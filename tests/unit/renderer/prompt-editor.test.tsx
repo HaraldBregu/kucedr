@@ -44,6 +44,7 @@ jest.mock('@/components/text-editor', () => {
 
 describe('PromptEditor', () => {
 	it('expands when text wraps to another visual line and collapses when cleared', async () => {
+		jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 		const { container, rerender } = render(
 			<PromptEditor
 				value=""
