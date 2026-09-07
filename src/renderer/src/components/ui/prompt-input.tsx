@@ -499,7 +499,7 @@ function PromptInput({
 												</motion.div>
 											) : null}
 											{leadingAction ? (
-												<div className={cn('col-start-1 flex h-10 items-center', controlsRow)}>
+												<div className={cn('col-start-1 flex h-10 self-end items-center', controlsRow)}>
 													{leadingAction}
 												</div>
 											) : null}
@@ -520,7 +520,7 @@ function PromptInput({
 											</motion.div>
 											<div
 												className={cn(
-													'relative flex h-10 min-w-0 items-center justify-end',
+													'relative flex h-10 min-w-0 self-end items-center justify-end',
 													isDictationMode
 														? leadingAction
 															? 'col-start-2 col-end-4'
