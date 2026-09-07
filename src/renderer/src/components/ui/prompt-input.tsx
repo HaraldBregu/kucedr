@@ -445,7 +445,10 @@ function PromptInput({
 						<motion.div
 							initial={false}
 							animate={{
-								height: contentHeight === undefined ? 'auto' : contentHeight + 2,
+								height:
+									transition.duration === 0 || contentHeight === undefined
+										? 'auto'
+										: contentHeight + 2,
 								borderRadius: isConversationMode || !isPromptExpanded ? 28 : 12,
 							}}
 							transition={transition}
