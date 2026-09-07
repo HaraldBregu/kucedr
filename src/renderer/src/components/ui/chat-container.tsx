@@ -8,14 +8,14 @@ import { cn } from '@/lib/utils';
 export type ChatContainerRootProps = {
 	children: React.ReactNode;
 	className?: string;
-	resize?: React.ComponentProps<typeof StickToBottom>['resize'];
+	contextRef?: React.ComponentProps<typeof StickToBottom>['contextRef'];
 } & React.HTMLAttributes<HTMLDivElement>;
 
-function ChatContainerRoot({ children, className, resize = 'smooth', ...props }: ChatContainerRootProps) {
+function ChatContainerRoot({ children, className, ...props }: ChatContainerRootProps) {
 	return (
 		<StickToBottom
 			className={cn('relative flex-1 overflow-y-auto', className)}
-			resize={resize}
+			resize="smooth"
 			initial="instant"
 			role="log"
 			{...props}

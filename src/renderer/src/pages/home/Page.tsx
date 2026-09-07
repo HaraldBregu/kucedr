@@ -42,6 +42,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
+import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { AssistantMessage } from './components/AssistantMessage';
 import { ReplyPreview } from './components/Reply';
 import { UserMessage } from './components/UserMessage';
@@ -443,12 +444,17 @@ function PageContent(): ReactElement {
 	const navigate = useNavigate();
 	const workspaceRef = useRef<HTMLDivElement>(null);
 	const composerRef = useRef<HTMLDivElement>(null);
+	const chatScrollRef = useRef<StickToBottomContext>(null);
 	useLayoutEffect(() => {
 		const workspace = workspaceRef.current;
 		const composer = composerRef.current;
 		if (!workspace || !composer) return;
 		const updateSpacing = (): void => {
 			workspace.style.setProperty('--composer-height', `${composer.getBoundingClientRect().height}px`);
+			void chatScrollRef.current?.scrollToBottom({
+				animation: 'instant',
+				preserveScrollPosition: true,
+			});
 		};
 		updateSpacing();
 		return resize(composer, updateSpacing);
@@ -758,7 +764,7 @@ function PageContent(): ReactElement {
 					</span>
 					<ChatContainerRoot
 						className="min-h-0 p-0 [scrollbar-gutter:auto]"
-						resize={agent.replyTo ? 'instant' : 'smooth'}
+						contextRef={chatScrollRef}
 					>
 						<ChatContainerContent
 							className={cn(
