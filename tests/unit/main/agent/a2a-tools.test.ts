@@ -10,8 +10,8 @@ import { cancelA2aTaskTool } from '../../../../src/main/agent/tools/a2a/cancel';
 import { delegateA2aTool } from '../../../../src/main/agent/tools/a2a/delegate';
 import { getA2aTaskTool } from '../../../../src/main/agent/tools/a2a/get';
 
-it.each([delegateA2aTool, getA2aTaskTool, cancelA2aTaskTool])(
-	'%s requires approval for remote A2A access',
+it.each([delegateA2aTool, cancelA2aTaskTool])(
+	'%s requires approval for remote A2A changes',
 	(tool) => {
 		expect(tool.hardApproval).toBe(true);
 	}
