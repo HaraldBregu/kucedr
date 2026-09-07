@@ -32,7 +32,7 @@ const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
 beforeEach(() => {
 	location = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-reply-')), 'agent');
-	mockStream.mockImplementation(async function* () {});
+	mockStream.mockReset().mockImplementation(async function* () {});
 });
 
 afterEach(() => {
