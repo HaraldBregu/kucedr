@@ -82,6 +82,23 @@ describe('loadMcpTools', () => {
 		expect(result.diagnostics).toMatchObject({ loadedTools: 3, failures: [] });
 	});
 
+	it('preserves read-only annotations and gates tools without them', async () => {
+		listToolsMock.mockResolvedValue({
+			tools: [
+				{ name: 'lookup', inputSchema: { type: 'object' }, annotations: { readOnlyHint: true } },
+				{ name: 'write', inputSchema: { type: 'object' }, annotations: { readOnlyHint: false } },
+				{ name: 'unknown', inputSchema: { type: 'object' } },
+			],
+		});
+
+		const result = await loadMcpTools();
+		expect(result.tools.map((configured) => configured.capability)).toEqual([
+			{ effects: ['read'], approval: false },
+			{ effects: ['external'], approval: true },
+			{ effects: ['external'], approval: true },
+		]);
+	});
+
 	it('reports connection and listing failures without exposing raw errors', async () => {
 		getMcpServersMock.mockReturnValue({
 			connects: { type: 'http', url: 'https://connects.test' },

@@ -14,15 +14,18 @@ export function mcpTool(
 	schema: JSONSchema,
 	serverId: string,
 	approval?: McpApprovalPolicy,
-	runtimeName = mcpToolName(serverId, toolName, new Set())
+	runtimeName = mcpToolName(serverId, toolName, new Set()),
+	readOnly = false
 ) {
 	const parseInput = mcpInputParser(schema);
 	return jsonTool({
 		id: runtimeName,
 		name: toolName.charAt(0).toUpperCase() + toolName.slice(1).replaceAll('_', ' '),
 		description,
-		capability: { effects: ['external'], approval: approval !== 'never' },
-		hardApproval: approval !== 'never',
+		capability: {
+			effects: readOnly ? ['read'] : ['external'],
+			approval: approval === 'always' || (approval !== 'never' && !readOnly),
+		},
 		timeoutMs: MCP_TOOL_TIMEOUT_MS,
 		maxOutputBytes: MCP_MAX_OUTPUT_BYTES,
 		parseInput,

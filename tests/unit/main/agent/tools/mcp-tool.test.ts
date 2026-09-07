@@ -28,6 +28,26 @@ describe('mcpTool', () => {
 		}
 	});
 
+	it.each([
+		[undefined, true, false],
+		[undefined, false, true],
+		['always', true, true],
+		['always', false, true],
+		['never', true, false],
+		['never', false, false],
+	] as const)('applies approval policy %s to read-only hint %s', (approval, readOnly, requiresApproval) => {
+		const configured = mcpTool(client, 'lookup', '', schema, 'safe', approval, undefined, readOnly);
+		expect(configured.capability).toEqual({
+			effects: readOnly ? ['read'] : ['external'],
+			approval: requiresApproval,
+		});
+	});
+
+	it('requires default approval when read-only metadata is absent', () => {
+		const configured = mcpTool(client, 'lookup', '', schema, 'safe');
+		expect(configured.capability).toEqual({ effects: ['external'], approval: true });
+	});
+
 	it('validates inputs and forwards timeout plus cancellation to the SDK', async () => {
 		callToolMock.mockResolvedValue({ content: [{ type: 'text', text: 'ok' }] });
 		const signal = new AbortController().signal;

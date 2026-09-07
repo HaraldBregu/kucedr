@@ -109,7 +109,8 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 							listedTool.inputSchema as JSONSchema,
 							result.id,
 							result.approval,
-							runtimeName
+							runtimeName,
+							listedTool.annotations?.readOnlyHint === true
 						)
 					);
 					usedNames.add(runtimeName);
