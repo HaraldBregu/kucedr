@@ -910,7 +910,6 @@ function PageContent(): ReactElement {
 									planCommandActive && 'plan-prompt-frame',
 									goalCommandActive && 'goal-prompt-frame'
 								)}
-								footerClassName="-mx-1.5 -mb-1.5"
 								actions={
 									<PromptInputActions className="justify-end gap-1.5">
 										<VoiceButton

@@ -127,30 +127,6 @@ function usePromptInputExpansion({
 	return isExpanded;
 }
 
-function PromptInputMotionSlot({
-	children,
-	transition,
-	ref,
-}: {
-	children: React.ReactNode;
-	transition: ReturnType<typeof usePromptInputTransition>;
-	ref?: React.Ref<HTMLDivElement>;
-}) {
-	return (
-		<motion.div
-			ref={ref}
-			layout="position"
-			initial={{ opacity: 0, y: 4 }}
-			animate={{ opacity: 1, y: 0 }}
-			exit={{ opacity: 0, y: -4 }}
-			transition={transition}
-			className="shrink-0"
-		>
-			{children}
-		</motion.div>
-	);
-}
-
 function PromptInputVoiceWaveform({
 	muted,
 	mediaStream,
@@ -403,6 +379,7 @@ function PromptInput({
 	const isDictationMode = voiceMode === 'dictation';
 	const isPromptExpanded =
 		expanded || isExpanded || isConversationMode || isDictationMode || Boolean(header);
+	const controlsRow = header ? 'row-start-3' : isPromptExpanded ? 'row-start-2' : 'row-start-1';
 
 	useLayoutEffect(() => {
 		const content = contentRef.current;
@@ -467,16 +444,16 @@ function PromptInput({
 							)}
 							{...(props as React.ComponentProps<typeof motion.div>)}
 						>
-							<div className="h-full overflow-hidden rounded-[inherit]">
+							<div className="flex h-full flex-col justify-end overflow-hidden rounded-[inherit]">
 								<div
 									ref={contentRef}
 									className={cn(
-										'relative',
+										'relative shrink-0',
 										isConversationMode
 											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
-											: isPromptExpanded
-												? 'flex max-h-[min(48vh,30rem)] min-h-24 flex-col px-4 py-3'
-												: 'flex min-h-12 items-center gap-2 p-1'
+											: 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 p-1',
+										!isConversationMode &&
+											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12')
 									)}
 								>
 									{isConversationMode ? (
@@ -516,47 +493,40 @@ function PromptInput({
 												<motion.div
 													layout="position"
 													transition={transition}
-													className="mb-2 shrink-0"
+													className="col-span-3 col-start-1 row-start-1 mx-3 mb-2 mt-2"
 												>
 													{header}
 												</motion.div>
 											) : null}
-											<AnimatePresence initial={false} mode="popLayout">
-												{!isPromptExpanded && leadingAction && (
-													<PromptInputMotionSlot transition={transition}>
-														{leadingAction}
-													</PromptInputMotionSlot>
-												)}
-											</AnimatePresence>
+											{leadingAction ? (
+												<div className={cn('col-start-1 flex h-10 items-center', controlsRow)}>
+													{leadingAction}
+												</div>
+											) : null}
 											<motion.div
 												layout="position"
 												transition={transition}
 												className={cn(
-													isPromptExpanded ? 'min-h-0 flex-1' : 'min-w-0 flex-1',
+													'min-w-0',
+													isPromptExpanded ? 'col-span-3 col-start-1 mx-3 mb-3 min-h-0' : 'col-start-2',
+													isPromptExpanded && !header && 'mt-2',
+													header ? 'row-start-2' : 'row-start-1',
 													contentClassName
 												)}
 											>
 												{children}
 											</motion.div>
-											<motion.div
-												layout="position"
-												transition={transition}
+											<div
 												className={cn(
-													'relative',
-													isPromptExpanded
-														? 'mt-3 flex items-center justify-between gap-2'
-														: 'flex shrink-0 self-center items-center justify-center gap-1.5',
+													'relative flex h-10 min-w-0 items-center justify-end',
+													isDictationMode
+														? leadingAction ? 'col-start-2 col-end-4' : 'col-span-3 col-start-1'
+														: 'col-start-3',
+													controlsRow,
 													isPromptExpanded && footerClassName
 												)}
 											>
-												<AnimatePresence initial={false} mode="popLayout">
-													{isPromptExpanded && leadingAction && (
-														<PromptInputMotionSlot transition={transition}>
-															{leadingAction}
-														</PromptInputMotionSlot>
-													)}
-												</AnimatePresence>
-												<AnimatePresence initial={false} mode="popLayout">
+												<AnimatePresence initial={false} mode="popLayout" anchorX="right">
 													<motion.div
 														key={isDictationMode ? 'dictation' : 'actions'}
 														initial={{ opacity: 0 }}
@@ -584,7 +554,7 @@ function PromptInput({
 														)}
 													</motion.div>
 												</AnimatePresence>
-											</motion.div>
+											</div>
 										</>
 									)}
 								</div>
