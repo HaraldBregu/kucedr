@@ -169,7 +169,7 @@ export function AssistantMessage({
 	readonly showHeader?: boolean;
 	readonly collapseLongContent?: boolean;
 	readonly className?: string;
-	readonly onReply?: () => void;
+	readonly onReply?: (message: Pick<AgentMessage, 'id' | 'content'>) => void;
 	readonly canImplement?: boolean;
 	readonly onImplement?: () => void;
 }): ReactElement {
@@ -414,8 +414,8 @@ export function AssistantMessage({
 							className="text-muted-foreground hover:text-foreground"
 							aria-label="Reply"
 							title="Reply"
-							disabled={!onReply}
-							onClick={onReply}
+							disabled={!onReply || !messageText}
+							onClick={() => onReply?.({ id: message.id, content: messageText })}
 						>
 							<Reply className="size-3.5" />
 						</Button>

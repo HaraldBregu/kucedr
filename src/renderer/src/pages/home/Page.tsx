@@ -43,6 +43,7 @@ import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import { AssistantMessage } from './components/AssistantMessage';
+import { ReplyPreview } from './components/Reply';
 import { UserMessage } from './components/UserMessage';
 import { Provider, welcomeMessage } from './context';
 import {
@@ -795,7 +796,7 @@ function PageContent(): ReactElement {
 												showHeader={showAssistantHeader}
 												collapseLongContent={isPreviousMessage}
 												className={groupedAssistantClassName}
-												onReply={agent.switchToTyping}
+												onReply={agent.replyToMessage}
 												canImplement={
 													index === visibleMessages.length - 1 &&
 													message.state === 'completed' &&
@@ -847,8 +848,15 @@ function PageContent(): ReactElement {
 								onSubmit={() => void submitPrompt()}
 								textareaRef={agent.inputRef}
 								header={
-									attachments.length > 0 ? (
-										<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
+									agent.replyTo || attachments.length > 0 ? (
+										<div className="flex min-w-0 flex-col gap-2">
+											{agent.replyTo ? (
+												<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
+											) : null}
+											{attachments.length > 0 ? (
+												<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
+											) : null}
+										</div>
 									) : undefined
 								}
 								leadingAction={
