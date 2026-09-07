@@ -45,7 +45,7 @@ describe('ExecSandbox permissions', () => {
 			const sandbox = new ExecSandbox();
 			await sandbox.wrap('pwd', '/workspace', 'linux-command');
 			const config = initialize.mock.calls.at(-1)?.[0];
-			expect(config.filesystem.allowRead).toContain(config.seccomp.applyPath);
+			expect(config.filesystem.denyRead).not.toContain(config.seccomp.applyPath);
 			await sandbox.wrap('pwd', agentLocation(), 'linux-plan', undefined, [], 'plan');
 			const plan = JSON.parse(writeFile.mock.calls.at(-1)?.[1] as string);
 			expect(plan.filesystem.allowRead).toContain(plan.seccomp.applyPath);
@@ -56,14 +56,15 @@ describe('ExecSandbox permissions', () => {
 
 	it('includes the cache ancestor in canonical command input before approval, preserving the working directory', () => {
 		const configured = execTool(new ExecSandbox());
-		const input = configured.parseInput({ command: 'pwd', workdir: '/tmp/claude/project' });
-		expect(input).toEqual({ command: 'pwd', workdir: '/tmp/claude/project', additionalRoots: [realPath('/tmp/claude')] });
+		const input = configured.parseInput({ command: 'pwd', workdir: '/tmp/claude/project', additionalRoots: ['.'] });
+		expect(input).toEqual({ command: 'pwd', workdir: '/tmp/claude/project', additionalRoots: ['.', realPath('/tmp/claude')] });
 		expect(configured.parseInput(input)).toEqual(input);
 		expect(configured.parseInput({ command: 'pwd', additionalRoots: ['/tmp/claude/project'] })).toMatchObject({ additionalRoots: ['/tmp/claude/project', realPath('/tmp/claude')] });
 	});
 
-	it('does not expand cache scope for workspace-only, elevated, or Plan commands', () => {
+	it('does not expand cache scope without a write request, or for elevated or Plan commands', () => {
 		const sandbox = new ExecSandbox();
+		expect(execTool(sandbox).parseInput({ command: 'pwd', workdir: '/tmp/claude/project' })).toEqual({ command: 'pwd', workdir: '/tmp/claude/project' });
 		expect(execTool(sandbox).parseInput({ command: 'pwd', workdir: '/workspace' })).toEqual({ command: 'pwd', workdir: '/workspace' });
 		const input = { command: 'pwd', workdir: '/tmp/claude/project', elevated: true };
 		expect(execTool(sandbox).parseInput(input)).toEqual(input);
@@ -77,19 +78,16 @@ describe('ExecSandbox permissions', () => {
 			}
 		).configuration();
 
-		expect(configuration.config.filesystem.allowRead).toEqual(
-			expect.arrayContaining(['/workspace/**', '/shared/**'])
-		);
+		expect(configuration.config.filesystem.allowRead).toEqual([]);
 		expect(configuration.config.filesystem.allowWrite).toEqual(
 			expect.arrayContaining(['/workspace/**', '/shared/**'])
 		);
 		expect(configuration.config.filesystem.denyRead).toEqual(
-			expect.arrayContaining([path.parse(agentLocation()).root, '/shared/private/**'])
+			expect.arrayContaining(['/shared/private/**'])
 		);
 		expect(configuration.config.filesystem.denyRead).toContain('/workspace/private/**');
 		expect(configuration.config.filesystem.denyWrite).toEqual(['/shared/private/**', '/workspace/private/**', '/tmp/claude', '/home/user/.npm/_logs']);
-		expect(configuration.config.filesystem.allowRead).toContain('/usr');
-		expect(configuration.config.filesystem.allowRead).toEqual(expect.arrayContaining(['/lib', '/lib64', '/lib32']));
+		expect(configuration.config.filesystem.denyRead).not.toContain(path.parse(agentLocation()).root);
 	});
 
 	it('removes a runtime cache write restriction only for its approved invocation', async () => {

@@ -19,6 +19,8 @@ import { redoFileTool } from '../../../../../src/main/agent/tools/core/redo';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { processTool, registry, type ProcessSession } from '../../../../../src/main/agent/tools/core/process';
 import { resetPermissions, setPermissions, getPermissions } from '../../../../../src/main/agent/agent_store';
+import { respondToolPermission } from '../../../../../src/main/agent/permissions';
+import { realPath } from '../../../../../src/main/shared/real_path';
 import type { FileHistory } from '../../../../../src/main/agent/history/types';
 import type { RuntimeEvent, Tool } from '../../../../../src/main/agent/types';
 
@@ -76,7 +78,6 @@ it.each(['task', 'health', 'child'] as const)('blocks unapproved outside access 
 	const bash = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
 	const operations: [Tool, Record<string, unknown>][] = [
 		[writeTool, { path: '../background-outside.txt', content: 'outside' }],
-		[bash, { command: 'pwd', workdir: '..' }],
 		[bash, { command: 'pwd', additionalRoots: ['..'] }],
 		[bash, { command: 'pwd', elevated: true }],
 	];
@@ -135,7 +136,7 @@ it('asks before a patch moves a workspace file outside', async () => {
 	expect(fs.readFileSync(path.join(workspace, 'move.txt'), 'utf8')).toBe('content');
 });
 
-it.each([{ command: 'pwd', workdir: '..' }, { command: 'pwd', additionalRoots: ['..'] }, { command: 'pwd', elevated: true }])('asks before command access beyond the workspace: %j', async (args) => {
+it.each([{ command: 'pwd', additionalRoots: ['..'] }, { command: 'pwd', elevated: true }])('asks before command access beyond the workspace: %j', async (args) => {
 	const run = jest.fn();
 	const tool = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
 	expect((await execute(tool, args)).at(-1)).toMatchObject({ type: 'tool_permission_request' });
@@ -154,4 +155,70 @@ it.each(['camera_recorder', 'microphone_recorder', 'screen_recorder', 'open_apps
 	const tool = jsonTool({ id, name: id, description: id, schema: {}, execute: run });
 	expect((await execute(tool, {})).at(-1)).toMatchObject({ type: 'tool_permission_request' });
 	expect(run).not.toHaveBeenCalled();
+});
+
+
+it('reads outside files and runs sandboxed commands from outside without approval', async () => {
+	const target = path.join(userDataLocation(), 'outside-read.txt');
+	fs.writeFileSync(target, 'outside content');
+	expect((await execute(readTool, { path: target })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow', output: 'outside content' });
+	const run = jest.fn().mockResolvedValue('done');
+	const bash = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	expect((await execute(bash, { command: 'cat outside-read.txt', workdir: '..' })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
+	expect(run).toHaveBeenCalledTimes(1);
+});
+
+it.each(['approve', 'approve_always', 'reject'] as const)('records %s for an outside overwrite and reuses only a saved grant', async (decision) => {
+	const target = path.join(userDataLocation(), `outside-${decision}/file.txt`);
+	fs.mkdirSync(path.dirname(target), { recursive: true });
+	fs.writeFileSync(target, 'original');
+	const events = runToolCall(writeTool, { id: decision, name: 'write', args: { path: target, content: 'changed' } }, undefined, undefined, { runId: scope.runId, windowId: 1 });
+	await events.next();
+	const request = (await events.next()).value;
+	expect(request).toMatchObject({ type: 'tool_permission_request', persistable: true, targets: [realPath(path.dirname(target))] });
+	if (!request || request.type !== 'tool_permission_request') throw new Error('Expected approval');
+	expect(fs.readFileSync(target, 'utf8')).toBe('original');
+	const end = events.next();
+	expect(respondToolPermission({ approvalId: request.approvalId, runId: scope.runId, toolName: 'write', inputFingerprint: request.inputFingerprint }, decision, 1)).toBe(true);
+	expect((await end).value).toMatchObject({ type: 'tool_call_end', permissionOutcome: decision });
+	await events.next();
+	expect(fs.readFileSync(target, 'utf8')).toBe(decision === 'reject' ? 'original' : 'changed');
+	expect(getPermissions().write.allow.includes(`${realPath(path.dirname(target))}/**`)).toBe(decision === 'approve_always');
+	const next = await execute(writeTool, { path: target, content: 'again' });
+	expect(next.at(-1)?.type).toBe(decision === 'approve_always' ? 'tool_call_end' : 'tool_permission_request');
+});
+
+it('reuses a saved outside location for create, edit, move, delete, undo and redo across runs', async () => {
+	const directory = path.join(userDataLocation(), 'trusted-outside');
+	fs.mkdirSync(directory, { recursive: true });
+	const permissions = getPermissions();
+	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, `${realPath(directory)}/**`] } });
+	const original = path.join(directory, 'original.txt');
+	const moved = path.join(directory, 'moved.txt');
+	const history: FileHistory = { operations: [] };
+	const operations: [Tool, Record<string, unknown>][] = [
+		[writeTool, { path: original, content: 'first' }],
+		[writeTool, { path: original, content: 'second' }],
+		[editTool, { path: original, oldText: 'second', newText: 'third' }],
+		[applyPatchTool, { input: `*** Begin Patch\n*** Update File: ${original}\n*** Move to: ${moved}\n@@\n-third\n+fourth\n*** End Patch` }],
+		[applyPatchTool, { input: `*** Begin Patch\n*** Delete File: ${moved}\n*** End Patch` }],
+		[undoFileTool(history), {}],
+		[redoFileTool(history), {}],
+	];
+	for (const [tool, args] of operations) {
+		expect((await execute(tool, args, history, 'child')).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow', isError: undefined });
+	}
+	expect(fs.existsSync(original)).toBe(false);
+	expect(fs.existsSync(moved)).toBe(false);
+});
+
+it('offers a reusable folder grant for undo outside the workspace', async () => {
+	const target = path.join(userDataLocation(), 'undo-outside.txt');
+	const history: FileHistory = { operations: [] };
+	const permissions = getPermissions();
+	setPermissions({ ...permissions, write: { ...permissions.write, allow: [...permissions.write.allow, realPath(target)] } });
+	await execute(writeTool, { path: target, content: 'created' }, history);
+	resetPermissions();
+	expect((await execute(undoFileTool(history), {}, history)).at(-1)).toMatchObject({ type: 'tool_permission_request', persistable: true, targets: [realPath(path.dirname(target))] });
+	expect(fs.readFileSync(target, 'utf8')).toBe('created');
 });

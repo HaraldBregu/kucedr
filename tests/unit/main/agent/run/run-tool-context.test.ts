@@ -18,7 +18,7 @@ import { runToolCall } from '../../../../../src/main/agent/runner/run_tool_call'
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { execTool } from '../../../../../src/main/agent/tools/core/bash';
 import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
-import type { RuntimeEvent, Tool, ToolCall } from '../../../../../src/main/agent/types';
+import type { RuntimeEvent, Tool } from '../../../../../src/main/agent/types';
 
 const emptyPermissions = {
 	read: { allow: [], deny: [] },
@@ -117,7 +117,7 @@ describe('exec path approval', () => {
 		const run = jest.fn().mockResolvedValue('done');
 		const events = runToolCall(
 			fakeTool('bash', run),
-			{ id: 'exec', name: 'bash', args: { command: 'pwd', workdir: '/outside' } },
+			{ id: 'exec', name: 'bash', args: { command: 'pwd', workdir: '/outside', additionalRoots: ['.'] } },
 			undefined,
 			undefined,
 			{ runId: 'run', windowId: 1 }
@@ -163,7 +163,7 @@ describe('exec path approval', () => {
 		} as unknown as ExecSandbox;
 		const events = runToolCall(
 			execTool(sandbox),
-			{ id: 'exec', name: 'bash', args: { command: 'pwd', workdir: '/outside' } },
+			{ id: 'exec', name: 'bash', args: { command: 'pwd', workdir: '/outside', additionalRoots: ['.'] } },
 			undefined,
 			undefined,
 			{ runId: 'run', windowId: 1 }
@@ -224,18 +224,16 @@ describe('exec path approval', () => {
 });
 
 describe('per-run file access', () => {
-	it('reuses a successful read directory only in the originating run', async () => {
+	it('allows outside reads in independent runs without approval', async () => {
 		const root = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-read-context-'));
 		const read = jest.fn().mockResolvedValue('content');
 		const tool = fakeTool('read', read);
 		const first = createRunContext().fileAccess;
 		const second = createRunContext().fileAccess;
 
-		await approveCall(tool, {
-			id: 'first',
-			name: 'read',
-			args: { path: path.join(root, 'first.txt') },
-		}, first, 'run-one');
+		await collect(runToolCall(tool, {
+			id: 'first', name: 'read', args: { path: path.join(root, 'first.txt') },
+		}, undefined, first, { runId: 'run-one' }));
 
 		const reused = await collect(
 			runToolCall(
@@ -257,9 +255,9 @@ describe('per-run file access', () => {
 				{ runId: 'run-two' }
 			)
 		);
-		expect(isolated.at(-1)).toMatchObject({ type: 'tool_call_end', isError: true });
+		expect(isolated.at(-1)).toMatchObject({ type: 'tool_call_end', isError: undefined });
 		expect(first.readDirectories.size).toBe(1);
-		expect(second.readDirectories.size).toBe(0);
+		expect(second.readDirectories.size).toBe(1);
 	});
 
 	it('allows editing only the exact file newly created in the same run', async () => {
@@ -375,38 +373,6 @@ describe('per-run file access', () => {
 		expect(read).not.toHaveBeenCalled();
 	});
 });
-
-async function approveCall(
-	tool: Tool,
-	call: ToolCall,
-	fileAccess: ReturnType<typeof createRunContext>['fileAccess'],
-	runId: string
-): Promise<void> {
-	const events = runToolCall(
-		tool,
-		call,
-		new AbortController().signal,
-		fileAccess,
-		{ runId, windowId: 1 }
-	);
-	expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
-	const request = (await events.next()).value;
-	if (!request || request.type !== 'tool_permission_request') throw new Error('Expected approval');
-	const end = events.next();
-	expect(
-		respondToolPermission(
-			{
-				approvalId: request.approvalId,
-				runId,
-				toolName: request.toolName,
-				inputFingerprint: request.inputFingerprint,
-			},
-			'approve',
-			1
-		)
-	).toBe(true);
-	expect((await end).value).toMatchObject({ type: 'tool_call_end', isError: undefined });
-}
 
 async function collect(events: AsyncGenerator<RuntimeEvent, void>): Promise<RuntimeEvent[]> {
 	const collected: RuntimeEvent[] = [];

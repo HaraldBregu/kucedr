@@ -34,6 +34,7 @@ describe('resolveToolPermission', () => {
 
 	it('uses configured rules and the caller fallback for unknown tools', () => {
 		expect(resolveToolPermission('read', { path: '/outside/a.txt' })).toBe('allow');
+		expect(resolveToolPermission('read', { path: '/untrusted/a.txt' })).toBe('allow');
 		expect(resolveToolPermission('edit', { path: '/outside/a.txt' })).toBe('ask');
 		expect(resolveToolPermission('mcp__safe__lookup', {}, undefined, true, 'allow')).toBe('allow');
 		expect(resolveToolPermission('mcp__records__delete')).toBe('allow');
@@ -51,7 +52,7 @@ describe('resolveToolPermission', () => {
 		expect(resolveToolPermission('read', { path: '/repo/private/a.txt' }, fileAccess)).toBe('deny');
 	});
 
-	it('allows every shell form inside the workspace and asks outside', () => {
+	it('allows shell reads anywhere and asks for outside write access', () => {
 		getPermissions.mockReturnValue({
 			...defaults,
 			exec: { allow: ['/appdata/agent/**'], deny: ['/appdata/agent/private/**'] },
@@ -59,9 +60,10 @@ describe('resolveToolPermission', () => {
 
 		expect(resolveToolPermission('bash', { command: 'echo ok > result.txt' })).toBe('allow');
 		expect(resolveToolPermission('bash', { command: 'echo $(pwd)' })).toBe('allow');
-		expect(resolveToolPermission('bash', { command: 'pwd', workdir: '/outside' })).toBe('ask');
+		expect(resolveToolPermission('bash', { command: 'pwd', workdir: '/outside' })).toBe('allow');
 		expect(resolveToolPermission('bash', { command: 'pwd', workdir: 'private' })).toBe('deny');
 		expect(resolveToolPermission('bash', { command: 'pwd', elevated: true })).toBe('ask');
+		expect(resolveToolPermission('bash', { command: 'touch file', workdir: '/outside', additionalRoots: ['.'] })).toBe('ask');
 	});
 
 	it('asks when any declared external root is not trusted', () => {
