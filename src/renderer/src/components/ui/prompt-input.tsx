@@ -451,7 +451,7 @@ function PromptInput({
 										'relative shrink-0',
 										isConversationMode
 											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
-											: 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 p-1',
+											: 'grid grid-cols-[auto_minmax(0,1fr)_auto] content-end items-center gap-x-2 p-1',
 										!isConversationMode &&
 											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12')
 									)}
