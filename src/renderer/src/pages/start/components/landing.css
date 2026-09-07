@@ -33,12 +33,8 @@
 }
 
 .dark .landing {
-	--primary: #ffb86b;
-	--primary-foreground: #121010;
-}
-
-.dark .landing-brand {
-	--primary: #c9e7a0;
+	--primary: #c3dba3;
+	--primary-foreground: #17171a;
 }
 
 .landing-logo {

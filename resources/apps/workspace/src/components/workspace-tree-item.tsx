@@ -137,13 +137,13 @@ export function WorkspaceTreeItem({
 				aria-busy={movingPath === entry.path || undefined}
 				className={cn(
 					'mx-0 h-7 gap-1.5 rounded-md px-0 py-0 pr-2 text-left text-[12px] font-medium text-sidebar-muted outline-none',
-					'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:[&_svg]:text-sidebar-accent-foreground focus-visible:ring-1 focus-visible:ring-sidebar-ring',
-					'data-[selected=true]:bg-sidebar-accent data-[selected=true]:text-sidebar-accent-foreground data-[selected=true]:[&_svg]:text-sidebar-accent-foreground',
+					'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-1 focus-visible:ring-sidebar-ring',
+					'data-[selected=true]:bg-sidebar-accent data-[selected=true]:text-sidebar-foreground',
 					draggedPath === entry.path && 'opacity-45',
 					movingPath === entry.path && 'animate-pulse',
 					isDropTarget &&
 						!dropError &&
-						'bg-sidebar-accent text-sidebar-accent-foreground [&_svg]:text-sidebar-accent-foreground ring-1 ring-sidebar-ring',
+						'bg-sidebar-accent text-sidebar-foreground ring-1 ring-sidebar-ring',
 					isDropTarget && dropError && 'ring-1 ring-destructive'
 				)}
 			>

@@ -17,7 +17,7 @@ export function AppWindowControls({
 				type="button"
 				variant="ghost"
 				size="icon"
-				className="h-full w-[46px] rounded-none text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+				className="h-full w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
 				onClick={() => window.win.minimize()}
 				title="Minimize"
 				aria-label="Minimize"
@@ -28,7 +28,7 @@ export function AppWindowControls({
 				type="button"
 				variant="ghost"
 				size="icon"
-				className="h-full w-[46px] rounded-none text-muted-foreground hover:bg-muted/80 hover:text-foreground"
+				className="h-full w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
 				onClick={() => window.win.maximize()}
 				title={isMaximized ? 'Restore' : 'Maximize'}
 				aria-label={isMaximized ? 'Restore' : 'Maximize'}
