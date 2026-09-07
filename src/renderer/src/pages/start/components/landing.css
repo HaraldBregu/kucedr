@@ -37,6 +37,10 @@
 	--primary-foreground: #121010;
 }
 
+.dark .landing-brand {
+	--primary: #c9e7a0;
+}
+
 .landing-logo {
 	mask: url('@resources/icons/icon.svg') center / contain no-repeat;
 }
