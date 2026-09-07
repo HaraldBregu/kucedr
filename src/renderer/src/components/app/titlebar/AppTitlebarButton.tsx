@@ -12,7 +12,7 @@ export function AppTitlebarButton({
 			type="button"
 			variant="ghost"
 			size="icon-sm"
-			className="text-muted-foreground data-[pressed=true]:bg-accent data-[pressed=true]:text-foreground"
+			className="text-muted-foreground data-[pressed=true]:bg-accent data-[pressed=true]:text-accent-foreground"
 			data-pressed={button.pressed}
 			aria-label={button.label}
 			aria-expanded={button.expanded}

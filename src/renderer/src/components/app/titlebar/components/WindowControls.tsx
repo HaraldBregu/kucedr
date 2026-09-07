@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { TitleBarRightContainer } from '../TitleBarRightContainer';
 
 const btnBase =
-	'flex items-center justify-center h-full w-[46px] text-muted-foreground hover:bg-accent/80 hover:text-foreground active:bg-accent transition-colors duration-100';
+	'flex items-center justify-center h-full w-[46px] text-muted-foreground hover:bg-muted/80 hover:text-foreground active:bg-muted transition-colors duration-100';
 
 interface WindowControlsProps {
 	readonly isMaximized: boolean;
