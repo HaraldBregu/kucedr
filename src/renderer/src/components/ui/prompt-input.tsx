@@ -7,6 +7,7 @@ import { TypingLoader } from './loader';
 import { Persona, type PersonaState } from '@/components/persona';
 import { cn } from '@/lib/utils';
 import { Check, Mic, MicOff, X } from 'lucide-react';
+import { resize } from 'motion';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import React, { createContext, useContext, useLayoutEffect, useRef, useState } from 'react';
 
@@ -129,13 +130,16 @@ function usePromptInputExpansion({
 function PromptInputMotionSlot({
 	children,
 	transition,
+	ref,
 }: {
 	children: React.ReactNode;
 	transition: ReturnType<typeof usePromptInputTransition>;
+	ref?: React.Ref<HTMLDivElement>;
 }) {
 	return (
 		<motion.div
-			layout
+			ref={ref}
+			layout="position"
 			initial={{ opacity: 0, y: 4 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -4 }}
@@ -213,6 +217,7 @@ function PromptInputVoicePanel({
 	onMutedChange?: (muted: boolean) => void;
 }) {
 	const promptInputContext = usePromptInput();
+	const transition = usePromptInputTransition();
 	const [localMuted, setLocalMuted] = useState(false);
 	const isDictation = mode === 'dictation';
 	const isMuted = !isDictation && (muted ?? localMuted);
@@ -233,7 +238,7 @@ function PromptInputVoicePanel({
 			initial={{ opacity: 0, y: 4 }}
 			animate={{ opacity: 1, y: 0 }}
 			exit={{ opacity: 0, y: -4 }}
-			transition={{ duration: 0.14, ease: [0.4, 0, 0.2, 1] }}
+			transition={transition}
 			className="flex min-w-0 flex-1 cursor-default items-center gap-2 text-foreground"
 		>
 			{leadingAction ? (
@@ -385,6 +390,8 @@ function PromptInput({
 	const triggerFileUpload = () => fileInputRef.current?.click();
 	const currentValue = value ?? internalValue;
 	const hasAdaptiveLayout = Boolean(leadingAction || actions);
+	const contentRef = useRef<HTMLDivElement>(null);
+	const [contentHeight, setContentHeight] = useState<number>();
 	const transition = usePromptInputTransition();
 	const isExpanded = usePromptInputExpansion({
 		value: currentValue,
@@ -396,6 +403,13 @@ function PromptInput({
 	const isDictationMode = voiceMode === 'dictation';
 	const isPromptExpanded =
 		expanded || isExpanded || isConversationMode || isDictationMode || Boolean(header);
+
+	useLayoutEffect(() => {
+		const content = contentRef.current;
+		if (!content || !hasAdaptiveLayout) return;
+		setContentHeight(content.offsetHeight);
+		return resize(content, (_, { height }) => setContentHeight(height));
+	}, [hasAdaptiveLayout]);
 
 	const handleChange = (newValue: string) => {
 		setInternalValue(newValue);
@@ -427,34 +441,44 @@ function PromptInput({
 				}}
 			>
 				{hasAdaptiveLayout ? (
-					<motion.div
-						layout
-						transition={transition}
-						className={cn('mx-auto w-full max-w-[96rem]', wrapperClassName)}
-					>
+					<div className={cn('mx-auto w-full max-w-[96rem]', wrapperClassName)}>
 						<motion.div
-							layout
 							initial={false}
-							animate={{ borderRadius: isConversationMode || !isPromptExpanded ? 28 : 12 }}
+							animate={{
+								height: contentHeight === undefined ? 'auto' : contentHeight + 2,
+								borderRadius: isConversationMode || !isPromptExpanded ? 28 : 12,
+							}}
 							transition={transition}
 							onClick={isConversationMode ? onClick : handleClick}
 							data-expanded={isPromptExpanded}
 							data-voice-mode={voiceMode ?? undefined}
 							className={cn(
-								'cursor-text border border-border/60 bg-card/95 text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
+								'relative overflow-hidden cursor-text border border-border/60 bg-card/95 text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
 								isConversationMode
-									? 'flex h-[min(42vh,18rem)] min-h-56 cursor-default flex-col gap-2 overflow-hidden rounded-[1.75rem] p-2 focus-within:ring-0'
+									? 'cursor-default rounded-[1.75rem] focus-within:ring-0'
 									: isPromptExpanded
-										? 'flex max-h-[min(48vh,30rem)] min-h-24 flex-col rounded-xl px-4 py-3'
-										: 'flex min-h-12 items-center gap-2 rounded-full p-1',
+										? 'rounded-xl'
+										: 'rounded-full',
 								disabled && 'cursor-not-allowed opacity-60',
 								className
 							)}
 							{...(props as React.ComponentProps<typeof motion.div>)}
 						>
+							<div
+								ref={contentRef}
+								className={cn(
+									'relative',
+									isConversationMode
+										? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
+										: isPromptExpanded
+											? 'flex max-h-[min(48vh,30rem)] min-h-24 flex-col px-4 py-3'
+											: 'flex min-h-12 items-center gap-2 p-1'
+								)}
+							>
 							{isConversationMode ? (
 								<motion.div
-									layout
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
 									transition={transition}
 									className="relative flex min-h-0 flex-1 items-center justify-center rounded-[1.35rem] bg-neutral-950"
 								>
@@ -485,11 +509,11 @@ function PromptInput({
 							) : (
 								<>
 									{header ? (
-										<motion.div layout transition={transition} className="mb-2 shrink-0">
+										<motion.div layout="position" transition={transition} className="mb-2 shrink-0">
 											{header}
 										</motion.div>
 									) : null}
-									<AnimatePresence initial={false}>
+									<AnimatePresence initial={false} mode="popLayout">
 										{!isPromptExpanded && leadingAction && (
 											<PromptInputMotionSlot transition={transition}>
 												{leadingAction}
@@ -497,7 +521,7 @@ function PromptInput({
 										)}
 									</AnimatePresence>
 									<motion.div
-										layout
+										layout="position"
 										transition={transition}
 										className={cn(
 											isPromptExpanded ? 'min-h-0 flex-1' : 'min-w-0 flex-1',
@@ -507,22 +531,32 @@ function PromptInput({
 										{children}
 									</motion.div>
 									<motion.div
-										layout
+										layout="position"
 										transition={transition}
 										className={cn(
+											'relative',
 											isPromptExpanded
 												? 'mt-3 flex items-center justify-between gap-2'
 												: 'flex shrink-0 self-center items-center justify-center gap-1.5',
 											isPromptExpanded && footerClassName
 										)}
 									>
-										<AnimatePresence initial={false}>
+										<AnimatePresence initial={false} mode="popLayout">
 											{isPromptExpanded && leadingAction && (
 												<PromptInputMotionSlot transition={transition}>
 													{leadingAction}
 												</PromptInputMotionSlot>
 											)}
 										</AnimatePresence>
+										<AnimatePresence initial={false} mode="popLayout">
+											<motion.div
+												key={isDictationMode ? 'dictation' : 'actions'}
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												exit={{ opacity: 0, pointerEvents: 'none' }}
+												transition={transition}
+												className={isDictationMode ? 'min-w-0 flex-1' : 'shrink-0'}
+											>
 										{isDictationMode ? (
 											<PromptInputVoicePanel
 												mode="dictation"
@@ -540,11 +574,14 @@ function PromptInput({
 										) : (
 											actions
 										)}
+											</motion.div>
+										</AnimatePresence>
 									</motion.div>
 								</>
 							)}
+							</div>
 						</motion.div>
-					</motion.div>
+					</div>
 				) : (
 					<div
 						onClick={handleClick}
