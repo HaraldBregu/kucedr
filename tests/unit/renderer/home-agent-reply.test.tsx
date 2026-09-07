@@ -19,6 +19,10 @@ jest.mock('../../../src/renderer/src/contexts/chat-session', () => ({
 
 beforeEach(() => {
 	mockSessionId = 'chat-one';
+	send.mockReset();
+	mockDispatch.mockClear();
+	mockSetMode.mockClear();
+	mockSetSessionId.mockClear();
 	send.mockResolvedValue('Assistant response');
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
