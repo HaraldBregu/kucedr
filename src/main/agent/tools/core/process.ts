@@ -293,7 +293,6 @@ export const processTool: Tool = tool({
 		'Manage running exec sessions for commands already started: list, poll, log, write, send-keys, submit, paste, kill. ' +
 		'Use poll/log when you need status, logs, quiet-success confirmation, or completion confirmation. ' +
 		'Use write/send-keys/submit/paste/kill for input or intervention.',
-	hardApproval: ({ action }) => ['kill', 'clear', 'remove'].includes(action),
 	inputSchema: processInputSchema,
 	execute: runProcess,
 });

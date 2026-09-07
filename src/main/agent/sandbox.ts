@@ -17,7 +17,6 @@ import { getPermissions } from './agent_store';
 import { userDataLocation } from '../shared/user_data_location';
 import { resolveUserPath } from '../shared/user_path';
 import { permissionFor } from './permissions/permission_for';
-import { permissionRuleRoot } from './permissions/permission_rule_root';
 import { recursivePermissionRule } from './permissions/recursive_permission_rule';
 import type { AgentInteractionMode } from '../../shared/agent_types';
 import { agentLocation } from '../shared/agent_location';
@@ -75,7 +74,6 @@ export class ExecSandbox {
 			? {
 					filesystem: {
 						...config.filesystem,
-						allowRead: [...(config.filesystem.allowRead ?? []), ...approvedPatterns],
 						allowWrite: [...(config.filesystem.allowWrite ?? []), ...approvedPatterns],
 					},
 			}

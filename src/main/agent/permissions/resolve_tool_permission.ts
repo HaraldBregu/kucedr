@@ -53,15 +53,10 @@ export function resolveToolPermissionDetails(
 	const permissions = configuredPermissions ?? getPermissions();
 	if (toolName === 'bash') return resolveCommandPermission(args, permissions, AGENT_DIRECTORY, fallback);
 	const targets =
-		kind === 'write' || kind === 'exec'
+		kind === 'write'
 			? directoryPermissionTargets(toolName, args, AGENT_DIRECTORY, history)
 			: toolPermissionTargets(toolName, args, AGENT_DIRECTORY);
-	const decisions = targets.map((target) =>
-		kind === 'exec' && args.elevated !== true &&
-			(['read', 'write'] as const).some((capability) => permissionFor(permissions[capability], target, capability) === 'deny')
-			? 'deny'
-			: permissionFor(permissions[kind], target, kind, args.elevated === true)
-	);
+	const decisions = targets.map((target) => permissionFor(permissions[kind], target, kind));
 	const approvalTargets = [
 		...new Set(
 			toolApprovalTargets(toolName, args, AGENT_DIRECTORY, history).filter(
@@ -75,14 +70,13 @@ export function resolveToolPermissionDetails(
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };
 	if (reuseContext && contextAllowsTool(context, toolName, args, AGENT_DIRECTORY))
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };
-	const hostExecution = kind === 'exec' && args.elevated === true;
 	return {
 		mode: fallback,
 		kind,
 		targets,
 		approvalTargets,
-		reason: hostExecution ? 'host_execution' : 'outside_trusted_location',
-		persistable: !hostExecution && approvalTargets.length > 0,
+		reason: 'outside_trusted_location',
+		persistable: approvalTargets.length > 0,
 	};
 }
 

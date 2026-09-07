@@ -107,7 +107,7 @@ describe('ExecSandbox permissions', () => {
 			'/bin/sh',
 			expect.objectContaining({
 				filesystem: expect.objectContaining({
-					allowRead: expect.arrayContaining(['/outside/**']),
+					allowRead: [],
 					allowWrite: expect.arrayContaining(['/outside/**']),
 				}),
 			}),
