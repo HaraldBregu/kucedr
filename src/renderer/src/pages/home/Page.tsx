@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState, type ReactElement } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactElement } from 'react';
 import type { AgentPromptInputCapabilities } from '@shared/agent_types';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion, resize } from 'motion/react';
 import {
 	AlertCircle,
 	ArrowUp,
@@ -441,6 +441,18 @@ function PageContent(): ReactElement {
 	const { mode, setMode } = useChatMode();
 	const { sessionId: chatSessionId } = useChatSession();
 	const navigate = useNavigate();
+	const workspaceRef = useRef<HTMLDivElement>(null);
+	const composerRef = useRef<HTMLDivElement>(null);
+	useLayoutEffect(() => {
+		const workspace = workspaceRef.current;
+		const composer = composerRef.current;
+		if (!workspace || !composer) return;
+		const updateSpacing = (): void => {
+			workspace.style.setProperty('--composer-height', `${composer.getBoundingClientRect().height}px`);
+		};
+		updateSpacing();
+		return resize(composer, updateSpacing);
+	}, []);
 	const [voiceMode, setVoiceMode] = useState<PromptInputVoiceMode | null>(null);
 	const [activeDictationMode, setActiveDictationMode] = useState<VoiceButtonMode | null>(null);
 	const updateMode = useCallback(
@@ -737,6 +749,7 @@ function PageContent(): ReactElement {
 				}
 			>
 				<div
+					ref={workspaceRef}
 					data-slot="home-workspace"
 					className="relative flex min-h-0 flex-1 flex-col bg-background text-foreground"
 				>
@@ -749,9 +762,7 @@ function PageContent(): ReactElement {
 								'mx-auto w-full max-w-4xl gap-5 px-4',
 								showEmptyConversation
 									? 'h-full min-h-0 justify-center overflow-hidden pb-36 pt-20'
-									: voiceMode === 'conversation'
-										? 'min-h-full pb-80 pt-6'
-										: 'min-h-full pb-28 pt-6'
+									: 'min-h-full pt-6'
 							)}
 						>
 							{showEmptyConversation ? (
@@ -808,13 +819,12 @@ function PageContent(): ReactElement {
 									})}
 								</>
 							)}
-							<ChatContainerScrollAnchor className={showEmptyConversation ? 'h-0' : undefined} />
+							<ChatContainerScrollAnchor
+								className={showEmptyConversation ? 'h-0' : 'h-[var(--composer-height,7rem)]'}
+							/>
 						</ChatContainerContent>
 						<div
-							className={cn(
-								'pointer-events-none absolute inset-x-0 z-30 flex justify-center',
-								voiceMode === 'conversation' ? 'bottom-80' : 'bottom-24'
-							)}
+							className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center"
 						>
 							<ScrollButton
 								type="button"
@@ -824,6 +834,7 @@ function PageContent(): ReactElement {
 						</div>
 					</ChatContainerRoot>
 					<div
+						ref={composerRef}
 						data-slot="home-composer-shell"
 						className="absolute inset-x-0 bottom-0 z-20 flex justify-center px-4 pb-5 pt-3"
 					>
