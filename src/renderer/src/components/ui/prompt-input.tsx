@@ -499,7 +499,9 @@ function PromptInput({
 												</motion.div>
 											) : null}
 											{leadingAction ? (
-												<div className={cn('col-start-1 flex h-10 self-end items-center', controlsRow)}>
+												<div
+													className={cn('col-start-1 flex h-10 self-end items-center', controlsRow)}
+												>
 													{leadingAction}
 												</div>
 											) : null}
