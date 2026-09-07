@@ -65,6 +65,7 @@ import {
 import { getModelId, getProviderId } from './agent_store';
 import { preflightPromptAttachments, resolvePromptInputCapabilities } from './attachments';
 import { workspacePath } from './system';
+import { formatReplyMessage } from '../../shared/reply';
 
 const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
 	main: 'high',
@@ -235,7 +236,7 @@ export class Agent {
 			const baseInput: Omit<RuntimeInput, 'type' | 'toolsAllow'> = {
 				runId: request.id,
 				task: 'chat',
-				message: parsedSkillCommand.message,
+				message: formatReplyMessage(parsedSkillCommand.message, options.replyTo),
 				scope: { ownerId: `${request.category === 'main' ? 'interactive' : request.agentId}:${request.sessionId}`, source: request.category === 'main' ? 'interactive' : request.category === 'bot' ? 'channel' : request.category === 'task' ? 'task' : request.category === 'health' ? 'health' : 'child', sessionId: request.sessionId, runId: request.id },
 				agentId: request.agentId,
 				contextMode:
@@ -364,7 +365,7 @@ export class Agent {
 				? {
 						activeRun: {
 							runId: active.request.id,
-							message: active.request.message,
+							message: formatReplyMessage(active.request.message, active.request.options.replyTo),
 							status: active.lifecycle.status,
 							events: [...active.responseEvents],
 						},

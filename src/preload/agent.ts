@@ -44,6 +44,9 @@ function normalizeAgentSendRuntimeOptions(options?: AgentRunOptions): AgentRunOp
 		...(optionalTrimmedString(options.sessionId)
 			? { sessionId: optionalTrimmedString(options.sessionId) }
 			: {}),
+		...(optionalTrimmedString(options.replyTo)
+			? { replyTo: optionalTrimmedString(options.replyTo) }
+			: {}),
 		...(optionalTrimmedString(options.providerId)
 			? { providerId: optionalTrimmedString(options.providerId) }
 			: {}),

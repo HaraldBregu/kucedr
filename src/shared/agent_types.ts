@@ -112,6 +112,7 @@ export interface AgentPromptInputCapabilities {
 export interface AgentRunOptions {
 	runId?: string;
 	sessionId?: string;
+	replyTo?: string;
 	providerId?: string;
 	model?: string;
 	effort?: ModelReasoningEffort;
