@@ -456,7 +456,7 @@ function PromptInput({
 							data-expanded={isPromptExpanded}
 							data-voice-mode={voiceMode ?? undefined}
 							className={cn(
-								'relative overflow-hidden cursor-text border border-border/60 bg-card/95 text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
+								'relative cursor-text border border-border/60 bg-card/95 text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
 								isConversationMode
 									? 'cursor-default rounded-[1.75rem] focus-within:ring-0'
 									: isPromptExpanded
@@ -467,6 +467,7 @@ function PromptInput({
 							)}
 							{...(props as React.ComponentProps<typeof motion.div>)}
 						>
+							<div className="h-full overflow-hidden rounded-[inherit]">
 							<div
 								ref={contentRef}
 								className={cn(
@@ -586,6 +587,7 @@ function PromptInput({
 										</motion.div>
 									</>
 								)}
+							</div>
 							</div>
 						</motion.div>
 					</div>

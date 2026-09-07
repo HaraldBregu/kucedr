@@ -54,7 +54,7 @@ describe('PromptEditor', () => {
 		const prompt = container.querySelector('[data-expanded]');
 
 		await waitFor(() => expect(prompt).toHaveAttribute('data-expanded', 'false'));
-		expect(prompt?.firstElementChild).toHaveClass('min-h-12');
+		expect(prompt?.firstElementChild?.firstElementChild).toHaveClass('min-h-12');
 		expect(prompt).toHaveClass('rounded-full');
 		await waitFor(() => expect(prompt).toHaveStyle({ borderRadius: '28px' }));
 
@@ -66,7 +66,7 @@ describe('PromptEditor', () => {
 			/>
 		);
 		await waitFor(() => expect(prompt).toHaveAttribute('data-expanded', 'true'));
-		expect(prompt?.firstElementChild).toHaveClass('min-h-24');
+		expect(prompt?.firstElementChild?.firstElementChild).toHaveClass('min-h-24');
 		expect(prompt).toHaveClass('rounded-xl');
 		await waitFor(() => expect(prompt).toHaveStyle({ borderRadius: '12px' }));
 
@@ -78,7 +78,7 @@ describe('PromptEditor', () => {
 			/>
 		);
 		await waitFor(() => expect(prompt).toHaveAttribute('data-expanded', 'false'));
-		expect(prompt?.firstElementChild).toHaveClass('min-h-12');
+		expect(prompt?.firstElementChild?.firstElementChild).toHaveClass('min-h-12');
 		expect(prompt).toHaveClass('rounded-full');
 		await waitFor(() => expect(prompt).toHaveStyle({ borderRadius: '28px' }));
 	});
