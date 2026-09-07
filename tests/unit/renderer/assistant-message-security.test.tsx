@@ -78,3 +78,22 @@ it('expands and collapses long assistant content', () => {
 	expect(content).not.toHaveClass('max-h-40', 'overflow-hidden');
 	expect(screen.getByRole('button', { name: 'Less' })).toHaveAttribute('aria-expanded', 'true');
 });
+
+it('replies to the selected assistant message', () => {
+	const onReply = jest.fn();
+	render(<AssistantMessage message={message('  The selected answer.  ')} onReply={onReply} />);
+	fireEvent.click(screen.getByRole('button', { name: 'Reply' }));
+	expect(onReply).toHaveBeenCalledWith({ id: 'assistant-1', content: 'The selected answer.' });
+});
+
+it('uses the displayed plan content when replying to a plan', () => {
+	const onReply = jest.fn();
+	render(
+		<AssistantMessage
+			message={message('<proposed_plan>\nThe plan to discuss.\n</proposed_plan>')}
+			onReply={onReply}
+		/>
+	);
+	fireEvent.click(screen.getByRole('button', { name: 'Reply' }));
+	expect(onReply).toHaveBeenCalledWith({ id: 'assistant-1', content: 'The plan to discuss.' });
+});

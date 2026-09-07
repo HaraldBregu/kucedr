@@ -8,12 +8,17 @@ import type { PromptAttachment } from '../../../src/renderer/src/pages/home/atta
 const handleSubmit = jest.fn();
 const setInput = jest.fn();
 const useSuggestion = jest.fn();
+const clearReply = jest.fn();
+let replyTo: { id: string; content: string } | null = null;
 let modelCatalogChanged: (() => void) | undefined;
 
 jest.mock('../../../src/renderer/src/pages/home/hooks', () => ({
 	useHomeAgent: () => ({
 		chatState: { messages: [{ id: 'agent-welcome', role: 'agent' }] },
 		editUserMessage: jest.fn(),
+		clearReply,
+		replyTo,
+		replyToMessage: jest.fn(),
 		handleSubmit,
 		historyLoading: false,
 		input: '',
@@ -175,6 +180,7 @@ describe('Home prompt attachments', () => {
 		handleSubmit.mockResolvedValue(true);
 		useSuggestion.mockClear();
 		modelCatalogChanged = undefined;
+		replyTo = null;
 	});
 
 	it('shows the full empty-state prompt set and fills a selected suggestion', async () => {
@@ -291,5 +297,23 @@ describe('Home prompt attachments', () => {
 		expect(result[0].error).toMatch(/4 bytes or smaller/);
 		expect(result[1].error).toMatch(/not supported/);
 		expect(result[2].error).toMatch(/maximum of 2/);
+	});
+
+	it('shows reply context alongside attachments and lets the user cancel it', async () => {
+		replyTo = { id: 'assistant-one', content: 'The answer being discussed.' };
+		renderPage(jest.fn().mockResolvedValue(imageCapabilities));
+		const picker = await screen.findByLabelText('Attachment files');
+		await waitFor(() => expect(picker).toHaveAttribute('accept', imageCapabilities.accept));
+		fireEvent.change(picker, {
+			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
+		});
+
+		expect(screen.getByRole('group', { name: 'Replying to Kucedr' })).toHaveTextContent(
+			'The answer being discussed.'
+		);
+		expect(screen.getByText('diagram.png')).toBeInTheDocument();
+		fireEvent.click(screen.getByRole('button', { name: 'Cancel reply' }));
+		expect(clearReply).toHaveBeenCalledTimes(1);
+		expect(screen.getByText('diagram.png')).toBeInTheDocument();
 	});
 });
