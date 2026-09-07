@@ -211,9 +211,9 @@ function PromptInputVoicePanel({
 	return (
 		<motion.div
 			key={mode}
-			initial={{ opacity: 0, y: 4 }}
-			animate={{ opacity: 1, y: 0 }}
-			exit={{ opacity: 0, y: -4 }}
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
 			transition={transition}
 			className="flex min-w-0 flex-1 cursor-default items-center gap-2 text-foreground"
 		>

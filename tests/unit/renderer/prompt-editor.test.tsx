@@ -52,6 +52,9 @@ describe('PromptEditor', () => {
 			/>
 		);
 		const prompt = container.querySelector('[data-expanded]');
+		const attachmentButton = screen.getByRole('button', { name: 'Attach' });
+		const sendButton = screen.getByRole('button', { name: 'Send' });
+		attachmentButton.focus();
 
 		await waitFor(() => expect(prompt).toHaveAttribute('data-expanded', 'false'));
 		expect(prompt?.firstElementChild?.firstElementChild).toHaveClass('min-h-12');
@@ -66,6 +69,9 @@ describe('PromptEditor', () => {
 			/>
 		);
 		await waitFor(() => expect(prompt).toHaveAttribute('data-expanded', 'true'));
+		expect(screen.getByRole('button', { name: 'Attach' })).toBe(attachmentButton);
+		expect(screen.getByRole('button', { name: 'Send' })).toBe(sendButton);
+		expect(attachmentButton).toHaveFocus();
 		expect(prompt?.firstElementChild?.firstElementChild).toHaveClass('min-h-24');
 		expect(prompt).toHaveClass('rounded-xl');
 		await waitFor(() => expect(prompt).toHaveStyle({ borderRadius: '12px' }));
@@ -81,6 +87,9 @@ describe('PromptEditor', () => {
 		expect(prompt?.firstElementChild?.firstElementChild).toHaveClass('min-h-12');
 		expect(prompt).toHaveClass('rounded-full');
 		await waitFor(() => expect(prompt).toHaveStyle({ borderRadius: '28px' }));
+		expect(screen.getByRole('button', { name: 'Attach' })).toBe(attachmentButton);
+		expect(screen.getByRole('button', { name: 'Send' })).toBe(sendButton);
+		expect(attachmentButton).toHaveFocus();
 	});
 
 	it('shows only the persona and a top-right stop control during voice conversation', () => {
