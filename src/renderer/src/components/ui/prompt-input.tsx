@@ -530,7 +530,12 @@ function PromptInput({
 													isPromptExpanded && footerClassName
 												)}
 											>
-												<AnimatePresence initial={false} mode="popLayout" anchorX="right">
+												<AnimatePresence
+													initial={false}
+													mode="popLayout"
+													anchorX="right"
+													anchorY="bottom"
+												>
 													<motion.div
 														key={isDictationMode ? 'dictation' : 'actions'}
 														initial={{ opacity: 0 }}
