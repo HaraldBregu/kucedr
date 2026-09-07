@@ -451,10 +451,8 @@ function PageContent(): ReactElement {
 		if (!workspace || !composer) return;
 		const updateSpacing = (): void => {
 			workspace.style.setProperty('--composer-height', `${composer.getBoundingClientRect().height}px`);
-			void chatScrollRef.current?.scrollToBottom({
-				animation: 'instant',
-				preserveScrollPosition: true,
-			});
+			const scrollState = chatScrollRef.current?.state;
+			if (scrollState?.isAtBottom) scrollState.scrollTop = scrollState.calculatedTargetScrollTop;
 		};
 		updateSpacing();
 		return resize(composer, updateSpacing);
