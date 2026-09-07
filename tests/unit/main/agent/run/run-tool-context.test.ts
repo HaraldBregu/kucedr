@@ -192,7 +192,7 @@ describe('exec path approval', () => {
 		);
 	});
 
-	it('never offers a persistent grant for host execution', async () => {
+	it.each(['reject', 'approve_always'] as const)('rejects %s without persisting a host execution grant', async (decision) => {
 		const events = runToolCall(
 			fakeTool('bash', jest.fn()),
 			{ id: 'host', name: 'bash', args: { command: 'pwd', elevated: true } },
@@ -216,10 +216,11 @@ describe('exec path approval', () => {
 				toolName: request.toolName,
 				inputFingerprint: request.inputFingerprint,
 			},
-			'reject',
+			decision,
 			1
 		);
-		await end;
+		expect((await end).value).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'reject', isError: true });
+		expect(addPermissionRule).not.toHaveBeenCalled();
 	});
 });
 

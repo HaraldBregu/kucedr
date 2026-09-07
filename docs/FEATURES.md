@@ -188,9 +188,9 @@ The Permissions screen provides persistent controls for sensitive tools:
 
 - The policy has three buckets: `read`, `write`, and `exec`.
 - Each bucket contains only `allow` and `deny` rule arrays. There is no persisted `ask` property.
-- All entries are absolute or home-relative path globs. Exec entries identify directories where sandboxed commands may run and access files.
+- All entries are absolute or home-relative path globs. Exec allow entries identify directories where sandboxed commands may write files.
 - The default policy trusts the agent workspace recursively for reads, writes, and sandboxed commands. Unmatched sensitive operations resolve to an interactive **Ask** decision.
-- Tools unrelated to filesystem reads, filesystem mutations, or command execution remain allowed.
+- Other tools use their capability policy; sensor access and external effects retain separate approval requirements.
 - An interactive permission card offers **Deny**, **Allow once**, and **Trust this location** when the grant can be persisted.
 - Trusting a location stores a recursive containing-folder glob for the requesting capability.
 - Resetting restores the default workspace path glob in all three buckets.

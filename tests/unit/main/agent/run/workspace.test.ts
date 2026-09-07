@@ -20,6 +20,7 @@ import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { processTool, registry, type ProcessSession } from '../../../../../src/main/agent/tools/core/process';
 import { resetPermissions, setPermissions, getPermissions } from '../../../../../src/main/agent/agent_store';
 import { respondToolPermission } from '../../../../../src/main/agent/permissions';
+import { stringifyRunEntry } from '../../../../../src/main/agent/session/session_stringify_run_entry';
 import { realPath } from '../../../../../src/main/shared/real_path';
 import type { FileHistory } from '../../../../../src/main/agent/history/types';
 import type { RuntimeEvent, Tool } from '../../../../../src/main/agent/types';
@@ -180,7 +181,9 @@ it.each(['approve', 'approve_always', 'reject'] as const)('records %s for an out
 	expect(fs.readFileSync(target, 'utf8')).toBe('original');
 	const end = events.next();
 	expect(respondToolPermission({ approvalId: request.approvalId, runId: scope.runId, toolName: 'write', inputFingerprint: request.inputFingerprint }, decision, 1)).toBe(true);
-	expect((await end).value).toMatchObject({ type: 'tool_call_end', permissionOutcome: decision });
+	const outcome = (await end).value;
+	expect(outcome).toMatchObject({ type: 'tool_call_end', permissionOutcome: decision });
+	expect(JSON.parse(stringifyRunEntry(outcome)!)).toMatchObject({ event: { toolCallId: decision, permissionOutcome: decision } });
 	await events.next();
 	expect(fs.readFileSync(target, 'utf8')).toBe(decision === 'reject' ? 'original' : 'changed');
 	expect(getPermissions().write.allow.includes(`${realPath(path.dirname(target))}/**`)).toBe(decision === 'approve_always');
@@ -221,4 +224,25 @@ it('offers a reusable folder grant for undo outside the workspace', async () => 
 	resetPermissions();
 	expect((await execute(undoFileTool(history), {}, history)).at(-1)).toMatchObject({ type: 'tool_permission_request', persistable: true, targets: [realPath(path.dirname(target))] });
 	expect(fs.readFileSync(target, 'utf8')).toBe('created');
+});
+
+
+it('persists an outside command grant and reuses it without an approval window', async () => {
+	const run = jest.fn().mockResolvedValue('done');
+	const bash = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	const directory = path.join(userDataLocation(), 'command-output');
+	fs.mkdirSync(directory);
+	const args = { command: 'touch output.txt', workdir: directory, additionalRoots: ['.'] };
+	const events = runToolCall(bash, { id: 'command-grant', name: 'bash', args }, undefined, undefined, { runId: scope.runId, windowId: 1 });
+	await events.next();
+	const request = (await events.next()).value;
+	expect(request).toMatchObject({ type: 'tool_permission_request', persistable: true, targets: [realPath(directory)] });
+	if (!request || request.type !== 'tool_permission_request') throw new Error('Expected approval');
+	const end = events.next();
+	expect(respondToolPermission({ approvalId: request.approvalId, runId: scope.runId, toolName: 'bash', inputFingerprint: request.inputFingerprint }, 'approve_always', 1)).toBe(true);
+	expect((await end).value).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'approve_always' });
+	await events.next();
+	expect(getPermissions().exec.allow).toContain(`${realPath(directory)}/**`);
+	expect((await execute(bash, args, undefined, 'child')).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
+	expect(run).toHaveBeenCalledTimes(2);
 });
