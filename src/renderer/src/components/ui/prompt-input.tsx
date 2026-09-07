@@ -468,126 +468,126 @@ function PromptInput({
 							{...(props as React.ComponentProps<typeof motion.div>)}
 						>
 							<div className="h-full overflow-hidden rounded-[inherit]">
-							<div
-								ref={contentRef}
-								className={cn(
-									'relative',
-									isConversationMode
-										? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
-										: isPromptExpanded
-											? 'flex max-h-[min(48vh,30rem)] min-h-24 flex-col px-4 py-3'
-											: 'flex min-h-12 items-center gap-2 p-1'
-								)}
-							>
-								{isConversationMode ? (
-									<motion.div
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										transition={transition}
-										className="relative flex min-h-0 flex-1 items-center justify-center rounded-[1.35rem] bg-neutral-950"
-									>
-										<button
-											type="button"
-											aria-label="End voice conversation"
-											disabled={disabled}
-											onClick={(event) => {
-												event.stopPropagation();
-												onVoiceEnd?.();
-											}}
-											className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white/70 backdrop-blur-sm transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 disabled:pointer-events-none disabled:opacity-50"
+								<div
+									ref={contentRef}
+									className={cn(
+										'relative',
+										isConversationMode
+											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
+											: isPromptExpanded
+												? 'flex max-h-[min(48vh,30rem)] min-h-24 flex-col px-4 py-3'
+												: 'flex min-h-12 items-center gap-2 p-1'
+									)}
+								>
+									{isConversationMode ? (
+										<motion.div
+											initial={{ opacity: 0 }}
+											animate={{ opacity: 1 }}
+											transition={transition}
+											className="relative flex min-h-0 flex-1 items-center justify-center rounded-[1.35rem] bg-neutral-950"
 										>
-											<X className="size-4" strokeWidth={2.4} />
-										</button>
-										<Persona
-											state={voicePersonaState ?? 'idle'}
-											level={
-												voicePersonaState === 'speaking'
-													? 0.72
-													: voicePersonaState === 'listening'
-														? 0.28
-														: 0.16
-											}
-											size={176}
-										/>
-									</motion.div>
-								) : (
-									<>
-										{header ? (
-											<motion.div
-												layout="position"
-												transition={transition}
-												className="mb-2 shrink-0"
+											<button
+												type="button"
+												aria-label="End voice conversation"
+												disabled={disabled}
+												onClick={(event) => {
+													event.stopPropagation();
+													onVoiceEnd?.();
+												}}
+												className="absolute right-3 top-3 z-10 flex size-8 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white/70 backdrop-blur-sm transition hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 disabled:pointer-events-none disabled:opacity-50"
 											>
-												{header}
-											</motion.div>
-										) : null}
-										<AnimatePresence initial={false} mode="popLayout">
-											{!isPromptExpanded && leadingAction && (
-												<PromptInputMotionSlot transition={transition}>
-													{leadingAction}
-												</PromptInputMotionSlot>
-											)}
-										</AnimatePresence>
-										<motion.div
-											layout="position"
-											transition={transition}
-											className={cn(
-												isPromptExpanded ? 'min-h-0 flex-1' : 'min-w-0 flex-1',
-												contentClassName
-											)}
-										>
-											{children}
+												<X className="size-4" strokeWidth={2.4} />
+											</button>
+											<Persona
+												state={voicePersonaState ?? 'idle'}
+												level={
+													voicePersonaState === 'speaking'
+														? 0.72
+														: voicePersonaState === 'listening'
+															? 0.28
+															: 0.16
+												}
+												size={176}
+											/>
 										</motion.div>
-										<motion.div
-											layout="position"
-											transition={transition}
-											className={cn(
-												'relative',
-												isPromptExpanded
-													? 'mt-3 flex items-center justify-between gap-2'
-													: 'flex shrink-0 self-center items-center justify-center gap-1.5',
-												isPromptExpanded && footerClassName
-											)}
-										>
+									) : (
+										<>
+											{header ? (
+												<motion.div
+													layout="position"
+													transition={transition}
+													className="mb-2 shrink-0"
+												>
+													{header}
+												</motion.div>
+											) : null}
 											<AnimatePresence initial={false} mode="popLayout">
-												{isPromptExpanded && leadingAction && (
+												{!isPromptExpanded && leadingAction && (
 													<PromptInputMotionSlot transition={transition}>
 														{leadingAction}
 													</PromptInputMotionSlot>
 												)}
 											</AnimatePresence>
-											<AnimatePresence initial={false} mode="popLayout">
-												<motion.div
-													key={isDictationMode ? 'dictation' : 'actions'}
-													initial={{ opacity: 0 }}
-													animate={{ opacity: 1 }}
-													exit={{ opacity: 0, pointerEvents: 'none' }}
-													transition={transition}
-													className={isDictationMode ? 'min-w-0 flex-1' : 'shrink-0'}
-												>
-													{isDictationMode ? (
-														<PromptInputVoicePanel
-															mode="dictation"
-															disabled={disabled}
-															elapsedMs={voiceElapsedMs}
-															muted={voiceMuted}
-															mediaStream={voiceMediaStream}
-															analyser={voiceAnalyser}
-															status={voiceStatus}
-															waveformActive={voiceWaveformActive}
-															onCancel={onVoiceCancel}
-															onConfirm={onVoiceConfirm ?? onSubmit}
-															onMutedChange={onVoiceMutedChange}
-														/>
-													) : (
-														actions
+											<motion.div
+												layout="position"
+												transition={transition}
+												className={cn(
+													isPromptExpanded ? 'min-h-0 flex-1' : 'min-w-0 flex-1',
+													contentClassName
+												)}
+											>
+												{children}
+											</motion.div>
+											<motion.div
+												layout="position"
+												transition={transition}
+												className={cn(
+													'relative',
+													isPromptExpanded
+														? 'mt-3 flex items-center justify-between gap-2'
+														: 'flex shrink-0 self-center items-center justify-center gap-1.5',
+													isPromptExpanded && footerClassName
+												)}
+											>
+												<AnimatePresence initial={false} mode="popLayout">
+													{isPromptExpanded && leadingAction && (
+														<PromptInputMotionSlot transition={transition}>
+															{leadingAction}
+														</PromptInputMotionSlot>
 													)}
-												</motion.div>
-											</AnimatePresence>
-										</motion.div>
-									</>
-								)}
-							</div>
+												</AnimatePresence>
+												<AnimatePresence initial={false} mode="popLayout">
+													<motion.div
+														key={isDictationMode ? 'dictation' : 'actions'}
+														initial={{ opacity: 0 }}
+														animate={{ opacity: 1 }}
+														exit={{ opacity: 0, pointerEvents: 'none' }}
+														transition={transition}
+														className={isDictationMode ? 'min-w-0 flex-1' : 'shrink-0'}
+													>
+														{isDictationMode ? (
+															<PromptInputVoicePanel
+																mode="dictation"
+																disabled={disabled}
+																elapsedMs={voiceElapsedMs}
+																muted={voiceMuted}
+																mediaStream={voiceMediaStream}
+																analyser={voiceAnalyser}
+																status={voiceStatus}
+																waveformActive={voiceWaveformActive}
+																onCancel={onVoiceCancel}
+																onConfirm={onVoiceConfirm ?? onSubmit}
+																onMutedChange={onVoiceMutedChange}
+															/>
+														) : (
+															actions
+														)}
+													</motion.div>
+												</AnimatePresence>
+											</motion.div>
+										</>
+									)}
+								</div>
 							</div>
 						</motion.div>
 					</div>
