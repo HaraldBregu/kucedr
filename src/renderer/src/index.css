@@ -162,22 +162,22 @@
 	--app-popover-background-base: #181c22;
 	--app-sidebar-background-base: #181c22;
 	--app-window-background: color-mix(
-		in oklch,
+		in srgb,
 		var(--app-window-background-base) calc(var(--app-bg-opacity) * 100%),
 		transparent
 	);
 	--app-surface-background: color-mix(
-		in oklch,
+		in srgb,
 		var(--app-surface-background-base) calc(var(--app-surface-opacity) * 100%),
 		transparent
 	);
 	--app-popover-background: color-mix(
-		in oklch,
+		in srgb,
 		var(--app-popover-background-base) calc(var(--app-popover-opacity) * 100%),
 		transparent
 	);
 	--app-sidebar-background: color-mix(
-		in oklch,
+		in srgb,
 		var(--app-sidebar-background-base) calc(var(--app-sidebar-opacity) * 100%),
 		transparent
 	);

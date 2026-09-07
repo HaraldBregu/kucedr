@@ -154,13 +154,13 @@ const darkThemeColors: AppThemeColors = {
 	'app-popover-background-base': '#181c22',
 	'app-sidebar-background-base': '#181c22',
 	'app-window-background':
-		'color-mix(in oklch, var(--app-window-background-base) calc(var(--app-bg-opacity) * 100%), transparent)',
+		'color-mix(in srgb, var(--app-window-background-base) calc(var(--app-bg-opacity) * 100%), transparent)',
 	'app-surface-background':
-		'color-mix(in oklch, var(--app-surface-background-base) calc(var(--app-surface-opacity) * 100%), transparent)',
+		'color-mix(in srgb, var(--app-surface-background-base) calc(var(--app-surface-opacity) * 100%), transparent)',
 	'app-popover-background':
-		'color-mix(in oklch, var(--app-popover-background-base) calc(var(--app-popover-opacity) * 100%), transparent)',
+		'color-mix(in srgb, var(--app-popover-background-base) calc(var(--app-popover-opacity) * 100%), transparent)',
 	'app-sidebar-background':
-		'color-mix(in oklch, var(--app-sidebar-background-base) calc(var(--app-sidebar-opacity) * 100%), transparent)',
+		'color-mix(in srgb, var(--app-sidebar-background-base) calc(var(--app-sidebar-opacity) * 100%), transparent)',
 	'app-window-border': 'var(--border)',
 	'app-scrollbar-track': 'oklch(1 0 0 / 6%)',
 	'app-scrollbar-thumb': 'color-mix(in oklch, var(--foreground) 24%, transparent)',
