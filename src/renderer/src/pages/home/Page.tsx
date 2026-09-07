@@ -756,7 +756,10 @@ function PageContent(): ReactElement {
 					<span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
-					<ChatContainerRoot className="min-h-0 p-0 [scrollbar-gutter:auto]">
+					<ChatContainerRoot
+						className="min-h-0 p-0 [scrollbar-gutter:auto]"
+						resize={agent.replyTo ? 'instant' : 'smooth'}
+					>
 						<ChatContainerContent
 							className={cn(
 								'mx-auto w-full max-w-4xl gap-5 px-4',
