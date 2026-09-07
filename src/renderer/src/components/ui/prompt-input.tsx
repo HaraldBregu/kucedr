@@ -508,7 +508,9 @@ function PromptInput({
 												transition={transition}
 												className={cn(
 													'min-w-0',
-													isPromptExpanded ? 'col-span-3 col-start-1 mx-3 mb-3 min-h-0' : 'col-start-2',
+													isPromptExpanded
+														? 'col-span-3 col-start-1 mx-3 mb-3 min-h-0'
+														: 'col-start-2',
 													isPromptExpanded && !header && 'mt-2',
 													header ? 'row-start-2' : 'row-start-1',
 													contentClassName
@@ -520,7 +522,9 @@ function PromptInput({
 												className={cn(
 													'relative flex h-10 min-w-0 items-center justify-end',
 													isDictationMode
-														? leadingAction ? 'col-start-2 col-end-4' : 'col-span-3 col-start-1'
+														? leadingAction
+															? 'col-start-2 col-end-4'
+															: 'col-span-3 col-start-1'
 														: 'col-start-3',
 													controlsRow,
 													isPromptExpanded && footerClassName
