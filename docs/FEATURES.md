@@ -217,24 +217,25 @@ Permissions use this top-level structure:
 Rule resolution is deny-first:
 
 - Any matching deny rule denies the operation, even when an allow rule also matches.
-- The workspace is always trusted. Block rules inside it are discarded.
-- If an execute allow contains a blocked child outside the workspace, the broader execute allow is removed so the operating-system sandbox cannot re-allow the child.
+- The workspace is trusted by default; explicit block rules remain effective.
 - If no deny matches, a matching allow rule allows the operation.
-- If neither matches, the runtime requests approval when interactive and denies non-interactive background calls.
+- If neither matches, reads proceed without approval. File mutations request approval when interactive and are denied in background calls without an approval window.
 - Shell syntax does not change the permission decision. Commands using pipes, substitutions, or redirections run without a prompt when every declared location is trusted.
-- `exec_command.workdir` and every `exec_command.additionalRoots` entry are canonicalized before authorization. Relative additional roots resolve from the command working directory.
+- `bash.workdir` and every `bash.additionalRoots` entry are canonicalized before authorization. Relative additional roots resolve from the command working directory.
 
 Important boundaries:
 
-- Normal `exec` calls run inside the operating-system command sandbox. Trusted and blocked exec paths are also applied to sandbox reads and writes.
-- A command that needs an outside directory must declare it in `additionalRoots`. Kucedr asks before spawning the command; a one-time approval extends only that sandboxed invocation.
+- Normal `bash` calls run inside the operating-system command sandbox. Writes are confined to trusted exec paths and the runtime temporary directory; explicit read, write, and exec denies remain effective.
+- A command that needs to create, modify, or delete files in an outside directory must declare it in `additionalRoots`, including its working directory if that directory needs write access. Kucedr asks before spawning the command; a one-time approval extends only that sandboxed invocation.
 - A command that intentionally needs host execution must use `elevated: true`. Host execution always requires interactive approval and cannot be persisted as a trusted location.
-- Windows does not support per-invocation filesystem overrides. An outside location must be trusted persistently before a Windows sandboxed command can use it.
+- Windows does not support per-invocation filesystem overrides. An outside location must be trusted persistently before a Windows sandboxed command can write to it.
 - On macOS and Linux, permission edits apply to newly wrapped commands without stopping already-running sandbox sessions. Windows sandbox policy changes require reinitialization and may stop active sandboxed commands.
-- Command reads from operating-system paths outside the user home remain available when required by the shell and installed programs. Execute locations strictly gate command working directories, declared user locations, and filesystem writes; they are not a complete operating-system read allowlist.
+- Commands may read outside files and use an outside working directory without approval. This does not grant write access to that directory. Undeclared outside writes are blocked by the sandbox; retry with the required directory in `additionalRoots`.
 - Background calls never bypass stored permissions. Because they cannot display an approval request, an **Ask** result is denied.
 - Relative policy paths such as `Desktop/**` resolve from the user home directory.
 - Permission rules are managed as trusted or blocked locations in Settings, scoped to read, write, and execute capabilities.
+- **Allow once** authorizes one invocation; **Trust this location** saves a recursive grant for later runs, including overwrites, moves, deletes, undo, and redo. Approval and rejection outcomes are recorded in the session trace.
+- MCP tools declaring `readOnlyHint: true` do not prompt under the default policy. Explicit server `always`/`never` settings are preserved; unclassified and mutating MCP tools retain approval.
 
 ### Skills
 

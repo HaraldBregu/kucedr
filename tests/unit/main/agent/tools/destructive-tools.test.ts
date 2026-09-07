@@ -1,47 +1,41 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { applyPatchTool } from '../../../../../src/main/agent/tools/core/patch';
-import { writeTool } from '../../../../../src/main/agent/tools/core/write';
-import { processTool } from '../../../../../src/main/agent/tools/core/process';
-import type { Tool } from '../../../../../src/main/agent/types';
 
-function requiresHardApproval(tool: Tool, input: Record<string, unknown>): boolean {
-	return typeof tool.hardApproval === 'function'
-		? tool.hardApproval(input)
-		: tool.hardApproval === true;
-}
-
-it('classifies process termination as a hard approval', () => {
-	expect(requiresHardApproval(processTool, { action: 'kill', sessionId: 'session' })).toBe(true);
-	expect(requiresHardApproval(processTool, { action: 'clear', sessionId: 'session' })).toBe(true);
-	expect(requiresHardApproval(processTool, { action: 'remove', sessionId: 'session' })).toBe(true);
-	expect(requiresHardApproval(processTool, { action: 'log', sessionId: 'session' })).toBe(false);
+jest.mock('../../../../../src/main/shared/user_data_location', () => {
+	const directory = jest.requireActual<typeof fs>('node:fs').mkdtempSync(jest.requireActual<typeof path>('node:path').join(jest.requireActual<typeof os>('node:os').tmpdir(), 'kucedr-destructive-'));
+	return { userDataLocation: () => directory };
 });
 
-it('classifies file deletion and overwrite as hard approvals', () => {
-	const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-destructive-tool-'));
-	const existing = path.join(directory, 'existing.txt');
-	fs.writeFileSync(existing, 'content');
+import { applyPatchTool } from '../../../../../src/main/agent/tools/core/patch';
+import { writeTool } from '../../../../../src/main/agent/tools/core/write';
+import { runToolCall } from '../../../../../src/main/agent/runner/run_tool_call';
+import { userDataLocation } from '../../../../../src/main/shared/user_data_location';
+import { resetPermissions } from '../../../../../src/main/agent/agent_store';
+import { realPath } from '../../../../../src/main/shared/real_path';
 
-	expect(
-		requiresHardApproval(applyPatchTool, {
-			input: '*** Begin Patch\n*** Delete File: /tmp/example\n*** End Patch',
-		})
-	).toBe(true);
-	expect(
-		requiresHardApproval(applyPatchTool, {
-			input: '*** Begin Patch\n*** Add File: /tmp/example\n+content\n*** End Patch',
-		})
-	).toBe(false);
-	expect(
-		requiresHardApproval(applyPatchTool, {
-			input:
-				'*** Begin Patch\n*** Update File: /tmp/example\n*** Move to: /tmp/moved\n@@\n-content\n+updated\n*** End Patch',
-		})
-	).toBe(true);
-	expect(requiresHardApproval(writeTool, { path: existing, content: 'replacement' })).toBe(true);
-	expect(
-		requiresHardApproval(writeTool, { path: path.join(directory, 'new.txt'), content: 'new' })
-	).toBe(false);
+afterAll(() => fs.rmSync(userDataLocation(), { recursive: true, force: true }));
+
+it.each(['overwrite', 'delete', 'move'])('requests a reusable location grant before outside %s', async (operation) => {
+	resetPermissions();
+	const target = path.join(userDataLocation(), `${operation}.txt`);
+	const moved = path.join(userDataLocation(), `${operation}-moved.txt`);
+	fs.writeFileSync(target, 'content');
+	const tool = operation === 'overwrite' ? writeTool : applyPatchTool;
+	const args = operation === 'overwrite' ? { path: target, content: 'replacement' }
+		: { input: operation === 'delete'
+			? `*** Begin Patch\n*** Delete File: ${target}\n*** End Patch`
+			: `*** Begin Patch\n*** Update File: ${target}\n*** Move to: ${moved}\n@@\n-content\n+updated\n*** End Patch` };
+	const events = runToolCall(tool, { id: operation, name: tool.id, args }, undefined, undefined, { runId: 'run', windowId: 1 });
+	await events.next();
+	try {
+		expect((await events.next()).value).toMatchObject({
+			type: 'tool_permission_request', persistable: true,
+			targets: [realPath(userDataLocation())], reason: 'outside_trusted_location',
+		});
+		expect(fs.readFileSync(target, 'utf8')).toBe('content');
+		expect(fs.existsSync(moved)).toBe(false);
+	} finally {
+		await events.return();
+	}
 });

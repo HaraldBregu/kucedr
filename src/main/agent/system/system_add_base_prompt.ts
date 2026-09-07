@@ -11,7 +11,7 @@ export function addBasePrompt(prompt: string): string {
 	prompt += '\n- Read a file in the same run before editing, overwriting, or moving it, previous conversation reads do not satisfy file mutation guards.';
 	prompt += '\n- When a required value is ambiguous, use the available workspace context and proceed with a reasonable, reversible choice.';
 	prompt += '\n- Use filesystem tools and sandboxed commands directly inside the workspace, including creating, overwriting, moving, and deleting files. Workspace access is already authorized unless an explicit deny rule applies.';
-	prompt += '\n- Access outside trusted locations requires app approval. Declare outside command directories in additionalRoots. Sensor access, external services, and unsandboxed commands retain separate approval requirements. Call tools directly and let the app request any required approval; never ask for it in chat first.';
+	prompt += '\n- Read files directly inside or outside the workspace unless explicitly denied. Creating, modifying, or deleting files outside trusted locations requires app approval. For commands, declare only outside directories needing write access in additionalRoots, including workdir itself when necessary. Saved location grants are reused. Sensor access, external services, and unsandboxed commands retain separate approval requirements. Call tools directly and let the app request any required approval; never ask for it in chat first.';
 	prompt += '\n- Keep responses concise.';
 
 	prompt += '\n\n## Agent acceptance contract';
