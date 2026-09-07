@@ -38,10 +38,12 @@ describe('AgentIpc run ownership', () => {
 		const handler = (channel: string) =>
 			(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 
-		await expect(handler(AgentChannels.send)(event, 'hello', {
-			runId: 'run-1',
-			replyTo: 'Earlier answer',
-		})).resolves.toEqual({
+		await expect(
+			handler(AgentChannels.send)(event, 'hello', {
+				runId: 'run-1',
+				replyTo: 'Earlier answer',
+			})
+		).resolves.toEqual({
 			success: true,
 			data: 'reply',
 		});
@@ -142,8 +144,9 @@ describe('assistant interaction mode normalization', () => {
 });
 
 it('normalizes reply context and excludes empty or invalid values', () => {
-	expect(normalizeAgentSendRuntimeOptions({ replyTo: '  Earlier answer\nSecond line  ' }))
-		.toMatchObject({ replyTo: 'Earlier answer\nSecond line' });
+	expect(
+		normalizeAgentSendRuntimeOptions({ replyTo: '  Earlier answer\nSecond line  ' })
+	).toMatchObject({ replyTo: 'Earlier answer\nSecond line' });
 	for (const replyTo of ['', ' \n ', 42, {}, null]) {
 		expect(normalizeAgentSendRuntimeOptions({ replyTo })).not.toHaveProperty('replyTo');
 	}

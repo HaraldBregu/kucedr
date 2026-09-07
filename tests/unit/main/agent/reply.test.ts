@@ -43,31 +43,38 @@ it.each([
 	['Explain this', 'Explain this', undefined],
 	['/skill writer Explain this', 'Explain this', 'writer'],
 	['/goal Explain this', 'Explain this', undefined],
-])('persists reply context and preserves command semantics for %s', async (message, prompt, skill) => {
-	const agent = new Agent({} as WindowFactory, {} as ExecSandbox);
-	await agent.send(message, 'main', {
-		type: 'default',
-		sessionId: SESSION_ID,
-		replyTo: 'Earlier answer',
-	});
-	const expected = `> **Replying to Kucedr**\n>\n> Earlier answer\n\n${prompt}`;
-	const [, session, input] = mockStream.mock.calls[0];
-	expect(input.message).toBe(expected);
-	expect(input.explicitSkill).toBe(skill);
-	expect(session.messages).toEqual([{ role: 'user', content: expected }]);
-	expect(agent.getLastMessages(SESSION_ID)).toEqual([
-		expect.objectContaining({ role: 'user', content: expected }),
-	]);
-	if (message.startsWith('/goal')) {
-		expect(readGoal(sessionDir(session))?.objective).toBe('Explain this');
+])(
+	'persists reply context and preserves command semantics for %s',
+	async (message, prompt, skill) => {
+		const agent = new Agent({} as WindowFactory, {} as ExecSandbox);
+		await agent.send(message, 'main', {
+			type: 'default',
+			sessionId: SESSION_ID,
+			replyTo: 'Earlier answer',
+		});
+		const expected = `> **Replying to Kucedr**\n>\n> Earlier answer\n\n${prompt}`;
+		const [, session, input] = mockStream.mock.calls[0];
+		expect(input.message).toBe(expected);
+		expect(input.explicitSkill).toBe(skill);
+		expect(session.messages).toEqual([{ role: 'user', content: expected }]);
+		expect(agent.getLastMessages(SESSION_ID)).toEqual([
+			expect.objectContaining({ role: 'user', content: expected }),
+		]);
+		if (message.startsWith('/goal')) {
+			expect(readGoal(sessionDir(session))?.objective).toBe('Explain this');
+		}
 	}
-});
+);
 
 it('includes reply context when restoring an active run', async () => {
 	const agent = new Agent({} as WindowFactory, {} as ExecSandbox);
 	let release: () => void = () => {};
-	const pending = new Promise<void>((resolve) => { release = resolve; });
-	mockStream.mockImplementation(async function* () { await pending; });
+	const pending = new Promise<void>((resolve) => {
+		release = resolve;
+	});
+	mockStream.mockImplementation(async function* () {
+		await pending;
+	});
 	const response = agent.send('Explain this', 'main', {
 		type: 'default',
 		runId: 'reply-run',
