@@ -7,6 +7,7 @@ import { toolPermissionTargets } from './tool_permission_targets';
 import type { PermissionKind, PermissionMode, PermissionsSchema } from './permissions_types';
 import type { ToolPermissionResolution } from './permission_resolution';
 import { toolApprovalTargets } from './tool_approval_targets';
+import { resolveCommandPermission } from './command';
 import type { FileHistory } from '../history/types';
 
 export function resolveToolPermissionDetails(
@@ -50,6 +51,7 @@ export function resolveToolPermissionDetails(
 	}
 
 	const permissions = configuredPermissions ?? getPermissions();
+	if (toolName === 'bash') return resolveCommandPermission(args, permissions, AGENT_DIRECTORY, fallback);
 	const targets =
 		kind === 'write' || kind === 'exec'
 			? directoryPermissionTargets(toolName, args, AGENT_DIRECTORY, history)
@@ -69,7 +71,7 @@ export function resolveToolPermissionDetails(
 	];
 	if (decisions.includes('deny'))
 		return { mode: 'deny', kind, targets, approvalTargets, persistable: false };
-	if (targets.length > 0 && decisions.every((decision) => decision === 'allow'))
+	if (kind === 'read' || (targets.length > 0 && decisions.every((decision) => decision === 'allow')))
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };
 	if (reuseContext && contextAllowsTool(context, toolName, args, AGENT_DIRECTORY))
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };

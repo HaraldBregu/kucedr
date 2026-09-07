@@ -53,7 +53,7 @@ const execInputSchema = z.object({
 		.array(z.string().min(1))
 		.optional()
 		.describe(
-			'Additional directories the command will access outside its working directory. Relative paths resolve from workdir. Untrusted locations require approval before execution.'
+			'Directories outside the workspace where the command needs to create, modify, or delete files. Include workdir itself when it needs write access. Relative paths resolve from workdir. Reads do not require additionalRoots.'
 		),
 	env: z.record(z.string(), z.string()).optional(),
 	yieldMs: z
@@ -416,7 +416,7 @@ export function execTool(
 		id: 'bash',
 		name: 'Execute command',
 		description:
-			'Run a shell command in a filesystem sandbox. Commands are trusted by working directory. Declare every directory accessed outside workdir in additionalRoots so Kucedr can request permission before execution. ' +
+			'Run a shell command in a filesystem sandbox. Reads are allowed; writes are confined to the workspace and trusted locations. Declare outside directories that need write access in additionalRoots to request and optionally remember permission. ' +
 			'Runtime cache access may require approval for its containing cache directory. For an intentional host operation, retry with elevated: true to request approval. Set background or yieldMs for long-running commands, timeout to stop slow commands, and pty for TTY-only CLIs.',
 		planSafe: interactionMode === 'plan',
 		inputSchema: execInputSchema,
@@ -427,7 +427,9 @@ export function execTool(
 		parseInput(raw: unknown): Record<string, unknown> {
 			const input = configured.parseInput(raw);
 			if (interactionMode === 'plan' || input.elevated === true) return input;
-			const required = sandbox.requiredRoots(resolveExecRoots(input, agentLocation()));
+			const roots = resolveExecRoots(input, agentLocation());
+			const requested = ((input.additionalRoots as string[] | undefined) ?? []).map((root) => resolveUserPath(root, roots[0] ?? agentLocation()));
+			const required = sandbox.requiredRoots(requested);
 			return required.length > 0
 				? { ...input, additionalRoots: [...((input.additionalRoots as string[] | undefined) ?? []), ...required] }
 				: input;

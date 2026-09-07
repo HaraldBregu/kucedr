@@ -1,7 +1,4 @@
-import fs from 'node:fs';
 import { z } from 'zod';
-import { agentLocation } from '../../../shared/agent_location';
-import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { writeAuthorizedFile } from '../../files/write';
 import { removeAuthorizedFile } from '../../files/remove';
@@ -16,10 +13,6 @@ export const applyPatchTool = tool({
 	name: 'Apply patch',
 	description:
 		'Apply a multi-file patch using the *** Begin Patch/*** End Patch format. Supports Add File, Delete File, and Update File (with optional Move to) hunks.',
-	hardApproval: ({ input }) =>
-		parsePatch(input).some((hunk) => hunk.kind === 'delete' ||
-			(hunk.kind === 'update' && Boolean(hunk.movePath)) ||
-			(hunk.kind === 'add' && fs.existsSync(resolveUserPath(hunk.path, agentLocation())))),
 	inputSchema: z.object({
 		input: z.string().min(1).describe('Patch content using the *** Begin Patch/End Patch format.'),
 	}),

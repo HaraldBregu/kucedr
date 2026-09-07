@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { directoryPermissionTargets } from './directory_permission_targets';
+import { directoryPermissionTargets, MEDIA_TOOLS } from './directory_permission_targets';
 import { toolPermissionTargets } from './tool_permission_targets';
 import type { FileHistory } from '../history/types';
 
@@ -9,11 +9,10 @@ export function toolApprovalTargets(
 	baseDir: string,
 	history?: FileHistory
 ): string[] {
-	if (toolName === 'bash' || toolName === 'process') {
-		return directoryPermissionTargets(toolName, args, baseDir, history);
-	}
-	const targets = toolPermissionTargets(toolName, args, baseDir);
-	return targets.length > 0
-		? targets.map((target) => path.dirname(target))
+	const targets = toolName === 'read'
+		? toolPermissionTargets(toolName, args, baseDir)
 		: directoryPermissionTargets(toolName, args, baseDir, history);
+	return toolName === 'bash' || toolName === 'process' || MEDIA_TOOLS.has(toolName)
+		? targets
+		: targets.map((target) => path.dirname(target));
 }

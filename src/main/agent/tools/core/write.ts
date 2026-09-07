@@ -1,7 +1,4 @@
-import fs from 'node:fs';
 import { z } from 'zod';
-import { agentLocation } from '../../../shared/agent_location';
-import { resolveUserPath } from '../../../shared/user_path';
 import { tool } from '../tool';
 import { writeAuthorizedFile } from '../../files/write';
 import { authorizeFilePath } from '../../files/authorize';
@@ -11,7 +8,6 @@ export const writeTool = tool({
 	name: 'Write file',
 	description:
 		'Create or overwrite a UTF-8 text file with exact content, creating parent directories when needed.',
-	hardApproval: ({ path: filePath }) => fs.existsSync(resolveUserPath(filePath, agentLocation())),
 	inputSchema: z.object({
 		path: z
 			.string()

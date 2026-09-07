@@ -29,7 +29,7 @@ export function builtinCapability(id: string, input: Record<string, unknown>): T
 	if (READ.has(id)) return { effects: ['read'] };
 	if (WRITE.has(id)) return { effects: ['write'] };
 	if (GOAL.has(id)) return { effects: ['persistence'] };
-	if (PERSIST.has(id)) return { effects: ['write', 'persistence'], approval: true };
+	if (PERSIST.has(id)) return { effects: ['write', 'persistence'] };
 	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: true };
 	if (CONTROL.has(id)) return { effects: ['sensor'], approval: true };
 	if (PAID.has(id)) return { effects: ['paid', 'write'] };

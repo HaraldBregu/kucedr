@@ -17,7 +17,7 @@ const AGENT_FILES: Record<string, string> = {
 	update_health: 'HEALTH.md',
 	complete_bootstrap: 'BOOTSTRAP.md',
 };
-const MEDIA_TOOLS = new Set([
+export const MEDIA_TOOLS = new Set([
 	'create_image',
 	'create_video',
 	'create_sound',

@@ -33,7 +33,6 @@ import { executionScope, type ExecutionScope } from '../execution/scope';
 import { authorizedPaths } from '../permissions/access';
 import type { ExecutionBudget } from '../execution/budget';
 import { captureAccess } from '../permissions/capture_access';
-import { isWorkspaceOperation } from '../permissions/workspace';
 
 export interface ToolCallSecurityContext {
 	runId: string;
@@ -164,9 +163,9 @@ export async function* runToolCall(
 		const capability = typeof tool.capability === 'function' ? tool.capability(canonicalInput) : tool.capability;
 		const channelAllowed = scope.source !== 'channel' || ['search_web', 'fetch_web_page', 'subagent', 'subagents'].includes(tool.id);
 		if (!capability || !channelAllowed) resolution = { ...resolution, mode: 'deny', persistable: false };
-		const hardApproval = !isWorkspaceOperation(resolution, capability) && (capability?.approval === true || (typeof tool.hardApproval === 'function'
+		const hardApproval = capability?.approval === true || (typeof tool.hardApproval === 'function'
 			? tool.hardApproval(canonicalInput)
-			: tool.hardApproval === true));
+			: tool.hardApproval === true);
 		if (hardApproval && resolution.mode !== 'deny') {
 			resolution = {
 				...resolution,
@@ -218,7 +217,7 @@ export async function* runToolCall(
 				signal
 			);
 			const effectiveDecision =
-				(decision === 'approve' && !allowOnce) || (decision === 'approve_always' && hardApproval)
+				(decision === 'approve' && !allowOnce) || (decision === 'approve_always' && !resolution.persistable)
 					? 'reject'
 					: decision;
 			permissionOutcome = effectiveDecision;

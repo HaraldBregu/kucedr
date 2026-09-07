@@ -247,19 +247,6 @@ export class ExecSandbox {
 		const explicitWriteDenies = resolveRules([...permissions.exec.deny, ...permissions.write.deny]);
 		if ([...explicitReadDenies, ...explicitWriteDenies].some((rule) => /[*?[\]{}]/.test(rule.replace(/[\\/]\*\*$/, ''))))
 			throw new Error('Command sandbox rules must use exact paths or a trailing /**. Refine the blocked pattern before executing commands.');
-		const allowRead = [
-			...sandboxSystemReads(),
-			...(process.platform === 'linux' ? [this.vendoredSeccompPath()] : []),
-			this.temporaryDirectory,
-			...resolveRules(permissions.exec.allow),
-		].filter((rule) => {
-			const allowed = permissionRuleRoot(rule);
-			return !explicitReadDenies.some((denied) => {
-				const root = permissionRuleRoot(denied);
-				const relative = path.relative(root, allowed);
-				return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
-			});
-		});
 		const allowWrite = [
 			...resolveRules(permissions.exec.allow),
 			this.temporaryDirectory,
@@ -271,7 +258,8 @@ export class ExecSandbox {
 				permissionFor({ allow: [...allowWrite, ...approvedRoots.map(recursivePermissionRule)], deny: [] }, value, 'write') !== 'allow'
 			),
 		];
-		const denyRead = [path.parse(os.homedir()).root, ...explicitReadDenies];
+		const denyRead = explicitReadDenies;
+		const allowRead: string[] = [];
 		const windowsPath = this.vendoredWindowsPath();
 		const seccompPath = this.vendoredSeccompPath();
 		const config: SandboxRuntimeConfig = {
