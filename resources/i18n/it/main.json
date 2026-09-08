@@ -981,7 +981,7 @@
 		},
 		"storageProviders": {
 			"description": "Connessioni di archiviazione file compatibili con S3",
-			"add": "Aggiungi storage",
+			"add": "Aggiungi provider",
 			"edit": "Modifica {{name}}",
 			"remove": "Rimuovi {{name}}",
 			"editTitle": "Modifica storage",

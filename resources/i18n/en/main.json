@@ -982,7 +982,7 @@
 		},
 		"storageProviders": {
 			"description": "S3-compatible file storage connections",
-			"add": "Add storage",
+			"add": "Add provider",
 			"edit": "Edit {{name}}",
 			"remove": "Remove {{name}}",
 			"editTitle": "Edit storage",

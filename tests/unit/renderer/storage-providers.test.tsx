@@ -51,7 +51,7 @@ it('adds multiple independent S3 connections and retains existing entries', asyn
 	render(<StorageProvidersPage />);
 	await screen.findByText('No storage connections');
 	for (const name of ['Production', 'Archive']) {
-		await user.click(screen.getByRole('button', { name: 'Add storage' }));
+		await user.click(screen.getByRole('button', { name: 'Add provider' }));
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 		expect(screen.getByRole('form').closest('[data-slot="card"]')).toBeInTheDocument();
 		const form = within(screen.getByRole('form'));
@@ -137,7 +137,7 @@ it('keeps the draft when saving fails and allows cancelling without saving', asy
 it('shows loading and load errors without a false empty state', async () => {
 	api.listProviders.mockRejectedValueOnce(new Error('Could not open saved connections.'));
 	render(<StorageProvidersPage />);
-	expect(screen.getByRole('button', { name: 'Add storage' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Add provider' })).toBeDisabled();
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not open saved connections.');
 	expect(screen.queryByText('No storage connections')).not.toBeInTheDocument();
 });
