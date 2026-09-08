@@ -206,7 +206,7 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		await expect(page).toHaveURL(new RegExp(`#/settings/agent/${resource.path}$`));
 		await expect(page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name: 'Agent', exact: true })).toHaveAttribute('aria-current', 'page');
 		await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
-		await page.getByRole('navigation', { name: 'Settings breadcrumb' }).getByRole('link', { name: 'Agent', exact: true }).click();
+		await page.getByRole('navigation', { name: 'Settings navigation' }).getByRole('link', { name: 'Agent', exact: true }).click();
 	}
 	await page.screenshot({ path: testInfo.outputPath('agent-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
