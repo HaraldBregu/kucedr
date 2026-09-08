@@ -80,7 +80,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 					}}
 				/>
 			)}
-			<SettingsPanel>
+			{(loading || providers.length > 0 || (editing === null && !error)) && <SettingsPanel>
 				{loading ? (
 					<SettingsLoadingRows />
 				) : providers.length === 0 ? (
@@ -149,7 +149,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 						/>
 					))
 				)}
-			</SettingsPanel>
+			</SettingsPanel>}
 		</SettingsPageShell>
 	);
 }

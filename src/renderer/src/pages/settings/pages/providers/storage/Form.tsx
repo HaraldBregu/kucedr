@@ -103,6 +103,7 @@ export default function StorageForm({
 										id={`storage-${field.key}`}
 										type={field.type}
 										autoComplete="off"
+										autoFocus={field.key === 'name'}
 										spellCheck={false}
 										aria-describedby={description ? `storage-${field.key}-description` : undefined}
 										required={
