@@ -38,7 +38,14 @@ export default function Provider({
 							{t('settings.storage.provider.title')}
 						</div>
 						<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-							{selected?.name ?? t('settings.storage.provider.placeholder')}
+							{selected?.name ??
+								t(
+									providers.length === 0
+										? 'settings.storage.provider.empty'
+										: providerId
+											? 'settings.storage.provider.missing'
+											: 'settings.storage.provider.placeholder'
+								)}
 						</p>
 					</div>
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />

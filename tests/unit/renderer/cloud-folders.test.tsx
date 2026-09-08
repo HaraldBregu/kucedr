@@ -157,10 +157,12 @@ it('offers storage configuration when no providers exist', async () => {
 			<CloudPage />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('button', { name: /^Storage provider/ }));
-	expect(
-		await screen.findByText('Add a storage provider before setting up backups.')
-	).toBeInTheDocument();
+	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
+	expect(disclosure).toHaveTextContent('Add a storage provider before setting up backups.');
+	await user.click(disclosure);
+	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toHaveAccessibleDescription(
+		'Add a storage provider before setting up backups.'
+	);
 	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeDisabled();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
