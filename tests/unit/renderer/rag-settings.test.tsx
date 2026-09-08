@@ -298,7 +298,9 @@ it('groups the model, index, and folder paths in one configuration card', async 
 	expect(configurationCard).toBeInTheDocument();
 
 	const configuration = within(configurationCard as HTMLElement);
-	expect(configuration.queryByRole('combobox', { name: 'Vector database' })).not.toBeInTheDocument();
+	expect(
+		configuration.queryByRole('combobox', { name: 'Vector database' })
+	).not.toBeInTheDocument();
 	expect(configuration.getByRole('combobox', { name: 'Embedding model' })).toBeInTheDocument();
 	expect(configuration.getByLabelText('Index name')).toHaveValue('kucedr');
 	expect(configuration.getByText('/Users/example/docs')).toBeInTheDocument();
