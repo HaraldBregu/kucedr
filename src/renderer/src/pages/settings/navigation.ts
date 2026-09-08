@@ -58,7 +58,7 @@ export interface SettingsModelServiceItem {
 export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] = [
 	{
 		id: AGENTS.assistant,
-		path: '/settings/assistant',
+		path: '/settings/agent',
 		labelKey: 'settings.modelServices.assistantName',
 		descriptionKey: 'settings.modelServices.kucedrDescription',
 		keywords: 'kucedr service default provider model',
@@ -269,7 +269,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Skills
 	{
-		path: '/settings/skills',
+		path: '/settings/agent/skills',
 		labelKey: 'settings.skills.title',
 		keywords: 'plugins import folder delete refresh',
 	},
@@ -288,20 +288,20 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Permissions
 	{
-		path: '/settings/assistant/permissions',
+		path: '/settings/agent/permissions',
 		labelKey: 'settings.permissions.toolsTitle',
 		descriptionKey: 'settings.permissions.toolsDescription',
 		keywords: 'permissions permission directory recursive tool write edit exec allow deny ask',
 	},
 	// Health
 	{
-		path: '/settings/assistant/health',
+		path: '/settings/agent/health',
 		labelKey: 'settings.health.settingsTitle',
 		descriptionKey: 'settings.health.settingsDescription',
 		keywords: 'periodic health check interval provider model',
 	},
 	{
-		path: '/settings/assistant/health',
+		path: '/settings/agent/health',
 		labelKey: 'settings.health.checklistTitle',
 		descriptionKey: 'settings.health.checklistDescription',
 		keywords: 'health checklist instructions agent HEALTH.md',
@@ -309,14 +309,14 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	// Model services
 	...SETTINGS_MODEL_SERVICE_ITEMS,
 	{
-		path: '/settings/assistant/chathistory',
+		path: '/settings/agent/chathistory',
 		labelKey: 'settings.chatHistory.title',
 		descriptionKey: 'settings.chatHistory.description',
 		keywords: 'chat history transcript messages context delete clear folder',
 		icon: Bot,
 	},
 	{
-		path: '/settings/assistant/data',
+		path: '/settings/agent/data',
 		labelKey: 'settings.dataControls.title',
 		descriptionKey: 'settings.dataControls.description',
 		keywords: 'data management export purge memory sessions local knowledge index',
@@ -350,7 +350,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Cloud,
 	},
 	{
-		path: '/settings/tasks',
+		path: '/settings/agent/tasks',
 		labelKey: 'settings.tabs.taskScheduler',
 		descriptionKey: 'settings.overview.descriptions.cron',
 		icon: ListChecks,
@@ -368,7 +368,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Search,
 	},
 	{
-		path: '/settings/providers/mcp',
+		path: '/settings/agent/mcp',
 		labelKey: 'settings.tabs.mcp',
 		descriptionKey: 'settings.overview.descriptions.mcp',
 		icon: PlugZap,
@@ -380,31 +380,31 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Bot,
 	},
 	{
-		path: '/settings/assistant/rag',
+		path: '/settings/agent/rag',
 		labelKey: 'settings.rag.title',
 		descriptionKey: 'settings.overview.descriptions.rag',
 		icon: Library,
 	},
 	{
-		path: '/settings/assistant/llm-wiki',
+		path: '/settings/agent/llm-wiki',
 		labelKey: 'settings.wiki.title',
 		descriptionKey: 'settings.overview.descriptions.wiki',
 		icon: BookOpenText,
 	},
 	{
-		path: '/settings/skills',
+		path: '/settings/agent/skills',
 		labelKey: 'settings.tabs.skills',
 		descriptionKey: 'settings.overview.descriptions.skills',
 		icon: Sparkles,
 	},
 	{
-		path: '/settings/assistant/health',
+		path: '/settings/agent/health',
 		labelKey: 'settings.tabs.health',
 		descriptionKey: 'settings.overview.descriptions.health',
 		icon: HeartPulse,
 	},
 	{
-		path: '/settings/assistant/permissions',
+		path: '/settings/agent/permissions',
 		labelKey: 'settings.tabs.permissions',
 		descriptionKey: 'settings.overview.descriptions.permissions',
 		icon: ShieldCheck,
@@ -428,3 +428,9 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Blocks,
 	},
 ] satisfies readonly SettingsNavigationItem[];
+
+export const SETTINGS_AGENT_RESOURCE_ITEMS = [
+	'/settings/agent/skills',
+	'/settings/agent/tasks',
+	'/settings/agent/mcp',
+].flatMap((path) => SETTINGS_NAVIGATION.filter((item) => item.path === path));

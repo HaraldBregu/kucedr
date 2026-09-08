@@ -333,15 +333,15 @@ it('announces a realtime conversation setup save error', async () => {
 });
 
 it.each([
-	['Data management', '/settings/assistant/data'],
-	['RAG', '/settings/assistant/rag'],
-	['LLM Wiki', '/settings/assistant/llm-wiki'],
+	['Data management', '/settings/agent/data'],
+	['RAG', '/settings/agent/rag'],
+	['LLM Wiki', '/settings/agent/llm-wiki'],
 ])('opens %s from the Agent settings page', async (label, path) => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/assistant']}>
+		<MemoryRouter initialEntries={['/settings/agent']}>
 			<Routes>
-				<Route path="/settings/assistant" element={<AssistantPage />} />
+				<Route path="/settings/agent" element={<AssistantPage />} />
 				<Route path={path} element={<p>{label} page</p>} />
 			</Routes>
 		</MemoryRouter>

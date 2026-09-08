@@ -8,7 +8,11 @@ import {
 	usePageContext,
 } from '@/components/app/base/page';
 import { cn } from '@/lib/utils';
-import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from './navigation';
+import {
+	SETTINGS_AGENT_RESOURCE_ITEMS,
+	SETTINGS_MODEL_SERVICE_ITEMS,
+	SETTINGS_NAVIGATION,
+} from './navigation';
 import { AGENTS } from '@/lib/compat';
 
 const SETTINGS_SIDEBAR_GROUPS = [
@@ -20,12 +24,10 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'assistant',
 		titleKey: 'settings.overview.groups.assistant',
 		items: [
-			...SETTINGS_MODEL_SERVICE_ITEMS.filter(
-				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coder
-			),
-			...SETTINGS_NAVIGATION.slice(11, 12),
-			...SETTINGS_NAVIGATION.slice(4, 5),
-			...SETTINGS_NAVIGATION.slice(7, 11),
+			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
+			...SETTINGS_AGENT_RESOURCE_ITEMS,
+			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.coder),
+			...SETTINGS_NAVIGATION.slice(8, 11),
 			...SETTINGS_NAVIGATION.slice(12, 14),
 		],
 	},
@@ -96,7 +98,13 @@ export function SettingsSidebar(): React.JSX.Element {
 												to={item.path}
 												data-active={isActive ? '' : undefined}
 												aria-current={isActive ? 'page' : undefined}
-												className={cn(SPLIT_ITEM_CLASS, isActive && SPLIT_ITEM_ACTIVE_CLASS)}
+												className={cn(
+													SPLIT_ITEM_CLASS,
+													SETTINGS_AGENT_RESOURCE_ITEMS.some(
+														(resource) => resource.path === item.path
+													) && 'pl-8',
+													isActive && SPLIT_ITEM_ACTIVE_CLASS
+												)}
 											>
 												<Icon className="size-4 shrink-0" strokeWidth={1.8} />
 												<span>{t(item.labelKey)}</span>

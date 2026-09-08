@@ -266,27 +266,6 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'tasks',
-						children: [
-							{
-								index: true,
-								element: (
-									<SettingsRouteWrapper>
-										<TasksPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: ':taskId/detail',
-								element: (
-									<SettingsRouteWrapper>
-										<TaskDetailsPage />
-									</SettingsRouteWrapper>
-								),
-							},
-						],
-					},
-					{
 						path: 'general',
 						children: [
 							{
@@ -350,27 +329,6 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
-						path: 'skills',
-						children: [
-							{
-								index: true,
-								element: (
-									<SettingsRouteWrapper>
-										<SkillsPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'skilldetails/:skillId',
-								element: (
-									<SettingsRouteWrapper>
-										<SkillDetailsPage />
-									</SettingsRouteWrapper>
-								),
-							},
-						],
-					},
-					{
 						path: 'a2a',
 						element: (
 							<SettingsRouteWrapper>
@@ -400,27 +358,6 @@ const routes: RouteObject[] = [
 										<ProvidersPage section="search" />
 									</SettingsRouteWrapper>
 								),
-							},
-							{
-								path: 'mcp',
-								children: [
-									{
-										index: true,
-										element: (
-											<SettingsRouteWrapper>
-												<McpPage />
-											</SettingsRouteWrapper>
-										),
-									},
-									{
-										path: ':mcpServerId',
-										element: (
-											<SettingsRouteWrapper>
-												<McpDetailsPage />
-											</SettingsRouteWrapper>
-										),
-									},
-								],
 							},
 							{
 								path: 'bots',
@@ -490,11 +427,11 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'knowledge-base',
-						element: <Navigate to="/settings/assistant/rag" replace />,
+						element: <Navigate to="/settings/agent/rag" replace />,
 					},
 					{
 						path: 'llm-wiki',
-						element: <Navigate to="/settings/assistant/llm-wiki" replace />,
+						element: <Navigate to="/settings/agent/llm-wiki" replace />,
 					},
 					{
 						path: 'coder',
@@ -505,8 +442,71 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'assistant',
+						path: 'agent',
 						children: [
+							{
+								path: 'skills',
+								children: [
+									{
+										index: true,
+										element: (
+											<SettingsRouteWrapper>
+												<SkillsPage />
+											</SettingsRouteWrapper>
+										),
+									},
+									{
+										path: 'skilldetails/:skillId',
+										element: (
+											<SettingsRouteWrapper>
+												<SkillDetailsPage />
+											</SettingsRouteWrapper>
+										),
+									},
+								],
+							},
+							{
+								path: 'tasks',
+								children: [
+									{
+										index: true,
+										element: (
+											<SettingsRouteWrapper>
+												<TasksPage />
+											</SettingsRouteWrapper>
+										),
+									},
+									{
+										path: ':taskId/detail',
+										element: (
+											<SettingsRouteWrapper>
+												<TaskDetailsPage />
+											</SettingsRouteWrapper>
+										),
+									},
+								],
+							},
+							{
+								path: 'mcp',
+								children: [
+									{
+										index: true,
+										element: (
+											<SettingsRouteWrapper>
+												<McpPage />
+											</SettingsRouteWrapper>
+										),
+									},
+									{
+										path: ':mcpServerId',
+										element: (
+											<SettingsRouteWrapper>
+												<McpDetailsPage />
+											</SettingsRouteWrapper>
+										),
+									},
+								],
+							},
 							{
 								index: true,
 								element: (
@@ -541,7 +541,7 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'knowledge-base',
-								element: <Navigate to="/settings/assistant/rag" replace />,
+								element: <Navigate to="/settings/agent/rag" replace />,
 							},
 							{
 								path: 'llm-wiki',
@@ -569,7 +569,7 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'policies',
-								element: <Navigate to="/settings/assistant/permissions" replace />,
+								element: <Navigate to="/settings/agent/permissions" replace />,
 							},
 						],
 					},

@@ -41,11 +41,11 @@ const routes = [
 	'/settings/cloud',
 	'/settings/system',
 	'/settings/channels',
-	'/settings/skills',
+	'/settings/agent/skills',
 	'/settings/providers',
 	'/settings/providers/keys',
-	'/settings/providers/mcp',
-	'/settings/providers/mcp/missing',
+	'/settings/agent/mcp',
+	'/settings/agent/mcp/missing',
 	'/settings/providers/transcribe',
 	'/settings/providers/voice',
 	'/settings/providers/image',
@@ -53,14 +53,14 @@ const routes = [
 	'/settings/providers/video',
 	'/settings/providers/music',
 	'/settings/providers/search',
-	'/settings/assistant/rag',
-	'/settings/assistant/llm-wiki',
-	'/settings/tasks',
-	'/settings/assistant',
+	'/settings/agent/rag',
+	'/settings/agent/llm-wiki',
+	'/settings/agent/tasks',
+	'/settings/agent',
 	'/settings/coder',
-	'/settings/assistant/chathistory',
-	'/settings/assistant/health',
-	'/settings/assistant/permissions',
+	'/settings/agent/chathistory',
+	'/settings/agent/health',
+	'/settings/agent/permissions',
 ];
 
 for (const route of routes) {
@@ -169,7 +169,7 @@ test('wiki settings renders the complete configuration workflow', async ({
 	browserName: _browserName,
 }, testInfo) => {
 	await page.evaluate(() => {
-		window.location.hash = '#/settings/assistant/llm-wiki';
+		window.location.hash = '#/settings/agent/llm-wiki';
 	});
 	await expect(page.getByRole('heading', { name: 'LLM Wiki', exact: true })).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Raw source folder', exact: true })).toBeVisible();

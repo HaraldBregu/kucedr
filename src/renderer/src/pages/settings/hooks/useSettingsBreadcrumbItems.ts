@@ -10,18 +10,18 @@ interface SettingsBreadcrumbItem {
 }
 
 const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
-	'/settings/assistant/chathistory': 'settings.chatHistory.title',
-	'/settings/assistant/data': 'settings.dataControls.title',
-	'/settings/assistant/health': 'settings.tabs.health',
-	'/settings/assistant/rag': 'settings.rag.title',
-	'/settings/assistant/llm-wiki': 'settings.wiki.title',
-	'/settings/assistant/permissions': 'settings.tabs.permissions',
+	'/settings/agent/chathistory': 'settings.chatHistory.title',
+	'/settings/agent/data': 'settings.dataControls.title',
+	'/settings/agent/health': 'settings.tabs.health',
+	'/settings/agent/rag': 'settings.rag.title',
+	'/settings/agent/llm-wiki': 'settings.wiki.title',
+	'/settings/agent/permissions': 'settings.tabs.permissions',
 };
 
 export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] {
 	const { t } = useTranslation();
 	const location = useLocation();
-	const mcpDetailMatch = useMatch('/settings/providers/mcp/:mcpServerId');
+	const mcpDetailMatch = useMatch('/settings/agent/mcp/:mcpServerId');
 	const appDetailMatch = useMatch('/settings/apps/:appId');
 
 	if (location.pathname === '/settings') return [];
@@ -39,7 +39,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 				label: assistantItem
 					? t(assistantItem.labelKey)
 					: t('settings.modelServices.assistantName'),
-				path: '/settings/assistant',
+				path: '/settings/agent',
 			},
 			{ label: t(assistantSubpageLabelKey) },
 		];
@@ -65,7 +65,8 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	if (mcpDetailMatch) {
 		return [
-			{ label: t('settings.tabs.mcp'), path: '/settings/providers/mcp' },
+			{ label: t('settings.modelServices.assistantName'), path: '/settings/agent' },
+			{ label: t('settings.tabs.mcp'), path: '/settings/agent/mcp' },
 			{ label: mcpDetailMatch.params.mcpServerId ?? '' },
 		];
 	}
@@ -84,7 +85,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	const items: SettingsBreadcrumbItem[] = [{ label: t(current.labelKey) }];
 
-	if (location.pathname.startsWith('/settings/tasks/') && location.pathname.endsWith('/detail')) {
+	if (
+		location.pathname.startsWith('/settings/agent/tasks/') &&
+		location.pathname.endsWith('/detail')
+	) {
 		items[0] = { ...items[0], path: current.path };
 		items.push({ label: t('settings.cron.detail.title') });
 	}
@@ -96,7 +100,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		items.push({ label: channelLabel });
 	}
 
-	if (location.pathname.startsWith('/settings/skills/skilldetails/')) {
+	if (location.pathname.startsWith('/settings/agent/skills/skilldetails/')) {
 		const skillId = decodeURIComponent(location.pathname.split('/').at(-1) ?? '');
 		items[0] = { ...items[0], path: current.path };
 		items.push({ label: skillId });
@@ -106,6 +110,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		const media = getSystemMedia(decodeURIComponent(location.pathname.split('/').at(-1) ?? ''));
 		items[0] = { ...items[0], path: current.path };
 		items.push({ label: media ? t(media.titleKey) : t('settings.tabs.system') });
+	}
+
+	if (location.pathname.startsWith('/settings/agent/')) {
+		items.unshift({ label: t('settings.modelServices.assistantName'), path: '/settings/agent' });
 	}
 
 	return items;

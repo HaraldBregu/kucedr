@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
@@ -32,6 +32,7 @@ import {
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import { AgentMediaModelConfiguration } from './media';
 import RealtimeConversationConfiguration from './conversation';
+import { SETTINGS_AGENT_RESOURCE_ITEMS } from '../../navigation';
 import { SEARCH_ENGINES } from '../search/catalog';
 import type { SearchEngineId, SearchSettings } from '../../../../../../shared/search_types';
 
@@ -324,15 +325,29 @@ const AssistantPage: React.FC = () => {
 			</SettingsPanel>
 
 			<SettingsPanel>
+				{SETTINGS_AGENT_RESOURCE_ITEMS.map((item) => (
+					<Link key={item.path} to={item.path} className="block hover:bg-muted/40">
+						<SettingsRow
+							title={t(item.labelKey)}
+							description={t(item.descriptionKey)}
+							className="grid-cols-[minmax(0,1fr)_auto]"
+							actionClassName="w-auto justify-end"
+							actions={<ChevronRight className="size-4 text-muted-foreground" />}
+						/>
+					</Link>
+				))}
+			</SettingsPanel>
+
+			<SettingsPanel>
 				<div
 					role="button"
 					tabIndex={0}
 					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/assistant/chathistory')}
+					onClick={() => navigate('/settings/agent/chathistory')}
 					onKeyDown={(event) => {
 						if (event.key === 'Enter' || event.key === ' ') {
 							event.preventDefault();
-							navigate('/settings/assistant/chathistory');
+							navigate('/settings/agent/chathistory');
 						}
 					}}
 				>
@@ -351,11 +366,11 @@ const AssistantPage: React.FC = () => {
 					role="button"
 					tabIndex={0}
 					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/assistant/health')}
+					onClick={() => navigate('/settings/agent/health')}
 					onKeyDown={(event) => {
 						if (event.key === 'Enter' || event.key === ' ') {
 							event.preventDefault();
-							navigate('/settings/assistant/health');
+							navigate('/settings/agent/health');
 						}
 					}}
 				>
@@ -371,11 +386,11 @@ const AssistantPage: React.FC = () => {
 					role="button"
 					tabIndex={0}
 					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/assistant/permissions')}
+					onClick={() => navigate('/settings/agent/permissions')}
 					onKeyDown={(event) => {
 						if (event.key === 'Enter' || event.key === ' ') {
 							event.preventDefault();
-							navigate('/settings/assistant/permissions');
+							navigate('/settings/agent/permissions');
 						}
 					}}
 				>
@@ -394,11 +409,11 @@ const AssistantPage: React.FC = () => {
 					role="button"
 					tabIndex={0}
 					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/assistant/rag')}
+					onClick={() => navigate('/settings/agent/rag')}
 					onKeyDown={(event) => {
 						if (event.key === 'Enter' || event.key === ' ') {
 							event.preventDefault();
-							navigate('/settings/assistant/rag');
+							navigate('/settings/agent/rag');
 						}
 					}}
 				>
@@ -414,11 +429,11 @@ const AssistantPage: React.FC = () => {
 					role="button"
 					tabIndex={0}
 					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/assistant/llm-wiki')}
+					onClick={() => navigate('/settings/agent/llm-wiki')}
 					onKeyDown={(event) => {
 						if (event.key === 'Enter' || event.key === ' ') {
 							event.preventDefault();
-							navigate('/settings/assistant/llm-wiki');
+							navigate('/settings/agent/llm-wiki');
 						}
 					}}
 				>
@@ -437,11 +452,11 @@ const AssistantPage: React.FC = () => {
 					role="button"
 					tabIndex={0}
 					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/assistant/data')}
+					onClick={() => navigate('/settings/agent/data')}
 					onKeyDown={(event) => {
 						if (event.key === 'Enter' || event.key === ' ') {
 							event.preventDefault();
-							navigate('/settings/assistant/data');
+							navigate('/settings/agent/data');
 						}
 					}}
 				>

@@ -177,7 +177,7 @@ const McpPage = (): React.JSX.Element => {
 						<McpServerRow
 							key={server.id}
 							server={server}
-							onOpen={() => navigate(`/settings/providers/mcp/${encodeURIComponent(server.id)}`)}
+							onOpen={() => navigate(`/settings/agent/mcp/${encodeURIComponent(server.id)}`)}
 						/>
 					))
 				)}

@@ -108,7 +108,7 @@ export const TitleBar = React.memo(function TitleBar({
 						.showContextMenu([
 							{ id: '/settings/general', label: t('settings.tabs.general') },
 							{
-								id: '/settings/assistant',
+								id: '/settings/agent',
 								label: t('settings.overview.groups.agent'),
 							},
 							{ id: '/settings/system', label: t('settings.tabs.system') },

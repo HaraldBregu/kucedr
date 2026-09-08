@@ -30,15 +30,15 @@ beforeEach(() => {
 });
 
 it.each([
-	['/settings/assistant/rag', 'settings.rag.title'],
+	['/settings/agent/rag', 'settings.rag.title'],
 	['/settings/general/persona', 'settings.persona.title'],
-	['/settings/assistant/llm-wiki', 'settings.wiki.title'],
-	['/settings/tasks', 'settings.tabs.taskScheduler'],
+	['/settings/agent/llm-wiki', 'settings.wiki.title'],
+	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/coder', 'settings.coder.title'],
-	['/settings/assistant/permissions', 'settings.tabs.permissions'],
-	['/settings/assistant/data', 'settings.dataControls.title'],
+	['/settings/agent/permissions', 'settings.tabs.permissions'],
+	['/settings/agent/data', 'settings.dataControls.title'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
-	if (path === '/settings/assistant/data' || path === '/settings/general/persona') {
+	if (path === '/settings/agent/data' || path === '/settings/general/persona') {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else if (path === '/settings/coder') {
 		expect(SETTINGS_MODEL_SERVICE_ITEMS).toContainEqual(
@@ -65,7 +65,7 @@ it.each([
 
 it('renders settings navigation beside the workspace and marks the current section', () => {
 	const { container } = render(
-		<MemoryRouter initialEntries={['/settings/assistant/chathistory']}>
+		<MemoryRouter initialEntries={['/settings/agent/chathistory']}>
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
 					<Route path="*" element={<SettingsPageHeader title="Settings page" />} />

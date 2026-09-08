@@ -24,11 +24,11 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 		})),
 	});
 	render(
-		<MemoryRouter initialEntries={['/settings/providers/mcp/demo-server']}>
+		<MemoryRouter initialEntries={['/settings/agent/mcp/demo-server']}>
 			<SettingsBreadcrumb />
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
-					<Route path="providers">
+					<Route path="agent">
 						<Route path="mcp">
 							<Route index element={<p>MCP list</p>} />
 							<Route path=":mcpServerId" element={<p>MCP detail</p>} />

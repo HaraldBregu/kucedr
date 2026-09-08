@@ -96,7 +96,7 @@ const McpDetailsPage: React.FC = () => {
 		setError('');
 		try {
 			await window.mcp.delete(server.id);
-			navigate('/settings/providers/mcp');
+			navigate('/settings/agent/mcp');
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
@@ -121,7 +121,7 @@ const McpDetailsPage: React.FC = () => {
 				<SettingsPageHeader
 					title="MCP server"
 					action={
-						<Button variant="outline" size="xs" onClick={() => navigate('/settings/providers/mcp')}>
+						<Button variant="outline" size="xs" onClick={() => navigate('/settings/agent/mcp')}>
 							<ArrowLeft className="size-3" />
 							All servers
 						</Button>
@@ -159,7 +159,7 @@ const McpDetailsPage: React.FC = () => {
 				description={description}
 				action={
 					<div className="flex flex-wrap items-center gap-1.5">
-						<Button variant="ghost" size="xs" onClick={() => navigate('/settings/providers/mcp')}>
+						<Button variant="ghost" size="xs" onClick={() => navigate('/settings/agent/mcp')}>
 							<ArrowLeft className="size-3" />
 							All servers
 						</Button>
@@ -232,7 +232,7 @@ const McpDetailsPage: React.FC = () => {
 						<McpServerForm
 							initial={{ id: server.id, entry: server.data }}
 							onSubmit={save}
-							onCancel={() => navigate('/settings/providers/mcp')}
+							onCancel={() => navigate('/settings/agent/mcp')}
 							onRemove={server.source === 'configured' ? remove : undefined}
 						/>
 					</div>
