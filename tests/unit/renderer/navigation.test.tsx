@@ -117,8 +117,8 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(assistantGroup).not.toBeNull();
 	expect(providersGroup).not.toBeNull();
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
-	).toBeInTheDocument();
+		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
+	).not.toBeInTheDocument();
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.coder.title' })
 	).toBeInTheDocument();
@@ -138,7 +138,10 @@ it('renders settings navigation beside the workspace and marks the current secti
 		})
 	).not.toBeInTheDocument();
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.mcp' })
-	).toBeInTheDocument();
+		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })
+	).not.toBeInTheDocument();
+	expect(
+		within(navigation).queryByRole('link', { name: 'settings.tabs.taskScheduler' })
+	).not.toBeInTheDocument();
 	expect(currentSection).toHaveAttribute('data-active');
 });

@@ -199,15 +199,14 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		await page.evaluate(() => { window.location.hash = '#/settings/agent'; });
 		const name = new RegExp(resource.name, 'i');
 		const sidebarLink = page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name });
-		await expect(sidebarLink).toHaveAttribute('href', `/settings/agent/${resource.path}`);
-		await expect(sidebarLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
+		await expect(sidebarLink).toHaveCount(0);
 		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole('link', { name });
 		await expect(pageLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
 		await pageLink.click();
 		await expect(page).toHaveURL(new RegExp(`#/settings/agent/${resource.path}$`));
-		await expect(sidebarLink).toHaveAttribute('aria-current', 'page');
+		await expect(page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name: 'Agent', exact: true })).toHaveAttribute('aria-current', 'page');
 		await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
-		await page.getByRole('navigation', { name: 'Breadcrumb' }).getByRole('link', { name: 'Agent', exact: true }).click();
+		await page.getByRole('navigation', { name: 'Settings breadcrumb' }).getByRole('link', { name: 'Agent', exact: true }).click();
 	}
 	await page.screenshot({ path: testInfo.outputPath('agent-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
