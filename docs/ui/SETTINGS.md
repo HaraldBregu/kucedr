@@ -39,7 +39,7 @@ The visible sidebar is grouped as follows:
 | Group        | Destinations                                                                                      |
 | ------------ | ------------------------------------------------------------------------------------------------- |
 | General      | Account, General, System, Cloud                                                                   |
-| Assistant    | Agent, Coder, RAG, LLM Wiki |
+| Assistant    | Agent, Coder |
 | Providers    | Models, Search engines                                                                            |
 | Channels     | Channels                                                                                          |
 | Integrations | A2A agents, Apps                                                                            |

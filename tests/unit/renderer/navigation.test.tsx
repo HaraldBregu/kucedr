@@ -149,5 +149,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();
+	expect(
+		within(navigation).queryByRole('link', { name: 'settings.rag.title' })
+	).not.toBeInTheDocument();
+	expect(
+		within(navigation).queryByRole('link', { name: 'settings.wiki.title' })
+	).not.toBeInTheDocument();
 	expect(currentSection).toHaveAttribute('data-active');
 });

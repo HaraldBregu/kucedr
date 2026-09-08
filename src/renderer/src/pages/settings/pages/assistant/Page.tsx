@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ChevronDown, ChevronRight, HeartPulse, ShieldCheck } from 'lucide-react';
+import {
+	AlertTriangle,
+	ChevronDown,
+	ChevronRight,
+	HeartPulse,
+	ShieldCheck,
+	Library,
+	BookOpenText,
+} from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
@@ -422,6 +430,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.rag.title')}
+						icon={Library}
 						description={t('settings.overview.descriptions.rag')}
 						className="grid-cols-[minmax(0,1fr)_auto]"
 						actionClassName="w-auto justify-end"
@@ -442,6 +451,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.wiki.title')}
+						icon={BookOpenText}
 						description={t('settings.wiki.description')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"

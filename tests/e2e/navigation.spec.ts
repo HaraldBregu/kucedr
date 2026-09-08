@@ -196,13 +196,15 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		{ name: 'MCP Servers', path: 'mcp', icon: 'plug-zap' },
 		{ name: 'Health', path: 'health', icon: 'heart-pulse' },
 		{ name: 'Permissions', path: 'permissions', icon: 'shield-check' },
+		{ name: 'RAG', path: 'rag', icon: 'library' },
+		{ name: 'LLM Wiki', path: 'llm-wiki', icon: 'book-open-text' },
 	];
 	for (const resource of resources) {
 		await page.evaluate(() => { window.location.hash = '#/settings/agent'; });
 		const name = new RegExp(resource.name, 'i');
 		const sidebarLink = page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name });
 		await expect(sidebarLink).toHaveCount(0);
-		const role = ['health', 'permissions'].includes(resource.path) ? 'button' : 'link';
+		const role = ['health', 'permissions', 'rag', 'llm-wiki'].includes(resource.path) ? 'button' : 'link';
 		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole(role, { name });
 		await expect(pageLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
 		await pageLink.click();

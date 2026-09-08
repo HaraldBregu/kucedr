@@ -23,7 +23,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter(
 				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coder
 			),
-			...SETTINGS_NAVIGATION.slice(8, 10),
 		],
 	},
 	{
