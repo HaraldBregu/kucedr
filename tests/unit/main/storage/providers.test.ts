@@ -49,32 +49,44 @@ it('encrypts metadata and secrets and excludes the saved secret from public resu
 	expect(saved).not.toHaveProperty('secretAccessKey');
 	expect(saved.hasSecretAccessKey).toBe(true);
 	expect(providers.list()[0]).not.toHaveProperty('secretAccessKey');
-	expect(encryption.encryptString).toHaveBeenCalledWith(JSON.stringify([{ ...input, id: saved.id }]));
+	expect(encryption.encryptString).toHaveBeenCalledWith(
+		JSON.stringify([{ ...input, id: saved.id }])
+	);
 	const persisted = JSON.stringify(persistence.store);
 	for (const value of [input.name, input.endpoint, input.accessKeyId, input.secretAccessKey!]) {
 		expect(persisted).not.toContain(value);
 	}
 });
 
-it.each(['', '   ', undefined])('preserves the existing secret when editing with %p', (secretAccessKey) => {
-	const saved = providers.save(input);
-	const updated = providers.save({ ...input, id: saved.id, name: 'Renamed', secretAccessKey });
-	expect(updated.name).toBe('Renamed');
-	expect(providers.list()).toHaveLength(1);
-	const decrypted = JSON.parse(Buffer.from(persistence.get('encryptedProviders'), 'base64').toString());
-	expect(decrypted[0].secretAccessKey).toBe(input.secretAccessKey);
-});
+it.each(['', '   ', undefined])(
+	'preserves the existing secret when editing with %p',
+	(secretAccessKey) => {
+		const saved = providers.save(input);
+		const updated = providers.save({ ...input, id: saved.id, name: 'Renamed', secretAccessKey });
+		expect(updated.name).toBe('Renamed');
+		expect(providers.list()).toHaveLength(1);
+		const decrypted = JSON.parse(
+			Buffer.from(persistence.get('encryptedProviders'), 'base64').toString()
+		);
+		expect(decrypted[0].secretAccessKey).toBe(input.secretAccessKey);
+	}
+);
 
 it('replaces the secret when a new value is provided', () => {
 	const saved = providers.save(input);
 	providers.save({ ...input, id: saved.id, secretAccessKey: 'replacement' });
-	const decrypted = JSON.parse(Buffer.from(persistence.get('encryptedProviders'), 'base64').toString());
+	const decrypted = JSON.parse(
+		Buffer.from(persistence.get('encryptedProviders'), 'base64').toString()
+	);
 	expect(decrypted[0].secretAccessKey).toBe('replacement');
 });
 
 it('accepts AWS default endpoints and HTTP endpoints for compatible providers', () => {
 	expect(providers.save({ ...input, endpoint: '', region: 'us-east-1' }).endpoint).toBe('');
-	expect(providers.save({ ...input, endpoint: 'http://localhost:9000', forcePathStyle: true }).forcePathStyle).toBe(true);
+	expect(
+		providers.save({ ...input, endpoint: 'http://localhost:9000', forcePathStyle: true })
+			.forcePathStyle
+	).toBe(true);
 });
 
 it.each([
@@ -90,10 +102,13 @@ it.each([
 	expect(persistence.get('encryptedProviders')).toBe('');
 });
 
-it.each(['name', 'region', 'bucket', 'accessKeyId', 'secretAccessKey'])('requires %s on new connections', (field) => {
-	expect(() => providers.save({ ...input, [field]: '  ' })).toThrow('required');
-	expect(persistence.get('encryptedProviders')).toBe('');
-});
+it.each(['name', 'region', 'bucket', 'accessKeyId', 'secretAccessKey'])(
+	'requires %s on new connections',
+	(field) => {
+		expect(() => providers.save({ ...input, [field]: '  ' })).toThrow('required');
+		expect(persistence.get('encryptedProviders')).toBe('');
+	}
+);
 
 it.each([
 	null,
@@ -109,7 +124,9 @@ it.each([
 });
 
 it('rejects updates to nonexistent connections and invalid remove identifiers', () => {
-	expect(() => providers.save({ ...input, id: 'a00c674a-c8c8-4d01-930f-ad690b3d0123' })).toThrow('not found');
+	expect(() => providers.save({ ...input, id: 'a00c674a-c8c8-4d01-930f-ad690b3d0123' })).toThrow(
+		'not found'
+	);
 	expect(() => providers.remove('../outside')).toThrow('identifier');
 	expect(persistence.get('encryptedProviders')).toBe('');
 });
@@ -120,7 +137,9 @@ it('refuses plaintext fallback when operating-system encryption is unavailable',
 	encryption.isEncryptionAvailable.mockReturnValue(false);
 	expect(() => providers.save(input)).toThrow('Secure operating-system storage is unavailable');
 	expect(() => providers.list()).toThrow('Secure operating-system storage is unavailable');
-	expect(() => providers.remove(saved.id)).toThrow('Secure operating-system storage is unavailable');
+	expect(() => providers.remove(saved.id)).toThrow(
+		'Secure operating-system storage is unavailable'
+	);
 	expect(persistence.get('encryptedProviders')).toBe(encrypted);
 });
 
@@ -133,7 +152,9 @@ it('rejects the insecure Linux basic_text backend', () => {
 it('preserves encrypted records when decryption fails', () => {
 	providers.save(input);
 	const encrypted = persistence.get('encryptedProviders');
-	encryption.decryptString.mockImplementation(() => { throw new Error('Keychain failure'); });
+	encryption.decryptString.mockImplementation(() => {
+		throw new Error('Keychain failure');
+	});
 	expect(() => providers.save(input)).toThrow('Saved storage providers could not be opened');
 	expect(persistence.get('encryptedProviders')).toBe(encrypted);
 });
@@ -141,7 +162,11 @@ it('preserves encrypted records when decryption fails', () => {
 it('does not overwrite records if encrypting an edit fails', () => {
 	const saved = providers.save(input);
 	const encrypted = persistence.get('encryptedProviders');
-	encryption.encryptString.mockImplementation(() => { throw new Error('Keychain failure'); });
-	expect(() => providers.save({ ...input, id: saved.id, name: 'Changed' })).toThrow('Keychain failure');
+	encryption.encryptString.mockImplementation(() => {
+		throw new Error('Keychain failure');
+	});
+	expect(() => providers.save({ ...input, id: saved.id, name: 'Changed' })).toThrow(
+		'Keychain failure'
+	);
 	expect(persistence.get('encryptedProviders')).toBe(encrypted);
 });

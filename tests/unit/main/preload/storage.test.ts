@@ -35,8 +35,13 @@ it('subscribes and removes the exact operation status event handler', () => {
 
 it('exposes storage provider list, save and remove through typed channels', async () => {
 	const input: StorageProviderInput = {
-		name: 'Archive', endpoint: '', region: 'us-east-1', bucket: 'archive',
-		accessKeyId: 'access-key', secretAccessKey: 'secret', forcePathStyle: false,
+		name: 'Archive',
+		endpoint: '',
+		region: 'us-east-1',
+		bucket: 'archive',
+		accessKeyId: 'access-key',
+		secretAccessKey: 'secret',
+		forcePathStyle: false,
 	};
 	await storage.listProviders();
 	await storage.saveProvider(input);
@@ -48,5 +53,7 @@ it('exposes storage provider list, save and remove through typed channels', asyn
 
 it('surfaces storage provider save failures to the renderer', async () => {
 	invoke.mockResolvedValue({ success: false, error: { message: 'Secure storage is unavailable' } });
-	await expect(storage.saveProvider({} as StorageProviderInput)).rejects.toThrow('Secure storage is unavailable');
+	await expect(storage.saveProvider({} as StorageProviderInput)).rejects.toThrow(
+		'Secure storage is unavailable'
+	);
 });

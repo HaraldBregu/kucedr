@@ -103,9 +103,15 @@ it('lists, saves and removes storage providers through the trusted renderer', ()
 	storageProviders.list.mockReturnValue([{ id: 'connection' }]);
 	storageProviders.save.mockReturnValue({ id: 'connection' });
 	storageProviders.remove.mockReturnValue(true);
-	const list = registerQueryWithEvent.mock.calls.find(([channel]) => channel === StorageChannels.listProviders)?.[1];
-	const save = registerCommandWithEvent.mock.calls.find(([channel]) => channel === StorageChannels.saveProvider)?.[1];
-	const remove = registerCommandWithEvent.mock.calls.find(([channel]) => channel === StorageChannels.removeProvider)?.[1];
+	const list = registerQueryWithEvent.mock.calls.find(
+		([channel]) => channel === StorageChannels.listProviders
+	)?.[1];
+	const save = registerCommandWithEvent.mock.calls.find(
+		([channel]) => channel === StorageChannels.saveProvider
+	)?.[1];
+	const remove = registerCommandWithEvent.mock.calls.find(
+		([channel]) => channel === StorageChannels.removeProvider
+	)?.[1];
 	expect(list(event)).toEqual([{ id: 'connection' }]);
 	expect(save(event, input)).toEqual({ id: 'connection' });
 	expect(remove(event, 'connection')).toBe(true);
@@ -113,15 +119,26 @@ it('lists, saves and removes storage providers through the trusted renderer', ()
 	expect(storageProviders.remove).toHaveBeenCalledWith('connection');
 });
 
-it.each(['app view', 'untracked renderer', 'subframe'])('rejects provider credential access from an %s', (source) => {
-	if (source === 'app view') appRegistry.has.mockReturnValue(true);
-	if (source === 'untracked renderer') (BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(null);
-	const incoming = source === 'subframe' ? { ...event, senderFrame: {} } : event;
-	for (const channel of [StorageChannels.listProviders, StorageChannels.saveProvider, StorageChannels.removeProvider]) {
-		const handler = [...registerQueryWithEvent.mock.calls, ...registerCommandWithEvent.mock.calls].find(([name]) => name === channel)?.[1];
-		expect(() => handler(incoming, {})).toThrow();
+it.each(['app view', 'untracked renderer', 'subframe'])(
+	'rejects provider credential access from an %s',
+	(source) => {
+		if (source === 'app view') appRegistry.has.mockReturnValue(true);
+		if (source === 'untracked renderer')
+			(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(null);
+		const incoming = source === 'subframe' ? { ...event, senderFrame: {} } : event;
+		for (const channel of [
+			StorageChannels.listProviders,
+			StorageChannels.saveProvider,
+			StorageChannels.removeProvider,
+		]) {
+			const handler = [
+				...registerQueryWithEvent.mock.calls,
+				...registerCommandWithEvent.mock.calls,
+			].find(([name]) => name === channel)?.[1];
+			expect(() => handler(incoming, {})).toThrow();
+		}
+		expect(storageProviders.list).not.toHaveBeenCalled();
+		expect(storageProviders.save).not.toHaveBeenCalled();
+		expect(storageProviders.remove).not.toHaveBeenCalled();
 	}
-	expect(storageProviders.list).not.toHaveBeenCalled();
-	expect(storageProviders.save).not.toHaveBeenCalled();
-	expect(storageProviders.remove).not.toHaveBeenCalled();
-});
+);

@@ -12,7 +12,10 @@ import type { StorageProvidersState, StoredStorageProvider } from './types';
 export class StorageProviderStore {
 	constructor(
 		private readonly store: Pick<Store<StorageProvidersState>, 'get' | 'set' | 'path'>,
-		private readonly encryption: Pick<typeof safeStorage, 'isEncryptionAvailable' | 'getSelectedStorageBackend' | 'encryptString' | 'decryptString'> = safeStorage,
+		private readonly encryption: Pick<
+			typeof safeStorage,
+			'isEncryptionAvailable' | 'getSelectedStorageBackend' | 'encryptString' | 'decryptString'
+		> = safeStorage,
 		private readonly platform: NodeJS.Platform = process.platform
 	) {}
 
@@ -53,11 +56,14 @@ export class StorageProviderStore {
 		if (!encrypted) return [];
 		this.assertAvailable();
 		try {
-			const values: unknown = JSON.parse(this.encryption.decryptString(Buffer.from(encrypted, 'base64')));
+			const values: unknown = JSON.parse(
+				this.encryption.decryptString(Buffer.from(encrypted, 'base64'))
+			);
 			if (!Array.isArray(values)) throw new Error('Invalid storage provider data.');
 			return values.map((value) => {
 				const provider = normalizeStorageProvider(value);
-				if (!provider.id || !provider.secretAccessKey) throw new Error('Invalid storage provider data.');
+				if (!provider.id || !provider.secretAccessKey)
+					throw new Error('Invalid storage provider data.');
 				return { ...provider, id: provider.id, secretAccessKey: provider.secretAccessKey };
 			});
 		} catch {
@@ -74,7 +80,9 @@ export class StorageProviderStore {
 
 	private assertAvailable(): void {
 		if (!isSafeStorageAvailable(this.encryption, this.platform)) {
-			throw new Error('Secure operating-system storage is unavailable. Storage credentials cannot be saved or opened.');
+			throw new Error(
+				'Secure operating-system storage is unavailable. Storage credentials cannot be saved or opened.'
+			);
 		}
 	}
 }

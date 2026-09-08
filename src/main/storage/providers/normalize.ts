@@ -27,16 +27,24 @@ export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 		}
 		if (
 			!['http:', 'https:'].includes(endpoint.protocol) ||
-			endpoint.username || endpoint.password || values.endpoint.includes('?') || values.endpoint.includes('#')
+			endpoint.username ||
+			endpoint.password ||
+			values.endpoint.includes('?') ||
+			values.endpoint.includes('#')
 		) {
-			throw new Error('Storage endpoint must be an HTTP or HTTPS URL without credentials, query, or fragment.');
+			throw new Error(
+				'Storage endpoint must be an HTTP or HTTPS URL without credentials, query, or fragment.'
+			);
 		}
 	}
 	if (typeof input.forcePathStyle !== 'boolean') {
 		throw new Error('Invalid storage path-style setting.');
 	}
 	const id = input.id === undefined ? undefined : storageProviderIdentifier(input.id);
-	if (input.secretAccessKey !== undefined && (typeof input.secretAccessKey !== 'string' || input.secretAccessKey.length > 16_384)) {
+	if (
+		input.secretAccessKey !== undefined &&
+		(typeof input.secretAccessKey !== 'string' || input.secretAccessKey.length > 16_384)
+	) {
 		throw new Error('Invalid storage secret access key.');
 	}
 	return {
