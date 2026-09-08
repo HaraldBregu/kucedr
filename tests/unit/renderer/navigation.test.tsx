@@ -37,6 +37,7 @@ it.each([
 	['/settings/agent/skills', 'settings.tabs.skills'],
 	['/settings/agent/mcp', 'settings.tabs.mcp'],
 	['/settings/coder', 'settings.coder.title'],
+	['/settings/providers/databases', 'settings.tabs.databases'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/agent/data', 'settings.dataControls.title'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
@@ -133,10 +134,10 @@ it('renders settings navigation beside the workspace and marks the current secti
 		})
 	).toBeInTheDocument();
 	expect(
-		within(providersGroup as HTMLElement).queryByRole('link', {
+		within(providersGroup as HTMLElement).getByRole('link', {
 			name: 'settings.tabs.databases',
 		})
-	).not.toBeInTheDocument();
+	).toHaveAttribute('href', '/settings/providers/databases');
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })
 	).not.toBeInTheDocument();

@@ -27,21 +27,21 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter(
 				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coder
 			),
-			...SETTINGS_NAVIGATION.slice(14, 15),
+			...SETTINGS_NAVIGATION.slice(15, 16),
 		],
 	},
 	{
 		id: 'providers',
 		titleKey: 'settings.tabs.providers',
-		items: SETTINGS_NAVIGATION.slice(5, 7),
+		items: SETTINGS_NAVIGATION.slice(5, 8),
 	},
 	{
 		id: 'channels',
-		items: SETTINGS_NAVIGATION.slice(13, 14),
+		items: SETTINGS_NAVIGATION.slice(14, 15),
 	},
 	{
 		id: 'integrations',
-		items: SETTINGS_NAVIGATION.slice(15),
+		items: SETTINGS_NAVIGATION.slice(16),
 	},
 ] as const;
 

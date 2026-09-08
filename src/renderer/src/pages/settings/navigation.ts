@@ -368,6 +368,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Search,
 	},
 	{
+		path: '/settings/providers/databases',
+		labelKey: 'settings.tabs.databases',
+		descriptionKey: 'settings.overview.descriptions.databases',
+		icon: Database,
+	},
+	{
 		path: '/settings/agent/mcp',
 		labelKey: 'settings.tabs.mcp',
 		descriptionKey: 'settings.overview.descriptions.mcp',

@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 import type { StoredProviderKind } from '@shared/provider_types';
 import type { SearchEngineId, SearchSettings } from '@shared/search_types';
 import type { McpData } from '@shared/mcp_types';
+import { databaseCatalog } from './database';
 import { mcps } from '@/lib/providers';
 import {
 	actionableProviderCatalog,
@@ -29,8 +30,8 @@ import { CustomMcpCard } from '../mcp/components/CustomMcpCard';
 import { McpServerForm } from '../mcp/components/McpServerForm';
 import { useMcpServers } from '../mcp/hooks/useMcpServers';
 
-type ProviderKind = Exclude<StoredProviderKind, 'databases' | 'channels'> | 'search';
-export type ProviderSetupSection = 'models' | 'search' | 'mcp';
+type ProviderKind = Exclude<StoredProviderKind, 'channels'> | 'search';
+export type ProviderSetupSection = 'models' | 'search' | 'mcp' | 'databases';
 
 const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descriptionKey: string }> =
 	{
@@ -42,6 +43,10 @@ const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descript
 			titleKey: 'settings.tabs.searchEngines',
 			descriptionKey: 'settings.overview.descriptions.searchEngine',
 		},
+		databases: {
+			titleKey: 'settings.tabs.databases',
+			descriptionKey: 'settings.overview.descriptions.databases',
+		},
 		mcp: {
 			titleKey: 'settings.tabs.mcp',
 			descriptionKey: 'settings.overview.descriptions.mcp',
@@ -51,7 +56,8 @@ const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descript
 /** Providers pinned on top of the start-flow models list. */
 const FEATURED_PROVIDER_IDS = ['openai', 'anthropic', 'deepseek', 'elevenlabs'] as const;
 
-function allCatalogItems(): ProviderCatalogItem[] {
+function allCatalogItems(section?: ProviderSetupSection): readonly ProviderCatalogItem[] {
+	if (section === 'databases') return databaseCatalog();
 	return [...actionableProviderCatalog(), ...actionableSearchCatalog()];
 }
 
@@ -63,7 +69,7 @@ interface ProvidersPageProps {
 const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section }) => {
 	const { t } = useTranslation();
 	const [providerEntries, setProviderEntries] = useState<ProviderSetupEntry[]>(() =>
-		allCatalogItems().map((provider, index) => ({
+		allCatalogItems(section).map((provider, index) => ({
 			providerId: provider.id,
 			apiKey: '',
 			apiKeySaved: false,
@@ -81,16 +87,18 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		let cancelled = false;
 
 		void window.provider
-			.list('models')
+			.list(section === 'databases' ? 'databases' : 'models')
 			.then((storedProviders) => {
 				if (cancelled) return;
 				const savedStatus: Record<string, boolean> = Object.fromEntries(
 					storedProviders.map((provider) => [provider.id, provider.configured])
 				);
-				const hasSavedProvider = allCatalogItems().some((provider) => savedStatus[provider.id]);
+				const hasSavedProvider = allCatalogItems(section).some(
+					(provider) => savedStatus[provider.id]
+				);
 
 				setProviderEntries((currentEntries) =>
-					allCatalogItems().map((provider, index) => {
+					allCatalogItems(section).map((provider, index) => {
 						const current = currentEntries.find((entry) => entry.providerId === provider.id);
 						const draft = current?.apiKey ?? '';
 						const hasDraft = draft.trim().length > 0;
@@ -132,7 +140,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		return () => {
 			cancelled = true;
 		};
-	}, [t]);
+	}, [section, t]);
 
 	const updateProviderEntry = (providerId: string, patch: Partial<ProviderSetupEntry>): void => {
 		setProviderEntries((currentEntries) => {
@@ -160,7 +168,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 
 	const saveProviderEntry = async (
 		providerId: string,
-		kind: Exclude<StoredProviderKind, 'databases' | 'channels'>
+		kind: Exclude<StoredProviderKind, 'channels'>
 	): Promise<void> => {
 		const entry = providerEntries.find((item) => item.providerId === providerId);
 		const apiKey = entry?.apiKey.trim() ?? '';
@@ -392,6 +400,14 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						)}
 					</SettingsSection>
 				)}
+
+			{section === 'databases' && (
+				<SettingsSection title={t('settings.tabs.databases')}>
+					<div className="space-y-3 pb-4">
+						{databaseCatalog().map((provider) => renderProviderCard(provider, 'databases'))}
+					</div>
+				</SettingsSection>
+			)}
 
 			{(section === undefined || section === 'search') &&
 				(!embedded || searchCatalog.length > 0) && (
