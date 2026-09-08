@@ -2,13 +2,15 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StorageProvidersPage from '../../../src/renderer/src/pages/settings/pages/providers/storage/Page';
 import type { StorageProvider, StorageProviderInput } from '../../../src/shared/storage_types';
+import mockTranslations from '../../../resources/i18n/en/main.json';
 
 jest.mock('react-i18next', () => {
-	const translations = require('../../../resources/i18n/en/main.json');
 	const t = (key: string, options?: Record<string, string>): string => {
-		const value =
-			key.split('.').reduce((entry: any, part: string) => entry?.[part], translations) ?? key;
-		return String(value).replace(/\{\{(\w+)\}\}/g, (_, name) => options?.[name] ?? '');
+		let value: unknown = mockTranslations;
+		for (const part of key.split('.')) {
+			value = value && typeof value === 'object' ? (value as Record<string, unknown>)[part] : undefined;
+		}
+		return String(value ?? key).replace(/\{\{(\w+)\}\}/g, (_, name) => options?.[name] ?? '');
 	};
 	return { useTranslation: () => ({ t }) };
 });
