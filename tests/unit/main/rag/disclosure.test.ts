@@ -44,6 +44,29 @@ it('retains valid recipient consent without requiring another owner decision', (
 	expect(JSON.stringify(saved)).not.toContain('synthetic-');
 });
 
+it('requires a selected database before authorizing remote storage', () => {
+	configuration.databaseProviderId = '';
+	configuration.databaseId = '';
+	configuration.mirrorConsent = { version: 1, indexName: 'knowledge-base' };
+	expect(() => authorizeRagDisclosure(configuration)).toThrow('Select a vector database');
+});
+
+it('requires the user database credential before authorizing remote storage', () => {
+	getProvider.mockImplementation((_id, kind) =>
+		kind === 'databases' ? undefined : { apiKey: 'synthetic-embedding-account' }
+	);
+	configuration.mirrorConsent = { version: 1, indexName: 'knowledge-base' };
+	expect(() => authorizeRagDisclosure(configuration)).toThrow('Settings → Providers → Vector DB');
+});
+
+it('directs missing embedding credentials to model provider settings', () => {
+	getProvider.mockReturnValue(undefined);
+	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'model' };
+	expect(() => authorizeRagDisclosure(configuration)).toThrow(
+		'Configure your OpenAI API key in Settings → Providers → Models.'
+	);
+});
+
 it.each(['embedding', 'mirror'])(
 	'does not remint existing consent after the %s account changes',
 	(kind) => {

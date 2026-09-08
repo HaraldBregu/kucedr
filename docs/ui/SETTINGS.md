@@ -171,8 +171,11 @@ See [Provider Reference](../PROVIDERS.md) for exact runtime coverage and model I
 - The searchable **API Keys** deep page should provide the model-provider credential list. The
   visible Models page can connect the same model credentials inline.
 
-Pinecone is an internal RAG dependency configured with `PINECONE_API_KEY` in the main-process
-environment. It should not appear as a provider, credential card, or database selection.
+**Vector DB** connects the user's database account through the provider credential vault. The RAG
+page requires an explicit database selection and uses that account for remote storage. Pinecone
+is currently supported; there is no default database selection or environment API key fallback.
+Embedding credentials are configured separately under **Providers → Models**. Both remote
+disclosures must be approved before indexing.
 
 ### Model service pages
 

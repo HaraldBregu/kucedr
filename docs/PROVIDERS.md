@@ -31,7 +31,8 @@ See [Settings UI](ui/SETTINGS.md) for the complete Settings navigation and persi
    Video, or Audio settings page.
 3. Configure Brave or Tavily under **Settings → Providers → Search**.
 4. Save vector database API keys under **Settings → Providers → Vector DB**
-   (`/settings/providers/databases`). Pinecone is the built-in vector database provider.
+   (`/settings/providers/databases`), then explicitly select the database in **Settings → RAG**.
+   Pinecone is the currently supported vector database provider.
 5. Run the test offered by the settings page, when present, before relying on the provider in an
    agent run.
 
@@ -72,7 +73,7 @@ manifest.
 | [Mistral AI](https://console.mistral.ai/api-keys)                                  | `mistral`           | Chat, speech to text, text to speech                             | Available                                                                |
 | [OpenAI](https://platform.openai.com/api-keys)                                     | `openai`            | Chat, speech to text, text to speech, realtime voice, embeddings | Available                                                                |
 | [Pika](https://pika.art)                                                           | `pika`              | Video                                                            | Partial: the adapter uses fal.run while the manifest supplies Pika's URL |
-| [Pinecone](https://app.pinecone.io)                                                | `pinecone`          | Vector database                                                  | Partial: credential storage; RAG mirroring uses the environment key       |
+| [Pinecone](https://app.pinecone.io)                                                | `pinecone`          | Vector database                                                  | RAG mirroring with the user's selected database and saved credentials    |
 | [Qwen and Wan](https://modelstudio.console.alibabacloud.com)                       | `qwen`              | Chat, speech to text, image, video                               | Available                                                                |
 | [Reka AI](https://platform.reka.ai/apikeys)                                        | `reka`              | Chat                                                             | Available                                                                |
 | [Tavily](https://app.tavily.com/home)                                              | `tavily`            | Web search                                                       | Available                                                                |
@@ -193,9 +194,12 @@ Save and edit Pinecone API keys under **Settings → Providers → Vector DB**. 
 the provider vault's `databases` collection, separate from model and search credentials. Create a
 key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
 
-Credential storage does not change RAG execution: local retrieval uses SQLite, and optional
-Pinecone mirroring still reads `PINECONE_API_KEY` from the environment. Settings does not expose a
-database selection for RAG.
+Select the database explicitly in **Settings → RAG**; no database is selected automatically.
+RAG indexing uses the selected provider's saved API key for Pinecone storage, while local retrieval
+uses SQLite. The environment's `PINECONE_API_KEY` is not used. Configure the embedding provider's
+key separately under **Settings → Providers → Models**, then approve both disclosures in RAG
+settings. Changing the database selection or account requires new storage consent. Failed-upload
+cleanup stays pinned to the account used for that upload.
 
 ## Custom and plugin providers
 

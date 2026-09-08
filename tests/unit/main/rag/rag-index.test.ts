@@ -84,6 +84,17 @@ it('publishes locally only after the authorized mirror finishes', async () => {
 	expect(discard).not.toHaveBeenCalled();
 });
 
+it('blocks indexing before document export when the database selection is removed', async () => {
+	configuration.databaseProviderId = '';
+	configuration.databaseId = '';
+	await expect(
+		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
+	).rejects.toThrow('Select a vector database');
+	expect(embed).not.toHaveBeenCalled();
+	expect(upload).not.toHaveBeenCalled();
+	expect(publish).not.toHaveBeenCalled();
+});
+
 it.each(['embedding', 'mirror', 'account', 'model', 'index'])(
 	'blocks unapproved or changed %s disclosure before any export',
 	async (change) => {
