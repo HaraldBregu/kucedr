@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RadioTower } from 'lucide-react';
 import type { CatalogService } from '@shared/provider_types';
 import {
 	SettingsLoadingRows,
@@ -46,7 +45,6 @@ export default function ChannelsPage(): React.JSX.Element {
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.channels')}
-				icon={RadioTower}
 				description={t('settings.channels.description')}
 			/>
 			<SettingsPanel>
