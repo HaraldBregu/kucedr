@@ -1,4 +1,5 @@
 import type { ChannelStatusEvent, ChannelType, StoredChannelProvider } from '../../shared';
+import { isChannelId } from '../../shared/channels_definitions';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { LoggerService } from '../shared';
@@ -172,6 +173,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 	}
 
 	async function start(channel: ChannelType): Promise<void> {
+		if (!isChannelId(channel)) throw new Error('Unknown channel provider.');
 		if (adapters.has(channel)) return;
 
 		const credential = channelCredential(channel);

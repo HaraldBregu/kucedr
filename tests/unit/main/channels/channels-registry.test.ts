@@ -87,6 +87,14 @@ describe('createChannelRegistry', () => {
 		expect(registry.getStatus('telegram')).toBeUndefined();
 	});
 
+	it('rejects unsupported channel identifiers before loading credentials or starting an adapter', async () => {
+		const registry = createChannelRegistry(deps());
+
+		await expect(registry.start('unsupported' as never)).rejects.toThrow('Unknown channel provider.');
+		expect(mockGetChannelProvider).not.toHaveBeenCalled();
+		expect(mockAdapterStart).not.toHaveBeenCalled();
+	});
+
 	it('throws when sending on a channel that is not running', async () => {
 		const registry = createChannelRegistry(deps());
 		await expect(
