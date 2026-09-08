@@ -333,6 +333,9 @@ it('announces a realtime conversation setup save error', async () => {
 });
 
 it.each([
+	['settings.tabs.skills', '/settings/agent/skills'],
+	['settings.tabs.taskScheduler', '/settings/agent/tasks'],
+	['settings.tabs.mcp', '/settings/agent/mcp'],
 	['Data management', '/settings/agent/data'],
 	['RAG', '/settings/agent/rag'],
 	['LLM Wiki', '/settings/agent/llm-wiki'],

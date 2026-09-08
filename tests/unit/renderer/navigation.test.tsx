@@ -34,6 +34,8 @@ it.each([
 	['/settings/general/persona', 'settings.persona.title'],
 	['/settings/agent/llm-wiki', 'settings.wiki.title'],
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
+	['/settings/agent/skills', 'settings.tabs.skills'],
+	['/settings/agent/mcp', 'settings.tabs.mcp'],
 	['/settings/coder', 'settings.coder.title'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/agent/data', 'settings.dataControls.title'],
@@ -61,6 +63,11 @@ it.each([
 
 	const breadcrumb = screen.getByRole('navigation', { name: 'settings.breadcrumb.label' });
 	expect(within(breadcrumb).getByText(labelKey)).toBeInTheDocument();
+	if (path.startsWith('/settings/agent/')) {
+		expect(
+			within(breadcrumb).getByRole('link', { name: 'settings.modelServices.assistantName' })
+		).toHaveAttribute('href', '/settings/agent');
+	}
 });
 
 it('renders settings navigation beside the workspace and marks the current section', () => {

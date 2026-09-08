@@ -329,6 +329,7 @@ const AssistantPage: React.FC = () => {
 					<Link key={item.path} to={item.path} className="block hover:bg-muted/40">
 						<SettingsRow
 							title={t(item.labelKey)}
+							icon={item.icon}
 							description={t(item.descriptionKey)}
 							className="grid-cols-[minmax(0,1fr)_auto]"
 							actionClassName="w-auto justify-end"
