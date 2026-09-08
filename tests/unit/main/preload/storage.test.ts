@@ -8,6 +8,7 @@ jest.mock('electron', () => ({
 
 import { storage } from '../../../../src/preload/storage';
 import { StorageChannels } from '../../../../src/shared/ipc_channels_definitions';
+import type { StorageProviderInput } from '../../../../src/shared/storage_types';
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -30,4 +31,22 @@ it('subscribes and removes the exact operation status event handler', () => {
 	expect(callback).toHaveBeenCalledWith(status);
 	unsubscribe();
 	expect(removeListener).toHaveBeenCalledWith(StorageChannels.operationStatusChanged, handler);
+});
+
+it('exposes storage provider list, save and remove through typed channels', async () => {
+	const input: StorageProviderInput = {
+		name: 'Archive', endpoint: '', region: 'us-east-1', bucket: 'archive',
+		accessKeyId: 'access-key', secretAccessKey: 'secret', forcePathStyle: false,
+	};
+	await storage.listProviders();
+	await storage.saveProvider(input);
+	await storage.removeProvider('connection');
+	expect(invoke).toHaveBeenNthCalledWith(1, StorageChannels.listProviders);
+	expect(invoke).toHaveBeenNthCalledWith(2, StorageChannels.saveProvider, input);
+	expect(invoke).toHaveBeenNthCalledWith(3, StorageChannels.removeProvider, 'connection');
+});
+
+it('surfaces storage provider save failures to the renderer', async () => {
+	invoke.mockResolvedValue({ success: false, error: { message: 'Secure storage is unavailable' } });
+	await expect(storage.saveProvider({} as StorageProviderInput)).rejects.toThrow('Secure storage is unavailable');
 });

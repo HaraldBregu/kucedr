@@ -1,4 +1,5 @@
 import type { StorageProviderInput } from '../../../shared/storage_types';
+import { storageProviderIdentifier } from './identifier';
 
 export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -26,7 +27,7 @@ export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 		}
 		if (
 			!['http:', 'https:'].includes(endpoint.protocol) ||
-			endpoint.username || endpoint.password || endpoint.search || endpoint.hash
+			endpoint.username || endpoint.password || values.endpoint.includes('?') || values.endpoint.includes('#')
 		) {
 			throw new Error('Storage endpoint must be an HTTP or HTTPS URL without credentials, query, or fragment.');
 		}
@@ -34,14 +35,12 @@ export function normalizeStorageProvider(value: unknown): StorageProviderInput {
 	if (typeof input.forcePathStyle !== 'boolean') {
 		throw new Error('Invalid storage path-style setting.');
 	}
-	if (input.id !== undefined && (typeof input.id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.id))) {
-		throw new Error('Invalid storage provider identifier.');
-	}
+	const id = input.id === undefined ? undefined : storageProviderIdentifier(input.id);
 	if (input.secretAccessKey !== undefined && (typeof input.secretAccessKey !== 'string' || input.secretAccessKey.length > 16_384)) {
 		throw new Error('Invalid storage secret access key.');
 	}
 	return {
-		...(input.id === undefined ? {} : { id: input.id as string }),
+		...(id === undefined ? {} : { id }),
 		name: values.name,
 		endpoint: values.endpoint,
 		region: values.region,

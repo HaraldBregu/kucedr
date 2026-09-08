@@ -5,6 +5,7 @@ import type { StorageProvider } from '../../../shared/storage_types';
 import { isSafeStorageAvailable } from '../../shared/safe_storage';
 import { restrictSettingsFile } from '../../shared/restrict_settings_file';
 import { normalizeStorageProvider } from './normalize';
+import { storageProviderIdentifier } from './identifier';
 import { storageProviderSummary } from './summary';
 import type { StorageProvidersState, StoredStorageProvider } from './types';
 
@@ -39,11 +40,9 @@ export class StorageProviderStore {
 	}
 
 	remove(id: unknown): boolean {
-		if (typeof id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id)) {
-			throw new Error('Invalid storage provider identifier.');
-		}
+		const identifier = storageProviderIdentifier(id);
 		const providers = this.read();
-		const remaining = providers.filter((provider) => provider.id !== id);
+		const remaining = providers.filter((provider) => provider.id !== identifier);
 		if (remaining.length === providers.length) return false;
 		this.write(remaining);
 		return true;
