@@ -82,7 +82,14 @@ export function SettingsSidebar(): React.JSX.Element {
 			<div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pb-4 pt-3">
 				<nav aria-label={t('settings.title')}>
 					{SETTINGS_SIDEBAR_GROUPS.map((group) => (
-						<section data-slot="split-pane-group" key={group.id} className={cn("px-2 py-1 first:pt-0", group.id === 'channels' && 'mt-3 border-t border-sidebar-border/50 pt-3')}>
+						<section
+							data-slot="split-pane-group"
+							key={group.id}
+							className={cn(
+								'px-2 py-1 first:pt-0',
+								group.id === 'channels' && 'mt-3 border-t border-sidebar-border/50 pt-3'
+							)}
+						>
 							{'titleKey' in group ? (
 								<h2 className="flex h-7 items-center px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/70">
 									{t(group.titleKey)}
