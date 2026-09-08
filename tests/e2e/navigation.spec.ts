@@ -184,3 +184,40 @@ test('wiki settings renders the complete configuration workflow', async ({
 	await expect(page.getByRole('button', { name: 'Open folder' })).toBeVisible();
 	await page.screenshot({ path: testInfo.outputPath('wiki-settings-status.png'), fullPage: true });
 });
+
+
+test('Agent resources have icons and open their nested settings pages', async ({ browserName: _browserName }, testInfo) => {
+	await app.evaluate(({ BrowserWindow }) => {
+		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
+	});
+	const resources = [
+		{ name: 'Skills', path: 'skills', icon: 'sparkles' },
+		{ name: 'Tasks', path: 'tasks', icon: 'list-checks' },
+		{ name: 'MCP Servers', path: 'mcp', icon: 'plug-zap' },
+	];
+	for (const resource of resources) {
+		await page.evaluate(() => { window.location.hash = '#/settings/agent'; });
+		const name = new RegExp(resource.name, 'i');
+		const sidebarLink = page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name });
+		await expect(sidebarLink).toHaveAttribute('href', `/settings/agent/${resource.path}`);
+		await expect(sidebarLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
+		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole('link', { name });
+		await expect(pageLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
+		await pageLink.click();
+		await expect(page).toHaveURL(new RegExp(`#/settings/agent/${resource.path}$`));
+		await expect(sidebarLink).toHaveAttribute('aria-current', 'page');
+		await expect(page.getByRole('heading', { name, exact: true })).toBeVisible();
+		await page.getByRole('navigation', { name: 'Breadcrumb' }).getByRole('link', { name: 'Agent', exact: true }).click();
+	}
+	await page.screenshot({ path: testInfo.outputPath('agent-desktop.png'), fullPage: true });
+	await app.evaluate(({ BrowserWindow }) => {
+		const window = BrowserWindow.getAllWindows()[0];
+		window.setMinimumSize(390, 600);
+		window.setSize(390, 800);
+	});
+	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
+	const skills = page.locator('[data-slot="settings-workspace"]').getByRole('link', { name: /Skills/ });
+	await skills.scrollIntoViewIfNeeded();
+	await page.screenshot({ path: testInfo.outputPath('agent-narrow.png'), fullPage: true });
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});

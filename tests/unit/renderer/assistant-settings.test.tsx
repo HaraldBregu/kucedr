@@ -333,13 +333,13 @@ it('announces a realtime conversation setup save error', async () => {
 });
 
 it.each([
-	['settings.tabs.skills', '/settings/agent/skills'],
-	['settings.tabs.taskScheduler', '/settings/agent/tasks'],
-	['settings.tabs.mcp', '/settings/agent/mcp'],
-	['Data management', '/settings/agent/data'],
-	['RAG', '/settings/agent/rag'],
-	['LLM Wiki', '/settings/agent/llm-wiki'],
-])('opens %s from the Agent settings page', async (label, path) => {
+	['settings.tabs.skills', '/settings/agent/skills', 'link'],
+	['settings.tabs.taskScheduler', '/settings/agent/tasks', 'link'],
+	['settings.tabs.mcp', '/settings/agent/mcp', 'link'],
+	['Data management', '/settings/agent/data', 'button'],
+	['RAG', '/settings/agent/rag', 'button'],
+	['LLM Wiki', '/settings/agent/llm-wiki', 'button'],
+])('opens %s from the Agent settings page', async (label, path, role) => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/agent']}>
@@ -350,6 +350,6 @@ it.each([
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: new RegExp(label) }));
+	await user.click(screen.getByRole(role, { name: new RegExp(label) }));
 	expect(await screen.findByText(`${label} page`)).toBeInTheDocument();
 });
