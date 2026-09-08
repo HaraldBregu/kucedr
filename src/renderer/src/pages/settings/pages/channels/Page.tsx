@@ -382,7 +382,11 @@ const ChannelsPage: React.FC = () => {
 				</div>
 			</SettingsSection>
 
-			<ProvidersPage embedded section="channels" />
+			<ProvidersPage
+				embedded
+				section="channels"
+				onChannelSaved={(providerId) => setConfigured((current) => new Set([...current, providerId]))}
+			/>
 
 			<SettingsSection title={t('settings.channels.available')}>
 				{!channels ? (

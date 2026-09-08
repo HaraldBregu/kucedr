@@ -67,9 +67,10 @@ function allCatalogItems(): ProviderCatalogItem[] {
 interface ProvidersPageProps {
 	readonly embedded?: boolean;
 	readonly section?: ProviderSetupSection;
+	readonly onChannelSaved?: (providerId: string) => void;
 }
 
-const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section }) => {
+const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section, onChannelSaved }) => {
 	const { t } = useTranslation();
 	const [providerEntries, setProviderEntries] = useState<ProviderSetupEntry[]>(() =>
 		allCatalogItems().map((provider, index) => ({
@@ -180,8 +181,10 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setSavingProviderId(providerId);
 		setError(null);
 		try {
-			if (kind === 'channels') await window.provider.setChannel({ id: providerId, apiKey });
-			else await window.provider.set({ id: providerId, apiKey, kind });
+			if (kind === 'channels') {
+				await window.provider.setChannel({ id: providerId, apiKey });
+				onChannelSaved?.(providerId);
+			} else await window.provider.set({ id: providerId, apiKey, kind });
 			updateProviderEntry(providerId, { apiKey: '', apiKeySaved: true, editing: false });
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save provider API key.'));

@@ -240,6 +240,7 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 	await discord.getByLabel('Discord API key', { exact: true }).fill('channel-test-token');
 	await discord.getByRole('button', { name: 'Save', exact: true }).click();
 	await expect(discord.getByRole('button', { name: 'Edit Discord API key' })).toBeVisible();
+	await expect(page.getByRole('button', { name: /Discord Bot API/ })).toContainText('Configured');
 	expect(await page.evaluate(() => window.provider.getChannel('discord'))).toMatchObject({ id: 'discord', configured: true });
 	await page.screenshot({ path: testInfo.outputPath('channels-configuration.png'), fullPage: true });
 });
