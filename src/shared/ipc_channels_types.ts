@@ -675,6 +675,18 @@ export interface DataInvokeChannelMap {
 }
 
 export interface StorageInvokeChannelMap {
+	[StorageChannels.listProviders]: {
+		args: [];
+		result: import('./storage_types').StorageProvider[];
+	};
+	[StorageChannels.saveProvider]: {
+		args: [input: import('./storage_types').StorageProviderInput];
+		result: import('./storage_types').StorageProvider;
+	};
+	[StorageChannels.removeProvider]: {
+		args: [id: string];
+		result: boolean;
+	};
 	[StorageChannels.getSettings]: {
 		args: [];
 		result: import('./storage_types').StorageSyncSettings;

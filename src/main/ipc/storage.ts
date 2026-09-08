@@ -13,6 +13,7 @@ import type { StorageOperations } from '../storage';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
+import { storageProviders } from '../storage/providers';
 
 export interface StorageIpcDeps {
 	appRegistry: AppRegistry;
@@ -28,6 +29,18 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 		_eventBus: EventBus
 	): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
+		registerQueryWithEvent(StorageChannels.listProviders, (event) => {
+			trusted.assert(event);
+			return storageProviders.list();
+		});
+		registerCommandWithEvent(StorageChannels.saveProvider, (event, input) => {
+			trusted.assert(event);
+			return storageProviders.save(input);
+		});
+		registerCommandWithEvent(StorageChannels.removeProvider, (event, id) => {
+			trusted.assert(event);
+			return storageProviders.remove(id);
+		});
 		registerQueryWithEvent(StorageChannels.getSettings, (event) => {
 			trusted.assert(event);
 			return getStorageSettings();

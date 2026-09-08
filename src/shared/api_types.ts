@@ -11,6 +11,8 @@ import type { ChannelCredentialSaveInput, ChannelCredentialSummary } from './cha
 import type { SearchEngineId, SearchEngineInput, SearchSettings } from './search_types';
 import type {
 	StorageOperationStatus,
+	StorageProvider,
+	StorageProviderInput,
 	StorageSyncFolder,
 	StorageSyncSettings,
 } from './storage_types';
@@ -291,6 +293,9 @@ export interface ProviderApi {
 }
 
 export interface StorageApi {
+	listProviders: () => Promise<StorageProvider[]>;
+	saveProvider: (input: StorageProviderInput) => Promise<StorageProvider>;
+	removeProvider: (id: string) => Promise<boolean>;
 	getSettings: () => Promise<StorageSyncSettings>;
 	saveSettings: (settings: StorageSyncSettings) => Promise<StorageSyncSettings>;
 	syncFolders: () => Promise<StorageSyncFolder[]>;

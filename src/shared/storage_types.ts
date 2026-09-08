@@ -1,3 +1,19 @@
+export interface StorageProvider {
+	id: string;
+	name: string;
+	endpoint: string;
+	region: string;
+	bucket: string;
+	accessKeyId: string;
+	forcePathStyle: boolean;
+	hasSecretAccessKey: boolean;
+}
+
+export type StorageProviderInput = Omit<StorageProvider, 'id' | 'hasSecretAccessKey'> & {
+	id?: string;
+	secretAccessKey?: string;
+};
+
 export interface StorageSyncSettings {
 	paths: string[];
 	syncEnabled: boolean;
