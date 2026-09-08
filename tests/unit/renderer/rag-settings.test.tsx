@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import RagPage from '../../../src/renderer/src/pages/settings/pages/rag/Page';
 
@@ -13,6 +13,8 @@ jest.mock('react-i18next', () => {
 		'settings.rag.embeddingConsentDescription':
 			'Allow Kucedr to send document chunks to the selected embedding provider.',
 		'settings.rag.mirrorConsent': 'Store plaintext knowledge in Pinecone',
+		'settings.rag.databaseTitle': 'Vector database',
+		'settings.rag.databasePlaceholder': 'Select vector database',
 		'settings.rag.embeddingModelTitle': 'Embedding model',
 		'settings.rag.embeddingModelDescription':
 			'Model used to embed RAG documents for vector search.',
@@ -57,6 +59,9 @@ jest.mock('react-i18next', () => {
 
 jest.mock('@/lib/providers', () => ({
 	defaultProviderId: () => 'openai',
+	databases: () => [
+		{ id: 'pinecone', name: 'Pinecone', provider: { id: 'pinecone', name: 'Pinecone' } },
+	],
 	modelsFor: () => [
 		{
 			id: 'text-embedding-3-small',
@@ -77,6 +82,11 @@ const agentApi = {
 	ragGetConfiguration: jest.fn(),
 	ragSaveConfiguration: jest.fn(),
 	ragIndex: jest.fn(),
+};
+
+const databaseApi = {
+	getConfiguration: jest.fn(),
+	saveConfiguration: jest.fn(),
 };
 
 const embeddingApi = {
@@ -114,6 +124,9 @@ beforeEach(() => {
 		configurable: true,
 		value: MouseEvent,
 	});
+	Object.defineProperty(window, 'database', { configurable: true, value: databaseApi });
+	databaseApi.getConfiguration.mockResolvedValue({ providerId: undefined, databaseId: undefined });
+	databaseApi.saveConfiguration.mockImplementation(async (configuration) => configuration);
 	Object.defineProperty(window, 'agent', { configurable: true, value: agentApi });
 	Object.defineProperty(window, 'models', {
 		configurable: true,
@@ -176,9 +189,8 @@ it('loads and saves the embedding model used by RAG', async () => {
 	const selector = await screen.findByRole('combobox', { name: 'Embedding model' });
 	expect(selector).toHaveTextContent('OpenAI / Text Embedding 3 Small');
 
-	selector.focus();
-	await user.keyboard('{ArrowDown}');
-	await user.click(await screen.findByRole('option', { name: 'Voyage / Voyage 3' }));
+	fireEvent.keyDown(selector, { key: 'ArrowDown' });
+	fireEvent.click(await screen.findByRole('option', { name: 'Voyage / Voyage 3' }));
 
 	await waitFor(() => {
 		expect(embeddingApi.setProviderId).toHaveBeenCalledWith('voyage');
@@ -223,6 +235,10 @@ it('records remote embedding consent for the selected provider and model', async
 });
 
 it('requires RAG and both disclosures before indexing', async () => {
+	databaseApi.getConfiguration.mockResolvedValue({
+		providerId: 'pinecone',
+		databaseId: 'pinecone',
+	});
 	const user = userEvent.setup();
 	const configuration = await agentApi.ragGetConfiguration();
 	agentApi.ragGetConfiguration.mockResolvedValue({
@@ -298,9 +314,7 @@ it('groups the model, index, and folder paths in one configuration card', async 
 	expect(configurationCard).toBeInTheDocument();
 
 	const configuration = within(configurationCard as HTMLElement);
-	expect(
-		configuration.queryByRole('combobox', { name: 'Vector database' })
-	).not.toBeInTheDocument();
+	expect(configuration.getByRole('combobox', { name: 'Vector database' })).toBeInTheDocument();
 	expect(configuration.getByRole('combobox', { name: 'Embedding model' })).toBeInTheDocument();
 	expect(configuration.getByLabelText('Index name')).toHaveValue('kucedr');
 	expect(configuration.getByText('/Users/example/docs')).toBeInTheDocument();
@@ -328,7 +342,6 @@ it('saves the selected RAG index name from the configuration card', async () => 
 });
 
 it('saves a friendly automation schedule preset', async () => {
-	const user = userEvent.setup();
 	agentApi.ragGetConfiguration.mockResolvedValue({
 		indexName: 'kucedr',
 		databaseProviderId: '',
@@ -346,8 +359,8 @@ it('saves a friendly automation schedule preset', async () => {
 	const frequency = screen.getByRole('combobox', { name: 'Indexing frequency' });
 	await waitFor(() => expect(frequency).toHaveTextContent('Every 12 hours'));
 
-	await user.click(frequency);
-	await user.click(await screen.findByRole('option', { name: 'Every 4 hours' }));
+	fireEvent.keyDown(frequency, { key: 'ArrowDown' });
+	fireEvent.click(await screen.findByRole('option', { name: 'Every 4 hours' }));
 
 	await waitFor(() =>
 		expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(
@@ -357,4 +370,68 @@ it('saves a friendly automation schedule preset', async () => {
 			})
 		)
 	);
+});
+
+it('leaves the vector database unselected until the user chooses one', async () => {
+	render(<RagPage />);
+	const selector = screen.getByRole('combobox', { name: 'Vector database' });
+	await waitFor(() => expect(selector).toBeEnabled());
+	expect(selector).toHaveTextContent('Select vector database');
+	expect(databaseApi.saveConfiguration).not.toHaveBeenCalled();
+	expect(
+		screen.getByRole('switch', { name: 'Store plaintext knowledge in Pinecone' })
+	).toBeDisabled();
+});
+
+it('saves an explicit vector database choice and reloads cleared disclosure', async () => {
+	const configuration = await agentApi.ragGetConfiguration();
+	agentApi.ragGetConfiguration.mockResolvedValue({
+		...configuration,
+		mirrorConsent: { version: 1, indexName: 'kucedr', recipient: 'old-recipient' },
+	});
+	render(<RagPage />);
+	const selector = screen.getByRole('combobox', { name: 'Vector database' });
+	await waitFor(() => expect(selector).toBeEnabled());
+	agentApi.ragGetConfiguration.mockClear();
+	agentApi.ragGetConfiguration.mockResolvedValue({ ...configuration, mirrorConsent: null });
+	fireEvent.keyDown(selector, { key: 'ArrowDown' });
+	fireEvent.click(await screen.findByRole('option', { name: 'Pinecone / Pinecone' }));
+	await waitFor(() =>
+		expect(databaseApi.saveConfiguration).toHaveBeenCalledWith({
+			providerId: 'pinecone',
+			databaseId: 'pinecone',
+		})
+	);
+	await waitFor(() => expect(agentApi.ragGetConfiguration).toHaveBeenCalledTimes(1));
+	await waitFor(() => expect(selector).toBeEnabled());
+	expect(selector).toHaveTextContent('Pinecone / Pinecone');
+	expect(
+		screen.getByRole('switch', { name: 'Store plaintext knowledge in Pinecone' })
+	).not.toBeChecked();
+	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
+});
+
+it('blocks indexing without a selected database even when disclosures are saved', async () => {
+	const configuration = await agentApi.ragGetConfiguration();
+	agentApi.ragGetConfiguration.mockResolvedValue({
+		...configuration,
+		enabled: true,
+		folders: ['/Users/example/docs'],
+		embeddingConsent: {
+			version: 1,
+			providerId: 'openai',
+			modelId: 'text-embedding-3-small',
+			recipient: 'embedding-recipient',
+		},
+		mirrorConsent: { version: 1, indexName: 'kucedr', recipient: 'mirror-recipient' },
+	});
+	render(<RagPage />);
+	await screen.findByText('/Users/example/docs');
+	await waitFor(() =>
+		expect(screen.getByRole('combobox', { name: 'Vector database' })).toBeEnabled()
+	);
+	const index = screen.getByRole('button', { name: 'Generate index' });
+	expect(index).toBeDisabled();
+	fireEvent.click(index);
+	expect(agentApi.ragIndex).not.toHaveBeenCalled();
 });
