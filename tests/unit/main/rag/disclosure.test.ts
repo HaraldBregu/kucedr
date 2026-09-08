@@ -76,8 +76,12 @@ it.each(['embedding', 'mirror'])(
 		getProvider.mockImplementation((_id, section) => ({
 			apiKey:
 				section === 'databases'
-					? kind === 'mirror' ? 'changed-account' : 'synthetic-mirror-account'
-					: kind === 'embedding' ? 'changed-account' : 'synthetic-embedding-account',
+					? kind === 'mirror'
+						? 'changed-account'
+						: 'synthetic-mirror-account'
+					: kind === 'embedding'
+						? 'changed-account'
+						: 'synthetic-embedding-account',
 		}));
 		const changed = authorizeRagDisclosure(saved);
 		expect(changed).toEqual(saved);
