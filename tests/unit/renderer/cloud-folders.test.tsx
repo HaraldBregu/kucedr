@@ -1,63 +1,53 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import CloudPage from '../../../src/renderer/src/pages/settings/pages/cloud/Page';
-
-const mockUseAuth = jest.fn();
+import type { StorageProvider } from '../../../src/shared/storage_types';
+import mockTranslations from '../../../resources/i18n/en/main.json';
 
 jest.mock('../../../src/renderer/src/contexts/AuthContext', () => ({
-	useAuth: () => mockUseAuth(),
+	useAuth: () => {
+		throw new Error('Cloud backup must not require account access.');
+	},
 }));
 
 jest.mock('react-i18next', () => {
-	const translations: Record<string, string> = {
-		'common.tryAgain': 'Try Again',
-		'settings.tabs.cloud': 'Cloud',
-		'settings.overview.descriptions.cloud': 'Cloud backup and secure key sync',
-		'settings.storage.sync.title': 'Cloud Backup',
-		'settings.storage.sync.description': 'Configure cloud backup.',
-		'settings.storage.folders.agent': 'Assistant workspace',
-		'settings.storage.backup': 'Back up now',
-		'settings.storage.restore': 'Restore from cloud',
-		'settings.storage.sync.addFolders': 'Add folders',
-		'settings.storage.autoSync.interval': 'Backup interval',
-		'settings.storage.autoSync.description': 'Run on schedule',
-		'settings.storage.autoSync.off': 'Off',
-		'settings.storage.autoSync.cronExpression': 'Cron expression',
-		'settings.storage.autoSync.cronDescription': 'Five-field cron expression',
-		'settings.storage.sync.save': 'Save schedule',
-		'settings.storage.cancel': 'Cancel',
-		'settings.storage.errors.load': 'Could not load cloud backup settings.',
-		'settings.storage.credentials.title': 'Secure key sync',
-		'settings.storage.credentials.setupDescription':
-			'Create a passphrase to encrypt and sync saved API keys.',
-		'settings.storage.credentials.unlockDescription': 'Enter the secure key sync passphrase.',
-		'settings.storage.credentials.readyDescription': 'Saved API keys are ready to sync.',
-		'settings.storage.credentials.passphrase': 'Sync passphrase',
-		'settings.storage.credentials.confirmPassphrase': 'Confirm passphrase',
-		'settings.storage.credentials.passphraseHelp':
-			'Use at least 12 characters. It cannot be recovered.',
-		'settings.storage.credentials.setup': 'Enable secure sync',
-		'settings.storage.credentials.settingUp': 'Enabling…',
-		'settings.storage.credentials.unlock': 'Unlock secure sync',
-		'settings.storage.credentials.unlocking': 'Unlocking…',
-		'settings.storage.credentials.status': 'Secure key sync',
-		'settings.storage.credentials.ready': 'Ready',
-		'settings.storage.credentials.pending': 'Pending changes',
-		'settings.storage.credentials.lastSync': 'Last sync',
-		'settings.storage.credentials.never': 'Not yet synced',
-		'settings.storage.credentials.sync': 'Sync now',
-		'settings.storage.credentials.syncing': 'Syncing…',
-		'settings.storage.credentials.memoryWarning':
-			'Secure device storage is unavailable. API keys are kept in memory only.',
-		'settings.storage.credentials.errors.load': 'Could not check secure key sync.',
-		'settings.storage.credentials.errors.mismatch': 'Passphrases do not match.',
+	const t = (key: string): string => {
+		let value: unknown = mockTranslations;
+		for (const part of key.split('.')) {
+			value =
+				value && typeof value === 'object' ? (value as Record<string, unknown>)[part] : undefined;
+		}
+		return String(value ?? key);
 	};
-	const t = (key: string): string => translations[key] ?? key;
 	return { useTranslation: () => ({ t }) };
 });
 
+const providers: StorageProvider[] = [
+	{
+		id: 'primary',
+		name: 'Production files',
+		bucket: 'files',
+		region: 'us-east-1',
+		endpoint: '',
+		accessKeyId: 'test-access',
+		hasSecretAccessKey: true,
+		forcePathStyle: false,
+	},
+	{
+		id: 'archive',
+		name: 'Archive',
+		bucket: 'archive',
+		region: 'eu-west-1',
+		endpoint: '',
+		accessKeyId: 'test-access',
+		hasSecretAccessKey: true,
+		forcePathStyle: false,
+	},
+];
+const settings = { paths: ['/data/agent'], syncEnabled: false, syncCronExpression: '0 3 * * *' };
 const storageApi = {
+	listProviders: jest.fn(),
 	getSettings: jest.fn(),
 	saveSettings: jest.fn(),
 	syncFolders: jest.fn(),
@@ -68,189 +58,128 @@ const storageApi = {
 	restore: jest.fn(),
 };
 
-const providerApi = {
-	vaultStatus: jest.fn(),
-	setupVault: jest.fn(),
-	unlockVault: jest.fn(),
-	syncVault: jest.fn(),
-};
-
-const setupStatus = {
-	persistence: 'encrypted' as const,
-	cloudConfigured: false,
-	unlocked: false,
-	pending: 0,
-};
-
 beforeEach(() => {
 	jest.clearAllMocks();
-	mockUseAuth.mockReturnValue({
-		state: {
-			status: 'signedIn',
-			persistence: 'encrypted',
-			user: { id: 'user-1', email: 'person@example.com' },
-		},
-		localOnly: false,
-		requireSignIn: jest.fn(),
-		skipSignIn: jest.fn(),
-	});
+	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'storage', { configurable: true, value: storageApi });
-	Object.defineProperty(window, 'provider', { configurable: true, value: providerApi });
-	storageApi.getSettings.mockResolvedValue({
-		paths: [],
-		syncEnabled: false,
-		syncCronExpression: '0 3 * * *',
-	});
+	storageApi.listProviders.mockResolvedValue(providers);
+	storageApi.getSettings.mockResolvedValue(settings);
+	storageApi.saveSettings.mockImplementation(async (value) => value);
 	storageApi.syncFolders.mockResolvedValue([{ key: 'agent', path: '/data/agent' }]);
 	storageApi.getOperationStatus.mockResolvedValue(undefined);
 	storageApi.onOperationStatusChanged.mockReturnValue(jest.fn());
-	providerApi.vaultStatus.mockResolvedValue(setupStatus);
-	providerApi.setupVault.mockResolvedValue({
-		...setupStatus,
-		cloudConfigured: true,
-		unlocked: true,
-	});
-	providerApi.unlockVault.mockResolvedValue({
-		...setupStatus,
-		cloudConfigured: true,
-		unlocked: true,
-	});
-	providerApi.syncVault.mockResolvedValue({
-		...setupStatus,
-		cloudConfigured: true,
-		unlocked: true,
-		lastSyncedAt: '2026-09-03T10:00:00.000Z',
+	storageApi.backup.mockResolvedValue({
+		operationId: 'backup-1',
+		operation: 'backup',
+		trigger: 'manual',
+		state: 'running',
+		startedAt: '2026-09-08T10:00:00Z',
+		transferred: 0,
+		skipped: 0,
+		failed: 0,
+		revision: 1,
 	});
 });
 
-it('shows cloud backup controls without provider identity or selection', async () => {
+it('shows storage selection beneath the title and before backup setup without login or key sync', async () => {
 	render(
 		<MemoryRouter>
 			<CloudPage />
 		</MemoryRouter>
 	);
-
-	expect(screen.getByRole('heading', { name: 'Cloud' })).toBeInTheDocument();
-	expect(await screen.findByRole('switch', { name: 'Assistant workspace' })).toBeVisible();
-	expect(screen.queryByText(/provider/i)).not.toBeInTheDocument();
-	expect(screen.queryByText(/supabase/i)).not.toBeInTheDocument();
-	expect(screen.queryByRole('combobox', { name: /storage to use/i })).not.toBeInTheDocument();
+	const title = screen.getByRole('heading', { name: 'Cloud', exact: true });
+	const selector = await screen.findByRole('combobox', { name: 'Storage provider' });
+	const backup = screen.getByRole('heading', { name: 'Cloud Backup' });
+	expect(title.compareDocumentPosition(selector) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(selector.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(screen.queryByText(/sign in|supabase|secure key sync/i)).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
+	expect(screen.getByRole('link', { name: 'Manage storage' })).toHaveAttribute(
+		'href',
+		'/settings/providers/storage'
+	);
 });
 
-it('shows a recoverable error state instead of an endless loading skeleton', async () => {
-	storageApi.getSettings.mockRejectedValue(new Error('Storage is offline'));
-	const { container } = render(
+it('saves a chosen provider before starting backup while signed out', async () => {
+	const user = userEvent.setup();
+	render(
 		<MemoryRouter>
 			<CloudPage />
 		</MemoryRouter>
 	);
+	await user.click(await screen.findByRole('combobox', { name: 'Storage provider' }));
+	await user.click(await screen.findByRole('option', { name: 'Archive' }));
+	await user.click(screen.getByRole('button', { name: 'Back up now' }));
+	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledTimes(1));
+	expect(storageApi.saveSettings).toHaveBeenCalledWith({ ...settings, providerId: 'archive' });
+	expect(storageApi.saveSettings.mock.invocationCallOrder[0]).toBeLessThan(
+		storageApi.backup.mock.invocationCallOrder[0]
+	);
+});
 
+it('loads the saved selection and cancels a provider change without overwriting it', async () => {
+	const user = userEvent.setup();
+	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'primary' });
+	render(
+		<MemoryRouter>
+			<CloudPage />
+		</MemoryRouter>
+	);
+	const selector = await screen.findByRole('combobox', { name: 'Storage provider' });
+	expect(selector).toHaveTextContent('Production files');
+	await user.click(selector);
+	await user.click(await screen.findByRole('option', { name: 'Archive' }));
+	await user.click(screen.getByRole('button', { name: 'Cancel', exact: true }));
+	expect(selector).toHaveTextContent('Production files');
+	expect(storageApi.saveSettings).not.toHaveBeenCalled();
+});
+
+it('offers storage configuration when no providers exist', async () => {
+	storageApi.listProviders.mockResolvedValue([]);
+	render(
+		<MemoryRouter>
+			<CloudPage />
+		</MemoryRouter>
+	);
+	expect(
+		await screen.findByText('Add a storage provider before setting up backups.')
+	).toBeInTheDocument();
+	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
+});
+
+it('retries a failed provider load and restores the saved selection', async () => {
+	const user = userEvent.setup();
+	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'primary' });
+	storageApi.listProviders.mockRejectedValueOnce(new Error('Could not open storage credentials'));
+	render(
+		<MemoryRouter>
+			<CloudPage />
+		</MemoryRouter>
+	);
+	expect(await screen.findByRole('alert')).toHaveTextContent('Could not load storage settings.');
+	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
+	await user.click(screen.getByRole('button', { name: 'Try Again' }));
+	await waitFor(() => expect(screen.getByRole('button', { name: 'Back up now' })).toBeEnabled());
+	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toHaveTextContent(
+		'Production files'
+	);
+});
+
+it('keeps a failed settings save editable and does not start a backup', async () => {
+	const user = userEvent.setup();
+	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'primary' });
+	storageApi.saveSettings.mockRejectedValueOnce(new Error('Unable to save'));
+	render(
+		<MemoryRouter>
+			<CloudPage />
+		</MemoryRouter>
+	);
+	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent(
-		'Could not load cloud backup settings.'
+		'Could not save the cloud backup schedule.'
 	);
-	expect(screen.getByRole('button', { name: 'Try Again' })).toBeEnabled();
-	expect(container.querySelector('[aria-busy="true"]')).not.toBeInTheDocument();
-});
-
-it('sets up secure key sync with a confirmed passphrase', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-
-	await user.type(await screen.findByLabelText('Sync passphrase'), 'a secure passphrase');
-	await user.type(screen.getByLabelText('Confirm passphrase'), 'a secure passphrase');
-	await user.click(screen.getByRole('button', { name: 'Enable secure sync' }));
-
-	await waitFor(() => expect(providerApi.setupVault).toHaveBeenCalledWith('a secure passphrase'));
-	expect(await screen.findByRole('button', { name: 'Sync now' })).toBeEnabled();
-});
-
-it('unlocks an existing secure key sync', async () => {
-	const user = userEvent.setup();
-	providerApi.vaultStatus.mockResolvedValue({
-		...setupStatus,
-		cloudConfigured: true,
-	});
-	render(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-
-	await user.type(await screen.findByLabelText('Sync passphrase'), 'a secure passphrase');
-	await user.click(screen.getByRole('button', { name: 'Unlock secure sync' }));
-
-	await waitFor(() => expect(providerApi.unlockVault).toHaveBeenCalledWith('a secure passphrase'));
-});
-
-it('runs secure key sync from the ready state', async () => {
-	const user = userEvent.setup();
-	providerApi.vaultStatus.mockResolvedValue({
-		...setupStatus,
-		cloudConfigured: true,
-		unlocked: true,
-		pending: 2,
-	});
-	render(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-
-	await user.click(await screen.findByRole('button', { name: 'Sync now' }));
-	expect(providerApi.syncVault).toHaveBeenCalledWith();
-});
-
-it('explains and blocks secure key setup when device storage is unavailable', async () => {
-	providerApi.vaultStatus.mockResolvedValue({
-		...setupStatus,
-		persistence: 'memory',
-	});
-	render(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-
-	expect(await screen.findByText(/secure device storage is unavailable/i)).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Enable secure sync' })).toBeDisabled();
-});
-
-it('ignores a stale vault status after account access changes', async () => {
-	let resolveStatus: ((status: typeof setupStatus) => void) | undefined;
-	providerApi.vaultStatus.mockReturnValue(
-		new Promise((resolve) => {
-			resolveStatus = resolve;
-		})
-	);
-	const view = render(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-	await waitFor(() => expect(providerApi.vaultStatus).toHaveBeenCalledTimes(1));
-
-	mockUseAuth.mockReturnValue({
-		state: { status: 'signedOut', persistence: 'encrypted' },
-		localOnly: false,
-		requireSignIn: jest.fn(),
-		skipSignIn: jest.fn(),
-	});
-	view.rerender(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-	await act(async () => {
-		resolveStatus?.({
-			...setupStatus,
-			cloudConfigured: true,
-			unlocked: true,
-		});
-	});
-
-	expect(screen.queryByRole('button', { name: 'Sync now' })).not.toBeInTheDocument();
+	expect(storageApi.backup).not.toHaveBeenCalled();
+	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
 });
