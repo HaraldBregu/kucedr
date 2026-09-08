@@ -2,6 +2,16 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event';
 import RagPage from '../../../src/renderer/src/pages/settings/pages/rag/Page';
 
+jest.mock('@/components/ui/select', () => {
+	const actual = jest.requireActual('@/components/ui/select');
+	return {
+		...actual,
+		SelectContent: (props: object) => (
+			<actual.SelectContent {...props} alignItemWithTrigger={false} />
+		),
+	};
+});
+
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
 		'settings.rag.title': 'RAG',
