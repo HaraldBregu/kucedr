@@ -12,6 +12,7 @@ jest.mock('react-i18next', () => {
 		'settings.rag.embeddingConsent': 'Send document text for embeddings',
 		'settings.rag.embeddingConsentDescription':
 			'Allow Kucedr to send document chunks to the selected embedding provider.',
+		'settings.rag.mirrorConsent': 'Store plaintext knowledge in Pinecone',
 		'settings.rag.embeddingModelTitle': 'Embedding model',
 		'settings.rag.embeddingModelDescription':
 			'Model used to embed RAG documents for vector search.',
@@ -75,6 +76,7 @@ jest.mock('@/lib/providers', () => ({
 const agentApi = {
 	ragGetConfiguration: jest.fn(),
 	ragSaveConfiguration: jest.fn(),
+	ragIndex: jest.fn(),
 };
 
 const embeddingApi = {
@@ -218,6 +220,62 @@ it('records remote embedding consent for the selected provider and model', async
 			})
 		)
 	);
+});
+
+it('requires RAG and both disclosures before indexing', async () => {
+	const user = userEvent.setup();
+	const configuration = await agentApi.ragGetConfiguration();
+	agentApi.ragGetConfiguration.mockResolvedValue({
+		...configuration,
+		folders: ['/Users/example/docs'],
+	});
+	agentApi.ragSaveConfiguration.mockImplementation(async (next) => ({
+		...next,
+		embeddingConsent: next.embeddingConsent
+			? { ...next.embeddingConsent, recipient: 'embedding-recipient' }
+			: null,
+		mirrorConsent: next.mirrorConsent
+			? { ...next.mirrorConsent, recipient: 'mirror-recipient' }
+			: null,
+	}));
+	agentApi.ragIndex.mockResolvedValue({ files: 1, vectors: 2 });
+	render(<RagPage />);
+
+	await screen.findByText('/Users/example/docs');
+	const index = screen.getByRole('button', { name: 'Generate index' });
+	expect(index).toBeDisabled();
+	await user.click(screen.getByRole('switch', { name: 'Enable RAG' }));
+	expect(index).toBeDisabled();
+	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
+	expect(index).toBeDisabled();
+	await user.click(screen.getByRole('switch', { name: 'Store plaintext knowledge in Pinecone' }));
+	await waitFor(() => expect(index).toBeEnabled());
+	await user.click(index);
+	await waitFor(() => expect(agentApi.ragIndex).toHaveBeenCalledTimes(1));
+	await waitFor(() => expect(index).toBeEnabled());
+
+	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
+	expect(index).toBeDisabled();
+	await user.click(index);
+	expect(agentApi.ragIndex).toHaveBeenCalledTimes(1);
+});
+
+it('does not display embedding disclosure without a recipient as accepted', async () => {
+	const configuration = await agentApi.ragGetConfiguration();
+	agentApi.ragGetConfiguration.mockResolvedValue({
+		...configuration,
+		embeddingConsent: {
+			version: 1,
+			providerId: 'openai',
+			modelId: 'text-embedding-3-small',
+		},
+	});
+	render(<RagPage />);
+
+	await screen.findByRole('combobox', { name: 'Embedding model' });
+	expect(
+		screen.getByRole('switch', { name: 'Send document text for embeddings' })
+	).not.toBeChecked();
 });
 
 it('groups the model, index, and folder paths in one configuration card', async () => {
