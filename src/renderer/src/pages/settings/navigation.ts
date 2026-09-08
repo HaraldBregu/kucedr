@@ -2,7 +2,7 @@ import {
 	Binary,
 	BookOpenText,
 	Bot,
-	Blocks,
+	Layers,
 	BotMessageSquare,
 	Cloud,
 	Code2,
@@ -419,7 +419,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/apps',
 		labelKey: 'settings.tabs.apps',
 		descriptionKey: 'settings.overview.descriptions.apps',
-		icon: Blocks,
+		icon: Layers,
 	},
 ] satisfies readonly SettingsNavigationItem[];
 
