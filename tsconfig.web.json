@@ -10,6 +10,7 @@
 		"src/shared/**/*"
 	],
 	"compilerOptions": {
+		"rootDir": ".",
 		"types": ["electron-vite/node"],
 		"plugins": [{ "name": "typescript-plugin-css-modules" }],
 		"composite": true,

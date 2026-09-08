@@ -53,7 +53,7 @@ it('adds multiple independent S3 connections and retains existing entries', asyn
 	for (const name of ['Production', 'Archive']) {
 		await user.click(screen.getByRole('button', { name: 'Add storage' }));
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
-		expect(screen.getByRole('form').closest('[data-slot=\"card\"]')).toBeInTheDocument();
+		expect(screen.getByRole('form').closest('[data-slot="card"]')).toBeInTheDocument();
 		const form = within(screen.getByRole('form'));
 		expect(form.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
 		await user.type(form.getByLabelText('Name'), name);

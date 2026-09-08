@@ -12,6 +12,7 @@
 		"src/example"
 	],
 	"compilerOptions": {
+		"rootDir": ".",
 		"composite": true,
 		"outDir": "./dist",
 		"module": "ESNext",
