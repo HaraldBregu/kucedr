@@ -8,7 +8,8 @@ jest.mock('react-i18next', () => {
 	const t = (key: string, options?: Record<string, string>): string => {
 		let value: unknown = mockTranslations;
 		for (const part of key.split('.')) {
-			value = value && typeof value === 'object' ? (value as Record<string, unknown>)[part] : undefined;
+			value =
+				value && typeof value === 'object' ? (value as Record<string, unknown>)[part] : undefined;
 		}
 		return String(value ?? key).replace(/\{\{(\w+)\}\}/g, (_, name) => options?.[name] ?? '');
 	};
