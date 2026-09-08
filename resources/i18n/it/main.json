@@ -875,10 +875,7 @@
 			"denyRules": "Nega",
 			"rulesHint": "Un glob di percorso o comando per riga. Le regole di negazione hanno la precedenza.",
 			"kinds": {
-				"read": {
-					"title": "Lettura",
-					"description": "Percorsi che l'agente può leggere."
-				},
+				"read": { "title": "Lettura", "description": "Percorsi che l'agente può leggere." },
 				"write": {
 					"title": "Scrittura",
 					"description": "Percorsi che l'agente può creare, modificare o eliminare."
@@ -1039,7 +1036,7 @@
 			"errors": {
 				"load": "Impossibile caricare le impostazioni di archiviazione.",
 				"pickFolders": "Impossibile selezionare le cartelle.",
-				"saveSync": "Impossibile salvare la pianificazione del backup cloud.",
+				"saveSync": "Impossibile salvare le impostazioni di backup.",
 				"push": "Impossibile eseguire il backup dei file.",
 				"pull": "Impossibile ripristinare i file."
 			},

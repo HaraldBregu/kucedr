@@ -876,10 +876,7 @@
 			"denyRules": "Deny",
 			"rulesHint": "One path glob or command per line. Deny rules take precedence.",
 			"kinds": {
-				"read": {
-					"title": "Read",
-					"description": "Paths the agent may read."
-				},
+				"read": { "title": "Read", "description": "Paths the agent may read." },
 				"write": {
 					"title": "Write",
 					"description": "Paths the agent may create, edit, or delete."
@@ -1040,7 +1037,7 @@
 			"errors": {
 				"load": "Could not load storage settings.",
 				"pickFolders": "Could not select folders.",
-				"saveSync": "Could not save the cloud backup schedule.",
+				"saveSync": "Could not save backup settings.",
 				"push": "Could not back up files.",
 				"pull": "Could not restore files."
 			},

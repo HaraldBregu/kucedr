@@ -178,7 +178,7 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 	);
 	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent(
-		'Could not save the cloud backup schedule.'
+		'Could not save backup settings.'
 	);
 	expect(storageApi.backup).not.toHaveBeenCalled();
 	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
