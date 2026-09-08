@@ -157,6 +157,7 @@ describe('provider credential IPC boundary', () => {
 	});
 
 	it('saves and lists database credentials separately from model credentials', () => {
+		setProvider.mockClear();
 		const sync = register();
 		const summary = {
 			kind: 'databases',
