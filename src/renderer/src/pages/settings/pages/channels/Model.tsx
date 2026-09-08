@@ -56,6 +56,8 @@ export function ChannelModelConfiguration({
 			triggerTitle={t(`settings.channels.${kind}Model`)}
 			description={t(`settings.channels.${kind}ModelDescription`)}
 			showInlineError
+			showIcon={false}
+			grouped
 			onChange={(providerId, modelId) => void save(providerId, modelId)}
 		/>
 	);

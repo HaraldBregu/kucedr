@@ -7,6 +7,7 @@ import {
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
+	SettingsPanel,
 	SettingsSection,
 } from '../../components';
 import { ChannelModelConfiguration } from './Model';
@@ -48,13 +49,11 @@ export default function ChannelsPage(): React.JSX.Element {
 				icon={RadioTower}
 				description={t('settings.channels.description')}
 			/>
-			<SettingsSection title={t('settings.channels.configuration')}>
-				<div className="grid gap-2">
-					<ChannelModelConfiguration kind="llm" />
-					<ChannelModelConfiguration kind="stt" />
-					<ChannelModelConfiguration kind="tts" />
-				</div>
-			</SettingsSection>
+			<SettingsPanel>
+				<ChannelModelConfiguration kind="llm" />
+				<ChannelModelConfiguration kind="stt" />
+				<ChannelModelConfiguration kind="tts" />
+			</SettingsPanel>
 			<SettingsSection title={t('settings.channels.integration')}>
 				{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 				{loading ? (
