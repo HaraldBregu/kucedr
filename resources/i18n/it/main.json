@@ -1493,6 +1493,7 @@
 			"behaviorTitle": "Comportamento RAG",
 			"enabled": "Abilita RAG",
 			"enabledDescription": "Indicizzazione dei documenti e ricerca dell'assistente.",
+			"indexRequirements": "Prima di indicizzare, abilita RAG e approva sia l'invio dei documenti per gli embedding sia il salvataggio in chiaro su Pinecone nella sezione Comportamento RAG.",
 			"embeddingConsent": "Invia il testo dei documenti per gli embedding",
 			"embeddingConsentDescription": "Consenti l’invio di parti dei documenti e query di ricerca al provider e account di embedding selezionati. Le modifiche a provider, modello, endpoint o account richiedono nuovo consenso.",
 			"mirrorConsent": "Salva la conoscenza in chiaro su Pinecone",

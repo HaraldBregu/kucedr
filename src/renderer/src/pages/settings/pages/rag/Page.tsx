@@ -96,7 +96,7 @@ const RagPage: React.FC = () => {
 	}, [t]);
 
 	const handleIndex = async (): Promise<void> => {
-		if (!ragConfiguration?.folders.length || !ragConfiguration.indexName.trim()) return;
+		if (!canIndex || !ragConfiguration) return;
 		setIndexing(true);
 		setError(null);
 		setIndexed(null);
@@ -208,8 +208,22 @@ const RagPage: React.FC = () => {
 	);
 	const embeddingConsentMatches =
 		ragConfiguration?.embeddingConsent?.version === 1 &&
+		Boolean(ragConfiguration.embeddingConsent.recipient) &&
 		ragConfiguration.embeddingConsent.providerId === embeddingProviderId &&
 		ragConfiguration.embeddingConsent.modelId === embeddingModelId;
+	const mirrorConsentMatches =
+		ragConfiguration?.mirrorConsent?.version === 1 &&
+		Boolean(ragConfiguration.mirrorConsent.recipient) &&
+		ragConfiguration.mirrorConsent.indexName === ragConfiguration.indexName;
+	const indexingAuthorized =
+		ragConfiguration?.enabled === true && embeddingConsentMatches && mirrorConsentMatches;
+	const canIndex =
+		indexingAuthorized &&
+		!indexing &&
+		!savingRagConfiguration &&
+		!loadingEmbeddingModel &&
+		!savingEmbeddingModel &&
+		Boolean(ragConfiguration?.folders.length && ragConfiguration.indexName.trim());
 	const selectedSchedule = SETTINGS_SCHEDULES.find(
 		(schedule) => schedule.cron === ragConfiguration?.cronExpression
 	);
@@ -255,6 +269,8 @@ const RagPage: React.FC = () => {
 									!ragConfiguration ||
 									!embeddingProviderId ||
 									!embeddingModelId ||
+									loadingEmbeddingModel ||
+									savingEmbeddingModel ||
 									savingRagConfiguration ||
 									indexing
 								}
@@ -272,10 +288,7 @@ const RagPage: React.FC = () => {
 						actionClassName="ml-auto w-auto justify-end"
 						actions={
 							<Switch
-								checked={Boolean(
-									ragConfiguration?.mirrorConsent?.recipient &&
-									ragConfiguration.mirrorConsent.indexName === ragConfiguration.indexName
-								)}
+								checked={mirrorConsentMatches}
 								disabled={!ragConfiguration || savingRagConfiguration || indexing}
 								aria-label={t('settings.rag.mirrorConsent')}
 								onCheckedChange={(enabled) => {
@@ -319,7 +332,7 @@ const RagPage: React.FC = () => {
 											: null
 									}
 									onValueChange={(value) => void selectEmbeddingModel(value)}
-									disabled={savingEmbeddingModel}
+									disabled={savingEmbeddingModel || savingRagConfiguration || indexing}
 								>
 									<SelectTrigger
 										id="rag-embedding-model"
@@ -427,16 +440,15 @@ const RagPage: React.FC = () => {
 							</div>
 						</SettingsField>
 
+						{ragConfiguration && !indexingAuthorized && (
+							<SettingsNotice>{t('settings.rag.indexRequirements')}</SettingsNotice>
+						)}
+
 						<div className="flex justify-end">
 							<Button
 								type="button"
 								size="sm"
-								disabled={
-									indexing ||
-									savingRagConfiguration ||
-									!ragConfiguration?.folders.length ||
-									!ragConfiguration.indexName.trim()
-								}
+								disabled={!canIndex}
 								onClick={() => void handleIndex()}
 							>
 								{indexing ? (
