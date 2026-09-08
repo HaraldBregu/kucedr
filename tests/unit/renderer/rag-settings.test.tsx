@@ -3,12 +3,61 @@ import userEvent from '@testing-library/user-event';
 import RagPage from '../../../src/renderer/src/pages/settings/pages/rag/Page';
 
 jest.mock('@/components/ui/select', () => {
-	const actual = jest.requireActual('@/components/ui/select');
+	const React = jest.requireActual<typeof import('react')>('react');
+	const Context = React.createContext({
+		value: null as string | null,
+		disabled: false,
+		onValueChange: (_value: string) => {},
+	});
 	return {
-		...actual,
-		SelectContent: (props: object) => (
-			<actual.SelectContent {...props} alignItemWithTrigger={false} />
+		Select: ({
+			value,
+			disabled,
+			onValueChange,
+			children,
+		}: {
+			value: string | null;
+			disabled: boolean;
+			onValueChange: (value: string) => void;
+			children: React.ReactNode;
+		}) => (
+			<Context.Provider value={{ value, disabled, onValueChange }}>{children}</Context.Provider>
 		),
+		SelectTrigger: ({
+			children,
+			size: _size,
+			...props
+		}: React.ComponentProps<'button'> & { size?: string }) => {
+			const { disabled } = React.useContext(Context);
+			return (
+				<button {...props} role="combobox" disabled={disabled}>
+					{children}
+				</button>
+			);
+		},
+		SelectValue: ({
+			children,
+			placeholder,
+		}: {
+			children: React.ReactNode;
+			placeholder?: string;
+		}) => <>{children || placeholder}</>,
+		SelectContent: ({ children }: { children: React.ReactNode }) => (
+			<div role="listbox">{children}</div>
+		),
+		SelectItem: ({ value, children }: { value: string; children: React.ReactNode }) => {
+			const context = React.useContext(Context);
+			return (
+				<button
+					role="option"
+					aria-selected={context.value === value}
+					disabled={context.disabled}
+					onClick={() => context.onValueChange(value)}
+				>
+					{children}
+				</button>
+			);
+		},
 	};
 });
 
@@ -198,9 +247,7 @@ it('loads and saves the embedding model used by RAG', async () => {
 	const selector = await screen.findByRole('combobox', { name: 'Embedding model' });
 	expect(selector).toHaveTextContent('OpenAI / Text Embedding 3 Small');
 
-	fireEvent.change(selector.parentElement!.querySelector('input')!, {
-		target: { value: 'voyage\u001Fvoyage-3' },
-	});
+	fireEvent.click(screen.getByRole('option', { name: 'Voyage / Voyage 3' }));
 
 	await waitFor(() => {
 		expect(embeddingApi.setProviderId).toHaveBeenCalledWith('voyage');
@@ -369,9 +416,7 @@ it('saves a friendly automation schedule preset', async () => {
 	const frequency = screen.getByRole('combobox', { name: 'Indexing frequency' });
 	await waitFor(() => expect(frequency).toHaveTextContent('Every 12 hours'));
 
-	fireEvent.change(frequency.parentElement!.querySelector('input')!, {
-		target: { value: 'every4h' },
-	});
+	fireEvent.click(screen.getByRole('option', { name: 'Every 4 hours' }));
 
 	await waitFor(() =>
 		expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(
@@ -405,9 +450,7 @@ it('saves an explicit vector database choice and reloads cleared disclosure', as
 	await waitFor(() => expect(selector).toBeEnabled());
 	agentApi.ragGetConfiguration.mockClear();
 	agentApi.ragGetConfiguration.mockResolvedValue({ ...configuration, mirrorConsent: null });
-	fireEvent.change(selector.parentElement!.querySelector('input')!, {
-		target: { value: 'pinecone\u001Fpinecone' },
-	});
+	fireEvent.click(screen.getByRole('option', { name: 'Pinecone / Pinecone' }));
 	await waitFor(() =>
 		expect(databaseApi.saveConfiguration).toHaveBeenCalledWith({
 			providerId: 'pinecone',
