@@ -13,7 +13,8 @@ import {
 } from '@/components/ui/select';
 import type { RagMatch } from '../../../../../../main/agent/knowledge/rag';
 import type { RagConfiguration } from '../../../../../../shared/rag_types';
-import { defaultProviderId, modelsFor } from '@/lib/providers';
+import type { DatabaseConfiguration } from '../../../../../../shared/database_types';
+import { databases, defaultProviderId, modelsFor } from '@/lib/providers';
 import { getErrorMessage } from '../../../start/setupConstants';
 import {
 	SettingsLoadingRows,
@@ -32,6 +33,12 @@ const VALUE_SEPARATOR = '\u001F';
 
 const RagPage: React.FC = () => {
 	const { t } = useTranslation();
+	const vectorDatabases = useMemo(() => databases(), []);
+	const [databaseConfiguration, setDatabaseConfiguration] = useState<DatabaseConfiguration | null>(
+		null
+	);
+	const [loadingDatabase, setLoadingDatabase] = useState(true);
+	const [savingDatabase, setSavingDatabase] = useState(false);
 	const embeddingModels = useMemo(() => modelsFor('embedding'), []);
 	const [error, setError] = useState<string | null>(null);
 	const [indexing, setIndexing] = useState(false);
@@ -82,9 +89,13 @@ const RagPage: React.FC = () => {
 
 	useEffect(() => {
 		let cancelled = false;
-		void window.agent.ragGetConfiguration().then(
-			(configuration) => {
-				if (!cancelled) setRagConfiguration(configuration);
+		void Promise.all([window.agent.ragGetConfiguration(), window.database.getConfiguration()]).then(
+			([configuration, database]) => {
+				if (!cancelled) {
+					setRagConfiguration(configuration);
+					setDatabaseConfiguration(database);
+					setLoadingDatabase(false);
+				}
 			},
 			(err) => {
 				if (!cancelled) setError(getErrorMessage(err, t('settings.rag.loadError')));
@@ -182,6 +193,26 @@ const RagPage: React.FC = () => {
 		}
 	};
 
+	const selectDatabase = async (value: string | null): Promise<void> => {
+		if (!value) return;
+		const [providerId, databaseId] = value.split(VALUE_SEPARATOR);
+		const entry = vectorDatabases.find(
+			(database) => database.provider.id === providerId && database.id === databaseId
+		);
+		if (!entry) return;
+		setSavingDatabase(true);
+		setError(null);
+		try {
+			const saved = await window.database.saveConfiguration({ providerId, databaseId });
+			setDatabaseConfiguration(saved);
+			setRagConfiguration(await window.agent.ragGetConfiguration());
+		} catch (err) {
+			setError(getErrorMessage(err, t('settings.rag.saveError')));
+		} finally {
+			setSavingDatabase(false);
+		}
+	};
+
 	const selectEmbeddingModel = async (value: string | null): Promise<void> => {
 		if (!value) return;
 		const [providerId = '', modelId = ''] = value.split(VALUE_SEPARATOR);
@@ -203,6 +234,12 @@ const RagPage: React.FC = () => {
 		}
 	};
 
+	const selectedDatabase = vectorDatabases.find(
+		(entry) =>
+			entry.provider.id === databaseConfiguration?.providerId &&
+			entry.id === databaseConfiguration?.databaseId
+	);
+	const databaseReady = Boolean(selectedDatabase) && !loadingDatabase && !savingDatabase;
 	const selectedEmbeddingModel = embeddingModels.find(
 		(entry) => entry.provider.id === embeddingProviderId && entry.id === embeddingModelId
 	);
@@ -212,6 +249,7 @@ const RagPage: React.FC = () => {
 		ragConfiguration.embeddingConsent.providerId === embeddingProviderId &&
 		ragConfiguration.embeddingConsent.modelId === embeddingModelId;
 	const mirrorConsentMatches =
+		databaseReady &&
 		ragConfiguration?.mirrorConsent?.version === 1 &&
 		Boolean(ragConfiguration.mirrorConsent.recipient) &&
 		ragConfiguration.mirrorConsent.indexName === ragConfiguration.indexName;
@@ -219,6 +257,7 @@ const RagPage: React.FC = () => {
 		ragConfiguration?.enabled === true && embeddingConsentMatches && mirrorConsentMatches;
 	const canIndex =
 		indexingAuthorized &&
+		databaseReady &&
 		!indexing &&
 		!savingRagConfiguration &&
 		!loadingEmbeddingModel &&
@@ -289,7 +328,7 @@ const RagPage: React.FC = () => {
 						actions={
 							<Switch
 								checked={mirrorConsentMatches}
-								disabled={!ragConfiguration || savingRagConfiguration || indexing}
+								disabled={!ragConfiguration || !databaseReady || savingRagConfiguration || indexing}
 								aria-label={t('settings.rag.mirrorConsent')}
 								onCheckedChange={(enabled) => {
 									if (ragConfiguration)
@@ -315,6 +354,43 @@ const RagPage: React.FC = () => {
 			<SettingsSection title={t('settings.rag.configurationTitle')}>
 				<SettingsPanel>
 					<div className="grid gap-4 px-3 py-3">
+						<SettingsField
+							id="rag-vector-database"
+							label={t('settings.rag.databaseTitle')}
+							description={t('settings.rag.databaseDescription')}
+						>
+							<Select
+								value={
+									selectedDatabase
+										? `${selectedDatabase.provider.id}${VALUE_SEPARATOR}${selectedDatabase.id}`
+										: null
+								}
+								onValueChange={(value) => void selectDatabase(value)}
+								disabled={loadingDatabase || savingDatabase || savingRagConfiguration || indexing}
+							>
+								<SelectTrigger
+									id="rag-vector-database"
+									size="sm"
+									className="w-56 max-w-full text-xs"
+								>
+									<SelectValue placeholder={t('settings.rag.databasePlaceholder')}>
+										{selectedDatabase &&
+											`${selectedDatabase.provider.name} / ${selectedDatabase.name || selectedDatabase.id}`}
+									</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{vectorDatabases.map((entry) => (
+										<SelectItem
+											key={`${entry.provider.id}${VALUE_SEPARATOR}${entry.id}`}
+											value={`${entry.provider.id}${VALUE_SEPARATOR}${entry.id}`}
+										>
+											{`${entry.provider.name} / ${entry.name || entry.id}`}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</SettingsField>
+
 						<SettingsField
 							id="rag-embedding-model"
 							label={t('settings.rag.embeddingModelTitle')}
