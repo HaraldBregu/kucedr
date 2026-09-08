@@ -20,7 +20,7 @@
 		"node": ">=22.19",
 		"npm": ">=11.5.1"
 	},
-	"copyright": "\u00a9 2026 Kucedr Project. All rights reserved.",
+	"copyright": "© 2026 Kucedr Project. All rights reserved.",
 	"type": "module",
 	"license": "MIT",
 	"kucedr.channel": {
@@ -116,7 +116,6 @@
 		"clsx": "^2.1.1",
 		"cmdk": "^1.1.1",
 		"date-fns": "^4.4.0",
-		"discord.js": "^14.27.0",
 		"electron-store": "11.0.2",
 		"grammy": "^1.42.0",
 		"gray-matter": "^4.0.3",
