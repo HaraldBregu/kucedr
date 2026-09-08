@@ -1,0 +1,14 @@
+{
+  "providerId": "pinecone",
+  "providerName": "Pinecone",
+  "apiKeyUrl": "https://app.pinecone.io",
+  "instructions": "Create an API key in the Pinecone console: https://docs.pinecone.io/guides/projects/manage-api-keys",
+  "services": [
+    {
+      "id": "pinecone",
+      "name": "Pinecone Vector Database",
+      "url": "https://api.pinecone.io",
+      "type": "database"
+    }
+  ]
+}

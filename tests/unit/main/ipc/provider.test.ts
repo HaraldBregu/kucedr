@@ -156,6 +156,52 @@ describe('provider credential IPC boundary', () => {
 		expect(JSON.stringify(result)).not.toContain('apiKey');
 	});
 
+	it('saves and lists database credentials separately from model credentials', () => {
+		const sync = register();
+		const summary = {
+			kind: 'databases',
+			id: 'pinecone',
+			name: 'Pinecone',
+			baseUrl: 'https://api.pinecone.io',
+			configured: true,
+			syncStatus: 'local',
+		};
+		sync.getSummary.mockReturnValue(summary);
+		sync.listSummaries.mockReturnValue([summary]);
+
+		const saved = handler(registerCommandWithEvent, ProviderChannels.set)({}, {
+			kind: 'databases',
+			id: 'pinecone',
+			apiKey: ' database-secret ',
+		});
+		const listed = handler(registerQueryWithEvent, ProviderChannels.list)({}, 'databases');
+
+		expect(setProvider).toHaveBeenCalledWith(
+			{
+				id: 'pinecone',
+				name: 'Pinecone',
+				apiKey: 'database-secret',
+				baseUrl: 'https://api.pinecone.io',
+			},
+			'databases'
+		);
+		expect(listProviders).toHaveBeenCalledWith('databases');
+		expect(sync.getSummary).toHaveBeenCalledWith('databases', 'pinecone');
+		expect(sync.listSummaries).toHaveBeenCalledWith('databases');
+		expect(saved).toEqual(summary);
+		expect(listed).toEqual([summary]);
+		expect(JSON.stringify({ saved, listed })).not.toContain('apiKey');
+		expect(JSON.stringify({ saved, listed })).not.toContain('database-secret');
+		expect(() =>
+			handler(registerCommandWithEvent, ProviderChannels.set)({}, {
+				kind: 'models',
+				id: 'pinecone',
+				apiKey: 'database-secret',
+			})
+		).toThrow('Unknown provider.');
+		expect(setProvider).toHaveBeenCalledTimes(1);
+	});
+
 	it('rejects saving a channel that is absent from the supported catalog', () => {
 		register();
 

@@ -67,7 +67,14 @@ describe('provider manifests', () => {
 		expect(providersById.get('tavily')?.iconLightUrl).toContain(
 			'/resources/providers/tavily/images/official/tavily-black.svg'
 		);
-		expect(providersById.has('pinecone')).toBe(false);
+		expect(providersById.get('pinecone')).toEqual(
+			expect.objectContaining({
+				id: 'pinecone',
+				name: 'Pinecone',
+				apiKeyUrl: 'https://app.pinecone.io',
+			})
+		);
+		expect(loadModels().some((model) => model.provider.id === 'pinecone')).toBe(false);
 		expect(deepseek?.metadata).toEqual(
 			expect.objectContaining({ contextWindow: 1_048_576, defaultOutputTokens: 32_768 })
 		);
@@ -124,7 +131,15 @@ describe('provider manifests', () => {
 				}),
 			])
 		);
-		expect(loadDatabases()).toEqual([]);
+		expect(loadDatabases()).toEqual([
+			expect.objectContaining({
+				id: 'pinecone',
+				name: 'Pinecone Vector Database',
+				type: 'database',
+				url: 'https://api.pinecone.io',
+				provider: expect.objectContaining({ id: 'pinecone' }),
+			}),
+		]);
 		expect(namesAreAlphabetical(loadModels())).toBe(true);
 		expect(namesAreAlphabetical(loadDatabases())).toBe(true);
 		expect(namesAreAlphabetical(loadWebSearches())).toBe(true);

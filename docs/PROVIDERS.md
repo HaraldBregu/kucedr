@@ -30,7 +30,9 @@ See [Settings UI](ui/SETTINGS.md) for the complete Settings navigation and persi
 2. Choose the provider and model on the relevant Assistant, RAG, Voice, Transcription, Image,
    Video, or Audio settings page.
 3. Configure Brave or Tavily under **Settings → Providers → Search**.
-4. Run the test offered by the settings page, when present, before relying on the provider in an
+4. Save vector database API keys under **Settings → Providers → Vector DB**
+   (`/settings/providers/databases`). Pinecone is the built-in vector database provider.
+5. Run the test offered by the settings page, when present, before relying on the provider in an
    agent run.
 
 Provider credentials and selections are stored in Kucedr's local application-data directory.
@@ -70,6 +72,7 @@ manifest.
 | [Mistral AI](https://console.mistral.ai/api-keys)                                  | `mistral`           | Chat, speech to text, text to speech                             | Available                                                                |
 | [OpenAI](https://platform.openai.com/api-keys)                                     | `openai`            | Chat, speech to text, text to speech, realtime voice, embeddings | Available                                                                |
 | [Pika](https://pika.art)                                                           | `pika`              | Video                                                            | Partial: the adapter uses fal.run while the manifest supplies Pika's URL |
+| [Pinecone](https://app.pinecone.io)                                                | `pinecone`          | Vector database                                                  | Partial: credential storage; RAG mirroring uses the environment key       |
 | [Qwen and Wan](https://modelstudio.console.alibabacloud.com)                       | `qwen`              | Chat, speech to text, image, video                               | Available                                                                |
 | [Reka AI](https://platform.reka.ai/apikeys)                                        | `reka`              | Chat                                                             | Available                                                                |
 | [Tavily](https://app.tavily.com/home)                                              | `tavily`            | Web search                                                       | Available                                                                |
@@ -178,16 +181,21 @@ The `bge` adapter targets a self-hosted OpenAI-compatible embeddings endpoint. I
 not ship a `bge` manifest, it does not appear in the normal model picker unless a compatible custom
 manifest supplies the provider and model entry.
 
-### Search and internal vector storage
+### Search and vector storage
 
 | Area            | Provider | Service                                 |
 | --------------- | -------- | --------------------------------------- |
 | Web search      | Brave    | Brave Web Search (`brave-web-search`)   |
 | Web search      | Tavily   | Tavily Web Search (`tavily-web-search`) |
+| Vector database | Pinecone | Pinecone Vector Database (`pinecone`)  |
 
-Pinecone is an internal RAG dependency rather than a catalog provider. The main process reads
-`PINECONE_API_KEY` from the environment, and Settings does not expose its credential or a database
-selection.
+Save and edit Pinecone API keys under **Settings → Providers → Vector DB**. These credentials use
+the provider vault's `databases` collection, separate from model and search credentials. Create a
+key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
+
+Credential storage does not change RAG execution: local retrieval uses SQLite, and optional
+Pinecone mirroring still reads `PINECONE_API_KEY` from the environment. Settings does not expose a
+database selection for RAG.
 
 ## Custom and plugin providers
 
