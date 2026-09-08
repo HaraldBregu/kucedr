@@ -152,7 +152,7 @@ const HealthPage: React.FC = () => {
 								<Item
 									variant="outline"
 									size="md"
-									className="border-b border-border/60 last:border-b-0"
+									className="border-b border-border/60 last:border-b-0 px-5 py-4"
 								>
 									<ItemContent className="min-w-0 flex-1">
 										<ItemTitle className="max-w-full truncate">
@@ -184,7 +184,7 @@ const HealthPage: React.FC = () => {
 								<Item
 									variant="outline"
 									size="md"
-									className="border-b border-border/60 last:border-b-0"
+									className="border-b border-border/60 last:border-b-0 px-5 py-4"
 								>
 									<ItemContent className="min-w-0 flex-1">
 										<ItemTitle className="max-w-full truncate">
@@ -218,7 +218,7 @@ const HealthPage: React.FC = () => {
 								<Item
 									variant="outline"
 									size="md"
-									className="border-b border-border/60 last:border-b-0"
+									className="border-b border-border/60 last:border-b-0 px-5 py-4"
 								>
 									<ItemContent className="min-w-0 flex-1">
 										<ItemTitle className="max-w-full truncate">
@@ -253,7 +253,7 @@ const HealthPage: React.FC = () => {
 								<Item
 									variant="outline"
 									size="md"
-									className="border-b border-border/60 last:border-b-0"
+									className="border-b border-border/60 last:border-b-0 px-5 py-4"
 								>
 									<ItemContent className="min-w-0 flex-1">
 										<ItemTitle className="max-w-full truncate">
@@ -315,7 +315,7 @@ const HealthPage: React.FC = () => {
 								<Item
 									variant="outline"
 									size="md"
-									className="border-b border-border/60 last:border-b-0"
+									className="border-b border-border/60 last:border-b-0 px-5 py-4"
 								>
 									<ItemContent className="min-w-0 flex-1">
 										<ItemTitle className="max-w-full truncate">

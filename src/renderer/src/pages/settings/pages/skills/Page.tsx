@@ -156,7 +156,7 @@ const SkillsPage: React.FC = () => {
 								tabIndex={0}
 								variant="outline"
 								size="md"
-								className="cursor-pointer border-b border-border/60 hover:bg-muted/40 last:border-b-0"
+								className="cursor-pointer border-b border-border/60 hover:bg-muted/40 last:border-b-0 px-5 py-4"
 								onClick={() => navigate(`/settings/agent/skills/skilldetails/${encodeURIComponent(skill.id)}`)}
 								onKeyDown={(event) => {
 									if (event.key === 'Enter' || event.key === ' ') {

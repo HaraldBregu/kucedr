@@ -121,7 +121,7 @@ const EmbeddingPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.modelServices.configuration')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<ModelProviderSelect
 							idPrefix="embedding"
 							providerGroups={embeddingProviderGroups()}
@@ -145,7 +145,7 @@ const EmbeddingPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.embedding.input')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<SettingsField
 							id="embedding-input"
 							label={t('settings.embedding.input')}

@@ -197,7 +197,7 @@ const PermissionsPage: React.FC = () => {
 								}
 							/>
 						))}
-						<div className="space-y-2 border-t border-border/60 p-3">
+						<div className="space-y-2 border-t border-border/60 p-4">
 							<div className="flex flex-col gap-2 sm:flex-row">
 								<Input aria-label={t('settings.permissions.pathLabel')} value={newPath} onChange={(event) => setNewPath(event.target.value)} placeholder={t('settings.permissions.pathPlaceholder')} disabled={saving} />
 								<Button type="button" variant="outline" size="icon" aria-label={t('settings.permissions.browse')} onClick={() => void window.agent.policyPickDirectory().then((value) => value && setNewPath(value)).catch((cause: unknown) => setError(cause instanceof Error ? cause.message : String(cause)))} disabled={saving}>

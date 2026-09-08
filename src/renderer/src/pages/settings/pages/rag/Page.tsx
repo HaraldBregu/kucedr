@@ -353,7 +353,7 @@ const RagPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.rag.configurationTitle')}>
 				<SettingsPanel>
-					<div className="grid gap-4 px-3 py-3">
+					<div className="grid gap-4 px-4 py-4">
 						<SettingsField
 							id="rag-vector-database"
 							label={t('settings.rag.databaseTitle')}
@@ -600,7 +600,7 @@ const RagPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.rag.searchTitle')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<Input
 							value={query}
 							placeholder={t('settings.rag.searchPlaceholder')}

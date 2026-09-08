@@ -106,7 +106,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 
 			<SettingsSection title={t('settings.system.mediaPermissions.title')}>
 				<SettingsPanel>
-					<div className="flex flex-wrap items-center gap-2 p-3">
+					<div className="flex flex-wrap items-center gap-2 p-4">
 						{media.permission ? (
 							<>
 								<span
@@ -147,7 +147,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 				description={t('settings.system.media.test.description')}
 			>
 				<SettingsPanel>
-					<div className="flex flex-col gap-3 p-3">
+					<div className="flex flex-col gap-3 p-4">
 						{recorderError && (
 							<SettingsNotice variant="destructive">{recorderError}</SettingsNotice>
 						)}

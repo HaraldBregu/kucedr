@@ -146,29 +146,29 @@ const TaskDetailsPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.cron.detailsTitle')}>
 				<Card size="sm" className="gap-0! p-0!">
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent><ItemTitle>{t('settings.cron.detail.id')}</ItemTitle></ItemContent>
 						<ItemActions className="ml-auto justify-end"><code className="max-w-[55vw] truncate text-[11px]">{task.id}</code></ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent><ItemTitle>{t('settings.cron.detail.schedule')}</ItemTitle></ItemContent>
 						<ItemActions className="ml-auto justify-end"><code className="max-w-[55vw] truncate text-[11px]">{task.cronExpression ?? t('settings.cron.detail.notScheduled')}</code></ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent><ItemTitle>{t('settings.cron.detail.actionType')}</ItemTitle></ItemContent>
 						<ItemActions className="ml-auto justify-end"><span className="text-xs">{actionType}</span></ItemActions>
 					</Item>
 					{task.action.type === 'agent' && <>
-						<Item variant="outline" size="md" className="border-b border-border/60">
+						<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 							<ItemContent><ItemTitle>{t('settings.cron.detail.effort')}</ItemTitle></ItemContent>
 							<ItemActions className="ml-auto justify-end"><span className="text-xs">{task.action.effort}</span></ItemActions>
 						</Item>
 					</>}
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent><ItemTitle>{t('settings.cron.detail.createdAt')}</ItemTitle></ItemContent>
 						<ItemActions className="ml-auto justify-end"><time className="text-xs" dateTime={task.createdAt}>{new Date(task.createdAt).toLocaleString()}</time></ItemActions>
 					</Item>
-					<Item variant="outline" size="md">
+					<Item variant="outline" size="md" className="px-5 py-4">
 						<ItemContent><ItemTitle>{t('settings.cron.detail.updatedAt')}</ItemTitle></ItemContent>
 						<ItemActions className="ml-auto justify-end"><time className="text-xs" dateTime={task.updatedAt}>{new Date(task.updatedAt).toLocaleString()}</time></ItemActions>
 					</Item>
@@ -180,7 +180,7 @@ const TaskDetailsPage: React.FC = () => {
 					title={t('settings.cron.detail.promptInput')}
 					description={t('settings.cron.detail.promptInputDescription')}
 				>
-					<Card size="sm" className="p-3!">
+					<Card size="sm" className="p-4!">
 						<pre className="whitespace-pre-wrap break-words font-sans text-xs leading-5 text-foreground">
 							{task.action.prompt}
 						</pre>
@@ -193,7 +193,7 @@ const TaskDetailsPage: React.FC = () => {
 					title={t('settings.cron.detail.capabilities')}
 					description={t('settings.cron.detail.capabilitiesDescription')}
 				>
-					<Card size="sm" className="grid gap-3 p-3!">
+					<Card size="sm" className="grid gap-3 p-4!">
 						<SettingsRow
 							title={t('settings.cron.detail.enabled')}
 							description={t('settings.cron.detail.enabledDescription')}

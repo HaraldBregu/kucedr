@@ -23,7 +23,7 @@ function MediaRow({
 			onClick={() => navigate(detailPath)}
 			variant="outline"
 			size="md"
-			className="min-h-11 border-b border-border/60 text-left last:border-b-0 hover:bg-muted/40"
+			className="min-h-11 border-b border-border/60 text-left last:border-b-0 hover:bg-muted/40 px-5 py-4"
 		>
 			<ItemIcon icon={icon} className="[&_svg]:size-4" />
 			<ItemContent className="min-w-0 flex-1">

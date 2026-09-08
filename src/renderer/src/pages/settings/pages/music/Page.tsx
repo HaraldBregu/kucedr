@@ -135,7 +135,7 @@ const MusicPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.modelServices.configuration')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<ModelProviderSelect
 							idPrefix="music"
 							providerGroups={musicProviderGroups()}
@@ -159,7 +159,7 @@ const MusicPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.music.prompt')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<SettingsField
 							id="music-prompt"
 							label={t('settings.music.prompt')}
@@ -196,14 +196,14 @@ const MusicPage: React.FC = () => {
 			<SettingsSection title={t('settings.music.libraryTitle')}>
 				<SettingsPanel>
 					{sounds.length === 0 ? (
-						<p className="px-3 py-3 text-[11px] leading-4 text-muted-foreground">
+						<p className="px-4 py-4 text-[11px] leading-4 text-muted-foreground">
 							{t('settings.music.libraryEmpty')}
 						</p>
 					) : (
 						sounds.map((sound) => (
 							<div
 								key={sound.path}
-								className="grid gap-2 border-b border-border/30 px-3 py-3 last:border-b-0"
+								className="grid gap-2 border-b border-border/30 px-4 py-4 last:border-b-0"
 								onContextMenu={() => void window.app.showAudioContextMenu(sound.path)}
 							>
 								<div className="flex items-center gap-2 text-xs">

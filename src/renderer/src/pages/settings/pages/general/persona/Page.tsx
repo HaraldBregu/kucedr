@@ -27,7 +27,7 @@ const PersonaPage: React.FC = () => {
 				description={t('settings.persona.previewDescription')}
 			>
 				<SettingsPanel className="overflow-hidden">
-					<div className="flex min-h-96 flex-col items-center justify-center gap-4 bg-neutral-950 p-6">
+					<div className="flex min-h-96 flex-col items-center justify-center gap-4 bg-neutral-950 p-7">
 						<Persona state={state} level={state === 'speaking' ? 0.72 : 0.28} />
 						<div className="flex flex-wrap items-center justify-center gap-1.5">
 							{PERSONA_STATES.map((personaState) => (

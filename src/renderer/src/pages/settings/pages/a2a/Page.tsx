@@ -80,7 +80,7 @@ export default function A2aPage(): React.JSX.Element {
 			{adding && (
 				<SettingsSection title="Remote agent">
 					<SettingsPanel>
-						<div className="grid gap-3 p-3">
+						<div className="grid gap-3 p-4">
 							<div className="grid gap-1">
 								<Label htmlFor="a2a-name">Name</Label>
 								<Input
@@ -196,7 +196,7 @@ export default function A2aPage(): React.JSX.Element {
 				) : (
 					<div className="divide-y divide-border">
 						{agents.map((agent) => (
-							<div key={agent.id} className="flex items-center justify-between gap-3 p-3">
+							<div key={agent.id} className="flex items-center justify-between gap-3 p-4">
 								<div>
 									<div className="text-sm font-medium">{agent.name}</div>
 									<div className="text-xs text-muted-foreground">{agent.url}</div>

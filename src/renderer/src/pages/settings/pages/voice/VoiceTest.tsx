@@ -13,7 +13,7 @@ const VoiceTest: React.FC = () => {
 
 	return (
 		<SettingsPanel>
-			<div className="grid gap-3 px-3 py-3">
+			<div className="grid gap-3 px-4 py-4">
 				{errorMessage && (
 					<SettingsNotice variant="destructive" icon={AlertTriangle}>
 						{errorMessage}

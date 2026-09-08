@@ -119,7 +119,7 @@ const ImagePage: React.FC = () => {
 
 			<SettingsSection title={t('settings.modelServices.configuration')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<ModelProviderSelect
 							idPrefix="image"
 							providerGroups={imageProviderGroups()}
@@ -143,7 +143,7 @@ const ImagePage: React.FC = () => {
 
 			<SettingsSection title={t('settings.image.prompt')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<SettingsField
 							id="image-prompt"
 							label={t('settings.image.prompt')}

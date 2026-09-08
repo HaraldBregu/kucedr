@@ -147,7 +147,7 @@ const TasksPage: React.FC = () => {
 								onClick={() => navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)}
 								variant="outline"
 								size="md"
-								className="cursor-pointer border-b border-border/60 text-left hover:bg-muted/50 last:border-b-0"
+								className="cursor-pointer border-b border-border/60 text-left hover:bg-muted/50 last:border-b-0 px-5 py-4"
 							>
 								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
 									<ItemTitle className="max-w-full truncate">{task.name}</ItemTitle>

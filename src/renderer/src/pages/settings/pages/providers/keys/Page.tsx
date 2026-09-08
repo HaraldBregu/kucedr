@@ -147,8 +147,8 @@ const ProvidersPage: React.FC = () => {
 								<CardContent className="p-0">
 									<div
 										className={cn(
-											'grid min-h-12 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2.5 px-3 py-2.5',
-											editing && 'pb-2'
+											'grid min-h-12 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2.5 px-4 py-3.5',
+											editing && 'pb-3'
 										)}
 									>
 										<ProviderAvatar
@@ -213,7 +213,7 @@ const ProvidersPage: React.FC = () => {
 									</div>
 
 									{provider.supported && editing && entry ? (
-										<div className="flex items-center gap-2 px-3 pb-3">
+										<div className="flex items-center gap-2 px-4 pb-4">
 											<Input
 												aria-label={`${provider.name} API key`}
 												autoComplete="off"

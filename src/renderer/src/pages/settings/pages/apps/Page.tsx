@@ -164,7 +164,7 @@ const AppsPage: React.FC = () => {
 									type="button"
 									variant="outline"
 									size="md"
-									className="min-w-0 flex-1 cursor-pointer pr-2 text-left"
+									className="min-w-0 flex-1 cursor-pointer pl-5 pr-3 py-4 text-left"
 									onClick={() => navigate(appPath(app.id))}
 								>
 									<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">

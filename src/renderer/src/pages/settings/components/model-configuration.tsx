@@ -54,7 +54,7 @@ export function ModelProviderConfiguration({
 	const configurationBody = configState.loading ? (
 		<SettingsLoadingRows rows={2} />
 	) : (
-		<div className="grid min-w-0 gap-3 px-3 py-3">
+		<div className="grid min-w-0 gap-3 px-4 py-4">
 			{showInlineError && configState.error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{configState.error}
@@ -130,19 +130,19 @@ export function ModelProviderConfiguration({
 						/>
 					}
 				/>
-				<div className="px-3 pb-3 empty:hidden">{children}</div>
+				<div className="px-4 pb-4 empty:hidden">{children}</div>
 				{configState.providers.length === 0 && (
-					<p className="px-3 pb-2 text-[11px] leading-4 text-muted-foreground">
+					<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
 						{t('settings.providers.noProviders')}
 					</p>
 				)}
 				{configState.providers.length > 0 && configState.modelGroups.length === 0 && (
-					<p className="px-3 pb-2 text-[11px] leading-4 text-muted-foreground">
+					<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
 						{t('settings.modelServices.noModels')}
 					</p>
 				)}
 				{configState.saved && (
-					<p className="px-3 pb-2 text-[11px] leading-4 text-muted-foreground">
+					<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
 						{t('settings.modelServices.saved')}
 					</p>
 				)}
@@ -160,7 +160,7 @@ export function ModelProviderConfiguration({
 					: 'min-w-0 max-w-full overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10'
 			}
 		>
-			<CollapsibleTrigger className="group flex w-full items-center gap-3 px-3 py-2.5 text-left">
+			<CollapsibleTrigger className="group flex w-full items-center gap-3 px-4 py-3.5 text-left">
 				{showIcon &&
 					(provider ? (
 						<ProviderAvatar

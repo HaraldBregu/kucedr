@@ -32,7 +32,7 @@ import {
 import { SETTINGS_SCHEDULES } from '../schedules';
 import { DataControls } from '../../components/data';
 
-const WIKI_ITEM_CLASS = 'flex-nowrap border-b border-border/60 last:border-b-0';
+const WIKI_ITEM_CLASS = 'px-4 py-3 flex-nowrap border-b border-border/60 last:border-b-0';
 
 const WikiPage: React.FC = () => {
 	const { t } = useTranslation();
@@ -352,7 +352,7 @@ const WikiPage: React.FC = () => {
 
 					<SettingsSection title={t('settings.wiki.configurationTitle')}>
 						<SettingsPanel>
-							<div className="grid gap-4 p-3">
+							<div className="grid gap-4 p-4">
 								<ModelProviderSelect
 									idPrefix="wiki"
 									providerGroups={llmProviderGroups()}

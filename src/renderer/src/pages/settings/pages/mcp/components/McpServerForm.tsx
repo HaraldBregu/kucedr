@@ -276,7 +276,7 @@ export function McpServerForm({
 					</SelectContent>
 				</Select>
 			</Field>
-			<label className="flex items-center justify-between gap-3 rounded-md border border-border px-3 py-2">
+			<label className="flex items-center justify-between gap-3 rounded-md border border-border px-4 py-3">
 				<span>
 					<span className="block text-[13px] font-medium text-foreground">Defer tool loading</span>
 					<span className="block text-[11px] text-muted-foreground">

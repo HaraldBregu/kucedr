@@ -83,7 +83,7 @@ const GeneralPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.application.information')}>
 				<Card size="sm" className="gap-0! p-0!">
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent>
 							<ItemTitle>{t('settings.application.name')}</ItemTitle>
 						</ItemContent>
@@ -91,7 +91,7 @@ const GeneralPage: React.FC = () => {
 							<span className="text-[13px] text-foreground">{__APP_NAME__}</span>
 						</ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent>
 							<ItemTitle>{t('settings.application.version')}</ItemTitle>
 						</ItemContent>
@@ -104,7 +104,7 @@ const GeneralPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.application.actions')}>
 				<Card size="sm" className="gap-0! p-0!">
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<PanelTop className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
@@ -119,7 +119,7 @@ const GeneralPage: React.FC = () => {
 							/>
 						</ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<Coffee className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
@@ -134,7 +134,7 @@ const GeneralPage: React.FC = () => {
 							/>
 						</ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<FolderOpen className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
@@ -147,7 +147,7 @@ const GeneralPage: React.FC = () => {
 							</Button>
 						</ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<FolderOpen className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
@@ -170,7 +170,7 @@ const GeneralPage: React.FC = () => {
 						type="button"
 						variant="outline"
 						size="md"
-						className="cursor-pointer border-b border-border/60 hover:bg-muted/40"
+						className="cursor-pointer border-b border-border/60 hover:bg-muted/40 px-5 py-4"
 						onClick={() => navigate('/settings/general/persona')}
 					>
 						<ItemMedia variant="icon">
@@ -183,7 +183,7 @@ const GeneralPage: React.FC = () => {
 							<ChevronRight className="size-4 text-muted-foreground" strokeWidth={1.8} />
 						</ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<Languages className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
@@ -211,7 +211,7 @@ const GeneralPage: React.FC = () => {
 							</Select>
 						</ItemActions>
 					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<SunMoon className="size-3" strokeWidth={1.8} />
 						</ItemMedia>

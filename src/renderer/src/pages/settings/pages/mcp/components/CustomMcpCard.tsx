@@ -30,9 +30,9 @@ export function CustomMcpCard({
 	};
 
 	return (
-		<Card size="sm">
+		<Card size="sm" className="py-4!">
 			<Collapsible open={expanded} onOpenChange={setExpanded}>
-				<CardHeader className={cn('items-center', expanded && 'border-b')}>
+				<CardHeader className={cn('items-center px-4!', expanded && 'border-b pb-4!')}>
 					<div className="flex min-w-0 flex-1 items-center gap-2.5">
 						<div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted">
 							{icon ?? <PlugZap className="size-4 text-muted-foreground" />}
@@ -57,7 +57,7 @@ export function CustomMcpCard({
 					</CardAction>
 				</CardHeader>
 				<CollapsibleContent>
-					<CardContent className="pt-4">
+					<CardContent className="px-4! pt-5">
 						{editing ? (
 							<McpServerForm
 								initial={{ id, entry }}

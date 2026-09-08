@@ -118,7 +118,7 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 					>
 						<fieldset disabled={saving} className="grid min-w-0 gap-2">
 							<SettingsPanel>
-								<div className="grid grid-cols-1 gap-3 border-b border-border/60 p-3 sm:grid-cols-2">
+								<div className="grid grid-cols-1 gap-3 border-b border-border/60 p-4 sm:grid-cols-2">
 									{DIMENSIONS.map((key) => (
 										<SettingsField
 											key={key}

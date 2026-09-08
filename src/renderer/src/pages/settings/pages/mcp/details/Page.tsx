@@ -228,7 +228,7 @@ const McpDetailsPage: React.FC = () => {
 				}
 			>
 				<SettingsPanel>
-					<div className="p-3">
+					<div className="p-4">
 						<McpServerForm
 							initial={{ id: server.id, entry: server.data }}
 							onSubmit={save}

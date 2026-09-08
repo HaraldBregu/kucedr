@@ -256,7 +256,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 						onChange={(providerId) => updateDraft({ ...storage, providerId })}
 					/>
 					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
-						<CardHeader className="border-b border-border/60 py-3">
+						<CardHeader className="border-b border-border/60 px-4! py-4">
 							<CardTitle>
 								<h2 className="text-sm font-medium">{t('settings.storage.sync.title')}</h2>
 							</CardTitle>
@@ -317,7 +317,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 								/>
 							))}
 
-							<div className="border-b border-border/60 px-3 py-2">
+							<div className="border-b border-border/60 px-4 py-3">
 								<Button
 									variant="outline"
 									size="sm"
@@ -379,7 +379,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 							/>
 						</CardContent>
 
-						<CardFooter className="flex-wrap justify-end gap-2">
+						<CardFooter className="flex-wrap justify-end gap-2 p-4!">
 							<Button
 								variant="outline"
 								size="sm"

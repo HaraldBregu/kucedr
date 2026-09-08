@@ -122,7 +122,7 @@ const VideoPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.modelServices.configuration')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<ModelProviderSelect
 							idPrefix="video"
 							providerGroups={videoProviderGroups()}
@@ -146,7 +146,7 @@ const VideoPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.video.prompt')}>
 				<SettingsPanel>
-					<div className="grid gap-3 px-3 py-3">
+					<div className="grid gap-3 px-4 py-4">
 						<SettingsField
 							id="video-prompt"
 							label={t('settings.video.prompt')}

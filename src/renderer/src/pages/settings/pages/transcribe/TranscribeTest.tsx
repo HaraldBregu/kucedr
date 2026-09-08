@@ -25,7 +25,7 @@ function ExamplePanel({
 }: ExamplePanelProps): React.JSX.Element {
 	return (
 		<SettingsPanel>
-			<div className="grid gap-3 px-3 py-3">
+			<div className="grid gap-3 px-4 py-4">
 				<div>
 					<div className="text-[13px] font-medium leading-4 text-foreground">{title}</div>
 					<p className="mt-0.5 text-[11px] leading-4 text-muted-foreground">{hint}</p>

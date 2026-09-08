@@ -85,7 +85,7 @@ const ChannelDetailPage: React.FC = () => {
 
 			{credential ? (
 				<Card size="sm" className="gap-0! p-0!">
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<KeyRound className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
@@ -110,7 +110,7 @@ const ChannelDetailPage: React.FC = () => {
 						</ItemActions>
 					</Item>
 
-					<Item variant="outline" size="md" className="border-b border-border/60">
+					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemMedia variant="icon">
 							<ShieldCheck className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
@@ -140,7 +140,7 @@ const ChannelDetailPage: React.FC = () => {
 					<Item
 						variant="outline"
 						size="md"
-						className="flex-col items-stretch gap-3 border-b border-border/60"
+						className="flex-col items-stretch gap-3 border-b border-border/60 px-5 py-4"
 					>
 						<div className="flex w-full min-w-0 items-start gap-3">
 							<ItemMedia variant="icon">
@@ -168,7 +168,7 @@ const ChannelDetailPage: React.FC = () => {
 							onRemove={(value) => removeListValue('allowFrom', value)}
 						/>
 					</Item>
-					<Item variant="outline" size="md" className="flex-col items-stretch gap-3">
+					<Item variant="outline" size="md" className="flex-col items-stretch gap-3 px-5 py-4">
 						<div className="flex w-full min-w-0 items-start gap-3">
 							<ItemMedia variant="icon">
 								<Hash className="size-3" strokeWidth={1.8} />

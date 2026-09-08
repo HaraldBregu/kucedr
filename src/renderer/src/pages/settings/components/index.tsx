@@ -162,7 +162,7 @@ export function SettingsRow({
 	return (
 		<div
 			className={cn(
-				'grid min-h-11 items-center gap-2 border-b border-border/60 px-3 py-2 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-3',
+				'grid min-h-11 items-center gap-2 border-b border-border/60 px-4 py-3 last:border-b-0 sm:grid-cols-[minmax(0,1fr)_auto] sm:px-4',
 				className
 			)}
 		>
@@ -237,7 +237,7 @@ export function SettingsNotice({
 		<div
 			role={variant === 'destructive' ? 'alert' : undefined}
 			className={cn(
-				'flex items-start gap-2 rounded-lg border px-3 py-2 text-xs shadow-none',
+				'flex items-start gap-2 rounded-lg border px-4 py-3 text-xs shadow-none',
 				variant === 'destructive'
 					? 'border-destructive/30 bg-destructive/10 text-destructive'
 					: 'border-border/70 bg-muted/30 text-muted-foreground',
@@ -266,7 +266,7 @@ export function SettingsEmptyState({
 	className,
 }: SettingsEmptyStateProps): React.JSX.Element {
 	return (
-		<Empty className={cn('min-h-20 gap-2 border-0 p-3', className)}>
+		<Empty className={cn('min-h-20 gap-2 border-0 p-4', className)}>
 			<EmptyHeader className="gap-1">
 				{Icon && (
 					<EmptyMedia variant="icon" className="mb-1 size-7 rounded-md">
@@ -293,7 +293,7 @@ export function SettingsLoadingRows({
 	className,
 }: SettingsLoadingRowsProps): React.JSX.Element {
 	return (
-		<div className={cn('grid gap-2 p-3', className)}>
+		<div className={cn('grid gap-2 p-4', className)}>
 			{Array.from({ length: rows }).map((_, index) => (
 				<div key={index} className="flex min-h-9 items-center gap-2">
 					<Skeleton className="size-6 rounded-md" />
@@ -316,7 +316,7 @@ export function SettingsPageSkeleton(): React.JSX.Element {
 			</header>
 
 			{[0, 1, 2].map((card) => (
-				<Card key={card} size="sm" className="gap-0! p-3!">
+				<Card key={card} size="sm" className="gap-0! p-4!">
 					<Skeleton className="h-4 w-1/3 max-w-full" />
 					<Skeleton className="mt-3 h-14 w-full" />
 				</Card>

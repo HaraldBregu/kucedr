@@ -137,7 +137,7 @@ const McpPage = (): React.JSX.Element => {
 			{addingServer && (
 				<SettingsSection title="Add MCP server">
 					<SettingsPanel>
-						<div className="p-3">
+						<div className="p-4">
 							<McpServerForm
 								onSubmit={async (id, entry) => {
 									await save(id, entry);

@@ -213,7 +213,7 @@ const SkillDetailsPage: React.FC = () => {
 							value={compactList(inspection.resources, t('settings.skills.none'))}
 							mono
 						/>
-						<pre className="max-h-96 overflow-auto whitespace-pre-wrap border-t border-border/60 p-4 text-xs leading-5 text-foreground">
+						<pre className="max-h-96 overflow-auto whitespace-pre-wrap border-t border-border/60 p-5 text-xs leading-5 text-foreground">
 							{inspection.instructions}
 						</pre>
 					</SettingsPanel>
@@ -228,7 +228,7 @@ const SkillDetailsPage: React.FC = () => {
 								key={`${diagnostic.code}:${diagnostic.message}`}
 								variant="outline"
 								size="md"
-								className="border-b border-border/60 last:border-b-0"
+								className="border-b border-border/60 last:border-b-0 px-5 py-4"
 							>
 								<ItemContent className="min-w-0 flex-col items-start gap-1">
 									<ItemTitle className="max-w-full truncate">{diagnostic.code}</ItemTitle>
@@ -255,7 +255,7 @@ function SkillDetail({
 	readonly mono?: boolean;
 }): React.JSX.Element {
 	return (
-		<Item variant="outline" size="md" className="border-b border-border/60 last:border-b-0">
+		<Item variant="outline" size="md" className="border-b border-border/60 last:border-b-0 px-5 py-4">
 			<ItemContent className="min-w-0">
 				<ItemTitle>{label}</ItemTitle>
 			</ItemContent>
