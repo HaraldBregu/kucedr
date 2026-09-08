@@ -64,8 +64,8 @@ const Sandbox: React.FC = () => {
 	const Icon = ready ? ShieldCheck : ShieldAlert;
 
 	return (
-		<Card size="sm" aria-live="polite">
-			<CardHeader className="flex-row items-start justify-between gap-3">
+		<Card size="sm" className="py-4!" aria-live="polite">
+			<CardHeader className="flex-row items-start justify-between gap-3 px-4!">
 				<div className="space-y-1">
 					<CardTitle className="flex items-center gap-2">
 						<Icon className="size-4" />
@@ -75,7 +75,7 @@ const Sandbox: React.FC = () => {
 				</div>
 				<Badge variant={ready ? 'secondary' : 'outline'}>{label}</Badge>
 			</CardHeader>
-			<CardContent className="space-y-3">
+			<CardContent className="space-y-3 px-4!">
 				{status?.message && (
 					<p className="whitespace-pre-line text-xs text-muted-foreground">{status.message}</p>
 				)}
