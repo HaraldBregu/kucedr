@@ -8,6 +8,7 @@ import {
 	Code2,
 	Database,
 	Folder,
+	HardDrive,
 	HeartPulse,
 	ImageIcon,
 	Info,
@@ -372,6 +373,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.databases',
 		descriptionKey: 'settings.overview.descriptions.databases',
 		icon: Database,
+	},
+	{
+		path: '/settings/providers/storage',
+		labelKey: 'settings.tabs.storage',
+		descriptionKey: 'settings.storageProviders.description',
+		icon: HardDrive,
 	},
 	{
 		path: '/settings/agent/mcp',
