@@ -9,6 +9,7 @@ jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({ getRagC
 import { ragClient } from '../../../../src/main/agent/knowledge/rag/rag_client';
 
 beforeEach(() => {
+	jest.clearAllMocks();
 	getRagConfiguration.mockReturnValue({ databaseProviderId: 'pinecone', databaseId: 'pinecone' });
 	getProvider.mockReturnValue({ apiKey: ' user-database-key ' });
 });
