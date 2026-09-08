@@ -23,6 +23,14 @@ export class StorageProviderStore {
 		return this.read().map(storageProviderSummary);
 	}
 
+	resolve(id: unknown): StoredStorageProvider {
+		if (!id) throw new Error('Select a storage provider for cloud backup.');
+		const identifier = storageProviderIdentifier(id);
+		const provider = this.read().find((entry) => entry.id === identifier);
+		if (!provider) throw new Error('The selected storage provider was not found.');
+		return provider;
+	}
+
 	save(value: unknown): StorageProvider {
 		const input = normalizeStorageProvider(value);
 		this.assertAvailable();

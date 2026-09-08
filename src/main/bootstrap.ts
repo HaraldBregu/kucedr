@@ -11,10 +11,12 @@ import { Conversation } from './agent/conversation';
 import { ExecSandbox } from './agent/sandbox';
 import { createRealtimeVoiceManager } from './agent/realtime_voice';
 import { StorageOperations, pullFiles, pushFiles, withStorageLock } from './storage';
+import { transferStorage } from './storage/s3/transfer';
+import { storageProviders } from './storage/providers';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
 import { Coder, CoderProjectStore, CoderStore } from './coder';
-import { getProvider } from './settings_store';
+import { getProvider, getStorageSettings } from './settings_store';
 import { agentLocation } from './shared/agent_location';
 import { EnvironmentManager } from './terminal/environment';
 import { PtyManager } from './terminal/manager';
@@ -25,10 +27,8 @@ import { loadCloudConfig } from './cloud/config';
 import { AuthSessionStorage } from './cloud/session';
 import { SupabaseAccountProvider } from './cloud/supabase/auth';
 import { createSupabaseClient } from './cloud/supabase/client';
-import { SupabaseObjectStore } from './cloud/supabase/objects';
 import { SupabaseCloudRepository } from './cloud/supabase/records';
 import { SupabaseProviderCloud } from './cloud/supabase/providers';
-import { UnavailableObjectStore } from './storage/unavailable';
 import { ProviderSyncService } from './providers/sync';
 import { providerVault } from './providers/vault';
 
@@ -85,16 +85,13 @@ export function bootstrapServices(): BootstrapResult {
 			? new SupabaseAccountProvider(cloudClient, cloudConfig, authStorage)
 			: undefined;
 	const authService = new AuthService(accountProvider ?? null);
-	const objectStore = cloudClient
-		? new SupabaseObjectStore(cloudClient, () => authService.getSignedInUserId())
-		: new UnavailableObjectStore();
 	const storageOperations = new StorageOperations(
 		(status) => {
 			eventBus.broadcastToWindows(StorageChannels.operationStatusChanged, status);
 		},
 		{
-			backup: () => pushFiles(objectStore),
-			restore: () => pullFiles(objectStore),
+			backup: () => transferStorage(storageProviders.resolve(getStorageSettings().providerId), pushFiles),
+			restore: () => transferStorage(storageProviders.resolve(getStorageSettings().providerId), pullFiles),
 			lock: withStorageLock,
 			preventSuspension: preventStorageSuspension,
 		}

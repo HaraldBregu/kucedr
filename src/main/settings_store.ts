@@ -9,6 +9,7 @@ import type { StorageSyncSettings } from '../shared/storage_types';
 import { userDataLocation } from './shared/user_data_location';
 import { DEFAULT_SYNC_CRON_EXPRESSION } from './storage/storage_sync_types';
 import { normalizeStorageSettings } from './storage/storage_config';
+import { storageProviders } from './storage/providers';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
 import type { PersistedTaskState } from './tasks/tasks_types';
 import type { AppLanguage, AppLaunchState, AppTheme } from '../shared/app_types';
@@ -240,6 +241,7 @@ export function getStorageSettings(): StorageSyncSettings {
 
 export function saveStorageSettings(settings: StorageSyncSettings): StorageSyncSettings {
 	const saved = normalizeStorageSettings(settings);
+	if (saved.providerId || saved.syncEnabled) storageProviders.resolve(saved.providerId);
 	store.set('cloud', saved);
 	return saved;
 }

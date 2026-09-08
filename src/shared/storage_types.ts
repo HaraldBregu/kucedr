@@ -15,6 +15,7 @@ export type StorageProviderInput = Omit<StorageProvider, 'id' | 'hasSecretAccess
 };
 
 export interface StorageSyncSettings {
+	providerId?: string;
 	paths: string[];
 	syncEnabled: boolean;
 	syncCronExpression: string;

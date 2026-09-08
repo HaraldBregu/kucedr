@@ -36,7 +36,7 @@ import { registerIpcHandlers } from './ipc/core/register_ipc_handlers';
 import { setupEventLogging, setupProcessSafetyNet } from './shared/error_reporter';
 import { setupMemoryMonitor } from './shared/metrics';
 import { bootstrapServices, cleanup } from './bootstrap';
-import { bindStorageSyncToAccount } from './storage';
+import { startStorageSync, stopStorageSync } from './storage';
 import { startRagSchedule, stopRagSchedule } from './agent/knowledge/rag';
 import { CHANNEL_PROVIDER_IDS } from '../shared';
 import { AppChannels } from '../shared/ipc_channels_definitions';
@@ -88,11 +88,6 @@ setupAppLifecycle(appState, logger);
 setupEventLogging(logger);
 
 const shortcutManager = new ShortcutManager();
-const unbindStorageSync = bindStorageSyncToAccount(
-	services.authService,
-	logger,
-	services.storageOperations
-);
 
 app.on('browser-window-created', (_event, win) => {
 	shortcutManager.attach(win);
@@ -153,6 +148,7 @@ const menuManager = new Menu({
 
 app.whenReady().then(() => {
 	recordAppLaunch();
+	startStorageSync(logger, services.storageOperations);
 	services.cloudService.initialize();
 	services.providerSyncService.initialize();
 	const authInitialization = services.authService.initialize();
@@ -240,7 +236,7 @@ app.on('before-quit', (event) => {
 	if (shutdownPromise) return;
 	shutdownPromise = Promise.resolve().then(async () => {
 		destroyAllApps();
-		unbindStorageSync();
+		stopStorageSync();
 		stopRagSchedule();
 		stopWiki();
 		await cleanup(services);

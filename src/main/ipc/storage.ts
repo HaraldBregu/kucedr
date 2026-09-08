@@ -35,11 +35,24 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 		});
 		registerCommandWithEvent(StorageChannels.saveProvider, (event, input) => {
 			trusted.assert(event);
+			if (storageOperations.isRunning() && input?.id && input.id === getStorageSettings().providerId) {
+				throw new Error('The selected storage provider cannot change while a cloud operation is running.');
+			}
 			return storageProviders.save(input);
 		});
 		registerCommandWithEvent(StorageChannels.removeProvider, (event, id) => {
 			trusted.assert(event);
-			return storageProviders.remove(id);
+			const settings = getStorageSettings();
+			const selected = settings.providerId === id;
+			if (selected && storageOperations.isRunning()) {
+				throw new Error('The selected storage provider cannot be removed while a cloud operation is running.');
+			}
+			const removed = storageProviders.remove(id);
+			if (removed && selected) {
+				saveStorageSettings({ ...settings, providerId: undefined, syncEnabled: false });
+				rescheduleStorageSync();
+			}
+			return removed;
 		});
 		registerQueryWithEvent(StorageChannels.getSettings, (event) => {
 			trusted.assert(event);
