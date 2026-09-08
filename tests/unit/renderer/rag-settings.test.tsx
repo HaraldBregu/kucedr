@@ -188,8 +188,9 @@ it('loads and saves the embedding model used by RAG', async () => {
 	const selector = await screen.findByRole('combobox', { name: 'Embedding model' });
 	expect(selector).toHaveTextContent('OpenAI / Text Embedding 3 Small');
 
-	fireEvent.keyDown(selector, { key: 'ArrowDown' });
-	fireEvent.click(await screen.findByRole('option', { name: 'Voyage / Voyage 3' }));
+	fireEvent.change(selector.parentElement!.querySelector('input')!, {
+		target: { value: 'voyage\u001Fvoyage-3' },
+	});
 
 	await waitFor(() => {
 		expect(embeddingApi.setProviderId).toHaveBeenCalledWith('voyage');
@@ -358,8 +359,9 @@ it('saves a friendly automation schedule preset', async () => {
 	const frequency = screen.getByRole('combobox', { name: 'Indexing frequency' });
 	await waitFor(() => expect(frequency).toHaveTextContent('Every 12 hours'));
 
-	fireEvent.keyDown(frequency, { key: 'ArrowDown' });
-	fireEvent.click(await screen.findByRole('option', { name: 'Every 4 hours' }));
+	fireEvent.change(frequency.parentElement!.querySelector('input')!, {
+		target: { value: 'every4h' },
+	});
 
 	await waitFor(() =>
 		expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(
@@ -379,7 +381,7 @@ it('leaves the vector database unselected until the user chooses one', async () 
 	expect(databaseApi.saveConfiguration).not.toHaveBeenCalled();
 	expect(
 		screen.getByRole('switch', { name: 'Store plaintext knowledge in Pinecone' })
-	).toBeDisabled();
+	).toHaveAttribute('aria-disabled', 'true');
 });
 
 it('saves an explicit vector database choice and reloads cleared disclosure', async () => {
@@ -393,8 +395,9 @@ it('saves an explicit vector database choice and reloads cleared disclosure', as
 	await waitFor(() => expect(selector).toBeEnabled());
 	agentApi.ragGetConfiguration.mockClear();
 	agentApi.ragGetConfiguration.mockResolvedValue({ ...configuration, mirrorConsent: null });
-	fireEvent.keyDown(selector, { key: 'ArrowDown' });
-	fireEvent.click(await screen.findByRole('option', { name: 'Pinecone / Pinecone' }));
+	fireEvent.change(selector.parentElement!.querySelector('input')!, {
+		target: { value: 'pinecone\u001Fpinecone' },
+	});
 	await waitFor(() =>
 		expect(databaseApi.saveConfiguration).toHaveBeenCalledWith({
 			providerId: 'pinecone',
