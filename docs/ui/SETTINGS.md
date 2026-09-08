@@ -39,10 +39,10 @@ The visible sidebar is grouped as follows:
 | Group        | Destinations                                                                                      |
 | ------------ | ------------------------------------------------------------------------------------------------- |
 | General      | Account, General, System, Cloud                                                                   |
-| Assistant    | Agent, Coder |
+| Assistant    | Agent, Coder, A2A |
 | Providers    | Models, Search engines                                                                            |
 | Channels     | Channels                                                                                          |
-| Integrations | A2A agents, Apps                                                                            |
+| Integrations | Apps                                                                            |
 
 The `/settings` route redirects to `/settings/general`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open General directly.

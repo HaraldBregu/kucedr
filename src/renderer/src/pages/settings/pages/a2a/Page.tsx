@@ -57,7 +57,7 @@ export default function A2aPage(): React.JSX.Element {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title="A2A agents"
+				title="A2A"
 				description="Connect remote Agent2Agent-compatible agents and delegate work to them."
 				action={
 					<Button
