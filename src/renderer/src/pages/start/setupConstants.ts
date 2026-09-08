@@ -1,7 +1,5 @@
 import { getProviderApiConfigurationUrl } from '../../../../shared';
 import {
-	channelProviders,
-	channels,
 	providerIdsFor,
 	providerModels,
 	providers,
@@ -234,23 +232,6 @@ export function actionableSearchCatalog(): readonly ProviderCatalogItem[] {
 				.filter((entry) => entry.provider.id === provider.id)
 				.map((entry) => entry.name)
 				.join(' - ') || 'Web search',
-		supported: true,
-		apiConfigurationUrl: getProviderApiConfigurationUrl(provider),
-		iconDarkUrl: provider.iconDarkUrl,
-		iconLightUrl: provider.iconLightUrl,
-	}));
-}
-
-/** Providers with at least one channel service, shaped like the models catalog cards. */
-export function actionableChannelCatalog(): readonly ProviderCatalogItem[] {
-	return channelProviders().map((provider) => ({
-		id: provider.id,
-		name: provider.name,
-		capabilities:
-			channels()
-				.filter((entry) => entry.provider.id === provider.id)
-				.map((entry) => entry.name)
-				.join(' - ') || 'Channel',
 		supported: true,
 		apiConfigurationUrl: getProviderApiConfigurationUrl(provider),
 		iconDarkUrl: provider.iconDarkUrl,

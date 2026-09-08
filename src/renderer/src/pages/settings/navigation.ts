@@ -248,7 +248,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		path: '/settings/channels',
 		labelKey: 'settings.channels.token',
 		descriptionKey: 'settings.channels.tokenDescription',
-		keywords: 'bot secret key telegram discord',
+		keywords: 'bot secret key telegram',
 	},
 	{
 		path: '/settings/channels',

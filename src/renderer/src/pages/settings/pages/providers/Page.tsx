@@ -12,7 +12,6 @@ import type { SearchEngineId, SearchSettings } from '@shared/search_types';
 import type { McpData } from '@shared/mcp_types';
 import { mcps } from '@/lib/providers';
 import {
-	actionableChannelCatalog,
 	actionableProviderCatalog,
 	actionableSearchCatalog,
 	getErrorMessage,
@@ -30,8 +29,8 @@ import { CustomMcpCard } from '../mcp/components/CustomMcpCard';
 import { McpServerForm } from '../mcp/components/McpServerForm';
 import { useMcpServers } from '../mcp/hooks/useMcpServers';
 
-type ProviderKind = Exclude<StoredProviderKind, 'databases'> | 'search';
-export type ProviderSetupSection = 'models' | 'search' | 'mcp' | 'channels';
+type ProviderKind = Exclude<StoredProviderKind, 'databases' | 'channels'> | 'search';
+export type ProviderSetupSection = 'models' | 'search' | 'mcp';
 
 const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descriptionKey: string }> =
 	{
@@ -47,10 +46,6 @@ const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descript
 			titleKey: 'settings.tabs.mcp',
 			descriptionKey: 'settings.overview.descriptions.mcp',
 		},
-		channels: {
-			titleKey: 'settings.tabs.channels',
-			descriptionKey: 'settings.overview.descriptions.channels',
-		},
 	};
 
 /** Providers pinned on top of the start-flow models list. */
@@ -60,17 +55,15 @@ function allCatalogItems(): ProviderCatalogItem[] {
 	return [
 		...actionableProviderCatalog(),
 		...actionableSearchCatalog(),
-		...actionableChannelCatalog(),
 	];
 }
 
 interface ProvidersPageProps {
 	readonly embedded?: boolean;
 	readonly section?: ProviderSetupSection;
-	readonly onChannelSaved?: (providerId: string) => void;
 }
 
-const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section, onChannelSaved }) => {
+const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section }) => {
 	const { t } = useTranslation();
 	const [providerEntries, setProviderEntries] = useState<ProviderSetupEntry[]>(() =>
 		allCatalogItems().map((provider, index) => ({
@@ -90,11 +83,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	useEffect(() => {
 		let cancelled = false;
 
-		void Promise.all([window.provider.list('models'), window.provider.listChannels()])
-			.then(([storedProviders, storedChannels]) => {
+		void window.provider.list('models')
+			.then((storedProviders) => {
 				if (cancelled) return;
 				const savedStatus: Record<string, boolean> = Object.fromEntries(
-					[...storedProviders, ...storedChannels].map((provider) => [
+					storedProviders.map((provider) => [
 						provider.id,
 						provider.configured,
 					])
@@ -172,7 +165,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 
 	const saveProviderEntry = async (
 		providerId: string,
-		kind: Exclude<StoredProviderKind, 'databases'>
+		kind: Exclude<StoredProviderKind, 'databases' | 'channels'>
 	): Promise<void> => {
 		const entry = providerEntries.find((item) => item.providerId === providerId);
 		const apiKey = entry?.apiKey.trim() ?? '';
@@ -181,10 +174,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setSavingProviderId(providerId);
 		setError(null);
 		try {
-			if (kind === 'channels') {
-				await window.provider.setChannel({ id: providerId, apiKey });
-				onChannelSaved?.(providerId);
-			} else await window.provider.set({ id: providerId, apiKey, kind });
+			await window.provider.set({ id: providerId, apiKey, kind });
 			updateProviderEntry(providerId, { apiKey: '', apiKeySaved: true, editing: false });
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save provider API key.'));
@@ -356,7 +346,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	);
 	const otherProviders = modelCatalog.filter((provider) => !featuredIds.has(provider.id));
 	const searchCatalog = actionableSearchCatalog();
-	const channelCatalog = actionableChannelCatalog();
 	const mcpCatalog = mcps();
 	const catalogMcpIds = new Set(mcpCatalog.map((service) => service.id));
 	const customMcpServers = Object.entries(mcpServers).filter(([id]) => !catalogMcpIds.has(id)) as [
@@ -420,13 +409,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					</SettingsSection>
 				)}
 
-			{(section === undefined || section === 'channels') && (!embedded || channelCatalog.length > 0) && (
-				<SettingsSection title={t('settings.tabs.channels')}>
-					<div className="space-y-3 pb-4">
-						{channelCatalog.map((provider) => renderProviderCard(provider, 'channels'))}
-					</div>
-				</SettingsSection>
-			)}
 
 			{(section === undefined || section === 'mcp') && mcpCatalog.length > 0 && (
 				<SettingsSection title="Default MCP">
