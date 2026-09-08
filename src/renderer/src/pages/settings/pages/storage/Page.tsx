@@ -35,9 +35,9 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { useAuth } from '@/contexts/AuthContext';
 import type {
 	StorageOperationStatus,
+	StorageProvider,
 	StorageSyncFolder,
 	StorageSyncSettings,
 } from '@shared/storage_types';
@@ -49,6 +49,7 @@ import {
 	SettingsRow,
 } from '../../components';
 import { SYNC_INTERVALS } from './constants';
+import Provider from './Provider';
 
 interface StoragePageProps {
 	readonly inline?: boolean;
@@ -56,8 +57,8 @@ interface StoragePageProps {
 
 const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const { t } = useTranslation();
-	const { state: authState, localOnly, requireSignIn } = useAuth();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
+	const [providers, setProviders] = useState<StorageProvider[]>([]);
 	const [settingsLoading, setSettingsLoading] = useState(true);
 	const [availableFolders, setAvailableFolders] = useState<StorageSyncFolder[]>([]);
 	const [draft, setDraft] = useState<StorageSyncSettings | null>(null);
@@ -84,16 +85,18 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 			window.storage.getSettings(),
 			window.storage.syncFolders(),
 			window.storage.getOperationStatus(),
-		]).then(([settingsResult, foldersResult, statusResult]) => {
+			window.storage.listProviders(),
+		]).then(([settingsResult, foldersResult, statusResult, providersResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
 			if (foldersResult.status === 'fulfilled') setAvailableFolders(foldersResult.value);
+			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
 			if (statusResult.status === 'fulfilled' && statusResult.value) {
 				applyOperationStatus(statusResult.value);
 			}
 
-			const failed = [settingsResult, foldersResult, statusResult].some(
+			const failed = [settingsResult, foldersResult, statusResult, providersResult].some(
 				(result) => result.status === 'rejected'
 			);
 			setLoadFailed(failed);
@@ -108,7 +111,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	}, [applyOperationStatus, loadVersion, t]);
 
 	const storage = draft ?? settings;
-	const cloudEnabled = authState.status === 'signedIn' && !localOnly;
+	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
 	const runningOperation = operationStatus?.state === 'running' ? operationStatus : undefined;
 	const builtInPaths = new Set(availableFolders.map((folder) => folder.path));
 	const customPaths = storage?.paths.filter((entry) => !builtInPaths.has(entry)) ?? [];
@@ -116,19 +119,8 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		? 'off'
 		: (SYNC_INTERVALS.find((interval) => interval.cron === storage.syncCronExpression)?.key ??
 			'custom');
-	const busy = operationStatusLoading || savingSync || Boolean(runningOperation);
-	const controlsDisabled = busy || !cloudEnabled;
-	const cloudAccessMessage =
-		authState.status === 'loading'
-			? t('settings.storage.access.loading')
-			: authState.status === 'unconfigured'
-				? t('settings.storage.access.unavailable')
-				: authState.status === 'recovery'
-					? t('settings.storage.access.recovery')
-					: authState.status === 'confirmationRequired'
-						? t('settings.storage.access.confirmationRequired')
-						: t('settings.storage.access.signedOut');
-	const canRequestSignIn = authState.status === 'signedOut';
+	const busy = settingsLoading || operationStatusLoading || savingSync || Boolean(runningOperation);
+	const controlsDisabled = busy || !selectedProvider;
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
 			? `settings.storage.operation.${operationStatus.operation}.scheduledRunning`
@@ -238,19 +230,6 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 				/>
 			)}
 
-			{!cloudEnabled && (
-				<div className="flex flex-wrap items-center gap-2">
-					<SettingsNotice className="min-w-0 flex-1" icon={AlertTriangle}>
-						{cloudAccessMessage}
-					</SettingsNotice>
-					{canRequestSignIn && (
-						<Button type="button" size="sm" onClick={requireSignIn}>
-							{t('common.signIn')}
-						</Button>
-					)}
-				</div>
-			)}
-
 			{error && (
 				<div className="flex flex-wrap items-center gap-2">
 					<SettingsNotice className="min-w-0 flex-1" variant="destructive" icon={AlertTriangle}>
@@ -270,6 +249,12 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 				</div>
 			) : storage ? (
 				<>
+					<Provider
+						providers={providers}
+						providerId={storage.providerId}
+						disabled={busy}
+						onChange={(providerId) => updateDraft({ ...storage, providerId })}
+					/>
 					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 						<CardHeader className="border-b border-border/60 py-3">
 							<CardTitle>
@@ -475,7 +460,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 								<Button variant="outline" onClick={() => setRestoreOpen(false)}>
 									{t('settings.storage.cancel')}
 								</Button>
-								<Button onClick={() => void runRestore()}>
+								<Button disabled={controlsDisabled || storage.paths.length === 0} onClick={() => void runRestore()}>
 									<Download className="size-3" />
 									{t('settings.storage.restoreDialog.confirm')}
 								</Button>
