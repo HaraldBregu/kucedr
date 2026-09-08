@@ -36,12 +36,8 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: SETTINGS_NAVIGATION.slice(5, 8),
 	},
 	{
-		id: 'channels',
-		items: SETTINGS_NAVIGATION.slice(14, 15),
-	},
-	{
 		id: 'integrations',
-		items: SETTINGS_NAVIGATION.slice(16),
+		items: [...SETTINGS_NAVIGATION.slice(14, 15), ...SETTINGS_NAVIGATION.slice(16)],
 	},
 ] as const;
 
@@ -87,7 +83,7 @@ export function SettingsSidebar(): React.JSX.Element {
 							key={group.id}
 							className={cn(
 								'px-2 py-1 first:pt-0',
-								group.id === 'channels' && 'mt-3 border-t border-sidebar-border/50 pt-3'
+								group.id === 'integrations' && 'mt-3 border-t border-sidebar-border/50 pt-3'
 							)}
 						>
 							{'titleKey' in group ? (

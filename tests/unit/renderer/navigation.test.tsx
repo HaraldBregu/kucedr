@@ -156,5 +156,14 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(navigation).queryByRole('link', { name: 'settings.wiki.title' })
 	).not.toBeInTheDocument();
+	expect(
+		within(navigation)
+			.getByRole('link', { name: 'settings.tabs.channels' })
+			.closest('[data-slot="split-pane-group"]')
+	).toBe(
+		within(navigation)
+			.getByRole('link', { name: 'settings.tabs.apps' })
+			.closest('[data-slot="split-pane-group"]')
+	);
 	expect(currentSection).toHaveAttribute('data-active');
 });
