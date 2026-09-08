@@ -52,15 +52,17 @@ it('adds multiple independent S3 connections and retains existing entries', asyn
 	await screen.findByText('No storage connections');
 	for (const name of ['Production', 'Archive']) {
 		await user.click(screen.getByRole('button', { name: 'Add storage' }));
-		const dialog = within(screen.getByRole('dialog'));
-		expect(dialog.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
-		await user.type(dialog.getByLabelText('Name'), name);
-		await user.type(dialog.getByLabelText('Bucket'), name.toLowerCase() + '-files');
-		await user.type(dialog.getByLabelText('Access key ID'), 'test-access');
-		await user.type(dialog.getByLabelText('Secret access key'), 'test-secret');
+		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+		expect(screen.getByRole('form').closest('[data-slot=\"card\"]')).toBeInTheDocument();
+		const form = within(screen.getByRole('form'));
+		expect(form.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
+		await user.type(form.getByLabelText('Name'), name);
+		await user.type(form.getByLabelText('Bucket'), name.toLowerCase() + '-files');
+		await user.type(form.getByLabelText('Access key ID'), 'test-access');
+		await user.type(form.getByLabelText('Secret access key'), 'test-secret');
 		api.saveProvider.mockResolvedValueOnce(name === 'Production' ? first : second);
-		await user.click(dialog.getByRole('button', { name: 'Save', exact: true }));
-		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+		await user.click(form.getByRole('button', { name: 'Save', exact: true }));
+		await waitFor(() => expect(screen.queryByRole('form')).not.toBeInTheDocument());
 	}
 	expect(screen.getByText('Production')).toBeInTheDocument();
 	expect(screen.getByText('Archive')).toBeInTheDocument();
@@ -83,14 +85,14 @@ it('edits one connection without requiring or displaying its saved secret', asyn
 	api.listProviders.mockResolvedValue([first, second]);
 	render(<StorageProvidersPage />);
 	await user.click(await screen.findByRole('button', { name: 'Edit Production' }));
-	const dialog = within(screen.getByRole('dialog'));
-	expect(dialog.getByLabelText('Secret access key')).toHaveValue('');
-	expect(dialog.getByLabelText('Secret access key')).not.toBeRequired();
-	await user.clear(dialog.getByLabelText('Name'));
-	await user.type(dialog.getByLabelText('Name'), 'Updated production');
-	await user.type(dialog.getByLabelText('Endpoint URL'), 'http://localhost:9000');
-	await user.click(dialog.getByRole('switch', { name: 'Use path-style addressing' }));
-	await user.click(dialog.getByRole('button', { name: 'Save', exact: true }));
+	const form = within(screen.getByRole('form'));
+	expect(form.getByLabelText('Secret access key')).toHaveValue('');
+	expect(form.getByLabelText('Secret access key')).not.toBeRequired();
+	await user.clear(form.getByLabelText('Name'));
+	await user.type(form.getByLabelText('Name'), 'Updated production');
+	await user.type(form.getByLabelText('Endpoint URL'), 'http://localhost:9000');
+	await user.click(form.getByRole('switch', { name: 'Use path-style addressing' }));
+	await user.click(form.getByRole('button', { name: 'Save', exact: true }));
 	await screen.findByText('Updated production');
 	expect(screen.getByText('Archive')).toBeInTheDocument();
 	expect(api.saveProvider).toHaveBeenCalledWith(
@@ -128,7 +130,7 @@ it('keeps the draft when saving fails and allows cancelling without saving', asy
 	expect(await screen.findByRole('alert')).toHaveTextContent('Secure storage unavailable.');
 	expect(screen.getByLabelText('Name')).toHaveValue('Production');
 	await user.click(screen.getByRole('button', { name: 'Cancel', exact: true }));
-	await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+	await waitFor(() => expect(screen.queryByRole('form')).not.toBeInTheDocument());
 	expect(api.saveProvider).toHaveBeenCalledTimes(1);
 });
 

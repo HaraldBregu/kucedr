@@ -4,13 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import type { StorageProvider, StorageProviderInput } from '@shared/storage_types';
 import { getErrorMessage } from '../../../../start/setupConstants';
 import { SettingsField, SettingsNotice } from '../../../components';
@@ -54,14 +48,16 @@ export default function StorageForm({
 
 	return (
 		<Card size="sm" className="gap-0! py-0!">
-				<CardHeader className="border-b border-border/60 py-3">
-					<CardTitle>
-						<h2 className="text-sm font-medium" id="storage-form-title">
+			<CardHeader className="border-b border-border/60 py-3">
+				<CardTitle>
+					<h2 className="text-sm font-medium" id="storage-form-title">
 						{t(provider ? 'settings.storageProviders.editTitle' : 'settings.storageProviders.add')}
-						</h2>
-					</CardTitle>
-					<CardDescription className="text-xs">{t('settings.storageProviders.formDescription')}</CardDescription>
-				</CardHeader>
+					</h2>
+				</CardTitle>
+				<CardDescription className="text-xs">
+					{t('settings.storageProviders.formDescription')}
+				</CardDescription>
+			</CardHeader>
 			<CardContent className="py-3!">
 				<form
 					className="grid gap-4"

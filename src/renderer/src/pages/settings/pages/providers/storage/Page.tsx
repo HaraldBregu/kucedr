@@ -65,11 +65,27 @@ export default function StorageProvidersPage(): React.JSX.Element {
 					{error}
 				</SettingsNotice>
 			)}
+			{editing !== null && (
+				<StorageForm
+					provider={editing === 'new' ? undefined : editing}
+					onCancel={() => setEditing(null)}
+					onSaved={(saved) => {
+						setProviders((current) =>
+							current.some((entry) => entry.id === saved.id)
+								? current.map((entry) => (entry.id === saved.id ? saved : entry))
+								: [...current, saved]
+						);
+						setError('');
+						setEditing(null);
+					}}
+				/>
+			)}
 			<SettingsPanel>
 				{loading ? (
 					<SettingsLoadingRows />
 				) : providers.length === 0 ? (
-					!error && (
+					!error &&
+					editing === null && (
 						<SettingsEmptyState
 							icon={HardDrive}
 							title={t('settings.storageProviders.emptyTitle')}
@@ -134,21 +150,6 @@ export default function StorageProvidersPage(): React.JSX.Element {
 					))
 				)}
 			</SettingsPanel>
-			{editing !== null && (
-				<StorageForm
-					provider={editing === 'new' ? undefined : editing}
-					onCancel={() => setEditing(null)}
-					onSaved={(saved) => {
-						setProviders((current) =>
-							current.some((entry) => entry.id === saved.id)
-								? current.map((entry) => (entry.id === saved.id ? saved : entry))
-								: [...current, saved]
-						);
-						setError('');
-						setEditing(null);
-					}}
-				/>
-			)}
 		</SettingsPageShell>
 	);
 }
