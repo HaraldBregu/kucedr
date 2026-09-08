@@ -182,7 +182,6 @@ it('manages RAG data from the RAG page', async () => {
 });
 
 it('loads and saves the embedding model used by RAG', async () => {
-	const user = userEvent.setup();
 	render(<RagPage />);
 
 	expect(await screen.findByRole('heading', { name: 'RAG' })).toBeInTheDocument();
