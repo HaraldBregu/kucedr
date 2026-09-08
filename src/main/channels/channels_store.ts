@@ -1,13 +1,13 @@
 import path from 'node:path';
 import Store from 'electron-store';
-import type { ChannelModelKind, ChannelModelSelection, StoredBotProvider } from '../../shared';
+import type { ChannelModelKind, ChannelModelSelection, StoredChannelProvider } from '../../shared';
 import { userDataLocation } from '../shared/user_data_location';
 import { getModelId, getProviderId } from '../models/selection';
 import { safeStorage } from 'electron';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
 
-type PersistedBotProvider = Omit<StoredBotProvider, 'apiKey'> & { readonly apiKey?: string };
+type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & { readonly apiKey?: string };
 
 type ChannelModelKeys = {
 	providerId: keyof ChannelsStoreState;
@@ -30,7 +30,7 @@ const CHANNEL_MODEL_KEYS: Record<ChannelModelKind, ChannelModelKeys> = {
 } as const;
 
 export interface ChannelsStoreState {
-	readonly providers: PersistedBotProvider[];
+	readonly providers: PersistedChannelProvider[];
 	readonly encryptedApiKeys: Record<string, string>;
 	readonly llmProviderId?: string;
 	readonly llmModelId?: string;
@@ -66,7 +66,7 @@ function trimValue(value: unknown): string | undefined {
 	return trimmed || undefined;
 }
 
-export function listChannelProviders(): StoredBotProvider[] {
+export function listChannelProviders(): StoredChannelProvider[] {
 	const encryptedApiKeys = { ...(store.get('encryptedApiKeys') ?? {}) };
 	let migrated = false;
 	const providers = store.get('providers').map((provider) => {
@@ -105,11 +105,11 @@ export function listChannelProviders(): StoredBotProvider[] {
 	return providers;
 }
 
-export function getChannelProvider(id: string): StoredBotProvider | undefined {
+export function getChannelProvider(id: string): StoredChannelProvider | undefined {
 	return listChannelProviders().find((provider) => provider.id === id);
 }
 
-export function setChannelProvider(provider: StoredBotProvider): StoredBotProvider {
+export function setChannelProvider(provider: StoredChannelProvider): StoredChannelProvider {
 	const providers = listChannelProviders();
 	const index = providers.findIndex((entry) => entry.id === provider.id);
 	if (index === -1) providers.push(provider);

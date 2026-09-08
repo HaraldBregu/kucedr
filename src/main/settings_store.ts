@@ -164,7 +164,7 @@ export function getLaunchState(): AppLaunchState {
 function readProviders(kind: StoredProviderKind): StoredProvider[] {
 	if (kind === 'models') return getModelProvidersState();
 	if (kind === 'databases') return getDatabaseProvidersState();
-	if (kind === 'bots') return [];
+	if (kind === 'channels') return [];
 	return [];
 }
 
@@ -174,14 +174,14 @@ export function listProviders(kind?: StoredProviderKind): StoredProvider[] {
 
 export function getProvider(
 	id: string,
-	kind: Exclude<StoredProviderKind, 'bots'> = 'models'
+	kind: Exclude<StoredProviderKind, 'channels'> = 'models'
 ): StoredProvider | undefined {
 	return readProviders(kind).find((provider) => provider.id === id);
 }
 
 export function hasProvider(
 	id: string,
-	kind: Exclude<StoredProviderKind, 'bots'> = 'models'
+	kind: Exclude<StoredProviderKind, 'channels'> = 'models'
 ): boolean {
 	return getProvider(id, kind) !== undefined;
 }
@@ -190,8 +190,8 @@ export function setProvider(
 	provider: StoredProvider,
 	kind: StoredProviderKind = 'models'
 ): StoredProvider {
-	if (kind === 'bots') {
-		throw new Error('Bot providers are stored in channels settings.');
+	if (kind === 'channels') {
+		throw new Error('Channel providers are stored in channels settings.');
 	}
 	const providers = readProviders(kind);
 	const index = providers.findIndex((entry) => entry.id === provider.id);
@@ -207,7 +207,7 @@ export function setProvider(
 
 export function deleteProvider(
 	id: string,
-	kind: Exclude<StoredProviderKind, 'bots'> = 'models'
+	kind: Exclude<StoredProviderKind, 'channels'> = 'models'
 ): void {
 	const remaining = readProviders(kind).filter((provider) => provider.id !== id);
 	if (kind === 'databases') setDatabaseProvidersState(remaining);

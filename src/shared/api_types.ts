@@ -7,7 +7,7 @@ import type {
 	ProviderVaultStatus,
 	PublicProvider,
 } from './provider_types';
-import type { BotCredentialSaveInput, BotCredentialSummary } from './channels_types';
+import type { ChannelCredentialSaveInput, ChannelCredentialSummary } from './channels_types';
 import type { SearchEngineId, SearchEngineInput, SearchSettings } from './search_types';
 import type {
 	StorageOperationStatus,
@@ -278,9 +278,9 @@ export interface ProviderApi {
 	list: (
 		kind?: Exclude<ProviderCredentialKind, 'search_engines'>
 	) => Promise<ProviderCredentialSummary[]>;
-	getBot: (id: string) => Promise<BotCredentialSummary | undefined>;
-	setBot: (input: BotCredentialSaveInput) => Promise<BotCredentialSummary>;
-	listBots: () => Promise<BotCredentialSummary[]>;
+	getChannel: (id: string) => Promise<ChannelCredentialSummary | undefined>;
+	setChannel: (input: ChannelCredentialSaveInput) => Promise<ChannelCredentialSummary>;
+	listChannels: () => Promise<ChannelCredentialSummary[]>;
 	vaultStatus: () => Promise<ProviderVaultStatus>;
 	setupVault: (passphrase: string) => Promise<ProviderVaultStatus>;
 	unlockVault: (passphrase: string) => Promise<ProviderVaultStatus>;

@@ -166,7 +166,7 @@ describe('provider credential IPC boundary', () => {
 			dmPolicy: 'allowlist',
 		});
 
-		const result = await handler(registerQueryWithEvent, ProviderChannels.getBot)({}, 'discord');
+		const result = await handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'discord');
 
 		expect(result).toEqual({
 			id: 'discord',

@@ -570,17 +570,17 @@ export interface ProviderInvokeChannelMap {
 		args: [kind?: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>];
 		result: import('./provider_types').ProviderCredentialSummary[];
 	};
-	[ProviderChannels.getBot]: {
+	[ProviderChannels.getChannel]: {
 		args: [id: string];
-		result: import('./channels_types').BotCredentialSummary | undefined;
+		result: import('./channels_types').ChannelCredentialSummary | undefined;
 	};
-	[ProviderChannels.setBot]: {
-		args: [input: import('./channels_types').BotCredentialSaveInput];
-		result: import('./channels_types').BotCredentialSummary;
+	[ProviderChannels.setChannel]: {
+		args: [input: import('./channels_types').ChannelCredentialSaveInput];
+		result: import('./channels_types').ChannelCredentialSummary;
 	};
-	[ProviderChannels.listBots]: {
+	[ProviderChannels.listChannels]: {
 		args: [];
-		result: import('./channels_types').BotCredentialSummary[];
+		result: import('./channels_types').ChannelCredentialSummary[];
 	};
 	[ProviderChannels.vaultStatus]: {
 		args: [];

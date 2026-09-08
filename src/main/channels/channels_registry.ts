@@ -1,4 +1,4 @@
-import type { ChannelStatusEvent, ChannelType, StoredBotProvider } from '../../shared';
+import type { ChannelStatusEvent, ChannelType, StoredChannelProvider } from '../../shared';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import type { EventBus } from '../event_bus';
 import type { LoggerService } from '../shared';
@@ -68,13 +68,13 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 	const adapters = new Map<ChannelType, ChannelAdapter>();
 	const statusCache = new Map<ChannelType, ChannelStatusEvent>();
 
-	function botCredential(channel: ChannelType): StoredBotProvider | undefined {
+	function channelCredential(channel: ChannelType): StoredChannelProvider | undefined {
 		return getChannelProvider(channel);
 	}
 
 	async function createAdapter(
 		channel: ChannelType,
-		credential: StoredBotProvider
+		credential: StoredChannelProvider
 	): Promise<ChannelAdapter> {
 		if (channel === 'telegram') {
 			const { createTelegramAdapter } = await import('./adapters/telegram');
@@ -98,7 +98,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 	}
 
 	async function handleMessage(message: ChannelInboundMessage): Promise<void> {
-		const decision = canReceive(message, botCredential(message.channel));
+		const decision = canReceive(message, channelCredential(message.channel));
 		if (!decision.allowed) {
 			logger.info('ChannelRegistry', 'Dropped channel message', {
 				channel: message.channel,
@@ -186,7 +186,7 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 	async function start(channel: ChannelType): Promise<void> {
 		if (adapters.has(channel)) return;
 
-		const credential = botCredential(channel);
+		const credential = channelCredential(channel);
 		if (!credential?.apiKey.trim()) {
 			logger.warn('ChannelRegistry', `${channel} channel is not configured`);
 			return;

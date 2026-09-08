@@ -7,7 +7,7 @@ import type {
 	ProviderCredentialSummary,
 	PublicProvider,
 } from '../shared/provider_types';
-import type { BotCredentialSaveInput } from '../shared/channels_types';
+import type { ChannelCredentialSaveInput } from '../shared/channels_types';
 
 type SavedCredentialKind = Exclude<ProviderCredentialKind, 'search_engines'>;
 
@@ -41,10 +41,10 @@ export const provider: ProviderApi = {
 			? typedInvokeUnwrap(ProviderStoreChannels.list, kind)
 			: typedInvokeUnwrap(ProviderStoreChannels.list);
 	},
-	getBot: (id: string) => typedInvokeUnwrap(ProviderStoreChannels.getBot, id),
-	setBot: (input: BotCredentialSaveInput) =>
-		typedInvokeUnwrap(ProviderStoreChannels.setBot, input),
-	listBots: () => typedInvokeUnwrap(ProviderStoreChannels.listBots),
+	getChannel: (id: string) => typedInvokeUnwrap(ProviderStoreChannels.getChannel, id),
+	setChannel: (input: ChannelCredentialSaveInput) =>
+		typedInvokeUnwrap(ProviderStoreChannels.setChannel, input),
+	listChannels: () => typedInvokeUnwrap(ProviderStoreChannels.listChannels),
 	vaultStatus: () => typedInvokeUnwrap(ProviderStoreChannels.vaultStatus),
 	setupVault: (passphrase: string) =>
 		typedInvokeUnwrap(ProviderStoreChannels.setupVault, passphrase),

@@ -1,4 +1,4 @@
-import { CHANNEL_DEFAULT_DM_POLICY, type StoredBotProvider } from '../../shared';
+import { CHANNEL_DEFAULT_DM_POLICY, type StoredChannelProvider } from '../../shared';
 import type { ChannelInboundMessage } from './channels_types';
 import { CHANNEL_MAX_VOICE_BYTES } from './channels_voice';
 
@@ -10,7 +10,7 @@ export interface ChannelSecurityDecision {
 /** Whether an inbound message may reach the agent, per the bot credential's rules. */
 export function canReceive(
 	message: ChannelInboundMessage,
-	credential: StoredBotProvider | undefined
+	credential: StoredChannelProvider | undefined
 ): ChannelSecurityDecision {
 	if (!credential?.apiKey.trim()) {
 		return { allowed: false, reason: 'channel_not_configured' };

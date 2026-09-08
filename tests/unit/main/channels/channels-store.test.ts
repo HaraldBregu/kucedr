@@ -9,7 +9,7 @@ import {
 	listChannelProviders,
 	setChannelProvider,
 } from '../../../../src/main/channels/channels_store';
-import type { StoredBotProvider } from '../../../../src/shared';
+import type { StoredChannelProvider } from '../../../../src/shared';
 
 describe('channels store', () => {
 	beforeEach(() => {
@@ -24,7 +24,7 @@ describe('channels store', () => {
 	});
 
 	it('persists channel providers under settings/channels.json', () => {
-		const provider: StoredBotProvider = {
+		const provider: StoredChannelProvider = {
 			id: 'telegram',
 			name: 'Telegram',
 			apiKey: 'token',

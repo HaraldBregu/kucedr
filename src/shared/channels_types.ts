@@ -21,7 +21,7 @@ export const CHANNEL_CONNECTION_STATUSES = [
 export type ChannelConnectionStatus = (typeof CHANNEL_CONNECTION_STATUSES)[number];
 
 /** A bot provider credential: the bot token plus who may reach the agent through it. */
-export interface StoredBotProvider extends StoredProvider {
+export interface StoredChannelProvider extends StoredProvider {
 	allowFrom?: string[];
 	groupAllowFrom?: string[];
 	dmPolicy?: ChannelDmPolicy;
@@ -31,7 +31,7 @@ export interface StoredBotProvider extends StoredProvider {
 	ttsModelId?: string;
 }
 
-export interface BotCredentialSaveInput {
+export interface ChannelCredentialSaveInput {
 	id: string;
 	apiKey: string;
 	allowFrom?: string[];
@@ -43,7 +43,7 @@ export interface BotCredentialSaveInput {
 	ttsModelId?: string;
 }
 
-export type BotCredentialSummary = Omit<StoredBotProvider, 'apiKey'> & {
+export type ChannelCredentialSummary = Omit<StoredChannelProvider, 'apiKey'> & {
 	configured: boolean;
 };
 

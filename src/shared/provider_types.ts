@@ -106,9 +106,9 @@ export interface ModelSelection {
 }
 
 /** Which settings-store collection a provider credential belongs to. */
-export type StoredProviderKind = 'models' | 'databases' | 'bots';
+export type StoredProviderKind = 'models' | 'databases' | 'channels';
 
-export type ProviderCredentialKind = Exclude<StoredProviderKind, 'bots'> | 'search_engines';
+export type ProviderCredentialKind = Exclude<StoredProviderKind, 'channels'> | 'search_engines';
 
 export type ProviderSyncStatus = 'local' | 'pending' | 'synced' | 'memoryOnly';
 

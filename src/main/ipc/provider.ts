@@ -1,4 +1,4 @@
-import type { BotCredentialSaveInput, BotCredentialSummary, StoredBotProvider } from '../../shared/channels_types';
+import type { ChannelCredentialSaveInput, ChannelCredentialSummary, StoredChannelProvider } from '../../shared/channels_types';
 import { CHANNEL_DM_POLICIES } from '../../shared/channels_types';
 import type {
 	ProviderCredentialKind,
@@ -61,18 +61,18 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			if (!summary) throw new Error('The provider credential could not be saved.');
 			return summary;
 		});
-		registerQueryWithEvent(ProviderStoreChannels.getBot, (event, id) => {
+		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
 			trusted.assert(event);
 			const provider = getChannelProvider(this.id(id));
-			return provider ? this.botSummary(provider) : undefined;
+			return provider ? this.channelSummary(provider) : undefined;
 		});
-		registerQueryWithEvent(ProviderStoreChannels.listBots, (event) => {
+		registerQueryWithEvent(ProviderStoreChannels.listChannels, (event) => {
 			trusted.assert(event);
-			return listChannelProviders().map((provider) => this.botSummary(provider));
+			return listChannelProviders().map((provider) => this.channelSummary(provider));
 		});
-		registerCommandWithEvent(ProviderStoreChannels.setBot, (event, value) => {
+		registerCommandWithEvent(ProviderStoreChannels.setChannel, (event, value) => {
 			trusted.assert(event);
-			return this.saveBot(this.botInput(value));
+			return this.saveChannel(this.channelInput(value));
 		});
 		registerQueryWithEvent(ProviderStoreChannels.vaultStatus, (event) => {
 			trusted.assert(event);
@@ -122,10 +122,10 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		};
 	}
 
-	private botInput(value: unknown): BotCredentialSaveInput {
+	private channelInput(value: unknown): ChannelCredentialSaveInput {
 		const record = this.record(value);
 		const dmPolicy = CHANNEL_DM_POLICIES.includes(record.dmPolicy as never)
-			? (record.dmPolicy as BotCredentialSaveInput['dmPolicy'])
+			? (record.dmPolicy as ChannelCredentialSaveInput['dmPolicy'])
 			: undefined;
 		return {
 			id: this.id(record.id),
@@ -142,7 +142,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		};
 	}
 
-	private saveBot(input: BotCredentialSaveInput): BotCredentialSummary {
+	private saveChannel(input: ChannelCredentialSaveInput): ChannelCredentialSummary {
 		const service = loadChannels().find((entry) => entry.provider.id === input.id);
 		if (!service) throw new Error('Unknown channel provider.');
 		const existing = getChannelProvider(input.id);
@@ -156,10 +156,10 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			baseUrl: service.url ?? service.provider.baseUrl,
 			apiKey,
 		});
-		return this.botSummary(saved);
+		return this.channelSummary(saved);
 	}
 
-	private botSummary(provider: StoredBotProvider): BotCredentialSummary {
+	private channelSummary(provider: StoredChannelProvider): ChannelCredentialSummary {
 		const { apiKey, ...summary } = provider;
 		return { ...summary, configured: Boolean(apiKey.trim()) };
 	}
@@ -204,7 +204,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	private optionalIdentifiers(
 		record: Record<string, unknown>
 	): Pick<
-		BotCredentialSaveInput,
+		ChannelCredentialSaveInput,
 		'sttProviderId' | 'sttModelId' | 'ttsProviderId' | 'ttsModelId'
 	> {
 		const result: Record<string, string> = {};
