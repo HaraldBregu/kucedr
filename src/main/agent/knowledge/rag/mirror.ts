@@ -1,10 +1,11 @@
 import { uploadRagMirror } from './upload';
 import { discardRagMirror } from './discard';
+import { ragDatabaseKey } from './database';
+import { getRagConfiguration } from './rag_store';
 import type { RagMirror } from './types';
 
 export function createRagMirror(): RagMirror {
-	const apiKey = process.env.PINECONE_API_KEY?.trim() ?? '';
-	if (!apiKey) throw new Error('PINECONE_API_KEY is not configured.');
+	const apiKey = ragDatabaseKey(getRagConfiguration());
 	return {
 		upload: uploadRagMirror.bind(undefined, apiKey),
 		discard: discardRagMirror.bind(undefined, apiKey),

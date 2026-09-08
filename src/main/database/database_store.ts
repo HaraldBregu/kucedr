@@ -38,10 +38,16 @@ export function saveDatabaseConfiguration(
 		providerId: configuration.providerId,
 		databaseId: configuration.databaseId,
 	};
+	const current = getRagConfiguration();
 	saveRagConfiguration({
-		...getRagConfiguration(),
+		...current,
 		databaseProviderId: saved.providerId ?? '',
 		databaseId: saved.databaseId ?? '',
+		mirrorConsent:
+			current.databaseProviderId === (saved.providerId ?? '') &&
+			current.databaseId === (saved.databaseId ?? '')
+				? current.mirrorConsent
+				: null,
 	});
 	return saved;
 }

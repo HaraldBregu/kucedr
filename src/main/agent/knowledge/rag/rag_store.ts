@@ -49,7 +49,8 @@ export function getRagConfiguration(): RagConfiguration {
 						kind,
 						configuration.embeddingProviderId,
 						configuration.embeddingModelId,
-						configuration.indexName
+						configuration.indexName,
+						configuration
 					)
 			)
 				configuration[key] = null;

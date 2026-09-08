@@ -13,7 +13,7 @@ export function assertRagConsent(
 		consent?.version !== 1 ||
 		consent.providerId !== providerId ||
 		consent.modelId !== modelId ||
-		consent.recipient !== ragRecipient('embedding', providerId, modelId, indexName)
+		consent.recipient !== ragRecipient('embedding', providerId, modelId, indexName, configuration)
 	)
 		throw new Error(
 			'Confirm remote embedding disclosure for document text and search queries in RAG settings.'
@@ -23,7 +23,7 @@ export function assertRagConsent(
 		if (
 			accepted?.version !== 1 ||
 			accepted.indexName !== indexName ||
-			accepted.recipient !== ragRecipient('mirror', providerId, modelId, indexName)
+			accepted.recipient !== ragRecipient('mirror', providerId, modelId, indexName, configuration)
 		)
 			throw new Error(
 				'Confirm Pinecone plaintext storage and failed-upload cleanup in RAG settings.'

@@ -16,7 +16,8 @@ export function authorizeRagDisclosure(configuration: RagConfiguration): RagConf
 				'embedding',
 				next.embeddingProviderId,
 				next.embeddingModelId,
-				next.indexName
+				next.indexName,
+				next
 			),
 		};
 	}
@@ -30,7 +31,8 @@ export function authorizeRagDisclosure(configuration: RagConfiguration): RagConf
 				'mirror',
 				next.embeddingProviderId,
 				next.embeddingModelId,
-				next.indexName
+				next.indexName,
+				next
 			),
 		};
 	}
