@@ -26,6 +26,7 @@ let persistence: Store<StorageProvidersState>;
 let providers: StorageProviderStore;
 
 beforeEach(() => {
+	jest.clearAllMocks();
 	persistence = new Store<StorageProvidersState>({ defaults: { encryptedProviders: '' } });
 	encryption.isEncryptionAvailable.mockReturnValue(true);
 	encryption.getSelectedStorageBackend.mockReturnValue('gnome_libsecret');
@@ -49,9 +50,7 @@ it('encrypts metadata and secrets and excludes the saved secret from public resu
 	expect(saved).not.toHaveProperty('secretAccessKey');
 	expect(saved.hasSecretAccessKey).toBe(true);
 	expect(providers.list()[0]).not.toHaveProperty('secretAccessKey');
-	expect(encryption.encryptString).toHaveBeenCalledWith(
-		JSON.stringify([{ ...input, id: saved.id }])
-	);
+	expect(JSON.parse(encryption.encryptString.mock.calls[0][0])).toEqual([{ ...input, id: saved.id }]);
 	const persisted = JSON.stringify(persistence.store);
 	for (const value of [input.name, input.endpoint, input.accessKeyId, input.secretAccessKey!]) {
 		expect(persisted).not.toContain(value);
