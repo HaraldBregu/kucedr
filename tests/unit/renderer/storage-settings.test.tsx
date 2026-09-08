@@ -1,14 +1,8 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import StoragePage from '../../../src/renderer/src/pages/settings/pages/storage/Page';
 import type { StorageOperationStatus } from '../../../src/shared/storage_types';
-
-const mockUseAuth = jest.fn();
-const requireSignIn = jest.fn();
-
-jest.mock('../../../src/renderer/src/contexts/AuthContext', () => ({
-	useAuth: () => mockUseAuth(),
-}));
 
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
@@ -16,12 +10,8 @@ jest.mock('react-i18next', () => {
 		'common.tryAgain': 'Try Again',
 		'settings.storage.configurationTitle': 'Cloud Backup',
 		'settings.storage.description': 'Choose folders to back up securely.',
-		'settings.storage.access.loading': 'Checking account access…',
-		'settings.storage.access.unavailable': 'Cloud backup is unavailable right now.',
-		'settings.storage.access.recovery': 'Finish updating your password before using cloud backup.',
-		'settings.storage.access.confirmationRequired':
-			'Confirm your email address before using cloud backup.',
-		'settings.storage.access.signedOut': 'Sign in to back up and restore your folders.',
+		'settings.storage.provider.title': 'Storage provider',
+		'settings.storage.provider.manage': 'Manage storage',
 		'settings.storage.cancel': 'Cancel',
 		'settings.storage.sync.title': 'Cloud Backup',
 		'settings.storage.sync.description': 'Back up selected folders on a schedule',
@@ -56,6 +46,7 @@ jest.mock('react-i18next', () => {
 });
 
 const storageApi = {
+	listProviders: jest.fn(),
 	getSettings: jest.fn(),
 	saveSettings: jest.fn(),
 	syncFolders: jest.fn(),
@@ -69,6 +60,7 @@ const storageApi = {
 let operationListener: ((status: StorageOperationStatus) => void) | undefined;
 const unsubscribeOperationStatus = jest.fn();
 const settings = {
+	providerId: 'primary',
 	paths: [] as string[],
 	syncEnabled: false,
 	syncCronExpression: '0 3 * * *',
@@ -76,19 +68,21 @@ const settings = {
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	mockUseAuth.mockReturnValue({
-		state: {
-			status: 'signedIn',
-			persistence: 'encrypted',
-			user: { id: 'user-1', email: 'person@example.com' },
-		},
-		localOnly: false,
-		requireSignIn,
-		skipSignIn: jest.fn(),
-	});
 	operationListener = undefined;
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'storage', { configurable: true, value: storageApi });
+	storageApi.listProviders.mockResolvedValue([
+		{
+			id: 'primary',
+			name: 'Production files',
+			bucket: 'files',
+			region: 'us-east-1',
+			endpoint: '',
+			accessKeyId: 'test-access',
+			hasSecretAccessKey: true,
+			forcePathStyle: false,
+		},
+	]);
 	storageApi.getSettings.mockResolvedValue(settings);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
 	storageApi.syncFolders.mockResolvedValue([]);
@@ -122,10 +116,14 @@ beforeEach(() => {
 	});
 });
 
-it('saves folders and a custom schedule without provider settings', async () => {
+it('saves folders and a custom schedule with the selected storage provider', async () => {
 	const user = userEvent.setup();
 	storageApi.syncFolders.mockResolvedValue([{ key: 'agent', path: '/data/agent' }]);
-	render(<StoragePage />);
+	render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 
 	await user.click(await screen.findByRole('switch', { name: 'Agent' }));
 	await user.click(screen.getByRole('combobox', { name: 'Backup interval' }));
@@ -136,18 +134,23 @@ it('saves folders and a custom schedule without provider settings', async () => 
 
 	await waitFor(() =>
 		expect(storageApi.saveSettings).toHaveBeenCalledWith({
+			providerId: 'primary',
 			paths: ['/data/agent'],
 			syncEnabled: true,
 			syncCronExpression: '0 4 * * *',
 		})
 	);
-	expect(screen.queryByText(/provider/i)).not.toBeInTheDocument();
+	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
 });
 
 it('backs up directly and confirms before restoring matching local files', async () => {
 	const user = userEvent.setup();
 	storageApi.getSettings.mockResolvedValue({ ...settings, paths: ['/data/agent'] });
-	render(<StoragePage />);
+	render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 
 	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
@@ -187,8 +190,13 @@ it('rehydrates a running backup after the page remounts', async () => {
 	});
 
 	const unsubscribeCount = unsubscribeOperationStatus.mock.calls.length;
-	const first = render(<StoragePage />);
+	const first = render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 	expect(await screen.findByText('Backup is running in the background…')).toBeInTheDocument();
+	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeDisabled();
 	first.unmount();
 	expect(unsubscribeOperationStatus).toHaveBeenCalledTimes(unsubscribeCount + 1);
 });
@@ -201,7 +209,11 @@ it('keeps a newer completion event when the initial snapshot resolves late', asy
 			resolveStatus = resolve;
 		})
 	);
-	render(<StoragePage />);
+	render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 	await waitFor(() => expect(storageApi.onOperationStatusChanged).toHaveBeenCalled());
 	act(() => {
 		operationListener?.({
@@ -238,7 +250,11 @@ it('keeps a newer completion event when the initial snapshot resolves late', asy
 it('preserves loaded settings when an auxiliary load fails', async () => {
 	storageApi.getSettings.mockResolvedValue({ ...settings, paths: ['/data/agent'] });
 	storageApi.syncFolders.mockRejectedValue(new Error('folder discovery failed'));
-	render(<StoragePage />);
+	render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 
 	expect(await screen.findByText('/data/agent')).toBeInTheDocument();
 	expect(screen.getByRole('alert')).toHaveTextContent('Could not load cloud backup settings.');
@@ -247,7 +263,11 @@ it('preserves loaded settings when an auxiliary load fails', async () => {
 
 it('shows a retry without editable defaults when settings cannot be loaded', async () => {
 	storageApi.getSettings.mockRejectedValue(new Error('settings unavailable'));
-	const { container } = render(<StoragePage />);
+	const { container } = render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 
 	expect(await screen.findByRole('alert')).toHaveTextContent(
 		'Could not load cloud backup settings.'
@@ -257,39 +277,26 @@ it('shows a retry without editable defaults when settings cannot be loaded', asy
 	expect(container.querySelector('[aria-busy="true"]')).not.toBeInTheDocument();
 });
 
-it.each([
-	['signedOut', 'Sign in to back up and restore your folders.'],
-	['unconfigured', 'Cloud backup is unavailable right now.'],
-	['recovery', 'Finish updating your password before using cloud backup.'],
-] as const)('disables cloud controls while auth is %s', async (status, message) => {
-	mockUseAuth.mockReturnValue({
-		state: { status, persistence: 'encrypted' },
-		localOnly: false,
-		requireSignIn,
-		skipSignIn: jest.fn(),
-	});
-	storageApi.getSettings.mockResolvedValue({ ...settings, paths: ['/data/agent'] });
-	render(<StoragePage />);
-
-	expect(await screen.findByText(message)).toBeInTheDocument();
-	expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
-	expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
-	expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
-});
-
-it('opens sign-in recovery from the signed-out cloud notice', async () => {
-	const user = userEvent.setup();
-	mockUseAuth.mockReturnValue({
-		state: { status: 'signedOut', persistence: 'encrypted' },
-		localOnly: false,
-		requireSignIn,
-		skipSignIn: jest.fn(),
-	});
-	render(<StoragePage />);
-
-	await user.click(await screen.findByRole('button', { name: 'Sign in' }));
-	expect(requireSignIn).toHaveBeenCalledTimes(1);
-});
+it.each([undefined, 'deleted'])(
+	'disables backup until an available provider is selected (%s)',
+	async (providerId) => {
+		storageApi.getSettings.mockResolvedValue({ ...settings, providerId, paths: ['/data/agent'] });
+		render(
+			<MemoryRouter>
+				<StoragePage />
+			</MemoryRouter>
+		);
+		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
+		expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
+		expect(screen.getByRole('link', { name: 'Manage storage' })).toHaveAttribute(
+			'href',
+			'/settings/providers/storage'
+		);
+		expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();
+	}
+);
 
 it('keeps a newer completion event when the backup command resolves late', async () => {
 	const user = userEvent.setup();
@@ -300,7 +307,11 @@ it('keeps a newer completion event when the backup command resolves late', async
 			resolveBackup = resolve;
 		})
 	);
-	render(<StoragePage />);
+	render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 
 	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
@@ -338,7 +349,11 @@ it('keeps a newer completion event when the backup command resolves late', async
 
 it('announces partial backups as warnings', async () => {
 	storageApi.getSettings.mockResolvedValue({ ...settings, paths: ['/data/agent'] });
-	render(<StoragePage />);
+	render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
 	await waitFor(() => expect(storageApi.onOperationStatusChanged).toHaveBeenCalled());
 
 	act(() => {

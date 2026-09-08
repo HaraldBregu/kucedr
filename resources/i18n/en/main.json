@@ -166,7 +166,7 @@
 				"configuration": "Configuration"
 			},
 			"descriptions": {
-				"cloud": "Cloud backup and secure key sync",
+				"cloud": "Back up files to your storage provider",
 				"general": "App info and appearance",
 				"account": "Cloud identity and session",
 				"modelServices": "Model service setup",
@@ -876,7 +876,10 @@
 			"denyRules": "Deny",
 			"rulesHint": "One path glob or command per line. Deny rules take precedence.",
 			"kinds": {
-				"read": { "title": "Read", "description": "Paths the agent may read." },
+				"read": {
+					"title": "Read",
+					"description": "Paths the agent may read."
+				},
 				"write": {
 					"title": "Write",
 					"description": "Paths the agent may create, edit, or delete."
@@ -1007,50 +1010,15 @@
 		"storage": {
 			"configurationTitle": "Cloud Backup",
 			"description": "Choose local folders to back up securely.",
-			"access": {
-				"loading": "Checking account access…",
-				"unavailable": "Cloud backup is unavailable right now.",
-				"recovery": "Finish updating your password before using cloud backup.",
-				"confirmationRequired": "Confirm your email address before using cloud backup.",
-				"signedOut": "Sign in to back up and restore your folders."
-			},
-			"credentials": {
-				"title": "Secure key sync",
-				"setupDescription": "Create a separate passphrase to encrypt and sync your saved API keys across signed-in devices.",
-				"unlockDescription": "Enter your secure key sync passphrase to use saved API keys on this device.",
-				"readyDescription": "Your saved API keys are encrypted and ready to sync across signed-in devices.",
-				"passphrase": "Sync passphrase",
-				"confirmPassphrase": "Confirm passphrase",
-				"passphraseHelp": "Use at least 12 characters and store this passphrase safely. It cannot be recovered.",
-				"setup": "Enable secure sync",
-				"settingUp": "Enabling…",
-				"unlock": "Unlock secure sync",
-				"unlocking": "Unlocking…",
-				"status": "Secure key sync",
-				"ready": "Ready",
-				"pending": "Pending changes",
-				"lastSync": "Last sync",
-				"never": "Not yet synced",
-				"sync": "Sync now",
-				"syncing": "Syncing…",
-				"memoryWarning": "Secure device storage is unavailable. API keys are kept in memory only and are cleared when the app closes.",
-				"errors": {
-					"load": "Could not check secure key sync.",
-					"setup": "Could not enable secure key sync.",
-					"unlock": "Could not unlock secure key sync. Check the passphrase and try again.",
-					"sync": "Could not sync saved API keys.",
-					"mismatch": "Passphrases do not match."
-				}
-			},
 			"sync": {
 				"title": "Cloud Backup",
 				"description": "Choose local folders and back them up securely on a schedule.",
 				"addFolders": "Add folders",
 				"folder": "Selected folder",
 				"removeFolder": "Remove folder",
-				"save": "Save schedule"
+				"save": "Save backup settings"
 			},
-			"syncSaved": "Cloud backup schedule saved.",
+			"syncSaved": "Backup settings saved.",
 			"autoSync": {
 				"description": "Back up the selected folders automatically on a schedule.",
 				"cronExpression": "Cron expression",
@@ -1107,7 +1075,15 @@
 			},
 			"pushing": "Backing up…",
 			"pulling": "Restoring…",
-			"cancel": "Cancel"
+			"cancel": "Cancel",
+			"provider": {
+				"title": "Storage provider",
+				"description": "Choose the destination for backups and restores.",
+				"placeholder": "Select storage provider",
+				"empty": "Add a storage provider before setting up backups.",
+				"missing": "The selected provider is unavailable. Choose another provider.",
+				"manage": "Manage storage"
+			}
 		},
 		"embedding": {
 			"input": "Text",

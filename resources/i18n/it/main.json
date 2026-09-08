@@ -166,7 +166,7 @@
 				"configuration": "Configurazione"
 			},
 			"descriptions": {
-				"cloud": "Backup cloud e sincronizzazione sicura delle chiavi",
+				"cloud": "Backup dei file sul tuo provider di archiviazione",
 				"general": "Info e aspetto dell'app",
 				"account": "Identità cloud e sessione",
 				"modelServices": "Setup servizi modello",
@@ -875,7 +875,10 @@
 			"denyRules": "Nega",
 			"rulesHint": "Un glob di percorso o comando per riga. Le regole di negazione hanno la precedenza.",
 			"kinds": {
-				"read": { "title": "Lettura", "description": "Percorsi che l'agente può leggere." },
+				"read": {
+					"title": "Lettura",
+					"description": "Percorsi che l'agente può leggere."
+				},
 				"write": {
 					"title": "Scrittura",
 					"description": "Percorsi che l'agente può creare, modificare o eliminare."
@@ -1006,50 +1009,15 @@
 		"storage": {
 			"configurationTitle": "Backup cloud",
 			"description": "Scegli le cartelle locali di cui eseguire il backup in modo sicuro.",
-			"access": {
-				"loading": "Verifica dell'accesso all'account…",
-				"unavailable": "Il backup cloud non è disponibile al momento.",
-				"recovery": "Completa l'aggiornamento della password prima di usare il backup cloud.",
-				"confirmationRequired": "Conferma il tuo indirizzo email prima di usare il backup cloud.",
-				"signedOut": "Accedi per eseguire il backup e il ripristino delle cartelle."
-			},
-			"credentials": {
-				"title": "Sincronizzazione sicura delle chiavi",
-				"setupDescription": "Crea una passphrase separata per cifrare e sincronizzare le chiavi API salvate tra i dispositivi su cui hai effettuato l'accesso.",
-				"unlockDescription": "Inserisci la passphrase di sincronizzazione sicura per usare le chiavi API salvate su questo dispositivo.",
-				"readyDescription": "Le chiavi API salvate sono cifrate e pronte per la sincronizzazione tra i dispositivi su cui hai effettuato l'accesso.",
-				"passphrase": "Passphrase di sincronizzazione",
-				"confirmPassphrase": "Conferma passphrase",
-				"passphraseHelp": "Usa almeno 12 caratteri e conserva la passphrase in modo sicuro. Non può essere recuperata.",
-				"setup": "Attiva sincronizzazione sicura",
-				"settingUp": "Attivazione…",
-				"unlock": "Sblocca sincronizzazione sicura",
-				"unlocking": "Sblocco…",
-				"status": "Sincronizzazione sicura delle chiavi",
-				"ready": "Pronta",
-				"pending": "Modifiche in sospeso",
-				"lastSync": "Ultima sincronizzazione",
-				"never": "Non ancora sincronizzate",
-				"sync": "Sincronizza ora",
-				"syncing": "Sincronizzazione…",
-				"memoryWarning": "L'archiviazione sicura del dispositivo non è disponibile. Le chiavi API vengono conservate solo in memoria e cancellate alla chiusura dell'app.",
-				"errors": {
-					"load": "Impossibile verificare la sincronizzazione sicura delle chiavi.",
-					"setup": "Impossibile attivare la sincronizzazione sicura delle chiavi.",
-					"unlock": "Impossibile sbloccare la sincronizzazione sicura delle chiavi. Verifica la passphrase e riprova.",
-					"sync": "Impossibile sincronizzare le chiavi API salvate.",
-					"mismatch": "Le passphrase non corrispondono."
-				}
-			},
 			"sync": {
 				"title": "Backup cloud",
 				"description": "Scegli le cartelle locali ed eseguine il backup in modo sicuro secondo una pianificazione.",
 				"addFolders": "Aggiungi cartelle",
 				"folder": "Cartella selezionata",
 				"removeFolder": "Rimuovi cartella",
-				"save": "Salva pianificazione"
+				"save": "Salva impostazioni backup"
 			},
-			"syncSaved": "Pianificazione del backup cloud salvata.",
+			"syncSaved": "Impostazioni backup salvate.",
 			"autoSync": {
 				"description": "Esegui automaticamente il backup delle cartelle selezionate secondo una pianificazione.",
 				"cronExpression": "Espressione cron",
@@ -1106,7 +1074,15 @@
 			},
 			"pushing": "Backup in corso…",
 			"pulling": "Ripristino in corso…",
-			"cancel": "Annulla"
+			"cancel": "Annulla",
+			"provider": {
+				"title": "Provider di archiviazione",
+				"description": "Scegli la destinazione per backup e ripristini.",
+				"placeholder": "Seleziona provider di archiviazione",
+				"empty": "Aggiungi un provider di archiviazione prima di configurare i backup.",
+				"missing": "Il provider selezionato non è disponibile. Scegli un altro provider.",
+				"manage": "Gestisci storage"
+			}
 		},
 		"embedding": {
 			"input": "Testo",

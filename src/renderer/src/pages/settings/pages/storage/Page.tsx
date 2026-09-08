@@ -460,7 +460,10 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 								<Button variant="outline" onClick={() => setRestoreOpen(false)}>
 									{t('settings.storage.cancel')}
 								</Button>
-								<Button disabled={controlsDisabled || storage.paths.length === 0} onClick={() => void runRestore()}>
+								<Button
+									disabled={controlsDisabled || storage.paths.length === 0}
+									onClick={() => void runRestore()}
+								>
 									<Download className="size-3" />
 									{t('settings.storage.restoreDialog.confirm')}
 								</Button>
