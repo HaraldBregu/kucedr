@@ -72,18 +72,6 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 		return getChannelProvider(channel);
 	}
 
-	async function createAdapter(
-		channel: ChannelType,
-		credential: StoredChannelProvider
-	): Promise<ChannelAdapter> {
-		if (channel === 'telegram') {
-			const { createTelegramAdapter } = await import('./adapters/telegram');
-			return createTelegramAdapter({ token: credential.apiKey });
-		}
-		const { createDiscordAdapter } = await import('./adapters/discord');
-		return createDiscordAdapter({ token: credential.apiKey });
-	}
-
 	function handleStatus(channel: ChannelType, update: ChannelStatusUpdate): void {
 		const event: ChannelStatusEvent = {
 			type: channel,
@@ -192,7 +180,8 @@ export function createChannelRegistry(dependencies: ChannelRegistryDependencies)
 			return;
 		}
 
-		const adapter = await createAdapter(channel, credential);
+		const { createTelegramAdapter } = await import('./adapters/telegram');
+		const adapter = createTelegramAdapter({ token: credential.apiKey });
 		adapter.onStatus((update) => handleStatus(channel, update));
 		adapter.onMessage((message) => {
 			void handleMessage(message);

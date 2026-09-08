@@ -7,6 +7,7 @@ import {
 	type PublicProvider,
 } from '../../shared/provider_types';
 import { parseProviderManifest } from '../../shared/providers/validation';
+import { isChannelId } from '../../shared/channels_definitions';
 import { resourceRoot } from '../shared/resource_root';
 
 export function loadChannels(): readonly CatalogService[] {
@@ -21,7 +22,7 @@ export function loadChannels(): readonly CatalogService[] {
 			const manifestPath = path.join(channelDirectory, 'manifest.json');
 			if (!existsSync(manifestPath)) continue;
 			const manifest = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
-			if (!manifest) continue;
+			if (!manifest || !isChannelId(normalizeProviderId(manifest.providerId))) continue;
 
 			const darkIconPath = manifest.icon_dark_url
 				? path.resolve(channelDirectory, manifest.icon_dark_url.replace(/^\/+/, ''))

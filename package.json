@@ -20,48 +20,15 @@
 		"node": ">=22.19",
 		"npm": ">=11.5.1"
 	},
-	"copyright": "© 2026 Kucedr Project. All rights reserved.",
+	"copyright": "\u00a9 2026 Kucedr Project. All rights reserved.",
 	"type": "module",
 	"license": "MIT",
 	"kucedr.channel": {
 		"catalogPath": "src/main/channels/catalog.ts",
 		"ids": [
-			"clickclack",
-			"discord",
-			"feishu",
-			"googlechat",
-			"imessage",
-			"irc",
-			"line",
-			"matrix",
-			"mattermost",
-			"msteams",
-			"nextcloud-talk",
-			"nostr",
-			"qa-channel",
-			"qqbot",
-			"slack",
-			"synology-chat",
-			"telegram",
-			"tlon",
-			"twitch",
-			"whatsapp",
-			"zalo",
-			"zalouser"
+			"telegram"
 		],
-		"aliases": {
-			"lark": "feishu",
-			"gchat": "googlechat",
-			"google-chat": "googlechat",
-			"imsg": "imessage",
-			"internet-relay-chat": "irc",
-			"teams": "msteams",
-			"nc-talk": "nextcloud-talk",
-			"nc": "nextcloud-talk",
-			"twitch-chat": "twitch",
-			"zl": "zalo",
-			"zlu": "zalouser"
-		}
+		"aliases": {}
 	},
 	"main": "./out/main/index.js",
 	"scripts": {

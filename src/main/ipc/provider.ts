@@ -1,4 +1,5 @@
 import type { ChannelCredentialSaveInput, ChannelCredentialSummary, StoredChannelProvider } from '../../shared/channels_types';
+import { isChannelId } from '../../shared/channels_definitions';
 import { CHANNEL_DM_POLICIES } from '../../shared/channels_types';
 import type {
 	ProviderCredentialKind,
@@ -63,12 +64,16 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		});
 		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
 			trusted.assert(event);
-			const provider = getChannelProvider(this.id(id));
+			const normalizedId = this.id(id);
+			if (!isChannelId(normalizedId)) return undefined;
+			const provider = getChannelProvider(normalizedId);
 			return provider ? this.channelSummary(provider) : undefined;
 		});
 		registerQueryWithEvent(ProviderStoreChannels.listChannels, (event) => {
 			trusted.assert(event);
-			return listChannelProviders().map((provider) => this.channelSummary(provider));
+			return listChannelProviders()
+				.filter((provider) => isChannelId(provider.id))
+				.map((provider) => this.channelSummary(provider));
 		});
 		registerCommandWithEvent(ProviderStoreChannels.setChannel, (event, value) => {
 			trusted.assert(event);

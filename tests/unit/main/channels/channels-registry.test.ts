@@ -84,7 +84,7 @@ describe('createChannelRegistry', () => {
 	it('returns undefined status before any channel starts', () => {
 		const registry = createChannelRegistry(deps());
 		expect(registry.getStatus()).toBeUndefined();
-		expect(registry.getStatus('discord')).toBeUndefined();
+		expect(registry.getStatus('telegram')).toBeUndefined();
 	});
 
 	it('throws when sending on a channel that is not running', async () => {

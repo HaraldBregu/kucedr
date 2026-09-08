@@ -4,19 +4,19 @@ describe('channel manifests', () => {
 	it('loads channel services and icons from resources/channels', () => {
 		const channels = loadChannels();
 
-		expect(channels.map((channel) => channel.provider.id)).toEqual(['discord', 'telegram']);
+		expect(channels.map((channel) => channel.provider.id)).toEqual(['telegram']);
 		expect(channels[0]).toEqual(
 			expect.objectContaining({
-				id: 'discord-bot',
-				name: 'Discord Bot API',
+				id: 'telegram-bot',
+				name: 'Telegram Bot API',
 				provider: expect.objectContaining({
-					id: 'discord',
-					name: 'Discord',
+					id: 'telegram',
+					name: 'Telegram',
 					iconDarkUrl: expect.stringContaining(
-						'/resources/channels/discord/images/svg/discord-color.svg'
+						'/resources/channels/telegram/images/svg/telegram-color.svg'
 					),
 					iconLightUrl: expect.stringContaining(
-						'/resources/channels/discord/images/svg/discord-color.svg'
+						'/resources/channels/telegram/images/svg/telegram-color.svg'
 					),
 				}),
 			})

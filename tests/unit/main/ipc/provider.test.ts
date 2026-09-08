@@ -30,9 +30,9 @@ jest.mock('../../../../src/main/channels', () => ({
 	setChannelProvider,
 	loadChannels: () => [
 		{
-			id: 'discord-bot',
-			provider: { id: 'discord', name: 'Discord', baseUrl: 'https://discord.com/api' },
-			url: 'https://discord.com/api',
+			id: 'telegram-bot',
+			provider: { id: 'telegram', name: 'Telegram', baseUrl: 'https://api.telegram.org' },
+			url: 'https://api.telegram.org',
 		},
 	],
 }));
@@ -159,19 +159,19 @@ describe('provider credential IPC boundary', () => {
 	it('does not expose bot tokens through the split bot query', async () => {
 		register();
 		getChannelProvider.mockReturnValue({
-			id: 'discord',
-			name: 'Discord',
+			id: 'telegram',
+			name: 'Telegram',
 			apiKey: 'bot-secret',
-			baseUrl: 'https://discord.com/api',
+			baseUrl: 'https://api.telegram.org',
 			dmPolicy: 'allowlist',
 		});
 
-		const result = await handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'discord');
+		const result = await handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'telegram');
 
 		expect(result).toEqual({
-			id: 'discord',
-			name: 'Discord',
-			baseUrl: 'https://discord.com/api',
+			id: 'telegram',
+			name: 'Telegram',
+			baseUrl: 'https://api.telegram.org',
 			dmPolicy: 'allowlist',
 			configured: true,
 		});

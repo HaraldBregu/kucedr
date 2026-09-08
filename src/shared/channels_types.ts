@@ -1,6 +1,6 @@
 import type { StoredProvider } from './provider_types';
 
-export const CHANNEL_PROVIDER_IDS = ['discord', 'telegram'] as const;
+export const CHANNEL_PROVIDER_IDS = ['telegram'] as const;
 
 export type ChannelType = (typeof CHANNEL_PROVIDER_IDS)[number];
 

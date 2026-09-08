@@ -17,7 +17,6 @@ describe('channelSessionId', () => {
 	});
 
 	it.each([
-		['channel', { channel: 'discord' }],
 		['account', { accountId: 'account-2' }],
 		['chat', { chatId: 'chat-2' }],
 		['thread', { threadId: 'thread-2' }],

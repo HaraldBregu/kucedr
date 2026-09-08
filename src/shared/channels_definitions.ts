@@ -2,12 +2,6 @@ import { CHANNEL_PROVIDER_IDS, type ChannelCatalogEntry, type ChannelType } from
 
 export const CHANNEL_CATALOG: readonly ChannelCatalogEntry[] = [
 	{
-		id: 'discord',
-		label: 'Discord',
-		blurb: 'Receive and send Discord bot messages.',
-		brandIconId: 'discord',
-	},
-	{
 		id: 'telegram',
 		label: 'Telegram',
 		blurb: 'Receive Telegram bot messages and send agent replies.',
