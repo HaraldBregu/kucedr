@@ -45,6 +45,7 @@ const ChannelDetailPage = lazy(() => import('./pages/settings/pages/channels/det
 const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
 const ProvidersPage = lazy(() => import('./pages/settings/pages/providers/Page'));
+const StorageProvidersPage = lazy(() => import('./pages/settings/pages/providers/storage/Page'));
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const A2aPage = lazy(() => import('./pages/settings/pages/a2a/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
@@ -356,6 +357,14 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<ProvidersPage section="databases" />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'storage',
+								element: (
+									<SettingsRouteWrapper>
+										<StorageProvidersPage />
 									</SettingsRouteWrapper>
 								),
 							},

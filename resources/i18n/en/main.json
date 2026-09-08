@@ -203,6 +203,7 @@
 			"providers": "Providers",
 			"searchEngine": "Search engine",
 			"databases": "Vector DB",
+			"storage": "Storage",
 			"searchEngines": "Search",
 			"media": "Media",
 			"devices": "Devices",
@@ -977,6 +978,30 @@
 				"load": "Could not load search engine settings.",
 				"save": "Could not save the search engine API key.",
 				"select": "Could not select the search engine."
+			}
+		},
+		"storageProviders": {
+			"description": "S3-compatible file storage connections",
+			"add": "Add storage",
+			"edit": "Edit {{name}}",
+			"remove": "Remove {{name}}",
+			"editTitle": "Edit storage",
+			"formDescription": "Connect an Amazon S3 or S3-compatible bucket.",
+			"emptyTitle": "No storage connections",
+			"emptyDescription": "Add a bucket to configure your file storage.",
+			"endpointHint": "Optional for Amazon S3. Enter your endpoint for other S3 providers.",
+			"secretHint": "Leave blank to keep the saved secret key.",
+			"loadError": "Could not load storage connections.",
+			"saveError": "Could not save this storage connection.",
+			"removeError": "Could not remove this storage connection.",
+			"fields": {
+				"name": "Name",
+				"bucket": "Bucket",
+				"region": "Region",
+				"endpoint": "Endpoint URL",
+				"accessKeyId": "Access key ID",
+				"secretAccessKey": "Secret access key",
+				"forcePathStyle": "Use path-style addressing"
 			}
 		},
 		"storage": {
