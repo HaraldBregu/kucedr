@@ -44,6 +44,7 @@ const routes = [
 	'/settings/agent/skills',
 	'/settings/providers',
 	'/settings/providers/keys',
+	'/settings/providers/databases',
 	'/settings/agent/mcp',
 	'/settings/agent/mcp/missing',
 	'/settings/providers/transcribe',
@@ -255,5 +256,34 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
 	await telegram.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('channels-narrow.png'), fullPage: true });
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+});
+
+
+test('Vector DB saves and reloads database credentials from Providers', async ({ browserName: _browserName }, testInfo) => {
+	await app.evaluate(({ BrowserWindow }) => { BrowserWindow.getAllWindows()[0].setSize(1100, 850); });
+	await page.evaluate(() => { window.location.hash = '#/settings/providers/models'; });
+	const sidebar = page.locator('[data-slot="settings-sidebar"]');
+	const link = sidebar.getByRole('link', { name: 'Vector DB', exact: true });
+	await expect(link.locator('svg.lucide-database')).toBeVisible();
+	await link.click();
+	await expect(page).toHaveURL(/#\/settings\/providers\/databases$/);
+	await expect(page.getByRole('heading', { name: 'Vector DB', level: 1 })).toBeVisible();
+	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-test-key');
+	await page.getByRole('button', { name: 'Save', exact: true }).click();
+	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
+	expect(await page.evaluate(() => window.provider.get('pinecone', 'databases'))).toMatchObject({ id: 'pinecone', kind: 'databases', configured: true });
+	expect(await page.evaluate(() => window.provider.get('pinecone', 'models'))).toBeUndefined();
+	await page.reload();
+	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
+	await page.getByRole('button', { name: 'Edit Pinecone API key' }).click();
+	await expect(page.getByLabel('Pinecone API key', { exact: true })).toHaveValue('');
+	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-updated-key');
+	await page.getByRole('button', { name: 'Save', exact: true }).click();
+	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
+	await page.screenshot({ path: testInfo.outputPath('vector-db-desktop.png'), fullPage: true });
+	await app.evaluate(({ BrowserWindow }) => { const win = BrowserWindow.getAllWindows()[0]; win.setMinimumSize(390, 600); win.setSize(390, 800); });
+	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
+	await page.screenshot({ path: testInfo.outputPath('vector-db-narrow.png'), fullPage: true });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });

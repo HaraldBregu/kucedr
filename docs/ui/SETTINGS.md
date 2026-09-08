@@ -40,7 +40,7 @@ The visible sidebar is grouped as follows:
 | ------------ | ------------------------------------------------------------------------------------------------- |
 | General      | Account, General, System, Cloud                                                                   |
 | Assistant    | Agent, Coder, A2A |
-| Providers    | Models, Search engines                                                                            |
+| Providers    | Models, Search, Vector DB                                                                            |
 | Channels     | Channels                                                                                          |
 | Integrations | Apps                                                                            |
 
