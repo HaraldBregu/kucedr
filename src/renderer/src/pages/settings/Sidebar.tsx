@@ -73,7 +73,7 @@ export function SettingsSidebar(): React.JSX.Element {
 					<span>{t('settings.returnToChat', 'Return to Chat')}</span>
 				</Link>
 			</div>
-			<div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pt-3">
+			<div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pb-4 pt-3">
 				<nav aria-label={t('settings.title')}>
 					{SETTINGS_SIDEBAR_GROUPS.map((group) => (
 						<section data-slot="split-pane-group" key={group.id} className="px-2 py-1 first:pt-0">
