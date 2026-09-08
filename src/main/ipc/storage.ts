@@ -24,7 +24,10 @@ export interface StorageIpcDeps {
 export class StorageIpc implements IpcModule<StorageIpcDeps> {
 	readonly name = 'storage';
 
-	register({ appRegistry, storageOperations, windows }: StorageIpcDeps, _eventBus: EventBus): void {
+	register(
+		{ appRegistry, storageOperations, windows }: StorageIpcDeps,
+		_eventBus: EventBus
+	): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		registerQueryWithEvent(StorageChannels.listProviders, (event) => {
 			trusted.assert(event);
