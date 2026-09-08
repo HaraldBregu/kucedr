@@ -48,7 +48,7 @@ export default function StorageForm({
 
 	return (
 		<Card size="sm" className="gap-0! py-0!">
-			<CardHeader className="border-b border-border/60 px-4! py-4">
+			<CardHeader className="border-b border-border/60 px-4! py-4!">
 				<CardTitle>
 					<h2 className="text-sm font-medium" id="storage-form-title">
 						{t(provider ? 'settings.storageProviders.editTitle' : 'settings.storageProviders.add')}
