@@ -208,6 +208,8 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		await expect(page.getByRole('heading', { name, level: 1 })).toBeVisible();
 		await page.getByRole('navigation', { name: 'Settings navigation' }).getByRole('link', { name: 'Agent', exact: true }).click();
 	}
+	await expect(page.getByRole('heading', { name: 'Agent', exact: true })).toBeVisible();
+	await page.locator('[data-slot="settings-workspace"]').getByRole('link', { name: /Skills/ }).scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
 		const window = BrowserWindow.getAllWindows()[0];
