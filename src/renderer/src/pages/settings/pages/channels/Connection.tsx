@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ChevronRight, ExternalLink, LoaderCircle, Pencil } from 'lucide-react';
 import type { CatalogService } from '@shared/provider_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -105,7 +105,7 @@ export function TelegramConnection({
 					{!editing && (
 						<Button variant="outline" size="sm" onClick={() => setEditing(true)}>
 							<Pencil className="size-3.5" />
-							{t('common.edit')} {t('settings.channels.bot')}
+							{t(configured ? 'settings.channels.editToken' : 'settings.channels.connect')}
 						</Button>
 					)}
 					{provider.apiKeyUrl && (
@@ -115,12 +115,12 @@ export function TelegramConnection({
 							onClick={() => void openExternalUrl(provider.apiKeyUrl!)}
 						>
 							<ExternalLink className="size-3.5" />
-							{t('settings.channels.token')}
+							{t('settings.channels.getToken')}
 						</Button>
 					)}
 					<Link
 						to="/settings/channels/channelDetail/telegram"
-						className="ml-auto inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+						className={buttonVariants({ variant: 'ghost', size: 'sm', className: 'ml-auto' })}
 					>
 						{t('settings.channels.configuration')}
 						<ChevronRight className="size-3.5" />

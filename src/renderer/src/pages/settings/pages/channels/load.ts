@@ -26,7 +26,9 @@ export async function loadChannelModelState(
 		const availableProviders = mergeProviders(
 			kind === 'stt'
 				? await window.models.transcribe.listProviders()
-				: providers().filter((provider) => providerIdsFor(capability).includes(provider.id)),
+				: providerIdsFor(capability).flatMap((id) =>
+						providers().filter((provider) => provider.id === id)
+					),
 			storedProvider
 		);
 		const modelGroups: ProviderModelGroup[] = [];

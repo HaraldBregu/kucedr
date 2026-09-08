@@ -1,61 +1,116 @@
-import { render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ChannelsPage from '../../../src/renderer/src/pages/settings/pages/channels/Page';
 
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
 		'settings.tabs.channels': 'Channels',
-		'settings.channels.description': 'Connect messaging channels.',
 		'settings.channels.configured': 'Configured',
 		'settings.channels.notConfigured': 'Not configured',
+		'settings.channels.bot': 'Bot token',
+		'settings.channels.connect': 'Connect',
+		'settings.channels.editToken': 'Edit token',
+		'settings.channels.configuration': 'Configuration',
+		'common.save': 'Save',
+		'common.cancel': 'Cancel',
 	};
 	const t = (key: string): string => translations[key] ?? key;
 	return { useTranslation: () => ({ t }) };
 });
 
 const channels = jest.fn();
-const listChannels = jest.fn();
+const getChannel = jest.fn();
+const setChannel = jest.fn();
 
 beforeEach(() => {
 	Object.defineProperty(window, 'app', {
 		configurable: true,
-		value: { channels },
+		value: {
+			channels,
+			getChannelsModelSelection: jest.fn().mockResolvedValue({}),
+		},
 	});
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
-		value: { listChannels, list: jest.fn().mockResolvedValue([]), vaultStatus: jest.fn().mockResolvedValue({}) },
+		value: { getChannel, setChannel },
 	});
-	Object.defineProperty(window, 'search', { configurable: true, value: { getSettings: jest.fn().mockResolvedValue({ configured: {} }) } });
-	Object.defineProperty(window, 'mcp', { configurable: true, value: { list: jest.fn().mockResolvedValue({}) } });
+	Object.defineProperty(window, 'models', {
+		configurable: true,
+		value: {
+			transcribe: {
+				listProviders: jest.fn().mockResolvedValue([]),
+			},
+		},
+	});
 	channels.mockResolvedValue([
 		{
-			id: 'discord-bot',
-			name: 'Discord Bot API',
+			id: 'telegram-bot',
+			name: 'Telegram Bot API',
 			type: 'bot',
-			url: 'https://discord.com/api',
+			url: 'https://api.telegram.org',
 			provider: {
-				id: 'discord',
-				name: 'Discord',
-				baseUrl: 'https://discord.com/api',
-				iconDarkUrl: 'local-resource://discord.svg',
-				iconLightUrl: 'local-resource://discord.svg',
+				id: 'telegram',
+				name: 'Telegram',
+				baseUrl: 'https://api.telegram.org',
+				iconDarkUrl: 'local-resource://telegram.svg',
+				iconLightUrl: 'local-resource://telegram.svg',
 			},
 		},
 	]);
-	listChannels.mockResolvedValue([
-		{ id: 'discord', name: 'Discord', configured: true, baseUrl: 'https://discord.com/api' },
-	]);
+	getChannel.mockResolvedValue({ id: 'telegram', configured: false });
+	setChannel.mockResolvedValue({ id: 'telegram', configured: true });
 });
 
-it('presents channels returned by the channel catalog IPC', async () => {
+it('shows a single Telegram connection and opens its detailed configuration', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/channels']}>
+			<Routes>
+				<Route path="/settings/channels" element={<ChannelsPage />} />
+				<Route path="/settings/channels/channelDetail/telegram" element={<p>Telegram details</p>} />
+			</Routes>
+		</MemoryRouter>
+	);
+	expect(await screen.findAllByRole('heading', { name: 'Telegram', exact: true })).toHaveLength(1);
+	expect(screen.getByText('Telegram Bot API')).toBeInTheDocument();
+	expect(screen.getByText('Not configured')).toBeInTheDocument();
+	expect(getChannel).toHaveBeenCalledWith('telegram');
+	await user.click(screen.getByRole('link', { name: 'Configuration' }));
+	expect(screen.getByText('Telegram details')).toBeInTheDocument();
+});
+
+it('saves a trimmed Telegram token and clears it after success', async () => {
+	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
 			<ChannelsPage />
 		</MemoryRouter>
 	);
+	await user.click(await screen.findByRole('button', { name: 'Connect' }));
+	expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+	await user.type(screen.getByLabelText('Bot token'), '  test-token  ');
+	await user.click(screen.getByRole('button', { name: 'Save' }));
+	await waitFor(() =>
+		expect(setChannel).toHaveBeenCalledWith({ id: 'telegram', apiKey: 'test-token' })
+	);
+	expect(await screen.findByText('Configured')).toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'Edit token' }));
+	expect(screen.getByLabelText('Bot token')).toHaveValue('');
+});
 
-	expect(await screen.findByText('Discord')).toBeInTheDocument();
-	expect(screen.getByText('Discord Bot API')).toBeInTheDocument();
-	expect(screen.getByText('Configured')).toBeInTheDocument();
-	expect(channels).toHaveBeenCalledTimes(1);
+it('keeps the token editable when saving fails', async () => {
+	setChannel.mockRejectedValue(new Error('Token could not be saved'));
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ChannelsPage />
+		</MemoryRouter>
+	);
+	await user.click(await screen.findByRole('button', { name: 'Connect' }));
+	await user.type(screen.getByLabelText('Bot token'), 'test-token');
+	await user.click(screen.getByRole('button', { name: 'Save' }));
+	expect(await screen.findByRole('alert')).toHaveTextContent('Token could not be saved');
+	expect(screen.getByLabelText('Bot token')).toHaveValue('test-token');
+	expect(screen.getByText('Not configured')).toBeInTheDocument();
 });

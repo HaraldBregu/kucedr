@@ -18,7 +18,6 @@ beforeEach(() => {
 		configurable: true,
 		value: {
 			list: jest.fn().mockResolvedValue([]),
-			listChannels: jest.fn().mockResolvedValue([]),
 			vaultStatus: jest.fn().mockResolvedValue({
 				persistence: 'encrypted',
 				cloudConfigured: false,
@@ -63,7 +62,7 @@ describe('Providers settings', () => {
 		expect(screen.getByRole('heading', { name: 'Models' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Search' })).toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Channels' })).toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'Channels' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: /storage/i })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: /storage/i })).not.toBeInTheDocument();
 		await waitFor(() => expect(window.provider.list).toHaveBeenCalled());
