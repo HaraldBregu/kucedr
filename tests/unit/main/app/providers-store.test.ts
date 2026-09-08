@@ -26,6 +26,8 @@ jest.mock('../../../../src/main/models', () => ({
 	loadDatabases: () => [],
 }));
 
+jest.mock('../../../../src/main/storage/providers', () => ({ storageProviders: { resolve: jest.fn() } }));
+
 import {
 	getTaskConfiguration,
 	listProviders,
@@ -40,6 +42,7 @@ import {
 } from '../../../../src/main/settings_store';
 import { getDatabaseConfiguration } from '../../../../src/main/database/database_store';
 import type { StoredProvider } from '../../../../src/shared/provider_types';
+import { storageProviders } from '../../../../src/main/storage/providers';
 
 function provider(id: string, name: string): StoredProvider {
 	return { id, name, apiKey: 'k', baseUrl: 'https://api' };
@@ -122,12 +125,26 @@ describe('providers in app settings', () => {
 describe('storage sync in app settings', () => {
 	it('round-trips folder sync and cron settings', () => {
 		const settings = {
+			providerId: 'a00c674a-c8c8-4d01-930f-ad690b3d0123',
 			paths: ['/data/agent'],
 			syncEnabled: true,
 			syncCronExpression: '0 3 * * *',
 		};
 		saveStorageSettings(settings);
 		expect(getStorageSettings()).toEqual(settings);
+		expect(storageProviders.resolve).toHaveBeenCalledWith(settings.providerId);
+	});
+
+	it('rejects a missing selected provider without changing saved settings', () => {
+		const before = getStorageSettings();
+		(storageProviders.resolve as jest.Mock).mockImplementationOnce(() => { throw new Error('not found'); });
+		expect(() => saveStorageSettings({ paths: [], providerId: 'b00c674a-c8c8-4d01-930f-ad690b3d0123', syncEnabled: false, syncCronExpression: '0 3 * * *' })).toThrow('not found');
+		expect(getStorageSettings()).toEqual(before);
+	});
+
+	it('requires a provider before enabling scheduled sync', () => {
+		(storageProviders.resolve as jest.Mock).mockImplementationOnce(() => { throw new Error('Select a storage provider'); });
+		expect(() => saveStorageSettings({ paths: [], syncEnabled: true, syncCronExpression: '0 3 * * *' })).toThrow('Select a storage provider');
 	});
 
 	it('rejects an invalid cron schedule', () => {

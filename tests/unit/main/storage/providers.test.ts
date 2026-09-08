@@ -57,6 +57,21 @@ it('encrypts metadata and secrets and excludes the saved secret from public resu
 	}
 });
 
+it('resolves only the selected credentials in main without changing public results', () => {
+	providers.save(input);
+	const selected = providers.save({ ...input, name: 'Second', secretAccessKey: 'second-secret' });
+	const resolved = providers.resolve(selected.id);
+	expect(resolved).toMatchObject({ id: selected.id, name: 'Second', secretAccessKey: 'second-secret' });
+	resolved.secretAccessKey = 'changed';
+	expect(providers.resolve(selected.id).secretAccessKey).toBe('second-secret');
+	expect(providers.list().every((entry) => !('secretAccessKey' in entry))).toBe(true);
+});
+
+it('fails clearly when a selected provider is missing', () => {
+	expect(() => providers.resolve(undefined)).toThrow('Select a storage provider');
+	expect(() => providers.resolve('a00c674a-c8c8-4d01-930f-ad690b3d0123')).toThrow('not found');
+});
+
 it.each(['', '   ', undefined])(
 	'preserves the existing secret when editing with %p',
 	(secretAccessKey) => {

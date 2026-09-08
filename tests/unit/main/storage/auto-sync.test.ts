@@ -1,4 +1,12 @@
-import { runStorageSync } from '../../../../src/main/storage/storage_auto_sync';
+import { isAutoSyncable, runStorageSync } from '../../../../src/main/storage/storage_auto_sync';
+
+it('only schedules backups with a selected provider and enabled folders', () => {
+	const storage = { providerId: 'connection', paths: ['/data/agent'], syncEnabled: true, syncCronExpression: '0 3 * * *' };
+	expect(isAutoSyncable(storage)).toBe(true);
+	expect(isAutoSyncable({ ...storage, providerId: undefined })).toBe(false);
+	expect(isAutoSyncable({ ...storage, paths: [] })).toBe(false);
+	expect(isAutoSyncable({ ...storage, syncEnabled: false })).toBe(false);
+});
 
 it('starts scheduled backups through the shared operation service', async () => {
 	const logger = { info: jest.fn(), error: jest.fn() };

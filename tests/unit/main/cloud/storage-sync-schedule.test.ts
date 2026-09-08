@@ -29,6 +29,7 @@ describe('storage sync scheduling', () => {
 	const logger = { info: jest.fn(), error: jest.fn() };
 	const operations = {} as never;
 	const storage = {
+		providerId: 'connection',
 		paths: ['/data/agent'],
 		syncEnabled: true,
 		syncCronExpression: '0 3 * * *',
@@ -53,7 +54,7 @@ describe('storage sync scheduling', () => {
 
 	afterEach(() => stopStorageSync());
 
-	it('schedules a no-overlap cron task and runs storage sync', async () => {
+	it('schedules selected storage without an account dependency and prevents overlapping sync', async () => {
 		startStorageSync(logger, operations);
 
 		expect(schedule).toHaveBeenCalledWith('0 3 * * *', expect.any(Function), {

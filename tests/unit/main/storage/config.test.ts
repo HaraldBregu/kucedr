@@ -1,28 +1,16 @@
 import { normalizeStorageSettings } from '../../../../src/main/storage/storage_config';
 
-const validConfig = {
-	paths: ['/data/kucedr'],
-	syncEnabled: true,
-	syncCronExpression: '0 3 * * *',
-};
+const settings = { paths: [], syncEnabled: false, syncCronExpression: '0 3 * * *' };
+const providerId = 'a00c674a-c8c8-4d01-930f-ad690b3d0123';
 
-describe('normalizeStorageSettings', () => {
-	it('normalizes paths and cron whitespace', () => {
-		expect(
-			normalizeStorageSettings({
-				...validConfig,
-				paths: ['/data/kucedr/../kucedr', '/data/kucedr'],
-				syncCronExpression: '0  3  * * *',
-			})
-		).toEqual(validConfig);
-	});
+it('preserves the selected storage provider', () => {
+	expect(normalizeStorageSettings({ ...settings, providerId })).toEqual({ ...settings, providerId });
+});
 
-	it.each([
-		['relative folders', { paths: ['data/kucedr'] }],
-		['filesystem roots', { paths: ['/'] }],
-		['invalid schedules', { syncCronExpression: 'sometimes' }],
-		['invalid enabled flags', { syncEnabled: 'yes' }],
-	])('rejects %s', (_name, override) => {
-		expect(() => normalizeStorageSettings({ ...validConfig, ...override })).toThrow();
-	});
+it.each([undefined, '', '   ', null])('omits empty provider selection %p', (providerId) => {
+	expect(normalizeStorageSettings({ ...settings, providerId })).toEqual(settings);
+});
+
+it.each([42, {}, 'unknown', '../outside'])('rejects invalid provider selection %p', (providerId) => {
+	expect(() => normalizeStorageSettings({ ...settings, providerId })).toThrow('identifier');
 });
