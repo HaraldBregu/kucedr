@@ -26,7 +26,7 @@ sync. Requests are sent only to the AI providers and connected services you conf
 - **Automate routines** — create recurring schedules and periodic checklist-based health runs.
 - **Remember useful context** — maintain durable memory, personalization files, conversation history, and a local working directory.
 - **Compile persistent knowledge** — archive immutable evidence, incrementally maintain a cited Markdown wiki, query it before raw sources, and review risky changes.
-- **Chat from other apps** — connect Telegram or Discord channels to reach Kucedr away from the desktop app.
+- **Chat from other apps** — connect Telegram to reach Kucedr away from the desktop app.
 
 Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces and light, dark, and system themes.
 

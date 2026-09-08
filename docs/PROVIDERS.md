@@ -4,8 +4,8 @@ Kucedr ships 23 provider manifests under `resources/providers`. This page is the
 human-readable inventory of those built-in providers, the services they expose in the catalog,
 and whether the current runtime can execute each service.
 
-The inventory covers model, search, and database providers. Telegram and Discord are
-messaging channels and are documented in [Kucedr Feature Reference](FEATURES.md#messaging-channels).
+The inventory covers model, search, and database providers. Telegram is a
+messaging channel and is documented in [Kucedr Feature Reference](FEATURES.md#messaging-channels).
 MCP servers and apps are integrations rather than providers.
 
 ## Support status

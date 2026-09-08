@@ -1404,7 +1404,6 @@
 			"token": "Token",
 			"tokenDescription": "Archiviato cifrato nel portachiavi del sistema operativo.",
 			"telegramTokenPlaceholder": "Incolla token bot Telegram",
-			"discordTokenPlaceholder": "Incolla token bot Discord",
 			"tokenPlaceholder": "Incolla token o chiave di accesso",
 			"secret": "Segreto",
 			"secretPlaceholder": "Incolla segreto di firma",
@@ -1782,7 +1781,6 @@
 		"whatsapp": "WhatsApp",
 		"zalo": "Zalo",
 		"zalouser": "Zalo Personal",
-		"discord": "Discord",
 		"clickclackDescription": "Collega conversazioni ClickClack.",
 		"feishuDescription": "Collega workspace chat Feishu o Lark.",
 		"googlechatDescription": "Collega spazi e DM Google Chat.",
@@ -1804,7 +1802,6 @@
 		"whatsappDescription": "Abbina un account WhatsApp con un codice di 8 caratteri mostrato in questa schermata.",
 		"zaloDescription": "Collega conversazioni bot Zalo.",
 		"zalouserDescription": "Collega sessioni utente personali Zalo.",
-		"discordDescription": "Collega un bot Discord usando il suo token.",
 		"status": {
 			"connecting": "Connessione…",
 			"pairing_code": "Inserisci il codice",

@@ -36,7 +36,7 @@ Kucedr provides:
 - Independent provider and model selection for chat, transcription, speech, image, video, audio, scheduled work, and health checks.
 - Local skills, remote HTTP MCP servers, local stdio MCP servers, and standalone app windows.
 - Persistent schedules, periodic `HEALTH.md` checks, and account-backed cloud backup for local folders.
-- Telegram and Discord bot connections with sender policies.
+- Telegram bot connections with sender policies.
 - Local configuration, conversation history, memory, generated-media storage, and operational logs.
 - Windows, macOS, and Linux packaging; partial English and Italian localization; light, dark, and system themes.
 
@@ -463,7 +463,7 @@ audio file menu on right-click. It has no search, filter, refresh, or delete too
 
 ## 5. Messaging channels
 
-Kucedr includes Telegram and Discord bot adapters. Enabled channels with tokens are started when the app becomes ready.
+Kucedr includes a Telegram bot adapter. Telegram starts when the app becomes ready if enabled with a token.
 
 ### Shared behavior
 
@@ -472,7 +472,7 @@ Kucedr includes Telegram and Discord bot adapters. Enabled channels with tokens 
 - Channel replies use their own configured chat provider and model.
 - Long replies are split into platform-sized parts, and delivery receipts distinguish sent, partial, and failed delivery.
 - `/start` returns a fixed connected greeting. Other slash-prefixed channel messages are ignored.
-- All accepted Telegram and Discord messages currently share one fixed bot-session UUID.
+- All accepted Telegram messages currently share one fixed bot-session UUID.
 - Channel agent runs use the background type with the full tool catalog, plus an eight-call public-web budget per run.
 
 ### Access policies
@@ -493,15 +493,7 @@ Kucedr includes Telegram and Discord bot adapters. Enabled channels with tokens 
 - Reply splitting at 4,096 characters.
 - Renderer IPC supports start, stop, and restart.
 
-### Discord
-
-- Guild, guild-message, direct-message, and message-content intents.
-- Bot-authored messages are ignored.
-- Threads and reply references are supported.
-- discord.js handles reconnection.
-- Reply splitting at 2,000 characters.
-
-The Channels screen configures both adapters with enable state, token, DM policy, direct-sender allowlist, group/channel allowlist, and the reply provider/model. The current renderer displays live runtime status only for Telegram and labels Discord as "config only," even though Discord is started by the main-process registry when enabled.
+The Channels screen configures Telegram with enable state, token, DM policy, direct-sender allowlist, group/channel allowlist, and the reply provider/model. It also displays live runtime status.
 
 ## 6. Desktop, settings, and extensibility surfaces
 

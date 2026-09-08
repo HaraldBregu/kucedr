@@ -1405,7 +1405,6 @@
 			"token": "Token",
 			"tokenDescription": "Stored encrypted in your OS keychain.",
 			"telegramTokenPlaceholder": "Paste Telegram bot token",
-			"discordTokenPlaceholder": "Paste Discord bot token",
 			"tokenPlaceholder": "Paste token or access key",
 			"secret": "Secret",
 			"secretPlaceholder": "Paste signing secret",
@@ -1783,7 +1782,6 @@
 		"whatsapp": "WhatsApp",
 		"zalo": "Zalo",
 		"zalouser": "Zalo Personal",
-		"discord": "Discord",
 		"clickclackDescription": "Connect ClickClack conversations.",
 		"feishuDescription": "Connect Feishu or Lark chat workspaces.",
 		"googlechatDescription": "Connect Google Chat spaces and DMs.",
@@ -1805,7 +1803,6 @@
 		"whatsappDescription": "Pair a WhatsApp account with an 8-character code shown on this screen.",
 		"zaloDescription": "Connect Zalo bot conversations.",
 		"zalouserDescription": "Connect Zalo personal user sessions.",
-		"discordDescription": "Connect a Discord bot using its bot token.",
 		"status": {
 			"connecting": "Connecting…",
 			"pairing_code": "Enter pairing code",
