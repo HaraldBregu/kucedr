@@ -225,3 +225,21 @@ test('Agent resources have icons and open their nested settings pages', async ({
 	await page.screenshot({ path: testInfo.outputPath('agent-narrow.png'), fullPage: true });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
+
+
+test('Channels includes provider credentials and the sidebar has bottom spacing', async ({ browserName: _browserName }, testInfo) => {
+	await app.evaluate(({ BrowserWindow }) => { BrowserWindow.getAllWindows()[0].setSize(1100, 850); });
+	await page.evaluate(() => { window.location.hash = '#/settings/channels'; });
+	const sidebar = page.locator('[data-slot="settings-sidebar"]');
+	await expect(sidebar.getByRole('link', { name: 'Bots', exact: true })).toHaveCount(0);
+	await expect(sidebar.getByRole('link', { name: 'Channels', exact: true })).toHaveCount(1);
+	await expect(sidebar.getByRole('link', { name: 'Channels', exact: true }).locator('svg.lucide-radio-tower')).toBeVisible();
+	await expect(sidebar.locator('.overflow-y-auto')).toHaveCSS('padding-bottom', '16px');
+	const discord = page.getByRole('heading', { name: 'Discord', exact: true }).locator('xpath=ancestor::*[@data-slot="card"][1]');
+	await discord.getByRole('button', { name: 'Connect', exact: true }).click();
+	await discord.getByLabel('Discord API key', { exact: true }).fill('channel-test-token');
+	await discord.getByRole('button', { name: 'Save', exact: true }).click();
+	await expect(discord.getByRole('button', { name: 'Edit Discord API key' })).toBeVisible();
+	expect(await page.evaluate(() => window.provider.getChannel('discord'))).toMatchObject({ id: 'discord', configured: true });
+	await page.screenshot({ path: testInfo.outputPath('channels-configuration.png'), fullPage: true });
+});
