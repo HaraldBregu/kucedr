@@ -32,6 +32,8 @@ const second: StorageProvider = {
 const api = { listProviders: jest.fn(), saveProvider: jest.fn(), removeProvider: jest.fn() };
 
 beforeEach(() => {
+	jest.clearAllMocks();
+	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'storage', { configurable: true, value: api });
 	api.listProviders.mockResolvedValue([]);
 	api.saveProvider.mockImplementation(async (input: StorageProviderInput) => {

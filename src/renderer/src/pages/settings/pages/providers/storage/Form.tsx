@@ -49,9 +49,7 @@ export default function StorageForm({
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState('');
 	const canSave =
-		['name', 'bucket', 'region', 'accessKeyId'].every((key) =>
-			String(draft[key as keyof StorageProviderInput] ?? '').trim()
-		) &&
+		[draft.name, draft.bucket, draft.region, draft.accessKeyId].every((value) => value.trim()) &&
 		(provider?.hasSecretAccessKey || !!draft.secretAccessKey?.trim());
 
 	return (
