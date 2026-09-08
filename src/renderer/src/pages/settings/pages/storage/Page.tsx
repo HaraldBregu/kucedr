@@ -343,7 +343,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 											className="w-56 max-w-full text-xs"
 											aria-label={t('settings.storage.autoSync.interval')}
 										>
-											<SelectValue />
+											<SelectValue>{t(`settings.storage.autoSync.${intervalValue}`)}</SelectValue>
 										</SelectTrigger>
 										<SelectContent>
 											<SelectItem value="off">{t('settings.storage.autoSync.off')}</SelectItem>
