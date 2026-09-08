@@ -15,10 +15,10 @@ let catalog: readonly CatalogModel[] = [];
 let databaseCatalog: readonly CatalogService[] = [];
 let webSearchCatalog: readonly CatalogWebSearch[] = [];
 let mcpCatalog: readonly CatalogService[] = [];
-let botCatalog: readonly CatalogService[] = [];
+let channelCatalog: readonly CatalogService[] = [];
 
 export async function loadModels(): Promise<void> {
-	[catalog, databaseCatalog, webSearchCatalog, mcpCatalog, botCatalog] = await Promise.all([
+	[catalog, databaseCatalog, webSearchCatalog, mcpCatalog, channelCatalog] = await Promise.all([
 		window.app.models(),
 		window.app.databases(),
 		window.app.webSearches(),
@@ -74,13 +74,13 @@ export function mcpProviders(): readonly PublicProvider[] {
 	return uniqueProviders(mcpCatalog);
 }
 
-export function bots(): readonly CatalogService[] {
-	return botCatalog;
+export function channels(): readonly CatalogService[] {
+	return channelCatalog;
 }
 
-/** One record per provider, derived from the bots they serve. */
-export function botProviders(): readonly PublicProvider[] {
-	return uniqueProviders(botCatalog);
+/** One record per provider, derived from the channels they serve. */
+export function channelProviders(): readonly PublicProvider[] {
+	return uniqueProviders(channelCatalog);
 }
 
 export function providerIdsFor(type: ModelCapability): string[] {

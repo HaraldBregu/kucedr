@@ -12,7 +12,7 @@ import type { SearchEngineId, SearchSettings } from '@shared/search_types';
 import type { McpData } from '@shared/mcp_types';
 import { mcps } from '@/lib/providers';
 import {
-	actionableBotCatalog,
+	actionableChannelCatalog,
 	actionableProviderCatalog,
 	actionableSearchCatalog,
 	getErrorMessage,
@@ -31,7 +31,7 @@ import { McpServerForm } from '../mcp/components/McpServerForm';
 import { useMcpServers } from '../mcp/hooks/useMcpServers';
 
 type ProviderKind = Exclude<StoredProviderKind, 'databases'> | 'search';
-export type ProviderSetupSection = 'models' | 'search' | 'mcp' | 'bots';
+export type ProviderSetupSection = 'models' | 'search' | 'mcp' | 'channels';
 
 const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descriptionKey: string }> =
 	{
@@ -47,9 +47,9 @@ const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descript
 			titleKey: 'settings.tabs.mcp',
 			descriptionKey: 'settings.overview.descriptions.mcp',
 		},
-		bots: {
-			titleKey: 'settings.tabs.bots',
-			descriptionKey: 'settings.overview.descriptions.bots',
+		channels: {
+			titleKey: 'settings.tabs.channels',
+			descriptionKey: 'settings.overview.descriptions.channels',
 		},
 	};
 
@@ -60,7 +60,7 @@ function allCatalogItems(): ProviderCatalogItem[] {
 	return [
 		...actionableProviderCatalog(),
 		...actionableSearchCatalog(),
-		...actionableBotCatalog(),
+		...actionableChannelCatalog(),
 	];
 }
 
@@ -89,11 +89,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	useEffect(() => {
 		let cancelled = false;
 
-		void Promise.all([window.provider.list('models'), window.provider.listBots()])
-			.then(([storedProviders, storedBots]) => {
+		void Promise.all([window.provider.list('models'), window.provider.listChannels()])
+			.then(([storedProviders, storedChannels]) => {
 				if (cancelled) return;
 				const savedStatus: Record<string, boolean> = Object.fromEntries(
-					[...storedProviders, ...storedBots].map((provider) => [
+					[...storedProviders, ...storedChannels].map((provider) => [
 						provider.id,
 						provider.configured,
 					])
@@ -180,7 +180,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setSavingProviderId(providerId);
 		setError(null);
 		try {
-			if (kind === 'bots') await window.provider.setBot({ id: providerId, apiKey });
+			if (kind === 'channels') await window.provider.setChannel({ id: providerId, apiKey });
 			else await window.provider.set({ id: providerId, apiKey, kind });
 			updateProviderEntry(providerId, { apiKey: '', apiKeySaved: true, editing: false });
 		} catch (err) {
@@ -353,7 +353,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	);
 	const otherProviders = modelCatalog.filter((provider) => !featuredIds.has(provider.id));
 	const searchCatalog = actionableSearchCatalog();
-	const botCatalog = actionableBotCatalog();
+	const channelCatalog = actionableChannelCatalog();
 	const mcpCatalog = mcps();
 	const catalogMcpIds = new Set(mcpCatalog.map((service) => service.id));
 	const customMcpServers = Object.entries(mcpServers).filter(([id]) => !catalogMcpIds.has(id)) as [
@@ -417,10 +417,10 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					</SettingsSection>
 				)}
 
-			{(section === undefined || section === 'bots') && (!embedded || botCatalog.length > 0) && (
-				<SettingsSection title={t('settings.tabs.bots')}>
+			{(section === undefined || section === 'channels') && (!embedded || channelCatalog.length > 0) && (
+				<SettingsSection title={t('settings.tabs.channels')}>
 					<div className="space-y-3 pb-4">
-						{botCatalog.map((provider) => renderProviderCard(provider, 'bots'))}
+						{channelCatalog.map((provider) => renderProviderCard(provider, 'channels'))}
 					</div>
 				</SettingsSection>
 			)}

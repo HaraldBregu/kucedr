@@ -9,7 +9,7 @@ import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/componen
 import { SettingsNotice, SettingsPageHeader, SettingsPageShell } from '../../../components';
 import type { CatalogService } from '@shared/provider_types';
 import { CHANNEL_DM_POLICIES } from '@shared/channels_types';
-import type { ChannelDmPolicy, StoredBotProvider } from '@shared/channels_types';
+import type { ChannelDmPolicy, StoredChannelProvider } from '@shared/channels_types';
 
 type ListField = 'allowFrom' | 'groupAllowFrom';
 
@@ -20,7 +20,7 @@ const ChannelDetailPage: React.FC = () => {
 	const { channelId } = useParams<{ channelId: string }>();
 	const providerId = channelId ?? '';
 	const [service, setService] = useState<CatalogService | null>(null);
-	const [credential, setCredential] = useState<StoredBotProvider | null>(null);
+	const [credential, setCredential] = useState<StoredChannelProvider | null>(null);
 	const [listDrafts, setListDrafts] = useState<Record<ListField, string>>({
 		allowFrom: '',
 		groupAllowFrom: '',
@@ -30,7 +30,7 @@ const ChannelDetailPage: React.FC = () => {
 	useEffect(() => {
 		let mounted = true;
 
-		void Promise.all([window.app.channels(), window.provider.getBot(providerId)])
+		void Promise.all([window.app.channels(), window.provider.getChannel(providerId)])
 			.then(([services, stored]) => {
 				if (!mounted) return;
 				const entry = services.find((item) => item.provider.id === providerId) ?? null;
@@ -47,11 +47,11 @@ const ChannelDetailPage: React.FC = () => {
 		};
 	}, [providerId]);
 
-	const save = async (next: StoredBotProvider): Promise<void> => {
+	const save = async (next: StoredChannelProvider): Promise<void> => {
 		setCredential(next);
 		setError(null);
 		try {
-			const saved = await window.provider.setBot(next);
+			const saved = await window.provider.setChannel(next);
 			setCredential({ ...saved, apiKey: '' });
 		} catch (err) {
 			setError(err instanceof Error ? err.message : String(err));
@@ -299,7 +299,7 @@ function ListEditor({
 	);
 }
 
-function blankCredential(providerId: string, service: CatalogService | null): StoredBotProvider {
+function blankCredential(providerId: string, service: CatalogService | null): StoredChannelProvider {
 	return {
 		id: providerId,
 		name: service?.provider.name ?? providerId,

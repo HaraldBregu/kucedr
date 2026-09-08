@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, RadioTower } from 'lucide-react';
 import type { Model } from '@/lib/compat';
 import { providerIdsFor, providerModels, providers, supportsSpeechToTextApiType } from '@/lib/providers';
 import { Badge } from '@/components/ui/badge';
@@ -27,6 +27,8 @@ import {
 	SettingsPageShell,
 	SettingsSection,
 } from '../../components';
+
+import ProvidersPage from '../providers/Page';
 
 type CatalogProvider = PublicProvider;
 
@@ -231,7 +233,7 @@ const ChannelsPage: React.FC = () => {
 	useEffect(() => {
 		let mounted = true;
 
-		void Promise.all([window.app.channels(), window.provider.listBots()])
+		void Promise.all([window.app.channels(), window.provider.listChannels()])
 			.then(([services, stored]) => {
 				if (!mounted) return;
 				setChannels(services);
@@ -343,6 +345,7 @@ const ChannelsPage: React.FC = () => {
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.channels')}
+				icon={RadioTower}
 				description={t('settings.channels.description')}
 			/>
 
@@ -378,6 +381,8 @@ const ChannelsPage: React.FC = () => {
 					/>
 				</div>
 			</SettingsSection>
+
+			<ProvidersPage embedded section="channels" />
 
 			<SettingsSection title={t('settings.channels.available')}>
 				{!channels ? (

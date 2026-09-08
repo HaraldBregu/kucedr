@@ -23,7 +23,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter(
 				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coder
 			),
-			...SETTINGS_NAVIGATION.slice(8, 11),
+			...SETTINGS_NAVIGATION.slice(8, 10),
 		],
 	},
 	{
@@ -33,11 +33,11 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	},
 	{
 		id: 'channels',
-		items: SETTINGS_NAVIGATION.slice(14, 15),
+		items: SETTINGS_NAVIGATION.slice(13, 14),
 	},
 	{
 		id: 'integrations',
-		items: SETTINGS_NAVIGATION.slice(15),
+		items: SETTINGS_NAVIGATION.slice(14),
 	},
 ] as const;
 

@@ -7,7 +7,7 @@ jest.mock('react-i18next', () => {
 		'settings.tabs.providers': 'Providers',
 		'settings.providers.description': 'Connect providers and configure models.',
 		'settings.overview.groups.mlModels': 'Models',
-		'settings.tabs.bots': 'Bots',
+		'settings.tabs.channels': 'Channels',
 	};
 	const t = (key: string): string => translations[key] ?? key;
 	return { useTranslation: () => ({ t }) };
@@ -18,7 +18,7 @@ beforeEach(() => {
 		configurable: true,
 		value: {
 			list: jest.fn().mockResolvedValue([]),
-			listBots: jest.fn().mockResolvedValue([]),
+			listChannels: jest.fn().mockResolvedValue([]),
 			vaultStatus: jest.fn().mockResolvedValue({
 				persistence: 'encrypted',
 				cloudConfigured: false,
@@ -63,7 +63,7 @@ describe('Providers settings', () => {
 		expect(screen.getByRole('heading', { name: 'Models' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Search' })).toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Bots' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Channels' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: /storage/i })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: /storage/i })).not.toBeInTheDocument();
 		await waitFor(() => expect(window.provider.list).toHaveBeenCalled());

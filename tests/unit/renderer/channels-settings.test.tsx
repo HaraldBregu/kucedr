@@ -14,7 +14,7 @@ jest.mock('react-i18next', () => {
 });
 
 const channels = jest.fn();
-const listBots = jest.fn();
+const listChannels = jest.fn();
 
 beforeEach(() => {
 	Object.defineProperty(window, 'app', {
@@ -23,8 +23,10 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
-		value: { listBots },
+		value: { listChannels, list: jest.fn().mockResolvedValue([]), vaultStatus: jest.fn().mockResolvedValue({}) },
 	});
+	Object.defineProperty(window, 'search', { configurable: true, value: { getSettings: jest.fn().mockResolvedValue({ configured: {} }) } });
+	Object.defineProperty(window, 'mcp', { configurable: true, value: { list: jest.fn().mockResolvedValue({}) } });
 	channels.mockResolvedValue([
 		{
 			id: 'discord-bot',
@@ -40,7 +42,7 @@ beforeEach(() => {
 			},
 		},
 	]);
-	listBots.mockResolvedValue([
+	listChannels.mockResolvedValue([
 		{ id: 'discord', name: 'Discord', configured: true, baseUrl: 'https://discord.com/api' },
 	]);
 });

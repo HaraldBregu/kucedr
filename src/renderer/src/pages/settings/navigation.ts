@@ -374,12 +374,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: PlugZap,
 	},
 	{
-		path: '/settings/providers/bots',
-		labelKey: 'settings.tabs.bots',
-		descriptionKey: 'settings.overview.descriptions.bots',
-		icon: Bot,
-	},
-	{
 		path: '/settings/agent/rag',
 		labelKey: 'settings.rag.title',
 		descriptionKey: 'settings.overview.descriptions.rag',

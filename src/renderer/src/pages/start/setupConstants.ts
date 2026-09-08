@@ -1,7 +1,7 @@
 import { getProviderApiConfigurationUrl } from '../../../../shared';
 import {
-	botProviders,
-	bots,
+	channelProviders,
+	channels,
 	providerIdsFor,
 	providerModels,
 	providers,
@@ -241,16 +241,16 @@ export function actionableSearchCatalog(): readonly ProviderCatalogItem[] {
 	}));
 }
 
-/** Providers with at least one bot service, shaped like the models catalog cards. */
-export function actionableBotCatalog(): readonly ProviderCatalogItem[] {
-	return botProviders().map((provider) => ({
+/** Providers with at least one channel service, shaped like the models catalog cards. */
+export function actionableChannelCatalog(): readonly ProviderCatalogItem[] {
+	return channelProviders().map((provider) => ({
 		id: provider.id,
 		name: provider.name,
 		capabilities:
-			bots()
+			channels()
 				.filter((entry) => entry.provider.id === provider.id)
 				.map((entry) => entry.name)
-				.join(' - ') || 'Bot',
+				.join(' - ') || 'Channel',
 		supported: true,
 		apiConfigurationUrl: getProviderApiConfigurationUrl(provider),
 		iconDarkUrl: provider.iconDarkUrl,

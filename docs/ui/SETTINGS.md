@@ -39,7 +39,7 @@ The visible sidebar is grouped as follows:
 | Group        | Destinations                                                                                      |
 | ------------ | ------------------------------------------------------------------------------------------------- |
 | General      | Account, General, System, Cloud                                                                   |
-| Assistant    | Assistant, Coder, Skills, Background tasks, MCP servers, Bots, RAG, LLM Wiki, Health, Permissions |
+| Assistant    | Agent, Coder, RAG, LLM Wiki |
 | Providers    | Models, Search engines                                                                            |
 | Channels     | Channels                                                                                          |
 | Integrations | A2A agents, Apps                                                                            |
@@ -166,7 +166,7 @@ See [Provider Reference](../PROVIDERS.md) for exact runtime coverage and model I
 
 ### Provider connections
 
-- **Models**, **Search engines**, and **Bots** should list their catalog providers as
+- **Models**, **Search engines**, and **Channels** should list their catalog providers as
   connection cards with external setup links, password inputs, and connected state.
 - Unsupported catalog entries should be disabled as **Soon**.
 - The searchable **API Keys** deep page should provide the model-provider credential list. The
