@@ -8,7 +8,11 @@ import {
 	usePageContext,
 } from '@/components/app/base/page';
 import { cn } from '@/lib/utils';
-import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from './navigation';
+import {
+	SETTINGS_MODEL_SERVICE_ITEMS,
+	SETTINGS_NAVIGATION,
+	type SettingsNavigationItem,
+} from './navigation';
 import { AGENTS } from '@/lib/compat';
 
 const SETTINGS_SIDEBAR_GROUPS = [
@@ -40,7 +44,9 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	},
 ] as const;
 
-const SETTINGS_SIDEBAR_ITEMS = SETTINGS_SIDEBAR_GROUPS.flatMap((group) => group.items);
+const SETTINGS_SIDEBAR_ITEMS = SETTINGS_SIDEBAR_GROUPS.flatMap<SettingsNavigationItem>(
+	(group) => group.items
+);
 
 export function SettingsSidebar(): React.JSX.Element {
 	const { t } = useTranslation();
