@@ -45,7 +45,11 @@ beforeEach(() => {
 	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 1, webContents: sender });
 	storageOperations.getStatus.mockReturnValue(undefined);
 	storageOperations.isRunning.mockReturnValue(false);
-	getStorageSettings.mockReturnValue({ paths: [], syncEnabled: false, syncCronExpression: '0 3 * * *' });
+	getStorageSettings.mockReturnValue({
+		paths: [],
+		syncEnabled: false,
+		syncCronExpression: '0 3 * * *',
+	});
 	new StorageIpc().register(
 		{
 			appRegistry: appRegistry as never,
@@ -146,37 +150,57 @@ it.each(['app view', 'untracked renderer', 'subframe'])(
 	}
 );
 
-it.each([StorageChannels.saveProvider, StorageChannels.removeProvider])('protects the selected provider during an operation: %s', (channel) => {
-	getStorageSettings.mockReturnValue({ providerId: 'selected' });
-	storageOperations.isRunning.mockReturnValue(true);
-	const handler = registerCommandWithEvent.mock.calls.find(([name]) => name === channel)?.[1];
-	expect(() => handler(event, channel === StorageChannels.saveProvider ? { id: 'selected' } : 'selected')).toThrow('while a cloud operation is running');
-	expect(storageProviders.save).not.toHaveBeenCalled();
-	expect(storageProviders.remove).not.toHaveBeenCalled();
-});
+it.each([StorageChannels.saveProvider, StorageChannels.removeProvider])(
+	'protects the selected provider during an operation: %s',
+	(channel) => {
+		getStorageSettings.mockReturnValue({ providerId: 'selected' });
+		storageOperations.isRunning.mockReturnValue(true);
+		const handler = registerCommandWithEvent.mock.calls.find(([name]) => name === channel)?.[1];
+		expect(() =>
+			handler(event, channel === StorageChannels.saveProvider ? { id: 'selected' } : 'selected')
+		).toThrow('while a cloud operation is running');
+		expect(storageProviders.save).not.toHaveBeenCalled();
+		expect(storageProviders.remove).not.toHaveBeenCalled();
+	}
+);
 
 it('allows unrelated provider edits during an operation', () => {
 	getStorageSettings.mockReturnValue({ providerId: 'selected' });
 	storageOperations.isRunning.mockReturnValue(true);
-	const handler = registerCommandWithEvent.mock.calls.find(([name]) => name === StorageChannels.saveProvider)?.[1];
+	const handler = registerCommandWithEvent.mock.calls.find(
+		([name]) => name === StorageChannels.saveProvider
+	)?.[1];
 	handler(event, { id: 'other' });
 	expect(storageProviders.save).toHaveBeenCalledWith({ id: 'other' });
 });
 
 it('clears the selection and stops scheduled sync after removing the selected provider', () => {
-	const settings = { providerId: 'selected', paths: ['/data/agent'], syncEnabled: true, syncCronExpression: '0 3 * * *' };
+	const settings = {
+		providerId: 'selected',
+		paths: ['/data/agent'],
+		syncEnabled: true,
+		syncCronExpression: '0 3 * * *',
+	};
 	getStorageSettings.mockReturnValue(settings);
 	storageProviders.remove.mockReturnValue(true);
-	const handler = registerCommandWithEvent.mock.calls.find(([name]) => name === StorageChannels.removeProvider)?.[1];
+	const handler = registerCommandWithEvent.mock.calls.find(
+		([name]) => name === StorageChannels.removeProvider
+	)?.[1];
 	expect(handler(event, 'selected')).toBe(true);
-	expect(saveStorageSettings).toHaveBeenCalledWith({ ...settings, providerId: undefined, syncEnabled: false });
+	expect(saveStorageSettings).toHaveBeenCalledWith({
+		...settings,
+		providerId: undefined,
+		syncEnabled: false,
+	});
 	expect(rescheduleStorageSync).toHaveBeenCalledTimes(1);
 });
 
 it('keeps the selection when an unrelated provider is removed', () => {
 	getStorageSettings.mockReturnValue({ providerId: 'selected' });
 	storageProviders.remove.mockReturnValue(true);
-	const handler = registerCommandWithEvent.mock.calls.find(([name]) => name === StorageChannels.removeProvider)?.[1];
+	const handler = registerCommandWithEvent.mock.calls.find(
+		([name]) => name === StorageChannels.removeProvider
+	)?.[1];
 	expect(handler(event, 'other')).toBe(true);
 	expect(saveStorageSettings).not.toHaveBeenCalled();
 	expect(rescheduleStorageSync).not.toHaveBeenCalled();
@@ -184,7 +208,9 @@ it('keeps the selection when an unrelated provider is removed', () => {
 
 it('blocks changing backup settings during an operation', () => {
 	storageOperations.isRunning.mockReturnValue(true);
-	const handler = registerCommandWithEvent.mock.calls.find(([name]) => name === StorageChannels.saveSettings)?.[1];
+	const handler = registerCommandWithEvent.mock.calls.find(
+		([name]) => name === StorageChannels.saveSettings
+	)?.[1];
 	expect(() => handler(event, {})).toThrow('while a cloud operation is running');
 	expect(saveStorageSettings).not.toHaveBeenCalled();
 });

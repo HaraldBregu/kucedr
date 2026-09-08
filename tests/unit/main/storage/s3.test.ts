@@ -14,28 +14,51 @@ it('uploads bytes to the selected bucket using the existing backup key', async (
 	const data = new Uint8Array([1, 2, 3]);
 	await store.put('kucedr/v1/agent/file.txt', data, 'text/plain');
 	expect(send.mock.calls[0][0]).toBeInstanceOf(PutObjectCommand);
-	expect(send.mock.calls[0][0].input).toEqual({ Bucket: 'archive', Key: 'kucedr/v1/agent/file.txt', Body: data, ContentType: 'text/plain' });
+	expect(send.mock.calls[0][0].input).toEqual({
+		Bucket: 'archive',
+		Key: 'kucedr/v1/agent/file.txt',
+		Body: data,
+		ContentType: 'text/plain',
+	});
 });
 
 it('downloads a streamed object without changing its bytes', async () => {
-	send.mockResolvedValue({ ContentLength: 4, Body: Readable.from([Buffer.from([1, 2]), Buffer.from([3, 4])]) });
+	send.mockResolvedValue({
+		ContentLength: 4,
+		Body: Readable.from([Buffer.from([1, 2]), Buffer.from([3, 4])]),
+	});
 	await expect(store.get('kucedr/v1/agent/file.txt')).resolves.toEqual(Buffer.from([1, 2, 3, 4]));
 	expect(send.mock.calls[0][0]).toBeInstanceOf(GetObjectCommand);
-	expect(send.mock.calls[0][0].input).toEqual({ Bucket: 'archive', Key: 'kucedr/v1/agent/file.txt' });
+	expect(send.mock.calls[0][0].input).toEqual({
+		Bucket: 'archive',
+		Key: 'kucedr/v1/agent/file.txt',
+	});
 });
 
 it('lists every page recursively using the requested prefix and continuation token', async () => {
-	send.mockResolvedValueOnce({
-		Contents: [{ Key: 'kucedr/v1/agent/one', Size: 3, LastModified: new Date('2026-01-01T00:00:00Z') }],
-		IsTruncated: true, NextContinuationToken: 'next',
-	}).mockResolvedValueOnce({ Contents: [{ Key: 'kucedr/v1/agent/folder/two', Size: 4 }], IsTruncated: false });
+	send
+		.mockResolvedValueOnce({
+			Contents: [
+				{ Key: 'kucedr/v1/agent/one', Size: 3, LastModified: new Date('2026-01-01T00:00:00Z') },
+			],
+			IsTruncated: true,
+			NextContinuationToken: 'next',
+		})
+		.mockResolvedValueOnce({
+			Contents: [{ Key: 'kucedr/v1/agent/folder/two', Size: 4 }],
+			IsTruncated: false,
+		});
 	await expect(store.list('kucedr/v1/agent/')).resolves.toEqual([
 		{ key: 'kucedr/v1/agent/one', size: 3, lastModified: '2026-01-01T00:00:00.000Z' },
 		{ key: 'kucedr/v1/agent/folder/two', size: 4, lastModified: undefined },
 	]);
 	expect(send.mock.calls[0][0]).toBeInstanceOf(ListObjectsV2Command);
 	expect(send.mock.calls[0][0].input).toEqual({ Bucket: 'archive', Prefix: 'kucedr/v1/agent/' });
-	expect(send.mock.calls[1][0].input).toEqual({ Bucket: 'archive', Prefix: 'kucedr/v1/agent/', ContinuationToken: 'next' });
+	expect(send.mock.calls[1][0].input).toEqual({
+		Bucket: 'archive',
+		Prefix: 'kucedr/v1/agent/',
+		ContinuationToken: 'next',
+	});
 });
 
 it('handles an empty bucket', async () => {
@@ -68,12 +91,15 @@ it('enforces download limits when the server omits or understates the size', asy
 	expect(body.destroyed).toBe(true);
 });
 
-it.each(['../outside', '/absolute', 'folder/../outside', 'folder\\outside', 'folder//file'])('rejects unsafe object key %s', async (key) => {
-	await expect(store.put(key, new Uint8Array())).rejects.toThrow('object key is invalid');
-	await expect(store.get(key)).rejects.toThrow('object key is invalid');
-	await expect(store.list(key)).rejects.toThrow('object key is invalid');
-	expect(send).not.toHaveBeenCalled();
-});
+it.each(['../outside', '/absolute', 'folder/../outside', 'folder\\outside', 'folder//file'])(
+	'rejects unsafe object key %s',
+	async (key) => {
+		await expect(store.put(key, new Uint8Array())).rejects.toThrow('object key is invalid');
+		await expect(store.get(key)).rejects.toThrow('object key is invalid');
+		await expect(store.list(key)).rejects.toThrow('object key is invalid');
+		expect(send).not.toHaveBeenCalled();
+	}
+);
 
 it('exposes useful S3 permission errors without forwarding server-provided credentials or details', async () => {
 	const error = new Error('secret-access-key in provider response');

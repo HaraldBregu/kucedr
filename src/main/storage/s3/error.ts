@@ -8,5 +8,7 @@ export function throwStorageRequestError(error: unknown): never {
 		NoSuchKey: 'The backup file was not found in storage.',
 		InvalidRegion: 'The configured storage region is invalid.',
 	};
-	throw new Error(messages[name] ?? 'The S3 request failed. Check the storage provider connection.');
+	throw new Error(
+		messages[name] ?? 'The S3 request failed. Check the storage provider connection.'
+	);
 }

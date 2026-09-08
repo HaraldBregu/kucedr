@@ -50,7 +50,9 @@ it('encrypts metadata and secrets and excludes the saved secret from public resu
 	expect(saved).not.toHaveProperty('secretAccessKey');
 	expect(saved.hasSecretAccessKey).toBe(true);
 	expect(providers.list()[0]).not.toHaveProperty('secretAccessKey');
-	expect(JSON.parse(encryption.encryptString.mock.calls[0][0])).toEqual([{ ...input, id: saved.id }]);
+	expect(JSON.parse(encryption.encryptString.mock.calls[0][0])).toEqual([
+		{ ...input, id: saved.id },
+	]);
 	const persisted = JSON.stringify(persistence.store);
 	for (const value of [input.name, input.endpoint, input.accessKeyId, input.secretAccessKey!]) {
 		expect(persisted).not.toContain(value);
@@ -61,7 +63,11 @@ it('resolves only the selected credentials in main without changing public resul
 	providers.save(input);
 	const selected = providers.save({ ...input, name: 'Second', secretAccessKey: 'second-secret' });
 	const resolved = providers.resolve(selected.id);
-	expect(resolved).toMatchObject({ id: selected.id, name: 'Second', secretAccessKey: 'second-secret' });
+	expect(resolved).toMatchObject({
+		id: selected.id,
+		name: 'Second',
+		secretAccessKey: 'second-secret',
+	});
 	resolved.secretAccessKey = 'changed';
 	expect(providers.resolve(selected.id).secretAccessKey).toBe('second-secret');
 	expect(providers.list().every((entry) => !('secretAccessKey' in entry))).toBe(true);

@@ -26,7 +26,9 @@ jest.mock('../../../../src/main/models', () => ({
 	loadDatabases: () => [],
 }));
 
-jest.mock('../../../../src/main/storage/providers', () => ({ storageProviders: { resolve: jest.fn() } }));
+jest.mock('../../../../src/main/storage/providers', () => ({
+	storageProviders: { resolve: jest.fn() },
+}));
 
 import {
 	getTaskConfiguration,
@@ -137,14 +139,27 @@ describe('storage sync in app settings', () => {
 
 	it('rejects a missing selected provider without changing saved settings', () => {
 		const before = getStorageSettings();
-		(storageProviders.resolve as jest.Mock).mockImplementationOnce(() => { throw new Error('not found'); });
-		expect(() => saveStorageSettings({ paths: [], providerId: 'b00c674a-c8c8-4d01-930f-ad690b3d0123', syncEnabled: false, syncCronExpression: '0 3 * * *' })).toThrow('not found');
+		(storageProviders.resolve as jest.Mock).mockImplementationOnce(() => {
+			throw new Error('not found');
+		});
+		expect(() =>
+			saveStorageSettings({
+				paths: [],
+				providerId: 'b00c674a-c8c8-4d01-930f-ad690b3d0123',
+				syncEnabled: false,
+				syncCronExpression: '0 3 * * *',
+			})
+		).toThrow('not found');
 		expect(getStorageSettings()).toEqual(before);
 	});
 
 	it('requires a provider before enabling scheduled sync', () => {
-		(storageProviders.resolve as jest.Mock).mockImplementationOnce(() => { throw new Error('Select a storage provider'); });
-		expect(() => saveStorageSettings({ paths: [], syncEnabled: true, syncCronExpression: '0 3 * * *' })).toThrow('Select a storage provider');
+		(storageProviders.resolve as jest.Mock).mockImplementationOnce(() => {
+			throw new Error('Select a storage provider');
+		});
+		expect(() =>
+			saveStorageSettings({ paths: [], syncEnabled: true, syncCronExpression: '0 3 * * *' })
+		).toThrow('Select a storage provider');
 	});
 
 	it('rejects an invalid cron schedule', () => {

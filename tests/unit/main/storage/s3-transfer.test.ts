@@ -10,9 +10,14 @@ jest.mock('@aws-sdk/client-s3', () => ({
 const send = jest.fn();
 const destroy = jest.fn();
 const provider: StoredStorageProvider = {
-	id: 'a00c674a-c8c8-4d01-930f-ad690b3d0123', name: 'Archive',
-	endpoint: 'https://storage.example.test', region: 'auto', bucket: 'archive',
-	accessKeyId: 'selected-access', secretAccessKey: 'selected-secret', forcePathStyle: true,
+	id: 'a00c674a-c8c8-4d01-930f-ad690b3d0123',
+	name: 'Archive',
+	endpoint: 'https://storage.example.test',
+	region: 'auto',
+	bucket: 'archive',
+	accessKeyId: 'selected-access',
+	secretAccessKey: 'selected-secret',
+	forcePathStyle: true,
 };
 
 beforeEach(() => {
@@ -24,7 +29,9 @@ beforeEach(() => {
 it('captures selected credentials and bucket once for the whole operation', async () => {
 	const selected = { ...provider };
 	let resume: (() => void) | undefined;
-	const paused = new Promise<void>((resolve) => { resume = resolve; });
+	const paused = new Promise<void>((resolve) => {
+		resume = resolve;
+	});
 	const pending = transferStorage(selected, async (store) => {
 		await store.put('one', new Uint8Array());
 		await paused;
@@ -36,10 +43,14 @@ it('captures selected credentials and bucket once for the whole operation', asyn
 	resume?.();
 	await expect(pending).resolves.toBe('completed');
 	expect(S3Client).toHaveBeenCalledTimes(1);
-	expect(S3Client).toHaveBeenCalledWith(expect.objectContaining({
-		endpoint: provider.endpoint, region: provider.region, forcePathStyle: true,
-		credentials: { accessKeyId: provider.accessKeyId, secretAccessKey: provider.secretAccessKey },
-	}));
+	expect(S3Client).toHaveBeenCalledWith(
+		expect.objectContaining({
+			endpoint: provider.endpoint,
+			region: provider.region,
+			forcePathStyle: true,
+			credentials: { accessKeyId: provider.accessKeyId, secretAccessKey: provider.secretAccessKey },
+		})
+	);
 	expect(send.mock.calls.map(([command]) => command.input.Bucket)).toEqual(['archive', 'archive']);
 	expect(destroy).toHaveBeenCalledTimes(1);
 });
@@ -50,6 +61,10 @@ it('uses the default AWS endpoint when no endpoint is configured', async () => {
 });
 
 it('closes the client after a failed transfer', async () => {
-	await expect(transferStorage(provider, async () => { throw new Error('local file failed'); })).rejects.toThrow('local file failed');
+	await expect(
+		transferStorage(provider, async () => {
+			throw new Error('local file failed');
+		})
+	).rejects.toThrow('local file failed');
 	expect(destroy).toHaveBeenCalledTimes(1);
 });

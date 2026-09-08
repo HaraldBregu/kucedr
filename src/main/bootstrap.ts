@@ -90,8 +90,10 @@ export function bootstrapServices(): BootstrapResult {
 			eventBus.broadcastToWindows(StorageChannels.operationStatusChanged, status);
 		},
 		{
-			backup: () => transferStorage(storageProviders.resolve(getStorageSettings().providerId), pushFiles),
-			restore: () => transferStorage(storageProviders.resolve(getStorageSettings().providerId), pullFiles),
+			backup: () =>
+				transferStorage(storageProviders.resolve(getStorageSettings().providerId), pushFiles),
+			restore: () =>
+				transferStorage(storageProviders.resolve(getStorageSettings().providerId), pullFiles),
 			lock: withStorageLock,
 			preventSuspension: preventStorageSuspension,
 		}

@@ -16,8 +16,10 @@ export function normalizeStorageSettings(value: unknown): StorageSyncSettings {
 	if (!cron.validate(syncCronExpression)) {
 		throw new Error('Storage sync schedule must be a valid cron expression.');
 	}
-	const selected = typeof input.providerId === 'string' ? input.providerId.trim() : input.providerId;
-	const providerId = selected == null || selected === '' ? undefined : storageProviderIdentifier(selected);
+	const selected =
+		typeof input.providerId === 'string' ? input.providerId.trim() : input.providerId;
+	const providerId =
+		selected == null || selected === '' ? undefined : storageProviderIdentifier(selected);
 	return {
 		...(providerId ? { providerId } : {}),
 		paths: normalizeStoragePaths(input.paths),

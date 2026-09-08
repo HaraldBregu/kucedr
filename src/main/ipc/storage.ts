@@ -24,10 +24,7 @@ export interface StorageIpcDeps {
 export class StorageIpc implements IpcModule<StorageIpcDeps> {
 	readonly name = 'storage';
 
-	register(
-		{ appRegistry, storageOperations, windows }: StorageIpcDeps,
-		_eventBus: EventBus
-	): void {
+	register({ appRegistry, storageOperations, windows }: StorageIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		registerQueryWithEvent(StorageChannels.listProviders, (event) => {
 			trusted.assert(event);
@@ -35,8 +32,14 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 		});
 		registerCommandWithEvent(StorageChannels.saveProvider, (event, input) => {
 			trusted.assert(event);
-			if (storageOperations.isRunning() && input?.id && input.id === getStorageSettings().providerId) {
-				throw new Error('The selected storage provider cannot change while a cloud operation is running.');
+			if (
+				storageOperations.isRunning() &&
+				input?.id &&
+				input.id === getStorageSettings().providerId
+			) {
+				throw new Error(
+					'The selected storage provider cannot change while a cloud operation is running.'
+				);
 			}
 			return storageProviders.save(input);
 		});
@@ -45,7 +48,9 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			const settings = getStorageSettings();
 			const selected = settings.providerId === id;
 			if (selected && storageOperations.isRunning()) {
-				throw new Error('The selected storage provider cannot be removed while a cloud operation is running.');
+				throw new Error(
+					'The selected storage provider cannot be removed while a cloud operation is running.'
+				);
 			}
 			const removed = storageProviders.remove(id);
 			if (removed && selected) {
