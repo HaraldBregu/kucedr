@@ -6,13 +6,14 @@ import { assertRagConsent } from '../../../../src/main/agent/knowledge/rag/conse
 
 let configuration: RagConfiguration;
 beforeEach(() => {
-	getProvider.mockReturnValue({ apiKey: 'synthetic-embedding-account' });
-	process.env.PINECONE_API_KEY = 'synthetic-mirror-account';
+	getProvider.mockImplementation((_id, kind) => ({
+		apiKey: kind === 'databases' ? 'synthetic-mirror-account' : 'synthetic-embedding-account',
+	}));
 	configuration = {
 		enabled: true,
 		indexName: 'knowledge-base',
-		databaseId: '',
-		databaseProviderId: '',
+		databaseId: 'pinecone',
+		databaseProviderId: 'pinecone',
 		embeddingProviderId: 'openai',
 		embeddingModelId: 'model',
 		embeddingConsent: null,
@@ -21,9 +22,6 @@ beforeEach(() => {
 		scheduleEnabled: false,
 		cronExpression: '0 3 * * *',
 	};
-});
-afterEach(() => {
-	delete process.env.PINECONE_API_KEY;
 });
 
 it('leaves missing and legacy consent unapproved during ordinary saves', () => {
@@ -52,8 +50,12 @@ it.each(['embedding', 'mirror'])(
 		configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'model' };
 		configuration.mirrorConsent = { version: 1, indexName: 'knowledge-base' };
 		const saved = authorizeRagDisclosure(configuration);
-		if (kind === 'embedding') getProvider.mockReturnValue({ apiKey: 'changed-account' });
-		else process.env.PINECONE_API_KEY = 'changed-account';
+		getProvider.mockImplementation((_id, section) => ({
+			apiKey:
+				section === 'databases'
+					? kind === 'mirror' ? 'changed-account' : 'synthetic-mirror-account'
+					: kind === 'embedding' ? 'changed-account' : 'synthetic-embedding-account',
+		}));
 		const changed = authorizeRagDisclosure(saved);
 		expect(changed).toEqual(saved);
 		expect(() => assertRagConsent(changed, 'openai', 'model', 'knowledge-base', true)).toThrow(

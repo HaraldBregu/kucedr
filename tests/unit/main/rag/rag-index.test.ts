@@ -36,13 +36,14 @@ beforeEach(async () => {
 	jest.resetAllMocks();
 	root = await realpath(await mkdtemp(path.join(os.tmpdir(), 'kucedr-rag-index-')));
 	await writeFile(path.join(root, 'guide.md'), '# Guide');
-	process.env.PINECONE_API_KEY = 'synthetic-pinecone-account';
-	getProvider.mockReturnValue({ apiKey: 'synthetic-embedding-account' });
+	getProvider.mockImplementation((_id, kind) => ({
+		apiKey: kind === 'databases' ? 'synthetic-mirror-account' : 'synthetic-embedding-account',
+	}));
 	configuration = authorizeRagDisclosure({
 		enabled: true,
 		indexName: 'knowledge-base',
-		databaseId: '',
-		databaseProviderId: '',
+		databaseId: 'pinecone',
+		databaseProviderId: 'pinecone',
 		embeddingProviderId: 'openai',
 		embeddingModelId: 'test-model',
 		embeddingConsent: { providerId: 'openai', modelId: 'test-model', version: 1 },
@@ -63,7 +64,6 @@ beforeEach(async () => {
 });
 afterEach(async () => {
 	await rm(root, { recursive: true, force: true });
-	delete process.env.PINECONE_API_KEY;
 });
 
 it('publishes locally only after the authorized mirror finishes', async () => {

@@ -23,13 +23,14 @@ const record = {
 let configuration: RagConfiguration;
 beforeEach(() => {
 	jest.resetAllMocks();
-	process.env.PINECONE_API_KEY = 'synthetic-mirror-account';
-	getProvider.mockReturnValue({ apiKey: 'synthetic-embedding-account' });
+	getProvider.mockImplementation((_id, kind) => ({
+		apiKey: kind === 'databases' ? 'synthetic-mirror-account' : 'synthetic-embedding-account',
+	}));
 	configuration = authorizeRagDisclosure({
 		enabled: true,
 		indexName: 'knowledge-base',
-		databaseId: '',
-		databaseProviderId: '',
+		databaseId: 'pinecone',
+		databaseProviderId: 'pinecone',
 		embeddingProviderId: 'openai',
 		embeddingModelId: 'model',
 		embeddingConsent: { version: 1, providerId: 'openai', modelId: 'model' },
@@ -46,9 +47,6 @@ beforeEach(() => {
 		describeIndex,
 		index: () => ({ namespace, deleteNamespace }),
 	});
-});
-afterEach(() => {
-	delete process.env.PINECONE_API_KEY;
 });
 
 it('uploads only the disclosed plaintext, paths and vectors in bounded batches', async () => {
@@ -89,7 +87,9 @@ it('rejects an existing index outside the disclosed location before uploading', 
 
 it('pins the failed namespace cleanup to the original account even after credentials rotate', async () => {
 	const mirror = createRagMirror();
-	process.env.PINECONE_API_KEY = 'changed-account';
+	getProvider.mockImplementation((_id, kind) => ({
+		apiKey: kind === 'databases' ? 'changed-account' : 'synthetic-embedding-account',
+	}));
 	await expect(mirror.upload('knowledge-base', generation, 2, [record])).rejects.toThrow(
 		'account changed'
 	);
