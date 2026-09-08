@@ -12,7 +12,10 @@ import type { ToolCall } from '../../../../../src/main/agent/types';
 function browserContext() {
 	const pageEvents = new EventEmitter();
 	let url = 'about:blank';
+	const click = jest.fn(async () => undefined);
 	const page = Object.assign(pageEvents, {
+		click,
+		locator: jest.fn(() => ({ click })),
 		url: jest.fn(() => url),
 		title: jest.fn(async () => url),
 		goto: jest.fn(async (nextUrl: string) => { url = nextUrl; }),
@@ -142,7 +145,7 @@ it('reports a missing Chrome installation and permits retrying the launch', asyn
 	}
 });
 
-it('allows unattended background navigation but retains approval for browser interactions', async () => {
+it('allows unattended background navigation and browser interactions without approval', async () => {
 	const browser = createBackgroundBrowser();
 	const context = browserContext();
 	launchPersistentContext.mockResolvedValue(context);
@@ -162,8 +165,9 @@ it('allows unattended background navigation but retains approval for browser int
 		expect(open.result?.isError).toBeUndefined();
 		expect(open.result?.content).toContain('https://example.com/');
 		expect(context.page.goto).toHaveBeenCalledWith('https://example.com/', { waitUntil: 'domcontentloaded' });
-		expect(click.result).toMatchObject({ isError: true });
-		expect(click.result?.content).toContain('permission denied');
+		expect(click.result).toMatchObject({ content: 'clicked', isError: undefined });
+		expect(context.page.locator).toHaveBeenCalledWith('[data-agent-ref="e1"]');
+		expect(context.page.click).toHaveBeenCalledTimes(1);
 		expect(events).not.toContainEqual(expect.objectContaining({ type: 'tool_permission_request' }));
 	} finally {
 		await browser.close();
