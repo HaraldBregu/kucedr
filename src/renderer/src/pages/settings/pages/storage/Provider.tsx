@@ -60,36 +60,40 @@ export default function Provider({
 										)
 							}
 						>
-						<Select
-							items={providers.map((provider) => ({ value: provider.id, label: provider.name }))}
-							value={selected?.id ?? null}
-							onValueChange={(value) => {
-								if (value) onChange(value);
-							}}
-							disabled={disabled || providers.length === 0}
-						>
-							<SelectTrigger
-								id="cloud-storage-provider"
-								className="w-full min-w-0 max-w-full text-xs"
-								aria-describedby="cloud-storage-provider-description"
+							<Select
+								items={providers.map((provider) => ({ value: provider.id, label: provider.name }))}
+								value={selected?.id ?? null}
+								onValueChange={(value) => {
+									if (value) onChange(value);
+								}}
+								disabled={disabled || providers.length === 0}
 							>
-								<SelectValue
-									className="min-w-0 overflow-hidden"
-									placeholder={t('settings.storage.provider.placeholder')}
-								/>
-							</SelectTrigger>
-							<SelectContent>
-								{providers.map((provider) => (
-									<SelectItem key={provider.id} value={provider.id}>
-										<span className="truncate">{provider.name}</span>
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+								<SelectTrigger
+									id="cloud-storage-provider"
+									className="w-full min-w-0 max-w-full text-xs"
+									aria-describedby="cloud-storage-provider-description"
+								>
+									<SelectValue
+										className="min-w-0 overflow-hidden"
+										placeholder={t('settings.storage.provider.placeholder')}
+									/>
+								</SelectTrigger>
+								<SelectContent>
+									{providers.map((provider) => (
+										<SelectItem key={provider.id} value={provider.id}>
+											<span className="truncate">{provider.name}</span>
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 						</SettingsField>
 						<Link
 							to="/settings/providers/storage"
-							className={buttonVariants({ variant: 'link', size: 'xs', className: 'justify-self-start' })}
+							className={buttonVariants({
+								variant: 'link',
+								size: 'xs',
+								className: 'justify-self-start',
+							})}
 						>
 							{t('settings.storage.provider.manage')}
 						</Link>

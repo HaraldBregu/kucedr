@@ -195,9 +195,7 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 		</MemoryRouter>
 	);
 	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
-	expect(await screen.findByRole('alert')).toHaveTextContent(
-		'Could not save backup settings.'
-	);
+	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save backup settings.');
 	expect(storageApi.backup).not.toHaveBeenCalled();
 	await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
