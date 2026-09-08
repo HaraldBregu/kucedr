@@ -143,5 +143,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(navigation).queryByRole('link', { name: 'settings.tabs.taskScheduler' })
 	).not.toBeInTheDocument();
+	expect(
+		within(navigation).queryByRole('link', { name: 'settings.tabs.health' })
+	).not.toBeInTheDocument();
+	expect(
+		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
+	).not.toBeInTheDocument();
 	expect(currentSection).toHaveAttribute('data-active');
 });

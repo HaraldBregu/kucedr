@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
+import { AlertTriangle, ChevronDown, ChevronRight, HeartPulse, ShieldCheck } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
@@ -377,6 +377,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.tabs.health')}
+						icon={HeartPulse}
 						description={t('settings.overview.descriptions.health')}
 						className="grid-cols-[minmax(0,1fr)_auto]"
 						actionClassName="w-auto justify-end"
@@ -397,6 +398,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.tabs.permissions')}
+						icon={ShieldCheck}
 						description={t('settings.overview.descriptions.permissions')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"

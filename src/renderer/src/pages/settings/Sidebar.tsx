@@ -24,7 +24,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coder
 			),
 			...SETTINGS_NAVIGATION.slice(8, 11),
-			...SETTINGS_NAVIGATION.slice(12, 14),
 		],
 	},
 	{
