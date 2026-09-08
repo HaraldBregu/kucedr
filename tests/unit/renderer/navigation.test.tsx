@@ -38,6 +38,7 @@ it.each([
 	['/settings/agent/mcp', 'settings.tabs.mcp'],
 	['/settings/coder', 'settings.coder.title'],
 	['/settings/providers/databases', 'settings.tabs.databases'],
+	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/agent/data', 'settings.dataControls.title'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
@@ -138,6 +139,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 			name: 'settings.tabs.databases',
 		})
 	).toHaveAttribute('href', '/settings/providers/databases');
+	expect(
+		within(providersGroup as HTMLElement).getByRole('link', {
+			name: 'settings.tabs.storage',
+		})
+	).toHaveAttribute('href', '/settings/providers/storage');
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })
 	).not.toBeInTheDocument();

@@ -203,6 +203,7 @@
 			"providers": "Provider",
 			"searchEngine": "Motore di ricerca",
 			"databases": "Vector DB",
+			"storage": "Storage",
 			"searchEngines": "Ricerca",
 			"media": "Media",
 			"devices": "Dispositivi",
@@ -976,6 +977,30 @@
 				"load": "Impossibile caricare le impostazioni del motore di ricerca.",
 				"save": "Impossibile salvare la chiave API del motore di ricerca.",
 				"select": "Impossibile selezionare il motore di ricerca."
+			}
+		},
+		"storageProviders": {
+			"description": "Connessioni di archiviazione file compatibili con S3",
+			"add": "Aggiungi storage",
+			"edit": "Modifica {{name}}",
+			"remove": "Rimuovi {{name}}",
+			"editTitle": "Modifica storage",
+			"formDescription": "Collega un bucket Amazon S3 o compatibile con S3.",
+			"emptyTitle": "Nessuna connessione di archiviazione",
+			"emptyDescription": "Aggiungi un bucket per configurare l'archiviazione dei file.",
+			"endpointHint": "Facoltativo per Amazon S3. Inserisci l'endpoint per gli altri provider S3.",
+			"secretHint": "Lascia vuoto per mantenere la chiave segreta salvata.",
+			"loadError": "Impossibile caricare le connessioni di archiviazione.",
+			"saveError": "Impossibile salvare questa connessione di archiviazione.",
+			"removeError": "Impossibile rimuovere questa connessione di archiviazione.",
+			"fields": {
+				"name": "Nome",
+				"bucket": "Bucket",
+				"region": "Regione",
+				"endpoint": "URL endpoint",
+				"accessKeyId": "ID chiave di accesso",
+				"secretAccessKey": "Chiave di accesso segreta",
+				"forcePathStyle": "Usa indirizzamento path-style"
 			}
 		},
 		"storage": {
