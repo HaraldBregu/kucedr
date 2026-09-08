@@ -82,13 +82,20 @@ beforeEach(() => {
 });
 
 it('shows storage selection beneath the title and before backup setup without login or key sync', async () => {
+	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
 			<CloudPage />
 		</MemoryRouter>
 	);
 	const title = screen.getByRole('heading', { name: 'Cloud', exact: true });
-	const selector = await screen.findByRole('combobox', { name: 'Storage provider' });
+	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
+	expect(disclosure).toHaveAttribute('aria-expanded', 'false');
+	expect(disclosure).toHaveTextContent('Select storage provider');
+	expect(screen.queryByRole('combobox', { name: 'Storage provider' })).not.toBeInTheDocument();
+	await user.click(disclosure);
+	expect(disclosure).toHaveAttribute('aria-expanded', 'true');
+	const selector = screen.getByRole('combobox', { name: 'Storage provider' });
 	const backup = screen.getByRole('heading', { name: 'Cloud Backup' });
 	expect(title.compareDocumentPosition(selector) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	expect(selector.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -107,8 +114,10 @@ it('saves a chosen provider before starting backup while signed out', async () =
 			<CloudPage />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('combobox', { name: 'Storage provider' }));
+	await user.click(await screen.findByRole('button', { name: /^Storage provider/ }));
+	await user.click(screen.getByRole('combobox', { name: 'Storage provider' }));
 	await user.click(await screen.findByRole('option', { name: 'Archive' }));
+	expect(screen.getByRole('button', { name: /^Storage provider/ })).toHaveTextContent('Archive');
 	await user.click(screen.getByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledTimes(1));
 	expect(storageApi.saveSettings).toHaveBeenCalledWith({ ...settings, providerId: 'archive' });
@@ -125,22 +134,30 @@ it('loads the saved selection and cancels a provider change without overwriting 
 			<CloudPage />
 		</MemoryRouter>
 	);
-	const selector = await screen.findByRole('combobox', { name: 'Storage provider' });
+	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
+	expect(disclosure).toHaveTextContent('Production files');
+	await user.click(disclosure);
+	const selector = screen.getByRole('combobox', { name: 'Storage provider' });
 	expect(selector).toHaveTextContent('Production files');
 	await user.click(selector);
 	await user.click(await screen.findByRole('option', { name: 'Archive' }));
 	await user.click(screen.getByRole('button', { name: 'Cancel', exact: true }));
 	expect(selector).toHaveTextContent('Production files');
 	expect(storageApi.saveSettings).not.toHaveBeenCalled();
+	await user.click(disclosure);
+	expect(disclosure).toHaveAttribute('aria-expanded', 'false');
+	expect(disclosure).toHaveTextContent('Production files');
 });
 
 it('offers storage configuration when no providers exist', async () => {
+	const user = userEvent.setup();
 	storageApi.listProviders.mockResolvedValue([]);
 	render(
 		<MemoryRouter>
 			<CloudPage />
 		</MemoryRouter>
 	);
+	await user.click(await screen.findByRole('button', { name: /^Storage provider/ }));
 	expect(
 		await screen.findByText('Add a storage provider before setting up backups.')
 	).toBeInTheDocument();
@@ -162,6 +179,7 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	await user.click(screen.getByRole('button', { name: 'Try Again' }));
 	await waitFor(() => expect(screen.getByRole('button', { name: 'Back up now' })).toBeEnabled());
+	await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toHaveTextContent(
 		'Production files'
 	);
@@ -181,5 +199,6 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 		'Could not save backup settings.'
 	);
 	expect(storageApi.backup).not.toHaveBeenCalled();
+	await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
 });

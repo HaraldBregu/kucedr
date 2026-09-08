@@ -140,6 +140,7 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 			syncCronExpression: '0 4 * * *',
 		})
 	);
+	await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
 });
 
@@ -176,6 +177,7 @@ it('backs up directly and confirms before restoring matching local files', async
 });
 
 it('rehydrates a running backup after the page remounts', async () => {
+	const user = userEvent.setup();
 	storageApi.getSettings.mockResolvedValue({ ...settings, paths: ['/data/agent'] });
 	storageApi.getOperationStatus.mockResolvedValue({
 		operationId: 'backup-1',
@@ -196,6 +198,7 @@ it('rehydrates a running backup after the page remounts', async () => {
 		</MemoryRouter>
 	);
 	expect(await screen.findByText('Backup is running in the background…')).toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 	expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeDisabled();
 	first.unmount();
 	expect(unsubscribeOperationStatus).toHaveBeenCalledTimes(unsubscribeCount + 1);
@@ -280,6 +283,7 @@ it('shows a retry without editable defaults when settings cannot be loaded', asy
 it.each([undefined, 'deleted'])(
 	'disables backup until an available provider is selected (%s)',
 	async (providerId) => {
+		const user = userEvent.setup();
 		storageApi.getSettings.mockResolvedValue({ ...settings, providerId, paths: ['/data/agent'] });
 		render(
 			<MemoryRouter>
@@ -289,6 +293,7 @@ it.each([undefined, 'deleted'])(
 		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
+		await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 		expect(screen.getByRole('combobox', { name: 'Storage provider' })).toBeEnabled();
 		expect(screen.getByRole('link', { name: 'Manage storage' })).toHaveAttribute(
 			'href',
