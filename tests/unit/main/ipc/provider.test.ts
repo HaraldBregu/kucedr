@@ -156,6 +156,33 @@ describe('provider credential IPC boundary', () => {
 		expect(JSON.stringify(result)).not.toContain('apiKey');
 	});
 
+	it('rejects saving a channel that is absent from the supported catalog', () => {
+		register();
+
+		expect(() =>
+			handler(registerCommandWithEvent, ProviderChannels.setChannel)({}, {
+				id: 'unsupported',
+				apiKey: 'bot-secret',
+			})
+		).toThrow('Unknown channel provider.');
+		expect(setChannelProvider).not.toHaveBeenCalled();
+	});
+
+	it('omits unsupported saved channels from queries without changing stored credentials', () => {
+		register();
+		listChannelProviders.mockReturnValue([
+			{ id: 'unsupported', name: 'Unsupported', baseUrl: '', apiKey: 'old-secret' },
+			{ id: 'telegram', name: 'Telegram', baseUrl: '', apiKey: 'bot-secret' },
+		]);
+
+		expect(handler(registerQueryWithEvent, ProviderChannels.listChannels)({})).toEqual([
+			{ id: 'telegram', name: 'Telegram', baseUrl: '', configured: true },
+		]);
+		expect(handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'unsupported'))
+			.toBeUndefined();
+		expect(setChannelProvider).not.toHaveBeenCalled();
+	});
+
 	it('does not expose bot tokens through the split bot query', async () => {
 		register();
 		getChannelProvider.mockReturnValue({
