@@ -319,7 +319,7 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
-								path: 'channelDetail/:channelId',
+								path: 'channelDetail/telegram',
 								element: (
 									<SettingsRouteWrapper>
 										<ChannelDetailPage />

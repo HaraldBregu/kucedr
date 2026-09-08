@@ -52,10 +52,7 @@ const SECTION_HEADERS: Record<ProviderSetupSection, { titleKey: string; descript
 const FEATURED_PROVIDER_IDS = ['openai', 'anthropic', 'deepseek', 'elevenlabs'] as const;
 
 function allCatalogItems(): ProviderCatalogItem[] {
-	return [
-		...actionableProviderCatalog(),
-		...actionableSearchCatalog(),
-	];
+	return [...actionableProviderCatalog(), ...actionableSearchCatalog()];
 }
 
 interface ProvidersPageProps {
@@ -83,14 +80,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	useEffect(() => {
 		let cancelled = false;
 
-		void window.provider.list('models')
+		void window.provider
+			.list('models')
 			.then((storedProviders) => {
 				if (cancelled) return;
 				const savedStatus: Record<string, boolean> = Object.fromEntries(
-					storedProviders.map((provider) => [
-						provider.id,
-						provider.configured,
-					])
+					storedProviders.map((provider) => [provider.id, provider.configured])
 				);
 				const hasSavedProvider = allCatalogItems().some((provider) => savedStatus[provider.id]);
 
@@ -379,9 +374,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					{error}
 				</SettingsNotice>
 			)}
-			{vaultWarning && (
-				<SettingsNotice icon={AlertTriangle}>{vaultWarning}</SettingsNotice>
-			)}
+			{vaultWarning && <SettingsNotice icon={AlertTriangle}>{vaultWarning}</SettingsNotice>}
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
@@ -408,7 +401,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						</div>
 					</SettingsSection>
 				)}
-
 
 			{(section === undefined || section === 'mcp') && mcpCatalog.length > 0 && (
 				<SettingsSection title="Default MCP">

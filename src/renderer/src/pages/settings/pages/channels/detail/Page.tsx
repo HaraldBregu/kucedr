@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 import { Hash, KeyRound, Plus, ShieldCheck, UserRound, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -17,8 +16,7 @@ const SETTINGS_INPUT_CLASS = 'h-8 w-full text-xs sm:w-80';
 
 const ChannelDetailPage: React.FC = () => {
 	const { t } = useTranslation();
-	const { channelId } = useParams<{ channelId: string }>();
-	const providerId = channelId ?? '';
+	const providerId = 'telegram';
 	const [service, setService] = useState<CatalogService | null>(null);
 	const [credential, setCredential] = useState<StoredChannelProvider | null>(null);
 	const [listDrafts, setListDrafts] = useState<Record<ListField, string>>({
