@@ -52,7 +52,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 				action={
 					<Button
 						size="sm"
-						disabled={loading || removing !== null}
+						disabled={loading || removing !== null || editing !== null}
 						onClick={() => setEditing('new')}
 					>
 						<Plus className="size-3.5" />
@@ -96,7 +96,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 									<Button
 										variant="ghost"
 										size="icon-sm"
-										disabled={removing !== null}
+										disabled={removing !== null || editing !== null}
 										aria-label={t('settings.storageProviders.edit', { name: provider.name })}
 										onClick={() => setEditing(provider)}
 									>
@@ -105,7 +105,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 									<Button
 										variant="ghost"
 										size="icon-sm"
-										disabled={removing !== null}
+										disabled={removing !== null || editing !== null}
 										className="text-muted-foreground hover:text-destructive"
 										aria-label={t('settings.storageProviders.remove', { name: provider.name })}
 										onClick={() => {

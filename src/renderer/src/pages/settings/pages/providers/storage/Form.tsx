@@ -5,12 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog';
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card';
 import type { StorageProvider, StorageProviderInput } from '@shared/storage_types';
 import { getErrorMessage } from '../../../../start/setupConstants';
 import { SettingsField, SettingsNotice } from '../../../components';
@@ -53,24 +53,19 @@ export default function StorageForm({
 		(provider?.hasSecretAccessKey || !!draft.secretAccessKey?.trim());
 
 	return (
-		<Dialog
-			open
-			onOpenChange={(open) => {
-				if (!open && !saving) onCancel();
-			}}
-		>
-			<DialogContent
-				className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg"
-				showCloseButton={!saving}
-			>
-				<DialogHeader>
-					<DialogTitle>
+		<Card size="sm" className="gap-0! py-0!">
+				<CardHeader className="border-b border-border/60 py-3">
+					<CardTitle>
+						<h2 className="text-sm font-medium" id="storage-form-title">
 						{t(provider ? 'settings.storageProviders.editTitle' : 'settings.storageProviders.add')}
-					</DialogTitle>
-					<DialogDescription>{t('settings.storageProviders.formDescription')}</DialogDescription>
-				</DialogHeader>
+						</h2>
+					</CardTitle>
+					<CardDescription className="text-xs">{t('settings.storageProviders.formDescription')}</CardDescription>
+				</CardHeader>
+			<CardContent className="py-3!">
 				<form
 					className="grid gap-4"
+					aria-labelledby="storage-form-title"
 					onSubmit={(event) => {
 						event.preventDefault();
 						if (saving || !canSave) return;
@@ -150,7 +145,7 @@ export default function StorageForm({
 						</Button>
 					</div>
 				</form>
-			</DialogContent>
-		</Dialog>
+			</CardContent>
+		</Card>
 	);
 }
