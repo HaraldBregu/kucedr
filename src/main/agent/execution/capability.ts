@@ -39,7 +39,7 @@ export function builtinCapability(id: string, input: Record<string, unknown>): T
 	if (id === 'lint_wiki') return { effects: input.autoFix === true ? ['write'] : ['read'] };
 	if (id === 'use_web_browser') {
 		const passive = ['status', 'tabs', 'snapshot', 'screenshot', 'console'].includes(String(input.action));
-		return { effects: passive ? ['read'] : ['external'], approval: !passive };
+		return { effects: passive ? ['read'] : ['external'] };
 	}
 	return undefined;
 }
