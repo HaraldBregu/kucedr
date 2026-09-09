@@ -227,7 +227,7 @@ it('groups independently collapsible provider settings in one card', async () =>
 		/Image/,
 		/Audio/,
 		/Video/,
-		/Search Engine.*Brave/,
+		/Search Engine/,
 	]) {
 		const trigger = await screen.findByRole('button', { name });
 		expect(trigger).toHaveAttribute('aria-expanded', 'false');

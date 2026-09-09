@@ -4,7 +4,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Bot,
-	ChevronDown,
 	ChevronRight,
 	Image as ImageIcon,
 	HeartPulse,
@@ -13,6 +12,7 @@ import {
 	BookOpenText,
 	Music2,
 	Radio,
+	Search as SearchIcon,
 	Video,
 	Volume2,
 } from 'lucide-react';
@@ -313,57 +313,52 @@ const AssistantPage: React.FC = () => {
 				/>
 
 				<Collapsible className="min-w-0 max-w-full overflow-hidden">
-					<CollapsibleTrigger className="group flex w-full items-center gap-3 px-4 py-3.5 text-left">
-						<div className="min-w-0 flex-1">
-							<div className="truncate text-[13px] font-medium leading-4 text-foreground">
-								{t('settings.tabs.searchEngine')}
+					<div className="flex w-full items-center gap-3 px-4 py-3.5">
+						<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-3 text-left">
+							<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+							<div className="min-w-0 flex-1">
+								<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+									{t('settings.tabs.searchEngine')}
+								</div>
+								<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+									{selectedSearchEngineDescription}
+								</p>
 							</div>
-							<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-								{selectedSearchEngine?.name ?? selectedSearchEngineDescription}
-							</p>
+						</CollapsibleTrigger>
+						<div className="shrink-0">
+							<Select
+								value={searchSettings?.engineId ?? null}
+								onValueChange={handleSearchEngineChange}
+								disabled={!searchSettings || searchSavingEngineId !== null}
+							>
+								<SelectTrigger
+									className="w-40 max-w-full text-xs [&_svg]:size-3"
+									aria-label={t('settings.tabs.searchEngine')}
+								>
+									<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
+										{selectedSearchEngine?.name}
+									</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{SEARCH_ENGINES.map((engine) => (
+										<SelectItem
+											key={engine.id}
+											value={engine.id}
+											disabled={!searchSettings?.configured[engine.id]}
+										>
+											{engine.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 						</div>
-						<ChevronDown
-							className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180"
-							aria-hidden="true"
-						/>
-					</CollapsibleTrigger>
-					<CollapsibleContent className="border-t border-border/60">
+					</div>
+					<CollapsibleContent>
 						{searchEngineError && (
 							<SettingsNotice variant="destructive" icon={AlertTriangle} className="mx-3 mt-3">
 								{searchEngineError}
 							</SettingsNotice>
 						)}
-						<SettingsRow
-							title={t('settings.tabs.searchEngine')}
-							description={selectedSearchEngineDescription}
-							actions={
-								<Select
-									value={searchSettings?.engineId ?? null}
-									onValueChange={handleSearchEngineChange}
-									disabled={!searchSettings || searchSavingEngineId !== null}
-								>
-									<SelectTrigger
-										className="w-56 max-w-full text-xs [&_svg]:size-3"
-										aria-label={t('settings.tabs.searchEngine')}
-									>
-										<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
-											{selectedSearchEngine?.name}
-										</SelectValue>
-									</SelectTrigger>
-									<SelectContent>
-										{SEARCH_ENGINES.map((engine) => (
-											<SelectItem
-												key={engine.id}
-												value={engine.id}
-												disabled={!searchSettings?.configured[engine.id]}
-											>
-												{engine.name}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							}
-						/>
 					</CollapsibleContent>
 				</Collapsible>
 			</SettingsPanel>
