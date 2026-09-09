@@ -40,7 +40,7 @@ The visible sidebar is grouped as follows:
 | ------------ | ------------------------------------------------------------------------------------------------- |
 | General      | Account, General, System, Cloud                                                                   |
 | Assistant    | Agent, Coder, A2A |
-| Providers    | Models, Search, Vector DB                                                                            |
+| Providers    | Models, Search, Database                                                                             |
 | Integrations | Channels, Apps                                                                            |
 
 The `/settings` route redirects to `/settings/general`. The username link, title-bar user button,
@@ -171,7 +171,7 @@ See [Provider Reference](../PROVIDERS.md) for exact runtime coverage and model I
 - The searchable **API Keys** deep page should provide the model-provider credential list. The
   visible Models page can connect the same model credentials inline.
 
-**Vector DB** connects the user's database account through the provider credential vault. The RAG
+**Database** connects the user's database account through the provider credential vault. The RAG
 page requires an explicit database selection and uses that account for remote storage. Pinecone
 is currently supported; there is no default database selection or environment API key fallback.
 Embedding credentials are configured separately under **Providers → Models**. Both remote

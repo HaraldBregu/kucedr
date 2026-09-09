@@ -30,8 +30,8 @@ See [Settings UI](ui/SETTINGS.md) for the complete Settings navigation and persi
 2. Choose the provider and model on the relevant Assistant, RAG, Voice, Transcription, Image,
    Video, or Audio settings page.
 3. Configure Brave or Tavily under **Settings → Providers → Search**.
-4. Save vector database API keys under **Settings → Providers → Vector DB**
-   (`/settings/providers/databases`), then explicitly select the database in **Settings → RAG**.
+4. Save vector database API keys under **Settings → Providers → Database**
+   (`/settings/providers/database`), then explicitly select the database in **Settings → RAG**.
    Pinecone is the currently supported vector database provider.
 5. Run the test offered by the settings page, when present, before relying on the provider in an
    agent run.
@@ -190,7 +190,7 @@ manifest supplies the provider and model entry.
 | Web search      | Tavily   | Tavily Web Search (`tavily-web-search`) |
 | Vector database | Pinecone | Pinecone Vector Database (`pinecone`)  |
 
-Save and edit Pinecone API keys under **Settings → Providers → Vector DB**. These credentials use
+Save and edit Pinecone API keys under **Settings → Providers → Database**. These credentials use
 the provider vault's `databases` collection, separate from model and search credentials. Create a
 key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
 
