@@ -10,7 +10,7 @@ jest.mock('react-i18next', () => {
 		'common.tryAgain': 'Try Again',
 		'settings.storage.configurationTitle': 'Cloud Backup',
 		'settings.storage.description': 'Choose folders to back up securely.',
-		'settings.storage.provider.title': 'Storage provider',
+		'settings.storage.provider.title': 'Storage',
 		'settings.storage.provider.description':
 			'Choose which configured storage provider receives your backups and supplies files when you restore them.',
 		'settings.storage.cancel': 'Cancel',
@@ -83,6 +83,16 @@ beforeEach(() => {
 			hasSecretAccessKey: true,
 			forcePathStyle: false,
 		},
+		{
+			id: 'archive',
+			name: 'Archive',
+			bucket: 'archive',
+			region: 'eu-west-1',
+			endpoint: '',
+			accessKeyId: 'test-archive-access',
+			hasSecretAccessKey: true,
+			forcePathStyle: false,
+		},
 	]);
 	storageApi.getSettings.mockResolvedValue(settings);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
@@ -126,6 +136,8 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 		</MemoryRouter>
 	);
 
+	await user.click(await screen.findByRole('combobox', { name: 'Storage' }));
+	await user.click(await screen.findByRole('option', { name: 'Archive' }));
 	await user.click(await screen.findByRole('switch', { name: 'Agent' }));
 	await user.click(screen.getByRole('combobox', { name: 'Backup interval' }));
 	await user.click(await screen.findByRole('option', { name: 'Every day' }));
@@ -135,7 +147,7 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 
 	await waitFor(() =>
 		expect(storageApi.saveSettings).toHaveBeenCalledWith({
-			providerId: 'primary',
+			providerId: 'archive',
 			paths: ['/data/agent'],
 			syncEnabled: true,
 			syncCronExpression: '0 4 * * *',
@@ -202,7 +214,7 @@ it('rehydrates a running backup after the page remounts', async () => {
 		</MemoryRouter>
 	);
 	expect(await screen.findByText('Backup is running in the background…')).toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: /Storage provider/ })).not.toBeInTheDocument();
+	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
 	first.unmount();
 	expect(unsubscribeOperationStatus).toHaveBeenCalledTimes(unsubscribeCount + 1);
 });
@@ -295,7 +307,7 @@ it.each([undefined, 'deleted'])(
 		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
-		expect(screen.queryByRole('button', { name: /Storage provider/ })).not.toBeInTheDocument();
+		expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
 		expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();
 	}

@@ -96,6 +96,7 @@ it('shows the storage provider description beneath the title and before backup s
 	expect(description.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	expect(screen.queryByText(/sign in|supabase|secure key sync/i)).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
+	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
 
@@ -113,6 +114,7 @@ it('keeps backup controls disabled when no providers exist', async () => {
 	).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
+	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
 
@@ -129,6 +131,7 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	await user.click(screen.getByRole('button', { name: 'Try Again' }));
 	await waitFor(() => expect(screen.getByRole('button', { name: 'Back up now' })).toBeEnabled());
+	expect(screen.getByRole('combobox', { name: 'Storage' })).toHaveTextContent('Production files');
 	expect(
 		screen.getByText(
 			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
