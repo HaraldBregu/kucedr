@@ -90,11 +90,10 @@ describe('protocol security', () => {
 				contents === mainContents ? ({} as Electron.BrowserWindow) : null
 			);
 		setupMediaPermissionHandlers(appRegistry);
+		const defaultSession = session.defaultSession;
 		expect(
 			jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][1]
 		).toEqual({ useSystemPicker: false });
-
-		const defaultSession = session.defaultSession;
 		const check = jest.mocked(defaultSession.setPermissionCheckHandler).mock.calls[0][0];
 		const mainUrl = pathToFileURL(
 			path.join(app.getAppPath(), 'out/renderer/index.html')
