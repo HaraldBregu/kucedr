@@ -112,7 +112,7 @@ export function MicrophoneInput({
 							alignItemWithTrigger={false}
 							className="w-80 max-w-[calc(100vw-2rem)] p-1"
 						>
-							<SelectItem value="default" className="[&>span]:min-w-0 [&>span]:shrink">
+							<SelectItem value="default" className="[&>div]:min-w-0 [&>div]:shrink">
 								<span className="min-w-0 truncate" title={currentInput?.label || defaultLabel}>
 									{defaultLabel}
 									{currentInput?.label ? ` (${currentInput.label})` : ''}
@@ -123,7 +123,7 @@ export function MicrophoneInput({
 								<SelectItem
 									key={input.deviceId}
 									value={input.deviceId}
-									className="[&>span]:min-w-0 [&>span]:shrink"
+									className="[&>div]:min-w-0 [&>div]:shrink"
 								>
 									<span className="truncate" title={input.label}>
 										{input.label ||
