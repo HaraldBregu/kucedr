@@ -32,7 +32,7 @@ export default function Provider({
 	return (
 		<SettingsPanel>
 			<Collapsible className="min-w-0 max-w-full overflow-hidden">
-				<CollapsibleTrigger className="group flex w-full items-center gap-3 px-4 py-3.5 text-left">
+				<CollapsibleTrigger className="group flex w-full items-center gap-4 px-4 py-3.5 text-left">
 					<div className="min-w-0 flex-1">
 						<div className="truncate text-[13px] font-medium leading-4 text-foreground">
 							{t('settings.storage.provider.title')}

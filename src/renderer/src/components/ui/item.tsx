@@ -31,7 +31,7 @@ function Item({
 				'group/item flex w-full flex-wrap items-center transition-colors duration-100 outline-none',
 				'focus-visible:ring-[3px] focus-visible:ring-ring/50',
 				size === 'sm' && 'gap-2 px-3 py-2',
-				size === 'md' && 'gap-3 px-4 py-3',
+				size === 'md' && 'gap-4 px-4 py-3',
 				className
 			)}
 		>
@@ -71,7 +71,7 @@ function ItemContent({ children, className }: ItemContentProps): React.JSX.Eleme
 	return (
 		<div
 			data-slot="item-content"
-			className={cn('flex flex-1 flex-row items-center gap-3', className)}
+			className={cn('flex flex-1 flex-row items-center gap-4', className)}
 		>
 			{children}
 		</div>

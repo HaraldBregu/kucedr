@@ -249,20 +249,48 @@ it('groups independently collapsible provider settings in one card', async () =>
 	);
 	expect(model).toBeDefined();
 	if (!model) return;
-	const voiceTrigger = screen.getByRole('button', { name: /Voice/ });
+	const voiceTrigger = (await screen.findAllByRole('button', { name: /Voice/ })).find(
+		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
+	);
+	expect(voiceTrigger).toBeDefined();
+	if (!voiceTrigger) return;
 	expect(voiceTrigger).toHaveTextContent('Text to speech model');
 	expect(voiceTrigger.nextElementSibling).not.toHaveClass('border-t');
 	expect(screen.getAllByText('Text to speech model')).toHaveLength(1);
-	const voice = (await screen.findAllByRole('combobox', { name: 'Voice' })).find((entry) =>
+	const voice = (await screen.findAllByRole('button', { name: 'Voice' })).find(
+		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
+	);
+	const realtimeConversation = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
+		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
+	);
+	const image = (await screen.findAllByRole('button', { name: 'Image' })).find(
+		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
+	);
+	const audio = (await screen.findAllByRole('button', { name: 'Audio' })).find(
+		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
+	);
+	const video = (await screen.findAllByRole('button', { name: 'Video' })).find(
+		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
+	);
+	expect(voice).toBeDefined();
+	expect(realtimeConversation).toBeDefined();
+	expect(image).toBeDefined();
+	expect(audio).toBeDefined();
+	expect(video).toBeDefined();
+	if (!voice || !realtimeConversation || !image || !audio || !video) return;
+	/*
+	 * The model selectors use buttons on the Agent page; Search Engine remains a select.
+	 */
+	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
+	expect(voice).toHaveTextContent('Eleven v3');
+	/*
+	 * Keep the selected model assertions next to their corresponding controls.
+	 */
+	/* eslint-disable @typescript-eslint/no-unused-vars */
+	const legacyVoice = (await screen.findAllByRole('combobox', { name: 'Voice' })).find((entry) =>
 		entry.textContent?.includes('Eleven v3')
 	);
-	const realtimeConversation = await screen.findByRole('combobox', {
-		name: 'Realtime conversation',
-	});
-	const image = await screen.findByRole('combobox', { name: 'Image' });
-	const audio = await screen.findByRole('combobox', { name: 'Audio' });
-	const video = await screen.findByRole('combobox', { name: 'Video' });
-	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
+	/* eslint-enable @typescript-eslint/no-unused-vars */
 	expect(model).toHaveTextContent('GPT');
 	expect(realtimeConversation).toHaveTextContent('OpenAI / GPT Realtime');
 	expect(voice).toHaveTextContent('ElevenLabs / Eleven v3');
