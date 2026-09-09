@@ -92,27 +92,25 @@ export function ModelProviderSelect({
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
 	const selectedLabel = selectedModel ? modelLabel(providerId, selectedModel) : undefined;
 	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
-	const buttonLabel = selectedLabel ?? labels?.placeholder ?? t('settings.modelServices.modelPlaceholder');
+	const buttonLabel =
+		selectedLabel ?? labels?.placeholder ?? t('settings.modelServices.modelPlaceholder');
 
 	const buttonSelect = (
 		<Popover open={buttonOpen} onOpenChange={setButtonOpen}>
 			<PopoverTrigger asChild>
 				<Button
-				type="button"
-				variant="outline"
-				size="sm"
-				disabled={disabled || providerGroups.length === 0}
-				aria-label={accessibleLabel}
-				className="min-w-40 max-w-full justify-between text-xs"
+					type="button"
+					variant="outline"
+					size="sm"
+					disabled={disabled || providerGroups.length === 0}
+					aria-label={accessibleLabel}
+					className="min-w-40 max-w-full justify-between text-xs"
 				>
 					<span className="min-w-0 truncate">{buttonLabel}</span>
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent
-				align="end"
-				className="w-max max-w-[calc(100vw-2rem)] p-1"
-			>
+			<PopoverContent align="end" className="w-max max-w-[calc(100vw-2rem)] p-1">
 				<div role="menu" aria-label={accessibleLabel} className="min-w-0">
 					{providerGroups.flatMap((group) =>
 						group.models.map((model) => {
@@ -146,7 +144,9 @@ export function ModelProviderSelect({
 		</Popover>
 	);
 
-	const select = buttonDropdown ? buttonSelect : (
+	const select = buttonDropdown ? (
+		buttonSelect
+	) : (
 		<Select
 			value={selectedModel ? `${providerId}${VALUE_SEPARATOR}${modelId}` : null}
 			onValueChange={(value) => {
@@ -159,11 +159,7 @@ export function ModelProviderSelect({
 			<SelectTrigger
 				id={`${idPrefix}-model`}
 				className={inline ? 'w-40 max-w-full text-xs' : 'w-full min-w-0 max-w-full text-xs'}
-				aria-label={
-					inline || !showFieldLabel
-					? accessibleLabel
-						: undefined
-				}
+				aria-label={inline || !showFieldLabel ? accessibleLabel : undefined}
 			>
 				<SelectValue
 					className="min-w-0 overflow-hidden"
