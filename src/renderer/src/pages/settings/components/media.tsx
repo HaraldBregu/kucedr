@@ -2,8 +2,7 @@ import React from 'react';
 import { Camera, ChevronRight, Mic, MonitorUp, type LucideIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Item, ItemActions, ItemContent, ItemIcon, ItemTitle } from '@/components/ui/item';
-import { SettingsPanel } from './index';
+import { SettingsPanel, SettingsRow } from './index';
 
 function MediaRow({
 	icon,
@@ -17,22 +16,19 @@ function MediaRow({
 	const navigate = useNavigate();
 
 	return (
-		<Item
-			as="button"
+		<button
 			type="button"
 			onClick={() => navigate(detailPath)}
-			variant="outline"
-			size="md"
-			className="min-h-11 border-b border-border/60 text-left last:border-b-0 hover:bg-muted/40 px-5 py-4"
+			className="block w-full text-left hover:bg-muted/40"
 		>
-			<ItemIcon icon={icon} className="[&_svg]:size-4" />
-			<ItemContent className="min-w-0 flex-1">
-				<ItemTitle className="truncate">{title}</ItemTitle>
-			</ItemContent>
-			<ItemActions className="ml-auto flex-none items-center justify-end">
-				<ChevronRight className="size-4 text-muted-foreground" />
-			</ItemActions>
-		</Item>
+			<SettingsRow
+				title={title}
+				media={<icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+				className="grid-cols-[minmax(0,1fr)_auto]"
+				actionClassName="w-auto justify-end"
+				actions={<ChevronRight className="size-4 text-muted-foreground" />}
+			/>
+		</button>
 	);
 }
 
