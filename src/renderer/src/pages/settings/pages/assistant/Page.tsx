@@ -7,6 +7,8 @@ import {
 	ChevronRight,
 	Image as ImageIcon,
 	HeartPulse,
+	History,
+	Database,
 	ShieldCheck,
 	Library,
 	BookOpenText,
@@ -373,7 +375,7 @@ const AssistantPage: React.FC = () => {
 					<Link key={item.path} to={item.path} className="block hover:bg-muted/40">
 						<SettingsRow
 							title={t(item.labelKey)}
-							icon={item.icon}
+							media={<item.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 							description={t(item.descriptionKey)}
 							className="grid-cols-[minmax(0,1fr)_auto]"
 							actionClassName="w-auto justify-end"
@@ -398,6 +400,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.chatHistory.title')}
+						media={<History className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						description={t('settings.chatHistory.description')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
@@ -421,7 +424,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.tabs.health')}
-						icon={HeartPulse}
+						media={<HeartPulse className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						description={t('settings.overview.descriptions.health')}
 						className="grid-cols-[minmax(0,1fr)_auto]"
 						actionClassName="w-auto justify-end"
@@ -442,7 +445,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.tabs.permissions')}
-						icon={ShieldCheck}
+						media={<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						description={t('settings.overview.descriptions.permissions')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
@@ -466,7 +469,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.rag.title')}
-						icon={Library}
+						media={<Library className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						description={t('settings.overview.descriptions.rag')}
 						className="grid-cols-[minmax(0,1fr)_auto]"
 						actionClassName="w-auto justify-end"
@@ -487,7 +490,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.wiki.title')}
-						icon={BookOpenText}
+						media={<BookOpenText className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						description={t('settings.wiki.description')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
@@ -511,6 +514,7 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.dataControls.title')}
+						media={<Database className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						description={t('settings.dataControls.description')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
