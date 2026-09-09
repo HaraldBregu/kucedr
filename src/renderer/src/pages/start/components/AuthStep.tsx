@@ -172,7 +172,9 @@ export function AuthStep(): React.JSX.Element {
 			<div className="flex w-full max-w-sm flex-col gap-6">
 				<Card>
 					<CardHeader className="text-center">
-						<CardTitle className="text-xl">{title}</CardTitle>
+						<CardTitle className="text-xl">
+							<h1 className="text-xl font-medium leading-snug">{title}</h1>
+						</CardTitle>
 						<CardDescription>{description}</CardDescription>
 					</CardHeader>
 					<CardContent>
