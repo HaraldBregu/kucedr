@@ -35,6 +35,8 @@ interface AgentMediaModelConfigurationProps {
 	readonly showIcon?: boolean;
 	readonly grouped?: boolean;
 	readonly showSelectedModel?: boolean;
+	readonly showFieldLabel?: boolean;
+	readonly showContentSeparator?: boolean;
 }
 
 const MEDIA_CONTENT_INPUTS = new Set([
@@ -76,6 +78,8 @@ export function AgentMediaModelConfiguration({
 	showIcon = true,
 	grouped = false,
 	showSelectedModel = false,
+	showFieldLabel = true,
+	showContentSeparator = true,
 }: AgentMediaModelConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
@@ -182,6 +186,8 @@ export function AgentMediaModelConfiguration({
 			showIcon={showIcon}
 			grouped={grouped}
 			showSelectedModel={showSelectedModel}
+			showFieldLabel={showFieldLabel}
+			showContentSeparator={showContentSeparator}
 			triggerTitle={title}
 			description={description}
 			showInlineError

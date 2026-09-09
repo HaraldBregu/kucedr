@@ -223,8 +223,10 @@ const AssistantPage: React.FC = () => {
 					triggerTitle={t('settings.modelServices.model')}
 					description={t('settings.modelServices.modelDescription')}
 					showIcon={false}
+					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					showContentSeparator={false}
 					onChange={(providerId, modelId) => void handleChange(providerId, modelId)}
 				>
 					<ModelOptions
@@ -235,7 +237,11 @@ const AssistantPage: React.FC = () => {
 					/>
 				</ModelProviderConfiguration>
 
-				<RealtimeConversationConfiguration showSelectedModel />
+				<RealtimeConversationConfiguration
+					showFieldLabel={false}
+					showSelectedModel
+					showContentSeparator={false}
+				/>
 
 				<AgentMediaModelConfiguration
 					api={window.models.voice}
@@ -244,8 +250,10 @@ const AssistantPage: React.FC = () => {
 					title={t('settings.modelServices.voiceName')}
 					description={t('settings.modelServices.textToSpeechModelDescription')}
 					showIcon={false}
+					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					showContentSeparator={false}
 				/>
 
 				<AgentMediaModelConfiguration
@@ -255,8 +263,10 @@ const AssistantPage: React.FC = () => {
 					title={t('settings.modelServices.imageAssistantName')}
 					description={t('settings.modelServices.imageModelDescription')}
 					showIcon={false}
+					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					showContentSeparator={false}
 				/>
 
 				<AgentMediaModelConfiguration
@@ -266,8 +276,10 @@ const AssistantPage: React.FC = () => {
 					title={t('settings.modelServices.musicCreatorName')}
 					description={t('settings.modelServices.musicModelDescription')}
 					showIcon={false}
+					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					showContentSeparator={false}
 				/>
 
 				<AgentMediaModelConfiguration
@@ -277,8 +289,10 @@ const AssistantPage: React.FC = () => {
 					title={t('settings.modelServices.videoCreatorName')}
 					description={t('settings.modelServices.videoModelDescription')}
 					showIcon={false}
+					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					showContentSeparator={false}
 				/>
 
 				<Collapsible className="min-w-0 max-w-full overflow-hidden">

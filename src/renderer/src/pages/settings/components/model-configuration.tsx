@@ -20,6 +20,7 @@ interface ModelProviderConfigurationProps {
 	readonly grouped?: boolean;
 	readonly collapsible?: boolean;
 	readonly showSelectedModel?: boolean;
+	readonly showContentSeparator?: boolean;
 	readonly defaultOpen?: boolean;
 	readonly onChange: (nextProviderId: string, nextModelId: string) => void;
 	readonly children?: ReactNode;
@@ -37,6 +38,7 @@ export function ModelProviderConfiguration({
 	grouped = false,
 	collapsible = true,
 	showSelectedModel = false,
+	showContentSeparator = true,
 	defaultOpen = false,
 	onChange,
 	children,
@@ -192,7 +194,7 @@ export function ModelProviderConfiguration({
 				)}
 				<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />
 			</CollapsibleTrigger>
-			<CollapsibleContent className="border-t border-border/60">
+			<CollapsibleContent className={showContentSeparator ? 'border-t border-border/60' : undefined}>
 				{configurationBody}
 			</CollapsibleContent>
 		</Collapsible>

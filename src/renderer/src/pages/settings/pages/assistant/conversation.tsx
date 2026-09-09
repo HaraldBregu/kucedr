@@ -15,12 +15,14 @@ interface RealtimeConversationConfigurationProps {
 	readonly selectDefaultModel?: boolean;
 	readonly showFieldLabel?: boolean;
 	readonly showSelectedModel?: boolean;
+	readonly showContentSeparator?: boolean;
 }
 
 export default function RealtimeConversationConfiguration({
 	selectDefaultModel = true,
 	showFieldLabel = true,
 	showSelectedModel = false,
+	showContentSeparator = true,
 }: RealtimeConversationConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
@@ -176,6 +178,7 @@ export default function RealtimeConversationConfiguration({
 				showIcon={false}
 				showFieldLabel={showFieldLabel}
 				showSelectedModel={showSelectedModel}
+				showContentSeparator={showContentSeparator}
 				grouped
 				onChange={handleModelChange}
 			>
