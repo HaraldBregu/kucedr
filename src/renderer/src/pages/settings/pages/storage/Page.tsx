@@ -144,6 +144,11 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		setSyncStatus(null);
 	};
 
+	const selectProvider = (providerId: string): void => {
+		if (!storage) return;
+		updateDraft({ ...storage, providerId });
+	};
+
 	const pickFolders = async (): Promise<void> => {
 		if (!storage) return;
 		setError(null);
@@ -249,7 +254,12 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 				</div>
 			) : storage ? (
 				<>
-					<Provider />
+					<Provider
+						providers={providers}
+						providerId={storage.providerId}
+						disabled={busy}
+						onChange={selectProvider}
+					/>
 					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 						<CardHeader className="border-b border-border/60 px-4! py-4!">
 							<CardTitle>

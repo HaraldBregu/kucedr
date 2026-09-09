@@ -1080,8 +1080,9 @@
 			"pulling": "Ripristino in corso…",
 			"cancel": "Annulla",
 			"provider": {
-				"title": "Provider di archiviazione",
-				"description": "Scegli quale provider di archiviazione configurato riceve i backup e fornisce i file durante il ripristino."
+				"title": "Archiviazione",
+				"description": "Scegli quale provider di archiviazione configurato riceve i backup e fornisce i file durante il ripristino.",
+				"placeholder": "Seleziona provider di archiviazione"
 			}
 		},
 		"embedding": {
