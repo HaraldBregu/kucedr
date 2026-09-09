@@ -3,6 +3,7 @@ import {
 	BrowserWindow,
 	clipboard,
 	dialog,
+	desktopCapturer,
 	ipcMain,
 	Menu,
 	nativeImage,
@@ -85,6 +86,21 @@ const SYSTEM_PREFERENCE_PANES: Record<SystemPreferencePaneId, string> = {
 	Camera: 'x-apple.systempreferences:com.apple.preference.security?Privacy_Camera',
 	Microphone: 'x-apple.systempreferences:com.apple.preference.security?Privacy_Microphone',
 };
+
+let devScreenCaptureWarmup: Promise<void> | undefined;
+
+function warmUpDevScreenCapture(): Promise<void> {
+	if (devScreenCaptureWarmup) return devScreenCaptureWarmup;
+	devScreenCaptureWarmup = Promise.race([
+		desktopCapturer
+			.getSources({ types: ['screen'], thumbnailSize: { width: 1, height: 1 } })
+			.then(() => undefined),
+		new Promise<void>((resolve) => setTimeout(resolve, 1500)),
+	])
+		.then(() => undefined)
+		.catch(() => undefined);
+	return devScreenCaptureWarmup;
+}
 
 const lightThemeColors: AppThemeColors = {
 	radius: '0.625rem',
