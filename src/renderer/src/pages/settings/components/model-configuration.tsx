@@ -1,12 +1,13 @@
 import React, { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, Bot, ChevronDown } from 'lucide-react';
+import { AlertTriangle, Bot } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { getProviderCatalogItem } from '../../start/setupConstants';
 import { SettingsLoadingRows, SettingsNotice, SettingsRow } from './index';
 import type { ModelConfigurationState } from './model-configuration-state';
+import type { LucideIcon } from 'lucide-react';
 
 interface ModelProviderConfigurationProps {
 	readonly configState: ModelConfigurationState;
@@ -16,6 +17,7 @@ interface ModelProviderConfigurationProps {
 	readonly triggerDescription?: ReactNode;
 	readonly showInlineError?: boolean;
 	readonly showIcon?: boolean;
+	readonly icon?: LucideIcon;
 	readonly showFieldLabel?: boolean;
 	readonly grouped?: boolean;
 	readonly collapsible?: boolean;
@@ -34,6 +36,7 @@ export function ModelProviderConfiguration({
 	triggerDescription,
 	showInlineError = false,
 	showIcon = true,
+	icon: FunctionIcon,
 	showFieldLabel = true,
 	grouped = false,
 	collapsible = true,
@@ -173,7 +176,11 @@ export function ModelProviderConfiguration({
 			<div className="flex w-full items-center gap-3 px-4 py-3.5">
 				<CollapsibleTrigger className="group flex min-w-0 flex-1 items-center gap-3 text-left">
 					{showIcon &&
-						(provider ? (
+						(FunctionIcon ? (
+							<div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
+								<FunctionIcon className="size-4" aria-hidden="true" />
+							</div>
+						) : provider ? (
 							<ProviderAvatar
 								providerId={provider.id}
 								name={providerName}
@@ -194,7 +201,6 @@ export function ModelProviderConfiguration({
 							{triggerDescription ?? (showSelectedModel ? description : modelName)}
 						</p>
 					</div>
-					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />
 				</CollapsibleTrigger>
 				{showSelectedModel && <div className="shrink-0">{collapsibleModelSelect}</div>}
 			</div>
