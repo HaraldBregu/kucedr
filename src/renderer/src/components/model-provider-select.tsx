@@ -115,7 +115,10 @@ export function ModelProviderSelect({
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 				</Button>
 			</PopoverTrigger>
-			<PopoverContent align="end" className="w-max max-w-[calc(100vw-2rem)] p-1">
+			<PopoverContent
+				align="end"
+				className="max-h-[calc(100vh-2rem)] w-max max-w-[calc(100vw-2rem)] overflow-y-auto p-1"
+			>
 				<div role="menu" aria-label={accessibleLabel} className="min-w-0">
 					{providerGroups.flatMap((group) =>
 						group.models.map((model) => {
