@@ -250,7 +250,6 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					showSelectedModel
 					showContentSeparator={false}
-					inlineAdvanced
 				/>
 
 				<AgentMediaModelConfiguration

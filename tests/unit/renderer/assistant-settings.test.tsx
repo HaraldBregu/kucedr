@@ -238,7 +238,6 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const model = await screen.findByRole('combobox', { name: 'Model' });
 	const voiceTrigger = screen.getByRole('button', { name: /Voice/ });
 	expect(voiceTrigger).toHaveTextContent('Text to speech model');
-	expect(voiceTrigger).toHaveTextContent('Eleven v3');
 	expect(voiceTrigger.nextElementSibling).not.toHaveClass('border-t');
 	expect(screen.getAllByText('Text to speech model')).toHaveLength(1);
 	const voice = (await screen.findAllByRole('combobox', { name: 'Voice' })).find((entry) =>
@@ -283,7 +282,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	);
 
 	await user.click(
-		await screen.findByRole('button', { name: /Realtime conversation.*GPT Realtime/ })
+		await screen.findByRole('button', { name: /Realtime conversation/ })
 	);
 	const selector = await screen.findByRole('combobox', { name: 'Realtime conversation' });
 	await user.click(selector);
@@ -329,7 +328,7 @@ it('announces a realtime conversation setup save error', async () => {
 	);
 
 	await user.click(
-		await screen.findByRole('button', { name: /Realtime conversation.*GPT Realtime/ })
+		await screen.findByRole('button', { name: /Realtime conversation/ })
 	);
 	await user.click(await screen.findByRole('combobox', { name: 'Realtime conversation' }));
 	await user.click(await screen.findByRole('option', { name: 'xAI / Grok Voice' }));
