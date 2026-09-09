@@ -335,11 +335,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 						action={
 							<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
 								<PopoverTrigger asChild>
-									<Button
-										variant="outline"
-										size="icon-sm"
-										aria-label={t('common.moreOptions')}
-									>
+									<Button variant="outline" size="icon-sm" aria-label={t('common.moreOptions')}>
 										<MoreHorizontal className="size-3.5" />
 									</Button>
 								</PopoverTrigger>
