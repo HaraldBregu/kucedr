@@ -313,7 +313,13 @@
 				},
 				"microphone": {
 					"label": "Microfono",
-					"description": "Registra l'audio dal microfono per verificare l'accesso all'ingresso."
+					"description": "Registra l'audio dal microfono per verificare l'accesso all'ingresso.",
+					"inputDescription": "Usato per la chat vocale e la dettatura",
+					"systemDefault": "Predefinito di sistema",
+					"unnamed": "Microfono {{number}}",
+					"unavailable": "Microfono non disponibile",
+					"loadInputsError": "Impossibile caricare gli ingressi del microfono.",
+					"saveInputError": "Impossibile salvare l'ingresso del microfono."
 				},
 				"screen": {
 					"label": "Schermo",

@@ -1,3 +1,4 @@
+import { getMicrophoneConstraints } from '@/lib/microphone/constraints';
 import type { RecorderApi } from '@shared/api_types';
 
 type RecorderTrack = RecorderApi['microphone'];
@@ -83,13 +84,13 @@ function createCaptureHost(api: RecorderTrack, getStream: () => Promise<MediaStr
 
 export function initRecorderCapture(): () => void {
 	const disposers = [
-		createCaptureHost(window.recorder.microphone, () =>
+		createCaptureHost(window.recorder.microphone, async () =>
 			navigator.mediaDevices.getUserMedia({
-				audio: { echoCancellation: true, noiseSuppression: true },
+				audio: await getMicrophoneConstraints({ echoCancellation: true, noiseSuppression: true }),
 			})
 		),
-		createCaptureHost(window.recorder.camera, () =>
-			navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+		createCaptureHost(window.recorder.camera, async () =>
+			navigator.mediaDevices.getUserMedia({ audio: await getMicrophoneConstraints(), video: true })
 		),
 		createCaptureHost(window.recorder.screen, () =>
 			navigator.mediaDevices.getDisplayMedia({ video: true })

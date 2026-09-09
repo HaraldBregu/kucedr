@@ -314,7 +314,13 @@
 				},
 				"microphone": {
 					"label": "Microphone",
-					"description": "Record audio from the microphone to verify input access."
+					"description": "Record audio from the microphone to verify input access.",
+					"inputDescription": "Used for voice chat and dictation",
+					"systemDefault": "System default",
+					"unnamed": "Microphone {{number}}",
+					"unavailable": "Microphone unavailable",
+					"loadInputsError": "Unable to load microphone inputs.",
+					"saveInputError": "Unable to save microphone input."
 				},
 				"screen": {
 					"label": "Screen",

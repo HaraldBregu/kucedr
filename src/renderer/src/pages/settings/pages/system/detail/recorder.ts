@@ -1,3 +1,4 @@
+import { getMicrophoneConstraints } from '@/lib/microphone/constraints';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SystemMedia } from './media';
 
@@ -74,7 +75,11 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 			stream =
 				media.source === 'display'
 					? await navigator.mediaDevices.getDisplayMedia(media.constraints)
-					: await navigator.mediaDevices.getUserMedia(media.constraints);
+					: await navigator.mediaDevices.getUserMedia(
+							media.id === 'microphone'
+								? { audio: await getMicrophoneConstraints() }
+								: media.constraints
+						);
 			if (generationRef.current !== generation) {
 				stopStream(stream);
 				return;

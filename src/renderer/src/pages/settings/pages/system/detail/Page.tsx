@@ -14,6 +14,7 @@ import {
 } from '../../../components';
 import { getSystemMedia, type SystemMedia } from './media';
 import { useMediaRecorderTest } from './recorder';
+import { MicrophoneInput } from './Input';
 
 function errorMessage(error: unknown, fallback: string): string {
 	return error instanceof Error ? error.message : fallback;
@@ -101,6 +102,13 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader title={t(media.titleKey)} description={t(media.descriptionKey)} />
+
+			{media.id === 'microphone' && (
+				<MicrophoneInput
+					refreshKey={`${status}-${recorderState}`}
+					disabled={recorderState === 'starting' || recorderState === 'recording'}
+				/>
+			)}
 
 			{permissionError && <SettingsNotice variant="destructive">{permissionError}</SettingsNotice>}
 
