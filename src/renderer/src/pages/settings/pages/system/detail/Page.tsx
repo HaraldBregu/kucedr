@@ -99,6 +99,21 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 		[t]
 	);
 
+	const requestScreenAccess = useCallback(async (): Promise<void> => {
+		if (media.permission) return;
+		setPermissionError('');
+		try {
+			const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+			stream.getTracks().forEach((track) => track.stop());
+			const result = await window.app.getScreenCapturePermission();
+			setStatus(result.systemStatus);
+		} catch (error) {
+			setPermissionError(
+				errorMessage(error, t('settings.system.media.screen.requestError'))
+			);
+		}
+	}, [media.permission, t]);
+
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader title={t(media.titleKey)} description={t(media.descriptionKey)} />
@@ -155,6 +170,15 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 								>
 									{t(`settings.system.permissionStatus.${status}`)}
 								</span>
+								<Button
+									variant="outline"
+									size="xs"
+									disabled={recorderState === 'starting' || recorderState === 'recording'}
+									onClick={() => void requestScreenAccess()}
+								>
+									<ShieldCheck className="size-3" />
+									{t('settings.application.requestScreenRecording')}
+								</Button>
 								<Button variant="outline" size="xs" onClick={() => openSettings('ScreenCapture')}>
 									<Settings className="size-3" />
 									{t('settings.application.openScreenRecording')}

@@ -288,6 +288,7 @@
 			"openAccessibility": "Open Accessibility",
 			"screenRecording": "Screen Recording",
 			"screenRecordingDescription": "Manage screen recording permissions",
+			"requestScreenRecording": "Request Screen Access",
 			"openScreenRecording": "Open Screen Recording",
 			"menuBar": "Menu Bar",
 			"menuBarDescription": "Show or hide the app icon in the menu bar",
@@ -325,7 +326,8 @@
 				"screen": {
 					"label": "Screen",
 					"description": "Capture the screen to verify screen recording access.",
-					"permissionHelp": "Allow Kucedr in System Settings → Privacy & Security → Screen Recording, then fully quit and relaunch the packaged app."
+					"permissionHelp": "Allow the active app in System Settings → Privacy & Security → Screen & System Audio Recording, then fully quit and relaunch it. Development runs appear as Electron; packaged builds appear as Kucedr.",
+					"requestError": "Screen capture was cancelled or denied. Enable the active app in Screen & System Audio Recording, then fully quit and relaunch it."
 				},
 				"test": {
 					"title": "Recording test",

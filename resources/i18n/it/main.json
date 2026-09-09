@@ -287,6 +287,7 @@
 			"openAccessibility": "Apri Accessibilità",
 			"screenRecording": "Registrazione Schermo",
 			"screenRecordingDescription": "Gestisci i permessi di registrazione schermo",
+			"requestScreenRecording": "Richiedi accesso allo schermo",
 			"openScreenRecording": "Apri Registrazione Schermo",
 			"menuBar": "Barra dei Menu",
 			"menuBarDescription": "Mostra o nascondi l'icona dell'app nella barra dei menu",
@@ -324,7 +325,8 @@
 				"screen": {
 					"label": "Schermo",
 					"description": "Cattura lo schermo per verificare l'accesso alla registrazione dello schermo.",
-					"permissionHelp": "Consenti Kucedr in Impostazioni di Sistema → Privacy e Sicurezza → Registrazione Schermo, quindi chiudi completamente e riavvia l'app pacchettizzata."
+					"permissionHelp": "Consenti l'app attiva in Impostazioni di Sistema → Privacy e Sicurezza → Registrazione schermo e audio di sistema, quindi chiudila completamente e riavviala. Le esecuzioni di sviluppo appaiono come Electron; le build pacchettizzate come Kucedr.",
+					"requestError": "La cattura dello schermo è stata annullata o negata. Abilita l'app attiva in Registrazione schermo e audio di sistema, quindi chiudila completamente e riavviala."
 				},
 				"test": {
 					"title": "Prova di registrazione",
