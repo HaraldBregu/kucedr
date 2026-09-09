@@ -66,7 +66,7 @@
 		"quality:check": "npm run quality:audit && npm run typecheck && npm run lint && npm run test:main && npm run test:renderer && npm run test:packages",
 		"dist:win": "cross-env NODE_ENV=production npm run build && electron-builder --win --x64",
 		"dist:win:portable": "cross-env NODE_ENV=production npm run build && electron-builder --win portable --x64",
-		"dist:mac": "cross-env NODE_ENV=production npm run build && electron-builder --mac --x64 && electron-builder --mac --arm64",
+		"dist:mac": "cross-env NODE_ENV=production npm run typecheck:app && electron-vite build && electron-builder --mac --x64 && electron-builder --mac --arm64",
 		"dist:mac:dmg": "cross-env NODE_ENV=production npm run build && electron-builder --mac dmg --x64 && electron-builder --mac dmg --arm64",
 		"dist:linux:appimage": "cross-env NODE_ENV=production npm run build && electron-builder --linux AppImage --x64",
 		"dist:linux:portable": "cross-env NODE_ENV=production npm run build && electron-builder --linux AppImage tar.gz --x64",
