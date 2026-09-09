@@ -101,12 +101,20 @@ export function createRecorder(channels: { command: string; event: string }): Re
 	function fail(id: string, error: unknown): void {
 		const recording = recordings.get(id);
 		if (!isActive(recording)) return;
+		const writer = writers.get(id);
+		writers.delete(id);
 		settle({
 			...recording,
 			status: 'error',
 			error: error instanceof Error ? error.message : String(error),
 		});
-		void closeWriter(id, true);
+		void (async () => {
+			try {
+				await writer?.handle?.close();
+			} finally {
+				await fs.rm(recording.url, { force: true });
+			}
+		})();
 	}
 
 	async function openWriter(recording: Recording): Promise<FileHandle> {
