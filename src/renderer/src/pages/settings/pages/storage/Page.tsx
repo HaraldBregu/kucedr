@@ -373,49 +373,44 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 									}
 								/>
 							</CardContent>
-
 						</Card>
 					</SettingsSection>
 
 					<div className="flex flex-wrap justify-end gap-2">
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => setRestoreOpen(true)}
-									disabled={controlsDisabled || storage.paths.length === 0}
-								>
-									<Download className="size-3" />
-									{runningOperation?.operation === 'restore'
-										? t('settings.storage.pulling')
-										: t('settings.storage.restore')}
-								</Button>
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => void runBackup()}
-									disabled={controlsDisabled || storage.paths.length === 0}
-								>
-									<Upload className="size-3" />
-									{runningOperation?.operation === 'backup'
-										? t('settings.storage.pushing')
-										: t('settings.storage.backup')}
-								</Button>
-								<Button
-									variant="ghost"
-									size="sm"
-									onClick={() => setDraft(null)}
-									disabled={!draft || controlsDisabled}
-								>
-									{t('settings.storage.cancel')}
-								</Button>
-								<Button
-									size="sm"
-									onClick={() => void saveSync()}
-									disabled={!draft || controlsDisabled}
-								>
-									<Save className="size-3" />
-									{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
-								</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => setRestoreOpen(true)}
+							disabled={controlsDisabled || storage.paths.length === 0}
+						>
+							<Download className="size-3" />
+							{runningOperation?.operation === 'restore'
+								? t('settings.storage.pulling')
+								: t('settings.storage.restore')}
+						</Button>
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => void runBackup()}
+							disabled={controlsDisabled || storage.paths.length === 0}
+						>
+							<Upload className="size-3" />
+							{runningOperation?.operation === 'backup'
+								? t('settings.storage.pushing')
+								: t('settings.storage.backup')}
+						</Button>
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={() => setDraft(null)}
+							disabled={!draft || controlsDisabled}
+						>
+							{t('settings.storage.cancel')}
+						</Button>
+						<Button size="sm" onClick={() => void saveSync()} disabled={!draft || controlsDisabled}>
+							<Save className="size-3" />
+							{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
+						</Button>
 					</div>
 
 					{syncStatus && <SettingsNotice icon={FolderSync}>{syncStatus}</SettingsNotice>}
