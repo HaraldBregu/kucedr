@@ -222,23 +222,14 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 				}
 				if (status === 'denied' || status === 'restricted') {
 					callback({});
-					void (parentWindow
-						? dialog.showMessageBox(parentWindow, {
-							type: 'error',
-						title: 'Screen Recording Permission Required',
-						message: 'Kucedr cannot access the screen.',
-						detail:
-							'Open System Settings → Privacy & Security → Screen Recording, enable Kucedr, then fully quit and relaunch the packaged app.',
-						buttons: ['OK'],
-						})
-						: dialog.showMessageBox({
+					showDisplayCaptureMessage(parentWindow, {
 							type: 'error',
 							title: 'Screen Recording Permission Required',
 							message: 'Kucedr cannot access the screen.',
-							detail:
-								'Open System Settings → Privacy & Security → Screen Recording, enable Kucedr, then fully quit and relaunch the packaged app.',
-							buttons: ['OK'],
-						}));
+								detail:
+									'Open System Settings → Privacy & Security → Screen Recording, enable Kucedr, then fully quit and relaunch the packaged app.',
+								buttons: ['OK'],
+					});
 					return;
 				}
 			}
@@ -247,6 +238,16 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 				.then((sources) => {
 					if (sources.length === 0) {
 						callback({});
+						showDisplayCaptureMessage(parentWindow, {
+							type: 'error',
+							title: 'Desktop Capture Unavailable',
+							message: 'Kucedr could not find a display or window to record.',
+							detail:
+								process.platform === 'linux'
+									? 'On Wayland, ensure PipeWire and xdg-desktop-portal are running and that your desktop portal supports screen sharing. On X11, retry after confirming that a display is available.'
+									: 'Close other capture sessions and try again.',
+							buttons: ['OK'],
+						});
 						return;
 					}
 					if (sources.length === 1) {
@@ -267,7 +268,19 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 						})
 						.catch(() => callback({}));
 				})
-				.catch(() => callback({}));
+				.catch(() => {
+					callback({});
+					showDisplayCaptureMessage(parentWindow, {
+						type: 'error',
+						title: 'Desktop Capture Unavailable',
+						message: 'Kucedr could not access desktop capture.',
+						detail:
+							process.platform === 'linux'
+								? 'On Wayland, check PipeWire and xdg-desktop-portal. On X11, verify that the desktop session exposes the display to Electron.'
+								: 'Check the operating system screen-capture permission and try again.',
+						buttons: ['OK'],
+					});
+				});
 		}, {
 			useSystemPicker:
 				process.platform === 'darwin' &&
