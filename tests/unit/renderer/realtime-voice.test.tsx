@@ -148,6 +148,7 @@ describe('useRealtimeVoice', () => {
 		});
 		window.models = { realtimeVoice: api } as unknown as Window['models'];
 		window.app = {
+			getMicrophoneInputId: jest.fn().mockResolvedValue('default'),
 			getMicrophonePermission: jest.fn().mockResolvedValue({
 				enabled: true,
 				systemStatus: 'granted',

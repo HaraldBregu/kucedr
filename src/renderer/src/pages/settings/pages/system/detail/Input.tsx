@@ -59,13 +59,16 @@ export function MicrophoneInput({
 		};
 	}, [refresh, refreshKey]);
 
-	const unavailable = inputId !== 'default' && !inputs.some((input) => input.deviceId === inputId);
+	const selectedIndex = inputs.findIndex((input) => input.deviceId === inputId);
+	const unavailable = inputId !== 'default' && selectedIndex === -1;
 	const defaultLabel = t('settings.system.media.microphone.systemDefault');
 	const selectedLabel =
 		inputId === 'default'
 			? defaultLabel
-			: inputs.find((input) => input.deviceId === inputId)?.label ||
-				t('settings.system.media.microphone.unavailable');
+			: selectedIndex === -1
+				? t('settings.system.media.microphone.unavailable')
+				: inputs[selectedIndex].label ||
+					t('settings.system.media.microphone.unnamed', { number: selectedIndex + 1 });
 
 	return (
 		<>
@@ -109,7 +112,7 @@ export function MicrophoneInput({
 							alignItemWithTrigger={false}
 							className="w-80 max-w-[calc(100vw-2rem)] p-1"
 						>
-							<SelectItem value="default">
+							<SelectItem value="default" className="[&>span]:min-w-0 [&>span]:shrink">
 								<span className="min-w-0 truncate" title={currentInput?.label || defaultLabel}>
 									{defaultLabel}
 									{currentInput?.label ? ` (${currentInput.label})` : ''}

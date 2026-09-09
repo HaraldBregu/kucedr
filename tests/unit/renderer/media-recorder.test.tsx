@@ -39,6 +39,9 @@ describe('useMediaRecorderTest', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
+		window.app = {
+			getMicrophoneInputId: jest.fn().mockResolvedValue('usb-microphone'),
+		} as unknown as Window['app'];
 		getUserMedia = jest.fn(
 			() =>
 				new Promise<MediaStream>((resolve) => {
@@ -60,12 +63,13 @@ describe('useMediaRecorderTest', () => {
 		let first: Promise<void>;
 		let second: Promise<void>;
 
-		act(() => {
+		await act(async () => {
 			first = result.current.start();
 			second = result.current.start();
 		});
 		expect(result.current.state).toBe('starting');
 		expect(getUserMedia).toHaveBeenCalledTimes(1);
+		expect(getUserMedia).toHaveBeenCalledWith({ audio: { deviceId: { exact: 'usb-microphone' } } });
 
 		await act(async () => {
 			resolveStream(stream);
@@ -78,7 +82,7 @@ describe('useMediaRecorderTest', () => {
 		const { result, unmount } = renderHook(() => useMediaRecorderTest(media));
 		let pending: Promise<void>;
 
-		act(() => {
+		await act(async () => {
 			pending = result.current.start();
 		});
 		unmount();
