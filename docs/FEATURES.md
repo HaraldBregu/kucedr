@@ -555,7 +555,15 @@ no enable/disable control.
 - Microphone can be recorded and played back.
 - Camera and screen capture show a live preview, can record, stop, retry, and play the result.
 - On non-macOS platforms, the explicit system permission status is reported as unknown and the current application-level microphone/camera toggle handlers do not disable capture.
-- Display capture automatically chooses the first source returned by Electron; Kucedr does not present its own source picker.
+- Display capture selects one display or window per recording. macOS 15+ uses Electron's native system picker when available; other platforms use a native Kucedr source chooser when Electron returns multiple sources. Linux PipeWire environments may expose only one portal-mediated source.
+- Background recorder tools stream WebM chunks to a main-process-owned file with ordered writes, bounded in-flight buffering, no silent overwrite, and completion only after the file is closed. Screen recording is video-only; system-audio loopback is not enabled.
+
+### Screen recording troubleshooting
+
+- macOS 10.15+ requires Screen Recording permission. In a packaged build, enable Kucedr under System Settings → Privacy & Security → Screen Recording, then fully quit and relaunch Kucedr. Development runs are permissioned as the development app/host and should not be treated as packaged-app validation.
+- Windows uses Electron desktop capture and supports one selected display or window per recording. System-audio loopback is not enabled by the screen recorder.
+- Linux X11 relies on Electron desktop source enumeration. Linux Wayland relies on the desktop's PipeWire/portal capture support; unrestricted display enumeration and silent source selection are not assumed. If the portal or PipeWire service is unavailable, capture fails and the recording returns to an error state.
+- Recorder output is WebM and the destination name must use `.webm`. Existing files are never overwritten. A single recording is limited to 256 MiB; capture stops with an error if disk writes cannot keep up or the limit is reached.
 
 ### Window, tray, and native menus
 
