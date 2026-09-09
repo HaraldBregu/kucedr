@@ -160,13 +160,14 @@ export async function cleanup(services: MainServices): Promise<void> {
 		storageOperations,
 	} = services;
 	logger.info('Bootstrap', 'Starting cleanup');
-	await Promise.all([microphone.destroy(), camera.destroy(), screen.destroy()]);
+	const recorderCleanup = Promise.all([microphone.destroy(), camera.destroy(), screen.destroy()]);
 	terminalManager.shutdown();
 	agentService.destroy();
 	coderService.destroy();
 	await conversationService.execute({ type: 'voice', action: 'stop-all' });
 	await windowContextManager.destroyAll();
 	await storageOperations.settle();
+	await recorderCleanup;
 	await cloudService.destroy();
 	providerSyncService.destroy();
 	authService.destroy();
