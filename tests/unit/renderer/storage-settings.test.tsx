@@ -307,7 +307,7 @@ it.each([undefined, 'deleted'])(
 		);
 		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
-		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 		expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
 		expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();

@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {
 	AlertTriangle,
 	Download,
-	FolderPlus,
 	FolderSync,
+	Plus,
 	Save,
 	Trash2,
 	Upload,
@@ -262,6 +262,17 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 					<SettingsSection
 						title={t('settings.storage.sync.title')}
 						description={t('settings.storage.sync.description')}
+						action={
+							<Button
+								variant="outline"
+								size="icon-sm"
+								aria-label={t('settings.storage.sync.addFolders')}
+								disabled={controlsDisabled}
+								onClick={() => void pickFolders()}
+							>
+								<Plus className="size-3" />
+							</Button>
+						}
 					>
 					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 						<CardContent className="p-0!">
@@ -315,18 +326,6 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 									}
 								/>
 							))}
-
-							<div className="border-b border-border/60 px-4 py-3">
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={() => void pickFolders()}
-									disabled={controlsDisabled}
-								>
-									<FolderPlus className="size-3" />
-									{t('settings.storage.sync.addFolders')}
-								</Button>
-							</div>
 
 							<SettingsRow
 								title={t('settings.storage.autoSync.interval')}
