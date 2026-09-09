@@ -31,6 +31,7 @@ import { SupabaseCloudRepository } from './cloud/supabase/records';
 import { SupabaseProviderCloud } from './cloud/supabase/providers';
 import { ProviderSyncService } from './providers/sync';
 import { providerVault } from './providers/vault';
+import { camera, microphone, screen } from './recorder';
 
 export interface MainServices {
 	appState: AppState;
@@ -159,6 +160,7 @@ export async function cleanup(services: MainServices): Promise<void> {
 		storageOperations,
 	} = services;
 	logger.info('Bootstrap', 'Starting cleanup');
+	await Promise.all([microphone.destroy(), camera.destroy(), screen.destroy()]);
 	terminalManager.shutdown();
 	agentService.destroy();
 	coderService.destroy();
