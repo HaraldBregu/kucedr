@@ -1024,6 +1024,8 @@
 			},
 			"syncSaved": "Backup settings saved.",
 			"autoSync": {
+				"sectionTitle": "Automation",
+				"sectionDescription": "Configure when backups run automatically and customize the schedule with cron.",
 				"description": "Back up the selected folders automatically on a schedule.",
 				"cronExpression": "Cron expression",
 				"cronDescription": "Five-field cron schedule in local time. For example, 0 3 * * * runs daily at 03:00.",

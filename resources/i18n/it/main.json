@@ -1023,6 +1023,8 @@
 			},
 			"syncSaved": "Impostazioni backup salvate.",
 			"autoSync": {
+				"sectionTitle": "Automazione",
+				"sectionDescription": "Configura quando eseguire automaticamente i backup e personalizza la pianificazione con cron.",
 				"description": "Esegui automaticamente il backup delle cartelle selezionate secondo una pianificazione.",
 				"cronExpression": "Espressione cron",
 				"cronDescription": "Pianificazione cron a cinque campi nell'ora locale. Ad esempio, 0 3 * * * viene eseguita ogni giorno alle 03:00.",

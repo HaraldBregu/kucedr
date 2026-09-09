@@ -23,6 +23,9 @@ jest.mock('react-i18next', () => {
 		'settings.storage.sync.save': 'Save schedule',
 		'settings.storage.syncSaved': 'Schedule saved',
 		'settings.storage.autoSync.interval': 'Backup interval',
+		'settings.storage.autoSync.sectionTitle': 'Automation',
+		'settings.storage.autoSync.sectionDescription':
+			'Configure when backups run automatically and customize the schedule with cron.',
 		'settings.storage.autoSync.description': 'Run on schedule',
 		'settings.storage.autoSync.off': 'Off',
 		'settings.storage.autoSync.every1d': 'Every day',
