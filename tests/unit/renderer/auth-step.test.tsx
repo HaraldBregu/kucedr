@@ -80,7 +80,7 @@ it('keeps the eight-character minimum for new passwords', async () => {
 			<AuthStep />
 		</AuthProvider>
 	);
-	await user.click(screen.getByRole('button', { name: 'New to Kucedr? Create an account' }));
+	await user.click(screen.getByRole('button', { name: 'Create an account' }));
 
 	expect(screen.getByLabelText('Password')).toHaveAttribute('minlength', '8');
 	expect(screen.getByLabelText('Confirm password')).toHaveAttribute('minlength', '8');
@@ -117,7 +117,7 @@ it('creates an account and shows the confirmation state', async () => {
 			<AuthStep />
 		</AuthProvider>
 	);
-	await user.click(screen.getByRole('button', { name: 'New to Kucedr? Create an account' }));
+	await user.click(screen.getByRole('button', { name: 'Create an account' }));
 	await user.type(screen.getByLabelText('Email'), 'new@example.test');
 	await user.type(screen.getByLabelText('Password'), 'valid-password');
 	await user.type(screen.getByLabelText('Confirm password'), 'valid-password');
