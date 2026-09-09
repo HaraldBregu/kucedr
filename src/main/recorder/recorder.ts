@@ -18,6 +18,7 @@ const MAX_PENDING_CHUNKS = 8;
 
 type RecordingWriter = {
 	handle: FileHandle | null;
+	ownsFile: boolean;
 	chain: Promise<void>;
 	nextSequence: number;
 	pending: number;
@@ -90,7 +91,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 			try {
 				await writer.handle?.close();
 			} finally {
-				if (removeFile) {
+				if (removeFile && writer.ownsFile) {
 					const recording = recordings.get(id);
 					if (recording) await fs.rm(recording.url, { force: true });
 				}
@@ -111,7 +112,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 		try {
 			await writer?.handle?.close();
 		} finally {
-			await fs.rm(recording.url, { force: true });
+			if (writer?.ownsFile) await fs.rm(recording.url, { force: true });
 		}
 	}
 
@@ -121,6 +122,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 		if (writer.handle) return writer.handle;
 		await fs.mkdir(path.dirname(recording.url), { recursive: true });
 		writer.handle = await fs.open(recording.url, 'wx');
+		writer.ownsFile = true;
 		return writer.handle;
 	}
 
@@ -174,6 +176,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 			captureHosts.set(recording.id, captureWindow.webContents);
 			writers.set(recording.id, {
 				handle: null,
+				ownsFile: false,
 				chain: Promise.resolve(),
 				nextSequence: 0,
 				pending: 0,
@@ -241,7 +244,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 				throw error;
 			});
 			try {
-				await operation;
+				await writer.chain;
 			} finally {
 				writer.pending -= 1;
 			}
