@@ -87,7 +87,10 @@ function ItemTitle({ children, className }: ItemTitleProps): React.JSX.Element {
 	return (
 		<div
 			data-slot="item-title"
-			className={cn('line-clamp-1 flex w-fit shrink-0 items-center text-[13px] font-medium text-foreground', className)}
+			className={cn(
+				'line-clamp-1 flex w-fit shrink-0 items-center text-[13px] font-medium text-foreground',
+				className
+			)}
 		>
 			{children}
 		</div>
@@ -101,10 +104,7 @@ interface ItemActionsProps {
 
 function ItemActions({ children, className }: ItemActionsProps): React.JSX.Element {
 	return (
-		<div
-			data-slot="item-actions"
-			className={cn('flex flex-1 items-center', className)}
-		>
+		<div data-slot="item-actions" className={cn('flex flex-1 items-center', className)}>
 			{children}
 		</div>
 	);

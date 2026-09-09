@@ -260,9 +260,9 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const voice = (await screen.findAllByRole('button', { name: 'Voice' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
-	const realtimeConversation = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
-		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
-	);
+	const realtimeConversation = (
+		await screen.findAllByRole('button', { name: 'Realtime conversation' })
+	).find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
 	const image = (await screen.findAllByRole('button', { name: 'Image' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
@@ -320,9 +320,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	expect(selector).toBeDefined();
 	if (!selector) return;
 	await user.click(selector);
-	expect(
-		screen.queryByRole('menuitemradio', { name: /Custom Realtime/ })
-	).not.toBeInTheDocument();
+	expect(screen.queryByRole('menuitemradio', { name: /Custom Realtime/ })).not.toBeInTheDocument();
 	await user.click(await screen.findByRole('menuitemradio', { name: /Grok Voice/ }));
 
 	await waitFor(() => {
