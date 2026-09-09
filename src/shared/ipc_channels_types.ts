@@ -476,6 +476,10 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./app_types').CameraPermissionSettings;
 	};
+	[AppChannels.getScreenCapturePermission]: {
+		args: [];
+		result: import('./app_types').ScreenCapturePermissionSettings;
+	};
 	[AppChannels.models]: {
 		args: [];
 		result: import('./model_types').CatalogModel[];

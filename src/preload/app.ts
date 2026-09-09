@@ -149,6 +149,9 @@ export const app: AppApi = {
 	requestCameraPermission: () => {
 		return typedInvokeUnwrap(AppChannels.requestCameraPermission);
 	},
+	getScreenCapturePermission: () => {
+		return typedInvokeUnwrap(AppChannels.getScreenCapturePermission);
+	},
 	openVideo: (path: string): Promise<void> => {
 		const normalizedPath = optionalTrimmedString(path);
 		if (!normalizedPath) throw new Error('Invalid video path.');

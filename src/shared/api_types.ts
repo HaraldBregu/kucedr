@@ -92,6 +92,7 @@ import type {
 import type {
 	MicrophonePermissionSettings,
 	CameraPermissionSettings,
+	ScreenCapturePermissionSettings,
 	SystemPreferencePaneId,
 	AppLanguage,
 	AppLaunchState,
@@ -500,6 +501,7 @@ export interface AppApi extends AppStorageApi {
 	getCameraPermission: () => Promise<CameraPermissionSettings>;
 	setCameraEnabled: (enabled: boolean) => Promise<CameraPermissionSettings>;
 	requestCameraPermission: () => Promise<CameraPermissionSettings>;
+	getScreenCapturePermission: () => Promise<ScreenCapturePermissionSettings>;
 	openVideo: (path: string) => Promise<void>;
 	showImageContextMenu: (path: string) => Promise<void>;
 	showVideoContextMenu: (path: string) => Promise<void>;

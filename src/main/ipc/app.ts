@@ -736,6 +736,24 @@ export class AppIpc implements IpcModule {
 			}, AppChannels.requestCameraPermission)
 		);
 
+		ipcMain.handle(
+			AppChannels.getScreenCapturePermission,
+			wrapSimpleHandler(() => {
+				if (process.platform !== 'darwin') {
+					return { systemStatus: 'unknown', requiresRelaunch: false };
+				}
+				try {
+					const systemStatus = systemPreferences.getMediaAccessStatus('screen');
+					return {
+						systemStatus,
+						requiresRelaunch: systemStatus === 'granted',
+					};
+				} catch {
+					return { systemStatus: 'unknown', requiresRelaunch: false };
+				}
+			}, AppChannels.getScreenCapturePermission)
+		);
+
 		logger.info('AppIpc', `Registered ${this.name} module`);
 	}
 }

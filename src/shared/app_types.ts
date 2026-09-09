@@ -33,6 +33,11 @@ export interface CameraPermissionSettings {
 	readonly canRequest: boolean;
 }
 
+export interface ScreenCapturePermissionSettings {
+	readonly systemStatus: MicrophoneSystemPermissionStatus;
+	readonly requiresRelaunch: boolean;
+}
+
 export type SystemPreferencePaneId = 'Accessibility' | 'ScreenCapture' | 'Camera' | 'Microphone';
 
 export type AppLanguage = 'en' | 'it';
