@@ -11,6 +11,7 @@ jest.mock('react-i18next', () => {
 		'settings.storage.configurationTitle': 'Cloud Backup',
 		'settings.storage.description': 'Choose folders to back up securely.',
 		'settings.storage.provider.title': 'Storage provider',
+		'settings.storage.provider.placeholder': 'Select storage provider',
 		'settings.storage.provider.manage': 'Manage storage',
 		'settings.storage.cancel': 'Cancel',
 		'settings.storage.sync.title': 'Cloud Backup',
@@ -292,6 +293,7 @@ it.each([undefined, 'deleted'])(
 		expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toBeEnabled();
+		await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 		expect(screen.getByRole('link', { name: 'Manage storage' })).toHaveAttribute(
 			'href',
 			'/settings/providers/storage'

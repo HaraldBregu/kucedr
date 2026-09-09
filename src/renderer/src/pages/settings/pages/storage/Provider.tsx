@@ -61,7 +61,7 @@ export default function Provider({
 								variant="outline"
 								size="sm"
 								disabled={disabled || providers.length === 0}
-								aria-label={providerTitle}
+								aria-label={providerPlaceholder}
 								className="min-w-40 max-w-full justify-between text-xs"
 							>
 								<span className="min-w-0 truncate">
