@@ -58,6 +58,10 @@ const storageApi = {
 	restore: jest.fn(),
 };
 
+const openActions = async (user: ReturnType<typeof userEvent.setup>): Promise<void> => {
+	await user.click(await screen.findByRole('button', { name: 'More options' }));
+};
+
 beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
@@ -102,7 +106,7 @@ it('shows the storage provider description beneath the title and before backup s
 		description.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING
 	).toBeTruthy();
 	expect(screen.queryByText(/sign in|supabase|secure key sync/i)).not.toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
 	expect(screen.queryByText('Media library')).not.toBeInTheDocument();
 	expect(screen.queryByText('/Users/haraldbregu/.kucedr/library')).not.toBeInTheDocument();
@@ -121,8 +125,10 @@ it('keeps backup controls disabled when no providers exist', async () => {
 			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
 		)
 	).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
-	expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
+	const user = userEvent.setup();
+	await openActions(user);
+	expect(screen.getByRole('menuitem', { name: 'Back up now' })).toBeDisabled();
+	expect(screen.getByRole('menuitem', { name: 'Restore from cloud' })).toBeDisabled();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
@@ -137,9 +143,9 @@ it('retries a failed provider load and restores the saved selection', async () =
 		</MemoryRouter>
 	);
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not load storage settings.');
-	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
 	await user.click(screen.getByRole('button', { name: 'Try Again' }));
-	await waitFor(() => expect(screen.getByRole('button', { name: 'Back up now' })).toBeEnabled());
+	await waitFor(() => expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled());
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toHaveTextContent('Production files');
 	expect(
 		screen.getByText(
@@ -157,7 +163,8 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 			<CloudPage />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
+	await openActions(user);
+	await user.click(screen.getByRole('menuitem', { name: 'Back up now' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save backup settings.');
 	expect(storageApi.backup).not.toHaveBeenCalled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
