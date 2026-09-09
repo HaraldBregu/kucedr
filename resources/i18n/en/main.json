@@ -1019,8 +1019,7 @@
 				"description": "Choose local folders and back them up securely on a schedule.",
 				"addFolders": "Add folders",
 				"folder": "Selected folder",
-				"removeFolder": "Remove folder",
-				"save": "Save backup settings"
+				"removeFolder": "Remove folder"
 			},
 			"syncSaved": "Backup settings saved.",
 			"autoSync": {
@@ -1042,7 +1041,6 @@
 				"every7d": "Every 7 days",
 				"custom": "Custom schedule"
 			},
-			"saving": "Saving…",
 			"errors": {
 				"load": "Could not load storage settings.",
 				"pickFolders": "Could not select folders.",

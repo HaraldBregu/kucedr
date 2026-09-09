@@ -1018,8 +1018,7 @@
 				"description": "Scegli le cartelle locali ed eseguine il backup in modo sicuro secondo una pianificazione.",
 				"addFolders": "Aggiungi cartelle",
 				"folder": "Cartella selezionata",
-				"removeFolder": "Rimuovi cartella",
-				"save": "Salva impostazioni backup"
+				"removeFolder": "Rimuovi cartella"
 			},
 			"syncSaved": "Impostazioni backup salvate.",
 			"autoSync": {
@@ -1041,7 +1040,6 @@
 				"every7d": "Ogni 7 giorni",
 				"custom": "Pianificazione personalizzata"
 			},
-			"saving": "Salvataggio…",
 			"errors": {
 				"load": "Impossibile caricare le impostazioni di archiviazione.",
 				"pickFolders": "Impossibile selezionare le cartelle.",
