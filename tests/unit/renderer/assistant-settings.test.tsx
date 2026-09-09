@@ -314,12 +314,16 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	);
 
 	await user.click(await screen.findByRole('button', { name: /Realtime conversation/ }));
-	const selector = await screen.findByRole('combobox', { name: 'Realtime conversation' });
+	const selector = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
+		(element) => element.getAttribute('aria-haspopup') === 'dialog'
+	);
+	expect(selector).toBeDefined();
+	if (!selector) return;
 	await user.click(selector);
 	expect(
-		screen.queryByRole('option', { name: 'OpenAI / Custom Realtime' })
+		screen.queryByRole('menuitemradio', { name: /Custom Realtime/ })
 	).not.toBeInTheDocument();
-	await user.click(await screen.findByRole('option', { name: 'xAI / Grok Voice' }));
+	await user.click(await screen.findByRole('menuitemradio', { name: /Grok Voice/ }));
 
 	await waitFor(() => {
 		expect(realtimeSetSetup).toHaveBeenCalledWith({
@@ -358,8 +362,13 @@ it('announces a realtime conversation setup save error', async () => {
 	);
 
 	await user.click(await screen.findByRole('button', { name: /Realtime conversation/ }));
-	await user.click(await screen.findByRole('combobox', { name: 'Realtime conversation' }));
-	await user.click(await screen.findByRole('option', { name: 'xAI / Grok Voice' }));
+	const selector = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
+		(element) => element.getAttribute('aria-haspopup') === 'dialog'
+	);
+	expect(selector).toBeDefined();
+	if (!selector) return;
+	await user.click(selector);
+	await user.click(await screen.findByRole('menuitemradio', { name: /Grok Voice/ }));
 
 	expect(await screen.findByRole('alert')).toHaveTextContent('Realtime setup could not be saved.');
 });
