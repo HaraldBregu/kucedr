@@ -173,7 +173,7 @@ export function ModelProviderConfiguration({
 					: 'min-w-0 max-w-full overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10'
 			}
 		>
-			<div className="flex w-full items-center gap-3 px-4 py-3.5">
+			<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
 				<CollapsibleTrigger className="group flex min-w-0 flex-1 items-center gap-3 text-left">
 					{showIcon &&
 						(FunctionIcon ? (
