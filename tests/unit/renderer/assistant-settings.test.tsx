@@ -259,8 +259,9 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(search).toHaveTextContent('Brave');
 
 	expect(cards.every(Boolean)).toBe(true);
-	expect(new Set(cards.slice(0, 6)).size).toBe(1);
-	expect(cards[6]).not.toBe(cards[0]);
+	expect(new Set(cards.slice(0, 3)).size).toBe(1);
+	expect(new Set(cards.slice(3)).size).toBe(1);
+	expect(cards[3]).not.toBe(cards[0]);
 
 	const wiki = screen.getByRole('button', { name: /LLM Wiki/ });
 	const rag = screen.getByRole('button', { name: /RAG/ });
