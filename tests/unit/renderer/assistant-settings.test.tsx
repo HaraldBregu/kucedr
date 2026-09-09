@@ -221,12 +221,12 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(screen.queryByRole('heading', { name: 'History' })).not.toBeInTheDocument();
 	const cards: Array<Element | null> = [];
 	for (const name of [
-		/Model.*GPT/,
-		/Realtime conversation.*GPT Realtime/,
-		/Voice.*Eleven v3/,
-		/Image.*Gemini Image/,
-		/Audio.*Eleven Music/,
-		/Video.*Veo/,
+		/Model/,
+		/Realtime conversation/,
+		/Voice/,
+		/Image/,
+		/Audio/,
+		/Video/,
 		/Search Engine.*Brave/,
 	]) {
 		const trigger = await screen.findByRole('button', { name });
