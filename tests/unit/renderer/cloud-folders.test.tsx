@@ -81,84 +81,39 @@ beforeEach(() => {
 	});
 });
 
-it('shows storage selection beneath the title and before backup setup without login or key sync', async () => {
-	const user = userEvent.setup();
+it('shows the storage provider description beneath the title and before backup setup', async () => {
 	render(
 		<MemoryRouter>
 			<CloudPage />
 		</MemoryRouter>
 	);
 	const title = screen.getByRole('heading', { name: 'Cloud', exact: true });
-	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
-	expect(disclosure).toHaveAttribute('aria-expanded', 'false');
-	expect(disclosure).toHaveTextContent('Select storage provider');
-	const selector = screen.getByRole('button', { name: 'Select storage provider' });
-	expect(selector).toHaveTextContent('Select storage provider');
-	await user.click(disclosure);
-	expect(disclosure).toHaveAttribute('aria-expanded', 'true');
+	const description = await screen.findByText(
+		'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+	);
 	const backup = screen.getByRole('heading', { name: 'Cloud Backup' });
-	expect(title.compareDocumentPosition(selector) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-	expect(selector.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(title.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(description.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 	expect(screen.queryByText(/sign in|supabase|secure key sync/i)).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
-	expect(screen.getByRole('link', { name: 'Manage storage' })).toHaveAttribute(
-		'href',
-		'/settings/providers/storage'
-	);
+	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
 
-it('saves a chosen provider before starting backup while signed out', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-	await user.click(screen.getByRole('button', { name: 'Select storage provider' }));
-	await user.click(await screen.findByRole('menuitemradio', { name: 'Archive' }));
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toHaveTextContent('Archive');
-	await user.click(screen.getByRole('button', { name: 'Back up now' }));
-	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledTimes(1));
-	expect(storageApi.saveSettings).toHaveBeenCalledWith({ ...settings, providerId: 'archive' });
-	expect(storageApi.saveSettings.mock.invocationCallOrder[0]).toBeLessThan(
-		storageApi.backup.mock.invocationCallOrder[0]
-	);
-});
-
-it('loads the saved selection and cancels a provider change without overwriting it', async () => {
-	const user = userEvent.setup();
-	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: 'primary' });
-	render(
-		<MemoryRouter>
-			<CloudPage />
-		</MemoryRouter>
-	);
-	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
-	expect(disclosure).toHaveTextContent('Production files');
-	const selector = screen.getByRole('button', { name: 'Select storage provider' });
-	expect(selector).toHaveTextContent('Production files');
-	await user.click(selector);
-	await user.click(await screen.findByRole('menuitemradio', { name: 'Archive' }));
-	await user.click(screen.getByRole('button', { name: 'Cancel', exact: true }));
-	expect(selector).toHaveTextContent('Production files');
-	expect(storageApi.saveSettings).not.toHaveBeenCalled();
-	expect(disclosure).toHaveAttribute('aria-expanded', 'false');
-	expect(disclosure).toHaveTextContent('Production files');
-});
-
-it('offers storage configuration when no providers exist', async () => {
-	const user = userEvent.setup();
+it('keeps backup controls disabled when no providers exist', async () => {
 	storageApi.listProviders.mockResolvedValue([]);
 	render(
 		<MemoryRouter>
 			<CloudPage />
 		</MemoryRouter>
 	);
-	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
-	expect(disclosure).toHaveTextContent('Add a storage provider before setting up backups.');
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeDisabled();
+	expect(
+		await screen.findByText(
+			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+		)
+	).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
+	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
 
 it('retries a failed provider load and restores the saved selection', async () => {
@@ -174,9 +129,11 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	await user.click(screen.getByRole('button', { name: 'Try Again' }));
 	await waitFor(() => expect(screen.getByRole('button', { name: 'Back up now' })).toBeEnabled());
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toHaveTextContent(
-		'Production files'
-	);
+	expect(
+		screen.getByText(
+			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+		)
+	).toBeInTheDocument();
 });
 
 it('keeps a failed settings save editable and does not start a backup', async () => {
@@ -191,5 +148,5 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save backup settings.');
 	expect(storageApi.backup).not.toHaveBeenCalled();
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeEnabled();
+	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });

@@ -141,7 +141,11 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 			syncCronExpression: '0 4 * * *',
 		})
 	);
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeEnabled();
+	expect(
+		screen.getByText(
+			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+		)
+	).toBeInTheDocument();
 });
 
 it('backs up directly and confirms before restoring matching local files', async () => {
@@ -198,7 +202,7 @@ it('rehydrates a running backup after the page remounts', async () => {
 		</MemoryRouter>
 	);
 	expect(await screen.findByText('Backup is running in the background…')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: /Storage provider/ })).not.toBeInTheDocument();
 	first.unmount();
 	expect(unsubscribeOperationStatus).toHaveBeenCalledTimes(unsubscribeCount + 1);
 });
@@ -282,7 +286,6 @@ it('shows a retry without editable defaults when settings cannot be loaded', asy
 it.each([undefined, 'deleted'])(
 	'disables backup until an available provider is selected (%s)',
 	async (providerId) => {
-		const user = userEvent.setup();
 		storageApi.getSettings.mockResolvedValue({ ...settings, providerId, paths: ['/data/agent'] });
 		render(
 			<MemoryRouter>
@@ -292,12 +295,8 @@ it.each([undefined, 'deleted'])(
 		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
-		expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeEnabled();
-		await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
-		expect(screen.getByRole('link', { name: 'Manage storage' })).toHaveAttribute(
-			'href',
-			'/settings/providers/storage'
-		);
+		expect(screen.queryByRole('button', { name: /Storage provider/ })).not.toBeInTheDocument();
+		expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();
 	}
 );
