@@ -87,7 +87,7 @@ describe('renderer recorder capture', () => {
 		const dispose = initRecorderCapture();
 		const start = environment.commands.get('2');
 		start?.({ type: 'start', id: 'capture-1', duration: 30_000 });
-		await Promise.resolve();
+		await new Promise((resolve) => setTimeout(resolve, 0));
 		const recorder = FakeMediaRecorder.instances[0];
 		recorder.emit(new Blob(['first']));
 		environment.streamTrack.emitEnded();
@@ -107,7 +107,7 @@ describe('renderer recorder capture', () => {
 		const dispose = initRecorderCapture();
 		const start = environment.commands.get('2');
 		start?.({ type: 'start', id: 'capture-1', duration: 30_000 });
-		await Promise.resolve();
+		await new Promise((resolve) => setTimeout(resolve, 0));
 		start?.({ type: 'start', id: 'capture-2', duration: 30_000 });
 		await Promise.resolve();
 		const cancel = environment.commands.get('2');
