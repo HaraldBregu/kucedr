@@ -254,7 +254,7 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 						return;
 					}
 					const picker = {
-							type: 'question',
+							type: 'question' as const,
 							title: 'Choose a screen to record',
 							message: 'Select the display or window to capture.',
 							buttons: [...sources.map((source) => source.name || 'Untitled source'), 'Cancel'],

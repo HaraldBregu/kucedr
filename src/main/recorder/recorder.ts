@@ -120,9 +120,6 @@ export function createRecorder(channels: { command: string; event: string }): Re
 	async function openWriter(recording: Recording): Promise<FileHandle> {
 		const writer = writers.get(recording.id);
 		if (!writer) throw new Error('Recording writer is unavailable.');
-		if (writer.size + chunk.data.byteLength > MAX_RECORDING_BYTES) {
-			throw new Error('Recording data is too large.');
-		}
 		if (writer.handle) return writer.handle;
 		await fs.mkdir(path.dirname(recording.url), { recursive: true });
 		writer.handle = await fs.open(recording.url, 'wx');
@@ -132,6 +129,9 @@ export function createRecorder(channels: { command: string; event: string }): Re
 	async function writeChunk(recording: Recording, chunk: RecorderCaptureChunk): Promise<void> {
 		const writer = writers.get(recording.id);
 		if (!writer) throw new Error('Recording writer is unavailable.');
+		if (writer.size + chunk.data.byteLength > MAX_RECORDING_BYTES) {
+			throw new Error('Recording data is too large.');
+		}
 		const handle = await openWriter(recording);
 		let offset = 0;
 		while (offset < chunk.data.byteLength) {
