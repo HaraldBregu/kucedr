@@ -1,6 +1,9 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Check, ChevronDown } from 'lucide-react';
 import { providerIdsFor, providerModels } from '@/lib/providers';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
 	Select,
 	SelectContent,
@@ -10,6 +13,7 @@ import {
 } from '@/components/ui/select';
 import { SettingsField } from '@pages/settings/components';
 import { getProviderCatalogItem } from '@pages/start/setupConstants';
+import { cn } from '@/lib/utils';
 
 export interface ModelProviderGroup {
 	readonly id: string;
@@ -65,6 +69,7 @@ interface ModelProviderSelectProps {
 	readonly onChange: (nextProviderId: string, nextModelId: string) => void;
 	readonly disabled?: boolean;
 	readonly inline?: boolean;
+	readonly buttonDropdown?: boolean;
 	readonly showFieldLabel?: boolean;
 	readonly labels?: ModelProviderSelectLabels;
 }
@@ -77,15 +82,71 @@ export function ModelProviderSelect({
 	onChange,
 	disabled = false,
 	inline = false,
+	buttonDropdown = false,
 	showFieldLabel = true,
 	labels,
 }: ModelProviderSelectProps): React.JSX.Element {
 	const { t } = useTranslation();
+	const [buttonOpen, setButtonOpen] = useState(false);
 	const selectedGroup = providerGroups.find((group) => group.id === providerId);
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
 	const selectedLabel = selectedModel ? modelLabel(providerId, selectedModel) : undefined;
+	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
+	const buttonLabel = selectedLabel ?? labels?.placeholder ?? t('settings.modelServices.modelPlaceholder');
 
-	const select = (
+	const buttonSelect = (
+		<Popover open={buttonOpen} onOpenChange={setButtonOpen}>
+			<PopoverTrigger asChild>
+				<Button
+				type="button"
+				variant="outline"
+				size="sm"
+				disabled={disabled || providerGroups.length === 0}
+				aria-label={accessibleLabel}
+				className="min-w-40 max-w-full justify-between text-xs"
+				>
+					<span className="min-w-0 truncate">{buttonLabel}</span>
+					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent
+				align="end"
+				className="w-max max-w-[calc(100vw-2rem)] p-1"
+			>
+				<div role="menu" aria-label={accessibleLabel} className="min-w-0">
+					{providerGroups.flatMap((group) =>
+						group.models.map((model) => {
+							const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
+							const isSelected = value === `${providerId}${VALUE_SEPARATOR}${modelId}`;
+							return (
+								<button
+									key={value}
+									type="button"
+									role="menuitemradio"
+									aria-checked={isSelected}
+									onClick={() => {
+										onChange(group.id, model.id);
+										setButtonOpen(false);
+									}}
+									className="flex w-full min-w-0 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
+								>
+									<Check
+										className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
+										aria-hidden="true"
+									/>
+									<span className="min-w-0 truncate whitespace-nowrap">
+										{modelLabel(group.id, model)}
+									</span>
+								</button>
+							);
+						})
+					)}
+				</div>
+			</PopoverContent>
+		</Popover>
+	);
+
+	const select = buttonDropdown ? buttonSelect : (
 		<Select
 			value={selectedModel ? `${providerId}${VALUE_SEPARATOR}${modelId}` : null}
 			onValueChange={(value) => {
@@ -100,7 +161,7 @@ export function ModelProviderSelect({
 				className={inline ? 'w-40 max-w-full text-xs' : 'w-full min-w-0 max-w-full text-xs'}
 				aria-label={
 					inline || !showFieldLabel
-						? (labels?.label ?? t('settings.modelServices.model'))
+					? accessibleLabel
 						: undefined
 				}
 			>
