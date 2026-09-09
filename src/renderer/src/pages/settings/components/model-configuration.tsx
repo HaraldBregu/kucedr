@@ -54,6 +54,27 @@ export function ModelProviderConfiguration({
 	const modelName = model?.name ?? model?.id ?? t('settings.modelServices.modelUnavailable');
 	const selectLabel =
 		typeof triggerTitle === 'string' ? triggerTitle : t('settings.modelServices.model');
+	const modelSelectDisabled =
+		configState.loading || configState.saving || configState.modelGroups.length === 0;
+	const collapsibleModelSelect = (
+		<ModelProviderSelect
+			inline={showSelectedModel}
+			idPrefix={idPrefix}
+			providerGroups={toModelProviderGroups(configState.modelGroups)}
+			providerId={configState.providerId}
+			modelId={configState.modelId}
+			onChange={onChange}
+			disabled={modelSelectDisabled}
+			showFieldLabel={showSelectedModel ? false : showFieldLabel}
+			labels={{
+				label: selectLabel,
+				description,
+				placeholder: configState.loadingModels
+					? t('settings.modelServices.modelsLoading')
+					: undefined,
+			}}
+		/>
+	);
 
 	const configurationBody = configState.loading ? (
 		<SettingsLoadingRows rows={2} />
@@ -65,22 +86,7 @@ export function ModelProviderConfiguration({
 				</SettingsNotice>
 			)}
 
-			<ModelProviderSelect
-				idPrefix={idPrefix}
-				providerGroups={toModelProviderGroups(configState.modelGroups)}
-				providerId={configState.providerId}
-				modelId={configState.modelId}
-				onChange={onChange}
-				disabled={configState.loading || configState.saving || configState.modelGroups.length === 0}
-				showFieldLabel={showFieldLabel}
-				labels={{
-					label: selectLabel,
-					description,
-					placeholder: configState.loadingModels
-						? t('settings.modelServices.modelsLoading')
-						: undefined,
-				}}
-			/>
+			{!showSelectedModel && collapsibleModelSelect}
 
 			{children}
 
@@ -164,36 +170,34 @@ export function ModelProviderConfiguration({
 					: 'min-w-0 max-w-full overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10'
 			}
 		>
-			<CollapsibleTrigger className="group flex w-full items-center gap-3 px-4 py-3.5 text-left">
-				{showIcon &&
-					(provider ? (
-						<ProviderAvatar
-							providerId={provider.id}
-							name={providerName}
-							iconDarkUrl={provider.iconDarkUrl}
-							iconLightUrl={provider.iconLightUrl}
-							className="size-10"
-						/>
-					) : (
-						<div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
-							<Bot className="size-4" aria-hidden="true" />
+			<div className="flex w-full items-center gap-3 px-4 py-3.5">
+				<CollapsibleTrigger className="group flex min-w-0 flex-1 items-center gap-3 text-left">
+					{showIcon &&
+						(provider ? (
+							<ProviderAvatar
+								providerId={provider.id}
+								name={providerName}
+								iconDarkUrl={provider.iconDarkUrl}
+								iconLightUrl={provider.iconLightUrl}
+								className="size-10"
+							/>
+						) : (
+							<div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
+								<Bot className="size-4" aria-hidden="true" />
+							</div>
+						))}
+					<div className="min-w-0 flex-1">
+						<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+							{triggerTitle ?? providerName}
 						</div>
-					))}
-				<div className="min-w-0 flex-1">
-					<div className="truncate text-[13px] font-medium leading-4 text-foreground">
-						{triggerTitle ?? providerName}
+						<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+							{triggerDescription ?? (showSelectedModel ? description : modelName)}
+						</p>
 					</div>
-					<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-						{triggerDescription ?? (showSelectedModel ? description : modelName)}
-					</p>
-				</div>
-				{showSelectedModel && (
-					<span className="max-w-[38%] shrink-0 truncate text-right text-[11px] leading-4 text-muted-foreground">
-						{modelName}
-					</span>
-				)}
-				<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />
-			</CollapsibleTrigger>
+					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />
+				</CollapsibleTrigger>
+				{showSelectedModel && <div className="shrink-0">{collapsibleModelSelect}</div>}
+			</div>
 			<CollapsibleContent className={showContentSeparator ? 'border-t border-border/60' : undefined}>
 				{configurationBody}
 			</CollapsibleContent>
