@@ -1081,11 +1081,7 @@
 			"cancel": "Annulla",
 			"provider": {
 				"title": "Provider di archiviazione",
-				"description": "Scegli quale provider di archiviazione configurato riceve i backup e fornisce i file durante il ripristino.",
-				"placeholder": "Seleziona provider di archiviazione",
-				"empty": "Aggiungi un provider di archiviazione prima di configurare i backup.",
-				"missing": "Il provider selezionato non è disponibile. Scegli un altro provider.",
-				"manage": "Gestisci storage"
+				"description": "Scegli quale provider di archiviazione configurato riceve i backup e fornisce i file durante il ripristino."
 			}
 		},
 		"embedding": {

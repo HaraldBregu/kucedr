@@ -1082,11 +1082,7 @@
 			"cancel": "Cancel",
 			"provider": {
 				"title": "Storage provider",
-				"description": "Choose which configured storage provider receives your backups and supplies files when you restore them.",
-				"placeholder": "Select storage provider",
-				"empty": "Add a storage provider before setting up backups.",
-				"missing": "The selected provider is unavailable. Choose another provider.",
-				"manage": "Manage storage"
+				"description": "Choose which configured storage provider receives your backups and supplies files when you restore them."
 			}
 		},
 		"embedding": {
