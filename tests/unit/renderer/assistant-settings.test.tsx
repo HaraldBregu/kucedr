@@ -89,6 +89,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.assistantName': 'Agent',
 		'settings.modelServices.kucedrDescription': 'Chat, tools, and planning',
 		'settings.modelServices.configuration': 'Configuration',
+		'settings.modelServices.toolModels': 'Tool models',
 		'settings.modelServices.subtitle': 'Configure model assignments',
 		'settings.modelServices.imageAssistantName': 'Image',
 		'settings.modelServices.voiceName': 'Voice',

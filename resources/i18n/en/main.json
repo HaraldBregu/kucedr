@@ -1184,6 +1184,7 @@
 			"allModelServices": "All model services",
 			"identity": "Identity",
 			"configuration": "Configuration",
+			"toolModels": "Tool models",
 			"kucedrBreadcrumb": "Kucedr",
 			"assistantName": "Agent",
 			"kucedrDescription": "Chat, tools, and planning",

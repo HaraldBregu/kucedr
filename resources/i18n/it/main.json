@@ -1183,6 +1183,7 @@
 			"allModelServices": "Tutti i servizi modello",
 			"identity": "Identita",
 			"configuration": "Configurazione",
+			"toolModels": "Modelli degli strumenti",
 			"kucedrBreadcrumb": "Kucedr",
 			"assistantName": "Agent",
 			"kucedrDescription": "Chat, strumenti e piani",

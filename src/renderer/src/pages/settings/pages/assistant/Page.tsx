@@ -36,6 +36,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
+	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import {
@@ -269,8 +270,9 @@ const AssistantPage: React.FC = () => {
 
 			</SettingsPanel>
 
-			<SettingsPanel>
-				<AgentMediaModelConfiguration
+			<SettingsSection title={t('settings.modelServices.toolModels')}>
+				<SettingsPanel>
+					<AgentMediaModelConfiguration
 					api={window.models.image}
 					capability="text-to-image"
 					idPrefix="agent-image"
@@ -283,9 +285,9 @@ const AssistantPage: React.FC = () => {
 					showSelectedModel
 					showContentSeparator={false}
 					inlineAdvanced
-				/>
+					/>
 
-				<AgentMediaModelConfiguration
+					<AgentMediaModelConfiguration
 					api={window.models.sound}
 					capability="text-to-audio"
 					idPrefix="agent-audio"
@@ -298,9 +300,9 @@ const AssistantPage: React.FC = () => {
 					showSelectedModel
 					showContentSeparator={false}
 					inlineAdvanced
-				/>
+					/>
 
-				<AgentMediaModelConfiguration
+					<AgentMediaModelConfiguration
 					api={window.models.video}
 					capability="text-to-video"
 					idPrefix="agent-video"
@@ -313,8 +315,8 @@ const AssistantPage: React.FC = () => {
 					showSelectedModel
 					showContentSeparator={false}
 					inlineAdvanced
-				/>
-				<Collapsible className="min-w-0 max-w-full overflow-hidden">
+					/>
+					<Collapsible className="min-w-0 max-w-full overflow-hidden">
 					<div className="flex w-full items-center gap-3 px-4 py-3.5">
 						<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-3 text-left">
 							<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
@@ -362,8 +364,9 @@ const AssistantPage: React.FC = () => {
 							</SettingsNotice>
 						)}
 					</CollapsibleContent>
-				</Collapsible>
-			</SettingsPanel>
+					</Collapsible>
+				</SettingsPanel>
+			</SettingsSection>
 
 			<SettingsPanel>
 				{SETTINGS_AGENT_RESOURCE_ITEMS.map((item) => (
