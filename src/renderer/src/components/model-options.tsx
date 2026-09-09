@@ -12,12 +12,14 @@ import { JsonOption } from '@/components/json';
 import type { ModelInputSchema } from '@shared/model_types';
 import { SettingsRow } from '@pages/settings/components';
 import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ModelOptionsProps {
 	readonly inputs: Readonly<Record<string, ModelInputSchema>>;
 	readonly values: Readonly<Record<string, unknown>>;
 	readonly excludedInputs?: ReadonlySet<string>;
 	readonly allowComplex?: boolean;
+	readonly inlineAdvanced?: boolean;
 	readonly onChange: (path: readonly string[], value: unknown) => void;
 }
 
@@ -36,6 +38,7 @@ export function ModelOptions({
 	values,
 	excludedInputs,
 	allowComplex = false,
+	inlineAdvanced = false,
 	onChange,
 }: ModelOptionsProps): React.JSX.Element | null {
 	const entries: Array<{ path: string[]; schema: ModelInputSchema }> = [];
@@ -91,10 +94,11 @@ export function ModelOptions({
 		let node: React.JSX.Element;
 		if (choices.length > 0) {
 			const selectedIndex = choices.findIndex((choice) => Object.is(choice.value, value));
-			node = (
-				<SettingsRow
-					key={key}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={inlineAdvanced ? 'border-b-0' : undefined}
+						title={label}
 					actions={
 						<Select
 							value={selectedIndex < 0 ? '__default__' : String(selectedIndex)}
@@ -121,10 +125,11 @@ export function ModelOptions({
 			);
 		} else if (schema.type === 'boolean') {
 			const checked = value === undefined ? schema.default === true : value === true;
-			node = (
-				<SettingsRow
-					key={key}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={inlineAdvanced ? 'border-b-0' : undefined}
+						title={label}
 					actions={
 						<Switch
 							aria-label={label}
@@ -135,10 +140,11 @@ export function ModelOptions({
 				/>
 			);
 		} else if (schema.type === 'array' || schema.type === 'object') {
-			node = (
-				<SettingsRow
-					key={key}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={inlineAdvanced ? 'border-b-0' : undefined}
+						title={label}
 					description={schema.description}
 					actionClassName="sm:max-w-[60%]"
 					actions={
@@ -149,10 +155,11 @@ export function ModelOptions({
 		} else {
 			const numeric = schema.type === 'number' || schema.type === 'integer';
 			const displayedValue = value === undefined ? schema.default : value;
-			node = (
-				<SettingsRow
-					key={key}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={inlineAdvanced ? 'border-b-0' : undefined}
+						title={label}
 					actions={
 						<Input
 							aria-label={label}
@@ -197,16 +204,25 @@ export function ModelOptions({
 	const advanced = rendered.filter((entry) => !entry.primary).map((entry) => entry.node);
 
 	return (
-		<div className="-mx-4 -mb-4 mt-1 border-t border-border/60">
+		<div className={cn('-mx-4 -mb-4 mt-1', !inlineAdvanced && 'border-t border-border/60')}>
 			{primary}
 			{advanced.length > 0 && (
-				<Collapsible>
-					<CollapsibleTrigger className="group flex min-h-10 w-full items-center justify-between px-4 py-3 text-left text-[12px] font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
-						<span>Advanced</span>
-						<ChevronDown className="size-3.5 transition-transform group-data-panel-open:rotate-180" />
-					</CollapsibleTrigger>
-					<CollapsibleContent className="border-t border-border/60">{advanced}</CollapsibleContent>
-				</Collapsible>
+				inlineAdvanced ? (
+					<>
+						<div className="px-4 py-3 text-[12px] font-medium text-muted-foreground">
+							Advanced properties
+						</div>
+						{advanced}
+					</>
+				) : (
+					<Collapsible>
+						<CollapsibleTrigger className="group flex min-h-10 w-full items-center justify-between px-4 py-3 text-left text-[12px] font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+							<span>Advanced</span>
+							<ChevronDown className="size-3.5 transition-transform group-data-panel-open:rotate-180" />
+						</CollapsibleTrigger>
+						<CollapsibleContent className="border-t border-border/60">{advanced}</CollapsibleContent>
+					</Collapsible>
+				)
 			)}
 		</div>
 	);
