@@ -359,3 +359,12 @@ function isTrustedMediaRequestSource(
 		isTrustedRendererUrl(requestingUrl)
 	);
 }
+
+function showDisplayCaptureMessage(
+	parentWindow: BrowserWindow | null,
+	options: Electron.MessageBoxOptions
+): void {
+	void (parentWindow ? dialog.showMessageBox(parentWindow, options) : dialog.showMessageBox(options)).catch(
+		() => undefined
+	);
+}
