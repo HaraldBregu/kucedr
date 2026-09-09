@@ -151,11 +151,28 @@ it('keeps explicit workspace deny rules effective', async () => {
 	expect(fs.existsSync(path.join(workspace, 'blocked.txt'))).toBe(false);
 });
 
-it.each(['camera_recorder', 'microphone_recorder', 'screen_recorder', 'open_apps', 'create_task'])('retains approval for %s effects beyond workspace files', async (id) => {
+it.each(['camera_recorder', 'screen_recorder', 'open_apps', 'create_task'])('retains approval for %s effects beyond workspace files', async (id) => {
 	const run = jest.fn();
 	const tool = jsonTool({ id, name: id, description: id, schema: {}, execute: run });
 	expect((await execute(tool, {})).at(-1)).toMatchObject({ type: 'tool_permission_request' });
 	expect(run).not.toHaveBeenCalled();
+});
+
+it('allows microphone_recorder in the workspace without forced approval', async () => {
+	const run = jest.fn().mockResolvedValue('started');
+	const tool = jsonTool({
+		id: 'microphone_recorder',
+		name: 'microphone_recorder',
+		description: 'microphone_recorder',
+		schema: {},
+		execute: run,
+	});
+
+	expect((await execute(tool, {})).at(-1)).toMatchObject({
+		type: 'tool_call_end',
+		permissionOutcome: 'allow',
+	});
+	expect(run).toHaveBeenCalled();
 });
 
 

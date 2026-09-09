@@ -139,6 +139,9 @@ describe('resolveToolPermission', () => {
 			resolveToolPermission('screen_recorder', {}, undefined, true, 'ask', trustedWrites)
 		).toBe('allow');
 		expect(
+			resolveToolPermission('microphone_recorder', {}, undefined, true, 'ask', trustedWrites)
+		).toBe('allow');
+		expect(
 			resolveToolPermission(
 				'screen_recorder',
 				{ directory: '/outside' },

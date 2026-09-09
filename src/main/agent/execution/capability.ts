@@ -30,6 +30,7 @@ export function builtinCapability(id: string, input: Record<string, unknown>): T
 	if (WRITE.has(id)) return { effects: ['write'] };
 	if (GOAL.has(id)) return { effects: ['persistence'] };
 	if (PERSIST.has(id)) return { effects: ['write', 'persistence'] };
+	if (id === 'microphone_recorder') return { effects: ['sensor', 'write'] };
 	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: true };
 	if (CONTROL.has(id)) return { effects: ['sensor'] };
 	if (PAID.has(id)) return { effects: ['paid', 'write'] };
