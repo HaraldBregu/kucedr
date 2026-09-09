@@ -1,6 +1,7 @@
 const buildFromTemplate = jest.fn((template: unknown) => template);
 
 jest.mock('electron', () => ({
+	app: { isPackaged: false, getAppPath: jest.fn(() => process.cwd()) },
 	Tray: class {
 		on = jest.fn();
 		setToolTip = jest.fn();
