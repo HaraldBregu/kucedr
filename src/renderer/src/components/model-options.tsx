@@ -197,11 +197,11 @@ export function ModelOptions({
 	const advanced = rendered.filter((entry) => !entry.primary).map((entry) => entry.node);
 
 	return (
-		<div className="-mx-3 -mb-3 mt-1 border-t border-border/60">
+		<div className="-mx-4 -mb-4 mt-1 border-t border-border/60">
 			{primary}
 			{advanced.length > 0 && (
 				<Collapsible>
-					<CollapsibleTrigger className="group flex min-h-10 w-full items-center justify-between px-3 py-2 text-left text-[12px] font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
+					<CollapsibleTrigger className="group flex min-h-10 w-full items-center justify-between px-4 py-3 text-left text-[12px] font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring">
 						<span>Advanced</span>
 						<ChevronDown className="size-3.5 transition-transform group-data-panel-open:rotate-180" />
 					</CollapsibleTrigger>
