@@ -85,7 +85,13 @@ jest.mock('@/components/ui/chat-container', () => ({
 }));
 
 jest.mock('@/components/ui/prompt-input', () => ({
-	PromptInputAction: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+	PromptInputAction: ({
+		children,
+		tooltip,
+	}: {
+		children?: React.ReactNode;
+		tooltip?: React.ReactNode;
+	}) => <div data-tooltip={tooltip}>{children}</div>,
 	PromptInputActions: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 	usePromptInput: () => ({ triggerFileUpload: jest.fn() }),
 }));
@@ -210,6 +216,20 @@ describe('Home prompt attachments', () => {
 		fireEvent.click(screen.getByText('Plan a trip'));
 		expect(useSuggestion).toHaveBeenCalledWith(
 			'Plan a five-day trip to Rome with food, art, and quiet neighborhoods.'
+		);
+	});
+
+	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
+		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
+		renderPage(getCapabilities);
+
+		const voiceButton = await screen.findByRole('button', {
+			name: 'Choose a speech-to-text provider and model in Settings.',
+		});
+		expect(voiceButton).toBeDisabled();
+		expect(voiceButton.parentElement).toHaveAttribute(
+			'data-tooltip',
+			'Choose a speech-to-text provider and model in Settings.'
 		);
 	});
 

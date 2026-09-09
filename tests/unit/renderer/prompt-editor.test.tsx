@@ -1,5 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { PromptEditor } from '@/components/prompt-editor';
+import {
+	PromptInput,
+	PromptInputAction,
+	PromptInputActions,
+} from '@/components/ui/prompt-input';
 
 jest.mock('@/components/ui/bar-wave-animation', () => ({
 	BarWaveAnimation: () => <div data-testid="voice-waveform" />,
@@ -43,6 +48,32 @@ jest.mock('@/components/text-editor', () => {
 });
 
 describe('PromptEditor', () => {
+	it('keeps disabled actions hoverable when their disabled tooltip is enabled', () => {
+		render(
+			<PromptInput
+				actions={
+					<PromptInputActions>
+						<PromptInputAction
+							tooltip="Choose a speech-to-text provider and model in Settings."
+							showTooltipWhenDisabled
+							delay={0}
+						>
+							<button type="button" aria-label="Record voice" disabled>
+								Record voice
+							</button>
+						</PromptInputAction>
+					</PromptInputActions>
+				}
+			>
+				<span />
+			</PromptInput>
+		);
+
+		const voiceButton = screen.getByRole('button', { name: 'Record voice' });
+		expect(voiceButton).toBeDisabled();
+		expect(voiceButton.parentElement).toHaveClass('inline-flex');
+	});
+
 	it('expands when text wraps to another visual line and collapses when cleared', async () => {
 		jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
 		const { container, rerender } = render(
