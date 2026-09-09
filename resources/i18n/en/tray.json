@@ -2,6 +2,8 @@
 	"showKucedr": "Show Kucedr",
 	"hideKucedr": "Hide Kucedr",
 	"apps": "Apps",
+	"microphone": "Microphone",
+	"microphoneDefault": "System default",
 	"noApps": "No apps",
 	"quit": "Quit"
 }

@@ -11,6 +11,14 @@ interface TrayManagerCallbacks {
 	isAppVisible: () => boolean;
 	getApps: () => App[];
 	onOpenApp: (app: App) => void;
+	getMicrophoneInputs?: () => Promise<readonly MicrophoneInput[]>;
+	getMicrophoneInputId?: () => string;
+	onMicrophoneInputChange?: (inputId: string) => void;
+}
+
+export interface MicrophoneInput {
+	readonly id: string;
+	readonly label: string;
 }
 
 export class Tray {
@@ -18,6 +26,7 @@ export class Tray {
 	private contextMenu: Menu | null = null;
 	private currentLanguage = 'en';
 	private callbacks: TrayManagerCallbacks;
+	private microphoneInputs: readonly MicrophoneInput[] = [];
 
 	constructor(callbacks: TrayManagerCallbacks) {
 		this.callbacks = callbacks;
@@ -36,13 +45,14 @@ export class Tray {
 		});
 
 		this.tray.on('right-click', () => {
-			this.buildContextMenu();
-			if (this.contextMenu) {
-				this.tray?.popUpContextMenu(this.contextMenu);
-			}
+			void this.refreshMicrophoneInputs().finally(() => {
+				this.buildContextMenu();
+				if (this.contextMenu) this.tray?.popUpContextMenu(this.contextMenu);
+			});
 		});
 
 		this.buildContextMenu();
+		void this.refreshMicrophoneInputs();
 	}
 
 	destroy(): void {
@@ -69,6 +79,15 @@ export class Tray {
 		this.buildContextMenu();
 	}
 
+	private async refreshMicrophoneInputs(): Promise<void> {
+		if (!this.callbacks.getMicrophoneInputs) return;
+		try {
+			this.microphoneInputs = await this.callbacks.getMicrophoneInputs();
+		} catch {
+			this.microphoneInputs = [];
+		}
+	}
+
 	private buildContextMenu(): void {
 		if (!this.tray) {
 			this.contextMenu = null;
@@ -77,6 +96,27 @@ export class Tray {
 		const m = loadTranslations(this.currentLanguage, 'tray');
 		const isVisible = this.callbacks.isAppVisible();
 		const apps = this.callbacks.getApps();
+		const selectedMicrophoneId = this.callbacks.getMicrophoneInputId?.() ?? 'default';
+		const microphoneItems: Electron.MenuItemConstructorOptions[] = [
+			{
+				label: m.microphoneDefault || 'System default',
+				type: 'radio',
+				checked: selectedMicrophoneId === 'default',
+				click: (): void => {
+					this.callbacks.onMicrophoneInputChange?.('default');
+					this.buildContextMenu();
+				},
+			},
+			...this.microphoneInputs.map((input) => ({
+				label: input.label,
+				type: 'radio' as const,
+				checked: selectedMicrophoneId === input.id,
+				click: (): void => {
+					this.callbacks.onMicrophoneInputChange?.(input.id);
+					this.buildContextMenu();
+				},
+			})),
+		];
 		const appItems: Array<Electron.MenuItemConstructorOptions> = apps.length
 			? apps.map((app) => ({
 					label: app.title,
@@ -92,6 +132,10 @@ export class Tray {
 			{
 				label: m.apps || 'Apps',
 				submenu: appItems,
+			},
+			{
+				label: m.microphone || 'Microphone',
+				submenu: microphoneItems,
 			},
 			{ type: 'separator' },
 			{
