@@ -37,6 +37,7 @@ interface AgentMediaModelConfigurationProps {
 	readonly showSelectedModel?: boolean;
 	readonly showFieldLabel?: boolean;
 	readonly showContentSeparator?: boolean;
+	readonly inlineAdvanced?: boolean;
 }
 
 const MEDIA_CONTENT_INPUTS = new Set([
@@ -80,6 +81,7 @@ export function AgentMediaModelConfiguration({
 	showSelectedModel = false,
 	showFieldLabel = true,
 	showContentSeparator = true,
+	inlineAdvanced = false,
 }: AgentMediaModelConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
@@ -199,6 +201,7 @@ export function AgentMediaModelConfiguration({
 				values={options}
 				excludedInputs={MEDIA_CONTENT_INPUTS}
 				allowComplex={capability === 'text-to-speech'}
+				inlineAdvanced={inlineAdvanced}
 				onChange={handleOptionChange}
 			/>
 		</ModelProviderConfiguration>

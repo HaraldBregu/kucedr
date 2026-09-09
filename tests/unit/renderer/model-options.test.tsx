@@ -3,6 +3,22 @@ import userEvent from '@testing-library/user-event';
 import { ModelOptions } from '../../../src/renderer/src/components/model-options';
 
 describe('ModelOptions', () => {
+	it('keeps advanced properties in the expanded panel when requested', () => {
+		const { container } = render(
+			<ModelOptions
+				inputs={{ duration: { type: 'integer', minimum: 1, maximum: 30, default: 8 } }}
+				values={{}}
+				inlineAdvanced
+				onChange={jest.fn()}
+			/>
+		);
+
+		expect(screen.getByText('Advanced properties')).toBeInTheDocument();
+		expect(screen.getByRole('spinbutton')).toHaveValue(8);
+		expect(container.firstElementChild).not.toHaveClass('border-t');
+		expect(container.querySelectorAll('.border-b-0').length).toBeGreaterThan(0);
+	});
+
 	it('renders nested provider choices as a select', async () => {
 		const user = userEvent.setup();
 		render(

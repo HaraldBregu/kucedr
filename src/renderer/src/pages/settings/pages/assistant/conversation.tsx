@@ -186,6 +186,7 @@ export default function RealtimeConversationConfiguration({
 					key={`${state.providerId}:${state.modelId}`}
 					inputs={voiceInput ? { voice: voiceInput } : {}}
 					values={selectedVoice ? { voice: selectedVoice } : {}}
+					inlineAdvanced={showSelectedModel}
 					onChange={handleVoiceChange}
 				/>
 			</ModelProviderConfiguration>

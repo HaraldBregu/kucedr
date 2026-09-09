@@ -233,6 +233,7 @@ const AssistantPage: React.FC = () => {
 						key={`${state.providerId}:${state.modelId}`}
 						inputs={inputs}
 						values={modelOptions}
+						inlineAdvanced
 						onChange={updateModelOption}
 					/>
 				</ModelProviderConfiguration>
@@ -241,6 +242,7 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					showSelectedModel
 					showContentSeparator={false}
+					inlineAdvanced
 				/>
 
 				<AgentMediaModelConfiguration
@@ -254,6 +256,7 @@ const AssistantPage: React.FC = () => {
 					grouped
 					showSelectedModel
 					showContentSeparator={false}
+					inlineAdvanced
 				/>
 
 				<AgentMediaModelConfiguration
@@ -267,6 +270,7 @@ const AssistantPage: React.FC = () => {
 					grouped
 					showSelectedModel
 					showContentSeparator={false}
+					inlineAdvanced
 				/>
 
 				<AgentMediaModelConfiguration
@@ -280,6 +284,7 @@ const AssistantPage: React.FC = () => {
 					grouped
 					showSelectedModel
 					showContentSeparator={false}
+					inlineAdvanced
 				/>
 
 				<AgentMediaModelConfiguration
@@ -293,6 +298,7 @@ const AssistantPage: React.FC = () => {
 					grouped
 					showSelectedModel
 					showContentSeparator={false}
+					inlineAdvanced
 				/>
 
 				<Collapsible className="min-w-0 max-w-full overflow-hidden">
