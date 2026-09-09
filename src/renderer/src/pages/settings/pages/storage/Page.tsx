@@ -249,12 +249,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 				</div>
 			) : storage ? (
 				<>
-					<Provider
-						providers={providers}
-						providerId={storage.providerId}
-						disabled={busy}
-						onChange={(providerId) => updateDraft({ ...storage, providerId })}
-					/>
+					<Provider />
 					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 						<CardHeader className="border-b border-border/60 px-4! py-4!">
 							<CardTitle>
