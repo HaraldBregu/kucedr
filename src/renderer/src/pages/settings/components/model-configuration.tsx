@@ -22,6 +22,7 @@ interface ModelProviderConfigurationProps {
 	readonly grouped?: boolean;
 	readonly collapsible?: boolean;
 	readonly showSelectedModel?: boolean;
+	readonly buttonDropdown?: boolean;
 	readonly showContentSeparator?: boolean;
 	readonly defaultOpen?: boolean;
 	readonly onChange: (nextProviderId: string, nextModelId: string) => void;
@@ -41,6 +42,7 @@ export function ModelProviderConfiguration({
 	grouped = false,
 	collapsible = true,
 	showSelectedModel = false,
+	buttonDropdown = false,
 	showContentSeparator = true,
 	defaultOpen = false,
 	onChange,
@@ -62,6 +64,7 @@ export function ModelProviderConfiguration({
 	const collapsibleModelSelect = (
 		<ModelProviderSelect
 			inline={showSelectedModel}
+			buttonDropdown={buttonDropdown}
 			idPrefix={idPrefix}
 			providerGroups={toModelProviderGroups(configState.modelGroups)}
 			providerId={configState.providerId}

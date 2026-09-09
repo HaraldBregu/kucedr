@@ -39,7 +39,6 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
-	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import {
@@ -237,6 +236,7 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					buttonDropdown
 					showContentSeparator={false}
 					onChange={(providerId, modelId) => void handleChange(providerId, modelId)}
 				>
@@ -287,8 +287,7 @@ const AssistantPage: React.FC = () => {
 				/>
 			</SettingsPanel>
 
-			<SettingsSection title={t('settings.modelServices.toolModels')}>
-				<SettingsPanel>
+			<SettingsPanel>
 					<AgentMediaModelConfiguration
 						api={window.models.image}
 						capability="text-to-image"
@@ -382,8 +381,7 @@ const AssistantPage: React.FC = () => {
 							)}
 						</CollapsibleContent>
 					</Collapsible>
-				</SettingsPanel>
-			</SettingsSection>
+			</SettingsPanel>
 
 			<SettingsPanel>
 				{SETTINGS_AGENT_RESOURCE_ITEMS.map((item) => (
