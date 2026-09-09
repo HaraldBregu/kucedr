@@ -131,16 +131,16 @@ export function ModelProviderSelect({
 										onChange(group.id, model.id);
 										setButtonOpen(false);
 									}}
-									className="flex w-full min-w-0 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
+									className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
 								>
-									<Check
-										className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
-										aria-hidden="true"
-									/>
 									<span className="flex min-w-0 flex-col items-start">
 										<span className="min-w-0 truncate whitespace-nowrap text-sm text-foreground">
 											{modelName(model)}
 										</span>
+									<Check
+										className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
+										aria-hidden="true"
+									/>
 										<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground">
 											{getProviderCatalogItem(group.id).name}
 										</span>
