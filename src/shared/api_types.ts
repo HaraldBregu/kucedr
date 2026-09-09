@@ -503,6 +503,7 @@ export interface AppApi extends AppStorageApi {
 	setCameraEnabled: (enabled: boolean) => Promise<CameraPermissionSettings>;
 	requestCameraPermission: () => Promise<CameraPermissionSettings>;
 	getScreenCapturePermission: () => Promise<ScreenCapturePermissionSettings>;
+	requestScreenCapturePermission: () => Promise<ScreenCapturePermissionSettings>;
 	openVideo: (path: string) => Promise<void>;
 	showImageContextMenu: (path: string) => Promise<void>;
 	showVideoContextMenu: (path: string) => Promise<void>;

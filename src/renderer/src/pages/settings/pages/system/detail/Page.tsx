@@ -103,10 +103,14 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 		if (media.permission) return;
 		setPermissionError('');
 		try {
-			const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
-			stream.getTracks().forEach((track) => track.stop());
-			const result = await window.app.getScreenCapturePermission();
+			const result = await window.app.requestScreenCapturePermission();
 			setStatus(result.systemStatus);
+			if (result.systemStatus === 'unknown') {
+				const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+				stream.getTracks().forEach((track) => track.stop());
+				return;
+			}
+			if (result.systemStatus !== 'granted') openSettings('ScreenCapture');
 		} catch (error) {
 			setPermissionError(
 				errorMessage(error, t('settings.system.media.screen.requestError'))
