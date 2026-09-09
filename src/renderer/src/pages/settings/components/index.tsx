@@ -166,7 +166,7 @@ export function SettingsRow({
 				className
 			)}
 		>
-			<div className={cn('flex min-w-0 items-center gap-2', contentClassName)}>
+			<div className={cn('flex min-w-0 items-center gap-4', contentClassName)}>
 				{media ??
 					(Icon && (
 						<span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted/60 text-muted-foreground">
