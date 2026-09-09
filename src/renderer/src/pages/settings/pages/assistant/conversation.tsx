@@ -178,7 +178,7 @@ export default function RealtimeConversationConfiguration({
 				triggerDescription={model ? undefined : t('settings.modelServices.modelPlaceholder')}
 				description={t('settings.modelServices.realtimeConversationDescription')}
 				showInlineError
-				showIcon={false}
+				showIcon={Boolean(icon)}
 				icon={icon}
 				showFieldLabel={showFieldLabel}
 				showSelectedModel={showSelectedModel}
