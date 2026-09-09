@@ -40,6 +40,7 @@ export const WebContentsView = jest.fn();
 
 export const webContents = {
 	getAllWebContents: jest.fn(() => []),
+	fromFrame: jest.fn((frame: { webContents?: unknown }) => frame.webContents),
 };
 
 export const dialog = {

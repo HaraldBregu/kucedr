@@ -28,8 +28,11 @@ describe('recorder IPC', () => {
 
 		expect(jest.mocked(ipcMain.handle).mock.calls.map(([channel]) => channel)).toEqual([
 			RecorderChannels.microphone.complete,
+			RecorderChannels.microphone.chunk,
 			RecorderChannels.camera.complete,
+			RecorderChannels.camera.chunk,
 			RecorderChannels.screen.complete,
+			RecorderChannels.screen.chunk,
 		]);
 		const handler = jest
 			.mocked(ipcMain.handle)

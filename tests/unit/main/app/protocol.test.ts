@@ -122,7 +122,7 @@ describe('protocol security', () => {
 		const display = jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][0];
 		const denied = jest.fn();
 		display(
-			{ frame: { url: pathToFileURL('/tmp/app/index.html').toString() } } as never,
+			{ frame: { url: pathToFileURL('/tmp/app/index.html').toString(), top: null } } as never,
 			denied
 		);
 		expect(denied).toHaveBeenCalledWith({});
@@ -130,10 +130,33 @@ describe('protocol security', () => {
 
 		jest.mocked(desktopCapturer.getSources).mockResolvedValue([{ id: 'screen:1' }] as never);
 		await new Promise<void>((resolve) => {
-			display({ frame: { url: mainUrl } } as never, (result) => {
+			display({ frame: { url: mainUrl, top: undefined, webContents: mainContents } } as never, (result) => {
 				expect(result).toEqual({ video: { id: 'screen:1' } });
 				resolve();
 			});
 		});
+	});
+
+	it('asks the user when more than one source is available', async () => {
+		const appRegistry = new AppRegistry();
+		const mainContents = { id: 8 };
+		jest.mocked(BrowserWindow.fromWebContents).mockReturnValue({} as Electron.BrowserWindow);
+		setupMediaPermissionHandlers(appRegistry);
+		const display = jest.mocked(session.defaultSession.setDisplayMediaRequestHandler).mock.calls.at(-1)?.[0];
+		jest.mocked(desktopCapturer.getSources).mockResolvedValue([
+			{ id: 'screen:1', name: 'Display 1' },
+			{ id: 'screen:2', name: 'Display 2' },
+		] as never);
+		jest.mocked(dialog.showMessageBox).mockResolvedValueOnce({ response: 1 } as never);
+		const callback = jest.fn();
+		display?.({
+			frame: { url: pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(), top: undefined, webContents: mainContents },
+		} as never, callback);
+		await new Promise((resolve) => setImmediate(resolve));
+		expect(dialog.showMessageBox).toHaveBeenCalledWith(
+			expect.anything(),
+			expect.objectContaining({ buttons: ['Display 1', 'Display 2', 'Cancel'] })
+		);
+		expect(callback).toHaveBeenCalledWith({ video: { id: 'screen:2', name: 'Display 2' } });
 	});
 });
