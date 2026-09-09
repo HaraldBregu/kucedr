@@ -135,9 +135,7 @@ export interface WindowApi {
 	isFullScreen: () => Promise<boolean>;
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void) => () => void;
 	setTitlebarOptions: (options: AppTitlebarOptions | null) => void;
-	onTitlebarOptionsChanged: (
-		callback: (options: AppTitlebarOptions | null) => void
-	) => () => void;
+	onTitlebarOptionsChanged: (callback: (options: AppTitlebarOptions | null) => void) => () => void;
 	clickTitlebarButton: (buttonId: string) => void;
 	onTitlebarButtonClick: (callback: (buttonId: string) => void) => () => void;
 	setTitlebarSidebarWidth: (width: number | null) => void;
@@ -319,7 +317,10 @@ export interface DatabaseApi {
 
 export interface AppsApi {
 	getSettings(appId: string): Promise<import('./app_window_settings').ResolvedAppWindowSettings>;
-	setSettings(appId: string, settings: import('./app_window_settings').AppWindowSettings): Promise<import('./app_window_settings').ResolvedAppWindowSettings>;
+	setSettings(
+		appId: string,
+		settings: import('./app_window_settings').AppWindowSettings
+	): Promise<import('./app_window_settings').ResolvedAppWindowSettings>;
 	list: () => Promise<App[]>;
 	open: (appId: string) => Promise<void>;
 	openRoot: () => Promise<void>;

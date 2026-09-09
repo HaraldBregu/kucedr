@@ -18,11 +18,7 @@ type ActiveCapture = {
 
 const CHUNK_TIMESLICE_MS = 1_000;
 const MAX_PENDING_CHUNKS = 8;
-const VIDEO_MIME_TYPES = [
-	'video/webm;codecs=vp9,opus',
-	'video/webm;codecs=vp8,opus',
-	'video/webm',
-];
+const VIDEO_MIME_TYPES = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'];
 const AUDIO_MIME_TYPES = ['audio/webm;codecs=opus', 'audio/webm'];
 
 function supportedMimeType(types: readonly string[]): string | undefined {
@@ -70,7 +66,9 @@ function createCaptureHost(
 
 	async function startCapture(id: string, duration: number): Promise<void> {
 		if (captures.size > 0) {
-			await api.complete({ id, error: 'A recording is already in progress.' }).catch(() => undefined);
+			await api
+				.complete({ id, error: 'A recording is already in progress.' })
+				.catch(() => undefined);
 			return;
 		}
 		const capture: ActiveCapture = {
@@ -159,7 +157,9 @@ function createCaptureHost(
 			stopStream(capture);
 			captures.delete(id);
 			if (!capture.discard) {
-				await api.complete({ id, error: captureError(error, 'Media capture failed.') }).catch(() => undefined);
+				await api
+					.complete({ id, error: captureError(error, 'Media capture failed.') })
+					.catch(() => undefined);
 			}
 		}
 	}
@@ -201,7 +201,10 @@ export function initRecorderCapture(): () => void {
 		createCaptureHost(
 			window.recorder.camera,
 			async () =>
-				navigator.mediaDevices.getUserMedia({ audio: await getMicrophoneConstraints(), video: true }),
+				navigator.mediaDevices.getUserMedia({
+					audio: await getMicrophoneConstraints(),
+					video: true,
+				}),
 			'video'
 		),
 		createCaptureHost(

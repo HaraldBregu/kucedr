@@ -199,7 +199,8 @@ export function createRecorder(channels: { command: string; event: string }): Re
 		},
 		stop(id) {
 			const recording = recordings.get(id);
-			if (!recording || (recording.status !== 'recording' && recording.status !== 'selecting')) return;
+			if (!recording || (recording.status !== 'recording' && recording.status !== 'selecting'))
+				return;
 			set({ ...recording, status: 'stopping' });
 			sendCommand(id, { type: 'stop', id });
 		},

@@ -38,10 +38,7 @@ describe('recorder capture ownership', () => {
 			'capture:command',
 			expect.objectContaining({ type: 'start', id: recording.id })
 		);
-		expect(secondContents.send).not.toHaveBeenCalledWith(
-			'capture:command',
-			expect.anything()
-		);
+		expect(secondContents.send).not.toHaveBeenCalledWith('capture:command', expect.anything());
 
 		await expect(
 			recorder.chunk({ id: recording.id, sequence: 0, data: new Uint8Array([1]) }, 12)
@@ -62,24 +59,27 @@ describe('recorder capture ownership', () => {
 	it('rejects duplicate sessions and refuses to overwrite an existing output', async () => {
 		const contents = {
 			id: 11,
-			getURL: () => pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
+			getURL: () =>
+				pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
 			isDestroyed: () => false,
 			send: jest.fn(),
 		};
-		jest.mocked(BrowserWindow.getAllWindows).mockReturnValue([
-			{ isDestroyed: () => false, webContents: contents },
-		] as never);
+		jest
+			.mocked(BrowserWindow.getAllWindows)
+			.mockReturnValue([{ isDestroyed: () => false, webContents: contents }] as never);
 		const recorder = createRecorder({ command: 'capture:command', event: 'capture:event' });
 		const output = path.join(directory, 'capture.webm');
 		await fs.writeFile(output, 'keep');
 
 		const first = recorder.start({ url: path.join(directory, 'first.webm'), duration: 1_000 });
-		expect(() => recorder.start({ url: path.join(directory, 'second.webm'), duration: 1_000 })).toThrow(
-			'already in progress'
-		);
+		expect(() =>
+			recorder.start({ url: path.join(directory, 'second.webm'), duration: 1_000 })
+		).toThrow('already in progress');
 		recorder.cancel(first.id);
 		await expect(fs.readFile(output, 'utf8')).resolves.toBe('keep');
-		await expect(recorder.chunk({ id: first.id, sequence: 0, data: new Uint8Array([1]) }, 11)).resolves.toBeUndefined();
+		await expect(
+			recorder.chunk({ id: first.id, sequence: 0, data: new Uint8Array([1]) }, 11)
+		).resolves.toBeUndefined();
 
 		const second = recorder.start({ url: output, duration: 1_000 });
 		await expect(
@@ -92,13 +92,14 @@ describe('recorder capture ownership', () => {
 	it('preserves chunk order and cleans the file on capture failure', async () => {
 		const contents = {
 			id: 11,
-			getURL: () => pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
+			getURL: () =>
+				pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
 			isDestroyed: () => false,
 			send: jest.fn(),
 		};
-		jest.mocked(BrowserWindow.getAllWindows).mockReturnValue([
-			{ isDestroyed: () => false, webContents: contents },
-		] as never);
+		jest
+			.mocked(BrowserWindow.getAllWindows)
+			.mockReturnValue([{ isDestroyed: () => false, webContents: contents }] as never);
 		const recorder = createRecorder({ command: 'capture:command', event: 'capture:event' });
 		const output = path.join(directory, 'failed.webm');
 		const recording = recorder.start({ url: output, duration: 1_000 });

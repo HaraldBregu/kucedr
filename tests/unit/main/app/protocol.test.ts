@@ -103,20 +103,13 @@ describe('protocol security', () => {
 			securityOrigin: 'file://',
 		} as Electron.PermissionCheckHandlerHandlerDetails;
 
-		expect(
-			check(appContents as Electron.WebContents, 'clipboard-read', 'file://', details)
-		).toBe(false);
-		expect(
-			check(
-				appContents as Electron.WebContents,
-				'clipboard-sanitized-write',
-				'file://',
-				details
-			)
-		).toBe(true);
-		expect(check(appContents as Electron.WebContents, 'media', 'file://', details)).toBe(
+		expect(check(appContents as Electron.WebContents, 'clipboard-read', 'file://', details)).toBe(
 			false
 		);
+		expect(
+			check(appContents as Electron.WebContents, 'clipboard-sanitized-write', 'file://', details)
+		).toBe(true);
+		expect(check(appContents as Electron.WebContents, 'media', 'file://', details)).toBe(false);
 		expect(check(mainContents as Electron.WebContents, 'media', 'file://', details)).toBe(true);
 
 		const display = jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][0];
@@ -144,7 +137,9 @@ describe('protocol security', () => {
 		const mainContents = { id: 8 };
 		jest.mocked(BrowserWindow.fromWebContents).mockReturnValue({} as Electron.BrowserWindow);
 		setupMediaPermissionHandlers(appRegistry);
-		const display = jest.mocked(session.defaultSession.setDisplayMediaRequestHandler).mock.calls.at(-1)?.[0];
+		const display = jest
+			.mocked(session.defaultSession.setDisplayMediaRequestHandler)
+			.mock.calls.at(-1)?.[0];
 		jest.mocked(desktopCapturer.getSources).mockResolvedValue([
 			{ id: 'screen:1', name: 'Display 1' },
 			{ id: 'screen:2', name: 'Display 2' },
@@ -170,7 +165,9 @@ describe('protocol security', () => {
 		const mainContents = { id: 8 };
 		jest.mocked(BrowserWindow.fromWebContents).mockReturnValue({} as Electron.BrowserWindow);
 		setupMediaPermissionHandlers(appRegistry);
-		const display = jest.mocked(session.defaultSession.setDisplayMediaRequestHandler).mock.calls.at(-1)?.[0];
+		const display = jest
+			.mocked(session.defaultSession.setDisplayMediaRequestHandler)
+			.mock.calls.at(-1)?.[0];
 		const frame = {
 			url: pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
 			webContents: mainContents,

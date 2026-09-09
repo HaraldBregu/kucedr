@@ -197,64 +197,67 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 			callback(allowed);
 		});
 
-		targetSession.setDisplayMediaRequestHandler((request, callback) => {
-			const frame = request.frame;
-			const requestContents = frame ? webContents.fromFrame(frame) : undefined;
-			const parentWindow = requestContents ? BrowserWindow.fromWebContents(requestContents) : null;
-			const trusted = Boolean(
-				allowDisplayCapture &&
-				frame &&
-				frame === frame.top &&
-				requestContents &&
-				parentWindow &&
-				isTrustedAppRendererUrl(frame.url)
-			);
-			if (!trusted) {
-				callback({});
-				return;
-			}
-			if (process.platform === 'darwin') {
-				let status: string = 'unknown';
-				try {
-					status = systemPreferences.getMediaAccessStatus('screen');
-				} catch {
-					status = 'unknown';
-				}
-				if (status === 'denied' || status === 'restricted') {
+		targetSession.setDisplayMediaRequestHandler(
+			(request, callback) => {
+				const frame = request.frame;
+				const requestContents = frame ? webContents.fromFrame(frame) : undefined;
+				const parentWindow = requestContents
+					? BrowserWindow.fromWebContents(requestContents)
+					: null;
+				const trusted = Boolean(
+					allowDisplayCapture &&
+					frame &&
+					frame === frame.top &&
+					requestContents &&
+					parentWindow &&
+					isTrustedAppRendererUrl(frame.url)
+				);
+				if (!trusted) {
 					callback({});
-					showDisplayCaptureMessage(parentWindow, {
-							type: 'error',
-							title: 'Screen Recording Permission Required',
-							message: 'Kucedr cannot access the screen.',
-								detail:
-									'Open System Settings → Privacy & Security → Screen Recording, enable Kucedr, then fully quit and relaunch the packaged app.',
-								buttons: ['OK'],
-					});
 					return;
 				}
-			}
-			desktopCapturer
-				.getSources({ types: ['screen', 'window'], thumbnailSize: { width: 0, height: 0 } })
-				.then((sources) => {
-					if (sources.length === 0) {
+				if (process.platform === 'darwin') {
+					let status: string = 'unknown';
+					try {
+						status = systemPreferences.getMediaAccessStatus('screen');
+					} catch {
+						status = 'unknown';
+					}
+					if (status === 'denied' || status === 'restricted') {
 						callback({});
 						showDisplayCaptureMessage(parentWindow, {
 							type: 'error',
-							title: 'Desktop Capture Unavailable',
-							message: 'Kucedr could not find a display or window to record.',
+							title: 'Screen Recording Permission Required',
+							message: 'Kucedr cannot access the screen.',
 							detail:
-								process.platform === 'linux'
-									? 'On Wayland, ensure PipeWire and xdg-desktop-portal are running and that your desktop portal supports screen sharing. On X11, retry after confirming that a display is available.'
-									: 'Close other capture sessions and try again.',
+								'Open System Settings → Privacy & Security → Screen Recording, enable Kucedr, then fully quit and relaunch the packaged app.',
 							buttons: ['OK'],
 						});
 						return;
 					}
-					if (sources.length === 1) {
-						callback({ video: sources[0] });
-						return;
-					}
-					const picker = {
+				}
+				desktopCapturer
+					.getSources({ types: ['screen', 'window'], thumbnailSize: { width: 0, height: 0 } })
+					.then((sources) => {
+						if (sources.length === 0) {
+							callback({});
+							showDisplayCaptureMessage(parentWindow, {
+								type: 'error',
+								title: 'Desktop Capture Unavailable',
+								message: 'Kucedr could not find a display or window to record.',
+								detail:
+									process.platform === 'linux'
+										? 'On Wayland, ensure PipeWire and xdg-desktop-portal are running and that your desktop portal supports screen sharing. On X11, retry after confirming that a display is available.'
+										: 'Close other capture sessions and try again.',
+								buttons: ['OK'],
+							});
+							return;
+						}
+						if (sources.length === 1) {
+							callback({ video: sources[0] });
+							return;
+						}
+						const picker = {
 							type: 'question' as const,
 							title: 'Choose a screen to record',
 							message: 'Select the display or window to capture.',
@@ -262,36 +265,44 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 							cancelId: sources.length,
 							noLink: true,
 						};
-					void (parentWindow ? dialog.showMessageBox(parentWindow, picker) : dialog.showMessageBox(picker))
-						.then(({ response }) => {
-							callback(response >= 0 && response < sources.length ? { video: sources[response] } : {});
-						})
-						.catch(() => callback({}));
-				})
-				.catch(() => {
-					callback({});
-					showDisplayCaptureMessage(parentWindow, {
-						type: 'error',
-						title: 'Desktop Capture Unavailable',
-						message: 'Kucedr could not access desktop capture.',
-						detail:
-							process.platform === 'linux'
-								? 'On Wayland, check PipeWire and xdg-desktop-portal. On X11, verify that the desktop session exposes the display to Electron.'
-								: 'Check the operating system screen-capture permission and try again.',
-						buttons: ['OK'],
+						void (
+							parentWindow
+								? dialog.showMessageBox(parentWindow, picker)
+								: dialog.showMessageBox(picker)
+						)
+							.then(({ response }) => {
+								callback(
+									response >= 0 && response < sources.length ? { video: sources[response] } : {}
+								);
+							})
+							.catch(() => callback({}));
+					})
+					.catch(() => {
+						callback({});
+						showDisplayCaptureMessage(parentWindow, {
+							type: 'error',
+							title: 'Desktop Capture Unavailable',
+							message: 'Kucedr could not access desktop capture.',
+							detail:
+								process.platform === 'linux'
+									? 'On Wayland, check PipeWire and xdg-desktop-portal. On X11, verify that the desktop session exposes the display to Electron.'
+									: 'Check the operating system screen-capture permission and try again.',
+							buttons: ['OK'],
+						});
 					});
-				});
-		}, {
-			useSystemPicker:
-				process.platform === 'darwin' &&
-				(() => {
-					try {
-					return Number.parseInt(process.getSystemVersion(), 10) >= 15;
-					} catch {
-						return false;
-					}
-				})(),
-		});
+			},
+			{
+				useSystemPicker:
+					process.platform === 'darwin' &&
+					(() => {
+						try {
+							return Number.parseInt(process.getSystemVersion(), 10) >= 15;
+						} catch {
+							return false;
+						}
+					})(),
+			}
+		);
 	};
 
 	configure(session.defaultSession, true);
@@ -327,9 +338,7 @@ function isTrustedRendererUrl(url?: string): boolean {
 
 	try {
 		const parsed = new URL(url);
-		return (
-			parsed.protocol === `${APP_RESOURCE_SCHEME}:` || isTrustedRendererOrigin(parsed.origin)
-		);
+		return parsed.protocol === `${APP_RESOURCE_SCHEME}:` || isTrustedRendererOrigin(parsed.origin);
 	} catch {
 		return false;
 	}
@@ -356,8 +365,7 @@ function isAppWindowWebContents(
 	appRegistry: AppRegistry
 ): boolean {
 	return Boolean(
-		webContents &&
-		(BrowserWindow.fromWebContents(webContents) || appRegistry.has(webContents))
+		webContents && (BrowserWindow.fromWebContents(webContents) || appRegistry.has(webContents))
 	);
 }
 
@@ -377,7 +385,7 @@ function showDisplayCaptureMessage(
 	parentWindow: BrowserWindow | null,
 	options: Electron.MessageBoxOptions
 ): void {
-	void (parentWindow ? dialog.showMessageBox(parentWindow, options) : dialog.showMessageBox(options)).catch(
-		() => undefined
-	);
+	void (
+		parentWindow ? dialog.showMessageBox(parentWindow, options) : dialog.showMessageBox(options)
+	).catch(() => undefined);
 }
