@@ -88,6 +88,8 @@ describe('renderer recorder capture', () => {
 		const start = environment.commands.get('2');
 		start?.({ type: 'start', id: 'capture-1', duration: 30_000 });
 		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(FakeMediaRecorder.instances).toHaveLength(1);
+		expect(environment.complete).not.toHaveBeenCalled();
 		const recorder = FakeMediaRecorder.instances[0];
 		recorder.emit(new Blob(['first']));
 		environment.streamTrack.emitEnded();
