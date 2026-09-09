@@ -55,12 +55,12 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 	const [permissionError, setPermissionError] = useState('');
 
 	useEffect(() => {
-		if (!media.permission) return;
 		let active = true;
-		const request =
-			media.permission === 'camera'
+		const request = media.permission
+			? media.permission === 'camera'
 				? window.app.getCameraPermission()
-				: window.app.getMicrophonePermission();
+				: window.app.getMicrophonePermission()
+			: window.app.getScreenCapturePermission();
 		void request
 			.then((result) => {
 				if (active) setStatus(result.systemStatus);
@@ -111,6 +111,11 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 			)}
 
 			{permissionError && <SettingsNotice variant="destructive">{permissionError}</SettingsNotice>}
+			{!media.permission && (status === 'denied' || status === 'restricted') && (
+				<SettingsNotice variant="destructive">
+					{t('settings.system.media.screen.permissionHelp')}
+				</SettingsNotice>
+			)}
 
 			<SettingsSection title={t('settings.system.mediaPermissions.title')}>
 				<SettingsPanel>
@@ -141,10 +146,20 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 								</Button>
 							</>
 						) : (
-							<Button variant="outline" size="xs" onClick={() => openSettings('ScreenCapture')}>
-								<Settings className="size-3" />
-								{t('settings.application.openScreenRecording')}
-							</Button>
+							<>
+								<span
+									className={cn(
+										'inline-flex h-6 items-center rounded-md border px-2 text-[11px] font-medium',
+										statusClassName(status)
+									)}
+								>
+									{t(`settings.system.permissionStatus.${status}`)}
+								</span>
+								<Button variant="outline" size="xs" onClick={() => openSettings('ScreenCapture')}>
+									<Settings className="size-3" />
+									{t('settings.application.openScreenRecording')}
+								</Button>
+							</>
 						)}
 					</div>
 				</SettingsPanel>

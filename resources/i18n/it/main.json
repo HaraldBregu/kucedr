@@ -323,7 +323,8 @@
 				},
 				"screen": {
 					"label": "Schermo",
-					"description": "Cattura lo schermo per verificare l'accesso alla registrazione dello schermo."
+					"description": "Cattura lo schermo per verificare l'accesso alla registrazione dello schermo.",
+					"permissionHelp": "Consenti Kucedr in Impostazioni di Sistema → Privacy e Sicurezza → Registrazione Schermo, quindi chiudi completamente e riavvia l'app pacchettizzata."
 				},
 				"test": {
 					"title": "Prova di registrazione",
