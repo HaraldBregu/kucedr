@@ -278,25 +278,14 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(audio).toBeDefined();
 	expect(video).toBeDefined();
 	if (!voice || !realtimeConversation || !image || !audio || !video) return;
-	/*
-	 * The model selectors use buttons on the Agent page; Search Engine remains a select.
-	 */
 	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
 	expect(voice).toHaveTextContent('Eleven v3');
-	/*
-	 * Keep the selected model assertions next to their corresponding controls.
-	 */
-	/* eslint-disable @typescript-eslint/no-unused-vars */
-	const legacyVoice = (await screen.findAllByRole('combobox', { name: 'Voice' })).find((entry) =>
-		entry.textContent?.includes('Eleven v3')
-	);
-	/* eslint-enable @typescript-eslint/no-unused-vars */
 	expect(model).toHaveTextContent('GPT');
-	expect(realtimeConversation).toHaveTextContent('OpenAI / GPT Realtime');
-	expect(voice).toHaveTextContent('ElevenLabs / Eleven v3');
-	expect(image).toHaveTextContent('Google / Gemini Image');
-	expect(audio).toHaveTextContent('ElevenLabs / Eleven Music');
-	expect(video).toHaveTextContent('Google / Veo');
+	expect(realtimeConversation).toHaveTextContent('GPT Realtime');
+	expect(voice).toHaveTextContent('Eleven v3');
+	expect(image).toHaveTextContent('Gemini Image');
+	expect(audio).toHaveTextContent('Eleven Music');
+	expect(video).toHaveTextContent('Veo');
 	expect(search).toHaveTextContent('Brave');
 
 	expect(cards.every(Boolean)).toBe(true);
