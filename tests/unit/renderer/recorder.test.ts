@@ -91,7 +91,10 @@ describe('renderer recorder capture', () => {
 		expect(FakeMediaRecorder.instances).toHaveLength(1);
 		expect(environment.complete).not.toHaveBeenCalled();
 		const recorder = FakeMediaRecorder.instances[0];
-		recorder.emit(new Blob(['first']));
+		recorder.emit({
+			size: 5,
+			arrayBuffer: async () => new Uint8Array([102, 105, 114, 115, 116]).buffer,
+		} as Blob);
 		environment.streamTrack.emitEnded();
 		await new Promise((resolve) => setTimeout(resolve, 0));
 		await Promise.resolve();
