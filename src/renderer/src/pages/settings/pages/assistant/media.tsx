@@ -36,6 +36,7 @@ interface AgentMediaModelConfigurationProps {
 	readonly showIcon?: boolean;
 	readonly grouped?: boolean;
 	readonly showSelectedModel?: boolean;
+	readonly buttonDropdown?: boolean;
 	readonly showFieldLabel?: boolean;
 	readonly showContentSeparator?: boolean;
 	readonly inlineAdvanced?: boolean;
@@ -82,6 +83,7 @@ export function AgentMediaModelConfiguration({
 	showIcon = true,
 	grouped = false,
 	showSelectedModel = false,
+	buttonDropdown = false,
 	showFieldLabel = true,
 	showContentSeparator = true,
 	inlineAdvanced = false,
@@ -199,6 +201,7 @@ export function AgentMediaModelConfiguration({
 			icon={icon}
 			grouped={grouped}
 			showSelectedModel={showSelectedModel}
+			buttonDropdown={buttonDropdown}
 			showFieldLabel={showFieldLabel}
 			showContentSeparator={showContentSeparator}
 			triggerTitle={title}

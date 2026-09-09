@@ -253,6 +253,7 @@ const AssistantPage: React.FC = () => {
 					icon={Radio}
 					showFieldLabel={false}
 					showSelectedModel
+					buttonDropdown
 					showContentSeparator={false}
 				/>
 
@@ -267,6 +268,7 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					buttonDropdown
 					showContentSeparator={false}
 					showOptions={false}
 				/>
@@ -282,6 +284,7 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					buttonDropdown
 					showContentSeparator={false}
 					inlineAdvanced
 				/>
@@ -299,6 +302,7 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					buttonDropdown
 					showContentSeparator={false}
 					inlineAdvanced
 				/>
@@ -314,6 +318,7 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					buttonDropdown
 					showContentSeparator={false}
 					inlineAdvanced
 				/>
@@ -329,6 +334,7 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
+					buttonDropdown
 					showContentSeparator={false}
 					inlineAdvanced
 				/>
