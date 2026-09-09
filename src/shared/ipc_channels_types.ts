@@ -436,6 +436,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./sandbox').SandboxStatus;
 	};
+	[AppChannels.getMicrophoneInputId]: {
+		args: [];
+		result: string;
+	};
+	[AppChannels.setMicrophoneInputId]: {
+		args: [inputId: string];
+		result: void;
+	};
 	[AppChannels.getMicrophonePermission]: {
 		args: [];
 		result: import('./app_types').MicrophonePermissionSettings;

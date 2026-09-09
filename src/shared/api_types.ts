@@ -483,6 +483,8 @@ export interface AppApi extends AppStorageApi {
 	 * Returns a cleanup function to remove the listener.
 	 */
 	onThemeModeChanged: (callback: (theme: AppThemeData) => void) => () => void;
+	getMicrophoneInputId: () => Promise<string>;
+	setMicrophoneInputId: (inputId: string) => Promise<void>;
 	getMicrophonePermission: () => Promise<MicrophonePermissionSettings>;
 	setMicrophoneEnabled: (enabled: boolean) => Promise<MicrophonePermissionSettings>;
 	requestMicrophonePermission: () => Promise<MicrophonePermissionSettings>;

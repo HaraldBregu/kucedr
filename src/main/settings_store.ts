@@ -26,6 +26,7 @@ export type AppSettingsState = {
 	keepAwake: boolean;
 	language: AppLanguage;
 	theme: AppTheme;
+	microphoneInputId: string;
 	launchCount: number;
 	cloud: StorageSyncSettings;
 };
@@ -45,6 +46,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	language: 'en',
 	theme: 'system',
+	microphoneInputId: 'default',
 	launchCount: 0,
 	cloud: DEFAULT_STORAGE_SETTINGS,
 };
@@ -149,6 +151,17 @@ export function getTheme(): AppTheme {
 
 export function setTheme(theme: AppTheme): void {
 	store.set('theme', theme);
+}
+
+export function getMicrophoneInputId(): string {
+	return store.get('microphoneInputId');
+}
+
+export function setMicrophoneInputId(inputId: string): void {
+	if (typeof inputId !== 'string' || !inputId.trim()) {
+		throw new Error('Invalid microphone input ID.');
+	}
+	store.set('microphoneInputId', inputId);
 }
 
 export function recordAppLaunch(): AppLaunchState {

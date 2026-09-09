@@ -41,6 +41,8 @@ import {
 	setLanguage as setStoredLanguage,
 	getTheme as getStoredTheme,
 	setTheme as setStoredTheme,
+	getMicrophoneInputId as getStoredMicrophoneInputId,
+	setMicrophoneInputId as setStoredMicrophoneInputId,
 	getLaunchState as getStoredLaunchState,
 } from '../settings_store';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
@@ -593,6 +595,18 @@ export class AppIpc implements IpcModule {
 		ipcMain.handle(
 			AppChannels.setupSandbox,
 			wrapSimpleHandler(() => sandbox.setup(), AppChannels.setupSandbox)
+		);
+
+		ipcMain.handle(
+			AppChannels.getMicrophoneInputId,
+			wrapSimpleHandler(() => getStoredMicrophoneInputId(), AppChannels.getMicrophoneInputId)
+		);
+
+		ipcMain.handle(
+			AppChannels.setMicrophoneInputId,
+			wrapSimpleHandler((inputId: string) => {
+				setStoredMicrophoneInputId(inputId);
+			}, AppChannels.setMicrophoneInputId)
 		);
 
 		ipcMain.handle(

@@ -165,6 +165,8 @@ export const AppChannels = {
 	themeModeChanged: 'app:theme-mode-changed',
 	getSandboxStatus: 'app:sandbox:status:get',
 	setupSandbox: 'app:sandbox:setup',
+	getMicrophoneInputId: 'app:get-microphone-input-id',
+	setMicrophoneInputId: 'app:set-microphone-input-id',
 	getMicrophonePermission: 'app:get-microphone-permission',
 	setMicrophoneEnabled: 'app:set-microphone-enabled',
 	requestMicrophonePermission: 'app:request-microphone-permission',

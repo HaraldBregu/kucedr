@@ -122,6 +122,12 @@ export const app: AppApi = {
 	onThemeModeChanged: (callback: (theme: AppThemeData) => void): (() => void) => {
 		return typedOn(AppChannels.themeModeChanged, callback);
 	},
+	getMicrophoneInputId: () => {
+		return typedInvokeUnwrap(AppChannels.getMicrophoneInputId);
+	},
+	setMicrophoneInputId: (inputId) => {
+		return typedInvokeUnwrap(AppChannels.setMicrophoneInputId, inputId);
+	},
 	getMicrophonePermission: () => {
 		return typedInvokeUnwrap(AppChannels.getMicrophonePermission);
 	},
