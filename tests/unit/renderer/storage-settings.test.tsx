@@ -21,7 +21,6 @@ jest.mock('react-i18next', () => {
 		'settings.storage.sync.addFolders': 'Add folders',
 		'settings.storage.sync.folder': 'Selected folder',
 		'settings.storage.sync.removeFolder': 'Remove folder',
-		'settings.storage.sync.save': 'Save schedule',
 		'settings.storage.syncSaved': 'Schedule saved',
 		'settings.storage.autoSync.interval': 'Backup interval',
 		'settings.storage.autoSync.sectionTitle': 'Automation',
