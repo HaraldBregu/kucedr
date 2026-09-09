@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import fs from 'node:fs/promises';
-import { app, BrowserWindow, desktopCapturer, net, protocol, session } from 'electron';
+import { app, BrowserWindow, desktopCapturer, dialog, net, protocol, session } from 'electron';
 import { AppRegistry } from '../../../../src/main/apps/app_registry';
 import { appsRoot } from '../../../../src/main/apps/app_root';
 import {
@@ -130,7 +130,9 @@ describe('protocol security', () => {
 
 		jest.mocked(desktopCapturer.getSources).mockResolvedValue([{ id: 'screen:1' }] as never);
 		await new Promise<void>((resolve) => {
-			display({ frame: { url: mainUrl, top: undefined, webContents: mainContents } } as never, (result) => {
+			const frame = { url: mainUrl, webContents: mainContents } as never;
+			(frame as { top: unknown }).top = frame;
+			display({ frame } as never, (result) => {
 				expect(result).toEqual({ video: { id: 'screen:1' } });
 				resolve();
 			});
@@ -149,9 +151,12 @@ describe('protocol security', () => {
 		] as never);
 		jest.mocked(dialog.showMessageBox).mockResolvedValueOnce({ response: 1 } as never);
 		const callback = jest.fn();
-		display?.({
-			frame: { url: pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(), top: undefined, webContents: mainContents },
-		} as never, callback);
+		const frame = {
+			url: pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
+			webContents: mainContents,
+		} as never;
+		(frame as { top: unknown }).top = frame;
+		display?.({ frame } as never, callback);
 		await new Promise((resolve) => setImmediate(resolve));
 		expect(dialog.showMessageBox).toHaveBeenCalledWith(
 			expect.anything(),
