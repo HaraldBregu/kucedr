@@ -1,20 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-	AlertTriangle,
-	Download,
-	FolderSync,
-	Plus,
-	Save,
-	Trash2,
-	Upload,
-} from 'lucide-react';
+import { AlertTriangle, Download, FolderSync, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import {
-	Card,
-	CardContent,
-	CardFooter,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import {
 	Dialog,
 	DialogContent,
@@ -274,160 +262,159 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 							</Button>
 						}
 					>
-					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
-						<CardContent className="p-0!">
-							{visibleFolders.map((folder) => (
+						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
+							<CardContent className="p-0!">
+								{visibleFolders.map((folder) => (
+									<SettingsRow
+										key={folder.path}
+										title={t(`settings.storage.folders.${folder.key}`)}
+										description={folder.path}
+										className="grid-cols-[minmax(0,1fr)_auto]"
+										actionClassName="ml-auto w-auto justify-end"
+										actions={
+											<Switch
+												checked={storage.paths.includes(folder.path)}
+												aria-label={t(`settings.storage.folders.${folder.key}`)}
+												disabled={controlsDisabled}
+												onCheckedChange={(checked) =>
+													updateDraft({
+														...storage,
+														paths: checked
+															? [...new Set([...storage.paths, folder.path])]
+															: storage.paths.filter((entry) => entry !== folder.path),
+													})
+												}
+											/>
+										}
+									/>
+								))}
+
+								{customPaths.map((selectedPath) => (
+									<SettingsRow
+										key={selectedPath}
+										title={t('settings.storage.sync.folder')}
+										description={selectedPath}
+										className="grid-cols-[minmax(0,1fr)_auto] [&_p]:break-all"
+										actionClassName="ml-auto w-auto justify-end"
+										actions={
+											<Button
+												variant="ghost"
+												size="icon-sm"
+												aria-label={t('settings.storage.sync.removeFolder')}
+												disabled={controlsDisabled}
+												onClick={() =>
+													updateDraft({
+														...storage,
+														paths: storage.paths.filter((entry) => entry !== selectedPath),
+													})
+												}
+											>
+												<Trash2 className="size-3" />
+											</Button>
+										}
+									/>
+								))}
+							</CardContent>
+						</Card>
+					</SettingsSection>
+
+					<SettingsSection
+						title={t('settings.storage.autoSync.sectionTitle')}
+						description={t('settings.storage.autoSync.sectionDescription')}
+					>
+						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
+							<CardContent className="p-0!">
 								<SettingsRow
-									key={folder.path}
-									title={t(`settings.storage.folders.${folder.key}`)}
-									description={folder.path}
-									className="grid-cols-[minmax(0,1fr)_auto]"
-									actionClassName="ml-auto w-auto justify-end"
+									title={t('settings.storage.autoSync.interval')}
+									description={t('settings.storage.autoSync.description')}
 									actions={
-										<Switch
-											checked={storage.paths.includes(folder.path)}
-											aria-label={t(`settings.storage.folders.${folder.key}`)}
+										<Select
+											value={intervalValue}
+											onValueChange={selectInterval}
 											disabled={controlsDisabled}
-											onCheckedChange={(checked) =>
-												updateDraft({
-													...storage,
-													paths: checked
-														? [...new Set([...storage.paths, folder.path])]
-														: storage.paths.filter((entry) => entry !== folder.path),
-												})
+										>
+											<SelectTrigger
+												size="sm"
+												className="w-56 max-w-full text-xs"
+												aria-label={t('settings.storage.autoSync.interval')}
+											>
+												<SelectValue>{t(`settings.storage.autoSync.${intervalValue}`)}</SelectValue>
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="off">{t('settings.storage.autoSync.off')}</SelectItem>
+												{SYNC_INTERVALS.map((interval) => (
+													<SelectItem key={interval.key} value={interval.key}>
+														{t(`settings.storage.autoSync.${interval.key}`)}
+													</SelectItem>
+												))}
+												{intervalValue === 'custom' && (
+													<SelectItem value="custom">
+														{t('settings.storage.autoSync.custom')}
+													</SelectItem>
+												)}
+											</SelectContent>
+										</Select>
+									}
+								/>
+
+								<SettingsRow
+									title={t('settings.storage.autoSync.cronExpression')}
+									description={t('settings.storage.autoSync.cronDescription')}
+									actions={
+										<Input
+											value={storage.syncCronExpression}
+											aria-label={t('settings.storage.autoSync.cronExpression')}
+											className="w-56 max-w-full font-mono text-xs"
+											disabled={!storage.syncEnabled || controlsDisabled}
+											onChange={(event) =>
+												updateDraft({ ...storage, syncCronExpression: event.target.value })
 											}
 										/>
 									}
 								/>
-							))}
+							</CardContent>
 
-							{customPaths.map((selectedPath) => (
-								<SettingsRow
-									key={selectedPath}
-									title={t('settings.storage.sync.folder')}
-									description={selectedPath}
-									className="grid-cols-[minmax(0,1fr)_auto] [&_p]:break-all"
-									actionClassName="ml-auto w-auto justify-end"
-									actions={
-										<Button
-											variant="ghost"
-											size="icon-sm"
-											aria-label={t('settings.storage.sync.removeFolder')}
-											disabled={controlsDisabled}
-											onClick={() =>
-												updateDraft({
-													...storage,
-													paths: storage.paths.filter((entry) => entry !== selectedPath),
-												})
-											}
-										>
-											<Trash2 className="size-3" />
-										</Button>
-								}
-							/>
-						))}
-					</CardContent>
-				</Card>
-			</SettingsSection>
-
-			<SettingsSection
-				title={t('settings.storage.autoSync.sectionTitle')}
-				description={t('settings.storage.autoSync.sectionDescription')}
-			>
-				<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
-					<CardContent className="p-0!">
-
-							<SettingsRow
-								title={t('settings.storage.autoSync.interval')}
-								description={t('settings.storage.autoSync.description')}
-								actions={
-									<Select
-										value={intervalValue}
-										onValueChange={selectInterval}
-										disabled={controlsDisabled}
-									>
-										<SelectTrigger
-											size="sm"
-											className="w-56 max-w-full text-xs"
-											aria-label={t('settings.storage.autoSync.interval')}
-										>
-											<SelectValue>{t(`settings.storage.autoSync.${intervalValue}`)}</SelectValue>
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="off">{t('settings.storage.autoSync.off')}</SelectItem>
-											{SYNC_INTERVALS.map((interval) => (
-												<SelectItem key={interval.key} value={interval.key}>
-													{t(`settings.storage.autoSync.${interval.key}`)}
-												</SelectItem>
-											))}
-											{intervalValue === 'custom' && (
-												<SelectItem value="custom">
-													{t('settings.storage.autoSync.custom')}
-												</SelectItem>
-											)}
-										</SelectContent>
-									</Select>
-								}
-							/>
-
-							<SettingsRow
-								title={t('settings.storage.autoSync.cronExpression')}
-								description={t('settings.storage.autoSync.cronDescription')}
-								actions={
-									<Input
-										value={storage.syncCronExpression}
-										aria-label={t('settings.storage.autoSync.cronExpression')}
-										className="w-56 max-w-full font-mono text-xs"
-										disabled={!storage.syncEnabled || controlsDisabled}
-										onChange={(event) =>
-											updateDraft({ ...storage, syncCronExpression: event.target.value })
-										}
-									/>
-								}
-							/>
-						</CardContent>
-
-						<CardFooter className="flex-wrap justify-end gap-2 p-4!">
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => setRestoreOpen(true)}
-								disabled={controlsDisabled || storage.paths.length === 0}
-							>
-								<Download className="size-3" />
-								{runningOperation?.operation === 'restore'
-									? t('settings.storage.pulling')
-									: t('settings.storage.restore')}
-							</Button>
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => void runBackup()}
-								disabled={controlsDisabled || storage.paths.length === 0}
-							>
-								<Upload className="size-3" />
-								{runningOperation?.operation === 'backup'
-									? t('settings.storage.pushing')
-									: t('settings.storage.backup')}
-							</Button>
-							<Button
-								variant="ghost"
-								size="sm"
-								onClick={() => setDraft(null)}
-								disabled={!draft || controlsDisabled}
-							>
-								{t('settings.storage.cancel')}
-							</Button>
-							<Button
-								size="sm"
-								onClick={() => void saveSync()}
-								disabled={!draft || controlsDisabled}
-							>
-								<Save className="size-3" />
-								{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
-							</Button>
-						</CardFooter>
-					</Card>
+							<CardFooter className="flex-wrap justify-end gap-2 p-4!">
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => setRestoreOpen(true)}
+									disabled={controlsDisabled || storage.paths.length === 0}
+								>
+									<Download className="size-3" />
+									{runningOperation?.operation === 'restore'
+										? t('settings.storage.pulling')
+										: t('settings.storage.restore')}
+								</Button>
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={() => void runBackup()}
+									disabled={controlsDisabled || storage.paths.length === 0}
+								>
+									<Upload className="size-3" />
+									{runningOperation?.operation === 'backup'
+										? t('settings.storage.pushing')
+										: t('settings.storage.backup')}
+								</Button>
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={() => setDraft(null)}
+									disabled={!draft || controlsDisabled}
+								>
+									{t('settings.storage.cancel')}
+								</Button>
+								<Button
+									size="sm"
+									onClick={() => void saveSync()}
+									disabled={!draft || controlsDisabled}
+								>
+									<Save className="size-3" />
+									{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
+								</Button>
+							</CardFooter>
+						</Card>
 					</SettingsSection>
 
 					{syncStatus && <SettingsNotice icon={FolderSync}>{syncStatus}</SettingsNotice>}

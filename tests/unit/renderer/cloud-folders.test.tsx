@@ -95,8 +95,12 @@ it('shows the storage provider description beneath the title and before backup s
 		'Choose which configured storage provider receives your backups and supplies files when you restore them.'
 	);
 	const backup = screen.getByRole('heading', { name: 'Cloud Backup' });
-	expect(title.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-	expect(description.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(
+		title.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING
+	).toBeTruthy();
+	expect(
+		description.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING
+	).toBeTruthy();
 	expect(screen.queryByText(/sign in|supabase|secure key sync/i)).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
