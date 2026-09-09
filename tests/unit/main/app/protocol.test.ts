@@ -90,6 +90,9 @@ describe('protocol security', () => {
 				contents === mainContents ? ({} as Electron.BrowserWindow) : null
 			);
 		setupMediaPermissionHandlers(appRegistry);
+		expect(
+			jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][1]
+		).toEqual({ useSystemPicker: false });
 
 		const defaultSession = session.defaultSession;
 		const check = jest.mocked(defaultSession.setPermissionCheckHandler).mock.calls[0][0];
