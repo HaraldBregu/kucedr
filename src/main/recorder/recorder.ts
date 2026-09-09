@@ -98,7 +98,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 		}
 	}
 
-	function fail(id: string, error: unknown): void {
+	async function fail(id: string, error: unknown): Promise<void> {
 		const recording = recordings.get(id);
 		if (!isActive(recording)) return;
 		const writer = writers.get(id);
@@ -108,13 +108,11 @@ export function createRecorder(channels: { command: string; event: string }): Re
 			status: 'error',
 			error: error instanceof Error ? error.message : String(error),
 		});
-		void (async () => {
-			try {
-				await writer?.handle?.close();
-			} finally {
-				await fs.rm(recording.url, { force: true });
-			}
-		})();
+		try {
+			await writer?.handle?.close();
+		} finally {
+			await fs.rm(recording.url, { force: true });
+		}
 	}
 
 	async function openWriter(recording: Recording): Promise<FileHandle> {
@@ -190,7 +188,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 					const current = recordings.get(recording.id);
 					if (isActive(current)) {
 						sendCommand(recording.id, { type: 'cancel', id: recording.id });
-						fail(recording.id, 'Recording timed out.');
+						void fail(recording.id, 'Recording timed out.');
 					}
 				}, duration + COMPLETION_GRACE_MS)
 			);
@@ -222,24 +220,24 @@ export function createRecorder(channels: { command: string; event: string }): Re
 				throw new Error('Recording chunk sequence is invalid.');
 			}
 			if (chunk.data.byteLength > MAX_CHUNK_BYTES) {
-				fail(chunk.id, 'Recording chunk is too large.');
+				await fail(chunk.id, 'Recording chunk is too large.');
 				return;
 			}
 			const writer = writers.get(chunk.id);
 			if (!writer) throw new Error('Recording writer is unavailable.');
 			if (chunk.sequence !== writer.nextSequence) {
-				fail(chunk.id, 'Recording chunks arrived out of order.');
+				await fail(chunk.id, 'Recording chunks arrived out of order.');
 				return;
 			}
 			if (writer.pending >= MAX_PENDING_CHUNKS) {
-				fail(chunk.id, 'Recording output cannot keep up with capture.');
+				await fail(chunk.id, 'Recording output cannot keep up with capture.');
 				return;
 			}
 			writer.nextSequence += 1;
 			writer.pending += 1;
 			const operation = writer.chain.then(() => writeChunk(recording, chunk));
-			writer.chain = operation.catch((error) => {
-				fail(chunk.id, error);
+			writer.chain = operation.catch(async (error) => {
+				await fail(chunk.id, error);
 				throw error;
 			});
 			try {
@@ -257,7 +255,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 			const writer = writers.get(result.id);
 			if (result.error) {
 				await writer?.chain.catch(() => undefined);
-				if (isActive(recordings.get(result.id))) fail(result.id, result.error);
+				if (isActive(recordings.get(result.id))) await fail(result.id, result.error);
 				return;
 			}
 			if (!writer?.hasChunk) {
@@ -278,7 +276,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 					size: writer.size,
 				});
 			} catch (error) {
-				fail(result.id, error);
+				await fail(result.id, error);
 			}
 		},
 		async destroy() {
