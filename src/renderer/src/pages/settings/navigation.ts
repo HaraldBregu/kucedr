@@ -19,7 +19,6 @@ import {
 	Server,
 	ShieldCheck,
 	Sparkles,
-	Volume2,
 	UserRound,
 	type LucideIcon,
 } from 'lucide-react';
@@ -67,14 +66,6 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		descriptionKey: 'settings.coder.description',
 		keywords: 'coder coding pi codex anthropic claude openai agent harness runtime',
 		icon: Code2,
-	},
-	{
-		id: AGENTS.textToSpeech,
-		path: '/settings/providers/voice',
-		labelKey: 'settings.modelServices.voiceName',
-		descriptionKey: 'settings.modelServices.voiceDescription',
-		keywords: 'voice text to speech tts output speaking audio synthesis model',
-		icon: Volume2,
 	},
 ] as const;
 

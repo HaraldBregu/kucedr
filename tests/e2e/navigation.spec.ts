@@ -47,7 +47,6 @@ const routes = [
 	'/settings/agent/mcp',
 	'/settings/agent/mcp/missing',
 	'/settings/providers/transcribe',
-	'/settings/providers/voice',
 	'/settings/providers/search',
 	'/settings/agent/rag',
 	'/settings/agent/llm-wiki',

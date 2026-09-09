@@ -544,7 +544,7 @@ function PageContent(): ReactElement {
 	const voiceErrorAction = realtimeVoice.requiresConfiguration
 		? {
 				label: 'Open Voice settings',
-				action: () => navigate('/settings/providers/voice'),
+				action: () => navigate('/settings/agent'),
 			}
 		: voiceErrorMessage?.toLowerCase().includes('microphone')
 			? {
