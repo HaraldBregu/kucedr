@@ -102,6 +102,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.musicModelDescription': 'Audio defaults',
 		'settings.modelServices.videoModelDescription': 'Video defaults',
 		'settings.modelServices.model': 'Model',
+		'settings.modelServices.llmModel': 'LLM Model',
 		'settings.modelServices.modelDescription': 'Choose provider and model',
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.modelServices.realtimeConversationConfiguration': 'Realtime conversation',
@@ -243,7 +244,7 @@ it('groups independently collapsible provider settings in one card', async () =>
 		expect(trigger).toHaveAttribute('aria-expanded', 'true');
 		cards.push(trigger.closest('[data-slot="card"]'));
 	}
-	const model = (await screen.findAllByRole('button', { name: 'Model' })).find(
+	const model = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
 		(element) => element.getAttribute('aria-haspopup') === 'dialog'
 	);
 	expect(model).toBeDefined();

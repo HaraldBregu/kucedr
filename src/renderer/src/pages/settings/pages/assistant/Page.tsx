@@ -229,7 +229,7 @@ const AssistantPage: React.FC = () => {
 				<ModelProviderConfiguration
 					configState={state}
 					idPrefix="assistant"
-					triggerTitle={t('settings.modelServices.model')}
+					triggerTitle={t('settings.modelServices.llmModel')}
 					description={t('settings.modelServices.modelDescription')}
 					showIcon
 					icon={Bot}

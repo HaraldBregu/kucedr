@@ -1186,6 +1186,7 @@
 			"toolModels": "Modelli degli strumenti",
 			"kucedrBreadcrumb": "Kucedr",
 			"assistantName": "Agent",
+			"llmModel": "Modello LLM",
 			"kucedrDescription": "Chat, strumenti e piani",
 			"speechTranscriberName": "Trascrivi",
 			"speechTranscriberDescription": "Modelli speech-to-text",

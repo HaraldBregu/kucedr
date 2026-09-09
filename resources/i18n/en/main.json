@@ -1187,6 +1187,7 @@
 			"toolModels": "Tool models",
 			"kucedrBreadcrumb": "Kucedr",
 			"assistantName": "Agent",
+			"llmModel": "LLM Model",
 			"kucedrDescription": "Chat, tools, and planning",
 			"speechTranscriberName": "Transcribe",
 			"speechTranscriberDescription": "Speech-to-text models",
