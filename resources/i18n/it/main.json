@@ -1221,6 +1221,8 @@
 			"testVoiceSpeaking": "Pronuncia in corso…",
 			"voiceName": "Voce",
 			"voiceDescription": "Conversazioni realtime e output vocale",
+			"transcriptionName": "Trascrizione",
+			"transcriptionDescription": "Trascrizione da voce a testo",
 			"realtimeVoiceConfiguration": "Conversazione realtime",
 			"realtimeVoiceDescription": "Conversazioni vocali bidirezionali in tempo reale.",
 			"realtimeVoiceModelDescription": "Modello realtime OpenAI usato per le conversazioni dal vivo.",

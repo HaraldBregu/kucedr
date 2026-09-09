@@ -14,7 +14,6 @@ import {
 	Info,
 	Library,
 	ListChecks,
-	Mic,
 	MonitorCog,
 	Music,
 	PlugZap,

@@ -58,7 +58,6 @@ const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page')
 const CoderPage = lazy(() => import('./pages/settings/pages/coder/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const DataPage = lazy(() => import('./pages/settings/pages/assistant/data/Page'));
-const TranscribePage = lazy(() => import('./pages/settings/pages/transcribe/Page'));
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ImagePage = lazy(() => import('./pages/settings/pages/image/Page'));
 const EmbeddingPage = lazy(() => import('./pages/settings/pages/embedding/Page'));
@@ -386,11 +385,7 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'transcribe',
-								element: (
-									<SettingsRouteWrapper>
-										<TranscribePage />
-									</SettingsRouteWrapper>
-								),
+								element: <Navigate to="/settings/agent" replace />,
 							},
 							{
 								path: 'voice',
@@ -584,7 +579,7 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'transcribe',
-						element: <Navigate to="/settings/providers/transcribe" replace />,
+						element: <Navigate to="/settings/agent" replace />,
 					},
 					{
 						path: 'voice',
@@ -592,7 +587,7 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'speech-to-text',
-						element: <Navigate to="/settings/providers/transcribe" replace />,
+						element: <Navigate to="/settings/agent" replace />,
 					},
 					{
 						path: 'text-to-speech',

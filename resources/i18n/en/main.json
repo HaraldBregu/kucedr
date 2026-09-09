@@ -1222,6 +1222,8 @@
 			"testVoiceSpeaking": "Speaking…",
 			"voiceName": "Voice",
 			"voiceDescription": "Realtime conversations and spoken output",
+			"transcriptionName": "Transcription",
+			"transcriptionDescription": "Speech-to-text transcription",
 			"realtimeVoiceConfiguration": "Realtime conversation",
 			"realtimeVoiceDescription": "Live voice-to-voice conversations.",
 			"realtimeVoiceModelDescription": "OpenAI realtime model used for live conversations.",
