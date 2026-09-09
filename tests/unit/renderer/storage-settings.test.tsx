@@ -152,11 +152,9 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 	await user.click(await screen.findByRole('option', { name: 'Every day' }));
 	await user.clear(screen.getByLabelText('Cron expression'));
 	await user.type(screen.getByLabelText('Cron expression'), '0 4 * * *');
-	await openActions(user);
-	await user.click(screen.getByRole('menuitem', { name: 'Save schedule' }));
 
 	await waitFor(() =>
-		expect(storageApi.saveSettings).toHaveBeenCalledWith({
+		expect(storageApi.saveSettings).toHaveBeenLastCalledWith({
 			providerId: 'archive',
 			paths: ['/data/agent'],
 			syncEnabled: true,
@@ -320,6 +318,8 @@ it.each([undefined, 'deleted'])(
 		await openActions(user);
 		expect(await screen.findByRole('menuitem', { name: 'Back up now' })).toBeDisabled();
 		expect(screen.getByRole('menuitem', { name: 'Restore from cloud' })).toBeDisabled();
+		expect(screen.queryByRole('menuitem', { name: 'Save schedule' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('menuitem', { name: 'Cancel' })).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
 		expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
