@@ -26,6 +26,7 @@ import type {
 	RecordConfig,
 	Recording,
 	RecorderCaptureResult,
+	RecorderCaptureChunk,
 	RecorderCommand,
 } from './recorder_types';
 import type { ChannelModelKind, ChannelModelSelection } from './channels_types';
@@ -259,16 +260,19 @@ export interface RecorderInvokeChannelMap {
 	[RecorderChannels.microphone.cancel]: { args: [id: string]; result: void };
 	[RecorderChannels.microphone.list]: { args: []; result: Recording[] };
 	[RecorderChannels.microphone.complete]: { args: [result: RecorderCaptureResult]; result: void };
+	[RecorderChannels.microphone.chunk]: { args: [chunk: RecorderCaptureChunk]; result: void };
 	[RecorderChannels.camera.start]: { args: [config: RecordConfig]; result: Recording };
 	[RecorderChannels.camera.stop]: { args: [id: string]; result: void };
 	[RecorderChannels.camera.cancel]: { args: [id: string]; result: void };
 	[RecorderChannels.camera.list]: { args: []; result: Recording[] };
 	[RecorderChannels.camera.complete]: { args: [result: RecorderCaptureResult]; result: void };
+	[RecorderChannels.camera.chunk]: { args: [chunk: RecorderCaptureChunk]; result: void };
 	[RecorderChannels.screen.start]: { args: [config: RecordConfig]; result: Recording };
 	[RecorderChannels.screen.stop]: { args: [id: string]; result: void };
 	[RecorderChannels.screen.cancel]: { args: [id: string]; result: void };
 	[RecorderChannels.screen.list]: { args: []; result: Recording[] };
 	[RecorderChannels.screen.complete]: { args: [result: RecorderCaptureResult]; result: void };
+	[RecorderChannels.screen.chunk]: { args: [chunk: RecorderCaptureChunk]; result: void };
 }
 
 export interface RecorderEventChannelMap {

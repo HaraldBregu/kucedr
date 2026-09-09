@@ -3,7 +3,14 @@ export interface RecordConfig {
 	duration: number;
 }
 
-export type RecordingStatus = 'recording' | 'stopping' | 'completed' | 'cancelled' | 'error';
+export type RecordingStatus =
+	| 'selecting'
+	| 'recording'
+	| 'stopping'
+	| 'saving'
+	| 'completed'
+	| 'cancelled'
+	| 'error';
 
 export interface Recording {
 	id: string;
@@ -23,7 +30,12 @@ export type RecorderCommand =
 
 export interface RecorderCaptureResult {
 	id: string;
-	base64?: string;
 	mimeType?: string;
 	error?: string;
+}
+
+export interface RecorderCaptureChunk {
+	id: string;
+	sequence: number;
+	data: Uint8Array;
 }

@@ -57,7 +57,12 @@ import type {
 import type { EmbeddingRequest, EmbeddingResult } from './embedding_types';
 import type { ImageRequest, ImageResult } from './image_types';
 import type { SoundFile, SoundRequest, SoundResult } from './sound_types';
-import type { Recording, RecorderCaptureResult, RecorderCommand } from './recorder_types';
+import type {
+	Recording,
+	RecorderCaptureChunk,
+	RecorderCaptureResult,
+	RecorderCommand,
+} from './recorder_types';
 import type { VideoRequest, VideoResult } from './video_types';
 import type { TextRequest } from './text_types';
 import type { SpeechSynthesisRequest, SpeechSynthesisResult } from './speech_types';
@@ -340,16 +345,19 @@ export interface WikiApi {
 export interface RecorderApi {
 	microphone: {
 		complete: (result: RecorderCaptureResult) => Promise<void>;
+		chunk: (chunk: RecorderCaptureChunk) => Promise<void>;
 		onCommand: (callback: (command: RecorderCommand) => void) => () => void;
 		onEvent: (callback: (recording: Recording) => void) => () => void;
 	};
 	camera: {
 		complete: (result: RecorderCaptureResult) => Promise<void>;
+		chunk: (chunk: RecorderCaptureChunk) => Promise<void>;
 		onCommand: (callback: (command: RecorderCommand) => void) => () => void;
 		onEvent: (callback: (recording: Recording) => void) => () => void;
 	};
 	screen: {
 		complete: (result: RecorderCaptureResult) => Promise<void>;
+		chunk: (chunk: RecorderCaptureChunk) => Promise<void>;
 		onCommand: (callback: (command: RecorderCommand) => void) => () => void;
 		onEvent: (callback: (recording: Recording) => void) => () => void;
 	};
