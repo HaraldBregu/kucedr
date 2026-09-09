@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { AlertTriangle, Download, FolderSync, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import {
 	Dialog,
 	DialogContent,
@@ -374,7 +374,10 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 								/>
 							</CardContent>
 
-							<CardFooter className="flex-wrap justify-end gap-2 p-4!">
+						</Card>
+					</SettingsSection>
+
+					<div className="flex flex-wrap justify-end gap-2">
 								<Button
 									variant="outline"
 									size="sm"
@@ -413,9 +416,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 									<Save className="size-3" />
 									{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
 								</Button>
-							</CardFooter>
-						</Card>
-					</SettingsSection>
+					</div>
 
 					{syncStatus && <SettingsNotice icon={FolderSync}>{syncStatus}</SettingsNotice>}
 					{operationStatusText && (
