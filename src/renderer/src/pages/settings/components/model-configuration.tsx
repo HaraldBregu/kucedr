@@ -177,7 +177,7 @@ export function ModelProviderConfiguration({
 				<CollapsibleTrigger className="group flex min-w-0 flex-1 items-center gap-3 text-left">
 					{showIcon &&
 						(FunctionIcon ? (
-							<FunctionIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+							<FunctionIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 						) : provider ? (
 							<ProviderAvatar
 								providerId={provider.id}
