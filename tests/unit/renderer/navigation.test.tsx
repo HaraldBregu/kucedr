@@ -37,7 +37,7 @@ it.each([
 	['/settings/agent/skills', 'settings.tabs.skills'],
 	['/settings/agent/mcp', 'settings.tabs.mcp'],
 	['/settings/coder', 'settings.coder.title'],
-	['/settings/providers/databases', 'settings.tabs.databases'],
+	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/agent/data', 'settings.dataControls.title'],
@@ -138,7 +138,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(providersGroup as HTMLElement).getByRole('link', {
 			name: 'settings.tabs.databases',
 		})
-	).toHaveAttribute('href', '/settings/providers/databases');
+	).toHaveAttribute('href', '/settings/providers/database');
 	expect(
 		within(providersGroup as HTMLElement).getByRole('link', {
 			name: 'settings.tabs.storage',

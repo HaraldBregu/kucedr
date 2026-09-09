@@ -39,7 +39,7 @@ it('requires an explicit database selection even with an environment key', () =>
 it('requires the selected database account key even with an environment key', () => {
 	process.env.PINECONE_API_KEY = 'environment-key';
 	getProvider.mockReturnValue(undefined);
-	expect(() => ragClient()).toThrow('Settings → Providers → Vector DB');
+	expect(() => ragClient()).toThrow('Settings → Providers → Database');
 	expect(mockPinecone).not.toHaveBeenCalled();
 });
 

@@ -56,7 +56,7 @@ it('requires the user database credential before authorizing remote storage', ()
 		kind === 'databases' ? undefined : { apiKey: 'synthetic-embedding-account' }
 	);
 	configuration.mirrorConsent = { version: 1, indexName: 'knowledge-base' };
-	expect(() => authorizeRagDisclosure(configuration)).toThrow('Settings → Providers → Vector DB');
+	expect(() => authorizeRagDisclosure(configuration)).toThrow('Settings → Providers → Database');
 });
 
 it('directs missing embedding credentials to model provider settings', () => {

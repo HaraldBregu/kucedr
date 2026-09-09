@@ -11,6 +11,6 @@ export function ragDatabaseKey(
 		throw new Error('The selected vector database is not supported by RAG.');
 	const apiKey = getProvider(databaseProviderId, 'databases')?.apiKey.trim();
 	if (!apiKey)
-		throw new Error('Configure your Pinecone API key in Settings → Providers → Vector DB.');
+		throw new Error('Configure your Pinecone API key in Settings → Providers → Database.');
 	return apiKey;
 }

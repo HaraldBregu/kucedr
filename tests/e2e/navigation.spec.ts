@@ -44,7 +44,7 @@ const routes = [
 	'/settings/agent/skills',
 	'/settings/providers',
 	'/settings/providers/keys',
-	'/settings/providers/databases',
+	'/settings/providers/database',
 	'/settings/agent/mcp',
 	'/settings/agent/mcp/missing',
 	'/settings/providers/transcribe',
@@ -260,15 +260,15 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 });
 
 
-test('Vector DB saves and reloads database credentials from Providers', async ({ browserName: _browserName }, testInfo) => {
+test('Database saves and reloads database credentials from Providers', async ({ browserName: _browserName }, testInfo) => {
 	await app.evaluate(({ BrowserWindow }) => { BrowserWindow.getAllWindows()[0].setSize(1100, 850); });
 	await page.evaluate(() => { window.location.hash = '#/settings/providers/models'; });
 	const sidebar = page.locator('[data-slot="settings-sidebar"]');
-	const link = sidebar.getByRole('link', { name: 'Vector DB', exact: true });
+	const link = sidebar.getByRole('link', { name: 'Database', exact: true });
 	await expect(link.locator('svg.lucide-database')).toBeVisible();
 	await link.click();
-	await expect(page).toHaveURL(/#\/settings\/providers\/databases$/);
-	await expect(page.getByRole('heading', { name: 'Vector DB', level: 1 })).toBeVisible();
+	await expect(page).toHaveURL(/#\/settings\/providers\/database$/);
+	await expect(page.getByRole('heading', { name: 'Database', level: 1 })).toBeVisible();
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-test-key');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();

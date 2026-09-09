@@ -360,7 +360,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Search,
 	},
 	{
-		path: '/settings/providers/databases',
+		path: '/settings/providers/database',
 		labelKey: 'settings.tabs.databases',
 		descriptionKey: 'settings.overview.descriptions.databases',
 		icon: Database,

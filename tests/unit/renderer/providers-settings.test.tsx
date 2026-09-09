@@ -9,7 +9,7 @@ jest.mock('react-i18next', () => {
 		'settings.providers.description': 'Connect providers and configure models.',
 		'settings.overview.groups.mlModels': 'Models',
 		'settings.tabs.channels': 'Channels',
-		'settings.tabs.databases': 'Vector DB',
+		'settings.tabs.databases': 'Database',
 		'common.save': 'Save',
 	};
 	const t = (key: string): string => translations[key] ?? key;
@@ -85,7 +85,7 @@ describe('Providers settings', () => {
 	});
 });
 
-it('saves Vector DB credentials in the databases collection', async () => {
+it('saves Database credentials in the databases collection', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
@@ -107,7 +107,7 @@ it('saves Vector DB credentials in the databases collection', async () => {
 	expect(screen.queryByLabelText('Pinecone API key')).not.toBeInTheDocument();
 });
 
-it('loads saved Vector DB status and opens a blank editor', async () => {
+it('loads saved Database status and opens a blank editor', async () => {
 	jest
 		.mocked(window.provider.list)
 		.mockResolvedValue([
@@ -130,7 +130,7 @@ it('loads saved Vector DB status and opens a blank editor', async () => {
 	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('');
 });
 
-it('keeps the Vector DB key editable when saving fails', async () => {
+it('keeps the Database key editable when saving fails', async () => {
 	jest.mocked(window.provider.set).mockRejectedValue(new Error('Could not store database key'));
 	const user = userEvent.setup();
 	render(

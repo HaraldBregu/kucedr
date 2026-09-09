@@ -352,12 +352,16 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
-								path: 'databases',
+								path: 'database',
 								element: (
 									<SettingsRouteWrapper>
 										<ProvidersPage section="databases" />
 									</SettingsRouteWrapper>
 								),
+							},
+							{
+								path: 'databases',
+								element: <Navigate to="/settings/providers/database" replace />,
 							},
 							{
 								path: 'storage',
