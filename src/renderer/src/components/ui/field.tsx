@@ -1,6 +1,5 @@
 import React, { type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { Label } from './label';
 
 interface FieldProps {
 	readonly children: ReactNode;
@@ -65,4 +64,4 @@ function FieldSeparator({
 	);
 }
 
-export { Field, FieldDescription, FieldGroup, FieldLabel, FieldSeparator };
+export { Field };

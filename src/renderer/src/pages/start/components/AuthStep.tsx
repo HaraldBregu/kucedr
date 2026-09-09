@@ -2,14 +2,9 @@ import React, { useState } from 'react';
 import { AlertCircle, CheckCircle2, Eye, EyeOff, LoaderCircle, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-	Field,
-	FieldDescription,
-	FieldGroup,
-	FieldLabel,
-	FieldSeparator,
-} from '@/components/ui/field';
+import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import googleIcon from '@resources/providers/google/images/fallback_lobehub/svg/google-color.svg';
 
@@ -187,7 +182,7 @@ export function AuthStep(): React.JSX.Element {
 							</div>
 						) : (
 							<form onSubmit={submit}>
-								<FieldGroup>
+								<div className="flex w-full flex-col gap-4">
 									{!recovery && mode !== 'forgot' ? (
 										<>
 											<Button
@@ -205,12 +200,17 @@ export function AuthStep(): React.JSX.Element {
 												)}
 												{mode === 'signUp' ? 'Sign up with Google' : 'Sign in with Google'}
 											</Button>
-											<FieldSeparator>Or continue with</FieldSeparator>
+											<div className="relative -my-1 h-5 text-center text-xs">
+												<span className="relative z-10 bg-card px-2 text-muted-foreground">
+													Or continue with
+												</span>
+												<span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-border" />
+											</div>
 										</>
 									) : null}
 									{!recovery ? (
 										<Field>
-											<FieldLabel htmlFor="auth-email">Email</FieldLabel>
+											<Label htmlFor="auth-email">Email</Label>
 											<Input
 												id="auth-email"
 												type="email"
@@ -227,9 +227,9 @@ export function AuthStep(): React.JSX.Element {
 									{mode !== 'forgot' || recovery ? (
 										<Field>
 											<div className="flex items-center justify-between">
-												<FieldLabel htmlFor="auth-password">
+												<Label htmlFor="auth-password">
 													{recovery ? 'New password' : 'Password'}
-												</FieldLabel>
+												</Label>
 												{mode === 'signIn' && !recovery ? (
 													<Button
 														type="button"
@@ -270,7 +270,7 @@ export function AuthStep(): React.JSX.Element {
 									) : null}
 									{mode === 'signUp' || recovery ? (
 										<Field>
-											<FieldLabel htmlFor="auth-confirmation">Confirm password</FieldLabel>
+											<Label htmlFor="auth-confirmation">Confirm password</Label>
 											<Input
 												id="auth-confirmation"
 												type={showPassword ? 'text' : 'password'}
@@ -303,7 +303,7 @@ export function AuthStep(): React.JSX.Element {
 													: 'Sign in'}
 									</Button>
 									{!recovery ? (
-										<FieldDescription className="text-center">
+										<p className="text-muted-foreground text-center text-sm leading-normal">
 											{mode === 'signUp'
 												? 'Already have an account? '
 												: mode === 'forgot'
@@ -326,9 +326,9 @@ export function AuthStep(): React.JSX.Element {
 														? 'Back to sign in'
 														: 'Create an account'}
 											</Button>
-										</FieldDescription>
+										</p>
 									) : null}
-								</FieldGroup>
+								</div>
 							</form>
 						)}
 						{state.persistence === 'memory' ? (
@@ -340,10 +340,10 @@ export function AuthStep(): React.JSX.Element {
 					</CardContent>
 				</Card>
 				{!recovery && mode !== 'forgot' ? (
-					<FieldDescription className="px-6 text-center">
+					<p className="text-muted-foreground px-6 text-center text-sm leading-normal">
 						By continuing, you agree to our <a href="#">Terms of Service</a> and{' '}
 						<a href="#">Privacy Policy</a>.
-					</FieldDescription>
+					</p>
 				) : null}
 			</div>
 		</div>
