@@ -49,7 +49,6 @@ const StorageProvidersPage = lazy(() => import('./pages/settings/pages/providers
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const A2aPage = lazy(() => import('./pages/settings/pages/a2a/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
-const ProviderKeysPage = lazy(() => import('./pages/settings/pages/providers/keys/Page'));
 const RagPage = lazy(() => import('./pages/settings/pages/rag/Page'));
 const WikiPage = lazy(() => import('./pages/settings/pages/wiki/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
@@ -59,10 +58,6 @@ const CoderPage = lazy(() => import('./pages/settings/pages/coder/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const DataPage = lazy(() => import('./pages/settings/pages/assistant/data/Page'));
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
-const ImagePage = lazy(() => import('./pages/settings/pages/image/Page'));
-const EmbeddingPage = lazy(() => import('./pages/settings/pages/embedding/Page'));
-const VideoPage = lazy(() => import('./pages/settings/pages/video/Page'));
-const MusicPage = lazy(() => import('./pages/settings/pages/music/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
 const SIDEBAR_TRANSITION_MS = 200;
@@ -380,14 +375,6 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
-								path: 'keys',
-								element: (
-									<SettingsRouteWrapper>
-										<ProviderKeysPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
 								path: 'transcribe',
 								element: <Navigate to="/settings/agent" replace />,
 							},
@@ -396,38 +383,6 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<VoicePage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'image',
-								element: (
-									<SettingsRouteWrapper>
-										<ImagePage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'embedding',
-								element: (
-									<SettingsRouteWrapper>
-										<EmbeddingPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'video',
-								element: (
-									<SettingsRouteWrapper>
-										<VideoPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'music',
-								element: (
-									<SettingsRouteWrapper>
-										<MusicPage />
 									</SettingsRouteWrapper>
 								),
 							},
@@ -596,30 +551,6 @@ const routes: RouteObject[] = [
 					{
 						path: 'text-to-speech',
 						element: <Navigate to="/settings/providers/voice" replace />,
-					},
-					{
-						path: 'image',
-						element: <Navigate to="/settings/providers/image" replace />,
-					},
-					{
-						path: 'embedding',
-						element: <Navigate to="/settings/providers/embedding" replace />,
-					},
-					{
-						path: 'video',
-						element: <Navigate to="/settings/providers/video" replace />,
-					},
-					{
-						path: 'text-to-video',
-						element: <Navigate to="/settings/providers/video" replace />,
-					},
-					{
-						path: 'music',
-						element: <Navigate to="/settings/providers/music" replace />,
-					},
-					{
-						path: 'text-to-audio',
-						element: <Navigate to="/settings/providers/music" replace />,
 					},
 					{
 						path: 'apps',

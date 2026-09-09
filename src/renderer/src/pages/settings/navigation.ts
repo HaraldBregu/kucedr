@@ -10,19 +10,16 @@ import {
 	Folder,
 	HardDrive,
 	HeartPulse,
-	ImageIcon,
 	Info,
 	Library,
 	ListChecks,
 	MonitorCog,
-	Music,
 	PlugZap,
 	RadioTower,
 	Search,
 	Server,
 	ShieldCheck,
 	Sparkles,
-	Video,
 	Volume2,
 	UserRound,
 	type LucideIcon,
@@ -79,38 +76,6 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		descriptionKey: 'settings.modelServices.voiceDescription',
 		keywords: 'voice text to speech tts output speaking audio synthesis model',
 		icon: Volume2,
-	},
-	{
-		id: AGENTS.textToImage,
-		path: '/settings/providers/image',
-		labelKey: 'settings.modelServices.imageAssistantName',
-		descriptionKey: 'settings.modelServices.imageAssistantDescription',
-		keywords: 'image generation prompt creative model',
-		icon: ImageIcon,
-	},
-	{
-		id: AGENTS.embedding,
-		path: '/settings/providers/embedding',
-		labelKey: 'settings.modelServices.embeddingName',
-		descriptionKey: 'settings.modelServices.embeddingDescription',
-		keywords: 'embedding embeddings vector rag retrieval search index model',
-		icon: Binary,
-	},
-	{
-		id: AGENTS.textToVideo,
-		path: '/settings/providers/video',
-		labelKey: 'settings.modelServices.videoCreatorName',
-		descriptionKey: 'settings.modelServices.videoCreatorDescription',
-		keywords: 'text to video generation model',
-		icon: Video,
-	},
-	{
-		id: AGENTS.textToAudio,
-		path: '/settings/providers/music',
-		labelKey: 'settings.modelServices.musicCreatorName',
-		descriptionKey: 'settings.modelServices.musicCreatorDescription',
-		keywords: 'music audio generation creator model',
-		icon: Music,
 	},
 ] as const;
 
@@ -200,14 +165,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.system.capabilities.description',
 		keywords:
 			'windows files network webcam microphone audio bluetooth usb printer scanner clipboard notifications gps location system information drivers daemons hardware',
-	},
-	// Providers — API keys
-	{
-		path: '/settings/providers/keys',
-		labelKey: 'settings.providers.modelsApiKeys',
-		descriptionKey: 'settings.providers.storeApiKeysDescription',
-		keywords: 'api key secret token anthropic openai google provider',
-		icon: Server,
 	},
 	// Search engines
 	{
