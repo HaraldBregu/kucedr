@@ -21,13 +21,25 @@ export class RecorderIpc implements IpcModule<RecorderIpcDeps> {
 			trusted.assert(event);
 			return microphone.complete(result, event.sender.id);
 		});
+		registerCommandWithEvent(RecorderChannels.microphone.chunk, (event, chunk) => {
+			trusted.assert(event);
+			return microphone.chunk(chunk, event.sender.id);
+		});
 		registerCommandWithEvent(RecorderChannels.camera.complete, (event, result) => {
 			trusted.assert(event);
 			return camera.complete(result, event.sender.id);
 		});
+		registerCommandWithEvent(RecorderChannels.camera.chunk, (event, chunk) => {
+			trusted.assert(event);
+			return camera.chunk(chunk, event.sender.id);
+		});
 		registerCommandWithEvent(RecorderChannels.screen.complete, (event, result) => {
 			trusted.assert(event);
 			return screen.complete(result, event.sender.id);
+		});
+		registerCommandWithEvent(RecorderChannels.screen.chunk, (event, chunk) => {
+			trusted.assert(event);
+			return screen.chunk(chunk, event.sender.id);
 		});
 	}
 }
