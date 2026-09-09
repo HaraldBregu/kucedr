@@ -92,7 +92,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.subtitle': 'Configure model assignments',
 		'settings.modelServices.imageAssistantName': 'Image',
 		'settings.modelServices.voiceName': 'Voice',
-		'settings.modelServices.textToSpeechModelDescription': 'Spoken output defaults',
+		'settings.modelServices.textToSpeechModelDescription': 'Text to speech model',
 		'settings.modelServices.musicCreatorName': 'Audio',
 		'settings.modelServices.videoCreatorName': 'Video',
 		'settings.modelServices.imageModelDescription': 'Image defaults',
@@ -236,6 +236,9 @@ it('groups independently collapsible provider settings in one card', async () =>
 		cards.push(trigger.closest('[data-slot="card"]'));
 	}
 	const model = await screen.findByRole('combobox', { name: 'Model' });
+	const voiceTrigger = screen.getByRole('button', { name: /Voice/ });
+	expect(voiceTrigger).toHaveTextContent('Text to speech model');
+	expect(voiceTrigger).toHaveTextContent('Eleven v3');
 	const voice = (await screen.findAllByRole('combobox', { name: 'Voice' })).find((entry) =>
 		entry.textContent?.includes('Eleven v3')
 	);

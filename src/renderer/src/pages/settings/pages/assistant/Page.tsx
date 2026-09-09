@@ -224,6 +224,7 @@ const AssistantPage: React.FC = () => {
 					description={t('settings.modelServices.modelDescription')}
 					showIcon={false}
 					grouped
+					showSelectedModel
 					onChange={(providerId, modelId) => void handleChange(providerId, modelId)}
 				>
 					<ModelOptions
@@ -234,7 +235,7 @@ const AssistantPage: React.FC = () => {
 					/>
 				</ModelProviderConfiguration>
 
-				<RealtimeConversationConfiguration />
+				<RealtimeConversationConfiguration showSelectedModel />
 
 				<AgentMediaModelConfiguration
 					api={window.models.voice}
@@ -244,6 +245,7 @@ const AssistantPage: React.FC = () => {
 					description={t('settings.modelServices.textToSpeechModelDescription')}
 					showIcon={false}
 					grouped
+					showSelectedModel
 				/>
 
 				<AgentMediaModelConfiguration
@@ -254,6 +256,7 @@ const AssistantPage: React.FC = () => {
 					description={t('settings.modelServices.imageModelDescription')}
 					showIcon={false}
 					grouped
+					showSelectedModel
 				/>
 
 				<AgentMediaModelConfiguration
@@ -264,6 +267,7 @@ const AssistantPage: React.FC = () => {
 					description={t('settings.modelServices.musicModelDescription')}
 					showIcon={false}
 					grouped
+					showSelectedModel
 				/>
 
 				<AgentMediaModelConfiguration
@@ -274,6 +278,7 @@ const AssistantPage: React.FC = () => {
 					description={t('settings.modelServices.videoModelDescription')}
 					showIcon={false}
 					grouped
+					showSelectedModel
 				/>
 
 				<Collapsible className="min-w-0 max-w-full overflow-hidden">

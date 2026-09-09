@@ -19,6 +19,7 @@ interface ModelProviderConfigurationProps {
 	readonly showFieldLabel?: boolean;
 	readonly grouped?: boolean;
 	readonly collapsible?: boolean;
+	readonly showSelectedModel?: boolean;
 	readonly defaultOpen?: boolean;
 	readonly onChange: (nextProviderId: string, nextModelId: string) => void;
 	readonly children?: ReactNode;
@@ -35,6 +36,7 @@ export function ModelProviderConfiguration({
 	showFieldLabel = true,
 	grouped = false,
 	collapsible = true,
+	showSelectedModel = false,
 	defaultOpen = false,
 	onChange,
 	children,
@@ -180,9 +182,14 @@ export function ModelProviderConfiguration({
 						{triggerTitle ?? providerName}
 					</div>
 					<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-						{triggerDescription ?? modelName}
+						{triggerDescription ?? (showSelectedModel ? description : modelName)}
 					</p>
 				</div>
+				{showSelectedModel && (
+					<span className="max-w-[38%] shrink-0 truncate text-right text-[11px] leading-4 text-muted-foreground">
+						{modelName}
+					</span>
+				)}
 				<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />
 			</CollapsibleTrigger>
 			<CollapsibleContent className="border-t border-border/60">

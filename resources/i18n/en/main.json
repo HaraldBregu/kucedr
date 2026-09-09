@@ -1230,7 +1230,7 @@
 			"textToSpeechConfigurationSubtitle": "Voice output settings are listed here.",
 			"textToSpeechProviderDescription": "Provider used for spoken responses.",
 			"textToSpeechModel": "Voice model",
-			"textToSpeechModelDescription": "Model used for spoken output.",
+			"textToSpeechModelDescription": "Text to speech model",
 			"imageAssistantName": "Image",
 			"imageAssistantDescription": "Create images from prompts",
 			"imageConfigurationSubtitle": "Choose the image-capable provider and model.",
