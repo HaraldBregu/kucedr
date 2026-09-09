@@ -293,6 +293,7 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 			},
 			{
 				useSystemPicker:
+					app.isPackaged &&
 					process.platform === 'darwin' &&
 					(() => {
 						try {
