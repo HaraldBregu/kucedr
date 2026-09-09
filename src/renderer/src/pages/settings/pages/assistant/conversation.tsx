@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { LucideIcon } from 'lucide-react';
 import { ModelOptions } from '@/components/model-options';
 import { modelsFor, providerModels, providers } from '@/lib/providers';
 import { updateModelOptions } from '@/lib/options';
@@ -16,6 +17,7 @@ interface RealtimeConversationConfigurationProps {
 	readonly showFieldLabel?: boolean;
 	readonly showSelectedModel?: boolean;
 	readonly showContentSeparator?: boolean;
+	readonly icon?: LucideIcon;
 }
 
 export default function RealtimeConversationConfiguration({
@@ -23,6 +25,7 @@ export default function RealtimeConversationConfiguration({
 	showFieldLabel = true,
 	showSelectedModel = false,
 	showContentSeparator = true,
+	icon,
 }: RealtimeConversationConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
@@ -176,6 +179,7 @@ export default function RealtimeConversationConfiguration({
 				description={t('settings.modelServices.realtimeConversationDescription')}
 				showInlineError
 				showIcon={false}
+				icon={icon}
 				showFieldLabel={showFieldLabel}
 				showSelectedModel={showSelectedModel}
 				showContentSeparator={showContentSeparator}

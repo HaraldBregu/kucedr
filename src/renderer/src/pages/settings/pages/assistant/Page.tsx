@@ -3,12 +3,18 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
+	Bot,
 	ChevronDown,
 	ChevronRight,
+	Image as ImageIcon,
 	HeartPulse,
 	ShieldCheck,
 	Library,
 	BookOpenText,
+	Music2,
+	Radio,
+	Video,
+	Volume2,
 } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
@@ -222,7 +228,8 @@ const AssistantPage: React.FC = () => {
 					idPrefix="assistant"
 					triggerTitle={t('settings.modelServices.model')}
 					description={t('settings.modelServices.modelDescription')}
-					showIcon={false}
+					showIcon
+					icon={Bot}
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
@@ -239,6 +246,7 @@ const AssistantPage: React.FC = () => {
 				</ModelProviderConfiguration>
 
 				<RealtimeConversationConfiguration
+					icon={Radio}
 					showFieldLabel={false}
 					showSelectedModel
 					showContentSeparator={false}
@@ -251,7 +259,8 @@ const AssistantPage: React.FC = () => {
 					idPrefix="agent-voice"
 					title={t('settings.modelServices.voiceName')}
 					description={t('settings.modelServices.textToSpeechModelDescription')}
-					showIcon={false}
+					showIcon
+					icon={Volume2}
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
@@ -265,7 +274,8 @@ const AssistantPage: React.FC = () => {
 					idPrefix="agent-image"
 					title={t('settings.modelServices.imageAssistantName')}
 					description={t('settings.modelServices.imageModelDescription')}
-					showIcon={false}
+					showIcon
+					icon={ImageIcon}
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
@@ -279,7 +289,8 @@ const AssistantPage: React.FC = () => {
 					idPrefix="agent-audio"
 					title={t('settings.modelServices.musicCreatorName')}
 					description={t('settings.modelServices.musicModelDescription')}
-					showIcon={false}
+					showIcon
+					icon={Music2}
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
@@ -293,7 +304,8 @@ const AssistantPage: React.FC = () => {
 					idPrefix="agent-video"
 					title={t('settings.modelServices.videoCreatorName')}
 					description={t('settings.modelServices.videoModelDescription')}
-					showIcon={false}
+					showIcon
+					icon={Video}
 					showFieldLabel={false}
 					grouped
 					showSelectedModel

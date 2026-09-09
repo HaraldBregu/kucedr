@@ -1,5 +1,6 @@
 import React, { useEffect, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { LucideIcon } from 'lucide-react';
 import { ModelOptions } from '@/components/model-options';
 import { modelsFor, providerIdsFor, providerModels, providers } from '@/lib/providers';
 import { updateModelOptions } from '@/lib/options';
@@ -38,6 +39,7 @@ interface AgentMediaModelConfigurationProps {
 	readonly showFieldLabel?: boolean;
 	readonly showContentSeparator?: boolean;
 	readonly inlineAdvanced?: boolean;
+	readonly icon?: LucideIcon;
 }
 
 const MEDIA_CONTENT_INPUTS = new Set([
@@ -82,6 +84,7 @@ export function AgentMediaModelConfiguration({
 	showFieldLabel = true,
 	showContentSeparator = true,
 	inlineAdvanced = false,
+	icon,
 }: AgentMediaModelConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
@@ -185,7 +188,8 @@ export function AgentMediaModelConfiguration({
 			configState={state}
 			idPrefix={idPrefix}
 			collapsible={collapsible}
-			showIcon={showIcon}
+			showIcon={showIcon || Boolean(icon)}
+			icon={icon}
 			grouped={grouped}
 			showSelectedModel={showSelectedModel}
 			showFieldLabel={showFieldLabel}

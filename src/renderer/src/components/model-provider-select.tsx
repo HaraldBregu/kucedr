@@ -97,7 +97,7 @@ export function ModelProviderSelect({
 		>
 			<SelectTrigger
 				id={`${idPrefix}-model`}
-				className={inline ? 'w-56 max-w-full text-xs' : 'w-full min-w-0 max-w-full text-xs'}
+				className={inline ? 'w-40 max-w-full text-xs' : 'w-full min-w-0 max-w-full text-xs'}
 				aria-label={
 					inline || !showFieldLabel
 						? (labels?.label ?? t('settings.modelServices.model'))
