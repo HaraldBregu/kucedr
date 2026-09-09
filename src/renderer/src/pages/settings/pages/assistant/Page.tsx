@@ -13,6 +13,7 @@ import {
 	Library,
 	BookOpenText,
 	Music2,
+	Mic,
 	Radio,
 	Search as SearchIcon,
 	Video,
@@ -253,6 +254,21 @@ const AssistantPage: React.FC = () => {
 					showFieldLabel={false}
 					showSelectedModel
 					showContentSeparator={false}
+				/>
+
+				<AgentMediaModelConfiguration
+					api={window.models.transcribe}
+					capability="speech-to-text"
+					idPrefix="agent-transcription"
+					title={t('settings.modelServices.transcriptionName')}
+					description={t('settings.modelServices.transcriptionDescription')}
+					showIcon
+					icon={Mic}
+					showFieldLabel={false}
+					grouped
+					showSelectedModel
+					showContentSeparator={false}
+					showOptions={false}
 				/>
 
 				<AgentMediaModelConfiguration

@@ -19,15 +19,15 @@ interface MediaModelApi {
 	readonly setProviderId: (providerId: string) => Promise<void>;
 	readonly getModelId: () => Promise<string | undefined>;
 	readonly setModelId: (modelId: string) => Promise<void>;
-	readonly getOptions: () => Promise<Record<string, unknown>>;
-	readonly setOptions: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
+		readonly getOptions?: () => Promise<Record<string, unknown>>;
+		readonly setOptions?: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
 }
 
 interface AgentMediaModelConfigurationProps {
 	readonly api: MediaModelApi;
 	readonly capability: Extract<
 		ModelCapability,
-		'text-to-image' | 'text-to-audio' | 'text-to-video' | 'text-to-speech'
+		'speech-to-text' | 'text-to-image' | 'text-to-audio' | 'text-to-video' | 'text-to-speech'
 	>;
 	readonly idPrefix: string;
 	readonly title: ReactNode;
@@ -39,6 +39,7 @@ interface AgentMediaModelConfigurationProps {
 	readonly showFieldLabel?: boolean;
 	readonly showContentSeparator?: boolean;
 	readonly inlineAdvanced?: boolean;
+	readonly showOptions?: boolean;
 	readonly icon?: LucideIcon;
 }
 
@@ -84,6 +85,7 @@ export function AgentMediaModelConfiguration({
 	showFieldLabel = true,
 	showContentSeparator = true,
 	inlineAdvanced = false,
+	showOptions = true,
 	icon,
 }: AgentMediaModelConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
@@ -99,7 +101,11 @@ export function AgentMediaModelConfiguration({
 
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([api.getProviderId(), api.getModelId(), api.getOptions()])
+		void Promise.all([
+			api.getProviderId(),
+			api.getModelId(),
+			api.getOptions?.() ?? Promise.resolve({}),
+		])
 			.then(([storedProviderId, storedModelId, storedOptions]) => {
 				if (!mounted) return;
 				const availableProviders = providerIdsFor(capability).flatMap((providerId) => {
@@ -161,7 +167,7 @@ export function AgentMediaModelConfiguration({
 		try {
 			await api.setProviderId(providerId);
 			await api.setModelId(modelId);
-			await api.setOptions({});
+			if (api.setOptions) await api.setOptions({});
 			setState((current) => ({ ...current, saving: false, saved: true }));
 		} catch (error) {
 			setState((current) => ({
@@ -173,6 +179,7 @@ export function AgentMediaModelConfiguration({
 	};
 
 	const handleOptionChange = (path: readonly string[], value: unknown): void => {
+		if (!api.setOptions) return;
 		const next = updateModelOptions(options, path, value);
 		setOptions(next);
 		void api.setOptions(next).catch((error) => {
@@ -199,15 +206,17 @@ export function AgentMediaModelConfiguration({
 			showInlineError
 			onChange={(providerId, modelId) => void handleChange(providerId, modelId)}
 		>
-			<ModelOptions
-				key={`${state.providerId}:${state.modelId}`}
-				inputs={inputs}
-				values={options}
-				excludedInputs={MEDIA_CONTENT_INPUTS}
-				allowComplex={capability === 'text-to-speech'}
-				inlineAdvanced={inlineAdvanced}
-				onChange={handleOptionChange}
-			/>
+			{showOptions && (
+				<ModelOptions
+					key={`${state.providerId}:${state.modelId}`}
+					inputs={inputs}
+					values={options}
+					excludedInputs={MEDIA_CONTENT_INPUTS}
+					allowComplex={capability === 'text-to-speech'}
+					inlineAdvanced={inlineAdvanced}
+					onChange={handleOptionChange}
+				/>
+			)}
 		</ModelProviderConfiguration>
 	);
 }

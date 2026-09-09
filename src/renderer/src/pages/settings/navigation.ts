@@ -74,14 +74,6 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		icon: Code2,
 	},
 	{
-		id: AGENTS.speechToText,
-		path: '/settings/providers/transcribe',
-		labelKey: 'settings.modelServices.speechTranscriberName',
-		descriptionKey: 'settings.modelServices.speechTranscriberDescription',
-		keywords: 'speech transcription transcribe audio voice microphone model',
-		icon: Mic,
-	},
-	{
 		id: AGENTS.textToSpeech,
 		path: '/settings/providers/voice',
 		labelKey: 'settings.modelServices.voiceName',
