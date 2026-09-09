@@ -7,10 +7,12 @@ import { SettingsPanel, SettingsRow } from './index';
 function MediaRow({
 	icon,
 	title,
+	description,
 	detailPath,
 }: {
 	readonly icon: LucideIcon;
 	readonly title: string;
+	readonly description: string;
 	readonly detailPath: string;
 }): React.JSX.Element {
 	const navigate = useNavigate();
@@ -24,6 +26,7 @@ function MediaRow({
 		>
 			<SettingsRow
 				title={title}
+				description={description}
 				media={<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 				className="grid-cols-[minmax(0,1fr)_auto]"
 				actionClassName="w-auto justify-end"
@@ -45,16 +48,19 @@ export function MediaPermissionsSection({
 			<MediaRow
 				icon={Mic}
 				title={t('settings.system.media.microphone.label')}
+				description={t('settings.system.media.microphone.description')}
 				detailPath="/settings/system/media/microphone"
 			/>
 			<MediaRow
 				icon={Camera}
 				title={t('settings.system.media.camera.label')}
+				description={t('settings.system.media.camera.description')}
 				detailPath="/settings/system/media/camera"
 			/>
 			<MediaRow
 				icon={MonitorUp}
 				title={t('settings.system.media.screen.label')}
+				description={t('settings.system.media.screen.description')}
 				detailPath="/settings/system/media/screen"
 			/>
 		</SettingsPanel>
