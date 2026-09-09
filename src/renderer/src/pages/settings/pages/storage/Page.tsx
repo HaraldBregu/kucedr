@@ -323,9 +323,19 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 										>
 											<Trash2 className="size-3" />
 										</Button>
-									}
-								/>
-							))}
+								}
+							/>
+						))}
+					</CardContent>
+				</Card>
+			</SettingsSection>
+
+			<SettingsSection
+				title={t('settings.storage.autoSync.sectionTitle')}
+				description={t('settings.storage.autoSync.sectionDescription')}
+			>
+				<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
+					<CardContent className="p-0!">
 
 							<SettingsRow
 								title={t('settings.storage.autoSync.interval')}
