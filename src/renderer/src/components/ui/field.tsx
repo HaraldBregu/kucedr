@@ -14,9 +14,7 @@ function Field({ children, orientation = 'vertical', className }: FieldProps): R
 			data-slot="field"
 			data-orientation={orientation}
 			className={cn(
-				orientation === 'horizontal'
-					? 'flex flex-row items-center gap-2'
-					: 'flex flex-col gap-1.5',
+				orientation === 'horizontal' ? 'flex flex-row items-center gap-2' : 'flex flex-col gap-1.5',
 				className
 			)}
 		>
@@ -33,14 +31,14 @@ function FieldGroup({ children, className }: FieldProps): React.JSX.Element {
 	);
 }
 
-function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>): React.JSX.Element {
+function FieldLabel({
+	className,
+	...props
+}: React.ComponentProps<typeof Label>): React.JSX.Element {
 	return <Label className={className} {...props} />;
 }
 
-function FieldDescription({
-	className,
-	...props
-}: React.ComponentProps<'p'>): React.JSX.Element {
+function FieldDescription({ className, ...props }: React.ComponentProps<'p'>): React.JSX.Element {
 	return (
 		<p
 			data-slot="field-description"
