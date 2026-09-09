@@ -287,9 +287,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 		</MemoryRouter>
 	);
 
-	await user.click(
-		await screen.findByRole('button', { name: /Realtime conversation/ })
-	);
+	await user.click(await screen.findByRole('button', { name: /Realtime conversation/ }));
 	const selector = await screen.findByRole('combobox', { name: 'Realtime conversation' });
 	await user.click(selector);
 	expect(
@@ -333,9 +331,7 @@ it('announces a realtime conversation setup save error', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(
-		await screen.findByRole('button', { name: /Realtime conversation/ })
-	);
+	await user.click(await screen.findByRole('button', { name: /Realtime conversation/ }));
 	await user.click(await screen.findByRole('combobox', { name: 'Realtime conversation' }));
 	await user.click(await screen.findByRole('option', { name: 'xAI / Grok Voice' }));
 
