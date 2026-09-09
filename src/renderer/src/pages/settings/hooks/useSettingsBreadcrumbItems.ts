@@ -56,13 +56,6 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		return [{ label: t(serviceItem.labelKey) }];
 	}
 
-	if (location.pathname === '/settings/providers/keys') {
-		return [
-			{ label: t('settings.tabs.providers'), path: '/settings/providers' },
-			{ label: t('settings.providers.apiKeysTitle') },
-		];
-	}
-
 	if (mcpDetailMatch) {
 		return [
 			{ label: t('settings.modelServices.assistantName'), path: '/settings/agent' },

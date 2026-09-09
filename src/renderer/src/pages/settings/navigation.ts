@@ -1,5 +1,4 @@
 import {
-	Binary,
 	BookOpenText,
 	Bot,
 	Layers,
@@ -17,7 +16,6 @@ import {
 	PlugZap,
 	RadioTower,
 	Search,
-	Server,
 	ShieldCheck,
 	Sparkles,
 	Volume2,
