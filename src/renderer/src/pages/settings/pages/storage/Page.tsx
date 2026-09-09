@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	AlertTriangle,
 	Download,
 	FolderSync,
 	MoreHorizontal,
 	Plus,
-	Save,
 	Trash2,
 	Upload,
 } from 'lucide-react';
@@ -60,7 +59,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const [draft, setDraft] = useState<StorageSyncSettings | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [syncStatus, setSyncStatus] = useState<string | null>(null);
-	const [savingSync, setSavingSync] = useState(false);
+	const saveQueueRef = useRef(Promise.resolve());
 	const [operationStatus, setOperationStatus] = useState<StorageOperationStatus>();
 	const [operationStatusLoading, setOperationStatusLoading] = useState(true);
 	const [restoreOpen, setRestoreOpen] = useState(false);
@@ -117,7 +116,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		? 'off'
 		: (SYNC_INTERVALS.find((interval) => interval.cron === storage.syncCronExpression)?.key ??
 			'custom');
-	const busy = settingsLoading || operationStatusLoading || savingSync || Boolean(runningOperation);
+	const busy = settingsLoading || operationStatusLoading || Boolean(runningOperation);
 	const controlsDisabled = busy || !selectedProvider;
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
@@ -137,9 +136,32 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const operationNeedsAttention =
 		operationStatus?.state === 'failed' || operationStatus?.state === 'partial';
 
+	const persistSettings = (next: StorageSyncSettings): Promise<StorageSyncSettings | undefined> => {
+		const save = async (): Promise<StorageSyncSettings | undefined> => {
+			try {
+				const saved = await window.storage.saveSettings(next);
+				setSettings(saved);
+				setDraft((current) => (current === next ? null : current));
+				setSyncStatus(t('settings.storage.syncSaved'));
+				return saved;
+			} catch {
+				setError(t('settings.storage.errors.saveSync'));
+				return undefined;
+			}
+		};
+		const queued = saveQueueRef.current.then(save, save);
+		saveQueueRef.current = queued.then(
+			() => undefined,
+			() => undefined
+		);
+		return queued;
+	};
+
 	const updateDraft = (next: StorageSyncSettings): void => {
 		setDraft(next);
+		setError(null);
 		setSyncStatus(null);
+		void persistSettings(next);
 	};
 
 	const selectProvider = (providerId: string): void => {
@@ -160,30 +182,11 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		}
 	};
 
-	const saveSync = async (): Promise<StorageSyncSettings | undefined> => {
-		if (!storage) return undefined;
-		setSavingSync(true);
-		setError(null);
-		setSyncStatus(null);
-		try {
-			const saved = await window.storage.saveSettings(storage);
-			setSettings(saved);
-			setDraft(null);
-			setSyncStatus(t('settings.storage.syncSaved'));
-			return saved;
-		} catch {
-			setError(t('settings.storage.errors.saveSync'));
-			return undefined;
-		} finally {
-			setSavingSync(false);
-		}
-	};
-
 	const runBackup = async (): Promise<void> => {
 		setError(null);
 		setSyncStatus(null);
 		try {
-			if (!(await saveSync())) return;
+			if (!storage || !(await persistSettings(storage))) return;
 			applyOperationStatus(await window.storage.backup());
 		} catch {
 			setError(t('settings.storage.errors.push'));
@@ -195,7 +198,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		setError(null);
 		setSyncStatus(null);
 		try {
-			if (!(await saveSync())) return;
+			if (!storage || !(await persistSettings(storage))) return;
 			applyOperationStatus(await window.storage.restore());
 		} catch {
 			setError(t('settings.storage.errors.pull'));
@@ -370,31 +373,6 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 											{runningOperation?.operation === 'backup'
 												? t('settings.storage.pushing')
 												: t('settings.storage.backup')}
-										</button>
-										<button
-											type="button"
-											role="menuitem"
-											disabled={!draft || controlsDisabled}
-											onClick={() => {
-												setActionsOpen(false);
-												setDraft(null);
-											}}
-											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
-										>
-											{t('settings.storage.cancel')}
-										</button>
-										<button
-											type="button"
-											role="menuitem"
-											disabled={!draft || controlsDisabled}
-											onClick={() => {
-												setActionsOpen(false);
-												void saveSync();
-											}}
-											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
-										>
-											<Save className="size-3.5" />
-											{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
 										</button>
 									</div>
 								</PopoverContent>
