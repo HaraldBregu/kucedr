@@ -1,4 +1,14 @@
-import { app, BrowserWindow, desktopCapturer, net, protocol, session } from 'electron';
+import {
+	app,
+	BrowserWindow,
+	desktopCapturer,
+	dialog,
+	net,
+	protocol,
+	session,
+	systemPreferences,
+	WebContents,
+} from 'electron';
 import { pathToFileURL } from 'node:url';
 import { fileURLToPath } from 'node:url';
 import fs from 'node:fs/promises';
@@ -188,18 +198,77 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 		});
 
 		targetSession.setDisplayMediaRequestHandler((request, callback) => {
-			const trusted = allowDisplayCapture && isTrustedAppRendererUrl(request.frame?.url);
+			const frame = request.frame;
+			const requestContents = frame ? WebContents.fromFrame(frame) : undefined;
+			const parentWindow = requestContents ? BrowserWindow.fromWebContents(requestContents) : null;
+			const trusted = Boolean(
+				allowDisplayCapture &&
+				frame &&
+				frame === frame.top &&
+				requestContents &&
+				parentWindow &&
+				isTrustedAppRendererUrl(frame.url)
+			);
 			if (!trusted) {
 				callback({});
 				return;
 			}
+			if (process.platform === 'darwin') {
+				let status: string = 'unknown';
+				try {
+					status = systemPreferences.getMediaAccessStatus('screen');
+				} catch {
+					status = 'unknown';
+				}
+				if (status === 'denied' || status === 'restricted') {
+					callback({});
+					void dialog.showMessageBox(parentWindow ?? undefined, {
+						type: 'error',
+						title: 'Screen Recording Permission Required',
+						message: 'Kucedr cannot access the screen.',
+						detail:
+							'Open System Settings → Privacy & Security → Screen Recording, enable Kucedr, then fully quit and relaunch the packaged app.',
+						buttons: ['OK'],
+					});
+					return;
+				}
+			}
 			desktopCapturer
-				.getSources({ types: ['screen', 'window'] })
+				.getSources({ types: ['screen', 'window'], thumbnailSize: { width: 0, height: 0 } })
 				.then((sources) => {
-					const source = sources[0];
-					callback(source ? { video: source } : {});
+					if (sources.length === 0) {
+						callback({});
+						return;
+					}
+					if (sources.length === 1) {
+						callback({ video: sources[0] });
+						return;
+					}
+					void dialog
+						.showMessageBox(parentWindow ?? undefined, {
+							type: 'question',
+							title: 'Choose a screen to record',
+							message: 'Select the display or window to capture.',
+							buttons: [...sources.map((source) => source.name || 'Untitled source'), 'Cancel'],
+							cancelId: sources.length,
+							noLink: true,
+						})
+						.then(({ response }) => {
+							callback(response >= 0 && response < sources.length ? { video: sources[response] } : {});
+						})
+						.catch(() => callback({}));
 				})
 				.catch(() => callback({}));
+		}, {
+			useSystemPicker:
+				process.platform === 'darwin' &&
+				(() => {
+					try {
+						return Number.parseInt(systemPreferences.getSystemVersion(), 10) >= 15;
+					} catch {
+						return false;
+					}
+				})(),
 		});
 	};
 
