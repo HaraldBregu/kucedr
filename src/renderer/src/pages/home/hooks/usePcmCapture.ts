@@ -40,11 +40,7 @@ export function usePcmCapture() {
 		async (onAudio: (audio: string) => void): Promise<void> => {
 			stop();
 			const mediaStream = await navigator.mediaDevices.getUserMedia({
-				audio: await getMicrophoneConstraints({
-					echoCancellation: true,
-					noiseSuppression: true,
-					channelCount: 1,
-				}),
+				audio: await getMicrophoneConstraints({ echoCancellation: true, noiseSuppression: true, channelCount: 1 }),
 			});
 			let context: AudioContext | null = null;
 			try {
@@ -57,11 +53,7 @@ export function usePcmCapture() {
 				processor.onaudioprocess = (event): void => {
 					if (mutedRef.current) return;
 					const input = event.inputBuffer.getChannelData(0);
-					const pcm = resampleToPcm16(
-						input,
-						context?.sampleRate ?? OUTPUT_SAMPLE_RATE,
-						OUTPUT_SAMPLE_RATE
-					);
+					const pcm = resampleToPcm16(input, context?.sampleRate ?? OUTPUT_SAMPLE_RATE, OUTPUT_SAMPLE_RATE);
 					if (pcm.length > 0) onAudio(pcm16ToBase64(pcm));
 				};
 				source.connect(inputAnalyser);
