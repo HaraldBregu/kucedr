@@ -141,7 +141,7 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 			syncCronExpression: '0 4 * * *',
 		})
 	);
-	expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toBeEnabled();
+	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeEnabled();
 });
 
 it('backs up directly and confirms before restoring matching local files', async () => {
@@ -198,7 +198,7 @@ it('rehydrates a running backup after the page remounts', async () => {
 		</MemoryRouter>
 	);
 	expect(await screen.findByText('Backup is running in the background…')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeDisabled();
 	first.unmount();
 	expect(unsubscribeOperationStatus).toHaveBeenCalledTimes(unsubscribeCount + 1);
 });
@@ -292,7 +292,7 @@ it.each([undefined, 'deleted'])(
 		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
-		expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toBeEnabled();
+		expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeEnabled();
 		await user.click(screen.getByRole('button', { name: /^Storage provider/ }));
 		expect(screen.getByRole('link', { name: 'Manage storage' })).toHaveAttribute(
 			'href',
