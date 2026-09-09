@@ -14,6 +14,7 @@ function MediaRow({
 	readonly detailPath: string;
 }): React.JSX.Element {
 	const navigate = useNavigate();
+	const Icon = icon;
 
 	return (
 		<button
@@ -23,7 +24,7 @@ function MediaRow({
 		>
 			<SettingsRow
 				title={title}
-				media={<icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+				media={<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 				className="grid-cols-[minmax(0,1fr)_auto]"
 				actionClassName="w-auto justify-end"
 				actions={<ChevronRight className="size-4 text-muted-foreground" />}
