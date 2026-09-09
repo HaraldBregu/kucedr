@@ -13,6 +13,7 @@ jest.mock('react-i18next', () => {
 		'settings.storage.provider.title': 'Storage',
 		'settings.storage.provider.description':
 			'Choose which configured storage provider receives your backups and supplies files when you restore them.',
+		'settings.storage.provider.placeholder': 'Select storage provider',
 		'settings.storage.cancel': 'Cancel',
 		'settings.storage.sync.title': 'Cloud Backup',
 		'settings.storage.sync.description': 'Back up selected folders on a schedule',
