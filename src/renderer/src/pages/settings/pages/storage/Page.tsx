@@ -13,10 +13,7 @@ import { Button } from '@/components/ui/button';
 import {
 	Card,
 	CardContent,
-	CardDescription,
 	CardFooter,
-	CardHeader,
-	CardTitle,
 } from '@/components/ui/card';
 import {
 	Dialog,
@@ -47,6 +44,7 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsRow,
+	SettingsSection,
 } from '../../components';
 import { SYNC_INTERVALS } from './constants';
 import Provider from './Provider';
@@ -260,16 +258,11 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 						disabled={busy}
 						onChange={selectProvider}
 					/>
+					<SettingsSection
+						title={t('settings.storage.sync.title')}
+						description={t('settings.storage.sync.description')}
+					>
 					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
-						<CardHeader className="border-b border-border/60 px-4! py-4!">
-							<CardTitle>
-								<h2 className="text-sm font-medium">{t('settings.storage.sync.title')}</h2>
-							</CardTitle>
-							<CardDescription className="text-xs">
-								{t('settings.storage.sync.description')}
-							</CardDescription>
-						</CardHeader>
-
 						<CardContent className="p-0!">
 							{availableFolders.map((folder) => (
 								<SettingsRow
@@ -425,6 +418,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 							</Button>
 						</CardFooter>
 					</Card>
+					</SettingsSection>
 
 					{syncStatus && <SettingsNotice icon={FolderSync}>{syncStatus}</SettingsNotice>}
 					{operationStatusText && (
