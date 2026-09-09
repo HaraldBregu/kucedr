@@ -47,7 +47,7 @@ export default function Provider({
 								{providerTitle}
 							</div>
 							<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-								{selected?.name ?? providerDescription}
+								{selected?.name ?? providerPlaceholder}
 							</p>
 						</div>
 						<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />
