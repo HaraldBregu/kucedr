@@ -1,5 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertTriangle, Download, FolderSync, Plus, Save, Trash2, Upload } from 'lucide-react';
+import {
+	AlertTriangle,
+	Download,
+	FolderSync,
+	MoreHorizontal,
+	Plus,
+	Save,
+	Trash2,
+	Upload,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -12,6 +21,7 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
 	Select,
 	SelectContent,
@@ -54,6 +64,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const [operationStatus, setOperationStatus] = useState<StorageOperationStatus>();
 	const [operationStatusLoading, setOperationStatusLoading] = useState(true);
 	const [restoreOpen, setRestoreOpen] = useState(false);
+	const [actionsOpen, setActionsOpen] = useState(false);
 	const [loadFailed, setLoadFailed] = useState(false);
 	const [loadVersion, setLoadVersion] = useState(0);
 	const applyOperationStatus = useCallback((status: StorageOperationStatus): void => {
@@ -321,6 +332,78 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 					<SettingsSection
 						title={t('settings.storage.autoSync.sectionTitle')}
 						description={t('settings.storage.autoSync.sectionDescription')}
+						action={
+							<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
+								<PopoverTrigger asChild>
+									<Button
+										variant="outline"
+										size="icon-sm"
+										aria-label={t('common.moreOptions')}
+									>
+										<MoreHorizontal className="size-3.5" />
+									</Button>
+								</PopoverTrigger>
+								<PopoverContent align="end" collisionPadding={12} className="w-52 p-1">
+									<div role="menu" aria-label={t('common.moreOptions')}>
+										<button
+											type="button"
+											role="menuitem"
+											disabled={controlsDisabled || storage.paths.length === 0}
+											onClick={() => {
+												setActionsOpen(false);
+												setRestoreOpen(true);
+											}}
+											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+										>
+											<Download className="size-3.5" />
+											{runningOperation?.operation === 'restore'
+												? t('settings.storage.pulling')
+												: t('settings.storage.restore')}
+										</button>
+										<button
+											type="button"
+											role="menuitem"
+											disabled={controlsDisabled || storage.paths.length === 0}
+											onClick={() => {
+												setActionsOpen(false);
+												void runBackup();
+											}}
+											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+										>
+											<Upload className="size-3.5" />
+											{runningOperation?.operation === 'backup'
+												? t('settings.storage.pushing')
+												: t('settings.storage.backup')}
+										</button>
+										<button
+											type="button"
+											role="menuitem"
+											disabled={!draft || controlsDisabled}
+											onClick={() => {
+												setActionsOpen(false);
+												setDraft(null);
+											}}
+											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+										>
+											{t('settings.storage.cancel')}
+										</button>
+										<button
+											type="button"
+											role="menuitem"
+											disabled={!draft || controlsDisabled}
+											onClick={() => {
+												setActionsOpen(false);
+												void saveSync();
+											}}
+											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+										>
+											<Save className="size-3.5" />
+											{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
+										</button>
+									</div>
+								</PopoverContent>
+							</Popover>
+						}
 					>
 						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 							<CardContent className="p-0!">
@@ -375,43 +458,6 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 							</CardContent>
 						</Card>
 					</SettingsSection>
-
-					<div className="flex flex-wrap justify-end gap-2">
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => setRestoreOpen(true)}
-							disabled={controlsDisabled || storage.paths.length === 0}
-						>
-							<Download className="size-3" />
-							{runningOperation?.operation === 'restore'
-								? t('settings.storage.pulling')
-								: t('settings.storage.restore')}
-						</Button>
-						<Button
-							variant="outline"
-							size="sm"
-							onClick={() => void runBackup()}
-							disabled={controlsDisabled || storage.paths.length === 0}
-						>
-							<Upload className="size-3" />
-							{runningOperation?.operation === 'backup'
-								? t('settings.storage.pushing')
-								: t('settings.storage.backup')}
-						</Button>
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={() => setDraft(null)}
-							disabled={!draft || controlsDisabled}
-						>
-							{t('settings.storage.cancel')}
-						</Button>
-						<Button size="sm" onClick={() => void saveSync()} disabled={!draft || controlsDisabled}>
-							<Save className="size-3" />
-							{savingSync ? t('settings.storage.saving') : t('settings.storage.sync.save')}
-						</Button>
-					</div>
 
 					{syncStatus && <SettingsNotice icon={FolderSync}>{syncStatus}</SettingsNotice>}
 					{operationStatusText && (
