@@ -110,6 +110,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 
 	const storage = draft ?? settings;
 	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
+	const visibleFolders = availableFolders.filter((folder) => folder.key !== 'library');
 	const runningOperation = operationStatus?.state === 'running' ? operationStatus : undefined;
 	const builtInPaths = new Set(availableFolders.map((folder) => folder.path));
 	const customPaths = storage?.paths.filter((entry) => !builtInPaths.has(entry)) ?? [];
@@ -264,7 +265,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 					>
 					<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 						<CardContent className="p-0!">
-							{availableFolders.map((folder) => (
+							{visibleFolders.map((folder) => (
 								<SettingsRow
 									key={folder.path}
 									title={t(`settings.storage.folders.${folder.key}`)}

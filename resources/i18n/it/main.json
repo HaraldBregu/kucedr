@@ -1050,7 +1050,6 @@
 			"folders": {
 				"agent": "Area di lavoro dell'assistente",
 				"sessions": "Conversazioni dell'assistente",
-				"library": "Libreria multimediale",
 				"wiki": "Dati wiki",
 				"skills": "Skill installate"
 			},

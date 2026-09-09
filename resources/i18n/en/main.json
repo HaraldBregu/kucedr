@@ -1051,7 +1051,6 @@
 			"folders": {
 				"agent": "Assistant workspace",
 				"sessions": "Assistant conversations",
-				"library": "Media library",
 				"wiki": "Wiki data",
 				"skills": "Installed skills"
 			},

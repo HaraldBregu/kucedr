@@ -65,7 +65,10 @@ beforeEach(() => {
 	storageApi.listProviders.mockResolvedValue(providers);
 	storageApi.getSettings.mockResolvedValue(settings);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
-	storageApi.syncFolders.mockResolvedValue([{ key: 'agent', path: '/data/agent' }]);
+	storageApi.syncFolders.mockResolvedValue([
+		{ key: 'agent', path: '/data/agent' },
+		{ key: 'library', path: '/Users/haraldbregu/.kucedr/library' },
+	]);
 	storageApi.getOperationStatus.mockResolvedValue(undefined);
 	storageApi.onOperationStatusChanged.mockReturnValue(jest.fn());
 	storageApi.backup.mockResolvedValue({
@@ -97,6 +100,8 @@ it('shows the storage provider description beneath the title and before backup s
 	expect(screen.queryByText(/sign in|supabase|secure key sync/i)).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
+	expect(screen.queryByText('Media library')).not.toBeInTheDocument();
+	expect(screen.queryByText('/Users/haraldbregu/.kucedr/library')).not.toBeInTheDocument();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });
 
