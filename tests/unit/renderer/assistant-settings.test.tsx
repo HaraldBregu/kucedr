@@ -233,13 +233,21 @@ it('groups independently collapsible provider settings in one card', async () =>
 		/Video/,
 		/Search Engine/,
 	]) {
-		const trigger = await screen.findByRole('button', { name });
+		const trigger = (await screen.findAllByRole('button', { name })).find(
+			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
+		);
+		expect(trigger).toBeDefined();
+		if (!trigger) continue;
 		expect(trigger).toHaveAttribute('aria-expanded', 'false');
 		await user.click(trigger);
 		expect(trigger).toHaveAttribute('aria-expanded', 'true');
 		cards.push(trigger.closest('[data-slot="card"]'));
 	}
-	const model = await screen.findByRole('combobox', { name: 'Model' });
+	const model = (await screen.findAllByRole('button', { name: 'Model' })).find(
+		(element) => element.getAttribute('aria-haspopup') === 'dialog'
+	);
+	expect(model).toBeDefined();
+	if (!model) return;
 	const voiceTrigger = screen.getByRole('button', { name: /Voice/ });
 	expect(voiceTrigger).toHaveTextContent('Text to speech model');
 	expect(voiceTrigger.nextElementSibling).not.toHaveClass('border-t');
