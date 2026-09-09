@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Bot,
+	BrainCircuit,
 	ChevronRight,
 	Image as ImageIcon,
 	HeartPulse,
@@ -232,7 +233,7 @@ const AssistantPage: React.FC = () => {
 					triggerTitle={t('settings.modelServices.llmModel')}
 					description={t('settings.modelServices.modelDescription')}
 					showIcon
-					icon={Bot}
+					icon={BrainCircuit}
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
