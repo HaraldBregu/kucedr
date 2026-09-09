@@ -311,24 +311,30 @@ function AttachmentButton({
 function VoiceButton({
 	onVoiceModeRequest,
 	disabled,
+	disabledReason,
 	mode,
 }: {
 	readonly onVoiceModeRequest: () => void;
 	readonly disabled?: boolean;
+	readonly disabledReason?: string;
 	readonly mode: VoiceButtonMode;
 }): ReactElement {
 	const label = mode === 'record' ? 'Record voice' : 'Dictate';
-	const tooltip = mode === 'disabled' ? 'Configure speech to text' : label;
+	const isDisabled = disabled || mode === 'disabled';
+	const tooltip =
+		mode === 'disabled'
+			? 'Choose a speech-to-text provider and model in Settings.'
+			: disabledReason ?? label;
 
 	return (
-		<PromptInputAction tooltip={tooltip}>
+		<PromptInputAction tooltip={tooltip} showTooltipWhenDisabled={isDisabled}>
 			<Button
 				type="button"
 				variant="ghost"
 				size="icon"
 				className="size-8 rounded-full text-foreground hover:bg-muted"
 				aria-label={tooltip}
-				disabled={disabled || mode === 'disabled'}
+				disabled={isDisabled}
 				onClick={onVoiceModeRequest}
 			>
 				<Mic className="size-4" />
@@ -546,6 +552,14 @@ function PageContent(): ReactElement {
 					action: () => navigate('/settings/system/media/microphone'),
 				}
 			: undefined;
+	const voiceButtonDisabledReason =
+		voiceButtonMode === 'disabled'
+			? 'Choose a speech-to-text provider and model in Settings.'
+			: voiceBusy
+				? 'Wait for the current voice operation to finish.'
+				: agent.isLoading
+					? 'Wait for the current response to finish.'
+					: undefined;
 
 	useEffect(() => {
 		if (mode !== 'chat') return;
@@ -941,6 +955,7 @@ function PageContent(): ReactElement {
 										<VoiceButton
 											onVoiceModeRequest={() => void startDictation()}
 											disabled={voiceBusy || agent.isLoading}
+											disabledReason={voiceButtonDisabledReason}
 											mode={voiceButtonMode}
 										/>
 										<SubmitButton

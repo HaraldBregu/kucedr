@@ -703,6 +703,7 @@ function PromptInputActions({ children, className, ...props }: PromptInputAction
 export type PromptInputActionProps = {
 	className?: string;
 	tooltip: React.ReactNode;
+	showTooltipWhenDisabled?: boolean;
 	children: React.ReactElement<{
 		disabled?: boolean;
 		onClick?: React.MouseEventHandler<HTMLElement>;
@@ -712,23 +713,34 @@ export type PromptInputActionProps = {
 
 function PromptInputAction({
 	tooltip,
+	showTooltipWhenDisabled = false,
 	children,
 	className,
 	side = 'top',
 	...props
 }: PromptInputActionProps) {
 	const { disabled } = usePromptInput();
+	const childDisabled = Boolean(children.props.disabled);
+	const isDisabled = disabled || childDisabled;
 	const child = React.cloneElement(children, {
-		disabled: disabled || children.props.disabled,
+		disabled: isDisabled,
 		onClick: (event: React.MouseEvent<HTMLElement>) => {
 			event.stopPropagation();
 			children.props.onClick?.(event);
 		},
 	});
+	const trigger = showTooltipWhenDisabled && isDisabled ? (
+		<span className="inline-flex">{child}</span>
+	) : (
+		child
+	);
 
 	return (
 		<Tooltip {...props}>
-			<TooltipTrigger render={child} disabled={disabled} />
+			<TooltipTrigger
+				render={trigger}
+				disabled={showTooltipWhenDisabled ? false : disabled}
+			/>
 			<TooltipContent side={side} className={className}>
 				{tooltip}
 			</TooltipContent>
