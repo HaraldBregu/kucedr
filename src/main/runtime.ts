@@ -12,6 +12,8 @@ import {
 	setLanguage as setStoredLanguage,
 	getTheme,
 	setTheme as setStoredTheme,
+	getMicrophoneInputId,
+	setMicrophoneInputId,
 	recordAppLaunch,
 } from './settings_store';
 import type { AppLanguage } from '../shared/app_types';
@@ -109,11 +111,13 @@ const trayManager = new Tray({
 		if (!win || win.isDestroyed()) return [];
 		try {
 			return await win.webContents.executeJavaScript(
-				`navigator.mediaDevices?.enumerateDevices
-					? (await navigator.mediaDevices.enumerateDevices())
+				`(async () => {
+					if (!navigator.mediaDevices?.enumerateDevices) return [];
+					const devices = await navigator.mediaDevices.enumerateDevices();
+					return devices
 						.filter((device) => device.kind === 'audioinput' && device.deviceId !== 'default' && device.deviceId !== 'communications')
-						.map((device, index) => ({ id: device.deviceId, label: device.label || 'Microphone ' + (index + 1) }))
-					: []`,
+						.map((device, index) => ({ id: device.deviceId, label: device.label || 'Microphone ' + (index + 1) }));
+				})()`,
 				true
 			);
 		} catch {
