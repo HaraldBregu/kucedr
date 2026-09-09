@@ -239,6 +239,8 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const voiceTrigger = screen.getByRole('button', { name: /Voice/ });
 	expect(voiceTrigger).toHaveTextContent('Text to speech model');
 	expect(voiceTrigger).toHaveTextContent('Eleven v3');
+	expect(voiceTrigger.nextElementSibling).not.toHaveClass('border-t');
+	expect(screen.getAllByText('Text to speech model')).toHaveLength(1);
 	const voice = (await screen.findAllByRole('combobox', { name: 'Voice' })).find((entry) =>
 		entry.textContent?.includes('Eleven v3')
 	);
