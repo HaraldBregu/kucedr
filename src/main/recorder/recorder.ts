@@ -262,7 +262,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 				return;
 			}
 			if (!writer?.hasChunk) {
-				fail(result.id, 'Recording produced no data.');
+				await fail(result.id, 'Recording produced no data.');
 				return;
 			}
 			set({ ...recording, status: 'saving' });

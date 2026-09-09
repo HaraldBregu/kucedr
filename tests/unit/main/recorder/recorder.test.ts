@@ -79,8 +79,9 @@ describe('recorder capture ownership', () => {
 		await expect(recorder.chunk({ id: first.id, sequence: 0, data: new Uint8Array([1]) }, 11)).resolves.toBeUndefined();
 
 		const second = recorder.start({ url: output, duration: 1_000 });
-		await recorder.chunk({ id: second.id, sequence: 0, data: new Uint8Array([1]) }, 11);
-		await recorder.complete({ id: second.id, mimeType: 'video/webm' }, 11);
+		await expect(
+			recorder.chunk({ id: second.id, sequence: 0, data: new Uint8Array([1]) }, 11)
+		).rejects.toThrow('already exists');
 		expect(recorder.get(second.id)).toMatchObject({ status: 'error' });
 		await expect(fs.readFile(output, 'utf8')).resolves.toBe('keep');
 	});
