@@ -35,6 +35,8 @@ export default function Provider({
 						? 'settings.storage.provider.missing'
 						: 'settings.storage.provider.description'
 			);
+	const providerSummary = selected?.name ??
+		(providers.length === 0 || providerId ? providerDescription : providerPlaceholder);
 
 	return (
 		<SettingsPanel>
@@ -47,7 +49,7 @@ export default function Provider({
 								{providerTitle}
 							</div>
 							<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-								{selected?.name ?? providerPlaceholder}
+								{providerSummary}
 							</p>
 						</div>
 						<ChevronDown className="size-3.5 shrink-0 text-muted-foreground transition-transform group-data-panel-open:rotate-180" />
@@ -59,7 +61,7 @@ export default function Provider({
 								variant="outline"
 								size="sm"
 								disabled={disabled || providers.length === 0}
-								aria-label={providerPlaceholder}
+								aria-label={providerTitle}
 								className="min-w-40 max-w-full justify-between text-xs"
 							>
 								<span className="min-w-0 truncate">

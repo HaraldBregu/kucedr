@@ -92,7 +92,7 @@ it('shows storage selection beneath the title and before backup setup without lo
 	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
 	expect(disclosure).toHaveAttribute('aria-expanded', 'false');
 	expect(disclosure).toHaveTextContent('Select storage provider');
-	const selector = screen.getByRole('button', { name: 'Select storage provider' });
+	const selector = screen.getByRole('button', { name: 'Storage provider', exact: true });
 	expect(selector).toHaveTextContent('Select storage provider');
 	await user.click(disclosure);
 	expect(disclosure).toHaveAttribute('aria-expanded', 'true');
@@ -114,9 +114,9 @@ it('saves a chosen provider before starting backup while signed out', async () =
 			<CloudPage />
 		</MemoryRouter>
 	);
-	await user.click(screen.getByRole('button', { name: 'Select storage provider' }));
+	await user.click(screen.getByRole('button', { name: 'Storage provider', exact: true }));
 	await user.click(await screen.findByRole('menuitemradio', { name: 'Archive' }));
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toHaveTextContent('Archive');
+	expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toHaveTextContent('Archive');
 	await user.click(screen.getByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledTimes(1));
 	expect(storageApi.saveSettings).toHaveBeenCalledWith({ ...settings, providerId: 'archive' });
@@ -135,14 +135,13 @@ it('loads the saved selection and cancels a provider change without overwriting 
 	);
 	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
 	expect(disclosure).toHaveTextContent('Production files');
-	const selector = screen.getByRole('button', { name: 'Select storage provider' });
+	const selector = screen.getByRole('button', { name: 'Storage provider', exact: true });
 	expect(selector).toHaveTextContent('Production files');
 	await user.click(selector);
 	await user.click(await screen.findByRole('menuitemradio', { name: 'Archive' }));
 	await user.click(screen.getByRole('button', { name: 'Cancel', exact: true }));
 	expect(selector).toHaveTextContent('Production files');
 	expect(storageApi.saveSettings).not.toHaveBeenCalled();
-	await user.click(disclosure);
 	expect(disclosure).toHaveAttribute('aria-expanded', 'false');
 	expect(disclosure).toHaveTextContent('Production files');
 });
@@ -157,7 +156,7 @@ it('offers storage configuration when no providers exist', async () => {
 	);
 	const disclosure = await screen.findByRole('button', { name: /^Storage provider/ });
 	expect(disclosure).toHaveTextContent('Add a storage provider before setting up backups.');
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toBeDisabled();
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	expect(screen.getByRole('button', { name: 'Restore from cloud' })).toBeDisabled();
 });
@@ -175,7 +174,7 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('button', { name: 'Back up now' })).toBeDisabled();
 	await user.click(screen.getByRole('button', { name: 'Try Again' }));
 	await waitFor(() => expect(screen.getByRole('button', { name: 'Back up now' })).toBeEnabled());
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toHaveTextContent(
+	expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toHaveTextContent(
 		'Production files'
 	);
 });
@@ -192,5 +191,5 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save backup settings.');
 	expect(storageApi.backup).not.toHaveBeenCalled();
-	expect(screen.getByRole('button', { name: 'Select storage provider' })).toBeEnabled();
+	expect(screen.getByRole('button', { name: 'Storage provider', exact: true })).toBeEnabled();
 });
