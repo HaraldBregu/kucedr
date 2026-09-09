@@ -137,10 +137,10 @@ export function ModelProviderSelect({
 										<span className="min-w-0 truncate whitespace-nowrap text-sm text-foreground">
 											{modelName(model)}
 										</span>
-									<Check
-										className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
-										aria-hidden="true"
-									/>
+										<Check
+											className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
+											aria-hidden="true"
+										/>
 										<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground">
 											{getProviderCatalogItem(group.id).name}
 										</span>
