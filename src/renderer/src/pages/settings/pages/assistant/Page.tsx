@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
-	Bot,
 	BrainCircuit,
 	ChevronRight,
 	Image as ImageIcon,
