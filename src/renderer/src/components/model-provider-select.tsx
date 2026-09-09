@@ -117,6 +117,7 @@ export function ModelProviderSelect({
 			</PopoverTrigger>
 			<PopoverContent
 				align="end"
+				collisionPadding={12}
 				className="max-h-[var(--radix-popover-content-available-height)] w-max max-w-[calc(100vw-2rem)] overflow-y-auto p-1"
 			>
 				<div role="menu" aria-label={accessibleLabel} className="min-w-0">
