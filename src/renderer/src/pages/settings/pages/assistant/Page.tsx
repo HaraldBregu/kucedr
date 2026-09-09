@@ -285,103 +285,102 @@ const AssistantPage: React.FC = () => {
 					showContentSeparator={false}
 					inlineAdvanced
 				/>
-
 			</SettingsPanel>
 
 			<SettingsSection title={t('settings.modelServices.toolModels')}>
 				<SettingsPanel>
 					<AgentMediaModelConfiguration
-					api={window.models.image}
-					capability="text-to-image"
-					idPrefix="agent-image"
-					title={t('settings.modelServices.imageAssistantName')}
-					description={t('settings.modelServices.imageModelDescription')}
-					showIcon
-					icon={ImageIcon}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					showContentSeparator={false}
-					inlineAdvanced
+						api={window.models.image}
+						capability="text-to-image"
+						idPrefix="agent-image"
+						title={t('settings.modelServices.imageAssistantName')}
+						description={t('settings.modelServices.imageModelDescription')}
+						showIcon
+						icon={ImageIcon}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						showContentSeparator={false}
+						inlineAdvanced
 					/>
 
 					<AgentMediaModelConfiguration
-					api={window.models.sound}
-					capability="text-to-audio"
-					idPrefix="agent-audio"
-					title={t('settings.modelServices.musicCreatorName')}
-					description={t('settings.modelServices.musicModelDescription')}
-					showIcon
-					icon={Music2}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					showContentSeparator={false}
-					inlineAdvanced
+						api={window.models.sound}
+						capability="text-to-audio"
+						idPrefix="agent-audio"
+						title={t('settings.modelServices.musicCreatorName')}
+						description={t('settings.modelServices.musicModelDescription')}
+						showIcon
+						icon={Music2}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						showContentSeparator={false}
+						inlineAdvanced
 					/>
 
 					<AgentMediaModelConfiguration
-					api={window.models.video}
-					capability="text-to-video"
-					idPrefix="agent-video"
-					title={t('settings.modelServices.videoCreatorName')}
-					description={t('settings.modelServices.videoModelDescription')}
-					showIcon
-					icon={Video}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					showContentSeparator={false}
-					inlineAdvanced
+						api={window.models.video}
+						capability="text-to-video"
+						idPrefix="agent-video"
+						title={t('settings.modelServices.videoCreatorName')}
+						description={t('settings.modelServices.videoModelDescription')}
+						showIcon
+						icon={Video}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						showContentSeparator={false}
+						inlineAdvanced
 					/>
 					<Collapsible className="min-w-0 max-w-full overflow-hidden">
-					<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
-						<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-3 text-left">
-							<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-							<div className="min-w-0 flex-1">
-								<div className="truncate text-[13px] font-medium leading-4 text-foreground">
-									{t('settings.tabs.searchEngine')}
+						<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
+							<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-3 text-left">
+								<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+								<div className="min-w-0 flex-1">
+									<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+										{t('settings.tabs.searchEngine')}
+									</div>
+									<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+										{selectedSearchEngineDescription}
+									</p>
 								</div>
-								<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-									{selectedSearchEngineDescription}
-								</p>
-							</div>
-						</CollapsibleTrigger>
-						<div className="shrink-0">
-							<Select
-								value={searchSettings?.engineId ?? null}
-								onValueChange={handleSearchEngineChange}
-								disabled={!searchSettings || searchSavingEngineId !== null}
-							>
-								<SelectTrigger
-									className="w-40 max-w-full text-xs [&_svg]:size-3"
-									aria-label={t('settings.tabs.searchEngine')}
+							</CollapsibleTrigger>
+							<div className="shrink-0">
+								<Select
+									value={searchSettings?.engineId ?? null}
+									onValueChange={handleSearchEngineChange}
+									disabled={!searchSettings || searchSavingEngineId !== null}
 								>
-									<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
-										{selectedSearchEngine?.name}
-									</SelectValue>
-								</SelectTrigger>
-								<SelectContent>
-									{SEARCH_ENGINES.map((engine) => (
-										<SelectItem
-											key={engine.id}
-											value={engine.id}
-											disabled={!searchSettings?.configured[engine.id]}
-										>
-											{engine.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+									<SelectTrigger
+										className="w-40 max-w-full text-xs [&_svg]:size-3"
+										aria-label={t('settings.tabs.searchEngine')}
+									>
+										<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
+											{selectedSearchEngine?.name}
+										</SelectValue>
+									</SelectTrigger>
+									<SelectContent>
+										{SEARCH_ENGINES.map((engine) => (
+											<SelectItem
+												key={engine.id}
+												value={engine.id}
+												disabled={!searchSettings?.configured[engine.id]}
+											>
+												{engine.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
 						</div>
-					</div>
-					<CollapsibleContent>
-						{searchEngineError && (
-							<SettingsNotice variant="destructive" icon={AlertTriangle} className="mx-3 mt-3">
-								{searchEngineError}
-							</SettingsNotice>
-						)}
-					</CollapsibleContent>
+						<CollapsibleContent>
+							{searchEngineError && (
+								<SettingsNotice variant="destructive" icon={AlertTriangle} className="mx-3 mt-3">
+									{searchEngineError}
+								</SettingsNotice>
+							)}
+						</CollapsibleContent>
 					</Collapsible>
 				</SettingsPanel>
 			</SettingsSection>
@@ -391,7 +390,9 @@ const AssistantPage: React.FC = () => {
 					<Link key={item.path} to={item.path} className="block hover:bg-muted/40">
 						<SettingsRow
 							title={t(item.labelKey)}
-							media={<item.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+							media={
+								<item.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+							}
 							description={t(item.descriptionKey)}
 							className="grid-cols-[minmax(0,1fr)_auto]"
 							actionClassName="w-auto justify-end"
@@ -440,7 +441,9 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.tabs.health')}
-						media={<HeartPulse className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<HeartPulse className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						description={t('settings.overview.descriptions.health')}
 						className="grid-cols-[minmax(0,1fr)_auto]"
 						actionClassName="w-auto justify-end"
@@ -461,7 +464,9 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.tabs.permissions')}
-						media={<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						description={t('settings.overview.descriptions.permissions')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
@@ -506,7 +511,9 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.wiki.title')}
-						media={<BookOpenText className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<BookOpenText className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						description={t('settings.wiki.description')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
@@ -530,7 +537,9 @@ const AssistantPage: React.FC = () => {
 				>
 					<SettingsRow
 						title={t('settings.dataControls.title')}
-						media={<Database className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<Database className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						description={t('settings.dataControls.description')}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"

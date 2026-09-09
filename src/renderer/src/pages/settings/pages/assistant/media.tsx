@@ -19,8 +19,8 @@ interface MediaModelApi {
 	readonly setProviderId: (providerId: string) => Promise<void>;
 	readonly getModelId: () => Promise<string | undefined>;
 	readonly setModelId: (modelId: string) => Promise<void>;
-		readonly getOptions?: () => Promise<Record<string, unknown>>;
-		readonly setOptions?: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
+	readonly getOptions?: () => Promise<Record<string, unknown>>;
+	readonly setOptions?: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
 }
 
 interface AgentMediaModelConfigurationProps {
