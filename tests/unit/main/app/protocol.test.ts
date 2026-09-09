@@ -164,4 +164,32 @@ describe('protocol security', () => {
 		);
 		expect(callback).toHaveBeenCalledWith({ video: { id: 'screen:2', name: 'Display 2' } });
 	});
+
+	it('returns an empty grant for source cancellation and unavailable capture infrastructure', async () => {
+		const appRegistry = new AppRegistry();
+		const mainContents = { id: 8 };
+		jest.mocked(BrowserWindow.fromWebContents).mockReturnValue({} as Electron.BrowserWindow);
+		setupMediaPermissionHandlers(appRegistry);
+		const display = jest.mocked(session.defaultSession.setDisplayMediaRequestHandler).mock.calls.at(-1)?.[0];
+		const frame = {
+			url: pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
+			webContents: mainContents,
+		} as never;
+		(frame as { top: unknown }).top = frame;
+		jest.mocked(desktopCapturer.getSources).mockResolvedValue([]);
+		const unavailable = jest.fn();
+		display?.({ frame } as never, unavailable);
+		await new Promise((resolve) => setImmediate(resolve));
+		expect(unavailable).toHaveBeenCalledWith({});
+
+		jest.mocked(desktopCapturer.getSources).mockResolvedValue([
+			{ id: 'screen:1', name: 'Display 1' },
+			{ id: 'screen:2', name: 'Display 2' },
+		] as never);
+		jest.mocked(dialog.showMessageBox).mockResolvedValueOnce({ response: 2 } as never);
+		const cancelled = jest.fn();
+		display?.({ frame } as never, cancelled);
+		await new Promise((resolve) => setImmediate(resolve));
+		expect(cancelled).toHaveBeenCalledWith({});
+	});
 });

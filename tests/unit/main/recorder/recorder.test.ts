@@ -44,16 +44,19 @@ describe('recorder capture ownership', () => {
 		);
 
 		await expect(
-			recorder.complete({ id: recording.id, base64: Buffer.from('wrong').toString('base64') }, 12)
+			recorder.chunk({ id: recording.id, sequence: 0, data: new Uint8Array([1]) }, 12)
 		).rejects.toThrow('different capture host');
 		await expect(fs.readFile(output)).rejects.toMatchObject({ code: 'ENOENT' });
 
-		await recorder.chunk(
-			{ id: recording.id, sequence: 0, data: new Uint8Array(Buffer.from('recorded')) },
-			11
-		);
+		await Promise.all([
+			recorder.chunk(
+				{ id: recording.id, sequence: 0, data: new Uint8Array(Buffer.from('recorded')) },
+				11
+			),
+			recorder.chunk({ id: recording.id, sequence: 1, data: new Uint8Array([33]) }, 11),
+		]);
 		await recorder.complete({ id: recording.id, mimeType: 'video/webm' }, 11);
-		await expect(fs.readFile(output, 'utf8')).resolves.toBe('recorded');
+		await expect(fs.readFile(output, 'utf8')).resolves.toBe('recorded!');
 	});
 
 	it('rejects duplicate sessions and refuses to overwrite an existing output', async () => {
