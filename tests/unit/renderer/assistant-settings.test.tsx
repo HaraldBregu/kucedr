@@ -313,7 +313,12 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('button', { name: /Realtime conversation/ }));
+	const trigger = (await screen.findAllByRole('button', { name: /Realtime conversation/ })).find(
+		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
+	);
+	expect(trigger).toBeDefined();
+	if (!trigger) return;
+	await user.click(trigger);
 	const selector = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
 		(element) => element.getAttribute('aria-haspopup') === 'dialog'
 	);
@@ -359,7 +364,12 @@ it('announces a realtime conversation setup save error', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('button', { name: /Realtime conversation/ }));
+	const trigger = (await screen.findAllByRole('button', { name: /Realtime conversation/ })).find(
+		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
+	);
+	expect(trigger).toBeDefined();
+	if (!trigger) return;
+	await user.click(trigger);
 	const selector = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
 		(element) => element.getAttribute('aria-haspopup') === 'dialog'
 	);
