@@ -262,7 +262,7 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const audio = await screen.findByRole('combobox', { name: 'Audio' });
 	const video = await screen.findByRole('combobox', { name: 'Video' });
 	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
-	expect(model).toHaveTextContent('OpenAI / GPT');
+	expect(model).toHaveTextContent('GPT');
 	expect(realtimeConversation).toHaveTextContent('OpenAI / GPT Realtime');
 	expect(voice).toHaveTextContent('ElevenLabs / Eleven v3');
 	expect(image).toHaveTextContent('Google / Gemini Image');

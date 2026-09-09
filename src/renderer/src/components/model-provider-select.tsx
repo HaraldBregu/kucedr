@@ -55,6 +55,10 @@ function modelLabel(providerId: string, model: { id: string; name: string }): st
 	return `${getProviderCatalogItem(providerId).name} / ${model.name || model.id}`;
 }
 
+function modelName(model: { id: string; name: string }): string {
+	return model.name || model.id;
+}
+
 interface ModelProviderSelectLabels {
 	readonly label?: string;
 	readonly placeholder?: string;
@@ -92,8 +96,9 @@ export function ModelProviderSelect({
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
 	const selectedLabel = selectedModel ? modelLabel(providerId, selectedModel) : undefined;
 	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
-	const buttonLabel =
-		selectedLabel ?? labels?.placeholder ?? t('settings.modelServices.modelPlaceholder');
+	const buttonLabel = selectedModel
+		? modelName(selectedModel)
+		: (labels?.placeholder ?? t('settings.modelServices.modelPlaceholder'));
 
 	const buttonSelect = (
 		<Popover open={buttonOpen} onOpenChange={setButtonOpen}>
@@ -132,8 +137,13 @@ export function ModelProviderSelect({
 										className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
 										aria-hidden="true"
 									/>
-									<span className="min-w-0 truncate whitespace-nowrap">
-										{modelLabel(group.id, model)}
+									<span className="flex min-w-0 flex-col items-start">
+										<span className="min-w-0 truncate whitespace-nowrap text-sm text-foreground">
+											{modelName(model)}
+										</span>
+										<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground">
+											{getProviderCatalogItem(group.id).name}
+										</span>
 									</span>
 								</button>
 							);
