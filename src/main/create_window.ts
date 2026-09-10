@@ -223,6 +223,7 @@ export class Main {
 			html: 'voice.html',
 			hash: `voice/${encodeURIComponent(chatSessionId)}`,
 		});
+		if (process.platform === 'darwin') win.setWindowButtonVisibility(false);
 		this.voiceWindow = win;
 		win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
 		this.windowContextManager.create(win);
