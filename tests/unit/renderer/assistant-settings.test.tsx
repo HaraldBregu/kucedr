@@ -404,8 +404,11 @@ it('uses the Agent model picker UI and task switches', async () => {
 	(window.tasks.setEnabled as jest.Mock).mockResolvedValueOnce({ ...task, enabled: false });
 
 	render(
-		<MemoryRouter>
-			<TasksPage />
+		<MemoryRouter initialEntries={['/settings/agent/tasks']}>
+			<Routes>
+				<Route path="/settings/agent/tasks" element={<TasksPage />} />
+				<Route path="/settings/agent/tasks/:taskId/detail" element={<p>Task detail</p>} />
+			</Routes>
 		</MemoryRouter>
 	);
 	const modelTrigger = (await screen.findAllByRole('button', { name: /LLM Model/ })).find(
@@ -422,14 +425,17 @@ it('uses the Agent model picker UI and task switches', async () => {
 	expect(screen.getByText('Task description')).toBeInTheDocument();
 	expect(screen.getByText('Every 12 minutes')).toBeInTheDocument();
 	const taskSwitch = await screen.findByRole('switch', { name: 'Disable Demo task' });
-	const taskTitle = screen.getByRole('button', { name: 'Demo task' });
-	expect(taskTitle.parentElement?.querySelector('[data-slot="switch"]')).toBe(taskSwitch);
+	const taskItem = screen.getByRole('button', { name: 'Demo task' });
+	expect(taskItem.querySelector('[data-slot="switch"]')).toBe(taskSwitch);
+	expect(taskItem).toHaveClass('cursor-pointer', 'hover:bg-muted/40');
 	expect(taskSwitch).toBeChecked();
 	await user.click(taskSwitch);
 	await waitFor(() => {
 		expect(window.tasks.setEnabled).toHaveBeenCalledWith('task-1', false);
-		expect(taskSwitch).not.toBeChecked();
+		 expect(taskSwitch).not.toBeChecked();
 	});
+	await user.click(taskItem);
+	expect(await screen.findByText('Task detail')).toBeInTheDocument();
 });
 
 it('announces a realtime conversation setup save error', async () => {
