@@ -39,6 +39,7 @@ import { AppChannels } from '../shared/ipc_channels_definitions';
 import { startWiki, stopWiki } from './agent/knowledge/wiki';
 import { authLinks } from './cloud/links';
 import { loadLocalEnvironment } from './cloud/environment';
+import { VoiceWindow } from './voice_window';
 
 // // DIAG: bump V8 old-space heap to confirm whether crashes (Chromium OOM,
 // // exception 0xE0000008) come from the V8/JS heap or from native/C++
@@ -72,6 +73,7 @@ try {
 const services = bootstrapServices();
 const { eventBus, appState, windowFactory, logger, windowContextManager, agentService } = services;
 const mainWindow = new Main(appState, windowFactory, windowContextManager);
+const voiceWindow = new VoiceWindow(windowFactory, windowContextManager);
 agentService.start(logger);
 startRagSchedule(logger);
 // Re-bind safety net with the real logger now that it exists.
@@ -80,8 +82,8 @@ setupMemoryMonitor(logger);
 logger.info('CrashReporter', `Crash dumps path: ${app.getPath('crashDumps')}`);
 logger.info('Main', 'Starting app');
 logger.info('Main', 'Enabling IPC modules...');
-registerIpcHandlers(services, eventBus, {
-	openVoiceConversation: (chatSessionId) => mainWindow.openVoiceConversation(chatSessionId),
+	registerIpcHandlers(services, eventBus, {
+		openVoiceConversation: (chatSessionId) => voiceWindow.open(chatSessionId),
 });
 setupAppLifecycle(appState, logger);
 setupEventLogging(logger);
@@ -94,13 +96,13 @@ app.on('browser-window-created', (_event, win) => {
 
 const trayManager = new Tray({
 	onToggleApp: () => mainWindow.toggleVisibility(),
-	onToggleVoiceConversation: () => mainWindow.toggleVoiceConversation(),
+	onToggleVoiceConversation: () => voiceWindow.toggle(),
 	onQuit: () => {
 		appState.setQuitting();
 		app.quit();
 	},
 	isAppVisible: () => mainWindow.isVisible(),
-	isVoiceConversationVisible: () => mainWindow.isVoiceConversationVisible(),
+	isVoiceConversationVisible: () => voiceWindow.isVisible(),
 	getApps: () => listApps(),
 	onOpenApp: (app) => loadApp(windowFactory, app),
 	getMicrophoneInputs: async () => {

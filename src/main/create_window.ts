@@ -3,7 +3,6 @@ import type { AppState } from './app_state';
 import type { RendererContentOptions, WindowFactory } from './window_factory';
 import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
-import { getPlatformTranslucencyOptions } from './translucency';
 
 const DEFAULT_WINDOW_WIDTH = 812;
 const DEFAULT_WINDOW_HEIGHT = 625;
@@ -11,8 +10,6 @@ const MINIMUM_WINDOW_WIDTH = 768;
 const MINIMUM_WINDOW_HEIGHT = 600;
 const STARTUP_WINDOW_WIDTH = 812;
 const STARTUP_WINDOW_HEIGHT = 625;
-const VOICE_WINDOW_WIDTH = 360;
-const VOICE_WINDOW_HEIGHT = 480;
 const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
 export class Main {
@@ -59,27 +56,6 @@ export class Main {
 			...this.createWindowOptions(),
 			width: STARTUP_WINDOW_WIDTH,
 			height: STARTUP_WINDOW_HEIGHT,
-		};
-	}
-
-	private createVoiceWindowOptions() {
-		return {
-			...this.createWindowOptions(),
-			title: 'Voice conversation',
-			width: VOICE_WINDOW_WIDTH,
-			height: VOICE_WINDOW_HEIGHT,
-			minWidth: VOICE_WINDOW_WIDTH,
-			minHeight: VOICE_WINDOW_HEIGHT,
-			maxWidth: VOICE_WINDOW_WIDTH,
-			maxHeight: VOICE_WINDOW_HEIGHT,
-			resizable: false,
-			minimizable: false,
-			maximizable: false,
-			fullscreenable: false,
-			center: true,
-			alwaysOnTop: true,
-			skipTaskbar: true,
-			show: false,
 		};
 	}
 
@@ -203,70 +179,12 @@ export class Main {
 		return this.getOpenAppWindows().some((win) => win.isVisible());
 	}
 
-	isVoiceConversationVisible(): boolean {
-		return Boolean(
-			this.voiceWindow && !this.voiceWindow.isDestroyed() && this.voiceWindow.isVisible()
-		);
-	}
-
-	toggleVoiceConversation(): void {
-		const win = this.voiceWindow;
-		if (!win || win.isDestroyed()) return;
-		if (win.isVisible()) {
-			win.hide();
-			return;
-		}
-		win.show();
-		win.focus();
-	}
-
 	setOnWindowVisibilityChange(callback: () => void): void {
 		this.onWindowVisibilityChange = callback;
 	}
 
 	createAdditionalWindow(): BrowserWindow {
 		return this.createLauncherWindow();
-	}
-
-	openVoiceConversation(chatSessionId: string): void {
-		const existing = this.voiceWindow;
-		if (existing && !existing.isDestroyed()) {
-			existing.show();
-			existing.focus();
-			return;
-		}
-
-		const win = this.windowFactory.create(this.createVoiceWindowOptions(), {
-			html: 'voice.html',
-			hash: `voice/${encodeURIComponent(chatSessionId)}`,
-		});
-		if (process.platform === 'darwin') win.setWindowButtonVisibility(false);
-		this.voiceWindow = win;
-		win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
-		this.windowContextManager.create(win);
-		attachWindowHandlers(win);
-
-		win.setAlwaysOnTop(true, 'floating');
-		if (typeof win.setVisibleOnAllWorkspaces === 'function') {
-			win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-		}
-		win.on('blur', () => {
-			if (win.isDestroyed() || !win.isVisible()) return;
-			setImmediate(() => {
-				if (!win.isDestroyed() && win.isVisible()) win.focus();
-			});
-		});
-		win.on('closed', () => {
-			if (this.voiceWindow?.id === win.id) this.voiceWindow = null;
-			this.onWindowVisibilityChange?.();
-		});
-		win.on('show', () => this.onWindowVisibilityChange?.());
-		win.on('hide', () => this.onWindowVisibilityChange?.());
-		win.once('ready-to-show', () => {
-			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
-			win.show();
-			win.focus();
-		});
 	}
 
 	createWindowForFile(filePath: string): BrowserWindow {
