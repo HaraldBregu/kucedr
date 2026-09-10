@@ -9,7 +9,14 @@ it('keeps screen source selection on its dedicated chat component', () => {
 		content: '',
 		runId: 'run-1',
 		state: 'using_tools',
-		tools: [{ toolCallId: 'source-1', type: 'select_screen_source', state: 'input-available' }],
+		tools: [
+			{
+				toolCallId: 'source-1',
+				type: 'select_screen_source',
+				state: 'input-available',
+				input: { sources: [{ id: 'screen:1', name: 'Display 1', type: 'screen' }] },
+			},
+		],
 	};
 	const state: AgentChatState = {
 		messages: [message],
@@ -31,7 +38,10 @@ it('keeps screen source selection on its dedicated chat component', () => {
 		},
 	});
 
-	expect((requested.messages[0] as AgentMessage).tools[0].type).toBe('select_screen_source');
+	expect((requested.messages[0] as AgentMessage).tools[0]).toMatchObject({
+		type: 'select_screen_source',
+		input: { sources: [{ id: 'screen:1', name: 'Display 1', type: 'screen' }] },
+	});
 });
 
 it('settles a tool still shown as running when its agent run completes', () => {

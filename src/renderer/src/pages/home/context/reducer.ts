@@ -168,14 +168,15 @@ function applyResponseEvent(
 			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: event.runId },
 			ensured.message.id,
 			(message) => {
-				const type = message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type;
+				const tool = message.tools.find((candidate) => candidate.toolCallId === event.toolCallId);
+				const screenSource = tool?.type === 'select_screen_source';
 				return {
 					...message,
 					state: 'awaiting_input',
 					tools: updateAgentToolPart(message.tools, event.toolCallId, {
-						type: type === 'select_screen_source' ? 'select_screen_source' : 'ask',
+						type: screenSource ? 'select_screen_source' : 'ask',
 						state: 'input-available',
-						input: { questions: event.questions },
+						input: screenSource ? tool?.input : { questions: event.questions },
 					}),
 					pendingUserInput: {
 						requestId: event.requestId,
