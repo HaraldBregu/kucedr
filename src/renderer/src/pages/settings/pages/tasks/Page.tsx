@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, BrainCircuit, ListChecks } from 'lucide-react';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
-import { providerIdsFor, providerModels, providers } from '@/lib/providers';
+import { ModelOptions } from '@/components/model-options';
+import { updateModelOptions } from '@/lib/options';
+import { modelsFor, providerIdsFor, providerModels, providers } from '@/lib/providers';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import {
 	SettingsEmptyState,
@@ -44,13 +46,18 @@ const TasksPage: React.FC = () => {
 	const [saved, setSaved] = useState(false);
 	const [runtimeError, setRuntimeError] = useState<string | null>(null);
 	const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
+	const [modelOptions, setModelOptions] = useState<Record<string, unknown>>({});
 
 	const modelGroups = taskModelGroups();
+	const model = modelsFor('llm').find(
+		(item) => item.provider.id === providerId && item.id === modelId
+	);
+	const inputs = model?.metadata?.documentationStatus === 'verified' ? model.metadata.inputs : {};
 
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([window.tasks.list(), window.tasks.getRuntime()])
-			.then(([list, runtime]) => {
+		void Promise.all([window.tasks.list(), window.tasks.getRuntime(), window.agent.getModelOptions()])
+			.then(([list, runtime, options]) => {
 				if (!mounted) return;
 				setTasks(list);
 				const groups = taskModelGroups();
@@ -58,6 +65,7 @@ const TasksPage: React.FC = () => {
 				const model = group?.models.find((item) => item.id === runtime?.modelId) ?? group?.models[0];
 				setProviderId(group?.provider.id ?? '');
 				setModelId(model?.id ?? '');
+				setModelOptions(options);
 			})
 			.catch((err: unknown) => {
 				if (mounted) setError(err instanceof Error ? err.message : String(err));
@@ -73,11 +81,13 @@ const TasksPage: React.FC = () => {
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
 		setProviderId(nextProviderId);
 		setModelId(nextModelId);
+		setModelOptions({});
 		setSaving(true);
 		setSaved(false);
 		setRuntimeError(null);
 		try {
 			await window.tasks.setRuntime(nextProviderId, nextModelId);
+			await window.agent.setModelOptions({});
 			setSaved(true);
 		} catch (err) {
 			setRuntimeError(
@@ -86,6 +96,15 @@ const TasksPage: React.FC = () => {
 		} finally {
 			setSaving(false);
 		}
+	};
+
+	const saveModelOptions = (next: Record<string, unknown>): void => {
+		setModelOptions(next);
+		void window.agent.setModelOptions(next);
+	};
+
+	const updateModelOption = (path: readonly string[], value: unknown): void => {
+		saveModelOptions(updateModelOptions(modelOptions, path, value));
 	};
 
 	const handleTaskEnabledChange = async (taskId: string, enabled: boolean): Promise<void> => {
@@ -135,7 +154,15 @@ const TasksPage: React.FC = () => {
 					onChange={(nextProviderId, nextModelId) =>
 						void handleChange(nextProviderId, nextModelId)
 					}
-				/>
+				>
+					<ModelOptions
+						key={`${providerId}:${modelId}`}
+						inputs={inputs}
+						values={modelOptions}
+						inlineAdvanced
+						onChange={updateModelOption}
+					/>
+				</ModelProviderConfiguration>
 			</SettingsPanel>
 
 			{error && (
