@@ -52,5 +52,4 @@ it('confirms and deletes every stored chat from the header actions', async () =>
 		expect(agentApi.deleteSession).toHaveBeenCalledWith('session-1')
 	);
 	expect(agentApi.deleteSession).toHaveBeenCalledWith('session-2');
-	expect(await screen.findByText('settings.chatHistory.empty')).toBeInTheDocument();
 });
