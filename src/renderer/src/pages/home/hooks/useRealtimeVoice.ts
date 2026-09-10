@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { modelsFor } from '@/lib/providers';
-import { useHomeAgentContext } from '../context';
+import { HomeAgentContext } from '../context/context';
 import type {
 	RealtimeVoiceEvent,
 	RealtimeVoiceState,
@@ -42,7 +42,7 @@ export function useRealtimeVoice({
 	readonly chatSessionId: string;
 	readonly onClosed: () => void;
 }) {
-	const { dispatchChat } = useHomeAgentContext();
+	const dispatchChat = useContext(HomeAgentContext)?.dispatchChat ?? (() => undefined);
 	const [status, setStatus] = useState<RealtimeVoiceUiStatus>('idle');
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [requiresConfiguration, setRequiresConfiguration] = useState(false);
