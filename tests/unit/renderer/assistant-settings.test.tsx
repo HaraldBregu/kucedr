@@ -421,6 +421,8 @@ it('uses the Agent model picker UI and task switches', async () => {
 	expect(screen.getByText('Task description')).toBeInTheDocument();
 	expect(screen.getByText('Every 12 minutes')).toBeInTheDocument();
 	const taskSwitch = await screen.findByRole('switch', { name: 'Disable Demo task' });
+	const taskTitle = screen.getByRole('button', { name: 'Demo task' });
+	expect(taskTitle.parentElement?.querySelector('[data-slot="switch"]')).toBe(taskSwitch);
 	expect(taskSwitch).toBeChecked();
 	await user.click(taskSwitch);
 	await waitFor(() => {
