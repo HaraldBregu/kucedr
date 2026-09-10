@@ -47,58 +47,58 @@ export function VoiceConversationWindow({
 
 	return (
 		<main className="flex h-full min-h-0 flex-col bg-card text-foreground" data-voice-window>
-				<div className="relative flex min-h-0 flex-1 items-center justify-center px-4">
-					<div className="relative flex size-full max-h-[min(62vh,22rem)] min-h-56 items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
-						<Persona
-							state={state}
-							level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
-							size={176}
-						/>
-					</div>
+			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4">
+				<div className="relative flex size-full max-h-[min(62vh,22rem)] min-h-56 items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
+					<Persona
+						state={state}
+						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
+						size={176}
+					/>
+			</div>
+			</div>
+			<div className="flex shrink-0 flex-col gap-3 px-5 pb-5 pt-4">
+				<div className="flex items-center justify-between gap-3">
+					<span
+						role="status"
+						aria-live="polite"
+						className={cn(
+							'truncate text-xs font-medium text-muted-foreground',
+							voice.status === 'error' && 'text-destructive'
+						)}
+					>
+						{voice.errorMessage ?? statusLabels[voice.status]}
+					</span>
+					<span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
+						{formatDuration(voice.elapsedMs)}
+					</span>
 				</div>
-				<div className="flex shrink-0 flex-col gap-3 px-5 pb-5 pt-4">
-					<div className="flex items-center justify-between gap-3">
-						<span
-							role="status"
-							aria-live="polite"
-							className={cn(
-								'truncate text-xs font-medium text-muted-foreground',
-								voice.status === 'error' && 'text-destructive'
-							)}
-						>
-							{voice.errorMessage ?? statusLabels[voice.status]}
-						</span>
-						<span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
-							{formatDuration(voice.elapsedMs)}
-						</span>
-					</div>
-					<div className="flex items-center justify-center gap-2">
-						<button
-							type="button"
-							aria-label={voice.isMuted ? 'Unmute' : 'Mute'}
-							disabled={!voice.isActive || isEnding}
-							onClick={() => voice.setMuted(!voice.isMuted)}
-							className={cn(
-								'flex size-10 items-center justify-center rounded-full border transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
-								voice.isMuted
-									? 'border-destructive/40 bg-destructive/10 text-destructive focus-visible:ring-destructive/40'
-									: 'border-border bg-background/70 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/55'
-							)}
-						>
-							{voice.isMuted ? <MicOff className="size-4" /> : <Mic className="size-4" />}
-						</button>
-						<button
-							type="button"
-							aria-label="End voice conversation"
-							disabled={isEnding}
-							onClick={() => void voice.end()}
-							className="flex h-10 min-w-28 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
-						>
-							{isEnding ? <TypingLoader size="sm" /> : null}
-							<span>{voice.status === 'error' ? 'Close' : 'End'}</span>
-						</button>
-					</div>
+				<div className="flex items-center justify-center gap-2">
+					<button
+						type="button"
+						aria-label={voice.isMuted ? 'Unmute' : 'Mute'}
+						disabled={!voice.isActive || isEnding}
+						onClick={() => voice.setMuted(!voice.isMuted)}
+						className={cn(
+							'flex size-10 items-center justify-center rounded-full border transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
+							voice.isMuted
+								? 'border-destructive/40 bg-destructive/10 text-destructive focus-visible:ring-destructive/40'
+								: 'border-border bg-background/70 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/55'
+						)}
+					>
+						{voice.isMuted ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+					</button>
+					<button
+						type="button"
+						aria-label="End voice conversation"
+						disabled={isEnding}
+						onClick={() => void voice.end()}
+						className="flex h-10 min-w-28 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
+					>
+						{isEnding ? <TypingLoader size="sm" /> : null}
+						<span>{voice.status === 'error' ? 'Close' : 'End'}</span>
+					</button>
 				</div>
+			</div>
 		</main>
 	);
 }
