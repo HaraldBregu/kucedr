@@ -1,7 +1,11 @@
 import { contextAllowsTool, type FileAccessContext } from '../context';
 import { AGENT_DIRECTORY, getPermissions } from '../agent_store';
 import { registry } from '../tools/core/process';
-import { directoryPermissionTargets, isWritePermissionTool } from './directory_permission_targets';
+import {
+	directoryPermissionTargets,
+	isWritePermissionTool,
+	TASK_MUTATION_TOOLS,
+} from './directory_permission_targets';
 import { permissionFor } from './permission_for';
 import { toolPermissionTargets } from './tool_permission_targets';
 import type { PermissionKind, PermissionMode, PermissionsSchema } from './permissions_types';
@@ -57,6 +61,15 @@ export function resolveToolPermissionDetails(
 			? directoryPermissionTargets(toolName, args, AGENT_DIRECTORY, history)
 			: toolPermissionTargets(toolName, args, AGENT_DIRECTORY);
 	const decisions = targets.map((target) => permissionFor(permissions[kind], target, kind));
+	if (TASK_MUTATION_TOOLS.has(toolName)) {
+		return {
+			mode: decisions.includes('deny') ? 'deny' : 'allow',
+			kind,
+			targets,
+			approvalTargets: [],
+			persistable: false,
+		};
+	}
 	const approvalTargets = [
 		...new Set(
 			toolApprovalTargets(toolName, args, AGENT_DIRECTORY, history).filter(

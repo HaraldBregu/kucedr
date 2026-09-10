@@ -33,6 +33,7 @@ const TASK_TOOLS = new Set([
 	'delete_task',
 	'run_task_now',
 ]);
+export const TASK_MUTATION_TOOLS = new Set(['create_task', 'update_task', 'delete_task']);
 const WIKI_TOOLS = new Set([
 	'ingest_wiki_source',
 	'save_wiki_analysis',

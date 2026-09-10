@@ -129,6 +129,19 @@ describe('resolveToolPermission', () => {
 		).toBe('allow');
 	});
 
+	it.each(['create_task', 'update_task', 'delete_task'])('allows direct %s requests', (toolName) => {
+		expect(resolveToolPermission(toolName, {}, undefined, true, 'ask', defaults)).toBe('allow');
+	});
+
+	it('keeps an explicit deny rule for task mutations', () => {
+		const denyWrites: PermissionsSchema = {
+			...defaults,
+			write: { allow: [], deny: ['*'] },
+		};
+
+		expect(resolveToolPermission('delete_task', {}, undefined, true, 'ask', denyWrites)).toBe('deny');
+	});
+
 	it('allows recorder output in trusted roots and asks outside them', () => {
 		const trustedWrites: PermissionsSchema = {
 			...defaults,
