@@ -114,6 +114,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.cron.actions.enable': 'Enable',
 		'settings.cron.actions.disable': 'Disable',
+		'settings.cron.schedule.everyMinutes': 'Every {{count}} minutes',
 		'settings.modelServices.realtimeConversationConfiguration': 'Realtime conversation',
 		'settings.modelServices.realtimeConversationDescription': 'Live model and voice',
 		'settings.modelServices.loadError': 'Unable to load models',
@@ -129,7 +130,13 @@ jest.mock('react-i18next', () => {
 		'settings.wiki.title': 'LLM Wiki',
 		'settings.wiki.description': 'Build a persistent Markdown wiki',
 	};
-	const t = (key: string): string => translations[key] ?? key;
+	const t = (key: string, options?: Record<string, unknown>): string => {
+		const value = translations[key] ?? key;
+		return Object.entries(options ?? {}).reduce(
+			(result, [name, replacement]) => result.replaceAll(`{{${name}}}`, String(replacement)),
+			value
+		);
+	};
 	return { useTranslation: () => ({ t }) };
 });
 jest.mock('@/lib/providers', () => ({
@@ -384,7 +391,8 @@ it('uses the Agent model picker UI and task switches', async () => {
 	const task = {
 		id: 'task-1',
 		name: 'Demo task',
-		cronExpression: '0 * * * *',
+		description: 'Task description',
+		cronExpression: '*/12 * * * *',
 		enabled: true,
 		action: { type: 'agent' as const, prompt: 'Do the work', effort: 'medium' as const },
 		sessionIds: [],
@@ -410,6 +418,8 @@ it('uses the Agent model picker UI and task switches', async () => {
 	).toBeInTheDocument();
 	await user.click(modelTrigger);
 	expect(await screen.findByRole('combobox', { name: 'Reasoning' })).toBeInTheDocument();
+	expect(screen.getByText('Task description')).toBeInTheDocument();
+	expect(screen.getByText('Every 12 minutes')).toBeInTheDocument();
 	const taskSwitch = await screen.findByRole('switch', { name: 'Disable Demo task' });
 	expect(taskSwitch).toBeChecked();
 	await user.click(taskSwitch);
