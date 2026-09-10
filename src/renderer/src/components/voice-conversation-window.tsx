@@ -54,7 +54,7 @@ export function VoiceConversationWindow({
 						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
 						size={176}
 					/>
-			</div>
+				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-3 px-5 pb-5 pt-4">
 				<div className="flex items-center justify-between gap-3">
