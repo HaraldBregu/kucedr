@@ -393,6 +393,7 @@ it('uses the Agent model picker UI and task switches', async () => {
 			<TasksPage />
 		</MemoryRouter>
 	);
+	console.log('task test list', await window.tasks.list());
 
 	const modelTrigger = (await screen.findAllByRole('button', { name: /LLM Model/ })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
