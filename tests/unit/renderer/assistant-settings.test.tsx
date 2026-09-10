@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AssistantPage from '../../../src/renderer/src/pages/settings/pages/assistant/Page';
 import RealtimeConversationConfiguration from '../../../src/renderer/src/pages/settings/pages/assistant/conversation';
+import TasksPage from '../../../src/renderer/src/pages/settings/pages/tasks/Page';
 
 const mockProviders = [
 	{ id: 'openai', name: 'OpenAI', baseUrl: 'https://openai.example' },
@@ -211,6 +212,15 @@ beforeEach(() => {
 		configurable: true,
 		value: { getSettings: jest.fn().mockResolvedValue({ targetPath: '/wiki' }) },
 	});
+	Object.defineProperty(window, 'tasks', {
+		configurable: true,
+		value: {
+			list: jest.fn().mockResolvedValue([]),
+			getRuntime: jest.fn().mockResolvedValue({ providerId: 'openai', modelId: 'gpt' }),
+			setRuntime: jest.fn().mockResolvedValue({ providerId: 'openai', modelId: 'gpt' }),
+			setEnabled: jest.fn(),
+		},
+	});
 	jest.clearAllMocks();
 });
 
@@ -353,6 +363,44 @@ it('leaves realtime conversation unselected when catalog defaults are disabled',
 	const selector = await screen.findByRole('combobox', { name: 'Realtime conversation' });
 	expect(selector).not.toHaveTextContent('GPT Realtime');
 	expect(realtimeSetSetup).not.toHaveBeenCalled();
+});
+
+it('uses the Agent model picker UI and task switches', async () => {
+	const user = userEvent.setup();
+	const task = {
+		id: 'task-1',
+		name: 'Demo task',
+		cronExpression: '0 * * * *',
+		enabled: true,
+		action: { type: 'agent' as const, prompt: 'Do the work', effort: 'medium' as const },
+		sessionIds: [],
+		createdAt: '2026-09-10T00:00:00.000Z',
+		updatedAt: '2026-09-10T00:00:00.000Z',
+	};
+	(window.tasks.list as jest.Mock).mockResolvedValueOnce([task]);
+	(window.tasks.setEnabled as jest.Mock).mockResolvedValueOnce({ ...task, enabled: false });
+
+	render(
+		<MemoryRouter>
+			<TasksPage />
+		</MemoryRouter>
+	);
+
+	const modelTrigger = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
+		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
+	);
+	expect(modelTrigger).toBeDefined();
+	if (!modelTrigger) return;
+	expect(modelTrigger).toHaveTextContent('Choose provider and model');
+	expect(modelTrigger.nextElementSibling).toHaveAttribute('aria-haspopup', 'dialog');
+
+	const taskSwitch = await screen.findByRole('switch', { name: 'Enable Demo task' });
+	expect(taskSwitch).toBeChecked();
+	await user.click(taskSwitch);
+	await waitFor(() => {
+		expect(window.tasks.setEnabled).toHaveBeenCalledWith('task-1', false);
+		expect(taskSwitch).not.toBeChecked();
+	});
 });
 
 it('announces a realtime conversation setup save error', async () => {
