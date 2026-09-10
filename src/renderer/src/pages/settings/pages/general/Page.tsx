@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
-	AppWindow,
 	AudioWaveform,
 	ChevronRight,
 	Coffee,
@@ -10,7 +9,6 @@ import {
 	Languages,
 	PanelTop,
 	SunMoon,
-	Tag,
 } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/kibo-ui/theme-switcher';
 import { Button } from '@/components/ui/button';
@@ -91,16 +89,12 @@ const GeneralPage: React.FC = () => {
 					<SettingsRow
 						title={t('settings.application.name')}
 						description={t('settings.application.nameDescription')}
-						media={
-							<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-						}
 						actionClassName="w-auto justify-end"
 						actions={<span className="text-[13px] text-foreground">{__APP_NAME__}</span>}
 					/>
 					<SettingsRow
 						title={t('settings.application.version')}
 						description={t('settings.application.versionDescription')}
-						media={<Tag className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
 						actions={
 							<span className="font-mono text-[13px] text-foreground">{__APP_VERSION__}</span>
