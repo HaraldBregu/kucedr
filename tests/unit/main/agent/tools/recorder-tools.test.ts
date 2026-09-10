@@ -108,6 +108,15 @@ it('lists screen sources before starting a screen recording', async () => {
 	expect(screen.start).not.toHaveBeenCalled();
 });
 
+it('reports when no screen source is available', async () => {
+	jest.mocked(desktopCapturer.getSources).mockResolvedValue([] as never);
+
+	await expect(ownedRun(screenRecorderTool(), {})).rejects.toThrow(
+		'No display or window is available to record.'
+	);
+	expect(screen.start).not.toHaveBeenCalled();
+});
+
 it.each([
 	['microphone', microphoneRecorderTool, microphone],
 	['camera', cameraRecorderTool, camera],

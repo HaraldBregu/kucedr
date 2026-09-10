@@ -47,6 +47,9 @@ export function screenRecorderTool(): Tool {
 		execute: async ({ sourceId, duration, directory, filename }, signal) => {
 			signal?.throwIfAborted();
 			const sources = await desktopCapturer.getSources({ types: ['screen', 'window'] });
+			if (sources.length === 0) {
+				throw new Error('No display or window is available to record.');
+			}
 			if (!sourceId) {
 				return {
 					status: 'selection_required' as const,
