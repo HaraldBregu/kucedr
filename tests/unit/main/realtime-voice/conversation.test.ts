@@ -12,9 +12,11 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 	const location = path.join(temporaryRoot, 'agent');
 	try {
 		const conversation = realtimeVoiceConversationFactory({ location })(SESSION_ID, 'model');
+		const voiceSessionId = conversation.persistenceSessionId;
+		expect(voiceSessionId).toBeDefined();
 		conversation.beginUserTurn('user-1');
 		conversation.addAssistantTranscript('First answer.');
-		expect(loadMessagesBySessionId(SESSION_ID, location)).toEqual([
+		expect(loadMessagesBySessionId(voiceSessionId!, location)).toEqual([
 			expect.objectContaining({ role: 'assistant' }),
 		]);
 
@@ -23,7 +25,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 		conversation.addAssistantTranscript('Second answer.');
 		conversation.beginUserTurn('user-2');
 
-		const messages = loadMessagesBySessionId(SESSION_ID, location);
+		const messages = loadMessagesBySessionId(voiceSessionId!, location);
 		expect(messages.map((message) => message.role)).toEqual([
 			'user',
 			'assistant',
@@ -33,12 +35,7 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 		expect(messages[0].content).toBe('First spoken message.');
 		expect(messages[2].content).toBe('Second spoken message.');
 		expect(JSON.stringify(messages)).not.toContain('Voice message');
-		expect(realtimeVoiceConversationFactory({ location })(SESSION_ID, 'model').history).toEqual([
-			{ role: 'user', text: 'First spoken message.' },
-			{ role: 'assistant', text: 'First answer.' },
-			{ role: 'user', text: 'Second spoken message.' },
-			{ role: 'assistant', text: 'Second answer.' },
-		]);
+		expect(realtimeVoiceConversationFactory({ location })(SESSION_ID, 'model').history).toEqual([]);
 	} finally {
 		fs.rmSync(temporaryRoot, { recursive: true, force: true });
 	}
@@ -87,6 +84,8 @@ it('preserves updates from text and two voice writers sharing one coordinator', 
 	const factory = realtimeVoiceConversationFactory(config, coordinator);
 	const first = factory(SESSION_ID, 'model');
 	const second = factory(SESSION_ID, 'model');
+	const firstVoiceSessionId = first.persistenceSessionId!;
+	const secondVoiceSessionId = second.persistenceSessionId!;
 	const text = createSessionState();
 	try {
 		init(
@@ -99,15 +98,20 @@ it('preserves updates from text and two voice writers sharing one coordinator', 
 		first.addAssistantTranscript('First voice.');
 		addAssistantMessage(text, 'Text answer.', []);
 		second.addAssistantTranscript('Second voice.');
-		const serialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
-		for (const expected of ['Text question.', 'First voice.', 'Text answer.', 'Second voice.']) {
-			expect(serialized).toContain(expected);
-		}
+		const textSerialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+		expect(textSerialized).toContain('Text question.');
+		expect(textSerialized).toContain('Text answer.');
+		expect(JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.location))).toContain(
+			'First voice.'
+		);
+		expect(JSON.stringify(loadMessagesBySessionId(secondVoiceSessionId, config.location))).toContain(
+			'Second voice.'
+		);
 		releaseSession(text);
 		expect(text.lease.signal.aborted).toBe(false);
 		addAssistantMessage(text, 'Closed writer callback.', []);
 		second.addAssistantTranscript('Still active voice.');
-		expect(JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location))).not.toContain(
+		expect(JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.location))).not.toContain(
 			'Closed writer'
 		);
 	} finally {
@@ -143,8 +147,9 @@ it.each(['clear', 'delete', 'edit'])(
 			{ task: 'chat', message: 'Original question.', sessionId: SESSION_ID },
 			'main',
 			coordinator
-		);
-		const voice = realtimeVoiceConversationFactory(config, coordinator)(SESSION_ID, 'model');
+			);
+			const voice = realtimeVoiceConversationFactory(config, coordinator)(SESSION_ID, 'model');
+			const voiceSessionId = voice.persistenceSessionId!;
 		try {
 			if (operation === 'clear')
 				clearMessages(createSessionState(), config, SESSION_ID, coordinator);
@@ -161,17 +166,22 @@ it.each(['clear', 'delete', 'edit'])(
 					)
 				).toBe(true);
 			expect(state.lease.signal.aborted).toBe(true);
-			expect(voice.signal?.aborted).toBe(true);
+				expect(voice.signal?.aborted).toBe(false);
 			voice.addAssistantTranscript('Late voice callback.');
 			addAssistantMessage(state, 'Late text callback.', []);
 			appendRun(state, { type: 'run_finished' });
 			persistSystemPrompt(state, 'Late system prompt.');
-			const serialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
-			expect(serialized).not.toContain('Late');
-			if (operation === 'edit') expect(serialized).toContain('Edited question.');
-			else expect(serialized).toBe('[]');
-			if (operation === 'delete')
-				expect(fs.existsSync(path.join(state.sessionsPath, state.folderName))).toBe(false);
+				const serialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+				const voiceSerialized = JSON.stringify(
+					loadMessagesBySessionId(voiceSessionId, config.location)
+				);
+				expect(serialized).not.toContain('Late');
+				expect(voiceSerialized).toContain('Late voice callback.');
+				if (operation === 'edit') expect(serialized).toContain('Edited question.');
+				else expect(serialized).toBe('[]');
+				if (operation === 'delete')
+					expect(fs.existsSync(path.join(state.sessionsPath, state.folderName))).toBe(false);
+				expect(fs.existsSync(path.join(state.sessionsPath, voiceSessionId))).toBe(true);
 		} finally {
 			voice.dispose?.();
 			releaseSession(state);
@@ -192,6 +202,7 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 	const config = { location: path.join(temporaryRoot, 'agent') };
 	const coordinator = new SessionCoordinator();
 	const voice = realtimeVoiceConversationFactory(config, coordinator)(SESSION_ID, 'model');
+	const voiceSessionId = voice.persistenceSessionId!;
 	const state = createSessionState();
 	try {
 		init(
@@ -211,9 +222,11 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 			'pending prompt'
 		);
 		persist(state);
-		let content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
-		expect(content).toContain('Accepted pending prompt.');
-		expect(content).toContain('Concurrent voice answer.');
+			let content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+			expect(content).toContain('Accepted pending prompt.');
+			expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.location))).toContain(
+			'Concurrent voice answer.'
+		);
 		releaseSession(state);
 		init(
 			state,
@@ -230,8 +243,10 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 		releaseSession(state);
 		voice.addAssistantTranscript('Another voice answer.');
 		content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
-		expect(content).not.toContain('Rejected pending prompt.');
-		expect(content).toContain('Another voice answer.');
+			expect(content).not.toContain('Rejected pending prompt.');
+		expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.location))).toContain(
+			'Another voice answer.'
+		);
 	} finally {
 		voice.dispose?.();
 		releaseSession(state);
