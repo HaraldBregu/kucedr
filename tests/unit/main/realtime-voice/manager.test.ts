@@ -291,7 +291,7 @@ describe('RealtimeVoiceManager', () => {
 		await expect(starting).rejects.toThrow('stopped');
 	});
 
-	it('prepends transient context while replaying only the active chat history', async () => {
+	it('prepends transient context while starting a fresh voice session', async () => {
 		const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-manager-'));
 		const requests: RealtimeVoiceAdapterRequest[] = [];
 		const adapterEmits: RealtimeVoiceAdapterEventHandler[] = [];
@@ -331,11 +331,7 @@ describe('RealtimeVoiceManager', () => {
 			await manager.stop(11, first.id);
 
 			const restarted = await manager.start(11, { chatSessionId: firstChat });
-			expect(requests[1].history).toEqual([
-				...context,
-				{ role: 'user', text: 'Remember this question.' },
-				{ role: 'assistant', text: 'I will remember this answer.' },
-			]);
+			expect(requests[1].history).toEqual(context);
 			await manager.stop(11, restarted.id);
 
 			const isolated = await manager.start(11, { chatSessionId: secondChat });
