@@ -83,9 +83,10 @@ export async function* stream(
 	options: StreamOptions = {}
 ): AsyncGenerator<RuntimeEvent> {
 	let terminal = false;
-	const browser = input.type === 'background' && input.agentId !== 'channels' && input.scope?.source !== 'channel'
-		? createBackgroundBrowser()
-		: undefined;
+	const browser =
+		input.type === 'background' && input.agentId !== 'channels' && input.scope?.source !== 'channel'
+			? createBackgroundBrowser()
+			: undefined;
 	try {
 		for await (const event of loop(config, session, input, signal, options, browser?.tool)) {
 			tryAppendRun(session, event);
@@ -167,7 +168,8 @@ async function* loop(
 	let tools: Tool[] = options.tools
 		? [...options.tools]
 		: builtinTools(config, options.sandbox!, options.windowFactory, input.interactionMode);
-	if (backgroundBrowser) tools = tools.map((tool) => tool.id === backgroundBrowser.id ? backgroundBrowser : tool);
+	if (backgroundBrowser)
+		tools = tools.map((tool) => (tool.id === backgroundBrowser.id ? backgroundBrowser : tool));
 	if (!options.tools && input.interactionMode !== 'plan') {
 		tools.push(
 			undoFileTool(session.runContext.fileHistory),
@@ -223,8 +225,10 @@ async function* loop(
 			closeMcp = mcp.close;
 			mcpDiscovery = mcp.diagnostics;
 		}
-		const childTools = filterTools(tools, input.toolsAllow, input.toolsDeny).filter((tool) =>
-			tool.id !== 'use_web_browser' || (input.agentId !== 'channels' && input.scope?.source !== 'channel')
+		const childTools = filterTools(tools, input.toolsAllow, input.toolsDeny).filter(
+			(tool) =>
+				tool.id !== 'use_web_browser' ||
+				(input.agentId !== 'channels' && input.scope?.source !== 'channel')
 		);
 		const childRuntime = {
 			type: input.type,
@@ -287,9 +291,7 @@ async function* loop(
 				? buildSkillContext(skillSnapshot.skills)
 				: '';
 			const activeGoalContext =
-				session.category === 'main' &&
-				input.interactionMode !== 'plan' &&
-				session.folderName !== ''
+				session.category === 'main' && input.interactionMode !== 'plan' && session.folderName !== ''
 					? goalContext(sessionDir(session))
 					: '';
 			const runtimeContext = [workspaceContext, skillContext, activeGoalContext]

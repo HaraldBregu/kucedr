@@ -506,7 +506,11 @@ describe('run stream system prompt', () => {
 			runModelTurnMock
 				.mockImplementationOnce(async function* () {
 					yield* [];
-					return { content: '', model: 'test-model', toolCalls: [{ id: 'record', name: id, args: {} }] };
+					return {
+						content: '',
+						model: 'test-model',
+						toolCalls: [{ id: 'record', name: id, args: {} }],
+					};
 				})
 				.mockImplementationOnce(successfulTurn);
 			const events = [];
@@ -528,7 +532,10 @@ describe('run stream system prompt', () => {
 				events.push(event);
 
 			expect(runModelTurnMock).toHaveBeenCalledTimes(1);
-			expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { stopReason: 'end_turn' } });
+			expect(events.at(-1)).toMatchObject({
+				type: 'run_finished',
+				result: { stopReason: 'end_turn' },
+			});
 		}
 	);
 
