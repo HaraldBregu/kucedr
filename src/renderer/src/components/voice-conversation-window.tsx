@@ -1,5 +1,4 @@
 import { useCallback, useEffect } from 'react';
-import { Mic, MicOff } from 'lucide-react';
 import { Persona, type PersonaState } from '@/components/persona';
 import { TypingLoader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
@@ -94,20 +93,6 @@ export function VoiceConversationWindow({
 					</span>
 				</div>
 				<div className="flex items-center justify-center gap-2">
-					<button
-						type="button"
-						aria-label={voice.isMuted ? 'Enable microphone' : 'Disable microphone'}
-						disabled={!voice.stream || isEnding}
-						onClick={() => voice.setMuted(!voice.isMuted)}
-						className={cn(
-							'flex size-10 items-center justify-center rounded-full border transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
-							voice.isMuted
-								? 'border-destructive/40 bg-destructive/10 text-destructive focus-visible:ring-destructive/40'
-								: 'border-border bg-background/70 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/55'
-						)}
-					>
-						{voice.isMuted ? <MicOff className="size-4" /> : <Mic className="size-4" />}
-					</button>
 					<button
 						type="button"
 						aria-label="End voice conversation"
