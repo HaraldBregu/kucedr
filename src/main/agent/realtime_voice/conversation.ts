@@ -14,6 +14,7 @@ import { realtimeVoiceHistory } from './history';
 import { loadMessagesBySessionId } from '../session/session_load_messages_by_session_id';
 
 export interface RealtimeVoiceConversation {
+	readonly persistenceSessionId: string;
 	readonly signal?: AbortSignal;
 	dispose?(): void;
 	readonly history: readonly RealtimeVoiceHistoryMessage[];
@@ -60,6 +61,7 @@ export function realtimeVoiceConversationFactory(
 			}
 		}
 		return {
+			persistenceSessionId: voiceSessionId,
 			signal: state.lease?.signal,
 			dispose: () => releaseSession(state),
 			history: realtimeVoiceHistory(contextMessages),
