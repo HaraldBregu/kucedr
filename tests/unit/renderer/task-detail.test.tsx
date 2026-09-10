@@ -25,7 +25,6 @@ jest.mock('react-i18next', () => {
 		'settings.cron.history.openFolder': 'Open session folder',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
-		'settings.cron.actions.back': 'Back',
 		'settings.cron.actions.remove': 'Delete',
 		'settings.cron.actions.removing': 'Deleting...',
 		'settings.cron.actions.disable': 'Disable',
