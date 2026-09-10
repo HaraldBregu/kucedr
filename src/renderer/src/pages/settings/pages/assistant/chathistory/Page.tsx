@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, LoaderCircle, Trash2 } from 'lucide-react';
+import { AlertTriangle, FolderOpen, LoaderCircle, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { AgentSessionSummary } from '@/lib/compat';
 import {
 	SettingsEmptyState,
@@ -24,6 +25,8 @@ const ChatHistoryPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
+	const [deletingAll, setDeletingAll] = useState(false);
+	const [actionsOpen, setActionsOpen] = useState(false);
 
 	const loadSessions = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -57,11 +60,69 @@ const ChatHistoryPage: React.FC = () => {
 		}
 	};
 
+	const handleDeleteAll = async (): Promise<void> => {
+		if (!window.confirm(t('settings.chatHistory.confirmDelete'))) return;
+		setActionsOpen(false);
+		setDeletingAll(true);
+		setError(null);
+		try {
+			await Promise.all(sessions.map((session) => window.agent.deleteSession(session.id)));
+			setSessions([]);
+		} catch (deleteError) {
+			setError(firstErrorMessage(deleteError, t('settings.chatHistory.errors.delete')));
+		} finally {
+			setDeletingAll(false);
+		}
+	};
+
+	const handleOpenFolder = async (): Promise<void> => {
+		setActionsOpen(false);
+		setError(null);
+		try {
+			await window.agent.openSessionsFolder();
+		} catch (openFolderError) {
+			setError(firstErrorMessage(openFolderError, t('settings.chatHistory.errors.openFolder')));
+		}
+	};
+
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.chatHistory.title')}
 				description={t('settings.chatHistory.description')}
+				action={
+					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
+						<PopoverTrigger asChild>
+							<Button variant="outline" size="icon-sm" aria-label={t('common.moreOptions')}>
+								<MoreHorizontal className="size-3.5" />
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent align="end" collisionPadding={12} className="w-56 p-1">
+							<div role="menu" aria-label={t('settings.chatHistory.actions')}>
+								<button
+									type="button"
+									role="menuitem"
+									disabled={deletingAll || deletingSessionId !== null}
+									onClick={() => void handleOpenFolder()}
+									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+								>
+									<FolderOpen className="size-3.5" />
+									{t('settings.chatHistory.openFolder')}
+								</button>
+								<button
+									type="button"
+									role="menuitem"
+									disabled={loading || sessions.length === 0 || deletingAll || deletingSessionId !== null}
+									onClick={() => void handleDeleteAll()}
+									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
+								>
+									{deletingAll ? <LoaderCircle className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
+									{deletingAll ? t('settings.chatHistory.deleting') : t('settings.chatHistory.delete')}
+								</button>
+							</div>
+						</PopoverContent>
+					</Popover>
+				}
 			/>
 
 			{error && (
@@ -95,7 +156,7 @@ const ChatHistoryPage: React.FC = () => {
 										variant="destructive"
 										size="icon"
 										className="size-8"
-										disabled={deletingSessionId !== null}
+										disabled={deletingAll || deletingSessionId !== null}
 										aria-label={t('settings.chatHistory.deleteSession', { title })}
 										onClick={() => void handleDelete(session)}
 									>

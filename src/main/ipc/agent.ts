@@ -1,5 +1,5 @@
 import { authorizeRagDisclosure } from '../agent/knowledge/rag/disclosure';
-import { BrowserWindow, dialog, ipcMain, type IpcMainInvokeEvent } from 'electron';
+import { BrowserWindow, dialog, ipcMain, shell, type IpcMainInvokeEvent } from 'electron';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { watch } from 'chokidar';
@@ -25,7 +25,7 @@ import type {
 	WorkspaceTreeEntry,
 } from '../../shared/agent_types';
 import { normalizeAgentInputFiles } from '../../shared/agent_files';
-import { requireUuidSessionId } from '../agent/session';
+import { requireUuidSessionId, sessionsRoot } from '../agent/session';
 import { workspacePath } from '../agent/system';
 import {
 	getPermissions,
@@ -339,6 +339,20 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		ipcMain.handle(
 			AgentChannels.listSessions,
 			wrapAgentHandler(mainAccess, () => agent.listSessions(), AgentChannels.listSessions)
+		);
+
+		ipcMain.handle(
+			AgentChannels.openSessionsFolder,
+			wrapAgentHandler(
+				mainAccess,
+				async (): Promise<void> => {
+					const root = sessionsRoot(agent.config.location);
+					await fs.mkdir(root, { recursive: true });
+					const error = await shell.openPath(root);
+					if (error) throw new Error(error);
+				},
+				AgentChannels.openSessionsFolder
+			)
 		);
 
 		ipcMain.handle(

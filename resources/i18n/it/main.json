@@ -469,7 +469,7 @@
 			"actionsDescription": "L'eliminazione della cronologia cancella anche la trascrizione della chat attiva.",
 			"refresh": "Aggiorna",
 			"openFolder": "Apri cartella cronologia chat",
-			"delete": "Elimina Cronologia",
+			"delete": "Elimina tutto",
 			"deleteSession": "Elimina {{title}}",
 			"deleting": "Eliminazione...",
 			"confirmDelete": "Eliminare la cronologia chat e cancellare la chat corrente?",

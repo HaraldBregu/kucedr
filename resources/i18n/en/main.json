@@ -470,7 +470,7 @@
 			"actionsDescription": "Deleting history also clears the active chat transcript.",
 			"refresh": "Refresh",
 			"openFolder": "Open chat history folder",
-			"delete": "Delete History",
+			"delete": "Delete all",
 			"deleteSession": "Delete {{title}}",
 			"deleting": "Deleting...",
 			"confirmDelete": "Delete chat history and clear the current chat?",

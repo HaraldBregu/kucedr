@@ -123,6 +123,9 @@ export const agent: AgentApi = {
 	listSessions: (): Promise<AgentSessionSummary[]> => {
 		return typedInvokeUnwrap(AgentChannels.listSessions);
 	},
+	openSessionsFolder: (): Promise<void> => {
+		return typedInvokeUnwrap(AgentChannels.openSessionsFolder);
+	},
 	renameSession: (sessionId: string, title: string): Promise<void> => {
 		const normalizedSessionId = optionalTrimmedString(sessionId);
 		const normalizedTitle = optionalTrimmedString(title);
