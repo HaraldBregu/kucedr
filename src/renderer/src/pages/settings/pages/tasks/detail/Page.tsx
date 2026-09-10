@@ -43,9 +43,7 @@ const TaskDetailsPage: React.FC = () => {
 					const selected = tasks.find((item) => item.id === decodedTaskId) ?? null;
 					setTask(selected);
 					setHistory(taskHistory);
-					setToolsAllow(
-						selected?.action.type === 'agent' ? (selected.action.toolsAllow ?? []).join(', ') : ''
-					);
+					setToolsAllow(selected?.toolsAllow?.join(', ') ?? '');
 				}
 			})
 			.catch((caught: unknown) => {
@@ -90,10 +88,6 @@ const TaskDetailsPage: React.FC = () => {
 		);
 	}
 
-	const actionType =
-		task.action.type === 'agent'
-			? t('settings.cron.detail.agent')
-			: t('settings.cron.detail.debug');
 	const runNow = async (): Promise<void> => {
 		setRunning(true);
 		setError(null);
@@ -130,7 +124,6 @@ const TaskDetailsPage: React.FC = () => {
 		}
 	};
 	const saveCapabilities = async (): Promise<void> => {
-		if (task.action.type !== 'agent') return;
 		setSaving(true);
 		setError(null);
 		try {
@@ -191,24 +184,12 @@ const TaskDetailsPage: React.FC = () => {
 					</Item>
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent>
-							<ItemTitle>{t('settings.cron.detail.actionType')}</ItemTitle>
+							<ItemTitle>{t('settings.cron.detail.effort')}</ItemTitle>
 						</ItemContent>
 						<ItemActions className="ml-auto justify-end">
-							<span className="text-xs">{actionType}</span>
+							<span className="text-xs">{task.effort}</span>
 						</ItemActions>
 					</Item>
-					{task.action.type === 'agent' && (
-						<>
-							<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-								<ItemContent>
-									<ItemTitle>{t('settings.cron.detail.effort')}</ItemTitle>
-								</ItemContent>
-								<ItemActions className="ml-auto justify-end">
-									<span className="text-xs">{task.action.effort}</span>
-								</ItemActions>
-							</Item>
-						</>
-					)}
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent>
 							<ItemTitle>{t('settings.cron.detail.createdAt')}</ItemTitle>
@@ -232,39 +213,35 @@ const TaskDetailsPage: React.FC = () => {
 				</Card>
 			</SettingsSection>
 
-			{task.action.type === 'agent' && (
-				<SettingsSection
-					title={t('settings.cron.detail.promptInput')}
-					description={t('settings.cron.detail.promptInputDescription')}
-				>
-					<Card size="sm" className="p-4!">
-						<pre className="whitespace-pre-wrap break-words font-sans text-xs leading-5 text-foreground">
-							{task.action.prompt}
-						</pre>
-					</Card>
-				</SettingsSection>
-			)}
+			<SettingsSection
+				title={t('settings.cron.detail.promptInput')}
+				description={t('settings.cron.detail.promptInputDescription')}
+			>
+				<Card size="sm" className="p-4!">
+					<pre className="whitespace-pre-wrap break-words font-sans text-xs leading-5 text-foreground">
+						{task.prompt}
+					</pre>
+				</Card>
+			</SettingsSection>
 
-			{task.action.type === 'agent' && (
-				<SettingsSection
-					title={t('settings.cron.detail.capabilities')}
-					description={t('settings.cron.detail.capabilitiesDescription')}
-				>
-					<Card size="sm" className="grid gap-3 p-4!">
-						<Input
-							value={toolsAllow}
-							disabled={saving}
-							placeholder={t('settings.cron.detail.toolsPlaceholder')}
-							onChange={(event) => setToolsAllow(event.target.value)}
-						/>
-						<div className="flex justify-end">
-							<Button size="sm" disabled={saving} onClick={() => void saveCapabilities()}>
-								{t('settings.cron.detail.saveCapabilities')}
-							</Button>
-						</div>
-					</Card>
-				</SettingsSection>
-			)}
+			<SettingsSection
+				title={t('settings.cron.detail.capabilities')}
+				description={t('settings.cron.detail.capabilitiesDescription')}
+			>
+				<Card size="sm" className="grid gap-3 p-4!">
+					<Input
+						value={toolsAllow}
+						disabled={saving}
+						placeholder={t('settings.cron.detail.toolsPlaceholder')}
+						onChange={(event) => setToolsAllow(event.target.value)}
+					/>
+					<div className="flex justify-end">
+						<Button size="sm" disabled={saving} onClick={() => void saveCapabilities()}>
+							{t('settings.cron.detail.saveCapabilities')}
+						</Button>
+					</div>
+				</Card>
+			</SettingsSection>
 
 			<SettingsSection
 				title={t('settings.cron.history.title')}

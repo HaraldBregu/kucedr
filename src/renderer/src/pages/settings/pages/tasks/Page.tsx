@@ -21,10 +21,6 @@ import { ModelProviderConfiguration } from '../../components/model-configuration
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
 
-function describeAction(task: Task): string {
-	return task.action.type === 'agent' ? task.action.prompt : task.action.message;
-}
-
 type Translate = (key: string, options?: Record<string, unknown>) => string;
 
 function describeSchedule(expression: string | undefined, t: Translate): string {
@@ -267,7 +263,7 @@ const TasksPage: React.FC = () => {
 										</div>
 									</div>
 									<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
-										{task.description ?? describeAction(task)}
+										{task.description ?? task.prompt}
 									</p>
 								</ItemContent>
 							</Item>

@@ -16,26 +16,21 @@ export function fire(scheduleId: string): TaskScheduledTask | undefined {
 		return undefined;
 	}
 	const schedule = requireSchedule(scheduleId);
-	if (schedule.action.type === 'debug') {
-		console.info('[Task]', `Schedule ${scheduleId} fired: ${schedule.action.message}`);
-	}
-	if (schedule.action.type === 'agent') {
-		if (!runner) {
-			console.warn('[Task]', `Schedule ${scheduleId} skipped: no agent runner registered.`);
-			emit(schedule, 'schedule.skipped', 'No agent runner registered.');
-		} else {
-			runner(schedule).then(
-				() => emit(schedule, 'schedule.completed', 'Scheduled agent run completed.'),
-				(error) => {
-					console.error('[Task]', `Schedule ${scheduleId} agent run failed.`, error);
-					emit(
-						schedule,
-						'schedule.failed',
-						error instanceof Error ? error.message : 'Scheduled agent run failed.'
-					);
-				}
-			);
-		}
+	if (!runner) {
+		console.warn('[Task]', `Schedule ${scheduleId} skipped: no agent runner registered.`);
+		emit(schedule, 'schedule.skipped', 'No agent runner registered.');
+	} else {
+		runner(schedule).then(
+			() => emit(schedule, 'schedule.completed', 'Scheduled agent run completed.'),
+			(error) => {
+				console.error('[Task]', `Schedule ${scheduleId} agent run failed.`, error);
+				emit(
+					schedule,
+					'schedule.failed',
+					error instanceof Error ? error.message : 'Scheduled agent run failed.'
+				);
+			}
+		);
 	}
 	return trigger(scheduleId);
 }

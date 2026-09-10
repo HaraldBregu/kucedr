@@ -10,13 +10,12 @@ export function configureScheduleCapabilities(
 	toolsAllow: readonly string[]
 ): TaskSchedule {
 	const schedule = getSchedule(scheduleId.trim());
-	if (schedule.action.type !== 'agent') throw new Error('Only agent schedules have tool capabilities.');
 	const normalized = [...new Set(toolsAllow.map((name) => name.trim()).filter(Boolean))];
 	if (normalized.length > 32 || normalized.some((name) => !TOOL_NAME.test(name))) {
 		throw new Error('Schedule tool allowlist is invalid.');
 	}
 	return updateSchedule(schedule.id, {
 		enabled,
-		action: { ...schedule.action, toolsAllow: normalized },
+		toolsAllow: normalized,
 	});
 }

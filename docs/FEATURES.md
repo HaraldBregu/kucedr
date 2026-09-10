@@ -309,21 +309,20 @@ Kucedr persists cron schedule records with:
 - A name and optional description.
 - A cron expression.
 - Enabled or paused state.
-- A debug-message or agent-prompt action.
+- An agent prompt and reasoning effort.
 - Created and updated timestamps.
 - Create, update, pause, resume, delete, get, list, and run-now operations.
 - A separate provider and model selection for scheduled work.
 - Startup reconciliation that reloads and reschedules persisted records.
 
-The Tasks settings screen selects the task provider/model and lists each schedule's name, prompt or
-message, cron expression, and enabled state. Task details expose metadata, **Run now**, confirmed
-deletion, and, for agent tasks, enabled state and a tool allowlist. Creating a task or editing its
-name, schedule, prompt, action type, or effort remains agent-driven rather than a direct Settings
-form.
+The Tasks settings screen selects the task provider/model and lists each schedule's name, prompt,
+cron expression, and enabled state. Task details expose metadata, **Run now**, confirmed deletion,
+and a tool allowlist. Creating a task or editing its name, schedule, prompt, or effort remains
+agent-driven rather than a direct Settings form.
 
 Scheduled agent actions run as background agents with the full tool catalog by default. A non-empty persisted tool allowlist narrows the tools available to that schedule; a blank allowlist keeps the full catalog.
 
-**Partial:** the current cron callback logs debug actions and creates trigger/task metadata, but its agent-action branch is still an empty no-op. Scheduled prompts and **Run now** therefore do not execute an agent request yet.
+Scheduled prompts and **Run now** invoke the agent directly as background runs.
 
 ### Periodic health checks
 

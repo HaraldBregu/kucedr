@@ -131,19 +131,18 @@ export class Agent {
 		if (this.isStarted) return;
 		this.isStarted = true;
 		setTaskRunner((schedule) => {
-			if (schedule.action.type !== 'agent') return Promise.resolve('');
 			const runtime = getRuntime();
-			const toolsAllow = schedule.action.toolsAllow;
+			const toolsAllow = schedule.toolsAllow;
 			const sessionId = randomUUID();
 			associateSession(schedule.id, sessionId);
-			return this.send(schedule.action.prompt, 'tasks', {
+			return this.send(schedule.prompt, 'tasks', {
 				type: 'background',
 				sessionId,
 				...(toolsAllow?.length ? { toolsAllow } : {}),
 				toolsDeny: SCHEDULED_TASK_TOOLS_DENY,
 				streaming: false,
 				contextMode: 'minimal',
-				effort: schedule.action.effort,
+				effort: schedule.effort,
 				...(runtime ? { providerId: runtime.providerId, modelId: runtime.modelId } : {}),
 			});
 		});

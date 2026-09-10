@@ -16,7 +16,9 @@ export function updateSchedule(
 		patch.cronExpression = request.cronExpression.trim().replace(/\s+/g, ' ');
 	}
 	if (typeof request.enabled === 'boolean') patch.enabled = request.enabled;
-	if (request.action) patch.action = request.action;
+	if (typeof request.prompt === 'string') patch.prompt = request.prompt.trim();
+	if (request.effort) patch.effort = request.effort;
+	if (request.toolsAllow) patch.toolsAllow = request.toolsAllow;
 	unscheduleJob(scheduleId);
 	const updated = activate(update(scheduleId, patch));
 	emit(updated, 'schedule.updated', 'Schedule updated.');

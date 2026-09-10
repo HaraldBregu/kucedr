@@ -18,22 +18,15 @@ export interface TaskScheduledTask {
 	updatedAt: string;
 }
 
-export type TaskAction =
-	| { type: 'debug'; message: string }
-	| {
-			type: 'agent';
-			prompt: string;
-			effort: ModelReasoningEffort;
-			toolsAllow?: string[];
-	  };
-
 export interface TaskSchedule {
 	id: string;
 	name: string;
 	description?: string;
 	cronExpression?: string;
 	enabled: boolean;
-	action: TaskAction;
+	prompt: string;
+	effort: ModelReasoningEffort;
+	toolsAllow?: string[];
 	sessionIds: string[];
 	createdAt: string;
 	updatedAt: string;
