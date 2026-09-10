@@ -71,6 +71,8 @@ describe('task request schemas', () => {
 	});
 
 	it('requires a prompt and effort for new tasks', () => {
-		expect(() => createTaskRequestSchema.parse({ name: 'Nightly', action: { type: 'agent' } })).toThrow();
+		expect(() =>
+			createTaskRequestSchema.parse({ name: 'Nightly', action: { type: 'agent' } })
+		).toThrow();
 	});
 });

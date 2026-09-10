@@ -18,7 +18,11 @@ beforeEach(() => {
 });
 
 it('lets the trusted settings surface enable a schedule with a normalized narrow allowlist', () => {
-	configureScheduleCapabilities(' schedule-1 ', true, [' web_fetch ', 'knowledge_query', 'web_fetch']);
+	configureScheduleCapabilities(' schedule-1 ', true, [
+		' web_fetch ',
+		'knowledge_query',
+		'web_fetch',
+	]);
 
 	expect(updateSchedule).toHaveBeenCalledWith('schedule-1', {
 		enabled: true,

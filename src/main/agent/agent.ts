@@ -236,7 +236,21 @@ export class Agent {
 				runId: request.id,
 				task: 'chat',
 				message: formatReplyMessage(parsedSkillCommand.message, options.replyTo),
-				scope: { ownerId: `${request.category === 'main' ? 'interactive' : request.agentId}:${request.sessionId}`, source: request.category === 'main' ? 'interactive' : request.category === 'bot' ? 'channel' : request.category === 'task' ? 'task' : request.category === 'health' ? 'health' : 'child', sessionId: request.sessionId, runId: request.id },
+				scope: {
+					ownerId: `${request.category === 'main' ? 'interactive' : request.agentId}:${request.sessionId}`,
+					source:
+						request.category === 'main'
+							? 'interactive'
+							: request.category === 'bot'
+								? 'channel'
+								: request.category === 'task'
+									? 'task'
+									: request.category === 'health'
+										? 'health'
+										: 'child',
+					sessionId: request.sessionId,
+					runId: request.id,
+				},
 				agentId: request.agentId,
 				contextMode:
 					options.contextMode ??
@@ -279,14 +293,19 @@ export class Agent {
 					response = reply;
 				} else {
 					addAssistantMessage(session, reply, []);
-				this.emit(record, { type: 'text_delta', delta: reply, agentId: request.agentId, runId: request.id });
-				this.emit(record, {
-					type: 'run_finished',
-					stopReason: 'end_turn',
-					outputChars: reply.length,
-					agentId: request.agentId,
-					runId: request.id,
-				});
+					this.emit(record, {
+						type: 'text_delta',
+						delta: reply,
+						agentId: request.agentId,
+						runId: request.id,
+					});
+					this.emit(record, {
+						type: 'run_finished',
+						stopReason: 'end_turn',
+						outputChars: reply.length,
+						agentId: request.agentId,
+						runId: request.id,
+					});
 					return { text: reply, stopReason: 'end_turn' };
 				}
 			}
@@ -296,7 +315,11 @@ export class Agent {
 			});
 
 			const timeoutSignal = AbortSignal.timeout(10 * 60_000);
-			const runSignal = AbortSignal.any([controller.signal, timeoutSignal, ...(session.lease ? [session.lease.signal] : [])]);
+			const runSignal = AbortSignal.any([
+				controller.signal,
+				timeoutSignal,
+				...(session.lease ? [session.lease.signal] : []),
+			]);
 			const events = stream(this.config, session, input, runSignal, {
 				streaming: options.streaming ?? true,
 				windowFactory: this.windowFactory,
@@ -324,7 +347,11 @@ export class Agent {
 				}
 			}
 			if (result && request.category === 'main' && session.folderName !== '') {
-				accountGoalRun(sessionDir(session), result.usage ?? { inputTokens: 0, outputTokens: 0 }, result.toolCalls.length);
+				accountGoalRun(
+					sessionDir(session),
+					result.usage ?? { inputTokens: 0, outputTokens: 0 },
+					result.toolCalls.length
+				);
 			}
 			return {
 				text: response,
@@ -346,10 +373,7 @@ export class Agent {
 		}
 	}
 
-	private emit(
-		record: AgentRunRecord<InternalAgentSendOptions>,
-		event: AgentResponseEvent
-	): void {
+	private emit(record: AgentRunRecord<InternalAgentSendOptions>, event: AgentResponseEvent): void {
 		record.responseEvents.push(event);
 		record.request.options.streamEvent?.(event);
 	}

@@ -8,10 +8,7 @@ import type { TaskScheduledTask } from './tasks_types';
 
 export function fire(scheduleId: string): TaskScheduledTask | undefined {
 	if (!exists(scheduleId)) {
-		console.warn(
-			'[Task]',
-			`Orphaned tasks job removed: schedule ${scheduleId} no longer exists.`
-		);
+		console.warn('[Task]', `Orphaned tasks job removed: schedule ${scheduleId} no longer exists.`);
 		unscheduleJob(scheduleId);
 		return undefined;
 	}
