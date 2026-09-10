@@ -15,11 +15,14 @@ function chatSessionIdFromHash(): string {
 }
 
 const chatSessionId = chatSessionIdFromHash();
+const root = createRoot(rootElement);
 
-createRoot(rootElement).render(
-	<StrictMode>
-		<VoiceConversationWindow chatSessionId={chatSessionId} />
-	</StrictMode>
-);
+const render = (): void => {
+	root.render(
+		<StrictMode>
+			<VoiceConversationWindow chatSessionId={chatSessionId} />
+		</StrictMode>
+	);
+};
 
-void loadModels().then(() => window.location.reload()).catch(() => undefined);
+void loadModels().catch(() => undefined).finally(render);
