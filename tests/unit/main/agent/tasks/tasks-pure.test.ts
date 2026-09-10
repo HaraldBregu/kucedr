@@ -2,7 +2,10 @@ import { clone } from '../../../../../src/main/tasks/tasks_clone';
 import { isActiveSchedule } from '../../../../../src/main/tasks/tasks_is_active_schedule';
 import { buildTask } from '../../../../../src/main/tasks/tasks_build_task';
 import type { TaskSchedule } from '../../../../../src/main/tasks/tasks_types';
-import { taskActionSchema } from '../../../../../src/main/agent/tools/tasks/schema';
+import {
+	createTaskRequestSchema,
+	updateTaskRequestSchema,
+} from '../../../../../src/main/agent/tools/tasks/schema';
 
 function schedule(overrides: Partial<TaskSchedule> = {}): TaskSchedule {
 	return {
@@ -11,7 +14,8 @@ function schedule(overrides: Partial<TaskSchedule> = {}): TaskSchedule {
 		description: 'runs nightly',
 		cronExpression: '0 0 * * *',
 		enabled: true,
-		action: { type: 'agent', prompt: 'do it' },
+		prompt: 'do it',
+		effort: 'low',
 		createdAt: 'now',
 		updatedAt: 'now',
 		...overrides,
@@ -45,26 +49,28 @@ describe('buildTask', () => {
 	});
 });
 
-describe('taskActionSchema', () => {
-	it('strips model-supplied permission overrides from scheduled tasks', () => {
-		expect(taskActionSchema.parse({ type: 'agent', prompt: 'do it', effort: 'low' })).not.toHaveProperty(
-			'permissionMode'
-		);
+describe('task request schemas', () => {
+	it('accepts direct agent fields and strips model-supplied permission overrides', () => {
 		expect(
-			taskActionSchema.parse({
-				type: 'agent',
+			createTaskRequestSchema.parse({
+				name: 'Nightly',
 				prompt: 'do it',
 				effort: 'low',
 				permissionMode: 'bypass',
-			})
-		).not.toHaveProperty('permissionMode');
-		expect(
-			taskActionSchema.parse({
-				type: 'agent',
-				prompt: 'do it',
-				effort: 'low',
 				toolsAllow: ['exec'],
 			})
-		).not.toHaveProperty('toolsAllow');
+		).toEqual({ name: 'Nightly', prompt: 'do it', effort: 'low' });
+		expect(
+			updateTaskRequestSchema.parse({
+				prompt: 'do it',
+				effort: 'low',
+				permissionMode: 'bypass',
+				toolsAllow: ['exec'],
+			})
+		).toEqual({ prompt: 'do it', effort: 'low' });
+	});
+
+	it('requires a prompt and effort for new tasks', () => {
+		expect(() => createTaskRequestSchema.parse({ name: 'Nightly', action: { type: 'agent' } })).toThrow();
 	});
 });

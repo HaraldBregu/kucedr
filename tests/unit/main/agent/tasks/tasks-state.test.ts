@@ -13,7 +13,8 @@ const scheduleFixture = {
 	id: 's1',
 	name: 'Nightly',
 	enabled: true,
-	action: { type: 'agent', prompt: 'x' },
+	prompt: 'x',
+	effort: 'low',
 	createdAt: 'now',
 	updatedAt: 'now',
 };
