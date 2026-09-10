@@ -83,7 +83,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 			'tool_call_input',
 			'tool_call_result',
 		]);
-		expect(events.at(-1)).toMatchObject({
+	expect(events.at(-1)).toMatchObject({
 			sessionId: 'voice-session',
 			agentId: 'main',
 			runId: 'voice-session:response-1',
@@ -92,8 +92,8 @@ it('runs native Realtime function calls through the existing tool runner and emi
 			output: 'hello',
 			outputText: 'hello',
 			status: 'ok',
-		});
-		expect(loadMessagesBySessionId(CHAT_SESSION_ID, location)).toEqual([
+			});
+		expect(loadMessagesBySessionId(conversation.persistenceSessionId!, location)).toEqual([
 			expect.objectContaining({
 				role: 'assistant',
 				toolCalls: [
@@ -106,8 +106,8 @@ it('runs native Realtime function calls through the existing tool runner and emi
 				],
 			}),
 		]);
-		realtimeVoiceConversationFactory({ location })(CHAT_SESSION_ID, 'model');
-		expect(loadMessagesBySessionId(CHAT_SESSION_ID, location)[0].toolCalls).toHaveLength(1);
+		const restored = realtimeVoiceConversationFactory({ location })(CHAT_SESSION_ID, 'model');
+		expect(loadMessagesBySessionId(restored.persistenceSessionId!, location)).toEqual([]);
 	} finally {
 		fs.rmSync(temporaryRoot, { recursive: true, force: true });
 	}
@@ -116,6 +116,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 it('persists failed Realtime tool calls with their canonical input and error outcome', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-error-'));
 	const location = path.join(temporaryRoot, 'agent');
+	const conversation = realtimeVoiceConversationFactory({ location })(CHAT_SESSION_ID, 'model');
 	let resolveResult = (): void => undefined;
 	const resultAdded = new Promise<void>((resolve) => (resolveResult = resolve));
 	const runtime = new RealtimeVoiceToolRuntime({
@@ -138,7 +139,7 @@ it('persists failed Realtime tool calls with their canonical input and error out
 		],
 		signal: new AbortController().signal,
 		resources: new KeyedMutex(),
-		conversation: realtimeVoiceConversationFactory({ location })(CHAT_SESSION_ID, 'model'),
+		conversation,
 		connection: () => ({
 			appendAudio: async () => undefined,
 			interrupt: async () => undefined,
@@ -161,7 +162,7 @@ it('persists failed Realtime tool calls with their canonical input and error out
 			arguments: '{"value":42}',
 		});
 		await resultAdded;
-		const call = loadMessagesBySessionId(CHAT_SESSION_ID, location)[0].toolCalls?.[0];
+		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0].toolCalls?.[0];
 		expect(call).toMatchObject({
 			id: 'call-error',
 			name: 'explode',
@@ -177,6 +178,7 @@ it('persists failed Realtime tool calls with their canonical input and error out
 it('preserves the existing permission request identity and returns rejected tool status', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-denied-'));
 	const location = path.join(temporaryRoot, 'agent');
+	const conversation = realtimeVoiceConversationFactory({ location })(CHAT_SESSION_ID, 'model');
 	let resolvePermission = (_event: Record<string, unknown>): void => undefined;
 	const permissionEvent = new Promise<Record<string, unknown>>(
 		(resolve) => (resolvePermission = resolve)
@@ -203,7 +205,7 @@ it('preserves the existing permission request identity and returns rejected tool
 		],
 		signal: new AbortController().signal,
 		resources: new KeyedMutex(),
-		conversation: realtimeVoiceConversationFactory({ location })(CHAT_SESSION_ID, 'model'),
+		conversation,
 		connection: () => ({
 			appendAudio: async () => undefined,
 			interrupt: async () => undefined,
@@ -251,7 +253,7 @@ it('preserves the existing permission request identity and returns rejected tool
 			6
 		);
 		expect(await toolResult).toContain('permission denied');
-		const call = loadMessagesBySessionId(CHAT_SESSION_ID, location)[0].toolCalls?.[0];
+		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0].toolCalls?.[0];
 		expect(call).toMatchObject({
 			id: 'call-permission',
 			name: 'write',
