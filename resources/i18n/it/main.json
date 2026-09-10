@@ -737,7 +737,7 @@
 				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato."
 			},
 			"history": {
-				"title": "Cronologia",
+				"title": "Cronologia sessioni",
 				"description": "Sessioni agente create da questa attività.",
 				"emptyTitle": "Nessuna cronologia",
 				"emptyDescription": "Le sessioni agente create da questa attività appariranno qui.",

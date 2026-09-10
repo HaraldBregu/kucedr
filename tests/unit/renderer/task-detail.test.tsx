@@ -17,7 +17,7 @@ jest.mock('react-i18next', () => {
 		'settings.cron.detail.notScheduled': 'Not scheduled',
 		'settings.cron.detail.promptInput': 'Prompt input',
 		'settings.cron.detail.promptInputDescription': 'Prompt description',
-		'settings.cron.history.title': 'History',
+		'settings.cron.history.title': 'Session History',
 		'settings.cron.history.description': 'Agent sessions created by this task.',
 		'settings.cron.history.emptyTitle': 'No history yet',
 		'settings.cron.history.emptyDescription':
