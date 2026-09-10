@@ -13,9 +13,14 @@ export function screenRecorderTool(): Tool {
 		id: 'screen_recorder',
 		name: 'Screen recorder',
 		description:
-			'Start recording the user screen (video only) for a given duration. Requires an open app window and macOS Screen Recording permission. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Use screen_recorder_status to check progress or wait for completion before using the file.',
+			'Start recording the user screen (video only). Requires an open app window and macOS Screen Recording permission. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Specify a duration to stop automatically, or omit it and use screen_recorder_stop. Use screen_recorder_status to check progress or wait for completion before using the file.',
 		inputSchema: z.object({
-			duration: z.number().min(1).max(600).describe('Recording duration in seconds (max 600).'),
+			duration: z
+				.number()
+				.min(1)
+				.max(600)
+				.optional()
+				.describe('Optional recording duration in seconds (max 600). Omit to record until stopped.'),
 			directory: z
 				.string()
 				.optional()
@@ -34,7 +39,10 @@ export function screenRecorderTool(): Tool {
 			const owner = recordingOwner(screen);
 			const targetDir = resolveUserPath(directory ?? '.', agentLocation());
 			const url = path.join(targetDir, path.basename(filename ?? `screen-${Date.now()}.webm`));
-			const recording = screen.start({ url, duration: duration * 1000 });
+			const recording = screen.start({
+				url,
+				...(duration === undefined ? {} : { duration: duration * 1000 }),
+			});
 			rememberRecording(screen, recording.id, owner);
 			signal?.addEventListener('abort', () => screen.cancel(recording.id), { once: true });
 			return {

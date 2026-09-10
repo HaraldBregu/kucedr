@@ -65,7 +65,7 @@ function createCaptureHost(
 		}
 	}
 
-	async function startCapture(id: string, duration: number): Promise<void> {
+	async function startCapture(id: string, duration?: number): Promise<void> {
 		if (captures.size > 0) {
 			await api
 				.complete({ id, error: 'A recording is already in progress.' })
@@ -152,7 +152,9 @@ function createCaptureHost(
 				await api.complete({ id, mimeType: actualMimeType || undefined }).catch(() => undefined);
 			};
 			recorder.start(CHUNK_TIMESLICE_MS);
-			capture.timer = window.setTimeout(() => stopCapture(id, false), duration);
+			if (duration !== undefined) {
+				capture.timer = window.setTimeout(() => stopCapture(id, false), duration);
+			}
 		} catch (error) {
 			window.clearTimeout(capture.timer);
 			stopStream(capture);

@@ -1,6 +1,6 @@
 export interface RecordConfig {
 	url: string;
-	duration: number;
+	duration?: number;
 }
 
 export type RecordingStatus =
@@ -15,7 +15,7 @@ export type RecordingStatus =
 export interface Recording {
 	id: string;
 	url: string;
-	duration: number;
+	duration?: number;
 	status: RecordingStatus;
 	startedAt: number;
 	mimeType?: string;
@@ -24,7 +24,7 @@ export interface Recording {
 }
 
 export type RecorderCommand =
-	| { type: 'start'; id: string; duration: number }
+	| { type: 'start'; id: string; duration?: number }
 	| { type: 'stop'; id: string }
 	| { type: 'cancel'; id: string };
 

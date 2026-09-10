@@ -13,9 +13,14 @@ export function cameraRecorderTool(): Tool {
 		id: 'camera_recorder',
 		name: 'Camera recorder',
 		description:
-			'Start recording video (with audio) from the user camera for a given duration. Requires an open app window. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Use camera_recorder_status to check progress or wait for completion before using the file.',
+			'Start recording video (with audio) from the user camera. Requires an open app window. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Specify a duration to stop automatically, or omit it and use camera_recorder_stop. Use camera_recorder_status to check progress or wait for completion before using the file.',
 		inputSchema: z.object({
-			duration: z.number().min(1).max(600).describe('Recording duration in seconds (max 600).'),
+			duration: z
+				.number()
+				.min(1)
+				.max(600)
+				.optional()
+				.describe('Optional recording duration in seconds (max 600). Omit to record until stopped.'),
 			directory: z
 				.string()
 				.optional()
@@ -34,7 +39,10 @@ export function cameraRecorderTool(): Tool {
 			const owner = recordingOwner(camera);
 			const targetDir = resolveUserPath(directory ?? '.', agentLocation());
 			const url = path.join(targetDir, path.basename(filename ?? `camera-${Date.now()}.webm`));
-			const recording = camera.start({ url, duration: duration * 1000 });
+			const recording = camera.start({
+				url,
+				...(duration === undefined ? {} : { duration: duration * 1000 }),
+			});
 			rememberRecording(camera, recording.id, owner);
 			signal?.addEventListener('abort', () => camera.cancel(recording.id), { once: true });
 			return {

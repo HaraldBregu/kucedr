@@ -13,9 +13,14 @@ export function microphoneRecorderTool(): Tool {
 		id: 'microphone_recorder',
 		name: 'Microphone recorder',
 		description:
-			'Start recording audio from the user microphone for a given duration. Requires an open app window. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Use microphone_recorder_status to check progress or wait for completion before using the file.',
+			'Start recording audio from the user microphone. Requires an open app window. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Specify a duration to stop automatically, or omit it and use microphone_recorder_stop. Use microphone_recorder_status to check progress or wait for completion before using the file.',
 		inputSchema: z.object({
-			duration: z.number().min(1).max(600).describe('Recording duration in seconds (max 600).'),
+			duration: z
+				.number()
+				.min(1)
+				.max(600)
+				.optional()
+				.describe('Optional recording duration in seconds (max 600). Omit to record until stopped.'),
 			directory: z
 				.string()
 				.optional()
@@ -34,7 +39,10 @@ export function microphoneRecorderTool(): Tool {
 			const owner = recordingOwner(microphone);
 			const targetDir = resolveUserPath(directory ?? '.', agentLocation());
 			const url = path.join(targetDir, path.basename(filename ?? `microphone-${Date.now()}.webm`));
-			const recording = microphone.start({ url, duration: duration * 1000 });
+			const recording = microphone.start({
+				url,
+				...(duration === undefined ? {} : { duration: duration * 1000 }),
+			});
 			rememberRecording(microphone, recording.id, owner);
 			signal?.addEventListener('abort', () => microphone.cancel(recording.id), { once: true });
 			return {

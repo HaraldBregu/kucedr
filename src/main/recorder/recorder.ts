@@ -146,14 +146,14 @@ export function createRecorder(channels: { command: string; event: string }): Re
 	return {
 		start(config) {
 			const url = typeof config?.url === 'string' ? config.url.trim() : '';
-			const duration = Number(config?.duration);
+			const duration = config?.duration;
 			if (!url || !path.isAbsolute(url)) {
 				throw new Error('Recording url must be an absolute path.');
 			}
 			if (path.extname(url).toLowerCase() !== '.webm') {
 				throw new Error('Recordings must use the .webm extension.');
 			}
-			if (!Number.isFinite(duration) || duration <= 0) {
+			if (duration !== undefined && (!Number.isFinite(duration) || duration <= 0)) {
 				throw new Error('Recording duration must be a positive number of milliseconds.');
 			}
 			if ([...recordings.values()].some(isActive)) {
@@ -185,16 +185,18 @@ export function createRecorder(channels: { command: string; event: string }): Re
 			});
 			set(recording);
 			sendCommand(recording.id, { type: 'start', id: recording.id, duration });
-			timeouts.set(
-				recording.id,
-				setTimeout(() => {
-					const current = recordings.get(recording.id);
-					if (isActive(current)) {
-						sendCommand(recording.id, { type: 'cancel', id: recording.id });
-						void fail(recording.id, 'Recording timed out.');
-					}
-				}, duration + COMPLETION_GRACE_MS)
-			);
+			if (duration !== undefined) {
+				timeouts.set(
+					recording.id,
+					setTimeout(() => {
+						const current = recordings.get(recording.id);
+						if (isActive(current)) {
+							sendCommand(recording.id, { type: 'cancel', id: recording.id });
+							void fail(recording.id, 'Recording timed out.');
+						}
+					}, duration + COMPLETION_GRACE_MS)
+				);
+			}
 			return recording;
 		},
 		stop(id) {
