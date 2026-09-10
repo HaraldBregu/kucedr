@@ -73,7 +73,11 @@ const TaskDetailsPage: React.FC = () => {
 		return (
 			<SettingsPageShell>
 				<SettingsPageHeader title={t('settings.cron.detailsTitle')} />
-				{error && <SettingsNotice variant="destructive" icon={AlertTriangle}>{error}</SettingsNotice>}
+				{error && (
+					<SettingsNotice variant="destructive" icon={AlertTriangle}>
+						{error}
+					</SettingsNotice>
+				)}
 				<Card size="sm" className="gap-0! p-0!">
 					<SettingsEmptyState
 						icon={ListChecks}
@@ -86,9 +90,10 @@ const TaskDetailsPage: React.FC = () => {
 		);
 	}
 
-	const actionType = task.action.type === 'agent'
-		? t('settings.cron.detail.agent')
-		: t('settings.cron.detail.debug');
+	const actionType =
+		task.action.type === 'agent'
+			? t('settings.cron.detail.agent')
+			: t('settings.cron.detail.debug');
 	const runNow = async (): Promise<void> => {
 		setRunning(true);
 		setError(null);
@@ -133,7 +138,10 @@ const TaskDetailsPage: React.FC = () => {
 				await window.tasks.configureCapabilities(
 					task.id,
 					task.enabled,
-					toolsAllow.split(',').map((name) => name.trim()).filter(Boolean)
+					toolsAllow
+						.split(',')
+						.map((name) => name.trim())
+						.filter(Boolean)
 				)
 			);
 		} catch (caught) {
@@ -155,35 +163,71 @@ const TaskDetailsPage: React.FC = () => {
 				}
 			/>
 
-			{error && <SettingsNotice variant="destructive" icon={AlertTriangle}>{error}</SettingsNotice>}
+			{error && (
+				<SettingsNotice variant="destructive" icon={AlertTriangle}>
+					{error}
+				</SettingsNotice>
+			)}
 
 			<SettingsSection title={t('settings.cron.detailsTitle')}>
 				<Card size="sm" className="gap-0! p-0!">
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemContent><ItemTitle>{t('settings.cron.detail.id')}</ItemTitle></ItemContent>
-						<ItemActions className="ml-auto justify-end"><code className="max-w-[55vw] truncate text-[11px]">{task.id}</code></ItemActions>
+						<ItemContent>
+							<ItemTitle>{t('settings.cron.detail.id')}</ItemTitle>
+						</ItemContent>
+						<ItemActions className="ml-auto justify-end">
+							<code className="max-w-[55vw] truncate text-[11px]">{task.id}</code>
+						</ItemActions>
 					</Item>
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemContent><ItemTitle>{t('settings.cron.detail.schedule')}</ItemTitle></ItemContent>
-						<ItemActions className="ml-auto justify-end"><code className="max-w-[55vw] truncate text-[11px]">{task.cronExpression ?? t('settings.cron.detail.notScheduled')}</code></ItemActions>
+						<ItemContent>
+							<ItemTitle>{t('settings.cron.detail.schedule')}</ItemTitle>
+						</ItemContent>
+						<ItemActions className="ml-auto justify-end">
+							<code className="max-w-[55vw] truncate text-[11px]">
+								{task.cronExpression ?? t('settings.cron.detail.notScheduled')}
+							</code>
+						</ItemActions>
 					</Item>
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemContent><ItemTitle>{t('settings.cron.detail.actionType')}</ItemTitle></ItemContent>
-						<ItemActions className="ml-auto justify-end"><span className="text-xs">{actionType}</span></ItemActions>
+						<ItemContent>
+							<ItemTitle>{t('settings.cron.detail.actionType')}</ItemTitle>
+						</ItemContent>
+						<ItemActions className="ml-auto justify-end">
+							<span className="text-xs">{actionType}</span>
+						</ItemActions>
 					</Item>
-					{task.action.type === 'agent' && <>
-						<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-							<ItemContent><ItemTitle>{t('settings.cron.detail.effort')}</ItemTitle></ItemContent>
-							<ItemActions className="ml-auto justify-end"><span className="text-xs">{task.action.effort}</span></ItemActions>
-						</Item>
-					</>}
+					{task.action.type === 'agent' && (
+						<>
+							<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
+								<ItemContent>
+									<ItemTitle>{t('settings.cron.detail.effort')}</ItemTitle>
+								</ItemContent>
+								<ItemActions className="ml-auto justify-end">
+									<span className="text-xs">{task.action.effort}</span>
+								</ItemActions>
+							</Item>
+						</>
+					)}
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemContent><ItemTitle>{t('settings.cron.detail.createdAt')}</ItemTitle></ItemContent>
-						<ItemActions className="ml-auto justify-end"><time className="text-xs" dateTime={task.createdAt}>{new Date(task.createdAt).toLocaleString()}</time></ItemActions>
+						<ItemContent>
+							<ItemTitle>{t('settings.cron.detail.createdAt')}</ItemTitle>
+						</ItemContent>
+						<ItemActions className="ml-auto justify-end">
+							<time className="text-xs" dateTime={task.createdAt}>
+								{new Date(task.createdAt).toLocaleString()}
+							</time>
+						</ItemActions>
 					</Item>
 					<Item variant="outline" size="md" className="px-5 py-4">
-						<ItemContent><ItemTitle>{t('settings.cron.detail.updatedAt')}</ItemTitle></ItemContent>
-						<ItemActions className="ml-auto justify-end"><time className="text-xs" dateTime={task.updatedAt}>{new Date(task.updatedAt).toLocaleString()}</time></ItemActions>
+						<ItemContent>
+							<ItemTitle>{t('settings.cron.detail.updatedAt')}</ItemTitle>
+						</ItemContent>
+						<ItemActions className="ml-auto justify-end">
+							<time className="text-xs" dateTime={task.updatedAt}>
+								{new Date(task.updatedAt).toLocaleString()}
+							</time>
+						</ItemActions>
 					</Item>
 				</Card>
 			</SettingsSection>
@@ -234,24 +278,28 @@ const TaskDetailsPage: React.FC = () => {
 							description={t('settings.cron.history.emptyDescription')}
 							className="min-h-28"
 						/>
-					) : history.map((event, index) => (
-						<Item
-							key={event.eventId}
-							variant="outline"
-							size="md"
-							className={`px-5 py-4 ${index < history.length - 1 ? 'border-b border-border/60' : ''}`}
-						>
-							<ItemContent className="min-w-0">
-								<ItemTitle className="text-sm">{event.message}</ItemTitle>
-								<p className="text-[11px] text-muted-foreground">{event.type.replace('schedule.', '')}</p>
-							</ItemContent>
-							<ItemActions className="ml-auto flex-none justify-end">
-								<time className="text-xs text-muted-foreground" dateTime={event.timestamp}>
-									{new Date(event.timestamp).toLocaleString()}
-								</time>
-							</ItemActions>
-						</Item>
-					))}
+					) : (
+						history.map((event, index) => (
+							<Item
+								key={event.eventId}
+								variant="outline"
+								size="md"
+								className={`px-5 py-4 ${index < history.length - 1 ? 'border-b border-border/60' : ''}`}
+							>
+								<ItemContent className="min-w-0">
+									<ItemTitle className="text-sm">{event.message}</ItemTitle>
+									<p className="text-[11px] text-muted-foreground">
+										{event.type.replace('schedule.', '')}
+									</p>
+								</ItemContent>
+								<ItemActions className="ml-auto flex-none justify-end">
+									<time className="text-xs text-muted-foreground" dateTime={event.timestamp}>
+										{new Date(event.timestamp).toLocaleString()}
+									</time>
+								</ItemActions>
+							</Item>
+						))
+					)}
 				</Card>
 			</SettingsSection>
 
@@ -271,7 +319,12 @@ const TaskDetailsPage: React.FC = () => {
 				<Button size="sm" disabled={running || deleting || toggling} onClick={() => void runNow()}>
 					{running ? t('settings.cron.actions.running') : t('settings.cron.actions.run')}
 				</Button>
-				<Button variant="destructive" size="sm" disabled={running || deleting || toggling} onClick={() => void deleteTask()}>
+				<Button
+					variant="destructive"
+					size="sm"
+					disabled={running || deleting || toggling}
+					onClick={() => void deleteTask()}
+				>
 					{deleting ? t('settings.cron.actions.removing') : t('settings.cron.actions.remove')}
 				</Button>
 			</div>

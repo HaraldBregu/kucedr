@@ -3,7 +3,11 @@ import { listeners } from './tasks_module_state';
 import { writeState } from './tasks_write_state';
 import type { TaskSchedule, TaskScheduleEvent } from './tasks_types';
 
-export function emit(schedule: TaskSchedule, type: TaskScheduleEvent['type'], message: string): void {
+export function emit(
+	schedule: TaskSchedule,
+	type: TaskScheduleEvent['type'],
+	message: string
+): void {
 	const event: TaskScheduleEvent = {
 		eventId: randomUUID(),
 		scheduleId: schedule.id,
