@@ -742,7 +742,7 @@
 				"description": "Agent sessions created by this task.",
 				"emptyTitle": "No history yet",
 				"emptyDescription": "Agent sessions created by this task will appear here.",
-				"session": "Agent session",
+				"openSessionsFolder": "Open sessions folder",
 				"openFolder": "Open session folder"
 			},
 			"notFoundTitle": "Scheduled task not found",

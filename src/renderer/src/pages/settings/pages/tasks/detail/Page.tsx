@@ -30,6 +30,7 @@ const TaskDetailsPage: React.FC = () => {
 	const [running, setRunning] = useState(false);
 	const [deleting, setDeleting] = useState(false);
 	const [toggling, setToggling] = useState(false);
+	const [openingSessionsFolder, setOpeningSessionsFolder] = useState(false);
 	const [openingSessionId, setOpeningSessionId] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -130,6 +131,17 @@ const TaskDetailsPage: React.FC = () => {
 			setOpeningSessionId(null);
 		}
 	};
+	const openSessionsFolder = async (): Promise<void> => {
+		setOpeningSessionsFolder(true);
+		setError(null);
+		try {
+			await window.agent.openSessionsFolder();
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setOpeningSessionsFolder(false);
+		}
+	};
 
 	return (
 		<SettingsPageShell>
@@ -219,6 +231,19 @@ const TaskDetailsPage: React.FC = () => {
 			<SettingsSection
 				title={t('settings.cron.history.title')}
 				description={t('settings.cron.history.description')}
+				action={
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-sm"
+						disabled={openingSessionsFolder}
+						aria-label={t('settings.cron.history.openSessionsFolder')}
+						title={t('settings.cron.history.openSessionsFolder')}
+						onClick={() => void openSessionsFolder()}
+					>
+						<FolderOpen className="size-3.5" />
+					</Button>
+				}
 			>
 				<Card size="sm" className="gap-0! p-0!">
 					{history.length === 0 ? (
@@ -238,9 +263,6 @@ const TaskDetailsPage: React.FC = () => {
 							>
 								<ItemContent className="min-w-0">
 									<ItemTitle className="text-sm">{session.title.trim() || session.id}</ItemTitle>
-									<p className="text-[11px] text-muted-foreground">
-										{t('settings.cron.history.session')}
-									</p>
 								</ItemContent>
 								<ItemActions className="ml-auto flex-none justify-end">
 									<Button
