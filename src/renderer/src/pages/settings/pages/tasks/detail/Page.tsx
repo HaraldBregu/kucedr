@@ -239,6 +239,12 @@ const TaskDetailsPage: React.FC = () => {
 									<ItemTitle className="text-sm">{session.title.trim() || session.id}</ItemTitle>
 								</ItemContent>
 								<ItemActions className="ml-auto flex-none justify-end">
+									<time
+										className="text-xs text-muted-foreground"
+										dateTime={new Date(session.createdAtMs).toISOString()}
+									>
+										{new Date(session.createdAtMs).toLocaleString()}
+									</time>
 									<Button
 										type="button"
 										variant="ghost"
@@ -250,12 +256,6 @@ const TaskDetailsPage: React.FC = () => {
 									>
 										<FolderOpen className="size-3.5" />
 									</Button>
-									<time
-										className="text-xs text-muted-foreground"
-										dateTime={new Date(session.createdAtMs).toISOString()}
-									>
-										{new Date(session.createdAtMs).toLocaleString()}
-									</time>
 								</ItemActions>
 							</Item>
 						))
