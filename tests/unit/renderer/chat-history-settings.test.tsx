@@ -43,6 +43,7 @@ it('confirms and deletes every stored chat from the header actions', async () =>
 	const user = userEvent.setup();
 	render(<ChatHistoryPage />);
 
+	await screen.findByText('First chat');
 	await openActions(user);
 	await user.click(screen.getByRole('menuitem', { name: 'settings.chatHistory.delete' }));
 
