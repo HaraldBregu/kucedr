@@ -18,10 +18,11 @@ jest.mock('react-i18next', () => {
 		'settings.cron.detail.promptInput': 'Prompt input',
 		'settings.cron.detail.promptInputDescription': 'Prompt description',
 		'settings.cron.history.title': 'History',
-		'settings.cron.history.description': 'Recent activity',
+		'settings.cron.history.description': 'Agent sessions created by this task.',
 		'settings.cron.history.emptyTitle': 'No history yet',
-		'settings.cron.history.emptyDescription': 'Task activity will appear here.',
-		'settings.cron.history.openFolder': 'Open history folder',
+		'settings.cron.history.emptyDescription': 'Agent sessions created by this task will appear here.',
+		'settings.cron.history.session': 'Agent session',
+		'settings.cron.history.openFolder': 'Open session folder',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
 		'settings.cron.actions.remove': 'Delete',
@@ -49,33 +50,34 @@ const task = {
 const list = jest.fn();
 const history = jest.fn();
 const setEnabled = jest.fn();
-const openFolder = jest.fn();
+const openSessionFolder = jest.fn();
 
 beforeEach(() => {
 	list.mockReset().mockResolvedValue([task]);
 	history.mockReset().mockResolvedValue([
 		{
-			eventId: 'event-1',
-			scheduleId: task.id,
-			type: 'schedule.completed',
-			timestamp: '2026-09-10T09:00:00.000Z',
-			message: 'Scheduled agent run completed.',
+			id: 'session-1',
+			title: 'Nightly summary run',
+			createdAtMs: Date.parse('2026-09-10T09:00:00.000Z'),
 		},
 	]);
 	setEnabled.mockReset().mockResolvedValue({ ...task, enabled: false });
-	openFolder.mockReset().mockResolvedValue(undefined);
+	openSessionFolder.mockReset().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'tasks', {
 		configurable: true,
 		value: {
 			list,
 			history,
 			setEnabled,
-			openFolder,
 			runNow: jest.fn(),
 			delete: jest.fn(),
 			getRuntime: jest.fn(),
 			setRuntime: jest.fn(),
 		},
+	});
+	Object.defineProperty(window, 'agent', {
+		configurable: true,
+		value: { openSessionFolder },
 	});
 });
 
@@ -89,17 +91,17 @@ it('shows task history and toggles the schedule state', async () => {
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByText('Scheduled agent run completed.')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Disable' })).toBeInTheDocument();
+	expect(await screen.findByText('Nightly summary run')).toBeInTheDocument();
+	expect(screen.getByRole('switch', { name: 'Disable' })).toBeInTheDocument();
 
-	await user.click(screen.getByRole('button', { name: 'Disable' }));
+	await user.click(screen.getByRole('switch', { name: 'Disable' }));
 
 	await waitFor(() => expect(setEnabled).toHaveBeenCalledWith('task-1', false));
-	expect(history).toHaveBeenCalledTimes(2);
-	expect(await screen.findByRole('button', { name: 'Enable' })).toBeInTheDocument();
+	expect(history).toHaveBeenCalledTimes(1);
+	expect(await screen.findByRole('switch', { name: 'Enable' })).toBeInTheDocument();
 });
 
-it('opens the task history folder from a history entry', async () => {
+it('opens the session folder from a history entry', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
@@ -109,7 +111,7 @@ it('opens the task history folder from a history entry', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('button', { name: 'Open history folder' }));
+	await user.click(await screen.findByRole('button', { name: 'Open session folder' }));
 
-	expect(openFolder).toHaveBeenCalledTimes(1);
+	expect(openSessionFolder).toHaveBeenCalledWith('session-1');
 });

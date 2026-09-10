@@ -1,13 +1,9 @@
 const registerCommandWithEvent = jest.fn();
 const registerQueryWithEvent = jest.fn();
-const listTaskHistory = jest.fn();
+const getSchedule = jest.fn();
+const listSessions = jest.fn();
 const pauseSchedule = jest.fn();
 const resumeSchedule = jest.fn();
-const openPath = jest.fn();
-
-jest.mock('electron', () => ({
-	shell: { openPath },
-}));
 
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 	registerCommandWithEvent,
@@ -19,8 +15,8 @@ jest.mock('../../../../src/main/ipc/core/trusted', () => ({
 jest.mock('../../../../src/main/tasks', () => ({
 	configureScheduleCapabilities: jest.fn(),
 	deleteSchedule: jest.fn(),
+	getSchedule,
 	getRuntime: jest.fn(),
-	listTaskHistory,
 	listSchedules: jest.fn(),
 	pauseSchedule,
 	resumeSchedule,
@@ -44,25 +40,24 @@ function query(channel: string): (...args: unknown[]) => unknown {
 beforeEach(() => {
 	registerCommandWithEvent.mockClear();
 	registerQueryWithEvent.mockClear();
-	listTaskHistory.mockReset();
+	getSchedule.mockReset();
+	listSessions.mockReset();
 	pauseSchedule.mockReset();
 	resumeSchedule.mockReset();
-	new TaskIpc().register({ windows: {} as never, apps: {} as never }, {} as never);
+	new TaskIpc().register(
+		{ windows: {} as never, apps: {} as never, agent: { listSessions } as never },
+		{} as never
+	);
 });
 
-it('returns persisted history for a task', () => {
-	listTaskHistory.mockReturnValue([{ eventId: 'event-1' }]);
+it('returns the agent sessions created by a task', () => {
+	const session = { id: 'session-1', title: 'Nightly run', createdAtMs: 2 };
+	getSchedule.mockReturnValue({ id: 'task-1', sessionIds: ['session-1'] });
+	listSessions.mockReturnValue([session, { id: 'other', title: 'Other', createdAtMs: 1 }]);
 
-	expect(query(TaskChannels.history)(event, 'task-1')).toEqual([{ eventId: 'event-1' }]);
-	expect(listTaskHistory).toHaveBeenCalledWith('task-1');
-});
-
-it('opens the task history storage folder', async () => {
-	openPath.mockResolvedValue('');
-
-	await command(TaskChannels.openFolder)(event);
-
-	expect(openPath).toHaveBeenCalledWith(expect.stringMatching(/[\\/]settings$/));
+	expect(query(TaskChannels.history)(event, 'task-1')).toEqual([session]);
+	expect(getSchedule).toHaveBeenCalledWith('task-1');
+	expect(listSessions).toHaveBeenCalledWith('task');
 });
 
 it('pauses and resumes a task from the enabled control', () => {
