@@ -22,7 +22,6 @@ jest.mock('react-i18next', () => {
 		'settings.cron.history.emptyTitle': 'No history yet',
 		'settings.cron.history.emptyDescription':
 			'Agent sessions created by this task will appear here.',
-		'settings.cron.history.openSessionsFolder': 'Open sessions folder',
 		'settings.cron.history.openFolder': 'Open session folder',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
