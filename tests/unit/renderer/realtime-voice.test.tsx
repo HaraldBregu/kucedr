@@ -211,6 +211,29 @@ describe('useRealtimeVoice', () => {
 		unmount();
 	});
 
+	it('deduplicates concurrent starts', async () => {
+		api.startSession.mockResolvedValue(session);
+		const { result, unmount } = renderHook(
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() }),
+			{ wrapper }
+		);
+
+		let firstResult!: boolean;
+		let secondResult!: boolean;
+		await act(async () => {
+			[firstResult, secondResult] = await Promise.all([
+				result.current.start(),
+				result.current.start(),
+			]);
+		});
+
+		expect(firstResult).toBe(true);
+		expect(secondResult).toBe(true);
+		expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
+		expect(api.startSession).toHaveBeenCalledTimes(1);
+		unmount();
+	});
+
 	it('turns append failures into a terminal visible error', async () => {
 		api.startSession.mockResolvedValue(session);
 		api.appendAudio.mockRejectedValue(new Error('Audio transport failed.'));

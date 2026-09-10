@@ -69,6 +69,7 @@ export function useRealtimeVoice({
 	const onClosedRef = useRef(onClosed);
 	const sessionIdRef = useRef<string | null>(null);
 	const sessionChatIdRef = useRef<string | null>(null);
+	const startPromiseRef = useRef<Promise<boolean> | null>(null);
 	const startRunRef = useRef(0);
 	const statusRef = useRef<RealtimeVoiceUiStatus>('idle');
 	const startedAtMsRef = useRef(0);
@@ -241,8 +242,11 @@ export function useRealtimeVoice({
 		});
 	}, [dispatchChat, enqueuePlayback, failSession, releaseAudio, stopPlayback]);
 
-	const start = useCallback(async (): Promise<boolean> => {
+	const start = useCallback((): Promise<boolean> => {
 		if (sessionIdRef.current) return true;
+		if (startPromiseRef.current) return startPromiseRef.current;
+
+		const startPromise = (async (): Promise<boolean> => {
 		setErrorMessage(null);
 		setRequiresConfiguration(false);
 		if (!isConfigured) {
@@ -307,6 +311,11 @@ export function useRealtimeVoice({
 			setStatus('error');
 			return false;
 		}
+		})();
+		startPromiseRef.current = startPromise;
+		return startPromise.finally(() => {
+			if (startPromiseRef.current === startPromise) startPromiseRef.current = null;
+		});
 	}, [
 		chatSessionId,
 		failSession,
