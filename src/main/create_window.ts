@@ -64,6 +64,7 @@ export class Main {
 
 	private createVoiceWindowOptions() {
 		return {
+			title: 'Voice conversation',
 			width: VOICE_WINDOW_WIDTH,
 			height: VOICE_WINDOW_HEIGHT,
 			minWidth: VOICE_WINDOW_WIDTH,
@@ -75,7 +76,7 @@ export class Main {
 			maximizable: false,
 			fullscreenable: false,
 			center: true,
-			frame: false,
+			frame: true,
 			transparent: true,
 			backgroundColor: TRANSPARENT_WINDOW_BACKGROUND,
 			alwaysOnTop: true,

@@ -48,7 +48,7 @@ export function VoiceConversationWindow({
 	return (
 		<main className="h-full p-3 text-foreground" data-voice-window>
 			<div className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/95 shadow-2xl shadow-black/30 backdrop-blur-xl">
-				<div className="flex h-11 shrink-0 items-center justify-between px-4 [-webkit-app-region:drag]">
+				<div className="flex h-11 shrink-0 items-center justify-between px-4">
 					<span className="text-xs font-semibold tracking-wide text-muted-foreground">
 						Voice conversation
 					</span>
@@ -57,7 +57,7 @@ export function VoiceConversationWindow({
 						aria-label="End voice conversation"
 						disabled={isEnding}
 						onClick={() => void voice.end()}
-						className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50 [-webkit-app-region:no-drag]"
+						className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
 					>
 						<X className="size-4" strokeWidth={2.4} />
 					</button>
