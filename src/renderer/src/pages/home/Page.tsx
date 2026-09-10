@@ -872,7 +872,6 @@ function PageContent(): ReactElement {
 										/>
 									)
 								}
-				{/* Conversation-mode prompt props remain in PromptInput for future reuse; voice now owns a separate window. */}
 				voiceMode={voiceMode === 'dictation' ? voiceMode : null}
 				voiceElapsedMs={activeVoiceElapsedMs}
 				voiceMuted={activeVoiceMuted}
