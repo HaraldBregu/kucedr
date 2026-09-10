@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, ArrowLeft, BrainCircuit, ListChecks } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AlertTriangle, BrainCircuit, ListChecks } from 'lucide-react';
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';
@@ -169,20 +168,7 @@ const TasksPage: React.FC = () => {
 	};
 
 	return (
-		<SettingsPageShell className="pt-3 sm:pt-4">
-			<div className="-mb-2">
-				<Button
-					type="button"
-					variant="ghost"
-					size="xs"
-					aria-label={t('settings.cron.actions.back')}
-					title={t('settings.cron.actions.back')}
-					onClick={() => navigate('/settings/agent')}
-				>
-					<ArrowLeft className="size-3.5" />
-					{t('settings.cron.actions.back')}
-				</Button>
-			</div>
+		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.taskScheduler')}
 				description={t('settings.cron.description')}

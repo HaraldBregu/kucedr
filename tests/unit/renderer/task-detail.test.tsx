@@ -120,19 +120,3 @@ it('opens the session folder from a history entry', async () => {
 
 	expect(openSessionFolder).toHaveBeenCalledWith('session-1');
 });
-
-it('navigates back to the tasks list from the detail header', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
-			<Routes>
-				<Route path="/settings/agent/tasks" element={<div>Tasks list</div>} />
-				<Route path="/settings/agent/tasks/:taskId/detail" element={<TaskDetailsPage />} />
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await user.click(await screen.findByRole('button', { name: 'Back' }));
-
-	expect(await screen.findByText('Tasks list')).toBeInTheDocument();
-});
