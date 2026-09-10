@@ -1,8 +1,8 @@
 {
 	"showKucedr": "Show Kucedr",
 	"hideKucedr": "Hide Kucedr",
-	"showVoiceConversation": "Show Voice Conversation",
-	"hideVoiceConversation": "Hide Voice Conversation",
+	"startVoiceConversation": "Start Conversation",
+	"endVoiceConversation": "End Conversation",
 	"apps": "Apps",
 	"microphone": "Microphone",
 	"microphoneDefault": "System default",
