@@ -10,7 +10,6 @@ interface TrayManagerCallbacks {
 	onToggleVoiceConversation: () => void;
 	onQuit: () => void;
 	isAppVisible: () => boolean;
-	hasVoiceConversation: () => boolean;
 	isVoiceConversationVisible: () => boolean;
 	getApps: () => App[];
 	onOpenApp: (app: App) => void;
@@ -99,7 +98,6 @@ export class Tray {
 		const m = loadTranslations(this.currentLanguage, 'tray');
 		const isVisible = this.callbacks.isAppVisible();
 		const voiceConversationVisible = this.callbacks.isVoiceConversationVisible();
-		const hasVoiceConversation = this.callbacks.hasVoiceConversation();
 		const apps = this.callbacks.getApps();
 		const selectedMicrophoneId = this.callbacks.getMicrophoneInputId?.() ?? 'default';
 		const microphoneItems: Electron.MenuItemConstructorOptions[] = [
@@ -138,7 +136,7 @@ export class Tray {
 				label: voiceConversationVisible
 					? m.hideVoiceConversation || 'Hide Voice Conversation'
 					: m.showVoiceConversation || 'Show Voice Conversation',
-				enabled: hasVoiceConversation,
+				enabled: true,
 				click: () => this.callbacks.onToggleVoiceConversation(),
 			},
 			{

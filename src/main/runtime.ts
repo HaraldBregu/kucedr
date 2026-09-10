@@ -100,7 +100,6 @@ const trayManager = new Tray({
 		app.quit();
 	},
 	isAppVisible: () => mainWindow.isVisible(),
-	hasVoiceConversation: () => mainWindow.hasVoiceConversation(),
 	isVoiceConversationVisible: () => mainWindow.isVoiceConversationVisible(),
 	getApps: () => listApps(),
 	onOpenApp: (app) => loadApp(windowFactory, app),

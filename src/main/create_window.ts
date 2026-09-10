@@ -203,10 +203,6 @@ export class Main {
 		return this.getOpenAppWindows().some((win) => win.isVisible());
 	}
 
-	hasVoiceConversation(): boolean {
-		return Boolean(this.voiceWindow && !this.voiceWindow.isDestroyed());
-	}
-
 	isVoiceConversationVisible(): boolean {
 		return Boolean(
 			this.voiceWindow && !this.voiceWindow.isDestroyed() && this.voiceWindow.isVisible()
