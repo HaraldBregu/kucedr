@@ -51,7 +51,6 @@ const task = {
 const list = jest.fn();
 const history = jest.fn();
 const setEnabled = jest.fn();
-const openSessionsFolder = jest.fn();
 const openSessionFolder = jest.fn();
 
 beforeEach(() => {
@@ -68,7 +67,6 @@ beforeEach(() => {
 		},
 	]);
 	setEnabled.mockReset().mockResolvedValue({ ...task, enabled: false });
-	openSessionsFolder.mockReset().mockResolvedValue(undefined);
 	openSessionFolder.mockReset().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'tasks', {
 		configurable: true,
@@ -84,7 +82,7 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
-		value: { openSessionFolder, openSessionsFolder },
+		value: { openSessionFolder },
 	});
 });
 
@@ -121,19 +119,4 @@ it('opens the session folder from a history entry', async () => {
 	await user.click(await screen.findByRole('button', { name: 'Open session folder' }));
 
 	expect(openSessionFolder).toHaveBeenCalledWith('session-1');
-});
-
-it('opens the sessions folder from the history section header', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
-			<Routes>
-				<Route path="/settings/agent/tasks/:taskId/detail" element={<TaskDetailsPage />} />
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await user.click(await screen.findByRole('button', { name: 'Open sessions folder' }));
-
-	expect(openSessionsFolder).toHaveBeenCalledTimes(1);
 });

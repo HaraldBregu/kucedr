@@ -741,7 +741,6 @@
 				"description": "Sessioni agente create da questa attività.",
 				"emptyTitle": "Nessuna cronologia",
 				"emptyDescription": "Le sessioni agente create da questa attività appariranno qui.",
-				"openSessionsFolder": "Apri cartella sessioni",
 				"openFolder": "Apri cartella sessione"
 			},
 			"notFoundTitle": "Attivita programmata non trovata",
