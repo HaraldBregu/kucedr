@@ -25,4 +25,6 @@ const render = (): void => {
 	);
 };
 
-void loadModels().catch(() => undefined).finally(render);
+void loadModels()
+	.catch(() => undefined)
+	.finally(render);

@@ -55,7 +55,10 @@ export interface WindowIpcDeps {
 export class WindowIpc implements IpcModule<WindowIpcDeps> {
 	readonly name = 'window';
 
-	register({ logger, appRegistry, openVoiceConversation }: WindowIpcDeps, _eventBus: EventBus): void {
+	register(
+		{ logger, appRegistry, openVoiceConversation }: WindowIpcDeps,
+		_eventBus: EventBus
+	): void {
 		// --- Send handlers (fire-and-forget) ---
 
 		ipcMain.on(WindowChannels.minimize, (event) => {
@@ -193,10 +196,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 								...(item.enabled === undefined ? {} : { enabled: item.enabled }),
 							};
 						}
-						if (
-							item.type !== undefined &&
-							item.type !== 'item'
-						) {
+						if (item.type !== undefined && item.type !== 'item') {
 							throw new Error(`Unsupported context menu item type: ${item.type}`);
 						}
 						if (

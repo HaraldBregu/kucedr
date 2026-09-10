@@ -3,10 +3,7 @@ import { Mic, MicOff, X } from 'lucide-react';
 import { Persona, type PersonaState } from '@/components/persona';
 import { TypingLoader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
-import {
-	useRealtimeVoice,
-	type RealtimeVoiceUiStatus,
-} from '@/pages/home/hooks/useRealtimeVoice';
+import { useRealtimeVoice, type RealtimeVoiceUiStatus } from '@/pages/home/hooks/useRealtimeVoice';
 
 const statusLabels: Record<RealtimeVoiceUiStatus, string> = {
 	idle: 'Ready',

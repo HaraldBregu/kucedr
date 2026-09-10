@@ -83,7 +83,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 			'tool_call_input',
 			'tool_call_result',
 		]);
-	expect(events.at(-1)).toMatchObject({
+		expect(events.at(-1)).toMatchObject({
 			sessionId: 'voice-session',
 			agentId: 'main',
 			runId: 'voice-session:response-1',
@@ -92,7 +92,7 @@ it('runs native Realtime function calls through the existing tool runner and emi
 			output: 'hello',
 			outputText: 'hello',
 			status: 'ok',
-			});
+		});
 		expect(loadMessagesBySessionId(conversation.persistenceSessionId!, location)).toEqual([
 			expect.objectContaining({
 				role: 'assistant',
@@ -162,7 +162,8 @@ it('persists failed Realtime tool calls with their canonical input and error out
 			arguments: '{"value":42}',
 		});
 		await resultAdded;
-		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0].toolCalls?.[0];
+		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0]
+			.toolCalls?.[0];
 		expect(call).toMatchObject({
 			id: 'call-error',
 			name: 'explode',
@@ -253,7 +254,8 @@ it('preserves the existing permission request identity and returns rejected tool
 			6
 		);
 		expect(await toolResult).toContain('permission denied');
-		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0].toolCalls?.[0];
+		const call = loadMessagesBySessionId(conversation.persistenceSessionId!, location)[0]
+			.toolCalls?.[0];
 		expect(call).toMatchObject({
 			id: 'call-permission',
 			name: 'write',

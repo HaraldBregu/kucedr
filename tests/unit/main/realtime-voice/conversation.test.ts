@@ -110,16 +110,16 @@ it('preserves updates from text and two voice writers sharing one coordinator', 
 		expect(JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.location))).toContain(
 			'First voice.'
 		);
-		expect(JSON.stringify(loadMessagesBySessionId(secondVoiceSessionId, config.location))).toContain(
-			'Second voice.'
-		);
+		expect(
+			JSON.stringify(loadMessagesBySessionId(secondVoiceSessionId, config.location))
+		).toContain('Second voice.');
 		releaseSession(text);
 		expect(text.lease.signal.aborted).toBe(false);
 		addAssistantMessage(text, 'Closed writer callback.', []);
 		second.addAssistantTranscript('Still active voice.');
-		expect(JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.location))).not.toContain(
-			'Closed writer'
-		);
+		expect(
+			JSON.stringify(loadMessagesBySessionId(firstVoiceSessionId, config.location))
+		).not.toContain('Closed writer');
 	} finally {
 		first.dispose?.();
 		second.dispose?.();
@@ -153,9 +153,9 @@ it.each(['clear', 'delete', 'edit'])(
 			{ task: 'chat', message: 'Original question.', sessionId: SESSION_ID },
 			'main',
 			coordinator
-			);
-			const voice = realtimeVoiceConversationFactory(config, coordinator)(SESSION_ID, 'model');
-			const voiceSessionId = voice.persistenceSessionId!;
+		);
+		const voice = realtimeVoiceConversationFactory(config, coordinator)(SESSION_ID, 'model');
+		const voiceSessionId = voice.persistenceSessionId!;
 		try {
 			if (operation === 'clear')
 				clearMessages(createSessionState(), config, SESSION_ID, coordinator);
@@ -172,22 +172,22 @@ it.each(['clear', 'delete', 'edit'])(
 					)
 				).toBe(true);
 			expect(state.lease.signal.aborted).toBe(true);
-				expect(voice.signal?.aborted).toBe(false);
+			expect(voice.signal?.aborted).toBe(false);
 			voice.addAssistantTranscript('Late voice callback.');
 			addAssistantMessage(state, 'Late text callback.', []);
 			appendRun(state, { type: 'run_finished' });
 			persistSystemPrompt(state, 'Late system prompt.');
-				const serialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
-				const voiceSerialized = JSON.stringify(
-					loadMessagesBySessionId(voiceSessionId, config.location)
-				);
-				expect(serialized).not.toContain('Late');
-				expect(voiceSerialized).toContain('Late voice callback.');
-				if (operation === 'edit') expect(serialized).toContain('Edited question.');
-				else expect(serialized).toBe('[]');
-				if (operation === 'delete')
-					expect(fs.existsSync(path.join(state.sessionsPath, state.folderName))).toBe(false);
-				expect(fs.existsSync(path.join(state.sessionsPath, voiceSessionId))).toBe(true);
+			const serialized = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+			const voiceSerialized = JSON.stringify(
+				loadMessagesBySessionId(voiceSessionId, config.location)
+			);
+			expect(serialized).not.toContain('Late');
+			expect(voiceSerialized).toContain('Late voice callback.');
+			if (operation === 'edit') expect(serialized).toContain('Edited question.');
+			else expect(serialized).toBe('[]');
+			if (operation === 'delete')
+				expect(fs.existsSync(path.join(state.sessionsPath, state.folderName))).toBe(false);
+			expect(fs.existsSync(path.join(state.sessionsPath, voiceSessionId))).toBe(true);
 		} finally {
 			voice.dispose?.();
 			releaseSession(state);
@@ -228,9 +228,9 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 			'pending prompt'
 		);
 		persist(state);
-			let content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
-			expect(content).toContain('Accepted pending prompt.');
-			expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.location))).toContain(
+		let content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
+		expect(content).toContain('Accepted pending prompt.');
+		expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.location))).toContain(
 			'Concurrent voice answer.'
 		);
 		releaseSession(state);
@@ -249,7 +249,7 @@ it('keeps deferred prompts private until validation accepts them and preserves c
 		releaseSession(state);
 		voice.addAssistantTranscript('Another voice answer.');
 		content = JSON.stringify(loadMessagesBySessionId(SESSION_ID, config.location));
-			expect(content).not.toContain('Rejected pending prompt.');
+		expect(content).not.toContain('Rejected pending prompt.');
 		expect(JSON.stringify(loadMessagesBySessionId(voiceSessionId, config.location))).toContain(
 			'Another voice answer.'
 		);

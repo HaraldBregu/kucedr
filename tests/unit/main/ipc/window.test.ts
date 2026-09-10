@@ -62,9 +62,7 @@ it('shows a native context menu and returns the selected item id', async () => {
 
 	const errorLog = jest.spyOn(console, 'error').mockImplementation(() => undefined);
 	await expect(
-		handler({ sender: {} } as IpcMainInvokeEvent, [
-			{ type: 'role', role: 'reload' },
-		] as never)
+		handler({ sender: {} } as IpcMainInvokeEvent, [{ type: 'role', role: 'reload' }] as never)
 	).resolves.toMatchObject({
 		success: false,
 		error: { message: 'Unsupported context menu role: reload' },
@@ -159,10 +157,7 @@ it('forwards titlebar options to the owning shell and button clicks to its app',
 	clickButton({ sender: appContents }, 'toggle-sidebar');
 	expect(appSend).not.toHaveBeenCalled();
 	clickButton({ sender: shellContents }, 'toggle-sidebar');
-	expect(appSend).toHaveBeenCalledWith(
-		WindowChannels.titlebarButtonClicked,
-		'toggle-sidebar'
-	);
+	expect(appSend).toHaveBeenCalledWith(WindowChannels.titlebarButtonClicked, 'toggle-sidebar');
 });
 
 it('rejects malformed titlebar options and unknown button ids', () => {
