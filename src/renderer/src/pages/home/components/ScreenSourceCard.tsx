@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useRef, useState, type FormEvent, type ReactElement } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AgentToolPart, PendingUserInput } from '../context';
 
 type Source = { id: string; name: string; type: 'screen' | 'window' };
@@ -48,7 +48,6 @@ export function ScreenSourceCard({
 }): ReactElement | null {
 	const sources = useMemo(() => sourcesFromTool(tool), [tool]);
 	const result = useMemo(() => resultFromTool(tool), [tool]);
-	const [selected, setSelected] = useState('');
 	const [submitting, setSubmitting] = useState(false);
 	const [error, setError] = useState('');
 	const resolvedRef = useRef<HTMLDivElement>(null);
@@ -77,17 +76,12 @@ export function ScreenSourceCard({
 
 	if (!pending) return null;
 
-	const submit = async (event: FormEvent): Promise<void> => {
-		event.preventDefault();
-		if (!selected) {
-			setError('Choose a display or window to record.');
-			return;
-		}
+	const select = async (sourceId: string): Promise<void> => {
 		setSubmitting(true);
 		setError('');
 		try {
 			const accepted = await window.agent.respondUserInput(pending, [
-				{ questionId: 'screen-source', answer: selected },
+				{ questionId: 'screen-source', answer: sourceId },
 			]);
 			if (!accepted) setError('This selection is no longer active. Start screen recording again.');
 		} catch (cause) {
@@ -102,40 +96,28 @@ export function ScreenSourceCard({
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">Choose a screen to record</CardTitle>
 			</CardHeader>
-			<form onSubmit={(event) => void submit(event)}>
-				<CardContent className="max-h-80 space-y-2 overflow-y-auto px-4">
-					{sources.map((source) => (
-						<label
+			<CardContent className="max-h-80 space-y-2 overflow-y-auto px-4">
+				{sources.map((source) => (
+					<Button
 							key={source.id}
-							className="flex cursor-pointer items-start gap-2 rounded-lg border border-border/60 p-2 text-sm focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/40"
+							type="button"
+							variant="outline"
+							disabled={submitting}
+							onClick={() => void select(source.id)}
+							className="h-auto w-full justify-start gap-2 whitespace-normal p-2 text-left text-sm"
 						>
-							<input
-								type="radio"
-								name="screen-source"
-								value={source.id}
-								checked={selected === source.id}
-								disabled={submitting}
-								onChange={() => setSelected(source.id)}
-								className="mt-1"
-							/>
 							<span>
 								<span className="block font-medium">{source.name}</span>
 								<span className="block text-xs text-muted-foreground">
 									{source.type === 'screen' ? 'Display' : 'Window'}
 								</span>
 							</span>
-						</label>
+						</Button>
 					))}
-					<p aria-live="polite" className="text-sm text-destructive">
-						{error}
-					</p>
-				</CardContent>
-				<CardFooter className="justify-end px-4 pt-4">
-					<Button type="submit" size="sm" disabled={submitting}>
-						{submitting ? 'Starting…' : 'Start recording'}
-					</Button>
-				</CardFooter>
-			</form>
+				<p aria-live="polite" className="text-sm text-destructive">
+					{error}
+				</p>
+			</CardContent>
 		</Card>
 	);
 }

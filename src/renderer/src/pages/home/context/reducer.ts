@@ -171,7 +171,11 @@ function applyResponseEvent(
 				...message,
 				state: 'awaiting_input',
 				tools: updateAgentToolPart(message.tools, event.toolCallId, {
-					type: 'ask',
+					type:
+						message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
+						'select_screen_source'
+							? 'select_screen_source'
+							: 'ask',
 					state: 'input-available',
 					input: { questions: event.questions },
 				}),
@@ -192,10 +196,29 @@ function applyResponseEvent(
 			...message,
 			pendingUserInput: undefined,
 			tools: updateAgentToolPart(message.tools, event.toolCallId, {
-				type: 'ask',
+				type:
+					message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
+					'select_screen_source'
+						? 'select_screen_source'
+						: 'ask',
 				state: event.status === 'resolved' ? 'output-available' : 'output-error',
-				output: { status: event.status, answers: event.answers },
-				outputText: JSON.stringify({ status: event.status, answers: event.answers }),
+				output:
+					message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
+					'select_screen_source'
+						? {
+							status: event.status,
+							sourceId: event.answers.find((answer) => answer.questionId === 'screen-source')?.answer,
+						}
+						: { status: event.status, answers: event.answers },
+				outputText: JSON.stringify(
+					message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
+						'select_screen_source'
+						? {
+								status: event.status,
+								sourceId: event.answers.find((answer) => answer.questionId === 'screen-source')?.answer,
+							}
+						: { status: event.status, answers: event.answers }
+				),
 			}),
 		}));
 	}

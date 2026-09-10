@@ -36,18 +36,17 @@ beforeEach(() => {
 	respondUserInput.mockReset();
 });
 
-it('submits the selected source identifier without offering a free-form option', async () => {
+it('submits a selected source immediately without a confirmation button', async () => {
 	const user = userEvent.setup();
 	respondUserInput.mockResolvedValue(true);
 	render(<ScreenSourceCard tool={tool} pending={pending} />);
 
-	await user.click(screen.getByRole('radio', { name: /Kucedr/i }));
-	await user.click(screen.getByRole('button', { name: 'Start recording' }));
+	await user.click(screen.getByRole('button', { name: /Kucedr/i }));
 
 	await waitFor(() =>
 		expect(respondUserInput).toHaveBeenCalledWith(pending, [
 			{ questionId: 'screen-source', answer: 'window:2' },
 		])
 	);
-	expect(screen.queryByRole('radio', { name: /Other/i })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Start recording' })).not.toBeInTheDocument();
 });

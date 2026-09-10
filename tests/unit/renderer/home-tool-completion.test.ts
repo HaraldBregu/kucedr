@@ -1,6 +1,39 @@
 import { agentChatReducer } from '../../../src/renderer/src/pages/home/context/reducer';
 import type { AgentChatState, AgentMessage } from '../../../src/renderer/src/pages/home/context/state';
 
+it('keeps screen source selection on its dedicated chat component', () => {
+	const message: AgentMessage = {
+		id: 'agent-1',
+		role: 'agent',
+		type: 'agent',
+		content: '',
+		runId: 'run-1',
+		state: 'using_tools',
+		tools: [{ toolCallId: 'source-1', type: 'select_screen_source', state: 'input-available' }],
+	};
+	const state: AgentChatState = {
+		messages: [message],
+		activeAgentId: message.id,
+		activeRunId: message.runId,
+	};
+
+	const requested = agentChatReducer(state, {
+		type: 'apply_response_event',
+		receivedAtMs: 100,
+		event: {
+			type: 'user_input_request',
+			runId: 'run-1',
+			requestId: 'request',
+			toolCallId: 'source-1',
+			inputFingerprint: 'fingerprint',
+			expiresAt: new Date(Date.now() + 60_000).toISOString(),
+			questions: [],
+		},
+	});
+
+	expect((requested.messages[0] as AgentMessage).tools[0].type).toBe('select_screen_source');
+});
+
 it('settles a tool still shown as running when its agent run completes', () => {
 	const message: AgentMessage = {
 		id: 'agent-1',
