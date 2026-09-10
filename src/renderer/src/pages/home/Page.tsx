@@ -626,14 +626,16 @@ function PageContent(): ReactElement {
 	};
 
 	const startVoiceConversation = async (): Promise<void> => {
-		setVoiceMode('conversation');
-		updateMode('voice');
-		const started = await realtimeVoice.start();
-		if (!started) closeVoiceUi();
-	};
-
-	const endVoiceConversation = async (): Promise<void> => {
-		await realtimeVoice.end();
+		setTranscriptionErrorMessage(null);
+		try {
+			await window.win.openVoiceConversation(chatSessionId);
+		} catch (error) {
+			setTranscriptionErrorMessage(
+				error instanceof Error && error.message.trim()
+					? error.message
+					: 'Voice conversation could not be opened.'
+			);
+		}
 	};
 
 	const startDictation = async (): Promise<void> => {
