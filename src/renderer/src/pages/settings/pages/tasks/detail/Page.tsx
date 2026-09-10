@@ -70,7 +70,7 @@ const TaskDetailsPage: React.FC = () => {
 
 	if (loading) {
 		return (
-			<SettingsPageShell>
+			<SettingsPageShell className="pt-3 sm:pt-4">
 				<div className="-mb-2">{backButton}</div>
 				<SettingsPageHeader title={t('settings.cron.detailsTitle')} />
 				<SettingsLoadingRows rows={4} />
@@ -80,7 +80,7 @@ const TaskDetailsPage: React.FC = () => {
 
 	if (!task) {
 		return (
-			<SettingsPageShell>
+			<SettingsPageShell className="pt-3 sm:pt-4">
 				<div className="-mb-2">{backButton}</div>
 				<SettingsPageHeader title={t('settings.cron.detailsTitle')} />
 				{error && (
@@ -146,7 +146,7 @@ const TaskDetailsPage: React.FC = () => {
 		}
 	};
 	return (
-		<SettingsPageShell>
+		<SettingsPageShell className="pt-3 sm:pt-4">
 			<div className="-mb-2">{backButton}</div>
 			<SettingsPageHeader
 				title={task.name}
