@@ -732,16 +732,16 @@
 				"noDescription": "No description",
 				"notSet": "Not set",
 				"promptInput": "Prompt input",
-				"promptInputDescription": "This prompt is passed to the agent when the task runs.",
 				"enabled": "Enable schedule",
 				"enabledDescription": "Allow this schedule to run at its configured time."
 			},
 			"history": {
 				"title": "Session History",
-				"description": "Agent sessions created by this task.",
 				"emptyTitle": "No history yet",
 				"emptyDescription": "Agent sessions created by this task will appear here.",
-				"openFolder": "Open session folder"
+				"openFolder": "Open session folder",
+				"delete": "Delete session history",
+				"confirmDelete": "Delete all session history?"
 			},
 			"notFoundTitle": "Scheduled task not found",
 			"notFoundDescription": "The scheduled task may have been removed.",

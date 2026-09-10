@@ -15,13 +15,13 @@ jest.mock('react-i18next', () => {
 		'settings.cron.detail.updatedAt': 'Updated',
 		'settings.cron.detail.notScheduled': 'Not scheduled',
 		'settings.cron.detail.promptInput': 'Prompt input',
-		'settings.cron.detail.promptInputDescription': 'Prompt description',
 		'settings.cron.history.title': 'Session History',
-		'settings.cron.history.description': 'Agent sessions created by this task.',
 		'settings.cron.history.emptyTitle': 'No history yet',
 		'settings.cron.history.emptyDescription':
 			'Agent sessions created by this task will appear here.',
 		'settings.cron.history.openFolder': 'Open session folder',
+		'settings.cron.history.delete': 'Delete session history',
+		'settings.cron.history.confirmDelete': 'Delete all session history?',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
 		'settings.cron.actions.remove': 'Delete',
@@ -49,6 +49,7 @@ const list = jest.fn();
 const history = jest.fn();
 const setEnabled = jest.fn();
 const openSessionFolder = jest.fn();
+const deleteSession = jest.fn();
 
 beforeEach(() => {
 	Object.defineProperty(window, 'PointerEvent', {
@@ -65,6 +66,11 @@ beforeEach(() => {
 	]);
 	setEnabled.mockReset().mockResolvedValue({ ...task, enabled: false });
 	openSessionFolder.mockReset().mockResolvedValue(undefined);
+	deleteSession.mockReset().mockResolvedValue(undefined);
+	Object.defineProperty(window, 'confirm', {
+		configurable: true,
+		value: jest.fn(() => true),
+	});
 	Object.defineProperty(window, 'tasks', {
 		configurable: true,
 		value: {
@@ -79,7 +85,7 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
-		value: { openSessionFolder },
+		value: { openSessionFolder, deleteSession },
 	});
 });
 
@@ -116,4 +122,21 @@ it('opens the session folder from a history entry', async () => {
 	await user.click(await screen.findByRole('button', { name: 'Open session folder' }));
 
 	expect(openSessionFolder).toHaveBeenCalledWith('session-1');
+});
+
+it('deletes all session history from the section action', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
+			<Routes>
+				<Route path="/settings/agent/tasks/:taskId/detail" element={<TaskDetailsPage />} />
+			</Routes>
+		</MemoryRouter>
+	);
+
+	await user.click(await screen.findByRole('button', { name: 'Delete session history' }));
+
+	await waitFor(() => expect(deleteSession).toHaveBeenCalledWith('session-1'));
+	expect(window.confirm).toHaveBeenCalledWith('Delete all session history?');
+	expect(await screen.findByText('No history yet')).toBeInTheDocument();
 });

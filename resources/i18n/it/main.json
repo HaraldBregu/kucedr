@@ -731,16 +731,16 @@
 				"noDescription": "Nessuna descrizione",
 				"notSet": "Non impostata",
 				"promptInput": "Prompt di input",
-				"promptInputDescription": "Questo prompt viene passato all'agente quando viene eseguita l'attività.",
 				"enabled": "Abilita attività",
 				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato."
 			},
 			"history": {
 				"title": "Cronologia sessioni",
-				"description": "Sessioni agente create da questa attività.",
 				"emptyTitle": "Nessuna cronologia",
 				"emptyDescription": "Le sessioni agente create da questa attività appariranno qui.",
-				"openFolder": "Apri cartella sessione"
+				"openFolder": "Apri cartella sessione",
+				"delete": "Elimina cronologia sessioni",
+				"confirmDelete": "Eliminare tutta la cronologia delle sessioni?"
 			},
 			"notFoundTitle": "Attivita programmata non trovata",
 			"notFoundDescription": "L'attivita programmata potrebbe essere stata rimossa.",

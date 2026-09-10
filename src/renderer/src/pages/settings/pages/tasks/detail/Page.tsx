@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, FolderOpen, History, ListChecks } from 'lucide-react';
+import { AlertTriangle, FolderOpen, History, ListChecks, LoaderCircle, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
@@ -29,6 +29,7 @@ const TaskDetailsPage: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [running, setRunning] = useState(false);
 	const [deleting, setDeleting] = useState(false);
+	const [deletingHistory, setDeletingHistory] = useState(false);
 	const [toggling, setToggling] = useState(false);
 	const [openingSessionId, setOpeningSessionId] = useState<string | null>(null);
 
@@ -130,6 +131,19 @@ const TaskDetailsPage: React.FC = () => {
 			setOpeningSessionId(null);
 		}
 	};
+	const deleteHistory = async (): Promise<void> => {
+		if (!window.confirm(t('settings.cron.history.confirmDelete'))) return;
+		setDeletingHistory(true);
+		setError(null);
+		try {
+			await Promise.all(history.map((session) => window.agent.deleteSession(session.id)));
+			setHistory([]);
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setDeletingHistory(false);
+		}
+	};
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -198,7 +212,6 @@ const TaskDetailsPage: React.FC = () => {
 
 			<SettingsSection
 				title={t('settings.cron.detail.promptInput')}
-				description={t('settings.cron.detail.promptInputDescription')}
 			>
 				<Card size="sm" className="p-4!">
 					<pre className="whitespace-pre-wrap break-words font-sans text-xs leading-5 text-foreground">
@@ -209,7 +222,23 @@ const TaskDetailsPage: React.FC = () => {
 
 			<SettingsSection
 				title={t('settings.cron.history.title')}
-				description={t('settings.cron.history.description')}
+				action={
+					<Button
+						type="button"
+						variant="destructive"
+						size="icon-sm"
+						disabled={history.length === 0 || deletingHistory || deleting || toggling}
+						aria-label={t('settings.cron.history.delete')}
+						title={t('settings.cron.history.delete')}
+						onClick={() => void deleteHistory()}
+					>
+						{deletingHistory ? (
+							<LoaderCircle className="size-3.5 animate-spin" />
+						) : (
+							<Trash2 className="size-3.5" />
+						)}
+					</Button>
+				}
 			>
 				<Card size="sm" className="gap-0! p-0!">
 					{history.length === 0 ? (
