@@ -22,7 +22,11 @@ import { CloudIpc } from '../cloud';
 import type { EventBus } from '../../event_bus';
 import type { MainServices } from '../../bootstrap';
 
-export function registerIpcHandlers(services: MainServices, eventBus: EventBus): void {
+export function registerIpcHandlers(
+	services: MainServices,
+	eventBus: EventBus,
+	options: { openVoiceConversation?: (chatSessionId: string) => void } = {}
+): void {
 	const {
 		logger,
 		agentService,
@@ -157,7 +161,12 @@ export function registerIpcHandlers(services: MainServices, eventBus: EventBus):
 			eventBus
 		)
 	);
-	safeRegister('window', () => new WindowIpc().register({ logger, appRegistry }, eventBus));
+	safeRegister('window', () =>
+		new WindowIpc().register(
+			{ logger, appRegistry, openVoiceConversation: options.openVoiceConversation },
+			eventBus
+		)
+	);
 	safeRegister('terminal', () =>
 		new TerminalIpc().register(
 			{

@@ -71,6 +71,7 @@ try {
 // Bootstrap new architecture - FULL INTEGRATION ENABLED
 const services = bootstrapServices();
 const { eventBus, appState, windowFactory, logger, windowContextManager, agentService } = services;
+const mainWindow = new Main(appState, windowFactory, windowContextManager);
 agentService.start(logger);
 startRagSchedule(logger);
 // Re-bind safety net with the real logger now that it exists.
@@ -79,7 +80,9 @@ setupMemoryMonitor(logger);
 logger.info('CrashReporter', `Crash dumps path: ${app.getPath('crashDumps')}`);
 logger.info('Main', 'Starting app');
 logger.info('Main', 'Enabling IPC modules...');
-registerIpcHandlers(services, eventBus);
+registerIpcHandlers(services, eventBus, {
+	openVoiceConversation: (chatSessionId) => mainWindow.openVoiceConversation(chatSessionId),
+});
 setupAppLifecycle(appState, logger);
 setupEventLogging(logger);
 
@@ -88,8 +91,6 @@ const shortcutManager = new ShortcutManager();
 app.on('browser-window-created', (_event, win) => {
 	shortcutManager.attach(win);
 });
-
-const mainWindow = new Main(appState, windowFactory, windowContextManager);
 
 const trayManager = new Tray({
 	onToggleApp: () => mainWindow.toggleVisibility(),
