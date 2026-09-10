@@ -84,9 +84,10 @@ export interface PersistedTaskState {
 	providerId?: string;
 	modelId?: string;
 	schedules: TaskSchedule[];
+	history?: Record<string, TaskScheduleEvent[]>;
 }
 
-export const DEFAULT_TASK_STATE: PersistedTaskState = { schedules: [] };
+export const DEFAULT_TASK_STATE: PersistedTaskState = { schedules: [], history: {} };
 
 export type TaskFunctionId =
 	| 'create_schedule'

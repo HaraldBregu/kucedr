@@ -13,6 +13,7 @@ export { pauseSchedule } from './tasks_pause_schedule';
 export { resumeSchedule } from './tasks_resume_schedule';
 export { deleteSchedule } from './tasks_delete_schedule';
 export { getSchedule } from './tasks_get_schedule';
+export { listTaskHistory } from './tasks_history';
 export { listSchedules } from './tasks_list_schedules';
 export { getRuntime } from './tasks_get_runtime';
 export { setRuntime } from './tasks_set_runtime';

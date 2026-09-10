@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, ListChecks } from 'lucide-react';
+import { AlertTriangle, History, ListChecks } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import {
 	SettingsEmptyState,
@@ -14,11 +13,11 @@ import {
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
-	SettingsRow,
 	SettingsSection,
 } from '../../../components';
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
+type TaskHistory = Awaited<ReturnType<typeof window.tasks.history>>;
 
 const TaskDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
@@ -26,22 +25,24 @@ const TaskDetailsPage: React.FC = () => {
 	const { taskId } = useParams<{ taskId: string }>();
 	const decodedTaskId = decodeURIComponent(taskId ?? '');
 	const [task, setTask] = useState<Task | null>(null);
+	const [history, setHistory] = useState<TaskHistory>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [saving, setSaving] = useState(false);
 	const [running, setRunning] = useState(false);
 	const [deleting, setDeleting] = useState(false);
+	const [toggling, setToggling] = useState(false);
 	const [toolsAllow, setToolsAllow] = useState('');
 
 	useEffect(() => {
 		let mounted = true;
 
-		void window.tasks
-			.list()
-			.then((tasks) => {
+		void Promise.all([window.tasks.list(), window.tasks.history(decodedTaskId)])
+			.then(([tasks, taskHistory]) => {
 				if (mounted) {
 					const selected = tasks.find((item) => item.id === decodedTaskId) ?? null;
 					setTask(selected);
+					setHistory(taskHistory);
 					setToolsAllow(
 						selected?.action.type === 'agent' ? (selected.action.toolsAllow ?? []).join(', ') : ''
 					);
@@ -109,6 +110,18 @@ const TaskDetailsPage: React.FC = () => {
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 			setDeleting(false);
+		}
+	};
+	const toggleEnabled = async (): Promise<void> => {
+		setToggling(true);
+		setError(null);
+		try {
+			setTask(await window.tasks.setEnabled(task.id, !task.enabled));
+			setHistory(await window.tasks.history(task.id));
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setToggling(false);
 		}
 	};
 	const saveCapabilities = async (): Promise<void> => {
@@ -194,17 +207,6 @@ const TaskDetailsPage: React.FC = () => {
 					description={t('settings.cron.detail.capabilitiesDescription')}
 				>
 					<Card size="sm" className="grid gap-3 p-4!">
-						<SettingsRow
-							title={t('settings.cron.detail.enabled')}
-							description={t('settings.cron.detail.enabledDescription')}
-							actions={
-								<Switch
-									checked={task.enabled}
-									disabled={saving}
-									onCheckedChange={(enabled) => setTask({ ...task, enabled })}
-								/>
-							}
-						/>
 						<Input
 							value={toolsAllow}
 							disabled={saving}
@@ -220,11 +222,56 @@ const TaskDetailsPage: React.FC = () => {
 				</SettingsSection>
 			)}
 
+			<SettingsSection
+				title={t('settings.cron.history.title')}
+				description={t('settings.cron.history.description')}
+			>
+				<Card size="sm" className="gap-0! p-0!">
+					{history.length === 0 ? (
+						<SettingsEmptyState
+							icon={History}
+							title={t('settings.cron.history.emptyTitle')}
+							description={t('settings.cron.history.emptyDescription')}
+							className="min-h-28"
+						/>
+					) : history.map((event, index) => (
+						<Item
+							key={event.eventId}
+							variant="outline"
+							size="md"
+							className={`px-5 py-4 ${index < history.length - 1 ? 'border-b border-border/60' : ''}`}
+						>
+							<ItemContent className="min-w-0">
+								<ItemTitle className="text-sm">{event.message}</ItemTitle>
+								<p className="text-[11px] text-muted-foreground">{event.type.replace('schedule.', '')}</p>
+							</ItemContent>
+							<ItemActions className="ml-auto flex-none justify-end">
+								<time className="text-xs text-muted-foreground" dateTime={event.timestamp}>
+									{new Date(event.timestamp).toLocaleString()}
+								</time>
+							</ItemActions>
+						</Item>
+					))}
+				</Card>
+			</SettingsSection>
+
 			<div className="flex justify-end gap-2">
-				<Button size="sm" disabled={running || deleting} onClick={() => void runNow()}>
+				<Button
+					variant="outline"
+					size="sm"
+					disabled={running || deleting || toggling}
+					onClick={() => void toggleEnabled()}
+				>
+					{toggling
+						? t('settings.cron.actions.updating')
+						: task.enabled
+							? t('settings.cron.actions.disable')
+							: t('settings.cron.actions.enable')}
+				</Button>
+				<Button size="sm" disabled={running || deleting || toggling} onClick={() => void runNow()}>
 					{running ? t('settings.cron.actions.running') : t('settings.cron.actions.run')}
 				</Button>
-				<Button variant="destructive" size="sm" disabled={running || deleting} onClick={() => void deleteTask()}>
+				<Button variant="destructive" size="sm" disabled={running || deleting || toggling} onClick={() => void deleteTask()}>
 					{deleting ? t('settings.cron.actions.removing') : t('settings.cron.actions.remove')}
 				</Button>
 			</div>

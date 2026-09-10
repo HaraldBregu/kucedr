@@ -239,8 +239,10 @@ export interface CoderApi {
 
 export interface TaskApi {
 	list: () => Promise<TaskSchedule[]>;
+	history: (scheduleId: string) => Promise<TaskScheduleEvent[]>;
 	runNow: (scheduleId: string) => Promise<TaskScheduledTask>;
 	delete: (scheduleId: string) => Promise<void>;
+	setEnabled: (scheduleId: string, enabled: boolean) => Promise<TaskSchedule>;
 	getRuntime: () => Promise<TaskRuntime | undefined>;
 	setRuntime: (providerId: string, modelId: string) => Promise<TaskRuntime>;
 	configureCapabilities: (

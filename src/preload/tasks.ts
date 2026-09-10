@@ -6,11 +6,17 @@ export const tasks: TaskApi = {
 	list: () => {
 		return typedInvokeUnwrap(TaskChannels.list);
 	},
+	history: (scheduleId: string) => {
+		return typedInvokeUnwrap(TaskChannels.history, scheduleId);
+	},
 	runNow: (scheduleId: string) => {
 		return typedInvokeUnwrap(TaskChannels.runNow, scheduleId);
 	},
 	delete: (scheduleId: string) => {
 		return typedInvokeUnwrap(TaskChannels.delete, scheduleId);
+	},
+	setEnabled: (scheduleId: string, enabled: boolean) => {
+		return typedInvokeUnwrap(TaskChannels.setEnabled, scheduleId, enabled);
 	},
 	getRuntime: () => {
 		return typedInvokeUnwrap(TaskChannels.getRuntime);

@@ -6,7 +6,10 @@ import {
 	configureScheduleCapabilities,
 	deleteSchedule,
 	getRuntime,
+	listTaskHistory,
 	listSchedules,
+	pauseSchedule,
+	resumeSchedule,
 	runScheduleNow,
 	setRuntime,
 } from '../tasks';
@@ -28,6 +31,11 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 			trusted.assert(event);
 			return listSchedules();
 		});
+		registerQueryWithEvent(TaskChannels.history, (event, scheduleId: string) => {
+			trusted.assert(event);
+			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
+			return listTaskHistory(scheduleId);
+		});
 		registerCommandWithEvent(TaskChannels.runNow, (event, scheduleId: string) => {
 			trusted.assert(event);
 			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
@@ -37,6 +45,13 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 			trusted.assert(event);
 			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
 			return deleteSchedule(scheduleId);
+		});
+		registerCommandWithEvent(TaskChannels.setEnabled, (event, scheduleId: string, enabled: boolean) => {
+			trusted.assert(event);
+			if (typeof scheduleId !== 'string' || typeof enabled !== 'boolean') {
+				throw new Error('Invalid task schedule configuration.');
+			}
+			return enabled ? resumeSchedule(scheduleId) : pauseSchedule(scheduleId);
 		});
 		registerQueryWithEvent(TaskChannels.getRuntime, (event) => {
 			trusted.assert(event);
