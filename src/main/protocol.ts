@@ -194,11 +194,12 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 					return;
 				}
 
-			const mediaDetails = details as Electron.MediaAccessPermissionRequest;
-			const requestsAudio = mediaDetails.mediaTypes?.includes('audio') ?? false;
-			const requestsVideo = mediaDetails.mediaTypes?.includes('video') ?? false;
-			const allowed =
-				(requestsAudio || requestsVideo) &&
+				const mediaDetails = details as Electron.MediaAccessPermissionRequest;
+				const requestsAudio = mediaDetails.mediaTypes?.includes('audio') ?? false;
+				const requestsVideo = mediaDetails.mediaTypes?.includes('video') ?? false;
+				const requestsDisplayCapture = mediaDetails.mediaTypes?.length === 0;
+				const allowed =
+					(requestsAudio || requestsVideo || (allowDisplayCapture && requestsDisplayCapture)) &&
 				mediaDetails.isMainFrame &&
 				!appRegistry.has(webContents) &&
 				Boolean(webContents && BrowserWindow.fromWebContents(webContents)) &&
