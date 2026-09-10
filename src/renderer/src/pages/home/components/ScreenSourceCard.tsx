@@ -59,16 +59,16 @@ export function ScreenSourceCard({
 	if (result) {
 		const source = sources.find((candidate) => candidate.id === result.sourceId);
 		return (
-			<Card className="max-w-2xl gap-3 border-border/70 py-4">
-				<CardHeader className="px-4">
-					<div ref={resolvedRef} tabIndex={-1} className="outline-none">
-						<CardTitle className="text-sm">
+			<Card size="sm" className="max-w-2xl border-border/70">
+				<CardContent>
+					<div ref={resolvedRef} tabIndex={-1} className="flex items-center justify-between gap-3 outline-none">
+						<CardTitle className="min-w-0 truncate text-sm">
 							{result.status === 'resolved' ? 'Screen selected' : 'Screen selection interrupted'}
 						</CardTitle>
+						<span className="max-w-[60%] truncate text-right text-xs text-muted-foreground">
+							{source?.name ?? 'No screen source was selected.'}
+						</span>
 					</div>
-				</CardHeader>
-				<CardContent className="px-4 text-sm text-muted-foreground">
-					{source?.name ?? 'No screen source was selected.'}
 				</CardContent>
 			</Card>
 		);
@@ -96,24 +96,25 @@ export function ScreenSourceCard({
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">Choose a screen to record</CardTitle>
 			</CardHeader>
-			<CardContent className="max-h-80 space-y-2 overflow-y-auto px-4">
-				{sources.map((source) => (
-					<Button
-						key={source.id}
-						type="button"
-						variant="outline"
-						disabled={submitting}
-						onClick={() => void select(source.id)}
-						className="h-auto w-full justify-start gap-2 whitespace-normal p-2 text-left text-sm"
-					>
-						<span>
-							<span className="block font-medium">{source.name}</span>
-							<span className="block text-xs text-muted-foreground">
-								{source.type === 'screen' ? 'Display' : 'Window'}
-							</span>
-						</span>
-					</Button>
-				))}
+			<CardContent className="space-y-2 px-4">
+				<ul aria-label="Available screen sources" className="space-y-2">
+					{sources.map((source) => (
+						<li key={source.id}>
+							<Button
+								type="button"
+								variant="outline"
+								disabled={submitting}
+								onClick={() => void select(source.id)}
+								className="h-auto w-full justify-between gap-3 p-2 text-left text-sm"
+							>
+								<span className="min-w-0 flex-1 whitespace-normal font-medium">{source.name}</span>
+								<span className="shrink-0 text-right text-xs text-muted-foreground">
+									{source.type === 'screen' ? 'Display' : 'Window'}
+								</span>
+							</Button>
+						</li>
+					))}
+				</ul>
 				<p aria-live="polite" className="text-sm text-destructive">
 					{error}
 				</p>
