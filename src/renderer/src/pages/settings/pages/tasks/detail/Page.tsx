@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, FolderOpen, History, ListChecks } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, FolderOpen, History, ListChecks } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
@@ -55,9 +55,23 @@ const TaskDetailsPage: React.FC = () => {
 		};
 	}, [decodedTaskId]);
 
+	const backButton = (
+		<Button
+			type="button"
+			variant="ghost"
+			size="icon-sm"
+			aria-label={t('titleBar.navigateBack')}
+			title={t('titleBar.navigateBack')}
+			onClick={() => navigate('/settings/agent/tasks')}
+		>
+			<ArrowLeft className="size-3.5" />
+		</Button>
+	);
+
 	if (loading) {
 		return (
 			<SettingsPageShell>
+				<div className="-mb-2">{backButton}</div>
 				<SettingsPageHeader title={t('settings.cron.detailsTitle')} />
 				<SettingsLoadingRows rows={4} />
 			</SettingsPageShell>
@@ -67,6 +81,7 @@ const TaskDetailsPage: React.FC = () => {
 	if (!task) {
 		return (
 			<SettingsPageShell>
+				<div className="-mb-2">{backButton}</div>
 				<SettingsPageHeader title={t('settings.cron.detailsTitle')} />
 				{error && (
 					<SettingsNotice variant="destructive" icon={AlertTriangle}>
@@ -132,6 +147,7 @@ const TaskDetailsPage: React.FC = () => {
 	};
 	return (
 		<SettingsPageShell>
+			<div className="-mb-2">{backButton}</div>
 			<SettingsPageHeader
 				title={task.name}
 				description={task.description ?? t('settings.cron.detail.noDescription')}

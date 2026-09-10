@@ -5,6 +5,7 @@ import TaskDetailsPage from '../../../src/renderer/src/pages/settings/pages/task
 
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
+		'titleBar.navigateBack': 'Navigate back',
 		'settings.cron.detailsTitle': 'Task details',
 		'settings.cron.enabled': 'Enabled',
 		'settings.cron.disabled': 'Disabled',
