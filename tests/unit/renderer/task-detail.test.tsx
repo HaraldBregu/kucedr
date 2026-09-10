@@ -21,7 +21,7 @@ jest.mock('react-i18next', () => {
 			'Agent sessions created by this task will appear here.',
 		'settings.cron.history.openFolder': 'Open session folder',
 		'settings.cron.history.delete': 'Delete session history',
-		'settings.cron.history.confirmDelete': 'Delete all session history?',
+	'settings.cron.history.confirmDelete': 'Delete this session history?',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
 		'settings.cron.actions.remove': 'Delete',
@@ -124,7 +124,7 @@ it('opens the session folder from a history entry', async () => {
 	expect(openSessionFolder).toHaveBeenCalledWith('session-1');
 });
 
-it('deletes all session history from the section action', async () => {
+it('deletes a session from its history item', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
