@@ -82,7 +82,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 
 		ipcMain.handle(
 			WindowChannels.openVoiceConversation,
-			wrapIpcHandler((event, chatSessionId: string) => {
+			wrapIpcHandler((_event, chatSessionId: string) => {
 				if (typeof chatSessionId !== 'string' || !chatSessionId.trim()) {
 					throw new Error('Invalid voice conversation session id.');
 				}

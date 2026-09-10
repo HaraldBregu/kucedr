@@ -73,6 +73,7 @@ const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
 	health: 'low',
 	task: 'low',
 	subagent: 'low',
+	voice: 'normal',
 };
 
 const AGENT_CATEGORIES: Record<string, SessionCategory> = {
