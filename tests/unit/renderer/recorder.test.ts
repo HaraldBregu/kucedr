@@ -1,6 +1,6 @@
 import { initRecorderCapture } from '../../../src/renderer/src/lib/recorder';
 
-type Command = { type: 'start' | 'stop' | 'cancel'; id: string; duration?: number };
+type Command = { type: 'start' | 'stop' | 'cancel'; id: string; duration?: number; sourceId?: string };
 
 class FakeMediaRecorder {
 	static instances: FakeMediaRecorder[] = [];
