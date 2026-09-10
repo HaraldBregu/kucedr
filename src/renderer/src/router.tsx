@@ -56,7 +56,6 @@ const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page')
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
 const CoderPage = lazy(() => import('./pages/settings/pages/coder/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
-const DataPage = lazy(() => import('./pages/settings/pages/assistant/data/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
 const SIDEBAR_TRANSITION_MS = 200;
@@ -474,14 +473,6 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<ChatHistoryPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'data',
-								element: (
-									<SettingsRouteWrapper>
-										<DataPage />
 									</SettingsRouteWrapper>
 								),
 							},

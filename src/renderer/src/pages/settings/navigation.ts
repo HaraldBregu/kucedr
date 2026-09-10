@@ -254,13 +254,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'chat history transcript messages context delete clear folder',
 		icon: Bot,
 	},
-	{
-		path: '/settings/agent/data',
-		labelKey: 'settings.dataControls.title',
-		descriptionKey: 'settings.dataControls.description',
-		keywords: 'data management export purge memory sessions local knowledge index',
-		icon: Database,
-	},
 ] as const;
 
 export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [

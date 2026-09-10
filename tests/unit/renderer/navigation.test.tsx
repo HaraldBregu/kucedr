@@ -40,9 +40,8 @@ it.each([
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
-	['/settings/agent/data', 'settings.dataControls.title'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
-	if (path === '/settings/agent/data' || path === '/settings/general/persona') {
+	if (path === '/settings/general/persona') {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else if (path === '/settings/coder') {
 		expect(SETTINGS_MODEL_SERVICE_ITEMS).toContainEqual(
