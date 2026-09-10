@@ -17,7 +17,13 @@ const mockCatalog = [
 		name: 'GPT',
 		type: 'llm',
 		provider: mockProviders[0],
-		metadata: { documentationStatus: 'verified', documentationUrl: '', inputs: {} },
+		metadata: {
+			documentationStatus: 'verified',
+			documentationUrl: '',
+			inputs: {
+				reasoning: { type: 'string', title: 'Reasoning', enum: ['low', 'medium'] },
+			},
+		},
 	},
 	{
 		id: 'gemini-image',
@@ -395,6 +401,8 @@ it('uses the Agent model picker UI and task switches', async () => {
 	if (!modelTrigger) return;
 	expect(modelTrigger).toHaveTextContent('Choose provider and model');
 	expect(modelTrigger.parentElement?.querySelector('button[aria-haspopup="dialog"]')).toBeInTheDocument();
+	await user.click(modelTrigger);
+	expect(await screen.findByRole('combobox', { name: 'Reasoning' })).toBeInTheDocument();
 
 	const taskSwitch = await screen.findByRole('switch', { name: 'Enable Demo task' });
 	expect(taskSwitch).toBeChecked();
