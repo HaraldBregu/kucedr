@@ -239,7 +239,7 @@ const TasksPage: React.FC = () => {
 								size="md"
 								aria-label={task.name}
 								className="cursor-pointer border-b border-border/60 px-5 py-4 hover:bg-muted/40 last:border-b-0"
-									onClick={(event) => {
+								onClick={(event) => {
 									if (
 										event.target instanceof Element &&
 										event.target.closest('[data-slot="switch"]')
