@@ -40,6 +40,8 @@ it('submits a selected source immediately without a confirmation button', async 
 	const user = userEvent.setup();
 	respondUserInput.mockResolvedValue(true);
 	render(<ScreenSourceCard tool={tool} pending={pending} />);
+	expect(screen.getByRole('list', { name: 'Available screen sources' })).toBeInTheDocument();
+	expect(screen.getAllByRole('listitem')).toHaveLength(2);
 
 	await user.click(screen.getByRole('button', { name: /Kucedr/i }));
 
@@ -49,4 +51,16 @@ it('submits a selected source immediately without a confirmation button', async 
 		])
 	);
 	expect(screen.queryByRole('button', { name: 'Start recording' })).not.toBeInTheDocument();
+});
+
+it('renders the selected source as a compact title and detail row', () => {
+	render(
+		<ScreenSourceCard
+			tool={{ ...tool, state: 'output-available', output: { status: 'resolved', sourceId: 'window:2' } }}
+		/>
+	);
+
+	expect(screen.getByText('Screen selected')).toHaveClass('truncate');
+	expect(screen.getByText('Kucedr')).toHaveClass('truncate', 'text-right');
+	expect(screen.queryByRole('list')).not.toBeInTheDocument();
 });
