@@ -736,7 +736,6 @@
 				"promptInputDescription": "This prompt is passed to the agent when the task runs.",
 				"enabled": "Enable schedule",
 				"enabledDescription": "Allow this schedule to run at its configured time.",
-				"saveCapabilities": "Save capabilities"
   },
 	"history": {
 	  "title": "History",
