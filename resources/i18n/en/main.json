@@ -734,8 +734,6 @@
 				"notSet": "Not set",
 				"promptInput": "Prompt input",
 				"promptInputDescription": "This prompt is passed to the agent when the task runs.",
-				"capabilities": "Run capabilities",
-				"capabilitiesDescription": "Schedules use all tools by default. Enter tool names to restrict a schedule.",
 				"enabled": "Enable schedule",
 				"enabledDescription": "Allow this schedule to run at its configured time.",
 				"toolsPlaceholder": "All tools, or restrict with comma-separated names",

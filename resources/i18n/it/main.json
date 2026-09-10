@@ -733,8 +733,6 @@
 				"notSet": "Non impostata",
 				"promptInput": "Prompt di input",
 				"promptInputDescription": "Questo prompt viene passato all'agente quando viene eseguita l'attività.",
-				"capabilities": "Capacità di esecuzione",
-				"capabilitiesDescription": "Le attività usano tutti gli strumenti per impostazione predefinita. Inserisci i nomi degli strumenti per limitare un'attività.",
 				"enabled": "Abilita attività",
 				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato.",
 				"toolsPlaceholder": "Tutti gli strumenti, oppure limita con nomi separati da virgole",

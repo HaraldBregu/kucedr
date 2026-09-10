@@ -17,10 +17,6 @@ jest.mock('react-i18next', () => {
 		'settings.cron.detail.notScheduled': 'Not scheduled',
 		'settings.cron.detail.promptInput': 'Prompt input',
 		'settings.cron.detail.promptInputDescription': 'Prompt description',
-		'settings.cron.detail.capabilities': 'Run capabilities',
-		'settings.cron.detail.capabilitiesDescription': 'Capabilities description',
-		'settings.cron.detail.toolsPlaceholder': 'All tools',
-		'settings.cron.detail.saveCapabilities': 'Save capabilities',
 		'settings.cron.history.title': 'History',
 		'settings.cron.history.description': 'Recent activity',
 		'settings.cron.history.emptyTitle': 'No history yet',
@@ -79,7 +75,6 @@ beforeEach(() => {
 			delete: jest.fn(),
 			getRuntime: jest.fn(),
 			setRuntime: jest.fn(),
-			configureCapabilities: jest.fn(),
 		},
 	});
 });

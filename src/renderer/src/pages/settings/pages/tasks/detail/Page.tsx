@@ -5,7 +5,6 @@ import { AlertTriangle, FolderOpen, History, ListChecks } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import {
 	SettingsEmptyState,
@@ -28,12 +27,10 @@ const TaskDetailsPage: React.FC = () => {
 	const [history, setHistory] = useState<TaskHistory>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [saving, setSaving] = useState(false);
 	const [running, setRunning] = useState(false);
 	const [deleting, setDeleting] = useState(false);
 	const [toggling, setToggling] = useState(false);
 	const [openingFolder, setOpeningFolder] = useState(false);
-	const [toolsAllow, setToolsAllow] = useState('');
 
 	useEffect(() => {
 		let mounted = true;
@@ -44,7 +41,6 @@ const TaskDetailsPage: React.FC = () => {
 					const selected = tasks.find((item) => item.id === decodedTaskId) ?? null;
 					setTask(selected);
 					setHistory(taskHistory);
-					setToolsAllow(selected?.toolsAllow?.join(', ') ?? '');
 				}
 			})
 			.catch((caught: unknown) => {
@@ -122,26 +118,6 @@ const TaskDetailsPage: React.FC = () => {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
 			setToggling(false);
-		}
-	};
-	const saveCapabilities = async (): Promise<void> => {
-		setSaving(true);
-		setError(null);
-		try {
-			setTask(
-				await window.tasks.configureCapabilities(
-					task.id,
-					task.enabled,
-					toolsAllow
-						.split(',')
-						.map((name) => name.trim())
-						.filter(Boolean)
-				)
-			);
-		} catch (caught) {
-			setError(caught instanceof Error ? caught.message : String(caught));
-		} finally {
-			setSaving(false);
 		}
 	};
 	const openHistoryFolder = async (): Promise<void> => {
@@ -233,25 +209,6 @@ const TaskDetailsPage: React.FC = () => {
 					<pre className="whitespace-pre-wrap break-words font-sans text-xs leading-5 text-foreground">
 						{task.prompt}
 					</pre>
-				</Card>
-			</SettingsSection>
-
-			<SettingsSection
-				title={t('settings.cron.detail.capabilities')}
-				description={t('settings.cron.detail.capabilitiesDescription')}
-			>
-				<Card size="sm" className="grid gap-3 p-4!">
-					<Input
-						value={toolsAllow}
-						disabled={saving}
-						placeholder={t('settings.cron.detail.toolsPlaceholder')}
-						onChange={(event) => setToolsAllow(event.target.value)}
-					/>
-					<div className="flex justify-end">
-						<Button size="sm" disabled={saving} onClick={() => void saveCapabilities()}>
-							{t('settings.cron.detail.saveCapabilities')}
-						</Button>
-					</div>
 				</Card>
 			</SettingsSection>
 
