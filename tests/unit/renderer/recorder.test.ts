@@ -46,10 +46,21 @@ function createEnvironment() {
 	const chunk = jest.fn(async () => undefined);
 	const complete = jest.fn(async () => undefined);
 	const streamTrack = createTrack();
+	const microphoneTrack = { ...createTrack(), kind: 'audio' as const };
+	const tracks: MediaStreamTrack[] = [streamTrack];
 	const stream = {
-		getTracks: () => [streamTrack],
+		getTracks: () => tracks,
 		getVideoTracks: () => [streamTrack],
-		getAudioTracks: () => [],
+		getAudioTracks: () => tracks.filter((track) => track.kind === 'audio'),
+		addTrack: (track: MediaStreamTrack) => tracks.push(track),
+		removeTrack: (track: MediaStreamTrack) => {
+			const index = tracks.indexOf(track);
+			if (index >= 0) tracks.splice(index, 1);
+		},
+	} as unknown as MediaStream;
+	const microphone = {
+		getTracks: () => [microphoneTrack],
+		getAudioTracks: () => [microphoneTrack],
 	} as unknown as MediaStream;
 	const api = () => ({
 		chunk,
@@ -62,14 +73,15 @@ function createEnvironment() {
 	});
 	Object.assign(window, {
 		recorder: { microphone: api(), camera: api(), screen: api() },
+		app: { getMicrophoneInputId: jest.fn().mockResolvedValue('default') },
 	});
 	Object.assign(navigator, {
 		mediaDevices: {
 			getDisplayMedia: jest.fn(async () => stream),
-			getUserMedia: jest.fn(async () => stream),
+			getUserMedia: jest.fn(async () => microphone),
 		},
 	});
-	return { commands, chunk, complete, streamTrack, stream };
+	return { commands, chunk, complete, streamTrack, microphoneTrack, stream };
 }
 
 describe('renderer recorder capture', () => {
@@ -104,6 +116,7 @@ describe('renderer recorder capture', () => {
 		);
 		expect(environment.complete).toHaveBeenCalledWith({ id: 'capture-1', mimeType: 'video/webm' });
 		expect(environment.streamTrack.stop).toHaveBeenCalled();
+		expect(environment.microphoneTrack.stop).toHaveBeenCalled();
 		dispose();
 	});
 

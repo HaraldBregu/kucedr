@@ -33,9 +33,19 @@ const media: SystemMedia = {
 	video: false,
 };
 
+const screenMedia: SystemMedia = {
+	id: 'screen',
+	titleKey: 'screen',
+	descriptionKey: 'screen',
+	source: 'display',
+	constraints: { video: true },
+	video: true,
+};
+
 describe('useMediaRecorderTest', () => {
 	let resolveStream: (value: MediaStream) => void;
 	let getUserMedia: jest.Mock;
+	let getDisplayMedia: jest.Mock;
 
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -48,9 +58,10 @@ describe('useMediaRecorderTest', () => {
 					resolveStream = resolve;
 				})
 		);
+		getDisplayMedia = jest.fn();
 		Object.defineProperty(navigator, 'mediaDevices', {
 			configurable: true,
-			value: { getUserMedia },
+			value: { getUserMedia, getDisplayMedia },
 		});
 		Object.defineProperty(window, 'MediaRecorder', {
 			configurable: true,
@@ -92,5 +103,43 @@ describe('useMediaRecorderTest', () => {
 		});
 
 		expect(track.stop).toHaveBeenCalledTimes(1);
+	});
+
+	it('adds the selected microphone to a screen recording', async () => {
+		const displayTracks: MediaStreamTrack[] = [{ kind: 'video', stop: jest.fn() } as MediaStreamTrack];
+		const microphoneTrack = { kind: 'audio', stop: jest.fn() } as MediaStreamTrack;
+		const displayStream = {
+			getTracks: () => displayTracks,
+			getVideoTracks: () => displayTracks.filter((track) => track.kind === 'video'),
+			getAudioTracks: () => displayTracks.filter((track) => track.kind === 'audio'),
+			addTrack: (track: MediaStreamTrack) => displayTracks.push(track),
+			removeTrack: (track: MediaStreamTrack) => {
+				const index = displayTracks.indexOf(track);
+				if (index >= 0) displayTracks.splice(index, 1);
+			},
+		} as unknown as MediaStream;
+		const microphoneStream = {
+			getTracks: () => [microphoneTrack],
+			getAudioTracks: () => [microphoneTrack],
+		} as unknown as MediaStream;
+		getDisplayMedia.mockResolvedValue(displayStream);
+		getUserMedia.mockResolvedValue(microphoneStream);
+
+		const { result } = renderHook(() => useMediaRecorderTest(screenMedia));
+		await act(async () => {
+			await result.current.start();
+		});
+
+		expect(getUserMedia).toHaveBeenCalledWith({
+			audio: {
+				deviceId: { exact: 'usb-microphone' },
+				echoCancellation: true,
+				noiseSuppression: true,
+			},
+		});
+		expect(displayStream.getAudioTracks()).toEqual([microphoneTrack]);
+		expect(result.current.audioUnavailable).toBe(false);
+		act(() => result.current.stop());
+		expect(microphoneTrack.stop).toHaveBeenCalledTimes(1);
 	});
 });
