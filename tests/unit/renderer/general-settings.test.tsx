@@ -48,7 +48,7 @@ beforeEach(() => {
 				notifyKeepAwake = callback;
 				return jest.fn();
 			}),
-		}, 
+		},
 	});
 });
 
@@ -87,7 +87,9 @@ it('refreshes toggles changed from the native application menu', async () => {
 		notifyKeepAwake(true);
 	});
 
-	expect(await screen.findByRole('switch', { name: 'settings.application.menuBar' })).not.toBeChecked();
+	expect(
+		await screen.findByRole('switch', { name: 'settings.application.menuBar' })
+	).not.toBeChecked();
 	expect(screen.getByRole('switch', { name: 'settings.application.keepAwake' })).toBeChecked();
 });
 

@@ -23,7 +23,13 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useApp, type AppLanguage } from '@/contexts';
-import { SettingsPageHeader, SettingsPageShell, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
+import {
+	SettingsPageHeader,
+	SettingsPageShell,
+	SettingsPanel,
+	SettingsRow,
+	SettingsSection,
+} from '../../components';
 
 interface LanguageOption {
 	readonly value: AppLanguage;
@@ -85,11 +91,11 @@ const GeneralPage: React.FC = () => {
 					<SettingsRow
 						title={t('settings.application.name')}
 						description={t('settings.application.nameDescription')}
-						media={<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
-						actionClassName="w-auto justify-end"
-						actions={
-							<span className="text-[13px] text-foreground">{__APP_NAME__}</span>
+						media={
+							<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 						}
+						actionClassName="w-auto justify-end"
+						actions={<span className="text-[13px] text-foreground">{__APP_NAME__}</span>}
 					/>
 					<SettingsRow
 						title={t('settings.application.version')}
@@ -108,7 +114,9 @@ const GeneralPage: React.FC = () => {
 					<SettingsRow
 						title={t('settings.application.menuBar')}
 						description={t('settings.application.menuBarDescription')}
-						media={<PanelTop className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<PanelTop className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						actionClassName="w-auto justify-end"
 						actions={
 							<Switch
@@ -134,7 +142,9 @@ const GeneralPage: React.FC = () => {
 					<SettingsRow
 						title={t('settings.application.appData')}
 						description={t('settings.application.appDataDescription')}
-						media={<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						actionClassName="w-auto justify-end"
 						actions={
 							<Button variant="outline" size="xs" onClick={handleOpenAppDataFolder}>
@@ -144,7 +154,9 @@ const GeneralPage: React.FC = () => {
 					/>
 					<SettingsRow
 						title={t('settings.application.dataFolder')}
-						media={<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						actionClassName="w-auto justify-end"
 						actions={
 							<Button variant="outline" size="xs" onClick={handleOpenDataFolder}>
@@ -161,7 +173,12 @@ const GeneralPage: React.FC = () => {
 						<SettingsRow
 							title={t('settings.persona.title')}
 							description={t('settings.persona.description')}
-							media={<AudioWaveform className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+							media={
+								<AudioWaveform
+									className="size-5 shrink-0 text-muted-foreground"
+									aria-hidden="true"
+								/>
+							}
 							className="grid-cols-[minmax(0,1fr)_auto]"
 							actionClassName="w-auto justify-end"
 							actions={<ChevronRight className="size-4 text-muted-foreground" />}
@@ -170,7 +187,9 @@ const GeneralPage: React.FC = () => {
 					<SettingsRow
 						title={t('settings.language.title')}
 						description={t('settings.language.description')}
-						media={<Languages className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<Languages className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						actionClassName="w-auto justify-end"
 						actions={
 							<Select value={language} onValueChange={handleLanguageChange}>
@@ -197,9 +216,7 @@ const GeneralPage: React.FC = () => {
 						title={t('settings.theme.title')}
 						media={<SunMoon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
-						actions={
-							<ThemeSwitcher value={theme} onChange={setTheme} />
-						}
+						actions={<ThemeSwitcher value={theme} onChange={setTheme} />}
 					/>
 				</SettingsPanel>
 			</SettingsSection>
