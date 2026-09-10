@@ -69,7 +69,7 @@ export function VoiceConversationWindow({
 				</button>
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4">
-				<div className="relative flex size-full max-h-[min(62vh,22rem)] min-h-56 items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
+				<div className="relative flex aspect-[4/3] w-full max-w-[28rem] shrink-0 items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
 					<Persona
 						state={state}
 						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
