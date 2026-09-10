@@ -26,12 +26,8 @@ it('lets the trusted settings surface enable a schedule with a normalized narrow
 	});
 });
 
-it('rejects invalid tool names and non-agent schedules', () => {
+it('rejects invalid tool names', () => {
 	expect(() => configureScheduleCapabilities('schedule-1', true, ['../exec'])).toThrow(
 		'Schedule tool allowlist is invalid.'
-	);
-	getSchedule.mockReturnValue({ id: 'schedule-1', action: { type: 'debug', message: 'x' } });
-	expect(() => configureScheduleCapabilities('schedule-1', true, [])).toThrow(
-		'Only agent schedules have tool capabilities.'
 	);
 });

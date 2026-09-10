@@ -44,7 +44,9 @@ it('prevents scheduled agents from mutating tasks while honoring saved tool rest
 		id: 'schedule-1',
 		name: 'Daily task',
 		enabled: true,
-		action: { type: 'agent', prompt: 'Do the work', effort: 'low', toolsAllow },
+		prompt: 'Do the work',
+		effort: 'low',
+		toolsAllow,
 		createdAt: '2026-08-11T00:00:00.000Z',
 		updatedAt: '2026-08-11T00:00:00.000Z',
 	});
