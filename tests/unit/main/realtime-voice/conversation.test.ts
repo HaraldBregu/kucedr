@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { loadMessagesBySessionId } from '../../../../src/main/agent/session/session_load_messages_by_session_id';
+import { sessionsRoot } from '../../../../src/main/agent/session/session_sessions_root';
 import { realtimeVoiceConversationFactory } from '../../../../src/main/agent/realtime_voice/conversation';
 import { realtimeVoiceHistory } from '../../../../src/main/agent/realtime_voice/history';
 
@@ -14,6 +15,11 @@ it('persists only finalized voice transcripts at their reserved turn position', 
 		const conversation = realtimeVoiceConversationFactory({ location })(SESSION_ID, 'model');
 		const voiceSessionId = conversation.persistenceSessionId;
 		expect(voiceSessionId).toBeDefined();
+		expect(
+			JSON.parse(
+				fs.readFileSync(path.join(sessionsRoot(location), voiceSessionId!, 'info.json'), 'utf8')
+			)
+		).toEqual({ type: 'voice' });
 		conversation.beginUserTurn('user-1');
 		conversation.addAssistantTranscript('First answer.');
 		expect(loadMessagesBySessionId(voiceSessionId!, location)).toEqual([
