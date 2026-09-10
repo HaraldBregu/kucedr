@@ -106,6 +106,8 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.llmModel': 'LLM Model',
 		'settings.modelServices.modelDescription': 'Choose provider and model',
 		'settings.modelServices.modelPlaceholder': 'Select model',
+		'settings.cron.actions.enable': 'Enable',
+		'settings.cron.actions.disable': 'Disable',
 		'settings.modelServices.realtimeConversationConfiguration': 'Realtime conversation',
 		'settings.modelServices.realtimeConversationDescription': 'Live model and voice',
 		'settings.modelServices.loadError': 'Unable to load models',
@@ -386,13 +388,13 @@ it('uses the Agent model picker UI and task switches', async () => {
 		</MemoryRouter>
 	);
 
-	const modelTrigger = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
+	const modelTrigger = (await screen.findAllByRole('button', { name: /LLM Model/ })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 	);
 	expect(modelTrigger).toBeDefined();
 	if (!modelTrigger) return;
 	expect(modelTrigger).toHaveTextContent('Choose provider and model');
-	expect(modelTrigger.nextElementSibling).toHaveAttribute('aria-haspopup', 'dialog');
+	expect(modelTrigger.parentElement?.querySelector('button[aria-haspopup="dialog"]')).toBeInTheDocument();
 
 	const taskSwitch = await screen.findByRole('switch', { name: 'Enable Demo task' });
 	expect(taskSwitch).toBeChecked();
