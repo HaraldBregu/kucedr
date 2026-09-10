@@ -99,21 +99,21 @@ export function ScreenSourceCard({
 			<CardContent className="max-h-80 space-y-2 overflow-y-auto px-4">
 				{sources.map((source) => (
 					<Button
-							key={source.id}
-							type="button"
-							variant="outline"
-							disabled={submitting}
-							onClick={() => void select(source.id)}
-							className="h-auto w-full justify-start gap-2 whitespace-normal p-2 text-left text-sm"
-						>
-							<span>
-								<span className="block font-medium">{source.name}</span>
-								<span className="block text-xs text-muted-foreground">
-									{source.type === 'screen' ? 'Display' : 'Window'}
-								</span>
+						key={source.id}
+						type="button"
+						variant="outline"
+						disabled={submitting}
+						onClick={() => void select(source.id)}
+						className="h-auto w-full justify-start gap-2 whitespace-normal p-2 text-left text-sm"
+					>
+						<span>
+							<span className="block font-medium">{source.name}</span>
+							<span className="block text-xs text-muted-foreground">
+								{source.type === 'screen' ? 'Display' : 'Window'}
 							</span>
-						</Button>
-					))}
+						</span>
+					</Button>
+				))}
 				<p aria-live="polite" className="text-sm text-destructive">
 					{error}
 				</p>
