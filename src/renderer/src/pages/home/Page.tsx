@@ -872,37 +872,13 @@ function PageContent(): ReactElement {
 										/>
 									)
 								}
-								voiceMode={voiceMode}
-								voiceElapsedMs={
-									voiceMode === 'conversation' ? realtimeVoice.elapsedMs : activeVoiceElapsedMs
-								}
-								voiceMuted={voiceMode === 'conversation' ? realtimeVoice.isMuted : activeVoiceMuted}
-								voiceMediaStream={
-									voiceMode === 'conversation' ? realtimeVoice.stream : activeVoiceStream
-								}
-								voiceAnalyser={voiceMode === 'conversation' ? realtimeVoice.analyser : null}
-								voiceStatus={
-									voiceMode === 'conversation'
-										? realtimeVoiceStatusLabels[realtimeVoice.status]
-										: undefined
-								}
-								voicePersonaState={
-									(realtimeVoice.status === 'listening' && !realtimeVoice.isMuted) ||
-									realtimeVoice.status === 'thinking' ||
-									realtimeVoice.status === 'speaking'
-										? realtimeVoice.status
-										: 'idle'
-								}
-								voiceWaveformActive={
-									voiceMode === 'conversation'
-										? realtimeVoice.status === 'speaking' ||
-											(realtimeVoice.status === 'listening' && !realtimeVoice.isMuted)
-										: undefined
-								}
-								onVoiceMutedChange={
-									voiceMode === 'conversation' ? realtimeVoice.setMuted : activeVoiceSetMuted
-								}
-								onVoiceEnd={() => void endVoiceConversation()}
+				{/* Conversation-mode prompt props remain in PromptInput for future reuse; voice now owns a separate window. */}
+				voiceMode={voiceMode === 'dictation' ? voiceMode : null}
+				voiceElapsedMs={activeVoiceElapsedMs}
+				voiceMuted={activeVoiceMuted}
+				voiceMediaStream={activeVoiceStream}
+				voiceAnalyser={null}
+				onVoiceMutedChange={activeVoiceSetMuted}
 								onVoiceCancel={() => void cancelDictation()}
 								onVoiceConfirm={() => void confirmDictation()}
 								filesAccept={promptCapabilities?.accept}
