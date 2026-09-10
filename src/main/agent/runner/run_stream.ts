@@ -62,6 +62,18 @@ const MAX_TOOL_CALLS = 100;
 const MAX_TOOL_OUTPUT_BYTES = 2_000_000;
 const MAX_PAID_TOOL_CALLS = 3;
 const MAX_BOT_WEB_TOOL_CALLS = 8;
+const BACKGROUND_RECORDER_IDS = new Set(['microphone_recorder', 'screen_recorder']);
+
+function startsBackgroundRecorder(call: import('../types').ToolCall): boolean {
+	if (!BACKGROUND_RECORDER_IDS.has(call.name) || call.result?.isError) return false;
+	if (typeof call.result?.content !== 'string') return false;
+	try {
+		const result = JSON.parse(call.result.content) as { id?: unknown };
+		return typeof result.id === 'string' && result.id.length > 0;
+	} catch {
+		return false;
+	}
+}
 
 export async function* stream(
 	config: Config,
@@ -387,6 +399,10 @@ async function* loop(
 				}
 			}
 			addToolResults(session, turn.toolCalls);
+			if (turn.toolCalls.some(startsBackgroundRecorder)) {
+				yield { type: 'run_finished', result: toResult(session, 'success') };
+				return;
+			}
 			if (outputBudgetExceeded) {
 				session.stopReason = 'budget_exhausted';
 				yield { type: 'run_finished', result: toResult(session, 'success') };

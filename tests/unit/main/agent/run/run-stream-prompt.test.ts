@@ -493,6 +493,45 @@ describe('run stream system prompt', () => {
 		expect(search).toHaveBeenCalledTimes(9);
 	});
 
+	it.each(['microphone_recorder', 'screen_recorder'])(
+		'releases the chat run after %s starts in the background',
+		async (id) => {
+			const recorder = jsonTool({
+				id,
+				name: id,
+				description: id,
+				schema: { type: 'object' },
+				execute: () => ({ id: 'recording-1', status: 'recording' }),
+			});
+			runModelTurnMock
+				.mockImplementationOnce(async function* () {
+					yield* [];
+					return { content: '', model: 'test-model', toolCalls: [{ id: 'record', name: id, args: {} }] };
+				})
+				.mockImplementationOnce(successfulTurn);
+			const events = [];
+			for await (const event of stream(
+				{ location: '/workspace' },
+				createSessionState(),
+				{
+					runId: `${id}-run`,
+					task: 'chat',
+					message: 'Start recording',
+					model: 'test-model',
+					type: 'default',
+					agentId: 'main',
+					contextMode: 'minimal',
+				},
+				new AbortController().signal,
+				{ tools: [recorder] }
+			))
+				events.push(event);
+
+			expect(runModelTurnMock).toHaveBeenCalledTimes(1);
+			expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { stopReason: 'end_turn' } });
+		}
+	);
+
 	it('rejects a malformed Plan response before publishing it', async () => {
 		const events = [];
 		await expect(async () => {
