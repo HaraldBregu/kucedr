@@ -1,6 +1,5 @@
 export { clone } from './tasks_clone';
 export { associateSession } from './tasks_associate_session';
-export { taskEvents } from './tasks_events';
 export { destroyTask } from './tasks_destroy';
 export { initTask } from './tasks_init';
 export { invokeTask } from './tasks_invoke';
@@ -13,7 +12,6 @@ export { pauseSchedule } from './tasks_pause_schedule';
 export { resumeSchedule } from './tasks_resume_schedule';
 export { deleteSchedule } from './tasks_delete_schedule';
 export { getSchedule } from './tasks_get_schedule';
-export { listTaskHistory } from './tasks_history';
 export { listSchedules } from './tasks_list_schedules';
 export { getRuntime } from './tasks_get_runtime';
 export { setRuntime } from './tasks_set_runtime';
@@ -34,7 +32,6 @@ export { configureScheduleCapabilities } from './tasks_configure_capabilities';
 export {
 	DEFAULT_TASK_STATE,
 	type TaskRunner,
-	type TaskEvents,
 	type TaskFunctionId,
 	type TaskFunctionInput,
 	type TaskFunctionResult,
@@ -42,7 +39,6 @@ export {
 	type TaskRuntime,
 	type TaskSchedule,
 	type TaskScheduleCreateRequest,
-	type TaskScheduleEvent,
 	type TaskScheduledTask,
 	type TaskScheduleUpdateRequest,
 	type PersistedTaskState,

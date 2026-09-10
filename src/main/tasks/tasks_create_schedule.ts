@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { activate } from './tasks_activate';
 import { create } from './tasks_create';
-import { emit } from './tasks_emit';
 import type { TaskSchedule, TaskScheduleCreateRequest } from './tasks_types';
 
 export function createSchedule(request: TaskScheduleCreateRequest): TaskSchedule {
@@ -20,7 +19,5 @@ export function createSchedule(request: TaskScheduleCreateRequest): TaskSchedule
 		createdAt: nowIso,
 		updatedAt: nowIso,
 	};
-	const created = activate(create(schedule));
-	emit(created, 'schedule.created', 'Schedule created.');
-	return created;
+	return activate(create(schedule));
 }

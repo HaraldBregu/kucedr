@@ -43,29 +43,6 @@ export type TaskScheduleUpdateRequest = Partial<
 	Omit<TaskSchedule, 'id' | 'createdAt' | 'updatedAt'>
 >;
 
-export interface TaskScheduleEvent {
-	eventId: string;
-	scheduleId: string;
-	type:
-		| 'schedule.created'
-		| 'schedule.updated'
-		| 'schedule.paused'
-		| 'schedule.resumed'
-		| 'schedule.deleted'
-		| 'schedule.loaded'
-		| 'schedule.recovered'
-		| 'schedule.due'
-		| 'schedule.triggered'
-		| 'schedule.skipped'
-		| 'schedule.missed'
-		| 'schedule.failed'
-		| 'schedule.completed'
-		| 'schedule.permissionDenied'
-		| 'schedule.nextRunUpdated';
-	timestamp: string;
-	message: string;
-}
-
 export interface TaskRuntime {
 	providerId: string;
 	modelId: string;
@@ -77,10 +54,9 @@ export interface PersistedTaskState {
 	providerId?: string;
 	modelId?: string;
 	schedules: TaskSchedule[];
-	history?: Record<string, TaskScheduleEvent[]>;
 }
 
-export const DEFAULT_TASK_STATE: PersistedTaskState = { schedules: [], history: {} };
+export const DEFAULT_TASK_STATE: PersistedTaskState = { schedules: [] };
 
 export type TaskFunctionId =
 	| 'create_schedule'
@@ -112,10 +88,6 @@ export interface TaskFunctionResult {
 	get_schedule: TaskSchedule;
 	list_schedules: TaskSchedule[];
 	run_schedule_now: TaskScheduledTask;
-}
-
-export interface TaskEvents {
-	subscribe(listener: (event: TaskScheduleEvent) => void): () => void;
 }
 
 export type TaskRunner = (schedule: TaskSchedule) => Promise<unknown>;
