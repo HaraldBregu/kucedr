@@ -320,7 +320,7 @@ cron expression, and enabled state. Task details expose metadata, **Run now**, c
 and a tool allowlist. Creating a task or editing its name, schedule, prompt, or effort remains
 agent-driven rather than a direct Settings form.
 
-Scheduled agent actions run as background agents with the full tool catalog by default. A non-empty persisted tool allowlist narrows the tools available to that schedule; a blank allowlist keeps the full catalog.
+Scheduled tasks run as background agents with the full tool catalog by default. A non-empty persisted tool allowlist narrows the tools available to that schedule; a blank allowlist keeps the full catalog.
 
 Scheduled prompts and **Run now** invoke the agent directly as background runs.
 
