@@ -218,9 +218,7 @@ const TaskDetailsPage: React.FC = () => {
 				</Card>
 			</SettingsSection>
 
-			<SettingsSection
-				title={t('settings.cron.history.title')}
-			>
+			<SettingsSection title={t('settings.cron.history.title')}>
 				<Card size="sm" className="gap-0! p-0!">
 					{history.length === 0 ? (
 						<SettingsEmptyState

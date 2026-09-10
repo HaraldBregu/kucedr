@@ -21,7 +21,7 @@ jest.mock('react-i18next', () => {
 			'Agent sessions created by this task will appear here.',
 		'settings.cron.history.openFolder': 'Open session folder',
 		'settings.cron.history.delete': 'Delete session history',
-	'settings.cron.history.confirmDelete': 'Delete this session history?',
+		'settings.cron.history.confirmDelete': 'Delete this session history?',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
 		'settings.cron.actions.remove': 'Delete',
