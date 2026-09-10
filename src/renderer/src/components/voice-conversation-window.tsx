@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { Mic, MicOff, X } from 'lucide-react';
+import { Mic, MicOff } from 'lucide-react';
 import { Persona, type PersonaState } from '@/components/persona';
 import { TypingLoader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
@@ -46,22 +46,7 @@ export function VoiceConversationWindow({
 	}, [voice.start]);
 
 	return (
-		<main className="h-full p-3 text-foreground" data-voice-window>
-			<div className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-border/60 bg-card/95 shadow-2xl shadow-black/30 backdrop-blur-xl">
-				<div className="flex h-11 shrink-0 items-center justify-between px-4">
-					<span className="text-xs font-semibold tracking-wide text-muted-foreground">
-						Voice conversation
-					</span>
-					<button
-						type="button"
-						aria-label="End voice conversation"
-						disabled={isEnding}
-						onClick={() => void voice.end()}
-						className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
-					>
-						<X className="size-4" strokeWidth={2.4} />
-					</button>
-				</div>
+		<main className="flex h-full min-h-0 flex-col bg-card text-foreground" data-voice-window>
 				<div className="relative flex min-h-0 flex-1 items-center justify-center px-4">
 					<div className="relative flex size-full max-h-[min(62vh,22rem)] min-h-56 items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
 						<Persona
@@ -114,7 +99,6 @@ export function VoiceConversationWindow({
 						</button>
 					</div>
 				</div>
-			</div>
 		</main>
 	);
 }
