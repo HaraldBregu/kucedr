@@ -210,9 +210,7 @@ const TaskDetailsPage: React.FC = () => {
 				</Card>
 			</SettingsSection>
 
-			<SettingsSection
-				title={t('settings.cron.detail.promptInput')}
-			>
+			<SettingsSection title={t('settings.cron.detail.promptInput')}>
 				<Card size="sm" className="p-4!">
 					<pre className="whitespace-pre-wrap break-words font-sans text-xs leading-5 text-foreground">
 						{task.prompt}
