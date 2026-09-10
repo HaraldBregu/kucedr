@@ -15,6 +15,11 @@ export const win: WindowApi = {
 	close: (): void => {
 		typedSend(WindowChannels.close);
 	},
+	openVoiceConversation: (chatSessionId): Promise<void> => {
+		const normalizedChatSessionId = chatSessionId.trim();
+		if (!normalizedChatSessionId) throw new Error('Invalid voice conversation session id.');
+		return typedInvokeUnwrap(WindowChannels.openVoiceConversation, normalizedChatSessionId);
+	},
 	popupMenu: (): void => {
 		typedSend(WindowChannels.popupMenu);
 	},

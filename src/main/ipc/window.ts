@@ -32,6 +32,7 @@ const maxContextMenuTextLength = 120;
 export interface WindowIpcDeps {
 	logger: LoggerService;
 	appRegistry: AppRegistry;
+	openVoiceConversation?: (chatSessionId: string) => void;
 }
 
 /**
@@ -54,7 +55,7 @@ export interface WindowIpcDeps {
 export class WindowIpc implements IpcModule<WindowIpcDeps> {
 	readonly name = 'window';
 
-	register({ logger, appRegistry }: WindowIpcDeps, _eventBus: EventBus): void {
+	register({ logger, appRegistry, openVoiceConversation }: WindowIpcDeps, _eventBus: EventBus): void {
 		// --- Send handlers (fire-and-forget) ---
 
 		ipcMain.on(WindowChannels.minimize, (event) => {
@@ -78,6 +79,17 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 			const win = BrowserWindow.fromWebContents(event.sender);
 			if (win) win.close();
 		});
+
+		ipcMain.handle(
+			WindowChannels.openVoiceConversation,
+			wrapIpcHandler((event, chatSessionId: string) => {
+				if (typeof chatSessionId !== 'string' || !chatSessionId.trim()) {
+					throw new Error('Invalid voice conversation session id.');
+				}
+				if (!openVoiceConversation) throw new Error('Voice conversations are unavailable.');
+				openVoiceConversation(chatSessionId.trim());
+			}, 'window:open-voice-conversation')
+		);
 
 		ipcMain.on(WindowChannels.popupMenu, (event) => {
 			const win = BrowserWindow.fromWebContents(event.sender);
