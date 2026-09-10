@@ -553,10 +553,10 @@ no enable/disable control.
 - On macOS, Kucedr displays microphone/camera permission status, can request access, and opens the relevant System Settings pane.
 - Screen capture opens its OS settings pane.
 - Microphone can be recorded and played back.
-- Camera and screen capture show a live preview, can record, stop, retry, and play the result.
+- Camera and screen capture show a live preview, can record, stop, retry, and play the result. Screen recordings include the selected microphone when access is granted, and remain usable as video-only if it is unavailable.
 - On non-macOS platforms, the explicit system permission status is reported as unknown and the current application-level microphone/camera toggle handlers do not disable capture.
 - Display capture selects one display or window per recording. macOS 15+ uses Electron's native system picker when available; other platforms use a native Kucedr source chooser when Electron returns multiple sources. Linux PipeWire environments may expose only one portal-mediated source.
-- Background recorder tools stream WebM chunks to a main-process-owned file with ordered writes, bounded in-flight buffering, no silent overwrite, and completion only after the file is closed. Screen recording is video-only; system-audio loopback is not enabled.
+- Background recorder tools stream WebM chunks to a main-process-owned file with ordered writes, bounded in-flight buffering, no silent overwrite, and completion only after the file is closed. Screen recordings include microphone audio when available; system-audio loopback is not enabled.
 
 ### Screen recording troubleshooting
 

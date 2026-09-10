@@ -44,6 +44,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 	const {
 		state: recorderState,
 		error: recorderError,
+		audioUnavailable,
 		recordedUrl,
 		elapsedSeconds,
 		videoRef,
@@ -201,6 +202,9 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 					<div className="flex flex-col gap-3 p-4">
 						{recorderError && (
 							<SettingsNotice variant="destructive">{recorderError}</SettingsNotice>
+						)}
+						{media.source === 'display' && audioUnavailable && (
+							<SettingsNotice>{t('settings.system.media.screen.microphoneUnavailable')}</SettingsNotice>
 						)}
 
 						{media.video && recorderState !== 'recorded' && (

@@ -1,4 +1,5 @@
 import { getMicrophoneConstraints } from '@/lib/microphone/constraints';
+import { getScreenRecordingStream } from '@/lib/microphone/screen';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SystemMedia } from './media';
 
@@ -7,6 +8,7 @@ export type RecorderState = 'idle' | 'starting' | 'recording' | 'recorded';
 export interface MediaRecorderTest {
 	readonly state: RecorderState;
 	readonly error: string;
+	readonly audioUnavailable: boolean;
 	readonly recordedUrl: string | null;
 	readonly elapsedSeconds: number;
 	readonly videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -26,6 +28,7 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 
 	const [state, setState] = useState<RecorderState>('idle');
 	const [error, setError] = useState('');
+	const [audioUnavailable, setAudioUnavailable] = useState(false);
 	const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
 	const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
@@ -63,6 +66,7 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 		startingRef.current = true;
 		setState('starting');
 		setError('');
+		setAudioUnavailable(false);
 		if (urlRef.current) {
 			URL.revokeObjectURL(urlRef.current);
 			urlRef.current = null;
@@ -72,14 +76,17 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 
 		let stream: MediaStream | null = null;
 		try {
-			stream =
-				media.source === 'display'
-					? await navigator.mediaDevices.getDisplayMedia(media.constraints)
-					: await navigator.mediaDevices.getUserMedia(
+			if (media.source === 'display') {
+				const captured = await getScreenRecordingStream(media.constraints);
+				stream = captured.stream;
+				setAudioUnavailable(!captured.hasMicrophone);
+			} else {
+				stream = await navigator.mediaDevices.getUserMedia(
 							media.id === 'microphone'
 								? { audio: await getMicrophoneConstraints() }
 								: media.constraints
 						);
+			}
 			if (generationRef.current !== generation) {
 				stopStream(stream);
 				return;
@@ -141,6 +148,7 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 		setRecordedUrl(null);
 		setElapsedSeconds(0);
 		setError('');
+		setAudioUnavailable(false);
 		setState('idle');
 	}, [clearTimer, stopStream]);
 
@@ -159,5 +167,5 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 		};
 	}, [media.id, stopStream]);
 
-	return { state, error, recordedUrl, elapsedSeconds, videoRef, start, stop, reset };
+	return { state, error, audioUnavailable, recordedUrl, elapsedSeconds, videoRef, start, stop, reset };
 }

@@ -325,7 +325,8 @@
 				},
 				"screen": {
 					"label": "Screen",
-					"description": "Capture the screen to verify screen recording access.",
+					"description": "Capture the screen and microphone to verify screen recording access.",
+					"microphoneUnavailable": "Screen recording will continue without microphone audio. Allow microphone access to include it.",
 					"permissionHelp": "Allow the active app in System Settings → Privacy & Security → Screen & System Audio Recording, then fully quit and relaunch it. Development runs appear as Electron; packaged builds appear as Kucedr.",
 					"requestError": "Screen capture was cancelled or denied. Enable the active app in Screen & System Audio Recording, then fully quit and relaunch it."
 				},

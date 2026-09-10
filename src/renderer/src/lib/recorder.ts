@@ -1,4 +1,5 @@
 import { getMicrophoneConstraints } from '@/lib/microphone/constraints';
+import { getScreenRecordingStream } from '@/lib/microphone/screen';
 import type { RecorderApi } from '@shared/api_types';
 
 type RecorderTrack = RecorderApi['microphone'];
@@ -209,7 +210,7 @@ export function initRecorderCapture(): () => void {
 		),
 		createCaptureHost(
 			window.recorder.screen,
-			() => navigator.mediaDevices.getDisplayMedia(screenVideo),
+			async () => (await getScreenRecordingStream(screenVideo)).stream,
 			'video'
 		),
 	];
