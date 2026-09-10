@@ -327,13 +327,9 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const wiki = screen.getByRole('button', { name: /LLM Wiki/ });
 	const rag = screen.getByRole('button', { name: /RAG/ });
 	const permissions = screen.getByRole('button', { name: /Permissions/ });
-	const dataManagement = screen.getByRole('button', { name: /Data management/ });
-	expect(
-		wiki.compareDocumentPosition(dataManagement) & Node.DOCUMENT_POSITION_FOLLOWING
-	).toBeTruthy();
 	expect(rag.closest('[data-slot="card"]')).toBe(wiki.closest('[data-slot="card"]'));
 	expect(permissions.closest('[data-slot="card"]')).not.toBe(rag.closest('[data-slot="card"]'));
-	expect(dataManagement.closest('[data-slot="card"]')).not.toBe(wiki.closest('[data-slot="card"]'));
+	expect(screen.queryByRole('button', { name: /Data management/ })).not.toBeInTheDocument();
 });
 
 it('shows only runtime-supported realtime models and saves model and voice together', async () => {
@@ -468,7 +464,6 @@ it.each([
 	['settings.tabs.skills', '/settings/agent/skills', 'link'],
 	['settings.tabs.taskScheduler', '/settings/agent/tasks', 'link'],
 	['settings.tabs.mcp', '/settings/agent/mcp', 'link'],
-	['Data management', '/settings/agent/data', 'button'],
 	['RAG', '/settings/agent/rag', 'button'],
 	['LLM Wiki', '/settings/agent/llm-wiki', 'button'],
 ])('opens %s from the Agent settings page', async (label, path, role) => {
