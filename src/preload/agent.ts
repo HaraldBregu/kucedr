@@ -126,6 +126,11 @@ export const agent: AgentApi = {
 	openSessionsFolder: (): Promise<void> => {
 		return typedInvokeUnwrap(AgentChannels.openSessionsFolder);
 	},
+	openSessionFolder: (sessionId: string): Promise<void> => {
+		const normalizedSessionId = optionalTrimmedString(sessionId);
+		if (!normalizedSessionId) throw new Error('Invalid assistant session id.');
+		return typedInvokeUnwrap(AgentChannels.openSessionFolder, normalizedSessionId);
+	},
 	renameSession: (sessionId: string, title: string): Promise<void> => {
 		const normalizedSessionId = optionalTrimmedString(sessionId);
 		const normalizedTitle = optionalTrimmedString(title);

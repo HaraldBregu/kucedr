@@ -252,6 +252,7 @@ export interface AgentInvokeChannelMap {
 		result: import('../main/agent/knowledge/rag/types').RagMatch[];
 	};
 	[AgentChannels.ragPickFolder]: { args: []; result: string | undefined };
+	[AgentChannels.openSessionFolder]: { args: [sessionId: string]; result: void };
 }
 
 export interface RecorderInvokeChannelMap {
@@ -288,9 +289,8 @@ export interface TaskInvokeChannelMap {
 	[TaskChannels.list]: { args: []; result: import('../main/tasks').TaskSchedule[] };
 	[TaskChannels.history]: {
 		args: [scheduleId: string];
-		result: import('../main/tasks').TaskScheduleEvent[];
+		result: import('./agent_types').AgentSessionSummary[];
 	};
-	[TaskChannels.openFolder]: { args: []; result: void };
 	[TaskChannels.runNow]: {
 		args: [scheduleId: string];
 		result: import('../main/tasks').TaskScheduledTask;

@@ -32,7 +32,6 @@ import type {
 	TaskRuntime,
 	TaskSchedule,
 	TaskScheduledTask,
-	TaskScheduleEvent,
 } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/agent/health/health_types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
@@ -165,6 +164,7 @@ export interface AgentApi {
 	getPromptInputCapabilities: () => Promise<AgentPromptInputCapabilities | null>;
 	listSessions: () => Promise<AgentSessionSummary[]>;
 	openSessionsFolder: () => Promise<void>;
+	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;
 	getLastMessages: (sessionId: string) => Promise<AgentHistoryMessage[]>;
 	getSessionSnapshot: (sessionId: string) => Promise<AgentSessionSnapshot>;
@@ -244,8 +244,7 @@ export interface CoderApi {
 
 export interface TaskApi {
 	list: () => Promise<TaskSchedule[]>;
-	history: (scheduleId: string) => Promise<TaskScheduleEvent[]>;
-	openFolder: () => Promise<void>;
+	history: (scheduleId: string) => Promise<AgentSessionSummary[]>;
 	runNow: (scheduleId: string) => Promise<TaskScheduledTask>;
 	delete: (scheduleId: string) => Promise<void>;
 	setEnabled: (scheduleId: string, enabled: boolean) => Promise<TaskSchedule>;

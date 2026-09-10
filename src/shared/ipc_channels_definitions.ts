@@ -7,6 +7,7 @@ export const AgentChannels = {
 	getPromptInputCapabilities: 'agent:prompt-input-capabilities:get',
 	listSessions: 'agent:list-sessions',
 	openSessionsFolder: 'agent:sessions:open-folder',
+	openSessionFolder: 'agent:session:open-folder',
 	renameSession: 'agent:rename-session',
 	lastMessages: 'agent:last-messages',
 	sessionSnapshot: 'agent:session-snapshot',
@@ -108,7 +109,6 @@ export const RecorderChannels = {
 export const TaskChannels = {
 	list: 'tasks:list',
 	history: 'tasks:history',
-	openFolder: 'tasks:open-folder',
 	runNow: 'tasks:run-now',
 	delete: 'tasks:delete',
 	setEnabled: 'tasks:enabled:set',

@@ -9,9 +9,6 @@ export const tasks: TaskApi = {
 	history: (scheduleId: string) => {
 		return typedInvokeUnwrap(TaskChannels.history, scheduleId);
 	},
-	openFolder: () => {
-		return typedInvokeUnwrap(TaskChannels.openFolder);
-	},
 	runNow: (scheduleId: string) => {
 		return typedInvokeUnwrap(TaskChannels.runNow, scheduleId);
 	},
