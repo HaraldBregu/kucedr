@@ -128,6 +128,19 @@ describe('protocol security', () => {
 			securityOrigin: 'file://',
 		} as Electron.MediaAccessPermissionRequest);
 		expect(legacyDisplayCaptureCallback).toHaveBeenCalledWith(true);
+		const appLegacyCaptureCallback = jest.fn();
+		request(
+			appContents as Electron.WebContents,
+			'media',
+			appLegacyCaptureCallback,
+			{
+				isMainFrame: true,
+				mediaTypes: [],
+				requestingUrl: mainUrl,
+				securityOrigin: 'file://',
+			} as Electron.MediaAccessPermissionRequest
+		);
+		expect(appLegacyCaptureCallback).toHaveBeenCalledWith(false);
 		const appCaptureCallback = jest.fn();
 		request(appContents as Electron.WebContents, 'display-capture', appCaptureCallback, {
 			isMainFrame: true,
