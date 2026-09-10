@@ -32,3 +32,8 @@ it('omits empty reply context', async () => {
 		interactionMode: 'default',
 	});
 });
+
+it('opens the chat history folder through the dedicated agent channel', async () => {
+	await agent.openSessionsFolder();
+	expect(invoke).toHaveBeenCalledWith(AgentChannels.openSessionsFolder);
+});
