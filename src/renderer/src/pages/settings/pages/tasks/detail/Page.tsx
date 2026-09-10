@@ -59,12 +59,13 @@ const TaskDetailsPage: React.FC = () => {
 		<Button
 			type="button"
 			variant="ghost"
-			size="icon-sm"
-			aria-label={t('titleBar.navigateBack')}
-			title={t('titleBar.navigateBack')}
+			size="xs"
+			aria-label={t('settings.cron.actions.back')}
+			title={t('settings.cron.actions.back')}
 			onClick={() => navigate('/settings/agent/tasks')}
 		>
 			<ArrowLeft className="size-3.5" />
+			{t('settings.cron.actions.back')}
 		</Button>
 	);
 

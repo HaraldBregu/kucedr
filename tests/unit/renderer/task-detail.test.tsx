@@ -5,7 +5,6 @@ import TaskDetailsPage from '../../../src/renderer/src/pages/settings/pages/task
 
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
-		'titleBar.navigateBack': 'Navigate back',
 		'settings.cron.detailsTitle': 'Task details',
 		'settings.cron.enabled': 'Enabled',
 		'settings.cron.disabled': 'Disabled',
@@ -26,6 +25,7 @@ jest.mock('react-i18next', () => {
 		'settings.cron.history.openFolder': 'Open session folder',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
+		'settings.cron.actions.back': 'Back',
 		'settings.cron.actions.remove': 'Delete',
 		'settings.cron.actions.removing': 'Deleting...',
 		'settings.cron.actions.disable': 'Disable',
@@ -132,7 +132,7 @@ it('navigates back to the tasks list from the detail header', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('button', { name: 'Navigate back' }));
+	await user.click(await screen.findByRole('button', { name: 'Back' }));
 
 	expect(await screen.findByText('Tasks list')).toBeInTheDocument();
 });
