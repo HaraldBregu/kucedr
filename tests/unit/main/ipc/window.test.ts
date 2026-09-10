@@ -97,9 +97,9 @@ it('opens the dedicated voice conversation window with a trimmed chat session id
 		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry, openVoiceConversation },
 		{} as EventBus
 	);
-	const handler = (ipcMain.handle as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.openVoiceConversation
-	)?.[1];
+	const handler = (ipcMain.handle as jest.Mock).mock.calls
+		.filter(([channel]) => channel === WindowChannels.openVoiceConversation)
+		.at(-1)?.[1];
 
 	await expect(handler({ sender: {} } as IpcMainInvokeEvent, ' chat-session ')).resolves.toEqual({
 		success: true,
