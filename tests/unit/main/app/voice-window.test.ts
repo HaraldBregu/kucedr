@@ -51,5 +51,5 @@ it('creates a standalone voice window that can be shown and hidden independently
 	expect(voiceWindow.isVisible()).toBe(true);
 	expect(win.hide).toHaveBeenCalledTimes(1);
 	expect(win.show).toHaveBeenCalledTimes(2);
-	 expect(attachWindowHandlers).toHaveBeenCalledWith(win);
+	expect(attachWindowHandlers).toHaveBeenCalledWith(win);
 });
