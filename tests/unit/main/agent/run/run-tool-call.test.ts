@@ -228,6 +228,8 @@ describe('runToolCall', () => {
 		).toBe(true);
 		expect((await resultEvent).value).toMatchObject({ type: 'user_input_result', status: 'resolved' });
 		await events.next();
-		expect(call.result).toMatchObject({ content: { status: 'resolved', sourceId: 'window:2' } });
+		expect(call.result).toMatchObject({
+			content: JSON.stringify({ status: 'resolved', sourceId: 'window:2' }),
+		});
 	});
 });
