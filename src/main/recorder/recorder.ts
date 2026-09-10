@@ -147,6 +147,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 		start(config) {
 			const url = typeof config?.url === 'string' ? config.url.trim() : '';
 			const duration = config?.duration;
+			const sourceId = typeof config?.sourceId === 'string' ? config.sourceId.trim() : undefined;
 			if (!url || !path.isAbsolute(url)) {
 				throw new Error('Recording url must be an absolute path.');
 			}
@@ -155,6 +156,9 @@ export function createRecorder(channels: { command: string; event: string }): Re
 			}
 			if (duration !== undefined && (!Number.isFinite(duration) || duration <= 0)) {
 				throw new Error('Recording duration must be a positive number of milliseconds.');
+			}
+			if (config?.sourceId !== undefined && !sourceId) {
+				throw new Error('Recording source must be a non-empty identifier.');
 			}
 			if ([...recordings.values()].some(isActive)) {
 				throw new Error('A recording is already in progress.');
@@ -188,6 +192,7 @@ export function createRecorder(channels: { command: string; event: string }): Re
 				type: 'start',
 				id: recording.id,
 				...(duration === undefined ? {} : { duration }),
+				...(sourceId === undefined ? {} : { sourceId }),
 			});
 			if (duration !== undefined) {
 				timeouts.set(

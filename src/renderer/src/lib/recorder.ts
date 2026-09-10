@@ -39,7 +39,7 @@ function captureError(error: unknown, fallback: string): string {
 
 function createCaptureHost(
 	api: RecorderTrack,
-	getStream: () => Promise<MediaStream>,
+	getStream: (sourceId?: string) => Promise<MediaStream>,
 	mediaKind: 'audio' | 'video'
 ): () => void {
 	const captures = new Map<string, ActiveCapture>();
@@ -65,7 +65,7 @@ function createCaptureHost(
 		}
 	}
 
-	async function startCapture(id: string, duration?: number): Promise<void> {
+	async function startCapture(id: string, duration?: number, sourceId?: string): Promise<void> {
 		if (captures.size > 0) {
 			await api
 				.complete({ id, error: 'A recording is already in progress.' })
@@ -89,7 +89,7 @@ function createCaptureHost(
 			if (typeof MediaRecorder === 'undefined') {
 				throw new Error('MediaRecorder is not supported in this environment.');
 			}
-			const stream = await getStream();
+			const stream = await getStream(sourceId);
 			capture.stream = stream;
 			if (capture.discard || capture.stopRequested) {
 				stopStream(capture);
@@ -168,7 +168,7 @@ function createCaptureHost(
 	}
 
 	const disposeCommand = api.onCommand((command) => {
-		if (command.type === 'start') void startCapture(command.id, command.duration);
+		if (command.type === 'start') void startCapture(command.id, command.duration, command.sourceId);
 		else stopCapture(command.id, command.type === 'cancel');
 	});
 
@@ -212,7 +212,7 @@ export function initRecorderCapture(): () => void {
 		),
 		createCaptureHost(
 			window.recorder.screen,
-			async () => (await getScreenRecordingStream(screenVideo)).stream,
+			async (sourceId) => (await getScreenRecordingStream(screenVideo, sourceId)).stream,
 			'video'
 		),
 	];

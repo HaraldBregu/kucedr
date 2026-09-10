@@ -35,6 +35,7 @@ import { microphoneRecorderStopTool } from '../tools/system/microphone_recorder_
 import { screenRecorderTool } from '../tools/system/screen_recorder';
 import { screenRecorderStatusTool } from '../tools/system/screen_recorder_status';
 import { screenRecorderStopTool } from '../tools/system/screen_recorder_stop';
+import { selectScreenSourceTool } from '../tools/system/screen_source';
 import { createTaskTool } from '../tools/tasks/create_task';
 import { deleteTaskTool } from '../tools/tasks/delete_task';
 import { getTaskTool } from '../tools/tasks/get_task';
@@ -78,6 +79,7 @@ export function builtinTools(
 		cameraRecorderStatusTool,
 		cameraRecorderStopTool,
 		screenRecorderTool(),
+		...(interactionMode === 'default' ? [selectScreenSourceTool] : []),
 		screenRecorderStatusTool,
 		screenRecorderStopTool,
 		saveMemoryTool(config),
