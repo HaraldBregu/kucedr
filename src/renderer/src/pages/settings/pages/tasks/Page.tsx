@@ -230,39 +230,41 @@ const TasksPage: React.FC = () => {
 							description={t('settings.cron.emptyDescription')}
 						/>
 					) : (
-							tasks.map((task) => (
-								<Item
-									key={task.id}
-									role="button"
-									tabIndex={0}
-									variant="outline"
-									size="md"
-									aria-label={task.name}
-									className="cursor-pointer border-b border-border/60 px-5 py-4 hover:bg-muted/40 last:border-b-0"
-									onClick={() =>
-										navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)
+						tasks.map((task) => (
+							<Item
+								key={task.id}
+								role="button"
+								tabIndex={0}
+								variant="outline"
+								size="md"
+								aria-label={task.name}
+								className="cursor-pointer border-b border-border/60 px-5 py-4 hover:bg-muted/40 last:border-b-0"
+								onClick={() =>
+									navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)
+								}
+								onKeyDown={(event) => {
+									if (event.key === 'Enter' || event.key === ' ') {
+										event.preventDefault();
+										navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`);
 									}
-									onKeyDown={(event) => {
-										if (event.key === 'Enter' || event.key === ' ') {
-											event.preventDefault();
-											navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`);
-										}
-									}}
-								>
-									<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-										<div className="flex w-full min-w-0 items-center gap-3">
-											<ItemTitle className="min-w-0 max-w-full flex-1 truncate">{task.name}</ItemTitle>
+								}}
+							>
+								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
+									<div className="flex w-full min-w-0 items-center gap-3">
+										<ItemTitle className="min-w-0 max-w-full flex-1 truncate">
+											{task.name}
+										</ItemTitle>
 										<div className="ml-auto flex shrink-0 items-center gap-3">
 											<span className="max-w-[45%] truncate text-right text-[11px] text-muted-foreground sm:max-w-none">
 												{describeSchedule(task.cronExpression, t)}
 											</span>
 											<Switch
-														checked={task.enabled}
-														disabled={togglingTaskId === task.id}
-														aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
-														onClick={(event) => event.stopPropagation()}
-														onKeyDown={(event) => event.stopPropagation()}
-														onCheckedChange={(enabled) =>
+												checked={task.enabled}
+												disabled={togglingTaskId === task.id}
+												aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
+												onClick={(event) => event.stopPropagation()}
+												onKeyDown={(event) => event.stopPropagation()}
+												onCheckedChange={(enabled) =>
 													void handleTaskEnabledChange(task.id, enabled)
 												}
 											></Switch>

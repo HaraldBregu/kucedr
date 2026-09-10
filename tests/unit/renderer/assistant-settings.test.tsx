@@ -432,7 +432,7 @@ it('uses the Agent model picker UI and task switches', async () => {
 	await user.click(taskSwitch);
 	await waitFor(() => {
 		expect(window.tasks.setEnabled).toHaveBeenCalledWith('task-1', false);
-		 expect(taskSwitch).not.toBeChecked();
+		expect(taskSwitch).not.toBeChecked();
 	});
 	await user.click(taskItem);
 	expect(await screen.findByText('Task detail')).toBeInTheDocument();
