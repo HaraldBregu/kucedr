@@ -156,6 +156,12 @@ const mediaApi = (providerId: string, modelId: string) => ({
 const realtimeSetSetup = jest.fn();
 
 beforeEach(() => {
+	if (!window.PointerEvent) {
+		Object.defineProperty(window, 'PointerEvent', {
+			configurable: true,
+			value: MouseEvent,
+		});
+	}
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
 		value: {
