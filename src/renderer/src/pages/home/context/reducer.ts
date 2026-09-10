@@ -167,60 +167,51 @@ function applyResponseEvent(
 		return updateAgentMessage(
 			{ ...ensured.state, activeAgentId: ensured.message.id, activeRunId: event.runId },
 			ensured.message.id,
-			(message) => ({
-				...message,
-				state: 'awaiting_input',
-				tools: updateAgentToolPart(message.tools, event.toolCallId, {
-					type:
-						message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
-						'select_screen_source'
-							? 'select_screen_source'
-							: 'ask',
-					state: 'input-available',
-					input: { questions: event.questions },
-				}),
-				pendingUserInput: {
-					requestId: event.requestId,
-					runId: event.runId,
-					toolCallId: event.toolCallId,
-					inputFingerprint: event.inputFingerprint,
-					questions: event.questions,
-					expiresAt: event.expiresAt,
-				},
-			})
+			(message) => {
+				const type = message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type;
+				return {
+					...message,
+					state: 'awaiting_input',
+					tools: updateAgentToolPart(message.tools, event.toolCallId, {
+						type: type === 'select_screen_source' ? 'select_screen_source' : 'ask',
+						state: 'input-available',
+						input: { questions: event.questions },
+					}),
+					pendingUserInput: {
+						requestId: event.requestId,
+						runId: event.runId,
+						toolCallId: event.toolCallId,
+						inputFingerprint: event.inputFingerprint,
+						questions: event.questions,
+						expiresAt: event.expiresAt,
+					},
+				};
+			}
 		);
 	}
 
 	if (event.type === 'user_input_result') {
-		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
-			...message,
-			pendingUserInput: undefined,
-			tools: updateAgentToolPart(message.tools, event.toolCallId, {
-				type:
-					message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
-					'select_screen_source'
-						? 'select_screen_source'
-						: 'ask',
-				state: event.status === 'resolved' ? 'output-available' : 'output-error',
-				output:
-					message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
-					'select_screen_source'
-						? {
-							status: event.status,
-							sourceId: event.answers.find((answer) => answer.questionId === 'screen-source')?.answer,
-						}
-						: { status: event.status, answers: event.answers },
-				outputText: JSON.stringify(
-					message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
-						'select_screen_source'
-						? {
-								status: event.status,
-								sourceId: event.answers.find((answer) => answer.questionId === 'screen-source')?.answer,
-							}
-						: { status: event.status, answers: event.answers }
-				),
-			}),
-		}));
+		return updateAgentMessage(ensured.state, ensured.message.id, (message) => {
+			const screenSource =
+				message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
+				'select_screen_source';
+			const output = screenSource
+				? {
+					status: event.status,
+					sourceId: event.answers.find((answer) => answer.questionId === 'screen-source')?.answer,
+				}
+				: { status: event.status, answers: event.answers };
+			return {
+				...message,
+				pendingUserInput: undefined,
+				tools: updateAgentToolPart(message.tools, event.toolCallId, {
+					type: screenSource ? 'select_screen_source' : 'ask',
+					state: event.status === 'resolved' ? 'output-available' : 'output-error',
+					output,
+					outputText: JSON.stringify(output),
+				}),
+			};
+		});
 	}
 
 	if (event.type === 'model_usage') {
