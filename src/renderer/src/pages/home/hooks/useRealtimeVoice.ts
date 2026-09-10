@@ -293,7 +293,6 @@ export function useRealtimeVoice({
 
 			sessionIdRef.current = session.id;
 			sessionChatIdRef.current = chatSessionId;
-			setMuted(false);
 			setStatus('listening');
 			startedAtMsRef.current = Date.now();
 			clockRef.current = window.setInterval(() => {
@@ -312,10 +311,9 @@ export function useRealtimeVoice({
 		chatSessionId,
 		failSession,
 		isConfigured,
-		isSupported,
-		releaseAudio,
-		setMuted,
-		startCapture,
+			isSupported,
+			releaseAudio,
+			startCapture,
 		startPlayback,
 	]);
 

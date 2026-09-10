@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { Mic, MicOff, X } from 'lucide-react';
+import { Mic, MicOff } from 'lucide-react';
 import { Persona, type PersonaState } from '@/components/persona';
 import { TypingLoader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
@@ -40,6 +40,9 @@ export function VoiceConversationWindow({
 	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow, closeOnError: false });
 	const isEnding = voice.status === 'ending';
 	const state = personaState(voice.status, voice.isMuted);
+	const statusMessage =
+		voice.errorMessage ??
+		(voice.status === 'checking-permission' ? null : statusLabels[voice.status]);
 
 	useEffect(() => {
 		void voice.start();
@@ -57,38 +60,30 @@ export function VoiceConversationWindow({
 				<span className="text-sm font-normal tracking-wide text-muted-foreground">
 					Voice conversation
 				</span>
-				<button
-					type="button"
-					aria-label="End voice conversation"
-					disabled={isEnding}
-					onClick={() => void voice.end()}
-					className="absolute right-1 top-1 flex size-10 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
-					style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-				>
-					<X className="size-[13px]" strokeWidth={1.5} />
-				</button>
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
 				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
 					<Persona
 						state={state}
 						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
-						size={176}
+						size={208}
 					/>
 				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
-				<div className="flex items-center justify-between gap-3">
-					<span
-						role="status"
-						aria-live="polite"
-						className={cn(
-							'truncate text-xs font-medium text-muted-foreground',
-							voice.status === 'error' && 'text-destructive'
-						)}
-					>
-						{voice.errorMessage ?? statusLabels[voice.status]}
-					</span>
+				<div className={cn('flex items-center gap-3', statusMessage ? 'justify-between' : 'justify-end')}>
+					{statusMessage ? (
+						<span
+							role="status"
+							aria-live="polite"
+							className={cn(
+								'truncate text-xs font-medium text-muted-foreground',
+								voice.status === 'error' && 'text-destructive'
+							)}
+						>
+							{statusMessage}
+						</span>
+					) : null}
 					<span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
 						{formatDuration(voice.elapsedMs)}
 					</span>
@@ -96,8 +91,8 @@ export function VoiceConversationWindow({
 				<div className="flex items-center justify-center gap-2">
 					<button
 						type="button"
-						aria-label={voice.isMuted ? 'Unmute' : 'Mute'}
-						disabled={!voice.isActive || isEnding}
+						aria-label={voice.isMuted ? 'Enable microphone' : 'Disable microphone'}
+						disabled={!voice.stream || isEnding}
 						onClick={() => voice.setMuted(!voice.isMuted)}
 						className={cn(
 							'flex size-10 items-center justify-center rounded-full border transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
