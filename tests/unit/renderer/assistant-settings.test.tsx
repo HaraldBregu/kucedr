@@ -405,7 +405,9 @@ it('uses the Agent model picker UI and task switches', async () => {
 	expect(modelTrigger).toBeDefined();
 	if (!modelTrigger) return;
 	expect(modelTrigger).toHaveTextContent('Choose provider and model');
-	expect(modelTrigger.parentElement?.querySelector('button[aria-haspopup="dialog"]')).toBeInTheDocument();
+	expect(
+		modelTrigger.parentElement?.querySelector('button[aria-haspopup="dialog"]')
+	).toBeInTheDocument();
 	await user.click(modelTrigger);
 	expect(await screen.findByRole('combobox', { name: 'Reasoning' })).toBeInTheDocument();
 	const taskSwitch = await screen.findByRole('switch', { name: 'Disable Demo task' });

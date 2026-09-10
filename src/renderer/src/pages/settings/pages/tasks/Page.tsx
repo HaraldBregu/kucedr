@@ -56,13 +56,18 @@ const TasksPage: React.FC = () => {
 
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([window.tasks.list(), window.tasks.getRuntime(), window.agent.getModelOptions()])
+		void Promise.all([
+			window.tasks.list(),
+			window.tasks.getRuntime(),
+			window.agent.getModelOptions(),
+		])
 			.then(([list, runtime, options]) => {
 				if (!mounted) return;
 				setTasks(list);
 				const groups = taskModelGroups();
 				const group = groups.find((item) => item.provider.id === runtime?.providerId) ?? groups[0];
-				const model = group?.models.find((item) => item.id === runtime?.modelId) ?? group?.models[0];
+				const model =
+					group?.models.find((item) => item.id === runtime?.modelId) ?? group?.models[0];
 				setProviderId(group?.provider.id ?? '');
 				setModelId(model?.id ?? '');
 				setModelOptions(options);
@@ -151,9 +156,7 @@ const TasksPage: React.FC = () => {
 					showSelectedModel
 					buttonDropdown
 					showContentSeparator={false}
-					onChange={(nextProviderId, nextModelId) =>
-						void handleChange(nextProviderId, nextModelId)
-					}
+					onChange={(nextProviderId, nextModelId) => void handleChange(nextProviderId, nextModelId)}
 				>
 					<ModelOptions
 						key={`${providerId}:${modelId}`}
@@ -195,7 +198,9 @@ const TasksPage: React.FC = () => {
 								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
 									<button
 										type="button"
-										onClick={() => navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)}
+										onClick={() =>
+											navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)
+										}
 										className="w-full min-w-0 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 									>
 										<ItemTitle className="max-w-full truncate">{task.name}</ItemTitle>
@@ -203,7 +208,9 @@ const TasksPage: React.FC = () => {
 											{describeAction(task)}
 										</p>
 										{task.cronExpression && (
-											<code className="text-[11px] text-muted-foreground">{task.cronExpression}</code>
+											<code className="text-[11px] text-muted-foreground">
+												{task.cronExpression}
+											</code>
 										)}
 									</button>
 								</ItemContent>
@@ -212,11 +219,8 @@ const TasksPage: React.FC = () => {
 										checked={task.enabled}
 										disabled={togglingTaskId === task.id}
 										aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
-										onCheckedChange={(enabled) =>
-											void handleTaskEnabledChange(task.id, enabled)
-										}
-									>
-									</Switch>
+										onCheckedChange={(enabled) => void handleTaskEnabledChange(task.id, enabled)}
+									></Switch>
 								</ItemActions>
 							</Item>
 						))
