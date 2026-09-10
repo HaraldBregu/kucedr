@@ -311,9 +311,9 @@ export function useRealtimeVoice({
 		chatSessionId,
 		failSession,
 		isConfigured,
-			isSupported,
-			releaseAudio,
-			startCapture,
+		isSupported,
+		releaseAudio,
+		startCapture,
 		startPlayback,
 	]);
 

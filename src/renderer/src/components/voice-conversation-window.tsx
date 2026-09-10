@@ -71,7 +71,12 @@ export function VoiceConversationWindow({
 				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
-				<div className={cn('flex items-center gap-3', statusMessage ? 'justify-between' : 'justify-end')}>
+				<div
+					className={cn(
+						'flex items-center gap-3',
+						statusMessage ? 'justify-between' : 'justify-end'
+					)}
+				>
 					{statusMessage ? (
 						<span
 							role="status"
