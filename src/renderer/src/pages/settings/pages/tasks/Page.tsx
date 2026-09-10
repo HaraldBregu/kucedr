@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, ListChecks } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { AlertTriangle, BrainCircuit, ListChecks } from 'lucide-react';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Switch } from '@/components/ui/switch';
 import { providerIdsFor, providerModels, providers } from '@/lib/providers';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import {
@@ -43,6 +43,7 @@ const TasksPage: React.FC = () => {
 	const [saving, setSaving] = useState(false);
 	const [saved, setSaved] = useState(false);
 	const [runtimeError, setRuntimeError] = useState<string | null>(null);
+	const [togglingTaskId, setTogglingTaskId] = useState<string | null>(null);
 
 	const modelGroups = taskModelGroups();
 
@@ -87,6 +88,19 @@ const TasksPage: React.FC = () => {
 		}
 	};
 
+	const handleTaskEnabledChange = async (taskId: string, enabled: boolean): Promise<void> => {
+		setTogglingTaskId(taskId);
+		setError(null);
+		try {
+			const updatedTask = await window.tasks.setEnabled(taskId, enabled);
+			setTasks((current) => current.map((task) => (task.id === taskId ? updatedTask : task)));
+		} catch (err) {
+			setError(err instanceof Error ? err.message : String(err));
+		} finally {
+			setTogglingTaskId(null);
+		}
+	};
+
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -94,10 +108,7 @@ const TasksPage: React.FC = () => {
 				description={t('settings.cron.description')}
 			/>
 
-			<SettingsSection
-				title={t('settings.cron.runtime.title')}
-				description={t('settings.cron.runtime.description')}
-			>
+			<SettingsPanel>
 				<ModelProviderConfiguration
 					configState={{
 						providers: modelGroups.map((group) => group.provider),
@@ -111,13 +122,21 @@ const TasksPage: React.FC = () => {
 						error: runtimeError,
 					}}
 					idPrefix="task-runtime"
+					triggerTitle={t('settings.modelServices.llmModel')}
 					description={t('settings.modelServices.modelDescription')}
 					showInlineError
+					showIcon
+					icon={BrainCircuit}
+					showFieldLabel={false}
+					grouped
+					showSelectedModel
+					buttonDropdown
+					showContentSeparator={false}
 					onChange={(nextProviderId, nextModelId) =>
 						void handleChange(nextProviderId, nextModelId)
 					}
 				/>
-			</SettingsSection>
+			</SettingsPanel>
 
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
@@ -142,29 +161,35 @@ const TasksPage: React.FC = () => {
 						tasks.map((task) => (
 							<Item
 								key={task.id}
-								as="button"
-								type="button"
-								onClick={() => navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)}
 								variant="outline"
 								size="md"
-								className="cursor-pointer border-b border-border/60 text-left hover:bg-muted/50 last:border-b-0 px-5 py-4"
+								className="border-b border-border/60 px-5 py-4 last:border-b-0"
 							>
 								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-									<ItemTitle className="max-w-full truncate">{task.name}</ItemTitle>
-									<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
-										{describeAction(task)}
-									</p>
-									{task.cronExpression && (
-										<code className="text-[11px] text-muted-foreground">{task.cronExpression}</code>
-									)}
+									<button
+										type="button"
+										onClick={() => navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)}
+										className="w-full min-w-0 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+									>
+										<ItemTitle className="max-w-full truncate">{task.name}</ItemTitle>
+										<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
+											{describeAction(task)}
+										</p>
+										{task.cronExpression && (
+											<code className="text-[11px] text-muted-foreground">{task.cronExpression}</code>
+										)}
+									</button>
 								</ItemContent>
 								<ItemActions className="ml-auto flex-none justify-end">
-									<Badge
-										variant={task.enabled ? 'default' : 'secondary'}
-										className="text-[10px] leading-none"
+									<Switch
+										checked={task.enabled}
+										disabled={togglingTaskId === task.id}
+										aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
+										onCheckedChange={(enabled) =>
+											void handleTaskEnabledChange(task.id, enabled)
+										}
 									>
-										{task.enabled ? t('settings.cron.enabled') : t('settings.cron.disabled')}
-									</Badge>
+									</Switch>
 								</ItemActions>
 							</Item>
 						))
