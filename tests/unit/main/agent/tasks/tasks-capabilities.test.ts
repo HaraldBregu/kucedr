@@ -12,7 +12,6 @@ beforeEach(() => {
 		id: 'schedule-1',
 		enabled: false,
 		prompt: 'check status',
-		effort: 'low',
 	});
 	updateSchedule.mockImplementation((_id, patch) => ({ id: 'schedule-1', ...patch }));
 });

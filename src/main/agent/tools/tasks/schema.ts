@@ -10,7 +10,6 @@ export const createTaskRequestSchema = z.object({
 	cronExpression: z.string().optional(),
 	enabled: z.boolean().optional(),
 	prompt: z.string(),
-	effort: z.enum(['none', 'minimal', 'low', 'medium', 'high', 'xhigh']),
 });
 
 export const updateTaskRequestSchema = z
@@ -20,7 +19,6 @@ export const updateTaskRequestSchema = z
 		cronExpression: z.string().optional(),
 		enabled: z.boolean().optional(),
 		prompt: z.string().optional(),
-		effort: z.enum(['none', 'minimal', 'low', 'medium', 'high', 'xhigh']).optional(),
 	})
 	.refine((value) => Object.keys(value).length > 0, {
 		message: 'update_task requires at least one field in request.',

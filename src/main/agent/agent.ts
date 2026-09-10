@@ -142,7 +142,6 @@ export class Agent {
 				toolsDeny: SCHEDULED_TASK_TOOLS_DENY,
 				streaming: false,
 				contextMode: 'minimal',
-				effort: schedule.effort,
 				...(runtime ? { providerId: runtime.providerId, modelId: runtime.modelId } : {}),
 			});
 		});

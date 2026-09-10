@@ -175,14 +175,6 @@ const TaskDetailsPage: React.FC = () => {
 					</Item>
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
 						<ItemContent>
-							<ItemTitle>{t('settings.cron.detail.effort')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto justify-end">
-							<span className="text-xs">{task.effort}</span>
-						</ItemActions>
-					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemContent>
 							<ItemTitle>{t('settings.cron.detail.createdAt')}</ItemTitle>
 						</ItemContent>
 						<ItemActions className="ml-auto justify-end">

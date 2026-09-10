@@ -13,7 +13,6 @@ const scheduleFixture = {
 	name: 'Nightly',
 	enabled: true,
 	prompt: 'x',
-	effort: 'low',
 	createdAt: 'now',
 	updatedAt: 'now',
 };

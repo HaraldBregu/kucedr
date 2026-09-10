@@ -1,5 +1,3 @@
-import type { ModelReasoningEffort } from '../../shared/agent_types';
-
 export interface TaskJobInfo {
 	readonly id: string;
 	readonly name: string;
@@ -25,7 +23,6 @@ export interface TaskSchedule {
 	cronExpression?: string;
 	enabled: boolean;
 	prompt: string;
-	effort: ModelReasoningEffort;
 	toolsAllow?: string[];
 	sessionIds: string[];
 	createdAt: string;

@@ -726,7 +726,6 @@
 				"status": "Status",
 				"schedule": "Cron schedule",
 				"description": "Description",
-				"effort": "Reasoning effort",
 				"createdAt": "Created",
 				"updatedAt": "Updated",
 				"notScheduled": "Not scheduled",

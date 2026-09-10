@@ -15,7 +15,6 @@ function schedule(overrides: Partial<TaskSchedule> = {}): TaskSchedule {
 		cronExpression: '0 0 * * *',
 		enabled: true,
 		prompt: 'do it',
-		effort: 'low',
 		createdAt: 'now',
 		updatedAt: 'now',
 		...overrides,
@@ -55,22 +54,20 @@ describe('task request schemas', () => {
 			createTaskRequestSchema.parse({
 				name: 'Nightly',
 				prompt: 'do it',
-				effort: 'low',
 				permissionMode: 'bypass',
 				toolsAllow: ['exec'],
 			})
-		).toEqual({ name: 'Nightly', prompt: 'do it', effort: 'low' });
+		).toEqual({ name: 'Nightly', prompt: 'do it' });
 		expect(
 			updateTaskRequestSchema.parse({
 				prompt: 'do it',
-				effort: 'low',
 				permissionMode: 'bypass',
 				toolsAllow: ['exec'],
 			})
-		).toEqual({ prompt: 'do it', effort: 'low' });
+		).toEqual({ prompt: 'do it' });
 	});
 
-	it('requires a prompt and effort for new tasks', () => {
+	it('requires a prompt for new tasks', () => {
 		expect(() =>
 			createTaskRequestSchema.parse({ name: 'Nightly', action: { type: 'agent' } })
 		).toThrow();

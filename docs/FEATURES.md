@@ -309,7 +309,7 @@ Kucedr persists cron schedule records with:
 - A name and optional description.
 - A cron expression.
 - Enabled or paused state.
-- An agent prompt and reasoning effort.
+- An agent prompt.
 - Created and updated timestamps.
 - Create, update, pause, resume, delete, get, list, and run-now operations.
 - A separate provider and model selection for scheduled work.
@@ -317,8 +317,8 @@ Kucedr persists cron schedule records with:
 
 The Tasks settings screen selects the task provider/model and lists each schedule's name, prompt,
 cron expression, and enabled state. Task details expose metadata, **Run now**, and confirmed
-deletion. Creating a task or editing its name, schedule, prompt, or effort remains agent-driven
-rather than a direct Settings form.
+deletion. Creating a task or editing its name, schedule, or prompt remains agent-driven rather
+than a direct Settings form.
 
 Scheduled tasks run as background agents with the full tool catalog by default. A non-empty persisted tool allowlist narrows the tools available to that schedule; a blank allowlist keeps the full catalog.
 
