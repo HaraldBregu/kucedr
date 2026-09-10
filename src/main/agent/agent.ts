@@ -50,7 +50,6 @@ import type {
 import { toError } from '../ipc/core/error';
 import { AgentRunScheduler, type AgentRunPriority } from './agent_scheduler';
 import type { WindowFactory } from '../window_factory';
-import type { SessionCategory } from './session';
 import { KeyedLimiter } from './limiter';
 import { KeyedMutex } from './mutex';
 import type { ExecSandbox } from './sandbox';
