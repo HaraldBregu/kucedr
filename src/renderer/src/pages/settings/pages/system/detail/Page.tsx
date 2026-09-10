@@ -113,9 +113,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 			}
 			if (result.systemStatus !== 'granted') openSettings('ScreenCapture');
 		} catch (error) {
-			setPermissionError(
-				errorMessage(error, t('settings.system.media.screen.requestError'))
-			);
+			setPermissionError(errorMessage(error, t('settings.system.media.screen.requestError')));
 		}
 	}, [media.permission, t]);
 
@@ -204,7 +202,9 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 							<SettingsNotice variant="destructive">{recorderError}</SettingsNotice>
 						)}
 						{media.source === 'display' && audioUnavailable && (
-							<SettingsNotice>{t('settings.system.media.screen.microphoneUnavailable')}</SettingsNotice>
+							<SettingsNotice>
+								{t('settings.system.media.screen.microphoneUnavailable')}
+							</SettingsNotice>
 						)}
 
 						{media.video && recorderState !== 'recorded' && (

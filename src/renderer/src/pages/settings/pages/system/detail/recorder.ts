@@ -82,10 +82,10 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 				setAudioUnavailable(!captured.hasMicrophone);
 			} else {
 				stream = await navigator.mediaDevices.getUserMedia(
-							media.id === 'microphone'
-								? { audio: await getMicrophoneConstraints() }
-								: media.constraints
-						);
+					media.id === 'microphone'
+						? { audio: await getMicrophoneConstraints() }
+						: media.constraints
+				);
 			}
 			if (generationRef.current !== generation) {
 				stopStream(stream);
@@ -167,5 +167,15 @@ export function useMediaRecorderTest(media: SystemMedia): MediaRecorderTest {
 		};
 	}, [media.id, stopStream]);
 
-	return { state, error, audioUnavailable, recordedUrl, elapsedSeconds, videoRef, start, stop, reset };
+	return {
+		state,
+		error,
+		audioUnavailable,
+		recordedUrl,
+		elapsedSeconds,
+		videoRef,
+		start,
+		stop,
+		reset,
+	};
 }

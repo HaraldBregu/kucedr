@@ -106,7 +106,9 @@ describe('useMediaRecorderTest', () => {
 	});
 
 	it('adds the selected microphone to a screen recording', async () => {
-		const displayTracks: MediaStreamTrack[] = [{ kind: 'video', stop: jest.fn() } as MediaStreamTrack];
+		const displayTracks: MediaStreamTrack[] = [
+			{ kind: 'video', stop: jest.fn() } as MediaStreamTrack,
+		];
 		const microphoneTrack = { kind: 'audio', stop: jest.fn() } as MediaStreamTrack;
 		const displayStream = {
 			getTracks: () => displayTracks,
