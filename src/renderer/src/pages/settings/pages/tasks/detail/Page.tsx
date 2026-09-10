@@ -29,7 +29,7 @@ const TaskDetailsPage: React.FC = () => {
 	const [error, setError] = useState<string | null>(null);
 	const [running, setRunning] = useState(false);
 	const [deleting, setDeleting] = useState(false);
-	const [deletingHistory, setDeletingHistory] = useState(false);
+	const [deletingHistoryId, setDeletingHistoryId] = useState<string | null>(null);
 	const [toggling, setToggling] = useState(false);
 	const [openingSessionId, setOpeningSessionId] = useState<string | null>(null);
 
@@ -131,17 +131,17 @@ const TaskDetailsPage: React.FC = () => {
 			setOpeningSessionId(null);
 		}
 	};
-	const deleteHistory = async (): Promise<void> => {
+	const deleteHistory = async (sessionId: string): Promise<void> => {
 		if (!window.confirm(t('settings.cron.history.confirmDelete'))) return;
-		setDeletingHistory(true);
+		setDeletingHistoryId(sessionId);
 		setError(null);
 		try {
-			await Promise.all(history.map((session) => window.agent.deleteSession(session.id)));
-			setHistory([]);
+			await window.agent.deleteSession(sessionId);
+			setHistory((current) => current.filter((session) => session.id !== sessionId));
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
-			setDeletingHistory(false);
+			setDeletingHistoryId(null);
 		}
 	};
 	return (
@@ -220,23 +220,6 @@ const TaskDetailsPage: React.FC = () => {
 
 			<SettingsSection
 				title={t('settings.cron.history.title')}
-				action={
-					<Button
-						type="button"
-						variant="destructive"
-						size="icon-sm"
-						disabled={history.length === 0 || deletingHistory || deleting || toggling}
-						aria-label={t('settings.cron.history.delete')}
-						title={t('settings.cron.history.delete')}
-						onClick={() => void deleteHistory()}
-					>
-						{deletingHistory ? (
-							<LoaderCircle className="size-3.5 animate-spin" />
-						) : (
-							<Trash2 className="size-3.5" />
-						)}
-					</Button>
-				}
 			>
 				<Card size="sm" className="gap-0! p-0!">
 					{history.length === 0 ? (
@@ -268,12 +251,27 @@ const TaskDetailsPage: React.FC = () => {
 										type="button"
 										variant="ghost"
 										size="icon-sm"
-										disabled={openingSessionId === session.id}
+										disabled={deletingHistoryId !== null || openingSessionId === session.id}
 										aria-label={t('settings.cron.history.openFolder')}
 										title={t('settings.cron.history.openFolder')}
 										onClick={() => void openSessionFolder(session.id)}
 									>
 										<FolderOpen className="size-3.5" />
+									</Button>
+									<Button
+										type="button"
+										variant="destructive"
+										size="icon-sm"
+										disabled={deletingHistoryId !== null || openingSessionId !== null}
+										aria-label={t('settings.cron.history.delete')}
+										title={t('settings.cron.history.delete')}
+										onClick={() => void deleteHistory(session.id)}
+									>
+										{deletingHistoryId === session.id ? (
+											<LoaderCircle className="size-3.5 animate-spin" />
+										) : (
+											<Trash2 className="size-3.5" />
+										)}
 									</Button>
 								</ItemActions>
 							</Item>

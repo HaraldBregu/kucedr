@@ -741,7 +741,7 @@
 				"emptyDescription": "Agent sessions created by this task will appear here.",
 				"openFolder": "Open session folder",
 				"delete": "Delete session history",
-				"confirmDelete": "Delete all session history?"
+				"confirmDelete": "Delete this session history?"
 			},
 			"notFoundTitle": "Scheduled task not found",
 			"notFoundDescription": "The scheduled task may have been removed.",

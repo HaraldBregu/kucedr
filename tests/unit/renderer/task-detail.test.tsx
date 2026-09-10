@@ -137,6 +137,6 @@ it('deletes all session history from the section action', async () => {
 	await user.click(await screen.findByRole('button', { name: 'Delete session history' }));
 
 	await waitFor(() => expect(deleteSession).toHaveBeenCalledWith('session-1'));
-	expect(window.confirm).toHaveBeenCalledWith('Delete all session history?');
+	expect(window.confirm).toHaveBeenCalledWith('Delete this session history?');
 	expect(await screen.findByText('No history yet')).toBeInTheDocument();
 });

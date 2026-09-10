@@ -740,7 +740,7 @@
 				"emptyDescription": "Le sessioni agente create da questa attività appariranno qui.",
 				"openFolder": "Apri cartella sessione",
 				"delete": "Elimina cronologia sessioni",
-				"confirmDelete": "Eliminare tutta la cronologia delle sessioni?"
+				"confirmDelete": "Eliminare questa cronologia della sessione?"
 			},
 			"notFoundTitle": "Attivita programmata non trovata",
 			"notFoundDescription": "L'attivita programmata potrebbe essere stata rimossa.",
