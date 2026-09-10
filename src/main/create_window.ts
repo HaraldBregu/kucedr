@@ -11,10 +11,13 @@ const MINIMUM_WINDOW_WIDTH = 768;
 const MINIMUM_WINDOW_HEIGHT = 600;
 const STARTUP_WINDOW_WIDTH = 812;
 const STARTUP_WINDOW_HEIGHT = 625;
+const VOICE_WINDOW_WIDTH = 480;
+const VOICE_WINDOW_HEIGHT = 540;
 const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
 export class Main {
 	private window: BrowserWindow | null = null;
+	private voiceWindow: BrowserWindow | null = null;
 	private readonly appWindows = new Set<BrowserWindow>();
 	private onWindowVisibilityChange?: () => void;
 
@@ -56,6 +59,28 @@ export class Main {
 			...this.createWindowOptions(),
 			width: STARTUP_WINDOW_WIDTH,
 			height: STARTUP_WINDOW_HEIGHT,
+		};
+	}
+
+	private createVoiceWindowOptions() {
+		return {
+			width: VOICE_WINDOW_WIDTH,
+			height: VOICE_WINDOW_HEIGHT,
+			minWidth: VOICE_WINDOW_WIDTH,
+			minHeight: VOICE_WINDOW_HEIGHT,
+			maxWidth: VOICE_WINDOW_WIDTH,
+			maxHeight: VOICE_WINDOW_HEIGHT,
+			resizable: false,
+			minimizable: false,
+			maximizable: false,
+			fullscreenable: false,
+			center: true,
+			frame: false,
+			transparent: true,
+			backgroundColor: TRANSPARENT_WINDOW_BACKGROUND,
+			alwaysOnTop: true,
+			skipTaskbar: true,
+			show: false,
 		};
 	}
 
@@ -185,6 +210,43 @@ export class Main {
 
 	createAdditionalWindow(): BrowserWindow {
 		return this.createLauncherWindow();
+	}
+
+	openVoiceConversation(chatSessionId: string): void {
+		const existing = this.voiceWindow;
+		if (existing && !existing.isDestroyed()) {
+			existing.show();
+			existing.focus();
+			return;
+		}
+
+		const win = this.windowFactory.create(this.createVoiceWindowOptions(), {
+			html: 'voice.html',
+			hash: `voice/${encodeURIComponent(chatSessionId)}`,
+		});
+		this.voiceWindow = win;
+		win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
+		this.windowContextManager.create(win);
+		attachWindowHandlers(win);
+
+		win.setAlwaysOnTop(true, 'floating');
+		if (typeof win.setVisibleOnAllWorkspaces === 'function') {
+			win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+		}
+		win.on('blur', () => {
+			if (win.isDestroyed()) return;
+			setImmediate(() => {
+				if (!win.isDestroyed()) win.focus();
+			});
+		});
+		win.on('closed', () => {
+			if (this.voiceWindow?.id === win.id) this.voiceWindow = null;
+		});
+		win.once('ready-to-show', () => {
+			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
+			win.show();
+			win.focus();
+		});
 	}
 
 	createWindowForFile(filePath: string): BrowserWindow {
