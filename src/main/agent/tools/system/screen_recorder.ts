@@ -14,8 +14,14 @@ export function screenRecorderTool(): Tool {
 		id: 'screen_recorder',
 		name: 'Screen recorder',
 		description:
-			'Start recording the user screen (video only). Call without sourceId first. If it returns selection_required, call select_screen_source with the returned sources, then call this tool again with the returned sourceId. Requires an open app window and macOS Screen Recording permission. The recording runs in the background: this returns immediately with a recording id and the destination path. Specify a duration to stop automatically, or omit it and use screen_recorder_stop.',
+			'Start recording the user screen (video only). When the user directly requests the full screen, workspace, or application, set target to start it immediately without selecting a source. Otherwise call without sourceId or target; if it returns selection_required, call select_screen_source with the returned sources, then call this tool again with the returned sourceId. Requires an open app window and macOS Screen Recording permission. The recording runs in the background: this returns immediately with a recording id and the destination path. Specify a duration to stop automatically, or omit it and use screen_recorder_stop.',
 		inputSchema: z.object({
+			target: z
+				.enum(['full_screen', 'workspace', 'application'])
+				.optional()
+				.describe(
+					'Capture target explicitly requested by the user. Use full_screen for the entire display, workspace for the Kucedr workspace, or application for the Kucedr application. This starts recording immediately without asking the user to select a source.'
+				),
 			sourceId: z
 				.string()
 				.trim()
@@ -44,13 +50,33 @@ export function screenRecorderTool(): Tool {
 					'Optional file name for the recording, including the .webm extension (recordings are always WebM). Any directory part is ignored; use directory instead. Defaults to screen-<timestamp>.webm.'
 				),
 		}),
-		execute: async ({ sourceId, duration, directory, filename }, signal) => {
+		execute: async ({ target, sourceId, duration, directory, filename }, signal) => {
 			signal?.throwIfAborted();
 			const sources = await desktopCapturer.getSources({ types: ['screen', 'window'] });
 			if (sources.length === 0) {
 				throw new Error('No display or window is available to record.');
 			}
-			if (!sourceId) {
+			const workspaceName = path.basename(agentLocation()).toLocaleLowerCase();
+			const applicationSource = sources.find(
+				(source) => !source.id.startsWith('screen:') && source.name.toLocaleLowerCase().includes('kucedr')
+			);
+			const windowSource = sources.find((source) => !source.id.startsWith('screen:'));
+			const selectedSource = sourceId
+				? sources.find((source) => source.id === sourceId)
+				: target === 'full_screen'
+					? sources.find((source) => source.id.startsWith('screen:'))
+					: target === 'workspace'
+						? sources.find(
+								(source) =>
+									!source.id.startsWith('screen:') &&
+									source.name.toLocaleLowerCase().includes(workspaceName)
+							)
+							?? applicationSource
+							?? windowSource
+						: target === 'application'
+							? applicationSource ?? windowSource
+							: undefined;
+			if (!selectedSource && !target && !sourceId) {
 				return {
 					status: 'selection_required' as const,
 					sources: sources.map((source) => ({
@@ -60,7 +86,10 @@ export function screenRecorderTool(): Tool {
 					})),
 				};
 			}
-			if (!sources.some((source) => source.id === sourceId)) {
+			if (!selectedSource) {
+				if (target) {
+					throw new Error(`No ${target.replace('_', ' ')} source is available to record.`);
+				}
 				throw new Error('The selected screen source is no longer available. Start again to choose a source.');
 			}
 			const owner = recordingOwner(screen);
@@ -68,7 +97,7 @@ export function screenRecorderTool(): Tool {
 			const url = path.join(targetDir, path.basename(filename ?? `screen-${Date.now()}.webm`));
 			const recording = screen.start({
 				url,
-				sourceId,
+				sourceId: selectedSource.id,
 				...(duration === undefined ? {} : { duration: duration * 1000 }),
 			});
 			rememberRecording(screen, recording.id, owner);

@@ -108,6 +108,24 @@ it('lists screen sources before starting a screen recording', async () => {
 	expect(screen.start).not.toHaveBeenCalled();
 });
 
+it.each([
+	['full_screen', 'screen:1'],
+	['workspace', 'window:3'],
+	['application', 'window:2'],
+] as const)('starts the requested %s target without selecting a source', async (target, sourceId) => {
+	jest.mocked(desktopCapturer.getSources).mockResolvedValue([
+		{ id: 'screen:1', name: 'Display 1' },
+		{ id: 'window:2', name: 'Kucedr' },
+		{ id: 'window:3', name: 'Project workspace' },
+	] as never);
+
+	await expect(ownedRun(screenRecorderTool(), { target, filename: 'capture.webm' })).resolves.toMatchObject({
+		id,
+		status: 'recording',
+	});
+	expect(screen.start).toHaveBeenCalledWith({ url: '/workspace/capture.webm', sourceId });
+});
+
 it('reports when no screen source is available', async () => {
 	jest.mocked(desktopCapturer.getSources).mockResolvedValue([] as never);
 
