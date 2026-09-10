@@ -171,8 +171,8 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 								!appRegistry.has(webContents) &&
 								BrowserWindow.fromWebContents(webContents)) &&
 						isTrustedMediaRequestSource(undefined, details.requestingUrl, undefined)
-					)
-				);
+						)
+					);
 					return;
 				}
 				if (permission === 'display-capture') {
@@ -190,9 +190,9 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 					return;
 				}
 				if (permission !== 'media') {
-				callback(false);
-				return;
-			}
+					callback(false);
+					return;
+				}
 
 			const mediaDetails = details as Electron.MediaAccessPermissionRequest;
 			const requestsAudio = mediaDetails.mediaTypes?.includes('audio') ?? false;
