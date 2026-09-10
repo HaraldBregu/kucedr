@@ -38,9 +38,11 @@ function needsVoiceConfiguration(message: string): boolean {
 export function useRealtimeVoice({
 	chatSessionId,
 	onClosed,
+	closeOnError = true,
 }: {
 	readonly chatSessionId: string;
 	readonly onClosed: () => void;
+	readonly closeOnError?: boolean;
 }) {
 	const dispatchChat = useContext(HomeAgentContext)?.dispatchChat ?? (() => undefined);
 	const [status, setStatus] = useState<RealtimeVoiceUiStatus>('idle');
@@ -135,9 +137,9 @@ export function useRealtimeVoice({
 			dispatchChat({ type: 'error_active', errorText: message, completedAtMs: Date.now() });
 			releaseAudio();
 			void window.models.realtimeVoice.stopSession(sessionId).catch(() => undefined);
-			onClosedRef.current();
+			if (closeOnError) onClosedRef.current();
 		},
-		[dispatchChat, releaseAudio]
+		[closeOnError, dispatchChat, releaseAudio]
 	);
 
 	useEffect(() => {

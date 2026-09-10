@@ -40,7 +40,7 @@ export function VoiceConversationWindow({
 	const closeWindow = useCallback((): void => {
 		window.win.close();
 	}, []);
-	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow });
+	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow, closeOnError: false });
 	const isEnding = voice.status === 'ending';
 	const state = personaState(voice.status, voice.isMuted);
 
