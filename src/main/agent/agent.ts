@@ -13,6 +13,7 @@ import {
 	tryAppendRun,
 	updateUserMessageBySessionId,
 	type SessionResult,
+	type SessionCategory,
 	addAssistantMessage,
 	sessionDir,
 } from './session';
@@ -397,11 +398,11 @@ export class Agent {
 		};
 	}
 
-	listSessions(): AgentSessionSummary[] {
-		const sessions = listSessions(this.config.location);
+	listSessions(category: SessionCategory = 'main'): AgentSessionSummary[] {
+		const sessions = listSessions(this.config.location, category);
 		const byId = new Map(sessions.map((session) => [session.id, session]));
 		for (const record of this.runs.values()) {
-			if (record.request.category !== 'main') continue;
+			if (record.request.category !== category) continue;
 			const stored = byId.get(record.request.sessionId);
 			byId.set(record.request.sessionId, {
 				id: record.request.sessionId,

@@ -25,7 +25,7 @@ import type {
 	WorkspaceTreeEntry,
 } from '../../shared/agent_types';
 import { normalizeAgentInputFiles } from '../../shared/agent_files';
-import { requireUuidSessionId, sessionsRoot } from '../agent/session';
+import { requireUuidSessionId, sessionPath, sessionsRoot } from '../agent/session';
 import { workspacePath } from '../agent/system';
 import {
 	getPermissions,
@@ -352,6 +352,20 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					if (error) throw new Error(error);
 				},
 				AgentChannels.openSessionsFolder
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.openSessionFolder,
+			wrapAgentHandler(
+				mainAccess,
+				async (sessionId: unknown): Promise<void> => {
+					const root = sessionsRoot(agent.config.location);
+					const target = sessionPath(root, requireUuidSessionId(sessionId));
+					const error = await shell.openPath(target);
+					if (error) throw new Error(error);
+				},
+				AgentChannels.openSessionFolder
 			)
 		);
 

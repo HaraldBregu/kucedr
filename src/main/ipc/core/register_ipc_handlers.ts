@@ -99,7 +99,7 @@ export function registerIpcHandlers(services: MainServices, eventBus: EventBus):
 	);
 	safeRegister('tasks', () =>
 		new TaskIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
+			{ windows: windowContextManager, apps: appRegistry, agent: agentService },
 			eventBus
 		)
 	);

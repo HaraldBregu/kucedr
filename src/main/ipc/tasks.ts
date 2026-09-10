@@ -1,21 +1,19 @@
-import { shell } from 'electron';
-import path from 'node:path';
 import type { EventBus } from '../event_bus';
+import type { Agent } from '../agent/agent';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TaskChannels } from '../../shared/ipc_channels_definitions';
 import {
 	configureScheduleCapabilities,
 	deleteSchedule,
+	getSchedule,
 	getRuntime,
-	listTaskHistory,
 	listSchedules,
 	pauseSchedule,
 	resumeSchedule,
 	runScheduleNow,
 	setRuntime,
 } from '../tasks';
-import { taskStorePath } from '../tasks/tasks_store';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
@@ -23,12 +21,13 @@ import { TrustedRenderer } from './core/trusted';
 export interface TaskIpcDependencies {
 	windows: WindowContextManager;
 	apps: AppRegistry;
+	agent: Agent;
 }
 
 export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 	readonly name = 'tasks';
 
-	register({ windows, apps }: TaskIpcDependencies, _eventBus: EventBus): void {
+	register({ windows, apps, agent }: TaskIpcDependencies, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		registerQueryWithEvent(TaskChannels.list, (event) => {
 			trusted.assert(event);
@@ -37,12 +36,9 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 		registerQueryWithEvent(TaskChannels.history, (event, scheduleId: string) => {
 			trusted.assert(event);
 			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
-			return listTaskHistory(scheduleId);
-		});
-		registerCommandWithEvent(TaskChannels.openFolder, async (event): Promise<void> => {
-			trusted.assert(event);
-			const error = await shell.openPath(path.dirname(taskStorePath));
-			if (error) throw new Error(error);
+			const schedule = getSchedule(scheduleId);
+			const sessionIds = new Set(schedule.sessionIds);
+			return agent.listSessions('task').filter((session) => sessionIds.has(session.id));
 		});
 		registerCommandWithEvent(TaskChannels.runNow, (event, scheduleId: string) => {
 			trusted.assert(event);
