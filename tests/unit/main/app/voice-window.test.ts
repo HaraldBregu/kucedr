@@ -1,5 +1,6 @@
 const attachWindowHandlers = jest.fn();
 
+jest.mock('electron', () => ({ app: { focus: jest.fn() } }));
 jest.mock('../../../../src/main/window_events', () => ({ attachWindowHandlers }));
 jest.mock('../../../../src/main/translucency', () => ({
 	getPlatformTranslucencyOptions: () => ({}),
@@ -22,6 +23,7 @@ it('creates a standalone voice window that can be shown and hidden independently
 			visible = false;
 		}),
 		restore: jest.fn(),
+		moveTop: jest.fn(),
 		focus: jest.fn(),
 		on: jest.fn((event: string, listener: () => void) => {
 			listeners.set(event, listener);

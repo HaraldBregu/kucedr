@@ -1,4 +1,4 @@
-import type { BrowserWindow } from 'electron';
+import { app, type BrowserWindow } from 'electron';
 import type { RendererContentOptions, WindowFactory } from './window_factory';
 import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
@@ -16,6 +16,14 @@ export class VoiceWindow {
 		private readonly windowFactory: WindowFactory,
 		private readonly windowContextManager: WindowContextManager
 	) {}
+
+	private showWindow(win: BrowserWindow): void {
+		if (process.platform === 'darwin') app.focus({ steal: true });
+		win.restore();
+		win.show();
+		win.moveTop();
+		win.focus();
+	}
 
 	private createWindowOptions() {
 		const isMac = process.platform === 'darwin';
@@ -49,8 +57,7 @@ export class VoiceWindow {
 	open(chatSessionId: string): void {
 		const existing = this.window;
 		if (existing && !existing.isDestroyed()) {
-			existing.show();
-			existing.focus();
+			this.showWindow(existing);
 			return;
 		}
 
@@ -94,9 +101,7 @@ export class VoiceWindow {
 			win.hide();
 			return;
 		}
-		win.restore();
-		win.show();
-		win.focus();
+		this.showWindow(win);
 	}
 
 	isVisible(): boolean {
