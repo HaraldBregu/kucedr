@@ -735,8 +735,7 @@
 				"promptInputDescription": "Questo prompt viene passato all'agente quando viene eseguita l'attività.",
 				"enabled": "Abilita attività",
 				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato.",
-				"toolsPlaceholder": "Tutti gli strumenti, oppure limita con nomi separati da virgole",
-    "saveCapabilities": "Salva capacità"
+				"saveCapabilities": "Salva capacità"
   },
 	"history": {
 	  "title": "Cronologia",
