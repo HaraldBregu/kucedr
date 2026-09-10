@@ -37,3 +37,8 @@ it('opens the chat history folder through the dedicated agent channel', async ()
 	await agent.openSessionsFolder();
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.openSessionsFolder);
 });
+
+it('opens a specific session folder through the dedicated agent channel', async () => {
+	await agent.openSessionFolder(' session-1 ');
+	expect(invoke).toHaveBeenCalledWith(AgentChannels.openSessionFolder, 'session-1');
+});
