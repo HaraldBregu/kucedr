@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, BrainCircuit, ListChecks } from 'lucide-react';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';
 import { updateModelOptions } from '@/lib/options';
@@ -234,7 +234,7 @@ const TasksPage: React.FC = () => {
 							description={t('settings.cron.emptyDescription')}
 						/>
 					) : (
-						tasks.map((task) => (
+							tasks.map((task) => (
 							<Item
 								key={task.id}
 								variant="outline"
@@ -242,30 +242,34 @@ const TasksPage: React.FC = () => {
 								className="border-b border-border/60 px-5 py-4 last:border-b-0"
 							>
 								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-									<button
-										type="button"
-										onClick={() =>
-											navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)
-										}
-										className="w-full min-w-0 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-									>
-										<ItemTitle className="max-w-full truncate">{task.name}</ItemTitle>
-										<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
-											{task.description ?? describeAction(task)}
-										</p>
-									</button>
+									<div className="flex w-full min-w-0 items-center gap-3">
+										<button
+											type="button"
+											onClick={() =>
+												navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`)
+											}
+											className="min-w-0 flex-1 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+										>
+											<ItemTitle className="max-w-full truncate">{task.name}</ItemTitle>
+										</button>
+										<div className="ml-auto flex shrink-0 items-center gap-3">
+											<span className="max-w-[45%] truncate text-right text-[11px] text-muted-foreground sm:max-w-none">
+												{describeSchedule(task.cronExpression, t)}
+											</span>
+											<Switch
+												checked={task.enabled}
+												disabled={togglingTaskId === task.id}
+												aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
+												onCheckedChange={(enabled) =>
+													void handleTaskEnabledChange(task.id, enabled)
+												}
+											></Switch>
+										</div>
+									</div>
+									<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
+										{task.description ?? describeAction(task)}
+									</p>
 								</ItemContent>
-								<ItemActions className="ml-auto flex-none justify-end gap-3">
-									<span className="max-w-[45%] truncate text-right text-[11px] text-muted-foreground sm:max-w-none">
-										{describeSchedule(task.cronExpression, t)}
-									</span>
-									<Switch
-										checked={task.enabled}
-										disabled={togglingTaskId === task.id}
-										aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
-										onCheckedChange={(enabled) => void handleTaskEnabledChange(task.id, enabled)}
-									></Switch>
-								</ItemActions>
 							</Item>
 						))
 					)}
