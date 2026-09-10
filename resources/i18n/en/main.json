@@ -745,7 +745,8 @@
 	  "title": "History",
 	  "description": "Recent activity for this task.",
 	  "emptyTitle": "No history yet",
-	  "emptyDescription": "Task activity will appear here."
+	  "emptyDescription": "Task activity will appear here.",
+	  "openFolder": "Open history folder"
 	},
 			"notFoundTitle": "Scheduled task not found",
 			"notFoundDescription": "The scheduled task may have been removed.",

@@ -744,7 +744,8 @@
 	  "title": "Cronologia",
 	  "description": "Attività recente per questa attività.",
 	  "emptyTitle": "Nessuna cronologia",
-	  "emptyDescription": "L'attività dell'attività apparirà qui."
+	  "emptyDescription": "L'attività dell'attività apparirà qui.",
+	  "openFolder": "Apri cartella cronologia"
 	},
 			"notFoundTitle": "Attivita programmata non trovata",
 			"notFoundDescription": "L'attivita programmata potrebbe essere stata rimossa.",

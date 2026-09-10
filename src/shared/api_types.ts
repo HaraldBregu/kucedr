@@ -245,6 +245,7 @@ export interface CoderApi {
 export interface TaskApi {
 	list: () => Promise<TaskSchedule[]>;
 	history: (scheduleId: string) => Promise<TaskScheduleEvent[]>;
+	openFolder: () => Promise<void>;
 	runNow: (scheduleId: string) => Promise<TaskScheduledTask>;
 	delete: (scheduleId: string) => Promise<void>;
 	setEnabled: (scheduleId: string, enabled: boolean) => Promise<TaskSchedule>;

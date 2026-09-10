@@ -25,6 +25,7 @@ jest.mock('react-i18next', () => {
 		'settings.cron.history.description': 'Recent activity',
 		'settings.cron.history.emptyTitle': 'No history yet',
 		'settings.cron.history.emptyDescription': 'Task activity will appear here.',
+		'settings.cron.history.openFolder': 'Open history folder',
 		'settings.cron.actions.run': 'Run now',
 		'settings.cron.actions.running': 'Running...',
 		'settings.cron.actions.remove': 'Delete',
@@ -52,6 +53,7 @@ const task = {
 const list = jest.fn();
 const history = jest.fn();
 const setEnabled = jest.fn();
+const openFolder = jest.fn();
 
 beforeEach(() => {
 	list.mockReset().mockResolvedValue([task]);
@@ -65,12 +67,14 @@ beforeEach(() => {
 		},
 	]);
 	setEnabled.mockReset().mockResolvedValue({ ...task, enabled: false });
+	openFolder.mockReset().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'tasks', {
 		configurable: true,
 		value: {
 			list,
 			history,
 			setEnabled,
+			openFolder,
 			runNow: jest.fn(),
 			delete: jest.fn(),
 			getRuntime: jest.fn(),
@@ -98,4 +102,19 @@ it('shows task history and toggles the schedule state', async () => {
 	await waitFor(() => expect(setEnabled).toHaveBeenCalledWith('task-1', false));
 	expect(history).toHaveBeenCalledTimes(2);
 	expect(await screen.findByRole('button', { name: 'Enable' })).toBeInTheDocument();
+});
+
+it('opens the task history folder from a history entry', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
+			<Routes>
+				<Route path="/settings/agent/tasks/:taskId/detail" element={<TaskDetailsPage />} />
+			</Routes>
+		</MemoryRouter>
+	);
+
+	await user.click(await screen.findByRole('button', { name: 'Open history folder' }));
+
+	expect(openFolder).toHaveBeenCalledTimes(1);
 });

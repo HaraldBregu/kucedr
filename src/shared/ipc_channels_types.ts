@@ -290,6 +290,7 @@ export interface TaskInvokeChannelMap {
 		args: [scheduleId: string];
 		result: import('../main/tasks').TaskScheduleEvent[];
 	};
+	[TaskChannels.openFolder]: { args: []; result: void };
 	[TaskChannels.runNow]: {
 		args: [scheduleId: string];
 		result: import('../main/tasks').TaskScheduledTask;

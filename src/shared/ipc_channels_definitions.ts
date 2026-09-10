@@ -108,6 +108,7 @@ export const RecorderChannels = {
 export const TaskChannels = {
 	list: 'tasks:list',
 	history: 'tasks:history',
+	openFolder: 'tasks:open-folder',
 	runNow: 'tasks:run-now',
 	delete: 'tasks:delete',
 	setEnabled: 'tasks:enabled:set',

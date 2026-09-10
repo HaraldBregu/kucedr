@@ -3,6 +3,11 @@ const registerQueryWithEvent = jest.fn();
 const listTaskHistory = jest.fn();
 const pauseSchedule = jest.fn();
 const resumeSchedule = jest.fn();
+const openPath = jest.fn();
+
+jest.mock('electron', () => ({
+	shell: { openPath },
+}));
 
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 	registerCommandWithEvent,
@@ -50,6 +55,14 @@ it('returns persisted history for a task', () => {
 
 	expect(query(TaskChannels.history)(event, 'task-1')).toEqual([{ eventId: 'event-1' }]);
 	expect(listTaskHistory).toHaveBeenCalledWith('task-1');
+});
+
+it('opens the task history storage folder', async () => {
+	openPath.mockResolvedValue('');
+
+	await command(TaskChannels.openFolder)(event);
+
+	expect(openPath).toHaveBeenCalledWith(expect.stringMatching(/[\\/]settings$/));
 });
 
 it('pauses and resumes a task from the enabled control', () => {

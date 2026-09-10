@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, History, ListChecks } from 'lucide-react';
+import { AlertTriangle, FolderOpen, History, ListChecks } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -32,6 +32,7 @@ const TaskDetailsPage: React.FC = () => {
 	const [running, setRunning] = useState(false);
 	const [deleting, setDeleting] = useState(false);
 	const [toggling, setToggling] = useState(false);
+	const [openingFolder, setOpeningFolder] = useState(false);
 	const [toolsAllow, setToolsAllow] = useState('');
 
 	useEffect(() => {
@@ -141,6 +142,17 @@ const TaskDetailsPage: React.FC = () => {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
 			setSaving(false);
+		}
+	};
+	const openHistoryFolder = async (): Promise<void> => {
+		setOpeningFolder(true);
+		setError(null);
+		try {
+			await window.tasks.openFolder();
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setOpeningFolder(false);
 		}
 	};
 
@@ -270,6 +282,17 @@ const TaskDetailsPage: React.FC = () => {
 									</p>
 								</ItemContent>
 								<ItemActions className="ml-auto flex-none justify-end">
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon-sm"
+										disabled={openingFolder}
+										aria-label={t('settings.cron.history.openFolder')}
+										title={t('settings.cron.history.openFolder')}
+										onClick={() => void openHistoryFolder()}
+									>
+										<FolderOpen className="size-3.5" />
+									</Button>
 									<time className="text-xs text-muted-foreground" dateTime={event.timestamp}>
 										{new Date(event.timestamp).toLocaleString()}
 									</time>

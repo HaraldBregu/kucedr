@@ -1,3 +1,5 @@
+import { shell } from 'electron';
+import path from 'node:path';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
@@ -13,6 +15,7 @@ import {
 	runScheduleNow,
 	setRuntime,
 } from '../tasks';
+import { taskStorePath } from '../tasks/tasks_store';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
@@ -35,6 +38,11 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 			trusted.assert(event);
 			if (typeof scheduleId !== 'string') throw new Error('Invalid task schedule id.');
 			return listTaskHistory(scheduleId);
+		});
+		registerCommandWithEvent(TaskChannels.openFolder, async (event): Promise<void> => {
+			trusted.assert(event);
+			const error = await shell.openPath(path.dirname(taskStorePath));
+			if (error) throw new Error(error);
 		});
 		registerCommandWithEvent(TaskChannels.runNow, (event, scheduleId: string) => {
 			trusted.assert(event);
