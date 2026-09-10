@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Switch } from '@/components/ui/switch';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -30,7 +31,7 @@ const TaskDetailsPage: React.FC = () => {
 	const [running, setRunning] = useState(false);
 	const [deleting, setDeleting] = useState(false);
 	const [toggling, setToggling] = useState(false);
-	const [openingFolder, setOpeningFolder] = useState(false);
+	const [openingSessionId, setOpeningSessionId] = useState<string | null>(null);
 
 	useEffect(() => {
 		let mounted = true;
@@ -113,22 +114,21 @@ const TaskDetailsPage: React.FC = () => {
 		setError(null);
 		try {
 			setTask(await window.tasks.setEnabled(task.id, !task.enabled));
-			setHistory(await window.tasks.history(task.id));
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
 			setToggling(false);
 		}
 	};
-	const openHistoryFolder = async (): Promise<void> => {
-		setOpeningFolder(true);
+	const openSessionFolder = async (sessionId: string): Promise<void> => {
+		setOpeningSessionId(sessionId);
 		setError(null);
 		try {
-			await window.tasks.openFolder();
+			await window.agent.openSessionFolder(sessionId);
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {
-			setOpeningFolder(false);
+			setOpeningSessionId(null);
 		}
 	};
 
@@ -138,9 +138,16 @@ const TaskDetailsPage: React.FC = () => {
 				title={task.name}
 				description={task.description ?? t('settings.cron.detail.noDescription')}
 				action={
-					<Badge variant={task.enabled ? 'default' : 'secondary'}>
-						{task.enabled ? t('settings.cron.enabled') : t('settings.cron.disabled')}
-					</Badge>
+					<Switch
+						checked={task.enabled}
+						disabled={toggling}
+						aria-label={
+							task.enabled
+								? t('settings.cron.actions.disable')
+								: t('settings.cron.actions.enable')
+						}
+						onCheckedChange={() => void toggleEnabled()}
+					/>
 				}
 			/>
 
@@ -225,17 +232,17 @@ const TaskDetailsPage: React.FC = () => {
 							className="min-h-28"
 						/>
 					) : (
-						history.map((event, index) => (
+					history.map((session, index) => (
 							<Item
-								key={event.eventId}
+								key={session.id}
 								variant="outline"
 								size="md"
 								className={`px-5 py-4 ${index < history.length - 1 ? 'border-b border-border/60' : ''}`}
 							>
 								<ItemContent className="min-w-0">
-									<ItemTitle className="text-sm">{event.message}</ItemTitle>
+									<ItemTitle className="text-sm">{session.title.trim() || session.id}</ItemTitle>
 									<p className="text-[11px] text-muted-foreground">
-										{event.type.replace('schedule.', '')}
+										{t('settings.cron.history.session')}
 									</p>
 								</ItemContent>
 								<ItemActions className="ml-auto flex-none justify-end">
@@ -243,15 +250,18 @@ const TaskDetailsPage: React.FC = () => {
 										type="button"
 										variant="ghost"
 										size="icon-sm"
-										disabled={openingFolder}
+										disabled={openingSessionId === session.id}
 										aria-label={t('settings.cron.history.openFolder')}
 										title={t('settings.cron.history.openFolder')}
-										onClick={() => void openHistoryFolder()}
+										onClick={() => void openSessionFolder(session.id)}
 									>
 										<FolderOpen className="size-3.5" />
 									</Button>
-									<time className="text-xs text-muted-foreground" dateTime={event.timestamp}>
-										{new Date(event.timestamp).toLocaleString()}
+									<time
+										className="text-xs text-muted-foreground"
+										dateTime={new Date(session.createdAtMs).toISOString()}
+									>
+										{new Date(session.createdAtMs).toLocaleString()}
 									</time>
 								</ItemActions>
 							</Item>
@@ -261,18 +271,6 @@ const TaskDetailsPage: React.FC = () => {
 			</SettingsSection>
 
 			<div className="flex justify-end gap-2">
-				<Button
-					variant="outline"
-					size="sm"
-					disabled={running || deleting || toggling}
-					onClick={() => void toggleEnabled()}
-				>
-					{toggling
-						? t('settings.cron.actions.updating')
-						: task.enabled
-							? t('settings.cron.actions.disable')
-							: t('settings.cron.actions.enable')}
-				</Button>
 				<Button size="sm" disabled={running || deleting || toggling} onClick={() => void runNow()}>
 					{running ? t('settings.cron.actions.running') : t('settings.cron.actions.run')}
 				</Button>
