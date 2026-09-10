@@ -119,7 +119,7 @@ it('opens Persona settings from General settings', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: 'settings.persona.title' }));
+	await user.click(screen.getByRole('link', { name: 'settings.persona.title' }));
 
 	expect(screen.getByText('Persona page')).toBeInTheDocument();
 });

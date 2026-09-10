@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
+	AppWindow,
 	AudioWaveform,
 	ChevronRight,
 	Coffee,
@@ -9,11 +10,10 @@ import {
 	Languages,
 	PanelTop,
 	SunMoon,
+	Tag,
 } from 'lucide-react';
 import { ThemeSwitcher } from '@/components/kibo-ui/theme-switcher';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import {
 	Select,
 	SelectContent,
@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { useApp, type AppLanguage } from '@/contexts';
-import { SettingsPageHeader, SettingsPageShell, SettingsSection } from '../../components';
+import { SettingsPageHeader, SettingsPageShell, SettingsPanel, SettingsRow, SettingsSection } from '../../components';
 
 interface LanguageOption {
 	readonly value: AppLanguage;
@@ -37,7 +37,6 @@ const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
 
 const GeneralPage: React.FC = () => {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { language, setLanguage, theme, setTheme } = useApp();
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [keepAwake, setKeepAwake] = useState(false);
@@ -82,115 +81,98 @@ const GeneralPage: React.FC = () => {
 			<SettingsPageHeader title={t('settings.tabs.general')} />
 
 			<SettingsSection title={t('settings.application.information')}>
-				<Card size="sm" className="gap-0! p-0!">
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemContent>
-							<ItemTitle>{t('settings.application.name')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.application.name')}
+						description={t('settings.application.nameDescription')}
+						media={<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<span className="text-[13px] text-foreground">{__APP_NAME__}</span>
-						</ItemActions>
-					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemContent>
-							<ItemTitle>{t('settings.application.version')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+						}
+					/>
+					<SettingsRow
+						title={t('settings.application.version')}
+						description={t('settings.application.versionDescription')}
+						media={<Tag className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<span className="font-mono text-[13px] text-foreground">{__APP_VERSION__}</span>
-						</ItemActions>
-					</Item>
-				</Card>
+						}
+					/>
+				</SettingsPanel>
 			</SettingsSection>
 
 			<SettingsSection title={t('settings.application.actions')}>
-				<Card size="sm" className="gap-0! p-0!">
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<PanelTop className="size-3" strokeWidth={1.8} />
-						</ItemMedia>
-						<ItemContent>
-							<ItemTitle>{t('settings.application.menuBar')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.application.menuBar')}
+						description={t('settings.application.menuBarDescription')}
+						media={<PanelTop className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<Switch
 								checked={trayEnabled}
 								onCheckedChange={handleTrayToggle}
 								aria-label={t('settings.application.menuBar')}
 							/>
-						</ItemActions>
-					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<Coffee className="size-3" strokeWidth={1.8} />
-						</ItemMedia>
-						<ItemContent>
-							<ItemTitle>{t('settings.application.keepAwake')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+						}
+					/>
+					<SettingsRow
+						title={t('settings.application.keepAwake')}
+						description={t('settings.application.keepAwakeDescription')}
+						media={<Coffee className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<Switch
 								checked={keepAwake}
 								onCheckedChange={handleKeepAwakeToggle}
 								aria-label={t('settings.application.keepAwake')}
 							/>
-						</ItemActions>
-					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<FolderOpen className="size-3" strokeWidth={1.8} />
-						</ItemMedia>
-						<ItemContent>
-							<ItemTitle>{t('settings.application.appData')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+						}
+					/>
+					<SettingsRow
+						title={t('settings.application.appData')}
+						description={t('settings.application.appDataDescription')}
+						media={<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<Button variant="outline" size="xs" onClick={handleOpenAppDataFolder}>
 								{t('settings.application.openAppData')}
 							</Button>
-						</ItemActions>
-					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<FolderOpen className="size-3" strokeWidth={1.8} />
-						</ItemMedia>
-						<ItemContent>
-							<ItemTitle>{t('settings.application.dataFolder')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+						}
+					/>
+					<SettingsRow
+						title={t('settings.application.dataFolder')}
+						media={<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<Button variant="outline" size="xs" onClick={handleOpenDataFolder}>
 								{t('settings.application.openDataFolder')}
 							</Button>
-						</ItemActions>
-					</Item>
-				</Card>
+						}
+					/>
+				</SettingsPanel>
 			</SettingsSection>
 
 			<SettingsSection title={t('settings.sections.layout')}>
-				<Card size="sm" className="gap-0! p-0!">
-					<Item
-						as="button"
-						type="button"
-						variant="outline"
-						size="md"
-						className="cursor-pointer border-b border-border/60 hover:bg-muted/40 px-5 py-4"
-						onClick={() => navigate('/settings/general/persona')}
-					>
-						<ItemMedia variant="icon">
-							<AudioWaveform className="size-3" strokeWidth={1.8} />
-						</ItemMedia>
-						<ItemContent>
-							<ItemTitle>{t('settings.persona.title')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
-							<ChevronRight className="size-4 text-muted-foreground" strokeWidth={1.8} />
-						</ItemActions>
-					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<Languages className="size-3" strokeWidth={1.8} />
-						</ItemMedia>
-						<ItemContent>
-							<ItemTitle>{t('settings.language.title')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+				<SettingsPanel>
+					<Link to="/settings/general/persona" className="block hover:bg-muted/40">
+						<SettingsRow
+							title={t('settings.persona.title')}
+							description={t('settings.persona.description')}
+							media={<AudioWaveform className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+							className="grid-cols-[minmax(0,1fr)_auto]"
+							actionClassName="w-auto justify-end"
+							actions={<ChevronRight className="size-4 text-muted-foreground" />}
+						/>
+					</Link>
+					<SettingsRow
+						title={t('settings.language.title')}
+						description={t('settings.language.description')}
+						media={<Languages className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<Select value={language} onValueChange={handleLanguageChange}>
 								<SelectTrigger
 									size="sm"
@@ -209,20 +191,17 @@ const GeneralPage: React.FC = () => {
 									))}
 								</SelectContent>
 							</Select>
-						</ItemActions>
-					</Item>
-					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<SunMoon className="size-3" strokeWidth={1.8} />
-						</ItemMedia>
-						<ItemContent>
-							<ItemTitle>{t('settings.theme.title')}</ItemTitle>
-						</ItemContent>
-						<ItemActions className="ml-auto flex-none justify-end">
+						}
+					/>
+					<SettingsRow
+						title={t('settings.theme.title')}
+						media={<SunMoon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
 							<ThemeSwitcher value={theme} onChange={setTheme} />
-						</ItemActions>
-					</Item>
-				</Card>
+						}
+					/>
+				</SettingsPanel>
 			</SettingsSection>
 		</SettingsPageShell>
 	);
