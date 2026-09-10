@@ -1035,6 +1035,10 @@ export interface AppsInvokeChannelMap {
 }
 
 export interface WindowInvokeChannelMap {
+	[WindowChannels.openVoiceConversation]: {
+		args: [chatSessionId: string];
+		result: void;
+	};
 	[WindowChannels.isMaximized]: { args: []; result: boolean };
 	[WindowChannels.isFullScreen]: { args: []; result: boolean };
 	[WindowChannels.showContextMenu]: {

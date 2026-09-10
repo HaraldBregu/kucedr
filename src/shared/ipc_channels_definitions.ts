@@ -398,6 +398,7 @@ export const WindowChannels = {
 	minimize: 'window:minimize',
 	maximize: 'window:maximize',
 	close: 'window:close',
+	openVoiceConversation: 'window:open-voice-conversation',
 	isMaximized: 'window:is-maximized',
 	isFullScreen: 'window:is-fullscreen',
 	maximizeChange: 'window:maximize-change',
