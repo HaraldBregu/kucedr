@@ -8,19 +8,20 @@ type Source = { id: string; name: string; type: 'screen' | 'window' };
 function sourcesFromTool(tool: AgentToolPart): Source[] {
 	const sources = (tool.input as { sources?: unknown } | undefined)?.sources;
 	if (!Array.isArray(sources)) return [];
-	return sources.filter(
-		(source): source is Source =>
-			Boolean(
-				source &&
-				typeof source === 'object' &&
-				typeof (source as Source).id === 'string' &&
-				typeof (source as Source).name === 'string' &&
-				((source as Source).type === 'screen' || (source as Source).type === 'window')
-			)
+	return sources.filter((source): source is Source =>
+		Boolean(
+			source &&
+			typeof source === 'object' &&
+			typeof (source as Source).id === 'string' &&
+			typeof (source as Source).name === 'string' &&
+			((source as Source).type === 'screen' || (source as Source).type === 'window')
+		)
 	);
 }
 
-function resultFromTool(tool: AgentToolPart): { status: 'resolved' | 'interrupted'; sourceId?: string } | undefined {
+function resultFromTool(
+	tool: AgentToolPart
+): { status: 'resolved' | 'interrupted'; sourceId?: string } | undefined {
 	let value = tool.output;
 	if (typeof value === 'string') {
 		try {
@@ -125,7 +126,9 @@ export function ScreenSourceCard({
 							</span>
 						</label>
 					))}
-					<p aria-live="polite" className="text-sm text-destructive">{error}</p>
+					<p aria-live="polite" className="text-sm text-destructive">
+						{error}
+					</p>
 				</CardContent>
 				<CardFooter className="justify-end px-4 pt-4">
 					<Button type="submit" size="sm" disabled={submitting}>

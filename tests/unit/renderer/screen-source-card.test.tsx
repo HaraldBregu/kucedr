@@ -11,7 +11,9 @@ const pending: PendingUserInput = {
 	toolCallId: 'tool',
 	inputFingerprint: 'fingerprint',
 	expiresAt: new Date(Date.now() + 60_000).toISOString(),
-	questions: [{ id: 'screen-source', header: 'Screen', question: 'Choose a screen to record.', options: [] }],
+	questions: [
+		{ id: 'screen-source', header: 'Screen', question: 'Choose a screen to record.', options: [] },
+	],
 };
 
 const tool: AgentToolPart = {
