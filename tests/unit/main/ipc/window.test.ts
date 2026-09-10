@@ -93,6 +93,23 @@ it('forwards app sidebar widths to the matching titlebar shell', () => {
 	(openAppWindows as Map<string, unknown>).delete('workspace');
 });
 
+it('opens the dedicated voice conversation window with a trimmed chat session id', async () => {
+	const openVoiceConversation = jest.fn();
+	new WindowIpc().register(
+		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry, openVoiceConversation },
+		{} as EventBus
+	);
+	const handler = (ipcMain.handle as jest.Mock).mock.calls.find(
+		([channel]) => channel === WindowChannels.openVoiceConversation
+	)?.[1];
+
+	await expect(handler({ sender: {} } as IpcMainInvokeEvent, ' chat-session ')).resolves.toEqual({
+		success: true,
+		data: undefined,
+	});
+	expect(openVoiceConversation).toHaveBeenCalledWith('chat-session');
+});
+
 it('forwards titlebar options to the owning shell and button clicks to its app', () => {
 	const shellSend = jest.fn();
 	const shellContents = { send: shellSend };
