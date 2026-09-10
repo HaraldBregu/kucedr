@@ -3,6 +3,7 @@ import type { AppState } from './app_state';
 import type { RendererContentOptions, WindowFactory } from './window_factory';
 import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
+import { getPlatformTranslucencyOptions } from './translucency';
 
 const DEFAULT_WINDOW_WIDTH = 812;
 const DEFAULT_WINDOW_HEIGHT = 625;
@@ -14,7 +15,6 @@ const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
 export class Main {
 	private window: BrowserWindow | null = null;
-	private voiceWindow: BrowserWindow | null = null;
 	private readonly appWindows = new Set<BrowserWindow>();
 	private onWindowVisibilityChange?: () => void;
 

@@ -130,6 +130,10 @@ const trayManager = new Tray({
 	},
 });
 
+voiceWindow.setOnVisibilityChange(() => {
+	trayManager.updateContextMenu();
+});
+
 const menuManager = new Menu({
 	onLanguageChange: (lng) => {
 		setStoredLanguage(lng as AppLanguage);
