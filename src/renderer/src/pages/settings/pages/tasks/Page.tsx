@@ -234,7 +234,7 @@ const TasksPage: React.FC = () => {
 							description={t('settings.cron.emptyDescription')}
 						/>
 					) : (
-							tasks.map((task) => (
+						tasks.map((task) => (
 							<Item
 								key={task.id}
 								variant="outline"
