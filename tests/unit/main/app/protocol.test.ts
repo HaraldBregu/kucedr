@@ -113,6 +113,23 @@ describe('protocol security', () => {
 		).toBe(true);
 		expect(check(appContents as Electron.WebContents, 'media', 'file://', details)).toBe(false);
 		expect(check(mainContents as Electron.WebContents, 'media', 'file://', details)).toBe(true);
+		const request = jest.mocked(defaultSession.setPermissionRequestHandler).mock.calls[0][0];
+		const displayCaptureCallback = jest.fn();
+		request(
+			mainContents as Electron.WebContents,
+			'display-capture',
+			displayCaptureCallback,
+			{ isMainFrame: true, requestingUrl: mainUrl } as Electron.PermissionRequest
+		);
+		expect(displayCaptureCallback).toHaveBeenCalledWith(true);
+		const appCaptureCallback = jest.fn();
+		request(
+			appContents as Electron.WebContents,
+			'display-capture',
+			appCaptureCallback,
+			{ isMainFrame: true, requestingUrl: mainUrl } as Electron.PermissionRequest
+		);
+		expect(appCaptureCallback).toHaveBeenCalledWith(false);
 
 		const display = jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][0];
 		const denied = jest.fn();

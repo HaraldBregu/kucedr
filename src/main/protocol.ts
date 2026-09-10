@@ -173,9 +173,23 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 						isTrustedMediaRequestSource(undefined, details.requestingUrl, undefined)
 					)
 				);
-				return;
-			}
-			if (permission !== 'media') {
+					return;
+				}
+				if (permission === 'display-capture') {
+					const displayDetails = details as Electron.PermissionRequest;
+					callback(
+						Boolean(
+							allowDisplayCapture &&
+								displayDetails.isMainFrame &&
+								!appRegistry.has(webContents) &&
+								webContents &&
+								BrowserWindow.fromWebContents(webContents) &&
+								isTrustedMediaRequestSource(undefined, displayDetails.requestingUrl, undefined)
+						)
+					);
+					return;
+				}
+				if (permission !== 'media') {
 				callback(false);
 				return;
 			}
