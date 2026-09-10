@@ -247,70 +247,70 @@ export function useRealtimeVoice({
 		if (startPromiseRef.current) return startPromiseRef.current;
 
 		const startPromise = (async (): Promise<boolean> => {
-		setErrorMessage(null);
-		setRequiresConfiguration(false);
-		if (!isConfigured) {
-			setErrorMessage('Configure a supported realtime voice provider and model in Settings.');
-			setRequiresConfiguration(true);
-			setStatus('error');
-			return false;
-		}
-		if (!isSupported) {
-			setErrorMessage('Realtime voice is not supported in this environment.');
-			setStatus('error');
-			return false;
-		}
-
-		const runId = startRunRef.current + 1;
-		startRunRef.current = runId;
-		setStatus('checking-permission');
-		setElapsedMs(0);
-		userTurnMessageIdsRef.current = new Map();
-
-		try {
-			if (!(await getAppMicrophoneEnabled())) {
-				throw new Error('Microphone recording is disabled in Settings.');
+			setErrorMessage(null);
+			setRequiresConfiguration(false);
+			if (!isConfigured) {
+				setErrorMessage('Configure a supported realtime voice provider and model in Settings.');
+				setRequiresConfiguration(true);
+				setStatus('error');
+				return false;
 			}
-			if (startRunRef.current !== runId) return false;
+			if (!isSupported) {
+				setErrorMessage('Realtime voice is not supported in this environment.');
+				setStatus('error');
+				return false;
+			}
 
-			await startPlayback();
-			await startCapture((audio) => {
-				const sessionId = sessionIdRef.current;
-				if (sessionId) {
-					void window.models.realtimeVoice
-						.appendAudio(sessionId, audio)
-						.catch((error) => failSession(error, sessionId));
+			const runId = startRunRef.current + 1;
+			startRunRef.current = runId;
+			setStatus('checking-permission');
+			setElapsedMs(0);
+			userTurnMessageIdsRef.current = new Map();
+
+			try {
+				if (!(await getAppMicrophoneEnabled())) {
+					throw new Error('Microphone recording is disabled in Settings.');
 				}
-			});
-			if (startRunRef.current !== runId) {
+				if (startRunRef.current !== runId) return false;
+
+				await startPlayback();
+				await startCapture((audio) => {
+					const sessionId = sessionIdRef.current;
+					if (sessionId) {
+						void window.models.realtimeVoice
+							.appendAudio(sessionId, audio)
+							.catch((error) => failSession(error, sessionId));
+					}
+				});
+				if (startRunRef.current !== runId) {
+					releaseAudio();
+					return false;
+				}
+
+				setStatus('connecting');
+				const session = await window.models.realtimeVoice.startSession({ chatSessionId });
+				if (startRunRef.current !== runId) {
+					await window.models.realtimeVoice.stopSession(session.id).catch(() => undefined);
+					releaseAudio();
+					return false;
+				}
+
+				sessionIdRef.current = session.id;
+				sessionChatIdRef.current = chatSessionId;
+				setStatus('listening');
+				startedAtMsRef.current = Date.now();
+				clockRef.current = window.setInterval(() => {
+					setElapsedMs(Date.now() - startedAtMsRef.current);
+				}, CLOCK_INTERVAL_MS);
+				return true;
+			} catch (error) {
 				releaseAudio();
+				const message = dictationErrorMessage(error);
+				setErrorMessage(message);
+				setRequiresConfiguration(needsVoiceConfiguration(message));
+				setStatus('error');
 				return false;
 			}
-
-			setStatus('connecting');
-			const session = await window.models.realtimeVoice.startSession({ chatSessionId });
-			if (startRunRef.current !== runId) {
-				await window.models.realtimeVoice.stopSession(session.id).catch(() => undefined);
-				releaseAudio();
-				return false;
-			}
-
-			sessionIdRef.current = session.id;
-			sessionChatIdRef.current = chatSessionId;
-			setStatus('listening');
-			startedAtMsRef.current = Date.now();
-			clockRef.current = window.setInterval(() => {
-				setElapsedMs(Date.now() - startedAtMsRef.current);
-			}, CLOCK_INTERVAL_MS);
-			return true;
-		} catch (error) {
-			releaseAudio();
-			const message = dictationErrorMessage(error);
-			setErrorMessage(message);
-			setRequiresConfiguration(needsVoiceConfiguration(message));
-			setStatus('error');
-			return false;
-		}
 		})();
 		startPromiseRef.current = startPromise;
 		return startPromise.finally(() => {
