@@ -171,35 +171,35 @@ export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {
 								!appRegistry.has(webContents) &&
 								BrowserWindow.fromWebContents(webContents)) &&
 						isTrustedMediaRequestSource(undefined, details.requestingUrl, undefined)
-						)
-					);
-					return;
-				}
-				if (permission === 'display-capture') {
-					const displayDetails = details as Electron.PermissionRequest;
-					callback(
-						Boolean(
-							allowDisplayCapture &&
-								displayDetails.isMainFrame &&
-								!appRegistry.has(webContents) &&
-								webContents &&
-								BrowserWindow.fromWebContents(webContents) &&
-								isTrustedMediaRequestSource(undefined, displayDetails.requestingUrl, undefined)
-						)
-					);
-					return;
-				}
-				if (permission !== 'media') {
-					callback(false);
-					return;
-				}
+					)
+				);
+				return;
+			}
+			if (permission === 'display-capture') {
+				const displayDetails = details as Electron.PermissionRequest;
+				callback(
+					Boolean(
+						allowDisplayCapture &&
+						displayDetails.isMainFrame &&
+						!appRegistry.has(webContents) &&
+						webContents &&
+						BrowserWindow.fromWebContents(webContents) &&
+						isTrustedMediaRequestSource(undefined, displayDetails.requestingUrl, undefined)
+					)
+				);
+				return;
+			}
+			if (permission !== 'media') {
+				callback(false);
+				return;
+			}
 
-				const mediaDetails = details as Electron.MediaAccessPermissionRequest;
-				const requestsAudio = mediaDetails.mediaTypes?.includes('audio') ?? false;
-				const requestsVideo = mediaDetails.mediaTypes?.includes('video') ?? false;
-				const requestsDisplayCapture = mediaDetails.mediaTypes?.length === 0;
-				const allowed =
-					(requestsAudio || requestsVideo || (allowDisplayCapture && requestsDisplayCapture)) &&
+			const mediaDetails = details as Electron.MediaAccessPermissionRequest;
+			const requestsAudio = mediaDetails.mediaTypes?.includes('audio') ?? false;
+			const requestsVideo = mediaDetails.mediaTypes?.includes('video') ?? false;
+			const requestsDisplayCapture = mediaDetails.mediaTypes?.length === 0;
+			const allowed =
+				(requestsAudio || requestsVideo || (allowDisplayCapture && requestsDisplayCapture)) &&
 				mediaDetails.isMainFrame &&
 				!appRegistry.has(webContents) &&
 				Boolean(webContents && BrowserWindow.fromWebContents(webContents)) &&

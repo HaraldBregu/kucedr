@@ -91,9 +91,9 @@ describe('protocol security', () => {
 			);
 		setupMediaPermissionHandlers(appRegistry);
 		const defaultSession = session.defaultSession;
-		expect(
-			jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][1]
-		).toEqual({ useSystemPicker: false });
+		expect(jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][1]).toEqual({
+			useSystemPicker: false,
+		});
 		const check = jest.mocked(defaultSession.setPermissionCheckHandler).mock.calls[0][0];
 		const mainUrl = pathToFileURL(
 			path.join(app.getAppPath(), 'out/renderer/index.html')
@@ -115,33 +115,24 @@ describe('protocol security', () => {
 		expect(check(mainContents as Electron.WebContents, 'media', 'file://', details)).toBe(true);
 		const request = jest.mocked(defaultSession.setPermissionRequestHandler).mock.calls[0][0];
 		const displayCaptureCallback = jest.fn();
-		request(
-			mainContents as Electron.WebContents,
-			'display-capture',
-			displayCaptureCallback,
-			{ isMainFrame: true, requestingUrl: mainUrl } as Electron.PermissionRequest
-		);
+		request(mainContents as Electron.WebContents, 'display-capture', displayCaptureCallback, {
+			isMainFrame: true,
+			requestingUrl: mainUrl,
+		} as Electron.PermissionRequest);
 		expect(displayCaptureCallback).toHaveBeenCalledWith(true);
 		const legacyDisplayCaptureCallback = jest.fn();
-		request(
-			mainContents as Electron.WebContents,
-			'media',
-			legacyDisplayCaptureCallback,
-			{
-				isMainFrame: true,
-				mediaTypes: [],
-				requestingUrl: mainUrl,
-				securityOrigin: 'file://',
-			} as Electron.MediaAccessPermissionRequest
-		);
+		request(mainContents as Electron.WebContents, 'media', legacyDisplayCaptureCallback, {
+			isMainFrame: true,
+			mediaTypes: [],
+			requestingUrl: mainUrl,
+			securityOrigin: 'file://',
+		} as Electron.MediaAccessPermissionRequest);
 		expect(legacyDisplayCaptureCallback).toHaveBeenCalledWith(true);
 		const appCaptureCallback = jest.fn();
-		request(
-			appContents as Electron.WebContents,
-			'display-capture',
-			appCaptureCallback,
-			{ isMainFrame: true, requestingUrl: mainUrl } as Electron.PermissionRequest
-		);
+		request(appContents as Electron.WebContents, 'display-capture', appCaptureCallback, {
+			isMainFrame: true,
+			requestingUrl: mainUrl,
+		} as Electron.PermissionRequest);
 		expect(appCaptureCallback).toHaveBeenCalledWith(false);
 
 		const display = jest.mocked(defaultSession.setDisplayMediaRequestHandler).mock.calls[0][0];
