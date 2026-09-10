@@ -51,9 +51,7 @@ import {
 	useAudioRecorder,
 	useHomeAgent,
 	useRealtimeDictation,
-	useRealtimeVoice,
 	useVoiceButtonMode,
-	type RealtimeVoiceUiStatus,
 	type VoiceButtonMode,
 } from './hooks';
 import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
@@ -154,17 +152,6 @@ function RecorderErrorMessage({
 		</div>
 	);
 }
-
-const realtimeVoiceStatusLabels: Record<RealtimeVoiceUiStatus, string> = {
-	idle: 'Ready',
-	'checking-permission': 'Checking microphone…',
-	connecting: 'Connecting…',
-	listening: 'Listening…',
-	thinking: 'Kucedr is responding…',
-	speaking: 'Kucedr is speaking…',
-	ending: 'Ending…',
-	error: 'Voice conversation ended',
-};
 
 function EmptyConversation(): ReactElement {
 	return (
@@ -479,9 +466,6 @@ function PageContent(): ReactElement {
 		updateMode('chat');
 	}, [updateMode]);
 	const agent = useHomeAgent({ setMode: updateMode });
-	const realtimeVoice = useRealtimeVoice({ chatSessionId, onClosed: closeVoiceUi });
-	const realtimeVoiceActive = realtimeVoice.isActive;
-	const endRealtimeVoice = realtimeVoice.end;
 	const dictation = useRealtimeDictation({
 		value: agent.input,
 		onValueChange: agent.setInput,
