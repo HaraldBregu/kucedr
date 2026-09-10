@@ -11,7 +11,8 @@ beforeEach(() => {
 	getSchedule.mockReturnValue({
 		id: 'schedule-1',
 		enabled: false,
-		action: { type: 'agent', prompt: 'check status', effort: 'low' },
+		prompt: 'check status',
+		effort: 'low',
 	});
 	updateSchedule.mockImplementation((_id, patch) => ({ id: 'schedule-1', ...patch }));
 });
@@ -21,12 +22,7 @@ it('lets the trusted settings surface enable a schedule with a normalized narrow
 
 	expect(updateSchedule).toHaveBeenCalledWith('schedule-1', {
 		enabled: true,
-		action: {
-			type: 'agent',
-			prompt: 'check status',
-			effort: 'low',
-			toolsAllow: ['web_fetch', 'knowledge_query'],
-		},
+		toolsAllow: ['web_fetch', 'knowledge_query'],
 	});
 });
 
