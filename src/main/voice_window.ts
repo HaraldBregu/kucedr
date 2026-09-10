@@ -104,6 +104,8 @@ export class VoiceWindow {
 	end(): void {
 		const win = this.window;
 		if (!win || win.isDestroyed()) return;
+		this.window = null;
+		this.onVisibilityChange?.();
 		win.close();
 	}
 

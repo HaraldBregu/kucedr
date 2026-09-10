@@ -8,7 +8,7 @@ jest.mock('../../../../src/main/translucency', () => ({
 
 import { VoiceWindow } from '../../../../src/main/voice_window';
 
-it('creates a standalone voice window that can be shown and hidden independently', () => {
+it('creates a standalone voice window that can be started and ended independently', () => {
 	let visible = false;
 	const listeners = new Map<string, () => void>();
 	const win = {
@@ -50,7 +50,7 @@ it('creates a standalone voice window that can be shown and hidden independently
 
 	expect(options).not.toHaveProperty('parent');
 	expect(options).not.toHaveProperty('modal');
-	expect(voiceWindow.isActive()).toBe(true);
+	expect(voiceWindow.isActive()).toBe(false);
 	expect(win.close).toHaveBeenCalledTimes(1);
 	expect(win.show).toHaveBeenCalledTimes(1);
 	expect(attachWindowHandlers).toHaveBeenCalledWith(win);
