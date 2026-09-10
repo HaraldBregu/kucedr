@@ -7,9 +7,11 @@ import {
 	SessionCoordinator,
 	releaseSession,
 } from '../session';
+import { randomUUID } from 'node:crypto';
 import type { Config, ToolCall } from '../types';
 import type { RealtimeVoiceHistoryMessage } from '../../models/adapters/realtime_voice';
 import { realtimeVoiceHistory } from './history';
+import { loadMessagesBySessionId } from '../session/session_load_messages_by_session_id';
 
 export interface RealtimeVoiceConversation {
 	readonly signal?: AbortSignal;
@@ -39,14 +41,16 @@ export function realtimeVoiceConversationFactory(
 ): RealtimeVoiceConversationFactory {
 	return (chatSessionId, modelId) => {
 		const state = createSessionState();
+		const voiceSessionId = randomUUID();
 		const pendingUserTurns = new Map<string, PendingUserTurn>();
 		init(
 			state,
 			config,
-			{ task: 'chat', message: '', sessionId: chatSessionId, model: modelId },
-			'main',
+			{ task: 'voice', message: '', sessionId: voiceSessionId, model: modelId },
+			'voice',
 			coordinator
 		);
+		const contextMessages = loadMessagesBySessionId(chatSessionId, config.location);
 		const toolCalls = new Map<string, ToolCall>();
 		const completedToolCalls = new Set<string>();
 		for (const message of state.messages) {
@@ -58,7 +62,7 @@ export function realtimeVoiceConversationFactory(
 		return {
 			signal: state.lease?.signal,
 			dispose: () => releaseSession(state),
-			history: realtimeVoiceHistory(state.messages),
+			history: realtimeVoiceHistory(contextMessages),
 			beginUserTurn: (itemId) => {
 				if (state.lease && !state.lease.active) return;
 				const turn = pendingUserTurns.get(itemId) ?? {

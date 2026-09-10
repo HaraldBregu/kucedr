@@ -9,7 +9,7 @@ export function sessionType(sessionsPath: string, sessionId: string): SessionCat
 			type?: unknown;
 		};
 		const type = info?.type;
-		return type === 'main' || type === 'task' || type === 'health' || type === 'bot'
+		return type === 'main' || type === 'task' || type === 'health' || type === 'bot' || type === 'voice'
 			? type
 			: DEFAULT_CATEGORY;
 	} catch {

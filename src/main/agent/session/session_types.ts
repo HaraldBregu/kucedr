@@ -8,7 +8,7 @@ import type { Message, MessageContentBlock, ToolCall } from '../types';
 
 export const DEFAULT_CATEGORY: SessionCategory = 'main';
 
-export type SessionCategory = 'main' | 'bot' | 'health' | 'task' | 'subagent';
+export type SessionCategory = 'main' | 'bot' | 'health' | 'task' | 'subagent' | 'voice';
 
 export type SessionResultSubtype = 'success' | 'error_max_turns';
 
