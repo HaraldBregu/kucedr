@@ -79,6 +79,7 @@ export default defineConfig({
 				input: {
 					index: resolve(__dirname, 'src/renderer/index.html'),
 					app: resolve(__dirname, 'src/renderer/app.html'),
+					voice: resolve(__dirname, 'src/renderer/voice.html'),
 				},
 			},
 		},
