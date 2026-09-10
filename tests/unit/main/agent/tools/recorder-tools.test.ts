@@ -104,7 +104,10 @@ it.each([
 			{ filename: 'capture.webm', ...(_name === 'screen' ? { sourceId: 'screen:1' } : {}) }
 		);
 
-		expect(recorder.start).toHaveBeenCalledWith({ url: '/workspace/capture.webm' });
+		expect(recorder.start).toHaveBeenCalledWith({
+			url: '/workspace/capture.webm',
+			...(_name === 'screen' ? { sourceId: 'screen:1' } : {}),
+		});
 	}
 );
 
