@@ -260,20 +260,23 @@ const TasksPage: React.FC = () => {
 										<ItemTitle className="min-w-0 max-w-full flex-1 truncate">
 											{task.name}
 										</ItemTitle>
-										<div className="ml-auto flex shrink-0 items-center gap-3">
-											<span className="max-w-[45%] truncate text-right text-[11px] text-muted-foreground sm:max-w-none">
-												{describeSchedule(task.cronExpression, t)}
-											</span>
-											<Switch
-												checked={task.enabled}
-												disabled={togglingTaskId === task.id}
-												aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
-												onClick={(event) => event.stopPropagation()}
-												onKeyDown={(event) => event.stopPropagation()}
-												onCheckedChange={(enabled) =>
-													void handleTaskEnabledChange(task.id, enabled)
-												}
-											></Switch>
+											<div className="ml-auto flex shrink-0 items-center gap-3">
+												<span className="max-w-[45%] truncate text-right text-[11px] text-muted-foreground sm:max-w-none">
+													{describeSchedule(task.cronExpression, t)}
+												</span>
+												<div
+													onClick={(event) => event.stopPropagation()}
+													onKeyDown={(event) => event.stopPropagation()}
+												>
+													<Switch
+														checked={task.enabled}
+														disabled={togglingTaskId === task.id}
+														aria-label={`${task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')} ${task.name}`}
+														onCheckedChange={(enabled) =>
+															void handleTaskEnabledChange(task.id, enabled)
+														}
+													/>
+												</div>
 										</div>
 									</div>
 									<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
