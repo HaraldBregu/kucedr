@@ -94,11 +94,14 @@ app.on('browser-window-created', (_event, win) => {
 
 const trayManager = new Tray({
 	onToggleApp: () => mainWindow.toggleVisibility(),
+	onToggleVoiceConversation: () => mainWindow.toggleVoiceConversation(),
 	onQuit: () => {
 		appState.setQuitting();
 		app.quit();
 	},
 	isAppVisible: () => mainWindow.isVisible(),
+	hasVoiceConversation: () => mainWindow.hasVoiceConversation(),
+	isVoiceConversationVisible: () => mainWindow.isVoiceConversationVisible(),
 	getApps: () => listApps(),
 	onOpenApp: (app) => loadApp(windowFactory, app),
 	getMicrophoneInputs: async () => {

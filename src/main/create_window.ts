@@ -203,6 +203,27 @@ export class Main {
 		return this.getOpenAppWindows().some((win) => win.isVisible());
 	}
 
+	hasVoiceConversation(): boolean {
+		return Boolean(this.voiceWindow && !this.voiceWindow.isDestroyed());
+	}
+
+	isVoiceConversationVisible(): boolean {
+		return Boolean(
+			this.voiceWindow && !this.voiceWindow.isDestroyed() && this.voiceWindow.isVisible()
+		);
+	}
+
+	toggleVoiceConversation(): void {
+		const win = this.voiceWindow;
+		if (!win || win.isDestroyed()) return;
+		if (win.isVisible()) {
+			win.hide();
+			return;
+		}
+		win.show();
+		win.focus();
+	}
+
 	setOnWindowVisibilityChange(callback: () => void): void {
 		this.onWindowVisibilityChange = callback;
 	}
@@ -234,14 +255,17 @@ export class Main {
 			win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 		}
 		win.on('blur', () => {
-			if (win.isDestroyed()) return;
+			if (win.isDestroyed() || !win.isVisible()) return;
 			setImmediate(() => {
-				if (!win.isDestroyed()) win.focus();
+				if (!win.isDestroyed() && win.isVisible()) win.focus();
 			});
 		});
 		win.on('closed', () => {
 			if (this.voiceWindow?.id === win.id) this.voiceWindow = null;
+			this.onWindowVisibilityChange?.();
 		});
+		win.on('show', () => this.onWindowVisibilityChange?.());
+		win.on('hide', () => this.onWindowVisibilityChange?.());
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
 			win.show();

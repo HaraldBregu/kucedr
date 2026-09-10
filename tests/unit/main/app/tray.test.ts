@@ -16,6 +16,8 @@ jest.mock('../../../../src/main/i18n', () => ({
 	loadTranslations: () => ({
 		showKucedr: 'Show Kucedr',
 		hideKucedr: 'Hide Kucedr',
+		showVoiceConversation: 'Show Voice Conversation',
+		hideVoiceConversation: 'Hide Voice Conversation',
 		apps: 'Apps',
 		microphone: 'Microphone',
 		microphoneDefault: 'System default',
@@ -38,8 +40,11 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 	let selected = 'usb';
 	const tray = new Tray({
 		onToggleApp: jest.fn(),
+		onToggleVoiceConversation: jest.fn(),
 		onQuit: jest.fn(),
 		isAppVisible: () => false,
+		hasVoiceConversation: () => false,
+		isVoiceConversationVisible: () => false,
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 		getMicrophoneInputs: async () => [
@@ -69,4 +74,34 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 	});
 	microphone?.submenu?.find((entry) => entry.label === 'System default')?.click?.();
 	expect(selected).toBe('default');
+});
+
+it('shows and hides the active voice conversation from the tray', () => {
+	let visible = false;
+	const toggleVoiceConversation = jest.fn(() => {
+		visible = !visible;
+	});
+	const tray = new Tray({
+		onToggleApp: jest.fn(),
+		onToggleVoiceConversation: toggleVoiceConversation,
+		onQuit: jest.fn(),
+		isAppVisible: () => false,
+		hasVoiceConversation: () => true,
+		isVoiceConversationVisible: () => visible,
+		getApps: () => [],
+		onOpenApp: jest.fn(),
+	});
+
+	tray.create();
+	let template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+	let voiceItem = template.find((entry) => entry.label === 'Show Voice Conversation');
+	expect(voiceItem).toMatchObject({ enabled: true });
+	voiceItem?.click?.();
+
+	tray.updateContextMenu();
+	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+	voiceItem = template.find((entry) => entry.label === 'Hide Voice Conversation');
+	expect(voiceItem).toMatchObject({ enabled: true });
+	voiceItem?.click?.();
+	expect(toggleVoiceConversation).toHaveBeenCalledTimes(2);
 });
