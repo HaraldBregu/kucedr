@@ -114,6 +114,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.cron.actions.enable': 'Enable',
 		'settings.cron.actions.disable': 'Disable',
+		'settings.cron.actions.back': 'Back',
 		'settings.cron.schedule.everyMinutes': 'Every {{count}} minutes',
 		'settings.modelServices.realtimeConversationConfiguration': 'Realtime conversation',
 		'settings.modelServices.realtimeConversationDescription': 'Live model and voice',
