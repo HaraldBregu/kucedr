@@ -55,6 +55,7 @@ import {
 	type VoiceButtonMode,
 } from './hooks';
 import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
+import { ensureAppMicrophoneAccess } from './hooks/audio';
 import type { PromptAttachment } from './attachments/types';
 import { validatePromptAttachments } from './attachments/validation';
 import { HomeSidebar } from './Sidebar';
@@ -628,6 +629,7 @@ function PageContent(): ReactElement {
 	const startVoiceConversation = async (): Promise<void> => {
 		setTranscriptionErrorMessage(null);
 		try {
+			await ensureAppMicrophoneAccess();
 			await window.win.openVoiceConversation(chatSessionId);
 		} catch (error) {
 			setTranscriptionErrorMessage(

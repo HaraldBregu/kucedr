@@ -25,6 +25,20 @@ export async function getAppMicrophoneEnabled(): Promise<boolean> {
 	}
 }
 
+export async function ensureAppMicrophoneAccess(): Promise<void> {
+	const settings = await window.app.getMicrophonePermission();
+	if (!settings.enabled) throw new Error('Microphone recording is disabled in Settings.');
+	if (settings.systemStatus === 'denied' || settings.systemStatus === 'restricted') {
+		throw new Error('Microphone access is blocked. Allow microphone access and try again.');
+	}
+	if (!settings.canRequest) return;
+
+	const requested = await window.app.requestMicrophonePermission();
+	if (requested.systemStatus === 'denied' || requested.systemStatus === 'restricted') {
+		throw new Error('Microphone access is blocked. Allow microphone access and try again.');
+	}
+}
+
 export function dictationErrorMessage(error: unknown): string {
 	if (error instanceof DOMException) {
 		if (error.name === 'NotAllowedError' || error.name === 'SecurityError') {

@@ -6,7 +6,7 @@ import type {
 	RealtimeVoiceState,
 	RealtimeVoiceToolEvent,
 } from '@shared/realtime_voice';
-import { canCaptureAudio, dictationErrorMessage, getAppMicrophoneEnabled } from './audio';
+import { canCaptureAudio, dictationErrorMessage, ensureAppMicrophoneAccess } from './audio';
 import { usePcmCapture } from './usePcmCapture';
 import { usePcmPlayback } from './usePcmPlayback';
 
@@ -268,9 +268,7 @@ export function useRealtimeVoice({
 			userTurnMessageIdsRef.current = new Map();
 
 			try {
-				if (!(await getAppMicrophoneEnabled())) {
-					throw new Error('Microphone recording is disabled in Settings.');
-				}
+			await ensureAppMicrophoneAccess();
 				if (startRunRef.current !== runId) return false;
 
 				await startPlayback();

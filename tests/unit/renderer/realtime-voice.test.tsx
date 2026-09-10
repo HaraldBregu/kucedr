@@ -234,6 +234,33 @@ describe('useRealtimeVoice', () => {
 		unmount();
 	});
 
+	it('requests pending system microphone access before starting', async () => {
+		api.startSession.mockResolvedValue(session);
+		const requestMicrophonePermission = jest.fn().mockResolvedValue({
+			enabled: true,
+			systemStatus: 'granted',
+			canRequest: false,
+		});
+		window.app = {
+			getMicrophoneInputId: jest.fn().mockResolvedValue('default'),
+			getMicrophonePermission: jest.fn().mockResolvedValue({
+				enabled: true,
+				systemStatus: 'not-determined',
+				canRequest: true,
+			}),
+			requestMicrophonePermission,
+		} as unknown as Window['app'];
+
+		const { result, unmount } = renderHook(
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() }),
+			{ wrapper }
+		);
+		await act(async () => result.current.start());
+
+		expect(requestMicrophonePermission).toHaveBeenCalledTimes(1);
+		unmount();
+	});
+
 	it('turns append failures into a terminal visible error', async () => {
 		api.startSession.mockResolvedValue(session);
 		api.appendAudio.mockRejectedValue(new Error('Audio transport failed.'));
