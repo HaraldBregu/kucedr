@@ -693,6 +693,17 @@
 			},
 			"enabled": "Attiva",
 			"disabled": "Disattivata",
+			"schedule": {
+				"notScheduled": "Non pianificata",
+				"everyMinute": "Ogni minuto",
+				"everyMinutes": "Ogni {{count}} minuti",
+				"everyHour": "Ogni ora",
+				"everyHours": "Ogni {{count}} ore",
+				"daily": "Ogni giorno",
+				"dailyAt": "Ogni giorno alle {{time}}",
+				"monthly": "Ogni mese",
+				"monthlyAt": "Ogni mese alle {{time}}"
+			},
 			"nextRun": "Prossima",
 			"schedulesTitle": "Attivita programmate",
 			"schedulesDescription": "Pianificazioni cron persistenti salvate da Kucedr.",

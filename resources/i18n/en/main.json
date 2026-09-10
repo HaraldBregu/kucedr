@@ -694,6 +694,17 @@
 			},
 			"enabled": "Enabled",
 			"disabled": "Disabled",
+			"schedule": {
+				"notScheduled": "Not scheduled",
+				"everyMinute": "Every minute",
+				"everyMinutes": "Every {{count}} minutes",
+				"everyHour": "Every hour",
+				"everyHours": "Every {{count}} hours",
+				"daily": "Every day",
+				"dailyAt": "Every day at {{time}}",
+				"monthly": "Every month",
+				"monthlyAt": "Every month at {{time}}"
+			},
 			"nextRun": "Next",
 			"schedulesTitle": "Scheduled tasks",
 			"schedulesDescription": "Durable cron schedules saved by Kucedr.",
