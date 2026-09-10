@@ -728,6 +728,7 @@ function PageContent(): ReactElement {
 		void startVoiceConversation();
 	};
 
+	// PromptInput retains its conversation-mode rendering for future reuse; launch now opens the dedicated voice window.
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
