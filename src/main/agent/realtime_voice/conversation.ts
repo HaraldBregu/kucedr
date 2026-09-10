@@ -14,7 +14,7 @@ import { realtimeVoiceHistory } from './history';
 import { loadMessagesBySessionId } from '../session/session_load_messages_by_session_id';
 
 export interface RealtimeVoiceConversation {
-	readonly persistenceSessionId: string;
+	readonly persistenceSessionId?: string;
 	readonly signal?: AbortSignal;
 	dispose?(): void;
 	readonly history: readonly RealtimeVoiceHistoryMessage[];
