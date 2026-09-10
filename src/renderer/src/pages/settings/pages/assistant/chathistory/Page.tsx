@@ -112,12 +112,20 @@ const ChatHistoryPage: React.FC = () => {
 								<button
 									type="button"
 									role="menuitem"
-									disabled={loading || sessions.length === 0 || deletingAll || deletingSessionId !== null}
+									disabled={
+										loading || sessions.length === 0 || deletingAll || deletingSessionId !== null
+									}
 									onClick={() => void handleDeleteAll()}
 									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
 								>
-									{deletingAll ? <LoaderCircle className="size-3.5 animate-spin" /> : <Trash2 className="size-3.5" />}
-									{deletingAll ? t('settings.chatHistory.deleting') : t('settings.chatHistory.delete')}
+									{deletingAll ? (
+										<LoaderCircle className="size-3.5 animate-spin" />
+									) : (
+										<Trash2 className="size-3.5" />
+									)}
+									{deletingAll
+										? t('settings.chatHistory.deleting')
+										: t('settings.chatHistory.delete')}
 								</button>
 							</div>
 						</PopoverContent>

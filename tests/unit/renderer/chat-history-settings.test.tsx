@@ -48,8 +48,6 @@ it('confirms and deletes every stored chat from the header actions', async () =>
 	await user.click(screen.getByRole('menuitem', { name: 'settings.chatHistory.delete' }));
 
 	expect(window.confirm).toHaveBeenCalledWith('settings.chatHistory.confirmDelete');
-	await waitFor(() =>
-		expect(agentApi.deleteSession).toHaveBeenCalledWith('session-1')
-	);
+	await waitFor(() => expect(agentApi.deleteSession).toHaveBeenCalledWith('session-1'));
 	expect(agentApi.deleteSession).toHaveBeenCalledWith('session-2');
 });
