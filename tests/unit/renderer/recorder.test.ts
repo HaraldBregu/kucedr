@@ -136,6 +136,25 @@ describe('renderer recorder capture', () => {
 		dispose();
 	});
 
+	it('captures the selected desktop source without opening the display picker', async () => {
+		const environment = createEnvironment();
+		const dispose = initRecorderCapture();
+		const command = environment.commands.get('2');
+		command?.({ type: 'start', id: 'capture-1', sourceId: 'screen:1' });
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledWith({
+			video: {
+				mandatory: {
+					chromeMediaSource: 'desktop',
+					chromeMediaSourceId: 'screen:1',
+				},
+			},
+		});
+		expect(navigator.mediaDevices.getDisplayMedia).not.toHaveBeenCalled();
+		dispose();
+	});
+
 	it('cancels without sending a completion payload and rejects duplicate starts', async () => {
 		const environment = createEnvironment();
 		const dispose = initRecorderCapture();

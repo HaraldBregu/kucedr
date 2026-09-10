@@ -92,6 +92,22 @@ it.each([
 	}
 );
 
+it('lists screen sources before starting a screen recording', async () => {
+	jest.mocked(desktopCapturer.getSources).mockResolvedValue([
+		{ id: 'screen:1', name: 'Display 1' },
+		{ id: 'window:2', name: 'Kucedr' },
+	] as never);
+
+	await expect(ownedRun(screenRecorderTool(), {})).resolves.toEqual({
+		status: 'selection_required',
+		sources: [
+			{ id: 'screen:1', name: 'Display 1', type: 'screen' },
+			{ id: 'window:2', name: 'Kucedr', type: 'window' },
+		],
+	});
+	expect(screen.start).not.toHaveBeenCalled();
+});
+
 it.each([
 	['microphone', microphoneRecorderTool, microphone],
 	['camera', cameraRecorderTool, camera],
