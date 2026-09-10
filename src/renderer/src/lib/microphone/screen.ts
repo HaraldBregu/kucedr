@@ -1,7 +1,7 @@
 import { getMicrophoneConstraints } from './constraints';
 
 export async function getScreenRecordingStream(
-	constraints: DisplayMediaStreamConstraints
+	constraints: MediaStreamConstraints
 ): Promise<{ stream: MediaStream; hasMicrophone: boolean }> {
 	const stream = await navigator.mediaDevices.getDisplayMedia(constraints);
 	let microphone: MediaStream | null = null;
