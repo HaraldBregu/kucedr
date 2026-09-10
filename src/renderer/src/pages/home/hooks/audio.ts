@@ -11,15 +11,19 @@ export function stopStream(stream: MediaStream | null): void {
 export function canCaptureAudio(): boolean {
 	return Boolean(
 		navigator.mediaDevices &&
-			typeof navigator.mediaDevices.getUserMedia === 'function' &&
-			typeof AudioContext !== 'undefined'
+		typeof navigator.mediaDevices.getUserMedia === 'function' &&
+		typeof AudioContext !== 'undefined'
 	);
 }
 
 export async function getAppMicrophoneEnabled(): Promise<boolean> {
 	try {
 		const settings = await window.app.getMicrophonePermission();
-		return settings.enabled && settings.systemStatus !== 'denied' && settings.systemStatus !== 'restricted';
+		return (
+			settings.enabled &&
+			settings.systemStatus !== 'denied' &&
+			settings.systemStatus !== 'restricted'
+		);
 	} catch {
 		return true;
 	}
@@ -133,8 +137,8 @@ export function canRecordAudio(): boolean {
 	const mediaDevices = navigator.mediaDevices as MediaDevices | undefined;
 	return Boolean(
 		mediaDevices &&
-			typeof mediaDevices.getUserMedia === 'function' &&
-			typeof MediaRecorder !== 'undefined'
+		typeof mediaDevices.getUserMedia === 'function' &&
+		typeof MediaRecorder !== 'undefined'
 	);
 }
 
@@ -159,12 +163,16 @@ export function createRecordingFileName(mimeType: string): string {
 	return `kucedr-audio-${timestamp}.${extensionForMimeType(mimeType)}`;
 }
 
-export function normalizePermissionState(state: PermissionState): 'granted' | 'denied' | 'prompt' | 'unknown' {
+export function normalizePermissionState(
+	state: PermissionState
+): 'granted' | 'denied' | 'prompt' | 'unknown' {
 	if (state === 'granted' || state === 'denied' || state === 'prompt') return state;
 	return 'unknown';
 }
 
-export async function queryMicrophonePermission(): Promise<'granted' | 'denied' | 'prompt' | 'unknown'> {
+export async function queryMicrophonePermission(): Promise<
+	'granted' | 'denied' | 'prompt' | 'unknown'
+> {
 	if (!navigator.permissions?.query) return 'unknown';
 	try {
 		const status = await navigator.permissions.query({ name: 'microphone' as PermissionName });

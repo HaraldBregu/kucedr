@@ -268,7 +268,7 @@ export function useRealtimeVoice({
 			userTurnMessageIdsRef.current = new Map();
 
 			try {
-			await ensureAppMicrophoneAccess();
+				await ensureAppMicrophoneAccess();
 				if (startRunRef.current !== runId) return false;
 
 				await startPlayback();
