@@ -507,11 +507,7 @@ function PageContent(): ReactElement {
 		recorderStatus === 'checking-permission' ||
 		recorderStatus === 'stopping' ||
 		transcribingRecording;
-	const realtimeVoiceBusy =
-		realtimeVoice.status === 'checking-permission' ||
-		realtimeVoice.status === 'connecting' ||
-		realtimeVoice.status === 'ending';
-	const voiceBusy = dictationBusy || recordingBusy || realtimeVoiceBusy;
+	const voiceBusy = dictationBusy || recordingBusy;
 	const attachmentUnavailable = promptCapabilities === undefined || promptCapabilities === null;
 	const attachmentDisabled = voiceMode !== null || voiceBusy || attachmentUnavailable;
 	const activeVoiceElapsedMs =
@@ -521,16 +517,8 @@ function PageContent(): ReactElement {
 	const activeVoiceSetMuted =
 		activeDictationMode === 'record' ? recorder.setMuted : dictation.setMuted;
 	const voiceErrorMessage =
-		realtimeVoice.errorMessage ??
-		transcriptionErrorMessage ??
-		recorder.errorMessage ??
-		dictation.errorMessage;
-	const voiceErrorAction = realtimeVoice.requiresConfiguration
-		? {
-				label: 'Open Voice settings',
-				action: () => navigate('/settings/agent'),
-			}
-		: voiceErrorMessage?.toLowerCase().includes('microphone')
+		transcriptionErrorMessage ?? recorder.errorMessage ?? dictation.errorMessage;
+	const voiceErrorAction = voiceErrorMessage?.toLowerCase().includes('microphone')
 			? {
 					label: 'Open Microphone settings',
 					action: () => navigate('/settings/system/media/microphone'),
@@ -547,7 +535,6 @@ function PageContent(): ReactElement {
 
 	useEffect(() => {
 		if (mode !== 'chat') return;
-		if (realtimeVoiceActive) void endRealtimeVoice(false);
 		if (
 			dictationStatus === 'checking-permission' ||
 			dictationStatus === 'connecting' ||
@@ -567,8 +554,6 @@ function PageContent(): ReactElement {
 		cancelRecordingSession,
 		dictationStatus,
 		mode,
-		endRealtimeVoice,
-		realtimeVoiceActive,
 		recorderStatus,
 	]);
 
