@@ -243,7 +243,7 @@ export function useRealtimeVoice({
 	}, [dispatchChat, enqueuePlayback, failSession, releaseAudio, stopPlayback]);
 
 	const start = useCallback((): Promise<boolean> => {
-		if (sessionIdRef.current) return true;
+		if (sessionIdRef.current) return Promise.resolve(true);
 		if (startPromiseRef.current) return startPromiseRef.current;
 
 		const startPromise = (async (): Promise<boolean> => {
