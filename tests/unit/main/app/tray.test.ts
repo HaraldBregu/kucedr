@@ -16,8 +16,8 @@ jest.mock('../../../../src/main/i18n', () => ({
 	loadTranslations: () => ({
 		showKucedr: 'Show Kucedr',
 		hideKucedr: 'Hide Kucedr',
-		showVoiceConversation: 'Show Voice Conversation',
-		hideVoiceConversation: 'Hide Voice Conversation',
+		startVoiceConversation: 'Start Conversation',
+		endVoiceConversation: 'End Conversation',
 		apps: 'Apps',
 		microphone: 'Microphone',
 		microphoneDefault: 'System default',
@@ -40,10 +40,11 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 	let selected = 'usb';
 	const tray = new Tray({
 		onToggleApp: jest.fn(),
-		onToggleVoiceConversation: jest.fn(),
+		onStartVoiceConversation: jest.fn(),
+		onEndVoiceConversation: jest.fn(),
 		onQuit: jest.fn(),
 		isAppVisible: () => false,
-		isVoiceConversationVisible: () => false,
+		isVoiceConversationActive: () => false,
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 		getMicrophoneInputs: async () => [
@@ -75,31 +76,36 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 	expect(selected).toBe('default');
 });
 
-it('shows and hides the active voice conversation from the tray', () => {
-	let visible = false;
-	const toggleVoiceConversation = jest.fn(() => {
-		visible = !visible;
+it('starts and ends the voice conversation from the tray', () => {
+	let active = false;
+	const startVoiceConversation = jest.fn(() => {
+		active = true;
+	});
+	const endVoiceConversation = jest.fn(() => {
+		active = false;
 	});
 	const tray = new Tray({
 		onToggleApp: jest.fn(),
-		onToggleVoiceConversation: toggleVoiceConversation,
+		onStartVoiceConversation: startVoiceConversation,
+		onEndVoiceConversation: endVoiceConversation,
 		onQuit: jest.fn(),
 		isAppVisible: () => false,
-		isVoiceConversationVisible: () => visible,
+		isVoiceConversationActive: () => active,
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 	});
 
 	tray.create();
 	let template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	let voiceItem = template.find((entry) => entry.label === 'Show Voice Conversation');
+	let voiceItem = template.find((entry) => entry.label === 'Start Conversation');
 	expect(voiceItem).toMatchObject({ enabled: true });
 	voiceItem?.click?.();
 
 	tray.updateContextMenu();
 	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	voiceItem = template.find((entry) => entry.label === 'Hide Voice Conversation');
+	voiceItem = template.find((entry) => entry.label === 'End Conversation');
 	expect(voiceItem).toMatchObject({ enabled: true });
 	voiceItem?.click?.();
-	expect(toggleVoiceConversation).toHaveBeenCalledTimes(2);
+	expect(startVoiceConversation).toHaveBeenCalledTimes(1);
+	expect(endVoiceConversation).toHaveBeenCalledTimes(1);
 });

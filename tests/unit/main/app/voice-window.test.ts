@@ -22,6 +22,7 @@ it('creates a standalone voice window that can be shown and hidden independently
 		hide: jest.fn(() => {
 			visible = false;
 		}),
+		close: jest.fn(),
 		restore: jest.fn(),
 		moveTop: jest.fn(),
 		focus: jest.fn(),
@@ -45,13 +46,12 @@ it('creates a standalone voice window that can be shown and hidden independently
 	voiceWindow.open('chat-session');
 	const options = (windowFactory.create as jest.Mock).mock.calls[0]?.[0];
 	listeners.get('ready-to-show')?.();
-	voiceWindow.toggle();
-	voiceWindow.toggle();
+	voiceWindow.end();
 
 	expect(options).not.toHaveProperty('parent');
 	expect(options).not.toHaveProperty('modal');
-	expect(voiceWindow.isVisible()).toBe(true);
-	expect(win.hide).toHaveBeenCalledTimes(1);
-	expect(win.show).toHaveBeenCalledTimes(2);
+	expect(voiceWindow.isActive()).toBe(true);
+	expect(win.close).toHaveBeenCalledTimes(1);
+	expect(win.show).toHaveBeenCalledTimes(1);
 	expect(attachWindowHandlers).toHaveBeenCalledWith(win);
 });

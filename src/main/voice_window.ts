@@ -3,6 +3,7 @@ import type { RendererContentOptions, WindowFactory } from './window_factory';
 import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
 import { getPlatformTranslucencyOptions } from './translucency';
+import { randomUUID } from 'node:crypto';
 
 const VOICE_WINDOW_WIDTH = 360;
 const VOICE_WINDOW_HEIGHT = 480;
@@ -10,6 +11,7 @@ const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
 export class VoiceWindow {
 	private window: BrowserWindow | null = null;
+	private chatSessionId: string | null = null;
 	private onVisibilityChange?: () => void;
 
 	constructor(
@@ -60,6 +62,7 @@ export class VoiceWindow {
 			this.showWindow(existing);
 			return;
 		}
+		this.chatSessionId = chatSessionId;
 
 		const content: RendererContentOptions = {
 			html: 'voice.html',
@@ -94,18 +97,18 @@ export class VoiceWindow {
 		});
 	}
 
-	toggle(): void {
-		const win = this.window;
-		if (!win || win.isDestroyed()) return;
-		if (win.isVisible()) {
-			win.hide();
-			return;
-		}
-		this.showWindow(win);
+	start(): void {
+		this.open(this.chatSessionId ?? randomUUID());
 	}
 
-	isVisible(): boolean {
-		return Boolean(this.window && !this.window.isDestroyed() && this.window.isVisible());
+	end(): void {
+		const win = this.window;
+		if (!win || win.isDestroyed()) return;
+		win.close();
+	}
+
+	isActive(): boolean {
+		return Boolean(this.window && !this.window.isDestroyed());
 	}
 
 	setOnVisibilityChange(callback: () => void): void {
