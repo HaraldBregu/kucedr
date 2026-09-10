@@ -1,8 +1,14 @@
 import { executionScope } from '../../../../../src/main/agent/execution/scope';
 import { recordingOwners } from '../../../../../src/main/agent/recordings/store';
 import type { Tool } from '../../../../../src/main/agent/types';
-const scope = { ownerId: 'interactive:session', source: 'interactive' as const, sessionId: 'session', runId: 'run' };
-const ownedRun = (tool: Tool, input: Record<string, unknown>, signal?: AbortSignal) => executionScope.run(scope, () => tool.run(input, signal));
+const scope = {
+	ownerId: 'interactive:session',
+	source: 'interactive' as const,
+	sessionId: 'session',
+	runId: 'run',
+};
+const ownedRun = (tool: Tool, input: Record<string, unknown>, signal?: AbortSignal) =>
+	executionScope.run(scope, () => tool.run(input, signal));
 
 const microphone = { start: jest.fn(), stop: jest.fn(), cancel: jest.fn(), get: jest.fn() };
 const camera = { start: jest.fn(), stop: jest.fn(), cancel: jest.fn(), get: jest.fn() };
@@ -84,11 +90,14 @@ it.each([
 	['microphone', microphoneRecorderTool, microphone],
 	['camera', cameraRecorderTool, camera],
 	['screen', screenRecorderTool, screen],
-] as const)('starts an owned %s recording until explicitly stopped when duration is omitted', async (_name, createTool, recorder) => {
-	await ownedRun(createTool(), { filename: 'capture.webm' });
+] as const)(
+	'starts an owned %s recording until explicitly stopped when duration is omitted',
+	async (_name, createTool, recorder) => {
+		await ownedRun(createTool(), { filename: 'capture.webm' });
 
-	expect(recorder.start).toHaveBeenCalledWith({ url: '/workspace/capture.webm' });
-});
+		expect(recorder.start).toHaveBeenCalledWith({ url: '/workspace/capture.webm' });
+	}
+);
 
 it.each([
 	['microphone_recorder_stop', microphoneRecorderStopTool, microphone],
@@ -105,14 +114,19 @@ it.each([
 	[microphoneRecorderTool, microphoneRecorderStatusTool, microphoneRecorderStopTool, microphone],
 	[cameraRecorderTool, cameraRecorderStatusTool, cameraRecorderStopTool, camera],
 	[screenRecorderTool, screenRecorderStatusTool, screenRecorderStopTool, screen],
-] as const)('prevents other sessions from inspecting or stopping owned recordings', async (create, status, stop, recorder) => {
-	await ownedRun(create(), { duration: 1 });
-	const foreign = { ...scope, sessionId: 'other' };
-	await expect(executionScope.run(foreign, () => status.run({ id }))).rejects.toThrow('not owned');
-	await expect(executionScope.run(foreign, () => stop.run({ id }))).rejects.toThrow('not owned');
-	expect(recorder.stop).not.toHaveBeenCalled();
-	await expect(ownedRun(status, { id })).resolves.toMatchObject({ id });
-});
+] as const)(
+	'prevents other sessions from inspecting or stopping owned recordings',
+	async (create, status, stop, recorder) => {
+		await ownedRun(create(), { duration: 1 });
+		const foreign = { ...scope, sessionId: 'other' };
+		await expect(executionScope.run(foreign, () => status.run({ id }))).rejects.toThrow(
+			'not owned'
+		);
+		await expect(executionScope.run(foreign, () => stop.run({ id }))).rejects.toThrow('not owned');
+		expect(recorder.stop).not.toHaveBeenCalled();
+		await expect(ownedRun(status, { id })).resolves.toMatchObject({ id });
+	}
+);
 
 it('does not start recording without an execution owner', async () => {
 	await expect(cameraRecorderTool().run({ duration: 1 })).rejects.toThrow('owning session');

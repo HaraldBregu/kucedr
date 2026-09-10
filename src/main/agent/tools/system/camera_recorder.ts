@@ -20,7 +20,9 @@ export function cameraRecorderTool(): Tool {
 				.min(1)
 				.max(600)
 				.optional()
-				.describe('Optional recording duration in seconds (max 600). Omit to record until stopped.'),
+				.describe(
+					'Optional recording duration in seconds (max 600). Omit to record until stopped.'
+				),
 			directory: z
 				.string()
 				.optional()
