@@ -56,6 +56,33 @@ describe('recorder capture ownership', () => {
 		await expect(fs.readFile(output, 'utf8')).resolves.toBe('recorded!');
 	});
 
+	it('keeps a recording active without a duration until explicitly stopped', () => {
+		const contents = {
+			id: 11,
+			getURL: () =>
+				pathToFileURL(path.join(app.getAppPath(), 'out/renderer/index.html')).toString(),
+			isDestroyed: () => false,
+			send: jest.fn(),
+		};
+		jest
+			.mocked(BrowserWindow.getAllWindows)
+			.mockReturnValue([{ isDestroyed: () => false, webContents: contents }] as never);
+		const recorder = createRecorder({ command: 'capture:command', event: 'capture:event' });
+		const recording = recorder.start({ url: path.join(directory, 'capture.webm') });
+
+		expect(recording.duration).toBeUndefined();
+		expect(contents.send).toHaveBeenCalledWith('capture:command', {
+			type: 'start',
+			id: recording.id,
+		});
+
+		recorder.stop(recording.id);
+		expect(contents.send).toHaveBeenLastCalledWith('capture:command', {
+			type: 'stop',
+			id: recording.id,
+		});
+	});
+
 	it('rejects duplicate sessions and refuses to overwrite an existing output', async () => {
 		const contents = {
 			id: 11,

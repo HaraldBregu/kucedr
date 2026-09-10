@@ -184,7 +184,11 @@ export function createRecorder(channels: { command: string; event: string }): Re
 				hasChunk: false,
 			});
 			set(recording);
-			sendCommand(recording.id, { type: 'start', id: recording.id, duration });
+			sendCommand(recording.id, {
+				type: 'start',
+				id: recording.id,
+				...(duration === undefined ? {} : { duration }),
+			});
 			if (duration !== undefined) {
 				timeouts.set(
 					recording.id,

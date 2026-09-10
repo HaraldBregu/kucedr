@@ -120,6 +120,22 @@ describe('renderer recorder capture', () => {
 		dispose();
 	});
 
+	it('keeps recording without a duration until it receives a stop command', async () => {
+		const environment = createEnvironment();
+		const dispose = initRecorderCapture();
+		const command = environment.commands.get('2');
+		command?.({ type: 'start', id: 'capture-1' });
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		const recorder = FakeMediaRecorder.instances[0];
+		expect(recorder.state).toBe('recording');
+
+		command?.({ type: 'stop', id: 'capture-1' });
+		expect(recorder.state).toBe('inactive');
+		dispose();
+	});
+
 	it('cancels without sending a completion payload and rejects duplicate starts', async () => {
 		const environment = createEnvironment();
 		const dispose = initRecorderCapture();

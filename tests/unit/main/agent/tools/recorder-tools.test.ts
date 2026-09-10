@@ -81,6 +81,16 @@ it.each([
 );
 
 it.each([
+	['microphone', microphoneRecorderTool, microphone],
+	['camera', cameraRecorderTool, camera],
+	['screen', screenRecorderTool, screen],
+] as const)('starts an owned %s recording until explicitly stopped when duration is omitted', async (_name, createTool, recorder) => {
+	await ownedRun(createTool(), { filename: 'capture.webm' });
+
+	expect(recorder.start).toHaveBeenCalledWith({ url: '/workspace/capture.webm' });
+});
+
+it.each([
 	['microphone_recorder_stop', microphoneRecorderStopTool, microphone],
 	['camera_recorder_stop', cameraRecorderStopTool, camera],
 	['screen_recorder_stop', screenRecorderStopTool, screen],
