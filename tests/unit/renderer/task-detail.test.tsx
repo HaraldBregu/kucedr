@@ -53,6 +53,10 @@ const setEnabled = jest.fn();
 const openSessionFolder = jest.fn();
 
 beforeEach(() => {
+	Object.defineProperty(window, 'PointerEvent', {
+		configurable: true,
+		value: MouseEvent,
+	});
 	list.mockReset().mockResolvedValue([task]);
 	history.mockReset().mockResolvedValue([
 		{
