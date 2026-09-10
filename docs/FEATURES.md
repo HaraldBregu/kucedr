@@ -316,9 +316,9 @@ Kucedr persists cron schedule records with:
 - Startup reconciliation that reloads and reschedules persisted records.
 
 The Tasks settings screen selects the task provider/model and lists each schedule's name, prompt,
-cron expression, and enabled state. Task details expose metadata, **Run now**, confirmed deletion,
-and a tool allowlist. Creating a task or editing its name, schedule, prompt, or effort remains
-agent-driven rather than a direct Settings form.
+cron expression, and enabled state. Task details expose metadata, **Run now**, and confirmed
+deletion. Creating a task or editing its name, schedule, prompt, or effort remains agent-driven
+rather than a direct Settings form.
 
 Scheduled tasks run as background agents with the full tool catalog by default. A non-empty persisted tool allowlist narrows the tools available to that schedule; a blank allowlist keeps the full catalog.
 
