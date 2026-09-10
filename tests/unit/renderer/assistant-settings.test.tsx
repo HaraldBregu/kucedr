@@ -404,6 +404,14 @@ it('uses the Agent model picker UI and task switches', async () => {
 	expect(modelTrigger.parentElement?.querySelector('button[aria-haspopup="dialog"]')).toBeInTheDocument();
 	await user.click(modelTrigger);
 	expect(await screen.findByRole('combobox', { name: 'Reasoning' })).toBeInTheDocument();
+	console.log(
+		'task test switches',
+		Array.from(document.querySelectorAll('[role="switch"]')).map((element) => ({
+			label: element.getAttribute('aria-label'),
+			checked: element.getAttribute('aria-checked'),
+		})),
+		document.body.textContent
+	);
 
 	const taskSwitch = await screen.findByRole('switch', { name: 'Enable Demo task' });
 	expect(taskSwitch).toBeChecked();
