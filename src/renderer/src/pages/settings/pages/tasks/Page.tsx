@@ -34,17 +34,30 @@ function describeSchedule(expression: string | undefined, t: Translate): string 
 	if (fields.length !== 5) return expression;
 
 	const [minute, hour, dayOfMonth, month, dayOfWeek] = fields;
-	const time = hour !== '*' && minute !== '*' ? `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}` : '';
+	const time =
+		hour !== '*' && minute !== '*' ? `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}` : '';
 	if (minute === '*' && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
 		return t('settings.cron.schedule.everyMinute');
 	}
-	if (/^\*\/\d+$/.test(minute) && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+	if (
+		/^\*\/\d+$/.test(minute) &&
+		hour === '*' &&
+		dayOfMonth === '*' &&
+		month === '*' &&
+		dayOfWeek === '*'
+	) {
 		return t('settings.cron.schedule.everyMinutes', { count: minute.slice(2) });
 	}
 	if (minute === '0' && hour === '*' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
 		return t('settings.cron.schedule.everyHour');
 	}
-	if (/^\*\/\d+$/.test(hour) && minute === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
+	if (
+		/^\*\/\d+$/.test(hour) &&
+		minute === '0' &&
+		dayOfMonth === '*' &&
+		month === '*' &&
+		dayOfWeek === '*'
+	) {
 		return t('settings.cron.schedule.everyHours', { count: hour.slice(2) });
 	}
 	if (dayOfMonth === '1' && month === '*' && dayOfWeek === '*') {

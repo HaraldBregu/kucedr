@@ -646,10 +646,10 @@
 				"pause": "Pausa",
 				"resume": "Riprendi",
 				"run": "Esegui ora",
-    "running": "Esecuzione...",
-	"enable": "Abilita",
-	"disable": "Disabilita",
-	"updating": "Aggiornamento...",
+				"running": "Esecuzione...",
+				"enable": "Abilita",
+				"disable": "Disabilita",
+				"updating": "Aggiornamento...",
 				"remove": "Elimina",
 				"removeLabel": "Elimina attivita programmata {{id}}",
 				"removeJobLabel": "Elimina job cron registrato {{id}}",
@@ -742,14 +742,14 @@
 				"enabled": "Abilita attività",
 				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato.",
 				"toolsPlaceholder": "Tutti gli strumenti, oppure limita con nomi separati da virgole",
-    "saveCapabilities": "Salva capacità"
-  },
-	"history": {
-	  "title": "Cronologia",
-	  "description": "Attività recente per questa attività.",
-	  "emptyTitle": "Nessuna cronologia",
-	  "emptyDescription": "L'attività dell'attività apparirà qui."
-	},
+				"saveCapabilities": "Salva capacità"
+			},
+			"history": {
+				"title": "Cronologia",
+				"description": "Attività recente per questa attività.",
+				"emptyTitle": "Nessuna cronologia",
+				"emptyDescription": "L'attività dell'attività apparirà qui."
+			},
 			"notFoundTitle": "Attivita programmata non trovata",
 			"notFoundDescription": "L'attivita programmata potrebbe essere stata rimossa.",
 			"emptyTitle": "Nessuna attivita",

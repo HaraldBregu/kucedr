@@ -647,10 +647,10 @@
 				"pause": "Pause",
 				"resume": "Resume",
 				"run": "Run now",
-    "running": "Running...",
-	"enable": "Enable",
-	"disable": "Disable",
-	"updating": "Updating...",
+				"running": "Running...",
+				"enable": "Enable",
+				"disable": "Disable",
+				"updating": "Updating...",
 				"remove": "Delete",
 				"removeLabel": "Delete scheduled task {{id}}",
 				"removeJobLabel": "Delete registered cron job {{id}}",
@@ -720,7 +720,7 @@
 				"deleted": "Deleted"
 			},
 			"detailsTitle": "Task details",
-  "detail": {
+			"detail": {
 				"title": "Detail",
 				"id": "ID",
 				"status": "Status",
@@ -743,14 +743,14 @@
 				"enabled": "Enable schedule",
 				"enabledDescription": "Allow this schedule to run at its configured time.",
 				"toolsPlaceholder": "All tools, or restrict with comma-separated names",
-    "saveCapabilities": "Save capabilities"
-  },
-	"history": {
-	  "title": "History",
-	  "description": "Recent activity for this task.",
-	  "emptyTitle": "No history yet",
-	  "emptyDescription": "Task activity will appear here."
-	},
+				"saveCapabilities": "Save capabilities"
+			},
+			"history": {
+				"title": "History",
+				"description": "Recent activity for this task.",
+				"emptyTitle": "No history yet",
+				"emptyDescription": "Task activity will appear here."
+			},
 			"notFoundTitle": "Scheduled task not found",
 			"notFoundDescription": "The scheduled task may have been removed.",
 			"emptyTitle": "No tasks",
