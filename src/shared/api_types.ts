@@ -28,11 +28,7 @@ import type {
 	McpTestResult,
 } from './mcp_types';
 import type { App, AppImportResult } from './installed_app_types';
-import type {
-	TaskRuntime,
-	TaskSchedule,
-	TaskScheduledTask,
-} from '../main/tasks/tasks_types';
+import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/agent/health/health_types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
 import type { RagConfiguration } from './rag_types';

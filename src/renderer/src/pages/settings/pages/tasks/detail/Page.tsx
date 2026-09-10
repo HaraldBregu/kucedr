@@ -141,9 +141,7 @@ const TaskDetailsPage: React.FC = () => {
 						checked={task.enabled}
 						disabled={toggling}
 						aria-label={
-							task.enabled
-								? t('settings.cron.actions.disable')
-								: t('settings.cron.actions.enable')
+							task.enabled ? t('settings.cron.actions.disable') : t('settings.cron.actions.enable')
 						}
 						onCheckedChange={() => void toggleEnabled()}
 					/>
@@ -231,7 +229,7 @@ const TaskDetailsPage: React.FC = () => {
 							className="min-h-28"
 						/>
 					) : (
-					history.map((session, index) => (
+						history.map((session, index) => (
 							<Item
 								key={session.id}
 								variant="outline"

@@ -647,10 +647,10 @@
 				"pause": "Pause",
 				"resume": "Resume",
 				"run": "Run now",
-    "running": "Running...",
-	"enable": "Enable",
-	"disable": "Disable",
-	"updating": "Updating...",
+				"running": "Running...",
+				"enable": "Enable",
+				"disable": "Disable",
+				"updating": "Updating...",
 				"remove": "Delete",
 				"removeLabel": "Delete scheduled task {{id}}",
 				"removeJobLabel": "Delete registered cron job {{id}}",
@@ -720,7 +720,7 @@
 				"deleted": "Deleted"
 			},
 			"detailsTitle": "Task details",
-  "detail": {
+			"detail": {
 				"title": "Detail",
 				"id": "ID",
 				"status": "Status",
@@ -736,15 +736,15 @@
 				"promptInputDescription": "This prompt is passed to the agent when the task runs.",
 				"enabled": "Enable schedule",
 				"enabledDescription": "Allow this schedule to run at its configured time."
-  },
-	"history": {
-	  "title": "History",
-	  "description": "Agent sessions created by this task.",
-	  "emptyTitle": "No history yet",
-	  "emptyDescription": "Agent sessions created by this task will appear here.",
-	  "session": "Agent session",
-	  "openFolder": "Open session folder"
-	},
+			},
+			"history": {
+				"title": "History",
+				"description": "Agent sessions created by this task.",
+				"emptyTitle": "No history yet",
+				"emptyDescription": "Agent sessions created by this task will appear here.",
+				"session": "Agent session",
+				"openFolder": "Open session folder"
+			},
 			"notFoundTitle": "Scheduled task not found",
 			"notFoundDescription": "The scheduled task may have been removed.",
 			"emptyTitle": "No tasks",

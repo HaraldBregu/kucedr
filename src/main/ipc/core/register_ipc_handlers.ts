@@ -92,10 +92,7 @@ export function registerIpcHandlers(services: MainServices, eventBus: EventBus):
 		)
 	);
 	safeRegister('recorder', () =>
-		new RecorderIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
+		new RecorderIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('tasks', () =>
 		new TaskIpc().register(
@@ -104,16 +101,10 @@ export function registerIpcHandlers(services: MainServices, eventBus: EventBus):
 		)
 	);
 	safeRegister('mcp', () =>
-		new McpIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
+		new McpIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('models', () =>
-		new ModelsIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
+		new ModelsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('realtime-voice', () =>
 		new RealtimeVoiceIpc().register(
@@ -126,10 +117,7 @@ export function registerIpcHandlers(services: MainServices, eventBus: EventBus):
 		)
 	);
 	safeRegister('skills', () =>
-		new SkillsIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
+		new SkillsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('provider-store', () =>
 		new ProviderStoreIpc().register(
@@ -142,10 +130,7 @@ export function registerIpcHandlers(services: MainServices, eventBus: EventBus):
 		)
 	);
 	safeRegister('search', () =>
-		new SearchIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
+		new SearchIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('storage', () =>
 		new StorageIpc().register(
@@ -154,22 +139,13 @@ export function registerIpcHandlers(services: MainServices, eventBus: EventBus):
 		)
 	);
 	safeRegister('database', () =>
-		new DatabaseIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
+		new DatabaseIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('apps', () =>
-		new AppsIpc().register(
-			{ windowFactory, appRegistry, windows: windowContextManager },
-			eventBus
-		)
+		new AppsIpc().register({ windowFactory, appRegistry, windows: windowContextManager }, eventBus)
 	);
 	safeRegister('wiki', () =>
-		new WikiIpc().register(
-			{ windows: windowContextManager, apps: appRegistry },
-			eventBus
-		)
+		new WikiIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('data', () =>
 		new DataIpc().register(
