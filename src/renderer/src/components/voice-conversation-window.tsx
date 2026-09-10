@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { Mic, MicOff } from 'lucide-react';
+import { Mic, MicOff, X } from 'lucide-react';
 import { Persona, type PersonaState } from '@/components/persona';
 import { TypingLoader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
@@ -46,7 +46,28 @@ export function VoiceConversationWindow({
 	}, [voice.start]);
 
 	return (
-		<main className="flex h-full min-h-0 flex-col bg-card text-foreground" data-voice-window>
+		<main
+			className="app-translucent-window flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground"
+			data-voice-window
+		>
+			<div
+				className="relative flex h-12 shrink-0 items-center justify-center select-none"
+				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+			>
+				<span className="text-sm font-normal tracking-wide text-muted-foreground">
+					Voice conversation
+				</span>
+				<button
+					type="button"
+					aria-label="End voice conversation"
+					disabled={isEnding}
+					onClick={() => void voice.end()}
+					className="absolute right-1 top-1 flex size-10 items-center justify-center rounded-md text-muted-foreground transition hover:bg-accent/80 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
+					style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+				>
+					<X className="size-[13px]" strokeWidth={1.5} />
+				</button>
+			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4">
 				<div className="relative flex size-full max-h-[min(62vh,22rem)] min-h-56 items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
 					<Persona
