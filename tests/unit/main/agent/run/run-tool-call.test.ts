@@ -2,6 +2,7 @@ import { runToolCall } from '../../../../../src/main/agent/runner/run_tool_call'
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import type { ToolCall } from '../../../../../src/main/agent/types';
 import { requestUserInputTool } from '../../../../../src/main/agent/tools/core/ask';
+import { selectScreenSourceTool } from '../../../../../src/main/agent/tools/system/screen_source';
 import { respondUserInput } from '../../../../../src/main/agent/user_input/user_input_pending';
 
 describe('runToolCall', () => {
@@ -184,5 +185,49 @@ describe('runToolCall', () => {
 		expect((await events.next()).value).toMatchObject({ type: 'tool_call_end', isError: false });
 		await events.next();
 		expect(call.result).toMatchObject({ isError: false });
+	});
+
+	it('waits for a screen source selection in an interactive chat run', async () => {
+		const call: ToolCall = {
+			id: 'screen-source-call',
+			name: 'select_screen_source',
+			args: {
+				sources: [
+					{ id: 'screen:1', name: 'Display 1', type: 'screen' },
+					{ id: 'window:2', name: 'Kucedr', type: 'window' },
+				],
+			},
+		};
+		const events = runToolCall(
+			selectScreenSourceTool,
+			call,
+			new AbortController().signal,
+			undefined,
+			{ runId: 'run', windowId: 7, interactionMode: 'default' }
+		);
+
+		expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
+		const request = await events.next();
+		expect(request.value).toMatchObject({ type: 'user_input_request', toolCallId: call.id });
+		if (!request.value || request.value.type !== 'user_input_request') {
+			throw new Error('Expected screen source request');
+		}
+		const resultEvent = events.next();
+		await Promise.resolve();
+		expect(
+			respondUserInput(
+				{
+					requestId: request.value.requestId,
+					runId: 'run',
+					toolCallId: call.id,
+					inputFingerprint: request.value.inputFingerprint,
+				},
+				[{ questionId: 'screen-source', answer: 'window:2' }],
+				7
+			)
+		).toBe(true);
+		expect((await resultEvent).value).toMatchObject({ type: 'user_input_result', status: 'resolved' });
+		await events.next();
+		expect(call.result).toMatchObject({ content: { status: 'resolved', sourceId: 'window:2' } });
 	});
 });
