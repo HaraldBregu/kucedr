@@ -385,7 +385,7 @@ it('uses the Agent model picker UI and task switches', async () => {
 		createdAt: '2026-09-10T00:00:00.000Z',
 		updatedAt: '2026-09-10T00:00:00.000Z',
 	};
-	(window.tasks.list as jest.Mock).mockResolvedValueOnce([task]);
+	(window.tasks.list as jest.Mock).mockResolvedValue([task]);
 	(window.tasks.setEnabled as jest.Mock).mockResolvedValueOnce({ ...task, enabled: false });
 
 	render(
