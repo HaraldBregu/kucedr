@@ -16,6 +16,7 @@ import { useReadMessageAloud } from '../hooks';
 import { markdownComponents } from './markdown';
 import { statusLabel, isRunningState, stateTone } from './status';
 import { UserInputCard } from './UserInputCard';
+import { ScreenSourceCard } from './ScreenSourceCard';
 import { parsePlanEnvelope } from './plan';
 
 const LONG_MESSAGE_LENGTH = 600;
@@ -185,7 +186,10 @@ export function AssistantMessage({
 	const hasTools = message.tools.length > 0;
 	const skillTools = message.tools.filter(isSkillTool);
 	const questionTools = message.tools.filter((tool) => tool.type === 'ask');
-	const otherTools = message.tools.filter((tool) => !isSkillTool(tool) && tool.type !== 'ask');
+	const screenSourceTools = message.tools.filter((tool) => tool.type === 'select_screen_source');
+	const otherTools = message.tools.filter(
+		(tool) => !isSkillTool(tool) && tool.type !== 'ask' && tool.type !== 'select_screen_source'
+	);
 	const mediaPaths = generatedMediaPaths(message.tools);
 	const standaloneMediaPaths = mediaPaths.filter(
 		(path) => !contentEmbedsImage(message.content, path)
@@ -276,6 +280,17 @@ export function AssistantMessage({
 			{otherTools.length > 0 && <ToolActivityGroup tools={otherTools} />}
 			{questionTools.map((tool) => (
 				<UserInputCard
+					key={tool.toolCallId}
+					tool={tool}
+					pending={
+						message.pendingUserInput?.toolCallId === tool.toolCallId
+							? message.pendingUserInput
+							: undefined
+					}
+				/>
+			))}
+			{screenSourceTools.map((tool) => (
+				<ScreenSourceCard
 					key={tool.toolCallId}
 					tool={tool}
 					pending={

@@ -110,12 +110,31 @@ export async function* runToolCall(
 	) {
 		output = `Error: ${planCommandError(canonicalInput, agentLocation())}`;
 		isError = true;
-	} else if (toolCall.name === 'ask') {
-		if (security.interactionMode !== 'plan' || security.windowId === undefined) {
-			output = 'Error: structured user input is only available in an interactive Plan run.';
+	} else if (toolCall.name === 'ask' || toolCall.name === 'select_screen_source') {
+		const screenSelection = toolCall.name === 'select_screen_source';
+		if (
+			security.windowId === undefined ||
+			(!screenSelection && security.interactionMode !== 'plan') ||
+			(screenSelection && security.interactionMode !== 'default')
+		) {
+			output = screenSelection
+				? 'Error: screen source selection is only available in an interactive chat run.'
+				: 'Error: structured user input is only available in an interactive Plan run.';
 			isError = true;
 		} else {
-			const questions = canonicalInput.questions as AgentUserInputQuestion[];
+			const questions = screenSelection
+				? [{
+					id: 'screen-source',
+					header: 'Screen',
+					question: 'Choose the display or window to record.',
+					options: (canonicalInput.sources as Array<{ id: string; name: string; type: string }>).map(
+						(source) => ({
+							label: source.name,
+							description: source.type === 'screen' ? 'Display' : 'Window',
+						})
+					),
+				}] satisfies AgentUserInputQuestion[]
+				: canonicalInput.questions as AgentUserInputQuestion[];
 			const requestId = crypto.randomUUID();
 			const fingerprint = inputFingerprint(canonicalInput);
 			const expiresAtMs = Date.now() + 10 * 60_000;
@@ -147,7 +166,12 @@ export async function* runToolCall(
 				status,
 				answers: answers ?? [],
 			};
-			output = { status, answers: answers ?? [] };
+			output = screenSelection
+				? {
+					status,
+					sourceId: answers?.find((answer) => answer.questionId === 'screen-source')?.answer,
+				}
+				: { status, answers: answers ?? [] };
 			isError = !answers;
 		}
 	} else {
