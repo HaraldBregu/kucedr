@@ -5,6 +5,7 @@ import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/
 
 const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
+const mockSetTrayClickAction = jest.fn();
 let notifyTrayEnabled: (enabled: boolean) => void;
 let notifyKeepAwake: (enabled: boolean) => void;
 
@@ -29,6 +30,7 @@ beforeAll(() => {
 beforeEach(() => {
 	jest.clearAllMocks();
 	mockSetKeepAwake.mockResolvedValue(undefined);
+	mockSetTrayClickAction.mockResolvedValue(undefined);
 	Object.defineProperty(window, 'PointerEvent', {
 		configurable: true,
 		value: MouseEvent,
@@ -38,6 +40,8 @@ beforeEach(() => {
 		value: {
 			getTrayEnabled: jest.fn().mockResolvedValue(true),
 			setTrayEnabled: jest.fn().mockResolvedValue(undefined),
+			getTrayClickAction: jest.fn().mockResolvedValue('toggle-chat'),
+			setTrayClickAction: mockSetTrayClickAction,
 			onTrayEnabledChanged: jest.fn((callback) => {
 				notifyTrayEnabled = callback;
 				return jest.fn();
@@ -72,6 +76,27 @@ it('enables keep awake from General settings', async () => {
 
 	expect(mockSetKeepAwake).toHaveBeenCalledWith(true);
 	expect(keepAwake).toBeChecked();
+});
+
+it('saves the configured tray icon click action from General settings', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<GeneralPage />
+		</MemoryRouter>
+	);
+
+	const trayClickAction = await screen.findByRole('combobox', {
+		name: 'settings.application.trayClickAction.title',
+	});
+	await user.click(trayClickAction);
+	await user.click(
+		await screen.findByRole('option', {
+			name: 'settings.application.trayClickAction.togglePersona',
+		})
+	);
+
+	expect(mockSetTrayClickAction).toHaveBeenCalledWith('toggle-persona');
 });
 
 it('refreshes toggles changed from the native application menu', async () => {

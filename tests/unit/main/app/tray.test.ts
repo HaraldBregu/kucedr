@@ -1,9 +1,10 @@
 const buildFromTemplate = jest.fn((template: unknown) => template);
+const trayOn = jest.fn();
 
 jest.mock('electron', () => ({
 	app: { isPackaged: false, getAppPath: jest.fn(() => process.cwd()) },
 	Tray: class {
-		on = jest.fn();
+		on = trayOn;
 		setToolTip = jest.fn();
 		popUpContextMenu = jest.fn();
 		destroy = jest.fn();
@@ -37,10 +38,16 @@ type MenuEntry = {
 	click?: () => void;
 };
 
+function trayClickHandler(): () => void {
+	const handler = trayOn.mock.calls.find(([event]) => event === 'click')?.[1];
+	if (typeof handler !== 'function') throw new Error('Tray click handler was not registered.');
+	return handler;
+}
+
 it('labels the main-window action as Show Chat or Hide Chat', () => {
 	let appVisible = false;
 	const tray = new Tray({
-		onToggleApp: () => {
+		onToggleChat: () => {
 			appVisible = !appVisible;
 		},
 		onStartPersona: jest.fn(),
@@ -50,6 +57,7 @@ it('labels the main-window action as Show Chat or Hide Chat', () => {
 		isAppVisible: () => appVisible,
 		isPersonaActive: () => false,
 		isPersonaVisible: () => false,
+		getTrayClickAction: () => 'toggle-chat',
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 	});
@@ -68,7 +76,7 @@ it('labels the main-window action as Show Chat or Hide Chat', () => {
 it('lists microphone inputs and checks the persisted selection', async () => {
 	let selected = 'usb';
 	const tray = new Tray({
-		onToggleApp: jest.fn(),
+		onToggleChat: jest.fn(),
 		onStartPersona: jest.fn(),
 		onHidePersona: jest.fn(),
 		onShowPersona: jest.fn(),
@@ -76,6 +84,7 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 		isAppVisible: () => false,
 		isPersonaActive: () => false,
 		isPersonaVisible: () => false,
+		getTrayClickAction: () => 'toggle-chat',
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 		getMicrophoneInputs: async () => [
@@ -121,7 +130,7 @@ it('starts, hides, and shows the Persona without ending its conversation', () =>
 		visible = true;
 	});
 	const tray = new Tray({
-		onToggleApp: jest.fn(),
+		onToggleChat: jest.fn(),
 		onStartPersona: startPersona,
 		onHidePersona: hidePersona,
 		onShowPersona: showPersona,
@@ -129,6 +138,7 @@ it('starts, hides, and shows the Persona without ending its conversation', () =>
 		isAppVisible: () => false,
 		isPersonaActive: () => active,
 		isPersonaVisible: () => visible,
+		getTrayClickAction: () => 'toggle-chat',
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 	});
@@ -154,4 +164,48 @@ it('starts, hides, and shows the Persona without ending its conversation', () =>
 	expect(hidePersona).toHaveBeenCalledTimes(1);
 	expect(showPersona).toHaveBeenCalledTimes(1);
 	expect(active).toBe(true);
+});
+
+it('uses the configured action when the tray icon is clicked', () => {
+	let action: 'toggle-chat' | 'start-persona' | 'toggle-persona' = 'toggle-chat';
+	let active = false;
+	let visible = false;
+	const toggleChat = jest.fn();
+	const startPersona = jest.fn(() => {
+		active = true;
+		visible = true;
+	});
+	const hidePersona = jest.fn(() => {
+		visible = false;
+	});
+	const showPersona = jest.fn(() => {
+		visible = true;
+	});
+	const tray = new Tray({
+		onToggleChat: toggleChat,
+		onStartPersona: startPersona,
+		onHidePersona: hidePersona,
+		onShowPersona: showPersona,
+		onQuit: jest.fn(),
+		isAppVisible: () => false,
+		isPersonaActive: () => active,
+		isPersonaVisible: () => visible,
+		getTrayClickAction: () => action,
+		getApps: () => [],
+		onOpenApp: jest.fn(),
+	});
+
+	tray.create();
+	const click = trayClickHandler();
+	click();
+	action = 'start-persona';
+	click();
+	action = 'toggle-persona';
+	click();
+	click();
+
+	expect(toggleChat).toHaveBeenCalledTimes(1);
+	expect(startPersona).toHaveBeenCalledTimes(1);
+	expect(hidePersona).toHaveBeenCalledTimes(1);
+	expect(showPersona).toHaveBeenCalledTimes(1);
 });
