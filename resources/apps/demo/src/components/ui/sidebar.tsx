@@ -78,7 +78,11 @@ export function SidebarInset({ className, ...props }: ComponentProps<'section'>)
 	return <section className={cn('flex min-w-0 flex-1 flex-col', className)} {...props} />;
 }
 
-export function SidebarTrigger({ className, ...props }: ComponentProps<typeof Button>) {
+export function SidebarTrigger({
+	className,
+	isDark = false,
+	...props
+}: ComponentProps<typeof Button> & { isDark?: boolean }) {
 	const context = useContext(SidebarContext);
 	if (!context) throw new Error('SidebarTrigger must be rendered inside SidebarProvider.');
 
@@ -87,7 +91,8 @@ export function SidebarTrigger({ className, ...props }: ComponentProps<typeof Bu
 			variant="ghost"
 			size="icon"
 			className={cn(
-				'fixed left-20 top-2.5 z-50 size-7 text-foreground hover:text-foreground',
+				'fixed left-20 top-2.5 z-50 size-7',
+				isDark ? 'text-white hover:text-white' : 'text-foreground hover:text-foreground',
 				className
 			)}
 			aria-controls="demo-sidebar"

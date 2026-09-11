@@ -338,7 +338,10 @@ export default function App() {
 					)}
 					style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 				>
-					<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
+					<SidebarTrigger
+						isDark={theme.isDark}
+						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+					/>
 					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.titlebarTitle}</h1>
 					<div
 						className="flex items-center gap-1"
