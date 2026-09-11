@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AssistantPage from '../../../src/renderer/src/pages/settings/pages/assistant/Page';
 import RealtimeConversationConfiguration from '../../../src/renderer/src/pages/settings/pages/assistant/conversation';
+import ToolsPage from '../../../src/renderer/src/pages/settings/pages/assistant/tools/Page';
 import TasksPage from '../../../src/renderer/src/pages/settings/pages/tasks/Page';
 
 const mockProviders = [
@@ -269,28 +270,25 @@ beforeEach(() => {
 	jest.clearAllMocks();
 });
 
-it('groups independently collapsible provider settings in one card', async () => {
+it('keeps chat configuration on the Agent page and links to Tools', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter>
-			<AssistantPage />
+		<MemoryRouter initialEntries={['/settings/agent']}>
+			<Routes>
+				<Route path="/settings/agent" element={<AssistantPage />} />
+				<Route path="/settings/agent/tools" element={<ToolsPage />} />
+			</Routes>
 		</MemoryRouter>
 	);
 
 	expect(screen.queryByRole('heading', { name: 'Configuration' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('heading', { name: 'History' })).not.toBeInTheDocument();
-	expect(screen.getByRole('heading', { name: 'Tools' })).toBeInTheDocument();
-	for (const name of [
-		/Model/,
-		/Realtime conversation/,
-		/Voice/,
-		/Text to image/,
-		/Text to audio/,
-		/Text to video/,
-		/Text to speech/,
-		/Speech to text/,
-		/Search Engine/,
-	]) {
+	expect(screen.getByRole('link', { name: 'Tools' })).toHaveAttribute(
+		'href',
+		'/settings/agent/tools'
+	);
+	expect(screen.queryByRole('button', { name: 'Text to image' })).not.toBeInTheDocument();
+	for (const name of [/Model/, /Realtime conversation/, /Voice/, /Transcription/]) {
 		const trigger = (await screen.findAllByRole('button', { name })).find(
 			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 		);
@@ -318,6 +316,49 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const realtimeConversation = (
 		await screen.findAllByRole('button', { name: 'Realtime conversation' })
 	).find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
+	expect(voice).toBeDefined();
+	expect(realtimeConversation).toBeDefined();
+	if (!voice || !realtimeConversation) return;
+	expect(voice).toHaveTextContent('Eleven v3');
+	expect(model).toHaveTextContent('GPT');
+	expect(realtimeConversation).toHaveTextContent('GPT Realtime');
+
+	const wiki = screen.getByRole('button', { name: /LLM Wiki/ });
+	const rag = screen.getByRole('button', { name: /RAG/ });
+	const permissions = screen.getByRole('button', { name: /Permissions/ });
+	expect(rag.closest('[data-slot="card"]')).toBe(wiki.closest('[data-slot="card"]'));
+	expect(permissions.closest('[data-slot="card"]')).not.toBe(rag.closest('[data-slot="card"]'));
+	expect(screen.queryByRole('button', { name: /Data management/ })).not.toBeInTheDocument();
+
+	await user.click(screen.getByRole('link', { name: 'Tools' }));
+	expect(await screen.findByRole('heading', { name: 'Tools' })).toBeInTheDocument();
+});
+
+it('keeps every tool model and search configuration on the Tools page', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ToolsPage />
+		</MemoryRouter>
+	);
+
+	for (const name of [
+		/Text to image/,
+		/Text to audio/,
+		/Text to video/,
+		/Text to speech/,
+		/Speech to text/,
+		/Search Engine/,
+	]) {
+		const trigger = (await screen.findAllByRole('button', { name })).find(
+			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
+		);
+		expect(trigger).toBeDefined();
+		if (!trigger) continue;
+		if (trigger.getAttribute('aria-expanded') === 'false') await user.click(trigger);
+		expect(trigger).toHaveAttribute('aria-expanded', 'true');
+	}
+
 	const image = (await screen.findAllByRole('button', { name: 'Text to image' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
@@ -333,35 +374,20 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const speechToText = (await screen.findAllByRole('button', { name: 'Speech to text' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
-	expect(voice).toBeDefined();
-	expect(realtimeConversation).toBeDefined();
 	expect(image).toBeDefined();
 	expect(audio).toBeDefined();
 	expect(video).toBeDefined();
 	expect(textToSpeech).toBeDefined();
 	expect(speechToText).toBeDefined();
-	if (
-		!voice ||
-		!realtimeConversation ||
-		!image ||
-		!audio ||
-		!video ||
-		!textToSpeech ||
-		!speechToText
-	)
-		return;
+	if (!image || !audio || !video || !textToSpeech || !speechToText) return;
+
 	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
-	expect(voice).toHaveTextContent('Eleven v3');
-	expect(model).toHaveTextContent('GPT');
-	expect(realtimeConversation).toHaveTextContent('GPT Realtime');
-	expect(voice).toHaveTextContent('Eleven v3');
 	expect(image).toHaveTextContent('Gemini Image');
 	expect(audio).toHaveTextContent('Eleven Music');
 	expect(video).toHaveTextContent('Veo');
 	expect(textToSpeech).toHaveTextContent('Eleven v3');
 	expect(speechToText).toHaveTextContent('GPT Transcribe');
 	expect(search).toHaveTextContent('Brave');
-
 	expect(image.closest('[data-slot="card"]')).toBe(audio.closest('[data-slot="card"]'));
 	expect(audio.closest('[data-slot="card"]')).toBe(video.closest('[data-slot="card"]'));
 	expect(video.closest('[data-slot="card"]')).toBe(textToSpeech.closest('[data-slot="card"]'));
@@ -369,14 +395,6 @@ it('groups independently collapsible provider settings in one card', async () =>
 		speechToText.closest('[data-slot="card"]')
 	);
 	expect(speechToText.closest('[data-slot="card"]')).toBe(search.closest('[data-slot="card"]'));
-	expect(image.closest('[data-slot="card"]')).not.toBe(model.closest('[data-slot="card"]'));
-
-	const wiki = screen.getByRole('button', { name: /LLM Wiki/ });
-	const rag = screen.getByRole('button', { name: /RAG/ });
-	const permissions = screen.getByRole('button', { name: /Permissions/ });
-	expect(rag.closest('[data-slot="card"]')).toBe(wiki.closest('[data-slot="card"]'));
-	expect(permissions.closest('[data-slot="card"]')).not.toBe(rag.closest('[data-slot="card"]'));
-	expect(screen.queryByRole('button', { name: /Data management/ })).not.toBeInTheDocument();
 });
 
 it('shows only runtime-supported realtime models and saves model and voice together', async () => {

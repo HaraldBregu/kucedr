@@ -31,6 +31,7 @@ beforeEach(() => {
 
 it.each([
 	['/settings/agent/rag', 'settings.rag.title'],
+	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/general/persona', 'settings.persona.title'],
 	['/settings/agent/llm-wiki', 'settings.wiki.title'],
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
@@ -41,7 +42,7 @@ it.each([
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
-	if (path === '/settings/general/persona') {
+	if (path === '/settings/general/persona' || path === '/settings/agent/tools') {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else if (path === '/settings/coder') {
 		expect(SETTINGS_MODEL_SERVICE_ITEMS).toContainEqual(
