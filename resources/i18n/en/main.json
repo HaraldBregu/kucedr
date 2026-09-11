@@ -290,8 +290,8 @@
 			"screenRecordingDescription": "Manage screen recording permissions",
 			"requestScreenRecording": "Request Screen Access",
 			"openScreenRecording": "Open Screen Recording",
-			"menuBar": "Menu Bar",
-			"menuBarDescription": "Show or hide the app icon in the menu bar",
+			"menuBar": "Show Tray Icon",
+			"menuBarDescription": "Show or hide the Kucedr icon in the system tray",
 			"trayClickAction": {
 				"title": "Tray Icon Click",
 				"description": "Choose what happens when you click the tray icon",

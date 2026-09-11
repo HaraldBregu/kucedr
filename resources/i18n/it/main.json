@@ -289,8 +289,8 @@
 			"screenRecordingDescription": "Gestisci i permessi di registrazione schermo",
 			"requestScreenRecording": "Richiedi accesso allo schermo",
 			"openScreenRecording": "Apri Registrazione Schermo",
-			"menuBar": "Barra dei Menu",
-			"menuBarDescription": "Mostra o nascondi l'icona dell'app nella barra dei menu",
+			"menuBar": "Mostra icona nel menu",
+			"menuBarDescription": "Mostra o nascondi l'icona di Kucedr nella barra dei menu",
 			"trayClickAction": {
 				"title": "Clic sull'icona nel menu",
 				"description": "Scegli cosa accade quando fai clic sull'icona nel menu",
