@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
-import { AlertTriangle, Blocks, ExternalLink } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { AlertTriangle, Blocks, ExternalLink, MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { App } from '../../../../../../../shared/installed_app_types';
 import WindowSettings from './Window';
 import {
@@ -20,11 +21,14 @@ const KNOWN_METADATA_KEYS = ['version', 'category', 'entry'];
 
 const AppDetailsPage: React.FC = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { appId } = useParams<{ appId: string }>();
 	const decodedAppId = decodeURIComponent(appId ?? '');
 	const [app, setApp] = useState<App | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [opening, setOpening] = useState(false);
+	const [deleting, setDeleting] = useState(false);
+	const [actionsOpen, setActionsOpen] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const loadErrorFallback = t('settings.apps.loadError');
 
@@ -58,6 +62,21 @@ const AppDetailsPage: React.FC = () => {
 			setOpening(false);
 		}
 	}, [app, t]);
+
+	const handleDelete = useCallback(async (): Promise<void> => {
+		if (!app) return;
+		setDeleting(true);
+		setErrorMessage('');
+		try {
+			if (await window.apps.delete(app.id)) {
+				navigate('/settings/apps');
+			}
+		} catch {
+			setErrorMessage(t('settings.apps.deleteError'));
+		} finally {
+			setDeleting(false);
+		}
+	}, [app, navigate, t]);
 
 	if (loading) {
 		return (
@@ -98,13 +117,43 @@ const AppDetailsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={app.title}
+				 title={app.title}
 				description={app.description}
 				action={
-					<Button variant="outline" size="xs" onClick={() => void handleOpen()} disabled={opening}>
-						<ExternalLink className="size-3" />
-						{t('settings.apps.open')}
-					</Button>
+					<>
+						<Button variant="outline" size="xs" onClick={() => void handleOpen()} disabled={opening || deleting}>
+							<ExternalLink className="size-3" />
+							{t('settings.apps.open')}
+						</Button>
+						<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
+							<PopoverTrigger asChild>
+								<Button
+									variant="outline"
+									size="icon-xs"
+									disabled={opening || deleting}
+									aria-label={t('common.moreOptions')}
+								>
+									<MoreHorizontal className="size-3.5" />
+								</Button>
+							</PopoverTrigger>
+							<PopoverContent align="end" collisionPadding={12} className="w-44 p-1">
+								<div role="menu" aria-label={t('common.moreOptions')}>
+									<button
+										type="button"
+										role="menuitem"
+										disabled={deleting}
+										onClick={() => {
+											setActionsOpen(false);
+											void handleDelete();
+										}}
+										className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
+									>
+										{deleting ? t('settings.apps.deleting') : t('settings.apps.deleteAction', { name: app.title })}
+									</button>
+								</div>
+							</PopoverContent>
+						</Popover>
+					</>
 				}
 			/>
 

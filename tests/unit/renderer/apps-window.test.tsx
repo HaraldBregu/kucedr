@@ -28,6 +28,7 @@ beforeEach(() => {
 			getSettings: jest.fn().mockResolvedValue(settings),
 			setSettings: jest.fn().mockResolvedValue(settings),
 			open: jest.fn().mockResolvedValue(undefined),
+			delete: jest.fn().mockResolvedValue(true),
 		},
 	});
 });
@@ -63,6 +64,23 @@ it('shows app information before its window configuration', async () => {
 	const information = await screen.findByRole('heading', { name: 'settings.apps.information' });
 	const configuration = screen.getByRole('heading', { name: 'settings.apps.window.title' });
 	expect(information.compareDocumentPosition(configuration)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+});
+
+it('offers deletion from the detail page options menu', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/apps/my-app']}>
+			<Routes>
+				<Route path="/settings/apps/:appId" element={<AppDetailsPage />} />
+			</Routes>
+		</MemoryRouter>
+	);
+
+	await screen.findByText('My App');
+	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
+	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.deleteAction' }));
+
+	expect(window.apps.delete).toHaveBeenCalledWith('my-app');
 });
 
 it('saves edited dimensions and behavior for only the selected app', async () => {
