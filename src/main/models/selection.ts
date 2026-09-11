@@ -1,13 +1,13 @@
-import type { AgentChatbotModelKind, AgentToolModelKind } from '../../shared/agent_types';
+import type { AgentToolModelKind, AgentVoiceModelKind } from '../../shared/agent_types';
 import {
-	getChatbotModel,
 	getModelId as getAgentModelId,
 	getProviderId as getAgentProviderId,
 	getToolModel,
+	getVoiceModel,
 	setModelId as setAgentModelId,
 	setProviderId as setAgentProviderId,
-	setChatbotModel,
 	setToolModel,
+	setVoiceModel,
 } from '../agent/agent_store';
 import { getRagConfiguration, saveRagConfiguration } from '../agent/knowledge/rag/rag_store';
 
@@ -31,11 +31,11 @@ type ModelSelection = {
 
 type SelectedModelKind = Exclude<ModelKind, 'text' | 'embedding'>;
 
-const CHATBOT_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentChatbotModelKind>> = {
-	voice: 'voice',
+const VOICE_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentVoiceModelKind>> = {
+	voice: 'textToSpeech',
 	realtimeVoice: 'realtimeVoice',
-	transcribe: 'transcription',
-	realtime: 'transcription',
+	transcribe: 'speechToText',
+	realtime: 'speechToText',
 };
 
 const TOOL_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentToolModelKind>> = {
@@ -135,8 +135,8 @@ function selection(kind: ModelKind): ModelSelection {
 function getStoredModel(
 	kind: SelectedModelKind
 ): import('../../shared/agent_types').AgentMediaModelSettings {
-	const chatbotKind = CHATBOT_MODEL_KINDS[kind];
-	if (chatbotKind) return getChatbotModel(chatbotKind);
+	const voiceKind = VOICE_MODEL_KINDS[kind];
+	if (voiceKind) return getVoiceModel(voiceKind);
 	const toolKind = TOOL_MODEL_KINDS[kind];
 	if (toolKind) return getToolModel(toolKind);
 	throw new Error(`Unsupported model kind: ${kind}`);
@@ -146,8 +146,8 @@ function setStoredModel(
 	kind: SelectedModelKind,
 	settings: import('../../shared/agent_types').AgentMediaModelSettings
 ): void {
-	const chatbotKind = CHATBOT_MODEL_KINDS[kind];
-	if (chatbotKind) return setChatbotModel(chatbotKind, settings);
+	const voiceKind = VOICE_MODEL_KINDS[kind];
+	if (voiceKind) return setVoiceModel(voiceKind, settings);
 	const toolKind = TOOL_MODEL_KINDS[kind];
 	if (toolKind) return setToolModel(toolKind, settings);
 	throw new Error(`Unsupported model kind: ${kind}`);

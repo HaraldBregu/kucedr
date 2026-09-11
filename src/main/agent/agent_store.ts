@@ -1,9 +1,9 @@
 import path from 'node:path';
 import Store from 'electron-store';
 import type {
-	AgentChatbotModelKind,
 	AgentMediaModelSettings,
 	AgentToolModelKind,
+	AgentVoiceModelKind,
 } from '../../shared/agent_types';
 import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
@@ -22,10 +22,12 @@ export type SearchEngineSettings = {
 };
 type AgentStoreSchema = {
 	chatbot: {
-		model: AgentMediaModelSettings;
-		voice: AgentMediaModelSettings;
+		textToText: AgentMediaModelSettings;
+	};
+	voice: {
+		textToSpeech: AgentMediaModelSettings;
 		realtimeVoice: AgentMediaModelSettings;
-		transcription: AgentMediaModelSettings;
+		speechToText: AgentMediaModelSettings;
 	};
 	tools: {
 		webSearch: SearchEngineSettings;
@@ -38,7 +40,15 @@ type AgentStoreSchema = {
 	permissions: PermissionsSchema;
 };
 
-type LegacyAgentStoreSchema = Partial<AgentStoreSchema> & {
+type LegacyAgentStoreSchema = Partial<Omit<AgentStoreSchema, 'chatbot' | 'voice'>> & {
+	chatbot?: {
+		model?: AgentMediaModelSettings;
+		voice?: AgentMediaModelSettings;
+		realtimeVoice?: AgentMediaModelSettings;
+		transcription?: AgentMediaModelSettings;
+		textToText?: AgentMediaModelSettings;
+	};
+	voice?: Partial<AgentStoreSchema['voice']>;
 	large_language_model?: AgentMediaModelSettings;
 	web_search_engine?: SearchEngineSettings;
 	image_generator_model?: AgentMediaModelSettings;
@@ -73,10 +83,12 @@ const EMPTY_MEDIA_MODEL: AgentMediaModelSettings = {
 };
 const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 	chatbot: {
-		model: EMPTY_MEDIA_MODEL,
-		voice: EMPTY_MEDIA_MODEL,
+		textToText: EMPTY_MEDIA_MODEL,
+	},
+	voice: {
+		textToSpeech: EMPTY_MEDIA_MODEL,
 		realtimeVoice: EMPTY_MEDIA_MODEL,
-		transcription: EMPTY_MEDIA_MODEL,
+		speechToText: EMPTY_MEDIA_MODEL,
 	},
 	tools: {
 		webSearch: { providerId: '', providerName: '', enabled: false },
@@ -97,9 +109,11 @@ const store = new Store<AgentStoreSchema>({
 });
 
 const persisted = { ...store.store } as LegacyAgentStoreSchema;
-const chatbotModel =
-	persisted.chatbot?.model?.providerId || persisted.chatbot?.model?.modelId
-		? persisted.chatbot.model
+const chatbotTextToText =
+	persisted.chatbot?.textToText?.providerId || persisted.chatbot?.textToText?.modelId
+		? persisted.chatbot.textToText
+		: persisted.chatbot?.model?.providerId || persisted.chatbot?.model?.modelId
+			? persisted.chatbot.model
 		: persisted.large_language_model?.providerId || persisted.large_language_model?.modelId
 			? persisted.large_language_model
 			: {
@@ -109,16 +123,25 @@ const chatbotModel =
 				};
 store.store = {
 	chatbot: {
-		model: chatbotModel,
-		voice:
+		textToText: chatbotTextToText,
+	},
+	voice: {
+		textToSpeech:
+			persisted.voice?.textToSpeech ??
 			persisted.chatbot?.voice ??
 			persisted.text_to_speech_model ??
 			persisted.voice_model ??
 			EMPTY_MEDIA_MODEL,
 		realtimeVoice:
-			persisted.chatbot?.realtimeVoice ?? persisted.realtime_voice_model ?? EMPTY_MEDIA_MODEL,
-		transcription:
-			persisted.chatbot?.transcription ?? persisted.transcription_model ?? EMPTY_MEDIA_MODEL,
+			persisted.voice?.realtimeVoice ??
+			persisted.chatbot?.realtimeVoice ??
+			persisted.realtime_voice_model ??
+			EMPTY_MEDIA_MODEL,
+		speechToText:
+			persisted.voice?.speechToText ??
+			persisted.chatbot?.transcription ??
+			persisted.transcription_model ??
+			EMPTY_MEDIA_MODEL,
 	},
 	tools: {
 		webSearch:
@@ -148,35 +171,35 @@ store.store = {
 };
 
 export function getProviderId(): string | undefined {
-	return store.get('chatbot').model.providerId || undefined;
+	return store.get('chatbot').textToText.providerId || undefined;
 }
 
 export function setProviderId(providerId: string): void {
 	store.set('chatbot', {
 		...store.get('chatbot'),
-		model: { ...store.get('chatbot').model, providerId },
+		textToText: { ...store.get('chatbot').textToText, providerId },
 	});
 }
 
 export function getModelId(): string | undefined {
-	return store.get('chatbot').model.modelId || undefined;
+	return store.get('chatbot').textToText.modelId || undefined;
 }
 
 export function setModelId(modelId: string): void {
 	store.set('chatbot', {
 		...store.get('chatbot'),
-		model: { ...store.get('chatbot').model, modelId },
+		textToText: { ...store.get('chatbot').textToText, modelId },
 	});
 }
 
 export function getModelOptions(): Record<string, unknown> {
-	return store.get('chatbot').model.options;
+	return store.get('chatbot').textToText.options;
 }
 
 export function setModelOptions(modelOptions: Record<string, unknown>): void {
 	store.set('chatbot', {
 		...store.get('chatbot'),
-		model: { ...store.get('chatbot').model, options: modelOptions },
+		textToText: { ...store.get('chatbot').textToText, options: modelOptions },
 	});
 }
 
@@ -188,15 +211,12 @@ export function setSearchEngine(searchEngine: SearchEngineSettings): void {
 	store.set('tools', { ...store.get('tools'), webSearch: searchEngine });
 }
 
-export function getChatbotModel(kind: AgentChatbotModelKind): AgentMediaModelSettings {
-	return store.get('chatbot')[kind];
+export function getVoiceModel(kind: AgentVoiceModelKind): AgentMediaModelSettings {
+	return store.get('voice')[kind];
 }
 
-export function setChatbotModel(
-	kind: AgentChatbotModelKind,
-	settings: AgentMediaModelSettings
-): void {
-	store.set('chatbot', { ...store.get('chatbot'), [kind]: settings });
+export function setVoiceModel(kind: AgentVoiceModelKind, settings: AgentMediaModelSettings): void {
+	store.set('voice', { ...store.get('voice'), [kind]: settings });
 }
 
 export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
