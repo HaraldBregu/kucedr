@@ -1,5 +1,5 @@
 import React from 'react';
-import mark from '@resources/icons/icon.svg';
+import mark from '@resources/icons/icon-clear.svg';
 
 export function LogoView({
 	className = 'size-20 rounded-2xl',
