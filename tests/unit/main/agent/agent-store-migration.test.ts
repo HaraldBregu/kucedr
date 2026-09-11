@@ -40,17 +40,19 @@ import '../../../../src/main/agent/agent_store';
 it('migrates legacy agent settings into chatbot and tools branches', () => {
 	expect(persisted).toMatchObject({
 		chatbot: {
-			model: {
+			textToText: {
 				providerId: 'openai',
 				modelId: 'gpt-5',
 				options: { reasoning: 'high' },
 			},
-			voice: {
+		},
+		voice: {
+			textToSpeech: {
 				providerId: 'openai',
 				modelId: 'tts-1',
 				options: { voice: 'alloy' },
 			},
-			transcription: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
+			speechToText: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
 		},
 		tools: {
 			webSearch: { providerId: 'brave', providerName: 'Brave', enabled: true },

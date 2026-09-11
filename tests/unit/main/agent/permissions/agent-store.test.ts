@@ -20,13 +20,13 @@ import {
 	AGENT_DIRECTORY,
 	addPermissionRule,
 	getToolModel,
-	getChatbotModel,
+	getVoiceModel,
 	getModelId,
 	getPermissions,
 	getProviderId,
 	resetPermissions,
 	setToolModel,
-	setChatbotModel,
+	setVoiceModel,
 	setModelId,
 	setPermissions,
 	setProviderId,
@@ -100,7 +100,7 @@ describe('agent store permissions', () => {
 	});
 
 	it('keeps chat and tool speech selections independent', () => {
-		setChatbotModel('voice', {
+		setVoiceModel('textToSpeech', {
 			providerId: 'openai',
 			modelId: 'gpt-4o-mini-tts',
 			options: { voice: 'marin' },
@@ -116,7 +116,7 @@ describe('agent store permissions', () => {
 			options: {},
 		});
 
-		expect(getChatbotModel('voice')).toMatchObject({ providerId: 'openai' });
+		expect(getVoiceModel('textToSpeech')).toMatchObject({ providerId: 'openai' });
 		expect(getToolModel('textToSpeech')).toMatchObject({ providerId: 'elevenlabs' });
 		expect(getToolModel('speechToText')).toMatchObject({ providerId: 'deepgram' });
 	});
