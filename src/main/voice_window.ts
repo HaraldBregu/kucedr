@@ -59,7 +59,7 @@ export class VoiceWindow {
 	open(chatSessionId: string): void {
 		const existing = this.window;
 		if (existing && !existing.isDestroyed()) {
-			this.showWindow(existing);
+			this.show();
 			return;
 		}
 		this.chatSessionId = chatSessionId;
@@ -95,6 +95,18 @@ export class VoiceWindow {
 		this.open(this.chatSessionId ?? randomUUID());
 	}
 
+	show(): void {
+		const win = this.window;
+		if (!win || win.isDestroyed()) return;
+		this.showWindow(win);
+	}
+
+	hide(): void {
+		const win = this.window;
+		if (!win || win.isDestroyed()) return;
+		win.hide();
+	}
+
 	end(): void {
 		const win = this.window;
 		if (!win || win.isDestroyed()) return;
@@ -105,6 +117,10 @@ export class VoiceWindow {
 
 	isActive(): boolean {
 		return Boolean(this.window && !this.window.isDestroyed());
+	}
+
+	isVisible(): boolean {
+		return Boolean(this.window && !this.window.isDestroyed() && this.window.isVisible());
 	}
 
 	setOnVisibilityChange(callback: () => void): void {

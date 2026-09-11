@@ -16,8 +16,9 @@ jest.mock('../../../../src/main/i18n', () => ({
 	loadTranslations: () => ({
 		showKucedr: 'Show Kucedr',
 		hideKucedr: 'Hide Kucedr',
-		startVoiceConversation: 'Start Conversation',
-		endVoiceConversation: 'End Conversation',
+		startPersona: 'Start Persona',
+		hidePersona: 'Hide Persona',
+		showPersona: 'Show Persona',
 		apps: 'Apps',
 		microphone: 'Microphone',
 		microphoneDefault: 'System default',
@@ -40,11 +41,13 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 	let selected = 'usb';
 	const tray = new Tray({
 		onToggleApp: jest.fn(),
-		onStartVoiceConversation: jest.fn(),
-		onEndVoiceConversation: jest.fn(),
+		onStartPersona: jest.fn(),
+		onHidePersona: jest.fn(),
+		onShowPersona: jest.fn(),
 		onQuit: jest.fn(),
 		isAppVisible: () => false,
-		isVoiceConversationActive: () => false,
+		isPersonaActive: () => false,
+		isPersonaVisible: () => false,
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 		getMicrophoneInputs: async () => [
@@ -76,36 +79,51 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 	expect(selected).toBe('default');
 });
 
-it('starts and ends the voice conversation from the tray', () => {
+it('starts, hides, and shows the Persona without ending its conversation', () => {
 	let active = false;
-	const startVoiceConversation = jest.fn(() => {
+	let visible = false;
+	const startPersona = jest.fn(() => {
 		active = true;
+		visible = true;
 	});
-	const endVoiceConversation = jest.fn(() => {
-		active = false;
+	const hidePersona = jest.fn(() => {
+		visible = false;
+	});
+	const showPersona = jest.fn(() => {
+		visible = true;
 	});
 	const tray = new Tray({
 		onToggleApp: jest.fn(),
-		onStartVoiceConversation: startVoiceConversation,
-		onEndVoiceConversation: endVoiceConversation,
+		onStartPersona: startPersona,
+		onHidePersona: hidePersona,
+		onShowPersona: showPersona,
 		onQuit: jest.fn(),
 		isAppVisible: () => false,
-		isVoiceConversationActive: () => active,
+		isPersonaActive: () => active,
+		isPersonaVisible: () => visible,
 		getApps: () => [],
 		onOpenApp: jest.fn(),
 	});
 
 	tray.create();
 	let template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	let voiceItem = template.find((entry) => entry.label === 'Start Conversation');
-	expect(voiceItem).toMatchObject({ enabled: true });
-	voiceItem?.click?.();
+	let personaItem = template.find((entry) => entry.label === 'Start Persona');
+	expect(personaItem).toMatchObject({ enabled: true });
+	personaItem?.click?.();
 
 	tray.updateContextMenu();
 	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	voiceItem = template.find((entry) => entry.label === 'End Conversation');
-	expect(voiceItem).toMatchObject({ enabled: true });
-	voiceItem?.click?.();
-	expect(startVoiceConversation).toHaveBeenCalledTimes(1);
-	expect(endVoiceConversation).toHaveBeenCalledTimes(1);
+	personaItem = template.find((entry) => entry.label === 'Hide Persona');
+	expect(personaItem).toMatchObject({ enabled: true });
+	personaItem?.click?.();
+
+	tray.updateContextMenu();
+	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+	personaItem = template.find((entry) => entry.label === 'Show Persona');
+	expect(personaItem).toMatchObject({ enabled: true });
+	personaItem?.click?.();
+	expect(startPersona).toHaveBeenCalledTimes(1);
+	expect(hidePersona).toHaveBeenCalledTimes(1);
+	expect(showPersona).toHaveBeenCalledTimes(1);
+	expect(active).toBe(true);
 });

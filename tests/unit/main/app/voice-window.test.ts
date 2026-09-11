@@ -8,7 +8,7 @@ jest.mock('../../../../src/main/translucency', () => ({
 
 import { VoiceWindow } from '../../../../src/main/voice_window';
 
-it('creates a standalone voice window that can be started and ended independently', () => {
+it('keeps a standalone voice conversation active while its window is hidden', () => {
 	let visible = false;
 	const listeners = new Map<string, () => void>();
 	const win = {
@@ -46,14 +46,17 @@ it('creates a standalone voice window that can be started and ended independentl
 	voiceWindow.open('chat-session');
 	const options = (windowFactory.create as jest.Mock).mock.calls[0]?.[0];
 	listeners.get('ready-to-show')?.();
-	voiceWindow.end();
+	voiceWindow.hide();
+	voiceWindow.show();
 
 	expect(options).not.toHaveProperty('parent');
 	expect(options).not.toHaveProperty('modal');
 	expect(options).toHaveProperty('alwaysOnTop', true);
-	expect(voiceWindow.isActive()).toBe(false);
-	expect(win.close).toHaveBeenCalledTimes(1);
-	expect(win.show).toHaveBeenCalledTimes(1);
+	expect(voiceWindow.isActive()).toBe(true);
+	expect(voiceWindow.isVisible()).toBe(true);
+	expect(win.hide).toHaveBeenCalledTimes(1);
+	expect(win.close).not.toHaveBeenCalled();
+	expect(win.show).toHaveBeenCalledTimes(2);
 	expect(win.setAlwaysOnTop).toHaveBeenCalledWith(true, 'floating');
 	expect(win.setVisibleOnAllWorkspaces).toHaveBeenCalledWith(true, {
 		visibleOnFullScreen: true,

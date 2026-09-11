@@ -7,11 +7,13 @@ import { resourceRoot } from './shared/resource_root';
 
 interface TrayManagerCallbacks {
 	onToggleApp: () => void;
-	onStartVoiceConversation: () => void;
-	onEndVoiceConversation: () => void;
+	onStartPersona: () => void;
+	onHidePersona: () => void;
+	onShowPersona: () => void;
 	onQuit: () => void;
 	isAppVisible: () => boolean;
-	isVoiceConversationActive: () => boolean;
+	isPersonaActive: () => boolean;
+	isPersonaVisible: () => boolean;
 	getApps: () => App[];
 	onOpenApp: (app: App) => void;
 	getMicrophoneInputs?: () => Promise<readonly MicrophoneInput[]>;
@@ -98,7 +100,8 @@ export class Tray {
 		}
 		const m = loadTranslations(this.currentLanguage, 'tray');
 		const isVisible = this.callbacks.isAppVisible();
-		const voiceConversationActive = this.callbacks.isVoiceConversationActive();
+		const personaActive = this.callbacks.isPersonaActive();
+		const personaVisible = this.callbacks.isPersonaVisible();
 		const apps = this.callbacks.getApps();
 		const selectedMicrophoneId = this.callbacks.getMicrophoneInputId?.() ?? 'default';
 		const microphoneItems: Electron.MenuItemConstructorOptions[] = [
@@ -134,14 +137,18 @@ export class Tray {
 				click: () => this.callbacks.onToggleApp(),
 			},
 			{
-				label: voiceConversationActive
-					? m.endVoiceConversation || 'End Conversation'
-					: m.startVoiceConversation || 'Start Conversation',
+				label: !personaActive
+					? m.startPersona || 'Start Persona'
+					: personaVisible
+						? m.hidePersona || 'Hide Persona'
+						: m.showPersona || 'Show Persona',
 				enabled: true,
 				click: () =>
-					voiceConversationActive
-						? this.callbacks.onEndVoiceConversation()
-						: this.callbacks.onStartVoiceConversation(),
+					!personaActive
+						? this.callbacks.onStartPersona()
+						: personaVisible
+							? this.callbacks.onHidePersona()
+							: this.callbacks.onShowPersona(),
 			},
 			{
 				label: m.apps || 'Apps',

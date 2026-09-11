@@ -1,8 +1,9 @@
 {
 	"showKucedr": "Mostra Kucedr",
 	"hideKucedr": "Nascondi Kucedr",
-	"startVoiceConversation": "Avvia conversazione",
-	"endVoiceConversation": "Termina conversazione",
+	"startPersona": "Avvia Persona",
+	"hidePersona": "Nascondi Persona",
+	"showPersona": "Mostra Persona",
 	"apps": "App",
 	"microphone": "Microfono",
 	"microphoneDefault": "Predefinito di sistema",
