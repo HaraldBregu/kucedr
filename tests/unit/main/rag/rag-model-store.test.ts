@@ -2,8 +2,8 @@ const getAgentProviderId = jest.fn();
 const setAgentProviderId = jest.fn();
 const getAgentModelId = jest.fn();
 const setAgentModelId = jest.fn();
-const getAgentChatbotModel = jest.fn();
-const setAgentChatbotModel = jest.fn();
+const getAgentVoiceModel = jest.fn();
+const setAgentVoiceModel = jest.fn();
 const getAgentToolModel = jest.fn();
 const setAgentToolModel = jest.fn();
 const getRagConfiguration = jest.fn();
@@ -14,8 +14,8 @@ jest.mock('../../../../src/main/agent/agent_store', () => ({
 	setProviderId: setAgentProviderId,
 	getModelId: getAgentModelId,
 	setModelId: setAgentModelId,
-	getChatbotModel: getAgentChatbotModel,
-	setChatbotModel: setAgentChatbotModel,
+	getVoiceModel: getAgentVoiceModel,
+	setVoiceModel: setAgentVoiceModel,
 	getToolModel: getAgentToolModel,
 	setToolModel: setAgentToolModel,
 }));
@@ -52,14 +52,14 @@ const ragConfiguration = {
 beforeEach(() => {
 	jest.clearAllMocks();
 	let currentRagConfiguration = { ...ragConfiguration };
-	const chatbotModels = {
-		voice: { providerId: 'openai', modelId: 'gpt-4o-mini-tts', options: { voice: 'cedar' } },
+	const voiceModels = {
+		textToSpeech: { providerId: 'openai', modelId: 'gpt-4o-mini-tts', options: { voice: 'cedar' } },
 		realtimeVoice: {
 			providerId: 'openai',
 			modelId: 'gpt-realtime-2.1',
 			options: { voice: 'marin' },
 		},
-		transcription: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
+		speechToText: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
 	};
 	const toolModels = {
 		image: { providerId: 'google', modelId: 'gemini-image', options: { imageSize: '1K' } },
@@ -72,15 +72,15 @@ beforeEach(() => {
 	};
 	getAgentProviderId.mockReturnValue('openai');
 	getAgentModelId.mockReturnValue('gpt-5');
-	getAgentChatbotModel.mockImplementation(
-		(kind: keyof typeof chatbotModels) => chatbotModels[kind]
+	getAgentVoiceModel.mockImplementation(
+		(kind: keyof typeof voiceModels) => voiceModels[kind]
 	);
-	setAgentChatbotModel.mockImplementation(
+	setAgentVoiceModel.mockImplementation(
 		(
-			kind: keyof typeof chatbotModels,
-			settings: (typeof chatbotModels)[keyof typeof chatbotModels]
+			kind: keyof typeof voiceModels,
+			settings: (typeof voiceModels)[keyof typeof voiceModels]
 		) => {
-			chatbotModels[kind] = settings as never;
+			voiceModels[kind] = settings as never;
 		}
 	);
 	getAgentToolModel.mockImplementation((kind: keyof typeof toolModels) => toolModels[kind]);
@@ -156,7 +156,7 @@ it('reads and writes voice selection and options through the agent store', () =>
 	expect(getOptions('voice')).toEqual({ voice: 'cedar' });
 	setOptions('voice', { voice: 'marin', speed: 1.1 });
 
-	expect(setAgentChatbotModel).toHaveBeenCalledWith('voice', {
+	expect(setAgentVoiceModel).toHaveBeenCalledWith('textToSpeech', {
 		providerId: 'openai',
 		modelId: 'gpt-4o-mini-tts',
 		options: { voice: 'marin', speed: 1.1 },
@@ -172,12 +172,12 @@ it('reads and writes batch and realtime transcription through the agent store', 
 	setModelId('transcribe', 'nova-4');
 	setProviderId('realtime', 'openai');
 
-	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(1, 'transcription', {
+	expect(setAgentVoiceModel).toHaveBeenNthCalledWith(1, 'speechToText', {
 		providerId: 'deepgram',
 		modelId: 'nova-4',
 		options: {},
 	});
-	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(2, 'transcription', {
+	expect(setAgentVoiceModel).toHaveBeenNthCalledWith(2, 'speechToText', {
 		providerId: 'openai',
 		modelId: 'nova-4',
 		options: {},
@@ -192,12 +192,12 @@ it('reads and writes realtime voice selection and options independently', () => 
 	setModelId('realtimeVoice', 'gpt-realtime-2.1-mini');
 	setOptions('realtimeVoice', { voice: 'cedar' });
 
-	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(1, 'realtimeVoice', {
+	expect(setAgentVoiceModel).toHaveBeenNthCalledWith(1, 'realtimeVoice', {
 		providerId: 'openai',
 		modelId: 'gpt-realtime-2.1-mini',
 		options: {},
 	});
-	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(2, 'realtimeVoice', {
+	expect(setAgentVoiceModel).toHaveBeenNthCalledWith(2, 'realtimeVoice', {
 		providerId: 'openai',
 		modelId: 'gpt-realtime-2.1-mini',
 		options: { voice: 'cedar' },
