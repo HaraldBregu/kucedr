@@ -65,8 +65,7 @@ it('shows open and an overflow delete action on app cards', async () => {
 	expect(
 		screen.queryByRole('button', { name: /settings.apps.deleteAction/ })
 	).not.toBeInTheDocument();
-	const options = screen.getAllByRole('button', { name: 'common.moreOptions' });
-	await user.click(options.at(-1)!);
+	await user.click(screen.getByRole('button', { name: /settings.apps.deleteAction/ }));
 	expect(
 		await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ })
 	).toBeInTheDocument();

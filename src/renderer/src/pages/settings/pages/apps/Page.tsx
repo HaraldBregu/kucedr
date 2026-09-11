@@ -243,7 +243,7 @@ const AppsPage: React.FC = () => {
 															variant="outline"
 															size="icon-xs"
 															disabled={importing || openingAppId === app.id}
-															aria-label={t('common.moreOptions')}
+															aria-label={t('settings.apps.deleteAction', { name: app.title })}
 														>
 															<MoreHorizontal className="size-3.5" />
 														</Button>
