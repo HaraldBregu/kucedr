@@ -15,6 +15,7 @@ const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/rag': 'settings.rag.title',
 	'/settings/agent/llm-wiki': 'settings.wiki.title',
 	'/settings/agent/permissions': 'settings.tabs.permissions',
+	'/settings/agent/tools': 'settings.modelServices.tools',
 };
 
 export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] {

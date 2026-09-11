@@ -54,6 +54,7 @@ const WikiPage = lazy(() => import('./pages/settings/pages/wiki/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
+const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
 const CoderPage = lazy(() => import('./pages/settings/pages/coder/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
@@ -238,6 +239,14 @@ const routes: RouteObject[] = [
 					</RouteWrapper>
 				),
 				children: [
+					{
+						path: 'tools',
+						element: (
+							<SettingsRouteWrapper>
+								<ToolsPage />
+							</SettingsRouteWrapper>
+						),
+					},
 					{
 						index: true,
 						element: <Navigate to="/settings/general" replace />,

@@ -1265,6 +1265,7 @@
 			"toolTextToSpeechDescription": "Tool-call speech generation",
 			"toolSpeechToTextName": "Speech to text",
 			"toolSpeechToTextDescription": "Tool-call audio transcription",
+			"toolsDescription": "Configure the models and search service available to agent tools.",
 			"musicCreatorDescription": "Audio generation models",
 			"embeddingName": "Embedding",
 			"embeddingDescription": "Text embedding models",

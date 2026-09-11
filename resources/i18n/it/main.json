@@ -1264,6 +1264,7 @@
 			"toolTextToSpeechDescription": "Generazione vocale tramite strumenti",
 			"toolSpeechToTextName": "Da voce a testo",
 			"toolSpeechToTextDescription": "Trascrizione audio tramite strumenti",
+			"toolsDescription": "Configura i modelli e il servizio di ricerca disponibili per gli strumenti dell'agente.",
 			"musicCreatorDescription": "Modelli generazione audio",
 			"embeddingName": "Embedding",
 			"embeddingDescription": "Modelli di embedding testo",

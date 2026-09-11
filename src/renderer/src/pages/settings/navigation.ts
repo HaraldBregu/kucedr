@@ -212,6 +212,13 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.skills.title',
 		keywords: 'plugins import folder delete refresh',
 	},
+	// Tools
+	{
+		path: '/settings/agent/tools',
+		labelKey: 'settings.modelServices.tools',
+		descriptionKey: 'settings.modelServices.toolsDescription',
+		keywords: 'tools image audio video speech text to speech transcription search engine',
+	},
 	// Tasks
 	{
 		path: '/settings/cloud',
