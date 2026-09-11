@@ -170,10 +170,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 								...(item.enabled === undefined ? {} : { enabled: item.enabled }),
 							};
 						}
-						if (
-							item.type !== undefined &&
-							item.type !== 'item'
-						) {
+						if (item.type !== undefined && item.type !== 'item') {
 							throw new Error(`Unsupported context menu item type: ${item.type}`);
 						}
 						if (

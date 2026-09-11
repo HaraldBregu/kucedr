@@ -350,20 +350,10 @@ export default function App() {
 								/>
 							</label>
 							<div className="flex flex-wrap gap-2">
-								<Button
-									size="sm"
-									variant="outline"
-									disabled={storageBusy}
-									onClick={storeAppValue}
-								>
+								<Button size="sm" variant="outline" disabled={storageBusy} onClick={storeAppValue}>
 									{text.storeStorageValue}
 								</Button>
-								<Button
-									size="sm"
-									variant="secondary"
-									disabled={storageBusy}
-									onClick={loadAppValue}
-								>
+								<Button size="sm" variant="secondary" disabled={storageBusy} onClick={loadAppValue}>
 									{text.loadStorageValue}
 								</Button>
 								<Button
@@ -403,20 +393,10 @@ export default function App() {
 								/>
 							</label>
 							<div className="flex flex-wrap gap-2">
-								<Button
-									size="sm"
-									variant="outline"
-									disabled={storageBusy}
-									onClick={saveAppFile}
-								>
+								<Button size="sm" variant="outline" disabled={storageBusy} onClick={saveAppFile}>
 									{text.saveStorageFile}
 								</Button>
-								<Button
-									size="sm"
-									variant="secondary"
-									disabled={storageBusy}
-									onClick={readAppFile}
-								>
+								<Button size="sm" variant="secondary" disabled={storageBusy} onClick={readAppFile}>
 									{text.readStorageFile}
 								</Button>
 								<Button

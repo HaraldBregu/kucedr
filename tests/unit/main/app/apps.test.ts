@@ -3,11 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import type { BrowserWindow, WebContentsView } from 'electron';
 import type { WindowFactory } from '../../../../src/main/window_factory';
-import {
-	ensureApps,
-	listApps,
-	loadApp,
-} from '../../../../src/main/apps/app_index';
+import { ensureApps, listApps, loadApp } from '../../../../src/main/apps/app_index';
 import { appEntryPath } from '../../../../src/main/apps/app_entry';
 import { appManifestPath } from '../../../../src/main/apps/app_manifest';
 import type { AppManifest } from '../../../../src/main/apps/app_types';
@@ -137,10 +133,7 @@ describe('app discovery and loading', () => {
 
 	it('omits apps whose manifest entry is missing or unsafe', () => {
 		fs.mkdirSync(path.dirname(appManifestPath('missing', appLocation)), { recursive: true });
-		fs.writeFileSync(
-			appManifestPath('missing', appLocation),
-			JSON.stringify(projectManifest)
-		);
+		fs.writeFileSync(appManifestPath('missing', appLocation), JSON.stringify(projectManifest));
 		fs.mkdirSync(path.dirname(appManifestPath('unsafe', appLocation)), { recursive: true });
 		fs.writeFileSync(
 			appManifestPath('unsafe', appLocation),
@@ -191,9 +184,7 @@ describe('app discovery and loading', () => {
 		const entry = installApp(appLocation, 'project', projectManifest);
 		fs.unlinkSync(entry);
 
-		expect(() => loadApp(windowFactory, app, appLocation)).toThrow(
-			'App entry not found: project'
-		);
+		expect(() => loadApp(windowFactory, app, appLocation)).toThrow('App entry not found: project');
 		expect(create).not.toHaveBeenCalled();
 	});
 
@@ -203,28 +194,54 @@ describe('app discovery and loading', () => {
 			...projectManifest,
 			title: 'Updated Project',
 			metadata: { ...projectManifest.metadata, entry: 'new.html' },
-			window: { width: 1000, height: 700, minWidth: 500, minHeight: 300, resizable: false, maximizable: false },
+			window: {
+				width: 1000,
+				height: 700,
+				minWidth: 500,
+				minHeight: 300,
+				resizable: false,
+				maximizable: false,
+			},
 		});
 		const { create, createView, handlers, shellHandlers, windowFactory } = createWindowHarness();
 		loadApp(windowFactory, stale, appLocation);
-		expect(create).toHaveBeenCalledWith(expect.objectContaining({
-			title: 'Updated Project', width: 1000, height: 700, minWidth: 500, minHeight: 300,
-			resizable: false, maximizable: false,
-		}), { html: 'app.html', hash: 'app/Updated%20Project' });
+		expect(create).toHaveBeenCalledWith(
+			expect.objectContaining({
+				title: 'Updated Project',
+				width: 1000,
+				height: 700,
+				minWidth: 500,
+				minHeight: 300,
+				resizable: false,
+				maximizable: false,
+			}),
+			{ html: 'app.html', hash: 'app/Updated%20Project' }
+		);
 		shellHandlers.get('did-finish-load')?.();
-		expect(createView).toHaveBeenCalledWith(appEntryPath('project', 'new.html', appLocation), 'project');
+		expect(createView).toHaveBeenCalledWith(
+			appEntryPath('project', 'new.html', appLocation),
+			'project'
+		);
 		handlers.get('closed')?.();
 	});
 
 	it('rejects a missing or invalid current manifest before creating a window', () => {
 		const stale = { id: 'project', ...projectManifest };
 		const { create, windowFactory } = createWindowHarness();
-		expect(() => loadApp(windowFactory, stale, appLocation)).toThrow('App manifest not found or invalid');
+		expect(() => loadApp(windowFactory, stale, appLocation)).toThrow(
+			'App manifest not found or invalid'
+		);
 		installApp(appLocation, 'project', projectManifest);
-		fs.writeFileSync(appManifestPath('project', appLocation), JSON.stringify({
-			...projectManifest, window: { width: -1 },
-		}));
-		expect(() => loadApp(windowFactory, stale, appLocation)).toThrow('App manifest not found or invalid');
+		fs.writeFileSync(
+			appManifestPath('project', appLocation),
+			JSON.stringify({
+				...projectManifest,
+				window: { width: -1 },
+			})
+		);
+		expect(() => loadApp(windowFactory, stale, appLocation)).toThrow(
+			'App manifest not found or invalid'
+		);
 		expect(create).not.toHaveBeenCalled();
 	});
 
@@ -233,14 +250,24 @@ describe('app discovery and loading', () => {
 		installApp(appLocation, 'project', projectManifest);
 		const { create, handlers, windowFactory } = createWindowHarness();
 		loadApp(windowFactory, app, appLocation);
-		expect(create.mock.calls[0][0]).toMatchObject({ width: 820, height: 640, minWidth: 620, minHeight: 480 });
+		expect(create.mock.calls[0][0]).toMatchObject({
+			width: 820,
+			height: 640,
+			minWidth: 620,
+			minHeight: 480,
+		});
 		installApp(appLocation, 'project', { ...projectManifest, window: { width: 420, height: 320 } });
 		loadApp(windowFactory, app, appLocation);
 		expect(create).toHaveBeenCalledTimes(1);
 		handlers.get('closed')?.();
 		loadApp(windowFactory, app, appLocation);
 		expect(create).toHaveBeenCalledTimes(2);
-		expect(create.mock.calls[1][0]).toMatchObject({ width: 420, height: 320, minWidth: 420, minHeight: 320 });
+		expect(create.mock.calls[1][0]).toMatchObject({
+			width: 420,
+			height: 320,
+			minWidth: 420,
+			minHeight: 320,
+		});
 		handlers.get('closed')?.();
 	});
 
@@ -270,9 +297,7 @@ describe('app discovery and loading', () => {
 	});
 
 	it('rejects app paths outside the apps folder', () => {
-		expect(() => appEntryPath('../outside', 'index.html', appLocation)).toThrow(
-			'Invalid app id'
-		);
+		expect(() => appEntryPath('../outside', 'index.html', appLocation)).toThrow('Invalid app id');
 		expect(() => appEntryPath('project', '../outside.html', appLocation)).toThrow(
 			'Invalid app entry'
 		);
