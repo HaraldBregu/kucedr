@@ -163,6 +163,7 @@
 				"automations": "Automations",
 				"services": "Application",
 				"assistant": "Agents",
+				"extensions": "Extensions",
 				"configuration": "Configuration"
 			},
 			"descriptions": {
