@@ -87,7 +87,6 @@ export class VoiceWindow {
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
 			win.show();
-			win.focus();
 		});
 	}
 
