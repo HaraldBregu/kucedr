@@ -183,7 +183,6 @@ app.whenReady().then(() => {
 	recordAppLaunch();
 	startStorageSync(logger, services.storageOperations);
 	services.cloudService.initialize();
-	services.providerSyncService.initialize();
 	const authInitialization = services.authService.initialize();
 	const unsubscribeAuthLinks = authLinks.subscribe(async (url) => {
 		try {
@@ -251,7 +250,6 @@ app.whenReady().then(() => {
 			mainWindow.create();
 		}
 	});
-	app.on('browser-window-focus', () => services.providerSyncService.requestSync());
 });
 
 // Core window and quit-state handlers are managed by setupAppLifecycle.

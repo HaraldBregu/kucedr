@@ -41,7 +41,6 @@ export function registerIpcHandlers(
 		windowContextManager,
 		authService,
 		cloudService,
-		providerSyncService,
 	} = services;
 
 	const safeRegister = (name: string, register: () => void): void => {
@@ -126,7 +125,6 @@ export function registerIpcHandlers(
 	safeRegister('provider-store', () =>
 		new ProviderStoreIpc().register(
 			{
-				sync: providerSyncService,
 				windows: windowContextManager,
 				apps: appRegistry,
 			},

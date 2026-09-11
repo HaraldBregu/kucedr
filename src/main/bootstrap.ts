@@ -28,9 +28,6 @@ import { AuthSessionStorage } from './cloud/session';
 import { SupabaseAccountProvider } from './cloud/supabase/auth';
 import { createSupabaseClient } from './cloud/supabase/client';
 import { SupabaseCloudRepository } from './cloud/supabase/records';
-import { SupabaseProviderCloud } from './cloud/supabase/providers';
-import { ProviderSyncService } from './providers/sync';
-import { providerVault } from './providers/vault';
 import { camera, microphone, screen } from './recorder';
 
 export interface MainServices {
@@ -49,7 +46,6 @@ export interface MainServices {
 	terminalManager: PtyManager;
 	authService: AuthService;
 	cloudService: CloudService;
-	providerSyncService: ProviderSyncService;
 }
 
 export interface BootstrapResult extends MainServices {}
@@ -108,11 +104,6 @@ export function bootstrapServices(): BootstrapResult {
 		authService,
 		cloudClient ? new SupabaseCloudRepository(cloudClient) : undefined
 	);
-	const providerSyncService = new ProviderSyncService(
-		authService,
-		providerVault,
-		cloudClient ? new SupabaseProviderCloud(cloudClient) : undefined
-	);
 	eventBus.on('window:closed', (event) => {
 		agentService.cancelWindow((event.payload as { windowId: number }).windowId);
 		codingService.cancelWindow((event.payload as { windowId: number }).windowId);
@@ -141,7 +132,6 @@ export function bootstrapServices(): BootstrapResult {
 		terminalManager,
 		authService,
 		cloudService,
-		providerSyncService,
 	};
 }
 
@@ -153,7 +143,6 @@ export async function cleanup(services: MainServices): Promise<void> {
 		conversationService,
 		terminalManager,
 		cloudService,
-		providerSyncService,
 		authService,
 		agentService,
 		codingService,
@@ -169,7 +158,6 @@ export async function cleanup(services: MainServices): Promise<void> {
 	await storageOperations.settle();
 	await recorderCleanup;
 	await cloudService.destroy();
-	providerSyncService.destroy();
 	authService.destroy();
 	await channelRegistry.destroy();
 	logger.info('Bootstrap', 'Cleanup complete');
