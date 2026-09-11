@@ -33,18 +33,13 @@ beforeEach(() => {
 		configurable: true,
 		value: {
 			list: jest.fn().mockResolvedValue([]),
-			set: jest.fn().mockResolvedValue({ id: 'pinecone', configured: true }),
-			vaultStatus: jest.fn().mockResolvedValue({
-				persistence: 'encrypted',
-				cloudConfigured: false,
-				unlocked: false,
-				pending: 0,
-			}),
+			set: jest.fn().mockResolvedValue({ id: 'pinecone', apiKey: 'database-secret' }),
 		},
 	});
 	Object.defineProperty(window, 'search', {
 		configurable: true,
 		value: {
+			listProviders: jest.fn().mockResolvedValue([]),
 			getSettings: jest.fn().mockResolvedValue({
 				engineId: null,
 				configured: { brave: false, tavily: false },
@@ -102,32 +97,30 @@ it('saves Database credentials in the databases collection', async () => {
 			kind: 'databases',
 		})
 	);
-	expect(await screen.findByRole('button', { name: 'Edit Pinecone API key' })).toBeInTheDocument();
 	expect(window.provider.list).toHaveBeenCalledWith('databases');
-	expect(screen.queryByLabelText('Pinecone API key')).not.toBeInTheDocument();
+	expect(screen.getByText('database-secret')).toBeInTheDocument();
 });
 
-it('loads saved Database status and opens a blank editor', async () => {
+it('loads and displays saved Database keys', async () => {
 	jest
 		.mocked(window.provider.list)
 		.mockResolvedValue([
 			{
 				id: 'pinecone',
 				name: 'Pinecone',
-				kind: 'databases',
 				baseUrl: 'https://api.pinecone.io',
-				configured: true,
-				syncStatus: 'local',
+				apiKey: 'database-secret',
 			},
 		]);
-	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
 			<ProvidersPage section="databases" />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('button', { name: 'Edit Pinecone API key' }));
-	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('');
+	expect(await screen.findByText('database-secret')).toBeInTheDocument();
+	const user = userEvent.setup();
+	await user.click(screen.getByRole('button', { name: 'Edit Pinecone API key' }));
+	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('database-secret');
 });
 
 it('keeps the Database key editable when saving fails', async () => {

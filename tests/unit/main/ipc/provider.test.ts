@@ -61,21 +61,10 @@ function handler(registration: jest.Mock, channel: string): (...args: unknown[])
 }
 
 function register() {
-	const sync = {
-		getSummary: jest.fn(),
-		listSummaries: jest.fn(),
-		status: jest.fn(),
-		refreshStatus: jest.fn(),
-		setup: jest.fn(),
-		unlock: jest.fn(),
-		changePassphrase: jest.fn(),
-		sync: jest.fn(),
-	};
 	new ProviderStoreIpc().register(
-		{ sync: sync as never, windows: {} as never, apps: {} as never },
+		{ windows: {} as never, apps: {} as never },
 		{} as EventBus
 	);
-	return sync;
 }
 
 beforeEach(() => {
@@ -84,35 +73,16 @@ beforeEach(() => {
 });
 
 describe('provider credential IPC boundary', () => {
-	it('awaits refreshed vault readiness for the public status query', async () => {
-		const sync = register();
-		const status = {
-			persistence: 'encrypted',
-			cloudConfigured: true,
-			unlocked: false,
-			pending: 0,
-		};
-		sync.refreshStatus.mockResolvedValue(status);
-
-		await expect(
-			handler(registerQueryWithEvent, ProviderChannels.vaultStatus)({})
-		).resolves.toEqual(status);
-		expect(sync.refreshStatus).toHaveBeenCalledTimes(1);
-		expect(sync.status).not.toHaveBeenCalled();
-	});
-
-	it('returns summaries without API keys from get and list', async () => {
-		const sync = register();
-		const summary = {
-			kind: 'models',
+	it('returns API keys from get and list', async () => {
+		register();
+		const provider = {
 			id: 'openai',
 			name: 'OpenAI',
 			baseUrl: 'https://api.openai.com/v1',
-			configured: true,
-			syncStatus: 'local',
+			apiKey: 'provider-secret',
 		};
-		sync.getSummary.mockReturnValue(summary);
-		sync.listSummaries.mockReturnValue([summary]);
+		getProvider.mockReturnValue(provider);
+		listProviders.mockReturnValue([provider]);
 
 		const getResult = await handler(registerQueryWithEvent, ProviderChannels.get)(
 			{},
@@ -121,21 +91,19 @@ describe('provider credential IPC boundary', () => {
 		);
 		const listResult = await handler(registerQueryWithEvent, ProviderChannels.list)({}, 'models');
 
-		expect(JSON.stringify({ getResult, listResult })).not.toContain('apiKey');
-		expect(JSON.stringify({ getResult, listResult })).not.toContain('provider-secret');
+		expect(getResult).toEqual(provider);
+		expect(listResult).toEqual([provider]);
 	});
 
-	it('accepts a key-only save input and never returns the submitted key', async () => {
-		const sync = register();
-		const summary = {
-			kind: 'models',
+	it('saves and returns the submitted API key', async () => {
+		register();
+		const provider = {
 			id: 'openai',
 			name: 'OpenAI',
+			apiKey: 'provider-secret',
 			baseUrl: 'https://api.openai.com/v1',
-			configured: true,
-			syncStatus: 'pending',
 		};
-		sync.getSummary.mockReturnValue(summary);
+		setProvider.mockReturnValue(provider);
 
 		const result = await handler(registerCommandWithEvent, ProviderChannels.set)({}, {
 			kind: 'models',
@@ -152,23 +120,20 @@ describe('provider credential IPC boundary', () => {
 			},
 			'models'
 		);
-		expect(JSON.stringify(result)).not.toContain('provider-secret');
-		expect(JSON.stringify(result)).not.toContain('apiKey');
+		expect(result).toEqual(provider);
 	});
 
 	it('saves and lists database credentials separately from model credentials', () => {
 		setProvider.mockClear();
-		const sync = register();
-		const summary = {
-			kind: 'databases',
+		register();
+		const provider = {
 			id: 'pinecone',
 			name: 'Pinecone',
 			baseUrl: 'https://api.pinecone.io',
-			configured: true,
-			syncStatus: 'local',
+			apiKey: 'database-secret',
 		};
-		sync.getSummary.mockReturnValue(summary);
-		sync.listSummaries.mockReturnValue([summary]);
+		setProvider.mockReturnValue(provider);
+		listProviders.mockReturnValue([provider]);
 
 		const saved = handler(registerCommandWithEvent, ProviderChannels.set)({}, {
 			kind: 'databases',
@@ -187,12 +152,8 @@ describe('provider credential IPC boundary', () => {
 			'databases'
 		);
 		expect(listProviders).toHaveBeenCalledWith('databases');
-		expect(sync.getSummary).toHaveBeenCalledWith('databases', 'pinecone');
-		expect(sync.listSummaries).toHaveBeenCalledWith('databases');
-		expect(saved).toEqual(summary);
-		expect(listed).toEqual([summary]);
-		expect(JSON.stringify({ saved, listed })).not.toContain('apiKey');
-		expect(JSON.stringify({ saved, listed })).not.toContain('database-secret');
+		expect(saved).toEqual(provider);
+		expect(listed).toEqual([provider]);
 		expect(() =>
 			handler(registerCommandWithEvent, ProviderChannels.set)({}, {
 				kind: 'models',
