@@ -227,16 +227,16 @@ const AppsPage: React.FC = () => {
 										handleDetails(app.id);
 									}
 								}}
-								className="cursor-pointer gap-0! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								className="h-28 cursor-pointer gap-0! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 							>
-								<CardContent className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3!">
+								<CardContent className="grid h-full grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3!">
 									<div
 										aria-hidden="true"
-										className="flex min-h-18 items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground"
+										className="flex h-full items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground"
 									>
 										<Blocks className="size-4" strokeWidth={1.5} />
 									</div>
-									<div className="min-w-0">
+									<div className="flex min-w-0 flex-col">
 										<div className="flex min-w-0 items-start justify-between gap-3">
 											<div className="min-w-0">
 												<h3 className="truncate text-sm font-medium text-foreground">
