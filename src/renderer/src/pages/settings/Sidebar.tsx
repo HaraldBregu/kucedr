@@ -81,13 +81,13 @@ export function SettingsSidebar(): React.JSX.Element {
 			</div>
 			<div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pb-4 pt-3">
 				<nav aria-label={t('settings.title')}>
-					{SETTINGS_SIDEBAR_GROUPS.map((group) => (
+					{SETTINGS_SIDEBAR_GROUPS.map((group, index) => (
 						<section
 							data-slot="split-pane-group"
 							key={group.id}
 							className={cn(
 								'px-2 py-1 first:pt-0',
-								group.id === 'integrations' && 'mt-3'
+								index > 0 && 'mt-3'
 							)}
 						>
 							{'titleKey' in group ? (
