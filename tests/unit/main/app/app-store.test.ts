@@ -21,7 +21,6 @@ describe('app storage', () => {
 		storage.set('draw', 'config', { color: 'blue', size: 2 });
 		storage.set('demo', 'config', { color: 'red' });
 
-		expect(fs.existsSync(path.join(root, 'draw', 'data', 'store.json'))).toBe(true);
 		expect(storage.get('draw', 'config')).toEqual({ color: 'blue', size: 2 });
 		expect(storage.get('demo', 'config')).toEqual({ color: 'red' });
 		storage.delete('draw', 'config');

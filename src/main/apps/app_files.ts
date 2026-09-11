@@ -86,8 +86,10 @@ export class AppFileStorage {
 		const segments = this.fileSegments(filePath);
 		const namespace = this.namespace(appId);
 		const filesRoot = path.join(namespace, 'files');
+		const appDirectory = path.join(this.root, appId);
 		await fs.mkdir(this.root, { recursive: true });
 		await this.requireDirectory(this.root);
+		await this.createDirectory(appDirectory);
 		await this.createDirectory(namespace);
 		await this.createDirectory(filesRoot);
 
