@@ -1,5 +1,5 @@
 import { isAppEntry } from './app_entry_validate';
-import { isAppIcon } from './app_icon_validate';
+import { isAppImage } from './app_image_validate';
 import type { AppManifest } from './app_types';
 import { isAppWindowSettings } from '../../shared/app_window_validate';
 
@@ -20,7 +20,7 @@ export function isAppManifest(value: unknown): value is AppManifest {
 		typeof metadata.category === 'string' &&
 		metadata.category.trim().length > 0 &&
 		isAppEntry(metadata.entry) &&
-		(metadata.icon === undefined || isAppIcon(metadata.icon)) &&
+		(metadata.image === undefined || isAppImage(metadata.image)) &&
 		(manifest.window === undefined || isAppWindowSettings(manifest.window))
 	);
 }

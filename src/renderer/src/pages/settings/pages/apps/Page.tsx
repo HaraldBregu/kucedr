@@ -227,24 +227,24 @@ const AppsPage: React.FC = () => {
 										handleDetails(app.id);
 									}
 								}}
-								className="h-28 cursor-pointer gap-0! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								className="h-28 cursor-pointer gap-0! rounded-none! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 							>
-								<CardContent className="grid h-full grid-cols-[5rem_minmax(0,1fr)] gap-3 p-3!">
-									{app.iconUrl ? (
+								<CardContent className="grid h-full grid-cols-[10rem_minmax(0,1fr)] gap-0 p-0!">
+									{app.imageUrl ? (
 										<img
-											src={app.iconUrl}
+											src={app.imageUrl}
 											alt=""
-											className="size-14 justify-self-center self-center rounded-xl border border-border/70 object-cover"
+											className="h-full w-full object-cover"
 										/>
 									) : (
 										<div
 											aria-hidden="true"
-											className="flex aspect-video w-20 justify-self-center self-center items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground"
+											className="flex h-full w-full items-center justify-center border-r border-dashed border-border/70 bg-muted/50 text-muted-foreground"
 										>
 											<Blocks className="size-4" strokeWidth={1.5} />
 										</div>
 									)}
-									<div className="flex min-w-0 flex-col">
+									<div className="flex min-w-0 flex-col p-3">
 										<div className="flex min-w-0 items-start justify-between gap-3">
 											<div className="min-w-0">
 												<h3 className="truncate text-sm font-medium text-foreground">

@@ -4,7 +4,7 @@ export type AppMetadata = {
 	version: string;
 	category: string;
 	entry: string;
-	icon?: string;
+	image?: string;
 	[key: string]: unknown;
 };
 
@@ -17,7 +17,7 @@ export type AppManifest = {
 
 export type App = AppManifest & {
 	id: string;
-	iconUrl?: string;
+	imageUrl?: string;
 };
 
 export interface AppImportSkipped {

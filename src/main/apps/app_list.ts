@@ -23,14 +23,14 @@ export function listApps(appLocation?: string): App[] {
 		} catch {
 			continue;
 		}
-		const icon = manifest.metadata.icon
-			? path.join(appsRoot(appLocation), directory.name, ...manifest.metadata.icon.split('/'))
+		const image = manifest.metadata.image
+			? path.join(appsRoot(appLocation), directory.name, ...manifest.metadata.image.split('/'))
 			: undefined;
-		const iconUrl =
-			icon && existsSync(icon) && statSync(icon).isFile()
-				? `kucedr-app://${directory.name}/${manifest.metadata.icon}`
+		const imageUrl =
+			image && existsSync(image) && statSync(image).isFile()
+				? `kucedr-app://${directory.name}/${manifest.metadata.image}`
 				: undefined;
-		apps.push({ id: directory.name, ...manifest, ...(iconUrl && { iconUrl }) });
+		apps.push({ id: directory.name, ...manifest, ...(imageUrl && { imageUrl }) });
 	}
 	return apps.sort((left, right) => left.id.localeCompare(right.id));
 }
