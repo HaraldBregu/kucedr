@@ -201,6 +201,7 @@ it('activates, hides, and shows Persona from the configured tray icon action', (
 	action = 'toggle-persona';
 	click();
 	click();
+	click();
 
 	expect(toggleChat).toHaveBeenCalledTimes(1);
 	expect(startPersona).toHaveBeenCalledTimes(1);
