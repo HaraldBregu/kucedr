@@ -333,7 +333,7 @@ export default function App() {
 			<SidebarInset>
 				<header
 					className={cn(
-						'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3',
+						'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card pl-3',
 						!sidebarOpen && 'pl-28'
 					)}
 					style={{ WebkitAppRegion: 'drag' } as CSSProperties}
@@ -344,7 +344,7 @@ export default function App() {
 					/>
 					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.titlebarTitle}</h1>
 					<div
-						className="flex items-center gap-1"
+						className="z-10 mr-3 flex h-full items-center gap-1"
 						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 					>
 						<Button size="sm" onClick={showRandomNumber}>
@@ -390,32 +390,40 @@ export default function App() {
 					</div>
 					{!isMac && inKucedrApp ? (
 						<div
-							className="flex items-center gap-1"
+							className="flex h-full items-center gap-1"
 							style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 						>
-							<Button
-								size="icon"
-								variant="ghost"
+							<button
+								type="button"
+								className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-accent/80 hover:text-foreground active:bg-accent"
+								title="Minimize window"
 								aria-label="Minimize window"
 								onClick={win.minimize}
 							>
-								<Minus className="size-4" strokeWidth={1.5} />
-							</Button>
-							<Button
-								size="icon"
-								variant="ghost"
+								<Minus className="h-[13px] w-[13px]" strokeWidth={1.5} />
+							</button>
+							<button
+								type="button"
+								className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-accent/80 hover:text-foreground active:bg-accent"
+								title={maximized ? 'Restore window' : 'Maximize window'}
 								aria-label={maximized ? 'Restore window' : 'Maximize window'}
 								onClick={win.maximize}
 							>
 								{maximized ? (
-									<Copy className="size-4" strokeWidth={1.5} />
+									<Copy className="h-[11px] w-[11px]" strokeWidth={1.5} />
 								) : (
-									<Square className="size-4" strokeWidth={1.5} />
+									<Square className="h-[11px] w-[11px]" strokeWidth={1.5} />
 								)}
-							</Button>
-							<Button size="icon" variant="ghost" aria-label="Close window" onClick={win.close}>
-								<X className="size-4" strokeWidth={1.5} />
-							</Button>
+							</button>
+							<button
+								type="button"
+								className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
+								title="Close window"
+								aria-label="Close window"
+								onClick={win.close}
+							>
+								<X className="h-[13px] w-[13px]" strokeWidth={1.5} />
+							</button>
 						</div>
 					) : null}
 				</header>
