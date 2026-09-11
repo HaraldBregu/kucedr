@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { OpenAIRealtimeWS } from 'openai/realtime/ws';
 import { OpenAICompatibleRealtimeVoiceAdapter } from './realtime_voice_compatible';
+import { OpenAILiveVoiceAdapter } from './realtime_voice_live';
 import type {
 	RealtimeVoiceAdapter,
 	RealtimeVoiceAdapterEventHandler,
@@ -13,15 +14,19 @@ import type {
 
 const OPENAI_BASE_URL = 'https://api.openai.com/v1';
 export const OPENAI_REALTIME_VOICE_MODELS = ['gpt-realtime-2.1', 'gpt-realtime-2.1-mini'] as const;
+export const OPENAI_LIVE_VOICE_MODELS = ['gpt-live-1'] as const;
+export const OPENAI_VOICE_MODELS = [...OPENAI_REALTIME_VOICE_MODELS, ...OPENAI_LIVE_VOICE_MODELS] as const;
 
 export class OpenAIRealtimeVoiceAdapter implements RealtimeVoiceAdapter {
 	private readonly compatible: OpenAICompatibleRealtimeVoiceAdapter;
+	private readonly provider: RealtimeVoiceProviderSpec;
 
 	constructor(
 		provider: RealtimeVoiceProviderSpec,
 		socketFactory: RealtimeVoiceSocketFactory = createOpenAISocket,
 		connectTimeoutMs?: number
 	) {
+		this.provider = provider;
 		this.compatible = new OpenAICompatibleRealtimeVoiceAdapter(
 			{
 				provider,
@@ -38,6 +43,9 @@ export class OpenAIRealtimeVoiceAdapter implements RealtimeVoiceAdapter {
 		emit: RealtimeVoiceAdapterEventHandler,
 		signal?: AbortSignal
 	): Promise<RealtimeVoiceConnection> {
+		if (request.modelId === 'gpt-live-1') {
+			return new OpenAILiveVoiceAdapter(this.provider).connect(request, emit, signal);
+		}
 		return this.compatible.connect(request, emit, signal);
 	}
 }
