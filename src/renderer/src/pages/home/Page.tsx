@@ -833,7 +833,7 @@ function PageContent(): ReactElement {
 						data-slot="home-composer-shell"
 						className="absolute inset-x-0 bottom-0 z-20 flex justify-center px-4 pb-5 pt-3"
 					>
-						<div className="mx-auto w-full max-w-2xl">
+						<div className="mx-auto w-full max-w-4xl">
 							<RecorderErrorMessage
 								message={voiceErrorMessage}
 								actionLabel={voiceErrorAction?.label}
