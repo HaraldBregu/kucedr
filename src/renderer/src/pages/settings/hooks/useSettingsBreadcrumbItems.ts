@@ -28,7 +28,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	if (location.pathname === '/settings/general/persona') {
 		return [
 			{ label: t('settings.tabs.general'), path: '/settings/general' },
-			{ label: t('settings.persona.title') },
+			{ label: t('settings.voiceAgent.title') },
 		];
 	}
 	const assistantSubpageLabelKey = ASSISTANT_SUBPAGE_LABEL_KEYS[location.pathname];

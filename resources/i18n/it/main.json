@@ -227,7 +227,7 @@
 			"overview": "Panoramica",
 			"general": "Generale"
 		},
-		"persona": {
+		"voiceAgent": {
 			"title": "Voice Agent",
 			"description": "Visualizza in anteprima l'agente vocale animato di Kucedr.",
 			"preview": "Anteprima",
@@ -296,7 +296,7 @@
 				"title": "Clic sull'icona nel menu",
 				"description": "Scegli cosa accade quando fai clic sull'icona nel menu",
 				"chat": "Chat Agent",
-				"persona": "Voice Agent"
+				"voiceAgent": "Voice Agent"
 			},
 			"keepAwake": "Mantieni il computer attivo",
 			"keepAwakeDescription": "Mantieni attivi il computer e lo schermo mentre Kucedr è in esecuzione",

@@ -196,7 +196,7 @@ it('renders settings breadcrumbs inside the titlebar', () => {
 		'href',
 		'/settings/general'
 	);
-	expect(within(breadcrumb).getByText('settings.persona.title')).toBeInTheDocument();
+	expect(within(breadcrumb).getByText('settings.voiceAgent.title')).toBeInTheDocument();
 });
 
 it('does not open the titlebar menu from a breadcrumb link', () => {

@@ -120,9 +120,9 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	{
 		path: '/settings/general/persona',
-		labelKey: 'settings.persona.title',
-		descriptionKey: 'settings.persona.description',
-		keywords: 'persona voice orb appearance idle listening thinking speaking',
+		labelKey: 'settings.voiceAgent.title',
+		descriptionKey: 'settings.voiceAgent.description',
+		keywords: 'voice agent orb appearance idle listening thinking speaking',
 	},
 	// System — permissions
 	{

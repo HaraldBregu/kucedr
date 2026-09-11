@@ -92,7 +92,7 @@ it('saves the configured tray icon click action from General settings', async ()
 	await user.click(trayClickAction);
 	await user.click(
 		await screen.findByRole('option', {
-			name: 'settings.application.trayClickAction.persona',
+			name: 'settings.application.trayClickAction.voiceAgent',
 		})
 	);
 
@@ -135,18 +135,18 @@ it('changes the application theme from General settings', async () => {
 	expect(mockSetTheme).toHaveBeenCalledWith('dark');
 });
 
-it('opens Persona settings from General settings', async () => {
+it('opens Voice Agent settings from General settings', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/general']}>
 			<Routes>
 				<Route path="/settings/general" element={<GeneralPage />} />
-				<Route path="/settings/general/persona" element={<p>Persona page</p>} />
+			<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('link', { name: /settings\.persona\.title/ }));
+	await user.click(screen.getByRole('link', { name: /settings\.voiceAgent\.title/ }));
 
-	expect(screen.getByText('Persona page')).toBeInTheDocument();
+	expect(screen.getByText('Voice Agent page')).toBeInTheDocument();
 });

@@ -32,7 +32,7 @@ beforeEach(() => {
 it.each([
 	['/settings/agent/rag', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
-	['/settings/general/persona', 'settings.persona.title'],
+	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/agent/llm-wiki', 'settings.wiki.title'],
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/agent/skills', 'settings.tabs.skills'],

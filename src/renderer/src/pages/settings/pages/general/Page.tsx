@@ -42,7 +42,7 @@ const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
 
 const TRAY_CLICK_ACTION_OPTIONS = [
 	{ value: 'toggle-chat', labelKey: 'settings.application.trayClickAction.chat' },
-	{ value: 'toggle-persona', labelKey: 'settings.application.trayClickAction.persona' },
+	{ value: 'toggle-persona', labelKey: 'settings.application.trayClickAction.voiceAgent' },
 ] as const;
 
 type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];
@@ -192,8 +192,8 @@ const GeneralPage: React.FC = () => {
 				<SettingsPanel>
 					<Link to="/settings/general/persona" className="block hover:bg-muted/40">
 						<SettingsRow
-							title={t('settings.persona.title')}
-							description={t('settings.persona.description')}
+							title={t('settings.voiceAgent.title')}
+							description={t('settings.voiceAgent.description')}
 							media={
 								<AudioWaveform
 									className="size-5 shrink-0 text-muted-foreground"

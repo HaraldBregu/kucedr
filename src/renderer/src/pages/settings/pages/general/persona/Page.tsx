@@ -18,13 +18,13 @@ const PersonaPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.persona.title')}
-				description={t('settings.persona.description')}
+				title={t('settings.voiceAgent.title')}
+				description={t('settings.voiceAgent.description')}
 			/>
 
 			<SettingsSection
-				title={t('settings.persona.preview')}
-				description={t('settings.persona.previewDescription')}
+				title={t('settings.voiceAgent.preview')}
+				description={t('settings.voiceAgent.previewDescription')}
 			>
 				<SettingsPanel className="overflow-hidden">
 					<div className="flex min-h-96 flex-col items-center justify-center gap-4 bg-neutral-950 p-7">
@@ -40,7 +40,7 @@ const PersonaPage: React.FC = () => {
 									className="text-neutral-300 hover:bg-white/10 hover:text-white"
 									onClick={() => setState(personaState)}
 								>
-									{t(`settings.persona.states.${personaState}`)}
+									{t(`settings.voiceAgent.states.${personaState}`)}
 								</Button>
 							))}
 						</div>
