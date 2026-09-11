@@ -5,7 +5,6 @@ import {
 	app,
 	isKucedr,
 	isAppStoreValue,
-	win,
 	type AppLanguage,
 	type AppTheme,
 	type AppThemeColors,
@@ -92,12 +91,6 @@ export default function App() {
 	const themeStyle = Object.fromEntries(
 		Object.entries(theme.colors).map(([name, value]) => [`--${name}`, value])
 	) as CSSProperties;
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		win.setTitlebarOptions({ title: 'Demo', leftButtons: [], rightButtons: [] });
-		return () => win.setTitlebarOptions(null);
-	}, []);
 
 	const ensureKucedrApp = () => {
 		if (!isKucedr()) {
