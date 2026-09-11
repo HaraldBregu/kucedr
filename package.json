@@ -104,7 +104,7 @@
 		"@radix-ui/react-slider": "^1.4.7",
 		"@radix-ui/react-tooltip": "^1.2.8",
 		"@radix-ui/react-use-controllable-state": "^1.2.6",
-		"@supabase/supabase-js": "^2.112.4",
+		"@supabase/supabase-js": "^2.116.0",
 		"@tiptap/core": "^3.31.2",
 		"@tiptap/extensions": "^3.31.2",
 		"@tiptap/markdown": "^3.31.2",
