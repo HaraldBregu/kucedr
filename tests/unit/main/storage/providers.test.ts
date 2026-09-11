@@ -27,7 +27,7 @@ let providers: StorageProviderStore;
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	persistence = new Store<StorageProvidersState>({ defaults: { storage: '' } });
+	persistence = new Store<StorageProvidersState>({ defaults: { storage: [] } });
 	encryption.isEncryptionAvailable.mockReturnValue(true);
 	encryption.getSelectedStorageBackend.mockReturnValue('gnome_libsecret');
 	encryption.encryptString.mockImplementation((value: string) => Buffer.from(value));
@@ -45,18 +45,14 @@ it('stores multiple connections independently and preserves them across store in
 	expect(providers.remove(first.id)).toBe(false);
 });
 
-it('encrypts metadata and secrets and excludes the saved secret from public results', () => {
+it('encrypts secrets and excludes them from public results', () => {
 	const saved = providers.save(input);
 	expect(saved).not.toHaveProperty('secretAccessKey');
 	expect(saved.hasSecretAccessKey).toBe(true);
 	expect(providers.list()[0]).not.toHaveProperty('secretAccessKey');
-	expect(JSON.parse(encryption.encryptString.mock.calls[0][0])).toEqual([
-		{ ...input, id: saved.id },
-	]);
+	expect(encryption.encryptString).toHaveBeenCalledWith(input.secretAccessKey);
 	const persisted = JSON.stringify(persistence.store);
-	for (const value of [input.name, input.endpoint, input.accessKeyId, input.secretAccessKey!]) {
-		expect(persisted).not.toContain(value);
-	}
+	expect(persisted).not.toContain(input.secretAccessKey!);
 });
 
 it('resolves only the selected credentials in main without changing public results', () => {
@@ -85,20 +81,16 @@ it.each(['', '   ', undefined])(
 		const updated = providers.save({ ...input, id: saved.id, name: 'Renamed', secretAccessKey });
 		expect(updated.name).toBe('Renamed');
 		expect(providers.list()).toHaveLength(1);
-		const decrypted = JSON.parse(
-			Buffer.from(persistence.get('storage'), 'base64').toString()
-		);
-		expect(decrypted[0].secretAccessKey).toBe(input.secretAccessKey);
+		const encrypted = persistence.get('storage')[0].encryptedSecretAccessKey;
+		expect(Buffer.from(encrypted, 'base64').toString()).toBe(input.secretAccessKey);
 	}
 );
 
 it('replaces the secret when a new value is provided', () => {
 	const saved = providers.save(input);
 	providers.save({ ...input, id: saved.id, secretAccessKey: 'replacement' });
-	const decrypted = JSON.parse(
-		Buffer.from(persistence.get('storage'), 'base64').toString()
-	);
-	expect(decrypted[0].secretAccessKey).toBe('replacement');
+	const encrypted = persistence.get('storage')[0].encryptedSecretAccessKey;
+	expect(Buffer.from(encrypted, 'base64').toString()).toBe('replacement');
 });
 
 it('accepts AWS default endpoints and HTTP endpoints for compatible providers', () => {
@@ -119,14 +111,14 @@ it.each([
 	'not-a-url',
 ])('rejects invalid endpoint %s before persisting', (endpoint) => {
 	expect(() => providers.save({ ...input, endpoint })).toThrow('Storage endpoint');
-	expect(persistence.get('storage')).toBe('');
+	expect(persistence.get('storage')).toEqual([]);
 });
 
 it.each(['name', 'region', 'bucket', 'accessKeyId', 'secretAccessKey'])(
 	'requires %s on new connections',
 	(field) => {
 		expect(() => providers.save({ ...input, [field]: '  ' })).toThrow('required');
-		expect(persistence.get('storage')).toBe('');
+		expect(persistence.get('storage')).toEqual([]);
 	}
 );
 
@@ -140,7 +132,7 @@ it.each([
 	{ ...input, id: '../outside' },
 ])('validates untrusted IPC input %p', (value) => {
 	expect(() => providers.save(value)).toThrow();
-	expect(persistence.get('storage')).toBe('');
+	expect(persistence.get('storage')).toEqual([]);
 });
 
 it('rejects updates to nonexistent connections and invalid remove identifiers', () => {
@@ -148,7 +140,7 @@ it('rejects updates to nonexistent connections and invalid remove identifiers', 
 		'not found'
 	);
 	expect(() => providers.remove('../outside')).toThrow('identifier');
-	expect(persistence.get('storage')).toBe('');
+	expect(persistence.get('storage')).toEqual([]);
 });
 
 it('refuses plaintext fallback when operating-system encryption is unavailable', () => {
@@ -166,7 +158,7 @@ it('refuses plaintext fallback when operating-system encryption is unavailable',
 it('rejects the insecure Linux basic_text backend', () => {
 	encryption.getSelectedStorageBackend.mockReturnValue('basic_text');
 	expect(() => providers.save(input)).toThrow('Secure operating-system storage is unavailable');
-	expect(persistence.get('storage')).toBe('');
+	expect(persistence.get('storage')).toEqual([]);
 });
 
 it('preserves encrypted records when decryption fails', () => {
