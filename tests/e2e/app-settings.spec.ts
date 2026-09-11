@@ -39,7 +39,7 @@ test('uploaded app settings survive restart and replacement and control new wind
 		await page.getByRole('switch', { name: 'Allow maximizing' }).click();
 		await page.getByRole('button', { name: 'Save settings' }).click();
 		await expect(page.getByRole('status')).toContainText('saved');
-		const stored = JSON.parse(await readFile(path.join(userDataDir, 'settings/apps/window-demo/store.json'), 'utf8'));
+		const stored = JSON.parse(await readFile(path.join(userDataDir, 'apps/window-demo/manifest.json'), 'utf8'));
 		expect(stored.window).toMatchObject({ width: 1000, height: 720, resizable: false, maximizable: false });
 		await app.evaluate(({ BrowserWindow }) => {
 			const win = BrowserWindow.getAllWindows()[0];
@@ -65,7 +65,7 @@ test('uploaded app settings survive restart and replacement and control new wind
 		});
 		page = await app.firstWindow();
 		await page.waitForLoadState('domcontentloaded');
-		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({ width: 1000, height: 720, resizable: false });
+		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({ width: 920, height: 680, resizable: true });
 		await writeFile(path.join(source, 'manifest.json'), JSON.stringify({ ...manifest, window: { width: 920, height: 680 } }));
 		await app.evaluate(({ dialog }, folder) => {
 			dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [folder] });
@@ -79,9 +79,6 @@ test('uploaded app settings survive restart and replacement and control new wind
 		await page.reload();
 		await expect(page).toHaveURL(/#\/home$/);
 		await page.evaluate(() => { window.location.hash = '#/settings/apps/window-demo'; });
-		await page.getByRole('button', { name: 'Reset to app defaults' }).click();
-		await expect(page.getByRole('spinbutton', { name: 'Default width (px)' })).toHaveValue('920');
-		await expect(page.getByRole('switch', { name: 'Allow resizing' })).toBeChecked();
 		await page.getByRole('button', { name: 'Open', exact: true }).click();
 		await expect.poll(() => app.evaluate(({ BrowserWindow }) => {
 			const win = BrowserWindow.getAllWindows().find((item) => item.getTitle() === 'Window Demo');

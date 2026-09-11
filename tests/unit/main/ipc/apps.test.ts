@@ -4,6 +4,7 @@ const importApps = jest.fn();
 const openRoot = jest.fn();
 const deleteApp = jest.fn();
 const destroyApp = jest.fn();
+const writeAppWindowSettings = jest.fn();
 const app = {
 	id: 'demo-app',
 	title: 'Demo App',
@@ -18,6 +19,7 @@ jest.mock('../../../../src/main/apps/app_index', () => ({
 	openRoot,
 	deleteApp,
 	destroyApp,
+	writeAppWindowSettings,
 }));
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 	registerQueryWithEvent: jest.fn(),
@@ -27,7 +29,6 @@ jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 import type { EventBus } from '../../../../src/main/event_bus';
 import { AppsIpc } from '../../../../src/main/ipc/apps';
 import { registerCommandWithEvent, registerQueryWithEvent } from '../../../../src/main/ipc/core/gateway';
-import { AppWindowPreferences } from '../../../../src/main/apps/app_preferences';
 import { APP_WINDOW_DEFAULTS } from '../../../../src/shared/app_window_settings';
 import type { WindowFactory } from '../../../../src/main/window_factory';
 import { AppsChannels } from '../../../../src/shared/ipc_channels_definitions';
@@ -109,8 +110,7 @@ it('uses a native confirmation before deleting an app', async () => {
 });
 
 describe('app window settings IPC', () => {
-	let get: jest.SpyInstance;
-	let set: jest.SpyInstance;
+	let set: jest.Mock;
 	let read: (event: unknown, id: string) => unknown;
 	let save: (event: unknown, id: string, settings: unknown) => unknown;
 
@@ -118,8 +118,8 @@ describe('app window settings IPC', () => {
 		appRegistry.has.mockReturnValue(false);
 		windows.has.mockReturnValue(true);
 		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(owner);
-		get = jest.spyOn(AppWindowPreferences.prototype, 'get').mockReturnValue({ ...APP_WINDOW_DEFAULTS });
-		set = jest.spyOn(AppWindowPreferences.prototype, 'set').mockReturnValue({ ...APP_WINDOW_DEFAULTS, width: 960 });
+		set = writeAppWindowSettings;
+		set.mockReturnValue({ ...APP_WINDOW_DEFAULTS, width: 960 });
 		new AppsIpc().register({
 			windowFactory: {} as WindowFactory,
 			appRegistry: appRegistry as never,
@@ -132,14 +132,12 @@ describe('app window settings IPC', () => {
 	it('reads and saves settings for a trusted renderer and installed app', () => {
 		expect(read(event, app.id)).toEqual(APP_WINDOW_DEFAULTS);
 		expect(save(event, app.id, { width: 960 })).toEqual({ ...APP_WINDOW_DEFAULTS, width: 960 });
-		expect(get).toHaveBeenCalledWith(app);
-		expect(set).toHaveBeenCalledWith(app, { width: 960 });
+		expect(set).toHaveBeenCalledWith(app.id, { width: 960 });
 	});
 
 	it('rejects missing app identifiers before accessing preferences', () => {
 		expect(() => read(event, 'missing')).toThrow('App not found: missing');
 		expect(() => save(event, 'missing', {})).toThrow('App not found: missing');
-		expect(get).not.toHaveBeenCalled();
 		expect(set).not.toHaveBeenCalled();
 	});
 
@@ -147,7 +145,6 @@ describe('app window settings IPC', () => {
 		appRegistry.has.mockReturnValue(true);
 		expect(() => read(event, app.id)).toThrow('unavailable to app views');
 		expect(() => save(event, app.id, {})).toThrow('unavailable to app views');
-		expect(get).not.toHaveBeenCalled();
 		expect(set).not.toHaveBeenCalled();
 	});
 
@@ -158,7 +155,6 @@ describe('app window settings IPC', () => {
 		windows.has.mockReturnValue(false);
 		expect(() => read(event, app.id)).toThrow('unavailable to this renderer');
 		expect(() => save(event, app.id, {})).toThrow('unavailable to this renderer');
-		expect(get).not.toHaveBeenCalled();
 		expect(set).not.toHaveBeenCalled();
 	});
 });
