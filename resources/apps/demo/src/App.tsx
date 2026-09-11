@@ -99,7 +99,6 @@ export default function App() {
 	const [storageTestResults, setStorageTestResults] = useState<string[]>([]);
 	const [storageBusy, setStorageBusy] = useState(false);
 	const [maximized, setMaximized] = useState(false);
-	const [randomNumber, setRandomNumber] = useState<number | null>(null);
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const inKucedrApp = isKucedr();
 	const text = translations[language] ?? translations.en;
@@ -269,8 +268,6 @@ export default function App() {
 		});
 	};
 
-	const showRandomNumber = () => setRandomNumber(Math.floor(Math.random() * 100) + 1);
-
 	useEffect(() => {
 		if (!isKucedr()) return;
 
@@ -333,7 +330,7 @@ export default function App() {
 			<SidebarInset>
 				<header
 					className={cn(
-						'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card pl-3',
+						'flex h-12 shrink-0 items-center border-b border-border bg-card pl-3',
 						!sidebarOpen && 'pl-28'
 					)}
 					style={{ WebkitAppRegion: 'drag' } as CSSProperties}
@@ -343,26 +340,9 @@ export default function App() {
 						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 					/>
 					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.titlebarTitle}</h1>
-					<div
-						className="z-10 mr-3 flex h-full items-center gap-1"
-						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
-					>
-						<Button size="sm" onClick={showRandomNumber}>
-							{text.generateRandomNumber}
-						</Button>
-						<Button size="sm" variant="secondary" onClick={showRandomNumber}>
-							{text.generateAnotherNumber}
-						</Button>
-						<output
-							className="min-w-24 rounded-md bg-muted px-2 py-1 text-center text-sm"
-							aria-live="polite"
-						>
-							{text.randomNumber}: {randomNumber ?? '—'}
-						</output>
-					</div>
 					<div className="min-w-0 flex-1" />
 					<div
-						className="flex items-center gap-1"
+						className="z-10 mr-3 flex h-full items-center gap-1"
 						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 					>
 						<Button
