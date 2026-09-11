@@ -129,7 +129,7 @@ it.each<[AuthState]>([
 			user: { id: 'user-2', email: 'grace@example.com' },
 		},
 	],
-])('shows the account and settings label for authenticated users', async (state) => {
+])('shows the settings label for authenticated users', async (state) => {
 	listSessions.mockResolvedValue([]);
 	mockUseAuth.mockReturnValue({
 		state,
@@ -148,9 +148,9 @@ it.each<[AuthState]>([
 		</MemoryRouter>
 	);
 
-	const accountLink = screen.getByRole('link', { name: 'settings.accountAndSettings' });
+	const accountLink = screen.getByRole('link', { name: 'settings.title' });
 	expect(accountLink).toHaveAttribute('href', '/settings/general');
-	expect(within(accountLink).getByText('settings.accountAndSettings')).toBeInTheDocument();
+	expect(within(accountLink).getByText('settings.title')).toBeInTheDocument();
 	expect(accountLink.querySelector('.lucide-user')).toBeInTheDocument();
 	await screen.findByText('settings.chatHistory.empty');
 });

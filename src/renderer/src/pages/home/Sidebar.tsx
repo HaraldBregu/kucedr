@@ -70,9 +70,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? sessions[0]?.id : sessionId;
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
-	const accountLabel = authenticatedUser
-		? t('settings.accountAndSettings', 'Account and settings')
-		: t('settings.title');
+	const accountLabel = t('settings.title');
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
