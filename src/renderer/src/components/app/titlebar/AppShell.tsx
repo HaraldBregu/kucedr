@@ -14,7 +14,9 @@ export function AppShell({ title }: AppShellProps): React.JSX.Element {
 	const [sidebarTransitionDelay, setSidebarTransitionDelay] = useState<number>();
 
 	useEffect(() => {
-		const stopOptions = window.win.onTitlebarOptionsChanged((nextOptions) => {
+		let active = true;
+		let receivedOptions = false;
+		const applyOptions = (nextOptions: AppTitlebarOptions | null): void => {
 			setOptions(nextOptions);
 			setSidebarTransitionDelay(
 				nextOptions?.sidebarTransitionStartedAt === undefined
@@ -24,9 +26,17 @@ export function AppShell({ title }: AppShellProps): React.JSX.Element {
 							Math.max(0, Date.now() - nextOptions.sidebarTransitionStartedAt + 5)
 						)
 			);
+		};
+		const stopOptions = window.win.onTitlebarOptionsChanged((nextOptions) => {
+			receivedOptions = true;
+			applyOptions(nextOptions);
 		});
 		const stopSidebarWidth = window.win.onTitlebarSidebarWidthChanged(setSidebarWidth);
+		void window.win.getTitlebarOptions().then((nextOptions) => {
+			if (active && !receivedOptions) applyOptions(nextOptions);
+		});
 		return () => {
+			active = false;
 			stopOptions();
 			stopSidebarWidth();
 		};

@@ -45,13 +45,16 @@ let titlebarOptionsChanged: (options: {
 } | null) => void;
 const stopOptions = jest.fn();
 const stopSidebarWidth = jest.fn();
+const getTitlebarOptions = jest.fn();
 
 beforeEach(() => {
 	stopOptions.mockClear();
 	stopSidebarWidth.mockClear();
+	getTitlebarOptions.mockResolvedValue(null);
 	Object.defineProperty(window, 'win', {
 		configurable: true,
 		value: {
+			getTitlebarOptions,
 			onTitlebarSidebarWidthChanged: jest.fn((callback) => {
 				sidebarWidthChanged = callback;
 				return stopSidebarWidth;
@@ -62,6 +65,22 @@ beforeEach(() => {
 			}),
 		},
 	});
+});
+
+it('hydrates the shared titlebar state when its renderer reloads', async () => {
+	getTitlebarOptions.mockResolvedValue({
+		title: 'Coder',
+		leftButtons: [{ id: 'toggle-sidebar' }],
+		sidebarOpen: true,
+		sidebarWidth: 288,
+	});
+	render(<AppShell title="Manifest title" />);
+
+	expect(await screen.findByText('Coder')).toBeInTheDocument();
+	const titlebar = screen.getByTestId('app-titlebar');
+	expect(titlebar).toHaveAttribute('data-left-buttons', 'toggle-sidebar');
+	expect(titlebar).toHaveAttribute('data-sidebar-open', 'true');
+	expect(titlebar).toHaveAttribute('data-sidebar-width', '288');
 });
 
 it('paints the app titlebar over the main translucent window surface', () => {

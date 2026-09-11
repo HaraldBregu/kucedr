@@ -63,6 +63,9 @@ export const win: WindowApi = {
 				: { ...options, sidebarTransitionStartedAt: transitionStartedAt }
 		);
 	},
+	getTitlebarOptions: (): Promise<import('../shared/window_types').AppTitlebarOptions | null> => {
+		return typedInvokeUnwrap(WindowChannels.titlebarOptionsGet);
+	},
 	onTitlebarOptionsChanged: (callback): (() => void) => {
 		return typedOn(WindowChannels.titlebarOptionsChanged, callback);
 	},
