@@ -172,7 +172,7 @@ const SkillDetailsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			{successMessage && <SettingsNotice>{successMessage}</SettingsNotice>}
+			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
 			<SettingsSection title={t('settings.skills.details')}>
 				<SettingsPanel>

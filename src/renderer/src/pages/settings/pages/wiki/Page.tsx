@@ -240,9 +240,9 @@ const WikiPage: React.FC = () => {
 					})}
 				</SettingsNotice>
 			)}
-			{saved && <SettingsNotice>{t('settings.wiki.saved')}</SettingsNotice>}
+			{saved && <SettingsNotice autoDismiss>{t('settings.wiki.saved')}</SettingsNotice>}
 			{result && (
-				<SettingsNotice>
+				<SettingsNotice autoDismiss>
 					{t('settings.wiki.runResult', {
 						processed: result.processedSources,
 						skipped: result.skippedSources,

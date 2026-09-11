@@ -433,7 +433,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 						</Card>
 					</SettingsSection>
 
-					{syncStatus && <SettingsNotice icon={FolderSync}>{syncStatus}</SettingsNotice>}
+					{syncStatus && <SettingsNotice autoDismiss icon={FolderSync}>{syncStatus}</SettingsNotice>}
 					{operationStatusText && (
 						<div
 							role={
@@ -447,6 +447,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 							aria-atomic="true"
 						>
 							<SettingsNotice
+								autoDismiss={operationStatus?.state === 'completed'}
 								icon={operationNeedsAttention ? AlertTriangle : FolderSync}
 								variant={operationStatus?.state === 'failed' ? 'destructive' : 'default'}
 								className={

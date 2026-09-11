@@ -197,7 +197,7 @@ const AppsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			{successMessage && <SettingsNotice>{successMessage}</SettingsNotice>}
+			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
 			<SettingsSection title={t('settings.apps.title')}>
 				{loading ? (

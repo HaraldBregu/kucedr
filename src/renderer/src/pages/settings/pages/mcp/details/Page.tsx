@@ -202,9 +202,10 @@ const McpDetailsPage: React.FC = () => {
 					{error}
 				</SettingsNotice>
 			)}
-			{success && <SettingsNotice>{success}</SettingsNotice>}
+			{success && <SettingsNotice autoDismiss>{success}</SettingsNotice>}
 			{testResult && (
 				<SettingsNotice
+					autoDismiss={testResult.ok}
 					variant={testResult.ok ? 'default' : 'destructive'}
 					icon={testResult.ok ? undefined : AlertTriangle}
 				>

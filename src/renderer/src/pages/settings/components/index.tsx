@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useEffect, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -225,6 +225,7 @@ interface SettingsNoticeProps {
 	readonly icon?: LucideIcon;
 	readonly variant?: 'default' | 'destructive';
 	readonly className?: string;
+	readonly autoDismiss?: boolean;
 }
 
 export function SettingsNotice({
@@ -232,7 +233,19 @@ export function SettingsNotice({
 	icon: Icon,
 	variant = 'default',
 	className,
-}: SettingsNoticeProps): React.JSX.Element {
+	autoDismiss = false,
+}: SettingsNoticeProps): React.JSX.Element | null {
+	const [visible, setVisible] = useState(true);
+
+	useEffect(() => {
+		setVisible(true);
+		if (!autoDismiss) return;
+		const timeout = window.setTimeout(() => setVisible(false), 5_000);
+		return () => window.clearTimeout(timeout);
+	}, [autoDismiss, children]);
+
+	if (!visible) return null;
+
 	return (
 		<div
 			role={variant === 'destructive' ? 'alert' : undefined}

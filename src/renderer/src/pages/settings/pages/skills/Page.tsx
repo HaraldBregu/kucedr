@@ -130,7 +130,7 @@ const SkillsPage: React.FC = () => {
 			)}
 
 			{successMessage && (
-				<SettingsNotice>
+				<SettingsNotice autoDismiss>
 					{successMessage}
 				</SettingsNotice>
 			)}

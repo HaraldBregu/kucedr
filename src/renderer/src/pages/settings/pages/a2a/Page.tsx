@@ -73,7 +73,7 @@ export default function A2aPage(): React.JSX.Element {
 				}
 			/>
 			{notice && (
-				<SettingsNotice variant={notice.error ? 'destructive' : undefined}>
+				<SettingsNotice autoDismiss={!notice.error} variant={notice.error ? 'destructive' : undefined}>
 					{notice.text}
 				</SettingsNotice>
 			)}

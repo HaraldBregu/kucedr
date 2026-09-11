@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
@@ -119,6 +119,26 @@ it.each([false, true])('shows skipped upload reasons with partial success: %s', 
 	} else {
 		expect(screen.queryByText(/settings.apps.uploaded/)).not.toBeInTheDocument();
 	}
+});
+
+it('dismisses a completed upload notice after five seconds', async () => {
+	jest.useFakeTimers();
+	const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+	(window.apps.import as jest.Mock).mockResolvedValue({ imported: apps, skipped: [] });
+
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
+	await screen.findByText('Demo App');
+	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
+	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
+
+	expect(await screen.findByText(/settings.apps.uploaded/)).toBeInTheDocument();
+	act(() => jest.advanceTimersByTime(5_000));
+	expect(screen.queryByText(/settings.apps.uploaded/)).not.toBeInTheDocument();
+	jest.useRealTimers();
 });
 
 it('keeps a canceled upload quiet', async () => {
