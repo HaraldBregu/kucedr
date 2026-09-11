@@ -111,25 +111,6 @@ const action = await win.showContextMenu([
 ]);
 win.maximize();
 const maximized = await win.isMaximized();
-
-win.setTitlebarOptions({
-	title: 'Workspace',
-	leftButtons: [
-		{
-			id: 'toggle-sidebar',
-			label: 'Collapse sidebar',
-			icon: 'panel-left',
-			expanded: true,
-		},
-	],
-	rightButtons: [],
-	sidebarOpen: true,
-	sidebarWidth: 240,
-});
-const stopTitlebarActions = win.onTitlebarButtonClick((buttonId) => {
-	if (buttonId === 'toggle-sidebar') console.log('Toggle the app sidebar');
-});
-stopTitlebarActions();
 ```
 
 ## App window configuration
@@ -169,7 +150,7 @@ Every `window` field is optional. Apps without window configuration keep these d
 | `maximizable` | `true` | Allow the user to maximize the window |
 
 Dimensions are positive integer device-independent pixels, at most `32768`. The outer height
-includes Kucedr's 48-pixel titlebar. An explicit minimum cannot exceed its explicit initial
+is entirely available to the app. An explicit minimum cannot exceed its explicit initial
 dimension. If an initial dimension is smaller than the default minimum, the omitted minimum
 is lowered to fit it.
 
@@ -223,14 +204,9 @@ list the Pi model catalog, and run Codex OAuth; other apps are rejected. Coder i
 the registered Coder app. It exposes the narrow preload bridge; shell selection, PTY ownership,
 and process lifecycle remain in the Electron main process. It is not exposed by `connect()`.
 
-App titlebars are rendered by the Kucedr host. Embedded Apps can provide a centered title,
-left and right button descriptors, and optional sidebar state with
-`win.setTitlebarOptions()`. Button IDs are returned through `win.onTitlebarButtonClick()` so the
-app remains the owner of its application state. Passing `null` restores the manifest title and
-removes app-provided controls. Icons are selected from the exported
-`APP_TITLEBAR_BUTTON_ICONS` list; arbitrary markup is not accepted across the window boundary.
-Keep `sidebarWidth` at the expanded width and update `sidebarOpen` when showing or hiding it so the
-host titlebar uses the same off-canvas transition as the app sidebar.
+Embedded Apps own their entire window surface, including titlebars, navigation, and window controls.
+Use the `win` APIs to wire app-rendered minimize, maximize, and close controls, and apply
+`-webkit-app-region: drag` to app-defined draggable regions with `no-drag` on interactive controls.
 
 App store methods are available only to apps embedded in Kucedr. Kucedr derives the
 app namespace from the calling view, so apps never pass or select an app ID.
