@@ -276,11 +276,6 @@ export const ProviderChannels = {
 	getChannel: 'provider-store:channel:get',
 	setChannel: 'provider-store:channel:set',
 	listChannels: 'provider-store:channel:list',
-	vaultStatus: 'provider-store:vault:status',
-	setupVault: 'provider-store:vault:setup',
-	unlockVault: 'provider-store:vault:unlock',
-	changeVaultPassphrase: 'provider-store:vault:change-passphrase',
-	syncVault: 'provider-store:vault:sync',
 } as const;
 
 export const ProviderStoreChannels = ProviderChannels;
@@ -306,6 +301,7 @@ export const DatabaseChannels = {
 
 export const SearchChannels = {
 	getSettings: 'search:settings:get',
+	listProviders: 'search:providers:list',
 	saveEngine: 'search:engine:save',
 	selectEngine: 'search:engine:select',
 } as const;

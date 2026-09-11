@@ -4,7 +4,6 @@ import type { ProviderApi } from './index.d';
 import type {
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
-	ProviderCredentialSummary,
 	PublicProvider,
 } from '../shared/provider_types';
 import type { ChannelCredentialSaveInput } from '../shared/channels_types';
@@ -30,7 +29,7 @@ async function uniqueProvidersWithStored(
 }
 
 export const provider: ProviderApi = {
-	get: (id: string, kind: SavedCredentialKind): Promise<ProviderCredentialSummary | undefined> => {
+	get: (id: string, kind: SavedCredentialKind) => {
 		return typedInvokeUnwrap(ProviderStoreChannels.get, id, kind);
 	},
 	set: (input: ProviderCredentialSaveInput) => {
@@ -45,14 +44,6 @@ export const provider: ProviderApi = {
 	setChannel: (input: ChannelCredentialSaveInput) =>
 		typedInvokeUnwrap(ProviderStoreChannels.setChannel, input),
 	listChannels: () => typedInvokeUnwrap(ProviderStoreChannels.listChannels),
-	vaultStatus: () => typedInvokeUnwrap(ProviderStoreChannels.vaultStatus),
-	setupVault: (passphrase: string) =>
-		typedInvokeUnwrap(ProviderStoreChannels.setupVault, passphrase),
-	unlockVault: (passphrase: string) =>
-		typedInvokeUnwrap(ProviderStoreChannels.unlockVault, passphrase),
-	changeVaultPassphrase: (passphrase: string) =>
-		typedInvokeUnwrap(ProviderStoreChannels.changeVaultPassphrase, passphrase),
-	syncVault: () => typedInvokeUnwrap(ProviderStoreChannels.syncVault),
 	getModelProviders: async (): Promise<PublicProvider[]> => {
 		return uniqueProvidersWithStored(await window.app.models(), 'models');
 	},

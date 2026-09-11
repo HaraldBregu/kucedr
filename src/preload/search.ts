@@ -7,6 +7,7 @@ export const search: SearchApi = {
 	getSettings: (): Promise<SearchSettings> => {
 		return typedInvokeUnwrap(SearchChannels.getSettings);
 	},
+	listProviders: () => typedInvokeUnwrap(SearchChannels.listProviders),
 	saveEngine: (engineId: SearchEngineId, input: SearchEngineInput): Promise<SearchSettings> => {
 		return typedInvokeUnwrap(SearchChannels.saveEngine, engineId, input);
 	},

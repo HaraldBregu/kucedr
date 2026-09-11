@@ -4,6 +4,7 @@ import { CHANNEL_DM_POLICIES } from '../../shared/channels_types';
 import type {
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
+	StoredProvider,
 } from '../../shared/provider_types';
 import { ProviderStoreChannels } from '../../shared/ipc_channels_definitions';
 import {
@@ -15,7 +16,6 @@ import {
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import { loadDatabases, loadProviders } from '../models';
-import type { ProviderSyncService } from '../providers/sync';
 import { getProvider, listProviders, setProvider } from '../settings_store';
 import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
@@ -23,7 +23,6 @@ import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
 
 export interface ProviderStoreIpcDeps {
-	sync: ProviderSyncService;
 	windows: WindowContextManager;
 	apps: AppRegistry;
 }
@@ -33,34 +32,27 @@ type SavedCredentialKind = Exclude<ProviderCredentialKind, 'search_engines'>;
 export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	readonly name = 'provider-store';
 
-	register({ sync, windows, apps }: ProviderStoreIpcDeps, _eventBus: EventBus): void {
+	register({ windows, apps }: ProviderStoreIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
 		registerQueryWithEvent(ProviderStoreChannels.get, (event, id, kind) => {
 			trusted.assert(event);
 			const normalizedId = this.id(id);
 			const normalizedKind = this.kind(kind);
-			getProvider(normalizedId, normalizedKind);
-			return sync.getSummary(normalizedKind, normalizedId);
+			return getProvider(normalizedId, normalizedKind);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.list, (event, kind) => {
 			trusted.assert(event);
 			if (kind) {
 				const normalizedKind = this.kind(kind);
-				listProviders(normalizedKind);
-				return sync.listSummaries(normalizedKind);
+				return listProviders(normalizedKind);
 			}
-			listProviders('models');
-			listProviders('databases');
-			return [...sync.listSummaries('models'), ...sync.listSummaries('databases')];
+			return listProviders();
 		});
 		registerCommandWithEvent(ProviderStoreChannels.set, (event, value) => {
 			trusted.assert(event);
 			const input = this.credential(value);
 			const provider = this.catalogProvider(input.kind, input.id, input.apiKey);
-			setProvider(provider, input.kind);
-			const summary = sync.getSummary(input.kind, input.id);
-			if (!summary) throw new Error('The provider credential could not be saved.');
-			return summary;
+			return setProvider(provider, input.kind);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
 			trusted.assert(event);
@@ -79,29 +71,6 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			trusted.assert(event);
 			return this.saveChannel(this.channelInput(value));
 		});
-		registerQueryWithEvent(ProviderStoreChannels.vaultStatus, (event) => {
-			trusted.assert(event);
-			return sync.refreshStatus();
-		});
-		registerCommandWithEvent(ProviderStoreChannels.setupVault, (event, passphrase) => {
-			trusted.assert(event);
-			return sync.setup(this.passphrase(passphrase));
-		});
-		registerCommandWithEvent(ProviderStoreChannels.unlockVault, (event, passphrase) => {
-			trusted.assert(event);
-			return sync.unlock(this.passphrase(passphrase));
-		});
-		registerCommandWithEvent(
-			ProviderStoreChannels.changeVaultPassphrase,
-			(event, passphrase) => {
-				trusted.assert(event);
-				return sync.changePassphrase(this.passphrase(passphrase));
-			}
-		);
-		registerCommandWithEvent(ProviderStoreChannels.syncVault, (event) => {
-			trusted.assert(event);
-			return sync.sync();
-		});
 	}
 
 	private credential(value: unknown): ProviderCredentialSaveInput {
@@ -111,7 +80,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		return { kind: this.kind(record.kind), id: this.id(record.id), apiKey };
 	}
 
-	private catalogProvider(kind: SavedCredentialKind, id: string, apiKey: string) {
+	private catalogProvider(kind: SavedCredentialKind, id: string, apiKey: string): StoredProvider {
 		if (kind === 'models') {
 			const provider = loadProviders().find((entry) => entry.id === id);
 			if (!provider) throw new Error('Unknown provider.');
@@ -180,11 +149,6 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			throw new Error('The provider identifier is invalid.');
 		}
 		return id;
-	}
-
-	private passphrase(value: unknown): string {
-		if (typeof value !== 'string') throw new Error('The provider sync passphrase is invalid.');
-		return value;
 	}
 
 	private record(value: unknown): Record<string, unknown> {

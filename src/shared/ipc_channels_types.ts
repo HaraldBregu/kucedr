@@ -608,15 +608,15 @@ export interface ProviderInvokeChannelMap {
 			id: string,
 			kind: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>,
 		];
-		result: import('./provider_types').ProviderCredentialSummary | undefined;
+		result: import('./provider_types').StoredProvider | undefined;
 	};
 	[ProviderChannels.set]: {
 		args: [input: import('./provider_types').ProviderCredentialSaveInput];
-		result: import('./provider_types').ProviderCredentialSummary;
+		result: import('./provider_types').StoredProvider;
 	};
 	[ProviderChannels.list]: {
 		args: [kind?: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>];
-		result: import('./provider_types').ProviderCredentialSummary[];
+		result: import('./provider_types').StoredProvider[];
 	};
 	[ProviderChannels.getChannel]: {
 		args: [id: string];
@@ -630,26 +630,6 @@ export interface ProviderInvokeChannelMap {
 		args: [];
 		result: import('./channels_types').ChannelCredentialSummary[];
 	};
-	[ProviderChannels.vaultStatus]: {
-		args: [];
-		result: import('./provider_types').ProviderVaultStatus;
-	};
-	[ProviderChannels.setupVault]: {
-		args: [passphrase: string];
-		result: import('./provider_types').ProviderVaultStatus;
-	};
-	[ProviderChannels.unlockVault]: {
-		args: [passphrase: string];
-		result: import('./provider_types').ProviderVaultStatus;
-	};
-	[ProviderChannels.changeVaultPassphrase]: {
-		args: [passphrase: string];
-		result: import('./provider_types').ProviderVaultStatus;
-	};
-	[ProviderChannels.syncVault]: {
-		args: [];
-		result: import('./provider_types').ProviderVaultStatus;
-	};
 }
 
 export type ProviderStoreInvokeChannelMap = ProviderInvokeChannelMap;
@@ -658,6 +638,10 @@ export interface SearchInvokeChannelMap {
 	[SearchChannels.getSettings]: {
 		args: [];
 		result: import('./search_types').SearchSettings;
+	};
+	[SearchChannels.listProviders]: {
+		args: [];
+		result: import('./provider_types').StoredProvider[];
 	};
 	[SearchChannels.saveEngine]: {
 		args: [

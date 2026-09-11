@@ -1,5 +1,10 @@
 import type { EventBus } from '../event_bus';
-import { getSearchSettings, saveSearchEngine, selectSearchEngine } from '../search';
+import {
+	getSearchSettings,
+	getStoredSearchProviders,
+	saveSearchEngine,
+	selectSearchEngine,
+} from '../search';
 import { SearchChannels } from '../../shared/ipc_channels_definitions';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
@@ -20,6 +25,10 @@ export class SearchIpc implements IpcModule<SearchIpcDeps> {
 		registerQueryWithEvent(SearchChannels.getSettings, (event) => {
 			trusted.assert(event);
 			return getSearchSettings();
+		});
+		registerQueryWithEvent(SearchChannels.listProviders, (event) => {
+			trusted.assert(event);
+			return getStoredSearchProviders();
 		});
 		registerCommandWithEvent(SearchChannels.saveEngine, (event, engineId, input) => {
 			trusted.assert(event);

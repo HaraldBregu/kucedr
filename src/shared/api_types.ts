@@ -3,9 +3,8 @@ import type {
 	CatalogWebSearch,
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
-	ProviderCredentialSummary,
-	ProviderVaultStatus,
 	PublicProvider,
+	StoredProvider,
 } from './provider_types';
 import type { ChannelCredentialSaveInput, ChannelCredentialSummary } from './channels_types';
 import type { SearchEngineId, SearchEngineInput, SearchSettings } from './search_types';
@@ -291,19 +290,14 @@ export interface ProviderApi {
 	get: (
 		id: string,
 		kind: Exclude<ProviderCredentialKind, 'search_engines'>
-	) => Promise<ProviderCredentialSummary | undefined>;
-	set: (input: ProviderCredentialSaveInput) => Promise<ProviderCredentialSummary>;
+	) => Promise<StoredProvider | undefined>;
+	set: (input: ProviderCredentialSaveInput) => Promise<StoredProvider>;
 	list: (
 		kind?: Exclude<ProviderCredentialKind, 'search_engines'>
-	) => Promise<ProviderCredentialSummary[]>;
+	) => Promise<StoredProvider[]>;
 	getChannel: (id: string) => Promise<ChannelCredentialSummary | undefined>;
 	setChannel: (input: ChannelCredentialSaveInput) => Promise<ChannelCredentialSummary>;
 	listChannels: () => Promise<ChannelCredentialSummary[]>;
-	vaultStatus: () => Promise<ProviderVaultStatus>;
-	setupVault: (passphrase: string) => Promise<ProviderVaultStatus>;
-	unlockVault: (passphrase: string) => Promise<ProviderVaultStatus>;
-	changeVaultPassphrase: (passphrase: string) => Promise<ProviderVaultStatus>;
-	syncVault: () => Promise<ProviderVaultStatus>;
 	getModelProviders: () => Promise<PublicProvider[]>;
 	getDatabaseProviders: () => Promise<PublicProvider[]>;
 }
@@ -342,6 +336,7 @@ export interface AppsApi {
 
 export interface SearchApi {
 	getSettings: () => Promise<SearchSettings>;
+	listProviders: () => Promise<StoredProvider[]>;
 	saveEngine: (engineId: SearchEngineId, input: SearchEngineInput) => Promise<SearchSettings>;
 	selectEngine: (engineId: SearchEngineId) => Promise<SearchSettings>;
 }
