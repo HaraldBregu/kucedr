@@ -5,7 +5,8 @@ import type {
 } from '../../../shared/speech_types';
 
 export async function synthesize(
-	request: SpeechSynthesisRequest
+	request: SpeechSynthesisRequest,
+	selection: 'chatbot' | 'tool' = 'chatbot'
 ): Promise<SpeechSynthesisResult> {
-	return synthesizeTextToSpeech(request);
+	return synthesizeTextToSpeech(request, selection);
 }
