@@ -5,7 +5,7 @@ import type {
 } from '../../../shared/realtime_voice';
 import type { CatalogModel } from '../../../shared/model_types';
 import { normalizeProviderId } from '../../../shared/provider_types';
-import { getMediaModel, setMediaModel } from '../agent_store';
+import { getChatbotModel, setChatbotModel } from '../agent_store';
 import { findModel } from '../../models';
 import {
 	realtimeVoiceModelRefs,
@@ -50,7 +50,7 @@ function canonicalOptions(
 
 export function getRealtimeVoiceSetup(): RealtimeVoiceSetup {
 	const available = supportedModels();
-	const stored = getMediaModel('realtimeVoice');
+	const stored = getChatbotModel('realtimeVoice');
 	const providerId = normalizeProviderId(stored.providerId);
 	const modelId = stored.modelId.trim();
 	const selected = available.some(
@@ -83,6 +83,6 @@ export function setRealtimeVoiceSetup(request: RealtimeVoiceSetupRequest): Realt
 	const model = findModel(providerId, 'realtime-voice', modelId);
 	if (!model) throw new Error('The selected realtime voice model is not available.');
 	const options = canonicalOptions(model, request.options);
-	setMediaModel('realtimeVoice', { providerId, modelId, options });
+	setChatbotModel('realtimeVoice', { providerId, modelId, options });
 	return { providerId, modelId, options, supportedModels: supportedModels() };
 }

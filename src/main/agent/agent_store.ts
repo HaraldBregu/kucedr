@@ -1,6 +1,10 @@
 import path from 'node:path';
 import Store from 'electron-store';
-import type { AgentMediaModelKind, AgentMediaModelSettings } from '../../shared/agent_types';
+import type {
+	AgentChatbotModelKind,
+	AgentMediaModelSettings,
+	AgentToolModelKind,
+} from '../../shared/agent_types';
 import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
@@ -17,18 +21,32 @@ export type SearchEngineSettings = {
 	enabled: boolean;
 };
 type AgentStoreSchema = {
-	large_language_model: AgentMediaModelSettings;
-	web_search_engine: SearchEngineSettings;
-	image_generator_model: AgentMediaModelSettings;
-	audio_generator_model: AgentMediaModelSettings;
-	video_generator_model: AgentMediaModelSettings;
-	text_to_speech_model: AgentMediaModelSettings;
-	realtime_voice_model: AgentMediaModelSettings;
-	transcription_model: AgentMediaModelSettings;
+	chatbot: {
+		model: AgentMediaModelSettings;
+		voice: AgentMediaModelSettings;
+		realtimeVoice: AgentMediaModelSettings;
+		transcription: AgentMediaModelSettings;
+	};
+	tools: {
+		webSearch: SearchEngineSettings;
+		image: AgentMediaModelSettings;
+		audio: AgentMediaModelSettings;
+		video: AgentMediaModelSettings;
+		textToSpeech: AgentMediaModelSettings;
+		speechToText: AgentMediaModelSettings;
+	};
 	permissions: PermissionsSchema;
 };
 
 type LegacyAgentStoreSchema = Partial<AgentStoreSchema> & {
+	large_language_model?: AgentMediaModelSettings;
+	web_search_engine?: SearchEngineSettings;
+	image_generator_model?: AgentMediaModelSettings;
+	audio_generator_model?: AgentMediaModelSettings;
+	video_generator_model?: AgentMediaModelSettings;
+	text_to_speech_model?: AgentMediaModelSettings;
+	realtime_voice_model?: AgentMediaModelSettings;
+	transcription_model?: AgentMediaModelSettings;
 	providerId?: string;
 	modelId?: string;
 	modelOptions?: Record<string, unknown>;
@@ -54,32 +72,21 @@ const EMPTY_MEDIA_MODEL: AgentMediaModelSettings = {
 	options: {},
 };
 const DEFAULT_AGENT_STORE: AgentStoreSchema = {
-	large_language_model: EMPTY_MEDIA_MODEL,
-	web_search_engine: { providerId: '', providerName: '', enabled: false },
-	image_generator_model: EMPTY_MEDIA_MODEL,
-	audio_generator_model: EMPTY_MEDIA_MODEL,
-	video_generator_model: EMPTY_MEDIA_MODEL,
-	text_to_speech_model: EMPTY_MEDIA_MODEL,
-	realtime_voice_model: EMPTY_MEDIA_MODEL,
-	transcription_model: EMPTY_MEDIA_MODEL,
+	chatbot: {
+		model: EMPTY_MEDIA_MODEL,
+		voice: EMPTY_MEDIA_MODEL,
+		realtimeVoice: EMPTY_MEDIA_MODEL,
+		transcription: EMPTY_MEDIA_MODEL,
+	},
+	tools: {
+		webSearch: { providerId: '', providerName: '', enabled: false },
+		image: EMPTY_MEDIA_MODEL,
+		audio: EMPTY_MEDIA_MODEL,
+		video: EMPTY_MEDIA_MODEL,
+		textToSpeech: EMPTY_MEDIA_MODEL,
+		speechToText: EMPTY_MEDIA_MODEL,
+	},
 	permissions: DEFAULT_AGENT_PERMISSIONS,
-};
-
-type MediaModelKey =
-	| 'image_generator_model'
-	| 'audio_generator_model'
-	| 'video_generator_model'
-	| 'text_to_speech_model'
-	| 'realtime_voice_model'
-	| 'transcription_model';
-
-const MEDIA_MODEL_KEYS: Record<AgentMediaModelKind, MediaModelKey> = {
-	image: 'image_generator_model',
-	audio: 'audio_generator_model',
-	video: 'video_generator_model',
-	voice: 'text_to_speech_model',
-	realtimeVoice: 'realtime_voice_model',
-	transcription: 'transcription_model',
 };
 
 const store = new Store<AgentStoreSchema>({
@@ -90,72 +97,106 @@ const store = new Store<AgentStoreSchema>({
 });
 
 const persisted = { ...store.store } as LegacyAgentStoreSchema;
-const largeLanguageModel =
-	persisted.large_language_model?.providerId || persisted.large_language_model?.modelId
-		? persisted.large_language_model
+const chatbotModel =
+	persisted.chatbot?.model?.providerId || persisted.chatbot?.model?.modelId
+		? persisted.chatbot.model
+		: persisted.large_language_model?.providerId || persisted.large_language_model?.modelId
+			? persisted.large_language_model
 		: {
 				providerId: persisted.providerId ?? '',
 				modelId: persisted.modelId ?? '',
 				options: persisted.modelOptions ?? {},
 			};
 store.store = {
-	large_language_model: largeLanguageModel,
-	web_search_engine:
-		persisted.web_search_engine ?? persisted.search_engine ?? DEFAULT_AGENT_STORE.web_search_engine,
-	image_generator_model:
-		persisted.image_generator_model ?? persisted.image_model ?? EMPTY_MEDIA_MODEL,
-	audio_generator_model:
-		persisted.audio_generator_model ?? persisted.audio_model ?? EMPTY_MEDIA_MODEL,
-	video_generator_model:
-		persisted.video_generator_model ?? persisted.video_model ?? EMPTY_MEDIA_MODEL,
-	text_to_speech_model:
-		persisted.text_to_speech_model ?? persisted.voice_model ?? EMPTY_MEDIA_MODEL,
-	realtime_voice_model: persisted.realtime_voice_model ?? EMPTY_MEDIA_MODEL,
-	transcription_model: persisted.transcription_model ?? EMPTY_MEDIA_MODEL,
+	chatbot: {
+		model: chatbotModel,
+		voice:
+			persisted.chatbot?.voice ??
+			persisted.text_to_speech_model ??
+			persisted.voice_model ??
+			EMPTY_MEDIA_MODEL,
+		realtimeVoice: persisted.chatbot?.realtimeVoice ?? persisted.realtime_voice_model ?? EMPTY_MEDIA_MODEL,
+		transcription: persisted.chatbot?.transcription ?? persisted.transcription_model ?? EMPTY_MEDIA_MODEL,
+	},
+	tools: {
+		webSearch:
+			persisted.tools?.webSearch ??
+			persisted.web_search_engine ??
+			persisted.search_engine ??
+			DEFAULT_AGENT_STORE.tools.webSearch,
+		image:
+			persisted.tools?.image ??
+			persisted.image_generator_model ??
+			persisted.image_model ??
+			EMPTY_MEDIA_MODEL,
+		audio:
+			persisted.tools?.audio ??
+			persisted.audio_generator_model ??
+			persisted.audio_model ??
+			EMPTY_MEDIA_MODEL,
+		video:
+			persisted.tools?.video ??
+			persisted.video_generator_model ??
+			persisted.video_model ??
+			EMPTY_MEDIA_MODEL,
+		textToSpeech: persisted.tools?.textToSpeech ?? EMPTY_MEDIA_MODEL,
+		speechToText: persisted.tools?.speechToText ?? EMPTY_MEDIA_MODEL,
+	},
 	permissions: persisted.permissions ?? DEFAULT_AGENT_PERMISSIONS,
 };
 
 export function getProviderId(): string | undefined {
-	return store.get('large_language_model').providerId || undefined;
+	return store.get('chatbot').model.providerId || undefined;
 }
 
 export function setProviderId(providerId: string): void {
-	store.set('large_language_model', { ...store.get('large_language_model'), providerId });
+	store.set('chatbot', { ...store.get('chatbot'), model: { ...store.get('chatbot').model, providerId } });
 }
 
 export function getModelId(): string | undefined {
-	return store.get('large_language_model').modelId || undefined;
+	return store.get('chatbot').model.modelId || undefined;
 }
 
 export function setModelId(modelId: string): void {
-	store.set('large_language_model', { ...store.get('large_language_model'), modelId });
+	store.set('chatbot', { ...store.get('chatbot'), model: { ...store.get('chatbot').model, modelId } });
 }
 
 export function getModelOptions(): Record<string, unknown> {
-	return store.get('large_language_model').options;
+	return store.get('chatbot').model.options;
 }
 
 export function setModelOptions(modelOptions: Record<string, unknown>): void {
-	store.set('large_language_model', {
-		...store.get('large_language_model'),
-		options: modelOptions,
+	store.set('chatbot', {
+		...store.get('chatbot'),
+		model: { ...store.get('chatbot').model, options: modelOptions },
 	});
 }
 
 export function getSearchEngine(): SearchEngineSettings {
-	return store.get('web_search_engine');
+	return store.get('tools').webSearch;
 }
 
 export function setSearchEngine(searchEngine: SearchEngineSettings): void {
-	store.set('web_search_engine', searchEngine);
+	store.set('tools', { ...store.get('tools'), webSearch: searchEngine });
 }
 
-export function getMediaModel(kind: AgentMediaModelKind): AgentMediaModelSettings {
-	return store.get(MEDIA_MODEL_KEYS[kind]);
+export function getChatbotModel(kind: AgentChatbotModelKind): AgentMediaModelSettings {
+	return store.get('chatbot')[kind];
 }
 
-export function setMediaModel(kind: AgentMediaModelKind, settings: AgentMediaModelSettings): void {
-	store.set(MEDIA_MODEL_KEYS[kind], settings);
+export function setChatbotModel(
+	kind: AgentChatbotModelKind,
+	settings: AgentMediaModelSettings
+): void {
+	store.set('chatbot', { ...store.get('chatbot'), [kind]: settings });
+}
+
+export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
+	return store.get('tools')[kind];
+}
+
+export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
+	store.set('tools', { ...store.get('tools'), [kind]: settings });
 }
 
 export function getPermissions(): PermissionsSchema {

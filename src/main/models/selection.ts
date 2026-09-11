@@ -1,11 +1,13 @@
-import type { AgentMediaModelKind } from '../../shared/agent_types';
+import type { AgentChatbotModelKind, AgentToolModelKind } from '../../shared/agent_types';
 import {
-	getMediaModel,
+	getChatbotModel,
 	getModelId as getAgentModelId,
 	getProviderId as getAgentProviderId,
-	setMediaModel,
+	getToolModel,
 	setModelId as setAgentModelId,
 	setProviderId as setAgentProviderId,
+	setChatbotModel,
+	setToolModel,
 } from '../agent/agent_store';
 import { getRagConfiguration, saveRagConfiguration } from '../agent/knowledge/rag/rag_store';
 
@@ -27,16 +29,19 @@ type ModelSelection = {
 	modelId: string;
 };
 
-type AgentModelKind = Exclude<ModelKind, 'text' | 'embedding'>;
+type SelectedModelKind = Exclude<ModelKind, 'text' | 'embedding'>;
 
-const AGENT_MODEL_KINDS: Record<AgentModelKind, AgentMediaModelKind> = {
-	sound: 'audio',
-	image: 'image',
-	video: 'video',
+const CHATBOT_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentChatbotModelKind>> = {
 	voice: 'voice',
 	realtimeVoice: 'realtimeVoice',
 	transcribe: 'transcription',
 	realtime: 'transcription',
+};
+
+const TOOL_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentToolModelKind>> = {
+	sound: 'audio',
+	image: 'image',
+	video: 'video',
 };
 
 export function getProviderId(kind: ModelKind): string | undefined {
@@ -77,9 +82,8 @@ export function setSelection(kind: ModelKind, providerId: string, modelId: strin
 		});
 		return;
 	}
-	const agentKind = AGENT_MODEL_KINDS[kind];
-	const current = getMediaModel(agentKind);
-	setMediaModel(agentKind, {
+	const current = getStoredModel(kind);
+	setStoredModel(kind, {
 		providerId,
 		modelId,
 		options:
@@ -88,12 +92,11 @@ export function setSelection(kind: ModelKind, providerId: string, modelId: strin
 }
 
 export function getOptions(kind: MediaModelKind): Record<string, unknown> {
-	return getMediaModel(AGENT_MODEL_KINDS[kind]).options;
+	return getStoredModel(kind).options;
 }
 
 export function setOptions(kind: MediaModelKind, options: Record<string, unknown>): void {
-	const agentKind = AGENT_MODEL_KINDS[kind];
-	setMediaModel(agentKind, { ...getMediaModel(agentKind), options });
+	setStoredModel(kind, { ...getStoredModel(kind), options });
 }
 
 export function resolveOptions(
@@ -102,7 +105,7 @@ export function resolveOptions(
 	modelId: string,
 	overrides?: Record<string, unknown>
 ): Record<string, unknown> | undefined {
-	const configured = getMediaModel(AGENT_MODEL_KINDS[kind]);
+	const configured = getStoredModel(kind);
 	const defaults =
 		configured.providerId === providerId && configured.modelId === modelId
 			? configured.options
@@ -125,8 +128,27 @@ function selection(kind: ModelKind): ModelSelection {
 			modelId: configuration.embeddingModelId,
 		};
 	}
-	const configured = getMediaModel(AGENT_MODEL_KINDS[kind]);
+	const configured = getStoredModel(kind);
 	return { providerId: configured.providerId, modelId: configured.modelId };
+}
+
+function getStoredModel(kind: SelectedModelKind): import('../../shared/agent_types').AgentMediaModelSettings {
+	const chatbotKind = CHATBOT_MODEL_KINDS[kind];
+	if (chatbotKind) return getChatbotModel(chatbotKind);
+	const toolKind = TOOL_MODEL_KINDS[kind];
+	if (toolKind) return getToolModel(toolKind);
+	throw new Error(`Unsupported model kind: ${kind}`);
+}
+
+function setStoredModel(
+	kind: SelectedModelKind,
+	settings: import('../../shared/agent_types').AgentMediaModelSettings
+): void {
+	const chatbotKind = CHATBOT_MODEL_KINDS[kind];
+	if (chatbotKind) return setChatbotModel(chatbotKind, settings);
+	const toolKind = TOOL_MODEL_KINDS[kind];
+	if (toolKind) return setToolModel(toolKind, settings);
+	throw new Error(`Unsupported model kind: ${kind}`);
 }
 
 function optionalTrimmedString(value: unknown): string | undefined {
