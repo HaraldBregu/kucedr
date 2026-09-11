@@ -12,7 +12,7 @@ import {
 } from '../limits';
 import type { RagSource } from './types';
 
-const UTF8_DECODER = new TextDecoder('utf-8', { fatal: true });
+const UTF8_DECODING = new TextDecoder('utf-8', { fatal: true });
 
 export async function* collectRagSources(
 	sources: readonly string[],
@@ -41,7 +41,7 @@ export async function* collectRagSources(
 			if (bytes.some((byte) => byte < 32 && byte !== 9 && byte !== 10 && byte !== 13)) continue;
 			let content: string;
 			try {
-				content = UTF8_DECODER.decode(bytes);
+				content = UTF8_DECODING.decode(bytes);
 			} catch {
 				continue;
 			}

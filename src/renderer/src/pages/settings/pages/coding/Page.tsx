@@ -45,14 +45,14 @@ const CodingPage: React.FC = () => {
 
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([window.coder.getSettings(), window.coder.listModels()])
+		void Promise.all([window.coding.getSettings(), window.coding.listModels()])
 			.then(([nextSettings, nextCatalog]) => {
 				if (!mounted) return;
 				setSettings(nextSettings);
 				setCatalog(nextCatalog);
 			})
 			.catch((loadError) => {
-				if (mounted) setError(firstErrorMessage(loadError, t('settings.coder.loadError')));
+				if (mounted) setError(firstErrorMessage(loadError, t('settings.coding.loadError')));
 			})
 			.finally(() => {
 				if (mounted) setLoading(false);
@@ -74,13 +74,13 @@ const CodingPage: React.FC = () => {
 				setSaved(true);
 			})
 			.catch((saveError) => {
-				setError(firstErrorMessage(saveError, t('settings.coder.saveError')));
+				setError(firstErrorMessage(saveError, t('settings.coding.saveError')));
 			})
 			.finally(() => setSaving(false));
 	};
 
 	const refreshCatalog = async (): Promise<void> => {
-		setCatalog(await window.coder.listModels());
+		setCatalog(await window.coding.listModels());
 	};
 
 	const handleProviderChange = (providerId: CodingProviderId): void => {
@@ -107,7 +107,7 @@ const CodingPage: React.FC = () => {
 			})
 			.then(refreshCatalog)
 			.catch((connectError) => {
-				setError(firstErrorMessage(connectError, t('settings.coder.connectError')));
+				setError(firstErrorMessage(connectError, t('settings.coding.connectError')));
 			})
 			.finally(() => setConnecting(false));
 	};
@@ -119,7 +119,7 @@ const CodingPage: React.FC = () => {
 			.disconnectCodex()
 			.then(refreshCatalog)
 			.catch((disconnectError) => {
-				setError(firstErrorMessage(disconnectError, t('settings.coder.disconnectError')));
+				setError(firstErrorMessage(disconnectError, t('settings.coding.disconnectError')));
 			})
 			.finally(() => setConnecting(false));
 	};
@@ -130,11 +130,11 @@ const CodingPage: React.FC = () => {
 	const selectedModel = selectedProvider?.models.find((model) => model.id === settings?.modelId);
 	const deviceCode = authEvent?.type === 'device-code' ? authEvent : undefined;
 	const authMessage = deviceCode
-		? t('settings.coder.deviceCode')
+		? t('settings.coding.deviceCode')
 		: authEvent && 'message' in authEvent
 			? authEvent.message
 			: authEvent?.type === 'auth-url'
-				? (authEvent.instructions ?? t('settings.coder.completeLogin'))
+				? (authEvent.instructions ?? t('settings.coding.completeLogin'))
 				: null;
 	const authUrl =
 		authEvent?.type === 'device-code'
@@ -148,18 +148,18 @@ const CodingPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.coder.title')}
-				description={t('settings.coder.description')}
+				title={t('settings.coding.title')}
+				description={t('settings.coding.description')}
 				action={
 					saving ? (
-						<SettingsValue>{t('settings.coder.saving')}</SettingsValue>
+						<SettingsValue>{t('settings.coding.saving')}</SettingsValue>
 					) : saved ? (
-						<SettingsValue>{t('settings.coder.saved')}</SettingsValue>
+						<SettingsValue>{t('settings.coding.saved')}</SettingsValue>
 					) : undefined
 				}
 			/>
 
-			<SettingsNotice>{t('settings.coder.harnessExplanation')}</SettingsNotice>
+			<SettingsNotice>{t('settings.coding.harnessExplanation')}</SettingsNotice>
 
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
@@ -173,14 +173,14 @@ const CodingPage: React.FC = () => {
 				) : (
 					<>
 						<SettingsRow
-							title={t('settings.coder.runtime')}
-							description={t('settings.coder.runtimeDescription')}
+							title={t('settings.coding.runtime')}
+							description={t('settings.coding.runtimeDescription')}
 							actions={<SettingsValue>Pi SDK</SettingsValue>}
 						/>
 
 						<SettingsRow
-							title={t('settings.coder.provider')}
-							description={t('settings.coder.providerDescription')}
+							title={t('settings.coding.provider')}
+							description={t('settings.coding.providerDescription')}
 							actions={
 								<Select
 									value={settings.providerId}
@@ -191,7 +191,7 @@ const CodingPage: React.FC = () => {
 								>
 									<SelectTrigger
 										className="w-56 max-w-full text-xs"
-										aria-label={t('settings.coder.provider')}
+										aria-label={t('settings.coding.provider')}
 									>
 										<SelectValue>{selectedProvider?.name}</SelectValue>
 									</SelectTrigger>
@@ -207,8 +207,8 @@ const CodingPage: React.FC = () => {
 						/>
 
 						<SettingsRow
-							title={t('settings.coder.model')}
-							description={t('settings.coder.modelDescription')}
+							title={t('settings.coding.model')}
+							description={t('settings.coding.modelDescription')}
 							actions={
 								<Select
 									value={selectedModel?.id ?? null}
@@ -219,9 +219,9 @@ const CodingPage: React.FC = () => {
 								>
 									<SelectTrigger
 										className="w-56 max-w-full text-xs"
-										aria-label={t('settings.coder.model')}
+										aria-label={t('settings.coding.model')}
 									>
-										<SelectValue placeholder={t('settings.coder.selectModel')}>
+										<SelectValue placeholder={t('settings.coding.selectModel')}>
 											{selectedModel?.name}
 										</SelectValue>
 									</SelectTrigger>
@@ -237,18 +237,18 @@ const CodingPage: React.FC = () => {
 						/>
 
 						<SettingsRow
-							title={t('settings.coder.authentication')}
+							title={t('settings.coding.authentication')}
 							description={
 								selectedProvider?.authentication === 'oauth'
-									? t('settings.coder.codexAuthDescription')
-									: t('settings.coder.apiKeyDescription')
+									? t('settings.coding.codexAuthDescription')
+									: t('settings.coding.apiKeyDescription')
 							}
 							actions={
 								<>
 									<Badge variant={selectedProvider?.configured ? 'secondary' : 'outline'}>
 										{selectedProvider?.configured
-											? t('settings.coder.connected')
-											: t('settings.coder.notConnected')}
+											? t('settings.coding.connected')
+											: t('settings.coding.notConnected')}
 									</Badge>
 									{settings.providerId === 'openai-codex' ? (
 										selectedProvider?.configured ? (
@@ -258,19 +258,19 @@ const CodingPage: React.FC = () => {
 												disabled={connecting}
 												onClick={handleDisconnect}
 											>
-												{t('settings.coder.disconnect')}
+												{t('settings.coding.disconnect')}
 											</Button>
 										) : connecting ? (
 											<Button
 												size="xs"
 												variant="outline"
-												onClick={() => void window.coder.cancelCodexLogin()}
+												onClick={() => void window.coding.cancelCodexLogin()}
 											>
-												{t('settings.coder.cancel')}
+												{t('settings.coding.cancel')}
 											</Button>
 										) : (
 											<Button size="xs" onClick={handleConnect}>
-												{t('settings.coder.connect')}
+												{t('settings.coding.connect')}
 											</Button>
 										)
 									) : (
@@ -279,7 +279,7 @@ const CodingPage: React.FC = () => {
 											variant="outline"
 											onClick={() => navigate('/settings/providers/models')}
 										>
-											{t('settings.coder.manageApiKeys')}
+											{t('settings.coding.manageApiKeys')}
 										</Button>
 									)}
 								</>
@@ -287,8 +287,8 @@ const CodingPage: React.FC = () => {
 						/>
 
 						<SettingsRow
-							title={t('settings.coder.thinking')}
-							description={t('settings.coder.thinkingDescription')}
+							title={t('settings.coding.thinking')}
+							description={t('settings.coding.thinkingDescription')}
 							actions={
 								<Select
 									value={settings.thinkingLevel}
@@ -299,16 +299,16 @@ const CodingPage: React.FC = () => {
 								>
 									<SelectTrigger
 										className="w-40 max-w-full text-xs"
-										aria-label={t('settings.coder.thinking')}
+										aria-label={t('settings.coding.thinking')}
 									>
 										<SelectValue>
-											{t(`settings.coder.thinkingLevels.${settings.thinkingLevel}`)}
+											{t(`settings.coding.thinkingLevels.${settings.thinkingLevel}`)}
 										</SelectValue>
 									</SelectTrigger>
 									<SelectContent>
 										{CODING_THINKING_LEVELS.map((level) => (
 											<SelectItem key={level} value={level}>
-												{t(`settings.coder.thinkingLevels.${level}`)}
+												{t(`settings.coding.thinkingLevels.${level}`)}
 											</SelectItem>
 										))}
 									</SelectContent>
@@ -317,8 +317,8 @@ const CodingPage: React.FC = () => {
 						/>
 
 						<SettingsRow
-							title={t('settings.coder.tools')}
-							description={t('settings.coder.toolsDescription')}
+							title={t('settings.coding.tools')}
+							description={t('settings.coding.toolsDescription')}
 							actions={
 								<Select
 									value={settings.toolMode}
@@ -329,17 +329,17 @@ const CodingPage: React.FC = () => {
 								>
 									<SelectTrigger
 										className="w-40 max-w-full text-xs"
-										aria-label={t('settings.coder.tools')}
+										aria-label={t('settings.coding.tools')}
 									>
 										<SelectValue>
 											{settings.toolMode === 'coding'
-												? t('settings.coder.codingTools')
-												: t('settings.coder.readOnlyTools')}
+												? t('settings.coding.codingTools')
+												: t('settings.coding.readOnlyTools')}
 										</SelectValue>
 									</SelectTrigger>
 									<SelectContent>
-										<SelectItem value="read-only">{t('settings.coder.readOnlyTools')}</SelectItem>
-										<SelectItem value="coding">{t('settings.coder.codingTools')}</SelectItem>
+										<SelectItem value="read-only">{t('settings.coding.readOnlyTools')}</SelectItem>
+										<SelectItem value="coding">{t('settings.coding.codingTools')}</SelectItem>
 									</SelectContent>
 								</Select>
 							}
@@ -355,7 +355,7 @@ const CodingPage: React.FC = () => {
 						{deviceCode && (
 							<>
 								<span className="basis-full text-muted-foreground">
-									{t('settings.coder.deviceCodeHelp')}
+									{t('settings.coding.deviceCodeHelp')}
 								</span>
 								<code className="select-all rounded-md border bg-muted px-2 py-1 font-mono text-sm font-semibold tracking-widest text-foreground">
 									{deviceCode.userCode}
@@ -365,7 +365,7 @@ const CodingPage: React.FC = () => {
 									variant="outline"
 									onClick={() => void navigator.clipboard.writeText(deviceCode.userCode)}
 								>
-									{t('settings.coder.copyCode')}
+									{t('settings.coding.copyCode')}
 								</Button>
 							</>
 						)}
@@ -376,12 +376,12 @@ const CodingPage: React.FC = () => {
 								onClick={() => void window.app.openExternalUrl(authUrl)}
 							>
 								<ExternalLink />
-								{t('settings.coder.openLogin')}
+								{t('settings.coding.openLogin')}
 							</Button>
 						)}
 						{deviceCode && (
 							<span className="text-muted-foreground">
-								{t('settings.coder.waitingForAuthorization')}
+								{t('settings.coding.waitingForAuthorization')}
 							</span>
 						)}
 					</span>
@@ -390,7 +390,7 @@ const CodingPage: React.FC = () => {
 
 			{settings?.toolMode === 'coding' && (
 				<SettingsNotice icon={ShieldAlert} variant="destructive">
-					{t('settings.coder.toolWarning')}
+					{t('settings.coding.toolWarning')}
 				</SettingsNotice>
 			)}
 
@@ -398,7 +398,7 @@ const CodingPage: React.FC = () => {
 				!selectedProvider.configured &&
 				settings?.providerId !== 'openai-codex' && (
 					<SettingsNotice icon={AlertTriangle}>
-						{t('settings.coder.apiKeyMissing', { provider: selectedProvider.name })}
+						{t('settings.coding.apiKeyMissing', { provider: selectedProvider.name })}
 					</SettingsNotice>
 				)}
 		</SettingsPageShell>

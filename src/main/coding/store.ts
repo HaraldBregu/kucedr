@@ -4,7 +4,7 @@ import {
 	CODING_PROVIDER_IDS,
 	CODING_THINKING_LEVELS,
 	CODING_TOOL_MODES,
-	isCoderSettings,
+	isCodingSettings,
 	type CodingProviderId,
 	type CodingSettings,
 	type CodingThinkingLevel,
@@ -12,7 +12,7 @@ import {
 } from '../../shared/coding_types';
 import { userDataLocation } from '../shared/user_data_location';
 
-export const DEFAULT_CODER_SETTINGS: CodingSettings = {
+export const DEFAULT_CODING_SETTINGS: CodingSettings = {
 	runtime: 'pi',
 	providerId: 'openai-codex',
 	modelId: '',
@@ -20,19 +20,19 @@ export const DEFAULT_CODER_SETTINGS: CodingSettings = {
 	toolMode: 'read-only',
 };
 
-type StoredCoderSettings = CodingSettings & { workingDirectory?: string };
+type StoredCodingSettings = CodingSettings & { workingDirectory?: string };
 
 function normalizeSettings(value: unknown): CodingSettings {
 	const stored = value && typeof value === 'object' ? (value as Partial<CodingSettings>) : {};
 	const providerId = CODING_PROVIDER_IDS.includes(stored.providerId as CodingProviderId)
 		? (stored.providerId as CodingProviderId)
-		: DEFAULT_CODER_SETTINGS.providerId;
+		: DEFAULT_CODING_SETTINGS.providerId;
 	const thinkingLevel = CODING_THINKING_LEVELS.includes(stored.thinkingLevel as CodingThinkingLevel)
 		? (stored.thinkingLevel as CodingThinkingLevel)
-		: DEFAULT_CODER_SETTINGS.thinkingLevel;
+		: DEFAULT_CODING_SETTINGS.thinkingLevel;
 	const toolMode = CODING_TOOL_MODES.includes(stored.toolMode as CodingToolMode)
 		? (stored.toolMode as CodingToolMode)
-		: DEFAULT_CODER_SETTINGS.toolMode;
+		: DEFAULT_CODING_SETTINGS.toolMode;
 	return {
 		runtime: 'pi',
 		providerId,
@@ -43,15 +43,15 @@ function normalizeSettings(value: unknown): CodingSettings {
 }
 
 export class CodingStore {
-	private readonly store: Store<StoredCoderSettings>;
+	private readonly store: Store<StoredCodingSettings>;
 	private readonly legacyWorkingDirectory?: string;
 
 	constructor(directory = path.resolve(userDataLocation(), 'settings')) {
-		this.store = new Store<StoredCoderSettings>({
-			name: 'coder',
+		this.store = new Store<StoredCodingSettings>({
+			name: 'coding',
 			cwd: directory,
 			accessPropertiesByDotNotation: false,
-			defaults: DEFAULT_CODER_SETTINGS,
+			defaults: DEFAULT_CODING_SETTINGS,
 		});
 		const legacyDirectory = this.store.store.workingDirectory;
 		this.legacyWorkingDirectory =
@@ -66,7 +66,7 @@ export class CodingStore {
 	}
 
 	set(settings: CodingSettings): CodingSettings {
-		if (!isCoderSettings(settings)) throw new Error('Invalid coder settings.');
+		if (!isCodingSettings(settings)) throw new Error('Invalid coding settings.');
 		const normalized = normalizeSettings(settings);
 		this.store.store = normalized;
 		return normalized;

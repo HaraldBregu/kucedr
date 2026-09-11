@@ -7,14 +7,14 @@ import { ProjectSidebar } from '@/components/sidebar';
 import { Sidebar, SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Workspace } from '@/components/workspace';
-import { useCoderWorkspace } from '@/hooks/workspace';
+import { useCodingWorkspace } from '@/hooks/workspace';
 import { useTheme } from '@/hooks/use-theme';
 import { canLeaveInstructions } from '@/navigation';
 
 export default function App() {
 	useTheme();
-	const coder = useCoderWorkspace();
-	const setLeftOpen = coder.setLeftOpen;
+	const coding = useCodingWorkspace();
+	const setLeftOpen = coding.setLeftOpen;
 	const [page, setPage] = useState<'workspace' | 'configuration' | 'instructions'>('workspace');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const setSidebarVisibility = useCallback(
@@ -35,11 +35,11 @@ export default function App() {
 
 	return (
 		<TooltipProvider>
-			<SidebarProvider open={coder.leftOpen} onOpenChange={setSidebarVisibility}>
+			<SidebarProvider open={coding.leftOpen} onOpenChange={setSidebarVisibility}>
 				<main className="flex h-full min-h-0 w-full bg-background text-foreground">
 					<Sidebar aria-label="Coder workspaces and sessions">
 						<ProjectSidebar
-							coder={coder}
+							coding={coding}
 							configurationOpen={page === 'configuration'}
 							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenWorkspace={() => openPage('workspace')}
@@ -47,29 +47,29 @@ export default function App() {
 					</Sidebar>
 					<SidebarInset>
 						<Header
-							coder={coder}
+							coding={coding}
 							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenInstructions={() => void openPage('instructions')}
 							onOpenSidebar={() => setSidebarVisibility(true)}
-							sidebarOpen={coder.leftOpen}
+							sidebarOpen={coding.leftOpen}
 						/>
 						<div className="flex min-h-0 flex-1 flex-col">
 							{page === 'configuration' ? (
 								<Configuration
 									onDone={() => {
-										void coder.refresh();
+										void coding.refresh();
 										openPage('workspace');
 									}}
 								/>
-							) : page === 'instructions' && coder.activeProject ? (
+							) : page === 'instructions' && coding.activeProject ? (
 								<Instructions
-									projectId={coder.activeProject.id}
-									projectName={coder.activeProject.name}
+									projectId={coding.activeProject.id}
+									projectName={coding.activeProject.name}
 									onDirtyChange={setInstructionsDirty}
 									onDone={() => void openPage('workspace')}
 								/>
 							) : (
-								<Workspace coder={coder} />
+								<Workspace coding={coding} />
 							)}
 						</div>
 					</SidebarInset>

@@ -35,9 +35,9 @@ describe('app import', () => {
 		expect(fs.readFileSync(path.join(installed, 'index.html'), 'utf8')).toBe('installed');
 	});
 
-	it('imports the coder app identifier', () => {
+	it('imports the coding app identifier', () => {
 		const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-source-'));
-		const source = path.join(sourceRoot, 'coder');
+		const source = path.join(sourceRoot, 'coding');
 		fs.mkdirSync(source, { recursive: true });
 		fs.writeFileSync(path.join(source, 'index.html'), '<h1>Coder</h1>');
 		fs.writeFileSync(
@@ -51,7 +51,7 @@ describe('app import', () => {
 
 		try {
 			expect(importApps([source], appLocation)).toMatchObject({
-				imported: [expect.objectContaining({ id: 'coder' })],
+				imported: [expect.objectContaining({ id: 'coding' })],
 				skipped: [],
 			});
 		} finally {

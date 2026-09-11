@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { coder, type CodingProjectInstructions } from '@kucedr/sdk';
+import { coding, type CodingProjectInstructions } from '@kucedr/sdk';
 
 interface InstructionsState {
 	readonly projectId?: string;
@@ -47,7 +47,7 @@ export function useProjectInstructions(projectId: string | undefined) {
 		setSaving(true);
 		setState((value) => (value.projectId === projectId ? { ...value, error: '' } : value));
 		try {
-			const next = await coder.saveProjectInstructions(projectId, {
+			const next = await coding.saveProjectInstructions(projectId, {
 				content: submittedContent,
 				expectedRevision: instructions.revision,
 			});

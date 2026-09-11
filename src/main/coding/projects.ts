@@ -6,10 +6,10 @@ import type { CodingProject } from '../../shared/coding_types';
 import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
 
-interface StoredCoderProject extends Omit<CodingProject, 'available'> {}
+interface StoredCodingProject extends Omit<CodingProject, 'available'> {}
 
 interface CodingProjectState {
-	projects: StoredCoderProject[];
+	projects: StoredCodingProject[];
 }
 
 export class CodingProjectStore {
@@ -50,7 +50,7 @@ export class CodingProjectStore {
 			return this.get(existing.id) as CodingProject;
 		}
 		const timestamp = new Date().toISOString();
-		const project: StoredCoderProject = {
+		const project: StoredCodingProject = {
 			id: randomUUID(),
 			name: path.basename(canonicalDirectory) || canonicalDirectory,
 			directory: canonicalDirectory,

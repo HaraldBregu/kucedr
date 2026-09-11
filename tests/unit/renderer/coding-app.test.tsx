@@ -1,9 +1,9 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { app, coder as codingApi } from '@kucedr/sdk';
-import { useCoderWorkspace } from '../../../resources/apps/coder/src/hooks/workspace';
-import { useConfiguration } from '../../../resources/apps/coder/src/hooks/configuration';
-import { useProjectInstructions } from '../../../resources/apps/coder/src/hooks/instructions';
-import { canLeaveInstructions } from '../../../resources/apps/coder/src/navigation';
+import { app, coding as codingApi } from '@kucedr/sdk';
+import { useCodingWorkspace } from '../../../resources/apps/coding/src/hooks/workspace';
+import { useConfiguration } from '../../../resources/apps/coding/src/hooks/configuration';
+import { useProjectInstructions } from '../../../resources/apps/coding/src/hooks/instructions';
+import { canLeaveInstructions } from '../../../resources/apps/coding/src/navigation';
 
 jest.mock(
 	'@kucedr/sdk',
@@ -15,7 +15,7 @@ jest.mock(
 			setAppStoreValue: jest.fn(),
 			deleteAppStoreValue: jest.fn(),
 		},
-		coder: {
+		coding: {
 			getSettings: jest.fn(),
 			saveSettings: jest.fn(),
 			listModels: jest.fn(),
@@ -92,7 +92,7 @@ beforeEach(() => {
 	(codingApi.getSettings as jest.Mock).mockResolvedValue({
 		runtime: 'pi',
 		providerId: 'openai-codex',
-		modelId: 'gpt-coder',
+		modelId: 'gpt-coding',
 		thinkingLevel: 'medium',
 		toolMode: 'coding',
 	});
@@ -104,7 +104,7 @@ beforeEach(() => {
 				name: 'OpenAI Codex',
 				authentication: 'oauth',
 				configured: false,
-				models: [{ id: 'gpt-coder', name: 'GPT Coder', reasoning: true, contextWindow: 200000 }],
+				models: [{ id: 'gpt-coding', name: 'GPT Coder', reasoning: true, contextWindow: 200000 }],
 			},
 		],
 	});
@@ -137,7 +137,7 @@ beforeEach(() => {
 });
 
 it('restores the active project session and starts a new persistent Agent run', async () => {
-	const { result } = renderHook(() => useCoderWorkspace());
+	const { result } = renderHook(() => useCodingWorkspace());
 
 	await waitFor(() => expect(result.current.loading).toBe(false));
 	expect(result.current.activeProjectId).toBe(project.id);
@@ -207,7 +207,7 @@ it('groups sessions by workspace and opens an inactive workspace session', async
 			},
 		],
 	}));
-	const { result } = renderHook(() => useCoderWorkspace());
+	const { result } = renderHook(() => useCodingWorkspace());
 
 	await waitFor(() => expect(result.current.loading).toBe(false));
 	expect(result.current.sessionsByProject).toEqual({

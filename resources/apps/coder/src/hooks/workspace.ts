@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	app,
-	coder as codingApi,
+	coding as codingApi,
 	isKucedr,
 	type CodingProject,
 	type CodingResponseEvent,
@@ -81,7 +81,7 @@ const previewBlocks: CodingBlock[] = [
 	},
 ];
 
-export function useCoderWorkspace(): CodingController {
+export function useCodingWorkspace(): CodingController {
 	const preview = !isKucedr();
 	const activeRunIdRef = useRef('');
 	const cancelRequestedRef = useRef(false);

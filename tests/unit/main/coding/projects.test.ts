@@ -1,7 +1,7 @@
 import { existsSync, mkdtempSync, mkdirSync, realpathSync, symlinkSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { CodingProjectStore } from '../../../../src/main/coder/projects';
+import { CodingProjectStore } from '../../../../src/main/coding/projects';
 
 it('persists canonical external projects and removes only their metadata', () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));

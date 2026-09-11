@@ -4,7 +4,7 @@ import {
 	agent,
 	app,
 	APP_WINDOW_DEFAULTS,
-	coder,
+	coding,
 	connect,
 	isAppStoreValue,
 	isAppWindowSettings,
@@ -33,7 +33,7 @@ assert.equal(isAppWindowSettings({ maximizable: 'false' }), false);
 assert.equal(isKucedr(), false);
 assert.throws(() => app.getTheme, /unavailable/);
 assert.throws(() => agent.getWorkspaceLocation, /unavailable/);
-assert.throws(() => coder.getSettings, /unavailable/);
+assert.throws(() => coding.getSettings, /unavailable/);
 assert.throws(() => models.image.createImage, /unavailable/);
 assert.throws(() => terminal.create, /unavailable/);
 assert.throws(() => win.showContextMenu, /unavailable/);
@@ -113,7 +113,7 @@ const codingInstructions = {
 	revision: 'revision-1',
 	loadedSources: [{ path: '/tmp/kucedr-workspace/AGENTS.md', scope: 'workspace' }],
 };
-globalThis.coder = {
+globalThis.coding = {
 	getSettings: async () => codingSettings,
 	saveSettings: async (settings) => settings,
 	listModels: async () => ({ providers: [] }),
@@ -247,13 +247,13 @@ assert.equal(await agent.moveWorkspaceEntry('draft.md', 'notes'), 'notes/draft.m
 assert.equal(await agent.renameWorkspaceEntry('notes/draft.md', 'idea.md'), 'notes/idea.md');
 await agent.deleteWorkspaceFile('old.md');
 await agent.deleteWorkspaceDirectory('archive');
-assert.deepEqual(await coder.getSettings(), codingSettings);
+assert.deepEqual(await coding.getSettings(), codingSettings);
 const codingEvents = [];
-assert.deepEqual(await coder.listProjects(), [codingProject]);
-assert.deepEqual(await coder.getProjectInstructions(codingProject.id), codingInstructions);
+assert.deepEqual(await coding.listProjects(), [codingProject]);
+assert.deepEqual(await coding.getProjectInstructions(codingProject.id), codingInstructions);
 assert.equal(
 	(
-		await coder.saveProjectInstructions(codingProject.id, {
+		await coding.saveProjectInstructions(codingProject.id, {
 			content: '# Updated',
 			expectedRevision: codingInstructions.revision,
 		})
@@ -261,7 +261,7 @@ assert.equal(
 	'# Updated'
 );
 assert.deepEqual(
-	await coder.send({ projectId: codingProject.id, mode: 'agent', input: 'Fix the tests' }, (event) =>
+	await coding.send({ projectId: codingProject.id, mode: 'agent', input: 'Fix the tests' }, (event) =>
 		codingEvents.push(event)
 	),
 	{ projectId: codingProject.id, sessionId: 'session-1', output: 'done' }
@@ -282,7 +282,7 @@ assert.deepEqual(codingEvents, [
 		delta: 'done',
 	},
 ]);
-assert.equal(await coder.cancel('coding-run'), true);
+assert.equal(await coding.cancel('coding-run'), true);
 assert.deepEqual(await models.image.createImage({ prompt: 'room' }), {
 	base64: 'generated',
 	mimeType: 'image/png',
@@ -294,21 +294,21 @@ assert.deepEqual(
 	}),
 	{ base64: 'aGVsbG8=', mimeType: 'image/png' }
 );
-await coder.openProject(codingProject.id);
+await coding.openProject(codingProject.id);
 assert.equal(
-	(await coder.renameSession(codingProject.id, 'session-1', 'Focused tests')).title,
+	(await coding.renameSession(codingProject.id, 'session-1', 'Focused tests')).title,
 	'Focused tests'
 );
-assert.equal(await coder.deleteSession(codingProject.id, 'session-1'), true);
+assert.equal(await coding.deleteSession(codingProject.id, 'session-1'), true);
 assert.deepEqual(
 	await terminal.create({
-		id: 'terminal-coder',
+		id: 'terminal-coding',
 		cwd: codingProject.directory,
 		cols: 80,
 		rows: 24,
 	}),
 	{
-		id: 'terminal-coder',
+		id: 'terminal-coding',
 		cwd: codingProject.directory,
 		cols: 80,
 		rows: 24,
@@ -316,9 +316,9 @@ assert.deepEqual(
 		createdAt: 1,
 	}
 );
-terminal.write({ id: 'terminal-coder', data: 'pwd\r' });
-terminal.resize({ id: 'terminal-coder', cols: 120, rows: 40 });
-assert.equal(await terminal.kill({ id: 'terminal-coder' }), true);
+terminal.write({ id: 'terminal-coding', data: 'pwd\r' });
+terminal.resize({ id: 'terminal-coding', cols: 120, rows: 40 });
+assert.equal(await terminal.kill({ id: 'terminal-coding' }), true);
 assert.equal(await win.showContextMenu([{ id: 'open', label: 'Open' }]), 'open');
 assert.equal(await win.isMaximized(), true);
 win.setTitlebarOptions({

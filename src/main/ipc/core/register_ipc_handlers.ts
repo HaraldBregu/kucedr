@@ -15,7 +15,7 @@ import { WikiIpc } from '../wiki';
 import { WindowIpc } from '../window';
 import { DataIpc } from '../data';
 import { RealtimeVoiceIpc } from '../realtime_voice';
-import { CodingIpc } from '../coder';
+import { CodingIpc } from '../coding';
 import { TerminalIpc } from '../terminal';
 import { AuthIpc } from '../auth';
 import { CloudIpc } from '../cloud';
@@ -89,9 +89,9 @@ export function registerIpcHandlers(
 			eventBus
 		)
 	);
-	safeRegister('coder', () =>
+	safeRegister('coding', () =>
 		new CodingIpc().register(
-			{ coder: codingService, appRegistry, windows: windowContextManager },
+			{ coding: codingService, appRegistry, windows: windowContextManager },
 			eventBus
 		)
 	);

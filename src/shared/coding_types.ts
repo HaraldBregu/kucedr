@@ -177,7 +177,7 @@ export interface CodingAuthStatus {
 	readonly source?: string;
 }
 
-export function isCoderSettings(value: unknown): value is CodingSettings {
+export function isCodingSettings(value: unknown): value is CodingSettings {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
 	const settings = value as Partial<CodingSettings>;
 	return (
@@ -192,7 +192,7 @@ export function isCoderSettings(value: unknown): value is CodingSettings {
 	);
 }
 
-export function isCoderRunRequest(value: unknown): value is CodingRunRequest {
+export function isCodingRunRequest(value: unknown): value is CodingRunRequest {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
 	const request = value as Partial<CodingRunRequest>;
 	return (
@@ -206,7 +206,7 @@ export function isCoderRunRequest(value: unknown): value is CodingRunRequest {
 	);
 }
 
-export function isCoderProjectInstructionsUpdate(
+export function isCodingProjectInstructionsUpdate(
 	value: unknown
 ): value is CodingProjectInstructionsUpdate {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;

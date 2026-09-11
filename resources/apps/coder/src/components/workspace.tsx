@@ -10,14 +10,14 @@ import { Blocks } from '@/components/blocks';
 import { Composer } from '@/components/composer';
 import type { CodingController } from '@/controller';
 
-export function Workspace({ coder }: { coder: CodingController }) {
+export function Workspace({ coding }: { coding: CodingController }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [atBottom, setAtBottom] = useState(true);
 
 	useEffect(() => {
 		const scroll = scrollRef.current;
 		if (scroll && atBottom) scroll.scrollTop = scroll.scrollHeight;
-	}, [atBottom, coder.blocks, coder.runLabel]);
+	}, [atBottom, coding.blocks, coding.runLabel]);
 
 	const scrollToLatest = () => {
 		const scroll = scrollRef.current;
@@ -36,13 +36,13 @@ export function Workspace({ coder }: { coder: CodingController }) {
 					setAtBottom(target.scrollHeight - target.scrollTop - target.clientHeight < 72);
 				}}
 			>
-				{coder.loading ? (
+				{coding.loading ? (
 					<div className="mx-auto max-w-4xl space-y-3 p-6">
 						<Skeleton className="h-4 w-1/3" />
 						<Skeleton className="h-4 w-full" />
 						<Skeleton className="h-4 w-4/5" />
 					</div>
-				) : !coder.activeProject ? (
+				) : !coding.activeProject ? (
 					<Empty>
 						<FolderOpen className="size-5 text-muted-foreground" />
 						<div>
@@ -51,46 +51,46 @@ export function Workspace({ coder }: { coder: CodingController }) {
 								Choose a folder to start coding.
 							</p>
 						</div>
-						<Button onClick={() => void coder.addProject()} disabled={coder.busy}>
+						<Button onClick={() => void coding.addProject()} disabled={coding.busy}>
 							<FolderOpen /> Choose folder
 						</Button>
 					</Empty>
-				) : !coder.activeProject.available ? (
+				) : !coding.activeProject.available ? (
 					<Empty>
 						<TriangleAlert className="size-7 text-destructive" />
 						<div>
 							<h1 className="text-sm font-medium">Project folder unavailable</h1>
 							<p className="mt-1 max-w-md break-all text-xs text-muted-foreground">
-								{coder.activeProject.directory}
+								{coding.activeProject.directory}
 							</p>
 						</div>
 						<Button
 							variant="outline"
-							onClick={() => void coder.removeProject(coder.activeProject!.id)}
+							onClick={() => void coding.removeProject(coding.activeProject!.id)}
 						>
 							Remove from Coding
 						</Button>
 					</Empty>
-				) : coder.blocks.length === 0 ? (
+				) : coding.blocks.length === 0 ? (
 					<Empty>
 						<p className="text-xs text-muted-foreground">
 							Start with a prompt or switch to Command.
 						</p>
 					</Empty>
 				) : (
-					<Blocks coder={coder} />
+					<Blocks coding={coding} />
 				)}
 
-				{coder.error ? (
+				{coding.error ? (
 					<div className="p-4 sm:px-6">
 						<Alert className="border-destructive/30 bg-destructive/5 text-destructive">
-							{coder.error}
+							{coding.error}
 						</Alert>
 					</div>
 				) : null}
 			</div>
 
-			{!atBottom && coder.blocks.length > 0 ? (
+			{!atBottom && coding.blocks.length > 0 ? (
 				<Tooltip>
 					<TooltipTrigger
 						render={
@@ -110,9 +110,9 @@ export function Workspace({ coder }: { coder: CodingController }) {
 			) : null}
 
 			<div className="sr-only" aria-live="polite">
-				{coder.runLabel}
+				{coding.runLabel}
 			</div>
-			<Composer coder={coder} />
+			<Composer coding={coding} />
 		</div>
 	);
 }

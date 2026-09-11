@@ -32,13 +32,13 @@ const isMac =
 	(navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac'));
 
 export function Header({
-	coder,
+	coding,
 	onOpenConfiguration,
 	onOpenInstructions,
 	onOpenSidebar,
 	sidebarOpen,
 }: {
-	coder: CodingController;
+	coding: CodingController;
 	onOpenConfiguration: () => void;
 	onOpenInstructions: () => void;
 	onOpenSidebar: () => void;
@@ -62,12 +62,12 @@ export function Header({
 			<h1 className="min-w-0 shrink truncate text-sm font-medium">Coder</h1>
 			<div className="min-w-0 flex-1" />
 
-			{coder.runState === 'running' ? (
+			{coding.runState === 'running' ? (
 				<span className="mr-3 hidden items-center gap-1.5 text-[11px] text-muted-foreground sm:flex">
-					<LoaderCircle className="size-3 animate-spin" /> {coder.runLabel}
+					<LoaderCircle className="size-3 animate-spin" /> {coding.runLabel}
 				</span>
-			) : coder.runState === 'error' ? (
-				<span className="mr-3 hidden text-[11px] text-destructive sm:block">{coder.runLabel}</span>
+			) : coding.runState === 'error' ? (
+				<span className="mr-3 hidden text-[11px] text-destructive sm:block">{coding.runLabel}</span>
 			) : null}
 			<div
 				className="z-10 mr-3 flex h-full items-center gap-1"
@@ -99,7 +99,7 @@ export function Header({
 					<User className="size-4" strokeWidth={1.8} />
 				</Button>
 
-				{coder.activeProject ? (
+				{coding.activeProject ? (
 					<DropdownMenu>
 						<DropdownMenuTrigger
 							render={
@@ -109,16 +109,16 @@ export function Header({
 							}
 						/>
 						<DropdownMenuContent>
-							<DropdownMenuItem onClick={() => void coder.openProject(coder.activeProject!.id)}>
+							<DropdownMenuItem onClick={() => void coding.openProject(coding.activeProject!.id)}>
 								<FolderOpen /> Open folder
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								onClick={() => void navigator.clipboard.writeText(coder.activeProject!.directory)}
+								onClick={() => void navigator.clipboard.writeText(coding.activeProject!.directory)}
 							>
 								<Copy /> Copy path
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								disabled={!coder.activeProject.available}
+								disabled={!coding.activeProject.available}
 								onClick={onOpenInstructions}
 							>
 								<FileText /> Agent instructions
@@ -126,8 +126,8 @@ export function Header({
 							<DropdownMenuSeparator />
 							<DropdownMenuItem
 								variant="destructive"
-								disabled={coder.runState === 'running'}
-								onClick={() => void coder.removeProject(coder.activeProject!.id)}
+								disabled={coding.runState === 'running'}
+								onClick={() => void coding.removeProject(coding.activeProject!.id)}
 							>
 								<Trash2 /> Remove workspace
 							</DropdownMenuItem>
@@ -142,8 +142,8 @@ export function Header({
 								variant="ghost"
 								size="icon-sm"
 								aria-label="New coding session"
-								disabled={!coder.activeProject || coder.runState === 'running'}
-								onClick={() => coder.newSession()}
+								disabled={!coding.activeProject || coding.runState === 'running'}
+								onClick={() => coding.newSession()}
 							>
 								<Plus />
 							</Button>

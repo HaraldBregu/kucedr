@@ -11,7 +11,7 @@ import {
 import os from 'node:os';
 import path from 'node:path';
 import type { CodingProject } from '../../../../src/shared/coding_types';
-import { CodingInstructions } from '../../../../src/main/coder/instructions';
+import { CodingInstructions } from '../../../../src/main/coding/instructions';
 
 const timestamp = '2026-08-22T08:00:00.000Z';
 

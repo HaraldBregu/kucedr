@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
-import { CodingIpc } from '../../../../src/main/ipc/coder';
+import { CodingIpc } from '../../../../src/main/ipc/coding';
 import { CodingChannels } from '../../../../src/shared/ipc_channels_definitions';
-import type { Coder } from '../../../../src/main/coder';
+import type { Coder } from '../../../../src/main/coding';
 import type { EventBus } from '../../../../src/main/event_bus';
 
 const windows = { has: jest.fn() };
@@ -17,14 +17,14 @@ it('streams Coder app runs back to the originating view and scopes cancellation'
 		.mockResolvedValue({ projectId: 'project-1', sessionId: 'session-1', output: 'reply' });
 	const cancel = jest.fn().mockReturnValue(true);
 	const request = { projectId: 'project-1', mode: 'agent', input: 'prompt' } as const;
-	const coder = {
+	const coding = {
 		getSettings: jest.fn().mockReturnValue({ runtime: 'pi' }),
 		send,
 		cancel,
 	} as unknown as Coder;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
-		resolve: jest.fn().mockReturnValue('coder'),
+		resolve: jest.fn().mockReturnValue('coding'),
 	};
 	const sender = {
 		id: 23,
@@ -33,7 +33,7 @@ it('streams Coder app runs back to the originating view and scopes cancellation'
 		removeListener: jest.fn(),
 	};
 	new CodingIpc().register(
-		{ coder, appRegistry: appRegistry as never, windows: windows as never },
+		{ coding, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const handler = (channel: string) =>
@@ -82,7 +82,7 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 		lastOpenedAt: '2026-08-20T10:00:00.000Z',
 		available: true,
 	};
-	const coder = {
+	const coding = {
 		listProjects: jest.fn().mockReturnValue([selectedProject]),
 		addProject: jest.fn().mockReturnValue(selectedProject),
 		listSessions: jest.fn().mockResolvedValue([]),
@@ -93,7 +93,7 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 	} as unknown as Coder;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
-		resolve: jest.fn().mockReturnValue('coder'),
+		resolve: jest.fn().mockReturnValue('coding'),
 	};
 	const sender = { id: 23 };
 	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(undefined);
@@ -102,7 +102,7 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 		filePaths: ['/project'],
 	});
 	new CodingIpc().register(
-		{ coder, appRegistry: appRegistry as never, windows: windows as never },
+		{ coding, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const handler = (channel: string) =>
@@ -112,7 +112,7 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 		success: true,
 		data: selectedProject,
 	});
-	expect(coder.addProject).toHaveBeenCalledWith('/project');
+	expect(coding.addProject).toHaveBeenCalledWith('/project');
 	await expect(handler(CodingChannels.listProjects)({ sender })).resolves.toEqual({
 		success: true,
 		data: [selectedProject],
@@ -121,7 +121,7 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 		success: true,
 		data: [],
 	});
-	expect(coder.listSessions).toHaveBeenCalledWith('project-1');
+	expect(coding.listSessions).toHaveBeenCalledWith('project-1');
 	await expect(handler(CodingChannels.openProject)({ sender }, ' project-1 ')).resolves.toEqual({
 		success: true,
 		data: undefined,
@@ -130,34 +130,34 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 	await expect(
 		handler(CodingChannels.renameSession)({ sender }, ' project-1 ', ' session-1 ', ' Renamed ')
 	).resolves.toEqual({ success: true, data: { id: 'session-1', title: 'Renamed' } });
-	expect(coder.renameSession).toHaveBeenCalledWith('project-1', 'session-1', 'Renamed');
+	expect(coding.renameSession).toHaveBeenCalledWith('project-1', 'session-1', 'Renamed');
 	await expect(
 		handler(CodingChannels.deleteSession)({ sender }, ' project-1 ', ' session-1 ')
 	).resolves.toEqual({ success: true, data: true });
-	expect(coder.deleteSession).toHaveBeenCalledWith('project-1', 'session-1');
+	expect(coding.deleteSession).toHaveBeenCalledWith('project-1', 'session-1');
 	await expect(
 		handler(CodingChannels.getProjectInstructions)({ sender }, ' project-1 ')
 	).resolves.toEqual({ success: true, data: { projectId: 'project-1' } });
-	expect(coder.getProjectInstructions).toHaveBeenCalledWith('project-1');
+	expect(coding.getProjectInstructions).toHaveBeenCalledWith('project-1');
 	const update = { content: '  keep whitespace\n', expectedRevision: 'revision-1' };
 	await expect(
 		handler(CodingChannels.saveProjectInstructions)({ sender }, ' project-1 ', update)
 	).resolves.toEqual({ success: true, data: { projectId: 'project-1' } });
-	expect(coder.saveProjectInstructions).toHaveBeenCalledWith('project-1', update);
+	expect(coding.saveProjectInstructions).toHaveBeenCalledWith('project-1', update);
 });
 
 it('restricts project instruction files to the Coder app and validates updates', async () => {
-	const coder = {
+	const coding = {
 		getProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
 		saveProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
 	} as unknown as Coder;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
-		resolve: jest.fn().mockReturnValue('coder'),
+		resolve: jest.fn().mockReturnValue('coding'),
 	};
 	const sender = { id: 23 };
 	new CodingIpc().register(
-		{ coder, appRegistry: appRegistry as never, windows: windows as never },
+		{ coding, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const handler = (channel: string) =>
@@ -169,7 +169,7 @@ it('restricts project instruction files to the Coder app and validates updates',
 			expectedRevision: '',
 		})
 	).resolves.toEqual(expect.objectContaining({ success: false }));
-	expect(coder.saveProjectInstructions).not.toHaveBeenCalled();
+	expect(coding.saveProjectInstructions).not.toHaveBeenCalled();
 
 	appRegistry.has.mockReturnValue(false);
 	await expect(
@@ -182,17 +182,17 @@ it('restricts project instruction files to the Coder app and validates updates',
 			}),
 		})
 	);
-	expect(coder.getProjectInstructions).not.toHaveBeenCalled();
+	expect(coding.getProjectInstructions).not.toHaveBeenCalled();
 });
 
 it('rejects Coder access from other apps', async () => {
-	const coder = { getSettings: jest.fn(), send: jest.fn() } as unknown as Coder;
+	const coding = { getSettings: jest.fn(), send: jest.fn() } as unknown as Coder;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
 		resolve: jest.fn().mockReturnValue('demo'),
 	};
 	new CodingIpc().register(
-		{ coder, appRegistry: appRegistry as never, windows: windows as never },
+		{ coding, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const getSettings = (ipcMain.handle as jest.Mock).mock.calls.find(
@@ -217,7 +217,7 @@ it('rejects Coder access from other apps', async () => {
 	await expect(send({ sender }, 'prompt', 'run-1')).resolves.toEqual(
 		expect.objectContaining({ success: false })
 	);
-	expect(coder.send).not.toHaveBeenCalled();
+	expect(coding.send).not.toHaveBeenCalled();
 	await expect(listModels({ sender })).resolves.toEqual(
 		expect.objectContaining({ success: false })
 	);
@@ -228,7 +228,7 @@ it('allows configuration and authentication from the host and Coder app only', a
 		emit({ type: 'progress', message: 'Waiting' });
 		return Promise.resolve({ configured: true, type: 'oauth' });
 	});
-	const coder = {
+	const coding = {
 		saveSettings: jest.fn((settings) => settings),
 		listModels: jest.fn().mockResolvedValue({ providers: [] }),
 		connectCodex,
@@ -247,7 +247,7 @@ it('allows configuration and authentication from the host and Coder app only', a
 	const event = { sender, senderFrame: mainFrame };
 	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 1, webContents: sender });
 	new CodingIpc().register(
-		{ coder, appRegistry: appRegistry as never, windows: windows as never },
+		{ coding, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const handler = (channel: string) =>
@@ -266,12 +266,12 @@ it('allows configuration and authentication from the host and Coder app only', a
 	expect(sender.removeListener).toHaveBeenCalledWith('destroyed', expect.any(Function));
 
 	appRegistry.has.mockReturnValue(true);
-	(appRegistry as { resolve?: jest.Mock }).resolve = jest.fn().mockReturnValue('coder');
+	(appRegistry as { resolve?: jest.Mock }).resolve = jest.fn().mockReturnValue('coding');
 	await expect(handler(CodingChannels.listModels)(event)).resolves.toEqual({
 		success: true,
 		data: { providers: [] },
 	});
-	expect(coder.listModels).toHaveBeenCalled();
+	expect(coding.listModels).toHaveBeenCalled();
 
 	(appRegistry.resolve as jest.Mock).mockReturnValue('demo');
 	await expect(handler(CodingChannels.listModels)(event)).resolves.toEqual(

@@ -6,7 +6,7 @@ jest.mock('electron', () => ({
 	ipcRenderer: { invoke, on, removeListener },
 }));
 
-import { coder } from '../../../../src/preload/coder';
+import { coding } from '../../../../src/preload/coding';
 import { CodingChannels } from '../../../../src/shared/ipc_channels_definitions';
 
 beforeEach(() => {
@@ -25,7 +25,7 @@ it('normalizes run requests, filters events, and removes the exact event listene
 		mode: 'agent' as const,
 		input: ' inspect ',
 	};
-	const pending = coder.send(request, callback);
+	const pending = coding.send(request, callback);
 
 	const runId = invoke.mock.calls[0][2];
 	const listener = on.mock.calls[0][1];
@@ -70,22 +70,22 @@ it('normalizes run requests, filters events, and removes the exact event listene
 	expect(callback).toHaveBeenCalledTimes(1);
 	expect(callback).toHaveBeenCalledWith(expect.objectContaining({ delta: 'kept' }));
 	expect(runId).toHaveLength(36);
-	expect(() => coder.send({ projectId: 'project-1', mode: 'agent', input: ' ' })).toThrow(
-		'Invalid coder run request.'
+	expect(() => coding.send({ projectId: 'project-1', mode: 'agent', input: ' ' })).toThrow(
+		'Invalid coding run request.'
 	);
 });
 
 it('normalizes project and session identifiers before forwarding them', async () => {
-	await coder.openProject(' project-1 ');
+	await coding.openProject(' project-1 ');
 	expect(invoke).toHaveBeenCalledWith(CodingChannels.openProject, 'project-1');
 
-	await coder.listSessions(' project-1 ');
+	await coding.listSessions(' project-1 ');
 	expect(invoke).toHaveBeenCalledWith(CodingChannels.listSessions, 'project-1');
 
-	await coder.getSession(' project-1 ', ' session-1 ');
+	await coding.getSession(' project-1 ', ' session-1 ');
 	expect(invoke).toHaveBeenCalledWith(CodingChannels.getSession, 'project-1', 'session-1');
 
-	await coder.renameSession(' project-1 ', ' session-1 ', ' Focused tests ');
+	await coding.renameSession(' project-1 ', ' session-1 ', ' Focused tests ');
 	expect(invoke).toHaveBeenCalledWith(
 		CodingChannels.renameSession,
 		'project-1',
@@ -93,34 +93,34 @@ it('normalizes project and session identifiers before forwarding them', async ()
 		'Focused tests'
 	);
 
-	await coder.deleteSession(' project-1 ', ' session-1 ');
+	await coding.deleteSession(' project-1 ', ' session-1 ');
 	expect(invoke).toHaveBeenCalledWith(CodingChannels.deleteSession, 'project-1', 'session-1');
 
-	await coder.getProjectInstructions(' project-1 ');
+	await coding.getProjectInstructions(' project-1 ');
 	expect(invoke).toHaveBeenCalledWith(CodingChannels.getProjectInstructions, 'project-1');
 
 	const update = { content: '  keep whitespace\n', expectedRevision: 'revision-1' };
-	await coder.saveProjectInstructions(' project-1 ', update);
+	await coding.saveProjectInstructions(' project-1 ', update);
 	expect(invoke).toHaveBeenCalledWith(CodingChannels.saveProjectInstructions, 'project-1', update);
 
-	expect(() => coder.removeProject(' ')).toThrow('Invalid coder project id.');
-	expect(() => coder.getSession('project-1', ' ')).toThrow('Invalid coder session.');
-	expect(() => coder.renameSession('project-1', 'session-1', ' ')).toThrow(
-		'Invalid coder session title.'
+	expect(() => coding.removeProject(' ')).toThrow('Invalid coding project id.');
+	expect(() => coding.getSession('project-1', ' ')).toThrow('Invalid coding session.');
+	expect(() => coding.renameSession('project-1', 'session-1', ' ')).toThrow(
+		'Invalid coding session title.'
 	);
 	expect(() =>
-		coder.saveProjectInstructions('project-1', { content: 'content', expectedRevision: '' })
-	).toThrow('Invalid coder project instructions.');
+		coding.saveProjectInstructions('project-1', { content: 'content', expectedRevision: '' })
+	).toThrow('Invalid coding project instructions.');
 });
 
 it('validates settings before forwarding them to main', () => {
 	expect(() =>
-		coder.saveSettings({
+		coding.saveSettings({
 			runtime: 'pi',
 			providerId: 'unsupported',
 			modelId: 'model',
 			thinkingLevel: 'medium',
 			toolMode: 'read-only',
 		} as never)
-	).toThrow('Invalid coder settings.');
+	).toThrow('Invalid coding settings.');
 });

@@ -66,8 +66,8 @@ export {
 	CODING_PROVIDER_IDS,
 	CODING_THINKING_LEVELS,
 	CODING_TOOL_MODES,
-	isCoderRunRequest,
-	isCoderSettings,
+	isCodingRunRequest,
+	isCodingSettings,
 	type CodingAuthEvent,
 	type CodingAuthStatus,
 	type CodingCatalog,
@@ -120,7 +120,7 @@ function bridge<T extends object>(name: string): T {
 
 export const app = bridge<AppApi>('app');
 export const agent = bridge<AgentApi>('agent');
-export const coder = bridge<CodingApi>('coder');
+export const coding = bridge<CodingApi>('coding');
 export const models = bridge<ModelsApi>('models');
 export const terminal = bridge<TerminalApi>('terminalAPI');
 export const win = bridge<WindowApi>('win');

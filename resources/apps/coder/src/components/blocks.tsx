@@ -109,10 +109,10 @@ function ToolBlock({ block }: { block: Extract<CodingBlock, { type: 'tool' }> })
 
 function CommandBlock({
 	block,
-	coder,
+	coding,
 }: {
 	block: Extract<CodingBlock, { type: 'command' }>;
-	coder: CodingController;
+	coding: CodingController;
 }) {
 	const [open, setOpen] = useState(true);
 	const failed = block.status === 'failed';
@@ -165,10 +165,10 @@ function CommandBlock({
 								<Clipboard /> Copy output
 							</DropdownMenuItem>
 							<DropdownMenuItem
-								disabled={coder.runState === 'running'}
+								disabled={coding.runState === 'running'}
 								onClick={() => {
-									coder.setMode('shell');
-									coder.setInput(block.command);
+									coding.setMode('shell');
+									coding.setInput(block.command);
 									document.querySelector<HTMLTextAreaElement>('#coding-composer')?.focus();
 								}}
 							>
@@ -191,16 +191,16 @@ function CommandBlock({
 	);
 }
 
-export function Blocks({ coder }: { coder: CodingController }) {
+export function Blocks({ coding }: { coding: CodingController }) {
 	return (
 		<div className="py-2">
-			{coder.blocks.map((block) =>
+			{coding.blocks.map((block) =>
 				block.type === 'message' ? (
 					<MessageBlock key={block.id} block={block} />
 				) : block.type === 'tool' ? (
 					<ToolBlock key={block.id} block={block} />
 				) : (
-					<CommandBlock key={block.id} block={block} coder={coder} />
+					<CommandBlock key={block.id} block={block} coding={coding} />
 				)
 			)}
 		</div>

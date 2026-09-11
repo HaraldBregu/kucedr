@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
 	app,
-	coder,
+	coding,
 	isKucedr,
 	type CodingAuthEvent,
 	type CodingCatalog,
@@ -50,7 +50,7 @@ export function useConfiguration() {
 	const [error, setError] = useState('');
 
 	const refreshCatalog = async (): Promise<void> => {
-		if (!preview) setCatalog(await coder.listModels());
+		if (!preview) setCatalog(await coding.listModels());
 	};
 	const save = async (next: CodingSettings): Promise<void> => {
 		setSettings(next);
@@ -58,7 +58,7 @@ export function useConfiguration() {
 		setSaving(true);
 		setError('');
 		try {
-			setSettings(await coder.saveSettings(next));
+			setSettings(await coding.saveSettings(next));
 		} catch (reason) {
 			setError(reason instanceof Error ? reason.message : 'Unable to save Coder settings.');
 		} finally {
@@ -69,7 +69,7 @@ export function useConfiguration() {
 	useEffect(() => {
 		if (preview) return;
 		let active = true;
-		void Promise.all([coder.getSettings(), coder.listModels()])
+		void Promise.all([coding.getSettings(), coding.listModels()])
 			.then(([nextSettings, nextCatalog]) => {
 				if (!active) return;
 				setSettings(nextSettings);
@@ -109,7 +109,7 @@ export function useConfiguration() {
 		setAuthEvent(null);
 		setError('');
 		try {
-			await coder.connectCodex((event) => {
+			await coding.connectCodex((event) => {
 				setAuthEvent(event);
 				if (event.type === 'device-code') void app.openExternalUrl(event.verificationUri);
 				if (event.type === 'auth-url') void app.openExternalUrl(event.url);
@@ -126,7 +126,7 @@ export function useConfiguration() {
 		setConnecting(true);
 		setError('');
 		try {
-			await coder.disconnectCodex();
+			await coding.disconnectCodex();
 			await refreshCatalog();
 		} catch (reason) {
 			setError(reason instanceof Error ? reason.message : 'Unable to disconnect Codex.');
@@ -135,7 +135,7 @@ export function useConfiguration() {
 		}
 	};
 	const cancelConnect = async (): Promise<void> => {
-		if (!preview) await coder.cancelCodexLogin();
+		if (!preview) await coding.cancelCodexLogin();
 	};
 
 	const selectedProvider = catalog.providers.find((item) => item.id === settings?.providerId);

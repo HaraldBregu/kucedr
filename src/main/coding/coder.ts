@@ -299,7 +299,7 @@ export class Coder {
 			const model = runtime.getModel(settings.providerId, settings.modelId);
 			if (!model) throw new Error('Select an available Pi model in Coder settings.');
 			if (!(await runtime.checkAuth(settings.providerId))) {
-				throw new Error(`Connect ${settings.providerId} before starting a coder run.`);
+				throw new Error(`Connect ${settings.providerId} before starting a coding run.`);
 			}
 			const settingsManager = SettingsManager.inMemory(
 				{

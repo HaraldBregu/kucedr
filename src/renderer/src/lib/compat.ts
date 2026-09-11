@@ -22,7 +22,7 @@ import type { SttRealtimeEvent } from '../../../shared/stt_transcription';
 
 export const AGENTS = {
 	assistant: 'assistant',
-	coder: 'coder',
+	coding: 'coding',
 	speechToText: 'speech-to-text',
 	textToSpeech: 'text-to-speech',
 	textToImage: 'text-to-image',

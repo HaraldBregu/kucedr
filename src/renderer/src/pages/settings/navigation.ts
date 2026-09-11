@@ -60,11 +60,11 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		icon: Bot,
 	},
 	{
-		id: AGENTS.coder,
-		path: '/settings/coder',
-		labelKey: 'settings.coder.title',
-		descriptionKey: 'settings.coder.description',
-		keywords: 'coder coding pi codex anthropic claude openai agent harness runtime',
+		id: AGENTS.coding,
+		path: '/settings/coding',
+		labelKey: 'settings.coding.title',
+		descriptionKey: 'settings.coding.description',
+		keywords: 'coding coding pi codex anthropic claude openai agent harness runtime',
 		icon: Code2,
 	},
 ] as const;

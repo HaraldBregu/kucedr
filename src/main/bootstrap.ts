@@ -15,7 +15,7 @@ import { transferStorage } from './storage/s3/transfer';
 import { storageProviders } from './storage/providers';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
-import { Coder, CodingProjectStore, CodingStore } from './coder';
+import { Coder, CodingProjectStore, CodingStore } from './coding';
 import { getProvider, getStorageSettings } from './settings_store';
 import { agentLocation } from './shared/agent_location';
 import { EnvironmentManager } from './terminal/environment';
