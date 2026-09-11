@@ -46,7 +46,12 @@ export default function App() {
 						/>
 					</Sidebar>
 					<SidebarInset>
-						<Header coder={coder} onOpenInstructions={() => void openPage('instructions')} />
+						<Header
+							coder={coder}
+							onOpenConfiguration={() => void openPage('configuration')}
+							onOpenInstructions={() => void openPage('instructions')}
+							sidebarOpen={coder.leftOpen}
+						/>
 						<div className="flex min-h-0 flex-1 flex-col">
 							{page === 'configuration' ? (
 								<Configuration
