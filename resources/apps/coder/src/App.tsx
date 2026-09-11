@@ -46,6 +46,7 @@ export default function App() {
 						/>
 					</Sidebar>
 					<SidebarInset>
+						<Header coder={coder} onOpenInstructions={() => void openPage('instructions')} />
 						{page === 'configuration' ? (
 							<Configuration
 								onDone={() => {
@@ -61,10 +62,7 @@ export default function App() {
 								onDone={() => void openPage('workspace')}
 							/>
 						) : (
-							<>
-								<Header coder={coder} onOpenInstructions={() => void openPage('instructions')} />
-								<Workspace coder={coder} />
-							</>
+							<Workspace coder={coder} />
 						)}
 					</SidebarInset>
 				</main>
