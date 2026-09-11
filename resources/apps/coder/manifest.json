@@ -5,6 +5,6 @@
 		"version": "1.0.0",
 		"category": "utility",
 		"entry": "dist/index.html",
-		"image": "assets/images/preview.png"
+		"image": "assets/images/logo.png"
 	}
 }
