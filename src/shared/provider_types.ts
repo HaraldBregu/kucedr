@@ -110,30 +110,10 @@ export type StoredProviderKind = 'models' | 'databases' | 'channels';
 
 export type ProviderCredentialKind = Exclude<StoredProviderKind, 'channels'> | 'search_engines';
 
-export type ProviderSyncStatus = 'local' | 'pending' | 'synced' | 'memoryOnly';
-
 export interface ProviderCredentialSaveInput {
 	kind: Exclude<ProviderCredentialKind, 'search_engines'>;
 	id: string;
 	apiKey: string;
-}
-
-export interface ProviderCredentialSummary {
-	kind: ProviderCredentialKind;
-	id: string;
-	name: string;
-	baseUrl: string;
-	configured: boolean;
-	syncStatus: ProviderSyncStatus;
-}
-
-export interface ProviderVaultStatus {
-	persistence: 'encrypted' | 'memory';
-	cloudConfigured: boolean;
-	unlocked: boolean;
-	pending: number;
-	lastSyncedAt?: string;
-	warning?: string;
 }
 
 /** A provider's credentials as saved by the user. */
