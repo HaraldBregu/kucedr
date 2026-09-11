@@ -112,7 +112,7 @@ it('restores default window values without showing custom controls', async () =>
 
 	await screen.findByRole('spinbutton', { name: 'settings.apps.window.width' });
 	await user.click(screen.getByRole('combobox', { name: 'settings.apps.window.values' }));
-	await user.click(screen.getByRole('option', { name: 'settings.apps.window.default' }));
+	await user.click(await screen.findByRole('option', { name: 'settings.apps.window.default' }));
 
 	await waitFor(() => expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', {}));
 	expect(screen.queryByRole('spinbutton', { name: 'settings.apps.window.width' })).not.toBeInTheDocument();
