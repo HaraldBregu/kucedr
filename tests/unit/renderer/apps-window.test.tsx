@@ -56,7 +56,6 @@ it('shows app information before its window configuration', async () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/apps/my-app']}>
 			<Routes>
-				<Route path="/settings/apps" element={<p>Apps list</p>} />
 				<Route path="/settings/apps/:appId" element={<AppDetailsPage />} />
 			</Routes>
 		</MemoryRouter>
@@ -72,6 +71,7 @@ it('offers deletion from the detail page options menu', async () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/apps/my-app']}>
 			<Routes>
+				<Route path="/settings/apps" element={<p>Apps list</p>} />
 				<Route path="/settings/apps/:appId" element={<AppDetailsPage />} />
 			</Routes>
 		</MemoryRouter>
