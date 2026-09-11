@@ -1,5 +1,17 @@
-import { Copy, FileText, FolderOpen, LoaderCircle, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
-import type { CSSProperties } from 'react';
+import {
+	Copy,
+	FileText,
+	FolderOpen,
+	LoaderCircle,
+	Minus,
+	MoreHorizontal,
+	Plus,
+	Square,
+	Trash2,
+	X,
+} from 'lucide-react';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { isKucedr, win } from '@kucedr/sdk';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,6 +25,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import type { CoderController } from '@/controller';
 
+const isMac =
+	typeof navigator !== 'undefined' &&
+	(navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac'));
+
 export function Header({
 	coder,
 	onOpenInstructions,
@@ -21,10 +37,18 @@ export function Header({
 	onOpenInstructions: () => void;
 }): React.JSX.Element {
 	const session = coder.sessions.find((item) => item.id === coder.activeSessionId);
+	const inKucedr = isKucedr();
+	const [isMaximized, setIsMaximized] = useState(false);
+
+	useEffect(() => {
+		if (!inKucedr || isMac) return;
+		void win.isMaximized().then(setIsMaximized);
+		return win.onMaximizeChange(setIsMaximized);
+	}, [inKucedr]);
 
 	return (
 		<header
-			className="flex h-12 shrink-0 items-center gap-2 bg-transparent px-3"
+			className={`flex h-12 shrink-0 items-center gap-2 bg-transparent ${isMac ? 'pl-[76px] pr-3' : 'px-3'}`}
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
 			<SidebarTrigger className="[webkit-app-region:no-drag]" />
@@ -97,6 +121,45 @@ export function Header({
 				/>
 				<TooltipContent>New session · ⌘/Ctrl N</TooltipContent>
 			</Tooltip>
+
+			{!isMac ? (
+				<div
+					className="-mr-3 ml-1 flex h-full items-center"
+					style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+				>
+					<button
+						type="button"
+						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors hover:bg-accent/80 hover:text-foreground active:bg-accent"
+						onClick={() => inKucedr && win.minimize()}
+						title="Minimize"
+						aria-label="Minimize"
+					>
+						<Minus className="size-[13px]" strokeWidth={1.5} />
+					</button>
+					<button
+						type="button"
+						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors hover:bg-accent/80 hover:text-foreground active:bg-accent"
+						onClick={() => inKucedr && win.maximize()}
+						title={isMaximized ? 'Restore' : 'Maximize'}
+						aria-label={isMaximized ? 'Restore' : 'Maximize'}
+					>
+						{isMaximized ? (
+							<Copy className="size-[11px]" strokeWidth={1.5} />
+						) : (
+							<Square className="size-[11px]" strokeWidth={1.5} />
+						)}
+					</button>
+					<button
+						type="button"
+						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
+						onClick={() => inKucedr && win.close()}
+						title="Close"
+						aria-label="Close"
+					>
+						<X className="size-[13px]" strokeWidth={1.5} />
+					</button>
+				</div>
+			) : null}
 		</header>
 	);
 }
