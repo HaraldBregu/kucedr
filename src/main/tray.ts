@@ -86,9 +86,6 @@ export class Tray {
 
 	private handleTrayIconClick(): void {
 		switch (this.callbacks.getTrayClickAction()) {
-			case 'start-persona':
-				this.callbacks.onStartPersona();
-				return;
 			case 'toggle-persona':
 				if (!this.callbacks.isPersonaActive()) {
 					this.callbacks.onStartPersona();

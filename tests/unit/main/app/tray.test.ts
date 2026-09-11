@@ -166,8 +166,8 @@ it('starts, hides, and shows the Persona without ending its conversation', () =>
 	expect(active).toBe(true);
 });
 
-it('uses the configured action when the tray icon is clicked', () => {
-	let action: 'toggle-chat' | 'start-persona' | 'toggle-persona' = 'toggle-chat';
+it('activates, hides, and shows Persona from the configured tray icon action', () => {
+	let action: 'toggle-chat' | 'toggle-persona' = 'toggle-chat';
 	let active = false;
 	let visible = false;
 	const toggleChat = jest.fn();
@@ -197,8 +197,6 @@ it('uses the configured action when the tray icon is clicked', () => {
 
 	tray.create();
 	const click = trayClickHandler();
-	click();
-	action = 'start-persona';
 	click();
 	action = 'toggle-persona';
 	click();

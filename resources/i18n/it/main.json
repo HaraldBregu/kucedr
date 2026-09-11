@@ -294,9 +294,8 @@
 			"trayClickAction": {
 				"title": "Clic sull'icona nel menu",
 				"description": "Scegli cosa accade quando fai clic sull'icona nel menu",
-				"toggleChat": "Mostra o nascondi chat",
-				"startPersona": "Avvia Persona",
-				"togglePersona": "Mostra o nascondi Persona"
+				"chat": "Chat",
+				"persona": "Persona"
 			},
 			"keepAwake": "Mantieni il computer attivo",
 			"keepAwakeDescription": "Mantieni attivi il computer e lo schermo mentre Kucedr è in esecuzione",

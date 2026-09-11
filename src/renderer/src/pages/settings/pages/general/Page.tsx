@@ -41,9 +41,8 @@ const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
 ] as const;
 
 const TRAY_CLICK_ACTION_OPTIONS = [
-	{ value: 'toggle-chat', labelKey: 'settings.application.trayClickAction.toggleChat' },
-	{ value: 'start-persona', labelKey: 'settings.application.trayClickAction.startPersona' },
-	{ value: 'toggle-persona', labelKey: 'settings.application.trayClickAction.togglePersona' },
+	{ value: 'toggle-chat', labelKey: 'settings.application.trayClickAction.chat' },
+	{ value: 'toggle-persona', labelKey: 'settings.application.trayClickAction.persona' },
 ] as const;
 
 type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];

@@ -12,7 +12,13 @@ import { normalizeStorageSettings } from './storage/storage_config';
 import { storageProviders } from './storage/providers';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
 import type { PersistedTaskState } from './tasks/tasks_types';
-import type { AppLanguage, AppLaunchState, AppTheme, TrayClickAction } from '../shared/app_types';
+import {
+	TRAY_CLICK_ACTIONS,
+	type AppLanguage,
+	type AppLaunchState,
+	type AppTheme,
+	type TrayClickAction,
+} from '../shared/app_types';
 import {
 	getModelProvidersState,
 	setModelProvidersState,
@@ -132,7 +138,11 @@ export function setTrayEnabled(enabled: boolean): void {
 }
 
 export function getTrayClickAction(): TrayClickAction {
-	return store.get('trayClickAction');
+	const action = store.get('trayClickAction') as string;
+	if (TRAY_CLICK_ACTIONS.includes(action as TrayClickAction)) return action as TrayClickAction;
+	const migratedAction: TrayClickAction = action === 'start-persona' ? 'toggle-persona' : 'toggle-chat';
+	store.set('trayClickAction', migratedAction);
+	return migratedAction;
 }
 
 export function setTrayClickAction(action: TrayClickAction): void {

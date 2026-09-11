@@ -92,7 +92,7 @@ it('saves the configured tray icon click action from General settings', async ()
 	await user.click(trayClickAction);
 	await user.click(
 		await screen.findByRole('option', {
-			name: 'settings.application.trayClickAction.togglePersona',
+			name: 'settings.application.trayClickAction.persona',
 		})
 	);
 

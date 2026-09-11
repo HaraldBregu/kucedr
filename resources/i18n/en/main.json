@@ -295,9 +295,8 @@
 			"trayClickAction": {
 				"title": "Tray Icon Click",
 				"description": "Choose what happens when you click the tray icon",
-				"toggleChat": "Toggle Chat",
-				"startPersona": "Start Persona",
-				"togglePersona": "Toggle Persona"
+				"chat": "Chat",
+				"persona": "Persona"
 			},
 			"keepAwake": "Keep Computer Active",
 			"keepAwakeDescription": "Keep the computer and display awake while Kucedr is running",
