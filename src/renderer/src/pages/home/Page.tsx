@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PageContainer, Split } from '@/components/app/base/page';
-import appIcon from '@resources/icons/icon.png';
+import { LogoView } from '@/components/app/base/logo-view';
 import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
 import {
@@ -166,11 +166,7 @@ function EmptyConversation(): ReactElement {
 		<Empty className="mx-auto max-w-xl border-0 p-0">
 			<EmptyHeader className="max-w-lg gap-4">
 				<EmptyMedia className="mb-2">
-					<img
-						src={appIcon}
-						alt="Kucedr logo"
-						className="size-[72px] rounded-2xl object-contain dark:invert"
-					/>
+					<LogoView className="size-[72px] rounded-2xl" />
 				</EmptyMedia>
 				<EmptyTitle className="text-2xl font-bold leading-tight text-foreground">
 					What can I do for you?
