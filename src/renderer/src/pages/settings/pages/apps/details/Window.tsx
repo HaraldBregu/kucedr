@@ -214,7 +214,7 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 							</SettingsPanel>
 						</fieldset>
 							{customValues && !valid && (
-								<p id={`${id}-validation`} role="alert" className="text-xs text-destructive">
+								<p role="alert" className="text-xs text-destructive">
 									{t('settings.apps.window.invalid')}
 								</p>
 							)}
