@@ -90,7 +90,7 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 	protocol.handle(LOCAL_RESOURCE_SCHEME, handler(true));
 	const appSession = session.fromPartition(APP_SESSION_PARTITION);
 	appSession.protocol.handle(LOCAL_RESOURCE_SCHEME, handler(false));
-	appSession.protocol.handle(APP_RESOURCE_SCHEME, async (request) => {
+	const handleAppResource = async (request: Request): Promise<Response> => {
 		try {
 			const url = new URL(request.url);
 			if (!isAppId(url.host)) return new Response(null, { status: 403 });
@@ -118,7 +118,9 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 			logger.error('Apps', `App resource fetch failed for ${request.url}`, err);
 			return new Response(null, { status: 404 });
 		}
-	});
+	};
+	protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
+	appSession.protocol.handle(APP_RESOURCE_SCHEME, handleAppResource);
 }
 
 export function setupMediaPermissionHandlers(appRegistry: AppRegistry): void {

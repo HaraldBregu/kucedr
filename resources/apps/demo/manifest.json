@@ -1,6 +1,6 @@
 {
-	"title": "Coder",
-	"description": "A project-based Pi coding agent with persistent sessions and recorded shell commands.",
+	"title": "Demo",
+	"description": "Minimal Kucedr app-data demo app.",
 	"metadata": {
 		"version": "1.0.0",
 		"category": "utility",

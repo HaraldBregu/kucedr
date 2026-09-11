@@ -1,4 +1,5 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
+import path from 'node:path';
 import { appEntryPath } from './app_entry';
 import { isAppId } from './app_id';
 import { readAppManifest } from './app_read';
@@ -22,7 +23,14 @@ export function listApps(appLocation?: string): App[] {
 		} catch {
 			continue;
 		}
-		apps.push({ id: directory.name, ...manifest });
+		const image = manifest.metadata.image
+			? path.join(appsRoot(appLocation), directory.name, ...manifest.metadata.image.split('/'))
+			: undefined;
+		const imageUrl =
+			image && existsSync(image) && statSync(image).isFile()
+				? `kucedr-app://${directory.name}/${manifest.metadata.image}`
+				: undefined;
+		apps.push({ id: directory.name, ...manifest, ...(imageUrl && { imageUrl }) });
 	}
 	return apps.sort((left, right) => left.id.localeCompare(right.id));
 }
