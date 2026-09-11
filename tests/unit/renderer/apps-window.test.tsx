@@ -37,6 +37,7 @@ it('loads settings for the selected app inside its details page', async () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/apps/my-app']}>
 			<Routes>
+				<Route path="/settings/apps" element={<p>Apps list</p>} />
 				<Route path="/settings/apps/:appId" element={<AppDetailsPage />} />
 			</Routes>
 		</MemoryRouter>
