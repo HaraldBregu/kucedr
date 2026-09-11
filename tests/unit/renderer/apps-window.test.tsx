@@ -102,7 +102,6 @@ it('automatically saves edited dimensions and behavior for only the selected app
 });
 
 it('disables editing and duplicate saves while settings are being saved', async () => {
-	const user = userEvent.setup();
 	let complete!: (value: typeof settings) => void;
 	(window.apps.setSettings as jest.Mock).mockReturnValue(
 		new Promise((resolve) => {
