@@ -99,13 +99,13 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.tools': 'Tools',
 		'settings.modelServices.toolModels': 'Tool models',
 		'settings.modelServices.subtitle': 'Configure model assignments',
-		'settings.modelServices.imageAssistantName': 'Image',
+		'settings.modelServices.imageAssistantName': 'Text to image',
 		'settings.modelServices.voiceName': 'Voice',
 		'settings.modelServices.textToSpeechModelDescription': 'Text to speech model',
 		'settings.modelServices.transcriptionName': 'Transcription',
 		'settings.modelServices.transcriptionDescription': 'Speech-to-text transcription',
-		'settings.modelServices.musicCreatorName': 'Audio',
-		'settings.modelServices.videoCreatorName': 'Video',
+		'settings.modelServices.musicCreatorName': 'Text to audio',
+		'settings.modelServices.videoCreatorName': 'Text to video',
 		'settings.modelServices.imageModelDescription': 'Image defaults',
 		'settings.modelServices.musicModelDescription': 'Audio defaults',
 		'settings.modelServices.videoModelDescription': 'Video defaults',
@@ -262,9 +262,9 @@ it('groups independently collapsible provider settings in one card', async () =>
 		/Model/,
 		/Realtime conversation/,
 		/Voice/,
-		/Image/,
-		/Audio/,
-		/Video/,
+		/Text to image/,
+		/Text to audio/,
+		/Text to video/,
 		/Search Engine/,
 	]) {
 		const trigger = (await screen.findAllByRole('button', { name })).find(
@@ -296,13 +296,13 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const realtimeConversation = (
 		await screen.findAllByRole('button', { name: 'Realtime conversation' })
 	).find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
-	const image = (await screen.findAllByRole('button', { name: 'Image' })).find(
+	const image = (await screen.findAllByRole('button', { name: 'Text to image' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
-	const audio = (await screen.findAllByRole('button', { name: 'Audio' })).find(
+	const audio = (await screen.findAllByRole('button', { name: 'Text to audio' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
-	const video = (await screen.findAllByRole('button', { name: 'Video' })).find(
+	const video = (await screen.findAllByRole('button', { name: 'Text to video' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
 	expect(voice).toBeDefined();
