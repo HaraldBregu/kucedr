@@ -16,7 +16,7 @@
 	},
 	"dependencies": {
 		"@kucedr/sdk": "file:../../../packages/sdk",
-		"lucide-react": "^1.39.0",
+		"lucide-react": "^1.43.0",
 		"react": "^19.2.0",
 		"react-dom": "^19.2.0"
 	},
