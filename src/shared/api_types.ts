@@ -191,6 +191,13 @@ export interface AgentApi {
 	setModelId: (modelId: string) => Promise<boolean>;
 	getModelOptions: () => Promise<Record<string, unknown>>;
 	setModelOptions: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
+	getToolModel: (
+		kind: import('./agent_types').AgentToolModelKind
+	) => Promise<import('./agent_types').AgentMediaModelSettings>;
+	setToolModel: (
+		kind: import('./agent_types').AgentToolModelKind,
+		settings: import('./agent_types').AgentMediaModelSettings
+	) => Promise<import('./agent_types').AgentMediaModelSettings>;
 	policyGet: () => Promise<PermissionsSchema>;
 	policySet: (permissions: PermissionsSchema) => Promise<PermissionsSchema>;
 	policyReset: () => Promise<PermissionsSchema>;

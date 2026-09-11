@@ -46,9 +46,11 @@ import {
 	getModelId,
 	getModelOptions,
 	getProviderId,
+	getToolModel,
 	setModelId,
 	setModelOptions,
 	setProviderId,
+	setToolModel,
 } from '../agent/agent_store';
 import {
 	getRagConfiguration,
@@ -697,6 +699,28 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					return getModelOptions();
 				},
 				AgentChannels.setModelOptions
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.getToolModel,
+			wrapAgentHandler(
+				mainAccess,
+				(kind: unknown) => getToolModel(toToolModelKind(kind)),
+				AgentChannels.getToolModel
+			)
+		);
+		ipcMain.handle(
+			AgentChannels.setToolModel,
+			wrapAgentHandler(
+				mainAccess,
+				(kind: unknown, settings: unknown) => {
+					const toolKind = toToolModelKind(kind);
+					const next = toAgentMediaModelSettings(settings);
+					setToolModel(toolKind, next);
+					return getToolModel(toolKind);
+				},
+				AgentChannels.setToolModel
 			)
 		);
 

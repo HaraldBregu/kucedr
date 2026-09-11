@@ -275,6 +275,12 @@ export const agent: AgentApi = {
 	setModelOptions: (options: Record<string, unknown>): Promise<Record<string, unknown>> => {
 		return typedInvokeUnwrap(AgentChannels.setModelOptions, options);
 	},
+	getToolModel: (kind) => {
+		return typedInvokeUnwrap(AgentChannels.getToolModel, kind);
+	},
+	setToolModel: (kind, settings) => {
+		return typedInvokeUnwrap(AgentChannels.setToolModel, kind, settings);
+	},
 	policyGet: (): Promise<PermissionsSchema> => {
 		return typedInvokeUnwrap(AgentChannels.policyGet);
 	},

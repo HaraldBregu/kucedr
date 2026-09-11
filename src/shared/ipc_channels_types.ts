@@ -210,6 +210,17 @@ export interface AgentInvokeChannelMap {
 		args: [options: Record<string, unknown>];
 		result: Record<string, unknown>;
 	};
+	[AgentChannels.getToolModel]: {
+		args: [kind: import('./agent_types').AgentToolModelKind];
+		result: import('./agent_types').AgentMediaModelSettings;
+	};
+	[AgentChannels.setToolModel]: {
+		args: [
+			kind: import('./agent_types').AgentToolModelKind,
+			settings: import('./agent_types').AgentMediaModelSettings,
+		];
+		result: import('./agent_types').AgentMediaModelSettings;
+	};
 	[AgentChannels.policyGet]: {
 		args: [];
 		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
