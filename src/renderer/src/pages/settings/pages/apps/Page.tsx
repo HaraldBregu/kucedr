@@ -101,17 +101,20 @@ const AppsPage: React.FC = () => {
 		}
 	}, [loadApps, t]);
 
-	const handleOpen = useCallback(async (appId: string): Promise<void> => {
-		setOpeningAppId(appId);
-		setErrorMessage('');
-		try {
-			await window.apps.open(appId);
-		} catch (error) {
-			setErrorMessage(getErrorMessage(error, t('settings.apps.openError')));
-		} finally {
-			setOpeningAppId(null);
-		}
-	}, [t]);
+	const handleOpen = useCallback(
+		async (appId: string): Promise<void> => {
+			setOpeningAppId(appId);
+			setErrorMessage('');
+			try {
+				await window.apps.open(appId);
+			} catch (error) {
+				setErrorMessage(getErrorMessage(error, t('settings.apps.openError')));
+			} finally {
+				setOpeningAppId(null);
+			}
+		},
+		[t]
+	);
 
 	const appPath = useCallback(
 		(appId: string): string => `/settings/apps/${encodeURIComponent(appId)}`,
@@ -123,7 +126,7 @@ const AppsPage: React.FC = () => {
 			<SettingsPageHeader
 				title={t('settings.tabs.apps')}
 				description={t('settings.apps.description')}
-				 action={
+				action={
 					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
 						<PopoverTrigger asChild>
 							<Button
@@ -183,7 +186,11 @@ const AppsPage: React.FC = () => {
 			/>
 
 			{errorMessage && (
-				<SettingsNotice variant="destructive" icon={AlertTriangle} className="whitespace-pre-wrap break-words">
+				<SettingsNotice
+					variant="destructive"
+					icon={AlertTriangle}
+					className="whitespace-pre-wrap break-words"
+				>
 					{errorMessage}
 				</SettingsNotice>
 			)}
@@ -217,7 +224,9 @@ const AppsPage: React.FC = () => {
 									<div className="flex min-w-0 flex-col gap-2">
 										<div className="flex min-w-0 items-start justify-between gap-3">
 											<div className="min-w-0">
-												<h3 className="truncate text-sm font-medium text-foreground">{app.title}</h3>
+												<h3 className="truncate text-sm font-medium text-foreground">
+													{app.title}
+												</h3>
 												<p className="mt-0.5 line-clamp-2 text-[11px] leading-4 text-muted-foreground">
 													{app.description}
 												</p>
