@@ -52,9 +52,7 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 				if (!active) return;
 				setSaved(settings);
 				setDraft(settings);
-				setCustomValues(
-					WINDOW_KEYS.some((key) => settings[key] !== APP_WINDOW_DEFAULTS[key])
-				);
+				setCustomValues(WINDOW_KEYS.some((key) => settings[key] !== APP_WINDOW_DEFAULTS[key]));
 			})
 			.catch(() => {
 				if (active) setError('loadError');
@@ -82,28 +80,38 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 	);
 	const valid = settings !== null && isAppWindowSettings(settings);
 	const dirty =
-		settings !== null &&
-		saved !== null &&
-		WINDOW_KEYS.some((key) => settings[key] !== saved[key]);
+		settings !== null && saved !== null && WINDOW_KEYS.some((key) => settings[key] !== saved[key]);
 
-	const persist = useCallback(async (nextSettings: AppWindowSettings): Promise<void> => {
-		setSaving(true);
-		setError('');
-		setStatus('');
-		try {
-			const result = await window.apps.setSettings(appId, nextSettings);
-			setSaved(result);
-			setDraft(result);
-			setStatus('saved');
-		} catch {
-			setError('saveError');
-		} finally {
-			setSaving(false);
-		}
-	}, [appId]);
+	const persist = useCallback(
+		async (nextSettings: AppWindowSettings): Promise<void> => {
+			setSaving(true);
+			setError('');
+			setStatus('');
+			try {
+				const result = await window.apps.setSettings(appId, nextSettings);
+				setSaved(result);
+				setDraft(result);
+				setStatus('saved');
+			} catch {
+				setError('saveError');
+			} finally {
+				setSaving(false);
+			}
+		},
+		[appId]
+	);
 
 	useEffect(() => {
-		if (!customValues || !settings || !valid || !dirty || loading || saving || error === 'saveError') return;
+		if (
+			!customValues ||
+			!settings ||
+			!valid ||
+			!dirty ||
+			loading ||
+			saving ||
+			error === 'saveError'
+		)
+			return;
 		const timeout = window.setTimeout(() => void persist(settings), 300);
 		return () => window.clearTimeout(timeout);
 	}, [customValues, dirty, error, loading, persist, saving, settings, valid]);
@@ -174,55 +182,58 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 											key={key}
 											title={t(`settings.apps.window.${key}`)}
 											actions={
-											<Input
-												type="number"
-												min={1}
-												max={32768}
-												step={1}
-												required
-												className="h-8 text-xs"
-												value={draft[key]}
-												aria-invalid={!valid}
+												<Input
+													type="number"
+													min={1}
+													max={32768}
+													step={1}
+													required
+													className="h-8 text-xs"
+													value={draft[key]}
+													aria-invalid={!valid}
 													aria-label={t(`settings.apps.window.${key}`)}
 													onChange={(event) => {
-															setDraft((current) => current && { ...current, [key]: event.target.value });
-															setError('');
-															setStatus('');
-														}}
+														setDraft(
+															(current) => current && { ...current, [key]: event.target.value }
+														);
+														setError('');
+														setStatus('');
+													}}
 												/>
 											}
 										/>
 									))}
-								{customValues && TOGGLES.map((key) => (
-									<SettingsRow
-										key={key}
-										title={t(`settings.apps.window.${key}`)}
-										actions={
-											<Switch
-												checked={draft[key]}
-												disabled={saving}
-												aria-label={t(`settings.apps.window.${key}`)}
-												onCheckedChange={(checked) => {
-													setDraft((current) => current && { ...current, [key]: checked });
-													setError('');
-													setStatus('');
-												}}
-											/>
-										}
-									/>
-								))}
+								{customValues &&
+									TOGGLES.map((key) => (
+										<SettingsRow
+											key={key}
+											title={t(`settings.apps.window.${key}`)}
+											actions={
+												<Switch
+													checked={draft[key]}
+													disabled={saving}
+													aria-label={t(`settings.apps.window.${key}`)}
+													onCheckedChange={(checked) => {
+														setDraft((current) => current && { ...current, [key]: checked });
+														setError('');
+														setStatus('');
+													}}
+												/>
+											}
+										/>
+									))}
 							</SettingsPanel>
 						</fieldset>
-							{customValues && !valid && (
-								<p role="alert" className="text-xs text-destructive">
-									{t('settings.apps.window.invalid')}
-								</p>
-							)}
-							<div className="flex min-h-4 items-center">
-								<p role="status" className="text-xs text-muted-foreground">
-									{(saving || status) && t(`settings.apps.window.${saving ? 'saving' : status}`)}
-								</p>
-							</div>
+						{customValues && !valid && (
+							<p role="alert" className="text-xs text-destructive">
+								{t('settings.apps.window.invalid')}
+							</p>
+						)}
+						<div className="flex min-h-4 items-center">
+							<p role="status" className="text-xs text-muted-foreground">
+								{(saving || status) && t(`settings.apps.window.${saving ? 'saving' : status}`)}
+							</p>
+						</div>
 					</div>
 				)
 			)}

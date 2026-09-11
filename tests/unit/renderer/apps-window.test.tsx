@@ -49,7 +49,9 @@ it('loads settings for the selected app inside its details page', async () => {
 	expect(screen.getByRole('switch', { name: 'settings.apps.window.resizable' })).not.toBeChecked();
 	expect(window.apps.getSettings).toHaveBeenCalledWith('my-app');
 	expect(screen.getByText('settings.apps.window.nextOpen')).toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.apps.window.save' })
+	).not.toBeInTheDocument();
 });
 
 it('shows app information before its window configuration', async () => {
@@ -98,7 +100,9 @@ it('automatically saves edited dimensions and behavior for only the selected app
 
 	await waitFor(() => expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', updated));
 	expect(await screen.findByText('settings.apps.window.saved')).toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.apps.window.save' })
+	).not.toBeInTheDocument();
 });
 
 it('disables editing and duplicate saves while settings are being saved', async () => {
@@ -111,7 +115,9 @@ it('disables editing and duplicate saves while settings are being saved', async 
 	render(<WindowSettings appId="my-app" />);
 	const width = await screen.findByRole('spinbutton', { name: 'settings.apps.window.width' });
 	fireEvent.change(width, { target: { value: '1400' } });
-	await waitFor(() => expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', { ...settings, width: 1400 }));
+	await waitFor(() =>
+		expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', { ...settings, width: 1400 })
+	);
 	expect(width).toBeDisabled();
 	expect(screen.getByRole('switch', { name: 'settings.apps.window.resizable' })).toHaveAttribute(
 		'aria-disabled',
@@ -130,7 +136,9 @@ it.each(['', '0', '-1', '1.5', '32769', '619'])(
 		const width = await screen.findByRole('spinbutton', { name: 'settings.apps.window.width' });
 		fireEvent.change(width, { target: { value } });
 		expect(screen.getByRole('alert')).toHaveTextContent('settings.apps.window.invalid');
-		expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('button', { name: 'settings.apps.window.save' })
+		).not.toBeInTheDocument();
 		await new Promise((resolve) => window.setTimeout(resolve, 350));
 		expect(window.apps.setSettings).not.toHaveBeenCalled();
 	}
@@ -140,7 +148,9 @@ it('prevents minimum height exceeding default height', async () => {
 	render(<WindowSettings appId="my-app" />);
 	const minimum = await screen.findByRole('spinbutton', { name: 'settings.apps.window.minHeight' });
 	fireEvent.change(minimum, { target: { value: '901' } });
-	expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.apps.window.save' })
+	).not.toBeInTheDocument();
 	expect(screen.getByRole('alert')).toHaveTextContent('settings.apps.window.invalid');
 });
 
