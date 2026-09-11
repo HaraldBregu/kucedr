@@ -322,6 +322,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	expect(voice).toHaveTextContent('Eleven v3');
 	expect(model).toHaveTextContent('GPT');
 	expect(realtimeConversation).toHaveTextContent('GPT Realtime');
+	expect(voice.closest('[data-slot="card"]')).not.toBe(model.closest('[data-slot="card"]'));
 
 	const wiki = screen.getByRole('button', { name: /LLM Wiki/ });
 	const rag = screen.getByRole('button', { name: /RAG/ });

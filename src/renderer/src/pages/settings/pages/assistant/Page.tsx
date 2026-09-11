@@ -212,6 +212,9 @@ const AssistantPage: React.FC = () => {
 					showOptions={false}
 				/>
 
+			</SettingsPanel>
+
+			<SettingsPanel>
 				<AgentMediaModelConfiguration
 					api={window.models.voice}
 					capability="text-to-speech"
