@@ -235,7 +235,7 @@ const AppsPage: React.FC = () => {
 											<img
 												src={app.imageUrl}
 												alt=""
-												className="h-12 w-24 border border-border/70 object-cover"
+												className="size-16 border border-border/70 object-cover"
 											/>
 										</div>
 									) : (
