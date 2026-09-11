@@ -13,7 +13,6 @@ await mkdir(outputDirectory, { recursive: true });
 
 for (const size of pngSizes) {
 	const icon = await sharp(source)
-		.trim()
 		.resize({
 			width: size,
 			height: size,
