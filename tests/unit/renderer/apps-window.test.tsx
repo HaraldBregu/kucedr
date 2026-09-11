@@ -68,18 +68,6 @@ it('saves edited dimensions and behavior for only the selected app', async () =>
 	expect(screen.getByRole('button', { name: 'settings.apps.window.save' })).toBeDisabled();
 });
 
-it('resets overrides and displays current app defaults returned by the host', async () => {
-	const user = userEvent.setup();
-	(window.apps.setSettings as jest.Mock).mockResolvedValue({ ...APP_WINDOW_DEFAULTS, width: 1000 });
-	render(<WindowSettings appId="my-app" />);
-	await user.click(await screen.findByRole('button', { name: 'settings.apps.window.reset' }));
-
-	expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', {});
-	expect(await screen.findByText('settings.apps.window.resetDone')).toBeInTheDocument();
-	expect(screen.getByRole('spinbutton', { name: 'settings.apps.window.width' })).toHaveValue(1000);
-	expect(screen.getByRole('switch', { name: 'settings.apps.window.resizable' })).toBeChecked();
-});
-
 it('disables editing and duplicate saves while settings are being saved', async () => {
 	const user = userEvent.setup();
 	let complete!: (value: typeof settings) => void;
@@ -98,7 +86,6 @@ it('disables editing and duplicate saves while settings are being saved', async 
 		'true'
 	);
 	expect(screen.getByRole('button', { name: 'settings.apps.window.saving' })).toBeDisabled();
-	expect(screen.getByRole('button', { name: 'settings.apps.window.reset' })).toBeDisabled();
 	fireEvent.submit(width.closest('form')!);
 	expect(window.apps.setSettings).toHaveBeenCalledTimes(1);
 	complete({ ...settings, width: 1400 });

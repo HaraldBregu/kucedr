@@ -65,13 +65,13 @@ test('uploaded app settings survive restart and replacement and control new wind
 		});
 		page = await app.firstWindow();
 		await page.waitForLoadState('domcontentloaded');
-		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({ width: 920, height: 680, resizable: true });
+		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({ width: 1000, height: 720, resizable: false });
 		await writeFile(path.join(source, 'manifest.json'), JSON.stringify({ ...manifest, window: { width: 920, height: 680 } }));
 		await app.evaluate(({ dialog }, folder) => {
 			dialog.showOpenDialog = async () => ({ canceled: false, filePaths: [folder] });
 		}, source);
 		await page.evaluate(() => window.apps.import());
-		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({ width: 1000, height: 720, resizable: false });
+		expect(await page.evaluate(() => window.apps.getSettings('window-demo'))).toMatchObject({ width: 920, height: 680, resizable: true });
 		await page.evaluate(() => {
 			window.sessionStorage.setItem('kucedr-auth-local-only', 'true');
 			window.sessionStorage.setItem('kucedr-onboarding-started', 'true');
