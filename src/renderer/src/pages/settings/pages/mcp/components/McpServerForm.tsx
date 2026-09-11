@@ -511,13 +511,7 @@ export function McpServerForm({
 					Cancel
 				</Button>
 				<Button type="submit" disabled={saving}>
-					{saving
-						? 'Saving'
-						: type === 'stdio'
-							? 'Save'
-							: isEdit
-								? 'Save'
-								: 'Add MCP server'}
+					{saving ? 'Saving' : type === 'stdio' ? 'Save' : isEdit ? 'Save' : 'Add MCP server'}
 				</Button>
 			</div>
 		</form>
