@@ -500,8 +500,8 @@ export function McpServerForm({
 
 			{type === 'stdio' && (
 				<p className="text-[13px] text-muted-foreground">
-					Saving trusts this command, its arguments, environment and working directory to run with
-					your desktop account's privileges. Tool approvals apply after the server launches.
+					Saved local MCP commands run with your desktop account's privileges. Tool approvals apply
+					after the server launches.
 				</p>
 			)}
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
@@ -514,7 +514,7 @@ export function McpServerForm({
 					{saving
 						? 'Saving'
 						: type === 'stdio'
-							? 'Save and trust'
+							? 'Save'
 							: isEdit
 								? 'Save'
 								: 'Add MCP server'}

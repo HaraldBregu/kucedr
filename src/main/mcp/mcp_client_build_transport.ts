@@ -9,14 +9,9 @@ import { createOAuthProvider } from './mcp_oauth_create_provider';
 import { getMcpOauth, saveMcpOauth } from './mcp_store';
 import { createMcpFetch } from './mcp_fetch';
 import { parseMcpUrl } from './url';
-import { isMcpLaunchTrusted } from './launch/trusted';
 
 export function buildTransport(id: string, data: McpData): Transport {
 	if (data.type === 'stdio') {
-		if (!isMcpLaunchTrusted(id, data))
-			throw new Error(
-				'Local MCP launch is not trusted. Review and save or test this server in Settings before launching it.'
-			);
 		return new StdioClientTransport({
 			command: data.command,
 			args: data.args ? [...data.args] : undefined,

@@ -174,7 +174,7 @@ const McpDetailsPage: React.FC = () => {
 							) : (
 								<FlaskConical className="size-3" />
 							)}
-							{testing ? 'Testing' : server.data.type === 'stdio' ? 'Trust and test' : 'Test'}
+							{testing ? 'Testing' : 'Test'}
 						</Button>
 						<label className="flex items-center gap-1.5 text-xs text-muted-foreground">
 							<Switch
@@ -194,7 +194,7 @@ const McpDetailsPage: React.FC = () => {
 			{server.data.type === 'stdio' && (
 				<SettingsNotice>
 					Save, enable or test only local server commands you trust. They run with your desktop
-					account's privileges. Changed launch settings require renewed trust.
+					account's privileges.
 				</SettingsNotice>
 			)}
 			{error && (

@@ -61,9 +61,9 @@ The loader passes `require_approval`, but `mcpTool` receives it as `_approval` a
 
 Evidence: [tool adapter](../src/main/agent/tools/mcp/tool.ts#L10), [loader](../src/main/agent/tools/mcp/loader.ts#L54), [UI setting](../src/renderer/src/pages/settings/pages/mcp/components/McpServerForm.tsx#L264), [current test](../tests/unit/main/agent/tools/mcp-tool.test.ts#L23).
 
-Refactor: make the configured requirement mandatory in the common authorization path. `never` must not override an explicit denial or expand a run's capabilities. Separately model trust to launch an enabled local MCP server: discovery starts stdio commands on the host through [buildTransport](../src/main/mcp/mcp_client_build_transport.ts#L14), before any tool-call approval. Installing/enabling a server may be the owner's launch authorization, but per-call approval is not a sandbox for its startup code.
+Refactor: make the configured requirement mandatory in the common authorization path. `never` must not override an explicit denial or expand a run's capabilities. Discovery starts stdio commands on the host through [buildTransport](../src/main/mcp/mcp_client_build_transport.ts#L13), before any tool-call approval. Per-call approval is not a sandbox for startup code.
 
-Acceptance: `always` prevents invocation until matching approval; background execution denies it; rejection, expiry and replay cause zero connector calls; changed local launch definitions require the applicable trust decision before discovery spawns them.
+Acceptance: `always` prevents invocation until matching approval; background execution denies it; rejection, expiry and replay cause zero connector calls.
 
 ### F2 — High: directory authorization does not authorize the effect
 
