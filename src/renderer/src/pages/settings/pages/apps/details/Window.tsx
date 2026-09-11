@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useState } from 'react';
+import React, { useCallback, useEffect, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -66,13 +66,12 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 		saved !== null &&
 		[...DIMENSIONS, ...TOGGLES].some((key) => settings[key] !== saved[key]);
 
-	const persist = async (): Promise<void> => {
-		if (saving || !valid) return;
+	const persist = useCallback(async (nextSettings: ResolvedAppWindowSettings): Promise<void> => {
 		setSaving(true);
 		setError('');
 		setStatus('');
 		try {
-			const result = await window.apps.setSettings(appId, settings!);
+			const result = await window.apps.setSettings(appId, nextSettings);
 			setSaved(result);
 			setDraft(result);
 			setStatus('saved');
@@ -81,7 +80,13 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 		} finally {
 			setSaving(false);
 		}
-	};
+	}, [appId]);
+
+	useEffect(() => {
+		if (!settings || !valid || !dirty || loading || saving || error === 'saveError') return;
+		const timeout = window.setTimeout(() => void persist(settings), 300);
+		return () => window.clearTimeout(timeout);
+	}, [dirty, error, loading, persist, saving, settings, valid]);
 
 	return (
 		<SettingsSection
@@ -110,13 +115,8 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 			) : (
 				draft &&
 				error !== 'loadError' && (
-					<form
-						onSubmit={(event) => {
-							event.preventDefault();
-							void persist();
-						}}
-					>
-						<fieldset disabled={saving} className="grid min-w-0 gap-2">
+					<div className="grid min-w-0 gap-2">
+						<fieldset disabled={saving}>
 							<SettingsPanel>
 								<div className="grid grid-cols-1 gap-3 border-b border-border/60 p-4 sm:grid-cols-2">
 									{DIMENSIONS.map((key) => (
@@ -135,10 +135,11 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 												className="h-8 text-xs"
 												value={draft[key]}
 												aria-invalid={!valid}
-												aria-describedby={!valid ? `${id}-validation` : undefined}
-												onChange={(event) => {
-													setDraft({ ...draft, [key]: event.target.value });
-													setStatus('');
+														aria-describedby={!valid ? `${id}-validation` : undefined}
+													onChange={(event) => {
+															setDraft({ ...draft, [key]: event.target.value });
+															setError('');
+															setStatus('');
 												}}
 											/>
 										</SettingsField>
@@ -152,31 +153,29 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 											<Switch
 												checked={draft[key]}
 												disabled={saving}
-												aria-label={t(`settings.apps.window.${key}`)}
-												onCheckedChange={(checked) => {
-													setDraft({ ...draft, [key]: checked });
-													setStatus('');
+													aria-label={t(`settings.apps.window.${key}`)}
+													onCheckedChange={(checked) => {
+															setDraft({ ...draft, [key]: checked });
+															setError('');
+															setStatus('');
 												}}
 											/>
 										}
 									/>
 								))}
 							</SettingsPanel>
+						</fieldset>
 							{!valid && (
 								<p id={`${id}-validation`} role="alert" className="text-xs text-destructive">
 									{t('settings.apps.window.invalid')}
 								</p>
 							)}
-							<div className="flex flex-wrap items-center justify-end gap-2">
-								<p role="status" className="mr-auto text-xs text-muted-foreground">
-									{status && t(`settings.apps.window.${status}`)}
+							<div className="flex min-h-4 items-center">
+								<p role="status" className="text-xs text-muted-foreground">
+									{(saving || status) && t(`settings.apps.window.${saving ? 'saving' : status}`)}
 								</p>
-								<Button type="submit" size="xs" disabled={!valid || !dirty}>
-									{t(`settings.apps.window.${saving ? 'saving' : 'save'}`)}
-								</Button>
 							</div>
-						</fieldset>
-					</form>
+					</div>
 				)
 			)}
 		</SettingsSection>

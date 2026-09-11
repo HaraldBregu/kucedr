@@ -49,7 +49,7 @@ it('loads settings for the selected app inside its details page', async () => {
 	expect(screen.getByRole('switch', { name: 'settings.apps.window.resizable' })).not.toBeChecked();
 	expect(window.apps.getSettings).toHaveBeenCalledWith('my-app');
 	expect(screen.getByText('settings.apps.window.nextOpen')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'settings.apps.window.save' })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
 });
 
 it('shows app information before its window configuration', async () => {
@@ -85,7 +85,7 @@ it('offers deletion from the detail page options menu', async () => {
 	expect(await screen.findByText('Apps list')).toBeInTheDocument();
 });
 
-it('saves edited dimensions and behavior for only the selected app', async () => {
+it('automatically saves edited dimensions and behavior for only the selected app', async () => {
 	const user = userEvent.setup();
 	const updated = { ...settings, width: 1400, resizable: true, maximizable: false };
 	(window.apps.setSettings as jest.Mock).mockResolvedValue(updated);
@@ -95,11 +95,10 @@ it('saves edited dimensions and behavior for only the selected app', async () =>
 	await user.type(width, '1400');
 	await user.click(screen.getByRole('switch', { name: 'settings.apps.window.resizable' }));
 	await user.click(screen.getByRole('switch', { name: 'settings.apps.window.maximizable' }));
-	await user.click(screen.getByRole('button', { name: 'settings.apps.window.save' }));
 
 	await waitFor(() => expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', updated));
 	expect(await screen.findByText('settings.apps.window.saved')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'settings.apps.window.save' })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
 });
 
 it('disables editing and duplicate saves while settings are being saved', async () => {
@@ -113,14 +112,13 @@ it('disables editing and duplicate saves while settings are being saved', async 
 	render(<WindowSettings appId="my-app" />);
 	const width = await screen.findByRole('spinbutton', { name: 'settings.apps.window.width' });
 	fireEvent.change(width, { target: { value: '1400' } });
-	await user.click(screen.getByRole('button', { name: 'settings.apps.window.save' }));
+	await waitFor(() => expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', { ...settings, width: 1400 }));
 	expect(width).toBeDisabled();
 	expect(screen.getByRole('switch', { name: 'settings.apps.window.resizable' })).toHaveAttribute(
 		'aria-disabled',
 		'true'
 	);
-	expect(screen.getByRole('button', { name: 'settings.apps.window.saving' })).toBeDisabled();
-	fireEvent.submit(width.closest('form')!);
+	expect(screen.getByText('settings.apps.window.saving')).toBeInTheDocument();
 	expect(window.apps.setSettings).toHaveBeenCalledTimes(1);
 	complete({ ...settings, width: 1400 });
 	expect(await screen.findByText('settings.apps.window.saved')).toBeInTheDocument();
@@ -133,8 +131,8 @@ it.each(['', '0', '-1', '1.5', '32769', '619'])(
 		const width = await screen.findByRole('spinbutton', { name: 'settings.apps.window.width' });
 		fireEvent.change(width, { target: { value } });
 		expect(screen.getByRole('alert')).toHaveTextContent('settings.apps.window.invalid');
-		expect(screen.getByRole('button', { name: 'settings.apps.window.save' })).toBeDisabled();
-		fireEvent.submit(width.closest('form')!);
+		expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
+		await new Promise((resolve) => window.setTimeout(resolve, 350));
 		expect(window.apps.setSettings).not.toHaveBeenCalled();
 	}
 );
@@ -143,7 +141,7 @@ it('prevents minimum height exceeding default height', async () => {
 	render(<WindowSettings appId="my-app" />);
 	const minimum = await screen.findByRole('spinbutton', { name: 'settings.apps.window.minHeight' });
 	fireEvent.change(minimum, { target: { value: '901' } });
-	expect(screen.getByRole('button', { name: 'settings.apps.window.save' })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: 'settings.apps.window.save' })).not.toBeInTheDocument();
 	expect(screen.getByRole('alert')).toHaveTextContent('settings.apps.window.invalid');
 });
 
@@ -160,16 +158,14 @@ it('offers retry after a load error and keeps the form unavailable until loaded'
 	expect(window.apps.getSettings).toHaveBeenCalledTimes(2);
 });
 
-it('preserves edits and lets the user retry a failed save', async () => {
-	const user = userEvent.setup();
+it('preserves edits and retries after the next valid change when automatic saving fails', async () => {
 	(window.apps.setSettings as jest.Mock).mockRejectedValueOnce(new Error('Write failed'));
 	render(<WindowSettings appId="my-app" />);
 	const width = await screen.findByRole('spinbutton', { name: 'settings.apps.window.width' });
 	fireEvent.change(width, { target: { value: '1400' } });
-	await user.click(screen.getByRole('button', { name: 'settings.apps.window.save' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('settings.apps.window.saveError');
 	expect(width).toHaveValue(1400);
-	await user.click(screen.getByRole('button', { name: 'settings.apps.window.save' }));
+	fireEvent.change(width, { target: { value: '1401' } });
 	expect(await screen.findByText('settings.apps.window.saved')).toBeInTheDocument();
 	expect(window.apps.setSettings).toHaveBeenCalledTimes(2);
 });
