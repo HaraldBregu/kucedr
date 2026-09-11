@@ -591,9 +591,9 @@ Kucedr stores configuration and working data below Electron's application-data d
 | Diagnostics | Local rotating logs and crash dumps. Crash dumps are not uploaded by the current configuration.                                             |
 | Wiki        | Source inbox, immutable evidence snapshots, generated Markdown, source/page/operation registries, review queue, failures, and audit log.    |
 
-Model, database, and search provider keys are encrypted in a local credential vault when secure
-operating-system storage is available. Without it, new keys remain memory-only. Bot tokens and MCP
-secrets use their respective local stores and should still be protected as sensitive app data.
+Model, database, and search provider keys are stored as entered in the local provider settings
+file and are visible in Provider settings. Bot tokens and MCP secrets use their respective local
+stores and should still be protected as sensitive app data.
 
 Prompts, attachments, tool inputs, and generated content may be sent to configured model providers,
 MCP servers, websites, browser targets, messaging channels, or Kucedr account cloud services as

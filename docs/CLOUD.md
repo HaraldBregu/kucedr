@@ -1,8 +1,8 @@
 # Account and Cloud Architecture
 
-Kucedr presents one provider-neutral account and cloud experience. People sign in, enable secure
-key sync, choose backup folders, and restore files from the application UI. Infrastructure
-endpoints, buckets, credentials, and vendor names are never user settings.
+Kucedr presents one provider-neutral account and cloud experience. People sign in, choose backup
+folders, and restore files from the application UI. Infrastructure endpoints, buckets,
+credentials, and vendor names are never user settings.
 
 AI model, search, database, and messaging providers are a separate product concept. Users choose
 those services deliberately; they do not choose the infrastructure behind a Kucedr account.
@@ -17,7 +17,6 @@ and renderer code use Kucedr domain terms only.
 | Account lifecycle and profile    | `cloud/service.ts`  | `AccountProvider`    | `cloud/supabase/auth.ts`      |
 | Conversation records and files   | `cloud/data.ts`     | `CloudRepository`    | `cloud/supabase/records.ts`   |
 | Folder backup objects            | `storage/*`         | `StorageObjectStore` | `cloud/supabase/objects.ts`   |
-| Encrypted API-key reconciliation | `providers/sync.ts` | `ProviderCloudPort`  | `cloud/supabase/providers.ts` |
 
 `bootstrap.ts` is the composition root. It creates the concrete client once and injects each
 adapter independently. No application service constructs an SDK client or imports SDK types.
@@ -25,11 +24,11 @@ adapter independently. No application service constructs an SDK client or import
 ## Security and lifecycle rules
 
 - Only `signedIn` grants a user ID or access token. Loading, signed-out, confirmation, recovery,
-  and unconfigured states cannot read profiles, cloud records, backup objects, or synced keys.
+  and unconfigured states cannot read profiles, cloud records, or backup objects.
 - Public auth state never contains access or refresh tokens. Provider error identifiers are mapped
   to stable `AuthError` or `CloudError` messages before crossing IPC.
-- Sessions are encrypted with operating-system secure storage. If secure storage is unavailable,
-  sessions and new API keys remain memory-only and are cleared when Kucedr exits.
+- Sessions are encrypted with operating-system secure storage. Provider API keys are stored as
+  entered in local provider settings and are not synchronized through the account service.
 - The first fully signed-in account is bound to the local Kucedr profile. A different account is
   rejected to prevent accidental cross-account access.
 - Scheduled backups exist only while signed in. Shutdown waits for active storage work before

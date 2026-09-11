@@ -190,9 +190,9 @@ manifest supplies the provider and model entry.
 | Web search      | Tavily   | Tavily Web Search (`tavily-web-search`) |
 | Vector database | Pinecone | Pinecone Vector Database (`pinecone`)  |
 
-Save and edit Pinecone API keys under **Settings → Providers → Database**. These credentials use
-the provider vault's `databases` collection, separate from model and search credentials. Create a
-key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
+Save and edit Pinecone API keys under **Settings → Providers → Database**. Credentials are stored
+as entered in the local `settings/providers.json` file, separately from model and search
+credentials. Create a key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
 
 Select the database explicitly in **Settings → RAG**; no database is selected automatically.
 RAG indexing uses the selected provider's saved API key for Pinecone storage, while local retrieval

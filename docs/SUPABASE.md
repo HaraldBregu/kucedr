@@ -84,9 +84,8 @@ back to the desktop app through `kucedr://auth/callback`.
 ## Required backend invariants
 
 The separately managed backend schema must provide application tables, row-level security,
-ownership constraints, a private file bucket, private Realtime policies, provider-vault tables,
-and the atomic credential reconciliation RPC expected by the adapters. Verify these hosted-project
-settings before releasing a build:
+ownership constraints, a private file bucket, and private Realtime policies. Verify these
+hosted-project settings before releasing a build:
 
 1. Add `kucedr://auth/callback` to the Auth redirect allow list.
 2. Enable the Google provider with its Web OAuth client ID and secret.

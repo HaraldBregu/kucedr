@@ -166,12 +166,12 @@ See [Provider Reference](../PROVIDERS.md) for exact runtime coverage and model I
 ### Provider connections
 
 - **Models**, **Search engines**, and **Channels** should list their catalog providers as
-  connection cards with external setup links, password inputs, and connected state.
+  connection cards with external setup links, API-key inputs, and connected state.
 - Unsupported catalog entries should be disabled as **Soon**.
 - The searchable **API Keys** deep page should provide the model-provider credential list. The
   visible Models page can connect the same model credentials inline.
 
-**Database** connects the user's database account through the provider credential vault. The RAG
+**Database** stores the user's database account credentials in local provider settings. The RAG
 page requires an explicit database selection and uses that account for remote storage. Pinecone
 is currently supported; there is no default database selection or environment API key fallback.
 Embedding credentials are configured separately under **Providers → Models**. Both remote
@@ -200,7 +200,6 @@ infrastructure provider, profile selector, endpoint, bucket, or storage credenti
 
 Cloud should allow the user to:
 
-- create or unlock a passphrase-protected vault and synchronize saved API keys;
 - include known Kucedr folders and additional folders selected from the system picker;
 - select an automatic sync interval or edit the cron expression;
 - save or cancel sync changes;
@@ -208,9 +207,9 @@ Cloud should allow the user to:
 - confirm and run a restore;
 - inspect save, backup, restore, and failure status inline.
 
-Secure key sync, backup, and restore require a fully signed-in account. Recovery sessions cannot
-use them. Remote files are isolated below the account's private backup path; folder selections and
-schedules remain local application settings.
+Backup and restore require a fully signed-in account. Recovery sessions cannot use them. Remote
+files are isolated below the account's private backup path; folder selections and schedules remain
+local application settings.
 
 ## Knowledge and data
 
