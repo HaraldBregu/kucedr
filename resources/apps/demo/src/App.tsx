@@ -302,7 +302,22 @@ export default function App() {
 				)}
 				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 			>
-				<h1 className="min-w-0 flex-1 truncate text-sm font-medium">{text.title}</h1>
+				<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.title}</h1>
+				<div className="flex items-center gap-1 [webkit-app-region:no-drag]">
+					<Button size="sm" onClick={showRandomNumber}>
+						{text.generateRandomNumber}
+					</Button>
+					<Button size="sm" variant="secondary" onClick={showRandomNumber}>
+						{text.generateAnotherNumber}
+					</Button>
+					<output
+						className="min-w-24 rounded-md bg-muted px-2 py-1 text-center text-sm"
+						aria-live="polite"
+					>
+						{text.randomNumber}: {randomNumber ?? '—'}
+					</output>
+				</div>
+				<div className="min-w-0 flex-1" />
 				{!isMac && inKucedrApp ? (
 					<div className="flex items-center gap-1 [webkit-app-region:no-drag]">
 						<Button size="sm" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
@@ -329,18 +344,6 @@ export default function App() {
 						<p className="text-sm text-muted-foreground">
 							{inKucedrApp ? text.connected : text.disconnected}
 						</p>
-						<div className="space-y-3 rounded-md border border-border p-4">
-							<p className="text-sm font-semibold">{text.randomNumber}</p>
-							<div className="flex flex-wrap gap-2">
-								<Button onClick={showRandomNumber}>{text.generateRandomNumber}</Button>
-								<Button variant="secondary" onClick={showRandomNumber}>
-									{text.generateAnotherNumber}
-								</Button>
-							</div>
-							<output className="block text-sm" aria-live="polite">
-								{text.randomNumber}: {randomNumber ?? '—'}
-							</output>
-						</div>
 						<div className="space-y-2">
 							<p className="text-sm font-semibold">{text.theme}</p>
 							<p className="text-sm">
