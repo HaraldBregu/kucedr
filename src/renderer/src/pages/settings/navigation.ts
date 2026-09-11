@@ -57,7 +57,7 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		labelKey: 'settings.modelServices.assistantName',
 		descriptionKey: 'settings.modelServices.kucedrDescription',
 		keywords: 'kucedr service default provider model',
-		icon: Bot,
+		icon: BotMessageSquare,
 	},
 	{
 		id: AGENTS.coding,
