@@ -9,6 +9,7 @@ export type ProviderOption = {
 export type ProviderSetupEntry = {
 	providerId: string;
 	apiKey: string;
+	savedApiKey: string;
 	apiKeySaved: boolean;
 	editing: boolean;
 };

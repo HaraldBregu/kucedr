@@ -16,7 +16,6 @@ import {
 	actionableProviderCatalog,
 	actionableSearchCatalog,
 	getErrorMessage,
-	MASKED_API_KEY_LABEL,
 } from '../../../start/setupConstants';
 import type { ProviderCatalogItem, ProviderSetupEntry } from '../../../start/setupTypes';
 import {
@@ -72,13 +71,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		allCatalogItems(section).map((provider, index) => ({
 			providerId: provider.id,
 			apiKey: '',
+			savedApiKey: '',
 			apiKeySaved: false,
 			editing: index === 0,
 		}))
 	);
 	const [savingProviderId, setSavingProviderId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
-	const [vaultWarning, setVaultWarning] = useState<string | null>(null);
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
 	const [addingCustomMcp, setAddingCustomMcp] = useState(false);
 	const { servers: mcpServers, load: loadMcpServers } = useMcpServers();
@@ -86,31 +85,32 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	useEffect(() => {
 		let cancelled = false;
 
-		void window.provider
-			.list(section === 'databases' ? 'databases' : 'models')
-			.then((storedProviders) => {
+		void Promise.all([
+			window.provider.list(section === 'databases' ? 'databases' : 'models'),
+			window.search.listProviders(),
+		])
+			.then(([storedProviders, storedSearchProviders]) => {
 				if (cancelled) return;
-				const savedStatus: Record<string, boolean> = Object.fromEntries(
-					storedProviders.map((provider) => [provider.id, provider.configured])
+				const savedProviders = new Map(
+					[...storedProviders, ...storedSearchProviders].map((provider) => [provider.id, provider])
 				);
 				const hasSavedProvider = allCatalogItems(section).some(
-					(provider) => savedStatus[provider.id]
+					(provider) => Boolean(savedProviders.get(provider.id)?.apiKey.trim())
 				);
 
 				setProviderEntries((currentEntries) =>
 					allCatalogItems(section).map((provider, index) => {
 						const current = currentEntries.find((entry) => entry.providerId === provider.id);
-						const draft = current?.apiKey ?? '';
-						const hasDraft = draft.trim().length > 0;
-						const saved = savedStatus[provider.id] ?? false;
+						const savedApiKey = savedProviders.get(provider.id)?.apiKey ?? '';
+						const saved = Boolean(savedApiKey.trim());
 
 						return {
 							providerId: provider.id,
-							apiKey: draft,
+							apiKey: current?.apiKey || savedApiKey,
+							savedApiKey,
 							apiKeySaved: saved,
-							editing: hasDraft
-								? (current?.editing ?? false)
-								: saved
+							editing:
+								saved && !current?.savedApiKey
 									? false
 									: (current?.editing ?? (!hasSavedProvider && index === 0)),
 						};
@@ -121,13 +121,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				if (cancelled) return;
 				setError(getErrorMessage(err, 'Could not check saved provider access.'));
 			});
-		void window.provider.vaultStatus().then(
-			(status) => {
-				if (!cancelled) setVaultWarning(status.warning ?? null);
-			},
-			() => undefined
-		);
-
 		void window.search.getSettings().then(
 			(settings) => {
 				if (!cancelled) setSearchSettings(settings);
@@ -140,14 +133,21 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		return () => {
 			cancelled = true;
 		};
-	}, [section, t]);
+	}, [section]);
 
 	const updateProviderEntry = (providerId: string, patch: Partial<ProviderSetupEntry>): void => {
 		setProviderEntries((currentEntries) => {
 			if (!currentEntries.some((entry) => entry.providerId === providerId)) {
 				return [
 					...currentEntries,
-					{ providerId, apiKey: '', apiKeySaved: false, editing: false, ...patch },
+					{
+						providerId,
+						apiKey: '',
+						savedApiKey: '',
+						apiKeySaved: false,
+						editing: false,
+						...patch,
+					},
 				];
 			}
 			return currentEntries.map((entry) =>
@@ -178,7 +178,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setError(null);
 		try {
 			await window.provider.set({ id: providerId, apiKey, kind });
-			updateProviderEntry(providerId, { apiKey: '', apiKeySaved: true, editing: false });
+			updateProviderEntry(providerId, { apiKey, savedApiKey: apiKey, apiKeySaved: true, editing: false });
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save provider API key.'));
 		} finally {
@@ -195,7 +195,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setError(null);
 		try {
 			setSearchSettings(await window.search.saveEngine(providerId as SearchEngineId, { apiKey }));
-			updateProviderEntry(providerId, { apiKey: '', apiKeySaved: true, editing: false });
+			updateProviderEntry(providerId, { apiKey, savedApiKey: apiKey, apiKeySaved: true, editing: false });
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save search provider API key.'));
 		} finally {
@@ -255,7 +255,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								</Button>
 							</div>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
-								{connected ? MASKED_API_KEY_LABEL : provider.capabilities}
+								{connected ? entry?.savedApiKey : provider.capabilities}
 							</p>
 						</div>
 						<div className="flex shrink-0 justify-end gap-2">
@@ -269,7 +269,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										onClick={() =>
 											updateProviderEntry(provider.id, {
 												editing: true,
-												apiKey: '',
+												apiKey: entry?.savedApiKey ?? '',
 											})
 										}
 									>
@@ -310,7 +310,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								}}
 								placeholder={t('settings.providers.apiKeyPlaceholder')}
 								spellCheck={false}
-								type="password"
+								type="text"
 								value={entry.apiKey}
 							/>
 							<Button
@@ -318,7 +318,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								variant="outline"
 								size="sm"
 								disabled={savingThisProvider}
-								onClick={() => updateProviderEntry(provider.id, { apiKey: '', editing: false })}
+								onClick={() =>
+									updateProviderEntry(provider.id, {
+										apiKey: entry.savedApiKey,
+										editing: false,
+									})
+								}
 							>
 								{t('common.cancel')}
 							</Button>
@@ -382,7 +387,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					{error}
 				</SettingsNotice>
 			)}
-			{vaultWarning && <SettingsNotice icon={AlertTriangle}>{vaultWarning}</SettingsNotice>}
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
