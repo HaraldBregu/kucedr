@@ -267,7 +267,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
 								{connected
 									? kind === 'models'
-										? '****'
+										? '************'
 										: entry?.savedApiKey
 									: provider.capabilities}
 							</p>

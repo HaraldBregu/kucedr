@@ -149,7 +149,7 @@ it('masks saved model keys until editing', async () => {
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByText('****')).toBeInTheDocument();
+	expect(await screen.findByText('************')).toBeInTheDocument();
 	expect(screen.queryByText('model-secret')).not.toBeInTheDocument();
 
 	const user = userEvent.setup();
