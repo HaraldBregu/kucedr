@@ -1,7 +1,6 @@
 import {
 	useCallback,
 	useEffect,
-	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -144,47 +143,12 @@ export default function App() {
 		}
 	}, [theme]);
 
-	const syncTitlebar = useCallback((open: boolean, width: number): void => {
-		if (!isKucedr()) return;
-		win.setTitlebarOptions({
-			title: 'Workspace',
-			leftButtons: [
-				{
-					id: 'toggle-sidebar',
-					label: open ? 'Collapse sidebar' : 'Expand sidebar',
-					icon: 'panel-left',
-					expanded: open,
-				},
-			],
-			rightButtons: [],
-			sidebarOpen: open,
-			sidebarWidth: width,
-		});
-	}, []);
-
 	const setSidebarVisibility = useCallback(
 		(open: boolean): void => {
-			syncTitlebar(open, sidebarWidth);
 			setSidebarOpen(open);
 		},
-		[sidebarWidth, syncTitlebar]
+		[]
 	);
-
-	useLayoutEffect(() => {
-		syncTitlebar(sidebarOpen, sidebarWidth);
-	}, [sidebarOpen, sidebarWidth, syncTitlebar]);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		return () => win.setTitlebarOptions(null);
-	}, []);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		return win.onTitlebarButtonClick((buttonId) => {
-			if (buttonId === 'toggle-sidebar') setSidebarVisibility(!sidebarOpen);
-		});
-	}, [setSidebarVisibility, sidebarOpen]);
 
 	useEffect(() => {
 		if (!isKucedr()) return;

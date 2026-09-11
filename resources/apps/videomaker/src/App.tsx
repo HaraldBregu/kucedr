@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { app, isKucedr, win } from '@kucedr/sdk';
+import { app, isKucedr } from '@kucedr/sdk';
 import type { CallbackListener, PlayerRef } from '@remotion/player';
 
 import { Export } from './components/Export';
@@ -40,12 +40,6 @@ export default function App() {
 	const duration = getProjectDuration(project);
 	const inputProps = useMemo(() => ({ project }), [project]);
 	const selectedClip = project.clips.find((clip) => clip.id === selectedId) ?? null;
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		win.setTitlebarOptions({ title: 'Video Maker', leftButtons: [], rightButtons: [] });
-		return () => win.setTitlebarOptions(null);
-	}, []);
 
 	useEffect(() => {
 		let active = true;
