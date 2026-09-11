@@ -283,7 +283,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 
 	expect(screen.queryByRole('heading', { name: 'Configuration' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('heading', { name: 'History' })).not.toBeInTheDocument();
-	expect(screen.getByRole('link', { name: 'Tools' })).toHaveAttribute(
+	expect(screen.getByRole('link', { name: /^Tools/ })).toHaveAttribute(
 		'href',
 		'/settings/agent/tools'
 	);
@@ -330,7 +330,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	expect(permissions.closest('[data-slot="card"]')).not.toBe(rag.closest('[data-slot="card"]'));
 	expect(screen.queryByRole('button', { name: /Data management/ })).not.toBeInTheDocument();
 
-	await user.click(screen.getByRole('link', { name: 'Tools' }));
+	await user.click(screen.getByRole('link', { name: /^Tools/ }));
 	expect(await screen.findByRole('heading', { name: 'Tools' })).toBeInTheDocument();
 });
 
