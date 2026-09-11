@@ -1340,7 +1340,7 @@
 			"detailCategory": "Category",
 			"detailEntry": "Entry file",
 			"window": {
-				"title": "Window settings",
+				"title": "App settings",
 				"nextOpen": "Changes apply the next time you close and reopen this app.",
 				"values": "Window values",
 				"default": "Default",

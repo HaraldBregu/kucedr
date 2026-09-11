@@ -1339,7 +1339,7 @@
 			"detailCategory": "Categoria",
 			"detailEntry": "File di ingresso",
 			"window": {
-				"title": "Impostazioni finestra",
+				"title": "Impostazioni app",
 				"nextOpen": "Le modifiche si applicano quando chiudi e riapri questa app.",
 				"values": "Valori finestra",
 				"default": "Predefiniti",
