@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import { getToolModel } from '../../agent_store';
-import { synthesize } from '../../../models/voice';
 import type { Tool } from '../../types';
 import { saveMedia } from './save';
 import { tool } from '../tool';
@@ -23,6 +22,7 @@ export function textToSpeechTool(): Tool {
 			if (!settings.providerId || !settings.modelId) {
 				throw new Error('Configure a Text to speech tool model in Settings.');
 			}
+			const { synthesize } = await import('../../../models/voice');
 			const { audio, mimeType } = await synthesize(
 				{
 					text,
