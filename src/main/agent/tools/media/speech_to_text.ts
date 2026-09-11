@@ -5,7 +5,6 @@ import { workspaceFileType } from '../../../../shared/workspace';
 import { getToolModel } from '../../agent_store';
 import { authorizeFilePath } from '../../files/authorize';
 import { readFileBounded } from '../../files/read';
-import { transcribe } from '../../../models/transcribe';
 import type { Tool } from '../../types';
 import { tool } from '../tool';
 
@@ -31,6 +30,7 @@ export function speechToTextTool(): Tool {
 			const { kind, mimeType } = workspaceFileType(resolved);
 			if (kind !== 'audio' || !mimeType) throw new Error('Speech to text requires an audio file.');
 			const audio = await readFileBounded(resolved, MAX_AUDIO_BYTES, signal);
+			const { transcribe } = await import('../../../models/transcribe');
 			const result = await transcribe({
 				audio: {
 					data: audio.toString('base64'),
