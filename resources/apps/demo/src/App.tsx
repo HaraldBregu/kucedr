@@ -390,7 +390,12 @@ export default function App() {
 							className="flex items-center gap-1"
 							style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 						>
-							<Button size="icon" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
+							<Button
+								size="icon"
+								variant="ghost"
+								aria-label="Minimize window"
+								onClick={win.minimize}
+							>
 								<Minus className="size-4" strokeWidth={1.5} />
 							</Button>
 							<Button
