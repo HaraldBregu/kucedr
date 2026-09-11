@@ -5,6 +5,8 @@
 	"hidePersona": "Hide Voice Agent",
 	"showPersona": "Show Voice Agent",
 	"apps": "Apps",
+	"tasks": "Tasks",
+	"noTasks": "No tasks",
 	"microphone": "Microphone",
 	"microphoneDefault": "System default",
 	"noApps": "No apps",

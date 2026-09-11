@@ -5,6 +5,8 @@
 	"hidePersona": "Nascondi Voice Agent",
 	"showPersona": "Mostra Voice Agent",
 	"apps": "App",
+	"tasks": "Attivita",
+	"noTasks": "Nessuna attivita",
 	"microphone": "Microfono",
 	"microphoneDefault": "Predefinito di sistema",
 	"noApps": "Nessuna app",

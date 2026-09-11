@@ -41,6 +41,7 @@ import { startWiki, stopWiki } from './agent/knowledge/wiki';
 import { authLinks } from './cloud/links';
 import { loadLocalEnvironment } from './cloud/environment';
 import { VoiceWindow } from './voice_window';
+import { listSchedules, runScheduleNow } from './tasks';
 
 // // DIAG: bump V8 old-space heap to confirm whether crashes (Chromium OOM,
 // // exception 0xE0000008) come from the V8/JS heap or from native/C++
@@ -110,6 +111,10 @@ const trayManager = new Tray({
 	getTrayClickAction,
 	getApps: () => listApps(),
 	onOpenApp: (app) => loadApp(windowFactory, app),
+	getTasks: () => listSchedules(),
+	onStartTask: (task) => {
+		runScheduleNow(task.id);
+	},
 	getMicrophoneInputs: async () => {
 		const win = mainWindow.getWindow();
 		if (!win || win.isDestroyed()) return [];

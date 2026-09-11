@@ -5,6 +5,7 @@ import { loadTranslations } from './i18n';
 import type { App } from './apps/app_index';
 import { resourceRoot } from './shared/resource_root';
 import type { TrayClickAction } from '../shared/app_types';
+import type { TaskSchedule } from './tasks';
 
 interface TrayManagerCallbacks {
 	onToggleChat: () => void;
@@ -18,6 +19,8 @@ interface TrayManagerCallbacks {
 	getTrayClickAction: () => TrayClickAction;
 	getApps: () => App[];
 	onOpenApp: (app: App) => void;
+	getTasks: () => TaskSchedule[];
+	onStartTask: (task: TaskSchedule) => void;
 	getMicrophoneInputs?: () => Promise<readonly MicrophoneInput[]>;
 	getMicrophoneInputId?: () => string;
 	onMicrophoneInputChange?: (inputId: string) => void;
@@ -125,6 +128,7 @@ export class Tray {
 		const personaActive = this.callbacks.isPersonaActive();
 		const personaVisible = this.callbacks.isPersonaVisible();
 		const apps = this.callbacks.getApps();
+		const tasks = this.callbacks.getTasks();
 		const selectedMicrophoneId = this.callbacks.getMicrophoneInputId?.() ?? 'default';
 		const microphoneItems: Electron.MenuItemConstructorOptions[] = [
 			{
@@ -152,6 +156,12 @@ export class Tray {
 					click: (): void => this.callbacks.onOpenApp(app),
 				}))
 			: [{ label: m.noApps || 'No apps', enabled: false }];
+		const taskItems: Array<Electron.MenuItemConstructorOptions> = tasks.length
+			? tasks.map((task) => ({
+					label: task.name,
+					click: (): void => this.callbacks.onStartTask(task),
+				}))
+			: [{ label: m.noTasks || 'No tasks', enabled: false }];
 
 		this.contextMenu = Menu.buildFromTemplate([
 			{
@@ -175,6 +185,10 @@ export class Tray {
 			{
 				label: m.apps || 'Apps',
 				submenu: appItems,
+			},
+			{
+				label: m.tasks || 'Tasks',
+				submenu: taskItems,
 			},
 			{
 				label: m.microphone || 'Microphone',
