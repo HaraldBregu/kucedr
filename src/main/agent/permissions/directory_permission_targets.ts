@@ -21,6 +21,7 @@ export const MEDIA_TOOLS = new Set([
 	'create_image',
 	'create_video',
 	'create_sound',
+	'text_to_speech',
 	'microphone_recorder',
 	'camera_recorder',
 	'screen_recorder',

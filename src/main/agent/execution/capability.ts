@@ -10,6 +10,7 @@ const READ = new Set([
 	'read_wiki_page', 'get_recent_wiki_activity', 'list_a2a_agents', 'list_apps', 'list_memories',
 	'get_task', 'list_tasks', 'list_skills', 'load_skill', 'get_goal', 'ask', 'subagent', 'subagents',
 	'get_a2a_task', 'camera_recorder_status', 'microphone_recorder_status', 'screen_recorder_status',
+	'speech_to_text',
 ]);
 const WRITE = new Set(['write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap']);
 const PERSIST = new Set([
@@ -22,7 +23,7 @@ const RECORD = new Set(['camera_recorder', 'microphone_recorder', 'screen_record
 const CONTROL = new Set([
 	'camera_recorder_stop', 'microphone_recorder_stop', 'screen_recorder_stop',
 ]);
-const PAID = new Set(['create_image', 'create_sound', 'create_video']);
+const PAID = new Set(['create_image', 'create_sound', 'create_video', 'text_to_speech']);
 const EXTERNAL = new Set(['delegate_a2a', 'cancel_a2a_task', 'open_apps', 'close_apps']);
 
 export function builtinCapability(id: string, input: Record<string, unknown>): ToolCapability | undefined {

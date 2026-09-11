@@ -16,7 +16,10 @@ import { SpeechProviderAuthError, SpeechProviderUnsupportedError } from './tts_e
 import { getModelId, getProviderId, resolveOptions } from '../../selection';
 import type { SpeechProviderSpec } from './tts_types';
 
-export async function synthesize(request: SpeechSynthesisRequest): Promise<SpeechSynthesisResult> {
+export async function synthesize(
+	request: SpeechSynthesisRequest,
+	selection: 'chatbot' | 'tool' = 'chatbot'
+): Promise<SpeechSynthesisResult> {
 	const normalized = normalizeSpeechSynthesisRequest(request);
 	const providerId = resolveProviderId(
 		normalized.providerId ?? configuredProviderId() ?? defaultProviderId('text-to-speech') ?? ''
@@ -27,7 +30,10 @@ export async function synthesize(request: SpeechSynthesisRequest): Promise<Speec
 		...normalized,
 		providerId,
 		modelId,
-		options: resolveOptions('voice', providerId, modelId, normalized.options),
+		options:
+			selection === 'tool'
+				? normalized.options
+				: resolveOptions('voice', providerId, modelId, normalized.options),
 	});
 }
 
