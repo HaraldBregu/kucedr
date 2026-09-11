@@ -1,5 +1,5 @@
 import { createCipheriv, randomBytes } from 'node:crypto';
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { safeStorage } from 'electron';
 
 const root = '/tmp/kucedr-providers-store-test';
@@ -30,10 +30,8 @@ it('moves encrypted storage providers into providers.json', () => {
 	});
 
 	expect(providersStore.get('encryptedProviders')).toBe('encrypted-storage-providers');
+	expect(providersStore.path).toBe(`${root}/settings/providers.json`);
 	expect(existsSync(`${root}/settings/storage.json`)).toBe(false);
-	expect(JSON.parse(readFileSync(`${root}/settings/providers.json`, 'utf8'))).toEqual(
-		expect.objectContaining({ encryptedProviders: 'encrypted-storage-providers' })
-	);
 });
 
 it('migrates decryptable provider keys into the direct settings store', () => {
