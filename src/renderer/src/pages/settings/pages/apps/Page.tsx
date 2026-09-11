@@ -227,7 +227,7 @@ const AppsPage: React.FC = () => {
 										handleDetails(app.id);
 									}
 								}}
-								className="h-28 cursor-pointer gap-0! rounded-none! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								className="h-28 cursor-pointer gap-0! overflow-hidden rounded-xl! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 							>
 								<CardContent className="grid h-full grid-cols-[10rem_minmax(0,1fr)] gap-0 p-0!">
 									{app.imageUrl ? (
