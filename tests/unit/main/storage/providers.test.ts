@@ -168,7 +168,7 @@ it('preserves encrypted records when decryption fails', () => {
 		throw new Error('Keychain failure');
 	});
 	expect(() => providers.save(input)).toThrow('Saved storage providers could not be opened');
-	expect(persistence.get('storageProviders')).toBe(encrypted);
+	expect(persistence.get('storage')).toBe(encrypted);
 });
 
 it('does not overwrite records if encrypting an edit fails', () => {

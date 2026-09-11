@@ -19,9 +19,23 @@ beforeEach(() => {
 afterAll(() => rmSync(root, { recursive: true, force: true }));
 
 it('moves encrypted storage providers into providers.json', () => {
+	const encryptedProviders = Buffer.from(
+		JSON.stringify([
+			{
+				id: 'a00c674a-c8c8-4d01-930f-ad690b3d0123',
+				name: 'Archive',
+				endpoint: 'https://storage.example.test',
+				region: 'auto',
+				bucket: 'archive',
+				accessKeyId: 'access-key',
+				secretAccessKey: 'secret-key',
+				forcePathStyle: false,
+			},
+		])
+	).toString('base64');
 	writeFileSync(
 		`${root}/settings/storage.json`,
-		JSON.stringify({ encryptedProviders: 'encrypted-storage-providers' })
+		JSON.stringify({ encryptedProviders })
 	);
 
 	let providersStore!: typeof import('../../../../src/main/providers/providers_store').providersStore;
@@ -29,7 +43,12 @@ it('moves encrypted storage providers into providers.json', () => {
 		({ providersStore } = require('../../../../src/main/providers/providers_store'));
 	});
 
-	expect(providersStore.get('storage')).toBe('encrypted-storage-providers');
+	expect(providersStore.get('storage')).toEqual([
+		expect.objectContaining({
+			name: 'Archive',
+			encryptedSecretAccessKey: Buffer.from('secret-key').toString('base64'),
+		}),
+	]);
 	expect(providersStore.path).toBe(`${root}/settings/providers.json`);
 	expect(existsSync(`${root}/settings/storage.json`)).toBe(false);
 });
