@@ -99,62 +99,58 @@ export function Header({
 					<User className="size-4" strokeWidth={1.8} />
 				</Button>
 
-			{coder.activeProject ? (
-				<DropdownMenu>
-					<DropdownMenuTrigger
+				{coder.activeProject ? (
+					<DropdownMenu>
+						<DropdownMenuTrigger
+							render={
+								<Button variant="ghost" size="icon-sm" aria-label="Workspace actions">
+									<MoreHorizontal />
+								</Button>
+							}
+						/>
+						<DropdownMenuContent>
+							<DropdownMenuItem onClick={() => void coder.openProject(coder.activeProject!.id)}>
+								<FolderOpen /> Open folder
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								onClick={() => void navigator.clipboard.writeText(coder.activeProject!.directory)}
+							>
+								<Copy /> Copy path
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								disabled={!coder.activeProject.available}
+								onClick={onOpenInstructions}
+							>
+								<FileText /> Agent instructions
+							</DropdownMenuItem>
+							<DropdownMenuSeparator />
+							<DropdownMenuItem
+								variant="destructive"
+								disabled={coder.runState === 'running'}
+								onClick={() => void coder.removeProject(coder.activeProject!.id)}
+							>
+								<Trash2 /> Remove workspace
+							</DropdownMenuItem>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				) : null}
+
+				<Tooltip>
+					<TooltipTrigger
 						render={
 							<Button
 								variant="ghost"
 								size="icon-sm"
-								aria-label="Workspace actions"
+								aria-label="New coding session"
+								disabled={!coder.activeProject || coder.runState === 'running'}
+								onClick={() => coder.newSession()}
 							>
-								<MoreHorizontal />
+								<Plus />
 							</Button>
 						}
 					/>
-					<DropdownMenuContent>
-						<DropdownMenuItem onClick={() => void coder.openProject(coder.activeProject!.id)}>
-							<FolderOpen /> Open folder
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							onClick={() => void navigator.clipboard.writeText(coder.activeProject!.directory)}
-						>
-							<Copy /> Copy path
-						</DropdownMenuItem>
-						<DropdownMenuItem
-							disabled={!coder.activeProject.available}
-							onClick={onOpenInstructions}
-						>
-							<FileText /> Agent instructions
-						</DropdownMenuItem>
-						<DropdownMenuSeparator />
-						<DropdownMenuItem
-							variant="destructive"
-							disabled={coder.runState === 'running'}
-							onClick={() => void coder.removeProject(coder.activeProject!.id)}
-						>
-							<Trash2 /> Remove workspace
-						</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			) : null}
-
-			<Tooltip>
-				<TooltipTrigger
-					render={
-						<Button
-							variant="ghost"
-							size="icon-sm"
-							aria-label="New coding session"
-							disabled={!coder.activeProject || coder.runState === 'running'}
-							onClick={() => coder.newSession()}
-						>
-							<Plus />
-						</Button>
-					}
-				/>
-				<TooltipContent>New session · ⌘/Ctrl N</TooltipContent>
-			</Tooltip>
+					<TooltipContent>New session · ⌘/Ctrl N</TooltipContent>
+				</Tooltip>
 			</div>
 
 			{!isMac ? (
