@@ -25,7 +25,9 @@ it('migrates decryptable provider keys into the direct settings store', () => {
 	const cipher = createCipheriv('aes-256-gcm', key, nonce);
 	cipher.setAAD(Buffer.from(JSON.stringify([vaultId, 'models', 'openai', 1]), 'utf8'));
 	const ciphertext = Buffer.concat([
-		cipher.update(JSON.stringify({ name: 'OpenAI', apiKey: 'saved-key', baseUrl: 'https://api.openai.com/v1' })),
+		cipher.update(
+			JSON.stringify({ name: 'OpenAI', apiKey: 'saved-key', baseUrl: 'https://api.openai.com/v1' })
+		),
 		cipher.final(),
 	]);
 	writeFileSync(

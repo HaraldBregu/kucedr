@@ -23,15 +23,15 @@ beforeEach(() => {
 afterAll(() => rmSync(root, { recursive: true, force: true }));
 
 it.each([
-		`${root}/settings/providers.json`,
-		`${root}/settings/cloud-auth.json`,
-		`${root}/settings/account.json`,
-		`${root}/settings`,
-		`${root}/providers`,
-		`${root}/providers/openai/manifest.json`,
-	])('rejects direct file synchronization of %s', (value) => {
-		expect(() => normalizeStoragePaths([value])).toThrow('Sensitive application data');
-	});
+	`${root}/settings/providers.json`,
+	`${root}/settings/cloud-auth.json`,
+	`${root}/settings/account.json`,
+	`${root}/settings`,
+	`${root}/providers`,
+	`${root}/providers/openai/manifest.json`,
+])('rejects direct file synchronization of %s', (value) => {
+	expect(() => normalizeStoragePaths([value])).toThrow('Sensitive application data');
+});
 
 it('excludes provider data when a parent Kucedr folder is selected', async () => {
 	await expect(walkFiles(root)).resolves.toEqual([`${root}/notes.md`]);

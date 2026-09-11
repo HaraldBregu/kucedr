@@ -38,9 +38,7 @@ jest.mock('../../../../src/main/channels', () => ({
 }));
 
 jest.mock('../../../../src/main/models', () => ({
-	loadProviders: () => [
-		{ id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1' },
-	],
+	loadProviders: () => [{ id: 'openai', name: 'OpenAI', baseUrl: 'https://api.openai.com/v1' }],
 	loadDatabases: () => [
 		{
 			id: 'pinecone',
@@ -61,10 +59,7 @@ function handler(registration: jest.Mock, channel: string): (...args: unknown[])
 }
 
 function register() {
-	new ProviderStoreIpc().register(
-		{ windows: {} as never, apps: {} as never },
-		{} as EventBus
-	);
+	new ProviderStoreIpc().register({ windows: {} as never, apps: {} as never }, {} as EventBus);
 }
 
 beforeEach(() => {
@@ -105,11 +100,14 @@ describe('provider credential IPC boundary', () => {
 		};
 		setProvider.mockReturnValue(provider);
 
-		const result = await handler(registerCommandWithEvent, ProviderChannels.set)({}, {
-			kind: 'models',
-			id: 'openai',
-			apiKey: 'provider-secret',
-		});
+		const result = await handler(registerCommandWithEvent, ProviderChannels.set)(
+			{},
+			{
+				kind: 'models',
+				id: 'openai',
+				apiKey: 'provider-secret',
+			}
+		);
 
 		expect(setProvider).toHaveBeenCalledWith(
 			{
@@ -135,11 +133,14 @@ describe('provider credential IPC boundary', () => {
 		setProvider.mockReturnValue(provider);
 		listProviders.mockReturnValue([provider]);
 
-		const saved = handler(registerCommandWithEvent, ProviderChannels.set)({}, {
-			kind: 'databases',
-			id: 'pinecone',
-			apiKey: ' database-secret ',
-		});
+		const saved = handler(registerCommandWithEvent, ProviderChannels.set)(
+			{},
+			{
+				kind: 'databases',
+				id: 'pinecone',
+				apiKey: ' database-secret ',
+			}
+		);
 		const listed = handler(registerQueryWithEvent, ProviderChannels.list)({}, 'databases');
 
 		expect(setProvider).toHaveBeenCalledWith(
@@ -155,11 +156,14 @@ describe('provider credential IPC boundary', () => {
 		expect(saved).toEqual(provider);
 		expect(listed).toEqual([provider]);
 		expect(() =>
-			handler(registerCommandWithEvent, ProviderChannels.set)({}, {
-				kind: 'models',
-				id: 'pinecone',
-				apiKey: 'database-secret',
-			})
+			handler(registerCommandWithEvent, ProviderChannels.set)(
+				{},
+				{
+					kind: 'models',
+					id: 'pinecone',
+					apiKey: 'database-secret',
+				}
+			)
 		).toThrow('Unknown provider.');
 		expect(setProvider).toHaveBeenCalledTimes(1);
 	});
@@ -168,10 +172,13 @@ describe('provider credential IPC boundary', () => {
 		register();
 
 		expect(() =>
-			handler(registerCommandWithEvent, ProviderChannels.setChannel)({}, {
-				id: 'unsupported',
-				apiKey: 'bot-secret',
-			})
+			handler(registerCommandWithEvent, ProviderChannels.setChannel)(
+				{},
+				{
+					id: 'unsupported',
+					apiKey: 'bot-secret',
+				}
+			)
 		).toThrow('Unknown channel provider.');
 		expect(setChannelProvider).not.toHaveBeenCalled();
 	});
@@ -186,8 +193,9 @@ describe('provider credential IPC boundary', () => {
 		expect(handler(registerQueryWithEvent, ProviderChannels.listChannels)({})).toEqual([
 			{ id: 'telegram', name: 'Telegram', baseUrl: '', configured: true },
 		]);
-		expect(handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'unsupported'))
-			.toBeUndefined();
+		expect(
+			handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'unsupported')
+		).toBeUndefined();
 		expect(setChannelProvider).not.toHaveBeenCalled();
 	});
 
@@ -201,7 +209,10 @@ describe('provider credential IPC boundary', () => {
 			dmPolicy: 'allowlist',
 		});
 
-		const result = await handler(registerQueryWithEvent, ProviderChannels.getChannel)({}, 'telegram');
+		const result = await handler(registerQueryWithEvent, ProviderChannels.getChannel)(
+			{},
+			'telegram'
+		);
 
 		expect(result).toEqual({
 			id: 'telegram',

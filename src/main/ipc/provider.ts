@@ -1,4 +1,8 @@
-import type { ChannelCredentialSaveInput, ChannelCredentialSummary, StoredChannelProvider } from '../../shared/channels_types';
+import type {
+	ChannelCredentialSaveInput,
+	ChannelCredentialSummary,
+	StoredChannelProvider,
+} from '../../shared/channels_types';
 import { isChannelId } from '../../shared/channels_definitions';
 import { CHANNEL_DM_POLICIES } from '../../shared/channels_types';
 import type {

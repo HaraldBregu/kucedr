@@ -102,16 +102,14 @@ it('saves Database credentials in the databases collection', async () => {
 });
 
 it('loads and displays saved Database keys', async () => {
-	jest
-		.mocked(window.provider.list)
-		.mockResolvedValue([
-			{
-				id: 'pinecone',
-				name: 'Pinecone',
-				baseUrl: 'https://api.pinecone.io',
-				apiKey: 'database-secret',
-			},
-		]);
+	jest.mocked(window.provider.list).mockResolvedValue([
+		{
+			id: 'pinecone',
+			name: 'Pinecone',
+			baseUrl: 'https://api.pinecone.io',
+			apiKey: 'database-secret',
+		},
+	]);
 	render(
 		<MemoryRouter>
 			<ProvidersPage section="databases" />

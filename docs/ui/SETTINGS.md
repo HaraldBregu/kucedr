@@ -36,12 +36,12 @@ workspace below the application title bar.
 
 The visible sidebar is grouped as follows:
 
-| Group        | Destinations                                                                                      |
-| ------------ | ------------------------------------------------------------------------------------------------- |
-| General      | Account, General, System, Cloud                                                                   |
-| Assistant    | Agent, Coding, A2A |
-| Providers    | Models, Search, Database                                                                             |
-| Integrations | Channels, Apps                                                                            |
+| Group        | Destinations                    |
+| ------------ | ------------------------------- |
+| General      | Account, General, System, Cloud |
+| Assistant    | Agent, Coding, A2A              |
+| Providers    | Models, Search, Database        |
+| Integrations | Channels, Apps                  |
 
 The `/settings` route redirects to `/settings/general`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open General directly.

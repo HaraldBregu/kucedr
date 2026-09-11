@@ -292,9 +292,7 @@ export interface ProviderApi {
 		kind: Exclude<ProviderCredentialKind, 'search_engines'>
 	) => Promise<StoredProvider | undefined>;
 	set: (input: ProviderCredentialSaveInput) => Promise<StoredProvider>;
-	list: (
-		kind?: Exclude<ProviderCredentialKind, 'search_engines'>
-	) => Promise<StoredProvider[]>;
+	list: (kind?: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<StoredProvider[]>;
 	getChannel: (id: string) => Promise<ChannelCredentialSummary | undefined>;
 	setChannel: (input: ChannelCredentialSaveInput) => Promise<ChannelCredentialSummary>;
 	listChannels: () => Promise<ChannelCredentialSummary[]>;

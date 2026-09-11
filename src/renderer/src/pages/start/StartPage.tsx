@@ -161,32 +161,28 @@ const StartPage: React.FC = () => {
 				<footer className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-2 border-t border-border bg-card/60 px-3 py-2 sm:px-5">
 					<SetupStepProgress currentStep={currentStep} />
 					<div className="flex items-center gap-2">
-							<Button
-								type="button"
-								variant="outline"
-								size="xs"
-								disabled={isBusy}
-								onClick={handleBack}
-							>
-								Back
-							</Button>
-							<Button
-								type="button"
-								size="sm"
-								disabled={step === 'models' ? !canContinueModels : isBusy}
-								onClick={handlePrimaryAction}
-							>
-								{isBusy
-									? 'Saving...'
-									: stepIndex === SETUP_STEPS.length - 1
-										? 'Finish'
-										: 'Continue'}
-								{isBusy ? (
-									<LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />
-								) : (
-									<ArrowRight className="size-3.5" aria-hidden="true" />
-								)}
-							</Button>
+						<Button
+							type="button"
+							variant="outline"
+							size="xs"
+							disabled={isBusy}
+							onClick={handleBack}
+						>
+							Back
+						</Button>
+						<Button
+							type="button"
+							size="sm"
+							disabled={step === 'models' ? !canContinueModels : isBusy}
+							onClick={handlePrimaryAction}
+						>
+							{isBusy ? 'Saving...' : stepIndex === SETUP_STEPS.length - 1 ? 'Finish' : 'Continue'}
+							{isBusy ? (
+								<LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />
+							) : (
+								<ArrowRight className="size-3.5" aria-hidden="true" />
+							)}
+						</Button>
 					</div>
 				</footer>
 			) : null}

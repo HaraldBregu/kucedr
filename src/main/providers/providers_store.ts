@@ -115,14 +115,14 @@ function openLegacyProvider(
 	const vaultId = value.vaultId;
 	const schemaVersion = value.schemaVersion;
 	if (
-		(value.tombstoneAt ||
-			(kind !== 'models' && kind !== 'databases' && kind !== 'search_engines') ||
-			typeof providerId !== 'string' ||
-			typeof vaultId !== 'string' ||
-			typeof schemaVersion !== 'number' ||
-			typeof value.ciphertext !== 'string' ||
-			typeof value.nonce !== 'string' ||
-			typeof value.tag !== 'string')
+		value.tombstoneAt ||
+		(kind !== 'models' && kind !== 'databases' && kind !== 'search_engines') ||
+		typeof providerId !== 'string' ||
+		typeof vaultId !== 'string' ||
+		typeof schemaVersion !== 'number' ||
+		typeof value.ciphertext !== 'string' ||
+		typeof value.nonce !== 'string' ||
+		typeof value.tag !== 'string'
 	)
 		return undefined;
 	try {
@@ -132,9 +132,10 @@ function openLegacyProvider(
 		);
 		decipher.setAuthTag(Buffer.from(value.tag, 'base64'));
 		const opened = JSON.parse(
-			Buffer.concat([decipher.update(Buffer.from(value.ciphertext, 'base64')), decipher.final()]).toString(
-				'utf8'
-			)
+			Buffer.concat([
+				decipher.update(Buffer.from(value.ciphertext, 'base64')),
+				decipher.final(),
+			]).toString('utf8')
 		) as Omit<StoredProvider, 'id'>;
 		if (
 			typeof opened.name !== 'string' ||

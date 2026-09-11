@@ -188,7 +188,7 @@ manifest supplies the provider and model entry.
 | --------------- | -------- | --------------------------------------- |
 | Web search      | Brave    | Brave Web Search (`brave-web-search`)   |
 | Web search      | Tavily   | Tavily Web Search (`tavily-web-search`) |
-| Vector database | Pinecone | Pinecone Vector Database (`pinecone`)  |
+| Vector database | Pinecone | Pinecone Vector Database (`pinecone`)   |
 
 Save and edit Pinecone API keys under **Settings → Providers → Database**. Credentials are stored
 as entered in the local `settings/providers.json` file, separately from model and search

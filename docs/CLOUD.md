@@ -12,11 +12,11 @@ those services deliberately; they do not choose the infrastructure behind a Kuce
 The main process owns every credential and infrastructure SDK. Shared types, preload APIs, IPC,
 and renderer code use Kucedr domain terms only.
 
-| Capability                       | Application service | Port                 | Current adapter               |
-| -------------------------------- | ------------------- | -------------------- | ----------------------------- |
-| Account lifecycle and profile    | `cloud/service.ts`  | `AccountProvider`    | `cloud/supabase/auth.ts`      |
-| Conversation records and files   | `cloud/data.ts`     | `CloudRepository`    | `cloud/supabase/records.ts`   |
-| Folder backup objects            | `storage/*`         | `StorageObjectStore` | `cloud/supabase/objects.ts`   |
+| Capability                     | Application service | Port                 | Current adapter             |
+| ------------------------------ | ------------------- | -------------------- | --------------------------- |
+| Account lifecycle and profile  | `cloud/service.ts`  | `AccountProvider`    | `cloud/supabase/auth.ts`    |
+| Conversation records and files | `cloud/data.ts`     | `CloudRepository`    | `cloud/supabase/records.ts` |
+| Folder backup objects          | `storage/*`         | `StorageObjectStore` | `cloud/supabase/objects.ts` |
 
 `bootstrap.ts` is the composition root. It creates the concrete client once and injects each
 adapter independently. No application service constructs an SDK client or imports SDK types.

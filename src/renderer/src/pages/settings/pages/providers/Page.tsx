@@ -94,8 +94,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				const savedProviders = new Map(
 					[...storedProviders, ...storedSearchProviders].map((provider) => [provider.id, provider])
 				);
-				const hasSavedProvider = allCatalogItems(section).some(
-					(provider) => Boolean(savedProviders.get(provider.id)?.apiKey.trim())
+				const hasSavedProvider = allCatalogItems(section).some((provider) =>
+					Boolean(savedProviders.get(provider.id)?.apiKey.trim())
 				);
 
 				setProviderEntries((currentEntries) =>
@@ -178,7 +178,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setError(null);
 		try {
 			await window.provider.set({ id: providerId, apiKey, kind });
-			updateProviderEntry(providerId, { apiKey, savedApiKey: apiKey, apiKeySaved: true, editing: false });
+			updateProviderEntry(providerId, {
+				apiKey,
+				savedApiKey: apiKey,
+				apiKeySaved: true,
+				editing: false,
+			});
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save provider API key.'));
 		} finally {
@@ -195,7 +200,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setError(null);
 		try {
 			setSearchSettings(await window.search.saveEngine(providerId as SearchEngineId, { apiKey }));
-			updateProviderEntry(providerId, { apiKey, savedApiKey: apiKey, apiKeySaved: true, editing: false });
+			updateProviderEntry(providerId, {
+				apiKey,
+				savedApiKey: apiKey,
+				apiKeySaved: true,
+				editing: false,
+			});
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save search provider API key.'));
 		} finally {
