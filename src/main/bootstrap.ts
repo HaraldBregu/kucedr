@@ -62,7 +62,6 @@ export function bootstrapServices(): BootstrapResult {
 	const codingService = new Coding({
 		store: codingStore,
 		projects: new CodingProjectStore(
-			undefined,
 			[agentLocation(), codingStore.getLegacyWorkingDirectory()].filter(
 				(directory): directory is string => Boolean(directory)
 			)

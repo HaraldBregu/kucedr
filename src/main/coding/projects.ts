@@ -1,37 +1,22 @@
 import { existsSync, realpathSync, statSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import Store from 'electron-store';
 import type { CodingProject } from '../../shared/coding_types';
 import { agentLocation } from '../shared/agent_location';
-import { userDataLocation } from '../shared/user_data_location';
 
 interface StoredCodingProject extends Omit<CodingProject, 'available'> {}
 
-interface CodingProjectState {
-	projects: StoredCodingProject[];
-}
-
 export class CodingProjectStore {
-	private readonly store: Store<CodingProjectState>;
+	private projects: StoredCodingProject[] = [];
 	private readonly workspaceDirectory: string;
 
-	constructor(
-		directory = path.resolve(userDataLocation(), 'settings'),
-		initialDirectories: readonly string[] = [agentLocation()]
-	) {
+	constructor(initialDirectories: readonly string[] = [agentLocation()]) {
 		this.workspaceDirectory = path.resolve(agentLocation());
-		this.store = new Store<CodingProjectState>({
-			name: 'coder-projects',
-			cwd: directory,
-			accessPropertiesByDotNotation: false,
-			defaults: { projects: [] },
-		});
 		for (const initialDirectory of initialDirectories) this.seed(initialDirectory);
 	}
 
 	list(): CodingProject[] {
-		return [...this.store.store.projects]
+		return [...this.projects]
 			.sort((left, right) => right.lastOpenedAt.localeCompare(left.lastOpenedAt))
 			.map((project) => ({ ...project, available: this.isAvailable(project.directory) }));
 	}
@@ -42,7 +27,7 @@ export class CodingProjectStore {
 
 	add(directory: string): CodingProject {
 		const canonicalDirectory = this.canonicalDirectory(directory);
-		const existing = this.store.store.projects.find(
+		const existing = this.projects.find(
 			(project) => project.directory === canonicalDirectory
 		);
 		if (existing) {
@@ -58,46 +43,42 @@ export class CodingProjectStore {
 			createdAt: timestamp,
 			lastOpenedAt: timestamp,
 		};
-		this.store.store = { projects: [project, ...this.store.store.projects] };
+		this.projects = [project, ...this.projects];
 		return { ...project, available: true };
 	}
 
 	remove(projectId: string): boolean {
-		const projects = this.store.store.projects.filter((project) => project.id !== projectId);
-		if (projects.length === this.store.store.projects.length) return false;
-		this.store.store = { projects };
+		const projects = this.projects.filter((project) => project.id !== projectId);
+		if (projects.length === this.projects.length) return false;
+		this.projects = projects;
 		return true;
 	}
 
 	touch(projectId: string): void {
 		const timestamp = new Date().toISOString();
-		this.store.store = {
-			projects: this.store.store.projects.map((project) =>
+		this.projects = this.projects.map((project) =>
 				project.id === projectId ? { ...project, lastOpenedAt: timestamp } : project
-			),
-		};
+			);
 	}
 
 	private seed(directory: string): void {
 		try {
 			const canonicalDirectory = this.canonicalDirectory(directory);
-			if (this.store.store.projects.some((project) => project.directory === canonicalDirectory)) {
+			if (this.projects.some((project) => project.directory === canonicalDirectory)) {
 				return;
 			}
 			const timestamp = new Date().toISOString();
-			this.store.store = {
-				projects: [
-					...this.store.store.projects,
-					{
-						id: randomUUID(),
-						name: path.basename(canonicalDirectory) || canonicalDirectory,
-						directory: canonicalDirectory,
-						kind: this.projectKind(canonicalDirectory),
-						createdAt: timestamp,
-						lastOpenedAt: timestamp,
-					},
-				],
-			};
+			this.projects = [
+				...this.projects,
+				{
+					id: randomUUID(),
+					name: path.basename(canonicalDirectory) || canonicalDirectory,
+					directory: canonicalDirectory,
+					kind: this.projectKind(canonicalDirectory),
+					createdAt: timestamp,
+					lastOpenedAt: timestamp,
+				},
+			];
 		} catch {
 			return;
 		}

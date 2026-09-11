@@ -9,7 +9,7 @@ it('persists canonical external projects and removes only their metadata', () =>
 	const aliasDirectory = path.join(root, 'project-alias');
 	mkdirSync(projectDirectory);
 	symlinkSync(projectDirectory, aliasDirectory);
-	const store = new CodingProjectStore(root, [projectDirectory]);
+	const store = new CodingProjectStore([projectDirectory]);
 
 	const seeded = store.list();
 	expect(seeded).toHaveLength(1);
@@ -28,7 +28,7 @@ it('persists canonical external projects and removes only their metadata', () =>
 
 it('rejects renderer-style relative or unavailable project paths', () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
-	const store = new CodingProjectStore(root, []);
+	const store = new CodingProjectStore([]);
 
 	expect(() => store.add('relative/project')).toThrow('must be absolute');
 	expect(() => store.add(path.join(root, 'missing'))).toThrow('unavailable');
