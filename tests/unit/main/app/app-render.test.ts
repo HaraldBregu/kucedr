@@ -90,7 +90,6 @@ describe('app renderer', () => {
 		);
 		expect(harness.create).toHaveBeenCalledWith(
 			expect.objectContaining({
-				autoHideMenuBar: undefined,
 				frame: false,
 				resizable: true,
 				title: 'Project',
@@ -100,6 +99,7 @@ describe('app renderer', () => {
 			}),
 			{ html: 'app.html', hash: 'app/Project' }
 		);
+		expect(harness.create.mock.calls[0]?.[0]).not.toHaveProperty('autoHideMenuBar');
 		expect(harness.win.setMenuBarVisibility).not.toHaveBeenCalled();
 		expect(harness.createView).not.toHaveBeenCalled();
 
