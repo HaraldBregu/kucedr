@@ -92,6 +92,7 @@ describe('provider manifests', () => {
 					}),
 				}),
 				expect.objectContaining({ id: 'gpt-realtime-2.1-mini', sampleRate: 24_000 }),
+				expect.objectContaining({ id: 'gpt-live-1', sampleRate: 24_000 }),
 			])
 		);
 		expect(
@@ -99,6 +100,7 @@ describe('provider manifests', () => {
 		).toEqual([
 			{ id: 'gpt-realtime-2.1', providerId: 'openai' },
 			{ id: 'gpt-realtime-2.1-mini', providerId: 'openai' },
+			{ id: 'gpt-live-1', providerId: 'openai' },
 			{ id: 'grok-voice-latest', providerId: 'xai' },
 		]);
 		expect(realtimeVoiceModels).toEqual(

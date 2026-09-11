@@ -11,6 +11,7 @@ describe('realtime voice adapter factory', () => {
 		expect(realtimeVoiceModelRefs()).toEqual([
 			{ providerId: 'openai', modelId: 'gpt-realtime-2.1' },
 			{ providerId: 'openai', modelId: 'gpt-realtime-2.1-mini' },
+			{ providerId: 'openai', modelId: 'gpt-live-1' },
 			{ providerId: 'xai', modelId: 'grok-voice-latest' },
 		]);
 		expect(supportsRealtimeVoiceModel(' XAI ', 'grok-voice-latest')).toBe(true);
