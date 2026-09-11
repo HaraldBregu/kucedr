@@ -255,6 +255,7 @@ const AppsPage: React.FC = () => {
 															event.stopPropagation();
 															void handleOpen(app.id);
 														}}
+														onKeyDown={(event) => event.stopPropagation()}
 												>
 													<ExternalLink className="size-3" />
 													{t('settings.apps.open')}
@@ -270,6 +271,7 @@ const AppsPage: React.FC = () => {
 															disabled={importing || openingAppId === app.id}
 															aria-label={t('settings.apps.deleteAction', { name: app.title })}
 															onClick={(event) => event.stopPropagation()}
+															onKeyDown={(event) => event.stopPropagation()}
 														>
 															<MoreHorizontal className="size-3.5" />
 														</Button>
