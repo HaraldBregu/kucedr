@@ -28,6 +28,20 @@ jest.mock('../../../src/renderer/src/pages/settings/pages/providers/database', (
 	],
 }));
 
+jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
+	actionableProviderCatalog: () => [
+		{
+			id: 'openai',
+			name: 'OpenAI',
+			capabilities: 'AI provider',
+			supported: true,
+		},
+	],
+	actionableSearchCatalog: () => [],
+	getErrorMessage: (error: unknown, fallback: string) =>
+		error instanceof Error ? error.message : fallback,
+}));
+
 beforeEach(() => {
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
