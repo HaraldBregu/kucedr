@@ -34,7 +34,7 @@ export class AppFileStorage {
 
 	private namespace(appId: string): string {
 		if (!isAppId(appId)) throw new Error('Invalid app ID.');
-		return path.join(this.root, appId);
+		return path.join(this.root, appId, 'data');
 	}
 
 	private fileSegments(filePath: string): string[] {
@@ -61,7 +61,7 @@ export class AppFileStorage {
 		const namespace = this.namespace(appId);
 		const filesRoot = path.join(namespace, 'files');
 		let current = this.root;
-		for (const segment of [appId, 'files', ...segments.slice(0, -1)]) {
+		for (const segment of [appId, 'data', 'files', ...segments.slice(0, -1)]) {
 			if (!(await this.isExistingDirectory(current))) return undefined;
 			current = path.join(current, segment);
 		}

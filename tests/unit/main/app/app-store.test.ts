@@ -77,13 +77,13 @@ describe('app storage', () => {
 	it('rejects directory targets and final file symlinks', async () => {
 		const storage = new AppStorage(root);
 		await storage.writeFile('draw', '..notes/file.bin', new Uint8Array([1]));
-		fs.mkdirSync(path.join(root, 'draw', 'files', 'folder'));
+		fs.mkdirSync(path.join(root, 'draw', 'data', 'files', 'folder'));
 		await expect(storage.readFile('draw', 'folder')).rejects.toThrow('regular file');
 
 		if (process.platform === 'win32') return;
 		const outside = path.join(root, 'outside.bin');
 		fs.writeFileSync(outside, 'outside');
-		fs.symlinkSync(outside, path.join(root, 'draw', 'files', 'link.bin'));
+		fs.symlinkSync(outside, path.join(root, 'draw', 'data', 'files', 'link.bin'));
 		await expect(storage.readFile('draw', 'link.bin')).rejects.toThrow('regular file');
 	});
 
@@ -93,8 +93,8 @@ describe('app storage', () => {
 		await storage.writeFile('draw', 'safe/file.bin', new Uint8Array([1]));
 		const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-outside-'));
 		try {
-			fs.rmSync(path.join(root, 'draw', 'files', 'safe'), { recursive: true });
-			fs.symlinkSync(outside, path.join(root, 'draw', 'files', 'safe'));
+			fs.rmSync(path.join(root, 'draw', 'data', 'files', 'safe'), { recursive: true });
+			fs.symlinkSync(outside, path.join(root, 'draw', 'data', 'files', 'safe'));
 			await expect(storage.readFile('draw', 'safe/file.bin')).rejects.toThrow(
 				'Invalid app storage directory'
 			);
@@ -109,7 +109,7 @@ describe('app storage', () => {
 	it('rejects a symlinked value store file', () => {
 		if (process.platform === 'win32') return;
 		const storage = new AppStorage(root);
-		const namespace = path.join(root, 'draw');
+		const namespace = path.join(root, 'draw', 'data');
 		const outside = path.join(root, 'outside.json');
 		fs.mkdirSync(namespace, { recursive: true });
 		fs.writeFileSync(outside, '{}');
@@ -124,7 +124,7 @@ describe('app storage', () => {
 		if (process.platform === 'win32') return;
 		const storage = new AppStorage(root);
 		storage.set('draw', 'config', { ready: true });
-		const namespace = path.join(root, 'draw');
+		const namespace = path.join(root, 'draw', 'data');
 		const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-values-'));
 		try {
 			fs.rmSync(namespace, { recursive: true });

@@ -69,7 +69,7 @@ export class AppValueStorage {
 
 	private namespace(appId: string): string {
 		if (!isAppId(appId)) throw new Error('Invalid app ID.');
-		return path.join(this.root, appId);
+		return path.join(this.root, appId, 'data');
 	}
 
 	private assertDirectory(directory: string): void {

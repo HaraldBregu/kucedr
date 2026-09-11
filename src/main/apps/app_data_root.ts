@@ -1,6 +1,5 @@
-import path from 'node:path';
-import { userDataLocation } from '../shared/user_data_location';
+import { appsRoot } from './app_root';
 
-export function appDataRoot(location = userDataLocation()): string {
-	return path.join(location, 'apps-data');
+export function appDataRoot(location?: string): string {
+	return appsRoot(location);
 }
