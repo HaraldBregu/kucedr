@@ -12,17 +12,19 @@ const defaults: ProvidersStoreState = {
 	models: [],
 	databases: [],
 	search_engines: [],
+	encryptedProviders: '',
 };
 
-const store = new Store<ProvidersStoreState>({
+export const providersStore = new Store<ProvidersStoreState>({
 	name: 'providers',
 	cwd: path.resolve(userDataLocation(), 'settings'),
 	accessPropertiesByDotNotation: false,
 	defaults,
 });
 
-export const providersStorePath = store.path;
+export const providersStorePath = providersStore.path;
 
+migrateLegacyStorageProviders();
 migrateLegacyProviders();
 
 export function getModelProvidersState(): StoredProvider[] {
@@ -54,15 +56,29 @@ function setSection(kind: ProviderCredentialKind, value: StoredProvider[]): void
 }
 
 function section(kind: ProviderCredentialKind): StoredProvider[] {
-	const value = store.get(kind);
+	const value = providersStore.get(kind);
 	return Array.isArray(value) ? value.filter(isStoredProvider) : [];
 }
 
 function writeSection(kind: ProviderCredentialKind, value: StoredProvider[]): void {
-	store.set(kind, value);
-	if (typeof store.path === 'string') {
-		restrictProviderPermissions(path.dirname(store.path), store.path);
+	providersStore.set(kind, value);
+	if (typeof providersStore.path === 'string') {
+		restrictProviderPermissions(path.dirname(providersStore.path), providersStore.path);
 	}
+}
+
+function migrateLegacyStorageProviders(): void {
+	const legacyPath = path.resolve(userDataLocation(), 'settings', 'storage.json');
+	if (!existsSync(legacyPath) || providersStore.get('encryptedProviders')) return;
+	try {
+		const legacy = JSON.parse(readFileSync(legacyPath, 'utf8')) as { encryptedProviders?: unknown };
+		if (typeof legacy.encryptedProviders !== 'string' || !legacy.encryptedProviders) return;
+		providersStore.set('encryptedProviders', legacy.encryptedProviders);
+		if (typeof providersStore.path === 'string') {
+			restrictProviderPermissions(path.dirname(providersStore.path), providersStore.path);
+		}
+		unlinkSync(legacyPath);
+	} catch {}
 }
 
 function migrateLegacyProviders(): void {
