@@ -52,7 +52,7 @@ const routes = [
 	'/settings/agent/llm-wiki',
 	'/settings/agent/tasks',
 	'/settings/agent',
-	'/settings/coder',
+	'/settings/coding',
 	'/settings/agent/chathistory',
 	'/settings/agent/health',
 	'/settings/agent/permissions',

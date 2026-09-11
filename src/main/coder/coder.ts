@@ -11,28 +11,28 @@ import {
 } from '@earendil-works/pi-coding-agent';
 import type { StoredProvider } from '../../shared/provider_types';
 import type {
-	CoderAuthEvent,
-	CoderAuthStatus,
-	CoderCatalog,
-	CoderProject,
-	CoderProjectInstructions,
-	CoderProjectInstructionsUpdate,
-	CoderProvider,
-	CoderProviderId,
-	CoderResponseEvent,
-	CoderRunRequest,
-	CoderRunResult,
-	CoderSessionBlock,
-	CoderSessionSnapshot,
-	CoderSessionSummary,
-	CoderSettings,
-} from '../../shared/coder_types';
-import { coderLocation, coderSessionsLocation } from './location';
-import { CoderInstructions } from './instructions';
-import { CoderProjectStore } from './projects';
-import { CoderStore } from './store';
+	CodingAuthEvent,
+	CodingAuthStatus,
+	CodingCatalog,
+	CodingProject,
+	CodingProjectInstructions,
+	CodingProjectInstructionsUpdate,
+	CodingProvider,
+	CodingProviderId,
+	CodingResponseEvent,
+	CodingRunRequest,
+	CodingRunResult,
+	CodingSessionBlock,
+	CodingSessionSnapshot,
+	CodingSessionSummary,
+	CodingSettings,
+} from '../../shared/coding_types';
+import { codingLocation, codingSessionsLocation } from './location';
+import { CodingInstructions } from './instructions';
+import { CodingProjectStore } from './projects';
+import { CodingStore } from './store';
 
-const SUPPORTED_PROVIDERS: readonly CoderProviderId[] = ['openai-codex', 'openai', 'anthropic'];
+const SUPPORTED_PROVIDERS: readonly CodingProviderId[] = ['openai-codex', 'openai', 'anthropic'];
 const READ_ONLY_TOOLS = ['read', 'grep', 'find', 'ls'];
 const CODING_TOOLS = ['read', 'bash', 'edit', 'write', 'grep', 'find', 'ls'];
 const RUN_TIMEOUT_MS = 30 * 60 * 1000;
@@ -47,36 +47,36 @@ interface ActiveRun {
 	abortSession?: () => Promise<void>;
 }
 
-interface CoderDependencies {
-	readonly store: CoderStore;
-	readonly projects: CoderProjectStore;
+interface CodingDependencies {
+	readonly store: CodingStore;
+	readonly projects: CodingProjectStore;
 	readonly getProvider: (providerId: string) => StoredProvider | undefined;
 }
 
 export class Coder {
 	private readonly runs = new Map<string, ActiveRun>();
 	private readonly authControllers = new Map<number, AbortController>();
-	private readonly instructions = new CoderInstructions();
+	private readonly instructions = new CodingInstructions();
 	private runtimePromise?: Promise<ModelRuntime>;
 
-	constructor(private readonly dependencies: CoderDependencies) {
-		mkdirSync(coderLocation(), { recursive: true });
-		mkdirSync(coderSessionsLocation(), { recursive: true });
+	constructor(private readonly dependencies: CodingDependencies) {
+		mkdirSync(codingLocation(), { recursive: true });
+		mkdirSync(codingSessionsLocation(), { recursive: true });
 	}
 
-	getSettings(): CoderSettings {
+	getSettings(): CodingSettings {
 		return this.dependencies.store.get();
 	}
 
-	saveSettings(settings: CoderSettings): CoderSettings {
+	saveSettings(settings: CodingSettings): CodingSettings {
 		return this.dependencies.store.set(settings);
 	}
 
-	listProjects(): CoderProject[] {
+	listProjects(): CodingProject[] {
 		return this.dependencies.projects.list();
 	}
 
-	addProject(directory: string): CoderProject {
+	addProject(directory: string): CodingProject {
 		return this.dependencies.projects.add(directory);
 	}
 
@@ -87,35 +87,35 @@ export class Coder {
 		return this.dependencies.projects.remove(projectId);
 	}
 
-	async getProjectInstructions(projectId: string): Promise<CoderProjectInstructions> {
+	async getProjectInstructions(projectId: string): Promise<CodingProjectInstructions> {
 		return this.instructions.get(this.requireProject(projectId));
 	}
 
 	async saveProjectInstructions(
 		projectId: string,
-		update: CoderProjectInstructionsUpdate
-	): Promise<CoderProjectInstructions> {
+		update: CodingProjectInstructionsUpdate
+	): Promise<CodingProjectInstructions> {
 		return this.instructions.save(this.requireProject(projectId), update);
 	}
 
-	async listSessions(projectId: string): Promise<CoderSessionSummary[]> {
+	async listSessions(projectId: string): Promise<CodingSessionSummary[]> {
 		const project = this.requireProject(projectId);
-		const sessions = await SessionManager.list(project.directory, coderSessionsLocation());
+		const sessions = await SessionManager.list(project.directory, codingSessionsLocation());
 		return sessions.map((session) => this.sessionSummary(project.id, session));
 	}
 
-	async getSession(projectId: string, sessionId: string): Promise<CoderSessionSnapshot> {
+	async getSession(projectId: string, sessionId: string): Promise<CodingSessionSnapshot> {
 		const project = this.requireProject(projectId);
 		const sessionInfo = await this.requireSession(project, sessionId);
 		const manager = SessionManager.open(
 			sessionInfo.path,
-			coderSessionsLocation(),
+			codingSessionsLocation(),
 			project.directory
 		);
 		const blocks = manager
 			.buildSessionContext()
 			.messages.map((message, index) => this.sessionBlock(message, index))
-			.filter((block): block is CoderSessionBlock => Boolean(block));
+			.filter((block): block is CodingSessionBlock => Boolean(block));
 		this.dependencies.projects.touch(project.id);
 		return { session: this.sessionSummary(project.id, sessionInfo), blocks };
 	}
@@ -124,7 +124,7 @@ export class Coder {
 		projectId: string,
 		sessionId: string,
 		title: string
-	): Promise<CoderSessionSummary> {
+	): Promise<CodingSessionSummary> {
 		const project = this.requireProject(projectId);
 		const session = await this.requireSession(project, sessionId);
 		if ([...this.runs.values()].some((run) => run.sessionKey === `${project.id}:${session.id}`)) {
@@ -134,7 +134,7 @@ export class Coder {
 		if (!normalizedTitle || normalizedTitle.length > 120) {
 			throw new Error('Coder session title must be between 1 and 120 characters.');
 		}
-		SessionManager.open(session.path, coderSessionsLocation(), project.directory).appendSessionInfo(
+		SessionManager.open(session.path, codingSessionsLocation(), project.directory).appendSessionInfo(
 			normalizedTitle
 		);
 		const updated = await this.requireSession(project, sessionId);
@@ -147,7 +147,7 @@ export class Coder {
 		if ([...this.runs.values()].some((run) => run.sessionKey === `${project.id}:${session.id}`)) {
 			throw new Error('Stop the active run before deleting this session.');
 		}
-		const root = path.resolve(coderSessionsLocation());
+		const root = path.resolve(codingSessionsLocation());
 		const target = path.resolve(session.path);
 		const relative = path.relative(root, target);
 		if (
@@ -162,15 +162,15 @@ export class Coder {
 		return true;
 	}
 
-	async listModels(): Promise<CoderCatalog> {
+	async listModels(): Promise<CodingCatalog> {
 		const runtime = await this.getRuntime();
 		await this.syncApiKeys(runtime);
 		const providers = await Promise.all(
 			runtime
 				.getProviders()
-				.filter((provider) => SUPPORTED_PROVIDERS.includes(provider.id as CoderProviderId))
-				.map(async (provider): Promise<CoderProvider> => {
-					const id = provider.id as CoderProviderId;
+				.filter((provider) => SUPPORTED_PROVIDERS.includes(provider.id as CodingProviderId))
+				.map(async (provider): Promise<CodingProvider> => {
+					const id = provider.id as CodingProviderId;
 					const auth = await runtime.checkAuth(id);
 					return {
 						id,
@@ -193,8 +193,8 @@ export class Coder {
 
 	async connectCodex(
 		windowId: number,
-		emit: (event: CoderAuthEvent) => void
-	): Promise<CoderAuthStatus> {
+		emit: (event: CodingAuthEvent) => void
+	): Promise<CodingAuthStatus> {
 		if (this.authControllers.has(windowId))
 			throw new Error('A Codex login is already in progress.');
 		const controller = new AbortController();
@@ -264,18 +264,18 @@ export class Coder {
 	async send(
 		ownerId: number,
 		runId: string,
-		request: CoderRunRequest,
-		emit: (event: CoderResponseEvent) => void
-	): Promise<CoderRunResult> {
+		request: CodingRunRequest,
+		emit: (event: CodingResponseEvent) => void
+	): Promise<CodingRunResult> {
 		if (this.runs.has(runId)) throw new Error('Coder run id is already active.');
 		const project = this.requireProject(request.projectId);
 		const sessionManager = request.sessionId
 			? SessionManager.open(
 					(await this.requireSession(project, request.sessionId)).path,
-					coderSessionsLocation(),
+					codingSessionsLocation(),
 					project.directory
 				)
-			: SessionManager.create(project.directory, coderSessionsLocation());
+			: SessionManager.create(project.directory, codingSessionsLocation());
 		const sessionId = sessionManager.getSessionId();
 		const sessionKey = `${project.id}:${sessionId}`;
 		if ([...this.runs.values()].some((run) => run.sessionKey === sessionKey)) {
@@ -313,7 +313,7 @@ export class Coder {
 			);
 			const resourceLoader = new DefaultResourceLoader({
 				cwd: project.directory,
-				agentDir: coderLocation(),
+				agentDir: codingLocation(),
 				settingsManager,
 				noExtensions: true,
 				noSkills: true,
@@ -323,7 +323,7 @@ export class Coder {
 			await resourceLoader.reload();
 			const { session } = await createAgentSession({
 				cwd: project.directory,
-				agentDir: coderLocation(),
+				agentDir: codingLocation(),
 				modelRuntime: runtime,
 				model,
 				thinkingLevel: settings.thinkingLevel,
@@ -441,21 +441,21 @@ export class Coder {
 		this.authControllers.clear();
 	}
 
-	private requireProject(projectId: string): CoderProject {
+	private requireProject(projectId: string): CodingProject {
 		const project = this.dependencies.projects.get(projectId);
 		if (!project) throw new Error('Coder project was not found.');
 		if (!project.available) throw new Error('Coder project directory is unavailable.');
 		return project;
 	}
 
-	private async requireSession(project: CoderProject, sessionId: string): Promise<SessionInfo> {
-		const sessions = await SessionManager.list(project.directory, coderSessionsLocation());
+	private async requireSession(project: CodingProject, sessionId: string): Promise<SessionInfo> {
+		const sessions = await SessionManager.list(project.directory, codingSessionsLocation());
 		const session = sessions.find((item) => item.id === sessionId);
 		if (!session) throw new Error('Coder session was not found for this project.');
 		return session;
 	}
 
-	private sessionSummary(projectId: string, session: SessionInfo): CoderSessionSummary {
+	private sessionSummary(projectId: string, session: SessionInfo): CodingSessionSummary {
 		const firstMessage = session.firstMessage.trim();
 		return {
 			id: session.id,
@@ -467,7 +467,7 @@ export class Coder {
 		};
 	}
 
-	private sessionBlock(message: unknown, index: number): CoderSessionBlock | undefined {
+	private sessionBlock(message: unknown, index: number): CodingSessionBlock | undefined {
 		if (!message || typeof message !== 'object') return undefined;
 		const value = message as Record<string, unknown>;
 		const timestamp =
@@ -515,7 +515,7 @@ export class Coder {
 
 	private getRuntime(): Promise<ModelRuntime> {
 		this.runtimePromise ??= ModelRuntime.create({
-			authPath: path.join(coderLocation(), 'auth.json'),
+			authPath: path.join(codingLocation(), 'auth.json'),
 			modelsPath: null,
 			allowModelNetwork: false,
 		});

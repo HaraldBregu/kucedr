@@ -32,7 +32,7 @@ import type {
 import type { ChannelModelKind, ChannelModelSelection } from './channels_types';
 import {
 	AgentChannels,
-	CoderChannels,
+	CodingChannels,
 	A2aChannels,
 	AppChannels,
 	RecorderChannels,
@@ -60,57 +60,57 @@ import {
 	CloudChannels,
 } from './ipc_channels_definitions';
 
-export interface CoderInvokeChannelMap {
-	[CoderChannels.getSettings]: { args: []; result: import('./coder_types').CoderSettings };
-	[CoderChannels.saveSettings]: {
-		args: [settings: import('./coder_types').CoderSettings];
-		result: import('./coder_types').CoderSettings;
+export interface CodingInvokeChannelMap {
+	[CodingChannels.getSettings]: { args: []; result: import('./coding_types').CodingSettings };
+	[CodingChannels.saveSettings]: {
+		args: [settings: import('./coding_types').CodingSettings];
+		result: import('./coding_types').CodingSettings;
 	};
-	[CoderChannels.listModels]: { args: []; result: import('./coder_types').CoderCatalog };
-	[CoderChannels.listProjects]: { args: []; result: import('./coder_types').CoderProject[] };
-	[CoderChannels.addProject]: {
+	[CodingChannels.listModels]: { args: []; result: import('./coding_types').CodingCatalog };
+	[CodingChannels.listProjects]: { args: []; result: import('./coding_types').CodingProject[] };
+	[CodingChannels.addProject]: {
 		args: [];
-		result: import('./coder_types').CoderProject | undefined;
+		result: import('./coding_types').CodingProject | undefined;
 	};
-	[CoderChannels.openProject]: { args: [projectId: string]; result: void };
-	[CoderChannels.removeProject]: { args: [projectId: string]; result: boolean };
-	[CoderChannels.getProjectInstructions]: {
+	[CodingChannels.openProject]: { args: [projectId: string]; result: void };
+	[CodingChannels.removeProject]: { args: [projectId: string]; result: boolean };
+	[CodingChannels.getProjectInstructions]: {
 		args: [projectId: string];
-		result: import('./coder_types').CoderProjectInstructions;
+		result: import('./coding_types').CodingProjectInstructions;
 	};
-	[CoderChannels.saveProjectInstructions]: {
-		args: [projectId: string, update: import('./coder_types').CoderProjectInstructionsUpdate];
-		result: import('./coder_types').CoderProjectInstructions;
+	[CodingChannels.saveProjectInstructions]: {
+		args: [projectId: string, update: import('./coding_types').CodingProjectInstructionsUpdate];
+		result: import('./coding_types').CodingProjectInstructions;
 	};
-	[CoderChannels.listSessions]: {
+	[CodingChannels.listSessions]: {
 		args: [projectId: string];
-		result: import('./coder_types').CoderSessionSummary[];
+		result: import('./coding_types').CodingSessionSummary[];
 	};
-	[CoderChannels.getSession]: {
+	[CodingChannels.getSession]: {
 		args: [projectId: string, sessionId: string];
-		result: import('./coder_types').CoderSessionSnapshot;
+		result: import('./coding_types').CodingSessionSnapshot;
 	};
-	[CoderChannels.renameSession]: {
+	[CodingChannels.renameSession]: {
 		args: [projectId: string, sessionId: string, title: string];
-		result: import('./coder_types').CoderSessionSummary;
+		result: import('./coding_types').CodingSessionSummary;
 	};
-	[CoderChannels.deleteSession]: {
+	[CodingChannels.deleteSession]: {
 		args: [projectId: string, sessionId: string];
 		result: boolean;
 	};
-	[CoderChannels.send]: {
-		args: [request: import('./coder_types').CoderRunRequest, runId: string];
-		result: import('./coder_types').CoderRunResult;
+	[CodingChannels.send]: {
+		args: [request: import('./coding_types').CodingRunRequest, runId: string];
+		result: import('./coding_types').CodingRunResult;
 	};
-	[CoderChannels.cancel]: { args: [runId: string]; result: boolean };
-	[CoderChannels.connectCodex]: { args: []; result: import('./coder_types').CoderAuthStatus };
-	[CoderChannels.cancelCodexLogin]: { args: []; result: boolean };
-	[CoderChannels.disconnectCodex]: { args: []; result: void };
+	[CodingChannels.cancel]: { args: [runId: string]; result: boolean };
+	[CodingChannels.connectCodex]: { args: []; result: import('./coding_types').CodingAuthStatus };
+	[CodingChannels.cancelCodexLogin]: { args: []; result: boolean };
+	[CodingChannels.disconnectCodex]: { args: []; result: void };
 }
 
-export interface CoderEventChannelMap {
-	[CoderChannels.response]: { data: import('./coder_types').CoderResponseEvent };
-	[CoderChannels.authEvent]: { data: import('./coder_types').CoderAuthEvent };
+export interface CodingEventChannelMap {
+	[CodingChannels.response]: { data: import('./coding_types').CodingResponseEvent };
+	[CodingChannels.authEvent]: { data: import('./coding_types').CodingAuthEvent };
 }
 
 export interface AgentInvokeChannelMap {
@@ -1170,7 +1170,7 @@ export interface InvokeChannelMap
 	extends
 		AppInvokeChannelMap,
 		AgentInvokeChannelMap,
-		CoderInvokeChannelMap,
+		CodingInvokeChannelMap,
 		RecorderInvokeChannelMap,
 		TaskInvokeChannelMap,
 		SkillsInvokeChannelMap,
@@ -1224,7 +1224,7 @@ export interface EventChannelMap
 	extends
 		AppEventChannelMap,
 		AgentEventChannelMap,
-		CoderEventChannelMap,
+		CodingEventChannelMap,
 		RecorderEventChannelMap,
 		StorageEventChannelMap,
 		WindowEventChannelMap,

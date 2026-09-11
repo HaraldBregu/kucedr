@@ -1,15 +1,15 @@
 import { existsSync, mkdtempSync, mkdirSync, realpathSync, symlinkSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { CoderProjectStore } from '../../../../src/main/coder/projects';
+import { CodingProjectStore } from '../../../../src/main/coder/projects';
 
 it('persists canonical external projects and removes only their metadata', () => {
-	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coder-projects-'));
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
 	const projectDirectory = path.join(root, 'project');
 	const aliasDirectory = path.join(root, 'project-alias');
 	mkdirSync(projectDirectory);
 	symlinkSync(projectDirectory, aliasDirectory);
-	const store = new CoderProjectStore(root, [projectDirectory]);
+	const store = new CodingProjectStore(root, [projectDirectory]);
 
 	const seeded = store.list();
 	expect(seeded).toHaveLength(1);
@@ -27,8 +27,8 @@ it('persists canonical external projects and removes only their metadata', () =>
 });
 
 it('rejects renderer-style relative or unavailable project paths', () => {
-	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coder-projects-'));
-	const store = new CoderProjectStore(root, []);
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
+	const store = new CodingProjectStore(root, []);
 
 	expect(() => store.add('relative/project')).toThrow('must be absolute');
 	expect(() => store.add(path.join(root, 'missing'))).toThrow('unavailable');

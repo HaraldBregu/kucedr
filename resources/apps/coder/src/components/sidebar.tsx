@@ -6,7 +6,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { Input } from '@/components/ui/input';
 import { SidebarContent, SidebarHeader } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import type { CoderController } from '@/controller';
+import type { CodingController } from '@/controller';
 
 export function ProjectSidebar({
 	coder,
@@ -14,7 +14,7 @@ export function ProjectSidebar({
 	onOpenConfiguration,
 	onOpenWorkspace,
 }: {
-	coder: CoderController;
+	coder: CodingController;
 	configurationOpen: boolean;
 	onOpenConfiguration: () => void;
 	onOpenWorkspace: () => boolean;
@@ -80,7 +80,7 @@ export function ProjectSidebar({
 				<div className="relative group-data-[state=collapsed]/sidebar:hidden">
 					<Search className="pointer-events-none absolute left-2.5 top-2 size-3.5 text-muted-foreground" />
 					<Input
-						id="coder-sidebar-search"
+						id="coding-sidebar-search"
 						aria-label="Search workspaces and sessions"
 						value={coder.query}
 						onChange={(event) => coder.setQuery(event.target.value)}

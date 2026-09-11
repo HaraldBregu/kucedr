@@ -37,14 +37,14 @@ it.each([
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/agent/skills', 'settings.tabs.skills'],
 	['/settings/agent/mcp', 'settings.tabs.mcp'],
-	['/settings/coder', 'settings.coder.title'],
+	['/settings/coding', 'settings.coding.title'],
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
 	if (path === '/settings/general/persona' || path === '/settings/agent/tools') {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
-	} else if (path === '/settings/coder') {
+	} else if (path === '/settings/coding') {
 		expect(SETTINGS_MODEL_SERVICE_ITEMS).toContainEqual(
 			expect.objectContaining({ path, labelKey })
 		);
@@ -122,7 +122,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
 	).not.toBeInTheDocument();
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.coder.title' })
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.coding.title' })
 	).toBeInTheDocument();
 	expect(
 		within(providersGroup as HTMLElement).getByRole('link', {

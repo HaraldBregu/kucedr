@@ -1,29 +1,29 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	app,
-	coder as coderApi,
+	coder as codingApi,
 	isKucedr,
-	type CoderProject,
-	type CoderResponseEvent,
-	type CoderRunMode,
-	type CoderSessionBlock,
-	type CoderSessionSummary,
-	type CoderSettings,
+	type CodingProject,
+	type CodingResponseEvent,
+	type CodingRunMode,
+	type CodingSessionBlock,
+	type CodingSessionSummary,
+	type CodingSettings,
 } from '@kucedr/sdk';
 
-import type { CoderBlock, CoderController, RunState } from '@/controller';
+import type { CodingBlock, CodingController, RunState } from '@/controller';
 
 const ACTIVE_PROJECT_KEY = 'active-project-id';
 const SIDEBAR_OPEN_KEY = 'sidebar-open';
 const previewTimestamp = new Date().toISOString();
-const previewSettings: CoderSettings = {
+const previewSettings: CodingSettings = {
 	runtime: 'pi',
 	providerId: 'openai-codex',
 	modelId: 'gpt-5.4',
 	thinkingLevel: 'high',
 	toolMode: 'coding',
 };
-const previewProjects: CoderProject[] = [
+const previewProjects: CodingProject[] = [
 	{
 		id: 'kucedr',
 		name: 'kucedr',
@@ -43,7 +43,7 @@ const previewProjects: CoderProject[] = [
 		available: true,
 	},
 ];
-const previewSessions: CoderSessionSummary[] = [
+const previewSessions: CodingSessionSummary[] = [
 	{
 		id: 'session-1',
 		projectId: 'kucedr',
@@ -54,7 +54,7 @@ const previewSessions: CoderSessionSummary[] = [
 	},
 ];
 const previewSessionsByProject = { kucedr: previewSessions, website: [] };
-const previewBlocks: CoderBlock[] = [
+const previewBlocks: CodingBlock[] = [
 	{
 		id: 'preview-user',
 		type: 'message',
@@ -81,20 +81,20 @@ const previewBlocks: CoderBlock[] = [
 	},
 ];
 
-export function useCoderWorkspace(): CoderController {
+export function useCoderWorkspace(): CodingController {
 	const preview = !isKucedr();
 	const activeRunIdRef = useRef('');
 	const cancelRequestedRef = useRef(false);
 	const runningRef = useRef(false);
 	const loadSequenceRef = useRef(0);
-	const [settings, setSettings] = useState<CoderSettings>(
+	const [settings, setSettings] = useState<CodingSettings>(
 		preview ? previewSettings : previewSettings
 	);
-	const [projects, setProjects] = useState<CoderProject[]>(preview ? previewProjects : []);
-	const [sessionsByProject, setSessionsByProject] = useState<Record<string, CoderSessionSummary[]>>(
+	const [projects, setProjects] = useState<CodingProject[]>(preview ? previewProjects : []);
+	const [sessionsByProject, setSessionsByProject] = useState<Record<string, CodingSessionSummary[]>>(
 		preview ? previewSessionsByProject : {}
 	);
-	const [blocks, setBlocks] = useState<CoderBlock[]>(preview ? previewBlocks : []);
+	const [blocks, setBlocks] = useState<CodingBlock[]>(preview ? previewBlocks : []);
 	const [activeProjectId, setActiveProjectId] = useState<string | undefined>(
 		preview ? 'kucedr' : undefined
 	);
@@ -102,7 +102,7 @@ export function useCoderWorkspace(): CoderController {
 		preview ? 'session-1' : undefined
 	);
 	const [input, setInput] = useState('');
-	const [mode, setMode] = useState<CoderRunMode>('agent');
+	const [mode, setMode] = useState<CodingRunMode>('agent');
 	const [query, setQuery] = useState('');
 	const [runState, setRunState] = useState<RunState>(preview ? 'idle' : 'loading');
 	const [runLabel, setRunLabel] = useState(preview ? 'Preview' : 'Loading');
@@ -125,7 +125,7 @@ export function useCoderWorkspace(): CoderController {
 			setError('');
 			setActiveProjectId(projectId);
 			try {
-				const nextSessions = await coderApi.listSessions(projectId);
+				const nextSessions = await codingApi.listSessions(projectId);
 				if (sequence !== loadSequenceRef.current) return;
 				setSessionsByProject((current) => ({ ...current, [projectId]: nextSessions }));
 				const session =
@@ -135,12 +135,12 @@ export function useCoderWorkspace(): CoderController {
 					setBlocks([]);
 					return;
 				}
-				const snapshot = await coderApi.getSession(projectId, session.id);
+				const snapshot = await codingApi.getSession(projectId, session.id);
 				if (sequence !== loadSequenceRef.current) return;
 				setActiveSessionId(session.id);
 				setBlocks(
 					snapshot.blocks.map(
-						(block: CoderSessionBlock): CoderBlock =>
+						(block: CodingSessionBlock): CodingBlock =>
 							block.type === 'message' ? { ...block, status: 'complete' } : block
 					)
 				);
@@ -161,8 +161,8 @@ export function useCoderWorkspace(): CoderController {
 		if (preview) return;
 		let active = true;
 		void Promise.all([
-			coderApi.getSettings(),
-			coderApi.listProjects(),
+			codingApi.getSettings(),
+			codingApi.listProjects(),
 			app.getAppStoreValue<string>(ACTIVE_PROJECT_KEY),
 			app.getAppStoreValue<boolean>(SIDEBAR_OPEN_KEY),
 		])
@@ -173,7 +173,7 @@ export function useCoderWorkspace(): CoderController {
 				if (typeof savedSidebarOpen === 'boolean') setLeftOpen(savedSidebarOpen);
 				const groupedSessions = await Promise.all(
 					nextProjects.map(
-						async (project) => [project.id, await coderApi.listSessions(project.id)] as const
+						async (project) => [project.id, await codingApi.listSessions(project.id)] as const
 					)
 				);
 				if (!active) return;
@@ -222,7 +222,7 @@ export function useCoderWorkspace(): CoderController {
 			setRunState('idle');
 			setRunLabel(settings.modelId ? 'Ready' : 'Setup needed');
 			window.requestAnimationFrame(() =>
-				document.querySelector<HTMLTextAreaElement>('#coder-composer')?.focus()
+				document.querySelector<HTMLTextAreaElement>('#coding-composer')?.focus()
 			);
 			if (!preview) void app.setAppStoreValue(ACTIVE_PROJECT_KEY, projectId);
 		},
@@ -238,7 +238,7 @@ export function useCoderWorkspace(): CoderController {
 			}
 			if (command && event.key === '/') {
 				event.preventDefault();
-				document.querySelector<HTMLTextAreaElement>('#coder-composer')?.focus();
+				document.querySelector<HTMLTextAreaElement>('#coding-composer')?.focus();
 			}
 			if (event.key === 'Escape' && query) setQuery('');
 		};
@@ -270,12 +270,12 @@ export function useCoderWorkspace(): CoderController {
 					setActiveSessionId(sessionId);
 					setBlocks(previewBlocks);
 				} else {
-					const snapshot = await coderApi.getSession(projectId, sessionId);
+					const snapshot = await codingApi.getSession(projectId, sessionId);
 					setActiveProjectId(projectId);
 					setActiveSessionId(sessionId);
 					setBlocks(
 						snapshot.blocks.map(
-							(block: CoderSessionBlock): CoderBlock =>
+							(block: CodingSessionBlock): CodingBlock =>
 								block.type === 'message' ? { ...block, status: 'complete' } : block
 						)
 					);
@@ -298,9 +298,9 @@ export function useCoderWorkspace(): CoderController {
 		setBusy(true);
 		setError('');
 		try {
-			const project = await coderApi.addProject();
+			const project = await codingApi.addProject();
 			if (!project) return;
-			const nextProjects = await coderApi.listProjects();
+			const nextProjects = await codingApi.listProjects();
 			setProjects(nextProjects);
 			setSessionsByProject((current) => ({ ...current, [project.id]: [] }));
 			setExpandedProjectIds((current) => [...new Set([...current, project.id])]);
@@ -319,8 +319,8 @@ export function useCoderWorkspace(): CoderController {
 			setBusy(true);
 			setError('');
 			try {
-				await coderApi.removeProject(projectId);
-				const nextProjects = await coderApi.listProjects();
+				await codingApi.removeProject(projectId);
+				const nextProjects = await codingApi.listProjects();
 				setProjects(nextProjects);
 				setSessionsByProject((current) => {
 					const next = { ...current };
@@ -354,7 +354,7 @@ export function useCoderWorkspace(): CoderController {
 			if (preview) return;
 			setError('');
 			try {
-				await coderApi.openProject(projectId);
+				await codingApi.openProject(projectId);
 			} catch (reason) {
 				setError(reason instanceof Error ? reason.message : 'Unable to open this project folder.');
 			}
@@ -368,12 +368,12 @@ export function useCoderWorkspace(): CoderController {
 		setError('');
 		try {
 			const [nextSettings, nextProjects] = await Promise.all([
-				coderApi.getSettings(),
-				coderApi.listProjects(),
+				codingApi.getSettings(),
+				codingApi.listProjects(),
 			]);
 			const groupedSessions = await Promise.all(
 				nextProjects.map(
-					async (project) => [project.id, await coderApi.listSessions(project.id)] as const
+					async (project) => [project.id, await codingApi.listSessions(project.id)] as const
 				)
 			);
 			setSettings(nextSettings);
@@ -399,7 +399,7 @@ export function useCoderWorkspace(): CoderController {
 		cancelRequestedRef.current = true;
 		setRunLabel('Stopping');
 		const runId = activeRunIdRef.current;
-		if (runId && !preview) void coderApi.cancel(runId).catch(() => undefined);
+		if (runId && !preview) void codingApi.cancel(runId).catch(() => undefined);
 	}, [preview]);
 
 	const send = useCallback(async (): Promise<void> => {
@@ -428,7 +428,7 @@ export function useCoderWorkspace(): CoderController {
 							}
 						: { role: 'user' as const, content: requestInput, status: 'complete' as const }),
 					timestamp: new Date().toISOString(),
-				} as CoderBlock,
+				} as CodingBlock,
 			]);
 			return;
 		}
@@ -463,13 +463,13 @@ export function useCoderWorkspace(): CoderController {
 					},
 		]);
 
-		const onEvent = (event: CoderResponseEvent): void => {
+		const onEvent = (event: CodingResponseEvent): void => {
 			if (event.type === 'status') {
 				if (event.status === 'started') {
 					activeRunIdRef.current = event.runId;
 					setActiveSessionId(event.sessionId);
 					setRunLabel(mode === 'shell' ? 'Running command' : 'Agent running');
-					if (cancelRequestedRef.current) void coderApi.cancel(event.runId).catch(() => undefined);
+					if (cancelRequestedRef.current) void codingApi.cancel(event.runId).catch(() => undefined);
 				} else if (event.status === 'cancelled') {
 					setRunLabel('Cancelled');
 					setBlocks((current) =>
@@ -585,7 +585,7 @@ export function useCoderWorkspace(): CoderController {
 		};
 
 		try {
-			const result = await coderApi.send(
+			const result = await codingApi.send(
 				{
 					projectId: project.id,
 					...(activeSessionId ? { sessionId: activeSessionId } : {}),
@@ -598,8 +598,8 @@ export function useCoderWorkspace(): CoderController {
 			setRunState('idle');
 			setRunLabel('Ready');
 			const [nextProjects, nextSessions] = await Promise.all([
-				coderApi.listProjects(),
-				coderApi.listSessions(project.id),
+				codingApi.listProjects(),
+				codingApi.listSessions(project.id),
 			]);
 			setProjects(nextProjects);
 			setSessionsByProject((current) => ({ ...current, [project.id]: nextSessions }));

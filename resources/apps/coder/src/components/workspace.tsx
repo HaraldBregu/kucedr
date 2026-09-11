@@ -8,9 +8,9 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Blocks } from '@/components/blocks';
 import { Composer } from '@/components/composer';
-import type { CoderController } from '@/controller';
+import type { CodingController } from '@/controller';
 
-export function Workspace({ coder }: { coder: CoderController }) {
+export function Workspace({ coder }: { coder: CodingController }) {
 	const scrollRef = useRef<HTMLDivElement>(null);
 	const [atBottom, setAtBottom] = useState(true);
 
@@ -68,7 +68,7 @@ export function Workspace({ coder }: { coder: CoderController }) {
 							variant="outline"
 							onClick={() => void coder.removeProject(coder.activeProject!.id)}
 						>
-							Remove from Coder
+							Remove from Coding
 						</Button>
 					</Empty>
 				) : coder.blocks.length === 0 ? (

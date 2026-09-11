@@ -12,14 +12,14 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import type {
-	CoderAuthEvent,
-	CoderCatalog,
-	CoderProviderId,
-	CoderSettings,
-	CoderThinkingLevel,
-	CoderToolMode,
-} from '../../../../../../shared/coder_types';
-import { CODER_THINKING_LEVELS } from '../../../../../../shared/coder_types';
+	CodingAuthEvent,
+	CodingCatalog,
+	CodingProviderId,
+	CodingSettings,
+	CodingThinkingLevel,
+	CodingToolMode,
+} from '../../../../../../shared/coding_types';
+import { CODING_THINKING_LEVELS } from '../../../../../../shared/coding_types';
 import {
 	SettingsLoadingRows,
 	SettingsNotice,
@@ -31,16 +31,16 @@ import {
 } from '../../components';
 import { firstErrorMessage } from '../../components/model-configuration-state';
 
-const CoderPage: React.FC = () => {
+const CodingPage: React.FC = () => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
-	const [settings, setSettings] = useState<CoderSettings | null>(null);
-	const [catalog, setCatalog] = useState<CoderCatalog>({ providers: [] });
+	const [settings, setSettings] = useState<CodingSettings | null>(null);
+	const [catalog, setCatalog] = useState<CodingCatalog>({ providers: [] });
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [saved, setSaved] = useState(false);
 	const [connecting, setConnecting] = useState(false);
-	const [authEvent, setAuthEvent] = useState<CoderAuthEvent | null>(null);
+	const [authEvent, setAuthEvent] = useState<CodingAuthEvent | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -62,12 +62,12 @@ const CoderPage: React.FC = () => {
 		};
 	}, [t]);
 
-	const save = (nextSettings: CoderSettings): void => {
+	const save = (nextSettings: CodingSettings): void => {
 		setSettings(nextSettings);
 		setSaving(true);
 		setSaved(false);
 		setError(null);
-		void window.coder
+		void window.coding
 			.saveSettings(nextSettings)
 			.then((stored) => {
 				setSettings(stored);
@@ -83,7 +83,7 @@ const CoderPage: React.FC = () => {
 		setCatalog(await window.coder.listModels());
 	};
 
-	const handleProviderChange = (providerId: CoderProviderId): void => {
+	const handleProviderChange = (providerId: CodingProviderId): void => {
 		if (!settings) return;
 		const provider = catalog.providers.find((item) => item.id === providerId);
 		const modelId = provider?.models.some((model) => model.id === settings.modelId)
@@ -96,7 +96,7 @@ const CoderPage: React.FC = () => {
 		setConnecting(true);
 		setAuthEvent(null);
 		setError(null);
-		void window.coder
+		void window.coding
 			.connectCodex((event) => {
 				setAuthEvent(event);
 				if (event.type === 'device-code') {
@@ -115,7 +115,7 @@ const CoderPage: React.FC = () => {
 	const handleDisconnect = (): void => {
 		setConnecting(true);
 		setError(null);
-		void window.coder
+		void window.coding
 			.disconnectCodex()
 			.then(refreshCatalog)
 			.catch((disconnectError) => {
@@ -185,7 +185,7 @@ const CoderPage: React.FC = () => {
 								<Select
 									value={settings.providerId}
 									onValueChange={(value) => {
-										if (value) handleProviderChange(value as CoderProviderId);
+										if (value) handleProviderChange(value as CodingProviderId);
 									}}
 									disabled={saving}
 								>
@@ -293,7 +293,7 @@ const CoderPage: React.FC = () => {
 								<Select
 									value={settings.thinkingLevel}
 									onValueChange={(value) => {
-										if (value) save({ ...settings, thinkingLevel: value as CoderThinkingLevel });
+										if (value) save({ ...settings, thinkingLevel: value as CodingThinkingLevel });
 									}}
 									disabled={saving}
 								>
@@ -306,7 +306,7 @@ const CoderPage: React.FC = () => {
 										</SelectValue>
 									</SelectTrigger>
 									<SelectContent>
-										{CODER_THINKING_LEVELS.map((level) => (
+										{CODING_THINKING_LEVELS.map((level) => (
 											<SelectItem key={level} value={level}>
 												{t(`settings.coder.thinkingLevels.${level}`)}
 											</SelectItem>
@@ -323,7 +323,7 @@ const CoderPage: React.FC = () => {
 								<Select
 									value={settings.toolMode}
 									onValueChange={(value) => {
-										if (value) save({ ...settings, toolMode: value as CoderToolMode });
+										if (value) save({ ...settings, toolMode: value as CodingToolMode });
 									}}
 									disabled={saving}
 								>
@@ -405,4 +405,4 @@ const CoderPage: React.FC = () => {
 	);
 };
 
-export default CoderPage;
+export default CodingPage;

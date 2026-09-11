@@ -87,14 +87,14 @@ globalThis.agent = {
 	deleteWorkspaceFile: async () => undefined,
 	deleteWorkspaceDirectory: async () => undefined,
 };
-const coderSettings = {
+const codingSettings = {
 	runtime: 'pi',
 	providerId: 'openai-codex',
 	modelId: 'gpt-5.4',
 	thinkingLevel: 'high',
 	toolMode: 'coding',
 };
-const coderProject = {
+const codingProject = {
 	id: 'project-1',
 	name: 'kucedr-workspace',
 	directory: '/tmp/kucedr-workspace',
@@ -103,8 +103,8 @@ const coderProject = {
 	lastOpenedAt: '2026-08-20T10:00:00.000Z',
 	available: true,
 };
-const coderInstructions = {
-	projectId: coderProject.id,
+const codingInstructions = {
+	projectId: codingProject.id,
 	activeFilePath: '/tmp/kucedr-workspace/AGENTS.md',
 	activeFileName: 'AGENTS.md',
 	content: '# Instructions',
@@ -114,16 +114,16 @@ const coderInstructions = {
 	loadedSources: [{ path: '/tmp/kucedr-workspace/AGENTS.md', scope: 'workspace' }],
 };
 globalThis.coder = {
-	getSettings: async () => coderSettings,
+	getSettings: async () => codingSettings,
 	saveSettings: async (settings) => settings,
 	listModels: async () => ({ providers: [] }),
-	listProjects: async () => [coderProject],
-	addProject: async () => coderProject,
+	listProjects: async () => [codingProject],
+	addProject: async () => codingProject,
 	openProject: async () => undefined,
-	removeProject: async (projectId) => projectId === coderProject.id,
-	getProjectInstructions: async () => coderInstructions,
+	removeProject: async (projectId) => projectId === codingProject.id,
+	getProjectInstructions: async () => codingInstructions,
 	saveProjectInstructions: async (_projectId, update) => ({
-		...coderInstructions,
+		...codingInstructions,
 		content: update.content,
 		revision: 'revision-2',
 	}),
@@ -131,7 +131,7 @@ globalThis.coder = {
 	getSession: async () => ({
 		session: {
 			id: 'session-1',
-			projectId: coderProject.id,
+			projectId: codingProject.id,
 			title: 'Fix the tests',
 			createdAt: '2026-08-20T10:00:00.000Z',
 			updatedAt: '2026-08-20T10:00:00.000Z',
@@ -150,7 +150,7 @@ globalThis.coder = {
 	deleteSession: async () => true,
 	send: async (request, onEvent) => {
 		const context = {
-			runId: 'coder-run',
+			runId: 'coding-run',
 			projectId: request.projectId,
 			sessionId: 'session-1',
 		};
@@ -158,7 +158,7 @@ globalThis.coder = {
 		onEvent?.({ ...context, type: 'text-delta', delta: 'done' });
 		return { projectId: request.projectId, sessionId: 'session-1', output: 'done' };
 	},
-	cancel: async (runId) => runId === 'coder-run',
+	cancel: async (runId) => runId === 'coding-run',
 	connectCodex: async () => ({ configured: true, type: 'oauth' }),
 	cancelCodexLogin: async () => false,
 	disconnectCodex: async () => undefined,
@@ -247,42 +247,42 @@ assert.equal(await agent.moveWorkspaceEntry('draft.md', 'notes'), 'notes/draft.m
 assert.equal(await agent.renameWorkspaceEntry('notes/draft.md', 'idea.md'), 'notes/idea.md');
 await agent.deleteWorkspaceFile('old.md');
 await agent.deleteWorkspaceDirectory('archive');
-assert.deepEqual(await coder.getSettings(), coderSettings);
-const coderEvents = [];
-assert.deepEqual(await coder.listProjects(), [coderProject]);
-assert.deepEqual(await coder.getProjectInstructions(coderProject.id), coderInstructions);
+assert.deepEqual(await coder.getSettings(), codingSettings);
+const codingEvents = [];
+assert.deepEqual(await coder.listProjects(), [codingProject]);
+assert.deepEqual(await coder.getProjectInstructions(codingProject.id), codingInstructions);
 assert.equal(
 	(
-		await coder.saveProjectInstructions(coderProject.id, {
+		await coder.saveProjectInstructions(codingProject.id, {
 			content: '# Updated',
-			expectedRevision: coderInstructions.revision,
+			expectedRevision: codingInstructions.revision,
 		})
 	).content,
 	'# Updated'
 );
 assert.deepEqual(
-	await coder.send({ projectId: coderProject.id, mode: 'agent', input: 'Fix the tests' }, (event) =>
-		coderEvents.push(event)
+	await coder.send({ projectId: codingProject.id, mode: 'agent', input: 'Fix the tests' }, (event) =>
+		codingEvents.push(event)
 	),
-	{ projectId: coderProject.id, sessionId: 'session-1', output: 'done' }
+	{ projectId: codingProject.id, sessionId: 'session-1', output: 'done' }
 );
-assert.deepEqual(coderEvents, [
+assert.deepEqual(codingEvents, [
 	{
 		type: 'status',
-		runId: 'coder-run',
-		projectId: coderProject.id,
+		runId: 'coding-run',
+		projectId: codingProject.id,
 		sessionId: 'session-1',
 		status: 'started',
 	},
 	{
 		type: 'text-delta',
-		runId: 'coder-run',
-		projectId: coderProject.id,
+		runId: 'coding-run',
+		projectId: codingProject.id,
 		sessionId: 'session-1',
 		delta: 'done',
 	},
 ]);
-assert.equal(await coder.cancel('coder-run'), true);
+assert.equal(await coder.cancel('coding-run'), true);
 assert.deepEqual(await models.image.createImage({ prompt: 'room' }), {
 	base64: 'generated',
 	mimeType: 'image/png',
@@ -294,22 +294,22 @@ assert.deepEqual(
 	}),
 	{ base64: 'aGVsbG8=', mimeType: 'image/png' }
 );
-await coder.openProject(coderProject.id);
+await coder.openProject(codingProject.id);
 assert.equal(
-	(await coder.renameSession(coderProject.id, 'session-1', 'Focused tests')).title,
+	(await coder.renameSession(codingProject.id, 'session-1', 'Focused tests')).title,
 	'Focused tests'
 );
-assert.equal(await coder.deleteSession(coderProject.id, 'session-1'), true);
+assert.equal(await coder.deleteSession(codingProject.id, 'session-1'), true);
 assert.deepEqual(
 	await terminal.create({
 		id: 'terminal-coder',
-		cwd: coderProject.directory,
+		cwd: codingProject.directory,
 		cols: 80,
 		rows: 24,
 	}),
 	{
 		id: 'terminal-coder',
-		cwd: coderProject.directory,
+		cwd: codingProject.directory,
 		cols: 80,
 		rows: 24,
 		shell: '/bin/zsh',

@@ -105,19 +105,19 @@ import type { WorkspaceAsset } from './workspace';
 import type { AppStorageApi } from './app_store_types';
 import type { SandboxStatus } from './sandbox';
 import type {
-	CoderAuthEvent,
-	CoderAuthStatus,
-	CoderCatalog,
-	CoderProject,
-	CoderProjectInstructions,
-	CoderProjectInstructionsUpdate,
-	CoderResponseEvent,
-	CoderRunRequest,
-	CoderRunResult,
-	CoderSessionSnapshot,
-	CoderSessionSummary,
-	CoderSettings,
-} from './coder_types';
+	CodingAuthEvent,
+	CodingAuthStatus,
+	CodingCatalog,
+	CodingProject,
+	CodingProjectInstructions,
+	CodingProjectInstructionsUpdate,
+	CodingResponseEvent,
+	CodingRunRequest,
+	CodingRunResult,
+	CodingSessionSnapshot,
+	CodingSessionSummary,
+	CodingSettings,
+} from './coding_types';
 export type { DataApi } from './data_types';
 export type { A2aApi } from './a2a_types';
 export type { TerminalApi } from './terminal';
@@ -215,33 +215,33 @@ export interface AgentApi {
 	ragPickFolder: () => Promise<string | undefined>;
 }
 
-export interface CoderApi {
-	getSettings: () => Promise<CoderSettings>;
-	saveSettings: (settings: CoderSettings) => Promise<CoderSettings>;
-	listModels: () => Promise<CoderCatalog>;
-	listProjects: () => Promise<CoderProject[]>;
-	addProject: () => Promise<CoderProject | undefined>;
+export interface CodingApi {
+	getSettings: () => Promise<CodingSettings>;
+	saveSettings: (settings: CodingSettings) => Promise<CodingSettings>;
+	listModels: () => Promise<CodingCatalog>;
+	listProjects: () => Promise<CodingProject[]>;
+	addProject: () => Promise<CodingProject | undefined>;
 	openProject: (projectId: string) => Promise<void>;
 	removeProject: (projectId: string) => Promise<boolean>;
-	getProjectInstructions: (projectId: string) => Promise<CoderProjectInstructions>;
+	getProjectInstructions: (projectId: string) => Promise<CodingProjectInstructions>;
 	saveProjectInstructions: (
 		projectId: string,
-		update: CoderProjectInstructionsUpdate
-	) => Promise<CoderProjectInstructions>;
-	listSessions: (projectId: string) => Promise<CoderSessionSummary[]>;
-	getSession: (projectId: string, sessionId: string) => Promise<CoderSessionSnapshot>;
+		update: CodingProjectInstructionsUpdate
+	) => Promise<CodingProjectInstructions>;
+	listSessions: (projectId: string) => Promise<CodingSessionSummary[]>;
+	getSession: (projectId: string, sessionId: string) => Promise<CodingSessionSnapshot>;
 	renameSession: (
 		projectId: string,
 		sessionId: string,
 		title: string
-	) => Promise<CoderSessionSummary>;
+	) => Promise<CodingSessionSummary>;
 	deleteSession: (projectId: string, sessionId: string) => Promise<boolean>;
 	send: (
-		request: CoderRunRequest,
-		onEvent?: (event: CoderResponseEvent) => void
-	) => Promise<CoderRunResult>;
+		request: CodingRunRequest,
+		onEvent?: (event: CodingResponseEvent) => void
+	) => Promise<CodingRunResult>;
 	cancel: (runId: string) => Promise<boolean>;
-	connectCodex: (onEvent?: (event: CoderAuthEvent) => void) => Promise<CoderAuthStatus>;
+	connectCodex: (onEvent?: (event: CodingAuthEvent) => void) => Promise<CodingAuthStatus>;
 	cancelCodexLogin: () => Promise<boolean>;
 	disconnectCodex: () => Promise<void>;
 }

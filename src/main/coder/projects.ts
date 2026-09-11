@@ -2,18 +2,18 @@ import { existsSync, realpathSync, statSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import Store from 'electron-store';
-import type { CoderProject } from '../../shared/coder_types';
+import type { CodingProject } from '../../shared/coding_types';
 import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
 
-interface StoredCoderProject extends Omit<CoderProject, 'available'> {}
+interface StoredCoderProject extends Omit<CodingProject, 'available'> {}
 
-interface CoderProjectState {
+interface CodingProjectState {
 	projects: StoredCoderProject[];
 }
 
-export class CoderProjectStore {
-	private readonly store: Store<CoderProjectState>;
+export class CodingProjectStore {
+	private readonly store: Store<CodingProjectState>;
 	private readonly workspaceDirectory: string;
 
 	constructor(
@@ -21,8 +21,8 @@ export class CoderProjectStore {
 		initialDirectories: readonly string[] = [agentLocation()]
 	) {
 		this.workspaceDirectory = path.resolve(agentLocation());
-		this.store = new Store<CoderProjectState>({
-			name: 'coder-projects',
+		this.store = new Store<CodingProjectState>({
+			name: 'coding-projects',
 			cwd: directory,
 			accessPropertiesByDotNotation: false,
 			defaults: { projects: [] },
@@ -30,24 +30,24 @@ export class CoderProjectStore {
 		for (const initialDirectory of initialDirectories) this.seed(initialDirectory);
 	}
 
-	list(): CoderProject[] {
+	list(): CodingProject[] {
 		return [...this.store.store.projects]
 			.sort((left, right) => right.lastOpenedAt.localeCompare(left.lastOpenedAt))
 			.map((project) => ({ ...project, available: this.isAvailable(project.directory) }));
 	}
 
-	get(projectId: string): CoderProject | undefined {
+	get(projectId: string): CodingProject | undefined {
 		return this.list().find((project) => project.id === projectId);
 	}
 
-	add(directory: string): CoderProject {
+	add(directory: string): CodingProject {
 		const canonicalDirectory = this.canonicalDirectory(directory);
 		const existing = this.store.store.projects.find(
 			(project) => project.directory === canonicalDirectory
 		);
 		if (existing) {
 			this.touch(existing.id);
-			return this.get(existing.id) as CoderProject;
+			return this.get(existing.id) as CodingProject;
 		}
 		const timestamp = new Date().toISOString();
 		const project: StoredCoderProject = {
@@ -112,7 +112,7 @@ export class CoderProjectStore {
 		return realpathSync.native(absoluteDirectory);
 	}
 
-	private projectKind(directory: string): CoderProject['kind'] {
+	private projectKind(directory: string): CodingProject['kind'] {
 		const relative = path.relative(this.workspaceDirectory, directory);
 		return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..')
 			? 'agent-workspace'

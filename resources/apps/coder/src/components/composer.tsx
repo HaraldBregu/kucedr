@@ -3,9 +3,9 @@ import { Bot, CircleStop, CornerDownLeft, TerminalSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import type { CoderController } from '@/controller';
+import type { CodingController } from '@/controller';
 
-export function Composer({ coder }: { coder: CoderController }) {
+export function Composer({ coder }: { coder: CodingController }) {
 	const disabled = !coder.activeProject?.available || !coder.modelId;
 	return (
 		<form
@@ -17,7 +17,7 @@ export function Composer({ coder }: { coder: CoderController }) {
 		>
 			<div className="mx-auto max-w-4xl rounded-lg border bg-card focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
 				<Textarea
-					id="coder-composer"
+					id="coding-composer"
 					value={coder.input}
 					onChange={(event) => coder.setInput(event.target.value)}
 					onKeyDown={(event) => {

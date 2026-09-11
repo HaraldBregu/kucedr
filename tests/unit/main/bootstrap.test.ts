@@ -19,7 +19,7 @@ it('settles storage operations before cloud and auth teardown', async () => {
 		logger: { info: jest.fn(), destroy: jest.fn() },
 		terminalManager: { shutdown: jest.fn() },
 		agentService: { destroy: jest.fn() },
-		coderService: { destroy: jest.fn() },
+		codingService: { destroy: jest.fn() },
 		conversationService: { execute: jest.fn(async () => undefined) },
 		windowContextManager: { destroyAll: jest.fn(async () => undefined) },
 		storageOperations,

@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import CoderPage from '../../../src/renderer/src/pages/settings/pages/coder/Page';
+import CodingPage from '../../../src/renderer/src/pages/settings/pages/coder/Page';
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({
@@ -54,7 +54,7 @@ beforeEach(() => {
 it('shows the Pi runtime and current SDK model catalog', async () => {
 	render(
 		<MemoryRouter>
-			<CoderPage />
+			<CodingPage />
 		</MemoryRouter>
 	);
 
@@ -76,7 +76,7 @@ it('starts Codex device authentication and displays the projected code', async (
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<CoderPage />
+			<CodingPage />
 		</MemoryRouter>
 	);
 

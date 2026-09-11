@@ -163,36 +163,36 @@
 	scrollbar-width: thin;
 }
 
-.coder-markdown > :first-child {
+.coding-markdown > :first-child {
 	margin-top: 0;
 }
 
-.coder-markdown > :last-child {
+.coding-markdown > :last-child {
 	margin-bottom: 0;
 }
 
-.coder-markdown p,
-.coder-markdown ul,
-.coder-markdown ol,
-.coder-markdown pre,
-.coder-markdown blockquote {
+.coding-markdown p,
+.coding-markdown ul,
+.coding-markdown ol,
+.coding-markdown pre,
+.coding-markdown blockquote {
 	margin: 0.65rem 0;
 }
 
-.coder-markdown ul,
-.coder-markdown ol {
+.coding-markdown ul,
+.coding-markdown ol {
 	padding-left: 1.3rem;
 }
 
-.coder-markdown ul {
+.coding-markdown ul {
 	list-style: disc;
 }
 
-.coder-markdown ol {
+.coding-markdown ol {
 	list-style: decimal;
 }
 
-.coder-markdown code {
+.coding-markdown code {
 	border-radius: calc(var(--radius) - 4px);
 	background: var(--code);
 	padding: 0.1rem 0.3rem;
@@ -201,7 +201,7 @@
 	font-size: 0.82em;
 }
 
-.coder-markdown pre {
+.coding-markdown pre {
 	overflow-x: auto;
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
@@ -209,12 +209,12 @@
 	padding: 0.75rem;
 }
 
-.coder-markdown pre code {
+.coding-markdown pre code {
 	background: transparent;
 	padding: 0;
 }
 
-.coder-markdown blockquote {
+.coding-markdown blockquote {
 	border-left: 2px solid var(--border);
 	padding-left: 0.75rem;
 	color: var(--muted-foreground);

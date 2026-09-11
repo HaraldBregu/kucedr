@@ -7,7 +7,7 @@ jest.mock('electron', () => ({
 }));
 
 import { coder } from '../../../../src/preload/coder';
-import { CoderChannels } from '../../../../src/shared/ipc_channels_definitions';
+import { CodingChannels } from '../../../../src/shared/ipc_channels_definitions';
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -56,7 +56,7 @@ it('normalizes run requests, filters events, and removes the exact event listene
 	});
 
 	expect(invoke).toHaveBeenCalledWith(
-		CoderChannels.send,
+		CodingChannels.send,
 		{
 			projectId: 'project-1',
 			sessionId: 'session-1',
@@ -65,8 +65,8 @@ it('normalizes run requests, filters events, and removes the exact event listene
 		},
 		expect.any(String)
 	);
-	expect(on).toHaveBeenCalledWith(CoderChannels.response, expect.any(Function));
-	expect(removeListener).toHaveBeenCalledWith(CoderChannels.response, on.mock.calls[0][1]);
+	expect(on).toHaveBeenCalledWith(CodingChannels.response, expect.any(Function));
+	expect(removeListener).toHaveBeenCalledWith(CodingChannels.response, on.mock.calls[0][1]);
 	expect(callback).toHaveBeenCalledTimes(1);
 	expect(callback).toHaveBeenCalledWith(expect.objectContaining({ delta: 'kept' }));
 	expect(runId).toHaveLength(36);
@@ -77,31 +77,31 @@ it('normalizes run requests, filters events, and removes the exact event listene
 
 it('normalizes project and session identifiers before forwarding them', async () => {
 	await coder.openProject(' project-1 ');
-	expect(invoke).toHaveBeenCalledWith(CoderChannels.openProject, 'project-1');
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.openProject, 'project-1');
 
 	await coder.listSessions(' project-1 ');
-	expect(invoke).toHaveBeenCalledWith(CoderChannels.listSessions, 'project-1');
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.listSessions, 'project-1');
 
 	await coder.getSession(' project-1 ', ' session-1 ');
-	expect(invoke).toHaveBeenCalledWith(CoderChannels.getSession, 'project-1', 'session-1');
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.getSession, 'project-1', 'session-1');
 
 	await coder.renameSession(' project-1 ', ' session-1 ', ' Focused tests ');
 	expect(invoke).toHaveBeenCalledWith(
-		CoderChannels.renameSession,
+		CodingChannels.renameSession,
 		'project-1',
 		'session-1',
 		'Focused tests'
 	);
 
 	await coder.deleteSession(' project-1 ', ' session-1 ');
-	expect(invoke).toHaveBeenCalledWith(CoderChannels.deleteSession, 'project-1', 'session-1');
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.deleteSession, 'project-1', 'session-1');
 
 	await coder.getProjectInstructions(' project-1 ');
-	expect(invoke).toHaveBeenCalledWith(CoderChannels.getProjectInstructions, 'project-1');
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.getProjectInstructions, 'project-1');
 
 	const update = { content: '  keep whitespace\n', expectedRevision: 'revision-1' };
 	await coder.saveProjectInstructions(' project-1 ', update);
-	expect(invoke).toHaveBeenCalledWith(CoderChannels.saveProjectInstructions, 'project-1', update);
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.saveProjectInstructions, 'project-1', update);
 
 	expect(() => coder.removeProject(' ')).toThrow('Invalid coder project id.');
 	expect(() => coder.getSession('project-1', ' ')).toThrow('Invalid coder session.');

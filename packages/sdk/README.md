@@ -52,7 +52,7 @@ Streaming callbacks (for `app` events) use the SSE stream opened on first use; c
 ## Usage inside Kucedr
 
 ```ts
-import { agent, app, coder, isKucedr, models, win, type AppThemeData } from '@kucedr/sdk';
+import { agent, app, coding, isKucedr, models, win, type AppThemeData } from '@kucedr/sdk';
 
 if (!isKucedr()) throw new Error('Not running inside Kucedr');
 
@@ -84,11 +84,11 @@ await agent.renameWorkspaceEntry('notes/draft.md', 'idea.md');
 await agent.deleteWorkspaceFile('old.md');
 await agent.deleteWorkspaceDirectory('archive');
 
-const settings = await coder.getSettings();
-const projects = await coder.listProjects();
-const project = projects[0] ?? (await coder.addProject());
-if (!project) throw new Error('Choose a Coder project first.');
-const result = await coder.send(
+const settings = await coding.getSettings();
+const projects = await coding.listProjects();
+const project = projects[0] ?? (await coding.addProject());
+if (!project) throw new Error('Choose a Coding project first.');
+const result = await coding.send(
 	{
 		projectId: project.id,
 		mode: 'agent',
@@ -98,11 +98,11 @@ const result = await coder.send(
 		if (event.type === 'text-delta') console.log(event.delta);
 	}
 );
-const sessions = await coder.listSessions(project.id);
-const snapshot = await coder.getSession(project.id, result.sessionId);
-await coder.openProject(project.id);
-await coder.renameSession(project.id, result.sessionId, 'Focused tests');
-await coder.deleteSession(project.id, result.sessionId);
+const sessions = await coding.listSessions(project.id);
+const snapshot = await coding.getSession(project.id, result.sessionId);
+await coding.openProject(project.id);
+await coding.renameSession(project.id, result.sessionId, 'Focused tests');
+await coding.deleteSession(project.id, result.sessionId);
 const action = await win.showContextMenu([
 	{ type: 'role', role: 'copy' },
 	{ type: 'separator' },
@@ -201,7 +201,7 @@ is opened; close and reopen an existing app window to use the updated settings.
 
 - `app`: app data + settings APIs exposed by preload (`setTheme`, `getThemeData`, `getLanguage`, etc.)
 - `agent`: workspace APIs exposed by preload, including text reads, typed asset reads, and Markdown writes.
-- `coder`: embedded Pi coding-agent projects, persistent sessions, Agent/Shell runs, settings, authentication, streaming, and cancellation.
+- `coding`: embedded Pi coding-agent projects, persistent sessions, Agent/Shell runs, settings, authentication, streaming, and cancellation.
 - `models`: embedded model APIs, including configured image generation and source-image editing without exposing provider credentials.
 - `terminal`: embedded-only, owner-scoped PTY lifecycle, input, resize, output, and exit events.
 - `win`: embedded-only window APIs, including native context menus and window controls.
@@ -209,18 +209,18 @@ is opened; close and reopen an existing app window to use the updated settings.
 - `isKucedr()`: host check for in-app mode.
 - `ping()`: validate API reachability in remote mode.
 
-`coder` is intentionally embedded-only. `addProject()` opens Kucedr's native folder picker, and all
+`coding` is intentionally embedded-only. `addProject()` opens Kucedr's native folder picker, and all
 runs use an opaque main-owned project ID rather than accepting a filesystem path from an app.
 Agent conversations persist per project; Shell mode records non-interactive commands in the same
 session but is not a PTY. A project's directory is the default cwd, not a security sandbox: coding
 tools can execute with the desktop user's authority. Apps receive redacted agent-tool events
 and never receive provider credentials. Project opening and session mutation also resolve opaque IDs
-inside the main process. The registered Coder app may read and save non-secret runtime settings,
-list the Pi model catalog, and run Codex OAuth; other apps are rejected. Coder is not exposed by
+inside the main process. The registered Coding app may read and save non-secret runtime settings,
+list the Pi model catalog, and run Codex OAuth; other apps are rejected. Coding is not exposed by
 `connect()`.
 
 `terminal` is also intentionally embedded-only and is authorized only for trusted Kucedr windows and
-the registered Coder app. It exposes the narrow preload bridge; shell selection, PTY ownership,
+the registered Coding app. It exposes the narrow preload bridge; shell selection, PTY ownership,
 and process lifecycle remain in the Electron main process. It is not exposed by `connect()`.
 
 App titlebars are rendered by the Kucedr host. Embedded Apps can provide a centered title,

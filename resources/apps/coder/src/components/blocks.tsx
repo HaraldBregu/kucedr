@@ -22,12 +22,12 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import type { CoderBlock, CoderController } from '@/controller';
+import type { CodingBlock, CodingController } from '@/controller';
 
-function MessageBlock({ block }: { block: Extract<CoderBlock, { type: 'message' }> }) {
+function MessageBlock({ block }: { block: Extract<CodingBlock, { type: 'message' }> }) {
 	const content =
 		block.role === 'assistant' ? (
-			<div className="coder-markdown text-sm leading-6">
+			<div className="coding-markdown text-sm leading-6">
 				<ReactMarkdown
 					remarkPlugins={[remarkGfm]}
 					components={{
@@ -85,7 +85,7 @@ function MessageBlock({ block }: { block: Extract<CoderBlock, { type: 'message' 
 	);
 }
 
-function ToolBlock({ block }: { block: Extract<CoderBlock, { type: 'tool' }> }) {
+function ToolBlock({ block }: { block: Extract<CodingBlock, { type: 'tool' }> }) {
 	const icon =
 		block.status === 'running' ? (
 			<LoaderCircle className="size-3 animate-spin" />
@@ -111,8 +111,8 @@ function CommandBlock({
 	block,
 	coder,
 }: {
-	block: Extract<CoderBlock, { type: 'command' }>;
-	coder: CoderController;
+	block: Extract<CodingBlock, { type: 'command' }>;
+	coder: CodingController;
 }) {
 	const [open, setOpen] = useState(true);
 	const failed = block.status === 'failed';
@@ -169,7 +169,7 @@ function CommandBlock({
 								onClick={() => {
 									coder.setMode('shell');
 									coder.setInput(block.command);
-									document.querySelector<HTMLTextAreaElement>('#coder-composer')?.focus();
+									document.querySelector<HTMLTextAreaElement>('#coding-composer')?.focus();
 								}}
 							>
 								<RotateCcw /> Load command
@@ -191,7 +191,7 @@ function CommandBlock({
 	);
 }
 
-export function Blocks({ coder }: { coder: CoderController }) {
+export function Blocks({ coder }: { coder: CodingController }) {
 	return (
 		<div className="py-2">
 			{coder.blocks.map((block) =>

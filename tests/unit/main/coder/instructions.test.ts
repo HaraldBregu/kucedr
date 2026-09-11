@@ -10,14 +10,14 @@ import {
 } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import type { CoderProject } from '../../../../src/shared/coder_types';
-import { CoderInstructions } from '../../../../src/main/coder/instructions';
+import type { CodingProject } from '../../../../src/shared/coding_types';
+import { CodingInstructions } from '../../../../src/main/coder/instructions';
 
 const timestamp = '2026-08-22T08:00:00.000Z';
 
 it('uses Pi filename precedence, reports inherited sources, and isolates workspace saves', async () => {
-	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coder-instructions-'));
-	const agentDirectory = path.join(root, 'coder-global');
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
+	const agentDirectory = path.join(root, 'coding-global');
 	const projectsDirectory = path.join(root, 'projects');
 	const firstDirectory = path.join(projectsDirectory, 'first');
 	const secondDirectory = path.join(projectsDirectory, 'second');
@@ -30,7 +30,7 @@ it('uses Pi filename precedence, reports inherited sources, and isolates workspa
 	writeFileSync(path.join(firstDirectory, 'AGENTS.md'), 'agents');
 	writeFileSync(path.join(firstDirectory, 'AGENTS.override.md'), 'override');
 	writeFileSync(path.join(secondDirectory, 'AGENTS.md'), 'second');
-	const first: CoderProject = {
+	const first: CodingProject = {
 		id: 'first',
 		name: 'first',
 		directory: firstDirectory,
@@ -39,13 +39,13 @@ it('uses Pi filename precedence, reports inherited sources, and isolates workspa
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const second: CoderProject = {
+	const second: CodingProject = {
 		...first,
 		id: 'second',
 		name: 'second',
 		directory: secondDirectory,
 	};
-	const instructions = new CoderInstructions(agentDirectory);
+	const instructions = new CodingInstructions(agentDirectory);
 
 	const firstResult = await instructions.get(first);
 	const secondResult = await instructions.get(second);
@@ -59,7 +59,7 @@ it('uses Pi filename precedence, reports inherited sources, and isolates workspa
 	});
 	expect(firstResult.loadedSources).toEqual(
 		expect.arrayContaining([
-			{ path: path.join(agentDirectory, 'AGENTS.md'), scope: 'coder-global' },
+			{ path: path.join(agentDirectory, 'AGENTS.md'), scope: 'coding-global' },
 			{ path: path.join(projectsDirectory, 'CLAUDE.md'), scope: 'ancestor' },
 			{ path: path.join(firstDirectory, 'AGENTS.override.md'), scope: 'workspace' },
 		])
@@ -80,12 +80,12 @@ it('uses Pi filename precedence, reports inherited sources, and isolates workspa
 });
 
 it('creates AGENTS.md and preserves an explicitly saved empty file', async () => {
-	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coder-instructions-'));
-	const agentDirectory = path.join(root, 'coder-global');
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
+	const agentDirectory = path.join(root, 'coding-global');
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
-	const project: CoderProject = {
+	const project: CodingProject = {
 		id: 'project',
 		name: 'project',
 		directory: projectDirectory,
@@ -94,7 +94,7 @@ it('creates AGENTS.md and preserves an explicitly saved empty file', async () =>
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CoderInstructions(agentDirectory);
+	const instructions = new CodingInstructions(agentDirectory);
 	const initial = await instructions.get(project);
 
 	expect(initial).toMatchObject({
@@ -115,14 +115,14 @@ it('creates AGENTS.md and preserves an explicitly saved empty file', async () =>
 });
 
 it('rejects stale revisions without overwriting external edits', async () => {
-	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coder-instructions-'));
-	const agentDirectory = path.join(root, 'coder-global');
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
+	const agentDirectory = path.join(root, 'coding-global');
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
 	const filePath = path.join(projectDirectory, 'AGENTS.md');
 	writeFileSync(filePath, 'initial');
-	const project: CoderProject = {
+	const project: CodingProject = {
 		id: 'project',
 		name: 'project',
 		directory: projectDirectory,
@@ -131,7 +131,7 @@ it('rejects stale revisions without overwriting external edits', async () => {
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CoderInstructions(agentDirectory);
+	const instructions = new CodingInstructions(agentDirectory);
 	const initial = await instructions.get(project);
 	writeFileSync(filePath, 'external edit');
 
@@ -142,15 +142,15 @@ it('rejects stale revisions without overwriting external edits', async () => {
 });
 
 it('reports symbolic links as read-only and rejects saving them', async () => {
-	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coder-instructions-'));
-	const agentDirectory = path.join(root, 'coder-global');
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
+	const agentDirectory = path.join(root, 'coding-global');
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
 	const target = path.join(root, 'outside.md');
 	writeFileSync(target, 'outside');
 	symlinkSync(target, path.join(projectDirectory, 'AGENTS.md'));
-	const project: CoderProject = {
+	const project: CodingProject = {
 		id: 'project',
 		name: 'project',
 		directory: projectDirectory,
@@ -159,7 +159,7 @@ it('reports symbolic links as read-only and rejects saving them', async () => {
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CoderInstructions(agentDirectory);
+	const instructions = new CodingInstructions(agentDirectory);
 	const initial = await instructions.get(project);
 
 	expect(initial).toMatchObject({ content: 'outside', exists: true, editable: false });
@@ -170,12 +170,12 @@ it('reports symbolic links as read-only and rejects saving them', async () => {
 });
 
 it('rejects existing and submitted content above 256 KiB', async () => {
-	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coder-instructions-'));
-	const agentDirectory = path.join(root, 'coder-global');
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-instructions-'));
+	const agentDirectory = path.join(root, 'coding-global');
 	const projectDirectory = path.join(root, 'project');
 	mkdirSync(agentDirectory);
 	mkdirSync(projectDirectory);
-	const project: CoderProject = {
+	const project: CodingProject = {
 		id: 'project',
 		name: 'project',
 		directory: projectDirectory,
@@ -184,7 +184,7 @@ it('rejects existing and submitted content above 256 KiB', async () => {
 		lastOpenedAt: timestamp,
 		available: true,
 	};
-	const instructions = new CoderInstructions(agentDirectory);
+	const instructions = new CodingInstructions(agentDirectory);
 	const initial = await instructions.get(project);
 
 	await expect(

@@ -1,5 +1,5 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { app, coder as coderApi } from '@kucedr/sdk';
+import { app, coder as codingApi } from '@kucedr/sdk';
 import { useCoderWorkspace } from '../../../resources/apps/coder/src/hooks/workspace';
 import { useConfiguration } from '../../../resources/apps/coder/src/hooks/configuration';
 import { useProjectInstructions } from '../../../resources/apps/coder/src/hooks/instructions';
@@ -80,7 +80,7 @@ const projectInstructions = {
 	editable: true,
 	revision: 'revision-1',
 	loadedSources: [
-		{ path: '/global/AGENTS.md', scope: 'coder-global' as const },
+		{ path: '/global/AGENTS.md', scope: 'coding-global' as const },
 		{ path: '/workspace/kucedr/AGENTS.md', scope: 'workspace' as const },
 	],
 };
@@ -89,15 +89,15 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	(app.getAppStoreValue as jest.Mock).mockResolvedValue(project.id);
 	(app.setAppStoreValue as jest.Mock).mockResolvedValue(undefined);
-	(coderApi.getSettings as jest.Mock).mockResolvedValue({
+	(codingApi.getSettings as jest.Mock).mockResolvedValue({
 		runtime: 'pi',
 		providerId: 'openai-codex',
 		modelId: 'gpt-coder',
 		thinkingLevel: 'medium',
 		toolMode: 'coding',
 	});
-	(coderApi.saveSettings as jest.Mock).mockImplementation(async (settings) => settings);
-	(coderApi.listModels as jest.Mock).mockResolvedValue({
+	(codingApi.saveSettings as jest.Mock).mockImplementation(async (settings) => settings);
+	(codingApi.listModels as jest.Mock).mockResolvedValue({
 		providers: [
 			{
 				id: 'openai-codex',
@@ -108,12 +108,12 @@ beforeEach(() => {
 			},
 		],
 	});
-	(coderApi.connectCodex as jest.Mock).mockResolvedValue({ configured: true, type: 'oauth' });
-	(coderApi.cancelCodexLogin as jest.Mock).mockResolvedValue(true);
-	(coderApi.disconnectCodex as jest.Mock).mockResolvedValue(undefined);
-	(coderApi.listProjects as jest.Mock).mockResolvedValue([project]);
-	(coderApi.listSessions as jest.Mock).mockResolvedValue([session]);
-	(coderApi.getSession as jest.Mock).mockResolvedValue({
+	(codingApi.connectCodex as jest.Mock).mockResolvedValue({ configured: true, type: 'oauth' });
+	(codingApi.cancelCodexLogin as jest.Mock).mockResolvedValue(true);
+	(codingApi.disconnectCodex as jest.Mock).mockResolvedValue(undefined);
+	(codingApi.listProjects as jest.Mock).mockResolvedValue([project]);
+	(codingApi.listSessions as jest.Mock).mockResolvedValue([session]);
+	(codingApi.getSession as jest.Mock).mockResolvedValue({
 		session,
 		blocks: [
 			{
@@ -125,8 +125,8 @@ beforeEach(() => {
 			},
 		],
 	});
-	(coderApi.getProjectInstructions as jest.Mock).mockResolvedValue(projectInstructions);
-	(coderApi.saveProjectInstructions as jest.Mock).mockImplementation(
+	(codingApi.getProjectInstructions as jest.Mock).mockResolvedValue(projectInstructions);
+	(codingApi.saveProjectInstructions as jest.Mock).mockImplementation(
 		async (_projectId, update) => ({
 			...projectInstructions,
 			content: update.content,
@@ -150,7 +150,7 @@ it('restores the active project session and starts a new persistent Agent run', 
 		result.current.newSession();
 		result.current.setInput('Inspect the project');
 	});
-	(coderApi.send as jest.Mock).mockImplementation(async (request, onEvent) => {
+	(codingApi.send as jest.Mock).mockImplementation(async (request, onEvent) => {
 		onEvent({
 			type: 'status',
 			runId: 'run-1',
@@ -177,7 +177,7 @@ it('restores the active project session and starts a new persistent Agent run', 
 
 	await act(async () => result.current.send());
 
-	expect(coderApi.send).toHaveBeenCalledWith(
+	expect(codingApi.send).toHaveBeenCalledWith(
 		{ projectId: project.id, mode: 'agent', input: 'Inspect the project' },
 		expect.any(Function)
 	);
@@ -191,11 +191,11 @@ it('restores the active project session and starts a new persistent Agent run', 
 });
 
 it('groups sessions by workspace and opens an inactive workspace session', async () => {
-	(coderApi.listProjects as jest.Mock).mockResolvedValue([project, otherProject]);
-	(coderApi.listSessions as jest.Mock).mockImplementation(async (projectId) =>
+	(codingApi.listProjects as jest.Mock).mockResolvedValue([project, otherProject]);
+	(codingApi.listSessions as jest.Mock).mockImplementation(async (projectId) =>
 		projectId === otherProject.id ? [otherSession] : [session]
 	);
-	(coderApi.getSession as jest.Mock).mockImplementation(async (projectId, sessionId) => ({
+	(codingApi.getSession as jest.Mock).mockImplementation(async (projectId, sessionId) => ({
 		session: projectId === otherProject.id ? otherSession : session,
 		blocks: [
 			{
@@ -229,14 +229,14 @@ it('loads and saves the app configuration through the Coder SDK', async () => {
 
 	act(() => result.current.setTools('read-only'));
 	await waitFor(() =>
-		expect(coderApi.saveSettings).toHaveBeenCalledWith(
+		expect(codingApi.saveSettings).toHaveBeenCalledWith(
 			expect.objectContaining({ toolMode: 'read-only' })
 		)
 	);
 });
 
 it('projects Codex device authentication into the app configuration', async () => {
-	(coderApi.connectCodex as jest.Mock).mockImplementation(async (onEvent) => {
+	(codingApi.connectCodex as jest.Mock).mockImplementation(async (onEvent) => {
 		onEvent({
 			type: 'device-code',
 			userCode: 'ABCD-EFGH',
@@ -266,7 +266,7 @@ it('loads and explicitly saves active workspace instructions with their revision
 	expect(result.current.canSave).toBe(true);
 	await act(async () => result.current.save());
 
-	expect(coderApi.saveProjectInstructions).toHaveBeenCalledWith(project.id, {
+	expect(codingApi.saveProjectInstructions).toHaveBeenCalledWith(project.id, {
 		content: '  # Updated\n',
 		expectedRevision: 'revision-1',
 	});
@@ -275,7 +275,7 @@ it('loads and explicitly saves active workspace instructions with their revision
 });
 
 it('allows explicit empty-file creation and preserves dirty content after a save conflict', async () => {
-	(coderApi.getProjectInstructions as jest.Mock).mockResolvedValue({
+	(codingApi.getProjectInstructions as jest.Mock).mockResolvedValue({
 		...projectInstructions,
 		content: '',
 		exists: false,
@@ -287,13 +287,13 @@ it('allows explicit empty-file creation and preserves dirty content after a save
 	expect(result.current.dirty).toBe(false);
 	expect(result.current.canSave).toBe(true);
 	await act(async () => result.current.save());
-	expect(coderApi.saveProjectInstructions).toHaveBeenCalledWith(project.id, {
+	expect(codingApi.saveProjectInstructions).toHaveBeenCalledWith(project.id, {
 		content: '',
 		expectedRevision: 'missing-revision',
 	});
 
 	act(() => result.current.setContent('# Local edit'));
-	(coderApi.saveProjectInstructions as jest.Mock).mockRejectedValueOnce(
+	(codingApi.saveProjectInstructions as jest.Mock).mockRejectedValueOnce(
 		new Error('Coder project instructions changed outside Kucedr. Reload before saving.')
 	);
 	await act(async () => result.current.save());

@@ -57,7 +57,7 @@ export function Sidebar({ className, ...props }: ComponentProps<'aside'>) {
 				)}
 			/>
 			<aside
-				id="coder-sidebar"
+				id="coding-sidebar"
 				data-state={context.open ? 'expanded' : 'collapsed'}
 				className={cn(
 					'fixed inset-y-0 left-0 z-30 flex w-64 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
@@ -99,7 +99,7 @@ export function SidebarTrigger({ className, ...props }: ComponentProps<typeof Bu
 				'fixed left-20 top-2.5 z-50 size-7 text-foreground hover:text-foreground',
 				className
 			)}
-			aria-controls="coder-sidebar"
+			aria-controls="coding-sidebar"
 			aria-expanded={context.open}
 			aria-label={context.open ? 'Collapse sidebar' : 'Expand sidebar'}
 			title="Toggle Sidebar"

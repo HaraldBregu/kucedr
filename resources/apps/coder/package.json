@@ -1,5 +1,5 @@
 {
-	"name": "kucedr-coder",
+	"name": "kucedr-coding",
 	"private": true,
 	"version": "1.0.0",
 	"description": "A project-based Pi coding agent with persistent sessions for Kucedr.",

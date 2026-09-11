@@ -1,9 +1,9 @@
 import {
-	CODER_THINKING_LEVELS,
+	CODING_THINKING_LEVELS,
 	app,
-	type CoderProviderId,
-	type CoderThinkingLevel,
-	type CoderToolMode,
+	type CodingProviderId,
+	type CodingThinkingLevel,
+	type CodingToolMode,
 } from '@kucedr/sdk';
 import { AlertTriangle, Check, Copy, ExternalLink } from 'lucide-react';
 
@@ -62,7 +62,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 											label: item.name,
 										}))}
 										disabled={configuration.saving}
-										onChange={(value) => configuration.setProvider(value as CoderProviderId)}
+										onChange={(value) => configuration.setProvider(value as CodingProviderId)}
 									/>
 								</Setting>
 								<Setting title="Model">
@@ -79,13 +79,13 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 								<Setting title="Thinking">
 									<Choice
 										value={settings.thinkingLevel}
-										options={CODER_THINKING_LEVELS.map((level) => ({
+										options={CODING_THINKING_LEVELS.map((level) => ({
 											value: level,
 											label:
 												level === 'xhigh' ? 'Extra high' : level[0].toUpperCase() + level.slice(1),
 										}))}
 										disabled={configuration.saving}
-										onChange={(value) => configuration.setThinking(value as CoderThinkingLevel)}
+										onChange={(value) => configuration.setThinking(value as CodingThinkingLevel)}
 									/>
 								</Setting>
 								<Setting title="Tools" description="Controls which Pi tools can run">
@@ -96,7 +96,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 											{ value: 'coding', label: 'Coding' },
 										]}
 										disabled={configuration.saving}
-										onChange={(value) => configuration.setTools(value as CoderToolMode)}
+										onChange={(value) => configuration.setTools(value as CodingToolMode)}
 									/>
 								</Setting>
 							</div>

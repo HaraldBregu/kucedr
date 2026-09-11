@@ -3,20 +3,20 @@ import { lstat, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { loadProjectContextFiles } from '@earendil-works/pi-coding-agent';
 import type {
-	CoderProject,
-	CoderProjectInstructions,
-	CoderProjectInstructionsUpdate,
-} from '../../shared/coder_types';
+	CodingProject,
+	CodingProjectInstructions,
+	CodingProjectInstructionsUpdate,
+} from '../../shared/coding_types';
 import { atomicWrite } from '../shared/atomic_write';
-import { coderLocation } from './location';
+import { codingLocation } from './location';
 
 const DEFAULT_FILE_NAME = 'AGENTS.md';
 const MAX_FILE_SIZE = 256 * 1024;
 
-export class CoderInstructions {
-	constructor(private readonly agentDirectory = coderLocation()) {}
+export class CodingInstructions {
+	constructor(private readonly agentDirectory = codingLocation()) {}
 
-	async get(project: CoderProject): Promise<CoderProjectInstructions> {
+	async get(project: CodingProject): Promise<CodingProjectInstructions> {
 		const workspaceDirectory = path.resolve(project.directory);
 		const agentDirectory = path.resolve(this.agentDirectory);
 		const contextFiles = loadProjectContextFiles({
@@ -78,7 +78,7 @@ export class CoderInstructions {
 						sourceDirectory === workspaceDirectory
 							? 'workspace'
 							: sourceDirectory === agentDirectory
-								? 'coder-global'
+								? 'coding-global'
 								: 'ancestor',
 				};
 			}),
@@ -86,9 +86,9 @@ export class CoderInstructions {
 	}
 
 	async save(
-		project: CoderProject,
-		update: CoderProjectInstructionsUpdate
-	): Promise<CoderProjectInstructions> {
+		project: CodingProject,
+		update: CodingProjectInstructionsUpdate
+	): Promise<CodingProjectInstructions> {
 		if (Buffer.byteLength(update.content, 'utf8') > MAX_FILE_SIZE) {
 			throw new Error('Coder project instructions exceed the 256 KiB limit.');
 		}

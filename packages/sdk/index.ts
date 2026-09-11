@@ -1,4 +1,4 @@
-import type { AgentApi, AppApi, CoderApi, ModelsApi, WindowApi } from '../../src/shared/api_types';
+import type { AgentApi, AppApi, CodingApi, ModelsApi, WindowApi } from '../../src/shared/api_types';
 import type { TerminalApi } from '../../src/shared/terminal';
 
 export {
@@ -8,7 +8,7 @@ export {
 	type RemoteAppApi,
 	type WorkspaceAgentApi,
 } from './connect';
-export type { AgentApi, AppApi, CoderApi, ModelsApi, WindowApi } from '../../src/shared/api_types';
+export type { AgentApi, AppApi, CodingApi, ModelsApi, WindowApi } from '../../src/shared/api_types';
 export type {
 	TerminalApi,
 	TerminalCreateRequest,
@@ -63,33 +63,33 @@ export {
 	type AppTitlebarOptions,
 } from '../../src/shared/window_types';
 export {
-	CODER_PROVIDER_IDS,
-	CODER_THINKING_LEVELS,
-	CODER_TOOL_MODES,
+	CODING_PROVIDER_IDS,
+	CODING_THINKING_LEVELS,
+	CODING_TOOL_MODES,
 	isCoderRunRequest,
 	isCoderSettings,
-	type CoderAuthEvent,
-	type CoderAuthStatus,
-	type CoderCatalog,
-	type CoderModel,
-	type CoderProvider,
-	type CoderProviderId,
-	type CoderProject,
-	type CoderProjectInstructionScope,
-	type CoderProjectInstructionSource,
-	type CoderProjectInstructions,
-	type CoderProjectInstructionsUpdate,
-	type CoderResponseEvent,
-	type CoderRunMode,
-	type CoderRunRequest,
-	type CoderRunResult,
-	type CoderSessionBlock,
-	type CoderSessionSnapshot,
-	type CoderSessionSummary,
-	type CoderSettings,
-	type CoderThinkingLevel,
-	type CoderToolMode,
-} from '../../src/shared/coder_types';
+	type CodingAuthEvent,
+	type CodingAuthStatus,
+	type CodingCatalog,
+	type CodingModel,
+	type CodingProvider,
+	type CodingProviderId,
+	type CodingProject,
+	type CodingProjectInstructionScope,
+	type CodingProjectInstructionSource,
+	type CodingProjectInstructions,
+	type CodingProjectInstructionsUpdate,
+	type CodingResponseEvent,
+	type CodingRunMode,
+	type CodingRunRequest,
+	type CodingRunResult,
+	type CodingSessionBlock,
+	type CodingSessionSnapshot,
+	type CodingSessionSummary,
+	type CodingSettings,
+	type CodingThinkingLevel,
+	type CodingToolMode,
+} from '../../src/shared/coding_types';
 export type {
 	AppStorageApi,
 	AppStoreValue,
@@ -120,7 +120,7 @@ function bridge<T extends object>(name: string): T {
 
 export const app = bridge<AppApi>('app');
 export const agent = bridge<AgentApi>('agent');
-export const coder = bridge<CoderApi>('coder');
+export const coder = bridge<CodingApi>('coder');
 export const models = bridge<ModelsApi>('models');
 export const terminal = bridge<TerminalApi>('terminalAPI');
 export const win = bridge<WindowApi>('win');

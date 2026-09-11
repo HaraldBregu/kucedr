@@ -1,3 +1,3 @@
 export { Coder } from './coder';
-export { CoderProjectStore } from './projects';
-export { CoderStore, DEFAULT_CODER_SETTINGS } from './store';
+export { CodingProjectStore } from './projects';
+export { CodingStore, DEFAULT_CODER_SETTINGS } from './store';

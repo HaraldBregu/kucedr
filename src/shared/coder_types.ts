@@ -1,5 +1,5 @@
-export const CODER_PROVIDER_IDS = ['openai-codex', 'openai', 'anthropic'] as const;
-export const CODER_THINKING_LEVELS = [
+export const CODING_PROVIDER_IDS = ['openai-codex', 'openai', 'anthropic'] as const;
+export const CODING_THINKING_LEVELS = [
 	'off',
 	'minimal',
 	'low',
@@ -8,43 +8,43 @@ export const CODER_THINKING_LEVELS = [
 	'xhigh',
 	'max',
 ] as const;
-export const CODER_TOOL_MODES = ['read-only', 'coding'] as const;
+export const CODING_TOOL_MODES = ['read-only', 'coding'] as const;
 
-export type CoderProviderId = (typeof CODER_PROVIDER_IDS)[number];
-export type CoderThinkingLevel = (typeof CODER_THINKING_LEVELS)[number];
-export type CoderToolMode = (typeof CODER_TOOL_MODES)[number];
-export type CoderRunMode = 'agent' | 'shell';
+export type CodingProviderId = (typeof CODING_PROVIDER_IDS)[number];
+export type CodingThinkingLevel = (typeof CODING_THINKING_LEVELS)[number];
+export type CodingToolMode = (typeof CODING_TOOL_MODES)[number];
+export type CodingRunMode = 'agent' | 'shell';
 
-export interface CoderSettings {
+export interface CodingSettings {
 	readonly runtime: 'pi';
-	readonly providerId: CoderProviderId;
+	readonly providerId: CodingProviderId;
 	readonly modelId: string;
-	readonly thinkingLevel: CoderThinkingLevel;
-	readonly toolMode: CoderToolMode;
+	readonly thinkingLevel: CodingThinkingLevel;
+	readonly toolMode: CodingToolMode;
 }
 
-export interface CoderModel {
+export interface CodingModel {
 	readonly id: string;
 	readonly name: string;
 	readonly reasoning: boolean;
 	readonly contextWindow: number;
 }
 
-export interface CoderProvider {
-	readonly id: CoderProviderId;
+export interface CodingProvider {
+	readonly id: CodingProviderId;
 	readonly name: string;
 	readonly authentication: 'oauth' | 'api-key';
 	readonly configured: boolean;
 	readonly authType?: 'oauth' | 'api_key';
 	readonly authSource?: string;
-	readonly models: readonly CoderModel[];
+	readonly models: readonly CodingModel[];
 }
 
-export interface CoderCatalog {
-	readonly providers: readonly CoderProvider[];
+export interface CodingCatalog {
+	readonly providers: readonly CodingProvider[];
 }
 
-export interface CoderProject {
+export interface CodingProject {
 	readonly id: string;
 	readonly name: string;
 	readonly directory: string;
@@ -54,14 +54,14 @@ export interface CoderProject {
 	readonly available: boolean;
 }
 
-export type CoderProjectInstructionScope = 'workspace' | 'ancestor' | 'coder-global';
+export type CodingProjectInstructionScope = 'workspace' | 'ancestor' | 'coding-global';
 
-export interface CoderProjectInstructionSource {
+export interface CodingProjectInstructionSource {
 	readonly path: string;
-	readonly scope: CoderProjectInstructionScope;
+	readonly scope: CodingProjectInstructionScope;
 }
 
-export interface CoderProjectInstructions {
+export interface CodingProjectInstructions {
 	readonly projectId: string;
 	readonly activeFilePath: string;
 	readonly activeFileName: string;
@@ -69,15 +69,15 @@ export interface CoderProjectInstructions {
 	readonly exists: boolean;
 	readonly editable: boolean;
 	readonly revision: string;
-	readonly loadedSources: readonly CoderProjectInstructionSource[];
+	readonly loadedSources: readonly CodingProjectInstructionSource[];
 }
 
-export interface CoderProjectInstructionsUpdate {
+export interface CodingProjectInstructionsUpdate {
 	readonly content: string;
 	readonly expectedRevision: string;
 }
 
-export interface CoderSessionSummary {
+export interface CodingSessionSummary {
 	readonly id: string;
 	readonly projectId: string;
 	readonly title: string;
@@ -86,7 +86,7 @@ export interface CoderSessionSummary {
 	readonly messageCount: number;
 }
 
-export type CoderSessionBlock =
+export type CodingSessionBlock =
 	| {
 			readonly id: string;
 			readonly type: 'message';
@@ -105,62 +105,62 @@ export type CoderSessionBlock =
 			readonly timestamp: string;
 	  };
 
-export interface CoderSessionSnapshot {
-	readonly session: CoderSessionSummary;
-	readonly blocks: readonly CoderSessionBlock[];
+export interface CodingSessionSnapshot {
+	readonly session: CodingSessionSummary;
+	readonly blocks: readonly CodingSessionBlock[];
 }
 
-export interface CoderRunRequest {
+export interface CodingRunRequest {
 	readonly projectId: string;
 	readonly sessionId?: string;
-	readonly mode: CoderRunMode;
+	readonly mode: CodingRunMode;
 	readonly input: string;
 }
 
-export interface CoderRunResult {
+export interface CodingRunResult {
 	readonly projectId: string;
 	readonly sessionId: string;
 	readonly output: string;
 }
 
-interface CoderResponseEventBase {
+interface CodingResponseEventBase {
 	readonly runId: string;
 	readonly projectId: string;
 	readonly sessionId: string;
 }
 
-export type CoderResponseEvent =
-	| (CoderResponseEventBase & {
+export type CodingResponseEvent =
+	| (CodingResponseEventBase & {
 			readonly type: 'status';
 			readonly status: 'started' | 'completed' | 'cancelled';
 	  })
-	| (CoderResponseEventBase & { readonly type: 'text-delta'; readonly delta: string })
-	| (CoderResponseEventBase & { readonly type: 'thinking-delta'; readonly delta: string })
-	| (CoderResponseEventBase & {
+	| (CodingResponseEventBase & { readonly type: 'text-delta'; readonly delta: string })
+	| (CodingResponseEventBase & { readonly type: 'thinking-delta'; readonly delta: string })
+	| (CodingResponseEventBase & {
 			readonly type: 'tool-start';
 			readonly toolCallId: string;
 			readonly toolName: string;
 	  })
-	| (CoderResponseEventBase & {
+	| (CodingResponseEventBase & {
 			readonly type: 'tool-end';
 			readonly toolCallId: string;
 			readonly toolName: string;
 			readonly isError: boolean;
 	  })
-	| (CoderResponseEventBase & {
+	| (CodingResponseEventBase & {
 			readonly type: 'command-start';
 			readonly command: string;
 	  })
-	| (CoderResponseEventBase & { readonly type: 'command-output'; readonly delta: string })
-	| (CoderResponseEventBase & {
+	| (CodingResponseEventBase & { readonly type: 'command-output'; readonly delta: string })
+	| (CodingResponseEventBase & {
 			readonly type: 'command-end';
 			readonly exitCode?: number;
 			readonly cancelled: boolean;
 			readonly truncated: boolean;
 	  })
-	| (CoderResponseEventBase & { readonly type: 'error'; readonly message: string });
+	| (CodingResponseEventBase & { readonly type: 'error'; readonly message: string });
 
-export type CoderAuthEvent =
+export type CodingAuthEvent =
 	| { readonly type: 'progress'; readonly message: string }
 	| { readonly type: 'info'; readonly message: string; readonly url?: string }
 	| { readonly type: 'auth-url'; readonly url: string; readonly instructions?: string }
@@ -171,30 +171,30 @@ export type CoderAuthEvent =
 			readonly expiresInSeconds?: number;
 	  };
 
-export interface CoderAuthStatus {
+export interface CodingAuthStatus {
 	readonly configured: boolean;
 	readonly type?: 'oauth' | 'api_key';
 	readonly source?: string;
 }
 
-export function isCoderSettings(value: unknown): value is CoderSettings {
+export function isCoderSettings(value: unknown): value is CodingSettings {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-	const settings = value as Partial<CoderSettings>;
+	const settings = value as Partial<CodingSettings>;
 	return (
 		settings.runtime === 'pi' &&
 		typeof settings.providerId === 'string' &&
-		CODER_PROVIDER_IDS.includes(settings.providerId as CoderProviderId) &&
+		CODING_PROVIDER_IDS.includes(settings.providerId as CodingProviderId) &&
 		typeof settings.modelId === 'string' &&
 		typeof settings.thinkingLevel === 'string' &&
-		CODER_THINKING_LEVELS.includes(settings.thinkingLevel as CoderThinkingLevel) &&
+		CODING_THINKING_LEVELS.includes(settings.thinkingLevel as CodingThinkingLevel) &&
 		typeof settings.toolMode === 'string' &&
-		CODER_TOOL_MODES.includes(settings.toolMode as CoderToolMode)
+		CODING_TOOL_MODES.includes(settings.toolMode as CodingToolMode)
 	);
 }
 
-export function isCoderRunRequest(value: unknown): value is CoderRunRequest {
+export function isCoderRunRequest(value: unknown): value is CodingRunRequest {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-	const request = value as Partial<CoderRunRequest>;
+	const request = value as Partial<CodingRunRequest>;
 	return (
 		typeof request.projectId === 'string' &&
 		request.projectId.trim().length > 0 &&
@@ -208,9 +208,9 @@ export function isCoderRunRequest(value: unknown): value is CoderRunRequest {
 
 export function isCoderProjectInstructionsUpdate(
 	value: unknown
-): value is CoderProjectInstructionsUpdate {
+): value is CodingProjectInstructionsUpdate {
 	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
-	const update = value as Partial<CoderProjectInstructionsUpdate>;
+	const update = value as Partial<CodingProjectInstructionsUpdate>;
 	return (
 		typeof update.content === 'string' &&
 		typeof update.expectedRevision === 'string' &&

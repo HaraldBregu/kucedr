@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { coder, type CoderProjectInstructions } from '@kucedr/sdk';
+import { coder, type CodingProjectInstructions } from '@kucedr/sdk';
 
 interface InstructionsState {
 	readonly projectId?: string;
-	readonly instructions?: CoderProjectInstructions;
+	readonly instructions?: CodingProjectInstructions;
 	readonly content: string;
 	readonly error: string;
 }
@@ -16,7 +16,7 @@ export function useProjectInstructions(projectId: string | undefined) {
 	useEffect(() => {
 		const sequence = ++loadSequenceRef.current;
 		if (!projectId) return;
-		void coder
+		void coding
 			.getProjectInstructions(projectId)
 			.then((next) => {
 				if (sequence !== loadSequenceRef.current) return;

@@ -3,22 +3,22 @@ import {
 	app,
 	coder,
 	isKucedr,
-	type CoderAuthEvent,
-	type CoderCatalog,
-	type CoderProviderId,
-	type CoderSettings,
-	type CoderThinkingLevel,
-	type CoderToolMode,
+	type CodingAuthEvent,
+	type CodingCatalog,
+	type CodingProviderId,
+	type CodingSettings,
+	type CodingThinkingLevel,
+	type CodingToolMode,
 } from '@kucedr/sdk';
 
-const previewSettings: CoderSettings = {
+const previewSettings: CodingSettings = {
 	runtime: 'pi',
 	providerId: 'openai-codex',
 	modelId: 'gpt-5.4',
 	thinkingLevel: 'high',
 	toolMode: 'coding',
 };
-const previewCatalog: CoderCatalog = {
+const previewCatalog: CodingCatalog = {
 	providers: [
 		{
 			id: 'openai-codex',
@@ -39,20 +39,20 @@ const previewCatalog: CoderCatalog = {
 
 export function useConfiguration() {
 	const preview = !isKucedr();
-	const [settings, setSettings] = useState<CoderSettings | null>(preview ? previewSettings : null);
-	const [catalog, setCatalog] = useState<CoderCatalog>(
+	const [settings, setSettings] = useState<CodingSettings | null>(preview ? previewSettings : null);
+	const [catalog, setCatalog] = useState<CodingCatalog>(
 		preview ? previewCatalog : { providers: [] }
 	);
 	const [loading, setLoading] = useState(!preview);
 	const [saving, setSaving] = useState(false);
 	const [connecting, setConnecting] = useState(false);
-	const [authEvent, setAuthEvent] = useState<CoderAuthEvent | null>(null);
+	const [authEvent, setAuthEvent] = useState<CodingAuthEvent | null>(null);
 	const [error, setError] = useState('');
 
 	const refreshCatalog = async (): Promise<void> => {
 		if (!preview) setCatalog(await coder.listModels());
 	};
-	const save = async (next: CoderSettings): Promise<void> => {
+	const save = async (next: CodingSettings): Promise<void> => {
 		setSettings(next);
 		if (preview) return;
 		setSaving(true);
@@ -86,7 +86,7 @@ export function useConfiguration() {
 		};
 	}, [preview]);
 
-	const setProvider = (providerId: CoderProviderId): void => {
+	const setProvider = (providerId: CodingProviderId): void => {
 		if (!settings) return;
 		const provider = catalog.providers.find((item) => item.id === providerId);
 		const modelId = provider?.models.some((model) => model.id === settings.modelId)
@@ -97,10 +97,10 @@ export function useConfiguration() {
 	const setModel = (modelId: string): void => {
 		if (settings) void save({ ...settings, modelId });
 	};
-	const setThinking = (thinkingLevel: CoderThinkingLevel): void => {
+	const setThinking = (thinkingLevel: CodingThinkingLevel): void => {
 		if (settings) void save({ ...settings, thinkingLevel });
 	};
-	const setTools = (toolMode: CoderToolMode): void => {
+	const setTools = (toolMode: CodingToolMode): void => {
 		if (settings) void save({ ...settings, toolMode });
 	};
 	const connect = async (): Promise<void> => {

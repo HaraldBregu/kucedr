@@ -1,6 +1,6 @@
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
-import { CoderIpc } from '../../../../src/main/ipc/coder';
-import { CoderChannels } from '../../../../src/shared/ipc_channels_definitions';
+import { CodingIpc } from '../../../../src/main/ipc/coder';
+import { CodingChannels } from '../../../../src/shared/ipc_channels_definitions';
 import type { Coder } from '../../../../src/main/coder';
 import type { EventBus } from '../../../../src/main/event_bus';
 
@@ -32,18 +32,18 @@ it('streams Coder app runs back to the originating view and scopes cancellation'
 		once: jest.fn(),
 		removeListener: jest.fn(),
 	};
-	new CoderIpc().register(
+	new CodingIpc().register(
 		{ coder, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const handler = (channel: string) =>
 		(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 
-	await expect(handler(CoderChannels.getSettings)({ sender })).resolves.toEqual({
+	await expect(handler(CodingChannels.getSettings)({ sender })).resolves.toEqual({
 		success: true,
 		data: { runtime: 'pi' },
 	});
-	await expect(handler(CoderChannels.send)({ sender }, request, 'run-1')).resolves.toEqual({
+	await expect(handler(CodingChannels.send)({ sender }, request, 'run-1')).resolves.toEqual({
 		success: true,
 		data: { projectId: 'project-1', sessionId: 'session-1', output: 'reply' },
 	});
@@ -55,7 +55,7 @@ it('streams Coder app runs back to the originating view and scopes cancellation'
 		sessionId: 'session-1',
 		status: 'started',
 	});
-	expect(sender.send).toHaveBeenCalledWith(CoderChannels.response, {
+	expect(sender.send).toHaveBeenCalledWith(CodingChannels.response, {
 		type: 'status',
 		runId: 'run-1',
 		projectId: 'project-1',
@@ -65,7 +65,7 @@ it('streams Coder app runs back to the originating view and scopes cancellation'
 	expect(sender.once).toHaveBeenCalledWith('destroyed', expect.any(Function));
 	expect(sender.removeListener).toHaveBeenCalledWith('destroyed', expect.any(Function));
 
-	await expect(handler(CoderChannels.cancel)({ sender }, 'run-1')).resolves.toEqual({
+	await expect(handler(CodingChannels.cancel)({ sender }, 'run-1')).resolves.toEqual({
 		success: true,
 		data: true,
 	});
@@ -101,47 +101,47 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 		canceled: false,
 		filePaths: ['/project'],
 	});
-	new CoderIpc().register(
+	new CodingIpc().register(
 		{ coder, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const handler = (channel: string) =>
 		(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 
-	await expect(handler(CoderChannels.addProject)({ sender })).resolves.toEqual({
+	await expect(handler(CodingChannels.addProject)({ sender })).resolves.toEqual({
 		success: true,
 		data: selectedProject,
 	});
 	expect(coder.addProject).toHaveBeenCalledWith('/project');
-	await expect(handler(CoderChannels.listProjects)({ sender })).resolves.toEqual({
+	await expect(handler(CodingChannels.listProjects)({ sender })).resolves.toEqual({
 		success: true,
 		data: [selectedProject],
 	});
-	await expect(handler(CoderChannels.listSessions)({ sender }, ' project-1 ')).resolves.toEqual({
+	await expect(handler(CodingChannels.listSessions)({ sender }, ' project-1 ')).resolves.toEqual({
 		success: true,
 		data: [],
 	});
 	expect(coder.listSessions).toHaveBeenCalledWith('project-1');
-	await expect(handler(CoderChannels.openProject)({ sender }, ' project-1 ')).resolves.toEqual({
+	await expect(handler(CodingChannels.openProject)({ sender }, ' project-1 ')).resolves.toEqual({
 		success: true,
 		data: undefined,
 	});
 	expect(shell.openPath).toHaveBeenCalledWith('/project');
 	await expect(
-		handler(CoderChannels.renameSession)({ sender }, ' project-1 ', ' session-1 ', ' Renamed ')
+		handler(CodingChannels.renameSession)({ sender }, ' project-1 ', ' session-1 ', ' Renamed ')
 	).resolves.toEqual({ success: true, data: { id: 'session-1', title: 'Renamed' } });
 	expect(coder.renameSession).toHaveBeenCalledWith('project-1', 'session-1', 'Renamed');
 	await expect(
-		handler(CoderChannels.deleteSession)({ sender }, ' project-1 ', ' session-1 ')
+		handler(CodingChannels.deleteSession)({ sender }, ' project-1 ', ' session-1 ')
 	).resolves.toEqual({ success: true, data: true });
 	expect(coder.deleteSession).toHaveBeenCalledWith('project-1', 'session-1');
 	await expect(
-		handler(CoderChannels.getProjectInstructions)({ sender }, ' project-1 ')
+		handler(CodingChannels.getProjectInstructions)({ sender }, ' project-1 ')
 	).resolves.toEqual({ success: true, data: { projectId: 'project-1' } });
 	expect(coder.getProjectInstructions).toHaveBeenCalledWith('project-1');
 	const update = { content: '  keep whitespace\n', expectedRevision: 'revision-1' };
 	await expect(
-		handler(CoderChannels.saveProjectInstructions)({ sender }, ' project-1 ', update)
+		handler(CodingChannels.saveProjectInstructions)({ sender }, ' project-1 ', update)
 	).resolves.toEqual({ success: true, data: { projectId: 'project-1' } });
 	expect(coder.saveProjectInstructions).toHaveBeenCalledWith('project-1', update);
 });
@@ -156,7 +156,7 @@ it('restricts project instruction files to the Coder app and validates updates',
 		resolve: jest.fn().mockReturnValue('coder'),
 	};
 	const sender = { id: 23 };
-	new CoderIpc().register(
+	new CodingIpc().register(
 		{ coder, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
@@ -164,7 +164,7 @@ it('restricts project instruction files to the Coder app and validates updates',
 		(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 
 	await expect(
-		handler(CoderChannels.saveProjectInstructions)({ sender }, 'project-1', {
+		handler(CodingChannels.saveProjectInstructions)({ sender }, 'project-1', {
 			content: 'content',
 			expectedRevision: '',
 		})
@@ -173,7 +173,7 @@ it('restricts project instruction files to the Coder app and validates updates',
 
 	appRegistry.has.mockReturnValue(false);
 	await expect(
-		handler(CoderChannels.getProjectInstructions)({ sender }, 'project-1')
+		handler(CodingChannels.getProjectInstructions)({ sender }, 'project-1')
 	).resolves.toEqual(
 		expect.objectContaining({
 			success: false,
@@ -191,18 +191,18 @@ it('rejects Coder access from other apps', async () => {
 		has: jest.fn().mockReturnValue(true),
 		resolve: jest.fn().mockReturnValue('demo'),
 	};
-	new CoderIpc().register(
+	new CodingIpc().register(
 		{ coder, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const getSettings = (ipcMain.handle as jest.Mock).mock.calls.find(
-		([channel]) => channel === CoderChannels.getSettings
+		([channel]) => channel === CodingChannels.getSettings
 	)?.[1];
 	const send = (ipcMain.handle as jest.Mock).mock.calls.find(
-		([channel]) => channel === CoderChannels.send
+		([channel]) => channel === CodingChannels.send
 	)?.[1];
 	const listModels = (ipcMain.handle as jest.Mock).mock.calls.find(
-		([channel]) => channel === CoderChannels.listModels
+		([channel]) => channel === CodingChannels.listModels
 	)?.[1];
 	const sender = { id: 24 };
 
@@ -246,19 +246,19 @@ it('allows configuration and authentication from the host and Coder app only', a
 	};
 	const event = { sender, senderFrame: mainFrame };
 	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 1, webContents: sender });
-	new CoderIpc().register(
+	new CodingIpc().register(
 		{ coder, appRegistry: appRegistry as never, windows: windows as never },
 		{} as EventBus
 	);
 	const handler = (channel: string) =>
 		(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 
-	await expect(handler(CoderChannels.connectCodex)(event)).resolves.toEqual({
+	await expect(handler(CodingChannels.connectCodex)(event)).resolves.toEqual({
 		success: true,
 		data: { configured: true, type: 'oauth' },
 	});
 	expect(connectCodex).toHaveBeenCalledWith(8, expect.any(Function));
-	expect(sender.send).toHaveBeenCalledWith(CoderChannels.authEvent, {
+	expect(sender.send).toHaveBeenCalledWith(CodingChannels.authEvent, {
 		type: 'progress',
 		message: 'Waiting',
 	});
@@ -267,14 +267,14 @@ it('allows configuration and authentication from the host and Coder app only', a
 
 	appRegistry.has.mockReturnValue(true);
 	(appRegistry as { resolve?: jest.Mock }).resolve = jest.fn().mockReturnValue('coder');
-	await expect(handler(CoderChannels.listModels)(event)).resolves.toEqual({
+	await expect(handler(CodingChannels.listModels)(event)).resolves.toEqual({
 		success: true,
 		data: { providers: [] },
 	});
 	expect(coder.listModels).toHaveBeenCalled();
 
 	(appRegistry.resolve as jest.Mock).mockReturnValue('demo');
-	await expect(handler(CoderChannels.listModels)(event)).resolves.toEqual(
+	await expect(handler(CodingChannels.listModels)(event)).resolves.toEqual(
 		expect.objectContaining({ success: false })
 	);
 });

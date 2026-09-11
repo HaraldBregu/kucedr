@@ -39,7 +39,7 @@ The visible sidebar is grouped as follows:
 | Group        | Destinations                                                                                      |
 | ------------ | ------------------------------------------------------------------------------------------------- |
 | General      | Account, General, System, Cloud                                                                   |
-| Assistant    | Agent, Coder, A2A |
+| Assistant    | Agent, Coding, A2A |
 | Providers    | Models, Search, Database                                                                             |
 | Integrations | Channels, Apps                                                                            |
 
@@ -111,7 +111,7 @@ On platforms where explicit operating-system status is unavailable, permission s
 unknown. Screen testing uses the display source supplied by Electron and does not provide an
 additional Kucedr source picker.
 
-## Assistant and Coder
+## Assistant and Coding
 
 ### Assistant
 
@@ -125,9 +125,9 @@ Assistant is the central model and behavior page. It should provide collapsible 
 Only search engines with stored credentials should be selectable. The same page should link to
 Chat history, Health, Permissions, RAG, LLM Wiki, and Data management.
 
-### Coder
+### Coding
 
-Coder should show the Pi SDK runtime and allow selection of its provider, model, thinking level,
+Coding should show the Pi SDK runtime and allow selection of its provider, model, thinking level,
 and read-only or coding tool mode. OpenAI Codex authentication should support connect, cancel, and
 disconnect flows, including browser login or device-code feedback. Other providers should link to
 model-provider credentials.

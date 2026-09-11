@@ -1,18 +1,18 @@
 import path from 'node:path';
 import Store from 'electron-store';
 import {
-	CODER_PROVIDER_IDS,
-	CODER_THINKING_LEVELS,
-	CODER_TOOL_MODES,
+	CODING_PROVIDER_IDS,
+	CODING_THINKING_LEVELS,
+	CODING_TOOL_MODES,
 	isCoderSettings,
-	type CoderProviderId,
-	type CoderSettings,
-	type CoderThinkingLevel,
-	type CoderToolMode,
-} from '../../shared/coder_types';
+	type CodingProviderId,
+	type CodingSettings,
+	type CodingThinkingLevel,
+	type CodingToolMode,
+} from '../../shared/coding_types';
 import { userDataLocation } from '../shared/user_data_location';
 
-export const DEFAULT_CODER_SETTINGS: CoderSettings = {
+export const DEFAULT_CODER_SETTINGS: CodingSettings = {
 	runtime: 'pi',
 	providerId: 'openai-codex',
 	modelId: '',
@@ -20,18 +20,18 @@ export const DEFAULT_CODER_SETTINGS: CoderSettings = {
 	toolMode: 'read-only',
 };
 
-type StoredCoderSettings = CoderSettings & { workingDirectory?: string };
+type StoredCoderSettings = CodingSettings & { workingDirectory?: string };
 
-function normalizeSettings(value: unknown): CoderSettings {
-	const stored = value && typeof value === 'object' ? (value as Partial<CoderSettings>) : {};
-	const providerId = CODER_PROVIDER_IDS.includes(stored.providerId as CoderProviderId)
-		? (stored.providerId as CoderProviderId)
+function normalizeSettings(value: unknown): CodingSettings {
+	const stored = value && typeof value === 'object' ? (value as Partial<CodingSettings>) : {};
+	const providerId = CODING_PROVIDER_IDS.includes(stored.providerId as CodingProviderId)
+		? (stored.providerId as CodingProviderId)
 		: DEFAULT_CODER_SETTINGS.providerId;
-	const thinkingLevel = CODER_THINKING_LEVELS.includes(stored.thinkingLevel as CoderThinkingLevel)
-		? (stored.thinkingLevel as CoderThinkingLevel)
+	const thinkingLevel = CODING_THINKING_LEVELS.includes(stored.thinkingLevel as CodingThinkingLevel)
+		? (stored.thinkingLevel as CodingThinkingLevel)
 		: DEFAULT_CODER_SETTINGS.thinkingLevel;
-	const toolMode = CODER_TOOL_MODES.includes(stored.toolMode as CoderToolMode)
-		? (stored.toolMode as CoderToolMode)
+	const toolMode = CODING_TOOL_MODES.includes(stored.toolMode as CodingToolMode)
+		? (stored.toolMode as CodingToolMode)
 		: DEFAULT_CODER_SETTINGS.toolMode;
 	return {
 		runtime: 'pi',
@@ -42,7 +42,7 @@ function normalizeSettings(value: unknown): CoderSettings {
 	};
 }
 
-export class CoderStore {
+export class CodingStore {
 	private readonly store: Store<StoredCoderSettings>;
 	private readonly legacyWorkingDirectory?: string;
 
@@ -61,11 +61,11 @@ export class CoderStore {
 		this.store.store = normalizeSettings(this.store.store);
 	}
 
-	get(): CoderSettings {
+	get(): CodingSettings {
 		return normalizeSettings(this.store.store);
 	}
 
-	set(settings: CoderSettings): CoderSettings {
+	set(settings: CodingSettings): CodingSettings {
 		if (!isCoderSettings(settings)) throw new Error('Invalid coder settings.');
 		const normalized = normalizeSettings(settings);
 		this.store.store = normalized;

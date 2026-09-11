@@ -85,11 +85,11 @@ export function Instructions({
 						</div>
 					) : editor.instructions ? (
 						<div className="flex min-h-[360px] flex-1 flex-col gap-2">
-							<label htmlFor="coder-agent-instructions" className="text-xs font-medium">
+							<label htmlFor="coding-agent-instructions" className="text-xs font-medium">
 								Workspace instructions
 							</label>
 							<Textarea
-								id="coder-agent-instructions"
+								id="coding-agent-instructions"
 								value={editor.content}
 								disabled={!editor.instructions.editable || editor.saving}
 								onChange={(event) => editor.setContent(event.target.value)}
@@ -111,8 +111,8 @@ export function Instructions({
 					) : null}
 
 					{editor.instructions ? (
-						<section aria-labelledby="coder-instruction-sources" className="space-y-2">
-							<h2 id="coder-instruction-sources" className="text-xs font-medium">
+						<section aria-labelledby="coding-instruction-sources" className="space-y-2">
+							<h2 id="coding-instruction-sources" className="text-xs font-medium">
 								Loaded instruction sources
 							</h2>
 							{editor.instructions.loadedSources.length ? (
@@ -123,7 +123,7 @@ export function Instructions({
 											className="flex min-w-0 items-start gap-2 rounded-md border px-2.5 py-2"
 										>
 											<Badge variant="outline">
-												{source.scope === 'coder-global'
+												{source.scope === 'coding-global'
 													? 'Coder global'
 													: source.scope[0].toUpperCase() + source.scope.slice(1)}
 											</Badge>

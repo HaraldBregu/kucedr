@@ -1143,8 +1143,8 @@
 			"libraryTitle": "Audio generati",
 			"libraryEmpty": "Nessun audio generato."
 		},
-		"coder": {
-			"title": "Coder",
+		"coding": {
+			"title": "Coding",
 			"description": "Configura il runtime di coding agent Pi",
 			"harnessExplanation": "Pi e l'harness del coding agent. OpenAI Codex, OpenAI API e Anthropic sono backend di modello e autenticazione usati da Pi.",
 			"runtime": "Runtime",
@@ -1187,9 +1187,9 @@
 			"completeLogin": "Completa l'accesso nel browser.",
 			"openLogin": "Apri accesso",
 			"toolWarning": "Pi non fornisce una sandbox. Gli strumenti di coding completo usano i permessi file e shell del tuo account desktop e non applicano le regole di autorizzazione dell'Agent di Kucedr.",
-			"apiKeyMissing": "Salva una chiave API per {{provider}} nei Provider prima di avviare il coder.",
-			"loadError": "Impossibile caricare le impostazioni Coder.",
-			"saveError": "Impossibile salvare le impostazioni Coder.",
+			"apiKeyMissing": "Salva una chiave API per {{provider}} nei Provider prima di avviare il coding.",
+			"loadError": "Impossibile caricare le impostazioni Coding.",
+			"saveError": "Impossibile salvare le impostazioni Coding.",
 			"connectError": "Impossibile collegare Codex.",
 			"disconnectError": "Impossibile disconnettere Codex."
 		},

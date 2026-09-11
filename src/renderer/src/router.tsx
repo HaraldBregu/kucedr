@@ -55,7 +55,7 @@ const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Pa
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
-const CoderPage = lazy(() => import('./pages/settings/pages/coder/Page'));
+const CodingPage = lazy(() => import('./pages/settings/pages/coder/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
@@ -391,7 +391,7 @@ const routes: RouteObject[] = [
 						path: 'coder',
 						element: (
 							<SettingsRouteWrapper>
-								<CoderPage />
+								<CodingPage />
 							</SettingsRouteWrapper>
 						),
 					},

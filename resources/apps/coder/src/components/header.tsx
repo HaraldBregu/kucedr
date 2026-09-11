@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import type { CoderController } from '@/controller';
+import type { CodingController } from '@/controller';
 
 const isMac =
 	typeof navigator !== 'undefined' &&
@@ -38,7 +38,7 @@ export function Header({
 	onOpenSidebar,
 	sidebarOpen,
 }: {
-	coder: CoderController;
+	coder: CodingController;
 	onOpenConfiguration: () => void;
 	onOpenInstructions: () => void;
 	onOpenSidebar: () => void;
@@ -82,7 +82,7 @@ export function Header({
 					title="Search Coder workspaces"
 					onClick={() => {
 						onOpenSidebar();
-						requestAnimationFrame(() => document.getElementById('coder-sidebar-search')?.focus());
+						requestAnimationFrame(() => document.getElementById('coding-sidebar-search')?.focus());
 					}}
 				>
 					<Search className="size-4" strokeWidth={1.8} />

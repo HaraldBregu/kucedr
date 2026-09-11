@@ -1,10 +1,10 @@
 import { BrowserWindow, dialog, shell } from 'electron';
-import { CoderChannels } from '../../shared/ipc_channels_definitions';
+import { CodingChannels } from '../../shared/ipc_channels_definitions';
 import {
 	isCoderProjectInstructionsUpdate,
 	isCoderRunRequest,
 	isCoderSettings,
-} from '../../shared/coder_types';
+} from '../../shared/coding_types';
 import type { Coder } from '../coder';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
@@ -13,16 +13,16 @@ import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
 
-interface CoderIpcDependencies {
+interface CodingIpcDependencies {
 	readonly coder: Coder;
 	readonly appRegistry: AppRegistry;
 	readonly windows: WindowContextManager;
 }
 
-export class CoderIpc implements IpcModule<CoderIpcDependencies> {
+export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 	readonly name = 'coder';
 
-	register({ coder, appRegistry, windows }: CoderIpcDependencies, _eventBus: EventBus): void {
+	register({ coder, appRegistry, windows }: CodingIpcDependencies, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		const assertCoderCaller = (event: Electron.IpcMainInvokeEvent): void => {
 			if (appRegistry.has(event.sender)) {
@@ -39,24 +39,24 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 				throw new Error('Project instructions are only available to the Coder app.');
 			}
 		};
-		registerQueryWithEvent(CoderChannels.getSettings, (event) => {
+		registerQueryWithEvent(CodingChannels.getSettings, (event) => {
 			assertCoderCaller(event);
 			return coder.getSettings();
 		});
-		registerCommandWithEvent(CoderChannels.saveSettings, (event, settings) => {
+		registerCommandWithEvent(CodingChannels.saveSettings, (event, settings) => {
 			assertCoderCaller(event);
 			if (!isCoderSettings(settings)) throw new Error('Invalid coder settings.');
 			return coder.saveSettings(settings);
 		});
-		registerQueryWithEvent(CoderChannels.listModels, (event) => {
+		registerQueryWithEvent(CodingChannels.listModels, (event) => {
 			assertCoderCaller(event);
 			return coder.listModels();
 		});
-		registerQueryWithEvent(CoderChannels.listProjects, (event) => {
+		registerQueryWithEvent(CodingChannels.listProjects, (event) => {
 			assertCoderCaller(event);
 			return coder.listProjects();
 		});
-		registerQueryWithEvent(CoderChannels.addProject, async (event) => {
+		registerQueryWithEvent(CodingChannels.addProject, async (event) => {
 			assertCoderCaller(event);
 			const window = BrowserWindow.fromWebContents(event.sender);
 			const options: Electron.OpenDialogOptions = { properties: ['openDirectory'] };
@@ -67,7 +67,7 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 				? undefined
 				: coder.addProject(result.filePaths[0]);
 		});
-		registerCommandWithEvent(CoderChannels.openProject, async (event, projectId) => {
+		registerCommandWithEvent(CodingChannels.openProject, async (event, projectId) => {
 			assertCoderCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coder project id.');
@@ -78,21 +78,21 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 			const error = await shell.openPath(project.directory);
 			if (error) throw new Error(error);
 		});
-		registerCommandWithEvent(CoderChannels.removeProject, (event, projectId) => {
+		registerCommandWithEvent(CodingChannels.removeProject, (event, projectId) => {
 			assertCoderCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coder project id.');
 			}
 			return coder.removeProject(projectId.trim());
 		});
-		registerQueryWithEvent(CoderChannels.getProjectInstructions, (event, projectId) => {
+		registerQueryWithEvent(CodingChannels.getProjectInstructions, (event, projectId) => {
 			assertCoderAppCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coder project id.');
 			}
 			return coder.getProjectInstructions(projectId.trim());
 		});
-		registerCommandWithEvent(CoderChannels.saveProjectInstructions, (event, projectId, update) => {
+		registerCommandWithEvent(CodingChannels.saveProjectInstructions, (event, projectId, update) => {
 			assertCoderAppCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coder project id.');
@@ -102,14 +102,14 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 			}
 			return coder.saveProjectInstructions(projectId.trim(), update);
 		});
-		registerQueryWithEvent(CoderChannels.listSessions, (event, projectId) => {
+		registerQueryWithEvent(CodingChannels.listSessions, (event, projectId) => {
 			assertCoderCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coder project id.');
 			}
 			return coder.listSessions(projectId.trim());
 		});
-		registerQueryWithEvent(CoderChannels.getSession, (event, projectId, sessionId) => {
+		registerQueryWithEvent(CodingChannels.getSession, (event, projectId, sessionId) => {
 			assertCoderCaller(event);
 			if (
 				typeof projectId !== 'string' ||
@@ -121,7 +121,7 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 			}
 			return coder.getSession(projectId.trim(), sessionId.trim());
 		});
-		registerCommandWithEvent(CoderChannels.renameSession, (event, projectId, sessionId, title) => {
+		registerCommandWithEvent(CodingChannels.renameSession, (event, projectId, sessionId, title) => {
 			assertCoderCaller(event);
 			if (
 				typeof projectId !== 'string' ||
@@ -136,7 +136,7 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 			}
 			return coder.renameSession(projectId.trim(), sessionId.trim(), title.trim());
 		});
-		registerCommandWithEvent(CoderChannels.deleteSession, (event, projectId, sessionId) => {
+		registerCommandWithEvent(CodingChannels.deleteSession, (event, projectId, sessionId) => {
 			assertCoderCaller(event);
 			if (
 				typeof projectId !== 'string' ||
@@ -148,7 +148,7 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 			}
 			return coder.deleteSession(projectId.trim(), sessionId.trim());
 		});
-		registerCommandWithEvent(CoderChannels.send, (event, request, runId) => {
+		registerCommandWithEvent(CodingChannels.send, (event, request, runId) => {
 			assertCoderCaller(event);
 			if (!isCoderRunRequest(request)) throw new Error('Invalid coder run request.');
 			if (typeof runId !== 'string' || !runId.trim()) throw new Error('Invalid coder run id.');
@@ -158,35 +158,35 @@ export class CoderIpc implements IpcModule<CoderIpcDependencies> {
 				coder.cancel(normalizedRunId, callerId);
 			};
 			event.sender.once('destroyed', cancel);
-			return coder
+			return coding
 				.send(callerId, normalizedRunId, request, (responseEvent) => {
-					event.sender.send(CoderChannels.response, responseEvent);
+					event.sender.send(CodingChannels.response, responseEvent);
 				})
 				.finally(() => event.sender.removeListener('destroyed', cancel));
 		});
-		registerCommandWithEvent(CoderChannels.cancel, (event, runId) => {
+		registerCommandWithEvent(CodingChannels.cancel, (event, runId) => {
 			assertCoderCaller(event);
 			if (typeof runId !== 'string' || !runId.trim()) throw new Error('Invalid coder run id.');
 			return coder.cancel(runId.trim(), event.sender.id);
 		});
-		registerCommandWithEvent(CoderChannels.connectCodex, (event) => {
+		registerCommandWithEvent(CodingChannels.connectCodex, (event) => {
 			assertCoderCaller(event);
 			const callerId = event.sender.id;
 			const cancel = (): void => {
 				coder.cancelCodexLogin(callerId);
 			};
 			event.sender.once('destroyed', cancel);
-			return coder
+			return coding
 				.connectCodex(callerId, (authEvent) => {
-					event.sender.send(CoderChannels.authEvent, authEvent);
+					event.sender.send(CodingChannels.authEvent, authEvent);
 				})
 				.finally(() => event.sender.removeListener('destroyed', cancel));
 		});
-		registerCommandWithEvent(CoderChannels.cancelCodexLogin, (event) => {
+		registerCommandWithEvent(CodingChannels.cancelCodexLogin, (event) => {
 			assertCoderCaller(event);
 			return coder.cancelCodexLogin(event.sender.id);
 		});
-		registerCommandWithEvent(CoderChannels.disconnectCodex, (event) => {
+		registerCommandWithEvent(CodingChannels.disconnectCodex, (event) => {
 			assertCoderCaller(event);
 			return coder.disconnectCodex();
 		});

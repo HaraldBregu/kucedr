@@ -52,7 +52,7 @@ export const AgentChannels = {
 	ragPickFolder: 'agent:rag:folder:pick',
 } as const;
 
-export const CoderChannels = {
+export const CodingChannels = {
 	getSettings: 'coder:settings:get',
 	saveSettings: 'coder:settings:save',
 	listModels: 'coder:models:list',

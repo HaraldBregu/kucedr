@@ -15,7 +15,7 @@ import { transferStorage } from './storage/s3/transfer';
 import { storageProviders } from './storage/providers';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
-import { Coder, CoderProjectStore, CoderStore } from './coder';
+import { Coder, CodingProjectStore, CodingStore } from './coder';
 import { getProvider, getStorageSettings } from './settings_store';
 import { agentLocation } from './shared/agent_location';
 import { EnvironmentManager } from './terminal/environment';
@@ -38,7 +38,7 @@ export interface MainServices {
 	eventBus: EventBus;
 	logger: LoggerService;
 	agentService: Agent;
-	coderService: Coder;
+	codingService: Coder;
 	conversationService: Conversation;
 	channelRegistry: ChannelRegistry;
 	windowFactory: WindowFactory;
@@ -62,12 +62,12 @@ export function bootstrapServices(): BootstrapResult {
 	const appStorage = new AppStorage();
 	const windowFactory = new WindowFactory(logger, appRegistry);
 	const agentService = new Agent(windowFactory, new ExecSandbox());
-	const coderStore = new CoderStore();
-	const coderService = new Coder({
-		store: coderStore,
-		projects: new CoderProjectStore(
+	const codingStore = new CodingStore();
+	const codingService = new Coder({
+		store: codingStore,
+		projects: new CodingProjectStore(
 			undefined,
-			[agentLocation(), coderStore.getLegacyWorkingDirectory()].filter(
+			[agentLocation(), codingStore.getLegacyWorkingDirectory()].filter(
 				(directory): directory is string => Boolean(directory)
 			)
 		),
@@ -115,7 +115,7 @@ export function bootstrapServices(): BootstrapResult {
 	);
 	eventBus.on('window:closed', (event) => {
 		agentService.cancelWindow((event.payload as { windowId: number }).windowId);
-		coderService.cancelWindow((event.payload as { windowId: number }).windowId);
+		codingService.cancelWindow((event.payload as { windowId: number }).windowId);
 		void conversationService.execute({
 			type: 'voice',
 			action: 'stop-window',
@@ -130,7 +130,7 @@ export function bootstrapServices(): BootstrapResult {
 		eventBus,
 		logger,
 		agentService,
-		coderService,
+		codingService,
 		conversationService,
 		channelRegistry,
 		windowFactory,
@@ -156,14 +156,14 @@ export async function cleanup(services: MainServices): Promise<void> {
 		providerSyncService,
 		authService,
 		agentService,
-		coderService,
+		codingService,
 		storageOperations,
 	} = services;
 	logger.info('Bootstrap', 'Starting cleanup');
 	const recorderCleanup = Promise.all([microphone.destroy(), camera.destroy(), screen.destroy()]);
 	terminalManager.shutdown();
 	agentService.destroy();
-	coderService.destroy();
+	codingService.destroy();
 	await conversationService.execute({ type: 'voice', action: 'stop-all' });
 	await windowContextManager.destroyAll();
 	await storageOperations.settle();
