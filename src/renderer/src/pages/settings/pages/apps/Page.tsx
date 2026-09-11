@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Blocks,
@@ -34,6 +35,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 const AppsPage: React.FC = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [apps, setApps] = useState<App[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [importing, setImporting] = useState(false);
@@ -112,6 +114,13 @@ const AppsPage: React.FC = () => {
 			}
 		},
 		[t]
+	);
+
+	const handleDetails = useCallback(
+		(appId: string): void => {
+			navigate(`/settings/apps/${encodeURIComponent(appId)}`);
+		},
+		[navigate]
 	);
 
 	return (
@@ -206,7 +215,20 @@ const AppsPage: React.FC = () => {
 				) : (
 					<div className="grid gap-3">
 						{apps.map((app) => (
-							<Card key={app.id} size="sm" className="gap-0! p-0!">
+							<Card
+								key={app.id}
+								size="sm"
+								role="link"
+								tabIndex={0}
+								onClick={() => handleDetails(app.id)}
+								onKeyDown={(event) => {
+									if (event.key === 'Enter' || event.key === ' ') {
+										event.preventDefault();
+										handleDetails(app.id);
+									}
+								}}
+								className="cursor-pointer gap-0! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+							>
 								<CardContent className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3!">
 									<div
 										aria-hidden="true"
@@ -225,11 +247,14 @@ const AppsPage: React.FC = () => {
 												</p>
 											</div>
 											<div className="flex shrink-0 items-center gap-1">
-												<Button
-													type="button"
-													size="xs"
-													disabled={importing || openingAppId === app.id}
-													onClick={() => void handleOpen(app.id)}
+													<Button
+														type="button"
+														size="xs"
+														disabled={importing || openingAppId === app.id}
+														onClick={(event) => {
+															event.stopPropagation();
+															void handleOpen(app.id);
+														}}
 												>
 													<ExternalLink className="size-3" />
 													{t('settings.apps.open')}
@@ -244,6 +269,7 @@ const AppsPage: React.FC = () => {
 															size="icon-xs"
 															disabled={importing || openingAppId === app.id}
 															aria-label={t('settings.apps.deleteAction', { name: app.title })}
+															onClick={(event) => event.stopPropagation()}
 														>
 															<MoreHorizontal className="size-3.5" />
 														</Button>

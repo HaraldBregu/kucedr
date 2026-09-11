@@ -152,6 +152,23 @@ it('opens an app from its card action', async () => {
 	expect(window.apps.open).toHaveBeenCalledWith('demo-app');
 });
 
+it('navigates to an app detail when its card is clicked', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/apps']}>
+			<Routes>
+				<Route path="/settings/apps" element={<AppsPage />} />
+				<Route path="/settings/apps/:appId" element={<p>App detail</p>} />
+			</Routes>
+		</MemoryRouter>
+	);
+
+	await user.click(await screen.findByRole('link', { name: /Demo App/ }));
+
+	expect(await screen.findByText('App detail')).toBeInTheDocument();
+	expect(window.apps.open).not.toHaveBeenCalled();
+});
+
 it('treats an app detail route as a child of the apps breadcrumb', async () => {
 	const user = userEvent.setup();
 
