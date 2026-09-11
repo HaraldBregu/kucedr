@@ -85,12 +85,19 @@ function migrateLegacyProviders(): void {
 					new Map(section(kind).map((provider) => [provider.id, provider])),
 				])
 			);
+			let complete = true;
 			for (const record of Object.values(records)) {
 				const provider = openLegacyProvider(record, key);
 				if (provider) providers.get(provider.kind)?.set(provider.value.id, provider.value);
+				else if (
+					!record ||
+					typeof record !== 'object' ||
+					!(record as Record<string, unknown>).tombstoneAt
+				)
+					complete = false;
 			}
 			for (const [kind, values] of providers) writeSection(kind, [...values.values()]);
-			unlinkSync(legacyPath);
+			if (complete) unlinkSync(legacyPath);
 		} finally {
 			key.fill(0);
 		}
