@@ -98,9 +98,9 @@ describe('provider manifests', () => {
 		expect(
 			realtimeVoiceModels.map((model) => ({ id: model.id, providerId: model.provider.id }))
 		).toEqual([
+			{ id: 'gpt-live-1', providerId: 'openai' },
 			{ id: 'gpt-realtime-2.1', providerId: 'openai' },
 			{ id: 'gpt-realtime-2.1-mini', providerId: 'openai' },
-			{ id: 'gpt-live-1', providerId: 'openai' },
 			{ id: 'grok-voice-latest', providerId: 'xai' },
 		]);
 		expect(realtimeVoiceModels).toEqual(
