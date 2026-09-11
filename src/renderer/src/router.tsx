@@ -240,14 +240,6 @@ const routes: RouteObject[] = [
 				),
 				children: [
 					{
-						path: 'tools',
-						element: (
-							<SettingsRouteWrapper>
-								<ToolsPage />
-							</SettingsRouteWrapper>
-						),
-					},
-					{
 						index: true,
 						element: <Navigate to="/settings/general" replace />,
 					},
@@ -406,6 +398,14 @@ const routes: RouteObject[] = [
 					{
 						path: 'agent',
 						children: [
+							{
+								path: 'tools',
+								element: (
+									<SettingsRouteWrapper>
+										<ToolsPage />
+									</SettingsRouteWrapper>
+								),
+							},
 							{
 								path: 'skills',
 								children: [
