@@ -39,7 +39,7 @@ type MenuEntry = {
 };
 
 function trayClickHandler(): () => void {
-	const handler = trayOn.mock.calls.find(([event]) => event === 'click')?.[1];
+	const handler = [...trayOn.mock.calls].reverse().find(([event]) => event === 'click')?.[1];
 	if (typeof handler !== 'function') throw new Error('Tray click handler was not registered.');
 	return handler;
 }
