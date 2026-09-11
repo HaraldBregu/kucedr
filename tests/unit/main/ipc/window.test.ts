@@ -86,3 +86,22 @@ it('opens the dedicated voice conversation window with a trimmed chat session id
 	});
 	expect(openVoiceConversation).toHaveBeenCalledWith('chat-session');
 });
+
+it('routes app-view window controls to the containing app window', () => {
+	const host = { minimize: jest.fn() };
+	const appContents = {};
+	Object.assign(BrowserWindow, { fromWebContents: jest.fn(() => null) });
+	(openAppWindows as Map<string, unknown>).set('workspace', { window: host });
+
+	new WindowIpc().register(
+		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
+		{} as EventBus
+	);
+	const minimize = (ipcMain.on as jest.Mock).mock.calls
+		.filter(([channel]) => channel === WindowChannels.minimize)
+		.at(-1)?.[1];
+
+	minimize({ sender: appContents });
+
+	expect(host.minimize).toHaveBeenCalledTimes(1);
+});
