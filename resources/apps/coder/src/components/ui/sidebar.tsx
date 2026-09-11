@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, type ComponentProps, type ReactNode } from 'react';
-import { PanelLeft } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface SidebarContextValue {
 	open: boolean;
@@ -48,23 +48,25 @@ export function Sidebar({ className, ...props }: ComponentProps<'aside'>) {
 	const context = useContext(SidebarContext);
 	if (!context) throw new Error('Sidebar must be rendered inside SidebarProvider.');
 	return (
-		<div
-			className={cn(
-				'relative h-full w-72 shrink-0 transition-[width] duration-200 ease-linear motion-reduce:transition-none',
-				!context.open && 'w-0'
-			)}
-		>
+		<>
+			<div
+				aria-hidden="true"
+				className={cn(
+					'shrink-0 transition-[width] duration-200 ease-linear motion-reduce:transition-none',
+					context.open ? 'w-64' : 'w-0'
+				)}
+			/>
 			<aside
 				id="coder-sidebar"
 				data-state={context.open ? 'expanded' : 'collapsed'}
 				className={cn(
-					'absolute inset-y-0 left-0 flex w-72 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
+					'fixed inset-y-0 left-0 z-30 flex w-64 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
 					!context.open && '-translate-x-full',
 					className
 				)}
 				{...props}
 			/>
-		</div>
+		</>
 	);
 }
 
