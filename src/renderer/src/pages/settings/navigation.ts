@@ -1,5 +1,6 @@
 import {
 	BookOpenText,
+	BrainCircuit,
 	Bot,
 	Layers,
 	BotMessageSquare,
@@ -57,7 +58,7 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		labelKey: 'settings.modelServices.assistantName',
 		descriptionKey: 'settings.modelServices.kucedrDescription',
 		keywords: 'kucedr service default provider model',
-		icon: BotMessageSquare,
+		icon: BrainCircuit,
 	},
 	{
 		id: AGENTS.coding,
