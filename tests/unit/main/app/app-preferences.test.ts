@@ -122,6 +122,30 @@ describe('app manifest window settings', () => {
 		expect(stored.window).toBeUndefined();
 	});
 
+	it('creates a manifest when a package-only app is saved', () => {
+		const directory = path.join(location, 'apps', 'package-notes');
+		fs.mkdirSync(directory, { recursive: true });
+		fs.writeFileSync(
+			path.join(directory, 'package.json'),
+			JSON.stringify({
+				name: 'Package Notes',
+				version: '1.0.0',
+				description: 'A package-only app',
+				main: 'index.html',
+				keywords: ['utility'],
+			})
+		);
+
+		writeAppWindowSettings('package-notes', { width: 800 }, location);
+
+		const stored = JSON.parse(fs.readFileSync(path.join(directory, 'manifest.json'), 'utf8'));
+		expect(stored).toMatchObject({
+			title: 'Package Notes',
+			metadata: { entry: 'index.html' },
+			window: { width: 800 },
+		});
+	});
+
 	it('rejects invalid updates without replacing the manifest', () => {
 		expect(() => writeAppWindowSettings('notes', { width: 400, minWidth: 500 }, location)).toThrow(
 			'Invalid app window settings'
