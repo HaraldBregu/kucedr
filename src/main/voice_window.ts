@@ -73,6 +73,9 @@ export class VoiceWindow {
 		win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
 		this.windowContextManager.create(win);
 		attachWindowHandlers(win);
+		if (typeof win.setVisibleOnAllWorkspaces === 'function') {
+			win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+		}
 		win.on('closed', () => {
 			if (this.window?.id === win.id) this.window = null;
 			this.onVisibilityChange?.();
