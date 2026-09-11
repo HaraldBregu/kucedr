@@ -42,12 +42,6 @@ export default function App() {
 	const selectedClip = project.clips.find((clip) => clip.id === selectedId) ?? null;
 
 	useEffect(() => {
-		if (!isKucedr()) return;
-		win.setTitlebarOptions({ title: 'Video Maker', leftButtons: [], rightButtons: [] });
-		return () => win.setTitlebarOptions(null);
-	}, []);
-
-	useEffect(() => {
 		let active = true;
 		loadProject()
 			.then((loaded) => {

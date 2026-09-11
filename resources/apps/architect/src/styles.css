@@ -81,11 +81,13 @@ button.primary:hover:not(:disabled) { background: color-mix(in oklch, var(--prim
 
 .architect { display: grid; grid-template-rows: 45px minmax(0, 1fr); background: var(--background); }
 .app-header { display: flex; align-items: center; gap: 9px; padding: 7px 10px; border-bottom: 1px solid var(--border); background: var(--card); }
+.app-header.mac-titlebar { padding-left: 80px; }
 .brand-mark { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 7px; background: var(--primary); color: var(--primary-foreground); }
 .brand-copy { display: grid; line-height: 1.05; }
 .brand-copy strong { font-size: 13px; }
 .brand-copy span { margin-top: 3px; color: var(--muted-foreground); font-size: 10px; }
 .header-spacer { flex: 1; }
+.window-controls { display: flex; align-items: center; gap: 2px; }
 .model-pill { display: flex; max-width: 260px; align-items: center; gap: 6px; overflow: hidden; border: 1px solid var(--border); border-radius: 999px; padding: 4px 9px; color: var(--muted-foreground); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .model-pill i { width: 6px; height: 6px; flex: 0 0 auto; border-radius: 50%; background: var(--muted-foreground); }
 .model-pill i.online { background: oklch(0.62 0.14 145); }

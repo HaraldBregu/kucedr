@@ -148,6 +148,16 @@ textarea {
 	background: var(--surface);
 }
 
+.app-header.mac-titlebar {
+	padding-left: 80px;
+}
+
+.app-header button,
+.app-header input,
+.app-header select {
+	-webkit-app-region: no-drag;
+}
+
 .brand {
 	display: flex;
 	align-items: center;
@@ -185,6 +195,12 @@ textarea {
 .header-spacer,
 .timeline-spacer {
 	flex: 1;
+}
+
+.window-controls {
+	display: flex;
+	align-items: center;
+	gap: 2px;
 }
 
 .icon-button {

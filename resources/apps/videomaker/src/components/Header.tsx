@@ -1,7 +1,13 @@
-import { FilePlus2, Film, HelpCircle, Plus, Share2 } from 'lucide-react';
+import { Copy, FilePlus2, Film, HelpCircle, Minus, Plus, Share2, Square, X } from 'lucide-react';
+import { useEffect, useState, type CSSProperties } from 'react';
+import { isKucedr, win } from '@kucedr/sdk';
 
 import { canvasPresets } from '../defaults';
 import type { Project } from '../types';
+
+const isMac =
+	typeof navigator !== 'undefined' &&
+	(navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac'));
 
 interface HeaderProps {
 	project: Project;
@@ -24,11 +30,22 @@ export function Header({
 	onDocs,
 	onExport,
 }: HeaderProps) {
+	const [maximized, setMaximized] = useState(false);
 	const preset = canvasPresets.find(
 		(candidate) => candidate.width === project.width && candidate.height === project.height
 	);
+
+	useEffect(() => {
+		if (!isKucedr()) return;
+		void win.isMaximized().then(setMaximized);
+		return win.onMaximizeChange(setMaximized);
+	}, []);
+
 	return (
-		<header className="app-header">
+		<header
+			className={`app-header${isMac ? ' mac-titlebar' : ''}`}
+			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
+		>
 			<div className="brand" aria-label="Video Maker">
 				<span className="brand-mark" aria-hidden="true">
 					<Film size={15} />
@@ -72,6 +89,24 @@ export function Header({
 			<button className="primary" disabled={exporting} onClick={onExport}>
 				<Share2 size={15} /> {exporting ? 'Exporting…' : 'Export MP4'}
 			</button>
+			{!isMac && isKucedr() ? (
+				<div className="window-controls">
+					<button className="icon-button" onClick={win.minimize} aria-label="Minimize window" title="Minimize">
+						<Minus size={15} />
+					</button>
+					<button
+						className="icon-button"
+						onClick={win.maximize}
+						aria-label={maximized ? 'Restore window' : 'Maximize window'}
+						title={maximized ? 'Restore' : 'Maximize'}
+					>
+						{maximized ? <Copy size={13} /> : <Square size={14} />}
+					</button>
+					<button className="icon-button" onClick={win.close} aria-label="Close window" title="Close">
+						<X size={15} />
+					</button>
+				</div>
+			) : null}
 		</header>
 	);
 }
