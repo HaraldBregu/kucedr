@@ -228,8 +228,8 @@
 			"general": "General"
 		},
 		"persona": {
-			"title": "Persona",
-			"description": "Preview Kucedr's animated voice persona.",
+			"title": "Voice Agent",
+			"description": "Preview Kucedr's animated voice agent.",
 			"preview": "Preview",
 			"previewDescription": "Choose a state to preview its motion and response.",
 			"states": {
@@ -296,8 +296,8 @@
 			"trayClickAction": {
 				"title": "Tray Icon Click",
 				"description": "Choose what happens when you click the tray icon",
-				"chat": "Chat",
-				"persona": "Persona"
+				"chat": "Chat Agent",
+				"persona": "Voice Agent"
 			},
 			"keepAwake": "Keep Computer Active",
 			"keepAwakeDescription": "Keep the computer and display awake while Kucedr is running",

@@ -15,11 +15,11 @@ jest.mock('electron', () => ({
 
 jest.mock('../../../../src/main/i18n', () => ({
 	loadTranslations: () => ({
-		showChat: 'Show Chat',
-		hideChat: 'Hide Chat',
-		startPersona: 'Start Persona',
-		hidePersona: 'Hide Persona',
-		showPersona: 'Show Persona',
+		showChat: 'Show Chat Agent',
+		hideChat: 'Hide Chat Agent',
+		startPersona: 'Start Voice Agent',
+		hidePersona: 'Hide Voice Agent',
+		showPersona: 'Show Voice Agent',
 		apps: 'Apps',
 		microphone: 'Microphone',
 		microphoneDefault: 'System default',
@@ -44,7 +44,7 @@ function trayClickHandler(): () => void {
 	return handler;
 }
 
-it('labels the main-window action as Show Chat or Hide Chat', () => {
+it('labels the main-window action as Show Chat Agent or Hide Chat Agent', () => {
 	let appVisible = false;
 	const tray = new Tray({
 		onToggleChat: () => {
@@ -64,13 +64,13 @@ it('labels the main-window action as Show Chat or Hide Chat', () => {
 
 	tray.create();
 	let template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	const showChat = template.find((entry) => entry.label === 'Show Chat');
+	const showChat = template.find((entry) => entry.label === 'Show Chat Agent');
 	expect(showChat).toBeDefined();
 	showChat?.click?.();
 
 	tray.updateContextMenu();
 	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	expect(template.find((entry) => entry.label === 'Hide Chat')).toBeDefined();
+	expect(template.find((entry) => entry.label === 'Hide Chat Agent')).toBeDefined();
 });
 
 it('lists microphone inputs and checks the persisted selection', async () => {
@@ -116,7 +116,7 @@ it('lists microphone inputs and checks the persisted selection', async () => {
 	expect(selected).toBe('default');
 });
 
-it('starts, hides, and shows the Persona without ending its conversation', () => {
+it('starts, hides, and shows the Voice Agent without ending its conversation', () => {
 	let active = false;
 	let visible = false;
 	const startPersona = jest.fn(() => {
@@ -145,19 +145,19 @@ it('starts, hides, and shows the Persona without ending its conversation', () =>
 
 	tray.create();
 	let template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	let personaItem = template.find((entry) => entry.label === 'Start Persona');
+	let personaItem = template.find((entry) => entry.label === 'Start Voice Agent');
 	expect(personaItem).toMatchObject({ enabled: true });
 	personaItem?.click?.();
 
 	tray.updateContextMenu();
 	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	personaItem = template.find((entry) => entry.label === 'Hide Persona');
+	personaItem = template.find((entry) => entry.label === 'Hide Voice Agent');
 	expect(personaItem).toMatchObject({ enabled: true });
 	personaItem?.click?.();
 
 	tray.updateContextMenu();
 	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-	personaItem = template.find((entry) => entry.label === 'Show Persona');
+	personaItem = template.find((entry) => entry.label === 'Show Voice Agent');
 	expect(personaItem).toMatchObject({ enabled: true });
 	personaItem?.click?.();
 	expect(startPersona).toHaveBeenCalledTimes(1);
@@ -166,7 +166,7 @@ it('starts, hides, and shows the Persona without ending its conversation', () =>
 	expect(active).toBe(true);
 });
 
-it('activates, hides, and shows Persona from the configured tray icon action', () => {
+it('activates, hides, and shows Voice Agent from the configured tray icon action', () => {
 	let action: 'toggle-chat' | 'toggle-persona' = 'toggle-chat';
 	let active = false;
 	let visible = false;

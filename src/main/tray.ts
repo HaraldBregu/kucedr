@@ -149,15 +149,15 @@ export class Tray {
 
 		this.contextMenu = Menu.buildFromTemplate([
 			{
-				label: isVisible ? m.hideChat || 'Hide Chat' : m.showChat || 'Show Chat',
+				label: isVisible ? m.hideChat || 'Hide Chat Agent' : m.showChat || 'Show Chat Agent',
 				click: () => this.callbacks.onToggleChat(),
 			},
 			{
 				label: !personaActive
-					? m.startPersona || 'Start Persona'
+					? m.startPersona || 'Start Voice Agent'
 					: personaVisible
-						? m.hidePersona || 'Hide Persona'
-						: m.showPersona || 'Show Persona',
+						? m.hidePersona || 'Hide Voice Agent'
+						: m.showPersona || 'Show Voice Agent',
 				enabled: true,
 				click: () =>
 					!personaActive

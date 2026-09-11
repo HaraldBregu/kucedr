@@ -228,8 +228,8 @@
 			"general": "Generale"
 		},
 		"persona": {
-			"title": "Persona",
-			"description": "Visualizza in anteprima la persona vocale animata di Kucedr.",
+			"title": "Voice Agent",
+			"description": "Visualizza in anteprima l'agente vocale animato di Kucedr.",
 			"preview": "Anteprima",
 			"previewDescription": "Scegli uno stato per visualizzarne il movimento e la risposta.",
 			"states": {
@@ -295,8 +295,8 @@
 			"trayClickAction": {
 				"title": "Clic sull'icona nel menu",
 				"description": "Scegli cosa accade quando fai clic sull'icona nel menu",
-				"chat": "Chat",
-				"persona": "Persona"
+				"chat": "Chat Agent",
+				"persona": "Voice Agent"
 			},
 			"keepAwake": "Mantieni il computer attivo",
 			"keepAwakeDescription": "Mantieni attivi il computer e lo schermo mentre Kucedr è in esecuzione",
