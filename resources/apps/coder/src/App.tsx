@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { isKucedr, win } from '@kucedr/sdk';
+import { useCallback, useState } from 'react';
 
 import { Configuration } from '@/components/configuration';
 import { Header } from '@/components/header';
@@ -18,55 +17,12 @@ export default function App() {
 	const setLeftOpen = coder.setLeftOpen;
 	const [page, setPage] = useState<'workspace' | 'configuration' | 'instructions'>('workspace');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
-	const activeSession = coder.sessions.find((item) => item.id === coder.activeSessionId);
-	const title =
-		page === 'configuration'
-			? 'Coder · Configuration'
-			: page === 'instructions'
-				? `Coder · ${coder.activeProject?.name ?? 'Agent instructions'}`
-				: [coder.activeProject?.name, activeSession?.title].filter(Boolean).join(' · ') || 'Coder';
-
-	const syncTitlebar = useCallback((open: boolean): void => {
-		if (!isKucedr()) return;
-		win.setTitlebarOptions({
-			title,
-			leftButtons: [
-				{
-					id: 'toggle-sidebar',
-					label: open ? 'Collapse project navigation' : 'Expand project navigation',
-					icon: 'panel-left',
-					expanded: open,
-				},
-			],
-			rightButtons: [],
-			sidebarOpen: open,
-			sidebarWidth: 288,
-		});
-	}, [title]);
-
 	const setSidebarVisibility = useCallback(
 		(open: boolean): void => {
-			syncTitlebar(open);
 			setLeftOpen(open);
 		},
-		[setLeftOpen, syncTitlebar]
+		[setLeftOpen]
 	);
-
-	useLayoutEffect(() => {
-		syncTitlebar(coder.leftOpen);
-	}, [coder.leftOpen, syncTitlebar]);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		return () => win.setTitlebarOptions(null);
-	}, []);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		return win.onTitlebarButtonClick((buttonId) => {
-			if (buttonId === 'toggle-sidebar') setSidebarVisibility(!coder.leftOpen);
-		});
-	}, [coder.leftOpen, setSidebarVisibility]);
 
 	const openPage = (nextPage: 'workspace' | 'configuration' | 'instructions'): boolean => {
 		if (nextPage !== 'instructions' && !canLeaveInstructions(page, instructionsDirty)) {
