@@ -113,7 +113,7 @@ const AppsPage: React.FC = () => {
 					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
 						<PopoverTrigger asChild>
 							<Button
-								variant="outline"
+								variant="ghost"
 								size="icon-sm"
 								disabled={loading || importing}
 								aria-label={t('common.moreOptions')}
