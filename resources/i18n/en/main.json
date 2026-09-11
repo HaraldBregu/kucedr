@@ -292,6 +292,13 @@
 			"openScreenRecording": "Open Screen Recording",
 			"menuBar": "Menu Bar",
 			"menuBarDescription": "Show or hide the app icon in the menu bar",
+			"trayClickAction": {
+				"title": "Tray Icon Click",
+				"description": "Choose what happens when you click the tray icon",
+				"toggleChat": "Toggle Chat",
+				"startPersona": "Start Persona",
+				"togglePersona": "Toggle Persona"
+			},
 			"keepAwake": "Keep Computer Active",
 			"keepAwakeDescription": "Keep the computer and display awake while Kucedr is running",
 			"appData": "Application Data",

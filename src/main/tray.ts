@@ -4,9 +4,10 @@ import path from 'node:path';
 import { loadTranslations } from './i18n';
 import type { App } from './apps/app_index';
 import { resourceRoot } from './shared/resource_root';
+import type { TrayClickAction } from '../shared/app_types';
 
 interface TrayManagerCallbacks {
-	onToggleApp: () => void;
+	onToggleChat: () => void;
 	onStartPersona: () => void;
 	onHidePersona: () => void;
 	onShowPersona: () => void;
@@ -14,6 +15,7 @@ interface TrayManagerCallbacks {
 	isAppVisible: () => boolean;
 	isPersonaActive: () => boolean;
 	isPersonaVisible: () => boolean;
+	getTrayClickAction: () => TrayClickAction;
 	getApps: () => App[];
 	onOpenApp: (app: App) => void;
 	getMicrophoneInputs?: () => Promise<readonly MicrophoneInput[]>;
@@ -45,9 +47,7 @@ export class Tray {
 		this.tray = new ElectronTray(icon.resize({ width: 16, height: 16 }));
 		this.tray.setToolTip('Kucedr');
 
-		this.tray.on('click', () => {
-			this.callbacks.onToggleApp();
-		});
+		this.tray.on('click', () => this.handleTrayIconClick());
 
 		this.tray.on('right-click', () => {
 			void this.refreshMicrophoneInputs().finally(() => {
@@ -82,6 +82,25 @@ export class Tray {
 	 */
 	updateContextMenu(): void {
 		this.buildContextMenu();
+	}
+
+	private handleTrayIconClick(): void {
+		switch (this.callbacks.getTrayClickAction()) {
+			case 'start-persona':
+				this.callbacks.onStartPersona();
+				return;
+			case 'toggle-persona':
+				if (!this.callbacks.isPersonaActive()) {
+					this.callbacks.onStartPersona();
+				} else if (this.callbacks.isPersonaVisible()) {
+					this.callbacks.onHidePersona();
+				} else {
+					this.callbacks.onShowPersona();
+				}
+				return;
+			default:
+				this.callbacks.onToggleChat();
+		}
 	}
 
 	private async refreshMicrophoneInputs(): Promise<void> {
@@ -134,7 +153,7 @@ export class Tray {
 		this.contextMenu = Menu.buildFromTemplate([
 			{
 				label: isVisible ? m.hideChat || 'Hide Chat' : m.showChat || 'Show Chat',
-				click: () => this.callbacks.onToggleApp(),
+				click: () => this.callbacks.onToggleChat(),
 			},
 			{
 				label: !personaActive

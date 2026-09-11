@@ -488,6 +488,8 @@ export interface AppApi extends AppStorageApi {
 	unfurlUrl: (url: string) => Promise<import('./app_types').UrlMetadata>;
 	setTrayEnabled: (enabled: boolean) => Promise<void>;
 	getTrayEnabled: () => Promise<boolean>;
+	setTrayClickAction: (action: import('./app_types').TrayClickAction) => Promise<void>;
+	getTrayClickAction: () => Promise<import('./app_types').TrayClickAction>;
 	getLaunchState: () => Promise<AppLaunchState>;
 	onTrayEnabledChanged: (callback: (enabled: boolean) => void) => () => void;
 	setKeepAwake: (enabled: boolean) => Promise<void>;

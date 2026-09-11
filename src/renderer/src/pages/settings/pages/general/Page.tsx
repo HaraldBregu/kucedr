@@ -7,6 +7,7 @@ import {
 	Coffee,
 	FolderOpen,
 	Languages,
+	MousePointerClick,
 	PanelTop,
 	SunMoon,
 } from 'lucide-react';
@@ -39,14 +40,24 @@ const LANGUAGE_OPTIONS: readonly LanguageOption[] = [
 	{ value: 'it', labelKey: 'settings.language.it' },
 ] as const;
 
+const TRAY_CLICK_ACTION_OPTIONS = [
+	{ value: 'toggle-chat', labelKey: 'settings.application.trayClickAction.toggleChat' },
+	{ value: 'start-persona', labelKey: 'settings.application.trayClickAction.startPersona' },
+	{ value: 'toggle-persona', labelKey: 'settings.application.trayClickAction.togglePersona' },
+] as const;
+
+type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];
+
 const GeneralPage: React.FC = () => {
 	const { t } = useTranslation();
 	const { language, setLanguage, theme, setTheme } = useApp();
 	const [trayEnabled, setTrayEnabled] = useState(true);
+	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
 
 	useEffect(() => {
 		void window.app.getTrayEnabled().then(setTrayEnabled);
+		void window.app.getTrayClickAction().then(setTrayClickAction);
 		void window.app.getKeepAwake().then(setKeepAwake);
 		const offTrayEnabled = window.app.onTrayEnabledChanged(setTrayEnabled);
 		const offKeepAwake = window.app.onKeepAwakeChanged(setKeepAwake);
@@ -65,6 +76,14 @@ const GeneralPage: React.FC = () => {
 		setKeepAwake(checked);
 		void window.app.setKeepAwake(checked).catch(() => setKeepAwake(!checked));
 	}, []);
+
+	const handleTrayClickActionChange = (next: string | null): void => {
+		if (next === null) return;
+		const option = TRAY_CLICK_ACTION_OPTIONS.find((item) => item.value === next);
+		if (!option) return;
+		setTrayClickAction(option.value);
+		void window.app.setTrayClickAction(option.value);
+	};
 
 	const handleOpenAppDataFolder = useCallback(() => {
 		void window.app.openAppDataFolder();
@@ -118,6 +137,40 @@ const GeneralPage: React.FC = () => {
 								onCheckedChange={handleTrayToggle}
 								aria-label={t('settings.application.menuBar')}
 							/>
+						}
+					/>
+					<SettingsRow
+						title={t('settings.application.trayClickAction.title')}
+						description={t('settings.application.trayClickAction.description')}
+						media={
+							<MousePointerClick
+								className="size-5 shrink-0 text-muted-foreground"
+								aria-hidden="true"
+							/>
+						}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select value={trayClickAction} onValueChange={handleTrayClickActionChange}>
+								<SelectTrigger
+									size="sm"
+									className="w-40 text-xs [&_svg]:size-3"
+									aria-label={t('settings.application.trayClickAction.title')}
+								>
+									<SelectValue>
+										{t(
+											TRAY_CLICK_ACTION_OPTIONS.find((item) => item.value === trayClickAction)
+													?.labelKey ?? ''
+										)}
+									</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{TRAY_CLICK_ACTION_OPTIONS.map((option) => (
+										<SelectItem key={option.value} value={option.value}>
+											{t(option.labelKey)}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
 						}
 					/>
 					<SettingsRow

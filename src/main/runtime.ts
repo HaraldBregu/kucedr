@@ -6,6 +6,7 @@ import { setTrayEnabled } from './set_tray_enabled';
 import {
 	getTrayEnabled,
 	setTrayEnabled as setStoredTrayEnabled,
+	getTrayClickAction,
 	getKeepAwake,
 	setKeepAwake as setStoredKeepAwake,
 	getLanguage,
@@ -95,7 +96,7 @@ app.on('browser-window-created', (_event, win) => {
 });
 
 const trayManager = new Tray({
-	onToggleApp: () => mainWindow.toggleVisibility(),
+	onToggleChat: () => mainWindow.toggleVisibility(),
 	onStartPersona: () => voiceWindow.start(),
 	onHidePersona: () => voiceWindow.hide(),
 	onShowPersona: () => voiceWindow.show(),
@@ -106,6 +107,7 @@ const trayManager = new Tray({
 	isAppVisible: () => mainWindow.isVisible(),
 	isPersonaActive: () => voiceWindow.isActive(),
 	isPersonaVisible: () => voiceWindow.isVisible(),
+	getTrayClickAction,
 	getApps: () => listApps(),
 	onOpenApp: (app) => loadApp(windowFactory, app),
 	getMicrophoneInputs: async () => {

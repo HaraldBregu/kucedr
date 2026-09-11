@@ -291,6 +291,13 @@
 			"openScreenRecording": "Apri Registrazione Schermo",
 			"menuBar": "Barra dei Menu",
 			"menuBarDescription": "Mostra o nascondi l'icona dell'app nella barra dei menu",
+			"trayClickAction": {
+				"title": "Clic sull'icona nel menu",
+				"description": "Scegli cosa accade quando fai clic sull'icona nel menu",
+				"toggleChat": "Mostra o nascondi chat",
+				"startPersona": "Avvia Persona",
+				"togglePersona": "Mostra o nascondi Persona"
+			},
 			"keepAwake": "Mantieni il computer attivo",
 			"keepAwakeDescription": "Mantieni attivi il computer e lo schermo mentre Kucedr è in esecuzione",
 			"appData": "Dati Applicazione",

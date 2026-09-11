@@ -44,6 +44,10 @@ export type AppLanguage = 'en' | 'it';
 
 export type AppTheme = 'light' | 'dark' | 'system';
 
+export const TRAY_CLICK_ACTIONS = ['toggle-chat', 'start-persona', 'toggle-persona'] as const;
+
+export type TrayClickAction = (typeof TRAY_CLICK_ACTIONS)[number];
+
 export type AppThemeColors = Record<string, string>;
 
 export interface AppThemeData {

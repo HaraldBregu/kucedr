@@ -428,6 +428,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: boolean;
 	};
+	[AppChannels.setTrayClickAction]: {
+		args: [action: import('./app_types').TrayClickAction];
+		result: void;
+	};
+	[AppChannels.getTrayClickAction]: {
+		args: [];
+		result: import('./app_types').TrayClickAction;
+	};
 	[AppChannels.getLaunchState]: {
 		args: [];
 		result: import('./app_types').AppLaunchState;

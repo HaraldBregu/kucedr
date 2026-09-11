@@ -83,6 +83,12 @@ export const app: AppApi = {
 	getTrayEnabled: (): Promise<boolean> => {
 		return typedInvokeUnwrap(AppChannels.getTrayEnabled);
 	},
+	setTrayClickAction: (action) => {
+		return typedInvokeUnwrap(AppChannels.setTrayClickAction, action);
+	},
+	getTrayClickAction: () => {
+		return typedInvokeUnwrap(AppChannels.getTrayClickAction);
+	},
 	getLaunchState: () => {
 		return typedInvokeUnwrap(AppChannels.getLaunchState);
 	},

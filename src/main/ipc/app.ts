@@ -30,12 +30,16 @@ import type {
 	AppTheme,
 	AppThemeData,
 	AppThemeColors,
+	TRAY_CLICK_ACTIONS,
+	type TrayClickAction,
 } from '../../shared/app_types';
 import { wrapIpcHandler, wrapSimpleHandler } from './core/error_handler';
 import { setKeepAwake as applyKeepAwake } from '../keep_awake';
 import {
 	getTrayEnabled as getStoredTrayEnabled,
 	setTrayEnabled as setStoredTrayEnabled,
+	getTrayClickAction as getStoredTrayClickAction,
+	setTrayClickAction as setStoredTrayClickAction,
 	getKeepAwake as getStoredKeepAwake,
 	setKeepAwake as setStoredKeepAwake,
 	getLanguage as getStoredLanguage,
@@ -540,6 +544,23 @@ export class AppIpc implements IpcModule {
 			wrapSimpleHandler(() => {
 				return getStoredTrayEnabled();
 			}, AppChannels.getTrayEnabled)
+		);
+
+		ipcMain.handle(
+			AppChannels.setTrayClickAction,
+			wrapSimpleHandler((action: TrayClickAction) => {
+				if (!TRAY_CLICK_ACTIONS.includes(action)) {
+					throw new Error('Invalid tray click action.');
+				}
+				setStoredTrayClickAction(action);
+			}, AppChannels.setTrayClickAction)
+		);
+
+		ipcMain.handle(
+			AppChannels.getTrayClickAction,
+			wrapSimpleHandler(() => {
+				return getStoredTrayClickAction();
+			}, AppChannels.getTrayClickAction)
 		);
 
 		ipcMain.handle(

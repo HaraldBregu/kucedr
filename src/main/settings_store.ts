@@ -12,7 +12,7 @@ import { normalizeStorageSettings } from './storage/storage_config';
 import { storageProviders } from './storage/providers';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
 import type { PersistedTaskState } from './tasks/tasks_types';
-import type { AppLanguage, AppLaunchState, AppTheme } from '../shared/app_types';
+import type { AppLanguage, AppLaunchState, AppTheme, TrayClickAction } from '../shared/app_types';
 import {
 	getModelProvidersState,
 	setModelProvidersState,
@@ -23,6 +23,7 @@ import { getRagConfiguration, saveRagConfiguration } from './agent/knowledge/rag
 
 export type AppSettingsState = {
 	trayEnabled: boolean;
+	trayClickAction: TrayClickAction;
 	keepAwake: boolean;
 	language: AppLanguage;
 	theme: AppTheme;
@@ -43,6 +44,7 @@ const DEFAULT_TASK_CONFIGURATION: PersistedTaskState = { schedules: [] };
 
 const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	trayEnabled: true,
+	trayClickAction: 'toggle-chat',
 	keepAwake: false,
 	language: 'en',
 	theme: 'system',
@@ -127,6 +129,14 @@ export function getTrayEnabled(): boolean {
 
 export function setTrayEnabled(enabled: boolean): void {
 	store.set('trayEnabled', enabled);
+}
+
+export function getTrayClickAction(): TrayClickAction {
+	return store.get('trayClickAction');
+}
+
+export function setTrayClickAction(action: TrayClickAction): void {
+	store.set('trayClickAction', action);
 }
 
 export function getKeepAwake(): boolean {
