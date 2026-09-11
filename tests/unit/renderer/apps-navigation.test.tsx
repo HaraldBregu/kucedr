@@ -51,13 +51,17 @@ beforeEach(() => {
 	});
 });
 
-it('shows only the open action on app cards', async () => {
+it('shows open and an overflow delete action on app cards', async () => {
+	const user = userEvent.setup();
 	render(<MemoryRouter><AppsPage /></MemoryRouter>);
 
 	await screen.findByText('Demo App');
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /settings.apps.deleteAction/ })).not.toBeInTheDocument();
+	const options = screen.getAllByRole('button', { name: 'common.moreOptions' });
+	await user.click(options.at(-1)!);
+	expect(await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ })).toBeInTheDocument();
 });
 
 it('opens the apps folder from the page header', async () => {

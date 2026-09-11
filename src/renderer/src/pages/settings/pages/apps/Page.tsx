@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { App } from '../../../../../../shared/installed_app_types';
+import Delete from './Delete';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -39,6 +40,7 @@ const AppsPage: React.FC = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
 	const [actionsOpen, setActionsOpen] = useState(false);
+	const [appActionsOpen, setAppActionsOpen] = useState<string | null>(null);
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
 
 	const loadApps = useCallback(async (): Promise<void> => {
@@ -222,15 +224,46 @@ const AppsPage: React.FC = () => {
 													{app.description}
 												</p>
 											</div>
-											<Button
-												type="button"
-												size="xs"
-												disabled={importing || openingAppId === app.id}
-												onClick={() => void handleOpen(app.id)}
-											>
-												<ExternalLink className="size-3" />
-												{t('settings.apps.open')}
-											</Button>
+											<div className="flex shrink-0 items-center gap-1">
+												<Button
+													type="button"
+													size="xs"
+													disabled={importing || openingAppId === app.id}
+													onClick={() => void handleOpen(app.id)}
+												>
+													<ExternalLink className="size-3" />
+													{t('settings.apps.open')}
+												</Button>
+												<Popover
+													open={appActionsOpen === app.id}
+													onOpenChange={(open) => setAppActionsOpen(open ? app.id : null)}
+												>
+													<PopoverTrigger asChild>
+														<Button
+															variant="outline"
+															size="icon-xs"
+															disabled={importing || openingAppId === app.id}
+															aria-label={t('common.moreOptions')}
+														>
+															<MoreHorizontal className="size-3.5" />
+														</Button>
+													</PopoverTrigger>
+													<PopoverContent align="end" collisionPadding={12} className="w-44 p-1">
+														<div role="menu" aria-label={t('common.moreOptions')}>
+															<Delete
+																app={app}
+																disabled={importing || openingAppId === app.id}
+																menuItem
+																onDeleted={(appId) => {
+																	setAppActionsOpen(null);
+																	setApps((current) => current.filter(({ id }) => id !== appId));
+																}}
+																onError={setErrorMessage}
+															/>
+														</div>
+													</PopoverContent>
+												</Popover>
+											</div>
 										</div>
 										<div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
 											<div className="flex flex-wrap items-center gap-1.5">
