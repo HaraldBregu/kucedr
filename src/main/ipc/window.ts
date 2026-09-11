@@ -140,17 +140,6 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 
 		// --- Query handlers (invoke/handle) ---
 		ipcMain.handle(
-			WindowChannels.titlebarOptionsGet,
-			wrapIpcHandler((event) => {
-				return (
-					[...openAppWindows.values()].find(
-						(appWindow) => appWindow.window.webContents === event.sender
-					)?.titlebarOptions ?? null
-				);
-			}, 'window:titlebar-options:get')
-		);
-
-		ipcMain.handle(
 			WindowChannels.isMaximized,
 			wrapIpcHandler((event) => {
 				const win = BrowserWindow.fromWebContents(event.sender);

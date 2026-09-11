@@ -136,7 +136,6 @@ export interface WindowApi {
 	isFullScreen: () => Promise<boolean>;
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void) => () => void;
 	setTitlebarOptions: (options: AppTitlebarOptions | null) => void;
-	getTitlebarOptions: () => Promise<AppTitlebarOptions | null>;
 	onTitlebarOptionsChanged: (callback: (options: AppTitlebarOptions | null) => void) => () => void;
 	clickTitlebarButton: (buttonId: string) => void;
 	onTitlebarButtonClick: (callback: (buttonId: string) => void) => () => void;

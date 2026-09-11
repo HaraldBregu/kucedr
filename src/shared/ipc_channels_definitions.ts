@@ -408,7 +408,6 @@ export const WindowChannels = {
 	maximizeChange: 'window:maximize-change',
 	fullScreenChange: 'window:fullscreen-change',
 	titlebarOptionsSet: 'window:titlebar-options:set',
-	titlebarOptionsGet: 'window:titlebar-options:get',
 	titlebarOptionsChanged: 'window:titlebar-options:changed',
 	titlebarButtonClick: 'window:titlebar-button:click',
 	titlebarButtonClicked: 'window:titlebar-button:clicked',
