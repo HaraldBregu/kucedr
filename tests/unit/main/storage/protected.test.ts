@@ -14,7 +14,6 @@ beforeEach(() => {
 	mkdirSync(`${root}/settings`, { recursive: true });
 	mkdirSync(`${root}/providers/openai`, { recursive: true });
 	writeFileSync(`${root}/settings/providers.json`, '{}');
-	writeFileSync(`${root}/settings/provider-vault.json`, '{}');
 	writeFileSync(`${root}/settings/cloud-auth.json`, '{}');
 	writeFileSync(`${root}/settings/account.json`, '{}');
 	writeFileSync(`${root}/providers/openai/manifest.json`, '{}');
@@ -25,7 +24,6 @@ afterAll(() => rmSync(root, { recursive: true, force: true }));
 
 it.each([
 		`${root}/settings/providers.json`,
-		`${root}/settings/provider-vault.json`,
 		`${root}/settings/cloud-auth.json`,
 		`${root}/settings/account.json`,
 		`${root}/settings`,
