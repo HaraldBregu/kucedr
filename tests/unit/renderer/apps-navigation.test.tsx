@@ -53,15 +53,23 @@ beforeEach(() => {
 
 it('shows open and an overflow delete action on app cards', async () => {
 	const user = userEvent.setup();
-	render(<MemoryRouter><AppsPage /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
 
 	await screen.findByText('Demo App');
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: /settings.apps.deleteAction/ })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: /settings.apps.deleteAction/ })
+	).not.toBeInTheDocument();
 	const options = screen.getAllByRole('button', { name: 'common.moreOptions' });
 	await user.click(options.at(-1)!);
-	expect(await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ })).toBeInTheDocument();
+	expect(
+		await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ })
+	).toBeInTheDocument();
 });
 
 it('opens the apps folder from the page header', async () => {
@@ -88,12 +96,20 @@ it.each([false, true])('shows skipped upload reasons with partial success: %s', 
 	(window.apps.import as jest.Mock).mockResolvedValue({
 		imported: partial ? apps : [],
 		skipped: [
-			{ name: 'workspace', sourcePath: '/apps/workspace', reason: 'Unable to install app: permission denied' },
+			{
+				name: 'workspace',
+				sourcePath: '/apps/workspace',
+				reason: 'Unable to install app: permission denied',
+			},
 			{ name: 'notes', sourcePath: '/apps/notes', reason: 'Missing or invalid manifest.' },
 		],
 	});
 
-	render(<MemoryRouter><AppsPage /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
 	await screen.findByText('Demo App');
 	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
 	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
@@ -112,7 +128,11 @@ it.each([false, true])('shows skipped upload reasons with partial success: %s', 
 it('keeps a canceled upload quiet', async () => {
 	const user = userEvent.setup();
 	(window.apps.import as jest.Mock).mockResolvedValue(undefined);
-	render(<MemoryRouter><AppsPage /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
 	await screen.findByText('Demo App');
 	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
 	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
@@ -125,7 +145,11 @@ it('keeps a canceled upload quiet', async () => {
 
 it('opens an app from its card action', async () => {
 	const user = userEvent.setup();
-	render(<MemoryRouter><AppsPage /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
 
 	await user.click(await screen.findByRole('button', { name: 'settings.apps.open' }));
 
