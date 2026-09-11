@@ -73,12 +73,6 @@ export class Main {
 			win.autoHideMenuBar = false;
 		});
 
-		win.on('blur', () => {
-			if (process.platform === 'darwin') return;
-			win.setMenuBarVisibility(false);
-			win.autoHideMenuBar = true;
-		});
-
 		win.on('closed', () => {
 			this.appWindows.delete(win);
 			if (this.window?.id === win.id) {

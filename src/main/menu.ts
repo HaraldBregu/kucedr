@@ -226,20 +226,6 @@ export class Menu {
 			},
 		];
 
-		if (!isMac) {
-			// On Windows/Linux the custom React TitleBar handles all menu actions.
-			// Setting the menu and then hiding the bar keeps keyboard accelerators
-			// (Ctrl+C/V/X/Z etc.) working while removing the native menu bar
-			// (including the Alt-key overlay).
-			const menu = ElectronMenu.buildFromTemplate(template);
-			ElectronMenu.setApplicationMenu(menu);
-			BrowserWindow.getAllWindows().forEach((win) => {
-				win.setMenuBarVisibility(false);
-				win.autoHideMenuBar = true;
-			});
-			return;
-		}
-
 		const menu = ElectronMenu.buildFromTemplate(template);
 		ElectronMenu.setApplicationMenu(menu);
 	}

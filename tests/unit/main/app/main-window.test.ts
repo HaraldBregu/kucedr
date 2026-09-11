@@ -32,7 +32,9 @@ it('shows the native menu bar when the main window gains focus', () => {
 
 	main.create();
 	listeners.get('focus')?.();
+	listeners.get('blur')?.();
 
 	expect(win.setMenuBarVisibility).toHaveBeenCalledWith(true);
+	expect(win.setMenuBarVisibility).not.toHaveBeenCalledWith(false);
 	expect(win.autoHideMenuBar).toBe(false);
 });
