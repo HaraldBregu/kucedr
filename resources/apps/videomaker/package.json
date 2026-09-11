@@ -23,7 +23,7 @@
 		"@kucedr/sdk": "file:../../../packages/sdk",
 		"@remotion/media": "4.0.520",
 		"@remotion/player": "4.0.513",
-		"@remotion/web-renderer": "4.0.520",
+		"@remotion/web-renderer": "4.0.522",
 		"lucide-react": "^1.39.0",
 		"mediabunny": "1.55.5",
 		"react": "^19.2.0",
