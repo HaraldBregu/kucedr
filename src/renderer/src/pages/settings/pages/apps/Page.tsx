@@ -207,12 +207,12 @@ const AppsPage: React.FC = () => {
 					<div className="grid gap-3">
 						{apps.map((app) => (
 							<Card key={app.id} size="sm" className="gap-0! p-0!">
-								<CardContent className="grid gap-3 p-3! sm:grid-cols-[9rem_minmax(0,1fr)]">
+								<CardContent className="grid grid-cols-[7rem_minmax(0,1fr)] gap-3 p-3!">
 									<div
 										aria-hidden="true"
-										className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground sm:aspect-auto sm:min-h-24"
+										className="flex min-h-18 items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground"
 									>
-										<Blocks className="size-5" strokeWidth={1.5} />
+										<Blocks className="size-4" strokeWidth={1.5} />
 									</div>
 									<div className="min-w-0">
 										<div className="flex min-w-0 items-start justify-between gap-3">
