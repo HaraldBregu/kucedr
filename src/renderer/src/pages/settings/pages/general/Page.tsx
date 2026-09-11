@@ -152,7 +152,7 @@ const GeneralPage: React.FC = () => {
 							<Select value={trayClickAction} onValueChange={handleTrayClickActionChange}>
 								<SelectTrigger
 									size="sm"
-									className="w-40 text-xs [&_svg]:size-3"
+									className="w-28 text-xs [&_svg]:size-3"
 									aria-label={t('settings.application.trayClickAction.title')}
 								>
 									<SelectValue>
