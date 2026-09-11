@@ -1,7 +1,6 @@
 import {
 	useCallback,
 	useEffect,
-	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -653,7 +652,9 @@ export default function App() {
 								variant="ghost"
 								size="icon"
 								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
-								onClick={() => isKucedr() && win.minimize()}
+								onClick={() => {
+									if (isKucedr()) win.minimize();
+								}}
 								title="Minimize"
 								aria-label="Minimize"
 							>
@@ -664,7 +665,9 @@ export default function App() {
 								variant="ghost"
 								size="icon"
 								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
-								onClick={() => isKucedr() && win.maximize()}
+								onClick={() => {
+									if (isKucedr()) win.maximize();
+								}}
 								title={isMaximized ? 'Restore' : 'Maximize'}
 								aria-label={isMaximized ? 'Restore' : 'Maximize'}
 							>
@@ -679,7 +682,9 @@ export default function App() {
 								variant="ghost"
 								size="icon"
 								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
-								onClick={() => isKucedr() && win.close()}
+								onClick={() => {
+									if (isKucedr()) win.close();
+								}}
 								title="Close"
 								aria-label="Close"
 							>
