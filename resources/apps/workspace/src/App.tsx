@@ -147,12 +147,9 @@ export default function App() {
 		}
 	}, [theme]);
 
-	const setSidebarVisibility = useCallback(
-		(open: boolean): void => {
-			setSidebarOpen(open);
-		},
-		[]
-	);
+	const setSidebarVisibility = useCallback((open: boolean): void => {
+		setSidebarOpen(open);
+	}, []);
 
 	useEffect(() => {
 		if (!isKucedr()) return;
@@ -635,10 +632,12 @@ export default function App() {
 			>
 				<header
 					className="flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3"
-					style={{
-						WebkitAppRegion: 'drag',
-						paddingLeft: isMac ? '72px' : undefined,
-					} as CSSProperties}
+					style={
+						{
+							WebkitAppRegion: 'drag',
+							paddingLeft: isMac ? '72px' : undefined,
+						} as CSSProperties
+					}
 				>
 					<SidebarTrigger className="[webkit-app-region:no-drag]" />
 					<span className="min-w-0 flex-1 truncate text-sm font-medium">Workspace</span>
@@ -696,69 +695,69 @@ export default function App() {
 
 				<div className="flex min-h-0 flex-1">
 					<Sidebar id="workspace-sidebar" collapsible="offcanvas" width={sidebarWidth}>
-					<SidebarContent>{sidebar}</SidebarContent>
-					<SidebarResizeHandle
-						onPointerDown={startSidebarResize}
-						onContextMenu={(event) => {
-							showNativeContextMenu(
-								event,
-								[
+						<SidebarContent>{sidebar}</SidebarContent>
+						<SidebarResizeHandle
+							onPointerDown={startSidebarResize}
+							onContextMenu={(event) => {
+								showNativeContextMenu(
+									event,
+									[
+										{
+											id: 'minimum',
+											label: 'Minimum Width',
+											enabled: sidebarWidth !== sidebarMinWidth,
+										},
+										{
+											id: 'reset',
+											label: 'Reset Width',
+											enabled: sidebarWidth !== sidebarDefaultWidth,
+										},
+										{
+											id: 'maximum',
+											label: 'Maximum Width',
+											enabled: sidebarWidth !== sidebarMaxWidth,
+										},
+									],
 									{
-										id: 'minimum',
-										label: 'Minimum Width',
-										enabled: sidebarWidth !== sidebarMinWidth,
-									},
-									{
-										id: 'reset',
-										label: 'Reset Width',
-										enabled: sidebarWidth !== sidebarDefaultWidth,
-									},
-									{
-										id: 'maximum',
-										label: 'Maximum Width',
-										enabled: sidebarWidth !== sidebarMaxWidth,
-									},
-								],
-								{
-									minimum: () => setSidebarWidth(sidebarMinWidth),
-									reset: () => setSidebarWidth(sidebarDefaultWidth),
-									maximum: () => setSidebarWidth(sidebarMaxWidth),
-								}
-							);
-						}}
-					/>
+										minimum: () => setSidebarWidth(sidebarMinWidth),
+										reset: () => setSidebarWidth(sidebarDefaultWidth),
+										maximum: () => setSidebarWidth(sidebarMaxWidth),
+									}
+								);
+							}}
+						/>
 					</Sidebar>
 
 					<SidebarInset>
-					<WorkspaceViewer
-						content={selectedContent}
-						dirty={selectedDirty}
-						error={selectedError}
-						file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
-						kind={selectedKind}
-						isDark={theme.isDark}
-						loading={selectedLoading}
-						markdownMode={markdownMode}
-						mediaUrl={selectedMediaUrl}
-						onChange={(content) => {
-							selectedContentRef.current = content;
-							setSelectedContent(content);
-							setSelectedSaveError('');
-						}}
-						onMarkdownModeChange={setMarkdownMode}
-						onRename={() => {
-							if (!selectedWorkspacePath) return;
-							startRenameWorkspaceEntry({
-								name: selectedWorkspacePath.split(/[\\/]/).pop() ?? selectedWorkspacePath,
-								path: selectedWorkspacePath,
-								type: 'file',
-							});
-						}}
-						onSave={() => saveWorkspaceFile(selectedPathRef.current, selectedContent)}
-						path={selectedWorkspacePath}
-						saveError={selectedSaveError}
-						saving={selectedSaving}
-					/>
+						<WorkspaceViewer
+							content={selectedContent}
+							dirty={selectedDirty}
+							error={selectedError}
+							file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
+							kind={selectedKind}
+							isDark={theme.isDark}
+							loading={selectedLoading}
+							markdownMode={markdownMode}
+							mediaUrl={selectedMediaUrl}
+							onChange={(content) => {
+								selectedContentRef.current = content;
+								setSelectedContent(content);
+								setSelectedSaveError('');
+							}}
+							onMarkdownModeChange={setMarkdownMode}
+							onRename={() => {
+								if (!selectedWorkspacePath) return;
+								startRenameWorkspaceEntry({
+									name: selectedWorkspacePath.split(/[\\/]/).pop() ?? selectedWorkspacePath,
+									path: selectedWorkspacePath,
+									type: 'file',
+								});
+							}}
+							onSave={() => saveWorkspaceFile(selectedPathRef.current, selectedContent)}
+							path={selectedWorkspacePath}
+							saveError={selectedSaveError}
+							saving={selectedSaving}
+						/>
 					</SidebarInset>
 				</div>
 			</SidebarProvider>
