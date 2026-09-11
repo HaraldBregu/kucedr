@@ -76,7 +76,10 @@ export class VoiceWindow {
 		attachWindowHandlers(win);
 		win.setAlwaysOnTop(true, 'floating');
 		if (typeof win.setVisibleOnAllWorkspaces === 'function') {
-			win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+			win.setVisibleOnAllWorkspaces(true, {
+				visibleOnFullScreen: true,
+				skipTransformProcessType: true,
+			});
 		}
 		win.on('closed', () => {
 			if (this.window?.id === win.id) this.window = null;
