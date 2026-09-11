@@ -15,11 +15,7 @@ import { resourceRoot } from './shared/resource_root';
 import { setupPdfContextMenu } from './pdf';
 import type { AppRegistry } from './apps/app_registry';
 import { externalUrl } from './external';
-import {
-	APP_RESOURCE_SCHEME,
-	APP_SESSION_PARTITION,
-	appResourceUrl,
-} from './protocol';
+import { APP_RESOURCE_SCHEME, APP_SESSION_PARTITION, appResourceUrl } from './protocol';
 
 export interface WindowPreset {
 	name: string;
@@ -66,11 +62,7 @@ export class WindowFactory {
 		};
 	}
 
-	private secureNavigation(
-		webContents: WebContents,
-		fileRoot?: string,
-		appId?: string
-	): void {
+	private secureNavigation(webContents: WebContents, fileRoot?: string, appId?: string): void {
 		webContents.setWindowOpenHandler(({ url }) => {
 			if (fileRoot || appId) {
 				const target = externalUrl(url);
@@ -87,11 +79,7 @@ export class WindowFactory {
 		});
 		webContents.on('will-navigate', (event, url) => {
 			const target = new URL(url);
-			if (
-				appId &&
-				target.protocol === `${APP_RESOURCE_SCHEME}:` &&
-				target.host === appId
-			) {
+			if (appId && target.protocol === `${APP_RESOURCE_SCHEME}:` && target.host === appId) {
 				return;
 			}
 			if (target.protocol === 'file:') {

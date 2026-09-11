@@ -1,10 +1,7 @@
 import { BrowserWindow, WebContentsView } from 'electron';
 import { AppRegistry } from '../../../../src/main/apps/app_registry';
 import { appsRoot } from '../../../../src/main/apps/app_root';
-import {
-	APP_RESOURCE_SCHEME,
-	APP_SESSION_PARTITION,
-} from '../../../../src/main/protocol';
+import { APP_RESOURCE_SCHEME, APP_SESSION_PARTITION } from '../../../../src/main/protocol';
 import { WindowFactory } from '../../../../src/main/window_factory';
 import path from 'node:path';
 
@@ -23,9 +20,7 @@ it('keeps the application menu visible on every native window', () => {
 
 	factory.create();
 
-	expect(BrowserWindow).toHaveBeenCalledWith(
-		expect.objectContaining({ autoHideMenuBar: false })
-	);
+	expect(BrowserWindow).toHaveBeenCalledWith(expect.objectContaining({ autoHideMenuBar: false }));
 	expect(win.setMenuBarVisibility).toHaveBeenCalledWith(true);
 });
 

@@ -1,9 +1,6 @@
 import type { BrowserWindow, WebContentsView } from 'electron';
 import { closeApp } from '../../../../src/main/apps/app_close';
-import {
-	openAppWindows,
-	render,
-} from '../../../../src/main/apps/app_render';
+import { openAppWindows, render } from '../../../../src/main/apps/app_render';
 import type { WindowFactory } from '../../../../src/main/window_factory';
 
 jest.mock('../../../../src/main/translucency', () => ({

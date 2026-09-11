@@ -4,7 +4,10 @@ import type { WindowFactory } from '../window_factory';
 import { attachWindowHandlers } from '../window_events';
 import { getPlatformTranslucencyOptions } from '../translucency';
 import type { AppTitlebarOptions } from '../../shared/window_types';
-import { APP_WINDOW_DEFAULTS, type ResolvedAppWindowSettings } from '../../shared/app_window_settings';
+import {
+	APP_WINDOW_DEFAULTS,
+	type ResolvedAppWindowSettings,
+} from '../../shared/app_window_settings';
 
 export interface AppWindow {
 	window: BrowserWindow;
