@@ -1,3 +1,9 @@
+jest.mock('../../../../../src/main/agent/agent_store', () => ({
+	getToolModel: jest.fn(),
+}));
+jest.mock('../../../../../src/main/models/transcribe', () => ({ transcribe: jest.fn() }));
+jest.mock('../../../../../src/main/models/voice', () => ({ synthesize: jest.fn() }));
+
 import { completeBootstrapTool } from '../../../../../src/main/agent/tools/assistant/complete_bootstrap';
 import { editTool } from '../../../../../src/main/agent/tools/core/edit';
 import { updateHealthSettingsTool } from '../../../../../src/main/agent/tools/health/update_health_settings';
