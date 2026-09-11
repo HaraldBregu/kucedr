@@ -60,7 +60,7 @@ export function Sidebar({ className, ...props }: ComponentProps<'aside'>) {
 				id="demo-sidebar"
 				data-state={context.open ? 'expanded' : 'collapsed'}
 				className={cn(
-					'fixed inset-y-0 left-0 z-30 flex w-60 flex-col overflow-hidden border-r border-border bg-card text-card-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
+					'fixed inset-y-0 left-0 z-30 flex w-60 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
 					!context.open && '-translate-x-full',
 					className
 				)}

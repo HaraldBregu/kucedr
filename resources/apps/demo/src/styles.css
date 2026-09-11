@@ -18,6 +18,15 @@
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+}
+
+:root {
+	--sidebar: var(--app-sidebar-background);
+	--sidebar-foreground: var(--foreground);
+	--sidebar-border: var(--border);
 }
 
 * {
