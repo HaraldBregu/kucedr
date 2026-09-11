@@ -12,7 +12,6 @@ import {
 	BookOpenText,
 	Mic,
 	Radio,
-	Volume2,
 	Wrench,
 } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
@@ -221,7 +220,7 @@ const AssistantPage: React.FC = () => {
 					title={t('settings.modelServices.voiceName')}
 					description={t('settings.modelServices.textToSpeechModelDescription')}
 					showIcon
-					icon={Volume2}
+					icon={Radio}
 					showFieldLabel={false}
 					grouped
 					showSelectedModel
