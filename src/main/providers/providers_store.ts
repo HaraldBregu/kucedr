@@ -94,9 +94,7 @@ function migrateLegacyProviders(): void {
 		} finally {
 			key.fill(0);
 		}
-	} catch {
-		// Keep an unreadable legacy file so the user can recover its credentials in an earlier build.
-	}
+	} catch {}
 }
 
 function openLegacyProvider(
