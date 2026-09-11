@@ -1,14 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import {
-	AlertTriangle,
-	ChevronRight,
-	FolderOpen,
-	RefreshCw,
-	Sparkles,
-	Upload,
-} from 'lucide-react';
+import { AlertTriangle, ChevronRight, FolderOpen, RefreshCw, Sparkles, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { SkillInfo } from '../../../../../../shared/skills_types';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
@@ -129,16 +122,9 @@ const SkillsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			{successMessage && (
-				<SettingsNotice autoDismiss>
-					{successMessage}
-				</SettingsNotice>
-			)}
+			{successMessage && <SettingsNotice autoDismiss>{successMessage}</SettingsNotice>}
 
-			<SettingsSection
-				title={t('settings.skills.title')}
-				description={skillsRoot || undefined}
-			>
+			<SettingsSection title={t('settings.skills.title')} description={skillsRoot || undefined}>
 				<SettingsPanel>
 					{loading ? (
 						<SettingsLoadingRows rows={2} />
@@ -157,7 +143,9 @@ const SkillsPage: React.FC = () => {
 								variant="outline"
 								size="md"
 								className="cursor-pointer border-b border-border/60 hover:bg-muted/40 last:border-b-0 px-5 py-4"
-								onClick={() => navigate(`/settings/agent/skills/skilldetails/${encodeURIComponent(skill.id)}`)}
+								onClick={() =>
+									navigate(`/settings/agent/skills/skilldetails/${encodeURIComponent(skill.id)}`)
+								}
 								onKeyDown={(event) => {
 									if (event.key === 'Enter' || event.key === ' ') {
 										event.preventDefault();
@@ -166,15 +154,16 @@ const SkillsPage: React.FC = () => {
 								}}
 							>
 								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-									<ItemTitle className="max-w-full truncate">
-										{skill.manifest.name}
-									</ItemTitle>
+									<ItemTitle className="max-w-full truncate">{skill.manifest.name}</ItemTitle>
 									<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
 										{skill.manifest.description || t('settings.skills.noDescription')}
 									</p>
 								</ItemContent>
 								<ItemActions className="ml-auto flex-none justify-end">
-									<ChevronRight className="size-3.5 text-muted-foreground transition-transform group-hover/item:translate-x-0.5" strokeWidth={1.8} />
+									<ChevronRight
+										className="size-3.5 text-muted-foreground transition-transform group-hover/item:translate-x-0.5"
+										strokeWidth={1.8}
+									/>
 								</ItemActions>
 							</Item>
 						))

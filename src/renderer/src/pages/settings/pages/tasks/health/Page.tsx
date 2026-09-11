@@ -91,9 +91,7 @@ const HealthPage: React.FC = () => {
 		setError(null);
 		try {
 			const activeHours =
-				settings.activeHours?.start && settings.activeHours?.end
-					? settings.activeHours
-					: undefined;
+				settings.activeHours?.start && settings.activeHours?.end ? settings.activeHours : undefined;
 			await window.agent.healthSaveSettings({ ...settings, activeHours });
 			await window.agent.healthSaveData(checklist);
 			setSaved(true);
@@ -374,7 +372,6 @@ const HealthPage: React.FC = () => {
 										</Popover>
 									</ItemActions>
 								</Item>
-
 							</SettingsPanel>
 						</div>
 					</SettingsSection>

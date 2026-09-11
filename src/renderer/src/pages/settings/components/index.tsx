@@ -269,7 +269,9 @@ interface SettingsAutoDismissProps {
 	readonly children: ReactNode;
 }
 
-export function SettingsAutoDismiss({ children }: SettingsAutoDismissProps): React.JSX.Element | null {
+export function SettingsAutoDismiss({
+	children,
+}: SettingsAutoDismissProps): React.JSX.Element | null {
 	const [visible, setVisible] = useState(true);
 
 	useEffect(() => {

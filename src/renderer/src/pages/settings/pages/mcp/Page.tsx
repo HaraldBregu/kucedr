@@ -110,11 +110,7 @@ const McpPage = (): React.JSX.Element => {
 							<Upload className="size-3" />
 							{importing ? 'Uploading' : 'Upload'}
 						</Button>
-						<Button
-							size="xs"
-							disabled={addingServer}
-							onClick={() => setAddingServer(true)}
-						>
+						<Button size="xs" disabled={addingServer} onClick={() => setAddingServer(true)}>
 							<Plus className="size-3" />
 							Add server
 						</Button>

@@ -433,7 +433,11 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 						</Card>
 					</SettingsSection>
 
-					{syncStatus && <SettingsNotice autoDismiss icon={FolderSync}>{syncStatus}</SettingsNotice>}
+					{syncStatus && (
+						<SettingsNotice autoDismiss icon={FolderSync}>
+							{syncStatus}
+						</SettingsNotice>
+					)}
 					{operationStatusText && (
 						<div
 							role={

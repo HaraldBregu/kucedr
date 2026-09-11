@@ -255,7 +255,11 @@ function SkillDetail({
 	readonly mono?: boolean;
 }): React.JSX.Element {
 	return (
-		<Item variant="outline" size="md" className="border-b border-border/60 last:border-b-0 px-5 py-4">
+		<Item
+			variant="outline"
+			size="md"
+			className="border-b border-border/60 last:border-b-0 px-5 py-4"
+		>
 			<ItemContent className="min-w-0">
 				<ItemTitle>{label}</ItemTitle>
 			</ItemContent>
