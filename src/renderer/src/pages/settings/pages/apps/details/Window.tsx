@@ -17,6 +17,7 @@ import {
 } from '../../../../../../../shared/app_window_settings';
 import { isAppWindowSettings } from '../../../../../../../shared/app_window_validate';
 import {
+	SettingsAutoDismiss,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPanel,
@@ -230,9 +231,17 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 							</p>
 						)}
 						<div className="flex min-h-4 items-center">
-							<p role="status" className="text-xs text-muted-foreground">
-								{(saving || status) && t(`settings.apps.window.${saving ? 'saving' : status}`)}
-							</p>
+							{saving ? (
+								<p role="status" className="text-xs text-muted-foreground">
+									{t('settings.apps.window.saving')}
+								</p>
+							) : status ? (
+								<SettingsAutoDismiss>
+									<p role="status" className="text-xs text-muted-foreground">
+										{t(`settings.apps.window.${status}`)}
+									</p>
+								</SettingsAutoDismiss>
+							) : null}
 						</div>
 					</div>
 				)

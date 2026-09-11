@@ -12,6 +12,8 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
+const AUTO_DISMISS_MS = 5_000;
+
 interface SettingsPageShellProps {
 	readonly children: ReactNode;
 	readonly className?: string;
@@ -240,7 +242,7 @@ export function SettingsNotice({
 	useEffect(() => {
 		setVisible(true);
 		if (!autoDismiss) return;
-		const timeout = window.setTimeout(() => setVisible(false), 5_000);
+		const timeout = window.setTimeout(() => setVisible(false), AUTO_DISMISS_MS);
 		return () => window.clearTimeout(timeout);
 	}, [autoDismiss, children]);
 
@@ -261,6 +263,22 @@ export function SettingsNotice({
 			<span className="min-w-0">{children}</span>
 		</div>
 	);
+}
+
+interface SettingsAutoDismissProps {
+	readonly children: ReactNode;
+}
+
+export function SettingsAutoDismiss({ children }: SettingsAutoDismissProps): React.JSX.Element | null {
+	const [visible, setVisible] = useState(true);
+
+	useEffect(() => {
+		setVisible(true);
+		const timeout = window.setTimeout(() => setVisible(false), AUTO_DISMISS_MS);
+		return () => window.clearTimeout(timeout);
+	}, [children]);
+
+	return visible ? <>{children}</> : null;
 }
 
 interface SettingsEmptyStateProps {

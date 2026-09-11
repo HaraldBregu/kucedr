@@ -18,6 +18,7 @@ import { providerIdsFor, providerModels, providers } from '@/lib/providers';
 import type { ProviderModelGroup } from '@pages/start/setupTypes';
 import {
 	SettingsLoadingRows,
+	SettingsAutoDismiss,
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
@@ -397,9 +398,11 @@ const HealthPage: React.FC = () => {
 					</SettingsSection>
 
 					{saved && (
-						<p className="text-[11px] leading-4 text-muted-foreground">
-							{t('settings.health.saved')}
-						</p>
+						<SettingsAutoDismiss>
+							<p className="text-[11px] leading-4 text-muted-foreground">
+								{t('settings.health.saved')}
+							</p>
+						</SettingsAutoDismiss>
 					)}
 
 					<div className="flex justify-end">

@@ -22,6 +22,7 @@ import type {
 import { CODING_THINKING_LEVELS } from '../../../../../../shared/coding_types';
 import {
 	SettingsLoadingRows,
+	SettingsAutoDismiss,
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
@@ -154,7 +155,9 @@ const CodingPage: React.FC = () => {
 					saving ? (
 						<SettingsValue>{t('settings.coding.saving')}</SettingsValue>
 					) : saved ? (
-						<SettingsValue>{t('settings.coding.saved')}</SettingsValue>
+						<SettingsAutoDismiss>
+							<SettingsValue>{t('settings.coding.saved')}</SettingsValue>
+						</SettingsAutoDismiss>
 					) : undefined
 				}
 			/>

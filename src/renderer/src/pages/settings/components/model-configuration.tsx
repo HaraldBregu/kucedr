@@ -5,7 +5,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { getProviderCatalogItem } from '../../start/setupConstants';
-import { SettingsLoadingRows, SettingsNotice, SettingsRow } from './index';
+import { SettingsAutoDismiss, SettingsLoadingRows, SettingsNotice, SettingsRow } from './index';
 import type { ModelConfigurationState } from './model-configuration-state';
 import type { LucideIcon } from 'lucide-react';
 
@@ -107,9 +107,11 @@ export function ModelProviderConfiguration({
 				</p>
 			)}
 			{configState.saved && (
-				<p className="text-[11px] leading-4 text-muted-foreground">
-					{t('settings.modelServices.saved')}
-				</p>
+				<SettingsAutoDismiss>
+					<p className="text-[11px] leading-4 text-muted-foreground">
+						{t('settings.modelServices.saved')}
+					</p>
+				</SettingsAutoDismiss>
 			)}
 		</div>
 	);
@@ -158,9 +160,11 @@ export function ModelProviderConfiguration({
 					</p>
 				)}
 				{configState.saved && (
-					<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
-						{t('settings.modelServices.saved')}
-					</p>
+					<SettingsAutoDismiss>
+						<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
+							{t('settings.modelServices.saved')}
+						</p>
+					</SettingsAutoDismiss>
 				)}
 			</>
 		);

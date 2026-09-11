@@ -447,7 +447,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 							aria-atomic="true"
 						>
 							<SettingsNotice
-								autoDismiss={operationStatus?.state === 'completed'}
+								autoDismiss={operationStatus?.state === 'succeeded'}
 								icon={operationNeedsAttention ? AlertTriangle : FolderSync}
 								variant={operationStatus?.state === 'failed' ? 'destructive' : 'default'}
 								className={
