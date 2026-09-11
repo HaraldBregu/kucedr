@@ -75,6 +75,7 @@ describe('directoryPermissionTargets', () => {
 		expect(directoryPermissionTargets('create_sound', { directory: 'clips' }, agentDir)).toEqual([
 			path.join(agentDir, 'clips'),
 		]);
+		expect(directoryPermissionTargets('text_to_speech', {}, agentDir)).toEqual([agentDir]);
 		expect(
 			directoryPermissionTargets('camera_recorder', { directory: 'captures' }, agentDir)
 		).toEqual([path.join(agentDir, 'captures')]);

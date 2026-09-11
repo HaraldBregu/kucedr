@@ -5,6 +5,8 @@ import { updateHealthTool } from '../../../../../src/main/agent/tools/health/upd
 import { createImageTool } from '../../../../../src/main/agent/tools/media/create_image';
 import { createSoundTool } from '../../../../../src/main/agent/tools/media/create_sound';
 import { createVideoTool } from '../../../../../src/main/agent/tools/media/create_video';
+import { speechToTextTool } from '../../../../../src/main/agent/tools/media/speech_to_text';
+import { textToSpeechTool } from '../../../../../src/main/agent/tools/media/text_to_speech';
 import { forgetMemoryTool } from '../../../../../src/main/agent/tools/memory/forget_memory';
 import { saveMemoryTool } from '../../../../../src/main/agent/tools/memory/save_memory';
 import { cameraRecorderTool } from '../../../../../src/main/agent/tools/system/camera_recorder';
@@ -40,6 +42,8 @@ it.each([
 	createImageTool(),
 	createVideoTool(),
 	createSoundTool(),
+	textToSpeechTool(),
+	speechToTextTool(),
 	microphoneRecorderTool(),
 	cameraRecorderTool(),
 	screenRecorderTool(),
