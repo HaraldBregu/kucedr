@@ -214,14 +214,14 @@ const AppsPage: React.FC = () => {
 					<div className="grid gap-3">
 						{apps.map((app) => (
 							<Card key={app.id} size="sm" className="gap-0! p-0!">
-								<CardContent className="grid gap-3 p-3! sm:grid-cols-[9rem_minmax(0,1fr)]">
+								<CardContent className="grid gap-3 p-3! sm:grid-cols-[9rem_minmax(0,1fr)_auto]">
 									<div
 										aria-hidden="true"
 										className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground sm:aspect-auto sm:min-h-24"
 									>
 										<Blocks className="size-5" strokeWidth={1.5} />
 									</div>
-									<div className="flex min-w-0 flex-col gap-2">
+									<div className="min-w-0">
 										<div className="flex min-w-0 items-start justify-between gap-3">
 											<div className="min-w-0">
 												<h3 className="truncate text-sm font-medium text-foreground">
@@ -235,35 +235,35 @@ const AppsPage: React.FC = () => {
 												{app.metadata.category}
 											</Badge>
 										</div>
-										<div className="mt-auto flex flex-wrap justify-end gap-1.5 pt-1">
-											<Button
-												type="button"
-												variant="outline"
-												size="xs"
-												disabled={importing || openingAppId === app.id}
-												onClick={() => navigate(appPath(app.id))}
-											>
-												<Settings2 className="size-3" />
-												{t('settings.apps.details')}
-											</Button>
-											<Button
-												type="button"
-												size="xs"
-												disabled={importing || openingAppId === app.id}
-												onClick={() => void handleOpen(app.id)}
-											>
-												<ExternalLink className="size-3" />
-												{t('settings.apps.open')}
-											</Button>
-											<Delete
-												app={app}
-												disabled={importing || openingAppId === app.id}
-												onDeleted={(appId) => {
-													setApps((current) => current.filter(({ id }) => id !== appId));
-												}}
-												onError={setErrorMessage}
-											/>
-										</div>
+									</div>
+									<div className="flex flex-wrap items-center justify-end gap-1.5 sm:self-stretch">
+										<Button
+											type="button"
+											variant="outline"
+											size="xs"
+											disabled={importing || openingAppId === app.id}
+											onClick={() => navigate(appPath(app.id))}
+										>
+											<Settings2 className="size-3" />
+											{t('settings.apps.details')}
+										</Button>
+										<Button
+											type="button"
+											size="xs"
+											disabled={importing || openingAppId === app.id}
+											onClick={() => void handleOpen(app.id)}
+										>
+											<ExternalLink className="size-3" />
+											{t('settings.apps.open')}
+										</Button>
+										<Delete
+											app={app}
+											disabled={importing || openingAppId === app.id}
+											onDeleted={(appId) => {
+												setApps((current) => current.filter(({ id }) => id !== appId));
+											}}
+											onError={setErrorMessage}
+										/>
 									</div>
 								</CardContent>
 							</Card>
