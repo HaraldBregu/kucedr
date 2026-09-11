@@ -153,7 +153,7 @@ describe('app discovery and loading', () => {
 		expect(listApps(appLocation)).toEqual([]);
 	});
 
-	it('loads the manifest entry below the app titlebar', async () => {
+	it('loads the manifest entry across the full app window', async () => {
 		const manifest: AppManifest = {
 			...projectManifest,
 			metadata: { ...projectManifest.metadata, entry: 'pages/project.html' },
@@ -177,7 +177,7 @@ describe('app discovery and loading', () => {
 		shellHandlers.get('did-finish-load')?.();
 		expect(createView).toHaveBeenCalledWith(entry, 'project');
 		expect(win.contentView.addChildView).toHaveBeenCalledWith(view);
-		expect(view.setBounds).toHaveBeenCalledWith({ x: 0, y: 48, width: 820, height: 592 });
+		expect(view.setBounds).toHaveBeenCalledWith({ x: 0, y: 0, width: 820, height: 640 });
 		expect(load).toHaveBeenCalledTimes(1);
 		handlers.get('ready-to-show')?.();
 		await new Promise((resolve) => setImmediate(resolve));

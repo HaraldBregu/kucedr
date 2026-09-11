@@ -9,7 +9,7 @@ jest.mock(
 beforeEach(() => {
 	Object.defineProperty(window, 'win', {
 		configurable: true,
-	value: {
+		value: {
 			minimize: jest.fn(),
 			maximize: jest.fn(),
 			close: jest.fn(),
