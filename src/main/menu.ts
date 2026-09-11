@@ -24,7 +24,6 @@ export class Menu {
 		this.callbacks = callbacks;
 	}
 
-
 	create(): void {
 		this.buildMenu();
 	}
