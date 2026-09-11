@@ -15,7 +15,9 @@ import type { PublicProvider } from '../../shared/provider_types';
 import { loadProviders } from '../models';
 import type {
 	AgentContextMode,
+	AgentMediaModelSettings,
 	AgentRunOptions,
+	AgentToolModelKind,
 	AgentToolPermissionDecision,
 	AgentToolPermissionScope,
 	AgentUserInputAnswer,
@@ -157,6 +159,29 @@ function optionalTrimmedString(value: unknown): string | undefined {
 	if (typeof value !== 'string') return undefined;
 	const trimmed = value.trim();
 	return trimmed || undefined;
+}
+
+function toToolModelKind(value: unknown): AgentToolModelKind {
+	if (
+		value === 'image' ||
+		value === 'audio' ||
+		value === 'video' ||
+		value === 'textToSpeech' ||
+		value === 'speechToText'
+	) {
+		return value;
+	}
+	throw new Error('Invalid tool model kind.');
+}
+
+function toAgentMediaModelSettings(value: unknown): AgentMediaModelSettings {
+	if (!isRecord(value)) throw new Error('Invalid tool model settings.');
+	const providerId = optionalTrimmedString(value.providerId);
+	const modelId = optionalTrimmedString(value.modelId);
+	if (!providerId || !modelId || !isRecord(value.options)) {
+		throw new Error('Invalid tool model settings.');
+	}
+	return { providerId, modelId, options: { ...value.options } };
 }
 
 function toPermissionRules(value: unknown): PermissionRules {
