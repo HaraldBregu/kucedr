@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from 'react';
+import {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+	type PointerEvent,
+} from 'react';
 
 import {
 	agent,
@@ -136,9 +143,12 @@ export default function App() {
 		}
 	}, [theme]);
 
-	const setSidebarVisibility = useCallback((open: boolean): void => {
-		setSidebarOpen(open);
-	}, []);
+	const setSidebarVisibility = useCallback(
+		(open: boolean): void => {
+			setSidebarOpen(open);
+		},
+		[]
+	);
 
 	useEffect(() => {
 		if (!isKucedr()) return;

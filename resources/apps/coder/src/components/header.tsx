@@ -122,12 +122,7 @@ export function Header({
 
 			{isKucedr() ? (
 				<div className="flex items-center gap-0.5 [webkit-app-region:no-drag]">
-					<Button
-						variant="ghost"
-						size="icon-sm"
-						aria-label="Minimize window"
-						onClick={win.minimize}
-					>
+					<Button variant="ghost" size="icon-sm" aria-label="Minimize window" onClick={win.minimize}>
 						<Minus />
 					</Button>
 					<Button

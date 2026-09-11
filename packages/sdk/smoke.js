@@ -214,7 +214,10 @@ await app.deleteAppStoreFile('assets/data.bin');
 await assert.rejects(app.readAppStoreFile('assets/data.bin'), /not found/);
 const writeAppStoreFile = globalThis.app.writeAppStoreFile;
 delete globalThis.app.writeAppStoreFile;
-assert.throws(() => app.writeAppStoreFile, /app\.writeAppStoreFile.*update the Kucedr host/);
+assert.throws(
+	() => app.writeAppStoreFile,
+	/app\.writeAppStoreFile.*update the Kucedr host/
+);
 globalThis.app.writeAppStoreFile = writeAppStoreFile;
 assert.equal(await agent.getWorkspaceLocation(), '/tmp/kucedr-workspace');
 assert.deepEqual(await agent.listWorkspaceFiles(), [workspaceFile]);

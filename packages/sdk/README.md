@@ -140,14 +140,14 @@ creating the window, so these settings take effect before the app's JavaScript r
 
 Every `window` field is optional. Apps without window configuration keep these defaults:
 
-| Field         | Default | Meaning                               |
-| ------------- | ------- | ------------------------------------- |
-| `width`       | `820`   | Initial outer window width            |
-| `height`      | `640`   | Initial outer window height           |
-| `minWidth`    | `620`   | Minimum outer window width            |
-| `minHeight`   | `480`   | Minimum outer window height           |
-| `resizable`   | `true`  | Allow the user to resize the window   |
-| `maximizable` | `true`  | Allow the user to maximize the window |
+| Field | Default | Meaning |
+| --- | --- | --- |
+| `width` | `820` | Initial outer window width |
+| `height` | `640` | Initial outer window height |
+| `minWidth` | `620` | Minimum outer window width |
+| `minHeight` | `480` | Minimum outer window height |
+| `resizable` | `true` | Allow the user to resize the window |
+| `maximizable` | `true` | Allow the user to maximize the window |
 
 Dimensions are positive integer device-independent pixels, at most `32768`. The outer height
 is entirely available to the app. An explicit minimum cannot exceed its explicit initial

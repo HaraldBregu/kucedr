@@ -83,7 +83,10 @@ export {
 	type CoderThinkingLevel,
 	type CoderToolMode,
 } from '../../src/shared/coder_types';
-export type { AppStorageApi, AppStoreValue } from '../../src/shared/app_store_types';
+export type {
+	AppStorageApi,
+	AppStoreValue,
+} from '../../src/shared/app_store_types';
 export { isAppStoreValue } from '../../src/shared/app_store_value';
 
 // Typed lazy views over the host preload globals.
