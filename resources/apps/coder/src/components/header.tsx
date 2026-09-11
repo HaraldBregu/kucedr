@@ -4,14 +4,9 @@ import {
 	FolderOpen,
 	LoaderCircle,
 	MoreHorizontal,
-	Minus,
 	Plus,
-	Square,
 	Trash2,
-	X,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { isKucedr, win } from '@kucedr/sdk';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -22,7 +17,6 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import type { CoderController } from '@/controller';
 
 export function Header({
@@ -32,21 +26,9 @@ export function Header({
 	coder: CoderController;
 	onOpenInstructions: () => void;
 }) {
-	const [maximized, setMaximized] = useState(false);
 	const session = coder.sessions.find((item) => item.id === coder.activeSessionId);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		void win.isMaximized().then(setMaximized);
-		return win.onMaximizeChange(setMaximized);
-	}, []);
-
 	return (
-		<header
-			className="flex h-12 shrink-0 items-center gap-2 bg-background px-3"
-			style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
-		>
-			<SidebarTrigger className="[webkit-app-region:no-drag]" />
+		<header className="flex h-11 shrink-0 items-center gap-2 bg-background px-3">
 			<div className="flex min-w-0 flex-1 items-center gap-1.5 text-xs">
 				<span className="truncate font-medium">{coder.activeProject?.name ?? 'Coder'}</span>
 				<span className="text-muted-foreground">/</span>
@@ -66,12 +48,6 @@ export function Header({
 					<DropdownMenuTrigger
 						render={
 							<Button variant="ghost" size="icon-sm" aria-label="Workspace actions">
-							<Button
-								variant="ghost"
-								size="icon-sm"
-								className="[webkit-app-region:no-drag]"
-								aria-label="Workspace actions"
-							>
 								<MoreHorizontal />
 							</Button>
 						}
@@ -109,7 +85,6 @@ export function Header({
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="[webkit-app-region:no-drag]"
 							aria-label="New coding session"
 							disabled={!coder.activeProject || coder.runState === 'running'}
 							onClick={() => coder.newSession()}
@@ -120,25 +95,6 @@ export function Header({
 				/>
 				<TooltipContent>New session · ⌘/Ctrl N</TooltipContent>
 			</Tooltip>
-
-			{isKucedr() ? (
-				<div className="flex items-center gap-0.5 [webkit-app-region:no-drag]">
-					<Button variant="ghost" size="icon-sm" aria-label="Minimize window" onClick={win.minimize}>
-						<Minus />
-					</Button>
-					<Button
-						variant="ghost"
-						size="icon-sm"
-						aria-label={maximized ? 'Restore window' : 'Maximize window'}
-						onClick={win.maximize}
-					>
-						<Square />
-					</Button>
-					<Button variant="ghost" size="icon-sm" aria-label="Close window" onClick={win.close}>
-						<X />
-					</Button>
-				</div>
-			) : null}
 		</header>
 	);
 }
