@@ -151,7 +151,7 @@ it('keeps a canceled upload quiet', async () => {
 	expect(screen.getByRole('button', { name: 'common.moreOptions' })).toBeEnabled();
 });
 
-it('navigates app clicks to the app detail subroute', async () => {
+it('navigates app details actions to the app detail subroute', async () => {
 	const user = userEvent.setup();
 
 	render(
@@ -167,11 +167,18 @@ it('navigates app clicks to the app detail subroute', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(
-		await screen.findByRole('button', { name: 'Demo App A demo app. Demo' })
-	);
+	await user.click(await screen.findByRole('button', { name: 'settings.apps.details' }));
 
 	expect(await screen.findByText('App detail')).toBeInTheDocument();
+});
+
+it('opens an app from its card action', async () => {
+	const user = userEvent.setup();
+	render(<MemoryRouter><AppsPage /></MemoryRouter>);
+
+	await user.click(await screen.findByRole('button', { name: 'settings.apps.open' }));
+
+	expect(window.apps.open).toHaveBeenCalledWith('demo-app');
 });
 
 it('treats an app detail route as a child of the apps breadcrumb', async () => {
