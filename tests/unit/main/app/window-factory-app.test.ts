@@ -14,6 +14,7 @@ it('keeps the application menu visible on every native window', () => {
 		setWindowOpenHandler: jest.fn(),
 	};
 	const win = {
+		loadFile: jest.fn(),
 		setMenuBarVisibility: jest.fn(),
 		webContents: contents,
 	};
