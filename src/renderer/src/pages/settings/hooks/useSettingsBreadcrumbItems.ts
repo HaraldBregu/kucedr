@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useMatch } from 'react-router-dom';
 import { getChannelCatalogEntry } from '../../../../../shared';
@@ -18,11 +19,38 @@ const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/tools': 'settings.modelServices.tools',
 };
 
+function formatAppLabel(appId: string): string {
+	return appId
+		.split(/[-_\s]+/)
+		.filter(Boolean)
+		.map((part) => `${part.charAt(0).toLocaleUpperCase()}${part.slice(1)}`)
+		.join(' ');
+}
+
 export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] {
 	const { t } = useTranslation();
 	const location = useLocation();
 	const mcpDetailMatch = useMatch('/settings/agent/mcp/:mcpServerId');
 	const appDetailMatch = useMatch('/settings/apps/:appId');
+	const appId = decodeURIComponent(appDetailMatch?.params.appId ?? '');
+	const [appLabel, setAppLabel] = useState<{ id: string; label: string } | null>(null);
+
+	useEffect(() => {
+		if (!appId) return;
+
+		let active = true;
+		void window.apps
+			.list()
+			.then((apps) => {
+				const app = apps.find((item) => item.id === appId);
+				if (active && app) setAppLabel({ id: appId, label: app.title });
+			})
+			.catch(() => undefined);
+
+		return () => {
+			active = false;
+		};
+	}, [appId]);
 
 	if (location.pathname === '/settings') return [];
 	if (location.pathname === '/settings/general/persona') {
@@ -67,7 +95,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	if (appDetailMatch) {
 		return [
 			{ label: t('settings.tabs.apps'), path: '/settings/apps' },
-			{ label: appDetailMatch.params.appId ?? '' },
+			{ label: appLabel?.id === appId ? appLabel.label : formatAppLabel(appId) },
 		];
 	}
 

@@ -171,6 +171,7 @@ it('navigates to an app detail when its card is clicked', async () => {
 
 it('treats an app detail route as a child of the apps breadcrumb', async () => {
 	const user = userEvent.setup();
+	(window.apps.list as jest.Mock).mockResolvedValue([{ ...apps[0], title: 'Kucedr Demo' }]);
 
 	render(
 		<MemoryRouter initialEntries={['/settings/apps/demo-app']}>
@@ -187,7 +188,7 @@ it('treats an app detail route as a child of the apps breadcrumb', async () => {
 	);
 
 	const breadcrumb = screen.getByRole('navigation', { name: 'settings.breadcrumb.label' });
-	expect(within(breadcrumb).getByText('demo-app')).toBeInTheDocument();
+	expect(await within(breadcrumb).findByText('Kucedr Demo')).toBeInTheDocument();
 
 	await user.click(within(breadcrumb).getByRole('link', { name: 'settings.tabs.apps' }));
 	expect(await screen.findByText('Apps list')).toBeInTheDocument();
