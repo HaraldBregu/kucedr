@@ -12,7 +12,7 @@ const defaults: ProvidersStoreState = {
 	models: [],
 	databases: [],
 	search_engines: [],
-	storageProviders: '',
+	storage: '',
 };
 
 export const providersStore = new Store<ProvidersStoreState>({
@@ -68,20 +68,23 @@ function writeSection(kind: ProviderCredentialKind, value: StoredProvider[]): vo
 }
 
 function migrateStorageProviders(): void {
-	const state = providersStore.store as ProvidersStoreState & { encryptedProviders?: unknown };
-	if (typeof state.encryptedProviders === 'string') {
-		const { encryptedProviders, ...providers } = state;
+	const state = providersStore.store as ProvidersStoreState & {
+		encryptedProviders?: unknown;
+		storageProviders?: unknown;
+	};
+	if (typeof state.encryptedProviders === 'string' || typeof state.storageProviders === 'string') {
+		const { encryptedProviders, storageProviders, ...providers } = state;
 		providersStore.store = {
 			...providers,
-			storageProviders: providers.storageProviders || encryptedProviders,
+			storage: providers.storage || storageProviders || encryptedProviders || '',
 		};
 	}
 	const legacyPath = path.resolve(userDataLocation(), 'settings', 'storage.json');
-	if (!existsSync(legacyPath) || providersStore.get('storageProviders')) return;
+	if (!existsSync(legacyPath) || providersStore.get('storage')) return;
 	try {
 		const legacy = JSON.parse(readFileSync(legacyPath, 'utf8')) as { encryptedProviders?: unknown };
 		if (typeof legacy.encryptedProviders !== 'string' || !legacy.encryptedProviders) return;
-		providersStore.set('storageProviders', legacy.encryptedProviders);
+		providersStore.set('storage', legacy.encryptedProviders);
 		if (typeof providersStore.path === 'string') {
 			restrictProviderPermissions(path.dirname(providersStore.path), providersStore.path);
 		}
