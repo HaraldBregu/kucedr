@@ -12,6 +12,9 @@ import type { LoggerService } from '../shared';
 import type { ContextMenuDescriptor, ContextMenuRole } from '../../shared/window_types';
 import type { AppRegistry } from '../apps/app_registry';
 import { openAppWindows } from '../apps/app_render';
+import { isAppTitlebarOptions } from '../../shared/titlebar_validate';
+import { setAppTitlebar } from '../apps/app_titlebar_set';
+import { dispatchAppTitlebarButton } from '../apps/app_titlebar_click';
 
 const contextMenuRoles = new Set<ContextMenuRole>([
 	'undo',
@@ -56,25 +59,15 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 		{ logger, appRegistry, openVoiceConversation }: WindowIpcDeps,
 		_eventBus: EventBus
 	): void {
-		const getWindow = (sender: Electron.WebContents): BrowserWindow | null => {
-			const window = BrowserWindow.fromWebContents(sender);
-			if (window) return window;
-			try {
-				return openAppWindows.get(appRegistry.resolve(sender))?.window ?? null;
-			} catch {
-				return null;
-			}
-		};
-
 		// --- Send handlers (fire-and-forget) ---
 
 		ipcMain.on(WindowChannels.minimize, (event) => {
-			const win = getWindow(event.sender);
+			const win = BrowserWindow.fromWebContents(event.sender);
 			if (win) win.minimize();
 		});
 
 		ipcMain.on(WindowChannels.maximize, (event) => {
-			const win = getWindow(event.sender);
+			const win = BrowserWindow.fromWebContents(event.sender);
 			if (win) {
 				if (!win.isMaximizable()) return;
 				if (win.isMaximized()) {
@@ -86,7 +79,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 		});
 
 		ipcMain.on(WindowChannels.close, (event) => {
-			const win = getWindow(event.sender);
+			const win = BrowserWindow.fromWebContents(event.sender);
 			if (win) win.close();
 		});
 
@@ -102,7 +95,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 		);
 
 		ipcMain.on(WindowChannels.popupMenu, (event) => {
-			const win = getWindow(event.sender);
+			const win = BrowserWindow.fromWebContents(event.sender);
 			if (win) {
 				const menu = ElectronMenu.getApplicationMenu();
 				if (menu) {
@@ -111,12 +104,46 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 			}
 		});
 
+		ipcMain.on(WindowChannels.titlebarSidebarWidthSet, (event, width) => {
+			if (
+				width !== null &&
+				(typeof width !== 'number' || !Number.isFinite(width) || width < 0 || width > 800)
+			) {
+				return;
+			}
+			let appId: string;
+			try {
+				appId = appRegistry.resolve(event.sender);
+			} catch {
+				return;
+			}
+			const appWindow = openAppWindows.get(appId)?.window;
+			if (!appWindow || appWindow.isDestroyed()) return;
+			appWindow.webContents.send(WindowChannels.titlebarSidebarWidthChanged, width);
+		});
+
+		ipcMain.on(WindowChannels.titlebarOptionsSet, (event, options) => {
+			if (!isAppTitlebarOptions(options)) return;
+			let appId: string;
+			try {
+				appId = appRegistry.resolve(event.sender);
+			} catch {
+				return;
+			}
+			setAppTitlebar(appId, options);
+		});
+
+		ipcMain.on(WindowChannels.titlebarButtonClick, (event, buttonId) => {
+			if (typeof buttonId !== 'string' || !buttonId.trim() || buttonId.length > 120) return;
+			dispatchAppTitlebarButton(event.sender, buttonId);
+		});
+
 		// --- Query handlers (invoke/handle) ---
 
 		ipcMain.handle(
 			WindowChannels.isMaximized,
 			wrapIpcHandler((event) => {
-				const win = getWindow(event.sender);
+				const win = BrowserWindow.fromWebContents(event.sender);
 				return win ? win.isMaximized() : false;
 			}, 'window:is-maximized')
 		);
@@ -124,7 +151,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 		ipcMain.handle(
 			WindowChannels.isFullScreen,
 			wrapIpcHandler((event) => {
-				const win = getWindow(event.sender);
+				const win = BrowserWindow.fromWebContents(event.sender);
 				return win ? win.isFullScreen() : false;
 			}, 'window:is-fullscreen')
 		);
@@ -132,7 +159,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 		ipcMain.handle(
 			WindowChannels.showContextMenu,
 			wrapIpcHandler((event, items: ContextMenuDescriptor[]) => {
-				const win = getWindow(event.sender);
+				const win = BrowserWindow.fromWebContents(event.sender);
 				if (!win) return null;
 				if (!Array.isArray(items) || items.length === 0) {
 					throw new Error('Context menu requires at least one item.');
