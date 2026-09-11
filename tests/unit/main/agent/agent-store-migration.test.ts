@@ -11,6 +11,7 @@ jest.mock('electron-store', () =>
 			audio_model: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
 			video_model: { providerId: 'google', modelId: 'veo-3', options: {} },
 			voice_model: { providerId: 'openai', modelId: 'tts-1', options: { voice: 'alloy' } },
+			transcription_model: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
 			realtime_voice_model: { providerId: 'openai', modelId: 'realtime-1', options: {} },
 			permissions: {
 				read: { allow: [], deny: [] },
@@ -49,7 +50,7 @@ it('migrates legacy agent settings into chatbot and tools branches', () => {
 				modelId: 'tts-1',
 				options: { voice: 'alloy' },
 			},
-			transcription: { providerId: '', modelId: '', options: {} },
+			transcription: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
 		},
 		tools: {
 			webSearch: { providerId: 'brave', providerName: 'Brave', enabled: true },

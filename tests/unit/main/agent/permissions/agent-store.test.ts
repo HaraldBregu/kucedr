@@ -20,11 +20,13 @@ import {
 	AGENT_DIRECTORY,
 	addPermissionRule,
 	getToolModel,
+	getChatbotModel,
 	getModelId,
 	getPermissions,
 	getProviderId,
 	resetPermissions,
 	setToolModel,
+	setChatbotModel,
 	setModelId,
 	setPermissions,
 	setProviderId,
@@ -95,5 +97,27 @@ describe('agent store permissions', () => {
 		expect(getProviderId()).toBe('provider');
 		expect(getModelId()).toBe('model');
 		expect(getToolModel('image')).toMatchObject({ providerId: 'google', modelId: 'image' });
+	});
+
+	it('keeps chat and tool speech selections independent', () => {
+		setChatbotModel('voice', {
+			providerId: 'openai',
+			modelId: 'gpt-4o-mini-tts',
+			options: { voice: 'marin' },
+		});
+		setToolModel('textToSpeech', {
+			providerId: 'elevenlabs',
+			modelId: 'eleven_v3',
+			options: { voice_id: 'eve' },
+		});
+		setToolModel('speechToText', {
+			providerId: 'deepgram',
+			modelId: 'nova-3',
+			options: {},
+		});
+
+		expect(getChatbotModel('voice')).toMatchObject({ providerId: 'openai' });
+		expect(getToolModel('textToSpeech')).toMatchObject({ providerId: 'elevenlabs' });
+		expect(getToolModel('speechToText')).toMatchObject({ providerId: 'deepgram' });
 	});
 });
