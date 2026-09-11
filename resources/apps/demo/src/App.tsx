@@ -303,7 +303,10 @@ export default function App() {
 				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 			>
 				<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.title}</h1>
-				<div className="flex items-center gap-1 [webkit-app-region:no-drag]">
+				<div
+					className="flex items-center gap-1"
+					style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+				>
 					<Button size="sm" onClick={showRandomNumber}>
 						{text.generateRandomNumber}
 					</Button>
@@ -319,7 +322,10 @@ export default function App() {
 				</div>
 				<div className="min-w-0 flex-1" />
 				{!isMac && inKucedrApp ? (
-					<div className="flex items-center gap-1 [webkit-app-region:no-drag]">
+					<div
+						className="flex items-center gap-1"
+						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+					>
 						<Button size="sm" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
 							−
 						</Button>
