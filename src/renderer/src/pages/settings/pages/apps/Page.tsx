@@ -229,7 +229,7 @@ const AppsPage: React.FC = () => {
 								}}
 								className="h-28 cursor-pointer gap-0! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 							>
-								<CardContent className="grid h-full grid-cols-[8rem_minmax(0,1fr)] gap-0 p-0!">
+								<CardContent className="grid h-full grid-cols-[7rem_minmax(0,1fr)] gap-0 p-0!">
 									{app.imageUrl ? (
 										<div className="flex h-full items-center justify-center">
 											<img
