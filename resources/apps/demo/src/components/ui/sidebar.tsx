@@ -86,7 +86,7 @@ export function SidebarTrigger({ className, ...props }: ComponentProps<typeof Bu
 		<Button
 			variant="ghost"
 			size="icon"
-			className={cn('fixed left-20 top-2.5 z-50 size-7 text-muted-foreground', className)}
+			className={cn('fixed left-20 top-2.5 z-50 size-7 text-foreground hover:text-foreground', className)}
 			aria-controls="demo-sidebar"
 			aria-expanded={context.open}
 			aria-label={context.open ? 'Collapse sidebar' : 'Expand sidebar'}

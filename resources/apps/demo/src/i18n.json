@@ -1,6 +1,11 @@
 {
 	"en": {
 		"title": "Kucedr app IPC demo",
+		"titlebarTitle": "Demo",
+		"searchAction": "Search demo",
+		"userAction": "Demo user",
+		"searchSelected": "Search action selected.",
+		"userSelected": "User action selected.",
 		"sidebarNavigation": "Demo navigation",
 		"overview": "Overview",
 		"connected": "Connected to Kucedr app runtime.",
@@ -75,6 +80,11 @@
 	},
 	"it": {
 		"title": "Demo IPC app Kucedr",
+		"titlebarTitle": "Demo",
+		"searchAction": "Cerca nel demo",
+		"userAction": "Utente demo",
+		"searchSelected": "Azione di ricerca selezionata.",
+		"userSelected": "Azione utente selezionata.",
 		"sidebarNavigation": "Navigazione Demo",
 		"overview": "Panoramica",
 		"connected": "Connesso al runtime dell'app Kucedr.",

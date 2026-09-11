@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { cva } from 'class-variance-authority';
+import { Copy, Minus, Search, Square, User, X } from 'lucide-react';
 
 import {
 	app,
@@ -338,7 +339,7 @@ export default function App() {
 					style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 				>
 					<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
-					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.title}</h1>
+					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.titlebarTitle}</h1>
 					<div
 						className="flex items-center gap-1"
 						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
@@ -357,24 +358,55 @@ export default function App() {
 						</output>
 					</div>
 					<div className="min-w-0 flex-1" />
+					<div
+						className="flex items-center gap-1"
+						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+					>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="size-8 rounded-full text-muted-foreground hover:text-foreground"
+							aria-label={text.searchAction}
+							title={text.searchAction}
+							onClick={() => setStatus(text.searchSelected)}
+						>
+							<Search className="size-4" strokeWidth={1.8} />
+						</Button>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="size-8 rounded-full text-muted-foreground hover:text-foreground"
+							aria-label={text.userAction}
+							title={text.userAction}
+							onClick={() => setStatus(text.userSelected)}
+						>
+							<User className="size-4" strokeWidth={1.8} />
+						</Button>
+					</div>
 					{!isMac && inKucedrApp ? (
 						<div
 							className="flex items-center gap-1"
 							style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 						>
-							<Button size="sm" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
-								−
+							<Button size="icon" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
+								<Minus className="size-4" strokeWidth={1.5} />
 							</Button>
 							<Button
-								size="sm"
+								size="icon"
 								variant="ghost"
 								aria-label={maximized ? 'Restore window' : 'Maximize window'}
 								onClick={win.maximize}
 							>
-								{maximized ? '❐' : '□'}
+								{maximized ? (
+									<Copy className="size-4" strokeWidth={1.5} />
+								) : (
+									<Square className="size-4" strokeWidth={1.5} />
+								)}
 							</Button>
-							<Button size="sm" variant="ghost" aria-label="Close window" onClick={win.close}>
-								×
+							<Button size="icon" variant="ghost" aria-label="Close window" onClick={win.close}>
+								<X className="size-4" strokeWidth={1.5} />
 							</Button>
 						</div>
 					) : null}
