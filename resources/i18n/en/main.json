@@ -273,7 +273,7 @@
 		},
 		"application": {
 			"information": "Information",
-			"actions": "Actions",
+			"actions": "Application Behavior",
 			"data": "Data",
 			"search": "Search",
 			"name": "Name",

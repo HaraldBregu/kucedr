@@ -273,7 +273,7 @@
 		},
 		"application": {
 			"information": "Informazioni",
-			"actions": "Azioni",
+			"actions": "Comportamento dell'applicazione",
 			"data": "Dati",
 			"name": "Nome",
 			"nameDescription": "Nome dell'applicazione installata",
