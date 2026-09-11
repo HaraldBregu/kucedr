@@ -1,4 +1,6 @@
 import { createContext, useContext, useEffect, type ComponentProps, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
+import { PanelLeft } from 'lucide-react';
 
 import { cn } from '../../lib/utils';
 import { Button } from './button';
@@ -46,23 +48,25 @@ export function Sidebar({ className, ...props }: ComponentProps<'aside'>) {
 	if (!context) throw new Error('Sidebar must be rendered inside SidebarProvider.');
 
 	return (
-		<div
-			className={cn(
-				'relative h-full w-60 shrink-0 transition-[width] duration-200 ease-linear motion-reduce:transition-none',
-				!context.open && 'w-0'
-			)}
-		>
+		<>
+			<div
+				aria-hidden="true"
+				className={cn(
+					'shrink-0 transition-[width] duration-200 ease-linear motion-reduce:transition-none',
+					context.open ? 'w-60' : 'w-0'
+				)}
+			/>
 			<aside
 				id="demo-sidebar"
 				data-state={context.open ? 'expanded' : 'collapsed'}
 				className={cn(
-					'absolute inset-y-0 left-0 flex w-60 flex-col overflow-hidden border-r border-border bg-card text-card-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
+					'fixed inset-y-0 left-0 z-30 flex w-60 flex-col overflow-hidden border-r border-border bg-card text-card-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
 					!context.open && '-translate-x-full',
 					className
 				)}
 				{...props}
 			/>
-		</div>
+		</>
 	);
 }
 
@@ -78,19 +82,20 @@ export function SidebarTrigger({ className, ...props }: ComponentProps<typeof Bu
 	const context = useContext(SidebarContext);
 	if (!context) throw new Error('SidebarTrigger must be rendered inside SidebarProvider.');
 
-	return (
+	return createPortal(
 		<Button
 			variant="ghost"
 			size="icon"
-			className={cn('shrink-0', className)}
+			className={cn('fixed left-20 top-2.5 z-50 size-7 text-muted-foreground', className)}
 			aria-controls="demo-sidebar"
 			aria-expanded={context.open}
 			aria-label={context.open ? 'Collapse sidebar' : 'Expand sidebar'}
-			title={`${context.open ? 'Collapse' : 'Expand'} sidebar (⌘/Ctrl+B)`}
+			title="Toggle Sidebar"
 			onClick={context.toggle}
 			{...props}
 		>
-			<span aria-hidden="true">☰</span>
-		</Button>
+			<PanelLeft className="size-4" strokeWidth={1.5} />
+		</Button>,
+		document.body
 	);
 }

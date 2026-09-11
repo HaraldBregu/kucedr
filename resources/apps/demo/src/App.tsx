@@ -305,7 +305,12 @@ export default function App() {
 			className={cn('app-demo flex min-h-0', theme.isDark && 'dark')}
 			style={themeStyle}
 		>
-			<Sidebar aria-label={text.sidebarNavigation} className={cn(isMac && 'pt-12')}>
+			<Sidebar aria-label={text.sidebarNavigation}>
+				<div
+					aria-hidden="true"
+					className="h-12 shrink-0 border-b border-border"
+					style={{ WebkitAppRegion: 'drag' } as CSSProperties}
+				/>
 				<div className="border-b border-border px-4 py-3 text-sm font-semibold">Demo</div>
 				<SidebarContent className="p-2">
 					<nav className="space-y-1" aria-label={text.sidebarNavigation}>
@@ -328,7 +333,7 @@ export default function App() {
 				<header
 					className={cn(
 						'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3',
-						isMac && !sidebarOpen && 'pl-20'
+						!sidebarOpen && 'pl-28'
 					)}
 					style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 				>

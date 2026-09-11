@@ -18,6 +18,7 @@
 		"@kucedr/sdk": "file:../../../packages/sdk",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
+		"lucide-react": "^1.39.0",
 		"react": "^19.1.1",
 		"react-dom": "^19.1.1",
 		"shadcn": "^4.7.0",
