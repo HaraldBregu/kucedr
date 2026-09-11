@@ -274,6 +274,7 @@
 		"application": {
 			"information": "Informazioni",
 			"actions": "Azioni",
+			"data": "Dati",
 			"name": "Nome",
 			"nameDescription": "Nome dell'applicazione installata",
 			"version": "Versione",

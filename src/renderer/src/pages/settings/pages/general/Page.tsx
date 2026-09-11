@@ -185,31 +185,6 @@ const GeneralPage: React.FC = () => {
 							/>
 						}
 					/>
-					<SettingsRow
-						title={t('settings.application.appData')}
-						description={t('settings.application.appDataDescription')}
-						media={
-							<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-						}
-						actionClassName="w-auto justify-end"
-						actions={
-							<Button variant="outline" size="xs" onClick={handleOpenAppDataFolder}>
-								{t('settings.application.openAppData')}
-							</Button>
-						}
-					/>
-					<SettingsRow
-						title={t('settings.application.dataFolder')}
-						media={
-							<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-						}
-						actionClassName="w-auto justify-end"
-						actions={
-							<Button variant="outline" size="xs" onClick={handleOpenDataFolder}>
-								{t('settings.application.openDataFolder')}
-							</Button>
-						}
-					/>
 				</SettingsPanel>
 			</SettingsSection>
 
@@ -263,6 +238,36 @@ const GeneralPage: React.FC = () => {
 						media={<SunMoon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						actionClassName="w-auto justify-end"
 						actions={<ThemeSwitcher value={theme} onChange={setTheme} />}
+					/>
+				</SettingsPanel>
+			</SettingsSection>
+
+			<SettingsSection title={t('settings.application.data')}>
+				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.application.appData')}
+						description={t('settings.application.appDataDescription')}
+						media={
+							<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Button variant="outline" size="xs" onClick={handleOpenAppDataFolder}>
+								{t('settings.application.openAppData')}
+							</Button>
+						}
+					/>
+					<SettingsRow
+						title={t('settings.application.dataFolder')}
+						media={
+							<FolderOpen className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Button variant="outline" size="xs" onClick={handleOpenDataFolder}>
+								{t('settings.application.openDataFolder')}
+							</Button>
+						}
 					/>
 				</SettingsPanel>
 			</SettingsSection>

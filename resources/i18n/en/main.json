@@ -274,6 +274,7 @@
 		"application": {
 			"information": "Information",
 			"actions": "Actions",
+			"data": "Data",
 			"search": "Search",
 			"name": "Name",
 			"nameDescription": "Installed application name",
