@@ -34,6 +34,32 @@ it('moves encrypted storage providers into providers.json', () => {
 	expect(existsSync(`${root}/settings/storage.json`)).toBe(false);
 });
 
+it('shares providers.json with storage connections', () => {
+	let storageProviders!: typeof import('../../../../src/main/storage/providers').storageProviders;
+	let getModelProvidersState!: typeof import('../../../../src/main/providers/providers_store').getModelProvidersState;
+	let setModelProvidersState!: typeof import('../../../../src/main/providers/providers_store').setModelProvidersState;
+	jest.isolateModules(() => {
+		({ storageProviders } = require('../../../../src/main/storage/providers'));
+		({ getModelProvidersState, setModelProvidersState } = require('../../../../src/main/providers/providers_store'));
+	});
+
+	const storage = storageProviders.save({
+		name: 'Archive',
+		endpoint: 'https://storage.example.test',
+		region: 'auto',
+		bucket: 'archive',
+		accessKeyId: 'access-key',
+		secretAccessKey: 'secret-key',
+		forcePathStyle: false,
+	});
+	setModelProvidersState([
+		{ id: 'openai', name: 'OpenAI', apiKey: 'saved-key', baseUrl: 'https://api.openai.com/v1' },
+	]);
+
+	expect(storageProviders.list()).toEqual([storage]);
+	expect(getModelProvidersState()).toHaveLength(1);
+});
+
 it('migrates decryptable provider keys into the direct settings store', () => {
 	const key = randomBytes(32);
 	const vaultId = 'legacy-vault';
