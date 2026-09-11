@@ -33,6 +33,13 @@ const mockCatalog = [
 		metadata: { documentationStatus: 'verified', documentationUrl: '', inputs: {} },
 	},
 	{
+		id: 'gpt-transcribe',
+		name: 'GPT Transcribe',
+		type: 'speech-to-text',
+		provider: mockProviders[0],
+		metadata: { documentationStatus: 'verified', documentationUrl: '', inputs: {} },
+	},
+	{
 		id: 'gpt-realtime',
 		name: 'GPT Realtime',
 		type: 'realtime-voice',
@@ -106,6 +113,10 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.transcriptionDescription': 'Speech-to-text transcription',
 		'settings.modelServices.musicCreatorName': 'Text to audio',
 		'settings.modelServices.videoCreatorName': 'Text to video',
+		'settings.modelServices.toolTextToSpeechName': 'Text to speech',
+		'settings.modelServices.toolTextToSpeechDescription': 'Tool-call speech generation',
+		'settings.modelServices.toolSpeechToTextName': 'Speech to text',
+		'settings.modelServices.toolSpeechToTextDescription': 'Tool-call audio transcription',
 		'settings.modelServices.imageModelDescription': 'Image defaults',
 		'settings.modelServices.musicModelDescription': 'Audio defaults',
 		'settings.modelServices.videoModelDescription': 'Video defaults',
@@ -164,6 +175,13 @@ const mediaApi = (providerId: string, modelId: string) => ({
 const realtimeSetSetup = jest.fn();
 
 beforeEach(() => {
+	const toolModels = {
+		image: { providerId: 'google', modelId: 'gemini-image', options: {} },
+		audio: { providerId: 'elevenlabs', modelId: 'eleven-music', options: {} },
+		video: { providerId: 'google', modelId: 'veo', options: {} },
+		textToSpeech: { providerId: 'elevenlabs', modelId: 'eleven_v3', options: {} },
+		speechToText: { providerId: 'openai', modelId: 'gpt-transcribe', options: {} },
+	};
 	if (!window.PointerEvent) {
 		Object.defineProperty(window, 'PointerEvent', {
 			configurable: true,
@@ -179,6 +197,11 @@ beforeEach(() => {
 			setModelId: jest.fn().mockResolvedValue(true),
 			getModelOptions: jest.fn().mockResolvedValue({}),
 			setModelOptions: jest.fn().mockResolvedValue({}),
+			getToolModel: jest.fn().mockImplementation(async (kind) => toolModels[kind]),
+			setToolModel: jest.fn().mockImplementation(async (kind, settings) => {
+				toolModels[kind] = settings;
+				return settings;
+			}),
 			ragGetConfiguration: jest.fn().mockResolvedValue({ indexName: 'knowledge-base' }),
 			listSessions: jest.fn().mockResolvedValue([
 				{
@@ -265,6 +288,8 @@ it('groups independently collapsible provider settings in one card', async () =>
 		/Text to image/,
 		/Text to audio/,
 		/Text to video/,
+		/Text to speech/,
+		/Speech to text/,
 		/Search Engine/,
 	]) {
 		const trigger = (await screen.findAllByRole('button', { name })).find(
@@ -305,12 +330,21 @@ it('groups independently collapsible provider settings in one card', async () =>
 	const video = (await screen.findAllByRole('button', { name: 'Text to video' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
+	const textToSpeech = (await screen.findAllByRole('button', { name: 'Text to speech' })).find(
+		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
+	);
+	const speechToText = (await screen.findAllByRole('button', { name: 'Speech to text' })).find(
+		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
+	);
 	expect(voice).toBeDefined();
 	expect(realtimeConversation).toBeDefined();
 	expect(image).toBeDefined();
 	expect(audio).toBeDefined();
 	expect(video).toBeDefined();
-	if (!voice || !realtimeConversation || !image || !audio || !video) return;
+	expect(textToSpeech).toBeDefined();
+	expect(speechToText).toBeDefined();
+	if (!voice || !realtimeConversation || !image || !audio || !video || !textToSpeech || !speechToText)
+		return;
 	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
 	expect(voice).toHaveTextContent('Eleven v3');
 	expect(model).toHaveTextContent('GPT');
@@ -319,6 +353,8 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(image).toHaveTextContent('Gemini Image');
 	expect(audio).toHaveTextContent('Eleven Music');
 	expect(video).toHaveTextContent('Veo');
+	expect(textToSpeech).toHaveTextContent('Eleven v3');
+	expect(speechToText).toHaveTextContent('GPT Transcribe');
 	expect(search).toHaveTextContent('Brave');
 
 	expect(cards.every(Boolean)).toBe(true);
