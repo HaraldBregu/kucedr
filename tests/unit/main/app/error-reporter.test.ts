@@ -29,6 +29,16 @@ describe('process safety net', () => {
 		expect(process.exitCode).toBe(1);
 		expect(app.quit).toHaveBeenCalledTimes(1);
 
+		listeners.get('exit')?.(0 as never);
+		expect(logger.warn).not.toHaveBeenCalled();
+
+		listeners.get('exit')?.(1 as never);
+		expect(logger.warn).toHaveBeenCalledWith(
+			'Process',
+			'process.exit(1)',
+			expect.objectContaining({ stack: expect.any(String) })
+		);
+
 		listeners.get('SIGTERM')?.();
 		expect(app.exit).toHaveBeenCalledWith(1);
 	});

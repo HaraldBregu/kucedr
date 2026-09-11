@@ -39,6 +39,7 @@ export function setupProcessSafetyNet(logger?: LoggerService): void {
 	});
 
 	process.on('exit', (code) => {
+		if (code === 0) return;
 		const stack = new Error('exit trace').stack;
 		safetyNetLogger?.warn('Process', `process.exit(${code})`, { stack });
 		console.error(`[process.exit] code=${code}`, stack);
