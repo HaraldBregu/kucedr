@@ -247,15 +247,15 @@ const AppsPage: React.FC = () => {
 												</p>
 											</div>
 											<div className="flex shrink-0 items-center gap-1">
-													<Button
-														type="button"
-														size="xs"
-														disabled={importing || openingAppId === app.id}
-														onClick={(event) => {
-															event.stopPropagation();
-															void handleOpen(app.id);
-														}}
-														onKeyDown={(event) => event.stopPropagation()}
+												<Button
+													type="button"
+													size="xs"
+													disabled={importing || openingAppId === app.id}
+													onClick={(event) => {
+														event.stopPropagation();
+														void handleOpen(app.id);
+													}}
+													onKeyDown={(event) => event.stopPropagation()}
 												>
 													<ExternalLink className="size-3" />
 													{t('settings.apps.open')}
