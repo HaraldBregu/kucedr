@@ -12,10 +12,7 @@ export class AppValueStorage {
 
 	constructor(private readonly root: string) {}
 
-	get<T extends AppStoreValue = AppStoreValue>(
-		appId: string,
-		key: string
-	): T | undefined {
+	get<T extends AppStoreValue = AppStoreValue>(appId: string, key: string): T | undefined {
 		this.validateKey(key);
 		return this.store(appId).get(key) as T | undefined;
 	}

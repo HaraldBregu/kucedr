@@ -36,7 +36,9 @@ describe('app folder watcher', () => {
 			ignored: expect.any(Function),
 			awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 25 },
 		});
-		const ignored = (jest.mocked(watch).mock.calls[0][1] as { ignored: (watchPath: string) => boolean }).ignored;
+		const ignored = (
+			jest.mocked(watch).mock.calls[0][1] as { ignored: (watchPath: string) => boolean }
+		).ignored;
 		expect(ignored(path.join('/tmp/kucedr', 'apps', 'project', 'data', 'store.json'))).toBe(true);
 		expect(ignored(path.join('/tmp/kucedr', 'apps', 'project', 'manifest.json'))).toBe(false);
 		handlers.get('all')?.('addDir', 'project');

@@ -54,7 +54,9 @@ describe('app storage', () => {
 	it('round-trips, overwrites, and deletes nested binary files', async () => {
 		const storage = new AppStorage(root);
 		await storage.writeFile('draw', 'scenes/current.bin', new Uint8Array([1, 2, 3]));
-		expect(fs.existsSync(path.join(root, 'draw', 'data', 'files', 'scenes', 'current.bin'))).toBe(true);
+		expect(fs.existsSync(path.join(root, 'draw', 'data', 'files', 'scenes', 'current.bin'))).toBe(
+			true
+		);
 		expect(await storage.readFile('draw', 'scenes/current.bin')).toEqual(new Uint8Array([1, 2, 3]));
 
 		await storage.writeFile('draw', 'scenes/current.bin', new Uint8Array([4, 5]));
@@ -117,9 +119,7 @@ describe('app storage', () => {
 		fs.writeFileSync(outside, '{}');
 		fs.symlinkSync(outside, path.join(namespace, 'store.json'));
 
-		expect(() => storage.set('draw', 'config', { ready: true })).toThrow(
-			'Invalid app store file'
-		);
+		expect(() => storage.set('draw', 'config', { ready: true })).toThrow('Invalid app store file');
 	});
 
 	it('revalidates a cached value store namespace', () => {

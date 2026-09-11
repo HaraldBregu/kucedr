@@ -103,7 +103,9 @@ describe('app import', () => {
 			expect(importApps([source], appLocation).imported).toHaveLength(1);
 			expect(fs.readFileSync(path.join(installed, 'index.html'), 'utf8')).toBe('replacement');
 			expect(fs.existsSync(path.join(installed, 'old.txt'))).toBe(false);
-			expect(fs.readFileSync(path.join(installed, 'data', 'store.json'), 'utf8')).toBe('{"saved":true}');
+			expect(fs.readFileSync(path.join(installed, 'data', 'store.json'), 'utf8')).toBe(
+				'{"saved":true}'
+			);
 			expect(fs.readdirSync(path.join(appLocation, 'apps'))).toEqual(['project']);
 		} finally {
 			fs.rmSync(sourceRoot, { recursive: true, force: true });
