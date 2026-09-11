@@ -176,12 +176,10 @@ function toToolModelKind(value: unknown): AgentToolModelKind {
 
 function toAgentMediaModelSettings(value: unknown): AgentMediaModelSettings {
 	if (!isRecord(value)) throw new Error('Invalid tool model settings.');
-	const providerId = optionalTrimmedString(value.providerId);
-	const modelId = optionalTrimmedString(value.modelId);
-	if (!providerId || !modelId || !isRecord(value.options)) {
+	if (typeof value.providerId !== 'string' || typeof value.modelId !== 'string' || !isRecord(value.options)) {
 		throw new Error('Invalid tool model settings.');
 	}
-	return { providerId, modelId, options: { ...value.options } };
+	return { providerId: value.providerId.trim(), modelId: value.modelId.trim(), options: { ...value.options } };
 }
 
 function toPermissionRules(value: unknown): PermissionRules {
