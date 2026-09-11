@@ -114,14 +114,13 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	).not.toBeInTheDocument();
 });
 
-it.each<[AuthState, string]>([
+it.each<[AuthState]>([
 	[
 		{
 			status: 'signedIn',
 			persistence: 'encrypted',
 			user: { id: 'user-1', email: 'ada@example.com', displayName: 'Ada Lovelace' },
 		},
-		'Ada Lovelace',
 	],
 	[
 		{
@@ -129,9 +128,8 @@ it.each<[AuthState, string]>([
 			persistence: 'encrypted',
 			user: { id: 'user-2', email: 'grace@example.com' },
 		},
-		'grace',
 	],
-])('shows the authenticated user in the sidebar as %s', async (state, username) => {
+])('shows the account and settings label for authenticated users', async (state) => {
 	listSessions.mockResolvedValue([]);
 	mockUseAuth.mockReturnValue({
 		state,
@@ -150,9 +148,9 @@ it.each<[AuthState, string]>([
 		</MemoryRouter>
 	);
 
-	const accountLink = screen.getByRole('link', { name: username });
+	const accountLink = screen.getByRole('link', { name: 'settings.accountAndSettings' });
 	expect(accountLink).toHaveAttribute('href', '/settings/general');
-	expect(within(accountLink).getByText(username)).toBeInTheDocument();
+	expect(within(accountLink).getByText('settings.accountAndSettings')).toBeInTheDocument();
 	expect(accountLink.querySelector('.lucide-user')).toBeInTheDocument();
 	await screen.findByText('settings.chatHistory.empty');
 });

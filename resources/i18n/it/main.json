@@ -137,6 +137,7 @@
 	},
 	"settings": {
 		"title": "Impostazioni",
+		"accountAndSettings": "Account e impostazioni",
 		"returnToChat": "Torna alla chat",
 		"description": "Configura le preferenze dell'applicazione",
 		"search": "Cerca",
