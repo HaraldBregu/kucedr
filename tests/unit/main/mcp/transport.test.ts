@@ -55,3 +55,9 @@ it('requires HTTPS except for loopback development servers', () => {
 		buildTransport('local', { type: 'http', url: 'http://127.0.0.1:3000/rpc' })
 	).not.toThrow();
 });
+
+it('creates local transports directly from the shared MCP configuration', () => {
+	expect(() =>
+		buildTransport('local', { type: 'stdio', command: process.execPath, args: ['server.mjs'] })
+	).not.toThrow();
+});
