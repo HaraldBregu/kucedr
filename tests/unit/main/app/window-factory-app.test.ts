@@ -1,4 +1,4 @@
-import { WebContentsView } from 'electron';
+import { BrowserWindow, WebContentsView } from 'electron';
 import { AppRegistry } from '../../../../src/main/apps/app_registry';
 import { appsRoot } from '../../../../src/main/apps/app_root';
 import {
@@ -7,6 +7,26 @@ import {
 } from '../../../../src/main/protocol';
 import { WindowFactory } from '../../../../src/main/window_factory';
 import path from 'node:path';
+
+it('keeps the application menu visible on every native window', () => {
+	const contents = {
+		on: jest.fn(),
+		setWindowOpenHandler: jest.fn(),
+	};
+	const win = {
+		setMenuBarVisibility: jest.fn(),
+		webContents: contents,
+	};
+	(BrowserWindow as unknown as jest.Mock).mockImplementationOnce(() => win);
+	const factory = new WindowFactory(undefined, new AppRegistry());
+
+	factory.create();
+
+	expect(BrowserWindow).toHaveBeenCalledWith(
+		expect.objectContaining({ autoHideMenuBar: false })
+	);
+	expect(win.setMenuBarVisibility).toHaveBeenCalledWith(true);
+});
 
 it('registers an app view before loading and removes it when destroyed', async () => {
 	const handlers = new Map<string, () => void>();
