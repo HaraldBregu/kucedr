@@ -1,5 +1,4 @@
 import { Copy, FileText, FolderOpen, LoaderCircle, MoreHorizontal, Plus, Trash2 } from 'lucide-react';
-import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -23,11 +22,8 @@ export function Header({
 	const session = coder.sessions.find((item) => item.id === coder.activeSessionId);
 
 	return (
-		<header
-			className="flex h-12 shrink-0 items-center gap-2 bg-background px-3"
-			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
-		>
-			<SidebarTrigger className="[webkit-app-region:no-drag]" />
+		<header className="flex h-12 shrink-0 items-center gap-2 bg-background px-3">
+			<SidebarTrigger />
 			<div className="flex min-w-0 flex-1 items-center gap-1.5 text-xs">
 				<span className="truncate font-medium">{coder.activeProject?.name ?? 'Coder'}</span>
 				<span className="text-muted-foreground">/</span>
@@ -49,7 +45,6 @@ export function Header({
 							<Button
 								variant="ghost"
 								size="icon-sm"
-								className="[webkit-app-region:no-drag]"
 								aria-label="Workspace actions"
 							>
 								<MoreHorizontal />
@@ -86,7 +81,6 @@ export function Header({
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="[webkit-app-region:no-drag]"
 							aria-label="New coding session"
 							disabled={!coder.activeProject || coder.runState === 'running'}
 							onClick={() => coder.newSession()}
