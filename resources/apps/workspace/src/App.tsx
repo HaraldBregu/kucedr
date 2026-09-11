@@ -5,8 +5,10 @@ import {
 	useMemo,
 	useRef,
 	useState,
+	type CSSProperties,
 	type PointerEvent,
 } from 'react';
+import { Copy, Minus, Square, X } from 'lucide-react';
 
 import {
 	agent,
@@ -37,6 +39,7 @@ import {
 	SidebarInset,
 	SidebarProvider,
 	SidebarResizeHandle,
+	SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { showNativeContextMenu } from '@/lib/menu';
@@ -100,6 +103,7 @@ export default function App() {
 	const [deleting, setDeleting] = useState(false);
 	const [sidebarWidth, setSidebarWidth] = useState(sidebarDefaultWidth);
 	const [sidebarOpen, setSidebarOpen] = useState(true);
+	const [isMaximized, setIsMaximized] = useState(false);
 	const selectedPathRef = useRef<string | null>(null);
 	const selectedContentRef = useRef('');
 	const saveInFlightRef = useRef<Promise<boolean> | null>(null);
@@ -144,47 +148,18 @@ export default function App() {
 		}
 	}, [theme]);
 
-	const syncTitlebar = useCallback((open: boolean, width: number): void => {
-		if (!isKucedr()) return;
-		win.setTitlebarOptions({
-			title: 'Workspace',
-			leftButtons: [
-				{
-					id: 'toggle-sidebar',
-					label: open ? 'Collapse sidebar' : 'Expand sidebar',
-					icon: 'panel-left',
-					expanded: open,
-				},
-			],
-			rightButtons: [],
-			sidebarOpen: open,
-			sidebarWidth: width,
-		});
-	}, []);
-
 	const setSidebarVisibility = useCallback(
 		(open: boolean): void => {
-			syncTitlebar(open, sidebarWidth);
 			setSidebarOpen(open);
 		},
-		[sidebarWidth, syncTitlebar]
+		[]
 	);
 
-	useLayoutEffect(() => {
-		syncTitlebar(sidebarOpen, sidebarWidth);
-	}, [sidebarOpen, sidebarWidth, syncTitlebar]);
-
 	useEffect(() => {
 		if (!isKucedr()) return;
-		return () => win.setTitlebarOptions(null);
+		void win.isMaximized().then(setIsMaximized);
+		return win.onMaximizeChange(setIsMaximized);
 	}, []);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		return win.onTitlebarButtonClick((buttonId) => {
-			if (buttonId === 'toggle-sidebar') setSidebarVisibility(!sidebarOpen);
-		});
-	}, [setSidebarVisibility, sidebarOpen]);
 
 	useEffect(() => {
 		if (!isKucedr()) return;
@@ -630,11 +605,12 @@ export default function App() {
 			workspaceLocation={workspaceLocation}
 		/>
 	);
+	const isMac = navigator.userAgent.includes('Macintosh');
 
 	return (
 		<TooltipProvider delayDuration={400}>
 			<SidebarProvider
-				className="flex h-dvh min-h-[520px] overflow-hidden bg-background text-foreground"
+				className="flex h-dvh min-h-[520px] flex-col overflow-hidden bg-background text-foreground"
 				onOpenChange={setSidebarVisibility}
 				open={sidebarOpen}
 				onContextMenu={(event) => {
@@ -658,7 +634,63 @@ export default function App() {
 					);
 				}}
 			>
-				<Sidebar id="workspace-sidebar" collapsible="offcanvas" width={sidebarWidth}>
+				<header
+					className="flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3"
+					style={{
+						WebkitAppRegion: 'drag',
+						paddingLeft: isMac ? '72px' : undefined,
+					} as CSSProperties}
+				>
+					<SidebarTrigger className="[webkit-app-region:no-drag]" />
+					<span className="min-w-0 flex-1 truncate text-sm font-medium">Workspace</span>
+					{!isMac ? (
+						<div
+							className="-my-3 -mr-3 flex h-12 items-center [webkit-app-region:no-drag]"
+							style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+						>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
+								onClick={() => isKucedr() && win.minimize()}
+								title="Minimize"
+								aria-label="Minimize"
+							>
+								<Minus className="size-[13px]" strokeWidth={1.5} />
+							</Button>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
+								onClick={() => isKucedr() && win.maximize()}
+								title={isMaximized ? 'Restore' : 'Maximize'}
+								aria-label={isMaximized ? 'Restore' : 'Maximize'}
+							>
+								{isMaximized ? (
+									<Copy className="size-[11px]" strokeWidth={1.5} />
+								) : (
+									<Square className="size-[11px]" strokeWidth={1.5} />
+								)}
+							</Button>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
+								onClick={() => isKucedr() && win.close()}
+								title="Close"
+								aria-label="Close"
+							>
+								<X className="size-[13px]" strokeWidth={1.5} />
+							</Button>
+						</div>
+					) : null}
+				</header>
+
+				<div className="flex min-h-0 flex-1">
+					<Sidebar id="workspace-sidebar" collapsible="offcanvas" width={sidebarWidth}>
 					<SidebarContent>{sidebar}</SidebarContent>
 					<SidebarResizeHandle
 						onPointerDown={startSidebarResize}
@@ -690,9 +722,9 @@ export default function App() {
 							);
 						}}
 					/>
-				</Sidebar>
+					</Sidebar>
 
-				<SidebarInset>
+					<SidebarInset>
 					<WorkspaceViewer
 						content={selectedContent}
 						dirty={selectedDirty}
@@ -722,7 +754,8 @@ export default function App() {
 						saveError={selectedSaveError}
 						saving={selectedSaving}
 					/>
-				</SidebarInset>
+					</SidebarInset>
+				</div>
 			</SidebarProvider>
 
 			<Dialog
