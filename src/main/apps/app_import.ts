@@ -75,7 +75,12 @@ export function importApps(sources: string[], appLocation?: string): AppImportRe
 		const stagedData = path.join(staging, 'data');
 		let movedExisting = false;
 		try {
-			cpSync(sourcePath, staging, { recursive: true, errorOnExist: true, force: false });
+			cpSync(sourcePath, staging, {
+				recursive: true,
+				errorOnExist: true,
+				force: false,
+				filter: (path) => path.basename(path) !== 'node_modules',
+			});
 			if (!readApp(staging)) throw new Error('Copied app is invalid.');
 			rmSync(stagedData, { recursive: true, force: true });
 			if (existsSync(destination)) {

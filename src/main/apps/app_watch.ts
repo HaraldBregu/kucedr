@@ -17,7 +17,8 @@ export function watchApps(
 		followSymlinks: false,
 		ignored: (watchPath) => {
 			const relative = path.isAbsolute(watchPath) ? path.relative(root, watchPath) : watchPath;
-			return relative.split(path.sep)[1] === 'data';
+			const segments = relative.split(path.sep);
+			return segments[1] === 'data' || segments.includes('node_modules');
 		},
 		awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 25 },
 	});

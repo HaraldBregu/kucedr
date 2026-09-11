@@ -41,6 +41,7 @@ describe('app folder watcher', () => {
 		).ignored;
 		expect(ignored(path.join('/tmp/kucedr', 'apps', 'project', 'data', 'store.json'))).toBe(true);
 		expect(ignored(path.join('project', 'data', 'store.json'))).toBe(true);
+		expect(ignored(path.join('/tmp/kucedr', 'apps', 'project', 'node_modules', 'package', 'index.js'))).toBe(true);
 		expect(ignored(path.join('/tmp/kucedr', 'apps', 'project', 'manifest.json'))).toBe(false);
 		handlers.get('all')?.('addDir', 'project');
 		handlers.get('all')?.('add', 'project/manifest.json');

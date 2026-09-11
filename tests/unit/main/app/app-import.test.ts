@@ -59,6 +59,29 @@ describe('app import', () => {
 		}
 	});
 
+	it('does not copy node modules into an imported app', () => {
+		const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-source-'));
+		const source = path.join(sourceRoot, 'project');
+		fs.mkdirSync(path.join(source, 'node_modules', 'unused-package'), { recursive: true });
+		fs.writeFileSync(path.join(source, 'index.html'), '<h1>Project</h1>');
+		fs.writeFileSync(path.join(source, 'node_modules', 'unused-package', 'index.js'), 'unused');
+		fs.writeFileSync(
+			path.join(source, 'manifest.json'),
+			JSON.stringify({
+				title: 'Project',
+				description: 'Project app',
+				metadata: { version: '1.0.0', category: 'utility', entry: 'index.html' },
+			})
+		);
+
+		try {
+			expect(importApps([source], appLocation).imported).toHaveLength(1);
+			expect(fs.existsSync(path.join(appLocation, 'apps', 'project', 'node_modules'))).toBe(false);
+		} finally {
+			fs.rmSync(sourceRoot, { recursive: true, force: true });
+		}
+	});
+
 	it('imports and discovers the workspace app with its built entry', () => {
 		const source = path.join(appLocation, 'resources', 'apps', 'workspace');
 		const manifest = JSON.parse(
