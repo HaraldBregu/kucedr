@@ -140,7 +140,8 @@ export function setTrayEnabled(enabled: boolean): void {
 export function getTrayClickAction(): TrayClickAction {
 	const action = store.get('trayClickAction') as string;
 	if (TRAY_CLICK_ACTIONS.includes(action as TrayClickAction)) return action as TrayClickAction;
-	const migratedAction: TrayClickAction = action === 'start-persona' ? 'toggle-persona' : 'toggle-chat';
+	const migratedAction: TrayClickAction =
+		action === 'start-persona' ? 'toggle-persona' : 'toggle-chat';
 	store.set('trayClickAction', migratedAction);
 	return migratedAction;
 }
