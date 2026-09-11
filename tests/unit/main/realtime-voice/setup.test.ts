@@ -1,10 +1,10 @@
-const getMediaModel = jest.fn();
-const setMediaModel = jest.fn();
+const getChatbotModel = jest.fn();
+const setChatbotModel = jest.fn();
 const findModel = jest.fn();
 const realtimeVoiceModelRefs = jest.fn();
 const supportsRealtimeVoiceModel = jest.fn();
 
-jest.mock('../../../../src/main/agent/agent_store', () => ({ getMediaModel, setMediaModel }));
+jest.mock('../../../../src/main/agent/agent_store', () => ({ getChatbotModel, setChatbotModel }));
 jest.mock('../../../../src/main/models', () => ({ findModel }));
 jest.mock('../../../../src/main/models/adapters/realtime_voice', () => ({
 	realtimeVoiceModelRefs,
@@ -37,7 +37,7 @@ const customModel = {
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	getMediaModel.mockReturnValue({
+	getChatbotModel.mockReturnValue({
 		providerId: 'openai',
 		modelId: 'gpt-realtime',
 		options: { voice: 'unknown', temperature: 0.4 },
@@ -64,7 +64,7 @@ it('returns only runtime-supported catalog models and canonical options', () => 
 		options: { voice: 'marin', temperature: 0.4 },
 		supportedModels: [{ providerId: 'openai', modelId: 'gpt-realtime' }],
 	});
-	expect(setMediaModel).not.toHaveBeenCalled();
+	expect(setChatbotModel).not.toHaveBeenCalled();
 });
 
 it('canonicalizes the voice and writes the complete setup atomically', () => {
@@ -74,8 +74,8 @@ it('canonicalizes the voice and writes the complete setup atomically', () => {
 		options: { voice: 'unsupported', temperature: 0.2 },
 	});
 
-	expect(setMediaModel).toHaveBeenCalledTimes(1);
-	expect(setMediaModel).toHaveBeenCalledWith('realtimeVoice', {
+	expect(setChatbotModel).toHaveBeenCalledTimes(1);
+	expect(setChatbotModel).toHaveBeenCalledWith('realtimeVoice', {
 		providerId: 'openai',
 		modelId: 'gpt-realtime',
 		options: { voice: 'marin', temperature: 0.2 },
@@ -91,7 +91,7 @@ it('rejects catalog entries that are not supported by a runtime adapter', () => 
 			options: {},
 		})
 	).toThrow('does not support realtime voice conversations');
-	expect(setMediaModel).not.toHaveBeenCalled();
+	expect(setChatbotModel).not.toHaveBeenCalled();
 });
 
 it('rejects malformed provider and model values before catalog access', () => {
@@ -99,7 +99,7 @@ it('rejects malformed provider and model values before catalog access', () => {
 		setRealtimeVoiceSetup({ providerId: 42, modelId: 'gpt-realtime', options: {} } as never)
 	).toThrow('Invalid realtime voice provider or model.');
 	expect(supportsRealtimeVoiceModel).not.toHaveBeenCalled();
-	expect(setMediaModel).not.toHaveBeenCalled();
+	expect(setChatbotModel).not.toHaveBeenCalled();
 });
 
 it('rejects runtime model references missing from the realtime voice catalog', () => {
@@ -111,5 +111,5 @@ it('rejects runtime model references missing from the realtime voice catalog', (
 			options: {},
 		})
 	).toThrow('not available');
-	expect(setMediaModel).not.toHaveBeenCalled();
+	expect(setChatbotModel).not.toHaveBeenCalled();
 });

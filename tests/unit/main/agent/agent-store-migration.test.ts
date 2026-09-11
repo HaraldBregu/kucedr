@@ -36,23 +36,29 @@ jest.mock('electron-store', () =>
 
 import '../../../../src/main/agent/agent_store';
 
-it('migrates legacy agent settings to descriptive keys', () => {
+it('migrates legacy agent settings into chatbot and tools branches', () => {
 	expect(persisted).toMatchObject({
-		large_language_model: {
-			providerId: 'openai',
-			modelId: 'gpt-5',
-			options: { reasoning: 'high' },
+		chatbot: {
+			model: {
+				providerId: 'openai',
+				modelId: 'gpt-5',
+				options: { reasoning: 'high' },
+			},
+			voice: {
+				providerId: 'openai',
+				modelId: 'tts-1',
+				options: { voice: 'alloy' },
+			},
+			transcription: { providerId: '', modelId: '', options: {} },
 		},
-		web_search_engine: { providerId: 'brave', providerName: 'Brave', enabled: true },
-		image_generator_model: { providerId: 'openai', modelId: 'image-1', options: {} },
-		audio_generator_model: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
-		video_generator_model: { providerId: 'google', modelId: 'veo-3', options: {} },
-		text_to_speech_model: {
-			providerId: 'openai',
-			modelId: 'tts-1',
-			options: { voice: 'alloy' },
+		tools: {
+			webSearch: { providerId: 'brave', providerName: 'Brave', enabled: true },
+			image: { providerId: 'openai', modelId: 'image-1', options: {} },
+			audio: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
+			video: { providerId: 'google', modelId: 'veo-3', options: {} },
+			textToSpeech: { providerId: '', modelId: '', options: {} },
+			speechToText: { providerId: '', modelId: '', options: {} },
 		},
-		transcription_model: { providerId: '', modelId: '', options: {} },
 	});
 	expect(persisted).not.toHaveProperty('providerId');
 	expect(persisted).not.toHaveProperty('modelId');
@@ -62,4 +68,7 @@ it('migrates legacy agent settings to descriptive keys', () => {
 	expect(persisted).not.toHaveProperty('audio_model');
 	expect(persisted).not.toHaveProperty('video_model');
 	expect(persisted).not.toHaveProperty('voice_model');
+	expect(persisted).not.toHaveProperty('large_language_model');
+	expect(persisted).not.toHaveProperty('text_to_speech_model');
+	expect(persisted).not.toHaveProperty('transcription_model');
 });

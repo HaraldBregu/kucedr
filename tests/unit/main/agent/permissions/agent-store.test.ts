@@ -19,12 +19,12 @@ jest.mock('electron-store', () =>
 import {
 	AGENT_DIRECTORY,
 	addPermissionRule,
-	getMediaModel,
+	getToolModel,
 	getModelId,
 	getPermissions,
 	getProviderId,
 	resetPermissions,
-	setMediaModel,
+	setToolModel,
 	setModelId,
 	setPermissions,
 	setProviderId,
@@ -86,7 +86,7 @@ describe('agent store permissions', () => {
 	it('preserves unrelated agent settings', () => {
 		setProviderId('provider');
 		setModelId('model');
-		setMediaModel('image', { providerId: 'google', modelId: 'image', options: {} });
+		setToolModel('image', { providerId: 'google', modelId: 'image', options: {} });
 		setPermissions({
 			read: { allow: [], deny: [] },
 			write: { allow: [], deny: [] },
@@ -94,6 +94,6 @@ describe('agent store permissions', () => {
 		});
 		expect(getProviderId()).toBe('provider');
 		expect(getModelId()).toBe('model');
-		expect(getMediaModel('image')).toMatchObject({ providerId: 'google', modelId: 'image' });
+		expect(getToolModel('image')).toMatchObject({ providerId: 'google', modelId: 'image' });
 	});
 });
