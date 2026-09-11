@@ -88,27 +88,27 @@ export function SidebarInset({ className, ...props }: ComponentProps<'section'>)
 	return <section className={cn('flex min-w-0 flex-1 flex-col', className)} {...props} />;
 }
 
-export function SidebarTrigger({ className }: { className?: string }) {
+export function SidebarTrigger({ className, ...props }: ComponentProps<typeof Button>) {
 	const context = useContext(SidebarContext);
 	if (!context) throw new Error('SidebarTrigger must be rendered inside SidebarProvider.');
-	return (
-		<Tooltip>
-			<TooltipTrigger
-				render={
-					<Button
-						variant="ghost"
-						size="icon-sm"
-						className={className}
-						aria-controls="coder-sidebar"
-						aria-expanded={context.open}
-						aria-label="Toggle project navigation"
-						onClick={context.toggle}
-					>
-						<PanelLeft />
-					</Button>
-				}
-			/>
-			<TooltipContent>Toggle sidebar · ⌘/Ctrl B</TooltipContent>
-		</Tooltip>
+	return createPortal(
+		<Button
+			variant="ghost"
+			size="icon"
+			className={cn('fixed left-20 top-2.5 z-50 size-7 text-foreground hover:text-foreground', className)}
+			aria-controls="coder-sidebar"
+			aria-expanded={context.open}
+			aria-label={context.open ? 'Collapse sidebar' : 'Expand sidebar'}
+			title="Toggle Sidebar"
+			onClick={context.toggle}
+			{...props}
+		>
+			{context.open ? (
+				<PanelLeftClose className="size-4" strokeWidth={1.5} />
+			) : (
+				<PanelLeftOpen className="size-4" strokeWidth={1.5} />
+			)}
+		</Button>,
+		document.body
 	);
 }
