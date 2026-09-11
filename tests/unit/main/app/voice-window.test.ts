@@ -57,7 +57,7 @@ it('keeps a standalone voice conversation active while its window is hidden', ()
 	expect(win.hide).toHaveBeenCalledTimes(1);
 	expect(win.close).not.toHaveBeenCalled();
 	expect(win.show).toHaveBeenCalledTimes(2);
-	expect(win.focus).toHaveBeenCalledTimes(1);
+	expect(win.focus).toHaveBeenCalledTimes(2);
 	expect(win.setAlwaysOnTop).toHaveBeenCalledWith(true, 'floating');
 	expect(win.setVisibleOnAllWorkspaces).toHaveBeenCalledWith(true, {
 		visibleOnFullScreen: true,

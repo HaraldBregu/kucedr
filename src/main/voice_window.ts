@@ -86,7 +86,7 @@ export class VoiceWindow {
 		win.on('hide', () => this.onVisibilityChange?.());
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
-			win.show();
+			this.showWindow(win);
 		});
 	}
 
