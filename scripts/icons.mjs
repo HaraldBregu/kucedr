@@ -49,14 +49,32 @@ for (const size of pngSizes) {
 
 await writeFile(path.join(root, 'resources/icons/icon.png'), rendered.get(1024));
 
-const trayTemplate = await sharp(Buffer.from(sourceWithoutBackground))
+const { data: trayTemplatePixels, info: trayTemplateInfo } = await sharp(
+	Buffer.from(sourceWithoutBackground)
+)
 	.resize({
 		width: 32,
 		height: 32,
 		fit: 'contain',
 		background: { r: 0, g: 0, b: 0, alpha: 0 },
 	})
-	.tint('#ffffff')
+	.ensureAlpha()
+	.raw()
+	.toBuffer({ resolveWithObject: true });
+
+for (let index = 0; index < trayTemplatePixels.length; index += trayTemplateInfo.channels) {
+	trayTemplatePixels[index] = 255;
+	trayTemplatePixels[index + 1] = 255;
+	trayTemplatePixels[index + 2] = 255;
+}
+
+const trayTemplate = await sharp(trayTemplatePixels, {
+	raw: {
+		width: trayTemplateInfo.width,
+		height: trayTemplateInfo.height,
+		channels: trayTemplateInfo.channels,
+	},
+})
 	.png({ compressionLevel: 9 })
 	.toBuffer();
 
