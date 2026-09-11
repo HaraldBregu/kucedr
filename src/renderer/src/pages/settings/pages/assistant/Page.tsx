@@ -292,100 +292,100 @@ const AssistantPage: React.FC = () => {
 			<SettingsSection title={t('settings.modelServices.tools')}>
 				<SettingsPanel>
 					<AgentMediaModelConfiguration
-					api={window.models.image}
-					capability="text-to-image"
-					idPrefix="agent-image"
-					title={t('settings.modelServices.imageAssistantName')}
-					description={t('settings.modelServices.imageModelDescription')}
-					showIcon
-					icon={ImageIcon}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					buttonDropdown
-					showContentSeparator={false}
-					inlineAdvanced
+						api={window.models.image}
+						capability="text-to-image"
+						idPrefix="agent-image"
+						title={t('settings.modelServices.imageAssistantName')}
+						description={t('settings.modelServices.imageModelDescription')}
+						showIcon
+						icon={ImageIcon}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						buttonDropdown
+						showContentSeparator={false}
+						inlineAdvanced
 					/>
 
 					<AgentMediaModelConfiguration
-					api={window.models.sound}
-					capability="text-to-audio"
-					idPrefix="agent-audio"
-					title={t('settings.modelServices.musicCreatorName')}
-					description={t('settings.modelServices.musicModelDescription')}
-					showIcon
-					icon={Music2}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					buttonDropdown
-					showContentSeparator={false}
-					inlineAdvanced
+						api={window.models.sound}
+						capability="text-to-audio"
+						idPrefix="agent-audio"
+						title={t('settings.modelServices.musicCreatorName')}
+						description={t('settings.modelServices.musicModelDescription')}
+						showIcon
+						icon={Music2}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						buttonDropdown
+						showContentSeparator={false}
+						inlineAdvanced
 					/>
 
 					<AgentMediaModelConfiguration
-					api={window.models.video}
-					capability="text-to-video"
-					idPrefix="agent-video"
-					title={t('settings.modelServices.videoCreatorName')}
-					description={t('settings.modelServices.videoModelDescription')}
-					showIcon
-					icon={Video}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					buttonDropdown
-					showContentSeparator={false}
-					inlineAdvanced
+						api={window.models.video}
+						capability="text-to-video"
+						idPrefix="agent-video"
+						title={t('settings.modelServices.videoCreatorName')}
+						description={t('settings.modelServices.videoModelDescription')}
+						showIcon
+						icon={Video}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						buttonDropdown
+						showContentSeparator={false}
+						inlineAdvanced
 					/>
 					<Collapsible className="min-w-0 max-w-full overflow-hidden">
-					<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
-						<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-4 text-left">
-							<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-							<div className="min-w-0 flex-1">
-								<div className="truncate text-[13px] font-medium leading-4 text-foreground">
-									{t('settings.tabs.searchEngine')}
+						<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
+							<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-4 text-left">
+								<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+								<div className="min-w-0 flex-1">
+									<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+										{t('settings.tabs.searchEngine')}
+									</div>
+									<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+										{selectedSearchEngineDescription}
+									</p>
 								</div>
-								<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-									{selectedSearchEngineDescription}
-								</p>
-							</div>
-						</CollapsibleTrigger>
-						<div className="shrink-0">
-							<Select
-								value={searchSettings?.engineId ?? null}
-								onValueChange={handleSearchEngineChange}
-								disabled={!searchSettings || searchSavingEngineId !== null}
-							>
-								<SelectTrigger
-									className="w-40 max-w-full text-xs [&_svg]:size-3"
-									aria-label={t('settings.tabs.searchEngine')}
+							</CollapsibleTrigger>
+							<div className="shrink-0">
+								<Select
+									value={searchSettings?.engineId ?? null}
+									onValueChange={handleSearchEngineChange}
+									disabled={!searchSettings || searchSavingEngineId !== null}
 								>
-									<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
-										{selectedSearchEngine?.name}
-									</SelectValue>
-								</SelectTrigger>
-								<SelectContent>
-									{SEARCH_ENGINES.map((engine) => (
-										<SelectItem
-											key={engine.id}
-											value={engine.id}
-											disabled={!searchSettings?.configured[engine.id]}
-										>
-											{engine.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+									<SelectTrigger
+										className="w-40 max-w-full text-xs [&_svg]:size-3"
+										aria-label={t('settings.tabs.searchEngine')}
+									>
+										<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
+											{selectedSearchEngine?.name}
+										</SelectValue>
+									</SelectTrigger>
+									<SelectContent>
+										{SEARCH_ENGINES.map((engine) => (
+											<SelectItem
+												key={engine.id}
+												value={engine.id}
+												disabled={!searchSettings?.configured[engine.id]}
+											>
+												{engine.name}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
 						</div>
-					</div>
-					<CollapsibleContent>
-						{searchEngineError && (
-							<SettingsNotice variant="destructive" icon={AlertTriangle} className="mx-3 mt-3">
-								{searchEngineError}
-							</SettingsNotice>
-						)}
-					</CollapsibleContent>
+						<CollapsibleContent>
+							{searchEngineError && (
+								<SettingsNotice variant="destructive" icon={AlertTriangle} className="mx-3 mt-3">
+									{searchEngineError}
+								</SettingsNotice>
+							)}
+						</CollapsibleContent>
 					</Collapsible>
 				</SettingsPanel>
 			</SettingsSection>
