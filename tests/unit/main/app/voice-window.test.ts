@@ -50,8 +50,12 @@ it('creates a standalone voice window that can be started and ended independentl
 
 	expect(options).not.toHaveProperty('parent');
 	expect(options).not.toHaveProperty('modal');
+	expect(options).not.toHaveProperty('alwaysOnTop');
 	expect(voiceWindow.isActive()).toBe(false);
 	expect(win.close).toHaveBeenCalledTimes(1);
 	expect(win.show).toHaveBeenCalledTimes(1);
+	expect(win.setAlwaysOnTop).not.toHaveBeenCalled();
+	expect(win.setVisibleOnAllWorkspaces).not.toHaveBeenCalled();
+	expect(listeners.has('blur')).toBe(false);
 	expect(attachWindowHandlers).toHaveBeenCalledWith(win);
 });
