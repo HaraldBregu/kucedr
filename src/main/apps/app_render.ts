@@ -18,7 +18,6 @@ export interface AppWindow {
 
 const windows = new Map<string, AppWindow>();
 export const openAppWindows: ReadonlyMap<string, AppWindow> = windows;
-const titleBarHeight = 48;
 export function render(
 	windowFactory: WindowFactory,
 	file: string,
@@ -79,9 +78,9 @@ export function render(
 		const { width, height } = win.getContentBounds();
 		appView.setBounds({
 			x: 0,
-			y: titleBarHeight,
+			y: 0,
 			width,
-			height: Math.max(0, height - titleBarHeight),
+			height,
 		});
 	};
 	const discardFailedShell = (): void => {

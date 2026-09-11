@@ -109,9 +109,9 @@ describe('app renderer', () => {
 		expect(harness.win.contentView.addChildView).toHaveBeenCalledWith(harness.view);
 		expect(harness.view.setBounds).toHaveBeenCalledWith({
 			x: 0,
-			y: 48,
+			y: 0,
 			width: 820,
-			height: 592,
+			height: 640,
 		});
 		expect(harness.load).toHaveBeenCalledTimes(1);
 		expect(openAppWindows.get('project-order')).toMatchObject({

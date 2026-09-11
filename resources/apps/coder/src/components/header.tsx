@@ -89,7 +89,10 @@ export function Header({
 						>
 							<Copy /> Copy path
 						</DropdownMenuItem>
-						<DropdownMenuItem disabled={!coder.activeProject.available} onClick={onOpenInstructions}>
+						<DropdownMenuItem
+							disabled={!coder.activeProject.available}
+							onClick={onOpenInstructions}
+						>
 							<FileText /> Agent instructions
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
