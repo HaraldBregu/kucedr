@@ -302,60 +302,10 @@ export default function App() {
 		<SidebarProvider
 			open={sidebarOpen}
 			onOpenChange={setSidebarOpen}
-			className={cn('app-demo flex min-h-0 flex-col', theme.isDark && 'dark')}
+			className={cn('app-demo flex min-h-0', theme.isDark && 'dark')}
 			style={themeStyle}
 		>
-			<header
-				className={cn(
-					'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3',
-					isMac && 'pl-20'
-				)}
-				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
-			>
-				<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
-				<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.title}</h1>
-				<div
-					className="flex items-center gap-1"
-					style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
-				>
-					<Button size="sm" onClick={showRandomNumber}>
-						{text.generateRandomNumber}
-					</Button>
-					<Button size="sm" variant="secondary" onClick={showRandomNumber}>
-						{text.generateAnotherNumber}
-					</Button>
-					<output
-						className="min-w-24 rounded-md bg-muted px-2 py-1 text-center text-sm"
-						aria-live="polite"
-					>
-						{text.randomNumber}: {randomNumber ?? '—'}
-					</output>
-				</div>
-				<div className="min-w-0 flex-1" />
-				{!isMac && inKucedrApp ? (
-					<div
-						className="flex items-center gap-1"
-						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
-					>
-						<Button size="sm" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
-							−
-						</Button>
-						<Button
-							size="sm"
-							variant="ghost"
-							aria-label={maximized ? 'Restore window' : 'Maximize window'}
-							onClick={win.maximize}
-						>
-							{maximized ? '❐' : '□'}
-						</Button>
-						<Button size="sm" variant="ghost" aria-label="Close window" onClick={win.close}>
-							×
-						</Button>
-					</div>
-				) : null}
-			</header>
-			<div className="flex min-h-0 flex-1">
-				<Sidebar aria-label={text.sidebarNavigation}>
+			<Sidebar aria-label={text.sidebarNavigation} className={cn(isMac && 'pt-12')}>
 					<div className="border-b border-border px-4 py-3 text-sm font-semibold">Demo</div>
 					<SidebarContent className="p-2">
 						<nav className="space-y-1" aria-label={text.sidebarNavigation}>
@@ -373,8 +323,57 @@ export default function App() {
 							</a>
 						</nav>
 					</SidebarContent>
-				</Sidebar>
-				<SidebarInset>
+			</Sidebar>
+			<SidebarInset>
+				<header
+					className={cn(
+						'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3',
+						isMac && !sidebarOpen && 'pl-20'
+					)}
+					style={{ WebkitAppRegion: 'drag' } as CSSProperties}
+				>
+					<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
+					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.title}</h1>
+					<div
+						className="flex items-center gap-1"
+						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+					>
+						<Button size="sm" onClick={showRandomNumber}>
+							{text.generateRandomNumber}
+						</Button>
+						<Button size="sm" variant="secondary" onClick={showRandomNumber}>
+							{text.generateAnotherNumber}
+						</Button>
+						<output
+							className="min-w-24 rounded-md bg-muted px-2 py-1 text-center text-sm"
+							aria-live="polite"
+						>
+							{text.randomNumber}: {randomNumber ?? '—'}
+						</output>
+					</div>
+					<div className="min-w-0 flex-1" />
+					{!isMac && inKucedrApp ? (
+						<div
+							className="flex items-center gap-1"
+							style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+						>
+							<Button size="sm" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
+								−
+							</Button>
+							<Button
+								size="sm"
+								variant="ghost"
+								aria-label={maximized ? 'Restore window' : 'Maximize window'}
+								onClick={win.maximize}
+							>
+								{maximized ? '❐' : '□'}
+							</Button>
+							<Button size="sm" variant="ghost" aria-label="Close window" onClick={win.close}>
+								×
+							</Button>
+						</div>
+					) : null}
+				</header>
 					<main className="min-h-0 flex-1 overflow-y-auto">
 						<div className="min-h-full w-full">
 							<div className="min-h-full w-full space-y-5 border border-border bg-card p-6 text-card-foreground shadow-sm">
@@ -567,8 +566,7 @@ export default function App() {
 							</div>
 						</div>
 					</main>
-				</SidebarInset>
-			</div>
+			</SidebarInset>
 		</SidebarProvider>
 	);
 }
