@@ -24,7 +24,7 @@ it('streams Coding app runs back to the originating view and scopes cancellation
 	} as unknown as Coding;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
-		resolve: jest.fn().mockReturnValue('coding'),
+		resolve: jest.fn().mockReturnValue('coder'),
 	};
 	const sender = {
 		id: 23,
@@ -93,7 +93,7 @@ it('lets the Coding app select main-owned projects and read their sessions', asy
 	} as unknown as Coding;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
-		resolve: jest.fn().mockReturnValue('coding'),
+		resolve: jest.fn().mockReturnValue('coder'),
 	};
 	const sender = { id: 23 };
 	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(undefined);
@@ -153,7 +153,7 @@ it('restricts project instruction files to the Coding app and validates updates'
 	} as unknown as Coding;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
-		resolve: jest.fn().mockReturnValue('coding'),
+		resolve: jest.fn().mockReturnValue('coder'),
 	};
 	const sender = { id: 23 };
 	new CodingIpc().register(
@@ -266,7 +266,7 @@ it('allows configuration and authentication from the host and Coding app only', 
 	expect(sender.removeListener).toHaveBeenCalledWith('destroyed', expect.any(Function));
 
 	appRegistry.has.mockReturnValue(true);
-	(appRegistry as { resolve?: jest.Mock }).resolve = jest.fn().mockReturnValue('coding');
+	(appRegistry as { resolve?: jest.Mock }).resolve = jest.fn().mockReturnValue('coder');
 	await expect(handler(CodingChannels.listModels)(event)).resolves.toEqual({
 		success: true,
 		data: { providers: [] },
