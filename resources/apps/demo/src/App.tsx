@@ -288,7 +288,10 @@ export default function App() {
 	}, [language, text.loadFailed, text.themeChanged]);
 
 	return (
-		<div className={cn('app-demo flex min-h-0 flex-col', theme.isDark && 'dark')} style={themeStyle}>
+		<div
+			className={cn('app-demo flex min-h-0 flex-col', theme.isDark && 'dark')}
+			style={themeStyle}
+		>
 			<header
 				className={cn(
 					'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3',
@@ -317,188 +320,185 @@ export default function App() {
 				) : null}
 			</header>
 			<main className="min-h-0 flex-1 overflow-y-auto">
-			<div className="min-h-full w-full">
-				<div className="min-h-full w-full space-y-5 border border-border bg-card p-6 text-card-foreground shadow-sm">
-					<p className="text-lg font-semibold">{text.title}</p>
-					<p className="text-sm text-muted-foreground">
-						{inKucedrApp ? text.connected : text.disconnected}
-					</p>
-					<div className="space-y-2">
-						<p className="text-sm font-semibold">{text.theme}</p>
-						<p className="text-sm">
-							{text.themeMode}: {theme.themeMode}
+				<div className="min-h-full w-full">
+					<div className="min-h-full w-full space-y-5 border border-border bg-card p-6 text-card-foreground shadow-sm">
+						<p className="text-lg font-semibold">{text.title}</p>
+						<p className="text-sm text-muted-foreground">
+							{inKucedrApp ? text.connected : text.disconnected}
 						</p>
-						<p className="text-sm">
-							{text.resolvedDarkMode}: {theme.isDark ? 'true' : 'false'}
+						<div className="space-y-2">
+							<p className="text-sm font-semibold">{text.theme}</p>
+							<p className="text-sm">
+								{text.themeMode}: {theme.themeMode}
+							</p>
+							<p className="text-sm">
+								{text.resolvedDarkMode}: {theme.isDark ? 'true' : 'false'}
+							</p>
+							<div className="mt-2 flex flex-wrap gap-2">
+								<Button variant="outline" onClick={() => setAppTheme('light')}>
+									{text.setLight}
+								</Button>
+								<Button variant="outline" onClick={() => setAppTheme('dark')}>
+									{text.setDark}
+								</Button>
+								<Button variant="outline" onClick={() => setAppTheme('system')}>
+									{text.setSystem}
+								</Button>
+								<Button variant="secondary" onClick={refreshTheme}>
+									{text.getTheme}
+								</Button>
+								<Button onClick={printThemeData}>{text.printThemeData}</Button>
+							</div>
+						</div>
+						<div className="space-y-2">
+							<p className="text-sm font-semibold">{text.language}</p>
+							<p className="text-sm">
+								{text.currentLanguage}: {language}
+							</p>
+							<div className="mt-2 flex flex-wrap gap-2">
+								<Button variant="outline" onClick={() => setAppLanguage('en')}>
+									{text.setEnglish}
+								</Button>
+								<Button variant="outline" onClick={() => setAppLanguage('it')}>
+									{text.setItalian}
+								</Button>
+								<Button variant="secondary" onClick={refreshLanguage}>
+									{text.getLanguage}
+								</Button>
+							</div>
+						</div>
+						<div className="space-y-4 border-t border-border pt-4">
+							<p className="text-sm font-semibold">{text.storage}</p>
+							<p className="text-sm text-muted-foreground">{text.storageDescription}</p>
+							<div className="space-y-3 rounded-md border border-border p-4">
+								<p className="text-sm font-semibold">{text.storageValue}</p>
+								<label className="block space-y-1 text-sm" htmlFor="storage-key">
+									<span>{text.storageKey}</span>
+									<Input
+										id="storage-key"
+										value={storageKey}
+										disabled={storageBusy}
+										onChange={(event) => setStorageKey(event.target.value)}
+									/>
+								</label>
+								<label className="block space-y-1 text-sm" htmlFor="storage-json">
+									<span>{text.storageJson}</span>
+									<Textarea
+										id="storage-json"
+										value={storageJson}
+										disabled={storageBusy}
+										className="font-mono"
+										onChange={(event) => setStorageJson(event.target.value)}
+									/>
+								</label>
+								<div className="flex flex-wrap gap-2">
+									<Button
+										size="sm"
+										variant="outline"
+										disabled={storageBusy}
+										onClick={storeAppValue}
+									>
+										{text.storeStorageValue}
+									</Button>
+									<Button
+										size="sm"
+										variant="secondary"
+										disabled={storageBusy}
+										onClick={loadAppValue}
+									>
+										{text.loadStorageValue}
+									</Button>
+									<Button
+										size="sm"
+										variant="destructive"
+										disabled={storageBusy}
+										onClick={deleteAppValue}
+									>
+										{text.deleteStorageValue}
+									</Button>
+								</div>
+								<div className="space-y-1">
+									<p className="text-xs font-medium text-muted-foreground">{text.storageResult}</p>
+									<pre className="max-h-36 min-h-10 overflow-auto whitespace-pre-wrap break-all rounded-md bg-muted p-3 text-xs">
+										{appStoreValue || text.storageEmpty}
+									</pre>
+								</div>
+							</div>
+							<div className="space-y-3 rounded-md border border-border p-4">
+								<p className="text-sm font-semibold">{text.storageFile}</p>
+								<label className="block space-y-1 text-sm" htmlFor="storage-path">
+									<span>{text.storagePath}</span>
+									<Input
+										id="storage-path"
+										value={storagePath}
+										disabled={storageBusy}
+										onChange={(event) => setStoragePath(event.target.value)}
+									/>
+								</label>
+								<label className="block space-y-1 text-sm" htmlFor="storage-file-content">
+									<span>{text.storageFileContent}</span>
+									<Textarea
+										id="storage-file-content"
+										value={storageFileContent}
+										disabled={storageBusy}
+										onChange={(event) => setStorageFileContent(event.target.value)}
+									/>
+								</label>
+								<div className="flex flex-wrap gap-2">
+									<Button size="sm" variant="outline" disabled={storageBusy} onClick={saveAppFile}>
+										{text.saveStorageFile}
+									</Button>
+									<Button
+										size="sm"
+										variant="secondary"
+										disabled={storageBusy}
+										onClick={readAppFile}
+									>
+										{text.readStorageFile}
+									</Button>
+									<Button
+										size="sm"
+										variant="destructive"
+										disabled={storageBusy}
+										onClick={deleteAppFile}
+									>
+										{text.deleteStorageFile}
+									</Button>
+								</div>
+								<div className="space-y-1">
+									<p className="text-xs font-medium text-muted-foreground">{text.storageResult}</p>
+									<pre className="max-h-36 min-h-10 overflow-auto whitespace-pre-wrap break-all rounded-md bg-muted p-3 text-xs">
+										{appFileValue || text.storageEmpty}
+									</pre>
+								</div>
+							</div>
+							<div className="space-y-3 rounded-md border border-border p-4">
+								<div>
+									<p className="text-sm font-semibold">{text.storageTest}</p>
+									<p className="mt-1 text-sm text-muted-foreground">
+										{text.storageTestDescription}
+									</p>
+								</div>
+								<Button disabled={storageBusy} onClick={runCompleteStorageTest}>
+									{text.runStorageTest}
+								</Button>
+								{storageTestResults.length > 0 && (
+									<ul className="space-y-1 text-xs" aria-label={text.storageTestResults}>
+										{storageTestResults.map((result) => (
+											<li key={result}>✓ {result}</li>
+										))}
+									</ul>
+								)}
+							</div>
+						</div>
+						<p className="text-sm text-muted-foreground">
+							{text.status}: {status}
 						</p>
-						<div className="mt-2 flex flex-wrap gap-2">
-							<Button variant="outline" onClick={() => setAppTheme('light')}>
-								{text.setLight}
-							</Button>
-							<Button variant="outline" onClick={() => setAppTheme('dark')}>
-								{text.setDark}
-							</Button>
-							<Button variant="outline" onClick={() => setAppTheme('system')}>
-								{text.setSystem}
-							</Button>
-							<Button variant="secondary" onClick={refreshTheme}>
-								{text.getTheme}
-							</Button>
-							<Button onClick={printThemeData}>{text.printThemeData}</Button>
-						</div>
+						<span className={themeBadgeClass({ variant: theme.isDark ? 'dark' : 'light' })}>
+							{theme.isDark ? text.dark : text.light}
+						</span>
 					</div>
-					<div className="space-y-2">
-						<p className="text-sm font-semibold">{text.language}</p>
-						<p className="text-sm">
-							{text.currentLanguage}: {language}
-						</p>
-						<div className="mt-2 flex flex-wrap gap-2">
-							<Button variant="outline" onClick={() => setAppLanguage('en')}>
-								{text.setEnglish}
-							</Button>
-							<Button variant="outline" onClick={() => setAppLanguage('it')}>
-								{text.setItalian}
-							</Button>
-							<Button variant="secondary" onClick={refreshLanguage}>
-								{text.getLanguage}
-							</Button>
-						</div>
-					</div>
-					<div className="space-y-4 border-t border-border pt-4">
-						<p className="text-sm font-semibold">{text.storage}</p>
-						<p className="text-sm text-muted-foreground">{text.storageDescription}</p>
-						<div className="space-y-3 rounded-md border border-border p-4">
-							<p className="text-sm font-semibold">{text.storageValue}</p>
-							<label className="block space-y-1 text-sm" htmlFor="storage-key">
-								<span>{text.storageKey}</span>
-								<Input
-									id="storage-key"
-									value={storageKey}
-									disabled={storageBusy}
-									onChange={(event) => setStorageKey(event.target.value)}
-								/>
-							</label>
-							<label className="block space-y-1 text-sm" htmlFor="storage-json">
-								<span>{text.storageJson}</span>
-								<Textarea
-									id="storage-json"
-									value={storageJson}
-									disabled={storageBusy}
-									className="font-mono"
-									onChange={(event) => setStorageJson(event.target.value)}
-								/>
-							</label>
-							<div className="flex flex-wrap gap-2">
-								<Button
-									size="sm"
-									variant="outline"
-									disabled={storageBusy}
-									onClick={storeAppValue}
-								>
-									{text.storeStorageValue}
-								</Button>
-								<Button
-									size="sm"
-									variant="secondary"
-									disabled={storageBusy}
-									onClick={loadAppValue}
-								>
-									{text.loadStorageValue}
-								</Button>
-								<Button
-									size="sm"
-									variant="destructive"
-									disabled={storageBusy}
-									onClick={deleteAppValue}
-								>
-									{text.deleteStorageValue}
-								</Button>
-							</div>
-							<div className="space-y-1">
-								<p className="text-xs font-medium text-muted-foreground">{text.storageResult}</p>
-								<pre className="max-h-36 min-h-10 overflow-auto whitespace-pre-wrap break-all rounded-md bg-muted p-3 text-xs">
-									{appStoreValue || text.storageEmpty}
-								</pre>
-							</div>
-						</div>
-						<div className="space-y-3 rounded-md border border-border p-4">
-							<p className="text-sm font-semibold">{text.storageFile}</p>
-							<label className="block space-y-1 text-sm" htmlFor="storage-path">
-								<span>{text.storagePath}</span>
-								<Input
-									id="storage-path"
-									value={storagePath}
-									disabled={storageBusy}
-									onChange={(event) => setStoragePath(event.target.value)}
-								/>
-							</label>
-							<label className="block space-y-1 text-sm" htmlFor="storage-file-content">
-								<span>{text.storageFileContent}</span>
-								<Textarea
-									id="storage-file-content"
-									value={storageFileContent}
-									disabled={storageBusy}
-									onChange={(event) => setStorageFileContent(event.target.value)}
-								/>
-							</label>
-							<div className="flex flex-wrap gap-2">
-								<Button
-									size="sm"
-									variant="outline"
-									disabled={storageBusy}
-									onClick={saveAppFile}
-								>
-									{text.saveStorageFile}
-								</Button>
-								<Button
-									size="sm"
-									variant="secondary"
-									disabled={storageBusy}
-									onClick={readAppFile}
-								>
-									{text.readStorageFile}
-								</Button>
-								<Button
-									size="sm"
-									variant="destructive"
-									disabled={storageBusy}
-									onClick={deleteAppFile}
-								>
-									{text.deleteStorageFile}
-								</Button>
-							</div>
-							<div className="space-y-1">
-								<p className="text-xs font-medium text-muted-foreground">{text.storageResult}</p>
-								<pre className="max-h-36 min-h-10 overflow-auto whitespace-pre-wrap break-all rounded-md bg-muted p-3 text-xs">
-									{appFileValue || text.storageEmpty}
-								</pre>
-							</div>
-						</div>
-						<div className="space-y-3 rounded-md border border-border p-4">
-							<div>
-								<p className="text-sm font-semibold">{text.storageTest}</p>
-								<p className="mt-1 text-sm text-muted-foreground">{text.storageTestDescription}</p>
-							</div>
-							<Button disabled={storageBusy} onClick={runCompleteStorageTest}>
-								{text.runStorageTest}
-							</Button>
-							{storageTestResults.length > 0 && (
-								<ul className="space-y-1 text-xs" aria-label={text.storageTestResults}>
-									{storageTestResults.map((result) => (
-										<li key={result}>✓ {result}</li>
-									))}
-								</ul>
-							)}
-						</div>
-					</div>
-					<p className="text-sm text-muted-foreground">
-						{text.status}: {status}
-					</p>
-					<span className={themeBadgeClass({ variant: theme.isDark ? 'dark' : 'light' })}>
-						{theme.isDark ? text.dark : text.light}
-					</span>
 				</div>
-			</div>
 			</main>
 		</div>
 	);

@@ -91,7 +91,12 @@ export function Header({
 			</button>
 			{!isMac && isKucedr() ? (
 				<div className="window-controls">
-					<button className="icon-button" onClick={win.minimize} aria-label="Minimize window" title="Minimize">
+					<button
+						className="icon-button"
+						onClick={win.minimize}
+						aria-label="Minimize window"
+						title="Minimize"
+					>
 						<Minus size={15} />
 					</button>
 					<button
@@ -102,7 +107,12 @@ export function Header({
 					>
 						{maximized ? <Copy size={13} /> : <Square size={14} />}
 					</button>
-					<button className="icon-button" onClick={win.close} aria-label="Close window" title="Close">
+					<button
+						className="icon-button"
+						onClick={win.close}
+						aria-label="Close window"
+						title="Close"
+					>
 						<X size={15} />
 					</button>
 				</div>
