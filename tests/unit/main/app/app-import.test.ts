@@ -85,7 +85,11 @@ describe('app import', () => {
 		fs.mkdirSync(installed, { recursive: true });
 		fs.mkdirSync(source, { recursive: true });
 		fs.writeFileSync(path.join(installed, 'old.txt'), 'old');
+		fs.mkdirSync(path.join(installed, 'data'), { recursive: true });
+		fs.writeFileSync(path.join(installed, 'data', 'store.json'), '{"saved":true}');
 		fs.writeFileSync(path.join(source, 'index.html'), 'replacement');
+		fs.mkdirSync(path.join(source, 'data'), { recursive: true });
+		fs.writeFileSync(path.join(source, 'data', 'store.json'), '{"untrusted":true}');
 		fs.writeFileSync(
 			path.join(source, 'manifest.json'),
 			JSON.stringify({
@@ -99,6 +103,7 @@ describe('app import', () => {
 			expect(importApps([source], appLocation).imported).toHaveLength(1);
 			expect(fs.readFileSync(path.join(installed, 'index.html'), 'utf8')).toBe('replacement');
 			expect(fs.existsSync(path.join(installed, 'old.txt'))).toBe(false);
+			expect(fs.readFileSync(path.join(installed, 'data', 'store.json'), 'utf8')).toBe('{"saved":true}');
 			expect(fs.readdirSync(path.join(appLocation, 'apps'))).toEqual(['project']);
 		} finally {
 			fs.rmSync(sourceRoot, { recursive: true, force: true });

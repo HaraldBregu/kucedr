@@ -1,4 +1,5 @@
 import { watch } from 'chokidar';
+import path from 'node:path';
 import { appsRoot } from './app_root';
 
 const updateDelay = 150;
@@ -10,9 +11,11 @@ export function watchApps(
 ): () => Promise<void> {
 	let updateTimer: ReturnType<typeof setTimeout> | undefined;
 	let stopped = false;
-	const watcher = watch(appsRoot(appLocation), {
+	const root = appsRoot(appLocation);
+	const watcher = watch(root, {
 		ignoreInitial: true,
 		followSymlinks: false,
+		ignored: (watchPath) => path.relative(root, watchPath).split(path.sep)[1] === 'data',
 		awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 25 },
 	});
 

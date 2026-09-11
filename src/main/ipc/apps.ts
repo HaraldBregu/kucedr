@@ -68,7 +68,7 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 				defaultId: 0,
 				noLink: true,
 				message: `Delete “${app.title}”?`,
-				detail: 'This permanently deletes the app from Kucedr. This action cannot be undone.',
+				detail: 'This permanently deletes the app and all of its stored data from Kucedr. This action cannot be undone.',
 			};
 			const result = await dialog.showMessageBox(window, options);
 			if (result.response !== 1) return false;

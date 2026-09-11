@@ -35,6 +35,7 @@ export class AppValueStorage {
 		const existing = this.stores.get(appId);
 		if (existing) {
 			this.assertDirectory(this.root);
+			this.assertDirectory(this.appDirectory(appId));
 			this.assertDirectory(this.namespace(appId));
 			this.assertStoreFile(existing.path);
 			return existing;
@@ -58,6 +59,13 @@ export class AppValueStorage {
 		const directory = this.namespace(appId);
 		mkdirSync(this.root, { recursive: true });
 		this.assertDirectory(this.root);
+		const appDirectory = this.appDirectory(appId);
+		try {
+			mkdirSync(appDirectory);
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+		}
+		this.assertDirectory(appDirectory);
 		try {
 			mkdirSync(directory);
 		} catch (error) {
@@ -67,9 +75,13 @@ export class AppValueStorage {
 		return directory;
 	}
 
-	private namespace(appId: string): string {
+	private appDirectory(appId: string): string {
 		if (!isAppId(appId)) throw new Error('Invalid app ID.');
-		return path.join(this.root, appId, 'data');
+		return path.join(this.root, appId);
+	}
+
+	private namespace(appId: string): string {
+		return path.join(this.appDirectory(appId), 'data');
 	}
 
 	private assertDirectory(directory: string): void {

@@ -21,6 +21,7 @@ describe('app storage', () => {
 		storage.set('draw', 'config', { color: 'blue', size: 2 });
 		storage.set('demo', 'config', { color: 'red' });
 
+		expect(fs.existsSync(path.join(root, 'draw', 'data', 'store.json'))).toBe(true);
 		expect(storage.get('draw', 'config')).toEqual({ color: 'blue', size: 2 });
 		expect(storage.get('demo', 'config')).toEqual({ color: 'red' });
 		storage.delete('draw', 'config');
@@ -53,6 +54,7 @@ describe('app storage', () => {
 	it('round-trips, overwrites, and deletes nested binary files', async () => {
 		const storage = new AppStorage(root);
 		await storage.writeFile('draw', 'scenes/current.bin', new Uint8Array([1, 2, 3]));
+		expect(fs.existsSync(path.join(root, 'draw', 'data', 'files', 'scenes', 'current.bin'))).toBe(true);
 		expect(await storage.readFile('draw', 'scenes/current.bin')).toEqual(new Uint8Array([1, 2, 3]));
 
 		await storage.writeFile('draw', 'scenes/current.bin', new Uint8Array([4, 5]));

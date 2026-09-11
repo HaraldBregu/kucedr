@@ -72,13 +72,27 @@ export function importApps(sources: string[], appLocation?: string): AppImportRe
 		const token = randomUUID();
 		const staging = path.join(root, `.${id}-${token}.import`);
 		const backup = path.join(root, `.${id}-${token}.backup`);
+		const stagedData = path.join(staging, 'data');
 		let movedExisting = false;
 		try {
 			cpSync(sourcePath, staging, { recursive: true, errorOnExist: true, force: false });
 			if (!readApp(staging)) throw new Error('Copied app is invalid.');
+			rmSync(stagedData, { recursive: true, force: true });
 			if (existsSync(destination)) {
 				renameSync(destination, backup);
 				movedExisting = true;
+				const existingData = path.join(backup, 'data');
+				if (existsSync(existingData)) {
+					const stats = lstatSync(existingData);
+					if (stats.isSymbolicLink() || !stats.isDirectory()) {
+						throw new Error('Existing app data directory is invalid.');
+					}
+					cpSync(existingData, stagedData, {
+						recursive: true,
+						errorOnExist: true,
+						force: false,
+					});
+				}
 			}
 			try {
 				renameSync(staging, destination);
