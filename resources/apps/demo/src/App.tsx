@@ -5,6 +5,7 @@ import {
 	app,
 	isKucedr,
 	isAppStoreValue,
+	win,
 	type AppLanguage,
 	type AppTheme,
 	type AppThemeColors,
@@ -59,6 +60,9 @@ const initialStorageKey = 'demo';
 const initialStorageJson = '{\n  "label": "Kucedr demo",\n  "count": 1\n}';
 const initialStoragePath = 'demo/message.txt';
 const initialStorageFileContent = 'Saved by the Kucedr demo app.';
+const isMac =
+	typeof navigator !== 'undefined' &&
+	(navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac'));
 const themeBadgeClass = cva(
 	'inline-flex h-9 items-center rounded-full border px-4 text-sm font-semibold',
 	{
@@ -86,11 +90,18 @@ export default function App() {
 	const [appFileValue, setAppFileValue] = useState('');
 	const [storageTestResults, setStorageTestResults] = useState<string[]>([]);
 	const [storageBusy, setStorageBusy] = useState(false);
+	const [maximized, setMaximized] = useState(false);
 	const inKucedrApp = isKucedr();
 	const text = translations[language] ?? translations.en;
 	const themeStyle = Object.fromEntries(
 		Object.entries(theme.colors).map(([name, value]) => [`--${name}`, value])
 	) as CSSProperties;
+
+	useEffect(() => {
+		if (!inKucedrApp) return;
+		void win.isMaximized().then(setMaximized);
+		return win.onMaximizeChange(setMaximized);
+	}, [inKucedrApp]);
 
 	const ensureKucedrApp = () => {
 		if (!isKucedr()) {
@@ -277,7 +288,35 @@ export default function App() {
 	}, [language, text.loadFailed, text.themeChanged]);
 
 	return (
-		<main className={cn('app-demo overflow-y-auto', theme.isDark && 'dark')} style={themeStyle}>
+		<div className={cn('app-demo flex min-h-0 flex-col', theme.isDark && 'dark')} style={themeStyle}>
+			<header
+				className={cn(
+					'flex h-12 shrink-0 items-center gap-2 border-b border-border bg-card px-3',
+					isMac && 'pl-20'
+				)}
+				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
+			>
+				<h1 className="min-w-0 flex-1 truncate text-sm font-medium">{text.title}</h1>
+				{!isMac && inKucedrApp ? (
+					<div className="flex items-center gap-1 [webkit-app-region:no-drag]">
+						<Button size="sm" variant="ghost" aria-label="Minimize window" onClick={win.minimize}>
+							−
+						</Button>
+						<Button
+							size="sm"
+							variant="ghost"
+							aria-label={maximized ? 'Restore window' : 'Maximize window'}
+							onClick={win.maximize}
+						>
+							{maximized ? '❐' : '□'}
+						</Button>
+						<Button size="sm" variant="ghost" aria-label="Close window" onClick={win.close}>
+							×
+						</Button>
+					</div>
+				) : null}
+			</header>
+			<main className="min-h-0 flex-1 overflow-y-auto">
 			<div className="min-h-full w-full">
 				<div className="min-h-full w-full space-y-5 border border-border bg-card p-6 text-card-foreground shadow-sm">
 					<p className="text-lg font-semibold">{text.title}</p>
@@ -460,6 +499,7 @@ export default function App() {
 					</span>
 				</div>
 			</div>
-		</main>
+			</main>
+		</div>
 	);
 }
