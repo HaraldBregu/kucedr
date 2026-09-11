@@ -79,7 +79,7 @@ export function importApps(sources: string[], appLocation?: string): AppImportRe
 				recursive: true,
 				errorOnExist: true,
 				force: false,
-				filter: (path) => path.basename(path) !== 'node_modules',
+				filter: (sourceFile) => path.basename(sourceFile) !== 'node_modules',
 			});
 			if (!readApp(staging)) throw new Error('Copied app is invalid.');
 			rmSync(stagedData, { recursive: true, force: true });
