@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+import { isKucedr, win } from '@kucedr/sdk';
 import { Brief } from './components/brief';
 import { Canvas } from './components/canvas';
 import { Header } from './components/header';
@@ -8,6 +10,11 @@ import { useTheme } from './theme';
 export default function App() {
 	useTheme();
 	const studio = useStudio();
+	useEffect(() => {
+		if (!isKucedr()) return;
+		win.setTitlebarOptions({ title: 'Architect', leftButtons: [], rightButtons: [] });
+		return () => win.setTitlebarOptions(null);
+	}, []);
 	return (
 		<div className="architect">
 			<Header
