@@ -2,7 +2,6 @@ import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { isKucedr, win } from '@kucedr/sdk';
 
 import { Configuration } from '@/components/configuration';
-import { Header } from '@/components/header';
 import { Instructions } from '@/components/instructions';
 import { ProjectSidebar } from '@/components/sidebar';
 import { Sidebar, SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -58,11 +57,6 @@ export default function App() {
 
 	useEffect(() => {
 		if (!isKucedr()) return;
-		return () => win.setTitlebarOptions(null);
-	}, []);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
 		return win.onTitlebarButtonClick((buttonId) => {
 			if (buttonId === 'toggle-sidebar') setSidebarVisibility(!coder.leftOpen);
 		});
@@ -105,10 +99,7 @@ export default function App() {
 								onDone={() => void openPage('workspace')}
 							/>
 						) : (
-							<>
-								<Header coder={coder} onOpenInstructions={() => void openPage('instructions')} />
-								<Workspace coder={coder} />
-							</>
+							<Workspace coder={coder} />
 						)}
 					</SidebarInset>
 				</main>
