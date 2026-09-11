@@ -50,6 +50,7 @@ export default function App() {
 							coder={coder}
 							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenInstructions={() => void openPage('instructions')}
+							onOpenSidebar={() => setSidebarVisibility(true)}
 							sidebarOpen={coder.leftOpen}
 						/>
 						<div className="flex min-h-0 flex-1 flex-col">

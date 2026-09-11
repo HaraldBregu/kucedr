@@ -35,11 +35,13 @@ export function Header({
 	coder,
 	onOpenConfiguration,
 	onOpenInstructions,
+	onOpenSidebar,
 	sidebarOpen,
 }: {
 	coder: CoderController;
 	onOpenConfiguration: () => void;
 	onOpenInstructions: () => void;
+	onOpenSidebar: () => void;
 	sidebarOpen: boolean;
 }): React.JSX.Element {
 	const inKucedr = isKucedr();
@@ -78,7 +80,10 @@ export function Header({
 					className="rounded-full text-muted-foreground hover:text-foreground"
 					aria-label="Search Coder workspaces"
 					title="Search Coder workspaces"
-					onClick={() => document.getElementById('coder-sidebar-search')?.focus()}
+					onClick={() => {
+						onOpenSidebar();
+						requestAnimationFrame(() => document.getElementById('coder-sidebar-search')?.focus());
+					}}
 				>
 					<Search className="size-4" strokeWidth={1.8} />
 				</Button>

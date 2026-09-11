@@ -1,4 +1,5 @@
 import { ChevronRight, FolderGit2, FolderPlus, Search, Settings } from 'lucide-react';
+import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -32,7 +33,7 @@ export function ProjectSidebar({
 			<div
 				aria-hidden="true"
 				className="h-12 shrink-0 border-b border-sidebar-border/50"
-				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 			/>
 			<SidebarHeader className="px-2 pb-2 pt-2">
 				<div className="flex min-h-9 items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
