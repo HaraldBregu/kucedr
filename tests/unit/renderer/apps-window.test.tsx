@@ -82,6 +82,7 @@ it('offers deletion from the detail page options menu', async () => {
 	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.deleteAction' }));
 
 	expect(window.apps.delete).toHaveBeenCalledWith('my-app');
+	expect(await screen.findByText('Apps list')).toBeInTheDocument();
 });
 
 it('saves edited dimensions and behavior for only the selected app', async () => {
