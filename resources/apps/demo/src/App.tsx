@@ -277,22 +277,7 @@ export default function App() {
 	}, [language, text.loadFailed, text.themeChanged]);
 
 	return (
-		<div className={cn('app-demo flex min-h-0 flex-col', theme.isDark && 'dark')} style={themeStyle}>
-			<header
-				className="flex h-12 shrink-0 items-center gap-2 bg-transparent px-3"
-				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
-			>
-				<h1 className="flex-1 text-sm font-medium">Demo</h1>
-				<Button
-					variant="ghost"
-					size="sm"
-					className="[webkit-app-region:no-drag]"
-					onClick={() => setStatus('Demo button clicked.')}
-				>
-					Demo
-				</Button>
-			</header>
-			<main className="min-h-0 flex-1 overflow-y-auto">
+		<main className={cn('app-demo overflow-y-auto', theme.isDark && 'dark')} style={themeStyle}>
 			<div className="min-h-full w-full">
 				<div className="min-h-full w-full space-y-5 border border-border bg-card p-6 text-card-foreground shadow-sm">
 					<p className="text-lg font-semibold">{text.title}</p>
@@ -475,7 +460,6 @@ export default function App() {
 					</span>
 				</div>
 			</div>
-			</main>
-		</div>
+		</main>
 	);
 }
