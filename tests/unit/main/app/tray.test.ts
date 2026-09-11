@@ -10,7 +10,11 @@ jest.mock('electron', () => ({
 		destroy = jest.fn();
 	},
 	Menu: { buildFromTemplate },
-	nativeImage: { createFromPath: jest.fn(() => ({ resize: jest.fn(() => ({})) })) },
+	nativeImage: {
+		createFromPath: jest.fn(() => ({
+			resize: jest.fn(() => ({ setTemplateImage: jest.fn() })),
+		})),
+	},
 }));
 
 jest.mock('../../../../src/main/i18n', () => ({
