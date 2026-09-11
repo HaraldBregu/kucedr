@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { CodingProjectStore } from '../../../../src/main/coding/projects';
 
-it('persists canonical external projects and removes only their metadata', () => {
+it('tracks canonical external projects in memory and removes only their metadata', () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
 	const projectDirectory = path.join(root, 'project');
 	const aliasDirectory = path.join(root, 'project-alias');
@@ -21,6 +21,7 @@ it('persists canonical external projects and removes only their metadata', () =>
 	});
 	expect(store.add(aliasDirectory).id).toBe(seeded[0].id);
 	expect(store.list()).toHaveLength(1);
+	expect(new CodingProjectStore([]).list()).toEqual([]);
 	expect(store.remove(seeded[0].id)).toBe(true);
 	expect(store.list()).toEqual([]);
 	expect(existsSync(projectDirectory)).toBe(true);
