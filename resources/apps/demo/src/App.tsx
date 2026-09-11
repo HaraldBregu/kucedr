@@ -91,6 +91,7 @@ export default function App() {
 	const [storageTestResults, setStorageTestResults] = useState<string[]>([]);
 	const [storageBusy, setStorageBusy] = useState(false);
 	const [maximized, setMaximized] = useState(false);
+	const [randomNumber, setRandomNumber] = useState<number | null>(null);
 	const inKucedrApp = isKucedr();
 	const text = translations[language] ?? translations.en;
 	const themeStyle = Object.fromEntries(
@@ -259,6 +260,8 @@ export default function App() {
 		});
 	};
 
+	const showRandomNumber = () => setRandomNumber(Math.floor(Math.random() * 100) + 1);
+
 	useEffect(() => {
 		if (!isKucedr()) return;
 
@@ -326,6 +329,18 @@ export default function App() {
 						<p className="text-sm text-muted-foreground">
 							{inKucedrApp ? text.connected : text.disconnected}
 						</p>
+						<div className="space-y-3 rounded-md border border-border p-4">
+							<p className="text-sm font-semibold">{text.randomNumber}</p>
+							<div className="flex flex-wrap gap-2">
+								<Button onClick={showRandomNumber}>{text.generateRandomNumber}</Button>
+								<Button variant="secondary" onClick={showRandomNumber}>
+									{text.generateAnotherNumber}
+								</Button>
+							</div>
+							<output className="block text-sm" aria-live="polite">
+								{text.randomNumber}: {randomNumber ?? '—'}
+							</output>
+						</div>
 						<div className="space-y-2">
 							<p className="text-sm font-semibold">{text.theme}</p>
 							<p className="text-sm">
