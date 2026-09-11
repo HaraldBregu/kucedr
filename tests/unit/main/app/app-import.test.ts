@@ -35,15 +35,24 @@ describe('app import', () => {
 		expect(fs.readFileSync(path.join(installed, 'index.html'), 'utf8')).toBe('installed');
 	});
 
-	it.each(['coder'])('rejects the privileged %s app identifier', (id) => {
+	it('imports the coder app identifier', () => {
 		const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-source-'));
-		const source = path.join(sourceRoot, id);
+		const source = path.join(sourceRoot, 'coder');
 		fs.mkdirSync(source, { recursive: true });
+		fs.writeFileSync(path.join(source, 'index.html'), '<h1>Coder</h1>');
+		fs.writeFileSync(
+			path.join(source, 'manifest.json'),
+			JSON.stringify({
+				title: 'Coder',
+				description: 'A coding app',
+				metadata: { version: '1.0.0', category: 'utility', entry: 'index.html' },
+			})
+		);
 
 		try {
 			expect(importApps([source], appLocation)).toMatchObject({
-				imported: [],
-				skipped: [{ sourcePath: source, reason: 'Reserved app folder name.' }],
+				imported: [expect.objectContaining({ id: 'coder' })],
+				skipped: [],
 			});
 		} finally {
 			fs.rmSync(sourceRoot, { recursive: true, force: true });
