@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactElement } from 'react';
+import {
+	useCallback,
+	useEffect,
+	useLayoutEffect,
+	useRef,
+	useState,
+	type ReactElement,
+} from 'react';
 import type { AgentPromptInputCapabilities } from '@shared/agent_types';
 import { AnimatePresence, motion, resize } from 'motion/react';
 import {
@@ -316,7 +323,7 @@ function VoiceButton({
 	const tooltip =
 		mode === 'disabled'
 			? 'Choose a speech-to-text provider and model in Settings.'
-			: disabledReason ?? label;
+			: (disabledReason ?? label);
 
 	return (
 		<PromptInputAction tooltip={tooltip} showTooltipWhenDisabled={isDisabled}>
@@ -448,7 +455,10 @@ function PageContent(): ReactElement {
 		const composer = composerRef.current;
 		if (!workspace || !composer) return;
 		const updateSpacing = (): void => {
-			workspace.style.setProperty('--composer-height', `${composer.getBoundingClientRect().height}px`);
+			workspace.style.setProperty(
+				'--composer-height',
+				`${composer.getBoundingClientRect().height}px`
+			);
 			const scrollState = chatScrollRef.current?.state;
 			if (scrollState?.isAtBottom) scrollState.scrollTop = scrollState.calculatedTargetScrollTop;
 		};
@@ -554,13 +564,7 @@ function PageContent(): ReactElement {
 		) {
 			void cancelRecordingSession();
 		}
-	}, [
-		cancelDictationSession,
-		cancelRecordingSession,
-		dictationStatus,
-		mode,
-		recorderStatus,
-	]);
+	}, [cancelDictationSession, cancelRecordingSession, dictationStatus, mode, recorderStatus]);
 
 	useEffect(() => () => setMode('chat'), [setMode]);
 
@@ -822,9 +826,7 @@ function PageContent(): ReactElement {
 								className={showEmptyConversation ? 'h-0' : 'h-[var(--composer-height,7rem)]'}
 							/>
 						</ChatContainerContent>
-		<div
-			className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center"
-		>
+						<div className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center">
 							<ScrollButton
 								type="button"
 								aria-label="Scroll to latest"
