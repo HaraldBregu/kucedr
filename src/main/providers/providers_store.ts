@@ -4,6 +4,7 @@ import path from 'node:path';
 import { safeStorage } from 'electron';
 import Store from 'electron-store';
 import { userDataLocation } from '../shared/user_data_location';
+import { isSafeStorageAvailable } from '../shared/safe_storage';
 import type { ProviderCredentialKind, StoredProvider } from '../../shared/provider_types';
 import type { PersistedStorageProvider } from '../storage/providers/types';
 import type { ProvidersStoreState } from './providers_types';
@@ -77,7 +78,7 @@ function migrateStorageProviders(): void {
 	const encrypted = [state.storage, state.storageProviders, state.encryptedProviders].find(
 		(value): value is string => typeof value === 'string'
 	);
-	if (encrypted && safeStorage.isEncryptionAvailable()) {
+	if (encrypted && isSafeStorageAvailable()) {
 		try {
 			const storage = JSON.parse(
 				safeStorage.decryptString(Buffer.from(encrypted, 'base64'))
@@ -101,7 +102,12 @@ function migrateStorageProviders(): void {
 		} catch {}
 	}
 	const legacyPath = path.resolve(userDataLocation(), 'settings', 'storage.json');
-	if (!existsSync(legacyPath) || providersStore.get('storage').length > 0) return;
+	if (
+		!existsSync(legacyPath) ||
+		providersStore.get('storage').length > 0 ||
+		!isSafeStorageAvailable()
+	)
+		return;
 	try {
 		const legacy = JSON.parse(readFileSync(legacyPath, 'utf8')) as { encryptedProviders?: unknown };
 		if (typeof legacy.encryptedProviders !== 'string' || !legacy.encryptedProviders) return;
