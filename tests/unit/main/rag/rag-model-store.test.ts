@@ -72,14 +72,9 @@ beforeEach(() => {
 	};
 	getAgentProviderId.mockReturnValue('openai');
 	getAgentModelId.mockReturnValue('gpt-5');
-	getAgentVoiceModel.mockImplementation(
-		(kind: keyof typeof voiceModels) => voiceModels[kind]
-	);
+	getAgentVoiceModel.mockImplementation((kind: keyof typeof voiceModels) => voiceModels[kind]);
 	setAgentVoiceModel.mockImplementation(
-		(
-			kind: keyof typeof voiceModels,
-			settings: (typeof voiceModels)[keyof typeof voiceModels]
-		) => {
+		(kind: keyof typeof voiceModels, settings: (typeof voiceModels)[keyof typeof voiceModels]) => {
 			voiceModels[kind] = settings as never;
 		}
 	);

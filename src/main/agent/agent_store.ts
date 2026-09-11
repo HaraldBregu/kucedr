@@ -114,13 +114,13 @@ const chatbotTextToText =
 		? persisted.chatbot.textToText
 		: persisted.chatbot?.model?.providerId || persisted.chatbot?.model?.modelId
 			? persisted.chatbot.model
-		: persisted.large_language_model?.providerId || persisted.large_language_model?.modelId
-			? persisted.large_language_model
-			: {
-					providerId: persisted.providerId ?? '',
-					modelId: persisted.modelId ?? '',
-					options: persisted.modelOptions ?? {},
-				};
+			: persisted.large_language_model?.providerId || persisted.large_language_model?.modelId
+				? persisted.large_language_model
+				: {
+						providerId: persisted.providerId ?? '',
+						modelId: persisted.modelId ?? '',
+						options: persisted.modelOptions ?? {},
+					};
 store.store = {
 	chatbot: {
 		textToText: chatbotTextToText,
