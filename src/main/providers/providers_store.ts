@@ -12,7 +12,7 @@ const defaults: ProvidersStoreState = {
 	models: [],
 	databases: [],
 	search_engines: [],
-	storage: '',
+	storage: [],
 };
 
 export const providersStore = new Store<ProvidersStoreState>({
@@ -69,22 +69,52 @@ function writeSection(kind: ProviderCredentialKind, value: StoredProvider[]): vo
 
 function migrateStorageProviders(): void {
 	const state = providersStore.store as ProvidersStoreState & {
+		storage?: unknown;
 		encryptedProviders?: unknown;
 		storageProviders?: unknown;
 	};
-	if (typeof state.encryptedProviders === 'string' || typeof state.storageProviders === 'string') {
-		const { encryptedProviders, storageProviders, ...providers } = state;
-		providersStore.store = {
-			...providers,
-			storage: providers.storage || storageProviders || encryptedProviders || '',
-		};
+	const encrypted = [state.storage, state.storageProviders, state.encryptedProviders].find(
+		(value): value is string => typeof value === 'string'
+	);
+	if (encrypted && safeStorage.isEncryptionAvailable()) {
+		try {
+			const storage = JSON.parse(
+				safeStorage.decryptString(Buffer.from(encrypted, 'base64'))
+			) as Array<Record<string, unknown>>;
+			if (!Array.isArray(storage)) return;
+			const { encryptedProviders: _encryptedProviders, storageProviders: _storageProviders, ...providers } =
+				state;
+			providersStore.store = {
+				...providers,
+				storage: storage.map(({ secretAccessKey, ...provider }) => ({
+					...provider,
+					encryptedSecretAccessKey:
+						typeof secretAccessKey === 'string'
+							? safeStorage.encryptString(secretAccessKey).toString('base64')
+							: '',
+				})),
+			};
+		} catch {}
 	}
 	const legacyPath = path.resolve(userDataLocation(), 'settings', 'storage.json');
-	if (!existsSync(legacyPath) || providersStore.get('storage')) return;
+	if (!existsSync(legacyPath) || providersStore.get('storage').length > 0) return;
 	try {
 		const legacy = JSON.parse(readFileSync(legacyPath, 'utf8')) as { encryptedProviders?: unknown };
 		if (typeof legacy.encryptedProviders !== 'string' || !legacy.encryptedProviders) return;
-		providersStore.set('storage', legacy.encryptedProviders);
+		const storage = JSON.parse(
+			safeStorage.decryptString(Buffer.from(legacy.encryptedProviders, 'base64'))
+		) as Array<Record<string, unknown>>;
+		if (!Array.isArray(storage)) return;
+		providersStore.set(
+			'storage',
+			storage.map(({ secretAccessKey, ...provider }) => ({
+				...provider,
+				encryptedSecretAccessKey:
+					typeof secretAccessKey === 'string'
+						? safeStorage.encryptString(secretAccessKey).toString('base64')
+						: '',
+			}))
+		);
 		if (typeof providersStore.path === 'string') {
 			restrictProviderPermissions(path.dirname(providersStore.path), providersStore.path);
 		}

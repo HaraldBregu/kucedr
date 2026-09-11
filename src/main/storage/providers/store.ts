@@ -7,7 +7,11 @@ import { restrictSettingsFile } from '../../shared/restrict_settings_file';
 import { normalizeStorageProvider } from './normalize';
 import { storageProviderIdentifier } from './identifier';
 import { storageProviderSummary } from './summary';
-import type { StorageProvidersState, StoredStorageProvider } from './types';
+import type {
+	PersistedStorageProvider,
+	StorageProvidersState,
+	StoredStorageProvider,
+} from './types';
 
 export class StorageProviderStore {
 	constructor(
@@ -60,16 +64,18 @@ export class StorageProviderStore {
 	}
 
 	private read(): StoredStorageProvider[] {
-		const encrypted = this.store.get('storage');
-		if (!encrypted) return [];
+		const storage = this.store.get('storage');
+		if (!storage.length) return [];
 		this.assertAvailable();
 		try {
-			const values: unknown = JSON.parse(
-				this.encryption.decryptString(Buffer.from(encrypted, 'base64'))
-			);
-			if (!Array.isArray(values)) throw new Error('Invalid storage provider data.');
-			return values.map((value) => {
-				const provider = normalizeStorageProvider(value);
+			return storage.map((value) => {
+				const { encryptedSecretAccessKey, ...metadata } = value;
+				const provider = normalizeStorageProvider({
+					...metadata,
+					secretAccessKey: this.encryption.decryptString(
+						Buffer.from(encryptedSecretAccessKey, 'base64')
+					),
+				});
 				if (!provider.id || !provider.secretAccessKey)
 					throw new Error('Invalid storage provider data.');
 				return { ...provider, id: provider.id, secretAccessKey: provider.secretAccessKey };
@@ -81,8 +87,13 @@ export class StorageProviderStore {
 
 	private write(providers: StoredStorageProvider[]): void {
 		this.assertAvailable();
-		const encrypted = this.encryption.encryptString(JSON.stringify(providers)).toString('base64');
-		this.store.set('storage', encrypted);
+		const storage: PersistedStorageProvider[] = providers.map(
+			({ secretAccessKey, ...provider }) => ({
+				...provider,
+				encryptedSecretAccessKey: this.encryption.encryptString(secretAccessKey).toString('base64'),
+			})
+		);
+		this.store.set('storage', storage);
 		restrictSettingsFile(this.store.path);
 	}
 

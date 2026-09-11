@@ -4,6 +4,10 @@ export type StoredStorageProvider = Omit<StorageProvider, 'hasSecretAccessKey'> 
 	secretAccessKey: string;
 };
 
+export type PersistedStorageProvider = Omit<StoredStorageProvider, 'secretAccessKey'> & {
+	encryptedSecretAccessKey: string;
+};
+
 export interface StorageProvidersState {
-	storage: string;
+	storage: PersistedStorageProvider[];
 }
