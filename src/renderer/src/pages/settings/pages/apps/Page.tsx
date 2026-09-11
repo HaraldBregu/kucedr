@@ -4,15 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Blocks,
-	ChevronRight,
+	ExternalLink,
 	FolderOpen,
 	MoreHorizontal,
 	RefreshCw,
+	Settings2,
 	Upload,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { App } from '../../../../../../shared/installed_app_types';
 import Delete from './Delete';
@@ -42,6 +43,7 @@ const AppsPage: React.FC = () => {
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
 	const [actionsOpen, setActionsOpen] = useState(false);
+	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
 
 	const loadApps = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -99,6 +101,18 @@ const AppsPage: React.FC = () => {
 		}
 	}, [loadApps, t]);
 
+	const handleOpen = useCallback(async (appId: string): Promise<void> => {
+		setOpeningAppId(appId);
+		setErrorMessage('');
+		try {
+			await window.apps.open(appId);
+		} catch (error) {
+			setErrorMessage(getErrorMessage(error, t('settings.apps.openError')));
+		} finally {
+			setOpeningAppId(null);
+		}
+	}, [t]);
+
 	const appPath = useCallback(
 		(appId: string): string => `/settings/apps/${encodeURIComponent(appId)}`,
 		[]
@@ -107,8 +121,8 @@ const AppsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				 title={t('settings.tabs.apps')}
-				 description={t('settings.apps.description')}
+				title={t('settings.tabs.apps')}
+				description={t('settings.apps.description')}
 				 action={
 					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
 						<PopoverTrigger asChild>
@@ -177,56 +191,76 @@ const AppsPage: React.FC = () => {
 			{successMessage && <SettingsNotice>{successMessage}</SettingsNotice>}
 
 			<SettingsSection title={t('settings.apps.title')}>
-				<SettingsPanel>
-					{loading ? (
+				{loading ? (
+					<SettingsPanel>
 						<SettingsLoadingRows rows={2} />
-					) : apps.length === 0 ? (
+					</SettingsPanel>
+				) : apps.length === 0 ? (
+					<SettingsPanel>
 						<SettingsEmptyState
 							icon={Blocks}
 							title={t('settings.apps.empty')}
 							description={t('settings.apps.emptyDescription')}
 						/>
-					) : (
-						apps.map((app) => (
-							<div
-								key={app.id}
-								className="flex items-center border-b border-border/60 hover:bg-muted/40 last:border-b-0"
-							>
-								<Item
-									as="button"
-									type="button"
-									variant="outline"
-									size="md"
-									className="min-w-0 flex-1 cursor-pointer pl-5 pr-3 py-4 text-left"
-									onClick={() => navigate(appPath(app.id))}
-								>
-									<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-										<ItemTitle className="max-w-full truncate">{app.title}</ItemTitle>
-										<p className="line-clamp-2 max-w-full text-[11px] leading-4 text-muted-foreground">
-											{app.description}
-										</p>
-									</ItemContent>
-									<ItemActions className="ml-auto flex-none items-center justify-end gap-2">
-										<Badge variant="secondary" className="text-[10px] leading-none">
-											{app.metadata.category}
-										</Badge>
-										<ChevronRight className="size-3.5 text-muted-foreground" strokeWidth={1.8} />
-									</ItemActions>
-								</Item>
-								<Delete
-									app={app}
-									disabled={loading || importing}
-									onDeleted={(appId) => {
-										setApps((current) =>
-											current.filter(({ id }) => id !== appId)
-										);
-									}}
-									onError={setErrorMessage}
-								/>
-							</div>
-						))
-					)}
-				</SettingsPanel>
+					</SettingsPanel>
+				) : (
+					<div className="grid gap-3">
+						{apps.map((app) => (
+							<Card key={app.id} size="sm" className="gap-0! p-0!">
+								<CardContent className="grid gap-3 p-3! sm:grid-cols-[9rem_minmax(0,1fr)]">
+									<div
+										aria-hidden="true"
+										className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground sm:aspect-auto sm:min-h-24"
+									>
+										<Blocks className="size-5" strokeWidth={1.5} />
+									</div>
+									<div className="flex min-w-0 flex-col gap-2">
+										<div className="flex min-w-0 items-start justify-between gap-3">
+											<div className="min-w-0">
+												<h3 className="truncate text-sm font-medium text-foreground">{app.title}</h3>
+												<p className="mt-0.5 line-clamp-2 text-[11px] leading-4 text-muted-foreground">
+													{app.description}
+												</p>
+											</div>
+											<Badge variant="secondary" className="shrink-0 text-[10px] leading-none">
+												{app.metadata.category}
+											</Badge>
+										</div>
+										<div className="mt-auto flex flex-wrap justify-end gap-1.5 pt-1">
+											<Button
+												type="button"
+												variant="outline"
+												size="xs"
+												disabled={importing || openingAppId === app.id}
+												onClick={() => navigate(appPath(app.id))}
+											>
+												<Settings2 className="size-3" />
+												{t('settings.apps.details')}
+											</Button>
+											<Button
+												type="button"
+												size="xs"
+												disabled={importing || openingAppId === app.id}
+												onClick={() => void handleOpen(app.id)}
+											>
+												<ExternalLink className="size-3" />
+												{t('settings.apps.open')}
+											</Button>
+											<Delete
+												app={app}
+												disabled={importing || openingAppId === app.id}
+												onDeleted={(appId) => {
+													setApps((current) => current.filter(({ id }) => id !== appId));
+												}}
+												onError={setErrorMessage}
+											/>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+						))}
+					</div>
+				)}
 			</SettingsSection>
 		</SettingsPageShell>
 	);

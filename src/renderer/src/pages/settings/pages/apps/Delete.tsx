@@ -25,7 +25,7 @@ export default function Delete({
 			type="button"
 			variant="ghost"
 			size="icon-sm"
-			className="mr-3 flex-none text-muted-foreground hover:text-destructive"
+			className="flex-none text-muted-foreground hover:text-destructive"
 			aria-label={t('settings.apps.deleteAction', { name: app.title })}
 			title={t('settings.apps.deleteAction', { name: app.title })}
 			disabled={disabled || deleting}
