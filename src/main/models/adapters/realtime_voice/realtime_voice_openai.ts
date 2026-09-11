@@ -15,7 +15,10 @@ import type {
 const OPENAI_BASE_URL = 'https://api.openai.com/v1';
 export const OPENAI_REALTIME_VOICE_MODELS = ['gpt-realtime-2.1', 'gpt-realtime-2.1-mini'] as const;
 export const OPENAI_LIVE_VOICE_MODELS = ['gpt-live-1'] as const;
-export const OPENAI_VOICE_MODELS = [...OPENAI_REALTIME_VOICE_MODELS, ...OPENAI_LIVE_VOICE_MODELS] as const;
+export const OPENAI_VOICE_MODELS = [
+	...OPENAI_REALTIME_VOICE_MODELS,
+	...OPENAI_LIVE_VOICE_MODELS,
+] as const;
 
 export class OpenAIRealtimeVoiceAdapter implements RealtimeVoiceAdapter {
 	private readonly compatible: OpenAICompatibleRealtimeVoiceAdapter;

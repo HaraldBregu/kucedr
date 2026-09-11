@@ -13,7 +13,10 @@ const CONNECT_TIMEOUT_MS = 15_000;
 
 interface LiveSocket {
 	readonly bufferedAmount: number;
-	on(event: 'open' | 'close' | 'error' | 'message', listener: (...args: unknown[]) => void): unknown;
+	on(
+		event: 'open' | 'close' | 'error' | 'message',
+		listener: (...args: unknown[]) => void
+	): unknown;
 	send(data: string): void;
 	close(code?: number, reason?: string): void;
 }
@@ -33,7 +36,9 @@ export class OpenAILiveVoiceAdapter implements RealtimeVoiceAdapter {
 		signal?: AbortSignal
 	): Promise<RealtimeVoiceConnection> {
 		if (request.modelId !== 'gpt-live-1') {
-			throw new Error(`${this.provider.name} Live voice model is not supported: ${request.modelId}`);
+			throw new Error(
+				`${this.provider.name} Live voice model is not supported: ${request.modelId}`
+			);
 		}
 		const connection = new OpenAILiveVoiceConnection(this.socketFactory(this.provider), emit);
 		await connection.open(request, this.connectTimeoutMs, signal);
@@ -50,7 +55,11 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		private readonly emit: RealtimeVoiceAdapterEventHandler
 	) {}
 
-	open(request: RealtimeVoiceAdapterRequest, timeoutMs: number, signal?: AbortSignal): Promise<void> {
+	open(
+		request: RealtimeVoiceAdapterRequest,
+		timeoutMs: number,
+		signal?: AbortSignal
+	): Promise<void> {
 		return new Promise((resolve, reject) => {
 			let settled = false;
 			const settle = (error?: Error): void => {
@@ -62,7 +71,9 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 				else resolve();
 			};
 			const abort = (): void => {
-				settle(signal?.reason instanceof Error ? signal.reason : new Error('Voice session stopped.'));
+				settle(
+					signal?.reason instanceof Error ? signal.reason : new Error('Voice session stopped.')
+				);
 				void this.stop();
 			};
 			const timer = setTimeout(() => {
@@ -138,12 +149,22 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 
 	private handle(event: Record<string, unknown>): void {
 		if (event.type === 'session.output_audio.delta' && typeof event.delta === 'string') {
-			this.emit({ type: 'assistant_audio_delta', itemId: 'live-output', responseId: 'live-output', audio: event.delta });
+			this.emit({
+				type: 'assistant_audio_delta',
+				itemId: 'live-output',
+				responseId: 'live-output',
+				audio: event.delta,
+			});
 			return;
 		}
 		if (event.type === 'session.output_transcript.delta' && typeof event.delta === 'string') {
 			this.transcript += event.delta;
-			this.emit({ type: 'assistant_transcript_delta', itemId: 'live-output', responseId: 'live-output', delta: event.delta });
+			this.emit({
+				type: 'assistant_transcript_delta',
+				itemId: 'live-output',
+				responseId: 'live-output',
+				delta: event.delta,
+			});
 		}
 	}
 }
@@ -156,7 +177,9 @@ function parseLiveEvent(data: unknown): Record<string, unknown> | undefined {
 	try {
 		const text = Buffer.isBuffer(data) ? data.toString() : String(data);
 		const parsed: unknown = JSON.parse(text);
-		return typeof parsed === 'object' && parsed !== null ? (parsed as Record<string, unknown>) : undefined;
+		return typeof parsed === 'object' && parsed !== null
+			? (parsed as Record<string, unknown>)
+			: undefined;
 	} catch {
 		return undefined;
 	}
