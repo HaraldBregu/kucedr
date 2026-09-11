@@ -211,7 +211,6 @@ const AssistantPage: React.FC = () => {
 					showContentSeparator={false}
 					showOptions={false}
 				/>
-
 			</SettingsPanel>
 
 			<SettingsPanel>
