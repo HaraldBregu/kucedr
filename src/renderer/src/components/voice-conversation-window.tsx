@@ -5,17 +5,6 @@ import { TypingLoader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
 import { useRealtimeVoice, type RealtimeVoiceUiStatus } from '@/pages/home/hooks/useRealtimeVoice';
 
-const statusLabels: Record<RealtimeVoiceUiStatus, string> = {
-	idle: 'Idle',
-	'checking-permission': 'Checking mic…',
-	connecting: 'Connecting…',
-	listening: 'Listening',
-	thinking: 'Thinking',
-	speaking: 'Speaking',
-	ending: 'Ending…',
-	error: 'Ended',
-};
-
 function formatDuration(elapsedMs: number): string {
 	const totalSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
 	const minutes = Math.floor(totalSeconds / 60);
@@ -40,9 +29,6 @@ export function VoiceConversationWindow({
 	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow, closeOnError: false });
 	const isEnding = voice.status === 'ending';
 	const state = personaState(voice.status);
-	const statusMessage =
-		voice.errorMessage ??
-		(voice.status === 'checking-permission' ? null : statusLabels[voice.status]);
 
 	useEffect(() => {
 		void voice.start();
@@ -68,26 +54,12 @@ export function VoiceConversationWindow({
 						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
 						size={208}
 					/>
-				</div>
-			</div>
-			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
-				<div className="flex min-h-4 items-center justify-center gap-2 text-xs">
-					{statusMessage ? (
-						<span
-							role="status"
-							aria-live="polite"
-							className={cn(
-								'max-w-40 truncate font-medium text-muted-foreground',
-								voice.status === 'error' && 'text-destructive'
-							)}
-						>
-							{statusMessage}
-						</span>
-					) : null}
-					<span className="shrink-0 font-mono text-xs tabular-nums text-muted-foreground">
+					<span className="absolute bottom-3 right-3 font-mono text-xs tabular-nums text-muted-foreground">
 						{formatDuration(voice.elapsedMs)}
 					</span>
 				</div>
+			</div>
+			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
 				<div className="flex items-center justify-center gap-2">
 					<button
 						type="button"

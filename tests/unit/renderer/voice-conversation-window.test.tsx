@@ -21,13 +21,13 @@ describe('VoiceConversationWindow', () => {
 		Object.defineProperty(window, 'win', { configurable: true, value: { close: jest.fn() } });
 	});
 
-	it.each<readonly [RealtimeVoiceUiStatus, boolean, PersonaState, string]>([
-		['connecting', false, 'idle', 'Connecting…'],
-		['listening', false, 'listening', 'Listening'],
-		['listening', true, 'listening', 'Listening'],
-		['thinking', false, 'thinking', 'Thinking'],
-		['speaking', false, 'speaking', 'Speaking'],
-	])('shows the %s persona state', (status, isMuted, expectedState, label) => {
+	it.each<readonly [RealtimeVoiceUiStatus, boolean, PersonaState]>([
+		['connecting', false, 'idle'],
+		['listening', false, 'listening'],
+		['listening', true, 'listening'],
+		['thinking', false, 'thinking'],
+		['speaking', false, 'speaking'],
+	])('shows the %s persona state', (status, isMuted, expectedState) => {
 		mockedUseRealtimeVoice.mockReturnValue({
 			elapsedMs: 61_000,
 			end: jest.fn(),
@@ -42,8 +42,7 @@ describe('VoiceConversationWindow', () => {
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
 		expect(screen.getByLabelText('Voice Agent')).toHaveAttribute('data-state', expectedState);
-		const statusLabel = screen.getByText(label);
-		expect(statusLabel.parentElement).toHaveClass('justify-center');
-		expect(screen.getByText('1:01')).toBeInTheDocument();
+		expect(screen.queryByRole('status')).not.toBeInTheDocument();
+		expect(screen.getByText('1:01')).toHaveClass('absolute', 'bottom-3', 'right-3');
 	});
 });
