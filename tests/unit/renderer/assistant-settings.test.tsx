@@ -280,7 +280,6 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(screen.queryByRole('heading', { name: 'Configuration' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('heading', { name: 'History' })).not.toBeInTheDocument();
 	expect(screen.getByRole('heading', { name: 'Tools' })).toBeInTheDocument();
-	const cards: Array<Element | null> = [];
 	for (const name of [
 		/Model/,
 		/Realtime conversation/,
@@ -299,7 +298,6 @@ it('groups independently collapsible provider settings in one card', async () =>
 		if (!trigger) continue;
 		if (trigger.getAttribute('aria-expanded') === 'false') await user.click(trigger);
 		expect(trigger).toHaveAttribute('aria-expanded', 'true');
-		cards.push(trigger.closest('[data-slot="card"]'));
 	}
 	const model = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
 		(element) => element.getAttribute('aria-haspopup') === 'dialog'
@@ -356,10 +354,12 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(speechToText).toHaveTextContent('GPT Transcribe');
 	expect(search).toHaveTextContent('Brave');
 
-	expect(cards.every(Boolean)).toBe(true);
-	expect(new Set(cards.slice(0, 3)).size).toBe(1);
-	expect(new Set(cards.slice(3)).size).toBe(1);
-	expect(cards[3]).not.toBe(cards[0]);
+	expect(image.closest('[data-slot="card"]')).toBe(audio.closest('[data-slot="card"]'));
+	expect(audio.closest('[data-slot="card"]')).toBe(video.closest('[data-slot="card"]'));
+	expect(video.closest('[data-slot="card"]')).toBe(textToSpeech.closest('[data-slot="card"]'));
+	expect(textToSpeech.closest('[data-slot="card"]')).toBe(speechToText.closest('[data-slot="card"]'));
+	expect(speechToText.closest('[data-slot="card"]')).toBe(search.closest('[data-slot="card"]'));
+	expect(image.closest('[data-slot="card"]')).not.toBe(model.closest('[data-slot="card"]'));
 
 	const wiki = screen.getByRole('button', { name: /LLM Wiki/ });
 	const rag = screen.getByRole('button', { name: /RAG/ });
