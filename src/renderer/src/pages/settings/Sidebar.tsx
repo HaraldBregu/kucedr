@@ -85,10 +85,10 @@ export function SettingsSidebar(): React.JSX.Element {
 						<section
 							data-slot="split-pane-group"
 							key={group.id}
-			className={cn(
-				'px-2 py-1 first:pt-0',
-				group.id === 'integrations' && 'mt-3'
-			)}
+							className={cn(
+								'px-2 py-1 first:pt-0',
+								group.id === 'integrations' && 'mt-3'
+							)}
 						>
 							{'titleKey' in group ? (
 								<h2 className="flex h-7 items-center px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/70">
