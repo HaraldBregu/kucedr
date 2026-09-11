@@ -6,8 +6,10 @@ import {
 	Minus,
 	MoreHorizontal,
 	Plus,
+	Search,
 	Square,
 	Trash2,
+	User,
 	X,
 } from 'lucide-react';
 import { useEffect, useState, type CSSProperties } from 'react';
@@ -31,12 +33,15 @@ const isMac =
 
 export function Header({
 	coder,
+	onOpenConfiguration,
 	onOpenInstructions,
+	sidebarOpen,
 }: {
 	coder: CoderController;
+	onOpenConfiguration: () => void;
 	onOpenInstructions: () => void;
+	sidebarOpen: boolean;
 }): React.JSX.Element {
-	const session = coder.sessions.find((item) => item.id === coder.activeSessionId);
 	const inKucedr = isKucedr();
 	const [isMaximized, setIsMaximized] = useState(false);
 
@@ -48,23 +53,46 @@ export function Header({
 
 	return (
 		<header
-			className={`flex h-12 shrink-0 items-center gap-2 bg-transparent ${isMac ? 'pl-[76px] pr-3' : 'px-3'}`}
+			className={`flex h-12 shrink-0 items-center border-b border-border bg-card pl-3 ${!sidebarOpen ? 'pl-28' : ''}`}
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
-			<SidebarTrigger className="[webkit-app-region:no-drag]" />
-			<div className="flex min-w-0 flex-1 items-center gap-1.5 text-xs">
-				<span className="truncate font-medium">{coder.activeProject?.name ?? 'Coder'}</span>
-				<span className="text-muted-foreground">/</span>
-				<span className="truncate text-muted-foreground">{session?.title ?? 'New session'}</span>
-			</div>
+			<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
+			<h1 className="min-w-0 shrink truncate text-sm font-medium">Coder</h1>
+			<div className="min-w-0 flex-1" />
 
 			{coder.runState === 'running' ? (
-				<span className="hidden items-center gap-1.5 text-[11px] text-muted-foreground sm:flex">
+				<span className="mr-3 hidden items-center gap-1.5 text-[11px] text-muted-foreground sm:flex">
 					<LoaderCircle className="size-3 animate-spin" /> {coder.runLabel}
 				</span>
 			) : coder.runState === 'error' ? (
-				<span className="hidden text-[11px] text-destructive sm:block">{coder.runLabel}</span>
+				<span className="mr-3 hidden text-[11px] text-destructive sm:block">{coder.runLabel}</span>
 			) : null}
+			<div
+				className="z-10 mr-3 flex h-full items-center gap-1"
+				style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
+			>
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon-sm"
+					className="rounded-full text-muted-foreground hover:text-foreground"
+					aria-label="Search Coder workspaces"
+					title="Search Coder workspaces"
+					onClick={() => document.getElementById('coder-sidebar-search')?.focus()}
+				>
+					<Search className="size-4" strokeWidth={1.8} />
+				</Button>
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon-sm"
+					className="rounded-full text-muted-foreground hover:text-foreground"
+					aria-label="Open Coder configuration"
+					title="Open Coder configuration"
+					onClick={onOpenConfiguration}
+				>
+					<User className="size-4" strokeWidth={1.8} />
+				</Button>
 
 			{coder.activeProject ? (
 				<DropdownMenu>
