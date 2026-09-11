@@ -157,6 +157,14 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			});
 			return;
 		}
+		if (event.type === 'session.output_audio.done') {
+			this.emit({
+				type: 'assistant_audio_done',
+				itemId: 'live-output',
+				responseId: 'live-output',
+			});
+			return;
+		}
 		if (event.type === 'session.output_transcript.delta' && typeof event.delta === 'string') {
 			this.transcript += event.delta;
 			this.emit({
