@@ -19,6 +19,7 @@ jest.mock('electron-store', () =>
 import {
 	AGENT_DIRECTORY,
 	addPermissionRule,
+	getChatbotModel,
 	getToolModel,
 	getVoiceModel,
 	getModelId,
@@ -26,6 +27,7 @@ import {
 	getProviderId,
 	resetPermissions,
 	setToolModel,
+	setChatbotModel,
 	setVoiceModel,
 	setModelId,
 	setPermissions,
@@ -100,7 +102,7 @@ describe('agent store permissions', () => {
 	});
 
 	it('keeps chat and tool speech selections independent', () => {
-		setVoiceModel('textToSpeech', {
+		setChatbotModel('textToSpeech', {
 			providerId: 'openai',
 			modelId: 'gpt-4o-mini-tts',
 			options: { voice: 'marin' },
@@ -116,7 +118,7 @@ describe('agent store permissions', () => {
 			options: {},
 		});
 
-		expect(getVoiceModel('textToSpeech')).toMatchObject({ providerId: 'openai' });
+		expect(getChatbotModel('textToSpeech')).toMatchObject({ providerId: 'openai' });
 		expect(getToolModel('textToSpeech')).toMatchObject({ providerId: 'elevenlabs' });
 		expect(getToolModel('speechToText')).toMatchObject({ providerId: 'deepgram' });
 	});

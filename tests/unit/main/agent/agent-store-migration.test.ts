@@ -45,14 +45,15 @@ it('migrates legacy agent settings into chatbot and tools branches', () => {
 				modelId: 'gpt-5',
 				options: { reasoning: 'high' },
 			},
-		},
-		voice: {
 			textToSpeech: {
 				providerId: 'openai',
 				modelId: 'tts-1',
 				options: { voice: 'alloy' },
 			},
 			speechToText: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
+		},
+		voice: {
+			realtimeVoice: { providerId: 'openai', modelId: 'realtime-1', options: {} },
 		},
 		tools: {
 			webSearch: { providerId: 'brave', providerName: 'Brave', enabled: true },

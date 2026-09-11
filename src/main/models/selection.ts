@@ -1,5 +1,10 @@
-import type { AgentToolModelKind, AgentVoiceModelKind } from '../../shared/agent_types';
+import type {
+	AgentChatbotModelKind,
+	AgentToolModelKind,
+	AgentVoiceModelKind,
+} from '../../shared/agent_types';
 import {
+	getChatbotModel,
 	getModelId as getAgentModelId,
 	getProviderId as getAgentProviderId,
 	getToolModel,
@@ -7,6 +12,7 @@ import {
 	setModelId as setAgentModelId,
 	setProviderId as setAgentProviderId,
 	setToolModel,
+	setChatbotModel,
 	setVoiceModel,
 } from '../agent/agent_store';
 import { getRagConfiguration, saveRagConfiguration } from '../agent/knowledge/rag/rag_store';
@@ -31,11 +37,14 @@ type ModelSelection = {
 
 type SelectedModelKind = Exclude<ModelKind, 'text' | 'embedding'>;
 
-const VOICE_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentVoiceModelKind>> = {
+const CHATBOT_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentChatbotModelKind>> = {
 	voice: 'textToSpeech',
-	realtimeVoice: 'realtimeVoice',
 	transcribe: 'speechToText',
 	realtime: 'speechToText',
+};
+
+const VOICE_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentVoiceModelKind>> = {
+	realtimeVoice: 'realtimeVoice',
 };
 
 const TOOL_MODEL_KINDS: Partial<Record<SelectedModelKind, AgentToolModelKind>> = {
@@ -135,6 +144,8 @@ function selection(kind: ModelKind): ModelSelection {
 function getStoredModel(
 	kind: SelectedModelKind
 ): import('../../shared/agent_types').AgentMediaModelSettings {
+	const chatbotKind = CHATBOT_MODEL_KINDS[kind];
+	if (chatbotKind) return getChatbotModel(chatbotKind);
 	const voiceKind = VOICE_MODEL_KINDS[kind];
 	if (voiceKind) return getVoiceModel(voiceKind);
 	const toolKind = TOOL_MODEL_KINDS[kind];
@@ -146,6 +157,8 @@ function setStoredModel(
 	kind: SelectedModelKind,
 	settings: import('../../shared/agent_types').AgentMediaModelSettings
 ): void {
+	const chatbotKind = CHATBOT_MODEL_KINDS[kind];
+	if (chatbotKind) return setChatbotModel(chatbotKind, settings);
 	const voiceKind = VOICE_MODEL_KINDS[kind];
 	if (voiceKind) return setVoiceModel(voiceKind, settings);
 	const toolKind = TOOL_MODEL_KINDS[kind];

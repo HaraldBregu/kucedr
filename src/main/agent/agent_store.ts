@@ -1,6 +1,7 @@
 import path from 'node:path';
 import Store from 'electron-store';
 import type {
+	AgentChatbotModelKind,
 	AgentMediaModelSettings,
 	AgentToolModelKind,
 	AgentVoiceModelKind,
@@ -23,11 +24,11 @@ export type SearchEngineSettings = {
 type AgentStoreSchema = {
 	chatbot: {
 		textToText: AgentMediaModelSettings;
+		textToSpeech: AgentMediaModelSettings;
+		speechToText: AgentMediaModelSettings;
 	};
 	voice: {
-		textToSpeech: AgentMediaModelSettings;
 		realtimeVoice: AgentMediaModelSettings;
-		speechToText: AgentMediaModelSettings;
 	};
 	tools: {
 		webSearch: SearchEngineSettings;
@@ -47,8 +48,14 @@ type LegacyAgentStoreSchema = Partial<Omit<AgentStoreSchema, 'chatbot' | 'voice'
 		realtimeVoice?: AgentMediaModelSettings;
 		transcription?: AgentMediaModelSettings;
 		textToText?: AgentMediaModelSettings;
+		textToSpeech?: AgentMediaModelSettings;
+		speechToText?: AgentMediaModelSettings;
 	};
-	voice?: Partial<AgentStoreSchema['voice']>;
+	voice?: {
+		textToSpeech?: AgentMediaModelSettings;
+		realtimeVoice?: AgentMediaModelSettings;
+		speechToText?: AgentMediaModelSettings;
+	};
 	large_language_model?: AgentMediaModelSettings;
 	web_search_engine?: SearchEngineSettings;
 	image_generator_model?: AgentMediaModelSettings;
@@ -84,11 +91,11 @@ const EMPTY_MEDIA_MODEL: AgentMediaModelSettings = {
 const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 	chatbot: {
 		textToText: EMPTY_MEDIA_MODEL,
+		textToSpeech: EMPTY_MEDIA_MODEL,
+		speechToText: EMPTY_MEDIA_MODEL,
 	},
 	voice: {
-		textToSpeech: EMPTY_MEDIA_MODEL,
 		realtimeVoice: EMPTY_MEDIA_MODEL,
-		speechToText: EMPTY_MEDIA_MODEL,
 	},
 	tools: {
 		webSearch: { providerId: '', providerName: '', enabled: false },
@@ -124,23 +131,25 @@ const chatbotTextToText =
 store.store = {
 	chatbot: {
 		textToText: chatbotTextToText,
-	},
-	voice: {
 		textToSpeech:
+			persisted.chatbot?.textToSpeech ??
 			persisted.voice?.textToSpeech ??
 			persisted.chatbot?.voice ??
 			persisted.text_to_speech_model ??
 			persisted.voice_model ??
 			EMPTY_MEDIA_MODEL,
+		speechToText:
+			persisted.chatbot?.speechToText ??
+			persisted.voice?.speechToText ??
+			persisted.chatbot?.transcription ??
+			persisted.transcription_model ??
+			EMPTY_MEDIA_MODEL,
+	},
+	voice: {
 		realtimeVoice:
 			persisted.voice?.realtimeVoice ??
 			persisted.chatbot?.realtimeVoice ??
 			persisted.realtime_voice_model ??
-			EMPTY_MEDIA_MODEL,
-		speechToText:
-			persisted.voice?.speechToText ??
-			persisted.chatbot?.transcription ??
-			persisted.transcription_model ??
 			EMPTY_MEDIA_MODEL,
 	},
 	tools: {
@@ -201,6 +210,17 @@ export function setModelOptions(modelOptions: Record<string, unknown>): void {
 		...store.get('chatbot'),
 		textToText: { ...store.get('chatbot').textToText, options: modelOptions },
 	});
+}
+
+export function getChatbotModel(kind: AgentChatbotModelKind): AgentMediaModelSettings {
+	return store.get('chatbot')[kind];
+}
+
+export function setChatbotModel(
+	kind: AgentChatbotModelKind,
+	settings: AgentMediaModelSettings
+): void {
+	store.set('chatbot', { ...store.get('chatbot'), [kind]: settings });
 }
 
 export function getSearchEngine(): SearchEngineSettings {

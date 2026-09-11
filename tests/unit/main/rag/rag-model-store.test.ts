@@ -4,6 +4,8 @@ const getAgentModelId = jest.fn();
 const setAgentModelId = jest.fn();
 const getAgentVoiceModel = jest.fn();
 const setAgentVoiceModel = jest.fn();
+const getAgentChatbotModel = jest.fn();
+const setAgentChatbotModel = jest.fn();
 const getAgentToolModel = jest.fn();
 const setAgentToolModel = jest.fn();
 const getRagConfiguration = jest.fn();
@@ -14,6 +16,8 @@ jest.mock('../../../../src/main/agent/agent_store', () => ({
 	setProviderId: setAgentProviderId,
 	getModelId: getAgentModelId,
 	setModelId: setAgentModelId,
+	getChatbotModel: getAgentChatbotModel,
+	setChatbotModel: setAgentChatbotModel,
 	getVoiceModel: getAgentVoiceModel,
 	setVoiceModel: setAgentVoiceModel,
 	getToolModel: getAgentToolModel,
@@ -52,14 +56,16 @@ const ragConfiguration = {
 beforeEach(() => {
 	jest.clearAllMocks();
 	let currentRagConfiguration = { ...ragConfiguration };
-	const voiceModels = {
+	const chatbotModels = {
 		textToSpeech: { providerId: 'openai', modelId: 'gpt-4o-mini-tts', options: { voice: 'cedar' } },
+		speechToText: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
+	};
+	const voiceModels = {
 		realtimeVoice: {
 			providerId: 'openai',
 			modelId: 'gpt-realtime-2.1',
 			options: { voice: 'marin' },
 		},
-		speechToText: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
 	};
 	const toolModels = {
 		image: { providerId: 'google', modelId: 'gemini-image', options: { imageSize: '1K' } },
@@ -72,6 +78,12 @@ beforeEach(() => {
 	};
 	getAgentProviderId.mockReturnValue('openai');
 	getAgentModelId.mockReturnValue('gpt-5');
+	getAgentChatbotModel.mockImplementation((kind: keyof typeof chatbotModels) => chatbotModels[kind]);
+	setAgentChatbotModel.mockImplementation(
+		(kind: keyof typeof chatbotModels, settings: (typeof chatbotModels)[keyof typeof chatbotModels]) => {
+			chatbotModels[kind] = settings as never;
+		}
+	);
 	getAgentVoiceModel.mockImplementation((kind: keyof typeof voiceModels) => voiceModels[kind]);
 	setAgentVoiceModel.mockImplementation(
 		(kind: keyof typeof voiceModels, settings: (typeof voiceModels)[keyof typeof voiceModels]) => {
@@ -151,7 +163,7 @@ it('reads and writes voice selection and options through the agent store', () =>
 	expect(getOptions('voice')).toEqual({ voice: 'cedar' });
 	setOptions('voice', { voice: 'marin', speed: 1.1 });
 
-	expect(setAgentVoiceModel).toHaveBeenCalledWith('textToSpeech', {
+	expect(setAgentChatbotModel).toHaveBeenCalledWith('textToSpeech', {
 		providerId: 'openai',
 		modelId: 'gpt-4o-mini-tts',
 		options: { voice: 'marin', speed: 1.1 },
@@ -167,12 +179,12 @@ it('reads and writes batch and realtime transcription through the agent store', 
 	setModelId('transcribe', 'nova-4');
 	setProviderId('realtime', 'openai');
 
-	expect(setAgentVoiceModel).toHaveBeenNthCalledWith(1, 'speechToText', {
+	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(1, 'speechToText', {
 		providerId: 'deepgram',
 		modelId: 'nova-4',
 		options: {},
 	});
-	expect(setAgentVoiceModel).toHaveBeenNthCalledWith(2, 'speechToText', {
+	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(2, 'speechToText', {
 		providerId: 'openai',
 		modelId: 'nova-4',
 		options: {},

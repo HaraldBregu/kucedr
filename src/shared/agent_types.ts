@@ -75,7 +75,9 @@ export type AgentToolEffect =
 	| 'paid'
 	| 'persistence';
 
-export type AgentVoiceModelKind = 'textToSpeech' | 'realtimeVoice' | 'speechToText';
+export type AgentChatbotModelKind = 'textToText' | 'textToSpeech' | 'speechToText';
+
+export type AgentVoiceModelKind = 'realtimeVoice';
 
 export type AgentToolModelKind = 'image' | 'audio' | 'video' | 'textToSpeech' | 'speechToText';
 
