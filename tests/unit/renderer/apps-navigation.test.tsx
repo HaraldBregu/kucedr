@@ -105,7 +105,8 @@ it('opens the apps folder from the page header', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: 'settings.apps.openFolder' }));
+	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
+	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.openFolder' }));
 
 	expect(window.apps.openRoot).toHaveBeenCalledTimes(1);
 });
@@ -122,7 +123,8 @@ it.each([false, true])('shows skipped upload reasons with partial success: %s', 
 
 	render(<MemoryRouter><AppsPage /></MemoryRouter>);
 	await screen.findByText('Demo App');
-	await user.click(screen.getByRole('button', { name: 'settings.apps.upload' }));
+	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
+	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
 
 	const alert = await screen.findByRole('alert');
 	expect(alert).toHaveTextContent('workspace: Unable to install app: permission denied');
@@ -140,12 +142,13 @@ it('keeps a canceled upload quiet', async () => {
 	(window.apps.import as jest.Mock).mockResolvedValue(undefined);
 	render(<MemoryRouter><AppsPage /></MemoryRouter>);
 	await screen.findByText('Demo App');
-	await user.click(screen.getByRole('button', { name: 'settings.apps.upload' }));
+	await user.click(screen.getByRole('button', { name: 'common.moreOptions' }));
+	await user.click(screen.getByRole('menuitem', { name: 'settings.apps.upload' }));
 
 	expect(window.apps.import).toHaveBeenCalledTimes(1);
 	expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 	expect(screen.queryByText(/settings.apps.uploaded/)).not.toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'settings.apps.upload' })).toBeEnabled();
+	expect(screen.getByRole('button', { name: 'common.moreOptions' })).toBeEnabled();
 });
 
 it('navigates app clicks to the app detail subroute', async () => {

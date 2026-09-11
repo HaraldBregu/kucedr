@@ -6,12 +6,14 @@ import {
 	Blocks,
 	ChevronRight,
 	FolderOpen,
+	MoreHorizontal,
 	RefreshCw,
 	Upload,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { App } from '../../../../../../shared/installed_app_types';
 import Delete from './Delete';
 import {
@@ -39,6 +41,7 @@ const AppsPage: React.FC = () => {
 	const [importing, setImporting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
+	const [actionsOpen, setActionsOpen] = useState(false);
 
 	const loadApps = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -104,34 +107,64 @@ const AppsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.tabs.apps')}
-				description={t('settings.apps.description')}
-				action={
-					<div className="flex flex-wrap items-center gap-2">
-						<Button
-							variant="outline"
-							size="icon-xs"
-							onClick={() => void handleOpenFolder()}
-							disabled={loading || importing}
-							aria-label={t('settings.apps.openFolder')}
-							title={t('settings.apps.openFolder')}
-						>
-							<FolderOpen className="size-3" />
-						</Button>
-						<Button
-							variant="outline"
-							size="xs"
-							onClick={loadApps}
-							disabled={loading || importing}
-						>
-							<RefreshCw className="size-3" />
-							{t('settings.apps.refresh')}
-						</Button>
-						<Button size="xs" onClick={() => void handleImport()} disabled={loading || importing}>
-							<Upload className="size-3" />
-							{importing ? t('settings.apps.uploading') : t('settings.apps.upload')}
-						</Button>
-					</div>
+				 title={t('settings.tabs.apps')}
+				 description={t('settings.apps.description')}
+				 action={
+					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
+						<PopoverTrigger asChild>
+							<Button
+								variant="outline"
+								size="icon-sm"
+								disabled={loading || importing}
+								aria-label={t('common.moreOptions')}
+							>
+								<MoreHorizontal className="size-3.5" />
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent align="end" collisionPadding={12} className="w-52 p-1">
+							<div role="menu" aria-label={t('common.moreOptions')}>
+								<button
+									type="button"
+									role="menuitem"
+									disabled={loading || importing}
+									onClick={() => {
+										setActionsOpen(false);
+										void handleOpenFolder();
+									}}
+									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+								>
+									<FolderOpen className="size-3.5" />
+									{t('settings.apps.openFolder')}
+								</button>
+								<button
+									type="button"
+									role="menuitem"
+									disabled={loading || importing}
+									onClick={() => {
+										setActionsOpen(false);
+										void loadApps();
+									}}
+									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+								>
+									<RefreshCw className="size-3.5" />
+									{t('settings.apps.refresh')}
+								</button>
+								<button
+									type="button"
+									role="menuitem"
+									disabled={loading || importing}
+									onClick={() => {
+										setActionsOpen(false);
+										void handleImport();
+									}}
+									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+								>
+									<Upload className="size-3.5" />
+									{importing ? t('settings.apps.uploading') : t('settings.apps.upload')}
+								</button>
+							</div>
+						</PopoverContent>
+					</Popover>
 				}
 			/>
 
