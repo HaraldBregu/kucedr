@@ -37,6 +37,34 @@ type MenuEntry = {
 	click?: () => void;
 };
 
+it('labels the main-window action as Show Chat or Hide Chat', () => {
+	let appVisible = false;
+	const tray = new Tray({
+		onToggleApp: () => {
+			appVisible = !appVisible;
+		},
+		onStartPersona: jest.fn(),
+		onHidePersona: jest.fn(),
+		onShowPersona: jest.fn(),
+		onQuit: jest.fn(),
+		isAppVisible: () => appVisible,
+		isPersonaActive: () => false,
+		isPersonaVisible: () => false,
+		getApps: () => [],
+		onOpenApp: jest.fn(),
+	});
+
+	tray.create();
+	let template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+	const showChat = template.find((entry) => entry.label === 'Show Chat');
+	expect(showChat).toBeDefined();
+	showChat?.click?.();
+
+	tray.updateContextMenu();
+	template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+	expect(template.find((entry) => entry.label === 'Hide Chat')).toBeDefined();
+});
+
 it('lists microphone inputs and checks the persisted selection', async () => {
 	let selected = 'usb';
 	const tray = new Tray({
