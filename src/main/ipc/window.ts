@@ -3,6 +3,7 @@ import {
 	BrowserWindow,
 	Menu as ElectronMenu,
 	type MenuItemConstructorOptions,
+	type WebContents,
 } from 'electron';
 import type { IpcModule } from './core/module';
 import type { EventBus } from '../event_bus';
@@ -56,7 +57,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 		{ logger, appRegistry, openVoiceConversation }: WindowIpcDeps,
 		_eventBus: EventBus
 	): void {
-		const getWindow = (sender: Electron.WebContents): BrowserWindow | null => {
+		const getWindow = (sender: WebContents): BrowserWindow | null => {
 			const window = BrowserWindow.fromWebContents(sender);
 			if (window) return window;
 			try {
