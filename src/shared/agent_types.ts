@@ -77,12 +77,7 @@ export type AgentToolEffect =
 
 export type AgentChatbotModelKind = 'voice' | 'realtimeVoice' | 'transcription';
 
-export type AgentToolModelKind =
-	| 'image'
-	| 'audio'
-	| 'video'
-	| 'textToSpeech'
-	| 'speechToText';
+export type AgentToolModelKind = 'image' | 'audio' | 'video' | 'textToSpeech' | 'speechToText';
 
 export interface AgentMediaModelSettings {
 	providerId: string;
@@ -316,7 +311,11 @@ export type AgentRunStreamEvent =
 			input: unknown;
 			mode: 'ask';
 			targets: string[];
-			reason: 'outside_trusted_location' | 'host_execution' | 'destructive_operation' | 'sensitive_operation';
+			reason:
+				| 'outside_trusted_location'
+				| 'host_execution'
+				| 'destructive_operation'
+				| 'sensitive_operation';
 			persistable: boolean;
 			allowOnce: boolean;
 			expiresAt: string;

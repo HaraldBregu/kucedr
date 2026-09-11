@@ -102,11 +102,11 @@ const chatbotModel =
 		? persisted.chatbot.model
 		: persisted.large_language_model?.providerId || persisted.large_language_model?.modelId
 			? persisted.large_language_model
-		: {
-				providerId: persisted.providerId ?? '',
-				modelId: persisted.modelId ?? '',
-				options: persisted.modelOptions ?? {},
-			};
+			: {
+					providerId: persisted.providerId ?? '',
+					modelId: persisted.modelId ?? '',
+					options: persisted.modelOptions ?? {},
+				};
 store.store = {
 	chatbot: {
 		model: chatbotModel,
@@ -115,8 +115,10 @@ store.store = {
 			persisted.text_to_speech_model ??
 			persisted.voice_model ??
 			EMPTY_MEDIA_MODEL,
-		realtimeVoice: persisted.chatbot?.realtimeVoice ?? persisted.realtime_voice_model ?? EMPTY_MEDIA_MODEL,
-		transcription: persisted.chatbot?.transcription ?? persisted.transcription_model ?? EMPTY_MEDIA_MODEL,
+		realtimeVoice:
+			persisted.chatbot?.realtimeVoice ?? persisted.realtime_voice_model ?? EMPTY_MEDIA_MODEL,
+		transcription:
+			persisted.chatbot?.transcription ?? persisted.transcription_model ?? EMPTY_MEDIA_MODEL,
 	},
 	tools: {
 		webSearch:
@@ -150,7 +152,10 @@ export function getProviderId(): string | undefined {
 }
 
 export function setProviderId(providerId: string): void {
-	store.set('chatbot', { ...store.get('chatbot'), model: { ...store.get('chatbot').model, providerId } });
+	store.set('chatbot', {
+		...store.get('chatbot'),
+		model: { ...store.get('chatbot').model, providerId },
+	});
 }
 
 export function getModelId(): string | undefined {
@@ -158,7 +163,10 @@ export function getModelId(): string | undefined {
 }
 
 export function setModelId(modelId: string): void {
-	store.set('chatbot', { ...store.get('chatbot'), model: { ...store.get('chatbot').model, modelId } });
+	store.set('chatbot', {
+		...store.get('chatbot'),
+		model: { ...store.get('chatbot').model, modelId },
+	});
 }
 
 export function getModelOptions(): Record<string, unknown> {

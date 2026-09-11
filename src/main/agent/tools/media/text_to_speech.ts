@@ -32,7 +32,7 @@ export function textToSpeechTool(): Tool {
 				},
 				'tool'
 			);
-			const extension = mimeType.includes('mpeg') ? 'mp3' : mimeType.split('/')[1] ?? 'mp3';
+			const extension = mimeType.includes('mpeg') ? 'mp3' : (mimeType.split('/')[1] ?? 'mp3');
 			const path = await saveMedia('speech', extension, audio, directory, signal);
 			return { path, mimeType };
 		},

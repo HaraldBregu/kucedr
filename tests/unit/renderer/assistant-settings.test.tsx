@@ -340,7 +340,15 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(video).toBeDefined();
 	expect(textToSpeech).toBeDefined();
 	expect(speechToText).toBeDefined();
-	if (!voice || !realtimeConversation || !image || !audio || !video || !textToSpeech || !speechToText)
+	if (
+		!voice ||
+		!realtimeConversation ||
+		!image ||
+		!audio ||
+		!video ||
+		!textToSpeech ||
+		!speechToText
+	)
 		return;
 	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
 	expect(voice).toHaveTextContent('Eleven v3');
@@ -357,7 +365,9 @@ it('groups independently collapsible provider settings in one card', async () =>
 	expect(image.closest('[data-slot="card"]')).toBe(audio.closest('[data-slot="card"]'));
 	expect(audio.closest('[data-slot="card"]')).toBe(video.closest('[data-slot="card"]'));
 	expect(video.closest('[data-slot="card"]')).toBe(textToSpeech.closest('[data-slot="card"]'));
-	expect(textToSpeech.closest('[data-slot="card"]')).toBe(speechToText.closest('[data-slot="card"]'));
+	expect(textToSpeech.closest('[data-slot="card"]')).toBe(
+		speechToText.closest('[data-slot="card"]')
+	);
 	expect(speechToText.closest('[data-slot="card"]')).toBe(search.closest('[data-slot="card"]'));
 	expect(image.closest('[data-slot="card"]')).not.toBe(model.closest('[data-slot="card"]'));
 

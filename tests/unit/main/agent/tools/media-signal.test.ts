@@ -58,16 +58,19 @@ it.each([
 	['image', createImageTool, createImage, 'png'],
 	['video', createVideoTool, createVideo, 'mp4'],
 	['sound', createSoundTool, createSound, 'mp3'],
-] as const)('propagates the run signal through %s generation and saving', async (kind, factory, create, extension) => {
-	const controller = new AbortController();
-	await factory().run({ prompt: 'generate this' }, controller.signal);
+] as const)(
+	'propagates the run signal through %s generation and saving',
+	async (kind, factory, create, extension) => {
+		const controller = new AbortController();
+		await factory().run({ prompt: 'generate this' }, controller.signal);
 
-	expect(create).toHaveBeenCalledWith({ prompt: 'generate this' }, controller.signal);
-	expect(saveMedia).toHaveBeenCalledWith(
-		kind,
-		extension,
-		expect.any(String),
-		undefined,
-		controller.signal
-	);
-});
+		expect(create).toHaveBeenCalledWith({ prompt: 'generate this' }, controller.signal);
+		expect(saveMedia).toHaveBeenCalledWith(
+			kind,
+			extension,
+			expect.any(String),
+			undefined,
+			controller.signal
+		);
+	}
+);

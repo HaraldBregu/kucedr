@@ -73,10 +73,12 @@ function toolModelApi(kind: AgentToolModelKind) {
 		getOptions: async (): Promise<Record<string, unknown>> =>
 			(await window.agent.getToolModel(kind)).options,
 		setOptions: async (options: Record<string, unknown>): Promise<Record<string, unknown>> =>
-			(await window.agent.setToolModel(kind, {
-				...(await window.agent.getToolModel(kind)),
-				options,
-			})).options,
+			(
+				await window.agent.setToolModel(kind, {
+					...(await window.agent.getToolModel(kind)),
+					options,
+				})
+			).options,
 	};
 }
 

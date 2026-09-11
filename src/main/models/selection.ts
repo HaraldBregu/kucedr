@@ -132,7 +132,9 @@ function selection(kind: ModelKind): ModelSelection {
 	return { providerId: configured.providerId, modelId: configured.modelId };
 }
 
-function getStoredModel(kind: SelectedModelKind): import('../../shared/agent_types').AgentMediaModelSettings {
+function getStoredModel(
+	kind: SelectedModelKind
+): import('../../shared/agent_types').AgentMediaModelSettings {
 	const chatbotKind = CHATBOT_MODEL_KINDS[kind];
 	if (chatbotKind) return getChatbotModel(chatbotKind);
 	const toolKind = TOOL_MODEL_KINDS[kind];
