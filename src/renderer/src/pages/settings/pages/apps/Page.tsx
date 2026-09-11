@@ -229,13 +229,19 @@ const AppsPage: React.FC = () => {
 								}}
 								className="h-28 cursor-pointer gap-0! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 							>
-								<CardContent className="grid h-full grid-cols-[10rem_minmax(0,1fr)] gap-0 p-0!">
+								<CardContent className="grid h-full grid-cols-[7.5rem_minmax(0,1fr)] gap-0 p-0!">
 									{app.imageUrl ? (
-										<img src={app.imageUrl} alt="" className="h-full w-full object-cover" />
+										<div className="flex h-full items-center justify-center">
+											<img
+												src={app.imageUrl}
+												alt=""
+												className="h-16 w-24 border border-border/70 object-cover"
+											/>
+										</div>
 									) : (
 										<div
 											aria-hidden="true"
-											className="flex h-full w-full items-center justify-center border-r border-dashed border-border/70 bg-muted/50 text-muted-foreground"
+											className="flex h-full items-center justify-center text-muted-foreground"
 										>
 											<Blocks className="size-4" strokeWidth={1.5} />
 										</div>
