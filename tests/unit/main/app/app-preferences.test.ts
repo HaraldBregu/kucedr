@@ -1,11 +1,10 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { AppWindowPreferences } from '../../../../src/main/apps/app_preferences';
+import { writeAppWindowSettings } from '../../../../src/main/apps/app_write';
 import { APP_WINDOW_DEFAULTS } from '../../../../src/shared/app_window_settings';
 import { isAppWindowSettings } from '../../../../src/shared/app_window_validate';
 import { resolveAppWindowSettings } from '../../../../src/shared/app_window_resolve';
-import type { App } from '../../../../src/shared/installed_app_types';
 
 describe('app window configuration', () => {
 	it.each([
@@ -35,7 +34,7 @@ describe('app window configuration', () => {
 		});
 	});
 
-	it('applies saved fields over manifest defaults without conflicting dimensions', () => {
+it('applies layered fields without conflicting dimensions', () => {
 		expect(resolveAppWindowSettings(
 			{ width: 1200, height: 900, minWidth: 800, resizable: false },
 			{ width: 480, maximizable: false }
@@ -47,49 +46,42 @@ describe('app window configuration', () => {
 	});
 });
 
-describe('app window preferences', () => {
+describe('app manifest window settings', () => {
 	let location: string;
-	let preferences: AppWindowPreferences;
-	const app: App = {
-		id: 'notes', title: 'Notes', description: 'A notes app',
+	const manifest = {
+		title: 'Notes',
+		description: 'A notes app',
 		metadata: { version: '1.0.0', category: 'utility', entry: 'index.html' },
 		window: { width: 960, height: 720 },
 	};
 
 	beforeEach(() => {
 		location = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-preferences-'));
-		preferences = new AppWindowPreferences(location);
+		fs.mkdirSync(path.join(location, 'apps', 'notes'), { recursive: true });
+		fs.writeFileSync(path.join(location, 'apps', 'notes', 'manifest.json'), JSON.stringify(manifest));
 	});
 
 	afterEach(() => {
 		fs.rmSync(location, { recursive: true, force: true });
 	});
 
-	it('saves preferences for one app without affecting another app', () => {
-		expect(preferences.get(app)).toMatchObject({ width: 960, height: 720 });
-		const saved = preferences.set(app, { width: 480, height: 320, resizable: false });
+	it('writes settings to the app manifest', () => {
+		const saved = writeAppWindowSettings('notes', { width: 480, height: 320, resizable: false }, location);
 		expect(saved).toMatchObject({ width: 480, height: 320, minWidth: 480, minHeight: 320, resizable: false });
-		expect(preferences.get(app)).toEqual(saved);
-		expect(preferences.get({ ...app, id: 'calendar' })).toMatchObject({ width: 960, height: 720, resizable: true });
+		const stored = JSON.parse(fs.readFileSync(path.join(location, 'apps', 'notes', 'manifest.json'), 'utf8'));
+		expect(stored.window).toEqual({ width: 480, height: 320, resizable: false });
 	});
 
-	it('resets saved preferences to the current manifest settings', () => {
-		preferences.set(app, { width: 480, resizable: false });
-		const updated = { ...app, window: { width: 1200, height: 900 } };
-		expect(preferences.get(updated)).toMatchObject({ width: 480, height: 900, resizable: false });
-		expect(preferences.set(updated, {})).toMatchObject({ width: 1200, height: 900, resizable: true });
-		expect(preferences.get(updated)).toMatchObject({ width: 1200, height: 900, resizable: true });
+	it('removes window settings when reset', () => {
+		writeAppWindowSettings('notes', {}, location);
+		const stored = JSON.parse(fs.readFileSync(path.join(location, 'apps', 'notes', 'manifest.json'), 'utf8'));
+		expect(stored.window).toBeUndefined();
 	});
 
-	it('rejects invalid updates without replacing saved settings', () => {
-		const saved = preferences.set(app, { width: 800 });
-		expect(() => preferences.set(app, { width: 400, minWidth: 500 })).toThrow('Invalid app window settings');
-		expect(() => preferences.set(app, { transparent: false })).toThrow('Invalid app window settings');
-		expect(preferences.get(app)).toEqual(saved);
-	});
-
-	it('rejects app identifiers outside the preferences directory', () => {
-		expect(() => preferences.get({ ...app, id: '../outside' })).toThrow('Invalid app ID');
-		expect(() => preferences.set({ ...app, id: '../outside' }, {})).toThrow('Invalid app ID');
+	it('rejects invalid updates without replacing the manifest', () => {
+		expect(() => writeAppWindowSettings('notes', { width: 400, minWidth: 500 }, location)).toThrow('Invalid app window settings');
+		expect(() => writeAppWindowSettings('../outside', {}, location)).toThrow('Invalid app id');
+		const stored = JSON.parse(fs.readFileSync(path.join(location, 'apps', 'notes', 'manifest.json'), 'utf8'));
+		expect(stored).toEqual(manifest);
 	});
 });
