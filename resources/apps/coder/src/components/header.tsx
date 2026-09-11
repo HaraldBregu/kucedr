@@ -46,7 +46,7 @@ export function Header({
 			className="flex h-12 shrink-0 items-center gap-2 bg-background px-3"
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
-			<SidebarTrigger className="[webkit-app-region:no-drag]" />
+			<SidebarTrigger className="[-webkit-app-region:no-drag]" />
 			<div className="flex min-w-0 flex-1 items-center gap-1.5 text-xs">
 				<span className="truncate font-medium">{coder.activeProject?.name ?? 'Coder'}</span>
 				<span className="text-muted-foreground">/</span>
@@ -68,7 +68,7 @@ export function Header({
 							<Button
 								variant="ghost"
 								size="icon-sm"
-								className="[webkit-app-region:no-drag]"
+								className="[-webkit-app-region:no-drag]"
 								aria-label="Workspace actions"
 							>
 								<MoreHorizontal />
@@ -108,7 +108,7 @@ export function Header({
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="[webkit-app-region:no-drag]"
+							className="[-webkit-app-region:no-drag]"
 							aria-label="New coding session"
 							disabled={!coder.activeProject || coder.runState === 'running'}
 							onClick={() => coder.newSession()}
@@ -121,7 +121,7 @@ export function Header({
 			</Tooltip>
 
 			{isKucedr() ? (
-				<div className="flex items-center gap-0.5 [webkit-app-region:no-drag]">
+				<div className="flex items-center gap-0.5 [-webkit-app-region:no-drag]">
 					<Button
 						variant="ghost"
 						size="icon-sm"
