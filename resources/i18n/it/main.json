@@ -1341,6 +1341,11 @@
 			"window": {
 				"title": "Impostazioni finestra",
 				"nextOpen": "Le modifiche si applicano quando chiudi e riapri questa app.",
+				"values": "Valori finestra",
+				"default": "Predefiniti",
+				"custom": "Personalizzati",
+				"defaultDescription": "Usa i valori predefiniti della finestra di Kucedr.",
+				"customDescription": "Imposta i valori della finestra per questa app.",
 				"width": "Larghezza predefinita (px)",
 				"height": "Altezza predefinita (px)",
 				"minWidth": "Larghezza minima (px)",

@@ -1,12 +1,22 @@
-import React, { useCallback, useEffect, useId, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import type { ResolvedAppWindowSettings } from '../../../../../../../shared/app_window_settings';
+import {
+	APP_WINDOW_DEFAULTS,
+	type AppWindowSettings,
+	type ResolvedAppWindowSettings,
+} from '../../../../../../../shared/app_window_settings';
 import { isAppWindowSettings } from '../../../../../../../shared/app_window_validate';
 import {
-	SettingsField,
 	SettingsLoadingRows,
 	SettingsNotice,
 	SettingsPanel,
@@ -16,14 +26,15 @@ import {
 
 const DIMENSIONS = ['width', 'height', 'minWidth', 'minHeight'] as const;
 const TOGGLES = ['resizable', 'maximizable'] as const;
+const WINDOW_KEYS = [...DIMENSIONS, ...TOGGLES] as const;
 type Draft = Omit<ResolvedAppWindowSettings, (typeof DIMENSIONS)[number]> &
 	Record<(typeof DIMENSIONS)[number], number | string>;
 
 export default function WindowSettings({ appId }: { readonly appId: string }): React.JSX.Element {
 	const { t } = useTranslation();
-	const id = useId();
 	const [draft, setDraft] = useState<Draft | null>(null);
 	const [saved, setSaved] = useState<ResolvedAppWindowSettings | null>(null);
+	const [customValues, setCustomValues] = useState(false);
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState('');
@@ -41,6 +52,9 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 				if (!active) return;
 				setSaved(settings);
 				setDraft(settings);
+				setCustomValues(
+					WINDOW_KEYS.some((key) => settings[key] !== APP_WINDOW_DEFAULTS[key])
+				);
 			})
 			.catch(() => {
 				if (active) setError('loadError');
@@ -53,24 +67,26 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 		};
 	}, [appId, attempt]);
 
-	const settings = useMemo(
+	const settings = useMemo<ResolvedAppWindowSettings | null>(
 		() =>
-			draft && {
-				...draft,
-				width: Number(draft.width),
-				height: Number(draft.height),
-				minWidth: Number(draft.minWidth),
-				minHeight: Number(draft.minHeight),
-			},
+			draft
+				? {
+						...draft,
+						width: Number(draft.width),
+						height: Number(draft.height),
+						minWidth: Number(draft.minWidth),
+						minHeight: Number(draft.minHeight),
+					}
+				: null,
 		[draft]
 	);
 	const valid = settings !== null && isAppWindowSettings(settings);
 	const dirty =
 		settings !== null &&
 		saved !== null &&
-		[...DIMENSIONS, ...TOGGLES].some((key) => settings[key] !== saved[key]);
+		WINDOW_KEYS.some((key) => settings[key] !== saved[key]);
 
-	const persist = useCallback(async (nextSettings: ResolvedAppWindowSettings): Promise<void> => {
+	const persist = useCallback(async (nextSettings: AppWindowSettings): Promise<void> => {
 		setSaving(true);
 		setError('');
 		setStatus('');
@@ -87,10 +103,10 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 	}, [appId]);
 
 	useEffect(() => {
-		if (!settings || !valid || !dirty || loading || saving || error === 'saveError') return;
+		if (!customValues || !settings || !valid || !dirty || loading || saving || error === 'saveError') return;
 		const timeout = window.setTimeout(() => void persist(settings), 300);
 		return () => window.clearTimeout(timeout);
-	}, [dirty, error, loading, persist, saving, settings, valid]);
+	}, [customValues, dirty, error, loading, persist, saving, settings, valid]);
 
 	return (
 		<SettingsSection
@@ -122,15 +138,43 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 					<div className="grid min-w-0 gap-2">
 						<fieldset disabled={saving}>
 							<SettingsPanel>
-								<div className="grid grid-cols-1 gap-3 border-b border-border/60 p-4 sm:grid-cols-2">
-									{DIMENSIONS.map((key) => (
-										<SettingsField
-											key={key}
-											id={`${id}-${key}`}
-											label={t(`settings.apps.window.${key}`)}
+								<SettingsRow
+									title={t('settings.apps.window.values')}
+									description={t(
+										`settings.apps.window.${customValues ? 'customDescription' : 'defaultDescription'}`
+									)}
+									actions={
+										<Select
+											value={customValues ? 'custom' : 'default'}
+											onValueChange={(value) => {
+												setError('');
+												setStatus('');
+												if (value === 'default') {
+													setCustomValues(false);
+													void persist({});
+													return;
+												}
+												setCustomValues(true);
+												setDraft((current) => current ?? { ...APP_WINDOW_DEFAULTS });
+											}}
 										>
+											<SelectTrigger size="sm" aria-label={t('settings.apps.window.values')}>
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="default">{t('settings.apps.window.default')}</SelectItem>
+												<SelectItem value="custom">{t('settings.apps.window.custom')}</SelectItem>
+											</SelectContent>
+										</Select>
+									}
+								/>
+								{customValues &&
+									DIMENSIONS.map((key) => (
+										<SettingsRow
+											key={key}
+											title={t(`settings.apps.window.${key}`)}
+											actions={
 											<Input
-												id={`${id}-${key}`}
 												type="number"
 												min={1}
 												max={32768}
@@ -139,17 +183,17 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 												className="h-8 text-xs"
 												value={draft[key]}
 												aria-invalid={!valid}
-														aria-describedby={!valid ? `${id}-validation` : undefined}
+													aria-label={t(`settings.apps.window.${key}`)}
 													onChange={(event) => {
-															setDraft({ ...draft, [key]: event.target.value });
+															setDraft((current) => current && { ...current, [key]: event.target.value });
 															setError('');
 															setStatus('');
-												}}
-											/>
-										</SettingsField>
+														}}
+												/>
+											}
+										/>
 									))}
-								</div>
-								{TOGGLES.map((key) => (
+								{customValues && TOGGLES.map((key) => (
 									<SettingsRow
 										key={key}
 										title={t(`settings.apps.window.${key}`)}
@@ -157,11 +201,11 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 											<Switch
 												checked={draft[key]}
 												disabled={saving}
-													aria-label={t(`settings.apps.window.${key}`)}
-													onCheckedChange={(checked) => {
-															setDraft({ ...draft, [key]: checked });
-															setError('');
-															setStatus('');
+												aria-label={t(`settings.apps.window.${key}`)}
+												onCheckedChange={(checked) => {
+													setDraft((current) => current && { ...current, [key]: checked });
+													setError('');
+													setStatus('');
 												}}
 											/>
 										}
@@ -169,7 +213,7 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 								))}
 							</SettingsPanel>
 						</fieldset>
-							{!valid && (
+							{customValues && !valid && (
 								<p id={`${id}-validation`} role="alert" className="text-xs text-destructive">
 									{t('settings.apps.window.invalid')}
 								</p>

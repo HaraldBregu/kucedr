@@ -1342,6 +1342,11 @@
 			"window": {
 				"title": "Window settings",
 				"nextOpen": "Changes apply the next time you close and reopen this app.",
+				"values": "Window values",
+				"default": "Default",
+				"custom": "Custom",
+				"defaultDescription": "Use Kucedr's default window values.",
+				"customDescription": "Set window values for this app.",
 				"width": "Default width (px)",
 				"height": "Default height (px)",
 				"minWidth": "Minimum width (px)",
