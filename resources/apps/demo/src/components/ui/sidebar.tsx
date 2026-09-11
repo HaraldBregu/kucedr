@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, type ComponentProps, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { PanelLeft } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 import { cn } from '../../lib/utils';
 import { Button } from './button';
@@ -97,7 +97,11 @@ export function SidebarTrigger({ className, ...props }: ComponentProps<typeof Bu
 			onClick={context.toggle}
 			{...props}
 		>
-			<PanelLeft className="size-4" strokeWidth={1.5} />
+			{context.open ? (
+				<PanelLeftClose className="size-4" strokeWidth={1.5} />
+			) : (
+				<PanelLeftOpen className="size-4" strokeWidth={1.5} />
+			)}
 		</Button>,
 		document.body
 	);
