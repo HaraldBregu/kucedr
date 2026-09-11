@@ -246,7 +246,7 @@ const AppsPage: React.FC = () => {
 											<Blocks className="size-4" strokeWidth={1.5} />
 										</div>
 									)}
-									<div className="flex min-w-0 flex-col p-3">
+									<div className="flex min-w-0 flex-col py-3 pr-3">
 										<div className="flex min-w-0 items-start justify-between gap-3">
 											<div className="min-w-0">
 												<h3 className="truncate text-sm font-medium text-foreground">
