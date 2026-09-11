@@ -29,6 +29,11 @@ export function ProjectSidebar({
 
 	return (
 		<>
+			<div
+				aria-hidden="true"
+				className="h-12 shrink-0 border-b border-sidebar-border/50"
+				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+			/>
 			<SidebarHeader className="px-2 pb-2 pt-2">
 				<div className="flex min-h-9 items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
 					<div className="flex min-w-0 flex-1 items-center gap-2 group-data-[state=collapsed]/sidebar:hidden">
@@ -74,6 +79,7 @@ export function ProjectSidebar({
 				<div className="relative group-data-[state=collapsed]/sidebar:hidden">
 					<Search className="pointer-events-none absolute left-2.5 top-2 size-3.5 text-muted-foreground" />
 					<Input
+						id="coder-sidebar-search"
 						aria-label="Search workspaces and sessions"
 						value={coder.query}
 						onChange={(event) => coder.setQuery(event.target.value)}
