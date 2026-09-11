@@ -5,7 +5,7 @@ import { appEntryPath } from './app_entry';
 import { render } from './app_render';
 import type { App } from './app_types';
 import { readAppManifest } from './app_read';
-import { AppWindowPreferences } from './app_preferences';
+import { resolveAppWindowSettings } from '../../shared/app_window_resolve';
 
 export function loadApp(
 	windowFactory: WindowFactory,
@@ -16,6 +16,6 @@ export function loadApp(
 	if (!manifest) throw new Error(`App manifest not found or invalid: ${app.id}`);
 	const entry = appEntryPath(app.id, manifest.metadata.entry, appLocation);
 	if (!existsSync(entry)) throw new Error(`App entry not found: ${app.id}`);
-	const settings = new AppWindowPreferences(appLocation).get({ ...manifest, id: app.id });
+	const settings = resolveAppWindowSettings(manifest.window ?? {});
 	return render(windowFactory, entry, manifest.title, app.id, settings);
 }

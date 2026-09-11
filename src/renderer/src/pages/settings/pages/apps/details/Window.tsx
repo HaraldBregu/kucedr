@@ -66,16 +66,16 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 		saved !== null &&
 		[...DIMENSIONS, ...TOGGLES].some((key) => settings[key] !== saved[key]);
 
-	const persist = async (reset: boolean): Promise<void> => {
-		if (saving || (!reset && !valid)) return;
+	const persist = async (): Promise<void> => {
+		if (saving || !valid) return;
 		setSaving(true);
 		setError('');
 		setStatus('');
 		try {
-			const result = await window.apps.setSettings(appId, reset ? {} : settings!);
+			const result = await window.apps.setSettings(appId, settings!);
 			setSaved(result);
 			setDraft(result);
-			setStatus(reset ? 'resetDone' : 'saved');
+			setStatus('saved');
 		} catch {
 			setError('saveError');
 		} finally {
@@ -113,7 +113,7 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 					<form
 						onSubmit={(event) => {
 							event.preventDefault();
-							void persist(false);
+							void persist();
 						}}
 					>
 						<fieldset disabled={saving} className="grid min-w-0 gap-2">
@@ -171,14 +171,6 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 								<p role="status" className="mr-auto text-xs text-muted-foreground">
 									{status && t(`settings.apps.window.${status}`)}
 								</p>
-								<Button
-									type="button"
-									variant="outline"
-									size="xs"
-									onClick={() => void persist(true)}
-								>
-									{t('settings.apps.window.reset')}
-								</Button>
 								<Button type="submit" size="xs" disabled={!valid || !dirty}>
 									{t(`settings.apps.window.${saving ? 'saving' : 'save'}`)}
 								</Button>

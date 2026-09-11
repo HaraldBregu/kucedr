@@ -7,6 +7,7 @@ export { listApps } from './app_list';
 export { loadApp } from './app_load';
 export { readAppManifest } from './app_read';
 export { readAppManifestFromDirectory } from './app_read';
+export { writeAppWindowSettings } from './app_write';
 export { importApps } from './app_import';
 export { openRoot } from './app_open_root';
 export { watchApps } from './app_watch';
