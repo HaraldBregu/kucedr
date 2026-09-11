@@ -43,6 +43,8 @@ describe('VoiceConversationWindow', () => {
 
 		expect(screen.getByLabelText('Voice Agent')).toHaveAttribute('data-state', expectedState);
 		expect(screen.queryByRole('status')).not.toBeInTheDocument();
-		expect(screen.getByText('1:01')).toHaveClass('absolute', 'bottom-3', 'right-3');
+		expect(screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling).toHaveTextContent(
+			'1:01'
+		);
 	});
 });

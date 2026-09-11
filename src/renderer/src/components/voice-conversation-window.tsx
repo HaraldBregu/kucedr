@@ -54,9 +54,6 @@ export function VoiceConversationWindow({
 						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
 						size={208}
 					/>
-					<span className="absolute bottom-3 right-3 font-mono text-xs tabular-nums text-muted-foreground">
-						{formatDuration(voice.elapsedMs)}
-					</span>
 				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
@@ -85,6 +82,9 @@ export function VoiceConversationWindow({
 						{isEnding ? <TypingLoader size="sm" /> : null}
 						<span>{voice.status === 'error' ? 'Close' : 'End'}</span>
 					</button>
+					<span className="font-mono text-xs tabular-nums text-muted-foreground">
+						{formatDuration(voice.elapsedMs)}
+					</span>
 				</div>
 			</div>
 		</main>
