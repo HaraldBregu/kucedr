@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
@@ -51,45 +51,13 @@ beforeEach(() => {
 	});
 });
 
-it('confirms before deleting an app', async () => {
-	const user = userEvent.setup();
-	const deleteApp = window.apps.delete as jest.Mock;
-	deleteApp
-		.mockResolvedValueOnce(false)
-		.mockRejectedValueOnce(new Error('Delete failed'))
-		.mockResolvedValueOnce(true);
+it('shows only the open action on app cards', async () => {
+	render(<MemoryRouter><AppsPage /></MemoryRouter>);
 
-	render(
-		<MemoryRouter initialEntries={['/settings/apps']}>
-			<Routes>
-				<Route path="/settings" element={<Layout />}>
-					<Route path="apps">
-						<Route index element={<AppsPage />} />
-						<Route path=":appId" element={<p>App detail</p>} />
-					</Route>
-				</Route>
-			</Routes>
-		</MemoryRouter>
-	);
-
-	const deleteButton = await screen.findByRole('button', {
-		name: /settings.apps.deleteAction/,
-	});
-	await user.click(deleteButton);
-
-	expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
-	await waitFor(() => expect(deleteApp).toHaveBeenCalledTimes(1));
-	expect(screen.getByText('Demo App')).toBeInTheDocument();
-
-	await user.click(deleteButton);
-	expect(await screen.findByText('Delete failed')).toBeInTheDocument();
-	expect(screen.getByText('Demo App')).toBeInTheDocument();
-
-	await user.click(deleteButton);
-	await waitFor(() => expect(deleteApp).toHaveBeenCalledTimes(3));
-	expect(deleteApp).toHaveBeenLastCalledWith('demo-app');
-	await waitFor(() => expect(screen.queryByText('Demo App')).not.toBeInTheDocument());
-	expect(screen.queryByText('App detail')).not.toBeInTheDocument();
+	await screen.findByText('Demo App');
+	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: /settings.apps.deleteAction/ })).not.toBeInTheDocument();
 });
 
 it('opens the apps folder from the page header', async () => {
@@ -149,27 +117,6 @@ it('keeps a canceled upload quiet', async () => {
 	expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 	expect(screen.queryByText(/settings.apps.uploaded/)).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'common.moreOptions' })).toBeEnabled();
-});
-
-it('navigates app details actions to the app detail subroute', async () => {
-	const user = userEvent.setup();
-
-	render(
-		<MemoryRouter initialEntries={['/settings/apps']}>
-			<Routes>
-				<Route path="/settings" element={<Layout />}>
-					<Route path="apps">
-						<Route index element={<AppsPage />} />
-						<Route path=":appId" element={<p>App detail</p>} />
-					</Route>
-				</Route>
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await user.click(await screen.findByRole('button', { name: 'settings.apps.details' }));
-
-	expect(await screen.findByText('App detail')).toBeInTheDocument();
 });
 
 it('opens an app from its card action', async () => {

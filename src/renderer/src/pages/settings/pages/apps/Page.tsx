@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Blocks,
@@ -8,7 +7,6 @@ import {
 	FolderOpen,
 	MoreHorizontal,
 	RefreshCw,
-	Settings2,
 	Upload,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -16,7 +14,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { App } from '../../../../../../shared/installed_app_types';
-import Delete from './Delete';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -36,7 +33,6 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 const AppsPage: React.FC = () => {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const [apps, setApps] = useState<App[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [importing, setImporting] = useState(false);
@@ -114,11 +110,6 @@ const AppsPage: React.FC = () => {
 			}
 		},
 		[t]
-	);
-
-	const appPath = useCallback(
-		(appId: string): string => `/settings/apps/${encodeURIComponent(appId)}`,
-		[]
 	);
 
 	return (
@@ -241,7 +232,7 @@ const AppsPage: React.FC = () => {
 												{t('settings.apps.open')}
 											</Button>
 										</div>
-										<div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-3">
+										<div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
 											<div className="flex flex-wrap items-center gap-1.5">
 												<Badge variant="secondary" className="text-[10px] leading-none">
 													{app.metadata.category}
@@ -249,26 +240,6 @@ const AppsPage: React.FC = () => {
 												<Badge variant="outline" className="text-[10px] leading-none">
 													{app.metadata.version}
 												</Badge>
-											</div>
-											<div className="flex flex-wrap items-center justify-end gap-1.5">
-												<Button
-													type="button"
-													variant="outline"
-													size="xs"
-													disabled={importing || openingAppId === app.id}
-													onClick={() => navigate(appPath(app.id))}
-												>
-													<Settings2 className="size-3" />
-													{t('settings.apps.details')}
-												</Button>
-												<Delete
-													app={app}
-													disabled={importing || openingAppId === app.id}
-													onDeleted={(appId) => {
-														setApps((current) => current.filter(({ id }) => id !== appId));
-													}}
-													onError={setErrorMessage}
-												/>
 											</div>
 										</div>
 									</div>
