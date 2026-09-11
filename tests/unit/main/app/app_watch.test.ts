@@ -40,6 +40,7 @@ describe('app folder watcher', () => {
 			jest.mocked(watch).mock.calls[0][1] as { ignored: (watchPath: string) => boolean }
 		).ignored;
 		expect(ignored(path.join('/tmp/kucedr', 'apps', 'project', 'data', 'store.json'))).toBe(true);
+		expect(ignored(path.join('project', 'data', 'store.json'))).toBe(true);
 		expect(ignored(path.join('/tmp/kucedr', 'apps', 'project', 'manifest.json'))).toBe(false);
 		handlers.get('all')?.('addDir', 'project');
 		handlers.get('all')?.('add', 'project/manifest.json');

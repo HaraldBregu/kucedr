@@ -15,7 +15,10 @@ export function watchApps(
 	const watcher = watch(root, {
 		ignoreInitial: true,
 		followSymlinks: false,
-		ignored: (watchPath) => path.relative(root, watchPath).split(path.sep)[1] === 'data',
+		ignored: (watchPath) => {
+			const relative = path.isAbsolute(watchPath) ? path.relative(root, watchPath) : watchPath;
+			return relative.split(path.sep)[1] === 'data';
+		},
 		awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 25 },
 	});
 
