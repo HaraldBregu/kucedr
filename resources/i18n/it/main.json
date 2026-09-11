@@ -1314,6 +1314,7 @@
 		},
 		"apps": {
 			"title": "App installate",
+			"information": "Informazioni sull'app",
 			"description": "App esterne che si aprono in una finestra dedicata e possono usare le API dell'app.",
 			"openFolder": "Apri Cartella",
 			"openFolderError": "Impossibile aprire la cartella delle app.",

@@ -1315,6 +1315,7 @@
 		},
 		"apps": {
 			"title": "Installed apps",
+			"information": "App information",
 			"description": "External apps that open in their own window and can call the app API.",
 			"openFolder": "Open Folder",
 			"openFolderError": "Unable to open the apps folder.",

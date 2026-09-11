@@ -51,6 +51,20 @@ it('loads settings for the selected app inside its details page', async () => {
 	expect(screen.getByRole('button', { name: 'settings.apps.window.save' })).toBeDisabled();
 });
 
+it('shows app information before its window configuration', async () => {
+	render(
+		<MemoryRouter initialEntries={['/settings/apps/my-app']}>
+			<Routes>
+				<Route path="/settings/apps/:appId" element={<AppDetailsPage />} />
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const information = await screen.findByRole('heading', { name: 'settings.apps.information' });
+	const configuration = screen.getByRole('heading', { name: 'settings.apps.window.title' });
+	expect(information.compareDocumentPosition(configuration)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+});
+
 it('saves edited dimensions and behavior for only the selected app', async () => {
 	const user = userEvent.setup();
 	const updated = { ...settings, width: 1400, resizable: true, maximizable: false };

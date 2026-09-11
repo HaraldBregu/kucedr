@@ -114,9 +114,7 @@ const AppDetailsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			<WindowSettings key={app.id} appId={app.id} />
-
-			<SettingsSection title={t('settings.apps.details')}>
+			<SettingsSection title={t('settings.apps.information')}>
 				<SettingsPanel>
 					<AppDetail label={t('settings.apps.detailId')} value={app.id} mono />
 					<AppDetail
@@ -141,6 +139,8 @@ const AppDetailsPage: React.FC = () => {
 					))}
 				</SettingsPanel>
 			</SettingsSection>
+
+			<WindowSettings key={app.id} appId={app.id} />
 		</SettingsPageShell>
 	);
 };
