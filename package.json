@@ -102,7 +102,7 @@
 		"@radix-ui/react-avatar": "^1.1.11",
 		"@radix-ui/react-popover": "^1.1.19",
 		"@radix-ui/react-slider": "^1.4.7",
-		"@radix-ui/react-tooltip": "^1.2.8",
+		"@radix-ui/react-tooltip": "^1.2.16",
 		"@radix-ui/react-use-controllable-state": "^1.2.6",
 		"@supabase/supabase-js": "^2.112.4",
 		"@tiptap/core": "^3.31.2",
