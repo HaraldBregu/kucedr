@@ -169,6 +169,24 @@ it('navigates to an app detail when its card is clicked', async () => {
 	expect(window.apps.open).not.toHaveBeenCalled();
 });
 
+it('does not navigate to app detail when an overflow action is clicked', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/apps']}>
+			<Routes>
+				<Route path="/settings/apps" element={<AppsPage />} />
+				<Route path="/settings/apps/:appId" element={<p>App detail</p>} />
+			</Routes>
+		</MemoryRouter>
+	);
+
+	await user.click(await screen.findByRole('button', { name: /settings.apps.deleteAction/ }));
+	await user.click(await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ }));
+
+	expect(window.apps.delete).toHaveBeenCalledWith('demo-app');
+	expect(screen.queryByText('App detail')).not.toBeInTheDocument();
+});
+
 it('treats an app detail route as a child of the apps breadcrumb', async () => {
 	const user = userEvent.setup();
 	(window.apps.list as jest.Mock).mockResolvedValue([{ ...apps[0], title: 'Kucedr Demo' }]);

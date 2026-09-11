@@ -286,7 +286,13 @@ const AppsPage: React.FC = () => {
 															<MoreHorizontal className="size-3.5" />
 														</Button>
 													</PopoverTrigger>
-													<PopoverContent align="end" collisionPadding={12} className="w-44 p-1">
+													<PopoverContent
+														align="end"
+														collisionPadding={12}
+														className="w-44 p-1"
+														onClick={(event) => event.stopPropagation()}
+														onKeyDown={(event) => event.stopPropagation()}
+													>
 														<div role="menu" aria-label={t('common.moreOptions')}>
 															<Delete
 																app={app}
