@@ -28,10 +28,7 @@ export interface AppsIpcDeps {
 export class AppsIpc implements IpcModule<AppsIpcDeps> {
 	readonly name = 'apps';
 
-	register(
-		{ windowFactory, appRegistry, windows }: AppsIpcDeps,
-		_eventBus: EventBus
-	): void {
+	register({ windowFactory, appRegistry, windows }: AppsIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		registerQueryWithEvent(AppsChannels.getSettings, (event, appId) => {
 			trusted.assert(event);

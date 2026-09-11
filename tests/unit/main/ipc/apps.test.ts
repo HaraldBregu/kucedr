@@ -28,7 +28,10 @@ jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 
 import type { EventBus } from '../../../../src/main/event_bus';
 import { AppsIpc } from '../../../../src/main/ipc/apps';
-import { registerCommandWithEvent, registerQueryWithEvent } from '../../../../src/main/ipc/core/gateway';
+import {
+	registerCommandWithEvent,
+	registerQueryWithEvent,
+} from '../../../../src/main/ipc/core/gateway';
 import { APP_WINDOW_DEFAULTS } from '../../../../src/shared/app_window_settings';
 import type { WindowFactory } from '../../../../src/main/window_factory';
 import { AppsChannels } from '../../../../src/shared/ipc_channels_definitions';
@@ -104,9 +107,7 @@ it('uses a native confirmation before deleting an app', async () => {
 	expect(appRegistry.revoke).toHaveBeenCalledWith(app.id);
 	expect(destroyApp).toHaveBeenCalledWith(app.id);
 
-	await expect(deleteHandler(event, 'missing-app')).rejects.toThrow(
-		'App not found: missing-app'
-	);
+	await expect(deleteHandler(event, 'missing-app')).rejects.toThrow('App not found: missing-app');
 });
 
 describe('app window settings IPC', () => {
@@ -120,13 +121,20 @@ describe('app window settings IPC', () => {
 		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(owner);
 		set = writeAppWindowSettings;
 		set.mockReturnValue({ ...APP_WINDOW_DEFAULTS, width: 960 });
-		new AppsIpc().register({
-			windowFactory: {} as WindowFactory,
-			appRegistry: appRegistry as never,
-			windows: windows as never,
-		}, {} as EventBus);
-		read = (registerQueryWithEvent as jest.Mock).mock.calls.find(([channel]) => channel === AppsChannels.getSettings)?.[1];
-		save = (registerCommandWithEvent as jest.Mock).mock.calls.find(([channel]) => channel === AppsChannels.setSettings)?.[1];
+		new AppsIpc().register(
+			{
+				windowFactory: {} as WindowFactory,
+				appRegistry: appRegistry as never,
+				windows: windows as never,
+			},
+			{} as EventBus
+		);
+		read = (registerQueryWithEvent as jest.Mock).mock.calls.find(
+			([channel]) => channel === AppsChannels.getSettings
+		)?.[1];
+		save = (registerCommandWithEvent as jest.Mock).mock.calls.find(
+			([channel]) => channel === AppsChannels.setSettings
+		)?.[1];
 	});
 
 	it('reads and saves settings for a trusted renderer and installed app', () => {
