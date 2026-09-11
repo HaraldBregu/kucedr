@@ -12,6 +12,7 @@ import {
 	BookOpenText,
 	Mic,
 	Radio,
+	Volume2,
 	Wrench,
 } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
@@ -187,12 +188,20 @@ const AssistantPage: React.FC = () => {
 					/>
 				</ModelProviderConfiguration>
 
-				<RealtimeConversationConfiguration
-					icon={Radio}
+				<AgentMediaModelConfiguration
+					api={window.models.voice}
+					capability="text-to-speech"
+					idPrefix="agent-voice"
+					title={t('settings.modelServices.voiceName')}
+					description={t('settings.modelServices.textToSpeechModelDescription')}
+					showIcon
+					icon={Volume2}
 					showFieldLabel={false}
+					grouped
 					showSelectedModel
 					buttonDropdown
 					showContentSeparator={false}
+					inlineAdvanced
 				/>
 
 				<AgentMediaModelConfiguration
@@ -213,20 +222,12 @@ const AssistantPage: React.FC = () => {
 			</SettingsPanel>
 
 			<SettingsPanel>
-				<AgentMediaModelConfiguration
-					api={window.models.voice}
-					capability="text-to-speech"
-					idPrefix="agent-voice"
-					title={t('settings.modelServices.voiceName')}
-					description={t('settings.modelServices.textToSpeechModelDescription')}
-					showIcon
+				<RealtimeConversationConfiguration
 					icon={Radio}
 					showFieldLabel={false}
-					grouped
 					showSelectedModel
 					buttonDropdown
 					showContentSeparator={false}
-					inlineAdvanced
 				/>
 			</SettingsPanel>
 
