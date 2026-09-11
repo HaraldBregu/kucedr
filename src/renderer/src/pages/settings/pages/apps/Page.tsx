@@ -214,7 +214,7 @@ const AppsPage: React.FC = () => {
 					<div className="grid gap-3">
 						{apps.map((app) => (
 							<Card key={app.id} size="sm" className="gap-0! p-0!">
-								<CardContent className="grid gap-3 p-3! sm:grid-cols-[9rem_minmax(0,1fr)_auto]">
+								<CardContent className="grid gap-3 p-3! sm:grid-cols-[9rem_minmax(0,1fr)]">
 									<div
 										aria-hidden="true"
 										className="flex aspect-video items-center justify-center rounded-lg border border-dashed border-border/70 bg-muted/50 text-muted-foreground sm:aspect-auto sm:min-h-24"
@@ -231,39 +231,46 @@ const AppsPage: React.FC = () => {
 													{app.description}
 												</p>
 											</div>
-											<Badge variant="secondary" className="shrink-0 text-[10px] leading-none">
-												{app.metadata.category}
-											</Badge>
+											<Button
+												type="button"
+												size="xs"
+												disabled={importing || openingAppId === app.id}
+												onClick={() => void handleOpen(app.id)}
+											>
+												<ExternalLink className="size-3" />
+												{t('settings.apps.open')}
+											</Button>
 										</div>
-									</div>
-									<div className="flex flex-wrap items-center justify-end gap-1.5 sm:self-stretch">
-										<Button
-											type="button"
-											variant="outline"
-											size="xs"
-											disabled={importing || openingAppId === app.id}
-											onClick={() => navigate(appPath(app.id))}
-										>
-											<Settings2 className="size-3" />
-											{t('settings.apps.details')}
-										</Button>
-										<Button
-											type="button"
-											size="xs"
-											disabled={importing || openingAppId === app.id}
-											onClick={() => void handleOpen(app.id)}
-										>
-											<ExternalLink className="size-3" />
-											{t('settings.apps.open')}
-										</Button>
-										<Delete
-											app={app}
-											disabled={importing || openingAppId === app.id}
-											onDeleted={(appId) => {
-												setApps((current) => current.filter(({ id }) => id !== appId));
-											}}
-											onError={setErrorMessage}
-										/>
+										<div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-3">
+											<div className="flex flex-wrap items-center gap-1.5">
+												<Badge variant="secondary" className="text-[10px] leading-none">
+													{app.metadata.category}
+												</Badge>
+												<Badge variant="outline" className="text-[10px] leading-none">
+													{app.metadata.version}
+												</Badge>
+											</div>
+											<div className="flex flex-wrap items-center justify-end gap-1.5">
+												<Button
+													type="button"
+													variant="outline"
+													size="xs"
+													disabled={importing || openingAppId === app.id}
+													onClick={() => navigate(appPath(app.id))}
+												>
+													<Settings2 className="size-3" />
+													{t('settings.apps.details')}
+												</Button>
+												<Delete
+													app={app}
+													disabled={importing || openingAppId === app.id}
+													onDeleted={(appId) => {
+														setApps((current) => current.filter(({ id }) => id !== appId));
+													}}
+													onError={setErrorMessage}
+												/>
+											</div>
+										</div>
 									</div>
 								</CardContent>
 							</Card>
