@@ -14,6 +14,13 @@ import {
 import { cn } from './lib/utils';
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
+import {
+	Sidebar,
+	SidebarContent,
+	SidebarInset,
+	SidebarProvider,
+	SidebarTrigger,
+} from './components/ui/sidebar';
 import { Textarea } from './components/ui/textarea';
 import translations from './i18n.json';
 import { runStorageTest } from './storage';
@@ -92,6 +99,7 @@ export default function App() {
 	const [storageBusy, setStorageBusy] = useState(false);
 	const [maximized, setMaximized] = useState(false);
 	const [randomNumber, setRandomNumber] = useState<number | null>(null);
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const inKucedrApp = isKucedr();
 	const text = translations[language] ?? translations.en;
 	const themeStyle = Object.fromEntries(
@@ -291,7 +299,9 @@ export default function App() {
 	}, [language, text.loadFailed, text.themeChanged]);
 
 	return (
-		<div
+		<SidebarProvider
+			open={sidebarOpen}
+			onOpenChange={setSidebarOpen}
 			className={cn('app-demo flex min-h-0 flex-col', theme.isDark && 'dark')}
 			style={themeStyle}
 		>
@@ -302,6 +312,7 @@ export default function App() {
 				)}
 				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 			>
+				<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
 				<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.title}</h1>
 				<div
 					className="flex items-center gap-1"
@@ -343,14 +354,37 @@ export default function App() {
 					</div>
 				) : null}
 			</header>
-			<main className="min-h-0 flex-1 overflow-y-auto">
-				<div className="min-h-full w-full">
-					<div className="min-h-full w-full space-y-5 border border-border bg-card p-6 text-card-foreground shadow-sm">
-						<p className="text-lg font-semibold">{text.title}</p>
+			<div className="flex min-h-0 flex-1">
+				<Sidebar aria-label={text.sidebarNavigation}>
+					<div className="border-b border-border px-4 py-3 text-sm font-semibold">Demo</div>
+					<SidebarContent className="p-2">
+						<nav className="space-y-1" aria-label={text.sidebarNavigation}>
+							<a className="block rounded-md px-3 py-2 text-sm hover:bg-muted" href="#overview">
+								{text.overview}
+							</a>
+							<a className="block rounded-md px-3 py-2 text-sm hover:bg-muted" href="#theme">
+								{text.theme}
+							</a>
+							<a className="block rounded-md px-3 py-2 text-sm hover:bg-muted" href="#language">
+								{text.language}
+							</a>
+							<a className="block rounded-md px-3 py-2 text-sm hover:bg-muted" href="#storage">
+								{text.storage}
+							</a>
+						</nav>
+					</SidebarContent>
+				</Sidebar>
+				<SidebarInset>
+					<main className="min-h-0 flex-1 overflow-y-auto">
+						<div className="min-h-full w-full">
+							<div className="min-h-full w-full space-y-5 border border-border bg-card p-6 text-card-foreground shadow-sm">
+								<div id="overview">
+									<p className="text-lg font-semibold">{text.title}</p>
 						<p className="text-sm text-muted-foreground">
 							{inKucedrApp ? text.connected : text.disconnected}
 						</p>
-						<div className="space-y-2">
+								</div>
+						<div id="theme" className="space-y-2">
 							<p className="text-sm font-semibold">{text.theme}</p>
 							<p className="text-sm">
 								{text.themeMode}: {theme.themeMode}
@@ -374,7 +408,7 @@ export default function App() {
 								<Button onClick={printThemeData}>{text.printThemeData}</Button>
 							</div>
 						</div>
-						<div className="space-y-2">
+						<div id="language" className="space-y-2">
 							<p className="text-sm font-semibold">{text.language}</p>
 							<p className="text-sm">
 								{text.currentLanguage}: {language}
@@ -391,7 +425,7 @@ export default function App() {
 								</Button>
 							</div>
 						</div>
-						<div className="space-y-4 border-t border-border pt-4">
+						<div id="storage" className="space-y-4 border-t border-border pt-4">
 							<p className="text-sm font-semibold">{text.storage}</p>
 							<p className="text-sm text-muted-foreground">{text.storageDescription}</p>
 							<div className="space-y-3 rounded-md border border-border p-4">
@@ -521,9 +555,11 @@ export default function App() {
 						<span className={themeBadgeClass({ variant: theme.isDark ? 'dark' : 'light' })}>
 							{theme.isDark ? text.dark : text.light}
 						</span>
-					</div>
+							</div>
+						</div>
+					</main>
+				</SidebarInset>
 				</div>
-			</main>
-		</div>
+		</SidebarProvider>
 	);
 }

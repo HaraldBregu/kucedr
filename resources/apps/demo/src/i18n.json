@@ -1,6 +1,8 @@
 {
 	"en": {
 		"title": "Kucedr app IPC demo",
+		"sidebarNavigation": "Demo navigation",
+		"overview": "Overview",
 		"connected": "Connected to Kucedr app runtime.",
 		"disconnected": "Running outside Kucedr app. Buttons are available but use app actions from host runtime only.",
 		"randomNumber": "Random number",
@@ -73,6 +75,8 @@
 	},
 	"it": {
 		"title": "Demo IPC app Kucedr",
+		"sidebarNavigation": "Navigazione Demo",
+		"overview": "Panoramica",
 		"connected": "Connesso al runtime dell'app Kucedr.",
 		"disconnected": "In esecuzione fuori dall'app Kucedr. I pulsanti sono disponibili, ma le azioni app funzionano solo nel runtime host.",
 		"randomNumber": "Numero casuale",
