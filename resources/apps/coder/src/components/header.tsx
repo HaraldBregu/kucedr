@@ -24,7 +24,7 @@ export function Header({
 
 	return (
 		<header
-			className="flex h-[84px] shrink-0 items-end gap-2 bg-background px-3 pb-3 pt-12"
+			className="flex h-12 shrink-0 items-center gap-2 bg-background px-3"
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
 			<SidebarTrigger className="[webkit-app-region:no-drag]" />
