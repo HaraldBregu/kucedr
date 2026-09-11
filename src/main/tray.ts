@@ -158,7 +158,8 @@ export class Tray {
 			: [{ label: m.noApps || 'No apps', enabled: false }];
 		const taskItems: Array<Electron.MenuItemConstructorOptions> = tasks.length
 			? tasks.map((task) => ({
-					label: task.name,
+					label: task.name.length > 48 ? `${task.name.slice(0, 47)}…` : task.name,
+					toolTip: task.name,
 					click: (): void => this.callbacks.onStartTask(task),
 				}))
 			: [{ label: m.noTasks || 'No tasks', enabled: false }];

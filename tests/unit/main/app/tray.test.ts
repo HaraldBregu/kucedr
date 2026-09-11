@@ -256,3 +256,36 @@ it('lists tasks in the Tasks submenu and starts the selected task', () => {
 	tasks?.submenu?.[0]?.click?.();
 	expect(onStartTask).toHaveBeenCalledWith(task);
 });
+
+it('truncates long task titles in the Tasks submenu', () => {
+	const task = {
+		id: 'task-1',
+		name: 'A'.repeat(49),
+		enabled: true,
+		prompt: 'Run the task.',
+		sessionIds: [],
+		createdAt: '2026-09-11T00:00:00.000Z',
+		updatedAt: '2026-09-11T00:00:00.000Z',
+	};
+	const tray = new Tray({
+		onToggleChat: jest.fn(),
+		onStartPersona: jest.fn(),
+		onHidePersona: jest.fn(),
+		onShowPersona: jest.fn(),
+		onQuit: jest.fn(),
+		isAppVisible: () => false,
+		isPersonaActive: () => false,
+		isPersonaVisible: () => false,
+		getTrayClickAction: () => 'toggle-chat',
+		getApps: () => [],
+		onOpenApp: jest.fn(),
+		getTasks: () => [task],
+		onStartTask: jest.fn(),
+	});
+
+	tray.create();
+
+	const template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
+	const taskItem = template.find((entry) => entry.label === 'Tasks')?.submenu?.[0];
+	expect(taskItem).toMatchObject({ label: `${'A'.repeat(47)}…`, toolTip: task.name });
+});
