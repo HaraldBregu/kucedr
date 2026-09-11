@@ -50,6 +50,7 @@ export class VoiceWindow {
 			...getPlatformTranslucencyOptions(),
 			title: 'Voice conversation',
 			center: true,
+			alwaysOnTop: true,
 			skipTaskbar: true,
 			show: false,
 		};
@@ -73,6 +74,7 @@ export class VoiceWindow {
 		win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
 		this.windowContextManager.create(win);
 		attachWindowHandlers(win);
+		win.setAlwaysOnTop(true, 'floating');
 		if (typeof win.setVisibleOnAllWorkspaces === 'function') {
 			win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 		}
