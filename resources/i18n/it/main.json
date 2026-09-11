@@ -1233,7 +1233,7 @@
 			"testVoicePlaceholder": "Inserisci il testo da pronunciare",
 			"testVoiceSpeak": "Pronuncia",
 			"testVoiceSpeaking": "Pronuncia in corso…",
-			"voiceName": "Voce",
+			"voiceName": "Sintesi vocale",
 			"voiceDescription": "Conversazioni realtime e output vocale",
 			"transcriptionName": "Trascrizione",
 			"transcriptionDescription": "Trascrizione da voce a testo",

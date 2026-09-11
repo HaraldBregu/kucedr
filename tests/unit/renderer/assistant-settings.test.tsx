@@ -108,7 +108,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.toolModels': 'Tool models',
 		'settings.modelServices.subtitle': 'Configure model assignments',
 		'settings.modelServices.imageAssistantName': 'Text to image',
-		'settings.modelServices.voiceName': 'Voice',
+		'settings.modelServices.voiceName': 'Speech',
 		'settings.modelServices.textToSpeechModelDescription': 'Text to speech model',
 		'settings.modelServices.transcriptionName': 'Transcription',
 		'settings.modelServices.transcriptionDescription': 'Speech-to-text transcription',
@@ -288,7 +288,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 		'/settings/agent/tools'
 	);
 	expect(screen.queryByRole('button', { name: 'Text to image' })).not.toBeInTheDocument();
-	for (const name of [/Model/, /Realtime conversation/, /Voice/, /Transcription/]) {
+	for (const name of [/Model/, /Realtime conversation/, /Speech/, /Transcription/]) {
 		const trigger = (await screen.findAllByRole('button', { name })).find(
 			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 		);
@@ -302,7 +302,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	);
 	expect(model).toBeDefined();
 	if (!model) return;
-	const voiceTrigger = (await screen.findAllByRole('button', { name: /Voice/ })).find(
+	const voiceTrigger = (await screen.findAllByRole('button', { name: /Speech/ })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 	);
 	expect(voiceTrigger).toBeDefined();
@@ -310,7 +310,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	expect(voiceTrigger).toHaveTextContent('Text to speech model');
 	expect(voiceTrigger.nextElementSibling).not.toHaveClass('border-t');
 	expect(screen.getAllByText('Text to speech model').length).toBeGreaterThan(0);
-	const voice = (await screen.findAllByRole('button', { name: 'Voice' })).find(
+	const voice = (await screen.findAllByRole('button', { name: 'Speech' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
 	const realtimeConversation = (

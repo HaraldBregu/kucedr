@@ -1234,7 +1234,7 @@
 			"testVoicePlaceholder": "Enter text to speak",
 			"testVoiceSpeak": "Speak",
 			"testVoiceSpeaking": "Speaking…",
-			"voiceName": "Voice",
+			"voiceName": "Speech",
 			"voiceDescription": "Realtime conversations and spoken output",
 			"transcriptionName": "Transcription",
 			"transcriptionDescription": "Speech-to-text transcription",
