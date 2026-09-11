@@ -5,6 +5,7 @@ import { safeStorage } from 'electron';
 import Store from 'electron-store';
 import { userDataLocation } from '../shared/user_data_location';
 import type { ProviderCredentialKind, StoredProvider } from '../../shared/provider_types';
+import type { PersistedStorageProvider } from '../storage/providers/types';
 import type { ProvidersStoreState } from './providers_types';
 import { restrictProviderPermissions } from './restrict';
 
@@ -86,13 +87,16 @@ function migrateStorageProviders(): void {
 				state;
 			providersStore.store = {
 				...providers,
-				storage: storage.map(({ secretAccessKey, ...provider }) => ({
-					...provider,
-					encryptedSecretAccessKey:
-						typeof secretAccessKey === 'string'
-							? safeStorage.encryptString(secretAccessKey).toString('base64')
-							: '',
-				})),
+				storage: storage.map(
+					({ secretAccessKey, ...provider }) =>
+						({
+							...provider,
+							encryptedSecretAccessKey:
+								typeof secretAccessKey === 'string'
+									? safeStorage.encryptString(secretAccessKey).toString('base64')
+									: '',
+						}) as PersistedStorageProvider
+				),
 			};
 		} catch {}
 	}
@@ -107,13 +111,16 @@ function migrateStorageProviders(): void {
 		if (!Array.isArray(storage)) return;
 		providersStore.set(
 			'storage',
-			storage.map(({ secretAccessKey, ...provider }) => ({
-				...provider,
-				encryptedSecretAccessKey:
-					typeof secretAccessKey === 'string'
-						? safeStorage.encryptString(secretAccessKey).toString('base64')
-						: '',
-			}))
+			storage.map(
+				({ secretAccessKey, ...provider }) =>
+					({
+						...provider,
+						encryptedSecretAccessKey:
+							typeof secretAccessKey === 'string'
+								? safeStorage.encryptString(secretAccessKey).toString('base64')
+								: '',
+					}) as PersistedStorageProvider
+			)
 		);
 		if (typeof providersStore.path === 'string') {
 			restrictProviderPermissions(path.dirname(providersStore.path), providersStore.path);
