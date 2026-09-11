@@ -27,7 +27,7 @@ let providers: StorageProviderStore;
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	persistence = new Store<StorageProvidersState>({ defaults: { encryptedProviders: '' } });
+	persistence = new Store<StorageProvidersState>({ defaults: { storageProviders: '' } });
 	encryption.isEncryptionAvailable.mockReturnValue(true);
 	encryption.getSelectedStorageBackend.mockReturnValue('gnome_libsecret');
 	encryption.encryptString.mockImplementation((value: string) => Buffer.from(value));
@@ -86,7 +86,7 @@ it.each(['', '   ', undefined])(
 		expect(updated.name).toBe('Renamed');
 		expect(providers.list()).toHaveLength(1);
 		const decrypted = JSON.parse(
-			Buffer.from(persistence.get('encryptedProviders'), 'base64').toString()
+			Buffer.from(persistence.get('storageProviders'), 'base64').toString()
 		);
 		expect(decrypted[0].secretAccessKey).toBe(input.secretAccessKey);
 	}
@@ -96,7 +96,7 @@ it('replaces the secret when a new value is provided', () => {
 	const saved = providers.save(input);
 	providers.save({ ...input, id: saved.id, secretAccessKey: 'replacement' });
 	const decrypted = JSON.parse(
-		Buffer.from(persistence.get('encryptedProviders'), 'base64').toString()
+		Buffer.from(persistence.get('storageProviders'), 'base64').toString()
 	);
 	expect(decrypted[0].secretAccessKey).toBe('replacement');
 });
@@ -119,14 +119,14 @@ it.each([
 	'not-a-url',
 ])('rejects invalid endpoint %s before persisting', (endpoint) => {
 	expect(() => providers.save({ ...input, endpoint })).toThrow('Storage endpoint');
-	expect(persistence.get('encryptedProviders')).toBe('');
+	expect(persistence.get('storageProviders')).toBe('');
 });
 
 it.each(['name', 'region', 'bucket', 'accessKeyId', 'secretAccessKey'])(
 	'requires %s on new connections',
 	(field) => {
 		expect(() => providers.save({ ...input, [field]: '  ' })).toThrow('required');
-		expect(persistence.get('encryptedProviders')).toBe('');
+		expect(persistence.get('storageProviders')).toBe('');
 	}
 );
 
@@ -140,7 +140,7 @@ it.each([
 	{ ...input, id: '../outside' },
 ])('validates untrusted IPC input %p', (value) => {
 	expect(() => providers.save(value)).toThrow();
-	expect(persistence.get('encryptedProviders')).toBe('');
+	expect(persistence.get('storageProviders')).toBe('');
 });
 
 it('rejects updates to nonexistent connections and invalid remove identifiers', () => {
@@ -148,45 +148,45 @@ it('rejects updates to nonexistent connections and invalid remove identifiers', 
 		'not found'
 	);
 	expect(() => providers.remove('../outside')).toThrow('identifier');
-	expect(persistence.get('encryptedProviders')).toBe('');
+	expect(persistence.get('storageProviders')).toBe('');
 });
 
 it('refuses plaintext fallback when operating-system encryption is unavailable', () => {
 	const saved = providers.save(input);
-	const encrypted = persistence.get('encryptedProviders');
+	const encrypted = persistence.get('storageProviders');
 	encryption.isEncryptionAvailable.mockReturnValue(false);
 	expect(() => providers.save(input)).toThrow('Secure operating-system storage is unavailable');
 	expect(() => providers.list()).toThrow('Secure operating-system storage is unavailable');
 	expect(() => providers.remove(saved.id)).toThrow(
 		'Secure operating-system storage is unavailable'
 	);
-	expect(persistence.get('encryptedProviders')).toBe(encrypted);
+	expect(persistence.get('storageProviders')).toBe(encrypted);
 });
 
 it('rejects the insecure Linux basic_text backend', () => {
 	encryption.getSelectedStorageBackend.mockReturnValue('basic_text');
 	expect(() => providers.save(input)).toThrow('Secure operating-system storage is unavailable');
-	expect(persistence.get('encryptedProviders')).toBe('');
+	expect(persistence.get('storageProviders')).toBe('');
 });
 
 it('preserves encrypted records when decryption fails', () => {
 	providers.save(input);
-	const encrypted = persistence.get('encryptedProviders');
+	const encrypted = persistence.get('storageProviders');
 	encryption.decryptString.mockImplementation(() => {
 		throw new Error('Keychain failure');
 	});
 	expect(() => providers.save(input)).toThrow('Saved storage providers could not be opened');
-	expect(persistence.get('encryptedProviders')).toBe(encrypted);
+	expect(persistence.get('storageProviders')).toBe(encrypted);
 });
 
 it('does not overwrite records if encrypting an edit fails', () => {
 	const saved = providers.save(input);
-	const encrypted = persistence.get('encryptedProviders');
+	const encrypted = persistence.get('storageProviders');
 	encryption.encryptString.mockImplementation(() => {
 		throw new Error('Keychain failure');
 	});
 	expect(() => providers.save({ ...input, id: saved.id, name: 'Changed' })).toThrow(
 		'Keychain failure'
 	);
-	expect(persistence.get('encryptedProviders')).toBe(encrypted);
+	expect(persistence.get('storageProviders')).toBe(encrypted);
 });
