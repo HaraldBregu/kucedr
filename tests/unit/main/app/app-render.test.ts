@@ -79,7 +79,7 @@ function createHarness() {
 }
 
 describe('app renderer', () => {
-	it('loads the titlebar shell before attaching and loading app content', async () => {
+	it('loads the app content across the full window surface', async () => {
 		const harness = createHarness();
 
 		expect(render(harness.windowFactory, '/app/index.html', 'Project', 'project-order')).toBe(
@@ -109,14 +109,13 @@ describe('app renderer', () => {
 		expect(harness.win.contentView.addChildView).toHaveBeenCalledWith(harness.view);
 		expect(harness.view.setBounds).toHaveBeenCalledWith({
 			x: 0,
-			y: 48,
+			y: 0,
 			width: 820,
-			height: 592,
+			height: 640,
 		});
 		expect(harness.load).toHaveBeenCalledTimes(1);
 		expect(openAppWindows.get('project-order')).toMatchObject({
 			contents: harness.viewWebContents,
-			titlebarOptions: null,
 		});
 		expect(harness.win.contentView.addChildView.mock.invocationCallOrder[0]).toBeLessThan(
 			harness.load.mock.invocationCallOrder[0]
@@ -152,7 +151,7 @@ describe('app renderer', () => {
 		harness.handlers.get('closed')?.();
 	});
 
-	it('discards a crashed titlebar shell so the app can be opened again', () => {
+	it('discards a crashed window shell so the app can be opened again', () => {
 		const harness = createHarness();
 		render(harness.windowFactory, '/app/index.html', 'Project', 'project-crash');
 
@@ -164,7 +163,7 @@ describe('app renderer', () => {
 		harness.handlers.get('closed')?.();
 	});
 
-	it('lets the app finish before closing the titlebar shell', () => {
+	it('lets the app finish before closing the window shell', () => {
 		const harness = createHarness();
 		render(harness.windowFactory, '/app/index.html', 'Project', 'project-close');
 		const closeEvent = { preventDefault: jest.fn() };
