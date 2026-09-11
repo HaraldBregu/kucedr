@@ -26,7 +26,7 @@ import {
 } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import { SEARCH_ENGINES } from '../../search/catalog';
-import type { SearchEngineId, SearchSettings } from '../../../../../../../../shared/search_types';
+import type { SearchEngineId, SearchSettings } from '../../../../../../../shared/search_types';
 import { AgentMediaModelConfiguration } from '../media';
 
 function toolModelApi(kind: AgentToolModelKind) {
