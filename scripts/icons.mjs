@@ -5,14 +5,30 @@ import sharp from 'sharp';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = await readFile(path.join(root, 'resources/icons/icon.svg'));
+const sourceWithoutBackground = source.toString().replace(/\s*<rect id="app-background"[^>]*\/>/, '');
+
+if (sourceWithoutBackground === source.toString()) {
+	throw new Error('Missing app-background rectangle in resources/icons/icon.svg.');
+}
+
 const outputDirectory = path.join(root, 'resources/icons/png');
 const pngSizes = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
 const rendered = new Map();
+const appRendered = new Map();
 
 await mkdir(outputDirectory, { recursive: true });
 
 for (const size of pngSizes) {
-	const icon = await sharp(source)
+	const appIcon = await sharp(source)
+		.resize({
+			width: size,
+			height: size,
+			fit: 'contain',
+			background: { r: 0, g: 0, b: 0, alpha: 0 },
+		})
+		.png({ compressionLevel: 9 })
+		.toBuffer();
+	const icon = await sharp(Buffer.from(sourceWithoutBackground))
 		.resize({
 			width: size,
 			height: size,
@@ -23,6 +39,7 @@ for (const size of pngSizes) {
 		.toBuffer();
 
 	rendered.set(size, icon);
+	appRendered.set(size, appIcon);
 	if (pngSizes.includes(size)) {
 		await writeFile(path.join(outputDirectory, `${size}x${size}.png`), icon);
 	}
@@ -74,7 +91,7 @@ const icnsRepresentations = [
 	['ic14', 512],
 ];
 const icnsChunks = icnsRepresentations.map(([type, size]) => {
-	const image = rendered.get(size);
+	const image = appRendered.get(size);
 	const chunk = Buffer.alloc(8 + image.length);
 
 	chunk.write(type, 0, 4, 'ascii');
