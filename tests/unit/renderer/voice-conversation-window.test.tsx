@@ -7,7 +7,7 @@ import {
 } from '../../../src/renderer/src/pages/home/hooks/useRealtimeVoice';
 
 jest.mock('@/components/persona', () => ({
-	Persona: ({ state }: { state: string }) => <output aria-label="Voice Agent" data-state={state} />,
+	Persona: ({ state }: { state: string }) => <div aria-label="Voice Agent" data-state={state} />,
 }));
 
 jest.mock('@/pages/home/hooks/useRealtimeVoice', () => ({
