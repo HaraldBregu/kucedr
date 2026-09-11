@@ -5,5 +5,5 @@ export type StoredStorageProvider = Omit<StorageProvider, 'hasSecretAccessKey'> 
 };
 
 export interface StorageProvidersState {
-	encryptedProviders: string;
+	storageProviders: string;
 }

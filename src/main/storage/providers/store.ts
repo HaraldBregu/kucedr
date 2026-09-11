@@ -60,7 +60,7 @@ export class StorageProviderStore {
 	}
 
 	private read(): StoredStorageProvider[] {
-		const encrypted = this.store.get('encryptedProviders');
+		const encrypted = this.store.get('storageProviders');
 		if (!encrypted) return [];
 		this.assertAvailable();
 		try {
@@ -82,7 +82,7 @@ export class StorageProviderStore {
 	private write(providers: StoredStorageProvider[]): void {
 		this.assertAvailable();
 		const encrypted = this.encryption.encryptString(JSON.stringify(providers)).toString('base64');
-		this.store.set('encryptedProviders', encrypted);
+		this.store.set('storageProviders', encrypted);
 		restrictSettingsFile(this.store.path);
 	}
 

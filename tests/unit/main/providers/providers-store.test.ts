@@ -29,7 +29,7 @@ it('moves encrypted storage providers into providers.json', () => {
 		({ providersStore } = require('../../../../src/main/providers/providers_store'));
 	});
 
-	expect(providersStore.get('encryptedProviders')).toBe('encrypted-storage-providers');
+	expect(providersStore.get('storageProviders')).toBe('encrypted-storage-providers');
 	expect(providersStore.path).toBe(`${root}/settings/providers.json`);
 	expect(existsSync(`${root}/settings/storage.json`)).toBe(false);
 });
