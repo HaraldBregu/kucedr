@@ -121,6 +121,28 @@ it('loads and displays saved Database keys', async () => {
 	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('database-secret');
 });
 
+it('masks saved model keys until editing', async () => {
+	jest.mocked(window.provider.list).mockResolvedValue([
+		{
+			id: 'openai',
+			name: 'OpenAI',
+			apiKey: 'model-secret',
+		},
+	]);
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="models" />
+		</MemoryRouter>
+	);
+
+	expect(await screen.findByText('****...')).toBeInTheDocument();
+	expect(screen.queryByText('model-secret')).not.toBeInTheDocument();
+
+	const user = userEvent.setup();
+	await user.click(screen.getByRole('button', { name: 'Edit OpenAI API key' }));
+	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('model-secret');
+});
+
 it('keeps the Database key editable when saving fails', async () => {
 	jest.mocked(window.provider.set).mockRejectedValue(new Error('Could not store database key'));
 	const user = userEvent.setup();
