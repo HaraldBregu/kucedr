@@ -105,6 +105,20 @@ it('automatically saves edited dimensions and behavior for only the selected app
 	).not.toBeInTheDocument();
 });
 
+it('restores default window values without showing custom controls', async () => {
+	const user = userEvent.setup();
+	(window.apps.setSettings as jest.Mock).mockResolvedValue(APP_WINDOW_DEFAULTS);
+	render(<WindowSettings appId="my-app" />);
+
+	await screen.findByRole('spinbutton', { name: 'settings.apps.window.width' });
+	await user.click(screen.getByRole('combobox', { name: 'settings.apps.window.values' }));
+	await user.click(screen.getByRole('option', { name: 'settings.apps.window.default' }));
+
+	await waitFor(() => expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', {}));
+	expect(screen.queryByRole('spinbutton', { name: 'settings.apps.window.width' })).not.toBeInTheDocument();
+	expect(await screen.findByText('settings.apps.window.saved')).toBeInTheDocument();
+});
+
 it('disables editing and duplicate saves while settings are being saved', async () => {
 	let complete!: (value: typeof settings) => void;
 	(window.apps.setSettings as jest.Mock).mockReturnValue(
