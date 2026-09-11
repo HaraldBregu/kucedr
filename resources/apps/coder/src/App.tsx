@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { isKucedr, win } from '@kucedr/sdk';
+import { useCallback, useState } from 'react';
 
 import { Configuration } from '@/components/configuration';
+import { Header } from '@/components/header';
 import { Instructions } from '@/components/instructions';
 import { ProjectSidebar } from '@/components/sidebar';
 import { Sidebar, SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
@@ -17,41 +17,12 @@ export default function App() {
 	const setLeftOpen = coder.setLeftOpen;
 	const [page, setPage] = useState<'workspace' | 'configuration' | 'instructions'>('workspace');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
-	const syncTitlebar = useCallback((open: boolean): void => {
-		if (!isKucedr()) return;
-		win.setTitlebarOptions({
-			title: 'Coder',
-			leftButtons: [
-				{
-					id: 'toggle-sidebar',
-					label: open ? 'Collapse project navigation' : 'Expand project navigation',
-					icon: 'panel-left',
-					expanded: open
-				}
-			],
-			rightButtons: [],
-			sidebarOpen: open,
-			sidebarWidth: 288
-		});
-	}, []);
 	const setSidebarVisibility = useCallback(
 		(open: boolean): void => {
-			syncTitlebar(open);
 			setLeftOpen(open);
 		},
-		[setLeftOpen, syncTitlebar]
+		[setLeftOpen]
 	);
-
-	useLayoutEffect(() => {
-		syncTitlebar(coder.leftOpen);
-	}, [coder.leftOpen, syncTitlebar]);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		return win.onTitlebarButtonClick((buttonId) => {
-			if (buttonId === 'toggle-sidebar') setSidebarVisibility(!coder.leftOpen);
-		});
-	}, [coder.leftOpen, setSidebarVisibility]);
 
 	const openPage = (nextPage: 'workspace' | 'configuration' | 'instructions'): boolean => {
 		if (nextPage !== 'instructions' && !canLeaveInstructions(page, instructionsDirty)) {
@@ -75,23 +46,26 @@ export default function App() {
 						/>
 					</Sidebar>
 					<SidebarInset>
-						{page === 'configuration' ? (
-							<Configuration
-								onDone={() => {
-									void coder.refresh();
-									openPage('workspace');
-								}}
-							/>
-						) : page === 'instructions' && coder.activeProject ? (
-							<Instructions
-								projectId={coder.activeProject.id}
-								projectName={coder.activeProject.name}
-								onDirtyChange={setInstructionsDirty}
-								onDone={() => void openPage('workspace')}
-							/>
-						) : (
-							<Workspace coder={coder} />
-						)}
+						<Header coder={coder} onOpenInstructions={() => void openPage('instructions')} />
+						<div className="flex min-h-0 flex-1 flex-col">
+							{page === 'configuration' ? (
+								<Configuration
+									onDone={() => {
+										void coder.refresh();
+										openPage('workspace');
+									}}
+								/>
+							) : page === 'instructions' && coder.activeProject ? (
+								<Instructions
+									projectId={coder.activeProject.id}
+									projectName={coder.activeProject.name}
+									onDirtyChange={setInstructionsDirty}
+									onDone={() => void openPage('workspace')}
+								/>
+							) : (
+								<Workspace coder={coder} />
+							)}
+						</div>
 					</SidebarInset>
 				</main>
 			</SidebarProvider>
