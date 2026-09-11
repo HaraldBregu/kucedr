@@ -12,11 +12,13 @@ if (sourceWithoutBackground === source.toString()) {
 }
 
 const outputDirectory = path.join(root, 'resources/icons/png');
+const macOutputDirectory = path.join(root, 'resources/icons/mac');
 const pngSizes = [16, 24, 32, 48, 64, 128, 256, 512, 1024];
 const rendered = new Map();
 const appRendered = new Map();
 
 await mkdir(outputDirectory, { recursive: true });
+await mkdir(macOutputDirectory, { recursive: true });
 
 for (const size of pngSizes) {
 	const appIcon = await sharp(source)
@@ -46,6 +48,19 @@ for (const size of pngSizes) {
 }
 
 await writeFile(path.join(root, 'resources/icons/icon.png'), rendered.get(1024));
+
+const trayTemplate = await sharp(Buffer.from(sourceWithoutBackground))
+	.resize({
+		width: 32,
+		height: 32,
+		fit: 'contain',
+		background: { r: 0, g: 0, b: 0, alpha: 0 },
+	})
+	.tint('#ffffff')
+	.png({ compressionLevel: 9 })
+	.toBuffer();
+
+await writeFile(path.join(macOutputDirectory, 'trayTemplate.png'), trayTemplate);
 
 const icoSizes = pngSizes.filter((size) => size <= 256);
 const icoHeader = Buffer.alloc(6);

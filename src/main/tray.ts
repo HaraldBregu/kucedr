@@ -40,11 +40,17 @@ export class Tray {
 	}
 
 	create(): void {
+		const iconPath =
+			process.platform === 'darwin'
+				? path.join(resourceRoot(), 'resources/icons/mac/trayTemplate.png')
+				: path.join(resourceRoot(), 'resources/icons/png/32x32.png');
 		const icon = nativeImage.createFromPath(
-			path.join(resourceRoot(), 'resources/icons/png/32x32.png')
-		);
+			iconPath
+		).resize({ width: 16, height: 16 });
 
-		this.tray = new ElectronTray(icon.resize({ width: 16, height: 16 }));
+		if (process.platform === 'darwin') icon.setTemplateImage(true);
+
+		this.tray = new ElectronTray(icon);
 		this.tray.setToolTip('Kucedr');
 
 		this.tray.on('click', () => this.handleTrayIconClick());
