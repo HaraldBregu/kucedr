@@ -159,7 +159,7 @@ const GeneralPage: React.FC = () => {
 									<SelectValue>
 										{t(
 											TRAY_CLICK_ACTION_OPTIONS.find((item) => item.value === trayClickAction)
-													?.labelKey ?? ''
+												?.labelKey ?? ''
 										)}
 									</SelectValue>
 								</SelectTrigger>
