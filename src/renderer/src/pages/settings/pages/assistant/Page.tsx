@@ -31,6 +31,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import type { Model } from '@/lib/compat';
+import type { AgentToolModelKind } from '@shared/agent_types';
 import type { PublicProvider } from '../../../../../../shared';
 import {
 	SettingsNotice,
@@ -54,6 +55,36 @@ import { SEARCH_ENGINES } from '../search/catalog';
 import type { SearchEngineId, SearchSettings } from '../../../../../../shared/search_types';
 
 type CatalogProvider = PublicProvider;
+
+function toolModelApi(kind: AgentToolModelKind) {
+	return {
+		getProviderId: async (): Promise<string | undefined> =>
+			(await window.agent.getToolModel(kind)).providerId || undefined,
+		setProviderId: async (providerId: string): Promise<void> => {
+			const current = await window.agent.getToolModel(kind);
+			await window.agent.setToolModel(kind, { ...current, providerId });
+		},
+		getModelId: async (): Promise<string | undefined> =>
+			(await window.agent.getToolModel(kind)).modelId || undefined,
+		setModelId: async (modelId: string): Promise<void> => {
+			const current = await window.agent.getToolModel(kind);
+			await window.agent.setToolModel(kind, { ...current, modelId });
+		},
+		getOptions: async (): Promise<Record<string, unknown>> =>
+			(await window.agent.getToolModel(kind)).options,
+		setOptions: async (options: Record<string, unknown>): Promise<Record<string, unknown>> =>
+			(await window.agent.setToolModel(kind, {
+				...(await window.agent.getToolModel(kind)),
+				options,
+			})).options,
+	};
+}
+
+const TOOL_IMAGE_API = toolModelApi('image');
+const TOOL_AUDIO_API = toolModelApi('audio');
+const TOOL_VIDEO_API = toolModelApi('video');
+const TOOL_TEXT_TO_SPEECH_API = toolModelApi('textToSpeech');
+const TOOL_SPEECH_TO_TEXT_API = toolModelApi('speechToText');
 
 function getCatalogProviderById(providerId: string): CatalogProvider | undefined {
 	return providers().find((provider) => provider.id === providerId);
@@ -293,7 +324,7 @@ const AssistantPage: React.FC = () => {
 			<SettingsSection title={t('settings.modelServices.tools')}>
 				<SettingsPanel>
 					<AgentMediaModelConfiguration
-						api={window.models.image}
+						api={TOOL_IMAGE_API}
 						capability="text-to-image"
 						idPrefix="agent-image"
 						title={t('settings.modelServices.imageAssistantName')}
@@ -309,7 +340,7 @@ const AssistantPage: React.FC = () => {
 					/>
 
 					<AgentMediaModelConfiguration
-						api={window.models.sound}
+						api={TOOL_AUDIO_API}
 						capability="text-to-audio"
 						idPrefix="agent-audio"
 						title={t('settings.modelServices.musicCreatorName')}
@@ -325,7 +356,7 @@ const AssistantPage: React.FC = () => {
 					/>
 
 					<AgentMediaModelConfiguration
-						api={window.models.video}
+						api={TOOL_VIDEO_API}
 						capability="text-to-video"
 						idPrefix="agent-video"
 						title={t('settings.modelServices.videoCreatorName')}
@@ -338,6 +369,38 @@ const AssistantPage: React.FC = () => {
 						buttonDropdown
 						showContentSeparator={false}
 						inlineAdvanced
+					/>
+
+					<AgentMediaModelConfiguration
+						api={TOOL_TEXT_TO_SPEECH_API}
+						capability="text-to-speech"
+						idPrefix="agent-tool-text-to-speech"
+						title={t('settings.modelServices.toolTextToSpeechName')}
+						description={t('settings.modelServices.toolTextToSpeechDescription')}
+						showIcon
+						icon={Volume2}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						buttonDropdown
+						showContentSeparator={false}
+						inlineAdvanced
+					/>
+
+					<AgentMediaModelConfiguration
+						api={TOOL_SPEECH_TO_TEXT_API}
+						capability="speech-to-text"
+						idPrefix="agent-tool-speech-to-text"
+						title={t('settings.modelServices.toolSpeechToTextName')}
+						description={t('settings.modelServices.toolSpeechToTextDescription')}
+						showIcon
+						icon={Mic}
+						showFieldLabel={false}
+						grouped
+						showSelectedModel
+						buttonDropdown
+						showContentSeparator={false}
+						showOptions={false}
 					/>
 					<Collapsible className="min-w-0 max-w-full overflow-hidden">
 						<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
