@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useId, useState } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -53,13 +53,17 @@ export default function WindowSettings({ appId }: { readonly appId: string }): R
 		};
 	}, [appId, attempt]);
 
-	const settings = draft && {
-		...draft,
-		width: Number(draft.width),
-		height: Number(draft.height),
-		minWidth: Number(draft.minWidth),
-		minHeight: Number(draft.minHeight),
-	};
+	const settings = useMemo(
+		() =>
+			draft && {
+				...draft,
+				width: Number(draft.width),
+				height: Number(draft.height),
+				minWidth: Number(draft.minWidth),
+				minHeight: Number(draft.minHeight),
+			},
+		[draft]
+	);
 	const valid = settings !== null && isAppWindowSettings(settings);
 	const dirty =
 		settings !== null &&
