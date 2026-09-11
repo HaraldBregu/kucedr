@@ -162,7 +162,7 @@
 				"aiFeatures": "Funzionalita AI",
 				"automations": "Automazioni",
 				"services": "Applicazione",
-				"assistant": "Assistant",
+				"assistant": "Agenti",
 				"configuration": "Configurazione"
 			},
 			"descriptions": {
@@ -1205,7 +1205,7 @@
 			"tools": "Strumenti",
 			"toolModels": "Modelli degli strumenti",
 			"kucedrBreadcrumb": "Kucedr",
-			"assistantName": "Agent",
+			"assistantName": "Assistant",
 			"llmModel": "Modello LLM",
 			"kucedrDescription": "Chat, strumenti e piani",
 			"speechTranscriberName": "Trascrivi",
