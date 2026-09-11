@@ -30,9 +30,9 @@ import type {
 	AppTheme,
 	AppThemeData,
 	AppThemeColors,
-	TRAY_CLICK_ACTIONS,
-	type TrayClickAction,
+	TrayClickAction,
 } from '../../shared/app_types';
+import { TRAY_CLICK_ACTIONS } from '../../shared/app_types';
 import { wrapIpcHandler, wrapSimpleHandler } from './core/error_handler';
 import { setKeepAwake as applyKeepAwake } from '../keep_awake';
 import {
