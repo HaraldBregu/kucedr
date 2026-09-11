@@ -333,8 +333,7 @@ export function AuthStep(): React.JSX.Element {
 						)}
 						{state.persistence === 'memory' ? (
 							<p className="mt-3 text-center text-[10px] leading-4 text-muted-foreground">
-								Secure system storage is unavailable, so this session will not persist after
-								restart.
+								Your session will not persist after restart.
 							</p>
 						) : null}
 					</CardContent>
