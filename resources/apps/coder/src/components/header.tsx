@@ -101,7 +101,6 @@ export function Header({
 							<Button
 								variant="ghost"
 								size="icon-sm"
-								className="[webkit-app-region:no-drag]"
 								aria-label="Workspace actions"
 							>
 								<MoreHorizontal />
@@ -141,7 +140,6 @@ export function Header({
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="[webkit-app-region:no-drag]"
 							aria-label="New coding session"
 							disabled={!coder.activeProject || coder.runState === 'running'}
 							onClick={() => coder.newSession()}
@@ -152,42 +150,43 @@ export function Header({
 				/>
 				<TooltipContent>New session · ⌘/Ctrl N</TooltipContent>
 			</Tooltip>
+			</div>
 
 			{!isMac ? (
 				<div
-					className="-mr-3 ml-1 flex h-full items-center"
+					className="flex h-full items-center gap-1"
 					style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 				>
 					<button
 						type="button"
-						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors hover:bg-accent/80 hover:text-foreground active:bg-accent"
+						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-accent/80 hover:text-foreground active:bg-accent"
 						onClick={() => inKucedr && win.minimize()}
 						title="Minimize"
 						aria-label="Minimize"
 					>
-						<Minus className="size-[13px]" strokeWidth={1.5} />
+						<Minus className="h-[13px] w-[13px]" strokeWidth={1.5} />
 					</button>
 					<button
 						type="button"
-						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors hover:bg-accent/80 hover:text-foreground active:bg-accent"
+						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-accent/80 hover:text-foreground active:bg-accent"
 						onClick={() => inKucedr && win.maximize()}
 						title={isMaximized ? 'Restore' : 'Maximize'}
 						aria-label={isMaximized ? 'Restore' : 'Maximize'}
 					>
 						{isMaximized ? (
-							<Copy className="size-[11px]" strokeWidth={1.5} />
+							<Copy className="h-[11px] w-[11px]" strokeWidth={1.5} />
 						) : (
-							<Square className="size-[11px]" strokeWidth={1.5} />
+							<Square className="h-[11px] w-[11px]" strokeWidth={1.5} />
 						)}
 					</button>
 					<button
 						type="button"
-						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
+						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
 						onClick={() => inKucedr && win.close()}
 						title="Close"
 						aria-label="Close"
 					>
-						<X className="size-[13px]" strokeWidth={1.5} />
+						<X className="h-[13px] w-[13px]" strokeWidth={1.5} />
 					</button>
 				</div>
 			) : null}
