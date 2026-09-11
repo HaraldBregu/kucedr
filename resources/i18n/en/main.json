@@ -1196,6 +1196,7 @@
 			"allModelServices": "All model services",
 			"identity": "Identity",
 			"configuration": "Configuration",
+			"tools": "Tools",
 			"toolModels": "Tool models",
 			"kucedrBreadcrumb": "Kucedr",
 			"assistantName": "Agent",

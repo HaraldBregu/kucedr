@@ -96,6 +96,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.assistantName': 'Agent',
 		'settings.modelServices.kucedrDescription': 'Chat, tools, and planning',
 		'settings.modelServices.configuration': 'Configuration',
+		'settings.modelServices.tools': 'Tools',
 		'settings.modelServices.toolModels': 'Tool models',
 		'settings.modelServices.subtitle': 'Configure model assignments',
 		'settings.modelServices.imageAssistantName': 'Image',
@@ -255,6 +256,7 @@ it('groups independently collapsible provider settings in one card', async () =>
 
 	expect(screen.queryByRole('heading', { name: 'Configuration' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('heading', { name: 'History' })).not.toBeInTheDocument();
+	expect(screen.getByRole('heading', { name: 'Tools' })).toBeInTheDocument();
 	const cards: Array<Element | null> = [];
 	for (const name of [
 		/Model/,
