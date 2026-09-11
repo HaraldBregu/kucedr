@@ -1071,21 +1071,11 @@ export interface WindowSendChannelMap {
 	[WindowChannels.maximize]: { args: [] };
 	[WindowChannels.close]: { args: [] };
 	[WindowChannels.popupMenu]: { args: [] };
-	[WindowChannels.titlebarOptionsSet]: {
-		args: [options: import('./window_types').AppTitlebarOptions | null];
-	};
-	[WindowChannels.titlebarButtonClick]: { args: [buttonId: string] };
-	[WindowChannels.titlebarSidebarWidthSet]: { args: [width: number | null] };
 }
 
 export interface WindowEventChannelMap {
 	[WindowChannels.maximizeChange]: { data: boolean };
 	[WindowChannels.fullScreenChange]: { data: boolean };
-	[WindowChannels.titlebarOptionsChanged]: {
-		data: import('./window_types').AppTitlebarOptions | null;
-	};
-	[WindowChannels.titlebarButtonClicked]: { data: string };
-	[WindowChannels.titlebarSidebarWidthChanged]: { data: number | null };
 }
 
 export interface TerminalInvokeChannelMap {

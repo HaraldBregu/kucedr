@@ -3,7 +3,6 @@ import { setupPdfContextMenu } from '../pdf';
 import type { WindowFactory } from '../window_factory';
 import { attachWindowHandlers } from '../window_events';
 import { getPlatformTranslucencyOptions } from '../translucency';
-import type { AppTitlebarOptions } from '../../shared/window_types';
 import {
 	APP_WINDOW_DEFAULTS,
 	type ResolvedAppWindowSettings,
@@ -13,13 +12,10 @@ export interface AppWindow {
 	window: BrowserWindow;
 	ready: boolean;
 	contents?: WebContents;
-	titlebarOptions: AppTitlebarOptions | null;
 }
 
 const windows = new Map<string, AppWindow>();
 export const openAppWindows: ReadonlyMap<string, AppWindow> = windows;
-const titleBarHeight = 48;
-
 export function render(
 	windowFactory: WindowFactory,
 	file: string,
@@ -35,7 +31,6 @@ export function render(
 		return existing.window;
 	}
 
-	const isMac = process.platform === 'darwin';
 	const win = windowFactory.create(
 		{
 			width: settings.width,
@@ -46,10 +41,6 @@ export function render(
 			maximizable: settings.maximizable,
 			frame: false,
 			transparent: true,
-			...(isMac && {
-				titleBarStyle: 'hidden',
-				trafficLightPosition: { x: 16, y: 17 },
-			}),
 			...getPlatformTranslucencyOptions(),
 			title,
 			backgroundColor: '#00000000',
@@ -60,7 +51,6 @@ export function render(
 	const appWindow: AppWindow = {
 		window: win,
 		ready: false,
-		titlebarOptions: null,
 	};
 	windows.set(appId, appWindow);
 	let shellFailed = false;
@@ -80,9 +70,9 @@ export function render(
 		const { width, height } = win.getContentBounds();
 		appView.setBounds({
 			x: 0,
-			y: titleBarHeight,
+			y: 0,
 			width,
-			height: Math.max(0, height - titleBarHeight),
+			height,
 		});
 	};
 	const discardFailedShell = (): void => {
