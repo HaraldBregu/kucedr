@@ -2,8 +2,10 @@ const getAgentProviderId = jest.fn();
 const setAgentProviderId = jest.fn();
 const getAgentModelId = jest.fn();
 const setAgentModelId = jest.fn();
-const getAgentMediaModel = jest.fn();
-const setAgentMediaModel = jest.fn();
+const getAgentChatbotModel = jest.fn();
+const setAgentChatbotModel = jest.fn();
+const getAgentToolModel = jest.fn();
+const setAgentToolModel = jest.fn();
 const getRagConfiguration = jest.fn();
 const saveRagConfiguration = jest.fn();
 
@@ -12,8 +14,10 @@ jest.mock('../../../../src/main/agent/agent_store', () => ({
 	setProviderId: setAgentProviderId,
 	getModelId: getAgentModelId,
 	setModelId: setAgentModelId,
-	getMediaModel: getAgentMediaModel,
-	setMediaModel: setAgentMediaModel,
+	getChatbotModel: getAgentChatbotModel,
+	setChatbotModel: setAgentChatbotModel,
+	getToolModel: getAgentToolModel,
+	setToolModel: setAgentToolModel,
 }));
 jest.mock('../../../../src/main/providers/providers_index', () => ({
 	getModelProvidersState: () => [],
@@ -48,14 +52,7 @@ const ragConfiguration = {
 beforeEach(() => {
 	jest.clearAllMocks();
 	let currentRagConfiguration = { ...ragConfiguration };
-	const mediaModels = {
-		image: { providerId: 'google', modelId: 'gemini-image', options: { imageSize: '1K' } },
-		audio: {
-			providerId: 'elevenlabs',
-			modelId: 'eleven-music',
-			options: { force_instrumental: true },
-		},
-		video: { providerId: 'google', modelId: 'veo-3.1', options: { durationSeconds: 8 } },
+	const chatbotModels = {
 		voice: { providerId: 'openai', modelId: 'gpt-4o-mini-tts', options: { voice: 'cedar' } },
 		realtimeVoice: {
 			providerId: 'openai',
@@ -64,12 +61,27 @@ beforeEach(() => {
 		},
 		transcription: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
 	};
+	const toolModels = {
+		image: { providerId: 'google', modelId: 'gemini-image', options: { imageSize: '1K' } },
+		audio: {
+			providerId: 'elevenlabs',
+			modelId: 'eleven-music',
+			options: { force_instrumental: true },
+		},
+		video: { providerId: 'google', modelId: 'veo-3.1', options: { durationSeconds: 8 } },
+	};
 	getAgentProviderId.mockReturnValue('openai');
 	getAgentModelId.mockReturnValue('gpt-5');
-	getAgentMediaModel.mockImplementation((kind: keyof typeof mediaModels) => mediaModels[kind]);
-	setAgentMediaModel.mockImplementation(
-		(kind: keyof typeof mediaModels, settings: (typeof mediaModels)[keyof typeof mediaModels]) => {
-			mediaModels[kind] = settings as never;
+	getAgentChatbotModel.mockImplementation((kind: keyof typeof chatbotModels) => chatbotModels[kind]);
+	setAgentChatbotModel.mockImplementation(
+		(kind: keyof typeof chatbotModels, settings: (typeof chatbotModels)[keyof typeof chatbotModels]) => {
+			chatbotModels[kind] = settings as never;
+		}
+	);
+	getAgentToolModel.mockImplementation((kind: keyof typeof toolModels) => toolModels[kind]);
+	setAgentToolModel.mockImplementation(
+		(kind: keyof typeof toolModels, settings: (typeof toolModels)[keyof typeof toolModels]) => {
+			toolModels[kind] = settings as never;
 		}
 	);
 	getRagConfiguration.mockImplementation(() => currentRagConfiguration);
@@ -116,17 +128,17 @@ it('reads and writes media selections and options through the agent store', () =
 	setOptions('sound', { force_instrumental: false });
 	setProviderId('video', 'xai');
 
-	expect(setAgentMediaModel).toHaveBeenNthCalledWith(1, 'image', {
+	expect(setAgentToolModel).toHaveBeenNthCalledWith(1, 'image', {
 		providerId: 'google',
 		modelId: 'gemini-image-next',
 		options: {},
 	});
-	expect(setAgentMediaModel).toHaveBeenNthCalledWith(2, 'audio', {
+	expect(setAgentToolModel).toHaveBeenNthCalledWith(2, 'audio', {
 		providerId: 'elevenlabs',
 		modelId: 'eleven-music',
 		options: { force_instrumental: false },
 	});
-	expect(setAgentMediaModel).toHaveBeenNthCalledWith(3, 'video', {
+	expect(setAgentToolModel).toHaveBeenNthCalledWith(3, 'video', {
 		providerId: 'xai',
 		modelId: 'veo-3.1',
 		options: {},
@@ -139,7 +151,7 @@ it('reads and writes voice selection and options through the agent store', () =>
 	expect(getOptions('voice')).toEqual({ voice: 'cedar' });
 	setOptions('voice', { voice: 'marin', speed: 1.1 });
 
-	expect(setAgentMediaModel).toHaveBeenCalledWith('voice', {
+	expect(setAgentChatbotModel).toHaveBeenCalledWith('voice', {
 		providerId: 'openai',
 		modelId: 'gpt-4o-mini-tts',
 		options: { voice: 'marin', speed: 1.1 },
@@ -155,12 +167,12 @@ it('reads and writes batch and realtime transcription through the agent store', 
 	setModelId('transcribe', 'nova-4');
 	setProviderId('realtime', 'openai');
 
-	expect(setAgentMediaModel).toHaveBeenNthCalledWith(1, 'transcription', {
+	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(1, 'transcription', {
 		providerId: 'deepgram',
 		modelId: 'nova-4',
 		options: {},
 	});
-	expect(setAgentMediaModel).toHaveBeenNthCalledWith(2, 'transcription', {
+	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(2, 'transcription', {
 		providerId: 'openai',
 		modelId: 'nova-4',
 		options: {},
@@ -175,12 +187,12 @@ it('reads and writes realtime voice selection and options independently', () => 
 	setModelId('realtimeVoice', 'gpt-realtime-2.1-mini');
 	setOptions('realtimeVoice', { voice: 'cedar' });
 
-	expect(setAgentMediaModel).toHaveBeenNthCalledWith(1, 'realtimeVoice', {
+	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(1, 'realtimeVoice', {
 		providerId: 'openai',
 		modelId: 'gpt-realtime-2.1-mini',
 		options: {},
 	});
-	expect(setAgentMediaModel).toHaveBeenNthCalledWith(2, 'realtimeVoice', {
+	expect(setAgentChatbotModel).toHaveBeenNthCalledWith(2, 'realtimeVoice', {
 		providerId: 'openai',
 		modelId: 'gpt-realtime-2.1-mini',
 		options: { voice: 'cedar' },
