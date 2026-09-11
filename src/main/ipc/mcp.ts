@@ -10,6 +10,7 @@ import {
 	getMcpOauth,
 	getMcpServers,
 	importLocalMcpServers,
+	listConfiguredMcpServers,
 	listMcpRegistry,
 	mcpLocalRoot,
 	saveMcpOauth,
