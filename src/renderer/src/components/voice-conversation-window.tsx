@@ -6,14 +6,14 @@ import { cn } from '@/lib/utils';
 import { useRealtimeVoice, type RealtimeVoiceUiStatus } from '@/pages/home/hooks/useRealtimeVoice';
 
 const statusLabels: Record<RealtimeVoiceUiStatus, string> = {
-	idle: 'Ready',
-	'checking-permission': 'Checking microphone…',
+	idle: 'Idle',
+	'checking-permission': 'Checking mic…',
 	connecting: 'Connecting…',
-	listening: 'Listening…',
-	thinking: 'Kucedr is responding…',
-	speaking: 'Kucedr is speaking…',
+	listening: 'Listening',
+	thinking: 'Thinking',
+	speaking: 'Speaking',
 	ending: 'Ending…',
-	error: 'Voice conversation ended',
+	error: 'Ended',
 };
 
 function formatDuration(elapsedMs: number): string {
@@ -23,9 +23,9 @@ function formatDuration(elapsedMs: number): string {
 	return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-function personaState(status: RealtimeVoiceUiStatus, muted: boolean): PersonaState {
+function personaState(status: RealtimeVoiceUiStatus): PersonaState {
 	if (status === 'thinking' || status === 'speaking') return status;
-	if (status === 'listening' && !muted) return 'listening';
+	if (status === 'listening') return 'listening';
 	return 'idle';
 }
 
@@ -39,7 +39,7 @@ export function VoiceConversationWindow({
 	}, []);
 	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow, closeOnError: false });
 	const isEnding = voice.status === 'ending';
-	const state = personaState(voice.status, voice.isMuted);
+	const state = personaState(voice.status);
 	const statusMessage =
 		voice.errorMessage ??
 		(voice.status === 'checking-permission' ? null : statusLabels[voice.status]);
@@ -71,18 +71,13 @@ export function VoiceConversationWindow({
 				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
-				<div
-					className={cn(
-						'flex items-center gap-3',
-						statusMessage ? 'justify-between' : 'justify-end'
-					)}
-				>
+				<div className="flex min-h-4 items-center justify-center gap-2 text-xs">
 					{statusMessage ? (
 						<span
 							role="status"
 							aria-live="polite"
 							className={cn(
-								'truncate text-xs font-medium text-muted-foreground',
+								'max-w-40 truncate font-medium text-muted-foreground',
 								voice.status === 'error' && 'text-destructive'
 							)}
 						>
