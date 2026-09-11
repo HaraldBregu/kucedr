@@ -13,6 +13,8 @@ import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway
 import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
 
+const CODING_APP_ID = 'coder';
+
 interface CodingIpcDependencies {
 	readonly coding: Coding;
 	readonly appRegistry: AppRegistry;
@@ -26,7 +28,7 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		const assertCodingCaller = (event: Electron.IpcMainInvokeEvent): void => {
 			if (appRegistry.has(event.sender)) {
-				if (appRegistry.resolve(event.sender) === 'coding') return;
+				if (appRegistry.resolve(event.sender) === CODING_APP_ID) return;
 				throw new Error('Coding is only available to the Coding app.');
 			}
 			trusted.assert(event);
@@ -34,7 +36,7 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 		const assertCodingAppCaller = (event: Electron.IpcMainInvokeEvent): void => {
 			if (
 				!appRegistry.has(event.sender) ||
-				appRegistry.resolve(event.sender) !== 'coding'
+				appRegistry.resolve(event.sender) !== CODING_APP_ID
 			) {
 				throw new Error('Project instructions are only available to the Coding app.');
 			}

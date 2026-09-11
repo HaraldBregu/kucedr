@@ -48,7 +48,7 @@ export class CodingStore {
 
 	constructor(directory = path.resolve(userDataLocation(), 'settings')) {
 		this.store = new Store<StoredCodingSettings>({
-			name: 'coding',
+			name: 'coder',
 			cwd: directory,
 			accessPropertiesByDotNotation: false,
 			defaults: DEFAULT_CODING_SETTINGS,

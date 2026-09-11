@@ -22,7 +22,7 @@ export class CodingProjectStore {
 	) {
 		this.workspaceDirectory = path.resolve(agentLocation());
 		this.store = new Store<CodingProjectState>({
-			name: 'coding-projects',
+			name: 'coder-projects',
 			cwd: directory,
 			accessPropertiesByDotNotation: false,
 			defaults: { projects: [] },
