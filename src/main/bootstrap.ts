@@ -15,7 +15,7 @@ import { transferStorage } from './storage/s3/transfer';
 import { storageProviders } from './storage/providers';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
-import { Coder, CodingProjectStore, CodingStore } from './coding';
+import { Coding, CodingProjectStore, CodingStore } from './coding';
 import { getProvider, getStorageSettings } from './settings_store';
 import { agentLocation } from './shared/agent_location';
 import { EnvironmentManager } from './terminal/environment';
@@ -38,7 +38,7 @@ export interface MainServices {
 	eventBus: EventBus;
 	logger: LoggerService;
 	agentService: Agent;
-	codingService: Coder;
+	codingService: Coding;
 	conversationService: Conversation;
 	channelRegistry: ChannelRegistry;
 	windowFactory: WindowFactory;
@@ -63,7 +63,7 @@ export function bootstrapServices(): BootstrapResult {
 	const windowFactory = new WindowFactory(logger, appRegistry);
 	const agentService = new Agent(windowFactory, new ExecSandbox());
 	const codingStore = new CodingStore();
-	const codingService = new Coder({
+	const codingService = new Coding({
 		store: codingStore,
 		projects: new CodingProjectStore(
 			undefined,

@@ -53,7 +53,7 @@ interface CodingDependencies {
 	readonly getProvider: (providerId: string) => StoredProvider | undefined;
 }
 
-export class Coder {
+export class Coding {
 	private readonly runs = new Map<string, ActiveRun>();
 	private readonly authControllers = new Map<number, AbortController>();
 	private readonly instructions = new CodingInstructions();
@@ -82,7 +82,7 @@ export class Coder {
 
 	removeProject(projectId: string): boolean {
 		if ([...this.runs.values()].some((run) => run.projectId === projectId)) {
-			throw new Error('Stop the active project run before removing it from Coder.');
+			throw new Error('Stop the active project run before removing it from Coding.');
 		}
 		return this.dependencies.projects.remove(projectId);
 	}
@@ -132,7 +132,7 @@ export class Coder {
 		}
 		const normalizedTitle = title.trim();
 		if (!normalizedTitle || normalizedTitle.length > 120) {
-			throw new Error('Coder session title must be between 1 and 120 characters.');
+			throw new Error('Coding session title must be between 1 and 120 characters.');
 		}
 		SessionManager.open(session.path, codingSessionsLocation(), project.directory).appendSessionInfo(
 			normalizedTitle
@@ -156,7 +156,7 @@ export class Coder {
 			relative.startsWith(`..${path.sep}`) ||
 			path.isAbsolute(relative)
 		) {
-			throw new Error('Coder session path is invalid.');
+			throw new Error('Coding session path is invalid.');
 		}
 		unlinkSync(target);
 		return true;
@@ -267,7 +267,7 @@ export class Coder {
 		request: CodingRunRequest,
 		emit: (event: CodingResponseEvent) => void
 	): Promise<CodingRunResult> {
-		if (this.runs.has(runId)) throw new Error('Coder run id is already active.');
+		if (this.runs.has(runId)) throw new Error('Coding run id is already active.');
 		const project = this.requireProject(request.projectId);
 		const sessionManager = request.sessionId
 			? SessionManager.open(
@@ -279,7 +279,7 @@ export class Coder {
 		const sessionId = sessionManager.getSessionId();
 		const sessionKey = `${project.id}:${sessionId}`;
 		if ([...this.runs.values()].some((run) => run.sessionKey === sessionKey)) {
-			throw new Error('This Coder session already has an active run.');
+			throw new Error('This Coding session already has an active run.');
 		}
 		const controller = new AbortController();
 		const run: ActiveRun = {
@@ -297,7 +297,7 @@ export class Coder {
 			const runtime = await this.getRuntime();
 			await this.syncApiKeys(runtime);
 			const model = runtime.getModel(settings.providerId, settings.modelId);
-			if (!model) throw new Error('Select an available Pi model in Coder settings.');
+			if (!model) throw new Error('Select an available Pi model in Coding settings.');
 			if (!(await runtime.checkAuth(settings.providerId))) {
 				throw new Error(`Connect ${settings.providerId} before starting a coding run.`);
 			}
@@ -373,7 +373,7 @@ export class Coder {
 			};
 			controller.signal.addEventListener('abort', abortSession, { once: true });
 			try {
-				if (controller.signal.aborted) throw new Error('Coder run cancelled.');
+				if (controller.signal.aborted) throw new Error('Coding run cancelled.');
 				if (request.mode === 'shell') {
 					emit({ ...eventContext, type: 'command-start', command: request.input });
 					const result = await session.executeBash(request.input, (delta) => {
@@ -388,10 +388,10 @@ export class Coder {
 						truncated: result.truncated,
 					});
 					if (controller.signal.aborted || result.cancelled)
-						throw new Error('Coder run cancelled.');
+						throw new Error('Coding run cancelled.');
 				} else {
 					await session.prompt(request.input, { expandPromptTemplates: false, source: 'rpc' });
-					if (controller.signal.aborted) throw new Error('Coder run cancelled.');
+					if (controller.signal.aborted) throw new Error('Coding run cancelled.');
 					if (finalError) throw new Error(finalError);
 				}
 				emit({ ...eventContext, type: 'status', status: 'completed' });
@@ -403,7 +403,7 @@ export class Coder {
 				session.dispose();
 			}
 		} catch (error) {
-			const message = error instanceof Error ? error.message : 'Coder run failed.';
+			const message = error instanceof Error ? error.message : 'Coding run failed.';
 			if (controller.signal.aborted) {
 				emit({ ...eventContext, type: 'status', status: 'cancelled' });
 			} else {
@@ -443,15 +443,15 @@ export class Coder {
 
 	private requireProject(projectId: string): CodingProject {
 		const project = this.dependencies.projects.get(projectId);
-		if (!project) throw new Error('Coder project was not found.');
-		if (!project.available) throw new Error('Coder project directory is unavailable.');
+		if (!project) throw new Error('Coding project was not found.');
+		if (!project.available) throw new Error('Coding project directory is unavailable.');
 		return project;
 	}
 
 	private async requireSession(project: CodingProject, sessionId: string): Promise<SessionInfo> {
 		const sessions = await SessionManager.list(project.directory, codingSessionsLocation());
 		const session = sessions.find((item) => item.id === sessionId);
-		if (!session) throw new Error('Coder session was not found for this project.');
+		if (!session) throw new Error('Coding session was not found for this project.');
 		return session;
 	}
 

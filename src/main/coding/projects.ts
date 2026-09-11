@@ -104,10 +104,10 @@ export class CodingProjectStore {
 	}
 
 	private canonicalDirectory(directory: string): string {
-		if (!path.isAbsolute(directory)) throw new Error('Coder project directory must be absolute.');
+		if (!path.isAbsolute(directory)) throw new Error('Coding project directory must be absolute.');
 		const absoluteDirectory = path.resolve(directory);
 		if (!existsSync(absoluteDirectory) || !statSync(absoluteDirectory).isDirectory()) {
-			throw new Error('Coder project directory is unavailable.');
+			throw new Error('Coding project directory is unavailable.');
 		}
 		return realpathSync.native(absoluteDirectory);
 	}

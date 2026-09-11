@@ -104,7 +104,7 @@ beforeEach(() => {
 				name: 'OpenAI Codex',
 				authentication: 'oauth',
 				configured: false,
-				models: [{ id: 'gpt-coding', name: 'GPT Coder', reasoning: true, contextWindow: 200000 }],
+				models: [{ id: 'gpt-coding', name: 'GPT Coding', reasoning: true, contextWindow: 200000 }],
 			},
 		],
 	});
@@ -221,7 +221,7 @@ it('groups sessions by workspace and opens an inactive workspace session', async
 	expect(result.current.blocks).toEqual([expect.objectContaining({ content: 'Website response' })]);
 });
 
-it('loads and saves the app configuration through the Coder SDK', async () => {
+it('loads and saves the app configuration through the Coding SDK', async () => {
 	const { result } = renderHook(() => useConfiguration());
 
 	await waitFor(() => expect(result.current.loading).toBe(false));
@@ -294,7 +294,7 @@ it('allows explicit empty-file creation and preserves dirty content after a save
 
 	act(() => result.current.setContent('# Local edit'));
 	(codingApi.saveProjectInstructions as jest.Mock).mockRejectedValueOnce(
-		new Error('Coder project instructions changed outside Kucedr. Reload before saving.')
+		new Error('Coding project instructions changed outside Kucedr. Reload before saving.')
 	);
 	await act(async () => result.current.save());
 	expect(result.current.content).toBe('# Local edit');

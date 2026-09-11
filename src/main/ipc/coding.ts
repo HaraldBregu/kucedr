@@ -5,7 +5,7 @@ import {
 	isCodingRunRequest,
 	isCodingSettings,
 } from '../../shared/coding_types';
-import type { Coder } from '../coding';
+import type { Coding } from '../coding';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
@@ -14,7 +14,7 @@ import type { IpcModule } from './core/module';
 import { TrustedRenderer } from './core/trusted';
 
 interface CodingIpcDependencies {
-	readonly coding: Coder;
+	readonly coding: Coding;
 	readonly appRegistry: AppRegistry;
 	readonly windows: WindowContextManager;
 }
@@ -27,7 +27,7 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 		const assertCodingCaller = (event: Electron.IpcMainInvokeEvent): void => {
 			if (appRegistry.has(event.sender)) {
 				if (appRegistry.resolve(event.sender) === 'coding') return;
-				throw new Error('Coder is only available to the Coder app.');
+				throw new Error('Coding is only available to the Coding app.');
 			}
 			trusted.assert(event);
 		};
@@ -36,7 +36,7 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 				!appRegistry.has(event.sender) ||
 				appRegistry.resolve(event.sender) !== 'coding'
 			) {
-				throw new Error('Project instructions are only available to the Coder app.');
+				throw new Error('Project instructions are only available to the Coding app.');
 			}
 		};
 		registerQueryWithEvent(CodingChannels.getSettings, (event) => {
@@ -74,7 +74,7 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 			}
 			const project = coding.listProjects().find((item) => item.id === projectId.trim());
 			if (!project || !project.available)
-				throw new Error('Coder project directory is unavailable.');
+				throw new Error('Coding project directory is unavailable.');
 			const error = await shell.openPath(project.directory);
 			if (error) throw new Error(error);
 		});

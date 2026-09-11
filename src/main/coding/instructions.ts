@@ -37,7 +37,7 @@ export class CodingInstructions {
 			const status = await lstat(activeFilePath);
 			if (status.isSymbolicLink()) editable = false;
 			else if (!status.isFile()) {
-				throw new Error('Coder project instructions must be a regular file.');
+				throw new Error('Coding project instructions must be a regular file.');
 			}
 			content = await readFile(activeFilePath, 'utf8');
 			exists = true;
@@ -52,7 +52,7 @@ export class CodingInstructions {
 		}
 
 		if (Buffer.byteLength(content, 'utf8') > MAX_FILE_SIZE) {
-			throw new Error('Coder project instructions exceed the 256 KiB limit.');
+			throw new Error('Coding project instructions exceed the 256 KiB limit.');
 		}
 
 		return {
@@ -90,14 +90,14 @@ export class CodingInstructions {
 		update: CodingProjectInstructionsUpdate
 	): Promise<CodingProjectInstructions> {
 		if (Buffer.byteLength(update.content, 'utf8') > MAX_FILE_SIZE) {
-			throw new Error('Coder project instructions exceed the 256 KiB limit.');
+			throw new Error('Coding project instructions exceed the 256 KiB limit.');
 		}
 		const current = await this.get(project);
 		if (current.revision !== update.expectedRevision) {
-			throw new Error('Coder project instructions changed outside Kucedr. Reload before saving.');
+			throw new Error('Coding project instructions changed outside Kucedr. Reload before saving.');
 		}
 		if (!current.editable) {
-			throw new Error('Coder project instructions cannot be edited through a symbolic link.');
+			throw new Error('Coding project instructions cannot be edited through a symbolic link.');
 		}
 		await atomicWrite(current.activeFilePath, update.content);
 		return this.get(project);

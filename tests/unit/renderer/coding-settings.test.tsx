@@ -25,7 +25,7 @@ const disconnectedCatalog = {
 			name: 'OpenAI Codex',
 			authentication: 'oauth' as const,
 			configured: false,
-			models: [{ id: 'gpt-coding', name: 'GPT Coder', reasoning: true, contextWindow: 1000 }],
+			models: [{ id: 'gpt-coding', name: 'GPT Coding', reasoning: true, contextWindow: 1000 }],
 		},
 	],
 };
@@ -60,7 +60,7 @@ it('shows the Pi runtime and current SDK model catalog', async () => {
 
 	expect(await screen.findByText('Pi SDK')).toBeInTheDocument();
 	expect(screen.getByText('OpenAI Codex')).toBeInTheDocument();
-	expect(screen.getByText('GPT Coder')).toBeInTheDocument();
+	expect(screen.getByText('GPT Coding')).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'settings.coding.connect' })).toBeInTheDocument();
 });
 

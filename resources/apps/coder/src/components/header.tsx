@@ -59,7 +59,7 @@ export function Header({
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
 			<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
-			<h1 className="min-w-0 shrink truncate text-sm font-medium">Coder</h1>
+			<h1 className="min-w-0 shrink truncate text-sm font-medium">Coding</h1>
 			<div className="min-w-0 flex-1" />
 
 			{coding.runState === 'running' ? (
@@ -78,8 +78,8 @@ export function Header({
 					variant="ghost"
 					size="icon-sm"
 					className="rounded-full text-muted-foreground hover:text-foreground"
-					aria-label="Search Coder workspaces"
-					title="Search Coder workspaces"
+					aria-label="Search Coding workspaces"
+					title="Search Coding workspaces"
 					onClick={() => {
 						onOpenSidebar();
 						requestAnimationFrame(() => document.getElementById('coding-sidebar-search')?.focus());
@@ -92,8 +92,8 @@ export function Header({
 					variant="ghost"
 					size="icon-sm"
 					className="rounded-full text-muted-foreground hover:text-foreground"
-					aria-label="Open Coder configuration"
-					title="Open Coder configuration"
+					aria-label="Open Coding configuration"
+					title="Open Coding configuration"
 					onClick={onOpenConfiguration}
 				>
 					<User className="size-4" strokeWidth={1.8} />

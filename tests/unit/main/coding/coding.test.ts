@@ -11,7 +11,7 @@ import {
 	sessionManagerList,
 	sessionManagerOpen,
 } from '@earendil-works/pi-coding-agent';
-import { Coder } from '../../../../src/main/coding/coding';
+import { Coding } from '../../../../src/main/coding/coding';
 import type { CodingProjectStore } from '../../../../src/main/coding/projects';
 import type { CodingStore } from '../../../../src/main/coding/store';
 
@@ -50,7 +50,7 @@ beforeEach(() => {
 it('runs Pi with the saved model, isolated resources, and redacted stream events', async () => {
 	const model = {
 		id: 'gpt-coding',
-		name: 'GPT Coder',
+		name: 'GPT Coding',
 		reasoning: true,
 		contextWindow: 1000,
 	};
@@ -92,7 +92,7 @@ it('runs Pi with the saved model, isolated resources, and redacted stream events
 		dispose: jest.fn(),
 	};
 	(createAgentSession as jest.Mock).mockResolvedValue({ session });
-	const coding = new Coder({
+	const coding = new Coding({
 		store: { get: jest.fn(() => settings), set: jest.fn() } as unknown as CodingStore,
 		projects: projects as unknown as CodingProjectStore,
 		getProvider: (id) =>
@@ -176,7 +176,7 @@ it('reloads cwd-bound instructions before the next message in a resumed session'
 	const reopenedManager = { getSessionId: () => sessionInfo.id };
 	sessionManagerList.mockResolvedValue([sessionInfo]);
 	sessionManagerOpen.mockReturnValue(reopenedManager);
-	const coding = new Coder({
+	const coding = new Coding({
 		store: { get: jest.fn(() => settings), set: jest.fn() } as unknown as CodingStore,
 		projects: projects as unknown as CodingProjectStore,
 		getProvider: (id) => ({ id, name: id, apiKey: 'key', baseUrl: '' }),
@@ -216,14 +216,14 @@ it('reloads cwd-bound instructions before the next message in a resumed session'
 
 it('rejects instruction access for an unavailable stored project', async () => {
 	projects.get.mockReturnValueOnce({ ...project, available: false });
-	const coding = new Coder({
+	const coding = new Coding({
 		store: { get: jest.fn(() => settings), set: jest.fn() } as unknown as CodingStore,
 		projects: projects as unknown as CodingProjectStore,
 		getProvider: () => undefined,
 	});
 
 	await expect(coding.getProjectInstructions(project.id)).rejects.toThrow(
-		'Coder project directory is unavailable.'
+		'Coding project directory is unavailable.'
 	);
 });
 
@@ -259,7 +259,7 @@ it('reopens a project session and records streamed Shell output', async () => {
 		dispose: jest.fn(),
 	};
 	(createAgentSession as jest.Mock).mockResolvedValue({ session });
-	const coding = new Coder({
+	const coding = new Coding({
 		store: { get: jest.fn(() => settings), set: jest.fn() } as unknown as CodingStore,
 		projects: projects as unknown as CodingProjectStore,
 		getProvider: (id) => ({ id, name: id, apiKey: 'key', baseUrl: '' }),
@@ -311,7 +311,7 @@ it('uses Codex device OAuth and projects only the device code event', async () =
 		checkAuth: jest.fn(async () => ({ type: 'oauth', source: 'OAuth' })),
 	};
 	modelRuntimeCreate.mockResolvedValue(runtime);
-	const coding = new Coder({
+	const coding = new Coding({
 		store: { get: jest.fn(() => settings), set: jest.fn() } as unknown as CodingStore,
 		projects: projects as unknown as CodingProjectStore,
 		getProvider: () => undefined,
@@ -349,7 +349,7 @@ it('renames only a session resolved inside its project', async () => {
 		.mockResolvedValueOnce([original])
 		.mockResolvedValueOnce([{ ...original, name: 'Focused tests' }]);
 	sessionManagerOpen.mockReturnValue({ appendSessionInfo });
-	const coding = new Coder({
+	const coding = new Coding({
 		store: { get: jest.fn(() => settings), set: jest.fn() } as unknown as CodingStore,
 		projects: projects as unknown as CodingProjectStore,
 		getProvider: () => undefined,

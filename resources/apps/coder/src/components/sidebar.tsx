@@ -39,7 +39,7 @@ export function ProjectSidebar({
 				<div className="flex min-h-9 items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
 					<div className="flex min-w-0 flex-1 items-center gap-2 group-data-[state=collapsed]/sidebar:hidden">
 						<FolderGit2 className="size-4 text-muted-foreground" />
-						<span className="truncate text-xs font-medium">Coder</span>
+						<span className="truncate text-xs font-medium">Coding</span>
 					</div>
 					<Tooltip>
 						<TooltipTrigger
@@ -67,7 +67,7 @@ export function ProjectSidebar({
 									variant={configurationOpen ? 'secondary' : 'ghost'}
 									size="icon-sm"
 									className="group-data-[state=collapsed]/sidebar:mx-auto"
-									aria-label="Open Coder configuration"
+									aria-label="Open Coding configuration"
 									onClick={onOpenConfiguration}
 								>
 									<Settings />
@@ -91,7 +91,7 @@ export function ProjectSidebar({
 			</SidebarHeader>
 
 			<SidebarContent aria-busy={coding.busy}>
-				<nav aria-label="Coder workspaces and sessions" className="px-2 pb-2">
+				<nav aria-label="Coding workspaces and sessions" className="px-2 pb-2">
 					<ul className="space-y-0.5">
 						{visibleProjects.map((project) => {
 							const sessions = coding.sessionsByProject[project.id] ?? [];

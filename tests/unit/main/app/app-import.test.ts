@@ -39,11 +39,11 @@ describe('app import', () => {
 		const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-source-'));
 		const source = path.join(sourceRoot, 'coding');
 		fs.mkdirSync(source, { recursive: true });
-		fs.writeFileSync(path.join(source, 'index.html'), '<h1>Coder</h1>');
+		fs.writeFileSync(path.join(source, 'index.html'), '<h1>Coding</h1>');
 		fs.writeFileSync(
 			path.join(source, 'manifest.json'),
 			JSON.stringify({
-				title: 'Coder',
+				title: 'Coding',
 				description: 'A coding app',
 				metadata: { version: '1.0.0', category: 'utility', entry: 'index.html' },
 			})

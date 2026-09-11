@@ -68,7 +68,7 @@ export function Instructions({
 							</h2>
 						</div>
 						<p className="text-xs leading-5 text-muted-foreground">
-							Changes apply to the next Coder message, including resumed sessions. A running tool
+							Changes apply to the next Coding message, including resumed sessions. A running tool
 							loop keeps the instructions it started with.
 						</p>
 						{editor.instructions ? (
@@ -124,7 +124,7 @@ export function Instructions({
 										>
 											<Badge variant="outline">
 												{source.scope === 'coding-global'
-													? 'Coder global'
+													? 'Coding global'
 													: source.scope[0].toUpperCase() + source.scope.slice(1)}
 											</Badge>
 											<span className="min-w-0 break-all font-mono text-[11px] text-muted-foreground">

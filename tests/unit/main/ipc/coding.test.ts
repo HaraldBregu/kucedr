@@ -1,7 +1,7 @@
 import { BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { CodingIpc } from '../../../../src/main/ipc/coding';
 import { CodingChannels } from '../../../../src/shared/ipc_channels_definitions';
-import type { Coder } from '../../../../src/main/coding';
+import type { Coding } from '../../../../src/main/coding';
 import type { EventBus } from '../../../../src/main/event_bus';
 
 const windows = { has: jest.fn() };
@@ -11,7 +11,7 @@ beforeEach(() => {
 	windows.has.mockReturnValue(true);
 });
 
-it('streams Coder app runs back to the originating view and scopes cancellation', async () => {
+it('streams Coding app runs back to the originating view and scopes cancellation', async () => {
 	const send = jest
 		.fn()
 		.mockResolvedValue({ projectId: 'project-1', sessionId: 'session-1', output: 'reply' });
@@ -21,7 +21,7 @@ it('streams Coder app runs back to the originating view and scopes cancellation'
 		getSettings: jest.fn().mockReturnValue({ runtime: 'pi' }),
 		send,
 		cancel,
-	} as unknown as Coder;
+	} as unknown as Coding;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
 		resolve: jest.fn().mockReturnValue('coding'),
@@ -72,7 +72,7 @@ it('streams Coder app runs back to the originating view and scopes cancellation'
 	expect(cancel).toHaveBeenCalledWith('run-1', 23);
 });
 
-it('lets the Coder app select main-owned projects and read their sessions', async () => {
+it('lets the Coding app select main-owned projects and read their sessions', async () => {
 	const selectedProject = {
 		id: 'project-1',
 		name: 'project',
@@ -90,7 +90,7 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 		deleteSession: jest.fn().mockResolvedValue(true),
 		getProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
 		saveProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
-	} as unknown as Coder;
+	} as unknown as Coding;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
 		resolve: jest.fn().mockReturnValue('coding'),
@@ -146,11 +146,11 @@ it('lets the Coder app select main-owned projects and read their sessions', asyn
 	expect(coding.saveProjectInstructions).toHaveBeenCalledWith('project-1', update);
 });
 
-it('restricts project instruction files to the Coder app and validates updates', async () => {
+it('restricts project instruction files to the Coding app and validates updates', async () => {
 	const coding = {
 		getProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
 		saveProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
-	} as unknown as Coder;
+	} as unknown as Coding;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
 		resolve: jest.fn().mockReturnValue('coding'),
@@ -178,15 +178,15 @@ it('restricts project instruction files to the Coder app and validates updates',
 		expect.objectContaining({
 			success: false,
 			error: expect.objectContaining({
-				message: 'Project instructions are only available to the Coder app.',
+				message: 'Project instructions are only available to the Coding app.',
 			}),
 		})
 	);
 	expect(coding.getProjectInstructions).not.toHaveBeenCalled();
 });
 
-it('rejects Coder access from other apps', async () => {
-	const coding = { getSettings: jest.fn(), send: jest.fn() } as unknown as Coder;
+it('rejects Coding access from other apps', async () => {
+	const coding = { getSettings: jest.fn(), send: jest.fn() } as unknown as Coding;
 	const appRegistry = {
 		has: jest.fn().mockReturnValue(true),
 		resolve: jest.fn().mockReturnValue('demo'),
@@ -210,7 +210,7 @@ it('rejects Coder access from other apps', async () => {
 		expect.objectContaining({
 			success: false,
 			error: expect.objectContaining({
-				message: 'Coder is only available to the Coder app.',
+				message: 'Coding is only available to the Coding app.',
 			}),
 		})
 	);
@@ -223,7 +223,7 @@ it('rejects Coder access from other apps', async () => {
 	);
 });
 
-it('allows configuration and authentication from the host and Coder app only', async () => {
+it('allows configuration and authentication from the host and Coding app only', async () => {
 	const connectCodex = jest.fn((_owner, emit) => {
 		emit({ type: 'progress', message: 'Waiting' });
 		return Promise.resolve({ configured: true, type: 'oauth' });
@@ -234,7 +234,7 @@ it('allows configuration and authentication from the host and Coder app only', a
 		connectCodex,
 		cancelCodexLogin: jest.fn().mockReturnValue(true),
 		disconnectCodex: jest.fn().mockResolvedValue(undefined),
-	} as unknown as Coder;
+	} as unknown as Coding;
 	const appRegistry = { has: jest.fn().mockReturnValue(false) };
 	const mainFrame = {};
 	const sender = {
