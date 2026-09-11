@@ -14,8 +14,8 @@ jest.mock('electron', () => ({
 
 jest.mock('../../../../src/main/i18n', () => ({
 	loadTranslations: () => ({
-		showKucedr: 'Show Kucedr',
-		hideKucedr: 'Hide Kucedr',
+		showChat: 'Show Chat',
+		hideChat: 'Hide Chat',
 		startPersona: 'Start Persona',
 		hidePersona: 'Hide Persona',
 		showPersona: 'Show Persona',

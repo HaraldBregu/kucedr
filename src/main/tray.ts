@@ -133,7 +133,7 @@ export class Tray {
 
 		this.contextMenu = Menu.buildFromTemplate([
 			{
-				label: isVisible ? m.hideKucedr || 'Hide Kucedr' : m.showKucedr || 'Show Kucedr',
+				label: isVisible ? m.hideChat || 'Hide Chat' : m.showChat || 'Show Chat',
 				click: () => this.callbacks.onToggleApp(),
 			},
 			{
