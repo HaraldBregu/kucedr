@@ -10,7 +10,7 @@ import {
 	Trash2,
 	X,
 } from 'lucide-react';
-import { type CSSProperties, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isKucedr, win } from '@kucedr/sdk';
 
 import { Button } from '@/components/ui/button';
@@ -44,7 +44,7 @@ export function Header({
 	return (
 		<header
 			className="flex h-12 shrink-0 items-center gap-2 bg-background px-3"
-			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
+			style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
 		>
 			<SidebarTrigger className="[webkit-app-region:no-drag]" />
 			<div className="flex min-w-0 flex-1 items-center gap-1.5 text-xs">
@@ -65,6 +65,7 @@ export function Header({
 				<DropdownMenu>
 					<DropdownMenuTrigger
 						render={
+							<Button variant="ghost" size="icon-sm" aria-label="Workspace actions">
 							<Button
 								variant="ghost"
 								size="icon-sm"
