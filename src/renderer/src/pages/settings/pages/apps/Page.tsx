@@ -231,11 +231,7 @@ const AppsPage: React.FC = () => {
 							>
 								<CardContent className="grid h-full grid-cols-[10rem_minmax(0,1fr)] gap-0 p-0!">
 									{app.imageUrl ? (
-										<img
-											src={app.imageUrl}
-											alt=""
-											className="h-full w-full object-cover"
-										/>
+										<img src={app.imageUrl} alt="" className="h-full w-full object-cover" />
 									) : (
 										<div
 											aria-hidden="true"
