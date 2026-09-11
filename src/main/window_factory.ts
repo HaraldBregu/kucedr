@@ -133,6 +133,7 @@ export class WindowFactory {
 			show: false,
 			icon: this.iconPath,
 			...overrides,
+			autoHideMenuBar: false,
 			webPreferences: {
 				...this.getBaseWebPreferences(),
 				...overrides.webPreferences,
@@ -145,6 +146,7 @@ export class WindowFactory {
 		};
 
 		const win = new BrowserWindow(options);
+		win.setMenuBarVisibility(true);
 		setupPdfContextMenu(win);
 
 		this.secureNavigation(win.webContents, content.file ? path.dirname(content.file) : undefined);

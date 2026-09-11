@@ -49,7 +49,6 @@ export function render(
 			}),
 			...getPlatformTranslucencyOptions(),
 			title,
-			autoHideMenuBar: true,
 			backgroundColor: '#00000000',
 		},
 		{ html: 'app.html', hash: `app/${encodeURIComponent(title)}` }
@@ -61,7 +60,6 @@ export function render(
 		titlebarOptions: null,
 	};
 	windows.set(appId, appWindow);
-	win.setMenuBarVisibility(false);
 	let shellFailed = false;
 	let appView: WebContentsView | undefined;
 	let appContents: WebContents | undefined;

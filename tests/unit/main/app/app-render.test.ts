@@ -90,6 +90,7 @@ describe('app renderer', () => {
 		);
 		expect(harness.create).toHaveBeenCalledWith(
 			expect.objectContaining({
+				autoHideMenuBar: undefined,
 				frame: false,
 				resizable: true,
 				title: 'Project',
@@ -99,6 +100,7 @@ describe('app renderer', () => {
 			}),
 			{ html: 'app.html', hash: 'app/Project' }
 		);
+		expect(harness.win.setMenuBarVisibility).not.toHaveBeenCalled();
 		expect(harness.createView).not.toHaveBeenCalled();
 
 		harness.handlers.get('ready-to-show')?.();
