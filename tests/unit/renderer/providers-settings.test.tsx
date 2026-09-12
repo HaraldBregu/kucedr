@@ -37,7 +37,14 @@ jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
 			supported: true,
 		},
 	],
-	actionableSearchCatalog: () => [],
+	actionableSearchCatalog: () => [
+		{
+			id: 'brave',
+			name: 'Brave',
+			capabilities: 'Web search',
+			supported: true,
+		},
+	],
 	getErrorMessage: (error: unknown, fallback: string) =>
 		error instanceof Error ? error.message : fallback,
 }));
@@ -157,6 +164,32 @@ it('masks saved model keys until editing', async () => {
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('button', { name: 'Edit OpenAI API key' }));
 	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('model-secret');
+});
+
+it('masks saved Search keys until editing', async () => {
+	jest.mocked(window.search.listProviders).mockResolvedValue([
+		{
+			id: 'brave',
+			name: 'Brave',
+			apiKey: 'search-secret',
+		},
+	]);
+	jest.mocked(window.search.getSettings).mockResolvedValue({
+		engineId: 'brave',
+		configured: { brave: true, tavily: false },
+	});
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="search" />
+		</MemoryRouter>
+	);
+
+	expect(await screen.findByText('************')).toBeInTheDocument();
+	expect(screen.queryByText('search-secret')).not.toBeInTheDocument();
+
+	const user = userEvent.setup();
+	await user.click(screen.getByRole('button', { name: 'Edit Brave API key' }));
+	expect(screen.getByLabelText('Brave API key')).toHaveValue('search-secret');
 });
 
 it('keeps the Database key editable when saving fails', async () => {
