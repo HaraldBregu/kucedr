@@ -702,18 +702,18 @@ describe('run stream system prompt', () => {
 				scope,
 			},
 			new AbortController().signal,
-			{ sandbox }
+			{ sandbox, modelOptions: { temperature: 0.2 } }
 		))
 			void _event;
 
-		const childInput = runModelTurnMock.mock.calls.find(
-			(call) => call[0].agentId === 'subagent'
-		)?.[0];
+		const childCall = runModelTurnMock.mock.calls.find((call) => call[0].agentId === 'subagent');
+		const childInput = childCall?.[0];
 		expect(childInput).toMatchObject({
 			providerId: 'test-provider',
 			model: 'pinned-model',
 			effort: 'high',
 			scope,
 		});
+		expect(childCall?.[8]).toEqual({ temperature: 0.2 });
 	});
 });

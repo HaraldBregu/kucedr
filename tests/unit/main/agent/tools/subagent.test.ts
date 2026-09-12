@@ -282,6 +282,12 @@ describe('subagentTool', () => {
 			text: 'done',
 			stopReason: 'end_turn',
 			usage: { inputTokens: 2, outputTokens: 3 },
+			result: {
+				sessionId: 'child',
+				model: 'pinned-model',
+				subtype: 'success',
+				toolCalls: [],
+			},
 		});
 		expect(mockStream.mock.calls[0][2]).toMatchObject({
 			providerId: 'pinned-provider',
