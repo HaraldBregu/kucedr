@@ -11,7 +11,6 @@ import { SearchIpc } from '../search';
 import { StorageIpc } from '../storage';
 import { DatabaseIpc } from '../database';
 import { AppsIpc } from '../apps';
-import { WikiIpc } from '../wiki';
 import { WindowIpc } from '../window';
 import { DataIpc } from '../data';
 import { RealtimeVoiceIpc } from '../realtime_voice';
@@ -145,9 +144,6 @@ export function registerIpcHandlers(
 	);
 	safeRegister('apps', () =>
 		new AppsIpc().register({ windowFactory, appRegistry, windows: windowContextManager }, eventBus)
-	);
-	safeRegister('wiki', () =>
-		new WikiIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('data', () =>
 		new DataIpc().register(

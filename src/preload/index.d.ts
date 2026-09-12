@@ -15,7 +15,6 @@ import type {
 	StorageApi,
 	DatabaseApi,
 	AppsApi,
-	WikiApi,
 	WindowApi,
 	DataApi,
 	TerminalApi,
@@ -40,7 +39,6 @@ declare global {
 		provider: ProviderApi;
 		search: SearchApi;
 		apps: AppsApi;
-		wiki: WikiApi;
 		dataControls: DataApi;
 		terminalAPI: TerminalApi;
 		auth: AuthApi;

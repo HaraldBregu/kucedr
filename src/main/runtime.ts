@@ -37,7 +37,6 @@ import { startStorageSync, stopStorageSync } from './storage';
 import { startRagSchedule, stopRagSchedule } from './agent/knowledge/rag';
 import { CHANNEL_PROVIDER_IDS } from '../shared';
 import { AppChannels } from '../shared/ipc_channels_definitions';
-import { startWiki, stopWiki } from './agent/knowledge/wiki';
 import { authLinks } from './cloud/links';
 import { loadLocalEnvironment } from './cloud/environment';
 import { VoiceWindow } from './voice_window';
@@ -214,7 +213,6 @@ app.whenReady().then(() => {
 	app.once('before-quit', () => {
 		void stopWatchingApps();
 	});
-	startWiki(logger);
 	// Apply persisted settings on startup (updateLanguage builds the menu)
 	const storedLanguage = getLanguage();
 	menuManager.updateLanguage(storedLanguage);
@@ -274,7 +272,6 @@ app.on('before-quit', (event) => {
 		destroyAllApps();
 		stopStorageSync();
 		stopRagSchedule();
-		stopWiki();
 		await cleanup(services);
 	});
 	void shutdownPromise

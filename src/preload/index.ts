@@ -13,7 +13,6 @@ import { skills } from './skills';
 import { storage } from './storage';
 import { database } from './database';
 import { apps } from './apps';
-import { wiki } from './wiki';
 import { win } from './win';
 import { data } from './data';
 import { terminalAPI } from './terminal';
@@ -34,7 +33,6 @@ export { skills } from './skills';
 export { storage } from './storage';
 export { database } from './database';
 export { apps } from './apps';
-export { wiki } from './wiki';
 export { data } from './data';
 export { terminalAPI } from './terminal';
 export { auth } from './auth';
@@ -57,7 +55,6 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('provider', provider);
 		contextBridge.exposeInMainWorld('search', search);
 		contextBridge.exposeInMainWorld('apps', apps);
-		contextBridge.exposeInMainWorld('wiki', wiki);
 		contextBridge.exposeInMainWorld('dataControls', data);
 		contextBridge.exposeInMainWorld('terminalAPI', terminalAPI);
 		contextBridge.exposeInMainWorld('auth', auth);
@@ -96,8 +93,6 @@ if (process.contextIsolated) {
 	globalThis.search = search;
 	// @ts-ignore (define in dts)
 	globalThis.apps = apps;
-	// @ts-ignore (define in dts)
-	globalThis.wiki = wiki;
 	// @ts-ignore (define in dts)
 	globalThis.dataControls = data;
 	// @ts-ignore (define in dts)

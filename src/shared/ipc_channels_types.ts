@@ -52,7 +52,6 @@ import {
 	TextChannels,
 	VideoChannels,
 	AppsChannels,
-	WikiChannels,
 	DataChannels,
 	WindowChannels,
 	TerminalChannels,
@@ -656,37 +655,6 @@ export interface SearchInvokeChannelMap {
 	};
 }
 
-export interface WikiInvokeChannelMap {
-	[WikiChannels.getSettings]: {
-		args: [];
-		result: import('./wiki_types').WikiSettings;
-	};
-	[WikiChannels.getStatus]: {
-		args: [];
-		result: import('./wiki_types').WikiStatus;
-	};
-	[WikiChannels.saveSettings]: {
-		args: [settings: import('./wiki_types').WikiSettings];
-		result: import('./wiki_types').WikiSettings;
-	};
-	[WikiChannels.run]: {
-		args: [];
-		result: import('./wiki_types').WikiRunResult;
-	};
-	[WikiChannels.cancel]: {
-		args: [];
-		result: boolean;
-	};
-	[WikiChannels.pickDirectory]: {
-		args: [kind: 'source' | 'target'];
-		result: string | undefined;
-	};
-	[WikiChannels.openDirectory]: {
-		args: [kind: 'source' | 'target'];
-		result: void;
-	};
-}
-
 export interface DataInvokeChannelMap {
 	[DataChannels.listScopes]: {
 		args: [];
@@ -1166,7 +1134,6 @@ export interface InvokeChannelMap
 		McpInvokeChannelMap,
 		ProviderStoreInvokeChannelMap,
 		SearchInvokeChannelMap,
-		WikiInvokeChannelMap,
 		DataInvokeChannelMap,
 		StorageInvokeChannelMap,
 		DatabaseInvokeChannelMap,

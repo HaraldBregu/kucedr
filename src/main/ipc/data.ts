@@ -77,14 +77,12 @@ export class DataIpc implements IpcModule<DataIpcDeps> {
 
 	private fileName(scope: DataScope): string {
 		if (scope.kind === 'sessions') return 'kucedr-sessions-export';
-		if (scope.kind === 'wiki') return 'kucedr-wiki-export';
 		if (scope.kind === 'memory') return 'kucedr-memory-export';
 		return `kucedr-rag-${scope.indexName}-export`;
 	}
 
 	private scopeDescription(scope: DataScope): string {
 		if (scope.kind === 'sessions') return `Sessions: ${scope.sessionIds.join(', ')}`;
-		if (scope.kind === 'wiki') return `Managed wiki target: ${scope.targetPath}`;
 		if (scope.kind === 'memory') return 'Persistent memory: all saved facts';
 		if (scope.mode === 'local_namespace') {
 			return `Local RAG namespace: ${scope.indexName} / ${scope.generation}`;

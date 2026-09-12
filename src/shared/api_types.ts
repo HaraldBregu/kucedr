@@ -98,7 +98,6 @@ import type {
 	AppThemeData,
 	AppTheme,
 } from './app_types';
-import type { WikiRunResult, WikiSettings, WikiStatus } from './wiki_types';
 import type { ContextMenuDescriptor, AppTitlebarOptions } from './window_types';
 import type { WorkspaceAsset } from './workspace';
 import type { AppStorageApi } from './app_store_types';
@@ -338,16 +337,6 @@ export interface SearchApi {
 	listProviders: () => Promise<StoredProvider[]>;
 	saveEngine: (engineId: SearchEngineId, input: SearchEngineInput) => Promise<SearchSettings>;
 	selectEngine: (engineId: SearchEngineId) => Promise<SearchSettings>;
-}
-
-export interface WikiApi {
-	getSettings: () => Promise<WikiSettings>;
-	getStatus: () => Promise<WikiStatus>;
-	saveSettings: (settings: WikiSettings) => Promise<WikiSettings>;
-	run: () => Promise<WikiRunResult>;
-	cancel: () => Promise<boolean>;
-	pickDirectory: (kind: 'source' | 'target') => Promise<string | undefined>;
-	openDirectory: (kind: 'source' | 'target') => Promise<void>;
 }
 
 export interface RecorderApi {

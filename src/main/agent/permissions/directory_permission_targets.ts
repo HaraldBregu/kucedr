@@ -6,7 +6,6 @@ import { healthStorePath } from '../health/health_store';
 import { skillsRoot } from '../skills/skills_root';
 import { registry } from '../tools/core/process';
 import { toolPermissionTargets } from './tool_permission_targets';
-import { getWikiSettings } from '../knowledge/wiki/wiki_get_settings';
 import { resolveExecRoots } from './resolve_exec_roots';
 import { fileHistoryTargets } from '../history/targets';
 import type { FileHistory } from '../history/types';
@@ -35,14 +34,6 @@ const TASK_TOOLS = new Set([
 	'run_task_now',
 ]);
 export const TASK_MUTATION_TOOLS = new Set(['create_task', 'update_task', 'delete_task']);
-const WIKI_TOOLS = new Set([
-	'ingest_wiki_source',
-	'save_wiki_analysis',
-	'lint_wiki',
-	'review_wiki_changes',
-	'rebuild_wiki_index',
-]);
-
 export function isWritePermissionTool(toolName: string, args: Record<string, unknown>): boolean {
 	return (
 		toolName === 'write' ||
@@ -53,8 +44,7 @@ export function isWritePermissionTool(toolName: string, args: Record<string, unk
 		toolName in AGENT_FILES ||
 		toolName === 'update_health_settings' ||
 		MEDIA_TOOLS.has(toolName) ||
-		TASK_TOOLS.has(toolName) ||
-		(WIKI_TOOLS.has(toolName) && (toolName !== 'lint_wiki' || args.autoFix === true))
+		TASK_TOOLS.has(toolName)
 	);
 }
 
@@ -87,9 +77,6 @@ export function directoryPermissionTargets(
 		return [realPath(resolveUserPath(directory, baseDir))];
 	}
 	if (TASK_TOOLS.has(toolName)) return [realPath(taskStorePath)];
-	if (WIKI_TOOLS.has(toolName)) {
-		return [realPath(path.resolve(getWikiSettings().targetPath, 'index.md'))];
-	}
 	if (toolName === 'load_skill') return [realPath(path.join(skillsRoot, String(args.name ?? '')))];
 	return [];
 }

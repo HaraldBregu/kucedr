@@ -1,5 +1,3 @@
-import { realPath } from '../shared/real_path';
-import { getWikiSettings } from '../agent/knowledge/wiki';
 import { normalizeRagIndexName } from '../agent/knowledge/rag/rag_index_name';
 import { requireUuidSessionId } from '../agent/session';
 import type { DataScope } from '../../shared/data_types';
@@ -19,16 +17,6 @@ export function normalizeDataScope(value: unknown): DataScope {
 		];
 		if (sessionIds.length > 500) throw new Error('Select no more than 500 assistant sessions.');
 		return { kind: 'sessions', sessionIds };
-	}
-	if (input.kind === 'wiki') {
-		if (typeof input.targetPath !== 'string' || !input.targetPath.trim()) {
-			throw new Error('A wiki target path is required.');
-		}
-		const targetPath = realPath(input.targetPath.trim());
-		if (targetPath !== realPath(getWikiSettings().targetPath)) {
-			throw new Error('The wiki scope must match the configured target.');
-		}
-		return { kind: 'wiki', targetPath };
 	}
 	if (input.kind === 'rag') {
 		if (typeof input.indexName !== 'string') throw new Error('A RAG index name is required.');

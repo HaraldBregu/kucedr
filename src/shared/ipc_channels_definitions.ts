@@ -307,16 +307,6 @@ export const SearchChannels = {
 	selectEngine: 'search:engine:select',
 } as const;
 
-export const WikiChannels = {
-	getSettings: 'wiki:settings:get',
-	getStatus: 'wiki:status:get',
-	saveSettings: 'wiki:settings:save',
-	run: 'wiki:run',
-	cancel: 'wiki:cancel',
-	pickDirectory: 'wiki:directory:pick',
-	openDirectory: 'wiki:directory:open',
-} as const;
-
 export const DataChannels = {
 	listScopes: 'data:scopes:list',
 	export: 'data:export',

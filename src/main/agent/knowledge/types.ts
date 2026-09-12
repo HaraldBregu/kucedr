@@ -4,7 +4,7 @@ export interface KnowledgeScanBudget {
 	bytes: number;
 }
 
-export type KnowledgeRoute = 'wiki' | 'primary_evidence' | 'rag' | 'abstain';
+export type KnowledgeRoute = 'rag' | 'abstain';
 
 export interface KnowledgeEvaluationCase {
 	id: string;

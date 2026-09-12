@@ -19,7 +19,7 @@ import { listAppsTool } from '../tools/apps/list_apps';
 import { openAppsTool } from '../tools/apps/open_apps';
 import { updateHealthSettingsTool } from '../tools/health/update_health_settings';
 import { updateHealthTool } from '../tools/health/update_health';
-import { getKnowledgeTools, getPlanWikiTools, getWikiTools } from '../tools/knowledge';
+import { getKnowledgeTools } from '../tools/knowledge';
 import { forgetMemoryTool } from '../tools/memory/forget_memory';
 import { listMemoriesTool } from '../tools/memory/list_memories';
 import { saveMemoryTool } from '../tools/memory/save_memory';
@@ -90,8 +90,6 @@ export function builtinTools(
 		forgetMemoryTool(config),
 		listMemoriesTool(config),
 		...getKnowledgeTools(),
-		...getWikiTools(),
-		...(interactionMode === 'plan' ? getPlanWikiTools() : []),
 		updateHealthTool(config),
 		updateHealthSettingsTool,
 		createTaskTool,

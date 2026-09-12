@@ -10,10 +10,6 @@ const READ = new Set([
 	'search_web',
 	'fetch_web_page',
 	'query_knowledge',
-	'query_wiki',
-	'search_wiki',
-	'read_wiki_page',
-	'get_recent_wiki_activity',
 	'list_a2a_agents',
 	'list_apps',
 	'list_memories',
@@ -43,10 +39,6 @@ const PERSIST = new Set([
 	'resume_task',
 	'delete_task',
 	'run_task_now',
-	'ingest_wiki_source',
-	'save_wiki_analysis',
-	'review_wiki_changes',
-	'rebuild_wiki_index',
 ]);
 const GOAL = new Set([
 	'update_goal_plan',
@@ -83,7 +75,6 @@ export function builtinCapability(
 		return {
 			effects: ['list', 'log', 'poll'].includes(String(input.action)) ? ['read'] : ['execute'],
 		};
-	if (id === 'lint_wiki') return { effects: input.autoFix === true ? ['write'] : ['read'] };
 	if (id === 'use_web_browser') {
 		const passive = ['status', 'tabs', 'snapshot', 'screenshot', 'console'].includes(
 			String(input.action)

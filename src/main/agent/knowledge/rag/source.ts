@@ -2,7 +2,7 @@ import { knowledgeRoot } from '../root';
 import { stat } from 'node:fs/promises';
 import path from 'node:path';
 import { TextDecoder } from 'node:util';
-import { assertWikiSourceSafe } from '../safety';
+import { assertKnowledgeSourceSafe } from '../safety';
 import { listKnowledgeFiles } from '../list';
 import { readFileBounded } from '../../files/read';
 import {
@@ -28,7 +28,7 @@ export async function* collectRagSources(
 			throw new Error('The selected source is not a folder: ' + source);
 		for (const file of await listKnowledgeFiles(source, signal, budget)) {
 			signal?.throwIfAborted();
-			assertWikiSourceSafe({ relativePath: path.join(path.basename(source), file), content: '' });
+			assertKnowledgeSourceSafe({ relativePath: path.join(path.basename(source), file), content: '' });
 			if (++files > KNOWLEDGE_MAX_FILES) throw new Error('Knowledge source file limit exceeded.');
 			const bytes = await readFileBounded(
 				path.join(source, file),
@@ -45,7 +45,7 @@ export async function* collectRagSources(
 			} catch {
 				continue;
 			}
-			assertWikiSourceSafe({ relativePath: file, content });
+			assertKnowledgeSourceSafe({ relativePath: file, content });
 			yield { source, sourceIndex, file, content };
 		}
 	}

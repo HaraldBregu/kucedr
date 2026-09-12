@@ -15,7 +15,6 @@ import { sessionPath, sessionsRoot } from '../agent/session';
 import { purgeRagManifest } from '../agent/knowledge/rag';
 import { getRagConfiguration } from '../agent/knowledge/rag/rag_store';
 import { ragVectorStore } from '../agent/knowledge/rag/vector';
-import { getWikiRepository, getWikiSettings } from '../agent/knowledge/wiki';
 import { DataArchive } from './data_archive';
 import { purgeRemoteRagNamespaces } from './data_purge_remote';
 
@@ -39,8 +38,6 @@ export class DataController {
 		const scopes: DataScope[] = [{ kind: 'memory' }];
 		const sessionIds = this.agent.listSessions().map((session) => session.id);
 		if (sessionIds.length > 0) scopes.push({ kind: 'sessions', sessionIds });
-		const wikiTarget = getWikiSettings().targetPath;
-		if (wikiTarget) scopes.push({ kind: 'wiki', targetPath: wikiTarget });
 		const rag = getRagConfiguration();
 		const store = ragVectorStore();
 		try {
@@ -151,20 +148,6 @@ export class DataController {
 					scope.mode === 'local_namespace' ? scope.generation : undefined
 				);
 			}
-		} else if (scope.kind === 'wiki') {
-			const repository = getWikiRepository(scope.targetPath);
-			for (const page of Object.values(repository.manifest.store.pages)) {
-				const pagePath = managedWikiPage(scope.targetPath, page.path);
-				await fs.rm(pagePath, { force: true });
-			}
-			repository.sources.store = { version: 1, sources: {} };
-			repository.reviews.store = { version: 1, items: [] };
-			repository.operations.store = { version: 1, operations: {} };
-			repository.failures.store = { version: 1, operations: [] };
-			repository.manifest.store = { version: 1, pages: {} };
-			repository.state.store = { sources: {} };
-			await fs.rm(repository.paths.evidence, { recursive: true, force: true });
-			await fs.rm(repository.paths.config, { recursive: true, force: true });
 		} else if (scope.kind === 'memory') {
 			const template = await fs.readFile(resolveTemplatePath(MEMORY_FILE));
 			await fs.writeFile(memoryPath(this.agent.config), template);
@@ -199,17 +182,6 @@ export class DataController {
 			} finally {
 				store.close();
 			}
-		} else if (scope.kind === 'wiki') {
-			const repository = getWikiRepository(scope.targetPath);
-			for (const page of Object.values(repository.manifest.store.pages)) {
-				await archive.addFile(
-					managedWikiPage(scope.targetPath, page.path),
-					path.join('wiki', 'pages', page.path)
-				);
-			}
-			await archive.addTree(repository.paths.state, path.join('wiki', 'state'));
-			await archive.addTree(repository.paths.evidence, path.join('wiki', 'evidence'));
-			await archive.addTree(repository.paths.config, path.join('wiki', 'config'));
 		} else if (scope.kind === 'memory') {
 			await archive.addFile(memoryPath(this.agent.config), path.join('memory', MEMORY_FILE));
 		} else {
@@ -226,16 +198,6 @@ export class DataController {
 	}
 }
 
-function managedWikiPage(targetPath: string, pagePath: string): string {
-	const root = path.resolve(targetPath);
-	const resolved = path.resolve(root, pagePath);
-	const relative = path.relative(root, resolved);
-	if (!relative || relative.startsWith('..') || path.isAbsolute(relative)) {
-		throw new Error('Managed wiki page escapes the configured target.');
-	}
-	return resolved;
-}
-
 function scopeHash(scope: DataScope): string {
 	return createHash('sha256').update(JSON.stringify(scope)).digest('hex');
 }
@@ -243,7 +205,6 @@ function scopeHash(scope: DataScope): string {
 function describeScope(scope: DataScope): string {
 	if (scope.kind === 'memory') return 'all persistent memory facts';
 	if (scope.kind === 'sessions') return `${scope.sessionIds.length} selected assistant session(s)`;
-	if (scope.kind === 'wiki') return `managed wiki data for ${scope.targetPath}`;
 	if (scope.mode === 'local_namespace') {
 		return `local RAG namespace ${scope.generation} in ${scope.indexName}`;
 	}
