@@ -318,7 +318,10 @@ describe('subagentTool', () => {
 				};
 			})()
 		);
-		const tool = subagentTool({ location: '/agent' }, [], { type: 'default', interactionMode: 'default' });
+		const tool = subagentTool({ location: '/agent' }, [], {
+			type: 'default',
+			interactionMode: 'default',
+		});
 
 		await expect(tool.run({ task: 'inspect' })).resolves.toMatchObject({
 			status,
