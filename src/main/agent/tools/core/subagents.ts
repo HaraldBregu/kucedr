@@ -26,8 +26,16 @@ export interface ChildOutcome {
 	stopReason?: string;
 	usage?: SessionResult['usage'];
 	error?: string;
-	result?: Pick<SessionResult, 'sessionId' | 'model' | 'subtype' | 'toolCalls'>;
+	result?: {
+		sessionId: string;
+		model: string;
+		subtype: SessionResult['subtype'];
+		toolCalls: number;
+		toolNames: string[];
+	};
 }
+
+const CHILD_SUMMARY_MAX_CHARS = 12_000;
 
 export async function runChild(
 	config: Config,
@@ -79,13 +87,14 @@ export async function runChild(
 	} catch (cause) {
 		error = cause instanceof Error ? cause.message : String(cause);
 	}
-	text = result?.text || text;
+	text = (result?.text || text).slice(0, CHILD_SUMMARY_MAX_CHARS);
 	const outcome = result
 		? {
 				sessionId: result.sessionId,
 				model: result.model,
 				subtype: result.subtype,
-				toolCalls: result.toolCalls,
+			toolCalls: result.toolCalls.length,
+			toolNames: [...new Set(result.toolCalls.map((call) => call.name))],
 			}
 		: undefined;
 	if (result?.subtype === 'error_max_turns') {
