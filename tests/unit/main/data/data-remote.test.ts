@@ -4,9 +4,15 @@ const selectedVectorDatabaseConnection = jest.fn(() => ({
 	adapter: { purge },
 }));
 
+const getRagConfiguration = jest.fn(() => ({
+	databaseProviderId: 'pinecone',
+	databaseId: 'pinecone',
+}));
+
 jest.mock('../../../../src/main/database/vector_connection', () => ({
 	selectedVectorDatabaseConnection,
 }));
+jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({ getRagConfiguration }));
 
 import { DataController } from '../../../../src/main/data/data_controller';
 
