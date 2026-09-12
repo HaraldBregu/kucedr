@@ -248,10 +248,10 @@ function describeScope(scope: DataScope): string {
 		return `local RAG namespace ${scope.generation} in ${scope.indexName}`;
 	}
 	if (scope.mode === 'remote_namespace') {
-		return `remote Pinecone namespace ${scope.generation} in ${scope.indexName}`;
+		return `remote vector database namespace ${scope.generation} in ${scope.indexName}`;
 	}
 	if (scope.mode === 'remote_all_namespaces') {
-		return `all Kucedr-owned remote Pinecone namespaces in ${scope.indexName}`;
+		return `all Kucedr-owned remote vector database namespaces in ${scope.indexName}`;
 	}
 	return `all local RAG data in ${scope.indexName}`;
 }

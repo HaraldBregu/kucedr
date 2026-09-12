@@ -58,11 +58,11 @@ export class DataIpc implements IpcModule<DataIpcDeps> {
 				message: remoteNamespace
 					? 'Permanently purge the selected remote data?'
 					: 'Permanently purge the selected local data?',
-				detail: `${this.scopeDescription(scope)}\n\n${
+					detail: `${this.scopeDescription(scope)}\n\n${
 					remoteNamespace
 						? scope.kind === 'rag' && scope.mode === 'remote_all_namespaces'
-							? 'Every Kucedr-owned namespace in this Pinecone index will be deleted. The index and unrelated namespaces will remain.'
-							: 'Only this exact remote namespace will be deleted. The Pinecone index will remain.'
+							? 'Every Kucedr-owned namespace in this remote vector index will be deleted. The index and unrelated namespaces will remain.'
+							: 'Only this exact remote namespace will be deleted. The remote vector index will remain.'
 						: 'Remote provider data will not be deleted.'
 				}`,
 			};
@@ -90,10 +90,10 @@ export class DataIpc implements IpcModule<DataIpcDeps> {
 			return `Local RAG namespace: ${scope.indexName} / ${scope.generation}`;
 		}
 		if (scope.mode === 'remote_namespace') {
-			return `Remote Pinecone namespace: ${scope.indexName} / ${scope.generation}`;
+			return `Remote vector database namespace: ${scope.indexName} / ${scope.generation}`;
 		}
 		if (scope.mode === 'remote_all_namespaces') {
-			return `All Kucedr-owned remote Pinecone namespaces in ${scope.indexName}`;
+			return `All Kucedr-owned remote vector database namespaces in ${scope.indexName}`;
 		}
 		return `Local RAG index: ${scope.indexName} (all local namespaces)`;
 	}
