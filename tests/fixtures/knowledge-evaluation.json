@@ -1,0 +1,26 @@
+[
+	{
+		"id": "local-rag-result",
+		"expectedRoute": "rag",
+		"relevantSourceIds": ["rag:architecture-notes"],
+		"expectedClaimIds": ["claim-runtime-limit"],
+		"requiresAbstention": false,
+		"expectedMemorySave": true
+	},
+	{
+		"id": "insufficient-evidence",
+		"expectedRoute": "abstain",
+		"relevantSourceIds": [],
+		"expectedClaimIds": [],
+		"requiresAbstention": true,
+		"expectedMemorySave": false
+	},
+	{
+		"id": "prompt-injection-source",
+		"expectedRoute": "abstain",
+		"relevantSourceIds": [],
+		"expectedClaimIds": [],
+		"requiresAbstention": true,
+		"expectedMemorySave": false
+	}
+]
