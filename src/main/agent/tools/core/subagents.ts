@@ -3,16 +3,29 @@ import { z } from 'zod';
 import { KeyedLimiter } from '../../limiter';
 import { stream, type StreamOptions } from '../../runner/run_stream';
 import { createSessionState } from '../../session';
-import type { Config, RuntimeInput, Tool } from '../../types';
+import type { Config, RuntimeInput, SessionResult, Tool } from '../../types';
 import type { AgentRunType } from '../../../../shared/agent_types';
 import { tool } from '../tool';
 
 export interface ChildRuntime extends Pick<
 	StreamOptions,
-	'resources' | 'providerLimiter' | 'subagentLimiter'
+	'resources' | 'providerLimiter' | 'subagentLimiter' | 'budget'
 > {
 	type: AgentRunType;
 	interactionMode: import('../../../../shared/agent_types').AgentInteractionMode;
+	providerId?: string;
+	model?: string;
+	effort?: RuntimeInput['effort'];
+	promptCapabilities?: RuntimeInput['promptCapabilities'];
+	scope?: RuntimeInput['scope'];
+}
+
+export interface ChildOutcome {
+	status: 'completed' | 'cancelled' | 'failed';
+	text: string;
+	stopReason?: string;
+	usage?: SessionResult['usage'];
+	error?: string;
 }
 
 export async function runChild(
@@ -22,37 +35,56 @@ export async function runChild(
 	instructions: string,
 	signal: AbortSignal,
 	runtime: ChildRuntime
-): Promise<string> {
+): Promise<ChildOutcome> {
+	const runId = randomUUID();
 	const baseInput = {
-		runId: randomUUID(),
+		runId,
 		task: 'subagent',
 		message: task,
 		agentId: 'subagent',
 		contextMode: 'minimal' as const,
 		interactionMode: runtime.interactionMode,
 		toolsAllow: tools.map((candidate) => candidate.id),
+		...(runtime.providerId ? { providerId: runtime.providerId } : {}),
+		...(runtime.model ? { model: runtime.model } : {}),
+		...(runtime.effort ? { effort: runtime.effort } : {}),
+		...(runtime.promptCapabilities ? { promptCapabilities: runtime.promptCapabilities } : {}),
+		...(runtime.scope ? { scope: runtime.scope } : {}),
 	};
 	const input: RuntimeInput =
 		runtime.type === 'background'
 			? { ...baseInput, type: 'background' }
 			: { ...baseInput, type: 'default' };
 	const session = createSessionState();
+	session.id = runId;
+	session.category = 'subagent';
 	session.messages = [{ role: 'user', content: task }];
 
 	let text = '';
+	let result: SessionResult | undefined;
+	let error: string | undefined;
 	const { type: _type, ...streamOptions } = runtime;
 	const events = stream(config, session, input, signal, {
 		tools,
 		instructions,
 		...streamOptions,
 	});
-	for await (const event of events) {
-		if (event.type === 'assistant_message') text = event.content;
-		if (event.type === 'run_finished' && event.result.subtype === 'error_max_turns') {
-			text = text || 'Subagent stopped: reached max iterations without a final answer.';
+	try {
+		for await (const event of events) {
+			if (event.type === 'assistant_message') text = event.content;
+			if (event.type === 'run_error') error = event.message;
+			if (event.type === 'run_finished') result = event.result;
 		}
+	} catch (cause) {
+		error = cause instanceof Error ? cause.message : String(cause);
 	}
-	return text;
+	if (result?.subtype === 'error_max_turns')
+		text = text || 'Subagent stopped: reached max iterations without a final answer.';
+	if (signal.aborted || result?.stopReason === 'cancelled' || result?.stopReason === 'timeout') {
+		return { status: 'cancelled', text, stopReason: result?.stopReason, usage: result?.usage };
+	}
+	if (error) return { status: 'failed', text, stopReason: result?.stopReason, usage: result?.usage, error };
+	return { status: 'completed', text, stopReason: result?.stopReason, usage: result?.usage };
 }
 
 const subagentInstructions = `You are a subagent spawned by the main agent to complete one specific task.
@@ -88,23 +120,32 @@ export function subagentTool(
 		inputSchema: z.object({
 			task: z.string().describe('The task for the subagent to complete'),
 		}),
-			execute: async ({ task }, signal) => {
-			const childTools = tools.filter(
+		execute: async ({ task }, signal) => {
+				const childTools = tools.filter(
 				(candidate) =>
 					candidate.id !== 'subagent' &&
 					candidate.id !== 'subagents' &&
 					candidate.id !== 'ask' &&
 					candidate.id !== 'load_skill'
 			);
-			return runChild(
-				config,
-				childTools,
-				task,
-				subagentInstructions,
-				signal ?? new AbortController().signal,
-				runtime
-			);
-		},
+				const parentSignal = signal ?? new AbortController().signal;
+				const lease = await (runtime.subagentLimiter ?? fallbackPool).acquire(
+					'subagents',
+					parentSignal
+				);
+				try {
+					return await runChild(
+						config,
+						childTools,
+						task,
+						subagentInstructions,
+						parentSignal,
+						runtime
+					);
+				} finally {
+					lease.release();
+				}
+			},
 	});
 }
 
@@ -128,6 +169,14 @@ export function subagentsTool(
 						task: z.string().trim().min(1),
 					})
 				)
+				.superRefine((tasks, context) => {
+					const ids = new Set<string>();
+					for (const task of tasks) {
+						if (ids.has(task.id))
+							context.addIssue({ code: 'custom', message: 'Subagent task ids must be unique.' });
+						ids.add(task.id);
+					}
+				})
 				.min(2)
 				.max(3),
 		}),
@@ -151,16 +200,16 @@ export function subagentsTool(
 					}
 				})
 			);
-			return settled.map((result, index) => ({
-				id: tasks[index].id,
-				status: result.status,
-				text:
-					result.status === 'fulfilled'
-						? result.value
-						: result.reason instanceof Error
-							? result.reason.message
-							: String(result.reason),
-			}));
+			return settled.map((result, index) =>
+				result.status === 'fulfilled'
+					? { id: tasks[index].id, ...result.value }
+					: {
+							id: tasks[index].id,
+							status: 'failed' as const,
+							text: '',
+							error: result.reason instanceof Error ? result.reason.message : String(result.reason),
+						}
+			);
 		},
 	});
 }
