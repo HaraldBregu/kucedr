@@ -121,31 +121,31 @@ export function subagentTool(
 			task: z.string().describe('The task for the subagent to complete'),
 		}),
 		execute: async ({ task }, signal) => {
-				const childTools = tools.filter(
+			const childTools = tools.filter(
 				(candidate) =>
 					candidate.id !== 'subagent' &&
 					candidate.id !== 'subagents' &&
 					candidate.id !== 'ask' &&
 					candidate.id !== 'load_skill'
 			);
-				const parentSignal = signal ?? new AbortController().signal;
-				const lease = await (runtime.subagentLimiter ?? fallbackPool).acquire(
-					'subagents',
-					parentSignal
+			const parentSignal = signal ?? new AbortController().signal;
+			const lease = await (runtime.subagentLimiter ?? fallbackPool).acquire(
+				'subagents',
+				parentSignal
+			);
+			try {
+				return await runChild(
+					config,
+					childTools,
+					task,
+					subagentInstructions,
+					parentSignal,
+					runtime
 				);
-				try {
-					return await runChild(
-						config,
-						childTools,
-						task,
-						subagentInstructions,
-						parentSignal,
-						runtime
-					);
-				} finally {
-					lease.release();
-				}
-			},
+			} finally {
+				lease.release();
+			}
+		},
 	});
 }
 

@@ -244,10 +244,10 @@ async function* loop(
 			...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
 			...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
 			budget,
-			...(input.providerId ? { providerId: input.providerId } : {}),
-			...(input.model ? { model: input.model } : {}),
+			providerId: provider.id,
+			model: modelId,
 			...(input.effort ? { effort: input.effort } : {}),
-			...(input.promptCapabilities ? { promptCapabilities: input.promptCapabilities } : {}),
+			...(promptCapabilities ? { promptCapabilities } : {}),
 			...(input.scope ? { scope: input.scope } : {}),
 		};
 		tools.push(
