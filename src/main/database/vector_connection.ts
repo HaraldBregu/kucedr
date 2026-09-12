@@ -1,6 +1,5 @@
 import type { DatabaseConfiguration } from '../../shared/database_types';
 import { getProvider } from '../settings_store';
-import { getRagConfiguration } from '../agent/knowledge/rag/rag_store';
 import { findVectorDatabaseAdapter, supportsVectorDatabase } from './vector_adapters';
 import type { VectorDatabaseAdapter } from './vector_types';
 
@@ -11,7 +10,7 @@ export interface VectorDatabaseConnection {
 }
 
 export function selectedVectorDatabaseConnection(
-	configuration: DatabaseConfiguration = currentConfiguration()
+	configuration: DatabaseConfiguration
 ): VectorDatabaseConnection {
 	if (!configuration.providerId || !configuration.databaseId) {
 		throw new Error('Select a vector database in RAG settings before enabling remote storage.');
@@ -30,9 +29,12 @@ export function selectedVectorDatabaseConnection(
 	return { configuration, adapter, apiKey };
 }
 
-export function isCurrentVectorDatabaseConnection(connection: VectorDatabaseConnection): boolean {
+export function isCurrentVectorDatabaseConnection(
+	connection: VectorDatabaseConnection,
+	configuration: DatabaseConfiguration
+): boolean {
 	try {
-		const current = selectedVectorDatabaseConnection();
+		const current = selectedVectorDatabaseConnection(configuration);
 		return (
 			current.configuration.providerId === connection.configuration.providerId &&
 			current.configuration.databaseId === connection.configuration.databaseId &&
@@ -40,13 +42,4 @@ export function isCurrentVectorDatabaseConnection(connection: VectorDatabaseConn
 		);
 	} catch {
 		return false;
-	}
-}
-
-function currentConfiguration(): DatabaseConfiguration {
-	const configuration = getRagConfiguration();
-	return {
-		providerId: configuration.databaseProviderId || undefined,
-		databaseId: configuration.databaseId || undefined,
-	};
 }
