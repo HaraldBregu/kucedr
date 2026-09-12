@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ToolActivityGroup } from '../../../src/renderer/src/pages/home/components/ToolActivityGroup';
 import type { AgentToolPart } from '../../../src/renderer/src/pages/home/context';
+import { toolPartLabel } from '../../../src/renderer/src/pages/home/components/tool-label';
 
 it('groups app tools under one collapsible activity', async () => {
 	const user = userEvent.setup();
@@ -17,4 +18,23 @@ it('groups app tools under one collapsible activity', async () => {
 	expect(screen.getByRole('button', { name: /List apps/ })).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: /Open apps/ })).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: /Close apps/ })).toBeInTheDocument();
+});
+
+it('shows clear delegation activity and batch outcomes', () => {
+	expect(
+		toolPartLabel({
+			type: 'subagents',
+			state: 'input-available',
+			toolCallId: 'delegating',
+			input: { tasks: [{ id: 'one' }, { id: 'two' }] },
+		})
+	).toBe('Delegating 2 tasks…');
+	expect(
+		toolPartLabel({
+			type: 'subagents',
+			state: 'output-available',
+			toolCallId: 'complete',
+			output: [{ status: 'completed' }, { status: 'failed' }],
+		})
+	).toBe('1/2 subagents completed');
 });
