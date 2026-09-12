@@ -46,6 +46,7 @@ import { isPlanOutputValid } from '../plan/output';
 import { filterPlanTools } from '../plan/tools';
 import { projectPromptAttachments, resolvePromptInputCapabilities } from '../attachments';
 import { createBackgroundBrowser } from '../tools/web/browser/background';
+import { ExecutionBudget } from '../execution/budget';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -55,6 +56,7 @@ export interface StreamOptions {
 	resources?: KeyedMutex;
 	providerLimiter?: KeyedLimiter;
 	subagentLimiter?: KeyedLimiter;
+	budget?: ExecutionBudget;
 	sandbox?: ExecSandbox;
 }
 
@@ -141,6 +143,12 @@ async function* loop(
 	const modelId = input.model ?? getModelId();
 	const modelOptions = getModelOptions();
 	const runId = input.runId ?? session.id;
+	const budget = options.budget ?? new ExecutionBudget({
+		calls: MAX_TOOL_CALLS,
+		paid: MAX_PAID_TOOL_CALLS,
+		output: MAX_TOOL_OUTPUT_BYTES,
+		...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
+	});
 	const skillLoadingEnabled =
 		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
 		!input.toolsDeny?.includes('load_skill');
@@ -236,6 +244,12 @@ async function* loop(
 			...(options.resources ? { resources: options.resources } : {}),
 			...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
 			...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
+			budget,
+			...(input.providerId ? { providerId: input.providerId } : {}),
+			...(input.model ? { model: input.model } : {}),
+			...(input.effort ? { effort: input.effort } : {}),
+			...(input.promptCapabilities ? { promptCapabilities: input.promptCapabilities } : {}),
+			...(input.scope ? { scope: input.scope } : {}),
 		};
 		tools.push(
 			subagentTool(config, childTools, childRuntime),
@@ -267,9 +281,6 @@ async function* loop(
 	};
 
 	try {
-		let toolOutputBytes = 0;
-		let paidToolCalls = 0;
-		let botWebToolCalls = 0;
 		while (true) {
 			if (signal.aborted) return;
 			const systemPrompt = await buildSystemPrompt(
@@ -314,7 +325,8 @@ async function* loop(
 				runtimeContext ? [{ role: 'user', content: runtimeContext }] : [],
 				options.streaming ?? true,
 				options.providerLimiter,
-				input.deferPersist ? () => persist(session) : undefined
+				input.deferPersist ? () => persist(session) : undefined,
+				budget
 			);
 
 			recordTurn(session, turn);
@@ -344,32 +356,6 @@ async function* loop(
 				return;
 			}
 
-			if (session.toolCalls.length + turn.toolCalls.length > MAX_TOOL_CALLS) {
-				session.stopReason = 'max_tool_calls';
-				yield { type: 'run_finished', result: toResult(session, 'success') };
-				return;
-			}
-			const paidTools = new Set(['create_image', 'create_video', 'create_sound']);
-			const requestedPaidCalls = turn.toolCalls.filter((call) => paidTools.has(call.name)).length;
-			if (paidToolCalls + requestedPaidCalls > MAX_PAID_TOOL_CALLS) {
-				session.stopReason = 'budget_exhausted';
-				yield { type: 'run_finished', result: toResult(session, 'success') };
-				return;
-			}
-			paidToolCalls += requestedPaidCalls;
-			const requestedBotWebCalls =
-				input.agentId === 'channels'
-					? turn.toolCalls.filter(
-							(call) => call.name === 'search_web' || call.name === 'fetch_web_page'
-						).length
-					: 0;
-			if (botWebToolCalls + requestedBotWebCalls > MAX_BOT_WEB_TOOL_CALLS) {
-				session.stopReason = 'budget_exhausted';
-				yield { type: 'run_finished', result: toResult(session, 'success') };
-				return;
-			}
-			botWebToolCalls += requestedBotWebCalls;
-
 			if (isExhausted(session)) {
 				session.stopReason = 'max_iterations';
 				const result = toResult(session, 'error_max_turns');
@@ -377,7 +363,6 @@ async function* loop(
 				return;
 			}
 
-			let outputBudgetExceeded = false;
 			for await (const event of runToolCalls(
 				tools,
 				turn.toolCalls,
@@ -386,6 +371,7 @@ async function* loop(
 				{
 					runId,
 					...(input.scope ? { scope: input.scope } : {}),
+					budget,
 					interactionMode: input.interactionMode,
 					...(input.approvalWindowId === undefined ? {} : { windowId: input.approvalWindowId }),
 				},
@@ -393,19 +379,13 @@ async function* loop(
 				session.runContext.fileHistory
 			)) {
 				yield event;
-				if (event.type !== 'tool_call_end') continue;
-				toolOutputBytes += Buffer.byteLength(formatToolOutput(event.output), 'utf8');
-				if (toolOutputBytes > MAX_TOOL_OUTPUT_BYTES) {
-					outputBudgetExceeded = true;
-					break;
-				}
 			}
 			addToolResults(session, turn.toolCalls);
 			if (turn.toolCalls.some(startsBackgroundRecorder)) {
 				yield { type: 'run_finished', result: toResult(session, 'success') };
 				return;
 			}
-			if (outputBudgetExceeded) {
+			if (budget.exhausted) {
 				session.stopReason = 'budget_exhausted';
 				yield { type: 'run_finished', result: toResult(session, 'success') };
 				return;
