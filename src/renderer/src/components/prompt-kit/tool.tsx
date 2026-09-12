@@ -182,19 +182,25 @@ function DelegationTasks({ input, output }: { readonly input: unknown; readonly 
 				const id = typeof record.id === 'string' ? record.id : `Subagent ${index + 1}`;
 				const taskText = typeof record.task === 'string' ? record.task : '';
 				const outcome = byId.get(id);
-				const status = isRecord(outcome) && typeof outcome.status === 'string' ? outcome.status : 'working';
+				const status =
+					isRecord(outcome) && typeof outcome.status === 'string' ? outcome.status : 'working';
 				const failed = status === 'failed' || status === 'cancelled' || status === 'exhausted';
 				return (
 					<div key={id} className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
 						{status === 'working' ? (
 							<LoaderCircle aria-label={`${id} working`} className="size-3 shrink-0 animate-spin" />
 						) : failed ? (
-							<CircleX aria-label={`${id} ${status}`} className="size-3 shrink-0 text-destructive" />
+							<CircleX
+								aria-label={`${id} ${status}`}
+								className="size-3 shrink-0 text-destructive"
+							/>
 						) : (
 							<Check aria-label={`${id} completed`} className="size-3 shrink-0" />
 						)}
 						<span className="shrink-0 font-medium text-foreground/80">{id}</span>
-						<span className="truncate" title={taskText}>{taskText || status}</span>
+						<span className="truncate" title={taskText}>
+							{taskText || status}
+						</span>
 						<span className="ml-auto shrink-0 text-[10px] capitalize text-muted-foreground/70">
 							{status}
 						</span>

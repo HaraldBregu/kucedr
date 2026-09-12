@@ -42,19 +42,21 @@ it('shows clear delegation activity and batch outcomes', () => {
 it('keeps each delegated task visible while the batch is running', () => {
 	render(
 		<ToolActivityGroup
-			tools={[
-				{
-					type: 'subagents',
-					state: 'input-available',
-					toolCallId: 'delegation',
-					input: {
-						tasks: [
-							{ id: 'research', task: 'Search primary sources' },
-							{ id: 'review', task: 'Compare the findings' },
-						],
+			tools={
+				[
+					{
+						type: 'subagents',
+						state: 'input-available',
+						toolCallId: 'delegation',
+						input: {
+							tasks: [
+								{ id: 'research', task: 'Search primary sources' },
+								{ id: 'review', task: 'Compare the findings' },
+							],
+						},
 					},
-				},
-			] satisfies AgentToolPart[]}
+				] satisfies AgentToolPart[]
+			}
 		/>
 	);
 

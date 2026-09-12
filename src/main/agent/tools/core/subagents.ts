@@ -93,8 +93,8 @@ export async function runChild(
 				sessionId: result.sessionId,
 				model: result.model,
 				subtype: result.subtype,
-			toolCalls: result.toolCalls.length,
-			toolNames: [...new Set(result.toolCalls.map((call) => call.name))],
+				toolCalls: result.toolCalls.length,
+				toolNames: [...new Set(result.toolCalls.map((call) => call.name))],
 			}
 		: undefined;
 	if (result?.subtype === 'error_max_turns') {
