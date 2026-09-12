@@ -39,6 +39,7 @@ import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
 import { createSessionState } from '../../../../../src/main/agent/session';
 import type { Message } from '../../../../../src/main/agent/types';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
+import { ExecutionBudget } from '../../../../../src/main/agent/execution/budget';
 
 const sandbox = {} as ExecSandbox;
 
@@ -715,5 +716,52 @@ describe('run stream system prompt', () => {
 			scope,
 		});
 		expect(childCall?.[7]).toEqual({ temperature: 0.2 });
+	});
+
+	it('allows one final synthesis turn after a delegation exhausts its work budget', async () => {
+		const budget = new ExecutionBudget({ output: 1 });
+		const subagents = jsonTool({
+			id: 'subagents',
+			name: 'Subagents',
+			description: 'delegate work',
+			schema: { type: 'object' },
+			execute: () => {
+				budget.observeOutput(1);
+				return [{ id: 'research', status: 'exhausted' }];
+			},
+		});
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [{ id: 'delegate', name: 'subagents', args: {} }],
+				};
+			})
+			.mockImplementationOnce(successfulTurn);
+		const events = [];
+		for await (const event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			{
+				runId: 'delegation-synthesis',
+				task: 'chat',
+				message: 'delegate then summarize',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ tools: [subagents], budget }
+		))
+			events.push(event);
+
+		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+		expect(events.at(-1)).toMatchObject({
+			type: 'run_finished',
+			result: { text: 'done', stopReason: 'end_turn' },
+		});
 	});
 });
