@@ -31,6 +31,26 @@ function mcpParts(type: string): { server: string; tool: string } | undefined {
 	return { server: segments[1], tool: segments.slice(2).join('__') };
 }
 
+function delegationOutcome(tool: AgentToolPart): { status?: string; count: number; completed: number } {
+	let output = tool.output;
+	if (typeof output === 'string') {
+		try {
+			output = JSON.parse(output);
+		} catch {
+			return { count: 0, completed: 0 };
+		}
+	}
+	if (Array.isArray(output)) {
+		const completed = output.filter(
+			(item) => isRecord(item) && item.status === 'completed'
+		).length;
+		return { count: output.length, completed };
+	}
+	return isRecord(output) && typeof output.status === 'string'
+		? { status: output.status, count: 1, completed: output.status === 'completed' ? 1 : 0 }
+		: { count: 0, completed: 0 };
+}
+
 export function toolPartLabel(tool: AgentToolPart): string {
 	if (tool.displayName) return tool.displayName;
 
@@ -42,6 +62,23 @@ export function toolPartLabel(tool: AgentToolPart): string {
 
 	const task = TASK_TOOL_LABELS[type];
 	if (task) return isToolRunning(tool) ? task.running : task.done;
+
+	if (type === 'subagent' || type === 'subagents') {
+		if (isToolRunning(tool)) {
+			const tasks = isRecord(tool.input) && Array.isArray(tool.input.tasks) ? tool.input.tasks.length : 0;
+			return tasks > 0 ? `Delegating ${tasks} tasks…` : 'Delegating task to a subagent…';
+		}
+		const outcome = delegationOutcome(tool);
+		if (outcome.count > 1) {
+			return outcome.completed === outcome.count
+				? `${outcome.count} subagents completed`
+				: `${outcome.completed}/${outcome.count} subagents completed`;
+		}
+		if (outcome.status === 'cancelled') return 'Subagent cancelled';
+		if (outcome.status === 'failed') return 'Subagent failed';
+		if (outcome.status === 'exhausted') return 'Subagent budget exhausted';
+		return 'Subagent completed';
+	}
 
 	if (type === 'read') {
 		const path = stringArg(input, 'path', 'file_path', 'filepath');
@@ -84,6 +121,8 @@ function groupVerbs(type: string): GroupVerbs {
 	if (t === 'grep' || t === 'search') return { running: 'Searching', done: 'Searched', noun: 'pattern' };
 	if (t === 'list_dir') return { running: 'Listing', done: 'Listed', noun: 'folder' };
 	if (t === 'load_skill') return { running: 'Loading', done: 'Loaded', noun: 'skill' };
+	if (t === 'subagent' || t === 'subagents')
+		return { running: 'Delegating', done: 'Delegated', noun: 'task' };
 	if (t === 'use_web_browser' || t === 'fetch_web_page' || t === 'search_web') {
 		return { running: 'Browsing', done: 'Browsed', noun: 'page' };
 	}

@@ -4,6 +4,7 @@ import { createElement, useState, type CSSProperties } from 'react';
 import {
 	AudioLines,
 	Blocks,
+	Bot,
 	CalendarClock,
 	Camera,
 	Check,
@@ -75,6 +76,7 @@ export function toolIcon(toolPart: ToolPart): typeof Wrench {
 	if (isTaskToolType(type)) return CalendarClock;
 	if (toolPart.serviceKind === 'mcp' || type.startsWith('mcp__')) return Plug;
 	if (isAppToolType(type)) return Blocks;
+	if (type === 'subagent' || type === 'subagents') return Bot;
 	if (type.includes('skill')) return Sparkles;
 	if (type === 'create_image') return Image;
 	if (type === 'create_video') return Video;
@@ -122,8 +124,48 @@ function ToolInput({ input }: { readonly input: unknown }) {
 	);
 }
 
-function ToolOutput({ output }: { readonly output: unknown }) {
+function delegationResult(output: unknown): unknown {
+	if (typeof output !== 'string') return output;
+	try {
+		return JSON.parse(output);
+	} catch {
+		return output;
+	}
+}
+
+function DelegationOutput({ output }: { readonly output: unknown }) {
+	const result = delegationResult(output);
+	const outcomes = Array.isArray(result) ? result : [result];
+	const statuses = outcomes.reduce<Record<string, number>>((summary, outcome) => {
+		const status = isRecord(outcome) && typeof outcome.status === 'string' ? outcome.status : 'completed';
+		summary[status] = (summary[status] ?? 0) + 1;
+		return summary;
+	}, {});
+	const text = outcomes
+		.map((outcome) => (isRecord(outcome) && typeof outcome.text === 'string' ? outcome.text : ''))
+		.filter(Boolean)
+		.join('\n\n');
+
+	return (
+		<div>
+			<h4 className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+				Subagent result
+			</h4>
+			<div className="space-y-1.5 rounded-sm bg-muted/40 px-2 py-1.5 text-xs text-muted-foreground">
+				<div className="flex flex-wrap gap-x-2 gap-y-0.5">
+					{Object.entries(statuses).map(([status, count]) => (
+						<span key={status}>{count} {status}</span>
+					))}
+				</div>
+				{text && <p className="whitespace-pre-wrap text-foreground/80">{text}</p>}
+			</div>
+		</div>
+	);
+}
+
+function ToolOutput({ output, type }: { readonly output: unknown; readonly type: string }) {
 	if (output === undefined) return null;
+	if (type === 'subagent' || type === 'subagents') return <DelegationOutput output={output} />;
 
 	return (
 		<div>
@@ -224,7 +266,7 @@ function Tool({
 				<CollapsibleContent>
 					<div className="mb-1 mt-0.5 space-y-2 rounded-md border border-border/50 bg-muted/20 p-2">
 						<ToolInput input={input} />
-						<ToolOutput output={output} />
+						<ToolOutput output={output} type={toolPart.type} />
 
 						{state === 'output-error' && toolPart.errorText && (
 							<div>
