@@ -17,7 +17,7 @@ export class DatabaseIpc implements IpcModule<DatabaseIpcDependencies> {
 
 	register({ windows, apps }: DatabaseIpcDependencies, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
-		trusted.query(DatabaseChannels.list, () => listVectorDatabases());
+		trusted.query(DatabaseChannels.list, () => [...listVectorDatabases()]);
 		trusted.query(DatabaseChannels.getConfiguration, () => getDatabaseConfiguration());
 		trusted.command(DatabaseChannels.saveConfiguration, (configuration) =>
 			saveDatabaseConfiguration(configuration)
