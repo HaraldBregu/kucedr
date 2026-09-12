@@ -166,6 +166,45 @@ function DelegationOutput({ output }: { readonly output: unknown }) {
 	);
 }
 
+function DelegationTasks({ input, output }: { readonly input: unknown; readonly output: unknown }) {
+	if (!isRecord(input) || !Array.isArray(input.tasks)) return null;
+	const outcomes = Array.isArray(delegationResult(output)) ? delegationResult(output) : [];
+	const byId = new Map(
+		outcomes.flatMap((outcome) =>
+			isRecord(outcome) && typeof outcome.id === 'string' ? [[outcome.id, outcome]] : []
+		)
+	);
+
+	return (
+		<div className="mt-1 space-y-1 border-l border-border/60 pl-3" aria-label="Subagent activity">
+			{input.tasks.map((task, index) => {
+				const record = isRecord(task) ? task : {};
+				const id = typeof record.id === 'string' ? record.id : `Subagent ${index + 1}`;
+				const taskText = typeof record.task === 'string' ? record.task : '';
+				const outcome = byId.get(id);
+				const status = isRecord(outcome) && typeof outcome.status === 'string' ? outcome.status : 'working';
+				const failed = status === 'failed' || status === 'cancelled' || status === 'exhausted';
+				return (
+					<div key={id} className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+						{status === 'working' ? (
+							<LoaderCircle aria-label={`${id} working`} className="size-3 shrink-0 animate-spin" />
+						) : failed ? (
+							<CircleX aria-label={`${id} ${status}`} className="size-3 shrink-0 text-destructive" />
+						) : (
+							<Check aria-label={`${id} completed`} className="size-3 shrink-0" />
+						)}
+						<span className="shrink-0 font-medium text-foreground/80">{id}</span>
+						<span className="truncate" title={taskText}>{taskText || status}</span>
+						<span className="ml-auto shrink-0 text-[10px] capitalize text-muted-foreground/70">
+							{status}
+						</span>
+					</div>
+				);
+			})}
+		</div>
+	);
+}
+
 function ToolOutput({ output, type }: { readonly output: unknown; readonly type: string }) {
 	if (output === undefined) return null;
 	if (type === 'subagent' || type === 'subagents') return <DelegationOutput output={output} />;
@@ -294,6 +333,9 @@ function Tool({
 					</div>
 				</CollapsibleContent>
 			</Collapsible>
+			{(toolPart.type === 'subagent' || toolPart.type === 'subagents') && (
+				<DelegationTasks input={input} output={output} />
+			)}
 		</div>
 	);
 }
