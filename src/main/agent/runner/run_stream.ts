@@ -286,13 +286,15 @@ async function* loop(
 	try {
 		while (true) {
 			if (signal.aborted) return;
+			const synthesisOnly = budget.isSynthesisOnly();
+			const turnTools = synthesisOnly ? [] : tools;
 			const systemPrompt = await buildSystemPrompt(
 				config,
-				tools,
+				turnTools,
 				session.runContext.loadedSkills,
 				options.instructions,
 				contextMode,
-				tools.some((tool) => tool.id === 'load_skill')
+				turnTools.some((tool) => tool.id === 'load_skill')
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt =
@@ -301,7 +303,7 @@ async function* loop(
 				contextMode === 'workspace' && options.instructions === undefined
 					? await buildWorkspaceContext(config)
 					: '';
-			const skillContext = tools.some((tool) => tool.id === 'load_skill')
+			const skillContext = turnTools.some((tool) => tool.id === 'load_skill')
 				? buildSkillContext(skillSnapshot.skills)
 				: '';
 			const activeGoalContext =
@@ -320,7 +322,7 @@ async function* loop(
 				modelId,
 				systemPrompt,
 				messages,
-				tools,
+				turnTools,
 				signal,
 				modelOptions,
 				undefined,
@@ -403,6 +405,7 @@ async function* loop(
 			}
 			if (
 				budget.exhausted &&
+				input.agentId !== 'subagent' &&
 				turn.toolCalls.some((call) => call.name === 'subagent' || call.name === 'subagents')
 			) {
 				budget.allowSynthesis();

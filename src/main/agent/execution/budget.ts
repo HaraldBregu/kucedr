@@ -65,9 +65,12 @@ export class ExecutionBudget {
 	}
 
 	allowSynthesis(): void {
-		if (this.limits.tokens !== undefined) return;
 		this.exhausted = false;
 		this.synthesisOnly = true;
+	}
+
+	isSynthesisOnly(): boolean {
+		return this.synthesisOnly;
 	}
 
 	observeOutput(bytes: number): void {
@@ -76,6 +79,13 @@ export class ExecutionBudget {
 	}
 
 	reserveModel(inputTokens: number, outputTokens: number): (usage?: SessionUsage) => void {
+		if (this.synthesisOnly) {
+			return (usage) => {
+				if (!usage) return;
+				this.usage.inputTokens += usage.inputTokens;
+				this.usage.outputTokens += usage.outputTokens;
+			};
+		}
 		const reservation = Math.ceil(inputTokens + outputTokens);
 		const consumed = this.usage.inputTokens + this.usage.outputTokens + this.estimatedTokens;
 		if (
