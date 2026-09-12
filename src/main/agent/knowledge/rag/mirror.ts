@@ -8,7 +8,11 @@ import { getRagConfiguration } from './rag_store';
 import type { RagMirror } from './types';
 
 export function createRagMirror(): RagMirror {
-	const connection = selectedVectorDatabaseConnection();
+	const configuration = getRagConfiguration();
+	const connection = selectedVectorDatabaseConnection({
+		providerId: configuration.databaseProviderId || undefined,
+		databaseId: configuration.databaseId || undefined,
+	});
 	return {
 		upload: (indexName, generation, dimensions, records, signal) =>
 			connection.adapter.upload({
@@ -26,10 +30,15 @@ export function createRagMirror(): RagMirror {
 }
 
 function assertMirrorCurrent(connection: VectorDatabaseConnection, indexName: string): void {
-	if (!isCurrentVectorDatabaseConnection(connection)) {
+	const configuration = getRagConfiguration();
+	if (
+		!isCurrentVectorDatabaseConnection(connection, {
+			providerId: configuration.databaseProviderId || undefined,
+			databaseId: configuration.databaseId || undefined,
+		})
+	) {
 		throw new Error('The vector database account changed during indexing.');
 	}
-	const configuration = getRagConfiguration();
 	assertRagConsent(
 		configuration,
 		configuration.embeddingProviderId,
