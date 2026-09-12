@@ -42,4 +42,5 @@ export function isCurrentVectorDatabaseConnection(
 		);
 	} catch {
 		return false;
+	}
 }
