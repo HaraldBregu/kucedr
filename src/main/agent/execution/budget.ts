@@ -10,6 +10,7 @@ export class ExecutionBudget {
 	unreportedModelCalls = 0;
 	estimatedTokens = 0;
 	private reservedTokens = 0;
+	private synthesisOnly = false;
 	exhausted = false;
 
 	constructor(
@@ -23,6 +24,7 @@ export class ExecutionBudget {
 	) {}
 
 	wouldExceed(calls: Array<{ tool: Tool | undefined; input: Record<string, unknown> }>): boolean {
+		if (this.synthesisOnly) return true;
 		let total = this.calls;
 		let paid = this.paidCalls;
 		let web = this.webCalls;
@@ -47,6 +49,7 @@ export class ExecutionBudget {
 		const paid = capability?.effects.includes('paid') === true;
 		const web = ['search_web', 'fetch_web_page', 'use_web_browser'].includes(tool?.id ?? '');
 		if (
+			this.synthesisOnly ||
 			this.exhausted ||
 			this.calls >= (this.limits.calls ?? 100) ||
 			(paid && this.paidCalls >= (this.limits.paid ?? 3)) ||
@@ -59,6 +62,12 @@ export class ExecutionBudget {
 		if (paid) this.paidCalls += 1;
 		if (web) this.webCalls += 1;
 		return undefined;
+	}
+
+	allowSynthesis(): void {
+		if (this.limits.tokens !== undefined) return;
+		this.exhausted = false;
+		this.synthesisOnly = true;
 	}
 
 	observeOutput(bytes: number): void {

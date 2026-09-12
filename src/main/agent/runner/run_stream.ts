@@ -401,6 +401,13 @@ async function* loop(
 				yield { type: 'run_finished', result: toResult(session, 'success') };
 				return;
 			}
+			if (
+				budget.exhausted &&
+				turn.toolCalls.some((call) => call.name === 'subagent' || call.name === 'subagents')
+			) {
+				budget.allowSynthesis();
+				continue;
+			}
 			if (budget.exhausted) {
 				session.stopReason = 'budget_exhausted';
 				yield { type: 'run_finished', result: toResult(session, 'success') };
