@@ -31,7 +31,11 @@ function mcpParts(type: string): { server: string; tool: string } | undefined {
 	return { server: segments[1], tool: segments.slice(2).join('__') };
 }
 
-function delegationOutcome(tool: AgentToolPart): { status?: string; count: number; completed: number } {
+function delegationOutcome(tool: AgentToolPart): {
+	status?: string;
+	count: number;
+	completed: number;
+} {
 	let output = tool.output;
 	if (typeof output === 'string') {
 		try {
@@ -41,9 +45,7 @@ function delegationOutcome(tool: AgentToolPart): { status?: string; count: numbe
 		}
 	}
 	if (Array.isArray(output)) {
-		const completed = output.filter(
-			(item) => isRecord(item) && item.status === 'completed'
-		).length;
+		const completed = output.filter((item) => isRecord(item) && item.status === 'completed').length;
 		return { count: output.length, completed };
 	}
 	return isRecord(output) && typeof output.status === 'string'
@@ -65,7 +67,8 @@ export function toolPartLabel(tool: AgentToolPart): string {
 
 	if (type === 'subagent' || type === 'subagents') {
 		if (isToolRunning(tool)) {
-			const tasks = isRecord(tool.input) && Array.isArray(tool.input.tasks) ? tool.input.tasks.length : 0;
+			const tasks =
+				isRecord(tool.input) && Array.isArray(tool.input.tasks) ? tool.input.tasks.length : 0;
 			return tasks > 0 ? `Delegating ${tasks} tasks…` : 'Delegating task to a subagent…';
 		}
 		const outcome = delegationOutcome(tool);
@@ -113,12 +116,11 @@ type GroupVerbs = { readonly running: string; readonly done: string; readonly no
 function groupVerbs(type: string): GroupVerbs {
 	const t = type.toLowerCase();
 	if (t === 'read') return { running: 'Reading', done: 'Read', noun: 'file' };
-	if (t === 'edit' || t === 'patch')
-		return { running: 'Editing', done: 'Edited', noun: 'file' };
+	if (t === 'edit' || t === 'patch') return { running: 'Editing', done: 'Edited', noun: 'file' };
 	if (t === 'write') return { running: 'Writing', done: 'Wrote', noun: 'file' };
-	if (t === 'bash' || t === 'process')
-		return { running: 'Running', done: 'Ran', noun: 'command' };
-	if (t === 'grep' || t === 'search') return { running: 'Searching', done: 'Searched', noun: 'pattern' };
+	if (t === 'bash' || t === 'process') return { running: 'Running', done: 'Ran', noun: 'command' };
+	if (t === 'grep' || t === 'search')
+		return { running: 'Searching', done: 'Searched', noun: 'pattern' };
 	if (t === 'list_dir') return { running: 'Listing', done: 'Listed', noun: 'folder' };
 	if (t === 'load_skill') return { running: 'Loading', done: 'Loaded', noun: 'skill' };
 	if (t === 'subagent' || t === 'subagents')
@@ -133,18 +135,11 @@ function groupVerbs(type: string): GroupVerbs {
 function toolRunningDetail(tool: AgentToolPart): string | undefined {
 	const input = isRecord(tool.input) ? tool.input : {};
 	const t = tool.type.toLowerCase();
-	if (
-		t === 'read' ||
-		t === 'edit' ||
-		t === 'write' ||
-		t === 'patch' ||
-		t === 'list_dir'
-	) {
+	if (t === 'read' || t === 'edit' || t === 'write' || t === 'patch' || t === 'list_dir') {
 		const path = stringArg(input, 'path', 'file_path', 'filepath');
 		return path ? basename(path) : undefined;
 	}
-	if (t === 'bash' || t === 'process')
-		return stringArg(input, 'command', 'name');
+	if (t === 'bash' || t === 'process') return stringArg(input, 'command', 'name');
 	if (t === 'grep' || t === 'search') return stringArg(input, 'pattern', 'query');
 	if (t === 'load_skill') return stringArg(input, 'name');
 	if (t === 'use_web_browser' || t === 'fetch_web_page' || t === 'search_web') {

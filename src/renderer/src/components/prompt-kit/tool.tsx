@@ -137,7 +137,8 @@ function DelegationOutput({ output }: { readonly output: unknown }) {
 	const result = delegationResult(output);
 	const outcomes = Array.isArray(result) ? result : [result];
 	const statuses = outcomes.reduce<Record<string, number>>((summary, outcome) => {
-		const status = isRecord(outcome) && typeof outcome.status === 'string' ? outcome.status : 'completed';
+		const status =
+			isRecord(outcome) && typeof outcome.status === 'string' ? outcome.status : 'completed';
 		summary[status] = (summary[status] ?? 0) + 1;
 		return summary;
 	}, {});
@@ -154,7 +155,9 @@ function DelegationOutput({ output }: { readonly output: unknown }) {
 			<div className="space-y-1.5 rounded-sm bg-muted/40 px-2 py-1.5 text-xs text-muted-foreground">
 				<div className="flex flex-wrap gap-x-2 gap-y-0.5">
 					{Object.entries(statuses).map(([status, count]) => (
-						<span key={status}>{count} {status}</span>
+						<span key={status}>
+							{count} {status}
+						</span>
 					))}
 				</div>
 				{text && <p className="whitespace-pre-wrap text-foreground/80">{text}</p>}
