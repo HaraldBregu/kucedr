@@ -148,7 +148,6 @@ chat and other supported features from running.
 - `src/main/agent` contains sessions, tools, skills, memory, schedules, health runs, sandboxing, and permission policy.
 - `src/main/models` contains provider-specific model integrations. See
   [Provider Reference](docs/PROVIDERS.md) for the built-in catalog and runtime support matrix.
-- `src/main/agent/knowledge/wiki` contains immutable-source registration, transactional wiki compilation, retrieval, lint, review, and agent tools. See [LLM Wiki](docs/WIKI.md).
 - `src/main/cloud` and `src/main/storage` keep account and cloud behavior behind replaceable ports.
   See [Account and Cloud Architecture](docs/CLOUD.md).
 

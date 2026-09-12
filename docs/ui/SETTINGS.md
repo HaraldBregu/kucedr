@@ -65,7 +65,7 @@ Settings uses both immediate and explicit persistence:
 
 - Provider/model selectors, simple application preferences, channel policy changes, and many
   service choices save when changed.
-- Permissions, Health, LLM Wiki, Cloud sync, MCP, A2A, and task capability forms provide explicit
+- Permissions, Health, Cloud sync, MCP, A2A, and task capability forms provide explicit
   save or submit actions where multiple values belong together.
 - Provider secrets should use password inputs and display a masked connected state after saving.
 - Pages should disable conflicting controls while loading, saving, testing, importing, running, or
@@ -123,7 +123,7 @@ Assistant is the central model and behavior page. It should provide collapsible 
 - the active configured web-search engine.
 
 Only search engines with stored credentials should be selectable. The same page should link to
-Chat history, Health, Permissions, RAG, LLM Wiki, and Data management.
+Chat history, Health, Permissions, Knowledge Base, and Data management.
 
 ### Coding
 
@@ -171,7 +171,7 @@ See [Provider Reference](../PROVIDERS.md) for exact runtime coverage and model I
 - The searchable **API Keys** deep page should provide the model-provider credential list. The
   visible Models page can connect the same model credentials inline.
 
-**Database** stores the user's database account credentials in local provider settings. The RAG
+**Database** stores the user's database account credentials in local provider settings. The Knowledge Base
 page requires an explicit database selection and uses that account for remote storage. Pinecone
 is currently supported; there is no default database selection or environment API key fallback.
 Embedding credentials are configured separately under **Providers → Models**. Both remote
@@ -213,25 +213,18 @@ local application settings.
 
 ## Knowledge and data
 
-### RAG
+### Knowledge Base
 
-RAG should configure enablement, consent for the selected remote embedding model, embedding model,
+Knowledge Base should configure enablement, consent for the selected remote embedding model, embedding model,
 index name, and one or more source folders. It should support indexing now,
 scheduled indexing presets, an inline retrieval test with scored matches, and export or purge
-controls for local and remote RAG scopes.
-
-### LLM Wiki
-
-LLM Wiki should configure enablement, automatic answer filing, review requirements, startup linting,
-provider/model, source and output folders, and an automation schedule. It should provide explicit
-**Save**, **Run now**, and **Cancel** actions, live compiler progress, last/next-run status, pending
-review count, an output-folder action, and Wiki export or purge controls.
+controls for local and remote knowledge scopes.
 
 ### Conversation and data management
 
 Chat history should list stored sessions with dates and confirm before deleting one. Data
-management should expose memory and session export or purge actions. RAG and Wiki own the equivalent
-controls for their data scopes.
+management should expose memory and session export or purge actions. Knowledge Base owns the
+equivalent controls for its data scopes.
 
 ## Skills and apps
 
@@ -332,7 +325,6 @@ required. Filesystem policy should:
 - [Task settings](../../src/renderer/src/pages/settings/pages/tasks/Page.tsx)
 - [System media settings](../../src/renderer/src/pages/settings/pages/system/)
 - [Knowledge settings](../../src/renderer/src/pages/settings/pages/rag/Page.tsx)
-- [Wiki settings](../../src/renderer/src/pages/settings/pages/wiki/Page.tsx)
 - [Permissions settings](../../src/renderer/src/pages/settings/pages/permissions/Page.tsx)
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
@@ -341,5 +333,4 @@ required. Filesystem policy should:
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)
 - [Provider settings tests](../../tests/unit/renderer/providers-settings.test.tsx)
 - [Permissions settings tests](../../tests/unit/renderer/permissions-settings.test.tsx)
-- [RAG settings tests](../../tests/unit/renderer/rag-settings.test.tsx)
-- [Wiki settings tests](../../tests/unit/renderer/wiki-settings.test.tsx)
+- [Knowledge Base settings tests](../../tests/unit/renderer/rag-settings.test.tsx)

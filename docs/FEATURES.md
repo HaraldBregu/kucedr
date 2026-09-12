@@ -360,18 +360,6 @@ While `BOOTSTRAP.md` exists, it is included in the user-controlled workspace con
 
 `save_memory` adds one bullet fact without duplicating an identical line. `forget_memory` removes every bullet containing the requested text, case-insensitively. Workspace profile and memory content are rebuilt as transient user-level context before each model turn rather than persisted in the system-prompt snapshot.
 
-### Persistent LLM Wiki
-
-Kucedr's optional LLM Wiki is an additive knowledge-compilation layer. It snapshots supported source files into checksum-addressed immutable evidence, uses the configured text model to create or incrementally enrich Markdown pages, and stores claim-level source IDs and locators. Page changes, `index.md`, and `log.md` are staged and validated before the generated wiki directory is replaced.
-
-The normal main assistant receives wiki tools only while the wiki is enabled. Query tools search exact titles and aliases before metadata, full text, and linked pages. Raw evidence is returned separately for quotations, exact facts, low-confidence matches, or contradictions. Existing Pinecone RAG remains unchanged and independent.
-
-Available tools are `ingest_wiki_source`, `search_wiki`, `read_wiki_page`, `query_wiki`, `save_wiki_analysis`, `lint_wiki`, `review_wiki_changes`, `rebuild_wiki_index`, and `get_recent_wiki_activity`. Wiki tools are not exposed to task, health, or messaging-channel sessions because the current application has one local-user wiki and no per-sender tenancy boundary.
-
-Major synthesis rewrites and contradiction resolutions enter a persistent review queue. Approval or rejection uses the existing interactive tool-permission flow. Scheduled generation also runs a lint inspection; optional startup lint is configurable.
-
-See [LLM Wiki](WIKI.md) for storage, configuration, schemas, workflows, examples, migration, and rollback.
-
 ## 3. Providers and model catalogs
 
 See [Provider Reference](PROVIDERS.md) for the complete built-in provider inventory, exact service
@@ -589,7 +577,6 @@ Kucedr stores configuration and working data below Electron's application-data d
 | Browser     | Persistent agent-browser profile.                                                                                                           |
 | Storage     | Local folder selections and cloud-backup schedule.                                                                                          |
 | Diagnostics | Local rotating logs and crash dumps. Crash dumps are not uploaded by the current configuration.                                             |
-| Wiki        | Source inbox, immutable evidence snapshots, generated Markdown, source/page/operation registries, review queue, failures, and audit log.    |
 
 Model, database, and search provider keys are stored as entered in the local provider settings
 file and are visible in Provider settings. Bot tokens and MCP secrets use their respective local
@@ -631,7 +618,6 @@ The main implementation areas behind this reference are:
 - [Chat and renderer UI](../src/renderer/src/pages/home/)
 - [Settings pages](../src/renderer/src/pages/settings/)
 - [Agent runtime and tools](../src/main/agent/)
-- [LLM Wiki](../src/main/agent/knowledge/wiki/)
 - [Apps](../src/main/apps/)
 - [Cloud storage sync](../src/renderer/src/pages/settings/pages/storage/)
 - [Account and cloud architecture](CLOUD.md)

@@ -166,14 +166,7 @@ Run one Jest test file by passing its path:
 
 ```sh
 npm run test:main -- tests/unit/main/agent/session/session-model-messages.test.ts
-npm run test:renderer -- tests/unit/renderer/wiki-settings.test.tsx
-```
-
-Run the complete focused LLM Wiki matrix without selecting unrelated main-process suites:
-
-```sh
-npx jest --config jest.config.cjs --selectProjects main --runInBand tests/unit/main/agent/knowledge/wiki tests/unit/main/agent/tools/wiki-tools.test.ts
-npx jest --config jest.config.cjs --selectProjects renderer --runInBand tests/unit/renderer/wiki-settings.test.tsx
+npm run test:renderer -- tests/unit/renderer/rag-settings.test.tsx
 ```
 
 ### Full local quality gate
