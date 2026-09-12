@@ -296,4 +296,35 @@ describe('subagentTool', () => {
 			scope,
 		});
 	});
+
+	it.each([
+		{ subtype: 'error_max_turns' as const, stopReason: 'max_iterations', status: 'failed' },
+		{ subtype: 'success' as const, stopReason: 'budget_exhausted', status: 'exhausted' },
+	])('preserves terminal $status outcomes', async ({ subtype, stopReason, status }) => {
+		mockStream.mockReturnValue(
+			(async function* () {
+				yield { type: 'assistant_message', content: 'draft', toolCalls: [] };
+				yield {
+					type: 'run_finished',
+					result: {
+						text: 'canonical result',
+						model: 'test-model',
+						toolCalls: [{ id: 'tool', name: 'read', args: {}, result: { content: 'ok' } }],
+						numTurns: 1,
+						subtype,
+						sessionId: 'child',
+						stopReason,
+					},
+				};
+			})()
+		);
+		const tool = subagentTool({ location: '/agent' }, [], { type: 'default', interactionMode: 'default' });
+
+		await expect(tool.run({ task: 'inspect' })).resolves.toMatchObject({
+			status,
+			text: 'canonical result',
+			stopReason,
+			result: { sessionId: 'child', toolCalls: [expect.objectContaining({ id: 'tool' })] },
+		});
+	});
 });
