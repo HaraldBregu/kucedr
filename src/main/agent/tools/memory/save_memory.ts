@@ -8,7 +8,7 @@ export function saveMemoryTool(config: Config): Tool {
 		id: 'save_memory',
 		name: 'Save memory',
 		description:
-			'Save one durable fact to persistent memory after the user explicitly asks for it. Do not save secrets or transient conversation details.',
+			'Save one concise, durable user fact to persistent memory. Save automatically when the user shares clearly useful long-term context, such as a stable preference, personal profile detail, ongoing project, commitment, or future plan. Do not save secrets, sensitive personal data, third-party private data, inferred facts, or transient conversation details.',
 		inputSchema: z.object({
 			fact: z
 				.string()

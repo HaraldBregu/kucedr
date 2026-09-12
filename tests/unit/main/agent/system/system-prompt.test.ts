@@ -17,6 +17,12 @@ describe('addBasePrompt', () => {
 		expect(prompt).toContain('## Workspace contract');
 		expect(prompt).toContain('## Agent acceptance contract');
 	});
+	it('directs the assistant to retain durable user context automatically', () => {
+		const prompt = addBasePrompt('');
+		expect(prompt).toContain('proactively save concise, high-confidence user facts');
+		expect(prompt).toContain('I will visit Budapest in December this year');
+		expect(prompt).toContain('sensitive personal data');
+	});
 	it('appends to any existing prompt', () => {
 		expect(addBasePrompt('PRE')).toMatch(/^PRE/);
 	});

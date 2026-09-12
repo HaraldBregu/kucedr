@@ -25,6 +25,13 @@ it.each([
 	expect(memoryTool.hardApproval).toBeUndefined();
 });
 
+it('allows durable user context to be saved without an explicit remember request', () => {
+	const memoryTool = saveMemoryTool(config);
+	expect(memoryTool.description).toContain('Save automatically');
+	expect(memoryTool.description).toContain('future plan');
+	expect(memoryTool.description).toContain('sensitive personal data');
+});
+
 it('requires an exact ID for deletion', () => {
 	const memoryTool = forgetMemoryTool(config);
 	expect(() => memoryTool.parseInput({ id: 'target' })).toThrow();
