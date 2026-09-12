@@ -637,131 +637,131 @@ export default function App() {
 						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 					/>
 					<SidebarContent>{sidebar}</SidebarContent>
-						<SidebarResizeHandle
-							onPointerDown={startSidebarResize}
-							onContextMenu={(event) => {
-								showNativeContextMenu(
-									event,
-									[
-										{
-											id: 'minimum',
-											label: 'Minimum Width',
-											enabled: sidebarWidth !== sidebarMinWidth,
-										},
-										{
-											id: 'reset',
-											label: 'Reset Width',
-											enabled: sidebarWidth !== sidebarDefaultWidth,
-										},
-										{
-											id: 'maximum',
-											label: 'Maximum Width',
-											enabled: sidebarWidth !== sidebarMaxWidth,
-										},
-									],
+					<SidebarResizeHandle
+						onPointerDown={startSidebarResize}
+						onContextMenu={(event) => {
+							showNativeContextMenu(
+								event,
+								[
 									{
-										minimum: () => setSidebarWidth(sidebarMinWidth),
-										reset: () => setSidebarWidth(sidebarDefaultWidth),
-										maximum: () => setSidebarWidth(sidebarMaxWidth),
-									}
-								);
-							}}
-						/>
-					</Sidebar>
+										id: 'minimum',
+										label: 'Minimum Width',
+										enabled: sidebarWidth !== sidebarMinWidth,
+									},
+									{
+										id: 'reset',
+										label: 'Reset Width',
+										enabled: sidebarWidth !== sidebarDefaultWidth,
+									},
+									{
+										id: 'maximum',
+										label: 'Maximum Width',
+										enabled: sidebarWidth !== sidebarMaxWidth,
+									},
+								],
+								{
+									minimum: () => setSidebarWidth(sidebarMinWidth),
+									reset: () => setSidebarWidth(sidebarDefaultWidth),
+									maximum: () => setSidebarWidth(sidebarMaxWidth),
+								}
+							);
+						}}
+					/>
+				</Sidebar>
 
 				<SidebarInset>
-				<header
-					className="flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3"
-					style={
-						{
-							WebkitAppRegion: 'drag',
-							paddingLeft: isMac && !sidebarOpen ? '112px' : undefined,
-						} as CSSProperties
-					}
-				>
-					<SidebarTrigger className="[webkit-app-region:no-drag]" />
-					<span className="min-w-0 flex-1 truncate text-sm font-medium">Workspace</span>
-					{!isMac ? (
-						<div
-							className="-my-3 -mr-3 flex h-12 items-center [webkit-app-region:no-drag]"
-							style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
-						>
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon"
-								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
-								onClick={() => {
-									if (isKucedr()) win.minimize();
-								}}
-								title="Minimize"
-								aria-label="Minimize"
+					<header
+						className="flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3"
+						style={
+							{
+								WebkitAppRegion: 'drag',
+								paddingLeft: isMac && !sidebarOpen ? '112px' : undefined,
+							} as CSSProperties
+						}
+					>
+						<SidebarTrigger className="[webkit-app-region:no-drag]" />
+						<span className="min-w-0 flex-1 truncate text-sm font-medium">Workspace</span>
+						{!isMac ? (
+							<div
+								className="-my-3 -mr-3 flex h-12 items-center [webkit-app-region:no-drag]"
+								style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 							>
-								<Minus className="size-[13px]" strokeWidth={1.5} />
-							</Button>
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon"
-								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
-								onClick={() => {
-									if (isKucedr()) win.maximize();
-								}}
-								title={isMaximized ? 'Restore' : 'Maximize'}
-								aria-label={isMaximized ? 'Restore' : 'Maximize'}
-							>
-								{isMaximized ? (
-									<Copy className="size-[11px]" strokeWidth={1.5} />
-								) : (
-									<Square className="size-[11px]" strokeWidth={1.5} />
-								)}
-							</Button>
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon"
-								className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
-								onClick={() => {
-									if (isKucedr()) win.close();
-								}}
-								title="Close"
-								aria-label="Close"
-							>
-								<X className="size-[13px]" strokeWidth={1.5} />
-							</Button>
-						</div>
-					) : null}
-				</header>
-						<WorkspaceViewer
-							content={selectedContent}
-							dirty={selectedDirty}
-							error={selectedError}
-							file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
-							kind={selectedKind}
-							isDark={theme.isDark}
-							loading={selectedLoading}
-							markdownMode={markdownMode}
-							mediaUrl={selectedMediaUrl}
-							onChange={(content) => {
-								selectedContentRef.current = content;
-								setSelectedContent(content);
-								setSelectedSaveError('');
-							}}
-							onMarkdownModeChange={setMarkdownMode}
-							onRename={() => {
-								if (!selectedWorkspacePath) return;
-								startRenameWorkspaceEntry({
-									name: selectedWorkspacePath.split(/[\\/]/).pop() ?? selectedWorkspacePath,
-									path: selectedWorkspacePath,
-									type: 'file',
-								});
-							}}
-							onSave={() => saveWorkspaceFile(selectedPathRef.current, selectedContent)}
-							path={selectedWorkspacePath}
-							saveError={selectedSaveError}
-							saving={selectedSaving}
-						/>
-					</SidebarInset>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
+									onClick={() => {
+										if (isKucedr()) win.minimize();
+									}}
+									title="Minimize"
+									aria-label="Minimize"
+								>
+									<Minus className="size-[13px]" strokeWidth={1.5} />
+								</Button>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
+									onClick={() => {
+										if (isKucedr()) win.maximize();
+									}}
+									title={isMaximized ? 'Restore' : 'Maximize'}
+									aria-label={isMaximized ? 'Restore' : 'Maximize'}
+								>
+									{isMaximized ? (
+										<Copy className="size-[11px]" strokeWidth={1.5} />
+									) : (
+										<Square className="size-[11px]" strokeWidth={1.5} />
+									)}
+								</Button>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon"
+									className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
+									onClick={() => {
+										if (isKucedr()) win.close();
+									}}
+									title="Close"
+									aria-label="Close"
+								>
+									<X className="size-[13px]" strokeWidth={1.5} />
+								</Button>
+							</div>
+						) : null}
+					</header>
+					<WorkspaceViewer
+						content={selectedContent}
+						dirty={selectedDirty}
+						error={selectedError}
+						file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
+						kind={selectedKind}
+						isDark={theme.isDark}
+						loading={selectedLoading}
+						markdownMode={markdownMode}
+						mediaUrl={selectedMediaUrl}
+						onChange={(content) => {
+							selectedContentRef.current = content;
+							setSelectedContent(content);
+							setSelectedSaveError('');
+						}}
+						onMarkdownModeChange={setMarkdownMode}
+						onRename={() => {
+							if (!selectedWorkspacePath) return;
+							startRenameWorkspaceEntry({
+								name: selectedWorkspacePath.split(/[\\/]/).pop() ?? selectedWorkspacePath,
+								path: selectedWorkspacePath,
+								type: 'file',
+							});
+						}}
+						onSave={() => saveWorkspaceFile(selectedPathRef.current, selectedContent)}
+						path={selectedWorkspacePath}
+						saveError={selectedSaveError}
+						saving={selectedSaving}
+					/>
+				</SidebarInset>
 			</SidebarProvider>
 
 			<Dialog
