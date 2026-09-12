@@ -750,6 +750,10 @@ export interface StorageInvokeChannelMap {
 }
 
 export interface DatabaseInvokeChannelMap {
+	[DatabaseChannels.list]: {
+		args: [];
+		result: import('./database_types').VectorDatabaseService[];
+	};
 	[DatabaseChannels.getConfiguration]: {
 		args: [];
 		result: import('./database_types').DatabaseConfiguration;

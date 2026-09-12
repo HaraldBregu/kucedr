@@ -15,7 +15,7 @@ import type {
 	StorageSyncFolder,
 	StorageSyncSettings,
 } from './storage_types';
-import type { DatabaseConfiguration } from './database_types';
+import type { DatabaseConfiguration, VectorDatabaseService } from './database_types';
 import type {
 	McpData,
 	McpLocalImportResult,
@@ -315,6 +315,7 @@ export interface StorageApi {
 }
 
 export interface DatabaseApi {
+	list: () => Promise<VectorDatabaseService[]>;
 	getConfiguration: () => Promise<DatabaseConfiguration>;
 	saveConfiguration: (configuration: DatabaseConfiguration) => Promise<DatabaseConfiguration>;
 }

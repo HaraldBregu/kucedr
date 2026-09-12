@@ -1,6 +1,5 @@
-import type { CatalogService } from '../../shared/provider_types';
 import type { DatabaseConfiguration } from '../../shared/database_types';
-import { loadDatabases } from '../models';
+import { supportsVectorDatabase } from './vector_adapters';
 import {
 	getRagConfiguration,
 	ragConfigurationStorePath,
@@ -21,7 +20,7 @@ export function getDatabaseConfiguration(): DatabaseConfiguration {
 		providerId: ragConfiguration.databaseProviderId || undefined,
 		databaseId: ragConfiguration.databaseId || undefined,
 	};
-	if (configuration.databaseId && !findDatabase(configuration)) {
+	if (configuration.databaseId && !supportsVectorDatabase(configuration.providerId, configuration.databaseId)) {
 		configuration.providerId = undefined;
 		configuration.databaseId = undefined;
 	}
@@ -31,7 +30,7 @@ export function getDatabaseConfiguration(): DatabaseConfiguration {
 export function saveDatabaseConfiguration(
 	configuration: DatabaseConfiguration
 ): DatabaseConfiguration {
-	if (configuration.databaseId && !findDatabase(configuration)) {
+	if (configuration.databaseId && !supportsVectorDatabase(configuration.providerId, configuration.databaseId)) {
 		throw new Error(`Database not found: ${configuration.databaseId}`);
 	}
 	const saved: DatabaseConfiguration = {
@@ -50,11 +49,4 @@ export function saveDatabaseConfiguration(
 				: null,
 	});
 	return saved;
-}
-
-function findDatabase(configuration: DatabaseConfiguration): CatalogService | undefined {
-	return loadDatabases().find(
-		(entry) =>
-			entry.id === configuration.databaseId && entry.provider.id === configuration.providerId
-	);
 }

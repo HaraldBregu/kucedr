@@ -295,6 +295,7 @@ export const StorageChannels = {
 } as const;
 
 export const DatabaseChannels = {
+	list: 'database:vector:list',
 	getConfiguration: 'database:configuration:get',
 	saveConfiguration: 'database:configuration:save',
 } as const;
