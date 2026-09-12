@@ -107,9 +107,9 @@ describe('subagentTool', () => {
 		releases.get('fail')?.();
 		releases.get('slow')?.();
 		await expect(pending).resolves.toEqual([
-			{ id: 'first', status: 'fulfilled', text: 'slow:done' },
-			{ id: 'second', status: 'rejected', text: 'child failed' },
-			{ id: 'third', status: 'fulfilled', text: 'fast:done' },
+			{ id: 'first', status: 'completed', text: 'slow:done' },
+			{ id: 'second', status: 'failed', text: '', error: 'child failed' },
+			{ id: 'third', status: 'completed', text: 'fast:done' },
 		]);
 	});
 
@@ -238,5 +238,60 @@ describe('subagentTool', () => {
 				],
 			})
 		).rejects.toThrow();
+		await expect(
+			tool.run({
+				tasks: [
+					{ id: 'duplicate', task: 'one' },
+					{ id: 'duplicate', task: 'two' },
+				],
+			})
+		).rejects.toThrow('Subagent task ids must be unique.');
+	});
+
+	it('inherits the pinned execution contract and reports structured results', async () => {
+		mockStream.mockReturnValue(
+			(async function* () {
+				yield { type: 'assistant_message', content: 'done', toolCalls: [] };
+				yield {
+					type: 'run_finished',
+					result: {
+						text: 'done',
+						model: 'pinned-model',
+						toolCalls: [],
+						numTurns: 1,
+						subtype: 'success',
+						sessionId: 'child',
+						stopReason: 'end_turn',
+						usage: { inputTokens: 2, outputTokens: 3 },
+					},
+				};
+			})()
+		);
+		const scope = { ownerId: 'channel', source: 'channel' as const, sessionId: 'parent', runId: 'parent' };
+		const tool = subagentTool(
+			{ location: '/agent' },
+			[],
+			{
+				type: 'background',
+				interactionMode: 'default',
+				providerId: 'pinned-provider',
+				model: 'pinned-model',
+				effort: 'high',
+				scope,
+			}
+		);
+
+		await expect(tool.run({ task: 'inspect' })).resolves.toEqual({
+			status: 'completed',
+			text: 'done',
+			stopReason: 'end_turn',
+			usage: { inputTokens: 2, outputTokens: 3 },
+		});
+		expect(mockStream.mock.calls[0][2]).toMatchObject({
+			providerId: 'pinned-provider',
+			model: 'pinned-model',
+			effort: 'high',
+			scope,
+		});
 	});
 });
