@@ -286,7 +286,8 @@ describe('subagentTool', () => {
 				sessionId: 'child',
 				model: 'pinned-model',
 				subtype: 'success',
-				toolCalls: [],
+				toolCalls: 0,
+				toolNames: [],
 			},
 		});
 		expect(mockStream.mock.calls[0][2]).toMatchObject({
@@ -327,7 +328,7 @@ describe('subagentTool', () => {
 			status,
 			text: 'canonical result',
 			stopReason,
-			result: { sessionId: 'child', toolCalls: [expect.objectContaining({ id: 'tool' })] },
+			result: { sessionId: 'child', toolCalls: 1, toolNames: ['read'] },
 		});
 	});
 });
