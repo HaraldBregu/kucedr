@@ -666,17 +666,22 @@ describe('run stream system prompt', () => {
 	});
 
 	it('pins the resolved execution contract for delegated children', async () => {
-		const scope = { ownerId: 'channel', source: 'channel' as const, sessionId: 'parent', runId: 'parent' };
+		const scope = {
+			ownerId: 'channel',
+			source: 'channel' as const,
+			sessionId: 'parent',
+			runId: 'parent',
+		};
 		runModelTurnMock.mockImplementation(async function* (input: { agentId: string }) {
 			yield* [];
 			return input.agentId === 'subagent'
 				? { content: 'child result', model: 'pinned-model', toolCalls: [] }
 				: runModelTurnMock.mock.calls.filter((call) => call[0].agentId === 'main').length === 1
 					? {
-						content: '',
-						model: 'pinned-model',
-						toolCalls: [{ id: 'delegate', name: 'subagent', args: { task: 'inspect' } }],
-					}
+							content: '',
+							model: 'pinned-model',
+							toolCalls: [{ id: 'delegate', name: 'subagent', args: { task: 'inspect' } }],
+						}
 					: { content: 'parent result', model: 'pinned-model', toolCalls: [] };
 		});
 
@@ -701,7 +706,9 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
-		const childInput = runModelTurnMock.mock.calls.find((call) => call[0].agentId === 'subagent')?.[0];
+		const childInput = runModelTurnMock.mock.calls.find(
+			(call) => call[0].agentId === 'subagent'
+		)?.[0];
 		expect(childInput).toMatchObject({
 			providerId: 'test-provider',
 			model: 'pinned-model',

@@ -142,12 +142,14 @@ async function* loop(
 	const modelId = input.model ?? getModelId();
 	const modelOptions = getModelOptions();
 	const runId = input.runId ?? session.id;
-	const budget = options.budget ?? new ExecutionBudget({
-		calls: MAX_TOOL_CALLS,
-		paid: MAX_PAID_TOOL_CALLS,
-		output: MAX_TOOL_OUTPUT_BYTES,
-		...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
-	});
+	const budget =
+		options.budget ??
+		new ExecutionBudget({
+			calls: MAX_TOOL_CALLS,
+			paid: MAX_PAID_TOOL_CALLS,
+			output: MAX_TOOL_OUTPUT_BYTES,
+			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
+		});
 	const skillLoadingEnabled =
 		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
 		!input.toolsDeny?.includes('load_skill');
@@ -354,10 +356,14 @@ async function* loop(
 				yield { type: 'run_finished', result };
 				return;
 			}
-			if (budget.wouldExceed(turn.toolCalls.map((call) => ({
-				tool: tools.find((tool) => tool.id === call.name),
-				input: call.args,
-			})))) {
+			if (
+				budget.wouldExceed(
+					turn.toolCalls.map((call) => ({
+						tool: tools.find((tool) => tool.id === call.name),
+						input: call.args,
+					}))
+				)
+			) {
 				budget.exhausted = true;
 				session.stopReason = 'budget_exhausted';
 				yield { type: 'run_finished', result: toResult(session, 'success') };

@@ -12,29 +12,46 @@ export class ExecutionBudget {
 	private reservedTokens = 0;
 	exhausted = false;
 
-	constructor(readonly limits: { tokens?: number; calls?: number; paid?: number; web?: number; output?: number } = {}) {}
+	constructor(
+		readonly limits: {
+			tokens?: number;
+			calls?: number;
+			paid?: number;
+			web?: number;
+			output?: number;
+		} = {}
+	) {}
 
 	wouldExceed(calls: Array<{ tool: Tool | undefined; input: Record<string, unknown> }>): boolean {
 		let total = this.calls;
 		let paid = this.paidCalls;
 		let web = this.webCalls;
 		for (const { tool, input } of calls) {
-			const capability = typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
+			const capability =
+				typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
 			total += 1;
 			if (capability?.effects.includes('paid')) paid += 1;
 			if (['search_web', 'fetch_web_page', 'use_web_browser'].includes(tool?.id ?? '')) web += 1;
 		}
-		return this.exhausted || total > (this.limits.calls ?? 100) ||
-			paid > (this.limits.paid ?? 3) || web > (this.limits.web ?? Number.POSITIVE_INFINITY);
+		return (
+			this.exhausted ||
+			total > (this.limits.calls ?? 100) ||
+			paid > (this.limits.paid ?? 3) ||
+			web > (this.limits.web ?? Number.POSITIVE_INFINITY)
+		);
 	}
 
 	admit(tool: Tool | undefined, input: Record<string, unknown>): string | undefined {
-		const capability = typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
+		const capability =
+			typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
 		const paid = capability?.effects.includes('paid') === true;
 		const web = ['search_web', 'fetch_web_page', 'use_web_browser'].includes(tool?.id ?? '');
-		if (this.exhausted || this.calls >= (this.limits.calls ?? 100) ||
+		if (
+			this.exhausted ||
+			this.calls >= (this.limits.calls ?? 100) ||
 			(paid && this.paidCalls >= (this.limits.paid ?? 3)) ||
-			(web && this.webCalls >= (this.limits.web ?? Number.POSITIVE_INFINITY))) {
+			(web && this.webCalls >= (this.limits.web ?? Number.POSITIVE_INFINITY))
+		) {
 			this.exhausted = true;
 			return 'Execution budget exhausted; this action was not executed.';
 		}
@@ -52,7 +69,11 @@ export class ExecutionBudget {
 	reserveModel(inputTokens: number, outputTokens: number): (usage?: SessionUsage) => void {
 		const reservation = Math.ceil(inputTokens + outputTokens);
 		const consumed = this.usage.inputTokens + this.usage.outputTokens + this.estimatedTokens;
-		if (this.exhausted || consumed + this.reservedTokens + reservation > (this.limits.tokens ?? Number.POSITIVE_INFINITY)) {
+		if (
+			this.exhausted ||
+			consumed + this.reservedTokens + reservation >
+				(this.limits.tokens ?? Number.POSITIVE_INFINITY)
+		) {
 			this.exhausted = true;
 			throw new Error('Execution token budget exhausted before model invocation.');
 		}
@@ -69,7 +90,11 @@ export class ExecutionBudget {
 				this.unreportedModelCalls += 1;
 				this.estimatedTokens += reservation;
 			}
-			if (this.usage.inputTokens + this.usage.outputTokens + this.estimatedTokens >= (this.limits.tokens ?? Number.POSITIVE_INFINITY)) this.exhausted = true;
+			if (
+				this.usage.inputTokens + this.usage.outputTokens + this.estimatedTokens >=
+				(this.limits.tokens ?? Number.POSITIVE_INFINITY)
+			)
+				this.exhausted = true;
 		};
 	}
 }

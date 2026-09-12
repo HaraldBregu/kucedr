@@ -83,7 +83,8 @@ export async function runChild(
 	if (signal.aborted || result?.stopReason === 'cancelled' || result?.stopReason === 'timeout') {
 		return { status: 'cancelled', text, stopReason: result?.stopReason, usage: result?.usage };
 	}
-	if (error) return { status: 'failed', text, stopReason: result?.stopReason, usage: result?.usage, error };
+	if (error)
+		return { status: 'failed', text, stopReason: result?.stopReason, usage: result?.usage, error };
 	return { status: 'completed', text, stopReason: result?.stopReason, usage: result?.usage };
 }
 
@@ -106,11 +107,7 @@ Rules:
 const fallbackPool = new KeyedLimiter(3);
 const PARALLEL_TOOL_IDS = new Set(['read', 'search_web', 'fetch_web_page', 'query_knowledge']);
 
-export function subagentTool(
-	config: Config,
-	tools: Tool[],
-	runtime: ChildRuntime
-): Tool {
+export function subagentTool(config: Config, tools: Tool[], runtime: ChildRuntime): Tool {
 	return tool({
 		id: 'subagent',
 		name: 'Subagent',

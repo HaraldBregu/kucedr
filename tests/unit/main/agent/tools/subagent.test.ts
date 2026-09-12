@@ -6,10 +6,7 @@ jest.mock('../../../../../src/main/agent/runner/run_stream', () => ({
 
 import type { SessionState } from '../../../../../src/main/agent/session';
 import type { RunContext } from '../../../../../src/main/agent/context';
-import {
-	subagentTool,
-	subagentsTool,
-} from '../../../../../src/main/agent/tools/core/subagents';
+import { subagentTool, subagentsTool } from '../../../../../src/main/agent/tools/core/subagents';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { KeyedLimiter } from '../../../../../src/main/agent/limiter';
 
@@ -100,9 +97,9 @@ describe('subagentTool', () => {
 		expect(peak).toBe(3);
 		expect(new Set(contexts).size).toBe(3);
 		contexts[0].fileAccess.readDirectories.add('/first');
-		expect(contexts.slice(1).every((context) => context.fileAccess.readDirectories.size === 0)).toBe(
-			true
-		);
+		expect(
+			contexts.slice(1).every((context) => context.fileAccess.readDirectories.size === 0)
+		).toBe(true);
 		releases.get('fast')?.();
 		releases.get('fail')?.();
 		releases.get('slow')?.();
@@ -144,9 +141,7 @@ describe('subagentTool', () => {
 		});
 
 		for (const call of mockStream.mock.calls) {
-			expect(call[4].tools.map((candidate: { id: string }) => candidate.id)).toEqual([
-				'read',
-			]);
+			expect(call[4].tools.map((candidate: { id: string }) => candidate.id)).toEqual(['read']);
 		}
 	});
 
@@ -267,19 +262,20 @@ describe('subagentTool', () => {
 				};
 			})()
 		);
-		const scope = { ownerId: 'channel', source: 'channel' as const, sessionId: 'parent', runId: 'parent' };
-		const tool = subagentTool(
-			{ location: '/agent' },
-			[],
-			{
-				type: 'background',
-				interactionMode: 'default',
-				providerId: 'pinned-provider',
-				model: 'pinned-model',
-				effort: 'high',
-				scope,
-			}
-		);
+		const scope = {
+			ownerId: 'channel',
+			source: 'channel' as const,
+			sessionId: 'parent',
+			runId: 'parent',
+		};
+		const tool = subagentTool({ location: '/agent' }, [], {
+			type: 'background',
+			interactionMode: 'default',
+			providerId: 'pinned-provider',
+			model: 'pinned-model',
+			effort: 'high',
+			scope,
+		});
 
 		await expect(tool.run({ task: 'inspect' })).resolves.toEqual({
 			status: 'completed',
