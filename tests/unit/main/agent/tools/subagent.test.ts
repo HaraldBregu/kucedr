@@ -180,7 +180,7 @@ describe('subagentTool', () => {
 		expect(signals).toHaveLength(3);
 		controller.abort(new Error('cancel parent'));
 		await expect(pending).resolves.toEqual(
-			expect.arrayContaining([expect.objectContaining({ status: 'rejected' })])
+			expect.arrayContaining([expect.objectContaining({ status: 'cancelled' })])
 		);
 		expect(signals.every((signal) => signal.aborted)).toBe(true);
 	});

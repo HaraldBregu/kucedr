@@ -354,6 +354,15 @@ async function* loop(
 				yield { type: 'run_finished', result };
 				return;
 			}
+			if (budget.wouldExceed(turn.toolCalls.map((call) => ({
+				tool: tools.find((tool) => tool.id === call.name),
+				input: call.args,
+			})))) {
+				budget.exhausted = true;
+				session.stopReason = 'budget_exhausted';
+				yield { type: 'run_finished', result: toResult(session, 'success') };
+				return;
+			}
 
 			if (isExhausted(session)) {
 				session.stopReason = 'max_iterations';
