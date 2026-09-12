@@ -13,8 +13,11 @@ import {
 } from '@/components/ui/select';
 import type { RagMatch } from '../../../../../../main/agent/knowledge/rag';
 import type { RagConfiguration } from '../../../../../../shared/rag_types';
-import type { DatabaseConfiguration } from '../../../../../../shared/database_types';
-import { databases, defaultProviderId, modelsFor } from '@/lib/providers';
+import type {
+	DatabaseConfiguration,
+	VectorDatabaseService,
+} from '../../../../../../shared/database_types';
+import { defaultProviderId, modelsFor } from '@/lib/providers';
 import { getErrorMessage } from '../../../start/setupConstants';
 import {
 	SettingsLoadingRows,
@@ -33,7 +36,7 @@ const VALUE_SEPARATOR = '\u001F';
 
 const RagPage: React.FC = () => {
 	const { t } = useTranslation();
-	const vectorDatabases = useMemo(() => databases(), []);
+	const [vectorDatabases, setVectorDatabases] = useState<readonly VectorDatabaseService[]>([]);
 	const [databaseConfiguration, setDatabaseConfiguration] = useState<DatabaseConfiguration | null>(
 		null
 	);
@@ -89,11 +92,16 @@ const RagPage: React.FC = () => {
 
 	useEffect(() => {
 		let cancelled = false;
-		void Promise.all([window.agent.ragGetConfiguration(), window.database.getConfiguration()]).then(
-			([configuration, database]) => {
+		void Promise.all([
+			window.agent.ragGetConfiguration(),
+			window.database.getConfiguration(),
+			window.database.list(),
+		]).then(
+			([configuration, database, availableDatabases]) => {
 				if (!cancelled) {
 					setRagConfiguration(configuration);
 					setDatabaseConfiguration(database);
+					setVectorDatabases(availableDatabases);
 					setLoadingDatabase(false);
 				}
 			},
@@ -197,7 +205,7 @@ const RagPage: React.FC = () => {
 		if (!value) return;
 		const [providerId, databaseId] = value.split(VALUE_SEPARATOR);
 		const entry = vectorDatabases.find(
-			(database) => database.provider.id === providerId && database.id === databaseId
+			(database) => database.providerId === providerId && database.databaseId === databaseId
 		);
 		if (!entry) return;
 		setSavingDatabase(true);
@@ -236,8 +244,8 @@ const RagPage: React.FC = () => {
 
 	const selectedDatabase = vectorDatabases.find(
 		(entry) =>
-			entry.provider.id === databaseConfiguration?.providerId &&
-			entry.id === databaseConfiguration?.databaseId
+			entry.providerId === databaseConfiguration?.providerId &&
+			entry.databaseId === databaseConfiguration?.databaseId
 	);
 	const databaseReady = Boolean(selectedDatabase) && !loadingDatabase && !savingDatabase;
 	const selectedEmbeddingModel = embeddingModels.find(
@@ -362,7 +370,7 @@ const RagPage: React.FC = () => {
 							<Select
 								value={
 									selectedDatabase
-										? `${selectedDatabase.provider.id}${VALUE_SEPARATOR}${selectedDatabase.id}`
+										? `${selectedDatabase.providerId}${VALUE_SEPARATOR}${selectedDatabase.databaseId}`
 										: null
 								}
 								onValueChange={(value) => void selectDatabase(value)}
@@ -374,17 +382,17 @@ const RagPage: React.FC = () => {
 									className="w-56 max-w-full text-xs"
 								>
 									<SelectValue placeholder={t('settings.rag.databasePlaceholder')}>
-										{selectedDatabase &&
-											`${selectedDatabase.provider.name} / ${selectedDatabase.name || selectedDatabase.id}`}
+									{selectedDatabase &&
+											`${selectedDatabase.providerName} / ${selectedDatabase.databaseName}`}
 									</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
 									{vectorDatabases.map((entry) => (
 										<SelectItem
-											key={`${entry.provider.id}${VALUE_SEPARATOR}${entry.id}`}
-											value={`${entry.provider.id}${VALUE_SEPARATOR}${entry.id}`}
+											key={`${entry.providerId}${VALUE_SEPARATOR}${entry.databaseId}`}
+											value={`${entry.providerId}${VALUE_SEPARATOR}${entry.databaseId}`}
 										>
-											{`${entry.provider.name} / ${entry.name || entry.id}`}
+											{`${entry.providerName} / ${entry.databaseName}`}
 										</SelectItem>
 									))}
 								</SelectContent>
