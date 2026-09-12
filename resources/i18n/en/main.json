@@ -186,7 +186,6 @@
 				"permissions": "Tool permissions and path rules",
 				"apps": "Installed apps",
 				"rag": "Document search and index",
-				"wiki": "Assistant knowledge and notes",
 				"plugins": "Installable app plugins",
 				"configurationDescription": "Configure models, storage, and integrations"
 			}
@@ -220,8 +219,7 @@
 			"skills": "Skills",
 			"apps": "Apps",
 			"plugins": "Plugins",
-			"rag": "RAG",
-			"wiki": "LLM Wiki"
+			"rag": "Knowledge Base"
 		},
 		"breadcrumb": {
 			"label": "Settings navigation",
@@ -1074,7 +1072,6 @@
 			"folders": {
 				"agent": "Assistant workspace",
 				"sessions": "Assistant conversations",
-				"wiki": "Wiki data",
 				"skills": "Installed skills"
 			},
 			"backup": "Back up now",
@@ -1595,69 +1592,8 @@
 			"remoteNamespaceDescription": "Only the matching Kucedr-owned remote namespace; the vector database index is never deleted.",
 			"remoteAllNamespaces": "All Kucedr remote vector namespaces",
 			"remoteAllNamespacesDescription": "Every Kucedr-owned namespace in the configured vector database index; unrelated namespaces and the index remain.",
-			"wiki": "Managed wiki",
-			"wikiDescription": "Compiled pages and app-owned state for the configured target.",
 			"loadError": "Unable to load data-management scopes.",
 			"actionError": "Unable to complete the data-management action."
-		},
-		"wiki": {
-			"title": "LLM Wiki",
-			"description": "Turn source documents into a persistent Markdown wiki.",
-			"overviewDescription": "Keep knowledge current as sources change.",
-			"behaviorTitle": "Wiki behavior",
-			"behaviorDescription": "Choose how the assistant uses and reviews wiki changes.",
-			"enabled": "Enable wiki knowledge",
-			"enabledDescription": "Give the assistant access to wiki tools.",
-			"autoFileAnswers": "Allow automatic answer filing",
-			"autoFileAnswersDescription": "Save useful, sourced answers to the wiki.",
-			"requireReview": "Review major changes",
-			"requireReviewDescription": "Require approval for major wiki changes.",
-			"lintOnStartup": "Lint on startup",
-			"lintOnStartupDescription": "Check wiki integrity when Kucedr starts.",
-			"configurationTitle": "Configuration",
-			"modelTitle": "Wiki model",
-			"modelDescription": "Choose the model that maintains the wiki.",
-			"sourcePath": "Raw source folder",
-			"sourceDescription": "Markdown, text, JSON, CSV and logs.",
-			"targetPath": "Generated wiki folder",
-			"targetDescription": "AGENTS.md, indexes, logs and generated pages.",
-			"pickSource": "Choose raw source folder",
-			"pickTarget": "Choose generated wiki folder",
-			"scheduleTitle": "Automation",
-			"scheduleFrequency": "Generation frequency",
-			"scheduleDescription": "Choose how often Kucedr processes new or changed sources.",
-			"scheduleOptions": {
-				"off": "Off",
-				"every4h": "Every 4 hours",
-				"every12h": "Every 12 hours",
-				"every1d": "Every day",
-				"every7d": "Every week",
-				"custom": "Custom schedule"
-			},
-			"statusTitle": "Status",
-			"settingsFile": "Settings file",
-			"nextRun": "Next run",
-			"lastRun": "Last run",
-			"pendingReviews": "Pending reviews",
-			"notScheduled": "Not scheduled",
-			"neverRun": "Never",
-			"outputFolder": "Generated wiki",
-			"openOutput": "Open folder",
-			"runNow": "Run now",
-			"running": "Generating...",
-			"cancelling": "Cancelling...",
-			"progress": {
-				"preparing": "Preparing {{current}} of {{total}} · {{source}}",
-				"generating": "Generating {{current}} of {{total}} · {{source}}",
-				"writing": "Saving {{current}} of {{total}} · {{source}}",
-				"cancelling": "Cancelling {{current}} of {{total}} · {{source}}"
-			},
-			"saved": "Wiki settings saved.",
-			"runResult": "Processed {{processed}} sources, skipped {{skipped}}, created {{created}} pages and updated {{updated}}.",
-			"loadError": "Unable to load wiki settings.",
-			"saveError": "Unable to save wiki settings.",
-			"runError": "Unable to generate the wiki.",
-			"cancelError": "Unable to cancel wiki generation."
 		}
 	},
 	"dialogs": {

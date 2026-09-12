@@ -38,9 +38,9 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'integrations',
 		titleKey: 'settings.overview.groups.extensions',
 		items: [
+			...SETTINGS_NAVIGATION.slice(14, 15),
+			...SETTINGS_NAVIGATION.slice(16),
 			...SETTINGS_NAVIGATION.slice(15, 16),
-			...SETTINGS_NAVIGATION.slice(17),
-			...SETTINGS_NAVIGATION.slice(16, 17),
 		],
 	},
 ] as const;

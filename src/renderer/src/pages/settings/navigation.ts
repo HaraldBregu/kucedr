@@ -1,5 +1,4 @@
 import {
-	BookOpenText,
 	Bot,
 	Layers,
 	BotMessageSquare,
@@ -329,12 +328,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.rag.title',
 		descriptionKey: 'settings.overview.descriptions.rag',
 		icon: Library,
-	},
-	{
-		path: '/settings/agent/llm-wiki',
-		labelKey: 'settings.wiki.title',
-		descriptionKey: 'settings.overview.descriptions.wiki',
-		icon: BookOpenText,
 	},
 	{
 		path: '/settings/agent/skills',

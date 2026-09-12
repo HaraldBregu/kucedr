@@ -50,7 +50,6 @@ const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const A2aPage = lazy(() => import('./pages/settings/pages/a2a/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
 const RagPage = lazy(() => import('./pages/settings/pages/rag/Page'));
-const WikiPage = lazy(() => import('./pages/settings/pages/wiki/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
@@ -384,10 +383,6 @@ const routes: RouteObject[] = [
 						element: <Navigate to="/settings/agent/rag" replace />,
 					},
 					{
-						path: 'llm-wiki',
-						element: <Navigate to="/settings/agent/llm-wiki" replace />,
-					},
-					{
 						path: 'coding',
 						element: (
 							<SettingsRouteWrapper>
@@ -496,14 +491,6 @@ const routes: RouteObject[] = [
 							{
 								path: 'knowledge-base',
 								element: <Navigate to="/settings/agent/rag" replace />,
-							},
-							{
-								path: 'llm-wiki',
-								element: (
-									<SettingsRouteWrapper>
-										<WikiPage />
-									</SettingsRouteWrapper>
-								),
 							},
 							{
 								path: 'health',

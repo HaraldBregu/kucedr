@@ -9,7 +9,6 @@ import { firstErrorMessage } from './model-configuration-state';
 export type DataControlKind =
 	| 'memory'
 	| 'sessions'
-	| 'wiki'
 	| 'local_index'
 	| 'local_namespace'
 	| 'remote_namespace'
@@ -28,11 +27,6 @@ const DATA_CONTROL_ITEMS = {
 	sessions: {
 		titleKey: 'settings.dataControls.sessions',
 		descriptionKey: 'settings.dataControls.sessionsDescription',
-		exportable: true,
-	},
-	wiki: {
-		titleKey: 'settings.dataControls.wiki',
-		descriptionKey: 'settings.dataControls.wikiDescription',
 		exportable: true,
 	},
 	local_index: {
@@ -85,7 +79,7 @@ export function DataControls({ kinds }: DataControlsProps): React.JSX.Element {
 
 	const scopeFor = (kind: DataControlKind): DataScope | undefined => {
 		return scopes?.find((scope) => {
-			if (kind === 'memory' || kind === 'sessions' || kind === 'wiki') {
+				if (kind === 'memory' || kind === 'sessions') {
 				return scope.kind === kind;
 			}
 			return scope.kind === 'rag' && scope.mode === kind;

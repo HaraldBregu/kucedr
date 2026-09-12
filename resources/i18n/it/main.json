@@ -186,7 +186,6 @@
 				"permissions": "Permessi strumenti e regole di percorso",
 				"apps": "App installate",
 				"rag": "Ricerca e indice documenti",
-				"wiki": "Note e conoscenza assistant",
 				"plugins": "Plugin installabili",
 				"configurationDescription": "Configura modelli, archiviazione e integrazioni"
 			}
@@ -220,8 +219,7 @@
 			"skills": "Abilità",
 			"apps": "App",
 			"plugins": "Plugin",
-			"rag": "RAG",
-			"wiki": "LLM Wiki"
+			"rag": "Knowledge Base"
 		},
 		"breadcrumb": {
 			"label": "Navigazione impostazioni",
@@ -1073,7 +1071,6 @@
 			"folders": {
 				"agent": "Area di lavoro dell'assistente",
 				"sessions": "Conversazioni dell'assistente",
-				"wiki": "Dati wiki",
 				"skills": "Skill installate"
 			},
 			"backup": "Esegui backup ora",
@@ -1594,69 +1591,8 @@
 			"remoteNamespaceDescription": "Solo il namespace remoto di Kucedr corrispondente; l'indice del database vettoriale non viene mai eliminato.",
 			"remoteAllNamespaces": "Tutti i namespace vettoriali remoti di Kucedr",
 			"remoteAllNamespacesDescription": "Tutti i namespace di Kucedr nell'indice del database vettoriale configurato; gli altri namespace e l'indice restano intatti.",
-			"wiki": "Wiki gestita",
-			"wikiDescription": "Pagine compilate e stato dell'app per la destinazione configurata.",
 			"loadError": "Impossibile caricare gli ambiti di gestione dati.",
 			"actionError": "Impossibile completare l'operazione di gestione dati."
-		},
-		"wiki": {
-			"title": "LLM Wiki",
-			"description": "Trasforma i documenti sorgente in una wiki Markdown persistente.",
-			"overviewDescription": "Mantieni aggiornata la conoscenza al variare delle fonti.",
-			"behaviorTitle": "Comportamento della Wiki",
-			"behaviorDescription": "Scegli come l'assistente usa e revisiona la Wiki.",
-			"enabled": "Abilita la conoscenza Wiki",
-			"enabledDescription": "Dai all'assistente accesso agli strumenti Wiki.",
-			"autoFileAnswers": "Consenti l'archiviazione automatica delle risposte",
-			"autoFileAnswersDescription": "Salva nella Wiki le risposte utili e con fonti.",
-			"requireReview": "Rivedi le modifiche importanti",
-			"requireReviewDescription": "Richiedi approvazione per le modifiche importanti.",
-			"lintOnStartup": "Controlla all'avvio",
-			"lintOnStartupDescription": "Controlla la Wiki all'avvio di Kucedr.",
-			"configurationTitle": "Configurazione",
-			"modelTitle": "Modello Wiki",
-			"modelDescription": "Scegli il modello che mantiene la Wiki.",
-			"sourcePath": "Cartella fonti grezze",
-			"sourceDescription": "Markdown, testo, JSON, CSV e log.",
-			"targetPath": "Cartella wiki generata",
-			"targetDescription": "AGENTS.md, indici, log e pagine generate.",
-			"pickSource": "Scegli la cartella delle fonti",
-			"pickTarget": "Scegli la cartella della wiki generata",
-			"scheduleTitle": "Automazione",
-			"scheduleFrequency": "Frequenza di generazione",
-			"scheduleDescription": "Scegli ogni quanto Kucedr elabora le fonti nuove o modificate.",
-			"scheduleOptions": {
-				"off": "Disattivata",
-				"every4h": "Ogni 4 ore",
-				"every12h": "Ogni 12 ore",
-				"every1d": "Ogni giorno",
-				"every7d": "Ogni settimana",
-				"custom": "Pianificazione personalizzata"
-			},
-			"statusTitle": "Stato",
-			"settingsFile": "File impostazioni",
-			"nextRun": "Prossima esecuzione",
-			"lastRun": "Ultima esecuzione",
-			"pendingReviews": "Revisioni in attesa",
-			"notScheduled": "Non pianificata",
-			"neverRun": "Mai",
-			"outputFolder": "Wiki generata",
-			"openOutput": "Apri cartella",
-			"runNow": "Esegui ora",
-			"running": "Generazione...",
-			"cancelling": "Annullamento...",
-			"progress": {
-				"preparing": "Preparazione {{current}} di {{total}} · {{source}}",
-				"generating": "Generazione {{current}} di {{total}} · {{source}}",
-				"writing": "Salvataggio {{current}} di {{total}} · {{source}}",
-				"cancelling": "Annullamento {{current}} di {{total}} · {{source}}"
-			},
-			"saved": "Impostazioni Wiki salvate.",
-			"runResult": "Elaborate {{processed}} fonti, saltate {{skipped}}, create {{created}} pagine e aggiornate {{updated}}.",
-			"loadError": "Impossibile caricare le impostazioni Wiki.",
-			"saveError": "Impossibile salvare le impostazioni Wiki.",
-			"runError": "Impossibile generare la Wiki.",
-			"cancelError": "Impossibile annullare la generazione della Wiki."
 		}
 	},
 	"dialogs": {
