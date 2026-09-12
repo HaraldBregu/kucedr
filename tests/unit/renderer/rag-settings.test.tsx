@@ -71,7 +71,7 @@ jest.mock('react-i18next', () => {
 		'settings.rag.embeddingConsent': 'Send document text for embeddings',
 		'settings.rag.embeddingConsentDescription':
 			'Allow Kucedr to send document chunks to the selected embedding provider.',
-		'settings.rag.mirrorConsent': 'Store plaintext knowledge in Pinecone',
+		'settings.rag.mirrorConsent': 'Store plaintext knowledge in the vector database',
 		'settings.rag.databaseTitle': 'Vector database',
 		'settings.rag.databasePlaceholder': 'Select vector database',
 		'settings.rag.embeddingModelTitle': 'Embedding model',
@@ -107,9 +107,9 @@ jest.mock('react-i18next', () => {
 		'settings.dataControls.ragIndexDescription': 'All local chunks',
 		'settings.dataControls.ragNamespace': 'Active local namespace',
 		'settings.dataControls.ragNamespaceDescription': 'Active local chunks',
-		'settings.dataControls.remoteNamespace': 'Pinecone namespace',
+		'settings.dataControls.remoteNamespace': 'Remote vector database namespace',
 		'settings.dataControls.remoteNamespaceDescription': 'Exact remote namespace',
-		'settings.dataControls.remoteAllNamespaces': 'All Pinecone namespaces',
+		'settings.dataControls.remoteAllNamespaces': 'All remote vector namespaces',
 		'settings.dataControls.remoteAllNamespacesDescription': 'All remote namespaces',
 	};
 	const t = (key: string): string => translations[key] ?? key;
@@ -118,9 +118,6 @@ jest.mock('react-i18next', () => {
 
 jest.mock('@/lib/providers', () => ({
 	defaultProviderId: () => 'openai',
-	databases: () => [
-		{ id: 'pinecone', name: 'Pinecone', provider: { id: 'pinecone', name: 'Pinecone' } },
-	],
 	modelsFor: () => [
 		{
 			id: 'text-embedding-3-small',
@@ -144,6 +141,7 @@ const agentApi = {
 };
 
 const databaseApi = {
+	list: jest.fn(),
 	getConfiguration: jest.fn(),
 	saveConfiguration: jest.fn(),
 };
@@ -185,6 +183,14 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'database', { configurable: true, value: databaseApi });
 	databaseApi.getConfiguration.mockResolvedValue({ providerId: undefined, databaseId: undefined });
+	databaseApi.list.mockResolvedValue([
+		{
+			providerId: 'pinecone',
+			databaseId: 'pinecone',
+			providerName: 'Pinecone',
+			databaseName: 'Pinecone Vector Database',
+		},
+	]);
 	databaseApi.saveConfiguration.mockImplementation(async (configuration) => configuration);
 	Object.defineProperty(window, 'agent', { configurable: true, value: agentApi });
 	Object.defineProperty(window, 'models', {
@@ -229,7 +235,7 @@ it('manages RAG data from the RAG page', async () => {
 		})
 	);
 
-	const allRemote = screen.getByText('All Pinecone namespaces');
+	const allRemote = screen.getByText('All remote vector namespaces');
 	const allRemoteRow = allRemote.closest('[class*="grid"]') as HTMLElement;
 	await user.click(within(allRemoteRow).getByRole('button', { name: 'Purge' }));
 	await waitFor(() =>
@@ -321,7 +327,9 @@ it('requires RAG and both disclosures before indexing', async () => {
 	expect(index).toBeDisabled();
 	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
 	expect(index).toBeDisabled();
-	await user.click(screen.getByRole('switch', { name: 'Store plaintext knowledge in Pinecone' }));
+	await user.click(
+		screen.getByRole('switch', { name: 'Store plaintext knowledge in the vector database' })
+	);
 	await waitFor(() => expect(index).toBeEnabled());
 	await user.click(index);
 	await waitFor(() => expect(agentApi.ragIndex).toHaveBeenCalledTimes(1));
@@ -435,7 +443,7 @@ it('leaves the vector database unselected until the user chooses one', async () 
 	expect(selector).toHaveTextContent('Select vector database');
 	expect(databaseApi.saveConfiguration).not.toHaveBeenCalled();
 	expect(
-		screen.getByRole('switch', { name: 'Store plaintext knowledge in Pinecone' })
+		screen.getByRole('switch', { name: 'Store plaintext knowledge in the vector database' })
 	).toHaveAttribute('aria-disabled', 'true');
 });
 
@@ -450,7 +458,7 @@ it('saves an explicit vector database choice and reloads cleared disclosure', as
 	await waitFor(() => expect(selector).toBeEnabled());
 	agentApi.ragGetConfiguration.mockClear();
 	agentApi.ragGetConfiguration.mockResolvedValue({ ...configuration, mirrorConsent: null });
-	fireEvent.click(screen.getByRole('option', { name: 'Pinecone / Pinecone' }));
+	fireEvent.click(screen.getByRole('option', { name: 'Pinecone / Pinecone Vector Database' }));
 	await waitFor(() =>
 		expect(databaseApi.saveConfiguration).toHaveBeenCalledWith({
 			providerId: 'pinecone',
@@ -459,9 +467,9 @@ it('saves an explicit vector database choice and reloads cleared disclosure', as
 	);
 	await waitFor(() => expect(agentApi.ragGetConfiguration).toHaveBeenCalledTimes(1));
 	await waitFor(() => expect(selector).toBeEnabled());
-	expect(selector).toHaveTextContent('Pinecone / Pinecone');
+	expect(selector).toHaveTextContent('Pinecone / Pinecone Vector Database');
 	expect(
-		screen.getByRole('switch', { name: 'Store plaintext knowledge in Pinecone' })
+		screen.getByRole('switch', { name: 'Store plaintext knowledge in the vector database' })
 	).not.toBeChecked();
 	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
 });

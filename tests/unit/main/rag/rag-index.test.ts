@@ -186,6 +186,6 @@ it('stops when consent is revoked between embedding batches and publication', as
 	});
 	await expect(
 		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
-	).rejects.toThrow('Confirm Pinecone');
+	).rejects.toThrow('Confirm remote vector database');
 	expect(upload).not.toHaveBeenCalled();
 });
