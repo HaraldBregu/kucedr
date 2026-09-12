@@ -33,7 +33,6 @@ it.each([
 	['/settings/agent/rag', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
-	['/settings/agent/llm-wiki', 'settings.wiki.title'],
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/agent/skills', 'settings.tabs.skills'],
 	['/settings/agent/mcp', 'settings.tabs.mcp'],
@@ -158,9 +157,6 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).not.toBeInTheDocument();
 	expect(
 		within(navigation).queryByRole('link', { name: 'settings.rag.title' })
-	).not.toBeInTheDocument();
-	expect(
-		within(navigation).queryByRole('link', { name: 'settings.wiki.title' })
 	).not.toBeInTheDocument();
 	expect(
 		within(navigation)

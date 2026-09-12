@@ -49,7 +49,6 @@ const routes = [
 	'/settings/providers/transcribe',
 	'/settings/providers/search',
 	'/settings/agent/rag',
-	'/settings/agent/llm-wiki',
 	'/settings/agent/tasks',
 	'/settings/agent',
 	'/settings/coding',
@@ -160,27 +159,6 @@ test('the leading /plan command activates Plan mode and requires prompt text', a
 	await expect(page.getByRole('button', { name: 'Send message' })).toBeEnabled();
 });
 
-test('wiki settings renders the complete configuration workflow', async ({
-	browserName: _browserName,
-}, testInfo) => {
-	await page.evaluate(() => {
-		window.location.hash = '#/settings/agent/llm-wiki';
-	});
-	await expect(page.getByRole('heading', { name: 'LLM Wiki', exact: true })).toBeVisible();
-	await expect(page.getByRole('textbox', { name: 'Raw source folder', exact: true })).toBeVisible();
-	await expect(
-		page.getByRole('textbox', { name: 'Generated wiki folder', exact: true })
-	).toBeVisible();
-	await expect(page.getByRole('combobox', { name: 'Generation frequency' })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Run now' })).toBeVisible();
-	await page.screenshot({ path: testInfo.outputPath('wiki-settings.png'), fullPage: true });
-	await page.getByText('Settings file', { exact: true }).scrollIntoViewIfNeeded();
-	await expect(page.getByRole('switch', { name: 'Enable wiki knowledge' })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Open folder' })).toBeVisible();
-	await page.screenshot({ path: testInfo.outputPath('wiki-settings-status.png'), fullPage: true });
-});
-
-
 test('Agent resources have icons and open their nested settings pages', async ({ browserName: _browserName }, testInfo) => {
 	await app.evaluate(({ BrowserWindow }) => {
 		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
@@ -191,15 +169,14 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		{ name: 'MCP Servers', path: 'mcp', icon: 'plug-zap' },
 		{ name: 'Health', path: 'health', icon: 'heart-pulse' },
 		{ name: 'Permissions', path: 'permissions', icon: 'shield-check' },
-		{ name: 'RAG', path: 'rag', icon: 'library' },
-		{ name: 'LLM Wiki', path: 'llm-wiki', icon: 'book-open-text' },
+		{ name: 'Knowledge Base', path: 'rag', icon: 'library' },
 	];
 	for (const resource of resources) {
 		await page.evaluate(() => { window.location.hash = '#/settings/agent'; });
 		const name = new RegExp(resource.name, 'i');
 		const sidebarLink = page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name });
 		await expect(sidebarLink).toHaveCount(0);
-		const role = ['health', 'permissions', 'rag', 'llm-wiki'].includes(resource.path) ? 'button' : 'link';
+		const role = ['health', 'permissions', 'rag'].includes(resource.path) ? 'button' : 'link';
 		const pageLink = page.locator('[data-slot="settings-workspace"]').getByRole(role, { name });
 		await expect(pageLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
 		await pageLink.click();

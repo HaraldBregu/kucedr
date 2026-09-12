@@ -1526,12 +1526,12 @@
 			"dismissSuccess": "Dismiss"
 		},
 		"rag": {
-			"title": "RAG",
+			"title": "Knowledge Base",
 			"description": "Index text files recursively from selected folders and search them as vectors.",
-			"behaviorTitle": "RAG behavior",
-			"enabled": "Enable RAG",
+			"behaviorTitle": "Knowledge Base behavior",
+			"enabled": "Enable Knowledge Base",
 			"enabledDescription": "Document indexing and assistant search.",
-			"indexRequirements": "Before indexing, select your vector database, configure the database and embedding provider API keys, enable RAG, and approve both disclosures under RAG behavior.",
+			"indexRequirements": "Before indexing, select your vector database, configure the database and embedding provider API keys, enable Knowledge Base, and approve both disclosures under Knowledge Base behavior.",
 			"embeddingConsent": "Send document text for embeddings",
 			"embeddingConsentDescription": "Allow document chunks and search queries to be sent to the selected embedding provider and account. Changing provider, model, endpoint or account requires new consent.",
 			"mirrorConsent": "Store plaintext knowledge in the vector database",
@@ -1551,8 +1551,8 @@
 			"pickFolder": "Choose folder",
 			"pickFolderError": "Unable to choose a source folder.",
 			"removeFolder": "Remove folder",
-			"loadError": "Unable to load RAG settings.",
-			"saveError": "Unable to save RAG settings.",
+			"loadError": "Unable to load Knowledge Base settings.",
+			"saveError": "Unable to save Knowledge Base settings.",
 			"scheduleTitle": "Automation",
 			"scheduleFrequency": "Indexing frequency",
 			"scheduleDescription": "Choose how often Kucedr checks the selected folders for new or changed files.",
@@ -2250,7 +2250,7 @@
 	"agentPrompt": {
 		"placeholder": "Ask the AI Agent and press Enter…",
 		"search": "Search",
-		"rag": "RAG"
+		"rag": "Knowledge Base"
 	},
 	"agentNode": {
 		"referenceImages": "Reference images",

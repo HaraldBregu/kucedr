@@ -1525,12 +1525,12 @@
 			"dismissSuccess": "Chiudi"
 		},
 		"rag": {
-			"title": "RAG",
+			"title": "Knowledge Base",
 			"description": "Indicizza ricorsivamente i file di testo nelle cartelle selezionate e cercali come vettori.",
-			"behaviorTitle": "Comportamento RAG",
-			"enabled": "Abilita RAG",
+			"behaviorTitle": "Comportamento Knowledge Base",
+			"enabled": "Abilita Knowledge Base",
 			"enabledDescription": "Indicizzazione dei documenti e ricerca dell'assistente.",
-			"indexRequirements": "Prima di indicizzare, seleziona il tuo database vettoriale, configura le chiavi API del database e del provider di embedding, abilita RAG e approva entrambi i consensi in Comportamento RAG.",
+			"indexRequirements": "Prima di indicizzare, seleziona il tuo database vettoriale, configura le chiavi API del database e del provider di embedding, abilita Knowledge Base e approva entrambi i consensi in Comportamento Knowledge Base.",
 			"embeddingConsent": "Invia il testo dei documenti per gli embedding",
 			"embeddingConsentDescription": "Consenti l’invio di parti dei documenti e query di ricerca al provider e account di embedding selezionati. Le modifiche a provider, modello, endpoint o account richiedono nuovo consenso.",
 			"mirrorConsent": "Salva la conoscenza in chiaro nel database vettoriale",
@@ -1550,8 +1550,8 @@
 			"pickFolder": "Scegli cartella",
 			"pickFolderError": "Impossibile scegliere una cartella sorgente.",
 			"removeFolder": "Rimuovi cartella",
-			"loadError": "Impossibile caricare le impostazioni RAG.",
-			"saveError": "Impossibile salvare le impostazioni RAG.",
+			"loadError": "Impossibile caricare le impostazioni Knowledge Base.",
+			"saveError": "Impossibile salvare le impostazioni Knowledge Base.",
 			"scheduleTitle": "Automazione",
 			"scheduleFrequency": "Frequenza di indicizzazione",
 			"scheduleDescription": "Scegli ogni quanto Kucedr controlla le cartelle selezionate per file nuovi o modificati.",
@@ -2249,7 +2249,7 @@
 	"agentPrompt": {
 		"placeholder": "Chiedi all'Agente AI e premi Invio…",
 		"search": "Cerca",
-		"rag": "RAG"
+		"rag": "Knowledge Base"
 	},
 	"agentNode": {
 		"referenceImages": "Immagini di riferimento",

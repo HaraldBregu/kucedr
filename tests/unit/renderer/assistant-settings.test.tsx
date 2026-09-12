@@ -138,10 +138,8 @@ jest.mock('react-i18next', () => {
 		'settings.overview.descriptions.permissions': 'Manage permissions',
 		'settings.dataControls.title': 'Data management',
 		'settings.dataControls.description': 'Export or purge assistant data',
-		'settings.rag.title': 'RAG',
+		'settings.rag.title': 'Knowledge Base',
 		'settings.overview.descriptions.rag': 'Document search and index',
-		'settings.wiki.title': 'LLM Wiki',
-		'settings.wiki.description': 'Build a persistent Markdown wiki',
 	};
 	const t = (key: string, options?: Record<string, unknown>): string => {
 		const value = translations[key] ?? key;
@@ -254,10 +252,6 @@ beforeEach(() => {
 			})),
 		},
 	});
-	Object.defineProperty(window, 'wiki', {
-		configurable: true,
-		value: { getSettings: jest.fn().mockResolvedValue({ targetPath: '/wiki' }) },
-	});
 	Object.defineProperty(window, 'tasks', {
 		configurable: true,
 		value: {
@@ -327,11 +321,11 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 		model.closest('[data-slot="card"]')
 	);
 
-	const wiki = screen.getByRole('button', { name: /LLM Wiki/ });
-	const rag = screen.getByRole('button', { name: /RAG/ });
+	const knowledgeBase = screen.getByRole('button', { name: /Knowledge Base/ });
 	const permissions = screen.getByRole('button', { name: /Permissions/ });
-	expect(rag.closest('[data-slot="card"]')).toBe(wiki.closest('[data-slot="card"]'));
-	expect(permissions.closest('[data-slot="card"]')).not.toBe(rag.closest('[data-slot="card"]'));
+	expect(permissions.closest('[data-slot="card"]')).not.toBe(
+		knowledgeBase.closest('[data-slot="card"]')
+	);
 	expect(screen.queryByRole('button', { name: /Data management/ })).not.toBeInTheDocument();
 
 	await user.click(screen.getByRole('link', { name: /^Tools/ }));
@@ -533,8 +527,7 @@ it.each([
 	['settings.tabs.skills', '/settings/agent/skills', 'link'],
 	['settings.tabs.taskScheduler', '/settings/agent/tasks', 'link'],
 	['settings.tabs.mcp', '/settings/agent/mcp', 'link'],
-	['RAG', '/settings/agent/rag', 'button'],
-	['LLM Wiki', '/settings/agent/llm-wiki', 'button'],
+	['Knowledge Base', '/settings/agent/rag', 'button'],
 ])('opens %s from the Agent settings page', async (label, path, role) => {
 	const user = userEvent.setup();
 	render(
