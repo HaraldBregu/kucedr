@@ -1,13 +1,40 @@
-import { uploadRagMirror } from './upload';
-import { discardRagMirror } from './discard';
-import { ragDatabaseKey } from './database';
+import {
+	isCurrentVectorDatabaseConnection,
+	selectedVectorDatabaseConnection,
+	type VectorDatabaseConnection,
+} from '../../../database/vector_connection';
+import { assertRagConsent } from './consent';
 import { getRagConfiguration } from './rag_store';
 import type { RagMirror } from './types';
 
 export function createRagMirror(): RagMirror {
-	const apiKey = ragDatabaseKey(getRagConfiguration());
+	const connection = selectedVectorDatabaseConnection();
 	return {
-		upload: uploadRagMirror.bind(undefined, apiKey),
-		discard: discardRagMirror.bind(undefined, apiKey),
+		upload: (indexName, generation, dimensions, records, signal) =>
+			connection.adapter.upload({
+				apiKey: connection.apiKey,
+				indexName,
+				generation,
+				dimensions,
+				records,
+				signal,
+				assertCurrent: () => assertMirrorCurrent(connection, indexName),
+			}),
+		discard: (indexName, generation, signal) =>
+			connection.adapter.discard(connection.apiKey, indexName, generation, signal),
 	};
+}
+
+function assertMirrorCurrent(connection: VectorDatabaseConnection, indexName: string): void {
+	if (!isCurrentVectorDatabaseConnection(connection)) {
+		throw new Error('The vector database account changed during indexing.');
+	}
+	const configuration = getRagConfiguration();
+	assertRagConsent(
+		configuration,
+		configuration.embeddingProviderId,
+		configuration.embeddingModelId,
+		indexName,
+		true
+	);
 }

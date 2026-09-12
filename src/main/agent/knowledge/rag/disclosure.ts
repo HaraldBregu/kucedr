@@ -24,7 +24,7 @@ export function authorizeRagDisclosure(configuration: RagConfiguration): RagConf
 	const mirror = next.mirrorConsent;
 	if (mirror?.version === 1 && !mirror.recipient) {
 		if (mirror.indexName !== next.indexName)
-			throw new Error('Select the index before granting Pinecone storage.');
+			throw new Error('Select the index before granting remote vector database storage.');
 		next.mirrorConsent = {
 			...mirror,
 			recipient: ragRecipient(

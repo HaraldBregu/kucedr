@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto';
 import { getProvider } from '../../../settings_store';
+import { selectedVectorDatabaseConnection } from '../../../database/vector_connection';
 import { EMBEDDING_PROVIDERS } from '../../../models/embedding/embedding_providers';
 import type { RagConfiguration } from '../../../../shared/rag_types';
-import { ragDatabaseKey } from './database';
 
 export function ragRecipient(
 	kind: 'embedding' | 'mirror',
@@ -12,19 +12,12 @@ export function ragRecipient(
 	configuration: Pick<RagConfiguration, 'databaseProviderId' | 'databaseId'>
 ): string {
 	if (kind === 'mirror') {
-		const key = ragDatabaseKey(configuration);
+		const connection = selectedVectorDatabaseConnection({
+			providerId: configuration.databaseProviderId || undefined,
+			databaseId: configuration.databaseId || undefined,
+		});
 		return createHash('sha256')
-			.update(
-				JSON.stringify([
-					configuration.databaseProviderId,
-					configuration.databaseId,
-					'https://api.pinecone.io',
-					'aws',
-					'us-east-1',
-					indexName,
-					key,
-				])
-			)
+			.update(JSON.stringify(connection.adapter.consentRecipient(connection.apiKey, indexName)))
 			.digest('hex');
 	}
 	const provider = EMBEDDING_PROVIDERS[providerId];
