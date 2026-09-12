@@ -22,7 +22,10 @@ beforeEach(() => {
 
 it('uses only selected database credentials and never an environment fallback', () => {
 	process.env.PINECONE_API_KEY = 'environment-key';
-	const connection = selectedVectorDatabaseConnection();
+	const connection = selectedVectorDatabaseConnection({
+		providerId: 'pinecone',
+		databaseId: 'pinecone',
+	});
 	expect(getProvider).toHaveBeenCalledWith('pinecone', 'databases');
 	expect(connection).toMatchObject({
 		configuration: { providerId: 'pinecone', databaseId: 'pinecone' },
@@ -33,10 +36,16 @@ it('uses only selected database credentials and never an environment fallback', 
 
 it('requires an explicit supported database selection and saved credential', () => {
 	getRagConfiguration.mockReturnValue({ databaseProviderId: '', databaseId: '' });
-	expect(() => selectedVectorDatabaseConnection()).toThrow('Select a vector database');
+	expect(() => selectedVectorDatabaseConnection({ providerId: undefined, databaseId: undefined })).toThrow(
+		'Select a vector database'
+	);
 	getRagConfiguration.mockReturnValue({ databaseProviderId: 'other', databaseId: 'other' });
-	expect(() => selectedVectorDatabaseConnection()).toThrow('not supported');
+	expect(() => selectedVectorDatabaseConnection({ providerId: 'other', databaseId: 'other' })).toThrow(
+		'not supported'
+	);
 	getRagConfiguration.mockReturnValue({ databaseProviderId: 'pinecone', databaseId: 'pinecone' });
 	getProvider.mockReturnValue(undefined);
-	expect(() => selectedVectorDatabaseConnection()).toThrow('Settings → Providers → Database');
+	expect(() =>
+		selectedVectorDatabaseConnection({ providerId: 'pinecone', databaseId: 'pinecone' })
+	).toThrow('Settings → Providers → Database');
 });
