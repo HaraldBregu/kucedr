@@ -31,7 +31,6 @@ import type { WindowFactory } from '../../window_factory';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
 import { filterTools } from './run_tools';
-import { formatToolOutput } from './run_common';
 import { selectSkillTools } from './run_skill_tools';
 import { activateSkill, createSkillRegistrySnapshot } from '../skills';
 import type { SkillLoadResult } from '../../../shared/skills_types';
