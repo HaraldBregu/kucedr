@@ -49,9 +49,9 @@ Sources: [IPC trust](../src/main/ipc/core/trusted.ts#L13), [approval caller](../
 - Per-session text scheduling, provider/subagent concurrency limits, ordered resource locks, bounded model retries, tool counts and output limits.
 - A2A hard approvals, endpoint/origin validation, bounded responses, redirect rejection and credential sealing; MCP schema and transport checks.
 - Skill package/resource containment, activation hashes and actual tool narrowing; workspace routing metadata is identified as user-controlled.
-- Session UUID/containment checks, atomic snapshots and backups, attachment checksums, semantic traces excluding raw model/tool content; wiki provenance, evidence checks and transactional updates.
+- Session UUID/containment checks, atomic snapshots and backups, attachment checksums, and semantic traces excluding raw model/tool content.
 
-Examples: [approval registry](../src/main/agent/permissions/permissions_pending.ts), [A2A fetch](../src/main/agent/a2a/fetch.ts), [skill tool intersection](../src/main/agent/runner/run_skill_tools.ts), [session containment](../src/main/agent/session/session_contained_path.ts), [trace projection](../src/main/agent/session/session_trace_entry.ts), [wiki evidence](../src/main/agent/knowledge/wiki/wiki_verify_evidence.ts).
+Examples: [approval registry](../src/main/agent/permissions/permissions_pending.ts), [A2A fetch](../src/main/agent/a2a/fetch.ts), [skill tool intersection](../src/main/agent/runner/run_skill_tools.ts), [session containment](../src/main/agent/session/session_contained_path.ts), [trace projection](../src/main/agent/session/session_trace_entry.ts).
 
 ## Findings
 
@@ -87,15 +87,13 @@ Acceptance: run B cannot enumerate/read/control run A's resources without a shar
 
 ### F4 — High: filesystem authorization is not bound to the accessed object
 
-There are two related paths. General file tools authorize a canonical target, then later execute the original path after asynchronous approval/lock waits. A symlink or parent directory can change in that interval. A deterministic test swapped a selected symlink during lock acquisition: `read` returned bytes from an explicitly denied outside directory.
+General file tools authorize a canonical target, then later execute the original path after asynchronous approval/lock waits. A symlink or parent directory can change in that interval. A deterministic test swapped a selected symlink during lock acquisition: `read` returned bytes from an explicitly denied outside directory.
 
-Wiki readers have a simpler containment gap: they enumerate `.md` names and use `readFile` without checking canonical containment. A fixture `wiki/leak.md` pointing outside the wiki was returned by `readWikiPage`. That tool is Plan-safe and bypasses the ordinary file-read policy; an existing malicious or accidental symlink is sufficient. Search/context/index readers repeat the pattern.
+Evidence: [canonical targets](../src/main/agent/permissions/tool_permission_targets.ts#L24), [authorization/execution gap](../src/main/agent/runner/run_tool_call.ts#L139), [raw file read](../src/main/agent/tools/core/read.ts#L22).
 
-Evidence: [canonical targets](../src/main/agent/permissions/tool_permission_targets.ts#L24), [authorization/execution gap](../src/main/agent/runner/run_tool_call.ts#L139), [raw file read](../src/main/agent/tools/core/read.ts#L22), [wiki read](../src/main/agent/knowledge/wiki/wiki_read_page.ts#L21), [wiki context](../src/main/agent/knowledge/wiki/wiki_context.ts#L24).
+Refactor: route file effects through a shared authorized filesystem boundary. Bind execution to a validated object/parent, revalidate after waits and immediately before effects, and define a symlink policy. Use descriptor-based/no-follow operations or an isolated filesystem executor where necessary; a second `realpath` alone is not a complete race defense.
 
-Refactor: route file effects through a shared authorized filesystem boundary. Bind execution to a validated object/parent, revalidate after waits and immediately before effects, and define a symlink policy. Use descriptor-based/no-follow operations or an isolated filesystem executor where necessary; a second `realpath` alone is not a complete race defense. Apply equivalent containment to every compiled-wiki read path.
-
-Acceptance: outside symlinks and path swaps cannot expose or mutate outside bytes; internal symlink behavior is explicit; denied paths stay denied across read/edit/patch/history/wiki routes; cancellation while waiting starts no file operation.
+Acceptance: outside symlinks and path swaps cannot expose or mutate outside bytes; internal symlink behavior is explicit; denied paths stay denied across read/edit/patch/history routes; cancellation while waiting starts no file operation.
 
 ### F5 — Medium, potentially high impact: filesystem permission names overstate their scope
 
