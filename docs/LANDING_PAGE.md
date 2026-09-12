@@ -2,7 +2,7 @@
 
 Build a polished, responsive product landing page for **Kucedr**, a cross-platform desktop AI copilot that turns conversations into actions and turns useful work into reusable knowledge.
 
-This document is the source prompt for the page. Use the approved positioning and copy below. Keep every product claim consistent with the current implementation, especially the distinctions between Skills, the Knowledge Base, the LLM Wiki, and Apps.
+This document is the source prompt for the page. Use the approved positioning and copy below. Keep every product claim consistent with the current implementation, especially the distinctions between Skills, the Knowledge Base, and Apps.
 
 ## Page objective
 
@@ -28,7 +28,7 @@ Do not add pricing, testimonials, customer logos, usage counters, or a newslette
 
 **Existing product tagline:** Your desktop AI copilot for everyday tasks.
 
-**Landing-page promise:** Kucedr connects action, reusable expertise, source-grounded retrieval, durable knowledge, and focused mini-apps in one desktop assistant.
+**Landing-page promise:** Kucedr connects action, reusable expertise, source-grounded retrieval, and focused mini-apps in one desktop assistant.
 
 **Core narrative:**
 
@@ -36,11 +36,10 @@ Do not add pricing, testimonials, customer logos, usage counters, or a newslette
 Ask Kucedr to do the work
   -> activate the right reusable Skill
   -> retrieve evidence from the Knowledge Base
-  -> build on durable knowledge in the LLM Wiki
   -> use focused Apps when the workflow needs a dedicated interface
 ```
 
-Use the user-facing name **RAG** in application navigation. Marketing copy may introduce it as the semantic Knowledge Base for less technical readers. Keep **LLM Wiki** as the feature name.
+Use the user-facing name **Knowledge Base** in application navigation and marketing copy. Technical documentation may describe its retrieval architecture as RAG.
 
 ## Approved page structure and copy
 
@@ -72,7 +71,7 @@ Turn conversations into action. Turn your work into lasting knowledge.
 **Supporting copy**
 
 ```text
-Kucedr works with your files, tools, and chosen AI providers—then makes the useful parts reusable through Skills, semantic document search, a source-aware LLM Wiki, and custom Apps.
+Kucedr works with your files, tools, and chosen AI providers—then makes the useful parts reusable through Skills, semantic document search, and custom Apps.
 ```
 
 **Actions**
@@ -86,14 +85,13 @@ Kucedr works with your files, tools, and chosen AI providers—then makes the us
 Bring your own providers. Keep control of the setup. Follow every tool action in the conversation.
 ```
 
-Show four concise capability labels near the hero visual:
+Show three concise capability labels near the hero visual:
 
 - Reusable Skills
 - Semantic Knowledge Base
-- Source-aware LLM Wiki
 - Custom Apps
 
-The hero visual should look like the real Kucedr desktop application, not a generic browser chat mockup. Show one request moving through visible activity states such as loading a skill, searching knowledge, reading a wiki page, and updating a local file. Do not invent a marketplace, team workspace, or autonomous background task result.
+The hero visual should look like the real Kucedr desktop application, not a generic browser chat mockup. Show one request moving through visible activity states such as loading a skill, searching knowledge, and updating a local file. Do not invent a marketplace, team workspace, or autonomous background task result.
 
 ### 3. Product foundation
 
@@ -113,7 +111,7 @@ Present a short four-step flow:
 
 1. **Ask** — Start with a natural-language request and the context that matters.
 2. **Act** — Kucedr selects tools, works through the task, and shows its activity.
-3. **Ground** — The assistant retrieves relevant source excerpts or compiled wiki knowledge.
+3. **Ground** — The assistant retrieves relevant source excerpts from the Knowledge Base.
 4. **Reuse** — Save the workflow as a Skill or give it a focused interface through an App.
 
 Use this section as context, not as a complete inventory of every Kucedr feature.
@@ -163,7 +161,7 @@ Set the section anchor to `knowledge`.
 **Eyebrow**
 
 ```text
-Retrieval plus durable knowledge
+Source-grounded retrieval
 ```
 
 **Heading**
@@ -175,10 +173,8 @@ Find the source. Keep the insight.
 **Intro copy**
 
 ```text
-Kucedr uses two complementary knowledge layers. The Knowledge Base retrieves relevant excerpts from indexed text. The LLM Wiki turns changing source material into structured, interlinked Markdown that can be checked, reviewed, and reused.
+The Knowledge Base retrieves relevant excerpts from indexed text so Kucedr can answer with material from the folders you choose.
 ```
-
-Present the two features as equal, connected panels rather than competing products.
 
 #### Knowledge Base
 
@@ -202,50 +198,7 @@ Choose one or more folders of text, create a semantic index with your selected e
 - Supports manual generation and scheduled full index rebuilds.
 - Rejects common credential files and high-confidence secret content before indexing.
 
-Use **RAG** in the interface. Marketing copy may say **RAG-powered semantic retrieval**. Do not describe this feature as local-only, incremental, compatible with PDFs or office documents, or independent of Pinecone.
-
-#### LLM Wiki
-
-**Card heading**
-
-```text
-Build knowledge that improves as sources change.
-```
-
-**Card copy**
-
-```text
-Compile Markdown, text, JSON, CSV, and log files into a persistent, interlinked Markdown wiki. Kucedr preserves source evidence, maintains traceable claims and contradictions, validates every staged update, and incrementally skips sources that have not changed.
-```
-
-**Feature points**
-
-- Generates concise source, concept, topic, project, comparison, synthesis, and question pages.
-- Records source-aware claims, confidence, relationships, contradictions, and open questions.
-- Keeps immutable evidence snapshots and an append-only operation log.
-- Stages and validates updates before atomically replacing the generated wiki.
-- Supports manual generation, cancellation, scheduled maintenance, linting, and review for major synthesis rewrites.
-- Stores the generated wiki as ordinary Markdown in a user-selected local folder.
-
-**Supporting callout**
-
-```text
-The wiki gives Kucedr durable synthesis. Raw evidence and the Knowledge Base remain available when an answer needs exact wording or broader retrieval.
-```
-
-For the visual, show source files flowing into interlinked Markdown pages with small evidence, confidence, and contradiction markers. Avoid depicting the wiki as vector search or claiming that every high-impact change always requires review.
-
-#### Knowledge comparison
-
-Preserve this distinction in both copy and visuals:
-
-|               | Knowledge Base                               | LLM Wiki                                              |
-| ------------- | -------------------------------------------- | ----------------------------------------------------- |
-| Best for      | Finding relevant source excerpts             | Maintaining reusable synthesis and relationships      |
-| Input         | Readable text across selected folders        | Markdown, text, JSON, CSV, and logs                   |
-| Processing    | Remote embeddings and Pinecone vector search | Selected text model and validated Markdown generation |
-| Result        | Ranked excerpts with paths and scores        | Interlinked pages with source-aware claims            |
-| Refresh model | Manual or scheduled full rebuild             | Incremental source-aware compilation                  |
+Use **Knowledge Base** in the interface. Technical copy may say **RAG-powered semantic retrieval**. Do not describe this feature as local-only, incremental, compatible with PDFs or office documents, or independent of Pinecone.
 
 ### 6. Apps
 
@@ -361,7 +314,7 @@ The page should feel capable, precise, and personal. Avoid a noisy cyberpunk aes
 
 - Use subtle scroll reveals and short transitions only where they clarify the product flow.
 - Animate the hero activity sequence once, then settle into a readable final state.
-- Let the Knowledge section visually branch into retrieval and wiki compilation, then reconnect at the answer.
+- Let the Knowledge section show selected files becoming ranked excerpts that ground an answer.
 - Make cards respond gently to hover without large tilts, parallax, or cursor-following effects.
 - Respect `prefers-reduced-motion` and keep all content available without animation.
 
@@ -371,7 +324,7 @@ The page should feel capable, precise, and personal. Avoid a noisy cyberpunk aes
 - Preserve the content order and messaging hierarchy on mobile.
 - Meet WCAG AA contrast for text, controls, focus indicators, and links.
 - Make navigation, menus, and calls to action fully keyboard accessible.
-- Do not rely on color alone to distinguish Skills, Knowledge Base, LLM Wiki, and Apps.
+- Do not rely on color alone to distinguish Skills, Knowledge Base, and Apps.
 - Give product images meaningful alternative text; mark decorative glow and connector elements as decorative.
 - Keep paragraph width readable and avoid horizontal scrolling at 320 CSS pixels.
 
@@ -386,7 +339,7 @@ Kucedr — Desktop AI that turns knowledge into action
 **Description**
 
 ```text
-Kucedr is a cross-platform desktop AI copilot with reusable Skills, a source-aware LLM Wiki, semantic document search, and custom Apps.
+Kucedr is a cross-platform desktop AI copilot with reusable Skills, semantic document search, and custom Apps.
 ```
 
 Use the same core message for Open Graph and social metadata. Use the Kucedr icon or a product-composition image, not a fabricated customer or performance statistic.
@@ -399,8 +352,6 @@ The finished page must not imply capabilities that are only planned, partial, or
 - Do not claim that all AI or knowledge processing happens locally.
 - Do not call the Knowledge Base incremental; current indexing rebuilds its Pinecone index.
 - Do not claim arbitrary vector-database support; the current runtime uses Pinecone.
-- Do not present the LLM Wiki as semantic vector search or as a replacement for the Knowledge Base.
-- Do not claim that wiki answers are automatically filed by default.
 - Do not claim a Skills or Apps marketplace.
 - Do not claim that every Skill metadata declaration is enforced at runtime.
 - Do not claim that Apps are signed, verified, permission-isolated, or safe to install from untrusted sources.
@@ -413,8 +364,7 @@ The finished page must not imply capabilities that are only planned, partial, or
 The landing page is complete when:
 
 - The hero explains Kucedr's category, action capability, and knowledge advantage without scrolling.
-- Skills, Knowledge Base, LLM Wiki, and Apps each receive a distinct, implementation-accurate explanation.
-- The relationship between retrieval and compiled wiki knowledge is visually and verbally clear.
+- Skills, Knowledge Base, and Apps each receive a distinct, implementation-accurate explanation.
 - The privacy section distinguishes local storage from processing by configured external services.
 - Primary and secondary calls to action are visible in the hero and final section.
 - The result works across desktop, tablet, and mobile and meets the accessibility requirements above.
@@ -426,12 +376,10 @@ Use these repository sources to validate final copy and product visuals:
 
 - [Product overview](../README.md)
 - [Feature reference](FEATURES.md)
-- [LLM Wiki reference](WIKI.md)
 - [Skills settings](../src/renderer/src/pages/settings/pages/skills/Page.tsx)
 - [Skill loading](../src/main/agent/tools/skill_load.ts)
 - [RAG settings](../src/renderer/src/pages/settings/pages/rag/Page.tsx)
 - [Knowledge search tool](../src/main/agent/tools/knowledge/rag.ts)
-- [LLM Wiki settings](../src/renderer/src/pages/settings/pages/wiki/Page.tsx)
 - [Apps settings](../src/renderer/src/pages/settings/pages/apps/Page.tsx)
 - [App window](../src/main/apps/app_render.ts)
 - [Kucedr SDK](../packages/sdk/README.md)
