@@ -664,4 +664,49 @@ describe('run stream system prompt', () => {
 		expect(events.filter((event) => event.type === 'run_finished')).toHaveLength(1);
 		expect(events.at(-1)?.type).toBe('run_finished');
 	});
+
+	it('pins the resolved execution contract for delegated children', async () => {
+		const scope = { ownerId: 'channel', source: 'channel' as const, sessionId: 'parent', runId: 'parent' };
+		runModelTurnMock.mockImplementation(async function* (input: { agentId: string }) {
+			yield* [];
+			return input.agentId === 'subagent'
+				? { content: 'child result', model: 'pinned-model', toolCalls: [] }
+				: runModelTurnMock.mock.calls.filter((call) => call[0].agentId === 'main').length === 1
+					? {
+						content: '',
+						model: 'pinned-model',
+						toolCalls: [{ id: 'delegate', name: 'subagent', args: { task: 'inspect' } }],
+					}
+					: { content: 'parent result', model: 'pinned-model', toolCalls: [] };
+		});
+
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			{
+				runId: 'parent-run',
+				task: 'chat',
+				message: 'delegate',
+				providerId: 'configured-provider',
+				model: 'pinned-model',
+				effort: 'high',
+				type: 'background',
+				agentId: 'main',
+				contextMode: 'minimal',
+				interactionMode: 'default',
+				scope,
+			},
+			new AbortController().signal,
+			{ sandbox }
+		))
+			void _event;
+
+		const childInput = runModelTurnMock.mock.calls.find((call) => call[0].agentId === 'subagent')?.[0];
+		expect(childInput).toMatchObject({
+			providerId: 'test-provider',
+			model: 'pinned-model',
+			effort: 'high',
+			scope,
+		});
+	});
 });
