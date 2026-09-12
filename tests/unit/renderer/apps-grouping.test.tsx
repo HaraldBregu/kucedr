@@ -38,3 +38,27 @@ it('shows clear delegation activity and batch outcomes', () => {
 		})
 	).toBe('1/2 subagents completed');
 });
+
+it('keeps each delegated task visible while the batch is running', () => {
+	render(
+		<ToolActivityGroup
+			tools={[
+				{
+					type: 'subagents',
+					state: 'input-available',
+					toolCallId: 'delegation',
+					input: {
+						tasks: [
+							{ id: 'research', task: 'Search primary sources' },
+							{ id: 'review', task: 'Compare the findings' },
+						],
+					},
+				},
+			] satisfies AgentToolPart[]}
+		/>
+	);
+
+	expect(screen.getByLabelText('Subagent activity')).toBeInTheDocument();
+	expect(screen.getByText('Search primary sources')).toBeInTheDocument();
+	expect(screen.getByText('Compare the findings')).toBeInTheDocument();
+});
