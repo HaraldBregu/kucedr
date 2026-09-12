@@ -84,8 +84,11 @@ it('edits one connection without requiring or displaying its saved secret', asyn
 	const user = userEvent.setup();
 	api.listProviders.mockResolvedValue([first, second]);
 	render(<StorageProvidersPage />);
+	await screen.findByText('Production');
+	expect(screen.queryByText('test-access-id')).not.toBeInTheDocument();
 	await user.click(await screen.findByRole('button', { name: 'Edit Production' }));
 	const form = within(screen.getByRole('form'));
+	expect(form.getByLabelText('Access key ID')).toHaveValue('test-access-id');
 	expect(form.getByLabelText('Secret access key')).toHaveValue('');
 	expect(form.getByLabelText('Secret access key')).not.toBeRequired();
 	await user.clear(form.getByLabelText('Name'));

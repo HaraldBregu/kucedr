@@ -265,11 +265,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								</Button>
 							</div>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
-								{connected
-									? kind === 'models'
-										? '************'
-										: entry?.savedApiKey
-									: provider.capabilities}
+								{connected ? '************' : provider.capabilities}
 							</p>
 						</div>
 						<div className="flex shrink-0 justify-end gap-2">

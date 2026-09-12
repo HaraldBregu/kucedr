@@ -112,7 +112,8 @@ it('saves Database credentials in the databases collection', async () => {
 		})
 	);
 	expect(window.provider.list).toHaveBeenCalledWith('databases');
-	expect(screen.getByText('database-secret')).toBeInTheDocument();
+	expect(screen.getByText('************')).toBeInTheDocument();
+	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
 });
 
 it('loads and displays saved Database keys', async () => {
@@ -129,7 +130,8 @@ it('loads and displays saved Database keys', async () => {
 			<ProvidersPage section="databases" />
 		</MemoryRouter>
 	);
-	expect(await screen.findByText('database-secret')).toBeInTheDocument();
+	expect(await screen.findByText('************')).toBeInTheDocument();
+	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('button', { name: 'Edit Pinecone API key' }));
 	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('database-secret');
