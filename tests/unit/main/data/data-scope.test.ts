@@ -1,7 +1,3 @@
-const getWikiSettings = jest.fn(() => ({ targetPath: '/wiki/current' }));
-
-jest.mock('../../../../src/main/agent/knowledge/wiki', () => ({ getWikiSettings }));
-
 import { normalizeDataScope } from '../../../../src/main/data/data_scope';
 
 it('normalizes exact local RAG and session scopes', () => {
@@ -59,9 +55,6 @@ it('rejects broad, malformed, and unconfigured scopes', () => {
 			sessionIds: ['..'],
 		})
 	).toThrow('Invalid assistant session id.');
-	expect(() => normalizeDataScope({ kind: 'wiki', targetPath: '/wiki/another' })).toThrow(
-		'must match the configured target'
-	);
 	expect(() =>
 		normalizeDataScope({
 			kind: 'rag',

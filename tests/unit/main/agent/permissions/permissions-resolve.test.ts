@@ -97,11 +97,6 @@ describe('resolveToolPermission', () => {
 		['resume_task', {}],
 		['delete_task', {}],
 		['run_task_now', {}],
-		['ingest_wiki_source', {}],
-		['save_wiki_analysis', {}],
-		['review_wiki_changes', {}],
-		['rebuild_wiki_index', {}],
-		['lint_wiki', { autoFix: true }],
 		['microphone_recorder', {}],
 		['camera_recorder', {}],
 		['screen_recorder', {}],
@@ -124,9 +119,6 @@ describe('resolveToolPermission', () => {
 		expect(resolveToolPermission('list_tasks', {}, undefined, true, 'ask', denyWrites)).toBe(
 			'allow'
 		);
-		expect(
-			resolveToolPermission('lint_wiki', { autoFix: false }, undefined, true, 'ask', denyWrites)
-		).toBe('allow');
 	});
 
 	it.each(['create_task', 'update_task', 'delete_task'])('allows direct %s requests', (toolName) => {

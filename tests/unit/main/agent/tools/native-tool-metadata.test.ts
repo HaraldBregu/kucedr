@@ -26,25 +26,12 @@ import { pauseTaskTool } from '../../../../../src/main/agent/tools/tasks/pause_t
 import { resumeTaskTool } from '../../../../../src/main/agent/tools/tasks/resume_task';
 import { runTaskNowTool } from '../../../../../src/main/agent/tools/tasks/run_task_now';
 import { updateTaskTool } from '../../../../../src/main/agent/tools/tasks/update_task';
-import { ingestWikiSourceTool } from '../../../../../src/main/agent/tools/knowledge/ingest_wiki_source';
-import { lintWikiTool } from '../../../../../src/main/agent/tools/knowledge/lint_wiki';
-import { readWikiPageTool } from '../../../../../src/main/agent/tools/knowledge/read_wiki_page';
-import { rebuildWikiIndexTool } from '../../../../../src/main/agent/tools/knowledge/rebuild_wiki_index';
-import { reviewWikiChangesTool } from '../../../../../src/main/agent/tools/knowledge/review_wiki_changes';
-import { saveWikiAnalysisTool } from '../../../../../src/main/agent/tools/knowledge/save_wiki_analysis';
-import { searchWikiTool } from '../../../../../src/main/agent/tools/knowledge/search_wiki';
-import { queryWikiTool } from '../../../../../src/main/agent/tools/knowledge/query_wiki';
 import { useWebBrowserTool } from '../../../../../src/main/agent/tools/web/use_web_browser';
 
 it.each([
 	updateHealthTool({ location: '/workspace' }),
 	updateHealthSettingsTool,
 	completeBootstrapTool,
-	ingestWikiSourceTool,
-	saveWikiAnalysisTool,
-	lintWikiTool,
-	reviewWikiChangesTool,
-	rebuildWikiIndexTool,
 	createImageTool(),
 	createVideoTool(),
 	createSoundTool(),
@@ -60,14 +47,6 @@ it.each([
 	expect(tool.hardApproval).toBeUndefined();
 	expect(tool.alwaysAsk).toBeUndefined();
 });
-
-it.each([searchWikiTool, readWikiPageTool, queryWikiTool])(
-	'%s is safe to expose in plan mode',
-	(tool) => {
-		expect(tool.planSafe).toBe(true);
-		expect(tool.hardApproval).toBeUndefined();
-	}
-);
 
 it.each([
 	createTaskTool,
@@ -101,9 +80,4 @@ it('uses taskId in task tool inputs', () => {
 it('uses ordinary policy approval for focused text edits', () => {
 	expect(editTool.id).toBe('edit');
 	expect(editTool.hardApproval).not.toBe(true);
-});
-
-it('allows wiki lint to use its ordinary policy', () => {
-	expect(lintWikiTool.id).toBe('lint_wiki');
-	expect(lintWikiTool.hardApproval).toBeUndefined();
 });

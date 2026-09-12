@@ -8,7 +8,7 @@ describe('storageTarget', () => {
 	});
 
 	it.each([
-		['another prefix', 'kucedr/v1/wiki/notes.md'],
+		['another prefix', 'kucedr/v1/archive/notes.md'],
 		['a parent traversal', 'kucedr/v1/agent/../notes.md'],
 		['an empty path segment', 'kucedr/v1/agent/notes//today.md'],
 	])('rejects %s', async (_name, key) => {

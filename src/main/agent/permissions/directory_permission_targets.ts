@@ -34,7 +34,7 @@ const TASK_TOOLS = new Set([
 	'run_task_now',
 ]);
 export const TASK_MUTATION_TOOLS = new Set(['create_task', 'update_task', 'delete_task']);
-export function isWritePermissionTool(toolName: string, args: Record<string, unknown>): boolean {
+export function isWritePermissionTool(toolName: string, _args: Record<string, unknown>): boolean {
 	return (
 		toolName === 'write' ||
 		toolName === 'edit' ||

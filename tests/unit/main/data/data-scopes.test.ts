@@ -7,11 +7,9 @@ const ragVectorStore = jest.fn(() => ({ getIndex, close }));
 const getRagConfiguration = jest.fn(() => ({
 	indexName: 'knowledge-base',
 }));
-const getWikiSettings = jest.fn(() => ({ targetPath: '/wiki' }));
 
 jest.mock('../../../../src/main/agent/knowledge/rag/vector', () => ({ ragVectorStore }));
 jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({ getRagConfiguration }));
-jest.mock('../../../../src/main/agent/knowledge/wiki', () => ({ getWikiSettings }));
 
 import { DataController } from '../../../../src/main/data/data_controller';
 
@@ -31,7 +29,6 @@ it('discovers full local, active local, and remote Kucedr namespace scopes separ
 	expect(controller.listScopes()).toEqual([
 		{ kind: 'memory' },
 		{ kind: 'sessions', sessionIds: ['11111111-1111-4111-8111-111111111111'] },
-		{ kind: 'wiki', targetPath: '/wiki' },
 		{ kind: 'rag', mode: 'local_index', indexName: 'knowledge-base' },
 		{
 			kind: 'rag',
