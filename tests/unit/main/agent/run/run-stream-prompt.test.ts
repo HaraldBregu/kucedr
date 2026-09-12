@@ -714,6 +714,6 @@ describe('run stream system prompt', () => {
 			effort: 'high',
 			scope,
 		});
-		expect(childCall?.[8]).toEqual({ temperature: 0.2 });
+		expect(childCall?.[7]).toEqual({ temperature: 0.2 });
 	});
 });
