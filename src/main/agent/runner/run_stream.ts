@@ -56,6 +56,7 @@ export interface StreamOptions {
 	providerLimiter?: KeyedLimiter;
 	subagentLimiter?: KeyedLimiter;
 	budget?: ExecutionBudget;
+	modelOptions?: Record<string, unknown>;
 	sandbox?: ExecSandbox;
 }
 
@@ -140,7 +141,7 @@ async function* loop(
 ): AsyncGenerator<RuntimeEvent> {
 	const provider = getResolvedProvider(input.providerId ?? getProviderId());
 	const modelId = input.model ?? getModelId();
-	const modelOptions = getModelOptions();
+	const modelOptions = options.modelOptions ?? structuredClone(getModelOptions());
 	const runId = input.runId ?? session.id;
 	const budget =
 		options.budget ??
@@ -246,6 +247,7 @@ async function* loop(
 			...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
 			...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
 			budget,
+			modelOptions,
 			providerId: provider.id,
 			model: modelId,
 			...(input.effort ? { effort: input.effort } : {}),

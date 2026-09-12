@@ -9,7 +9,7 @@ import { tool } from '../tool';
 
 export interface ChildRuntime extends Pick<
 	StreamOptions,
-	'resources' | 'providerLimiter' | 'subagentLimiter' | 'budget'
+	'resources' | 'providerLimiter' | 'subagentLimiter' | 'budget' | 'modelOptions'
 > {
 	type: AgentRunType;
 	interactionMode: import('../../../../shared/agent_types').AgentInteractionMode;
@@ -21,11 +21,12 @@ export interface ChildRuntime extends Pick<
 }
 
 export interface ChildOutcome {
-	status: 'completed' | 'cancelled' | 'failed';
+	status: 'completed' | 'cancelled' | 'failed' | 'exhausted';
 	text: string;
 	stopReason?: string;
 	usage?: SessionResult['usage'];
 	error?: string;
+	result?: Pick<SessionResult, 'sessionId' | 'model' | 'subtype' | 'toolCalls'>;
 }
 
 export async function runChild(
@@ -78,14 +79,58 @@ export async function runChild(
 	} catch (cause) {
 		error = cause instanceof Error ? cause.message : String(cause);
 	}
-	if (result?.subtype === 'error_max_turns')
-		text = text || 'Subagent stopped: reached max iterations without a final answer.';
+	text = result?.text || text;
+	const outcome = result
+		? {
+				sessionId: result.sessionId,
+				model: result.model,
+				subtype: result.subtype,
+				toolCalls: result.toolCalls,
+			}
+		: undefined;
+	if (result?.subtype === 'error_max_turns') {
+		return {
+			status: 'failed',
+			text: text || 'Subagent stopped: reached max iterations without a final answer.',
+			stopReason: result.stopReason,
+			usage: result.usage,
+			result: outcome,
+		};
+	}
 	if (signal.aborted || result?.stopReason === 'cancelled' || result?.stopReason === 'timeout') {
-		return { status: 'cancelled', text, stopReason: result?.stopReason, usage: result?.usage };
+		return {
+			status: 'cancelled',
+			text,
+			stopReason: result?.stopReason,
+			usage: result?.usage,
+			result: outcome,
+		};
 	}
 	if (error)
-		return { status: 'failed', text, stopReason: result?.stopReason, usage: result?.usage, error };
-	return { status: 'completed', text, stopReason: result?.stopReason, usage: result?.usage };
+		return {
+			status: 'failed',
+			text,
+			stopReason: result?.stopReason,
+			usage: result?.usage,
+			error,
+			result: outcome,
+		};
+	if (result?.stopReason === 'budget_exhausted') {
+		return {
+			status: 'exhausted',
+			text,
+			stopReason: result.stopReason,
+			usage: result.usage,
+			result: outcome,
+		};
+	}
+	return {
+		status: 'completed',
+		text,
+		stopReason: result?.stopReason,
+		usage: result?.usage,
+		result: outcome,
+	};
 }
 
 const subagentInstructions = `You are a subagent spawned by the main agent to complete one specific task.
