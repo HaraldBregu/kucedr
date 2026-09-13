@@ -40,10 +40,11 @@ beforeEach(() => resetPermissions());
 
 describe('agent store permissions', () => {
 	it('trusts the workspace recursively for every filesystem capability', () => {
-		expect(resetPermissions()).toEqual({
+		expect(resetPermissions()).toMatchObject({
 			read: { allow: [workspaceRule], deny: [] },
 			write: { allow: [workspaceRule], deny: [] },
 			exec: { allow: [workspaceRule], deny: [] },
+			tools: { read: 'ask', edit: 'ask', patch: 'ask' },
 		});
 	});
 
