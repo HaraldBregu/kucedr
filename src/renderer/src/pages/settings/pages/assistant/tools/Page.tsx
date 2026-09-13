@@ -84,6 +84,14 @@ type AgentToolGroup = {
 	readonly tools: readonly AgentTool[];
 };
 
+type FileToolsPermission = 'ask' | 'allow' | 'deny';
+
+function getFileToolsPermission(permissions: Awaited<ReturnType<typeof window.agent.policyGet>>): FileToolsPermission {
+	if (permissions.read.deny.includes('*') || permissions.write.deny.includes('*')) return 'deny';
+	if (permissions.read.allow.includes('*') && permissions.write.allow.includes('*')) return 'allow';
+	return 'ask';
+}
+
 const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 	{
 		titleKey: 'coordination',
@@ -296,6 +304,11 @@ const ToolsPage: React.FC = () => {
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
 	const [searchEngineError, setSearchEngineError] = useState<string | null>(null);
 	const [searchSavingEngineId, setSearchSavingEngineId] = useState<SearchEngineId | null>(null);
+	const [permissions, setPermissions] = useState<
+		Awaited<ReturnType<typeof window.agent.policyGet>> | null
+	>(null);
+	const [fileToolsSaving, setFileToolsSaving] = useState(false);
+	const [fileToolsError, setFileToolsError] = useState<string | null>(null);
 	const selectedSearchEngine = SEARCH_ENGINES.find(
 		(engine) => engine.id === searchSettings?.engineId
 	);
@@ -321,6 +334,12 @@ const ToolsPage: React.FC = () => {
 		};
 	}, [t]);
 
+	useEffect(() => {
+		void window.agent.policyGet().then(setPermissions, (error) => {
+			setFileToolsError(firstErrorMessage(error, t('settings.modelServices.loadError')));
+		});
+	}, [t]);
+
 	const handleSearchEngineChange = (value: SearchEngineId | null): void => {
 		if (!value) return;
 		setSearchSavingEngineId(value);
@@ -338,6 +357,29 @@ const ToolsPage: React.FC = () => {
 			.finally(() => {
 				setSearchSavingEngineId(null);
 			});
+	};
+
+	const handleFileToolsPermissionChange = (value: FileToolsPermission | null): void => {
+		if (!permissions || !value || fileToolsSaving) return;
+		const next = (['read', 'write'] as const).reduce(
+			(current, kind) => ({
+				...current,
+				[kind]: {
+					allow: value === 'allow' ? [...current[kind].allow.filter((rule) => rule !== '*'), '*'] : current[kind].allow.filter((rule) => rule !== '*'),
+					deny: value === 'deny' ? [...current[kind].deny.filter((rule) => rule !== '*'), '*'] : current[kind].deny.filter((rule) => rule !== '*'),
+				},
+			}),
+			permissions
+		);
+		setPermissions(next);
+		setFileToolsSaving(true);
+		setFileToolsError(null);
+		void window.agent.policySet(next).then(setPermissions, (error) => {
+			setFileToolsError(firstErrorMessage(error, t('settings.modelServices.saveError')));
+			setPermissions(permissions);
+		}).finally(() => {
+			setFileToolsSaving(false);
+		});
 	};
 
 	return (
@@ -482,13 +524,36 @@ const ToolsPage: React.FC = () => {
 			</SettingsSection>
 
 			{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
-				const Icon = group.icon;
-				return (
-					<SettingsSection
-						key={group.titleKey}
-						title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
-					>
-						<SettingsPanel>
+					const Icon = group.icon;
+					const fileToolsPermission = permissions ? getFileToolsPermission(permissions) : null;
+					return (
+						<SettingsSection
+							key={group.titleKey}
+							title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
+							action={
+								group.titleKey === 'files' ? (
+									<Select
+										value={fileToolsPermission}
+										onValueChange={(value) => handleFileToolsPermissionChange(value as FileToolsPermission | null)}
+										disabled={!fileToolsPermission || fileToolsSaving}
+									>
+										<SelectTrigger
+											size="sm"
+											className="w-32 text-xs [&_svg]:size-3"
+											aria-label={t('settings.modelServices.agentTools.filePermissionLabel')}
+										>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem>
+											<SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem>
+											<SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem>
+										</SelectContent>
+									</Select>
+								) : undefined
+							}
+						>
+							<SettingsPanel>
 							{group.tools.map(([name, id, description]) => (
 								<SettingsRow
 									key={id}
@@ -503,7 +568,12 @@ const ToolsPage: React.FC = () => {
 									}
 								/>
 							))}
-						</SettingsPanel>
+							</SettingsPanel>
+							{group.titleKey === 'files' && fileToolsError && (
+								<SettingsNotice variant="destructive" icon={AlertTriangle}>
+									{fileToolsError}
+								</SettingsNotice>
+							)}
 					</SettingsSection>
 				);
 			})}
