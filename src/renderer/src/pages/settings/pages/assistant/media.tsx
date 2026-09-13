@@ -208,6 +208,7 @@ export function AgentMediaModelConfiguration({
 			showFieldLabel={showFieldLabel}
 			showContentSeparator={showContentSeparator}
 			triggerTitle={title}
+			triggerDescription={description}
 			description={description}
 			showInlineError
 			onChange={(providerId, modelId) => void handleChange(providerId, modelId)}
