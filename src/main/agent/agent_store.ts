@@ -261,7 +261,7 @@ export function setChatbotModel(
 }
 
 export function getSearchEngine(): SearchEngineSettings {
-	return store.get('tools').webSearch;
+	return store.get('tools').webSearch as SearchEngineSettings;
 }
 
 export function setSearchEngine(searchEngine: SearchEngineSettings): void {
@@ -277,7 +277,7 @@ export function setVoiceModel(kind: AgentVoiceModelKind, settings: AgentMediaMod
 }
 
 export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
-	return store.get('tools')[kind];
+	return store.get('tools')[kind] as AgentMediaModelSettings;
 }
 
 export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
@@ -289,8 +289,16 @@ export function getPermissions(): PermissionsSchema {
 		normalizePermissionsSchema(store.get('permissions'), DEFAULT_AGENT_PERMISSIONS),
 		workspacePattern
 	);
-	const tools = store.get('tools').permissions;
-	return Object.keys(tools).length > 0 ? { ...permissions, tools: { ...tools } } : permissions;
+	const tools = store.get('tools');
+	return {
+		...permissions,
+		tools: Object.fromEntries(
+			Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => {
+				const settings = tools[key] as ToolSettings;
+				return [toolId, settings.enabled ? settings.permission : 'deny'];
+			})
+		),
+	};
 }
 
 export function setPermissions(permissions: PermissionsSchema): PermissionsSchema {
@@ -302,7 +310,21 @@ export function setPermissions(permissions: PermissionsSchema): PermissionsSchem
 			workspacePattern
 		)
 	);
-	if (tools) store.set('tools', { ...store.get('tools'), permissions: { ...tools } });
+	if (tools) {
+		const storedTools = store.get('tools');
+		store.set('tools', {
+			...storedTools,
+			...Object.fromEntries(
+				Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => [
+					key,
+					{
+						...(storedTools[key] as ToolSettings),
+						permission: tools[toolId] ?? (storedTools[key] as ToolSettings).permission,
+					},
+				])
+			),
+		});
+	}
 	return getPermissions();
 }
 
@@ -322,6 +344,6 @@ export function addPermissionRule(
 
 export function resetPermissions(): PermissionsSchema {
 	store.set('permissions', DEFAULT_AGENT_PERMISSIONS);
-	store.set('tools', { ...store.get('tools'), permissions: {} });
+	store.set('tools', { ...store.get('tools'), ...DEFAULT_RUNTIME_TOOL_SETTINGS });
 	return getPermissions();
 }
