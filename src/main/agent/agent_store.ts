@@ -178,12 +178,12 @@ const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 	},
 	tools: {
 		webSearch: { providerId: '', providerName: '', enabled: false },
+		...DEFAULT_RUNTIME_TOOL_SETTINGS,
 		create_image: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		create_sound: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		create_video: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		text_to_speech: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		speech_to_text: mediaToolSettings(EMPTY_MEDIA_MODEL),
-		...DEFAULT_RUNTIME_TOOL_SETTINGS,
 	},
 	permissions: DEFAULT_AGENT_PERMISSIONS,
 };
