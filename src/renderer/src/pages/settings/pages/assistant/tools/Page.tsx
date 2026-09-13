@@ -482,31 +482,31 @@ const ToolsPage: React.FC = () => {
 			</SettingsSection>
 
 			{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
-					const Icon = group.icon;
-					return (
-						<SettingsSection
-							key={group.titleKey}
-							title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
-						>
-							<SettingsPanel>
-								{group.tools.map(([name, id, description]) => (
-									<SettingsRow
-										key={id}
-										title={name}
-										media={
-											<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-										}
-										description={
-											<>
-												{description} <code className="text-[11px]">{id}</code>
-											</>
-										}
-									/>
-								))}
-							</SettingsPanel>
-						</SettingsSection>
-					);
-				})}
+				const Icon = group.icon;
+				return (
+					<SettingsSection
+						key={group.titleKey}
+						title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
+					>
+						<SettingsPanel>
+							{group.tools.map(([name, id, description]) => (
+								<SettingsRow
+									key={id}
+									title={name}
+									media={
+										<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+									}
+									description={
+										<>
+											{description} <code className="text-[11px]">{id}</code>
+										</>
+									}
+								/>
+							))}
+						</SettingsPanel>
+					</SettingsSection>
+				);
+			})}
 		</SettingsPageShell>
 	);
 };
