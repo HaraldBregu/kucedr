@@ -353,7 +353,9 @@ export function setVoiceModel(kind: AgentVoiceModelKind, settings: AgentMediaMod
 }
 
 export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
-	return store.get('tools')[TOOL_MODEL_KEYS[kind]] as AgentMediaModelSettings;
+	return mediaToolSettings(
+		store.get('tools')[TOOL_MODEL_KEYS[kind]] as Partial<AgentMediaModelSettings & ToolSettings>
+	);
 }
 
 export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
