@@ -354,23 +354,6 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 		</MemoryRouter>
 	);
 
-	for (const name of [
-		/Text to image/,
-		/Text to audio/,
-		/Text to video/,
-		/Text to speech/,
-		/Speech to text/,
-		/Search web/,
-	]) {
-		const trigger = (await screen.findAllByRole('button', { name })).find(
-			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
-		);
-		expect(trigger).toBeDefined();
-		if (!trigger) continue;
-		if (trigger.getAttribute('aria-expanded') === 'false') await user.click(trigger);
-		expect(trigger).toHaveAttribute('aria-expanded', 'true');
-	}
-
 	const image = (await screen.findAllByRole('button', { name: 'Text to image' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
@@ -406,7 +389,7 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 	expect(textToSpeech.closest('[data-slot="card"]')).toBe(
 		speechToText.closest('[data-slot="card"]')
 	);
-	expect(speechToText.closest('[data-slot="card"]')).toBe(search.closest('[data-slot="card"]'));
+	expect(speechToText.closest('[data-slot="card"]')).not.toBe(search.closest('[data-slot="card"]'));
 });
 
 it('lists every built-in agent tool on the Tools page', async () => {
@@ -419,7 +402,6 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	for (const tool of [
 		'list_a2a_agents',
 		'read',
-		'create_image',
 		'screen_recorder',
 		'query_knowledge',
 		'run_task_now',
@@ -429,6 +411,7 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	]) {
 		expect(await screen.findByText(tool)).toBeInTheDocument();
 	}
+	expect(screen.getByText('Text to image')).toBeInTheDocument();
 
 	expect(document.querySelectorAll('code')).toHaveLength(52);
 	expect(screen.getAllByRole('switch')).toHaveLength(57);

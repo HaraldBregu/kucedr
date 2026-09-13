@@ -577,6 +577,17 @@ const ToolsPage: React.FC = () => {
 									</SelectContent>
 								</Select>
 							</div>
+							<Switch
+								checked={permissions?.tools?.search_web?.enabled ?? true}
+								onCheckedChange={(enabled) =>
+									handleFileToolsPermissionChange('search_web', {
+										...(permissions?.tools?.search_web ?? { enabled: true, permission: 'ask' }),
+										enabled,
+									})
+								}
+								aria-label="Search web enabled"
+								disabled={!permissions || fileToolsSaving}
+							/>
 						</div>
 						<CollapsibleContent>
 							{searchEngineError && (
