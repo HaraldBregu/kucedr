@@ -404,7 +404,7 @@ const ToolsPage: React.FC = () => {
 								checked={permissions?.tools?.create_image?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('create_image', {
-										...(permissions?.tools?.create_image ?? { enabled: true, permission: 'ask' }),
+																...(permissions?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
@@ -433,7 +433,7 @@ const ToolsPage: React.FC = () => {
 								checked={permissions?.tools?.create_sound?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('create_sound', {
-										...(permissions?.tools?.create_sound ?? { enabled: true, permission: 'ask' }),
+																...(permissions?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
@@ -462,7 +462,7 @@ const ToolsPage: React.FC = () => {
 								checked={permissions?.tools?.create_video?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('create_video', {
-										...(permissions?.tools?.create_video ?? { enabled: true, permission: 'ask' }),
+																...(permissions?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
@@ -491,7 +491,7 @@ const ToolsPage: React.FC = () => {
 								checked={permissions?.tools?.text_to_speech?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('text_to_speech', {
-										...(permissions?.tools?.text_to_speech ?? { enabled: true, permission: 'ask' }),
+																...(permissions?.tools?.text_to_speech ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
@@ -520,7 +520,7 @@ const ToolsPage: React.FC = () => {
 								checked={permissions?.tools?.speech_to_text?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('speech_to_text', {
-										...(permissions?.tools?.speech_to_text ?? { enabled: true, permission: 'ask' }),
+																...(permissions?.tools?.speech_to_text ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
@@ -555,10 +555,10 @@ const ToolsPage: React.FC = () => {
 											</div>
 										</CollapsibleTrigger>
 										<Select
-											value={permissions?.tools?.search_web?.permission ?? 'ask'}
+											value={permissions?.tools?.search_web?.permission ?? 'allow'}
 											onValueChange={(value) =>
 												handleFileToolsPermissionChange('search_web', {
-													...(permissions?.tools?.search_web ?? { enabled: true, permission: 'ask' }),
+													...(permissions?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
 													permission: value as FileToolsPermission,
 												})
 											}
@@ -587,7 +587,7 @@ const ToolsPage: React.FC = () => {
 											checked={permissions?.tools?.search_web?.enabled ?? true}
 											onCheckedChange={(enabled) =>
 												handleFileToolsPermissionChange('search_web', {
-													...(permissions?.tools?.search_web ?? { enabled: true, permission: 'ask' }),
+													...(permissions?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
 													enabled,
 												})
 											}
@@ -638,7 +638,7 @@ const ToolsPage: React.FC = () => {
 								</Collapsible>
 							)}
 							{group.tools.map(([name, id, description]) => {
-								const settings = permissions?.tools?.[id] ?? { enabled: true, permission: 'ask' };
+								const settings = permissions?.tools?.[id] ?? { enabled: true, permission: 'allow' };
 								return (
 									<SettingsRow
 										key={id}

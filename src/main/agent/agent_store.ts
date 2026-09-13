@@ -151,7 +151,7 @@ const RUNTIME_TOOL_KEYS = {
 	complete_bootstrap: 'complete_bootstrap',
 } as const;
 const DEFAULT_RUNTIME_TOOL_SETTINGS: Record<string, ToolSettings> = Object.fromEntries(
-	Object.values(RUNTIME_TOOL_KEYS).map((key) => [key, { enabled: true, permission: 'ask' }])
+	Object.values(RUNTIME_TOOL_KEYS).map((key) => [key, { enabled: true, permission: 'allow' }])
 );
 const TOOL_MODEL_KEYS: Record<AgentToolModelKind, string> = {
 	image: 'create_image',
@@ -166,7 +166,7 @@ const mediaToolSettings = (
 	...EMPTY_MEDIA_MODEL,
 	...model,
 	enabled: model.enabled ?? true,
-	permission: model.permission ?? 'ask',
+	permission: model.permission ?? 'allow',
 });
 const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 	chatbot: {
@@ -285,7 +285,7 @@ store.store = {
 					key,
 					isToolSettings(persisted.tools?.[key])
 						? persisted.tools[key]
-						: { enabled: true, permission: legacyToolPermissions?.[toolId] ?? 'ask' },
+						: { enabled: true, permission: legacyToolPermissions?.[toolId] ?? 'allow' },
 				])
 		),
 	},

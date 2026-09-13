@@ -53,9 +53,9 @@ describe('agent store permissions', () => {
 			write: { allow: [workspaceRule], deny: [] },
 			exec: { allow: [workspaceRule], deny: [] },
 			tools: {
-				read: { enabled: true, permission: 'ask' },
-				edit: { enabled: true, permission: 'ask' },
-				patch: { enabled: true, permission: 'ask' },
+				read: { enabled: true, permission: 'allow' },
+				edit: { enabled: true, permission: 'allow' },
+				patch: { enabled: true, permission: 'allow' },
 			},
 		});
 	});
