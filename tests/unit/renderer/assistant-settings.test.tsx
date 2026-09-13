@@ -354,6 +354,20 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 		</MemoryRouter>
 	);
 
+	for (const name of [
+		'Text to image',
+		'Text to audio',
+		'Text to video',
+		'Text to speech',
+		'Speech to text',
+	]) {
+		const trigger = (await screen.findAllByRole('button', { name })).find(
+			(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
+		);
+		expect(trigger).toBeDefined();
+		if (trigger) await user.click(trigger);
+	}
+
 	const image = (await screen.findAllByRole('button', { name: 'Text to image' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
