@@ -1275,13 +1275,18 @@
 				"description": "Funzionalita integrate disponibili agli agenti. La disponibilita puo variare in base a modalita di esecuzione, autorizzazioni e configurazione. I server MCP installati aggiungono dinamicamente i propri strumenti.",
 				"groups": {
 					"coordination": "Coordinamento agenti",
-					"workspace": "Area di lavoro",
+					"files": "File",
+					"commands": "Comandi",
 					"web": "Web",
 					"media": "Media",
 					"recording": "Registrazione",
-					"knowledge": "Conoscenza e memoria",
-					"tasks": "Attivita e app",
-					"setup": "Competenze, obiettivi e configurazione"
+					"knowledge": "Conoscenza",
+					"memory": "Memoria",
+					"tasks": "Attivita",
+					"apps": "App",
+					"skills": "Competenze",
+					"goals": "Obiettivi",
+					"system": "Sistema"
 				}
 			},
 			"musicCreatorDescription": "Modelli generazione audio",

@@ -76,16 +76,21 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		titleKey: 'workspace',
+		titleKey: 'files',
 		tools: [
 			['Read file', 'read'],
 			['Write file', 'write'],
 			['Edit file', 'edit'],
 			['Apply patch', 'patch'],
-			['Execute command', 'bash'],
-			['Manage process', 'process'],
 			['Undo file operation', 'undo'],
 			['Redo file operation', 'redo'],
+		],
+	},
+	{
+		titleKey: 'commands',
+		tools: [
+			['Execute command', 'bash'],
+			['Manage process', 'process'],
 		],
 	},
 	{
@@ -125,6 +130,11 @@ const AGENT_TOOL_GROUPS = [
 		titleKey: 'knowledge',
 		tools: [
 			['Query knowledge', 'query_knowledge'],
+		],
+	},
+	{
+		titleKey: 'memory',
+		tools: [
 			['Save memory', 'save_memory'],
 			['Forget memory', 'forget_memory'],
 			['List memories', 'list_memories'],
@@ -141,21 +151,36 @@ const AGENT_TOOL_GROUPS = [
 			['Get task', 'get_task'],
 			['List tasks', 'list_tasks'],
 			['Run task now', 'run_task_now'],
+		],
+	},
+	{
+		titleKey: 'apps',
+		tools: [
 			['List apps', 'list_apps'],
 			['Open apps', 'open_apps'],
 			['Close apps', 'close_apps'],
 		],
 	},
 	{
-		titleKey: 'setup',
+		titleKey: 'skills',
 		tools: [
 			['List skills', 'list_skills'],
 			['Load skill', 'load_skill'],
+		],
+	},
+	{
+		titleKey: 'goals',
+		tools: [
 			['Get goal', 'get_goal'],
 			['Update goal plan', 'update_goal_plan'],
 			['Record goal evidence', 'record_goal_evidence'],
 			['Request goal completion', 'request_goal_completion'],
 			['Report goal blocker', 'report_goal_blocker'],
+		],
+	},
+	{
+		titleKey: 'system',
+		tools: [
 			['Request user input', 'ask'],
 			['Update health', 'update_health'],
 			['Update health settings', 'update_health_settings'],
