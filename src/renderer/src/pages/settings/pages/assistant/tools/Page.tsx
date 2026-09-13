@@ -1,14 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
+	AppWindow,
 	AlertTriangle,
+	BookOpen,
+	Brain,
+	FileText,
+	Globe,
 	Image as ImageIcon,
+	ListTodo,
 	Mic,
+	Monitor,
 	Music2,
+	Network,
 	Search as SearchIcon,
+	Settings,
+	Sparkles,
+	Target,
+	Terminal,
 	Video,
 	Volume2,
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
 	Select,
@@ -63,9 +76,18 @@ const TOOL_VIDEO_API = toolModelApi('video');
 const TOOL_TEXT_TO_SPEECH_API = toolModelApi('textToSpeech');
 const TOOL_SPEECH_TO_TEXT_API = toolModelApi('speechToText');
 
-const AGENT_TOOL_GROUPS = [
+type AgentTool = readonly [name: string, id: string, description: string];
+
+type AgentToolGroup = {
+	readonly titleKey: string;
+	readonly icon: LucideIcon;
+	readonly tools: readonly AgentTool[];
+};
+
+const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 	{
 		titleKey: 'coordination',
+		icon: Network,
 		tools: [
 			['List remote agents', 'list_a2a_agents', 'Lists connected remote agents that can accept delegated work.'],
 			['Delegate to remote agent', 'delegate_a2a', 'Sends a task to a connected remote agent.'],
@@ -77,6 +99,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'files',
+		icon: FileText,
 		tools: [
 			['Read file', 'read', 'Reads file contents from the workspace.'],
 			['Write file', 'write', 'Creates or replaces a file in the workspace.'],
@@ -88,6 +111,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'commands',
+		icon: Terminal,
 		tools: [
 			['Execute command', 'bash', 'Runs a shell command in the workspace.'],
 			['Manage process', 'process', 'Inspects, waits for, or stops managed processes.'],
@@ -95,6 +119,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'web',
+		icon: Globe,
 		tools: [
 			['Search web', 'search_web', 'Searches the web with the configured search engine.'],
 			['Fetch web page', 'fetch_web_page', 'Retrieves and reads a web page by URL.'],
@@ -103,6 +128,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'media',
+		icon: ImageIcon,
 		tools: [
 			['Create image', 'create_image', 'Generates or edits an image from instructions.'],
 			['Create video', 'create_video', 'Generates a video from instructions.'],
@@ -113,6 +139,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'recording',
+		icon: Monitor,
 		tools: [
 			['Microphone recorder', 'microphone_recorder', 'Starts recording microphone audio.'],
 			['Microphone recorder status', 'microphone_recorder_status', 'Reports the state of a microphone recording.'],
@@ -128,12 +155,14 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'knowledge',
+		icon: BookOpen,
 		tools: [
 			['Query knowledge', 'query_knowledge', 'Searches the selected knowledge base for relevant content.'],
 		],
 	},
 	{
 		titleKey: 'memory',
+		icon: Brain,
 		tools: [
 			['Save memory', 'save_memory', 'Saves a durable memory for future conversations.'],
 			['Forget memory', 'forget_memory', 'Removes a saved memory.'],
@@ -142,6 +171,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'tasks',
+		icon: ListTodo,
 		tools: [
 			['Create task', 'create_task', 'Creates a scheduled background task.'],
 			['Update task', 'update_task', 'Changes an existing scheduled task.'],
@@ -155,6 +185,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'apps',
+		icon: AppWindow,
 		tools: [
 			['List apps', 'list_apps', 'Lists installed apps available to the agent.'],
 			['Open apps', 'open_apps', 'Opens an installed app.'],
@@ -163,6 +194,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'skills',
+		icon: Sparkles,
 		tools: [
 			['List skills', 'list_skills', 'Lists skills that can extend the current run.'],
 			['Load skill', 'load_skill', 'Loads a skill and its allowed tools for the current run.'],
@@ -170,6 +202,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'goals',
+		icon: Target,
 		tools: [
 			['Get goal', 'get_goal', 'Reads the active goal, plan, criteria, and evidence.'],
 			['Update goal plan', 'update_goal_plan', 'Updates the steps for an active goal.'],
@@ -180,6 +213,7 @@ const AGENT_TOOL_GROUPS = [
 	},
 	{
 		titleKey: 'system',
+		icon: Settings,
 		tools: [
 			['Request user input', 'ask', 'Asks the user for information needed to continue.'],
 			['Update health', 'update_health', 'Updates the agent health status.'],
@@ -388,12 +422,17 @@ const ToolsPage: React.FC = () => {
 								{t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
 							</div>
 							{group.tools.map((tool) => {
-								const [name, id] = tool;
+								const [name, id, description] = tool;
 								return (
 								<SettingsRow
 									key={id}
 									title={name}
-									description={<code className="text-[11px]">{id}</code>}
+									icon={group.icon}
+									description={
+										<>
+											{description} <code className="text-[11px]">{id}</code>
+										</>
+									}
 								/>
 								);
 							})}
