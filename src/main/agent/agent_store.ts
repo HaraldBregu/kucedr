@@ -161,11 +161,12 @@ const TOOL_MODEL_KEYS: Record<AgentToolModelKind, string> = {
 	speechToText: 'speech_to_text',
 };
 const mediaToolSettings = (
-	model: AgentMediaModelSettings
+	model: Partial<AgentMediaModelSettings & ToolSettings>
 ): AgentMediaModelSettings & ToolSettings => ({
+	...EMPTY_MEDIA_MODEL,
 	...model,
-	enabled: true,
-	permission: 'ask',
+	enabled: model.enabled ?? true,
+	permission: model.permission ?? 'ask',
 });
 const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 	chatbot: {
