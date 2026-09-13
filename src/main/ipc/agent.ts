@@ -34,7 +34,6 @@ import {
 	resetPermissions,
 	respondToolPermission,
 	setPermissions,
-	type PermissionMode,
 	type PermissionRules,
 	type PermissionsSchema,
 } from '../agent/permissions';
