@@ -539,14 +539,6 @@ const ToolsPage: React.FC = () => {
 										}
 										actions={
 											<>
-												<Switch
-													checked={settings.enabled}
-													onCheckedChange={(enabled) =>
-														handleFileToolsPermissionChange(id, { ...settings, enabled })
-													}
-													disabled={!permissions || fileToolsSaving}
-													aria-label={`${name} enabled`}
-												/>
 												<Select
 													value={settings.permission}
 													onValueChange={(value) =>
@@ -576,6 +568,14 @@ const ToolsPage: React.FC = () => {
 														</SelectItem>
 													</SelectContent>
 												</Select>
+												<Switch
+													checked={settings.enabled}
+													onCheckedChange={(enabled) =>
+														handleFileToolsPermissionChange(id, { ...settings, enabled })
+													}
+													disabled={!permissions || fileToolsSaving}
+													aria-label={`${name} enabled`}
+												/>
 											</>
 										}
 									/>
