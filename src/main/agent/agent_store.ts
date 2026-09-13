@@ -346,7 +346,7 @@ export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings 
 export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
 	const key = TOOL_MODEL_KEYS[kind];
 	const current = store.get('tools')[key] as ToolSettings;
-	store.set('tools', { ...store.get('tools'), [key]: { ...settings, ...current } });
+	store.set('tools', { ...store.get('tools'), [key]: { ...current, ...settings } });
 }
 
 export function getPermissions(): PermissionsSchema {
