@@ -27,11 +27,6 @@ type ToolPermissions = Record<string, PermissionMode>;
 type ToolSettings = ToolConfiguration;
 type AgentToolsStore = {
 	webSearch: SearchEngineSettings;
-	image: AgentMediaModelSettings;
-	audio: AgentMediaModelSettings;
-	video: AgentMediaModelSettings;
-	textToSpeech: AgentMediaModelSettings;
-	speechToText: AgentMediaModelSettings;
 	[key: string]: SearchEngineSettings | AgentMediaModelSettings | ToolSettings;
 };
 type AgentStoreSchema = {
@@ -158,6 +153,18 @@ const RUNTIME_TOOL_KEYS = {
 const DEFAULT_RUNTIME_TOOL_SETTINGS: Record<string, ToolSettings> = Object.fromEntries(
 	Object.values(RUNTIME_TOOL_KEYS).map((key) => [key, { enabled: true, permission: 'ask' }])
 );
+const TOOL_MODEL_KEYS: Record<AgentToolModelKind, string> = {
+	image: 'create_image',
+	audio: 'create_sound',
+	video: 'create_video',
+	textToSpeech: 'text_to_speech',
+	speechToText: 'speech_to_text',
+};
+const mediaToolSettings = (model: AgentMediaModelSettings): AgentMediaModelSettings & ToolSettings => ({
+	...model,
+	enabled: true,
+	permission: 'ask',
+});
 const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 	chatbot: {
 		textToText: EMPTY_MEDIA_MODEL,
@@ -169,11 +176,11 @@ const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 	},
 	tools: {
 		webSearch: { providerId: '', providerName: '', enabled: false },
-		image: EMPTY_MEDIA_MODEL,
-		audio: EMPTY_MEDIA_MODEL,
-		video: EMPTY_MEDIA_MODEL,
-		textToSpeech: EMPTY_MEDIA_MODEL,
-		speechToText: EMPTY_MEDIA_MODEL,
+		create_image: mediaToolSettings(EMPTY_MEDIA_MODEL),
+		create_sound: mediaToolSettings(EMPTY_MEDIA_MODEL),
+		create_video: mediaToolSettings(EMPTY_MEDIA_MODEL),
+		text_to_speech: mediaToolSettings(EMPTY_MEDIA_MODEL),
+		speech_to_text: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		...DEFAULT_RUNTIME_TOOL_SETTINGS,
 	},
 	permissions: DEFAULT_AGENT_PERMISSIONS,
@@ -237,23 +244,29 @@ store.store = {
 			persisted.web_search_engine ??
 			persisted.search_engine ??
 			DEFAULT_AGENT_STORE.tools.webSearch,
-		image:
+		create_image: mediaToolSettings(
+			(persisted.tools?.create_image as AgentMediaModelSettings | undefined) ??
 			persisted.tools?.image ??
 			persisted.image_generator_model ??
 			persisted.image_model ??
-			EMPTY_MEDIA_MODEL,
-		audio:
+			EMPTY_MEDIA_MODEL
+		),
+		create_sound: mediaToolSettings(
+			(persisted.tools?.create_sound as AgentMediaModelSettings | undefined) ??
 			persisted.tools?.audio ??
 			persisted.audio_generator_model ??
 			persisted.audio_model ??
-			EMPTY_MEDIA_MODEL,
-		video:
+			EMPTY_MEDIA_MODEL
+		),
+		create_video: mediaToolSettings(
+			(persisted.tools?.create_video as AgentMediaModelSettings | undefined) ??
 			persisted.tools?.video ??
 			persisted.video_generator_model ??
 			persisted.video_model ??
-			EMPTY_MEDIA_MODEL,
-		textToSpeech: persisted.tools?.textToSpeech ?? EMPTY_MEDIA_MODEL,
-		speechToText: persisted.tools?.speechToText ?? EMPTY_MEDIA_MODEL,
+			EMPTY_MEDIA_MODEL
+		),
+		text_to_speech: mediaToolSettings((persisted.tools?.text_to_speech as AgentMediaModelSettings | undefined) ?? persisted.tools?.textToSpeech ?? EMPTY_MEDIA_MODEL),
+		speech_to_text: mediaToolSettings((persisted.tools?.speech_to_text as AgentMediaModelSettings | undefined) ?? persisted.tools?.speechToText ?? EMPTY_MEDIA_MODEL),
 		...Object.fromEntries(
 			Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => [
 				key,
@@ -327,11 +340,13 @@ export function setVoiceModel(kind: AgentVoiceModelKind, settings: AgentMediaMod
 }
 
 export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
-	return store.get('tools')[kind] as AgentMediaModelSettings;
+	return store.get('tools')[TOOL_MODEL_KEYS[kind]] as AgentMediaModelSettings;
 }
 
 export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
-	store.set('tools', { ...store.get('tools'), [kind]: settings });
+	const key = TOOL_MODEL_KEYS[kind];
+	const current = store.get('tools')[key] as ToolSettings;
+	store.set('tools', { ...store.get('tools'), [key]: { ...settings, ...current } });
 }
 
 export function getPermissions(): PermissionsSchema {
