@@ -1277,7 +1277,7 @@
 				"filePermissionLabel": "File tools permission",
 				"permissions": {
 					"ask": "Ask",
-					"allow": "Always allow",
+					"allow": "Always Allow",
 					"deny": "Deny"
 				},
 				"groups": {

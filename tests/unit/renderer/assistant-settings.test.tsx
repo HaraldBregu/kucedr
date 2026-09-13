@@ -120,7 +120,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.toolSpeechToTextDescription': 'Tool-call audio transcription',
 		'settings.modelServices.agentTools.filePermissionLabel': 'File tools permission',
 		'settings.modelServices.agentTools.permissions.ask': 'Ask',
-		'settings.modelServices.agentTools.permissions.allow': 'Always allow',
+		'settings.modelServices.agentTools.permissions.allow': 'Always Allow',
 		'settings.modelServices.agentTools.permissions.deny': 'Deny',
 		'settings.modelServices.imageModelDescription': 'Image defaults',
 		'settings.modelServices.musicModelDescription': 'Audio defaults',
@@ -447,7 +447,7 @@ it('saves a file tools permission choice', async () => {
 
 	const selector = await screen.findByRole('combobox', { name: 'File tools permission' });
 	await user.click(selector);
-	await user.click(await screen.findByRole('option', { name: 'Always allow' }));
+	await user.click(await screen.findByRole('option', { name: 'Always Allow' }));
 
 	await waitFor(() => {
 		expect(window.agent.policySet).toHaveBeenCalledWith({
