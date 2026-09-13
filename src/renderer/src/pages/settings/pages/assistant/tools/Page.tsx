@@ -362,13 +362,16 @@ const ToolsPage: React.FC = () => {
 							<div className="border-b border-border/60 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 								{group.title}
 							</div>
-							{group.tools.map(([name, id]) => (
+							{group.tools.map((tool) => {
+								const [name, id] = tool;
+								return (
 								<SettingsRow
 									key={id}
 									title={name}
 									description={<code className="text-[11px]">{id}</code>}
 								/>
-							))}
+								);
+							})}
 						</div>
 					))}
 				</SettingsPanel>

@@ -395,6 +395,31 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 	expect(speechToText.closest('[data-slot="card"]')).toBe(search.closest('[data-slot="card"]'));
 });
 
+it('lists every built-in agent tool on the Tools page', async () => {
+	render(
+		<MemoryRouter>
+			<ToolsPage />
+		</MemoryRouter>
+	);
+
+	for (const tool of [
+		'list_a2a_agents',
+		'read',
+		'search_web',
+		'create_image',
+		'screen_recorder',
+		'query_knowledge',
+		'run_task_now',
+		'load_skill',
+		'get_goal',
+		'complete_bootstrap',
+	]) {
+		expect(await screen.findByText(tool)).toBeInTheDocument();
+	}
+
+	expect(document.querySelectorAll('code')).toHaveLength(58);
+});
+
 it('shows only runtime-supported realtime models and saves model and voice together', async () => {
 	const user = userEvent.setup();
 	render(
