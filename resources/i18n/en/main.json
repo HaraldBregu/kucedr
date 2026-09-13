@@ -1271,6 +1271,20 @@
 			"toolSpeechToTextName": "Speech to text",
 			"toolSpeechToTextDescription": "Tool-call audio transcription",
 			"toolsDescription": "Configure the models and search service available to agent tools.",
+			"agentTools": {
+				"title": "Agent tools",
+				"description": "Built-in capabilities available to agents. Availability can vary by run mode, permissions, and configuration. Installed MCP servers add their own tools dynamically.",
+				"groups": {
+					"coordination": "Agent coordination",
+					"workspace": "Workspace",
+					"web": "Web",
+					"media": "Media",
+					"recording": "Recording",
+					"knowledge": "Knowledge and memory",
+					"tasks": "Tasks and apps",
+					"setup": "Skills, goals, and setup"
+				}
+			},
 			"musicCreatorDescription": "Audio generation models",
 			"embeddingName": "Embedding",
 			"embeddingDescription": "Text embedding models",

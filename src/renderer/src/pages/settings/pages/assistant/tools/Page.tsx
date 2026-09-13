@@ -65,7 +65,7 @@ const TOOL_SPEECH_TO_TEXT_API = toolModelApi('speechToText');
 
 const AGENT_TOOL_GROUPS = [
 	{
-		title: 'Agent coordination',
+		titleKey: 'coordination',
 		tools: [
 			['List remote agents', 'list_a2a_agents'],
 			['Delegate to remote agent', 'delegate_a2a'],
@@ -76,7 +76,7 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		title: 'Workspace',
+		titleKey: 'workspace',
 		tools: [
 			['Read file', 'read'],
 			['Write file', 'write'],
@@ -89,7 +89,7 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		title: 'Web',
+		titleKey: 'web',
 		tools: [
 			['Search web', 'search_web'],
 			['Fetch web page', 'fetch_web_page'],
@@ -97,7 +97,7 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		title: 'Media',
+		titleKey: 'media',
 		tools: [
 			['Create image', 'create_image'],
 			['Create video', 'create_video'],
@@ -107,7 +107,7 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		title: 'Recording',
+		titleKey: 'recording',
 		tools: [
 			['Microphone recorder', 'microphone_recorder'],
 			['Microphone recorder status', 'microphone_recorder_status'],
@@ -122,7 +122,7 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		title: 'Knowledge and memory',
+		titleKey: 'knowledge',
 		tools: [
 			['Query knowledge', 'query_knowledge'],
 			['Save memory', 'save_memory'],
@@ -131,7 +131,7 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		title: 'Tasks and apps',
+		titleKey: 'tasks',
 		tools: [
 			['Create task', 'create_task'],
 			['Update task', 'update_task'],
@@ -147,7 +147,7 @@ const AGENT_TOOL_GROUPS = [
 		],
 	},
 	{
-		title: 'Skills, goals, and setup',
+		titleKey: 'setup',
 		tools: [
 			['List skills', 'list_skills'],
 			['Load skill', 'load_skill'],
@@ -353,14 +353,14 @@ const ToolsPage: React.FC = () => {
 			</SettingsPanel>
 
 			<SettingsSection
-				title="Agent tools"
-				description="Built-in capabilities available to agents. Availability can vary by run mode, permissions, and configuration. Installed MCP servers add their own tools dynamically."
+				title={t('settings.modelServices.agentTools.title')}
+				description={t('settings.modelServices.agentTools.description')}
 			>
 				<SettingsPanel>
 					{AGENT_TOOL_GROUPS.map((group) => (
-						<div key={group.title}>
+						<div key={group.titleKey}>
 							<div className="border-b border-border/60 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-								{group.title}
+								{t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
 							</div>
 							{group.tools.map((tool) => {
 								const [name, id] = tool;
