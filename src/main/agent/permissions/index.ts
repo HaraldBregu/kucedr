@@ -17,4 +17,5 @@ export {
 	type PermissionMode,
 	type PermissionRules,
 	type PermissionsSchema,
+	type ToolConfiguration,
 } from './permissions_types';
