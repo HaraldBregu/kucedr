@@ -206,11 +206,11 @@ function toPermissions(value: unknown): PermissionsSchema {
 		value.tools === undefined
 			? undefined
 			: isRecord(value.tools)
-				? Object.fromEntries(
+				? (Object.fromEntries(
 						Object.entries(value.tools).filter(
 							([, mode]) => mode === 'ask' || mode === 'allow' || mode === 'deny'
 						)
-					) as Record<string, PermissionMode>
+					) as Record<string, PermissionMode>)
 				: (() => {
 						throw new Error('Invalid tool permissions.');
 					})();
