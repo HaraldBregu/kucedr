@@ -396,7 +396,8 @@ const ToolsPage: React.FC = () => {
 						showSelectedModel
 						buttonDropdown
 						showContentSeparator={false}
-						inlineAdvanced
+					inlineAdvanced
+					action={<Switch checked={permissions?.tools?.create_image?.enabled ?? true} onCheckedChange={(enabled) => handleFileToolsPermissionChange('create_image', { ...(permissions?.tools?.create_image ?? { enabled: true, permission: 'ask' }), enabled })} aria-label="Text to image enabled" disabled={!permissions || fileToolsSaving} />}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -412,7 +413,8 @@ const ToolsPage: React.FC = () => {
 						showSelectedModel
 						buttonDropdown
 						showContentSeparator={false}
-						inlineAdvanced
+					inlineAdvanced
+					action={<Switch checked={permissions?.tools?.create_sound?.enabled ?? true} onCheckedChange={(enabled) => handleFileToolsPermissionChange('create_sound', { ...(permissions?.tools?.create_sound ?? { enabled: true, permission: 'ask' }), enabled })} aria-label="Text to audio enabled" disabled={!permissions || fileToolsSaving} />}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -428,7 +430,8 @@ const ToolsPage: React.FC = () => {
 						showSelectedModel
 						buttonDropdown
 						showContentSeparator={false}
-						inlineAdvanced
+					inlineAdvanced
+					action={<Switch checked={permissions?.tools?.create_video?.enabled ?? true} onCheckedChange={(enabled) => handleFileToolsPermissionChange('create_video', { ...(permissions?.tools?.create_video ?? { enabled: true, permission: 'ask' }), enabled })} aria-label="Text to video enabled" disabled={!permissions || fileToolsSaving} />}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -444,7 +447,8 @@ const ToolsPage: React.FC = () => {
 						showSelectedModel
 						buttonDropdown
 						showContentSeparator={false}
-						inlineAdvanced
+					inlineAdvanced
+					action={<Switch checked={permissions?.tools?.text_to_speech?.enabled ?? true} onCheckedChange={(enabled) => handleFileToolsPermissionChange('text_to_speech', { ...(permissions?.tools?.text_to_speech ?? { enabled: true, permission: 'ask' }), enabled })} aria-label="Text to speech enabled" disabled={!permissions || fileToolsSaving} />}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -460,7 +464,8 @@ const ToolsPage: React.FC = () => {
 						showSelectedModel
 						buttonDropdown
 						showContentSeparator={false}
-						showOptions={false}
+					showOptions={false}
+					action={<Switch checked={permissions?.tools?.speech_to_text?.enabled ?? true} onCheckedChange={(enabled) => handleFileToolsPermissionChange('speech_to_text', { ...(permissions?.tools?.speech_to_text ?? { enabled: true, permission: 'ask' }), enabled })} aria-label="Speech to text enabled" disabled={!permissions || fileToolsSaving} />}
 					/>
 
 					<Collapsible className="min-w-0 max-w-full overflow-hidden">

@@ -42,6 +42,7 @@ interface AgentMediaModelConfigurationProps {
 	readonly inlineAdvanced?: boolean;
 	readonly showOptions?: boolean;
 	readonly icon?: LucideIcon;
+	readonly action?: ReactNode;
 }
 
 const MEDIA_CONTENT_INPUTS = new Set([
@@ -89,6 +90,7 @@ export function AgentMediaModelConfiguration({
 	inlineAdvanced = false,
 	showOptions = true,
 	icon,
+	action,
 }: AgentMediaModelConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
@@ -199,6 +201,7 @@ export function AgentMediaModelConfiguration({
 			collapsible={collapsible}
 			showIcon={showIcon || Boolean(icon)}
 			icon={icon}
+			action={action}
 			grouped={grouped}
 			showSelectedModel={showSelectedModel}
 			buttonDropdown={buttonDropdown}

@@ -25,6 +25,7 @@ interface ModelProviderConfigurationProps {
 	readonly buttonDropdown?: boolean;
 	readonly showContentSeparator?: boolean;
 	readonly defaultOpen?: boolean;
+	readonly action?: ReactNode;
 	readonly onChange: (nextProviderId: string, nextModelId: string) => void;
 	readonly children?: ReactNode;
 }
@@ -45,6 +46,7 @@ export function ModelProviderConfiguration({
 	buttonDropdown = false,
 	showContentSeparator = true,
 	defaultOpen = false,
+	action,
 	onChange,
 	children,
 }: ModelProviderConfigurationProps): React.JSX.Element {
@@ -208,6 +210,7 @@ export function ModelProviderConfiguration({
 					</div>
 				</CollapsibleTrigger>
 				{showSelectedModel && <div className="shrink-0">{collapsibleModelSelect}</div>}
+				{action && <div className="shrink-0" onClick={(event) => event.stopPropagation()}>{action}</div>}
 			</div>
 			<CollapsibleContent
 				className={showContentSeparator ? 'border-t border-border/60' : undefined}
