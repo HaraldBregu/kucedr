@@ -23,6 +23,8 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsRow,
+	SettingsSection,
 } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import { SEARCH_ENGINES } from '../../search/catalog';
@@ -60,6 +62,107 @@ const TOOL_AUDIO_API = toolModelApi('audio');
 const TOOL_VIDEO_API = toolModelApi('video');
 const TOOL_TEXT_TO_SPEECH_API = toolModelApi('textToSpeech');
 const TOOL_SPEECH_TO_TEXT_API = toolModelApi('speechToText');
+
+const AGENT_TOOL_GROUPS = [
+	{
+		title: 'Agent coordination',
+		tools: [
+			['List remote agents', 'list_a2a_agents'],
+			['Delegate to remote agent', 'delegate_a2a'],
+			['Get remote task', 'get_a2a_task'],
+			['Cancel remote task', 'cancel_a2a_task'],
+			['Subagent', 'subagent'],
+			['Subagents', 'subagents'],
+		],
+	},
+	{
+		title: 'Workspace',
+		tools: [
+			['Read file', 'read'],
+			['Write file', 'write'],
+			['Edit file', 'edit'],
+			['Apply patch', 'patch'],
+			['Execute command', 'bash'],
+			['Manage process', 'process'],
+			['Undo file operation', 'undo'],
+			['Redo file operation', 'redo'],
+		],
+	},
+	{
+		title: 'Web',
+		tools: [
+			['Search web', 'search_web'],
+			['Fetch web page', 'fetch_web_page'],
+			['Use web browser', 'use_web_browser'],
+		],
+	},
+	{
+		title: 'Media',
+		tools: [
+			['Create image', 'create_image'],
+			['Create video', 'create_video'],
+			['Create sound', 'create_sound'],
+			['Text to speech', 'text_to_speech'],
+			['Speech to text', 'speech_to_text'],
+		],
+	},
+	{
+		title: 'Recording',
+		tools: [
+			['Microphone recorder', 'microphone_recorder'],
+			['Microphone recorder status', 'microphone_recorder_status'],
+			['Microphone recorder stop', 'microphone_recorder_stop'],
+			['Camera recorder', 'camera_recorder'],
+			['Camera recorder status', 'camera_recorder_status'],
+			['Camera recorder stop', 'camera_recorder_stop'],
+			['Screen recorder', 'screen_recorder'],
+			['Select screen source', 'select_screen_source'],
+			['Screen recorder status', 'screen_recorder_status'],
+			['Screen recorder stop', 'screen_recorder_stop'],
+		],
+	},
+	{
+		title: 'Knowledge and memory',
+		tools: [
+			['Query knowledge', 'query_knowledge'],
+			['Save memory', 'save_memory'],
+			['Forget memory', 'forget_memory'],
+			['List memories', 'list_memories'],
+		],
+	},
+	{
+		title: 'Tasks and apps',
+		tools: [
+			['Create task', 'create_task'],
+			['Update task', 'update_task'],
+			['Pause task', 'pause_task'],
+			['Resume task', 'resume_task'],
+			['Delete task', 'delete_task'],
+			['Get task', 'get_task'],
+			['List tasks', 'list_tasks'],
+			['Run task now', 'run_task_now'],
+			['List apps', 'list_apps'],
+			['Open apps', 'open_apps'],
+			['Close apps', 'close_apps'],
+		],
+	},
+	{
+		title: 'Skills, goals, and setup',
+		tools: [
+			['List skills', 'list_skills'],
+			['Load skill', 'load_skill'],
+			['Get goal', 'get_goal'],
+			['Update goal plan', 'update_goal_plan'],
+			['Record goal evidence', 'record_goal_evidence'],
+			['Request goal completion', 'request_goal_completion'],
+			['Report goal blocker', 'report_goal_blocker'],
+			['Request user input', 'ask'],
+			['Update health', 'update_health'],
+			['Update health settings', 'update_health_settings'],
+			['Complete bootstrap', 'complete_bootstrap'],
+		],
+	},
+] as const;
 
 const ToolsPage: React.FC = () => {
 	const { t } = useTranslation();
@@ -248,6 +351,28 @@ const ToolsPage: React.FC = () => {
 					</CollapsibleContent>
 				</Collapsible>
 			</SettingsPanel>
+
+			<SettingsSection
+				title="Agent tools"
+				description="Built-in capabilities available to agents. Availability can vary by run mode, permissions, and configuration. Installed MCP servers add their own tools dynamically."
+			>
+				<SettingsPanel>
+					{AGENT_TOOL_GROUPS.map((group) => (
+						<div key={group.title}>
+							<div className="border-b border-border/60 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+								{group.title}
+							</div>
+							{group.tools.map(([name, id]) => (
+								<SettingsRow
+									key={id}
+									title={name}
+									description={<code className="text-[11px]">{id}</code>}
+								/>
+							))}
+						</div>
+					))}
+				</SettingsPanel>
+			</SettingsSection>
 		</SettingsPageShell>
 	);
 };
