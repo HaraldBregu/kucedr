@@ -481,12 +481,7 @@ const ToolsPage: React.FC = () => {
 				</SettingsPanel>
 			</SettingsSection>
 
-			<SettingsSection
-				title={t('settings.modelServices.agentTools.title')}
-				description={t('settings.modelServices.agentTools.description')}
-				className="order-1 gap-4"
-			>
-				{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
+			{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
 					const Icon = group.icon;
 					return (
 						<SettingsSection
@@ -512,7 +507,6 @@ const ToolsPage: React.FC = () => {
 						</SettingsSection>
 					);
 				})}
-			</SettingsSection>
 		</SettingsPageShell>
 	);
 };
