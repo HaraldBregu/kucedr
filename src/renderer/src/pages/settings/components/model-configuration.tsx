@@ -212,7 +212,7 @@ export function ModelProviderConfiguration({
 				{showSelectedModel && <div className="shrink-0">{collapsibleModelSelect}</div>}
 				{action && (
 					<div
-						className="flex shrink-0 items-center gap-1.5"
+						className="flex shrink-0 items-center gap-3"
 						onClick={(event) => event.stopPropagation()}
 					>
 						{action}

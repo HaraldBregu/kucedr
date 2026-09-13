@@ -405,7 +405,7 @@ const ToolsPage: React.FC = () => {
 								})}
 								disabled={!permissions || fileToolsSaving}
 							>
-								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to image`}>
+								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to image`}>
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
@@ -444,7 +444,7 @@ const ToolsPage: React.FC = () => {
 								})}
 								disabled={!permissions || fileToolsSaving}
 							>
-								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to audio`}>
+								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to audio`}>
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
@@ -483,7 +483,7 @@ const ToolsPage: React.FC = () => {
 								})}
 								disabled={!permissions || fileToolsSaving}
 							>
-								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to video`}>
+								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to video`}>
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
@@ -522,7 +522,7 @@ const ToolsPage: React.FC = () => {
 								})}
 								disabled={!permissions || fileToolsSaving}
 							>
-								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to speech`}>
+								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to speech`}>
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
@@ -561,7 +561,7 @@ const ToolsPage: React.FC = () => {
 								})}
 								disabled={!permissions || fileToolsSaving}
 							>
-								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Speech to text`}>
+								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Speech to text`}>
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
@@ -616,7 +616,7 @@ const ToolsPage: React.FC = () => {
 										>
 											<SelectTrigger
 												size="sm"
-												className="w-28 text-xs [&_svg]:size-3"
+												className="w-24 text-xs [&_svg]:size-3"
 												aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Search web`}
 											>
 												<SelectValue />
@@ -715,7 +715,7 @@ const ToolsPage: React.FC = () => {
 												>
 													<SelectTrigger
 														size="sm"
-														className="w-28 text-xs [&_svg]:size-3"
+														className="w-24 text-xs [&_svg]:size-3"
 														aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}
 													>
 														<SelectValue />
