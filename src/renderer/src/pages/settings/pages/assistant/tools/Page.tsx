@@ -128,7 +128,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'web',
 		icon: Globe,
 		tools: [
-			['Search web', 'search_web', 'Searches the web with the configured search engine.'],
 			['Fetch web page', 'fetch_web_page', 'Retrieves and reads a web page by URL.'],
 			[
 				'Use web browser',
@@ -534,7 +533,7 @@ const ToolsPage: React.FC = () => {
 								<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 								<div className="min-w-0 flex-1">
 									<div className="truncate text-[13px] font-medium leading-4 text-foreground">
-										{t('settings.tabs.searchEngine')}
+									Search web
 									</div>
 									<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
 										{selectedSearchEngineDescription}
@@ -549,7 +548,7 @@ const ToolsPage: React.FC = () => {
 								>
 									<SelectTrigger
 										className="w-40 max-w-full text-xs [&_svg]:size-3"
-										aria-label={t('settings.tabs.searchEngine')}
+									aria-label="Search web"
 									>
 										<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
 											{selectedSearchEngine?.name}
