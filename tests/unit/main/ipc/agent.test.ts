@@ -151,3 +151,12 @@ it('normalizes reply context and excludes empty or invalid values', () => {
 		expect(normalizeAgentSendRuntimeOptions({ replyTo })).not.toHaveProperty('replyTo');
 	}
 });
+
+it('allows a resubmission to reuse the edited user message', () => {
+	expect(normalizeAgentSendRuntimeOptions({ reuseLastUserMessage: true })).toMatchObject({
+		reuseLastUserMessage: true,
+	});
+	expect(normalizeAgentSendRuntimeOptions({ reuseLastUserMessage: 'true' })).not.toHaveProperty(
+		'reuseLastUserMessage'
+	);
+});

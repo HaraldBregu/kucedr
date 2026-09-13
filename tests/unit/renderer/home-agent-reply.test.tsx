@@ -6,6 +6,7 @@ const mockSetMode = jest.fn();
 const mockSetSessionId = jest.fn();
 let mockSessionId = 'chat-one';
 const send = jest.fn();
+const editUserMessage = jest.fn();
 const firstMessage = { id: 'assistant-one', content: 'First suggestion.\nMore details.' };
 const secondMessage = { id: 'assistant-two', content: 'Another suggestion.' };
 
@@ -20,18 +21,43 @@ jest.mock('../../../src/renderer/src/contexts/chat-session', () => ({
 beforeEach(() => {
 	mockSessionId = 'chat-one';
 	send.mockReset();
+	editUserMessage.mockReset();
 	mockDispatch.mockClear();
 	mockSetMode.mockClear();
 	mockSetSessionId.mockClear();
 	send.mockResolvedValue('Assistant response');
+	editUserMessage.mockResolvedValue(true);
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
 		value: {
 			send,
+			editUserMessage,
 			cancel: jest.fn().mockResolvedValue(true),
 			getSessionSnapshot: jest.fn().mockResolvedValue({ messages: [] }),
 		},
 	});
+});
+
+it('resubmits an edited user message without adding it to the session twice', async () => {
+	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
+
+	await act(async () => {
+		expect(await result.current.editUserMessage('user-1', 1, 'Updated question')).toBe(true);
+	});
+
+	expect(editUserMessage).toHaveBeenCalledWith('chat-one', 1, 'Updated question');
+	expect(mockDispatch).toHaveBeenCalledWith(
+		expect.objectContaining({
+			type: 'resubmit_user_message',
+			messageId: 'user-1',
+			content: 'Updated question',
+		})
+	);
+	expect(send).toHaveBeenCalledWith(
+		'Updated question',
+		expect.objectContaining({ sessionId: 'chat-one', reuseLastUserMessage: true }),
+		expect.any(Function)
+	);
 });
 
 it('selects and replaces the reply target while preserving the draft and focusing the editor', async () => {

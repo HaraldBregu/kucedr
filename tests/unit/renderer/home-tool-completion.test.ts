@@ -1,6 +1,36 @@
 import { agentChatReducer } from '../../../src/renderer/src/pages/home/context/reducer';
 import type { AgentChatState, AgentMessage } from '../../../src/renderer/src/pages/home/context/state';
 
+it('replaces the edited turn and removes every later chat message', () => {
+	const state: AgentChatState = {
+		messages: [
+			{ id: 'user-1', role: 'user', type: 'user', content: 'Original question' },
+			{
+				id: 'agent-1',
+				role: 'agent',
+				type: 'agent',
+				content: 'Original answer',
+				state: 'completed',
+				tools: [],
+			},
+			{ id: 'user-2', role: 'user', type: 'user', content: 'Later question' },
+		],
+	};
+
+	const updated = agentChatReducer(state, {
+		type: 'resubmit_user_message',
+		messageId: 'user-1',
+		content: 'Updated question',
+		agentMessageId: 'agent-replacement',
+	});
+
+	expect(updated.messages).toEqual([
+		{ id: 'user-1', role: 'user', type: 'user', content: 'Updated question' },
+		expect.objectContaining({ id: 'agent-replacement', role: 'agent', state: 'thinking' }),
+	]);
+	expect(updated.activeAgentId).toBe('agent-replacement');
+});
+
 it('keeps screen source selection on its dedicated chat component', () => {
 	const message: AgentMessage = {
 		id: 'agent-1',
