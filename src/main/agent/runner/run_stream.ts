@@ -151,12 +151,6 @@ async function* loop(
 			output: MAX_TOOL_OUTPUT_BYTES,
 			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
-	const skillLoadingEnabled =
-		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
-		!input.toolsDeny?.includes('load_skill');
-	const skillListingEnabled =
-		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
-		!input.toolsDeny?.includes('list_skills');
 	const configuredToolSettings = getPermissions().tools;
 	const skillLoadingEnabled =
 		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
@@ -205,6 +199,7 @@ async function* loop(
 		tools.push(...goalTools(sessionDir(session)));
 	}
 	tools = filterPlanTools(tools, input.interactionMode);
+	tools = filterDisabledTools(tools, configuredToolSettings);
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
 		rememberSkill(session.runContext, {
 			id: skill.id,
@@ -219,10 +214,10 @@ async function* loop(
 		tools.splice(
 			0,
 			tools.length,
-			...filterPlanTools(
+			...filterDisabledTools(filterPlanTools(
 				filterTools(selectSkillTools(tools, skill.allowedTools), input.toolsAllow, input.toolsDeny),
 				input.interactionMode
-			)
+			), configuredToolSettings)
 		);
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));
@@ -269,6 +264,7 @@ async function* loop(
 		);
 	}
 	tools = filterTools(tools, input.toolsAllow, input.toolsDeny);
+	tools = filterDisabledTools(tools, configuredToolSettings);
 	tools = filterPlanTools(tools, input.interactionMode);
 	if (input.explicitSkill && !skillLoadingEnabled)
 		throw new Error('Skill loading is unavailable for this run.');
