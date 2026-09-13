@@ -14,6 +14,7 @@ export {
 } from './permissions_pending';
 export {
 	type PermissionKind,
+	type PermissionMode,
 	type PermissionRules,
 	type PermissionsSchema,
 } from './permissions_types';
