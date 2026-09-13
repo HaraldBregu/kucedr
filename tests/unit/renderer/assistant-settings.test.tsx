@@ -118,6 +118,10 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.toolTextToSpeechDescription': 'Tool-call speech generation',
 		'settings.modelServices.toolSpeechToTextName': 'Speech to text',
 		'settings.modelServices.toolSpeechToTextDescription': 'Tool-call audio transcription',
+		'settings.modelServices.agentTools.filePermissionLabel': 'File tools permission',
+		'settings.modelServices.agentTools.permissions.ask': 'Ask',
+		'settings.modelServices.agentTools.permissions.allow': 'Always allow',
+		'settings.modelServices.agentTools.permissions.deny': 'Deny',
 		'settings.modelServices.imageModelDescription': 'Image defaults',
 		'settings.modelServices.musicModelDescription': 'Audio defaults',
 		'settings.modelServices.videoModelDescription': 'Video defaults',
@@ -181,6 +185,11 @@ beforeEach(() => {
 		textToSpeech: { providerId: 'elevenlabs', modelId: 'eleven_v3', options: {} },
 		speechToText: { providerId: 'openai', modelId: 'gpt-transcribe', options: {} },
 	};
+	let permissions = {
+		read: { allow: [], deny: [] },
+		write: { allow: [], deny: [] },
+		exec: { allow: [], deny: [] },
+	};
 	if (!window.PointerEvent) {
 		Object.defineProperty(window, 'PointerEvent', {
 			configurable: true,
@@ -200,6 +209,11 @@ beforeEach(() => {
 			setToolModel: jest.fn().mockImplementation(async (kind, settings) => {
 				toolModels[kind] = settings;
 				return settings;
+			}),
+			policyGet: jest.fn().mockResolvedValue(permissions),
+			policySet: jest.fn().mockImplementation(async (next) => {
+				permissions = next;
+				return next;
 			}),
 			ragGetConfiguration: jest.fn().mockResolvedValue({ indexName: 'knowledge-base' }),
 			listSessions: jest.fn().mockResolvedValue([
@@ -421,6 +435,27 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	expect(screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))).toBe(
 		Node.DOCUMENT_POSITION_FOLLOWING
 	);
+});
+
+it('saves a file tools permission choice', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ToolsPage />
+		</MemoryRouter>
+	);
+
+	const selector = await screen.findByRole('combobox', { name: 'File tools permission' });
+	await user.click(selector);
+	await user.click(await screen.findByRole('option', { name: 'Always allow' }));
+
+	await waitFor(() => {
+		expect(window.agent.policySet).toHaveBeenCalledWith({
+			read: { allow: ['*'], deny: [] },
+			write: { allow: ['*'], deny: [] },
+			exec: { allow: [], deny: [] },
+		});
+	});
 });
 
 it('shows only runtime-supported realtime models and saves model and voice together', async () => {
