@@ -414,31 +414,32 @@ const ToolsPage: React.FC = () => {
 			<SettingsSection
 				title={t('settings.modelServices.agentTools.title')}
 				description={t('settings.modelServices.agentTools.description')}
+				className="gap-4"
 			>
-				<SettingsPanel>
-					{AGENT_TOOL_GROUPS.map((group) => (
-						<div key={group.titleKey}>
-							<div className="border-b border-border/60 px-4 py-2 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-								{t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
-							</div>
-							{group.tools.map((tool) => {
-								const [name, id, description] = tool;
-								return (
-								<SettingsRow
-									key={id}
-									title={name}
-									icon={group.icon}
-									description={
-										<>
-											{description} <code className="text-[11px]">{id}</code>
-										</>
-									}
-								/>
-								);
-							})}
-						</div>
-					))}
-				</SettingsPanel>
+				{AGENT_TOOL_GROUPS.map((group) => {
+					const Icon = group.icon;
+					return (
+						<SettingsSection
+							key={group.titleKey}
+							title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
+						>
+							<SettingsPanel>
+								{group.tools.map(([name, id, description]) => (
+									<SettingsRow
+										key={id}
+										title={name}
+										media={<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+										description={
+											<>
+												{description} <code className="text-[11px]">{id}</code>
+											</>
+										}
+									/>
+								))}
+							</SettingsPanel>
+						</SettingsSection>
+					);
+				})}
 			</SettingsSection>
 		</SettingsPageShell>
 	);
