@@ -432,9 +432,9 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	}
 
 	expect(document.querySelectorAll('code')).toHaveLength(58);
-	expect(screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))).toBe(
-		Node.DOCUMENT_POSITION_FOLLOWING
-	);
+	expect(
+		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
+	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });
 
 it('saves a file tools permission choice', async () => {
