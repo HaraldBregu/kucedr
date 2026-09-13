@@ -210,7 +210,11 @@ export function ModelProviderConfiguration({
 					</div>
 				</CollapsibleTrigger>
 				{showSelectedModel && <div className="shrink-0">{collapsibleModelSelect}</div>}
-				{action && <div className="shrink-0" onClick={(event) => event.stopPropagation()}>{action}</div>}
+				{action && (
+					<div className="shrink-0" onClick={(event) => event.stopPropagation()}>
+						{action}
+					</div>
+				)}
 			</div>
 			<CollapsibleContent
 				className={showContentSeparator ? 'border-t border-border/60' : undefined}
