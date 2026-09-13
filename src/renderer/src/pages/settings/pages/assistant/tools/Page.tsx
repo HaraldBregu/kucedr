@@ -596,7 +596,7 @@ const ToolsPage: React.FC = () => {
 										/>
 									</div>
 									<CollapsibleContent>
-										<div className="border-t border-border/60 px-4 py-3">
+										<div className="border-t border-border/60">
 											<SettingsRow
 												title={t('settings.searchEngine.defaultTitle')}
 												description={t('settings.searchEngine.defaultDescription')}
