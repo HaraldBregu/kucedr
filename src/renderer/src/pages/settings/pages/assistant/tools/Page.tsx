@@ -86,14 +86,6 @@ type AgentToolGroup = {
 
 type FileToolsPermission = 'ask' | 'allow' | 'deny';
 
-function getFileToolsPermission(
-	permissions: Awaited<ReturnType<typeof window.agent.policyGet>>
-): FileToolsPermission {
-	if (permissions.read.deny.includes('*') || permissions.write.deny.includes('*')) return 'deny';
-	if (permissions.read.allow.includes('*') && permissions.write.allow.includes('*')) return 'allow';
-	return 'ask';
-}
-
 const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 	{
 		titleKey: 'coordination',
@@ -361,24 +353,12 @@ const ToolsPage: React.FC = () => {
 			});
 	};
 
-	const handleFileToolsPermissionChange = (value: FileToolsPermission | null): void => {
+	const handleFileToolsPermissionChange = (
+		toolId: string,
+		value: FileToolsPermission | null
+	): void => {
 		if (!permissions || !value || fileToolsSaving) return;
-		const next = (['read', 'write'] as const).reduce(
-			(current, kind) => ({
-				...current,
-				[kind]: {
-					allow:
-						value === 'allow'
-							? [...current[kind].allow.filter((rule) => rule !== '*'), '*']
-							: current[kind].allow.filter((rule) => rule !== '*'),
-					deny:
-						value === 'deny'
-							? [...current[kind].deny.filter((rule) => rule !== '*'), '*']
-							: current[kind].deny.filter((rule) => rule !== '*'),
-				},
-			}),
-			permissions
-		);
+		const next = { ...permissions, tools: { ...permissions.tools, [toolId]: value } };
 		setPermissions(next);
 		setFileToolsSaving(true);
 		setFileToolsError(null);
@@ -536,41 +516,10 @@ const ToolsPage: React.FC = () => {
 
 			{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
 				const Icon = group.icon;
-				const fileToolsPermission = permissions ? getFileToolsPermission(permissions) : null;
 				return (
 					<SettingsSection
 						key={group.titleKey}
 						title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
-						action={
-							group.titleKey === 'files' ? (
-								<Select
-									value={fileToolsPermission}
-									onValueChange={(value) =>
-										handleFileToolsPermissionChange(value as FileToolsPermission | null)
-									}
-									disabled={!fileToolsPermission || fileToolsSaving}
-								>
-									<SelectTrigger
-										size="sm"
-										className="w-32 text-xs [&_svg]:size-3"
-										aria-label={t('settings.modelServices.agentTools.filePermissionLabel')}
-									>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="ask">
-											{t('settings.modelServices.agentTools.permissions.ask')}
-										</SelectItem>
-										<SelectItem value="allow">
-											{t('settings.modelServices.agentTools.permissions.allow')}
-										</SelectItem>
-										<SelectItem value="deny">
-											{t('settings.modelServices.agentTools.permissions.deny')}
-										</SelectItem>
-									</SelectContent>
-								</Select>
-							) : undefined
-						}
 					>
 						<SettingsPanel>
 							{group.tools.map(([name, id, description]) => (
@@ -580,11 +529,31 @@ const ToolsPage: React.FC = () => {
 									media={
 										<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 									}
-									description={
+										description={
 										<>
 											{description} <code className="text-[11px]">{id}</code>
 										</>
-									}
+										}
+										actions={
+											group.titleKey === 'files' ? (
+												<Select
+													value={permissions?.tools?.[id] ?? 'ask'}
+													onValueChange={(value) =>
+														handleFileToolsPermissionChange(id, value as FileToolsPermission | null)
+													}
+													disabled={!permissions || fileToolsSaving}
+												>
+													<SelectTrigger size="sm" className="w-32 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}>
+														<SelectValue />
+													</SelectTrigger>
+													<SelectContent>
+														<SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem>
+														<SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem>
+														<SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem>
+													</SelectContent>
+												</Select>
+											) : undefined
+										}
 								/>
 							))}
 						</SettingsPanel>
