@@ -360,7 +360,7 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 		/Text to video/,
 		/Text to speech/,
 		/Speech to text/,
-		/Search Engine/,
+		/Search web/,
 	]) {
 		const trigger = (await screen.findAllByRole('button', { name })).find(
 			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
@@ -393,7 +393,7 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 	expect(speechToText).toBeDefined();
 	if (!image || !audio || !video || !textToSpeech || !speechToText) return;
 
-	const search = await screen.findByRole('combobox', { name: 'Search Engine' });
+	const search = await screen.findByRole('combobox', { name: 'Search web' });
 	expect(image).toHaveTextContent('Gemini Image');
 	expect(audio).toHaveTextContent('Eleven Music');
 	expect(video).toHaveTextContent('Veo');
@@ -419,7 +419,6 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	for (const tool of [
 		'list_a2a_agents',
 		'read',
-		'search_web',
 		'create_image',
 		'screen_recorder',
 		'query_knowledge',
@@ -431,8 +430,8 @@ it('lists every built-in agent tool on the Tools page', async () => {
 		expect(await screen.findByText(tool)).toBeInTheDocument();
 	}
 
-	expect(document.querySelectorAll('code')).toHaveLength(58);
-	expect(screen.getAllByRole('switch')).toHaveLength(58);
+	expect(document.querySelectorAll('code')).toHaveLength(52);
+	expect(screen.getAllByRole('switch')).toHaveLength(57);
 	expect(
 		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
