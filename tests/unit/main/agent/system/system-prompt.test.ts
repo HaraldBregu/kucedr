@@ -23,6 +23,12 @@ describe('addBasePrompt', () => {
 		expect(prompt).toContain('I will visit Budapest in December this year');
 		expect(prompt).toContain('sensitive personal data');
 	});
+	it('directs the assistant to use every recorder for matching user requests', () => {
+		const prompt = addBasePrompt('');
+		expect(prompt).toContain('call microphone_recorder');
+		expect(prompt).toContain('call camera_recorder');
+		expect(prompt).toContain('call screen_recorder');
+	});
 	it('appends to any existing prompt', () => {
 		expect(addBasePrompt('PRE')).toMatch(/^PRE/);
 	});

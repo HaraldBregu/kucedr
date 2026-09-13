@@ -494,7 +494,7 @@ describe('run stream system prompt', () => {
 		expect(search).toHaveBeenCalledTimes(9);
 	});
 
-	it.each(['microphone_recorder', 'screen_recorder'])(
+	it.each(['microphone_recorder', 'camera_recorder', 'screen_recorder'])(
 		'releases the chat run after %s starts in the background',
 		async (id) => {
 			const recorder = jsonTool({
