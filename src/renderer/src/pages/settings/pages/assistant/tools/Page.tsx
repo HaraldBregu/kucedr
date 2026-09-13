@@ -89,7 +89,11 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'coordination',
 		icon: Network,
 		tools: [
-			['List remote agents', 'list_a2a_agents', 'Lists connected remote agents that can accept delegated work.'],
+			[
+				'List remote agents',
+				'list_a2a_agents',
+				'Lists connected remote agents that can accept delegated work.',
+			],
 			['Delegate to remote agent', 'delegate_a2a', 'Sends a task to a connected remote agent.'],
 			['Get remote task', 'get_a2a_task', 'Checks the status and result of a delegated task.'],
 			['Cancel remote task', 'cancel_a2a_task', 'Cancels a delegated task that is still running.'],
@@ -123,7 +127,11 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		tools: [
 			['Search web', 'search_web', 'Searches the web with the configured search engine.'],
 			['Fetch web page', 'fetch_web_page', 'Retrieves and reads a web page by URL.'],
-			['Use web browser', 'use_web_browser', 'Controls a browser to navigate and interact with websites.'],
+			[
+				'Use web browser',
+				'use_web_browser',
+				'Controls a browser to navigate and interact with websites.',
+			],
 		],
 	},
 	{
@@ -142,22 +150,54 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		icon: Monitor,
 		tools: [
 			['Microphone recorder', 'microphone_recorder', 'Starts recording microphone audio.'],
-			['Microphone recorder status', 'microphone_recorder_status', 'Reports the state of a microphone recording.'],
-			['Microphone recorder stop', 'microphone_recorder_stop', 'Stops a microphone recording and returns the audio.'],
+			[
+				'Microphone recorder status',
+				'microphone_recorder_status',
+				'Reports the state of a microphone recording.',
+			],
+			[
+				'Microphone recorder stop',
+				'microphone_recorder_stop',
+				'Stops a microphone recording and returns the audio.',
+			],
 			['Camera recorder', 'camera_recorder', 'Starts recording from a camera.'],
-			['Camera recorder status', 'camera_recorder_status', 'Reports the state of a camera recording.'],
-			['Camera recorder stop', 'camera_recorder_stop', 'Stops a camera recording and returns the video.'],
+			[
+				'Camera recorder status',
+				'camera_recorder_status',
+				'Reports the state of a camera recording.',
+			],
+			[
+				'Camera recorder stop',
+				'camera_recorder_stop',
+				'Stops a camera recording and returns the video.',
+			],
 			['Screen recorder', 'screen_recorder', 'Starts recording a selected screen or window.'],
-			['Select screen source', 'select_screen_source', 'Lets the user choose the screen or window to record.'],
-			['Screen recorder status', 'screen_recorder_status', 'Reports the state of a screen recording.'],
-			['Screen recorder stop', 'screen_recorder_stop', 'Stops a screen recording and returns the video.'],
+			[
+				'Select screen source',
+				'select_screen_source',
+				'Lets the user choose the screen or window to record.',
+			],
+			[
+				'Screen recorder status',
+				'screen_recorder_status',
+				'Reports the state of a screen recording.',
+			],
+			[
+				'Screen recorder stop',
+				'screen_recorder_stop',
+				'Stops a screen recording and returns the video.',
+			],
 		],
 	},
 	{
 		titleKey: 'knowledge',
 		icon: BookOpen,
 		tools: [
-			['Query knowledge', 'query_knowledge', 'Searches the selected knowledge base for relevant content.'],
+			[
+				'Query knowledge',
+				'query_knowledge',
+				'Searches the selected knowledge base for relevant content.',
+			],
 		],
 	},
 	{
@@ -206,9 +246,21 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		tools: [
 			['Get goal', 'get_goal', 'Reads the active goal, plan, criteria, and evidence.'],
 			['Update goal plan', 'update_goal_plan', 'Updates the steps for an active goal.'],
-			['Record goal evidence', 'record_goal_evidence', 'Records evidence that a goal criterion is satisfied.'],
-			['Request goal completion', 'request_goal_completion', 'Requests completion after every goal criterion has evidence.'],
-			['Report goal blocker', 'report_goal_blocker', 'Marks an active goal as blocked with its reason.'],
+			[
+				'Record goal evidence',
+				'record_goal_evidence',
+				'Records evidence that a goal criterion is satisfied.',
+			],
+			[
+				'Request goal completion',
+				'request_goal_completion',
+				'Requests completion after every goal criterion has evidence.',
+			],
+			[
+				'Report goal blocker',
+				'report_goal_blocker',
+				'Marks an active goal as blocked with its reason.',
+			],
 		],
 	},
 	{
@@ -428,7 +480,9 @@ const ToolsPage: React.FC = () => {
 									<SettingsRow
 										key={id}
 										title={name}
-										media={<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+										media={
+											<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+										}
 										description={
 											<>
 												{description} <code className="text-[11px]">{id}</code>
