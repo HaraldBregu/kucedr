@@ -8,11 +8,16 @@ export interface PermissionRules {
 	deny: string[];
 }
 
+export interface ToolConfiguration {
+	enabled: boolean;
+	permission: PermissionMode;
+}
+
 export interface PermissionsSchema {
 	read: PermissionRules;
 	write: PermissionRules;
 	exec: PermissionRules;
-	tools?: Record<string, PermissionMode>;
+	tools?: Record<string, ToolConfiguration>;
 }
 
 export const EMPTY_PERMISSIONS: PermissionsSchema = {

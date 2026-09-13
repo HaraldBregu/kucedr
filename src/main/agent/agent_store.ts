@@ -14,6 +14,7 @@ import {
 	type PermissionKind,
 	type PermissionMode,
 	type PermissionsSchema,
+	type ToolConfiguration,
 } from './permissions/permissions_types';
 import { withWorkspacePermissions } from './permissions/with_workspace_permissions';
 
@@ -23,7 +24,7 @@ export type SearchEngineSettings = {
 	enabled: boolean;
 };
 type ToolPermissions = Record<string, PermissionMode>;
-type ToolSettings = { enabled: boolean; permission: PermissionMode };
+type ToolSettings = ToolConfiguration;
 type AgentToolsStore = {
 	webSearch: SearchEngineSettings;
 	image: AgentMediaModelSettings;
@@ -344,7 +345,7 @@ export function getPermissions(): PermissionsSchema {
 		tools: Object.fromEntries(
 			Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => {
 				const settings = tools[key] as ToolSettings;
-				return [toolId, settings.enabled ? settings.permission : 'deny'];
+				return [toolId, { ...settings }];
 			})
 		),
 	};
@@ -368,7 +369,7 @@ export function setPermissions(permissions: PermissionsSchema): PermissionsSchem
 					key,
 					{
 						...(storedTools[key] as ToolSettings),
-						permission: tools[toolId] ?? (storedTools[key] as ToolSettings).permission,
+						...(tools[toolId] ?? (storedTools[key] as ToolSettings)),
 					},
 				])
 			),
