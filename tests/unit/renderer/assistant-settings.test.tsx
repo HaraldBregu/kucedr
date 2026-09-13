@@ -456,7 +456,7 @@ it('saves a file tools permission choice', async () => {
 			read: { allow: [], deny: [] },
 			write: { allow: [], deny: [] },
 			exec: { allow: [], deny: [] },
-			tools: { read: 'allow' },
+			tools: { read: { enabled: true, permission: 'allow' } },
 		});
 	});
 });

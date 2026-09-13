@@ -43,7 +43,10 @@ describe('resolveToolPermission', () => {
 	it('honors a per-tool permission before directory rules', () => {
 		const configured: PermissionsSchema = {
 			...defaults,
-			tools: { read: 'deny', edit: 'allow' },
+			tools: {
+				read: { enabled: true, permission: 'deny' },
+				edit: { enabled: true, permission: 'allow' },
+			},
 		};
 
 		expect(

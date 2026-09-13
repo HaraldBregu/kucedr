@@ -44,7 +44,11 @@ describe('agent store permissions', () => {
 			read: { allow: [workspaceRule], deny: [] },
 			write: { allow: [workspaceRule], deny: [] },
 			exec: { allow: [workspaceRule], deny: [] },
-			tools: { read: 'ask', edit: 'ask', patch: 'ask' },
+			tools: {
+				read: { enabled: true, permission: 'ask' },
+				edit: { enabled: true, permission: 'ask' },
+				patch: { enabled: true, permission: 'ask' },
+			},
 		});
 	});
 
@@ -64,10 +68,18 @@ describe('agent store permissions', () => {
 			read: { allow: [], deny: [] },
 			write: { allow: [], deny: [] },
 			exec: { allow: [], deny: [] },
-			tools: { read: 'ask', edit: 'allow', patch: 'deny' },
+			tools: {
+				read: { enabled: true, permission: 'ask' },
+				edit: { enabled: true, permission: 'allow' },
+				patch: { enabled: true, permission: 'deny' },
+			},
 		});
 
-		expect(saved.tools).toMatchObject({ read: 'ask', edit: 'allow', patch: 'deny' });
+		expect(saved.tools).toMatchObject({
+			read: { enabled: true, permission: 'ask' },
+			edit: { enabled: true, permission: 'allow' },
+			patch: { enabled: true, permission: 'deny' },
+		});
 	});
 
 	it('preserves explicit blocked rules inside the workspace', () => {
