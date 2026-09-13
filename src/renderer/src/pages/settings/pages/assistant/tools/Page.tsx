@@ -347,7 +347,8 @@ const ToolsPage: React.FC = () => {
 				description={t('settings.modelServices.toolsDescription')}
 			/>
 
-			<SettingsPanel>
+			<SettingsSection title={t('settings.modelServices.toolModels')} className="order-2">
+				<SettingsPanel>
 				<AgentMediaModelConfiguration
 					api={TOOL_IMAGE_API}
 					capability="text-to-image"
@@ -477,12 +478,13 @@ const ToolsPage: React.FC = () => {
 						)}
 					</CollapsibleContent>
 				</Collapsible>
-			</SettingsPanel>
+				</SettingsPanel>
+			</SettingsSection>
 
 			<SettingsSection
 				title={t('settings.modelServices.agentTools.title')}
 				description={t('settings.modelServices.agentTools.description')}
-				className="gap-4"
+				className="order-1 gap-4"
 			>
 				{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
 					const Icon = group.icon;
