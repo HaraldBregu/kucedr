@@ -208,13 +208,13 @@ function toPermissions(value: unknown): PermissionsSchema {
 			: isRecord(value.tools)
 				? (Object.fromEntries(
 						Object.entries(value.tools).filter(
-						([, settings]) =>
-							isRecord(settings) &&
-							typeof settings.enabled === 'boolean' &&
-							(settings.permission === 'ask' ||
-								settings.permission === 'allow' ||
-								settings.permission === 'deny')
-					)
+							([, settings]) =>
+								isRecord(settings) &&
+								typeof settings.enabled === 'boolean' &&
+								(settings.permission === 'ask' ||
+									settings.permission === 'allow' ||
+									settings.permission === 'deny')
+						)
 					) as Record<string, import('../agent/permissions').ToolConfiguration>)
 				: (() => {
 						throw new Error('Invalid tool permissions.');
