@@ -1,5 +1,5 @@
 import { getResolvedProvider } from '../../settings_store';
-import { getModelId, getModelOptions, getProviderId } from '../agent_store';
+import { getModelId, getModelOptions, getPermissions, getProviderId } from '../agent_store';
 import {
 	addAssistantMessage,
 	addToolResults,
@@ -30,7 +30,7 @@ import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool 
 import type { WindowFactory } from '../../window_factory';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
-import { filterTools } from './run_tools';
+import { filterDisabledTools, filterTools } from './run_tools';
 import { selectSkillTools } from './run_skill_tools';
 import { activateSkill, createSkillRegistrySnapshot } from '../skills';
 import type { SkillLoadResult } from '../../../shared/skills_types';
@@ -157,6 +157,15 @@ async function* loop(
 	const skillListingEnabled =
 		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
 		!input.toolsDeny?.includes('list_skills');
+	const configuredToolSettings = getPermissions().tools;
+	const skillLoadingEnabled =
+		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
+		!input.toolsDeny?.includes('load_skill') &&
+		configuredToolSettings?.load_skill?.enabled !== false;
+	const skillListingEnabled =
+		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
+		!input.toolsDeny?.includes('list_skills') &&
+		configuredToolSettings?.list_skills?.enabled !== false;
 	const skillSnapshot =
 		skillLoadingEnabled || skillListingEnabled
 			? createSkillRegistrySnapshot()

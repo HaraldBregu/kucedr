@@ -9,3 +9,10 @@ export function filterTools(
 	const denied = new Set(deny);
 	return tools.filter((tool) => (!allowed || allowed.has(tool.id)) && !denied.has(tool.id));
 }
+
+export function filterDisabledTools(
+	tools: Tool[],
+	settings: Readonly<Record<string, { enabled: boolean }>> | undefined
+): Tool[] {
+	return tools.filter((tool) => settings?.[tool.id]?.enabled !== false);
+}
