@@ -445,15 +445,16 @@ it('saves a file tools permission choice', async () => {
 		</MemoryRouter>
 	);
 
-	const selector = await screen.findByRole('combobox', { name: 'File tools permission' });
+	const selector = await screen.findByRole('combobox', { name: 'File tools permission: Read file' });
 	await user.click(selector);
 	await user.click(await screen.findByRole('option', { name: 'Always Allow' }));
 
 	await waitFor(() => {
 		expect(window.agent.policySet).toHaveBeenCalledWith({
-			read: { allow: ['*'], deny: [] },
-			write: { allow: ['*'], deny: [] },
+			read: { allow: [], deny: [] },
+			write: { allow: [], deny: [] },
 			exec: { allow: [], deny: [] },
+			tools: { read: 'allow' },
 		});
 	});
 });

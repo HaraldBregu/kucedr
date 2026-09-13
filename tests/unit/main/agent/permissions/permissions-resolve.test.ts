@@ -40,6 +40,16 @@ describe('resolveToolPermission', () => {
 		expect(resolveToolPermission('mcp__records__delete')).toBe('allow');
 	});
 
+	it('honors a per-tool permission before directory rules', () => {
+		const configured: PermissionsSchema = {
+			...defaults,
+			tools: { read: 'deny', edit: 'allow' },
+		};
+
+		expect(resolveToolPermission('read', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)).toBe('deny');
+		expect(resolveToolPermission('edit', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)).toBe('allow');
+	});
+
 	it('keeps deny precedence over allow and contextual reuse', () => {
 		getPermissions.mockReturnValue({
 			...defaults,
