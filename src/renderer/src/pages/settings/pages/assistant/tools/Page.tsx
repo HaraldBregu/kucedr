@@ -30,6 +30,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import type { AgentToolModelKind } from '@shared/agent_types';
 import {
 	SettingsNotice,
@@ -355,10 +356,10 @@ const ToolsPage: React.FC = () => {
 
 	const handleFileToolsPermissionChange = (
 		toolId: string,
-		value: FileToolsPermission | null
+		settings: { enabled: boolean; permission: FileToolsPermission }
 	): void => {
-		if (!permissions || !value || fileToolsSaving) return;
-		const next = { ...permissions, tools: { ...permissions.tools, [toolId]: value } };
+		if (!permissions || fileToolsSaving) return;
+		const next = { ...permissions, tools: { ...permissions.tools, [toolId]: settings } };
 		setPermissions(next);
 		setFileToolsSaving(true);
 		setFileToolsError(null);
@@ -522,8 +523,9 @@ const ToolsPage: React.FC = () => {
 						title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
 					>
 						<SettingsPanel>
-							{group.tools.map(([name, id, description]) => (
-								<SettingsRow
+								{group.tools.map(([name, id, description]) => {
+									const settings = permissions?.tools?.[id] ?? { enabled: true, permission: 'ask' };
+									return <SettingsRow
 									key={id}
 									title={name}
 									media={
@@ -534,12 +536,18 @@ const ToolsPage: React.FC = () => {
 											{description} <code className="text-[11px]">{id}</code>
 										</>
 									}
-									actions={
-										group.titleKey === 'files' ? (
-											<Select
-												value={permissions?.tools?.[id] ?? 'ask'}
-												onValueChange={(value) =>
-													handleFileToolsPermissionChange(id, value as FileToolsPermission | null)
+										actions={
+											<>
+												<Switch
+													checked={settings.enabled}
+													onCheckedChange={(enabled) => handleFileToolsPermissionChange(id, { ...settings, enabled })}
+													disabled={!permissions || fileToolsSaving}
+													aria-label={`${name} enabled`}
+												/>
+													<Select
+														value={settings.permission}
+														onValueChange={(value) =>
+															handleFileToolsPermissionChange(id, { ...settings, permission: value as FileToolsPermission })
 												}
 												disabled={!permissions || fileToolsSaving}
 											>
@@ -560,12 +568,13 @@ const ToolsPage: React.FC = () => {
 													<SelectItem value="deny">
 														{t('settings.modelServices.agentTools.permissions.deny')}
 													</SelectItem>
-												</SelectContent>
-											</Select>
-										) : undefined
-									}
-								/>
-							))}
+													</SelectContent>
+												</Select>
+											</>
+										}
+									/>
+									};
+								})}
 						</SettingsPanel>
 						{group.titleKey === 'files' && fileToolsError && (
 							<SettingsNotice variant="destructive" icon={AlertTriangle}>
