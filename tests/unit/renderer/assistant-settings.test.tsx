@@ -376,6 +376,12 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 	expect(speechToText).toBeDefined();
 	if (!image || !audio || !video || !textToSpeech || !speechToText) return;
 
+	const searchTrigger = (await screen.findAllByRole('button', { name: /Search web/ })).find(
+		(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
+	);
+	expect(searchTrigger).toBeDefined();
+	if (!searchTrigger) return;
+	await user.click(searchTrigger);
 	const search = await screen.findByRole('combobox', { name: 'Search web' });
 	expect(image).toHaveTextContent('Gemini Image');
 	expect(audio).toHaveTextContent('Eleven Music');
