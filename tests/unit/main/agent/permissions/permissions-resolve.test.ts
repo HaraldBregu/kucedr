@@ -116,8 +116,6 @@ describe('resolveToolPermission', () => {
 		['complete_bootstrap', {}],
 		['create_task', {}],
 		['update_task', {}],
-		['pause_task', {}],
-		['resume_task', {}],
 		['delete_task', {}],
 		['run_task_now', {}],
 		['microphone_recorder', {}],
@@ -132,13 +130,12 @@ describe('resolveToolPermission', () => {
 		expect(resolveToolPermission(toolName, args, undefined, true, 'ask', denyWrites)).toBe('deny');
 	});
 
-	it('distinguishes read-only operations from conditional writes', () => {
+	it('allows list_tasks when task writes are denied', () => {
 		const denyWrites: PermissionsSchema = {
 			...defaults,
 			write: { allow: [], deny: ['*'] },
 		};
 
-		expect(resolveToolPermission('get_task', {}, undefined, true, 'ask', denyWrites)).toBe('allow');
 		expect(resolveToolPermission('list_tasks', {}, undefined, true, 'ask', denyWrites)).toBe(
 			'allow'
 		);

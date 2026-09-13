@@ -13,7 +13,6 @@ const READ = new Set([
 	'list_a2a_agents',
 	'list_apps',
 	'list_memories',
-	'get_task',
 	'list_tasks',
 	'list_skills',
 	'load_skill',
@@ -35,8 +34,6 @@ const PERSIST = new Set([
 	'update_health_settings',
 	'create_task',
 	'update_task',
-	'pause_task',
-	'resume_task',
 	'delete_task',
 	'run_task_now',
 ]);

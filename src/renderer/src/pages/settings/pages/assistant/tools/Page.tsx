@@ -217,10 +217,7 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		tools: [
 			['Create task', 'create_task', 'Creates a scheduled background task.'],
 			['Update task', 'update_task', 'Changes an existing scheduled task.'],
-			['Pause task', 'pause_task', 'Pauses a scheduled task.'],
-			['Resume task', 'resume_task', 'Resumes a paused scheduled task.'],
 			['Delete task', 'delete_task', 'Permanently removes a scheduled task.'],
-			['Get task', 'get_task', 'Reads the details of a scheduled task.'],
 			['List tasks', 'list_tasks', 'Lists scheduled tasks.'],
 			['Run task now', 'run_task_now', 'Runs a scheduled task immediately.'],
 		],

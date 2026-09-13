@@ -35,8 +35,6 @@ it('prevents scheduled agents from mutating tasks while honoring saved tool rest
 	const toolsDeny = [
 		'create_task',
 		'update_task',
-		'pause_task',
-		'resume_task',
 		'delete_task',
 		'run_task_now',
 	];

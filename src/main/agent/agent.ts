@@ -86,8 +86,6 @@ const AGENT_CATEGORIES: Record<string, SessionCategory> = {
 const SCHEDULED_TASK_TOOLS_DENY = [
 	'create_task',
 	'update_task',
-	'pause_task',
-	'resume_task',
 	'delete_task',
 	'run_task_now',
 ];

@@ -28,8 +28,6 @@ export const MEDIA_TOOLS = new Set([
 const TASK_TOOLS = new Set([
 	'create_task',
 	'update_task',
-	'pause_task',
-	'resume_task',
 	'delete_task',
 	'run_task_now',
 ]);

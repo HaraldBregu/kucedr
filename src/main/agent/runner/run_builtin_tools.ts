@@ -40,10 +40,7 @@ import { screenRecorderStopTool } from '../tools/system/screen_recorder_stop';
 import { selectScreenSourceTool } from '../tools/system/screen_source';
 import { createTaskTool } from '../tools/tasks/create_task';
 import { deleteTaskTool } from '../tools/tasks/delete_task';
-import { getTaskTool } from '../tools/tasks/get_task';
 import { listTasksTool } from '../tools/tasks/list_tasks';
-import { pauseTaskTool } from '../tools/tasks/pause_task';
-import { resumeTaskTool } from '../tools/tasks/resume_task';
 import { runTaskNowTool } from '../tools/tasks/run_task_now';
 import { updateTaskTool } from '../tools/tasks/update_task';
 import { fetchWebPageTool } from '../tools/web/fetch_web_page';
@@ -94,10 +91,7 @@ export function builtinTools(
 		updateHealthSettingsTool,
 		createTaskTool,
 		updateTaskTool,
-		pauseTaskTool,
-		resumeTaskTool,
 		deleteTaskTool,
-		getTaskTool,
 		listTasksTool,
 		runTaskNowTool,
 		listAppsTool,
