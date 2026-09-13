@@ -297,7 +297,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	);
 	expect(screen.queryByRole('button', { name: 'Text to image' })).not.toBeInTheDocument();
 	for (const name of [/Model/, /Realtime conversation/, /Speech/, /Transcription/]) {
-		const trigger = (await screen.findAllByRole('button', { name })).find(
+		const trigger = (await screen.findAllByRole('button', { name: new RegExp(name) })).find(
 			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 		);
 		expect(trigger).toBeDefined();
