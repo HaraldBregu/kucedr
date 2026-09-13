@@ -214,10 +214,13 @@ async function* loop(
 		tools.splice(
 			0,
 			tools.length,
-			...filterDisabledTools(filterPlanTools(
-				filterTools(selectSkillTools(tools, skill.allowedTools), input.toolsAllow, input.toolsDeny),
-				input.interactionMode
-			), configuredToolSettings)
+			...filterDisabledTools(
+				filterPlanTools(
+					filterTools(selectSkillTools(tools, skill.allowedTools), input.toolsAllow, input.toolsDeny),
+					input.interactionMode
+				),
+				configuredToolSettings
+			)
 		);
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));
