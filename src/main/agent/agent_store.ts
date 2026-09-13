@@ -160,7 +160,9 @@ const TOOL_MODEL_KEYS: Record<AgentToolModelKind, string> = {
 	textToSpeech: 'text_to_speech',
 	speechToText: 'speech_to_text',
 };
-const mediaToolSettings = (model: AgentMediaModelSettings): AgentMediaModelSettings & ToolSettings => ({
+const mediaToolSettings = (
+	model: AgentMediaModelSettings
+): AgentMediaModelSettings & ToolSettings => ({
 	...model,
 	enabled: true,
 	permission: 'ask',
@@ -246,27 +248,35 @@ store.store = {
 			DEFAULT_AGENT_STORE.tools.webSearch,
 		create_image: mediaToolSettings(
 			(persisted.tools?.create_image as AgentMediaModelSettings | undefined) ??
-			persisted.tools?.image ??
-			persisted.image_generator_model ??
-			persisted.image_model ??
-			EMPTY_MEDIA_MODEL
+				persisted.tools?.image ??
+				persisted.image_generator_model ??
+				persisted.image_model ??
+				EMPTY_MEDIA_MODEL
 		),
 		create_sound: mediaToolSettings(
 			(persisted.tools?.create_sound as AgentMediaModelSettings | undefined) ??
-			persisted.tools?.audio ??
-			persisted.audio_generator_model ??
-			persisted.audio_model ??
-			EMPTY_MEDIA_MODEL
+				persisted.tools?.audio ??
+				persisted.audio_generator_model ??
+				persisted.audio_model ??
+				EMPTY_MEDIA_MODEL
 		),
 		create_video: mediaToolSettings(
 			(persisted.tools?.create_video as AgentMediaModelSettings | undefined) ??
-			persisted.tools?.video ??
-			persisted.video_generator_model ??
-			persisted.video_model ??
-			EMPTY_MEDIA_MODEL
+				persisted.tools?.video ??
+				persisted.video_generator_model ??
+				persisted.video_model ??
+				EMPTY_MEDIA_MODEL
 		),
-		text_to_speech: mediaToolSettings((persisted.tools?.text_to_speech as AgentMediaModelSettings | undefined) ?? persisted.tools?.textToSpeech ?? EMPTY_MEDIA_MODEL),
-		speech_to_text: mediaToolSettings((persisted.tools?.speech_to_text as AgentMediaModelSettings | undefined) ?? persisted.tools?.speechToText ?? EMPTY_MEDIA_MODEL),
+		text_to_speech: mediaToolSettings(
+			(persisted.tools?.text_to_speech as AgentMediaModelSettings | undefined) ??
+				persisted.tools?.textToSpeech ??
+				EMPTY_MEDIA_MODEL
+		),
+		speech_to_text: mediaToolSettings(
+			(persisted.tools?.speech_to_text as AgentMediaModelSettings | undefined) ??
+				persisted.tools?.speechToText ??
+				EMPTY_MEDIA_MODEL
+		),
 		...Object.fromEntries(
 			Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => [
 				key,
