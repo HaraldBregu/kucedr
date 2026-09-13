@@ -278,12 +278,14 @@ store.store = {
 				EMPTY_MEDIA_MODEL
 		),
 		...Object.fromEntries(
-			Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => [
+			Object.entries(RUNTIME_TOOL_KEYS)
+				.filter(([, key]) => !Object.values(TOOL_MODEL_KEYS).includes(key))
+				.map(([toolId, key]) => [
 				key,
 				isToolSettings(persisted.tools?.[key])
 					? persisted.tools[key]
 					: { enabled: true, permission: legacyToolPermissions?.[toolId] ?? 'ask' },
-			])
+				])
 		),
 	},
 	permissions: persistedPermissions,
