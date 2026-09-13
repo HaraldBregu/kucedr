@@ -248,33 +248,33 @@ store.store = {
 			DEFAULT_AGENT_STORE.tools.webSearch,
 		create_image: mediaToolSettings(
 			(persisted.tools?.create_image as AgentMediaModelSettings | undefined) ??
-				persisted.tools?.image ??
+				(persisted.tools?.image as AgentMediaModelSettings | undefined) ??
 				persisted.image_generator_model ??
 				persisted.image_model ??
 				EMPTY_MEDIA_MODEL
 		),
 		create_sound: mediaToolSettings(
 			(persisted.tools?.create_sound as AgentMediaModelSettings | undefined) ??
-				persisted.tools?.audio ??
+				(persisted.tools?.audio as AgentMediaModelSettings | undefined) ??
 				persisted.audio_generator_model ??
 				persisted.audio_model ??
 				EMPTY_MEDIA_MODEL
 		),
 		create_video: mediaToolSettings(
 			(persisted.tools?.create_video as AgentMediaModelSettings | undefined) ??
-				persisted.tools?.video ??
+				(persisted.tools?.video as AgentMediaModelSettings | undefined) ??
 				persisted.video_generator_model ??
 				persisted.video_model ??
 				EMPTY_MEDIA_MODEL
 		),
 		text_to_speech: mediaToolSettings(
 			(persisted.tools?.text_to_speech as AgentMediaModelSettings | undefined) ??
-				persisted.tools?.textToSpeech ??
+				(persisted.tools?.textToSpeech as AgentMediaModelSettings | undefined) ??
 				EMPTY_MEDIA_MODEL
 		),
 		speech_to_text: mediaToolSettings(
 			(persisted.tools?.speech_to_text as AgentMediaModelSettings | undefined) ??
-				persisted.tools?.speechToText ??
+				(persisted.tools?.speechToText as AgentMediaModelSettings | undefined) ??
 				EMPTY_MEDIA_MODEL
 		),
 		...Object.fromEntries(
