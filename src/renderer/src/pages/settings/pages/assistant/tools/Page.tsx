@@ -393,13 +393,23 @@ const ToolsPage: React.FC = () => {
 						description={t('settings.modelServices.imageModelDescription')}
 						showIcon
 						icon={ImageIcon}
-						showFieldLabel={false}
 						grouped
-						showSelectedModel
-						buttonDropdown
 						showContentSeparator={false}
 						inlineAdvanced
-						action={
+						action={<>
+							<Select
+								value={permissions?.tools?.create_image?.permission ?? 'allow'}
+								onValueChange={(permission) => handleFileToolsPermissionChange('create_image', {
+									...(permissions?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
+									permission: permission as FileToolsPermission,
+								})}
+								disabled={!permissions || fileToolsSaving}
+							>
+								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to image`}>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
+							</Select>
 							<Switch
 								checked={permissions?.tools?.create_image?.enabled ?? true}
 								onCheckedChange={(enabled) =>
@@ -411,7 +421,7 @@ const ToolsPage: React.FC = () => {
 								aria-label="Text to image enabled"
 								disabled={!permissions || fileToolsSaving}
 							/>
-						}
+						</>}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -422,13 +432,23 @@ const ToolsPage: React.FC = () => {
 						description={t('settings.modelServices.musicModelDescription')}
 						showIcon
 						icon={Music2}
-						showFieldLabel={false}
 						grouped
-						showSelectedModel
-						buttonDropdown
 						showContentSeparator={false}
 						inlineAdvanced
-						action={
+						action={<>
+							<Select
+								value={permissions?.tools?.create_sound?.permission ?? 'allow'}
+								onValueChange={(permission) => handleFileToolsPermissionChange('create_sound', {
+									...(permissions?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
+									permission: permission as FileToolsPermission,
+								})}
+								disabled={!permissions || fileToolsSaving}
+							>
+								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to audio`}>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
+							</Select>
 							<Switch
 								checked={permissions?.tools?.create_sound?.enabled ?? true}
 								onCheckedChange={(enabled) =>
@@ -440,7 +460,7 @@ const ToolsPage: React.FC = () => {
 								aria-label="Text to audio enabled"
 								disabled={!permissions || fileToolsSaving}
 							/>
-						}
+						</>}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -451,13 +471,23 @@ const ToolsPage: React.FC = () => {
 						description={t('settings.modelServices.videoModelDescription')}
 						showIcon
 						icon={Video}
-						showFieldLabel={false}
 						grouped
-						showSelectedModel
-						buttonDropdown
 						showContentSeparator={false}
 						inlineAdvanced
-						action={
+						action={<>
+							<Select
+								value={permissions?.tools?.create_video?.permission ?? 'allow'}
+								onValueChange={(permission) => handleFileToolsPermissionChange('create_video', {
+									...(permissions?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
+									permission: permission as FileToolsPermission,
+								})}
+								disabled={!permissions || fileToolsSaving}
+							>
+								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to video`}>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
+							</Select>
 							<Switch
 								checked={permissions?.tools?.create_video?.enabled ?? true}
 								onCheckedChange={(enabled) =>
@@ -469,7 +499,7 @@ const ToolsPage: React.FC = () => {
 								aria-label="Text to video enabled"
 								disabled={!permissions || fileToolsSaving}
 							/>
-						}
+						</>}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -480,13 +510,23 @@ const ToolsPage: React.FC = () => {
 						description={t('settings.modelServices.toolTextToSpeechDescription')}
 						showIcon
 						icon={Volume2}
-						showFieldLabel={false}
 						grouped
-						showSelectedModel
-						buttonDropdown
 						showContentSeparator={false}
 						inlineAdvanced
-						action={
+						action={<>
+							<Select
+								value={permissions?.tools?.text_to_speech?.permission ?? 'allow'}
+								onValueChange={(permission) => handleFileToolsPermissionChange('text_to_speech', {
+									...(permissions?.tools?.text_to_speech ?? { enabled: true, permission: 'allow' }),
+									permission: permission as FileToolsPermission,
+								})}
+								disabled={!permissions || fileToolsSaving}
+							>
+								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to speech`}>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
+							</Select>
 							<Switch
 								checked={permissions?.tools?.text_to_speech?.enabled ?? true}
 								onCheckedChange={(enabled) =>
@@ -498,7 +538,7 @@ const ToolsPage: React.FC = () => {
 								aria-label="Text to speech enabled"
 								disabled={!permissions || fileToolsSaving}
 							/>
-						}
+						</>}
 					/>
 
 					<AgentMediaModelConfiguration
@@ -509,13 +549,23 @@ const ToolsPage: React.FC = () => {
 						description={t('settings.modelServices.toolSpeechToTextDescription')}
 						showIcon
 						icon={Mic}
-						showFieldLabel={false}
 						grouped
-						showSelectedModel
-						buttonDropdown
 						showContentSeparator={false}
 						showOptions={false}
-						action={
+						action={<>
+							<Select
+								value={permissions?.tools?.speech_to_text?.permission ?? 'allow'}
+								onValueChange={(permission) => handleFileToolsPermissionChange('speech_to_text', {
+									...(permissions?.tools?.speech_to_text ?? { enabled: true, permission: 'allow' }),
+									permission: permission as FileToolsPermission,
+								})}
+								disabled={!permissions || fileToolsSaving}
+							>
+								<SelectTrigger size="sm" className="w-28 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Speech to text`}>
+									<SelectValue />
+								</SelectTrigger>
+								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
+							</Select>
 							<Switch
 								checked={permissions?.tools?.speech_to_text?.enabled ?? true}
 								onCheckedChange={(enabled) =>
@@ -527,7 +577,7 @@ const ToolsPage: React.FC = () => {
 								aria-label="Speech to text enabled"
 								disabled={!permissions || fileToolsSaving}
 							/>
-						}
+						</>}
 					/>
 				</SettingsPanel>
 			</SettingsSection>
