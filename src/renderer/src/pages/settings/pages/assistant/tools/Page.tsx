@@ -525,55 +525,15 @@ const ToolsPage: React.FC = () => {
 						<SettingsPanel>
 								{group.tools.map(([name, id, description]) => {
 									const settings = permissions?.tools?.[id] ?? { enabled: true, permission: 'ask' };
-									return <SettingsRow
-									key={id}
-									title={name}
-									media={
-										<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-									}
-									description={
-										<>
-											{description} <code className="text-[11px]">{id}</code>
-										</>
-									}
-										actions={
-											<>
-												<Switch
-													checked={settings.enabled}
-													onCheckedChange={(enabled) => handleFileToolsPermissionChange(id, { ...settings, enabled })}
-													disabled={!permissions || fileToolsSaving}
-													aria-label={`${name} enabled`}
-												/>
-													<Select
-														value={settings.permission}
-														onValueChange={(value) =>
-															handleFileToolsPermissionChange(id, { ...settings, permission: value as FileToolsPermission })
-												}
-												disabled={!permissions || fileToolsSaving}
-											>
-												<SelectTrigger
-													size="sm"
-													className="w-32 text-xs [&_svg]:size-3"
-													aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}
-												>
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="ask">
-														{t('settings.modelServices.agentTools.permissions.ask')}
-													</SelectItem>
-													<SelectItem value="allow">
-														{t('settings.modelServices.agentTools.permissions.allow')}
-													</SelectItem>
-													<SelectItem value="deny">
-														{t('settings.modelServices.agentTools.permissions.deny')}
-													</SelectItem>
-													</SelectContent>
-												</Select>
-											</>
-										}
-									/>
-									};
+									return (
+										<SettingsRow
+											key={id}
+											title={name}
+											media={<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+											description={<>{description} <code className="text-[11px]">{id}</code></>}
+											actions={<><Switch checked={settings.enabled} onCheckedChange={(enabled) => handleFileToolsPermissionChange(id, { ...settings, enabled })} disabled={!permissions || fileToolsSaving} aria-label={`${name} enabled`} /><Select value={settings.permission} onValueChange={(value) => handleFileToolsPermissionChange(id, { ...settings, permission: value as FileToolsPermission })} disabled={!permissions || fileToolsSaving}><SelectTrigger size="sm" className="w-32 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}><SelectValue /></SelectTrigger><SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent></Select></>}
+										/>
+									);
 								})}
 						</SettingsPanel>
 						{group.titleKey === 'files' && fileToolsError && (
