@@ -368,27 +368,11 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 		if (trigger) await user.click(trigger);
 	}
 
-	const image = (await screen.findAllByRole('button', { name: 'Text to image' })).find(
-		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
-	);
-	const audio = (await screen.findAllByRole('button', { name: 'Text to audio' })).find(
-		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
-	);
-	const video = (await screen.findAllByRole('button', { name: 'Text to video' })).find(
-		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
-	);
-	const textToSpeech = (await screen.findAllByRole('button', { name: 'Text to speech' })).find(
-		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
-	);
-	const speechToText = (await screen.findAllByRole('button', { name: 'Speech to text' })).find(
-		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
-	);
-	expect(image).toBeDefined();
-	expect(audio).toBeDefined();
-	expect(video).toBeDefined();
-	expect(textToSpeech).toBeDefined();
-	expect(speechToText).toBeDefined();
-	if (!image || !audio || !video || !textToSpeech || !speechToText) return;
+	const image = await screen.findByRole('combobox', { name: 'Text to image' });
+	const audio = await screen.findByRole('combobox', { name: 'Text to audio' });
+	const video = await screen.findByRole('combobox', { name: 'Text to video' });
+	const textToSpeech = await screen.findByRole('combobox', { name: 'Text to speech' });
+	const speechToText = await screen.findByRole('combobox', { name: 'Speech to text' });
 
 	const searchTrigger = (await screen.findAllByRole('button', { name: /Search web/ })).find(
 		(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
