@@ -380,7 +380,10 @@ const ToolsPage: React.FC = () => {
 				description={t('settings.modelServices.toolsDescription')}
 			/>
 
-			<SettingsSection title={t('settings.modelServices.agentTools.groups.media')} className="order-2">
+			<SettingsSection
+				title={t('settings.modelServices.agentTools.groups.media')}
+				className="order-2"
+			>
 				<SettingsPanel>
 					<AgentMediaModelConfiguration
 						api={TOOL_IMAGE_API}
@@ -526,11 +529,13 @@ const ToolsPage: React.FC = () => {
 							/>
 						}
 					/>
-
 				</SettingsPanel>
 			</SettingsSection>
 
-			<SettingsSection title={t('settings.modelServices.agentTools.groups.web')} className="order-2">
+			<SettingsSection
+				title={t('settings.modelServices.agentTools.groups.web')}
+				className="order-2"
+			>
 				<SettingsPanel>
 					<Collapsible className="min-w-0 max-w-full overflow-hidden">
 						<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
@@ -538,7 +543,7 @@ const ToolsPage: React.FC = () => {
 								<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 								<div className="min-w-0 flex-1">
 									<div className="truncate text-[13px] font-medium leading-4 text-foreground">
-									Search web
+										Search web
 									</div>
 									<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
 										{selectedSearchEngineDescription}
@@ -553,7 +558,7 @@ const ToolsPage: React.FC = () => {
 								>
 									<SelectTrigger
 										className="w-40 max-w-full text-xs [&_svg]:size-3"
-									aria-label="Search web"
+										aria-label="Search web"
 									>
 										<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
 											{selectedSearchEngine?.name}
