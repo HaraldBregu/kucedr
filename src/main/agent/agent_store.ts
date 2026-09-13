@@ -12,6 +12,7 @@ import { normalizePermissionsSchema } from './permissions/normalize_permissions_
 import {
 	type PermissionBucket,
 	type PermissionKind,
+	type PermissionMode,
 	type PermissionsSchema,
 } from './permissions/permissions_types';
 import { withWorkspacePermissions } from './permissions/with_workspace_permissions';
@@ -21,6 +22,7 @@ export type SearchEngineSettings = {
 	providerName: string;
 	enabled: boolean;
 };
+type ToolPermissions = Record<string, PermissionMode>;
 type AgentStoreSchema = {
 	chatbot: {
 		textToText: AgentMediaModelSettings;
@@ -37,6 +39,7 @@ type AgentStoreSchema = {
 		video: AgentMediaModelSettings;
 		textToSpeech: AgentMediaModelSettings;
 		speechToText: AgentMediaModelSettings;
+		permissions: ToolPermissions;
 	};
 	permissions: PermissionsSchema;
 };
@@ -104,6 +107,7 @@ const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 		video: EMPTY_MEDIA_MODEL,
 		textToSpeech: EMPTY_MEDIA_MODEL,
 		speechToText: EMPTY_MEDIA_MODEL,
+		permissions: {},
 	},
 	permissions: DEFAULT_AGENT_PERMISSIONS,
 };
@@ -116,6 +120,8 @@ const store = new Store<AgentStoreSchema>({
 });
 
 const persisted = { ...store.store } as LegacyAgentStoreSchema;
+const { tools: legacyToolPermissions, ...persistedPermissions } =
+	persisted.permissions ?? DEFAULT_AGENT_PERMISSIONS;
 const chatbotTextToText =
 	persisted.chatbot?.textToText?.providerId || persisted.chatbot?.textToText?.modelId
 		? persisted.chatbot.textToText
@@ -175,8 +181,9 @@ store.store = {
 			EMPTY_MEDIA_MODEL,
 		textToSpeech: persisted.tools?.textToSpeech ?? EMPTY_MEDIA_MODEL,
 		speechToText: persisted.tools?.speechToText ?? EMPTY_MEDIA_MODEL,
+		permissions: persisted.tools?.permissions ?? legacyToolPermissions ?? {},
 	},
-	permissions: persisted.permissions ?? DEFAULT_AGENT_PERMISSIONS,
+	permissions: persistedPermissions,
 };
 
 export function getProviderId(): string | undefined {
@@ -248,20 +255,24 @@ export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModel
 }
 
 export function getPermissions(): PermissionsSchema {
-	return withWorkspacePermissions(
+	const permissions = withWorkspacePermissions(
 		normalizePermissionsSchema(store.get('permissions'), DEFAULT_AGENT_PERMISSIONS),
 		workspacePattern
 	);
+	const tools = store.get('tools').permissions;
+	return Object.keys(tools).length > 0 ? { ...permissions, tools: { ...tools } } : permissions;
 }
 
 export function setPermissions(permissions: PermissionsSchema): PermissionsSchema {
+	const { tools, ...directoryPermissions } = permissions;
 	store.set(
 		'permissions',
 		withWorkspacePermissions(
-			normalizePermissionsSchema(permissions, DEFAULT_AGENT_PERMISSIONS),
+			normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
 			workspacePattern
 		)
 	);
+	if (tools) store.set('tools', { ...store.get('tools'), permissions: { ...tools } });
 	return getPermissions();
 }
 
@@ -281,5 +292,6 @@ export function addPermissionRule(
 
 export function resetPermissions(): PermissionsSchema {
 	store.set('permissions', DEFAULT_AGENT_PERMISSIONS);
+	store.set('tools', { ...store.get('tools'), permissions: {} });
 	return getPermissions();
 }
