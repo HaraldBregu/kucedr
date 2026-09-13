@@ -34,6 +34,7 @@ import {
 	resetPermissions,
 	respondToolPermission,
 	setPermissions,
+	type PermissionMode,
 	type PermissionRules,
 	type PermissionsSchema,
 } from '../agent/permissions';
@@ -201,7 +202,7 @@ function toPermissionRules(value: unknown): PermissionRules {
 
 function toPermissions(value: unknown): PermissionsSchema {
 	if (!isRecord(value)) throw new Error('Invalid permissions.');
-	const tools =
+	const tools: Record<string, PermissionMode> | undefined =
 		value.tools === undefined
 			? undefined
 			: isRecord(value.tools)
@@ -209,7 +210,7 @@ function toPermissions(value: unknown): PermissionsSchema {
 						Object.entries(value.tools).filter(
 							([, mode]) => mode === 'ask' || mode === 'allow' || mode === 'deny'
 						)
-					)
+					) as Record<string, PermissionMode>
 				: (() => {
 						throw new Error('Invalid tool permissions.');
 					})();
