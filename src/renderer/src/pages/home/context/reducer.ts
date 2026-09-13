@@ -436,6 +436,25 @@ export function agentChatReducer(state: AgentChatState, action: AgentChatAction)
 						: message
 				),
 			};
+		case 'resubmit_user_message': {
+			const index = state.messages.findIndex(
+				(message) => message.id === action.messageId && message.role === 'user'
+			);
+			if (index < 0) return state;
+			const agentMessage = createAgentMessage(
+				action.agentMessageId,
+				undefined,
+				action.submittedAtMs
+			);
+			return {
+				messages: [
+					...state.messages.slice(0, index),
+					createUserMessage(action.messageId, action.content),
+					agentMessage,
+				],
+				activeAgentId: agentMessage.id,
+			};
+		}
 		case 'start_voice_turn': {
 			const previous = activeAgent(state);
 			const messages = previous

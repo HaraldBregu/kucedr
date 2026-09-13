@@ -272,6 +272,7 @@ export function normalizeAgentSendRuntimeOptions(options: unknown): AgentRunOpti
 			? { runId: optionalTrimmedString(options.runId) }
 			: {}),
 		...(sessionId ? { sessionId } : {}),
+		...(options.reuseLastUserMessage === true ? { reuseLastUserMessage: true } : {}),
 		...(optionalTrimmedString(options.replyTo)
 			? { replyTo: optionalTrimmedString(options.replyTo) }
 			: {}),

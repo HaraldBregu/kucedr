@@ -110,6 +110,7 @@ export interface AgentPromptInputCapabilities {
 export interface AgentRunOptions {
 	runId?: string;
 	sessionId?: string;
+	reuseLastUserMessage?: boolean;
 	replyTo?: string;
 	providerId?: string;
 	model?: string;

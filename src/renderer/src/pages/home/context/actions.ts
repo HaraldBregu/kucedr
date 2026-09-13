@@ -14,6 +14,13 @@ export type AgentChatAction =
 	| { type: 'append_user_message'; messageId: string; content: string }
 	| { type: 'update_user_message'; messageId: string; content: string }
 	| {
+			type: 'resubmit_user_message';
+			messageId: string;
+			content: string;
+			agentMessageId: string;
+			submittedAtMs?: number;
+	  }
+	| {
 			type: 'start_voice_turn';
 			userMessageId: string;
 			agentMessageId: string;

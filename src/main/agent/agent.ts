@@ -284,7 +284,13 @@ export class Agent {
 							...(options.toolsAllow === undefined ? {} : { toolsAllow: options.toolsAllow }),
 						};
 
-			init(session, this.config, input, request.category, this.sessions);
+			init(
+				session,
+				this.config,
+				options.reuseLastUserMessage ? { ...input, message: '' } : input,
+				request.category,
+				this.sessions
+			);
 			if (parsedGoalCommand) {
 				const reply = applyGoalCommand(sessionDir(session), parsedGoalCommand);
 				if (parsedGoalCommand.action === 'create') {

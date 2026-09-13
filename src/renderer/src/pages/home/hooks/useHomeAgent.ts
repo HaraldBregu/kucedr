@@ -133,6 +133,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				interactionMode?: AgentInteractionMode;
 				preserveInput?: boolean;
 				replyTo?: string;
+				replaceMessageId?: string;
 			} = {}
 		): Promise<boolean> => {
 			const trimmed = expandTaskCommand(prompt.trim());
@@ -156,13 +157,24 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				setReplyTo(null);
 			}
 			setIsLoading(true);
-			dispatchChat({
-				type: 'submit_user_message',
-				userMessageId: messageId('user'),
-				agentMessageId: messageId('agent'),
-				content: displayContent,
-				submittedAtMs,
-			});
+			const agentMessageId = messageId('agent');
+			if (sendOptions.replaceMessageId) {
+				dispatchChat({
+					type: 'resubmit_user_message',
+					messageId: sendOptions.replaceMessageId,
+					content: displayContent,
+					agentMessageId,
+					submittedAtMs,
+				});
+			} else {
+				dispatchChat({
+					type: 'submit_user_message',
+					userMessageId: messageId('user'),
+					agentMessageId,
+					content: displayContent,
+					submittedAtMs,
+				});
+			}
 
 			const agent = getAgentApi();
 			if (!agent) {
@@ -186,6 +198,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					sessionId,
 					interactionMode: sendOptions.interactionMode ?? interactionMode,
 					...(sendOptions.replyTo ? { replyTo: sendOptions.replyTo } : {}),
+					...(sendOptions.replaceMessageId ? { reuseLastUserMessage: true } : {}),
 					...(inputFiles.length > 0 ? { files: inputFiles } : {}),
 				};
 				let response = '';
@@ -256,10 +269,10 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 			const agent = getAgentApi();
 			if (!agent) return false;
 			const updated = await agent.editUserMessage(sessionId, userOffsetFromEnd, content);
-			if (updated) dispatchChat({ type: 'update_user_message', messageId, content });
-			return updated;
+			if (!updated) return false;
+			return sendPrompt(content, [], { replaceMessageId: messageId });
 		},
-		[dispatchChat, sessionId]
+		[sendPrompt, sessionId]
 	);
 
 	// useEffect(() => {

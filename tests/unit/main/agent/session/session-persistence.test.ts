@@ -83,7 +83,7 @@ describe('session persistence', () => {
 		]);
 	});
 
-	it('updates a stored user message by its offset from the end', () => {
+	it('updates a stored user message and discards later turns', () => {
 		const location = path.join(temporaryRoot, 'agent');
 		const state = createSessionState();
 		state.id = SESSION_ID;
@@ -102,9 +102,6 @@ describe('session persistence', () => {
 		);
 		expect(loadMessagesBySessionId(SESSION_ID, location)).toEqual([
 			{ role: 'user', content: 'Updated question' },
-			{ role: 'assistant', content: 'First answer' },
-			{ role: 'user', content: 'Second question' },
-			{ role: 'assistant', content: 'Second answer' },
 		]);
 	});
 

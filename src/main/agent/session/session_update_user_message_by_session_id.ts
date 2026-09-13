@@ -32,7 +32,7 @@ export function updateUserMessageBySessionId(
 			}
 
 			coordinator?.invalidate(filePath);
-			messages[index] = { ...message, content };
+			messages.splice(index, messages.length - index, { ...message, content });
 			writeMessagesFile(filePath, backupPath, `${JSON.stringify(messages, null, '\t')}\n`);
 			return true;
 		}
