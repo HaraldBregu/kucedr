@@ -281,10 +281,10 @@ store.store = {
 			Object.entries(RUNTIME_TOOL_KEYS)
 				.filter(([, key]) => !Object.values(TOOL_MODEL_KEYS).includes(key))
 				.map(([toolId, key]) => [
-				key,
-				isToolSettings(persisted.tools?.[key])
-					? persisted.tools[key]
-					: { enabled: true, permission: legacyToolPermissions?.[toolId] ?? 'ask' },
+					key,
+					isToolSettings(persisted.tools?.[key])
+						? persisted.tools[key]
+						: { enabled: true, permission: legacyToolPermissions?.[toolId] ?? 'ask' },
 				])
 		),
 	},
