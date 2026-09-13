@@ -55,7 +55,8 @@ export function resolveToolPermissionDetails(
 	}
 
 	const permissions = configuredPermissions ?? getPermissions();
-	if (toolName === 'bash') return resolveCommandPermission(args, permissions, AGENT_DIRECTORY, fallback);
+	if (toolName === 'bash')
+		return resolveCommandPermission(args, permissions, AGENT_DIRECTORY, fallback);
 	const targets =
 		kind === 'write'
 			? directoryPermissionTargets(toolName, args, AGENT_DIRECTORY, history)
@@ -67,7 +68,8 @@ export function resolveToolPermissionDetails(
 			mode: toolMode,
 			kind,
 			targets,
-			approvalTargets: toolMode === 'allow' ? [] : toolApprovalTargets(toolName, args, AGENT_DIRECTORY, history),
+			approvalTargets:
+				toolMode === 'allow' ? [] : toolApprovalTargets(toolName, args, AGENT_DIRECTORY, history),
 			persistable: false,
 		};
 	}
@@ -89,7 +91,10 @@ export function resolveToolPermissionDetails(
 	];
 	if (decisions.includes('deny'))
 		return { mode: 'deny', kind, targets, approvalTargets, persistable: false };
-	if (kind === 'read' || (targets.length > 0 && decisions.every((decision) => decision === 'allow')))
+	if (
+		kind === 'read' ||
+		(targets.length > 0 && decisions.every((decision) => decision === 'allow'))
+	)
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };
 	if (reuseContext && contextAllowsTool(context, toolName, args, AGENT_DIRECTORY))
 		return { mode: 'allow', kind, targets, approvalTargets, persistable: false };

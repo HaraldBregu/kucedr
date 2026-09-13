@@ -46,8 +46,12 @@ describe('resolveToolPermission', () => {
 			tools: { read: 'deny', edit: 'allow' },
 		};
 
-		expect(resolveToolPermission('read', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)).toBe('deny');
-		expect(resolveToolPermission('edit', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)).toBe('allow');
+		expect(
+			resolveToolPermission('read', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)
+		).toBe('deny');
+		expect(
+			resolveToolPermission('edit', { path: '/outside/a.txt' }, undefined, true, 'ask', configured)
+		).toBe('allow');
 	});
 
 	it('keeps deny precedence over allow and contextual reuse', () => {
@@ -73,7 +77,13 @@ describe('resolveToolPermission', () => {
 		expect(resolveToolPermission('bash', { command: 'pwd', workdir: '/outside' })).toBe('allow');
 		expect(resolveToolPermission('bash', { command: 'pwd', workdir: 'private' })).toBe('deny');
 		expect(resolveToolPermission('bash', { command: 'pwd', elevated: true })).toBe('ask');
-		expect(resolveToolPermission('bash', { command: 'touch file', workdir: '/outside', additionalRoots: ['.'] })).toBe('ask');
+		expect(
+			resolveToolPermission('bash', {
+				command: 'touch file',
+				workdir: '/outside',
+				additionalRoots: ['.'],
+			})
+		).toBe('ask');
 	});
 
 	it('asks when any declared external root is not trusted', () => {
@@ -131,9 +141,12 @@ describe('resolveToolPermission', () => {
 		);
 	});
 
-	it.each(['create_task', 'update_task', 'delete_task'])('allows direct %s requests', (toolName) => {
-		expect(resolveToolPermission(toolName, {}, undefined, true, 'ask', defaults)).toBe('allow');
-	});
+	it.each(['create_task', 'update_task', 'delete_task'])(
+		'allows direct %s requests',
+		(toolName) => {
+			expect(resolveToolPermission(toolName, {}, undefined, true, 'ask', defaults)).toBe('allow');
+		}
+	);
 
 	it('keeps an explicit deny rule for task mutations', () => {
 		const denyWrites: PermissionsSchema = {
@@ -141,7 +154,9 @@ describe('resolveToolPermission', () => {
 			write: { allow: [], deny: ['*'] },
 		};
 
-		expect(resolveToolPermission('delete_task', {}, undefined, true, 'ask', denyWrites)).toBe('deny');
+		expect(resolveToolPermission('delete_task', {}, undefined, true, 'ask', denyWrites)).toBe(
+			'deny'
+		);
 	});
 
 	it('allows recorder output in trusted roots and asks outside them', () => {

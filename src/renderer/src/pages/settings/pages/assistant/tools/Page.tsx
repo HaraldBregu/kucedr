@@ -529,31 +529,41 @@ const ToolsPage: React.FC = () => {
 									media={
 										<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 									}
-										description={
+									description={
 										<>
 											{description} <code className="text-[11px]">{id}</code>
 										</>
-										}
-										actions={
-											group.titleKey === 'files' ? (
-												<Select
-													value={permissions?.tools?.[id] ?? 'ask'}
-													onValueChange={(value) =>
-														handleFileToolsPermissionChange(id, value as FileToolsPermission | null)
-													}
-													disabled={!permissions || fileToolsSaving}
+									}
+									actions={
+										group.titleKey === 'files' ? (
+											<Select
+												value={permissions?.tools?.[id] ?? 'ask'}
+												onValueChange={(value) =>
+													handleFileToolsPermissionChange(id, value as FileToolsPermission | null)
+												}
+												disabled={!permissions || fileToolsSaving}
+											>
+												<SelectTrigger
+													size="sm"
+													className="w-32 text-xs [&_svg]:size-3"
+													aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}
 												>
-													<SelectTrigger size="sm" className="w-32 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}>
-														<SelectValue />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem>
-														<SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem>
-														<SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem>
-													</SelectContent>
-												</Select>
-											) : undefined
-										}
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="ask">
+														{t('settings.modelServices.agentTools.permissions.ask')}
+													</SelectItem>
+													<SelectItem value="allow">
+														{t('settings.modelServices.agentTools.permissions.allow')}
+													</SelectItem>
+													<SelectItem value="deny">
+														{t('settings.modelServices.agentTools.permissions.deny')}
+													</SelectItem>
+												</SelectContent>
+											</Select>
+										) : undefined
+									}
 								/>
 							))}
 						</SettingsPanel>

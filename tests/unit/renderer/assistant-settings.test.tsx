@@ -445,7 +445,9 @@ it('saves a file tools permission choice', async () => {
 		</MemoryRouter>
 	);
 
-	const selector = await screen.findByRole('combobox', { name: 'File tools permission: Read file' });
+	const selector = await screen.findByRole('combobox', {
+		name: 'File tools permission: Read file',
+	});
 	await user.click(selector);
 	await user.click(await screen.findByRole('option', { name: 'Always Allow' }));
 
