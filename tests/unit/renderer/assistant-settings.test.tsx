@@ -118,7 +118,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.toolTextToSpeechDescription': 'Tool-call speech generation',
 		'settings.modelServices.toolSpeechToTextName': 'Speech to text',
 		'settings.modelServices.toolSpeechToTextDescription': 'Tool-call audio transcription',
-		'settings.modelServices.agentTools.filePermissionLabel': 'File tools permission',
+		'settings.modelServices.agentTools.filePermissionLabel': 'File Tools Permission',
 		'settings.modelServices.agentTools.permissions.ask': 'Ask',
 		'settings.modelServices.agentTools.permissions.allow': 'Always Allow',
 		'settings.modelServices.agentTools.permissions.deny': 'Deny',
@@ -447,7 +447,7 @@ it('saves a file tools permission choice', async () => {
 	);
 
 	const selector = await screen.findByRole('combobox', {
-		name: 'File tools permission: Read file',
+		name: 'File Tools Permission: Read file',
 	});
 	await user.click(selector);
 	await user.click(await screen.findByRole('option', { name: 'Always Allow' }));

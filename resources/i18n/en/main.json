@@ -1274,7 +1274,7 @@
 			"agentTools": {
 				"title": "Agent tools",
 				"description": "Built-in capabilities available to agents. Availability can vary by run mode, permissions, and configuration. Installed MCP servers add their own tools dynamically.",
-				"filePermissionLabel": "File tools permission",
+				"filePermissionLabel": "File Tools Permission",
 				"permissions": {
 					"ask": "Ask",
 					"allow": "Always Allow",
