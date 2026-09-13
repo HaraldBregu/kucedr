@@ -581,6 +581,35 @@ const ToolsPage: React.FC = () => {
 												</SelectContent>
 											</Select>
 										</div>
+										<Select
+											value={permissions?.tools?.search_web?.permission ?? 'ask'}
+											onValueChange={(value) =>
+												handleFileToolsPermissionChange('search_web', {
+													...(permissions?.tools?.search_web ?? { enabled: true, permission: 'ask' }),
+													permission: value as FileToolsPermission,
+												})
+											}
+											disabled={!permissions || fileToolsSaving}
+										>
+											<SelectTrigger
+												size="sm"
+												className="w-28 text-xs [&_svg]:size-3"
+												aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Search web`}
+											>
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="ask">
+													{t('settings.modelServices.agentTools.permissions.ask')}
+												</SelectItem>
+												<SelectItem value="allow">
+													{t('settings.modelServices.agentTools.permissions.allow')}
+												</SelectItem>
+												<SelectItem value="deny">
+													{t('settings.modelServices.agentTools.permissions.deny')}
+												</SelectItem>
+											</SelectContent>
+										</Select>
 										<Switch
 											checked={permissions?.tools?.search_web?.enabled ?? true}
 											onCheckedChange={(enabled) =>
