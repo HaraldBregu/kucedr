@@ -380,7 +380,7 @@ const ToolsPage: React.FC = () => {
 				description={t('settings.modelServices.toolsDescription')}
 			/>
 
-			<SettingsSection title={t('settings.modelServices.toolModels')} className="order-2">
+			<SettingsSection title={t('settings.modelServices.agentTools.groups.media')} className="order-2">
 				<SettingsPanel>
 					<AgentMediaModelConfiguration
 						api={TOOL_IMAGE_API}
@@ -527,6 +527,11 @@ const ToolsPage: React.FC = () => {
 						}
 					/>
 
+				</SettingsPanel>
+			</SettingsSection>
+
+			<SettingsSection title={t('settings.modelServices.agentTools.groups.web')} className="order-2">
+				<SettingsPanel>
 					<Collapsible className="min-w-0 max-w-full overflow-hidden">
 						<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
 							<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-4 text-left">
@@ -579,7 +584,7 @@ const ToolsPage: React.FC = () => {
 				</SettingsPanel>
 			</SettingsSection>
 
-			{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
+			{ORDERED_AGENT_TOOL_GROUPS.filter((group) => group.titleKey !== 'media').map((group) => {
 				const Icon = group.icon;
 				return (
 					<SettingsSection
