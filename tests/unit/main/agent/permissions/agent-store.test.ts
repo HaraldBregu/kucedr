@@ -39,6 +39,14 @@ const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
 beforeEach(() => resetPermissions());
 
 describe('agent store permissions', () => {
+	it('keeps model fields on media tool configurations', () => {
+		expect(getToolModel('image')).toMatchObject({
+			providerId: '',
+			modelId: '',
+			options: {},
+		});
+	});
+
 	it('trusts the workspace recursively for every filesystem capability', () => {
 		expect(resetPermissions()).toMatchObject({
 			read: { allow: [workspaceRule], deny: [] },
