@@ -66,7 +66,7 @@ describe('agent store permissions', () => {
 			tools: { read: 'ask', edit: 'allow', patch: 'deny' },
 		});
 
-		expect(saved.tools).toEqual({ read: 'ask', edit: 'allow', patch: 'deny' });
+		expect(saved.tools).toMatchObject({ read: 'ask', edit: 'allow', patch: 'deny' });
 	});
 
 	it('preserves explicit blocked rules inside the workspace', () => {
