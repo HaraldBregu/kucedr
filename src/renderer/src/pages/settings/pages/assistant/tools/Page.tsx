@@ -275,6 +275,22 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 	},
 ] as const;
 
+const ORDERED_AGENT_TOOL_GROUPS = [
+	'files',
+	'commands',
+	'web',
+	'media',
+	'recording',
+	'knowledge',
+	'memory',
+	'skills',
+	'tasks',
+	'apps',
+	'coordination',
+	'goals',
+	'system',
+].map((titleKey) => AGENT_TOOL_GROUPS.find((group) => group.titleKey === titleKey)!);
+
 const ToolsPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
@@ -468,7 +484,7 @@ const ToolsPage: React.FC = () => {
 				description={t('settings.modelServices.agentTools.description')}
 				className="gap-4"
 			>
-				{AGENT_TOOL_GROUPS.map((group) => {
+				{ORDERED_AGENT_TOOL_GROUPS.map((group) => {
 					const Icon = group.icon;
 					return (
 						<SettingsSection
