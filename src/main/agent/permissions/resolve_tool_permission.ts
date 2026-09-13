@@ -27,6 +27,10 @@ export function resolveToolPermissionDetails(
 	if (toolName === 'read') kind = 'read';
 	else if (isWritePermissionTool(toolName, args)) kind = 'write';
 	else if (toolName === 'bash' || toolName === 'process') kind = 'exec';
+	const permissions = configuredPermissions ?? getPermissions();
+	const toolSettings = permissions.tools?.[toolName];
+	if (toolSettings && (!toolSettings.enabled || toolSettings.permission === 'deny'))
+		return { mode: 'deny', kind, targets: [], approvalTargets: [], persistable: false };
 	if (!kind) return { mode: 'allow', targets: [], approvalTargets: [], persistable: false };
 
 	if (toolName === 'process') {
@@ -54,7 +58,6 @@ export function resolveToolPermissionDetails(
 		};
 	}
 
-	const permissions = configuredPermissions ?? getPermissions();
 	if (toolName === 'bash')
 		return resolveCommandPermission(args, permissions, AGENT_DIRECTORY, fallback);
 	const targets =
@@ -62,14 +65,12 @@ export function resolveToolPermissionDetails(
 			? directoryPermissionTargets(toolName, args, AGENT_DIRECTORY, history)
 			: toolPermissionTargets(toolName, args, AGENT_DIRECTORY);
 	const decisions = targets.map((target) => permissionFor(permissions[kind], target, kind));
-	const toolMode = permissions.tools?.[toolName];
-	if (toolMode) {
+	if (toolSettings?.permission === 'allow') {
 		return {
-			mode: toolMode,
+			mode: 'allow',
 			kind,
 			targets,
-			approvalTargets:
-				toolMode === 'allow' ? [] : toolApprovalTargets(toolName, args, AGENT_DIRECTORY, history),
+			approvalTargets: [],
 			persistable: false,
 		};
 	}

@@ -202,15 +202,20 @@ function toPermissionRules(value: unknown): PermissionRules {
 
 function toPermissions(value: unknown): PermissionsSchema {
 	if (!isRecord(value)) throw new Error('Invalid permissions.');
-	const tools: Record<string, PermissionMode> | undefined =
+	const tools: Record<string, import('../agent/permissions').ToolConfiguration> | undefined =
 		value.tools === undefined
 			? undefined
 			: isRecord(value.tools)
 				? (Object.fromEntries(
 						Object.entries(value.tools).filter(
-							([, mode]) => mode === 'ask' || mode === 'allow' || mode === 'deny'
-						)
-					) as Record<string, PermissionMode>)
+						([, settings]) =>
+							isRecord(settings) &&
+							typeof settings.enabled === 'boolean' &&
+							(settings.permission === 'ask' ||
+								settings.permission === 'allow' ||
+								settings.permission === 'deny')
+					)
+					) as Record<string, import('../agent/permissions').ToolConfiguration>)
 				: (() => {
 						throw new Error('Invalid tool permissions.');
 					})();
