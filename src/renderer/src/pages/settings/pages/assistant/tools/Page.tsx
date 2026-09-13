@@ -554,33 +554,6 @@ const ToolsPage: React.FC = () => {
 												</p>
 											</div>
 										</CollapsibleTrigger>
-										<div className="shrink-0">
-											<Select
-												value={searchSettings?.engineId ?? null}
-												onValueChange={handleSearchEngineChange}
-												disabled={!searchSettings || searchSavingEngineId !== null}
-											>
-												<SelectTrigger
-													className="w-40 max-w-full text-xs [&_svg]:size-3"
-													aria-label="Search web"
-												>
-													<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
-														{selectedSearchEngine?.name}
-													</SelectValue>
-												</SelectTrigger>
-												<SelectContent>
-													{SEARCH_ENGINES.map((engine) => (
-														<SelectItem
-															key={engine.id}
-															value={engine.id}
-															disabled={!searchSettings?.configured[engine.id]}
-														>
-															{engine.name}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										</div>
 										<Select
 											value={permissions?.tools?.search_web?.permission ?? 'ask'}
 											onValueChange={(value) =>
@@ -623,6 +596,39 @@ const ToolsPage: React.FC = () => {
 										/>
 									</div>
 									<CollapsibleContent>
+										<div className="border-t border-border/60 px-4 py-3">
+											<SettingsRow
+												title={t('settings.searchEngine.defaultTitle')}
+												description={t('settings.searchEngine.defaultDescription')}
+												actions={
+													<Select
+														value={searchSettings?.engineId ?? null}
+														onValueChange={handleSearchEngineChange}
+														disabled={!searchSettings || searchSavingEngineId !== null}
+													>
+														<SelectTrigger
+															className="w-40 max-w-full text-xs [&_svg]:size-3"
+															aria-label="Search web"
+														>
+															<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
+																{selectedSearchEngine?.name}
+															</SelectValue>
+														</SelectTrigger>
+														<SelectContent>
+															{SEARCH_ENGINES.map((engine) => (
+																<SelectItem
+																	key={engine.id}
+																	value={engine.id}
+																	disabled={!searchSettings?.configured[engine.id]}
+																>
+																	{engine.name}
+																</SelectItem>
+															))}
+														</SelectContent>
+													</Select>
+												}
+											/>
+										</div>
 										{searchEngineError && (
 											<SettingsNotice variant="destructive" icon={AlertTriangle} className="mx-3 mt-3">
 												{searchEngineError}
