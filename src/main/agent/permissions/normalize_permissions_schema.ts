@@ -20,5 +20,14 @@ export function normalizePermissionsSchema(
 		read: rules(stored.read, fallback.read),
 		write: rules(stored.write, fallback.write),
 		exec: rules(stored.exec, fallback.exec),
+		...(stored.tools && typeof stored.tools === 'object' && !Array.isArray(stored.tools)
+			? {
+					tools: Object.fromEntries(
+						Object.entries(stored.tools).filter(
+							([, mode]) => mode === 'ask' || mode === 'allow' || mode === 'deny'
+						)
+					),
+				}
+			: {}),
 	};
 }

@@ -61,6 +61,16 @@ export function resolveToolPermissionDetails(
 			? directoryPermissionTargets(toolName, args, AGENT_DIRECTORY, history)
 			: toolPermissionTargets(toolName, args, AGENT_DIRECTORY);
 	const decisions = targets.map((target) => permissionFor(permissions[kind], target, kind));
+	const toolMode = permissions.tools?.[toolName];
+	if (toolMode) {
+		return {
+			mode: toolMode,
+			kind,
+			targets,
+			approvalTargets: toolMode === 'allow' ? [] : toolApprovalTargets(toolName, args, AGENT_DIRECTORY, history),
+			persistable: false,
+		};
+	}
 	if (TASK_MUTATION_TOOLS.has(toolName)) {
 		return {
 			mode: decisions.includes('deny') ? 'deny' : 'allow',

@@ -12,6 +12,7 @@ export interface PermissionsSchema {
 	read: PermissionRules;
 	write: PermissionRules;
 	exec: PermissionRules;
+	tools?: Record<string, PermissionMode>;
 }
 
 export const EMPTY_PERMISSIONS: PermissionsSchema = {

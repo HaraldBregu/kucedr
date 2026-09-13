@@ -201,10 +201,20 @@ function toPermissionRules(value: unknown): PermissionRules {
 
 function toPermissions(value: unknown): PermissionsSchema {
 	if (!isRecord(value)) throw new Error('Invalid permissions.');
+	const tools = value.tools === undefined
+		? undefined
+		: isRecord(value.tools)
+			? Object.fromEntries(
+					Object.entries(value.tools).filter(
+						([, mode]) => mode === 'ask' || mode === 'allow' || mode === 'deny'
+					)
+				)
+			: (() => { throw new Error('Invalid tool permissions.'); })();
 	return {
 		read: toPermissionRules(value.read),
 		write: toPermissionRules(value.write),
 		exec: toPermissionRules(value.exec),
+		...(tools ? { tools } : {}),
 	};
 }
 
