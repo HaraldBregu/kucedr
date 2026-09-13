@@ -211,7 +211,10 @@ export function ModelProviderConfiguration({
 				</CollapsibleTrigger>
 				{showSelectedModel && <div className="shrink-0">{collapsibleModelSelect}</div>}
 				{action && (
-					<div className="shrink-0" onClick={(event) => event.stopPropagation()}>
+					<div
+						className="flex shrink-0 items-center gap-1.5"
+						onClick={(event) => event.stopPropagation()}
+					>
 						{action}
 					</div>
 				)}
