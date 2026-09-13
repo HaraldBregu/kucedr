@@ -58,6 +58,17 @@ describe('agent store permissions', () => {
 		expect(saved.exec.allow).toEqual([workspaceRule]);
 	});
 
+	it('persists per-tool permission choices', () => {
+		const saved = setPermissions({
+			read: { allow: [], deny: [] },
+			write: { allow: [], deny: [] },
+			exec: { allow: [], deny: [] },
+			tools: { read: 'ask', edit: 'allow', patch: 'deny' },
+		});
+
+		expect(saved.tools).toEqual({ read: 'ask', edit: 'allow', patch: 'deny' });
+	});
+
 	it('preserves explicit blocked rules inside the workspace', () => {
 		const saved = setPermissions({
 			read: { allow: [], deny: [`${AGENT_DIRECTORY}/private/**`] },
