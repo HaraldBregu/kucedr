@@ -33,7 +33,7 @@ import Sandbox from './Sandbox';
 import { locationPath } from './location_path';
 
 type Permissions = Awaited<ReturnType<typeof window.agent.policyGet>>;
-type PermissionKind = keyof Permissions;
+type PermissionKind = Exclude<keyof Permissions, 'tools'>;
 type PermissionBucket = 'allow' | 'deny';
 
 const KINDS: PermissionKind[] = ['read', 'write', 'exec'];
