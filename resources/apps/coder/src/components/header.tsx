@@ -158,18 +158,20 @@ export function Header({
 					className="flex h-full items-center gap-1"
 					style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 				>
-					<button
+					<Button
 						type="button"
-						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-accent/80 hover:text-foreground active:bg-accent"
+						variant="ghost"
+						className="h-full w-[46px] rounded-none px-0 text-muted-foreground hover:bg-accent/80 hover:text-foreground active:bg-accent"
 						onClick={() => inKucedr && win.minimize()}
 						title="Minimize"
 						aria-label="Minimize"
 					>
 						<Minus className="h-[13px] w-[13px]" strokeWidth={1.5} />
-					</button>
-					<button
+					</Button>
+					<Button
 						type="button"
-						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-accent/80 hover:text-foreground active:bg-accent"
+						variant="ghost"
+						className="h-full w-[46px] rounded-none px-0 text-muted-foreground hover:bg-accent/80 hover:text-foreground active:bg-accent"
 						onClick={() => inKucedr && win.maximize()}
 						title={isMaximized ? 'Restore' : 'Maximize'}
 						aria-label={isMaximized ? 'Restore' : 'Maximize'}
@@ -179,16 +181,17 @@ export function Header({
 						) : (
 							<Square className="h-[11px] w-[11px]" strokeWidth={1.5} />
 						)}
-					</button>
-					<button
+					</Button>
+					<Button
 						type="button"
-						className="flex h-full w-[46px] items-center justify-center text-muted-foreground transition-colors duration-100 hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
+						variant="ghost"
+						className="h-full w-[46px] rounded-none px-0 text-muted-foreground hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
 						onClick={() => inKucedr && win.close()}
 						title="Close"
 						aria-label="Close"
 					>
 						<X className="h-[13px] w-[13px]" strokeWidth={1.5} />
-					</button>
+					</Button>
 				</div>
 			) : null}
 		</header>
