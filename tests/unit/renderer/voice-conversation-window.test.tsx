@@ -37,7 +37,6 @@ describe('VoiceConversationWindow', () => {
 			start: jest.fn(),
 			status,
 			stream: {} as MediaStream,
-			transcript: [],
 		} as ReturnType<typeof useRealtimeVoice>);
 
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
@@ -49,35 +48,4 @@ describe('VoiceConversationWindow', () => {
 		).toHaveTextContent('1:01');
 	});
 
-	it('shows one user or assistant message per item in a clipped scrollable list', () => {
-		mockedUseRealtimeVoice.mockReturnValue({
-			elapsedMs: 0,
-			end: jest.fn(),
-			errorMessage: null,
-			isMuted: false,
-			setMuted: jest.fn(),
-			start: jest.fn(),
-			status: 'listening',
-			stream: {} as MediaStream,
-			transcript: [
-				{ id: '1', role: 'user', content: 'First message' },
-				{ id: '2', role: 'assistant', content: 'Second message' },
-				{ id: '3', role: 'user', content: 'Third message' },
-				{ id: '4', role: 'assistant', content: 'Latest message' },
-			],
-		} as ReturnType<typeof useRealtimeVoice>);
-
-		render(<VoiceConversationWindow chatSessionId="chat-1" />);
-
-		const transcript = screen.getByRole('region', { name: 'Voice conversation transcript' });
-		expect(transcript).toHaveClass('left-3/4', 'w-1/2', 'inset-y-3', 'overflow-y-auto');
-		const messages = screen.getByRole('list');
-		const items = screen.getAllByRole('listitem');
-		expect(items).toHaveLength(4);
-		expect(items[0]).toHaveAttribute('data-message-role', 'user');
-		expect(items[1]).toHaveAttribute('data-message-role', 'assistant');
-		expect(messages).toHaveTextContent('First message');
-		expect(messages).toHaveTextContent('Second message');
-		expect(messages).toHaveTextContent('Latest message');
-	});
 });

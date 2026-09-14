@@ -12,12 +12,6 @@ import { usePcmPlayback } from './usePcmPlayback';
 
 export type RealtimeVoiceUiStatus = 'idle' | 'checking-permission' | RealtimeVoiceState | 'error';
 
-export interface RealtimeVoiceTranscriptMessage {
-	readonly id: string;
-	readonly role: 'user' | 'assistant';
-	readonly content: string;
-}
-
 const CLOCK_INTERVAL_MS = 250;
 const HOME_AGENT_ID = 'main';
 
@@ -55,7 +49,6 @@ export function useRealtimeVoice({
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [requiresConfiguration, setRequiresConfiguration] = useState(false);
 	const [elapsedMs, setElapsedMs] = useState(0);
-	const [transcript, setTranscript] = useState<readonly RealtimeVoiceTranscriptMessage[]>([]);
 	const {
 		analyser: captureAnalyser,
 		isMuted,
@@ -82,7 +75,6 @@ export function useRealtimeVoice({
 	const startedAtMsRef = useRef(0);
 	const clockRef = useRef<number | null>(null);
 	const userTurnMessageIdsRef = useRef<Map<string, string>>(new Map());
-	const assistantMessageIdRef = useRef<string | null>(null);
 
 	const supportedModels = modelsFor('realtime-voice');
 	const isConfigured = supportedModels.length > 0;
@@ -185,11 +177,6 @@ export function useRealtimeVoice({
 					const existingMessageId = userTurnMessageIdsRef.current.get(turnKey);
 					if (existingMessageId) {
 						if (transcript) {
-							setTranscript((messages) =>
-								messages.map((message) =>
-									message.id === existingMessageId ? { ...message, content: transcript } : message
-								)
-							);
 							dispatchChat({
 								type: 'update_user_message',
 								messageId: existingMessageId,
@@ -200,11 +187,6 @@ export function useRealtimeVoice({
 					}
 					const userMessageId = messageId('voice-user', event.itemId);
 					userTurnMessageIdsRef.current.set(turnKey, userMessageId);
-					assistantMessageIdRef.current = null;
-					setTranscript((messages) => [
-						...messages,
-						{ id: userMessageId, role: 'user', content: transcript || '…' },
-					]);
 					dispatchChat({
 						type: 'start_voice_turn',
 						userMessageId,
@@ -215,21 +197,7 @@ export function useRealtimeVoice({
 					});
 					return;
 				}
-				case 'assistant_transcript_delta': {
-					const id = event.itemId
-						? `voice-assistant-${event.itemId}`
-						: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
-					assistantMessageIdRef.current = id;
-					setTranscript((messages) => {
-						const existing = messages.find((message) => message.id === id);
-						return existing
-							? messages.map((message) =>
-									message.id === id
-										? { ...message, content: message.content + event.delta }
-										: message
-								)
-							: [...messages, { id, role: 'assistant', content: event.delta }];
-					});
+				case 'assistant_transcript_delta':
 					dispatchChat({
 						type: 'apply_response_event',
 						event: {
@@ -241,27 +209,13 @@ export function useRealtimeVoice({
 						receivedAtMs: Date.now(),
 					});
 					return;
-				}
-				case 'assistant_transcript_final': {
-					const id = event.itemId
-						? `voice-assistant-${event.itemId}`
-						: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
-					assistantMessageIdRef.current = id;
-					setTranscript((messages) => {
-						const existing = messages.some((message) => message.id === id);
-						return existing
-							? messages.map((message) =>
-									message.id === id ? { ...message, content: event.text } : message
-								)
-							: [...messages, { id, role: 'assistant', content: event.text }];
-					});
+				case 'assistant_transcript_final':
 					dispatchChat({
 						type: 'complete_active',
 						response: event.text,
 						completedAtMs: Date.now(),
 					});
 					return;
-				}
 				case 'assistant_audio_delta':
 					setStatus('speaking');
 					enqueuePlayback(event.audio);
@@ -311,9 +265,7 @@ export function useRealtimeVoice({
 			startRunRef.current = runId;
 			setStatus('checking-permission');
 			setElapsedMs(0);
-			setTranscript([]);
 			userTurnMessageIdsRef.current = new Map();
-			assistantMessageIdRef.current = null;
 
 			try {
 				await ensureAppMicrophoneAccess();
@@ -400,7 +352,6 @@ export function useRealtimeVoice({
 		isConfigured,
 		isMuted,
 		isSupported,
-		transcript,
 		requiresConfiguration,
 		setMuted,
 		start,
