@@ -12,6 +12,12 @@ import { usePcmPlayback } from './usePcmPlayback';
 
 export type RealtimeVoiceUiStatus = 'idle' | 'checking-permission' | RealtimeVoiceState | 'error';
 
+export interface RealtimeVoiceTranscriptMessage {
+	readonly id: string;
+	readonly role: 'user' | 'assistant';
+	readonly content: string;
+}
+
 const CLOCK_INTERVAL_MS = 250;
 const HOME_AGENT_ID = 'main';
 
@@ -49,6 +55,7 @@ export function useRealtimeVoice({
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [requiresConfiguration, setRequiresConfiguration] = useState(false);
 	const [elapsedMs, setElapsedMs] = useState(0);
+	const [transcript, setTranscript] = useState<readonly RealtimeVoiceTranscriptMessage[]>([]);
 	const {
 		analyser: captureAnalyser,
 		isMuted,
@@ -177,6 +184,11 @@ export function useRealtimeVoice({
 					const existingMessageId = userTurnMessageIdsRef.current.get(turnKey);
 					if (existingMessageId) {
 						if (transcript) {
+							setTranscript((messages) =>
+								messages.map((message) =>
+									message.id === existingMessageId ? { ...message, content: transcript } : message
+								)
+							);
 							dispatchChat({
 								type: 'update_user_message',
 								messageId: existingMessageId,
@@ -187,6 +199,10 @@ export function useRealtimeVoice({
 					}
 					const userMessageId = messageId('voice-user', event.itemId);
 					userTurnMessageIdsRef.current.set(turnKey, userMessageId);
+					setTranscript((messages) => [
+						...messages,
+						{ id: userMessageId, role: 'user', content: transcript || '…' },
+					]);
 					dispatchChat({
 						type: 'start_voice_turn',
 						userMessageId,
@@ -198,6 +214,15 @@ export function useRealtimeVoice({
 					return;
 				}
 				case 'assistant_transcript_delta':
+					setTranscript((messages) => {
+						const id = `voice-assistant-${event.itemId ?? event.sessionId}`;
+						const existing = messages.find((message) => message.id === id);
+						return existing
+							? messages.map((message) =>
+									message.id === id ? { ...message, content: message.content + event.delta } : message
+								)
+							: [...messages, { id, role: 'assistant', content: event.delta }];
+					});
 					dispatchChat({
 						type: 'apply_response_event',
 						event: {
@@ -210,6 +235,15 @@ export function useRealtimeVoice({
 					});
 					return;
 				case 'assistant_transcript_final':
+					setTranscript((messages) => {
+						const id = `voice-assistant-${event.itemId ?? event.sessionId}`;
+						const existing = messages.some((message) => message.id === id);
+						return existing
+							? messages.map((message) =>
+									message.id === id ? { ...message, content: event.text } : message
+								)
+							: [...messages, { id, role: 'assistant', content: event.text }];
+					});
 					dispatchChat({
 						type: 'complete_active',
 						response: event.text,
@@ -265,6 +299,7 @@ export function useRealtimeVoice({
 			startRunRef.current = runId;
 			setStatus('checking-permission');
 			setElapsedMs(0);
+			setTranscript([]);
 			userTurnMessageIdsRef.current = new Map();
 
 			try {
@@ -352,6 +387,7 @@ export function useRealtimeVoice({
 		isConfigured,
 		isMuted,
 		isSupported,
+		transcript,
 		requiresConfiguration,
 		setMuted,
 		start,

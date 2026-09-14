@@ -29,6 +29,7 @@ export function VoiceConversationWindow({
 	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow, closeOnError: false });
 	const isEnding = voice.status === 'ending';
 	const state = personaState(voice.status);
+	const recentTranscript = voice.transcript.slice(-3).filter((message) => message.content.trim());
 
 	useEffect(() => {
 		void voice.start();
@@ -49,11 +50,30 @@ export function VoiceConversationWindow({
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
 				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
-					<Persona
-						state={state}
-						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
-						size={208}
-					/>
+					<div className="-translate-x-16">
+						<Persona
+							state={state}
+							level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
+							size={208}
+						/>
+					</div>
+					<ol
+						aria-label="Voice conversation transcript"
+						className="absolute inset-y-0 right-0 flex w-[38%] flex-col justify-center gap-5 overflow-hidden pr-5 text-sm leading-5"
+					>
+						{recentTranscript.map((message, index) => (
+							<li
+								key={message.id}
+								className={cn(
+									'line-clamp-2 transition-opacity',
+									message.role === 'user' ? 'text-foreground' : 'text-muted-foreground',
+									index === 0 && recentTranscript.length > 1 ? 'opacity-40' : 'opacity-100'
+								)}
+							>
+								{message.content}
+							</li>
+						))}
+					</ol>
 				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">

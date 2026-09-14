@@ -37,6 +37,7 @@ describe('VoiceConversationWindow', () => {
 			start: jest.fn(),
 			status,
 			stream: {} as MediaStream,
+			transcript: [],
 		} as ReturnType<typeof useRealtimeVoice>);
 
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
@@ -46,5 +47,31 @@ describe('VoiceConversationWindow', () => {
 		expect(screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling).toHaveTextContent(
 			'1:01'
 		);
+	});
+
+	it('keeps a clipped recent transcript in the right-side rail', () => {
+		mockedUseRealtimeVoice.mockReturnValue({
+			elapsedMs: 0,
+			end: jest.fn(),
+			errorMessage: null,
+			isMuted: false,
+			setMuted: jest.fn(),
+			start: jest.fn(),
+			status: 'listening',
+			stream: {} as MediaStream,
+			transcript: [
+				{ id: '1', role: 'user', content: 'First message' },
+				{ id: '2', role: 'assistant', content: 'Second message' },
+				{ id: '3', role: 'user', content: 'Third message' },
+				{ id: '4', role: 'assistant', content: 'Latest message' },
+			],
+		} as ReturnType<typeof useRealtimeVoice>);
+
+		render(<VoiceConversationWindow chatSessionId="chat-1" />);
+
+		const transcript = screen.getByRole('list', { name: 'Voice conversation transcript' });
+		expect(transcript).not.toHaveTextContent('First message');
+		expect(transcript).toHaveTextContent('Second message');
+		expect(transcript).toHaveTextContent('Latest message');
 	});
 });
