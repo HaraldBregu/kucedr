@@ -36,46 +36,27 @@ export function VoiceConversationWindow({
 	}, [voice.start]);
 
 	return (
-		<main
-			className="app-translucent-window flex h-full min-h-0 flex-col overflow-hidden bg-background text-foreground"
-			data-voice-window
-		>
-			<div
-				className="relative flex h-12 shrink-0 items-center justify-center select-none"
-				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
-			>
-				<span className="text-sm font-normal tracking-wide text-muted-foreground">
-					Voice conversation
-				</span>
-			</div>
-			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
-				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
-					<Persona
-						state={state}
-						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
-						size={208}
-					/>
-					<ol
-						aria-label="Voice conversation transcript"
-						className="absolute bottom-1/2 left-[calc(100%-30px)] top-0 flex w-64 flex-col justify-end gap-5 overflow-hidden text-sm leading-5"
-					>
-						{transcript.map((message, index) => (
-							<li
-								key={message.id}
-								className={cn(
-									'line-clamp-2 transition-opacity',
-									message.role === 'user' ? 'text-foreground' : 'text-muted-foreground',
-									index === 0 && transcript.length > 1 ? 'opacity-40' : 'opacity-100'
-								)}
-							>
-								{message.content}
-							</li>
-						))}
-					</ol>
+		<main className="relative h-full overflow-hidden bg-transparent text-foreground" data-voice-window>
+			<section className="app-translucent-window flex h-full w-[640px] min-h-0 flex-col overflow-hidden bg-background">
+				<div
+					className="relative flex h-12 shrink-0 items-center justify-center select-none"
+					style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
+				>
+					<span className="text-sm font-normal tracking-wide text-muted-foreground">
+						Voice conversation
+					</span>
 				</div>
-			</div>
-			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
-				<div className="flex items-center justify-center gap-2">
+				<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
+					<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
+						<Persona
+							state={state}
+							level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
+							size={208}
+						/>
+					</div>
+				</div>
+				<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
+					<div className="flex items-center justify-center gap-2">
 					<button
 						type="button"
 						aria-label={voice.isMuted ? 'Enable microphone' : 'Disable microphone'}
@@ -103,8 +84,26 @@ export function VoiceConversationWindow({
 					<span className="font-mono text-xs tabular-nums text-muted-foreground">
 						{formatDuration(voice.elapsedMs)}
 					</span>
+					</div>
 				</div>
-			</div>
+			</section>
+			<ol
+				aria-label="Voice conversation transcript"
+				className="absolute bottom-1/2 left-[610px] top-12 flex w-80 flex-col justify-end gap-5 overflow-hidden text-sm leading-5"
+			>
+				{transcript.map((message, index) => (
+					<li
+						key={message.id}
+						className={cn(
+							'line-clamp-2 transition-opacity',
+							message.role === 'user' ? 'text-foreground' : 'text-muted-foreground',
+							index === 0 && transcript.length > 1 ? 'opacity-40' : 'opacity-100'
+						)}
+					>
+						{message.content}
+					</li>
+				))}
+			</ol>
 		</main>
 	);
 }

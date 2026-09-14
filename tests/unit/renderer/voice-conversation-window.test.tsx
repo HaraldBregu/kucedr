@@ -71,7 +71,7 @@ describe('VoiceConversationWindow', () => {
 
 		const transcript = screen.getByRole('list', { name: 'Voice conversation transcript' });
 		expect(transcript).toHaveClass(
-			'left-[calc(100%-30px)]',
+			'left-[610px]',
 			'bottom-1/2',
 			'justify-end'
 		);
