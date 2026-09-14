@@ -73,10 +73,10 @@ describe('VoiceConversationWindow', () => {
 		expect(transcript).toHaveClass(
 			'left-[calc(100%-30px)]',
 			'bottom-1/2',
-			'justify-end',
 			'overflow-y-auto'
 		);
 		const messages = screen.getByRole('list');
+		expect(messages).toHaveClass('justify-end');
 		expect(messages).toHaveTextContent('First message');
 		expect(messages).toHaveTextContent('Second message');
 		expect(messages).toHaveTextContent('Latest message');
