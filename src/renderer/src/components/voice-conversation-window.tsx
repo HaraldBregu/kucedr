@@ -55,23 +55,26 @@ export function VoiceConversationWindow({
 						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
 						size={208}
 					/>
-					<ol
+					<div
 						aria-label="Voice conversation transcript"
-						className="absolute bottom-1/2 left-[calc(100%-30px)] top-0 flex w-64 flex-col justify-end gap-5 overflow-y-auto text-sm leading-5"
+						className="absolute bottom-1/2 left-[calc(100%-30px)] top-0 w-64 overflow-y-auto text-sm leading-5"
+						role="region"
 					>
-						{transcript.map((message, index) => (
-							<li
-								key={message.id}
-								className={cn(
-									'line-clamp-2 transition-opacity',
-									message.role === 'user' ? 'text-foreground' : 'text-muted-foreground',
-									index === 0 && transcript.length > 1 ? 'opacity-40' : 'opacity-100'
-								)}
-							>
-								{message.content}
-							</li>
-						))}
-					</ol>
+						<ol className="flex min-h-full flex-col justify-end gap-5">
+							{transcript.map((message, index) => (
+								<li
+									key={message.id}
+									className={cn(
+										'line-clamp-2 transition-opacity',
+										message.role === 'user' ? 'text-foreground' : 'text-muted-foreground',
+										index === 0 && transcript.length > 1 ? 'opacity-40' : 'opacity-100'
+									)}
+								>
+									{message.content}
+								</li>
+							))}
+						</ol>
+					</div>
 				</div>
 			</div>
 			<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">

@@ -69,15 +69,16 @@ describe('VoiceConversationWindow', () => {
 
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
-		const transcript = screen.getByRole('list', { name: 'Voice conversation transcript' });
+		const transcript = screen.getByRole('region', { name: 'Voice conversation transcript' });
 		expect(transcript).toHaveClass(
 			'left-[calc(100%-30px)]',
 			'bottom-1/2',
 			'justify-end',
 			'overflow-y-auto'
 		);
-		expect(transcript).toHaveTextContent('First message');
-		expect(transcript).toHaveTextContent('Second message');
-		expect(transcript).toHaveTextContent('Latest message');
+		const messages = screen.getByRole('list');
+		expect(messages).toHaveTextContent('First message');
+		expect(messages).toHaveTextContent('Second message');
+		expect(messages).toHaveTextContent('Latest message');
 	});
 });
