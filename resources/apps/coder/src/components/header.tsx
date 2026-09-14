@@ -59,7 +59,6 @@ export function Header({
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
 			<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
-			<h1 className="min-w-0 shrink truncate text-sm font-medium">Coder</h1>
 			<div className="min-w-0 flex-1" />
 
 			{coding.runState === 'running' ? (

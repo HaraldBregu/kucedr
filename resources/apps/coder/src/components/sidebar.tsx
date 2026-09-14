@@ -1,4 +1,4 @@
-import { ChevronRight, CodeXml, FileText, Files, FolderPlus, Info, Search, Settings } from 'lucide-react';
+import { ChevronRight, FileText, Files, Folder, FolderPlus, Info, Search, Settings } from 'lucide-react';
 import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -44,8 +44,8 @@ export function ProjectSidebar({
 			<SidebarHeader className="px-2 pb-2 pt-2">
 				<div className="flex min-h-9 items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
 					<div className="flex min-w-0 flex-1 items-center gap-2 group-data-[state=collapsed]/sidebar:hidden">
-						<CodeXml className="size-4 text-muted-foreground" />
-						<span className="truncate text-xs font-medium">Coder</span>
+						<Folder className="size-4 text-muted-foreground" />
+						<span className="truncate text-xs font-medium">Projects</span>
 					</div>
 					<Tooltip>
 						<TooltipTrigger
@@ -133,7 +133,7 @@ export function ProjectSidebar({
 																void coding.selectProject(project.id);
 															}}
 														>
-													<CodeXml
+													<Folder
 																className={`size-3.5 ${project.available ? '' : 'text-destructive'}`}
 															/>
 															<span className="truncate text-xs group-data-[state=collapsed]/sidebar:hidden">
@@ -149,7 +149,7 @@ export function ProjectSidebar({
 										</div>
 
 										<CollapsibleContent className="group-data-[state=collapsed]/sidebar:hidden">
-											<ul className="ml-7 space-y-0.5 py-0.5">
+											<ul className="ml-7 space-y-0.5 border-l border-sidebar-border py-1 pl-2">
 												<li>
 													<Button
 														variant="ghost"
@@ -179,6 +179,11 @@ export function ProjectSidebar({
 														<FileText /> AGENTS.md
 													</Button>
 												</li>
+												{filteredSessions.length ? (
+													<li className="px-2 pb-0.5 pt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+														Sessions
+													</li>
+												) : null}
 												{filteredSessions.map((session) => (
 													<li key={session.id}>
 														<Button
