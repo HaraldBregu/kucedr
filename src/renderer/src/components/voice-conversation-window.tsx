@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 import { Persona, type PersonaState } from '@/components/persona';
 import { TypingLoader } from '@/components/ui/loader';
@@ -30,10 +30,16 @@ export function VoiceConversationWindow({
 	const isEnding = voice.status === 'ending';
 	const state = personaState(voice.status);
 	const transcript = voice.transcript.filter((message) => message.content.trim());
+	const transcriptRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		void voice.start();
 	}, [voice.start]);
+
+	useEffect(() => {
+		const container = transcriptRef.current;
+		if (container) container.scrollTop = container.scrollHeight;
+	}, [transcript]);
 
 	return (
 		<main
@@ -57,17 +63,18 @@ export function VoiceConversationWindow({
 					/>
 					<div
 						aria-label="Voice conversation transcript"
-						className="absolute bottom-1/2 right-3 top-3 w-[38%] overflow-y-auto text-sm leading-5"
+						className="absolute inset-y-3 left-3/4 w-1/2 overflow-y-auto text-sm leading-5"
+						ref={transcriptRef}
 						role="region"
 					>
-						<ol className="flex min-h-full flex-col justify-end gap-5">
-							{transcript.map((message, index) => (
+						<ol className="flex flex-col gap-5 py-3">
+							{transcript.map((message) => (
 								<li
+									data-message-role={message.role}
 									key={message.id}
 									className={cn(
-										'line-clamp-2 transition-opacity',
-										message.role === 'user' ? 'text-foreground' : 'text-muted-foreground',
-										index === 0 && transcript.length > 1 ? 'opacity-40' : 'opacity-100'
+										'break-words',
+										message.role === 'user' ? 'text-foreground' : 'text-muted-foreground'
 									)}
 								>
 									{message.content}

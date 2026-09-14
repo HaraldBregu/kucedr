@@ -49,7 +49,7 @@ describe('VoiceConversationWindow', () => {
 		).toHaveTextContent('1:01');
 	});
 
-	it('shows the complete transcript in a scrollable right-side rail', () => {
+	it('shows one user or assistant message per item in a clipped scrollable list', () => {
 		mockedUseRealtimeVoice.mockReturnValue({
 			elapsedMs: 0,
 			end: jest.fn(),
@@ -70,9 +70,12 @@ describe('VoiceConversationWindow', () => {
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
 		const transcript = screen.getByRole('region', { name: 'Voice conversation transcript' });
-		expect(transcript).toHaveClass('right-3', 'w-[38%]', 'bottom-1/2', 'overflow-y-auto');
+		expect(transcript).toHaveClass('left-3/4', 'w-1/2', 'inset-y-3', 'overflow-y-auto');
 		const messages = screen.getByRole('list');
-		expect(messages).toHaveClass('justify-end');
+		const items = screen.getAllByRole('listitem');
+		expect(items).toHaveLength(4);
+		expect(items[0]).toHaveAttribute('data-message-role', 'user');
+		expect(items[1]).toHaveAttribute('data-message-role', 'assistant');
 		expect(messages).toHaveTextContent('First message');
 		expect(messages).toHaveTextContent('Second message');
 		expect(messages).toHaveTextContent('Latest message');

@@ -82,6 +82,7 @@ export function useRealtimeVoice({
 	const startedAtMsRef = useRef(0);
 	const clockRef = useRef<number | null>(null);
 	const userTurnMessageIdsRef = useRef<Map<string, string>>(new Map());
+	const assistantMessageIdRef = useRef<string | null>(null);
 
 	const supportedModels = modelsFor('realtime-voice');
 	const isConfigured = supportedModels.length > 0;
@@ -199,6 +200,7 @@ export function useRealtimeVoice({
 					}
 					const userMessageId = messageId('voice-user', event.itemId);
 					userTurnMessageIdsRef.current.set(turnKey, userMessageId);
+					assistantMessageIdRef.current = null;
 					setTranscript((messages) => [
 						...messages,
 						{ id: userMessageId, role: 'user', content: transcript || '…' },
@@ -215,7 +217,10 @@ export function useRealtimeVoice({
 				}
 				case 'assistant_transcript_delta':
 					setTranscript((messages) => {
-						const id = `voice-assistant-${event.itemId ?? event.sessionId}`;
+						const id = event.itemId
+							? `voice-assistant-${event.itemId}`
+							: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
+						assistantMessageIdRef.current = id;
 						const existing = messages.find((message) => message.id === id);
 						return existing
 							? messages.map((message) =>
@@ -236,7 +241,10 @@ export function useRealtimeVoice({
 					return;
 				case 'assistant_transcript_final':
 					setTranscript((messages) => {
-						const id = `voice-assistant-${event.itemId ?? event.sessionId}`;
+						const id = event.itemId
+							? `voice-assistant-${event.itemId}`
+							: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
+						assistantMessageIdRef.current = id;
 						const existing = messages.some((message) => message.id === id);
 						return existing
 							? messages.map((message) =>
@@ -301,6 +309,7 @@ export function useRealtimeVoice({
 			setElapsedMs(0);
 			setTranscript([]);
 			userTurnMessageIdsRef.current = new Map();
+			assistantMessageIdRef.current = null;
 
 			try {
 				await ensureAppMicrophoneAccess();
