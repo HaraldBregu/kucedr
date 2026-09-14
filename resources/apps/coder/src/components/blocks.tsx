@@ -27,7 +27,7 @@ import type { CodingBlock, CodingController } from '@/controller';
 function MessageBlock({ block }: { block: Extract<CodingBlock, { type: 'message' }> }) {
 	const content =
 		block.role === 'assistant' ? (
-			<div className="coding-markdown text-sm leading-6">
+			<div className="coder-markdown text-sm leading-6">
 				<ReactMarkdown
 					remarkPlugins={[remarkGfm]}
 					components={{
@@ -169,7 +169,7 @@ function CommandBlock({
 								onClick={() => {
 									coding.setMode('shell');
 									coding.setInput(block.command);
-									document.querySelector<HTMLTextAreaElement>('#coding-composer')?.focus();
+									document.querySelector<HTMLTextAreaElement>('#coder-composer')?.focus();
 								}}
 							>
 								<RotateCcw /> Load command

@@ -17,7 +17,7 @@ export function Composer({ coding }: { coding: CodingController }) {
 		>
 			<div className="mx-auto max-w-4xl rounded-lg border bg-card focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
 				<Textarea
-					id="coding-composer"
+					id="coder-composer"
 					value={coding.input}
 					onChange={(event) => coding.setInput(event.target.value)}
 					onKeyDown={(event) => {

@@ -68,7 +68,7 @@ export function Workspace({ coding }: { coding: CodingController }) {
 							variant="outline"
 							onClick={() => void coding.removeProject(coding.activeProject!.id)}
 						>
-							Remove from Coding
+							Remove from Coder
 						</Button>
 					</Empty>
 				) : coding.blocks.length === 0 ? (
