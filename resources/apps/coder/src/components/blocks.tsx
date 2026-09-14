@@ -50,12 +50,12 @@ function MessageBlock({ block }: { block: Extract<CodingBlock, { type: 'message'
 		);
 
 	return (
-		<article className="group px-4 py-2 sm:px-6" aria-label={`${block.role} message`}>
+		<article className="group py-2" aria-label={`${block.role} message`}>
 			<div
 				className={
 					block.role === 'user'
 						? 'relative ml-auto max-w-2xl rounded-lg bg-muted px-3 py-2'
-						: 'relative mx-auto max-w-4xl py-2'
+						: 'relative w-full py-2'
 				}
 			>
 				{block.status === 'streaming' ? (
@@ -95,8 +95,8 @@ function ToolBlock({ block }: { block: Extract<CodingBlock, { type: 'tool' }> })
 			<X className="size-3 text-destructive" />
 		);
 	return (
-		<div className="px-4 py-1 sm:px-6">
-			<div className="mx-auto flex max-w-4xl items-center gap-2 text-[11px] text-muted-foreground">
+		<div className="py-1">
+			<div className="flex items-center gap-2 text-[11px] text-muted-foreground">
 				{icon}
 				<span className={block.status === 'failed' ? 'text-destructive' : ''}>
 					{block.toolName}
@@ -124,11 +124,11 @@ function CommandBlock({
 				: `exit ${block.exitCode ?? '?'}`;
 
 	return (
-		<div className="px-4 py-2 sm:px-6">
+		<div className="py-2">
 			<Collapsible
 				open={open}
 				onOpenChange={setOpen}
-				className="mx-auto max-w-4xl overflow-hidden rounded-lg bg-code"
+				className="overflow-hidden rounded-lg bg-code"
 			>
 				<div className="flex min-h-9 items-center gap-2 px-3">
 					<Terminal className="size-3.5 shrink-0 text-command" />
@@ -193,7 +193,7 @@ function CommandBlock({
 
 export function Blocks({ coding }: { coding: CodingController }) {
 	return (
-		<div className="py-2">
+		<div className="mx-auto w-full max-w-4xl px-3 py-2">
 			{coding.blocks.map((block) =>
 				block.type === 'message' ? (
 					<MessageBlock key={block.id} block={block} />
