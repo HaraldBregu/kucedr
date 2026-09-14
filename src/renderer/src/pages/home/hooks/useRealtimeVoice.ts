@@ -224,7 +224,9 @@ export function useRealtimeVoice({
 						const existing = messages.find((message) => message.id === id);
 						return existing
 							? messages.map((message) =>
-									message.id === id ? { ...message, content: message.content + event.delta } : message
+									message.id === id
+										? { ...message, content: message.content + event.delta }
+										: message
 								)
 							: [...messages, { id, role: 'assistant', content: event.delta }];
 					});
