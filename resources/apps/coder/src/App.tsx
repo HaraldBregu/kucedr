@@ -39,7 +39,7 @@ export default function App() {
 		<TooltipProvider>
 			<SidebarProvider open={coding.leftOpen} onOpenChange={setSidebarVisibility}>
 				<main className="flex h-full min-h-0 w-full bg-background text-foreground">
-					<Sidebar aria-label="Coding workspaces and sessions">
+					<Sidebar aria-label="Coder workspaces and sessions">
 						<ProjectSidebar
 							coding={coding}
 							configurationOpen={page === 'configuration'}

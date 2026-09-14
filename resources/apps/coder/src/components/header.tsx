@@ -59,7 +59,7 @@ export function Header({
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
 			<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
-			<h1 className="min-w-0 shrink truncate text-sm font-medium">Coding</h1>
+			<h1 className="min-w-0 shrink truncate text-sm font-medium">Coder</h1>
 			<div className="min-w-0 flex-1" />
 
 			{coding.runState === 'running' ? (
@@ -78,11 +78,11 @@ export function Header({
 					variant="ghost"
 					size="icon-sm"
 					className="rounded-full text-muted-foreground hover:text-foreground"
-					aria-label="Search Coding workspaces"
-					title="Search Coding workspaces"
+					aria-label="Search Coder workspaces"
+					title="Search Coder workspaces"
 					onClick={() => {
 						onOpenSidebar();
-						requestAnimationFrame(() => document.getElementById('coding-sidebar-search')?.focus());
+						requestAnimationFrame(() => document.getElementById('coder-sidebar-search')?.focus());
 					}}
 				>
 					<Search className="size-4" strokeWidth={1.8} />
@@ -92,8 +92,8 @@ export function Header({
 					variant="ghost"
 					size="icon-sm"
 					className="rounded-full text-muted-foreground hover:text-foreground"
-					aria-label="Open Coding configuration"
-					title="Open Coding configuration"
+					aria-label="Open Coder configuration"
+					title="Open Coder configuration"
 					onClick={onOpenConfiguration}
 				>
 					<User className="size-4" strokeWidth={1.8} />
@@ -141,7 +141,7 @@ export function Header({
 							<Button
 								variant="ghost"
 								size="icon-sm"
-								aria-label="New coding session"
+							aria-label="New Coder session"
 								disabled={!coding.activeProject || coding.runState === 'running'}
 								onClick={() => coding.newSession()}
 							>

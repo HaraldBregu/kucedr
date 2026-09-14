@@ -45,7 +45,7 @@ export function ProjectSidebar({
 				<div className="flex min-h-9 items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
 					<div className="flex min-w-0 flex-1 items-center gap-2 group-data-[state=collapsed]/sidebar:hidden">
 						<CodeXml className="size-4 text-muted-foreground" />
-						<span className="truncate text-xs font-medium">Coding</span>
+						<span className="truncate text-xs font-medium">Coder</span>
 					</div>
 					<Tooltip>
 						<TooltipTrigger
@@ -73,7 +73,7 @@ export function ProjectSidebar({
 									variant={configurationOpen ? 'secondary' : 'ghost'}
 									size="icon-sm"
 									className="group-data-[state=collapsed]/sidebar:mx-auto"
-									aria-label="Open Coding configuration"
+									aria-label="Open Coder configuration"
 									onClick={onOpenConfiguration}
 								>
 									<Settings />
@@ -86,8 +86,8 @@ export function ProjectSidebar({
 				<div className="relative group-data-[state=collapsed]/sidebar:hidden">
 					<Search className="pointer-events-none absolute left-2.5 top-2 size-3.5 text-muted-foreground" />
 					<Input
-						id="coding-sidebar-search"
-						aria-label="Search workspaces and sessions"
+					id="coder-sidebar-search"
+					aria-label="Search Coder workspaces and sessions"
 						value={coding.query}
 						onChange={(event) => coding.setQuery(event.target.value)}
 						placeholder="Search"
@@ -97,7 +97,7 @@ export function ProjectSidebar({
 			</SidebarHeader>
 
 			<SidebarContent aria-busy={coding.busy}>
-				<nav aria-label="Coding workspaces and sessions" className="px-2 pb-2">
+				<nav aria-label="Coder workspaces and sessions" className="px-2 pb-2">
 					<ul className="space-y-0.5">
 						{visibleProjects.map((project) => {
 							const sessions = coding.sessionsByProject[project.id] ?? [];
