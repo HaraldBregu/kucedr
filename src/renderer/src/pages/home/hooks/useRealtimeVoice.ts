@@ -255,7 +255,7 @@ export function useRealtimeVoice({
 								)
 							: [...messages, { id, role: 'assistant', content: event.text }];
 					});
-						dispatchChat({
+					dispatchChat({
 						type: 'complete_active',
 						response: event.text,
 						completedAtMs: Date.now(),
