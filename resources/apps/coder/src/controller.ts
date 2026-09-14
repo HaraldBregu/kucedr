@@ -1,6 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 import type {
 	CodingProject,
+	CodingProjectFile,
 	CodingProviderId,
 	CodingRunMode,
 	CodingSessionSummary,
@@ -65,8 +66,10 @@ export interface CodingController {
 	toolMode: CodingToolMode;
 	addProject: () => Promise<void>;
 	cancelRun: () => void;
+	createProjectFile: (filePath: string) => Promise<CodingProjectFile | undefined>;
 	newSession: (projectId?: string) => void;
 	openProject: (projectId: string) => Promise<void>;
+	listProjectFiles: (projectId: string) => Promise<CodingProjectFile[]>;
 	refresh: () => Promise<void>;
 	removeProject: (projectId: string) => Promise<void>;
 	selectProject: (projectId: string) => Promise<void>;

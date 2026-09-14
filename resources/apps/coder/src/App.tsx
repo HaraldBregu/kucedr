@@ -1,9 +1,11 @@
 import { useCallback, useState } from 'react';
 
 import { Configuration } from '@/components/configuration';
+import { Files } from '@/components/files';
 import { Header } from '@/components/header';
 import { Instructions } from '@/components/instructions';
 import { ProjectSidebar } from '@/components/sidebar';
+import { Project } from '@/components/project';
 import { Sidebar, SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Workspace } from '@/components/workspace';
@@ -15,7 +17,7 @@ export default function App() {
 	useTheme();
 	const coding = useCodingWorkspace();
 	const setLeftOpen = coding.setLeftOpen;
-	const [page, setPage] = useState<'workspace' | 'configuration' | 'instructions'>('workspace');
+	const [page, setPage] = useState<'workspace' | 'configuration' | 'instructions' | 'files' | 'project'>('workspace');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const setSidebarVisibility = useCallback(
 		(open: boolean): void => {
@@ -24,7 +26,7 @@ export default function App() {
 		[setLeftOpen]
 	);
 
-	const openPage = (nextPage: 'workspace' | 'configuration' | 'instructions'): boolean => {
+	const openPage = (nextPage: 'workspace' | 'configuration' | 'instructions' | 'files' | 'project'): boolean => {
 		if (nextPage !== 'instructions' && !canLeaveInstructions(page, instructionsDirty)) {
 			return false;
 		}
@@ -43,6 +45,8 @@ export default function App() {
 							configurationOpen={page === 'configuration'}
 							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenWorkspace={() => openPage('workspace')}
+							onOpenFiles={(projectId) => { void coding.selectProject(projectId); void openPage('files'); }}
+							onOpenProject={(projectId) => { void coding.selectProject(projectId); void openPage('project'); }}
 						/>
 					</Sidebar>
 					<SidebarInset>
@@ -68,6 +72,10 @@ export default function App() {
 									onDirtyChange={setInstructionsDirty}
 									onDone={() => void openPage('workspace')}
 								/>
+							) : page === 'files' && coding.activeProject ? (
+								<Files coding={coding} onDone={() => void openPage('workspace')} />
+							) : page === 'project' && coding.activeProject ? (
+								<Project coding={coding} onOpenFiles={() => void openPage('files')} onOpenInstructions={() => void openPage('instructions')} />
 							) : (
 								<Workspace coding={coding} />
 							)}

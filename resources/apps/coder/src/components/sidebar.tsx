@@ -1,4 +1,4 @@
-import { ChevronRight, FolderGit2, FolderPlus, Search, Settings } from 'lucide-react';
+import { ChevronRight, CodeXml, FileText, Files, FolderPlus, Info, Search, Settings } from 'lucide-react';
 import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,15 @@ export function ProjectSidebar({
 	coding,
 	configurationOpen,
 	onOpenConfiguration,
+	onOpenFiles,
+	onOpenProject,
 	onOpenWorkspace,
 }: {
 	coding: CodingController;
 	configurationOpen: boolean;
 	onOpenConfiguration: () => void;
+	onOpenFiles: (projectId: string) => void;
+	onOpenProject: (projectId: string) => void;
 	onOpenWorkspace: () => boolean;
 }) {
 	const query = coding.query.trim().toLowerCase();
@@ -38,7 +42,7 @@ export function ProjectSidebar({
 			<SidebarHeader className="px-2 pb-2 pt-2">
 				<div className="flex min-h-9 items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
 					<div className="flex min-w-0 flex-1 items-center gap-2 group-data-[state=collapsed]/sidebar:hidden">
-						<FolderGit2 className="size-4 text-muted-foreground" />
+						<CodeXml className="size-4 text-muted-foreground" />
 						<span className="truncate text-xs font-medium">Coding</span>
 					</div>
 					<Tooltip>
@@ -127,7 +131,7 @@ export function ProjectSidebar({
 																void coding.selectProject(project.id);
 															}}
 														>
-															<FolderGit2
+													<CodeXml
 																className={`size-3.5 ${project.available ? '' : 'text-destructive'}`}
 															/>
 															<span className="truncate text-xs group-data-[state=collapsed]/sidebar:hidden">
@@ -144,6 +148,35 @@ export function ProjectSidebar({
 
 										<CollapsibleContent className="group-data-[state=collapsed]/sidebar:hidden">
 											<ul className="ml-7 space-y-0.5 py-0.5">
+												<li>
+													<Button
+														variant="ghost"
+														className="h-7 w-full justify-start gap-2 px-2 text-left text-[11px] font-normal"
+														onClick={() => onOpenProject(project.id)}
+													>
+														<Info /> Project details
+													</Button>
+												</li>
+												<li>
+													<Button
+														variant="ghost"
+														className="h-7 w-full justify-start gap-2 px-2 text-left text-[11px] font-normal"
+														disabled={!project.available}
+														onClick={() => onOpenFiles(project.id)}
+													>
+														<Files /> Files
+													</Button>
+												</li>
+												<li>
+													<Button
+														variant="ghost"
+														className="h-7 w-full justify-start gap-2 px-2 text-left text-[11px] font-normal"
+														disabled={!project.available}
+														onClick={() => onOpenProject(project.id)}
+													>
+														<FileText /> AGENTS.md
+													</Button>
+												</li>
 												{filteredSessions.map((session) => (
 													<li key={session.id}>
 														<Button

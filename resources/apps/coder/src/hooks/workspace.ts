@@ -362,6 +362,28 @@ export function useCodingWorkspace(): CodingController {
 		[preview]
 	);
 
+	const listProjectFiles = useCallback(
+		async (projectId: string): Promise<CodingProjectFile[]> => {
+			if (preview) return [];
+			return codingApi.listProjectFiles(projectId);
+		},
+		[preview]
+	);
+
+	const createProjectFile = useCallback(
+		async (filePath: string): Promise<CodingProjectFile | undefined> => {
+			if (!activeProjectId || runningRef.current || preview) return undefined;
+			setError('');
+			try {
+				return await codingApi.createProjectFile(activeProjectId, filePath);
+			} catch (reason) {
+				setError(reason instanceof Error ? reason.message : 'Unable to create this file.');
+				return undefined;
+			}
+		},
+		[activeProjectId, preview]
+	);
+
 	const refresh = useCallback(async (): Promise<void> => {
 		if (preview) return;
 		setBusy(true);
@@ -642,8 +664,10 @@ export function useCodingWorkspace(): CodingController {
 		toolMode: settings.toolMode,
 		addProject,
 		cancelRun,
+		createProjectFile,
 		newSession,
 		openProject,
+		listProjectFiles,
 		refresh,
 		removeProject,
 		selectProject,
