@@ -1,8 +1,8 @@
-import { ChevronRight, FileText, Files, Folder, FolderPlus, Info, Search, Settings } from 'lucide-react';
+import { FileText, Files, Folder, FolderPlus, Info, Search, Settings } from 'lucide-react';
 import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { SidebarContent, SidebarHeader } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -109,15 +109,7 @@ export function ProjectSidebar({
 							return (
 								<li key={project.id}>
 									<Collapsible open={expanded} onOpenChange={() => coding.toggleProject(project.id)}>
-										<div className="flex items-center gap-0.5">
-											<CollapsibleTrigger
-												className="grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[state=collapsed]/sidebar:hidden"
-												aria-label={`${expanded ? 'Collapse' : 'Expand'} ${project.name}`}
-											>
-												<ChevronRight
-													className={`size-3.5 transition-transform ${expanded ? 'rotate-90' : ''}`}
-												/>
-											</CollapsibleTrigger>
+										<div className="flex items-center">
 											<Tooltip>
 												<TooltipTrigger
 													render={
@@ -130,6 +122,7 @@ export function ProjectSidebar({
 															disabled={coding.runState === 'running'}
 															onClick={() => {
 																if (!onOpenWorkspace()) return;
+																coding.toggleProject(project.id);
 																void coding.selectProject(project.id);
 															}}
 														>
@@ -149,7 +142,7 @@ export function ProjectSidebar({
 										</div>
 
 										<CollapsibleContent className="group-data-[state=collapsed]/sidebar:hidden">
-											<ul className="ml-7 space-y-0.5 border-l border-sidebar-border py-1 pl-2">
+											<ul className="ml-4 space-y-0.5 py-1">
 												<li>
 													<Button
 														variant="ghost"
