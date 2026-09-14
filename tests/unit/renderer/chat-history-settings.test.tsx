@@ -39,6 +39,13 @@ it('opens the chat history folder from the header actions', async () => {
 	expect(agentApi.openSessionsFolder).toHaveBeenCalledTimes(1);
 });
 
+it('loads every session type', async () => {
+	render(<ChatHistoryPage />);
+
+	await screen.findByText('First chat');
+	expect(agentApi.listSessions).toHaveBeenCalledWith(true);
+});
+
 it('confirms and deletes every stored chat from the header actions', async () => {
 	const user = userEvent.setup();
 	render(<ChatHistoryPage />);

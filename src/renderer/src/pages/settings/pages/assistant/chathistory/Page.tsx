@@ -32,7 +32,7 @@ const ChatHistoryPage: React.FC = () => {
 		setLoading(true);
 		setError(null);
 		try {
-			const nextSessions = await window.agent.listSessions();
+			const nextSessions = await window.agent.listSessions(true);
 			setSessions(nextSessions);
 		} catch (loadError) {
 			setError(firstErrorMessage(loadError, t('settings.chatHistory.errors.load')));

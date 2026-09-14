@@ -401,7 +401,12 @@ export class Agent {
 		};
 	}
 
-	listSessions(category: SessionCategory = 'main'): AgentSessionSummary[] {
+	listSessions(category: SessionCategory | 'all' = 'main'): AgentSessionSummary[] {
+		if (category === 'all') {
+			return (['main', 'bot', 'health', 'task', 'subagent', 'voice'] as const)
+				.flatMap((sessionCategory) => this.listSessions(sessionCategory))
+				.sort((left, right) => right.createdAtMs - left.createdAtMs);
+		}
 		const sessions = listSessions(this.config.location, category);
 		const byId = new Map(sessions.map((session) => [session.id, session]));
 		for (const record of this.runs.values()) {

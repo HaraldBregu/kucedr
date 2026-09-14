@@ -120,8 +120,8 @@ export const agent: AgentApi = {
 	getPromptInputCapabilities: (): Promise<AgentPromptInputCapabilities | null> => {
 		return typedInvokeUnwrap(AgentChannels.getPromptInputCapabilities);
 	},
-	listSessions: (): Promise<AgentSessionSummary[]> => {
-		return typedInvokeUnwrap(AgentChannels.listSessions);
+	listSessions: (includeAll = false): Promise<AgentSessionSummary[]> => {
+		return typedInvokeUnwrap(AgentChannels.listSessions, includeAll);
 	},
 	openSessionsFolder: (): Promise<void> => {
 		return typedInvokeUnwrap(AgentChannels.openSessionsFolder);

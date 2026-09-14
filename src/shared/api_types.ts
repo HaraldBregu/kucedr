@@ -158,7 +158,7 @@ export interface AgentApi {
 		answers: AgentUserInputAnswer[]
 	) => Promise<boolean>;
 	getPromptInputCapabilities: () => Promise<AgentPromptInputCapabilities | null>;
-	listSessions: () => Promise<AgentSessionSummary[]>;
+	listSessions: (includeAll?: boolean) => Promise<AgentSessionSummary[]>;
 	openSessionsFolder: () => Promise<void>;
 	openSessionFolder: (sessionId: string) => Promise<void>;
 	renameSession: (sessionId: string, title: string) => Promise<void>;

@@ -390,7 +390,11 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 
 		ipcMain.handle(
 			AgentChannels.listSessions,
-			wrapAgentHandler(mainAccess, () => agent.listSessions(), AgentChannels.listSessions)
+			wrapAgentHandler(
+				mainAccess,
+				(_event, includeAll: boolean = false) => agent.listSessions(includeAll ? 'all' : 'main'),
+				AgentChannels.listSessions
+			)
 		);
 
 		ipcMain.handle(

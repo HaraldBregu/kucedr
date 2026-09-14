@@ -12,7 +12,8 @@ export function sessionType(sessionsPath: string, sessionId: string): SessionCat
 		return type === 'main' ||
 			type === 'task' ||
 			type === 'health' ||
-			type === 'bot' ||
+			 type === 'bot' ||
+			type === 'subagent' ||
 			type === 'voice'
 			? type
 			: DEFAULT_CATEGORY;
