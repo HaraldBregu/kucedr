@@ -71,7 +71,7 @@ export const TitleBar = React.memo(function TitleBar({
 	const routeButton = isSettings ? (
 		<Button
 			type="button"
-			variant="secondary"
+			variant="default"
 			className="rounded-full"
 			onClick={() => navigate('/home')}
 			title={homeButtonLabel}
