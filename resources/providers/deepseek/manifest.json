@@ -81,13 +81,19 @@
 			}
 		},
 		{
-			"id": "deepseek-v4-flash",
-			"name": "DeepSeek V4 Flash",
+			"id": "deepseek-flash",
+			"name": "DeepSeek V4.1 Flash",
 			"type": "large-language-model",
 			"url": "https://api.deepseek.com",
 			"metadata": {
-				"promptAttachments": [],
-				"documentationUrl": "https://api-docs.deepseek.com/guides/thinking_mode",
+				"promptAttachments": [
+					{
+						"kind": "image",
+						"mimeTypes": ["image/jpeg", "image/png", "image/gif", "image/webp"],
+						"extensions": [".jpg", ".jpeg", ".png", ".gif", ".webp"]
+					}
+				],
+				"documentationUrl": "https://api-docs.deepseek.com/news/news260910/",
 				"documentationStatus": "verified",
 				"contextWindow": 1048576,
 				"defaultOutputTokens": 32768,
