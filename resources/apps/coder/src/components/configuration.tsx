@@ -51,7 +51,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 							</div>
 						) : (
 							<div className="space-y-5">
-								<Setting title="Agent" description="Coding-agent runtime">
+								<Setting title="Agent" description="Coder-agent runtime">
 									<span className="text-xs text-muted-foreground">Pi</span>
 								</Setting>
 								<Setting title="Provider">
@@ -178,7 +178,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 
 					{settings?.toolMode === 'coding' ? (
 						<Alert className="text-destructive">
-							<AlertTriangle /> Coding tools run with your desktop account permissions.
+							<AlertTriangle /> Coder tools run with your desktop account permissions.
 						</Alert>
 					) : null}
 					{configuration.error ? (

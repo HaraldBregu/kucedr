@@ -60,7 +60,7 @@ export function useConfiguration() {
 		try {
 			setSettings(await coding.saveSettings(next));
 		} catch (reason) {
-			setError(reason instanceof Error ? reason.message : 'Unable to save Coding settings.');
+			setError(reason instanceof Error ? reason.message : 'Unable to save Coder settings.');
 		} finally {
 			setSaving(false);
 		}

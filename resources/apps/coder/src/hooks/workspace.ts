@@ -194,7 +194,7 @@ export function useCodingWorkspace(): CodingController {
 			})
 			.catch((reason) => {
 				if (!active) return;
-				setError(reason instanceof Error ? reason.message : 'Unable to load Coding.');
+				setError(reason instanceof Error ? reason.message : 'Unable to load Coder.');
 				setRunState('error');
 				setRunLabel('Unavailable');
 				setBusy(false);
@@ -223,7 +223,7 @@ export function useCodingWorkspace(): CodingController {
 			setRunState('idle');
 			setRunLabel(settings.modelId ? 'Ready' : 'Setup needed');
 			window.requestAnimationFrame(() =>
-				document.querySelector<HTMLTextAreaElement>('#coding-composer')?.focus()
+				document.querySelector<HTMLTextAreaElement>('#coder-composer')?.focus()
 			);
 			if (!preview) void app.setAppStoreValue(ACTIVE_PROJECT_KEY, projectId);
 		},
@@ -239,7 +239,7 @@ export function useCodingWorkspace(): CodingController {
 			}
 			if (command && event.key === '/') {
 				event.preventDefault();
-				document.querySelector<HTMLTextAreaElement>('#coding-composer')?.focus();
+				document.querySelector<HTMLTextAreaElement>('#coder-composer')?.focus();
 			}
 			if (event.key === 'Escape' && query) setQuery('');
 		};
@@ -403,7 +403,7 @@ export function useCodingWorkspace(): CodingController {
 			setProjects(nextProjects);
 			setSessionsByProject(Object.fromEntries(groupedSessions));
 		} catch (reason) {
-			setError(reason instanceof Error ? reason.message : 'Unable to refresh Coding.');
+			setError(reason instanceof Error ? reason.message : 'Unable to refresh Coder.');
 		} finally {
 			setBusy(false);
 		}
@@ -430,7 +430,7 @@ export function useCodingWorkspace(): CodingController {
 		const project = projects.find((item) => item.id === activeProjectId);
 		if (!requestInput || !project || !project.available || runningRef.current) return;
 		if (!settings.modelId.trim()) {
-			setError('Select and connect a model in Kucedr Settings → Coding before starting.');
+			setError('Select and connect a model in Kucedr Settings → Coder before starting.');
 			setRunState('error');
 			setRunLabel('Setup needed');
 			return;
@@ -628,7 +628,7 @@ export function useCodingWorkspace(): CodingController {
 			setSessionsByProject((current) => ({ ...current, [project.id]: nextSessions }));
 		} catch (reason) {
 			const message =
-				reason instanceof Error ? reason.message : 'Coding could not finish this task.';
+				reason instanceof Error ? reason.message : 'Coder could not finish this task.';
 			const cancelled = cancelRequestedRef.current || message === 'Coding run cancelled.';
 			setRunState(cancelled ? 'idle' : 'error');
 			setRunLabel(cancelled ? 'Cancelled' : 'Failed');
