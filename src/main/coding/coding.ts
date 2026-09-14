@@ -15,6 +15,7 @@ import type {
 	CodingAuthStatus,
 	CodingCatalog,
 	CodingProject,
+	CodingProjectFile,
 	CodingProjectInstructions,
 	CodingProjectInstructionsUpdate,
 	CodingProvider,
@@ -29,6 +30,7 @@ import type {
 } from '../../shared/coding_types';
 import { codingLocation, codingSessionsLocation } from './location';
 import { CodingInstructions } from './instructions';
+import { createProjectFile, listProjectFiles } from './files';
 import { CodingProjectStore } from './projects';
 import { CodingStore } from './store';
 
@@ -85,6 +87,14 @@ export class Coding {
 			throw new Error('Stop the active project run before removing it from Coding.');
 		}
 		return this.dependencies.projects.remove(projectId);
+	}
+
+	async listProjectFiles(projectId: string): Promise<CodingProjectFile[]> {
+		return listProjectFiles(this.requireProject(projectId));
+	}
+
+	async createProjectFile(projectId: string, filePath: string): Promise<CodingProjectFile> {
+		return createProjectFile(this.requireProject(projectId), filePath);
 	}
 
 	async getProjectInstructions(projectId: string): Promise<CodingProjectInstructions> {

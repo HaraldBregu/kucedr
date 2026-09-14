@@ -54,6 +54,11 @@ export interface CodingProject {
 	readonly available: boolean;
 }
 
+export interface CodingProjectFile {
+	readonly path: string;
+	readonly type: 'file' | 'directory';
+}
+
 export type CodingProjectInstructionScope = 'workspace' | 'ancestor' | 'coding-global';
 
 export interface CodingProjectInstructionSource {
@@ -215,5 +220,15 @@ export function isCodingProjectInstructionsUpdate(
 		typeof update.content === 'string' &&
 		typeof update.expectedRevision === 'string' &&
 		update.expectedRevision.length > 0
+	);
+}
+
+export function isCodingProjectFilePath(value: unknown): value is string {
+	return (
+		typeof value === 'string' &&
+		value.trim().length > 0 &&
+		!value.includes('\0') &&
+		!value.startsWith('/') &&
+		!value.startsWith('\\')
 	);
 }

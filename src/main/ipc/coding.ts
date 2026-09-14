@@ -2,6 +2,7 @@ import { BrowserWindow, dialog, shell } from 'electron';
 import { CodingChannels } from '../../shared/ipc_channels_definitions';
 import {
 	isCodingProjectInstructionsUpdate,
+	isCodingProjectFilePath,
 	isCodingRunRequest,
 	isCodingSettings,
 } from '../../shared/coding_types';
@@ -86,6 +87,20 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 				throw new Error('Invalid coding project id.');
 			}
 			return coding.removeProject(projectId.trim());
+		});
+		registerQueryWithEvent(CodingChannels.listProjectFiles, (event, projectId) => {
+			assertCodingAppCaller(event);
+			if (typeof projectId !== 'string' || !projectId.trim()) {
+				throw new Error('Invalid coding project id.');
+			}
+			return coding.listProjectFiles(projectId.trim());
+		});
+		registerCommandWithEvent(CodingChannels.createProjectFile, (event, projectId, filePath) => {
+			assertCodingAppCaller(event);
+			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingProjectFilePath(filePath)) {
+				throw new Error('Invalid coding project file path.');
+			}
+			return coding.createProjectFile(projectId.trim(), filePath);
 		});
 		registerQueryWithEvent(CodingChannels.getProjectInstructions, (event, projectId) => {
 			assertCodingAppCaller(event);

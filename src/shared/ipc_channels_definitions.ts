@@ -60,6 +60,8 @@ export const CodingChannels = {
 	addProject: 'coding:projects:add',
 	openProject: 'coding:projects:open',
 	removeProject: 'coding:projects:remove',
+	listProjectFiles: 'coding:projects:files:list',
+	createProjectFile: 'coding:projects:files:create',
 	getProjectInstructions: 'coding:projects:instructions:get',
 	saveProjectInstructions: 'coding:projects:instructions:save',
 	listSessions: 'coding:sessions:list',

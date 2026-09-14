@@ -107,6 +107,7 @@ import type {
 	CodingAuthStatus,
 	CodingCatalog,
 	CodingProject,
+	CodingProjectFile,
 	CodingProjectInstructions,
 	CodingProjectInstructionsUpdate,
 	CodingResponseEvent,
@@ -221,6 +222,8 @@ export interface CodingApi {
 	addProject: () => Promise<CodingProject | undefined>;
 	openProject: (projectId: string) => Promise<void>;
 	removeProject: (projectId: string) => Promise<boolean>;
+	listProjectFiles: (projectId: string) => Promise<CodingProjectFile[]>;
+	createProjectFile: (projectId: string, filePath: string) => Promise<CodingProjectFile>;
 	getProjectInstructions: (projectId: string) => Promise<CodingProjectInstructions>;
 	saveProjectInstructions: (
 		projectId: string,

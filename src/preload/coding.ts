@@ -2,6 +2,7 @@ import type { CodingApi } from '../shared/api_types';
 import { CodingChannels } from '../shared/ipc_channels_definitions';
 import {
 	isCodingProjectInstructionsUpdate,
+	isCodingProjectFilePath,
 	isCodingRunRequest,
 	isCodingSettings,
 } from '../shared/coding_types';
@@ -25,6 +26,18 @@ export const coding: CodingApi = {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');
 		return typedInvokeUnwrap(CodingChannels.removeProject, normalizedProjectId);
+	},
+	listProjectFiles: (projectId) => {
+		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!normalizedProjectId) throw new Error('Invalid coding project id.');
+		return typedInvokeUnwrap(CodingChannels.listProjectFiles, normalizedProjectId);
+	},
+	createProjectFile: (projectId, filePath) => {
+		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!normalizedProjectId || !isCodingProjectFilePath(filePath)) {
+			throw new Error('Invalid coding project file path.');
+		}
+		return typedInvokeUnwrap(CodingChannels.createProjectFile, normalizedProjectId, filePath.trim());
 	},
 	getProjectInstructions: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
