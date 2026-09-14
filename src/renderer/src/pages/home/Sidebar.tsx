@@ -201,7 +201,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												{session.runStatus ? (
 													<TextShimmer
 														duration={2}
-														className="truncate"
+														className="truncate text-xs"
 														style={
 															{ '--foreground': 'var(--sidebar-foreground)' } as React.CSSProperties
 														}
@@ -209,7 +209,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 														{title}
 													</TextShimmer>
 												) : (
-													<span className="truncate">{title}</span>
+													<span className="truncate text-xs">{title}</span>
 												)}
 											</button>
 										)}
