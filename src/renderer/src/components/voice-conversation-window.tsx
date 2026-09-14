@@ -50,16 +50,14 @@ export function VoiceConversationWindow({
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
 				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
-					<div className="-translate-x-16">
-						<Persona
-							state={state}
-							level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
-							size={208}
-						/>
-					</div>
+					<Persona
+						state={state}
+						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
+						size={208}
+					/>
 					<ol
 						aria-label="Voice conversation transcript"
-						className="absolute inset-y-0 right-0 flex w-[38%] flex-col justify-center gap-5 overflow-hidden pr-5 text-sm leading-5"
+						className="absolute inset-y-0 left-[calc(100%-30px)] flex w-64 flex-col justify-center gap-5 text-sm leading-5"
 					>
 						{recentTranscript.map((message, index) => (
 							<li
