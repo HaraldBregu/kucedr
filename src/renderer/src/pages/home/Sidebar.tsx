@@ -76,7 +76,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
 			<div
 				aria-hidden="true"
-				className="h-12 shrink-0 border-b border-sidebar-border/50"
+				className="h-12 shrink-0"
 				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
 			/>
 			<header className="border-b border-sidebar-border/50 p-2">
