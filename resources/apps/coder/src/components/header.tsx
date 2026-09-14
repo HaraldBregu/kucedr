@@ -6,6 +6,7 @@ import {
 	Minus,
 	MoreHorizontal,
 	Plus,
+	PanelRightOpen,
 	Square,
 	Trash2,
 	User,
@@ -34,11 +35,15 @@ export function Header({
 	coding,
 	onOpenConfiguration,
 	onOpenInstructions,
+	onOpenRightSidebar,
+	rightSidebarOpen,
 	sidebarOpen,
 }: {
 	coding: CodingController;
 	onOpenConfiguration: () => void;
 	onOpenInstructions: () => void;
+	onOpenRightSidebar: () => void;
+	rightSidebarOpen: boolean;
 	sidebarOpen: boolean;
 }): React.JSX.Element {
 	const inKucedr = isKucedr();
@@ -117,13 +122,24 @@ export function Header({
 					</DropdownMenu>
 				) : null}
 
+				{!rightSidebarOpen ? (
+					<Button
+						variant="ghost"
+						size="icon-sm"
+						aria-label="Open chat sidebar"
+						onClick={onOpenRightSidebar}
+					>
+						<PanelRightOpen />
+					</Button>
+				) : null}
+
 				<Tooltip>
 					<TooltipTrigger
 						render={
 							<Button
 								variant="ghost"
 								size="icon-sm"
-							aria-label="New Coder session"
+								aria-label="New Coder session"
 								disabled={!coding.activeProject || coding.runState === 'running'}
 								onClick={() => coding.newSession()}
 							>

@@ -6,6 +6,7 @@ import { Header } from '@/components/header';
 import { Instructions } from '@/components/instructions';
 import { ProjectSidebar } from '@/components/sidebar';
 import { Project } from '@/components/project';
+import { RightSidebar } from '@/components/ui/right';
 import { Sidebar, SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Workspace } from '@/components/workspace';
@@ -19,6 +20,7 @@ export default function App() {
 	const setLeftOpen = coding.setLeftOpen;
 	const [page, setPage] = useState<'workspace' | 'configuration' | 'instructions' | 'files' | 'project'>('workspace');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
+	const [rightOpen, setRightOpen] = useState(true);
 	const setSidebarVisibility = useCallback(
 		(open: boolean): void => {
 			setLeftOpen(open);
@@ -53,6 +55,8 @@ export default function App() {
 							coding={coding}
 							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenInstructions={() => void openPage('instructions')}
+							onOpenRightSidebar={() => setRightOpen(true)}
+							rightSidebarOpen={rightOpen}
 							sidebarOpen={coding.leftOpen}
 						/>
 						<div className="flex min-h-0 flex-1 flex-col">
@@ -74,11 +78,14 @@ export default function App() {
 								<Files coding={coding} onDone={() => void openPage('workspace')} />
 							) : page === 'project' && coding.activeProject ? (
 								<Project coding={coding} onOpenConfiguration={() => void openPage('configuration')} onOpenFiles={() => void openPage('files')} onOpenInstructions={() => void openPage('instructions')} />
-							) : (
-								<Workspace coding={coding} />
-							)}
+							) : coding.activeProject ? (
+								<Project coding={coding} onOpenConfiguration={() => void openPage('configuration')} onOpenFiles={() => void openPage('files')} onOpenInstructions={() => void openPage('instructions')} />
+							) : null}
 						</div>
 					</SidebarInset>
+					<RightSidebar open={rightOpen} onOpenChange={setRightOpen}>
+						<Workspace coding={coding} />
+					</RightSidebar>
 				</main>
 			</SidebarProvider>
 		</TooltipProvider>
