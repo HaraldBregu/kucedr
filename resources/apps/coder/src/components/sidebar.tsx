@@ -2,6 +2,7 @@ import { ChevronRight, FileText, Files, Folder, FolderPlus, Info, Search, Settin
 import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { SidebarContent, SidebarHeader } from '@/components/ui/sidebar';
@@ -108,8 +109,9 @@ export function ProjectSidebar({
 
 							return (
 								<li key={project.id}>
-									<Collapsible open={expanded} onOpenChange={() => coding.toggleProject(project.id)}>
-										<div className="flex items-center gap-0.5">
+									<Card className="overflow-hidden shadow-none">
+										<Collapsible open={expanded} onOpenChange={() => coding.toggleProject(project.id)}>
+											<div className="flex items-center gap-0.5 p-1">
 											<CollapsibleTrigger
 												className="grid size-7 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring group-data-[state=collapsed]/sidebar:hidden"
 												aria-label={`${expanded ? 'Collapse' : 'Expand'} ${project.name}`}
@@ -203,8 +205,9 @@ export function ProjectSidebar({
 													</li>
 												))}
 											</ul>
-										</CollapsibleContent>
-									</Collapsible>
+											</CollapsibleContent>
+										</Collapsible>
+									</Card>
 								</li>
 							);
 						})}
