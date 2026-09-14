@@ -66,12 +66,12 @@ describe('app import', () => {
 			imported: [
 				expect.objectContaining({
 					id: 'coder',
-					metadata: expect.objectContaining({ image: 'assets/images/coding.png' }),
+					metadata: expect.objectContaining({ image: 'assets/images/logo.png' }),
 				}),
 			],
 			skipped: [],
 		});
-		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'assets', 'images', 'coding.png'))).toBe(
+		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'assets', 'images', 'logo.png'))).toBe(
 			true
 		);
 	});
