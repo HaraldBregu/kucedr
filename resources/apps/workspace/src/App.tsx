@@ -671,15 +671,12 @@ export default function App() {
 
 				<SidebarInset>
 					<header
-						className="flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3"
-						style={
-							{
-								WebkitAppRegion: 'drag',
-								paddingLeft: isMac && !sidebarOpen ? '112px' : undefined,
-							} as CSSProperties
-						}
+						className={`flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3${
+							!sidebarOpen ? ' pl-28' : ''
+						}`}
+						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 					>
-						<SidebarTrigger className="[webkit-app-region:no-drag]" />
+						<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
 						<span className="min-w-0 flex-1 truncate text-sm font-medium">Workspace</span>
 						{!isMac ? (
 							<div

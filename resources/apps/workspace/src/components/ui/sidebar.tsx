@@ -1,5 +1,6 @@
 import * as React from "react"
-import { PanelLeftIcon } from "lucide-react"
+import { createPortal } from "react-dom"
+import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -142,7 +143,7 @@ const SidebarTrigger = React.forwardRef<
 >(({ className, onClick, ...props }, ref) => {
   const { open, toggleSidebar } = useSidebar()
 
-  return (
+  return createPortal(
     <Button
       ref={ref}
       data-sidebar="trigger"
@@ -150,7 +151,7 @@ const SidebarTrigger = React.forwardRef<
       type="button"
       variant="ghost"
       size="icon"
-      className={cn("size-8 shrink-0", className)}
+      className={cn("fixed left-20 top-2.5 z-50 size-7", className)}
       aria-controls="workspace-sidebar"
       aria-expanded={open}
       aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
@@ -161,9 +162,10 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <PanelLeftIcon className="size-4" />
+      {open ? <PanelLeftClose className="size-4" strokeWidth={1.5} /> : <PanelLeftOpen className="size-4" strokeWidth={1.5} />}
       <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+    </Button>,
+    document.body,
   )
 })
 SidebarTrigger.displayName = "SidebarTrigger"
