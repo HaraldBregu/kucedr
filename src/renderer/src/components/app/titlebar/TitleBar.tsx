@@ -78,7 +78,7 @@ export const TitleBar = React.memo(function TitleBar({
 			aria-label={homeButtonLabel}
 		>
 			<LogoView className="pointer-events-none size-[18px]" />
-			Kucedr
+			{homeButtonLabel}
 		</Button>
 	) : !isOnboarding ? (
 		<Button
