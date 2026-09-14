@@ -93,7 +93,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 										value={settings.toolMode}
 										options={[
 											{ value: 'read-only', label: 'Read only' },
-											{ value: 'coding', label: 'Coding' },
+											{ value: 'coding', label: 'Coder' },
 										]}
 										disabled={configuration.saving}
 										onChange={(value) => configuration.setTools(value as CodingToolMode)}
