@@ -4,6 +4,7 @@ import {
 	coding as codingApi,
 	isKucedr,
 	type CodingProject,
+	type CodingProjectFile,
 	type CodingResponseEvent,
 	type CodingRunMode,
 	type CodingSessionBlock,

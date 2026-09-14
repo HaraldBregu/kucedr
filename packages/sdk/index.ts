@@ -75,6 +75,7 @@ export {
 	type CodingProvider,
 	type CodingProviderId,
 	type CodingProject,
+	type CodingProjectFile,
 	type CodingProjectInstructionScope,
 	type CodingProjectInstructionSource,
 	type CodingProjectInstructions,
