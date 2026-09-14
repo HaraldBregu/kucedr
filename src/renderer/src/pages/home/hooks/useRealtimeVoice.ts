@@ -215,12 +215,12 @@ export function useRealtimeVoice({
 					});
 					return;
 				}
-				case 'assistant_transcript_delta':
+				case 'assistant_transcript_delta': {
+					const id = event.itemId
+						? `voice-assistant-${event.itemId}`
+						: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
+					assistantMessageIdRef.current = id;
 					setTranscript((messages) => {
-						const id = event.itemId
-							? `voice-assistant-${event.itemId}`
-							: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
-						assistantMessageIdRef.current = id;
 						const existing = messages.find((message) => message.id === id);
 						return existing
 							? messages.map((message) =>
@@ -241,12 +241,13 @@ export function useRealtimeVoice({
 						receivedAtMs: Date.now(),
 					});
 					return;
-				case 'assistant_transcript_final':
+				}
+				case 'assistant_transcript_final': {
+					const id = event.itemId
+						? `voice-assistant-${event.itemId}`
+						: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
+					assistantMessageIdRef.current = id;
 					setTranscript((messages) => {
-						const id = event.itemId
-							? `voice-assistant-${event.itemId}`
-							: (assistantMessageIdRef.current ?? messageId('voice-assistant'));
-						assistantMessageIdRef.current = id;
 						const existing = messages.some((message) => message.id === id);
 						return existing
 							? messages.map((message) =>
@@ -254,12 +255,13 @@ export function useRealtimeVoice({
 								)
 							: [...messages, { id, role: 'assistant', content: event.text }];
 					});
-					dispatchChat({
+						dispatchChat({
 						type: 'complete_active',
 						response: event.text,
 						completedAtMs: Date.now(),
 					});
 					return;
+				}
 				case 'assistant_audio_delta':
 					setStatus('speaking');
 					enqueuePlayback(event.audio);
