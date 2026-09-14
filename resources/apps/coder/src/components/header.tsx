@@ -6,7 +6,6 @@ import {
 	Minus,
 	MoreHorizontal,
 	Plus,
-	Search,
 	Square,
 	Trash2,
 	User,
@@ -35,13 +34,11 @@ export function Header({
 	coding,
 	onOpenConfiguration,
 	onOpenInstructions,
-	onOpenSidebar,
 	sidebarOpen,
 }: {
 	coding: CodingController;
 	onOpenConfiguration: () => void;
 	onOpenInstructions: () => void;
-	onOpenSidebar: () => void;
 	sidebarOpen: boolean;
 }): React.JSX.Element {
 	const inKucedr = isKucedr();
@@ -72,20 +69,6 @@ export function Header({
 				className="z-10 mr-3 flex h-full items-center gap-1"
 				style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 			>
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon-sm"
-					className="rounded-full text-muted-foreground hover:text-foreground"
-					aria-label="Search Coder workspaces"
-					title="Search Coder workspaces"
-					onClick={() => {
-						onOpenSidebar();
-						requestAnimationFrame(() => document.getElementById('coder-sidebar-search')?.focus());
-					}}
-				>
-					<Search className="size-4" strokeWidth={1.8} />
-				</Button>
 				<Button
 					type="button"
 					variant="ghost"

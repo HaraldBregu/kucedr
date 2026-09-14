@@ -42,8 +42,6 @@ export default function App() {
 					<Sidebar aria-label="Coder workspaces and sessions">
 						<ProjectSidebar
 							coding={coding}
-							configurationOpen={page === 'configuration'}
-							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenWorkspace={() => openPage('workspace')}
 							onOpenFiles={(projectId) => { void coding.selectProject(projectId); void openPage('files'); }}
 							onOpenInstructions={(projectId) => { void coding.selectProject(projectId); void openPage('instructions'); }}
@@ -55,7 +53,6 @@ export default function App() {
 							coding={coding}
 							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenInstructions={() => void openPage('instructions')}
-							onOpenSidebar={() => setSidebarVisibility(true)}
 							sidebarOpen={coding.leftOpen}
 						/>
 						<div className="flex min-h-0 flex-1 flex-col">

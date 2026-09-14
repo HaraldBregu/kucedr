@@ -1,25 +1,20 @@
-import { FileText, Files, Folder, FolderPlus, Info, Search, Settings } from 'lucide-react';
+import { FileText, Files, Folder, Info } from 'lucide-react';
 import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
-import { Input } from '@/components/ui/input';
-import { SidebarContent, SidebarHeader } from '@/components/ui/sidebar';
+import { SidebarContent } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { CodingController } from '@/controller';
 
 export function ProjectSidebar({
 	coding,
-	configurationOpen,
-	onOpenConfiguration,
 	onOpenFiles,
 	onOpenInstructions,
 	onOpenProject,
 	onOpenWorkspace,
 }: {
 	coding: CodingController;
-	configurationOpen: boolean;
-	onOpenConfiguration: () => void;
 	onOpenFiles: (projectId: string) => void;
 	onOpenInstructions: (projectId: string) => void;
 	onOpenProject: (projectId: string) => void;
@@ -41,61 +36,6 @@ export function ProjectSidebar({
 				className="h-12 shrink-0 border-b border-sidebar-border/50"
 				style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 			/>
-			<SidebarHeader className="px-2 pb-2 pt-2">
-				<div className="flex min-h-9 items-center gap-1 group-data-[state=collapsed]/sidebar:flex-col">
-					<div className="flex min-w-0 flex-1 items-center gap-2 group-data-[state=collapsed]/sidebar:hidden">
-						<Folder className="size-4 text-muted-foreground" />
-						<span className="truncate text-xs font-medium">Projects</span>
-					</div>
-					<Tooltip>
-						<TooltipTrigger
-							render={
-								<Button
-									variant="ghost"
-									size="icon-sm"
-									className="group-data-[state=collapsed]/sidebar:mx-auto"
-									aria-label="Add project folder"
-									disabled={coding.busy || coding.runState === 'running'}
-									onClick={() => {
-										if (onOpenWorkspace()) void coding.addProject();
-									}}
-								>
-									<FolderPlus />
-								</Button>
-							}
-						/>
-						<TooltipContent>Add project</TooltipContent>
-					</Tooltip>
-					<Tooltip>
-						<TooltipTrigger
-							render={
-								<Button
-									variant={configurationOpen ? 'secondary' : 'ghost'}
-									size="icon-sm"
-									className="group-data-[state=collapsed]/sidebar:mx-auto"
-									aria-label="Open Coder configuration"
-									onClick={onOpenConfiguration}
-								>
-									<Settings />
-								</Button>
-							}
-						/>
-						<TooltipContent>Configuration</TooltipContent>
-					</Tooltip>
-				</div>
-				<div className="relative group-data-[state=collapsed]/sidebar:hidden">
-					<Search className="pointer-events-none absolute left-2.5 top-2 size-3.5 text-muted-foreground" />
-					<Input
-					id="coder-sidebar-search"
-					aria-label="Search Coder workspaces and sessions"
-						value={coding.query}
-						onChange={(event) => coding.setQuery(event.target.value)}
-						placeholder="Search"
-						className="h-8 border-0 bg-sidebar-accent/60 pl-8 shadow-none focus-visible:ring-1"
-					/>
-				</div>
-			</SidebarHeader>
-
 			<SidebarContent aria-busy={coding.busy}>
 				<nav aria-label="Coder workspaces and sessions" className="px-2 pb-2">
 					<ul className="space-y-0.5">
