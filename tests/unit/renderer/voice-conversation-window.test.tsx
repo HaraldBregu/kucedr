@@ -44,9 +44,9 @@ describe('VoiceConversationWindow', () => {
 
 		expect(screen.getByLabelText('Voice Agent')).toHaveAttribute('data-state', expectedState);
 		expect(screen.queryByRole('status')).not.toBeInTheDocument();
-		expect(screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling).toHaveTextContent(
-			'1:01'
-		);
+		expect(
+			screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling
+		).toHaveTextContent('1:01');
 	});
 
 	it('keeps the complete clipped transcript thread above the window center', () => {
@@ -70,11 +70,7 @@ describe('VoiceConversationWindow', () => {
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
 		const transcript = screen.getByRole('list', { name: 'Voice conversation transcript' });
-		expect(transcript).toHaveClass(
-			'left-[610px]',
-			'bottom-1/2',
-			'justify-end'
-		);
+		expect(transcript).toHaveClass('left-[610px]', 'bottom-1/2', 'justify-end');
 		expect(transcript).toHaveTextContent('First message');
 		expect(transcript).toHaveTextContent('Second message');
 		expect(transcript).toHaveTextContent('Latest message');

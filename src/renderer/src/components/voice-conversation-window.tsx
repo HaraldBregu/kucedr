@@ -36,7 +36,10 @@ export function VoiceConversationWindow({
 	}, [voice.start]);
 
 	return (
-		<main className="relative h-full overflow-hidden bg-transparent text-foreground" data-voice-window>
+		<main
+			className="relative h-full overflow-hidden bg-transparent text-foreground"
+			data-voice-window
+		>
 			<section className="app-translucent-window flex h-full w-[640px] min-h-0 flex-col overflow-hidden bg-background">
 				<div
 					className="relative flex h-12 shrink-0 items-center justify-center select-none"
@@ -57,33 +60,33 @@ export function VoiceConversationWindow({
 				</div>
 				<div className="flex shrink-0 flex-col gap-2 px-5 pb-4 pt-3">
 					<div className="flex items-center justify-center gap-2">
-					<button
-						type="button"
-						aria-label={voice.isMuted ? 'Enable microphone' : 'Disable microphone'}
-						disabled={!voice.stream || isEnding}
-						onClick={() => voice.setMuted(!voice.isMuted)}
-						className={cn(
-							'flex size-10 items-center justify-center rounded-full border transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
-							voice.isMuted
-								? 'border-destructive/40 bg-destructive/10 text-destructive focus-visible:ring-destructive/40'
-								: 'border-border bg-background/70 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/55'
-						)}
-					>
-						{voice.isMuted ? <MicOff className="size-4" /> : <Mic className="size-4" />}
-					</button>
-					<button
-						type="button"
-						aria-label="End voice conversation"
-						disabled={isEnding}
-						onClick={() => void voice.end()}
-						className="flex h-10 min-w-28 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
-					>
-						{isEnding ? <TypingLoader size="sm" /> : null}
-						<span>{voice.status === 'error' ? 'Close' : 'End'}</span>
-					</button>
-					<span className="font-mono text-xs tabular-nums text-muted-foreground">
-						{formatDuration(voice.elapsedMs)}
-					</span>
+						<button
+							type="button"
+							aria-label={voice.isMuted ? 'Enable microphone' : 'Disable microphone'}
+							disabled={!voice.stream || isEnding}
+							onClick={() => voice.setMuted(!voice.isMuted)}
+							className={cn(
+								'flex size-10 items-center justify-center rounded-full border transition focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
+								voice.isMuted
+									? 'border-destructive/40 bg-destructive/10 text-destructive focus-visible:ring-destructive/40'
+									: 'border-border bg-background/70 text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/55'
+							)}
+						>
+							{voice.isMuted ? <MicOff className="size-4" /> : <Mic className="size-4" />}
+						</button>
+						<button
+							type="button"
+							aria-label="End voice conversation"
+							disabled={isEnding}
+							onClick={() => void voice.end()}
+							className="flex h-10 min-w-28 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
+						>
+							{isEnding ? <TypingLoader size="sm" /> : null}
+							<span>{voice.status === 'error' ? 'Close' : 'End'}</span>
+						</button>
+						<span className="font-mono text-xs tabular-nums text-muted-foreground">
+							{formatDuration(voice.elapsedMs)}
+						</span>
 					</div>
 				</div>
 			</section>
