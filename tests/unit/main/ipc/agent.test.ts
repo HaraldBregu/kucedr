@@ -74,6 +74,30 @@ describe('AgentIpc run ownership', () => {
 		expect(cancel).toHaveBeenCalledWith('run-1', 7);
 	});
 
+	it('lists every session type when requested', async () => {
+		const listSessions = jest.fn().mockReturnValue([]);
+		const agent = { listSessions, config: { location: '/agent' } } as unknown as Agent;
+		const sender = { mainFrame: {} };
+		const event = { sender, senderFrame: sender.mainFrame };
+		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 7, webContents: sender });
+		new AgentIpc().register(
+			{
+				logger: { info: jest.fn() } as unknown as LoggerService,
+				agent,
+				conversation: { execute: jest.fn() } as unknown as Conversation,
+				windows: { has: (id: number) => id === 7 } as never,
+				apps: { has: () => false } as never,
+			},
+			{ sendTo: jest.fn() } as unknown as EventBus
+		);
+		const handler = (ipcMain.handle as jest.Mock).mock.calls.find(
+			([channel]) => channel === AgentChannels.listSessions
+		)?.[1];
+
+		await expect(handler(event, true)).resolves.toEqual({ success: true, data: [] });
+		expect(listSessions).toHaveBeenCalledWith('all');
+	});
+
 	it('rejects cancellation without an originating window', async () => {
 		const cancel = jest.fn();
 		const agent = { cancel, config: { location: '/agent' } } as unknown as Agent;
