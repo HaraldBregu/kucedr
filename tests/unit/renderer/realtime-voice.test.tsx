@@ -310,6 +310,47 @@ describe('useRealtimeVoice', () => {
 		]);
 	});
 
+	it('keeps consecutive user and assistant turns as separate transcript messages', async () => {
+		api.startSession.mockResolvedValue(session);
+		const { result } = renderHook(
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() }),
+			{ wrapper }
+		);
+		await act(async () => result.current.start());
+
+		act(() => {
+			emit({
+				type: 'user_turn',
+				sessionId: session.id,
+				itemId: 'user-1',
+				transcript: 'First user message',
+			});
+			emit({
+				type: 'assistant_transcript_final',
+				sessionId: session.id,
+				text: 'First assistant message',
+			});
+			emit({
+				type: 'user_turn',
+				sessionId: session.id,
+				itemId: 'user-2',
+				transcript: 'Second user message',
+			});
+			emit({
+				type: 'assistant_transcript_final',
+				sessionId: session.id,
+				text: 'Second assistant message',
+			});
+		});
+
+		expect(result.current.transcript).toEqual([
+			expect.objectContaining({ role: 'user', content: 'First user message' }),
+			expect.objectContaining({ role: 'assistant', content: 'First assistant message' }),
+			expect.objectContaining({ role: 'user', content: 'Second user message' }),
+			expect.objectContaining({ role: 'assistant', content: 'Second assistant message' }),
+		]);
+	});
+
 	it('renders realtime tool status and generated image, audio, and video results', async () => {
 		api.startSession.mockResolvedValue(session);
 		const { result } = renderHook(
