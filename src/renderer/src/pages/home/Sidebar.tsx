@@ -229,7 +229,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-lg px-1 outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 					>
 						<span
-							className="flex size-6 shrink-0 items-center justify-center rounded-full bg-orange-600 text-white"
+							className="flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground"
 							aria-hidden="true"
 						>
 							{authenticatedUser ? (
