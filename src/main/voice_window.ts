@@ -5,8 +5,8 @@ import { attachWindowHandlers } from './window_events';
 import { getPlatformTranslucencyOptions } from './translucency';
 import { randomUUID } from 'node:crypto';
 
-const VOICE_WINDOW_WIDTH = 960;
-const VOICE_WINDOW_HEIGHT = 560;
+const VOICE_WINDOW_WIDTH = 360;
+const VOICE_WINDOW_HEIGHT = 480;
 const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
 export class VoiceWindow {

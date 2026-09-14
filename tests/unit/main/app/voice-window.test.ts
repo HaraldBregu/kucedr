@@ -51,7 +51,7 @@ it('keeps a standalone voice conversation active while its window is hidden', ()
 
 	expect(options).not.toHaveProperty('parent');
 	expect(options).not.toHaveProperty('modal');
-	expect(options).toMatchObject({ width: 960, height: 560 });
+	expect(options).toMatchObject({ width: 360, height: 480 });
 	expect(options).toHaveProperty('alwaysOnTop', true);
 	expect(voiceWindow.isActive()).toBe(true);
 	expect(voiceWindow.isVisible()).toBe(true);
