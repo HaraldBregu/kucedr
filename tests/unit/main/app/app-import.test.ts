@@ -59,6 +59,23 @@ describe('app import', () => {
 		}
 	});
 
+	it('imports the bundled Coder manifest and its PNG icon', () => {
+		const source = path.resolve('resources/apps/coder');
+
+		expect(importApps([source], appLocation)).toMatchObject({
+			imported: [
+				expect.objectContaining({
+					id: 'coder',
+					metadata: expect.objectContaining({ image: 'assets/images/coding.png' }),
+				}),
+			],
+			skipped: [],
+		});
+		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'assets', 'images', 'coding.png'))).toBe(
+			true
+		);
+	});
+
 	it('does not copy node modules into an imported app', () => {
 		const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-source-'));
 		const source = path.join(sourceRoot, 'project');
