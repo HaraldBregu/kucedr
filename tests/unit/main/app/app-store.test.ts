@@ -135,4 +135,13 @@ describe('app storage', () => {
 			fs.rmSync(outside, { recursive: true, force: true });
 		}
 	});
+
+	it('recreates a missing cached value store namespace', () => {
+		const storage = new AppStorage(root);
+		storage.set('draw', 'config', { ready: true });
+		fs.rmSync(path.join(root, 'draw', 'data'), { recursive: true });
+
+		expect(storage.get('draw', 'config')).toEqual({ ready: true });
+		expect(fs.existsSync(path.join(root, 'draw', 'data'))).toBe(true);
+	});
 });

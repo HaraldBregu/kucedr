@@ -74,6 +74,7 @@ describe('app import', () => {
 		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'assets', 'images', 'logo.png'))).toBe(
 			true
 		);
+		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'data'))).toBe(true);
 	});
 
 	it('does not copy node modules into an imported app', () => {

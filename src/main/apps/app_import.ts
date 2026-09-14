@@ -99,6 +99,7 @@ export function importApps(sources: string[], appLocation?: string): AppImportRe
 					});
 				}
 			}
+			mkdirSync(stagedData, { recursive: true });
 			try {
 				renameSync(staging, destination);
 			} catch (error) {

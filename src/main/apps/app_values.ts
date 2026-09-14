@@ -31,9 +31,7 @@ export class AppValueStorage {
 	private store(appId: string): Store<AppStoreState> {
 		const existing = this.stores.get(appId);
 		if (existing) {
-			this.assertDirectory(this.root);
-			this.assertDirectory(this.appDirectory(appId));
-			this.assertDirectory(this.namespace(appId));
+			this.ensureDirectory(appId);
 			this.assertStoreFile(existing.path);
 			return existing;
 		}
