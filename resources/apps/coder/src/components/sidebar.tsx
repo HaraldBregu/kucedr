@@ -13,6 +13,7 @@ export function ProjectSidebar({
 	configurationOpen,
 	onOpenConfiguration,
 	onOpenFiles,
+	onOpenInstructions,
 	onOpenProject,
 	onOpenWorkspace,
 }: {
@@ -20,6 +21,7 @@ export function ProjectSidebar({
 	configurationOpen: boolean;
 	onOpenConfiguration: () => void;
 	onOpenFiles: (projectId: string) => void;
+	onOpenInstructions: (projectId: string) => void;
 	onOpenProject: (projectId: string) => void;
 	onOpenWorkspace: () => boolean;
 }) {
@@ -52,7 +54,7 @@ export function ProjectSidebar({
 									variant="ghost"
 									size="icon-sm"
 									className="group-data-[state=collapsed]/sidebar:mx-auto"
-									aria-label="Add workspace folder"
+									aria-label="Add project folder"
 									disabled={coding.busy || coding.runState === 'running'}
 									onClick={() => {
 										if (onOpenWorkspace()) void coding.addProject();
@@ -62,7 +64,7 @@ export function ProjectSidebar({
 								</Button>
 							}
 						/>
-						<TooltipContent>Add workspace</TooltipContent>
+						<TooltipContent>Add project</TooltipContent>
 					</Tooltip>
 					<Tooltip>
 						<TooltipTrigger
@@ -152,7 +154,7 @@ export function ProjectSidebar({
 													<Button
 														variant="ghost"
 														className="h-7 w-full justify-start gap-2 px-2 text-left text-[11px] font-normal"
-														onClick={() => onOpenProject(project.id)}
+														onClick={() => onOpenInstructions(project.id)}
 													>
 														<Info /> Project details
 													</Button>

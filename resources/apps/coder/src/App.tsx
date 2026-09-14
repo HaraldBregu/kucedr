@@ -46,6 +46,7 @@ export default function App() {
 							onOpenConfiguration={() => void openPage('configuration')}
 							onOpenWorkspace={() => openPage('workspace')}
 							onOpenFiles={(projectId) => { void coding.selectProject(projectId); void openPage('files'); }}
+							onOpenInstructions={(projectId) => { void coding.selectProject(projectId); void openPage('instructions'); }}
 							onOpenProject={(projectId) => { void coding.selectProject(projectId); void openPage('project'); }}
 						/>
 					</Sidebar>
