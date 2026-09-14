@@ -149,7 +149,7 @@ it('renders a transparent titlebar without visible title text', () => {
 	expect(within(titleBar as HTMLElement).queryByText('Kucedr')).not.toBeInTheDocument();
 });
 
-it('shows the Kucedr logo and label inside the Home button on Settings', async () => {
+it('shows the Kucedr logo and Home label inside the Settings button', async () => {
 	const user = userEvent.setup();
 
 	render(
@@ -164,7 +164,7 @@ it('shows the Kucedr logo and label inside the Home button on Settings', async (
 	const homeButton = screen.getByRole('button', { name: 'titleBar.home' });
 
 	expect(within(homeButton).getByRole('img', { name: 'Kucedr logo' })).toBeInTheDocument();
-	expect(within(homeButton).getByText('Kucedr')).toBeInTheDocument();
+	expect(within(homeButton).getByText('titleBar.home')).toBeInTheDocument();
 
 	await user.click(homeButton);
 
