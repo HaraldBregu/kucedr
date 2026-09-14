@@ -87,7 +87,7 @@ export function SettingsSidebar(): React.JSX.Element {
 							key={group.id}
 							className={cn(
 								'px-2 py-1 first:pt-0',
-								index > 0 && 'mt-3'
+								index > 0 && 'mt-2'
 							)}
 						>
 							{'titleKey' in group ? (
