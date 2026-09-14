@@ -49,7 +49,7 @@ describe('VoiceConversationWindow', () => {
 		);
 	});
 
-	it('keeps a clipped recent transcript in the right-side rail', () => {
+	it('keeps the complete clipped transcript thread above the window center', () => {
 		mockedUseRealtimeVoice.mockReturnValue({
 			elapsedMs: 0,
 			end: jest.fn(),
@@ -70,8 +70,12 @@ describe('VoiceConversationWindow', () => {
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
 		const transcript = screen.getByRole('list', { name: 'Voice conversation transcript' });
-		expect(transcript).toHaveClass('left-[calc(100%-30px)]');
-		expect(transcript).not.toHaveTextContent('First message');
+		expect(transcript).toHaveClass(
+			'left-[calc(100%-30px)]',
+			'bottom-1/2',
+			'justify-end'
+		);
+		expect(transcript).toHaveTextContent('First message');
 		expect(transcript).toHaveTextContent('Second message');
 		expect(transcript).toHaveTextContent('Latest message');
 	});

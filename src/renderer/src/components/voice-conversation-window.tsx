@@ -29,7 +29,7 @@ export function VoiceConversationWindow({
 	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow, closeOnError: false });
 	const isEnding = voice.status === 'ending';
 	const state = personaState(voice.status);
-	const recentTranscript = voice.transcript.slice(-3).filter((message) => message.content.trim());
+	const transcript = voice.transcript.filter((message) => message.content.trim());
 
 	useEffect(() => {
 		void voice.start();
@@ -57,15 +57,15 @@ export function VoiceConversationWindow({
 					/>
 					<ol
 						aria-label="Voice conversation transcript"
-						className="absolute inset-y-0 left-[calc(100%-30px)] flex w-64 flex-col justify-center gap-5 text-sm leading-5"
+						className="absolute bottom-1/2 left-[calc(100%-30px)] top-0 flex w-64 flex-col justify-end gap-5 overflow-hidden text-sm leading-5"
 					>
-						{recentTranscript.map((message, index) => (
+						{transcript.map((message, index) => (
 							<li
 								key={message.id}
 								className={cn(
 									'line-clamp-2 transition-opacity',
 									message.role === 'user' ? 'text-foreground' : 'text-muted-foreground',
-									index === 0 && recentTranscript.length > 1 ? 'opacity-40' : 'opacity-100'
+									index === 0 && transcript.length > 1 ? 'opacity-40' : 'opacity-100'
 								)}
 							>
 								{message.content}
