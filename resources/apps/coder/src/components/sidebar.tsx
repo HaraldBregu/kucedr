@@ -1,8 +1,15 @@
-import { FileText, Files, Folder, Info } from 'lucide-react';
+import { Copy, FileText, Files, Folder, FolderOpen, Info, MoreHorizontal, Trash2 } from 'lucide-react';
 import type { CSSProperties } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { SidebarContent } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import type { CodingController } from '@/controller';
@@ -79,39 +86,49 @@ export function ProjectSidebar({
 													{project.available ? project.directory : 'Unavailable'}
 												</TooltipContent>
 											</Tooltip>
+											<DropdownMenu>
+												<DropdownMenuTrigger
+													render={
+														<Button
+															variant="ghost"
+															size="icon-sm"
+															className="size-8 shrink-0 group-data-[state=collapsed]/sidebar:hidden"
+															aria-label={`${project.name} options`}
+														>
+															<MoreHorizontal />
+														</Button>
+													}
+												/>
+												<DropdownMenuContent align="end">
+													<DropdownMenuItem onClick={() => onOpenInstructions(project.id)}>
+														<Info /> Project details
+													</DropdownMenuItem>
+													<DropdownMenuItem disabled={!project.available} onClick={() => onOpenFiles(project.id)}>
+														<Files /> Files
+													</DropdownMenuItem>
+													<DropdownMenuItem disabled={!project.available} onClick={() => onOpenProject(project.id)}>
+														<FileText /> AGENTS.md
+													</DropdownMenuItem>
+													<DropdownMenuItem disabled={!project.available} onClick={() => void coding.openProject(project.id)}>
+														<FolderOpen /> Open folder
+													</DropdownMenuItem>
+													<DropdownMenuItem onClick={() => void navigator.clipboard.writeText(project.directory)}>
+														<Copy /> Copy path
+													</DropdownMenuItem>
+													<DropdownMenuSeparator />
+													<DropdownMenuItem
+														variant="destructive"
+														disabled={coding.runState === 'running'}
+														onClick={() => void coding.removeProject(project.id)}
+													>
+														<Trash2 /> Remove workspace
+													</DropdownMenuItem>
+												</DropdownMenuContent>
+											</DropdownMenu>
 										</div>
 
 										<CollapsibleContent className="group-data-[state=collapsed]/sidebar:hidden">
 											<ul className="ml-4 space-y-0.5 py-1">
-												<li>
-													<Button
-														variant="ghost"
-														className="h-7 w-full justify-start gap-2 px-2 text-left text-[11px] font-normal"
-														onClick={() => onOpenInstructions(project.id)}
-													>
-														<Info /> Project details
-													</Button>
-												</li>
-												<li>
-													<Button
-														variant="ghost"
-														className="h-7 w-full justify-start gap-2 px-2 text-left text-[11px] font-normal"
-														disabled={!project.available}
-														onClick={() => onOpenFiles(project.id)}
-													>
-														<Files /> Files
-													</Button>
-												</li>
-												<li>
-													<Button
-														variant="ghost"
-														className="h-7 w-full justify-start gap-2 px-2 text-left text-[11px] font-normal"
-														disabled={!project.available}
-														onClick={() => onOpenProject(project.id)}
-													>
-														<FileText /> AGENTS.md
-													</Button>
-												</li>
 												{filteredSessions.length ? (
 													<li className="px-2 pb-0.5 pt-2 text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
 														Sessions
