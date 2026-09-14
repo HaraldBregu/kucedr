@@ -44,13 +44,10 @@ describe('OpenAILiveVoiceAdapter', () => {
 		socket.emit('open');
 		socket.emit('message', JSON.stringify({ type: 'session.started' }));
 		await connecting;
-		socket.emit(
-			'message',
-			JSON.stringify({ type: 'session.output_audio.delta', delta: 'AQI=' })
-		);
+		socket.emit('message', JSON.stringify({ type: 'session.output_audio.delta', delta: 'AQI=' }));
 		socket.emit('message', JSON.stringify({ type: 'session.output_audio.done' }));
 
-			expect(events).toEqual([
+		expect(events).toEqual([
 			{
 				type: 'assistant_audio_delta',
 				itemId: 'live-output-0',
