@@ -76,7 +76,7 @@ export default function App() {
 							) : page === 'files' && coding.activeProject ? (
 								<Files coding={coding} onDone={() => void openPage('workspace')} />
 							) : page === 'project' && coding.activeProject ? (
-								<Project coding={coding} onOpenFiles={() => void openPage('files')} onOpenInstructions={() => void openPage('instructions')} />
+								<Project coding={coding} onOpenConfiguration={() => void openPage('configuration')} onOpenFiles={() => void openPage('files')} onOpenInstructions={() => void openPage('instructions')} />
 							) : (
 								<Workspace coding={coding} />
 							)}
