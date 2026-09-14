@@ -47,5 +47,4 @@ describe('VoiceConversationWindow', () => {
 			screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling
 		).toHaveTextContent('1:01');
 	});
-
 });
