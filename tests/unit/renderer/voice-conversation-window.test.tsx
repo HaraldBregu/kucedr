@@ -49,7 +49,7 @@ describe('VoiceConversationWindow', () => {
 		).toHaveTextContent('1:01');
 	});
 
-	it('keeps the complete clipped transcript thread above the window center', () => {
+	it('shows the complete transcript in a scrollable right-side rail', () => {
 		mockedUseRealtimeVoice.mockReturnValue({
 			elapsedMs: 0,
 			end: jest.fn(),
@@ -70,11 +70,7 @@ describe('VoiceConversationWindow', () => {
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
 		const transcript = screen.getByRole('region', { name: 'Voice conversation transcript' });
-		expect(transcript).toHaveClass(
-			'left-[calc(100%-30px)]',
-			'bottom-1/2',
-			'overflow-y-auto'
-		);
+		expect(transcript).toHaveClass('right-3', 'w-[38%]', 'bottom-1/2', 'overflow-y-auto');
 		const messages = screen.getByRole('list');
 		expect(messages).toHaveClass('justify-end');
 		expect(messages).toHaveTextContent('First message');

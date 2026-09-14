@@ -57,7 +57,7 @@ export function VoiceConversationWindow({
 					/>
 					<div
 						aria-label="Voice conversation transcript"
-						className="absolute bottom-1/2 left-[calc(100%-30px)] top-0 w-64 overflow-y-auto text-sm leading-5"
+						className="absolute bottom-1/2 right-3 top-3 w-[38%] overflow-y-auto text-sm leading-5"
 						role="region"
 					>
 						<ol className="flex min-h-full flex-col justify-end gap-5">
