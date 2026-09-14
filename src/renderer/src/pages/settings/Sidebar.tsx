@@ -76,7 +76,7 @@ export function SettingsSidebar(): React.JSX.Element {
 					}}
 				>
 					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
-					<span className="text-[13px]">{t('settings.returnToChat', 'Return to Chat')}</span>
+					<span className="text-xs">{t('settings.returnToChat', 'Return to Chat')}</span>
 				</Link>
 			</div>
 			<div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pb-4 pt-3">
@@ -109,7 +109,7 @@ export function SettingsSidebar(): React.JSX.Element {
 												className={cn(SPLIT_ITEM_CLASS, isActive && SPLIT_ITEM_ACTIVE_CLASS)}
 											>
 												<Icon className="size-4 shrink-0" strokeWidth={1.8} />
-											<span className="text-[13px]">{t(item.labelKey)}</span>
+											<span className="text-xs">{t(item.labelKey)}</span>
 											</Link>
 										</li>
 									);
