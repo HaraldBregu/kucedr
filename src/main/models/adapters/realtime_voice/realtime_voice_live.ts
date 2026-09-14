@@ -48,7 +48,11 @@ export class OpenAILiveVoiceAdapter implements RealtimeVoiceAdapter {
 
 class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 	private closed = false;
-	private transcript = '';
+	private inputTranscript = '';
+	private inputTurn = 0;
+	private inputTurnActive = false;
+	private outputTranscript = '';
+	private outputTurn = 0;
 
 	constructor(
 		private readonly socket: LiveSocket,
@@ -110,14 +114,8 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			this.socket.on('close', () => {
 				this.closed = true;
 				if (!settled) settle(new Error('Live voice connection closed before setup.'));
-				if (this.transcript) {
-					this.emit({
-						type: 'assistant_transcript_final',
-						itemId: 'live-output',
-						responseId: 'live-output',
-						transcript: this.transcript,
-					});
-				}
+				this.finishInputTurn();
+				this.finishOutputTurn();
 				this.emit({ type: 'closed' });
 			});
 			signal?.addEventListener('abort', abort, { once: true });
@@ -147,32 +145,82 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 		this.socket.send(JSON.stringify(event));
 	}
 
+	private inputItemId(): string {
+		return `live-input-${this.inputTurn}`;
+	}
+
+	private outputItemId(): string {
+		return `live-output-${this.outputTurn}`;
+	}
+
+	private finishInputTurn(): void {
+		if (!this.inputTurnActive) return;
+		const itemId = this.inputItemId();
+		this.emit({ type: 'input_speech_stopped', itemId });
+		const transcript = this.inputTranscript.trim();
+		if (transcript) this.emit({ type: 'user_transcript_final', itemId, transcript });
+		this.inputTranscript = '';
+		this.inputTurnActive = false;
+		this.inputTurn += 1;
+	}
+
+	private finishOutputTurn(): void {
+		const transcript = this.outputTranscript.trim();
+		if (transcript) {
+			const itemId = this.outputItemId();
+			this.emit({
+				type: 'assistant_transcript_final',
+				itemId,
+				responseId: itemId,
+				transcript,
+			});
+		}
+		this.outputTranscript = '';
+		this.outputTurn += 1;
+	}
+
 	private handle(event: Record<string, unknown>): void {
+		if (event.type === 'session.input_transcript.delta' && typeof event.delta === 'string') {
+			if (!this.inputTurnActive) {
+				this.inputTurnActive = true;
+				this.emit({ type: 'input_speech_started', itemId: this.inputItemId() });
+			}
+			this.inputTranscript += event.delta;
+			return;
+		}
 		if (event.type === 'session.output_audio.delta' && typeof event.delta === 'string') {
+			this.finishInputTurn();
+			const itemId = this.outputItemId();
 			this.emit({
 				type: 'assistant_audio_delta',
-				itemId: 'live-output',
-				responseId: 'live-output',
+				itemId,
+				responseId: itemId,
 				audio: event.delta,
 			});
 			return;
 		}
 		if (event.type === 'session.output_audio.done') {
+			this.finishInputTurn();
+			const itemId = this.outputItemId();
+			this.finishOutputTurn();
 			this.emit({
 				type: 'assistant_audio_done',
-				itemId: 'live-output',
-				responseId: 'live-output',
+				itemId,
+				responseId: itemId,
 			});
 			return;
 		}
 		if (event.type === 'session.output_transcript.delta' && typeof event.delta === 'string') {
-			this.transcript += event.delta;
+			this.finishInputTurn();
+			const itemId = this.outputItemId();
+			this.outputTranscript += event.delta;
 			this.emit({
 				type: 'assistant_transcript_delta',
-				itemId: 'live-output',
-				responseId: 'live-output',
+				itemId,
+				responseId: itemId,
 				delta: event.delta,
 			});
+			return;
 		}
 	}
 }
