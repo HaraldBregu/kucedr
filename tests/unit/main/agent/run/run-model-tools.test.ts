@@ -26,7 +26,7 @@ it('submits every selected tool to a model with documented context metadata', as
 		(async function* () {
 			yield {
 				type: 'model_call_end' as const,
-				model: 'deepseek-v4-flash',
+				model: 'deepseek-flash',
 				stopReason: 'end_turn',
 			};
 		})()
@@ -34,7 +34,7 @@ it('submits every selected tool to a model with documented context metadata', as
 	const events = runModelTurn(
 		{ task: 'chat', message: 'hello' },
 		{ id: 'deepseek', apiKey: 'key' } as ResolvedProvider,
-		'deepseek-v4-flash',
+		'deepseek-flash',
 		`System ${'workspace context '.repeat(10_000)}`,
 		[{ role: 'user', content: 'Use the right tool.' }],
 		tools,

@@ -12,7 +12,7 @@ describe('provider manifests', () => {
 			(model) => model.provider.id === 'openai' && model.id === 'gpt-5.6-sol'
 		);
 		const deepseek = loadModels().find(
-			(model) => model.provider.id === 'deepseek' && model.id === 'deepseek-v4-flash'
+			(model) => model.provider.id === 'deepseek' && model.id === 'deepseek-flash'
 		);
 		const openAiRealtime = loadModels().filter(
 			(model) => model.provider.id === 'openai' && model.type === 'realtime-voice'

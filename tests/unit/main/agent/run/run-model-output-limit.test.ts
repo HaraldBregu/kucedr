@@ -19,7 +19,7 @@ it('uses the provider-documented default instead of the maximum output capabilit
 		},
 	});
 
-	expect(modelOutputLimit('deepseek', 'deepseek-v4-flash', {})).toBe(32_768);
+	expect(modelOutputLimit('deepseek', 'deepseek-flash', {})).toBe(32_768);
 });
 
 it('does not treat a catalog maximum as the default request size', () => {

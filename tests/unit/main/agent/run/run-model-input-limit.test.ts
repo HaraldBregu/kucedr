@@ -35,7 +35,7 @@ it('uses a provider-documented context window outside the request fields', () =>
 		metadata: { contextWindow: 1_048_576, inputs: {} },
 	});
 
-	expect(modelInputLimit('deepseek', 'deepseek-v4-flash', 32_768)).toBe(1_000_000);
+	expect(modelInputLimit('deepseek', 'deepseek-flash', 32_768)).toBe(1_000_000);
 });
 
 it('uses the conservative documented fallback when metadata is unavailable', () => {
