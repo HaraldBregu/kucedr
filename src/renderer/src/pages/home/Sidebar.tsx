@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactElement } from 'react';
 import { EllipsisVertical, Library, LogOut, Plus, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS, usePageContext } from '@/components/app/base/page';
+import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -30,7 +30,6 @@ interface HomeSidebarProps {
 export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
-	const { isMobile } = usePageContext();
 	const { sessionId, setSessionId } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -261,7 +260,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
 								className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
-								side={isMobile ? 'bottom' : 'right'}
+								side="top"
 								align="end"
 							>
 								<DropdownMenuLabel className="p-0 font-normal">
