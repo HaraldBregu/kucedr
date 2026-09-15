@@ -242,17 +242,17 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<SidebarMenuButton
-									size="lg"
+									size="default"
 									aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-									className="h-10 py-1 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+									className="h-9 py-1 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
-									<Avatar className="size-7 rounded-lg grayscale">
+									<Avatar className="size-6 rounded-lg grayscale">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
 										<AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground">
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
-									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
+									<span className="grid min-w-0 flex-1 text-left text-xs leading-tight">
 										<span className="truncate font-medium">{accountItem.title}</span>
 										{accountItem.description ? (
 											<span className="truncate text-xs text-muted-foreground">{accountItem.description}</span>
