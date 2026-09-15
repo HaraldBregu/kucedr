@@ -40,6 +40,8 @@ export interface TitleBarProps {
 	onSearch?: () => void;
 	/** When true, renders agentic + info sidebar toggle buttons on the right */
 	showSidebarToggles?: boolean;
+	/** Whether the desktop sidebar occupies the left edge of the titlebar. */
+	sidebarOpen?: boolean;
 }
 
 export const TitleBar = React.memo(function TitleBar({
@@ -50,6 +52,7 @@ export const TitleBar = React.memo(function TitleBar({
 	centerContentClassName,
 	onSearch,
 	showSidebarToggles: _showSidebarToggles = false,
+	sidebarOpen = false,
 }: TitleBarProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
@@ -155,7 +158,13 @@ export const TitleBar = React.memo(function TitleBar({
 				</TitleBarLeftContainer>
 
 				{isHome && sessionTitle ? (
-					<div className="ml-2 flex min-w-0 items-center gap-1">
+					<div
+						data-slot="titlebar-chat-context"
+						className={cn(
+							'flex min-w-0 items-center gap-1 transition-[margin] duration-200 ease-linear motion-reduce:transition-none',
+							sidebarOpen ? 'ml-2' : 'ml-28'
+						)}
+					>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<Button

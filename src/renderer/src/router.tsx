@@ -171,6 +171,7 @@ function RootRouteComponent(): React.JSX.Element {
 							) : undefined
 						}
 						onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
+						sidebarOpen={!isMobile && state.sidebarOpen}
 						style={
 							hasSidebar
 								? { left: !isMobile && state.sidebarOpen ? 'var(--app-sidebar-width)' : 0 }

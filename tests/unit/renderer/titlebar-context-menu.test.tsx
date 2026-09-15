@@ -126,17 +126,32 @@ it('shows the current chat title and its dropdown on the left of the Home titleb
 			<ChatSessionContext.Provider
 				value={{ sessionId: 'session-1', setSessionId: jest.fn(), sessionTitle: 'Project roadmap' }}
 			>
-				<TitleBar />
+				<TitleBar sidebarOpen />
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 
 	expect(screen.getByText('Project roadmap')).toHaveAttribute('data-slot', 'titlebar-chat-title');
+	expect(screen.getByTestId('titlebar-chat-context')).toHaveClass('ml-2');
 	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.general' })).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.overview.groups.agent' })).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.system' })).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.apps' })).toBeInTheDocument();
+});
+
+it('places the current chat after the sidebar toggle when the sidebar is closed', () => {
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider
+				value={{ sessionId: 'session-1', setSessionId: jest.fn(), sessionTitle: 'Project roadmap' }}
+			>
+				<TitleBar sidebarOpen={false} />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	expect(screen.getByTestId('titlebar-chat-context')).toHaveClass('ml-28');
 });
 
 it('renders search immediately before the Home or Settings button', async () => {
