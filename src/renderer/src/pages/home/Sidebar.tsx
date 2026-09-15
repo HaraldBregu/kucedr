@@ -255,9 +255,9 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 									aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
 									className="h-9 py-1 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
-									<Avatar className="size-6 rounded-lg grayscale">
+									<Avatar className="size-6 rounded-full grayscale">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-										<AvatarFallback className="rounded-lg bg-accent text-accent-foreground">
+										<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
@@ -276,9 +276,9 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							>
 								<DropdownMenuLabel className="p-0 font-normal">
 									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-										<Avatar className="size-8 rounded-lg">
+										<Avatar className="size-8 rounded-full">
 											<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-											<AvatarFallback className="rounded-lg bg-accent text-accent-foreground">
+											<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
 												{accountInitial}
 											</AvatarFallback>
 										</Avatar>
