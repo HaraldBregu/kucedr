@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { TitleBar } from '../../../src/renderer/src/components/app/titlebar/TitleBar';
+import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
 import { SettingsBreadcrumb } from '../../../src/renderer/src/pages/settings/Breadcrumb';
 
 jest.mock('react-i18next', () => ({
@@ -116,6 +117,20 @@ it('shows the settings icon on Home', async () => {
 	await user.click(screen.getByRole('button', { name: 'settings.title' }));
 
 	expect(screen.getByText('/settings/general')).toBeInTheDocument();
+});
+
+it('shows the current chat title on the left of the Home titlebar', () => {
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider
+				value={{ sessionId: 'session-1', setSessionId: jest.fn(), sessionTitle: 'Project roadmap' }}
+			>
+				<TitleBar />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	expect(screen.getByText('Project roadmap')).toHaveAttribute('data-slot', 'titlebar-chat-title');
 });
 
 it('renders search immediately before the Home or Settings button', async () => {

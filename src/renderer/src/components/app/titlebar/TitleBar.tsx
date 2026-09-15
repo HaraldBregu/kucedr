@@ -10,6 +10,7 @@ import { TitleBarProvider } from './context/TitleBarContext';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
 import { LogoView } from '@/components/app/base/logo-view';
+import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 
 // Synchronous platform check — no hooks, no async, no state.
@@ -48,6 +49,7 @@ export const TitleBar = React.memo(function TitleBar({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
+	const { sessionTitle } = useChatSession();
 
 	const isHome = location.pathname === '/home';
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
@@ -147,6 +149,12 @@ export const TitleBar = React.memo(function TitleBar({
 
 					{/* {isSettings && <NavigationButtons />} */}
 				</TitleBarLeftContainer>
+
+				{isHome && sessionTitle ? (
+					<span data-slot="titlebar-chat-title" className="ml-2 min-w-0 max-w-72 truncate text-sm font-medium">
+						{sessionTitle}
+					</span>
+				) : null}
 
 				{centerContent && (
 					<div
