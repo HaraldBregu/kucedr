@@ -10,6 +10,8 @@ jest.mock('react-i18next', () => ({
 }));
 
 const showContextMenu = jest.fn();
+const renameSession = jest.fn();
+const deleteSession = jest.fn();
 const contextMenuItems = [
 	{ id: '/settings/general', label: 'settings.tabs.general' },
 	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
@@ -19,6 +21,12 @@ const contextMenuItems = [
 
 beforeEach(() => {
 	showContextMenu.mockReset().mockResolvedValue(null);
+	renameSession.mockReset().mockResolvedValue(undefined);
+	deleteSession.mockReset().mockResolvedValue(undefined);
+	Object.defineProperty(window, 'agent', {
+		configurable: true,
+		value: { renameSession, deleteSession },
+	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
 		value: {
@@ -152,6 +160,63 @@ it('places the current chat after the sidebar toggle when the sidebar is closed'
 	);
 
 	expect(document.querySelector('[data-slot="titlebar-chat-context"]')).toHaveClass('ml-28');
+});
+
+it('renames the current chat from the titlebar dropdown', async () => {
+	const user = userEvent.setup();
+	const setSessionTitle = jest.fn();
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider
+				value={{
+					sessionId: 'session-1',
+					setSessionId: jest.fn(),
+					sessionTitle: 'Project roadmap',
+					sessionTitleSessionId: 'session-1',
+					setSessionTitle,
+				}}
+			>
+				<TitleBar />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
+	await user.click(screen.getByRole('menuitem', { name: 'common.rename' }));
+	const input = screen.getByRole('textbox', { name: 'common.rename' });
+	await user.clear(input);
+	await user.type(input, 'Launch plan');
+	fireEvent.blur(input);
+
+	await waitFor(() => expect(renameSession).toHaveBeenCalledWith('session-1', 'Launch plan'));
+	expect(setSessionTitle).toHaveBeenCalledWith('Launch plan', 'session-1');
+});
+
+it('deletes the current chat from the titlebar dropdown after confirmation', async () => {
+	const user = userEvent.setup();
+	const setSessionId = jest.fn();
+	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(true);
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider
+				value={{
+					sessionId: 'session-1',
+					setSessionId,
+					sessionTitle: 'Project roadmap',
+					sessionTitleSessionId: 'session-1',
+				}}
+			>
+				<TitleBar />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
+	await user.click(screen.getByRole('menuitem', { name: 'common.delete' }));
+
+	await waitFor(() => expect(deleteSession).toHaveBeenCalledWith('session-1'));
+	expect(setSessionId).toHaveBeenCalledTimes(1);
+	confirm.mockRestore();
 });
 
 it('renders search immediately before the Home or Settings button', async () => {

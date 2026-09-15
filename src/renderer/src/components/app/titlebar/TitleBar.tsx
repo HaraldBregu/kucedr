@@ -10,6 +10,7 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { TitleBarProvider } from './context/TitleBarContext';
@@ -157,7 +158,7 @@ export const TitleBar = React.memo(function TitleBar({
 									{t('common.rename', 'Rename')}
 								</DropdownMenuItem>
 								<DropdownMenuItem
-									variant="destructive"
+									className="text-destructive focus:bg-destructive/10 focus:text-destructive"
 									onSelect={() => {
 										if (!window.confirm(t('settings.chatHistory.confirmDeleteSession', { title: sessionTitle }))) {
 											return;
@@ -170,6 +171,7 @@ export const TitleBar = React.memo(function TitleBar({
 									<Trash2 />
 									{t('common.delete', 'Delete')}
 								</DropdownMenuItem>
+								<DropdownMenuSeparator />
 								{titlebarMenuItems.map((item) => (
 									<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
 										{item.label}
