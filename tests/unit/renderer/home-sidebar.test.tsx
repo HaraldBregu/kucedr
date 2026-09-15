@@ -24,6 +24,7 @@ const listSessions = jest.fn();
 const renameSession = jest.fn();
 const deleteSession = jest.fn();
 const showContextMenu = jest.fn();
+const signOut = jest.fn();
 
 beforeEach(() => {
 	mockUseAuth.mockReturnValue({
@@ -65,6 +66,10 @@ beforeEach(() => {
 			openExternalUrl: jest.fn().mockResolvedValue(undefined),
 		},
 	});
+	Object.defineProperty(window, 'auth', {
+		configurable: true,
+		value: { signOut },
+	});
 });
 
 it('loads chat history, marks the latest default session, and switches sessions', async () => {
@@ -101,26 +106,24 @@ it('loads chat history, marks the latest default session, and switches sessions'
 
 	await user.click(older);
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
-	expect(screen.getByRole('link', { name: 'settings.title' })).toHaveAttribute(
-		'href',
-		'/settings/general'
-	);
-	expect(screen.getByText('settings.title')).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
+	expect(screen.getByText('settings.sidebar.account')).toBeInTheDocument();
 	expect(
-		screen.getByRole('link', { name: 'settings.title' }).querySelector('.lucide-settings-2')
+		screen.getByRole('button', { name: 'settings.sidebar.accountMenu' }).querySelector('.lucide-settings-2')
 	).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
 	).not.toBeInTheDocument();
 });
 
-it.each<[AuthState]>([
+it.each<[AuthState, string]>([
 	[
 		{
 			status: 'signedIn',
 			persistence: 'encrypted',
 			user: { id: 'user-1', email: 'ada@example.com', displayName: 'Ada Lovelace' },
 		},
+		'Ada Lovelace',
 	],
 	[
 		{
@@ -128,8 +131,10 @@ it.each<[AuthState]>([
 			persistence: 'encrypted',
 			user: { id: 'user-2', email: 'grace@example.com' },
 		},
+		'grace@example.com',
 	],
-])('shows the settings label for authenticated users', async (state) => {
+])('shows authenticated account identity and actions', async (state, accountName) => {
+	const user = userEvent.setup();
 	listSessions.mockResolvedValue([]);
 	mockUseAuth.mockReturnValue({
 		state,
@@ -148,10 +153,21 @@ it.each<[AuthState]>([
 		</MemoryRouter>
 	);
 
-	const accountLink = screen.getByRole('link', { name: 'settings.title' });
-	expect(accountLink).toHaveAttribute('href', '/settings/general');
-	expect(within(accountLink).getByText('settings.title')).toBeInTheDocument();
-	expect(accountLink.querySelector('.lucide-user')).toBeInTheDocument();
+	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
+	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
+	expect(within(accountMenu).getByText(state.user?.email ?? '')).toBeInTheDocument();
+	await user.click(accountMenu);
+	const menu = screen.getByRole('navigation', { name: 'settings.sidebar.accountMenu' });
+	expect(within(menu).getByRole('link', { name: 'settings.tabs.rag' })).toHaveAttribute(
+		'href',
+		'/settings/rag'
+	);
+	expect(within(menu).getByRole('link', { name: 'settings.sidebar.manageAccount' })).toHaveAttribute(
+		'href',
+		'/settings/account'
+	);
+	await user.click(within(menu).getByRole('button', { name: 'settings.sidebar.signOut' }));
+	expect(signOut).toHaveBeenCalledTimes(1);
 	await screen.findByText('settings.chatHistory.empty');
 });
 
