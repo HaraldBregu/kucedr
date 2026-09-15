@@ -27,6 +27,8 @@ const showContextMenu = jest.fn();
 const signOut = jest.fn();
 
 beforeEach(() => {
+	signOut.mockReset();
+	signOut.mockResolvedValue(undefined);
 	mockUseAuth.mockReturnValue({
 		state: { status: 'signedOut', persistence: 'encrypted' },
 		localOnly: false,
@@ -155,7 +157,9 @@ it.each<[AuthState, string]>([
 
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
-	expect(within(accountMenu).getByText(state.user?.email ?? '')).toBeInTheDocument();
+	expect(
+		within(accountMenu).getByText(state.status === 'signedIn' ? state.user.email : '')
+	).toBeInTheDocument();
 	await user.click(accountMenu);
 	const menu = screen.getByRole('navigation', { name: 'settings.sidebar.accountMenu' });
 	expect(within(menu).getByRole('link', { name: 'settings.tabs.rag' })).toHaveAttribute(
