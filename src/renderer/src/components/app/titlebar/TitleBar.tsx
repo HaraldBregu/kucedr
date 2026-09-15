@@ -1,10 +1,11 @@
 import React, { type ReactNode } from 'react';
-import { Menu, MessageCircle, Search, User } from 'lucide-react';
+import { Menu, MessageCircle, Pencil, Search, Trash2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TitleBarContainer } from './TitleBarContainer';
 import { TitleBarLeftContainer } from './TitleBarLeftContainer';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -58,7 +59,8 @@ export const TitleBar = React.memo(function TitleBar({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
-	const { sessionTitle } = useChatSession();
+	const { sessionId, sessionTitle, sessionTitleSessionId, setSessionId, setSessionTitle } = useChatSession();
+	const [editingChatTitle, setEditingChatTitle] = React.useState<string>();
 
 	const isHome = location.pathname === '/home';
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
@@ -66,6 +68,7 @@ export const TitleBar = React.memo(function TitleBar({
 	const settingsLabel = t('settings.title', 'Settings');
 	const homeButtonLabel = t('titleBar.home', 'Home');
 	const searchLabel = t('titleBar.search', 'Search');
+	const activeChatSessionId = sessionTitleSessionId ?? sessionId;
 	const titlebarMenuItems = [
 		{ path: '/settings/general', label: t('settings.tabs.general') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
@@ -149,6 +152,24 @@ export const TitleBar = React.memo(function TitleBar({
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="start" className="w-44">
+								<DropdownMenuItem onSelect={() => setEditingChatTitle(sessionTitle)}>
+									<Pencil />
+									{t('common.rename', 'Rename')}
+								</DropdownMenuItem>
+								<DropdownMenuItem
+									variant="destructive"
+									onSelect={() => {
+										if (!window.confirm(t('settings.chatHistory.confirmDeleteSession', { title: sessionTitle }))) {
+											return;
+										}
+										void window.agent.deleteSession(activeChatSessionId).then(() => {
+											setSessionId(crypto.randomUUID());
+										});
+									}}
+								>
+									<Trash2 />
+									{t('common.delete', 'Delete')}
+								</DropdownMenuItem>
 								{titlebarMenuItems.map((item) => (
 									<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
 										{item.label}
@@ -156,9 +177,32 @@ export const TitleBar = React.memo(function TitleBar({
 								))}
 							</DropdownMenuContent>
 						</DropdownMenu>
-						<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
-							{sessionTitle}
-						</span>
+						{editingChatTitle === undefined ? (
+							<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
+								{sessionTitle}
+							</span>
+						) : (
+							<Input
+								autoFocus
+								maxLength={120}
+								value={editingChatTitle}
+								onChange={(event) => setEditingChatTitle(event.target.value)}
+								onKeyDown={(event) => {
+									if (event.key === 'Enter') event.currentTarget.blur();
+									if (event.key === 'Escape') setEditingChatTitle(undefined);
+								}}
+								onBlur={(event) => {
+									const nextTitle = event.currentTarget.value.trim();
+									setEditingChatTitle(undefined);
+									if (!nextTitle || nextTitle === sessionTitle) return;
+									void window.agent.renameSession(activeChatSessionId, nextTitle).then(() => {
+										setSessionTitle?.(nextTitle, activeChatSessionId);
+									});
+								}}
+								aria-label={t('common.rename', 'Rename')}
+								className="h-8 w-56 text-sm font-medium"
+							/>
+						)}
 					</div>
 				) : null}
 

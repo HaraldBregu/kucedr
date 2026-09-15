@@ -24,13 +24,15 @@ interface ChatSessionContextValue {
 	sessionId: string;
 	setSessionId: (sessionId: string) => void;
 	sessionTitle?: string;
-	setSessionTitle?: (title: string | undefined) => void;
+	sessionTitleSessionId?: string;
+	setSessionTitle?: (title: string | undefined, sessionId?: string) => void;
 }
 
 export const ChatSessionContext = createContext<ChatSessionContextValue>({
 	sessionId: DEFAULT_CHAT_SESSION_ID,
 	setSessionId: () => {},
 	sessionTitle: undefined,
+	sessionTitleSessionId: undefined,
 	setSessionTitle: () => {},
 });
 

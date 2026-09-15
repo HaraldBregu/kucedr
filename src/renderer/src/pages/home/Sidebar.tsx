@@ -83,7 +83,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 
 	useEffect(() => {
 		const session = sessions.find((item) => item.id === currentSessionId);
-		setSessionTitle?.(session ? session.title.trim() || t('settings.chatHistory.untitled') : undefined);
+		setSessionTitle?.(
+			session ? session.title.trim() || t('settings.chatHistory.untitled') : undefined,
+			session?.id
+		);
 	}, [currentSessionId, sessions, setSessionTitle, t]);
 
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
@@ -177,7 +180,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 																		item.id === session.id ? { ...item, title: nextTitle } : item
 																	)
 																);
-																if (isActive) setSessionTitle?.(nextTitle);
+																if (isActive) setSessionTitle?.(nextTitle, session.id);
 															});
 												}}
 												aria-label={`Rename ${title}`}
@@ -196,7 +199,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												data-run-status={session.runStatus}
 												onClick={() => {
 													setSessionId(session.id);
-													setSessionTitle?.(title);
+													setSessionTitle?.(title, session.id);
 												}}
 												onContextMenu={(event) => {
 													event.preventDefault();

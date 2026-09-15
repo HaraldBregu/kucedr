@@ -104,6 +104,7 @@ function RootRouteComponent(): React.JSX.Element {
 	const [chatMode, setChatMode] = useState<ChatMode>('chat');
 	const [chatSessionId, setChatSessionId] = useState<string>(readPersistedChatSessionId);
 	const [chatSessionTitle, setChatSessionTitle] = useState<string>();
+	const [chatSessionTitleSessionId, setChatSessionTitleSessionId] = useState<string>();
 	const [commandMenuOpen, setCommandMenuOpen] = useState(false);
 	const [showSettingsBreadcrumb, setShowSettingsBreadcrumb] = useState(true);
 	const previousSidebarOpen = useRef(state.sidebarOpen);
@@ -135,10 +136,15 @@ function RootRouteComponent(): React.JSX.Element {
 				value={{
 					sessionId: chatSessionId,
 					sessionTitle: chatSessionTitle,
-					setSessionTitle: setChatSessionTitle,
+					sessionTitleSessionId: chatSessionTitleSessionId,
+					setSessionTitle: (title, sessionId) => {
+						setChatSessionTitle(title);
+						setChatSessionTitleSessionId(sessionId);
+					},
 					setSessionId: (sessionId) => {
 						setChatSessionId(sessionId);
 						setChatSessionTitle(undefined);
+						setChatSessionTitleSessionId(undefined);
 						persistChatSessionId(sessionId);
 					},
 				}}
