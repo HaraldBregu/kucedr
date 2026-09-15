@@ -261,7 +261,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
-								className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-72 rounded-lg"
+								className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-64 rounded-lg"
 								side="top"
 								align="end"
 								alignOffset={16}
