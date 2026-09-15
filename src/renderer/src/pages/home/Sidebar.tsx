@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Bot, Cloud, Code2, Layers, LogOut, Plus, RadioTower, Server, UserRound } from 'lucide-react';
+import { Bot, Cloud, Code2, Layers, ListTodo, LogOut, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -20,6 +20,7 @@ import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
+import { useCommandMenu } from '@/contexts/command-menu';
 import type { AgentSessionSummary } from '@/lib/compat';
 import { cn } from '@/lib/utils';
 
@@ -31,6 +32,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
+	const { open: openCommandMenu } = useCommandMenu();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
@@ -113,7 +115,15 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				className="h-12 shrink-0"
 				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
 			/>
-			<header className="border-b border-sidebar-border/50 p-2">
+			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
+				<Link to="/settings/agent/tasks" className={SPLIT_ITEM_CLASS}>
+					<ListTodo className="size-4" />
+					<span>{t('settings.tabs.taskScheduler')}</span>
+				</Link>
+				<button type="button" className={SPLIT_ITEM_CLASS} onClick={openCommandMenu}>
+					<Search className="size-4" />
+					<span>{t('titleBar.search')}</span>
+				</button>
 				<button
 					type="button"
 					className={SPLIT_ITEM_CLASS}

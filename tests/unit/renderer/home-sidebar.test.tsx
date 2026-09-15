@@ -7,6 +7,7 @@ import {
 	Split,
 } from '../../../src/renderer/src/components/app/base/page';
 import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
+import { CommandMenuProvider } from '../../../src/renderer/src/contexts/command-menu';
 import { HomeSidebar } from '../../../src/renderer/src/pages/home/Sidebar';
 import type { AuthState } from '../../../src/shared/auth_types';
 
@@ -280,6 +281,32 @@ it('starts a new chat from the sidebar', async () => {
 	expect(newChat).toHaveAttribute('class', SPLIT_ITEM_CLASS);
 	await user.click(newChat);
 	expect(setSessionId).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
+});
+
+it('keeps Tasks, Search, and New chat in the fixed sidebar action group', async () => {
+	const user = userEvent.setup();
+	const openCommandMenu = jest.fn();
+	listSessions.mockResolvedValue([]);
+
+	render(
+		<MemoryRouter>
+			<CommandMenuProvider value={{ open: openCommandMenu }}>
+				<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId: jest.fn() }}>
+					<PageContainer>
+						<HomeSidebar refreshKey="initial" />
+					</PageContainer>
+				</ChatSessionContext.Provider>
+			</CommandMenuProvider>
+		</MemoryRouter>
+	);
+
+	expect(await screen.findByRole('link', { name: 'settings.tabs.taskScheduler' })).toHaveAttribute(
+		'href',
+		'/settings/agent/tasks'
+	);
+	await user.click(screen.getByRole('button', { name: 'titleBar.search' }));
+	expect(openCommandMenu).toHaveBeenCalledTimes(1);
+	expect(screen.getByRole('button', { name: 'titleBar.newChat' })).toBeInTheDocument();
 });
 
 it('shows an empty state when there is no chat history', async () => {

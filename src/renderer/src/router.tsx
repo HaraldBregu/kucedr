@@ -19,6 +19,7 @@ import { SettingsPageSkeleton } from './pages/settings/components';
 import { SETTINGS_MODEL_SERVICE_ITEMS } from './pages/settings/navigation';
 import { CommandMenu, PageTransition } from './experience';
 import { ChatModeContext, type ChatMode } from './contexts/chat-mode';
+import { CommandMenuProvider } from './contexts/command-menu';
 import {
 	ChatSessionContext,
 	persistChatSessionId,
@@ -131,8 +132,9 @@ function RootRouteComponent(): React.JSX.Element {
 	}, [isMobile, isSettings, state.sidebarOpen]);
 
 	return (
-		<ChatModeContext.Provider value={{ mode: chatMode, setMode: setChatMode }}>
-			<ChatSessionContext.Provider
+		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
+			<ChatModeContext.Provider value={{ mode: chatMode, setMode: setChatMode }}>
+				<ChatSessionContext.Provider
 				value={{
 					sessionId: chatSessionId,
 					sessionTitle: chatSessionTitle,
@@ -195,8 +197,9 @@ function RootRouteComponent(): React.JSX.Element {
 						onOpenChange={setCommandMenuOpen}
 					/>
 				</div>
-			</ChatSessionContext.Provider>
-		</ChatModeContext.Provider>
+				</ChatSessionContext.Provider>
+			</ChatModeContext.Provider>
+		</CommandMenuProvider>
 	);
 }
 
