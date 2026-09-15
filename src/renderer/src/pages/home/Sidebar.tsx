@@ -265,7 +265,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
 								side="top"
 								align="end"
-								alignOffset={8}
+								alignOffset={16}
 							>
 								<DropdownMenuLabel className="p-0 font-normal">
 									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
