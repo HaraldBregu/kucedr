@@ -131,7 +131,7 @@ it.each<[AuthState, string]>([
 			persistence: 'encrypted',
 			user: { id: 'user-2', email: 'grace@example.com' },
 		},
-		'grace@example.com',
+		'settings.sidebar.account',
 	],
 ])('shows authenticated account identity and actions', async (state, accountName) => {
 	const user = userEvent.setup();
@@ -155,7 +155,7 @@ it.each<[AuthState, string]>([
 
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
-	if (state.status === 'signedIn' && state.user.displayName) {
+	if (state.status === 'signedIn') {
 		expect(within(accountMenu).getByText(state.user.email)).toBeInTheDocument();
 	}
 	await user.click(accountMenu);

@@ -81,9 +81,12 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? sessions[0]?.id : sessionId;
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
-	const accountName = authenticatedUser?.displayName ?? authenticatedUser?.email ?? t('settings.sidebar.account');
-	const accountEmail = authenticatedUser?.email;
-	const accountInitial = accountName.charAt(0).toUpperCase();
+	const accountItem = {
+		title: authenticatedUser?.displayName ?? t('settings.sidebar.account'),
+		description: authenticatedUser?.email,
+		avatarPath: authenticatedUser?.avatarPath,
+	};
+	const accountInitial = accountItem.title.charAt(0).toUpperCase();
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
@@ -240,19 +243,19 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							<DropdownMenuTrigger asChild>
 								<SidebarMenuButton
 									size="lg"
-									aria-label={t('settings.sidebar.accountMenu', { name: accountName })}
-									className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+									aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
+									className="h-10 py-1 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
-									<Avatar className="size-8 rounded-lg grayscale">
-										<AvatarImage src={authenticatedUser?.avatarPath} alt={accountName} />
+									<Avatar className="size-7 rounded-lg grayscale">
+										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
 										<AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground">
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
 									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-										<span className="truncate font-medium">{accountName}</span>
-										{accountEmail && accountEmail !== accountName ? (
-											<span className="truncate text-xs text-muted-foreground">{accountEmail}</span>
+										<span className="truncate font-medium">{accountItem.title}</span>
+										{accountItem.description ? (
+											<span className="truncate text-xs text-muted-foreground">{accountItem.description}</span>
 										) : null}
 									</span>
 									<EllipsisVertical className="ml-auto size-4" aria-hidden="true" />
@@ -267,15 +270,15 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								<DropdownMenuLabel className="p-0 font-normal">
 									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 										<Avatar className="size-8 rounded-lg">
-											<AvatarImage src={authenticatedUser?.avatarPath} alt={accountName} />
+											<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
 											<AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground">
 												{accountInitial}
 											</AvatarFallback>
 										</Avatar>
 										<div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-											<span className="truncate font-medium">{accountName}</span>
-											{accountEmail && accountEmail !== accountName ? (
-												<span className="truncate text-xs text-muted-foreground">{accountEmail}</span>
+											<span className="truncate font-medium">{accountItem.title}</span>
+											{accountItem.description ? (
+												<span className="truncate text-xs text-muted-foreground">{accountItem.description}</span>
 											) : null}
 										</div>
 									</div>
