@@ -23,6 +23,7 @@ jest.mock('react-i18next', () => ({
 const listSessions = jest.fn();
 const renameSession = jest.fn();
 const deleteSession = jest.fn();
+const openSessionFolder = jest.fn();
 const showContextMenu = jest.fn();
 const signOut = jest.fn();
 const confirmSignOut = jest.fn();
@@ -59,7 +60,7 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
-		value: { listSessions, renameSession, deleteSession },
+		value: { listSessions, renameSession, deleteSession, openSessionFolder },
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
@@ -201,12 +202,32 @@ it('renames a chat from its context menu without item action buttons', async () 
 	fireEvent.contextMenu(chat);
 	expect(showContextMenu).toHaveBeenCalledWith([
 		{ id: 'rename', label: 'common.rename' },
+		{ id: 'open-location', label: 'titleBar.openLocation' },
 		{ id: 'delete', label: 'common.delete' },
 	]);
 	const input = await screen.findByRole('textbox', { name: 'Rename Latest chat' });
 	await user.clear(input);
 	await user.type(input, 'Named chat{Enter}');
 	await waitFor(() => expect(renameSession).toHaveBeenCalledWith('session-latest', 'Named chat'));
+});
+
+it('opens a chat location from its context menu', async () => {
+	listSessions.mockResolvedValue([{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2 }]);
+	showContextMenu.mockResolvedValue('open-location');
+	openSessionFolder.mockResolvedValue(undefined);
+
+	render(
+		<MemoryRouter>
+			<ChatSessionContext.Provider value={{ sessionId: 'session-latest', setSessionId: jest.fn() }}>
+				<PageContainer>
+					<HomeSidebar refreshKey="initial" />
+				</PageContainer>
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	fireEvent.contextMenu(await screen.findByRole('button', { name: 'Latest chat' }));
+	await waitFor(() => expect(openSessionFolder).toHaveBeenCalledWith('session-latest'));
 });
 
 it('requires confirmation before permanently deleting a chat', async () => {

@@ -204,16 +204,20 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												onContextMenu={(event) => {
 													event.preventDefault();
 													void window.win
-														.showContextMenu([
-															{ id: 'rename', label: t('common.rename', 'Rename') },
-															{ id: 'delete', label: t('common.delete', 'Delete') },
-														])
+												.showContextMenu([
+													{ id: 'rename', label: t('common.rename', 'Rename') },
+													{ id: 'open-location', label: t('titleBar.openLocation', 'Open location') },
+													{ id: 'delete', label: t('common.delete', 'Delete') },
+												])
 														.then((action) => {
 															if (action === 'rename') {
 																setEditingTitle(title);
-																setEditingSessionId(session.id);
-															}
-															if (action === 'delete') {
+														setEditingSessionId(session.id);
+													}
+													if (action === 'open-location') {
+														void window.agent.openSessionFolder(session.id);
+													}
+													if (action === 'delete') {
 																if (
 																	!window.confirm(
 																		t('settings.chatHistory.confirmDeleteSession', { title })
