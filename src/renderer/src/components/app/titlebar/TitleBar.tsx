@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { Menu, MessageCircle, Pencil, Search, Trash2, User } from 'lucide-react';
+import { Folder, Menu, Pencil, Search, Trash2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TitleBarContainer } from './TitleBarContainer';
@@ -156,7 +156,7 @@ export const TitleBar = React.memo(function TitleBar({
 									aria-label={t('settings.chatHistory.title')}
 									style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 								>
-									<MessageCircle className="size-4" aria-hidden="true" />
+									<Folder className="size-4" aria-hidden="true" />
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="start" className="w-44">
