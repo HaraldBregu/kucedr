@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, Menu } from 'electron';
+import { BrowserWindow, dialog, ipcMain, Menu } from 'electron';
 import type { IpcMainInvokeEvent, MenuItemConstructorOptions } from 'electron';
 
 import type { EventBus } from '../../../../src/main/event_bus';
@@ -68,6 +68,31 @@ it('shows a native context menu and returns the selected item id', async () => {
 		error: { message: 'Unsupported context menu role: reload' },
 	});
 	errorLog.mockRestore();
+});
+
+it('shows a native confirmation before signing out', async () => {
+	const window = {};
+	Object.assign(BrowserWindow, { fromWebContents: jest.fn(() => window) });
+	(dialog.showMessageBox as jest.Mock).mockResolvedValueOnce({ response: 1 });
+
+	new WindowIpc().register(
+		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
+		{} as EventBus
+	);
+	const handler = (ipcMain.handle as jest.Mock).mock.calls.find(
+		([channel]) => channel === WindowChannels.confirmSignOut
+	)?.[1];
+
+	await expect(handler({ sender: {} } as IpcMainInvokeEvent)).resolves.toEqual({ success: true, data: true });
+	expect(dialog.showMessageBox).toHaveBeenCalledWith(
+		window,
+		expect.objectContaining({
+			type: 'warning',
+			buttons: ['Cancel', 'Sign out'],
+			defaultId: 0,
+			cancelId: 0,
+		})
+	);
 });
 
 it('forwards app sidebar widths to the matching titlebar shell', () => {

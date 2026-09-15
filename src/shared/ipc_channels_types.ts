@@ -1028,6 +1028,7 @@ export interface WindowInvokeChannelMap {
 		args: [items: import('./window_types').ContextMenuDescriptor[]];
 		result: string | null;
 	};
+	[WindowChannels.confirmSignOut]: { args: []; result: boolean };
 }
 
 export interface WindowSendChannelMap {

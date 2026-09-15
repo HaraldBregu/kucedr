@@ -1,6 +1,7 @@
 import {
 	ipcMain,
 	BrowserWindow,
+	dialog,
 	Menu as ElectronMenu,
 	type MenuItemConstructorOptions,
 } from 'electron';
@@ -240,6 +241,33 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 					menu.popup({ window: win });
 				});
 			}, WindowChannels.showContextMenu)
+		);
+
+		ipcMain.handle(
+			WindowChannels.confirmSignOut,
+			wrapIpcHandler(async (event) => {
+				const win = BrowserWindow.fromWebContents(event.sender);
+				const result = win
+					? await dialog.showMessageBox(win, {
+							type: 'warning',
+							title: 'Sign out?',
+							message: 'Are you sure you want to sign out?',
+							detail: 'You can continue using Kucedr on this device after signing out.',
+							buttons: ['Cancel', 'Sign out'],
+							defaultId: 0,
+							cancelId: 0,
+						})
+					: await dialog.showMessageBox({
+							type: 'warning',
+							title: 'Sign out?',
+							message: 'Are you sure you want to sign out?',
+							detail: 'You can continue using Kucedr on this device after signing out.',
+							buttons: ['Cancel', 'Sign out'],
+							defaultId: 0,
+							cancelId: 0,
+						});
+				return result.response === 1;
+			}, WindowChannels.confirmSignOut)
 		);
 
 		logger.info('WindowIpc', `Registered ${this.name} module`);

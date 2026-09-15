@@ -26,6 +26,7 @@ export const win: WindowApi = {
 	showContextMenu: (items) => {
 		return typedInvokeUnwrap(WindowChannels.showContextMenu, items);
 	},
+	confirmSignOut: (): Promise<boolean> => typedInvokeUnwrap(WindowChannels.confirmSignOut),
 	isMaximized: (): Promise<boolean> => {
 		return typedInvokeUnwrap(WindowChannels.isMaximized);
 	},

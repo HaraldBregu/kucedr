@@ -130,6 +130,7 @@ export interface WindowApi {
 	openVoiceConversation: (chatSessionId: string) => Promise<void>;
 	popupMenu: () => void;
 	showContextMenu: (items: ContextMenuDescriptor[]) => Promise<string | null>;
+	confirmSignOut: () => Promise<boolean>;
 	isMaximized: () => Promise<boolean>;
 	onMaximizeChange: (callback: (isMaximized: boolean) => void) => () => void;
 	isFullScreen: () => Promise<boolean>;

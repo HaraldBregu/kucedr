@@ -404,6 +404,7 @@ export const WindowChannels = {
 	titlebarSidebarWidthChanged: 'window:titlebar-sidebar-width:changed',
 	popupMenu: 'window:popup-menu',
 	showContextMenu: 'window:context-menu:show',
+	confirmSignOut: 'window:confirm-sign-out',
 } as const;
 
 export const TerminalChannels = {

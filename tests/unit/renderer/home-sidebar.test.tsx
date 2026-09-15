@@ -25,10 +25,13 @@ const renameSession = jest.fn();
 const deleteSession = jest.fn();
 const showContextMenu = jest.fn();
 const signOut = jest.fn();
+const confirmSignOut = jest.fn();
 
 beforeEach(() => {
 	signOut.mockReset();
 	signOut.mockResolvedValue(undefined);
+	confirmSignOut.mockReset();
+	confirmSignOut.mockResolvedValue(true);
 	mockUseAuth.mockReturnValue({
 		state: { status: 'signedOut', persistence: 'encrypted' },
 		localOnly: false,
@@ -60,7 +63,7 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
-		value: { showContextMenu },
+		value: { showContextMenu, confirmSignOut },
 	});
 	Object.defineProperty(window, 'app', {
 		configurable: true,
@@ -172,7 +175,8 @@ it.each<[AuthState, string]>([
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
 	await user.click(within(menu).getByRole('menuitem', { name: 'settings.sidebar.signOut' }));
-	expect(signOut).toHaveBeenCalledTimes(1);
+	expect(confirmSignOut).toHaveBeenCalledTimes(1);
+	await waitFor(() => expect(signOut).toHaveBeenCalledTimes(1));
 	await screen.findByText('settings.chatHistory.empty');
 });
 
