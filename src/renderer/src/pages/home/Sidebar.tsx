@@ -253,7 +253,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								<SidebarMenuButton
 									size="default"
 									aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-									className="h-9 py-1 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+									className="h-9 py-1.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
 									<Avatar className="size-6 rounded-full grayscale">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
