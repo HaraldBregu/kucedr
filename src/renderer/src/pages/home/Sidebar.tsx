@@ -7,6 +7,7 @@ import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { SidebarFooter } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
@@ -223,7 +224,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					</nav>
 				)}
 			</section>
-			<footer className="shrink-0 border-t border-sidebar-border/50 p-2">
+			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 				<Popover>
 					<PopoverTrigger asChild>
 						<button
@@ -279,7 +280,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						</nav>
 					</PopoverContent>
 				</Popover>
-			</footer>
+			</SidebarFooter>
 		</div>
 	);
 }
