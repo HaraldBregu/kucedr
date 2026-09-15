@@ -110,9 +110,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
 	expect(screen.getByText('settings.sidebar.account')).toBeInTheDocument();
-	expect(
-		screen.getByRole('button', { name: 'settings.sidebar.accountMenu' }).querySelector('.lucide-settings-2')
-	).toBeInTheDocument();
+	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
 	).not.toBeInTheDocument();
@@ -162,15 +160,15 @@ it.each<[AuthState, string]>([
 	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('menu');
-	expect(within(menu).getByRole('link', { name: 'settings.tabs.rag' })).toHaveAttribute(
+	expect(within(menu).getByRole('menuitem', { name: 'settings.tabs.rag' })).toHaveAttribute(
 		'href',
 		'/settings/rag'
 	);
-	expect(within(menu).getByRole('link', { name: 'settings.sidebar.manageAccount' })).toHaveAttribute(
+	expect(within(menu).getByRole('menuitem', { name: 'settings.sidebar.manageAccount' })).toHaveAttribute(
 		'href',
 		'/settings/account'
 	);
-	await user.click(within(menu).getByRole('button', { name: 'settings.sidebar.signOut' }));
+	await user.click(within(menu).getByRole('menuitem', { name: 'settings.sidebar.signOut' }));
 	expect(signOut).toHaveBeenCalledTimes(1);
 	await screen.findByText('settings.chatHistory.empty');
 });
