@@ -82,7 +82,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? sessions[0]?.id : sessionId;
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
 	const accountItem = {
-		title: authenticatedUser?.displayName ?? t('settings.sidebar.account'),
+		title: authenticatedUser ? t('settings.tabs.account') : t('settings.sidebar.account'),
 		description: authenticatedUser?.email,
 		avatarPath: authenticatedUser?.avatarPath,
 	};

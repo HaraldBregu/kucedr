@@ -126,7 +126,7 @@ it.each<[AuthState, string]>([
 			persistence: 'encrypted',
 			user: { id: 'user-1', email: 'ada@example.com', displayName: 'Ada Lovelace' },
 		},
-		'Ada Lovelace',
+		'settings.tabs.account',
 	],
 	[
 		{
@@ -134,7 +134,7 @@ it.each<[AuthState, string]>([
 			persistence: 'encrypted',
 			user: { id: 'user-2', email: 'grace@example.com' },
 		},
-		'settings.sidebar.account',
+		'settings.tabs.account',
 	],
 ])('shows authenticated account identity and actions', async (state, accountName) => {
 	const user = userEvent.setup();
