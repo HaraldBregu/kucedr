@@ -195,8 +195,8 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												)}
 												data-run-status={session.runStatus}
 												onClick={() => {
-													setSessionTitle?.(title);
 													setSessionId(session.id);
+													setSessionTitle?.(title);
 												}}
 												onContextMenu={(event) => {
 													event.preventDefault();
