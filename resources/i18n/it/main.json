@@ -137,6 +137,12 @@
 	},
 	"settings": {
 		"title": "Impostazioni",
+		"sidebar": {
+			"account": "Impostazioni",
+			"accountMenu": "Menu account per {{name}}",
+			"manageAccount": "Gestisci account",
+			"signOut": "Esci"
+		},
 		"returnToChat": "Torna alla chat",
 		"description": "Configura le preferenze dell'applicazione",
 		"search": "Cerca",

@@ -1,11 +1,12 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Plus, Settings2, User } from 'lucide-react';
+import { ChevronUpDown, Library, LogOut, Plus, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
@@ -70,7 +71,9 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? sessions[0]?.id : sessionId;
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
-	const accountLabel = t('settings.title');
+	const accountName = authenticatedUser?.displayName ?? authenticatedUser?.email ?? t('settings.sidebar.account');
+	const accountEmail = authenticatedUser?.email;
+	const accountInitial = accountName.charAt(0).toUpperCase();
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
@@ -221,26 +224,61 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				)}
 			</section>
 			<footer className="shrink-0 border-t border-sidebar-border/50 p-2">
-				<div className="flex min-w-0 items-center gap-1">
-					<Link
-						to="/settings/general"
-						aria-label={accountLabel}
-						title={accountLabel}
-						className="flex h-8 min-w-0 flex-1 items-center gap-2 rounded-lg px-1 outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-					>
-						<span
-							className="flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground"
-							aria-hidden="true"
+				<Popover>
+					<PopoverTrigger asChild>
+						<button
+							type="button"
+							aria-label={t('settings.sidebar.accountMenu', { name: accountName })}
+							className="flex w-full min-w-0 items-center gap-3 rounded-xl p-3 text-left outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 						>
+							<span
+								className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-lg font-medium text-secondary-foreground"
+								aria-hidden="true"
+							>
+								{authenticatedUser ? accountInitial : <Settings2 className="size-5" strokeWidth={1.8} />}
+							</span>
+							<span className="min-w-0 flex-1">
+								<span className="block truncate text-sm font-medium">{accountName}</span>
+								{accountEmail ? (
+									<span className="block truncate text-sm text-muted-foreground">{accountEmail}</span>
+								) : null}
+							</span>
+							<ChevronUpDown className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+						</button>
+					</PopoverTrigger>
+					<PopoverContent
+						side="top"
+						align="start"
+						className="w-[var(--radix-popover-trigger-width)] p-2"
+					>
+						<nav aria-label={t('settings.sidebar.accountMenu', { name: accountName })} className="grid gap-1">
+							<Link
+								to="/settings/rag"
+								className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+							>
+								<Library className="size-4" aria-hidden="true" />
+								{t('settings.tabs.rag')}
+							</Link>
+							<Link
+								to="/settings/account"
+								className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+							>
+								<Settings2 className="size-4" aria-hidden="true" />
+								{t('settings.sidebar.manageAccount')}
+							</Link>
 							{authenticatedUser ? (
-								<User className="size-3" strokeWidth={1.8} />
-							) : (
-								<Settings2 className="size-3" strokeWidth={1.8} />
-							)}
-						</span>
-						<span className="min-w-0 truncate text-sm font-medium">{accountLabel}</span>
-					</Link>
-				</div>
+								<button
+									type="button"
+									onClick={() => void window.auth.signOut()}
+									className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+								>
+									<LogOut className="size-4" aria-hidden="true" />
+									{t('settings.sidebar.signOut')}
+								</button>
+							) : null}
+						</nav>
+					</PopoverContent>
+				</Popover>
 			</footer>
 		</div>
 	);

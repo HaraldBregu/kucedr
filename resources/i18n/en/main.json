@@ -137,6 +137,12 @@
 	},
 	"settings": {
 		"title": "Settings",
+		"sidebar": {
+			"account": "Settings",
+			"accountMenu": "Account menu for {{name}}",
+			"manageAccount": "Manage account",
+			"signOut": "Sign out"
+		},
 		"returnToChat": "Return to Chat",
 		"description": "Configure your application preferences",
 		"search": "Search",
