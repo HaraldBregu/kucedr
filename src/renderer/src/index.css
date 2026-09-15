@@ -83,7 +83,7 @@
 	--app-surface-background-base: #f8f5ef;
 	--app-popover-background-base: #f8f5ef;
 	--app-sidebar-background-base: #eae4d9;
-	--app-window-border: #19635f;
+	--app-window-border: transparent;
 	--app-window-background: color-mix(
 		in srgb,
 		var(--app-window-background-base) calc(var(--app-bg-opacity) * 100%),
