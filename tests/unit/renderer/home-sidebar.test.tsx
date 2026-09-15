@@ -161,7 +161,7 @@ it.each<[AuthState, string]>([
 		expect(within(accountMenu).getByText(state.user.email)).toBeInTheDocument();
 	}
 	await user.click(accountMenu);
-	const menu = screen.getByRole('navigation', { name: 'settings.sidebar.accountMenu' });
+	const menu = screen.getByRole('menu');
 	expect(within(menu).getByRole('link', { name: 'settings.tabs.rag' })).toHaveAttribute(
 		'href',
 		'/settings/rag'
