@@ -30,7 +30,7 @@ interface HomeSidebarProps {
 export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
-	const { sessionId, setSessionId } = useChatSession();
+	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
@@ -80,6 +80,12 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	};
 
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? sessions[0]?.id : sessionId;
+
+	useEffect(() => {
+		const session = sessions.find((item) => item.id === currentSessionId);
+		setSessionTitle?.(session ? session.title.trim() || t('settings.chatHistory.untitled') : undefined);
+	}, [currentSessionId, sessions, setSessionTitle, t]);
+
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
 	const accountItem = {
 		title: authenticatedUser ? t('settings.tabs.account') : t('settings.sidebar.account'),
@@ -165,13 +171,14 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													const nextTitle = event.currentTarget.value.trim();
 													setEditingSessionId(undefined);
 													if (!nextTitle || nextTitle === title) return;
-													void window.agent.renameSession(session.id, nextTitle).then(() => {
-														setSessions((current) =>
-															current.map((item) =>
-																item.id === session.id ? { ...item, title: nextTitle } : item
-															)
-														);
-													});
+															void window.agent.renameSession(session.id, nextTitle).then(() => {
+																setSessions((current) =>
+																	current.map((item) =>
+																		item.id === session.id ? { ...item, title: nextTitle } : item
+																	)
+																);
+																if (isActive) setSessionTitle?.(nextTitle);
+															});
 												}}
 												aria-label={`Rename ${title}`}
 												className="h-8 min-w-0 flex-1"
@@ -187,7 +194,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													isActive && SPLIT_ITEM_ACTIVE_CLASS
 												)}
 												data-run-status={session.runStatus}
-												onClick={() => setSessionId(session.id)}
+												onClick={() => {
+													setSessionTitle?.(title);
+													setSessionId(session.id);
+												}}
 												onContextMenu={(event) => {
 													event.preventDefault();
 													void window.win
