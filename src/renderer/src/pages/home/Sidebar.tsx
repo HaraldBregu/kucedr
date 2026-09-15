@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { EllipsisVertical, Library, LogOut, Plus, Settings2 } from 'lucide-react';
+import { Library, LogOut, Plus, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -258,7 +258,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 											<span className="truncate text-xs text-muted-foreground">{accountItem.description}</span>
 										) : null}
 									</span>
-									<EllipsisVertical className="ml-auto size-4" aria-hidden="true" />
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
