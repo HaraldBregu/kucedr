@@ -1,13 +1,22 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ChevronsUpDown, Library, LogOut, Plus, Settings2 } from 'lucide-react';
+import { EllipsisVertical, Library, LogOut, Plus, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
+import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS, usePageContext } from '@/components/app/base/page';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { SidebarFooter } from '@/components/ui/sidebar';
+import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
@@ -21,6 +30,7 @@ interface HomeSidebarProps {
 export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
+	const { isMobile } = usePageContext();
 	const { sessionId, setSessionId } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -225,61 +235,73 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				)}
 			</section>
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
-				<Popover>
-					<PopoverTrigger asChild>
-						<button
-							type="button"
-							aria-label={t('settings.sidebar.accountMenu', { name: accountName })}
-							className="flex w-full min-w-0 items-center gap-3 rounded-xl p-3 text-left outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-						>
-							<span
-								className="flex size-12 shrink-0 items-center justify-center rounded-full bg-secondary text-lg font-medium text-secondary-foreground"
-								aria-hidden="true"
-							>
-								{authenticatedUser ? accountInitial : <Settings2 className="size-5" strokeWidth={1.8} />}
-							</span>
-							<span className="min-w-0 flex-1">
-								<span className="block truncate text-sm font-medium">{accountName}</span>
-								{accountEmail && accountEmail !== accountName ? (
-									<span className="block truncate text-sm text-muted-foreground">{accountEmail}</span>
-								) : null}
-							</span>
-							<ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-						</button>
-					</PopoverTrigger>
-					<PopoverContent
-						side="top"
-						align="start"
-						className="w-[var(--radix-popover-trigger-width)] p-2"
-					>
-						<nav aria-label={t('settings.sidebar.accountMenu', { name: accountName })} className="grid gap-1">
-							<Link
-								to="/settings/rag"
-								className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
-							>
-								<Library className="size-4" aria-hidden="true" />
-								{t('settings.tabs.rag')}
-							</Link>
-							<Link
-								to="/settings/account"
-								className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
-							>
-								<Settings2 className="size-4" aria-hidden="true" />
-								{t('settings.sidebar.manageAccount')}
-							</Link>
-							{authenticatedUser ? (
-								<button
-									type="button"
-									onClick={() => void window.auth.signOut()}
-									className="flex h-10 items-center gap-3 rounded-md px-3 text-sm font-medium outline-none hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring"
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<SidebarMenuButton
+									size="lg"
+									aria-label={t('settings.sidebar.accountMenu', { name: accountName })}
+									className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
-									<LogOut className="size-4" aria-hidden="true" />
-									{t('settings.sidebar.signOut')}
-								</button>
-							) : null}
-						</nav>
-					</PopoverContent>
-				</Popover>
+									<Avatar className="size-8 rounded-lg grayscale">
+										<AvatarImage src={authenticatedUser?.avatarPath} alt={accountName} />
+										<AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground">
+											{accountInitial}
+										</AvatarFallback>
+									</Avatar>
+									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
+										<span className="truncate font-medium">{accountName}</span>
+										{accountEmail && accountEmail !== accountName ? (
+											<span className="truncate text-xs text-muted-foreground">{accountEmail}</span>
+										) : null}
+									</span>
+									<EllipsisVertical className="ml-auto size-4" aria-hidden="true" />
+								</SidebarMenuButton>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent
+								className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-56 rounded-lg"
+								side={isMobile ? 'bottom' : 'right'}
+								align="end"
+							>
+								<DropdownMenuLabel className="p-0 font-normal">
+									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+										<Avatar className="size-8 rounded-lg">
+											<AvatarImage src={authenticatedUser?.avatarPath} alt={accountName} />
+											<AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground">
+												{accountInitial}
+											</AvatarFallback>
+										</Avatar>
+										<div className="grid min-w-0 flex-1 text-left text-sm leading-tight">
+											<span className="truncate font-medium">{accountName}</span>
+											{accountEmail && accountEmail !== accountName ? (
+												<span className="truncate text-xs text-muted-foreground">{accountEmail}</span>
+											) : null}
+										</div>
+									</div>
+								</DropdownMenuLabel>
+								<DropdownMenuSeparator />
+								<DropdownMenuGroup>
+									<DropdownMenuItem asChild>
+										<Link to="/settings/rag"><Library />{t('settings.tabs.rag')}</Link>
+									</DropdownMenuItem>
+									<DropdownMenuItem asChild>
+										<Link to="/settings/account"><Settings2 />{t('settings.sidebar.manageAccount')}</Link>
+									</DropdownMenuItem>
+								</DropdownMenuGroup>
+								{authenticatedUser ? (
+									<>
+										<DropdownMenuSeparator />
+										<DropdownMenuItem onSelect={() => void window.auth.signOut()}>
+											<LogOut />
+											{t('settings.sidebar.signOut')}
+										</DropdownMenuItem>
+									</>
+								) : null}
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</SidebarMenuItem>
+				</SidebarMenu>
 			</SidebarFooter>
 		</div>
 	);
