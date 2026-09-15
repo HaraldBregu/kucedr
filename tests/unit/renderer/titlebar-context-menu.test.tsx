@@ -132,7 +132,7 @@ it('shows the current chat title and its dropdown on the left of the Home titleb
 	);
 
 	expect(screen.getByText('Project roadmap')).toHaveAttribute('data-slot', 'titlebar-chat-title');
-	expect(document.querySelector('[data-slot="titlebar-chat-context"]')).toHaveClass('ml-2');
+	expect(document.querySelector('[data-slot="titlebar-chat-context"]')).toHaveClass('ml-0');
 	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.general' })).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.overview.groups.agent' })).toBeInTheDocument();

@@ -128,6 +128,40 @@ export const TitleBar = React.memo(function TitleBar({
 						});
 				}}
 			>
+				{isHome && sessionTitle ? (
+					<div
+						data-slot="titlebar-chat-context"
+						className={cn(
+							'flex min-w-0 items-center gap-1 transition-[margin] duration-200 ease-linear motion-reduce:transition-none',
+							sidebarOpen ? 'ml-0' : 'ml-28'
+						)}
+					>
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon-sm"
+									aria-label={t('settings.chatHistory.title')}
+									style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+								>
+									<MessageCircle className="size-4" aria-hidden="true" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="start" className="w-44">
+								{titlebarMenuItems.map((item) => (
+									<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
+										{item.label}
+									</DropdownMenuItem>
+								))}
+							</DropdownMenuContent>
+						</DropdownMenu>
+						<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
+							{sessionTitle}
+						</span>
+					</div>
+				) : null}
+
 				{/* ── Left: platform menu + nav buttons ── */}
 				<TitleBarLeftContainer isMac={isMac} isFullScreen={isFullScreen}>
 					{!isMac && (
@@ -156,40 +190,6 @@ export const TitleBar = React.memo(function TitleBar({
 
 					{/* {isSettings && <NavigationButtons />} */}
 				</TitleBarLeftContainer>
-
-				{isHome && sessionTitle ? (
-					<div
-						data-slot="titlebar-chat-context"
-						className={cn(
-							'flex min-w-0 items-center gap-1 transition-[margin] duration-200 ease-linear motion-reduce:transition-none',
-							sidebarOpen ? 'ml-2' : 'ml-28'
-						)}
-					>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon-sm"
-									aria-label={t('settings.chatHistory.title')}
-									style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-								>
-									<MessageCircle className="size-4" aria-hidden="true" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="start" className="w-44">
-								{titlebarMenuItems.map((item) => (
-									<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
-										{item.label}
-									</DropdownMenuItem>
-								))}
-							</DropdownMenuContent>
-						</DropdownMenu>
-						<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
-							{sessionTitle}
-						</span>
-					</div>
-				) : null}
 
 				{centerContent && (
 					<div
