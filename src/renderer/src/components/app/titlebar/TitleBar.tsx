@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { ChevronDown, Menu, Search, User } from 'lucide-react';
+import { Menu, MessageCircle, Search, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TitleBarContainer } from './TitleBarContainer';
@@ -165,7 +165,7 @@ export const TitleBar = React.memo(function TitleBar({
 									aria-label={t('settings.chatHistory.title')}
 									style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 								>
-									<ChevronDown className="size-4" aria-hidden="true" />
+									<MessageCircle className="size-4" aria-hidden="true" />
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="start" className="w-44">
