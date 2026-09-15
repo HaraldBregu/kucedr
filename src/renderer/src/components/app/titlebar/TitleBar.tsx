@@ -133,7 +133,7 @@ export const TitleBar = React.memo(function TitleBar({
 						data-slot="titlebar-chat-context"
 						className={cn(
 							'flex min-w-0 items-center gap-1 transition-[margin] duration-200 ease-linear motion-reduce:transition-none',
-							sidebarOpen ? 'ml-0' : 'ml-28'
+							sidebarOpen ? 'ml-3' : 'ml-28'
 						)}
 					>
 						<DropdownMenu>
