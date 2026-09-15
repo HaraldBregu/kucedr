@@ -157,9 +157,9 @@ it.each<[AuthState, string]>([
 
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
-	expect(
-		within(accountMenu).getByText(state.status === 'signedIn' ? state.user.email : '')
-	).toBeInTheDocument();
+	if (state.status === 'signedIn' && state.user.displayName) {
+		expect(within(accountMenu).getByText(state.user.email)).toBeInTheDocument();
+	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('navigation', { name: 'settings.sidebar.accountMenu' });
 	expect(within(menu).getByRole('link', { name: 'settings.tabs.rag' })).toHaveAttribute(

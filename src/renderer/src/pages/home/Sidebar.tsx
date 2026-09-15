@@ -239,7 +239,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							</span>
 							<span className="min-w-0 flex-1">
 								<span className="block truncate text-sm font-medium">{accountName}</span>
-								{accountEmail ? (
+								{accountEmail && accountEmail !== accountName ? (
 									<span className="block truncate text-sm text-muted-foreground">{accountEmail}</span>
 								) : null}
 							</span>
