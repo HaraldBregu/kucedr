@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { AuthApi, AuthState } from '../../../src/shared/auth_types';
 import { AuthProvider } from '../../../src/renderer/src/contexts/AuthContext';
@@ -33,6 +33,11 @@ it('shows account session data and switches to local use after sign-out', async 
 		}),
 	};
 	window.auth = auth;
+	const confirmSignOut = jest.fn(async () => true);
+	Object.defineProperty(window, 'win', {
+		configurable: true,
+		value: { confirmSignOut },
+	});
 
 	const { container } = render(
 		<AuthProvider>
@@ -49,7 +54,8 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(container.querySelector('header svg')).toBeNull();
 	await user.click(screen.getByRole('button', { name: 'Sign out' }));
 
-	expect(auth.signOut).toHaveBeenCalledTimes(1);
+	expect(confirmSignOut).toHaveBeenCalledTimes(1);
+	await waitFor(() => expect(auth.signOut).toHaveBeenCalledTimes(1));
 	expect(await screen.findByRole('button', { name: 'Sign in' })).toBeInTheDocument();
 	expect(screen.getByText('Not signed in')).toBeInTheDocument();
 });

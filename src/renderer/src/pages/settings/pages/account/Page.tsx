@@ -59,14 +59,22 @@ const AccountPage: React.FC = () => {
 								variant="outline"
 								disabled={sessionBusy}
 								onClick={() => {
-									setSessionBusy(true);
 									setError('');
-									void window.auth
-										.signOut()
+									void window.win
+										.confirmSignOut()
+										.then((confirmed) => {
+											if (!confirmed) return;
+											setSessionBusy(true);
+											void window.auth
+												.signOut()
+												.catch((cause) =>
+													setError(cause instanceof Error ? cause.message : 'Could not sign out.')
+												)
+												.finally(() => setSessionBusy(false));
+										})
 										.catch((cause) =>
 											setError(cause instanceof Error ? cause.message : 'Could not sign out.')
-										)
-										.finally(() => setSessionBusy(false));
+										);
 								}}
 							>
 								{sessionBusy ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : null}
