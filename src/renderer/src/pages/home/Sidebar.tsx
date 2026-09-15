@@ -308,7 +308,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 										<DropdownMenuItem
 											onSelect={() => {
 												void window.win.confirmSignOut().then((confirmed) => {
-													if (confirmed) return window.auth.signOut();
+													if (confirmed) void window.auth.signOut();
 												});
 											}}
 										>
