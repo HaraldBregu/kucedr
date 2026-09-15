@@ -270,10 +270,9 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
-								className="w-56 rounded-lg"
+								className="w-52 rounded-lg"
 								side="top"
 								align="end"
-								style={{ marginLeft: 12 }}
 							>
 								<DropdownMenuLabel className="p-0 font-normal">
 									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
