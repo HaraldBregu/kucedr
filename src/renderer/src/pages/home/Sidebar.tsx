@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { ChevronUpDown, Library, LogOut, Plus, Settings2 } from 'lucide-react';
+import { ChevronsUpDown, Library, LogOut, Plus, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -243,7 +243,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 									<span className="block truncate text-sm text-muted-foreground">{accountEmail}</span>
 								) : null}
 							</span>
-							<ChevronUpDown className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+							<ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
 						</button>
 					</PopoverTrigger>
 					<PopoverContent
