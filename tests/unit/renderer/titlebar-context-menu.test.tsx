@@ -183,7 +183,7 @@ it('renames the current chat from the titlebar dropdown', async () => {
 
 	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
 	await user.click(screen.getByRole('menuitem', { name: 'common.rename' }));
-	const input = screen.getByRole('textbox', { name: 'common.rename' });
+	const input = await screen.findByRole('textbox', { name: 'common.rename' });
 	await user.clear(input);
 	await user.type(input, 'Launch plan');
 	fireEvent.blur(input);

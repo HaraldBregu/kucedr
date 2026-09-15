@@ -62,6 +62,13 @@ export const TitleBar = React.memo(function TitleBar({
 	const { isFullScreen, isMaximized } = useWindowState();
 	const { sessionId, sessionTitle, sessionTitleSessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [editingChatTitle, setEditingChatTitle] = React.useState<string>();
+	const chatTitleInputRef = React.useRef<HTMLInputElement>(null);
+
+	React.useEffect(() => {
+		if (editingChatTitle === undefined) return;
+		const frame = window.requestAnimationFrame(() => chatTitleInputRef.current?.focus());
+		return () => window.cancelAnimationFrame(frame);
+	}, [editingChatTitle]);
 
 	const isHome = location.pathname === '/home';
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
@@ -185,13 +192,16 @@ export const TitleBar = React.memo(function TitleBar({
 							</span>
 						) : (
 							<Input
-								autoFocus
+								ref={chatTitleInputRef}
 								maxLength={120}
 								value={editingChatTitle}
 								onChange={(event) => setEditingChatTitle(event.target.value)}
 								onKeyDown={(event) => {
 									if (event.key === 'Enter') event.currentTarget.blur();
-									if (event.key === 'Escape') setEditingChatTitle(undefined);
+									if (event.key === 'Escape') {
+										event.preventDefault();
+										setEditingChatTitle(undefined);
+									}
 								}}
 								onBlur={(event) => {
 									const nextTitle = event.currentTarget.value.trim();
@@ -203,6 +213,7 @@ export const TitleBar = React.memo(function TitleBar({
 								}}
 								aria-label={t('common.rename', 'Rename')}
 								className="h-8 w-56 text-sm font-medium"
+								style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 							/>
 						)}
 					</div>
