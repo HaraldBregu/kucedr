@@ -257,7 +257,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								>
 									<Avatar className="size-6 rounded-lg grayscale">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-										<AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground">
+										<AvatarFallback className="rounded-lg bg-accent text-accent-foreground">
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
@@ -278,7 +278,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 										<Avatar className="size-8 rounded-lg">
 											<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-											<AvatarFallback className="rounded-lg bg-secondary text-secondary-foreground">
+											<AvatarFallback className="rounded-lg bg-accent text-accent-foreground">
 												{accountInitial}
 											</AvatarFallback>
 										</Avatar>
