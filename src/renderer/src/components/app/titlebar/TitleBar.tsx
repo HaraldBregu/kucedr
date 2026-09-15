@@ -1,10 +1,16 @@
 import React, { type ReactNode } from 'react';
-import { Menu, Search, User } from 'lucide-react';
+import { ChevronDown, Menu, Search, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TitleBarContainer } from './TitleBarContainer';
 import { TitleBarLeftContainer } from './TitleBarLeftContainer';
 import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { TitleBarProvider } from './context/TitleBarContext';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
@@ -57,6 +63,12 @@ export const TitleBar = React.memo(function TitleBar({
 	const settingsLabel = t('settings.title', 'Settings');
 	const homeButtonLabel = t('titleBar.home', 'Home');
 	const searchLabel = t('titleBar.search', 'Search');
+	const titlebarMenuItems = [
+		{ path: '/settings/general', label: t('settings.tabs.general') },
+		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
+		{ path: '/settings/system', label: t('settings.tabs.system') },
+		{ path: '/settings/apps', label: t('settings.tabs.apps') },
+	];
 	const searchButton = onSearch ? (
 		<Button
 			type="button"
@@ -107,15 +119,7 @@ export const TitleBar = React.memo(function TitleBar({
 
 					event.preventDefault();
 					void window.win
-						.showContextMenu([
-							{ id: '/settings/general', label: t('settings.tabs.general') },
-							{
-								id: '/settings/agent',
-								label: t('settings.overview.groups.agent'),
-							},
-							{ id: '/settings/system', label: t('settings.tabs.system') },
-							{ id: '/settings/apps', label: t('settings.tabs.apps') },
-						])
+						.showContextMenu(titlebarMenuItems.map((item) => ({ id: item.path, label: item.label })))
 						.then((path) => {
 							if (path) navigate(path);
 						});
@@ -151,9 +155,31 @@ export const TitleBar = React.memo(function TitleBar({
 				</TitleBarLeftContainer>
 
 				{isHome && sessionTitle ? (
-					<span data-slot="titlebar-chat-title" className="ml-2 min-w-0 max-w-72 truncate text-sm font-medium">
-						{sessionTitle}
-					</span>
+					<div className="ml-2 flex min-w-0 items-center gap-1">
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									type="button"
+									variant="ghost"
+									size="icon-sm"
+									aria-label={t('settings.chatHistory.title')}
+									style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+								>
+									<ChevronDown className="size-4" aria-hidden="true" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="start" className="w-44">
+								{titlebarMenuItems.map((item) => (
+									<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
+										{item.label}
+									</DropdownMenuItem>
+								))}
+							</DropdownMenuContent>
+						</DropdownMenu>
+						<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
+							{sessionTitle}
+						</span>
+					</div>
 				) : null}
 
 				{centerContent && (

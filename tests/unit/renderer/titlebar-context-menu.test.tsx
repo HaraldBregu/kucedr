@@ -119,7 +119,8 @@ it('shows the settings icon on Home', async () => {
 	expect(screen.getByText('/settings/general')).toBeInTheDocument();
 });
 
-it('shows the current chat title on the left of the Home titlebar', () => {
+it('shows the current chat title and its dropdown on the left of the Home titlebar', async () => {
+	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<ChatSessionContext.Provider
@@ -131,6 +132,11 @@ it('shows the current chat title on the left of the Home titlebar', () => {
 	);
 
 	expect(screen.getByText('Project roadmap')).toHaveAttribute('data-slot', 'titlebar-chat-title');
+	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
+	expect(screen.getByRole('menuitem', { name: 'settings.tabs.general' })).toBeInTheDocument();
+	expect(screen.getByRole('menuitem', { name: 'settings.overview.groups.agent' })).toBeInTheDocument();
+	expect(screen.getByRole('menuitem', { name: 'settings.tabs.system' })).toBeInTheDocument();
+	expect(screen.getByRole('menuitem', { name: 'settings.tabs.apps' })).toBeInTheDocument();
 });
 
 it('renders search immediately before the Home or Settings button', async () => {
