@@ -1957,6 +1957,7 @@
 	},
 	"titleBar": {
 		"applicationMenu": "Application menu",
+		"openLocation": "Open location",
 		"search": "Search",
 		"toggleSidebar": "Toggle sidebar",
 		"toggleAgenticSidebar": "Toggle AI agent",

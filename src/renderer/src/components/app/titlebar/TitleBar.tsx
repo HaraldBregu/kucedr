@@ -1,11 +1,10 @@
 import React, { type ReactNode } from 'react';
-import { Folder, Menu, Pencil, Search, Trash2, User } from 'lucide-react';
+import { Folder, FolderOpen, Menu, Search, Trash2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TitleBarContainer } from './TitleBarContainer';
 import { TitleBarLeftContainer } from './TitleBarLeftContainer';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -60,15 +59,7 @@ export const TitleBar = React.memo(function TitleBar({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
-	const { sessionId, sessionTitle, sessionTitleSessionId, setSessionId, setSessionTitle } = useChatSession();
-	const [editingChatTitle, setEditingChatTitle] = React.useState<string>();
-	const chatTitleInputRef = React.useRef<HTMLInputElement>(null);
-
-	React.useEffect(() => {
-		if (editingChatTitle === undefined) return;
-		const frame = window.requestAnimationFrame(() => chatTitleInputRef.current?.focus());
-		return () => window.cancelAnimationFrame(frame);
-	}, [editingChatTitle]);
+	const { sessionId, sessionTitle, sessionTitleSessionId, setSessionId } = useChatSession();
 
 	const isHome = location.pathname === '/home';
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
@@ -160,9 +151,9 @@ export const TitleBar = React.memo(function TitleBar({
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="start" className="w-44">
-								<DropdownMenuItem onSelect={() => setEditingChatTitle(sessionTitle)}>
-									<Pencil />
-									{t('common.rename', 'Rename')}
+								<DropdownMenuItem onSelect={() => void window.agent.openSessionFolder(activeChatSessionId)}>
+									<FolderOpen />
+									{t('titleBar.openLocation', 'Open location')}
 								</DropdownMenuItem>
 								<DropdownMenuItem
 									className="text-destructive focus:bg-destructive/10 focus:text-destructive"
@@ -186,36 +177,9 @@ export const TitleBar = React.memo(function TitleBar({
 								))}
 							</DropdownMenuContent>
 						</DropdownMenu>
-						{editingChatTitle === undefined ? (
-							<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
-								{sessionTitle}
-							</span>
-						) : (
-							<Input
-								ref={chatTitleInputRef}
-								maxLength={120}
-								value={editingChatTitle}
-								onChange={(event) => setEditingChatTitle(event.target.value)}
-								onKeyDown={(event) => {
-									if (event.key === 'Enter') event.currentTarget.blur();
-									if (event.key === 'Escape') {
-										event.preventDefault();
-										setEditingChatTitle(undefined);
-									}
-								}}
-								onBlur={(event) => {
-									const nextTitle = event.currentTarget.value.trim();
-									setEditingChatTitle(undefined);
-									if (!nextTitle || nextTitle === sessionTitle) return;
-									void window.agent.renameSession(activeChatSessionId, nextTitle).then(() => {
-										setSessionTitle?.(nextTitle, activeChatSessionId);
-									});
-								}}
-								aria-label={t('common.rename', 'Rename')}
-								className="h-8 w-56 text-sm font-medium"
-								style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-							/>
-						)}
+						<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
+							{sessionTitle}
+						</span>
 					</div>
 				) : null}
 

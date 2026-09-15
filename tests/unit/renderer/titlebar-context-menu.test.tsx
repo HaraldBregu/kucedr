@@ -10,8 +10,8 @@ jest.mock('react-i18next', () => ({
 }));
 
 const showContextMenu = jest.fn();
-const renameSession = jest.fn();
 const deleteSession = jest.fn();
+const openSessionFolder = jest.fn();
 const contextMenuItems = [
 	{ id: '/settings/general', label: 'settings.tabs.general' },
 	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
@@ -21,11 +21,11 @@ const contextMenuItems = [
 
 beforeEach(() => {
 	showContextMenu.mockReset().mockResolvedValue(null);
-	renameSession.mockReset().mockResolvedValue(undefined);
 	deleteSession.mockReset().mockResolvedValue(undefined);
+	openSessionFolder.mockReset().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
-		value: { renameSession, deleteSession },
+		value: { deleteSession, openSessionFolder },
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
@@ -162,9 +162,8 @@ it('places the current chat after the sidebar toggle when the sidebar is closed'
 	expect(document.querySelector('[data-slot="titlebar-chat-context"]')).toHaveClass('ml-28');
 });
 
-it('renames the current chat from the titlebar dropdown', async () => {
+it('opens the current chat location from the titlebar dropdown', async () => {
 	const user = userEvent.setup();
-	const setSessionTitle = jest.fn();
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<ChatSessionContext.Provider
@@ -173,7 +172,6 @@ it('renames the current chat from the titlebar dropdown', async () => {
 					setSessionId: jest.fn(),
 					sessionTitle: 'Project roadmap',
 					sessionTitleSessionId: 'session-1',
-					setSessionTitle,
 				}}
 			>
 				<TitleBar />
@@ -182,14 +180,10 @@ it('renames the current chat from the titlebar dropdown', async () => {
 	);
 
 	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
-	await user.click(screen.getByRole('menuitem', { name: 'common.rename' }));
-	const input = await screen.findByRole('textbox', { name: 'common.rename' });
-	await user.clear(input);
-	await user.type(input, 'Launch plan');
-	fireEvent.blur(input);
+	await user.click(screen.getByRole('menuitem', { name: 'titleBar.openLocation' }));
 
-	await waitFor(() => expect(renameSession).toHaveBeenCalledWith('session-1', 'Launch plan'));
-	expect(setSessionTitle).toHaveBeenCalledWith('Launch plan', 'session-1');
+	expect(openSessionFolder).toHaveBeenCalledWith('session-1');
+	expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
 });
 
 it('deletes the current chat from the titlebar dropdown after confirmation', async () => {

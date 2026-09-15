@@ -1956,6 +1956,7 @@
 	},
 	"titleBar": {
 		"applicationMenu": "Menu applicazione",
+		"openLocation": "Apri posizione",
 		"search": "Cerca",
 		"toggleSidebar": "Mostra/nascondi barra laterale",
 		"toggleAgenticSidebar": "Mostra/nascondi assistente AI",
