@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Library, LogOut, Plus, Settings2 } from 'lucide-react';
+import { Bot, Cloud, Code2, Layers, LogOut, Plus, RadioTower, Server, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -87,6 +87,15 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 		avatarPath: authenticatedUser?.avatarPath,
 	};
 	const accountInitial = accountItem.title.charAt(0).toUpperCase();
+	const menuItems = [
+		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
+		{ path: '/settings/cloud', label: t('settings.tabs.cloud'), icon: Cloud },
+		{ path: '/settings/agent', label: t('settings.sidebar.assistant'), icon: Bot },
+		{ path: '/settings/coding', label: t('settings.coding.title'), icon: Code2 },
+		{ path: '/settings/providers/models', label: t('settings.overview.groups.mlModels'), icon: Server },
+		{ path: '/settings/channels', label: t('settings.tabs.channels'), icon: RadioTower },
+		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
+	];
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
@@ -284,12 +293,14 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								</DropdownMenuLabel>
 								<DropdownMenuSeparator />
 								<DropdownMenuGroup>
-									<DropdownMenuItem asChild>
-										<Link to="/settings/rag"><Library />{t('settings.tabs.rag')}</Link>
-									</DropdownMenuItem>
-									<DropdownMenuItem asChild>
-										<Link to="/settings/account"><Settings2 />{t('settings.sidebar.manageAccount')}</Link>
-									</DropdownMenuItem>
+									{menuItems.map((item) => {
+										const Icon = item.icon;
+										return (
+											<DropdownMenuItem key={item.path} asChild>
+												<Link to={item.path}><Icon />{item.label}</Link>
+											</DropdownMenuItem>
+										);
+									})}
 								</DropdownMenuGroup>
 								{authenticatedUser ? (
 									<>

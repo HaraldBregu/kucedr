@@ -139,6 +139,7 @@
 		"title": "Impostazioni",
 		"sidebar": {
 			"account": "Impostazioni",
+			"assistant": "Assistente",
 			"accountMenu": "Menu account per {{name}}",
 			"manageAccount": "Gestisci account",
 			"signOut": "Esci"

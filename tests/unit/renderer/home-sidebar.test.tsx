@@ -160,14 +160,17 @@ it.each<[AuthState, string]>([
 	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('menu');
-	expect(within(menu).getByRole('menuitem', { name: 'settings.tabs.rag' })).toHaveAttribute(
-		'href',
-		'/settings/rag'
-	);
-	expect(within(menu).getByRole('menuitem', { name: 'settings.sidebar.manageAccount' })).toHaveAttribute(
-		'href',
-		'/settings/account'
-	);
+	[
+		['settings.tabs.account', '/settings/account'],
+		['settings.tabs.cloud', '/settings/cloud'],
+		['settings.sidebar.assistant', '/settings/agent'],
+		['settings.coding.title', '/settings/coding'],
+		['settings.overview.groups.mlModels', '/settings/providers/models'],
+		['settings.tabs.channels', '/settings/channels'],
+		['settings.tabs.apps', '/settings/apps'],
+	].forEach(([name, href]) => {
+		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
+	});
 	await user.click(within(menu).getByRole('menuitem', { name: 'settings.sidebar.signOut' }));
 	expect(signOut).toHaveBeenCalledTimes(1);
 	await screen.findByText('settings.chatHistory.empty');

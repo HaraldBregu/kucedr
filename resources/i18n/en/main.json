@@ -139,6 +139,7 @@
 		"title": "Settings",
 		"sidebar": {
 			"account": "Settings",
+			"assistant": "Assistant",
 			"accountMenu": "Account menu for {{name}}",
 			"manageAccount": "Manage account",
 			"signOut": "Sign out"
