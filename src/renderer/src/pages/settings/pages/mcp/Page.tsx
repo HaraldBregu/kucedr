@@ -3,7 +3,6 @@ import { AlertTriangle, FolderOpen, Plus, PlugZap, RefreshCw, Upload } from 'luc
 import { useNavigate } from 'react-router-dom';
 import type { McpData, McpRegistry } from '@shared/mcp_types';
 import { Button } from '@/components/ui/button';
-import { mcps } from '@/lib/providers';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -15,7 +14,6 @@ import {
 } from '../../components';
 import { McpServerForm } from './components/McpServerForm';
 import { McpServerRow } from './components/McpServerRow';
-import { McpCard } from '../providers/McpCard';
 
 const McpPage = (): React.JSX.Element => {
 	const navigate = useNavigate();
@@ -84,8 +82,6 @@ const McpPage = (): React.JSX.Element => {
 		}
 	};
 
-	const catalog = mcps();
-
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -143,19 +139,6 @@ const McpPage = (): React.JSX.Element => {
 							/>
 						</div>
 					</SettingsPanel>
-				</SettingsSection>
-			)}
-
-			{catalog.length > 0 && (
-				<SettingsSection
-					title="Available remote servers"
-					description="Remote MCP services from installed provider catalogs."
-				>
-					<div className="space-y-3">
-						{catalog.map((service) => (
-							<McpCard key={`${service.provider.id}-${service.id}`} service={service} />
-						))}
-					</div>
 				</SettingsSection>
 			)}
 

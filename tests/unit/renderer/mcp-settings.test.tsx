@@ -79,6 +79,7 @@ describe('MCP settings', () => {
 		expect(mcpApi.getRoot).not.toHaveBeenCalled();
 		expect(screen.queryByRole('heading', { name: 'Remote servers' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Local servers' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'Available remote servers' })).not.toBeInTheDocument();
 		expect(screen.queryByText('/home/user/.kucedr/mcp/servers/local')).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Open folder' })).toBeInTheDocument();
 		expect(screen.queryByText('Open folder')).not.toBeInTheDocument();
