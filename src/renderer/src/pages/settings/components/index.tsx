@@ -65,7 +65,7 @@ export function SettingsPageHeader({
 						{title}
 					</h1>
 					{description && (
-						<p className="mt-0.5 max-w-2xl text-sm leading-4 text-muted-foreground">
+						<p className="mt-1.5 max-w-2xl text-sm leading-4 text-muted-foreground">
 							{description}
 						</p>
 					)}
