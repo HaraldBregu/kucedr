@@ -312,7 +312,7 @@ it('keeps Tasks, Apps, Search, and New chat in the fixed sidebar action group', 
 		</MemoryRouter>
 	);
 
-		expect(await screen.findByRole('link', { name: 'settings.tabs.taskScheduler' })).toHaveAttribute(
+	expect(await screen.findByRole('link', { name: 'settings.tabs.taskScheduler' })).toHaveAttribute(
 		'href',
 		'/settings/agent/tasks'
 	);
