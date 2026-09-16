@@ -31,40 +31,40 @@
 		sans-serif;
 	color-scheme: light;
 	--radius: 0.625rem;
-	--background: oklch(0.976 0.006 84);
-	--foreground: oklch(0.205 0.018 67);
-	--card: oklch(0.995 0.003 84);
+	--background: #fbfbfa;
+	--foreground: #0e0e0e;
+	--card: #ffffff;
 	--card-foreground: var(--foreground);
-	--primary: oklch(0.42 0.075 68);
-	--primary-foreground: oklch(0.985 0.004 84);
-	--secondary: oklch(0.948 0.012 78);
+	--primary: #0e0e0e;
+	--primary-foreground: #fbfbfa;
+	--secondary: #eeede9;
 	--secondary-foreground: var(--foreground);
-	--muted: oklch(0.947 0.008 78);
-	--muted-foreground: oklch(0.51 0.027 66);
-	--accent: oklch(0.925 0.026 72);
-	--accent-foreground: oklch(0.31 0.04 66);
-	--border: oklch(0.88 0.014 76);
+	--muted: #eeede9;
+	--muted-foreground: #707070;
+	--accent: #eae9e5;
+	--accent-foreground: #0e0e0e;
+	--border: color-mix(in oklch, #a3a7a7 45%, transparent);
 	--input: var(--border);
-	--ring: oklch(0.58 0.08 69);
+	--ring: #2b5fb1;
 }
 
 .dark {
 	color-scheme: dark;
-	--background: oklch(0.16 0.014 65);
-	--foreground: oklch(0.94 0.009 77);
-	--card: oklch(0.205 0.016 65);
+	--background: #181818;
+	--foreground: #f4f4f0;
+	--card: #202020;
 	--card-foreground: var(--foreground);
-	--primary: oklch(0.72 0.075 73);
-	--primary-foreground: oklch(0.18 0.018 65);
-	--secondary: oklch(0.255 0.018 64);
+	--primary: #f4f4f0;
+	--primary-foreground: #181818;
+	--secondary: #2a2a28;
 	--secondary-foreground: var(--foreground);
-	--muted: oklch(0.245 0.016 64);
-	--muted-foreground: oklch(0.69 0.025 72);
-	--accent: oklch(0.29 0.028 66);
-	--accent-foreground: oklch(0.91 0.02 76);
-	--border: oklch(0.35 0.019 65);
+	--muted: #2a2a28;
+	--muted-foreground: #a3a7a7;
+	--accent: #333330;
+	--accent-foreground: #f4f4f0;
+	--border: color-mix(in oklch, #a3a7a7 35%, transparent);
 	--input: var(--border);
-	--ring: oklch(0.67 0.08 72);
+	--ring: #79a7ff;
 }
 
 * {
@@ -181,14 +181,14 @@ button.primary:hover:not(:disabled) {
 
 .architect {
 	display: grid;
-	grid-template-rows: 45px minmax(0, 1fr);
+	grid-template-rows: 48px minmax(0, 1fr);
 	background: var(--background);
 }
 .app-header {
 	display: flex;
 	align-items: center;
 	gap: 9px;
-	padding: 7px 10px;
+	padding: 8px 10px;
 	border-bottom: 1px solid var(--border);
 	background: var(--card);
 }
@@ -300,6 +300,19 @@ button.primary:hover:not(:disabled) {
 	align-content: start;
 	gap: 13px;
 	padding: 11px;
+}
+.discipline-tabs {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 5px;
+}
+.discipline-tabs button {
+	min-width: 0;
+	min-height: 46px;
+	flex-direction: column;
+	gap: 3px;
+	padding: 5px 3px;
+	font-size: 9px;
 }
 .panel-actions {
 	display: flex;
