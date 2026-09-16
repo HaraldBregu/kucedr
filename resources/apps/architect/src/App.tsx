@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Brief } from './components/brief';
 import { Canvas } from './components/canvas';
@@ -11,6 +11,16 @@ export default function App() {
 	useTheme();
 	const studio = useStudio();
 	const [sidebarOpen, setSidebarOpen] = useState(true);
+	useEffect(() => {
+		const onKeyDown = (event: KeyboardEvent): void => {
+			if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'b') {
+				event.preventDefault();
+				setSidebarOpen((open) => !open);
+			}
+		};
+		window.addEventListener('keydown', onKeyDown);
+		return () => window.removeEventListener('keydown', onKeyDown);
+	}, []);
 	return (
 		<div className="architect">
 			<button
