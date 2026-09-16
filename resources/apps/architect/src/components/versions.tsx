@@ -16,7 +16,7 @@ interface VersionsProps {
 export function Versions({ versions, currentId, cropMode, crop, busy, onSelect, onChange, onApply, onCancel }: VersionsProps) {
 	if (cropMode) {
 		return (
-			<aside className="versions-panel crop-panel panel">
+		<aside id="concepts" className="versions-panel crop-panel panel">
 				<div className="panel-title">
 					<div><strong>Crop image</strong><span>Frame a new version</span></div>
 					<Crop size={15} />
@@ -45,7 +45,7 @@ export function Versions({ versions, currentId, cropMode, crop, busy, onSelect, 
 	}
 
 	return (
-		<aside className="versions-panel panel">
+		<aside id="concepts" className="versions-panel panel">
 			<div className="panel-title">
 				<div><strong>Concept history</strong><span>{versions.length ? `${versions.length} in this session` : 'No concepts yet'}</span></div>
 				<History size={15} />

@@ -24,7 +24,7 @@ interface BriefProps {
 
 export function Brief({ brief, disabled, connected, onChange, onDisciplineChange, onGenerate, onImport }: BriefProps) {
 	return (
-		<aside className="brief-panel panel">
+		<section id="brief" className="brief-panel panel">
 			<div className="panel-title"><div><strong>Design brief</strong><span>Set the discipline, intent, and visual direction</span></div></div>
 			<div className="panel-scroll form-stack">
 				<fieldset>
@@ -42,6 +42,6 @@ export function Brief({ brief, disabled, connected, onChange, onDisciplineChange
 				<fieldset><legend>Frame</legend><div className="segmented">{(['1:1', '4:3', '3:2', '16:9'] as const).map((ratio) => <button key={ratio} type="button" className={brief.ratio === ratio ? 'active' : ''} onClick={() => onChange('ratio', ratio)}>{ratio}</button>)}</div></fieldset>
 			</div>
 			<div className="panel-actions"><button className="primary" disabled={disabled || !connected} onClick={onGenerate}><Sparkles size={15} /> Generate concept</button><label className="button secondary"><Upload size={15} /> Import<input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => { const file = event.target.files?.[0]; if (file) onImport(file); event.target.value = ''; }} /></label></div>
-		</aside>
+		</section>
 	);
 }

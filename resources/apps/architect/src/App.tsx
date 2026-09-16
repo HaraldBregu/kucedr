@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Brief } from './components/brief';
 import { Canvas } from './components/canvas';
 import { Header } from './components/header';
@@ -8,15 +10,29 @@ import { useTheme } from './theme';
 export default function App() {
 	useTheme();
 	const studio = useStudio();
+	const [sidebarOpen, setSidebarOpen] = useState(true);
 	return (
 		<div className="architect">
-			<Header
-				model={studio.modelLabel}
-				connected={studio.connected}
-				hasImage={Boolean(studio.current)}
-				onReset={studio.reset}
-			/>
-			<main className="workspace">
+			<button
+				type="button"
+				className="sidebar-trigger"
+				aria-controls="architect-sidebar"
+				aria-expanded={sidebarOpen}
+				aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+				title={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+				onClick={() => setSidebarOpen((open) => !open)}
+			>
+				{sidebarOpen ? <PanelLeftClose size={16} strokeWidth={1.5} /> : <PanelLeftOpen size={16} strokeWidth={1.5} />}
+			</button>
+			<div className={sidebarOpen ? 'sidebar-spacer' : 'sidebar-spacer collapsed'} />
+			<aside id="architect-sidebar" className={sidebarOpen ? 'architect-sidebar' : 'architect-sidebar collapsed'}>
+				<div className="sidebar-drag" />
+				<div className="sidebar-brand">Architect</div>
+				<nav className="sidebar-nav" aria-label="Architect navigation">
+					<a className="selected" href="#brief">Design brief</a>
+					<a href="#canvas">Canvas</a>
+					<a href="#concepts">Concept history</a>
+				</nav>
 				<Brief
 				brief={studio.brief}
 					disabled={Boolean(studio.busy)}
@@ -26,6 +42,16 @@ export default function App() {
 					onGenerate={() => void studio.generate()}
 					onImport={(file) => void studio.importFile(file)}
 				/>
+			</aside>
+			<section className="architect-inset">
+				<Header
+					model={studio.modelLabel}
+					connected={studio.connected}
+					hasImage={Boolean(studio.current)}
+					onReset={studio.reset}
+					sidebarOpen={sidebarOpen}
+				/>
+				<main className="workspace">
 				<Canvas
 					current={studio.current}
 					busy={studio.busy}
@@ -49,6 +75,7 @@ export default function App() {
 					onCancel={() => studio.setCropMode(false)}
 				/>
 			</main>
+			</section>
 		</div>
 	);
 }

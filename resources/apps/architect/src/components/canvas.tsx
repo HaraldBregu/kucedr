@@ -19,7 +19,7 @@ export function Canvas({ current, busy, message, cropMode, crop, discipline, onC
 	const cropRatio = crop.ratio === 'original' ? undefined : crop.ratio.replace(':', ' / ');
 
 	return (
-		<section className="canvas-panel">
+		<section id="canvas" className="canvas-panel">
 			<div className="canvas-toolbar">
 				<span>{current?.label ?? 'Untitled concept'}</span>
 				<div />
