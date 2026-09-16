@@ -76,7 +76,7 @@ export function SettingsSidebar(): React.JSX.Element {
 					}}
 				>
 					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
-					<span className="text-xs">{t('settings.returnToChat', 'Return to Chat')}</span>
+					<span className="text-xs">{t('settings.returnToChat', 'Return to App')}</span>
 				</Link>
 			</div>
 			<div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pb-4 pt-3">
