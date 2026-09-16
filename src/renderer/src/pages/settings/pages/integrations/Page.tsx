@@ -1,14 +1,18 @@
-import React from 'react';
-import { Plug } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { McpData, McpSettings } from '@shared/mcp_types';
+import { ProviderAvatar } from '@/components/provider-avatar';
+import { Switch } from '@/components/ui/switch';
 import { mcps } from '@/lib/providers';
 import {
 	SettingsEmptyState,
+	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
+	SettingsPanel,
+	SettingsRow,
 	SettingsSection,
 } from '../../components';
-import { McpCard } from '../providers/McpCard';
 
 const INTEGRATION_PROVIDER_IDS = [
 	'gmail',
@@ -20,31 +24,96 @@ const INTEGRATION_PROVIDER_IDS = [
 
 const IntegrationsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
+	const [servers, setServers] = useState<McpSettings>({});
+	const [savingId, setSavingId] = useState<string | null>(null);
+	const [error, setError] = useState('');
 	const catalog = INTEGRATION_PROVIDER_IDS.flatMap((providerId) =>
 		mcps().filter((service) => service.provider.id === providerId)
 	);
+
+	useEffect(() => {
+		let cancelled = false;
+		void window.mcp.list().then(
+			(entries) => {
+				if (!cancelled) setServers(entries);
+			},
+			(caught) => {
+				if (!cancelled) setError(caught instanceof Error ? caught.message : String(caught));
+			}
+		);
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	const setIntegrationEnabled = async (
+		service: (typeof catalog)[number],
+		enabled: boolean
+	): Promise<void> => {
+		setSavingId(service.id);
+		setError('');
+		const existing = servers[service.id];
+		const entry: McpData = existing
+			? { ...existing, enabled }
+			: {
+					type: 'http',
+					name: service.name,
+					url: service.url ?? '',
+					enabled,
+				};
+		try {
+			await window.mcp.upsert(service.id, entry);
+			setServers((current) => ({ ...current, [service.id]: entry }));
+		} catch (caught) {
+			setError(caught instanceof Error ? caught.message : String(caught));
+		} finally {
+			setSavingId(null);
+		}
+	};
 
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.integrations.title')}
 				description={t('settings.integrations.description')}
-				icon={Plug}
 			/>
+			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
 			<SettingsSection
 				title={t('settings.integrations.available')}
 				description={t('settings.integrations.availableDescription')}
 			>
 				{catalog.length > 0 ? (
-					<div className="space-y-3">
+					<SettingsPanel>
 						{catalog.map((service) => (
-							<McpCard key={`${service.provider.id}-${service.id}`} service={service} />
+							<SettingsRow
+								key={`${service.provider.id}-${service.id}`}
+								title={service.name}
+								description={service.provider.name}
+								media={
+									<ProviderAvatar
+										providerId={service.provider.id}
+										name={service.provider.name}
+										iconDarkUrl={service.provider.iconDarkUrl}
+										iconLightUrl={service.provider.iconLightUrl}
+									/>
+								}
+								actionClassName="w-auto justify-end"
+								actions={
+									<Switch
+										checked={servers[service.id]?.enabled === true}
+										disabled={savingId === service.id}
+										onCheckedChange={(enabled) =>
+											void setIntegrationEnabled(service, enabled)
+										}
+										aria-label={service.name}
+									/>
+								}
+							/>
 						))}
-					</div>
+					</SettingsPanel>
 				) : (
 					<SettingsEmptyState
-						icon={Plug}
 						title={t('settings.integrations.empty')}
 						description={t('settings.integrations.emptyDescription')}
 					/>
