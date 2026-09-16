@@ -202,6 +202,7 @@
 			"account": "Account",
 			"cloud": "Cloud",
 			"general": "Generale",
+			"generalDescription": "Configura informazioni, aspetto, lingua e dati dell'applicazione.",
 			"modelServices": "Servizi modello",
 			"channels": "Canali",
 			"integrations": "Integrazioni",
