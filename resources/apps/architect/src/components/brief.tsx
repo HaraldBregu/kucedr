@@ -35,8 +35,8 @@ export function Brief({ brief, disabled, connected, onChange, onDisciplineChange
 				</fieldset>
 				<label><span>Design focus</span><select value={brief.subject} onChange={(event) => onChange('subject', event.target.value)}>{subjects[brief.discipline].map((subject) => <option key={subject}>{subject}</option>)}</select></label>
 				<label><span>Intent</span><textarea rows={5} value={brief.description} placeholder="Describe the function, experience, and defining design moves…" onChange={(event) => onChange('description', event.target.value)} /></label>
-				<label><span>Setting or use</span><input value={brief.context} onChange={(event) => onChange('context', event.target.value)} /></label>
-				<label><span>Design language</span><input value={brief.style} onChange={(event) => onChange('style', event.target.value)} /></label>
+				<label><span>Setting or use</span><textarea rows={2} value={brief.context} onChange={(event) => onChange('context', event.target.value)} /></label>
+				<label><span>Design language</span><textarea rows={2} value={brief.style} onChange={(event) => onChange('style', event.target.value)} /></label>
 				<label><span>Materials</span><textarea rows={2} value={brief.materials} onChange={(event) => onChange('materials', event.target.value)} /></label>
 				<label><span>Light and mood</span><textarea rows={2} value={brief.lighting} onChange={(event) => onChange('lighting', event.target.value)} /></label>
 				<fieldset><legend>Frame</legend><div className="segmented">{(['1:1', '4:3', '3:2', '16:9'] as const).map((ratio) => <button key={ratio} type="button" className={brief.ratio === ratio ? 'active' : ''} onClick={() => onChange('ratio', ratio)}>{ratio}</button>)}</div></fieldset>
