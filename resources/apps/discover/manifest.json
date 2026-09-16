@@ -1,0 +1,18 @@
+{
+	"title": "Discover",
+	"description": "Research trends, explore markets, and turn questions into focused discovery briefs.",
+	"window": {
+		"width": 1200,
+		"height": 820,
+		"minWidth": 860,
+		"minHeight": 620,
+		"resizable": true,
+		"maximizable": true
+	},
+	"metadata": {
+		"version": "1.0.0",
+		"category": "research",
+		"entry": "dist/index.html",
+		"image": "assets/images/logo.png"
+	}
+}

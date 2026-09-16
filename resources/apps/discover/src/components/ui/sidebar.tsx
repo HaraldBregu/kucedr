@@ -57,7 +57,7 @@ export function Sidebar({ className, ...props }: ComponentProps<'aside'>) {
 				)}
 			/>
 			<aside
-				id="demo-sidebar"
+				id="discover-sidebar"
 				data-state={context.open ? 'expanded' : 'collapsed'}
 				className={cn(
 					'fixed inset-y-0 left-0 z-30 flex w-60 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
@@ -95,7 +95,7 @@ export function SidebarTrigger({
 				isDark ? 'text-white hover:text-white' : 'text-foreground hover:text-foreground',
 				className
 			)}
-			aria-controls="demo-sidebar"
+			aria-controls="discover-sidebar"
 			aria-expanded={context.open}
 			aria-label={context.open ? 'Collapse sidebar' : 'Expand sidebar'}
 			title="Toggle Sidebar"

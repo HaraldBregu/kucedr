@@ -39,6 +39,6 @@ body,
 	@apply h-full min-h-screen w-full m-0 p-0;
 }
 
-.app-demo {
+.app-discover {
 	@apply h-screen w-screen bg-background text-foreground;
 }
