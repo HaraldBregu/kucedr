@@ -8,6 +8,8 @@ jest.mock('../../../src/renderer/src/router', () => ({
 
 const navigate = router.navigate as jest.Mock;
 
+beforeEach(() => navigate.mockClear());
+
 it('navigates route history with mouse back and forward buttons on macOS', () => {
 	Object.defineProperty(navigator, 'platform', { configurable: true, value: 'MacIntel' });
 	const { unmount } = renderHook(() => useMouseNavigation());
