@@ -56,6 +56,7 @@
 		"build:coder": "npm ci --prefix resources/apps/coder && npm run build --prefix resources/apps/coder",
 		"build:architect": "npm ci --prefix resources/apps/architect && npm run build --prefix resources/apps/architect",
 		"build:demo": "npm ci --prefix resources/apps/demo && npm run build --prefix resources/apps/demo",
+		"build:discover": "npm ci --prefix resources/apps/discover && npm run build --prefix resources/apps/discover",
 		"build:workspace": "npm ci --prefix resources/apps/workspace && npm run build --prefix resources/apps/workspace",
 		"build:packages": "npm run build --workspaces --if-present",
 		"build:all": "npm run build && npm run build:packages && npm run build:workspace",
