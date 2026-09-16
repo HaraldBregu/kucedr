@@ -1,4 +1,4 @@
-import { Copy, Building2, Minus, RotateCcw, Square, X } from 'lucide-react';
+import { Copy, Minus, RotateCcw, Square, X } from 'lucide-react';
 import { useEffect, useState, type CSSProperties } from 'react';
 import { isKucedr, win } from '@kucedr/sdk';
 
@@ -11,9 +11,10 @@ interface HeaderProps {
 	connected: boolean;
 	hasImage: boolean;
 	onReset: () => void;
+	sidebarOpen: boolean;
 }
 
-export function Header({ model, connected, hasImage, onReset }: HeaderProps) {
+export function Header({ model, connected, hasImage, onReset, sidebarOpen }: HeaderProps) {
 	const [maximized, setMaximized] = useState(false);
 
 	useEffect(() => {
@@ -24,16 +25,10 @@ export function Header({ model, connected, hasImage, onReset }: HeaderProps) {
 
 	return (
 		<header
-			className={`app-header${isMac ? ' mac-titlebar' : ''}`}
+			className={`app-header${isMac ? ' mac-titlebar' : ''}${sidebarOpen ? '' : ' sidebar-collapsed'}`}
 			style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 		>
-			<div className="brand-mark" aria-hidden="true">
-				<Building2 size={16} strokeWidth={2} />
-			</div>
-			<div className="brand-copy">
-				<strong>Architect</strong>
-				<span>Spatial and industrial design studio</span>
-			</div>
+			<strong className="header-title">Architect</strong>
 			<div className="header-spacer" />
 			<span className="model-pill" title={model}>
 				<i className={connected ? 'online' : ''} />
