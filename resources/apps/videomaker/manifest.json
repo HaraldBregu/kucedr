@@ -1,9 +1,0 @@
-{
-	"title": "Video Maker",
-	"description": "Create layered videos with media, text, a Remotion preview, and in-browser MP4 export.",
-	"metadata": {
-		"version": "1.0.0",
-		"category": "creative",
-		"entry": "dist/index.html"
-	}
-}
