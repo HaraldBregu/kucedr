@@ -47,7 +47,7 @@ export function Versions({ versions, currentId, cropMode, crop, busy, onSelect, 
 	return (
 		<aside className="versions-panel panel">
 			<div className="panel-title">
-				<div><strong>Versions</strong><span>{versions.length ? `${versions.length} in this session` : 'No versions yet'}</span></div>
+				<div><strong>Concept history</strong><span>{versions.length ? `${versions.length} in this session` : 'No concepts yet'}</span></div>
 				<History size={15} />
 			</div>
 			<div className="panel-scroll version-list">
@@ -57,7 +57,7 @@ export function Versions({ versions, currentId, cropMode, crop, busy, onSelect, 
 						<span><strong>{version.label}</strong><small>{version.prompt}</small></span>
 					</button>
 				))}
-				{versions.length === 0 && <div className="empty-versions">Each generation, crop, and revision appears here.</div>}
+				{versions.length === 0 && <div className="empty-versions">Each concept, crop, and revision appears here.</div>}
 			</div>
 		</aside>
 	);

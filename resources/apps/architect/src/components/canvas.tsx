@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Crop, Download, ImagePlus, Send, Sparkles } from 'lucide-react';
-import type { ArchitectVersion, CropSettings } from '../types';
+import type { ArchitectVersion, CropSettings, DesignDiscipline } from '../types';
 
 interface CanvasProps {
 	current?: ArchitectVersion;
@@ -8,12 +8,13 @@ interface CanvasProps {
 	message: string;
 	cropMode: boolean;
 	crop: CropSettings;
+	discipline: DesignDiscipline;
 	onCrop: () => void;
 	onDownload: () => void;
 	onRevise: (instruction: string) => Promise<void>;
 }
 
-export function Canvas({ current, busy, message, cropMode, crop, onCrop, onDownload, onRevise }: CanvasProps) {
+export function Canvas({ current, busy, message, cropMode, crop, discipline, onCrop, onDownload, onRevise }: CanvasProps) {
 	const [instruction, setInstruction] = useState('');
 	const cropRatio = crop.ratio === 'original' ? undefined : crop.ratio.replace(':', ' / ');
 
@@ -37,7 +38,7 @@ export function Canvas({ current, busy, message, cropMode, crop, onCrop, onDownl
 					>
 						<img
 							src={current.url}
-							alt={current.prompt || 'Architectural visualization'}
+							alt={current.prompt || `${discipline} design visualization`}
 							style={
 								cropMode
 									? {
@@ -50,8 +51,8 @@ export function Canvas({ current, busy, message, cropMode, crop, onCrop, onDownl
 				) : (
 					<div className="empty-canvas">
 						<div><ImagePlus size={25} /></div>
-						<strong>Start with a room</strong>
-						<span>Write a design brief or import an existing interior image.</span>
+						<strong>Start a design concept</strong>
+						<span>Build an interior, exterior, or industrial design brief, or import a reference image.</span>
 					</div>
 				)}
 				{busy && (
@@ -68,7 +69,7 @@ export function Canvas({ current, busy, message, cropMode, crop, onCrop, onDownl
 						rows={2}
 						value={instruction}
 						disabled={!current || Boolean(busy)}
-						placeholder="Describe the next revision — replace the sofa, warm the palette, add concealed lighting…"
+						placeholder="Describe the next revision — refine the form, adjust materials, evolve the light…"
 						onChange={(event) => setInstruction(event.target.value)}
 						onKeyDown={(event) => {
 							if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') {

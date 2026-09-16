@@ -32,7 +32,7 @@ export function Header({ model, connected, hasImage, onReset }: HeaderProps) {
 			</div>
 			<div className="brand-copy">
 				<strong>Architect</strong>
-				<span>Interior image studio</span>
+				<span>Spatial and industrial design studio</span>
 			</div>
 			<div className="header-spacer" />
 			<span className="model-pill" title={model}>

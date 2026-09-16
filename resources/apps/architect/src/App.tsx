@@ -23,6 +23,7 @@ export default function App() {
 					connected={studio.connected}
 				onChange={studio.updateBrief}
 				onDisciplineChange={studio.selectDiscipline}
+				onDisciplineChange={studio.selectDiscipline}
 					onGenerate={() => void studio.generate()}
 					onImport={(file) => void studio.importFile(file)}
 				/>
@@ -30,8 +31,9 @@ export default function App() {
 					current={studio.current}
 					busy={studio.busy}
 					message={studio.message}
-					cropMode={studio.cropMode}
-					crop={studio.crop}
+				cropMode={studio.cropMode}
+				crop={studio.crop}
+				discipline={studio.brief.discipline}
 					onCrop={() => studio.setCropMode(!studio.cropMode)}
 					onDownload={studio.download}
 					onRevise={studio.revise}
