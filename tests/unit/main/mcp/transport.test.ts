@@ -56,6 +56,21 @@ it('requires HTTPS except for loopback development servers', () => {
 	).not.toThrow();
 });
 
+it('requires explicit credentials for the GitHub remote MCP server', () => {
+	expect(() =>
+		buildTransport('github', { type: 'http', url: 'https://api.githubcopilot.com/mcp/' })
+	).toThrow(
+		'GitHub remote MCP requires a personal access token. GitHub does not support dynamic client registration.'
+	);
+	expect(() =>
+		buildTransport('github', {
+			type: 'http',
+			url: 'https://api.githubcopilot.com/mcp/',
+			token: 'github-token',
+		})
+	).not.toThrow();
+});
+
 it('creates local transports directly from the shared MCP configuration', () => {
 	expect(() =>
 		buildTransport('local', { type: 'stdio', command: process.execPath, args: ['server.mjs'] })
