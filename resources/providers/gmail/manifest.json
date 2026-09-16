@@ -1,0 +1,15 @@
+{
+	"providerId": "gmail",
+	"providerName": "Gmail",
+	"images_url": "/images",
+	"icon_dark_url": "/images/official/gmail.png",
+	"icon_light_url": "/images/official/gmail.png",
+	"services": [
+		{
+			"id": "gmail",
+			"name": "Gmail",
+			"type": "mcp",
+			"url": "https://gmailmcp.googleapis.com/mcp/v1"
+		}
+	]
+}

@@ -1,0 +1,15 @@
+{
+	"providerId": "github",
+	"providerName": "GitHub",
+	"images_url": "/images",
+	"icon_dark_url": "/images/official/github.png",
+	"icon_light_url": "/images/official/github.png",
+	"services": [
+		{
+			"id": "github",
+			"name": "GitHub",
+			"type": "mcp",
+			"url": "https://api.githubcopilot.com/mcp/"
+		}
+	]
+}

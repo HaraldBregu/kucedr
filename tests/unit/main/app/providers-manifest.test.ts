@@ -1,4 +1,4 @@
-import { loadDatabases, loadModels, loadWebSearches } from '../../../../src/main/models';
+import { loadDatabases, loadMcps, loadModels, loadWebSearches } from '../../../../src/main/models';
 
 function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 	return entries.every(
@@ -8,6 +8,11 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 
 describe('provider manifests', () => {
 	it('routes manifest services to their matching catalog', () => {
+		const integrations = loadMcps().filter((service) =>
+			['gmail', 'google-calendar', 'google-drive', 'github', 'notion'].includes(
+				service.provider.id
+			)
+		);
 		const openAi = loadModels().find(
 			(model) => model.provider.id === 'openai' && model.id === 'gpt-5.6-sol'
 		);
@@ -24,6 +29,16 @@ describe('provider manifests', () => {
 		);
 		const realtimeVoiceModels = loadModels().filter((model) => model.type === 'realtime-voice');
 		expect(openAi?.provider.iconDarkUrl).toMatch(/^local-resource:\/\/file/);
+		expect(integrations.map((service) => service.provider.id)).toEqual([
+			'github',
+			'gmail',
+			'google-calendar',
+			'google-drive',
+			'notion',
+		]);
+		expect(integrations.every((service) => service.provider.iconLightUrl?.endsWith('.png'))).toBe(
+			true
+		);
 		expect(openAi?.provider.iconDarkUrl).toContain(
 			'/resources/providers/openai/images/fallback_lobehub/png_dark/openai.png'
 		);

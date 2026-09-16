@@ -18,7 +18,11 @@ import { AGENTS } from '@/lib/compat';
 const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'general',
-		items: SETTINGS_NAVIGATION.slice(0, 4),
+		items: SETTINGS_NAVIGATION.filter((item) =>
+			['/settings/account', '/settings/general', '/settings/system', '/settings/cloud'].includes(
+				item.path
+			)
+		),
 	},
 	{
 		id: 'assistant',
@@ -32,16 +36,19 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'providers',
 		titleKey: 'settings.tabs.providers',
-		items: SETTINGS_NAVIGATION.slice(5, 9),
+		items: SETTINGS_NAVIGATION.filter((item) => item.path.startsWith('/settings/providers/')),
 	},
 	{
 		id: 'integrations',
 		titleKey: 'settings.overview.groups.extensions',
-		items: [
-			...SETTINGS_NAVIGATION.slice(14, 15),
-			...SETTINGS_NAVIGATION.slice(16),
-			...SETTINGS_NAVIGATION.slice(15, 16),
-		],
+		items: SETTINGS_NAVIGATION.filter((item) =>
+			[
+				'/settings/channels',
+				'/settings/integrations',
+				'/settings/apps',
+				'/settings/a2a',
+			].includes(item.path)
+		),
 	},
 ] as const;
 

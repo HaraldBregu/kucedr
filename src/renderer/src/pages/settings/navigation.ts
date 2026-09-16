@@ -12,6 +12,7 @@ import {
 	Library,
 	ListChecks,
 	MonitorCog,
+	Plug,
 	PlugZap,
 	RadioTower,
 	Search,
@@ -352,6 +353,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.channels',
 		descriptionKey: 'settings.overview.descriptions.channels',
 		icon: RadioTower,
+	},
+	{
+		path: '/settings/integrations',
+		labelKey: 'settings.tabs.integrations',
+		descriptionKey: 'settings.overview.descriptions.integrations',
+		icon: Plug,
 	},
 	{
 		path: '/settings/a2a',

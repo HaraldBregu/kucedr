@@ -1,0 +1,15 @@
+{
+	"providerId": "notion",
+	"providerName": "Notion",
+	"images_url": "/images",
+	"icon_dark_url": "/images/official/notion.png",
+	"icon_light_url": "/images/official/notion.png",
+	"services": [
+		{
+			"id": "notion",
+			"name": "Notion",
+			"type": "mcp",
+			"url": "https://mcp.notion.com/mcp"
+		}
+	]
+}

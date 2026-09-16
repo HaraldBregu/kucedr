@@ -180,6 +180,7 @@
 				"modelServices": "Setup servizi modello",
 				"system": "Permessi e funzioni desktop",
 				"channels": "Integrazioni messaggi",
+				"integrations": "Servizi collegati e app di lavoro",
 				"skills": "Abilita agente installate",
 				"connectors": "Account app collegati",
 				"mcp": "Server strumenti esterni",
@@ -203,6 +204,7 @@
 			"general": "Generale",
 			"modelServices": "Servizi modello",
 			"channels": "Canali",
+			"integrations": "Integrazioni",
 			"connectors": "Connettori",
 			"mcp": "Server MCP",
 			"a2a": "A2A",
@@ -227,6 +229,14 @@
 			"apps": "App",
 			"plugins": "Plugin",
 			"rag": "Knowledge Base"
+		},
+		"integrations": {
+			"title": "Integrazioni",
+			"description": "Collega i servizi che Kucedr può usare per tuo conto.",
+			"available": "Integrazioni disponibili",
+			"availableDescription": "Aggiungi un servizio per rendere disponibili i suoi strumenti all'assistente.",
+			"empty": "Nessuna integrazione disponibile",
+			"emptyDescription": "Nessun provider di integrazione trovato nel catalogo provider."
 		},
 		"breadcrumb": {
 			"label": "Navigazione impostazioni",

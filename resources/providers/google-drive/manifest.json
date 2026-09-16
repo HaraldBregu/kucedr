@@ -1,0 +1,15 @@
+{
+	"providerId": "google-drive",
+	"providerName": "Google Drive",
+	"images_url": "/images",
+	"icon_dark_url": "/images/official/google-drive.png",
+	"icon_light_url": "/images/official/google-drive.png",
+	"services": [
+		{
+			"id": "google-drive",
+			"name": "Google Drive",
+			"type": "mcp",
+			"url": "https://drivemcp.googleapis.com/mcp/v1"
+		}
+	]
+}

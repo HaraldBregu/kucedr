@@ -40,6 +40,7 @@ it.each([
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
+	['/settings/integrations', 'settings.tabs.integrations'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
 	if (path === '/settings/general/persona' || path === '/settings/agent/tools') {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
@@ -161,6 +162,15 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.channels' })
+			.closest('[data-slot="split-pane-group"]')
+	).toBe(
+		within(navigation)
+			.getByRole('link', { name: 'settings.tabs.apps' })
+			.closest('[data-slot="split-pane-group"]')
+	);
+	expect(
+		within(navigation)
+			.getByRole('link', { name: 'settings.tabs.integrations' })
 			.closest('[data-slot="split-pane-group"]')
 	).toBe(
 		within(navigation)

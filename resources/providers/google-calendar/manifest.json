@@ -1,0 +1,15 @@
+{
+	"providerId": "google-calendar",
+	"providerName": "Google Calendar",
+	"images_url": "/images",
+	"icon_dark_url": "/images/official/google-calendar.png",
+	"icon_light_url": "/images/official/google-calendar.png",
+	"services": [
+		{
+			"id": "google-calendar",
+			"name": "Google Calendar",
+			"type": "mcp",
+			"url": "https://calendarmcp.googleapis.com/mcp/v1"
+		}
+	]
+}
