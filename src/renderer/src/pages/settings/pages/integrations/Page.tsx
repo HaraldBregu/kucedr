@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
+import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { mcps } from '@/lib/providers';
 import {
@@ -9,8 +10,6 @@ import {
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
-	SettingsPanel,
-	SettingsRow,
 } from '../../components';
 
 const INTEGRATION_PROVIDER_IDS = [
@@ -89,13 +88,14 @@ const IntegrationsPage = (): React.JSX.Element => {
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
 			{catalog.length > 0 ? (
-				<SettingsPanel>
+				<div className="space-y-3 pb-4">
 					{catalog.map((service) => (
-						<SettingsRow
+						<Card
 							key={`${service.provider.id}-${service.id}`}
-							title={service.name}
-							description={service.provider.name}
-							media={
+							className="rounded-lg border-border bg-card py-0 shadow-none"
+						>
+							<CardContent className="p-0">
+								<div className="grid min-h-12 grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-2.5 px-4 py-3.5">
 								<ProviderAvatar
 									providerId={service.provider.id}
 									name={service.provider.name}
@@ -103,21 +103,29 @@ const IntegrationsPage = (): React.JSX.Element => {
 									iconLightUrl={service.provider.iconLightUrl}
 									className="size-10"
 								/>
-							}
-							actionClassName="w-auto justify-end"
-							actions={
-								<Switch
-									checked={servers[service.id]?.enabled === true}
-									disabled={savingId === service.id}
-									onCheckedChange={(enabled) =>
-										void setIntegrationEnabled(service, enabled)
-									}
-									aria-label={service.name}
-								/>
-							}
-						/>
+									<div className="min-w-0 flex-1">
+										<h2 className="truncate text-sm font-semibold leading-tight text-foreground">
+											{service.name}
+										</h2>
+										<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
+											{service.provider.name}
+										</p>
+									</div>
+									<div className="flex shrink-0 justify-end">
+										<Switch
+											checked={servers[service.id]?.enabled === true}
+											disabled={savingId === service.id}
+											onCheckedChange={(enabled) =>
+												void setIntegrationEnabled(service, enabled)
+											}
+											aria-label={service.name}
+										/>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
 					))}
-				</SettingsPanel>
+				</div>
 			) : (
 				<SettingsEmptyState
 					title={t('settings.integrations.empty')}
