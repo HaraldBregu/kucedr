@@ -40,8 +40,8 @@ beforeEach(() => {
 	mcpApi.upsert.mockResolvedValue({});
 });
 
-it('renders the five integration providers as standard switch rows', async () => {
-	render(<IntegrationsPage />);
+it('renders the five integration providers as a flat switch list', async () => {
+	const { container } = render(<IntegrationsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
 	expect(screen.getAllByRole('switch').map((control) => control.getAttribute('aria-label'))).toEqual([
@@ -52,6 +52,8 @@ it('renders the five integration providers as standard switch rows', async () =>
 		'notion',
 	]);
 	await waitFor(() => expect(screen.getByRole('switch', { name: 'gmail' })).toBeChecked());
+	expect(screen.getByText('settings.integrations.items.github')).toBeInTheDocument();
+	expect(container.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
 });
 
