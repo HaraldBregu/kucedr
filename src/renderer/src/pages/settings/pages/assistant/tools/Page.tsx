@@ -409,20 +409,13 @@ const ToolsPage: React.FC = () => {
 				title={t('settings.modelServices.tools')}
 				description={t('settings.modelServices.toolsDescription')}
 			/>
-			<div className="relative">
-				<SearchIcon
-					className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
-					aria-hidden="true"
-				/>
-				<Input
-					type="search"
-					value={toolSearch}
-					onChange={(event) => setToolSearch(event.target.value)}
-					placeholder={t('settings.modelServices.agentTools.searchPlaceholder')}
-					aria-label={t('settings.modelServices.agentTools.searchPlaceholder')}
-					className="pl-9"
-				/>
-			</div>
+			<Input
+				type="search"
+				value={toolSearch}
+				onChange={(event) => setToolSearch(event.target.value)}
+				placeholder={t('settings.modelServices.agentTools.searchPlaceholder')}
+				aria-label={t('settings.modelServices.agentTools.searchPlaceholder')}
+			/>
 
 			{mediaSearchText.includes(normalizedToolSearch) && <SettingsSection
 				title={t('settings.modelServices.agentTools.groups.media')}
