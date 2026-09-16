@@ -408,8 +408,10 @@ const ToolsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.modelServices.tools')}
-				description={t('settings.modelServices.toolsDescription')}
+				title={<span className="text-xl">{t('settings.modelServices.tools')}</span>}
+				description={
+					<span className="text-xs">{t('settings.modelServices.toolsDescription')}</span>
+				}
 			/>
 			<div className="relative">
 				<Input
