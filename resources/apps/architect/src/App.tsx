@@ -22,8 +22,7 @@ export default function App() {
 					disabled={Boolean(studio.busy)}
 					connected={studio.connected}
 				onChange={studio.updateBrief}
-				onDisciplineChange={studio.selectDiscipline}
-				onDisciplineChange={studio.selectDiscipline}
+					onDisciplineChange={studio.selectDiscipline}
 					onGenerate={() => void studio.generate()}
 					onImport={(file) => void studio.importFile(file)}
 				/>
