@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { McpData } from '@shared/mcp_types';
+import { isGitHubRemoteMcpUrl } from '@shared/github_mcp';
 import { Button } from '@/components/ui/button';
 import {
 	Dialog,
@@ -90,6 +91,7 @@ export function McpServerForm({
 	const [deleting, setDeleting] = useState(false);
 
 	const serverId = id.trim().toLowerCase();
+	const isGitHubRemote = type === 'http' && isGitHubRemoteMcpUrl(url);
 
 	const buildEntry = (): McpData => {
 		const now = new Date().toISOString();
@@ -302,7 +304,35 @@ export function McpServerForm({
 							className={SMALL_INPUT_CLASS}
 						/>
 					</Field>
-					{isEdit && isValid ? (
+					{isGitHubRemote ? (
+						<Field>
+							<Label htmlFor="mcp-token">GitHub personal access token</Label>
+							<Input
+								id="mcp-token"
+								type="password"
+								value={token}
+								onChange={(e) => setToken(e.target.value)}
+								autoComplete="off"
+								className={SMALL_INPUT_CLASS}
+							/>
+							<p className="text-[12px] text-muted-foreground">
+								GitHub remote MCP requires a bearer token. Dynamic client registration is not
+								supported.
+							</p>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								onClick={() =>
+									void window.app.openExternalUrl(
+										'https://github.com/settings/personal-access-tokens/new'
+									)
+								}
+							>
+								Create GitHub token
+							</Button>
+						</Field>
+					) : isEdit && isValid ? (
 						<McpOAuthButton id={serverId} beforeStart={persist} />
 					) : (
 						<p className="text-[12px] text-muted-foreground">
@@ -312,17 +342,19 @@ export function McpServerForm({
 					<details>
 						<summary className="cursor-pointer text-[13px] text-muted-foreground">Advanced</summary>
 						<div className="grid gap-4 pt-4">
-							<Field>
-								<Label htmlFor="mcp-token">Access token (optional)</Label>
-								<Input
-									id="mcp-token"
-									type="password"
-									value={token}
-									onChange={(e) => setToken(e.target.value)}
-									autoComplete="off"
-									className={SMALL_INPUT_CLASS}
-								/>
-							</Field>
+							{!isGitHubRemote && (
+								<Field>
+									<Label htmlFor="mcp-token">Access token (optional)</Label>
+									<Input
+										id="mcp-token"
+										type="password"
+										value={token}
+										onChange={(e) => setToken(e.target.value)}
+										autoComplete="off"
+										className={SMALL_INPUT_CLASS}
+									/>
+								</Field>
+							)}
 							<Field>
 								<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
 								<Input

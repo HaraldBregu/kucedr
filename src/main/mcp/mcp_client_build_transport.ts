@@ -5,6 +5,7 @@ import {
 } from '@modelcontextprotocol/sdk/client/stdio.js';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import type { McpData } from '../../shared/mcp_types';
+import { isGitHubRemoteMcpUrl } from '../../shared/github_mcp';
 import { createOAuthProvider } from './mcp_oauth_create_provider';
 import { getMcpOauth, saveMcpOauth } from './mcp_store';
 import { createMcpFetch } from './mcp_fetch';
@@ -21,6 +22,11 @@ export function buildTransport(id: string, data: McpData): Transport {
 	}
 
 	const url = parseMcpUrl(data.url);
+	if (isGitHubRemoteMcpUrl(data.url) && !data.token && !data.client_id) {
+		throw new Error(
+			'GitHub remote MCP requires a personal access token. GitHub does not support dynamic client registration.'
+		);
+	}
 	const headers = data.token ? { Authorization: `Bearer ${data.token}` } : undefined;
 
 	return new StreamableHTTPClientTransport(url, {

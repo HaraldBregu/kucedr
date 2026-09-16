@@ -142,4 +142,31 @@ describe('MCP details', () => {
 		await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('remote'));
 		expect(await screen.findByText('MCP list')).toBeInTheDocument();
 	});
+
+	it('uses PAT authentication instead of unsupported OAuth registration for GitHub', async () => {
+		const user = userEvent.setup();
+		server = {
+			id: 'github',
+			source: 'configured',
+			data: {
+				type: 'http',
+				name: 'GitHub',
+				url: 'https://api.githubcopilot.com/mcp/',
+				enabled: true,
+			},
+		};
+		renderDetails('github');
+
+		const token = await screen.findByLabelText('GitHub personal access token');
+		expect(screen.queryByRole('button', { name: 'Connect with OAuth' })).not.toBeInTheDocument();
+		await user.type(token, 'github-token');
+		await user.click(screen.getByRole('button', { name: 'Save' }));
+
+		await waitFor(() =>
+			expect(mcpApi.upsert).toHaveBeenCalledWith(
+				'github',
+				expect.objectContaining({ token: 'github-token' })
+			)
+		);
+	});
 });
