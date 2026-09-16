@@ -96,6 +96,7 @@ const IntegrationsPage = (): React.JSX.Element => {
 										name={service.provider.name}
 										iconDarkUrl={service.provider.iconDarkUrl}
 										iconLightUrl={service.provider.iconLightUrl}
+										className="size-10"
 									/>
 								}
 								actionClassName="w-auto justify-end"
