@@ -28,6 +28,7 @@ jest.mock('../../../src/renderer/src/lib/providers', () => ({
 const mcpApi = {
 	list: jest.fn(),
 	upsert: jest.fn(),
+	delete: jest.fn(),
 };
 
 beforeEach(() => {
@@ -38,6 +39,7 @@ beforeEach(() => {
 		gmail: { type: 'http', name: 'gmail', url: 'https://gmail.example/mcp', enabled: true },
 	});
 	mcpApi.upsert.mockResolvedValue({});
+	mcpApi.delete.mockResolvedValue(undefined);
 });
 
 it('renders the five integration providers as standard switch rows', async () => {
@@ -69,4 +71,17 @@ it('enables an integration without opening configuration UI', async () => {
 			enabled: true,
 		})
 	);
+});
+
+it('removes the MCP server when an integration is disabled', async () => {
+	const user = userEvent.setup();
+	render(<IntegrationsPage />);
+
+	const gmailSwitch = screen.getByRole('switch', { name: 'gmail' });
+	await waitFor(() => expect(gmailSwitch).toBeChecked());
+	await user.click(gmailSwitch);
+
+	await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('gmail'));
+	expect(mcpApi.upsert).not.toHaveBeenCalled();
+	expect(gmailSwitch).not.toBeChecked();
 });

@@ -53,15 +53,25 @@ const IntegrationsPage = (): React.JSX.Element => {
 		setSavingId(service.id);
 		setError('');
 		const existing = servers[service.id];
-		const entry: McpData = existing
-			? { ...existing, enabled }
-			: {
-					type: 'http',
-					name: service.name,
-					url: service.url ?? '',
-					enabled,
-				};
 		try {
+			if (!enabled) {
+				await window.mcp.delete(service.id);
+				setServers((current) => {
+					const next = { ...current };
+					delete next[service.id];
+					return next;
+				});
+				return;
+			}
+
+			const entry: McpData = existing
+				? { ...existing, enabled: true }
+				: {
+						type: 'http',
+						name: service.name,
+						url: service.url ?? '',
+						enabled: true,
+					};
 			await window.mcp.upsert(service.id, entry);
 			setServers((current) => ({ ...current, [service.id]: entry }));
 		} catch (caught) {
