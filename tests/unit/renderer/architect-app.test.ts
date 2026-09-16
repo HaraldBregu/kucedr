@@ -25,8 +25,10 @@ const catalog = [
 describe('Architect app workflow', () => {
 	it('builds a domain-specific interior visualization prompt', () => {
 		const prompt = buildBriefPrompt({
+			discipline: 'interior',
 			description: 'a sunken conversation area facing the garden',
-			room: 'living room',
+			subject: 'living room',
+			context: 'a garden-facing private residence',
 			style: 'quiet modernism',
 			materials: 'travertine and walnut',
 			lighting: 'soft northern daylight',
@@ -38,9 +40,9 @@ describe('Architect app workflow', () => {
 	});
 
 	it('constrains revisions to the requested design change', () => {
-		const prompt = buildRevisionPrompt('replace the sofa with a low modular sectional');
+		const prompt = buildRevisionPrompt('replace the sofa with a low modular sectional', 'interior');
 		expect(prompt).toContain('apply only this design revision');
-		expect(prompt).toContain('Preserve the room geometry, camera position, perspective');
+		expect(prompt).toContain('Preserve the structure and spatial geometry, camera position, perspective');
 	});
 
 	it('selects a compatible edit model without switching providers', () => {
@@ -53,8 +55,10 @@ describe('Architect app workflow', () => {
 	it('maps aspect-ratio controls through model metadata', () => {
 		expect(
 			createGenerationOptions(catalog[0], {
+				discipline: 'interior',
 				description: 'room',
-				room: 'living room',
+				subject: 'living room',
+				context: 'home',
 				style: 'modern',
 				materials: 'oak',
 				lighting: 'daylight',
