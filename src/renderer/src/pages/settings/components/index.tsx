@@ -61,7 +61,7 @@ export function SettingsPageHeader({
 					</div>
 				)}
 				<div className="min-w-0">
-					<h1 className="text-2xl font-semibold leading-6 tracking-normal text-foreground">
+					<h1 className="text-2xl font-normal leading-6 tracking-normal text-foreground">
 						{title}
 					</h1>
 					{description && (
