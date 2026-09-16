@@ -32,6 +32,7 @@ const mcpApi = {
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'mcp', { configurable: true, value: mcpApi });
 	mcpApi.list.mockResolvedValue({
 		gmail: { type: 'http', name: 'gmail', url: 'https://gmail.example/mcp', enabled: true },
