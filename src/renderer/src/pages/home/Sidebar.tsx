@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Bot, Cloud, Code2, Layers, ListChecks, LogOut, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
+import { Bot, Cloud, Code2, Layers, LogOut, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -117,10 +117,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
 			/>
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
-				<Link to="/settings/agent/tasks" className={SPLIT_ITEM_CLASS}>
-					<ListChecks className="size-4" />
-					<span>{t('settings.tabs.taskScheduler')}</span>
-				</Link>
 				<Link to="/settings/apps" className={SPLIT_ITEM_CLASS}>
 					<Layers className="size-4" />
 					<span>{t('settings.tabs.apps')}</span>
