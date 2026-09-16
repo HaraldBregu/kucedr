@@ -408,9 +408,9 @@ const ToolsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={<span className="text-xl">{t('settings.modelServices.tools')}</span>}
+				title={<span className="text-2xl">{t('settings.modelServices.tools')}</span>}
 				description={
-					<span className="text-xs">{t('settings.modelServices.toolsDescription')}</span>
+					<span className="text-sm">{t('settings.modelServices.toolsDescription')}</span>
 				}
 			/>
 			<div className="relative">
