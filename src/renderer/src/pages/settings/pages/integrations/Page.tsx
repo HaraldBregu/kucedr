@@ -11,7 +11,6 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
-	SettingsSection,
 } from '../../components';
 
 const INTEGRATION_PROVIDER_IDS = [
@@ -89,47 +88,42 @@ const IntegrationsPage = (): React.JSX.Element => {
 			/>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
-			<SettingsSection
-				title={t('settings.integrations.available')}
-				description={t('settings.integrations.availableDescription')}
-			>
-				{catalog.length > 0 ? (
-					<SettingsPanel>
-						{catalog.map((service) => (
-							<SettingsRow
-								key={`${service.provider.id}-${service.id}`}
-								title={service.name}
-								description={service.provider.name}
-								media={
-									<ProviderAvatar
-										providerId={service.provider.id}
-										name={service.provider.name}
-										iconDarkUrl={service.provider.iconDarkUrl}
-										iconLightUrl={service.provider.iconLightUrl}
-										className="size-10"
-									/>
-								}
-								actionClassName="w-auto justify-end"
-								actions={
-									<Switch
-										checked={servers[service.id]?.enabled === true}
-										disabled={savingId === service.id}
-										onCheckedChange={(enabled) =>
-											void setIntegrationEnabled(service, enabled)
-										}
-										aria-label={service.name}
-									/>
-								}
-							/>
-						))}
-					</SettingsPanel>
-				) : (
-					<SettingsEmptyState
-						title={t('settings.integrations.empty')}
-						description={t('settings.integrations.emptyDescription')}
-					/>
-				)}
-			</SettingsSection>
+			{catalog.length > 0 ? (
+				<SettingsPanel>
+					{catalog.map((service) => (
+						<SettingsRow
+							key={`${service.provider.id}-${service.id}`}
+							title={service.name}
+							description={service.provider.name}
+							media={
+								<ProviderAvatar
+									providerId={service.provider.id}
+									name={service.provider.name}
+									iconDarkUrl={service.provider.iconDarkUrl}
+									iconLightUrl={service.provider.iconLightUrl}
+									className="size-10"
+								/>
+							}
+							actionClassName="w-auto justify-end"
+							actions={
+								<Switch
+									checked={servers[service.id]?.enabled === true}
+									disabled={savingId === service.id}
+									onCheckedChange={(enabled) =>
+										void setIntegrationEnabled(service, enabled)
+									}
+									aria-label={service.name}
+								/>
+							}
+						/>
+					))}
+				</SettingsPanel>
+			) : (
+				<SettingsEmptyState
+					title={t('settings.integrations.empty')}
+					description={t('settings.integrations.emptyDescription')}
+				/>
+			)}
 		</SettingsPageShell>
 	);
 };
