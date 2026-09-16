@@ -1,10 +1,13 @@
 import type { CatalogModel, ImageSource } from '@kucedr/sdk';
 
 export type CropRatio = 'original' | '1:1' | '4:3' | '3:2' | '16:9';
+export type DesignDiscipline = 'interior' | 'exterior' | 'industrial';
 
 export interface GenerationBrief {
+	discipline: DesignDiscipline;
 	description: string;
-	room: string;
+	subject: string;
+	context: string;
 	style: string;
 	materials: string;
 	lighting: string;
@@ -39,6 +42,7 @@ export interface StudioController {
 	modelLabel: string;
 	catalog: CatalogModel[];
 	updateBrief: (field: keyof GenerationBrief, value: string) => void;
+	selectDiscipline: (discipline: DesignDiscipline) => void;
 	updateCrop: (field: keyof CropSettings, value: string | number) => void;
 	generate: () => Promise<void>;
 	importFile: (file: File) => Promise<void>;

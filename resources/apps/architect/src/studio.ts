@@ -7,12 +7,14 @@ import { selectEditModel } from './model';
 import { createGenerationOptions } from './options';
 import { readImage } from './read';
 import { buildRevisionPrompt } from './revision';
-import type { CropSettings, GenerationBrief, StudioController } from './types';
+import type { CropSettings, DesignDiscipline, GenerationBrief, StudioController } from './types';
 import { createVersion } from './version';
 
 const initialBrief: GenerationBrief = {
+	discipline: 'interior',
 	description: '',
-	room: 'living room',
+	subject: 'living room',
+	context: 'a calm private residence with a garden view',
 	style: 'warm contemporary minimalism',
 	materials: 'natural oak, honed limestone, linen, and brushed metal',
 	lighting: 'soft late-afternoon daylight with warm indirect lighting',
@@ -33,7 +35,9 @@ export function useStudio(): StudioController {
 	const [modelId, setModelId] = useState<string>();
 	const [busy, setBusy] = useState<string>();
 	const [message, setMessage] = useState(
-		connected ? 'Ready for a design brief.' : 'Open this app in Kucedr to generate images.'
+		connected
+			? 'Ready to develop an interior, exterior, or industrial design concept.'
+			: 'Open this app in Kucedr to generate images.'
 	);
 
 	useEffect(() => {
@@ -71,8 +75,8 @@ export function useStudio(): StudioController {
 		if (!connected) return setMessage('Open Architect in Kucedr to use the configured image model.');
 		if (!brief.description.trim()) return setMessage('Describe the space you want to create.');
 		const prompt = buildBriefPrompt(brief);
-		setBusy('Generating architectural visualization…');
-		setMessage('Kucedr is translating the brief into a finished interior.');
+		setBusy(`Generating ${brief.discipline} design concept…`);
+		setMessage(`Kucedr is translating the brief into a finished ${brief.discipline} design.`);
 		try {
 			const result = await models.image.createImage({
 				prompt,
@@ -84,7 +88,7 @@ export function useStudio(): StudioController {
 						}
 					: {}),
 			});
-			append(result, 'Generated concept', brief.description.trim());
+			append(result, `Generated ${brief.discipline} concept`, brief.description.trim());
 			setMessage('Concept ready. Crop it or describe the next design revision.');
 		} catch (error) {
 			setMessage((error as Error).message);
@@ -97,7 +101,7 @@ export function useStudio(): StudioController {
 		try {
 			const result = await readImage(file);
 			append(result, 'Imported reference', file.name);
-			setMessage('Reference ready. Crop it or describe an architectural revision.');
+			setMessage('Reference ready. Crop it or describe the next design revision.');
 		} catch (error) {
 			setMessage((error as Error).message);
 		}
@@ -113,7 +117,7 @@ export function useStudio(): StudioController {
 				'Your configured image provider has no compatible edit model. Choose Google, BFL Kontext, or Qwen Image Edit in Kucedr Settings.'
 			);
 		}
-		const prompt = buildRevisionPrompt(instruction);
+		const prompt = buildRevisionPrompt(instruction, brief.discipline);
 		setBusy('Revising the current design…');
 		setMessage(`Preserving the composition with ${editModel.name}.`);
 		try {
@@ -160,6 +164,23 @@ export function useStudio(): StudioController {
 		modelLabel,
 		catalog,
 		updateBrief: (field, value) => setBrief((valueBefore) => ({ ...valueBefore, [field]: value })),
+		selectDiscipline: (discipline: DesignDiscipline) =>
+			setBrief((valueBefore) => ({
+				...valueBefore,
+				discipline,
+				subject:
+					discipline === 'interior'
+						? 'living room'
+						: discipline === 'exterior'
+							? 'private residence'
+							: 'lounge chair',
+				context:
+					discipline === 'interior'
+						? 'a calm private residence with a garden view'
+						: discipline === 'exterior'
+							? 'a wooded site with a generous approach'
+							: 'a studio setting with clear human scale',
+			})),
 		updateCrop: (field, value) => setCrop((valueBefore) => ({ ...valueBefore, [field]: value })),
 		generate,
 		importFile,

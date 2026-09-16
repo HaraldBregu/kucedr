@@ -2,7 +2,7 @@
 	"name": "kucedr-architect",
 	"private": true,
 	"version": "1.0.0",
-	"description": "An AI interior architecture image studio for Kucedr.",
+	"description": "An AI studio for interior, exterior, and industrial design concepts.",
 	"keywords": ["creative"],
 	"main": "dist/index.html",
 	"files": ["dist", "manifest.json"],

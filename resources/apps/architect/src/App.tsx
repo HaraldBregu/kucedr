@@ -18,10 +18,11 @@ export default function App() {
 			/>
 			<main className="workspace">
 				<Brief
-					brief={studio.brief}
+				brief={studio.brief}
 					disabled={Boolean(studio.busy)}
 					connected={studio.connected}
-					onChange={studio.updateBrief}
+				onChange={studio.updateBrief}
+				onDisciplineChange={studio.selectDiscipline}
 					onGenerate={() => void studio.generate()}
 					onImport={(file) => void studio.importFile(file)}
 				/>

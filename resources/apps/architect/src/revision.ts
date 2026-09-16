@@ -1,7 +1,10 @@
-export function buildRevisionPrompt(instruction: string): string {
+import type { DesignDiscipline } from './types';
+
+export function buildRevisionPrompt(instruction: string, discipline: DesignDiscipline): string {
+	const subject = discipline === 'industrial' ? 'object silhouette and proportions' : 'structure and spatial geometry';
 	return [
-		`Using the provided architectural image, apply only this design revision: ${instruction.trim()}.`,
-		'Preserve the room geometry, camera position, perspective, windows, doors, structural elements, lighting logic, scale, and every unspecified object.',
-		'Return one finished photorealistic interior visualization without text, labels, logos, or watermarks.',
+		`Using the provided ${discipline} design image, apply only this design revision: ${instruction.trim()}.`,
+		`Preserve the ${subject}, camera position, perspective, lighting logic, scale, and every unspecified element.`,
+		'Return one finished photorealistic design visualization without text, labels, logos, or watermarks.',
 	].join(' ');
 }
