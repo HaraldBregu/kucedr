@@ -20,8 +20,10 @@ import {
 	Terminal,
 	Video,
 	Volume2,
+	X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import {
@@ -409,13 +411,28 @@ const ToolsPage: React.FC = () => {
 				title={t('settings.modelServices.tools')}
 				description={t('settings.modelServices.toolsDescription')}
 			/>
-			<Input
-				type="search"
-				value={toolSearch}
-				onChange={(event) => setToolSearch(event.target.value)}
-				placeholder={t('settings.modelServices.agentTools.searchPlaceholder')}
-				aria-label={t('settings.modelServices.agentTools.searchPlaceholder')}
-			/>
+			<div className="relative">
+				<Input
+					type="text"
+					value={toolSearch}
+					onChange={(event) => setToolSearch(event.target.value)}
+					placeholder={t('settings.modelServices.agentTools.searchPlaceholder')}
+					aria-label={t('settings.modelServices.agentTools.searchPlaceholder')}
+					className="pr-10"
+				/>
+				{toolSearch && (
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-sm"
+						className="absolute right-1.5 top-1.5 text-muted-foreground"
+						onClick={() => setToolSearch('')}
+						aria-label={t('settings.modelServices.agentTools.clearSearch')}
+					>
+						<X aria-hidden="true" />
+					</Button>
+				)}
+			</div>
 
 			{mediaSearchText.includes(normalizedToolSearch) && <SettingsSection
 				title={t('settings.modelServices.agentTools.groups.media')}
