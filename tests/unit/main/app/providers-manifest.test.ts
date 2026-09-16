@@ -46,6 +46,16 @@ describe('provider manifests', () => {
 		expect(integrations.every((service) => service.provider.iconLightUrl?.endsWith('.png'))).toBe(
 			true
 		);
+		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
+			expect.objectContaining({
+				iconDarkUrl: expect.stringContaining(
+					'/resources/providers/github/images/official/github-dark.png'
+				),
+				iconLightUrl: expect.stringContaining(
+					'/resources/providers/github/images/official/github.png'
+				),
+			})
+		);
 		expect(openAi?.provider.iconDarkUrl).toContain(
 			'/resources/providers/openai/images/fallback_lobehub/png_dark/openai.png'
 		);

@@ -2,7 +2,7 @@
 	"providerId": "github",
 	"providerName": "GitHub",
 	"images_url": "/images",
-	"icon_dark_url": "/images/official/github.png",
+	"icon_dark_url": "/images/official/github-dark.png",
 	"icon_light_url": "/images/official/github.png",
 	"services": [
 		{
