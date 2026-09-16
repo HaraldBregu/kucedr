@@ -82,6 +82,18 @@ export class Main {
 		});
 	}
 
+	private trackRouteNavigation(win: BrowserWindow): void {
+		win.on('app-command', (_event, command) => {
+			if (command === 'browser-backward' && win.webContents.navigationHistory.canGoBack()) {
+				win.webContents.navigationHistory.goBack();
+			}
+
+			if (command === 'browser-forward' && win.webContents.navigationHistory.canGoForward()) {
+				win.webContents.navigationHistory.goForward();
+			}
+		});
+	}
+
 	private createLauncherWindow(
 		options: {
 			closeToTray?: boolean;
@@ -99,6 +111,7 @@ export class Main {
 
 		attachWindowHandlers(win);
 		this.trackWindowVisibility(win);
+		this.trackRouteNavigation(win);
 
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
@@ -200,6 +213,7 @@ export class Main {
 		this.windowContextManager.create(win);
 		attachWindowHandlers(win);
 		this.trackWindowVisibility(win);
+		this.trackRouteNavigation(win);
 
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
