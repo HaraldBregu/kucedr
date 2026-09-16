@@ -1290,6 +1290,7 @@
 			"agentTools": {
 				"title": "Strumenti dell'agente",
 				"description": "Funzionalita integrate disponibili agli agenti. La disponibilita puo variare in base a modalita di esecuzione, autorizzazioni e configurazione. I server MCP installati aggiungono dinamicamente i propri strumenti.",
+				"searchPlaceholder": "Cerca strumenti",
 				"filePermissionLabel": "Autorizzazione strumenti file",
 				"permissions": {
 					"ask": "Chiedi",

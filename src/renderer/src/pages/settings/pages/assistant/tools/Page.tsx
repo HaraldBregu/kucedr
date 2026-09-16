@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
 import {
 	Select,
 	SelectContent,
@@ -292,6 +293,7 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 
 const ToolsPage: React.FC = () => {
 	const { t } = useTranslation();
+	const [toolSearch, setToolSearch] = useState('');
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
 	const [searchEngineError, setSearchEngineError] = useState<string | null>(null);
 	const [searchSavingEngineId, setSearchSavingEngineId] = useState<SearchEngineId | null>(null);
@@ -306,6 +308,37 @@ const ToolsPage: React.FC = () => {
 	const selectedSearchEngineDescription = selectedSearchEngine
 		? t(selectedSearchEngine.descriptionKey)
 		: t('settings.searchEngine.defaultDescription');
+	const normalizedToolSearch = toolSearch.trim().toLocaleLowerCase();
+	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
+		...group,
+		tools: group.tools.filter(([name, id, description]) =>
+			[
+				name,
+				id,
+				description,
+				t(`settings.modelServices.agentTools.groups.${group.titleKey}`),
+			]
+				.join(' ')
+				.toLocaleLowerCase()
+				.includes(normalizedToolSearch)
+		),
+	}));
+	const mediaSearchText = [
+		t('settings.modelServices.agentTools.groups.media'),
+		t('settings.modelServices.imageAssistantName'),
+		t('settings.modelServices.imageModelDescription'),
+		t('settings.modelServices.musicCreatorName'),
+		t('settings.modelServices.musicModelDescription'),
+		t('settings.modelServices.videoCreatorName'),
+		t('settings.modelServices.videoModelDescription'),
+		t('settings.modelServices.toolTextToSpeechName'),
+		t('settings.modelServices.toolTextToSpeechDescription'),
+		t('settings.modelServices.toolSpeechToTextName'),
+		t('settings.modelServices.toolSpeechToTextDescription'),
+		'create_image create_sound create_video text_to_speech speech_to_text',
+	]
+		.join(' ')
+		.toLocaleLowerCase();
 
 	useEffect(() => {
 		let mounted = true;
@@ -376,8 +409,22 @@ const ToolsPage: React.FC = () => {
 				title={t('settings.modelServices.tools')}
 				description={t('settings.modelServices.toolsDescription')}
 			/>
+			<div className="relative">
+				<SearchIcon
+					className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+					aria-hidden="true"
+				/>
+				<Input
+					type="search"
+					value={toolSearch}
+					onChange={(event) => setToolSearch(event.target.value)}
+					placeholder={t('settings.modelServices.agentTools.searchPlaceholder')}
+					aria-label={t('settings.modelServices.agentTools.searchPlaceholder')}
+					className="pl-9"
+				/>
+			</div>
 
-			<SettingsSection
+			{mediaSearchText.includes(normalizedToolSearch) && <SettingsSection
 				title={t('settings.modelServices.agentTools.groups.media')}
 				className="order-2"
 			>
@@ -577,9 +624,13 @@ const ToolsPage: React.FC = () => {
 						</>}
 					/>
 				</SettingsPanel>
-			</SettingsSection>
+			</SettingsSection>}
 
-			{ORDERED_AGENT_TOOL_GROUPS.filter((group) => group.titleKey !== 'media').map((group) => {
+			{filteredToolGroups.filter((group) => group.titleKey !== 'media' && (
+				group.tools.length > 0 || (
+					group.titleKey === 'web' && 'search web search_web'.includes(normalizedToolSearch)
+				)
+			)).map((group) => {
 				const Icon = group.icon;
 				return (
 					<SettingsSection
