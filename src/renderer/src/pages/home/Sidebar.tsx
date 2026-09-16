@@ -121,6 +121,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					<ListChecks className="size-4" />
 					<span>{t('settings.tabs.taskScheduler')}</span>
 				</Link>
+				<Link to="/settings/apps" className={SPLIT_ITEM_CLASS}>
+					<Layers className="size-4" />
+					<span>{t('settings.tabs.apps')}</span>
+				</Link>
 				<button type="button" className={SPLIT_ITEM_CLASS} onClick={openCommandMenu}>
 					<Search className="size-4" />
 					<span>{t('titleBar.search')}</span>

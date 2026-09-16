@@ -286,7 +286,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('titleBar.newChat');
 });
 
-it('keeps Tasks, Search, and New chat in the fixed sidebar action group', async () => {
+it('keeps Tasks, Apps, Search, and New chat in the fixed sidebar action group', async () => {
 	const user = userEvent.setup();
 	const openCommandMenu = jest.fn();
 	listSessions.mockResolvedValue([]);
@@ -307,19 +307,21 @@ it('keeps Tasks, Search, and New chat in the fixed sidebar action group', async 
 					}
 				/>
 				<Route path="/settings/agent/tasks" element={<p>Tasks page</p>} />
+				<Route path="/settings/apps" element={<p>Apps page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByRole('link', { name: 'settings.tabs.taskScheduler' })).toHaveAttribute(
+		expect(await screen.findByRole('link', { name: 'settings.tabs.taskScheduler' })).toHaveAttribute(
 		'href',
 		'/settings/agent/tasks'
 	);
+	expect(screen.getByRole('link', { name: 'settings.tabs.apps' })).toHaveAttribute('href', '/settings/apps');
 	await user.click(screen.getByRole('button', { name: 'titleBar.search' }));
 	expect(openCommandMenu).toHaveBeenCalledTimes(1);
 	expect(screen.getByRole('button', { name: 'titleBar.newChat' })).toBeInTheDocument();
-	await user.click(screen.getByRole('link', { name: 'settings.tabs.taskScheduler' }));
-	expect(screen.getByText('Tasks page')).toBeInTheDocument();
+	await user.click(screen.getByRole('link', { name: 'settings.tabs.apps' }));
+	expect(screen.getByText('Apps page')).toBeInTheDocument();
 });
 
 it('shows an empty state when there is no chat history', async () => {
