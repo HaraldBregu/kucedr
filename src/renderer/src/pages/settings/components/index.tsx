@@ -61,11 +61,11 @@ export function SettingsPageHeader({
 					</div>
 				)}
 				<div className="min-w-0">
-					<h1 className="text-lg font-semibold leading-6 tracking-normal text-foreground">
+					<h1 className="text-2xl font-semibold leading-6 tracking-normal text-foreground">
 						{title}
 					</h1>
 					{description && (
-						<p className="mt-0.5 max-w-2xl text-[10px] leading-4 text-muted-foreground">
+						<p className="mt-0.5 max-w-2xl text-sm leading-4 text-muted-foreground">
 							{description}
 						</p>
 					)}
