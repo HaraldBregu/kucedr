@@ -36,6 +36,13 @@ describe('provider manifests', () => {
 			'google-drive',
 			'notion',
 		]);
+		expect(integrations.map((service) => service.url)).toEqual([
+			'https://api.githubcopilot.com/mcp/',
+			'https://gmailmcp.googleapis.com/mcp/v1',
+			'https://calendarmcp.googleapis.com/mcp/v1',
+			'https://drivemcp.googleapis.com/mcp/v1',
+			'https://mcp.notion.com/mcp',
+		]);
 		expect(integrations.every((service) => service.provider.iconLightUrl?.endsWith('.png'))).toBe(
 			true
 		);

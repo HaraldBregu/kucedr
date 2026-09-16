@@ -41,6 +41,7 @@ const routes = [
 	'/settings/cloud',
 	'/settings/system',
 	'/settings/channels',
+	'/settings/integrations',
 	'/settings/agent/skills',
 	'/settings/providers',
 	'/settings/providers/database',
