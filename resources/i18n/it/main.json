@@ -235,13 +235,6 @@
 			"description": "Collega i servizi che Kucedr può usare per tuo conto.",
 			"available": "Integrazioni disponibili",
 			"availableDescription": "Aggiungi un servizio per rendere disponibili i suoi strumenti all'assistente.",
-			"items": {
-				"gmail": "Leggi, cerca e prepara email",
-				"google-calendar": "Consulta gli impegni e gestisci gli eventi",
-				"google-drive": "Trova e utilizza i file",
-				"github": "Gestisci pull request, issue e repository",
-				"notion": "Cerca e aggiorna le pagine del workspace"
-			},
 			"empty": "Nessuna integrazione disponibile",
 			"emptyDescription": "Nessun provider di integrazione trovato nel catalogo provider."
 		},

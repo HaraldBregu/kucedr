@@ -235,13 +235,6 @@
 			"description": "Connect the services Kucedr can use on your behalf.",
 			"available": "Available integrations",
 			"availableDescription": "Add a service to make its tools available to the assistant.",
-			"items": {
-				"gmail": "Read, search, and draft email",
-				"google-calendar": "View schedules and manage events",
-				"google-drive": "Find and work with files",
-				"github": "Triage pull requests, issues, and repositories",
-				"notion": "Search and update workspace pages"
-			},
 			"empty": "No integrations available",
 			"emptyDescription": "No integration providers were found in the provider catalog."
 		},
