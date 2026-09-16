@@ -18,10 +18,13 @@ import { statusLabel, isRunningState, stateTone } from './status';
 import { UserInputCard } from './UserInputCard';
 import { ScreenSourceCard } from './ScreenSourceCard';
 import { parsePlanEnvelope } from './plan';
+import { ImageGallery } from './ImageGallery';
 
 const LONG_MESSAGE_LENGTH = 600;
 
-function generatedMediaPaths(tools: readonly AgentToolPart[]): string[] {
+type GeneratedMedia = { type: string; paths: string[] };
+
+function generatedMedia(tools: readonly AgentToolPart[]): GeneratedMedia[] {
 	return tools
 		.filter(
 			(tool) =>
@@ -30,8 +33,8 @@ function generatedMediaPaths(tools: readonly AgentToolPart[]): string[] {
 					tool.type === 'create_sound') &&
 				tool.state === 'output-available'
 		)
-		.map((tool) => imagePathFromOutput(tool.output))
-		.filter((path): path is string => typeof path === 'string' && path.length > 0);
+		.map((tool) => ({ type: tool.type, paths: imagePathsFromOutput(tool.output) }))
+		.filter(({ paths }) => paths.length > 0);
 }
 
 function isVideoPath(path: string): boolean {
@@ -44,17 +47,23 @@ function isAudioPath(path: string): boolean {
 
 // While streaming, tool.output is the structured result object; once the message
 // is rebuilt from persisted history it arrives as a JSON string, so accept both.
-function imagePathFromOutput(output: unknown): string | undefined {
+function imagePathsFromOutput(output: unknown): string[] {
 	let value = output;
 	if (typeof value === 'string') {
 		try {
 			value = JSON.parse(value);
 		} catch {
-			return undefined;
+			return [];
 		}
 	}
-	const path = (value as { path?: unknown } | null | undefined)?.path;
-	return typeof path === 'string' ? path : undefined;
+	const record = value as { images?: unknown; path?: unknown } | null | undefined;
+	const images = Array.isArray(record?.images)
+		? record.images
+				.map((image) => (image as { path?: unknown } | null)?.path)
+				.filter((path): path is string => typeof path === 'string' && path.length > 0)
+		: [];
+	if (images.length > 0) return images;
+	return typeof record?.path === 'string' && record.path.length > 0 ? [record.path] : [];
 }
 
 function isLocalImagePath(value: string): boolean {
@@ -131,6 +140,16 @@ function contentEmbedsImage(content: string, path: string): boolean {
 	return new RegExp(`!\\[[^\\]]*\\]\\(<?[^\\n]*${escaped}`).test(content);
 }
 
+function removeGeneratedImageEmbeds(content: string, imagePaths: readonly string[]): string {
+	return content.replace(/!\[[^\]]*\]\(([^()\n]+)\)/g, (match, destination: string) => {
+		const src = destination
+			.trim()
+			.replace(/^<|>$/g, '')
+			.replace(/^file:\/\//i, '');
+		return resolveLocalImagePath(src, imagePaths) ? '' : match;
+	});
+}
+
 function normalizeImageLinks(content: string): string {
 	return content.replace(/!\[([^\]]*)\]\(([^()\n]+)\)/g, (match, alt: string, dest: string) => {
 		// react-markdown's default urlTransform strips file: URLs, so rewrite
@@ -181,7 +200,6 @@ export function AssistantMessage({
 
 	const parsedPlan = parsePlanEnvelope(message.content, isStreaming);
 	const displayContent = parsedPlan.kind === 'markdown' ? message.content : parsedPlan.content;
-	const hasContent = displayContent.length > 0 || parsedPlan.kind === 'complete';
 	const messageText = displayContent.trim();
 	const hasTools = message.tools.length > 0;
 	const skillTools = message.tools.filter(isSkillTool);
@@ -190,10 +208,24 @@ export function AssistantMessage({
 	const otherTools = message.tools.filter(
 		(tool) => !isSkillTool(tool) && tool.type !== 'ask' && tool.type !== 'select_screen_source'
 	);
-	const mediaPaths = generatedMediaPaths(message.tools);
-	const standaloneMediaPaths = mediaPaths.filter(
-		(path) => !contentEmbedsImage(message.content, path)
-	);
+	const generated = generatedMedia(message.tools);
+	const mediaPaths = generated.flatMap(({ paths }) => paths);
+	const generatedImagePaths = generated
+		.filter(({ type }) => type === 'create_image')
+		.flatMap(({ paths }) => paths);
+	const standaloneImagePaths =
+		generatedImagePaths.length > 1
+			? generatedImagePaths
+			: generatedImagePaths.filter((path) => !contentEmbedsImage(message.content, path));
+	const markdownContent =
+		standaloneImagePaths.length > 1
+			? removeGeneratedImageEmbeds(displayContent, standaloneImagePaths)
+			: displayContent;
+	const hasContent = markdownContent.trim().length > 0 || parsedPlan.kind === 'complete';
+	const standaloneMediaPaths = generated
+		.filter(({ type }) => type !== 'create_image')
+		.flatMap(({ paths }) => paths)
+		.filter((path) => !contentEmbedsImage(message.content, path));
 	const messageMarkdownComponents = {
 		...markdownComponents,
 		img: ({ src, alt }: { src?: string; alt?: string }) => {
@@ -306,6 +338,13 @@ export function AssistantMessage({
 					permission={message.pendingPermission}
 				/>
 			)}
+			{standaloneImagePaths.length > 0 && (
+				<ImageGallery
+					paths={standaloneImagePaths}
+					toSource={localResourceUrl}
+					onContextMenu={(path) => void window.app.showImageContextMenu(path)}
+				/>
+			)}
 			{standaloneMediaPaths.length > 0 && (
 				<div className="flex w-full flex-col gap-2">
 					{standaloneMediaPaths.map((path) => {
@@ -328,15 +367,7 @@ export function AssistantMessage({
 								onOpenFile={() => void window.app.openVideo(path)}
 								onContextMenu={() => void window.app.showVideoContextMenu(path)}
 							/>
-						) : (
-							<img
-								key={path}
-								src={localResourceUrl(path)}
-								alt="Generated image"
-								className="h-auto max-w-full rounded-lg border border-border/50"
-								onContextMenu={() => void window.app.showImageContextMenu(path)}
-							/>
-						);
+						) : null;
 					})}
 				</div>
 			)}
@@ -361,7 +392,7 @@ export function AssistantMessage({
 										components={messageMarkdownComponents}
 										urlTransform={transformImageUrl}
 									>
-										{normalizeImageLinks(displayContent)}
+										{normalizeImageLinks(markdownContent)}
 									</Markdown>
 								</CardContent>
 								{canImplement && onImplement ? (
@@ -372,13 +403,13 @@ export function AssistantMessage({
 									</CardFooter>
 								) : null}
 							</Card>
-						) : displayContent ? (
+						) : markdownContent ? (
 							<Markdown
 								className="min-w-0 max-w-full break-words [overflow-wrap:anywhere]"
 								components={messageMarkdownComponents}
 								urlTransform={transformImageUrl}
 							>
-								{normalizeImageLinks(displayContent)}
+								{normalizeImageLinks(markdownContent)}
 							</Markdown>
 						) : null}
 					</div>

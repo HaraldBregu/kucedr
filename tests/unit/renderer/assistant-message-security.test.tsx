@@ -67,6 +67,106 @@ it('encodes reserved pathname characters in generated media URLs', () => {
 	);
 });
 
+it('shows a generated image picker and switches its selected image', () => {
+	render(
+		<AssistantMessage
+			message={message(
+				'Here are two choices:\n![first](/tmp/first.png)\n![second](/tmp/second.png)',
+				[
+					{
+						toolCallId: 'images-1',
+						type: 'create_image',
+						state: 'output-available',
+						output: {
+							images: [
+								{ path: '/tmp/first.png', mimeType: 'image/png' },
+								{ path: '/tmp/second.png', mimeType: 'image/png' },
+							],
+						},
+					},
+				]
+			)}
+		/>
+	);
+
+	expect(screen.getByRole('img', { name: 'Generated image 1 of 2' })).toHaveAttribute(
+		'src',
+		'local-resource://file/tmp/first.png'
+	);
+	expect(screen.getByRole('img', { name: 'Generated image 1 of 2' })).toHaveClass('object-cover');
+	expect(screen.getByLabelText('Generated images')).toHaveClass('grid-cols-[minmax(0,1fr)_4rem]');
+	expect(screen.getByLabelText('Choose generated image')).toHaveClass('overflow-y-auto');
+	fireEvent.click(screen.getByRole('button', { name: 'Show generated image 2 of 2' }));
+	expect(screen.getByRole('img', { name: 'Generated image 2 of 2' })).toHaveAttribute(
+		'src',
+		'local-resource://file/tmp/second.png'
+	);
+	expect(screen.getByRole('button', { name: 'Show generated image 2 of 2' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
+	expect(screen.getByRole('button', { name: 'Show generated image 2 of 2' })).not.toHaveClass(
+		'border-primary'
+	);
+	expect(screen.getByRole('button', { name: 'Show generated image 1 of 2' })).toHaveClass(
+		'brightness-50'
+	);
+	expect(screen.getByText(/Here are two choices/)).toBeInTheDocument();
+});
+
+it('groups images from separate image tool calls into one picker', () => {
+	render(
+		<AssistantMessage
+			message={message('', [
+				{
+					toolCallId: 'image-1',
+					type: 'create_image',
+					state: 'output-available',
+					output: { path: '/tmp/first.png' },
+				},
+				{
+					toolCallId: 'image-2',
+					type: 'create_image',
+					state: 'output-available',
+					output: { path: '/tmp/second.png' },
+				},
+			])}
+		/>
+	);
+
+	expect(screen.getByRole('img', { name: 'Generated image 1 of 2' })).toHaveAttribute(
+		'src',
+		'local-resource://file/tmp/first.png'
+	);
+	expect(screen.getByRole('button', { name: 'Show generated image 1 of 2' })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Show generated image 2 of 2' })).toBeInTheDocument();
+});
+
+it('shows image pickers from restored tool output', () => {
+	render(
+		<AssistantMessage
+			message={message('', [
+				{
+					toolCallId: 'images-1',
+					type: 'create_image',
+					state: 'output-available',
+					output: JSON.stringify({
+						images: [
+							{ path: '/tmp/first.png', mimeType: 'image/png' },
+							{ path: '/tmp/second.png', mimeType: 'image/png' },
+						],
+					}),
+				},
+			])}
+		/>
+	);
+
+	expect(screen.getByRole('img', { name: 'Generated image 1 of 2' })).toHaveAttribute(
+		'src',
+		'local-resource://file/tmp/first.png'
+	);
+});
+
 it('expands and collapses long assistant content', () => {
 	const { container } = render(
 		<AssistantMessage message={message('x'.repeat(700))} collapseLongContent />

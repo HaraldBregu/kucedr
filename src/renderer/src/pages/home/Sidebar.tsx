@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Bot, Cloud, Code2, Layers, ListTodo, LogOut, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
+import { Bot, Cloud, Code2, Layers, ListChecks, LogOut, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -85,10 +85,11 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 
 	useEffect(() => {
 		const session = sessions.find((item) => item.id === currentSessionId);
-		setSessionTitle?.(
-			session ? session.title.trim() || t('settings.chatHistory.untitled') : undefined,
-			session?.id
-		);
+		if (session) {
+			setSessionTitle?.(session.title.trim() || t('settings.chatHistory.untitled'), session.id);
+		} else if (currentSessionId === DEFAULT_CHAT_SESSION_ID) {
+			setSessionTitle?.(undefined);
+		}
 	}, [currentSessionId, sessions, setSessionTitle, t]);
 
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
@@ -117,7 +118,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 			/>
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<Link to="/settings/agent/tasks" className={SPLIT_ITEM_CLASS}>
-					<ListTodo className="size-4" />
+					<ListChecks className="size-4" />
 					<span>{t('settings.tabs.taskScheduler')}</span>
 				</Link>
 				<button type="button" className={SPLIT_ITEM_CLASS} onClick={openCommandMenu}>
@@ -127,7 +128,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				<button
 					type="button"
 					className={SPLIT_ITEM_CLASS}
-					onClick={() => setSessionId(crypto.randomUUID())}
+					onClick={() => {
+						setSessionId(crypto.randomUUID());
+						if (sessions.length === 0) setSessionTitle?.(t('titleBar.newChat', 'New chat'));
+					}}
 				>
 					<Plus className="size-4" />
 					<span>{t('titleBar.newChat', 'New chat')}</span>

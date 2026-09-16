@@ -19,15 +19,13 @@ export function SettingsBreadcrumb(): React.JSX.Element | null {
 			{items.map((item, index) => (
 				<React.Fragment key={`${item.label}-${index}`}>
 					{index > 0 ? (
-						<ChevronRight
-							className="size-3 shrink-0 text-muted-foreground/60"
-							strokeWidth={1.8}
-						/>
+						<ChevronRight className="size-3 shrink-0 text-muted-foreground/60" strokeWidth={1.8} />
 					) : null}
 					{item.path ? (
 						<Link
 							to={item.path}
 							className="min-w-0 rounded-sm font-medium outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/55"
+							style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 						>
 							{item.label}
 						</Link>

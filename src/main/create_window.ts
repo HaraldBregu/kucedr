@@ -5,11 +5,11 @@ import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
 import { getPlatformTranslucencyOptions } from './translucency';
 
-const DEFAULT_WINDOW_WIDTH = 812;
+const DEFAULT_WINDOW_WIDTH = 900;
 const DEFAULT_WINDOW_HEIGHT = 625;
 const MINIMUM_WINDOW_WIDTH = 768;
 const MINIMUM_WINDOW_HEIGHT = 600;
-const STARTUP_WINDOW_WIDTH = 812;
+const STARTUP_WINDOW_WIDTH = 900;
 const STARTUP_WINDOW_HEIGHT = 625;
 const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 

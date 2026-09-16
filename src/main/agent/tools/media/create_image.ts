@@ -9,9 +9,16 @@ export function createImageTool(): Tool {
 		id: 'create_image',
 		name: 'Create image',
 		description:
-			'Generate an image from a text prompt using the configured text-to-image provider. Saves the image in your agent workspace directory and returns its absolute path. The image is shown to the user automatically; if you reference it in markdown, use the returned path.',
+			'Generate one to eight images from a text prompt using the configured text-to-image provider. Saves the images in your agent workspace directory and returns their absolute paths. The images are shown to the user automatically; if you reference one in markdown, use its returned path.',
 		inputSchema: z.object({
 			prompt: z.string().min(1).describe('Text prompt describing the image to generate.'),
+			count: z
+				.number()
+				.int()
+				.min(1)
+				.max(8)
+				.default(1)
+				.describe('Number of images to generate, from 1 to 8. Defaults to 1.'),
 			directory: z
 				.string()
 				.optional()
@@ -19,11 +26,21 @@ export function createImageTool(): Tool {
 					'Optional directory to save the image in, relative to the agent workspace. ~ expands to the user home. Defaults to the agent workspace directory; only set it when the user asks for a specific location.'
 				),
 		}),
-		execute: async ({ prompt, directory }, signal) => {
-			const { base64, mimeType } = await createImage({ prompt }, signal);
-			const ext = mimeType.split('/')[1]?.split('+')[0] || 'png';
-			const filePath = await saveMedia('image', ext, base64, directory, signal);
-			return { path: filePath, mimeType };
+		execute: async ({ prompt, count, directory }, signal) => {
+			const images: Array<{ path: string; mimeType: string }> = [];
+			for (let index = 0; index < count; index++) {
+				const { base64, mimeType } = await createImage({ prompt }, signal);
+				const ext = mimeType.split('/')[1]?.split('+')[0] || 'png';
+				const path = await saveMedia(
+					count === 1 ? 'image' : `image-${index + 1}`,
+					ext,
+					base64,
+					directory,
+					signal
+				);
+				images.push({ path, mimeType });
+			}
+			return { path: images[0].path, mimeType: images[0].mimeType, images };
 		},
 	});
 }

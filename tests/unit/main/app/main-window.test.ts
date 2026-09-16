@@ -24,9 +24,10 @@ it('shows the native menu bar when the main window gains focus', () => {
 			listeners.set(event, listener);
 		}),
 	};
+	const windowFactory = { create: jest.fn(() => win) };
 	const main = new Main(
 		{ isQuitting: false } as never,
-		{ create: jest.fn(() => win) } as never,
+		windowFactory as never,
 		{ create: jest.fn() } as never
 	);
 
@@ -34,6 +35,10 @@ it('shows the native menu bar when the main window gains focus', () => {
 	listeners.get('focus')?.();
 	listeners.get('blur')?.();
 
+	expect(windowFactory.create).toHaveBeenCalledWith(
+		expect.objectContaining({ width: 900 }),
+		expect.objectContaining({ hash: 'start' })
+	);
 	expect(win.setMenuBarVisibility).toHaveBeenCalledWith(true);
 	expect(win.setMenuBarVisibility).not.toHaveBeenCalledWith(false);
 	expect(win.autoHideMenuBar).toBe(false);

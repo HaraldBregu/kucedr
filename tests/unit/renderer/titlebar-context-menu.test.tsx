@@ -112,7 +112,9 @@ it('shows the settings icon on Home', async () => {
 
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<TitleBar />
+			<ChatSessionContext.Provider value={{ sessionId: 'empty-session', setSessionId: jest.fn() }}>
+				<TitleBar />
+			</ChatSessionContext.Provider>
 			<Routes>
 				<Route path="/home" element={null} />
 				<Route path="/settings/general" element={<p>/settings/general</p>} />
@@ -132,7 +134,12 @@ it('shows the current chat title and its dropdown on the left of the Home titleb
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<ChatSessionContext.Provider
-				value={{ sessionId: 'session-1', setSessionId: jest.fn(), sessionTitle: 'Project roadmap' }}
+				value={{
+					sessionId: 'session-1',
+					setSessionId: jest.fn(),
+					sessionTitle: 'Project roadmap',
+					sessionTitleSessionId: 'session-1',
+				}}
 			>
 				<TitleBar sidebarOpen />
 			</ChatSessionContext.Provider>
@@ -146,6 +153,34 @@ it('shows the current chat title and its dropdown on the left of the Home titleb
 	expect(screen.getByRole('menuitem', { name: 'settings.overview.groups.agent' })).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.system' })).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.apps' })).toBeInTheDocument();
+});
+
+it('shows an unpersisted new chat title without the session menu button', () => {
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider
+				value={{ sessionId: 'new-session', setSessionId: jest.fn(), sessionTitle: 'New chat' }}
+			>
+				<TitleBar />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	expect(screen.getByText('New chat')).toHaveAttribute('data-slot', 'titlebar-chat-title');
+	expect(screen.queryByRole('button', { name: 'settings.chatHistory.title' })).not.toBeInTheDocument();
+});
+
+it('shows the New chat placeholder when the Home page has no chat sessions', () => {
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<ChatSessionContext.Provider value={{ sessionId: 'empty-session', setSessionId: jest.fn() }}>
+				<TitleBar />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	expect(screen.getByText('titleBar.newChat')).toHaveAttribute('data-slot', 'titlebar-chat-title');
+	expect(screen.queryByRole('button', { name: 'settings.chatHistory.title' })).not.toBeInTheDocument();
 });
 
 it('places the current chat after the sidebar toggle when the sidebar is closed', () => {

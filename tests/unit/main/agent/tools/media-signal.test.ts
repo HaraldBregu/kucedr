@@ -74,3 +74,46 @@ it.each([
 		);
 	}
 );
+
+it('generates and saves each requested image', async () => {
+	createImage
+		.mockResolvedValueOnce({ base64: 'aW1hZ2UtMQ==', mimeType: 'image/png' })
+		.mockResolvedValueOnce({ base64: 'aW1hZ2UtMg==', mimeType: 'image/jpeg' });
+	saveMedia.mockResolvedValueOnce('/tmp/image-1.png').mockResolvedValueOnce('/tmp/image-2.jpg');
+
+	await expect(createImageTool().run({ prompt: 'generate this', count: 2 })).resolves.toEqual({
+		path: '/tmp/image-1.png',
+		mimeType: 'image/png',
+		images: [
+			{ path: '/tmp/image-1.png', mimeType: 'image/png' },
+			{ path: '/tmp/image-2.jpg', mimeType: 'image/jpeg' },
+		],
+	});
+	expect(createImage).toHaveBeenNthCalledWith(1, { prompt: 'generate this' }, undefined);
+	expect(createImage).toHaveBeenNthCalledWith(2, { prompt: 'generate this' }, undefined);
+	expect(saveMedia).toHaveBeenNthCalledWith(
+		1,
+		'image-1',
+		'png',
+		'aW1hZ2UtMQ==',
+		undefined,
+		undefined
+	);
+	expect(saveMedia).toHaveBeenNthCalledWith(
+		2,
+		'image-2',
+		'jpeg',
+		'aW1hZ2UtMg==',
+		undefined,
+		undefined
+	);
+});
+
+it('limits image count from one to eight', () => {
+	const tool = createImageTool();
+	expect(tool.parseInput({ prompt: 'generate this' })).toMatchObject({ count: 1 });
+	expect(tool.parseInput({ prompt: 'generate this', count: 8 })).toMatchObject({ count: 8 });
+	expect(() => tool.parseInput({ prompt: 'generate this', count: 0 })).toThrow();
+	expect(() => tool.parseInput({ prompt: 'generate this', count: 9 })).toThrow();
+	expect(() => tool.parseInput({ prompt: 'generate this', count: 1.5 })).toThrow();
+});

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import {
 	PageContainer,
 	SPLIT_ITEM_CLASS,
@@ -82,6 +82,7 @@ beforeEach(() => {
 it('loads chat history, marks the latest default session, and switches sessions', async () => {
 	const user = userEvent.setup();
 	const setSessionId = jest.fn();
+	const setSessionTitle = jest.fn();
 	listSessions.mockResolvedValue([
 		{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2, runStatus: 'running' },
 		{ id: 'session-older', title: 'Older chat', createdAtMs: 1 },
@@ -89,7 +90,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 
 	render(
 		<MemoryRouter>
-			<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId }}>
+			<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId, setSessionTitle }}>
 				<PageContainer>
 					<HomeSidebar refreshKey="initial" />
 				</PageContainer>
@@ -261,6 +262,7 @@ it('requires confirmation before permanently deleting a chat', async () => {
 it('starts a new chat from the sidebar', async () => {
 	const user = userEvent.setup();
 	const setSessionId = jest.fn();
+	const setSessionTitle = jest.fn();
 	listSessions.mockResolvedValue([]);
 	Object.defineProperty(globalThis.crypto, 'randomUUID', {
 		configurable: true,
@@ -269,7 +271,7 @@ it('starts a new chat from the sidebar', async () => {
 
 	render(
 		<MemoryRouter>
-			<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId }}>
+			<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId, setSessionTitle }}>
 				<PageContainer>
 					<HomeSidebar refreshKey="initial" />
 				</PageContainer>
@@ -281,6 +283,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(newChat).toHaveAttribute('class', SPLIT_ITEM_CLASS);
 	await user.click(newChat);
 	expect(setSessionId).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
+	expect(setSessionTitle).toHaveBeenCalledWith('titleBar.newChat');
 });
 
 it('keeps Tasks, Search, and New chat in the fixed sidebar action group', async () => {
@@ -289,14 +292,22 @@ it('keeps Tasks, Search, and New chat in the fixed sidebar action group', async 
 	listSessions.mockResolvedValue([]);
 
 	render(
-		<MemoryRouter>
-			<CommandMenuProvider value={{ open: openCommandMenu }}>
-				<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId: jest.fn() }}>
-					<PageContainer>
-						<HomeSidebar refreshKey="initial" />
-					</PageContainer>
-				</ChatSessionContext.Provider>
-			</CommandMenuProvider>
+		<MemoryRouter initialEntries={['/home']}>
+			<Routes>
+				<Route
+					path="/home"
+					element={
+						<CommandMenuProvider value={{ open: openCommandMenu }}>
+							<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId: jest.fn() }}>
+								<PageContainer>
+									<HomeSidebar refreshKey="initial" />
+								</PageContainer>
+							</ChatSessionContext.Provider>
+						</CommandMenuProvider>
+					}
+				/>
+				<Route path="/settings/agent/tasks" element={<p>Tasks page</p>} />
+			</Routes>
 		</MemoryRouter>
 	);
 
@@ -307,6 +318,8 @@ it('keeps Tasks, Search, and New chat in the fixed sidebar action group', async 
 	await user.click(screen.getByRole('button', { name: 'titleBar.search' }));
 	expect(openCommandMenu).toHaveBeenCalledTimes(1);
 	expect(screen.getByRole('button', { name: 'titleBar.newChat' })).toBeInTheDocument();
+	await user.click(screen.getByRole('link', { name: 'settings.tabs.taskScheduler' }));
+	expect(screen.getByText('Tasks page')).toBeInTheDocument();
 });
 
 it('shows an empty state when there is no chat history', async () => {

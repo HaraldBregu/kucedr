@@ -67,6 +67,7 @@ export const TitleBar = React.memo(function TitleBar({
 	const settingsLabel = t('settings.title', 'Settings');
 	const homeButtonLabel = t('titleBar.home', 'Home');
 	const searchLabel = t('titleBar.search', 'Search');
+	const chatTitle = sessionTitle ?? (isHome ? t('titleBar.newChat', 'New chat') : undefined);
 	const activeChatSessionId = sessionTitleSessionId ?? sessionId;
 	const titlebarMenuItems = [
 		{ path: '/settings/general', label: t('settings.tabs.general') },
@@ -124,13 +125,15 @@ export const TitleBar = React.memo(function TitleBar({
 
 					event.preventDefault();
 					void window.win
-						.showContextMenu(titlebarMenuItems.map((item) => ({ id: item.path, label: item.label })))
+						.showContextMenu(
+							titlebarMenuItems.map((item) => ({ id: item.path, label: item.label }))
+						)
 						.then((path) => {
 							if (path) navigate(path);
 						});
 				}}
 			>
-				{isHome && sessionTitle ? (
+				{isHome && chatTitle ? (
 					<div
 						data-slot="titlebar-chat-context"
 						className={cn(
@@ -138,47 +141,58 @@ export const TitleBar = React.memo(function TitleBar({
 							sidebarOpen ? 'ml-3' : 'ml-28'
 						)}
 					>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon-sm"
-									aria-label={t('settings.chatHistory.title')}
-									style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-								>
-									<Folder className="size-4" aria-hidden="true" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="start" className="w-44">
-								<DropdownMenuItem onSelect={() => void window.agent.openSessionFolder(activeChatSessionId)}>
-									<FolderOpen />
-									{t('titleBar.openLocation', 'Open location')}
-								</DropdownMenuItem>
-								<DropdownMenuItem
-									className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-									onSelect={() => {
-										if (!window.confirm(t('settings.chatHistory.confirmDeleteSession', { title: sessionTitle }))) {
-											return;
-										}
-										void window.agent.deleteSession(activeChatSessionId).then(() => {
-											setSessionId(crypto.randomUUID());
-										});
-									}}
-								>
-									<Trash2 />
-									{t('common.delete', 'Delete')}
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
-								{titlebarMenuItems.map((item) => (
-									<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
-										{item.label}
+						{sessionTitleSessionId ? (
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										type="button"
+										variant="ghost"
+										size="icon-sm"
+										aria-label={t('settings.chatHistory.title')}
+										style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
+									>
+										<Folder className="size-4" aria-hidden="true" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="start" className="w-44">
+									<DropdownMenuItem
+										onSelect={() => void window.agent.openSessionFolder(activeChatSessionId)}
+									>
+										<FolderOpen />
+										{t('titleBar.openLocation', 'Open location')}
 									</DropdownMenuItem>
-								))}
-							</DropdownMenuContent>
-						</DropdownMenu>
-						<span data-slot="titlebar-chat-title" className="min-w-0 max-w-72 truncate text-sm font-medium">
-							{sessionTitle}
+									<DropdownMenuItem
+										className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+										onSelect={() => {
+											if (
+												!window.confirm(
+													t('settings.chatHistory.confirmDeleteSession', { title: chatTitle })
+												)
+											) {
+												return;
+											}
+											void window.agent.deleteSession(activeChatSessionId).then(() => {
+												setSessionId(crypto.randomUUID());
+											});
+										}}
+									>
+										<Trash2 />
+										{t('common.delete', 'Delete')}
+									</DropdownMenuItem>
+									<DropdownMenuSeparator />
+									{titlebarMenuItems.map((item) => (
+										<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
+											{item.label}
+										</DropdownMenuItem>
+									))}
+								</DropdownMenuContent>
+							</DropdownMenu>
+						) : null}
+						<span
+							data-slot="titlebar-chat-title"
+							className="min-w-0 max-w-72 truncate text-sm font-medium"
+						>
+							{chatTitle}
 						</span>
 					</div>
 				) : null}
@@ -221,12 +235,7 @@ export const TitleBar = React.memo(function TitleBar({
 							centerContentClassName
 						)}
 					>
-						<div
-							className="pointer-events-auto min-w-0 max-w-full"
-							style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
-						>
-							{centerContent}
-						</div>
+						<div className="pointer-events-auto min-w-0 max-w-full">{centerContent}</div>
 					</div>
 				)}
 
