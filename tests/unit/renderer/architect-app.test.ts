@@ -39,6 +39,32 @@ describe('Architect app workflow', () => {
 		expect(prompt).toContain('travertine and walnut');
 	});
 
+	it('changes prompt constraints for exterior and industrial concepts', () => {
+		const base = {
+			description: 'a quiet, durable design with a clear identity',
+			style: 'quiet modernism',
+			materials: 'powder-coated aluminium and oak',
+			lighting: 'soft northern daylight',
+			ratio: '16:9' as const,
+		};
+		expect(
+			buildBriefPrompt({
+				...base,
+				discipline: 'exterior',
+				subject: 'private residence',
+				context: 'a wooded hillside site',
+			})
+		).toContain('architectural exterior visualization');
+		expect(
+			buildBriefPrompt({
+				...base,
+				discipline: 'industrial',
+				subject: 'lounge chair',
+				context: 'a domestic reading corner',
+			})
+		).toContain('manufacturable details');
+	});
+
 	it('constrains revisions to the requested design change', () => {
 		const prompt = buildRevisionPrompt('replace the sofa with a low modular sectional', 'interior');
 		expect(prompt).toContain('apply only this design revision');
