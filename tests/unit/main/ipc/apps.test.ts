@@ -5,6 +5,7 @@ const openRoot = jest.fn();
 const deleteApp = jest.fn();
 const destroyApp = jest.fn();
 const writeAppWindowSettings = jest.fn();
+const addDebugApp = jest.fn();
 const app = {
 	id: 'demo-app',
 	title: 'Demo App',
@@ -20,6 +21,7 @@ jest.mock('../../../../src/main/apps/app_index', () => ({
 	deleteApp,
 	destroyApp,
 	writeAppWindowSettings,
+	addDebugApp,
 }));
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 	registerQueryWithEvent: jest.fn(),
@@ -67,6 +69,24 @@ it('opens the apps directory in the system file explorer', () => {
 	handler(event);
 
 	expect(openRoot).toHaveBeenCalledTimes(1);
+});
+
+it('adds a debug app path for a trusted renderer', () => {
+	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(owner);
+	addDebugApp.mockReturnValue(app);
+	new AppsIpc().register(
+		{
+			windowFactory: {} as WindowFactory,
+			appRegistry: appRegistry as never,
+			windows: windows as never,
+		},
+		{} as EventBus
+	);
+	const handler = (registerCommandWithEvent as jest.Mock).mock.calls.find(
+		([channel]) => channel === AppsChannels.addDebug
+	)?.[1];
+	expect(handler(event, '/projects/demo-app')).toBe(app);
+	expect(addDebugApp).toHaveBeenCalledWith('/projects/demo-app');
 });
 
 it('uses a native confirmation before deleting an app', async () => {

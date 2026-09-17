@@ -34,6 +34,7 @@ beforeEach(() => {
 			openRoot: jest.fn(),
 			delete: jest.fn().mockResolvedValue(undefined),
 			import: jest.fn(),
+			addDebug: jest.fn(),
 		},
 	});
 	Object.defineProperty(window, 'matchMedia', {
@@ -49,6 +50,25 @@ beforeEach(() => {
 			dispatchEvent: jest.fn(),
 		})),
 	});
+});
+
+it('adds a debug folder path without importing it', async () => {
+	const user = userEvent.setup();
+	(window.apps.addDebug as jest.Mock).mockResolvedValue({
+		...apps[0],
+		debugPath: '/projects/demo-app',
+	});
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
+	await screen.findByText('Demo App');
+	await user.type(screen.getByLabelText('settings.apps.debug.pathLabel'), '/projects/demo-app');
+	await user.click(screen.getByRole('button', { name: 'settings.apps.debug.add' }));
+	expect(window.apps.addDebug).toHaveBeenCalledWith('/projects/demo-app');
+	expect(window.apps.import).not.toHaveBeenCalled();
+	expect(window.apps.list).toHaveBeenCalledTimes(2);
 });
 
 it('shows open and an overflow delete action on app cards', async () => {
