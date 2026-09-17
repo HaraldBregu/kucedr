@@ -48,6 +48,7 @@ const AppsPage: React.FC = () => {
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
 	const [debugPath, setDebugPath] = useState('');
 	const [addingDebug, setAddingDebug] = useState(false);
+	const [selectingDebug, setSelectingDebug] = useState(false);
 
 	const loadApps = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -135,6 +136,19 @@ const AppsPage: React.FC = () => {
 			setAddingDebug(false);
 		}
 	}, [debugPath, loadApps, t]);
+
+	const handleSelectDebug = useCallback(async (): Promise<void> => {
+		setSelectingDebug(true);
+		setErrorMessage('');
+		try {
+			const selectedPath = await window.apps.selectDebugPath();
+			if (selectedPath) setDebugPath(selectedPath);
+		} catch (error) {
+			setErrorMessage(getErrorMessage(error, t('settings.apps.debug.selectError')));
+		} finally {
+			setSelectingDebug(false);
+		}
+	}, [t]);
 
 	const handleDetails = useCallback(
 		(appId: string): void => {
@@ -368,12 +382,24 @@ const AppsPage: React.FC = () => {
 						<Input
 							type="text"
 							value={debugPath}
-							onChange={(event) => setDebugPath(event.target.value)}
 							placeholder={t('settings.apps.debug.placeholder')}
 							aria-label={t('settings.apps.debug.pathLabel')}
-							disabled={addingDebug}
+							readOnly
+							disabled={addingDebug || selectingDebug}
 							className="h-8 min-w-0 font-mono text-xs"
 						/>
+						<Button
+							type="button"
+							variant="outline"
+							size="sm"
+							disabled={addingDebug || selectingDebug}
+							onClick={() => void handleSelectDebug()}
+						>
+							<FolderOpen className="size-3.5" />
+							{selectingDebug
+								? t('settings.apps.debug.selecting')
+								: t('settings.apps.debug.select')}
+						</Button>
 						<Button type="submit" size="sm" disabled={addingDebug || !debugPath.trim()}>
 							{addingDebug ? t('settings.apps.debug.adding') : t('settings.apps.debug.add')}
 						</Button>

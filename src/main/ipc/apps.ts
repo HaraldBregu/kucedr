@@ -97,5 +97,13 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 			trusted.assert(event);
 			return addDebugApp(folderPath);
 		});
+		registerQueryWithEvent(AppsChannels.selectDebugPath, async (event) => {
+			const window = trusted.assert(event);
+			const result = await dialog.showOpenDialog(window, {
+				title: 'Select debug app folder',
+				properties: ['openDirectory'],
+			});
+			return result.canceled ? undefined : result.filePaths[0];
+		});
 	}
 }

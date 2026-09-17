@@ -1019,6 +1019,7 @@ export interface AppsInvokeChannelMap {
 		args: [folderPath: string];
 		result: import('./installed_app_types').App;
 	};
+	[AppsChannels.selectDebugPath]: { args: []; result: string | undefined };
 }
 
 export interface WindowInvokeChannelMap {

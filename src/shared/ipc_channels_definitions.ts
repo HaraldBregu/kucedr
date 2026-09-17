@@ -386,6 +386,7 @@ export const AppsChannels = {
 	delete: 'apps:delete',
 	import: 'apps:import',
 	addDebug: 'apps:add-debug',
+	selectDebugPath: 'apps:select-debug-path',
 } as const;
 
 export const WindowChannels = {
