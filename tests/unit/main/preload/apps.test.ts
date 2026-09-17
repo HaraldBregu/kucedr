@@ -26,3 +26,9 @@ it('surfaces settings validation and save failures', async () => {
 	invoke.mockResolvedValue({ success: false, error: { code: 'INVALID_INPUT', message: 'Invalid app window settings.' } });
 	await expect(apps.setSettings('notes', { width: -1 })).rejects.toThrow('Invalid app window settings.');
 });
+
+it('adds a debug app folder through the typed channel', async () => {
+	invoke.mockResolvedValue({ success: true, data: undefined });
+	await apps.addDebug('/projects/debug-app');
+	expect(invoke).toHaveBeenCalledWith(AppsChannels.addDebug, '/projects/debug-app');
+});
