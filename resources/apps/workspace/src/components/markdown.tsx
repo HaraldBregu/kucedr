@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { app, isKucedr } from '@kucedr/sdk';
 
 import { showNativeContextMenu } from '@/lib/menu';
 import { workspaceResourceUrl } from '@/lib/resource';
@@ -38,9 +39,31 @@ export function MarkdownPreview({ canSave, content, onSave, path }: MarkdownPrev
 				remarkPlugins={[remarkGfm]}
 				skipHtml
 				components={{
-					a: ({ children }) => <span className="font-medium text-primary">{children}</span>,
+					a: ({ children, href }) =>
+						href ? (
+							<a
+								href={href}
+								target="_blank"
+								rel="noreferrer"
+								onClick={(event) => {
+									if (!isKucedr()) return;
+									event.preventDefault();
+									void app.openExternalUrl(href);
+								}}
+							>
+								{children}
+							</a>
+						) : (
+							<span className="font-medium text-primary">{children}</span>
+						),
 				}}
-				urlTransform={(url, key) => (key === 'src' ? workspaceResourceUrl(url, path) : '')}
+				urlTransform={(url, key) =>
+					key === 'src'
+						? workspaceResourceUrl(url, path)
+						: /^(https?:|mailto:)/i.test(url)
+							? url
+							: ''
+				}
 			>
 				{content}
 			</ReactMarkdown>
