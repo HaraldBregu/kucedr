@@ -89,6 +89,30 @@ it('adds a debug app path for a trusted renderer', () => {
 	expect(addDebugApp).toHaveBeenCalledWith('/projects/demo-app');
 });
 
+it('selects one debug app folder with the native directory dialog', async () => {
+	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(owner);
+	(dialog.showOpenDialog as jest.Mock).mockResolvedValue({
+		canceled: false,
+		filePaths: ['/projects/demo-app'],
+	});
+	new AppsIpc().register(
+		{
+			windowFactory: {} as WindowFactory,
+			appRegistry: appRegistry as never,
+			windows: windows as never,
+		},
+		{} as EventBus
+	);
+	const handler = (registerQueryWithEvent as jest.Mock).mock.calls.find(
+		([channel]) => channel === AppsChannels.selectDebugPath
+	)?.[1];
+	await expect(handler(event)).resolves.toBe('/projects/demo-app');
+	expect(dialog.showOpenDialog).toHaveBeenCalledWith(owner, {
+		title: 'Select debug app folder',
+		properties: ['openDirectory'],
+	});
+});
+
 it('uses a native confirmation before deleting an app', async () => {
 	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue(owner);
 	new AppsIpc().register(

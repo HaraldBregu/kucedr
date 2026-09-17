@@ -35,6 +35,7 @@ beforeEach(() => {
 			delete: jest.fn().mockResolvedValue(undefined),
 			import: jest.fn(),
 			addDebug: jest.fn(),
+			selectDebugPath: jest.fn(),
 		},
 	});
 	Object.defineProperty(window, 'matchMedia', {
@@ -58,14 +59,17 @@ it('adds a debug folder path without importing it', async () => {
 		...apps[0],
 		debugPath: '/projects/demo-app',
 	});
+	(window.apps.selectDebugPath as jest.Mock).mockResolvedValue('/projects/demo-app');
 	render(
 		<MemoryRouter>
 			<AppsPage />
 		</MemoryRouter>
 	);
 	await screen.findByText('Demo App');
-	await user.type(screen.getByLabelText('settings.apps.debug.pathLabel'), '/projects/demo-app');
+	await user.click(screen.getByRole('button', { name: 'settings.apps.debug.select' }));
+	expect(screen.getByLabelText('settings.apps.debug.pathLabel')).toHaveValue('/projects/demo-app');
 	await user.click(screen.getByRole('button', { name: 'settings.apps.debug.add' }));
+	expect(window.apps.selectDebugPath).toHaveBeenCalledTimes(1);
 	expect(window.apps.addDebug).toHaveBeenCalledWith('/projects/demo-app');
 	expect(window.apps.import).not.toHaveBeenCalled();
 	expect(window.apps.list).toHaveBeenCalledTimes(2);

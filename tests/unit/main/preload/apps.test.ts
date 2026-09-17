@@ -32,3 +32,9 @@ it('adds a debug app folder through the typed channel', async () => {
 	await apps.addDebug('/projects/debug-app');
 	expect(invoke).toHaveBeenCalledWith(AppsChannels.addDebug, '/projects/debug-app');
 });
+
+it('selects a debug app folder through the typed channel', async () => {
+	invoke.mockResolvedValue({ success: true, data: '/projects/debug-app' });
+	await expect(apps.selectDebugPath()).resolves.toBe('/projects/debug-app');
+	expect(invoke).toHaveBeenCalledWith(AppsChannels.selectDebugPath);
+});
