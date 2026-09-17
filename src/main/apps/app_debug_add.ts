@@ -1,4 +1,4 @@
-import { existsSync, lstatSync, statSync } from 'node:fs';
+import { existsSync, lstatSync, realpathSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { isAppId } from './app_id';
 import { appsRoot } from './app_root';
@@ -27,7 +27,13 @@ export function addDebugApp(folderPath: string): App {
 	}
 	const entry = path.join(directory, ...manifest.metadata.entry.split('/'));
 	if (!existsSync(entry) || !statSync(entry).isFile()) throw new Error('App entry file is missing.');
-	if (existsSync(path.join(appsRoot(), id))) {
+	const resolvedEntry = realpathSync(entry);
+	const relativeEntry = path.relative(realpathSync(directory), resolvedEntry);
+	if (relativeEntry.startsWith(`..${path.sep}`) || path.isAbsolute(relativeEntry)) {
+		throw new Error('App entry must stay inside the app folder.');
+	}
+	const installedDirectory = path.join(appsRoot(), id);
+	if (readAppManifestFromDirectory(installedDirectory)) {
 		throw new Error(`An installed app already uses the ID “${id}”.`);
 	}
 	const paths = debugAppPaths();

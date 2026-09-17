@@ -17,7 +17,6 @@ import { resolveWorkspaceFile } from './ipc/workspace';
 import { agentLocation } from './shared/agent_location';
 import type { LoggerService } from './shared';
 import type { AppRegistry } from './apps/app_registry';
-import { appsRoot } from './apps/app_root';
 import { isAppId } from './apps/app_id';
 import { appDirectory } from './apps/app_directory';
 

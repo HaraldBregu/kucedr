@@ -2,10 +2,9 @@ import { existsSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { appEntryPath } from './app_entry';
 import { isAppId } from './app_id';
-import { readAppManifest } from './app_read';
+import { readAppManifest, readAppManifestFromDirectory } from './app_read';
 import { appsRoot } from './app_root';
 import { debugAppPaths } from './app_debug_paths';
-import { readAppManifestFromDirectory } from './app_read';
 import type { App } from './app_types';
 
 export function listApps(appLocation?: string): App[] {

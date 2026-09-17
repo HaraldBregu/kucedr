@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Unlink } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import type { App } from '../../../../../../shared/installed_app_types';
 
@@ -41,6 +41,7 @@ export default function Delete({
 	};
 
 	if (menuItem) {
+		const Icon = app.debugPath ? Unlink : Trash2;
 		return (
 			<button
 				type="button"
@@ -49,8 +50,10 @@ export default function Delete({
 				onClick={handleDelete}
 				className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
 			>
-				<Trash2 className="size-3.5" />
-				{t('settings.apps.deleteAction', { name: app.title })}
+				<Icon className="size-3.5" />
+				{t(app.debugPath ? 'settings.apps.debug.remove' : 'settings.apps.deleteAction', {
+					name: app.title,
+				})}
 			</button>
 		);
 	}

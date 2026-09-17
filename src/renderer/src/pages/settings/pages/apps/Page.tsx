@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Blocks,
+	Bug,
 	ExternalLink,
 	FolderOpen,
 	MoreHorizontal,
@@ -13,6 +14,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { App } from '../../../../../../shared/installed_app_types';
 import Delete from './Delete';
@@ -44,6 +46,8 @@ const AppsPage: React.FC = () => {
 	const [actionsOpen, setActionsOpen] = useState(false);
 	const [appActionsOpen, setAppActionsOpen] = useState<string | null>(null);
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
+	const [debugPath, setDebugPath] = useState('');
+	const [addingDebug, setAddingDebug] = useState(false);
 
 	const loadApps = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -115,6 +119,22 @@ const AppsPage: React.FC = () => {
 		},
 		[t]
 	);
+
+	const handleAddDebug = useCallback(async (): Promise<void> => {
+		setAddingDebug(true);
+		setErrorMessage('');
+		setSuccessMessage('');
+		try {
+			await window.apps.addDebug(debugPath);
+			setDebugPath('');
+			setSuccessMessage(t('settings.apps.debug.added'));
+			await loadApps();
+		} catch (error) {
+			setErrorMessage(getErrorMessage(error, t('settings.apps.debug.addError')));
+		} finally {
+			setAddingDebug(false);
+		}
+	}, [debugPath, loadApps, t]);
 
 	const handleDetails = useCallback(
 		(appId: string): void => {
@@ -314,9 +334,14 @@ const AppsPage: React.FC = () => {
 												<Badge variant="secondary" className="text-[10px] leading-none">
 													{app.metadata.category}
 												</Badge>
-												<Badge variant="outline" className="text-[10px] leading-none">
-													{app.metadata.version}
-												</Badge>
+								<Badge variant="outline" className="text-[10px] leading-none">
+									{app.metadata.version}
+								</Badge>
+								{app.debugPath && (
+									<Badge variant="outline" className="text-[10px] leading-none">
+										{t('settings.apps.debug.badge')}
+									</Badge>
+								)}
 											</div>
 										</div>
 									</div>
@@ -325,6 +350,51 @@ const AppsPage: React.FC = () => {
 						))}
 					</div>
 				)}
+			</SettingsSection>
+
+			<SettingsSection
+				title={t('settings.apps.debug.title')}
+				description={t('settings.apps.debug.description')}
+			>
+				<SettingsPanel>
+					<form
+						className="flex items-center gap-2 p-4"
+						onSubmit={(event) => {
+							event.preventDefault();
+							void handleAddDebug();
+						}}
+					>
+						<Bug className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+						<Input
+							type="text"
+							value={debugPath}
+							onChange={(event) => setDebugPath(event.target.value)}
+							placeholder={t('settings.apps.debug.placeholder')}
+							aria-label={t('settings.apps.debug.pathLabel')}
+							disabled={addingDebug}
+							className="h-8 min-w-0 font-mono text-xs"
+						/>
+						<Button type="submit" size="sm" disabled={addingDebug || !debugPath.trim()}>
+							{addingDebug ? t('settings.apps.debug.adding') : t('settings.apps.debug.add')}
+						</Button>
+					</form>
+					{apps.some((app) => app.debugPath) && (
+						<div className="border-t border-border/70 px-4 py-3">
+							<p className="mb-2 text-xs font-medium text-foreground">
+								{t('settings.apps.debug.registered')}
+							</p>
+							<div className="grid gap-1.5">
+								{apps
+									.filter((app) => app.debugPath)
+									.map((app) => (
+										<p key={app.id} className="truncate font-mono text-xs text-muted-foreground">
+											{app.debugPath}
+										</p>
+									))}
+							</div>
+						</div>
+					)}
+				</SettingsPanel>
 			</SettingsSection>
 		</SettingsPageShell>
 	);
