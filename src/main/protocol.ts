@@ -19,6 +19,7 @@ import type { LoggerService } from './shared';
 import type { AppRegistry } from './apps/app_registry';
 import { appsRoot } from './apps/app_root';
 import { isAppId } from './apps/app_id';
+import { appDirectory } from './apps/app_directory';
 
 const LOCAL_RESOURCE_SCHEME = 'local-resource';
 export const APP_RESOURCE_SCHEME = 'kucedr-app';
@@ -51,7 +52,7 @@ export function registerLocalResourceProtocolScheme(): void {
 
 export function appResourceUrl(file: string, appId: string): string {
 	if (!isAppId(appId)) throw new Error('Invalid app ID.');
-	const root = path.resolve(appsRoot(), appId);
+	const root = path.resolve(appDirectory(appId));
 	const target = path.resolve(file);
 	const relative = path.relative(root, target);
 	if (!relative || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
@@ -94,7 +95,7 @@ export function registerLocalResourceProtocolHandler(logger: Pick<LoggerService,
 		try {
 			const url = new URL(request.url);
 			if (!isAppId(url.host)) return new Response(null, { status: 403 });
-			const root = path.resolve(appsRoot(), url.host);
+			const root = path.resolve(appDirectory(url.host));
 			const pathname = decodeURIComponent(url.pathname).replace(/^\/+/, '');
 			const target = path.resolve(root, pathname);
 			const lexicalRelative = path.relative(root, target);

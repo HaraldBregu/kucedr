@@ -4,6 +4,7 @@ import type { WindowFactory } from '../window_factory';
 import type { AppRegistry } from '../apps/app_registry';
 import {
 	deleteApp,
+	addDebugApp,
 	destroyApp,
 	importApps,
 	listApps,
@@ -67,9 +68,10 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 				cancelId: 0,
 				defaultId: 0,
 				noLink: true,
-				message: `Delete “${app.title}”?`,
-				detail:
-					'This permanently deletes the app and all of its stored data from Kucedr. This action cannot be undone.',
+				message: `${app.debugPath ? 'Remove' : 'Delete'} “${app.title}”?`,
+				detail: app.debugPath
+					? 'This removes the debug folder from Kucedr without deleting files from the source folder.'
+					: 'This permanently deletes the app and all of its stored data from Kucedr. This action cannot be undone.',
 			};
 			const result = await dialog.showMessageBox(window, options);
 			if (result.response !== 1) return false;
@@ -91,5 +93,9 @@ export class AppsIpc implements IpcModule<AppsIpcDeps> {
 				return importApps(result.filePaths);
 			}
 		);
+		registerCommandWithEvent(AppsChannels.addDebug, (event, folderPath) => {
+			trusted.assert(event);
+			return addDebugApp(folderPath);
+		});
 	}
 }
