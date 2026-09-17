@@ -334,6 +334,7 @@ export interface AppsApi {
 	openRoot: () => Promise<void>;
 	delete: (appId: string) => Promise<boolean>;
 	import: () => Promise<AppImportResult | undefined>;
+	addDebug: (folderPath: string) => Promise<App>;
 }
 
 export interface SearchApi {

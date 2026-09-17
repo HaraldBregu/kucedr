@@ -20,4 +20,7 @@ export const apps: AppsApi = {
 	import: () => {
 		return typedInvokeUnwrap(AppsChannels.import);
 	},
+	addDebug: (folderPath) => {
+		return typedInvokeUnwrap(AppsChannels.addDebug, folderPath);
+	},
 };

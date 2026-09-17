@@ -385,6 +385,7 @@ export const AppsChannels = {
 	openRoot: 'apps:open-root',
 	delete: 'apps:delete',
 	import: 'apps:import',
+	addDebug: 'apps:add-debug',
 } as const;
 
 export const WindowChannels = {

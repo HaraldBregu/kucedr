@@ -18,6 +18,7 @@ export type AppManifest = {
 export type App = AppManifest & {
 	id: string;
 	imageUrl?: string;
+	debugPath?: string;
 };
 
 export interface AppImportSkipped {
