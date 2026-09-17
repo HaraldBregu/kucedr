@@ -1381,8 +1381,21 @@
 			"detailId": "ID",
 			"detailVersion": "Version",
 			"detailCategory": "Category",
-			"detailEntry": "Entry file",
-			"window": {
+		"detailEntry": "Entry file",
+		"debug": {
+			"title": "Debug",
+			"description": "Load an app directly from a local folder without importing or copying it.",
+			"pathLabel": "App folder path",
+			"placeholder": "/absolute/path/to/app",
+			"add": "Add Path",
+			"adding": "Adding...",
+			"added": "Debug app path added.",
+			"addError": "Unable to add the debug app path.",
+			"registered": "Registered paths",
+			"badge": "Debug",
+			"remove": "Remove {{name}}"
+		},
+		"window": {
 				"title": "App settings",
 				"nextOpen": "Changes apply the next time you close and reopen this app.",
 				"values": "Window values",

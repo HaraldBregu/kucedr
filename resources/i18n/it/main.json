@@ -1380,8 +1380,21 @@
 			"detailId": "ID",
 			"detailVersion": "Versione",
 			"detailCategory": "Categoria",
-			"detailEntry": "File di ingresso",
-			"window": {
+		"detailEntry": "File di ingresso",
+		"debug": {
+			"title": "Debug",
+			"description": "Carica un'app direttamente da una cartella locale senza importarla o copiarla.",
+			"pathLabel": "Percorso cartella app",
+			"placeholder": "/percorso/assoluto/app",
+			"add": "Aggiungi Percorso",
+			"adding": "Aggiunta...",
+			"added": "Percorso dell'app di debug aggiunto.",
+			"addError": "Impossibile aggiungere il percorso dell'app di debug.",
+			"registered": "Percorsi registrati",
+			"badge": "Debug",
+			"remove": "Rimuovi {{name}}"
+		},
+		"window": {
 				"title": "Impostazioni app",
 				"nextOpen": "Le modifiche si applicano quando chiudi e riapri questa app.",
 				"values": "Valori finestra",
