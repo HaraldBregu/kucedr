@@ -1,10 +1,13 @@
-import { Menu as ElectronMenu } from 'electron';
+import { BrowserWindow, Menu as ElectronMenu } from 'electron';
 import { Menu } from '../../../../src/main/menu';
 
 jest.mock('@electron-toolkit/utils', () => ({ is: { dev: true } }));
 jest.mock('../../../../src/main/i18n', () => ({
 	loadTranslations: () => ({
 		apps: 'Apps',
+		view: 'View',
+		back: 'Back',
+		forward: 'Forward',
 	}),
 }));
 
@@ -99,7 +102,7 @@ describe('application menu apps', () => {
 		}).create();
 
 		const template = buildFromTemplate.mock.calls.at(-1)?.[0] as MenuEntry[];
-		const view = template.find((entry) => entry.label === undefined)?.submenu;
+		const view = template.find((entry) => entry.label === 'View')?.submenu;
 		const back = view?.find((entry) => entry.accelerator === 'Cmd+[');
 		const forward = view?.find((entry) => entry.accelerator === 'Cmd+]');
 		back?.click?.();
