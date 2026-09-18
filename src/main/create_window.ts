@@ -83,14 +83,24 @@ export class Main {
 	}
 
 	private trackRouteNavigation(win: BrowserWindow): void {
-		win.on('app-command', (_event, command) => {
-			if (command === 'browser-backward' && win.webContents.navigationHistory.canGoBack()) {
+		const navigate = (offset: -1 | 1): void => {
+			if (offset === -1 && win.webContents.navigationHistory.canGoBack()) {
 				win.webContents.navigationHistory.goBack();
 			}
 
-			if (command === 'browser-forward' && win.webContents.navigationHistory.canGoForward()) {
+			if (offset === 1 && win.webContents.navigationHistory.canGoForward()) {
 				win.webContents.navigationHistory.goForward();
 			}
+		};
+
+		win.on('app-command', (_event, command) => {
+			if (command === 'browser-backward') navigate(-1);
+			if (command === 'browser-forward') navigate(1);
+		});
+
+		win.on('swipe', (_event, direction) => {
+			if (direction === 'left') navigate(-1);
+			if (direction === 'right') navigate(1);
 		});
 	}
 

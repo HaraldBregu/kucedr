@@ -73,6 +73,22 @@ it('moves through route history for mouse back and forward commands', () => {
 	expect(win.webContents.navigationHistory.goForward).toHaveBeenCalledTimes(1);
 });
 
+it('moves through route history for macOS mouse swipe events', () => {
+	const { listeners, win } = createWindow();
+	const main = new Main(
+		{ isQuitting: false } as never,
+		{ create: jest.fn(() => win) } as never,
+		{ create: jest.fn() } as never
+	);
+
+	main.create();
+	listeners.get('swipe')?.({} as never, 'left' as never);
+	listeners.get('swipe')?.({} as never, 'right' as never);
+
+	expect(win.webContents.navigationHistory.goBack).toHaveBeenCalledTimes(1);
+	expect(win.webContents.navigationHistory.goForward).toHaveBeenCalledTimes(1);
+});
+
 it('does not navigate beyond route history', () => {
 	const { listeners, win } = createWindow();
 	win.webContents.navigationHistory.canGoBack.mockReturnValue(false);
@@ -86,6 +102,8 @@ it('does not navigate beyond route history', () => {
 	main.create();
 	listeners.get('app-command')?.({} as never, 'browser-backward' as never);
 	listeners.get('app-command')?.({} as never, 'browser-forward' as never);
+	listeners.get('swipe')?.({} as never, 'left' as never);
+	listeners.get('swipe')?.({} as never, 'right' as never);
 
 	expect(win.webContents.navigationHistory.goBack).not.toHaveBeenCalled();
 	expect(win.webContents.navigationHistory.goForward).not.toHaveBeenCalled();
