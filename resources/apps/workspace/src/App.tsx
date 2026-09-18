@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { showNativeContextMenu } from '@/lib/menu';
+import { availableWorkspaceName } from '@/lib/available';
 import { findWorkspaceEntry } from '@/lib/find';
 import { removeWorkspaceEntry } from '@/lib/remove';
 import { rebaseWorkspacePath } from '@/lib/rebase';
@@ -61,13 +62,6 @@ const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'excalidraw',
 	'tldraw',
 ]);
-const createFilePresets = [
-	{ kind: 'markdown', label: '.md', extension: '.md' },
-	{ kind: 'mermaid', label: '.mmd', extension: '.mmd' },
-	{ kind: 'excalidraw', label: '.excalidraw', extension: '.excalidraw' },
-	{ kind: 'tldraw', label: '.tldr', extension: '.tldr' },
-] as const;
-type CreateFileKind = (typeof createFilePresets)[number]['kind'];
 
 export default function App() {
 	const [theme, setTheme] = useState<AppThemeData>(fallbackTheme);
@@ -87,10 +81,8 @@ export default function App() {
 	const [markdownMode, setMarkdownMode] = useState<'source' | 'preview'>('source');
 	const [createRequest, setCreateRequest] = useState<{
 		parentPath: string;
-		type: 'file' | 'directory';
 	} | null>(null);
 	const [createName, setCreateName] = useState('');
-	const [createFileKind, setCreateFileKind] = useState<CreateFileKind>('markdown');
 	const [createError, setCreateError] = useState('');
 	const [creating, setCreating] = useState(false);
 	const [renameTarget, setRenameTarget] = useState<WorkspaceTreeEntry | null>(null);
@@ -357,18 +349,33 @@ export default function App() {
 		}
 	}
 
-	function startCreateWorkspaceEntry(parentPath: string, type: 'file' | 'directory') {
-		setCreateRequest({ parentPath, type });
-		setCreateFileKind('markdown');
-		setCreateName(type === 'file' ? 'Untitled' : 'New Folder');
+	function startCreateWorkspaceDirectory(parentPath: string) {
+		setCreateRequest({ parentPath });
+		setCreateName('New Folder');
 		setCreateError('');
+	}
+
+	async function createWorkspaceFile(parentPath: string) {
+		if (creating || !isKucedr()) return;
+		const parent = parentPath ? findWorkspaceEntry(workspaceFiles, parentPath) : null;
+		const name = availableWorkspaceName(parent?.children ?? (parentPath ? [] : workspaceFiles));
+		setCreating(true);
+		setWorkspaceError('');
+		try {
+			const createdPath = await agent.createWorkspaceFile(parentPath, name);
+			setWorkspaceFiles(await agent.listWorkspaceFiles());
+			await selectWorkspaceEntry({ name, path: createdPath, type: 'file' });
+			startRenameWorkspaceEntry({ name, path: createdPath, type: 'file' });
+		} catch (error) {
+			setWorkspaceError(error instanceof Error ? error.message : 'Unable to create the file.');
+		} finally {
+			setCreating(false);
+		}
 	}
 
 	async function confirmCreateWorkspaceEntry() {
 		if (!createRequest || creating || !isKucedr()) return;
 		const baseName = createName.trim();
-		const extension = createFilePresets.find((preset) => preset.kind === createFileKind)!.extension;
-		const name = createRequest.type === 'file' ? `${baseName}${extension}` : baseName;
 		if (!baseName) {
 			setCreateError('Enter a name.');
 			return;
@@ -376,16 +383,10 @@ export default function App() {
 		setCreating(true);
 		setCreateError('');
 		try {
-			const createdPath =
-				createRequest.type === 'directory'
-					? await agent.createWorkspaceDirectory(createRequest.parentPath, name)
-					: await agent.createWorkspaceFile(createRequest.parentPath, name);
+			await agent.createWorkspaceDirectory(createRequest.parentPath, baseName);
 			setWorkspaceFiles(await agent.listWorkspaceFiles());
 			setWorkspaceError('');
 			setCreateRequest(null);
-			if (createRequest.type === 'file') {
-				await selectWorkspaceEntry({ name, path: createdPath, type: 'file' });
-			}
 		} catch (error) {
 			setCreateError(error instanceof Error ? error.message : 'Unable to create the item.');
 		} finally {
@@ -402,8 +403,9 @@ export default function App() {
 	async function confirmRenameWorkspaceEntry() {
 		if (!renameTarget || renaming || !isKucedr()) return;
 		const name = renameName.trim();
-		if (!name) {
-			setRenameError('Enter a name.');
+		if (!name || name === renameTarget.name) {
+			setRenameTarget(null);
+			setRenameError('');
 			return;
 		}
 
@@ -588,13 +590,28 @@ export default function App() {
 
 	const sidebar = (
 		<AppSidebar
-			onCreateRequest={startCreateWorkspaceEntry}
+			onCreateDirectory={startCreateWorkspaceDirectory}
+			onCreateFile={createWorkspaceFile}
 			onDeleteRequest={(entry) => {
 				setDeleteError('');
 				setDeleteTarget(entry);
 			}}
 			onMoveRequest={moveWorkspaceEntry}
 			onRenameRequest={startRenameWorkspaceEntry}
+			onRenameCancel={() => {
+				if (renaming) return;
+				setRenameTarget(null);
+				setRenameError('');
+			}}
+			onRenameCommit={confirmRenameWorkspaceEntry}
+			onRenameNameChange={(name) => {
+				setRenameName(name);
+				setRenameError('');
+			}}
+			renameError={renameError}
+			renameName={renameName}
+			renameTarget={renameTarget}
+			renaming={renaming}
 			onWorkspaceSelect={selectWorkspaceEntry}
 			selectedWorkspacePath={selectedWorkspacePath}
 			workspaceError={workspaceError}
@@ -625,8 +642,8 @@ export default function App() {
 							},
 						],
 						{
-							'new-file': () => startCreateWorkspaceEntry('', 'file'),
-							'new-folder': () => startCreateWorkspaceEntry('', 'directory'),
+							'new-file': () => void createWorkspaceFile(''),
+							'new-folder': () => startCreateWorkspaceDirectory(''),
 							'copy-workspace-path': () => navigator.clipboard.writeText(workspaceLocation),
 						}
 					);
@@ -780,7 +797,7 @@ export default function App() {
 								{ id: 'cancel', label: 'Cancel', enabled: !creating },
 								{
 									id: 'create',
-									label: createRequest?.type === 'directory' ? 'Create Folder' : 'Create File',
+									label: 'Create Folder',
 									enabled: !creating && Boolean(createName.trim()),
 								},
 							],
@@ -800,7 +817,7 @@ export default function App() {
 					>
 						<DialogHeader>
 							<DialogTitle>
-								Create {createRequest?.type === 'directory' ? 'Folder' : 'File'}
+								Create Folder
 							</DialogTitle>
 							<DialogDescription>
 								{createRequest?.parentPath
@@ -812,13 +829,11 @@ export default function App() {
 							<label htmlFor="workspace-entry-name" className="text-xs font-medium">
 								Name
 							</label>
-							<div className="flex rounded-md border border-input bg-transparent shadow-sm focus-within:ring-1 focus-within:ring-ring">
-								<Input
+							<Input
 									id="workspace-entry-name"
 									autoFocus
 									value={createName}
 									disabled={creating}
-									className="min-w-0 rounded-r-none border-0 shadow-none focus-visible:ring-0"
 									onChange={(event) => {
 										setCreateName(event.target.value);
 										setCreateError('');
@@ -836,25 +851,6 @@ export default function App() {
 										]);
 									}}
 								/>
-								{createRequest?.type === 'file' ? (
-									<select
-										aria-label="File extension"
-										value={createFileKind}
-										disabled={creating}
-										className="h-8 shrink-0 rounded-r-md border-0 border-l border-input bg-muted px-2.5 text-xs text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50"
-										onChange={(event) => {
-											setCreateFileKind(event.target.value as CreateFileKind);
-											setCreateError('');
-										}}
-									>
-										{createFilePresets.map((preset) => (
-											<option key={preset.kind} value={preset.kind}>
-												{preset.label}
-											</option>
-										))}
-									</select>
-								) : null}
-							</div>
 						</div>
 						{createError ? <p className="text-xs text-destructive">{createError}</p> : null}
 						<DialogFooter>
@@ -866,109 +862,7 @@ export default function App() {
 							<Button type="submit" disabled={creating || !createName.trim()}>
 								{creating
 									? 'Creating…'
-									: `Create ${createRequest?.type === 'directory' ? 'Folder' : 'File'}`}
-							</Button>
-						</DialogFooter>
-					</form>
-				</DialogContent>
-			</Dialog>
-
-			<Dialog
-				open={Boolean(renameTarget)}
-				onOpenChange={(open) => {
-					if (!open && !renaming) {
-						setRenameTarget(null);
-						setRenameError('');
-					}
-				}}
-			>
-				<DialogContent
-					onContextMenu={(event) => {
-						showNativeContextMenu(
-							event,
-							[
-								{ id: 'cancel', label: 'Cancel', enabled: !renaming },
-								{
-									id: 'rename',
-									label: renameTarget?.type === 'directory' ? 'Rename Folder' : 'Rename File',
-									enabled:
-										!renaming &&
-										Boolean(renameName.trim()) &&
-										renameName.trim() !== renameTarget?.name,
-								},
-							],
-							{
-								cancel: () => setRenameTarget(null),
-								rename: () => confirmRenameWorkspaceEntry(),
-							}
-						);
-					}}
-				>
-					<form
-						className="space-y-3"
-						onSubmit={(event) => {
-							event.preventDefault();
-							void confirmRenameWorkspaceEntry();
-						}}
-					>
-						<DialogHeader>
-							<DialogTitle>
-								Rename {renameTarget?.type === 'directory' ? 'Folder' : 'File'}
-							</DialogTitle>
-							<DialogDescription>Enter a new name for {renameTarget?.name}.</DialogDescription>
-						</DialogHeader>
-						<div className="space-y-1.5">
-							<label htmlFor="workspace-entry-rename" className="text-xs font-medium">
-								Name
-							</label>
-							<Input
-								id="workspace-entry-rename"
-								autoFocus
-								value={renameName}
-								disabled={renaming}
-								onFocus={(event) => {
-									const extensionStart = renameName.lastIndexOf('.');
-									event.currentTarget.setSelectionRange(
-										0,
-										renameTarget?.type === 'file' && extensionStart > 0
-											? extensionStart
-											: renameName.length
-									);
-								}}
-								onChange={(event) => {
-									setRenameName(event.target.value);
-									setRenameError('');
-								}}
-								onContextMenu={(event) => {
-									showNativeContextMenu(event, [
-										{ type: 'role', role: 'undo' },
-										{ type: 'role', role: 'redo' },
-										{ type: 'separator' },
-										{ type: 'role', role: 'cut' },
-										{ type: 'role', role: 'copy' },
-										{ type: 'role', role: 'paste' },
-										{ type: 'separator' },
-										{ type: 'role', role: 'selectAll' },
-									]);
-								}}
-							/>
-						</div>
-						{renameError ? <p className="text-xs text-destructive">{renameError}</p> : null}
-						<DialogFooter>
-							<DialogClose asChild>
-								<Button type="button" variant="outline" disabled={renaming}>
-									Cancel
-								</Button>
-							</DialogClose>
-							<Button
-								type="submit"
-								disabled={
-									renaming || !renameName.trim() || renameName.trim() === renameTarget?.name
-								}
-							>
-								{renaming
-									? 'Renaming…'
-									: `Rename ${renameTarget?.type === 'directory' ? 'Folder' : 'File'}`}
+									: 'Create Folder'}
 							</Button>
 						</DialogFooter>
 					</form>
