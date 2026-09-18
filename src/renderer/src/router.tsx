@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import React, { Suspense, lazy, useState, type ReactNode } from 'react';
 import {
 	Navigate,
 	Outlet,
@@ -14,7 +14,7 @@ import {
 } from './components/app/base/PageLoadingSkeleton';
 import { NavigationBar } from './components/app/navigationbar/NavigationBar';
 import { Button } from './components/ui/button';
-import { Layout as SettingsLayout, SettingsBreadcrumb } from './pages/settings';
+import { Layout as SettingsLayout } from './pages/settings';
 import { SettingsPageSkeleton } from './pages/settings/components';
 import { SETTINGS_MODEL_SERVICE_ITEMS } from './pages/settings/navigation';
 import { CommandMenu, PageTransition } from './experience';
@@ -28,7 +28,6 @@ import {
 import { cn } from './lib/utils';
 import HomePage from './pages/home/Page';
 import StartPage from './pages/start/StartPage';
-import { usePageContext } from './components/app/base/page';
 import { StartupGate } from './auth/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
 import { useAuth } from './contexts/AuthContext';
@@ -60,7 +59,6 @@ const CodingPage = lazy(() => import('./pages/settings/pages/coding/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
-const SIDEBAR_TRANSITION_MS = 200;
 
 function ModelServiceLegacyRedirect(): React.JSX.Element {
 	const location = useLocation();
@@ -102,34 +100,17 @@ function SettingsRouteWrapper({ children }: { readonly children: ReactNode }): R
 
 function RootRouteComponent(): React.JSX.Element {
 	const location = useLocation();
-	const { state, isMobile } = usePageContext();
 	const [chatMode, setChatMode] = useState<ChatMode>('chat');
 	const [chatSessionId, setChatSessionId] = useState<string>(readPersistedChatSessionId);
 	const [chatSessionTitle, setChatSessionTitle] = useState<string>();
 	const [chatSessionTitleSessionId, setChatSessionTitleSessionId] = useState<string>();
 	const [commandMenuOpen, setCommandMenuOpen] = useState(false);
-	const [showSettingsBreadcrumb, setShowSettingsBreadcrumb] = useState(true);
-	const previousSidebarOpen = useRef(state.sidebarOpen);
 
 	const { phase } = useOnboarding();
 	const { state: authState, skipSignIn } = useAuth();
 	const isHome = location.pathname === '/home';
 	const isSettings = location.pathname.startsWith('/settings');
 	const hasSidebar = isHome || isSettings;
-
-	useLayoutEffect(() => {
-		const sidebarChanged = previousSidebarOpen.current !== state.sidebarOpen;
-		previousSidebarOpen.current = state.sidebarOpen;
-
-		if (!isSettings || isMobile || !sidebarChanged) {
-			setShowSettingsBreadcrumb(true);
-			return;
-		}
-
-		setShowSettingsBreadcrumb(false);
-		const timeout = window.setTimeout(() => setShowSettingsBreadcrumb(true), SIDEBAR_TRANSITION_MS);
-		return () => window.clearTimeout(timeout);
-	}, [isMobile, isSettings, state.sidebarOpen]);
 
 	return (
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
@@ -157,16 +138,6 @@ function RootRouteComponent(): React.JSX.Element {
 					)}
 				>
 					<NavigationBar
-						centerContent={
-							isSettings && showSettingsBreadcrumb ? (
-								<SettingsBreadcrumb />
-							) : undefined
-						}
-						centerContentClassName={
-							isSettings && (isMobile || !state.sidebarOpen)
-									? 'left-28'
-									: undefined
-						}
 						rightContent={
 							phase === 'auth' && authState.status !== 'recovery' ? (
 								<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>

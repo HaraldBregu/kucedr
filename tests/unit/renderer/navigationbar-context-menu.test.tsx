@@ -2,7 +2,6 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
-import { SettingsBreadcrumb } from '../../../src/renderer/src/pages/settings/Breadcrumb';
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
@@ -193,35 +192,12 @@ it('does not render the sidebar toggle in the navigationbar', () => {
 	expect(screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })).not.toBeInTheDocument();
 });
 
-it('renders settings breadcrumbs inside the navigationbar', () => {
+it('does not render route titles inside the navigationbar', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/general/persona']}>
-			<NavigationBar centerContent={<SettingsBreadcrumb />} />
+			<NavigationBar />
 		</MemoryRouter>
 	);
-	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
-	const breadcrumb = within(navigationBar as HTMLElement).getByRole('navigation', {
-		name: 'settings.breadcrumb.label',
-	});
 
-	expect(within(breadcrumb).getByRole('link', { name: 'settings.tabs.general' })).toHaveAttribute(
-		'href',
-		'/settings/general'
-	);
-	expect(within(breadcrumb).getByText('settings.voiceAgent.title')).toBeInTheDocument();
-});
-
-it('does not open the navigationbar menu from a breadcrumb link', () => {
-	const { container } = render(
-		<MemoryRouter initialEntries={['/settings/general/persona']}>
-			<NavigationBar centerContent={<SettingsBreadcrumb />} />
-		</MemoryRouter>
-	);
-	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
-	const breadcrumbLink = within(navigationBar as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.general',
-	});
-
-	fireEvent.contextMenu(breadcrumbLink);
-	expect(showContextMenu).not.toHaveBeenCalled();
+	expect(container.querySelector('[data-slot="navigationbar-content"]')).not.toBeInTheDocument();
 });

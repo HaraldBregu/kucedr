@@ -10,7 +10,6 @@ import { NavigationBarProvider } from './context/NavigationBarContext';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
 import { LogoView } from '@/components/app/base/logo-view';
-import { cn } from '@/lib/utils';
 
 // Synchronous platform check — no hooks, no async, no state.
 // macOS uses native traffic-light buttons; every other OS needs custom controls.
@@ -23,10 +22,6 @@ export interface NavigationBarProps {
 	className?: string;
 	/** Custom content rendered on the right before window controls */
 	rightContent?: ReactNode;
-	/** Route context rendered inside the navigation bar */
-	centerContent?: ReactNode;
-	/** Optional positioning override for route context */
-	centerContentClassName?: string;
 	/** Opens the global route and settings search */
 	onSearch?: () => void;
 }
@@ -34,8 +29,6 @@ export interface NavigationBarProps {
 export const NavigationBar = React.memo(function NavigationBar({
 	className,
 	rightContent,
-	centerContent,
-	centerContentClassName,
 	onSearch,
 }: NavigationBarProps) {
 	const { t } = useTranslation();
@@ -140,19 +133,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 
 					{/* {isSettings && <NavigationButtons />} */}
 				</NavigationBarLeftContainer>
-
-				{centerContent && (
-					<div
-						data-slot="navigationbar-content"
-						className={cn(
-							'pointer-events-none absolute inset-y-0 flex min-w-0 items-center overflow-hidden',
-							isMac ? 'left-4 right-16' : 'left-24 right-28',
-							centerContentClassName
-						)}
-					>
-						<div className="pointer-events-auto min-w-0 max-w-full">{centerContent}</div>
-					</div>
-				)}
 
 				<div className="flex-1" />
 
