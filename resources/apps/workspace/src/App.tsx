@@ -709,6 +709,11 @@ export default function App() {
 			>
 				<Sidebar id="workspace-sidebar" collapsible="offcanvas" width={sidebarWidth}>
 					<div
+						aria-hidden="true"
+						className="h-12 shrink-0"
+						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
+					/>
+					<div
 						className="flex h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2"
 						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 					>
