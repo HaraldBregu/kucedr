@@ -1,4 +1,4 @@
-import { AlertCircle, Check, FileText, LoaderCircle, Save } from 'lucide-react';
+import { FileText, LoaderCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import type { WorkspaceFileKind, WorkspaceTreeEntry } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
@@ -6,7 +6,6 @@ import type { WorkspaceSettings } from '@/lib/settings';
 import { FileViewer } from '@/components/viewer';
 import { FileInformation } from '@/components/information';
 import { FormatToggle } from '@/components/format-toggle';
-import { Button } from '@/components/ui/button';
 import { Tabs } from '@/components/ui/tabs';
 import { showNativeContextMenu } from '@/lib/menu';
 import { cn } from '@/lib/utils';
@@ -34,7 +33,6 @@ interface WorkspaceViewerProps {
 	onRename: () => void;
 	onSave: () => Promise<boolean>;
 	path: string | null;
-	saveError: string;
 	saving: boolean;
 	settings: WorkspaceSettings;
 }
@@ -54,7 +52,6 @@ export function WorkspaceViewer({
 	onRename,
 	onSave,
 	path,
-	saveError,
 	saving,
 	settings,
 }: WorkspaceViewerProps) {
@@ -79,14 +76,6 @@ export function WorkspaceViewer({
 				className="flex h-full min-h-0 min-w-0 flex-1 flex-col bg-background"
 				aria-label="Workspace file"
 			>
-				<header className="flex h-12 shrink-0 items-center gap-2 border-b px-3 sm:px-4">
-					<div className="min-w-0 flex-1">
-						<h1 className="truncate text-sm font-semibold tracking-[-0.02em]">Workspace</h1>
-						<p className="mt-0.5 text-[11px] text-muted-foreground">
-							Select a file from the sidebar.
-						</p>
-					</div>
-				</header>
 				<div className="flex flex-1 items-center justify-center px-6 text-center">
 					<div>
 						<div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
@@ -146,45 +135,6 @@ export function WorkspaceViewer({
 					);
 				}}
 			>
-				<header className="flex h-12 shrink-0 items-center gap-2 border-b px-3 sm:px-4">
-					<div
-						className="min-w-0 flex-1 cursor-default"
-						onDoubleClick={onRename}
-						title="Double-click to rename"
-					>
-						<h1 className="truncate text-sm font-semibold tracking-[-0.02em]">
-							{path.split(/[\\/]/).pop()}
-						</h1>
-						<p className="mt-0.5 truncate text-[11px] text-muted-foreground">{path}</p>
-					</div>
-
-					{editable && !loading ? (
-						<div className="flex shrink-0 items-center gap-2">
-							<span
-								className="hidden items-center gap-1.5 text-[11px] text-muted-foreground sm:flex"
-								title={saveError || undefined}
-							>
-								{saveError ? (
-									<AlertCircle className="h-3.5 w-3.5 text-destructive" />
-								) : saving ? (
-									<LoaderCircle className="h-3.5 w-3.5 animate-spin" />
-								) : (
-									<Check className="h-3.5 w-3.5" />
-								)}
-								{saveError ? 'Save failed' : saving ? 'Saving...' : dirty ? 'Unsaved' : 'Saved'}
-							</span>
-							<Button
-								variant="outline"
-								size="sm"
-								disabled={!dirty || saving}
-								onClick={() => void onSave()}
-							>
-								<Save className="h-3.5 w-3.5" /> Save
-							</Button>
-						</div>
-					) : null}
-				</header>
-
 				<div
 					className={cn(
 						'min-h-0 flex-1',

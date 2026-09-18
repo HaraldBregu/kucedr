@@ -920,7 +920,6 @@ export default function App() {
 						}}
 						onSave={() => saveWorkspaceFile(selectedPathRef.current, selectedContent)}
 						path={selectedWorkspacePath}
-						saveError={selectedSaveError}
 						saving={selectedSaving}
 						settings={workspaceSettings}
 					/>
