@@ -12,6 +12,11 @@ function command(channel: string): (...args: unknown[]) => unknown {
 	return registerCommandWithEvent.mock.calls.find(([registered]) => registered === channel)?.[1];
 }
 
+beforeEach(() => {
+	jest.clearAllMocks();
+	(openAppWindows as Map<string, unknown>).clear();
+});
+
 it('routes realtime voice lifecycle commands through the invoking window owner', async () => {
 	const execute = jest.fn(async () => undefined);
 	const mainFrame = {};
@@ -84,5 +89,4 @@ it('routes registered app views through their containing app window', async () =
 		windowId: 84,
 		request: { chatSessionId: 'chat' },
 	});
-	(openAppWindows as Map<string, unknown>).clear();
 });
