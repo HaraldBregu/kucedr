@@ -1,6 +1,7 @@
 import { lazy, Suspense, useRef } from 'react';
 import { FileQuestion, LoaderCircle, Music2 } from 'lucide-react';
 import type { WorkspaceFileKind } from '@kucedr/sdk';
+import type { WorkspaceSettings } from '@/lib/settings';
 
 import { TabsContent } from '@/components/ui/tabs';
 import {
@@ -43,6 +44,7 @@ interface FileViewerProps {
 	onSave: () => Promise<boolean>;
 	path: string;
 	url: string;
+	settings: WorkspaceSettings;
 }
 
 export function FileViewer({
@@ -54,6 +56,7 @@ export function FileViewer({
 	onSave,
 	path,
 	url,
+	settings,
 }: FileViewerProps) {
 	const name = path.split(/[\\/]/).pop() ?? path;
 	const mediaRef = useRef<HTMLMediaElement | null>(null);
@@ -127,11 +130,14 @@ export function FileViewer({
 					canSave={canSave}
 					className="min-h-full"
 					code
+					fontSize={settings.fontSize}
 					isDark={isDark}
+					lineNumbersVisible={settings.lineNumbers}
 					onChange={onChange}
 					onSave={onSave}
 					path={path}
 					value={content}
+					wordWrap={settings.wordWrap}
 				/>
 			</Suspense>
 		);

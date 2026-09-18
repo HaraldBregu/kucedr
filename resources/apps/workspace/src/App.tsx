@@ -7,7 +7,7 @@ import {
 	type CSSProperties,
 	type PointerEvent,
 } from 'react';
-import { Copy, Minus, Square, X } from 'lucide-react';
+import { Copy, Minus, Settings, Square, X } from 'lucide-react';
 
 import {
 	agent,
@@ -21,6 +21,7 @@ import {
 } from '@kucedr/sdk';
 import { AppSidebar } from '@/components/app-sidebar';
 import { WorkspaceViewer } from '@/components/workspace-viewer';
+import { WorkspaceSettingsView } from '@/components/settings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -35,6 +36,7 @@ import {
 import {
 	Sidebar,
 	SidebarContent,
+	SidebarFooter,
 	SidebarInset,
 	SidebarProvider,
 	SidebarResizeHandle,
@@ -47,6 +49,11 @@ import { findWorkspaceEntry } from '@/lib/find';
 import { removeWorkspaceEntry } from '@/lib/remove';
 import { rebaseWorkspacePath } from '@/lib/rebase';
 import { isWorkspacePathWithin } from '@/lib/within';
+import {
+	workspaceSettingsDefaults,
+	workspaceSettingsKey,
+	type WorkspaceSettings,
+} from '@/lib/settings';
 
 const fallbackTheme: AppThemeData = {
 	themeMode: 'light',
@@ -96,6 +103,10 @@ export default function App() {
 	const [sidebarWidth, setSidebarWidth] = useState(sidebarDefaultWidth);
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [isMaximized, setIsMaximized] = useState(false);
+	const [view, setView] = useState<'workspace' | 'settings'>('workspace');
+	const [workspaceSettings, setWorkspaceSettings] = useState<WorkspaceSettings>(
+		workspaceSettingsDefaults
+	);
 	const selectedPathRef = useRef<string | null>(null);
 	const selectedContentRef = useRef('');
 	const saveInFlightRef = useRef<Promise<boolean> | null>(null);
@@ -130,6 +141,27 @@ export default function App() {
 			active = false;
 			unsubscribe();
 		};
+	}, []);
+
+	useEffect(() => {
+		if (!isKucedr()) return;
+		void app.getAppStoreValue<WorkspaceSettings>(workspaceSettingsKey).then((stored) => {
+			if (!stored) return;
+			setWorkspaceSettings({
+				fontSize:
+					typeof stored.fontSize === 'number'
+						? Math.min(24, Math.max(10, stored.fontSize))
+						: workspaceSettingsDefaults.fontSize,
+				lineNumbers:
+					typeof stored.lineNumbers === 'boolean'
+						? stored.lineNumbers
+						: workspaceSettingsDefaults.lineNumbers,
+				wordWrap:
+					typeof stored.wordWrap === 'boolean'
+						? stored.wordWrap
+						: workspaceSettingsDefaults.wordWrap,
+			});
+		});
 	}, []);
 
 	useEffect(() => {
@@ -630,7 +662,10 @@ export default function App() {
 			renameName={renameName}
 			renameTarget={renameTarget}
 			renaming={renaming}
-			onWorkspaceSelect={selectWorkspaceEntry}
+			onWorkspaceSelect={(entry) => {
+				setView('workspace');
+				void selectWorkspaceEntry(entry);
+			}}
 			selectedWorkspacePath={selectedWorkspacePath}
 			workspaceError={workspaceError}
 			workspaceFiles={workspaceFiles}
@@ -674,6 +709,18 @@ export default function App() {
 						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 					/>
 					<SidebarContent>{sidebar}</SidebarContent>
+					<SidebarFooter>
+						<Button
+							type="button"
+							variant="ghost"
+							size="sm"
+							aria-current={view === 'settings' ? 'page' : undefined}
+							className="w-full justify-start gap-2 aria-[current=page]:bg-sidebar-accent aria-[current=page]:text-sidebar-accent-foreground"
+							onClick={() => setView('settings')}
+						>
+							<Settings /> Settings
+						</Button>
+					</SidebarFooter>
 					<SidebarResizeHandle
 						onPointerDown={startSidebarResize}
 						onContextMenu={(event) => {
@@ -766,6 +813,15 @@ export default function App() {
 							</div>
 						) : null}
 					</header>
+					{view === 'settings' ? (
+						<WorkspaceSettingsView
+							settings={workspaceSettings}
+							onChange={(settings) => {
+								setWorkspaceSettings(settings);
+								if (isKucedr()) void app.setAppStoreValue(workspaceSettingsKey, settings);
+							}}
+						/>
+					) : (
 					<WorkspaceViewer
 						content={selectedContent}
 						dirty={selectedDirty}
@@ -794,7 +850,9 @@ export default function App() {
 						path={selectedWorkspacePath}
 						saveError={selectedSaveError}
 						saving={selectedSaving}
+						settings={workspaceSettings}
 					/>
+					)}
 				</SidebarInset>
 			</SidebarProvider>
 

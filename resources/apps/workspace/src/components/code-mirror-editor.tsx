@@ -30,12 +30,15 @@ interface CodeMirrorEditorProps {
 	canSave?: boolean;
 	className?: string;
 	code?: boolean;
+	fontSize?: number;
 	isDark?: boolean;
+	lineNumbersVisible?: boolean;
 	onChange: (value: string) => void;
 	onSave?: () => unknown;
 	path?: string;
 	readOnly?: boolean;
 	value: string;
+	wordWrap?: boolean;
 }
 
 const markdownHighlight = HighlightStyle.define([
@@ -120,12 +123,15 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 			canSave = true,
 			className,
 			code = false,
+			fontSize = 13,
 			isDark = false,
+			lineNumbersVisible = true,
 			onChange,
 			onSave,
 			path = '',
 			readOnly = false,
 			value,
+			wordWrap = false,
 		},
 		ref
 	) {
@@ -139,6 +145,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		const editabilityRef = useRef(new Compartment());
 		const languageRef = useRef(new Compartment());
 		const themeRef = useRef(new Compartment());
+		const layoutRef = useRef(new Compartment());
 		onChangeRef.current = onChange;
 		onSaveRef.current = onSave;
 
@@ -222,7 +229,16 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 								: syntaxHighlighting(defaultHighlightStyle, { fallback: true })
 							: syntaxHighlighting(markdownHighlight, { fallback: true })
 					),
-					...(code ? [lineNumbers(), codeEditorTheme] : [EditorView.lineWrapping, noteEditorTheme]),
+					...(code
+						? [
+								layoutRef.current.of([
+									...(lineNumbersVisible ? [lineNumbers()] : []),
+									...(wordWrap ? [EditorView.lineWrapping] : []),
+									EditorView.theme({ '&': { fontSize: `${fontSize}px` } }),
+								]),
+								codeEditorTheme,
+							]
+						: [EditorView.lineWrapping, noteEditorTheme]),
 					placeholder(code ? '' : 'Start writing...'),
 					editabilityRef.current.of([
 						EditorState.readOnly.of(initialReadOnlyRef.current),
@@ -273,6 +289,18 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 				),
 			});
 		}, [code, isDark]);
+
+		useEffect(() => {
+			const view = viewRef.current;
+			if (!code || !view) return;
+			view.dispatch({
+				effects: layoutRef.current.reconfigure([
+					...(lineNumbersVisible ? [lineNumbers()] : []),
+					...(wordWrap ? [EditorView.lineWrapping] : []),
+					EditorView.theme({ '&': { fontSize: `${fontSize}px` } }),
+				]),
+			});
+		}, [code, fontSize, lineNumbersVisible, wordWrap]);
 
 		useEffect(() => {
 			const view = viewRef.current;

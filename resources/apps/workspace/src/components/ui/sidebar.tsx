@@ -125,6 +125,18 @@ const SidebarContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTM
 )
 SidebarContent.displayName = "SidebarContent"
 
+const SidebarFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      data-slot="sidebar-footer"
+      className={cn("shrink-0 border-t border-sidebar-border p-2", className)}
+      {...props}
+    />
+  ),
+)
+SidebarFooter.displayName = "SidebarFooter"
+
 const SidebarInset = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
   ({ className, ...props }, ref) => (
     <main
@@ -192,6 +204,7 @@ SidebarResizeHandle.displayName = "SidebarResizeHandle"
 export {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarInset,
   SidebarProvider,
   SidebarResizeHandle,

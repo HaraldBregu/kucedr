@@ -1,6 +1,7 @@
 import { AlertCircle, Check, FileText, LoaderCircle, Save } from 'lucide-react';
 import { useEffect } from 'react';
 import type { WorkspaceFileKind, WorkspaceTreeEntry } from '@kucedr/sdk';
+import type { WorkspaceSettings } from '@/lib/settings';
 
 import { FileViewer } from '@/components/viewer';
 import { FileInformation } from '@/components/information';
@@ -35,6 +36,7 @@ interface WorkspaceViewerProps {
 	path: string | null;
 	saveError: string;
 	saving: boolean;
+	settings: WorkspaceSettings;
 }
 
 export function WorkspaceViewer({
@@ -54,6 +56,7 @@ export function WorkspaceViewer({
 	path,
 	saveError,
 	saving,
+	settings,
 }: WorkspaceViewerProps) {
 	const editable = kind !== null && editableWorkspaceKinds.has(kind);
 	const canvas = kind === 'mermaid' || kind === 'excalidraw' || kind === 'tldraw';
@@ -206,6 +209,7 @@ export function WorkspaceViewer({
 							onSave={onSave}
 							path={path}
 							url={mediaUrl}
+							settings={settings}
 						/>
 					)}
 				</div>
