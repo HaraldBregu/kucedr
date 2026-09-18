@@ -23,17 +23,14 @@ export function Models({ language, ensureKucedr }: ModelsProps) {
 	const [chatSessionId, setChatSessionId] = useState('');
 	const [realtimeSessionId, setRealtimeSessionId] = useState('');
 
-	useEffect(
-		() => {
-			if (!isKucedr()) return;
-			return models.realtimeVoice.onSessionEvent((event) => {
-				if ('sessionId' in event && event.sessionId !== realtimeSessionId) return;
-				setResult(JSON.stringify(event, null, 2));
-				if (event.type === 'closed') setRealtimeSessionId('');
-			});
-		},
-		[realtimeSessionId]
-	);
+	useEffect(() => {
+		if (!isKucedr()) return;
+		return models.realtimeVoice.onSessionEvent((event) => {
+			if ('sessionId' in event && event.sessionId !== realtimeSessionId) return;
+			setResult(JSON.stringify(event, null, 2));
+			if (event.type === 'closed') setRealtimeSessionId('');
+		});
+	}, [realtimeSessionId]);
 
 	const run = async (action: () => Promise<string>) => {
 		if (!ensureKucedr()) return;
