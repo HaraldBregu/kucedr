@@ -71,7 +71,11 @@ export function Models({ language, ensureKucedr }: ModelsProps) {
 					onClick={() =>
 						run(async () => {
 							const value = await models.embedding.createEmbedding({ texts: [prompt] });
-							return JSON.stringify({ ...value, embeddings: value.embeddings.map((item) => item.slice(0, 8)) }, null, 2);
+							return JSON.stringify(
+								{ ...value, embeddings: value.embeddings.map((item) => item.slice(0, 8)) },
+								null,
+								2
+							);
 						})
 					}
 				>
@@ -133,7 +137,9 @@ export function Models({ language, ensureKucedr }: ModelsProps) {
 					size="sm"
 					variant="secondary"
 					disabled={busy}
-					onClick={() => run(async () => JSON.stringify(await models.realtimeVoice.getSetup(), null, 2))}
+					onClick={() =>
+						run(async () => JSON.stringify(await models.realtimeVoice.getSetup(), null, 2))
+					}
 				>
 					{text.getRealtimeVoice}
 				</Button>
@@ -174,9 +180,15 @@ export function Models({ language, ensureKucedr }: ModelsProps) {
 			<pre className="max-h-48 min-h-12 overflow-auto whitespace-pre-wrap break-words rounded-md bg-muted p-3 text-xs">
 				{result || text.modelResultEmpty}
 			</pre>
-			{mediaType === 'image' && mediaUrl ? <img src={mediaUrl} alt={text.generatedImage} className="max-h-72 rounded-md" /> : null}
-			{mediaType === 'audio' && mediaUrl ? <audio src={mediaUrl} controls className="w-full" /> : null}
-			{mediaType === 'video' && mediaUrl ? <video src={mediaUrl} controls className="max-h-72 w-full rounded-md" /> : null}
+			{mediaType === 'image' && mediaUrl ? (
+				<img src={mediaUrl} alt={text.generatedImage} className="max-h-72 rounded-md" />
+			) : null}
+			{mediaType === 'audio' && mediaUrl ? (
+				<audio src={mediaUrl} controls className="w-full" />
+			) : null}
+			{mediaType === 'video' && mediaUrl ? (
+				<video src={mediaUrl} controls className="max-h-72 w-full rounded-md" />
+			) : null}
 		</div>
 	);
 }
