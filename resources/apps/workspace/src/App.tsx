@@ -7,7 +7,7 @@ import {
 	type CSSProperties,
 	type PointerEvent,
 } from 'react';
-import { Copy, FilePlus2, FolderPlus, Minus, Search, Settings, Square, X } from 'lucide-react';
+import { FilePlus2, FolderPlus, Search, Settings } from 'lucide-react';
 
 import {
 	agent,
@@ -40,7 +40,6 @@ import {
 	SidebarInset,
 	SidebarProvider,
 	SidebarResizeHandle,
-	SidebarTrigger,
 } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { showNativeContextMenu } from '@/lib/menu';
@@ -63,6 +62,7 @@ const fallbackTheme: AppThemeData = {
 const sidebarMinWidth = 200;
 const sidebarMaxWidth = 360;
 const sidebarDefaultWidth = 240;
+const sidebarToggleButtonId = 'toggle-sidebar';
 const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'markdown',
 	'mermaid',
@@ -102,7 +102,6 @@ export default function App() {
 	const [deleting, setDeleting] = useState(false);
 	const [sidebarWidth, setSidebarWidth] = useState(sidebarDefaultWidth);
 	const [sidebarOpen, setSidebarOpen] = useState(true);
-	const [isMaximized, setIsMaximized] = useState(false);
 	const [view, setView] = useState<'workspace' | 'settings'>('workspace');
 	const [workspaceSettings, setWorkspaceSettings] = useState<WorkspaceSettings>(
 		workspaceSettingsDefaults
@@ -188,9 +187,27 @@ export default function App() {
 
 	useEffect(() => {
 		if (!isKucedr()) return;
-		void win.isMaximized().then(setIsMaximized);
-		return win.onMaximizeChange(setIsMaximized);
+		return win.onNavigationBarButtonClick((buttonId) => {
+			if (buttonId === sidebarToggleButtonId) setSidebarOpen((open) => !open);
+		});
 	}, []);
+
+	useEffect(() => {
+		if (!isKucedr()) return;
+		win.setNavigationBarOptions({
+			leftButtons: [
+				{
+					id: sidebarToggleButtonId,
+					label: sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar',
+					icon: 'panel-left',
+					expanded: sidebarOpen,
+				},
+			],
+			sidebarOpen,
+			sidebarWidth,
+		});
+		return () => win.setNavigationBarOptions(null);
+	}, [sidebarOpen, sidebarWidth]);
 
 	useEffect(() => {
 		if (!isKucedr()) return;
@@ -683,8 +700,6 @@ export default function App() {
 			searchQuery={sidebarSearchQuery}
 		/>
 	);
-	const isMac = navigator.userAgent.includes('Macintosh');
-
 	return (
 		<TooltipProvider delayDuration={400}>
 			<SidebarProvider
@@ -713,11 +728,6 @@ export default function App() {
 				}}
 			>
 				<Sidebar id="workspace-sidebar" collapsible="offcanvas" width={sidebarWidth}>
-					<div
-						aria-hidden="true"
-						className="h-12 shrink-0"
-						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
-					/>
 					<div
 						className="flex h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2"
 						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
@@ -823,67 +833,6 @@ export default function App() {
 				</Sidebar>
 
 				<SidebarInset>
-					<header
-						className={`flex h-12 shrink-0 items-center gap-2 border-b bg-background/80 px-3${
-							!sidebarOpen ? ' pl-28' : ''
-						}`}
-						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
-					>
-						<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
-						<span className="min-w-0 flex-1 truncate text-sm font-medium">
-							{view === 'settings' ? 'Settings' : selectedWorkspaceEntry?.name ?? ''}
-						</span>
-						{!isMac ? (
-							<div
-								className="-my-3 -mr-3 flex h-12 items-center [webkit-app-region:no-drag]"
-								style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
-							>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
-									onClick={() => {
-										if (isKucedr()) win.minimize();
-									}}
-									title="Minimize"
-									aria-label="Minimize"
-								>
-									<Minus className="size-[13px]" strokeWidth={1.5} />
-								</Button>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-accent/80 hover:text-foreground"
-									onClick={() => {
-										if (isKucedr()) win.maximize();
-									}}
-									title={isMaximized ? 'Restore' : 'Maximize'}
-									aria-label={isMaximized ? 'Restore' : 'Maximize'}
-								>
-									{isMaximized ? (
-										<Copy className="size-[11px]" strokeWidth={1.5} />
-									) : (
-										<Square className="size-[11px]" strokeWidth={1.5} />
-									)}
-								</Button>
-								<Button
-									type="button"
-									variant="ghost"
-									size="icon"
-									className="h-12 w-[46px] rounded-none text-muted-foreground hover:bg-[#e81123] hover:text-white active:bg-[#c42b1c] active:text-white"
-									onClick={() => {
-										if (isKucedr()) win.close();
-									}}
-									title="Close"
-									aria-label="Close"
-								>
-									<X className="size-[13px]" strokeWidth={1.5} />
-								</Button>
-							</div>
-						) : null}
-					</header>
 					{view === 'settings' ? (
 						<WorkspaceSettingsView
 							settings={workspaceSettings}

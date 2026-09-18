@@ -1,8 +1,5 @@
 import * as React from "react"
-import { createPortal } from "react-dom"
-import { PanelLeft } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface SidebarContextValue {
@@ -138,38 +135,6 @@ const SidebarInset = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElem
 )
 SidebarInset.displayName = "SidebarInset"
 
-const SidebarTrigger = React.forwardRef<
-  React.ElementRef<typeof Button>,
-  React.ComponentPropsWithoutRef<typeof Button>
->(({ className, onClick, ...props }, ref) => {
-  const { open, toggleSidebar } = useSidebar()
-
-  return createPortal(
-    <Button
-      ref={ref}
-      data-sidebar="trigger"
-      data-slot="sidebar-trigger"
-      type="button"
-      variant="ghost"
-      size="icon"
-      className={cn("fixed left-20 top-2.5 z-50 size-7 text-muted-foreground", className)}
-      aria-controls="workspace-sidebar"
-      aria-expanded={open}
-      aria-label="Toggle Sidebar"
-      title="Toggle Sidebar"
-      onClick={(event) => {
-        onClick?.(event)
-        if (!event.defaultPrevented) toggleSidebar()
-      }}
-      {...props}
-    >
-      <PanelLeft className="size-6" strokeWidth={1.5} />
-    </Button>,
-    document.body,
-  )
-})
-SidebarTrigger.displayName = "SidebarTrigger"
-
 const SidebarResizeHandle = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
@@ -196,5 +161,4 @@ export {
   SidebarInset,
   SidebarProvider,
   SidebarResizeHandle,
-  SidebarTrigger,
 }
