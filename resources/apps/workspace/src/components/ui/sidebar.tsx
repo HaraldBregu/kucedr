@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils"
 interface SidebarContextValue {
   open: boolean
   setOpen: (open: boolean) => void
-  toggleSidebar: () => void
 }
 
 const SidebarContext = React.createContext<SidebarContextValue | null>(null)
@@ -33,11 +32,9 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
       },
       [onOpenChange, openProp],
     )
-    const toggleSidebar = React.useCallback(() => setOpen(!open), [open, setOpen])
-
     const value = React.useMemo(
-      () => ({ open, setOpen, toggleSidebar }),
-      [open, setOpen, toggleSidebar],
+      () => ({ open, setOpen }),
+      [open, setOpen],
     )
 
     return (
