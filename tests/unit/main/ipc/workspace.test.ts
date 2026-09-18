@@ -11,6 +11,7 @@ import { writeWorkspaceMarkdown } from '../../../../src/main/ipc/markdown';
 import { moveWorkspaceEntry } from '../../../../src/main/ipc/move';
 import { renameWorkspaceEntry } from '../../../../src/main/ipc/rename';
 import { readWorkspaceTree } from '../../../../src/main/ipc/tree';
+import { readWorkspaceTextFile } from '../../../../src/main/ipc/text';
 import { resolveWorkspaceFile } from '../../../../src/main/ipc/workspace';
 import { writeWorkspaceFile } from '../../../../src/main/ipc/write';
 import { workspaceFileType } from '../../../../src/shared/workspace';
@@ -67,7 +68,21 @@ describe('workspace files', () => {
 			kind: 'pdf',
 			mimeType: 'application/pdf',
 		});
+		expect(workspaceFileType('src/component.vue')).toEqual({ kind: 'text', mimeType: 'text/plain' });
+		expect(workspaceFileType('script.rb')).toEqual({ kind: 'text', mimeType: 'text/plain' });
 		expect(workspaceFileType('archive.zip')).toEqual({ kind: 'unsupported' });
+	});
+
+	it('reads UTF-8 code and rejects binary data', async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-workspace-'));
+		await fs.writeFile(path.join(root, 'script.py'), 'print("hello")\n');
+		await fs.writeFile(path.join(root, 'binary.dat'), Buffer.from([0xff, 0xfe, 0x00]));
+
+		await expect(readWorkspaceTextFile(root, 'script.py')).resolves.toBe('print("hello")\n');
+		await expect(readWorkspaceTextFile(root, 'binary.dat')).rejects.toThrow(
+			'This binary file cannot be displayed as code.'
+		);
+		await fs.rm(root, { recursive: true });
 	});
 
 	it('resolves existing files inside the real workspace', async () => {

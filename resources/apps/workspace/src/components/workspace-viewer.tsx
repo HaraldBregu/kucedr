@@ -15,6 +15,7 @@ const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'mermaid',
 	'excalidraw',
 	'tldraw',
+	'text',
 ]);
 
 interface WorkspaceViewerProps {

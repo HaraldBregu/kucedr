@@ -57,6 +57,22 @@ const TEXT_EXTENSIONS = new Set([
 	'yml',
 ]);
 const TEXT_FILENAMES = new Set(['dockerfile', 'license', 'makefile', 'readme']);
+const BINARY_EXTENSIONS = new Set([
+	'7z',
+	'bin',
+	'dmg',
+	'doc',
+	'docx',
+	'exe',
+	'gz',
+	'jar',
+	'rar',
+	'tar',
+	'wasm',
+	'xls',
+	'xlsx',
+	'zip',
+]);
 
 export type WorkspaceFileKind =
 	| 'markdown'
@@ -96,7 +112,7 @@ export function workspaceFileType(filePath: string): WorkspaceFileType {
 	if (extension === 'tldr' || extension === 'tldraw') {
 		return { kind: 'tldraw', mimeType: 'application/vnd.tldraw+json' };
 	}
-	if (TEXT_EXTENSIONS.has(extension) || TEXT_FILENAMES.has(name))
+	if (!BINARY_EXTENSIONS.has(extension) || TEXT_EXTENSIONS.has(extension) || TEXT_FILENAMES.has(name))
 		return { kind: 'text', mimeType: 'text/plain' };
 	return { kind: 'unsupported' };
 }

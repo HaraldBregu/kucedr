@@ -121,25 +121,18 @@ export function FileViewer({
 
 	if (kind === 'text') {
 		return (
-			<article className="mx-auto min-h-full w-full max-w-[1000px] px-5 py-8 sm:px-8 lg:px-12">
-				<pre
-					className="whitespace-pre-wrap break-words font-mono text-[13px] leading-6 text-foreground"
-					onContextMenu={(event) => {
-						showNativeContextMenu(
-							event,
-							[
-								{ type: 'role', role: 'copy' },
-								{ type: 'role', role: 'selectAll' },
-								{ type: 'separator' },
-								{ id: 'copy-path', label: 'Copy Path' },
-							],
-							{ 'copy-path': () => navigator.clipboard.writeText(path) }
-						);
-					}}
-				>
-					{content}
-				</pre>
-			</article>
+			<Suspense fallback={viewerFallback}>
+				<CodeMirrorEditor
+					key={path}
+					canSave={canSave}
+					className="min-h-full"
+					code
+					onChange={onChange}
+					onSave={onSave}
+					path={path}
+					value={content}
+				/>
+			</Suspense>
 		);
 	}
 

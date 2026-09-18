@@ -4,7 +4,13 @@ import { workspaceFileType, type WorkspaceFileKind } from '../../shared/workspac
 import { atomicWrite } from '../shared/atomic_write';
 import { resolveWorkspaceFile } from './workspace';
 
-const editableKinds = new Set<WorkspaceFileKind>(['markdown', 'mermaid', 'excalidraw', 'tldraw']);
+const editableKinds = new Set<WorkspaceFileKind>([
+	'markdown',
+	'mermaid',
+	'excalidraw',
+	'tldraw',
+	'text',
+]);
 
 export async function writeWorkspaceFile(
 	root: string,

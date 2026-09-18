@@ -72,6 +72,7 @@ import { deleteWorkspaceDirectory } from './directory';
 import { writeWorkspaceMarkdown } from './markdown';
 import { writeWorkspaceFile } from './write';
 import { duplicateWorkspaceFile } from './duplicate';
+import { readWorkspaceTextFile } from './text';
 import { moveWorkspaceEntry } from './move';
 import { renameWorkspaceEntry } from './rename';
 import { readWorkspaceTree } from './tree';
@@ -536,11 +537,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				async (filePath: unknown): Promise<string> => {
 					const normalizedFilePath = optionalTrimmedString(filePath);
 					if (!normalizedFilePath) throw new Error('Invalid workspace file path.');
-					const root = workspacePath(agent.config);
-					const resolvedPath = await resolveWorkspaceFile(root, normalizedFilePath);
-					const stats = await fs.stat(resolvedPath);
-					if (!stats.isFile()) throw new Error('Workspace path is not a file.');
-					return fs.readFile(resolvedPath, 'utf8');
+					return readWorkspaceTextFile(workspacePath(agent.config), normalizedFilePath);
 				},
 				AgentChannels.readWorkspaceFile
 			)

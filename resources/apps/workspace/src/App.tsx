@@ -61,6 +61,7 @@ const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'mermaid',
 	'excalidraw',
 	'tldraw',
+	'text',
 ]);
 
 export default function App() {

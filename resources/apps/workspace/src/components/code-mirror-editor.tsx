@@ -8,12 +8,13 @@ import {
 	undo,
 } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
-import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { defaultHighlightStyle, HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { Compartment, EditorState, Transaction } from '@codemirror/state';
-import { EditorView, keymap, placeholder } from '@codemirror/view';
+import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 
 import { showNativeContextMenu } from '@/lib/menu';
+import { languageForPath } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
 interface CodeMirrorEditorHandle {
@@ -27,8 +28,10 @@ interface CodeMirrorEditorHandle {
 interface CodeMirrorEditorProps {
 	canSave?: boolean;
 	className?: string;
+	code?: boolean;
 	onChange: (value: string) => void;
 	onSave?: () => unknown;
+	path?: string;
 	readOnly?: boolean;
 	value: string;
 }
@@ -88,9 +91,30 @@ const noteEditorTheme = EditorView.theme({
 	},
 });
 
+const codeEditorTheme = EditorView.theme({
+	'&': { height: '100%', backgroundColor: 'transparent', color: 'var(--foreground)' },
+	'&.cm-focused': { outline: 'none' },
+	'.cm-scroller': { overflow: 'auto', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' },
+	'.cm-content': { minHeight: '100%', padding: '12px 0', caretColor: 'var(--primary)' },
+	'.cm-line': { padding: '0 16px' },
+	'.cm-gutters': {
+		backgroundColor: 'color-mix(in oklch, var(--muted) 35%, transparent)',
+		borderRight: '1px solid var(--border)',
+		color: 'var(--muted-foreground)',
+	},
+	'.cm-lineNumbers .cm-gutterElement': { padding: '0 10px 0 8px' },
+	'.cm-activeLine, .cm-activeLineGutter': {
+		backgroundColor: 'color-mix(in oklch, var(--muted) 45%, transparent)',
+	},
+	'.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--primary)' },
+	'&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
+		backgroundColor: 'color-mix(in oklch, var(--primary) 16%, transparent) !important',
+	},
+});
+
 export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEditorProps>(
 	function CodeMirrorEditor(
-		{ canSave = true, className, onChange, onSave, readOnly = false, value },
+		{ canSave = true, className, code = false, onChange, onSave, path = '', readOnly = false, value },
 		ref
 	) {
 		const mountRef = useRef<HTMLDivElement>(null);
@@ -100,6 +124,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		const initialValueRef = useRef(value);
 		const initialReadOnlyRef = useRef(readOnly);
 		const editabilityRef = useRef(new Compartment());
+		const languageRef = useRef(new Compartment());
 		onChangeRef.current = onChange;
 		onSaveRef.current = onSave;
 
@@ -175,20 +200,19 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 						...defaultKeymap,
 						...historyKeymap,
 					]),
-					markdown(),
-					syntaxHighlighting(markdownHighlight, { fallback: true }),
-					EditorView.lineWrapping,
-					noteEditorTheme,
-					placeholder('Start writing...'),
+					languageRef.current.of(code ? [] : markdown()),
+					syntaxHighlighting(code ? defaultHighlightStyle : markdownHighlight, { fallback: true }),
+					...(code ? [lineNumbers(), codeEditorTheme] : [EditorView.lineWrapping, noteEditorTheme]),
+					placeholder(code ? '' : 'Start writing...'),
 					editabilityRef.current.of([
 						EditorState.readOnly.of(initialReadOnlyRef.current),
 						EditorView.editable.of(!initialReadOnlyRef.current),
 					]),
 					EditorView.contentAttributes.of({
-						'aria-label': 'Note content',
+						'aria-label': code ? 'Code editor' : 'Note content',
 						'aria-multiline': 'true',
-						autocapitalize: 'sentences',
-						spellcheck: 'true',
+						autocapitalize: code ? 'off' : 'sentences',
+						spellcheck: code ? 'false' : 'true',
 					}),
 					EditorView.updateListener.of((update) => {
 						if (update.docChanged) onChangeRef.current(update.state.doc.toString());
@@ -204,6 +228,19 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 				viewRef.current = null;
 			};
 		}, []);
+
+		useEffect(() => {
+			if (!code || !path) return undefined;
+			let active = true;
+			void languageForPath(path).then((language) => {
+				const view = viewRef.current;
+				if (!active || !view) return;
+				view.dispatch({ effects: languageRef.current.reconfigure(language ?? []) });
+			});
+			return () => {
+				active = false;
+			};
+		}, [code, path]);
 
 		useEffect(() => {
 			const view = viewRef.current;
