@@ -91,7 +91,10 @@ it('shows a debug app badge and image preview', async () => {
 
 	const title = await screen.findByRole('heading', { name: 'Demo App' });
 	expect(title.parentElement).toHaveTextContent('settings.apps.debug.badge');
-	expect(screen.getByRole('img')).toHaveAttribute('src', debugApp.imageUrl);
+	expect(title.closest('[data-slot="card"]')?.querySelector('img')).toHaveAttribute(
+		'src',
+		debugApp.imageUrl
+	);
 });
 
 it('shows details, open, and an overflow delete action on app cards', async () => {
