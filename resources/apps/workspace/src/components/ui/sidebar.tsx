@@ -85,7 +85,7 @@ const Sidebar = React.forwardRef<HTMLDivElement, SidebarProps>(
           <div
             data-sidebar="sidebar"
             data-slot="sidebar-inner"
-            className="relative flex size-full flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
+            className="relative flex size-full flex-col border-r border-sidebar-border bg-background text-sidebar-foreground"
           >
             {children}
           </div>

@@ -222,7 +222,7 @@ export function AppSidebar({
 	return (
 		<div
 			className={cn(
-				'flex h-full w-full flex-col bg-sidebar text-sidebar-foreground',
+				'flex h-full w-full flex-col bg-background text-sidebar-foreground',
 				dropTargetPath === '' && !dropError && 'ring-1 ring-inset ring-sidebar-ring',
 				dropTargetPath === '' && dropError && 'ring-1 ring-inset ring-destructive'
 			)}
