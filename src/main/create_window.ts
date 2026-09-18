@@ -202,7 +202,7 @@ export class Main {
 		this.windowContextManager.create(win);
 		attachWindowHandlers(win);
 		this.trackWindowVisibility(win);
-		this.trackRouteNavigation(win);
+		attachRouteNavigation(win);
 
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);
