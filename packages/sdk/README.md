@@ -120,7 +120,7 @@ const action = await win.showContextMenu([
 win.maximize();
 const maximized = await win.isMaximized();
 
-win.setTitlebarOptions({
+win.setNavigationbarOptions({
 	title: 'Workspace',
 	leftButtons: [
 		{
@@ -134,10 +134,10 @@ win.setTitlebarOptions({
 	sidebarOpen: true,
 	sidebarWidth: 240,
 });
-const stopTitlebarActions = win.onTitlebarButtonClick((buttonId) => {
+const stopNavigationbarActions = win.onNavigationbarButtonClick((buttonId) => {
 	if (buttonId === 'toggle-sidebar') console.log('Toggle the app sidebar');
 });
-stopTitlebarActions();
+stopNavigationbarActions();
 ```
 
 ## App window configuration
@@ -177,7 +177,7 @@ Every `window` field is optional. Apps without window configuration keep these d
 | `maximizable` | `true` | Allow the user to maximize the window |
 
 Dimensions are positive integer device-independent pixels, at most `32768`. The outer height
-includes Kucedr's 48-pixel titlebar. An explicit minimum cannot exceed its explicit initial
+includes Kucedr's 48-pixel navigationbar. An explicit minimum cannot exceed its explicit initial
 dimension. If an initial dimension is smaller than the default minimum, the omitted minimum
 is lowered to fit it.
 
@@ -231,14 +231,14 @@ list the Pi model catalog, and run Codex OAuth; other apps are rejected. Coding 
 the registered Coding app. It exposes the narrow preload bridge; shell selection, PTY ownership,
 and process lifecycle remain in the Electron main process. It is not exposed by `connect()`.
 
-App titlebars are rendered by the Kucedr host. Embedded Apps can provide a centered title,
+App navigationbars are rendered by the Kucedr host. Embedded Apps can provide a centered title,
 left and right button descriptors, and optional sidebar state with
-`win.setTitlebarOptions()`. Button IDs are returned through `win.onTitlebarButtonClick()` so the
+`win.setNavigationbarOptions()`. Button IDs are returned through `win.onNavigationbarButtonClick()` so the
 app remains the owner of its application state. Passing `null` restores the manifest title and
 removes app-provided controls. Icons are selected from the exported
-`APP_TITLEBAR_BUTTON_ICONS` list; arbitrary markup is not accepted across the window boundary.
+`APP_NAVIGATIONBAR_BUTTON_ICONS` list; arbitrary markup is not accepted across the window boundary.
 Keep `sidebarWidth` at the expanded width and update `sidebarOpen` when showing or hiding it so the
-host titlebar uses the same off-canvas transition as the app sidebar.
+host navigationbar uses the same off-canvas transition as the app sidebar.
 
 App store methods are available only to apps embedded in Kucedr. Kucedr derives the
 app namespace from the calling view, so apps never pass or select an app ID.

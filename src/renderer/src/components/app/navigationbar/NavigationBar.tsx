@@ -2,8 +2,8 @@ import React, { type ReactNode } from 'react';
 import { Folder, FolderOpen, Menu, Search, Trash2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { TitleBarContainer } from './TitleBarContainer';
-import { TitleBarLeftContainer } from './TitleBarLeftContainer';
+import { NavigationBarContainer } from './NavigationBarContainer';
+import { NavigationBarLeftContainer } from './NavigationBarLeftContainer';
 import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
@@ -12,7 +12,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { TitleBarProvider } from './context/TitleBarContext';
+import { NavigationBarProvider } from './context/NavigationBarContext';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -26,7 +26,7 @@ const isMac =
 	typeof navigator !== 'undefined' &&
 	(navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac'));
 
-export interface TitleBarProps {
+export interface NavigationBarProps {
 	/** Optional class applied to the title bar container */
 	className?: string;
 	/** Optional inline style applied to the title bar container */
@@ -41,11 +41,11 @@ export interface TitleBarProps {
 	onSearch?: () => void;
 	/** When true, renders agentic + info sidebar toggle buttons on the right */
 	showSidebarToggles?: boolean;
-	/** Whether the desktop sidebar occupies the left edge of the titlebar. */
+	/** Whether the desktop sidebar occupies the left edge of the navigationbar. */
 	sidebarOpen?: boolean;
 }
 
-export const TitleBar = React.memo(function TitleBar({
+export const NavigationBar = React.memo(function NavigationBar({
 	className,
 	style,
 	rightContent,
@@ -54,7 +54,7 @@ export const TitleBar = React.memo(function TitleBar({
 	onSearch,
 	showSidebarToggles: _showSidebarToggles = false,
 	sidebarOpen = false,
-}: TitleBarProps) {
+}: NavigationBarProps) {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -65,11 +65,11 @@ export const TitleBar = React.memo(function TitleBar({
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
 	const settingsLabel = t('settings.title', 'Settings');
-	const homeButtonLabel = t('titleBar.home', 'Home');
-	const searchLabel = t('titleBar.search', 'Search');
-	const chatTitle = sessionTitle ?? (isHome ? t('titleBar.newChat', 'New chat') : undefined);
+	const homeButtonLabel = t('navigationBar.home', 'Home');
+	const searchLabel = t('navigationBar.search', 'Search');
+	const chatTitle = sessionTitle ?? (isHome ? t('navigationBar.newChat', 'New chat') : undefined);
 	const activeChatSessionId = sessionTitleSessionId ?? sessionId;
-	const titlebarMenuItems = [
+	const navigationbarMenuItems = [
 		{ path: '/settings/general', label: t('settings.tabs.general') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
 		{ path: '/settings/system', label: t('settings.tabs.system') },
@@ -114,8 +114,8 @@ export const TitleBar = React.memo(function TitleBar({
 		</Button>
 	) : null;
 	return (
-		<TitleBarProvider value={{ isMac, isFullScreen }}>
-			<TitleBarContainer
+		<NavigationBarProvider value={{ isMac, isFullScreen }}>
+			<NavigationBarContainer
 				className={cn(className, isOnboarding && 'bg-background')}
 				style={style}
 				onContextMenu={(event) => {
@@ -126,7 +126,7 @@ export const TitleBar = React.memo(function TitleBar({
 					event.preventDefault();
 					void window.win
 						.showContextMenu(
-							titlebarMenuItems.map((item) => ({ id: item.path, label: item.label }))
+							navigationbarMenuItems.map((item) => ({ id: item.path, label: item.label }))
 						)
 						.then((path) => {
 							if (path) navigate(path);
@@ -135,7 +135,7 @@ export const TitleBar = React.memo(function TitleBar({
 			>
 				{isHome && chatTitle ? (
 					<div
-						data-slot="titlebar-chat-context"
+						data-slot="navigationbar-chat-context"
 						className={cn(
 							'flex min-w-0 items-center gap-1 transition-[margin] duration-200 ease-linear motion-reduce:transition-none',
 							sidebarOpen ? 'ml-3' : 'ml-28'
@@ -159,7 +159,7 @@ export const TitleBar = React.memo(function TitleBar({
 										onSelect={() => void window.agent.openSessionFolder(activeChatSessionId)}
 									>
 										<FolderOpen />
-										{t('titleBar.openLocation', 'Open location')}
+										{t('navigationBar.openLocation', 'Open location')}
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										className="text-destructive focus:bg-destructive/10 focus:text-destructive"
@@ -180,7 +180,7 @@ export const TitleBar = React.memo(function TitleBar({
 										{t('common.delete', 'Delete')}
 									</DropdownMenuItem>
 									<DropdownMenuSeparator />
-									{titlebarMenuItems.map((item) => (
+									{navigationbarMenuItems.map((item) => (
 										<DropdownMenuItem key={item.path} onSelect={() => navigate(item.path)}>
 											{item.label}
 										</DropdownMenuItem>
@@ -189,7 +189,7 @@ export const TitleBar = React.memo(function TitleBar({
 							</DropdownMenu>
 						) : null}
 						<span
-							data-slot="titlebar-chat-title"
+							data-slot="navigationbar-chat-title"
 							className="min-w-0 max-w-72 truncate text-sm font-medium"
 						>
 							{chatTitle}
@@ -198,13 +198,13 @@ export const TitleBar = React.memo(function TitleBar({
 				) : null}
 
 				{/* ── Left: platform menu + nav buttons ── */}
-				<TitleBarLeftContainer isMac={isMac} isFullScreen={isFullScreen}>
+				<NavigationBarLeftContainer isMac={isMac} isFullScreen={isFullScreen}>
 					{!isMac && (
 						<button
 							type="button"
 							onClick={() => window.win?.popupMenu()}
 							className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground"
-							title={t('titleBar.applicationMenu')}
+							title={t('navigationBar.applicationMenu')}
 						>
 							<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
 						</button>
@@ -224,11 +224,11 @@ export const TitleBar = React.memo(function TitleBar({
 					)}
 
 					{/* {isSettings && <NavigationButtons />} */}
-				</TitleBarLeftContainer>
+				</NavigationBarLeftContainer>
 
 				{centerContent && (
 					<div
-						data-slot="titlebar-content"
+						data-slot="navigationbar-content"
 						className={cn(
 							'pointer-events-none absolute inset-y-0 flex min-w-0 items-center overflow-hidden',
 							isMac ? 'left-4 right-16' : 'left-24 right-28',
@@ -262,8 +262,8 @@ export const TitleBar = React.memo(function TitleBar({
 				)}
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}
-			</TitleBarContainer>
-		</TitleBarProvider>
+			</NavigationBarContainer>
+		</NavigationBarProvider>
 	);
 });
-TitleBar.displayName = 'TitleBar';
+NavigationBar.displayName = 'NavigationBar';

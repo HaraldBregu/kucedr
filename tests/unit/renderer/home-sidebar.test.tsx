@@ -204,7 +204,7 @@ it('renames a chat from its context menu without item action buttons', async () 
 	fireEvent.contextMenu(chat);
 	expect(showContextMenu).toHaveBeenCalledWith([
 		{ id: 'rename', label: 'common.rename' },
-		{ id: 'open-location', label: 'titleBar.openLocation' },
+		{ id: 'open-location', label: 'navigationBar.openLocation' },
 		{ id: 'delete', label: 'common.delete' },
 	]);
 	const input = await screen.findByRole('textbox', { name: 'Rename Latest chat' });
@@ -279,11 +279,11 @@ it('starts a new chat from the sidebar', async () => {
 		</MemoryRouter>
 	);
 
-	const newChat = screen.getByRole('button', { name: 'titleBar.newChat' });
+	const newChat = screen.getByRole('button', { name: 'navigationBar.newChat' });
 	expect(newChat).toHaveAttribute('class', SPLIT_ITEM_CLASS);
 	await user.click(newChat);
 	expect(setSessionId).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
-	expect(setSessionTitle).toHaveBeenCalledWith('titleBar.newChat');
+	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
 it('keeps Apps, Search, and New chat in the fixed sidebar action group', async () => {
@@ -312,9 +312,9 @@ it('keeps Apps, Search, and New chat in the fixed sidebar action group', async (
 	);
 
 	expect(await screen.findByRole('link', { name: 'settings.tabs.apps' })).toHaveAttribute('href', '/settings/apps');
-	await user.click(screen.getByRole('button', { name: 'titleBar.search' }));
+	await user.click(screen.getByRole('button', { name: 'navigationBar.search' }));
 	expect(openCommandMenu).toHaveBeenCalledTimes(1);
-	expect(screen.getByRole('button', { name: 'titleBar.newChat' })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'navigationBar.newChat' })).toBeInTheDocument();
 	await user.click(screen.getByRole('link', { name: 'settings.tabs.apps' }));
 	expect(screen.getByText('Apps page')).toBeInTheDocument();
 });

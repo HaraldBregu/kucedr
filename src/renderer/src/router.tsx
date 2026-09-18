@@ -12,7 +12,7 @@ import {
 	HomePageLoadingSkeleton,
 	PageLoadingSkeleton,
 } from './components/app/base/PageLoadingSkeleton';
-import { TitleBar } from './components/app/titlebar/TitleBar';
+import { NavigationBar } from './components/app/navigationbar/NavigationBar';
 import { Button } from './components/ui/button';
 import { Layout as SettingsLayout, SettingsBreadcrumb } from './pages/settings';
 import { SettingsPageSkeleton } from './pages/settings/components';
@@ -157,7 +157,7 @@ function RootRouteComponent(): React.JSX.Element {
 						'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
 					)}
 				>
-					<TitleBar
+					<NavigationBar
 						centerContent={
 							showOnboardingTitle ? (
 								<span className="text-sm font-medium">Kucedr</span>

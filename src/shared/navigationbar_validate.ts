@@ -1,16 +1,16 @@
 import {
-	APP_TITLEBAR_BUTTON_ICONS,
-	type AppTitlebarButton,
-	type AppTitlebarOptions,
+	APP_NAVIGATIONBAR_BUTTON_ICONS,
+	type AppNavigationbarButton,
+	type AppNavigationbarOptions,
 } from './window_types';
 
-const icons = new Set<string>(APP_TITLEBAR_BUTTON_ICONS);
+const icons = new Set<string>(APP_NAVIGATIONBAR_BUTTON_ICONS);
 const maxButtonsPerSide = 6;
 const maxTextLength = 120;
 
-export function isAppTitlebarOptions(
+export function isAppNavigationbarOptions(
 	value: unknown
-): value is AppTitlebarOptions | null {
+): value is AppNavigationbarOptions | null {
 	if (value === null) return true;
 	if (typeof value !== 'object' || Array.isArray(value)) return false;
 	const options = value as Record<string, unknown>;
@@ -48,7 +48,7 @@ export function isAppTitlebarOptions(
 		if (!Array.isArray(buttons) || buttons.length > maxButtonsPerSide) return false;
 		for (const value of buttons) {
 			if (typeof value !== 'object' || value === null || Array.isArray(value)) return false;
-			const button = value as Partial<AppTitlebarButton>;
+			const button = value as Partial<AppNavigationbarButton>;
 			if (
 				typeof button.id !== 'string' ||
 				!button.id.trim() ||

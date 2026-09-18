@@ -244,7 +244,7 @@ describe('app discovery and loading', () => {
 		handlers.get('closed')?.();
 	});
 
-	it('reuses an app window while its titlebar is still loading', () => {
+	it('reuses an app window while its navigationbar is still loading', () => {
 		const manifest: AppManifest = {
 			...projectManifest,
 			metadata: { ...projectManifest.metadata, entry: 'pages/project.html' },

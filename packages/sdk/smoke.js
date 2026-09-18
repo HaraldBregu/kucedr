@@ -238,19 +238,19 @@ globalThis.win = {
 	onMaximizeChange: () => () => undefined,
 	isFullScreen: async () => false,
 	onFullScreenChange: () => () => undefined,
-	setTitlebarOptions: (options) => {
-		globalThis.__titlebarOptions = options;
+	setNavigationbarOptions: (options) => {
+		globalThis.__navigationbarOptions = options;
 	},
-	onTitlebarOptionsChanged: () => () => undefined,
-	clickTitlebarButton: () => undefined,
-	onTitlebarButtonClick: (callback) => {
-		globalThis.__titlebarButtonClick = callback;
+	onNavigationbarOptionsChanged: () => () => undefined,
+	clickNavigationbarButton: () => undefined,
+	onNavigationbarButtonClick: (callback) => {
+		globalThis.__navigationbarButtonClick = callback;
 		return () => {
-			globalThis.__titlebarButtonClick = undefined;
+			globalThis.__navigationbarButtonClick = undefined;
 		};
 	},
-	setTitlebarSidebarWidth: () => undefined,
-	onTitlebarSidebarWidthChanged: () => () => undefined,
+	setNavigationbarSidebarWidth: () => undefined,
+	onNavigationbarSidebarWidthChanged: () => () => undefined,
 };
 
 assert.equal(isKucedr(), true);
@@ -378,7 +378,7 @@ terminal.resize({ id: 'terminal-coding', cols: 120, rows: 40 });
 assert.equal(await terminal.kill({ id: 'terminal-coding' }), true);
 assert.equal(await win.showContextMenu([{ id: 'open', label: 'Open' }]), 'open');
 assert.equal(await win.isMaximized(), true);
-win.setTitlebarOptions({
+win.setNavigationbarOptions({
 	title: 'Workspace',
 	leftButtons: [
 		{
@@ -392,15 +392,15 @@ win.setTitlebarOptions({
 	sidebarOpen: true,
 	sidebarWidth: 240,
 });
-assert.equal(globalThis.__titlebarOptions.title, 'Workspace');
-assert.equal(globalThis.__titlebarOptions.sidebarOpen, true);
-let titlebarButtonId;
-const stopTitlebarButtonClick = win.onTitlebarButtonClick((buttonId) => {
-	titlebarButtonId = buttonId;
+assert.equal(globalThis.__navigationbarOptions.title, 'Workspace');
+assert.equal(globalThis.__navigationbarOptions.sidebarOpen, true);
+let navigationbarButtonId;
+const stopNavigationbarButtonClick = win.onNavigationbarButtonClick((buttonId) => {
+	navigationbarButtonId = buttonId;
 });
-globalThis.__titlebarButtonClick('toggle-sidebar');
-assert.equal(titlebarButtonId, 'toggle-sidebar');
-stopTitlebarButtonClick();
+globalThis.__navigationbarButtonClick('toggle-sidebar');
+assert.equal(navigationbarButtonId, 'toggle-sidebar');
+stopNavigationbarButtonClick();
 
 // --- remote mode: bound to the app API server --------------------------------
 

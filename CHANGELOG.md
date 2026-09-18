@@ -38,7 +38,7 @@ Changes since [v1.0.2] (2026-07-26).
 - Routed model operations through the unified `window.models` preload API and channel/provider operations through the app API.
 - Changed generated media to save into the active workspace by default and made storage push/pull operate as full replacement mirrors.
 - Simplified channel configuration around provider credentials and a single default channel.
-- Improved prompt editing, attachment handling, tool activity, permission prompts, message rendering, titlebar behavior, audio/video players, and startup layout.
+- Improved prompt editing, attachment handling, tool activity, permission prompts, message rendering, navigationbar behavior, audio/video players, and startup layout.
 - Updated English and Italian translations for the new and reorganized settings, providers, channels, storage, wiki, and agent features.
 - Updated dependencies, including the Model Context Protocol SDK, `marked`, `node-cron`, PostCSS, and ts-jest.
 

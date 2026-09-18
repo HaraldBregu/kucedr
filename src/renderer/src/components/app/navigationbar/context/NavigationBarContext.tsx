@@ -1,14 +1,14 @@
 import { createContext, useContext } from 'react';
 
-interface TitleBarContextValue {
+interface NavigationBarContextValue {
 	isMac: boolean;
 	isFullScreen: boolean;
 }
 
-const TitleBarContext = createContext<TitleBarContextValue>({
+const NavigationBarContext = createContext<NavigationBarContextValue>({
 	isMac: false,
 	isFullScreen: false,
 });
 
-export const useTitleBarContext = () => useContext(TitleBarContext);
-export const TitleBarProvider = TitleBarContext.Provider;
+export const useNavigationBarContext = () => useContext(NavigationBarContext);
+export const NavigationBarProvider = NavigationBarContext.Provider;

@@ -123,18 +123,18 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				</Link>
 				<button type="button" className={SPLIT_ITEM_CLASS} onClick={openCommandMenu}>
 					<Search className="size-4" />
-					<span>{t('titleBar.search')}</span>
+					<span>{t('navigationBar.search')}</span>
 				</button>
 				<button
 					type="button"
 					className={SPLIT_ITEM_CLASS}
 					onClick={() => {
 						setSessionId(crypto.randomUUID());
-						if (sessions.length === 0) setSessionTitle?.(t('titleBar.newChat', 'New chat'));
+						if (sessions.length === 0) setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
 					}}
 				>
 					<Plus className="size-4" />
-					<span>{t('titleBar.newChat', 'New chat')}</span>
+					<span>{t('navigationBar.newChat', 'New chat')}</span>
 				</button>
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
@@ -220,7 +220,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													void window.win
 												.showContextMenu([
 													{ id: 'rename', label: t('common.rename', 'Rename') },
-													{ id: 'open-location', label: t('titleBar.openLocation', 'Open location') },
+													{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
 													{ id: 'delete', label: t('common.delete', 'Delete') },
 												])
 														.then((action) => {

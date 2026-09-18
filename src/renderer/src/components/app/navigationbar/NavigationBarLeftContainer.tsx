@@ -1,19 +1,19 @@
 import React, { memo, type ReactNode, type ReactElement } from 'react';
 import { cn } from '@/lib/utils';
 
-interface TitleBarLeftContainerProps {
+interface NavigationBarLeftContainerProps {
 	readonly isMac: boolean;
 	readonly isFullScreen?: boolean;
 	readonly className?: string;
 	readonly children: ReactNode;
 }
 
-export const TitleBarLeftContainer = memo(function AppTitleBarLeftContainer({
+export const NavigationBarLeftContainer = memo(function AppNavigationBarLeftContainer({
 	isMac,
 	isFullScreen = false,
 	className,
 	children,
-}: TitleBarLeftContainerProps): ReactElement {
+}: NavigationBarLeftContainerProps): ReactElement {
 	return (
 		<div
 			className={cn(

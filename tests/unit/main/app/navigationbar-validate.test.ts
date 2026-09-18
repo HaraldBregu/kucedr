@@ -1,8 +1,8 @@
-import { isAppTitlebarOptions } from '../../../../src/shared/titlebar_validate';
+import { isAppNavigationbarOptions } from '../../../../src/shared/navigationbar_validate';
 
-it('accepts a complete app titlebar snapshot and reset', () => {
+it('accepts a complete app navigationbar snapshot and reset', () => {
 	expect(
-		isAppTitlebarOptions({
+		isAppNavigationbarOptions({
 			title: 'Workspace',
 			leftButtons: [
 				{
@@ -18,7 +18,7 @@ it('accepts a complete app titlebar snapshot and reset', () => {
 			sidebarWidth: 240,
 		})
 	).toBe(true);
-	expect(isAppTitlebarOptions(null)).toBe(true);
+	expect(isAppNavigationbarOptions(null)).toBe(true);
 });
 
 it.each([
@@ -37,6 +37,6 @@ it.each([
 		],
 	},
 	{ rightButtons: new Array(7).fill({ id: 'same', label: 'Same', icon: 'settings' }) },
-])('rejects malformed titlebar options: %p', (options) => {
-	expect(isAppTitlebarOptions(options)).toBe(false);
+])('rejects malformed navigationbar options: %p', (options) => {
+	expect(isAppNavigationbarOptions(options)).toBe(false);
 });

@@ -95,7 +95,7 @@ it('shows a native confirmation before signing out', async () => {
 	);
 });
 
-it('forwards app sidebar widths to the matching titlebar shell', () => {
+it('forwards app sidebar widths to the matching navigationbar shell', () => {
 	const send = jest.fn();
 	const host = {
 		isDestroyed: jest.fn(() => false),
@@ -107,12 +107,12 @@ it('forwards app sidebar widths to the matching titlebar shell', () => {
 		{} as EventBus
 	);
 	const listener = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.titlebarSidebarWidthSet
+		([channel]) => channel === WindowChannels.navigationbarSidebarWidthSet
 	)?.[1];
 
 	listener({ sender: {} }, 240);
 
-	expect(send).toHaveBeenCalledWith(WindowChannels.titlebarSidebarWidthChanged, 240);
+	expect(send).toHaveBeenCalledWith(WindowChannels.navigationbarSidebarWidthChanged, 240);
 	(openAppWindows as Map<string, unknown>).delete('workspace');
 });
 
@@ -133,7 +133,7 @@ it('opens the dedicated voice conversation window with a trimmed chat session id
 	expect(openVoiceConversation).toHaveBeenCalledWith('chat-session');
 });
 
-it('forwards titlebar options to the owning shell and button clicks to its app', () => {
+it('forwards navigationbar options to the owning shell and button clicks to its app', () => {
 	const shellSend = jest.fn();
 	const shellContents = { send: shellSend };
 	const appSend = jest.fn();
@@ -149,17 +149,17 @@ it('forwards titlebar options to the owning shell and button clicks to its app',
 		window: host,
 		ready: true,
 		contents: appContents,
-		titlebarOptions: null,
+		navigationbarOptions: null,
 	});
 	new WindowIpc().register(
 		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
 		{} as EventBus
 	);
 	const setOptions = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.titlebarOptionsSet
+		([channel]) => channel === WindowChannels.navigationbarOptionsSet
 	)?.[1];
 	const clickButton = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.titlebarButtonClick
+		([channel]) => channel === WindowChannels.navigationbarButtonClick
 	)?.[1];
 	const options = {
 		title: 'Workspace',
@@ -178,14 +178,14 @@ it('forwards titlebar options to the owning shell and button clicks to its app',
 
 	setOptions({ sender: appContents }, options);
 
-	expect(shellSend).toHaveBeenCalledWith(WindowChannels.titlebarOptionsChanged, options);
+	expect(shellSend).toHaveBeenCalledWith(WindowChannels.navigationbarOptionsChanged, options);
 	clickButton({ sender: appContents }, 'toggle-sidebar');
 	expect(appSend).not.toHaveBeenCalled();
 	clickButton({ sender: shellContents }, 'toggle-sidebar');
-	expect(appSend).toHaveBeenCalledWith(WindowChannels.titlebarButtonClicked, 'toggle-sidebar');
+	expect(appSend).toHaveBeenCalledWith(WindowChannels.navigationbarButtonClicked, 'toggle-sidebar');
 });
 
-it('rejects malformed titlebar options and unknown button ids', () => {
+it('rejects malformed navigationbar options and unknown button ids', () => {
 	const shellSend = jest.fn();
 	const shellContents = { send: shellSend };
 	const appSend = jest.fn();
@@ -197,17 +197,17 @@ it('rejects malformed titlebar options and unknown button ids', () => {
 		window: { isDestroyed: jest.fn(() => false), webContents: shellContents },
 		ready: true,
 		contents: appContents,
-		titlebarOptions: null,
+		navigationbarOptions: null,
 	});
 	new WindowIpc().register(
 		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
 		{} as EventBus
 	);
 	const setOptions = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.titlebarOptionsSet
+		([channel]) => channel === WindowChannels.navigationbarOptionsSet
 	)?.[1];
 	const clickButton = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.titlebarButtonClick
+		([channel]) => channel === WindowChannels.navigationbarButtonClick
 	)?.[1];
 
 	setOptions(

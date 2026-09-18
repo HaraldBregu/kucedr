@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { TitleBar } from '../../../src/renderer/src/components/app/titlebar/TitleBar';
+import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
 import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
 import { SettingsBreadcrumb } from '../../../src/renderer/src/pages/settings/Breadcrumb';
 
@@ -48,31 +48,31 @@ it.each([
 	showContextMenu.mockResolvedValue(path);
 	const { container } = render(
 		<MemoryRouter initialEntries={['/project']}>
-			<TitleBar />
+			<NavigationBar />
 			<Routes>
 				<Route path="/project" element={null} />
 				<Route path={path} element={<p>{path}</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
-	const titleBar = container.querySelector('[data-slot="titlebar"]');
+	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
 
-	expect(titleBar).not.toBeNull();
+	expect(navigationBar).not.toBeNull();
 	const contextMenuEvent = new MouseEvent('contextmenu', {
 		bubbles: true,
 		cancelable: true,
 	});
-	fireEvent(titleBar as Element, contextMenuEvent);
+	fireEvent(navigationBar as Element, contextMenuEvent);
 
 	expect(contextMenuEvent.defaultPrevented).toBe(true);
 	expect(showContextMenu).toHaveBeenCalledWith(contextMenuItems);
 	await waitFor(() => expect(screen.getByText(path)).toBeInTheDocument());
 });
 
-it('does not open the titlebar menu from a button', () => {
+it('does not open the navigationbar menu from a button', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<TitleBar />
+			<NavigationBar />
 		</MemoryRouter>
 	);
 
@@ -81,14 +81,14 @@ it('does not open the titlebar menu from a button', () => {
 	expect(showContextMenu).not.toHaveBeenCalled();
 });
 
-it.each(['/settings', '/start'])('opens the titlebar menu while viewing %s', (path) => {
+it.each(['/settings', '/start'])('opens the navigationbar menu while viewing %s', (path) => {
 	const { container } = render(
 		<MemoryRouter initialEntries={[path]}>
-			<TitleBar />
+			<NavigationBar />
 		</MemoryRouter>
 	);
 
-	fireEvent.contextMenu(container.querySelector('[data-slot="titlebar"]') as Element);
+	fireEvent.contextMenu(container.querySelector('[data-slot="navigationbar"]') as Element);
 
 	expect(showContextMenu).toHaveBeenCalledWith(contextMenuItems);
 });
@@ -96,15 +96,15 @@ it.each(['/settings', '/start'])('opens the titlebar menu while viewing %s', (pa
 it('hides application navigation during onboarding', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/start']}>
-			<TitleBar />
+			<NavigationBar />
 		</MemoryRouter>
 	);
 
-	const titleBar = container.querySelector('[data-slot="titlebar"]');
-	expect(titleBar).toHaveClass('bg-background');
-	expect(titleBar).not.toHaveClass('bg-transparent');
+	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
+	expect(navigationBar).toHaveClass('bg-background');
+	expect(navigationBar).not.toHaveClass('bg-transparent');
 	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'titleBar.home' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.home' })).not.toBeInTheDocument();
 });
 
 it('shows the settings icon on Home', async () => {
@@ -113,7 +113,7 @@ it('shows the settings icon on Home', async () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<ChatSessionContext.Provider value={{ sessionId: 'empty-session', setSessionId: jest.fn() }}>
-				<TitleBar />
+				<NavigationBar />
 			</ChatSessionContext.Provider>
 			<Routes>
 				<Route path="/home" element={null} />
@@ -129,7 +129,7 @@ it('shows the settings icon on Home', async () => {
 	expect(screen.getByText('/settings/general')).toBeInTheDocument();
 });
 
-it('shows the current chat title and its dropdown on the left of the Home titlebar', async () => {
+it('shows the current chat title and its dropdown on the left of the Home navigationbar', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/home']}>
@@ -141,13 +141,13 @@ it('shows the current chat title and its dropdown on the left of the Home titleb
 					sessionTitleSessionId: 'session-1',
 				}}
 			>
-				<TitleBar sidebarOpen />
+				<NavigationBar sidebarOpen />
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 
-	expect(screen.getByText('Project roadmap')).toHaveAttribute('data-slot', 'titlebar-chat-title');
-	expect(document.querySelector('[data-slot="titlebar-chat-context"]')).toHaveClass('ml-3');
+	expect(screen.getByText('Project roadmap')).toHaveAttribute('data-slot', 'navigationbar-chat-title');
+	expect(document.querySelector('[data-slot="navigationbar-chat-context"]')).toHaveClass('ml-3');
 	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.general' })).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.overview.groups.agent' })).toBeInTheDocument();
@@ -161,12 +161,12 @@ it('shows an unpersisted new chat title without the session menu button', () => 
 			<ChatSessionContext.Provider
 				value={{ sessionId: 'new-session', setSessionId: jest.fn(), sessionTitle: 'New chat' }}
 			>
-				<TitleBar />
+				<NavigationBar />
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 
-	expect(screen.getByText('New chat')).toHaveAttribute('data-slot', 'titlebar-chat-title');
+	expect(screen.getByText('New chat')).toHaveAttribute('data-slot', 'navigationbar-chat-title');
 	expect(screen.queryByRole('button', { name: 'settings.chatHistory.title' })).not.toBeInTheDocument();
 });
 
@@ -174,12 +174,12 @@ it('shows the New chat placeholder when the Home page has no chat sessions', () 
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<ChatSessionContext.Provider value={{ sessionId: 'empty-session', setSessionId: jest.fn() }}>
-				<TitleBar />
+				<NavigationBar />
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 
-	expect(screen.getByText('titleBar.newChat')).toHaveAttribute('data-slot', 'titlebar-chat-title');
+	expect(screen.getByText('navigationBar.newChat')).toHaveAttribute('data-slot', 'navigationbar-chat-title');
 	expect(screen.queryByRole('button', { name: 'settings.chatHistory.title' })).not.toBeInTheDocument();
 });
 
@@ -189,15 +189,15 @@ it('places the current chat after the sidebar toggle when the sidebar is closed'
 			<ChatSessionContext.Provider
 				value={{ sessionId: 'session-1', setSessionId: jest.fn(), sessionTitle: 'Project roadmap' }}
 			>
-				<TitleBar sidebarOpen={false} />
+				<NavigationBar sidebarOpen={false} />
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 
-	expect(document.querySelector('[data-slot="titlebar-chat-context"]')).toHaveClass('ml-28');
+	expect(document.querySelector('[data-slot="navigationbar-chat-context"]')).toHaveClass('ml-28');
 });
 
-it('opens the current chat location from the titlebar dropdown', async () => {
+it('opens the current chat location from the navigationbar dropdown', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/home']}>
@@ -209,19 +209,19 @@ it('opens the current chat location from the titlebar dropdown', async () => {
 					sessionTitleSessionId: 'session-1',
 				}}
 			>
-				<TitleBar />
+				<NavigationBar />
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 
 	await user.click(screen.getByRole('button', { name: 'settings.chatHistory.title' }));
-	await user.click(screen.getByRole('menuitem', { name: 'titleBar.openLocation' }));
+	await user.click(screen.getByRole('menuitem', { name: 'navigationBar.openLocation' }));
 
 	expect(openSessionFolder).toHaveBeenCalledWith('session-1');
 	expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
 });
 
-it('deletes the current chat from the titlebar dropdown after confirmation', async () => {
+it('deletes the current chat from the navigationbar dropdown after confirmation', async () => {
 	const user = userEvent.setup();
 	const setSessionId = jest.fn();
 	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(true);
@@ -235,7 +235,7 @@ it('deletes the current chat from the titlebar dropdown after confirmation', asy
 					sessionTitleSessionId: 'session-1',
 				}}
 			>
-				<TitleBar />
+				<NavigationBar />
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
@@ -254,10 +254,10 @@ it('renders search immediately before the Home or Settings button', async () => 
 
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<TitleBar onSearch={onSearch} />
+			<NavigationBar onSearch={onSearch} />
 		</MemoryRouter>
 	);
-	const search = screen.getByRole('button', { name: 'titleBar.search' });
+	const search = screen.getByRole('button', { name: 'navigationBar.search' });
 	const settings = screen.getByRole('button', { name: 'settings.title' });
 
 	expect(search.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -265,18 +265,18 @@ it('renders search immediately before the Home or Settings button', async () => 
 	expect(onSearch).toHaveBeenCalledTimes(1);
 });
 
-it('renders a transparent titlebar without visible title text', () => {
+it('renders a transparent navigationbar without visible title text', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/home']}>
-			<TitleBar />
+			<NavigationBar />
 		</MemoryRouter>
 	);
-	const titleBar = container.querySelector('[data-slot="titlebar"]');
+	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
 
-	expect(titleBar).toHaveClass('bg-transparent');
-	expect(titleBar).not.toHaveClass('app-translucent-surface');
-	expect(within(titleBar as HTMLElement).queryByText('Application Name')).not.toBeInTheDocument();
-	expect(within(titleBar as HTMLElement).queryByText('Kucedr')).not.toBeInTheDocument();
+	expect(navigationBar).toHaveClass('bg-transparent');
+	expect(navigationBar).not.toHaveClass('app-translucent-surface');
+	expect(within(navigationBar as HTMLElement).queryByText('Application Name')).not.toBeInTheDocument();
+	expect(within(navigationBar as HTMLElement).queryByText('Kucedr')).not.toBeInTheDocument();
 });
 
 it('shows the Kucedr logo and Home label inside the Settings button', async () => {
@@ -284,41 +284,41 @@ it('shows the Kucedr logo and Home label inside the Settings button', async () =
 
 	render(
 		<MemoryRouter initialEntries={['/settings']}>
-			<TitleBar />
+			<NavigationBar />
 			<Routes>
 				<Route path="/settings" element={null} />
 				<Route path="/home" element={<p>/home</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
-	const homeButton = screen.getByRole('button', { name: 'titleBar.home' });
+	const homeButton = screen.getByRole('button', { name: 'navigationBar.home' });
 
 	expect(within(homeButton).getByRole('img', { name: 'Kucedr logo' })).toBeInTheDocument();
-	expect(within(homeButton).getByText('titleBar.home')).toBeInTheDocument();
+	expect(within(homeButton).getByText('navigationBar.home')).toBeInTheDocument();
 
 	await user.click(homeButton);
 
 	expect(screen.getByText('/home')).toBeInTheDocument();
 });
 
-it('does not render the sidebar toggle in the titlebar', () => {
+it('does not render the sidebar toggle in the navigationbar', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<TitleBar />
+			<NavigationBar />
 		</MemoryRouter>
 	);
 
-	expect(screen.queryByRole('button', { name: 'titleBar.toggleSidebar' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })).not.toBeInTheDocument();
 });
 
-it('renders settings breadcrumbs inside the titlebar', () => {
+it('renders settings breadcrumbs inside the navigationbar', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/general/persona']}>
-			<TitleBar centerContent={<SettingsBreadcrumb />} />
+			<NavigationBar centerContent={<SettingsBreadcrumb />} />
 		</MemoryRouter>
 	);
-	const titleBar = container.querySelector('[data-slot="titlebar"]');
-	const breadcrumb = within(titleBar as HTMLElement).getByRole('navigation', {
+	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
+	const breadcrumb = within(navigationBar as HTMLElement).getByRole('navigation', {
 		name: 'settings.breadcrumb.label',
 	});
 
@@ -329,14 +329,14 @@ it('renders settings breadcrumbs inside the titlebar', () => {
 	expect(within(breadcrumb).getByText('settings.voiceAgent.title')).toBeInTheDocument();
 });
 
-it('does not open the titlebar menu from a breadcrumb link', () => {
+it('does not open the navigationbar menu from a breadcrumb link', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/general/persona']}>
-			<TitleBar centerContent={<SettingsBreadcrumb />} />
+			<NavigationBar centerContent={<SettingsBreadcrumb />} />
 		</MemoryRouter>
 	);
-	const titleBar = container.querySelector('[data-slot="titlebar"]');
-	const breadcrumbLink = within(titleBar as HTMLElement).getByRole('link', {
+	const navigationBar = container.querySelector('[data-slot="navigationbar"]');
+	const breadcrumbLink = within(navigationBar as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.general',
 	});
 

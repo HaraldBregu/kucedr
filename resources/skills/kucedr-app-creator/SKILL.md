@@ -34,7 +34,7 @@ resources/apps/<app-id>/
 
 - `manifest.json` must provide `title`, `description`, and `metadata` with `version`, `category`, and `entry: "dist/index.html"`.
 - Set `metadata.image` only to an app-owned raster asset accepted by the current manifest validator. Do not use SVG for this field.
-- Use `window` only when the requested window dimensions or behavior differ from host defaults. Dimensions describe the outer window, including the host titlebar.
+- Use `window` only when the requested window dimensions or behavior differ from host defaults. Dimensions describe the outer window, including the host navigationbar.
 - For repository apps, depend on the local SDK as the nearest sibling-app configuration does (currently `file:../../../packages/sdk`). For an independently published app, use its released `@kucedr/sdk` dependency instead.
 - Keep `package.json` metadata and `main` consistent with the manifest, even though the manifest takes precedence when both exist.
 
@@ -64,7 +64,7 @@ Use `app.getAppStoreValue`, `setAppStoreValue`, and related methods for JSON-saf
 
 Use the host theme and language APIs where the feature needs them. Subscribe to change callbacks in React effects and always return the SDK unsubscribe function during cleanup.
 
-Kucedr renders the native titlebar. When the app needs titlebar controls, call `win.setTitlebarOptions()` with exported, allowlisted button icons and handle actions through `win.onTitlebarButtonClick()`. Keep application state, including sidebar state, in the app; pass only the titlebar descriptors and current sidebar layout information across the bridge.
+Kucedr renders the native navigationbar. When the app needs navigationbar controls, call `win.setNavigationbarOptions()` with exported, allowlisted button icons and handle actions through `win.onNavigationbarButtonClick()`. Keep application state, including sidebar state, in the app; pass only the navigationbar descriptors and current sidebar layout information across the bridge.
 
 ## Verify the actual deliverable
 

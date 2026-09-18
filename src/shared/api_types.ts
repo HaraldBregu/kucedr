@@ -98,7 +98,7 @@ import type {
 	AppThemeData,
 	AppTheme,
 } from './app_types';
-import type { ContextMenuDescriptor, AppTitlebarOptions } from './window_types';
+import type { ContextMenuDescriptor, AppNavigationbarOptions } from './window_types';
 import type { WorkspaceAsset } from './workspace';
 import type { AppStorageApi } from './app_store_types';
 import type { SandboxStatus } from './sandbox';
@@ -135,12 +135,12 @@ export interface WindowApi {
 	onMaximizeChange: (callback: (isMaximized: boolean) => void) => () => void;
 	isFullScreen: () => Promise<boolean>;
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void) => () => void;
-	setTitlebarOptions: (options: AppTitlebarOptions | null) => void;
-	onTitlebarOptionsChanged: (callback: (options: AppTitlebarOptions | null) => void) => () => void;
-	clickTitlebarButton: (buttonId: string) => void;
-	onTitlebarButtonClick: (callback: (buttonId: string) => void) => () => void;
-	setTitlebarSidebarWidth: (width: number | null) => void;
-	onTitlebarSidebarWidthChanged: (callback: (width: number | null) => void) => () => void;
+	setNavigationbarOptions: (options: AppNavigationbarOptions | null) => void;
+	onNavigationbarOptionsChanged: (callback: (options: AppNavigationbarOptions | null) => void) => () => void;
+	clickNavigationbarButton: (buttonId: string) => void;
+	onNavigationbarButtonClick: (callback: (buttonId: string) => void) => () => void;
+	setNavigationbarSidebarWidth: (width: number | null) => void;
+	onNavigationbarSidebarWidthChanged: (callback: (width: number | null) => void) => () => void;
 }
 
 export interface AgentApi {

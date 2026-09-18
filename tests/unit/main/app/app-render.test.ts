@@ -85,7 +85,7 @@ function createHarness() {
 }
 
 describe('app renderer', () => {
-	it('loads the titlebar shell before attaching and loading app content', async () => {
+	it('loads the navigationbar shell before attaching and loading app content', async () => {
 		const harness = createHarness();
 
 		expect(render(harness.windowFactory, '/app/index.html', 'Project', 'project-order')).toBe(
@@ -122,7 +122,7 @@ describe('app renderer', () => {
 		expect(harness.load).toHaveBeenCalledTimes(1);
 		expect(openAppWindows.get('project-order')).toMatchObject({
 			contents: harness.viewWebContents,
-			titlebarOptions: null,
+			navigationbarOptions: null,
 		});
 		expect(harness.win.contentView.addChildView.mock.invocationCallOrder[0]).toBeLessThan(
 			harness.load.mock.invocationCallOrder[0]
@@ -172,7 +172,7 @@ describe('app renderer', () => {
 		harness.handlers.get('closed')?.();
 	});
 
-	it('discards a crashed titlebar shell so the app can be opened again', () => {
+	it('discards a crashed navigationbar shell so the app can be opened again', () => {
 		const harness = createHarness();
 		render(harness.windowFactory, '/app/index.html', 'Project', 'project-crash');
 
@@ -184,7 +184,7 @@ describe('app renderer', () => {
 		harness.handlers.get('closed')?.();
 	});
 
-	it('lets the app finish before closing the titlebar shell', () => {
+	it('lets the app finish before closing the navigationbar shell', () => {
 		const harness = createHarness();
 		render(harness.windowFactory, '/app/index.html', 'Project', 'project-close');
 		const closeEvent = { preventDefault: jest.fn() };

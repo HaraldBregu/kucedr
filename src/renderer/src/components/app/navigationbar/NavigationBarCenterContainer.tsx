@@ -1,17 +1,17 @@
 import { memo, type ReactNode, type ReactElement } from 'react';
 import { cn } from '@/lib/utils';
 
-interface TitleBarCenterContainerProps {
+interface NavigationBarCenterContainerProps {
 	readonly className?: string;
 	readonly style?: React.CSSProperties;
 	readonly children: ReactNode;
 }
 
-export const TitleBarCenterContainer = memo(function AppTitleBarCenterContainer({
+export const NavigationBarCenterContainer = memo(function AppNavigationBarCenterContainer({
 	className,
 	style,
 	children,
-}: TitleBarCenterContainerProps): ReactElement {
+}: NavigationBarCenterContainerProps): ReactElement {
 	return (
 		<div
 			className={cn(

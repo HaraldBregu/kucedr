@@ -1,22 +1,22 @@
 import React, { memo, type ReactNode, type ReactElement } from 'react';
 import { cn } from '@/lib/utils';
 
-interface TitleBarContainerProps {
+interface NavigationBarContainerProps {
 	readonly className?: string;
 	readonly style?: React.CSSProperties;
 	readonly onContextMenu?: React.MouseEventHandler<HTMLDivElement>;
 	readonly children: ReactNode;
 }
 
-export const TitleBarContainer = memo(function AppTitleBarContainer({
+export const NavigationBarContainer = memo(function AppNavigationBarContainer({
 	className,
 	style,
 	onContextMenu,
 	children,
-}: TitleBarContainerProps): ReactElement {
+}: NavigationBarContainerProps): ReactElement {
 	return (
 		<div
-			data-slot="titlebar"
+			data-slot="navigationbar"
 			className={cn(
 				'fixed inset-x-0 top-0 z-50 flex h-12 shrink-0 items-center border-b border-border bg-transparent select-none transition-[left] duration-200 ease-linear',
 				className

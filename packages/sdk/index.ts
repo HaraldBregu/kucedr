@@ -99,12 +99,12 @@ export {
 	type WorkspaceFileType,
 } from '../../src/shared/workspace';
 export {
-	APP_TITLEBAR_BUTTON_ICONS,
+	APP_NAVIGATIONBAR_BUTTON_ICONS,
 	type ContextMenuDescriptor,
 	type ContextMenuRole,
-	type AppTitlebarButton,
-	type AppTitlebarButtonIcon,
-	type AppTitlebarOptions,
+	type AppNavigationbarButton,
+	type AppNavigationbarButtonIcon,
+	type AppNavigationbarOptions,
 } from '../../src/shared/window_types';
 export {
 	CODING_PROVIDER_IDS,

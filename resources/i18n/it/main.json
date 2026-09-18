@@ -1983,7 +1983,7 @@
 		"goHome": "Vai alla Home",
 		"restartApp": "Riavvia App"
 	},
-	"titleBar": {
+	"navigationBar": {
 		"applicationMenu": "Menu applicazione",
 		"openLocation": "Apri posizione",
 		"search": "Cerca",

@@ -1,14 +1,14 @@
 import { memo, type ReactElement } from 'react';
 import { cn } from '@/lib/utils';
 
-interface TitleBarCenterContainerTitleProps {
+interface NavigationBarCenterContainerTitleProps {
 	readonly className?: string;
 	readonly children: string;
 }
 
-export const TitleBarCenterContainerTitle = memo(function AppTitleBarCenterContainerTitle({
+export const NavigationBarCenterContainerTitle = memo(function AppNavigationBarCenterContainerTitle({
 	className,
 	children,
-}: TitleBarCenterContainerTitleProps): ReactElement {
+}: NavigationBarCenterContainerTitleProps): ReactElement {
 	return <span className={cn('text-sm font-normal tracking-wide', className)}>{children}</span>;
 });

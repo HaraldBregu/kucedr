@@ -1984,7 +1984,7 @@
 		"goHome": "Go Home",
 		"restartApp": "Restart App"
 	},
-	"titleBar": {
+	"navigationBar": {
 		"applicationMenu": "Application menu",
 		"openLocation": "Open location",
 		"search": "Search",
