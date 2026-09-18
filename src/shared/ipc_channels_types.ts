@@ -1045,21 +1045,21 @@ export interface WindowSendChannelMap {
 	[WindowChannels.maximize]: { args: [] };
 	[WindowChannels.close]: { args: [] };
 	[WindowChannels.popupMenu]: { args: [] };
-	[WindowChannels.navigationbarOptionsSet]: {
-		args: [options: import('./window_types').AppNavigationbarOptions | null];
+	[WindowChannels.navigationBarOptionsSet]: {
+		args: [options: import('./window_types').AppNavigationBarOptions | null];
 	};
-	[WindowChannels.navigationbarButtonClick]: { args: [buttonId: string] };
-	[WindowChannels.navigationbarSidebarWidthSet]: { args: [width: number | null] };
+	[WindowChannels.navigationBarButtonClick]: { args: [buttonId: string] };
+	[WindowChannels.navigationBarSidebarWidthSet]: { args: [width: number | null] };
 }
 
 export interface WindowEventChannelMap {
 	[WindowChannels.maximizeChange]: { data: boolean };
 	[WindowChannels.fullScreenChange]: { data: boolean };
-	[WindowChannels.navigationbarOptionsChanged]: {
-		data: import('./window_types').AppNavigationbarOptions | null;
+	[WindowChannels.navigationBarOptionsChanged]: {
+		data: import('./window_types').AppNavigationBarOptions | null;
 	};
-	[WindowChannels.navigationbarButtonClicked]: { data: string };
-	[WindowChannels.navigationbarSidebarWidthChanged]: { data: number | null };
+	[WindowChannels.navigationBarButtonClicked]: { data: string };
+	[WindowChannels.navigationBarSidebarWidthChanged]: { data: number | null };
 }
 
 export interface TerminalInvokeChannelMap {

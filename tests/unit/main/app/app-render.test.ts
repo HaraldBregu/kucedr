@@ -122,7 +122,7 @@ describe('app renderer', () => {
 		expect(harness.load).toHaveBeenCalledTimes(1);
 		expect(openAppWindows.get('project-order')).toMatchObject({
 			contents: harness.viewWebContents,
-			navigationbarOptions: null,
+			navigationBarOptions: null,
 		});
 		expect(harness.win.contentView.addChildView.mock.invocationCallOrder[0]).toBeLessThan(
 			harness.load.mock.invocationCallOrder[0]

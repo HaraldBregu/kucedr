@@ -1,7 +1,7 @@
 {
 	"en": {
 		"title": "Kucedr app IPC demo",
-		"navigationbarTitle": "Demo",
+		"navigationBarTitle": "Demo",
 		"searchAction": "Search demo",
 		"userAction": "Demo user",
 		"searchSelected": "Search action selected.",
@@ -96,7 +96,7 @@
 	},
 	"it": {
 		"title": "Demo IPC app Kucedr",
-		"navigationbarTitle": "Demo",
+		"navigationBarTitle": "Demo",
 		"searchAction": "Cerca nel demo",
 		"userAction": "Utente demo",
 		"searchSelected": "Azione di ricerca selezionata.",

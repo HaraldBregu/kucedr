@@ -49,7 +49,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const settingsLabel = t('settings.title', 'Settings');
 	const homeButtonLabel = t('navigationBar.home', 'Home');
 	const searchLabel = t('navigationBar.search', 'Search');
-	const navigationbarMenuItems = [
+	const navigationBarMenuItems = [
 		{ path: '/settings/general', label: t('settings.tabs.general') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
 		{ path: '/settings/system', label: t('settings.tabs.system') },
@@ -105,7 +105,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 					event.preventDefault();
 					void window.win
 						.showContextMenu(
-							navigationbarMenuItems.map((item) => ({ id: item.path, label: item.label }))
+							navigationBarMenuItems.map((item) => ({ id: item.path, label: item.label }))
 						)
 						.then((path) => {
 							if (path) navigate(path);

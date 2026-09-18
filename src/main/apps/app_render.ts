@@ -3,7 +3,7 @@ import { setupPdfContextMenu } from '../pdf';
 import type { WindowFactory } from '../window_factory';
 import { attachWindowHandlers } from '../window_events';
 import { getPlatformTranslucencyOptions } from '../translucency';
-import type { AppNavigationbarOptions } from '../../shared/window_types';
+import type { AppNavigationBarOptions } from '../../shared/window_types';
 import {
 	APP_WINDOW_DEFAULTS,
 	type ResolvedAppWindowSettings,
@@ -14,7 +14,7 @@ export interface AppWindow {
 	window: BrowserWindow;
 	ready: boolean;
 	contents?: WebContents;
-	navigationbarOptions: AppNavigationbarOptions | null;
+	navigationBarOptions: AppNavigationBarOptions | null;
 }
 
 const windows = new Map<string, AppWindow>();
@@ -59,7 +59,7 @@ export function render(
 	const appWindow: AppWindow = {
 		window: win,
 		ready: false,
-		navigationbarOptions: null,
+		navigationBarOptions: null,
 	};
 	windows.set(appId, appWindow);
 	let shellFailed = false;

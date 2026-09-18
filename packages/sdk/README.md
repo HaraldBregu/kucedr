@@ -120,7 +120,7 @@ const action = await win.showContextMenu([
 win.maximize();
 const maximized = await win.isMaximized();
 
-win.setNavigationbarOptions({
+win.setNavigationBarOptions({
 	title: 'Workspace',
 	leftButtons: [
 		{
@@ -134,10 +134,10 @@ win.setNavigationbarOptions({
 	sidebarOpen: true,
 	sidebarWidth: 240,
 });
-const stopNavigationbarActions = win.onNavigationbarButtonClick((buttonId) => {
+const stopNavigationBarActions = win.onNavigationBarButtonClick((buttonId) => {
 	if (buttonId === 'toggle-sidebar') console.log('Toggle the app sidebar');
 });
-stopNavigationbarActions();
+stopNavigationBarActions();
 ```
 
 ## App window configuration
@@ -233,10 +233,10 @@ and process lifecycle remain in the Electron main process. It is not exposed by 
 
 App navigationbars are rendered by the Kucedr host. Embedded Apps can provide a centered title,
 left and right button descriptors, and optional sidebar state with
-`win.setNavigationbarOptions()`. Button IDs are returned through `win.onNavigationbarButtonClick()` so the
+`win.setNavigationBarOptions()`. Button IDs are returned through `win.onNavigationBarButtonClick()` so the
 app remains the owner of its application state. Passing `null` restores the manifest title and
 removes app-provided controls. Icons are selected from the exported
-`APP_NAVIGATIONBAR_BUTTON_ICONS` list; arbitrary markup is not accepted across the window boundary.
+`APP_NAVIGATION_BAR_BUTTON_ICONS` list; arbitrary markup is not accepted across the window boundary.
 Keep `sidebarWidth` at the expanded width and update `sidebarOpen` when showing or hiding it so the
 host navigationbar uses the same off-canvas transition as the app sidebar.
 

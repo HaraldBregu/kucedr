@@ -1,8 +1,8 @@
-import { isAppNavigationbarOptions } from '../../../../src/shared/navigationbar_validate';
+import { isAppNavigationBarOptions } from '../../../../src/shared/navigationbar_validate';
 
 it('accepts a complete app navigationbar snapshot and reset', () => {
 	expect(
-		isAppNavigationbarOptions({
+		isAppNavigationBarOptions({
 			title: 'Workspace',
 			leftButtons: [
 				{
@@ -18,7 +18,7 @@ it('accepts a complete app navigationbar snapshot and reset', () => {
 			sidebarWidth: 240,
 		})
 	).toBe(true);
-	expect(isAppNavigationbarOptions(null)).toBe(true);
+	expect(isAppNavigationBarOptions(null)).toBe(true);
 });
 
 it.each([
@@ -38,5 +38,5 @@ it.each([
 	},
 	{ rightButtons: new Array(7).fill({ id: 'same', label: 'Same', icon: 'settings' }) },
 ])('rejects malformed navigationbar options: %p', (options) => {
-	expect(isAppNavigationbarOptions(options)).toBe(false);
+	expect(isAppNavigationBarOptions(options)).toBe(false);
 });

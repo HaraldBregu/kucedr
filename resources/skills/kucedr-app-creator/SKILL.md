@@ -64,7 +64,7 @@ Use `app.getAppStoreValue`, `setAppStoreValue`, and related methods for JSON-saf
 
 Use the host theme and language APIs where the feature needs them. Subscribe to change callbacks in React effects and always return the SDK unsubscribe function during cleanup.
 
-Kucedr renders the native navigationbar. When the app needs navigationbar controls, call `win.setNavigationbarOptions()` with exported, allowlisted button icons and handle actions through `win.onNavigationbarButtonClick()`. Keep application state, including sidebar state, in the app; pass only the navigationbar descriptors and current sidebar layout information across the bridge.
+Kucedr renders the native navigationbar. When the app needs navigationbar controls, call `win.setNavigationBarOptions()` with exported, allowlisted button icons and handle actions through `win.onNavigationBarButtonClick()`. Keep application state, including sidebar state, in the app; pass only the navigationbar descriptors and current sidebar layout information across the bridge.
 
 ## Verify the actual deliverable
 

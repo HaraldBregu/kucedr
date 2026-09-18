@@ -2,8 +2,8 @@ import { typedInvokeUnwrap, typedSend, typedOn } from '../shared/ipc_types';
 import { WindowChannels } from '../shared/ipc_channels_definitions';
 import type { WindowApi } from './index.d';
 
-let navigationbarSidebarOpen: boolean | undefined;
-let navigationbarSidebarTransitionStartedAt: number | undefined;
+let navigationBarSidebarOpen: boolean | undefined;
+let navigationBarSidebarTransitionStartedAt: number | undefined;
 
 export const win: WindowApi = {
 	minimize: (): void => {
@@ -39,44 +39,44 @@ export const win: WindowApi = {
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void): (() => void) => {
 		return typedOn(WindowChannels.fullScreenChange, callback);
 	},
-	setNavigationbarOptions: (options): void => {
+	setNavigationBarOptions: (options): void => {
 		if (options === null) {
-			navigationbarSidebarOpen = undefined;
-			navigationbarSidebarTransitionStartedAt = undefined;
-			typedSend(WindowChannels.navigationbarOptionsSet, options);
+			navigationBarSidebarOpen = undefined;
+			navigationBarSidebarTransitionStartedAt = undefined;
+			typedSend(WindowChannels.navigationBarOptionsSet, options);
 			return;
 		}
 		const sidebarChanged =
-			navigationbarSidebarOpen !== undefined &&
+			navigationBarSidebarOpen !== undefined &&
 			options.sidebarOpen !== undefined &&
-			navigationbarSidebarOpen !== options.sidebarOpen;
-		navigationbarSidebarOpen = options.sidebarOpen;
-		if (sidebarChanged) navigationbarSidebarTransitionStartedAt = Date.now();
+			navigationBarSidebarOpen !== options.sidebarOpen;
+		navigationBarSidebarOpen = options.sidebarOpen;
+		if (sidebarChanged) navigationBarSidebarTransitionStartedAt = Date.now();
 		const transitionStartedAt =
-			navigationbarSidebarTransitionStartedAt !== undefined &&
-			Date.now() - navigationbarSidebarTransitionStartedAt <= 200
-				? navigationbarSidebarTransitionStartedAt
+			navigationBarSidebarTransitionStartedAt !== undefined &&
+			Date.now() - navigationBarSidebarTransitionStartedAt <= 200
+				? navigationBarSidebarTransitionStartedAt
 				: undefined;
 		typedSend(
-			WindowChannels.navigationbarOptionsSet,
+			WindowChannels.navigationBarOptionsSet,
 			transitionStartedAt === undefined
 				? options
 				: { ...options, sidebarTransitionStartedAt: transitionStartedAt }
 		);
 	},
-	onNavigationbarOptionsChanged: (callback): (() => void) => {
-		return typedOn(WindowChannels.navigationbarOptionsChanged, callback);
+	onNavigationBarOptionsChanged: (callback): (() => void) => {
+		return typedOn(WindowChannels.navigationBarOptionsChanged, callback);
 	},
-	clickNavigationbarButton: (buttonId): void => {
-		typedSend(WindowChannels.navigationbarButtonClick, buttonId);
+	clickNavigationBarButton: (buttonId): void => {
+		typedSend(WindowChannels.navigationBarButtonClick, buttonId);
 	},
-	onNavigationbarButtonClick: (callback): (() => void) => {
-		return typedOn(WindowChannels.navigationbarButtonClicked, callback);
+	onNavigationBarButtonClick: (callback): (() => void) => {
+		return typedOn(WindowChannels.navigationBarButtonClicked, callback);
 	},
-	setNavigationbarSidebarWidth: (width: number | null): void => {
-		typedSend(WindowChannels.navigationbarSidebarWidthSet, width);
+	setNavigationBarSidebarWidth: (width: number | null): void => {
+		typedSend(WindowChannels.navigationBarSidebarWidthSet, width);
 	},
-	onNavigationbarSidebarWidthChanged: (callback: (width: number | null) => void): (() => void) => {
-		return typedOn(WindowChannels.navigationbarSidebarWidthChanged, callback);
+	onNavigationBarSidebarWidthChanged: (callback: (width: number | null) => void): (() => void) => {
+		return typedOn(WindowChannels.navigationBarSidebarWidthChanged, callback);
 	},
 } satisfies WindowApi;

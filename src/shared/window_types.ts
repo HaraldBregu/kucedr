@@ -24,7 +24,7 @@ export type ContextMenuDescriptor =
 			enabled?: boolean;
 	  };
 
-export const APP_NAVIGATIONBAR_BUTTON_ICONS = [
+export const APP_NAVIGATION_BAR_BUTTON_ICONS = [
 	'panel-left',
 	'panel-right',
 	'plus',
@@ -34,22 +34,22 @@ export const APP_NAVIGATIONBAR_BUTTON_ICONS = [
 	'more-horizontal',
 ] as const;
 
-export type AppNavigationbarButtonIcon =
-	(typeof APP_NAVIGATIONBAR_BUTTON_ICONS)[number];
+export type AppNavigationBarButtonIcon =
+	(typeof APP_NAVIGATION_BAR_BUTTON_ICONS)[number];
 
-export interface AppNavigationbarButton {
+export interface AppNavigationBarButton {
 	id: string;
 	label: string;
-	icon: AppNavigationbarButtonIcon;
+	icon: AppNavigationBarButtonIcon;
 	disabled?: boolean;
 	expanded?: boolean;
 	pressed?: boolean;
 }
 
-export interface AppNavigationbarOptions {
+export interface AppNavigationBarOptions {
 	title?: string;
-	leftButtons?: AppNavigationbarButton[];
-	rightButtons?: AppNavigationbarButton[];
+	leftButtons?: AppNavigationBarButton[];
+	rightButtons?: AppNavigationBarButton[];
 	sidebarOpen?: boolean;
 	sidebarTransitionStartedAt?: number;
 	sidebarWidth?: number | null;

@@ -13,9 +13,9 @@ import type { LoggerService } from '../shared';
 import type { ContextMenuDescriptor, ContextMenuRole } from '../../shared/window_types';
 import type { AppRegistry } from '../apps/app_registry';
 import { openAppWindows } from '../apps/app_render';
-import { isAppNavigationbarOptions } from '../../shared/navigationbar_validate';
-import { setAppNavigationbar } from '../apps/app_navigationbar_set';
-import { dispatchAppNavigationbarButton } from '../apps/app_navigationbar_click';
+import { isAppNavigationBarOptions } from '../../shared/navigationbar_validate';
+import { setAppNavigationBar } from '../apps/app_navigationbar_set';
+import { dispatchAppNavigationBarButton } from '../apps/app_navigationbar_click';
 
 const contextMenuRoles = new Set<ContextMenuRole>([
 	'undo',
@@ -105,7 +105,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 			}
 		});
 
-		ipcMain.on(WindowChannels.navigationbarSidebarWidthSet, (event, width) => {
+		ipcMain.on(WindowChannels.navigationBarSidebarWidthSet, (event, width) => {
 			if (
 				width !== null &&
 				(typeof width !== 'number' || !Number.isFinite(width) || width < 0 || width > 800)
@@ -120,23 +120,23 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 			}
 			const appWindow = openAppWindows.get(appId)?.window;
 			if (!appWindow || appWindow.isDestroyed()) return;
-			appWindow.webContents.send(WindowChannels.navigationbarSidebarWidthChanged, width);
+			appWindow.webContents.send(WindowChannels.navigationBarSidebarWidthChanged, width);
 		});
 
-		ipcMain.on(WindowChannels.navigationbarOptionsSet, (event, options) => {
-			if (!isAppNavigationbarOptions(options)) return;
+		ipcMain.on(WindowChannels.navigationBarOptionsSet, (event, options) => {
+			if (!isAppNavigationBarOptions(options)) return;
 			let appId: string;
 			try {
 				appId = appRegistry.resolve(event.sender);
 			} catch {
 				return;
 			}
-			setAppNavigationbar(appId, options);
+			setAppNavigationBar(appId, options);
 		});
 
-		ipcMain.on(WindowChannels.navigationbarButtonClick, (event, buttonId) => {
+		ipcMain.on(WindowChannels.navigationBarButtonClick, (event, buttonId) => {
 			if (typeof buttonId !== 'string' || !buttonId.trim() || buttonId.length > 120) return;
-			dispatchAppNavigationbarButton(event.sender, buttonId);
+			dispatchAppNavigationBarButton(event.sender, buttonId);
 		});
 
 		// --- Query handlers (invoke/handle) ---

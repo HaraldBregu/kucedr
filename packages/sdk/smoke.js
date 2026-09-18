@@ -238,19 +238,19 @@ globalThis.win = {
 	onMaximizeChange: () => () => undefined,
 	isFullScreen: async () => false,
 	onFullScreenChange: () => () => undefined,
-	setNavigationbarOptions: (options) => {
-		globalThis.__navigationbarOptions = options;
+	setNavigationBarOptions: (options) => {
+		globalThis.__navigationBarOptions = options;
 	},
-	onNavigationbarOptionsChanged: () => () => undefined,
-	clickNavigationbarButton: () => undefined,
-	onNavigationbarButtonClick: (callback) => {
-		globalThis.__navigationbarButtonClick = callback;
+	onNavigationBarOptionsChanged: () => () => undefined,
+	clickNavigationBarButton: () => undefined,
+	onNavigationBarButtonClick: (callback) => {
+		globalThis.__navigationBarButtonClick = callback;
 		return () => {
-			globalThis.__navigationbarButtonClick = undefined;
+			globalThis.__navigationBarButtonClick = undefined;
 		};
 	},
-	setNavigationbarSidebarWidth: () => undefined,
-	onNavigationbarSidebarWidthChanged: () => () => undefined,
+	setNavigationBarSidebarWidth: () => undefined,
+	onNavigationBarSidebarWidthChanged: () => () => undefined,
 };
 
 assert.equal(isKucedr(), true);
@@ -378,7 +378,7 @@ terminal.resize({ id: 'terminal-coding', cols: 120, rows: 40 });
 assert.equal(await terminal.kill({ id: 'terminal-coding' }), true);
 assert.equal(await win.showContextMenu([{ id: 'open', label: 'Open' }]), 'open');
 assert.equal(await win.isMaximized(), true);
-win.setNavigationbarOptions({
+win.setNavigationBarOptions({
 	title: 'Workspace',
 	leftButtons: [
 		{
@@ -392,15 +392,15 @@ win.setNavigationbarOptions({
 	sidebarOpen: true,
 	sidebarWidth: 240,
 });
-assert.equal(globalThis.__navigationbarOptions.title, 'Workspace');
-assert.equal(globalThis.__navigationbarOptions.sidebarOpen, true);
-let navigationbarButtonId;
-const stopNavigationbarButtonClick = win.onNavigationbarButtonClick((buttonId) => {
-	navigationbarButtonId = buttonId;
+assert.equal(globalThis.__navigationBarOptions.title, 'Workspace');
+assert.equal(globalThis.__navigationBarOptions.sidebarOpen, true);
+let navigationBarButtonId;
+const stopNavigationBarButtonClick = win.onNavigationBarButtonClick((buttonId) => {
+	navigationBarButtonId = buttonId;
 });
-globalThis.__navigationbarButtonClick('toggle-sidebar');
-assert.equal(navigationbarButtonId, 'toggle-sidebar');
-stopNavigationbarButtonClick();
+globalThis.__navigationBarButtonClick('toggle-sidebar');
+assert.equal(navigationBarButtonId, 'toggle-sidebar');
+stopNavigationBarButtonClick();
 
 // --- remote mode: bound to the app API server --------------------------------
 

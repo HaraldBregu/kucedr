@@ -343,7 +343,7 @@ export default function App() {
 						isDark={theme.isDark}
 						style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
 					/>
-					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.navigationbarTitle}</h1>
+					<h1 className="min-w-0 shrink truncate text-sm font-medium">{text.navigationBarTitle}</h1>
 					<div className="min-w-0 flex-1" />
 					<div
 						className="z-10 mr-3 flex h-full items-center gap-1"

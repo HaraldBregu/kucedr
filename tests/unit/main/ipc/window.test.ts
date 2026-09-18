@@ -107,12 +107,12 @@ it('forwards app sidebar widths to the matching navigationbar shell', () => {
 		{} as EventBus
 	);
 	const listener = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.navigationbarSidebarWidthSet
+		([channel]) => channel === WindowChannels.navigationBarSidebarWidthSet
 	)?.[1];
 
 	listener({ sender: {} }, 240);
 
-	expect(send).toHaveBeenCalledWith(WindowChannels.navigationbarSidebarWidthChanged, 240);
+	expect(send).toHaveBeenCalledWith(WindowChannels.navigationBarSidebarWidthChanged, 240);
 	(openAppWindows as Map<string, unknown>).delete('workspace');
 });
 
@@ -149,17 +149,17 @@ it('forwards navigationbar options to the owning shell and button clicks to its 
 		window: host,
 		ready: true,
 		contents: appContents,
-		navigationbarOptions: null,
+		navigationBarOptions: null,
 	});
 	new WindowIpc().register(
 		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
 		{} as EventBus
 	);
 	const setOptions = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.navigationbarOptionsSet
+		([channel]) => channel === WindowChannels.navigationBarOptionsSet
 	)?.[1];
 	const clickButton = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.navigationbarButtonClick
+		([channel]) => channel === WindowChannels.navigationBarButtonClick
 	)?.[1];
 	const options = {
 		title: 'Workspace',
@@ -178,11 +178,11 @@ it('forwards navigationbar options to the owning shell and button clicks to its 
 
 	setOptions({ sender: appContents }, options);
 
-	expect(shellSend).toHaveBeenCalledWith(WindowChannels.navigationbarOptionsChanged, options);
+	expect(shellSend).toHaveBeenCalledWith(WindowChannels.navigationBarOptionsChanged, options);
 	clickButton({ sender: appContents }, 'toggle-sidebar');
 	expect(appSend).not.toHaveBeenCalled();
 	clickButton({ sender: shellContents }, 'toggle-sidebar');
-	expect(appSend).toHaveBeenCalledWith(WindowChannels.navigationbarButtonClicked, 'toggle-sidebar');
+	expect(appSend).toHaveBeenCalledWith(WindowChannels.navigationBarButtonClicked, 'toggle-sidebar');
 });
 
 it('rejects malformed navigationbar options and unknown button ids', () => {
@@ -197,17 +197,17 @@ it('rejects malformed navigationbar options and unknown button ids', () => {
 		window: { isDestroyed: jest.fn(() => false), webContents: shellContents },
 		ready: true,
 		contents: appContents,
-		navigationbarOptions: null,
+		navigationBarOptions: null,
 	});
 	new WindowIpc().register(
 		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
 		{} as EventBus
 	);
 	const setOptions = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.navigationbarOptionsSet
+		([channel]) => channel === WindowChannels.navigationBarOptionsSet
 	)?.[1];
 	const clickButton = (ipcMain.on as jest.Mock).mock.calls.find(
-		([channel]) => channel === WindowChannels.navigationbarButtonClick
+		([channel]) => channel === WindowChannels.navigationBarButtonClick
 	)?.[1];
 
 	setOptions(
