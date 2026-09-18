@@ -1,5 +1,5 @@
 import { Bot } from 'lucide-react';
-import { useMemo, useState, type DragEvent } from 'react';
+import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { WorkspaceTreeEntry } from '@kucedr/sdk';
 
 import { Badge } from '@/components/ui/badge';
@@ -33,9 +33,13 @@ const agentFilePathSet = new Set<string>(agentFilePaths);
 const agentNodeId = '__kucedr_workspace_agent__';
 
 interface AppSidebarProps {
-	onCreateRequest: (parentPath: string, type: 'file' | 'directory') => void;
+	onCreateDirectory: (parentPath: string) => void;
+	onCreateFile: (parentPath: string) => void;
 	onDeleteRequest: (entry: WorkspaceTreeEntry) => void;
 	onMoveRequest: (entry: WorkspaceTreeEntry, destinationPath: string) => Promise<string>;
+	onRenameCancel: () => void;
+	onRenameCommit: () => void;
+	onRenameNameChange: (name: string) => void;
 	onRenameRequest: (entry: WorkspaceTreeEntry) => void;
 	onWorkspaceSelect: (entry: WorkspaceTreeEntry) => void;
 	selectedWorkspacePath: string | null;
@@ -43,12 +47,20 @@ interface AppSidebarProps {
 	workspaceFiles: WorkspaceTreeEntry[];
 	workspaceLoading: boolean;
 	workspaceLocation: string;
+	renameError: string;
+	renameName: string;
+	renameTarget: WorkspaceTreeEntry | null;
+	renaming: boolean;
 }
 
 export function AppSidebar({
-	onCreateRequest,
+	onCreateDirectory,
+	onCreateFile,
 	onDeleteRequest,
 	onMoveRequest,
+	onRenameCancel,
+	onRenameCommit,
+	onRenameNameChange,
 	onRenameRequest,
 	onWorkspaceSelect,
 	selectedWorkspacePath,
@@ -56,6 +68,10 @@ export function AppSidebar({
 	workspaceFiles,
 	workspaceLoading,
 	workspaceLocation,
+	renameError,
+	renameName,
+	renameTarget,
+	renaming,
 }: AppSidebarProps) {
 	const [expanded, setExpanded] = useState<Set<string>>(new Set());
 	const [draggedEntry, setDraggedEntry] = useState<WorkspaceTreeEntry | null>(null);
@@ -79,6 +95,23 @@ export function AppSidebar({
 		[workspaceFiles]
 	);
 	const agentExpanded = expanded.has(agentNodeId);
+	useEffect(() => {
+		if (!renameTarget) return;
+		const parts = renameTarget.path.split('/');
+		if (parts.length < 2) return;
+		setExpanded((current) => {
+			const next = new Set(current);
+			for (let index = 1; index < parts.length; index += 1) {
+				next.add(parts.slice(0, index).join('/'));
+			}
+			return next;
+		});
+	}, [renameTarget]);
+
+	function createFile(parentPath: string) {
+		if (parentPath) setExpanded((current) => new Set(current).add(parentPath));
+		onCreateFile(parentPath);
+	}
 	function toggleDirectory(path: string) {
 		setExpanded((current) => {
 			const next = new Set(current);
@@ -223,8 +256,8 @@ export function AppSidebar({
 						},
 					],
 					{
-						'new-file': () => onCreateRequest('', 'file'),
-						'new-folder': () => onCreateRequest('', 'directory'),
+						'new-file': () => createFile(''),
+						'new-folder': () => onCreateDirectory(''),
 						'expand-all': () => {
 							const paths = collectDirectoryPaths(regularFiles);
 							if (agentFiles.length > 0) paths.add(agentNodeId);
@@ -273,7 +306,7 @@ export function AppSidebar({
 												},
 											],
 											{
-												'new-file': () => onCreateRequest('', 'file'),
+												'new-file': () => createFile(''),
 												'toggle-agent': () => toggleDirectory(agentNodeId),
 											}
 										);
@@ -311,9 +344,17 @@ export function AppSidebar({
 											expanded={expanded}
 											isLast={index === agentFiles.length - 1}
 											movingPath={movingPath}
-											onCreateRequest={onCreateRequest}
+											onCreateDirectory={onCreateDirectory}
+											onCreateFile={createFile}
 											onDeleteRequest={onDeleteRequest}
 											onRenameRequest={onRenameRequest}
+											onRenameCancel={onRenameCancel}
+											onRenameCommit={onRenameCommit}
+											onRenameNameChange={onRenameNameChange}
+											renameError={renameError}
+											renameName={renameName}
+											renameTarget={renameTarget}
+											renaming={renaming}
 											onDragEnd={endDrag}
 											onDragLeave={dragLeaveTarget}
 											onDragOver={dragOverEntry}
@@ -351,9 +392,17 @@ export function AppSidebar({
 									expanded={expanded}
 									isLast={index === regularFiles.length - 1}
 									movingPath={movingPath}
-									onCreateRequest={onCreateRequest}
+									onCreateDirectory={onCreateDirectory}
+									onCreateFile={createFile}
 									onDeleteRequest={onDeleteRequest}
 									onRenameRequest={onRenameRequest}
+									onRenameCancel={onRenameCancel}
+									onRenameCommit={onRenameCommit}
+									onRenameNameChange={onRenameNameChange}
+									renameError={renameError}
+									renameName={renameName}
+									renameTarget={renameTarget}
+									renaming={renaming}
 									onDragEnd={endDrag}
 									onDragLeave={dragLeaveTarget}
 									onDragOver={dragOverEntry}

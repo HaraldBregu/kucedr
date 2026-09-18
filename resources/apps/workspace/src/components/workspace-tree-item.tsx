@@ -1,5 +1,5 @@
 import type { WorkspaceTreeEntry } from '@kucedr/sdk';
-import type { DragEvent } from 'react';
+import { useEffect, useRef, type DragEvent } from 'react';
 
 import {
 	TreeExpander,
@@ -9,6 +9,7 @@ import {
 	TreeNodeContent,
 	TreeNodeTrigger,
 } from '@/components/kibo-ui/tree';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { showNativeContextMenu } from '@/lib/menu';
 
@@ -21,8 +22,12 @@ export interface WorkspaceTreeItemProps {
 	expanded: Set<string>;
 	isLast?: boolean;
 	movingPath: string | null;
-	onCreateRequest: (parentPath: string, type: 'file' | 'directory') => void;
+	onCreateDirectory: (parentPath: string) => void;
+	onCreateFile: (parentPath: string) => void;
 	onDeleteRequest: (entry: WorkspaceTreeEntry) => void;
+	onRenameCancel: () => void;
+	onRenameCommit: () => void;
+	onRenameNameChange: (name: string) => void;
 	onRenameRequest: (entry: WorkspaceTreeEntry) => void;
 	onDragEnd: () => void;
 	onDragLeave: (event: DragEvent<HTMLElement>, path: string) => void;
@@ -32,6 +37,10 @@ export interface WorkspaceTreeItemProps {
 	onSelect: (entry: WorkspaceTreeEntry) => void;
 	onToggle: (path: string) => void;
 	selectedPath: string | null;
+	renameError: string;
+	renameName: string;
+	renameTarget: WorkspaceTreeEntry | null;
+	renaming: boolean;
 }
 
 export function WorkspaceTreeItem({
@@ -43,8 +52,12 @@ export function WorkspaceTreeItem({
 	expanded,
 	isLast = false,
 	movingPath,
-	onCreateRequest,
+	onCreateDirectory,
+	onCreateFile,
 	onDeleteRequest,
+	onRenameCancel,
+	onRenameCommit,
+	onRenameNameChange,
 	onRenameRequest,
 	onDragEnd,
 	onDragLeave,
@@ -54,18 +67,29 @@ export function WorkspaceTreeItem({
 	onSelect,
 	onToggle,
 	selectedPath,
+	renameError,
+	renameName,
+	renameTarget,
+	renaming,
 }: WorkspaceTreeItemProps) {
 	const isDirectory = entry.type === 'directory';
 	const isExpanded = expanded.has(entry.path);
 	const selected = selectedPath === entry.path;
 	const isDropTarget = dropTargetPath === entry.path;
 	const createParentPath = isDirectory ? entry.path : entry.path.split('/').slice(0, -1).join('/');
+	const editing = renameTarget?.path === entry.path;
+	const renameInputRef = useRef<HTMLInputElement>(null);
+	const cancelBlurRef = useRef(false);
+	useEffect(() => {
+		if (!editing || !renameError) return;
+		renameInputRef.current?.focus();
+	}, [editing, renameError]);
 
 	return (
 		<TreeNode isLast={isLast} level={depth} nodeId={entry.path}>
 			<TreeNodeTrigger
 				data-workspace-entry
-				draggable={!movingPath}
+				draggable={!movingPath && !editing}
 				expandOnClick={isDirectory}
 				role="treeitem"
 				tabIndex={0}
@@ -104,8 +128,8 @@ export function WorkspaceTreeItem({
 						{
 							toggle: () => onToggle(entry.path),
 							open: () => onSelect(entry),
-							'new-file': () => onCreateRequest(createParentPath, 'file'),
-							'new-folder': () => onCreateRequest(entry.path, 'directory'),
+							'new-file': () => onCreateFile(createParentPath),
+							'new-folder': () => onCreateDirectory(entry.path),
 							rename: () => onRenameRequest(entry),
 							'copy-path': () => navigator.clipboard.writeText(entry.path),
 							delete: () => onDeleteRequest(entry),
@@ -115,7 +139,7 @@ export function WorkspaceTreeItem({
 				onDoubleClick={(event) => {
 					event.preventDefault();
 					event.stopPropagation();
-					onRenameRequest(entry);
+					if (!editing) onRenameRequest(entry);
 				}}
 				onClick={() => {
 					if (!isDirectory) onSelect(entry);
@@ -153,8 +177,57 @@ export function WorkspaceTreeItem({
 					hasChildren={isDirectory}
 					className="mr-0 shrink-0 text-sidebar-muted [&_svg]:h-3.5 [&_svg]:w-3.5"
 				/>
-				<TreeLabel className="text-[12px] font-medium">{entry.name}</TreeLabel>
+				{editing ? (
+					<Input
+						ref={renameInputRef}
+						autoFocus
+						aria-invalid={Boolean(renameError)}
+						value={renameName}
+						disabled={renaming}
+						className="h-5 min-w-0 flex-1 rounded-sm px-1.5 text-[12px] shadow-none"
+						onBlur={() => {
+							if (cancelBlurRef.current) {
+								cancelBlurRef.current = false;
+								return;
+							}
+							onRenameCommit();
+						}}
+						onChange={(event) => onRenameNameChange(event.target.value)}
+						onClick={(event) => event.stopPropagation()}
+						onContextMenu={(event) => event.stopPropagation()}
+						onDoubleClick={(event) => event.stopPropagation()}
+						onFocus={(event) => {
+							const extensionStart = renameName.lastIndexOf('.');
+							event.currentTarget.setSelectionRange(
+								0,
+								entry.type === 'file' && extensionStart > 0
+									? extensionStart
+									: renameName.length
+							);
+						}}
+						onKeyDown={(event) => {
+							event.stopPropagation();
+							if (event.key === 'Enter') {
+								event.preventDefault();
+								event.currentTarget.blur();
+							}
+							if (event.key === 'Escape') {
+								event.preventDefault();
+								cancelBlurRef.current = true;
+								onRenameCancel();
+							}
+						}}
+						onPointerDown={(event) => event.stopPropagation()}
+					/>
+				) : (
+					<TreeLabel className="text-[12px] font-medium">{entry.name}</TreeLabel>
+				)}
 			</TreeNodeTrigger>
+			{editing && renameError ? (
+				<p role="alert" className="px-6 py-1 text-[10px] leading-4 text-destructive">
+					{renameError}
+				</p>
+			) : null}
 			<TreeNodeContent hasChildren={isDirectory} className="space-y-1">
 				{entry.children?.map((child, index) => (
 					<WorkspaceTreeItem
@@ -167,8 +240,12 @@ export function WorkspaceTreeItem({
 						expanded={expanded}
 						isLast={index === (entry.children?.length ?? 0) - 1}
 						movingPath={movingPath}
-						onCreateRequest={onCreateRequest}
+						onCreateDirectory={onCreateDirectory}
+						onCreateFile={onCreateFile}
 						onDeleteRequest={onDeleteRequest}
+						onRenameCancel={onRenameCancel}
+						onRenameCommit={onRenameCommit}
+						onRenameNameChange={onRenameNameChange}
 						onRenameRequest={onRenameRequest}
 						onDragEnd={onDragEnd}
 						onDragLeave={onDragLeave}
@@ -178,6 +255,10 @@ export function WorkspaceTreeItem({
 						onSelect={onSelect}
 						onToggle={onToggle}
 						selectedPath={selectedPath}
+						renameError={renameError}
+						renameName={renameName}
+						renameTarget={renameTarget}
+						renaming={renaming}
 					/>
 				))}
 			</TreeNodeContent>
