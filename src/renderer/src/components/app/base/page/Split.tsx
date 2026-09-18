@@ -54,7 +54,7 @@ export function Split({
 					aria-expanded={sidebarOpen}
 					title="Toggle Sidebar"
 					onClick={toggleSidebar}
-					className="fixed left-20 top-2.5 z-50 size-7 text-muted-foreground"
+					className="fixed left-20 top-2.5 z-50 size-7 text-muted-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground"
 					style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 				>
 					<PanelLeft className="size-4" strokeWidth={1.5} />
