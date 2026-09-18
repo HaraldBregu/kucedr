@@ -48,6 +48,7 @@ import { findWorkspaceEntry } from '@/lib/find';
 import { removeWorkspaceEntry } from '@/lib/remove';
 import { rebaseWorkspacePath } from '@/lib/rebase';
 import { isWorkspacePathWithin } from '@/lib/within';
+import { useNavigationBar } from '@/hooks/navigationbar';
 import {
 	workspaceSettingsDefaults,
 	workspaceSettingsKey,
@@ -62,7 +63,6 @@ const fallbackTheme: AppThemeData = {
 const sidebarMinWidth = 200;
 const sidebarMaxWidth = 360;
 const sidebarDefaultWidth = 240;
-const sidebarToggleButtonId = 'toggle-sidebar';
 const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'markdown',
 	'mermaid',
@@ -122,6 +122,7 @@ export default function App() {
 		() => findWorkspaceEntry(workspaceFiles, selectedWorkspacePath),
 		[workspaceFiles, selectedWorkspacePath]
 	);
+	useNavigationBar({ sidebarOpen, sidebarWidth, setSidebarOpen });
 	useEffect(() => {
 		if (!isKucedr()) return;
 
@@ -184,30 +185,6 @@ export default function App() {
 	const setSidebarVisibility = useCallback((open: boolean): void => {
 		setSidebarOpen(open);
 	}, []);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		return win.onNavigationBarButtonClick((buttonId) => {
-			if (buttonId === sidebarToggleButtonId) setSidebarOpen((open) => !open);
-		});
-	}, []);
-
-	useEffect(() => {
-		if (!isKucedr()) return;
-		win.setNavigationBarOptions({
-			leftButtons: [
-				{
-					id: sidebarToggleButtonId,
-					label: sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar',
-					icon: 'panel-left',
-					expanded: sidebarOpen,
-				},
-			],
-			sidebarOpen,
-			sidebarWidth,
-		});
-		return () => win.setNavigationBarOptions(null);
-	}, [sidebarOpen, sidebarWidth]);
 
 	useEffect(() => {
 		if (!isKucedr()) return;
