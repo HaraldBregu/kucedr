@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { models, type AppLanguage } from '@kucedr/sdk';
+import { isKucedr, models, type AppLanguage } from '@kucedr/sdk';
 
 import { Button } from './components/ui/button';
 import { Input } from './components/ui/input';
@@ -24,12 +24,14 @@ export function Models({ language, ensureKucedr }: ModelsProps) {
 	const [realtimeSessionId, setRealtimeSessionId] = useState('');
 
 	useEffect(
-		() =>
-			models.realtimeVoice.onSessionEvent((event) => {
+		() => {
+			if (!isKucedr()) return;
+			return models.realtimeVoice.onSessionEvent((event) => {
 				if ('sessionId' in event && event.sessionId !== realtimeSessionId) return;
 				setResult(JSON.stringify(event, null, 2));
 				if (event.type === 'closed') setRealtimeSessionId('');
-			}),
+			});
+		},
 		[realtimeSessionId]
 	);
 
