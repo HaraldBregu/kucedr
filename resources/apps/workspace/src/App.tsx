@@ -825,7 +825,9 @@ export default function App() {
 						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 					>
 						<SidebarTrigger style={{ WebkitAppRegion: 'no-drag' } as CSSProperties} />
-						<span className="min-w-0 flex-1 truncate text-sm font-medium">Workspace</span>
+						<span className="min-w-0 flex-1 truncate text-sm font-medium">
+							{view === 'settings' ? 'Settings' : selectedWorkspaceEntry?.name ?? ''}
+						</span>
 						{!isMac ? (
 							<div
 								className="-my-3 -mr-3 flex h-12 items-center [webkit-app-region:no-drag]"
