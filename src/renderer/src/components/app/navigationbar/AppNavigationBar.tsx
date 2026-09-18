@@ -24,7 +24,7 @@ export function AppNavigationBar({
 	const isMaximized = useAppWindowState();
 
 	return (
-		<NavigationBarContainer className="relative">
+		<NavigationBarContainer>
 			<NavigationBarLeftContainer isMac={isMac}>
 				{!isMac ? (
 					<Button
