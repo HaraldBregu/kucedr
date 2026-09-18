@@ -113,7 +113,6 @@ function RootRouteComponent(): React.JSX.Element {
 
 	const { phase } = useOnboarding();
 	const { state: authState, skipSignIn } = useAuth();
-	const showOnboardingTitle = phase === 'auth' || phase === 'setup';
 	const isHome = location.pathname === '/home';
 	const isSettings = location.pathname.startsWith('/settings');
 	const hasSidebar = isHome || isSettings;
@@ -159,16 +158,12 @@ function RootRouteComponent(): React.JSX.Element {
 				>
 					<NavigationBar
 						centerContent={
-							showOnboardingTitle ? (
-								<span className="text-sm font-medium">Kucedr</span>
-							) : isSettings && showSettingsBreadcrumb ? (
+							isSettings && showSettingsBreadcrumb ? (
 								<SettingsBreadcrumb />
 							) : undefined
 						}
 						centerContentClassName={
-							showOnboardingTitle
-								? 'left-1/2 right-auto -translate-x-1/2'
-								: isSettings && (isMobile || !state.sidebarOpen)
+							isSettings && (isMobile || !state.sidebarOpen)
 									? 'left-28'
 									: undefined
 						}
@@ -180,12 +175,6 @@ function RootRouteComponent(): React.JSX.Element {
 							) : undefined
 						}
 						onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
-						sidebarOpen={!isMobile && state.sidebarOpen}
-						style={
-							hasSidebar
-								? { left: !isMobile && state.sidebarOpen ? 'var(--app-sidebar-width)' : 0 }
-								: undefined
-						}
 					/>
 					<div className="min-h-0 flex-1 overflow-hidden pt-12">
 						<PageTransition>

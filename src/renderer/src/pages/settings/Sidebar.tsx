@@ -69,11 +69,6 @@ export function SettingsSidebar(): React.JSX.Element {
 
 	return (
 		<div data-slot="settings-sidebar" className="flex h-full min-h-0 flex-col">
-			<header
-				aria-hidden="true"
-				className="h-12 shrink-0 p-0"
-				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
-			/>
 			<div className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<Link
 					to="/home"
