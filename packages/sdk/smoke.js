@@ -476,6 +476,7 @@ assert.deepEqual(
 		'agent:workspace:markdown:write',
 		'agent:workspace:file:write',
 		'agent:workspace:file:create',
+		'agent:workspace:file:duplicate',
 		'agent:workspace:directory:create',
 		'agent:workspace:entry:move',
 		'agent:workspace:entry:rename',
