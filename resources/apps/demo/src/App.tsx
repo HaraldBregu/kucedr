@@ -25,6 +25,7 @@ import {
 import { Textarea } from './components/ui/textarea';
 import translations from './i18n.json';
 import { runStorageTest } from './storage';
+import { Models } from './models';
 
 const fallbackColors: AppThemeColors = {
 	radius: '0.625rem',
@@ -321,6 +322,9 @@ export default function App() {
 						<a className="block rounded-md px-3 py-2 text-sm hover:bg-muted" href="#language">
 							{text.language}
 						</a>
+						<a className="block rounded-md px-3 py-2 text-sm hover:bg-muted" href="#models">
+							{text.models}
+						</a>
 						<a className="block rounded-md px-3 py-2 text-sm hover:bg-muted" href="#storage">
 							{text.storage}
 						</a>
@@ -457,6 +461,7 @@ export default function App() {
 									</Button>
 								</div>
 							</div>
+							<Models language={language} ensureKucedr={ensureKucedrApp} />
 							<div id="storage" className="space-y-4 border-t border-border pt-4">
 								<p className="text-sm font-semibold">{text.storage}</p>
 								<p className="text-sm text-muted-foreground">{text.storageDescription}</p>
