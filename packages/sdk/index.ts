@@ -47,6 +47,50 @@ export {
 	type ImageResult,
 	type ImageSource,
 } from '../../src/shared/image_types';
+export type { EmbeddingRequest, EmbeddingResult } from '../../src/shared/embedding_types';
+export type { SoundFile, SoundRequest, SoundResult } from '../../src/shared/sound_types';
+export type { TextRequest } from '../../src/shared/text_types';
+export type { VideoRequest, VideoResult } from '../../src/shared/video_types';
+export {
+	SPEECH_MAX_TEXT_LENGTH,
+	type SpeechSynthesisMetadata,
+	type SpeechSynthesisRequest,
+	type SpeechSynthesisResult,
+} from '../../src/shared/speech_types';
+export {
+	STT_AUDIO_ENCODINGS,
+	STT_DEFAULT_REALTIME_SAMPLE_RATE,
+	STT_MAX_AUDIO_BASE64_LENGTH,
+	STT_MAX_LANGUAGE_LENGTH,
+	STT_MAX_PROMPT_LENGTH,
+	STT_MAX_REALTIME_AUDIO_BASE64_LENGTH,
+	type SttAudioEncoding,
+	type SttAudioInput,
+	type SttModelSelection,
+	type SttRealtimeAudioFormat,
+	type SttRealtimeEvent,
+	type SttRealtimeSession,
+	type SttRealtimeStartRequest,
+	type SttSelectionMode,
+	type SttTranscriptionMetadata,
+	type SttTranscriptionRequest,
+	type SttTranscriptionResult,
+	type SttUsage,
+} from '../../src/shared/stt_transcription';
+export {
+	REALTIME_VOICE_CHANNELS,
+	REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH,
+	REALTIME_VOICE_SAMPLE_RATE,
+	type RealtimeVoiceAudioFormat,
+	type RealtimeVoiceEvent,
+	type RealtimeVoiceModelRef,
+	type RealtimeVoiceSession,
+	type RealtimeVoiceSetup,
+	type RealtimeVoiceSetupRequest,
+	type RealtimeVoiceStartRequest,
+	type RealtimeVoiceState,
+	type RealtimeVoiceToolEvent,
+} from '../../src/shared/realtime_voice';
 export type { WorkspaceChangeEvent, WorkspaceTreeEntry } from '../../src/shared/agent_types';
 export {
 	workspaceFileType,

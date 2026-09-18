@@ -75,6 +75,14 @@ const revised = await models.image.createImage({
 	prompt: 'Replace only the armchair with a caramel leather lounge chair.',
 	source: { base64: generated.base64, mimeType: 'image/png' },
 });
+const answer = await models.text.generateText({ prompt: 'Explain this room in one sentence.' });
+const vectors = await models.embedding.createEmbedding({ texts: [answer] });
+const narration = await models.voice.synthesize({ text: answer });
+const transcription = await models.transcribe.transcribe({
+	audio: { data: narration.audio, encoding: 'base64', mimeType: narration.mimeType },
+});
+const ambience = await models.sound.createSound({ prompt: 'Quiet rain outside a reading room' });
+const clip = await models.video.createVideo({ prompt: 'A slow camera move through the room' });
 await agent.writeWorkspaceMarkdown('USER.md', '# Updated');
 await agent.writeWorkspaceFile('diagrams/flow.mmd', 'flowchart LR');
 await agent.createWorkspaceFile('', 'draft.md');
@@ -202,7 +210,7 @@ is opened; close and reopen an existing app window to use the updated settings.
 - `app`: app data + settings APIs exposed by preload (`setTheme`, `getThemeData`, `getLanguage`, etc.)
 - `agent`: workspace APIs exposed by preload, including text reads, typed asset reads, and Markdown writes.
 - `coding`: embedded Pi coding-agent projects, persistent sessions, Agent/Shell runs, settings, authentication, streaming, and cancellation.
-- `models`: embedded model APIs, including configured image generation and source-image editing without exposing provider credentials.
+- `models`: embedded model APIs for LLM text, embeddings, STT, TTS, realtime voice, image, audio, and video without exposing provider credentials.
 - `terminal`: embedded-only, owner-scoped PTY lifecycle, input, resize, output, and exit events.
 - `win`: embedded-only window APIs, including native context menus and window controls.
 - `connect()`: remote client for the app API and workspace agent APIs.
