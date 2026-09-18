@@ -80,9 +80,9 @@ export function render(
 		const { width, height } = win.getContentBounds();
 		appView.setBounds({
 			x: 0,
-			y: 0,
+			y: 48,
 			width,
-			height,
+			height: Math.max(0, height - 48),
 		});
 	};
 	const discardFailedShell = (): void => {
