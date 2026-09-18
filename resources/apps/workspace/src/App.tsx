@@ -792,7 +792,7 @@ export default function App() {
 					}}
 				>
 					<form
-					className="space-y-3"
+						className="space-y-3"
 						onSubmit={(event) => {
 							event.preventDefault();
 							void confirmCreateWorkspaceEntry();
@@ -841,7 +841,7 @@ export default function App() {
 										aria-label="File extension"
 										value={createFileKind}
 										disabled={creating}
-							className="h-8 shrink-0 rounded-r-md border-0 border-l border-input bg-muted px-2.5 text-xs text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50"
+										className="h-8 shrink-0 rounded-r-md border-0 border-l border-input bg-muted px-2.5 text-xs text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50"
 										onChange={(event) => {
 											setCreateFileKind(event.target.value as CreateFileKind);
 											setCreateError('');
@@ -905,7 +905,7 @@ export default function App() {
 					}}
 				>
 					<form
-					className="space-y-3"
+						className="space-y-3"
 						onSubmit={(event) => {
 							event.preventDefault();
 							void confirmRenameWorkspaceEntry();
