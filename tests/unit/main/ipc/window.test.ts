@@ -135,6 +135,7 @@ it('opens the dedicated voice conversation window with a trimmed chat session id
 
 it('forwards navigationbar options to the owning shell and button clicks to its app', () => {
 	const shellSend = jest.fn();
+	const layout = jest.fn();
 	const shellContents = { send: shellSend };
 	const appSend = jest.fn();
 	const appContents = {
@@ -150,6 +151,7 @@ it('forwards navigationbar options to the owning shell and button clicks to its 
 		ready: true,
 		contents: appContents,
 		navigationBarOptions: null,
+		layout,
 	});
 	new WindowIpc().register(
 		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
@@ -178,6 +180,7 @@ it('forwards navigationbar options to the owning shell and button clicks to its 
 
 	setOptions({ sender: appContents }, options);
 
+	expect(layout).toHaveBeenCalledTimes(1);
 	expect(shellSend).toHaveBeenCalledWith(WindowChannels.navigationBarOptionsChanged, options);
 	clickButton({ sender: appContents }, 'toggle-sidebar');
 	expect(appSend).not.toHaveBeenCalled();
