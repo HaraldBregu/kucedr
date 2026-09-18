@@ -119,6 +119,11 @@ describe('app renderer', () => {
 			width: 820,
 			height: 640,
 		});
+		expect(harness.load).toHaveBeenCalledTimes(1);
+		expect(openAppWindows.get('project-order')).toMatchObject({
+			contents: harness.viewWebContents,
+			navigationBarOptions: null,
+		});
 		const appWindow = openAppWindows.get('project-order');
 		if (!appWindow) throw new Error('Expected app window');
 		appWindow.navigationBarOptions = { leftButtons: [] };
@@ -128,11 +133,6 @@ describe('app renderer', () => {
 			y: 48,
 			width: 820,
 			height: 592,
-		});
-		expect(harness.load).toHaveBeenCalledTimes(1);
-		expect(openAppWindows.get('project-order')).toMatchObject({
-			contents: harness.viewWebContents,
-			navigationBarOptions: null,
 		});
 		expect(harness.win.contentView.addChildView.mock.invocationCallOrder[0]).toBeLessThan(
 			harness.load.mock.invocationCallOrder[0]
