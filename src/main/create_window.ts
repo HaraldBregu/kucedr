@@ -4,6 +4,7 @@ import type { RendererContentOptions, WindowFactory } from './window_factory';
 import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
 import { getPlatformTranslucencyOptions } from './translucency';
+import { attachRouteNavigation } from './attach_route_navigation';
 
 const DEFAULT_WINDOW_WIDTH = 900;
 const DEFAULT_WINDOW_HEIGHT = 625;
@@ -82,28 +83,6 @@ export class Main {
 		});
 	}
 
-	private trackRouteNavigation(win: BrowserWindow): void {
-		const navigate = (offset: -1 | 1): void => {
-			if (offset === -1 && win.webContents.navigationHistory.canGoBack()) {
-				win.webContents.navigationHistory.goBack();
-			}
-
-			if (offset === 1 && win.webContents.navigationHistory.canGoForward()) {
-				win.webContents.navigationHistory.goForward();
-			}
-		};
-
-		win.on('app-command', (_event, command) => {
-			if (command === 'browser-backward') navigate(-1);
-			if (command === 'browser-forward') navigate(1);
-		});
-
-		win.on('swipe', (_event, direction) => {
-			if (direction === 'left') navigate(-1);
-			if (direction === 'right') navigate(1);
-		});
-	}
-
 	private createLauncherWindow(
 		options: {
 			closeToTray?: boolean;
@@ -121,7 +100,7 @@ export class Main {
 
 		attachWindowHandlers(win);
 		this.trackWindowVisibility(win);
-		this.trackRouteNavigation(win);
+		attachRouteNavigation(win);
 
 		win.once('ready-to-show', () => {
 			win.setBackgroundColor(TRANSPARENT_WINDOW_BACKGROUND);

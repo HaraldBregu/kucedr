@@ -31,6 +31,12 @@ function createHarness() {
 	const viewWebContents = {
 		close: jest.fn(),
 		isDestroyed: jest.fn(() => false),
+		navigationHistory: {
+			canGoBack: jest.fn(() => true),
+			canGoForward: jest.fn(() => true),
+			goBack: jest.fn(),
+			goForward: jest.fn(),
+		},
 		on: jest.fn((event: string, handler: Handler) => viewHandlers.set(event, handler)),
 		once: jest.fn((event: string, handler: Handler) => viewHandlers.set(event, handler)),
 		send: jest.fn(),
@@ -135,6 +141,20 @@ describe('app renderer', () => {
 
 		harness.handlers.get('closed')?.();
 		expect(openAppWindows.has('project-order')).toBe(false);
+	});
+
+	it('navigates app content with native mouse commands and macOS swipe events', () => {
+		const harness = createHarness();
+		render(harness.windowFactory, '/app/index.html', 'Project', 'project-navigation');
+		harness.shellHandlers.get('did-finish-load')?.();
+
+		harness.handlers.get('app-command')?.({}, 'browser-backward');
+		harness.handlers.get('app-command')?.({}, 'browser-forward');
+		harness.handlers.get('swipe')?.({}, 'left');
+		harness.handlers.get('swipe')?.({}, 'right');
+
+		expect(harness.viewWebContents.navigationHistory.goBack).toHaveBeenCalledTimes(2);
+		expect(harness.viewWebContents.navigationHistory.goForward).toHaveBeenCalledTimes(2);
 	});
 
 	it('keeps a failed app view hidden and closes its shell', async () => {

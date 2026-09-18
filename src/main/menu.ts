@@ -1,6 +1,7 @@
 import { app, BrowserWindow, Menu as ElectronMenu } from 'electron';
 import { loadTranslations } from './i18n';
 import type { App } from './apps/app_index';
+import { openAppWindows } from './apps/app_render';
 
 interface MenuManagerCallbacks {
 	onLanguageChange: (lng: string) => void;
@@ -64,7 +65,11 @@ export class Menu {
 			this.buildMenu();
 		};
 		const navigate = (offset: -1 | 1): void => {
-			const history = BrowserWindow.getFocusedWindow()?.webContents.navigationHistory;
+			const focusedWindow = BrowserWindow.getFocusedWindow();
+			const appContents = Array.from(openAppWindows.values()).find(
+				(appWindow) => appWindow.window === focusedWindow
+			)?.contents;
+			const history = (appContents ?? focusedWindow?.webContents)?.navigationHistory;
 			if (offset === -1 && history?.canGoBack()) history.goBack();
 			if (offset === 1 && history?.canGoForward()) history.goForward();
 		};

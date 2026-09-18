@@ -8,6 +8,7 @@ import {
 	APP_WINDOW_DEFAULTS,
 	type ResolvedAppWindowSettings,
 } from '../../shared/app_window_settings';
+import { attachRouteNavigation } from '../attach_route_navigation';
 
 export interface AppWindow {
 	window: BrowserWindow;
@@ -68,6 +69,7 @@ export function render(
 	let appReady = false;
 	let childClosing = false;
 	let hostCloseAllowed = false;
+	attachRouteNavigation(win, () => appContents);
 	const showWhenReady = (): void => {
 		if (!shellReady || !appReady || win.isDestroyed()) return;
 		appWindow.ready = true;
