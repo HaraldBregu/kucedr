@@ -62,10 +62,10 @@ const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'tldraw',
 ]);
 const createFilePresets = [
-	{ kind: 'markdown', label: 'Markdown', name: 'Untitled.md' },
-	{ kind: 'mermaid', label: 'Mermaid', name: 'Untitled.mmd' },
-	{ kind: 'excalidraw', label: 'Excalidraw', name: 'Untitled.excalidraw' },
-	{ kind: 'tldraw', label: 'tldraw', name: 'Untitled.tldr' },
+	{ kind: 'markdown', label: '.md', extension: '.md' },
+	{ kind: 'mermaid', label: '.mmd', extension: '.mmd' },
+	{ kind: 'excalidraw', label: '.excalidraw', extension: '.excalidraw' },
+	{ kind: 'tldraw', label: '.tldr', extension: '.tldr' },
 ] as const;
 type CreateFileKind = (typeof createFilePresets)[number]['kind'];
 
@@ -360,14 +360,16 @@ export default function App() {
 	function startCreateWorkspaceEntry(parentPath: string, type: 'file' | 'directory') {
 		setCreateRequest({ parentPath, type });
 		setCreateFileKind('markdown');
-		setCreateName(type === 'file' ? 'Untitled.md' : 'New Folder');
+		setCreateName(type === 'file' ? 'Untitled' : 'New Folder');
 		setCreateError('');
 	}
 
 	async function confirmCreateWorkspaceEntry() {
 		if (!createRequest || creating || !isKucedr()) return;
-		const name = createName.trim();
-		if (!name) {
+		const baseName = createName.trim();
+		const extension = createFilePresets.find((preset) => preset.kind === createFileKind)!.extension;
+		const name = createRequest.type === 'file' ? `${baseName}${extension}` : baseName;
+		if (!baseName) {
 			setCreateError('Enter a name.');
 			return;
 		}
@@ -806,53 +808,53 @@ export default function App() {
 									: 'Create it at the workspace root.'}
 							</DialogDescription>
 						</DialogHeader>
-						{createRequest?.type === 'file' ? (
-							<div className="space-y-2">
-								<span className="text-sm font-medium">Type</span>
-								<div className="grid grid-cols-2 gap-2" role="group" aria-label="File type">
-									{createFilePresets.map((preset) => (
-										<Button
-											key={preset.kind}
-											type="button"
-											variant={createFileKind === preset.kind ? 'default' : 'outline'}
-											onClick={() => {
-												setCreateFileKind(preset.kind);
-												setCreateName(preset.name);
-												setCreateError('');
-											}}
-										>
-											{preset.label}
-										</Button>
-									))}
-								</div>
-							</div>
-						) : null}
 						<div className="space-y-2">
 							<label htmlFor="workspace-entry-name" className="text-sm font-medium">
 								Name
 							</label>
-							<Input
-								id="workspace-entry-name"
-								autoFocus
-								value={createName}
-								disabled={creating}
-								onChange={(event) => {
-									setCreateName(event.target.value);
-									setCreateError('');
-								}}
-								onContextMenu={(event) => {
-									showNativeContextMenu(event, [
-										{ type: 'role', role: 'undo' },
-										{ type: 'role', role: 'redo' },
-										{ type: 'separator' },
-										{ type: 'role', role: 'cut' },
-										{ type: 'role', role: 'copy' },
-										{ type: 'role', role: 'paste' },
-										{ type: 'separator' },
-										{ type: 'role', role: 'selectAll' },
-									]);
-								}}
-							/>
+							<div className="flex rounded-md border border-input bg-transparent shadow-sm focus-within:ring-1 focus-within:ring-ring">
+								<Input
+									id="workspace-entry-name"
+									autoFocus
+									value={createName}
+									disabled={creating}
+									className="min-w-0 rounded-r-none border-0 shadow-none focus-visible:ring-0"
+									onChange={(event) => {
+										setCreateName(event.target.value);
+										setCreateError('');
+									}}
+									onContextMenu={(event) => {
+										showNativeContextMenu(event, [
+											{ type: 'role', role: 'undo' },
+											{ type: 'role', role: 'redo' },
+											{ type: 'separator' },
+											{ type: 'role', role: 'cut' },
+											{ type: 'role', role: 'copy' },
+											{ type: 'role', role: 'paste' },
+											{ type: 'separator' },
+											{ type: 'role', role: 'selectAll' },
+										]);
+									}}
+								/>
+								{createRequest?.type === 'file' ? (
+									<select
+										aria-label="File extension"
+										value={createFileKind}
+										disabled={creating}
+										className="h-9 shrink-0 rounded-r-md border-0 border-l border-input bg-muted px-3 text-sm text-foreground outline-none disabled:cursor-not-allowed disabled:opacity-50"
+										onChange={(event) => {
+											setCreateFileKind(event.target.value as CreateFileKind);
+											setCreateError('');
+										}}
+									>
+										{createFilePresets.map((preset) => (
+											<option key={preset.kind} value={preset.kind}>
+												{preset.label}
+											</option>
+										))}
+									</select>
+								) : null}
+							</div>
 						</div>
 						{createError ? <p className="text-sm text-destructive">{createError}</p> : null}
 						<DialogFooter>
