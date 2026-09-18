@@ -164,7 +164,6 @@ export default function App() {
 						: workspaceSettingsDefaults.wordWrap,
 			});
 		});
-		});
 	}, []);
 
 	useEffect(() => {
