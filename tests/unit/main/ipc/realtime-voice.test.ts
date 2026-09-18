@@ -1,10 +1,12 @@
 const registerCommandWithEvent = jest.fn();
 
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({ registerCommandWithEvent }));
+jest.mock('../../../../src/main/apps/app_render', () => ({ openAppWindows: new Map() }));
 
 import { BrowserWindow } from 'electron';
 import { RealtimeVoiceIpc } from '../../../../src/main/ipc/realtime_voice';
 import { RealtimeVoiceChannels } from '../../../../src/shared/ipc_channels_definitions';
+import { openAppWindows } from '../../../../src/main/apps/app_render';
 
 function command(channel: string): (...args: unknown[]) => unknown {
 	return registerCommandWithEvent.mock.calls.find(([registered]) => registered === channel)?.[1];
@@ -55,4 +57,32 @@ it('routes realtime voice lifecycle commands through the invoking window owner',
 		windowId: 42,
 		sessionId: 'voice',
 	});
+});
+
+it('routes registered app views through their containing app window', async () => {
+	const execute = jest.fn(async () => undefined);
+	const mainFrame = {};
+	const sender = { mainFrame };
+	const appWindow = { id: 84, isDestroyed: () => false };
+	(openAppWindows as Map<string, unknown>).set('demo', { window: appWindow });
+	const dependencies = {
+		conversation: { execute } as never,
+		windows: { has: () => false } as never,
+		apps: {
+			has: () => true,
+			resolve: () => 'demo',
+		} as never,
+	};
+	new RealtimeVoiceIpc().register(dependencies, {} as never);
+	const event = { sender, senderFrame: mainFrame };
+
+	await command(RealtimeVoiceChannels.startSession)(event, { chatSessionId: 'chat' });
+
+	expect(execute).toHaveBeenCalledWith({
+		type: 'voice',
+		action: 'start',
+		windowId: 84,
+		request: { chatSessionId: 'chat' },
+	});
+	(openAppWindows as Map<string, unknown>).clear();
 });

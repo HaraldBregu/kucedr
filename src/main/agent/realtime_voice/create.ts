@@ -15,6 +15,7 @@ import { getProvider } from '../../settings_store';
 import type { WindowFactory } from '../../window_factory';
 import { realtimeVoiceConversationFactory } from './conversation';
 import { RealtimeVoiceManager } from './manager';
+import { openAppWindows } from '../../apps/app_render';
 
 export function createRealtimeVoiceManager(
 	agent: Agent,
@@ -25,7 +26,14 @@ export function createRealtimeVoiceManager(
 		createAdapter: buildRealtimeVoiceAdapter,
 		resources: agent.resources,
 		createConversation: realtimeVoiceConversationFactory(agent.config, agent.sessions),
-		emit: (windowId, event) => eventBus.sendTo(windowId, RealtimeVoiceChannels.sessionEvent, event),
+		emit: (windowId, event) => {
+			eventBus.sendTo(windowId, RealtimeVoiceChannels.sessionEvent, event);
+			for (const appWindow of openAppWindows.values()) {
+				if (appWindow.window.id === windowId && !appWindow.contents?.isDestroyed()) {
+					appWindow.contents?.send(RealtimeVoiceChannels.sessionEvent, event);
+				}
+			}
+		},
 		resolveConfiguration: async () => {
 			const configuredProviderId = getProviderId('realtimeVoice');
 			const providerId = normalizeProviderId(

@@ -5,7 +5,8 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import type { Conversation } from '../agent/conversation';
 import type { IpcModule } from './core/module';
-import { TrustedRenderer } from './core/trusted';
+import { openAppWindows } from '../apps/app_render';
+import { ModelRenderer } from './core/model';
 
 export interface RealtimeVoiceIpcDependencies {
 	conversation: Conversation;
@@ -20,12 +21,12 @@ export class RealtimeVoiceIpc implements IpcModule<RealtimeVoiceIpcDependencies>
 		{ conversation, windows, apps }: RealtimeVoiceIpcDependencies,
 		_eventBus: EventBus
 	): void {
-		const trusted = new TrustedRenderer(windows, apps);
+		const trusted = new ModelRenderer(windows, apps);
 		trusted.commandWithEvent(RealtimeVoiceChannels.startSession, (event, request) =>
 			conversation.execute({
 				type: 'voice',
 				action: 'start',
-				windowId: windowId(event.sender),
+				windowId: windowId(event.sender, apps),
 				request,
 			})
 		);
@@ -33,7 +34,7 @@ export class RealtimeVoiceIpc implements IpcModule<RealtimeVoiceIpcDependencies>
 			conversation.execute({
 				type: 'voice',
 				action: 'append-audio',
-				windowId: windowId(event.sender),
+				windowId: windowId(event.sender, apps),
 				sessionId,
 				audio,
 			})
@@ -42,7 +43,7 @@ export class RealtimeVoiceIpc implements IpcModule<RealtimeVoiceIpcDependencies>
 			conversation.execute({
 				type: 'voice',
 				action: 'interrupt',
-				windowId: windowId(event.sender),
+				windowId: windowId(event.sender, apps),
 				sessionId,
 			})
 		);
@@ -50,14 +51,21 @@ export class RealtimeVoiceIpc implements IpcModule<RealtimeVoiceIpcDependencies>
 			conversation.execute({
 				type: 'voice',
 				action: 'stop',
-				windowId: windowId(event.sender),
+				windowId: windowId(event.sender, apps),
 				sessionId,
 			})
 		);
 	}
 }
 
-function windowId(sender: Electron.WebContents): number {
+function windowId(sender: Electron.WebContents, apps: AppRegistry): number {
+	if (apps.has(sender)) {
+		const appWindow = openAppWindows.get(apps.resolve(sender))?.window;
+		if (!appWindow || appWindow.isDestroyed()) {
+			throw new Error('Realtime voice requires an active app window.');
+		}
+		return appWindow.id;
+	}
 	const window = BrowserWindow.fromWebContents(sender);
 	if (!window || window.isDestroyed()) throw new Error('Realtime voice requires an active window.');
 	return window.id;
