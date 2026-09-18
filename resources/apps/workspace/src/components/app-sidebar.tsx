@@ -20,6 +20,7 @@ import { showNativeContextMenu } from '@/lib/menu';
 import { rebaseWorkspacePath } from '@/lib/rebase';
 import { collectDirectoryPaths } from '@/lib/tree';
 import { isWorkspacePathWithin } from '@/lib/within';
+import { filterWorkspaceEntries } from '@/lib/filter';
 
 const agentFilePaths = [
 	'AGENTS.md',
@@ -48,6 +49,7 @@ interface AppSidebarProps {
 	workspaceFiles: WorkspaceTreeEntry[];
 	workspaceLoading: boolean;
 	workspaceLocation: string;
+	searchQuery: string;
 	renameError: string;
 	renameName: string;
 	renameTarget: WorkspaceTreeEntry | null;
@@ -70,6 +72,7 @@ export function AppSidebar({
 	workspaceFiles,
 	workspaceLoading,
 	workspaceLocation,
+	searchQuery,
 	renameError,
 	renameName,
 	renameTarget,
@@ -81,20 +84,26 @@ export function AppSidebar({
 	const [dropError, setDropError] = useState('');
 	const [dragMessage, setDragMessage] = useState('');
 	const [movingPath, setMovingPath] = useState<string | null>(null);
+	const visibleWorkspaceFiles = useMemo(
+		() => filterWorkspaceEntries(workspaceFiles, searchQuery),
+		[searchQuery, workspaceFiles]
+	);
 	const agentFiles = useMemo(
 		() =>
 			agentFilePaths.flatMap((path) => {
-				const entry = workspaceFiles.find(
+				const entry = visibleWorkspaceFiles.find(
 					(candidate) => candidate.type === 'file' && candidate.path === path
 				);
 				return entry ? [entry] : [];
 			}),
-		[workspaceFiles]
+		[visibleWorkspaceFiles]
 	);
 	const regularFiles = useMemo(
 		() =>
-			workspaceFiles.filter((entry) => entry.type !== 'file' || !agentFilePathSet.has(entry.path)),
-		[workspaceFiles]
+			visibleWorkspaceFiles.filter(
+				(entry) => entry.type !== 'file' || !agentFilePathSet.has(entry.path)
+			),
+		[visibleWorkspaceFiles]
 	);
 	const agentExpanded = expanded.has(agentNodeId);
 	useEffect(() => {
@@ -212,7 +221,7 @@ export function AppSidebar({
 		if (!draggedEntry || movingPath) return;
 		if ((event.target as Element).closest('[data-workspace-entry]')) return;
 		event.preventDefault();
-		const error = workspaceMoveError(draggedEntry, '', workspaceFiles);
+			const error = workspaceMoveError(draggedEntry, '', workspaceFiles);
 		event.dataTransfer.dropEffect = error ? 'none' : 'move';
 		setDropTargetPath('');
 		setDropError(error);
@@ -382,7 +391,9 @@ export function AppSidebar({
 								{workspaceError}
 							</div>
 						) : regularFiles.length === 0 && agentFiles.length === 0 ? (
-							<div className="px-3 py-2 text-[12px] text-sidebar-muted">No files</div>
+							<div className="px-3 py-2 text-[12px] text-sidebar-muted">
+								{searchQuery.trim() ? 'No matching files' : 'No files'}
+							</div>
 						) : (
 							regularFiles.map((entry, index) => (
 								<WorkspaceTreeItem

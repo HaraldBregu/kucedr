@@ -7,7 +7,7 @@ import {
 	type CSSProperties,
 	type PointerEvent,
 } from 'react';
-import { Copy, Minus, Settings, Square, X } from 'lucide-react';
+import { Copy, FilePlus2, FolderPlus, Minus, Search, Settings, Square, X } from 'lucide-react';
 
 import {
 	agent,
@@ -107,6 +107,8 @@ export default function App() {
 	const [workspaceSettings, setWorkspaceSettings] = useState<WorkspaceSettings>(
 		workspaceSettingsDefaults
 	);
+	const [sidebarSearchOpen, setSidebarSearchOpen] = useState(false);
+	const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
 	const selectedPathRef = useRef<string | null>(null);
 	const selectedContentRef = useRef('');
 	const saveInFlightRef = useRef<Promise<boolean> | null>(null);
@@ -673,6 +675,7 @@ export default function App() {
 			workspaceFiles={workspaceFiles}
 			workspaceLoading={workspaceLoading}
 			workspaceLocation={workspaceLocation}
+			searchQuery={sidebarSearchQuery}
 		/>
 	);
 	const isMac = navigator.userAgent.includes('Macintosh');
@@ -706,10 +709,64 @@ export default function App() {
 			>
 				<Sidebar id="workspace-sidebar" collapsible="offcanvas" width={sidebarWidth}>
 					<div
-						aria-hidden="true"
-						className="h-12 shrink-0 border-b border-sidebar-border"
+						className="flex h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2"
 						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
-					/>
+					>
+						<span className="min-w-0 flex-1 truncate px-1 text-xs font-semibold">Workspace</span>
+						<div className="flex items-center gap-0.5" style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="size-7"
+								title="New folder"
+								aria-label="New folder"
+								onClick={() => startCreateWorkspaceDirectory('')}
+							>
+								<FolderPlus />
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="size-7"
+								title="New file"
+								aria-label="New file"
+								onClick={() => void createWorkspaceFile('')}
+							>
+								<FilePlus2 />
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
+								className="size-7"
+								title="Search files"
+								aria-label="Search files"
+								aria-pressed={sidebarSearchOpen}
+								onClick={() => {
+									setSidebarSearchOpen((open) => !open);
+									if (sidebarSearchOpen) setSidebarSearchQuery('');
+								}}
+							>
+								<Search />
+							</Button>
+						</div>
+					</div>
+					{sidebarSearchOpen ? (
+						<div className="shrink-0 border-b border-sidebar-border p-2">
+							<Input
+								autoFocus
+								value={sidebarSearchQuery}
+								placeholder="Search files..."
+								aria-label="Search workspace files"
+								className="h-7 text-xs"
+								onChange={(event) => setSidebarSearchQuery(event.target.value)}
+								onKeyDown={(event) => {
+									if (event.key !== 'Escape') return;
+									setSidebarSearchOpen(false);
+									setSidebarSearchQuery('');
+								}}
+							/>
+						</div>
+					) : null}
 					<SidebarContent>{sidebar}</SidebarContent>
 					<SidebarFooter>
 						<Button
