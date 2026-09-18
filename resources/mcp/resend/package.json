@@ -6,6 +6,6 @@
 	"description": "Local MCP server for sending email through Resend.",
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.29.0",
-		"zod": "^4.5.4"
+		"zod": "^4.6.5"
 	}
 }
