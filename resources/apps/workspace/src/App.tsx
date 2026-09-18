@@ -151,11 +151,15 @@ export default function App() {
 			.getAppStoreValue<Record<string, string | number | boolean>>(workspaceSettingsKey)
 			.then((stored) => {
 			if (!stored) return;
-			setWorkspaceSettings({
+			const settings = {
 				fontSize:
 					typeof stored.fontSize === 'number'
 						? Math.min(24, Math.max(10, stored.fontSize))
 						: workspaceSettingsDefaults.fontSize,
+				formatted:
+					typeof stored.formatted === 'boolean'
+						? stored.formatted
+						: workspaceSettingsDefaults.formatted,
 				lineNumbers:
 					typeof stored.lineNumbers === 'boolean'
 						? stored.lineNumbers
@@ -164,7 +168,9 @@ export default function App() {
 					typeof stored.wordWrap === 'boolean'
 						? stored.wordWrap
 						: workspaceSettingsDefaults.wordWrap,
-			});
+			};
+			setWorkspaceSettings(settings);
+			setMarkdownMode(settings.formatted ? 'preview' : 'source');
 		});
 	}, []);
 
@@ -350,7 +356,6 @@ export default function App() {
 		const kind = workspaceFileType(entry.path).kind;
 		selectedPathRef.current = entry.path;
 		setSelectedWorkspacePath(entry.path);
-		setMarkdownMode('source');
 		setSelectedKind(kind);
 		selectedContentRef.current = '';
 		setSelectedContent('');
@@ -887,6 +892,7 @@ export default function App() {
 								if (isKucedr()) {
 									void app.setAppStoreValue(workspaceSettingsKey, {
 										fontSize: settings.fontSize,
+										formatted: settings.formatted,
 										lineNumbers: settings.lineNumbers,
 										wordWrap: settings.wordWrap,
 									});
@@ -909,7 +915,14 @@ export default function App() {
 							setSelectedContent(content);
 							setSelectedSaveError('');
 						}}
-						onMarkdownModeChange={setMarkdownMode}
+						onMarkdownModeChange={(mode) => {
+							setMarkdownMode(mode);
+							const settings = { ...workspaceSettings, formatted: mode === 'preview' };
+							setWorkspaceSettings(settings);
+							if (isKucedr()) {
+								void app.setAppStoreValue(workspaceSettingsKey, settings);
+							}
+						}}
 						onRename={() => {
 							if (!selectedWorkspacePath) return;
 							startRenameWorkspaceEntry({
