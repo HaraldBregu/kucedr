@@ -59,6 +59,7 @@ export function WorkspaceTreeItem({
 	const isExpanded = expanded.has(entry.path);
 	const selected = selectedPath === entry.path;
 	const isDropTarget = dropTargetPath === entry.path;
+	const createParentPath = isDirectory ? entry.path : entry.path.split('/').slice(0, -1).join('/');
 
 	return (
 		<TreeNode isLast={isLast} level={depth} nodeId={entry.path}>
@@ -83,10 +84,10 @@ export function WorkspaceTreeItem({
 								label: isDirectory ? (isExpanded ? 'Collapse' : 'Expand') : 'Open',
 								enabled: !isDirectory || Boolean(entry.children?.length),
 							},
+							{ type: 'separator' },
+							{ id: 'new-file', label: 'New File' },
 							...(isDirectory
 								? ([
-										{ type: 'separator' },
-										{ id: 'new-file', label: 'New File' },
 										{ id: 'new-folder', label: 'New Folder' },
 									] as const)
 								: []),
@@ -103,7 +104,7 @@ export function WorkspaceTreeItem({
 						{
 							toggle: () => onToggle(entry.path),
 							open: () => onSelect(entry),
-							'new-file': () => onCreateRequest(entry.path, 'file'),
+							'new-file': () => onCreateRequest(createParentPath, 'file'),
 							'new-folder': () => onCreateRequest(entry.path, 'directory'),
 							rename: () => onRenameRequest(entry),
 							'copy-path': () => navigator.clipboard.writeText(entry.path),

@@ -265,12 +265,17 @@ export function AppSidebar({
 										showNativeContextMenu(
 											event,
 											[
+												{ id: 'new-file', label: 'New File' },
+												{ type: 'separator' },
 												{
 													id: 'toggle-agent',
 													label: agentExpanded ? 'Collapse Agent' : 'Expand Agent',
 												},
 											],
-											{ 'toggle-agent': () => toggleDirectory(agentNodeId) }
+											{
+												'new-file': () => onCreateRequest('', 'file'),
+												'toggle-agent': () => toggleDirectory(agentNodeId),
+											}
 										);
 									}}
 									onKeyDown={(event) => {
