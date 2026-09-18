@@ -130,7 +130,7 @@
 		"lucide-react": "^1.31.0",
 		"marked": "^18.0.9",
 		"media-chrome": "^4.19.2",
-		"motion": "^13.1.1",
+		"motion": "^13.3.0",
 		"music-metadata": "^11.14.0",
 		"node-cron": "^4.6.0",
 		"node-pty": "^1.1.0",
