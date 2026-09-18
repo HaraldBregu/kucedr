@@ -11,6 +11,7 @@ import { markdown } from '@codemirror/lang-markdown';
 import { defaultHighlightStyle, HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { Compartment, EditorState, Transaction } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
+import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
 import { tags } from '@lezer/highlight';
 
 import { showNativeContextMenu } from '@/lib/menu';
@@ -29,6 +30,7 @@ interface CodeMirrorEditorProps {
 	canSave?: boolean;
 	className?: string;
 	code?: boolean;
+	isDark?: boolean;
 	onChange: (value: string) => void;
 	onSave?: () => unknown;
 	path?: string;
@@ -114,7 +116,17 @@ const codeEditorTheme = EditorView.theme({
 
 export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEditorProps>(
 	function CodeMirrorEditor(
-		{ canSave = true, className, code = false, onChange, onSave, path = '', readOnly = false, value },
+		{
+			canSave = true,
+			className,
+			code = false,
+			isDark = false,
+			onChange,
+			onSave,
+			path = '',
+			readOnly = false,
+			value,
+		},
 		ref
 	) {
 		const mountRef = useRef<HTMLDivElement>(null);
@@ -123,8 +135,10 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		const onSaveRef = useRef(onSave);
 		const initialValueRef = useRef(value);
 		const initialReadOnlyRef = useRef(readOnly);
+		const initialIsDarkRef = useRef(isDark);
 		const editabilityRef = useRef(new Compartment());
 		const languageRef = useRef(new Compartment());
+		const themeRef = useRef(new Compartment());
 		onChangeRef.current = onChange;
 		onSaveRef.current = onSave;
 
@@ -201,7 +215,13 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 						...historyKeymap,
 					]),
 					languageRef.current.of(code ? [] : markdown()),
-					syntaxHighlighting(code ? defaultHighlightStyle : markdownHighlight, { fallback: true }),
+					themeRef.current.of(
+						code
+							? initialIsDarkRef.current
+								? [oneDarkTheme, syntaxHighlighting(oneDarkHighlightStyle)]
+								: syntaxHighlighting(defaultHighlightStyle, { fallback: true })
+							: syntaxHighlighting(markdownHighlight, { fallback: true })
+					),
 					...(code ? [lineNumbers(), codeEditorTheme] : [EditorView.lineWrapping, noteEditorTheme]),
 					placeholder(code ? '' : 'Start writing...'),
 					editabilityRef.current.of([
@@ -241,6 +261,18 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 				active = false;
 			};
 		}, [code, path]);
+
+		useEffect(() => {
+			const view = viewRef.current;
+			if (!code || !view) return;
+			view.dispatch({
+				effects: themeRef.current.reconfigure(
+					isDark
+						? [oneDarkTheme, syntaxHighlighting(oneDarkHighlightStyle)]
+						: syntaxHighlighting(defaultHighlightStyle, { fallback: true })
+				),
+			});
+		}, [code, isDark]);
 
 		useEffect(() => {
 			const view = viewRef.current;

@@ -127,6 +127,7 @@ export function FileViewer({
 					canSave={canSave}
 					className="min-h-full"
 					code
+					isDark={isDark}
 					onChange={onChange}
 					onSave={onSave}
 					path={path}
