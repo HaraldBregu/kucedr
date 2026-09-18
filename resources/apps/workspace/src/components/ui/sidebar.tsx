@@ -1,6 +1,6 @@
 import * as React from "react"
 import { createPortal } from "react-dom"
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react"
+import { PanelLeft } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -37,17 +37,6 @@ const SidebarProvider = React.forwardRef<HTMLDivElement, SidebarProviderProps>(
       [onOpenChange, openProp],
     )
     const toggleSidebar = React.useCallback(() => setOpen(!open), [open, setOpen])
-
-    React.useEffect(() => {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (event.key.toLowerCase() === "b" && (event.metaKey || event.ctrlKey)) {
-          event.preventDefault()
-          toggleSidebar()
-        }
-      }
-      window.addEventListener("keydown", handleKeyDown)
-      return () => window.removeEventListener("keydown", handleKeyDown)
-    }, [toggleSidebar])
 
     const value = React.useMemo(
       () => ({ open, setOpen, toggleSidebar }),
@@ -163,19 +152,18 @@ const SidebarTrigger = React.forwardRef<
       type="button"
       variant="ghost"
       size="icon"
-      className={cn("fixed left-20 top-2.5 z-50 size-7", className)}
+      className={cn("fixed left-20 top-2.5 z-50 size-7 text-muted-foreground", className)}
       aria-controls="workspace-sidebar"
       aria-expanded={open}
-      aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
-      title={`${open ? "Collapse" : "Expand"} sidebar (⌘/Ctrl+B)`}
+      aria-label="Toggle Sidebar"
+      title="Toggle Sidebar"
       onClick={(event) => {
         onClick?.(event)
         if (!event.defaultPrevented) toggleSidebar()
       }}
       {...props}
     >
-      {open ? <PanelLeftClose className="size-4" strokeWidth={1.5} /> : <PanelLeftOpen className="size-4" strokeWidth={1.5} />}
-      <span className="sr-only">Toggle Sidebar</span>
+      <PanelLeft className="size-4" strokeWidth={1.5} />
     </Button>,
     document.body,
   )
