@@ -107,6 +107,15 @@ export function AppSidebar({
 	);
 	const agentExpanded = expanded.has(agentNodeId);
 	useEffect(() => {
+		if (!searchQuery.trim()) return;
+		setExpanded((current) => {
+			const next = new Set(current);
+			for (const path of collectDirectoryPaths(regularFiles)) next.add(path);
+			if (agentFiles.length > 0) next.add(agentNodeId);
+			return next;
+		});
+	}, [agentFiles.length, regularFiles, searchQuery]);
+	useEffect(() => {
 		if (!renameTarget) return;
 		const parts = renameTarget.path.split('/');
 		if (parts.length < 2) return;
