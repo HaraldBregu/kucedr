@@ -171,10 +171,10 @@ const lightThemeColors: AppThemeColors = {
 
 const darkThemeColors: AppThemeColors = {
 	...lightThemeColors,
-	'app-window-background-base': 'oklch(0.145 0 0)',
-	'app-surface-background-base': 'oklch(0.205 0 0)',
-	'app-popover-background-base': 'oklch(0.205 0 0)',
-	'app-sidebar-background-base': 'oklch(0.205 0 0)',
+	'app-window-background-base': 'oklch(0.18 0 0)',
+	'app-surface-background-base': 'oklch(0.235 0 0)',
+	'app-popover-background-base': 'oklch(0.235 0 0)',
+	'app-sidebar-background-base': 'oklch(0.235 0 0)',
 	'app-window-background':
 		'color-mix(in oklch, var(--app-window-background-base) calc(var(--app-bg-opacity) * 100%), transparent)',
 	'app-surface-background':
