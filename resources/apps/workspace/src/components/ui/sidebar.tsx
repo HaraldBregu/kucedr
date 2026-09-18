@@ -163,7 +163,7 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <PanelLeft className="size-5" strokeWidth={1.5} />
+      <PanelLeft className="size-6" strokeWidth={1.5} />
     </Button>,
     document.body,
   )
