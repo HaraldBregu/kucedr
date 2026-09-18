@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { models, type AppLanguage } from '@kucedr/sdk';
 
 import { Button } from './components/ui/button';
@@ -20,6 +20,18 @@ export function Models({ language, ensureKucedr }: ModelsProps) {
 	const [mediaUrl, setMediaUrl] = useState('');
 	const [mediaType, setMediaType] = useState<'image' | 'audio' | 'video'>();
 	const [busy, setBusy] = useState(false);
+	const [chatSessionId, setChatSessionId] = useState('');
+	const [realtimeSessionId, setRealtimeSessionId] = useState('');
+
+	useEffect(
+		() =>
+			models.realtimeVoice.onSessionEvent((event) => {
+				if ('sessionId' in event && event.sessionId !== realtimeSessionId) return;
+				setResult(JSON.stringify(event, null, 2));
+				if (event.type === 'closed') setRealtimeSessionId('');
+			}),
+		[realtimeSessionId]
+	);
 
 	const run = async (action: () => Promise<string>) => {
 		if (!ensureKucedr()) return;
@@ -176,6 +188,46 @@ export function Models({ language, ensureKucedr }: ModelsProps) {
 				>
 					{text.runStt}
 				</Button>
+			</div>
+			<div className="space-y-2 rounded-md border border-border p-4">
+				<label className="block space-y-1 text-sm" htmlFor="realtime-chat-session">
+					<span>{text.realtimeChatSession}</span>
+					<Input
+						id="realtime-chat-session"
+						value={chatSessionId}
+						disabled={busy || Boolean(realtimeSessionId)}
+						onChange={(event) => setChatSessionId(event.target.value)}
+					/>
+				</label>
+				<div className="flex flex-wrap gap-2">
+					<Button
+						size="sm"
+						disabled={busy || Boolean(realtimeSessionId) || !chatSessionId.trim()}
+						onClick={() =>
+							run(async () => {
+								const session = await models.realtimeVoice.startSession({ chatSessionId });
+								setRealtimeSessionId(session.id);
+								return JSON.stringify(session, null, 2);
+							})
+						}
+					>
+						{text.startRealtimeVoice}
+					</Button>
+					<Button
+						size="sm"
+						variant="destructive"
+						disabled={busy || !realtimeSessionId}
+						onClick={() =>
+							run(async () => {
+								await models.realtimeVoice.stopSession(realtimeSessionId);
+								setRealtimeSessionId('');
+								return text.realtimeVoiceStopped;
+							})
+						}
+					>
+						{text.stopRealtimeVoice}
+					</Button>
+				</div>
 			</div>
 			<pre className="max-h-48 min-h-12 overflow-auto whitespace-pre-wrap break-words rounded-md bg-muted p-3 text-xs">
 				{result || text.modelResultEmpty}
