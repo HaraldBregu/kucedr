@@ -152,7 +152,7 @@ const SidebarTrigger = React.forwardRef<
       type="button"
       variant="ghost"
       size="icon"
-      className={cn("fixed left-20 top-2.5 z-50 size-7 text-muted-foreground", className)}
+      className={cn("fixed left-20 top-2.5 z-50 size-8 text-muted-foreground", className)}
       aria-controls="workspace-sidebar"
       aria-expanded={open}
       aria-label="Toggle Sidebar"
@@ -163,7 +163,7 @@ const SidebarTrigger = React.forwardRef<
       }}
       {...props}
     >
-      <PanelLeft className="size-4" strokeWidth={1.5} />
+      <PanelLeft className="size-5" strokeWidth={1.5} />
     </Button>,
     document.body,
   )
