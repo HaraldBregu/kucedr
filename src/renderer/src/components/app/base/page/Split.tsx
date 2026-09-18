@@ -68,7 +68,7 @@ export function Split({
 				>
 					<SheetContent
 						side="left"
-						className="bg-sidebar p-0 text-sidebar-foreground"
+						className="bg-background p-0 text-sidebar-foreground"
 						style={{ width: 'min(18rem, calc(100vw - 3rem))', maxWidth: 'none' }}
 					>
 						<SheetHeader className="sr-only">
@@ -101,7 +101,7 @@ export function Split({
 						data-state={state.sidebarOpen ? 'expanded' : 'collapsed'}
 						aria-label={sidebarLabel}
 						className={cn(
-							'fixed bottom-0 left-0 top-12 z-30 flex flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
+							'fixed bottom-0 left-0 top-12 z-30 flex flex-col border-r border-sidebar-border bg-background text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',
 							state.sidebarOpen ? 'translate-x-0' : '-translate-x-full'
 						)}
 						style={{ width: 'var(--split-pane-sidebar-width)' }}
