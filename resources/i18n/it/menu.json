@@ -24,6 +24,8 @@
 	"copy": "Copia",
 	"paste": "Incolla",
 	"selectAll": "Seleziona tutto",
+	"back": "Indietro",
+	"forward": "Avanti",
 	"reload": "Ricarica",
 	"forceReload": "Ricarica forzata",
 	"toggleFullscreen": "Schermo intero",

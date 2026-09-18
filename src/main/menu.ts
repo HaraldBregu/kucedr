@@ -63,6 +63,11 @@ export class Menu {
 			this.callbacks.onThemeChange?.(theme);
 			this.buildMenu();
 		};
+		const navigate = (offset: -1 | 1): void => {
+			const history = BrowserWindow.getFocusedWindow()?.webContents.navigationHistory;
+			if (offset === -1 && history?.canGoBack()) history.goBack();
+			if (offset === 1 && history?.canGoForward()) history.goForward();
+		};
 
 		const template: Electron.MenuItemConstructorOptions[] = [
 			...(isMac
@@ -113,6 +118,13 @@ export class Menu {
 			{
 				label: m.view,
 				submenu: [
+					...(isMac
+						? [
+								{ label: m.back, accelerator: 'Cmd+[', click: (): void => navigate(-1) },
+								{ label: m.forward, accelerator: 'Cmd+]', click: (): void => navigate(1) },
+								{ type: 'separator' as const },
+							]
+						: []),
 					{ label: m.reload, role: 'reload' as const },
 					{ label: m.forceReload, role: 'forceReload' as const },
 				],

@@ -24,6 +24,8 @@
 	"copy": "Copy",
 	"paste": "Paste",
 	"selectAll": "Select All",
+	"back": "Back",
+	"forward": "Forward",
 	"reload": "Reload",
 	"forceReload": "Force Reload",
 	"toggleFullscreen": "Toggle Full Screen",
