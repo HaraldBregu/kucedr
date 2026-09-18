@@ -1,6 +1,5 @@
 import { existsSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
-import { appEntryPath } from './app_entry';
 import { isAppId } from './app_id';
 import { readAppManifest, readAppManifestFromDirectory } from './app_read';
 import { appsRoot } from './app_root';
@@ -16,9 +15,10 @@ export function listApps(appLocation?: string): App[] {
 				.sort((left, right) => left.name.localeCompare(right.name))
 		: [];
 	for (const directory of directories) {
-		const manifest = readAppManifest(directory.name, appLocation);
+		const installedDirectory = path.join(root, directory.name);
+		const manifest = readAppManifestFromDirectory(installedDirectory);
 		if (!manifest) continue;
-		const entry = appEntryPath(directory.name, manifest.metadata.entry, appLocation);
+		const entry = path.join(installedDirectory, ...manifest.metadata.entry.split('/'));
 		try {
 			if (!statSync(entry).isFile()) continue;
 		} catch {

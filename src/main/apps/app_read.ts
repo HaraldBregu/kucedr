@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { appManifestPath } from './app_manifest';
+import { appDirectory } from './app_directory';
 import { isAppManifest } from './app_manifest_validate';
 import { isAppEntry } from './app_entry_validate';
 import { isAppWindowSettings } from '../../shared/app_window_validate';
@@ -99,7 +100,7 @@ export function readAppManifest(id: string, appLocation?: string): AppManifest |
 		}
 	}
 
-	return readPackageManifestFromStandardFields(path.dirname(file));
+	return readPackageManifestFromStandardFields(appDirectory(id, appLocation));
 }
 
 export function readAppManifestFromDirectory(directory: string): AppManifest | null {
