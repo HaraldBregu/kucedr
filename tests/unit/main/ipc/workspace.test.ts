@@ -76,7 +76,7 @@ describe('workspace files', () => {
 	it('reads UTF-8 code and rejects binary data', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-workspace-'));
 		await fs.writeFile(path.join(root, 'script.py'), 'print("hello")\n');
-		await fs.writeFile(path.join(root, 'binary.dat'), Buffer.from([0xff, 0xfe, 0x00]));
+		await fs.writeFile(path.join(root, 'binary.dat'), Buffer.from([0x00, 0x01, 0x02]));
 
 		await expect(readWorkspaceTextFile(root, 'script.py')).resolves.toBe('print("hello")\n');
 		await expect(readWorkspaceTextFile(root, 'binary.dat')).rejects.toThrow(

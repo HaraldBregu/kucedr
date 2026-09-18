@@ -7,6 +7,7 @@ export async function readWorkspaceTextFile(root: string, filePath: string): Pro
 	const stats = await fs.stat(resolvedPath);
 	if (!stats.isFile()) throw new Error('Workspace path is not a file.');
 	const content = await fs.readFile(resolvedPath);
+	if (content.includes(0)) throw new Error('This binary file cannot be displayed as code.');
 	try {
 		return new TextDecoder('utf-8', { fatal: true }).decode(content);
 	} catch {
