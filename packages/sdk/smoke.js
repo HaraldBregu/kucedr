@@ -164,11 +164,54 @@ globalThis.coding = {
 	disconnectCodex: async () => undefined,
 };
 globalThis.models = {
+	embedding: {
+		createEmbedding: async (request) => ({
+			providerId: 'local',
+			modelId: request.modelId ?? 'embed',
+			dimensions: 2,
+			embeddings: request.texts.map(() => [0.25, 0.75]),
+		}),
+	},
 	image: {
 		createImage: async (request) => ({
 			base64: request.source?.base64 ?? 'generated',
 			mimeType: 'image/png',
 		}),
+	},
+	sound: {
+		createSound: async () => ({ base64: 'c291bmQ=', mimeType: 'audio/mpeg' }),
+	},
+	text: {
+		generateText: async (request) => `answer:${request.prompt}`,
+	},
+	transcribe: {
+		transcribe: async () => ({
+			text: 'transcript',
+			metadata: {
+				providerId: 'local',
+				providerName: 'Local',
+				modelId: 'stt',
+				createdAt: '2026-09-18T00:00:00.000Z',
+			},
+		}),
+	},
+	video: {
+		createVideo: async () => ({ base64: 'dmlkZW8=', mimeType: 'video/mp4' }),
+	},
+	voice: {
+		synthesize: async () => ({
+			audio: 'dm9pY2U=',
+			mimeType: 'audio/mpeg',
+			metadata: {
+				providerId: 'local',
+				providerName: 'Local',
+				modelId: 'tts',
+				createdAt: '2026-09-18T00:00:00.000Z',
+			},
+		}),
+	},
+	realtimeVoice: {
+		getSetup: async () => ({ options: {}, supportedModels: [] }),
 	},
 };
 globalThis.terminalAPI = {
@@ -294,6 +337,20 @@ assert.deepEqual(
 	}),
 	{ base64: 'aGVsbG8=', mimeType: 'image/png' }
 );
+assert.equal(await models.text.generateText({ prompt: 'hello' }), 'answer:hello');
+assert.equal((await models.embedding.createEmbedding({ texts: ['hello'] })).dimensions, 2);
+assert.equal((await models.voice.synthesize({ text: 'hello' })).mimeType, 'audio/mpeg');
+assert.equal(
+	(
+		await models.transcribe.transcribe({
+			audio: { data: 'dm9pY2U=', encoding: 'base64', mimeType: 'audio/mpeg' },
+		})
+	).text,
+	'transcript'
+);
+assert.equal((await models.sound.createSound({ prompt: 'rain' })).mimeType, 'audio/mpeg');
+assert.equal((await models.video.createVideo({ prompt: 'room' })).mimeType, 'video/mp4');
+assert.deepEqual(await models.realtimeVoice.getSetup(), { options: {}, supportedModels: [] });
 await coding.openProject(codingProject.id);
 assert.equal(
 	(await coding.renameSession(codingProject.id, 'session-1', 'Focused tests')).title,
