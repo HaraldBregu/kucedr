@@ -274,9 +274,16 @@ const AppsPage: React.FC = () => {
 									<div className="flex min-w-0 flex-col py-3 pr-3">
 										<div className="flex min-w-0 items-start justify-between gap-3">
 											<div className="min-w-0">
-												<h3 className="truncate text-sm font-medium text-foreground">
-													{app.title}
-												</h3>
+												<div className="flex min-w-0 items-center gap-1.5">
+													<h3 className="truncate text-sm font-medium text-foreground">
+														{app.title}
+													</h3>
+													{app.debugPath && (
+														<Badge variant="outline" className="shrink-0 text-[10px] leading-none">
+															{t('settings.apps.debug.badge')}
+														</Badge>
+													)}
+												</div>
 												<p className="mt-0.5 line-clamp-2 text-[11px] leading-4 text-muted-foreground">
 													{app.description}
 												</p>
@@ -351,11 +358,6 @@ const AppsPage: React.FC = () => {
 								<Badge variant="outline" className="text-[10px] leading-none">
 									{app.metadata.version}
 								</Badge>
-								{app.debugPath && (
-									<Badge variant="outline" className="text-[10px] leading-none">
-										{t('settings.apps.debug.badge')}
-									</Badge>
-								)}
 											</div>
 										</div>
 									</div>

@@ -25,6 +25,12 @@ const apps: App[] = [
 	},
 ];
 
+const debugApp: App = {
+	...apps[0],
+	debugPath: '/projects/demo-app',
+	imageUrl: 'kucedr-app://demo-app/assets/images/logo.png?v=1',
+};
+
 beforeEach(() => {
 	Object.defineProperty(window, 'apps', {
 		configurable: true,
@@ -73,6 +79,19 @@ it('adds a debug folder path without importing it', async () => {
 	expect(window.apps.addDebug).toHaveBeenCalledWith('/projects/demo-app');
 	expect(window.apps.import).not.toHaveBeenCalled();
 	expect(window.apps.list).toHaveBeenCalledTimes(2);
+});
+
+it('shows a debug app badge and image preview', async () => {
+	(window.apps.list as jest.Mock).mockResolvedValue([debugApp]);
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
+
+	const title = await screen.findByRole('heading', { name: 'Demo App' });
+	expect(title.parentElement).toHaveTextContent('settings.apps.debug.badge');
+	expect(screen.getByRole('img')).toHaveAttribute('src', debugApp.imageUrl);
 });
 
 it('shows details, open, and an overflow delete action on app cards', async () => {
