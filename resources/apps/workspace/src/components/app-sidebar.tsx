@@ -1,15 +1,7 @@
-import { Bot } from 'lucide-react';
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { WorkspaceTreeEntry } from '@kucedr/sdk';
 
-import { Badge } from '@/components/ui/badge';
 import {
-	TreeExpander,
-	TreeIcon,
-	TreeLabel,
-	TreeNode,
-	TreeNodeContent,
-	TreeNodeTrigger,
 	TreeProvider,
 	TreeView,
 } from '@/components/kibo-ui/tree';
@@ -22,16 +14,14 @@ import { collectDirectoryPaths } from '@/lib/tree';
 import { isWorkspacePathWithin } from '@/lib/within';
 import { filterWorkspaceEntries } from '@/lib/filter';
 
-const agentFilePaths = [
+const hiddenWorkspacePaths = new Set<string>([
 	'AGENTS.md',
 	'HEALTH.md',
 	'IDENTITY.md',
 	'MEMORY.md',
 	'SOUL.md',
 	'USER.md',
-] as const;
-const agentFilePathSet = new Set<string>(agentFilePaths);
-const agentNodeId = '__kucedr_workspace_agent__';
+]);
 
 interface AppSidebarProps {
 	onCreateDirectory: (parentPath: string) => void;
@@ -88,33 +78,21 @@ export function AppSidebar({
 		() => filterWorkspaceEntries(workspaceFiles, searchQuery),
 		[searchQuery, workspaceFiles]
 	);
-	const agentFiles = useMemo(
-		() =>
-			agentFilePaths.flatMap((path) => {
-				const entry = visibleWorkspaceFiles.find(
-					(candidate) => candidate.type === 'file' && candidate.path === path
-				);
-				return entry ? [entry] : [];
-			}),
-		[visibleWorkspaceFiles]
-	);
 	const regularFiles = useMemo(
 		() =>
 			visibleWorkspaceFiles.filter(
-				(entry) => entry.type !== 'file' || !agentFilePathSet.has(entry.path)
+				(entry) => entry.type !== 'file' || !hiddenWorkspacePaths.has(entry.path)
 			),
 		[visibleWorkspaceFiles]
 	);
-	const agentExpanded = expanded.has(agentNodeId);
 	useEffect(() => {
 		if (!searchQuery.trim()) return;
 		setExpanded((current) => {
 			const next = new Set(current);
 			for (const path of collectDirectoryPaths(regularFiles)) next.add(path);
-			if (agentFiles.length > 0) next.add(agentNodeId);
 			return next;
 		});
-	}, [agentFiles.length, regularFiles, searchQuery]);
+	}, [regularFiles, searchQuery]);
 	useEffect(() => {
 		if (!renameTarget) return;
 		const parts = renameTarget.path.split('/');
@@ -230,7 +208,7 @@ export function AppSidebar({
 		if (!draggedEntry || movingPath) return;
 		if ((event.target as Element).closest('[data-workspace-entry]')) return;
 		event.preventDefault();
-			const error = workspaceMoveError(draggedEntry, '', workspaceFiles);
+		const error = workspaceMoveError(draggedEntry, '', workspaceFiles);
 		event.dataTransfer.dropEffect = error ? 'none' : 'move';
 		setDropTargetPath('');
 		setDropError(error);
@@ -261,7 +239,7 @@ export function AppSidebar({
 						{
 							id: 'expand-all',
 							label: 'Expand All',
-							enabled: regularFiles.length > 0 || agentFiles.length > 0,
+							enabled: regularFiles.length > 0,
 						},
 						{
 							id: 'collapse-all',
@@ -280,7 +258,6 @@ export function AppSidebar({
 						'new-folder': () => onCreateDirectory(''),
 						'expand-all': () => {
 							const paths = collectDirectoryPaths(regularFiles);
-							if (agentFiles.length > 0) paths.add(agentNodeId);
 							setExpanded(paths);
 						},
 						'collapse-all': () => setExpanded(new Set()),
@@ -305,101 +282,13 @@ export function AppSidebar({
 					showLines={false}
 				>
 					<TreeView className="space-y-1 p-0" role="tree">
-						{!workspaceLoading && !workspaceError && agentFiles.length > 0 ? (
-							<TreeNode nodeId={agentNodeId}>
-								<TreeNodeTrigger
-									data-workspace-entry
-									expandOnClick
-									role="treeitem"
-									tabIndex={0}
-									aria-expanded={agentExpanded}
-									className="mx-0 h-7 gap-1.5 rounded-md px-0 py-0 pr-2 text-[12px] font-semibold text-sidebar-foreground outline-none hover:bg-sidebar-accent focus-visible:ring-1 focus-visible:ring-sidebar-ring"
-									onContextMenu={(event) => {
-										showNativeContextMenu(
-											event,
-											[
-												{ id: 'new-file', label: 'New File' },
-												{ type: 'separator' },
-												{
-													id: 'toggle-agent',
-													label: agentExpanded ? 'Collapse Agent' : 'Expand Agent',
-												},
-											],
-											{
-												'new-file': () => createFile(''),
-												'toggle-agent': () => toggleDirectory(agentNodeId),
-											}
-										);
-									}}
-									onKeyDown={(event) => {
-										if (event.key === 'Enter' || event.key === ' ') {
-											event.preventDefault();
-											toggleDirectory(agentNodeId);
-										}
-									}}
-								>
-									<TreeExpander hasChildren className="mr-0 shrink-0" />
-									<TreeIcon
-										hasChildren
-										icon={<Bot className="h-3.5 w-3.5" strokeWidth={1.8} />}
-										className="mr-0 shrink-0 text-sidebar-muted"
-									/>
-									<TreeLabel className="text-[12px] font-semibold">Agent</TreeLabel>
-									<Badge
-										variant="secondary"
-										className="h-4 border-0 bg-sidebar-accent px-1.5 text-[10px] text-sidebar-foreground"
-									>
-										{agentFiles.length}
-									</Badge>
-								</TreeNodeTrigger>
-								<TreeNodeContent hasChildren className="space-y-1">
-									{agentFiles.map((entry, index) => (
-										<WorkspaceTreeItem
-											key={entry.path}
-											depth={1}
-											draggedPath={draggedEntry?.path ?? null}
-											dropError={dropError}
-											dropTargetPath={dropTargetPath}
-											entry={entry}
-											expanded={expanded}
-											isLast={index === agentFiles.length - 1}
-											movingPath={movingPath}
-											onCreateDirectory={onCreateDirectory}
-											onCreateFile={createFile}
-											onDeleteRequest={onDeleteRequest}
-											onDuplicateRequest={onDuplicateRequest}
-											onRenameRequest={onRenameRequest}
-											onRenameCancel={onRenameCancel}
-											onRenameCommit={onRenameCommit}
-											onRenameNameChange={onRenameNameChange}
-											renameError={renameError}
-											renameName={renameName}
-											renameTarget={renameTarget}
-											renaming={renaming}
-											onDragEnd={endDrag}
-											onDragLeave={dragLeaveTarget}
-											onDragOver={dragOverEntry}
-											onDragStart={startDrag}
-											onDrop={(event, destination) => {
-												if (destination.type === 'directory') {
-													void moveEntry(event, destination.path, destination.children ?? []);
-												}
-											}}
-											onSelect={onWorkspaceSelect}
-											onToggle={toggleDirectory}
-											selectedPath={selectedWorkspacePath}
-										/>
-									))}
-								</TreeNodeContent>
-							</TreeNode>
-						) : null}
 						{workspaceLoading ? (
 							<div className="px-3 py-2 text-[12px] text-sidebar-muted">Loading files...</div>
 						) : workspaceError ? (
 							<div className="px-3 py-2 text-[12px] leading-5 text-sidebar-muted">
 								{workspaceError}
 							</div>
-						) : regularFiles.length === 0 && agentFiles.length === 0 ? (
+						) : regularFiles.length === 0 ? (
 							<div className="px-3 py-2 text-[12px] text-sidebar-muted">
 								{searchQuery.trim() ? 'No matching files' : 'No files'}
 							</div>
