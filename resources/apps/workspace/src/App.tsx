@@ -792,7 +792,7 @@ export default function App() {
 					}}
 				>
 					<form
-						className="space-y-4"
+					className="space-y-3"
 						onSubmit={(event) => {
 							event.preventDefault();
 							void confirmCreateWorkspaceEntry();
@@ -808,8 +808,8 @@ export default function App() {
 									: 'Create it at the workspace root.'}
 							</DialogDescription>
 						</DialogHeader>
-						<div className="space-y-2">
-							<label htmlFor="workspace-entry-name" className="text-sm font-medium">
+						<div className="space-y-1.5">
+							<label htmlFor="workspace-entry-name" className="text-xs font-medium">
 								Name
 							</label>
 							<div className="flex rounded-md border border-input bg-transparent shadow-sm focus-within:ring-1 focus-within:ring-ring">
@@ -856,7 +856,7 @@ export default function App() {
 								) : null}
 							</div>
 						</div>
-						{createError ? <p className="text-sm text-destructive">{createError}</p> : null}
+						{createError ? <p className="text-xs text-destructive">{createError}</p> : null}
 						<DialogFooter>
 							<DialogClose asChild>
 								<Button type="button" variant="outline" disabled={creating}>
@@ -905,7 +905,7 @@ export default function App() {
 					}}
 				>
 					<form
-						className="space-y-4"
+					className="space-y-3"
 						onSubmit={(event) => {
 							event.preventDefault();
 							void confirmRenameWorkspaceEntry();
@@ -917,8 +917,8 @@ export default function App() {
 							</DialogTitle>
 							<DialogDescription>Enter a new name for {renameTarget?.name}.</DialogDescription>
 						</DialogHeader>
-						<div className="space-y-2">
-							<label htmlFor="workspace-entry-rename" className="text-sm font-medium">
+						<div className="space-y-1.5">
+							<label htmlFor="workspace-entry-rename" className="text-xs font-medium">
 								Name
 							</label>
 							<Input
@@ -953,7 +953,7 @@ export default function App() {
 								}}
 							/>
 						</div>
-						{renameError ? <p className="text-sm text-destructive">{renameError}</p> : null}
+						{renameError ? <p className="text-xs text-destructive">{renameError}</p> : null}
 						<DialogFooter>
 							<DialogClose asChild>
 								<Button type="button" variant="outline" disabled={renaming}>
@@ -1011,7 +1011,7 @@ export default function App() {
 								: 'This permanently deletes the file from the agent workspace. This action cannot be undone.'}
 						</DialogDescription>
 					</DialogHeader>
-					{deleteError ? <p className="text-sm text-destructive">{deleteError}</p> : null}
+					{deleteError ? <p className="text-xs text-destructive">{deleteError}</p> : null}
 					<DialogFooter>
 						<DialogClose asChild>
 							<Button type="button" variant="outline" disabled={deleting}>

@@ -75,9 +75,9 @@ export function WorkspaceViewer({
 				className="flex h-full min-h-0 min-w-0 flex-1 flex-col bg-background"
 				aria-label="Workspace file"
 			>
-				<header className="flex h-14 shrink-0 items-center gap-2 border-b px-3 sm:px-5">
+				<header className="flex h-12 shrink-0 items-center gap-2 border-b px-3 sm:px-4">
 					<div className="min-w-0 flex-1">
-						<h1 className="truncate text-[17px] font-semibold tracking-[-0.025em]">Workspace</h1>
+						<h1 className="truncate text-sm font-semibold tracking-[-0.02em]">Workspace</h1>
 						<p className="mt-0.5 text-[11px] text-muted-foreground">
 							Select a file from the sidebar.
 						</p>
@@ -85,8 +85,8 @@ export function WorkspaceViewer({
 				</header>
 				<div className="flex flex-1 items-center justify-center px-6 text-center">
 					<div>
-						<div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
-							<FileText className="h-5 w-5" />
+						<div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+							<FileText className="h-4 w-4" />
 						</div>
 						<h2 className="text-sm font-semibold">No file selected</h2>
 						<p className="mx-auto mt-1.5 max-w-64 text-xs leading-5 text-muted-foreground">
@@ -142,13 +142,13 @@ export function WorkspaceViewer({
 					);
 				}}
 			>
-				<header className="flex h-14 shrink-0 items-center gap-3 border-b px-3 sm:px-5">
+				<header className="flex h-12 shrink-0 items-center gap-2 border-b px-3 sm:px-4">
 					<div
 						className="min-w-0 flex-1 cursor-default"
 						onDoubleClick={onRename}
 						title="Double-click to rename"
 					>
-						<h1 className="truncate text-[15px] font-semibold tracking-[-0.02em]">
+						<h1 className="truncate text-sm font-semibold tracking-[-0.02em]">
 							{path.split(/[\\/]/).pop()}
 						</h1>
 						<p className="mt-0.5 truncate text-[11px] text-muted-foreground">{path}</p>
@@ -188,12 +188,12 @@ export function WorkspaceViewer({
 					)}
 				>
 					{loading ? (
-						<div className="flex min-h-full items-center justify-center gap-2 text-sm text-muted-foreground">
-							<LoaderCircle className="h-4 w-4 animate-spin" /> Loading file...
+						<div className="flex min-h-full items-center justify-center gap-1.5 text-xs text-muted-foreground">
+							<LoaderCircle className="h-3.5 w-3.5 animate-spin" /> Loading file...
 						</div>
 					) : error ? (
 						<div className="flex min-h-full items-center justify-center px-6 text-center">
-							<p className="max-w-md text-sm text-destructive">{error}</p>
+							<p className="max-w-md text-xs text-destructive">{error}</p>
 						</div>
 					) : (
 						<FileViewer
