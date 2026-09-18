@@ -27,10 +27,9 @@ export function listApps(appLocation?: string): App[] {
 		const image = manifest.metadata.image
 			? path.join(appsRoot(appLocation), directory.name, ...manifest.metadata.image.split('/'))
 			: undefined;
-		const imageStat = image && existsSync(image) ? statSync(image) : undefined;
 		const imageUrl =
-			imageStat?.isFile() && manifest.metadata.image
-				? `kucedr-app://${directory.name}/${manifest.metadata.image}?v=${imageStat.mtimeMs}`
+			image && existsSync(image) && statSync(image).isFile()
+				? `kucedr-app://${directory.name}/${manifest.metadata.image}`
 				: undefined;
 		apps.push({ id: directory.name, ...manifest, ...(imageUrl && { imageUrl }) });
 	}
@@ -49,10 +48,9 @@ export function listApps(appLocation?: string): App[] {
 			const image = manifest.metadata.image
 				? path.join(directory, ...manifest.metadata.image.split('/'))
 				: undefined;
-			const imageStat = image && existsSync(image) ? statSync(image) : undefined;
 			const imageUrl =
-				imageStat?.isFile() && manifest.metadata.image
-					? `kucedr-app://${id}/${manifest.metadata.image}?v=${imageStat.mtimeMs}`
+				image && existsSync(image) && statSync(image).isFile()
+					? `kucedr-app://${id}/${manifest.metadata.image}`
 					: undefined;
 			apps.push({ id, ...manifest, debugPath: directory, ...(imageUrl && { imageUrl }) });
 		}

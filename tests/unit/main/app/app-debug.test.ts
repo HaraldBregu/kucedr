@@ -50,14 +50,13 @@ describe('debug app folders', () => {
 	it('registers and discovers an app without copying its folder', () => {
 		const directory = createApp(root);
 		expect(addDebugApp(directory)).toEqual({ id: 'debug-app', ...manifest, debugPath: directory });
+		fs.mkdirSync(path.join(userData, 'apps', 'debug-app', 'data'), { recursive: true });
 		expect(listApps()).toEqual([
 			{
 				id: 'debug-app',
 				...manifest,
 				debugPath: directory,
-				imageUrl: expect.stringMatching(
-					/^kucedr-app:\/\/debug-app\/assets\/images\/logo\.png\?v=\d+(?:\.\d+)?$/
-				),
+				imageUrl: 'kucedr-app://debug-app/assets/images/logo.png',
 			},
 		]);
 		expect(appEntryPath('debug-app', 'dist/index.html')).toBe(

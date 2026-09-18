@@ -28,7 +28,7 @@ const apps: App[] = [
 const debugApp: App = {
 	...apps[0],
 	debugPath: '/projects/demo-app',
-	imageUrl: 'kucedr-app://demo-app/assets/images/logo.png?v=1',
+	imageUrl: 'kucedr-app://demo-app/assets/images/logo.png',
 };
 
 beforeEach(() => {
