@@ -1,5 +1,5 @@
 import type { IpcModule } from './core/module';
-import { TrustedRenderer } from './core/trusted';
+import { ModelRenderer } from './core/model';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
@@ -44,7 +44,7 @@ export class ModelsIpc implements IpcModule<ModelsIpcDependencies> {
 	readonly name = 'models';
 
 	register({ windows, apps }: ModelsIpcDependencies, _eventBus: EventBus): void {
-		const trusted = new TrustedRenderer(windows, apps);
+		const trusted = new ModelRenderer(windows, apps);
 		trusted.command(EmbeddingChannels.createEmbedding, (request) =>
 			embedding.createEmbedding(request)
 		);

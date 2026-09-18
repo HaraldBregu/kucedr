@@ -116,9 +116,18 @@ it('rejects unsafe realtime voice selection inputs in main', () => {
 	);
 });
 
-it('rejects model operations from app renderers', () => {
+it('allows model operations from registered app renderers', () => {
 	appHas.mockReturnValue(true);
+	const setup = { options: {}, supportedModels: [] };
+	getRealtimeVoiceSetup.mockReturnValue(setup);
+
+	expect(query(RealtimeVoiceChannels.getSetup)()).toBe(setup);
+});
+
+it('rejects model operations from unregistered renderers', () => {
+	jest.mocked(BrowserWindow.fromWebContents).mockReturnValue(null);
+
 	expect(() => query(RealtimeVoiceChannels.getSetup)()).toThrow(
-		'Privileged IPC is unavailable to app views.'
+		'Privileged IPC is unavailable to this renderer.'
 	);
 });
