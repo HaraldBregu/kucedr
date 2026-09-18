@@ -11,10 +11,12 @@ export function AppShell(): React.JSX.Element {
 
 	return (
 		<div className="app-translucent-window flex h-full flex-col overflow-hidden bg-background text-foreground">
-			<AppNavigationBar
-				leftButtons={options?.leftButtons}
-				rightButtons={options?.rightButtons}
-			/>
+			{options ? (
+				<AppNavigationBar
+					leftButtons={options.leftButtons}
+					rightButtons={options.rightButtons}
+				/>
+			) : null}
 		</div>
 	);
 }

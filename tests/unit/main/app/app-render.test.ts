@@ -115,6 +115,16 @@ describe('app renderer', () => {
 		expect(harness.win.contentView.addChildView).toHaveBeenCalledWith(harness.view);
 		expect(harness.view.setBounds).toHaveBeenCalledWith({
 			x: 0,
+			y: 0,
+			width: 820,
+			height: 640,
+		});
+		const appWindow = openAppWindows.get('project-order');
+		if (!appWindow) throw new Error('Expected app window');
+		appWindow.navigationBarOptions = { leftButtons: [] };
+		appWindow.layout?.();
+		expect(harness.view.setBounds).toHaveBeenLastCalledWith({
+			x: 0,
 			y: 48,
 			width: 820,
 			height: 592,

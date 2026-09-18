@@ -9,5 +9,6 @@ export function setAppNavigationBar(
 	const appWindow = openAppWindows.get(appId);
 	if (!appWindow || appWindow.window.isDestroyed()) return;
 	appWindow.navigationBarOptions = options;
+	appWindow.layout?.();
 	appWindow.window.webContents.send(WindowChannels.navigationBarOptionsChanged, options);
 }

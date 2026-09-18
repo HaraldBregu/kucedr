@@ -15,6 +15,7 @@ export interface AppWindow {
 	ready: boolean;
 	contents?: WebContents;
 	navigationBarOptions: AppNavigationBarOptions | null;
+	layout?: () => void;
 }
 
 const windows = new Map<string, AppWindow>();
@@ -78,13 +79,15 @@ export function render(
 	const resizeView = (): void => {
 		if (!appView || win.isDestroyed()) return;
 		const { width, height } = win.getContentBounds();
+		const navigationBarHeight = appWindow.navigationBarOptions === null ? 0 : 48;
 		appView.setBounds({
 			x: 0,
-			y: 48,
+			y: navigationBarHeight,
 			width,
-			height: Math.max(0, height - 48),
+			height: Math.max(0, height - navigationBarHeight),
 		});
 	};
+	appWindow.layout = resizeView;
 	const discardFailedShell = (): void => {
 		if (shellFailed) return;
 		shellFailed = true;

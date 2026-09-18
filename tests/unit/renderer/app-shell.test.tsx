@@ -43,6 +43,8 @@ beforeEach(() => {
 it('renders the shared titleless navigation bar over the app window', () => {
 	render(<AppShell />);
 
+	expect(screen.queryByTestId('app-navigationbar')).not.toBeInTheDocument();
+	act(() => navigationBarOptionsChanged({ leftButtons: [] }));
 	const shell = screen.getByTestId('app-navigationbar').parentElement;
 	expect(shell).toHaveClass(
 		'app-translucent-window',
