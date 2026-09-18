@@ -173,15 +173,15 @@ describe('workspace files', () => {
 
 	it('writes every editable workspace document kind', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-workspace-'));
-		const files = ['notes.md', 'flow.mmd', 'sketch.excalidraw', 'canvas.tldr'];
+		const files = ['notes.md', 'flow.mmd', 'sketch.excalidraw', 'canvas.tldr', 'notes.txt'];
 		for (const file of files) await fs.writeFile(path.join(root, file), 'Before');
-		await fs.writeFile(path.join(root, 'notes.txt'), 'Before');
+		await fs.writeFile(path.join(root, 'archive.zip'), 'Before');
 
 		for (const file of files) {
 			await writeWorkspaceFile(root, file, `After ${file}`);
 			await expect(fs.readFile(path.join(root, file), 'utf8')).resolves.toBe(`After ${file}`);
 		}
-		await expect(writeWorkspaceFile(root, 'notes.txt', 'After')).rejects.toThrow(
+		await expect(writeWorkspaceFile(root, 'archive.zip', 'After')).rejects.toThrow(
 			'cannot be edited'
 		);
 

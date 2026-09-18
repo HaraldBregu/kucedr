@@ -76,7 +76,6 @@ import { readWorkspaceTextFile } from './text';
 import { moveWorkspaceEntry } from './move';
 import { renameWorkspaceEntry } from './rename';
 import { readWorkspaceTree } from './tree';
-import { resolveWorkspaceFile } from './workspace';
 import { respondUserInput } from '../agent/user_input/user_input_pending';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
