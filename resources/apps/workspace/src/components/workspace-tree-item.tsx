@@ -25,6 +25,7 @@ export interface WorkspaceTreeItemProps {
 	onCreateDirectory: (parentPath: string) => void;
 	onCreateFile: (parentPath: string) => void;
 	onDeleteRequest: (entry: WorkspaceTreeEntry) => void;
+	onDuplicateRequest: (entry: WorkspaceTreeEntry) => void;
 	onRenameCancel: () => void;
 	onRenameCommit: () => void;
 	onRenameNameChange: (name: string) => void;
@@ -55,6 +56,7 @@ export function WorkspaceTreeItem({
 	onCreateDirectory,
 	onCreateFile,
 	onDeleteRequest,
+	onDuplicateRequest,
 	onRenameCancel,
 	onRenameCommit,
 	onRenameNameChange,
@@ -117,6 +119,7 @@ export function WorkspaceTreeItem({
 								: []),
 							{ type: 'separator' },
 							{ id: 'rename', label: isDirectory ? 'Rename Folder' : 'Rename File' },
+							...(isDirectory ? [] : ([{ id: 'duplicate', label: 'Duplicate' }] as const)),
 							{ type: 'separator' },
 							{ id: 'copy-path', label: 'Copy Path' },
 							{ type: 'separator' },
@@ -131,6 +134,7 @@ export function WorkspaceTreeItem({
 							'new-file': () => onCreateFile(createParentPath),
 							'new-folder': () => onCreateDirectory(entry.path),
 							rename: () => onRenameRequest(entry),
+							duplicate: () => onDuplicateRequest(entry),
 							'copy-path': () => navigator.clipboard.writeText(entry.path),
 							delete: () => onDeleteRequest(entry),
 						}
@@ -243,6 +247,7 @@ export function WorkspaceTreeItem({
 						onCreateDirectory={onCreateDirectory}
 						onCreateFile={onCreateFile}
 						onDeleteRequest={onDeleteRequest}
+						onDuplicateRequest={onDuplicateRequest}
 						onRenameCancel={onRenameCancel}
 						onRenameCommit={onRenameCommit}
 						onRenameNameChange={onRenameNameChange}

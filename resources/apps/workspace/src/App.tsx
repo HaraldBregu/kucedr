@@ -525,6 +525,22 @@ export default function App() {
 		}
 	}
 
+	async function duplicateWorkspaceEntry(entry: WorkspaceTreeEntry) {
+		if (entry.type !== 'file' || !isKucedr()) return;
+		setWorkspaceError('');
+		try {
+			const duplicatedPath = await agent.duplicateWorkspaceFile(entry.path);
+			setWorkspaceFiles(await agent.listWorkspaceFiles());
+			await selectWorkspaceEntry({
+				name: duplicatedPath.split('/').pop() ?? duplicatedPath,
+				path: duplicatedPath,
+				type: 'file',
+			});
+		} catch (error) {
+			setWorkspaceError(error instanceof Error ? error.message : 'Unable to duplicate the file.');
+		}
+	}
+
 	async function moveWorkspaceEntry(
 		entry: WorkspaceTreeEntry,
 		destinationPath: string
@@ -596,6 +612,7 @@ export default function App() {
 				setDeleteError('');
 				setDeleteTarget(entry);
 			}}
+			onDuplicateRequest={duplicateWorkspaceEntry}
 			onMoveRequest={moveWorkspaceEntry}
 			onRenameRequest={startRenameWorkspaceEntry}
 			onRenameCancel={() => {

@@ -36,6 +36,7 @@ interface AppSidebarProps {
 	onCreateDirectory: (parentPath: string) => void;
 	onCreateFile: (parentPath: string) => void;
 	onDeleteRequest: (entry: WorkspaceTreeEntry) => void;
+	onDuplicateRequest: (entry: WorkspaceTreeEntry) => void;
 	onMoveRequest: (entry: WorkspaceTreeEntry, destinationPath: string) => Promise<string>;
 	onRenameCancel: () => void;
 	onRenameCommit: () => void;
@@ -57,6 +58,7 @@ export function AppSidebar({
 	onCreateDirectory,
 	onCreateFile,
 	onDeleteRequest,
+	onDuplicateRequest,
 	onMoveRequest,
 	onRenameCancel,
 	onRenameCommit,
@@ -347,6 +349,7 @@ export function AppSidebar({
 											onCreateDirectory={onCreateDirectory}
 											onCreateFile={createFile}
 											onDeleteRequest={onDeleteRequest}
+											onDuplicateRequest={onDuplicateRequest}
 											onRenameRequest={onRenameRequest}
 											onRenameCancel={onRenameCancel}
 											onRenameCommit={onRenameCommit}
@@ -395,6 +398,7 @@ export function AppSidebar({
 									onCreateDirectory={onCreateDirectory}
 									onCreateFile={createFile}
 									onDeleteRequest={onDeleteRequest}
+									onDuplicateRequest={onDuplicateRequest}
 									onRenameRequest={onRenameRequest}
 									onRenameCancel={onRenameCancel}
 									onRenameCommit={onRenameCommit}

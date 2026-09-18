@@ -176,6 +176,10 @@ export interface AgentInvokeChannelMap {
 		args: [parentPath: string, name: string];
 		result: string;
 	};
+	[AgentChannels.duplicateWorkspaceFile]: {
+		args: [filePath: string];
+		result: string;
+	};
 	[AgentChannels.createWorkspaceDirectory]: {
 		args: [parentPath: string, name: string];
 		result: string;

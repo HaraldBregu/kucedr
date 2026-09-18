@@ -180,6 +180,7 @@ export interface AgentApi {
 	writeWorkspaceFile: (filePath: string, content: string) => Promise<void>;
 	writeWorkspaceMarkdown: (filePath: string, content: string) => Promise<void>;
 	createWorkspaceFile: (parentPath: string, name: string) => Promise<string>;
+	duplicateWorkspaceFile: (filePath: string) => Promise<string>;
 	createWorkspaceDirectory: (parentPath: string, name: string) => Promise<string>;
 	moveWorkspaceEntry: (sourcePath: string, destinationDirectoryPath: string) => Promise<string>;
 	renameWorkspaceEntry: (sourcePath: string, name: string) => Promise<string>;

@@ -214,6 +214,11 @@ export const agent: AgentApi = {
 		if (!normalizedName) throw new Error('Invalid workspace file name.');
 		return typedInvokeUnwrap(AgentChannels.createWorkspaceFile, parentPath.trim(), normalizedName);
 	},
+	duplicateWorkspaceFile: (filePath) => {
+		const normalizedFilePath = optionalTrimmedString(filePath);
+		if (!normalizedFilePath) throw new Error('Invalid workspace file path.');
+		return typedInvokeUnwrap(AgentChannels.duplicateWorkspaceFile, normalizedFilePath);
+	},
 	createWorkspaceDirectory: (parentPath, name) => {
 		if (typeof parentPath !== 'string') throw new Error('Invalid workspace parent path.');
 		const normalizedName = optionalTrimmedString(name);

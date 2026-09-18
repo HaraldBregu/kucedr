@@ -6,6 +6,7 @@ import { readWorkspaceAsset } from '../../../../src/main/ipc/asset';
 import { createWorkspaceEntry } from '../../../../src/main/ipc/create';
 import { deleteWorkspaceFile } from '../../../../src/main/ipc/delete';
 import { deleteWorkspaceDirectory } from '../../../../src/main/ipc/directory';
+import { duplicateWorkspaceFile } from '../../../../src/main/ipc/duplicate';
 import { writeWorkspaceMarkdown } from '../../../../src/main/ipc/markdown';
 import { moveWorkspaceEntry } from '../../../../src/main/ipc/move';
 import { renameWorkspaceEntry } from '../../../../src/main/ipc/rename';
@@ -15,6 +16,16 @@ import { writeWorkspaceFile } from '../../../../src/main/ipc/write';
 import { workspaceFileType } from '../../../../src/shared/workspace';
 
 describe('workspace files', () => {
+	it('duplicates files without overwriting existing copies', async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-workspace-'));
+		await fs.writeFile(path.join(root, 'image.bin'), Buffer.from([0, 1, 2, 255]));
+
+		await expect(duplicateWorkspaceFile(root, 'image.bin')).resolves.toBe('image copy.bin');
+		await expect(duplicateWorkspaceFile(root, 'image.bin')).resolves.toBe('image copy 2.bin');
+		expect(await fs.readFile(path.join(root, 'image copy.bin'))).toEqual(Buffer.from([0, 1, 2, 255]));
+		await fs.rm(root, { recursive: true });
+	});
+
 	it('classifies editable documents and previewable assets', () => {
 		expect(workspaceFileType('notes/idea.md')).toEqual({
 			kind: 'markdown',
