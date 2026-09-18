@@ -267,7 +267,7 @@ export function AppSidebar({
 			}}
 		>
 			<nav
-				className="min-h-0 flex-1 overflow-y-auto px-2 py-2 scrollbar-subtle"
+				className="min-h-0 flex-1 overflow-y-auto px-1 py-2 scrollbar-subtle"
 				aria-label="Workspace files"
 			>
 				<p id="workspace-drag-instructions" className="sr-only">

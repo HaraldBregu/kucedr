@@ -164,7 +164,7 @@ export function WorkspaceTreeItem({
 				aria-keyshortcuts="Backspace Delete"
 				aria-busy={movingPath === entry.path || undefined}
 				className={cn(
-					'mx-0 h-7 gap-1.5 rounded-md px-0 py-0 pr-2 text-left text-[12px] font-medium text-sidebar-muted outline-none',
+					'mx-0 h-7 gap-1.5 rounded-md px-0 py-0 pr-1 text-left text-[12px] font-medium text-sidebar-muted outline-none',
 					'hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-1 focus-visible:ring-sidebar-ring',
 					'data-[selected=true]:bg-sidebar-accent data-[selected=true]:text-sidebar-foreground',
 					draggedPath === entry.path && 'opacity-45',
@@ -175,7 +175,6 @@ export function WorkspaceTreeItem({
 					isDropTarget && dropError && 'ring-1 ring-destructive'
 				)}
 			>
-				<span aria-hidden="true" className="h-4 w-4 shrink-0" />
 				<TreeIcon
 					hasChildren={isDirectory}
 					className="mr-0 shrink-0 text-sidebar-muted [&_svg]:h-3.5 [&_svg]:w-3.5"
