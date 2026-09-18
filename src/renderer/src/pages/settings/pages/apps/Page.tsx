@@ -252,16 +252,7 @@ const AppsPage: React.FC = () => {
 							<Card
 								key={app.id}
 								size="sm"
-								role="link"
-								tabIndex={0}
-								onClick={() => handleDetails(app.id)}
-								onKeyDown={(event) => {
-									if (event.key === 'Enter' || event.key === ' ') {
-										event.preventDefault();
-										handleDetails(app.id);
-									}
-								}}
-								className="h-28 cursor-pointer gap-0! p-0! transition-colors hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+								className="h-28 gap-0! p-0!"
 							>
 								<CardContent className="grid h-full grid-cols-[7rem_minmax(0,1fr)] gap-0 p-0!">
 									{app.imageUrl ? (
@@ -291,6 +282,15 @@ const AppsPage: React.FC = () => {
 												</p>
 											</div>
 											<div className="flex shrink-0 items-center gap-1">
+												<Button
+													type="button"
+													variant="outline"
+													size="xs"
+													disabled={importing || openingAppId === app.id}
+													onClick={() => handleDetails(app.id)}
+												>
+													{t('settings.apps.details')}
+												</Button>
 												<Button
 													type="button"
 													size="xs"

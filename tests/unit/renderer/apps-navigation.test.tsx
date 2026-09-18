@@ -75,7 +75,7 @@ it('adds a debug folder path without importing it', async () => {
 	expect(window.apps.list).toHaveBeenCalledTimes(2);
 });
 
-it('shows open and an overflow delete action on app cards', async () => {
+it('shows details, open, and an overflow delete action on app cards', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
@@ -84,8 +84,8 @@ it('shows open and an overflow delete action on app cards', async () => {
 	);
 
 	await screen.findByText('Demo App');
+	expect(screen.getByRole('button', { name: 'settings.apps.details' })).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: /settings.apps.deleteAction/ }));
 	expect(
 		await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ })
@@ -196,7 +196,7 @@ it('opens an app from its card action', async () => {
 	expect(window.apps.open).toHaveBeenCalledWith('demo-app');
 });
 
-it('navigates to an app detail when its card is clicked', async () => {
+it('navigates to an app detail only from its details button', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/apps']}>
@@ -207,7 +207,9 @@ it('navigates to an app detail when its card is clicked', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('link', { name: /Demo App/ }));
+	await screen.findByText('Demo App');
+	expect(screen.queryByRole('link', { name: /Demo App/ })).not.toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'settings.apps.details' }));
 
 	expect(await screen.findByText('App detail')).toBeInTheDocument();
 	expect(window.apps.open).not.toHaveBeenCalled();
