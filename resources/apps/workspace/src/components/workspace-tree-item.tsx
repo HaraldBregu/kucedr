@@ -2,7 +2,6 @@ import type { WorkspaceTreeEntry } from '@kucedr/sdk';
 import { useEffect, useRef, type DragEvent } from 'react';
 
 import {
-	TreeExpander,
 	TreeIcon,
 	TreeLabel,
 	TreeNode,
@@ -176,7 +175,7 @@ export function WorkspaceTreeItem({
 					isDropTarget && dropError && 'ring-1 ring-destructive'
 				)}
 			>
-				<TreeExpander hasChildren={isDirectory} className="mr-0 shrink-0" />
+				<span aria-hidden="true" className="h-4 w-4 shrink-0" />
 				<TreeIcon
 					hasChildren={isDirectory}
 					className="mr-0 shrink-0 text-sidebar-muted [&_svg]:h-3.5 [&_svg]:w-3.5"

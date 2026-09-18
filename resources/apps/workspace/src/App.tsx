@@ -145,7 +145,9 @@ export default function App() {
 
 	useEffect(() => {
 		if (!isKucedr()) return;
-		void app.getAppStoreValue<WorkspaceSettings>(workspaceSettingsKey).then((stored) => {
+		void app
+			.getAppStoreValue<Record<string, string | number | boolean>>(workspaceSettingsKey)
+			.then((stored) => {
 			if (!stored) return;
 			setWorkspaceSettings({
 				fontSize:
@@ -161,6 +163,7 @@ export default function App() {
 						? stored.wordWrap
 						: workspaceSettingsDefaults.wordWrap,
 			});
+		});
 		});
 	}, []);
 
@@ -818,7 +821,13 @@ export default function App() {
 							settings={workspaceSettings}
 							onChange={(settings) => {
 								setWorkspaceSettings(settings);
-								if (isKucedr()) void app.setAppStoreValue(workspaceSettingsKey, settings);
+								if (isKucedr()) {
+									void app.setAppStoreValue(workspaceSettingsKey, {
+										fontSize: settings.fontSize,
+										lineNumbers: settings.lineNumbers,
+										wordWrap: settings.wordWrap,
+									});
+								}
 							}}
 						/>
 					) : (
