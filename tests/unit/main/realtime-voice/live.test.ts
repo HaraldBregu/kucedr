@@ -28,6 +28,48 @@ class FakeLiveSocket {
 }
 
 describe('OpenAILiveVoiceAdapter', () => {
+	it('restores history and refreshes context from incoming transcripts outside instructions', async () => {
+		const socket = new FakeLiveSocket();
+		const contextForTurn = jest.fn(async () => 'User prefers concise answers.');
+		const adapter = new OpenAILiveVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'gpt-live-1',
+				voice: 'marin',
+				instructions: 'Help.',
+				history: [{ role: 'user', text: 'Earlier discussion.' }],
+				tools: [],
+				contextForTurn,
+			},
+			() => undefined
+		);
+		socket.emit('open');
+		socket.emit('message', JSON.stringify({ type: 'session.started' }));
+		await connecting;
+		expect(socket.sent.map((event) => JSON.parse(event))).toContainEqual(
+			expect.objectContaining({
+				type: 'session.thinking.append',
+				delegation_id: null,
+				content: expect.stringContaining('Earlier discussion.'),
+			})
+		);
+		socket.emit(
+			'message',
+			JSON.stringify({ type: 'session.input_transcript.delta', delta: 'What style do I prefer?' })
+		);
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(contextForTurn).toHaveBeenCalledWith('What style do I prefer?');
+		expect(JSON.parse(socket.sent.at(-1)!)).toMatchObject({
+			type: 'session.thinking.append',
+			content: expect.stringContaining('User prefers concise answers.'),
+		});
+		expect(JSON.parse(socket.sent[0]).session.instructions).toBe('Help.');
+	});
+
 	it('returns to listening after the live output audio completes', async () => {
 		const socket = new FakeLiveSocket();
 		const events: Array<{ type: string }> = [];

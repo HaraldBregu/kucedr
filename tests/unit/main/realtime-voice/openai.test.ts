@@ -50,6 +50,111 @@ class FakeSocket implements RealtimeVoiceSocket {
 }
 
 describe('OpenAIRealtimeVoiceAdapter', () => {
+	it('refreshes remembered context before each response and discards it after cancellation', async () => {
+		const socket = new FakeSocket();
+		let resolveContext: (value: string) => void = () => undefined;
+		const contextForTurn = jest.fn(
+			() =>
+				new Promise<string>((resolve) => {
+					resolveContext = resolve;
+				})
+		);
+		const adapter = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'gpt-realtime-2.1',
+				voice: 'marin',
+				instructions: 'Help.',
+				history: [],
+				tools: [],
+				contextForTurn,
+			},
+			() => undefined
+		);
+		socket.open();
+		expect(socket.sent[0]).toMatchObject({
+			session: { audio: { input: { turn_detection: { create_response: false } } } },
+		});
+		socket.event({ type: 'session.updated' });
+		const connection = await connecting;
+		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'one' });
+		socket.event({
+			type: 'conversation.item.input_audio_transcription.completed',
+			item_id: 'one',
+			transcript: 'What are my preferences?',
+		});
+		expect(contextForTurn).toHaveBeenCalledWith('What are my preferences?');
+		expect(socket.sent.some((event) => event.type === 'response.create')).toBe(false);
+		resolveContext('Prefers concise answers');
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(socket.sent.at(-2)).toMatchObject({
+			type: 'conversation.item.create',
+			item: {
+				role: 'user',
+				content: [{ type: 'input_text', text: expect.stringContaining('Prefers concise answers') }],
+			},
+		});
+		expect(socket.sent.at(-1)).toEqual({ type: 'response.create' });
+		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'two' });
+		socket.event({
+			type: 'conversation.item.input_audio_transcription.completed',
+			item_id: 'two',
+			transcript: 'New topic',
+		});
+		resolveContext('Different preference');
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(socket.sent.filter((event) => event.type === 'conversation.item.delete')).toHaveLength(
+			1
+		);
+		socket.event({ type: 'input_audio_buffer.speech_started', item_id: 'three' });
+		socket.event({
+			type: 'conversation.item.input_audio_transcription.completed',
+			item_id: 'three',
+			transcript: 'Stop',
+		});
+		await connection.stop();
+		const count = socket.sent.length;
+		resolveContext('Must not send');
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(socket.sent).toHaveLength(count);
+	});
+
+	it('continues a voice response when context lookup fails', async () => {
+		const socket = new FakeSocket();
+		const adapter = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'gpt-realtime-2.1',
+				voice: 'marin',
+				instructions: '',
+				history: [],
+				tools: [],
+				contextForTurn: async () => {
+					throw new Error('Unavailable');
+				},
+			},
+			() => undefined
+		);
+		socket.open();
+		socket.event({ type: 'session.updated' });
+		await connecting;
+		socket.event({
+			type: 'conversation.item.input_audio_transcription.completed',
+			item_id: 'one',
+			transcript: 'Hello',
+		});
+		await new Promise((resolve) => setTimeout(resolve, 0));
+		expect(socket.sent.at(-1)).toEqual({ type: 'response.create' });
+	});
+
 	it('configures current Realtime audio events and forwards streamed output', async () => {
 		const socket = new FakeSocket();
 		const adapter = new OpenAIRealtimeVoiceAdapter(
