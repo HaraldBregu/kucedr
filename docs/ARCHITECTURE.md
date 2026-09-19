@@ -42,7 +42,7 @@ command access. The terminal service is a separate typed IPC capability; see
 
 Workspace instruction files include `AGENTS.md`, `BOOTSTRAP.md`, `HEALTH.md`, `IDENTITY.md`,
 `SOUL.md`, and `USER.md`. The standalone memory module stores its configuration and
-`MEMORY.md` under `~/.kucedr/memory`; conversation history and memory remain separate from the
+UUID-named Markdown run snapshots and consolidated `MEMORY.md` under `~/.kucedr/memory`; the memory processor reads these snapshots instead of the session store. Conversation history and memory remain separate from the
 searchable RAG index.
 
 RAG configuration selects source folders, an embedding provider/model, a vector database, and
@@ -67,7 +67,7 @@ Chromium state and crash dumps uses Electron's own platform-specific paths.
 | Profile path         | Purpose                                                                 |
 | -------------------- | ----------------------------------------------------------------------- |
 | `settings/`          | App, agent, provider, RAG, task, account, and integration configuration |
-| `memory/`            | Memory configuration, processing state, and `MEMORY.md`                 |
+| `memory/`            | Memory configuration, run snapshots, processing state, and `MEMORY.md`  |
 | `workspace/`         | Default agent working directory and personalization Markdown files      |
 | `sessions/`          | Conversation/session persistence                                        |
 | `skills/`            | Installed skill instructions                                            |

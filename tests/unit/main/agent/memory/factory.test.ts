@@ -26,6 +26,7 @@ import { LlmModel } from '../../../../../src/main/models/adapters/llm';
 import { getProvider } from '../../../../../src/main/settings_store';
 import { scanSources } from '../../../../../src/main/memory/sources';
 import type { MemoryState } from '../../../../../src/main/memory/types';
+import { atomicWrite } from '../../../../../src/main/shared/atomic_write';
 
 it('persists independent configuration and invokes the configured provider directly without tools', async () => {
 	let persisted: MemoryState | undefined;
@@ -60,6 +61,13 @@ it('persists independent configuration and invokes the configured provider direc
 	(cron.schedule as jest.Mock).mockReturnValue({ destroy });
 	const first = createMemory(() => ({ location: '/home/test/.kucedr/workspace' }));
 	await first.start();
+	const sessionId = '11111111-1111-4111-8111-111111111111';
+	await first.capture(sessionId, [{ role: 'user', content: 'Remember this run.' }]);
+	expect(atomicWrite).toHaveBeenCalledWith(
+		`/home/test/.kucedr/memory/${sessionId}.md`,
+		expect.stringContaining('> Remember this run.')
+	);
+	expect(scanSources).toHaveBeenCalledWith();
 	expect(Store).toHaveBeenCalledWith(
 		expect.objectContaining({ name: 'settings', cwd: '/home/test/.kucedr/memory' })
 	);

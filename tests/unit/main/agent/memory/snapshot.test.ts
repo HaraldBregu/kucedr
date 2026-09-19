@@ -1,5 +1,6 @@
 import { snapshotMarkdown } from '../../../../../src/main/memory/snapshot';
 import { snapshotSource } from '../../../../../src/main/memory/snapshot_source';
+import { sessionMemoryPath } from '../../../../../src/main/memory/session_path';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
@@ -26,4 +27,8 @@ it('round trips visible messages through robust Markdown blocks', () => {
 		user,
 		'Visible answer',
 	]);
+});
+
+it('rejects a session ID that could escape the memory folder', () => {
+	expect(() => sessionMemoryPath('../MEMORY')).toThrow('valid memory session ID');
 });

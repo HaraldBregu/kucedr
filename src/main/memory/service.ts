@@ -52,8 +52,9 @@ export class Memory implements MemoryService {
 		return recall(await this.read(), query);
 	}
 	async capture(sessionId: string, messages: readonly MemoryMessage[]): Promise<void> {
-		const markdown = snapshotMarkdown(sessionId, messages);
-		await this.lock(() => this.dependencies.writeSession(sessionId, markdown));
+		const id = sessionId.toLowerCase();
+		const markdown = snapshotMarkdown(id, messages);
+		await this.lock(() => this.dependencies.writeSession(id, markdown));
 	}
 	async remove(sessionId: string): Promise<void> {
 		await this.lock(() => this.dependencies.removeSession(sessionId));
