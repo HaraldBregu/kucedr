@@ -23,7 +23,10 @@ it('captures finalized realtime voice turns in their persisted order', () => {
 		conversation.addAssistantTranscript('Spoken answer.');
 		expect(capture).toHaveBeenLastCalledWith(conversation.persistenceSessionId, [
 			expect.objectContaining({ role: 'user', content: 'Spoken question.' }),
-			expect.objectContaining({ role: 'assistant', content: 'Spoken answer.' }),
+			expect.objectContaining({
+				role: 'assistant',
+				content: [expect.objectContaining({ text: 'Spoken answer.' })],
+			}),
 		]);
 		conversation.dispose?.();
 	} finally {
