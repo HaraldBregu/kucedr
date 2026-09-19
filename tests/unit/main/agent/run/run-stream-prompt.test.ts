@@ -763,7 +763,7 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
 		expect(events.at(-1)).toMatchObject({
 			type: 'run_finished',
-			result: { text: 'done', stopReason: 'end_turn' },
+			result: { text: 'done', stopReason: 'budget_exhausted' },
 		});
 	});
 	it.each(['output', 'calls', 'turns', 'empty'] as const)(

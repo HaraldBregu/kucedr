@@ -46,6 +46,8 @@ import { filterPlanTools } from '../plan/tools';
 import { projectPromptAttachments, resolvePromptInputCapabilities } from '../attachments';
 import { createBackgroundBrowser } from '../tools/web/browser/background';
 import { ExecutionBudget } from '../execution/budget';
+import { skipToolCalls } from './skip';
+import { startsBackgroundRecorder } from './recorder';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -64,23 +66,6 @@ const MAX_TOOL_CALLS = 100;
 const MAX_TOOL_OUTPUT_BYTES = 2_000_000;
 const MAX_PAID_TOOL_CALLS = 3;
 const MAX_BOT_WEB_TOOL_CALLS = 8;
-const BACKGROUND_RECORDER_IDS = new Set([
-	'microphone_recorder',
-	'camera_recorder',
-	'screen_recorder',
-]);
-
-function startsBackgroundRecorder(call: import('../types').ToolCall): boolean {
-	if (!BACKGROUND_RECORDER_IDS.has(call.name) || call.result?.isError) return false;
-	if (typeof call.result?.content !== 'string') return false;
-	try {
-		const result = JSON.parse(call.result.content) as { id?: unknown };
-		return typeof result.id === 'string' && result.id.length > 0;
-	} catch {
-		return false;
-	}
-}
-
 export async function* stream(
 	config: Config,
 	session: SessionState,
@@ -295,10 +280,11 @@ async function* loop(
 		...(mcpDiscovery ? { mcpDiscovery } : {}),
 	};
 
+	let finalization: { instruction: string; stopReason?: string } | undefined;
 	try {
 		while (true) {
 			if (signal.aborted) return;
-			const synthesisOnly = budget.isSynthesisOnly();
+			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
 			const turnTools = synthesisOnly ? [] : tools;
 			const systemPrompt = await buildSystemPrompt(
 				config,
@@ -310,7 +296,11 @@ async function* loop(
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt =
-				input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt;
+				[
+					input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt,
+					finalization?.instruction,
+					synthesisOnly ? 'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.' : '',
+				].filter(Boolean).join('\n\n');
 			const workspaceContext =
 				contextMode === 'workspace' && options.instructions === undefined
 					? await buildWorkspaceContext(config)
@@ -347,6 +337,18 @@ async function* loop(
 			);
 
 			recordTurn(session, turn);
+			if (synthesisOnly && (turn.toolCalls.length > 0 || !turn.content.trim())) {
+				if (turn.toolCalls.length > 0) {
+					addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems);
+					yield* skipToolCalls(turn.toolCalls, 'Final answer required; this action was not executed.');
+					addToolResults(session, turn.toolCalls);
+				}
+				throw new Error('Agent did not produce a non-empty final answer without tool calls.');
+			}
+			if (turn.toolCalls.length === 0 && !turn.content.trim() && input.interactionMode !== 'plan') {
+				finalization = { instruction: 'The previous model response was empty. Answer the user now.' };
+				continue;
+			}
 			if (
 				turn.toolCalls.length === 0 &&
 				input.interactionMode === 'plan' &&
@@ -368,29 +370,34 @@ async function* loop(
 			});
 
 			if (turn.toolCalls.length === 0) {
+				if (finalization?.stopReason) session.stopReason = finalization.stopReason;
 				const result = toResult(session, 'success');
 				yield { type: 'run_finished', result };
 				return;
 			}
-			if (
-				budget.wouldExceed(
-					turn.toolCalls.map((call) => ({
-						tool: tools.find((tool) => tool.id === call.name),
-						input: call.args,
-					}))
-				)
-			) {
-				budget.exhausted = true;
-				session.stopReason = 'budget_exhausted';
-				yield { type: 'run_finished', result: toResult(session, 'success') };
-				return;
-			}
-
-			if (isExhausted(session)) {
-				session.stopReason = 'max_iterations';
-				const result = toResult(session, 'error_max_turns');
-				yield { type: 'run_finished', result };
-				return;
+			const budgetExceeded = budget.wouldExceed(
+				turn.toolCalls.map((call) => ({
+					tool: tools.find((tool) => tool.id === call.name), input: call.args,
+				}))
+			);
+			if (budgetExceeded || isExhausted(session)) {
+				const stopReason = budgetExceeded ? 'budget_exhausted' : 'max_iterations';
+				const instruction = budgetExceeded
+					? 'Execution budget exhausted; remaining actions were not executed. Explain the available results and limitations.'
+					: 'Turn limit reached; remaining actions were not executed. Explain the available results and limitations.';
+				yield* skipToolCalls(turn.toolCalls, instruction);
+				addToolResults(session, turn.toolCalls);
+				if (budgetExceeded) {
+					budget.exhausted = true;
+					if (input.agentId === 'subagent') {
+						session.stopReason = stopReason;
+						yield { type: 'run_finished', result: toResult(session, 'success') };
+						return;
+					}
+					budget.allowSynthesis();
+				}
+				finalization = { instruction, stopReason };
+				continue;
 			}
 
 			for await (const event of runToolCalls(
@@ -411,23 +418,21 @@ async function* loop(
 				yield event;
 			}
 			addToolResults(session, turn.toolCalls);
-			if (turn.toolCalls.some(startsBackgroundRecorder)) {
-				yield { type: 'run_finished', result: toResult(session, 'success') };
-				return;
-			}
-			if (
-				budget.exhausted &&
-				input.agentId !== 'subagent' &&
-				turn.toolCalls.some((call) => call.name === 'subagent' || call.name === 'subagents')
-			) {
-				budget.allowSynthesis();
-				continue;
-			}
 			if (budget.exhausted) {
-				session.stopReason = 'budget_exhausted';
-				yield { type: 'run_finished', result: toResult(session, 'success') };
-				return;
+				if (input.agentId === 'subagent') {
+					session.stopReason = 'budget_exhausted';
+					yield { type: 'run_finished', result: toResult(session, 'success') };
+					return;
+				}
+				budget.allowSynthesis();
+				finalization = {
+					instruction: 'Execution budget exhausted. Explain the available results and limitations.',
+					stopReason: 'budget_exhausted',
+				};
+			} else if (turn.toolCalls.some(startsBackgroundRecorder)) {
+				finalization = { instruction: 'Recording started in the background. Confirm its current status without waiting for completion or stopping it.' };
 			}
+
 		}
 	} finally {
 		await closeMcp?.();
