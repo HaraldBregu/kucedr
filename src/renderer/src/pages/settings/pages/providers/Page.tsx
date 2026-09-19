@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus } from 'lucide-react';
+import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
@@ -85,6 +85,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		savedModelId: '',
 		editing: false,
 	});
+	const [customModels, setCustomModels] = useState<string[]>([]);
+	const [loadingCustomModels, setLoadingCustomModels] = useState(false);
 	const [savingProviderId, setSavingProviderId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
@@ -256,6 +258,25 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			setError(getErrorMessage(err, 'Could not save custom model provider.'));
 		} finally {
 			setSavingProviderId(null);
+		}
+	};
+
+	const loadCustomModels = async (): Promise<void> => {
+		const baseUrl = customProvider.baseUrl.trim();
+		const apiKey = customProvider.apiKey.trim();
+		if (!baseUrl || !apiKey) return;
+		setLoadingCustomModels(true);
+		setError(null);
+		try {
+			const models = await window.provider.listCustomModels({ baseUrl, apiKey });
+			setCustomModels(models);
+			if (!customProvider.modelId.trim() && models[0]) {
+				setCustomProvider((current) => ({ ...current, modelId: models[0] }));
+			}
+		} catch (err) {
+			setError(getErrorMessage(err, 'Could not load models from the custom provider.'));
+		} finally {
+			setLoadingCustomModels(false);
 		}
 	};
 
@@ -431,7 +452,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					{customProvider.editing && (
 						<div className="grid gap-2 px-4 pb-4 sm:grid-cols-3">
 							<Input aria-label="Custom provider base URL" autoComplete="off" className="h-8" disabled={saving} placeholder="http://localhost:11434/v1" spellCheck={false} value={customProvider.baseUrl} onChange={(event) => setCustomProvider((current) => ({ ...current, baseUrl: event.target.value }))} />
-							<Input aria-label="Custom provider model ID" autoComplete="off" className="h-8" disabled={saving} placeholder="llama3.2:3b" spellCheck={false} value={customProvider.modelId} onChange={(event) => setCustomProvider((current) => ({ ...current, modelId: event.target.value }))} />
+							<div className="flex gap-2">
+								<Input aria-label="Custom provider model ID" autoComplete="off" className="h-8" disabled={saving} list="custom-provider-models" placeholder="llama3.2:3b" spellCheck={false} value={customProvider.modelId} onChange={(event) => setCustomProvider((current) => ({ ...current, modelId: event.target.value }))} />
+								<Button type="button" variant="outline" size="icon-sm" aria-label="Refresh custom provider models" disabled={saving || loadingCustomModels || !customProvider.baseUrl.trim() || !customProvider.apiKey.trim()} onClick={() => void loadCustomModels()}>{loadingCustomModels ? <LoaderCircle className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}</Button>
+								<datalist id="custom-provider-models">
+									{customModels.map((model) => <option key={model} value={model} />)}
+								</datalist>
+							</div>
 							<Input aria-label="Custom provider API key" autoComplete="off" className="h-8" disabled={saving} placeholder="ollama" spellCheck={false} type="text" value={customProvider.apiKey} onChange={(event) => setCustomProvider((current) => ({ ...current, apiKey: event.target.value }))} />
 							<div className="flex gap-2 sm:col-span-3 sm:justify-end">
 								<Button type="button" variant="outline" size="sm" disabled={saving} onClick={() => setCustomProvider((current) => ({ ...current, apiKey: current.savedApiKey, baseUrl: current.savedBaseUrl, modelId: current.savedModelId, editing: false }))}>{t('common.cancel')}</Button>
