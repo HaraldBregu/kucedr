@@ -44,10 +44,3 @@ export interface StoredEntry {
 	kind?: 'fact' | 'summary';
 	topic?: string;
 }
-export interface Extraction {
-	kind: 'fact' | 'summary';
-	topic: string;
-	text: string;
-	evidence: { source: string; quote: string }[];
-	replaces: string[];
-}
