@@ -43,9 +43,9 @@ describe('toResult', () => {
 		expect(toResult({ ...base, stopReason: undefined }, 'success').stopReason).toBe('end_turn');
 	});
 
-	it('blanks text and preserves stopReason on error', () => {
+	it('preserves the final explanation and stopReason on error', () => {
 		const r = toResult({ ...base, stopReason: 'max' }, 'error_max_turns');
-		expect(r.text).toBe('');
+		expect(r.text).toBe('answer');
 		expect(r.subtype).toBe('error_max_turns');
 		expect(r.stopReason).toBe('max');
 	});

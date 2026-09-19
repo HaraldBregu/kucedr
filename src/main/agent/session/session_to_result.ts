@@ -3,7 +3,7 @@ import type { SessionState } from './session_types';
 
 export function toResult(state: SessionState, subtype: SessionResultSubtype): SessionResult {
 	return {
-		text: subtype === 'success' ? state.finalText : '',
+		text: state.finalText,
 		model: state.model,
 		toolCalls: state.toolCalls,
 		numTurns: state.numTurns,

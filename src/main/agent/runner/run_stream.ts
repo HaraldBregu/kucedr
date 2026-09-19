@@ -383,7 +383,10 @@ async function* loop(
 
 			if (turn.toolCalls.length === 0) {
 				if (finalization?.stopReason) session.stopReason = finalization.stopReason;
-				const result = toResult(session, 'success');
+				const result = toResult(
+					session,
+					finalization?.stopReason === 'max_iterations' ? 'error_max_turns' : 'success'
+				);
 				yield { type: 'run_finished', result };
 				return;
 			}

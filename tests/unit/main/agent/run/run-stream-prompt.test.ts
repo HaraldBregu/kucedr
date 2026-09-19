@@ -813,6 +813,7 @@ describe('run stream system prompt', () => {
 				type: 'run_finished',
 				result: {
 					text: 'done',
+					subtype: boundary === 'turns' ? 'error_max_turns' : 'success',
 					stopReason:
 						boundary === 'turns'
 							? 'max_iterations'
