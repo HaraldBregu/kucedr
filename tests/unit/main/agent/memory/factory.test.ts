@@ -1,5 +1,5 @@
 jest.mock('electron-store', () => ({ __esModule: true, default: jest.fn() }));
-jest.mock('node:fs/promises', () => ({ readFile: jest.fn(), mkdir: jest.fn() }));
+jest.mock('node:fs/promises', () => ({ access: jest.fn(), readFile: jest.fn(), mkdir: jest.fn() }));
 jest.mock('node-cron', () => ({ __esModule: true, default: { schedule: jest.fn() } }));
 jest.mock('../../../../../src/main/agent/agent_store', () => ({ getChatbotModel: jest.fn() }));
 jest.mock('../../../../../src/main/models/adapters/llm', () => ({ LlmModel: jest.fn() }));
@@ -42,6 +42,7 @@ it('persists independent configuration and invokes the configured provider direc
 	(fs.readFile as jest.Mock).mockRejectedValue(
 		Object.assign(new Error('missing'), { code: 'ENOENT' })
 	);
+	(fs.access as jest.Mock).mockResolvedValue(undefined);
 	(scanSources as jest.Mock).mockResolvedValue([]);
 	(getChatbotModel as jest.Mock).mockReturnValue({
 		providerId: 'initial',

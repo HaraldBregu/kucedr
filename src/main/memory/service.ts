@@ -94,7 +94,7 @@ export class Memory implements MemoryService {
 		this.controller = new AbortController();
 		const signal = AbortSignal.any([this.controller.signal, AbortSignal.timeout(5 * 60_000)]);
 		this.error = null;
-		this.active = this.process(signal)
+		this.active = this.process(signal, trigger)
 			.catch((error: unknown) => {
 				if (!this.controller?.signal.aborted)
 					this.error = error instanceof Error ? error.message : 'Memory refresh failed.';
@@ -252,12 +252,19 @@ export class Memory implements MemoryService {
 			if (state !== this.state) this.persist(state);
 		});
 	}
-	private async process(signal: AbortSignal): Promise<void> {
+	private async process(
+		signal: AbortSignal,
+		trigger: 'manual' | 'startup' | 'wake' | 'cron'
+	): Promise<void> {
+		const wasInitialized = this.state.initialized;
 		await this.initialize();
 		signal.throwIfAborted();
 		const config = this.getConfig();
 		if (!config.providerId || !config.modelId) return;
 		this.dependencies.validate(config);
+		if (trigger === 'manual' && wasInitialized && !(await this.dependencies.exists())) {
+			await this.lock(async () => this.persist({ ...this.state, checkpoints: {} }));
+		}
 		const sources = await this.dependencies.sources();
 		this.pending = sources.reduce(
 			(total, source) =>

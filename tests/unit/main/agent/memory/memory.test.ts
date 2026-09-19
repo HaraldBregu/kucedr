@@ -11,16 +11,17 @@ function setup(initialized = true) {
  const sessions: SourceSession[] = [{ id: 'chat', messages: [{ fingerprint: 'first', role: 'user', text: 'I prefer concise answers.' }] }];
  const infer = jest.fn().mockResolvedValue('{"entries":[]}');
  const write = jest.fn(async (next: string) => { markdown = next; });
+	const exists = jest.fn(async () => true);
  const stop = jest.fn();
  const dependencies: MemoryDependencies = {
   store: { load: () => structuredClone(state), save: (next) => { state = structuredClone(next); } },
-  sources: jest.fn(async () => structuredClone(sessions)), read: async () => markdown, write, infer,
+		sources: jest.fn(async () => structuredClone(sessions)), exists, read: async () => markdown, write, infer,
   selection: jest.fn(() => ({ providerId: 'chat-provider', modelId: 'chat-model', modelOptions: {} })),
   schedule: jest.fn(() => ({ stop })), validate: jest.fn(),
  };
  const memory = new Memory(dependencies);
  const extracted = JSON.stringify({ entries: [{ kind: 'fact', topic: 'Preferences', text: 'Prefers concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] }] });
- return { memory, dependencies, infer, write, sessions, extracted, stop, state: () => state, markdown: () => markdown };
+	return { memory, dependencies, exists, infer, write, sessions, extracted, stop, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
 }
 
 it('baselines existing conversations without backfilling or model calls', async () => {
@@ -41,6 +42,17 @@ it('processes changes once and preserves manual Markdown', async () => {
  const calls = h.infer.mock.calls.length;
  await h.memory.refresh();
  expect(h.infer).toHaveBeenCalledTimes(calls);
+});
+
+it('rebuilds a missing memory document during manual generation', async () => {
+	const h = setup();
+	h.state().checkpoints.chat = ['first'];
+	h.setMarkdown('');
+	h.exists.mockResolvedValue(false);
+	h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+	await h.memory.refresh();
+	expect(h.markdown()).toContain('Prefers concise answers.');
+	expect(h.state().checkpoints.chat).toEqual(['first']);
 });
 
 it('detects inserted voice transcripts and edited messages without relying on message count', async () => {

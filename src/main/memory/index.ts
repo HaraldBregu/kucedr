@@ -45,6 +45,14 @@ export function createMemory(configuration: () => Config): MemoryService {
 		validate: validateConfiguration,
 		prepare: () => migrateWorkspaceMemory(configuration()),
 		sources: () => scanSources(configuration().location),
+		exists: () =>
+			fs
+				.access(memoryPath())
+				.then(() => true)
+				.catch((error: NodeJS.ErrnoException) => {
+					if (error.code === 'ENOENT') return false;
+					throw error;
+				}),
 		read: () =>
 			fs.readFile(memoryPath(), 'utf8').catch((error: NodeJS.ErrnoException) => {
 				if (error.code === 'ENOENT') return '';
