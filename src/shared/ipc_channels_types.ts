@@ -631,6 +631,10 @@ export interface ProviderInvokeChannelMap {
 		args: [kind?: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>];
 		result: import('./provider_types').StoredProvider[];
 	};
+	[ProviderChannels.listCustomModels]: {
+		args: [input: { baseUrl: string; apiKey: string }];
+		result: string[];
+	};
 	[ProviderChannels.getChannel]: {
 		args: [id: string];
 		result: import('./channels_types').ChannelCredentialSummary | undefined;

@@ -64,6 +64,10 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			);
 			return setProvider(provider, input.kind);
 		});
+		registerQueryWithEvent(ProviderStoreChannels.listCustomModels, async (event, value) => {
+			trusted.assert(event);
+			return this.listCustomModels(value);
+		});
 		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
 			trusted.assert(event);
 			const normalizedId = this.id(id);
@@ -138,6 +142,32 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const modelId = typeof value === 'string' ? value.trim() : '';
 		if (!modelId || modelId.length > 256) throw new Error('The provider model ID is invalid.');
 		return modelId;
+	}
+
+	private async listCustomModels(value: unknown): Promise<string[]> {
+		const record = this.record(value);
+		const baseUrl = this.baseUrl(record.baseUrl);
+		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
+		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
+		const signal = AbortSignal.timeout(10_000);
+		let response: Response;
+		try {
+			response = await fetch(new URL('models', `${baseUrl}/`), {
+				headers: { Authorization: `Bearer ${apiKey}` },
+				signal,
+			});
+		} catch {
+			throw new Error('Could not reach the custom model provider.');
+		}
+		if (!response.ok) throw new Error('Could not load models from the custom provider.');
+		const body = (await response.json()) as { data?: unknown };
+		if (!Array.isArray(body.data)) throw new Error('The custom provider returned an invalid model list.');
+		return [...new Set(
+			body.data
+				.map((entry) => (entry && typeof entry === 'object' ? (entry as { id?: unknown }).id : ''))
+				.filter((id): id is string => typeof id === 'string' && id.trim().length > 0 && id.length <= 256)
+				.map((id) => id.trim())
+		)].sort((left, right) => left.localeCompare(right));
 	}
 
 	private channelInput(value: unknown): ChannelCredentialSaveInput {

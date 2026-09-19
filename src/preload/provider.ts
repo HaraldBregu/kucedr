@@ -40,6 +40,8 @@ export const provider: ProviderApi = {
 			? typedInvokeUnwrap(ProviderStoreChannels.list, kind)
 			: typedInvokeUnwrap(ProviderStoreChannels.list);
 	},
+	listCustomModels: (input: { baseUrl: string; apiKey: string }) =>
+		typedInvokeUnwrap(ProviderStoreChannels.listCustomModels, input),
 	getChannel: (id: string) => typedInvokeUnwrap(ProviderStoreChannels.getChannel, id),
 	setChannel: (input: ChannelCredentialSaveInput) =>
 		typedInvokeUnwrap(ProviderStoreChannels.setChannel, input),
