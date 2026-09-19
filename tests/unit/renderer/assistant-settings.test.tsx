@@ -592,7 +592,9 @@ it.each([
 ] as const)('loads the saved %s configuration on its dedicated page', async (name, kind, model, Page) => {
 	render(<MemoryRouter><Page /></MemoryRouter>);
 	expect(screen.getByRole('heading', { name: `settings.tabs.${name}` })).toBeInTheDocument();
-	await waitFor(() => expect(screen.getByRole('button', { name: model })).toHaveAttribute('aria-haspopup', 'dialog'));
+	await waitFor(() => expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(model));
+	expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
+	expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
 	expect(window.agent.getToolModel).toHaveBeenCalledWith(kind);
 	expect(window.agent.getToolModel).not.toHaveBeenCalledWith(kind === 'audio' ? 'image' : 'audio');
 });
