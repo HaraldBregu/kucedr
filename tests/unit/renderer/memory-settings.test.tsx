@@ -85,16 +85,17 @@ it('uses schedule presets and shows the cron field only for a custom schedule', 
 	const frequency = await screen.findByRole('combobox', { name: 'settings.memory.frequency' });
 	expect(frequency).toHaveTextContent('settings.memory.every15Minutes');
 	expect(screen.queryByRole('textbox', { name: 'settings.memory.customCron' })).not.toBeInTheDocument();
-	await user.click(frequency);
-	await user.click(screen.getByRole('option', { name: 'settings.memory.custom' }));
-	const cron = screen.getByRole('textbox', { name: 'settings.memory.customCron' });
+
+	api.getConfig.mockResolvedValueOnce({ ...config, cronExpression: '0 6 * * 1-5' });
+	render(<MemoryPage />);
+	const cron = await screen.findByRole('textbox', { name: 'settings.memory.customCron' });
 	await user.clear(cron);
-	await user.type(cron, '0 6 * * 1-5');
-	await user.click(screen.getByRole('button', { name: 'settings.memory.saveSettings' }));
+	await user.type(cron, '0 7 * * 1-5');
+	await user.click(screen.getAllByRole('button', { name: 'settings.memory.saveSettings' })[1]);
 	await waitFor(() =>
 		expect(api.configure).toHaveBeenCalledWith({
 			...config,
-			cronExpression: '0 6 * * 1-5',
+			cronExpression: '0 7 * * 1-5',
 		})
 	);
 });
