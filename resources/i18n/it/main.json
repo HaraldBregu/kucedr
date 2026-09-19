@@ -164,13 +164,7 @@
 			"idle": "Inattivo",
 			"pending": "In attesa: {{count}}",
 			"lastSuccess": "Ultimo aggiornamento riuscito",
-			"never": "Mai",
-			"content": "Memoria salvata",
-			"contentDescription": "Rivedi e modifica i contenuti ricordati e le tue note personali.",
-			"saveContent": "Salva memoria",
-			"clear": "Cancella memoria",
-			"clearConfirm": "Cancellare tutti i ricordi salvati e le note personali?",
-			"forget": "Dimentica"
+			"never": "Mai"
 		},
 		"title": "Impostazioni",
 		"sidebar": {

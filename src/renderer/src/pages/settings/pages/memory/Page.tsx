@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { MemoryConfig, MemoryEntry, MemoryStatus } from '@shared/memory_types';
+import type { MemoryConfig, MemoryStatus } from '@shared/memory_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import {
 	Select,
@@ -36,21 +35,13 @@ export default function MemoryPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [config, setConfig] = useState<MemoryConfig | null>(null);
 	const [status, setStatus] = useState<MemoryStatus | null>(null);
-	const [entries, setEntries] = useState<MemoryEntry[]>([]);
-	const [markdown, setMarkdown] = useState('');
-	const [original, setOriginal] = useState('');
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [scheduleSelection, setScheduleSelection] = useState('every15Minutes');
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([
-			window.memory.getConfig(),
-			window.memory.status(),
-			window.memory.list(),
-			window.memory.read(),
-		])
-			.then(([next, progress, facts, text]) => {
+		void Promise.all([window.memory.getConfig(), window.memory.status()])
+			.then(([next, progress]) => {
 				if (!mounted) return;
 				setConfig(next);
 				setScheduleSelection(
@@ -58,9 +49,6 @@ export default function MemoryPage(): React.JSX.Element {
 						'custom'
 				);
 				setStatus(progress);
-				setEntries(facts);
-				setMarkdown(text);
-				setOriginal(text);
 			})
 			.catch((failure: unknown) => {
 				if (mounted) setError(String(failure));
@@ -80,17 +68,11 @@ export default function MemoryPage(): React.JSX.Element {
 			clearInterval(timer);
 		};
 	}, []);
-	const run = async (operation: () => Promise<unknown>, reload = false): Promise<void> => {
+	const run = async (operation: () => Promise<unknown>): Promise<void> => {
 		setBusy(true);
 		setError(null);
 		try {
 			await operation();
-			if (reload) {
-				const [facts, text] = await Promise.all([window.memory.list(), window.memory.read()]);
-				setEntries(facts);
-				setMarkdown(text);
-				setOriginal(text);
-			}
 			setStatus(await window.memory.status());
 		} catch (failure) {
 			setError(failure instanceof Error ? failure.message : String(failure));
@@ -110,7 +92,6 @@ export default function MemoryPage(): React.JSX.Element {
 		selectedModel?.metadata?.documentationStatus === 'verified'
 			? selectedModel.metadata.inputs
 			: {};
-	const dirty = markdown !== original;
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -271,8 +252,8 @@ export default function MemoryPage(): React.JSX.Element {
 						action={
 							<Button
 								variant="outline"
-								disabled={busy || status?.running || dirty || !config.providerId || !config.modelId}
-								onClick={() => void run(() => window.memory.refresh(), true)}
+								disabled={busy || status?.running || !config.providerId || !config.modelId}
+								onClick={() => void run(() => window.memory.refresh())}
 							>
 								{t('settings.memory.refresh')}
 							</Button>
@@ -293,51 +274,6 @@ export default function MemoryPage(): React.JSX.Element {
 								{status.error}
 							</p>
 						)}
-					</SettingsSection>
-					<SettingsSection
-						title={t('settings.memory.content')}
-						description={t('settings.memory.contentDescription')}
-					>
-						<Textarea
-							aria-label={t('settings.memory.content')}
-							className="min-h-60 font-mono text-sm"
-							value={markdown}
-							disabled={busy}
-							onChange={(event) => setMarkdown(event.target.value)}
-						/>
-						<div className="flex flex-wrap gap-2">
-							<Button
-								disabled={busy || !dirty}
-								onClick={() => void run(() => window.memory.edit(markdown, original), true)}
-							>
-								{t('settings.memory.saveContent')}
-							</Button>
-							<Button
-								variant="destructive"
-								disabled={busy || dirty || !original}
-								onClick={() => {
-									if (window.confirm(t('settings.memory.clearConfirm')))
-										void run(() => window.memory.clear(), true);
-								}}
-							>
-								{t('settings.memory.clear')}
-							</Button>
-						</div>
-						{entries.map((entry) => (
-							<SettingsRow
-								key={entry.id}
-								title={entry.fact}
-								actions={
-									<Button
-										variant="ghost"
-										disabled={busy || dirty}
-										onClick={() => void run(() => window.memory.forget(entry.id), true)}
-									>
-										{t('settings.memory.forget')}
-									</Button>
-								}
-							/>
-						))}
 					</SettingsSection>
 				</>
 			)}

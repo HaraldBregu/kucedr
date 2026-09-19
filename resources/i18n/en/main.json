@@ -164,13 +164,7 @@
 			"idle": "Idle",
 			"pending": "Pending: {{count}}",
 			"lastSuccess": "Last successful refresh",
-			"never": "Never",
-			"content": "Saved memory",
-			"contentDescription": "Review and edit remembered content and your manual notes.",
-			"saveContent": "Save memory",
-			"clear": "Clear memory",
-			"clearConfirm": "Clear all saved memories and manual notes?",
-			"forget": "Forget"
+			"never": "Never"
 		},
 		"title": "Settings",
 		"sidebar": {

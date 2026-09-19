@@ -100,29 +100,11 @@ it('uses schedule presets and shows the cron field only for a custom schedule', 
 	);
 });
 
-it.each(['Disk is full', 'Memory changed; reload before editing.'])(
-	'retains unsaved notes after edit failure: %s',
-	async (message) => {
-		api.edit.mockRejectedValueOnce(new Error(message));
-		const user = userEvent.setup();
-		render(<MemoryPage />);
-		const editor = await screen.findByRole('textbox', { name: 'settings.memory.content' });
-		await user.type(editor, '\nManual note');
-		expect(screen.getByRole('button', { name: 'settings.memory.refresh' })).toBeDisabled();
-		expect(screen.getByRole('button', { name: 'settings.memory.forget' })).toBeDisabled();
-		await user.click(screen.getByRole('button', { name: 'settings.memory.saveContent' }));
-		expect(await screen.findByRole('alert')).toHaveTextContent(message);
-		expect(api.edit).toHaveBeenCalledWith(
-			'# Notes\nPrefers tea\nManual note',
-			'# Notes\nPrefers tea'
-		);
-		expect(editor).toHaveValue('# Notes\nPrefers tea\nManual note');
-	}
-);
-
-it('forgets an entry using its stable identifier', async () => {
-	const user = userEvent.setup();
+it('does not load or show the memory file content', async () => {
 	render(<MemoryPage />);
-	await user.click(await screen.findByRole('button', { name: 'settings.memory.forget' }));
-	await waitFor(() => expect(api.forget).toHaveBeenCalledWith('fact-1'));
+	await screen.findByRole('combobox', { name: 'settings.memory.model' });
+	expect(api.read).not.toHaveBeenCalled();
+	expect(api.list).not.toHaveBeenCalled();
+	expect(screen.queryByText('# Notes')).not.toBeInTheDocument();
+	expect(screen.queryByText('Prefers tea')).not.toBeInTheDocument();
 });
