@@ -1217,7 +1217,7 @@ export interface MemoryInvokeChannelMap {
 	[MemoryChannels.status]: { args: []; result: MemoryStatus };
 	[MemoryChannels.list]: { args: []; result: MemoryEntry[] };
 	[MemoryChannels.read]: { args: []; result: string };
-	[MemoryChannels.edit]: { args: [markdown: string]; result: void };
+	[MemoryChannels.edit]: { args: [markdown: string, expected?: string]; result: void };
 	[MemoryChannels.forget]: { args: [id: string]; result: { removed: boolean } };
 	[MemoryChannels.clear]: { args: []; result: void };
 }

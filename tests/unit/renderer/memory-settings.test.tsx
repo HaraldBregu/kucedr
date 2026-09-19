@@ -54,8 +54,8 @@ it('saves independent memory configuration through the memory API', async () => 
 	await waitFor(() => expect(api.configure).toHaveBeenCalledWith({ ...config, enabled: false }));
 });
 
-it('retains unsaved notes after a failed edit and prevents destructive reloads', async () => {
-	api.edit.mockRejectedValueOnce(new Error('Disk is full'));
+it.each(['Disk is full', 'Memory changed; reload before editing.'])('retains unsaved notes after edit failure: %s', async (message) => {
+	api.edit.mockRejectedValueOnce(new Error(message));
 	const user = userEvent.setup();
 	render(<MemoryPage />);
 	const editor = await screen.findByRole('textbox', { name: 'settings.memory.content' });
@@ -63,7 +63,8 @@ it('retains unsaved notes after a failed edit and prevents destructive reloads',
 	expect(screen.getByRole('button', { name: 'settings.memory.refresh' })).toBeDisabled();
 	expect(screen.getByRole('button', { name: 'settings.memory.forget' })).toBeDisabled();
 	await user.click(screen.getByRole('button', { name: 'settings.memory.saveContent' }));
-	expect(await screen.findByRole('alert')).toHaveTextContent('Disk is full');
+	expect(await screen.findByRole('alert')).toHaveTextContent(message);
+	expect(api.edit).toHaveBeenCalledWith('# Notes\nPrefers tea\nManual note', '# Notes\nPrefers tea');
 	expect(editor).toHaveValue('# Notes\nPrefers tea\nManual note');
 });
 

@@ -264,7 +264,7 @@ export default function MemoryPage(): React.JSX.Element {
 						<div className="flex flex-wrap gap-2">
 							<Button
 								disabled={busy || !dirty}
-								onClick={() => void run(() => window.memory.edit(markdown), true)}
+								onClick={() => void run(() => window.memory.edit(markdown, original), true)}
 							>
 								{t('settings.memory.saveContent')}
 							</Button>

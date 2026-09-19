@@ -26,7 +26,7 @@ export interface MemoryService {
 	context(query: string): Promise<string>;
 	list(): Promise<MemoryEntry[]>;
 	read(): Promise<string>;
-	edit(markdown: string): Promise<void>;
+	edit(markdown: string, expected?: string): Promise<void>;
 	forget(id: string): Promise<{ removed: boolean }>;
 	clear(): Promise<void>;
 	start(): Promise<void>;
@@ -39,7 +39,7 @@ export interface MemoryApi {
 	status(): Promise<MemoryStatus>;
 	list(): Promise<MemoryEntry[]>;
 	read(): Promise<string>;
-	edit(markdown: string): Promise<void>;
+	edit(markdown: string, expected?: string): Promise<void>;
 	forget(id: string): Promise<{ removed: boolean }>;
 	clear(): Promise<void>;
 }
