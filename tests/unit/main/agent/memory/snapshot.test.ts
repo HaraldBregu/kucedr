@@ -22,7 +22,8 @@ it('round trips visible messages through robust Markdown blocks', () => {
 	expect(markdown).toContain('**Date:** 2026-09-19T14:30:00.000Z');
 	expect(markdown).toContain('**User:**');
 	expect(markdown).toContain('**Assistant:**');
-	expect(markdown).not.toContain('<!--');
+	expect(markdown).not.toContain('kucedr-memory-session');
+	expect(markdown).not.toContain('<!-- kucedr-message:');
 	expect(markdown).toContain('> # Heading');
 	expect(markdown).not.toContain('hidden system text');
 	expect(markdown).not.toContain('hidden internal text');
