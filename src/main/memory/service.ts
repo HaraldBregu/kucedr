@@ -47,16 +47,16 @@ export class Memory implements MemoryService {
 	}
 
 	async configure(patch: Partial<MemoryConfig>): Promise<MemoryConfig> {
-		const config = { ...this.getConfig(), ...patch };
-		if (
-			(patch.providerId !== undefined && patch.providerId !== this.state.config.providerId) ||
-			(patch.modelId !== undefined && patch.modelId !== this.state.config.modelId)
-		) {
-			config.modelOptions = patch.modelOptions ?? {};
-		}
-		this.dependencies.validate(config);
-		this.invalidate();
-		await this.lock(async () => {
+		return this.lock(async () => {
+			const config = { ...this.getConfig(), ...patch };
+			if (
+				(patch.providerId !== undefined && patch.providerId !== this.state.config.providerId) ||
+				(patch.modelId !== undefined && patch.modelId !== this.state.config.modelId)
+			) {
+				config.modelOptions = patch.modelOptions ?? {};
+			}
+			this.dependencies.validate(config);
+			this.invalidate();
 			this.persist({
 				...this.state,
 				config,
@@ -64,14 +64,16 @@ export class Memory implements MemoryService {
 					Boolean(config.providerId && config.modelId) || this.state.modelInitialized,
 			});
 			this.reschedule();
+			return this.getConfig();
 		});
-		return this.getConfig();
 	}
 
 	async start(): Promise<void> {
 		this.stopped = false;
-		await this.initialize();
 		this.reschedule();
+		await this.initialize().catch((error: unknown) => {
+			this.error = error instanceof Error ? error.message : 'Memory initialization failed.';
+		});
 		await this.refresh('startup');
 	}
 	async stop(): Promise<void> {

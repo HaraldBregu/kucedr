@@ -9,12 +9,18 @@ export function parseMemories(text: string): StoredEntry[] {
 		if (!match) return [];
 		const fact = match[1].trim().replace(/\s+/gu, ' ');
 		if (!fact) return [];
+		let topic = match[3];
+		try {
+			if (topic) topic = decodeURIComponent(topic);
+		} catch {
+			topic = undefined;
+		}
 		return [
 			{
 				id: `memory-${fingerprint(fact).slice(0, 16)}`,
 				fact,
 				lineIndex,
-				...(match[2] ? { kind: match[2] as 'fact' | 'summary', topic: match[3] } : {}),
+				...(match[2] ? { kind: match[2] as 'fact' | 'summary', topic } : {}),
 			},
 		];
 	});

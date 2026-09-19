@@ -68,7 +68,12 @@ export function createMemory(configuration: () => Config): MemoryService {
 				provider: { id: config.providerId, apiKey: provider.apiKey, baseURL: provider.baseUrl },
 				model: config.modelId,
 				options: config.modelOptions,
-				maxTokens: 4096,
+				maxTokens:
+					typeof config.modelOptions.max_output_tokens === 'number'
+						? config.modelOptions.max_output_tokens
+						: typeof config.modelOptions.max_tokens === 'number'
+							? config.modelOptions.max_tokens
+							: 4096,
 				signal,
 				tools: [],
 				messages: [{ role: 'user', content: prompt }],
