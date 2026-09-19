@@ -207,6 +207,7 @@ export class Memory implements MemoryService {
 		}
 	}
 	private async initialize(): Promise<void> {
+		await this.dependencies.prepare?.();
 		await this.lock(async () => {
 			let state = this.state;
 			if (state.mutation) {

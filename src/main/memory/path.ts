@@ -1,6 +1,9 @@
 import path from 'node:path';
-import type { Config } from '../agent/types';
+import { userDataLocation } from '../shared/user_data_location';
 
-export function memoryPath(config: Config): string {
-	return path.join(path.resolve(config.location), 'MEMORY.md');
+export const MEMORY_FILE = 'MEMORY.md';
+export const MEMORY_SETTINGS_FILE = 'settings.json';
+
+export function memoryPath(): string {
+	return path.join(userDataLocation(), 'memory', MEMORY_FILE);
 }

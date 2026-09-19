@@ -12,6 +12,8 @@ import { atomicWrite } from '../shared/atomic_write';
 import { Memory } from './service';
 import { defaultState } from './defaults';
 import { memoryPath } from './path';
+import { migrateWorkspaceMemory } from './migrate';
+import { prepareMemorySettings } from './settings';
 import { scanSources } from './sources';
 import { validateConfiguration } from './configuration';
 import type { MemoryState } from './types';
@@ -20,8 +22,8 @@ export { memoryPath } from './path';
 
 export function createMemory(configuration: () => Config): MemoryService {
 	const store = new Store<MemoryState>({
-		name: 'memory',
-		cwd: path.join(userDataLocation(), 'settings'),
+		name: 'settings',
+		cwd: prepareMemorySettings(),
 		accessPropertiesByDotNotation: false,
 		defaults: defaultState(),
 	});
@@ -42,14 +44,15 @@ export function createMemory(configuration: () => Config): MemoryService {
 			};
 		},
 		validate: validateConfiguration,
+		prepare: () => migrateWorkspaceMemory(configuration()),
 		sources: () => scanSources(configuration().location),
 		read: () =>
-			fs.readFile(memoryPath(configuration()), 'utf8').catch((error: NodeJS.ErrnoException) => {
+			fs.readFile(memoryPath(), 'utf8').catch((error: NodeJS.ErrnoException) => {
 				if (error.code === 'ENOENT') return '';
 				throw error;
 			}),
 		write: async (markdown) => {
-			const file = memoryPath(configuration());
+			const file = memoryPath();
 			await fs.mkdir(path.dirname(file), { recursive: true });
 			await atomicWrite(file, markdown);
 		},
