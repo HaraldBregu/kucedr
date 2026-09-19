@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { MemoryConfig, MemoryStatus } from '@shared/memory_types';
 import { Button } from '@/components/ui/button';
@@ -38,11 +38,13 @@ export default function MemoryPage(): React.JSX.Element {
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [scheduleSelection, setScheduleSelection] = useState('every15Minutes');
+	const persistedConfig = useRef<string | null>(null);
 	useEffect(() => {
 		let mounted = true;
 		void Promise.all([window.memory.getConfig(), window.memory.status()])
 			.then(([next, progress]) => {
 				if (!mounted) return;
+				persistedConfig.current = JSON.stringify(next);
 				setConfig(next);
 				setScheduleSelection(
 					MEMORY_SCHEDULES.find((schedule) => schedule.cron === next.cronExpression)?.key ??
@@ -68,6 +70,29 @@ export default function MemoryPage(): React.JSX.Element {
 			clearInterval(timer);
 		};
 	}, []);
+	useEffect(() => {
+		if (!config) return;
+		const serialized = JSON.stringify(config);
+		if (serialized === persistedConfig.current) return;
+		let active = true;
+		const timer = setTimeout(() => {
+			setError(null);
+			void window.memory
+				.configure(config)
+				.then((saved) => {
+					if (!active) return;
+					persistedConfig.current = JSON.stringify(saved);
+					setConfig(saved);
+				})
+				.catch((failure: unknown) => {
+					if (active) setError(failure instanceof Error ? failure.message : String(failure));
+				});
+		}, 400);
+		return () => {
+			active = false;
+			clearTimeout(timer);
+		};
+	}, [config]);
 	const run = async (operation: () => Promise<unknown>): Promise<void> => {
 		setBusy(true);
 		setError(null);
@@ -142,7 +167,6 @@ export default function MemoryPage(): React.JSX.Element {
 								<ModelOptions
 									inputs={inputs}
 									values={config.modelOptions}
-									inlineAdvanced
 									onChange={(path, value) =>
 										setConfig({
 											...config,
@@ -241,11 +265,6 @@ export default function MemoryPage(): React.JSX.Element {
 								}
 							/>
 						</SettingsPanel>
-						<Button
-							onClick={() => void run(async () => setConfig(await window.memory.configure(config)))}
-						>
-							{t('settings.memory.saveSettings')}
-						</Button>
 					</fieldset>
 					<SettingsSection
 						title={t('settings.memory.processing')}
@@ -255,7 +274,7 @@ export default function MemoryPage(): React.JSX.Element {
 								disabled={busy || status?.running || !config.providerId || !config.modelId}
 								onClick={() => void run(() => window.memory.refresh())}
 							>
-								{t('settings.memory.refresh')}
+								{t('settings.memory.generate')}
 							</Button>
 						}
 					>

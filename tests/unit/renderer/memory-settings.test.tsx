@@ -64,18 +64,16 @@ it('shows memory settings without collapsible items or a header icon', async () 
 	const modelSelect = await screen.findByRole('combobox', { name: 'settings.memory.model' });
 	const heading = screen.getByRole('heading', { name: 'settings.memory.title' });
 	expect(modelSelect).toHaveTextContent('GPT');
-	expect(screen.getByRole('spinbutton', { name: 'Creativity' })).toBeInTheDocument();
-	expect(screen.getByText('Advanced properties')).toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'Advanced' })).not.toBeInTheDocument();
-	expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
+	expect(screen.queryByRole('spinbutton', { name: 'Creativity' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Advanced' })).toBeInTheDocument();
 	expect(heading.closest('header')?.querySelector('svg')).toBeNull();
+	expect(screen.queryByRole('button', { name: 'settings.memory.saveSettings' })).not.toBeInTheDocument();
 });
 
-it('saves independent memory configuration through the memory API', async () => {
+it('saves independent memory configuration automatically', async () => {
 	const user = userEvent.setup();
 	render(<MemoryPage />);
 	await user.click(await screen.findByRole('switch', { name: 'settings.memory.enabled' }));
-	await user.click(screen.getByRole('button', { name: 'settings.memory.saveSettings' }));
 	await waitFor(() => expect(api.configure).toHaveBeenCalledWith({ ...config, enabled: false }));
 });
 
@@ -91,13 +89,19 @@ it('uses schedule presets and shows the cron field only for a custom schedule', 
 	const cron = await screen.findByRole('textbox', { name: 'settings.memory.customCron' });
 	await user.clear(cron);
 	await user.type(cron, '0 7 * * 1-5');
-	await user.click(screen.getAllByRole('button', { name: 'settings.memory.saveSettings' })[1]);
 	await waitFor(() =>
 		expect(api.configure).toHaveBeenCalledWith({
 			...config,
 			cronExpression: '0 7 * * 1-5',
 		})
 	);
+});
+
+it('generates memory on demand', async () => {
+	const user = userEvent.setup();
+	render(<MemoryPage />);
+	await user.click(await screen.findByRole('button', { name: 'settings.memory.generate' }));
+	await waitFor(() => expect(api.refresh).toHaveBeenCalledTimes(1));
 });
 
 it('does not load or show the memory file content', async () => {
