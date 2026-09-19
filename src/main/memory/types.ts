@@ -27,6 +27,7 @@ export interface MemoryDependencies {
 	write(markdown: string): Promise<void>;
 	writeSession(sessionId: string, markdown: string): Promise<void>;
 	removeSession(sessionId: string): Promise<void>;
+	watchSessions(callback: (sessionId: string) => void): { stop(): void };
 	infer(
 		config: MemoryConfig,
 		systemPrompt: string,

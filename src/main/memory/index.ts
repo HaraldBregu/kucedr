@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { watch } from 'node:fs';
 import path from 'node:path';
 import Store from 'electron-store';
 import cron from 'node-cron';
@@ -68,6 +69,32 @@ export function createMemory(configuration: () => Config): MemoryService {
 		},
 		removeSession: async (sessionId) => {
 			await fs.rm(sessionMemoryPath(sessionId), { force: true });
+		},
+		watchSessions: (callback) => {
+			const timers = new Map<string, NodeJS.Timeout>();
+			const watcher = watch(path.dirname(memoryPath()), (_event, filename) => {
+				const match = /^([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.md$/i.exec(
+					filename?.toString() ?? ''
+				);
+				if (!match) return;
+				const id = match[1].toLowerCase();
+				const current = timers.get(id);
+				if (current) clearTimeout(current);
+				timers.set(
+					id,
+					setTimeout(() => {
+						timers.delete(id);
+						callback(id);
+					}, 250)
+				);
+			});
+			return {
+				stop: () => {
+					for (const timer of timers.values()) clearTimeout(timer);
+					timers.clear();
+					watcher.close();
+				},
+			};
 		},
 		schedule: (expression, timezone, callback) => {
 			const task = cron.schedule(expression, callback, { timezone, noOverlap: true });

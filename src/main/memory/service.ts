@@ -16,6 +16,9 @@ export class Memory implements MemoryService {
 	private active?: Promise<MemoryStatus>;
 	private controller?: AbortController;
 	private task?: { stop(): void };
+	private watcher?: { stop(): void };
+	private watchedSessions = new Set<string>();
+	private watchDrain?: Promise<void>;
 	private queue: Promise<unknown> = Promise.resolve();
 	private revision = 0;
 	private stopped = false;
@@ -87,14 +90,22 @@ export class Memory implements MemoryService {
 		await this.initialize().catch((error: unknown) => {
 			this.error = error instanceof Error ? error.message : 'Memory initialization failed.';
 		});
+		this.watcher?.stop();
+		this.watcher = this.dependencies.watchSessions((sessionId) => {
+			this.enqueueSession(sessionId);
+		});
 		await this.refresh('startup');
 	}
 	async stop(): Promise<void> {
 		this.stopped = true;
+		this.watcher?.stop();
+		this.watcher = undefined;
+		this.watchedSessions.clear();
 		this.task?.stop();
 		this.task = undefined;
 		this.invalidate();
 		await this.active;
+		await this.watchDrain;
 		await this.queue;
 	}
 	refresh(trigger: 'manual' | 'startup' | 'wake' | 'cron' = 'manual'): Promise<MemoryStatus> {
@@ -219,6 +230,40 @@ export class Memory implements MemoryService {
 			});
 		}
 	}
+	private enqueueSession(sessionId: string): void {
+		if (this.stopped || !this.state.config.enabled) return;
+		this.watchedSessions.add(sessionId);
+		if (this.watchDrain) return;
+		this.watchDrain = this.drainSessions().finally(() => {
+			this.watchDrain = undefined;
+			if (this.watchedSessions.size) this.enqueueSession(this.watchedSessions.values().next().value);
+		});
+	}
+	private async drainSessions(): Promise<void> {
+		while (!this.stopped && this.state.config.enabled && this.watchedSessions.size) {
+			if (this.active) await this.active;
+			const sessionId = this.watchedSessions.values().next().value;
+			if (!sessionId) return;
+			this.watchedSessions.delete(sessionId);
+			this.controller = new AbortController();
+			const signal = AbortSignal.any([
+				this.controller.signal,
+				AbortSignal.timeout(5 * 60_000),
+			]);
+			this.error = null;
+			this.active = this.process(signal, 'watch', sessionId)
+				.catch((error: unknown) => {
+					if (!this.controller?.signal.aborted)
+						this.error = error instanceof Error ? error.message : 'Memory refresh failed.';
+				})
+				.then(() => {
+					this.active = undefined;
+					this.controller = undefined;
+					return this.status();
+				});
+			await this.active;
+		}
+	}
 	private async initialize(): Promise<void> {
 		await this.dependencies.prepare?.();
 		await this.lock(async () => {
@@ -267,7 +312,8 @@ export class Memory implements MemoryService {
 	}
 	private async process(
 		signal: AbortSignal,
-		trigger: 'manual' | 'startup' | 'wake' | 'cron'
+		trigger: 'manual' | 'startup' | 'wake' | 'cron' | 'watch',
+		sessionId?: string
 	): Promise<void> {
 		const wasInitialized = this.state.initialized;
 		await this.initialize();
@@ -278,7 +324,10 @@ export class Memory implements MemoryService {
 		if (trigger === 'manual' && wasInitialized && !(await this.dependencies.exists())) {
 			await this.lock(async () => this.persist({ ...this.state, checkpoints: {} }));
 		}
-		const sources = await this.dependencies.sources();
+		const allSources = await this.dependencies.sources();
+		const sources = sessionId
+			? allSources.filter((source) => source.id === sessionId)
+			: allSources;
 		this.pending = sources.reduce(
 			(total, source) =>
 				total +
