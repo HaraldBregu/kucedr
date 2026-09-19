@@ -120,48 +120,48 @@ function RootRouteComponent(): React.JSX.Element {
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
 			<ChatModeContext.Provider value={{ mode: chatMode, setMode: setChatMode }}>
 				<ChatSessionContext.Provider
-					value={{
-						sessionId: chatSessionId,
-						sessionTitle: chatSessionTitle,
-						sessionTitleSessionId: chatSessionTitleSessionId,
-						setSessionTitle: (title, sessionId) => {
-							setChatSessionTitle(title);
-							setChatSessionTitleSessionId(sessionId);
-						},
-						setSessionId: (sessionId) => {
-							setChatSessionId(sessionId);
-							setChatSessionTitle(undefined);
-							setChatSessionTitleSessionId(undefined);
-							persistChatSessionId(sessionId);
-						},
-					}}
+				value={{
+					sessionId: chatSessionId,
+					sessionTitle: chatSessionTitle,
+					sessionTitleSessionId: chatSessionTitleSessionId,
+					setSessionTitle: (title, sessionId) => {
+						setChatSessionTitle(title);
+						setChatSessionTitleSessionId(sessionId);
+					},
+					setSessionId: (sessionId) => {
+						setChatSessionId(sessionId);
+						setChatSessionTitle(undefined);
+						setChatSessionTitleSessionId(undefined);
+						persistChatSessionId(sessionId);
+					},
+				}}
+			>
+				<div
+					className={cn(
+						'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
+					)}
 				>
-					<div
-						className={cn(
-							'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
-						)}
-					>
-						<NavigationBar
-							rightContent={
-								phase === 'auth' && authState.status !== 'recovery' ? (
-									<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>
-										Skip
-									</Button>
-								) : undefined
-							}
-							onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
-						/>
-						<div className="min-h-0 flex-1 overflow-hidden pt-12">
-							<PageTransition>
-								<Outlet />
-							</PageTransition>
-						</div>
-						<CommandMenu
-							key={location.pathname}
-							open={commandMenuOpen}
-							onOpenChange={setCommandMenuOpen}
-						/>
+					<NavigationBar
+						rightContent={
+							phase === 'auth' && authState.status !== 'recovery' ? (
+								<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>
+									Skip
+								</Button>
+							) : undefined
+						}
+						onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
+					/>
+					<div className="min-h-0 flex-1 overflow-hidden pt-12">
+						<PageTransition>
+							<Outlet />
+						</PageTransition>
 					</div>
+					<CommandMenu
+						key={location.pathname}
+						open={commandMenuOpen}
+						onOpenChange={setCommandMenuOpen}
+					/>
+				</div>
 				</ChatSessionContext.Provider>
 			</ChatModeContext.Provider>
 		</CommandMenuProvider>
@@ -371,11 +371,7 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'memory',
-						element: (
-							<SettingsRouteWrapper>
-								<MemoryPage />
-							</SettingsRouteWrapper>
-						),
+						element: <SettingsRouteWrapper><MemoryPage /></SettingsRouteWrapper>,
 					},
 					{
 						path: 'coding',
@@ -390,27 +386,15 @@ const routes: RouteObject[] = [
 						children: [
 							{
 								path: 'music',
-								element: (
-									<SettingsRouteWrapper>
-										<MusicPage />
-									</SettingsRouteWrapper>
-								),
+								element: <SettingsRouteWrapper><MusicPage /></SettingsRouteWrapper>,
 							},
 							{
 								path: 'video',
-								element: (
-									<SettingsRouteWrapper>
-										<VideoPage />
-									</SettingsRouteWrapper>
-								),
+								element: <SettingsRouteWrapper><VideoPage /></SettingsRouteWrapper>,
 							},
 							{
 								path: 'image',
-								element: (
-									<SettingsRouteWrapper>
-										<ImagePage />
-									</SettingsRouteWrapper>
-								),
+								element: <SettingsRouteWrapper><ImagePage /></SettingsRouteWrapper>,
 							},
 							{
 								path: 'tools',

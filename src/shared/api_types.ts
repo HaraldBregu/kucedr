@@ -136,9 +136,7 @@ export interface WindowApi {
 	isFullScreen: () => Promise<boolean>;
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void) => () => void;
 	setNavigationBarOptions: (options: AppNavigationBarOptions | null) => void;
-	onNavigationBarOptionsChanged: (
-		callback: (options: AppNavigationBarOptions | null) => void
-	) => () => void;
+	onNavigationBarOptionsChanged: (callback: (options: AppNavigationBarOptions | null) => void) => () => void;
 	clickNavigationBarButton: (buttonId: string) => void;
 	onNavigationBarButtonClick: (callback: (buttonId: string) => void) => () => void;
 	setNavigationBarSidebarWidth: (width: number | null) => void;
