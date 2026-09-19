@@ -1,7 +1,11 @@
 import type { MemoryMessage } from '../../shared/memory_types';
 
-export function snapshotMarkdown(sessionId: string, messages: readonly MemoryMessage[]): string {
-	const sections: string[] = [`# Session ${sessionId}`, '', '<!-- kucedr-memory-session:v1 -->'];
+export function snapshotMarkdown(
+	sessionId: string,
+	messages: readonly MemoryMessage[],
+	date = new Date()
+): string {
+	const sections: string[] = [`# Session ${sessionId}`, '', `**Date:** ${date.toISOString()}`];
 	for (const message of messages) {
 		if (message.role !== 'user' && message.role !== 'assistant') continue;
 		const text =
@@ -25,9 +29,8 @@ export function snapshotMarkdown(sessionId: string, messages: readonly MemoryMes
 		if (!text.trim()) continue;
 		sections.push(
 			'',
-			`<!-- kucedr-message:${message.role} -->`,
-			...text.split('\n').map((line) => (line ? `> ${line}` : '>')),
-			'<!-- /kucedr-message -->'
+			`**${message.role === 'user' ? 'User' : 'Assistant'}:**`,
+			...text.split('\n').map((line) => (line ? `> ${line}` : '>'))
 		);
 	}
 	return `${sections.join('\n')}\n`;

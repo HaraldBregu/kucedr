@@ -17,8 +17,12 @@ it('round trips visible messages through robust Markdown blocks', () => {
 			],
 		},
 		{ role: 'assistant', content: 'Visible answer' },
-	]);
+	], new Date('2026-09-19T14:30:00.000Z'));
 
+	expect(markdown).toContain('**Date:** 2026-09-19T14:30:00.000Z');
+	expect(markdown).toContain('**User:**');
+	expect(markdown).toContain('**Assistant:**');
+	expect(markdown).not.toContain('<!--');
 	expect(markdown).toContain('> # Heading');
 	expect(markdown).not.toContain('hidden system text');
 	expect(markdown).not.toContain('hidden internal text');
@@ -27,6 +31,11 @@ it('round trips visible messages through robust Markdown blocks', () => {
 		user,
 		'Visible answer',
 	]);
+});
+
+it('continues reading existing version one snapshots', () => {
+	const markdown = `# Session ${SESSION_ID}\n\n<!-- kucedr-memory-session:v1 -->\n\n<!-- kucedr-message:user -->\n> Legacy message\n<!-- /kucedr-message -->\n`;
+	expect(snapshotSource(SESSION_ID, markdown).messages[0].text).toBe('Legacy message');
 });
 
 it('rejects a session ID that could escape the memory folder', () => {
