@@ -11,18 +11,33 @@ function setup(initialized = true) {
  const sessions: SourceSession[] = [{ id: 'chat', messages: [{ fingerprint: 'first', role: 'user', text: 'I prefer concise answers.' }] }];
  const infer = jest.fn().mockResolvedValue('{"entries":[]}');
  const write = jest.fn(async (next: string) => { markdown = next; });
+	const writeSession = jest.fn(async () => undefined);
+	const removeSession = jest.fn(async () => undefined);
 	const exists = jest.fn(async () => true);
  const stop = jest.fn();
  const dependencies: MemoryDependencies = {
   store: { load: () => structuredClone(state), save: (next) => { state = structuredClone(next); } },
-		sources: jest.fn(async () => structuredClone(sessions)), exists, read: async () => markdown, write, infer,
+		sources: jest.fn(async () => structuredClone(sessions)), exists, read: async () => markdown, write,
+		writeSession, removeSession, infer,
   selection: jest.fn(() => ({ providerId: 'chat-provider', modelId: 'chat-model', modelOptions: {} })),
   schedule: jest.fn(() => ({ stop })), validate: jest.fn(),
  };
  const memory = new Memory(dependencies);
  const extracted = JSON.stringify({ entries: [{ kind: 'fact', topic: 'Preferences', text: 'Prefers concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] }] });
-	return { memory, dependencies, exists, infer, write, sessions, extracted, stop, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
+	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, stop, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
 }
+
+it('serializes cumulative session snapshots and removes them through the memory module', async () => {
+	const h = setup();
+	const id = '11111111-1111-4111-8111-111111111111';
+	await h.memory.capture(id, [
+		{ role: 'user', content: 'First message' },
+		{ role: 'assistant', content: 'Current reply' },
+	]);
+	expect(h.writeSession).toHaveBeenCalledWith(id, expect.stringContaining('> Current reply'));
+	await h.memory.remove(id);
+	expect(h.removeSession).toHaveBeenCalledWith(id);
+});
 
 it('baselines existing conversations without backfilling or model calls', async () => {
  const h = setup(false);
