@@ -2,15 +2,28 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MemoryPage from '../../../src/renderer/src/pages/settings/pages/memory/Page';
 
+const mockProvider = { id: 'openai', name: 'OpenAI', baseUrl: 'https://openai.example' };
+const mockModel = {
+	id: 'model',
+	name: 'GPT',
+	type: 'llm',
+	provider: mockProvider,
+	metadata: {
+		documentationStatus: 'verified',
+		documentationUrl: '',
+		inputs: {
+			creativity: { type: 'number', title: 'Creativity', default: 0.7 },
+		},
+	},
+};
+
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key: string) => key }) }));
 jest.mock('../../../src/renderer/src/lib/providers', () => ({
-	modelsFor: () => [],
-	providerIdsFor: () => [],
-	providerModels: () => [],
-	providers: () => [],
-}));
-jest.mock('../../../src/renderer/src/pages/settings/components/model-configuration', () => ({
-	ModelProviderConfiguration: () => null,
+	modelsFor: (capability: string) => (capability === 'llm' ? [mockModel] : []),
+	providerIdsFor: (capability: string) => (capability === 'llm' ? [mockProvider.id] : []),
+	providerModels: (providerId: string, capability: string) =>
+		providerId === mockProvider.id && capability === 'llm' ? [mockModel] : [],
+	providers: () => [mockProvider],
 }));
 
 const config = {
@@ -44,6 +57,18 @@ beforeEach(() => {
 	api.read.mockResolvedValue('# Notes\nPrefers tea');
 	api.configure.mockImplementation(async (value) => value);
 	api.edit.mockResolvedValue(undefined);
+});
+
+it('shows memory settings without collapsible items or a header icon', async () => {
+	render(<MemoryPage />);
+	const modelSelect = await screen.findByRole('combobox', { name: 'settings.memory.model' });
+	const heading = screen.getByRole('heading', { name: 'settings.memory.title' });
+	expect(modelSelect).toHaveTextContent('GPT');
+	expect(screen.getByRole('spinbutton', { name: 'Creativity' })).toBeInTheDocument();
+	expect(screen.getByText('Advanced properties')).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Advanced' })).not.toBeInTheDocument();
+	expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
+	expect(heading.closest('header')?.querySelector('svg')).toBeNull();
 });
 
 it('saves independent memory configuration through the memory API', async () => {

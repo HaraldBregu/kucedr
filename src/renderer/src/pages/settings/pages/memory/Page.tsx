@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Brain } from 'lucide-react';
 import type { MemoryConfig, MemoryEntry, MemoryStatus } from '@shared/memory_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -105,7 +104,6 @@ export default function MemoryPage(): React.JSX.Element {
 			<SettingsPageHeader
 				title={t('settings.memory.title')}
 				description={t('settings.memory.description')}
-				icon={Brain}
 			/>
 			{error && (
 				<p role="alert" className="text-sm text-destructive">
@@ -142,6 +140,7 @@ export default function MemoryPage(): React.JSX.Element {
 									loading: false,
 									saving: busy,
 								}}
+								collapsible={false}
 								onChange={(providerId, modelId) =>
 									setConfig({ ...config, providerId, modelId, modelOptions: {} })
 								}
@@ -150,6 +149,7 @@ export default function MemoryPage(): React.JSX.Element {
 								<ModelOptions
 									inputs={inputs}
 									values={config.modelOptions}
+									inlineAdvanced
 									onChange={(path, value) =>
 										setConfig({
 											...config,
