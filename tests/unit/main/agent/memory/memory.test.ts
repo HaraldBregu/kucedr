@@ -210,3 +210,46 @@ it('leaves processing checkpoints intact when a manual edit cannot be written', 
  await expect(h.memory.edit('# Manual edit\n')).rejects.toThrow('disk full');
  expect(h.state().checkpoints.chat).toBeUndefined();
 });
+
+it('preserves existing memory and retry state when the validation response is malformed', async () => {
+ const h = setup();
+ const original = h.markdown();
+ h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[99]}');
+ await h.memory.refresh();
+ expect(h.markdown()).toBe(original);
+ expect(h.state().checkpoints.chat).toBeUndefined();
+ const restarted = new Memory(h.dependencies);
+ h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+ await restarted.refresh();
+ expect(h.markdown()).toContain('Prefers concise answers.');
+});
+
+it.each(['My password is secret123.', 'My medical record is private.'])('excludes private source content: %s', async (text) => {
+ const h = setup();
+ h.sessions[0].messages[0].text = text;
+ await h.memory.refresh();
+ expect(h.infer).not.toHaveBeenCalled();
+ expect(h.markdown()).not.toContain(text);
+});
+
+it('rejects unsupported output even with a matching evidence quote', async () => {
+ const h = setup();
+ const output = JSON.parse(h.extracted);
+ output.entries[0].text = 'Prefers detailed answers.';
+ h.infer.mockResolvedValueOnce(JSON.stringify(output)).mockResolvedValueOnce('{"accepted":[]}');
+ await h.memory.refresh();
+ expect(h.markdown()).not.toContain('Prefers detailed answers.');
+});
+
+it('rejects private output and assistant-only sources', async () => {
+ const h = setup();
+ const output = JSON.parse(h.extracted);
+ output.entries[0].text = 'Medical record: private.';
+ h.infer.mockResolvedValueOnce(JSON.stringify(output));
+ await h.memory.refresh();
+ expect(h.infer).toHaveBeenCalledTimes(1);
+ expect(h.markdown()).not.toContain('Medical record');
+ h.sessions[0].messages = [{ fingerprint: 'assistant', role: 'assistant', text: 'The user likes Go.' }];
+ await h.memory.refresh();
+ expect(h.infer).toHaveBeenCalledTimes(1);
+});
