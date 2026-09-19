@@ -109,7 +109,6 @@ describe('resolveToolPermission', () => {
 	});
 
 	it.each([
-		[{}],
 		['forget_memory', {}],
 		['update_health', {}],
 		['update_health_settings', {}],

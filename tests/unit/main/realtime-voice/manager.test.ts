@@ -54,6 +54,35 @@ const configuration: ResolvedRealtimeVoiceConfiguration = {
 };
 
 describe('RealtimeVoiceManager', () => {
+	it('retrieves relevant memory separately from voice instructions before connecting', async () => {
+		const memoryContext = jest.fn(async () => 'Remembered preference: concise answers');
+		const connect = jest.fn(async (_request: RealtimeVoiceAdapterRequest) => new FakeConnection());
+		const manager = new RealtimeVoiceManager({
+			createAdapter: () => ({ connect }),
+			resolveConfiguration: async () => configuration,
+			memoryContext,
+			createConversation: () => ({
+				history: [{ role: 'user', text: 'How should we write the report?' }],
+				beginUserTurn: () => undefined,
+				finalizeUserTurn: () => undefined,
+				addAssistantTranscript: () => undefined,
+				addToolCall: () => undefined,
+				addToolResult: () => undefined,
+			}),
+			resources: new KeyedMutex(),
+			emit: () => undefined,
+		});
+		await manager.start(1, { chatSessionId: 'memory-session' });
+		expect(memoryContext).toHaveBeenCalledWith('How should we write the report?');
+		expect(connect.mock.calls[0][0]).toMatchObject({
+			instructions: configuration.instructions,
+			history: [
+				{ role: 'user', text: 'Remembered preference: concise answers' },
+				{ role: 'user', text: 'How should we write the report?' },
+			],
+		});
+	});
+
 	it('replaces voice markers with final user transcripts while streaming UI events', async () => {
 		const connection = new FakeConnection();
 		let adapterEmit: RealtimeVoiceAdapterEventHandler = () => undefined;

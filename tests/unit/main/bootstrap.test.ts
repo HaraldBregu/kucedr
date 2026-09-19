@@ -1,3 +1,4 @@
+jest.mock('../../../src/main/memory', () => ({ createMemory: jest.fn() }));
 jest.mock('../../../src/main/channels', () => ({ createChannelRegistry: jest.fn() }));
 jest.mock('../../../src/main/agent/sandbox', () => ({ ExecSandbox: jest.fn() }));
 
@@ -19,6 +20,7 @@ it('settles storage operations before cloud and auth teardown', async () => {
 		logger: { info: jest.fn(), destroy: jest.fn() },
 		terminalManager: { shutdown: jest.fn() },
 		agentService: { destroy: jest.fn() },
+		memoryService: { stop: jest.fn(async () => undefined) },
 		codingService: { destroy: jest.fn() },
 		conversationService: { execute: jest.fn(async () => undefined) },
 		windowContextManager: { destroyAll: jest.fn(async () => undefined) },
@@ -29,10 +31,11 @@ it('settles storage operations before cloud and auth teardown', async () => {
 	} as unknown as MainServices;
 
 	const cleaning = cleanup(services);
-	for (let attempt = 0; attempt < 3 && !storageOperations.settle.mock.calls.length; attempt += 1) {
+	for (let attempt = 0; attempt < 6 && !storageOperations.settle.mock.calls.length; attempt += 1) {
 		await Promise.resolve();
 	}
 
+	expect(services.memoryService.stop).toHaveBeenCalledTimes(1);
 	expect(storageOperations.settle).toHaveBeenCalledTimes(1);
 	expect(cloudService.destroy).not.toHaveBeenCalled();
 	expect(authService.destroy).not.toHaveBeenCalled();
