@@ -17,7 +17,10 @@ export function prepareMemorySettings(): string {
 		unlinkSync(legacy);
 		return directory;
 	}
-	const backup = path.join(directory, `settings.legacy-${Math.trunc(statSync(legacy).mtimeMs)}.json`);
+	const backup = path.join(
+		directory,
+		`settings.legacy-${Math.trunc(statSync(legacy).mtimeMs)}.json`
+	);
 	renameSync(legacy, backup);
 	return directory;
 }

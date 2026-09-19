@@ -1,10 +1,7 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
 import type { WorkspaceTreeEntry } from '@kucedr/sdk';
 
-import {
-	TreeProvider,
-	TreeView,
-} from '@/components/kibo-ui/tree';
+import { TreeProvider, TreeView } from '@/components/kibo-ui/tree';
 import { WorkspaceTreeItem } from '@/components/workspace-tree-item';
 import { cn } from '@/lib/utils';
 import { workspaceMoveError } from '@/lib/drop';
