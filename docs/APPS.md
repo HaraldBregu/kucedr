@@ -4,14 +4,14 @@ Kucedr opens local HTML applications in dedicated desktop windows. Manage them i
 
 ## Application inventory
 
-| App | Purpose | Source |
-| --- | --- | --- |
-| Coder | Project-based coding agent, persistent sessions, and recorded shell commands | [Coder](../resources/apps/coder/) |
-| Workspace | Browse, edit, and preview files in the agent workspace | [Workspace](../resources/apps/workspace/) |
-| Discover | Turn a research question into an AI discovery brief | [Discover](../resources/apps/discover/) |
-| Demo | Exercise SDK theme, language, model, and storage APIs | [Demo](../resources/apps/demo/) |
-| Architect | A build-script reference remains, but the app source directory is absent | [Root scripts](../package.json) |
-| Videomaker | A build-script reference remains, but the app source directory is absent | [Root scripts](../package.json) |
+| App        | Purpose                                                                      | Source                                    |
+| ---------- | ---------------------------------------------------------------------------- | ----------------------------------------- |
+| Coder      | Project-based coding agent, persistent sessions, and recorded shell commands | [Coder](../resources/apps/coder/)         |
+| Workspace  | Browse, edit, and preview files in the agent workspace                       | [Workspace](../resources/apps/workspace/) |
+| Discover   | Turn a research question into an AI discovery brief                          | [Discover](../resources/apps/discover/)   |
+| Demo       | Exercise SDK theme, language, model, and storage APIs                        | [Demo](../resources/apps/demo/)           |
+| Architect  | A build-script reference remains, but the app source directory is absent     | [Root scripts](../package.json)           |
+| Videomaker | A build-script reference remains, but the app source directory is absent     | [Root scripts](../package.json)           |
 
 The four implemented apps declare version `1.0.0` and the entry `dist/index.html`. Architect and Videomaker cannot be built from their referenced directories in this checkout; they are not documented as working apps.
 
@@ -63,16 +63,16 @@ Workspace is a file browser and editor for the agent workspace. It uses the host
 
 Select a file in the tree to open it. The app supports creating files and folders, renaming, duplicating files, moving entries, and deleting entries with confirmation. Deletion is permanent. Search filters the displayed tree. Workspace changes from the host refresh the file list.
 
-| File type | Available interaction |
-| --- | --- |
-| Markdown | Source editing and formatted preview |
-| Text/code | CodeMirror editor with font size, line number, and wrapping preferences |
-| Mermaid | Diagram source editing and preview |
-| Excalidraw / tldraw | Drawing editors |
-| Images | Preview, copy image, and copy path |
-| Audio / video | Playback controls |
-| PDF | Embedded PDF viewer |
-| Unsupported files | Explicit preview-unavailable message |
+| File type           | Available interaction                                                   |
+| ------------------- | ----------------------------------------------------------------------- |
+| Markdown            | Source editing and formatted preview                                    |
+| Text/code           | CodeMirror editor with font size, line number, and wrapping preferences |
+| Mermaid             | Diagram source editing and preview                                      |
+| Excalidraw / tldraw | Drawing editors                                                         |
+| Images              | Preview, copy image, and copy path                                      |
+| Audio / video       | Playback controls                                                       |
+| PDF                 | Embedded PDF viewer                                                     |
+| Unsupported files   | Explicit preview-unavailable message                                    |
 
 Editable content is saved automatically after a short pause (700 ms), with save errors surfaced in the UI. The app also coordinates saving before changing selection or closing; attend to any unsaved-change warning before leaving. Media previews use the host's `local-resource://agent/` resource access.
 
@@ -105,13 +105,13 @@ Sources: [Demo application](../resources/apps/demo/src/App.tsx), [model examples
 
 ## Storage and window reference
 
-| Location | Contents |
-| --- | --- |
-| `~/.kucedr/apps/<id>/` | Installed app files |
-| `~/.kucedr/apps/<id>/data/store.json` | App-scoped key/value data |
-| `~/.kucedr/apps/<id>/data/files/` | App-scoped files |
-| `~/.kucedr/settings/apps-debug.json` | Registered external app paths |
-| External debug folder | Debug app source/build and manifest |
+| Location                              | Contents                            |
+| ------------------------------------- | ----------------------------------- |
+| `~/.kucedr/apps/<id>/`                | Installed app files                 |
+| `~/.kucedr/apps/<id>/data/store.json` | App-scoped key/value data           |
+| `~/.kucedr/apps/<id>/data/files/`     | App-scoped files                    |
+| `~/.kucedr/settings/apps-debug.json`  | Registered external app paths       |
+| External debug folder                 | Debug app source/build and manifest |
 
 The data root can be overridden by `KUCEDR_E2E_DATA_ROOT` for tests. App-scoped file and value APIs validate IDs and reject invalid storage paths or symlink storage directories.
 

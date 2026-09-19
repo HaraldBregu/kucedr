@@ -56,7 +56,7 @@ Background tasks cannot stop to ask for approval: an operation requiring an inte
 
 The agent workspace holds `AGENTS.md`, `IDENTITY.md`, `SOUL.md`, `USER.md`, `MEMORY.md`, and `HEALTH.md`. These provide behavior, identity, user context, durable facts, and the health checklist. A fresh workspace can include `BOOTSTRAP.md` for initial conversational setup.
 
-Ask the assistant to remember a useful fact or forget a saved fact when appropriate. Review the stored files and data controls when managing retained information. Memory, conversation history, compiled knowledge, and folder indexing are separate stores; deleting one does not imply deleting all of them.
+Ask the assistant to remember a useful fact or forget a saved fact when appropriate. Review the stored files and data controls when managing retained information. Memory, conversation history, and folder indexing are separate stores; deleting one does not imply deleting all of them.
 
 ## Voice and generated media
 
@@ -81,7 +81,7 @@ Keep Kucedr running for its in-process schedulers to execute. Verify an automati
 
 ## Knowledge and folder retrieval
 
-Compiled knowledge preserves source evidence and maintains cited Markdown knowledge for agent retrieval. Folder retrieval, also called retrieval-augmented generation (RAG), indexes selected local folders. These complement memory and conversation history; they are not interchangeable backups.
+Folder retrieval, also called retrieval-augmented generation (RAG), indexes selected local folders and returns relevant passages to the agent. It complements memory and conversation history; these are not interchangeable backups. The current query tool uses folder retrieval, not a separate Markdown wiki compiler.
 
 To configure folder retrieval:
 
@@ -114,7 +114,7 @@ Open Channels, configure the reply and optional speech models, then open Telegra
 
 Kucedr stores its profile under `~/.kucedr` (the user's home directory on each platform). General settings can open application data. See [Architecture](ARCHITECTURE.md) for the storage map.
 
-Configure a storage provider in **Providers → Storage**, select it in Cloud, choose folders and a schedule, and run a backup. Review operation status for transferred files or errors. Restore requires confirmation and can overwrite matching local files; preserve any local versions you need before restoring. Storage-provider backup is separate from account authentication and encrypted provider-key synchronization; see [Cloud architecture](CLOUD.md).
+Configure a storage provider in **Providers → Storage**, select it in Cloud, choose folders and a schedule, and run a backup. Review operation status for transferred files or errors. Restore requires confirmation and can overwrite matching local files; preserve any local versions you need before restoring. Storage-provider backup is separate from account authentication; see [Cloud architecture](CLOUD.md).
 
 Prompts, selected files, tool inputs, and generated data can leave the device through configured model providers, search engines, MCP servers, remote agents, channels, and storage. Local-only account mode does not make these services offline. Secrets are handled by their respective main-process stores; do not treat the entire profile directory as encrypted.
 

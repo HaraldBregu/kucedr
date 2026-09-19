@@ -280,7 +280,7 @@ required. Filesystem policy should:
   a saved-output library.
 - Data-control **Purge** does not show a renderer confirmation dialog; it immediately performs the
   backend preview-token and purge sequence.
-- Permissions **Reset** and app deletion are immediate and do not request confirmation.
+- Permissions **Reset** is immediate. Managed app deletion requests native confirmation.
 - A2A deletion has no confirmation or inline failure handling.
 - Ordinary Settings links do not close the mobile sidebar sheet after navigation; **Return to
   Home** does.

@@ -511,8 +511,8 @@ See [Apps](APPS.md) for the current bundled catalog and data/removal behavior.
 
 - **Cloud** backs up selected local folders using the selected storage provider. Restore requires
   confirmation and replaces matching files while retaining unrelated local files.
-- Account authentication and encrypted key-sync services are separate from provider-backed folder
-  backup. See [Cloud architecture](CLOUD.md) for their current boundaries.
+- Account authentication is separate from provider-backed folder backup. The current checkout
+  does not implement encrypted provider-key synchronization. See [Cloud architecture](CLOUD.md) for their current boundaries.
 - Assistant RAG requires an explicit database selection from configured provider accounts and
   consent for embeddings and remote mirroring. Queries use the local SQLite index.
 
