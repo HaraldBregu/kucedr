@@ -199,6 +199,9 @@
 			}
 		},
 		"tabs": {
+			"music": "Music",
+			"video": "Video",
+			"image": "Image",
 			"account": "Account",
 			"cloud": "Cloud",
 			"general": "General",

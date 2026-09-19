@@ -30,6 +30,9 @@ beforeEach(() => {
 });
 
 it.each([
+	['/settings/agent/music', 'settings.tabs.music'],
+	['/settings/agent/video', 'settings.tabs.video'],
+	['/settings/agent/image', 'settings.tabs.image'],
 	['/settings/agent/rag', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],

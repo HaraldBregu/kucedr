@@ -31,6 +31,9 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter(
 				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coding
 			),
+			...SETTINGS_NAVIGATION.filter((item) =>
+				['/settings/agent/music', '/settings/agent/video', '/settings/agent/image'].includes(item.path)
+			),
 		],
 	},
 	{
