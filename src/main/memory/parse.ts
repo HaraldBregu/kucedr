@@ -9,7 +9,7 @@ export function parseMemories(text: string): StoredEntry[] {
 		if (!match) return [];
 		const fact = match[1].trim().replace(/\s+/gu, ' ');
 		if (!fact) return [];
-		let topic = match[3];
+		let topic: string | undefined = match[3];
 		try {
 			if (topic) topic = decodeURIComponent(topic);
 		} catch {

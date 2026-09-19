@@ -287,7 +287,11 @@ export class Memory implements MemoryService {
 					config,
 					batch,
 					parseMemories(markdown),
-					signal
+					signal,
+					source.messages
+						.slice(0, source.messages.indexOf(batch[0]))
+						.filter((message) => message.role === 'user')
+						.slice(-1)
 				);
 				batches += 1;
 				const committed = await this.lock(async () => {
