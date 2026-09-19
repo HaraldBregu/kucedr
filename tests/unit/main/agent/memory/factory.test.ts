@@ -1,4 +1,5 @@
 jest.mock('electron-store', () => ({ __esModule: true, default: jest.fn() }));
+jest.mock('node:fs', () => ({ watch: jest.fn() }));
 jest.mock('node:fs/promises', () => ({ access: jest.fn(), readFile: jest.fn(), mkdir: jest.fn(), rm: jest.fn() }));
 jest.mock('node-cron', () => ({ __esModule: true, default: { schedule: jest.fn() } }));
 jest.mock('../../../../../src/main/agent/agent_store', () => ({ getChatbotModel: jest.fn() }));
@@ -18,6 +19,7 @@ jest.mock('../../../../../src/main/memory/settings', () => ({
 jest.mock('../../../../../src/main/memory/migrate', () => ({ migrateWorkspaceMemory: jest.fn() }));
 
 import fs from 'node:fs/promises';
+import { watch } from 'node:fs';
 import Store from 'electron-store';
 import cron from 'node-cron';
 import { createMemory } from '../../../../../src/main/memory';
@@ -55,6 +57,8 @@ it('persists independent configuration and invokes the configured provider direc
 		baseUrl: 'https://provider.invalid',
 	});
 	const destroy = jest.fn();
+	const close = jest.fn();
+	(watch as jest.Mock).mockReturnValue({ close });
 	(cron.schedule as jest.Mock).mockReturnValue({ destroy });
 	const first = createMemory(() => ({ location: '/home/test/.kucedr/workspace' }));
 	await first.start();
@@ -82,6 +86,7 @@ it('persists independent configuration and invokes the configured provider direc
 	});
 	await first.stop();
 	expect(destroy).toHaveBeenCalled();
+	expect(close).toHaveBeenCalled();
 	(getChatbotModel as jest.Mock).mockReturnValue({
 		providerId: 'new-chat',
 		modelId: 'new-chat-model',

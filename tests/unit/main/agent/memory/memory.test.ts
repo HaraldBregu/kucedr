@@ -15,16 +15,22 @@ function setup(initialized = true) {
 	const removeSession = jest.fn(async () => undefined);
 	const exists = jest.fn(async () => true);
  const stop = jest.fn();
+	const stopWatching = jest.fn();
+	let sessionChanged: ((sessionId: string) => void) | undefined;
  const dependencies: MemoryDependencies = {
   store: { load: () => structuredClone(state), save: (next) => { state = structuredClone(next); } },
 		sources: jest.fn(async () => structuredClone(sessions)), exists, read: async () => markdown, write,
 		writeSession, removeSession, infer,
+		watchSessions: jest.fn((callback) => {
+			sessionChanged = callback;
+			return { stop: stopWatching };
+		}),
   selection: jest.fn(() => ({ providerId: 'chat-provider', modelId: 'chat-model', modelOptions: {} })),
   schedule: jest.fn(() => ({ stop })), validate: jest.fn(),
  };
  const memory = new Memory(dependencies);
 	const extracted = '# Memory\n\nManual notes remain here.\n- Prefers concise answers.\n';
-	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, stop, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
+	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, stop, stopWatching, sessionChanged: () => sessionChanged, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
 }
 
 it('serializes cumulative session snapshots and removes them through the memory module', async () => {

@@ -236,12 +236,14 @@ export class Memory implements MemoryService {
 		if (this.watchDrain) return;
 		this.watchDrain = this.drainSessions().finally(() => {
 			this.watchDrain = undefined;
-			if (this.watchedSessions.size) this.enqueueSession(this.watchedSessions.values().next().value);
+			const next = this.watchedSessions.values().next().value;
+			if (next) this.enqueueSession(next);
 		});
 	}
 	private async drainSessions(): Promise<void> {
 		while (!this.stopped && this.state.config.enabled && this.watchedSessions.size) {
 			if (this.active) await this.active;
+			if (this.stopped || !this.state.config.enabled) return;
 			const sessionId = this.watchedSessions.values().next().value;
 			if (!sessionId) return;
 			this.watchedSessions.delete(sessionId);
