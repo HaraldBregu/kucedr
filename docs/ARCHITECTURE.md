@@ -41,8 +41,9 @@ command access. The terminal service is a separate typed IPC capability; see
 ## Knowledge, memory, and RAG
 
 Workspace instruction files include `AGENTS.md`, `BOOTSTRAP.md`, `HEALTH.md`, `IDENTITY.md`,
-`MEMORY.md`, `SOUL.md`, and `USER.md`. Durable workspace memory and conversation history are
-separate from the searchable RAG index.
+`SOUL.md`, and `USER.md`. The standalone memory module stores its configuration and
+`MEMORY.md` under `~/.kucedr/memory`; conversation history and memory remain separate from the
+searchable RAG index.
 
 RAG configuration selects source folders, an embedding provider/model, a vector database, and
 an index name. Indexing validates source paths, rejects symlinks and unsafe content, reads
@@ -66,6 +67,7 @@ Chromium state and crash dumps uses Electron's own platform-specific paths.
 | Profile path         | Purpose                                                                 |
 | -------------------- | ----------------------------------------------------------------------- |
 | `settings/`          | App, agent, provider, RAG, task, account, and integration configuration |
+| `memory/`            | Memory configuration, processing state, and `MEMORY.md`                 |
 | `workspace/`         | Default agent working directory and personalization Markdown files      |
 | `sessions/`          | Conversation/session persistence                                        |
 | `skills/`            | Installed skill instructions                                            |

@@ -54,7 +54,7 @@ Background tasks cannot stop to ask for approval: an operation requiring an inte
 
 ### Personalization and memory
 
-The agent workspace holds `AGENTS.md`, `IDENTITY.md`, `SOUL.md`, `USER.md`, `MEMORY.md`, and `HEALTH.md`. These provide behavior, identity, user context, durable facts, and the health checklist. A fresh workspace can include `BOOTSTRAP.md` for initial conversational setup.
+The agent workspace holds `AGENTS.md`, `IDENTITY.md`, `SOUL.md`, `USER.md`, and `HEALTH.md`. These provide behavior, identity, user context, and the health checklist. Durable memory is managed separately under `~/.kucedr/memory`. A fresh workspace can include `BOOTSTRAP.md` for initial conversational setup.
 
 Ask the assistant to remember a useful fact or forget a saved fact when appropriate. Review the stored files and data controls when managing retained information. Memory, conversation history, and folder indexing are separate stores; deleting one does not imply deleting all of them.
 

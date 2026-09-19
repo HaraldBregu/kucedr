@@ -353,12 +353,11 @@ Kucedr maintains an agent workspace in local application data with these Markdow
 | `IDENTITY.md`  | Assistant identity and presentation.                            |
 | `SOUL.md`      | Personality and behavioral guidance.                            |
 | `USER.md`      | User profile and preferences.                                   |
-| `MEMORY.md`    | Durable facts loaded into every conversation.                   |
 | `HEALTH.md`    | Checklist used by periodic health runs.                         |
 
 While `BOOTSTRAP.md` exists, it is included in the user-controlled workspace context. Completing bootstrap removes that file after the identity, user, and soul files have been updated.
 
-`save_memory` adds one bullet fact without duplicating an identical line. `forget_memory` removes every bullet containing the requested text, case-insensitively. Workspace profile and memory content are rebuilt as transient user-level context before each model turn rather than persisted in the system-prompt snapshot.
+The standalone memory module stores `settings.json` and `MEMORY.md` under `~/.kucedr/memory`. It processes new desktop chat and voice content on its configured schedule or through manual refresh, validates extracted facts and summaries, and provides bounded relevant context before responses. Memory Settings supports configuration, refresh, direct Markdown editing, forgetting individual entries, and clearing saved memory. The `list_memories` and `forget_memory` tools remain thin calls into this module.
 
 ## 3. Providers and model catalogs
 
