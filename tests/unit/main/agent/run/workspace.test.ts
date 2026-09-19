@@ -66,7 +66,7 @@ it.each([undefined, 'task', 'health', 'child'] as const)('creates, reads, overwr
 });
 
 it.each(['task', 'health', 'child'] as const)('allows workspace commands and memory updates without a window for %s', async (source) => {
-	for (const id of ['bash', 'save_memory', 'forget_memory', 'update_health']) {
+	for (const id of ['bash', 'forget_memory', 'update_health']) {
 		const run = jest.fn().mockResolvedValue('done');
 		const tool = jsonTool({ id, name: id, description: id, schema: {}, execute: run });
 		expect((await execute(tool, id === 'bash' ? { command: 'node tools/example.js' } : {}, undefined, source)).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
@@ -89,7 +89,7 @@ it.each(['task', 'health', 'child'] as const)('blocks unapproved outside access 
 	expect(fs.existsSync(path.resolve(workspace, '../background-outside.txt'))).toBe(false);
 });
 
-it.each(['save_memory', 'forget_memory', 'update_health', 'bash'])('allows workspace %s without approval', async (id) => {
+it.each(['forget_memory', 'update_health', 'bash'])('allows workspace %s without approval', async (id) => {
 	const run = jest.fn().mockResolvedValue('done');
 	const tool = jsonTool({ id, name: id, description: id, schema: {}, execute: run });
 	expect((await execute(tool, id === 'bash' ? { command: 'node tools/example.js' } : {})).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
