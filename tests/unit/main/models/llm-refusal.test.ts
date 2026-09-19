@@ -31,14 +31,18 @@ describe('OpenAI Responses refusal delivery', () => {
 			messages: [{ role: 'user', content: 'request' }],
 			maxTokens: 100,
 			streaming,
-		})) events.push(event);
+		}))
+			events.push(event);
 
-		expect(events.flatMap((event) => event.type === 'model_call_delta' ? [event.delta] : []).join(''))
-			.toBe(refusal);
-		expect(events.at(-1)).toEqual(expect.objectContaining({
-			type: 'model_call_end',
-			stopReason: 'end_turn',
-			usage: { inputTokens: 3, outputTokens: 7 },
-		}));
+		expect(
+			events.flatMap((event) => (event.type === 'model_call_delta' ? [event.delta] : [])).join('')
+		).toBe(refusal);
+		expect(events.at(-1)).toEqual(
+			expect.objectContaining({
+				type: 'model_call_end',
+				stopReason: 'end_turn',
+				usage: { inputTokens: 3, outputTokens: 7 },
+			})
+		);
 	});
 });
