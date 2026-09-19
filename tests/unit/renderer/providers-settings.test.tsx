@@ -166,6 +166,32 @@ it('masks saved model keys until editing', async () => {
 	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('model-secret');
 });
 
+it('saves a custom OpenAI-compatible model provider', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="models" />
+		</MemoryRouter>
+	);
+
+	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
+	await user.type(screen.getByLabelText('Custom provider base URL'), 'http://localhost:11434/v1');
+	await user.type(screen.getByLabelText('Custom provider model ID'), 'llama3.2:3b');
+	await user.type(screen.getByLabelText('Custom provider API key'), 'ollama');
+	await user.click(screen.getByRole('button', { name: 'Save', exact: true }));
+
+	await waitFor(() =>
+		expect(window.provider.set).toHaveBeenCalledWith({
+			id: 'custom',
+			kind: 'models',
+			apiKey: 'ollama',
+			baseUrl: 'http://localhost:11434/v1',
+			modelId: 'llama3.2:3b',
+		})
+	);
+	expect(screen.getByText('llama3.2:3b')).toBeInTheDocument();
+});
+
 it('masks saved Search keys until editing', async () => {
 	jest.mocked(window.search.listProviders).mockResolvedValue([
 		{

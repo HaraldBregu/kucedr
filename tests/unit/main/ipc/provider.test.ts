@@ -121,6 +121,49 @@ describe('provider credential IPC boundary', () => {
 		expect(result).toEqual(provider);
 	});
 
+	it('saves a custom OpenAI-compatible model provider', () => {
+		register();
+		const provider = {
+			id: 'custom',
+			name: 'Custom model provider',
+			apiKey: 'ollama',
+			baseUrl: 'http://localhost:11434/v1',
+			modelId: 'llama3.2:3b',
+		};
+		setProvider.mockReturnValue(provider);
+
+		const result = handler(registerCommandWithEvent, ProviderChannels.set)(
+			{},
+			{
+				kind: 'models',
+				id: 'custom',
+				apiKey: 'ollama',
+				baseUrl: 'http://localhost:11434/v1/',
+				modelId: ' llama3.2:3b ',
+			}
+		);
+
+		expect(setProvider).toHaveBeenCalledWith(provider, 'models');
+		expect(result).toEqual(provider);
+	});
+
+	it('rejects custom providers without an HTTP base URL', () => {
+		register();
+
+		expect(() =>
+			handler(registerCommandWithEvent, ProviderChannels.set)(
+				{},
+				{
+					kind: 'models',
+					id: 'custom',
+					apiKey: 'ollama',
+					baseUrl: 'file:///tmp/model',
+					modelId: 'llama3.2:3b',
+				}
+			)
+		).toThrow('The provider base URL is invalid.');
+	});
+
 	it('saves and lists database credentials separately from model credentials', () => {
 		setProvider.mockClear();
 		register();
