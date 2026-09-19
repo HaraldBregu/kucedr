@@ -76,6 +76,15 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			editing: index === 0,
 		}))
 	);
+	const [customProvider, setCustomProvider] = useState({
+		apiKey: '',
+		baseUrl: '',
+		modelId: '',
+		savedApiKey: '',
+		savedBaseUrl: '',
+		savedModelId: '',
+		editing: false,
+	});
 	const [savingProviderId, setSavingProviderId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
@@ -116,6 +125,18 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						};
 					})
 				);
+				const custom = savedProviders.get('custom');
+				if (custom?.modelId && custom.baseUrl) {
+					setCustomProvider({
+						apiKey: custom.apiKey,
+						baseUrl: custom.baseUrl,
+						modelId: custom.modelId,
+						savedApiKey: custom.apiKey,
+						savedBaseUrl: custom.baseUrl,
+						savedModelId: custom.modelId,
+						editing: false,
+					});
+				}
 			})
 			.catch((err) => {
 				if (cancelled) return;
@@ -208,6 +229,31 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			});
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not save search provider API key.'));
+		} finally {
+			setSavingProviderId(null);
+		}
+	};
+
+	const saveCustomProvider = async (): Promise<void> => {
+		const apiKey = customProvider.apiKey.trim();
+		const baseUrl = customProvider.baseUrl.trim();
+		const modelId = customProvider.modelId.trim();
+		if (!apiKey || !baseUrl || !modelId) return;
+		setSavingProviderId('custom');
+		setError(null);
+		try {
+			await window.provider.set({ id: 'custom', kind: 'models', apiKey, baseUrl, modelId });
+			setCustomProvider({
+				apiKey,
+				baseUrl,
+				modelId,
+				savedApiKey: apiKey,
+				savedBaseUrl: baseUrl,
+				savedModelId: modelId,
+				editing: false,
+			});
+		} catch (err) {
+			setError(getErrorMessage(err, 'Could not save custom model provider.'));
 		} finally {
 			setSavingProviderId(null);
 		}
@@ -357,6 +403,47 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		);
 	};
 
+	const renderCustomProviderCard = (): React.ReactElement => {
+		const connected = Boolean(customProvider.savedModelId);
+		const saving = savingProviderId === 'custom';
+		const canSave = Boolean(
+			customProvider.apiKey.trim() && customProvider.baseUrl.trim() && customProvider.modelId.trim()
+		);
+		return (
+			<Card className={cn('rounded-lg border-border bg-card py-0 shadow-none', customProvider.editing && 'border-ring ring-2 ring-ring/20')}>
+				<CardContent className="p-0">
+					<div className={cn('flex min-h-12 items-center gap-2.5 px-4 py-3.5', customProvider.editing && 'pb-3')}>
+						<div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-xs font-semibold text-muted-foreground">+</div>
+						<div className="min-w-0 flex-1">
+							<h2 className="truncate text-sm font-semibold leading-tight text-foreground">Custom model provider</h2>
+							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
+								{connected ? customProvider.savedModelId : 'OpenAI-compatible API'}
+							</p>
+						</div>
+						{connected && !customProvider.editing ? (
+							<Button type="button" variant="ghost" size="icon-xs" aria-label="Edit custom model provider" onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}>
+								<Pencil className="size-3.5" />
+							</Button>
+						) : !customProvider.editing ? (
+							<Button type="button" variant="outline" size="xs" onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}>Connect</Button>
+						) : null}
+					</div>
+					{customProvider.editing && (
+						<div className="grid gap-2 px-4 pb-4 sm:grid-cols-3">
+							<Input aria-label="Custom provider base URL" autoComplete="off" className="h-8" disabled={saving} placeholder="http://localhost:11434/v1" spellCheck={false} value={customProvider.baseUrl} onChange={(event) => setCustomProvider((current) => ({ ...current, baseUrl: event.target.value }))} />
+							<Input aria-label="Custom provider model ID" autoComplete="off" className="h-8" disabled={saving} placeholder="llama3.2:3b" spellCheck={false} value={customProvider.modelId} onChange={(event) => setCustomProvider((current) => ({ ...current, modelId: event.target.value }))} />
+							<Input aria-label="Custom provider API key" autoComplete="off" className="h-8" disabled={saving} placeholder="ollama" spellCheck={false} type="text" value={customProvider.apiKey} onChange={(event) => setCustomProvider((current) => ({ ...current, apiKey: event.target.value }))} />
+							<div className="flex gap-2 sm:col-span-3 sm:justify-end">
+								<Button type="button" variant="outline" size="sm" disabled={saving} onClick={() => setCustomProvider((current) => ({ ...current, apiKey: current.savedApiKey, baseUrl: current.savedBaseUrl, modelId: current.savedModelId, editing: false }))}>{t('common.cancel')}</Button>
+								<Button type="button" size="sm" disabled={saving || !canSave} onClick={() => void saveCustomProvider()}>{saving ? <LoaderCircle className="size-3.5 animate-spin" /> : null}{t('common.save')}</Button>
+							</div>
+						</div>
+					)}
+				</CardContent>
+			</Card>
+		);
+	};
+
 	const modelCatalog = actionableProviderCatalog();
 	const featuredIds = new Set<string>(FEATURED_PROVIDER_IDS);
 	const featuredProviders = FEATURED_PROVIDER_IDS.flatMap((id) =>
@@ -410,6 +497,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								{actionableProviderCatalog().map((provider) =>
 									renderProviderCard(provider, 'models')
 								)}
+								{renderCustomProviderCard()}
 							</div>
 						)}
 					</SettingsSection>
