@@ -94,67 +94,67 @@ export default function MemoryPage(): React.JSX.Element {
 				<fieldset className="min-w-0 space-y-4">
 					<SettingsPanel>
 						<SettingsRow
-								title={t('settings.memory.enabled')}
-								description={t('settings.memory.enabledDescription')}
-								actions={
-									<Switch
-										aria-label={t('settings.memory.enabled')}
-										checked={config.enabled}
-										onCheckedChange={(enabled) => setConfig({ ...config, enabled })}
-									/>
-								}
+							title={t('settings.memory.enabled')}
+							description={t('settings.memory.enabledDescription')}
+							actions={
+								<Switch
+									aria-label={t('settings.memory.enabled')}
+									checked={config.enabled}
+									onCheckedChange={(enabled) => setConfig({ ...config, enabled })}
+								/>
+							}
 						/>
 						<ModelProviderConfiguration
-								idPrefix="memory"
-								triggerTitle={t('settings.memory.model')}
-								description={t('settings.memory.modelDescription')}
-								configState={{
-									...initialModelConfigurationState,
-									providers: groups.map((group) => group.provider),
-									modelGroups: groups,
-									providerId: config.providerId,
-									modelId: config.modelId,
-									loading: false,
-									saving: false,
-								}}
-								collapsible={false}
-								onChange={(providerId, modelId) =>
-									setConfig({ ...config, providerId, modelId, modelOptions: {} })
-								}
+							idPrefix="memory"
+							triggerTitle={t('settings.memory.model')}
+							description={t('settings.memory.modelDescription')}
+							configState={{
+								...initialModelConfigurationState,
+								providers: groups.map((group) => group.provider),
+								modelGroups: groups,
+								providerId: config.providerId,
+								modelId: config.modelId,
+								loading: false,
+								saving: false,
+							}}
+							collapsible={false}
+							onChange={(providerId, modelId) =>
+								setConfig({ ...config, providerId, modelId, modelOptions: {} })
+							}
 						/>
 						<div className="px-4 pb-4">
-								<ModelOptions
-									inputs={inputs}
-									values={config.modelOptions}
-									onChange={(path, value) =>
-										setConfig({
-											...config,
-											modelOptions: updateModelOptions(config.modelOptions, path, value),
-										})
-									}
-								/>
+							<ModelOptions
+								inputs={inputs}
+								values={config.modelOptions}
+								onChange={(path, value) =>
+									setConfig({
+										...config,
+										modelOptions: updateModelOptions(config.modelOptions, path, value),
+									})
+								}
+							/>
 						</div>
 						<SettingsRow
-								title={t('settings.memory.type')}
-								actions={
-									<Select
-										value={config.memoryType}
-										onValueChange={(memoryType) =>
-											setConfig({ ...config, memoryType: memoryType as MemoryConfig['memoryType'] })
-										}
-									>
-										<SelectTrigger aria-label={t('settings.memory.type')} className="w-44">
-											<SelectValue>{t(`settings.memory.${config.memoryType}`)}</SelectValue>
-										</SelectTrigger>
-										<SelectContent>
-											{(['facts', 'summaries', 'both'] as const).map((value) => (
-												<SelectItem key={value} value={value}>
-													{t(`settings.memory.${value}`)}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								}
+							title={t('settings.memory.type')}
+							actions={
+								<Select
+									value={config.memoryType}
+									onValueChange={(memoryType) =>
+										setConfig({ ...config, memoryType: memoryType as MemoryConfig['memoryType'] })
+									}
+								>
+									<SelectTrigger aria-label={t('settings.memory.type')} className="w-44">
+										<SelectValue>{t(`settings.memory.${config.memoryType}`)}</SelectValue>
+									</SelectTrigger>
+									<SelectContent>
+										{(['facts', 'summaries', 'both'] as const).map((value) => (
+											<SelectItem key={value} value={value}>
+												{t(`settings.memory.${value}`)}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							}
 						/>
 					</SettingsPanel>
 				</fieldset>
