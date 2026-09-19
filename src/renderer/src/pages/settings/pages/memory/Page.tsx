@@ -209,6 +209,7 @@ export default function MemoryPage(): React.JSX.Element {
 										disabled={!config.scheduleEnabled}
 										value={scheduleSelection}
 										onValueChange={(value) => {
+											if (!value) return;
 											setScheduleSelection(value);
 											const schedule = MEMORY_SCHEDULES.find((entry) => entry.key === value);
 											if (schedule) setConfig({ ...config, cronExpression: schedule.cron });
