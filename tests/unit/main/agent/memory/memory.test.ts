@@ -4,7 +4,7 @@ import type { MemoryDependencies, MemoryState, SourceSession } from '../../../..
 
 function setup(initialized = true) {
  let state: MemoryState = {
-  config: { enabled: true, providerId: 'provider', modelId: 'model', modelOptions: {}, memoryType: 'both', scheduleEnabled: true, cronExpression: '*/15 * * * *', timezone: 'Europe/Rome' },
+  config: { enabled: true, providerId: 'provider', modelId: 'model', modelOptions: {}, memoryType: 'both' },
   initialized, modelInitialized: true, checkpoints: {}, suppressed: [], lastSuccess: null,
  };
  let markdown = '# Memory\n\nManual notes remain here.\n';
@@ -14,7 +14,6 @@ function setup(initialized = true) {
 	const writeSession = jest.fn(async () => undefined);
 	const removeSession = jest.fn(async () => undefined);
 	const exists = jest.fn(async () => true);
- const stop = jest.fn();
 	const stopWatching = jest.fn();
 	let sessionChanged: ((sessionId: string) => void) | undefined;
  const dependencies: MemoryDependencies = {
@@ -26,11 +25,11 @@ function setup(initialized = true) {
 			return { stop: stopWatching };
 		}),
   selection: jest.fn(() => ({ providerId: 'chat-provider', modelId: 'chat-model', modelOptions: {} })),
-  schedule: jest.fn(() => ({ stop })), validate: jest.fn(),
+  validate: jest.fn(),
  };
  const memory = new Memory(dependencies);
 	const extracted = '# Memory\n\nManual notes remain here.\n- Prefers concise answers.\n';
-	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, stop, stopWatching, sessionChanged: () => sessionChanged, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
+	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, stopWatching, sessionChanged: () => sessionChanged, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
 }
 
 it('serializes cumulative session snapshots and removes them through the memory module', async () => {
@@ -162,13 +161,9 @@ it('rejects a non-Markdown fenced model response', async () => {
  expect(h.markdown()).not.toContain('Prefers long answers.');
 });
 
-it('reschedules cron, pauses automatic triggers, and permits manual refresh', async () => {
+it('pauses automatic triggers when disabled and permits manual refresh', async () => {
  const h = setup();
  await h.memory.start();
- expect(h.dependencies.schedule).toHaveBeenCalledWith('*/15 * * * *', 'Europe/Rome', expect.any(Function));
- await h.memory.configure({ cronExpression: '0 * * * *', timezone: 'UTC' });
- expect(h.stop).toHaveBeenCalled();
- expect(h.dependencies.schedule).toHaveBeenLastCalledWith('0 * * * *', 'UTC', expect.any(Function));
  await h.memory.configure({ enabled: false });
  h.sessions[0].messages.push({ fingerprint: 'later', role: 'user', text: 'I write Go.' });
  const calls = h.infer.mock.calls.length;
@@ -216,16 +211,6 @@ it('automatically generates memory from only the changed session snapshot', asyn
 	expect(h.state().checkpoints.other).not.toContain('other-new');
 	await h.memory.stop();
 	expect(h.stopWatching).toHaveBeenCalled();
-});
-
-it('rejects invalid configuration without replacing the working schedule', async () => {
- const h = setup();
- await h.memory.start();
- (h.dependencies.validate as jest.Mock).mockImplementationOnce(() => { throw new Error('Invalid cron expression.'); });
- await expect(h.memory.configure({ cronExpression: 'not cron' })).rejects.toThrow('Invalid cron');
- expect(h.memory.getConfig().cronExpression).toBe('*/15 * * * *');
- expect(h.stop).not.toHaveBeenCalled();
- await h.memory.stop();
 });
 
 it('initializes the memory model from chat only once', async () => {
@@ -328,7 +313,6 @@ it('rejects private output and assistant-only sources', async () => {
 
 it.each([true, false])('recovers a mutation journal only when its document was committed: %s', async (committed) => {
  const h = setup();
- h.state().config.scheduleEnabled = false;
  h.state().mutation = {
   digest: fingerprint(committed ? h.markdown() : 'unwritten document'),
   checkpoints: { chat: ['first'] },
@@ -361,19 +345,6 @@ it('rejects stale manual edits without changing memory or checkpoints', async ()
  expect(h.markdown()).toBe('replacement');
 });
 
-it('uses manual refresh only when the schedule is disabled', async () => {
- const h = setup();
- await h.memory.configure({ scheduleEnabled: false });
- await h.memory.start();
- await h.memory.refresh('wake');
- await h.memory.refresh('cron');
- expect(h.dependencies.schedule).not.toHaveBeenCalled();
- expect(h.infer).not.toHaveBeenCalled();
- await h.memory.refresh();
- expect(h.infer).toHaveBeenCalledTimes(1);
- await h.memory.stop();
-});
-
 it('summarizes a new assistant reply using preceding user context without re-extracting old facts', async () => {
  const h = setup();
  await h.memory.refresh();
@@ -389,16 +360,15 @@ it('summarizes a new assistant reply using preceding user context without re-ext
  expect(h.state().checkpoints.chat).toEqual(['first', 'answer']);
 });
 
-it('keeps scheduling after a corrupt baseline and retries initialization', async () => {
+it('keeps watching after a corrupt baseline and retries initialization on wake', async () => {
  const h = setup(false);
  (h.dependencies.sources as jest.Mock).mockRejectedValue(new Error('corrupt conversation'));
  await h.memory.start();
- expect(h.dependencies.schedule).toHaveBeenCalledTimes(1);
+ expect(h.dependencies.watchSessions).toHaveBeenCalledTimes(1);
  expect(h.memory.status().error).toContain('corrupt conversation');
  expect(h.state().initialized).toBe(false);
  (h.dependencies.sources as jest.Mock).mockResolvedValue(structuredClone(h.sessions));
- const scheduled = (h.dependencies.schedule as jest.Mock).mock.calls[0][2];
- await scheduled();
+ await h.memory.refresh('wake');
  expect(h.state().initialized).toBe(true);
  expect(h.state().checkpoints.chat).toEqual(['first']);
  expect(h.infer).not.toHaveBeenCalled();
@@ -407,6 +377,6 @@ it('keeps scheduling after a corrupt baseline and retries initialization', async
 
 it('merges concurrent configuration patches instead of losing either update', async () => {
  const h = setup();
- await Promise.all([h.memory.configure({ timezone: 'UTC' }), h.memory.configure({ memoryType: 'facts' })]);
- expect(h.memory.getConfig()).toMatchObject({ timezone: 'UTC', memoryType: 'facts' });
+ await Promise.all([h.memory.configure({ enabled: false }), h.memory.configure({ memoryType: 'facts' })]);
+ expect(h.memory.getConfig()).toMatchObject({ enabled: false, memoryType: 'facts' });
 });
