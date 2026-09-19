@@ -1,7 +1,7 @@
 # Supabase Adapter
 
 This is the current infrastructure adapter for Kucedr accounts, cloud chat metadata, private file
-storage, encrypted credential records, and per-chat Realtime events. Read [Account and Cloud
+storage for cloud records, and per-chat Realtime events. Read [Account and Cloud
 Architecture](CLOUD.md) first. The client runs only in Electron's main process; shared contracts,
 IPC, and renderer code remain provider-neutral.
 
@@ -100,11 +100,9 @@ hosted-project settings before releasing a build:
 
 Existing local chats and provider configuration stay on the device. The first signed-in account
 becomes the owner of that local Kucedr profile; signing into another account
-is rejected to prevent accidental cross-account data exposure. Cloud folder backups use the
-private `user-files` bucket below `<user-id>/backups/`; no storage-provider selection or separate
-storage credentials are required. Legacy local storage-provider configuration is left untouched
-without migration but is no longer read by the Cloud workflow. Vector-database providers remain
-separate because they serve RAG rather than file backup.
+is rejected to prevent accidental cross-account data exposure. Folder backups use the separately configured S3-compatible storage provider in Settings → Cloud;
+they do not use this account adapter or require sign-in. Model, database, and search credentials
+remain in local provider settings. Vector databases serve RAG and are separate from file backup.
 
 Supabase session and PKCE values are encrypted with Electron `safeStorage`. On systems where
 secure encryption is unavailable, Kucedr keeps the session in memory and requires sign-in

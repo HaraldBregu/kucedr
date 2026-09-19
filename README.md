@@ -11,9 +11,8 @@
 Kucedr is a cross-platform desktop AI assistant that turns conversations into actions. Type or speak a request, attach images or PDFs, and let the agent work with files, run commands, research the web, create media, or automate a recurring task.
 
 You choose the providers and models behind each AI capability. Kucedr keeps its settings,
-conversations, and workspace data on your machine. Provider keys are encrypted locally when secure
-device storage is available, and signed-in users can optionally enable end-to-end encrypted key
-sync. Requests are sent only to the AI providers and connected services you configure.
+conversations, and workspace data on your machine. Model, database, and search keys are stored in local provider settings. Storage secret keys
+and persistent account sessions use secure device storage. Requests are sent only to the AI providers and connected services you configure.
 
 ## What Kucedr Can Do
 
@@ -25,15 +24,15 @@ sync. Requests are sent only to the AI providers and connected services you conf
 - **Extend the agent** — import reusable skills, connect remote HTTP or local stdio MCP servers, and delegate independent work to subagents.
 - **Automate routines** — create recurring schedules and periodic checklist-based health runs.
 - **Remember useful context** — maintain durable memory, personalization files, conversation history, and a local working directory.
-- **Compile persistent knowledge** — archive immutable evidence, incrementally maintain a cited Markdown wiki, query it before raw sources, and review risky changes.
+- **Search personal knowledge** — index selected folders with explicit embedding and remote-storage consent, then retrieve source excerpts from the local RAG index.
 - **Chat from other apps** — connect Telegram to reach Kucedr away from the desktop app.
 
 Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces and light, dark, and system themes.
 
 ## Control and Privacy
 
-- Provider API keys are encrypted locally when secure device storage is available. Optional key
-  sync encrypts them with a separate passphrase before upload.
+- Model, database, and search keys are stored as entered in local settings. Storage secret keys
+  and account sessions have separate secure-storage protections.
 - Prompts, attachments, and tool data may be sent to the providers, MCP servers, websites, or messaging channels you configure.
 - File writes, edits, patches, and command execution are governed by the agent permission policy.
 - Tool activity is streamed into the conversation so you can follow what the agent is doing.
@@ -61,8 +60,8 @@ workspaces and one lockfile.
 On first launch, follow the [Start Page Flow](docs/ui/START.md) to sign in or continue local-only,
 save a model-provider API key, and select the provider and model for the assistant. Search,
 database, speech, and media configuration are optional and can be completed later in Settings.
-Signed-in users can enable secure key sync and select folders for account-backed cloud backup from
-**Settings → Cloud**.
+Configure an S3-compatible provider and select folders for backup in **Settings → Cloud**.
+Folder backup does not require account sign-in.
 See [Home UI](docs/ui/HOME.md) for the chat workspace's states and interactions.
 See [Settings UI](docs/ui/SETTINGS.md) for configuration navigation and behavior.
 
@@ -97,7 +96,7 @@ Run the main local checks before submitting changes:
 npm run quality:check
 ```
 
-This runs the TypeScript checks, ESLint, main-process tests, and renderer tests. Run the end-to-end suite separately:
+This runs dependency audits, TypeScript checks, ESLint, main-process tests, renderer tests, and package tests. Run the end-to-end suite separately:
 
 ```bash
 npm run test:e2e
@@ -144,7 +143,8 @@ chat and other supported features from running.
 - `src/shared` contains cross-process types and API contracts.
 - `src/main/terminal` contains the PTY lifecycle behind the typed terminal IPC API. See [Terminal IPC Architecture](docs/TERMINAL.md).
 - `packages/cli` contains the publishable TypeScript command-line and terminal interface.
-- `packages/sdk` contains the publishable typed client for Kucedr's local API.
+- `packages/sdk` contains typed embedded bridges and an HTTP client; this checkout does not start
+  a matching standalone SDK HTTP server. See [Application Architecture](docs/ARCHITECTURE.md).
 - `src/main/agent` contains sessions, tools, skills, memory, schedules, health runs, sandboxing, and permission policy.
 - `src/main/models` contains provider-specific model integrations. See
   [Provider Reference](docs/PROVIDERS.md) for the built-in catalog and runtime support matrix.

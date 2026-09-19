@@ -3,7 +3,10 @@
 This is the canonical workflow for developing, testing, pushing, and deploying Kucedr from
 the monorepo.
 
-Kucedr contains three independently versioned products:
+Kucedr contains three independently versioned products. The root manifest also declares a
+`website` workspace and website scripts, but this checkout has no `website` directory; those
+commands cannot be used until that workspace is supplied. All workflow files currently end in
+`.yml.disabled`, so automated CI and tag deployments described below are inactive:
 
 | Product      | Manifest                    | Workspace name | Deployment destination |
 | ------------ | --------------------------- | -------------- | ---------------------- |
@@ -12,8 +15,7 @@ Kucedr contains three independently versioned products:
 | CLI          | `packages/cli/package.json` | `@kucedr/cli`  | npm                    |
 
 The private root package manages the Electron application and both npm workspaces through
-one root `package-lock.json`. `packages/examples/projects` is a standalone example and
-intentionally keeps its own lockfile.
+one root `package-lock.json`. The previously documented `packages/examples/projects` directory is absent in this checkout.
 
 ## Prerequisites
 
@@ -138,15 +140,6 @@ Inspect the publishable CLI tarball:
 npm pack --dry-run --workspace @kucedr/cli
 ```
 
-### Run the example project
-
-The example is not a root workspace. Install and run it from its own directory:
-
-```sh
-npm --prefix packages/examples/projects ci
-npm --prefix packages/examples/projects run dev
-```
-
 ## Test the repository
 
 ### Fast checks while coding
@@ -179,11 +172,12 @@ npm run quality:check
 
 It runs, in order:
 
-1. App, SDK, and CLI typechecks.
-2. ESLint.
-3. Main-process and integration Jest tests.
-4. Renderer Jest tests.
-5. SDK and CLI tests.
+1. Dependency audits for the root and configured bundled app/MCP packages.
+2. App and available workspace typechecks.
+3. ESLint.
+4. Main-process and integration Jest tests.
+5. Renderer Jest tests.
+6. Available workspace tests.
 
 Also verify formatting without rewriting files:
 
@@ -191,7 +185,8 @@ Also verify formatting without rewriting files:
 npm run format:check
 ```
 
-CI and release builds run this same gate. Run it locally before submitting changes.
+The disabled CI definition includes this gate. Run it locally before submitting changes;
+there is currently no active CI workflow.
 
 ### Production build
 
@@ -207,7 +202,7 @@ Build both publishable packages:
 npm run build:packages
 ```
 
-Build all three products:
+Build the Electron app, available workspaces, and bundled Workspace app:
 
 ```sh
 npm run build:all
@@ -242,9 +237,7 @@ Artifacts are written to the root `dist/` directory. Local packaging never uploa
 
 Production Windows packaging requires the signing certificate configured through
 `CSC_LINK` and `CSC_KEY_PASSWORD`. Production macOS packaging requires signing and
-notarization credentials. The development/staging `dist:*:dev` and `dist:*:staging`
-scripts currently reference missing helper scripts and must not be used until those
-helpers are restored.
+notarization credentials. There are no development/staging distribution scripts in the current root manifest.
 
 The Windows portable target is signed and runs as the current user. It extracts to a temporary
 directory for the lifetime of the process, so enterprise policies that prohibit execution from
@@ -277,16 +270,22 @@ Reports are written to `coverage/`.
 
 ### Match the automated CI gate
 
-The `CI` workflow runs for pull requests and every push to `main`:
+The stored `.github/workflows/ci.yml.disabled` definition is inactive. If explicitly restored
+to an enabled workflow, its verification commands include:
 
 ```sh
 npm ci
-npm run typecheck
+npm run quality:check
 npm run build
-npm run test:packages
+xvfb-run -a npm run test:e2e
 npm run build:packages
 npm pack --dry-run --workspace @kucedr/sdk
 npm pack --dry-run --workspace @kucedr/cli
+npm run build:demo
+npm run build:coder
+npm run build:architect
+npm run build:videomaker
+npm run build:workspace
 ```
 
 Newer pushes cancel an older in-progress CI run for the same branch. A cancelled run
@@ -294,7 +293,8 @@ therefore does not necessarily mean a test failed; inspect the newest run.
 
 ## Push a normal change
 
-A normal branch push runs CI but does not deploy any product.
+A normal branch push currently triggers no checked-in workflow. After CI is enabled, it can
+validate pushes without deploying products.
 
 Create a branch:
 
@@ -317,14 +317,16 @@ Stage only the intended files, commit, and push:
 ```sh
 git add path/to/file
 git commit -m "describe the change"
-git push --set-upstream origin your-change
+git push --set-upstream kucedr your-change
 ```
 
 Open a pull request, wait for the latest CI run to pass, and merge it into `main`.
 
 ## Deployment
 
-Deployment is tag-driven:
+The disabled release definitions describe tag-driven deployment. These are release procedures
+for use after the workflows are explicitly enabled and their prerequisites verified; pushing
+a tag currently triggers none of them:
 
 | Tag          | Workflow               | Result                                |
 | ------------ | ---------------------- | ------------------------------------- |
@@ -333,7 +335,7 @@ Deployment is tag-driven:
 | `cli-v1.2.3` | `Publish npm package`  | `@kucedr/cli@1.2.3` on npm            |
 
 Versions are independent. Releasing the SDK does not release the CLI or Electron app.
-A normal push to `main` runs CI only.
+With the workflows enabled, a normal push to `main` runs CI only.
 
 ### One-time GitHub and npm setup
 
@@ -394,7 +396,7 @@ Run this preflight before the Electron, SDK, or CLI instructions below:
 
 ```sh
 git switch main
-git pull --ff-only origin main
+git pull --ff-only kucedr main
 git status --short
 ```
 
@@ -430,7 +432,7 @@ The root manifest version and tag must match exactly.
    ```sh
    git add package.json package-lock.json
    git commit -m "release app v1.0.3"
-   git push origin main
+   git push kucedr main
    ```
 
 5. Wait for the latest `CI` run on that commit to succeed.
@@ -439,7 +441,7 @@ The root manifest version and tag must match exactly.
 
    ```sh
    git tag -a v1.0.3 -m "Kucedr v1.0.3"
-   git push origin v1.0.3
+   git push kucedr v1.0.3
    ```
 
 The release workflow rejects a tag that does not equal `v` plus the root manifest
@@ -480,14 +482,14 @@ Verify:
    ```sh
    git add packages/sdk/package.json package-lock.json
    git commit -m "release sdk v0.1.1"
-   git push origin main
+   git push kucedr main
    ```
 
 5. Wait for CI, then tag the same commit:
 
    ```sh
    git tag -a sdk-v0.1.1 -m "@kucedr/sdk v0.1.1"
-   git push origin sdk-v0.1.1
+   git push kucedr sdk-v0.1.1
    ```
 
 6. Verify the published version and provenance:
@@ -528,14 +530,14 @@ Verify:
    ```sh
    git add packages/cli/package.json packages/cli/src/program.ts package-lock.json
    git commit -m "release cli v0.1.1"
-   git push origin main
+   git push kucedr main
    ```
 
 5. Wait for CI, then tag the same commit:
 
    ```sh
    git tag -a cli-v0.1.1 -m "@kucedr/cli v0.1.1"
-   git push origin cli-v0.1.1
+   git push kucedr cli-v0.1.1
    ```
 
 6. Verify the published package:
