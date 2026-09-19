@@ -9,12 +9,12 @@ const api = toolModelApi('audio');
 export default function MusicPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
-		<SettingsPageShell className="px-4 sm:px-6">
+		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.music')}
 				description={t('settings.modelServices.musicModelDescription')}
 			/>
-			<div>
+			<div className="-mx-2">
 				<AgentMediaModelConfiguration
 					api={api}
 					capability="text-to-audio"

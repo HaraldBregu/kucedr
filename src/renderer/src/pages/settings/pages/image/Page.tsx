@@ -9,12 +9,12 @@ const api = toolModelApi('image');
 export default function ImagePage(): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
-		<SettingsPageShell className="px-4 sm:px-6">
+		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.image')}
 				description={t('settings.modelServices.imageModelDescription')}
 			/>
-			<div>
+			<div className="-mx-2">
 				<AgentMediaModelConfiguration
 					api={api}
 					capability="text-to-image"
