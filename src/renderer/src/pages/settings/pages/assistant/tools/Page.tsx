@@ -9,7 +9,6 @@ import {
 	Globe,
 	Image as ImageIcon,
 	ListTodo,
-	Mic,
 	Monitor,
 	Music2,
 	Network,
