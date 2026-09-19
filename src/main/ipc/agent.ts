@@ -166,9 +166,7 @@ function toToolModelKind(value: unknown): AgentToolModelKind {
 	if (
 		value === 'image' ||
 		value === 'audio' ||
-		value === 'video' ||
-		value === 'textToSpeech' ||
-		value === 'speechToText'
+		value === 'video'
 	) {
 		return value;
 	}

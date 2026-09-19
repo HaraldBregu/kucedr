@@ -24,7 +24,6 @@ const READ = new Set([
 	'camera_recorder_status',
 	'microphone_recorder_status',
 	'screen_recorder_status',
-	'speech_to_text',
 ]);
 const WRITE = new Set(['write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap']);
 const PERSIST = new Set([
@@ -49,7 +48,7 @@ const CONTROL = new Set([
 	'microphone_recorder_stop',
 	'screen_recorder_stop',
 ]);
-const PAID = new Set(['create_image', 'create_sound', 'create_video', 'text_to_speech']);
+const PAID = new Set(['create_image', 'create_sound', 'create_video']);
 const EXTERNAL = new Set(['delegate_a2a', 'cancel_a2a_task', 'open_apps', 'close_apps']);
 
 export function builtinCapability(

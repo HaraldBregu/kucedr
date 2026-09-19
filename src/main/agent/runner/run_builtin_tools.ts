@@ -26,8 +26,6 @@ import { saveMemoryTool } from '../tools/memory/save_memory';
 import { createImageTool } from '../tools/media/create_image';
 import { createSoundTool } from '../tools/media/create_sound';
 import { createVideoTool } from '../tools/media/create_video';
-import { speechToTextTool } from '../tools/media/speech_to_text';
-import { textToSpeechTool } from '../tools/media/text_to_speech';
 import { cameraRecorderTool } from '../tools/system/camera_recorder';
 import { cameraRecorderStatusTool } from '../tools/system/camera_recorder_status';
 import { cameraRecorderStopTool } from '../tools/system/camera_recorder_stop';
@@ -71,8 +69,6 @@ export function builtinTools(
 		createImageTool(),
 		createVideoTool(),
 		createSoundTool(),
-		textToSpeechTool(),
-		speechToTextTool(),
 		microphoneRecorderTool(),
 		microphoneRecorderStatusTool,
 		microphoneRecorderStopTool,

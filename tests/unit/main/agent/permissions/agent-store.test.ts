@@ -133,25 +133,15 @@ describe('agent store permissions', () => {
 		expect(getToolModel('image')).toMatchObject({ providerId: 'google', modelId: 'image' });
 	});
 
-	it('keeps chat and tool speech selections independent', () => {
+	it('keeps chatbot speech models available without speech tools', () => {
 		setChatbotModel('textToSpeech', {
 			providerId: 'openai',
 			modelId: 'gpt-4o-mini-tts',
 			options: { voice: 'marin' },
 		});
-		setToolModel('textToSpeech', {
-			providerId: 'elevenlabs',
-			modelId: 'eleven_v3',
-			options: { voice_id: 'eve' },
-		});
-		setToolModel('speechToText', {
-			providerId: 'deepgram',
-			modelId: 'nova-3',
-			options: {},
-		});
 
 		expect(getChatbotModel('textToSpeech')).toMatchObject({ providerId: 'openai' });
-		expect(getToolModel('textToSpeech')).toMatchObject({ providerId: 'elevenlabs' });
-		expect(getToolModel('speechToText')).toMatchObject({ providerId: 'deepgram' });
+		expect(getPermissions().tools).not.toHaveProperty('text_to_speech');
+		expect(getPermissions().tools).not.toHaveProperty('speech_to_text');
 	});
 });

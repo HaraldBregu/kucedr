@@ -111,8 +111,6 @@ const RUNTIME_TOOL_KEYS = {
 	create_image: 'create_image',
 	create_video: 'create_video',
 	create_sound: 'create_sound',
-	text_to_speech: 'text_to_speech',
-	speech_to_text: 'speech_to_text',
 	microphone_recorder: 'microphone_recorder',
 	microphone_recorder_status: 'microphone_recorder_status',
 	microphone_recorder_stop: 'microphone_recorder_stop',
@@ -154,8 +152,6 @@ const TOOL_MODEL_KEYS: Record<AgentToolModelKind, string> = {
 	image: 'create_image',
 	audio: 'create_sound',
 	video: 'create_video',
-	textToSpeech: 'text_to_speech',
-	speechToText: 'speech_to_text',
 };
 const mediaToolSettings = (
 	model: Partial<AgentMediaModelSettings & ToolSettings>
@@ -180,8 +176,6 @@ const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 		create_image: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		create_sound: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		create_video: mediaToolSettings(EMPTY_MEDIA_MODEL),
-		text_to_speech: mediaToolSettings(EMPTY_MEDIA_MODEL),
-		speech_to_text: mediaToolSettings(EMPTY_MEDIA_MODEL),
 	},
 	permissions: DEFAULT_AGENT_PERMISSIONS,
 };
@@ -263,16 +257,6 @@ store.store = {
 				(persisted.tools?.video as AgentMediaModelSettings | undefined) ??
 				persisted.video_generator_model ??
 				persisted.video_model ??
-				EMPTY_MEDIA_MODEL
-		),
-		text_to_speech: mediaToolSettings(
-			(persisted.tools?.text_to_speech as AgentMediaModelSettings | undefined) ??
-				(persisted.tools?.textToSpeech as AgentMediaModelSettings | undefined) ??
-				EMPTY_MEDIA_MODEL
-		),
-		speech_to_text: mediaToolSettings(
-			(persisted.tools?.speech_to_text as AgentMediaModelSettings | undefined) ??
-				(persisted.tools?.speechToText as AgentMediaModelSettings | undefined) ??
 				EMPTY_MEDIA_MODEL
 		),
 		...Object.fromEntries(

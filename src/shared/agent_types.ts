@@ -79,7 +79,7 @@ export type AgentChatbotModelKind = 'textToText' | 'textToSpeech' | 'speechToTex
 
 export type AgentVoiceModelKind = 'realtimeVoice';
 
-export type AgentToolModelKind = 'image' | 'audio' | 'video' | 'textToSpeech' | 'speechToText';
+export type AgentToolModelKind = 'image' | 'audio' | 'video';
 
 export interface AgentMediaModelSettings {
 	providerId: string;
