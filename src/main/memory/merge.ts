@@ -22,7 +22,13 @@ export function mergeMemories(
 			continue;
 		const removed = new Set(
 			existing
-				.filter((item) => entry.replaces.includes(item.id) && item.kind === entry.kind)
+				.filter(
+					(item) =>
+						entry.replaces.includes(item.id) &&
+						item.kind === entry.kind &&
+						(entry.kind === 'fact' ||
+							item.topic?.toLocaleLowerCase() === entry.topic.toLocaleLowerCase())
+				)
 				.map((item) => item.lineIndex)
 		);
 		result = result

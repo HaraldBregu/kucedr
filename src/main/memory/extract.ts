@@ -81,7 +81,13 @@ export async function extract(
 		)
 			return false;
 		return entry.replaces.every((id) =>
-			existing.some((record) => record.id === id && record.kind === entry.kind)
+			records.some(
+				(record) =>
+					record.id === id &&
+					record.kind === entry.kind &&
+					(entry.kind === 'fact' ||
+						record.topic?.toLocaleLowerCase() === entry.topic.toLocaleLowerCase())
+			)
 		);
 	});
 	if (!candidates.length) return [];
