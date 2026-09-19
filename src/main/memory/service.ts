@@ -248,10 +248,7 @@ export class Memory implements MemoryService {
 			if (!sessionId) return;
 			this.watchedSessions.delete(sessionId);
 			this.controller = new AbortController();
-			const signal = AbortSignal.any([
-				this.controller.signal,
-				AbortSignal.timeout(5 * 60_000),
-			]);
+			const signal = AbortSignal.any([this.controller.signal, AbortSignal.timeout(5 * 60_000)]);
 			this.error = null;
 			this.active = this.process(signal, 'watch', sessionId)
 				.catch((error: unknown) => {
