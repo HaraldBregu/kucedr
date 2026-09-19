@@ -1,3 +1,4 @@
+import { fingerprint } from '../../../../../src/main/memory/fingerprint';
 import { Memory } from '../../../../../src/main/memory/service';
 import type { MemoryDependencies, MemoryState, SourceSession } from '../../../../../src/main/memory/types';
 
@@ -252,4 +253,53 @@ it('rejects private output and assistant-only sources', async () => {
  h.sessions[0].messages = [{ fingerprint: 'assistant', role: 'assistant', text: 'The user likes Go.' }];
  await h.memory.refresh();
  expect(h.infer).toHaveBeenCalledTimes(1);
+});
+
+
+it.each([true, false])('recovers a mutation journal only when its document was committed: %s', async (committed) => {
+ const h = setup();
+ h.state().config.scheduleEnabled = false;
+ h.state().mutation = {
+  digest: fingerprint(committed ? h.markdown() : 'unwritten document'),
+  checkpoints: { chat: ['first'] },
+  suppressed: ['memory-0123456789abcdef'],
+ };
+ const restarted = new Memory(h.dependencies);
+ await restarted.start();
+ expect(h.state().mutation).toBeUndefined();
+ expect(h.state().checkpoints.chat).toEqual(committed ? ['first'] : undefined);
+ expect(h.state().suppressed).toEqual(committed ? ['memory-0123456789abcdef'] : []);
+ expect(h.infer).not.toHaveBeenCalled();
+ await restarted.stop();
+});
+
+it('removes an uncommitted journal after a write failure', async () => {
+ const h = setup();
+ h.write.mockRejectedValueOnce(new Error('disk full'));
+ await expect(h.memory.clear()).rejects.toThrow('disk full');
+ expect(h.state().mutation).toBeUndefined();
+ expect(h.state().checkpoints).toEqual({});
+ expect(h.state().suppressed).toEqual([]);
+});
+
+it('rejects stale manual edits without changing memory or checkpoints', async () => {
+ const h = setup();
+ await expect(h.memory.edit('replacement', 'stale document')).rejects.toThrow('Memory changed while editing');
+ expect(h.write).not.toHaveBeenCalled();
+ expect(h.state().checkpoints).toEqual({});
+ await h.memory.edit('replacement', h.markdown());
+ expect(h.markdown()).toBe('replacement');
+});
+
+it('uses manual refresh only when the schedule is disabled', async () => {
+ const h = setup();
+ await h.memory.configure({ scheduleEnabled: false });
+ await h.memory.start();
+ await h.memory.refresh('wake');
+ await h.memory.refresh('cron');
+ expect(h.dependencies.schedule).not.toHaveBeenCalled();
+ expect(h.infer).not.toHaveBeenCalled();
+ await h.memory.refresh();
+ expect(h.infer).toHaveBeenCalledTimes(1);
+ await h.memory.stop();
 });
