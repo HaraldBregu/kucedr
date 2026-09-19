@@ -1,5 +1,4 @@
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import Store from 'electron-store';
 import cron from 'node-cron';
 import type { MemoryService } from '../../shared/memory_types';
@@ -7,7 +6,6 @@ import type { Config } from '../agent/types';
 import { getChatbotModel } from '../agent/agent_store';
 import { LlmModel } from '../models/adapters/llm';
 import { getProvider } from '../settings_store';
-import { userDataLocation } from '../shared/user_data_location';
 import { atomicWrite } from '../shared/atomic_write';
 import { Memory } from './service';
 import { defaultState } from './defaults';

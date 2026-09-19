@@ -18,7 +18,6 @@ const hiddenWorkspacePaths = new Set<string>([
 	'AGENTS.md',
 	'HEALTH.md',
 	'IDENTITY.md',
-	'MEMORY.md',
 	'SOUL.md',
 	'USER.md',
 ]);

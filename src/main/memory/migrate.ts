@@ -15,12 +15,20 @@ export async function migrateWorkspaceMemory(config: Config): Promise<void> {
 		throw error;
 	}
 	await fs.mkdir(path.dirname(target), { recursive: true });
+	let targetExists = true;
 	try {
-		await fs.rename(legacy, target);
-		return;
+		await fs.access(target);
 	} catch (error) {
-		const code = (error as NodeJS.ErrnoException).code;
-		if (code !== 'EEXIST' && code !== 'ENOTEMPTY' && code !== 'EXDEV') throw error;
+		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+		targetExists = false;
+	}
+	if (!targetExists) {
+		try {
+			await fs.rename(legacy, target);
+			return;
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code !== 'EXDEV') throw error;
+		}
 	}
 	let current = '';
 	try {

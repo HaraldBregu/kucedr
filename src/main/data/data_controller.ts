@@ -11,7 +11,7 @@ import type {
 } from '../../shared/data_types';
 import type { Config } from '../agent/types';
 import { memoryPath } from '../memory/path';
-import { MEMORY_FILE } from '../agent/system';
+import { MEMORY_FILE } from '../memory/path';
 import { sessionPath, sessionsRoot } from '../agent/session';
 import { purgeRagManifest } from '../agent/knowledge/rag';
 import { getRagConfiguration } from '../agent/knowledge/rag/rag_store';
@@ -185,7 +185,7 @@ export class DataController {
 				store.close();
 			}
 		} else if (scope.kind === 'memory') {
-			await archive.addFile(memoryPath(this.agent.config), path.join('memory', MEMORY_FILE));
+			await archive.addFile(memoryPath(), path.join('memory', MEMORY_FILE));
 		} else {
 			const available = new Set(this.agent.listSessions().map((session) => session.id));
 			for (const sessionId of scope.sessionIds) {

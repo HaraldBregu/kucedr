@@ -9,9 +9,9 @@ import { toolPermissionTargets } from './tool_permission_targets';
 import { resolveExecRoots } from './resolve_exec_roots';
 import { fileHistoryTargets } from '../history/targets';
 import type { FileHistory } from '../history/types';
+import { memoryPath } from '../../memory/path';
 
 const AGENT_FILES: Record<string, string> = {
-	forget_memory: 'MEMORY.md',
 	update_health: 'HEALTH.md',
 	complete_bootstrap: 'BOOTSTRAP.md',
 };
@@ -65,6 +65,7 @@ export function directoryPermissionTargets(
 		const targets = toolPermissionTargets(toolName, args, baseDir);
 		return toolName === 'read' ? targets.map((target) => path.dirname(target)) : targets;
 	}
+	if (toolName === 'forget_memory') return [realPath(memoryPath())];
 	const fileName = AGENT_FILES[toolName];
 	if (fileName) return [realPath(path.join(baseDir, fileName))];
 	if (toolName === 'update_health_settings') return [realPath(healthStorePath)];
