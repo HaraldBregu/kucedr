@@ -787,7 +787,7 @@ describe('run stream system prompt', () => {
 			const events = [];
 			for await (const event of stream(
 				{ location: '/workspace' }, session,
-				{ task: 'chat', message: 'search then answer', agentId: 'main', contextMode: 'minimal' },
+				{ task: 'chat', model: 'test-model', message: 'search then answer', agentId: 'main', contextMode: 'minimal' },
 				new AbortController().signal, { tools: [tool], budget }
 			)) events.push(event);
 
@@ -813,7 +813,7 @@ describe('run stream system prompt', () => {
 		await expect(async () => {
 			for await (const event of stream(
 				{ location: '/workspace' }, createSessionState(),
-				{ task: 'chat', message: 'answer', agentId: 'main', contextMode: 'minimal' },
+				{ task: 'chat', model: 'test-model', message: 'answer', agentId: 'main', contextMode: 'minimal' },
 				new AbortController().signal, { tools: [] }
 			)) events.push(event);
 		}).rejects.toThrow('non-empty final answer');
