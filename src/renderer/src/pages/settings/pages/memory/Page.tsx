@@ -25,6 +25,13 @@ import {
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import { initialModelConfigurationState } from '../../components/model-configuration-state';
 
+const MEMORY_SCHEDULES = [
+	{ key: 'every15Minutes', cron: '*/15 * * * *' },
+	{ key: 'hourly', cron: '0 * * * *' },
+	{ key: 'daily', cron: '0 0 * * *' },
+	{ key: 'weekly', cron: '0 0 * * 0' },
+] as const;
+
 export default function MemoryPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [config, setConfig] = useState<MemoryConfig | null>(null);
@@ -34,6 +41,7 @@ export default function MemoryPage(): React.JSX.Element {
 	const [original, setOriginal] = useState('');
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [scheduleSelection, setScheduleSelection] = useState('every15Minutes');
 	useEffect(() => {
 		let mounted = true;
 		void Promise.all([
@@ -45,6 +53,10 @@ export default function MemoryPage(): React.JSX.Element {
 			.then(([next, progress, facts, text]) => {
 				if (!mounted) return;
 				setConfig(next);
+				setScheduleSelection(
+					MEMORY_SCHEDULES.find((schedule) => schedule.cron === next.cronExpression)?.key ??
+						'custom'
+				);
 				setStatus(progress);
 				setEntries(facts);
 				setMarkdown(text);
@@ -191,19 +203,50 @@ export default function MemoryPage(): React.JSX.Element {
 								}
 							/>
 							<SettingsRow
-								title={t('settings.memory.cron')}
+								title={t('settings.memory.frequency')}
 								actions={
-									<Input
-										className="w-44"
-										aria-label={t('settings.memory.cron')}
+									<Select
 										disabled={!config.scheduleEnabled}
-										value={config.cronExpression}
-										onChange={(event) =>
-											setConfig({ ...config, cronExpression: event.target.value })
-										}
-									/>
+										value={scheduleSelection}
+										onValueChange={(value) => {
+											setScheduleSelection(value);
+											const schedule = MEMORY_SCHEDULES.find((entry) => entry.key === value);
+											if (schedule) setConfig({ ...config, cronExpression: schedule.cron });
+										}}
+									>
+										<SelectTrigger
+											aria-label={t('settings.memory.frequency')}
+											className="w-44"
+										>
+											<SelectValue>{t(`settings.memory.${scheduleSelection}`)}</SelectValue>
+										</SelectTrigger>
+										<SelectContent>
+											{MEMORY_SCHEDULES.map((schedule) => (
+												<SelectItem key={schedule.key} value={schedule.key}>
+													{t(`settings.memory.${schedule.key}`)}
+												</SelectItem>
+											))}
+											<SelectItem value="custom">{t('settings.memory.custom')}</SelectItem>
+										</SelectContent>
+									</Select>
 								}
 							/>
+							{scheduleSelection === 'custom' && (
+								<SettingsRow
+									title={t('settings.memory.customCron')}
+									actions={
+										<Input
+											className="w-44 font-mono"
+											aria-label={t('settings.memory.customCron')}
+											disabled={!config.scheduleEnabled}
+											value={config.cronExpression}
+											onChange={(event) =>
+												setConfig({ ...config, cronExpression: event.target.value })
+											}
+										/>
+									}
+								/>
+							)}
 							<SettingsRow
 								title={t('settings.memory.timezone')}
 								actions={

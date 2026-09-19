@@ -79,6 +79,26 @@ it('saves independent memory configuration through the memory API', async () => 
 	await waitFor(() => expect(api.configure).toHaveBeenCalledWith({ ...config, enabled: false }));
 });
 
+it('uses schedule presets and shows the cron field only for a custom schedule', async () => {
+	const user = userEvent.setup();
+	render(<MemoryPage />);
+	const frequency = await screen.findByRole('combobox', { name: 'settings.memory.frequency' });
+	expect(frequency).toHaveTextContent('settings.memory.every15Minutes');
+	expect(screen.queryByRole('textbox', { name: 'settings.memory.customCron' })).not.toBeInTheDocument();
+	await user.click(frequency);
+	await user.click(screen.getByRole('option', { name: 'settings.memory.custom' }));
+	const cron = screen.getByRole('textbox', { name: 'settings.memory.customCron' });
+	await user.clear(cron);
+	await user.type(cron, '0 6 * * 1-5');
+	await user.click(screen.getByRole('button', { name: 'settings.memory.saveSettings' }));
+	await waitFor(() =>
+		expect(api.configure).toHaveBeenCalledWith({
+			...config,
+			cronExpression: '0 6 * * 1-5',
+		})
+	);
+});
+
 it.each(['Disk is full', 'Memory changed; reload before editing.'])(
 	'retains unsaved notes after edit failure: %s',
 	async (message) => {
