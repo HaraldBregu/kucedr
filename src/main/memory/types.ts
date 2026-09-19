@@ -16,6 +16,7 @@ export interface MemoryState {
 	checkpoints: Record<string, string[]>;
 	suppressed: string[];
 	lastSuccess: string | null;
+	mutation?: { digest: string; checkpoints: Record<string, string[]>; suppressed: string[] };
 }
 export interface MemoryDependencies {
 	store: { load(): MemoryState; save(state: MemoryState): void };
