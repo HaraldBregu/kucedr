@@ -495,7 +495,7 @@ describe('run stream system prompt', () => {
 	});
 
 	it.each(['microphone_recorder', 'camera_recorder', 'screen_recorder'])(
-		'releases the chat run after %s starts in the background',
+		'summarizes after %s starts without allowing more tools',
 		async (id) => {
 			const recorder = jsonTool({
 				id,
@@ -532,10 +532,11 @@ describe('run stream system prompt', () => {
 			))
 				events.push(event);
 
-			expect(runModelTurnMock).toHaveBeenCalledTimes(1);
+			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
-				result: { stopReason: 'end_turn' },
+				result: { text: 'done', stopReason: 'end_turn' },
 			});
 		}
 	);
@@ -765,4 +766,59 @@ describe('run stream system prompt', () => {
 			result: { text: 'done', stopReason: 'end_turn' },
 		});
 	});
+	it.each(['output', 'calls', 'turns', 'empty'] as const)(
+		'produces a final answer after the %s boundary',
+		async (boundary) => {
+			const execute = jest.fn(() => 'observed result');
+			const tool = jsonTool({
+				id: 'search_web', name: 'Search', description: 'Search',
+				schema: { type: 'object' }, execute,
+			});
+			const budget = new ExecutionBudget(boundary === 'output' ? { output: 1 } : boundary === 'calls' ? { calls: 0 } : {});
+			const session = createSessionState();
+			if (boundary === 'turns') session.maxTurns = 1;
+			runModelTurnMock.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '', model: 'test-model',
+					toolCalls: boundary === 'empty' ? [] : [{ id: 'search', name: tool.id, args: {} }],
+				};
+			});
+			const events = [];
+			for await (const event of stream(
+				{ location: '/workspace' }, session,
+				{ task: 'chat', message: 'search then answer', agentId: 'main', contextMode: 'minimal' },
+				new AbortController().signal, { tools: [tool], budget }
+			)) events.push(event);
+
+			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
+			expect(execute).toHaveBeenCalledTimes(boundary === 'output' ? 1 : 0);
+			expect(events.at(-1)).toMatchObject({
+				type: 'run_finished', result: { text: 'done', stopReason: boundary === 'turns' ? 'max_iterations' : ['calls', 'output'].includes(boundary) ? 'budget_exhausted' : 'end_turn' },
+			});
+			if (boundary === 'calls' || boundary === 'turns') {
+				expect(session.toolCalls[0].result).toMatchObject({ isError: true });
+				expect(events).toContainEqual(expect.objectContaining({ type: 'tool_call_end', isError: true }));
+			}
+		}
+	);
+
+	it('reports an error instead of silently completing when synthesis is empty', async () => {
+		runModelTurnMock.mockImplementation(async function* () {
+			yield* [];
+			return { content: '   ', model: 'test-model', toolCalls: [] };
+		});
+		const events = [];
+		await expect(async () => {
+			for await (const event of stream(
+				{ location: '/workspace' }, createSessionState(),
+				{ task: 'chat', message: 'answer', agentId: 'main', contextMode: 'minimal' },
+				new AbortController().signal, { tools: [] }
+			)) events.push(event);
+		}).rejects.toThrow('non-empty final answer');
+		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+		expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { stopReason: 'error' } });
+	});
+
 });
