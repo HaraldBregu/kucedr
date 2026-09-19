@@ -55,7 +55,13 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		registerCommandWithEvent(ProviderStoreChannels.set, (event, value) => {
 			trusted.assert(event);
 			const input = this.credential(value);
-			const provider = this.catalogProvider(input.kind, input.id, input.apiKey);
+			const provider = this.catalogProvider(
+				input.kind,
+				input.id,
+				input.apiKey,
+				input.baseUrl,
+				input.modelId
+			);
 			return setProvider(provider, input.kind);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.getChannel, (event, id) => {
@@ -81,10 +87,26 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const record = this.record(value);
 		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
 		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
-		return { kind: this.kind(record.kind), id: this.id(record.id), apiKey };
+		const kind = this.kind(record.kind);
+		const id = this.id(record.id);
+		if (id !== 'custom') return { kind, id, apiKey };
+		if (kind !== 'models') throw new Error('Custom providers support models only.');
+		const baseUrl = this.baseUrl(record.baseUrl);
+		const modelId = this.modelId(record.modelId);
+		return { kind, id, apiKey, baseUrl, modelId };
 	}
 
-	private catalogProvider(kind: SavedCredentialKind, id: string, apiKey: string): StoredProvider {
+	private catalogProvider(
+		kind: SavedCredentialKind,
+		id: string,
+		apiKey: string,
+		baseUrl?: string,
+		modelId?: string
+	): StoredProvider {
+		if (id === 'custom') {
+			if (!baseUrl || !modelId) throw new Error('Custom provider configuration is invalid.');
+			return { id, name: 'Custom model provider', apiKey, baseUrl, modelId };
+		}
 		if (kind === 'models') {
 			const provider = loadProviders().find((entry) => entry.id === id);
 			if (!provider) throw new Error('Unknown provider.');
@@ -98,6 +120,24 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			apiKey,
 			baseUrl: service.url ?? service.provider.baseUrl,
 		};
+	}
+
+	private baseUrl(value: unknown): string {
+		const baseUrl = typeof value === 'string' ? value.trim().replace(/\/+$/, '') : '';
+		if (!baseUrl || baseUrl.length > 2_048) throw new Error('The provider base URL is invalid.');
+		try {
+			const url = new URL(baseUrl);
+			if (url.protocol !== 'http:' && url.protocol !== 'https:') throw new Error();
+			return baseUrl;
+		} catch {
+			throw new Error('The provider base URL is invalid.');
+		}
+	}
+
+	private modelId(value: unknown): string {
+		const modelId = typeof value === 'string' ? value.trim() : '';
+		if (!modelId || modelId.length > 256) throw new Error('The provider model ID is invalid.');
+		return modelId;
 	}
 
 	private channelInput(value: unknown): ChannelCredentialSaveInput {

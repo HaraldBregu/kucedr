@@ -19,6 +19,7 @@ import type {
 import { userDataLocation } from './shared/user_data_location';
 import { parseProviderManifest } from '../shared/providers/validation';
 import { resourceRoot } from './shared/resource_root';
+import { getModelProvidersState } from './providers/providers_index';
 
 interface Catalog {
 	readonly models: readonly CatalogModel[];
@@ -269,6 +270,23 @@ function readCatalog(): Catalog {
 				.filter((service) => service.type === 'mcp')
 				.map((service) => ({ ...service, provider }))
 		);
+	}
+
+	const customProvider = getModelProvidersState().find(
+		(provider) => provider.id === 'custom' && provider.modelId?.trim() && provider.baseUrl.trim()
+	);
+	if (customProvider) {
+		models.push({
+			id: customProvider.modelId!,
+			name: customProvider.modelId!,
+			type: 'llm',
+			url: customProvider.baseUrl,
+			provider: {
+				id: customProvider.id,
+				name: customProvider.name,
+				baseUrl: customProvider.baseUrl,
+			},
+		});
 	}
 
 	return {

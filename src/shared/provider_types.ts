@@ -114,6 +114,8 @@ export interface ProviderCredentialSaveInput {
 	kind: Exclude<ProviderCredentialKind, 'search_engines'>;
 	id: string;
 	apiKey: string;
+	baseUrl?: string;
+	modelId?: string;
 }
 
 /** A provider's credentials as saved by the user. */
@@ -122,6 +124,7 @@ export interface StoredProvider {
 	name: string;
 	apiKey: string;
 	baseUrl: string;
+	modelId?: string;
 }
 
 export interface ResolvedProvider {
