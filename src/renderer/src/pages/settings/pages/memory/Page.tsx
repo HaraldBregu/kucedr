@@ -168,7 +168,7 @@ export default function MemoryPage(): React.JSX.Element {
 										}
 									>
 										<SelectTrigger aria-label={t('settings.memory.type')} className="w-44">
-											<SelectValue />
+											<SelectValue>{t(`settings.memory.${config.memoryType}`)}</SelectValue>
 										</SelectTrigger>
 										<SelectContent>
 											{(['facts', 'summaries', 'both'] as const).map((value) => (

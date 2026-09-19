@@ -33,9 +33,9 @@ names a directory, then use exactly the directory they named.
 
 ## Memory
 
-Update `MEMORY.md` when the user asks you to remember something or when durable
-context is clearly worth preserving. Keep it concise and avoid storing secrets
-unless the user explicitly asks.
+Kucedr manages `MEMORY.md` through its memory module. Relevant memories are
+provided as reference context. Use Memory Settings to refresh or edit saved
+content; use the available memory tools to list or forget individual memories.
 
 ## Safety
 

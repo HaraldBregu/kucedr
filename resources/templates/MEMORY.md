@@ -1,3 +1,3 @@
 # Memory
 
-Notes that persist across conversations. Update this when you learn something worth keeping.
+Notes that persist across conversations, managed through Memory Settings.
