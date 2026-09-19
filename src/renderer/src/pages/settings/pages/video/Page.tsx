@@ -14,7 +14,7 @@ export default function VideoPage(): React.JSX.Element {
 				title={t('settings.tabs.video')}
 				description={t('settings.modelServices.videoModelDescription')}
 			/>
-			<div className="-mx-2">
+			<div>
 				<AgentMediaModelConfiguration
 					api={api}
 					capability="text-to-video"
@@ -23,6 +23,7 @@ export default function VideoPage(): React.JSX.Element {
 					description={t('settings.modelServices.videoModelDescription')}
 					showIcon={false}
 					collapsible={false}
+					padded={false}
 					inlineAdvanced
 				/>
 			</div>

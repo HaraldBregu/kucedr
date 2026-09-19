@@ -41,6 +41,7 @@ interface AgentMediaModelConfigurationProps {
 	readonly showContentSeparator?: boolean;
 	readonly inlineAdvanced?: boolean;
 	readonly showOptions?: boolean;
+	readonly padded?: boolean;
 	readonly icon?: LucideIcon;
 	readonly action?: ReactNode;
 }
@@ -89,6 +90,7 @@ export function AgentMediaModelConfiguration({
 	showContentSeparator = true,
 	inlineAdvanced = false,
 	showOptions = true,
+	padded = true,
 	icon,
 	action,
 }: AgentMediaModelConfigurationProps): React.JSX.Element {
@@ -196,6 +198,7 @@ export function AgentMediaModelConfiguration({
 
 	return (
 		<ModelProviderConfiguration
+			padded={padded}
 			configState={state}
 			idPrefix={idPrefix}
 			collapsible={collapsible}
@@ -216,6 +219,7 @@ export function AgentMediaModelConfiguration({
 			{showOptions && (
 				<ModelOptions
 					key={`${state.providerId}:${state.modelId}`}
+					padded={padded}
 					inputs={inputs}
 					values={options}
 					excludedInputs={MEDIA_CONTENT_INPUTS}

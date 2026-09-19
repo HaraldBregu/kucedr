@@ -14,7 +14,7 @@ export default function MusicPage(): React.JSX.Element {
 				title={t('settings.tabs.music')}
 				description={t('settings.modelServices.musicModelDescription')}
 			/>
-			<div className="-mx-2">
+			<div>
 				<AgentMediaModelConfiguration
 					api={api}
 					capability="text-to-audio"
@@ -23,6 +23,7 @@ export default function MusicPage(): React.JSX.Element {
 					description={t('settings.modelServices.musicModelDescription')}
 					showIcon={false}
 					collapsible={false}
+					padded={false}
 					inlineAdvanced
 				/>
 			</div>

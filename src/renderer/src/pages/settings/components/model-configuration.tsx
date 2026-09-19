@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Bot } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
+import { cn } from '@/lib/utils';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { getProviderCatalogItem } from '../../start/setupConstants';
 import { SettingsAutoDismiss, SettingsLoadingRows, SettingsNotice, SettingsRow } from './index';
@@ -21,6 +22,7 @@ interface ModelProviderConfigurationProps {
 	readonly showFieldLabel?: boolean;
 	readonly grouped?: boolean;
 	readonly collapsible?: boolean;
+	readonly padded?: boolean;
 	readonly showSelectedModel?: boolean;
 	readonly buttonDropdown?: boolean;
 	readonly showContentSeparator?: boolean;
@@ -42,6 +44,7 @@ export function ModelProviderConfiguration({
 	showFieldLabel = true,
 	grouped = false,
 	collapsible = true,
+	padded = true,
 	showSelectedModel = false,
 	buttonDropdown = false,
 	showContentSeparator = true,
@@ -128,6 +131,7 @@ export function ModelProviderConfiguration({
 					</SettingsNotice>
 				)}
 				<SettingsRow
+					className={padded ? undefined : 'px-0 sm:px-0'}
 					title={rowTitle}
 					description={triggerDescription ?? description}
 					actions={
@@ -150,20 +154,20 @@ export function ModelProviderConfiguration({
 						/>
 					}
 				/>
-				<div className="px-4 pb-4 empty:hidden">{children}</div>
+				<div className={cn('pb-4 empty:hidden', padded && 'px-4')}>{children}</div>
 				{configState.providers.length === 0 && (
-					<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
+					<p className={cn('pb-3 text-[11px] leading-4 text-muted-foreground', padded && 'px-4')}>
 						{t('settings.providers.noProviders')}
 					</p>
 				)}
 				{configState.providers.length > 0 && configState.modelGroups.length === 0 && (
-					<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
+					<p className={cn('pb-3 text-[11px] leading-4 text-muted-foreground', padded && 'px-4')}>
 						{t('settings.modelServices.noModels')}
 					</p>
 				)}
 				{configState.saved && (
 					<SettingsAutoDismiss>
-						<p className="px-4 pb-3 text-[11px] leading-4 text-muted-foreground">
+						<p className={cn('pb-3 text-[11px] leading-4 text-muted-foreground', padded && 'px-4')}>
 							{t('settings.modelServices.saved')}
 						</p>
 					</SettingsAutoDismiss>

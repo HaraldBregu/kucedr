@@ -20,6 +20,7 @@ interface ModelOptionsProps {
 	readonly excludedInputs?: ReadonlySet<string>;
 	readonly allowComplex?: boolean;
 	readonly inlineAdvanced?: boolean;
+	readonly padded?: boolean;
 	readonly onChange: (path: readonly string[], value: unknown) => void;
 }
 
@@ -39,6 +40,7 @@ export function ModelOptions({
 	excludedInputs,
 	allowComplex = false,
 	inlineAdvanced = false,
+	padded = true,
 	onChange,
 }: ModelOptionsProps): React.JSX.Element | null {
 	const entries: Array<{ path: string[]; schema: ModelInputSchema }> = [];
@@ -97,7 +99,7 @@ export function ModelOptions({
 				node = (
 					<SettingsRow
 						key={key}
-						className={inlineAdvanced ? 'border-b-0' : undefined}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
 						title={label}
 					actions={
 						<Select
@@ -128,7 +130,7 @@ export function ModelOptions({
 				node = (
 					<SettingsRow
 						key={key}
-						className={inlineAdvanced ? 'border-b-0' : undefined}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
 						title={label}
 					actions={
 						<Switch
@@ -143,7 +145,7 @@ export function ModelOptions({
 				node = (
 					<SettingsRow
 						key={key}
-						className={inlineAdvanced ? 'border-b-0' : undefined}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
 						title={label}
 					description={schema.description}
 					actionClassName="sm:max-w-[60%]"
@@ -158,7 +160,7 @@ export function ModelOptions({
 				node = (
 					<SettingsRow
 						key={key}
-						className={inlineAdvanced ? 'border-b-0' : undefined}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
 						title={label}
 					actions={
 						<Input
@@ -204,12 +206,12 @@ export function ModelOptions({
 	const advanced = rendered.filter((entry) => !entry.primary).map((entry) => entry.node);
 
 	return (
-		<div className={cn('-mx-4 -mb-4 mt-1', !inlineAdvanced && 'border-t border-border/60')}>
+		<div className={cn('-mb-4 mt-1', padded && '-mx-4', !inlineAdvanced && 'border-t border-border/60')}>
 			{primary}
 			{advanced.length > 0 && (
 				inlineAdvanced ? (
 					<>
-						<div className="px-4 py-3 text-[12px] font-medium text-muted-foreground">
+						<div className={cn('py-3 text-[12px] font-medium text-muted-foreground', padded && 'px-4')}>
 							Advanced properties
 						</div>
 						{advanced}

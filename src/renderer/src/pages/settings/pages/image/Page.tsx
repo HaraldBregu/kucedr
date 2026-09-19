@@ -14,7 +14,7 @@ export default function ImagePage(): React.JSX.Element {
 				title={t('settings.tabs.image')}
 				description={t('settings.modelServices.imageModelDescription')}
 			/>
-			<div className="-mx-2">
+			<div>
 				<AgentMediaModelConfiguration
 					api={api}
 					capability="text-to-image"
@@ -23,6 +23,7 @@ export default function ImagePage(): React.JSX.Element {
 					description={t('settings.modelServices.imageModelDescription')}
 					showIcon={false}
 					collapsible={false}
+					padded={false}
 					inlineAdvanced
 				/>
 			</div>
