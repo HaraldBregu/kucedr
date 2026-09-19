@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { MemoryConfig, MemoryStatus } from '@shared/memory_types';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import {
 	Select,
@@ -24,20 +23,12 @@ import {
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import { initialModelConfigurationState } from '../../components/model-configuration-state';
 
-const MEMORY_SCHEDULES = [
-	{ key: 'every15Minutes', cron: '*/15 * * * *' },
-	{ key: 'hourly', cron: '0 * * * *' },
-	{ key: 'daily', cron: '0 0 * * *' },
-	{ key: 'weekly', cron: '0 0 * * 0' },
-] as const;
-
 export default function MemoryPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [config, setConfig] = useState<MemoryConfig | null>(null);
 	const [status, setStatus] = useState<MemoryStatus | null>(null);
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const [scheduleSelection, setScheduleSelection] = useState('every15Minutes');
 	const persistedConfig = useRef<string | null>(null);
 	useEffect(() => {
 		let mounted = true;
@@ -46,10 +37,6 @@ export default function MemoryPage(): React.JSX.Element {
 				if (!mounted) return;
 				persistedConfig.current = JSON.stringify(next);
 				setConfig(next);
-				setScheduleSelection(
-					MEMORY_SCHEDULES.find((schedule) => schedule.cron === next.cronExpression)?.key ??
-						'custom'
-				);
 				setStatus(progress);
 			})
 			.catch((failure: unknown) => {
@@ -195,73 +182,6 @@ export default function MemoryPage(): React.JSX.Element {
 											))}
 										</SelectContent>
 									</Select>
-								}
-							/>
-							<SettingsRow
-								title={t('settings.memory.schedule')}
-								actions={
-									<Switch
-										aria-label={t('settings.memory.schedule')}
-										checked={config.scheduleEnabled}
-										onCheckedChange={(scheduleEnabled) => setConfig({ ...config, scheduleEnabled })}
-									/>
-								}
-							/>
-							<SettingsRow
-								title={t('settings.memory.frequency')}
-								actions={
-									<Select
-										disabled={!config.scheduleEnabled}
-										value={scheduleSelection}
-										onValueChange={(value) => {
-											if (!value) return;
-											setScheduleSelection(value);
-											const schedule = MEMORY_SCHEDULES.find((entry) => entry.key === value);
-											if (schedule) setConfig({ ...config, cronExpression: schedule.cron });
-										}}
-									>
-										<SelectTrigger
-											aria-label={t('settings.memory.frequency')}
-											className="w-44"
-										>
-											<SelectValue>{t(`settings.memory.${scheduleSelection}`)}</SelectValue>
-										</SelectTrigger>
-										<SelectContent>
-											{MEMORY_SCHEDULES.map((schedule) => (
-												<SelectItem key={schedule.key} value={schedule.key}>
-													{t(`settings.memory.${schedule.key}`)}
-												</SelectItem>
-											))}
-											<SelectItem value="custom">{t('settings.memory.custom')}</SelectItem>
-										</SelectContent>
-									</Select>
-								}
-							/>
-							{scheduleSelection === 'custom' && (
-								<SettingsRow
-									title={t('settings.memory.customCron')}
-									actions={
-										<Input
-											className="w-44 font-mono"
-											aria-label={t('settings.memory.customCron')}
-											disabled={!config.scheduleEnabled}
-											value={config.cronExpression}
-											onChange={(event) =>
-												setConfig({ ...config, cronExpression: event.target.value })
-											}
-										/>
-									}
-								/>
-							)}
-							<SettingsRow
-								title={t('settings.memory.timezone')}
-								actions={
-									<Input
-										className="w-44"
-										aria-label={t('settings.memory.timezone')}
-										value={config.timezone}
-										onChange={(event) => setConfig({ ...config, timezone: event.target.value })}
-									/>
 								}
 							/>
 						</SettingsPanel>

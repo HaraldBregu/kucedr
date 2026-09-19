@@ -15,7 +15,6 @@ export class Memory implements MemoryService {
 	private state: MemoryState;
 	private active?: Promise<MemoryStatus>;
 	private controller?: AbortController;
-	private task?: { stop(): void };
 	private watcher?: { stop(): void };
 	private watchedSessions = new Set<string>();
 	private watchDrain?: Promise<void>;
@@ -26,7 +25,17 @@ export class Memory implements MemoryService {
 	private pending = 0;
 
 	constructor(private readonly dependencies: MemoryDependencies) {
-		this.state = structuredClone(dependencies.store.load());
+		const state = structuredClone(dependencies.store.load());
+		this.state = {
+			...state,
+			config: {
+				enabled: state.config.enabled,
+				providerId: state.config.providerId,
+				modelId: state.config.modelId,
+				modelOptions: state.config.modelOptions,
+				memoryType: state.config.memoryType,
+			},
+		};
 	}
 
 	getConfig(): MemoryConfig {
@@ -79,14 +88,12 @@ export class Memory implements MemoryService {
 				modelInitialized:
 					Boolean(config.providerId && config.modelId) || this.state.modelInitialized,
 			});
-			this.reschedule();
 			return this.getConfig();
 		});
 	}
 
 	async start(): Promise<void> {
 		this.stopped = false;
-		this.reschedule();
 		await this.initialize().catch((error: unknown) => {
 			this.error = error instanceof Error ? error.message : 'Memory initialization failed.';
 		});
@@ -101,19 +108,14 @@ export class Memory implements MemoryService {
 		this.watcher?.stop();
 		this.watcher = undefined;
 		this.watchedSessions.clear();
-		this.task?.stop();
-		this.task = undefined;
 		this.invalidate();
 		await this.active;
 		await this.watchDrain;
 		await this.queue;
 	}
-	refresh(trigger: 'manual' | 'startup' | 'wake' | 'cron' = 'manual'): Promise<MemoryStatus> {
+	refresh(trigger: 'manual' | 'startup' | 'wake' = 'manual'): Promise<MemoryStatus> {
 		if (this.active) return this.active;
-		if (
-			this.stopped ||
-			(trigger !== 'manual' && (!this.state.config.enabled || !this.state.config.scheduleEnabled))
-		)
+		if (this.stopped || (trigger !== 'manual' && !this.state.config.enabled))
 			return Promise.resolve(this.status());
 		this.controller = new AbortController();
 		const signal = AbortSignal.any([this.controller.signal, AbortSignal.timeout(5 * 60_000)]);
@@ -220,16 +222,6 @@ export class Memory implements MemoryService {
 		this.queue = result.catch(() => undefined);
 		return result;
 	}
-	private reschedule(): void {
-		this.task?.stop();
-		this.task = undefined;
-		const config = this.state.config;
-		if (!this.stopped && config.enabled && config.scheduleEnabled) {
-			this.task = this.dependencies.schedule(config.cronExpression, config.timezone, async () => {
-				await this.refresh('cron');
-			});
-		}
-	}
 	private enqueueSession(sessionId: string): void {
 		if (this.stopped || !this.state.config.enabled) return;
 		this.watchedSessions.add(sessionId);
@@ -311,7 +303,7 @@ export class Memory implements MemoryService {
 	}
 	private async process(
 		signal: AbortSignal,
-		trigger: 'manual' | 'startup' | 'wake' | 'cron' | 'watch',
+		trigger: 'manual' | 'startup' | 'wake' | 'watch',
 		sessionId?: string
 	): Promise<void> {
 		const wasInitialized = this.state.initialized;

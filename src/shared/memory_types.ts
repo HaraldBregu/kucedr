@@ -4,9 +4,6 @@ export interface MemoryConfig {
 	modelId: string;
 	modelOptions: Record<string, unknown>;
 	memoryType: 'facts' | 'summaries' | 'both';
-	scheduleEnabled: boolean;
-	cronExpression: string;
-	timezone: string;
 }
 export interface MemoryEntry {
 	id: string;
@@ -25,7 +22,7 @@ export interface MemoryMessage {
 export interface MemoryService {
 	getConfig(): MemoryConfig;
 	configure(patch: Partial<MemoryConfig>): Promise<MemoryConfig>;
-	refresh(trigger?: 'manual' | 'startup' | 'wake' | 'cron'): Promise<MemoryStatus>;
+	refresh(trigger?: 'manual' | 'startup' | 'wake'): Promise<MemoryStatus>;
 	status(): MemoryStatus;
 	context(query: string): Promise<string>;
 	list(): Promise<MemoryEntry[]>;

@@ -35,7 +35,6 @@ export interface MemoryDependencies {
 		signal: AbortSignal
 	): Promise<string>;
 	selection(): Pick<MemoryConfig, 'providerId' | 'modelId' | 'modelOptions'>;
-	schedule(expression: string, timezone: string, callback: () => Promise<void>): { stop(): void };
 	validate(config: MemoryConfig): void;
 }
 export interface StoredEntry {

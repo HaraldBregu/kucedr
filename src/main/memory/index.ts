@@ -2,7 +2,6 @@ import fs from 'node:fs/promises';
 import { watch } from 'node:fs';
 import path from 'node:path';
 import Store from 'electron-store';
-import cron from 'node-cron';
 import type { MemoryService } from '../../shared/memory_types';
 import type { Config } from '../agent/types';
 import { getChatbotModel } from '../agent/agent_store';
@@ -94,14 +93,6 @@ export function createMemory(configuration: () => Config): MemoryService {
 					for (const timer of timers.values()) clearTimeout(timer);
 					timers.clear();
 					watcher.close();
-				},
-			};
-		},
-		schedule: (expression, timezone, callback) => {
-			const task = cron.schedule(expression, callback, { timezone, noOverlap: true });
-			return {
-				stop: () => {
-					void task.destroy();
 				},
 			};
 		},
