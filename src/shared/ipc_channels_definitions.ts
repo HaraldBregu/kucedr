@@ -420,13 +420,13 @@ export const TerminalChannels = {
 } as const;
 
 export const MemoryChannels = {
- getConfig: 'memory:getConfig',
- configure: 'memory:configure',
- refresh: 'memory:refresh',
- status: 'memory:status',
- list: 'memory:list',
- read: 'memory:read',
- edit: 'memory:edit',
- forget: 'memory:forget',
- clear: 'memory:clear',
+	getConfig: 'memory:getConfig',
+	configure: 'memory:configure',
+	refresh: 'memory:refresh',
+	status: 'memory:status',
+	list: 'memory:list',
+	read: 'memory:read',
+	edit: 'memory:edit',
+	forget: 'memory:forget',
+	clear: 'memory:clear',
 } as const;

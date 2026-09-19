@@ -171,7 +171,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'memory',
 		icon: Brain,
 		tools: [
-			['Save memory', 'save_memory', 'Saves a durable memory for future conversations.'],
 			['Forget memory', 'forget_memory', 'Removes a saved memory.'],
 			['List memories', 'list_memories', 'Lists memories available to the agent.'],
 		],

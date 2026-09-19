@@ -1211,13 +1211,13 @@ export interface EventChannelMap
 		CloudEventChannelMap {}
 
 export interface MemoryInvokeChannelMap {
- [MemoryChannels.getConfig]: { args: []; result: MemoryConfig };
- [MemoryChannels.configure]: { args: [patch: Partial<MemoryConfig>]; result: MemoryConfig };
- [MemoryChannels.refresh]: { args: []; result: MemoryStatus };
- [MemoryChannels.status]: { args: []; result: MemoryStatus };
- [MemoryChannels.list]: { args: []; result: MemoryEntry[] };
- [MemoryChannels.read]: { args: []; result: string };
- [MemoryChannels.edit]: { args: [markdown: string]; result: void };
- [MemoryChannels.forget]: { args: [id: string]; result: { removed: boolean } };
- [MemoryChannels.clear]: { args: []; result: void };
+	[MemoryChannels.getConfig]: { args: []; result: MemoryConfig };
+	[MemoryChannels.configure]: { args: [patch: Partial<MemoryConfig>]; result: MemoryConfig };
+	[MemoryChannels.refresh]: { args: []; result: MemoryStatus };
+	[MemoryChannels.status]: { args: []; result: MemoryStatus };
+	[MemoryChannels.list]: { args: []; result: MemoryEntry[] };
+	[MemoryChannels.read]: { args: []; result: string };
+	[MemoryChannels.edit]: { args: [markdown: string]; result: void };
+	[MemoryChannels.forget]: { args: [id: string]; result: { removed: boolean } };
+	[MemoryChannels.clear]: { args: []; result: void };
 }

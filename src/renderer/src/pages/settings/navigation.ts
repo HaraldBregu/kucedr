@@ -1,4 +1,5 @@
 import {
+	Brain,
 	Image,
 	Music2,
 	Video,
@@ -267,6 +268,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 ] as const;
 
 export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
+	{
+		path: '/settings/memory',
+		labelKey: 'settings.memory.title',
+		descriptionKey: 'settings.memory.description',
+		icon: Brain,
+	},
 	{
 		path: '/settings/agent/music',
 		labelKey: 'settings.tabs.music',

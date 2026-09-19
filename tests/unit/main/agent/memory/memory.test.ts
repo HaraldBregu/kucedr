@@ -1,108 +1,129 @@
-import fs from 'node:fs/promises';
+import { Memory } from '../../../../../src/main/memory/service';
+import type { MemoryDependencies, MemoryState, SourceSession } from '../../../../../src/main/memory/types';
 
-jest.mock('node:fs/promises', () => ({
-	readFile: jest.fn(),
-	writeFile: jest.fn(),
-	rename: jest.fn(),
-	rm: jest.fn(),
-}));
-jest.mock('../../../../../src/main/agent/memory/memory_path', () => ({
-	memoryPath: jest.fn(() => '/mem/MEMORY.md'),
-}));
+function setup(initialized = true) {
+ let state: MemoryState = {
+  config: { enabled: true, providerId: 'provider', modelId: 'model', modelOptions: {}, memoryType: 'both', scheduleEnabled: true, cronExpression: '*/15 * * * *', timezone: 'Europe/Rome' },
+  initialized, modelInitialized: true, checkpoints: {}, suppressed: [], lastSuccess: null,
+ };
+ let markdown = '# Memory\n\nManual notes remain here.\n';
+ const sessions: SourceSession[] = [{ id: 'chat', messages: [{ fingerprint: 'first', role: 'user', text: 'I prefer concise answers.' }] }];
+ const infer = jest.fn().mockResolvedValue('{"entries":[]}');
+ const write = jest.fn(async (next: string) => { markdown = next; });
+ const stop = jest.fn();
+ const dependencies: MemoryDependencies = {
+  store: { load: () => structuredClone(state), save: (next) => { state = structuredClone(next); } },
+  sources: jest.fn(async () => structuredClone(sessions)), read: async () => markdown, write, infer,
+  selection: jest.fn(() => ({ providerId: 'chat-provider', modelId: 'chat-model', modelOptions: {} })),
+  schedule: jest.fn(() => ({ stop })), validate: jest.fn(),
+ };
+ const memory = new Memory(dependencies);
+ const extracted = JSON.stringify({ entries: [{ kind: 'fact', topic: 'Preferences', text: 'Prefers concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] }] });
+ return { memory, dependencies, infer, write, sessions, extracted, stop, state: () => state, markdown: () => markdown };
+}
 
-import { forgetMemory } from '../../../../../src/main/agent/memory/memory_forget';
-import { listMemories } from '../../../../../src/main/agent/memory/memory_list';
-import { saveMemory } from '../../../../../src/main/agent/memory/memory_save';
-import { MAX_MEMORY_FACT_LENGTH } from '../../../../../src/main/agent/memory/memory_types';
-import type { Config } from '../../../../../src/main/agent/types';
-
-const readFile = fs.readFile as jest.Mock;
-const writeFile = fs.writeFile as jest.Mock;
-const rename = fs.rename as jest.Mock;
-const rm = fs.rm as jest.Mock;
-const config = {} as Config;
-
-beforeEach(() => {
-	readFile.mockReset();
-	writeFile.mockReset().mockResolvedValue(undefined);
-	rename.mockReset().mockResolvedValue(undefined);
-	rm.mockReset().mockResolvedValue(undefined);
+it('baselines existing conversations without backfilling or model calls', async () => {
+ const h = setup(false);
+ await h.memory.refresh();
+ expect(h.infer).not.toHaveBeenCalled();
+ expect(h.state().initialized).toBe(true);
+ expect(h.state().checkpoints.chat).toEqual(['first']);
 });
 
-describe('saveMemory', () => {
-	it('normalizes one line and appends a stable ID', async () => {
-		readFile.mockResolvedValue('# Memory\n');
-		const result = await saveMemory(config, '  prefers\n  concise\tanswers  ');
-
-		expect(result).toMatchObject({
-			saved: true,
-			memory: {
-				id: expect.stringMatching(/^memory-[a-f0-9]{16}$/),
-				fact: 'prefers concise answers',
-			},
-		});
-		expect(writeFile).toHaveBeenCalledWith(
-			expect.stringMatching(/^\/mem\/\.MEMORY\.md\..+\.tmp$/),
-			`# Memory\n- [${result.memory.id}] prefers concise answers\n`,
-			expect.objectContaining({ encoding: 'utf8', flag: 'wx' })
-		);
-		expect(rename).toHaveBeenCalledWith(expect.any(String), '/mem/MEMORY.md');
-	});
-
-	it('deduplicates a legacy fact by its derived stable ID', async () => {
-		readFile.mockResolvedValue('- prefers concise answers\n');
-		expect(await saveMemory(config, 'prefers   concise answers')).toMatchObject({ saved: false });
-		expect(writeFile).not.toHaveBeenCalled();
-	});
-
-	it('rejects oversized facts and likely secrets', async () => {
-		readFile.mockResolvedValue('');
-		await expect(saveMemory(config, 'x'.repeat(MAX_MEMORY_FACT_LENGTH + 1))).rejects.toThrow(
-			'characters or fewer'
-		);
-		await expect(saveMemory(config, 'api_key=abcdefghijklmnopqrstuvwxyz123456')).rejects.toThrow(
-			'credential-like content'
-		);
-		expect(writeFile).not.toHaveBeenCalled();
-	});
+it('processes changes once and preserves manual Markdown', async () => {
+ const h = setup();
+ h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+ await h.memory.refresh();
+ expect(h.markdown()).toContain('Manual notes remain here.');
+ expect(h.markdown()).toContain('Prefers concise answers.');
+ expect(h.state().checkpoints.chat).toEqual(['first']);
+ const calls = h.infer.mock.calls.length;
+ await h.memory.refresh();
+ expect(h.infer).toHaveBeenCalledTimes(calls);
 });
 
-describe('listMemories', () => {
-	it('lists structured and legacy facts with stable IDs', async () => {
-		readFile.mockResolvedValue('- legacy fact\n- [memory-0000000000000000] structured fact\n');
-		const memories = await listMemories(config);
-
-		expect(memories).toEqual([
-			{ id: expect.stringMatching(/^memory-[a-f0-9]{16}$/), fact: 'legacy fact' },
-			{ id: expect.stringMatching(/^memory-[a-f0-9]{16}$/), fact: 'structured fact' },
-		]);
-		expect(memories[1].id).not.toBe('memory-0000000000000000');
-	});
+it('detects inserted voice transcripts and edited messages without relying on message count', async () => {
+ const h = setup();
+ await h.memory.refresh();
+ h.sessions[0].messages.unshift({ fingerprint: 'inserted', role: 'user', text: 'I use TypeScript.' });
+ await h.memory.refresh();
+ expect(h.infer.mock.calls[1][1]).toContain('I use TypeScript.');
+ h.sessions[0].messages = [{ fingerprint: 'edited', role: 'user', text: 'I now use Rust.' }];
+ await h.memory.refresh();
+ expect(h.infer.mock.calls[2][1]).toContain('I now use Rust.');
+ expect(h.state().checkpoints.chat).toEqual(['edited']);
 });
 
-describe('forgetMemory', () => {
-	it('deletes only the exact stable ID and preserves overlapping facts', async () => {
-		readFile.mockResolvedValue('- target\n- target details\n');
-		const [target, detail] = await listMemories(config);
-		readFile.mockResolvedValue('- target\n- target details\n');
+it.each(['provider', 'malformed', 'write'])('keeps checkpoints pending after a %s failure', async (failure) => {
+ const h = setup();
+ if (failure === 'provider') h.infer.mockRejectedValueOnce(new Error('offline'));
+ if (failure === 'malformed') h.infer.mockResolvedValueOnce('invalid JSON');
+ if (failure === 'write') {
+  h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+  h.write.mockRejectedValueOnce(new Error('disk full'));
+ }
+ await h.memory.refresh().catch(() => undefined);
+ expect(h.state().checkpoints.chat).toBeUndefined();
+ expect(h.markdown()).not.toContain('Prefers concise answers.');
+ await h.memory.refresh();
+ expect(h.state().checkpoints.chat).toEqual(['first']);
+});
 
-		expect(await forgetMemory(config, target.id)).toEqual({ removed: true, id: target.id });
-		expect(writeFile).toHaveBeenCalledWith(
-			expect.stringMatching(/^\/mem\/\.MEMORY\.md\..+\.tmp$/),
-			'- target details\n',
-			expect.objectContaining({ encoding: 'utf8', flag: 'wx' })
-		);
-		expect(rename).toHaveBeenCalledWith(expect.any(String), '/mem/MEMORY.md');
-		expect(detail.id).not.toBe(target.id);
-	});
+it('coalesces overlapping refreshes and discards output when a source changes during inference', async () => {
+ const h = setup();
+ let resolve!: (value: string) => void;
+ const entered = new Promise<void>((ready) => {
+  h.infer.mockImplementationOnce(() => { ready(); return new Promise<string>((done) => { resolve = done; }); });
+ });
+ const first = h.memory.refresh();
+ await entered;
+ const second = h.memory.refresh('wake');
+ h.sessions[0].messages[0] = { fingerprint: 'changed', role: 'user', text: 'I prefer detailed answers.' };
+ resolve(h.extracted);
+ h.infer.mockResolvedValue('{"accepted":[0]}');
+ await Promise.all([first, second]);
+ expect(h.write).not.toHaveBeenCalled();
+ expect(h.state().checkpoints.chat).toBeUndefined();
+});
 
-	it('does not write for a missing ID and rejects malformed IDs', async () => {
-		readFile.mockResolvedValue('- existing\n');
-		expect(await forgetMemory(config, 'memory-0000000000000000')).toEqual({
-			removed: false,
-			id: 'memory-0000000000000000',
-		});
-		await expect(forgetMemory(config, 'existing')).rejects.toThrow('valid memory ID');
-		expect(writeFile).not.toHaveBeenCalled();
-	});
+it('keeps remembered facts after source conversation deletion and restart', async () => {
+ const h = setup();
+ h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+ await h.memory.refresh();
+ h.sessions.splice(0);
+ const restarted = new Memory(h.dependencies);
+ await restarted.refresh();
+ expect(h.markdown()).toContain('Prefers concise answers.');
+ expect(h.infer).toHaveBeenCalledTimes(2);
+});
+
+it('clearing invalidates pending inference and prevents old input recreating memories', async () => {
+ const h = setup();
+ let resolve!: (value: string) => void;
+ const entered = new Promise<void>((ready) => {
+  h.infer.mockImplementationOnce(() => { ready(); return new Promise<string>((done) => { resolve = done; }); });
+ });
+ const pending = h.memory.refresh();
+ await entered;
+ await h.memory.clear();
+ resolve(h.extracted);
+ h.infer.mockResolvedValue('{"accepted":[0]}');
+ await pending;
+ await h.memory.refresh();
+ expect(h.markdown()).not.toContain('Prefers concise answers.');
+});
+
+it('keeps memory model configuration independent from the chat selection', async () => {
+ const h = setup();
+ await h.memory.configure({ modelId: 'independent', modelOptions: { temperature: 0 } });
+ await h.memory.refresh();
+ expect(h.memory.getConfig()).toMatchObject({ providerId: 'provider', modelId: 'independent', modelOptions: { temperature: 0 } });
+ expect(new Memory(h.dependencies).getConfig().modelId).toBe('independent');
+});
+
+it('rejects unvalidated quotes and assistant-only evidence', async () => {
+ const h = setup();
+ h.infer.mockResolvedValueOnce(JSON.stringify({ entries: [{ kind: 'fact', topic: 'Preferences', text: 'Prefers long answers.', evidence: [{ source: 'first', quote: 'I prefer long answers.' }] }] }));
+ await h.memory.refresh();
+ expect(h.markdown()).not.toContain('Prefers long answers.');
 });

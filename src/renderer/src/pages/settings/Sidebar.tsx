@@ -32,7 +32,12 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coding
 			),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/agent/music', '/settings/agent/video', '/settings/agent/image'].includes(item.path)
+				[
+					'/settings/memory',
+					'/settings/agent/music',
+					'/settings/agent/video',
+					'/settings/agent/image',
+				].includes(item.path)
 			),
 		],
 	},
@@ -45,12 +50,9 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'integrations',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			[
-				'/settings/channels',
-				'/settings/integrations',
-				'/settings/apps',
-				'/settings/a2a',
-			].includes(item.path)
+			['/settings/channels', '/settings/integrations', '/settings/apps', '/settings/a2a'].includes(
+				item.path
+			)
 		),
 	},
 ] as const;
@@ -87,11 +89,7 @@ export function SettingsSidebar(): React.JSX.Element {
 			<div className="no-scrollbar min-h-0 flex-1 overflow-y-auto pb-4 pt-3">
 				<nav aria-label={t('settings.title')}>
 					{SETTINGS_SIDEBAR_GROUPS.map((group) => (
-						<section
-							data-slot="split-pane-group"
-							key={group.id}
-							className="px-2 py-1 first:pt-0"
-						>
+						<section data-slot="split-pane-group" key={group.id} className="px-2 py-1 first:pt-0">
 							{'titleKey' in group ? (
 								<h2 className="flex h-7 items-center px-2 text-[10px] font-semibold uppercase tracking-[0.12em] text-sidebar-foreground/70">
 									{t(group.titleKey)}
@@ -111,7 +109,7 @@ export function SettingsSidebar(): React.JSX.Element {
 												className={cn(SPLIT_ITEM_CLASS, isActive && SPLIT_ITEM_ACTIVE_CLASS)}
 											>
 												<Icon className="size-4 shrink-0" strokeWidth={1.8} />
-											<span className="text-xs">{t(item.labelKey)}</span>
+												<span className="text-xs">{t(item.labelKey)}</span>
 											</Link>
 										</li>
 									);
