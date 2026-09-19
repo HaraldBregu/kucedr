@@ -1,9 +1,9 @@
 import { z } from 'zod';
-import { forgetMemory } from '../../memory';
-import type { Config, Tool } from '../../types';
+import type { MemoryService } from '../../../../shared/memory_types';
+import type { Tool } from '../../types';
 import { tool } from '../tool';
 
-export function forgetMemoryTool(config: Config): Tool {
+export function forgetMemoryTool(memory: Pick<MemoryService, 'forget'>): Tool {
 	return tool({
 		id: 'forget_memory',
 		name: 'Forget memory',
@@ -15,6 +15,6 @@ export function forgetMemoryTool(config: Config): Tool {
 				.regex(/^memory-[a-f0-9]{16}$/i)
 				.describe('Exact stable memory ID returned by list_memories.'),
 		}),
-		execute: ({ id }) => forgetMemory(config, id),
+		execute: ({ id }) => memory.forget(id),
 	});
 }

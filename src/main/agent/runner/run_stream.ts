@@ -1,3 +1,4 @@
+import type { MemoryService } from '../../../shared/memory_types';
 import { getResolvedProvider } from '../../settings_store';
 import { getModelId, getModelOptions, getPermissions, getProviderId } from '../agent_store';
 import {
@@ -51,6 +52,7 @@ import { startsBackgroundRecorder } from './recorder';
 
 export interface StreamOptions {
 	tools?: Tool[];
+	memory?: MemoryService;
 	instructions?: string;
 	streaming?: boolean;
 	windowFactory?: WindowFactory;
@@ -169,7 +171,7 @@ async function* loop(
 
 	let tools: Tool[] = options.tools
 		? [...options.tools]
-		: builtinTools(config, options.sandbox!, options.windowFactory, input.interactionMode);
+		: builtinTools(config, options.sandbox!, options.windowFactory, input.interactionMode, options.memory);
 	if (backgroundBrowser)
 		tools = tools.map((tool) => (tool.id === backgroundBrowser.id ? backgroundBrowser : tool));
 	if (!options.tools && input.interactionMode !== 'plan') {
@@ -319,7 +321,10 @@ async function* loop(
 				session.category === 'main' && input.interactionMode !== 'plan' && session.folderName !== ''
 					? goalContext(sessionDir(session))
 					: '';
-			const runtimeContext = [workspaceContext, skillContext, activeGoalContext]
+			const memoryContext = contextMode === 'workspace'
+				? await options.memory?.context(input.message) ?? ''
+				: '';
+			const runtimeContext = [workspaceContext, memoryContext, skillContext, activeGoalContext]
 				.filter(Boolean)
 				.join('\n\n');
 			const messages = promptCapabilities

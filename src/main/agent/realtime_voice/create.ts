@@ -25,6 +25,7 @@ export function createRealtimeVoiceManager(
 	const manager = new RealtimeVoiceManager({
 		createAdapter: buildRealtimeVoiceAdapter,
 		resources: agent.resources,
+		memoryContext: (query) => agent.memory?.context(query) ?? Promise.resolve(''),
 		createConversation: realtimeVoiceConversationFactory(agent.config, agent.sessions),
 		emit: (windowId, event) => {
 			eventBus.sendTo(windowId, RealtimeVoiceChannels.sessionEvent, event);
@@ -74,7 +75,7 @@ export function createRealtimeVoiceManager(
 						  supportedVoices.includes(metadataVoice.trim())
 						? metadataVoice.trim()
 						: (realtimeVoiceDefaultVoice(providerId) ?? '');
-			const tools = builtinTools(agent.config, agent.sandbox, windowFactory);
+			const tools = builtinTools(agent.config, agent.sandbox, windowFactory, 'default', agent.memory);
 			const instructions = await buildSystemPrompt(agent.config, tools);
 			const workspaceContext = await buildWorkspaceContext(agent.config);
 			return {

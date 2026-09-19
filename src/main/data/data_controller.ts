@@ -9,7 +9,7 @@ import type {
 	DataScope,
 } from '../../shared/data_types';
 import type { Config } from '../agent/types';
-import { memoryPath } from '../agent/memory';
+import { memoryPath } from '../memory/path';
 import { MEMORY_FILE, resolveTemplatePath } from '../agent/system';
 import { sessionPath, sessionsRoot } from '../agent/session';
 import { purgeRagManifest } from '../agent/knowledge/rag';

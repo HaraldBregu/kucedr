@@ -12,7 +12,6 @@ import { createImageTool } from '../../../../../src/main/agent/tools/media/creat
 import { createSoundTool } from '../../../../../src/main/agent/tools/media/create_sound';
 import { createVideoTool } from '../../../../../src/main/agent/tools/media/create_video';
 import { forgetMemoryTool } from '../../../../../src/main/agent/tools/memory/forget_memory';
-import { saveMemoryTool } from '../../../../../src/main/agent/tools/memory/save_memory';
 import { cameraRecorderTool } from '../../../../../src/main/agent/tools/system/camera_recorder';
 import { microphoneRecorderTool } from '../../../../../src/main/agent/tools/system/microphone_recorder';
 import { screenRecorderTool } from '../../../../../src/main/agent/tools/system/screen_recorder';
@@ -33,8 +32,7 @@ it.each([
 	microphoneRecorderTool(),
 	cameraRecorderTool(),
 	screenRecorderTool(),
-	saveMemoryTool({ location: '/workspace' }),
-	forgetMemoryTool({ location: '/workspace' }),
+	forgetMemoryTool({ forget: jest.fn() }),
 	useWebBrowserTool,
 ])('%s uses policy permission without forced approval', (tool) => {
 	expect(tool.hardApproval).toBeUndefined();

@@ -1,4 +1,4 @@
-import { app, BrowserWindow, crashReporter, nativeTheme, shell } from 'electron';
+import { app, BrowserWindow, crashReporter, nativeTheme, powerMonitor, shell } from 'electron';
 import { mkdirSync } from 'node:fs';
 import { Main } from './create_window';
 import { Tray } from './tray';
@@ -184,6 +184,10 @@ const menuManager = new Menu({
 });
 
 app.whenReady().then(() => {
+	void services.memoryService.start().catch((error) => logger.error('Memory', 'Failed to start memory processing', error));
+	powerMonitor.on('resume', () => {
+		void services.memoryService.refresh('wake').catch((error) => logger.error('Memory', 'Wake refresh failed', error));
+	});
 	recordAppLaunch();
 	startStorageSync(logger, services.storageOperations);
 	services.cloudService.initialize();

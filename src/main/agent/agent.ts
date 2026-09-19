@@ -1,3 +1,4 @@
+import type { MemoryService } from '../../shared/memory_types';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import {
@@ -116,7 +117,8 @@ export class Agent {
 
 	constructor(
 		private readonly windowFactory: WindowFactory,
-		readonly sandbox: ExecSandbox
+		readonly sandbox: ExecSandbox,
+		readonly memory?: MemoryService
 	) {
 		this.config = { location: path.resolve(agentLocation()) };
 		workspacePath(this.config);
@@ -329,6 +331,7 @@ export class Agent {
 				windowFactory: this.windowFactory,
 				resources: this.resources,
 				sandbox: this.sandbox,
+				memory: this.memory,
 				providerLimiter: this.providerLimiter,
 				subagentLimiter: this.subagentLimiter,
 			});

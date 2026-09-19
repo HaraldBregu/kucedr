@@ -12,7 +12,6 @@ export { ensureWorkspaceFiles } from './system_ensure_workspace_files';
 export { readAgent } from './system_read_agent';
 export { readBootstrap } from './system_read_bootstrap';
 export { readIdentity } from './system_read_identity';
-export { readMemory } from './system_read_memory';
 export { readSoul } from './system_read_soul';
 export { readTextFile } from './system_read_text_file';
 export { readUser } from './system_read_user';

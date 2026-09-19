@@ -34,6 +34,7 @@ export interface RealtimeVoiceManagerDependencies {
 	resolveConfiguration(): Promise<ResolvedRealtimeVoiceConfiguration>;
 	createConversation: RealtimeVoiceConversationFactory;
 	resources: KeyedMutex;
+	memoryContext?(query: string): Promise<string>;
 	emit(windowId: number, event: RealtimeVoiceEvent): void;
 }
 
@@ -132,10 +133,13 @@ export class RealtimeVoiceManager {
 		this.emit(active, { type: 'state', sessionId: info.id, status: 'connecting' });
 
 		try {
+			const memoryContext = await this.dependencies.memoryContext?.(
+				active.conversation.history.slice(-10).map((message) => message.text).join('\n')
+			);
 			const connection = await this.dependencies.createAdapter(provider).connect(
 				{
 					...adapterConfiguration,
-					history: [...context, ...active.conversation.history],
+					history: [...context, ...(memoryContext ? [{ role: 'user' as const, text: memoryContext }] : []), ...active.conversation.history],
 				},
 				(event) => this.handleAdapterEvent(active, event),
 				controller.signal

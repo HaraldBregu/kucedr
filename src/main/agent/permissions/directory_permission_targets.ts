@@ -11,7 +11,6 @@ import { fileHistoryTargets } from '../history/targets';
 import type { FileHistory } from '../history/types';
 
 const AGENT_FILES: Record<string, string> = {
-	save_memory: 'MEMORY.md',
 	forget_memory: 'MEMORY.md',
 	update_health: 'HEALTH.md',
 	complete_bootstrap: 'BOOTSTRAP.md',

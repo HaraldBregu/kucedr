@@ -2,7 +2,6 @@ import type { Config } from '../types';
 import { readAgent } from './system_read_agent';
 import { readBootstrap } from './system_read_bootstrap';
 import { readIdentity } from './system_read_identity';
-import { readMemory } from './system_read_memory';
 import { readSoul } from './system_read_soul';
 import { readUser } from './system_read_user';
 import { workspacePath } from './system_workspace_path';
@@ -15,7 +14,6 @@ export async function buildWorkspaceContext(config: Config): Promise<string> {
 		['IDENTITY.md', await readIdentity(resolvedWorkspacePath)],
 		['SOUL.md', await readSoul(resolvedWorkspacePath)],
 		['USER.md', await readUser(resolvedWorkspacePath)],
-		['MEMORY.md', await readMemory(resolvedWorkspacePath)],
 	] as const;
 	const sections = files
 		.filter(([, content]) => content.trim())
