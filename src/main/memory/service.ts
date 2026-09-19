@@ -105,8 +105,8 @@ export class Memory implements MemoryService {
 		const state = { ...this.state, initialized: true,
 			checkpoints: Object.fromEntries(sources.map((source) => [source.id, source.messages.map((message) => message.fingerprint)])),
 			suppressed: [...new Set([...this.state.suppressed, ...suppressed])] };
-		this.persist(state);
 		await this.dependencies.write(markdown);
+		this.persist(state);
 		this.pending = 0;
 	}
 	private invalidate(): void { this.revision += 1; this.controller?.abort(); }
