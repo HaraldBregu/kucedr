@@ -89,7 +89,11 @@ export function registerIpcHandlers(
 		)
 	);
 	safeRegister('memory', () =>
-		new MemoryIpc().register({ windows: windowContextManager, apps: appRegistry, memory: services.memoryService })
+		new MemoryIpc().register({
+			windows: windowContextManager,
+			apps: appRegistry,
+			memory: services.memoryService,
+		})
 	);
 	safeRegister('coding', () =>
 		new CodingIpc().register(

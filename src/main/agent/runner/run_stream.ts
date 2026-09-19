@@ -171,7 +171,13 @@ async function* loop(
 
 	let tools: Tool[] = options.tools
 		? [...options.tools]
-		: builtinTools(config, options.sandbox!, options.windowFactory, input.interactionMode, options.memory);
+		: builtinTools(
+				config,
+				options.sandbox!,
+				options.windowFactory,
+				input.interactionMode,
+				options.memory
+			);
 	if (backgroundBrowser)
 		tools = tools.map((tool) => (tool.id === backgroundBrowser.id ? backgroundBrowser : tool));
 	if (!options.tools && input.interactionMode !== 'plan') {
@@ -321,9 +327,8 @@ async function* loop(
 				session.category === 'main' && input.interactionMode !== 'plan' && session.folderName !== ''
 					? goalContext(sessionDir(session))
 					: '';
-			const memoryContext = contextMode === 'workspace'
-				? await options.memory?.context(input.message) ?? ''
-				: '';
+			const memoryContext =
+				contextMode === 'workspace' ? ((await options.memory?.context(input.message)) ?? '') : '';
 			const runtimeContext = [workspaceContext, memoryContext, skillContext, activeGoalContext]
 				.filter(Boolean)
 				.join('\n\n');

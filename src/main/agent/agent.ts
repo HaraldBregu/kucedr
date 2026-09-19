@@ -84,12 +84,7 @@ const AGENT_CATEGORIES: Record<string, SessionCategory> = {
 	health: 'health',
 };
 
-const SCHEDULED_TASK_TOOLS_DENY = [
-	'create_task',
-	'update_task',
-	'delete_task',
-	'run_task_now',
-];
+const SCHEDULED_TASK_TOOLS_DENY = ['create_task', 'update_task', 'delete_task', 'run_task_now'];
 
 type AgentSendBaseOptions = Omit<AgentRunOptions, 'toolsAllow'> & {
 	streaming?: boolean;
