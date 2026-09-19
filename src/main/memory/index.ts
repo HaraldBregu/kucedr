@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import path from 'node:path';
 import Store from 'electron-store';
 import cron from 'node-cron';
 import type { MemoryService } from '../../shared/memory_types';
