@@ -36,6 +36,12 @@ export class Memory implements MemoryService {
 				memoryType: state.config.memoryType,
 			},
 		};
+		if (
+			'scheduleEnabled' in state.config ||
+			'cronExpression' in state.config ||
+			'timezone' in state.config
+		)
+			dependencies.store.save(structuredClone(this.state));
 	}
 
 	getConfig(): MemoryConfig {

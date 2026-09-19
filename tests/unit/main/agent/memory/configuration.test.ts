@@ -4,11 +4,10 @@ import { validateConfiguration } from '../../../../../src/main/memory/configurat
 import { defaultState } from '../../../../../src/main/memory/defaults';
 import { findModel } from '../../../../../src/main/models';
 
-it('accepts defaults and rejects invalid cron and timezone values', () => {
+it('accepts defaults and rejects removed schedule settings', () => {
  const config = defaultState().config;
  expect(() => validateConfiguration(config)).not.toThrow();
- expect(() => validateConfiguration({ ...config, cronExpression: 'invalid' })).toThrow('cron');
- expect(() => validateConfiguration({ ...config, timezone: 'Invalid/Zone' })).toThrow();
+ expect(() => validateConfiguration({ ...config, cronExpression: '0 * * * *' } as typeof config)).toThrow();
 });
 
 it('requires a registered model and enforces its supported options', () => {

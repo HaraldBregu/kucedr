@@ -32,9 +32,6 @@ const config = {
 	modelId: 'model',
 	modelOptions: {},
 	memoryType: 'both',
-	scheduleEnabled: true,
-	cronExpression: '*/15 * * * *',
-	timezone: 'Europe/Rome',
 };
 const api = {
 	getConfig: jest.fn(),
@@ -77,24 +74,13 @@ it('saves independent memory configuration automatically', async () => {
 	await waitFor(() => expect(api.configure).toHaveBeenCalledWith({ ...config, enabled: false }));
 });
 
-it('uses schedule presets and shows the cron field only for a custom schedule', async () => {
-	const user = userEvent.setup();
+it('does not show scheduling controls', async () => {
 	render(<MemoryPage />);
-	const frequency = await screen.findByRole('combobox', { name: 'settings.memory.frequency' });
-	expect(frequency).toHaveTextContent('settings.memory.every15Minutes');
-	expect(screen.queryByRole('textbox', { name: 'settings.memory.customCron' })).not.toBeInTheDocument();
-
-	api.getConfig.mockResolvedValueOnce({ ...config, cronExpression: '0 6 * * 1-5' });
-	render(<MemoryPage />);
-	const cron = await screen.findByRole('textbox', { name: 'settings.memory.customCron' });
-	await user.clear(cron);
-	await user.type(cron, '0 7 * * 1-5');
-	await waitFor(() =>
-		expect(api.configure).toHaveBeenCalledWith({
-			...config,
-			cronExpression: '0 7 * * 1-5',
-		})
-	);
+	await screen.findByRole('combobox', { name: 'settings.memory.model' });
+	expect(screen.queryByText('settings.memory.schedule')).not.toBeInTheDocument();
+	expect(screen.queryByText('settings.memory.frequency')).not.toBeInTheDocument();
+	expect(screen.queryByText('settings.memory.customCron')).not.toBeInTheDocument();
+	expect(screen.queryByText('settings.memory.timezone')).not.toBeInTheDocument();
 });
 
 it('generates memory on demand', async () => {

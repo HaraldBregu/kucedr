@@ -1,7 +1,6 @@
 jest.mock('electron-store', () => ({ __esModule: true, default: jest.fn() }));
 jest.mock('node:fs', () => ({ watch: jest.fn() }));
 jest.mock('node:fs/promises', () => ({ access: jest.fn(), readFile: jest.fn(), mkdir: jest.fn(), rm: jest.fn() }));
-jest.mock('node-cron', () => ({ __esModule: true, default: { schedule: jest.fn() } }));
 jest.mock('../../../../../src/main/agent/agent_store', () => ({ getChatbotModel: jest.fn() }));
 jest.mock('../../../../../src/main/models/adapters/llm', () => ({ LlmModel: jest.fn() }));
 jest.mock('../../../../../src/main/settings_store', () => ({ getProvider: jest.fn() }));
@@ -21,7 +20,6 @@ jest.mock('../../../../../src/main/memory/migrate', () => ({ migrateWorkspaceMem
 import fs from 'node:fs/promises';
 import { watch } from 'node:fs';
 import Store from 'electron-store';
-import cron from 'node-cron';
 import { createMemory } from '../../../../../src/main/memory';
 import { getChatbotModel } from '../../../../../src/main/agent/agent_store';
 import { LlmModel } from '../../../../../src/main/models/adapters/llm';
@@ -56,10 +54,8 @@ it('persists independent configuration and invokes the configured provider direc
 		apiKey: 'provider-secret',
 		baseUrl: 'https://provider.invalid',
 	});
-	const destroy = jest.fn();
 	const close = jest.fn();
 	(watch as jest.Mock).mockReturnValue({ close });
-	(cron.schedule as jest.Mock).mockReturnValue({ destroy });
 	const first = createMemory(() => ({ location: '/home/test/.kucedr/workspace' }));
 	await first.start();
 	const sessionId = '11111111-1111-4111-8111-111111111111';
@@ -74,18 +70,12 @@ it('persists independent configuration and invokes the configured provider direc
 	expect(Store).toHaveBeenCalledWith(
 		expect.objectContaining({ name: 'settings', cwd: '/home/test/.kucedr/memory' })
 	);
-	expect(cron.schedule).toHaveBeenCalledWith(
-		'*/15 * * * *',
-		expect.any(Function),
-		expect.objectContaining({ noOverlap: true, timezone: expect.any(String) })
-	);
 	await first.configure({
 		providerId: 'deepseek',
 		modelId: 'deepseek-flash',
 		modelOptions: { temperature: 0 },
 	});
 	await first.stop();
-	expect(destroy).toHaveBeenCalled();
 	expect(close).toHaveBeenCalled();
 	(getChatbotModel as jest.Mock).mockReturnValue({
 		providerId: 'new-chat',
