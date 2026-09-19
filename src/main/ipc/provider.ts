@@ -152,7 +152,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const signal = AbortSignal.timeout(10_000);
 		let response: Response;
 		try {
-			response = await fetch(new URL('models', `${baseUrl}/`), {
+			response = await fetch(new URL('models', `${baseUrl}/`).toString(), {
 				headers: { Authorization: `Bearer ${apiKey}` },
 				signal,
 			});
