@@ -36,7 +36,7 @@ function CommandDialog({
         overlayClassName
       )}
       contentClassName={cn(
-        "fixed left-1/2 top-[16vh] z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 overflow-hidden rounded-lg border border-border/80 bg-popover text-popover-foreground shadow-xl shadow-black/20 outline-none",
+        "fixed left-1/2 top-[12vh] z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-lg border border-border/80 bg-popover text-popover-foreground shadow-xl shadow-black/20 outline-none",
         contentClassName
       )}
       className={cn("flex h-full w-full flex-col overflow-hidden", className)}
@@ -53,13 +53,13 @@ function CommandInput({
   return (
     <div
       data-slot="command-input-wrapper"
-      className="flex h-9 items-center gap-1.5 border-b border-border/70 px-2.5"
+      className="flex h-11 items-center gap-2 border-b border-border/70 px-3"
     >
-      <SearchIcon className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+      <SearchIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
       <CommandPrimitive.Input
         data-slot="command-input"
         className={cn(
-          "flex h-8 w-full rounded-md bg-transparent py-1.5 text-[13px] outline-none ring-0 placeholder:text-muted-foreground focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-10 w-full rounded-md bg-transparent py-2 text-sm outline-none ring-0 placeholder:text-muted-foreground focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         style={{ ...style, outline: "none" }}
@@ -76,7 +76,7 @@ function CommandList({
   return (
     <CommandPrimitive.List
       data-slot="command-list"
-      className={cn("no-scrollbar max-h-[340px] overflow-y-auto overflow-x-hidden p-1", className)}
+      className={cn("no-scrollbar max-h-[min(60vh,420px)] overflow-y-auto overflow-x-hidden p-1.5", className)}
       {...props}
     />
   )

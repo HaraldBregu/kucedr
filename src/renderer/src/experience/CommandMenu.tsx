@@ -189,20 +189,23 @@ function CommandMenuItem({
 			value={item.searchValue}
 			keywords={item.keywords}
 			onSelect={() => onSelect(item.path)}
-			className="items-start gap-2 px-2 py-1.5"
+			className="items-center gap-3 px-2 py-2"
 		>
-			<span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md bg-muted/70 text-muted-foreground">
-				<Icon className="size-3" aria-hidden="true" strokeWidth={1.8} />
+			<span
+				data-slot="command-page-icon"
+				className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted/70 text-muted-foreground"
+			>
+				<Icon className="size-4" aria-hidden="true" strokeWidth={1.8} />
 			</span>
 			<span className="flex min-w-0 flex-1 flex-col">
-				<span className="truncate text-xs font-medium leading-4">{item.label}</span>
+				<span className="truncate text-sm font-medium leading-4">{item.label}</span>
 				{item.description && (
-					<span className="truncate text-[10px] leading-3.5 text-muted-foreground">
+					<span className="truncate text-xs leading-4 text-muted-foreground">
 						{item.description}
 					</span>
 				)}
 			</span>
-			<CommandShortcut className="hidden max-w-32 truncate font-mono text-[9px] sm:block">
+			<CommandShortcut className="hidden max-w-40 shrink-0 truncate font-mono text-[10px] sm:block">
 				{item.path}
 			</CommandShortcut>
 		</CommandItem>
