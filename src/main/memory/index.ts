@@ -18,6 +18,7 @@ import { scanSources } from './sources';
 import { validateConfiguration } from './configuration';
 import type { MemoryState } from './types';
 import { sessionMemoryPath } from './session_path';
+import { createMemoryFile } from './file';
 
 export { memoryPath } from './path';
 
@@ -60,11 +61,7 @@ export function createMemory(configuration: () => Config): MemoryService {
 				if (error.code === 'ENOENT') return '';
 				throw error;
 			}),
-		write: async (markdown) => {
-			const file = memoryPath();
-			await fs.mkdir(path.dirname(file), { recursive: true });
-			await atomicWrite(file, markdown);
-		},
+		write: createMemoryFile,
 		writeSession: async (sessionId, markdown) => {
 			const file = sessionMemoryPath(sessionId);
 			await fs.mkdir(path.dirname(file), { recursive: true });
@@ -81,7 +78,7 @@ export function createMemory(configuration: () => Config): MemoryService {
 				},
 			};
 		},
-		infer: async (config, prompt, signal) => {
+		infer: async (config, systemPrompt, request, signal) => {
 			const provider = getProvider(config.providerId, 'models');
 			if (!provider) throw new Error('Memory provider is not configured.');
 			const options =
@@ -103,12 +100,13 @@ export function createMemory(configuration: () => Config): MemoryService {
 					streaming: false,
 					tools: [],
 					messages: [
+						{ role: 'system', content: systemPrompt },
 						{
 							role: 'user',
 							content:
 								attempt === 0
-									? prompt
-									: `${prompt}\nThe previous response was empty or invalid. Return one complete JSON object now.`,
+									? request
+									: `${request}\nThe previous response was empty or invalid. Return one complete JSON object now.`,
 						},
 					],
 				});
