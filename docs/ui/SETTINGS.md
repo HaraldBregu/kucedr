@@ -18,7 +18,7 @@ Open /settings
        -> immediate settings: save on selection, toggle, or blur
        -> staged settings: use the page's Save action
   -> show saved, running, empty, or error feedback on the same page
-  -> follow a breadcrumb to the parent page or Return to Chat
+  -> follow a breadcrumb to the parent page or Return to Home
 ```
 
 ## Layout and navigation
@@ -29,19 +29,19 @@ workspace below the application title bar.
 - On desktop, the sidebar should be collapsible and resizable by pointer or keyboard. Its width is
   shared with Home and restored from local storage.
 - On mobile, the sidebar should open in a left-side sheet.
-- **Return to Chat** should navigate to `/home` and close the mobile sheet.
+- **Return to Home** should navigate to `/home` and close the mobile sheet.
 - The title bar should show breadcrumbs for deep Settings pages and expose route search.
 - Pages should use a centered column, page header, compact sections, and shared loading, notice,
   empty-state, row, and panel components.
 
 The visible sidebar is grouped as follows:
 
-| Group        | Destinations                    |
-| ------------ | ------------------------------- |
-| General      | Account, General, System, Cloud |
-| Assistant    | Agent, Coding, A2A              |
-| Providers    | Models, Search, Database        |
-| Integrations | Channels, Apps                  |
+| Group        | Destinations                       |
+| ------------ | ---------------------------------- |
+| General      | Account, General, System, Cloud    |
+| Assistant    | Agent, Coding, Music, Video, Image |
+| Providers    | Models, Search, Database, Storage  |
+| Integrations | Channels, Integrations, A2A, Apps  |
 
 The `/settings` route redirects to `/settings/general`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open General directly.
@@ -177,39 +177,22 @@ is currently supported; there is no default database selection or environment AP
 Embedding credentials are configured separately under **Providers → Models**. Both remote
 disclosures must be approved before indexing.
 
-### Model service pages
+### Model service configuration
 
-Individual service pages should be reachable from Assistant or route search:
-
-- **Transcribe** has independent streaming and batch speech-to-text selections plus a microphone
-  transcription test.
-- **Voice** has independent realtime-conversation and read-aloud configuration plus a synthesis
-  test.
-- **Image** and **Video** select a provider/model and generate a preview from a prompt.
-- **Embedding** selects a provider/model and tests text input by reporting vector dimensions.
-- **Audio** selects a provider/model, generates from a prompt, and lists saved audio with playback
-  and native context-menu actions.
+Agent settings configures the assistant, realtime conversation, transcription, read-aloud,
+and web search. Music, Video, and Image have dedicated sidebar pages. The embedding model is
+selected in Knowledge Base. Coding has its own provider authentication, model, thinking-level,
+and tool-mode settings.
 
 Verified provider input schemas can expose additional model options. Changing a model should clear
 options that belonged to the previous model rather than carrying incompatible values forward.
 
 ## Cloud storage
 
-Cloud should use the signed-in Kucedr account's private storage directly. It should not show an
-infrastructure provider, profile selector, endpoint, bucket, or storage credentials.
-
-Cloud should allow the user to:
-
-- include known Kucedr folders and additional folders selected from the system picker;
-- select an automatic sync interval or edit the cron expression;
-- save or cancel sync changes;
-- run a backup immediately;
-- confirm and run a restore;
-- inspect save, backup, restore, and failure status inline.
-
-Backup and restore require a fully signed-in account. Recovery sessions cannot use them. Remote
-files are isolated below the account's private backup path; folder selections and schedules remain
-local application settings.
+Configure storage accounts under **Providers → Storage**, then select a provider in Cloud.
+Cloud configures local folders, automatic backup intervals, manual backup, and confirmed restore.
+It displays operation progress and errors. The current storage runtime uses the selected provider;
+account sign-in is separate from this backup configuration. See [Cloud architecture](../CLOUD.md).
 
 ## Knowledge and data
 
@@ -233,9 +216,10 @@ show imported/skipped feedback. A skill detail page should show its manifest, tr
 compatibility, allowed tools, resources, loaded instructions, and diagnostics. It should also allow
 download and confirmed deletion.
 
-Apps should open the apps folder, refresh discovery, import apps, and show each
-app's category and detail metadata. The list should allow deletion and surface a failed delete;
-the detail page should open the app in its own window.
+Apps opens the apps folder, refreshes discovery, imports apps, and registers external development
+folders through Debug. Cards expose separate **Details**, **Open**, and **Delete** actions; the
+card itself does not navigate. Details configures the app window. See [Apps](../APPS.md) for
+all bundled apps, registration, removal, and data behavior.
 
 Apps do not currently expose enable/disable controls in Settings.
 
@@ -299,7 +283,7 @@ required. Filesystem policy should:
 - Permissions **Reset** and app deletion are immediate and do not request confirmation.
 - A2A deletion has no confirmation or inline failure handling.
 - Ordinary Settings links do not close the mobile sidebar sheet after navigation; **Return to
-  Chat** does.
+  Home** does.
 - Some setting-specific search entries still route search-engine and scheduled-task queries to
   broader pages instead of their newer provider or task pages.
 - Some model selectors display the first catalog option as a fallback without persisting it until

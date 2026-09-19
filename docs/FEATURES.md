@@ -35,7 +35,7 @@ Kucedr provides:
 - Image and PDF attachments for multimodal requests, and live or recorded speech-to-text input with text-to-speech playback.
 - Independent provider and model selection for chat, transcription, speech, image, video, audio, scheduled work, and health checks.
 - Local skills, remote HTTP MCP servers, local stdio MCP servers, and standalone app windows.
-- Persistent schedules, periodic `HEALTH.md` checks, and account-backed cloud backup for local folders.
+- Persistent schedules, periodic `HEALTH.md` checks, and provider-backed cloud backup for local folders.
 - Telegram bot connections with sender policies.
 - Local configuration, conversation history, memory, generated-media storage, and operational logs.
 - Windows, macOS, and Linux packaging; partial English and Italian localization; light, dark, and system themes.
@@ -340,7 +340,7 @@ Available behavior:
 
 The Health settings screen exposes provider, model, interval, target, direct policy, start/end dates, and the checklist editor. The agent tool can additionally update light-context, isolated-session, skip-when-busy, active-hours, and include-reasoning fields.
 
-**Partial:** the runtime currently applies interval, busy checks, active hours/dates, and isolated-session behavior. Stored target, direct policy, light context, include reasoning, provider, and model fields are not consumed by `runHealthCheck`; health runs use the agent's normal active model.
+**Partial:** the runtime applies interval, busy checks, active hours/dates, isolated-session behavior, and configured provider/model overrides. It uses minimal context. Stored target, direct policy, light context, and include-reasoning fields are not consumed by `runHealthCheck`.
 
 ### Personalization, workspace, and memory
 
@@ -489,12 +489,10 @@ The Channels screen configures Telegram with enable state, token, DM policy, dir
 See [Settings UI](ui/SETTINGS.md) for the canonical navigation, persistence, and page behavior.
 
 - `/settings` and the application Settings entry points open General settings directly.
-- The sidebar groups pages as **General**, **Assistant**, **Providers**, **Channels**, and
-  **Integrations**. Dedicated model-service and API-key pages are also available through
-  Assistant, route search, or direct links.
-- The **Cloud** page configures folders, schedules, backup, and restore for the signed-in account's
-  private storage. It also configures end-to-end encrypted API-key sync. It has no infrastructure
-  provider selection, endpoint, bucket, or storage credentials.
+- The sidebar groups General, Assistant, Providers, and Integrations destinations. Agent links and
+  route search expose the deeper resource pages.
+- **Cloud** selects a configured storage provider, folders, schedules, backup, and restore.
+  Provider credentials are configured under **Providers → Storage**.
 - Deep pages use breadcrumbs.
 - `Cmd/Ctrl+F` opens a route and setting search palette.
 - Unknown routes show a 404 recovery view; route failures show retry, restart, or Home actions.
@@ -504,26 +502,19 @@ See [Settings UI](ui/SETTINGS.md) for the canonical navigation, persistence, and
 
 ### Apps
 
-Apps are standalone mini-app windows:
-
-- Each app lives in its own folder under the app's local data directory with a `manifest.json` declaring a title, description, and entry point.
-- The application menu and a `window.apps` API can list installed apps and open each one in its own `BrowserWindow`.
-- The main process watches app folders and supports hot-reload.
-- The Apps settings page opens the apps folder, refreshes discovery, imports app
-  packages, shows list/detail metadata, opens an app, and deletes it from the list.
-
-**Partial:** the app-loading backend and import/removal UI are implemented, but Settings has
-no enable/disable control.
+Apps are standalone mini-app windows discovered from installed app folders or registered external
+development folders. Settings supports import, Debug registration, refresh, Details, Open, and
+Delete. Cards themselves are not navigation links. Window details configure launch behavior.
+See [Apps](APPS.md) for the current bundled catalog and data/removal behavior.
 
 ### Cloud storage sync
 
-- **Cloud** selects local paths and a backup interval so chosen folders back up to the signed-in
-  account's private storage on a schedule. Restore replaces matching local files after explicit
-  confirmation and keeps other local files.
-- **Secure key sync** encrypts saved model, database, and search API keys with a separate
-  user-held passphrase and reconciles them across signed-in devices.
-- Assistant RAG uses Pinecone as its environment-configured remote vector mirror and does not
-  expose a vector-database provider or database picker.
+- **Cloud** backs up selected local folders using the selected storage provider. Restore requires
+  confirmation and replaces matching files while retaining unrelated local files.
+- Account authentication and encrypted key-sync services are separate from provider-backed folder
+  backup. See [Cloud architecture](CLOUD.md) for their current boundaries.
+- Assistant RAG requires an explicit database selection from configured provider accounts and
+  consent for embeddings and remote mirroring. Queries use the local SQLite index.
 
 ### Application preferences
 
