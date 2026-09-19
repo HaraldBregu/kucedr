@@ -9,7 +9,7 @@ const api = toolModelApi('image');
 export default function ImagePage(): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
-		<SettingsPageShell>
+		<SettingsPageShell className="px-4 sm:px-6">
 			<SettingsPageHeader
 				title={t('settings.tabs.image')}
 				description={t('settings.modelServices.imageModelDescription')}

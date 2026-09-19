@@ -9,7 +9,7 @@ const api = toolModelApi('video');
 export default function VideoPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
-		<SettingsPageShell>
+		<SettingsPageShell className="px-4 sm:px-6">
 			<SettingsPageHeader
 				title={t('settings.tabs.video')}
 				description={t('settings.modelServices.videoModelDescription')}
