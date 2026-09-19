@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import ProvidersPage from '../../../src/renderer/src/pages/settings/pages/providers/Page';
@@ -175,10 +175,13 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 	);
 
 	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
-	await user.type(screen.getByLabelText('Custom provider base URL'), 'http://localhost:11434/v1');
+	const baseUrlInput = screen.getByLabelText('Custom provider base URL');
+	const customCard = baseUrlInput.closest('[data-slot="card"]');
+	expect(customCard).not.toBeNull();
+	await user.type(baseUrlInput, 'http://localhost:11434/v1');
 	await user.type(screen.getByLabelText('Custom provider model ID'), 'llama3.2:3b');
 	await user.type(screen.getByLabelText('Custom provider API key'), 'ollama');
-	await user.click(screen.getByRole('button', { name: 'Save', exact: true }));
+	await user.click(within(customCard!).getByRole('button', { name: 'Save', exact: true }));
 
 	await waitFor(() =>
 		expect(window.provider.set).toHaveBeenCalledWith({
