@@ -9,7 +9,7 @@ function setup(initialized = true) {
  };
  let markdown = '# Memory\n\nManual notes remain here.\n';
  const sessions: SourceSession[] = [{ id: 'chat', messages: [{ fingerprint: 'first', role: 'user', text: 'I prefer concise answers.' }] }];
- const infer = jest.fn().mockResolvedValue('{"entries":[]}');
+	const infer = jest.fn(async () => markdown);
  const write = jest.fn(async (next: string) => { markdown = next; });
 	const writeSession = jest.fn(async () => undefined);
 	const removeSession = jest.fn(async () => undefined);
