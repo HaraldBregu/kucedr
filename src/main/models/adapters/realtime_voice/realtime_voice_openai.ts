@@ -79,7 +79,7 @@ function openAISession(request: RealtimeVoiceAdapterRequest): Record<string, unk
 				turn_detection: {
 					type: 'server_vad',
 					silence_duration_ms: 1_200,
-					create_response: true,
+					create_response: !request.contextForTurn,
 					interrupt_response: true,
 				},
 			},

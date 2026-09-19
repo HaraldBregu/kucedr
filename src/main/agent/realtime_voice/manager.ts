@@ -142,6 +142,7 @@ export class RealtimeVoiceManager {
 			const connection = await this.dependencies.createAdapter(provider).connect(
 				{
 					...adapterConfiguration,
+					contextForTurn: this.dependencies.memoryContext,
 					history: [
 						...context,
 						...(memoryContext ? [{ role: 'user' as const, text: memoryContext }] : []),
