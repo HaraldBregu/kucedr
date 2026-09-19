@@ -5,12 +5,11 @@ import type {
 	MemoryStatus,
 } from '../../shared/memory_types';
 import type { MemoryDependencies, MemoryState, SourceSession } from './types';
-import { extract } from './extract';
-import { mergeMemories } from './merge';
 import { parseMemories } from './parse';
 import { recall } from './recall';
 import { fingerprint } from './fingerprint';
 import { snapshotMarkdown } from './snapshot';
+import { generateMemory } from './generate';
 
 export class Memory implements MemoryService {
 	private state: MemoryState;
@@ -304,11 +303,11 @@ export class Memory implements MemoryService {
 				}
 				const revision = this.revision;
 				const markdown = await this.read();
-				const entries = await extract(
+				const next = await generateMemory(
 					this.dependencies,
 					config,
 					batch,
-					parseMemories(markdown),
+					markdown,
 					signal,
 					source.messages
 						.slice(0, source.messages.indexOf(batch[0]))
@@ -321,8 +320,16 @@ export class Memory implements MemoryService {
 					if (revision !== this.revision || markdown !== (await this.read())) return false;
 					const current = (await this.dependencies.sources()).find((item) => item.id === source.id);
 					if (!current || JSON.stringify(current) !== JSON.stringify(source)) return false;
-					const next = mergeMemories(markdown, entries, this.state.suppressed);
-					await this.dependencies.write(next);
+					if (next !== undefined) {
+						const filtered = next
+							.split('\n')
+							.filter((line) => {
+								const entry = parseMemories(line)[0];
+								return !entry || !this.state.suppressed.includes(entry.id);
+							})
+							.join('\n');
+						await this.dependencies.write(filtered);
+					}
 					const processed = new Set([
 						...(this.state.checkpoints[source.id] ?? []),
 						...batch.map((message) => message.fingerprint),
