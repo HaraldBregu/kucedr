@@ -22,7 +22,12 @@ export async function generateMemory(
 			signal
 		)
 	).trim();
-	if (!markdown || markdown.length > 2_000_000 || /^```|```$/m.test(markdown))
+	if (
+		!markdown ||
+		markdown.length > 2_000_000 ||
+		/^```|```$/m.test(markdown) ||
+		privateContent(markdown)
+	)
 		throw new Error('Memory model returned an invalid Markdown document.');
 	return `${markdown}\n`;
 }

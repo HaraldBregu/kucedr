@@ -38,10 +38,7 @@ it('persists independent configuration and invokes the configured provider direc
 			persisted = structuredClone(state);
 		},
 	}));
-	const generate = jest
-		.fn()
-		.mockResolvedValueOnce({ content: '' })
-		.mockResolvedValue({ content: '{"entries":[]}' });
+	const generate = jest.fn().mockResolvedValue({ content: '# Memory\n- Prefers TypeScript.\n' });
 	(LlmModel as jest.Mock).mockImplementation(() => ({ generate }));
 	(fs.readFile as jest.Mock).mockRejectedValue(
 		Object.assign(new Error('missing'), { code: 'ENOENT' })
@@ -105,7 +102,7 @@ it('persists independent configuration and invokes the configured provider direc
 	]);
 	await restarted.refresh();
 	expect(getProvider).toHaveBeenCalledWith('deepseek', 'models');
-	expect(generate).toHaveBeenCalledTimes(2);
+	expect(generate).toHaveBeenCalledTimes(1);
 	expect(generate).toHaveBeenCalledWith(
 		expect.objectContaining({
 			provider: {
@@ -114,13 +111,13 @@ it('persists independent configuration and invokes the configured provider direc
 				baseURL: 'https://provider.invalid',
 			},
 			model: 'deepseek-flash',
-			options: { temperature: 0, response_format: { type: 'json_object' } },
+			options: { temperature: 0 },
 			streaming: false,
 			tools: [],
 			signal: expect.any(AbortSignal),
 			messages: [
-				{ role: 'system', content: expect.stringContaining('durable application memory') },
-				{ role: 'user', content: expect.stringContaining('Generate memory candidates') },
+				{ role: 'system', content: expect.stringContaining('complete MEMORY.md') },
+				{ role: 'user', content: expect.stringContaining('Generate the complete MEMORY.md') },
 			],
 		})
 	);

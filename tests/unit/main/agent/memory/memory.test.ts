@@ -23,7 +23,7 @@ function setup(initialized = true) {
   schedule: jest.fn(() => ({ stop })), validate: jest.fn(),
  };
  const memory = new Memory(dependencies);
- const extracted = JSON.stringify({ entries: [{ kind: 'fact', topic: 'Preferences', text: 'Prefers concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] }] });
+	const extracted = '# Memory\n\nManual notes remain here.\n- Prefers concise answers.\n';
 	return { memory, dependencies, exists, infer, write, writeSession, removeSession, sessions, extracted, stop, state: () => state, markdown: () => markdown, setMarkdown: (next: string) => { markdown = next; } };
 }
 
@@ -49,7 +49,7 @@ it('baselines existing conversations without backfilling or model calls', async 
 
 it('processes changes once and preserves manual Markdown', async () => {
  const h = setup();
- h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+ h.infer.mockResolvedValueOnce(h.extracted);
  await h.memory.refresh();
  expect(h.markdown()).toContain('Manual notes remain here.');
  expect(h.markdown()).toContain('Prefers concise answers.');
@@ -64,7 +64,7 @@ it('rebuilds a missing memory document during manual generation', async () => {
 	h.state().checkpoints.chat = ['first'];
 	h.setMarkdown('');
 	h.exists.mockResolvedValue(false);
-	h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+	h.infer.mockResolvedValueOnce(h.extracted);
 	await h.memory.refresh();
 	expect(h.markdown()).toContain('Prefers concise answers.');
 	expect(h.state().checkpoints.chat).toEqual(['first']);
@@ -85,9 +85,9 @@ it('detects inserted voice transcripts and edited messages without relying on me
 it.each(['provider', 'malformed', 'write'])('keeps checkpoints pending after a %s failure', async (failure) => {
  const h = setup();
  if (failure === 'provider') h.infer.mockRejectedValueOnce(new Error('offline'));
- if (failure === 'malformed') h.infer.mockResolvedValueOnce('invalid JSON');
+ if (failure === 'malformed') h.infer.mockResolvedValueOnce('```md\ninvalid\n```');
  if (failure === 'write') {
-  h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+  h.infer.mockResolvedValueOnce(h.extracted);
   h.write.mockRejectedValueOnce(new Error('disk full'));
  }
  await h.memory.refresh().catch(() => undefined);
@@ -116,13 +116,13 @@ it('coalesces overlapping refreshes and discards output when a source changes du
 
 it('keeps remembered facts after source conversation deletion and restart', async () => {
  const h = setup();
- h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+ h.infer.mockResolvedValueOnce(h.extracted);
  await h.memory.refresh();
  h.sessions.splice(0);
  const restarted = new Memory(h.dependencies);
  await restarted.refresh();
  expect(h.markdown()).toContain('Prefers concise answers.');
- expect(h.infer).toHaveBeenCalledTimes(2);
+ expect(h.infer).toHaveBeenCalledTimes(1);
 });
 
 it('clearing invalidates pending inference and prevents old input recreating memories', async () => {
@@ -149,9 +149,9 @@ it('keeps memory model configuration independent from the chat selection', async
  expect(new Memory(h.dependencies).getConfig().modelId).toBe('independent');
 });
 
-it('rejects unvalidated quotes and assistant-only evidence', async () => {
+it('rejects a non-Markdown fenced model response', async () => {
  const h = setup();
- h.infer.mockResolvedValueOnce(JSON.stringify({ entries: [{ kind: 'fact', topic: 'Preferences', text: 'Prefers long answers.', evidence: [{ source: 'first', quote: 'I prefer long answers.' }] }] }));
+ h.infer.mockResolvedValueOnce('```md\n- Prefers long answers.\n```');
  await h.memory.refresh();
  expect(h.markdown()).not.toContain('Prefers long answers.');
 });
@@ -239,15 +239,15 @@ it('leaves processing checkpoints intact when a manual edit cannot be written', 
  expect(h.state().checkpoints.chat).toBeUndefined();
 });
 
-it('preserves existing memory and retry state when the validation response is malformed', async () => {
+it('preserves existing memory and retry state when generated Markdown is malformed', async () => {
  const h = setup();
  const original = h.markdown();
- h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[99]}');
+ h.infer.mockResolvedValueOnce('```md\ninvalid\n```');
  await h.memory.refresh();
  expect(h.markdown()).toBe(original);
  expect(h.state().checkpoints.chat).toBeUndefined();
  const restarted = new Memory(h.dependencies);
- h.infer.mockResolvedValueOnce(h.extracted).mockResolvedValueOnce('{"accepted":[0]}');
+ h.infer.mockResolvedValueOnce(h.extracted);
  await restarted.refresh();
  expect(h.markdown()).toContain('Prefers concise answers.');
 });
@@ -260,20 +260,18 @@ it.each(['My password is secret123.', 'My medical record is private.'])('exclude
  expect(h.markdown()).not.toContain(text);
 });
 
-it('rejects unsupported output even with a matching evidence quote', async () => {
+it('sends the existing document and changed source to the memory model', async () => {
  const h = setup();
- const output = JSON.parse(h.extracted);
- output.entries[0].text = 'Prefers detailed answers.';
- h.infer.mockResolvedValueOnce(JSON.stringify(output)).mockResolvedValueOnce('{"accepted":[]}');
+ h.infer.mockResolvedValueOnce(h.extracted);
  await h.memory.refresh();
- expect(h.markdown()).not.toContain('Prefers detailed answers.');
+	const request = h.infer.mock.calls[0][2] as string;
+	expect(request).toContain('Manual notes remain here.');
+	expect(request).toContain('I prefer concise answers.');
 });
 
 it('rejects private output and assistant-only sources', async () => {
  const h = setup();
- const output = JSON.parse(h.extracted);
- output.entries[0].text = 'Medical record: private.';
- h.infer.mockResolvedValueOnce(JSON.stringify(output));
+ h.infer.mockResolvedValueOnce('# Memory\n- Medical record: private.\n');
  await h.memory.refresh();
  expect(h.infer).toHaveBeenCalledTimes(1);
  expect(h.markdown()).not.toContain('Medical record');
@@ -335,23 +333,12 @@ it('summarizes a new assistant reply using preceding user context without re-ext
  const h = setup();
  await h.memory.refresh();
  h.sessions[0].messages.push({ fingerprint: 'answer', role: 'assistant', text: 'We agreed to keep future answers concise and focused.' });
- h.infer.mockResolvedValueOnce(JSON.stringify({ entries: [
-  { kind: 'summary', topic: 'Answers', text: 'Discussed keeping answers concise and focused.', evidence: [
-   { source: 'first', quote: 'I prefer concise answers.' },
-   { source: 'answer', quote: 'We agreed to keep future answers concise and focused.' },
-  ] },
-  { kind: 'fact', topic: 'Preferences', text: 'Prefers concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] },
-  { kind: 'summary', topic: 'Answers', text: 'Previously preferred concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] },
- ] })).mockResolvedValueOnce('{"accepted":[0]}');
+ h.infer.mockResolvedValueOnce('# Memory\n- Discussed keeping answers concise and focused.\n');
  await h.memory.refresh();
- expect(h.infer).toHaveBeenCalledTimes(3);
+ expect(h.infer).toHaveBeenCalledTimes(2);
  const prompt = h.infer.mock.calls[1][2] as string;
- const data = JSON.parse(prompt.split('\nDATA:\n')[1]);
- expect(data.changedSources).toEqual(['answer']);
- expect(data.sources).toEqual(expect.arrayContaining([expect.objectContaining({ fingerprint: 'first' }), expect.objectContaining({ fingerprint: 'answer' })]));
- const validation = JSON.parse((h.infer.mock.calls[2][2] as string).split('\nDATA:\n')[1]);
- expect(validation.candidates).toHaveLength(1);
- expect(validation.candidates[0].kind).toBe('summary');
+	expect(prompt).toContain('"fingerprint":"first"');
+	expect(prompt).toContain('"fingerprint":"answer"');
  expect(h.markdown()).toContain('Discussed keeping answers concise and focused.');
  expect(h.markdown()).not.toContain('Prefers concise answers.');
  expect(h.state().checkpoints.chat).toEqual(['first', 'answer']);
