@@ -18,6 +18,7 @@ it('exports and purges memory only after a matching one-use preview', async () =
 		config: { location: workspace },
 		listSessions: () => [],
 		deleteSession: jest.fn(),
+		memory: { clear: jest.fn(() => fs.writeFile(path.join(workspace, 'MEMORY.md'), '', 'utf8')) },
 	});
 	const scope = { kind: 'memory' as const };
 	const preview = await controller.previewPurge(scope);
