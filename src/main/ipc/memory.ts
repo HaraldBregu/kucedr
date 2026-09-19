@@ -1,4 +1,4 @@
-import type { MemoryService } from '../../shared/memory_types';
+import type { MemoryConfig, MemoryService } from '../../shared/memory_types';
 import { MemoryChannels } from '../../shared/ipc_channels_definitions';
 import type { WindowContextManager } from '../window_context';
 import type { AppRegistry } from '../apps/app_registry';

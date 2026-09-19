@@ -1,6 +1,6 @@
 import type { MemoryApi } from '../shared/memory_types';
 import { MemoryChannels } from '../shared/ipc_channels_definitions';
-import { typedInvokeUnwrap } from './ipc';
+import { typedInvokeUnwrap } from '../shared/ipc_types';
 export const memory: MemoryApi = {
  getConfig: () => typedInvokeUnwrap(MemoryChannels.getConfig),
  configure: (patch) => typedInvokeUnwrap(MemoryChannels.configure, patch),
