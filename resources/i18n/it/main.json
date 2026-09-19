@@ -1283,10 +1283,6 @@
 			"videoModel": "Modello video",
 			"videoModelDescription": "Modello usato per creare video.",
 			"musicCreatorName": "Da testo ad audio",
-			"toolTextToSpeechName": "Da testo a voce",
-			"toolTextToSpeechDescription": "Generazione vocale tramite strumenti",
-			"toolSpeechToTextName": "Da voce a testo",
-			"toolSpeechToTextDescription": "Trascrizione audio tramite strumenti",
 			"toolsDescription": "Configura i modelli e il servizio di ricerca disponibili per gli strumenti dell'agente.",
 			"agentTools": {
 				"title": "Strumenti dell'agente",

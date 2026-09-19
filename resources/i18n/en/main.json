@@ -1284,10 +1284,6 @@
 			"videoModel": "Video model",
 			"videoModelDescription": "Model used to create videos.",
 			"musicCreatorName": "Text to audio",
-			"toolTextToSpeechName": "Text to speech",
-			"toolTextToSpeechDescription": "Tool-call speech generation",
-			"toolSpeechToTextName": "Speech to text",
-			"toolSpeechToTextDescription": "Tool-call audio transcription",
 			"toolsDescription": "Configure the models and search service available to agent tools.",
 			"agentTools": {
 				"title": "Agent tools",

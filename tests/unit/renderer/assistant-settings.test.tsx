@@ -114,10 +114,6 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.transcriptionDescription': 'Speech-to-text transcription',
 		'settings.modelServices.musicCreatorName': 'Text to audio',
 		'settings.modelServices.videoCreatorName': 'Text to video',
-		'settings.modelServices.toolTextToSpeechName': 'Text to speech',
-		'settings.modelServices.toolTextToSpeechDescription': 'Tool-call speech generation',
-		'settings.modelServices.toolSpeechToTextName': 'Speech to text',
-		'settings.modelServices.toolSpeechToTextDescription': 'Tool-call audio transcription',
 		'settings.modelServices.agentTools.filePermissionLabel': 'File Tools Permission',
 		'settings.modelServices.agentTools.permissions.ask': 'Ask',
 		'settings.modelServices.agentTools.permissions.allow': 'Always Allow',
@@ -182,8 +178,6 @@ beforeEach(() => {
 		image: { providerId: 'google', modelId: 'gemini-image', options: {} },
 		audio: { providerId: 'elevenlabs', modelId: 'eleven-music', options: {} },
 		video: { providerId: 'google', modelId: 'veo', options: {} },
-		textToSpeech: { providerId: 'elevenlabs', modelId: 'eleven_v3', options: {} },
-		speechToText: { providerId: 'openai', modelId: 'gpt-transcribe', options: {} },
 	};
 	let permissions = {
 		read: { allow: [], deny: [] },
@@ -358,8 +352,6 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 		'Text to image',
 		'Text to audio',
 		'Text to video',
-		'Text to speech',
-		'Speech to text',
 	]) {
 		const trigger = (await screen.findAllByRole('button', { name: new RegExp(name) })).find(
 			(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
@@ -371,8 +363,6 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 	const image = await screen.findByRole('combobox', { name: 'Text to image' });
 	const audio = await screen.findByRole('combobox', { name: 'Text to audio' });
 	const video = await screen.findByRole('combobox', { name: 'Text to video' });
-	const textToSpeech = await screen.findByRole('combobox', { name: 'Text to speech' });
-	const speechToText = await screen.findByRole('combobox', { name: 'Speech to text' });
 
 	const searchTrigger = (await screen.findAllByRole('button', { name: /Search web/ })).find(
 		(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
@@ -384,16 +374,12 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 	expect(image).toHaveTextContent('Gemini Image');
 	expect(audio).toHaveTextContent('Eleven Music');
 	expect(video).toHaveTextContent('Veo');
-	expect(textToSpeech).toHaveTextContent('Eleven v3');
-	expect(speechToText).toHaveTextContent('GPT Transcribe');
 	expect(search).toHaveTextContent('Brave');
 	expect(image.closest('[data-slot="card"]')).toBe(audio.closest('[data-slot="card"]'));
 	expect(audio.closest('[data-slot="card"]')).toBe(video.closest('[data-slot="card"]'));
-	expect(video.closest('[data-slot="card"]')).toBe(textToSpeech.closest('[data-slot="card"]'));
-	expect(textToSpeech.closest('[data-slot="card"]')).toBe(
-		speechToText.closest('[data-slot="card"]')
-	);
-	expect(speechToText.closest('[data-slot="card"]')).not.toBe(search.closest('[data-slot="card"]'));
+	expect(video.closest('[data-slot="card"]')).not.toBe(search.closest('[data-slot="card"]'));
+	expect(screen.queryByText('Text to speech')).not.toBeInTheDocument();
+	expect(screen.queryByText('Speech to text')).not.toBeInTheDocument();
 });
 
 it('lists every built-in agent tool on the Tools page', async () => {
@@ -418,7 +404,7 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	expect(screen.getByText('Text to image')).toBeInTheDocument();
 
 	expect(document.querySelectorAll('code')).toHaveLength(49);
-	expect(screen.getAllByRole('switch')).toHaveLength(55);
+	expect(screen.getAllByRole('switch')).toHaveLength(53);
 	expect(
 		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);

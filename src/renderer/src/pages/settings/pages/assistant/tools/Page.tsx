@@ -19,7 +19,6 @@ import {
 	Target,
 	Terminal,
 	Video,
-	Volume2,
 	X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -77,8 +76,6 @@ function toolModelApi(kind: AgentToolModelKind) {
 const TOOL_IMAGE_API = toolModelApi('image');
 const TOOL_AUDIO_API = toolModelApi('audio');
 const TOOL_VIDEO_API = toolModelApi('video');
-const TOOL_TEXT_TO_SPEECH_API = toolModelApi('textToSpeech');
-const TOOL_SPEECH_TO_TEXT_API = toolModelApi('speechToText');
 
 type AgentTool = readonly [name: string, id: string, description: string];
 
@@ -146,8 +143,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 			['Create image', 'create_image', 'Generates or edits an image from instructions.'],
 			['Create video', 'create_video', 'Generates a video from instructions.'],
 			['Create sound', 'create_sound', 'Generates audio or music from instructions.'],
-			['Text to speech', 'text_to_speech', 'Converts text into spoken audio.'],
-			['Speech to text', 'speech_to_text', 'Transcribes speech from an audio input.'],
 		],
 	},
 	{
@@ -333,11 +328,7 @@ const ToolsPage: React.FC = () => {
 		t('settings.modelServices.musicModelDescription'),
 		t('settings.modelServices.videoCreatorName'),
 		t('settings.modelServices.videoModelDescription'),
-		t('settings.modelServices.toolTextToSpeechName'),
-		t('settings.modelServices.toolTextToSpeechDescription'),
-		t('settings.modelServices.toolSpeechToTextName'),
-		t('settings.modelServices.toolSpeechToTextDescription'),
-		'create_image create_sound create_video text_to_speech speech_to_text',
+		'create_image create_sound create_video',
 	]
 		.join(' ')
 		.toLocaleLowerCase();
@@ -556,83 +547,6 @@ const ToolsPage: React.FC = () => {
 						</>}
 					/>
 
-					<AgentMediaModelConfiguration
-						api={TOOL_TEXT_TO_SPEECH_API}
-						capability="text-to-speech"
-						idPrefix="agent-tool-text-to-speech"
-						title={t('settings.modelServices.toolTextToSpeechName')}
-						description={t('settings.modelServices.toolTextToSpeechDescription')}
-						showIcon
-						icon={Volume2}
-						grouped
-						showContentSeparator={false}
-						inlineAdvanced
-						action={<>
-							<Select
-								value={permissions?.tools?.text_to_speech?.permission ?? 'allow'}
-								onValueChange={(permission) => handleFileToolsPermissionChange('text_to_speech', {
-									...(permissions?.tools?.text_to_speech ?? { enabled: true, permission: 'allow' }),
-									permission: permission as FileToolsPermission,
-								})}
-								disabled={!permissions || fileToolsSaving}
-							>
-								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to speech`}>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
-							</Select>
-							<Switch
-								checked={permissions?.tools?.text_to_speech?.enabled ?? true}
-								onCheckedChange={(enabled) =>
-									handleFileToolsPermissionChange('text_to_speech', {
-																...(permissions?.tools?.text_to_speech ?? { enabled: true, permission: 'allow' }),
-										enabled,
-									})
-								}
-								aria-label="Text to speech enabled"
-								disabled={!permissions || fileToolsSaving}
-							/>
-						</>}
-					/>
-
-					<AgentMediaModelConfiguration
-						api={TOOL_SPEECH_TO_TEXT_API}
-						capability="speech-to-text"
-						idPrefix="agent-tool-speech-to-text"
-						title={t('settings.modelServices.toolSpeechToTextName')}
-						description={t('settings.modelServices.toolSpeechToTextDescription')}
-						showIcon
-						icon={Mic}
-						grouped
-						showContentSeparator={false}
-						showOptions={false}
-						action={<>
-							<Select
-								value={permissions?.tools?.speech_to_text?.permission ?? 'allow'}
-								onValueChange={(permission) => handleFileToolsPermissionChange('speech_to_text', {
-									...(permissions?.tools?.speech_to_text ?? { enabled: true, permission: 'allow' }),
-									permission: permission as FileToolsPermission,
-								})}
-								disabled={!permissions || fileToolsSaving}
-							>
-								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Speech to text`}>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
-							</Select>
-							<Switch
-								checked={permissions?.tools?.speech_to_text?.enabled ?? true}
-								onCheckedChange={(enabled) =>
-									handleFileToolsPermissionChange('speech_to_text', {
-																...(permissions?.tools?.speech_to_text ?? { enabled: true, permission: 'allow' }),
-										enabled,
-									})
-								}
-								aria-label="Speech to text enabled"
-								disabled={!permissions || fileToolsSaving}
-							/>
-						</>}
-					/>
 				</SettingsPanel>
 			</SettingsSection>}
 
