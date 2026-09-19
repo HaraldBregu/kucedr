@@ -109,7 +109,7 @@ Sources: [Demo application](../resources/apps/demo/src/App.tsx), [model examples
 | --- | --- |
 | `~/.kucedr/apps/<id>/` | Installed app files |
 | `~/.kucedr/apps/<id>/data/store.json` | App-scoped key/value data |
-| `~/.kucedr/apps/<id>/data/` | App-scoped files |
+| `~/.kucedr/apps/<id>/data/files/` | App-scoped files |
 | `~/.kucedr/settings/apps-debug.json` | Registered external app paths |
 | External debug folder | Debug app source/build and manifest |
 
