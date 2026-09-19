@@ -75,14 +75,12 @@ describe('agent filesystem prompt', () => {
 		await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
 		await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
-		await fs.writeFile(path.join(root, 'MEMORY.md'), '- Prefers concise answers');
 
 		const bootstrapContext = await buildWorkspaceContext({ location: root });
 		expect(bootstrapContext).toContain('# Agent rules');
 		expect(bootstrapContext).toContain('# Identity');
 		expect(bootstrapContext).toContain('# Soul');
 		expect(bootstrapContext).toContain('- **Name:** Alice');
-		expect(bootstrapContext).toContain('- Prefers concise answers');
 		expect(bootstrapContext).toContain('# Bootstrap questions');
 
 		await fs.rm(path.join(root, 'BOOTSTRAP.md'));
@@ -118,17 +116,14 @@ describe('agent filesystem prompt', () => {
 		expect(context).not.toContain('startup_files');
 	});
 
-	it('keeps user profile and memory out of the system prompt', async () => {
+	it('keeps the user profile out of the system prompt', async () => {
 		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
-		await fs.writeFile(path.join(root, 'MEMORY.md'), '- Private preference');
 
 		const prompt = await buildSystemPrompt({ location: root });
 		const context = await buildWorkspaceContext({ location: root });
 
 		expect(prompt).not.toContain('Alice');
-		expect(prompt).not.toContain('Private preference');
 		expect(context).toContain('editable, user-controlled local files');
 		expect(context).toContain('- **Name:** Alice');
-		expect(context).toContain('- Private preference');
 	});
 });

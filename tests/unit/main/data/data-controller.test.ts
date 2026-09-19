@@ -8,9 +8,13 @@ const sessionId = '11111111-1111-4111-8111-111111111111';
 it('exports and purges memory only after a matching one-use preview', async () => {
 	const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-data-memory-'));
 	const workspace = path.join(root, 'workspace');
+	const memoryFile = path.join(root, 'memory', 'MEMORY.md');
+	const previousDataRoot = process.env.KUCEDR_E2E_DATA_ROOT;
+	process.env.KUCEDR_E2E_DATA_ROOT = root;
 	await fs.mkdir(workspace, { recursive: true });
+	await fs.mkdir(path.dirname(memoryFile), { recursive: true });
 	await fs.writeFile(
-		path.join(workspace, 'MEMORY.md'),
+		memoryFile,
 		'# Memory\n\n- [memory-1234567890abcdef] Prefers concise answers\n',
 		'utf8'
 	);
@@ -18,7 +22,7 @@ it('exports and purges memory only after a matching one-use preview', async () =
 		config: { location: workspace },
 		listSessions: () => [],
 		deleteSession: jest.fn(),
-		memory: { clear: jest.fn(() => fs.writeFile(path.join(workspace, 'MEMORY.md'), '', 'utf8')) },
+		memory: { clear: jest.fn(() => fs.writeFile(memoryFile, '', 'utf8')) },
 	});
 	const scope = { kind: 'memory' as const };
 	const preview = await controller.previewPurge(scope);
@@ -32,13 +36,13 @@ it('exports and purges memory only after a matching one-use preview', async () =
 	await expect(controller.purge(scope, preview.confirmationId)).resolves.toEqual(
 		expect.objectContaining({ remoteDataDeleted: false, scope })
 	);
-	expect(await fs.readFile(path.join(workspace, 'MEMORY.md'), 'utf8')).not.toContain(
-		'Prefers concise answers'
-	);
+	expect(await fs.readFile(memoryFile, 'utf8')).not.toContain('Prefers concise answers');
 	await expect(controller.purge(scope, preview.confirmationId)).rejects.toThrow(
 		'confirmation is missing'
 	);
 	await fs.rm(root, { recursive: true, force: true });
+	if (previousDataRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
+	else process.env.KUCEDR_E2E_DATA_ROOT = previousDataRoot;
 });
 
 it('exports and deletes only explicitly listed sessions through the agent lock boundary', async () => {

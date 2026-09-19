@@ -294,7 +294,6 @@ describe('run stream system prompt', () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-prompt-'));
 		try {
 			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
-			await fs.writeFile(path.join(root, 'MEMORY.md'), '- Private preference');
 			const session = createSessionState();
 			session.id = 'session';
 			session.messages = [{ role: 'user', content: 'Current request' }];
@@ -320,12 +319,10 @@ describe('run stream system prompt', () => {
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][10] as Message[];
 			expect(systemPrompt).not.toContain('Alice');
-			expect(systemPrompt).not.toContain('Private preference');
 			expect(contextMessages[0]).toMatchObject({
 				role: 'user',
 				content: expect.stringContaining('- **Name:** Alice'),
 			});
-			expect(contextMessages[0].content).toEqual(expect.stringContaining('- Private preference'));
 			expect(messages[0]).toEqual({ role: 'user', content: 'Current request' });
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });

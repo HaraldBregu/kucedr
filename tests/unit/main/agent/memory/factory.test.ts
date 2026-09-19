@@ -8,6 +8,10 @@ jest.mock('../../../../../src/main/shared/user_data_location', () => ({ userData
 jest.mock('../../../../../src/main/shared/atomic_write', () => ({ atomicWrite: jest.fn() }));
 jest.mock('../../../../../src/main/memory/sources', () => ({ scanSources: jest.fn() }));
 jest.mock('../../../../../src/main/memory/configuration', () => ({ validateConfiguration: jest.fn() }));
+jest.mock('../../../../../src/main/memory/settings', () => ({
+ prepareMemorySettings: () => '/home/test/.kucedr/memory',
+}));
+jest.mock('../../../../../src/main/memory/migrate', () => ({ migrateWorkspaceMemory: jest.fn() }));
 
 import fs from 'node:fs/promises';
 import Store from 'electron-store';
@@ -35,7 +39,7 @@ it('persists independent configuration and invokes the configured provider direc
  (cron.schedule as jest.Mock).mockReturnValue({ destroy });
  const first = createMemory(() => ({ location: '/home/test/.kucedr/workspace' }));
  await first.start();
- expect(Store).toHaveBeenCalledWith(expect.objectContaining({ name: 'memory', cwd: '/home/test/.kucedr/settings' }));
+ expect(Store).toHaveBeenCalledWith(expect.objectContaining({ name: 'settings', cwd: '/home/test/.kucedr/memory' }));
  expect(cron.schedule).toHaveBeenCalledWith('*/15 * * * *', expect.any(Function), expect.objectContaining({ noOverlap: true, timezone: expect.any(String) }));
  await first.configure({ providerId: 'memory-provider', modelId: 'memory-model', modelOptions: { temperature: 0 } });
  await first.stop();
