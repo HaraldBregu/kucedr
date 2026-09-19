@@ -216,7 +216,7 @@ it('loads available custom provider models', async () => {
 		})
 	);
 	expect(screen.getByLabelText('Custom provider model ID')).toHaveValue('llama3.2:3b');
-	expect(screen.getByRole('option', { name: 'qwen3:8b' })).toBeInTheDocument();
+	expect(document.querySelector('option[value="qwen3:8b"]')).toBeInTheDocument();
 });
 
 it('masks saved Search keys until editing', async () => {
