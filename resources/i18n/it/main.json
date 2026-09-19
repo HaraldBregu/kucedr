@@ -1670,7 +1670,7 @@
 			"export": "Esporta",
 			"purge": "Elimina",
 			"memory": "Memoria persistente",
-			"memoryDescription": "Fatti salvati in MEMORY.md.",
+			"memoryDescription": "Fatti e riepiloghi salvati.",
 			"sessions": "Sessioni dell'assistente",
 			"sessionsDescription": "{{count}} sessioni attualmente elencate.",
 			"ragIndex": "Indice locale completo della conoscenza",

@@ -1671,7 +1671,7 @@
 			"export": "Export",
 			"purge": "Purge",
 			"memory": "Persistent memory",
-			"memoryDescription": "Saved facts in MEMORY.md.",
+			"memoryDescription": "Saved facts and summaries.",
 			"sessions": "Assistant sessions",
 			"sessionsDescription": "{{count}} currently listed session(s).",
 			"ragIndex": "Full local knowledge index",
