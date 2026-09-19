@@ -303,3 +303,51 @@ it('uses manual refresh only when the schedule is disabled', async () => {
  expect(h.infer).toHaveBeenCalledTimes(1);
  await h.memory.stop();
 });
+
+it('summarizes a new assistant reply using preceding user context without re-extracting old facts', async () => {
+ const h = setup();
+ await h.memory.refresh();
+ h.sessions[0].messages.push({ fingerprint: 'answer', role: 'assistant', text: 'We agreed to keep future answers concise and focused.' });
+ h.infer.mockResolvedValueOnce(JSON.stringify({ entries: [
+  { kind: 'summary', topic: 'Answers', text: 'Discussed keeping answers concise and focused.', evidence: [
+   { source: 'first', quote: 'I prefer concise answers.' },
+   { source: 'answer', quote: 'We agreed to keep future answers concise and focused.' },
+  ] },
+  { kind: 'fact', topic: 'Preferences', text: 'Prefers concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] },
+  { kind: 'summary', topic: 'Answers', text: 'Previously preferred concise answers.', evidence: [{ source: 'first', quote: 'I prefer concise answers.' }] },
+ ] })).mockResolvedValueOnce('{"accepted":[0]}');
+ await h.memory.refresh();
+ expect(h.infer).toHaveBeenCalledTimes(3);
+ const prompt = h.infer.mock.calls[1][1] as string;
+ const data = JSON.parse(prompt.split('\nDATA:\n')[1]);
+ expect(data.changedSources).toEqual(['answer']);
+ expect(data.sources).toEqual(expect.arrayContaining([expect.objectContaining({ fingerprint: 'first' }), expect.objectContaining({ fingerprint: 'answer' })]));
+ const validation = JSON.parse((h.infer.mock.calls[2][1] as string).split('\nDATA:\n')[1]);
+ expect(validation.candidates).toHaveLength(1);
+ expect(validation.candidates[0].kind).toBe('summary');
+ expect(h.markdown()).toContain('Discussed keeping answers concise and focused.');
+ expect(h.markdown()).not.toContain('Prefers concise answers.');
+ expect(h.state().checkpoints.chat).toEqual(['first', 'answer']);
+});
+
+it('keeps scheduling after a corrupt baseline and retries initialization', async () => {
+ const h = setup(false);
+ (h.dependencies.sources as jest.Mock).mockRejectedValue(new Error('corrupt conversation'));
+ await h.memory.start();
+ expect(h.dependencies.schedule).toHaveBeenCalledTimes(1);
+ expect(h.memory.status().error).toContain('corrupt conversation');
+ expect(h.state().initialized).toBe(false);
+ (h.dependencies.sources as jest.Mock).mockResolvedValue(structuredClone(h.sessions));
+ const scheduled = (h.dependencies.schedule as jest.Mock).mock.calls[0][2];
+ await scheduled();
+ expect(h.state().initialized).toBe(true);
+ expect(h.state().checkpoints.chat).toEqual(['first']);
+ expect(h.infer).not.toHaveBeenCalled();
+ await h.memory.stop();
+});
+
+it('merges concurrent configuration patches instead of losing either update', async () => {
+ const h = setup();
+ await Promise.all([h.memory.configure({ timezone: 'UTC' }), h.memory.configure({ memoryType: 'facts' })]);
+ expect(h.memory.getConfig()).toMatchObject({ timezone: 'UTC', memoryType: 'facts' });
+});
