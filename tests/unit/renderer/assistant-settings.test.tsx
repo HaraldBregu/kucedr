@@ -343,7 +343,7 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	expect(await screen.findByRole('heading', { name: 'Tools' })).toBeInTheDocument();
 });
 
-it('keeps every tool model and search configuration on the Tools page', async () => {
+it('keeps media permissions and search configuration on Tools without model selection', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
@@ -351,21 +351,11 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 		</MemoryRouter>
 	);
 
-	for (const name of [
-		'Text to image',
-		'Text to audio',
-		'Text to video',
-	]) {
-		const trigger = (await screen.findAllByRole('button', { name: new RegExp(name) })).find(
-			(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
-		);
-		expect(trigger).toBeDefined();
-		if (trigger) await user.click(trigger);
+	for (const name of ['Text to image', 'Text to audio', 'Text to video']) {
+		expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
+		expect(await screen.findByRole('switch', { name: `${name} enabled` })).toBeEnabled();
 	}
-
-	const image = await screen.findByRole('combobox', { name: 'Text to image' });
-	const audio = await screen.findByRole('combobox', { name: 'Text to audio' });
-	const video = await screen.findByRole('combobox', { name: 'Text to video' });
+	expect(window.agent.getToolModel).not.toHaveBeenCalled();
 
 	const searchTrigger = (await screen.findAllByRole('button', { name: /Search web/ })).find(
 		(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
@@ -374,13 +364,7 @@ it('keeps every tool model and search configuration on the Tools page', async ()
 	if (!searchTrigger) return;
 	await user.click(searchTrigger);
 	const search = await screen.findByRole('combobox', { name: 'Search web' });
-	expect(image).toHaveTextContent('Gemini Image');
-	expect(audio).toHaveTextContent('Eleven Music');
-	expect(video).toHaveTextContent('Veo');
 	expect(search).toHaveTextContent('Brave');
-	expect(image.closest('[data-slot="card"]')).toBe(audio.closest('[data-slot="card"]'));
-	expect(audio.closest('[data-slot="card"]')).toBe(video.closest('[data-slot="card"]'));
-	expect(video.closest('[data-slot="card"]')).not.toBe(search.closest('[data-slot="card"]'));
 	expect(screen.queryByText('Text to speech')).not.toBeInTheDocument();
 	expect(screen.queryByText('Speech to text')).not.toBeInTheDocument();
 });

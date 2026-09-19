@@ -32,7 +32,6 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { toolModelApi } from '../toolmodel';
 import {
 	SettingsNotice,
 	SettingsPageHeader,
@@ -44,12 +43,6 @@ import {
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import { SEARCH_ENGINES } from '../../search/catalog';
 import type { SearchEngineId, SearchSettings } from '../../../../../../../shared/search_types';
-import { AgentMediaModelConfiguration } from '../media';
-
-
-const TOOL_IMAGE_API = toolModelApi('image');
-const TOOL_AUDIO_API = toolModelApi('audio');
-const TOOL_VIDEO_API = toolModelApi('video');
 
 type AgentTool = readonly [name: string, id: string, description: string];
 
@@ -404,18 +397,11 @@ const ToolsPage: React.FC = () => {
 				className="order-2"
 			>
 				<SettingsPanel>
-					<AgentMediaModelConfiguration
-						api={TOOL_IMAGE_API}
-						capability="text-to-image"
-						idPrefix="agent-image"
+					<SettingsRow
 						title={t('settings.modelServices.imageAssistantName')}
 						description={t('settings.modelServices.imageModelDescription')}
-						showIcon
 						icon={ImageIcon}
-						grouped
-						showContentSeparator={false}
-						inlineAdvanced
-						action={<>
+						actions={<>
 							<Select
 								value={permissions?.tools?.create_image?.permission ?? 'allow'}
 								onValueChange={(permission) => handleFileToolsPermissionChange('create_image', {
@@ -443,18 +429,11 @@ const ToolsPage: React.FC = () => {
 						</>}
 					/>
 
-					<AgentMediaModelConfiguration
-						api={TOOL_AUDIO_API}
-						capability="text-to-audio"
-						idPrefix="agent-audio"
+					<SettingsRow
 						title={t('settings.modelServices.musicCreatorName')}
 						description={t('settings.modelServices.musicModelDescription')}
-						showIcon
 						icon={Music2}
-						grouped
-						showContentSeparator={false}
-						inlineAdvanced
-						action={<>
+						actions={<>
 							<Select
 								value={permissions?.tools?.create_sound?.permission ?? 'allow'}
 								onValueChange={(permission) => handleFileToolsPermissionChange('create_sound', {
@@ -482,18 +461,11 @@ const ToolsPage: React.FC = () => {
 						</>}
 					/>
 
-					<AgentMediaModelConfiguration
-						api={TOOL_VIDEO_API}
-						capability="text-to-video"
-						idPrefix="agent-video"
+					<SettingsRow
 						title={t('settings.modelServices.videoCreatorName')}
 						description={t('settings.modelServices.videoModelDescription')}
-						showIcon
 						icon={Video}
-						grouped
-						showContentSeparator={false}
-						inlineAdvanced
-						action={<>
+						actions={<>
 							<Select
 								value={permissions?.tools?.create_video?.permission ?? 'allow'}
 								onValueChange={(permission) => handleFileToolsPermissionChange('create_video', {
