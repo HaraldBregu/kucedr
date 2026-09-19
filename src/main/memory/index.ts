@@ -17,6 +17,7 @@ import { normalizeJson } from './json';
 import { scanSources } from './sources';
 import { validateConfiguration } from './configuration';
 import type { MemoryState } from './types';
+import { sessionMemoryPath } from './session_path';
 
 export { memoryPath } from './path';
 
@@ -45,7 +46,7 @@ export function createMemory(configuration: () => Config): MemoryService {
 		},
 		validate: validateConfiguration,
 		prepare: () => migrateWorkspaceMemory(configuration()),
-		sources: () => scanSources(configuration().location),
+		sources: () => scanSources(),
 		exists: () =>
 			fs
 				.access(memoryPath())
@@ -63,6 +64,14 @@ export function createMemory(configuration: () => Config): MemoryService {
 			const file = memoryPath();
 			await fs.mkdir(path.dirname(file), { recursive: true });
 			await atomicWrite(file, markdown);
+		},
+		writeSession: async (sessionId, markdown) => {
+			const file = sessionMemoryPath(sessionId);
+			await fs.mkdir(path.dirname(file), { recursive: true });
+			await atomicWrite(file, markdown);
+		},
+		removeSession: async (sessionId) => {
+			await fs.rm(sessionMemoryPath(sessionId), { force: true });
 		},
 		schedule: (expression, timezone, callback) => {
 			const task = cron.schedule(expression, callback, { timezone, noOverlap: true });

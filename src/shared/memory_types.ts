@@ -18,6 +18,10 @@ export interface MemoryStatus {
 	error: string | null;
 	pending: number;
 }
+export interface MemoryMessage {
+	role: string;
+	content: unknown;
+}
 export interface MemoryService {
 	getConfig(): MemoryConfig;
 	configure(patch: Partial<MemoryConfig>): Promise<MemoryConfig>;
@@ -29,6 +33,8 @@ export interface MemoryService {
 	edit(markdown: string, expected?: string): Promise<void>;
 	forget(id: string): Promise<{ removed: boolean }>;
 	clear(): Promise<void>;
+	capture(sessionId: string, messages: readonly MemoryMessage[]): Promise<void>;
+	remove(sessionId: string): Promise<void>;
 	start(): Promise<void>;
 	stop(): Promise<void>;
 }

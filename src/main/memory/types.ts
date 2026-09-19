@@ -25,6 +25,8 @@ export interface MemoryDependencies {
 	exists(): Promise<boolean>;
 	read(): Promise<string>;
 	write(markdown: string): Promise<void>;
+	writeSession(sessionId: string, markdown: string): Promise<void>;
+	removeSession(sessionId: string): Promise<void>;
 	infer(config: MemoryConfig, prompt: string, signal: AbortSignal): Promise<string>;
 	selection(): Pick<MemoryConfig, 'providerId' | 'modelId' | 'modelOptions'>;
 	schedule(expression: string, timezone: string, callback: () => Promise<void>): { stop(): void };

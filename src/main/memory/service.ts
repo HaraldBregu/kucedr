@@ -1,10 +1,16 @@
-import type { MemoryConfig, MemoryService, MemoryStatus } from '../../shared/memory_types';
+import type {
+	MemoryConfig,
+	MemoryMessage,
+	MemoryService,
+	MemoryStatus,
+} from '../../shared/memory_types';
 import type { MemoryDependencies, MemoryState, SourceSession } from './types';
 import { extract } from './extract';
 import { mergeMemories } from './merge';
 import { parseMemories } from './parse';
 import { recall } from './recall';
 import { fingerprint } from './fingerprint';
+import { snapshotMarkdown } from './snapshot';
 
 export class Memory implements MemoryService {
 	private state: MemoryState;
@@ -44,6 +50,13 @@ export class Memory implements MemoryService {
 	}
 	async context(query: string): Promise<string> {
 		return recall(await this.read(), query);
+	}
+	async capture(sessionId: string, messages: readonly MemoryMessage[]): Promise<void> {
+		const markdown = snapshotMarkdown(sessionId, messages);
+		await this.lock(() => this.dependencies.writeSession(sessionId, markdown));
+	}
+	async remove(sessionId: string): Promise<void> {
+		await this.lock(() => this.dependencies.removeSession(sessionId));
 	}
 
 	async configure(patch: Partial<MemoryConfig>): Promise<MemoryConfig> {
