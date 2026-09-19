@@ -254,6 +254,7 @@ async function* loop(
 			...(options.resources ? { resources: options.resources } : {}),
 			...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
 			...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
+			...(options.memory ? { memory: options.memory } : {}),
 			budget,
 			modelOptions,
 			providerId: provider.id,

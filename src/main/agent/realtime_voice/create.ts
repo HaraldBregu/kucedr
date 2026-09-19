@@ -26,7 +26,7 @@ export function createRealtimeVoiceManager(
 		createAdapter: buildRealtimeVoiceAdapter,
 		resources: agent.resources,
 		memoryContext: (query) => agent.memory?.context(query) ?? Promise.resolve(''),
-		createConversation: realtimeVoiceConversationFactory(agent.config, agent.sessions),
+		createConversation: realtimeVoiceConversationFactory(agent.config, agent.sessions, agent.memory),
 		emit: (windowId, event) => {
 			eventBus.sendTo(windowId, RealtimeVoiceChannels.sessionEvent, event);
 			for (const appWindow of openAppWindows.values()) {

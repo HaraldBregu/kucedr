@@ -371,6 +371,7 @@ export class Agent {
 			const cause = toError(error, 'Agent request failed.');
 			throw cause;
 		} finally {
+			if (session.id) await this.memory?.capture(session.id, session.messages).catch(() => undefined);
 			releaseSession(session);
 		}
 	}
@@ -442,14 +443,20 @@ export class Agent {
 		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
 		return this.scheduler.run(
 			resolvedSessionId,
-			async () =>
-				updateUserMessageBySessionId(
+			async () => {
+				const updated = updateUserMessageBySessionId(
 					resolvedSessionId,
 					this.config.location,
 					userOffsetFromEnd,
 					content,
 					this.sessions
-				),
+				);
+				if (updated)
+					await this.memory
+						?.capture(resolvedSessionId, loadMessages(this.config, resolvedSessionId))
+						.catch(() => undefined);
+				return updated;
+			},
 			{ priority: 'high' }
 		);
 	}
@@ -462,6 +469,7 @@ export class Agent {
 			async () => {
 				await Promise.allSettled(completions);
 				clearSessionMessages(createSessionState(), this.config, resolvedSessionId, this.sessions);
+				await this.memory?.remove(resolvedSessionId).catch(() => undefined);
 			},
 			{ priority: 'high' }
 		);
@@ -475,6 +483,7 @@ export class Agent {
 			async () => {
 				await Promise.allSettled(completions);
 				deleteStoredSession(createSessionState(), this.config, resolvedSessionId, this.sessions);
+				await this.memory?.remove(resolvedSessionId).catch(() => undefined);
 			},
 			{ priority: 'high' }
 		);

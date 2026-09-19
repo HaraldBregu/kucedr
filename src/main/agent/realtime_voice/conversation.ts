@@ -12,6 +12,7 @@ import type { Config, ToolCall } from '../types';
 import type { RealtimeVoiceHistoryMessage } from '../../models/adapters/realtime_voice';
 import { realtimeVoiceHistory } from './history';
 import { loadMessagesBySessionId } from '../session/session_load_messages_by_session_id';
+import type { MemoryService } from '../../../shared/memory_types';
 
 export interface RealtimeVoiceConversation {
 	readonly persistenceSessionId?: string;
@@ -38,7 +39,8 @@ export type RealtimeVoiceConversationFactory = (
 
 export function realtimeVoiceConversationFactory(
 	config: Config,
-	coordinator = new SessionCoordinator()
+	coordinator = new SessionCoordinator(),
+	memory?: MemoryService
 ): RealtimeVoiceConversationFactory {
 	return (chatSessionId, modelId) => {
 		const state = createSessionState();
@@ -54,6 +56,9 @@ export function realtimeVoiceConversationFactory(
 		const contextMessages = loadMessagesBySessionId(chatSessionId, config.location);
 		const toolCalls = new Map<string, ToolCall>();
 		const completedToolCalls = new Set<string>();
+		const capture = () => {
+			void memory?.capture(voiceSessionId, state.messages).catch(() => undefined);
+		};
 		for (const message of state.messages) {
 			for (const toolCall of message.toolCalls ?? []) {
 				toolCalls.set(toolCall.id, toolCall);
@@ -63,7 +68,10 @@ export function realtimeVoiceConversationFactory(
 		return {
 			persistenceSessionId: voiceSessionId,
 			signal: state.lease?.signal,
-			dispose: () => releaseSession(state),
+			dispose: () => {
+				capture();
+				releaseSession(state);
+			},
 			history: realtimeVoiceHistory(contextMessages),
 			beginUserTurn: (itemId) => {
 				if (state.lease && !state.lease.active) return;
@@ -76,6 +84,7 @@ export function realtimeVoiceConversationFactory(
 				pendingUserTurns.set(itemId, turn);
 				if (!turn.transcript) return;
 				insertUserMessage(state, turn.index, turn.transcript);
+				capture();
 				pendingUserTurns.delete(itemId);
 				for (const pending of pendingUserTurns.values()) {
 					if (pending.index >= turn.index) pending.index += 1;
@@ -91,12 +100,16 @@ export function realtimeVoiceConversationFactory(
 				pendingUserTurns.set(itemId, turn);
 				if (!turn.begun) return;
 				insertUserMessage(state, turn.index, transcript);
+				capture();
 				pendingUserTurns.delete(itemId);
 				for (const pending of pendingUserTurns.values()) {
 					if (pending.index >= turn.index) pending.index += 1;
 				}
 			},
-			addAssistantTranscript: (transcript) => addAssistantMessage(state, transcript, []),
+			addAssistantTranscript: (transcript) => {
+				addAssistantMessage(state, transcript, []);
+				capture();
+			},
 			addToolCall: (toolCall) => {
 				if (state.lease && !state.lease.active) return;
 				if (toolCalls.has(toolCall.id)) return;
