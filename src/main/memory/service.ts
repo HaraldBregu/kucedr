@@ -327,9 +327,7 @@ export class Memory implements MemoryService {
 			await this.lock(async () => this.persist({ ...this.state, checkpoints: {} }));
 		}
 		const allSources = await this.dependencies.sources();
-		const sources = sessionId
-			? allSources.filter((source) => source.id === sessionId)
-			: allSources;
+		const sources = sessionId ? allSources.filter((source) => source.id === sessionId) : allSources;
 		this.pending = sources.reduce(
 			(total, source) =>
 				total +

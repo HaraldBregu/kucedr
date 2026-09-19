@@ -73,9 +73,10 @@ export function createMemory(configuration: () => Config): MemoryService {
 		watchSessions: (callback) => {
 			const timers = new Map<string, NodeJS.Timeout>();
 			const watcher = watch(path.dirname(memoryPath()), (_event, filename) => {
-				const match = /^([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.md$/i.exec(
-					filename?.toString() ?? ''
-				);
+				const match =
+					/^([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.md$/i.exec(
+						filename?.toString() ?? ''
+					);
 				if (!match) return;
 				const id = match[1].toLowerCase();
 				const current = timers.get(id);
