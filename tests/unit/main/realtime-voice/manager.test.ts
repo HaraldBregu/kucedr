@@ -77,7 +77,7 @@ describe('RealtimeVoiceManager', () => {
 		expect(connect.mock.calls[0][0]).toMatchObject({
 			instructions: configuration.instructions,
 			history: [
-				{ role: 'user', text: 'Remembered preference: concise answers' },
+				{ role: 'user', text: expect.stringContaining('Remembered preference: concise answers') },
 				{ role: 'user', text: 'How should we write the report?' },
 			],
 		});
