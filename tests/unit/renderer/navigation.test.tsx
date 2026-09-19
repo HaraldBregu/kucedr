@@ -182,3 +182,13 @@ it('renders settings navigation beside the workspace and marks the current secti
 	);
 	expect(currentSection).toHaveAttribute('data-active');
 });
+
+it.each(['music', 'video', 'image'])('marks %s active inside the Assistant sidebar group', (name) => {
+	const { container } = render(<MemoryRouter initialEntries={[`/settings/agent/${name}`]}><Layout /></MemoryRouter>);
+	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
+	const group = within(navigation).getByText('settings.overview.groups.assistant').closest('section');
+	const link = within(group as HTMLElement).getByRole('link', { name: `settings.tabs.${name}` });
+	expect(link).toHaveAttribute('href', `/settings/agent/${name}`);
+	expect(link).toHaveAttribute('aria-current', 'page');
+	expect(container.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
+});

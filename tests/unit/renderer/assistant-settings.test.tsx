@@ -1,3 +1,6 @@
+import MusicPage from '../../../src/renderer/src/pages/settings/pages/music/Page';
+import VideoPage from '../../../src/renderer/src/pages/settings/pages/video/Page';
+import ImagePage from '../../../src/renderer/src/pages/settings/pages/image/Page';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -580,4 +583,16 @@ it.each([
 
 	await user.click(screen.getByRole(role, { name: new RegExp(label) }));
 	expect(await screen.findByText(`${label} page`)).toBeInTheDocument();
+});
+
+it.each([
+	['music', 'audio', 'Eleven Music', MusicPage],
+	['video', 'video', 'Veo', VideoPage],
+	['image', 'image', 'Gemini Image', ImagePage],
+] as const)('loads the saved %s configuration on its dedicated page', async (name, kind, model, Page) => {
+	render(<MemoryRouter><Page /></MemoryRouter>);
+	expect(screen.getByRole('heading', { name: `settings.tabs.${name}` })).toBeInTheDocument();
+	await waitFor(() => expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(model));
+	expect(window.agent.getToolModel).toHaveBeenCalledWith(kind);
+	expect(screen.getAllByRole('combobox')).toHaveLength(1);
 });
