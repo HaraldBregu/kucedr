@@ -5,7 +5,7 @@ human-readable inventory of those built-in providers, the services they expose i
 and whether the current runtime can execute each service.
 
 The inventory covers model, search, and database providers. Telegram is a
-messaging channel and is documented in [Kucedr Feature Reference](FEATURES.md#messaging-channels).
+messaging channel and is documented in [Kucedr Feature Reference](FEATURES.md#5-messaging-channels).
 MCP servers and apps are integrations rather than providers.
 
 ## Support status
