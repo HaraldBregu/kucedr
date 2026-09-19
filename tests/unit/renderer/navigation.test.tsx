@@ -99,6 +99,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const assistantGroup = within(navigation)
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
+	const mediaGroup = within(navigation)
+		.getByText('settings.tabs.media')
+		.closest('[data-slot="split-pane-group"]');
 	const providersGroup = within(navigation)
 		.getByText('settings.tabs.providers')
 		.closest('[data-slot="split-pane-group"]');
@@ -120,6 +123,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.title' })
 	).not.toBeInTheDocument();
 	expect(assistantGroup).not.toBeNull();
+	expect(mediaGroup).not.toBeNull();
 	expect(providersGroup).not.toBeNull();
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
@@ -127,6 +131,12 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.coding.title' })
 	).toBeInTheDocument();
+	expect(
+		within(mediaGroup as HTMLElement).getAllByRole('link').map((link) => link.textContent)
+	).toEqual(['settings.tabs.music', 'settings.tabs.image', 'settings.tabs.video']);
+	expect(
+		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.music' })
+	).not.toBeInTheDocument();
 	expect(
 		within(providersGroup as HTMLElement).getByRole('link', {
 			name: 'settings.overview.groups.mlModels',
@@ -183,10 +193,10 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(currentSection).toHaveAttribute('data-active');
 });
 
-it.each(['music', 'video', 'image'])('marks %s active inside the Assistant sidebar group', (name) => {
+it.each(['music', 'image', 'video'])('marks %s active inside the Media sidebar group', (name) => {
 	const { container } = render(<MemoryRouter initialEntries={[`/settings/agent/${name}`]}><Layout /></MemoryRouter>);
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const group = within(navigation).getByText('settings.overview.groups.assistant').closest('section');
+	const group = within(navigation).getByText('settings.tabs.media').closest('section');
 	const link = within(group as HTMLElement).getByRole('link', { name: `settings.tabs.${name}` });
 	expect(link).toHaveAttribute('href', `/settings/agent/${name}`);
 	expect(link).toHaveAttribute('aria-current', 'page');

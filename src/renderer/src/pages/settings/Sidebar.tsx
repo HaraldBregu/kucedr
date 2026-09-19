@@ -31,10 +31,17 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter(
 				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coding
 			),
-			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/memory', '/settings/agent/music', '/settings/agent/video', '/settings/agent/image'].includes(item.path)
-			),
+			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
 		],
+	},
+	{
+		id: 'media',
+		titleKey: 'settings.tabs.media',
+		items: [
+			'/settings/agent/music',
+			'/settings/agent/image',
+			'/settings/agent/video',
+		].flatMap((path) => SETTINGS_NAVIGATION.filter((item) => item.path === path)),
 	},
 	{
 		id: 'providers',
