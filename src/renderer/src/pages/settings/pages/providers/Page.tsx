@@ -5,6 +5,7 @@ import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { openExternalUrl } from '@/lib/external-links';
 import { cn } from '@/lib/utils';
 import type { StoredProviderKind } from '@shared/provider_types';
@@ -431,38 +432,174 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			customProvider.apiKey.trim() && customProvider.baseUrl.trim() && customProvider.modelId.trim()
 		);
 		return (
-			<Card className={cn('rounded-lg border-border bg-card py-0 shadow-none', customProvider.editing && 'border-ring ring-2 ring-ring/20')}>
+			<Card
+				className={cn(
+					'rounded-lg border-border bg-card py-0 shadow-none',
+					customProvider.editing && 'border-ring ring-2 ring-ring/20'
+				)}
+			>
 				<CardContent className="p-0">
-					<div className={cn('flex min-h-12 items-center gap-2.5 px-4 py-3.5', customProvider.editing && 'pb-3')}>
-						<div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-xs font-semibold text-muted-foreground">+</div>
+					<div
+						className={cn(
+							'flex min-h-12 items-center gap-2.5 px-4 py-3.5',
+							customProvider.editing && 'pb-3'
+						)}
+					>
+						<div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-xs font-semibold text-muted-foreground">
+							+
+						</div>
 						<div className="min-w-0 flex-1">
-							<h2 className="truncate text-sm font-semibold leading-tight text-foreground">Custom model provider</h2>
+							<h3 className="truncate text-sm font-semibold leading-tight text-foreground">
+								{t('settings.providers.localModels.model')}
+							</h3>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
-								{connected ? customProvider.savedModelId : 'OpenAI-compatible API'}
+								{connected
+									? customProvider.savedModelId
+									: t('settings.providers.localModels.compatibility')}
 							</p>
 						</div>
 						{connected && !customProvider.editing ? (
-							<Button type="button" variant="ghost" size="icon-xs" aria-label="Edit custom model provider" onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-xs"
+								aria-label={t('settings.providers.localModels.edit')}
+								onClick={() =>
+									setCustomProvider((current) => ({ ...current, editing: true }))
+								}
+							>
 								<Pencil className="size-3.5" />
 							</Button>
 						) : !customProvider.editing ? (
-							<Button type="button" variant="outline" size="xs" onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}>Connect</Button>
+							<Button
+								type="button"
+								variant="outline"
+								size="xs"
+								onClick={() =>
+									setCustomProvider((current) => ({ ...current, editing: true }))
+								}
+							>
+								{t('settings.providers.localModels.connect')}
+							</Button>
 						) : null}
 					</div>
 					{customProvider.editing && (
 						<div className="grid gap-2 px-4 pb-4 sm:grid-cols-3">
-							<Input aria-label="Custom provider base URL" autoComplete="off" className="h-8" disabled={saving} placeholder="http://localhost:11434/v1" spellCheck={false} value={customProvider.baseUrl} onChange={(event) => setCustomProvider((current) => ({ ...current, baseUrl: event.target.value }))} />
-							<div className="flex gap-2">
-								<Input aria-label="Custom provider model ID" autoComplete="off" className="h-8" disabled={saving} list="custom-provider-models" placeholder="llama3.2:3b" spellCheck={false} value={customProvider.modelId} onChange={(event) => setCustomProvider((current) => ({ ...current, modelId: event.target.value }))} />
-								<Button type="button" variant="outline" size="icon-sm" aria-label="Refresh custom provider models" disabled={saving || loadingCustomModels || !customProvider.baseUrl.trim() || !customProvider.apiKey.trim()} onClick={() => void loadCustomModels()}>{loadingCustomModels ? <LoaderCircle className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}</Button>
+							<div className="grid gap-1.5">
+								<Label htmlFor="local-model-url">
+									{t('settings.providers.localModels.url')}
+								</Label>
+								<Input
+									id="local-model-url"
+									autoComplete="off"
+									className="h-8"
+									disabled={saving}
+									placeholder="http://localhost:11434/v1"
+									spellCheck={false}
+									value={customProvider.baseUrl}
+									onChange={(event) =>
+										setCustomProvider((current) => ({
+											...current,
+											baseUrl: event.target.value,
+										}))
+									}
+								/>
+							</div>
+							<div className="grid gap-1.5">
+								<Label htmlFor="local-model-id">
+									{t('settings.providers.localModels.modelId')}
+								</Label>
+								<div className="flex gap-2">
+									<Input
+										id="local-model-id"
+										autoComplete="off"
+										className="h-8"
+										disabled={saving}
+										list="custom-provider-models"
+										placeholder="llama3.2:3b"
+										spellCheck={false}
+										value={customProvider.modelId}
+										onChange={(event) =>
+											setCustomProvider((current) => ({
+												...current,
+												modelId: event.target.value,
+											}))
+										}
+									/>
+									<Button
+										type="button"
+										variant="outline"
+										size="icon-sm"
+										aria-label={t('settings.providers.localModels.refresh')}
+										disabled={
+											saving ||
+											loadingCustomModels ||
+											!customProvider.baseUrl.trim() ||
+											!customProvider.apiKey.trim()
+										}
+										onClick={() => void loadCustomModels()}
+									>
+										{loadingCustomModels ? (
+											<LoaderCircle className="size-3.5 animate-spin" />
+										) : (
+											<RefreshCw className="size-3.5" />
+										)}
+									</Button>
+								</div>
 								<datalist id="custom-provider-models">
-									{customModels.map((model) => <option key={model} value={model} />)}
+									{customModels.map((model) => (
+										<option key={model} value={model} />
+									))}
 								</datalist>
 							</div>
-							<Input aria-label="Custom provider API key" autoComplete="off" className="h-8" disabled={saving} placeholder="ollama" spellCheck={false} type="text" value={customProvider.apiKey} onChange={(event) => setCustomProvider((current) => ({ ...current, apiKey: event.target.value }))} />
+							<div className="grid gap-1.5">
+								<Label htmlFor="local-model-token">
+									{t('settings.providers.localModels.token')}
+								</Label>
+								<Input
+									id="local-model-token"
+									autoComplete="off"
+									className="h-8"
+									disabled={saving}
+									placeholder="ollama"
+									spellCheck={false}
+									type="text"
+									value={customProvider.apiKey}
+									onChange={(event) =>
+										setCustomProvider((current) => ({
+											...current,
+											apiKey: event.target.value,
+										}))
+									}
+								/>
+							</div>
 							<div className="flex gap-2 sm:col-span-3 sm:justify-end">
-								<Button type="button" variant="outline" size="sm" disabled={saving} onClick={() => setCustomProvider((current) => ({ ...current, apiKey: current.savedApiKey, baseUrl: current.savedBaseUrl, modelId: current.savedModelId, editing: false }))}>{t('common.cancel')}</Button>
-								<Button type="button" size="sm" disabled={saving || !canSave} onClick={() => void saveCustomProvider()}>{saving ? <LoaderCircle className="size-3.5 animate-spin" /> : null}{t('common.save')}</Button>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={saving}
+									onClick={() =>
+										setCustomProvider((current) => ({
+											...current,
+											apiKey: current.savedApiKey,
+											baseUrl: current.savedBaseUrl,
+											modelId: current.savedModelId,
+											editing: false,
+										}))
+									}
+								>
+									{t('common.cancel')}
+								</Button>
+								<Button
+									type="button"
+									size="sm"
+									disabled={saving || !canSave}
+									onClick={() => void saveCustomProvider()}
+								>
+									{saving ? <LoaderCircle className="size-3.5 animate-spin" /> : null}
+									{t('common.save')}
+								</Button>
 							</div>
 						</div>
 					)}
@@ -524,11 +661,16 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								{actionableProviderCatalog().map((provider) =>
 									renderProviderCard(provider, 'models')
 								)}
-								{renderCustomProviderCard()}
 							</div>
 						)}
 					</SettingsSection>
 				)}
+
+			{!embedded && (section === undefined || section === 'models') && (
+				<SettingsSection title={t('settings.providers.localModels.title')}>
+					<div className="space-y-3 pb-4">{renderCustomProviderCard()}</div>
+				</SettingsSection>
+			)}
 
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>

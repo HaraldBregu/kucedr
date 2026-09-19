@@ -8,6 +8,15 @@ jest.mock('react-i18next', () => {
 		'settings.tabs.providers': 'Providers',
 		'settings.providers.description': 'Connect providers and configure models.',
 		'settings.overview.groups.mlModels': 'Models',
+		'settings.providers.localModels.title': 'Local models',
+		'settings.providers.localModels.model': 'Local model',
+		'settings.providers.localModels.compatibility': 'OpenAI-compatible API',
+		'settings.providers.localModels.url': 'URL',
+		'settings.providers.localModels.modelId': 'Model',
+		'settings.providers.localModels.token': 'Token',
+		'settings.providers.localModels.connect': 'Connect',
+		'settings.providers.localModels.edit': 'Edit local model',
+		'settings.providers.localModels.refresh': 'Refresh local models',
 		'settings.tabs.channels': 'Channels',
 		'settings.tabs.databases': 'Database',
 		'common.save': 'Save',
@@ -93,6 +102,7 @@ describe('Providers settings', () => {
 		);
 
 		expect(screen.getByRole('heading', { name: 'Models' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Local models' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Search' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Channels' })).not.toBeInTheDocument();
@@ -176,12 +186,12 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 	);
 
 	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
-	const baseUrlInput = screen.getByLabelText('Custom provider base URL');
+	const baseUrlInput = screen.getByLabelText('URL');
 	const customCard = baseUrlInput.closest('[data-slot="card"]');
 	expect(customCard).not.toBeNull();
 	await user.type(baseUrlInput, 'http://localhost:11434/v1');
-	await user.type(screen.getByLabelText('Custom provider model ID'), 'llama3.2:3b');
-	await user.type(screen.getByLabelText('Custom provider API key'), 'ollama');
+	await user.type(screen.getByLabelText('Model'), 'llama3.2:3b');
+	await user.type(screen.getByLabelText('Token'), 'ollama');
 	await user.click(within(customCard!).getByRole('button', { name: 'Save', exact: true }));
 
 	await waitFor(() =>
@@ -205,9 +215,9 @@ it('loads available custom provider models', async () => {
 	);
 
 	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
-	await user.type(screen.getByLabelText('Custom provider base URL'), 'http://localhost:11434/v1');
-	await user.type(screen.getByLabelText('Custom provider API key'), 'ollama');
-	await user.click(screen.getByRole('button', { name: 'Refresh custom provider models' }));
+	await user.type(screen.getByLabelText('URL'), 'http://localhost:11434/v1');
+	await user.type(screen.getByLabelText('Token'), 'ollama');
+	await user.click(screen.getByRole('button', { name: 'Refresh local models' }));
 
 	await waitFor(() =>
 		expect(window.provider.listCustomModels).toHaveBeenCalledWith({
@@ -215,7 +225,7 @@ it('loads available custom provider models', async () => {
 			apiKey: 'ollama',
 		})
 	);
-	expect(screen.getByLabelText('Custom provider model ID')).toHaveValue('llama3.2:3b');
+	expect(screen.getByLabelText('Model')).toHaveValue('llama3.2:3b');
 	expect(document.querySelector('option[value="qwen3:8b"]')).toBeInTheDocument();
 });
 

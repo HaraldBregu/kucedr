@@ -1010,6 +1010,17 @@
 			"baseUrl": "URL Base",
 			"baseUrlPlaceholder": "https://api.example.com/v1",
 			"apiKeyPlaceholder": "Incolla chiave API",
+			"localModels": {
+				"title": "Modelli locali",
+				"model": "Modello locale",
+				"compatibility": "API compatibile con OpenAI",
+				"url": "URL",
+				"modelId": "Modello",
+				"token": "Token",
+				"connect": "Connetti",
+				"edit": "Modifica modello locale",
+				"refresh": "Aggiorna modelli locali"
+			},
 			"addProvider": "Aggiungi Provider",
 			"saving": "Salvataggio...",
 			"keySaved": "Chiave API salvata",
