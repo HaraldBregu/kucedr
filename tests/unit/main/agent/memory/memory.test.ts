@@ -327,6 +327,7 @@ it('rejects private output and assistant-only sources', async () => {
 
 it.each([true, false])('recovers a mutation journal only when its document was committed: %s', async (committed) => {
  const h = setup();
+	h.state().config.enabled = false;
  h.state().mutation = {
   digest: fingerprint(committed ? h.markdown() : 'unwritten document'),
   checkpoints: { chat: ['first'] },
