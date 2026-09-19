@@ -172,20 +172,21 @@ export function ModelProviderSelect({
 		>
 			<SelectTrigger
 				id={`${idPrefix}-model`}
-				className={inline ? 'w-40 max-w-full text-xs' : 'w-full min-w-0 max-w-full text-xs'}
+				className={`${inline ? 'w-80' : 'w-full'} min-w-0 max-w-full whitespace-normal text-xs data-[size=default]:h-auto data-[size=default]:min-h-8 *:data-[slot=select-value]:line-clamp-none`}
 				aria-label={inline || !showFieldLabel ? accessibleLabel : undefined}
 			>
 				<SelectValue
-					className="min-w-0 overflow-hidden"
+					className="min-w-0 whitespace-normal break-words"
 					placeholder={labels?.placeholder ?? t('settings.modelServices.modelPlaceholder')}
 				>
 					{selectedLabel}
 				</SelectValue>
 			</SelectTrigger>
-			<SelectContent>
+			<SelectContent className="max-w-[var(--available-width)]">
 				{providerGroups.flatMap((group) =>
 					group.models.map((model) => (
 						<SelectItem
+							className="[&>span]:min-w-0 [&>span]:shrink [&>span]:whitespace-normal [&>span]:break-words"
 							key={`${group.id}${VALUE_SEPARATOR}${model.id}`}
 							value={`${group.id}${VALUE_SEPARATOR}${model.id}`}
 						>
