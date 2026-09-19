@@ -33,7 +33,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [Releasing](RELEASING.md): release entry point and deployment references.
 - [Security](../SECURITY.md): security policy and vulnerability reporting.
 - [Agent review](AGENT_REVIEW.md): engineering review of the agent runtime; consult current source before treating findings as current defects.
-- [Landing page](LANDING_PAGE.md): product website guidance.
+- [Landing page](LANDING_PAGE.md): product website design brief; verify proposed claims against the current application guide.
 
 ## Keep documentation current
 

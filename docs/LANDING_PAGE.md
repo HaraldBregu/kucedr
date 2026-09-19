@@ -1,5 +1,7 @@
 # Kucedr Landing Page Build Prompt
 
+> Design brief, not a current capability reference. Some proposed knowledge-generation and wiki claims below are not implemented in this checkout. Verify product copy against the [application guide](APPLICATION.md) and [architecture](ARCHITECTURE.md) before publishing.
+
 Build a polished, responsive product landing page for **Kucedr**, a cross-platform desktop AI copilot that turns conversations into actions and turns useful work into reusable knowledge.
 
 This document is the source prompt for the page. Use the approved positioning and copy below. Keep every product claim consistent with the current implementation, especially the distinctions between Skills, the Knowledge Base, and Apps.
@@ -377,9 +379,9 @@ Use these repository sources to validate final copy and product visuals:
 - [Product overview](../README.md)
 - [Feature reference](FEATURES.md)
 - [Skills settings](../src/renderer/src/pages/settings/pages/skills/Page.tsx)
-- [Skill loading](../src/main/agent/tools/skill_load.ts)
+- [Skill loading](../src/main/agent/tools/skills/load_skill.ts)
 - [RAG settings](../src/renderer/src/pages/settings/pages/rag/Page.tsx)
-- [Knowledge search tool](../src/main/agent/tools/knowledge/rag.ts)
+- [Knowledge search tool](../src/main/agent/tools/knowledge/query_knowledge.ts)
 - [Apps settings](../src/renderer/src/pages/settings/pages/apps/Page.tsx)
 - [App window](../src/main/apps/app_render.ts)
 - [Kucedr SDK](../packages/sdk/README.md)

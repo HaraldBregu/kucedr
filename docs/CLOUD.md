@@ -16,7 +16,7 @@ the renderer to application services; trusted settings views can edit provider c
 | ------------------------------ | ------------------- | -------------------- | --------------------------- |
 | Account lifecycle and profile  | `cloud/service.ts`  | `AccountProvider`    | `cloud/supabase/auth.ts`    |
 | Conversation records and files | `cloud/data.ts`     | `CloudRepository`    | `cloud/supabase/records.ts` |
-| Folder backup objects          | `storage/*`         | `StorageObjectStore` | `storage/s3/store.ts` |
+| Folder backup objects          | `storage/*`         | `StorageObjectStore` | `storage/s3/store.ts`       |
 
 `bootstrap.ts` is the composition root. It creates the Supabase client for account and cloud
 record services. Folder transfers resolve the selected storage provider and create an S3 client

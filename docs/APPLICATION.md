@@ -92,7 +92,7 @@ To configure folder retrieval:
 5. Index the folders, inspect the result, and use the search field to verify expected passages and paths.
 6. Enable an indexing schedule only after the manual run succeeds.
 
-Retrieval queries use a local SQLite index. Indexing can send source text to the embedding provider and mirror data remotely; changing the selected recipient can require renewed consent. Export and purge controls are scoped to the displayed local or remote data. Read the selected scope before using Purge.
+Retrieval queries search a local SQLite index after sending the query to the selected embedding service. Indexing can send source text to the embedding provider and mirror data remotely; changing the selected recipient can require renewed consent. Export and purge controls are scoped to the displayed local or remote data. Read the selected scope before using Purge.
 
 ## Connect external capabilities
 

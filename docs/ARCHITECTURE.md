@@ -6,14 +6,14 @@ This reference describes the current checkout; see [Development](DEVELOPMENT.md)
 
 ## Process and service boundaries
 
-| Layer | Responsibility | Source |
-| --- | --- | --- |
-| Main entry and runtime | Single-instance lock, auth deep links, lifecycle, tray, shortcuts, scheduling, shutdown | `src/main/index.ts`, `src/main/runtime.ts` |
-| Composition root | Creates agent, coding, account, cloud-record, storage, terminal, window, and channel services | `src/main/bootstrap.ts` |
-| Main IPC | Registers operations and validates access to privileged services | `src/main/ipc` |
-| Preload | Exposes typed capabilities through Electron context bridges | `src/preload/index.ts` |
-| Renderer | React pages, settings, chat, voice, localization, and interaction state | `src/renderer/src` |
-| Shared contracts | Types, IPC channel names, and serialization shared across processes and SDK | `src/shared` |
+| Layer                  | Responsibility                                                                                | Source                                     |
+| ---------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| Main entry and runtime | Single-instance lock, auth deep links, lifecycle, tray, shortcuts, scheduling, shutdown       | `src/main/index.ts`, `src/main/runtime.ts` |
+| Composition root       | Creates agent, coding, account, cloud-record, storage, terminal, window, and channel services | `src/main/bootstrap.ts`                    |
+| Main IPC               | Registers operations and validates access to privileged services                              | `src/main/ipc`                             |
+| Preload                | Exposes typed capabilities through Electron context bridges                                   | `src/preload/index.ts`                     |
+| Renderer               | React pages, settings, chat, voice, localization, and interaction state                       | `src/renderer/src`                         |
+| Shared contracts       | Types, IPC channel names, and serialization shared across processes and SDK                   | `src/shared`                               |
 
 The renderer invokes preload methods rather than importing Node filesystem or provider SDKs.
 Main services publish state through the event bus and IPC. Window closure cancels associated
@@ -63,15 +63,15 @@ The application profile defaults to `~/.kucedr` on all platforms, resolved from 
 directory. `KUCEDR_E2E_DATA_ROOT` overrides it for isolated tests. Electron runtime data such as
 Chromium state and crash dumps uses Electron's own platform-specific paths.
 
-| Profile path | Purpose |
-| --- | --- |
-| `settings/` | App, agent, provider, RAG, task, account, and integration configuration |
-| `workspace/` | Default agent working directory and personalization Markdown files |
-| `sessions/` | Conversation/session persistence |
-| `skills/` | Installed skill instructions |
-| `apps/` | Managed application files and per-app data |
-| `library/` | Library/media files |
-| `rag/vectors.sqlite` | Local RAG vectors and source records |
+| Profile path         | Purpose                                                                 |
+| -------------------- | ----------------------------------------------------------------------- |
+| `settings/`          | App, agent, provider, RAG, task, account, and integration configuration |
+| `workspace/`         | Default agent working directory and personalization Markdown files      |
+| `sessions/`          | Conversation/session persistence                                        |
+| `skills/`            | Installed skill instructions                                            |
+| `apps/`              | Managed application files and per-app data                              |
+| `library/`           | Library/media files                                                     |
+| `rag/vectors.sqlite` | Local RAG vectors and source records                                    |
 
 Model, database, and search API keys are stored as entered in `settings/providers.json`.
 Storage secret keys use secure device storage. Account sessions are encrypted when secure

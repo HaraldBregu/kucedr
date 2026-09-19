@@ -14,6 +14,8 @@ You choose the providers and models behind each AI capability. Kucedr keeps its 
 conversations, and workspace data on your machine. Model, database, and search keys are stored in local provider settings. Storage secret keys
 and persistent account sessions use secure device storage. Requests are sent only to the AI providers and connected services you configure.
 
+Read the [documentation](docs/README.md) for the application guide, bundled apps, architecture, and development workflow.
+
 ## What Kucedr Can Do
 
 - **Work with your computer** — read, create, and edit files; apply precise patches; and run commands or long-lived processes.
