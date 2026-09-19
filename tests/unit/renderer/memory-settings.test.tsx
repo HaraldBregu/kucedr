@@ -36,6 +36,7 @@ const api = {
 };
 beforeEach(() => {
 	jest.clearAllMocks();
+	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'memory', { configurable: true, value: api });
 	api.getConfig.mockResolvedValue(config);
 	api.status.mockResolvedValue({ running: false, lastSuccess: null, error: null, pending: 0 });
