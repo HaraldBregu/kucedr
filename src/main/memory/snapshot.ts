@@ -1,11 +1,7 @@
 import type { MemoryMessage } from '../../shared/memory_types';
 
 export function snapshotMarkdown(sessionId: string, messages: readonly MemoryMessage[]): string {
-	const sections: string[] = [
-		`# Session ${sessionId}`,
-		'',
-		'<!-- kucedr-memory-session:v1 -->',
-	];
+	const sections: string[] = [`# Session ${sessionId}`, '', '<!-- kucedr-memory-session:v1 -->'];
 	for (const message of messages) {
 		if (message.role !== 'user' && message.role !== 'assistant') continue;
 		const text =

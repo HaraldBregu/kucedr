@@ -371,7 +371,8 @@ export class Agent {
 			const cause = toError(error, 'Agent request failed.');
 			throw cause;
 		} finally {
-			if (session.id) await this.memory?.capture(session.id, session.messages).catch(() => undefined);
+			if (session.id)
+				await this.memory?.capture(session.id, session.messages).catch(() => undefined);
 			releaseSession(session);
 		}
 	}

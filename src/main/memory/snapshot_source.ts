@@ -4,7 +4,8 @@ import type { SourceSession } from './types';
 export function snapshotSource(sessionId: string, markdown: string): SourceSession {
 	if (!markdown.startsWith(`# Session ${sessionId}\n\n<!-- kucedr-memory-session:v1 -->\n`))
 		throw new Error('A memory session file could not be read; memory processing will retry.');
-	const pattern = /<!-- kucedr-message:(user|assistant) -->\n([\s\S]*?)\n<!-- \/kucedr-message -->/g;
+	const pattern =
+		/<!-- kucedr-message:(user|assistant) -->\n([\s\S]*?)\n<!-- \/kucedr-message -->/g;
 	const occurrences = new Map<string, number>();
 	const source: SourceSession = { id: sessionId, messages: [] };
 	let match: RegExpExecArray | null;
