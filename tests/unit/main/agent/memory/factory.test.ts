@@ -68,6 +68,8 @@ it('persists independent configuration and invokes the configured provider direc
 		expect.stringContaining('> Remember this run.')
 	);
 	expect(scanSources).toHaveBeenCalledWith();
+	await first.edit('# Memory\n');
+	expect(atomicWrite).toHaveBeenCalledWith('/home/test/.kucedr/memory/MEMORY.md', '# Memory\n');
 	expect(Store).toHaveBeenCalledWith(
 		expect.objectContaining({ name: 'settings', cwd: '/home/test/.kucedr/memory' })
 	);
@@ -116,7 +118,10 @@ it('persists independent configuration and invokes the configured provider direc
 			streaming: false,
 			tools: [],
 			signal: expect.any(AbortSignal),
-			messages: [{ role: 'user', content: expect.any(String) }],
+			messages: [
+				{ role: 'system', content: expect.stringContaining('durable application memory') },
+				{ role: 'user', content: expect.stringContaining('Generate memory candidates') },
+			],
 		})
 	);
 	expect(JSON.stringify(persisted)).not.toContain('provider-secret');

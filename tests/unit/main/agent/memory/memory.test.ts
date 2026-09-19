@@ -75,10 +75,10 @@ it('detects inserted voice transcripts and edited messages without relying on me
  await h.memory.refresh();
  h.sessions[0].messages.unshift({ fingerprint: 'inserted', role: 'user', text: 'I use TypeScript.' });
  await h.memory.refresh();
- expect(h.infer.mock.calls[1][1]).toContain('I use TypeScript.');
+ expect(h.infer.mock.calls[1][2]).toContain('I use TypeScript.');
  h.sessions[0].messages = [{ fingerprint: 'edited', role: 'user', text: 'I now use Rust.' }];
  await h.memory.refresh();
- expect(h.infer.mock.calls[2][1]).toContain('I now use Rust.');
+ expect(h.infer.mock.calls[2][2]).toContain('I now use Rust.');
  expect(h.state().checkpoints.chat).toEqual(['edited']);
 });
 
@@ -204,7 +204,7 @@ it('cancels outstanding inference on shutdown', async () => {
  const h = setup();
  let signal!: AbortSignal;
  const entered = new Promise<void>((ready) => {
-  h.infer.mockImplementationOnce((_config, _prompt, current: AbortSignal) => {
+  h.infer.mockImplementationOnce((_config, _system, _request, current: AbortSignal) => {
    signal = current;
    ready();
    return new Promise((_resolve, reject) => current.addEventListener('abort', () => reject(current.reason), { once: true }));
@@ -345,11 +345,11 @@ it('summarizes a new assistant reply using preceding user context without re-ext
  ] })).mockResolvedValueOnce('{"accepted":[0]}');
  await h.memory.refresh();
  expect(h.infer).toHaveBeenCalledTimes(3);
- const prompt = h.infer.mock.calls[1][1] as string;
+ const prompt = h.infer.mock.calls[1][2] as string;
  const data = JSON.parse(prompt.split('\nDATA:\n')[1]);
  expect(data.changedSources).toEqual(['answer']);
  expect(data.sources).toEqual(expect.arrayContaining([expect.objectContaining({ fingerprint: 'first' }), expect.objectContaining({ fingerprint: 'answer' })]));
- const validation = JSON.parse((h.infer.mock.calls[2][1] as string).split('\nDATA:\n')[1]);
+ const validation = JSON.parse((h.infer.mock.calls[2][2] as string).split('\nDATA:\n')[1]);
  expect(validation.candidates).toHaveLength(1);
  expect(validation.candidates[0].kind).toBe('summary');
  expect(h.markdown()).toContain('Discussed keeping answers concise and focused.');
