@@ -205,7 +205,11 @@ async function* loop(
 			tools.length,
 			...filterDisabledTools(
 				filterPlanTools(
-					filterTools(selectSkillTools(tools, skill.allowedTools), input.toolsAllow, input.toolsDeny),
+					filterTools(
+						selectSkillTools(tools, skill.allowedTools),
+						input.toolsAllow,
+						input.toolsDeny
+					),
 					input.interactionMode
 				),
 				configuredToolSettings
@@ -295,12 +299,15 @@ async function* loop(
 				turnTools.some((tool) => tool.id === 'load_skill')
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
-			const protectedSkillPrompt =
-				[
-					input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt,
-					finalization?.instruction,
-					synthesisOnly ? 'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.' : '',
-				].filter(Boolean).join('\n\n');
+			const protectedSkillPrompt = [
+				input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt,
+				finalization?.instruction,
+				synthesisOnly
+					? 'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.'
+					: '',
+			]
+				.filter(Boolean)
+				.join('\n\n');
 			const workspaceContext =
 				contextMode === 'workspace' && options.instructions === undefined
 					? await buildWorkspaceContext(config)
@@ -340,13 +347,18 @@ async function* loop(
 			if (synthesisOnly && (turn.toolCalls.length > 0 || !turn.content.trim())) {
 				if (turn.toolCalls.length > 0) {
 					addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems);
-					yield* skipToolCalls(turn.toolCalls, 'Final answer required; this action was not executed.');
+					yield* skipToolCalls(
+						turn.toolCalls,
+						'Final answer required; this action was not executed.'
+					);
 					addToolResults(session, turn.toolCalls);
 				}
 				throw new Error('Agent did not produce a non-empty final answer without tool calls.');
 			}
 			if (turn.toolCalls.length === 0 && !turn.content.trim() && input.interactionMode !== 'plan') {
-				finalization = { instruction: 'The previous model response was empty. Answer the user now.' };
+				finalization = {
+					instruction: 'The previous model response was empty. Answer the user now.',
+				};
 				continue;
 			}
 			if (
@@ -377,7 +389,8 @@ async function* loop(
 			}
 			const budgetExceeded = budget.wouldExceed(
 				turn.toolCalls.map((call) => ({
-					tool: tools.find((tool) => tool.id === call.name), input: call.args,
+					tool: tools.find((tool) => tool.id === call.name),
+					input: call.args,
 				}))
 			);
 			if (budgetExceeded || isExhausted(session)) {
@@ -430,9 +443,11 @@ async function* loop(
 					stopReason: 'budget_exhausted',
 				};
 			} else if (turn.toolCalls.some(startsBackgroundRecorder)) {
-				finalization = { instruction: 'Recording started in the background. Confirm its current status without waiting for completion or stopping it.' };
+				finalization = {
+					instruction:
+						'Recording started in the background. Confirm its current status without waiting for completion or stopping it.',
+				};
 			}
-
 		}
 	} finally {
 		await closeMcp?.();

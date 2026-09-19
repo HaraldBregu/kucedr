@@ -771,35 +771,61 @@ describe('run stream system prompt', () => {
 		async (boundary) => {
 			const execute = jest.fn(() => 'observed result');
 			const tool = jsonTool({
-				id: 'search_web', name: 'Search', description: 'Search',
-				schema: { type: 'object' }, execute,
+				id: 'search_web',
+				name: 'Search',
+				description: 'Search',
+				schema: { type: 'object' },
+				execute,
 			});
-			const budget = new ExecutionBudget(boundary === 'output' ? { output: 1 } : boundary === 'calls' ? { calls: 0 } : {});
+			const budget = new ExecutionBudget(
+				boundary === 'output' ? { output: 1 } : boundary === 'calls' ? { calls: 0 } : {}
+			);
 			const session = createSessionState();
 			if (boundary === 'turns') session.maxTurns = 1;
 			runModelTurnMock.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
-					content: '', model: 'test-model',
+					content: '',
+					model: 'test-model',
 					toolCalls: boundary === 'empty' ? [] : [{ id: 'search', name: tool.id, args: {} }],
 				};
 			});
 			const events = [];
 			for await (const event of stream(
-				{ location: '/workspace' }, session,
-				{ task: 'chat', model: 'test-model', message: 'search then answer', agentId: 'main', contextMode: 'minimal' },
-				new AbortController().signal, { tools: [tool], budget }
-			)) events.push(event);
+				{ location: '/workspace' },
+				session,
+				{
+					task: 'chat',
+					model: 'test-model',
+					message: 'search then answer',
+					agentId: 'main',
+					contextMode: 'minimal',
+				},
+				new AbortController().signal,
+				{ tools: [tool], budget }
+			))
+				events.push(event);
 
 			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
 			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
 			expect(execute).toHaveBeenCalledTimes(boundary === 'output' ? 1 : 0);
 			expect(events.at(-1)).toMatchObject({
-				type: 'run_finished', result: { text: 'done', stopReason: boundary === 'turns' ? 'max_iterations' : ['calls', 'output'].includes(boundary) ? 'budget_exhausted' : 'end_turn' },
+				type: 'run_finished',
+				result: {
+					text: 'done',
+					stopReason:
+						boundary === 'turns'
+							? 'max_iterations'
+							: ['calls', 'output'].includes(boundary)
+								? 'budget_exhausted'
+								: 'end_turn',
+				},
 			});
 			if (boundary === 'calls' || boundary === 'turns') {
 				expect(session.toolCalls[0].result).toMatchObject({ isError: true });
-				expect(events).toContainEqual(expect.objectContaining({ type: 'tool_call_end', isError: true }));
+				expect(events).toContainEqual(
+					expect.objectContaining({ type: 'tool_call_end', isError: true })
+				);
 			}
 		}
 	);
@@ -812,13 +838,89 @@ describe('run stream system prompt', () => {
 		const events = [];
 		await expect(async () => {
 			for await (const event of stream(
-				{ location: '/workspace' }, createSessionState(),
-				{ task: 'chat', model: 'test-model', message: 'answer', agentId: 'main', contextMode: 'minimal' },
-				new AbortController().signal, { tools: [] }
-			)) events.push(event);
+				{ location: '/workspace' },
+				createSessionState(),
+				{
+					task: 'chat',
+					model: 'test-model',
+					message: 'answer',
+					agentId: 'main',
+					contextMode: 'minimal',
+				},
+				new AbortController().signal,
+				{ tools: [] }
+			))
+				events.push(event);
 		}).rejects.toThrow('non-empty final answer');
 		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
 		expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { stopReason: 'error' } });
 	});
 
+	it.each(['cancel', 'tools', 'empty'] as const)(
+		'keeps finalization bounded when the next outcome is %s',
+		async (outcome) => {
+			const controller = new AbortController();
+			const execute = jest.fn(() => 'observed result');
+			const tool = jsonTool({
+				id: 'search_web',
+				name: 'Search',
+				description: 'Search',
+				schema: { type: 'object' },
+				execute,
+			});
+			const session = createSessionState();
+			runModelTurnMock
+				.mockImplementationOnce(async function* () {
+					yield* [];
+					return {
+						content: '',
+						model: 'test-model',
+						toolCalls: [{ id: 'first', name: tool.id, args: {} }],
+					};
+				})
+				.mockImplementationOnce(async function* () {
+					yield* [];
+					return {
+						content: '',
+						model: 'test-model',
+						toolCalls: outcome === 'tools' ? [{ id: 'forbidden', name: tool.id, args: {} }] : [],
+					};
+				})
+				.mockImplementationOnce(successfulTurn);
+			const events = [];
+			const run = async () => {
+				for await (const event of stream(
+					{ location: '/workspace' },
+					session,
+					{
+						task: 'chat',
+						model: 'test-model',
+						message: 'search then answer',
+						agentId: 'main',
+						contextMode: 'minimal',
+					},
+					controller.signal,
+					{ tools: [tool], budget: new ExecutionBudget(outcome === 'tools' ? { output: 1 } : {}) }
+				)) {
+					events.push(event);
+					if (outcome === 'cancel' && event.type === 'tool_call_end') controller.abort();
+				}
+			};
+			if (outcome === 'tools') await expect(run()).rejects.toThrow('non-empty final answer');
+			else await run();
+			expect(execute).toHaveBeenCalledTimes(1);
+			expect(runModelTurnMock).toHaveBeenCalledTimes(
+				outcome === 'cancel' ? 1 : outcome === 'tools' ? 2 : 3
+			);
+			expect(events.at(-1)).toMatchObject({
+				type: 'run_finished',
+				result: {
+					stopReason:
+						outcome === 'cancel' ? 'cancelled' : outcome === 'tools' ? 'error' : 'end_turn',
+					...(outcome === 'empty' ? { text: 'done' } : {}),
+				},
+			});
+			if (outcome === 'tools') expect(session.toolCalls[1].result).toMatchObject({ isError: true });
+		}
+	);
 });

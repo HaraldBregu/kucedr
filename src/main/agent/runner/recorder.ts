@@ -14,4 +14,3 @@ export function startsBackgroundRecorder(call: import('../types').ToolCall): boo
 		return false;
 	}
 }
-
