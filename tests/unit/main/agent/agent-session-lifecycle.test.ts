@@ -119,11 +119,32 @@ jest.mock('../../../../src/main/agent/runner/run_stream', () => ({
 import { Agent } from '../../../../src/main/agent/agent';
 import type { ExecSandbox } from '../../../../src/main/agent/sandbox';
 import type { WindowFactory } from '../../../../src/main/window_factory';
+import type { MemoryService } from '../../../../src/shared/memory_types';
 
 beforeEach(() => {
 	jest.clearAllMocks();
 	controls.clear();
 	order.length = 0;
+});
+
+it.each(['main', 'channels', 'tasks', 'health'])('captures the completed %s agent run', async (agentId) => {
+	const capture = jest.fn(async () => undefined);
+	const memory = { capture } as unknown as MemoryService;
+	const agent = new Agent(
+		{} as WindowFactory,
+		{ reset: jest.fn() } as unknown as ExecSandbox,
+		memory
+	);
+	const control = controlRun(`capture-${agentId}`);
+	const response = agent.send('remember this', agentId, {
+		type: agentId === 'main' ? 'default' : 'background',
+		runId: `capture-${agentId}`,
+		sessionId: agentId,
+	});
+	await control.started;
+	control.release();
+	await response;
+	expect(capture).toHaveBeenCalledWith(SESSION_ID, expect.any(Array));
 });
 
 it('rejects invalid current-turn attachments before session initialization', async () => {
@@ -189,7 +210,12 @@ it.each([
 		await expect(replacementResponse).resolves.toBe('replacement reply');
 		expect(resolveSessionId).toHaveBeenCalledWith('health', expect.any(String), 'health');
 		expect(resolveStoredSessionId).toHaveBeenCalledWith('health', expect.any(String));
-		expect(mutate).toHaveBeenCalledWith(expect.any(Object), expect.any(Object), SESSION_ID);
+		expect(mutate).toHaveBeenCalledWith(
+			expect.any(Object),
+			expect.any(Object),
+			SESSION_ID,
+			expect.any(Object)
+		);
 	}
 );
 

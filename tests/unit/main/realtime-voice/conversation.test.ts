@@ -5,8 +5,31 @@ import { loadMessagesBySessionId } from '../../../../src/main/agent/session/sess
 import { sessionsRoot } from '../../../../src/main/agent/session/session_sessions_root';
 import { realtimeVoiceConversationFactory } from '../../../../src/main/agent/realtime_voice/conversation';
 import { realtimeVoiceHistory } from '../../../../src/main/agent/realtime_voice/history';
+import type { MemoryService } from '../../../../src/shared/memory_types';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
+
+it('captures finalized realtime voice turns in their persisted order', () => {
+	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-memory-'));
+	const capture = jest.fn(async () => undefined);
+	try {
+		const conversation = realtimeVoiceConversationFactory(
+			{ location: path.join(temporaryRoot, 'agent') },
+			undefined,
+			{ capture } as unknown as MemoryService
+		)(SESSION_ID, 'model');
+		conversation.beginUserTurn('user-1');
+		conversation.finalizeUserTurn('user-1', 'Spoken question.');
+		conversation.addAssistantTranscript('Spoken answer.');
+		expect(capture).toHaveBeenLastCalledWith(conversation.persistenceSessionId, [
+			expect.objectContaining({ role: 'user', content: 'Spoken question.' }),
+			expect.objectContaining({ role: 'assistant', content: 'Spoken answer.' }),
+		]);
+		conversation.dispose?.();
+	} finally {
+		fs.rmSync(temporaryRoot, { recursive: true, force: true });
+	}
+});
 
 it('persists only finalized voice transcripts at their reserved turn position', () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-conversation-'));

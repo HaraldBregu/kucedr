@@ -9,6 +9,7 @@ import type { RunContext } from '../../../../../src/main/agent/context';
 import { subagentTool, subagentsTool } from '../../../../../src/main/agent/tools/core/subagents';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { KeyedLimiter } from '../../../../../src/main/agent/limiter';
+import type { MemoryService } from '../../../../../src/shared/memory_types';
 
 const flush = (): Promise<void> => new Promise((resolve) => setImmediate(resolve));
 
@@ -18,12 +19,17 @@ describe('subagentTool', () => {
 	});
 
 	it('ignores model-supplied system instructions', async () => {
+		const capture = jest.fn(async () => undefined);
 		mockStream.mockReturnValue(
 			(async function* () {
 				yield { type: 'assistant_message', content: 'done', toolCalls: [] };
 			})()
 		);
-		const tool = subagentTool({ location: '/agent' }, [], { type: 'default' });
+		const tool = subagentTool(
+			{ location: '/agent' },
+			[],
+			{ type: 'default', memory: { capture } as unknown as MemoryService }
+		);
 
 		await tool.run({ task: 'inspect context', systemPrompt: 'Act as a test reviewer.' });
 
@@ -38,6 +44,9 @@ describe('subagentTool', () => {
 			contextMode: 'minimal',
 			toolsAllow: [],
 		});
+		expect(capture).toHaveBeenCalledWith(session.id, [
+			{ role: 'user', content: 'inspect context' },
+		]);
 	});
 
 	it('creates fresh isolated context for every child execution', async () => {
