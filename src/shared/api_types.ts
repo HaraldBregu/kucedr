@@ -520,3 +520,5 @@ export interface AppApi extends AppStorageApi {
 	restartTelegram: () => Promise<ChannelStatusEvent | undefined>;
 	onChannelsStatusChanged: (callback: (event: ChannelStatusEvent) => void) => () => void;
 }
+
+export type { MemoryApi } from './memory_types';

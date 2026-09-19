@@ -1,3 +1,4 @@
+import type { MemoryConfig, MemoryEntry, MemoryStatus } from './memory_types';
 import type { SpeechSynthesisRequest, SpeechSynthesisResult } from './speech_types';
 import type {
 	RealtimeVoiceEvent,
@@ -31,6 +32,7 @@ import type {
 } from './recorder_types';
 import type { ChannelModelKind, ChannelModelSelection } from './channels_types';
 import {
+	MemoryChannels,
 	AgentChannels,
 	CodingChannels,
 	A2aChannels,
@@ -1142,6 +1144,7 @@ export interface CloudInvokeChannelMap {
 
 export interface InvokeChannelMap
 	extends
+		MemoryInvokeChannelMap,
 		AppInvokeChannelMap,
 		AgentInvokeChannelMap,
 		CodingInvokeChannelMap,
@@ -1206,3 +1209,15 @@ export interface EventChannelMap
 		TerminalEventChannelMap,
 		AuthEventChannelMap,
 		CloudEventChannelMap {}
+
+export interface MemoryInvokeChannelMap {
+ [MemoryChannels.getConfig]: { args: []; result: MemoryConfig };
+ [MemoryChannels.configure]: { args: [patch: Partial<MemoryConfig>]; result: MemoryConfig };
+ [MemoryChannels.refresh]: { args: []; result: MemoryStatus };
+ [MemoryChannels.status]: { args: []; result: MemoryStatus };
+ [MemoryChannels.list]: { args: []; result: MemoryEntry[] };
+ [MemoryChannels.read]: { args: []; result: string };
+ [MemoryChannels.edit]: { args: [markdown: string]; result: void };
+ [MemoryChannels.forget]: { args: [id: string]; result: { removed: boolean } };
+ [MemoryChannels.clear]: { args: []; result: void };
+}

@@ -1,6 +1,7 @@
 export type * from '../shared/api_types';
 
 import type {
+	MemoryApi,
 	AgentApi,
 	CodingApi,
 	A2aApi,
@@ -24,6 +25,7 @@ import type {
 
 declare global {
 	interface Window {
+		memory: MemoryApi;
 		win: WindowApi;
 		app: AppApi;
 		agent: AgentApi;

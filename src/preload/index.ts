@@ -1,3 +1,5 @@
+import { memory } from './memory';
+export { memory } from './memory';
 import { contextBridge } from 'electron';
 import { agent } from './agent';
 import { coding } from './coding';
@@ -40,6 +42,7 @@ export { cloud } from './cloud';
 
 if (process.contextIsolated) {
 	try {
+		contextBridge.exposeInMainWorld('memory', memory);
 		contextBridge.exposeInMainWorld('app', app);
 		contextBridge.exposeInMainWorld('win', win);
 		contextBridge.exposeInMainWorld('agent', agent);
@@ -65,6 +68,7 @@ if (process.contextIsolated) {
 } else {
 	// @ts-ignore (define in dts)
 	globalThis.app = app;
+	Object.assign(globalThis, { memory });
 	// @ts-ignore (define in dts)
 	globalThis.win = win;
 	// @ts-ignore (define in dts)
