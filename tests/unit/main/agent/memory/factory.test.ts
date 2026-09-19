@@ -37,7 +37,10 @@ it('persists independent configuration and invokes the configured provider direc
 			persisted = structuredClone(state);
 		},
 	}));
-	const generate = jest.fn().mockResolvedValue({ content: '{"entries":[]}' });
+	const generate = jest
+		.fn()
+		.mockResolvedValueOnce({ content: '' })
+		.mockResolvedValue({ content: '{"entries":[]}' });
 	(LlmModel as jest.Mock).mockImplementation(() => ({ generate }));
 	(fs.readFile as jest.Mock).mockRejectedValue(
 		Object.assign(new Error('missing'), { code: 'ENOENT' })
@@ -66,8 +69,8 @@ it('persists independent configuration and invokes the configured provider direc
 		expect.objectContaining({ noOverlap: true, timezone: expect.any(String) })
 	);
 	await first.configure({
-		providerId: 'memory-provider',
-		modelId: 'memory-model',
+		providerId: 'deepseek',
+		modelId: 'deepseek-flash',
 		modelOptions: { temperature: 0 },
 	});
 	await first.stop();
@@ -80,8 +83,8 @@ it('persists independent configuration and invokes the configured provider direc
 	const restarted = createMemory(() => ({ location: '/home/test/.kucedr/workspace' }));
 	await restarted.start();
 	expect(restarted.getConfig()).toMatchObject({
-		providerId: 'memory-provider',
-		modelId: 'memory-model',
+		providerId: 'deepseek',
+		modelId: 'deepseek-flash',
 		modelOptions: { temperature: 0 },
 	});
 	(scanSources as jest.Mock).mockResolvedValue([
@@ -91,16 +94,18 @@ it('persists independent configuration and invokes the configured provider direc
 		},
 	]);
 	await restarted.refresh();
-	expect(getProvider).toHaveBeenCalledWith('memory-provider', 'models');
+	expect(getProvider).toHaveBeenCalledWith('deepseek', 'models');
+	expect(generate).toHaveBeenCalledTimes(2);
 	expect(generate).toHaveBeenCalledWith(
 		expect.objectContaining({
 			provider: {
-				id: 'memory-provider',
+				id: 'deepseek',
 				apiKey: 'provider-secret',
 				baseURL: 'https://provider.invalid',
 			},
-			model: 'memory-model',
-			options: { temperature: 0 },
+			model: 'deepseek-flash',
+			options: { temperature: 0, response_format: { type: 'json_object' } },
+			streaming: false,
 			tools: [],
 			signal: expect.any(AbortSignal),
 			messages: [{ role: 'user', content: expect.any(String) }],
