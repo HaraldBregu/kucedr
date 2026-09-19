@@ -22,11 +22,12 @@ export async function generateMemory(
 			signal
 		)
 	).trim();
+	const existingLines = new Set(existing.split('\n'));
 	if (
 		!markdown ||
 		markdown.length > 2_000_000 ||
 		/^```|```$/m.test(markdown) ||
-		privateContent(markdown)
+		markdown.split('\n').some((line) => privateContent(line) && !existingLines.has(line))
 	)
 		throw new Error('Memory model returned an invalid Markdown document.');
 	return `${markdown}\n`;
