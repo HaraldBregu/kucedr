@@ -1,3 +1,4 @@
+import type { MemoryService } from '../../shared/memory_types';
 import { createHash, randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -10,7 +11,7 @@ import type {
 } from '../../shared/data_types';
 import type { Config } from '../agent/types';
 import { memoryPath } from '../memory/path';
-import { MEMORY_FILE, resolveTemplatePath } from '../agent/system';
+import { MEMORY_FILE } from '../agent/system';
 import { sessionPath, sessionsRoot } from '../agent/session';
 import { purgeRagManifest } from '../agent/knowledge/rag';
 import { getRagConfiguration } from '../agent/knowledge/rag/rag_store';
@@ -19,6 +20,7 @@ import { DataArchive } from './data_archive';
 import { purgeRemoteRagNamespaces } from './data_purge_remote';
 
 interface AgentDataPort {
+	memory?: Pick<MemoryService, 'clear'>;
 	config: Config;
 	listSessions(): AgentSessionSummary[];
 	deleteSession(sessionId: string): Promise<void>;
@@ -149,8 +151,8 @@ export class DataController {
 				);
 			}
 		} else if (scope.kind === 'memory') {
-			const template = await fs.readFile(resolveTemplatePath(MEMORY_FILE));
-			await fs.writeFile(memoryPath(this.agent.config), template);
+			if (!this.agent.memory) throw new Error('Memory service is unavailable.');
+			await this.agent.memory.clear();
 		} else {
 			for (const sessionId of scope.sessionIds) await this.agent.deleteSession(sessionId);
 		}

@@ -1,3 +1,4 @@
+import { MemoryIpc } from '../memory';
 import { AgentIpc } from '../agent';
 import { A2aIpc } from '../a2a';
 import { AppIpc } from '../app';
@@ -84,6 +85,12 @@ export function registerIpcHandlers(
 				windows: windowContextManager,
 				apps: appRegistry,
 			},
+			eventBus
+		)
+	);
+	safeRegister('memory', () =>
+		new MemoryIpc().register(
+			{ windows: windowContextManager, apps: appRegistry, memory: services.memoryService },
 			eventBus
 		)
 	);
