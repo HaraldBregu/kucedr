@@ -147,14 +147,7 @@
 			"type": "Memory Type",
 			"facts": "Facts",
 			"summaries": "Summaries",
-			"both": "Facts and summaries",
-			"processing": "Processing",
-			"generate": "Generate Memory",
-			"running": "Processing",
-			"idle": "Idle",
-			"pending": "Pending: {{count}}",
-			"lastSuccess": "Last successful refresh",
-			"never": "Never"
+			"both": "Facts and summaries"
 		},
 		"title": "Settings",
 		"sidebar": {

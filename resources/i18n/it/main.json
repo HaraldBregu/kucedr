@@ -147,14 +147,7 @@
 			"type": "Tipo di memoria",
 			"facts": "Fatti",
 			"summaries": "Riepiloghi",
-			"both": "Fatti e riepiloghi",
-			"processing": "Elaborazione",
-			"generate": "Genera memoria",
-			"running": "Elaborazione in corso",
-			"idle": "Inattivo",
-			"pending": "In attesa: {{count}}",
-			"lastSuccess": "Ultimo aggiornamento riuscito",
-			"never": "Mai"
+			"both": "Fatti e riepiloghi"
 		},
 		"title": "Impostazioni",
 		"sidebar": {

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { MemoryConfig, MemoryStatus } from '@shared/memory_types';
-import { Button } from '@/components/ui/button';
+import type { MemoryConfig } from '@shared/memory_types';
 import { Switch } from '@/components/ui/switch';
 import {
 	Select,
@@ -18,7 +17,6 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
-	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import { initialModelConfigurationState } from '../../components/model-configuration-state';
@@ -26,35 +24,22 @@ import { initialModelConfigurationState } from '../../components/model-configura
 export default function MemoryPage(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [config, setConfig] = useState<MemoryConfig | null>(null);
-	const [status, setStatus] = useState<MemoryStatus | null>(null);
-	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const persistedConfig = useRef<string | null>(null);
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([window.memory.getConfig(), window.memory.status()])
-			.then(([next, progress]) => {
+		void window.memory
+			.getConfig()
+			.then((next) => {
 				if (!mounted) return;
 				persistedConfig.current = JSON.stringify(next);
 				setConfig(next);
-				setStatus(progress);
 			})
 			.catch((failure: unknown) => {
 				if (mounted) setError(String(failure));
 			});
-		const timer = setInterval(() => {
-			void window.memory
-				.status()
-				.then((next) => {
-					if (mounted) setStatus(next);
-				})
-				.catch((failure: unknown) => {
-					if (mounted) setError(String(failure));
-				});
-		}, 3000);
 		return () => {
 			mounted = false;
-			clearInterval(timer);
 		};
 	}, []);
 	useEffect(() => {
@@ -80,18 +65,6 @@ export default function MemoryPage(): React.JSX.Element {
 			clearTimeout(timer);
 		};
 	}, [config]);
-	const run = async (operation: () => Promise<unknown>): Promise<void> => {
-		setBusy(true);
-		setError(null);
-		try {
-			await operation();
-			setStatus(await window.memory.status());
-		} catch (failure) {
-			setError(failure instanceof Error ? failure.message : String(failure));
-		} finally {
-			setBusy(false);
-		}
-	};
 	const groups = providerIdsFor('llm').flatMap((id) => {
 		const provider = providers().find((item) => item.id === id);
 		const models = providerModels(id, 'llm');
@@ -118,8 +91,7 @@ export default function MemoryPage(): React.JSX.Element {
 			{!config ? (
 				<p role="status">{t('settings.memory.loading')}</p>
 			) : (
-				<>
-					<fieldset disabled={busy} className="min-w-0 space-y-4">
+				<fieldset className="min-w-0 space-y-4">
 						<SettingsPanel>
 							<SettingsRow
 								title={t('settings.memory.enabled')}
@@ -143,7 +115,7 @@ export default function MemoryPage(): React.JSX.Element {
 									providerId: config.providerId,
 									modelId: config.modelId,
 									loading: false,
-									saving: busy,
+									saving: false,
 								}}
 								collapsible={false}
 								onChange={(providerId, modelId) =>
@@ -185,36 +157,7 @@ export default function MemoryPage(): React.JSX.Element {
 								}
 							/>
 						</SettingsPanel>
-					</fieldset>
-					<SettingsSection
-						title={t('settings.memory.processing')}
-						action={
-							<Button
-								variant="outline"
-								disabled={busy || status?.running || !config.providerId || !config.modelId}
-								onClick={() => void run(() => window.memory.refresh())}
-							>
-								{t('settings.memory.generate')}
-							</Button>
-						}
-					>
-						<p role="status" className="text-sm text-muted-foreground">
-							{t(status?.running ? 'settings.memory.running' : 'settings.memory.idle')} ·{' '}
-							{t('settings.memory.pending', { count: status?.pending ?? 0 })}
-						</p>
-						<p className="text-sm text-muted-foreground">
-							{t('settings.memory.lastSuccess')}:{' '}
-							{status?.lastSuccess
-								? new Date(status.lastSuccess).toLocaleString()
-								: t('settings.memory.never')}
-						</p>
-						{status?.error && (
-							<p role="alert" className="text-sm text-destructive">
-								{status.error}
-							</p>
-						)}
-					</SettingsSection>
-				</>
+				</fieldset>
 			)}
 		</SettingsPageShell>
 	);
