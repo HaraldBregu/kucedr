@@ -179,6 +179,45 @@ it('reschedules cron, pauses automatic triggers, and permits manual refresh', as
  await h.memory.stop();
 });
 
+it('automatically generates memory from only the changed session snapshot', async () => {
+	const h = setup();
+	await h.memory.start();
+	h.sessions.push({
+		id: 'other',
+		messages: [{ fingerprint: 'other-old', role: 'user', text: 'I use Python.' }],
+	});
+	await h.memory.refresh();
+	h.sessions[0].messages.push({
+		fingerprint: 'chat-new',
+		role: 'user',
+		text: 'I now use TypeScript.',
+	});
+	h.sessions[1].messages.push({
+		fingerprint: 'other-new',
+		role: 'user',
+		text: 'I now use Go.',
+	});
+	let request = '';
+	let entered!: () => void;
+	const started = new Promise<void>((resolve) => {
+		entered = resolve;
+	});
+	h.infer.mockImplementationOnce(async (_config, _system, value: string) => {
+		request = value;
+		entered();
+		return h.extracted;
+	});
+	h.sessionChanged()?.('chat');
+	await started;
+	while (h.memory.status().running) await new Promise((resolve) => setImmediate(resolve));
+	expect(request).toContain('I now use TypeScript.');
+	expect(request).not.toContain('I now use Go.');
+	expect(h.state().checkpoints.chat).toContain('chat-new');
+	expect(h.state().checkpoints.other).not.toContain('other-new');
+	await h.memory.stop();
+	expect(h.stopWatching).toHaveBeenCalled();
+});
+
 it('rejects invalid configuration without replacing the working schedule', async () => {
  const h = setup();
  await h.memory.start();
