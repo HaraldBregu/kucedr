@@ -434,6 +434,7 @@ export class LlmModel implements LlmAdapter {
 				break;
 			}
 			case 'response.output_text.delta':
+			case 'response.refusal.delta':
 				yield { type: 'text_delta', text: event.delta };
 				break;
 			case 'response.mcp_call_arguments.delta':

@@ -47,6 +47,9 @@ export async function* responses(
 				if (content.type === 'output_text' && content.text) {
 					yield { type: 'text_delta', text: content.text };
 				}
+				if (content.type === 'refusal' && content.refusal) {
+					yield { type: 'text_delta', text: content.refusal };
+				}
 			}
 			continue;
 		}
