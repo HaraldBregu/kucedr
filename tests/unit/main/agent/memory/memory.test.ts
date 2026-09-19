@@ -154,6 +154,20 @@ it('keeps memory model configuration independent from the chat selection', async
  expect(new Memory(h.dependencies).getConfig().modelId).toBe('independent');
 });
 
+it('removes legacy schedule settings from persisted memory configuration', () => {
+	const h = setup();
+	Object.assign(h.state().config, {
+		scheduleEnabled: true,
+		cronExpression: '*/15 * * * *',
+		timezone: 'Europe/Rome',
+	});
+	const config = new Memory(h.dependencies).getConfig();
+	expect(config).not.toHaveProperty('scheduleEnabled');
+	expect(config).not.toHaveProperty('cronExpression');
+	expect(config).not.toHaveProperty('timezone');
+	expect(h.state().config).toEqual(config);
+});
+
 it('rejects a non-Markdown fenced model response', async () => {
  const h = setup();
  h.infer.mockResolvedValueOnce('```md\n- Prefers long answers.\n```');
