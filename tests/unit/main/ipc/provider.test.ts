@@ -164,6 +164,28 @@ describe('provider credential IPC boundary', () => {
 		).toThrow('The provider base URL is invalid.');
 	});
 
+	it('lists model IDs from a custom OpenAI-compatible provider', async () => {
+		register();
+		const fetchMock = jest.fn().mockResolvedValue({
+			ok: true,
+			json: async () => ({
+				data: [{ id: 'llama3.2:3b' }, { id: 'qwen3:8b' }, { id: 'llama3.2:3b' }, {}],
+			}),
+		});
+		global.fetch = fetchMock;
+
+		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
+			{},
+			{ baseUrl: 'http://localhost:11434/v1', apiKey: 'ollama' }
+		);
+
+		expect(result).toEqual(['llama3.2:3b', 'qwen3:8b']);
+		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/v1/models', {
+			headers: { Authorization: 'Bearer ollama' },
+			signal: expect.any(AbortSignal),
+		});
+	});
+
 	it('saves and lists database credentials separately from model credentials', () => {
 		setProvider.mockClear();
 		register();

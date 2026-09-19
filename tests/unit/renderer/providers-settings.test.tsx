@@ -52,9 +52,10 @@ jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
 beforeEach(() => {
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
-		value: {
+	value: {
 			list: jest.fn().mockResolvedValue([]),
 			set: jest.fn().mockResolvedValue({ id: 'pinecone', apiKey: 'database-secret' }),
+			listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b', 'qwen3:8b']),
 		},
 	});
 	Object.defineProperty(window, 'search', {
@@ -193,6 +194,29 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 		})
 	);
 	expect(screen.getByText('llama3.2:3b')).toBeInTheDocument();
+});
+
+it('loads available custom provider models', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="models" />
+		</MemoryRouter>
+	);
+
+	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
+	await user.type(screen.getByLabelText('Custom provider base URL'), 'http://localhost:11434/v1');
+	await user.type(screen.getByLabelText('Custom provider API key'), 'ollama');
+	await user.click(screen.getByRole('button', { name: 'Refresh custom provider models' }));
+
+	await waitFor(() =>
+		expect(window.provider.listCustomModels).toHaveBeenCalledWith({
+			baseUrl: 'http://localhost:11434/v1',
+			apiKey: 'ollama',
+		})
+	);
+	expect(screen.getByLabelText('Custom provider model ID')).toHaveValue('llama3.2:3b');
+	expect(screen.getByRole('option', { name: 'qwen3:8b' })).toBeInTheDocument();
 });
 
 it('masks saved Search keys until editing', async () => {
