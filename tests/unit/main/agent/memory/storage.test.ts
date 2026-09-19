@@ -70,7 +70,9 @@ describe('memory storage', () => {
 
 		const files = await fs.readdir(path.join(root, 'memory'));
 		expect(files).toContain('settings.json');
-		expect(files.some((file) => /^settings\.legacy-\d+\.json$/.test(file))).toBe(true);
+		expect(files.some((file) => /^settings\.legacy-\d+-[a-f0-9-]+\.json$/.test(file))).toBe(
+			true
+		);
 		expect(await fs.readFile(settings, 'utf8')).toContain('current');
 		await expect(fs.stat(legacySettings)).rejects.toMatchObject({ code: 'ENOENT' });
 	});

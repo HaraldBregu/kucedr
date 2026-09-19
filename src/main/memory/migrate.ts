@@ -7,6 +7,7 @@ import { memoryPath, MEMORY_FILE } from './path';
 export async function migrateWorkspaceMemory(config: Config): Promise<void> {
 	const legacy = path.join(path.resolve(config.location), MEMORY_FILE);
 	const target = memoryPath();
+	if (legacy === target) return;
 	let legacyContent: string;
 	try {
 		legacyContent = await fs.readFile(legacy, 'utf8');

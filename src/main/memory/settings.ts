@@ -1,4 +1,5 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, statSync, unlinkSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { userDataLocation } from '../shared/user_data_location';
 import { memoryPath, MEMORY_SETTINGS_FILE } from './path';
@@ -19,7 +20,7 @@ export function prepareMemorySettings(): string {
 	}
 	const backup = path.join(
 		directory,
-		`settings.legacy-${Math.trunc(statSync(legacy).mtimeMs)}.json`
+		`settings.legacy-${Math.trunc(statSync(legacy).mtimeMs)}-${randomUUID()}.json`
 	);
 	renameSync(legacy, backup);
 	return directory;
