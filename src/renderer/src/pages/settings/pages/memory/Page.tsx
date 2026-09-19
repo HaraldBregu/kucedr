@@ -92,8 +92,8 @@ export default function MemoryPage(): React.JSX.Element {
 				<p role="status">{t('settings.memory.loading')}</p>
 			) : (
 				<fieldset className="min-w-0 space-y-4">
-						<SettingsPanel>
-							<SettingsRow
+					<SettingsPanel>
+						<SettingsRow
 								title={t('settings.memory.enabled')}
 								description={t('settings.memory.enabledDescription')}
 								actions={
@@ -103,8 +103,8 @@ export default function MemoryPage(): React.JSX.Element {
 										onCheckedChange={(enabled) => setConfig({ ...config, enabled })}
 									/>
 								}
-							/>
-							<ModelProviderConfiguration
+						/>
+						<ModelProviderConfiguration
 								idPrefix="memory"
 								triggerTitle={t('settings.memory.model')}
 								description={t('settings.memory.modelDescription')}
@@ -121,8 +121,8 @@ export default function MemoryPage(): React.JSX.Element {
 								onChange={(providerId, modelId) =>
 									setConfig({ ...config, providerId, modelId, modelOptions: {} })
 								}
-							/>
-							<div className="px-4 pb-4">
+						/>
+						<div className="px-4 pb-4">
 								<ModelOptions
 									inputs={inputs}
 									values={config.modelOptions}
@@ -133,8 +133,8 @@ export default function MemoryPage(): React.JSX.Element {
 										})
 									}
 								/>
-							</div>
-							<SettingsRow
+						</div>
+						<SettingsRow
 								title={t('settings.memory.type')}
 								actions={
 									<Select
@@ -155,8 +155,8 @@ export default function MemoryPage(): React.JSX.Element {
 										</SelectContent>
 									</Select>
 								}
-							/>
-						</SettingsPanel>
+						/>
+					</SettingsPanel>
 				</fieldset>
 			)}
 		</SettingsPageShell>
