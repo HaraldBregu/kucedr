@@ -84,6 +84,52 @@ it('updates provider schemas before continuing after a discovery result', async 
 	expect(execute).toHaveBeenCalledTimes(1);
 });
 
+it('does not continue a voice response when the provider rejects a tool refresh', async () => {
+	const discovery = createToolDiscovery({ eligible: [jsonTool({
+		id: 'read',
+		name: 'Read',
+		description: 'Read a file',
+		schema: { type: 'object' },
+		execute: () => 'read',
+	})], required: [] });
+	const addToolResult = jest.fn();
+	const onError = jest.fn();
+	const runtime = new RealtimeVoiceToolRuntime({
+		sessionId: 'voice-refresh-error',
+		windowId: 4,
+		tools: discovery.active(),
+		refreshTools: async () => ({ tools: discovery.active(), instructions: discovery.prompt() }),
+		signal: new AbortController().signal,
+		resources: new KeyedMutex(),
+		conversation: { addToolCall: () => undefined, addToolResult: () => undefined },
+		connection: () => ({
+			appendAudio: async () => undefined,
+			interrupt: async () => undefined,
+			stop: async () => undefined,
+			updateTools: async () => {
+				throw new Error('Provider rejected update');
+			},
+			addToolResult,
+		}),
+		emit: () => undefined,
+		onThinking: () => undefined,
+		onError,
+	});
+
+	runtime.handle({
+		type: 'tool_call',
+		callId: 'load-read',
+		itemId: 'load-read',
+		responseId: 'load-response',
+		name: 'discover_tools',
+		arguments: '{"query":"Read a file","toolIds":["read"],"mcpServerIds":[]}',
+	});
+	await new Promise((resolve) => setImmediate(resolve));
+
+	expect(onError).toHaveBeenCalledWith(expect.objectContaining({ message: 'Provider rejected update' }));
+	expect(addToolResult).not.toHaveBeenCalled();
+});
+
 it('runs native Realtime function calls through the existing tool runner and emits normalized lifecycle events', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-success-'));
 	const location = path.join(temporaryRoot, 'agent');
