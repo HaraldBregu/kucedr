@@ -35,6 +35,7 @@ export interface RealtimeVoiceToolRuntimeDependencies {
 	chatSessionId?: string;
 	windowId: number;
 	tools: Tool[];
+	refreshTools?(): Promise<{ tools: Tool[]; instructions: string }>;
 	signal: AbortSignal;
 	resources: KeyedMutex;
 	conversation: Pick<RealtimeVoiceConversation, 'addToolCall' | 'addToolResult'>;
@@ -59,8 +60,11 @@ export class RealtimeVoiceToolRuntime {
 	private outputBytes = 0;
 	private paidCalls = 0;
 	private webCalls = 0;
+	private tools: Tool[];
 
-	constructor(private readonly dependencies: RealtimeVoiceToolRuntimeDependencies) {}
+	constructor(private readonly dependencies: RealtimeVoiceToolRuntimeDependencies) {
+		this.tools = dependencies.tools;
+	}
 
 	observe(responseId: string): boolean {
 		if (!this.responses.has(responseId)) {
@@ -127,7 +131,7 @@ export class RealtimeVoiceToolRuntime {
 	private async run(event: Extract<ToolAdapterEvent, { type: 'tool_call' }>): Promise<void> {
 		const response = this.responses.get(event.responseId)!;
 		try {
-			const tool = this.dependencies.tools.find((candidate) => candidate.id === event.name);
+			const tool = this.tools.find((candidate) => candidate.id === event.name);
 			const args = parseToolArgs(event.arguments);
 			if (!this.names.has(event.callId)) {
 				this.names.set(event.callId, event.name);
@@ -193,6 +197,22 @@ export class RealtimeVoiceToolRuntime {
 				if (runtimeEvent.type === 'tool_permission_request')
 					this.emit(runtimeEvent, response.runId);
 				if (runtimeEvent.type === 'tool_call_end') {
+					if (
+						event.name === 'discover_tools' &&
+						runtimeEvent.isError !== true &&
+						this.dependencies.refreshTools
+					) {
+						const connection = this.dependencies.connection();
+						if (!connection?.updateTools)
+							throw new Error('Realtime voice provider cannot update loaded tools.');
+						const refreshed = await this.dependencies.refreshTools();
+						await connection.updateTools(
+							refreshed.tools,
+							refreshed.instructions,
+							response.signal
+						);
+						this.tools = refreshed.tools;
+					}
 					await this.finish(
 						persistedToolCall,
 						runtimeEvent.input,
@@ -226,6 +246,7 @@ export class RealtimeVoiceToolRuntime {
 	}
 
 	private consumeBudget(name: string): string | undefined {
+		if (name === 'discover_tools') return undefined;
 		if (this.outputBytes > MAX_TOOL_OUTPUT_BYTES)
 			return 'Error: realtime voice tool-output budget exhausted.';
 		this.calls += 1;
@@ -250,7 +271,8 @@ export class RealtimeVoiceToolRuntime {
 		response: { signal: AbortSignal; runId: string }
 	): Promise<void> {
 		const outputText = formatToolOutput(output);
-		this.outputBytes += Buffer.byteLength(outputText, 'utf8');
+		if (toolCall.name !== 'discover_tools')
+			this.outputBytes += Buffer.byteLength(outputText, 'utf8');
 		const exhausted = this.outputBytes > MAX_TOOL_OUTPUT_BYTES;
 		const finalOutput = exhausted
 			? 'Error: realtime voice tool-output budget exhausted.'

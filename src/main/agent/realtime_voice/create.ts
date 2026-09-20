@@ -2,6 +2,8 @@ import { normalizeProviderId } from '../../../shared/provider_types';
 import { RealtimeVoiceChannels } from '../../../shared/ipc_channels_definitions';
 import type { Agent } from '../agent';
 import { builtinTools } from '../runner/run_builtin_tools';
+import { createToolDiscovery } from '../runner/run_discovery';
+import { filterDisabledTools } from '../runner/run_tools';
 import { buildSystemPrompt, buildWorkspaceContext } from '../system';
 import type { EventBus } from '../../event_bus';
 import { defaultProviderId, loadModels } from '../../models';
@@ -16,6 +18,7 @@ import { getProvider } from '../../settings_store';
 import { realtimeVoiceConversationFactory } from './conversation';
 import { RealtimeVoiceManager } from './manager';
 import { openAppWindows } from '../../apps/app_render';
+import { getPermissions } from '../agent_store';
 
 export function createRealtimeVoiceManager(
 	agent: Agent,
@@ -78,10 +81,28 @@ export function createRealtimeVoiceManager(
 						  supportedVoices.includes(metadataVoice.trim())
 						? metadataVoice.trim()
 						: (realtimeVoiceDefaultVoice(providerId) ?? '');
-			const tools = supportsRealtimeVoiceTools(providerId, model.id)
-				? builtinTools(agent.config, agent.sandbox, 'default')
-				: [];
-			const instructions = await buildSystemPrompt(agent.config, tools);
+			const supportsTools = supportsRealtimeVoiceTools(providerId, model.id);
+			const discovery = supportsTools
+				? createToolDiscovery({
+						eligible: filterDisabledTools(
+							builtinTools(agent.config, agent.sandbox, 'default'),
+							getPermissions().tools
+						),
+						required: [],
+					})
+				: undefined;
+			const refreshTools = async (): Promise<{
+				tools: ReturnType<typeof builtinTools>;
+				instructions: string;
+			}> => {
+				const tools = discovery?.active() ?? [];
+				const baseInstructions = await buildSystemPrompt(agent.config, tools);
+				return {
+					tools,
+					instructions: [baseInstructions, discovery?.prompt()].filter(Boolean).join('\n\n'),
+				};
+			};
+			const toolConfiguration = await refreshTools();
 			const workspaceContext = await buildWorkspaceContext(agent.config);
 			return {
 				provider: {
@@ -91,9 +112,10 @@ export function createRealtimeVoiceManager(
 				},
 				modelId: model.id,
 				voice,
-				instructions,
+				instructions: toolConfiguration.instructions,
 				context: workspaceContext ? [{ role: 'user', text: workspaceContext }] : [],
-				tools,
+				tools: toolConfiguration.tools,
+				...(discovery ? { refreshTools } : {}),
 			};
 		},
 	});

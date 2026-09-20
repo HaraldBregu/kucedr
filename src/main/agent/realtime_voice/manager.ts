@@ -20,6 +20,7 @@ import type {
 } from '../../models/adapters/realtime_voice';
 import type { RealtimeVoiceConversation, RealtimeVoiceConversationFactory } from './conversation';
 import { RealtimeVoiceToolRuntime } from './tool_runtime';
+import type { Tool } from '../types';
 
 export interface ResolvedRealtimeVoiceConfiguration extends Omit<
 	RealtimeVoiceAdapterRequest,
@@ -71,7 +72,7 @@ export class RealtimeVoiceManager {
 		if (previous) await this.close(previous, true);
 
 		const configuration = await this.dependencies.resolveConfiguration();
-		const { provider, context, ...adapterConfiguration } = configuration;
+		const { provider, context, refreshTools, ...adapterConfiguration } = configuration;
 		this.requireCurrentGeneration(windowId, generation);
 		const displaced = this.byWindow.get(windowId);
 		if (displaced) await this.close(displaced, true);
@@ -109,6 +110,7 @@ export class RealtimeVoiceManager {
 			chatSessionId,
 			windowId,
 			tools: configuration.tools,
+			...(refreshTools ? { refreshTools } : {}),
 			signal: controller.signal,
 			resources: this.dependencies.resources,
 			conversation: active.conversation,
