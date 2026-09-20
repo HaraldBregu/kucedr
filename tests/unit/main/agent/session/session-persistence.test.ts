@@ -97,9 +97,7 @@ describe('session persistence', () => {
 		];
 		persist(state);
 
-		expect(updateUserMessageBySessionId(SESSION_ID, location, 1, 'Updated question')).toBe(
-			true
-		);
+		expect(updateUserMessageBySessionId(SESSION_ID, location, 1, 'Updated question')).toBe(true);
 		expect(loadMessagesBySessionId(SESSION_ID, location)).toEqual([
 			{ role: 'user', content: 'Updated question' },
 		]);

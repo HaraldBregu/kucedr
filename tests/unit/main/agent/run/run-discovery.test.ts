@@ -15,7 +15,10 @@ describe('progressive tool discovery', () => {
 	it('starts minimal and enforces per-call, per-run, deduplication, and eligibility boundaries', async () => {
 		const eligible = Array.from({ length: 20 }, (_, index) => fakeTool(`tool_${index}`));
 		const required = fakeTool('get_goal');
-		const discovery = createToolDiscovery({ eligible: [...eligible, required], required: [required] });
+		const discovery = createToolDiscovery({
+			eligible: [...eligible, required],
+			required: [required],
+		});
 
 		expect(discovery.active().map((tool) => tool.id)).toEqual(['get_goal', 'discover_tools']);
 		expect(discovery.tool.description).toContain('tool_0 | tool 0 | tool_0 capability');

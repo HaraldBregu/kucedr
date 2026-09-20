@@ -1,5 +1,8 @@
 import { agentChatReducer } from '../../../src/renderer/src/pages/home/context/reducer';
-import type { AgentChatState, AgentMessage } from '../../../src/renderer/src/pages/home/context/state';
+import type {
+	AgentChatState,
+	AgentMessage,
+} from '../../../src/renderer/src/pages/home/context/state';
 
 it('replaces the edited turn and removes every later chat message', () => {
 	const state: AgentChatState = {
