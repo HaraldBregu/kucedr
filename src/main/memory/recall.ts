@@ -12,7 +12,10 @@ export function recall(markdown: string, query: string): string {
 		if (!/^\s*[-*]\s+\S/.test(source)) return [];
 		const line = source.replace(/ <!-- kucedr:(?:fact|summary):[^ ]* -->/g, '').trim();
 		if (!line || privateContent(line)) return [];
-		const normalized = line.toLocaleLowerCase().replace(/\s+/g, ' ');
+		const normalized = line
+			.replace(/^\s*[-*]\s+/, '')
+			.toLocaleLowerCase()
+			.replace(/\s+/g, ' ');
 		const core = /\b(profile|preference|preferences|profilo|preferenze)\b/.test(section);
 		const score = terms.reduce(
 			(total, term) => total + (normalized.includes(term) ? 1 : 0),

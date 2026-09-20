@@ -305,6 +305,8 @@ describe('run stream system prompt', () => {
 		if (denied[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(denied[0].tools).toEqual(['discover_tools']);
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('read | Read');
+		for (const removed of ['save_memory', 'list_memories', 'forget_memory'])
+			expect(runModelTurnMock.mock.calls[1][9]).not.toContain(removed);
 		expect(denied[0].tools).not.toContain('subagent');
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});

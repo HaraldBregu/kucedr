@@ -9,7 +9,7 @@ it('always recalls up to four unique core records plus relevant durable records'
 - Prefers concise answers.
 - Uses dark mode.
 - Fifth core record.
-- Prefers concise answers.
+* Prefers concise answers.
 ## Projects
 - Kucedr uses TypeScript.
 - Unrelated Python project.
