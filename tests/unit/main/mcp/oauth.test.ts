@@ -9,7 +9,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 	'authorizes %s with a registered client without DCR',
 	async (host) => {
 		const serverUrl = `https://${host}.googleapis.com/mcp/v1`;
-		let state: McpOAuthState = { client_id: 'registered-client', client_secret: 'saved-secret' };
+		let state: McpOAuthState = { client_id: 'old-client', client_secret: 'old-secret' };
 		const redirect = jest.fn();
 		const provider = createOAuthProvider({
 			serverUrl,
@@ -76,7 +76,7 @@ it('explains the Google credential requirement before attempting dynamic registr
 		storage: { load: () => ({}), save: jest.fn() },
 	});
 	expect(() => provider.clientInformation()).toThrow(
-		'Google Cloud OAuth client ID and client secret'
+		'MCP_GOOGLE_CLIENT_ID'
 	);
 });
 
