@@ -10,6 +10,7 @@ function fakeTool(name: string, output: string): Tool {
 		schema: { type: 'object' },
 		timeoutMs: 1_000,
 		maxOutputBytes: 1_000,
+		capability: { effects: ['read'] },
 		parseInput: () => ({}),
 		run: () => output,
 	};
