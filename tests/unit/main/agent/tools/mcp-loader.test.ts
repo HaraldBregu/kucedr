@@ -182,8 +182,8 @@ describe('loadMcpTools', () => {
 		expect(connectMock).not.toHaveBeenCalled();
 		expect(result.tools).toEqual([]);
 		expect(result.deferredServers).toEqual([
-			{ id: 'eager', name: 'Eager' },
 			{ id: 'deferred', name: 'Deferred' },
+			{ id: 'eager', name: 'Eager' },
 			{ id: 'unrelated', name: 'unrelated' },
 		]);
 

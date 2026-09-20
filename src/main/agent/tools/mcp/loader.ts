@@ -165,7 +165,12 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 						return data ? [[id, data] as const] : [];
 					});
 				if (selected.length === 0) return [];
-				return discover(selected, discoverySignal);
+				try {
+					return await discover(selected, discoverySignal);
+				} catch (error) {
+					await closeMcpClients(clients);
+					throw error;
+				}
 			},
 			diagnostics,
 			close: () => closeMcpClients(clients),
