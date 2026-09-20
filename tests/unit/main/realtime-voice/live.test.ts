@@ -3,6 +3,7 @@ import { OpenAILiveVoiceAdapter } from '../../../../src/main/models/adapters/rea
 class FakeLiveSocket {
 	readonly bufferedAmount = 0;
 	readonly sent: string[] = [];
+	closed = false;
 	private readonly listeners = {
 		close: [] as Array<(...args: unknown[]) => void>,
 		error: [] as Array<(...args: unknown[]) => void>,
@@ -19,6 +20,7 @@ class FakeLiveSocket {
 	}
 
 	close(): void {
+		this.closed = true;
 		this.emit('close');
 	}
 
@@ -140,5 +142,26 @@ describe('OpenAILiveVoiceAdapter', () => {
 			expect.objectContaining({ itemId: 'live-output-0', transcript: 'First assistant message' }),
 			expect.objectContaining({ itemId: 'live-output-1', transcript: 'Second assistant message' }),
 		]);
+	});
+
+	it('rejects and closes immediately when setup returns a protocol error', async () => {
+		const socket = new FakeLiveSocket();
+		const adapter = new OpenAILiveVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			15_000
+		);
+		const connecting = adapter.connect(
+			{ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] },
+			() => undefined
+		);
+		socket.emit('open');
+		socket.emit(
+			'message',
+			JSON.stringify({ type: 'error', error: { message: 'Invalid Live configuration.' } })
+		);
+
+		await expect(connecting).rejects.toThrow('Invalid Live configuration.');
+		expect(socket.closed).toBe(true);
 	});
 });

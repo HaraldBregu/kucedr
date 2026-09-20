@@ -301,6 +301,30 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		jest.useRealTimers();
 	});
 
+	it('rejects and closes immediately when setup returns a protocol error', async () => {
+		const socket = new FakeSocket();
+		const adapter = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			15_000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'gpt-realtime-2.1',
+				voice: 'marin',
+				instructions: '',
+				history: [],
+				tools: [],
+			},
+			() => undefined
+		);
+		socket.open();
+		socket.event({ type: 'error', error: { message: 'Invalid session configuration.' } });
+
+		await expect(connecting).rejects.toThrow('Invalid session configuration.');
+		expect(socket.closed).toBe(true);
+	});
+
 	it('closes and rejects setup immediately when the owner aborts', async () => {
 		const socket = new FakeSocket();
 		const adapter = new OpenAIRealtimeVoiceAdapter(

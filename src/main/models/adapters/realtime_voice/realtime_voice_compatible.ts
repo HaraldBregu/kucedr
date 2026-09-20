@@ -190,7 +190,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			return;
 		}
 		tools.resultIds.add(callId);
-		this.continueToolResponse(tools);
+		this.continueToolResponse(responseId, tools);
 	}
 
 	async stop(): Promise<void> {
@@ -244,7 +244,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			const tools = responseId ? this.responseTools.get(responseId) : undefined;
 			if (tools) {
 				tools.responseDone = true;
-				this.continueToolResponse(tools);
+				this.continueToolResponse(responseId, tools);
 			}
 			return;
 		}
@@ -369,7 +369,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		this.callResponses.set(callId, responseId);
 	}
 
-	private continueToolResponse(tools: {
+	private continueToolResponse(responseId: string, tools: {
 		callIds: Set<string>;
 		resultIds: Set<string>;
 		responseDone: boolean;
@@ -384,5 +384,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			return;
 		tools.continued = true;
 		this.realtime.send({ type: 'response.create' });
+		this.responseTools.delete(responseId);
+		for (const callId of tools.callIds) this.callResponses.delete(callId);
 	}
 }
