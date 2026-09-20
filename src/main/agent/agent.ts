@@ -50,7 +50,6 @@ import type {
 } from '../../shared/agent_types';
 import { toError } from '../ipc/core/error';
 import { AgentRunScheduler, type AgentRunPriority } from './agent_scheduler';
-import type { WindowFactory } from '../window_factory';
 import { KeyedLimiter } from './limiter';
 import { KeyedMutex } from './mutex';
 import type { ExecSandbox } from './sandbox';
@@ -111,7 +110,6 @@ export class Agent {
 	readonly config: Config;
 
 	constructor(
-		private readonly windowFactory: WindowFactory,
 		readonly sandbox: ExecSandbox,
 		readonly memory?: MemoryService
 	) {
@@ -323,7 +321,6 @@ export class Agent {
 			]);
 			const events = stream(this.config, session, input, runSignal, {
 				streaming: options.streaming ?? true,
-				windowFactory: this.windowFactory,
 				resources: this.resources,
 				sandbox: this.sandbox,
 				memory: this.memory,

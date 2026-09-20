@@ -1,5 +1,4 @@
 import type { Config, Tool } from '../types';
-import type { WindowFactory } from '../../window_factory';
 import type { ExecSandbox } from '../sandbox';
 import type { AgentInteractionMode } from '../../../shared/agent_types';
 import { completeBootstrapTool } from '../tools/assistant/complete_bootstrap';
@@ -14,9 +13,6 @@ import { processTool } from '../tools/core/process';
 import { readTool } from '../tools/core/read';
 import { requestUserInputTool } from '../tools/core/ask';
 import { writeTool } from '../tools/core/write';
-import { closeAppsTool } from '../tools/apps/close_apps';
-import { listAppsTool } from '../tools/apps/list_apps';
-import { openAppsTool } from '../tools/apps/open_apps';
 import { updateHealthSettingsTool } from '../tools/health/update_health_settings';
 import { updateHealthTool } from '../tools/health/update_health';
 import { getKnowledgeTools } from '../tools/knowledge';
@@ -45,7 +41,6 @@ import { useWebBrowserTool } from '../tools/web/use_web_browser';
 export function builtinTools(
 	config: Config,
 	sandbox: ExecSandbox,
-	windowFactory?: WindowFactory,
 	interactionMode: AgentInteractionMode = 'default'
 ): Tool[] {
 	return [
@@ -84,9 +79,6 @@ export function builtinTools(
 		deleteTaskTool,
 		listTasksTool,
 		runTaskNowTool,
-		listAppsTool,
-		...(windowFactory ? [openAppsTool(windowFactory)] : []),
-		closeAppsTool,
 		completeBootstrapTool,
 	];
 }

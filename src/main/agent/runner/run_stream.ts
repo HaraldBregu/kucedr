@@ -28,7 +28,6 @@ import { listSkillsTool } from '../tools/skills/list_skills';
 import { loadSkillTool } from '../tools/skills/load_skill';
 import { subagentTool, subagentsTool } from '../tools/core/subagents';
 import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool } from '../types';
-import type { WindowFactory } from '../../window_factory';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
 import { filterDisabledTools, filterTools } from './run_tools';
@@ -61,7 +60,6 @@ export interface StreamOptions {
 	memory?: MemoryService;
 	instructions?: string;
 	streaming?: boolean;
-	windowFactory?: WindowFactory;
 	resources?: KeyedMutex;
 	providerLimiter?: KeyedLimiter;
 	subagentLimiter?: KeyedLimiter;
@@ -177,12 +175,7 @@ async function* loop(
 
 	let tools: Tool[] = options.tools
 		? [...options.tools]
-		: builtinTools(
-				config,
-				options.sandbox!,
-				options.windowFactory,
-				input.interactionMode
-			);
+		: builtinTools(config, options.sandbox!, input.interactionMode);
 	if (backgroundBrowser)
 		tools = tools.map((tool) => (tool.id === backgroundBrowser.id ? backgroundBrowser : tool));
 	if (!options.tools && input.interactionMode !== 'plan') {

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-	AppWindow,
 	AlertTriangle,
 	BookOpen,
 	FileText,
@@ -176,15 +175,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 			['Delete task', 'delete_task', 'Permanently removes a scheduled task.'],
 			['List tasks', 'list_tasks', 'Lists scheduled tasks.'],
 			['Run task now', 'run_task_now', 'Runs a scheduled task immediately.'],
-		],
-	},
-	{
-		titleKey: 'apps',
-		icon: AppWindow,
-		tools: [
-			['List apps', 'list_apps', 'Lists installed apps available to the agent.'],
-			['Open apps', 'open_apps', 'Opens an installed app.'],
-			['Close apps', 'close_apps', 'Closes an open app.'],
 		],
 	},
 	{

@@ -61,7 +61,7 @@ export function bootstrapServices(): BootstrapResult {
 	const appStorage = new AppStorage();
 	const windowFactory = new WindowFactory(logger, appRegistry);
 	const memoryService = createMemory(() => agentService.config);
-	const agentService = new Agent(windowFactory, new ExecSandbox(), memoryService);
+	const agentService = new Agent(new ExecSandbox(), memoryService);
 	const codingStore = new CodingStore();
 	const codingService = new Coding({
 		store: codingStore,
@@ -74,7 +74,7 @@ export function bootstrapServices(): BootstrapResult {
 	});
 	const channelRegistry = createChannelRegistry({ logger, eventBus, agentService });
 	const windowContextManager = new WindowContextManager(logger, eventBus);
-	const realtimeVoiceManager = createRealtimeVoiceManager(agentService, windowFactory, eventBus);
+	const realtimeVoiceManager = createRealtimeVoiceManager(agentService, eventBus);
 	const conversationService = new Conversation(agentService, realtimeVoiceManager);
 	const cloudConfig = loadCloudConfig();
 	const authStorage = cloudConfig ? new AuthSessionStorage() : undefined;

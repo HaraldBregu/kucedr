@@ -151,7 +151,7 @@ it('keeps explicit workspace deny rules effective', async () => {
 	expect(fs.existsSync(path.join(workspace, 'blocked.txt'))).toBe(false);
 });
 
-it.each(['camera_recorder', 'open_apps'])('retains approval for %s effects beyond workspace files', async (id) => {
+it.each(['camera_recorder', 'delegate_a2a'])('retains approval for %s effects beyond workspace files', async (id) => {
 	const run = jest.fn();
 	const tool = jsonTool({ id, name: id, description: id, schema: {}, execute: run });
 	expect((await execute(tool, {})).at(-1)).toMatchObject({ type: 'tool_permission_request' });

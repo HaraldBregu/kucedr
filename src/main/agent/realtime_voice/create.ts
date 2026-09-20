@@ -13,14 +13,12 @@ import {
 } from '../../models/adapters/realtime_voice';
 import { getModelId, getOptions, getProviderId } from '../../models/selection';
 import { getProvider } from '../../settings_store';
-import type { WindowFactory } from '../../window_factory';
 import { realtimeVoiceConversationFactory } from './conversation';
 import { RealtimeVoiceManager } from './manager';
 import { openAppWindows } from '../../apps/app_render';
 
 export function createRealtimeVoiceManager(
 	agent: Agent,
-	windowFactory: WindowFactory,
 	eventBus: EventBus
 ): RealtimeVoiceManager {
 	const manager = new RealtimeVoiceManager({
@@ -81,7 +79,7 @@ export function createRealtimeVoiceManager(
 						? metadataVoice.trim()
 						: (realtimeVoiceDefaultVoice(providerId) ?? '');
 			const tools = supportsRealtimeVoiceTools(providerId, model.id)
-				? builtinTools(agent.config, agent.sandbox, windowFactory, 'default')
+				? builtinTools(agent.config, agent.sandbox, 'default')
 				: [];
 			const instructions = await buildSystemPrompt(agent.config, tools);
 			const workspaceContext = await buildWorkspaceContext(agent.config);
