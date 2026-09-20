@@ -3,6 +3,7 @@ import {
 	realtimeVoiceDefaultVoice,
 	realtimeVoiceModelRefs,
 	supportsRealtimeVoiceModel,
+	supportsRealtimeVoiceTools,
 	XAIRealtimeVoiceAdapter,
 } from '../../../../src/main/models/adapters/realtime_voice';
 
@@ -15,6 +16,9 @@ describe('realtime voice adapter factory', () => {
 			{ providerId: 'xai', modelId: 'grok-voice-latest' },
 		]);
 		expect(supportsRealtimeVoiceModel(' XAI ', 'grok-voice-latest')).toBe(true);
+		expect(supportsRealtimeVoiceTools('openai', 'gpt-realtime-2.1')).toBe(true);
+		expect(supportsRealtimeVoiceTools('xai', 'grok-voice-latest')).toBe(true);
+		expect(supportsRealtimeVoiceTools('openai', 'gpt-live-1')).toBe(false);
 		expect(supportsRealtimeVoiceModel('google', 'gemini-3.1-flash-live-preview')).toBe(false);
 		expect(supportsRealtimeVoiceModel('qwen', 'qwen3.5-omni')).toBe(false);
 		expect(realtimeVoiceDefaultVoice(' XAI ')).toBe('eve');

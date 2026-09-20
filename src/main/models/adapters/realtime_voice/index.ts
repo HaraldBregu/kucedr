@@ -3,6 +3,7 @@ export {
 	realtimeVoiceDefaultVoice,
 	realtimeVoiceModelRefs,
 	supportsRealtimeVoiceModel,
+	supportsRealtimeVoiceTools,
 } from './realtime_voice_factory';
 export { OpenAIRealtimeVoiceAdapter } from './realtime_voice_openai';
 export { OpenAILiveVoiceAdapter } from './realtime_voice_live';

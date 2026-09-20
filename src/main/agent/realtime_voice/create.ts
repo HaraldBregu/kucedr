@@ -9,6 +9,7 @@ import {
 	buildRealtimeVoiceAdapter,
 	realtimeVoiceDefaultVoice,
 	supportsRealtimeVoiceModel,
+	supportsRealtimeVoiceTools,
 } from '../../models/adapters/realtime_voice';
 import { getModelId, getOptions, getProviderId } from '../../models/selection';
 import { getProvider } from '../../settings_store';
@@ -79,13 +80,15 @@ export function createRealtimeVoiceManager(
 						  supportedVoices.includes(metadataVoice.trim())
 						? metadataVoice.trim()
 						: (realtimeVoiceDefaultVoice(providerId) ?? '');
-			const tools = builtinTools(
-				agent.config,
-				agent.sandbox,
-				windowFactory,
-				'default',
-				agent.memory
-			);
+			const tools = supportsRealtimeVoiceTools(providerId, model.id)
+				? builtinTools(
+						agent.config,
+						agent.sandbox,
+						windowFactory,
+						'default',
+						agent.memory
+					)
+				: [];
 			const instructions = await buildSystemPrompt(agent.config, tools);
 			const workspaceContext = await buildWorkspaceContext(agent.config);
 			return {

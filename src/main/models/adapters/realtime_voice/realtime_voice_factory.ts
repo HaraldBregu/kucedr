@@ -6,6 +6,7 @@ import { XAI_REALTIME_VOICE_MODELS, XAIRealtimeVoiceAdapter } from './realtime_v
 interface RealtimeVoiceAdapterRegistration {
 	readonly defaultVoice: string;
 	readonly modelIds: readonly string[];
+	readonly toolModelIds: readonly string[];
 	create(provider: RealtimeVoiceProviderSpec): RealtimeVoiceAdapter;
 }
 
@@ -13,11 +14,13 @@ const REALTIME_VOICE_ADAPTERS: Readonly<Record<string, RealtimeVoiceAdapterRegis
 	openai: {
 		defaultVoice: 'marin',
 		modelIds: OPENAI_VOICE_MODELS,
+		toolModelIds: OPENAI_REALTIME_VOICE_MODELS,
 		create: (provider) => new OpenAIRealtimeVoiceAdapter(provider),
 	},
 	xai: {
 		defaultVoice: 'eve',
 		modelIds: XAI_REALTIME_VOICE_MODELS,
+		toolModelIds: XAI_REALTIME_VOICE_MODELS,
 		create: (provider) => new XAIRealtimeVoiceAdapter(provider),
 	},
 };
@@ -47,6 +50,11 @@ export function realtimeVoiceModelRefs(): readonly {
 export function supportsRealtimeVoiceModel(providerId: string, modelId: string): boolean {
 	const registration = REALTIME_VOICE_ADAPTERS[normalizeProviderId(providerId)];
 	return registration?.modelIds.includes(modelId.trim()) ?? false;
+}
+
+export function supportsRealtimeVoiceTools(providerId: string, modelId: string): boolean {
+	const registration = REALTIME_VOICE_ADAPTERS[normalizeProviderId(providerId)];
+	return registration?.toolModelIds.includes(modelId.trim()) ?? false;
 }
 
 export function realtimeVoiceDefaultVoice(providerId: string): string | undefined {
