@@ -185,7 +185,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		});
 		const responseId = this.callResponses.get(callId);
 		const tools = responseId ? this.responseTools.get(responseId) : undefined;
-		if (!tools) {
+		if (!responseId || !tools) {
 			this.realtime.send({ type: 'response.create' });
 			return;
 		}
@@ -242,7 +242,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			const responseId = event.response?.id ?? this.activeResponseId;
 			this.activeResponseId = undefined;
 			const tools = responseId ? this.responseTools.get(responseId) : undefined;
-			if (tools) {
+			if (responseId && tools) {
 				tools.responseDone = true;
 				this.continueToolResponse(responseId, tools);
 			}
