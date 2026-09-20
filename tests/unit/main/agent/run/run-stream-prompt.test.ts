@@ -821,7 +821,7 @@ describe('run stream system prompt', () => {
 				boundary === 'output' ? { output: 1 } : boundary === 'calls' ? { calls: 0 } : {}
 			);
 			const session = createSessionState();
-			if (boundary === 'turns') session.maxTurns = 1;
+			if (boundary === 'turns') session.maxTurns = 2;
 			if (boundary !== 'empty') runModelTurnMock.mockImplementationOnce(discoveryTurn([tool.id]));
 			runModelTurnMock.mockImplementationOnce(async function* () {
 				yield* [];
