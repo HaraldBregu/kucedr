@@ -1,7 +1,10 @@
 import http from 'node:http';
 import { getMcpOAuthRedirectUrl } from './redirect';
 
-export function startOauthCallbackServer(expectedState: string, timeoutMs = 300_000): Promise<{
+export function startOauthCallbackServer(
+	expectedState: string,
+	timeoutMs = 300_000
+): Promise<{
 	code: Promise<string>;
 	close: () => void;
 }> {
@@ -10,12 +13,15 @@ export function startOauthCallbackServer(expectedState: string, timeoutMs = 300_
 		let resolveCode: (code: string) => void = () => {};
 		let rejectCode: (err: Error) => void = () => {};
 		let settled = false;
+		let closed = false;
 		const code = new Promise<string>((res, rej) => {
 			resolveCode = res;
 			rejectCode = rej;
 		});
 		void code.catch(() => {});
 		const close = (): void => {
+			if (closed) return;
+			closed = true;
 			clearTimeout(timer);
 			server.close();
 			if (!settled) {
@@ -29,7 +35,13 @@ export function startOauthCallbackServer(expectedState: string, timeoutMs = 300_
 				res.writeHead(404).end();
 				return;
 			}
-			if (settled || req.method !== 'GET' || !expectedState || url.searchParams.getAll('state').length !== 1 || url.searchParams.get('state') !== expectedState) {
+			if (
+				settled ||
+				req.method !== 'GET' ||
+				!expectedState ||
+				url.searchParams.getAll('state').length !== 1 ||
+				url.searchParams.get('state') !== expectedState
+			) {
 				res.writeHead(400).end('Invalid OAuth state.');
 				return;
 			}
@@ -44,7 +56,9 @@ export function startOauthCallbackServer(expectedState: string, timeoutMs = 300_
 				res.writeHead(400).end('Authorization failed. You can close this window.');
 				rejectCode(new Error(`OAuth authorization failed: ${error}`));
 			} else {
-				res.writeHead(200, { 'Content-Type': 'text/html' }).end('<html><body>Authorization complete. You can close this window.</body></html>');
+				res
+					.writeHead(200, { 'Content-Type': 'text/html' })
+					.end('<html><body>Authorization complete. You can close this window.</body></html>');
 				resolveCode(authCode!);
 			}
 			close();

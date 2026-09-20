@@ -11,12 +11,15 @@ const close = jest.fn();
 const response = { writeHead: jest.fn(), end: jest.fn() };
 
 beforeEach(() => {
+	jest.clearAllMocks();
 	jest.useFakeTimers();
 	response.writeHead.mockReturnValue(response);
 	jest.spyOn(http, 'createServer').mockImplementation(((listener: typeof handle) => {
 		handle = listener;
 		return {
-			once: (_event: string, listener: typeof onError) => { onError = listener; },
+			once: (_event: string, listener: typeof onError) => {
+				onError = listener;
+			},
 			listen: (_port: number, _host: string, listener: () => void) => listener(),
 			close,
 		} as unknown as http.Server;
@@ -27,25 +30,45 @@ afterEach(() => {
 	jest.useRealTimers();
 });
 
-it.each(['code=attacker', 'code=attacker&state=wrong', 'code=attacker&state=expected&state=wrong', 'state=expected'])(
-	'ignores invalid callbacks and accepts a later valid callback: %s',
-	async (query) => {
-		const callback = await startOauthCallbackServer('expected');
-		handle({ method: 'GET', url: `/oauth/callback?${query}` } as http.IncomingMessage, response as unknown as http.ServerResponse);
-		expect(response.writeHead).toHaveBeenLastCalledWith(400);
-		expect(close).not.toHaveBeenCalled();
-		handle({ method: 'GET', url: '/oauth/callback?code=valid&state=expected' } as http.IncomingMessage, response as unknown as http.ServerResponse);
-		await expect(callback.code).resolves.toBe('valid');
-		expect(close).toHaveBeenCalledTimes(1);
-		expect(jest.getTimerCount()).toBe(0);
-	}
-);
+it.each([
+	'code=attacker',
+	'code=attacker&state=wrong',
+	'code=attacker&state=expected&state=wrong',
+	'state=expected',
+])('ignores invalid callbacks and accepts a later valid callback: %s', async (query) => {
+	const callback = await startOauthCallbackServer('expected');
+	handle(
+		{ method: 'GET', url: `/oauth/callback?${query}` } as http.IncomingMessage,
+		response as unknown as http.ServerResponse
+	);
+	expect(response.writeHead).toHaveBeenLastCalledWith(400);
+	expect(close).not.toHaveBeenCalled();
+	handle(
+		{ method: 'GET', url: '/oauth/callback?code=valid&state=expected' } as http.IncomingMessage,
+		response as unknown as http.ServerResponse
+	);
+	await expect(callback.code).resolves.toBe('valid');
+	expect(close).toHaveBeenCalledTimes(1);
+	expect(jest.getTimerCount()).toBe(0);
+});
 
 it('rejects provider errors only after checking state and closes the listener', async () => {
 	const callback = await startOauthCallbackServer('expected');
-	handle({ method: 'GET', url: '/oauth/callback?error=access_denied&state=wrong' } as http.IncomingMessage, response as unknown as http.ServerResponse);
+	handle(
+		{
+			method: 'GET',
+			url: '/oauth/callback?error=access_denied&state=wrong',
+		} as http.IncomingMessage,
+		response as unknown as http.ServerResponse
+	);
 	expect(close).not.toHaveBeenCalled();
-	handle({ method: 'GET', url: '/oauth/callback?error=access_denied&state=expected' } as http.IncomingMessage, response as unknown as http.ServerResponse);
+	handle(
+		{
+			method: 'GET',
+			url: '/oauth/callback?error=access_denied&state=expected',
+		} as http.IncomingMessage,
+		response as unknown as http.ServerResponse
+	);
 	await expect(callback.code).rejects.toThrow('access_denied');
 	expect(close).toHaveBeenCalledTimes(1);
 });
