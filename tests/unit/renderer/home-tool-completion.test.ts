@@ -178,3 +178,50 @@ it('stops a running tool when its agent run fails', () => {
 		status: 'error',
 	});
 });
+
+it('shows capability selection without creating a discovery tool card', () => {
+	const message: AgentMessage = {
+		id: 'agent-1',
+		role: 'agent',
+		type: 'agent',
+		content: '',
+		runId: 'run-1',
+		state: 'thinking',
+		tools: [],
+	};
+	const state: AgentChatState = {
+		messages: [message],
+		activeAgentId: message.id,
+		activeRunId: message.runId,
+	};
+	const selecting = agentChatReducer(state, {
+		type: 'apply_response_event',
+		receivedAtMs: 100,
+		event: { type: 'capability_resolution_start', agentId: 'main', runId: 'run-1' },
+	});
+	const selected = agentChatReducer(selecting, {
+		type: 'apply_response_event',
+		receivedAtMs: 101,
+		event: {
+			type: 'capability_resolution_result',
+			agentId: 'main',
+			runId: 'run-1',
+			tools: ['read', 'edit', 'mcp__gmail__send'],
+			services: [
+				{ name: 'Read', displayName: 'Read', serviceKind: 'tool' },
+				{ name: 'Edit', displayName: 'Edit', serviceKind: 'tool' },
+				{ name: 'Send', displayName: 'Gmail', serviceKind: 'mcp', serviceId: 'gmail' },
+			],
+			skills: [],
+			directAnswer: false,
+			decision: { mode: 'use_tools', reason: 'Tools selected for this run.' },
+		},
+	});
+	const selectedMessage = selected.messages[0] as AgentMessage;
+
+	expect(selectedMessage.tools).toEqual([]);
+	expect(selectedMessage.toolSelection).toEqual({
+		state: 'selected',
+		names: ['Gmail', 'Read', 'Edit'],
+	});
+});

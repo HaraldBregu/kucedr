@@ -152,6 +152,50 @@ describe('loadMcpTools', () => {
 		releaseFirst?.();
 		await expect(loading).resolves.toMatchObject({ tools: [] });
 	});
+
+	it('catalogs eager servers and leaves deferred servers disconnected until selected', async () => {
+		getMcpServersMock.mockReturnValue({
+			eager: { type: 'http', url: 'https://eager.test', name: 'Eager' },
+			deferred: {
+				type: 'http',
+				url: 'https://deferred.test',
+				name: 'Deferred',
+				defer_loading: true,
+			},
+			unrelated: {
+				type: 'http',
+				url: 'https://unrelated.test',
+				defer_loading: true,
+			},
+		});
+		connectMock.mockImplementation(async (id: string) => ({ id }));
+		listToolsMock.mockImplementation(async (client: { id: string }) => ({
+			tools: [{ name: `${client.id}_tool`, inputSchema: { type: 'object' } }],
+		}));
+
+		const result = await loadMcpTools();
+		expect(connectMock).toHaveBeenCalledTimes(1);
+		expect(connectMock).toHaveBeenCalledWith('eager', expect.anything(), 30_000, undefined);
+		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__eager__eager_tool']);
+		expect(result.deferredServers).toEqual([
+			{ id: 'deferred', name: 'Deferred' },
+			{ id: 'unrelated', name: 'unrelated' },
+		]);
+
+		await result.loadDeferred(['deferred']);
+		expect(connectMock).toHaveBeenCalledTimes(2);
+		expect(connectMock).not.toHaveBeenCalledWith('unrelated', expect.anything(), 30_000, undefined);
+		expect(result.tools.map((tool) => tool.id)).toEqual([
+			'mcp__eager__eager_tool',
+			'mcp__deferred__deferred_tool',
+		]);
+		await result.loadDeferred(['deferred']);
+		expect(connectMock).toHaveBeenCalledTimes(2);
+		await result.close();
+		expect(closeMock).toHaveBeenCalledTimes(2);
+		await result.close();
+		expect(closeMock).toHaveBeenCalledTimes(2);
+	});
 });
 
 it('closes every acquired client if discovery postprocessing fails', async () => {

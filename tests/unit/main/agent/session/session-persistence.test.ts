@@ -195,4 +195,27 @@ describe('session persistence', () => {
 		);
 		expect(trace).toContain('"serverId":"resend","phase":"connect"');
 	});
+
+	it('records privacy-safe progressive selection IDs without model rationale', () => {
+		const state = createSessionState();
+		state.id = SESSION_ID;
+		state.folderName = SESSION_ID;
+		state.sessionsPath = path.join(temporaryRoot, 'sessions');
+		appendRun(state, {
+			type: 'capability_resolution_result',
+			tools: [
+				{ id: 'read', name: 'Read' },
+				{ id: 'mcp__gmail__send', name: 'Send', serviceId: 'gmail', serviceName: 'Gmail' },
+			],
+			serviceIds: ['gmail'],
+		});
+		appendRun(state, { type: 'run_finished', result: { sessionId: SESSION_ID, text: '' } });
+
+		const trace = fs.readFileSync(runFilePath(state), 'utf8');
+		expect(trace).toContain(
+			'"selectedToolIds":["read","mcp__gmail__send"],"selectedServiceCount":1,"selectedServiceIds":["gmail"]'
+		);
+		expect(trace).not.toContain('private rationale');
+		expect(trace).not.toContain('serviceName');
+	});
 });
