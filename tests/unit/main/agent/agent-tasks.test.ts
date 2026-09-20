@@ -24,11 +24,10 @@ jest.mock('../../../../src/main/agent/permissions', () => ({
 import { Agent } from '../../../../src/main/agent/agent';
 import type { ExecSandbox } from '../../../../src/main/agent/sandbox';
 import type { TaskRunner, TaskSchedule } from '../../../../src/main/tasks';
-import type { WindowFactory } from '../../../../src/main/window_factory';
 
 it('prevents scheduled agents from mutating tasks while honoring saved tool restrictions', async () => {
 	const sandbox = { reset: jest.fn() } as unknown as ExecSandbox;
-	const agent = new Agent({} as WindowFactory, sandbox);
+	const agent = new Agent(sandbox);
 	const send = jest.spyOn(agent, 'send').mockResolvedValue('done');
 	agent.start({ info: jest.fn(), error: jest.fn() });
 	const runner = mockSetTaskRunner.mock.calls[0][0] as TaskRunner;

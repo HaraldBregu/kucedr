@@ -45,7 +45,6 @@ jest.mock('../../../../src/main/agent/runner/run_stream', () => ({
 import { Agent } from '../../../../src/main/agent/agent';
 import type { RunContext } from '../../../../src/main/agent/context';
 import type { ExecSandbox } from '../../../../src/main/agent/sandbox';
-import type { WindowFactory } from '../../../../src/main/window_factory';
 
 interface ControlledRun {
 	started: Promise<void>;
@@ -126,7 +125,7 @@ describe('Agent scoped cancellation', () => {
 	});
 
 	it('cancels only the owned UI run and returns its accumulated text', async () => {
-		const agent = new Agent({} as WindowFactory, sandbox());
+		const agent = new Agent(sandbox());
 		const ui = controlRun(controls, 'ui-run');
 		const bot = controlRun(controls, 'bot-run');
 		const uiResponse = agent.send('ui', 'main', {
@@ -158,7 +157,7 @@ describe('Agent scoped cancellation', () => {
 	});
 
 	it('resolves a queued cancellation with empty text and admits a replacement', async () => {
-		const agent = new Agent({} as WindowFactory, sandbox());
+		const agent = new Agent(sandbox());
 		const activeControls = ['active-1', 'active-2', 'active-3'].map((runId) =>
 			controlRun(controls, runId)
 		);
@@ -199,7 +198,7 @@ describe('Agent scoped cancellation', () => {
 	});
 
 	it('clears busy state after success, failure, and cancellation', async () => {
-		const agent = new Agent({} as WindowFactory, sandbox());
+		const agent = new Agent(sandbox());
 		for (const runId of ['success', 'failure', 'cancelled']) {
 			const control = controlRun(controls, runId);
 			const response = agent.send(runId, 'main', {
@@ -219,7 +218,7 @@ describe('Agent scoped cancellation', () => {
 	});
 
 	it('isolates contexts for concurrent and same-session sequential runs', async () => {
-		const agent = new Agent({} as WindowFactory, sandbox());
+		const agent = new Agent(sandbox());
 		const first = controlRun(controls, 'first');
 		const concurrent = controlRun(controls, 'concurrent');
 		const sequential = controlRun(controls, 'sequential');
@@ -269,7 +268,7 @@ describe('Agent scoped cancellation', () => {
 	});
 
 	it('retains global cancellation only for shutdown', async () => {
-		const agent = new Agent({} as WindowFactory, sandbox());
+		const agent = new Agent(sandbox());
 		const ui = controlRun(controls, 'ui-run');
 		const bot = controlRun(controls, 'bot-run');
 		const runs = [

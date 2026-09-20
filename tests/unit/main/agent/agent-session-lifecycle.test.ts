@@ -118,7 +118,6 @@ jest.mock('../../../../src/main/agent/runner/run_stream', () => ({
 
 import { Agent } from '../../../../src/main/agent/agent';
 import type { ExecSandbox } from '../../../../src/main/agent/sandbox';
-import type { WindowFactory } from '../../../../src/main/window_factory';
 import type { MemoryService } from '../../../../src/shared/memory_types';
 
 beforeEach(() => {
@@ -132,7 +131,6 @@ it('captures completed main chat runs', async () => {
 	const capture = jest.fn(async () => undefined);
 	const memory = { capture } as unknown as MemoryService;
 	const agent = new Agent(
-		{} as WindowFactory,
 		{ reset: jest.fn() } as unknown as ExecSandbox,
 		memory
 	);
@@ -152,7 +150,6 @@ it.each(['channels', 'tasks', 'health'])('does not expose %s runs to personal me
 	const capture = jest.fn(async () => undefined);
 	const memory = { capture } as unknown as MemoryService;
 	const agent = new Agent(
-		{} as WindowFactory,
 		{ reset: jest.fn() } as unknown as ExecSandbox,
 		memory
 	);
@@ -169,7 +166,7 @@ it.each(['channels', 'tasks', 'health'])('does not expose %s runs to personal me
 });
 
 it('rejects invalid current-turn attachments before session initialization', async () => {
-	const agent = new Agent({} as WindowFactory, { reset: jest.fn() } as unknown as ExecSandbox);
+	const agent = new Agent({ reset: jest.fn() } as unknown as ExecSandbox);
 	await expect(
 		agent.send('inspect', 'main', {
 			type: 'default',
@@ -194,7 +191,7 @@ it.each([
 ] as const)(
 	'enqueues %s before a replacement send while the cancelled run settles',
 	async (method, mutate, mutationEvent) => {
-		const agent = new Agent({} as WindowFactory, { reset: jest.fn() } as unknown as ExecSandbox);
+		const agent = new Agent({ reset: jest.fn() } as unknown as ExecSandbox);
 		const old = controlRun('old');
 		const oldResponse = agent.send('old', 'health', {
 			type: 'background',
@@ -241,7 +238,7 @@ it.each([
 );
 
 it('cancels queued same-session work before clear and keeps the replacement behind maintenance', async () => {
-	const agent = new Agent({} as WindowFactory, { reset: jest.fn() } as unknown as ExecSandbox);
+	const agent = new Agent({ reset: jest.fn() } as unknown as ExecSandbox);
 	const running = controlRun('running');
 	controlRun('queued');
 	const runningResponse = agent.send('running', 'main', {

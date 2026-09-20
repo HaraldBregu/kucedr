@@ -26,7 +26,6 @@ import { Agent } from '../../../../src/main/agent/agent';
 import { readGoal } from '../../../../src/main/agent/goal/read';
 import { sessionDir } from '../../../../src/main/agent/session';
 import type { ExecSandbox } from '../../../../src/main/agent/sandbox';
-import type { WindowFactory } from '../../../../src/main/window_factory';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
 
@@ -46,7 +45,7 @@ it.each([
 ])(
 	'persists reply context and preserves command semantics for %s',
 	async (message, prompt, skill) => {
-		const agent = new Agent({} as WindowFactory, {} as ExecSandbox);
+		const agent = new Agent({} as ExecSandbox);
 		await agent.send(message, 'main', {
 			type: 'default',
 			sessionId: SESSION_ID,
@@ -67,7 +66,7 @@ it.each([
 );
 
 it('includes reply context when restoring an active run', async () => {
-	const agent = new Agent({} as WindowFactory, {} as ExecSandbox);
+	const agent = new Agent({} as ExecSandbox);
 	let release: () => void = () => {};
 	const pending = new Promise<void>((resolve) => {
 		release = resolve;

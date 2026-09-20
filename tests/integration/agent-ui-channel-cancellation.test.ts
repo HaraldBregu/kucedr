@@ -176,7 +176,7 @@ it('cancels the IPC UI run without interrupting the channel registry bot run', a
 		emit: jest.fn(),
 		broadcast: jest.fn(),
 	} as unknown as EventBus;
-	const agent = new Agent({} as WindowFactory, { reset: jest.fn() } as unknown as ExecSandbox);
+	const agent = new Agent({ reset: jest.fn() } as unknown as ExecSandbox);
 	const conversation = {
 		execute: ({ message, options }: { message: string; options: unknown }) =>
 			agent.send(message, 'main', options as never),
