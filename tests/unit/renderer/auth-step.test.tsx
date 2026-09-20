@@ -232,7 +232,6 @@ it('does not let a stale initial failure overwrite a newer auth event', async ()
 	expect(screen.getByRole('heading', { name: 'Check your email' })).toBeInTheDocument();
 });
 
-
 it('shows callback failures and clears the error when Google sign-in retries', async () => {
 	const user = userEvent.setup();
 	let listener: ((state: AuthState) => void) | undefined;
@@ -243,14 +242,22 @@ it('shows callback failures and clears the error when Google sign-in retries', a
 	window.auth.signInWithGoogle = jest.fn(async () => {
 		listener?.({ status: 'signedOut', persistence: 'encrypted' });
 	});
-	render(<AuthProvider><AuthStep /></AuthProvider>);
+	render(
+		<AuthProvider>
+			<AuthStep />
+		</AuthProvider>
+	);
 	await screen.findByRole('heading', { name: 'Welcome back' });
-	act(() => listener?.({
-		status: 'signedOut',
-		persistence: 'encrypted',
-		error: 'Sign-in could not be completed. Please try again.',
-	}));
-	expect(screen.getByRole('alert')).toHaveTextContent('Sign-in could not be completed. Please try again.');
+	act(() =>
+		listener?.({
+			status: 'signedOut',
+			persistence: 'encrypted',
+			error: 'Sign-in could not be completed. Please try again.',
+		})
+	);
+	expect(screen.getByRole('alert')).toHaveTextContent(
+		'Sign-in could not be completed. Please try again.'
+	);
 	await user.click(screen.getByRole('button', { name: 'Sign in with Google' }));
 	expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 });

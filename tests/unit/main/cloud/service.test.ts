@@ -85,9 +85,9 @@ it('limits a recovery session to recovery operations', async () => {
 	expect(service.getAccessToken()).toBeNull();
 	expect(service.getSignedInUserId()).toBeUndefined();
 	await expect(service.getProfile()).rejects.toThrow('Sign in to manage your account.');
-	await expect(
-		service.updateProfile({ firstName: 'Grace', lastName: 'Hopper' })
-	).rejects.toThrow('Sign in to manage your account.');
+	await expect(service.updateProfile({ firstName: 'Grace', lastName: 'Hopper' })).rejects.toThrow(
+		'Sign in to manage your account.'
+	);
 	expect(provider.getProfile).not.toHaveBeenCalled();
 	expect(provider.updateProfile).not.toHaveBeenCalled();
 });
@@ -120,10 +120,12 @@ it('keeps provider tokens out of public auth state', async () => {
 	expect(JSON.stringify(service.getState())).not.toMatch(/current-secret|accessToken/);
 });
 
-
 it('publishes safe callback failures and clears them when Google sign-in retries', async () => {
 	const provider = accountProvider({
-		exchangeCode: jest.fn().mockRejectedValueOnce(new Error('provider-secret')).mockResolvedValue(currentSession),
+		exchangeCode: jest
+			.fn()
+			.mockRejectedValueOnce(new Error('provider-secret'))
+			.mockResolvedValue(currentSession),
 	});
 	const service = new AuthService(provider, { accept: () => true });
 	await service.initialize();
