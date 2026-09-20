@@ -3,7 +3,6 @@ import { realPath } from '../../shared/real_path';
 import { resolveUserPath } from '../../shared/user_path';
 import { taskStorePath } from '../../tasks/tasks_store';
 import { healthStorePath } from '../health/health_store';
-import { skillsRoot } from '../skills/skills_root';
 import { registry } from '../tools/core/process';
 import { toolPermissionTargets } from './tool_permission_targets';
 import { resolveExecRoots } from './resolve_exec_roots';
@@ -67,6 +66,6 @@ export function directoryPermissionTargets(
 		return [realPath(resolveUserPath(directory, baseDir))];
 	}
 	if (TASK_TOOLS.has(toolName)) return [realPath(taskStorePath)];
-	if (toolName === 'load_skill') return [realPath(path.join(skillsRoot, String(args.name ?? '')))];
+	if (toolName === 'load_skill') return [];
 	return [];
 }

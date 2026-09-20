@@ -147,7 +147,7 @@ This group covers what makes Kucedr an agent rather than a chat window: the tool
 
 Kucedr uses an iterative tool-calling loop:
 
-1. Build a system prompt from the base assistant contract, tool descriptions, workspace metadata, the live filesystem inventory, and any skill loaded during the run. Editable profile and memory files plus installed-skill routing metadata are prepended separately as user-controlled context.
+1. Build a system prompt from the base assistant contract, tool descriptions, workspace metadata, the live filesystem inventory, and any skill loaded during the run. Editable profile and memory files plus a bounded project-and-user skill catalog are prepended separately as user-controlled context.
 2. Stream a model turn and collect text, reasoning continuity where supported, and tool calls.
 3. Run requested tools, stream their activity into the conversation, and append results to the transcript.
 4. Continue until the model returns no tool calls, the request is cancelled, an error occurs, or the 20-turn session limit is reached.
@@ -239,7 +239,7 @@ Important boundaries:
 
 ### Skills
 
-Skills are local directories under the agent's `skills` folder and must contain `SKILL.md`.
+Skills are folders containing `SKILL.md`. Runtime discovery scans the active workspace and the managed user directory at `~/.kucedr/skills`, including nested skill collections. Project skills take precedence over user skills with the same case-insensitive name.
 
 The Skills settings area can:
 
@@ -254,7 +254,7 @@ The Skills settings area can:
 
 Validation requires frontmatter `name` and `description`. Names are lowercase alphanumeric/hyphen identifiers of 1–64 characters, and descriptions are limited to 1,024 characters. Importing an existing ID replaces its folder. Only enabled skills can be loaded by the agent.
 
-The Home slash menu searches installed skills, and the agent can load a selected skill's `SKILL.md` instructions during a run. The loader returns the skill directory path; bundled scripts, references, and assets must be read separately when needed.
+The Home slash menu searches installed skills. Every eligible run receives a bounded catalog of skill names and descriptions before its first model turn. An explicit selection or matching request activates the validated `SKILL.md` body on the next turn. The loader returns the canonical skill directory and a bounded resource inventory; bundled scripts, references, and assets are read separately only when the loaded instructions require them. Skill `allowed-tools` restrict eligibility but never bypasses the required `discover_tools` loading turn.
 
 ### MCP servers
 

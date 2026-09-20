@@ -19,7 +19,10 @@ describe('buildSkillContext', () => {
 		);
 		const context = buildSkillContext(skills);
 		expect(context.length).toBeLessThanOrEqual(8_000);
-		expect(context).toContain('Additional skill metadata omitted');
+		for (let index = 0; index < 20; index += 1)
+			expect(context).toContain(`skill-${String(index).padStart(2, '0')}`);
+		expect(context).not.toContain('Additional skill names omitted');
+		expect(context).toContain('…');
 		expect(context.indexOf('skill-00')).toBeLessThan(context.indexOf('skill-01'));
 	});
 });

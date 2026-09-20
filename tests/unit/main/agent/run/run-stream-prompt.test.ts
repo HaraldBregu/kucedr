@@ -30,7 +30,10 @@ const mockLoadMcpTools = jest.fn(async () => ({
 	deferredServers: [],
 	close: closeMcpMock,
 }));
-const createSkillRegistrySnapshotMock = jest.fn(() => ({ skills: [], diagnostics: [] }));
+const createSkillRegistrySnapshotMock = jest.fn((_options?: unknown) => ({
+	skills: [],
+	diagnostics: [],
+}));
 const activateSkillMock = jest.fn();
 
 jest.mock('../../../../../src/main/settings_store', () => ({
@@ -51,7 +54,7 @@ jest.mock('../../../../../src/main/agent/tools/mcp/loader', () => ({
 }));
 
 jest.mock('../../../../../src/main/agent/skills', () => ({
-	createSkillRegistrySnapshot: () => createSkillRegistrySnapshotMock(),
+	createSkillRegistrySnapshot: (...args: unknown[]) => createSkillRegistrySnapshotMock(...args),
 	activateSkill: (...args: unknown[]) => activateSkillMock(...args),
 }));
 
@@ -115,6 +118,7 @@ describe('run stream system prompt', () => {
 			activateSkillMock.mockResolvedValue(activatedSkill);
 			const session = createSessionState();
 			session.messages = [{ role: 'user', content: 'Draft this' }];
+			const events = [];
 			try {
 				for await (const event of stream(
 					{ location: root },
@@ -130,9 +134,9 @@ describe('run stream system prompt', () => {
 						explicitSkill: 'writer',
 					},
 					new AbortController().signal,
-					{ tools: [] }
+					{ sandbox }
 				))
-					void event;
+					events.push(event);
 
 				expect(activateSkillMock).toHaveBeenCalledWith(
 					expect.objectContaining({ skills: [registrySkill] }),
@@ -142,6 +146,12 @@ describe('run stream system prompt', () => {
 				expect(protectedPrompt).toContain('EXACT WRITER INSTRUCTIONS');
 				expect(protectedPrompt).toContain('"canonicalRoot":"/canonical/skills/writer"');
 				expect(protectedPrompt).toContain('references/style.md');
+				expect(events[0]).toMatchObject({
+					type: 'run_started',
+					tools: expect.arrayContaining(['discover_tools', 'load_skill']),
+				});
+				if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
+				expect(events[0].tools).not.toContain('read');
 			} finally {
 				await fs.rm(root, { recursive: true, force: true });
 			}
@@ -152,7 +162,6 @@ describe('run stream system prompt', () => {
 		createSkillRegistrySnapshotMock.mockReturnValue({ skills: [registrySkill], diagnostics: [] });
 		activateSkillMock.mockResolvedValue(activatedSkill);
 		runModelTurnMock
-			.mockImplementationOnce(discoveryTurn(['load_skill']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -181,10 +190,17 @@ describe('run stream system prompt', () => {
 		))
 			void event;
 
-		expect(runModelTurnMock.mock.calls[1][10]).toEqual([
+		expect(createSkillRegistrySnapshotMock).toHaveBeenCalledWith({ projectRoot: '/workspace' });
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(
+			expect.arrayContaining(['discover_tools', 'load_skill'])
+		);
+		expect(runModelTurnMock.mock.calls[0][10]).toEqual([
 			expect.objectContaining({ content: expect.stringContaining('Draft polished documents') }),
 		]);
-		expect(runModelTurnMock.mock.calls[2][9]).toContain('EXACT WRITER INSTRUCTIONS');
+		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain(
+			'read'
+		);
 		const receipt = session.messages.find(
 			(message) => message.toolCalls?.[0]?.name === 'load_skill'
 		)?.toolCalls?.[0]?.result?.content;

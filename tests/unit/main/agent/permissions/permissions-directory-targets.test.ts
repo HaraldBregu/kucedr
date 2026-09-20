@@ -3,7 +3,6 @@ import { directoryPermissionTargets } from '../../../../../src/main/agent/permis
 import { taskStorePath } from '../../../../../src/main/tasks/tasks_store';
 import { healthStorePath } from '../../../../../src/main/agent/health/health_store';
 import { registry, type ProcessSession } from '../../../../../src/main/agent/tools/core/process';
-import { skillsRoot } from '../../../../../src/main/agent/skills/skills_root';
 
 const agentDir = path.resolve('/appdata/agent');
 
@@ -69,7 +68,7 @@ describe('directoryPermissionTargets', () => {
 		]);
 	});
 
-	it('maps generated media and loaded skills inside the agent directory', () => {
+	it('maps generated media and keeps skill activation path-independent', () => {
 		expect(directoryPermissionTargets('create_image', {}, agentDir)).toEqual([agentDir]);
 		expect(directoryPermissionTargets('create_sound', { directory: 'clips' }, agentDir)).toEqual([
 			path.join(agentDir, 'clips'),
@@ -77,9 +76,7 @@ describe('directoryPermissionTargets', () => {
 		expect(
 			directoryPermissionTargets('camera_recorder', { directory: 'captures' }, agentDir)
 		).toEqual([path.join(agentDir, 'captures')]);
-		expect(directoryPermissionTargets('load_skill', { name: 'example' }, agentDir)).toEqual([
-			path.join(skillsRoot, 'example'),
-		]);
+		expect(directoryPermissionTargets('load_skill', { name: 'example' }, agentDir)).toEqual([]);
 	});
 
 	it('uses the originating exec workdir for process calls', () => {

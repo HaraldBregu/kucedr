@@ -28,7 +28,7 @@ export function scanSkillFolders(root: string): string[] {
 			continue;
 		}
 		if (current.depth >= SKILL_PACKAGE_MAX_DEPTH) continue;
-		for (const entry of entries.toReversed()) {
+		for (const entry of [...entries].reverse()) {
 			if (
 				!entry.isDirectory() ||
 				entry.name.startsWith('.import-') ||
