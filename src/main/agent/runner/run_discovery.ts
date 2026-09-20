@@ -78,7 +78,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 			...(eligible.has('write') && !active.has('write')
 				? ['For example, to create a demo file when write is not loaded: call discover_tools({"query":"Create a demo file","toolIds":["write"],"mcpServerIds":[]}); then, on the next turn, call write using its exposed schema.']
 				: []),
-			'If a call reports an unknown or unavailable tool, check this directory and use discover_tools before retrying. Tools absent from the directory are unavailable; do not invent IDs. Loading resets for each run, so past conversation calls do not establish current availability.',
+			'discover_tools is the required loader for one or more tools. A loading turn performs no other tool actions. Tools absent from the directory are unavailable; do not invent IDs. Loading resets for each run, so past conversation calls do not establish current availability.',
 			'For an unloaded MCP server, use discover_tools with its mcpServerIds and a capability query. Only that server is queried. If no tools are selected, choose exact toolIds from the returned list in another discovery call.',
 			'At most 8 new tools can be selected per discovery call and 16 per run. Several already-loaded tools may be called together and will execute sequentially.',
 			'ID | Name | Status | Description',

@@ -402,8 +402,8 @@ async function* loop(
 				budget
 			);
 
-			recordTurn(session, turn);
 			if (synthesisOnly && (turn.toolCalls.length > 0 || !turn.content.trim())) {
+				recordTurn(session, turn);
 				if (turn.toolCalls.length > 0) {
 					addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems);
 					yield* skipToolCalls(
@@ -415,6 +415,7 @@ async function* loop(
 				throw new Error('Agent did not produce a non-empty final answer without tool calls.');
 			}
 			if (turn.toolCalls.length === 0 && !turn.content.trim() && input.interactionMode !== 'plan') {
+				recordTurn(session, turn);
 				finalization = {
 					instruction: 'The previous model response was empty. Answer the user now.',
 				};
@@ -425,12 +426,14 @@ async function* loop(
 				input.interactionMode === 'plan' &&
 				!isPlanOutputValid(turn.content)
 			) {
+				recordTurn(session, turn);
 				throw new Error(
 					'Plan response must contain exactly one non-empty <proposed_plan> envelope and no other text.'
 				);
 			}
 
 			if (turn.toolCalls.length === 0) {
+				recordTurn(session, turn);
 				yield {
 					type: 'assistant_message',
 					content: turn.content,
@@ -460,31 +463,37 @@ async function* loop(
 						)
 				),
 			];
-			const automaticallyResolvedCallIds = new Set<string>();
-			if (requestedUnavailableToolIds.length > 0) {
+			const discoveryCalls = turn.toolCalls.filter((call) => call.name === DISCOVER_TOOLS_ID);
+			if (discoveryCalls.length > 0 || requestedUnavailableToolIds.length > 0) {
 				const loader =
-					turn.toolCalls.find((call) => call.name === DISCOVER_TOOLS_ID) ??
+					discoveryCalls[0] ??
 					turn.toolCalls.find((call) => requestedUnavailableToolIds.includes(call.name))!;
-				const existingToolIds = Array.isArray(loader.args.toolIds)
-					? loader.args.toolIds.filter((id): id is string => typeof id === 'string')
-					: [];
-				const existingMcpServerIds = Array.isArray(loader.args.mcpServerIds)
-					? loader.args.mcpServerIds.filter((id): id is string => typeof id === 'string')
-					: [];
+				const requestedToolIds = discoveryCalls.flatMap((call) =>
+					Array.isArray(call.args.toolIds)
+						? call.args.toolIds.filter((id): id is string => typeof id === 'string')
+						: []
+				);
+				const requestedMcpServerIds = discoveryCalls.flatMap((call) =>
+					Array.isArray(call.args.mcpServerIds)
+						? call.args.mcpServerIds.filter((id): id is string => typeof id === 'string')
+						: []
+				);
+				const requestedQuery = discoveryCalls.find(
+					(call) => typeof call.args.query === 'string' && call.args.query.trim()
+				)?.args.query;
 				loader.name = DISCOVER_TOOLS_ID;
 				loader.args = {
-					query: `Load tools needed for the next step: ${requestedUnavailableToolIds.join(', ')}`,
-					toolIds: [...new Set([...existingToolIds, ...requestedUnavailableToolIds])],
-					mcpServerIds: existingMcpServerIds,
+					query:
+						typeof requestedQuery === 'string'
+							? requestedQuery
+							: `Load tools needed for the next step: ${requestedUnavailableToolIds.join(', ')}`,
+					toolIds: [...new Set([...requestedToolIds, ...requestedUnavailableToolIds])],
+					mcpServerIds: [...new Set(requestedMcpServerIds)],
 				};
-				for (const call of turn.toolCalls) {
-					if (call === loader || !requestedUnavailableToolIds.includes(call.name)) continue;
-					call.name = DISCOVER_TOOLS_ID;
-					call.args = { query: 'Combined into the required tool-loading step.', toolIds: [], mcpServerIds: [] };
-					call.result = { content: 'Included in the required tool-loading step.' };
-					automaticallyResolvedCallIds.add(call.id);
-				}
+				turn.toolCalls = [loader];
+				turn.providerItems = [];
 			}
+			recordTurn(session, turn);
 			yield {
 				type: 'assistant_message',
 				content: turn.content,
@@ -494,9 +503,7 @@ async function* loop(
 				inputTokens: turn.usage?.inputTokens ?? 0,
 				outputTokens: turn.usage?.outputTokens ?? 0,
 			});
-			const pendingToolCalls = turn.toolCalls.filter(
-				(call) => !automaticallyResolvedCallIds.has(call.id)
-			);
+			const pendingToolCalls = turn.toolCalls;
 			const budgetExceeded = budget.wouldExceed(
 				pendingToolCalls.map((call) => ({
 					tool: turnTools.find((tool) => tool.id === call.name),
