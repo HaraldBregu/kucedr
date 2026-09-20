@@ -1,5 +1,5 @@
 import en from '../../../resources/i18n/en/main.json';
-import it from '../../../resources/i18n/it/main.json';
+import italian from '../../../resources/i18n/it/main.json';
 import { statusLabel } from '../../../src/renderer/src/pages/home/components/status';
 import type { AgentMessage } from '../../../src/renderer/src/pages/home/context';
 
@@ -24,8 +24,8 @@ it('formats compact English and Italian tool-selection statuses with overflow', 
 	).toBe('Selecting tools…');
 	expect(
 		statusLabel(selectionMessage('selected'), {
-			selecting: it.chat.toolSelection.selecting,
-			selected: (names) => it.chat.toolSelection.selected.replace('{{tools}}', names),
+			selecting: italian.chat.toolSelection.selecting,
+			selected: (names) => italian.chat.toolSelection.selected.replace('{{tools}}', names),
 		})
 	).toBe('Selezionati: Read, Edit, Gmail +1');
 });
