@@ -27,6 +27,7 @@ export interface ResolvedRealtimeVoiceConfiguration extends Omit<
 > {
 	provider: RealtimeVoiceProviderSpec;
 	context: readonly RealtimeVoiceHistoryMessage[];
+	refreshTools?(): Promise<{ tools: Tool[]; instructions: string }>;
 }
 
 export interface RealtimeVoiceManagerDependencies {

@@ -12,6 +12,7 @@ import type {
 	RealtimeVoiceSocket,
 	RealtimeVoiceSocketFactory,
 } from './realtime_voice_types';
+import type { Tool } from '../../../agent/types';
 
 const CONNECT_TIMEOUT_MS = 15_000;
 
@@ -68,6 +69,10 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		{ callIds: Set<string>; resultIds: Set<string>; responseDone: boolean; continued: boolean }
 	>();
 	private readonly callResponses = new Map<string, string>();
+	private readonly sessionUpdateWaiters: Array<{
+		resolve(): void;
+		reject(error: Error): void;
+	}> = [];
 
 	constructor(
 		private readonly realtime: RealtimeVoiceSocket,
@@ -116,9 +121,11 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 					void this.stop();
 					return;
 				}
-				if (event.type === 'session.updated' && !settled) {
-					this.replayHistory(history);
-					settle();
+				if (event.type === 'session.updated') {
+					if (!settled) {
+						this.replayHistory(history);
+						settle();
+					} else this.sessionUpdateWaiters.shift()?.resolve();
 				}
 				this.handleEvent(event);
 			});
@@ -177,6 +184,52 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		this.realtime.send({ type: 'response.cancel' });
 	}
 
+	updateTools(tools: Tool[], instructions: string, signal?: AbortSignal): Promise<void> {
+		if (this.closed) return Promise.reject(new Error('Realtime voice connection is closed.'));
+		return new Promise((resolve, reject) => {
+			let settled = false;
+			const finish = (error?: Error): void => {
+				if (settled) return;
+				settled = true;
+				clearTimeout(timer);
+				signal?.removeEventListener('abort', abort);
+				if (error) reject(error);
+				else resolve();
+			};
+			const waiter = { resolve: () => finish(), reject: (error: Error) => finish(error) };
+			const abort = (): void => {
+				const index = this.sessionUpdateWaiters.indexOf(waiter);
+				if (index >= 0) this.sessionUpdateWaiters.splice(index, 1);
+				finish(signal?.reason instanceof Error ? signal.reason : new Error('Voice session stopped.'));
+			};
+			const timer = setTimeout(() => {
+				const index = this.sessionUpdateWaiters.indexOf(waiter);
+				if (index >= 0) this.sessionUpdateWaiters.splice(index, 1);
+				finish(new Error('Realtime voice tool update timed out.'));
+			}, CONNECT_TIMEOUT_MS);
+			timer.unref?.();
+			this.sessionUpdateWaiters.push(waiter);
+			signal?.addEventListener('abort', abort, { once: true });
+			if (signal?.aborted) {
+				abort();
+				return;
+			}
+			this.realtime.send({
+				type: 'session.update',
+				session: {
+					instructions,
+					parallel_tool_calls: false,
+					tools: tools.map((tool) => ({
+						type: 'function',
+						name: tool.id,
+						description: tool.description,
+						parameters: tool.schema,
+					})),
+				},
+			});
+		});
+	}
+
 	async addToolResult(callId: string, output: string): Promise<void> {
 		if (this.closed) return;
 		this.realtime.send({
@@ -196,6 +249,8 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 	async stop(): Promise<void> {
 		if (this.closed) return;
 		this.closed = true;
+		for (const waiter of this.sessionUpdateWaiters.splice(0))
+			waiter.reject(new Error('Realtime voice connection is closed.'));
 		if (this.transcriptTimer) clearTimeout(this.transcriptTimer);
 		this.realtime.close({ code: 1000, reason: 'Voice session stopped.' });
 	}

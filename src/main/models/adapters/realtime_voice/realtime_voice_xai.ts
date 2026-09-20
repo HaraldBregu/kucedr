@@ -63,6 +63,7 @@ function xaiSession(request: RealtimeVoiceAdapterRequest): Record<string, unknow
 			prefix_padding_ms: 333,
 			silence_duration_ms: 1_200,
 		},
+		parallel_tool_calls: false,
 		audio: {
 			input: {
 				format: { type: 'audio/pcm', rate: 24_000 },
