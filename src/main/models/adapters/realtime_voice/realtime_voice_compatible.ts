@@ -116,10 +116,14 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			timer.unref?.();
 
 			this.realtime.on('event', (event) => {
-				if (event.type === 'error' && !settled) {
-					settle(new Error(event.error.message));
-					void this.stop();
-					return;
+				if (event.type === 'error') {
+					const error = new Error(event.error.message);
+					if (!settled) {
+						settle(error);
+						void this.stop();
+						return;
+					}
+					for (const waiter of this.sessionUpdateWaiters.splice(0)) waiter.reject(error);
 				}
 				if (event.type === 'session.updated') {
 					if (!settled) {
