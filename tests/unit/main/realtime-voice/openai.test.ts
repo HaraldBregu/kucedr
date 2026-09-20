@@ -230,8 +230,32 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 			},
 		]);
 		expect(socket.sent).not.toContainEqual({ type: 'response.create' });
+		const update = connection.updateTools?.(
+			[
+				{
+					id: 'write',
+					name: 'Write file',
+					description: 'Write a file.',
+					schema: { type: 'object' },
+					timeoutMs: 1_000,
+					maxOutputBytes: 1_000,
+					parseInput: () => ({}),
+					run: () => '',
+				},
+			],
+			'Updated instructions.'
+		);
+		expect(socket.sent.at(-1)).toMatchObject({
+			type: 'session.update',
+			session: {
+				instructions: 'Updated instructions.',
+				parallel_tool_calls: false,
+				tools: [{ type: 'function', name: 'write' }],
+			},
+		});
 		socket.event({ type: 'session.updated' });
-		expect(socket.sent).toHaveLength(3);
+		await update;
+		expect(socket.sent).toHaveLength(4);
 		socket.event({
 			type: 'conversation.item.input_audio_transcription.completed',
 			item_id: 'user-item',

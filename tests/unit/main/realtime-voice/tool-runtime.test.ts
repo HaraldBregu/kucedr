@@ -6,9 +6,83 @@ import { respondToolPermission } from '../../../../src/main/agent/permissions';
 import { loadMessagesBySessionId } from '../../../../src/main/agent/session/session_load_messages_by_session_id';
 import { realtimeVoiceConversationFactory } from '../../../../src/main/agent/realtime_voice/conversation';
 import { RealtimeVoiceToolRuntime } from '../../../../src/main/agent/realtime_voice/tool_runtime';
+import { createToolDiscovery } from '../../../../src/main/agent/runner/run_discovery';
+import { jsonTool } from '../../../../src/main/agent/tools/tool';
 import type { RealtimeVoiceConnection } from '../../../../src/main/models/adapters/realtime_voice';
 
 const CHAT_SESSION_ID = '11111111-1111-4111-8111-111111111111';
+
+it('updates provider schemas before continuing after a discovery result', async () => {
+	const execute = jest.fn(() => 'written');
+	const write = jsonTool({
+		id: 'write',
+		name: 'Write',
+		description: 'Write a file',
+		capability: { effects: ['write'] },
+		schema: { type: 'object' },
+		execute,
+	});
+	const discovery = createToolDiscovery({ eligible: [write], required: [] });
+	const order: string[] = [];
+	const outputs: string[] = [];
+	let resolveSecond = (): void => undefined;
+	const secondResult = new Promise<void>((resolve) => (resolveSecond = resolve));
+	const runtime = new RealtimeVoiceToolRuntime({
+		sessionId: 'voice-discovery',
+		windowId: 4,
+		tools: discovery.active(),
+		refreshTools: async () => ({
+			tools: discovery.active(),
+			instructions: discovery.prompt(),
+		}),
+		signal: new AbortController().signal,
+		resources: new KeyedMutex(),
+		conversation: { addToolCall: () => undefined, addToolResult: () => undefined },
+		connection: () => ({
+			appendAudio: async () => undefined,
+			interrupt: async () => undefined,
+			stop: async () => undefined,
+			updateTools: async (tools, instructions) => {
+				order.push('update');
+				expect(tools.map((tool) => tool.id)).toEqual(['discover_tools', 'write']);
+				expect(instructions).toContain('write | Write | Loaded');
+			},
+			addToolResult: async (_id, output) => {
+				order.push('result');
+				outputs.push(output);
+				if (outputs.length === 2) resolveSecond();
+			},
+		}),
+		emit: () => undefined,
+		onThinking: () => undefined,
+		onError: (error) => {
+			throw error;
+		},
+	});
+
+	runtime.handle({
+		type: 'tool_call',
+		callId: 'load-write',
+		itemId: 'load-write',
+		responseId: 'load-response',
+		name: 'discover_tools',
+		arguments: '{"query":"Write a file","toolIds":["write"],"mcpServerIds":[]}',
+	});
+	await new Promise((resolve) => setImmediate(resolve));
+	expect(order).toEqual(['update', 'result']);
+	expect(execute).not.toHaveBeenCalled();
+
+	runtime.handle({
+		type: 'tool_call',
+		callId: 'write-file',
+		itemId: 'write-file',
+		responseId: 'write-response',
+		name: 'write',
+		arguments: '{}',
+	});
+	await secondResult;
+	expect(execute).toHaveBeenCalledTimes(1);
+});
 
 it('runs native Realtime function calls through the existing tool runner and emits normalized lifecycle events', async () => {
 	const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-voice-tool-success-'));
