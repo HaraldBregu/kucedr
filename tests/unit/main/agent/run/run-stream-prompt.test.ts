@@ -752,6 +752,8 @@ describe('run stream system prompt', () => {
 			scope,
 		});
 		expect(childCall?.[7]).toEqual({ temperature: 0.2 });
+		expect(childCall?.[9]).toContain('## Tool loading and availability');
+		expect(childCall?.[9]).toContain('Never call a tool to test whether it is loaded');
 	});
 
 	it('allows one final synthesis turn after a delegation exhausts its work budget', async () => {

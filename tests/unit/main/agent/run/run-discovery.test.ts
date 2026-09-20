@@ -12,6 +12,21 @@ function fakeTool(id: string) {
 }
 
 describe('progressive tool discovery', () => {
+	it('explains loading before creating a file, updates availability, and resets for a new run', async () => {
+		const write = fakeTool('write');
+		const discovery = createToolDiscovery({ eligible: [write], required: [] });
+		expect(discovery.prompt()).toContain('write | write | Not loaded; use discover_tools | write capability');
+		expect(discovery.prompt()).toContain('"query":"Create a demo file","toolIds":["write"]');
+		expect(discovery.prompt()).toContain('next model turn');
+		await discovery.tool.run({ query: 'Create a demo file', toolIds: ['write'] });
+		expect(discovery.prompt()).toContain('write | write | Loaded | write capability');
+		expect(discovery.active().map((entry) => entry.id)).toEqual(['discover_tools', 'write']);
+		const nextRun = createToolDiscovery({ eligible: [write], required: [] });
+		expect(nextRun.prompt()).toContain('write | write | Not loaded');
+		discovery.replaceEligible([]);
+		expect(discovery.prompt()).not.toContain('write | write');
+		expect(discovery.active().map((entry) => entry.id)).toEqual(['discover_tools']);
+	});
 	it('starts minimal and enforces per-call, per-run, deduplication, and eligibility boundaries', async () => {
 		const eligible = Array.from({ length: 20 }, (_, index) => fakeTool(`tool_${index}`));
 		const required = fakeTool('get_goal');
