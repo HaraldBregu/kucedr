@@ -207,11 +207,17 @@ async function* loop(
 	let explicitSkill: SkillLoadResult | undefined;
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		let filtered = filterDisabledTools(
-			filterPlanTools(filterTools(candidates, input.toolsAllow, input.toolsDeny), input.interactionMode),
+			filterPlanTools(
+				filterTools(candidates, input.toolsAllow, input.toolsDeny),
+				input.interactionMode
+			),
 			configuredToolSettings
 		);
 		for (const loaded of session.runContext.loadedSkills) {
-			filtered = selectSkillTools(filtered, skillSnapshot.skills.find((skill) => skill.id === loaded.id)?.manifest.allowedTools);
+			filtered = selectSkillTools(
+				filtered,
+				skillSnapshot.skills.find((skill) => skill.id === loaded.id)?.manifest.allowedTools
+			);
 		}
 		return filtered;
 	};
@@ -253,11 +259,12 @@ async function* loop(
 			mcpEntries = mcp.entries ?? [];
 			deferredMcpServers = (mcp.deferredServers ?? []).filter((server) => {
 				if (input.toolsAllow === undefined) return true;
-				const normalized = server.id
-					.normalize('NFKC')
-					.replace(/[^a-zA-Z0-9_-]/g, '_')
-					.replace(/_+/g, '_')
-					.replace(/^_+|_+$/g, '') || 'server';
+				const normalized =
+					server.id
+						.normalize('NFKC')
+						.replace(/[^a-zA-Z0-9_-]/g, '_')
+						.replace(/_+/g, '_')
+						.replace(/^_+|_+$/g, '') || 'server';
 				return input.toolsAllow.some((id) => id.startsWith(`mcp__${normalized}__`));
 			});
 			loadDeferredMcp = mcp.loadDeferred;
@@ -307,7 +314,9 @@ async function* loop(
 	discovery = createToolDiscovery({
 		eligible: tools,
 		required: tools.filter((candidate) => requiredToolIds.has(candidate.id)),
-		mcpTools: mcpEntries.filter((entry) => tools.some((candidate) => candidate.id === entry.tool.id)),
+		mcpTools: mcpEntries.filter((entry) =>
+			tools.some((candidate) => candidate.id === entry.tool.id)
+		),
 		deferredMcpServers,
 		...(loadDeferredMcp ? { loadMcpServers: loadDeferredMcp } : {}),
 		filterEligible: filterEligibleTools,

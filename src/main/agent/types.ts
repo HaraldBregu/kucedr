@@ -40,7 +40,11 @@ export interface Tool {
 	readonly maxOutputBytes: number;
 	readonly planSafe?: boolean;
 	readonly hardApproval?: boolean | ((input: Record<string, unknown>) => boolean);
-	readonly capability?: import('./execution/capability').ToolCapability | ((input: Record<string, unknown>) => import('./execution/capability').ToolCapability | undefined);
+	readonly capability?:
+		| import('./execution/capability').ToolCapability
+		| ((
+				input: Record<string, unknown>
+		  ) => import('./execution/capability').ToolCapability | undefined);
 	parseInput(input: unknown): Record<string, unknown>;
 	run(input: Record<string, unknown>, signal?: AbortSignal): Promise<unknown> | unknown;
 }
@@ -227,7 +231,11 @@ export type RuntimeEvent =
 			input: Record<string, unknown>;
 			mode: 'ask';
 			targets: string[];
-			reason: 'outside_trusted_location' | 'host_execution' | 'destructive_operation' | 'sensitive_operation';
+			reason:
+				| 'outside_trusted_location'
+				| 'host_execution'
+				| 'destructive_operation'
+				| 'sensitive_operation';
 			persistable: boolean;
 			allowOnce: boolean;
 			expiresAt: string;
