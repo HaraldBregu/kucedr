@@ -42,7 +42,13 @@ let processor: {
 	connect: jest.Mock;
 	disconnect: jest.Mock;
 };
-let playedSource: { stop: jest.Mock; onended: (() => void) | null };
+let playedSource: {
+	stop: jest.Mock;
+	onended: (() => void) | null;
+	buffer: unknown;
+	connect: jest.Mock;
+	start: jest.Mock;
+};
 
 class FakeAudioContext {
 	readonly sampleRate = 48_000;
@@ -65,13 +71,14 @@ class FakeAudioContext {
 		getChannelData: () => new Float32Array(length),
 	}));
 	createBufferSource = jest.fn(() => {
-		playedSource = { stop: jest.fn(), onended: null };
-		return {
-			...playedSource,
+		playedSource = {
+			stop: jest.fn(),
+			onended: null,
 			buffer: null,
 			connect: jest.fn(),
 			start: jest.fn(),
 		};
+		return playedSource;
 	});
 	resume = jest.fn().mockResolvedValue(undefined);
 	close = jest.fn().mockResolvedValue(undefined);
@@ -213,8 +220,9 @@ describe('useRealtimeVoice', () => {
 
 	it('deduplicates concurrent starts', async () => {
 		api.startSession.mockResolvedValue(session);
+		const onClosed = jest.fn();
 		const { result, unmount } = renderHook(
-			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() }),
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed }),
 			{ wrapper }
 		);
 
@@ -231,7 +239,23 @@ describe('useRealtimeVoice', () => {
 		expect(secondResult).toBe(true);
 		expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledTimes(1);
 		expect(api.startSession).toHaveBeenCalledTimes(1);
+		expect(onClosed).not.toHaveBeenCalled();
 		unmount();
+	});
+
+	it('stays speaking until buffered playback finishes', async () => {
+		api.startSession.mockResolvedValue(session);
+		const { result } = renderHook(
+			() => useRealtimeVoice({ chatSessionId: 'chat-1', onClosed: jest.fn() }),
+			{ wrapper }
+		);
+		await act(async () => result.current.start());
+
+		act(() => emit({ type: 'assistant_audio_delta', sessionId: session.id, audio: 'AAA=' }));
+		act(() => emit({ type: 'state', sessionId: session.id, status: 'listening' }));
+		expect(result.current.status).toBe('speaking');
+		act(() => playedSource.onended?.());
+		expect(result.current.status).toBe('listening');
 	});
 
 	it('requests pending system microphone access before starting', async () => {

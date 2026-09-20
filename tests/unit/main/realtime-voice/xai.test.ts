@@ -93,7 +93,12 @@ describe('XAIRealtimeVoiceAdapter', () => {
 			type: 'session.update',
 			session: {
 				voice: 'eve',
-				turn_detection: { type: 'server_vad', silence_duration_ms: 1_200 },
+				turn_detection: {
+					type: 'server_vad',
+					threshold: 0.5,
+					prefix_padding_ms: 333,
+					silence_duration_ms: 1_200,
+				},
 				audio: {
 					input: {
 						format: { type: 'audio/pcm', rate: 24_000 },
@@ -138,6 +143,16 @@ describe('XAIRealtimeVoiceAdapter', () => {
 			transcript: 'Open the current file.',
 		});
 		socket.event({
+			type: 'conversation.item.input_audio_transcription.updated',
+			item_id: 'next-user-item',
+			transcript: 'Open the corrected file.',
+		});
+		expect(events).toContainEqual({
+			type: 'user_transcript_update',
+			itemId: 'next-user-item',
+			transcript: 'Open the corrected file.',
+		});
+		socket.event({
 			type: 'response.output_audio_transcript.delta',
 			response_id: 'response',
 			item_id: 'item',
@@ -149,6 +164,45 @@ describe('XAIRealtimeVoiceAdapter', () => {
 			itemId: 'item',
 			delta: 'Hello',
 		});
+	});
+
+	it('waits for every parallel tool result before continuing once', async () => {
+		const socket = new FakeSocket();
+		const adapter = new XAIRealtimeVoiceAdapter(
+			{ id: 'xai', name: 'xAI', apiKey: 'key' },
+			() => socket,
+			1_000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'grok-voice-latest',
+				voice: 'eve',
+				instructions: '',
+				history: [],
+				tools: [],
+			},
+			() => undefined
+		);
+		socket.open();
+		socket.event({ type: 'session.updated' });
+		const connection = await connecting;
+
+		socket.event({ type: 'response.created', response: { id: 'response-1' } });
+		for (const callId of ['call-1', 'call-2']) {
+			socket.event({
+				type: 'response.function_call_arguments.done',
+				call_id: callId,
+				item_id: `item-${callId}`,
+				response_id: 'response-1',
+				name: 'read',
+				arguments: '{}',
+			});
+		}
+		socket.event({ type: 'response.done', response: { id: 'response-1' } });
+		await connection.addToolResult('call-1', 'first');
+		expect(socket.sent.filter((event) => event.type === 'response.create')).toHaveLength(0);
+		await connection.addToolResult('call-2', 'second');
+		expect(socket.sent.filter((event) => event.type === 'response.create')).toHaveLength(1);
 	});
 
 	it('rejects models outside the stable xAI allow-list before opening a socket', async () => {

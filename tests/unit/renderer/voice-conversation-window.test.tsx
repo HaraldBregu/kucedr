@@ -47,4 +47,24 @@ describe('VoiceConversationWindow', () => {
 			screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling
 		).toHaveTextContent('1:01');
 	});
+
+	it('shows startup errors inside the standalone window', () => {
+		mockedUseRealtimeVoice.mockReturnValue({
+			elapsedMs: 0,
+			end: jest.fn(),
+			errorMessage: 'Microphone access was denied.',
+			isMuted: false,
+			setMuted: jest.fn(),
+			start: jest.fn(),
+			status: 'error',
+			stream: null,
+		} as ReturnType<typeof useRealtimeVoice>);
+
+		render(<VoiceConversationWindow chatSessionId="chat-1" />);
+
+		expect(screen.getByRole('alert')).toHaveTextContent('Microphone access was denied.');
+		expect(screen.getByRole('button', { name: 'End voice conversation' })).toHaveTextContent(
+			'Close'
+		);
+	});
 });

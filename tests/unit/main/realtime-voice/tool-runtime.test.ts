@@ -191,10 +191,10 @@ it('preserves the existing permission request identity and returns rejected tool
 		windowId: 6,
 		tools: [
 			{
-				id: 'write',
-				capability: { effects: ['write'] },
-				name: 'Write file',
-				description: 'Write a file.',
+				id: 'external_probe',
+				capability: { effects: ['external'], approval: true },
+				name: 'External probe',
+				description: 'Perform an external action.',
 				schema: { type: 'object' },
 				timeoutMs: 1_000,
 				maxOutputBytes: 1_000,
@@ -228,8 +228,8 @@ it('preserves the existing permission request identity and returns rejected tool
 			callId: 'call-permission',
 			itemId: 'item-permission',
 			responseId: 'response-permission',
-			name: 'write',
-			arguments: '{"path":"/etc/kucedr-test","content":"test"}',
+		name: 'external_probe',
+		arguments: '{"value":"test"}',
 		});
 		const permission = await permissionEvent;
 		expect(permission).toMatchObject({
@@ -237,7 +237,7 @@ it('preserves the existing permission request identity and returns rejected tool
 			sessionId: 'voice-permission',
 			runId: 'voice-permission:response-permission',
 			toolCallId: 'call-permission',
-			toolName: 'write',
+			toolName: 'external_probe',
 			mode: 'ask',
 		});
 		expect(permission).toHaveProperty('approvalId');
@@ -247,7 +247,7 @@ it('preserves the existing permission request identity and returns rejected tool
 			{
 				approvalId: String(permission.approvalId),
 				runId: 'voice-permission:response-permission',
-				toolName: 'write',
+				toolName: 'external_probe',
 				inputFingerprint: String(permission.inputFingerprint),
 			},
 			'reject',
@@ -258,8 +258,8 @@ it('preserves the existing permission request identity and returns rejected tool
 			.toolCalls?.[0];
 		expect(call).toMatchObject({
 			id: 'call-permission',
-			name: 'write',
-			args: { path: '/etc/kucedr-test', content: 'test' },
+			name: 'external_probe',
+			args: { value: 'test' },
 			result: { isError: true },
 		});
 		expect(call?.result?.content).toContain('permission denied');

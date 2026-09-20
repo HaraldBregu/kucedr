@@ -133,6 +133,14 @@ describe('RealtimeVoiceManager', () => {
 			responseId: 'response-1',
 			transcript: 'Hello there.',
 		});
+		adapterEmit({ type: 'response_started', responseId: 'response-2' });
+		adapterEmit({
+			type: 'assistant_audio_delta',
+			itemId: 'assistant-2',
+			responseId: 'response-2',
+			audio: 'AAAA',
+		});
+		adapterEmit({ type: 'input_speech_started', itemId: 'user-2' });
 		adapterEmit({
 			type: 'assistant_transcript_final',
 			itemId: 'assistant-1',
@@ -145,6 +153,7 @@ describe('RealtimeVoiceManager', () => {
 			{ itemId: 'user-1', transcript: 'Show the message I sent.' },
 		]);
 		expect(assistantTurns).toEqual(['Hello there.']);
+		expect(connection.interrupts).toBe(1);
 		expect(events).toContainEqual({ type: 'user_turn', sessionId: session.id, itemId: 'user-1' });
 		expect(events).toContainEqual({
 			type: 'user_turn',
