@@ -155,25 +155,27 @@ export class Memory implements MemoryService {
 			);
 		});
 	}
-	async forget(id: string): Promise<{ removed: boolean }> {
-		if (!/^memory-[a-f0-9]{16}$/i.test(id)) throw new Error('A valid memory ID is required.');
+	async forget(match: string): Promise<{ removed: number }> {
+		const query = match.trim().toLowerCase();
+		if (!query) throw new Error('A memory ID or text match is required.');
 		this.invalidate();
 		return this.lock(async () => {
 			const markdown = await this.read();
-			const lines = new Set(
-				parseMemories(markdown)
-					.filter((entry) => entry.id === id.toLowerCase())
-					.map((entry) => entry.lineIndex)
+			const entries = parseMemories(markdown).filter((entry) =>
+				query.startsWith('memory-')
+					? entry.id === query
+					: entry.fact.toLowerCase().includes(query)
 			);
-			if (!lines.size) return { removed: false };
+			if (!entries.length) return { removed: 0 };
+			const lines = new Set(entries.map((entry) => entry.lineIndex));
 			await this.replace(
 				markdown
 					.split('\n')
 					.filter((_line, index) => !lines.has(index))
 					.join('\n'),
-				[id.toLowerCase()]
+				entries.map((entry) => entry.id)
 			);
-			return { removed: true };
+			return { removed: entries.length };
 		});
 	}
 	async clear(): Promise<void> {

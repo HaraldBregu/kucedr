@@ -28,7 +28,7 @@ export interface MemoryService {
 	list(): Promise<MemoryEntry[]>;
 	read(): Promise<string>;
 	edit(markdown: string, expected?: string): Promise<void>;
-	forget(id: string): Promise<{ removed: boolean }>;
+	forget(match: string): Promise<{ removed: number }>;
 	clear(): Promise<void>;
 	capture(sessionId: string, messages: readonly MemoryMessage[]): Promise<void>;
 	remove(sessionId: string): Promise<void>;
@@ -43,6 +43,6 @@ export interface MemoryApi {
 	list(): Promise<MemoryEntry[]>;
 	read(): Promise<string>;
 	edit(markdown: string, expected?: string): Promise<void>;
-	forget(id: string): Promise<{ removed: boolean }>;
+	forget(match: string): Promise<{ removed: number }>;
 	clear(): Promise<void>;
 }

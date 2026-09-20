@@ -7,14 +7,15 @@ export function forgetMemoryTool(memory: Pick<MemoryService, 'forget'>): Tool {
 	return tool({
 		id: 'forget_memory',
 		name: 'Forget memory',
-		description: 'Remove exactly one persistent memory by the stable ID returned by list_memories.',
+		description:
+			'Remove persistent memories through the application memory module. Pass a stable ID for one exact record or text shared by every record the user wants forgotten.',
 		inputSchema: z.object({
-			id: z
+			match: z
 				.string()
 				.trim()
-				.regex(/^memory-[a-f0-9]{16}$/i)
-				.describe('Exact stable memory ID returned by list_memories.'),
+				.min(1)
+				.describe('Exact memory ID or case-insensitive text identifying the memories to remove.'),
 		}),
-		execute: ({ id }) => memory.forget(id),
+		execute: ({ match }) => memory.forget(match),
 	});
 }
