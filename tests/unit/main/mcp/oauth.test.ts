@@ -1,3 +1,4 @@
+import { googleOAuthOptions } from '../../../../src/main/mcp/google';
 import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
 import { createOAuthProvider } from '../../../../src/main/mcp/mcp_oauth_create_provider';
 import { getMcpOAuthRedirectUrl } from '../../../../src/main/mcp/redirect';
@@ -11,7 +12,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		let state: McpOAuthState = { client_id: 'old-client', client_secret: 'old-secret' };
 		const redirect = jest.fn();
 		const provider = createOAuthProvider({
-			serverUrl,
+			...googleOAuthOptions(serverUrl),
 			storage: {
 				load: () => state,
 				save: (value) => {
@@ -71,12 +72,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 
 it('explains the Google credential requirement before attempting dynamic registration', () => {
 	delete process.env.MCP_GOOGLE_CLIENT_ID;
-	delete process.env.MCP_GOOGLE_CLIENT_SECRET;
-	const provider = createOAuthProvider({
-		serverUrl: 'https://gmailmcp.googleapis.com/mcp/v1',
-		storage: { load: () => ({}), save: jest.fn() },
-	});
-	expect(() => provider.clientInformation()).toThrow('MCP_GOOGLE_CLIENT_ID');
+	expect(() => googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow('MCP_GOOGLE_CLIENT_ID');
 });
 
 it('leaves generic OAuth registration and authorization parameters unchanged', () => {
@@ -134,23 +130,15 @@ it('uses the configured redirect consistently in client metadata and OAuth', () 
 	expect(provider.clientMetadata.redirect_uris).toEqual(['http://127.0.0.1:3002/callback']);
 });
 
-it('uses Google client credentials only from the environment', () => {
+it('isolates Google options from generic MCP servers and permits public Google clients', () => {
+	expect(googleOAuthOptions('https://example.com/mcp')).toEqual({});
+	delete process.env.MCP_GOOGLE_CLIENT_SECRET;
 	const provider = createOAuthProvider({
-		serverUrl: 'https://gmailmcp.googleapis.com/mcp/v1',
-		clientId: 'ignored',
-		clientSecret: 'ignored',
+		...googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1'),
 		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
 	});
-	expect(provider.clientInformation()).toEqual({
-		client_id: 'registered-client',
-		client_secret: 'saved-secret',
-	});
-	delete process.env.MCP_GOOGLE_CLIENT_ID;
-	const missing = createOAuthProvider({
-		serverUrl: 'https://gmailmcp.googleapis.com/mcp/v1',
-		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
-	});
-	expect(() => missing.clientInformation()).toThrow('MCP_GOOGLE_CLIENT_ID');
+	expect(provider.clientInformation()).toEqual({ client_id: 'registered-client', client_secret: undefined });
+	expect(provider.clientMetadata.token_endpoint_auth_method).toBe('none');
 });
 
 it('isolates pending PKCE verifiers and state between attempts', async () => {
@@ -165,4 +153,84 @@ it('isolates pending PKCE verifiers and state between attempts', async () => {
 	await first.invalidateCredentials!('verifier');
 	expect(() => first.codeVerifier()).toThrow('Missing OAuth code verifier');
 	expect(storage.save).toHaveBeenCalledWith({});
+});
+
+it('registers and authorizes a generic public MCP client with discovered metadata and pins discovery', async () => {
+	const serverUrl = 'https://generic.example/mcp';
+	const redirectUrl = 'http://127.0.0.1:49152/oauth/callback';
+	let stored: McpOAuthState = {};
+	const redirect = jest.fn();
+	const provider = createOAuthProvider({
+		redirectUrl,
+		state: 'attempt-state',
+		storage: { load: () => stored, save: (value) => { stored = value; } },
+		onRedirect: redirect,
+	});
+	let discoveryRequests = 0;
+	const fetchFn = jest.fn(async (input: string | URL, init?: RequestInit) => {
+		const url = String(input);
+		if (url.includes('/.well-known/oauth-protected-resource')) {
+			discoveryRequests++;
+			return Response.json({ resource: serverUrl, authorization_servers: ['https://issuer.example'], scopes_supported: ['tools:read'] });
+		}
+		if (url.includes('/.well-known/')) {
+			discoveryRequests++;
+			return Response.json({ issuer: 'https://issuer.example', authorization_endpoint: 'https://issuer.example/authorize', token_endpoint: 'https://issuer.example/token', registration_endpoint: 'https://issuer.example/register', response_types_supported: ['code'], code_challenge_methods_supported: ['S256'], token_endpoint_auth_methods_supported: ['none'] });
+		}
+		if (url === 'https://issuer.example/register') {
+			const metadata = JSON.parse(String(init?.body));
+			expect(metadata.redirect_uris).toEqual([redirectUrl]);
+			expect(metadata.token_endpoint_auth_method).toBe('none');
+			return Response.json({ ...metadata, client_id: 'dynamic-client' }, { status: 201 });
+		}
+		if (url === 'https://issuer.example/token') {
+			const body = new URLSearchParams(String(init?.body));
+			expect(body.get('client_id')).toBe('dynamic-client');
+			expect(body.has('client_secret')).toBe(false);
+			expect(body.get('code_verifier')).toBe(await provider.codeVerifier());
+			expect(body.get('redirect_uri')).toBe(redirectUrl);
+			expect(body.get('resource')).toBe(serverUrl);
+			return Response.json({ access_token: 'generic-access', token_type: 'Bearer', refresh_token: 'generic-refresh' });
+		}
+		throw new Error(`Unexpected request: ${url}`);
+	});
+	await expect(auth(provider, { serverUrl, fetchFn })).resolves.toBe('REDIRECT');
+	const authorization = redirect.mock.calls[0][0] as URL;
+	expect(authorization.origin).toBe('https://issuer.example');
+	expect(authorization.searchParams.get('redirect_uri')).toBe(redirectUrl);
+	expect(authorization.searchParams.get('state')).toBe('attempt-state');
+	expect(authorization.searchParams.get('scope')).toBe('tools:read');
+	expect(authorization.searchParams.get('resource')).toBe(serverUrl);
+	expect(authorization.searchParams.get('code_challenge_method')).toBe('S256');
+	expect(authorization.searchParams.get('code_challenge')).toBeTruthy();
+	expect(authorization.searchParams.has('access_type')).toBe(false);
+	const beforeExchange = discoveryRequests;
+	await expect(auth(provider, { serverUrl, fetchFn, authorizationCode: 'generic-code' })).resolves.toBe('AUTHORIZED');
+	expect(discoveryRequests).toBe(beforeExchange);
+	expect(stored.tokens?.access_token).toBe('generic-access');
+});
+
+it('refreshes generic OAuth tokens without losing a refresh token omitted by the issuer', async () => {
+	let stored: McpOAuthState = { tokens: { access_token: 'old', refresh_token: 'keep-refresh', token_type: 'Bearer' } };
+	const provider = createOAuthProvider({ clientId: 'public-client', storage: { load: () => stored, save: (value) => { stored = value; } } });
+	const fetchFn = jest.fn(async (input: string | URL, init?: RequestInit) => {
+		const url = String(input);
+		if (url.includes('/.well-known/oauth-protected-resource')) return Response.json({ resource: 'https://generic.example/mcp', authorization_servers: ['https://issuer.example'] });
+		if (url.includes('/.well-known/')) return Response.json({ issuer: 'https://issuer.example', authorization_endpoint: 'https://issuer.example/authorize', token_endpoint: 'https://issuer.example/token', response_types_supported: ['code'], token_endpoint_auth_methods_supported: ['none'] });
+		if (url === 'https://issuer.example/token') {
+			const body = new URLSearchParams(String(init?.body));
+			expect(body.get('grant_type')).toBe('refresh_token');
+			expect(body.get('refresh_token')).toBe('keep-refresh');
+			return Response.json({ access_token: 'renewed', token_type: 'Bearer' });
+		}
+		throw new Error(`Unexpected request: ${url}`);
+	});
+	await expect(auth(provider, { serverUrl: 'https://generic.example/mcp', fetchFn })).resolves.toBe('AUTHORIZED');
+	expect(stored.tokens).toEqual({ access_token: 'renewed', token_type: 'Bearer', refresh_token: 'keep-refresh' });
+});
+
+it('does not mix an explicit public client with a previously registered confidential client', () => {
+	const provider = createOAuthProvider({ clientId: 'public-client', storage: { load: () => ({ client_id: 'old-client', client_secret: 'old-secret' }), save: jest.fn() } });
+	expect(provider.clientInformation()).toEqual({ client_id: 'public-client', client_secret: undefined });
+	expect(provider.clientMetadata.token_endpoint_auth_method).toBe('none');
 });

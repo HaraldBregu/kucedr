@@ -6,6 +6,7 @@ import {
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import type { McpData } from '../../shared/mcp_types';
 import { isGitHubRemoteMcpUrl } from '../../shared/github_mcp';
+import { googleOAuthOptions } from './google';
 import { createOAuthProvider } from './mcp_oauth_create_provider';
 import { getMcpOauth, saveMcpOauth } from './mcp_store';
 import { createMcpFetch } from './mcp_fetch';
@@ -32,13 +33,12 @@ export function buildTransport(id: string, data: McpData): Transport {
 	return new StreamableHTTPClientTransport(url, {
 		fetch: createMcpFetch(),
 		authProvider: createOAuthProvider({
-			serverUrl: data.url,
+			...googleOAuthOptions(data.url),
 			storage: {
 				load: () => getMcpOauth(id),
 				save: (state) => saveMcpOauth(id, state),
 			},
-			clientId: data.client_id,
-			clientSecret: data.client_secret,
+			...(data.client_id ? { clientId: data.client_id, clientSecret: data.client_secret } : {}),
 		}),
 		requestInit: headers ? { headers } : undefined,
 	});

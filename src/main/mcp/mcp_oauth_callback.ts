@@ -10,7 +10,7 @@ export function startOauthCallbackServer(
 	code: Promise<string>;
 	close: () => void;
 }> {
-	const redirect = new URL(redirectUrl);
+	const redirect = new URL(getMcpOAuthRedirectUrl(redirectUrl));
 	return new Promise((resolveListen, rejectListen) => {
 		let resolveCode: (code: string) => void = () => {};
 		let rejectCode: (err: Error) => void = () => {};
@@ -60,7 +60,7 @@ export function startOauthCallbackServer(
 			} else {
 				res
 					.writeHead(200, { 'Content-Type': 'text/html' })
-					.end('<html><body>Authorization complete. You can close this window.</body></html>');
+					.end('<html><body>Authorization response received. Return to Kucedr to finish connecting.</body></html>');
 				resolveCode(authCode!);
 			}
 			close();

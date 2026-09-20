@@ -1,5 +1,4 @@
 import { randomBytes } from 'node:crypto';
-import { googleMcpScopes } from '../../shared/google_mcp';
 import type { OAuthClientProvider } from '@modelcontextprotocol/sdk/client/auth.js';
 import type { OAuthClientInformationMixed } from '@modelcontextprotocol/sdk/shared/auth.js';
 import type { McpOAuthProviderParams, McpOAuthState } from './mcp_types';
@@ -8,16 +7,12 @@ import { getMcpOAuthRedirectUrl } from './redirect';
 
 export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClientProvider {
 	const { storage } = params;
-	const state = randomBytes(32).toString('hex');
-	const redirectUrl = getMcpOAuthRedirectUrl();
+	const state = params.state ?? randomBytes(32).toString('hex');
+	const redirectUrl = getMcpOAuthRedirectUrl(params.redirectUrl);
+	let discovery: Awaited<ReturnType<NonNullable<OAuthClientProvider['discoveryState']>>>;
 	let codeVerifier: string | undefined;
-	const googleScopes = googleMcpScopes(params.serverUrl ?? '');
-	const clientId = googleScopes ? process.env.MCP_GOOGLE_CLIENT_ID?.trim() : params.clientId;
-	const clientSecret = googleScopes
-		? process.env.MCP_GOOGLE_CLIENT_SECRET?.trim()
-		: params.clientSecret;
-	const staticClient =
-		googleScopes || clientId ? { client_id: clientId, client_secret: clientSecret } : undefined;
+	const { clientId, clientSecret } = params;
+	const staticClient = clientId ? { client_id: clientId, client_secret: clientSecret } : undefined;
 	return {
 		get redirectUrl() {
 			return redirectUrl;
@@ -27,17 +22,13 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 		},
 		get clientMetadata() {
 			return clientMetadata(
-				Boolean(googleScopes ? clientSecret : (clientSecret ?? storage.load().client_secret))
+				Boolean(staticClient ? clientSecret : storage.load().client_secret),
+				redirectUrl
 			);
 		},
 		clientInformation() {
 			const { tokens: _tokens, codeVerifier: _verifier, ...storedClient } = storage.load();
 			const client = staticClient ?? storedClient;
-			if (googleScopes && (!client.client_id || !client.client_secret)) {
-				throw new Error(
-					`Set MCP_GOOGLE_CLIENT_ID and MCP_GOOGLE_CLIENT_SECRET in the .env file. Register ${getMcpOAuthRedirectUrl()} as the OAuth client redirect URI in Google Cloud. Google does not support dynamic client registration.`
-				);
-			}
 			return client.client_id ? (client as OAuthClientInformationMixed) : undefined;
 		},
 		saveClientInformation(clientInformation) {
@@ -47,15 +38,21 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			return storage.load().tokens;
 		},
 		saveTokens(tokens) {
-			storage.save({ ...storage.load(), tokens });
+			const previous = storage.load();
+			storage.save({
+				...previous,
+				tokens: {
+					...tokens,
+					refresh_token: tokens.refresh_token ?? previous.tokens?.refresh_token,
+				},
+			});
 		},
 		redirectToAuthorization(url) {
-			if (googleScopes) {
-				url.searchParams.set('scope', googleScopes);
-				url.searchParams.set('access_type', 'offline');
-				url.searchParams.set('prompt', 'consent');
+			for (const [key, value] of Object.entries(params.authorizationParams ?? {})) {
+				url.searchParams.set(key, value);
 			}
-			params.onRedirect?.(url);
+			if (!params.onRedirect) throw new Error('Connect this MCP server with OAuth in Settings.');
+			params.onRedirect(url);
 		},
 		saveCodeVerifier(value) {
 			codeVerifier = value;
@@ -64,6 +61,12 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			const verifier = codeVerifier;
 			if (!verifier) throw new Error('Missing OAuth code verifier. Start the login flow again.');
 			return verifier;
+		},
+		discoveryState() {
+			return discovery;
+		},
+		saveDiscoveryState(value) {
+			discovery = value;
 		},
 		invalidateCredentials(scope) {
 			const { tokens, codeVerifier: _storedVerifier, ...client } = storage.load();

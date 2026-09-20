@@ -1,10 +1,10 @@
-export function getMcpOAuthRedirectUrl(): string {
-	const value =
-		process.env.MCP_CLIENT_REDIRECT_URL?.trim() || 'http://127.0.0.1:3001/oauth/callback';
+export function getMcpOAuthRedirectUrl(
+	value = process.env.MCP_CLIENT_REDIRECT_URL?.trim() || 'http://127.0.0.1:3001/oauth/callback'
+): string {
 	const url = new URL(value);
 	if (
 		url.protocol !== 'http:' ||
-		!['127.0.0.1', 'localhost'].includes(url.hostname) ||
+		!['127.0.0.1', '[::1]', 'localhost'].includes(url.hostname) ||
 		!url.port ||
 		url.username ||
 		url.password ||

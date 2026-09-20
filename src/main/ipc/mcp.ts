@@ -1,3 +1,5 @@
+import { randomBytes } from 'node:crypto';
+import { googleOAuthOptions } from '../mcp/google';
 import { dialog, shell } from 'electron';
 import { mkdirSync } from 'node:fs';
 import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
@@ -229,25 +231,28 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 			async (event, id: string): Promise<McpOAuthStart> => {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
-				let redirectUrl: string | undefined;
-				const provider = createOAuthProvider({
-					serverUrl: server.url,
-					storage: oauthStorage(server.id),
-					clientId: server.clientId,
-					clientSecret: server.clientSecret,
-					onRedirect: (url) => {
-						redirectUrl = url.toString();
-					},
-				});
-				const result = await auth(provider, { serverUrl: server.url });
-				if (result === 'AUTHORIZED') return { status: 'authorized' };
-				if (!redirectUrl)
-					throw new Error(`MCP server "${id}" did not return an authorization URL.`);
-
-				const state = await provider.state!();
+				const state = randomBytes(32).toString('hex');
+				const options = googleOAuthOptions(server.url);
 				const callback = await startOauthCallbackServer(state);
 				try {
-					await shell.openExternal(redirectUrl);
+					let authorizationUrl: string | undefined;
+					const provider = createOAuthProvider({
+						...options,
+						storage: oauthStorage(server.id),
+						...(server.clientId
+							? { clientId: server.clientId, clientSecret: server.clientSecret }
+							: {}),
+						redirectUrl: callback.redirectUrl,
+						state,
+						onRedirect: (url) => {
+							authorizationUrl = url.toString();
+						},
+					});
+					const result = await auth(provider, { serverUrl: server.url });
+					if (result === 'AUTHORIZED') return { status: 'authorized' };
+					if (!authorizationUrl)
+						throw new Error(`MCP server "${id}" did not return an authorization URL.`);
+					await shell.openExternal(authorizationUrl);
 					const code = await callback.code;
 					const finish = await auth(provider, { serverUrl: server.url, authorizationCode: code });
 					if (finish !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);

@@ -45,5 +45,8 @@ export type McpOAuthProviderParams = {
 	storage: McpOAuthStorage;
 	clientId?: string;
 	clientSecret?: string;
+	redirectUrl?: string;
+	state?: string;
+	authorizationParams?: Record<string, string>;
 	onRedirect?: (url: URL) => void;
 };
