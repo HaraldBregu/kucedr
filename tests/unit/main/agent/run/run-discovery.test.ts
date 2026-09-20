@@ -21,8 +21,9 @@ describe('progressive tool discovery', () => {
 		});
 
 		expect(discovery.active().map((tool) => tool.id)).toEqual(['get_goal', 'discover_tools']);
-		expect(discovery.tool.description).toContain('tool_0 | tool 0 | tool_0 capability');
-		expect(discovery.tool.description).not.toContain('"properties"');
+		expect(discovery.prompt()).toContain('tool_0 | tool 0 | Not loaded; use discover_tools | tool_0 capability');
+		expect(discovery.prompt()).toContain('get_goal | get goal | Loaded');
+		expect(discovery.prompt()).not.toContain('"properties"');
 
 		const first = await discovery.tool.run({
 			query: 'exact selection',
@@ -33,6 +34,8 @@ describe('progressive tool discovery', () => {
 			selectedToolIds: eligible.slice(0, 8).map((tool) => tool.id),
 			limitReached: true,
 		});
+		expect(discovery.prompt()).toContain('tool_0 | tool 0 | Loaded');
+		expect(discovery.prompt()).toContain('tool_8 | tool 8 | Not loaded');
 
 		const second = await discovery.tool.run({
 			query: 'more exact tools',
@@ -78,7 +81,8 @@ describe('progressive tool discovery', () => {
 			selectedToolIds: [],
 			availableTools: [{ id: gmail.id, name: gmail.name, description: gmail.description }],
 		});
-		expect(discovery.tool.description).toContain('calendar | Calendar');
-		expect(discovery.tool.description).not.toContain('gmail | Gmail');
+		expect(discovery.prompt()).toContain('calendar | Calendar');
+		expect(discovery.prompt()).not.toContain('gmail | Gmail');
+		expect(discovery.prompt()).toContain('mcp__gmail__send_message | mcp  gmail  send message | Not loaded');
 	});
 });

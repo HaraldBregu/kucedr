@@ -232,9 +232,7 @@ describe('run stream system prompt', () => {
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(events[0].tools).toEqual(['discover_tools']);
-		expect(
-			(runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description
-		).toContain('list_skills');
+		expect(runModelTurnMock.mock.calls[0][9]).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -260,9 +258,7 @@ describe('run stream system prompt', () => {
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(events[0].tools).toEqual(['discover_tools']);
-		expect(
-			(runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description
-		).toContain('list_skills');
+		expect(runModelTurnMock.mock.calls[0][9]).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -308,9 +304,7 @@ describe('run stream system prompt', () => {
 		expect(denied[0]).toMatchObject({ type: 'run_started' });
 		if (denied[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(denied[0].tools).toEqual(['discover_tools']);
-		expect(
-			(runModelTurnMock.mock.calls[1][5] as Array<{ description: string }>)[0].description
-		).toContain('read | Read');
+		expect(runModelTurnMock.mock.calls[1][9]).toContain('read | Read');
 		expect(denied[0].tools).not.toContain('subagent');
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});
@@ -1028,6 +1022,9 @@ describe('run stream system prompt', () => {
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(['discover_tools', 'read', 'edit']);
 		expect(order).toEqual(['read', 'edit']);
+		expect(runModelTurnMock.mock.calls[0][9]).toContain('edit | Edit | Not loaded; use discover_tools | Edit a file');
+		expect(runModelTurnMock.mock.calls[1][9]).toContain('edit | Edit | Loaded | Edit a file');
+		expect(runModelTurnMock.mock.calls[0][9]).toContain('Never call a tool to test whether it is loaded');
 	});
 
 	it('does not execute a hidden tool hallucinated beside discovery in the same response', async () => {
