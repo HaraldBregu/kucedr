@@ -1,0 +1,201 @@
+import { z } from 'zod';
+import type { Tool } from '../types';
+import { tool } from '../tools/tool';
+
+export const DISCOVER_TOOLS_ID = 'discover_tools';
+export const DISCOVERY_CALL_LIMIT = 8;
+export const DISCOVERY_RUN_LIMIT = 16;
+
+export interface DiscoveredMcpTool {
+	tool: Tool;
+	serverId: string;
+	serverName: string;
+}
+
+export interface DeferredMcpServer {
+	id: string;
+	name: string;
+}
+
+export interface ToolDiscoveryResult {
+	selectedToolIds: string[];
+	selectedTools: Array<{ id: string; name: string; serviceId?: string; serviceName?: string }>;
+	selectedServiceIds: string[];
+	rejectedToolIds: string[];
+	availableTools?: Array<{ id: string; name: string; description: string }>;
+	limitReached: boolean;
+}
+
+interface ToolDiscoveryOptions {
+	eligible: Tool[];
+	required: Tool[];
+	mcpTools?: DiscoveredMcpTool[];
+	deferredMcpServers?: DeferredMcpServer[];
+	loadMcpServers?: (serverIds: string[], signal?: AbortSignal) => Promise<DiscoveredMcpTool[]>;
+	filterEligible?: (tools: Tool[]) => Tool[];
+}
+
+export interface ToolDiscovery {
+	readonly tool: Tool;
+	active(): Tool[];
+	eligible(): Tool[];
+	replaceEligible(tools: Tool[]): void;
+	activateImmediate(toolIds: readonly string[]): void;
+}
+
+function searchTokens(value: string): string[] {
+	return value
+		.toLocaleLowerCase()
+		.normalize('NFKC')
+		.split(/[^\p{L}\p{N}_-]+/u)
+		.map((token) => token.trim())
+		.filter((token) => token.length >= 2);
+}
+
+export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscovery {
+	let eligible = new Map(options.eligible.map((candidate) => [candidate.id, candidate]));
+	const required = new Map(options.required.map((candidate) => [candidate.id, candidate]));
+	const active = new Map(required);
+	const mcpMetadata = new Map(
+		(options.mcpTools ?? []).map((entry) => [
+			entry.tool.id,
+			{ serverId: entry.serverId, serverName: entry.serverName },
+		])
+	);
+	const deferredServers = new Map(
+		(options.deferredMcpServers ?? []).map((server) => [server.id, server])
+	);
+	let selectedCount = 0;
+
+	const directory = (): string => {
+		const tools = [...eligible.values()]
+			.sort((left, right) => left.id.localeCompare(right.id))
+			.map((candidate) => `${candidate.id} | ${candidate.name} | ${candidate.description.replace(/\s+/g, ' ').trim()}`);
+		const servers = [...deferredServers.values()]
+			.sort((left, right) => left.id.localeCompare(right.id))
+			.map((server) => `${server.id} | ${server.name}`);
+		return [
+			'Eligible tool directory (IDs, names, one-line descriptions; schemas stay hidden until activation):',
+			...tools,
+			...(servers.length > 0 ? ['Deferred MCP servers (server ID | name):', ...servers] : []),
+		].join('\n');
+	};
+
+	const discoveryTool = tool({
+		id: DISCOVER_TOOLS_ID,
+		name: 'Discover tools',
+		description: 'Select only the tools needed for the next step. ' + directory(),
+		planSafe: true,
+		capability: { effects: ['read'] },
+		inputSchema: z.object({
+			query: z.string().trim().min(1).max(240).describe('Concise capability need.'),
+			toolIds: z.array(z.string().trim().min(1)).max(DISCOVERY_CALL_LIMIT).default([]),
+			mcpServerIds: z.array(z.string().trim().min(1)).max(DISCOVERY_CALL_LIMIT).default([]),
+		}),
+		execute: async ({ query, toolIds, mcpServerIds }, signal): Promise<ToolDiscoveryResult> => {
+			signal?.throwIfAborted();
+			const requestedServers = [...new Set(mcpServerIds)];
+			const allowedServers = requestedServers.filter((id) => deferredServers.has(id));
+			let loaded: DiscoveredMcpTool[] = [];
+			if (allowedServers.length > 0 && options.loadMcpServers) {
+				loaded = await options.loadMcpServers(allowedServers, signal);
+				signal?.throwIfAborted();
+				const filtered = options.filterEligible
+					? options.filterEligible(loaded.map((entry) => entry.tool))
+					: loaded.map((entry) => entry.tool);
+				const allowedIds = new Set(filtered.map((candidate) => candidate.id));
+				for (const entry of loaded) {
+					deferredServers.delete(entry.serverId);
+					if (!allowedIds.has(entry.tool.id)) continue;
+					eligible.set(entry.tool.id, entry.tool);
+					mcpMetadata.set(entry.tool.id, {
+						serverId: entry.serverId,
+						serverName: entry.serverName,
+					});
+				}
+			}
+
+			const rejectedToolIds = toolIds.filter((id) => !eligible.has(id));
+			const requested = [...new Set(toolIds)].filter((id) => eligible.has(id));
+			if (requested.length === 0) {
+				const queryTokens = searchTokens(query);
+				const loadedIds = new Set(loaded.map((entry) => entry.tool.id));
+				const pool = loaded.length > 0
+					? [...eligible.values()].filter((candidate) => loadedIds.has(candidate.id))
+					: [...eligible.values()];
+				const scored = pool
+					.map((candidate) => {
+						const text = `${candidate.id} ${candidate.name} ${candidate.description}`.toLocaleLowerCase();
+						return {
+							id: candidate.id,
+							score: queryTokens.reduce((score, token) => score + (text.includes(token) ? 1 : 0), 0),
+						};
+					})
+					.filter((candidate) => candidate.score > 0)
+					.sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
+				requested.push(...scored.map((candidate) => candidate.id));
+			}
+
+			const remaining = Math.max(0, DISCOVERY_RUN_LIMIT - selectedCount);
+			const selectedToolIds = requested
+				.filter((id) => !active.has(id))
+				.slice(0, Math.min(DISCOVERY_CALL_LIMIT, remaining));
+			for (const id of selectedToolIds) active.set(id, eligible.get(id)!);
+			selectedCount += selectedToolIds.length;
+			const selectedTools = selectedToolIds.map((id) => {
+				const candidate = eligible.get(id)!;
+				const service = mcpMetadata.get(id);
+				return {
+					id,
+					name: candidate.name,
+					...(service ? { serviceId: service.serverId, serviceName: service.serverName } : {}),
+				};
+			});
+			const selectedServiceIds = [...new Set(selectedTools.flatMap((entry) => entry.serviceId ?? []))];
+			const noMatch = selectedToolIds.length === 0 && loaded.length > 0;
+			return {
+				selectedToolIds,
+				selectedTools,
+				selectedServiceIds,
+				rejectedToolIds,
+				...(noMatch
+					? {
+							availableTools: loaded
+								.filter((entry) => eligible.has(entry.tool.id))
+								.map((entry) => ({
+									id: entry.tool.id,
+									name: entry.tool.name,
+									description: entry.tool.description,
+								})),
+						}
+					: {}),
+				limitReached:
+					requested.filter((id) => !active.has(id)).length > selectedToolIds.length ||
+					selectedCount >= DISCOVERY_RUN_LIMIT,
+			};
+		},
+	});
+	Object.defineProperty(discoveryTool, 'description', {
+		get: () => 'Select only the tools needed for the next step. ' + directory(),
+		enumerable: true,
+	});
+	active.set(discoveryTool.id, discoveryTool);
+
+	return {
+		tool: discoveryTool,
+		active: () => [...active.values()],
+		eligible: () => [...eligible.values()],
+		replaceEligible(tools) {
+			eligible = new Map(tools.map((candidate) => [candidate.id, candidate]));
+			for (const id of active.keys()) {
+				if (id !== DISCOVER_TOOLS_ID && !required.has(id) && !eligible.has(id)) active.delete(id);
+			}
+		},
+		activateImmediate(toolIds) {
+			for (const id of toolIds) {
+				const candidate = eligible.get(id);
+				if (candidate) active.set(id, candidate);
+			}
+		},
+	};
+}
