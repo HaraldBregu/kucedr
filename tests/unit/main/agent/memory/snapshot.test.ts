@@ -36,6 +36,7 @@ it('round trips visible messages through robust Markdown blocks', () => {
 		user,
 		'Visible answer',
 	]);
+	expect(snapshotSource(SESSION_ID, markdown).updatedAt).toBe('2026-09-19T14:30:00.000Z');
 });
 
 it('continues reading existing version one snapshots', () => {

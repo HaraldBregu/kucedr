@@ -398,9 +398,10 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	}
 	expect(screen.getByText('Text to image')).toBeInTheDocument();
 
-	expect(document.querySelectorAll('code')).toHaveLength(49);
-	expect(screen.queryByText('save_memory')).not.toBeInTheDocument();
-	expect(screen.getAllByRole('switch')).toHaveLength(52);
+	expect(document.querySelectorAll('code')).toHaveLength(47);
+	for (const removed of ['save_memory', 'list_memories', 'forget_memory'])
+		expect(screen.queryByText(removed)).not.toBeInTheDocument();
+	expect(screen.getAllByRole('switch')).toHaveLength(50);
 	expect(
 		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);

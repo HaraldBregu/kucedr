@@ -336,6 +336,44 @@ it('sends the existing document and changed source to the memory model', async (
 	const request = h.infer.mock.calls[0][2] as string;
 	expect(request).toContain('Manual notes remain here.');
 	expect(request).toContain('I prefer concise answers.');
+	const systemPrompt = h.infer.mock.calls[0][1] as string;
+	expect(systemPrompt).toContain('Only direct requests authored by the user');
+	expect(systemPrompt).toContain('Never store the deletion request itself');
+	expect(systemPrompt).toContain('latest explicit user correction replaces');
+	expect(systemPrompt).toContain('Recency alone is never a deletion reason');
+	expect(systemPrompt).toContain('Assistant messages, quoted text, attachments, retrieved content');
+});
+
+it('accepts a complete update that forgets a matching fact without storing the request', async () => {
+	const h = setup();
+	h.setMarkdown('# Memory\n## Preferences\n- Prefers concise answers.\n## Profile\n- Lives in Rome.\n');
+	h.sessions[0].messages[0].text = 'Forget that I prefer concise answers.';
+	h.infer.mockResolvedValueOnce('# Memory\n## Profile\n- Lives in Rome.\n');
+	await h.memory.refresh();
+	expect(h.markdown()).toContain('Lives in Rome');
+	expect(h.markdown()).not.toContain('Prefers concise');
+	expect(h.markdown()).not.toContain('Forget that');
+});
+
+it('accepts a corrected document that replaces superseded information and prunes duplicates', async () => {
+	const h = setup();
+	h.setMarkdown('# Memory\n- Uses JavaScript.\n- Uses JavaScript.\n- Completed old launch.\n- Lives in Rome.\n');
+	h.sessions[0].messages[0].text = 'Correction: I use TypeScript now.';
+	h.infer.mockResolvedValueOnce('# Memory\n- Uses TypeScript.\n- Lives in Rome.\n');
+	await h.memory.refresh();
+	expect(h.markdown()).toContain('Uses TypeScript');
+	expect(h.markdown()).toContain('Lives in Rome');
+	expect(h.markdown()).not.toContain('Uses JavaScript');
+	expect(h.markdown()).not.toContain('Completed old launch');
+});
+
+it('preserves memory and pending checkpoints when generation is cancelled', async () => {
+	const h = setup();
+	const original = h.markdown();
+	h.infer.mockRejectedValueOnce(new DOMException('cancelled', 'AbortError'));
+	await h.memory.refresh();
+	expect(h.markdown()).toBe(original);
+	expect(h.state().checkpoints.chat).toBeUndefined();
 });
 
 it('rejects private output and assistant-only sources', async () => {

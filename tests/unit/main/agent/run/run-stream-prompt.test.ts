@@ -408,6 +408,61 @@ describe('run stream system prompt', () => {
 		}
 	});
 
+	it.each(['minimal', 'workspace'] as const)('injects untrusted automatic memory into %s main chat', async (contextMode) => {
+		const session = createSessionState();
+		session.category = 'main';
+		session.messages = [{ role: 'user', content: 'Current correction' }];
+		const context = jest.fn(async () => '- Prefers concise answers.');
+		for await (const event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: `memory-${contextMode}`,
+				task: 'chat',
+				message: 'Current correction',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode,
+				interactionMode: 'default',
+			},
+			new AbortController().signal,
+			{ tools: [], memory: { context } as never }
+		)) void event;
+		expect(context).toHaveBeenCalledWith('Current correction');
+		expect(runModelTurnMock.mock.calls[0][10]).toEqual([
+			expect.objectContaining({
+				role: 'user',
+				content: expect.stringContaining('explicit corrections override this recalled context'),
+			}),
+		]);
+	});
+
+	it.each(['bot', 'task', 'health', 'subagent'] as const)('keeps personal memory out of %s runs even in workspace mode', async (category) => {
+		const session = createSessionState();
+		session.category = category;
+		session.messages = [{ role: 'user', content: 'Background request' }];
+		const context = jest.fn(async () => '- Private preference.');
+		for await (const event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: `isolated-${category}`,
+				task: 'chat',
+				message: 'Background request',
+				model: 'test-model',
+				type: 'background',
+				agentId: category,
+				contextMode: 'workspace',
+				interactionMode: 'default',
+			},
+			new AbortController().signal,
+			{ tools: [], memory: { context } as never }
+		)) void event;
+		expect(context).not.toHaveBeenCalled();
+		expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
+	});
+
 	it('keeps pending bootstrap context out of non-main minimal turns', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-bot-bootstrap-'));
 		try {

@@ -127,7 +127,8 @@ beforeEach(() => {
 	order.length = 0;
 });
 
-it.each(['main', 'channels', 'tasks', 'health'])('captures the completed %s agent run', async (agentId) => {
+it('captures completed main chat runs', async () => {
+	const agentId = 'main';
 	const capture = jest.fn(async () => undefined);
 	const memory = { capture } as unknown as MemoryService;
 	const agent = new Agent(
@@ -145,6 +146,26 @@ it.each(['main', 'channels', 'tasks', 'health'])('captures the completed %s agen
 	control.release();
 	await response;
 	expect(capture).toHaveBeenCalledWith(SESSION_ID, expect.any(Array));
+});
+
+it.each(['channels', 'tasks', 'health'])('does not expose %s runs to personal memory', async (agentId) => {
+	const capture = jest.fn(async () => undefined);
+	const memory = { capture } as unknown as MemoryService;
+	const agent = new Agent(
+		{} as WindowFactory,
+		{ reset: jest.fn() } as unknown as ExecSandbox,
+		memory
+	);
+	const control = controlRun(`isolated-${agentId}`);
+	const response = agent.send('private background content', agentId, {
+		type: 'background',
+		runId: `isolated-${agentId}`,
+		sessionId: agentId,
+	});
+	await control.started;
+	control.release();
+	await response;
+	expect(capture).not.toHaveBeenCalled();
 });
 
 it('rejects invalid current-turn attachments before session initialization', async () => {

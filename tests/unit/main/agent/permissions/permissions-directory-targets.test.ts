@@ -4,7 +4,6 @@ import { taskStorePath } from '../../../../../src/main/tasks/tasks_store';
 import { healthStorePath } from '../../../../../src/main/agent/health/health_store';
 import { registry, type ProcessSession } from '../../../../../src/main/agent/tools/core/process';
 import { skillsRoot } from '../../../../../src/main/agent/skills/skills_root';
-import { memoryPath } from '../../../../../src/main/memory/path';
 
 const agentDir = path.resolve('/appdata/agent');
 
@@ -58,10 +57,6 @@ describe('directoryPermissionTargets', () => {
 		expect(directoryPermissionTargets(toolName, {}, agentDir)).toEqual([
 			path.join(agentDir, fileName),
 		]);
-	});
-
-	it('maps memory deletion to the standalone memory folder', () => {
-		expect(directoryPermissionTargets('forget_memory', {}, agentDir)).toEqual([memoryPath()]);
 	});
 
 	it('maps schedule changes to the shared cron store', () => {

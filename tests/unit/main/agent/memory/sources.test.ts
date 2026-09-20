@@ -17,7 +17,7 @@ it('scans UUID memory snapshots of every agent type with stable fingerprints and
 				path.join(root, `${id}.md`),
 				snapshotMarkdown(id, [
 					{ role: 'user', content: index === 0 ? 'x'.repeat(9000) : 'original transcript' },
-				])
+				], new Date(`2026-09-${String(12 - index).padStart(2, '0')}T12:00:00.000Z`))
 			);
 		}
 		await fs.writeFile(path.join(root, 'MEMORY.md'), '# Consolidated memory');
@@ -25,8 +25,8 @@ it('scans UUID memory snapshots of every agent type with stable fingerprints and
 		await fs.writeFile(path.join(root, 'not-a-session.md'), '# Notes');
 
 		const first = await scanSources(root);
-		expect(first.map((source) => source.id)).toEqual(ids);
-		expect(first[0].messages.map((message) => message.text.length)).toEqual([4000, 4000, 1000]);
+		expect(first.map((source) => source.id)).toEqual([...ids].reverse());
+		expect(first[2].messages.map((message) => message.text.length)).toEqual([4000, 4000, 1000]);
 		expect(await scanSources(root)).toEqual(first);
 
 		await fs.writeFile(
@@ -37,13 +37,14 @@ it('scans UUID memory snapshots of every agent type with stable fingerprints and
 			])
 		);
 		const inserted = await scanSources(root);
-		expect(inserted[1].messages[1].fingerprint).toBe(first[1].messages[0].fingerprint);
+		expect(inserted.at(-1)?.id).toBe(ids[1]);
+		expect(inserted.at(-1)?.messages[1].fingerprint).toBe(first[1].messages[0].fingerprint);
 
 		await fs.writeFile(
 			path.join(root, `${ids[1]}.md`),
 			snapshotMarkdown(ids[1], [{ role: 'user', content: 'edited transcript' }])
 		);
-		expect((await scanSources(root))[1].messages[0].fingerprint).not.toBe(
+		expect((await scanSources(root)).at(-1)?.messages[0].fingerprint).not.toBe(
 			first[1].messages[0].fingerprint
 		);
 		await fs.writeFile(path.join(root, `${ids[1]}.md`), '{invalid');
