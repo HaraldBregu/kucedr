@@ -175,10 +175,17 @@ export interface McpDiscoveryDiagnostics {
 	failures: McpDiscoveryIssue[];
 }
 
+export interface RuntimeCapabilitySelection {
+	tools: Array<{ id: string; name: string; serviceId?: string; serviceName?: string }>;
+	serviceIds: string[];
+}
+
 export type RuntimeEvent =
 	| RuntimeModelEvent
 	| { type: 'provider_queue_metrics'; providerId: string; queueDelayMs: number; attempt: number }
 	| { type: 'run_error'; message: string }
+	| { type: 'capability_resolution_start' }
+	| ({ type: 'capability_resolution_result' } & RuntimeCapabilitySelection)
 	| {
 			type: 'run_started';
 			sessionId: string;

@@ -49,6 +49,12 @@ import { createBackgroundBrowser } from '../tools/web/browser/background';
 import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
+import {
+	createToolDiscovery,
+	DISCOVER_TOOLS_ID,
+	type ToolDiscovery,
+	type ToolDiscoveryResult,
+} from './run_discovery';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -197,6 +203,18 @@ async function* loop(
 	}
 	tools = filterPlanTools(tools, input.interactionMode);
 	tools = filterDisabledTools(tools, configuredToolSettings);
+	let discovery: ToolDiscovery | undefined;
+	let explicitSkill: SkillLoadResult | undefined;
+	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
+		let filtered = filterDisabledTools(
+			filterPlanTools(filterTools(candidates, input.toolsAllow, input.toolsDeny), input.interactionMode),
+			configuredToolSettings
+		);
+		for (const loaded of session.runContext.loadedSkills) {
+			filtered = selectSkillTools(filtered, skillSnapshot.skills.find((skill) => skill.id === loaded.id)?.manifest.allowedTools);
+		}
+		return filtered;
+	};
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
 		rememberSkill(session.runContext, {
 			id: skill.id,
@@ -208,21 +226,8 @@ async function* loop(
 			resources: skill.resources,
 			warnings: skill.warnings,
 		});
-		tools.splice(
-			0,
-			tools.length,
-			...filterDisabledTools(
-				filterPlanTools(
-					filterTools(
-						selectSkillTools(tools, skill.allowedTools),
-						input.toolsAllow,
-						input.toolsDeny
-					),
-					input.interactionMode
-				),
-				configuredToolSettings
-			)
-		);
+		tools = filterEligibleTools(selectSkillTools(tools, skill.allowedTools));
+		discovery?.replaceEligible(tools);
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));
 	if (!options.tools && skillLoadingEnabled) {
@@ -232,6 +237,9 @@ async function* loop(
 
 	let closeMcp: (() => Promise<void>) | undefined;
 	let mcpDiscovery: McpDiscoveryDiagnostics | undefined;
+	let mcpEntries: Awaited<ReturnType<typeof loadMcpTools>>['entries'] = [];
+	let deferredMcpServers: Awaited<ReturnType<typeof loadMcpTools>>['deferredServers'] = [];
+	let loadDeferredMcp: Awaited<ReturnType<typeof loadMcpTools>>['loadDeferred'] | undefined;
 	if (!options.tools) {
 		if (
 			input.interactionMode !== 'plan' &&
@@ -242,6 +250,17 @@ async function* loop(
 			tools.push(...mcp.tools);
 			closeMcp = mcp.close;
 			mcpDiscovery = mcp.diagnostics;
+			mcpEntries = mcp.entries ?? [];
+			deferredMcpServers = (mcp.deferredServers ?? []).filter((server) => {
+				if (input.toolsAllow === undefined) return true;
+				const normalized = server.id
+					.normalize('NFKC')
+					.replace(/[^a-zA-Z0-9_-]/g, '_')
+					.replace(/_+/g, '_')
+					.replace(/^_+|_+$/g, '') || 'server';
+				return input.toolsAllow.some((id) => id.startsWith(`mcp__${normalized}__`));
+			});
+			loadDeferredMcp = mcp.loadDeferred;
 		}
 		const childTools = filterTools(tools, input.toolsAllow, input.toolsDeny).filter(
 			(tool) =>
@@ -273,8 +292,27 @@ async function* loop(
 	tools = filterPlanTools(tools, input.interactionMode);
 	if (input.explicitSkill && !skillLoadingEnabled)
 		throw new Error('Skill loading is unavailable for this run.');
-	if (input.explicitSkill)
-		applyActivatedSkill(await activateSkill(skillSnapshot, input.explicitSkill));
+	if (input.explicitSkill) {
+		explicitSkill = await activateSkill(skillSnapshot, input.explicitSkill);
+		applyActivatedSkill(explicitSkill);
+	}
+	const requiredToolIds = new Set([
+		...(input.interactionMode === 'plan' ? ['ask'] : []),
+		'get_goal',
+		'update_goal_plan',
+		'record_goal_evidence',
+		'request_goal_completion',
+		'report_goal_blocker',
+	]);
+	discovery = createToolDiscovery({
+		eligible: tools,
+		required: tools.filter((candidate) => requiredToolIds.has(candidate.id)),
+		mcpTools: mcpEntries.filter((entry) => tools.some((candidate) => candidate.id === entry.tool.id)),
+		deferredMcpServers,
+		...(loadDeferredMcp ? { loadMcpServers: loadDeferredMcp } : {}),
+		filterEligible: filterEligibleTools,
+	});
+	if (explicitSkill?.allowedTools) discovery.activateImmediate(explicitSkill.allowedTools);
 
 	yield {
 		type: 'run_started',
@@ -282,7 +320,7 @@ async function* loop(
 		interactionMode: input.interactionMode,
 		model: modelId,
 		providerId: provider.id,
-		tools: tools.map((tool) => tool.id),
+		tools: discovery.active().map((tool) => tool.id),
 		skillDiagnostics: skillSnapshot.diagnostics,
 		skillActivations: session.runContext.loadedSkills.map((skill) => ({
 			id: skill.id,
@@ -298,7 +336,7 @@ async function* loop(
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
-			const turnTools = synthesisOnly ? [] : tools;
+			const turnTools = synthesisOnly ? [] : discovery.active();
 			const systemPrompt = await buildSystemPrompt(
 				config,
 				turnTools,
@@ -408,7 +446,7 @@ async function* loop(
 			}
 			const budgetExceeded = budget.wouldExceed(
 				turn.toolCalls.map((call) => ({
-					tool: tools.find((tool) => tool.id === call.name),
+					tool: turnTools.find((tool) => tool.id === call.name),
 					input: call.args,
 				}))
 			);
@@ -433,7 +471,7 @@ async function* loop(
 			}
 
 			for await (const event of runToolCalls(
-				tools,
+				turnTools,
 				turn.toolCalls,
 				signal,
 				session.runContext.fileAccess,
@@ -447,6 +485,19 @@ async function* loop(
 				options.resources,
 				session.runContext.fileHistory
 			)) {
+				if (event.type === 'tool_call_start' && event.toolName === DISCOVER_TOOLS_ID) {
+					yield { type: 'capability_resolution_start' };
+					continue;
+				}
+				if (event.type === 'tool_call_end' && event.toolName === DISCOVER_TOOLS_ID) {
+					const output = event.output as ToolDiscoveryResult | undefined;
+					yield {
+						type: 'capability_resolution_result',
+						tools: output?.selectedTools ?? [],
+						serviceIds: output?.selectedServiceIds ?? [],
+					};
+					continue;
+				}
 				yield event;
 			}
 			addToolResults(session, turn.toolCalls);
