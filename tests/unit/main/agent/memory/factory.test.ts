@@ -117,5 +117,18 @@ it('persists independent configuration and invokes the configured provider direc
 		})
 	);
 	expect(JSON.stringify(persisted)).not.toContain('provider-secret');
+	(scanSources as jest.Mock).mockResolvedValue([
+		{
+			id: 'session',
+			messages: [
+				{ fingerprint: 'first', role: 'user', text: 'I prefer TypeScript.' },
+				{ fingerprint: 'second', role: 'user', text: 'I also use Rust.' },
+			],
+		},
+	]);
+	generate.mockResolvedValueOnce({ content: '# Memory\n- Partial', stopReason: 'max_tokens' });
+	const truncated = await restarted.refresh();
+	expect(truncated.error).toContain('truncated');
+	expect(persisted?.checkpoints.session).toEqual(['first']);
 	await restarted.stop();
 });
