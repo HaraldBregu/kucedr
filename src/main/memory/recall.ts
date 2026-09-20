@@ -23,9 +23,14 @@ export function recall(markdown: string, query: string): string {
 		);
 		return [{ line, normalized, index, core, score }];
 	});
-	const unique = <T extends { normalized: string }>(items: T[]): T[] => [
-		...new Map(items.map((item) => [item.normalized, item])).values(),
-	];
+	const unique = <T extends { normalized: string }>(items: T[]): T[] => {
+		const seen = new Set<string>();
+		return items.filter((item) => {
+			if (seen.has(item.normalized)) return false;
+			seen.add(item.normalized);
+			return true;
+		});
+	};
 	const core = unique(records.filter((record) => record.core)).slice(0, 4);
 	const coreKeys = new Set(core.map((record) => record.normalized));
 	const relevant = unique(
