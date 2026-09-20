@@ -143,7 +143,29 @@ it('clearing invalidates pending inference and prevents old input recreating mem
  h.infer.mockResolvedValue('{"accepted":[0]}');
  await pending;
  await h.memory.refresh();
- expect(h.markdown()).not.toContain('Prefers concise answers.');
+	expect(h.markdown()).not.toContain('Prefers concise answers.');
+});
+
+it('forgetting invalidates pending inference and prevents a deleted fact from returning', async () => {
+	const h = setup();
+	h.setMarkdown('# Memory\n- Prefers concise answers.\n');
+	const [record] = await h.memory.list();
+	let resolve!: (value: string) => void;
+	const entered = new Promise<void>((ready) => {
+		h.infer.mockImplementationOnce(() => {
+			ready();
+			return new Promise<string>((done) => {
+				resolve = done;
+			});
+		});
+	});
+	const pending = h.memory.refresh();
+	await entered;
+	await h.memory.forget(record.id);
+	resolve(h.extracted);
+	await pending;
+	expect(h.markdown()).not.toContain('Prefers concise answers.');
+	expect(h.state().suppressed).toContain(record.id);
 });
 
 it('keeps memory model configuration independent from the chat selection', async () => {
@@ -263,17 +285,20 @@ it('cancels outstanding inference on shutdown', async () => {
  expect(h.state().checkpoints.chat).toBeUndefined();
 });
 
-it('serializes manual edits and forgets exact IDs while retaining other notes', async () => {
+it('serializes manual edits and forgets IDs or matching content while retaining other notes', async () => {
  const h = setup();
- await Promise.all([h.memory.edit('# Notes\n- first\n'), h.memory.edit('# Notes\n- first\n- second\n')]);
+ await Promise.all([h.memory.edit('# Notes\n- first schedule\n'), h.memory.edit('# Notes\n- first schedule\n- second schedule\n- retained\n')]);
  const records = await h.memory.list();
- expect(records).toHaveLength(2);
- await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: true });
+ expect(records).toHaveLength(3);
+ await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: 1 });
  expect(h.markdown()).toContain('# Notes');
- expect(h.markdown()).toContain('- second');
- expect(h.markdown()).not.toContain('- first');
+ expect(h.markdown()).toContain('- second schedule');
+ expect(h.markdown()).not.toContain('- first schedule');
  expect(h.state().suppressed).toContain(records[0].id);
- await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: false });
+ await expect(h.memory.forget('schedule')).resolves.toEqual({ removed: 1 });
+ expect(h.markdown()).not.toContain('schedule');
+ expect(h.markdown()).toContain('- retained');
+ await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: 0 });
 });
 
 it('leaves processing checkpoints intact when a manual edit cannot be written', async () => {
