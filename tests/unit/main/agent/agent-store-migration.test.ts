@@ -58,11 +58,9 @@ it('migrates legacy agent settings into chatbot and tools branches', () => {
 		},
 		tools: {
 			webSearch: { providerId: 'brave', providerName: 'Brave', enabled: true },
-			image: { providerId: 'openai', modelId: 'image-1', options: {} },
-			audio: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
-			video: { providerId: 'google', modelId: 'veo-3', options: {} },
-			textToSpeech: { providerId: '', modelId: '', options: {} },
-			speechToText: { providerId: '', modelId: '', options: {} },
+			create_image: { providerId: 'openai', modelId: 'image-1', options: {} },
+			create_sound: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
+			create_video: { providerId: 'google', modelId: 'veo-3', options: {} },
 		},
 	});
 	expect(persisted).not.toHaveProperty('providerId');
