@@ -353,8 +353,8 @@ async function* loop(
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt = [
-				synthesisOnly ? '' : discovery.prompt(),
 				input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt,
+				synthesisOnly ? '' : discovery.prompt(),
 				finalization?.instruction,
 				synthesisOnly
 					? 'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.'
