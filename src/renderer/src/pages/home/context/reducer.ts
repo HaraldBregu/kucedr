@@ -99,10 +99,7 @@ function isTerminalRunState(state: AgentMessage['state']): boolean {
 	return state === 'completed' || state === 'cancelled' || state === 'error';
 }
 
-function settleRunningTools(
-	tools: readonly AgentToolPart[],
-	failed = false
-): AgentToolPart[] {
+function settleRunningTools(tools: readonly AgentToolPart[], failed = false): AgentToolPart[] {
 	return tools.map((tool) =>
 		tool.state === 'input-streaming' || tool.state === 'input-available'
 			? failed
@@ -220,9 +217,9 @@ function applyResponseEvent(
 				'select_screen_source';
 			const output = screenSource
 				? {
-					status: event.status,
-					sourceId: event.answers.find((answer) => answer.questionId === 'screen-source')?.answer,
-				}
+						status: event.status,
+						sourceId: event.answers.find((answer) => answer.questionId === 'screen-source')?.answer,
+					}
 				: { status: event.status, answers: event.answers };
 			return {
 				...message,

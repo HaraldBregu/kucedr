@@ -14,10 +14,7 @@ export type AgentToolPart = ToolPart & {
 
 type AgentToolPartPatch = Omit<Partial<AgentToolPart>, 'toolCallId'>;
 
-function createAgentToolPart(
-	toolCallId: string,
-	patch: AgentToolPartPatch
-): AgentToolPart {
+function createAgentToolPart(toolCallId: string, patch: AgentToolPartPatch): AgentToolPart {
 	return {
 		toolCallId,
 		type: patch.type ?? 'tool',

@@ -1,8 +1,4 @@
-import type {
-	AgentRunState,
-	AgentUserInputQuestion,
-	AgentUserInputScope,
-} from '@/lib/compat';
+import type { AgentRunState, AgentUserInputQuestion, AgentUserInputScope } from '@/lib/compat';
 import type { AgentToolPart } from './tool-parts';
 
 export type { AgentRunState, AgentToolPart };
@@ -22,7 +18,11 @@ export interface PendingToolPermission {
 	readonly inputFingerprint: string;
 	readonly input: unknown;
 	readonly targets: readonly string[];
-	readonly reason: 'outside_trusted_location' | 'host_execution' | 'destructive_operation' | 'sensitive_operation';
+	readonly reason:
+		| 'outside_trusted_location'
+		| 'host_execution'
+		| 'destructive_operation'
+		| 'sensitive_operation';
 	readonly persistable: boolean;
 	readonly allowOnce: boolean;
 	readonly expiresAt: string;

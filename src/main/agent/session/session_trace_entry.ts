@@ -68,7 +68,9 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 	if (event.type === 'capability_resolution_result') {
 		const tools = Array.isArray(event.tools) ? event.tools : [];
 		const toolIds = tools
-			.map((tool) => (tool && typeof tool === 'object' ? (tool as Record<string, unknown>).id : undefined))
+			.map((tool) =>
+				tool && typeof tool === 'object' ? (tool as Record<string, unknown>).id : undefined
+			)
 			.filter((id): id is string => typeof id === 'string')
 			.slice(0, 16);
 		const serviceIds = Array.isArray(event.serviceIds)
