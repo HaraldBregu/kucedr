@@ -7,6 +7,7 @@ export interface SourceMessage {
 }
 export interface SourceSession {
 	id: string;
+	updatedAt?: string;
 	messages: SourceMessage[];
 }
 export interface MemoryState {

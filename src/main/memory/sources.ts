@@ -21,5 +21,8 @@ export async function scanSources(root = path.dirname(memoryPath())): Promise<So
 		const id = match[1].toLowerCase();
 		sources.push(snapshotSource(id, await fs.readFile(path.join(root, entry.name), 'utf8')));
 	}
-	return sources.sort((left, right) => left.id.localeCompare(right.id));
+	return sources.sort(
+		(left, right) =>
+			(left.updatedAt ?? '').localeCompare(right.updatedAt ?? '') || left.id.localeCompare(right.id)
+	);
 }

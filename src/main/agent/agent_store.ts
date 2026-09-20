@@ -122,8 +122,6 @@ const RUNTIME_TOOL_KEYS = {
 	screen_recorder_status: 'screen_recorder_status',
 	screen_recorder_stop: 'screen_recorder_stop',
 	query_knowledge: 'query_knowledge',
-	forget_memory: 'forget_memory',
-	list_memories: 'list_memories',
 	create_task: 'create_task',
 	update_task: 'update_task',
 	delete_task: 'delete_task',

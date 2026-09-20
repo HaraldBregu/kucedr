@@ -1,4 +1,3 @@
-import type { MemoryService } from '../../../shared/memory_types';
 import type { Config, Tool } from '../types';
 import type { WindowFactory } from '../../window_factory';
 import type { ExecSandbox } from '../sandbox';
@@ -21,8 +20,6 @@ import { openAppsTool } from '../tools/apps/open_apps';
 import { updateHealthSettingsTool } from '../tools/health/update_health_settings';
 import { updateHealthTool } from '../tools/health/update_health';
 import { getKnowledgeTools } from '../tools/knowledge';
-import { forgetMemoryTool } from '../tools/memory/forget_memory';
-import { listMemoriesTool } from '../tools/memory/list_memories';
 import { createImageTool } from '../tools/media/create_image';
 import { createSoundTool } from '../tools/media/create_sound';
 import { createVideoTool } from '../tools/media/create_video';
@@ -49,8 +46,7 @@ export function builtinTools(
 	config: Config,
 	sandbox: ExecSandbox,
 	windowFactory?: WindowFactory,
-	interactionMode: AgentInteractionMode = 'default',
-	memory?: MemoryService
+	interactionMode: AgentInteractionMode = 'default'
 ): Tool[] {
 	return [
 		listA2aAgentsTool,
@@ -80,7 +76,6 @@ export function builtinTools(
 		...(interactionMode === 'default' ? [selectScreenSourceTool] : []),
 		screenRecorderStatusTool,
 		screenRecorderStopTool,
-		...(memory ? [forgetMemoryTool(memory), listMemoriesTool(memory)] : []),
 		...getKnowledgeTools(),
 		updateHealthTool(config),
 		updateHealthSettingsTool,

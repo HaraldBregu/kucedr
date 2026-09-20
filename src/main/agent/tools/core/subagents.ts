@@ -9,7 +9,7 @@ import { tool } from '../tool';
 
 export interface ChildRuntime extends Pick<
 	StreamOptions,
-	'resources' | 'providerLimiter' | 'subagentLimiter' | 'budget' | 'modelOptions' | 'memory'
+	'resources' | 'providerLimiter' | 'subagentLimiter' | 'budget' | 'modelOptions'
 > {
 	type: AgentRunType;
 	interactionMode: import('../../../../shared/agent_types').AgentInteractionMode;
@@ -87,7 +87,6 @@ export async function runChild(
 	} catch (cause) {
 		error = cause instanceof Error ? cause.message : String(cause);
 	}
-	await runtime.memory?.capture(runId, session.messages).catch(() => undefined);
 	text = (result?.text || text).slice(0, CHILD_SUMMARY_MAX_CHARS);
 	const outcome = result
 		? {

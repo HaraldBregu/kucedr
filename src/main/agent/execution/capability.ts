@@ -12,7 +12,6 @@ const READ = new Set([
 	'query_knowledge',
 	'list_a2a_agents',
 	'list_apps',
-	'list_memories',
 	'list_tasks',
 	'list_skills',
 	'load_skill',
@@ -27,7 +26,6 @@ const READ = new Set([
 ]);
 const WRITE = new Set(['write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap']);
 const PERSIST = new Set([
-	'forget_memory',
 	'update_health',
 	'update_health_settings',
 	'create_task',

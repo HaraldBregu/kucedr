@@ -16,7 +16,8 @@ export function snapshotSource(sessionId: string, markdown: string): SourceSessi
 		? /<!-- kucedr-message:(user|assistant) -->\n([\s\S]*?)\n<!-- \/kucedr-message -->/g
 		: /\*\*(User|Assistant):\*\*\n((?:>[^\n]*(?:\n|$))+)/g;
 	const occurrences = new Map<string, number>();
-	const source: SourceSession = { id: sessionId, messages: [] };
+	const date = markdown.match(/^# Session [^\n]+\n\n\*\*Date:\*\* ([^\n]+)\n/)?.[1];
+	const source: SourceSession = { id: sessionId, ...(date ? { updatedAt: date } : {}), messages: [] };
 	let match: RegExpExecArray | null;
 	while ((match = pattern.exec(markdown))) {
 		const lines = match[2].replace(/\n$/, '').split('\n');

@@ -4,7 +4,6 @@ import {
 	AppWindow,
 	AlertTriangle,
 	BookOpen,
-	Brain,
 	FileText,
 	Globe,
 	Image as ImageIcon,
@@ -166,14 +165,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 				'query_knowledge',
 				'Searches the selected knowledge base for relevant content.',
 			],
-		],
-	},
-	{
-		titleKey: 'memory',
-		icon: Brain,
-		tools: [
-			['Forget memory', 'forget_memory', 'Removes a saved memory.'],
-			['List memories', 'list_memories', 'Lists memories available to the agent.'],
 		],
 	},
 	{
