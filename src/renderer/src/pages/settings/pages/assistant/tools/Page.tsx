@@ -43,6 +43,7 @@ import {
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import { SEARCH_ENGINES } from '../../search/catalog';
 import type { SearchEngineId, SearchSettings } from '../../../../../../../shared/search_types';
+import McpTools from './Mcp';
 
 type AgentTool = readonly [name: string, id: string, description: string];
 
@@ -272,6 +273,10 @@ const ToolsPage: React.FC = () => {
 		? t(selectedSearchEngine.descriptionKey)
 		: t('settings.searchEngine.defaultDescription');
 	const normalizedToolSearch = toolSearch.trim().toLocaleLowerCase();
+	const discoveryName = t('settings.modelServices.agentTools.discovery.name');
+	const discoveryDescription = t('settings.modelServices.agentTools.discovery.description');
+	const showDiscovery = ['discover_tools', discoveryName, discoveryDescription]
+		.join(' ').toLocaleLowerCase().includes(normalizedToolSearch);
 	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
 		...group,
 		tools: group.tools.filter(([name, id, description]) =>
@@ -390,6 +395,18 @@ const ToolsPage: React.FC = () => {
 					</Button>
 				)}
 			</div>
+			{showDiscovery && (
+				<SettingsSection title={t('settings.modelServices.agentTools.discovery.title')}>
+					<SettingsPanel>
+						<SettingsRow
+							title={discoveryName}
+							icon={SearchIcon}
+							description={<>{discoveryDescription} <code className="text-[11px]">discover_tools</code></>}
+							actions={<span className="text-xs text-muted-foreground">{t('settings.modelServices.agentTools.discovery.required')}</span>}
+						/>
+					</SettingsPanel>
+				</SettingsSection>
+			)}
 
 			{mediaSearchText.includes(normalizedToolSearch) && <SettingsSection
 				title={t('settings.modelServices.agentTools.groups.media')}
@@ -671,6 +688,7 @@ const ToolsPage: React.FC = () => {
 					</SettingsSection>
 				);
 			})}
+			<McpTools search={normalizedToolSearch} />
 		</SettingsPageShell>
 	);
 };

@@ -1313,6 +1313,12 @@
 			"musicCreatorName": "Text to audio",
 			"toolsDescription": "Configure the models and search service available to agent tools.",
 			"agentTools": {
+				"discovery": {
+					"title": "Tool discovery",
+					"name": "Discover tools",
+					"description": "Find and load tools when needed. Other tools remain unloaded until selected for the current run.",
+					"required": "Required"
+				},
 				"title": "Agent tools",
 				"description": "Built-in capabilities available to agents. Availability can vary by run mode, permissions, and configuration. Installed MCP servers add their own tools dynamically.",
 				"searchPlaceholder": "Search tools",
