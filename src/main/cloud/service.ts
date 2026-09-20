@@ -92,6 +92,10 @@ export class AuthService {
 	}
 
 	signInWithGoogle(): Promise<string> {
+		if (this.state.error) {
+			const { error: _error, ...state } = this.state;
+			this.setState(state);
+		}
 		return this.accountProvider().signInWithGoogle();
 	}
 
@@ -132,21 +136,30 @@ export class AuthService {
 	}
 
 	async handleDeepLink(value: string): Promise<AuthState> {
-		const url = new URL(value);
-		if (url.protocol !== 'kucedr:' || url.hostname !== 'auth' || url.pathname !== '/callback') {
-			throw new Error('The authentication link is invalid.');
+		try {
+			const url = new URL(value);
+			if (url.protocol !== 'kucedr:' || url.hostname !== 'auth' || url.pathname !== '/callback') {
+				throw new Error('The authentication link is invalid.');
+			}
+			if (url.searchParams.has('error')) throw new Error('The authentication link was rejected.');
+			const code = url.searchParams.get('code');
+			if (!code || code.length > 2048) throw new Error('The authentication link has expired.');
+			const session = await this.accountProvider().exchangeCode(code);
+			const recovery =
+				url.searchParams.get('type') === 'recovery' || this.state.status === 'recovery';
+			this.applySession(recovery ? 'recovery' : 'session', session);
+			if (this.state.status !== (recovery ? 'recovery' : 'signedIn')) {
+				throw this.accountMismatchError();
+			}
+			return this.getState();
+		} catch (cause) {
+			const error =
+				cause instanceof Error && cause.name === 'AccountMismatchError'
+					? this.accountMismatchError().message
+					: 'Sign-in could not be completed. Please try again.';
+			this.setState({ ...this.state, error });
+			throw new Error(error);
 		}
-		if (url.searchParams.has('error')) throw new Error('The authentication link was rejected.');
-		const code = url.searchParams.get('code');
-		if (!code || code.length > 2048) throw new Error('The authentication link has expired.');
-		const session = await this.accountProvider().exchangeCode(code);
-		const recovery =
-			url.searchParams.get('type') === 'recovery' || this.state.status === 'recovery';
-		this.applySession(recovery ? 'recovery' : 'session', session);
-		if (this.state.status !== (recovery ? 'recovery' : 'signedIn')) {
-			throw this.accountMismatchError();
-		}
-		return this.getState();
 	}
 
 	destroy(): void {

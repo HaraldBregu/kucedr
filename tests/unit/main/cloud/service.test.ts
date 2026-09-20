@@ -119,3 +119,33 @@ it('keeps provider tokens out of public auth state', async () => {
 	});
 	expect(JSON.stringify(service.getState())).not.toMatch(/current-secret|accessToken/);
 });
+
+
+it('publishes safe callback failures and clears them when Google sign-in retries', async () => {
+	const provider = accountProvider({
+		exchangeCode: jest.fn().mockRejectedValueOnce(new Error('provider-secret')).mockResolvedValue(currentSession),
+	});
+	const service = new AuthService(provider, { accept: () => true });
+	await service.initialize();
+	const listener = jest.fn();
+	service.onStateChanged(listener);
+
+	await expect(service.handleDeepLink('kucedr://auth/callback?code=expired')).rejects.toThrow(
+		'Sign-in could not be completed. Please try again.'
+	);
+	expect(listener).toHaveBeenLastCalledWith({
+		status: 'signedOut',
+		persistence: 'encrypted',
+		error: 'Sign-in could not be completed. Please try again.',
+	});
+	expect(JSON.stringify(service.getState())).not.toContain('provider-secret');
+
+	await service.signInWithGoogle();
+	expect(service.getState()).not.toHaveProperty('error');
+	await service.handleDeepLink('kucedr://auth/callback?code=valid');
+	expect(service.getState()).toEqual({
+		status: 'signedIn',
+		persistence: 'encrypted',
+		user: currentSession.user,
+	});
+});

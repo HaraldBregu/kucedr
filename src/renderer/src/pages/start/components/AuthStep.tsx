@@ -85,6 +85,7 @@ export function AuthStep(): React.JSX.Element {
 	};
 
 	const disabled = busy || googleBusy;
+	const visibleError = error || state.error;
 
 	if (state.status === 'unconfigured') {
 		return (
@@ -145,9 +146,9 @@ export function AuthStep(): React.JSX.Element {
 						>
 							Back to sign in
 						</Button>
-						{error ? (
+						{visibleError ? (
 							<p className="text-xs text-destructive" role="alert">
-								{error}
+								{visibleError}
 							</p>
 						) : null}
 					</CardContent>
@@ -283,13 +284,13 @@ export function AuthStep(): React.JSX.Element {
 											/>
 										</Field>
 									) : null}
-									{error ? (
+									{visibleError ? (
 										<div
 											className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-2.5 text-xs text-destructive"
 											role="alert"
 										>
 											<AlertCircle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-											<span>{error}</span>
+											<span>{visibleError}</span>
 										</div>
 									) : null}
 									<Button type="submit" size="lg" className="w-full" disabled={disabled}>

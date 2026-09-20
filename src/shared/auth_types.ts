@@ -14,6 +14,7 @@ export interface AuthUser {
 }
 
 export interface AuthState {
+	error?: string;
 	status: AuthStatus;
 	user?: AuthUser;
 	email?: string;
