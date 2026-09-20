@@ -11,12 +11,14 @@ it.each(['127.0.0.1', '[::1]'])(
 			expect(new URL(first.redirectUrl).hostname).toBe(host);
 			expect(Number(new URL(first.redirectUrl).port)).toBeGreaterThan(0);
 			expect(Number(new URL(second.redirectUrl).port)).toBeGreaterThan(0);
-			const invalid = await fetch(`${first.redirectUrl}?state=second&code=wrong`);
+			const invalid = await fetch(`${first.redirectUrl}?state=second&code=wrong`, {
+				headers: { Connection: 'close' },
+			});
 			expect(invalid.status).toBe(400);
 			await invalid.text();
 			const responses = await Promise.all([
-				fetch(`${first.redirectUrl}?state=first&code=one`),
-				fetch(`${second.redirectUrl}?state=second&code=two`),
+				fetch(`${first.redirectUrl}?state=first&code=one`, { headers: { Connection: 'close' } }),
+				fetch(`${second.redirectUrl}?state=second&code=two`, { headers: { Connection: 'close' } }),
 			]);
 			for (const response of responses) {
 				expect(response.status).toBe(200);
