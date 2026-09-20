@@ -379,7 +379,9 @@ const ToolsPage: React.FC = () => {
 					<SettingsPanel>
 						<SettingsRow
 							title={discoveryName}
-							icon={SearchIcon}
+							media={
+								<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+							}
 							description={<>{discoveryDescription} <code className="text-[11px]">discover_tools</code></>}
 							actions={<span className="text-xs text-muted-foreground">{t('settings.modelServices.agentTools.discovery.required')}</span>}
 						/>

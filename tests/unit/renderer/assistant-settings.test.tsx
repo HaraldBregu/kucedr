@@ -417,7 +417,9 @@ it('lists every built-in agent tool on the Tools page', async () => {
 it('shows discovery as required and searchable without permission controls', async () => {
 	const user = userEvent.setup();
 	render(<MemoryRouter><ToolsPage /></MemoryRouter>);
-	await screen.findByText('discover_tools');
+	const discoveryId = await screen.findByText('discover_tools');
+	const discoveryRow = discoveryId.closest('.grid');
+	expect(discoveryRow?.querySelector('svg')).toHaveClass('size-5');
 	await user.type(screen.getByRole('textbox'), 'discover_tools');
 	expect(screen.getByText('discover_tools')).toBeInTheDocument();
 	expect(screen.getByText('settings.modelServices.agentTools.discovery.required')).toBeInTheDocument();
