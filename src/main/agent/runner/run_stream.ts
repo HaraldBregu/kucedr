@@ -157,8 +157,10 @@ async function* loop(
 		configuredToolSettings?.list_skills?.enabled !== false;
 	const skillSnapshot =
 		skillLoadingEnabled || skillListingEnabled
-			? createSkillRegistrySnapshot()
+			? createSkillRegistrySnapshot({ projectRoot: config.location })
 			: { skills: [], diagnostics: [] };
+	const skillDisclosureEnabled =
+		!options.tools && skillLoadingEnabled && skillSnapshot.skills.length > 0;
 
 	if (!provider || !modelId) throw new Error('Agent requires a configured provider and model.');
 	const promptCapabilities =
@@ -293,6 +295,7 @@ async function* loop(
 	}
 	const requiredToolIds = new Set([
 		...(input.interactionMode === 'plan' ? ['ask'] : []),
+		...(skillDisclosureEnabled ? ['load_skill'] : []),
 		'get_goal',
 		'update_goal_plan',
 		'record_goal_evidence',
@@ -309,7 +312,6 @@ async function* loop(
 		...(loadDeferredMcp ? { loadMcpServers: loadDeferredMcp } : {}),
 		filterEligible: filterEligibleTools,
 	});
-	if (explicitSkill?.allowedTools) discovery.activateImmediate(explicitSkill.allowedTools);
 
 	yield {
 		type: 'run_started',
@@ -340,7 +342,7 @@ async function* loop(
 				session.runContext.loadedSkills,
 				options.instructions,
 				contextMode,
-				turnTools.some((tool) => tool.id === 'load_skill')
+				skillDisclosureEnabled
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt = [
@@ -357,7 +359,7 @@ async function* loop(
 				contextMode === 'workspace' && options.instructions === undefined
 					? await buildWorkspaceContext(config)
 					: '';
-			const skillContext = turnTools.some((tool) => tool.id === 'load_skill')
+			const skillContext = skillDisclosureEnabled
 				? buildSkillContext(skillSnapshot.skills)
 				: '';
 			const activeGoalContext =

@@ -13,7 +13,7 @@ export function addSkillPrompt(
 	}
 	if (loadedSkills.length > 0) {
 		prompt +=
-			'\n\nFollow the loaded instructions below, and resolve bundled scripts, references, and assets against the returned skill directory.';
+			'\n\nFollow the loaded instructions below. Resolve bundled scripts, references, and assets against the returned skill directory, and load only the resource files required by those instructions.';
 		for (const skill of loadedSkills) {
 			prompt += `\n\n<skill_content ${JSON.stringify({ id: skill.id, name: skill.name, canonicalRoot: skill.canonicalRoot, hash: skill.hash, trust: skill.trust })}>`;
 			if (skill.resources.length > 0) {
