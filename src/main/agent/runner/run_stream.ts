@@ -451,11 +451,14 @@ async function* loop(
 			}
 			const activeToolIds = new Set(turnTools.map((tool) => tool.id));
 			const eligibleToolIds = new Set(discovery.eligible().map((tool) => tool.id));
+			const mcpToolIds = new Set(mcpEntries.map((entry) => entry.tool.id));
 			const requestedUnavailableToolIds = [
 				...new Set(
 					turn.toolCalls
 						.map((call) => call.name)
-						.filter((id) => !activeToolIds.has(id) && eligibleToolIds.has(id))
+						.filter(
+							(id) => !activeToolIds.has(id) && eligibleToolIds.has(id) && !mcpToolIds.has(id)
+						)
 				),
 			];
 			const automaticallyResolvedCallIds = new Set<string>();
@@ -482,6 +485,17 @@ async function* loop(
 					tools: resolved.selectedTools,
 					serviceIds: resolved.selectedServiceIds,
 				};
+				for (const call of turn.toolCalls) {
+					if (!automaticallyResolvedCallIds.has(call.id)) continue;
+					yield {
+						type: 'tool_call_end',
+						toolCallId: call.id,
+						toolName: call.name,
+						input: call.args,
+						output: call.result?.content,
+						durationMs: 0,
+					};
+				}
 			}
 			const pendingToolCalls = turn.toolCalls.filter(
 				(call) => !automaticallyResolvedCallIds.has(call.id)

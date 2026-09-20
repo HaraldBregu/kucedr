@@ -1092,6 +1092,7 @@ describe('run stream system prompt', () => {
 
 	it('loads a hidden eligible tool without exposing an unknown-tool error or executing it early', async () => {
 		const execute = jest.fn();
+		const budget = new ExecutionBudget({ calls: 1 });
 		const read = jsonTool({
 			id: 'read',
 			name: 'Read',
@@ -1106,18 +1107,20 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [
-						{
-							id: 'discover-read',
-							name: 'discover_tools',
-							args: { query: 'read', toolIds: ['read'], mcpServerIds: [] },
-						},
-						{ id: 'early-read', name: 'read', args: {} },
-					],
+					toolCalls: [{ id: 'early-read', name: 'read', args: {} }],
+				};
+			})
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [{ id: 'retry-read', name: 'read', args: {} }],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
 		const session = createSessionState();
+		const events = [];
 
 		for await (const _event of stream(
 			{ location: '/workspace' },
@@ -1132,11 +1135,12 @@ describe('run stream system prompt', () => {
 				contextMode: 'minimal',
 			},
 			new AbortController().signal,
-			{ tools: [read] }
+			{ tools: [read], budget }
 		))
-			void _event;
+			events.push(_event);
 
-		expect(execute).not.toHaveBeenCalled();
+		expect(execute).toHaveBeenCalledTimes(1);
+		expect(budget.calls).toBe(1);
 		expect(session.toolCalls.find((call) => call.id === 'early-read')?.result).toMatchObject({
 			content: "Tool 'read' is now loaded. Retry this call on the next turn using its exposed schema.",
 		});
@@ -1146,5 +1150,12 @@ describe('run stream system prompt', () => {
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain('read');
+		expect(events).toContainEqual(
+			expect.objectContaining({
+				type: 'tool_call_end',
+				toolCallId: 'early-read',
+				isError: undefined,
+			})
+		);
 	});
 });
