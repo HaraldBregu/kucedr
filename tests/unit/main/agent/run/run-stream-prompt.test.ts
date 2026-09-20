@@ -1090,14 +1090,14 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock.mock.calls[0][9]).toContain('Never call a tool to test whether it is loaded');
 	});
 
-	it('loads a hidden eligible tool without exposing an unknown-tool error or executing it early', async () => {
+	it('loads hidden bash without exposing an unknown-tool error or executing it early', async () => {
 		const execute = jest.fn();
 		const budget = new ExecutionBudget({ calls: 1 });
-		const read = jsonTool({
-			id: 'read',
-			name: 'Read',
-			description: 'Read a file',
-			capability: { effects: ['read'] },
+		const bash = jsonTool({
+			id: 'bash',
+			name: 'Bash',
+			description: 'Run a command',
+			capability: { effects: ['execute'] },
 			schema: { type: 'object' },
 			execute,
 		});
@@ -1107,7 +1107,7 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: 'early-read', name: 'read', args: {} }],
+					toolCalls: [{ id: 'early-bash', name: 'bash', args: { command: 'pwd' } }],
 				};
 			})
 			.mockImplementationOnce(async function* () {
@@ -1115,7 +1115,7 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: 'retry-read', name: 'read', args: {} }],
+					toolCalls: [{ id: 'retry-bash', name: 'bash', args: { command: 'pwd' } }],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
@@ -1135,27 +1135,25 @@ describe('run stream system prompt', () => {
 				contextMode: 'minimal',
 			},
 			new AbortController().signal,
-			{ tools: [read], budget }
+			{ tools: [bash], budget }
 		))
 			events.push(_event);
 
 		expect(execute).toHaveBeenCalledTimes(1);
 		expect(budget.calls).toBe(1);
-		expect(session.toolCalls.find((call) => call.id === 'early-read')?.result).toMatchObject({
-			content: "Tool 'read' is now loaded. Retry this call on the next turn using its exposed schema.",
+		expect(session.toolCalls.find((call) => call.id === 'early-bash')?.result).toMatchObject({
+			content: "Tool 'bash' is now loaded. Retry this call on the next turn using its exposed schema.",
 		});
-		expect(session.toolCalls.find((call) => call.id === 'early-read')?.result).not.toHaveProperty(
+		expect(session.toolCalls.find((call) => call.id === 'early-bash')?.result).not.toHaveProperty(
 			'isError'
 		);
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toContain('read');
-		expect(events).toContainEqual(
-			expect.objectContaining({
-				type: 'tool_call_end',
-				toolCallId: 'early-read',
-				isError: undefined,
-			})
+		).toContain('bash');
+		const automaticEnd = events.find(
+			(event) => event.type === 'tool_call_end' && event.toolCallId === 'early-bash'
 		);
+		expect(automaticEnd).toMatchObject({ type: 'tool_call_end', toolCallId: 'early-bash' });
+		expect(automaticEnd).not.toHaveProperty('isError');
 	});
 });
