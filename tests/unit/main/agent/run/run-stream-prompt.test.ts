@@ -232,9 +232,9 @@ describe('run stream system prompt', () => {
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(events[0].tools).toEqual(['discover_tools']);
-		expect((runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description).toContain(
-			'list_skills'
-		);
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description
+		).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -260,9 +260,9 @@ describe('run stream system prompt', () => {
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(events[0].tools).toEqual(['discover_tools']);
-		expect((runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description).toContain(
-			'list_skills'
-		);
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description
+		).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -308,9 +308,9 @@ describe('run stream system prompt', () => {
 		expect(denied[0]).toMatchObject({ type: 'run_started' });
 		if (denied[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(denied[0].tools).toEqual(['discover_tools']);
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ description: string }>)[0].description).toContain(
-			'read | Read'
-		);
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ description: string }>)[0].description
+		).toContain('read | Read');
 		expect(denied[0].tools).not.toContain('subagent');
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});
