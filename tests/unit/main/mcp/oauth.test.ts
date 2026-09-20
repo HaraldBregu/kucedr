@@ -72,7 +72,9 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 
 it('explains the Google credential requirement before attempting dynamic registration', () => {
 	delete process.env.MCP_GOOGLE_CLIENT_ID;
-	expect(() => googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow('MCP_GOOGLE_CLIENT_ID');
+	expect(() => googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow(
+		'MCP_GOOGLE_CLIENT_ID'
+	);
 });
 
 it('leaves generic OAuth registration and authorization parameters unchanged', () => {
@@ -137,7 +139,10 @@ it('isolates Google options from generic MCP servers and permits public Google c
 		...googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1'),
 		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
 	});
-	expect(provider.clientInformation()).toEqual({ client_id: 'registered-client', client_secret: undefined });
+	expect(provider.clientInformation()).toEqual({
+		client_id: 'registered-client',
+		client_secret: undefined,
+	});
 	expect(provider.clientMetadata.token_endpoint_auth_method).toBe('none');
 });
 
@@ -163,7 +168,12 @@ it('registers and authorizes a generic public MCP client with discovered metadat
 	const provider = createOAuthProvider({
 		redirectUrl,
 		state: 'attempt-state',
-		storage: { load: () => stored, save: (value) => { stored = value; } },
+		storage: {
+			load: () => stored,
+			save: (value) => {
+				stored = value;
+			},
+		},
 		onRedirect: redirect,
 	});
 	let discoveryRequests = 0;
@@ -171,11 +181,23 @@ it('registers and authorizes a generic public MCP client with discovered metadat
 		const url = String(input);
 		if (url.includes('/.well-known/oauth-protected-resource')) {
 			discoveryRequests++;
-			return Response.json({ resource: serverUrl, authorization_servers: ['https://issuer.example'], scopes_supported: ['tools:read'] });
+			return Response.json({
+				resource: serverUrl,
+				authorization_servers: ['https://issuer.example'],
+				scopes_supported: ['tools:read'],
+			});
 		}
 		if (url.includes('/.well-known/')) {
 			discoveryRequests++;
-			return Response.json({ issuer: 'https://issuer.example', authorization_endpoint: 'https://issuer.example/authorize', token_endpoint: 'https://issuer.example/token', registration_endpoint: 'https://issuer.example/register', response_types_supported: ['code'], code_challenge_methods_supported: ['S256'], token_endpoint_auth_methods_supported: ['none'] });
+			return Response.json({
+				issuer: 'https://issuer.example',
+				authorization_endpoint: 'https://issuer.example/authorize',
+				token_endpoint: 'https://issuer.example/token',
+				registration_endpoint: 'https://issuer.example/register',
+				response_types_supported: ['code'],
+				code_challenge_methods_supported: ['S256'],
+				token_endpoint_auth_methods_supported: ['none'],
+			});
 		}
 		if (url === 'https://issuer.example/register') {
 			const metadata = JSON.parse(String(init?.body));
@@ -190,7 +212,11 @@ it('registers and authorizes a generic public MCP client with discovered metadat
 			expect(body.get('code_verifier')).toBe(await provider.codeVerifier());
 			expect(body.get('redirect_uri')).toBe(redirectUrl);
 			expect(body.get('resource')).toBe(serverUrl);
-			return Response.json({ access_token: 'generic-access', token_type: 'Bearer', refresh_token: 'generic-refresh' });
+			return Response.json({
+				access_token: 'generic-access',
+				token_type: 'Bearer',
+				refresh_token: 'generic-refresh',
+			});
 		}
 		throw new Error(`Unexpected request: ${url}`);
 	});
@@ -205,18 +231,41 @@ it('registers and authorizes a generic public MCP client with discovered metadat
 	expect(authorization.searchParams.get('code_challenge')).toBeTruthy();
 	expect(authorization.searchParams.has('access_type')).toBe(false);
 	const beforeExchange = discoveryRequests;
-	await expect(auth(provider, { serverUrl, fetchFn, authorizationCode: 'generic-code' })).resolves.toBe('AUTHORIZED');
+	await expect(
+		auth(provider, { serverUrl, fetchFn, authorizationCode: 'generic-code' })
+	).resolves.toBe('AUTHORIZED');
 	expect(discoveryRequests).toBe(beforeExchange);
 	expect(stored.tokens?.access_token).toBe('generic-access');
 });
 
 it('refreshes generic OAuth tokens without losing a refresh token omitted by the issuer', async () => {
-	let stored: McpOAuthState = { tokens: { access_token: 'old', refresh_token: 'keep-refresh', token_type: 'Bearer' } };
-	const provider = createOAuthProvider({ clientId: 'public-client', storage: { load: () => stored, save: (value) => { stored = value; } } });
+	let stored: McpOAuthState = {
+		tokens: { access_token: 'old', refresh_token: 'keep-refresh', token_type: 'Bearer' },
+	};
+	const provider = createOAuthProvider({
+		clientId: 'public-client',
+		storage: {
+			load: () => stored,
+			save: (value) => {
+				stored = value;
+			},
+		},
+	});
 	const fetchFn = jest.fn(async (input: string | URL, init?: RequestInit) => {
 		const url = String(input);
-		if (url.includes('/.well-known/oauth-protected-resource')) return Response.json({ resource: 'https://generic.example/mcp', authorization_servers: ['https://issuer.example'] });
-		if (url.includes('/.well-known/')) return Response.json({ issuer: 'https://issuer.example', authorization_endpoint: 'https://issuer.example/authorize', token_endpoint: 'https://issuer.example/token', response_types_supported: ['code'], token_endpoint_auth_methods_supported: ['none'] });
+		if (url.includes('/.well-known/oauth-protected-resource'))
+			return Response.json({
+				resource: 'https://generic.example/mcp',
+				authorization_servers: ['https://issuer.example'],
+			});
+		if (url.includes('/.well-known/'))
+			return Response.json({
+				issuer: 'https://issuer.example',
+				authorization_endpoint: 'https://issuer.example/authorize',
+				token_endpoint: 'https://issuer.example/token',
+				response_types_supported: ['code'],
+				token_endpoint_auth_methods_supported: ['none'],
+			});
 		if (url === 'https://issuer.example/token') {
 			const body = new URLSearchParams(String(init?.body));
 			expect(body.get('grant_type')).toBe('refresh_token');
@@ -225,12 +274,27 @@ it('refreshes generic OAuth tokens without losing a refresh token omitted by the
 		}
 		throw new Error(`Unexpected request: ${url}`);
 	});
-	await expect(auth(provider, { serverUrl: 'https://generic.example/mcp', fetchFn })).resolves.toBe('AUTHORIZED');
-	expect(stored.tokens).toEqual({ access_token: 'renewed', token_type: 'Bearer', refresh_token: 'keep-refresh' });
+	await expect(auth(provider, { serverUrl: 'https://generic.example/mcp', fetchFn })).resolves.toBe(
+		'AUTHORIZED'
+	);
+	expect(stored.tokens).toEqual({
+		access_token: 'renewed',
+		token_type: 'Bearer',
+		refresh_token: 'keep-refresh',
+	});
 });
 
 it('does not mix an explicit public client with a previously registered confidential client', () => {
-	const provider = createOAuthProvider({ clientId: 'public-client', storage: { load: () => ({ client_id: 'old-client', client_secret: 'old-secret' }), save: jest.fn() } });
-	expect(provider.clientInformation()).toEqual({ client_id: 'public-client', client_secret: undefined });
+	const provider = createOAuthProvider({
+		clientId: 'public-client',
+		storage: {
+			load: () => ({ client_id: 'old-client', client_secret: 'old-secret' }),
+			save: jest.fn(),
+		},
+	});
+	expect(provider.clientInformation()).toEqual({
+		client_id: 'public-client',
+		client_secret: undefined,
+	});
 	expect(provider.clientMetadata.token_endpoint_auth_method).toBe('none');
 });
