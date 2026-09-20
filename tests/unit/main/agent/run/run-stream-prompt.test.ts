@@ -704,7 +704,9 @@ describe('run stream system prompt', () => {
 			yield* [];
 			if (input.agentId === 'subagent')
 				return { content: 'child result', model: 'pinned-model', toolCalls: [] };
-			const mainCalls = runModelTurnMock.mock.calls.filter((call) => call[0].agentId === 'main').length;
+			const mainCalls = runModelTurnMock.mock.calls.filter(
+				(call) => call[0].agentId === 'main'
+			).length;
 			return mainCalls === 1
 				? {
 						content: '',
