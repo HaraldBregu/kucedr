@@ -19,11 +19,6 @@ jest.mock('electron-store', () =>
 				exec: { allow: [], deny: [] },
 				tools: { save_memory: 'allow', list_memories: 'allow', forget_memory: 'allow' },
 			},
-			tools: {
-				save_memory: { enabled: true, permission: 'allow' },
-				list_memories: { enabled: true, permission: 'allow' },
-				forget_memory: { enabled: true, permission: 'allow' },
-			},
 		};
 		return {
 			get: (key: string) => backing[key],
