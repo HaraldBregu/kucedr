@@ -348,10 +348,9 @@ export function McpServerForm({
 								<p className="text-[12px] text-muted-foreground">
 									Google requires your own OAuth client ID and secret. In Google Cloud, enable the
 									product API and its MCP service, configure the consent screen, and create a Web
-									application OAuth client. Register https://kucedr.haraldbregu.com/ as its redirect
-									URI (or your configured MCP_OAUTH_REDIRECT_URL). Enter the credentials below, then
-									connect with OAuth. Google Workspace MCP access may require enrollment in the
-									Developer Preview.
+									application OAuth client. Set MCP_OAUTH_REDIRECT_URL to its registered redirect
+									URI before launching Kucedr. Enter the credentials below, then connect with OAuth.
+									Google Workspace MCP access may require enrollment in the Developer Preview.
 								</p>
 							)}
 							{!isGitHubRemote && (

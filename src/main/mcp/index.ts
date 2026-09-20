@@ -3,7 +3,7 @@ export { callTool } from './mcp_client_call_tool';
 export { close } from './mcp_client_close';
 export { connect } from './mcp_client_connect';
 export { listTools } from './mcp_client_list_tools';
-export { clientMetadata, MCP_OAUTH_REDIRECT_URL } from './mcp_oauth_client_metadata';
+export { clientMetadata } from './mcp_oauth_client_metadata';
 export { startOauthCallbackServer } from './mcp_oauth_callback';
 export { createOAuthProvider } from './mcp_oauth_create_provider';
 export { getMcpOauth, getMcpServers, saveMcpOauth, setMcpServers } from './mcp_store';

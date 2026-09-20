@@ -2,7 +2,8 @@ import { googleMcpScopes } from '../../shared/google_mcp';
 import type { OAuthClientProvider } from '@modelcontextprotocol/sdk/client/auth.js';
 import type { OAuthClientInformationMixed } from '@modelcontextprotocol/sdk/shared/auth.js';
 import type { McpOAuthProviderParams, McpOAuthState } from './mcp_types';
-import { clientMetadata, MCP_OAUTH_REDIRECT_URL } from './mcp_oauth_client_metadata';
+import { clientMetadata } from './mcp_oauth_client_metadata';
+import { getMcpOAuthRedirectUrl } from './redirect';
 
 export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClientProvider {
 	const { storage } = params;
@@ -12,7 +13,7 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 		: undefined;
 	return {
 		get redirectUrl() {
-			return MCP_OAUTH_REDIRECT_URL;
+			return getMcpOAuthRedirectUrl();
 		},
 		get clientMetadata() {
 			return clientMetadata(Boolean(params.clientSecret ?? storage.load().client_secret));
@@ -22,7 +23,7 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			const client = staticClient ?? storedClient;
 			if (googleScopes && (!client.client_id || !client.client_secret)) {
 				throw new Error(
-					`Google MCP requires a Google Cloud OAuth client ID and client secret. Create a Web application client, register ${MCP_OAUTH_REDIRECT_URL} as its authorized redirect URI, and enter the credentials in the server settings. Google does not support dynamic client registration.`
+					`Google MCP requires a Google Cloud OAuth client ID and client secret. Create a Web application client, register ${getMcpOAuthRedirectUrl()} as its authorized redirect URI, and enter the credentials in the server settings. Google does not support dynamic client registration.`
 				);
 			}
 			return client.client_id ? (client as OAuthClientInformationMixed) : undefined;

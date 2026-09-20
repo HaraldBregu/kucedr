@@ -83,7 +83,7 @@ export function McpOAuthButton({
 						<Input
 							value={callback}
 							onChange={(e) => setCallback(e.target.value)}
-							placeholder="http://127.0.0.1:8989/oauth/callback?code=…"
+							placeholder="Authorization code or redirect URL"
 							autoComplete="off"
 						/>
 						<Button type="button" onClick={complete}>

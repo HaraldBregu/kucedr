@@ -1,6 +1,7 @@
 import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
 import { createOAuthProvider } from '../../../../src/main/mcp/mcp_oauth_create_provider';
-import { MCP_OAUTH_REDIRECT_URL } from '../../../../src/main/mcp/mcp_oauth_client_metadata';
+import { clientMetadata } from '../../../../src/main/mcp/mcp_oauth_client_metadata';
+import { getMcpOAuthRedirectUrl } from '../../../../src/main/mcp/redirect';
 import { googleMcpScopes } from '../../../../src/shared/google_mcp';
 import type { McpOAuthState } from '../../../../src/main/mcp/mcp_types';
 
@@ -44,7 +45,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 				expect(body.get('client_id')).toBe('registered-client');
 				expect(body.get('client_secret')).toBe('saved-secret');
 				expect(body.get('code_verifier')).toBe(state.codeVerifier);
-				expect(body.get('redirect_uri')).toBe(MCP_OAUTH_REDIRECT_URL);
+				expect(body.get('redirect_uri')).toBe(process.env.MCP_OAUTH_REDIRECT_URL);
 				return Response.json({
 					access_token: 'access',
 					token_type: 'Bearer',
@@ -90,4 +91,34 @@ it('leaves generic OAuth registration and authorization parameters unchanged', (
 	expect(redirect).toHaveBeenCalledWith(url);
 	expect(url.searchParams.toString()).toBe('scope=read');
 	expect(googleMcpScopes('https://gmailmcp.googleapis.com.evil.test/mcp/v1')).toBeUndefined();
+});
+
+const originalRedirectUrl = process.env.MCP_OAUTH_REDIRECT_URL;
+
+beforeEach(() => {
+	process.env.MCP_OAUTH_REDIRECT_URL = 'https://callback.example.test/oauth';
+});
+
+afterEach(() => {
+	if (originalRedirectUrl === undefined) delete process.env.MCP_OAUTH_REDIRECT_URL;
+	else process.env.MCP_OAUTH_REDIRECT_URL = originalRedirectUrl;
+});
+
+it.each([undefined, '', '  '])(
+	'requires an explicitly configured redirect instead of a fallback (%s)',
+	(value) => {
+		if (value === undefined) delete process.env.MCP_OAUTH_REDIRECT_URL;
+		else process.env.MCP_OAUTH_REDIRECT_URL = value;
+		expect(() => getMcpOAuthRedirectUrl()).toThrow('Set MCP_OAUTH_REDIRECT_URL');
+		const provider = createOAuthProvider({ storage: { load: () => ({}), save: jest.fn() } });
+		expect(() => provider.redirectUrl).toThrow('Set MCP_OAUTH_REDIRECT_URL');
+		expect(() => clientMetadata(false)).toThrow('Set MCP_OAUTH_REDIRECT_URL');
+	}
+);
+
+it('uses the configured redirect consistently in client metadata and OAuth', () => {
+	process.env.MCP_OAUTH_REDIRECT_URL = '  https://custom.example.test/callback  ';
+	const provider = createOAuthProvider({ storage: { load: () => ({}), save: jest.fn() } });
+	expect(provider.redirectUrl).toBe('https://custom.example.test/callback');
+	expect(provider.clientMetadata.redirect_uris).toEqual(['https://custom.example.test/callback']);
 });

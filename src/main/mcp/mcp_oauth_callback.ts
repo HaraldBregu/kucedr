@@ -1,11 +1,11 @@
 import http from 'node:http';
-import { MCP_OAUTH_REDIRECT_URL } from './mcp_oauth_client_metadata';
+import { getMcpOAuthRedirectUrl } from './redirect';
 
 export function startOauthCallbackServer(timeoutMs = 300_000): Promise<{
 	code: Promise<string>;
 	close: () => void;
 }> {
-	const redirect = new URL(MCP_OAUTH_REDIRECT_URL);
+	const redirect = new URL(getMcpOAuthRedirectUrl());
 	return new Promise((resolveListen, rejectListen) => {
 		let resolveCode: (code: string) => void = () => {};
 		let rejectCode: (err: Error) => void = () => {};
@@ -28,7 +28,7 @@ export function startOauthCallbackServer(timeoutMs = 300_000): Promise<{
 		});
 		const timer = setTimeout(
 			() => rejectCode(new Error('Timed out waiting for the OAuth callback.')),
-			timeoutMs,
+			timeoutMs
 		);
 		server.once('error', (err) => {
 			clearTimeout(timer);
