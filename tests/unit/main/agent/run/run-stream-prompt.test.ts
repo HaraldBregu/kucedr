@@ -194,9 +194,13 @@ describe('run stream system prompt', () => {
 		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(
 			expect.arrayContaining(['discover_tools', 'load_skill'])
 		);
-		expect(runModelTurnMock.mock.calls[0][10]).toEqual([
-			expect.objectContaining({ content: expect.stringContaining('Draft polished documents') }),
-		]);
+		const firstTurnTools = runModelTurnMock.mock.calls[0][5] as Array<{
+			id: string;
+			description: string;
+		}>;
+		expect(firstTurnTools.find((tool) => tool.id === 'load_skill')?.description).toContain(
+			'Draft polished documents'
+		);
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
 		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain(
 			'read'
