@@ -205,6 +205,7 @@ async function* loop(
 	tools = filterDisabledTools(tools, configuredToolSettings);
 	let discovery: ToolDiscovery | undefined;
 	let explicitSkill: SkillLoadResult | undefined;
+	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		let filtered = filterDisabledTools(
 			filterPlanTools(
@@ -213,15 +214,12 @@ async function* loop(
 			),
 			configuredToolSettings
 		);
-		for (const loaded of session.runContext.loadedSkills) {
-			filtered = selectSkillTools(
-				filtered,
-				skillSnapshot.skills.find((skill) => skill.id === loaded.id)?.manifest.allowedTools
-			);
-		}
+		for (const allowedTools of skillToolScopes)
+			filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
 	};
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
+		skillToolScopes.push(skill.allowedTools);
 		rememberSkill(session.runContext, {
 			id: skill.id,
 			name: skill.name,
@@ -232,7 +230,7 @@ async function* loop(
 			resources: skill.resources,
 			warnings: skill.warnings,
 		});
-		tools = filterEligibleTools(selectSkillTools(tools, skill.allowedTools));
+		tools = filterEligibleTools(discovery?.eligible() ?? tools);
 		discovery?.replaceEligible(tools);
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));

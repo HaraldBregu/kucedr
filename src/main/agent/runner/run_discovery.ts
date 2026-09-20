@@ -22,6 +22,7 @@ export interface ToolDiscoveryResult {
 	selectedTools: Array<{ id: string; name: string; serviceId?: string; serviceName?: string }>;
 	selectedServiceIds: string[];
 	rejectedToolIds: string[];
+	rejectedServerIds: string[];
 	availableTools?: Array<{ id: string; name: string; description: string }>;
 	limitReached: boolean;
 }
@@ -92,23 +93,24 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
 			query: z.string().trim().min(1).max(240).describe('Concise capability need.'),
-			toolIds: z.array(z.string().trim().min(1)).max(DISCOVERY_CALL_LIMIT).default([]),
-			mcpServerIds: z.array(z.string().trim().min(1)).max(DISCOVERY_CALL_LIMIT).default([]),
+			toolIds: z.array(z.string().trim().min(1)).max(64).default([]),
+			mcpServerIds: z.array(z.string().trim().min(1)).max(64).default([]),
 		}),
 		execute: async ({ query, toolIds, mcpServerIds }, signal): Promise<ToolDiscoveryResult> => {
 			signal?.throwIfAborted();
 			const requestedServers = [...new Set(mcpServerIds)];
 			const allowedServers = requestedServers.filter((id) => deferredServers.has(id));
+			const rejectedServerIds = requestedServers.filter((id) => !deferredServers.has(id));
 			let loaded: DiscoveredMcpTool[] = [];
 			if (allowedServers.length > 0 && options.loadMcpServers) {
 				loaded = await options.loadMcpServers(allowedServers, signal);
 				signal?.throwIfAborted();
+				for (const id of allowedServers) deferredServers.delete(id);
 				const filtered = options.filterEligible
 					? options.filterEligible(loaded.map((entry) => entry.tool))
 					: loaded.map((entry) => entry.tool);
 				const allowedIds = new Set(filtered.map((candidate) => candidate.id));
 				for (const entry of loaded) {
-					deferredServers.delete(entry.serverId);
 					if (!allowedIds.has(entry.tool.id)) continue;
 					eligible.set(entry.tool.id, entry.tool);
 					mcpMetadata.set(entry.tool.id, {
@@ -141,13 +143,13 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 					})
 					.filter((candidate) => candidate.score > 0)
 					.sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
-				requested.push(...scored.map((candidate) => candidate.id));
+				const bestScore = scored[0]?.score ?? 0;
+				requested.push(...scored.filter((candidate) => candidate.score === bestScore).map((candidate) => candidate.id));
 			}
 
 			const remaining = Math.max(0, DISCOVERY_RUN_LIMIT - selectedCount);
-			const selectedToolIds = requested
-				.filter((id) => !active.has(id))
-				.slice(0, Math.min(DISCOVERY_CALL_LIMIT, remaining));
+			const newToolIds = requested.filter((id) => !active.has(id));
+			const selectedToolIds = newToolIds.slice(0, Math.min(DISCOVERY_CALL_LIMIT, remaining));
 			for (const id of selectedToolIds) active.set(id, eligible.get(id)!);
 			selectedCount += selectedToolIds.length;
 			const selectedTools = selectedToolIds.map((id) => {
@@ -168,6 +170,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 				selectedTools,
 				selectedServiceIds,
 				rejectedToolIds,
+				rejectedServerIds,
 				...(noMatch
 					? {
 							availableTools: loaded
@@ -179,9 +182,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 								})),
 						}
 					: {}),
-				limitReached:
-					requested.filter((id) => !active.has(id)).length > selectedToolIds.length ||
-					selectedCount >= DISCOVERY_RUN_LIMIT,
+				limitReached: newToolIds.length > selectedToolIds.length || selectedCount >= DISCOVERY_RUN_LIMIT,
 			};
 		},
 	});
