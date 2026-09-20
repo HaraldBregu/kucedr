@@ -382,7 +382,7 @@ const ToolsPage: React.FC = () => {
 							media={
 								<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 							}
-							description={<>{discoveryDescription} <code className="text-[11px]">discover_tools</code></>}
+							description={discoveryDescription}
 							actions={<span className="text-xs text-muted-foreground">{t('settings.modelServices.agentTools.discovery.required')}</span>}
 						/>
 					</SettingsPanel>
@@ -611,11 +611,7 @@ const ToolsPage: React.FC = () => {
 										media={
 											<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 										}
-										description={
-											<>
-												{description} <code className="text-[11px]">{id}</code>
-											</>
-										}
+									description={description}
 										actions={
 											<>
 												<Select

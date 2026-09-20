@@ -121,6 +121,9 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.agentTools.permissions.ask': 'Ask',
 		'settings.modelServices.agentTools.permissions.allow': 'Always Allow',
 		'settings.modelServices.agentTools.permissions.deny': 'Deny',
+		'settings.modelServices.agentTools.discovery.name': 'Discover tools',
+		'settings.modelServices.agentTools.discovery.description': 'Find and load tools when needed.',
+		'settings.modelServices.agentTools.discovery.required': 'Required',
 		'settings.modelServices.imageModelDescription': 'Image defaults',
 		'settings.modelServices.musicModelDescription': 'Audio defaults',
 		'settings.modelServices.videoModelDescription': 'Video defaults',
@@ -384,21 +387,21 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	);
 
 	for (const tool of [
-		'discover_tools',
-		'list_a2a_agents',
-		'read',
-		'screen_recorder',
-		'query_knowledge',
-		'run_task_now',
-		'load_skill',
-		'get_goal',
-		'complete_bootstrap',
+		'Discover tools',
+		'List remote agents',
+		'Read file',
+		'Screen recorder',
+		'Query knowledge',
+		'Run task now',
+		'Load skill',
+		'Get goal',
+		'Complete bootstrap',
 	]) {
 		expect(await screen.findByText(tool)).toBeInTheDocument();
 	}
 	expect(screen.getByText('Text to image')).toBeInTheDocument();
 
-	expect(document.querySelectorAll('code')).toHaveLength(44);
+	expect(document.querySelectorAll('code')).toHaveLength(0);
 	for (const removed of [
 		'save_memory',
 		'list_memories',
@@ -417,12 +420,13 @@ it('lists every built-in agent tool on the Tools page', async () => {
 it('shows discovery as required and searchable without permission controls', async () => {
 	const user = userEvent.setup();
 	render(<MemoryRouter><ToolsPage /></MemoryRouter>);
-	const discoveryId = await screen.findByText('discover_tools');
-	const discoveryRow = discoveryId.closest('.grid');
+	const discoveryTitle = await screen.findByText('Discover tools');
+	const discoveryRow = discoveryTitle.closest('.grid');
 	expect(discoveryRow?.querySelector('svg')).toHaveClass('size-5');
+	expect(screen.queryByText('discover_tools')).not.toBeInTheDocument();
 	await user.type(screen.getByRole('textbox'), 'discover_tools');
-	expect(screen.getByText('discover_tools')).toBeInTheDocument();
-	expect(screen.getByText('settings.modelServices.agentTools.discovery.required')).toBeInTheDocument();
+	expect(screen.getByText('Discover tools')).toBeInTheDocument();
+	expect(screen.getByText('Required')).toBeInTheDocument();
 	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
 	expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
 	expect(window.mcp.test).not.toHaveBeenCalled();
