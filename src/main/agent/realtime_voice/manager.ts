@@ -265,6 +265,11 @@ export class RealtimeVoiceManager {
 			active.toolRuntime.interrupt();
 			if (active.state === 'speaking' || active.state === 'thinking') {
 				this.emit(active, { type: 'interrupted', sessionId });
+				void active.connection?.interrupt().catch((error) => {
+					if (!active.controller.signal.aborted) {
+						this.emit(active, { type: 'error', sessionId, message: errorMessage(error) });
+					}
+				});
 			}
 			this.emit(active, { type: event.type, sessionId, itemId: event.itemId });
 			this.setState(active, 'listening');

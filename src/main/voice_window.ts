@@ -59,8 +59,12 @@ export class VoiceWindow {
 	open(chatSessionId: string): void {
 		const existing = this.window;
 		if (existing && !existing.isDestroyed()) {
-			this.show();
-			return;
+			if (this.chatSessionId === chatSessionId) {
+				this.show();
+				return;
+			}
+			this.window = null;
+			existing.close();
 		}
 		this.chatSessionId = chatSessionId;
 

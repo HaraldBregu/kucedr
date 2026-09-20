@@ -330,10 +330,9 @@ export function useRealtimeVoice({
 	]);
 
 	useEffect(() => {
-		mountedRef.current = true;
-		return () => {
-			if (sessionChatIdRef.current === chatSessionId) void closeSession();
-		};
+		if (sessionChatIdRef.current && sessionChatIdRef.current !== chatSessionId) {
+			void closeSession(false);
+		}
 	}, [chatSessionId, closeSession]);
 
 	useEffect(() => {
