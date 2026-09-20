@@ -1,3 +1,4 @@
+import { googleMcpScopes } from '../../shared/google_mcp';
 import type { OAuthClientProvider } from '@modelcontextprotocol/sdk/client/auth.js';
 import type { OAuthClientInformationMixed } from '@modelcontextprotocol/sdk/shared/auth.js';
 import type { McpOAuthProviderParams, McpOAuthState } from './mcp_types';
@@ -5,6 +6,7 @@ import { clientMetadata, MCP_OAUTH_REDIRECT_URL } from './mcp_oauth_client_metad
 
 export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClientProvider {
 	const { storage } = params;
+	const googleScopes = googleMcpScopes(params.serverUrl ?? '');
 	const staticClient = params.clientId
 		? { client_id: params.clientId, client_secret: params.clientSecret }
 		: undefined;
@@ -13,11 +15,16 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			return MCP_OAUTH_REDIRECT_URL;
 		},
 		get clientMetadata() {
-			return clientMetadata(Boolean(params.clientSecret));
+			return clientMetadata(Boolean(params.clientSecret ?? storage.load().client_secret));
 		},
 		clientInformation() {
-			if (staticClient) return staticClient;
-			const { tokens: _tokens, codeVerifier: _verifier, ...client } = storage.load();
+			const { tokens: _tokens, codeVerifier: _verifier, ...storedClient } = storage.load();
+			const client = staticClient ?? storedClient;
+			if (googleScopes && (!client.client_id || !client.client_secret)) {
+				throw new Error(
+					`Google MCP requires a Google Cloud OAuth client ID and client secret. Create a Web application client, register ${MCP_OAUTH_REDIRECT_URL} as its authorized redirect URI, and enter the credentials in the server settings. Google does not support dynamic client registration.`
+				);
+			}
 			return client.client_id ? (client as OAuthClientInformationMixed) : undefined;
 		},
 		saveClientInformation(clientInformation) {
@@ -30,6 +37,11 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			storage.save({ ...storage.load(), tokens });
 		},
 		redirectToAuthorization(url) {
+			if (googleScopes) {
+				url.searchParams.set('scope', googleScopes);
+				url.searchParams.set('access_type', 'offline');
+				url.searchParams.set('prompt', 'consent');
+			}
 			params.onRedirect?.(url);
 		},
 		saveCodeVerifier(codeVerifier) {

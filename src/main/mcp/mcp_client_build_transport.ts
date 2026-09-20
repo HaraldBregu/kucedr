@@ -32,6 +32,7 @@ export function buildTransport(id: string, data: McpData): Transport {
 	return new StreamableHTTPClientTransport(url, {
 		fetch: createMcpFetch(),
 		authProvider: createOAuthProvider({
+			serverUrl: data.url,
 			storage: {
 				load: () => getMcpOauth(id),
 				save: (state) => saveMcpOauth(id, state),

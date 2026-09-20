@@ -65,7 +65,7 @@ export function McpOAuthButton({
 			<div className="flex items-center gap-1.5 text-[13px] text-muted-foreground">
 				<Check className="size-3.5 text-emerald-500" />
 				Authenticated
-				<Button variant="ghost" size="sm" onClick={() => setPhase('idle')}>
+				<Button type="button" variant="ghost" size="sm" onClick={() => setPhase('idle')}>
 					Re-authenticate
 				</Button>
 			</div>
@@ -86,11 +86,19 @@ export function McpOAuthButton({
 							placeholder="http://127.0.0.1:8989/oauth/callback?code=…"
 							autoComplete="off"
 						/>
-						<Button onClick={complete}>Complete</Button>
+						<Button type="button" onClick={complete}>
+							Complete
+						</Button>
 					</div>
 				</>
 			) : (
-				<Button variant="outline" size="sm" disabled={phase === 'busy'} onClick={start}>
+				<Button
+					type="button"
+					variant="outline"
+					size="sm"
+					disabled={phase === 'busy'}
+					onClick={start}
+				>
 					<KeyRound className="size-3.5" />
 					{phase === 'busy' ? 'Connecting' : 'Connect with OAuth'}
 				</Button>

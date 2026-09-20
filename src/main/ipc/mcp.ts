@@ -232,6 +232,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				let redirectUrl: string | undefined;
 				const provider = () =>
 					createOAuthProvider({
+						serverUrl: server.url,
 						storage: oauthStorage(server.id),
 						clientId: server.clientId,
 						clientSecret: server.clientSecret,
@@ -270,6 +271,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				const server = getHttpMcpServer(id);
 				const result = await auth(
 					createOAuthProvider({
+						serverUrl: server.url,
 						storage: oauthStorage(server.id),
 						clientId: server.clientId,
 						clientSecret: server.clientSecret,

@@ -41,6 +41,7 @@ export type McpOAuthStorage = {
 };
 
 export type McpOAuthProviderParams = {
+	serverUrl?: string;
 	storage: McpOAuthStorage;
 	clientId?: string;
 	clientSecret?: string;

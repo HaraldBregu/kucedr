@@ -25,5 +25,10 @@ export function mergeMcpRecord(
 		...(preserveHttpSecrets || preserveStdioSecrets ? existing : undefined),
 		id,
 		...data,
+		...(preserveHttpSecrets && {
+			token: data.token ?? existing.token,
+			client_secret: data.client_secret ?? existing.client_secret,
+			refresh_token: data.refresh_token ?? existing.refresh_token,
+		}),
 	} as McpRecord;
 }

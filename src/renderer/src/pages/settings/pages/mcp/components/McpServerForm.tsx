@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { McpData } from '@shared/mcp_types';
+import { googleMcpScopes } from '@shared/google_mcp';
 import { isGitHubRemoteMcpUrl } from '@shared/github_mcp';
 import { Button } from '@/components/ui/button';
 import {
@@ -92,6 +93,7 @@ export function McpServerForm({
 
 	const serverId = id.trim().toLowerCase();
 	const isGitHubRemote = type === 'http' && isGitHubRemoteMcpUrl(url);
+	const isGoogleRemote = type === 'http' && Boolean(googleMcpScopes(url));
 
 	const buildEntry = (): McpData => {
 		const now = new Date().toISOString();
@@ -339,9 +341,19 @@ export function McpServerForm({
 							Save the server before connecting with OAuth.
 						</p>
 					)}
-					<details>
+					<details open={isGoogleRemote || undefined}>
 						<summary className="cursor-pointer text-[13px] text-muted-foreground">Advanced</summary>
 						<div className="grid gap-4 pt-4">
+							{isGoogleRemote && (
+								<p className="text-[12px] text-muted-foreground">
+									Google requires your own OAuth client ID and secret. In Google Cloud, enable the
+									product API and its MCP service, configure the consent screen, and create a Web
+									application OAuth client. Register https://kucedr.haraldbregu.com/ as its redirect
+									URI (or your configured MCP_OAUTH_REDIRECT_URL). Enter the credentials below, then
+									connect with OAuth. Google Workspace MCP access may require enrollment in the
+									Developer Preview.
+								</p>
+							)}
 							{!isGitHubRemote && (
 								<Field>
 									<Label htmlFor="mcp-token">Access token (optional)</Label>
@@ -356,7 +368,9 @@ export function McpServerForm({
 								</Field>
 							)}
 							<Field>
-								<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
+								<Label htmlFor="mcp-client-id">
+									{isGoogleRemote ? 'Google OAuth client ID' : 'Client ID (optional)'}
+								</Label>
 								<Input
 									id="mcp-client-id"
 									value={clientId}
@@ -366,10 +380,13 @@ export function McpServerForm({
 								/>
 							</Field>
 							<Field>
-								<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>
+								<Label htmlFor="mcp-client-secret">
+									{isGoogleRemote ? 'Google OAuth client secret' : 'Client secret (optional)'}
+								</Label>
 								<Input
 									id="mcp-client-secret"
 									type="password"
+									placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
 									value={clientSecret}
 									onChange={(e) => setClientSecret(e.target.value)}
 									autoComplete="off"
