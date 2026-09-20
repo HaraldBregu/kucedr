@@ -67,11 +67,11 @@ Acceptance: `always` prevents invocation until matching approval; background exe
 
 ### F2 — High: directory authorization does not authorize the effect
 
-The resolver classifies tools by ID and otherwise permits them. Browser actions can click, submit or evaluate JavaScript in a persistent signed-in profile without a separate effect grant. Camera/microphone recording and paid media generation are classified as writes to their destination directory; choosing the already trusted workspace can satisfy that check without authorizing recording or spending. OS recording permissions still apply. Memory's “after the user explicitly asks” requirement is in the tool description, while execution checks filesystem access.
+The resolver classifies tools by ID and otherwise permits them. Browser actions can click, submit or evaluate JavaScript in a persistent signed-in profile without a separate effect grant. Camera/microphone recording and paid media generation are classified as writes to their destination directory; choosing the already trusted workspace can satisfy that check without authorizing recording or spending. OS recording permissions still apply.
 
-Evidence: [default allow](../src/main/agent/permissions/resolve_tool_permission.ts#L27), [write classification](../src/main/agent/permissions/directory_permission_targets.ts#L44), [browser operations](../src/main/agent/tools/web/use_web_browser.ts#L185), [camera](../src/main/agent/tools/system/camera_recorder.ts#L9), [memory](../src/main/agent/tools/memory/save_memory.ts#L7).
+Evidence: [default allow](../src/main/agent/permissions/resolve_tool_permission.ts#L27), [write classification](../src/main/agent/permissions/directory_permission_targets.ts#L44), [browser operations](../src/main/agent/tools/web/use_web_browser.ts#L185), [camera](../src/main/agent/tools/system/camera_recorder.ts#L9).
 
-Refactor: require every exposed tool/action to declare effects and resources; evaluate them in one deterministic policy function. Separate destination access from external actions, sensing, paid calls and durable memory. Reuse explicit owner grants within their declared scope rather than prompting for every harmless substep. Unclassified capabilities must be unavailable until classified.
+Refactor: require every exposed tool/action to declare effects and resources; evaluate them in one deterministic policy function. Separate destination access from external actions, sensing, and paid calls. Reuse explicit owner grants within their declared scope rather than prompting for every harmless substep. Unclassified capabilities must be unavailable until classified.
 
 Acceptance: an unknown tool is denied; a trusted output directory alone cannot authorize sensing/payment; passive browser operations and authenticated submissions are distinguishable; an external page or skill cannot grant itself a new effect.
 

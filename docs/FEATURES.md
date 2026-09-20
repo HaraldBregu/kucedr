@@ -31,7 +31,7 @@ This document describes the feature set present in the current source tree, grou
 Kucedr provides:
 
 - Persistent, streaming conversations with multiple local chat sessions.
-- An agent loop that can use files, patches, commands, long-running processes, the web, a browser, memory, skills, MCP tools, media generation, automation tools, and one-level subagents.
+- An agent loop that can use files, patches, commands, long-running processes, the web, a browser, skills, MCP tools, media generation, automation tools, and one-level subagents, with relevant memory supplied automatically to chat and voice.
 - Image and PDF attachments for multimodal requests, and live or recorded speech-to-text input with text-to-speech playback.
 - Independent provider and model selection for chat, transcription, speech, image, video, audio, scheduled work, and health checks.
 - Local skills, remote HTTP MCP servers, local stdio MCP servers, and standalone app windows.
@@ -357,7 +357,7 @@ Kucedr maintains an agent workspace in local application data with these Markdow
 
 While `BOOTSTRAP.md` exists, it is included in the user-controlled workspace context. Completing bootstrap removes that file after the identity, user, and soul files have been updated.
 
-The standalone memory module stores `settings.json`, consolidated `MEMORY.md`, and one cumulative Markdown transcript per agent session under `~/.kucedr/memory`. Each `<session-id>.md` file includes its update date and readable `User:` and `Assistant:` sections. Main, channel, task, health, subagent, and realtime voice runs update these files atomically. While memory is enabled, the module watches this folder and automatically processes only the session file that changed. **Generate Memory** processes all pending snapshots on demand. Generation calls the selected LLM adapter with dedicated system and user prompts and no tools, receives the complete Markdown document, validates it, then atomically creates `MEMORY.md`. Memory Settings supports configuration, refresh, forgetting individual entries, and clearing saved memory without displaying the memory document. The `list_memories` and `forget_memory` tools remain thin calls into this module.
+The standalone memory module stores `settings.json`, consolidated `MEMORY.md`, and cumulative Markdown transcripts for main chat and realtime voice sessions under `~/.kucedr/memory`. Each `<session-id>.md` file includes its update date and readable `User:` and `Assistant:` sections. The module watches changed snapshots and asynchronously extracts durable memories, applies explicit user corrections and forget requests, and conservatively removes obsolete or redundant records. Generation uses the selected LLM adapter with dedicated prompts and no tools, validates the complete replacement document, and writes it atomically; failed or truncated output leaves the prior document and pending checkpoints intact. Main chat in minimal or workspace mode and realtime voice receive bounded relevant memory automatically as untrusted reference context. Channels, tasks, health runs, and subagents receive no personal memory. Memory Settings retains manual inspection, editing, forgetting, clearing, refresh, and recovery controls; there are no model-callable memory tools, and conversational forget requests take effect asynchronously after the saved snapshot is processed.
 
 ## 3. Providers and model catalogs
 
