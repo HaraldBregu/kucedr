@@ -6,6 +6,21 @@ const successfulTurn = async function* () {
 	yield* [];
 	return { content: 'done', model: 'test-model', toolCalls: [] };
 };
+const discoveryTurn = (toolIds: string[]) =>
+	async function* () {
+		yield* [];
+		return {
+			content: '',
+			model: 'test-model',
+			toolCalls: [
+				{
+					id: `discover-${toolIds.join('-')}`,
+					name: 'discover_tools',
+					args: { query: toolIds.join(' '), toolIds, mcpServerIds: [] },
+				},
+			],
+		};
+	};
 const runModelTurnMock = jest.fn(successfulTurn);
 const appendRunMock = jest.fn();
 const closeMcpMock = jest.fn();
@@ -125,6 +140,7 @@ describe('run stream system prompt', () => {
 		createSkillRegistrySnapshotMock.mockReturnValue({ skills: [registrySkill], diagnostics: [] });
 		activateSkillMock.mockResolvedValue(activatedSkill);
 		runModelTurnMock
+			.mockImplementationOnce(discoveryTurn(['load_skill']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -153,10 +169,10 @@ describe('run stream system prompt', () => {
 		))
 			void event;
 
-		expect(runModelTurnMock.mock.calls[0][10]).toEqual([
+		expect(runModelTurnMock.mock.calls[1][10]).toEqual([
 			expect.objectContaining({ content: expect.stringContaining('Draft polished documents') }),
 		]);
-		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
+		expect(runModelTurnMock.mock.calls[2][9]).toContain('EXACT WRITER INSTRUCTIONS');
 		const receipt = session.messages.find(
 			(message) => message.toolCalls?.[0]?.name === 'load_skill'
 		)?.toolCalls?.[0]?.result?.content;
@@ -215,7 +231,10 @@ describe('run stream system prompt', () => {
 			events.push(event);
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
-		expect(events[0].tools).toContain('list_skills');
+		expect(events[0].tools).toEqual(['discover_tools']);
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description).toContain(
+			'list_skills'
+		);
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -240,7 +259,10 @@ describe('run stream system prompt', () => {
 			events.push(event);
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
-		expect(events[0].tools).toContain('list_skills');
+		expect(events[0].tools).toEqual(['discover_tools']);
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ description: string }>)[0].description).toContain(
+			'list_skills'
+		);
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -263,7 +285,7 @@ describe('run stream system prompt', () => {
 			{ sandbox }
 		))
 			noTools.push(event);
-		expect(noTools[0]).toMatchObject({ type: 'run_started', tools: [] });
+		expect(noTools[0]).toMatchObject({ type: 'run_started', tools: ['discover_tools'] });
 
 		const denied = [];
 		for await (const event of stream(
@@ -285,7 +307,10 @@ describe('run stream system prompt', () => {
 			denied.push(event);
 		expect(denied[0]).toMatchObject({ type: 'run_started' });
 		if (denied[0]?.type !== 'run_started') throw new Error('Expected run_started');
-		expect(denied[0].tools).toContain('read');
+		expect(denied[0].tools).toEqual(['discover_tools']);
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ description: string }>)[0].description).toContain(
+			'read | Read'
+		);
 		expect(denied[0].tools).not.toContain('subagent');
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});
