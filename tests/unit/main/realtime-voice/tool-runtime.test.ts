@@ -85,13 +85,18 @@ it('updates provider schemas before continuing after a discovery result', async 
 });
 
 it('does not continue a voice response when the provider rejects a tool refresh', async () => {
-	const discovery = createToolDiscovery({ eligible: [jsonTool({
-		id: 'read',
-		name: 'Read',
-		description: 'Read a file',
-		schema: { type: 'object' },
-		execute: () => 'read',
-	})], required: [] });
+	const discovery = createToolDiscovery({
+		eligible: [
+			jsonTool({
+				id: 'read',
+				name: 'Read',
+				description: 'Read a file',
+				schema: { type: 'object' },
+				execute: () => 'read',
+			}),
+		],
+		required: [],
+	});
 	const addToolResult = jest.fn();
 	const onError = jest.fn();
 	const runtime = new RealtimeVoiceToolRuntime({
