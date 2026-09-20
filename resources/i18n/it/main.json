@@ -1328,7 +1328,7 @@
 				"discovery": {
 					"title": "Ricerca strumenti",
 					"name": "Trova strumenti",
-					"description": "Trova e carica gli strumenti quando servono. Gli altri strumenti restano non caricati finché non vengono selezionati per l'esecuzione corrente.",
+					"description": "Trova e carica gli strumenti quando servono.",
 					"required": "Obbligatorio"
 				},
 				"title": "Strumenti dell'agente",

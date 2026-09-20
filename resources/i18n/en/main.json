@@ -1329,7 +1329,7 @@
 				"discovery": {
 					"title": "Tool discovery",
 					"name": "Discover tools",
-					"description": "Find and load tools when needed. Other tools remain unloaded until selected for the current run.",
+					"description": "Find and load tools when needed.",
 					"required": "Required"
 				},
 				"title": "Agent tools",
