@@ -449,8 +449,41 @@ async function* loop(
 				yield { type: 'run_finished', result };
 				return;
 			}
+			const activeToolIds = new Set(turnTools.map((tool) => tool.id));
+			const eligibleToolIds = new Set(discovery.eligible().map((tool) => tool.id));
+			const requestedUnavailableToolIds = [
+				...new Set(
+					turn.toolCalls
+						.map((call) => call.name)
+						.filter((id) => !activeToolIds.has(id) && eligibleToolIds.has(id))
+				),
+			];
+			if (requestedUnavailableToolIds.length > 0) {
+				yield { type: 'capability_resolution_start' };
+				const resolved = (await discovery.tool.run(
+					{
+						query: `Load requested tools: ${requestedUnavailableToolIds.join(', ')}`,
+						toolIds: requestedUnavailableToolIds,
+						mcpServerIds: [],
+					},
+					signal
+				)) as ToolDiscoveryResult;
+				const selected = new Set(resolved.selectedToolIds);
+				for (const call of turn.toolCalls) {
+					if (!selected.has(call.name)) continue;
+					call.result = {
+						content: `Tool '${call.name}' is now loaded. Retry this call on the next turn using its exposed schema.`,
+					};
+				}
+				yield {
+					type: 'capability_resolution_result',
+					tools: resolved.selectedTools,
+					serviceIds: resolved.selectedServiceIds,
+				};
+			}
+			const pendingToolCalls = turn.toolCalls.filter((call) => call.result === undefined);
 			const budgetExceeded = budget.wouldExceed(
-				turn.toolCalls.map((call) => ({
+				pendingToolCalls.map((call) => ({
 					tool: turnTools.find((tool) => tool.id === call.name),
 					input: call.args,
 				}))
@@ -460,7 +493,7 @@ async function* loop(
 				const instruction = budgetExceeded
 					? 'Execution budget exhausted; remaining actions were not executed. Explain the available results and limitations.'
 					: 'Turn limit reached; remaining actions were not executed. Explain the available results and limitations.';
-				yield* skipToolCalls(turn.toolCalls, instruction);
+				yield* skipToolCalls(pendingToolCalls, instruction);
 				addToolResults(session, turn.toolCalls);
 				if (budgetExceeded) {
 					budget.exhausted = true;
@@ -477,7 +510,7 @@ async function* loop(
 
 			for await (const event of runToolCalls(
 				turnTools,
-				turn.toolCalls,
+				pendingToolCalls,
 				signal,
 				session.runContext.fileAccess,
 				{

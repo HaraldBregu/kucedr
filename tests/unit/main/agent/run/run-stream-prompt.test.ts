@@ -1090,7 +1090,7 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock.mock.calls[0][9]).toContain('Never call a tool to test whether it is loaded');
 	});
 
-	it('does not execute a hidden tool hallucinated beside discovery in the same response', async () => {
+	it('loads a hidden eligible tool without exposing an unknown-tool error or executing it early', async () => {
 		const execute = jest.fn();
 		const read = jsonTool({
 			id: 'read',
@@ -1138,8 +1138,11 @@ describe('run stream system prompt', () => {
 
 		expect(execute).not.toHaveBeenCalled();
 		expect(session.toolCalls.find((call) => call.id === 'early-read')?.result).toMatchObject({
-			isError: true,
-			content: "Error: unknown tool 'read'",
+			isError: undefined,
+			content: "Tool 'read' is now loaded. Retry this call on the next turn using its exposed schema.",
 		});
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toContain('read');
 	});
 });
