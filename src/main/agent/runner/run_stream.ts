@@ -430,17 +430,16 @@ async function* loop(
 				);
 			}
 
-			yield {
-				type: 'assistant_message',
-				content: turn.content,
-				toolCalls: turn.toolCalls,
-			};
-			addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems, {
-				inputTokens: turn.usage?.inputTokens ?? 0,
-				outputTokens: turn.usage?.outputTokens ?? 0,
-			});
-
 			if (turn.toolCalls.length === 0) {
+				yield {
+					type: 'assistant_message',
+					content: turn.content,
+					toolCalls: turn.toolCalls,
+				};
+				addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems, {
+					inputTokens: turn.usage?.inputTokens ?? 0,
+					outputTokens: turn.usage?.outputTokens ?? 0,
+				});
 				if (finalization?.stopReason) session.stopReason = finalization.stopReason;
 				const result = toResult(
 					session,
@@ -463,40 +462,38 @@ async function* loop(
 			];
 			const automaticallyResolvedCallIds = new Set<string>();
 			if (requestedUnavailableToolIds.length > 0) {
-				yield { type: 'capability_resolution_start' };
-				const resolved = (await discovery.tool.run(
-					{
-						query: `Load requested tools: ${requestedUnavailableToolIds.join(', ')}`,
-						toolIds: requestedUnavailableToolIds,
-						mcpServerIds: [],
-					},
-					signal
-				)) as ToolDiscoveryResult;
-				const selected = new Set(resolved.selectedToolIds);
-				for (const call of turn.toolCalls) {
-					if (!selected.has(call.name)) continue;
-					automaticallyResolvedCallIds.add(call.id);
-					call.result = {
-						content: `Tool '${call.name}' is now loaded. Retry this call on the next turn using its exposed schema.`,
-					};
-				}
-				yield {
-					type: 'capability_resolution_result',
-					tools: resolved.selectedTools,
-					serviceIds: resolved.selectedServiceIds,
+				const loader =
+					turn.toolCalls.find((call) => call.name === DISCOVER_TOOLS_ID) ??
+					turn.toolCalls.find((call) => requestedUnavailableToolIds.includes(call.name))!;
+				const existingToolIds = Array.isArray(loader.args.toolIds)
+					? loader.args.toolIds.filter((id): id is string => typeof id === 'string')
+					: [];
+				const existingMcpServerIds = Array.isArray(loader.args.mcpServerIds)
+					? loader.args.mcpServerIds.filter((id): id is string => typeof id === 'string')
+					: [];
+				loader.name = DISCOVER_TOOLS_ID;
+				loader.args = {
+					query: `Load tools needed for the next step: ${requestedUnavailableToolIds.join(', ')}`,
+					toolIds: [...new Set([...existingToolIds, ...requestedUnavailableToolIds])],
+					mcpServerIds: existingMcpServerIds,
 				};
 				for (const call of turn.toolCalls) {
-					if (!automaticallyResolvedCallIds.has(call.id)) continue;
-					yield {
-						type: 'tool_call_end',
-						toolCallId: call.id,
-						toolName: call.name,
-						input: call.args,
-						output: call.result?.content,
-						durationMs: 0,
-					};
+					if (call === loader || !requestedUnavailableToolIds.includes(call.name)) continue;
+					call.name = DISCOVER_TOOLS_ID;
+					call.args = { query: 'Combined into the required tool-loading step.', toolIds: [], mcpServerIds: [] };
+					call.result = { content: 'Included in the required tool-loading step.' };
+					automaticallyResolvedCallIds.add(call.id);
 				}
 			}
+			yield {
+				type: 'assistant_message',
+				content: turn.content,
+				toolCalls: turn.toolCalls,
+			};
+			addAssistantMessage(session, turn.content, turn.toolCalls, turn.providerItems, {
+				inputTokens: turn.usage?.inputTokens ?? 0,
+				outputTokens: turn.usage?.outputTokens ?? 0,
+			});
 			const pendingToolCalls = turn.toolCalls.filter(
 				(call) => !automaticallyResolvedCallIds.has(call.id)
 			);

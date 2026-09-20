@@ -1141,19 +1141,21 @@ describe('run stream system prompt', () => {
 
 		expect(execute).toHaveBeenCalledTimes(1);
 		expect(budget.calls).toBe(1);
-		expect(session.toolCalls.find((call) => call.id === 'early-bash')?.result).toMatchObject({
-			content: "Tool 'bash' is now loaded. Retry this call on the next turn using its exposed schema.",
+		expect(session.toolCalls.find((call) => call.id === 'early-bash')).toMatchObject({
+			name: 'discover_tools',
+			args: { toolIds: ['bash'] },
+			result: { isError: undefined },
 		});
-		expect(session.toolCalls.find((call) => call.id === 'early-bash')?.result).not.toHaveProperty(
-			'isError'
-		);
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain('bash');
-		const automaticEnd = events.find(
-			(event) => event.type === 'tool_call_end' && event.toolCallId === 'early-bash'
-		);
-		expect(automaticEnd).toMatchObject({ type: 'tool_call_end', toolCallId: 'early-bash' });
-		expect(automaticEnd).not.toHaveProperty('isError');
+		expect(
+			events.filter(
+				(event) =>
+					(event.type === 'tool_call_start' || event.type === 'tool_call_end') &&
+					event.toolName === 'bash'
+			)
+		).toHaveLength(2);
+		expect(JSON.stringify(events)).not.toContain("unknown tool 'bash'");
 	});
 });

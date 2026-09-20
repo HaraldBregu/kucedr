@@ -5,6 +5,45 @@ import type { ResolvedProvider } from '../../../../../src/shared/provider_types'
 import { KeyedLimiter } from '../../../../../src/main/agent/limiter';
 
 describe('runModelTurn', () => {
+	it('keeps calls to unloaded tools out of the visible stream while retaining them for routing', async () => {
+		const stream = jest.fn(() =>
+			(async function* () {
+				yield { type: 'model_tool_call_start' as const, id: 'bash-call', name: 'bash' };
+				yield {
+					type: 'model_tool_call_args_delta' as const,
+					id: 'bash-call',
+					jsonDelta: '{"command":"pwd"}',
+				};
+				yield { type: 'model_call_end' as const, model: 'model', stopReason: 'tool_use' };
+			})()
+		);
+		const generator = runModelTurn(
+			{ task: 'chat', message: 'where am I' },
+			{ id: 'test', apiKey: 'key' } as ResolvedProvider,
+			'model',
+			'system',
+			[{ role: 'user', content: 'where am I' }],
+			[],
+			new AbortController().signal,
+			{},
+			{ stream } as ModelTurnStream
+		);
+		const emitted = [];
+		let turn;
+		while (true) {
+			const next = await generator.next();
+			if (next.done) {
+				turn = next.value;
+				break;
+			}
+			emitted.push(next.value);
+		}
+		expect(emitted.map((event) => event.type)).toEqual(['model_call_end']);
+		expect(turn.toolCalls).toEqual([
+			{ id: 'bash-call', name: 'bash', args: { command: 'pwd' } },
+		]);
+	});
+
 	it('adds privacy-safe timing and retry counters to the terminal model event', async () => {
 		const stream = jest.fn(() =>
 			(async function* () {

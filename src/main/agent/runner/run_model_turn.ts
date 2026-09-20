@@ -57,6 +57,8 @@ export async function* runModelTurn(
 		let usage: ModelTurn['usage'];
 		const providerItems: MessageContentBlock[] = [];
 		const pending = new Map<string, { name: string; argsText: string }>();
+		const callableToolIds = new Set(context.tools.map((tool) => tool.id));
+		const hiddenToolCallIds = new Set<string>();
 		const lease = providerLimiter
 			? await providerLimiter.acquire(provider.id.trim().toLowerCase(), signal)
 			: undefined;
@@ -104,6 +106,7 @@ export async function* runModelTurn(
 				}
 				if (event.type === 'model_tool_call_start') {
 					pending.set(event.id, { name: event.name, argsText: '' });
+					if (!callableToolIds.has(event.name)) hiddenToolCallIds.add(event.id);
 				}
 				if (event.type === 'model_tool_call_args_delta') {
 					const toolCall = pending.get(event.id);
@@ -121,6 +124,12 @@ export async function* runModelTurn(
 					};
 					continue;
 				}
+				if (
+					(event.type === 'model_tool_call_start' ||
+						event.type === 'model_tool_call_args_delta') &&
+					hiddenToolCallIds.has(event.id)
+				)
+					continue;
 				yield event;
 			}
 
