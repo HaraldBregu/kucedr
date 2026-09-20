@@ -9,9 +9,17 @@ const mockRead = {
 	parseInput: (input: unknown) => input as Record<string, unknown>,
 	run: () => 'read',
 };
+const mockWrite = {
+	...mockRead,
+	id: 'write',
+	name: 'Write',
+	description: 'Write a file',
+	capability: { effects: ['write'] },
+	run: () => 'write',
+};
 
 jest.mock('../../../../src/main/agent/runner/run_builtin_tools', () => ({
-	builtinTools: () => [mockRead],
+	builtinTools: () => [mockRead, mockWrite],
 }));
 jest.mock('../../../../src/main/agent/system', () => ({
 	buildSystemPrompt: async (_config: unknown, tools: Array<{ id: string }>) =>
@@ -73,11 +81,12 @@ it('starts voice with only the loader and exposes selected tools after refresh',
 	expect(configuration.tools.map((tool) => tool.id)).toEqual(['discover_tools']);
 	expect(configuration.instructions).toContain('read | Read | Not loaded; use discover_tools');
 	await configuration.tools[0].run({
-		query: 'Read a file',
-		toolIds: ['read'],
+		query: 'Read and write files',
+		toolIds: ['read', 'write'],
 		mcpServerIds: [],
 	});
 	const refreshed = await configuration.refreshTools?.();
-	expect(refreshed?.tools.map((tool) => tool.id)).toEqual(['discover_tools', 'read']);
+	expect(refreshed?.tools.map((tool) => tool.id)).toEqual(['discover_tools', 'read', 'write']);
 	expect(refreshed?.instructions).toContain('read | Read | Loaded');
+	expect(refreshed?.instructions).toContain('write | Write | Loaded');
 });
