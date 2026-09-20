@@ -81,13 +81,7 @@ export function createRealtimeVoiceManager(
 						? metadataVoice.trim()
 						: (realtimeVoiceDefaultVoice(providerId) ?? '');
 			const tools = supportsRealtimeVoiceTools(providerId, model.id)
-				? builtinTools(
-						agent.config,
-						agent.sandbox,
-						windowFactory,
-						'default',
-						agent.memory
-					)
+				? builtinTools(agent.config, agent.sandbox, windowFactory, 'default', agent.memory)
 				: [];
 			const instructions = await buildSystemPrompt(agent.config, tools);
 			const workspaceContext = await buildWorkspaceContext(agent.config);
