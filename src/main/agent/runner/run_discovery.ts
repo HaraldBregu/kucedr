@@ -70,7 +70,10 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 	const directory = (): string => {
 		const tools = [...eligible.values()]
 			.sort((left, right) => left.id.localeCompare(right.id))
-			.map((candidate) => `${candidate.id} | ${candidate.name} | ${candidate.description.replace(/\s+/g, ' ').trim()}`);
+			.map(
+				(candidate) =>
+					`${candidate.id} | ${candidate.name} | ${candidate.description.replace(/\s+/g, ' ').trim()}`
+			);
 		const servers = [...deferredServers.values()]
 			.sort((left, right) => left.id.localeCompare(right.id))
 			.map((server) => `${server.id} | ${server.name}`);
@@ -120,15 +123,20 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 			if (requested.length === 0) {
 				const queryTokens = searchTokens(query);
 				const loadedIds = new Set(loaded.map((entry) => entry.tool.id));
-				const pool = loaded.length > 0
-					? [...eligible.values()].filter((candidate) => loadedIds.has(candidate.id))
-					: [...eligible.values()];
+				const pool =
+					loaded.length > 0
+						? [...eligible.values()].filter((candidate) => loadedIds.has(candidate.id))
+						: [...eligible.values()];
 				const scored = pool
 					.map((candidate) => {
-						const text = `${candidate.id} ${candidate.name} ${candidate.description}`.toLocaleLowerCase();
+						const text =
+							`${candidate.id} ${candidate.name} ${candidate.description}`.toLocaleLowerCase();
 						return {
 							id: candidate.id,
-							score: queryTokens.reduce((score, token) => score + (text.includes(token) ? 1 : 0), 0),
+							score: queryTokens.reduce(
+								(score, token) => score + (text.includes(token) ? 1 : 0),
+								0
+							),
 						};
 					})
 					.filter((candidate) => candidate.score > 0)
@@ -151,7 +159,9 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 					...(service ? { serviceId: service.serverId, serviceName: service.serverName } : {}),
 				};
 			});
-			const selectedServiceIds = [...new Set(selectedTools.flatMap((entry) => entry.serviceId ?? []))];
+			const selectedServiceIds = [
+				...new Set(selectedTools.flatMap((entry) => entry.serviceId ?? [])),
+			];
 			const noMatch = selectedToolIds.length === 0 && loaded.length > 0;
 			return {
 				selectedToolIds,
