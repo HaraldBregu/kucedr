@@ -28,11 +28,23 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 		},
 		clientInformation() {
 			const { tokens: _tokens, codeVerifier: _verifier, ...storedClient } = storage.load();
+			if (
+				!staticClient &&
+				params.onRedirect &&
+				storedClient.redirect_uris &&
+				!storedClient.redirect_uris.includes(redirectUrl)
+			) {
+				return undefined;
+			}
 			const client = staticClient ?? storedClient;
 			return client.client_id ? (client as OAuthClientInformationMixed) : undefined;
 		},
 		saveClientInformation(clientInformation) {
-			storage.save({ ...storage.load(), ...clientInformation });
+			const previous = storage.load();
+			storage.save({
+				...clientInformation,
+				...(previous.client_id === clientInformation.client_id ? { tokens: previous.tokens } : {}),
+			});
 		},
 		tokens() {
 			return storage.load().tokens;

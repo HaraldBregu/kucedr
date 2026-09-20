@@ -346,14 +346,19 @@ export function McpServerForm({
 						<div className="grid gap-4 pt-4">
 							{isGoogleRemote && (
 								<p className="text-[12px] text-muted-foreground">
-									Google requires your own OAuth client ID and secret. In Google Cloud, enable the
-									product API and its MCP service, configure the consent screen, and create a Web
-									application OAuth client. Set MCP_CLIENT_REDIRECT_URL to its registered loopback redirect
-									URI in the .env file, along with MCP_GOOGLE_CLIENT_ID and
-									MCP_GOOGLE_CLIENT_SECRET. Restart Kucedr, then connect with OAuth. Google
-									Workspace MCP access may require enrollment in the Developer Preview.
+									Google requires a registered OAuth client. Enable the product API and its MCP
+									service, then configure the consent screen. Set MCP_GOOGLE_CLIENT_ID and, if
+									required, MCP_GOOGLE_CLIENT_SECRET in .env. Desktop clients support loopback
+									callbacks; Web clients must register the exact MCP callback URL. Restart Kucedr,
+									then connect with OAuth. Workspace MCP access may require enrollment in the
+									Developer Preview.
 								</p>
 							)}
+							<p className="text-[12px] text-muted-foreground">
+								The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
+								URL if your authorization server requires it. To use another loopback URL, set
+								MCP_CLIENT_REDIRECT_URL in .env and restart Kucedr.
+							</p>
 							{!isGitHubRemote && !isGoogleRemote && (
 								<Field>
 									<Label htmlFor="mcp-token">Access token (optional)</Label>

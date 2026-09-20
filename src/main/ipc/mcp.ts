@@ -130,12 +130,11 @@ function getHttpMcpServer(id: string): {
 	const connectorId = resolveMcpId(id);
 	const entry = getMcpServers()[connectorId];
 	if (!entry || entry.type !== 'http') throw new Error(`No http MCP server "${id}".`);
-	const oauth = getMcpOauth(connectorId);
 	return {
 		id: connectorId,
 		url: entry.url,
-		clientId: oauth.client_id ?? entry.client_id,
-		clientSecret: oauth.client_secret,
+		clientId: entry.client_id,
+		clientSecret: entry.client_secret,
 	};
 }
 

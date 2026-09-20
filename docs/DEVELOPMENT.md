@@ -58,6 +58,45 @@ Use `npm install` instead of `npm ci` only when intentionally adding, removing, 
 dependencies. Commit both the affected `package.json` and the root `package-lock.json`.
 Do not create lockfiles inside `packages/sdk` or `packages/cli`.
 
+## MCP OAuth callback setup
+
+HTTP MCP authorization runs directly between Kucedr and the authorization server discovered
+from the MCP server. It does not use Supabase or `MCP_OAUTH_REDIRECT_URL`.
+
+The default callback is `http://127.0.0.1:3001/oauth/callback`. For a pre-registered OAuth
+client, register this exact URL with its authorization server. Set the connector's client
+ID and optional client secret in its advanced settings. Servers supporting dynamic client
+registration receive the callback URL automatically through the MCP SDK.
+
+`MCP_CLIENT_REDIRECT_URL` optionally overrides the callback for all HTTP MCP connections.
+Use an HTTP loopback address with an explicit port. Prefer `127.0.0.1` or `[::1]` over
+`localhost` to avoid hostname resolution differences. The listener is bound before OAuth
+registration or browser launch; its actual URL is used unchanged for registration,
+authorization, and code exchange. An occupied fixed port fails rather than silently changing
+a registered URL. The listener closes on callback, cancellation, error, or timeout.
+
+For native OAuth clients that permit variable loopback ports, set
+`MCP_CLIENT_REDIRECT_URL=http://127.0.0.1:0/oauth/callback`. Port `0` asks the OS to allocate an
+available port; it is never sent to the authorization server. Do not use this option for a
+pre-registered client requiring an exact fixed port. A dynamically registered client whose
+registered callback differs is registered again before starting a new interactive flow.
+
+Google Workspace uses the same callback and PKCE/state flow. Its provider-specific adapter
+adds Google scopes and consent parameters and reads `MCP_GOOGLE_CLIENT_ID` plus optional
+`MCP_GOOGLE_CLIENT_SECRET`. For a Google Desktop app OAuth client, variable loopback ports
+are supported. A Google Web application OAuth client requires the exact registered callback.
+Never reuse an account sign-in callback for an MCP connection.
+
+The generic client supports pre-registered clients and dynamic client registration, with
+SDK authorization-server discovery, PKCE S256, per-attempt state validation, and token
+refresh. It does not currently publish a hosted OAuth client metadata document. Provider
+policies and supported registration methods still determine whether a particular MCP server
+can authorize Kucedr.
+
+References: [MCP authorization](https://modelcontextprotocol.io/specification/2025-11-25/basic/authorization),
+[OAuth for native apps](https://www.rfc-editor.org/rfc/rfc8252), and
+[Google desktop OAuth](https://developers.google.com/identity/protocols/oauth2/native-app).
+
 ## Run the Electron app for development
 
 Start the normal development environment:
