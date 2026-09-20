@@ -1952,6 +1952,10 @@
 	"chat": {
 		"titlePlaceholder": "Chat Senza Titolo",
 		"placeholder": "Chat in arrivo",
+		"toolSelection": {
+			"selecting": "Selezione degli strumenti…",
+			"selected": "Selezionati: {{tools}}"
+		},
 		"placeholderDescription": "Inizia una conversazione con l'AI per fare brainstorming, redigere o perfezionare idee."
 	},
 	"writing": {

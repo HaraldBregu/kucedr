@@ -1953,6 +1953,10 @@
 	"chat": {
 		"titlePlaceholder": "Untitled Chat",
 		"placeholder": "Chat coming soon",
+		"toolSelection": {
+			"selecting": "Selecting tools…",
+			"selected": "Selected: {{tools}}"
+		},
 		"placeholderDescription": "Start a conversation with AI to brainstorm, draft, or refine ideas."
 	},
 	"writing": {

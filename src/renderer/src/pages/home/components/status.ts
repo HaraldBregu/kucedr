@@ -38,7 +38,17 @@ function formatElapsedSeconds(message: AgentMessage): string | undefined {
 	return `${seconds} second${seconds === 1 ? '' : 's'}`;
 }
 
-export function statusLabel(message: AgentMessage): string {
+export function statusLabel(
+	message: AgentMessage,
+	toolSelection?: { selecting: string; selected: (names: string) => string }
+): string {
+	if (message.toolSelection && toolSelection) {
+		if (message.toolSelection.state === 'selecting') return toolSelection.selecting;
+		const visible = message.toolSelection.names.slice(0, 3);
+		const overflow = message.toolSelection.names.length - visible.length;
+		const names = `${visible.join(', ')}${overflow > 0 ? ` +${overflow}` : ''}`;
+		return toolSelection.selected(names);
+	}
 	if (message.state === 'answering' && message.tools.length > 0) {
 		return 'Answering with tool results';
 	}

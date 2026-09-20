@@ -57,6 +57,8 @@ export function applyAgentResponseEventToTools(
 	receivedAtMs?: number
 ): AgentToolPart[] | undefined {
 	switch (event.type) {
+		case 'capability_resolution_start':
+		case 'capability_resolution_result':
 		case 'run_state':
 		case 'run_started':
 		case 'reasoning_summary':
@@ -65,6 +67,7 @@ export function applyAgentResponseEventToTools(
 		case 'user_input_result':
 			return undefined;
 		case 'tool_call_start':
+			if (event.toolName === 'discover_tools') return undefined;
 			return updateAgentToolPart(tools, event.toolCallId, {
 				type: event.toolName,
 				state: 'input-streaming',
@@ -73,6 +76,7 @@ export function applyAgentResponseEventToTools(
 				outputTokens,
 			});
 		case 'tool_call_args_delta':
+			if (event.toolName === 'discover_tools') return undefined;
 			return updateAgentToolPart(tools, event.toolCallId, {
 				type: event.toolName,
 				displayName: event.displayName,
@@ -83,6 +87,7 @@ export function applyAgentResponseEventToTools(
 				inputText: event.argsText,
 			});
 		case 'tool_call_input':
+			if (event.toolName === 'discover_tools') return undefined;
 			return updateAgentToolPart(tools, event.toolCallId, {
 				type: event.toolName,
 				displayName: event.displayName,
@@ -95,6 +100,7 @@ export function applyAgentResponseEventToTools(
 				startedAtMs: receivedAtMs,
 			});
 		case 'tool_call_result': {
+			if (event.toolName === 'discover_tools') return undefined;
 			const isError = event.status !== 'ok';
 			const errorText =
 				event.errorText ?? (isError ? event.outputText || 'Tool call failed.' : undefined);

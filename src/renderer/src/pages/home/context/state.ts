@@ -50,6 +50,10 @@ export interface AgentMessage {
 	readonly outputTokens?: number;
 	readonly settledOutputTokens?: number;
 	readonly streamedChars?: number;
+	readonly toolSelection?: {
+		readonly state: 'selecting' | 'selected';
+		readonly names: readonly string[];
+	};
 }
 
 export type HomeChatMessage = UserMessage | AgentMessage;

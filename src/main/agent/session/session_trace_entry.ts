@@ -64,6 +64,24 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 				: {}),
 		};
 	}
+	if (event.type === 'capability_resolution_start') return { type: event.type };
+	if (event.type === 'capability_resolution_result') {
+		const tools = Array.isArray(event.tools) ? event.tools : [];
+		const toolIds = tools
+			.map((tool) => (tool && typeof tool === 'object' ? (tool as Record<string, unknown>).id : undefined))
+			.filter((id): id is string => typeof id === 'string')
+			.slice(0, 16);
+		const serviceIds = Array.isArray(event.serviceIds)
+			? event.serviceIds.filter((id): id is string => typeof id === 'string').slice(0, 16)
+			: [];
+		return {
+			type: event.type,
+			selectedToolCount: toolIds.length,
+			selectedToolIds: toolIds,
+			selectedServiceCount: serviceIds.length,
+			selectedServiceIds: serviceIds,
+		};
+	}
 	if (event.type === 'assistant_message') {
 		return {
 			type: event.type,

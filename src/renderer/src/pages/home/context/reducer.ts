@@ -133,6 +133,28 @@ function applyResponseEvent(
 	}
 
 	if (event.type === 'run_started') return ensured.state;
+	if (event.type === 'capability_resolution_start') {
+		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
+			...message,
+			state: 'thinking',
+			toolSelection: { state: 'selecting', names: [] },
+		}));
+	}
+	if (event.type === 'capability_resolution_result') {
+		const names = [
+			...(event.services ?? [])
+				.filter((service) => service.serviceKind === 'mcp')
+				.map((service) => service.displayName ?? service.name),
+			...(event.services ?? [])
+				.filter((service) => service.serviceKind !== 'mcp')
+				.map((service) => service.displayName ?? service.name),
+		];
+		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
+			...message,
+			state: 'thinking',
+			toolSelection: { state: 'selected', names: [...new Set(names)] },
+		}));
+	}
 
 	if (event.type === 'reasoning_summary') {
 		return ensured.state;

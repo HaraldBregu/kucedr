@@ -19,6 +19,7 @@ import { UserInputCard } from './UserInputCard';
 import { ScreenSourceCard } from './ScreenSourceCard';
 import { parsePlanEnvelope } from './plan';
 import { ImageGallery } from './ImageGallery';
+import { useTranslation } from 'react-i18next';
 
 const LONG_MESSAGE_LENGTH = 600;
 
@@ -196,6 +197,7 @@ export function AssistantMessage({
 	const canToggleContent =
 		collapseLongContent && message.content.trim().length > LONG_MESSAGE_LENGTH;
 	const [isContentExpanded, setIsContentExpanded] = useState(false);
+	const { t } = useTranslation();
 	const { speak, isSpeaking, errorMessage: speakErrorMessage, clearError } = useReadMessageAloud();
 
 	const parsedPlan = parsePlanEnvelope(message.content, isStreaming);
@@ -267,7 +269,10 @@ export function AssistantMessage({
 		hasTools ||
 		(message.state !== 'idle' && message.state !== 'completed') ||
 		Boolean(message.errorText);
-	const label = statusLabel(message);
+	const label = statusLabel(message, {
+		selecting: t('chat.toolSelection.selecting'),
+		selected: (names) => t('chat.toolSelection.selected', { tools: names }),
+	});
 	const labelContent = statusLabelContent(message, isStreaming, label);
 	const statusClassName = cn(
 		'inline-flex min-h-6 max-w-full items-center rounded-full px-2 py-0.5 text-xs font-semibold',
