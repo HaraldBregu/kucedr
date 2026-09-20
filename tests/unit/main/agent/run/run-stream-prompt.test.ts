@@ -970,4 +970,118 @@ describe('run stream system prompt', () => {
 			if (outcome === 'tools') expect(session.toolCalls[2].result).toMatchObject({ isError: true });
 		}
 	);
+
+	it('activates only requested file tools and executes an active batch sequentially', async () => {
+		const order: string[] = [];
+		const read = jsonTool({
+			id: 'read',
+			name: 'Read',
+			description: 'Read a file',
+			capability: { effects: ['read'] },
+			schema: { type: 'object' },
+			execute: () => order.push('read'),
+		});
+		const edit = jsonTool({
+			id: 'edit',
+			name: 'Edit',
+			description: 'Edit a file',
+			capability: { effects: ['read'] },
+			schema: { type: 'object' },
+			execute: () => order.push('edit'),
+		});
+		runModelTurnMock
+			.mockImplementationOnce(discoveryTurn(['read', 'edit']))
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [
+						{ id: 'read-call', name: 'read', args: {} },
+						{ id: 'edit-call', name: 'edit', args: {} },
+					],
+				};
+			})
+			.mockImplementationOnce(successfulTurn);
+
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			{
+				runId: 'file-edit',
+				task: 'chat',
+				message: 'Read and edit the file',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ tools: [read, edit] }
+		))
+			void _event;
+
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual([
+			'discover_tools',
+		]);
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual([
+			'discover_tools',
+			'read',
+			'edit',
+		]);
+		expect(order).toEqual(['read', 'edit']);
+	});
+
+	it('does not execute a hidden tool hallucinated beside discovery in the same response', async () => {
+		const execute = jest.fn();
+		const read = jsonTool({
+			id: 'read',
+			name: 'Read',
+			description: 'Read a file',
+			capability: { effects: ['read'] },
+			schema: { type: 'object' },
+			execute,
+		});
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [
+						{
+							id: 'discover-read',
+							name: 'discover_tools',
+							args: { query: 'read', toolIds: ['read'], mcpServerIds: [] },
+						},
+						{ id: 'early-read', name: 'read', args: {} },
+					],
+				};
+			})
+			.mockImplementationOnce(successfulTurn);
+		const session = createSessionState();
+
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: 'same-turn-guard',
+				task: 'chat',
+				message: 'Read a file',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ tools: [read] }
+		))
+			void _event;
+
+		expect(execute).not.toHaveBeenCalled();
+		expect(session.toolCalls.find((call) => call.id === 'early-read')?.result).toMatchObject({
+			isError: true,
+			content: "Error: unknown tool 'read'",
+		});
+	});
 });
