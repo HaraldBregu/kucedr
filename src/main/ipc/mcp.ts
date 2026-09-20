@@ -230,7 +230,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
 				let redirectUrl: string | undefined;
-				const provider = () =>
+				const provider =
 					createOAuthProvider({
 						serverUrl: server.url,
 						storage: oauthStorage(server.id),
@@ -240,22 +240,17 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 							redirectUrl = url.toString();
 						},
 					});
-				const result = await auth(provider(), { serverUrl: server.url });
+				const result = await auth(provider, { serverUrl: server.url });
 				if (result === 'AUTHORIZED') return { status: 'authorized' };
 				if (!redirectUrl)
 					throw new Error(`MCP server "${id}" did not return an authorization URL.`);
 
-				let callback: Awaited<ReturnType<typeof startOauthCallbackServer>>;
-				try {
-					callback = await startOauthCallbackServer();
-				} catch {
-					// ponytail: callback port busy → fall back to the manual paste flow
-					return { status: 'redirect', url: redirectUrl };
-				}
+				const state = await provider.state!();
+				const callback = await startOauthCallbackServer(state);
 				try {
 					await shell.openExternal(redirectUrl);
 					const code = await callback.code;
-					const finish = await auth(provider(), { serverUrl: server.url, authorizationCode: code });
+					const finish = await auth(provider, { serverUrl: server.url, authorizationCode: code });
 					if (finish !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);
 					return { status: 'authorized' };
 				} finally {
@@ -264,22 +259,5 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 			}
 		);
 
-		registerCommandWithEvent(
-			McpChannels.oauthFinish,
-			async (event, id: string, code: string): Promise<void> => {
-				trusted.assert(event);
-				const server = getHttpMcpServer(id);
-				const result = await auth(
-					createOAuthProvider({
-						serverUrl: server.url,
-						storage: oauthStorage(server.id),
-						clientId: server.clientId,
-						clientSecret: server.clientSecret,
-					}),
-					{ serverUrl: server.url, authorizationCode: code }
-				);
-				if (result !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);
-			}
-		);
 	}
 }

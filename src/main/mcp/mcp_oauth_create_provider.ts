@@ -1,3 +1,4 @@
+import { randomBytes } from 'node:crypto';
 import { googleMcpScopes } from '../../shared/google_mcp';
 import type { OAuthClientProvider } from '@modelcontextprotocol/sdk/client/auth.js';
 import type { OAuthClientInformationMixed } from '@modelcontextprotocol/sdk/shared/auth.js';
@@ -7,6 +8,9 @@ import { getMcpOAuthRedirectUrl } from './redirect';
 
 export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClientProvider {
 	const { storage } = params;
+	const state = randomBytes(32).toString('hex');
+	const redirectUrl = getMcpOAuthRedirectUrl();
+	let codeVerifier: string | undefined;
 	const googleScopes = googleMcpScopes(params.serverUrl ?? '');
 	const clientId = googleScopes ? process.env.MCP_GOOGLE_CLIENT_ID?.trim() : params.clientId;
 	const clientSecret = googleScopes
@@ -16,7 +20,10 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 		googleScopes || clientId ? { client_id: clientId, client_secret: clientSecret } : undefined;
 	return {
 		get redirectUrl() {
-			return getMcpOAuthRedirectUrl();
+			return redirectUrl;
+		},
+		state() {
+			return state;
 		},
 		get clientMetadata() {
 			return clientMetadata(
@@ -50,11 +57,11 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			}
 			params.onRedirect?.(url);
 		},
-		saveCodeVerifier(codeVerifier) {
-			storage.save({ ...storage.load(), codeVerifier });
+		saveCodeVerifier(value) {
+			codeVerifier = value;
 		},
 		codeVerifier() {
-			const verifier = storage.load().codeVerifier;
+			const verifier = codeVerifier;
 			if (!verifier) throw new Error('Missing OAuth code verifier. Start the login flow again.');
 			return verifier;
 		},

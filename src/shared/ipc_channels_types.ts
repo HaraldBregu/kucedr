@@ -404,7 +404,6 @@ export interface McpInvokeChannelMap {
 		args: [id: string];
 		result: import('./mcp_types').McpOAuthStart;
 	};
-	[McpChannels.oauthFinish]: { args: [id: string, code: string]; result: void };
 }
 
 export interface AgentEventChannelMap {

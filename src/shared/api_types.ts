@@ -287,7 +287,6 @@ export interface McpApi {
 	openRoot: () => Promise<void>;
 	test: (id: string) => Promise<McpTestResult>;
 	oauthStart: (id: string) => Promise<McpOAuthStart>;
-	oauthFinish: (id: string, code: string) => Promise<void>;
 }
 
 export interface ProviderApi {

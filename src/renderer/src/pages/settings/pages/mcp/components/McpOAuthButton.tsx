@@ -1,18 +1,8 @@
 import React, { useState } from 'react';
 import { Check, KeyRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
-type Phase = 'idle' | 'awaitingCode' | 'busy' | 'done';
-
-function extractCode(input: string): string {
-	const value = input.trim();
-	try {
-		return new URL(value).searchParams.get('code') ?? value;
-	} catch {
-		return value;
-	}
-}
+type Phase = 'idle' | 'busy' | 'done';
 
 export function McpOAuthButton({
 	id,
@@ -22,7 +12,6 @@ export function McpOAuthButton({
 	readonly beforeStart?: () => Promise<void>;
 }): React.JSX.Element {
 	const [phase, setPhase] = useState<Phase>('idle');
-	const [callback, setCallback] = useState('');
 	const [error, setError] = useState<string | null>(null);
 
 	const start = async (): Promise<void> => {
@@ -35,28 +24,10 @@ export function McpOAuthButton({
 				setPhase('done');
 				return;
 			}
-			await window.app.openExternalUrl(result.url);
-			setPhase('awaitingCode');
+
 		} catch (err) {
 			setError(err instanceof Error ? err.message : String(err));
 			setPhase('idle');
-		}
-	};
-
-	const complete = async (): Promise<void> => {
-		const code = extractCode(callback);
-		if (!code) {
-			setError('Paste the authorization code or redirect URL.');
-			return;
-		}
-		setError(null);
-		setPhase('busy');
-		try {
-			await window.mcp.oauthFinish(id, code);
-			setPhase('done');
-		} catch (err) {
-			setError(err instanceof Error ? err.message : String(err));
-			setPhase('awaitingCode');
 		}
 	};
 
@@ -74,24 +45,7 @@ export function McpOAuthButton({
 
 	return (
 		<div className="grid gap-2">
-			{phase === 'awaitingCode' ? (
-				<>
-					<p className="text-[13px] text-muted-foreground">
-						Approve access in your browser, then paste the redirected URL (or the code) below.
-					</p>
-					<div className="flex gap-2">
-						<Input
-							value={callback}
-							onChange={(e) => setCallback(e.target.value)}
-							placeholder="Authorization code or redirect URL"
-							autoComplete="off"
-						/>
-						<Button type="button" onClick={complete}>
-							Complete
-						</Button>
-					</div>
-				</>
-			) : (
+
 				<Button
 					type="button"
 					variant="outline"
@@ -102,7 +56,6 @@ export function McpOAuthButton({
 					<KeyRound className="size-3.5" />
 					{phase === 'busy' ? 'Connecting' : 'Connect with OAuth'}
 				</Button>
-			)}
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 		</div>
 	);

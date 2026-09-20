@@ -152,7 +152,6 @@ export const McpChannels = {
 	openRoot: 'mcp:local:open',
 	test: 'mcp:test',
 	oauthStart: 'mcp:oauth:start',
-	oauthFinish: 'mcp:oauth:finish',
 } as const;
 
 export const AppChannels = {

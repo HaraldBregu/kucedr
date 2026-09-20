@@ -40,7 +40,4 @@ export const mcp: McpApi = {
 	oauthStart: (id: string) => {
 		return typedInvokeUnwrap(McpChannels.oauthStart, id);
 	},
-	oauthFinish: (id: string, code: string) => {
-		return typedInvokeUnwrap(McpChannels.oauthFinish, id, code);
-	},
 };
