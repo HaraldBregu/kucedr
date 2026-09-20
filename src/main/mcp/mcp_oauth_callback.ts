@@ -3,12 +3,14 @@ import { getMcpOAuthRedirectUrl } from './redirect';
 
 export function startOauthCallbackServer(
 	expectedState: string,
-	timeoutMs = 300_000
+	timeoutMs = 300_000,
+	redirectUrl = getMcpOAuthRedirectUrl()
 ): Promise<{
+	redirectUrl: string;
 	code: Promise<string>;
 	close: () => void;
 }> {
-	const redirect = new URL(getMcpOAuthRedirectUrl());
+	const redirect = new URL(redirectUrl);
 	return new Promise((resolveListen, rejectListen) => {
 		let resolveCode: (code: string) => void = () => {};
 		let rejectCode: (err: Error) => void = () => {};
@@ -74,8 +76,10 @@ export function startOauthCallbackServer(
 			rejectListen(err);
 			close();
 		});
-		server.listen(Number(redirect.port), redirect.hostname, () => {
-			resolveListen({ code, close });
+		server.listen(Number(redirect.port), redirect.hostname.replace(/^\[|\]$/g, ''), () => {
+			const address = server.address() as import('node:net').AddressInfo;
+			redirect.port = String(address.port);
+			resolveListen({ redirectUrl: redirect.toString(), code, close });
 		});
 	});
 }

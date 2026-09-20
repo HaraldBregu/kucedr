@@ -21,6 +21,7 @@ beforeEach(() => {
 				onError = listener;
 			},
 			listen: (_port: number, _host: string, listener: () => void) => listener(),
+			address: () => ({ port: 3001 }),
 			close,
 		} as unknown as http.Server;
 	}) as typeof http.createServer);
