@@ -228,8 +228,8 @@ it('preserves the existing permission request identity and returns rejected tool
 			callId: 'call-permission',
 			itemId: 'item-permission',
 			responseId: 'response-permission',
-		name: 'external_probe',
-		arguments: '{"value":"test"}',
+			name: 'external_probe',
+			arguments: '{"value":"test"}',
 		});
 		const permission = await permissionEvent;
 		expect(permission).toMatchObject({

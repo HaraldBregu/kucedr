@@ -369,12 +369,15 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 		this.callResponses.set(callId, responseId);
 	}
 
-	private continueToolResponse(responseId: string, tools: {
-		callIds: Set<string>;
-		resultIds: Set<string>;
-		responseDone: boolean;
-		continued: boolean;
-	}): void {
+	private continueToolResponse(
+		responseId: string,
+		tools: {
+			callIds: Set<string>;
+			resultIds: Set<string>;
+			responseDone: boolean;
+			continued: boolean;
+		}
+	): void {
 		if (
 			tools.continued ||
 			!tools.responseDone ||

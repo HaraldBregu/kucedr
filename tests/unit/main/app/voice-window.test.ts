@@ -87,7 +87,9 @@ it('replaces an active voice window when another chat starts a conversation', ()
 		setAlwaysOnTop: jest.fn(),
 		setVisibleOnAllWorkspaces: jest.fn(),
 	}));
-	const windowFactory = { create: jest.fn().mockReturnValueOnce(windows[0]).mockReturnValueOnce(windows[1]) } as never;
+	const windowFactory = {
+		create: jest.fn().mockReturnValueOnce(windows[0]).mockReturnValueOnce(windows[1]),
+	} as never;
 	const voiceWindow = new VoiceWindow(windowFactory, { create: jest.fn() } as never);
 
 	voiceWindow.open('chat-a');
