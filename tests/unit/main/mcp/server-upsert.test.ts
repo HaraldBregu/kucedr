@@ -104,3 +104,31 @@ describe('MCP server upsert', () => {
 		]);
 	});
 });
+
+it('keeps a redacted client secret when the settings form submits an undefined value', () => {
+	getMcpServersState.mockReturnValue([
+		{
+			id: 'remote',
+			type: 'http',
+			url: 'https://old.example/mcp',
+			client_id: 'client',
+			client_secret: 'saved-secret',
+		},
+	]);
+	upsertMcpServer('remote', {
+		type: 'http',
+		url: 'https://old.example/mcp',
+		client_id: 'client',
+		client_secret: undefined,
+	});
+	expect(setMcpServersState).toHaveBeenCalledWith([
+		expect.objectContaining({ client_secret: 'saved-secret' }),
+	]);
+	upsertMcpServer('remote', {
+		type: 'http',
+		url: 'https://old.example/mcp',
+		client_id: 'different-client',
+		client_secret: undefined,
+	});
+	expect(setMcpServersState.mock.calls[1][0][0].client_secret).toBeUndefined();
+});

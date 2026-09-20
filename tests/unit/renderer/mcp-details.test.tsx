@@ -170,3 +170,29 @@ describe('MCP details', () => {
 		);
 	});
 });
+
+it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+	'saves registered Google credentials before authenticating %s without submitting the form',
+	async (host) => {
+		const user = userEvent.setup();
+		server = {
+			id: 'google',
+			source: 'configured',
+			data: { type: 'http', url: `https://${host}.googleapis.com/mcp/v1` },
+		};
+		mcpApi.oauthStart.mockResolvedValue({ status: 'authorized' });
+		renderDetails('google');
+		const clientId = await screen.findByLabelText('Google OAuth client ID');
+		expect(clientId).toBeVisible();
+		await user.type(clientId, 'registered-client');
+		await user.type(screen.getByLabelText('Google OAuth client secret'), 'client-secret');
+		await user.click(screen.getByRole('button', { name: 'Connect with OAuth' }));
+		await screen.findByText('Authenticated');
+		expect(mcpApi.upsert).toHaveBeenCalledTimes(1);
+		expect(mcpApi.upsert).toHaveBeenCalledWith(
+			'google',
+			expect.objectContaining({ client_id: 'registered-client', client_secret: 'client-secret' })
+		);
+		expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
+	}
+);
