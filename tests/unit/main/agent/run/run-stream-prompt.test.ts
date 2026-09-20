@@ -24,6 +24,12 @@ const discoveryTurn = (toolIds: string[]) =>
 const runModelTurnMock = jest.fn(successfulTurn);
 const appendRunMock = jest.fn();
 const closeMcpMock = jest.fn();
+const mockLoadMcpTools = jest.fn(async () => ({
+	tools: [],
+	entries: [],
+	deferredServers: [],
+	close: closeMcpMock,
+}));
 const createSkillRegistrySnapshotMock = jest.fn(() => ({ skills: [], diagnostics: [] }));
 const activateSkillMock = jest.fn();
 
@@ -41,7 +47,7 @@ jest.mock('../../../../../src/main/agent/session/session_append_run', () => ({
 }));
 
 jest.mock('../../../../../src/main/agent/tools/mcp/loader', () => ({
-	loadMcpTools: jest.fn(async () => ({ tools: [], close: closeMcpMock })),
+	loadMcpTools: (...args: unknown[]) => mockLoadMcpTools(...args),
 }));
 
 jest.mock('../../../../../src/main/agent/skills', () => ({
@@ -63,6 +69,12 @@ describe('run stream system prompt', () => {
 		runModelTurnMock.mockReset().mockImplementation(successfulTurn);
 		appendRunMock.mockReset();
 		closeMcpMock.mockReset();
+		mockLoadMcpTools.mockReset().mockResolvedValue({
+			tools: [],
+			entries: [],
+			deferredServers: [],
+			close: closeMcpMock,
+		});
 		createSkillRegistrySnapshotMock.mockReset().mockReturnValue({ skills: [], diagnostics: [] });
 		activateSkillMock.mockReset();
 	});
@@ -1181,5 +1193,68 @@ describe('run stream system prompt', () => {
 		).toHaveLength(4);
 		expect(JSON.stringify(events)).not.toContain("unknown tool 'bash'");
 		expect(JSON.stringify(events)).not.toContain("unknown tool 'write'");
+	});
+
+	it('loads an eligible MCP tool before executing a premature direct call', async () => {
+		const execute = jest.fn();
+		const mcpTool = jsonTool({
+			id: 'mcp__files__read_file',
+			name: 'Read MCP file',
+			description: 'Read a file through MCP',
+			capability: { effects: ['read'] },
+			schema: { type: 'object' },
+			execute,
+		});
+		mockLoadMcpTools.mockResolvedValue({
+			tools: [mcpTool],
+			entries: [{ tool: mcpTool, serverId: 'files', serverName: 'Files' }],
+			deferredServers: [],
+			close: closeMcpMock,
+		});
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [{ id: 'early-mcp', name: mcpTool.id, args: { path: 'demo.txt' } }],
+				};
+			})
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [{ id: 'retry-mcp', name: mcpTool.id, args: { path: 'demo.txt' } }],
+				};
+			})
+			.mockImplementationOnce(successfulTurn);
+		const session = createSessionState();
+
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: 'mcp-loader',
+				task: 'chat',
+				message: 'Read the file',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ sandbox }
+		))
+			void _event;
+
+		expect(session.toolCalls.find((call) => call.id === 'early-mcp')).toMatchObject({
+			name: 'discover_tools',
+			args: { toolIds: [mcpTool.id] },
+		});
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toContain(mcpTool.id);
+		expect(execute).toHaveBeenCalledTimes(1);
 	});
 });

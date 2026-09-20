@@ -446,14 +446,11 @@ async function* loop(
 			}
 			const activeToolIds = new Set(turnTools.map((tool) => tool.id));
 			const eligibleToolIds = new Set(discovery.eligible().map((tool) => tool.id));
-			const mcpToolIds = new Set(mcpEntries.map((entry) => entry.tool.id));
 			const requestedUnavailableToolIds = [
 				...new Set(
 					turn.toolCalls
 						.map((call) => call.name)
-						.filter(
-							(id) => !activeToolIds.has(id) && eligibleToolIds.has(id) && !mcpToolIds.has(id)
-						)
+						.filter((id) => !activeToolIds.has(id) && eligibleToolIds.has(id))
 				),
 			];
 			const discoveryCalls = turn.toolCalls.filter((call) => call.name === DISCOVER_TOOLS_ID);
