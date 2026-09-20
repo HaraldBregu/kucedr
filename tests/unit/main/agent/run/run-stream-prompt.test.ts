@@ -460,10 +460,12 @@ describe('run stream system prompt', () => {
 			schema: { type: 'object' },
 			execute: search,
 		});
-		runModelTurnMock.mockImplementationOnce(async function* () {
-			yield* [];
-			return { content: '', model: 'test-model', toolCalls: calls };
-		});
+		runModelTurnMock
+			.mockImplementationOnce(discoveryTurn(['search_web']))
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return { content: '', model: 'test-model', toolCalls: calls };
+			});
 		const botEvents = [];
 		const botSession = createSessionState();
 		botSession.messages = [{ role: 'user', content: 'public current-events question' }];
@@ -490,6 +492,7 @@ describe('run stream system prompt', () => {
 		});
 
 		runModelTurnMock
+			.mockImplementationOnce(discoveryTurn(['search_web']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return { content: '', model: 'test-model', toolCalls: calls };
@@ -527,6 +530,7 @@ describe('run stream system prompt', () => {
 				execute: () => ({ id: 'recording-1', status: 'recording' }),
 			});
 			runModelTurnMock
+				.mockImplementationOnce(discoveryTurn([id]))
 				.mockImplementationOnce(async function* () {
 					yield* [];
 					return {
@@ -554,8 +558,8 @@ describe('run stream system prompt', () => {
 			))
 				events.push(event);
 
-			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
-			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
+			expect(runModelTurnMock).toHaveBeenCalledTimes(3);
+			expect(runModelTurnMock.mock.calls[2][5]).toEqual([]);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
 				result: { text: 'done', stopReason: 'end_turn' },
@@ -698,9 +702,22 @@ describe('run stream system prompt', () => {
 		};
 		runModelTurnMock.mockImplementation(async function* (input: { agentId: string }) {
 			yield* [];
-			return input.agentId === 'subagent'
-				? { content: 'child result', model: 'pinned-model', toolCalls: [] }
-				: runModelTurnMock.mock.calls.filter((call) => call[0].agentId === 'main').length === 1
+			if (input.agentId === 'subagent')
+				return { content: 'child result', model: 'pinned-model', toolCalls: [] };
+			const mainCalls = runModelTurnMock.mock.calls.filter((call) => call[0].agentId === 'main').length;
+			return mainCalls === 1
+				? {
+						content: '',
+						model: 'pinned-model',
+						toolCalls: [
+							{
+								id: 'discover-subagent',
+								name: 'discover_tools',
+								args: { query: 'delegate', toolIds: ['subagent'], mcpServerIds: [] },
+							},
+						],
+					}
+				: mainCalls === 2
 					? {
 							content: '',
 							model: 'pinned-model',
@@ -754,6 +771,7 @@ describe('run stream system prompt', () => {
 			},
 		});
 		runModelTurnMock
+			.mockImplementationOnce(discoveryTurn(['subagents']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -781,8 +799,8 @@ describe('run stream system prompt', () => {
 		))
 			events.push(event);
 
-		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
-		expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
+		expect(runModelTurnMock).toHaveBeenCalledTimes(3);
+		expect(runModelTurnMock.mock.calls[2][5]).toEqual([]);
 		expect(events.at(-1)).toMatchObject({
 			type: 'run_finished',
 			result: { text: 'done', stopReason: 'budget_exhausted' },
@@ -804,6 +822,7 @@ describe('run stream system prompt', () => {
 			);
 			const session = createSessionState();
 			if (boundary === 'turns') session.maxTurns = 1;
+			if (boundary !== 'empty') runModelTurnMock.mockImplementationOnce(discoveryTurn([tool.id]));
 			runModelTurnMock.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -828,8 +847,8 @@ describe('run stream system prompt', () => {
 			))
 				events.push(event);
 
-			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
-			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
+			expect(runModelTurnMock).toHaveBeenCalledTimes(boundary === 'empty' ? 2 : 3);
+			expect(runModelTurnMock.mock.calls[boundary === 'empty' ? 1 : 2][5]).toEqual([]);
 			expect(execute).toHaveBeenCalledTimes(boundary === 'output' ? 1 : 0);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
@@ -845,7 +864,9 @@ describe('run stream system prompt', () => {
 				},
 			});
 			if (boundary === 'calls' || boundary === 'turns') {
-				expect(session.toolCalls[0].result).toMatchObject({ isError: true });
+				expect(session.toolCalls[boundary === 'empty' ? 0 : 1].result).toMatchObject({
+					isError: true,
+				});
 				expect(events).toContainEqual(
 					expect.objectContaining({ type: 'tool_call_end', isError: true })
 				);
@@ -893,6 +914,7 @@ describe('run stream system prompt', () => {
 			});
 			const session = createSessionState();
 			runModelTurnMock
+				.mockImplementationOnce(discoveryTurn([tool.id]))
 				.mockImplementationOnce(async function* () {
 					yield* [];
 					return {
@@ -933,7 +955,7 @@ describe('run stream system prompt', () => {
 			else await run();
 			expect(execute).toHaveBeenCalledTimes(1);
 			expect(runModelTurnMock).toHaveBeenCalledTimes(
-				outcome === 'cancel' ? 1 : outcome === 'tools' ? 2 : 3
+				outcome === 'cancel' ? 2 : outcome === 'tools' ? 3 : 4
 			);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
@@ -943,7 +965,7 @@ describe('run stream system prompt', () => {
 					...(outcome === 'empty' ? { text: 'done' } : {}),
 				},
 			});
-			if (outcome === 'tools') expect(session.toolCalls[1].result).toMatchObject({ isError: true });
+			if (outcome === 'tools') expect(session.toolCalls[2].result).toMatchObject({ isError: true });
 		}
 	);
 });
