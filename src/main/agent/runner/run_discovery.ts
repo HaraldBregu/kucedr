@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { Tool } from '../types';
 import { tool } from '../tools/tool';
+import { searchTokens } from './tokens';
 
 export const DISCOVER_TOOLS_ID = 'discover_tools';
 export const DISCOVERY_CALL_LIMIT = 8;
@@ -42,15 +43,6 @@ export interface ToolDiscovery {
 	eligible(): Tool[];
 	replaceEligible(tools: Tool[]): void;
 	activateImmediate(toolIds: readonly string[]): void;
-}
-
-function searchTokens(value: string): string[] {
-	return value
-		.toLocaleLowerCase()
-		.normalize('NFKC')
-		.split(/[^\p{L}\p{N}_-]+/u)
-		.map((token) => token.trim())
-		.filter((token) => token.length >= 2);
 }
 
 export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscovery {
