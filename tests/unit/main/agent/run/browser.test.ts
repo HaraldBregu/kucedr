@@ -45,13 +45,40 @@ function browserContext() {
 beforeEach(() => {
 	setModelId('test-model');
 	launchPersistentContext.mockReset();
-	model.mockReset().mockImplementation(async function* () {
-		yield* [];
-		return { content: 'done', model: 'test-model', toolCalls: [] };
-	}).mockImplementationOnce(async function* () {
-		yield* [];
-		return { content: '', model: 'test-model', toolCalls: [{ id: 'browser-start', name: 'use_web_browser', args: { action: 'start' } }] };
-	});
+	model
+		.mockReset()
+		.mockImplementation(async function* () {
+			yield* [];
+			return { content: 'done', model: 'test-model', toolCalls: [] };
+		})
+		.mockImplementationOnce(async function* () {
+			yield* [];
+			return {
+				content: '',
+				model: 'test-model',
+				toolCalls: [
+					{
+						id: 'discover-browser',
+						name: 'discover_tools',
+						args: {
+							query: 'browser',
+							toolIds: ['use_web_browser'],
+							mcpServerIds: [],
+						},
+					},
+				],
+			};
+		})
+		.mockImplementationOnce(async function* () {
+			yield* [];
+			return {
+				content: '',
+				model: 'test-model',
+				toolCalls: [
+					{ id: 'browser-start', name: 'use_web_browser', args: { action: 'start' } },
+				],
+			};
+		});
 });
 
 afterAll(() => fs.rmSync(userDataLocation(), { recursive: true, force: true }));
@@ -121,10 +148,30 @@ it.each([
 
 it('does not let channel agents delegate browser access to a background child', async () => {
 	const requested = new Set<string>();
+	const phases = new Map<string, number>();
 	model.mockReset().mockImplementation(async function* (input: { agentId: string }, _provider: unknown, _model: unknown, _prompt: unknown, _messages: unknown, tools: Tool[]) {
 		yield* [];
 		if (input.agentId === 'subagent') expect(tools.map((tool) => tool.id)).not.toContain('use_web_browser');
-		if (requested.has(input.agentId)) return { content: 'done', model: 'test-model', toolCalls: [] };
+		const phase = phases.get(input.agentId) ?? 0;
+		phases.set(input.agentId, phase + 1);
+		if (phase >= 2) return { content: 'done', model: 'test-model', toolCalls: [] };
+		if (phase === 0) {
+			return {
+				content: '',
+				model: 'test-model',
+				toolCalls: [
+					{
+						id: `discover-${input.agentId}`,
+						name: 'discover_tools',
+						args: {
+							query: input.agentId === 'channels' ? 'delegate' : 'browser',
+							toolIds: [input.agentId === 'channels' ? 'subagent' : 'use_web_browser'],
+							mcpServerIds: [],
+						},
+					},
+				],
+			};
+		}
 		requested.add(input.agentId);
 		return {
 			content: '', model: 'test-model', toolCalls: [input.agentId === 'channels'
@@ -137,7 +184,10 @@ it('does not let channel agents delegate browser access to a background child', 
 		type: 'background', agentId: 'channels', contextMode: 'minimal',
 		scope: { ownerId: 'channel', source: 'channel', sessionId: 'channel', runId: 'channel-parent' },
 	}, new AbortController().signal, { sandbox: {} as ExecSandbox })) {
-		if (event.type === 'tool_call_end') expect(event.permissionOutcome).toBe('allow');
+		if (event.type === 'tool_call_end') {
+			if (event.toolName === 'subagent') expect(event.permissionOutcome).toBe('allow');
+			if (event.toolName === 'use_web_browser') expect(event.isError).toBe(true);
+		}
 	}
 	expect(requested).toEqual(new Set(['channels', 'subagent']));
 	expect(launchPersistentContext).not.toHaveBeenCalled();
