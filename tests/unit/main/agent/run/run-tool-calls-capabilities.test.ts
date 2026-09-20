@@ -17,7 +17,7 @@ function fakeTool(name: string, output: string): Tool {
 
 describe('runToolCalls capability changes', () => {
 	it('uses the current tool set for every call in a model batch', async () => {
-		const load = fakeTool('load_skill', 'loaded');
+		const load = fakeTool('activate', 'loaded');
 		const write = fakeTool('write', 'wrote');
 		const tools = [load, write];
 		const calls: ToolCall[] = [
