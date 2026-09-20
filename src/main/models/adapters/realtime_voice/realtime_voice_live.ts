@@ -112,6 +112,14 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 			this.socket.on('message', (data) => {
 				const event = parseLiveEvent(data);
 				if (!event) return;
+				if (event.type === 'error') {
+					const error = liveError(event);
+					if (!settled) {
+						settle(error);
+						void this.stop();
+					} else this.emit({ type: 'error', message: error.message });
+					return;
+				}
 				if (event.type === 'session.started') {
 					this.appendContext(
 						request.history
@@ -279,4 +287,13 @@ function parseLiveEvent(data: unknown): Record<string, unknown> | undefined {
 	} catch {
 		return undefined;
 	}
+}
+
+function liveError(event: Record<string, unknown>): Error {
+	const error = event.error;
+	if (typeof error === 'object' && error !== null && 'message' in error) {
+		const message = error.message;
+		if (typeof message === 'string' && message.trim()) return new Error(message);
+	}
+	return new Error('Live voice session failed.');
 }

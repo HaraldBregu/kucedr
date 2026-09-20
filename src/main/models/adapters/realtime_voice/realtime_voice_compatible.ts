@@ -111,6 +111,11 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			timer.unref?.();
 
 			this.realtime.on('event', (event) => {
+				if (event.type === 'error' && !settled) {
+					settle(new Error(event.error.message));
+					void this.stop();
+					return;
+				}
 				if (event.type === 'session.updated' && !settled) {
 					this.replayHistory(history);
 					settle();
@@ -118,8 +123,10 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 				this.handleEvent(event);
 			});
 			this.realtime.on('error', (error) => {
-				if (!settled) settle(error);
-				else this.emit({ type: 'error', message: error.message });
+				if (!settled) {
+					settle(error);
+					void this.stop();
+				} else this.emit({ type: 'error', message: error.message });
 			});
 			this.realtime.socket.on('close', () => {
 				this.closed = true;
