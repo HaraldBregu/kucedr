@@ -89,7 +89,6 @@ import { createChannelRegistry } from '../../src/main/channels/channels_registry
 import { AgentChannels } from '../../src/shared/ipc_channels_definitions';
 import type { EventBus } from '../../src/main/event_bus';
 import type { LoggerService } from '../../src/main/shared';
-import type { WindowFactory } from '../../src/main/window_factory';
 import type { ExecSandbox } from '../../src/main/agent/sandbox';
 import type { Conversation } from '../../src/main/agent/conversation';
 
