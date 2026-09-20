@@ -1090,16 +1090,25 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock.mock.calls[0][9]).toContain('Never call a tool to test whether it is loaded');
 	});
 
-	it('loads hidden bash without exposing an unknown-tool error or executing it early', async () => {
-		const execute = jest.fn();
-		const budget = new ExecutionBudget({ calls: 1 });
+	it('consolidates premature calls into one loader turn and executes them once on the next turn', async () => {
+		const bashExecute = jest.fn();
+		const writeExecute = jest.fn();
+		const budget = new ExecutionBudget({ calls: 2 });
 		const bash = jsonTool({
 			id: 'bash',
 			name: 'Bash',
 			description: 'Run a command',
 			capability: { effects: ['execute'] },
 			schema: { type: 'object' },
-			execute,
+			execute: bashExecute,
+		});
+		const write = jsonTool({
+			id: 'write',
+			name: 'Write',
+			description: 'Write a file',
+			capability: { effects: ['write'] },
+			schema: { type: 'object' },
+			execute: writeExecute,
 		});
 		runModelTurnMock
 			.mockImplementationOnce(async function* () {
@@ -1107,7 +1116,11 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: 'early-bash', name: 'bash', args: { command: 'pwd' } }],
+					providerItems: [{ type: 'provider_item', provider: 'openai', item: { type: 'reasoning' } }],
+					toolCalls: [
+						{ id: 'early-bash', name: 'bash', args: { command: 'pwd' } },
+						{ id: 'early-write', name: 'write', args: { path: 'demo.txt' } },
+					],
 				};
 			})
 			.mockImplementationOnce(async function* () {
@@ -1115,7 +1128,10 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: 'retry-bash', name: 'bash', args: { command: 'pwd' } }],
+					toolCalls: [
+						{ id: 'retry-bash', name: 'bash', args: { command: 'pwd' } },
+						{ id: 'retry-write', name: 'write', args: { path: 'demo.txt' } },
+					],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
@@ -1135,27 +1151,35 @@ describe('run stream system prompt', () => {
 				contextMode: 'minimal',
 			},
 			new AbortController().signal,
-			{ tools: [bash], budget }
+			{ tools: [bash, write], budget }
 		))
 			events.push(_event);
 
-		expect(execute).toHaveBeenCalledTimes(1);
-		expect(budget.calls).toBe(1);
+		expect(bashExecute).toHaveBeenCalledTimes(1);
+		expect(writeExecute).toHaveBeenCalledTimes(1);
+		expect(budget.calls).toBe(2);
 		expect(session.toolCalls.find((call) => call.id === 'early-bash')).toMatchObject({
 			name: 'discover_tools',
-			args: { toolIds: ['bash'] },
+			args: { toolIds: ['bash', 'write'] },
 			result: { isError: undefined },
 		});
+		expect(session.toolCalls.some((call) => call.id === 'early-write')).toBe(false);
+		expect(
+			session.messages
+				.find((message) => message.toolCalls?.some((call) => call.id === 'early-bash'))
+				?.content
+		).toEqual([{ type: 'text', text: '' }]);
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toContain('bash');
+		).toEqual(expect.arrayContaining(['bash', 'write']));
 		expect(
 			events.filter(
 				(event) =>
 					(event.type === 'tool_call_start' || event.type === 'tool_call_end') &&
-					event.toolName === 'bash'
+					(event.toolName === 'bash' || event.toolName === 'write')
 			)
-		).toHaveLength(2);
+		).toHaveLength(4);
 		expect(JSON.stringify(events)).not.toContain("unknown tool 'bash'");
+		expect(JSON.stringify(events)).not.toContain("unknown tool 'write'");
 	});
 });

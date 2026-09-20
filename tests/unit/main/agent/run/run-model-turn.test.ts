@@ -5,7 +5,7 @@ import type { ResolvedProvider } from '../../../../../src/shared/provider_types'
 import { KeyedLimiter } from '../../../../../src/main/agent/limiter';
 
 describe('runModelTurn', () => {
-	it('keeps calls to unloaded tools out of the visible stream while retaining them for routing', async () => {
+	it('keeps model-level tool calls out of the visible stream while retaining them for execution', async () => {
 		const stream = jest.fn(() =>
 			(async function* () {
 				yield { type: 'model_tool_call_start' as const, id: 'bash-call', name: 'bash' };
@@ -23,7 +23,7 @@ describe('runModelTurn', () => {
 			'model',
 			'system',
 			[{ role: 'user', content: 'where am I' }],
-			[],
+			[{ id: 'bash' } as never],
 			new AbortController().signal,
 			{},
 			{ stream } as ModelTurnStream
