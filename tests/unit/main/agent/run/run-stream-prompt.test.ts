@@ -1021,14 +1021,12 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
-		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual([
-			'discover_tools',
-		]);
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual([
-			'discover_tools',
-			'read',
-			'edit',
-		]);
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toEqual(['discover_tools']);
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toEqual(['discover_tools', 'read', 'edit']);
 		expect(order).toEqual(['read', 'edit']);
 	});
 
