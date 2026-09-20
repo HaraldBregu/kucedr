@@ -32,7 +32,7 @@ export default function Mcp({ search }: { search: string }): React.JSX.Element {
 
 	return (
 		<SettingsSection title={t(`${prefix}.title`)} description={t(`${prefix}.description`)}>
-			{error && <SettingsNotice tone="error">{error}</SettingsNotice>}
+			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{!registry && !error && <SettingsNotice>{t(`${prefix}.loading`)}</SettingsNotice>}
 			{registry && servers.length === 0 && <SettingsNotice>{t(`${prefix}.${query ? 'noMatches' : 'empty'}`)}</SettingsNotice>}
 			{servers.length > 0 && <SettingsPanel>
@@ -62,7 +62,7 @@ export default function Mcp({ search }: { search: string }): React.JSX.Element {
 								}}
 							>{t(`${prefix}.${loading === server.id ? 'loading' : 'show'}`)}</Button>}
 						/>
-						{result && !result.ok && <SettingsNotice tone="error">{result.error || t(`${prefix}.inspectError`)}</SettingsNotice>}
+						{result && !result.ok && <SettingsNotice variant="destructive">{result.error || t(`${prefix}.inspectError`)}</SettingsNotice>}
 						{result?.ok && result.tools.length === 0 && <SettingsNotice>{t(`${prefix}.noTools`)}</SettingsNotice>}
 						{result?.ok && result.tools.filter((name) => serverMatches || name.toLocaleLowerCase().includes(query)).map((name) =>
 							<SettingsRow key={name} title={name} description={server.data.name || server.id} />
