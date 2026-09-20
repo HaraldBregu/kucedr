@@ -67,3 +67,35 @@ it('keeps a standalone voice conversation active while its window is hidden', ()
 	expect(listeners.has('blur')).toBe(false);
 	expect(attachWindowHandlers).toHaveBeenCalledWith(win);
 });
+
+it('replaces an active voice window when another chat starts a conversation', () => {
+	const windows = [1, 2].map((id) => ({
+		id,
+		webContents: {},
+		isDestroyed: jest.fn(() => false),
+		isVisible: jest.fn(() => true),
+		show: jest.fn(),
+		hide: jest.fn(),
+		close: jest.fn(),
+		restore: jest.fn(),
+		moveTop: jest.fn(),
+		focus: jest.fn(),
+		on: jest.fn(),
+		once: jest.fn(),
+		setBackgroundColor: jest.fn(),
+		setWindowButtonVisibility: jest.fn(),
+		setAlwaysOnTop: jest.fn(),
+		setVisibleOnAllWorkspaces: jest.fn(),
+	}));
+	const windowFactory = { create: jest.fn().mockReturnValueOnce(windows[0]).mockReturnValueOnce(windows[1]) } as never;
+	const voiceWindow = new VoiceWindow(windowFactory, { create: jest.fn() } as never);
+
+	voiceWindow.open('chat-a');
+	voiceWindow.open('chat-b');
+
+	expect(windows[0].close).toHaveBeenCalledTimes(1);
+	expect(windowFactory.create).toHaveBeenCalledTimes(2);
+	expect((windowFactory.create as jest.Mock).mock.calls[1]?.[1]).toMatchObject({
+		hash: 'voice/chat-b',
+	});
+});

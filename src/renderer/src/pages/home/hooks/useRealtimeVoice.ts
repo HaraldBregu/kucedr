@@ -336,6 +336,7 @@ export function useRealtimeVoice({
 	}, [chatSessionId, closeSession]);
 
 	useEffect(() => {
+		mountedRef.current = true;
 		return () => {
 			mountedRef.current = false;
 			startRunRef.current += 1;
