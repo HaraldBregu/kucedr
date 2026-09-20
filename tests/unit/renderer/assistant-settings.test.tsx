@@ -272,6 +272,13 @@ beforeEach(() => {
 			setEnabled: jest.fn(),
 		},
 	});
+	Object.defineProperty(window, 'mcp', {
+		configurable: true,
+		value: {
+			registry: jest.fn().mockResolvedValue({ servers: [], diagnostics: [] }),
+			test: jest.fn(),
+		},
+	});
 	jest.clearAllMocks();
 });
 
@@ -377,6 +384,7 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	);
 
 	for (const tool of [
+		'discover_tools',
 		'list_a2a_agents',
 		'read',
 		'screen_recorder',
@@ -390,12 +398,24 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	}
 	expect(screen.getByText('Text to image')).toBeInTheDocument();
 
-	expect(document.querySelectorAll('code')).toHaveLength(48);
+	expect(document.querySelectorAll('code')).toHaveLength(49);
 	expect(screen.queryByText('save_memory')).not.toBeInTheDocument();
 	expect(screen.getAllByRole('switch')).toHaveLength(52);
 	expect(
 		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+});
+
+it('shows discovery as required and searchable without permission controls', async () => {
+	const user = userEvent.setup();
+	render(<MemoryRouter><ToolsPage /></MemoryRouter>);
+	await screen.findByText('discover_tools');
+	await user.type(screen.getByRole('textbox'), 'discover_tools');
+	expect(screen.getByText('discover_tools')).toBeInTheDocument();
+	expect(screen.getByText('settings.modelServices.agentTools.discovery.required')).toBeInTheDocument();
+	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+	expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+	expect(window.mcp.test).not.toHaveBeenCalled();
 });
 
 it('saves a file tools permission choice', async () => {
