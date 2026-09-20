@@ -1313,6 +1313,19 @@
 			"musicCreatorName": "Text to audio",
 			"toolsDescription": "Configure the models and search service available to agent tools.",
 			"agentTools": {
+				"mcp": {
+					"title": "MCP tools",
+					"description": "Show tools connects only the selected server to list its tool names. It does not load them into the agent; the agent selects tools on demand.",
+					"show": "Show tools",
+					"loading": "Loading…",
+					"onDemand": "Available on demand",
+					"disabled": "Disabled",
+					"empty": "No MCP servers configured.",
+					"noMatches": "No matching MCP servers or discovered tools.",
+					"noTools": "This server returned no tools.",
+					"loadError": "Unable to load MCP servers.",
+					"inspectError": "Unable to list this server's tools."
+				},
 				"discovery": {
 					"title": "Tool discovery",
 					"name": "Discover tools",

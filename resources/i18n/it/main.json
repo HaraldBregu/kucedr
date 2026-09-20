@@ -1312,6 +1312,19 @@
 			"musicCreatorName": "Da testo ad audio",
 			"toolsDescription": "Configura i modelli e il servizio di ricerca disponibili per gli strumenti dell'agente.",
 			"agentTools": {
+				"mcp": {
+					"title": "Strumenti MCP",
+					"description": "Mostra strumenti si connette solo al server selezionato per elencare i nomi degli strumenti. Non li carica nell'agente: l'agente li seleziona su richiesta.",
+					"show": "Mostra strumenti",
+					"loading": "Caricamento…",
+					"onDemand": "Disponibile su richiesta",
+					"disabled": "Disabilitato",
+					"empty": "Nessun server MCP configurato.",
+					"noMatches": "Nessun server MCP o strumento rilevato corrispondente.",
+					"noTools": "Questo server non ha restituito strumenti.",
+					"loadError": "Impossibile caricare i server MCP.",
+					"inspectError": "Impossibile elencare gli strumenti di questo server."
+				},
 				"discovery": {
 					"title": "Ricerca strumenti",
 					"name": "Trova strumenti",

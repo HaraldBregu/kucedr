@@ -1,0 +1,75 @@
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Network } from 'lucide-react';
+import type { McpRegistry, McpTestResult } from '@shared/mcp_types';
+import { Button } from '@/components/ui/button';
+import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
+import { firstErrorMessage } from '../../../components/model-configuration-state';
+
+export default function Mcp({ search }: { search: string }): React.JSX.Element {
+	const { t } = useTranslation();
+	const [registry, setRegistry] = useState<McpRegistry | null>(null);
+	const [error, setError] = useState<string | null>(null);
+	const [loading, setLoading] = useState<string | null>(null);
+	const [results, setResults] = useState<Record<string, McpTestResult>>({});
+	const prefix = 'settings.modelServices.agentTools.mcp';
+	const query = search.trim().toLocaleLowerCase();
+
+	useEffect(() => {
+		let mounted = true;
+		void window.mcp.registry().then((next) => {
+			if (mounted) setRegistry(next);
+		}, (failure) => {
+			if (mounted) setError(firstErrorMessage(failure, t(`${prefix}.loadError`)));
+		});
+		return () => { mounted = false; };
+	}, [t]);
+
+	const servers = registry?.servers.filter((server) =>
+		[t(`${prefix}.title`), server.id, server.data.name, ...(results[server.id]?.tools ?? [])]
+			.join(' ').toLocaleLowerCase().includes(query)
+	) ?? [];
+
+	return (
+		<SettingsSection title={t(`${prefix}.title`)} description={t(`${prefix}.description`)}>
+			{error && <SettingsNotice tone="error">{error}</SettingsNotice>}
+			{!registry && !error && <SettingsNotice>{t(`${prefix}.loading`)}</SettingsNotice>}
+			{registry && servers.length === 0 && <SettingsNotice>{t(`${prefix}.${query ? 'noMatches' : 'empty'}`)}</SettingsNotice>}
+			{servers.length > 0 && <SettingsPanel>
+				{servers.map((server) => {
+					const result = results[server.id];
+					const serverMatches = [t(`${prefix}.title`), server.id, server.data.name].join(' ').toLocaleLowerCase().includes(query);
+					return <div key={server.id}>
+						<SettingsRow
+							title={server.data.name || server.id}
+							description={`${server.id} · ${t(`${prefix}.${server.data.enabled === false ? 'disabled' : 'onDemand'}`)}`}
+							icon={Network}
+							actions={<Button
+								variant="outline"
+								size="sm"
+								disabled={server.data.enabled === false || loading !== null}
+								aria-label={`${t(`${prefix}.show`)}: ${server.data.name || server.id}`}
+								onClick={() => {
+									setLoading(server.id);
+									void window.mcp.test(server.id).then((next) => {
+										setResults((current) => ({ ...current, [server.id]: next }));
+									}, (failure) => {
+										setResults((current) => ({ ...current, [server.id]: {
+											ok: false, tools: [], toolCount: 0, durationMs: 0,
+											error: firstErrorMessage(failure, t(`${prefix}.inspectError`)),
+										} }));
+									}).finally(() => setLoading(null));
+								}}
+							>{t(`${prefix}.${loading === server.id ? 'loading' : 'show'}`)}</Button>}
+						/>
+						{result && !result.ok && <SettingsNotice tone="error">{result.error || t(`${prefix}.inspectError`)}</SettingsNotice>}
+						{result?.ok && result.tools.length === 0 && <SettingsNotice>{t(`${prefix}.noTools`)}</SettingsNotice>}
+						{result?.ok && result.tools.filter((name) => serverMatches || name.toLocaleLowerCase().includes(query)).map((name) =>
+							<SettingsRow key={name} title={name} description={server.data.name || server.id} />
+						)}
+					</div>;
+				})}
+			</SettingsPanel>}
+		</SettingsSection>
+	);
+}
