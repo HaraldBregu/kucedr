@@ -60,6 +60,7 @@ export function useRealtimeVoice({
 	const {
 		analyser: playbackAnalyser,
 		enqueue: enqueuePlayback,
+		isPlaying,
 		release: releasePlayback,
 		start: startPlayback,
 		stop: stopPlayback,
@@ -80,7 +81,11 @@ export function useRealtimeVoice({
 	const isConfigured = supportedModels.length > 0;
 	const isSupported = canCaptureAudio();
 	const isActive = status !== 'idle' && status !== 'error';
-	const analyser = status === 'speaking' ? playbackAnalyser : captureAnalyser;
+	const displayedStatus =
+		isPlaying && (status === 'listening' || status === 'thinking' || status === 'speaking')
+			? 'speaking'
+			: status;
+	const analyser = displayedStatus === 'speaking' ? playbackAnalyser : captureAnalyser;
 
 	useEffect(() => {
 		onClosedRef.current = onClosed;
@@ -355,7 +360,7 @@ export function useRealtimeVoice({
 		requiresConfiguration,
 		setMuted,
 		start,
-		status,
+		status: displayedStatus,
 		stream,
 	};
 }

@@ -290,6 +290,18 @@ export class RealtimeVoiceManager {
 			});
 			return;
 		}
+		if (event.type === 'user_transcript_update') {
+			const transcript = event.transcript.trim();
+			if (transcript) {
+				this.emit(active, {
+					type: 'user_turn',
+					sessionId,
+					itemId: event.itemId,
+					transcript,
+				});
+			}
+			return;
+		}
 		if (event.type === 'assistant_transcript_delta') {
 			this.emit(active, { type: event.type, sessionId, itemId: event.itemId, delta: event.delta });
 			return;

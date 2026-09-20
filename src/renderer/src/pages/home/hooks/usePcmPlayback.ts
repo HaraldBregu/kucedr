@@ -5,6 +5,7 @@ const SAMPLE_RATE = 24_000;
 
 export function usePcmPlayback() {
 	const [analyser, setAnalyser] = useState<AnalyserNode | null>(null);
+	const [isPlaying, setIsPlaying] = useState(false);
 	const mountedRef = useRef(true);
 	const contextRef = useRef<AudioContext | null>(null);
 	const analyserRef = useRef<AnalyserNode | null>(null);
@@ -21,6 +22,7 @@ export function usePcmPlayback() {
 		}
 		sourcesRef.current.clear();
 		nextTimeRef.current = contextRef.current?.currentTime ?? 0;
+		if (mountedRef.current) setIsPlaying(false);
 	}, []);
 
 	const release = useCallback((): void => {
@@ -62,7 +64,11 @@ export function usePcmPlayback() {
 		const startAt = Math.max(context.currentTime, nextTimeRef.current);
 		nextTimeRef.current = startAt + buffer.duration;
 		sourcesRef.current.add(source);
-		source.onended = () => sourcesRef.current.delete(source);
+		setIsPlaying(true);
+		source.onended = () => {
+			sourcesRef.current.delete(source);
+			if (sourcesRef.current.size === 0 && mountedRef.current) setIsPlaying(false);
+		};
 		source.start(startAt);
 	}, []);
 
@@ -74,5 +80,5 @@ export function usePcmPlayback() {
 		};
 	}, [release]);
 
-	return { analyser, enqueue, release, start, stop };
+	return { analyser, enqueue, isPlaying, release, start, stop };
 }

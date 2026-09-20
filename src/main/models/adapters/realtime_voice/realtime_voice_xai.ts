@@ -57,7 +57,12 @@ function xaiSession(request: RealtimeVoiceAdapterRequest): Record<string, unknow
 	return {
 		instructions: request.instructions,
 		voice: request.voice.trim() || 'eve',
-		turn_detection: { type: 'server_vad', silence_duration_ms: 1_200 },
+		turn_detection: {
+			type: 'server_vad',
+			threshold: 0.5,
+			prefix_padding_ms: 333,
+			silence_duration_ms: 1_200,
+		},
 		audio: {
 			input: {
 				format: { type: 'audio/pcm', rate: 24_000 },

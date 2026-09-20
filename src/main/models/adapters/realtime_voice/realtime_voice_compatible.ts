@@ -62,6 +62,12 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 	private contextItem?: string;
 	private transcriptTimer?: ReturnType<typeof setTimeout>;
 	private completedTurns = new Set<string>();
+	private activeResponseId?: string;
+	private readonly responseTools = new Map<
+		string,
+		{ callIds: Set<string>; resultIds: Set<string>; responseDone: boolean; continued: boolean }
+	>();
+	private readonly callResponses = new Map<string, string>();
 
 	constructor(
 		private readonly realtime: RealtimeVoiceSocket,
@@ -170,7 +176,14 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			type: 'conversation.item.create',
 			item: { type: 'function_call_output', call_id: callId, output },
 		});
-		this.realtime.send({ type: 'response.create' });
+		const responseId = this.callResponses.get(callId);
+		const tools = responseId ? this.responseTools.get(responseId) : undefined;
+		if (!tools) {
+			this.realtime.send({ type: 'response.create' });
+			return;
+		}
+		tools.resultIds.add(callId);
+		this.continueToolResponse(tools);
 	}
 
 	async stop(): Promise<void> {
@@ -213,11 +226,19 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 	private handleEvent(event: RealtimeVoiceServerEvent): void {
 		if (event.type === 'response.created') {
 			this.responseActive = true;
+			this.activeResponseId = event.response.id;
 			this.emit({ type: 'response_started', responseId: event.response.id });
 			return;
 		}
 		if (event.type === 'response.done') {
 			this.responseActive = false;
+			const responseId = event.response?.id ?? this.activeResponseId;
+			this.activeResponseId = undefined;
+			const tools = responseId ? this.responseTools.get(responseId) : undefined;
+			if (tools) {
+				tools.responseDone = true;
+				this.continueToolResponse(tools);
+			}
 			return;
 		}
 		if (
@@ -226,6 +247,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			event.item.call_id &&
 			event.item.name
 		) {
+			this.registerToolCall(event.response_id, event.item.call_id);
 			this.emit({
 				type: 'tool_call_start',
 				callId: event.item.call_id,
@@ -255,6 +277,14 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			if (this.contextForTurn) void this.prepareResponse(event.item_id, event.transcript);
 			this.emit({
 				type: 'user_transcript_final',
+				itemId: event.item_id,
+				transcript: event.transcript,
+			});
+			return;
+		}
+		if (event.type === 'conversation.item.input_audio_transcription.updated') {
+			this.emit({
+				type: 'user_transcript_update',
 				itemId: event.item_id,
 				transcript: event.transcript,
 			});
@@ -306,6 +336,7 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			return;
 		}
 		if (event.type === 'response.function_call_arguments.done') {
+			this.registerToolCall(event.response_id, event.call_id);
 			this.emit({
 				type: 'tool_call',
 				callId: event.call_id,
@@ -317,5 +348,34 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			return;
 		}
 		if (event.type === 'error') this.emit({ type: 'error', message: event.error.message });
+	}
+
+	private registerToolCall(responseId: string, callId: string): void {
+		const tools = this.responseTools.get(responseId) ?? {
+			callIds: new Set<string>(),
+			resultIds: new Set<string>(),
+			responseDone: false,
+			continued: false,
+		};
+		tools.callIds.add(callId);
+		this.responseTools.set(responseId, tools);
+		this.callResponses.set(callId, responseId);
+	}
+
+	private continueToolResponse(tools: {
+		callIds: Set<string>;
+		resultIds: Set<string>;
+		responseDone: boolean;
+		continued: boolean;
+	}): void {
+		if (
+			tools.continued ||
+			!tools.responseDone ||
+			tools.callIds.size === 0 ||
+			tools.resultIds.size !== tools.callIds.size
+		)
+			return;
+		tools.continued = true;
+		this.realtime.send({ type: 'response.create' });
 	}
 }

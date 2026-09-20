@@ -24,6 +24,7 @@ export type RealtimeVoiceAdapterEvent =
 	| { type: 'response_started'; responseId: string }
 	| { type: 'input_speech_started'; itemId: string }
 	| { type: 'input_speech_stopped'; itemId: string }
+	| { type: 'user_transcript_update'; itemId: string; transcript: string }
 	| { type: 'user_transcript_final'; itemId: string; transcript: string }
 	| { type: 'tool_call_start'; callId: string; itemId: string; responseId: string; name: string }
 	| { type: 'assistant_transcript_delta'; itemId: string; responseId: string; delta: string }
@@ -91,7 +92,7 @@ export type RealtimeVoiceClientEvent =
 export type RealtimeVoiceServerEvent =
 	| { type: 'session.updated' }
 	| { type: 'response.created'; response: { id: string } }
-	| { type: 'response.done' }
+	| { type: 'response.done'; response?: { id: string } }
 	| {
 			type: 'response.output_item.added';
 			response_id: string;
@@ -99,6 +100,11 @@ export type RealtimeVoiceServerEvent =
 	  }
 	| { type: 'input_audio_buffer.speech_started'; item_id: string }
 	| { type: 'input_audio_buffer.speech_stopped'; item_id: string }
+	| {
+			type: 'conversation.item.input_audio_transcription.updated';
+			item_id: string;
+			transcript: string;
+	  }
 	| {
 			type: 'conversation.item.input_audio_transcription.completed';
 			item_id: string;
