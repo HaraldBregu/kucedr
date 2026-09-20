@@ -149,7 +149,8 @@ function applyResponseEvent(
 		return updateAgentMessage(ensured.state, ensured.message.id, (message) => ({
 			...message,
 			state: 'thinking',
-			toolSelection: { state: 'selected', names: [...new Set(names)] },
+			toolSelection:
+				names.length > 0 ? { state: 'selected', names: [...new Set(names)] } : undefined,
 		}));
 	}
 
@@ -265,6 +266,7 @@ function applyResponseEvent(
 				...message,
 				runId: event.runId,
 				state: 'answering',
+				toolSelection: undefined,
 				content: message.content + event.delta,
 				streamedChars: (message.streamedChars ?? 0) + event.delta.length,
 				startedAtMs: message.startedAtMs ?? receivedAtMs,
