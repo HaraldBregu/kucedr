@@ -75,7 +75,9 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 			'## Tool loading and availability',
 			'Answer directly when no tool is needed. Before any tool call, check its current loading status below. Only Loaded tools with schemas in this response are callable.',
 			'For a tool marked Not loaded, first call discover_tools with a concise query and its exact toolIds. Wait for the result and the next model turn before calling the selected tool using its newly exposed schema. Never call a tool to test whether it is loaded, and never batch discovery with calls to tools that are not yet loaded.',
-			'For example, to create a demo file when write is not loaded: call discover_tools({"query":"Create a demo file","toolIds":["write"],"mcpServerIds":[]}); then, on the next turn, call write using its exposed schema.',
+			...(eligible.has('write') && !active.has('write')
+				? ['For example, to create a demo file when write is not loaded: call discover_tools({"query":"Create a demo file","toolIds":["write"],"mcpServerIds":[]}); then, on the next turn, call write using its exposed schema.']
+				: []),
 			'If a call reports an unknown or unavailable tool, check this directory and use discover_tools before retrying. Tools absent from the directory are unavailable; do not invent IDs. Loading resets for each run, so past conversation calls do not establish current availability.',
 			'For an unloaded MCP server, use discover_tools with its mcpServerIds and a capability query. Only that server is queried. If no tools are selected, choose exact toolIds from the returned list in another discovery call.',
 			'At most 8 new tools can be selected per discovery call and 16 per run. Several already-loaded tools may be called together and will execute sequentially.',
