@@ -144,7 +144,11 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 					.filter((candidate) => candidate.score > 0)
 					.sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
 				const bestScore = scored[0]?.score ?? 0;
-				requested.push(...scored.filter((candidate) => candidate.score === bestScore).map((candidate) => candidate.id));
+				requested.push(
+					...scored
+						.filter((candidate) => candidate.score === bestScore)
+						.map((candidate) => candidate.id)
+				);
 			}
 
 			const remaining = Math.max(0, DISCOVERY_RUN_LIMIT - selectedCount);
@@ -182,7 +186,8 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 								})),
 						}
 					: {}),
-				limitReached: newToolIds.length > selectedToolIds.length || selectedCount >= DISCOVERY_RUN_LIMIT,
+				limitReached:
+					newToolIds.length > selectedToolIds.length || selectedCount >= DISCOVERY_RUN_LIMIT,
 			};
 		},
 	});

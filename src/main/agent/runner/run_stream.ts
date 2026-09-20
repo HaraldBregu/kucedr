@@ -214,8 +214,7 @@ async function* loop(
 			),
 			configuredToolSettings
 		);
-		for (const allowedTools of skillToolScopes)
-			filtered = selectSkillTools(filtered, allowedTools);
+		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
 	};
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
