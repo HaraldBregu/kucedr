@@ -237,7 +237,6 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 	'media',
 	'recording',
 	'knowledge',
-	'memory',
 	'skills',
 	'tasks',
 	'apps',

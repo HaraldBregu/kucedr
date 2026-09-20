@@ -409,12 +409,13 @@ describe('run stream system prompt', () => {
 	});
 
 	it.each(['minimal', 'workspace'] as const)('injects untrusted automatic memory into %s main chat', async (contextMode) => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
 		const session = createSessionState();
 		session.category = 'main';
 		session.messages = [{ role: 'user', content: 'Current correction' }];
 		const context = jest.fn(async () => '- Prefers concise answers.');
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: root },
 			session,
 			{
 				runId: `memory-${contextMode}`,
@@ -436,15 +437,17 @@ describe('run stream system prompt', () => {
 				content: expect.stringContaining('explicit corrections override this recalled context'),
 			}),
 		]);
+		await fs.rm(root, { recursive: true, force: true });
 	});
 
 	it.each(['bot', 'task', 'health', 'subagent'] as const)('keeps personal memory out of %s runs even in workspace mode', async (category) => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-isolated-memory-'));
 		const session = createSessionState();
 		session.category = category;
 		session.messages = [{ role: 'user', content: 'Background request' }];
 		const context = jest.fn(async () => '- Private preference.');
 		for await (const event of stream(
-			{ location: '/workspace' },
+			{ location: root },
 			session,
 			{
 				runId: `isolated-${category}`,
@@ -460,7 +463,8 @@ describe('run stream system prompt', () => {
 			{ tools: [], memory: { context } as never }
 		)) void event;
 		expect(context).not.toHaveBeenCalled();
-		expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
+		expect(JSON.stringify(runModelTurnMock.mock.calls[0][10])).not.toContain('Private preference');
+		await fs.rm(root, { recursive: true, force: true });
 	});
 
 	it('keeps pending bootstrap context out of non-main minimal turns', async () => {

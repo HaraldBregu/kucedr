@@ -112,7 +112,7 @@ it('persists independent configuration and invokes the configured provider direc
 			signal: expect.any(AbortSignal),
 			messages: [
 				{ role: 'system', content: expect.stringContaining('complete MEMORY.md') },
-				{ role: 'user', content: expect.stringContaining('Generate the complete MEMORY.md') },
+				{ role: 'user', content: expect.stringContaining('Generate the complete updated MEMORY.md') },
 			],
 		})
 	);

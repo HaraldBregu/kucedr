@@ -17,6 +17,12 @@ jest.mock('electron-store', () =>
 				read: { allow: [], deny: [] },
 				write: { allow: [], deny: [] },
 				exec: { allow: [], deny: [] },
+				tools: { save_memory: 'allow', list_memories: 'allow', forget_memory: 'allow' },
+			},
+			tools: {
+				save_memory: { enabled: true, permission: 'allow' },
+				list_memories: { enabled: true, permission: 'allow' },
+				forget_memory: { enabled: true, permission: 'allow' },
 			},
 		};
 		return {
@@ -75,4 +81,7 @@ it('migrates legacy agent settings into chatbot and tools branches', () => {
 	expect(persisted).not.toHaveProperty('large_language_model');
 	expect(persisted).not.toHaveProperty('text_to_speech_model');
 	expect(persisted).not.toHaveProperty('transcription_model');
+	expect(persisted.tools).not.toHaveProperty('save_memory');
+	expect(persisted.tools).not.toHaveProperty('list_memories');
+	expect(persisted.tools).not.toHaveProperty('forget_memory');
 });
