@@ -17,7 +17,6 @@ const mcpApi = {
 	openRoot: jest.fn(),
 	test: jest.fn(),
 	oauthStart: jest.fn(),
-	oauthFinish: jest.fn(),
 };
 
 let server: McpServerInfo;

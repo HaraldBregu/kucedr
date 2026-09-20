@@ -19,12 +19,8 @@ export function McpOAuthButton({
 		setPhase('busy');
 		try {
 			await beforeStart?.();
-			const result = await window.mcp.oauthStart(id);
-			if (result.status === 'authorized') {
-				setPhase('done');
-				return;
-			}
-
+			await window.mcp.oauthStart(id);
+			setPhase('done');
 		} catch (err) {
 			setError(err instanceof Error ? err.message : String(err));
 			setPhase('idle');
@@ -45,17 +41,10 @@ export function McpOAuthButton({
 
 	return (
 		<div className="grid gap-2">
-
-				<Button
-					type="button"
-					variant="outline"
-					size="sm"
-					disabled={phase === 'busy'}
-					onClick={start}
-				>
-					<KeyRound className="size-3.5" />
-					{phase === 'busy' ? 'Connecting' : 'Connect with OAuth'}
-				</Button>
+			<Button type="button" variant="outline" size="sm" disabled={phase === 'busy'} onClick={start}>
+				<KeyRound className="size-3.5" />
+				{phase === 'busy' ? 'Connecting' : 'Connect with OAuth'}
+			</Button>
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 		</div>
 	);

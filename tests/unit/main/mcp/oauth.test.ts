@@ -76,9 +76,7 @@ it('explains the Google credential requirement before attempting dynamic registr
 		serverUrl: 'https://gmailmcp.googleapis.com/mcp/v1',
 		storage: { load: () => ({}), save: jest.fn() },
 	});
-	expect(() => provider.clientInformation()).toThrow(
-		'MCP_GOOGLE_CLIENT_ID'
-	);
+	expect(() => provider.clientInformation()).toThrow('MCP_GOOGLE_CLIENT_ID');
 });
 
 it('leaves generic OAuth registration and authorization parameters unchanged', () => {
@@ -120,12 +118,14 @@ it('uses a dedicated callback independent of account authentication', () => {
 	expect(getMcpOAuthRedirectUrl()).toBe('http://127.0.0.1:3001/oauth/callback');
 });
 
-it.each(['https://example.com/callback', 'http://example.com:3001/callback', 'http://127.0.0.1/callback'])(
-	'rejects callbacks that cannot be owned by the desktop app: %s', (value) => {
-		process.env.MCP_CLIENT_REDIRECT_URL = value;
-		expect(() => getMcpOAuthRedirectUrl()).toThrow('HTTP loopback');
-	}
-);
+it.each([
+	'https://example.com/callback',
+	'http://example.com:3001/callback',
+	'http://127.0.0.1/callback',
+])('rejects callbacks that cannot be owned by the desktop app: %s', (value) => {
+	process.env.MCP_CLIENT_REDIRECT_URL = value;
+	expect(() => getMcpOAuthRedirectUrl()).toThrow('HTTP loopback');
+});
 
 it('uses the configured redirect consistently in client metadata and OAuth', () => {
 	process.env.MCP_CLIENT_REDIRECT_URL = '  http://127.0.0.1:3002/callback  ';
@@ -151,4 +151,18 @@ it('uses Google client credentials only from the environment', () => {
 		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
 	});
 	expect(() => missing.clientInformation()).toThrow('MCP_GOOGLE_CLIENT_ID');
+});
+
+it('isolates pending PKCE verifiers and state between attempts', async () => {
+	const storage = { load: () => ({}), save: jest.fn() };
+	const first = createOAuthProvider({ storage });
+	const second = createOAuthProvider({ storage });
+	await first.saveCodeVerifier('first');
+	await second.saveCodeVerifier('second');
+	expect(await first.codeVerifier()).toBe('first');
+	expect(await second.codeVerifier()).toBe('second');
+	expect(await first.state!()).not.toBe(await second.state!());
+	await first.invalidateCredentials!('verifier');
+	expect(() => first.codeVerifier()).toThrow('Missing OAuth code verifier');
+	expect(storage.save).toHaveBeenCalledWith({});
 });

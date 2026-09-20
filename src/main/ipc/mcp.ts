@@ -230,16 +230,15 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
 				let redirectUrl: string | undefined;
-				const provider =
-					createOAuthProvider({
-						serverUrl: server.url,
-						storage: oauthStorage(server.id),
-						clientId: server.clientId,
-						clientSecret: server.clientSecret,
-						onRedirect: (url) => {
-							redirectUrl = url.toString();
-						},
-					});
+				const provider = createOAuthProvider({
+					serverUrl: server.url,
+					storage: oauthStorage(server.id),
+					clientId: server.clientId,
+					clientSecret: server.clientSecret,
+					onRedirect: (url) => {
+						redirectUrl = url.toString();
+					},
+				});
 				const result = await auth(provider, { serverUrl: server.url });
 				if (result === 'AUTHORIZED') return { status: 'authorized' };
 				if (!redirectUrl)
@@ -258,6 +257,5 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				}
 			}
 		);
-
 	}
 }

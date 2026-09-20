@@ -16,7 +16,6 @@ const mcpApi = {
 	openRoot: jest.fn(),
 	test: jest.fn(),
 	oauthStart: jest.fn(),
-	oauthFinish: jest.fn(),
 };
 
 function DetailTarget(): React.JSX.Element {

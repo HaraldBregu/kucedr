@@ -35,7 +35,7 @@ export type McpData = McpHttpData | McpStdioData;
 
 export type McpSettings = Record<string, McpData>;
 
-export type McpOAuthStart = { status: 'authorized' } | { status: 'redirect'; url: string };
+export type McpOAuthStart = { status: 'authorized' };
 
 export type McpServerSource = 'configured' | 'local';
 
