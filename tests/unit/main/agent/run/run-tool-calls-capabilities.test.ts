@@ -21,7 +21,7 @@ describe('runToolCalls capability changes', () => {
 		const write = fakeTool('write', 'wrote');
 		const tools = [load, write];
 		const calls: ToolCall[] = [
-			{ id: '1', name: 'load_skill', args: {} },
+			{ id: '1', name: 'activate', args: {} },
 			{ id: '2', name: 'write', args: {} },
 		];
 		const outputs: unknown[] = [];
@@ -35,7 +35,7 @@ describe('runToolCalls capability changes', () => {
 		)) {
 			if (event.type !== 'tool_call_end') continue;
 			outputs.push(event.output);
-			if (event.toolName === 'load_skill') tools.splice(0, tools.length, load);
+			if (event.toolName === 'activate') tools.splice(0, tools.length, load);
 		}
 
 		expect(outputs).toEqual(['loaded', "Error: unknown tool 'write'"]);
