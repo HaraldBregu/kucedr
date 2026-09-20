@@ -69,6 +69,8 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 );
 
 it('explains the Google credential requirement before attempting dynamic registration', () => {
+	delete process.env.MCP_GOOGLE_CLIENT_ID;
+	delete process.env.MCP_GOOGLE_CLIENT_SECRET;
 	const provider = createOAuthProvider({
 		serverUrl: 'https://gmailmcp.googleapis.com/mcp/v1',
 		storage: { load: () => ({}), save: jest.fn() },
@@ -94,12 +96,20 @@ it('leaves generic OAuth registration and authorization parameters unchanged', (
 });
 
 const originalRedirectUrl = process.env.MCP_OAUTH_REDIRECT_URL;
+const originalGoogleClientId = process.env.MCP_GOOGLE_CLIENT_ID;
+const originalGoogleClientSecret = process.env.MCP_GOOGLE_CLIENT_SECRET;
 
 beforeEach(() => {
 	process.env.MCP_OAUTH_REDIRECT_URL = 'https://callback.example.test/oauth';
+	process.env.MCP_GOOGLE_CLIENT_ID = 'registered-client';
+	process.env.MCP_GOOGLE_CLIENT_SECRET = 'saved-secret';
 });
 
 afterEach(() => {
+	if (originalGoogleClientId === undefined) delete process.env.MCP_GOOGLE_CLIENT_ID;
+	else process.env.MCP_GOOGLE_CLIENT_ID = originalGoogleClientId;
+	if (originalGoogleClientSecret === undefined) delete process.env.MCP_GOOGLE_CLIENT_SECRET;
+	else process.env.MCP_GOOGLE_CLIENT_SECRET = originalGoogleClientSecret;
 	if (originalRedirectUrl === undefined) delete process.env.MCP_OAUTH_REDIRECT_URL;
 	else process.env.MCP_OAUTH_REDIRECT_URL = originalRedirectUrl;
 });
@@ -121,4 +131,23 @@ it('uses the configured redirect consistently in client metadata and OAuth', () 
 	const provider = createOAuthProvider({ storage: { load: () => ({}), save: jest.fn() } });
 	expect(provider.redirectUrl).toBe('https://custom.example.test/callback');
 	expect(provider.clientMetadata.redirect_uris).toEqual(['https://custom.example.test/callback']);
+});
+
+it('uses Google client credentials only from the environment', () => {
+	const provider = createOAuthProvider({
+		serverUrl: 'https://gmailmcp.googleapis.com/mcp/v1',
+		clientId: 'ignored',
+		clientSecret: 'ignored',
+		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
+	});
+	expect(provider.clientInformation()).toEqual({
+		client_id: 'registered-client',
+		client_secret: 'saved-secret',
+	});
+	delete process.env.MCP_GOOGLE_CLIENT_ID;
+	const missing = createOAuthProvider({
+		serverUrl: 'https://gmailmcp.googleapis.com/mcp/v1',
+		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
+	});
+	expect(() => missing.clientInformation()).toThrow('MCP_GOOGLE_CLIENT_ID');
 });

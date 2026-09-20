@@ -8,22 +8,27 @@ import { getMcpOAuthRedirectUrl } from './redirect';
 export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClientProvider {
 	const { storage } = params;
 	const googleScopes = googleMcpScopes(params.serverUrl ?? '');
-	const staticClient = params.clientId
-		? { client_id: params.clientId, client_secret: params.clientSecret }
-		: undefined;
+	const clientId = googleScopes ? process.env.MCP_GOOGLE_CLIENT_ID?.trim() : params.clientId;
+	const clientSecret = googleScopes
+		? process.env.MCP_GOOGLE_CLIENT_SECRET?.trim()
+		: params.clientSecret;
+	const staticClient =
+		googleScopes || clientId ? { client_id: clientId, client_secret: clientSecret } : undefined;
 	return {
 		get redirectUrl() {
 			return getMcpOAuthRedirectUrl();
 		},
 		get clientMetadata() {
-			return clientMetadata(Boolean(params.clientSecret ?? storage.load().client_secret));
+			return clientMetadata(
+				Boolean(googleScopes ? clientSecret : (clientSecret ?? storage.load().client_secret))
+			);
 		},
 		clientInformation() {
 			const { tokens: _tokens, codeVerifier: _verifier, ...storedClient } = storage.load();
 			const client = staticClient ?? storedClient;
 			if (googleScopes && (!client.client_id || !client.client_secret)) {
 				throw new Error(
-					`Google MCP requires a Google Cloud OAuth client ID and client secret. Create a Web application client, register ${getMcpOAuthRedirectUrl()} as its authorized redirect URI, and enter the credentials in the server settings. Google does not support dynamic client registration.`
+					`Set MCP_GOOGLE_CLIENT_ID and MCP_GOOGLE_CLIENT_SECRET in the .env file. Register ${getMcpOAuthRedirectUrl()} as the OAuth client redirect URI in Google Cloud. Google does not support dynamic client registration.`
 				);
 			}
 			return client.client_id ? (client as OAuthClientInformationMixed) : undefined;

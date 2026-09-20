@@ -349,11 +349,12 @@ export function McpServerForm({
 									Google requires your own OAuth client ID and secret. In Google Cloud, enable the
 									product API and its MCP service, configure the consent screen, and create a Web
 									application OAuth client. Set MCP_OAUTH_REDIRECT_URL to its registered redirect
-									URI before launching Kucedr. Enter the credentials below, then connect with OAuth.
-									Google Workspace MCP access may require enrollment in the Developer Preview.
+									URI in the .env file, along with MCP_GOOGLE_CLIENT_ID and
+									MCP_GOOGLE_CLIENT_SECRET. Restart Kucedr, then connect with OAuth. Google
+									Workspace MCP access may require enrollment in the Developer Preview.
 								</p>
 							)}
-							{!isGitHubRemote && (
+							{!isGitHubRemote && !isGoogleRemote && (
 								<Field>
 									<Label htmlFor="mcp-token">Access token (optional)</Label>
 									<Input
@@ -366,32 +367,32 @@ export function McpServerForm({
 									/>
 								</Field>
 							)}
-							<Field>
-								<Label htmlFor="mcp-client-id">
-									{isGoogleRemote ? 'Google OAuth client ID' : 'Client ID (optional)'}
-								</Label>
-								<Input
-									id="mcp-client-id"
-									value={clientId}
-									onChange={(e) => setClientId(e.target.value)}
-									autoComplete="off"
-									className={SMALL_INPUT_CLASS}
-								/>
-							</Field>
-							<Field>
-								<Label htmlFor="mcp-client-secret">
-									{isGoogleRemote ? 'Google OAuth client secret' : 'Client secret (optional)'}
-								</Label>
-								<Input
-									id="mcp-client-secret"
-									type="password"
-									placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
-									value={clientSecret}
-									onChange={(e) => setClientSecret(e.target.value)}
-									autoComplete="off"
-									className={SMALL_INPUT_CLASS}
-								/>
-							</Field>
+							{!isGoogleRemote && (
+								<>
+									<Field>
+										<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
+										<Input
+											id="mcp-client-id"
+											value={clientId}
+											onChange={(e) => setClientId(e.target.value)}
+											autoComplete="off"
+											className={SMALL_INPUT_CLASS}
+										/>
+									</Field>
+									<Field>
+										<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>
+										<Input
+											id="mcp-client-secret"
+											type="password"
+											placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
+											value={clientSecret}
+											onChange={(e) => setClientSecret(e.target.value)}
+											autoComplete="off"
+											className={SMALL_INPUT_CLASS}
+										/>
+									</Field>
+								</>
+							)}
 							{removeAction()}
 						</div>
 					</details>

@@ -172,7 +172,7 @@ describe('MCP details', () => {
 });
 
 it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
-	'saves registered Google credentials before authenticating %s without submitting the form',
+	'authenticates %s using env configuration without exposing credential inputs or submitting the form',
 	async (host) => {
 		const user = userEvent.setup();
 		server = {
@@ -182,16 +182,15 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		};
 		mcpApi.oauthStart.mockResolvedValue({ status: 'authorized' });
 		renderDetails('google');
-		const clientId = await screen.findByLabelText('Google OAuth client ID');
-		expect(clientId).toBeVisible();
-		await user.type(clientId, 'registered-client');
-		await user.type(screen.getByLabelText('Google OAuth client secret'), 'client-secret');
+		await screen.findByText(/MCP_GOOGLE_CLIENT_ID/);
+		expect(screen.queryByLabelText(/Client ID/)).not.toBeInTheDocument();
+		expect(screen.queryByLabelText(/Client secret/)).not.toBeInTheDocument();
 		await user.click(screen.getByRole('button', { name: 'Connect with OAuth' }));
 		await screen.findByText('Authenticated');
 		expect(mcpApi.upsert).toHaveBeenCalledTimes(1);
 		expect(mcpApi.upsert).toHaveBeenCalledWith(
 			'google',
-			expect.objectContaining({ client_id: 'registered-client', client_secret: 'client-secret' })
+			expect.objectContaining({ type: 'http', url: `https://${host}.googleapis.com/mcp/v1` })
 		);
 		expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
 	}
