@@ -39,6 +39,7 @@ interface ToolDiscoveryOptions {
 
 export interface ToolDiscovery {
 	readonly tool: Tool;
+	prompt(): string;
 	active(): Tool[];
 	eligible(): Tool[];
 	replaceEligible(tools: Tool[]): void;
@@ -61,17 +62,24 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 	let selectedCount = 0;
 
 	const directory = (): string => {
-		const tools = [...eligible.values()]
+		const tools = [...new Map([...eligible, ...active]).values()]
 			.sort((left, right) => left.id.localeCompare(right.id))
 			.map(
 				(candidate) =>
-					`${candidate.id} | ${candidate.name} | ${candidate.description.replace(/\s+/g, ' ').trim()}`
+					`${candidate.id} | ${candidate.name} | ${active.has(candidate.id) ? 'Loaded' : 'Not loaded; use discover_tools'} | ${candidate.description.replace(/\s+/g, ' ').trim()}`
 			);
 		const servers = [...deferredServers.values()]
 			.sort((left, right) => left.id.localeCompare(right.id))
 			.map((server) => `${server.id} | ${server.name}`);
 		return [
-			'Eligible tool directory (IDs, names, one-line descriptions; schemas stay hidden until activation):',
+			'## Tool loading and availability',
+			'Answer directly when no tool is needed. Before any tool call, check its current loading status below. Only Loaded tools with schemas in this response are callable.',
+			'For a tool marked Not loaded, first call discover_tools with a concise query and its exact toolIds. Wait for the result and the next model turn before calling the selected tool using its newly exposed schema. Never call a tool to test whether it is loaded, and never batch discovery with calls to tools that are not yet loaded.',
+			'For example, to create a demo file when write is not loaded: call discover_tools({"query":"Create a demo file","toolIds":["write"],"mcpServerIds":[]}); then, on the next turn, call write using its exposed schema.',
+			'If a call reports an unknown or unavailable tool, check this directory and use discover_tools before retrying. Tools absent from the directory are unavailable; do not invent IDs. Loading resets for each run, so past conversation calls do not establish current availability.',
+			'For an unloaded MCP server, use discover_tools with its mcpServerIds and a capability query. Only that server is queried. If no tools are selected, choose exact toolIds from the returned list in another discovery call.',
+			'At most 8 new tools can be selected per discovery call and 16 per run. Several already-loaded tools may be called together and will execute sequentially.',
+			'ID | Name | Status | Description',
 			...tools,
 			...(servers.length > 0 ? ['Deferred MCP servers (server ID | name):', ...servers] : []),
 		].join('\n');
@@ -80,7 +88,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 	const discoveryTool = tool({
 		id: DISCOVER_TOOLS_ID,
 		name: 'Discover tools',
-		description: 'Select only the tools needed for the next step. ' + directory(),
+		description: 'Search for and load tools needed for the next step. Call this before using any tool marked Not loaded in the tool directory. Selected tool schemas become callable on the next model turn; wait for this result before using them.',
 		planSafe: true,
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
@@ -183,14 +191,11 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 			};
 		},
 	});
-	Object.defineProperty(discoveryTool, 'description', {
-		get: () => 'Select only the tools needed for the next step. ' + directory(),
-		enumerable: true,
-	});
 	active.set(discoveryTool.id, discoveryTool);
 
 	return {
 		tool: discoveryTool,
+		prompt: directory,
 		active: () => [...active.values()],
 		eligible: () => [...eligible.values()],
 		replaceEligible(tools) {

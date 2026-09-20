@@ -353,6 +353,7 @@ async function* loop(
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt = [
+				synthesisOnly ? '' : discovery.prompt(),
 				input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt,
 				finalization?.instruction,
 				synthesisOnly
