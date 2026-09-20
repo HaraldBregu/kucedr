@@ -458,6 +458,7 @@ async function* loop(
 						.filter((id) => !activeToolIds.has(id) && eligibleToolIds.has(id))
 				),
 			];
+			const automaticallyResolvedCallIds = new Set<string>();
 			if (requestedUnavailableToolIds.length > 0) {
 				yield { type: 'capability_resolution_start' };
 				const resolved = (await discovery.tool.run(
@@ -471,6 +472,7 @@ async function* loop(
 				const selected = new Set(resolved.selectedToolIds);
 				for (const call of turn.toolCalls) {
 					if (!selected.has(call.name)) continue;
+					automaticallyResolvedCallIds.add(call.id);
 					call.result = {
 						content: `Tool '${call.name}' is now loaded. Retry this call on the next turn using its exposed schema.`,
 					};
@@ -481,7 +483,9 @@ async function* loop(
 					serviceIds: resolved.selectedServiceIds,
 				};
 			}
-			const pendingToolCalls = turn.toolCalls.filter((call) => call.result === undefined);
+			const pendingToolCalls = turn.toolCalls.filter(
+				(call) => !automaticallyResolvedCallIds.has(call.id)
+			);
 			const budgetExceeded = budget.wouldExceed(
 				pendingToolCalls.map((call) => ({
 					tool: turnTools.find((tool) => tool.id === call.name),

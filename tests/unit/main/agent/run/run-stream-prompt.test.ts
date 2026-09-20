@@ -1138,9 +1138,11 @@ describe('run stream system prompt', () => {
 
 		expect(execute).not.toHaveBeenCalled();
 		expect(session.toolCalls.find((call) => call.id === 'early-read')?.result).toMatchObject({
-			isError: undefined,
 			content: "Tool 'read' is now loaded. Retry this call on the next turn using its exposed schema.",
 		});
+		expect(session.toolCalls.find((call) => call.id === 'early-read')?.result).not.toHaveProperty(
+			'isError'
+		);
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain('read');
