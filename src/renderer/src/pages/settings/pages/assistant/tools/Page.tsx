@@ -229,7 +229,6 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 	'knowledge',
 	'skills',
 	'tasks',
-	'apps',
 	'coordination',
 	'goals',
 	'system',

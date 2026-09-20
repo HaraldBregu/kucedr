@@ -10,6 +10,11 @@ jest.mock('electron-store', () =>
 			image_model: { providerId: 'openai', modelId: 'image-1', options: {} },
 			audio_model: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
 			video_model: { providerId: 'google', modelId: 'veo-3', options: {} },
+			tools: {
+				list_apps: { enabled: true, permission: 'allow' },
+				open_apps: { enabled: true, permission: 'allow' },
+				close_apps: { enabled: true, permission: 'allow' },
+			},
 			voice_model: { providerId: 'openai', modelId: 'tts-1', options: { voice: 'alloy' } },
 			transcription_model: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
 			realtime_voice_model: { providerId: 'openai', modelId: 'realtime-1', options: {} },
@@ -77,4 +82,7 @@ it('migrates legacy agent settings into chatbot and tools branches', () => {
 	expect(persisted.tools).not.toHaveProperty('save_memory');
 	expect(persisted.tools).not.toHaveProperty('list_memories');
 	expect(persisted.tools).not.toHaveProperty('forget_memory');
+	expect(persisted.tools).not.toHaveProperty('list_apps');
+	expect(persisted.tools).not.toHaveProperty('open_apps');
+	expect(persisted.tools).not.toHaveProperty('close_apps');
 });
