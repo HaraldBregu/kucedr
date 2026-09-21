@@ -18,7 +18,13 @@ import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { updateModelOptions } from '@/lib/options';
 import type { Model } from '@/lib/compat';
 import type { PublicProvider } from '../../../../../../shared';
@@ -68,10 +74,11 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 	}));
 	const preferredGroup =
 		modelGroups.find((group) => group.provider.id === storedProvider?.id) ?? modelGroups[0];
-	const preferredModel = storedProvider?.id === 'custom'
-		? localModelOption
-		: 
-		preferredGroup?.models.find((model) => model.id === storedModelId) ?? preferredGroup?.models[0];
+	const preferredModel =
+		storedProvider?.id === 'custom'
+			? localModelOption
+			: (preferredGroup?.models.find((model) => model.id === storedModelId) ??
+				preferredGroup?.models[0]);
 
 	return {
 		providers,
@@ -131,7 +138,12 @@ const AssistantPage: React.FC = () => {
 			const provider = (await window.provider.list('models')).find((item) => item.id === 'custom');
 			if (!provider) return;
 			setLocalProvider(provider);
-			setLocalModels(await window.provider.listCustomModels({ baseUrl: provider.baseUrl, apiKey: provider.apiKey }));
+			setLocalModels(
+				await window.provider.listCustomModels({
+					baseUrl: provider.baseUrl,
+					apiKey: provider.apiKey,
+				})
+			);
 		} finally {
 			setLoadingLocalModels(false);
 		}
@@ -177,7 +189,11 @@ const AssistantPage: React.FC = () => {
 	};
 	const handleLocalModelChange = async (modelId: string): Promise<void> => {
 		if (!localProvider || !modelId) return;
-		await window.agent.setProvider({ id: 'custom', name: 'Ollama', baseUrl: localProvider.baseUrl });
+		await window.agent.setProvider({
+			id: 'custom',
+			name: 'Ollama',
+			baseUrl: localProvider.baseUrl,
+		});
 		await window.agent.setModelId(modelId);
 		setState((current) => ({ ...current, providerId: 'custom', modelId: 'local', saved: true }));
 	};
@@ -213,17 +229,42 @@ const AssistantPage: React.FC = () => {
 					{state.providerId === 'custom' && (
 						<div className="grid gap-3 pt-3">
 							<div className="grid gap-1.5">
-								<Label htmlFor="assistant-local-provider">{t('settings.modelServices.localProvider')}</Label>
+								<Label htmlFor="assistant-local-provider">
+									{t('settings.modelServices.localProvider')}
+								</Label>
 								<Select value="ollama" disabled>
-									<SelectTrigger id="assistant-local-provider"><SelectValue /></SelectTrigger>
-									<SelectContent><SelectItem value="ollama">Ollama</SelectItem></SelectContent>
+									<SelectTrigger id="assistant-local-provider">
+										<SelectValue />
+									</SelectTrigger>
+									<SelectContent>
+										<SelectItem value="ollama">Ollama</SelectItem>
+									</SelectContent>
 								</Select>
 							</div>
 							<div className="grid gap-1.5">
-								<Label htmlFor="assistant-local-model">{t('settings.modelServices.localModel')}</Label>
-								<Select disabled={loadingLocalModels || localModels.length === 0} onValueChange={(value) => void handleLocalModelChange(value)}>
-									<SelectTrigger id="assistant-local-model"><SelectValue placeholder={loadingLocalModels ? t('settings.modelServices.modelsLoading') : t('settings.modelServices.modelPlaceholder')} /></SelectTrigger>
-									<SelectContent>{localModels.map((model) => <SelectItem key={model} value={model}>{model}</SelectItem>)}</SelectContent>
+								<Label htmlFor="assistant-local-model">
+									{t('settings.modelServices.localModel')}
+								</Label>
+								<Select
+									disabled={loadingLocalModels || localModels.length === 0}
+									onValueChange={(value) => void handleLocalModelChange(value)}
+								>
+									<SelectTrigger id="assistant-local-model">
+										<SelectValue
+											placeholder={
+												loadingLocalModels
+													? t('settings.modelServices.modelsLoading')
+													: t('settings.modelServices.modelPlaceholder')
+											}
+										/>
+									</SelectTrigger>
+									<SelectContent>
+										{localModels.map((model) => (
+											<SelectItem key={model} value={model}>
+												{model}
+											</SelectItem>
+										))}
+									</SelectContent>
 								</Select>
 							</div>
 						</div>
