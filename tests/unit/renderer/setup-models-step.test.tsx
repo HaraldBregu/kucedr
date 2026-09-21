@@ -20,17 +20,23 @@ jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => 
 jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/conversation', () => ({
 	__esModule: true,
 	default: ({
+		buttonDropdown,
 		icon,
 		selectDefaultModel,
+		showSelectedModel,
 		showFieldLabel,
 	}: {
+		buttonDropdown?: boolean;
 		icon?: unknown;
 		selectDefaultModel?: boolean;
+		showSelectedModel?: boolean;
 		showFieldLabel?: boolean;
 	}) => (
 		<div
 			data-default-model={String(selectDefaultModel)}
+			data-button-dropdown={String(buttonDropdown)}
 			data-has-icon={String(Boolean(icon))}
+			data-show-selected-model={String(showSelectedModel)}
 			data-show-field-label={String(showFieldLabel)}
 			data-testid="setup-realtime"
 		>
@@ -86,6 +92,14 @@ it('groups the chat and voice Assistant configurations', () => {
 	);
 	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
 		'data-has-icon',
+		'true'
+	);
+	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
+		'data-show-selected-model',
+		'true'
+	);
+	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
+		'data-button-dropdown',
 		'true'
 	);
 	expect(within(toolsGroup).getByTestId('setup-search')).toBeInTheDocument();

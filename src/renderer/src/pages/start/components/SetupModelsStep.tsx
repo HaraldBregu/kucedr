@@ -240,6 +240,8 @@ export function SetupModelsStep({
 							<RealtimeConversationConfiguration
 								selectDefaultModel={false}
 								showFieldLabel={false}
+								showSelectedModel
+								buttonDropdown
 								icon={Radio}
 							/>
 						</CardContent>
