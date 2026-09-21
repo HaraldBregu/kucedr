@@ -48,6 +48,7 @@ export function SetupModelsStep({
 	onServiceChange,
 }: SetupModelsStepProps): React.JSX.Element {
 	const [availableLocalModels, setAvailableLocalModels] = useState<string[]>([]);
+	const [localProviderName, setLocalProviderName] = useState<string>();
 	const assistantServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>
 		ASSISTANT_SERVICE_IDS.has(service.id)
 	);
@@ -58,10 +59,14 @@ export function SetupModelsStep({
 		() =>
 			serviceStates.assistant.modelGroups.map((group) =>
 				group.provider.id === 'ollama' && availableLocalModels.length > 0
-					? { ...group, models: availableLocalModels.map((id) => ({ id, name: id })) }
+					? {
+							...group,
+							provider: { ...group.provider, name: localProviderName ?? group.provider.name },
+							models: availableLocalModels.map((id) => ({ id, name: id })),
+						}
 					: group
 			),
-		[availableLocalModels, serviceStates.assistant.modelGroups]
+		[availableLocalModels, localProviderName, serviceStates.assistant.modelGroups]
 	);
 
 	useEffect(() => {
@@ -70,11 +75,11 @@ export function SetupModelsStep({
 		void window.provider
 			.list('models')
 			.then((providers) => providers.find((provider) => provider.id === 'custom'))
-			.then((provider) =>
-				provider
-					? window.provider.listCustomModels({ baseUrl: provider.baseUrl, apiKey: provider.apiKey })
-					: []
-			)
+			.then(async (provider) => {
+				if (!provider) return [];
+				if (!cancelled) setLocalProviderName(provider.name);
+				return window.provider.listCustomModels({ baseUrl: provider.baseUrl, apiKey: provider.apiKey });
+			})
 			.then((models) => {
 				if (!cancelled) setAvailableLocalModels(models);
 			})
