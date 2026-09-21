@@ -1371,6 +1371,8 @@
 			"model": "Modello",
 			"modelDescription": "Modello usato da questo servizio per le risposte testuali.",
 			"modelPlaceholder": "Seleziona modello",
+			"localProvider": "Provider locale",
+			"localModel": "Modello locale",
 			"modelsLoading": "Caricamento…",
 			"modelsLoadError": "Impossibile caricare i modelli per questo provider.",
 			"noModels": "Nessun modello disponibile per questo provider.",

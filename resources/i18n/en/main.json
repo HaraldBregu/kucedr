@@ -1372,6 +1372,8 @@
 			"model": "Model",
 			"modelDescription": "Model this service uses for text responses.",
 			"modelPlaceholder": "Select model",
+			"localProvider": "Local provider",
+			"localModel": "Local model",
 			"modelsLoading": "Loading…",
 			"modelsLoadError": "Unable to load models for this provider.",
 			"noModels": "No models are available for this provider.",
