@@ -49,7 +49,7 @@ it('does not let a delayed restore overwrite a newer provider session event', as
 				})
 		),
 	});
-	const service = new AuthService(provider, { accept: () => true });
+	const service = new AuthService(provider, { accept: () => true, clear: jest.fn() });
 
 	const initializing = service.initialize();
 	emit('session', currentSession);
@@ -72,7 +72,7 @@ it('limits a recovery session to recovery operations', async () => {
 			return jest.fn();
 		}),
 	});
-	const service = new AuthService(provider, { accept: () => true });
+	const service = new AuthService(provider, { accept: () => true, clear: jest.fn() });
 	await service.initialize();
 
 	emit('recovery', currentSession);
@@ -94,7 +94,7 @@ it('limits a recovery session to recovery operations', async () => {
 
 it('notifies session listeners when a device account mismatch rejects a session', async () => {
 	const provider = accountProvider({ restore: jest.fn(async () => currentSession) });
-	const service = new AuthService(provider, { accept: () => false });
+	const service = new AuthService(provider, { accept: () => false, clear: jest.fn() });
 	const listener = jest.fn();
 	service.onSessionChanged(listener);
 
@@ -107,7 +107,7 @@ it('notifies session listeners when a device account mismatch rejects a session'
 it('keeps provider tokens out of public auth state', async () => {
 	const service = new AuthService(
 		accountProvider({ restore: jest.fn(async () => currentSession) }),
-		{ accept: () => true }
+		{ accept: () => true, clear: jest.fn() }
 	);
 
 	await service.initialize();
@@ -127,7 +127,7 @@ it('publishes safe callback failures and clears them when Google sign-in retries
 			.mockRejectedValueOnce(new Error('provider-secret'))
 			.mockResolvedValue(currentSession),
 	});
-	const service = new AuthService(provider, { accept: () => true });
+	const service = new AuthService(provider, { accept: () => true, clear: jest.fn() });
 	await service.initialize();
 	const listener = jest.fn();
 	service.onStateChanged(listener);
@@ -145,6 +145,25 @@ it('publishes safe callback failures and clears them when Google sign-in retries
 	await service.signInWithGoogle();
 	expect(service.getState()).not.toHaveProperty('error');
 	await service.handleDeepLink('kucedr://auth/callback?code=valid');
+	expect(service.getState()).toEqual({
+		status: 'signedIn',
+		persistence: 'encrypted',
+		user: currentSession.user,
+	});
+});
+
+it('allows a different account to sign in after an explicit sign-out', async () => {
+	const binding = { accept: jest.fn(() => true), clear: jest.fn() };
+	const provider = accountProvider({ restore: jest.fn(async () => staleSession) });
+	const service = new AuthService(provider, binding);
+	await service.initialize();
+
+	await service.signOut();
+	await service.signIn({ email: currentSession.user.email, password: 'password' });
+
+	expect(binding.clear).toHaveBeenCalledTimes(1);
+	expect(binding.accept).toHaveBeenNthCalledWith(1, staleSession.user.id);
+	expect(binding.accept).toHaveBeenNthCalledWith(2, currentSession.user.id);
 	expect(service.getState()).toEqual({
 		status: 'signedIn',
 		persistence: 'encrypted',

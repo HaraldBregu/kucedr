@@ -13,6 +13,7 @@ import { DeviceAccountBinding } from './binding';
 
 interface AccountBinding {
 	accept(userId: string): boolean;
+	clear(): void;
 }
 
 export class AuthService {
@@ -131,6 +132,7 @@ export class AuthService {
 
 	async signOut(): Promise<AuthState> {
 		if (this.provider) await this.provider.signOut();
+		this.binding?.clear();
 		this.applySession('session', null);
 		return this.getState();
 	}

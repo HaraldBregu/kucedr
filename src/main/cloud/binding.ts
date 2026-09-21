@@ -19,4 +19,8 @@ export class DeviceAccountBinding {
 		if (!current) this.store.set('userId', userId);
 		return true;
 	}
+
+	clear(): void {
+		this.store.delete('userId');
+	}
 }
