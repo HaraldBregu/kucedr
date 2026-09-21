@@ -81,10 +81,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const [customProvider, setCustomProvider] = useState({
 		apiKey: '',
 		baseUrl: '',
-		modelId: '',
 		savedApiKey: '',
 		savedBaseUrl: '',
-		savedModelId: '',
 		editing: false,
 	});
 	const [customModels, setCustomModels] = useState<string[]>([]);
@@ -130,14 +128,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					})
 				);
 				const custom = savedProviders.get('custom');
-				if (custom?.modelId && custom.baseUrl) {
+				if (custom?.baseUrl) {
 					setCustomProvider({
 						apiKey: custom.apiKey,
 						baseUrl: custom.baseUrl,
-						modelId: custom.modelId,
 						savedApiKey: custom.apiKey,
 						savedBaseUrl: custom.baseUrl,
-						savedModelId: custom.modelId,
 						editing: false,
 					});
 				}
@@ -241,19 +237,16 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const saveCustomProvider = async (): Promise<void> => {
 		const apiKey = customProvider.apiKey.trim();
 		const baseUrl = customProvider.baseUrl.trim();
-		const modelId = customProvider.modelId.trim();
-		if (!apiKey || !baseUrl || !modelId) return;
+		if (!apiKey || !baseUrl) return;
 		setSavingProviderId('custom');
 		setError(null);
 		try {
-			await window.provider.set({ id: 'custom', kind: 'models', apiKey, baseUrl, modelId });
+			await window.provider.set({ id: 'custom', kind: 'models', apiKey, baseUrl });
 			setCustomProvider({
 				apiKey,
 				baseUrl,
-				modelId,
 				savedApiKey: apiKey,
 				savedBaseUrl: baseUrl,
-				savedModelId: modelId,
 				editing: false,
 			});
 		} catch (err) {
@@ -272,9 +265,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		try {
 			const models = await window.provider.listCustomModels({ baseUrl, apiKey });
 			setCustomModels(models);
-			if (!customProvider.modelId.trim() && models[0]) {
-				setCustomProvider((current) => ({ ...current, modelId: models[0] }));
-			}
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not load models from the custom provider.'));
 		} finally {
@@ -427,10 +417,10 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	};
 
 	const renderCustomProviderCard = (): React.ReactElement => {
-		const connected = Boolean(customProvider.savedModelId);
+		const connected = Boolean(customProvider.savedBaseUrl);
 		const saving = savingProviderId === 'custom';
 		const canSave = Boolean(
-			customProvider.apiKey.trim() && customProvider.baseUrl.trim() && customProvider.modelId.trim()
+			customProvider.apiKey.trim() && customProvider.baseUrl.trim()
 		);
 		return (
 			<Card
@@ -459,7 +449,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							</h3>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
 								{connected
-									? customProvider.savedModelId
+									? customProvider.savedBaseUrl
 									: t('settings.providers.localModels.compatibility')}
 							</p>
 						</div>
@@ -506,27 +496,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									}
 								/>
 							</div>
-							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
-								<Label htmlFor="local-model-id" className="sm:text-right">
-									{t('settings.providers.localModels.modelId')}
-								</Label>
-								<div className="flex gap-2">
-									<Input
-										id="local-model-id"
-										autoComplete="off"
-										className="h-8"
-										disabled={saving}
-										list="custom-provider-models"
-										placeholder="llama3.2:3b"
-										spellCheck={false}
-										value={customProvider.modelId}
-										onChange={(event) =>
-											setCustomProvider((current) => ({
-												...current,
-												modelId: event.target.value,
-											}))
-										}
-									/>
+							<div className="flex sm:ml-[10.75rem]">
 									<Button
 										type="button"
 										variant="outline"
@@ -543,12 +513,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										{t('settings.providers.localModels.refresh')}
 									</Button>
 								</div>
-								<datalist id="custom-provider-models">
-									{customModels.map((model) => (
-										<option key={model} value={model} />
-									))}
-								</datalist>
-							</div>
 							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
 								<Label htmlFor="local-model-token" className="sm:text-right">
 									{t('settings.providers.localModels.token')}
@@ -581,7 +545,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											...current,
 											apiKey: current.savedApiKey,
 											baseUrl: current.savedBaseUrl,
-											modelId: current.savedModelId,
 											editing: false,
 										}))
 									}

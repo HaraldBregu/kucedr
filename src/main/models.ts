@@ -272,23 +272,6 @@ function readCatalog(): Catalog {
 		);
 	}
 
-	const customProvider = getModelProvidersState().find(
-		(provider) => provider.id === 'custom' && provider.modelId?.trim() && provider.baseUrl.trim()
-	);
-	if (customProvider) {
-		models.push({
-			id: customProvider.modelId!,
-			name: customProvider.modelId!,
-			type: 'llm',
-			url: customProvider.baseUrl,
-			provider: {
-				id: customProvider.id,
-				name: customProvider.name,
-				baseUrl: customProvider.baseUrl,
-			},
-		});
-	}
-
 	return {
 		models: models.sort(compareByName),
 		databases: databases.sort(compareByName),

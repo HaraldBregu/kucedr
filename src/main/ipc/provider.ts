@@ -55,12 +55,11 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		registerCommandWithEvent(ProviderStoreChannels.set, (event, value) => {
 			trusted.assert(event);
 			const input = this.credential(value);
-			const provider = this.catalogProvider(
+		const provider = this.catalogProvider(
 				input.kind,
 				input.id,
 				input.apiKey,
-				input.baseUrl,
-				input.modelId
+				input.baseUrl
 			);
 			return setProvider(provider, input.kind);
 		});
@@ -96,8 +95,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		if (id !== 'custom') return { kind, id, apiKey };
 		if (kind !== 'models') throw new Error('Custom providers support models only.');
 		const baseUrl = this.baseUrl(record.baseUrl);
-		const modelId = this.modelId(record.modelId);
-		return { kind, id, apiKey, baseUrl, modelId };
+		return { kind, id, apiKey, baseUrl };
 	}
 
 	private catalogProvider(
@@ -105,11 +103,11 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		id: string,
 		apiKey: string,
 		baseUrl?: string,
-		modelId?: string
+
 	): StoredProvider {
 		if (id === 'custom') {
-			if (!baseUrl || !modelId) throw new Error('Custom provider configuration is invalid.');
-			return { id, name: 'Custom model provider', apiKey, baseUrl, modelId };
+			if (!baseUrl) throw new Error('Custom provider configuration is invalid.');
+			return { id, name: 'Ollama', apiKey, baseUrl };
 		}
 		if (kind === 'models') {
 			const provider = loadProviders().find((entry) => entry.id === id);
