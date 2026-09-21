@@ -53,7 +53,12 @@ export function SetupSearch(): React.JSX.Element {
 				}}
 			>
 				<SelectTrigger className="h-8 w-52 text-xs" aria-label="Search Engine">
-					<SelectValue placeholder="Connect a search provider first" />
+					<SelectValue placeholder="Connect a search provider first">
+						{(value) =>
+							SEARCH_ENGINES.find((engine) => engine.id === value)?.name ??
+							'Connect a search provider first'
+						}
+					</SelectValue>
 				</SelectTrigger>
 				<SelectContent>
 					{SEARCH_ENGINES.map((engine) => (
