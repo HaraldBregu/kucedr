@@ -1010,6 +1010,8 @@
 			"baseUrl": "URL Base",
 			"baseUrlPlaceholder": "https://api.example.com/v1",
 			"apiKeyPlaceholder": "Incolla chiave API",
+			"configured": "Configurato",
+			"notConfigured": "Non configurato",
 			"localModels": {
 				"title": "Modelli locali",
 				"model": "Ollama",

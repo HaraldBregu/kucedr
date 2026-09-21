@@ -328,7 +328,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								</Button>
 							</div>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
-								{connected ? '************' : provider.capabilities}
+								{t(
+									connected
+										? 'settings.providers.configured'
+										: 'settings.providers.notConfigured'
+								)}
 							</p>
 						</div>
 						<div className="flex min-w-0 shrink-0 justify-end gap-2">
@@ -500,9 +504,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								{t('settings.providers.localModels.model')}
 							</h3>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
-								{connected
-									? customProvider.savedBaseUrl
-									: t('settings.providers.localModels.compatibility')}
+								{t(
+									connected
+										? 'settings.providers.configured'
+										: 'settings.providers.notConfigured'
+								)}
 							</p>
 						</div>
 						{connected && !customProvider.editing ? (

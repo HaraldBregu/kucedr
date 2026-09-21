@@ -1011,6 +1011,8 @@
 			"baseUrl": "Base URL",
 			"baseUrlPlaceholder": "https://api.example.com/v1",
 			"apiKeyPlaceholder": "Paste API key",
+			"configured": "Configured",
+			"notConfigured": "Not configured",
 			"localModels": {
 				"title": "Local models",
 				"model": "Ollama",

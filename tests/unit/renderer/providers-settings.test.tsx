@@ -17,6 +17,8 @@ jest.mock('react-i18next', () => {
 		'settings.providers.localModels.edit': 'Edit Ollama',
 		'settings.providers.localModels.refresh': 'Get available models',
 		'settings.modelServices.localProvider': 'Local provider',
+		'settings.providers.configured': 'Configured',
+		'settings.providers.notConfigured': 'Not configured',
 		'settings.tabs.channels': 'Channels',
 		'settings.tabs.databases': 'Database',
 		'common.save': 'Save',
@@ -156,7 +158,7 @@ it('loads and displays saved Database keys', async () => {
 			<ProvidersPage section="databases" />
 		</MemoryRouter>
 	);
-	expect(await screen.findByText('************')).toBeInTheDocument();
+	expect(await screen.findByText('Configured')).toBeInTheDocument();
 	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('button', { name: 'Edit Pinecone API key' }));
