@@ -214,59 +214,59 @@ const McpDetailsPage: React.FC = () => {
 					<McpServerForm initial={{ id: server.id, entry: server.data }} onSubmit={save} />
 				</SettingsPanel>
 				<div className="flex flex-wrap items-center gap-2 px-0.5 py-1">
-						<Button
-							type="button"
-							variant="outline"
-							size="sm"
-							onClick={() => void test()}
-							disabled={testing || saving}
-						>
-							{testing ? (
-								<RefreshCw className="size-3.5 animate-spin" />
-							) : (
-								<FlaskConical className="size-3.5" />
-							)}
-							{testing ? 'Testing' : 'Test'}
-						</Button>
-						{server.source === 'configured' && (
-							<Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
-								<Button
-									type="button"
-									variant="destructive"
-									size="sm"
-									disabled={saving}
-									onClick={() => setConfirmRemoveOpen(true)}
-								>
-									Remove MCP server
-								</Button>
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>Delete MCP server</DialogTitle>
-										<DialogDescription>
-											Remove <span className="font-medium text-foreground">{title}</span>? This
-											cannot be undone.
-										</DialogDescription>
-									</DialogHeader>
-									<DialogFooter>
-										<Button
-											type="button"
-											variant="outline"
-											onClick={() => setConfirmRemoveOpen(false)}
-										>
-											Cancel
-										</Button>
-										<Button
-											type="button"
-											variant="destructive"
-											disabled={saving}
-											onClick={() => void remove()}
-										>
-											Delete
-										</Button>
-									</DialogFooter>
-								</DialogContent>
-							</Dialog>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						onClick={() => void test()}
+						disabled={testing || saving}
+					>
+						{testing ? (
+							<RefreshCw className="size-3.5 animate-spin" />
+						) : (
+							<FlaskConical className="size-3.5" />
 						)}
+						{testing ? 'Testing' : 'Test'}
+					</Button>
+					{server.source === 'configured' && (
+						<Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
+							<Button
+								type="button"
+								variant="destructive"
+								size="sm"
+								disabled={saving}
+								onClick={() => setConfirmRemoveOpen(true)}
+							>
+								Remove MCP server
+							</Button>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Delete MCP server</DialogTitle>
+									<DialogDescription>
+										Remove <span className="font-medium text-foreground">{title}</span>? This cannot
+										be undone.
+									</DialogDescription>
+								</DialogHeader>
+								<DialogFooter>
+									<Button
+										type="button"
+										variant="outline"
+										onClick={() => setConfirmRemoveOpen(false)}
+									>
+										Cancel
+									</Button>
+									<Button
+										type="button"
+										variant="destructive"
+										disabled={saving}
+										onClick={() => void remove()}
+									>
+										Delete
+									</Button>
+								</DialogFooter>
+							</DialogContent>
+						</Dialog>
+					)}
 				</div>
 			</SettingsSection>
 		</SettingsPageShell>
