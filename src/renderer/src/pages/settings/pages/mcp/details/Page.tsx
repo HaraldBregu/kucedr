@@ -185,17 +185,6 @@ const McpDetailsPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 			{success && <SettingsNotice autoDismiss>{success}</SettingsNotice>}
-			{testResult && (
-				<SettingsNotice
-					autoDismiss={testResult.ok}
-					variant={testResult.ok ? 'default' : 'destructive'}
-					icon={testResult.ok ? undefined : AlertTriangle}
-				>
-					{testResult.ok
-						? `${testResult.toolCount} tool${testResult.toolCount === 1 ? '' : 's'} · ${testResult.durationMs} ms`
-						: testResult.error || 'Unable to connect.'}
-				</SettingsNotice>
-			)}
 			{server.diagnostic && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{server.diagnostic}
@@ -268,6 +257,17 @@ const McpDetailsPage: React.FC = () => {
 						</Dialog>
 					)}
 				</div>
+				{testResult && (
+					<SettingsNotice
+						autoDismiss={testResult.ok}
+						variant={testResult.ok ? 'default' : 'destructive'}
+						icon={testResult.ok ? undefined : AlertTriangle}
+					>
+						{testResult.ok
+							? `${testResult.toolCount} tool${testResult.toolCount === 1 ? '' : 's'} · ${testResult.durationMs} ms`
+							: testResult.error || 'Unable to connect.'}
+					</SettingsNotice>
+				)}
 			</SettingsSection>
 		</SettingsPageShell>
 	);
