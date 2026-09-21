@@ -5,12 +5,6 @@ import { googleMcpScopes } from '@shared/google_mcp';
 import { isGitHubRemoteMcpUrl } from '@shared/github_mcp';
 import { Button } from '@/components/ui/button';
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
@@ -79,13 +73,11 @@ export function McpServerForm({
 	initial,
 	onSubmit,
 	onCancel,
-	onRemove,
 	action,
 }: {
 	readonly initial?: { readonly id: string; readonly entry: McpData };
 	readonly onSubmit: (id: string, entry: McpData) => Promise<void>;
 	readonly onCancel: () => void;
-	readonly onRemove?: () => Promise<void>;
 	readonly action?: React.ReactNode;
 }): React.JSX.Element {
 	const isEdit = Boolean(initial);
@@ -113,8 +105,6 @@ export function McpServerForm({
 	const [deferLoading, setDeferLoading] = useState(entry?.defer_loading ?? false);
 	const [error, setError] = useState<string | null>(null);
 	const [saving, setSaving] = useState(false);
-	const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
-	const [deleting, setDeleting] = useState(false);
 
 	const serverId = id.trim().toLowerCase();
 	const isGitHubRemote = type === 'http' && isGitHubRemoteMcpUrl(url);
@@ -171,60 +161,6 @@ export function McpServerForm({
 	};
 
 	const isValid = Boolean(serverId && (type === 'http' ? url.trim() : command.trim()));
-	const serverName = entry?.name ?? id;
-
-	const confirmDelete = async (): Promise<void> => {
-		if (!onRemove) return;
-		setDeleting(true);
-		try {
-			await onRemove();
-			setConfirmDeleteOpen(false);
-		} finally {
-			setDeleting(false);
-		}
-	};
-
-	const removeAction = (): React.JSX.Element | null => {
-		if (!onRemove) return null;
-
-		return (
-			<Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
-				<Button
-					type="button"
-					variant="destructive"
-					size="sm"
-					onClick={() => setConfirmDeleteOpen(true)}
-					disabled={saving || deleting}
-				>
-					<Trash2 className="size-3.5" />
-					Remove MCP server
-				</Button>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>Delete MCP server</DialogTitle>
-						<DialogDescription>
-							Remove <span className="font-medium text-foreground">{serverName}</span>? This cannot
-							be undone.
-						</DialogDescription>
-					</DialogHeader>
-					<DialogFooter>
-						<Button type="button" variant="outline" onClick={() => setConfirmDeleteOpen(false)}>
-							Cancel
-						</Button>
-						<Button
-							type="button"
-							variant="destructive"
-							onClick={() => void confirmDelete()}
-							disabled={deleting}
-						>
-							Delete
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
-		);
-	};
-
 	const submit = async (event: React.FormEvent): Promise<void> => {
 		event.preventDefault();
 		if (!isValid) {
@@ -608,10 +544,7 @@ export function McpServerForm({
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 
 			<div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 px-5 py-3">
-				<div className="flex flex-wrap items-center gap-2">
-					{action}
-					{removeAction()}
-				</div>
+				<div className="flex flex-wrap items-center gap-2">{action}</div>
 				<div className="ml-auto flex items-center gap-2">
 					<Button type="button" variant="ghost" onClick={onCancel}>
 						Cancel
