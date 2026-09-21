@@ -365,40 +365,50 @@ export function McpServerForm({
 					{isGoogleRemote ? (
 						removeAction()
 					) : (
-						<details>
+						<details className="p-4">
 							<summary className="cursor-pointer text-[13px] text-muted-foreground">
 								Advanced
 							</summary>
-							<div className="grid gap-4 pt-4">
+							<div className="mt-3 divide-y divide-border/60 border-y border-border/60">
 								<p className="text-[12px] text-muted-foreground">
 									The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
 									URL if your authorization server requires it. To use another loopback URL, set
 									CLIENT_REDIRECT_URL in .env and restart Kucedr.
 								</p>
 								{!isGitHubRemote && (
-									<Field>
-										<Label htmlFor="mcp-token">Access token (optional)</Label>
+									<SettingsRow
+										className="border-b-0! px-0!"
+										title={<Label htmlFor="mcp-token">Access token (optional)</Label>}
+										actions={
 										<Input
 											id="mcp-token"
 											type="password"
 											value={token}
 											onChange={(e) => setToken(e.target.value)}
 											autoComplete="off"
+											className="sm:w-80"
 										/>
-									</Field>
+										}
+									/>
 								)}
 								<>
-									<Field>
-										<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
+									<SettingsRow
+										className="border-b-0! px-0!"
+										title={<Label htmlFor="mcp-client-id">Client ID (optional)</Label>}
+										actions={
 										<Input
 											id="mcp-client-id"
 											value={clientId}
 											onChange={(e) => setClientId(e.target.value)}
 											autoComplete="off"
+											className="sm:w-80"
 										/>
-									</Field>
-									<Field>
-										<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>
+										}
+									/>
+									<SettingsRow
+										className="border-b-0! px-0!"
+										title={<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>}
+										actions={
 										<Input
 											id="mcp-client-secret"
 											type="password"
@@ -406,8 +416,10 @@ export function McpServerForm({
 											value={clientSecret}
 											onChange={(e) => setClientSecret(e.target.value)}
 											autoComplete="off"
+											className="sm:w-80"
 										/>
-									</Field>
+										}
+									/>
 								</>
 								{removeAction()}
 							</div>
