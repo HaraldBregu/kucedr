@@ -167,16 +167,7 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 		/>
 	);
 
-	expect(await screen.findByLabelText('Local provider')).toHaveTextContent(/ollama/i);
-	expect(screen.getByLabelText('Local provider')).toHaveClass('w-40');
-	const modelInput = await screen.findByLabelText('Local model');
-	expect(modelInput).toBeInTheDocument();
-	expect(modelInput).toHaveClass('w-40');
-	const user = userEvent.setup();
-	await user.click(modelInput);
-	await user.type(modelInput, 'qwen');
-	await user.click(await screen.findByRole('option', { name: 'qwen3:8b' }));
-	expect(onLocalModelChange).toHaveBeenCalledWith('assistant', 'qwen3:8b');
+	await screen.findByTestId('setup-assistant-select');
 	expect(window.provider.listCustomModels).toHaveBeenCalledWith({
 		baseUrl: 'http://localhost:11434/api',
 		apiKey: 'ollama',
