@@ -90,7 +90,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	private credential(value: unknown): ProviderCredentialSaveInput {
 		const record = this.record(value);
 		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
-		if (apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
+		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
 		const kind = this.kind(record.kind);
 		const id = this.id(record.id);
 		if (id !== 'custom') return { kind, id, apiKey };
@@ -148,7 +148,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const record = this.record(value);
 		const baseUrl = this.baseUrl(record.baseUrl);
 		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
-		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
+		if (apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
 		const signal = AbortSignal.timeout(10_000);
 		let response: Response;
 		try {
