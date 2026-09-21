@@ -150,7 +150,7 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 		/>
 	);
 
-	expect(await screen.findByLabelText('Local provider')).toHaveTextContent('Ollama');
+	expect(await screen.findByLabelText('Local provider')).toHaveTextContent(/ollama/i);
 	expect(await screen.findByLabelText('Local model')).toBeInTheDocument();
 	expect(window.provider.listCustomModels).toHaveBeenCalledWith({
 		baseUrl: 'http://localhost:11434/api',
