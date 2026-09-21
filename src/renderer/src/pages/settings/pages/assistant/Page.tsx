@@ -51,11 +51,13 @@ function getProviderLlmModels(providerId: string): Model[] {
 const localModelOption: Model = { id: 'local', name: 'Local model' };
 
 function localModelProvider(): PublicProvider {
-	return getCatalogProviderById('ollama') ?? {
-		id: 'ollama',
-		name: 'Local model provider',
-		baseUrl: '',
-	};
+	return (
+		getCatalogProviderById('ollama') ?? {
+			id: 'ollama',
+			name: 'Local model provider',
+			baseUrl: '',
+		}
+	);
 }
 
 async function loadAssistantState(): Promise<ModelConfigurationState> {
@@ -72,10 +74,12 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		storedProviderId === 'ollama' && storedModelId
 			? { id: storedModelId, name: storedModelId }
 			: localModelOption;
-	const modelGroups: ProviderModelGroup[] = [...providers, localModelProvider()].map((provider) => ({
-		provider,
-		models: provider.id === 'ollama' ? [localModel] : getProviderLlmModels(provider.id),
-	}));
+	const modelGroups: ProviderModelGroup[] = [...providers, localModelProvider()].map(
+		(provider) => ({
+			provider,
+			models: provider.id === 'ollama' ? [localModel] : getProviderLlmModels(provider.id),
+		})
+	);
 	const preferredGroup =
 		modelGroups.find((group) => group.provider.id === storedProviderId) ?? modelGroups[0];
 	const preferredModel =
