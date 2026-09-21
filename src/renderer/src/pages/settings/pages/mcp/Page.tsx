@@ -129,15 +129,13 @@ const McpPage = (): React.JSX.Element => {
 			{addingServer && (
 				<SettingsSection title="Add MCP server">
 					<SettingsPanel>
-						<div className="p-4">
-							<McpServerForm
-								onSubmit={async (id, entry) => {
-									await save(id, entry);
-									setAddingServer(false);
-								}}
-								onCancel={() => setAddingServer(false)}
-							/>
-						</div>
+						<McpServerForm
+							onSubmit={async (id, entry) => {
+								await save(id, entry);
+								setAddingServer(false);
+							}}
+							onCancel={() => setAddingServer(false)}
+						/>
 					</SettingsPanel>
 				</SettingsSection>
 			)}

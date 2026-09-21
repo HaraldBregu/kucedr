@@ -204,29 +204,27 @@ const McpDetailsPage: React.FC = () => {
 				}
 			>
 				<SettingsPanel>
-					<div className="p-4">
-						<McpServerForm
-							initial={{ id: server.id, entry: server.data }}
-							onSubmit={save}
-							onCancel={() => navigate('/settings/agent/mcp')}
-							onRemove={server.source === 'configured' ? remove : undefined}
-							action={
-								<Button
-									type="button"
-									variant="outline"
-									onClick={() => void test()}
-									disabled={testing || saving}
-								>
-									{testing ? (
-										<RefreshCw className="size-3.5 animate-spin" />
-									) : (
-										<FlaskConical className="size-3.5" />
-									)}
-									{testing ? 'Testing' : 'Test'}
-								</Button>
-							}
-						/>
-					</div>
+					<McpServerForm
+						initial={{ id: server.id, entry: server.data }}
+						onSubmit={save}
+						onCancel={() => navigate('/settings/agent/mcp')}
+						onRemove={server.source === 'configured' ? remove : undefined}
+						action={
+							<Button
+								type="button"
+								variant="outline"
+								onClick={() => void test()}
+								disabled={testing || saving}
+							>
+								{testing ? (
+									<RefreshCw className="size-3.5 animate-spin" />
+								) : (
+									<FlaskConical className="size-3.5" />
+								)}
+								{testing ? 'Testing' : 'Test'}
+							</Button>
+						}
+					/>
 				</SettingsPanel>
 			</SettingsSection>
 		</SettingsPageShell>
