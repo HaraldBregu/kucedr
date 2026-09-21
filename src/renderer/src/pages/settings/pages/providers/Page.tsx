@@ -214,7 +214,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 
 	const saveSearchEntry = async (providerId: string): Promise<void> => {
 		const entry = providerEntries.find((item) => item.providerId === providerId);
-		const apiKey = entry?.apiKey.trim() ?? '';
+		const apiKey = entry?.apiKey.trim() || entry?.savedApiKey.trim() || '';
 		if (!entry || !apiKey) return;
 
 		setSavingProviderId(providerId);
@@ -348,7 +348,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 													void saveProviderEntry(provider.id, kind);
 												}
 											}}
-											placeholder={t('settings.providers.apiKeyPlaceholder')}
+											placeholder={
+												entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
+											}
 											spellCheck={false}
 											type="text"
 											value={entry.apiKey}
