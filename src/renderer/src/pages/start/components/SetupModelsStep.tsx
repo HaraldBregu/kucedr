@@ -54,7 +54,6 @@ type SetupModelsStepProps = {
 		providerId: string,
 		modelId: string
 	) => void;
-	readonly onLocalModelChange: (serviceId: ModelServiceId, modelId: string) => void;
 };
 
 export function SetupLocalModelSelector({
@@ -157,7 +156,6 @@ export function SetupModelsStep({
 	loadingModels,
 	savingConfig,
 	onServiceChange,
-	onLocalModelChange,
 }: SetupModelsStepProps): React.JSX.Element {
 	const [availableLocalModels, setAvailableLocalModels] = useState<string[]>([]);
 	const assistantServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>

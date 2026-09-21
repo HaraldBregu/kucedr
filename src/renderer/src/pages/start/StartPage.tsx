@@ -26,7 +26,7 @@ const StartPage: React.FC = () => {
 	const { phase, start, restart, refreshConfiguration } = useOnboarding();
 	const [state, dispatch] = useReducer(setupReducer, undefined, createInitialSetupState);
 	const { step, serviceStates, loadingModels, savingConfig, errorMessage } = state;
-	const { handleServiceChange, handleLocalModelChange, handleSaveModels } = useSetupModelServices(
+	const { handleServiceChange, handleSaveModels } = useSetupModelServices(
 		state,
 		dispatch
 	);
@@ -131,7 +131,6 @@ const StartPage: React.FC = () => {
 				loadingModels={loadingModels}
 				savingConfig={savingConfig}
 				onServiceChange={handleServiceChange}
-				onLocalModelChange={handleLocalModelChange}
 			/>
 		);
 	}
