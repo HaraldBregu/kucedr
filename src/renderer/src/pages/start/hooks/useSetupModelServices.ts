@@ -17,8 +17,9 @@ export async function loadModelServiceState(
 		service.getSelection().catch(() => undefined),
 		service.loadModelGroups().catch(() => []),
 	]);
+	const selectedProviderId = selection?.providerId === 'custom' ? 'ollama' : selection?.providerId;
 	const selectedGroup = selection
-		? modelGroups.find((group) => group.provider.id === selection.providerId)
+		? modelGroups.find((group) => group.provider.id === selectedProviderId)
 		: undefined;
 	const selectedModel = selectedGroup?.models.find((model) => model.id === selection?.modelId);
 	if ((selection?.providerId === 'ollama' || selection?.providerId === 'custom') && selectedGroup) {
