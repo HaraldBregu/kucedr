@@ -9,11 +9,13 @@ jest.mock('@pages/settings/components/model-configuration', () => ({
 		grouped,
 		showFieldLabel,
 		triggerTitle,
+		children,
 	}: {
 		idPrefix: string;
 		grouped?: boolean;
 		showFieldLabel?: boolean;
 		triggerTitle: React.ReactNode;
+		children?: React.ReactNode;
 	}) => (
 		<div
 			data-testid={idPrefix}
@@ -21,6 +23,7 @@ jest.mock('@pages/settings/components/model-configuration', () => ({
 			data-show-field-label={String(showFieldLabel)}
 		>
 			{triggerTitle}
+			{children}
 		</div>
 	),
 }));
@@ -67,6 +70,7 @@ it('groups model services in one card', () => {
 			loadingModels={false}
 			savingConfig={false}
 			onServiceChange={jest.fn()}
+			onLocalModelChange={jest.fn()}
 		/>
 	);
 
@@ -105,4 +109,51 @@ it('groups model services in one card', () => {
 	]);
 	expect(screen.queryByTestId('setup-health')).not.toBeInTheDocument();
 	expect(screen.queryByTestId('setup-tasks')).not.toBeInTheDocument();
+});
+
+it('uses the Assistant local-model controls for Ollama', async () => {
+	Object.defineProperty(window, 'provider', {
+		configurable: true,
+		value: {
+			list: jest.fn().mockResolvedValue([
+				{
+					id: 'custom',
+					name: 'Ollama',
+					apiKey: 'ollama',
+					baseUrl: 'http://localhost:11434/api',
+				},
+			]),
+			listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b']),
+		},
+	});
+	const serviceStates = {
+		...SERVICE_STATES,
+		assistant: {
+			providerId: 'custom',
+			modelId: 'local',
+			modelGroups: [
+				{
+					provider: { id: 'custom', name: 'Local model', baseUrl: '' },
+					models: [{ id: 'local', name: 'Local model' }],
+				},
+			],
+		},
+	};
+
+	render(
+		<SetupModelsStep
+			serviceStates={serviceStates}
+			loadingModels={false}
+			savingConfig={false}
+			onServiceChange={jest.fn()}
+			onLocalModelChange={jest.fn()}
+		/>
+	);
+
+	expect(await screen.findByLabelText('Local provider')).toHaveTextContent('Ollama');
+	expect(await screen.findByLabelText('Local model')).toBeInTheDocument();
+	expect(window.provider.listCustomModels).toHaveBeenCalledWith({
+		baseUrl: 'http://localhost:11434/api',
+		apiKey: 'ollama',
+	});
 });
