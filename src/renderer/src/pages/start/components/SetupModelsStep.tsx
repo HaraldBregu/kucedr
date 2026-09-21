@@ -183,7 +183,7 @@ export function SetupModelsStep({
 				<section aria-label="Model providers" className="min-w-0">
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
-							{assistantServices.map((service, index) => (
+							{assistantServices.map((service) => (
 								<React.Fragment key={service.id}>
 									<ModelProviderConfiguration
 										configState={toModelConfigurationState(
