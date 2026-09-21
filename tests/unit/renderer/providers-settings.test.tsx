@@ -9,13 +9,13 @@ jest.mock('react-i18next', () => {
 		'settings.providers.description': 'Connect providers and configure models.',
 		'settings.overview.groups.mlModels': 'Models',
 		'settings.providers.localModels.title': 'Local models',
-		'settings.providers.localModels.model': 'Local model',
+		'settings.providers.localModels.model': 'Ollama',
 		'settings.providers.localModels.compatibility': 'OpenAI-compatible API',
 		'settings.providers.localModels.url': 'URL',
 		'settings.providers.localModels.modelId': 'Model',
 		'settings.providers.localModels.token': 'Token',
 		'settings.providers.localModels.connect': 'Connect',
-		'settings.providers.localModels.edit': 'Edit local model',
+		'settings.providers.localModels.edit': 'Edit Ollama',
 		'settings.providers.localModels.refresh': 'Refresh local models',
 		'settings.tabs.channels': 'Channels',
 		'settings.tabs.databases': 'Database',
@@ -102,7 +102,8 @@ describe('Providers settings', () => {
 		);
 
 		expect(screen.getByRole('heading', { name: 'Models' })).toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Local models' })).toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'Local models' })).not.toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Ollama' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Search' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Channels' })).not.toBeInTheDocument();

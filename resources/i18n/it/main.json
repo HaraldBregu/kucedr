@@ -1012,13 +1012,13 @@
 			"apiKeyPlaceholder": "Incolla chiave API",
 			"localModels": {
 				"title": "Modelli locali",
-				"model": "Modello locale",
+				"model": "Ollama",
 				"compatibility": "API compatibile con OpenAI",
 				"url": "URL",
 				"modelId": "Modello",
 				"token": "Token",
 				"connect": "Connetti",
-				"edit": "Modifica modello locale",
+				"edit": "Modifica Ollama",
 				"refresh": "Aggiorna modelli locali"
 			},
 			"addProvider": "Aggiungi Provider",

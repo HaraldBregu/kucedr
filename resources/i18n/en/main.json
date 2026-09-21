@@ -1013,13 +1013,13 @@
 			"apiKeyPlaceholder": "Paste API key",
 			"localModels": {
 				"title": "Local models",
-				"model": "Local model",
+				"model": "Ollama",
 				"compatibility": "OpenAI-compatible API",
 				"url": "URL",
 				"modelId": "Model",
 				"token": "Token",
 				"connect": "Connect",
-				"edit": "Edit local model",
+				"edit": "Edit Ollama",
 				"refresh": "Refresh local models"
 			},
 			"addProvider": "Add Provider",

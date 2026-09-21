@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
+import ollamaLogo from '@resources/providers/ollama/images/official/ollama.svg';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -445,9 +446,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							customProvider.editing && 'pb-3'
 						)}
 					>
-						<div className="flex size-8 shrink-0 items-center justify-center rounded-md border border-border bg-muted text-xs font-semibold text-muted-foreground">
-							+
-						</div>
+						<ProviderAvatar
+							providerId="ollama"
+							name="Ollama"
+							iconDarkUrl={ollamaLogo}
+							iconLightUrl={ollamaLogo}
+							className="bg-white dark:bg-white"
+						/>
 						<div className="min-w-0 flex-1">
 							<h3 className="truncate text-sm font-semibold leading-tight text-foreground">
 								{t('settings.providers.localModels.model')}
@@ -651,6 +656,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
+						{!embedded && <div className="space-y-3">{renderCustomProviderCard()}</div>}
 						{embedded ? (
 							<div className="space-y-3 pb-4">
 								{featuredProviders.map((provider) => renderProviderCard(provider, 'models'))}
@@ -665,12 +671,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						)}
 					</SettingsSection>
 				)}
-
-			{!embedded && (section === undefined || section === 'models') && (
-				<SettingsSection title={t('settings.providers.localModels.title')}>
-					<div className="space-y-3 pb-4">{renderCustomProviderCard()}</div>
-				</SettingsSection>
-			)}
 
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>
