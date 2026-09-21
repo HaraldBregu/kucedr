@@ -57,7 +57,7 @@ type SetupModelsStepProps = {
 	readonly onLocalModelChange: (serviceId: ModelServiceId, modelId: string) => void;
 };
 
-function SetupLocalModelSelector({
+export function SetupLocalModelSelector({
 	selectedModelId,
 	onChange,
 }: {
