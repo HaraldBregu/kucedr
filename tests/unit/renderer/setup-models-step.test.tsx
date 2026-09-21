@@ -26,12 +26,14 @@ jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => 
 jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/conversation', () => ({
 	__esModule: true,
 	default: ({
+		buttonClassName,
 		buttonDropdown,
 		icon,
 		selectDefaultModel,
 		showSelectedModel,
 		showFieldLabel,
 	}: {
+		buttonClassName?: string;
 		buttonDropdown?: boolean;
 		icon?: unknown;
 		selectDefaultModel?: boolean;
@@ -41,6 +43,7 @@ jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/conversation
 		<div
 			data-default-model={String(selectDefaultModel)}
 			data-button-dropdown={String(buttonDropdown)}
+			data-button-class-name={buttonClassName}
 			data-has-icon={String(Boolean(icon))}
 			data-show-selected-model={String(showSelectedModel)}
 			data-show-field-label={String(showFieldLabel)}
@@ -109,6 +112,10 @@ it('groups the chat and voice Assistant configurations', () => {
 		'data-button-dropdown',
 		'true'
 	);
+	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
+		'data-button-class-name',
+		expect.stringContaining('w-40')
+	);
 	expect(within(toolsGroup).getByTestId('setup-search')).toBeInTheDocument();
 	for (const id of ['image', 'video', 'audio']) {
 		expect(within(toolsGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
@@ -161,6 +168,7 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 	);
 
 	expect(await screen.findByLabelText('Local provider')).toHaveTextContent(/ollama/i);
+	expect(screen.getByLabelText('Local provider')).toHaveClass('w-40');
 	const modelInput = await screen.findByLabelText('Local model');
 	expect(modelInput).toBeInTheDocument();
 	expect(modelInput).toHaveClass('w-40');
