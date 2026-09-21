@@ -322,9 +322,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											}
 											onKeyDown={(event) => {
 												if (event.key === 'Enter' && canSaveProvider) {
-											void (kind === 'search'
-												? saveSearchEntry(provider.id)
-												: saveProviderEntry(provider.id, kind));
+													void (kind === 'search'
+														? saveSearchEntry(provider.id)
+														: saveProviderEntry(provider.id, kind));
 												}
 											}}
 											placeholder={
