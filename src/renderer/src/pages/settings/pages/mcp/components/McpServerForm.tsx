@@ -352,7 +352,8 @@ export function McpServerForm({
 									installed app and development. MCP_GOOGLE_CLIENT_ID and MCP_GOOGLE_CLIENT_SECRET
 									are optional environment fallbacks; this server's credentials take precedence.
 									Desktop clients support loopback callbacks; Web clients must register the exact
-									MCP callback URL. Workspace MCP access may require enrollment in the Developer Preview.
+									MCP callback URL. Workspace MCP access may require enrollment in the Developer
+									Preview.
 								</p>
 							)}
 							<p className="text-[12px] text-muted-foreground">
@@ -374,28 +375,28 @@ export function McpServerForm({
 								</Field>
 							)}
 							<>
-									<Field>
-										<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
-										<Input
-											id="mcp-client-id"
-											value={clientId}
-											onChange={(e) => setClientId(e.target.value)}
-											autoComplete="off"
-											className={SMALL_INPUT_CLASS}
-										/>
-									</Field>
-									<Field>
-										<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>
-										<Input
-											id="mcp-client-secret"
-											type="password"
-											placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
-											value={clientSecret}
-											onChange={(e) => setClientSecret(e.target.value)}
-											autoComplete="off"
-											className={SMALL_INPUT_CLASS}
-										/>
-									</Field>
+								<Field>
+									<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
+									<Input
+										id="mcp-client-id"
+										value={clientId}
+										onChange={(e) => setClientId(e.target.value)}
+										autoComplete="off"
+										className={SMALL_INPUT_CLASS}
+									/>
+								</Field>
+								<Field>
+									<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>
+									<Input
+										id="mcp-client-secret"
+										type="password"
+										placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
+										value={clientSecret}
+										onChange={(e) => setClientSecret(e.target.value)}
+										autoComplete="off"
+										className={SMALL_INPUT_CLASS}
+									/>
+								</Field>
 							</>
 							{removeAction()}
 						</div>

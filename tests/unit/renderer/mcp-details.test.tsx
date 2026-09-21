@@ -189,12 +189,16 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		expect(mcpApi.upsert).toHaveBeenCalledTimes(1);
 		expect(mcpApi.upsert).toHaveBeenCalledWith(
 			'google',
-			expect.objectContaining({ type: 'http', url: `https://${host}.googleapis.com/mcp/v1`, client_id: 'configured-client', client_secret: 'configured-secret' })
+			expect.objectContaining({
+				type: 'http',
+				url: `https://${host}.googleapis.com/mcp/v1`,
+				client_id: 'configured-client',
+				client_secret: 'configured-secret',
+			})
 		);
 		expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
 	}
 );
-
 
 it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 	'reopens %s with its client ID and keeps a redacted secret unchanged',
@@ -203,7 +207,11 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		server = {
 			id: 'google',
 			source: 'configured',
-			data: { type: 'http', url: `https://${host}.googleapis.com/mcp/v1`, client_id: 'saved-client' },
+			data: {
+				type: 'http',
+				url: `https://${host}.googleapis.com/mcp/v1`,
+				client_id: 'saved-client',
+			},
 		};
 		renderDetails('google');
 		expect(await screen.findByLabelText(/Client ID/)).toHaveValue('saved-client');
@@ -212,6 +220,11 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		expect(secret).toHaveAttribute('type', 'password');
 		expect(secret).toHaveAttribute('placeholder', 'Leave blank to keep the saved secret');
 		await user.click(screen.getByRole('button', { name: 'Save' }));
-		await waitFor(() => expect(mcpApi.upsert).toHaveBeenCalledWith('google', expect.objectContaining({ client_id: 'saved-client', client_secret: undefined })));
+		await waitFor(() =>
+			expect(mcpApi.upsert).toHaveBeenCalledWith(
+				'google',
+				expect.objectContaining({ client_id: 'saved-client', client_secret: undefined })
+			)
+		);
 	}
 );
