@@ -61,7 +61,10 @@ it('groups the chat and voice Assistant configurations', () => {
 	expect(chatAssistantGroup.parentElement).toHaveClass('mt-6');
 	const serviceIds = ['assistant', 'voice', 'transcription'];
 	for (const id of serviceIds) {
-		expect(within(chatAssistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
+		expect(within(chatAssistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute(
+			'data-slot',
+			'item'
+		);
 		expect(within(chatAssistantGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
 	expect(within(chatAssistantGroup).getByTestId('setup-assistant')).toHaveTextContent('LLM Model');
