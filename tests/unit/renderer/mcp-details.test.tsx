@@ -205,14 +205,14 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		expect(mcpApi.upsert).toHaveBeenCalledTimes(1);
 		expect(mcpApi.upsert).toHaveBeenCalledWith(
 			'google',
-				expect.objectContaining({
-					type: 'http',
-					url: `https://${host}.googleapis.com/mcp/v1`,
-					token: undefined,
-					client_id: undefined,
-					client_secret: undefined,
-				})
-			);
-			expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
-		}
+			expect.objectContaining({
+				type: 'http',
+				url: `https://${host}.googleapis.com/mcp/v1`,
+				token: undefined,
+				client_id: undefined,
+				client_secret: undefined,
+			})
+		);
+		expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
+	}
 );

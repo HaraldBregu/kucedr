@@ -151,26 +151,22 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			{ windows: { has: () => true }, apps: { has: () => false } } as never,
 			{} as never
 		);
-		jest
-			.mocked(getMcpServers)
-			.mockReturnValue({
-				google: {
-					type: 'http',
-					url: `https://${host}.googleapis.com/mcp/v1`,
-					client_id: 'configured-google-id',
-					client_secret: 'configured-google-secret',
-				},
-			});
+		jest.mocked(getMcpServers).mockReturnValue({
+			google: {
+				type: 'http',
+				url: `https://${host}.googleapis.com/mcp/v1`,
+				client_id: 'configured-google-id',
+				client_secret: 'configured-google-secret',
+			},
+		});
 		jest
 			.mocked(getMcpOauth)
 			.mockReturnValue({ client_id: 'saved-google-id', client_secret: 'saved-google-secret' });
-		jest
-			.mocked(startOauthCallbackServer)
-			.mockResolvedValue({
-				redirectUrl: 'http://127.0.0.1:3001/oauth/callback',
-				code: Promise.resolve('code'),
-				close: jest.fn(),
-			});
+		jest.mocked(startOauthCallbackServer).mockResolvedValue({
+			redirectUrl: 'http://127.0.0.1:3001/oauth/callback',
+			code: Promise.resolve('code'),
+			close: jest.fn(),
+		});
 		jest.mocked(createOAuthProvider).mockReturnValue({} as never);
 		jest.mocked(auth).mockResolvedValue('AUTHORIZED');
 		const handler = jest

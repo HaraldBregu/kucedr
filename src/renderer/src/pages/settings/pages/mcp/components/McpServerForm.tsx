@@ -342,49 +342,51 @@ export function McpServerForm({
 						removeAction()
 					) : (
 						<details>
-						<summary className="cursor-pointer text-[13px] text-muted-foreground">Advanced</summary>
-						<div className="grid gap-4 pt-4">
-							<p className="text-[12px] text-muted-foreground">
-								The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
-								URL if your authorization server requires it. To use another loopback URL, set
-								CLIENT_REDIRECT_URL in .env and restart Kucedr.
-							</p>
-							{!isGitHubRemote && (
-								<Field>
-									<Label htmlFor="mcp-token">Access token (optional)</Label>
-									<Input
-										id="mcp-token"
-										type="password"
-										value={token}
-										onChange={(e) => setToken(e.target.value)}
-										autoComplete="off"
-									/>
-								</Field>
-							)}
-							<>
-								<Field>
-									<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
-									<Input
-										id="mcp-client-id"
-										value={clientId}
-										onChange={(e) => setClientId(e.target.value)}
-										autoComplete="off"
-									/>
-								</Field>
-								<Field>
-									<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>
-									<Input
-										id="mcp-client-secret"
-										type="password"
-										placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
-										value={clientSecret}
-										onChange={(e) => setClientSecret(e.target.value)}
-										autoComplete="off"
-									/>
-								</Field>
-							</>
-							{removeAction()}
-						</div>
+							<summary className="cursor-pointer text-[13px] text-muted-foreground">
+								Advanced
+							</summary>
+							<div className="grid gap-4 pt-4">
+								<p className="text-[12px] text-muted-foreground">
+									The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
+									URL if your authorization server requires it. To use another loopback URL, set
+									CLIENT_REDIRECT_URL in .env and restart Kucedr.
+								</p>
+								{!isGitHubRemote && (
+									<Field>
+										<Label htmlFor="mcp-token">Access token (optional)</Label>
+										<Input
+											id="mcp-token"
+											type="password"
+											value={token}
+											onChange={(e) => setToken(e.target.value)}
+											autoComplete="off"
+										/>
+									</Field>
+								)}
+								<>
+									<Field>
+										<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
+										<Input
+											id="mcp-client-id"
+											value={clientId}
+											onChange={(e) => setClientId(e.target.value)}
+											autoComplete="off"
+										/>
+									</Field>
+									<Field>
+										<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>
+										<Input
+											id="mcp-client-secret"
+											type="password"
+											placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
+											value={clientSecret}
+											onChange={(e) => setClientSecret(e.target.value)}
+											autoComplete="off"
+										/>
+									</Field>
+								</>
+								{removeAction()}
+							</div>
 						</details>
 					)}
 				</>
