@@ -1,5 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { ModelProviderConfiguration } from '@pages/settings/components/model-configuration';
 import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
 import { SetupSearch } from './SetupSearch';
@@ -26,6 +34,7 @@ type SetupModelsStepProps = {
 		providerId: string,
 		modelId: string
 	) => void;
+	readonly onLocalModelChange: (serviceId: ModelServiceId, modelId: string) => void;
 };
 
 function toModelConfigurationState(
@@ -56,11 +65,85 @@ function getSelectionSummary(serviceState: ModelServiceState, fallback: string):
 		: fallback;
 }
 
+function SetupLocalModelSelector({
+	selectedModelId,
+	onChange,
+}: {
+	readonly selectedModelId?: string;
+	readonly onChange: (modelId: string) => void;
+}): React.JSX.Element {
+	const [models, setModels] = useState<string[]>([]);
+	const [loading, setLoading] = useState(true);
+
+	useEffect(() => {
+		let cancelled = false;
+		void window.provider
+			.list('models')
+			.then((providers) => providers.find((provider) => provider.id === 'custom'))
+			.then((provider) =>
+				provider
+					? window.provider.listCustomModels({
+							baseUrl: provider.baseUrl,
+							apiKey: provider.apiKey,
+						})
+					: []
+			)
+			.then((availableModels) => {
+				if (!cancelled) setModels(availableModels);
+			})
+			.catch(() => {
+				if (!cancelled) setModels([]);
+			})
+			.finally(() => {
+				if (!cancelled) setLoading(false);
+			});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
+
+	return (
+		<div className="grid gap-3 pt-3">
+			<div className="grid gap-1.5">
+				<Label htmlFor="setup-assistant-local-provider">Local provider</Label>
+				<Select value="ollama" disabled>
+					<SelectTrigger id="setup-assistant-local-provider">
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="ollama">Ollama</SelectItem>
+					</SelectContent>
+				</Select>
+			</div>
+			<div className="grid gap-1.5">
+				<Label htmlFor="setup-assistant-local-model">Local model</Label>
+				<Select
+					value={selectedModelId}
+					disabled={loading || models.length === 0}
+					onValueChange={(value) => onChange(String(value))}
+				>
+					<SelectTrigger id="setup-assistant-local-model">
+						<SelectValue placeholder={loading ? 'Loading models...' : 'Select a model'} />
+					</SelectTrigger>
+					<SelectContent>
+						{models.map((model) => (
+							<SelectItem key={model} value={model}>
+								{model}
+							</SelectItem>
+						))}
+					</SelectContent>
+					</Select>
+			</div>
+		</div>
+	);
+}
+
 export function SetupModelsStep({
 	serviceStates,
 	loadingModels,
 	savingConfig,
 	onServiceChange,
+	onLocalModelChange,
 }: SetupModelsStepProps): React.JSX.Element {
 	const assistantServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>
 		ASSISTANT_SERVICE_IDS.has(service.id)
@@ -96,7 +179,15 @@ export function SetupModelsStep({
 										onChange={(providerId, modelId) =>
 											onServiceChange(service.id, providerId, modelId)
 										}
-									/>
+									>
+										{service.id === 'assistant' &&
+											serviceStates.assistant.providerId === 'custom' && (
+												<SetupLocalModelSelector
+													selectedModelId={serviceStates.assistant.localModelId}
+													onChange={(modelId) => onLocalModelChange('assistant', modelId)}
+												/>
+											)}
+									</ModelProviderConfiguration>
 									{service.id === 'assistant' && (
 										<RealtimeConversationConfiguration
 											selectDefaultModel={false}
