@@ -258,6 +258,9 @@ export function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function getProviderCatalogItem(providerId: string): ProviderCatalogItem {
+	if (providerId === 'custom') {
+		return { id: 'custom', name: 'Ollama', capabilities: 'Local models', supported: true };
+	}
 	return (
 		actionableProviderCatalog().find((provider) => provider.id === providerId) ?? {
 			id: providerId,
