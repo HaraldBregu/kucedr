@@ -3,6 +3,14 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, FlaskConical, Plug, RefreshCw } from 'lucide-react';
 import type { McpData, McpServerInfo, McpTestResult } from '@shared/mcp_types';
 import { Button } from '@/components/ui/button';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import {
 	SettingsEmptyState,
@@ -26,6 +34,7 @@ const McpDetailsPage: React.FC = () => {
 	const [error, setError] = useState('');
 	const [success, setSuccess] = useState('');
 	const [testResult, setTestResult] = useState<McpTestResult>();
+	const [confirmRemoveOpen, setConfirmRemoveOpen] = useState(false);
 
 	const load = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -96,6 +105,7 @@ const McpDetailsPage: React.FC = () => {
 		setError('');
 		try {
 			await window.mcp.delete(server.id);
+			setConfirmRemoveOpen(false);
 			navigate('/settings/agent/mcp');
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
@@ -207,8 +217,6 @@ const McpDetailsPage: React.FC = () => {
 					<McpServerForm
 						initial={{ id: server.id, entry: server.data }}
 						onSubmit={save}
-						onCancel={() => navigate('/settings/agent/mcp')}
-						onRemove={server.source === 'configured' ? remove : undefined}
 						action={
 							<Button
 								type="button"
@@ -226,6 +234,37 @@ const McpDetailsPage: React.FC = () => {
 						}
 					/>
 				</SettingsPanel>
+				{server.source === 'configured' && (
+					<SettingsPanel className="p-4!">
+						<Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
+							<Button
+								type="button"
+								variant="destructive"
+								size="sm"
+								disabled={saving}
+								onClick={() => setConfirmRemoveOpen(true)}
+							>
+								Remove MCP server
+							</Button>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Delete MCP server</DialogTitle>
+									<DialogDescription>
+										Remove <span className="font-medium text-foreground">{title}</span>? This cannot be undone.
+									</DialogDescription>
+								</DialogHeader>
+								<DialogFooter>
+									<Button type="button" variant="outline" onClick={() => setConfirmRemoveOpen(false)}>
+										Cancel
+									</Button>
+									<Button type="button" variant="destructive" disabled={saving} onClick={() => void remove()}>
+										Delete
+									</Button>
+								</DialogFooter>
+							</DialogContent>
+						</Dialog>
+					</SettingsPanel>
+				)}
 			</SettingsSection>
 		</SettingsPageShell>
 	);
