@@ -57,11 +57,10 @@ const StartPage: React.FC = () => {
 				const modelProviderIds = new Set(
 					actionableProviderCatalog().map((provider) => provider.id)
 				);
-				const hasSavedKey = storedProviders.some(
-					(provider) =>
-						(provider.id === 'custom'
-							? Boolean(provider.apiKey.trim() && provider.baseUrl.trim())
-							: modelProviderIds.has(provider.id) && Boolean(provider.apiKey.trim()))
+				const hasSavedKey = storedProviders.some((provider) =>
+					provider.id === 'custom'
+						? Boolean(provider.apiKey.trim() && provider.baseUrl.trim())
+						: modelProviderIds.has(provider.id) && Boolean(provider.apiKey.trim())
 				);
 				if (hasSavedKey) {
 					dispatch({ type: 'GO_TO_STEP', step: 'search' });

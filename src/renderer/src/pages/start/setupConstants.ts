@@ -290,7 +290,10 @@ export function getSelectedServiceModel(
 		selectedModel?.id === 'local' &&
 		serviceState.localModelId
 	) {
-		return { provider: selectedProvider.provider, model: { id: serviceState.localModelId, name: serviceState.localModelId } };
+		return {
+			provider: selectedProvider.provider,
+			model: { id: serviceState.localModelId, name: serviceState.localModelId },
+		};
 	}
 	return selectedProvider && selectedModel
 		? { provider: selectedProvider.provider, model: selectedModel }

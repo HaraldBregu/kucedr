@@ -132,7 +132,7 @@ function SetupLocalModelSelector({
 							</SelectItem>
 						))}
 					</SelectContent>
-					</Select>
+				</Select>
 			</div>
 		</div>
 	);
