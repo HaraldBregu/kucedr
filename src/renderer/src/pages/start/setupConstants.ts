@@ -203,7 +203,7 @@ export const STEP_COPY: Record<SetupStep, { title: string; description: string }
 	models: {
 		title: 'Agent configuration',
 		description:
-			'Choose the model each service should use. Only the model is required — you can change any of these later in settings.',
+			'Choose how your assistant chats, speaks, listens, and uses tools. You can update these choices anytime in Settings.',
 	},
 };
 
