@@ -161,7 +161,9 @@ export function SetupModelsStep({
 	const assistantServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>
 		ASSISTANT_SERVICE_IDS.has(service.id)
 	);
-	const toolServices = MODEL_SERVICE_DEFINITIONS.filter((service) => TOOL_SERVICE_IDS.has(service.id));
+	const toolServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>
+		TOOL_SERVICE_IDS.has(service.id)
+	);
 
 	return (
 		<div className="mx-auto flex min-h-full w-full min-w-0 max-w-2xl flex-col justify-center py-8">
