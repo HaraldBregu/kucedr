@@ -252,8 +252,7 @@ export function SetupModelsStep({
 													labels={{ label: title, placeholder: 'Select a model' }}
 													onChange={(providerId, modelId) => {
 														if (service.id === 'assistant' && providerId === 'custom') {
-															onServiceChange('assistant', 'custom', 'local');
-															onLocalModelChange('assistant', modelId);
+														onServiceChange('assistant', 'custom', modelId);
 															return;
 														}
 														onServiceChange(service.id, providerId, modelId);

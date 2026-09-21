@@ -92,14 +92,24 @@ export function useSetupModelServices(state: SetupState, dispatch: Dispatch<Setu
 		modelId: string
 	): Promise<void> {
 		dispatch({ type: 'CLEAR_ERROR' });
-		dispatch({ type: 'CHANGE_SERVICE_SELECTION', serviceId, providerId, modelId });
+		const isAssistantLocalModel = serviceId === 'assistant' && providerId === 'custom';
+		dispatch({
+			type: 'CHANGE_SERVICE_SELECTION',
+			serviceId,
+			providerId,
+			modelId: isAssistantLocalModel ? 'local' : modelId,
+		});
+		if (isAssistantLocalModel) {
+			dispatch({ type: 'SET_LOCAL_MODEL', serviceId, modelId });
+		}
 
 		const service = MODEL_SERVICE_DEFINITIONS.find((item) => item.id === serviceId);
 		if (!service?.saveOnChange) return;
 		const selected = getSelectedServiceModel({
 			...serviceStates[serviceId],
 			providerId,
-			modelId,
+			modelId: isAssistantLocalModel ? 'local' : modelId,
+			localModelId: isAssistantLocalModel ? modelId : undefined,
 		});
 		if (!selected) return;
 
@@ -116,11 +126,6 @@ export function useSetupModelServices(state: SetupState, dispatch: Dispatch<Setu
 		} finally {
 			dispatch({ type: 'SET_SAVING_CONFIG', saving: false });
 		}
-	}
-
-	function handleLocalModelChange(serviceId: ModelServiceId, modelId: string): void {
-		dispatch({ type: 'CLEAR_ERROR' });
-		dispatch({ type: 'SET_LOCAL_MODEL', serviceId, modelId });
 	}
 
 	async function handleSaveModels(): Promise<boolean> {
@@ -152,7 +157,6 @@ export function useSetupModelServices(state: SetupState, dispatch: Dispatch<Setu
 
 	return {
 		handleServiceChange,
-		handleLocalModelChange,
 		handleSaveModels,
 	};
 }
