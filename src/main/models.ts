@@ -19,7 +19,6 @@ import type {
 import { userDataLocation } from './shared/user_data_location';
 import { parseProviderManifest } from '../shared/providers/validation';
 import { resourceRoot } from './shared/resource_root';
-import { getModelProvidersState } from './providers/providers_index';
 
 interface Catalog {
 	readonly models: readonly CatalogModel[];

@@ -128,7 +128,6 @@ describe('provider credential IPC boundary', () => {
 			name: 'Custom model provider',
 			apiKey: 'ollama',
 			baseUrl: 'http://localhost:11434/v1',
-			modelId: 'llama3.2:3b',
 		};
 		setProvider.mockReturnValue(provider);
 
@@ -139,7 +138,6 @@ describe('provider credential IPC boundary', () => {
 				id: 'custom',
 				apiKey: 'ollama',
 				baseUrl: 'http://localhost:11434/v1/',
-				modelId: ' llama3.2:3b ',
 			}
 		);
 
@@ -158,7 +156,6 @@ describe('provider credential IPC boundary', () => {
 					id: 'custom',
 					apiKey: 'ollama',
 					baseUrl: 'file:///tmp/model',
-					modelId: 'llama3.2:3b',
 				}
 			)
 		).toThrow('The provider base URL is invalid.');

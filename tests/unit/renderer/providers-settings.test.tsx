@@ -12,7 +12,6 @@ jest.mock('react-i18next', () => {
 		'settings.providers.localModels.model': 'Ollama',
 		'settings.providers.localModels.compatibility': 'OpenAI-compatible API',
 		'settings.providers.localModels.url': 'URL',
-		'settings.providers.localModels.modelId': 'Model',
 		'settings.providers.localModels.token': 'Token',
 		'settings.providers.localModels.connect': 'Connect',
 		'settings.providers.localModels.edit': 'Edit Ollama',
@@ -197,7 +196,6 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 	const customCard = baseUrlInput.closest('[data-slot="card"]');
 	expect(customCard).not.toBeNull();
 	await user.type(baseUrlInput, 'http://localhost:11434/v1');
-	await user.type(screen.getByLabelText('Model'), 'llama3.2:3b');
 	await user.type(screen.getByLabelText('Token'), 'ollama');
 	await user.click(within(customCard!).getByRole('button', { name: 'Save', exact: true }));
 
@@ -207,10 +205,9 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 			kind: 'models',
 			apiKey: 'ollama',
 			baseUrl: 'http://localhost:11434/v1',
-			modelId: 'llama3.2:3b',
 		})
 	);
-	expect(screen.getByText('llama3.2:3b')).toBeInTheDocument();
+	expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
 });
 
 it('loads available custom provider models', async () => {
@@ -231,8 +228,7 @@ it('loads available custom provider models', async () => {
 			apiKey: '',
 		})
 	);
-	expect(screen.getByLabelText('Model')).toHaveValue('llama3.2:3b');
-	expect(document.querySelector('option[value="qwen3:8b"]')).toBeInTheDocument();
+	expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
 });
 
 it('masks saved Search keys until editing', async () => {

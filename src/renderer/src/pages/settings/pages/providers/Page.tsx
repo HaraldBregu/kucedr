@@ -85,7 +85,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		savedBaseUrl: '',
 		editing: false,
 	});
-	const [customModels, setCustomModels] = useState<string[]>([]);
 	const [loadingCustomModels, setLoadingCustomModels] = useState(false);
 	const [savingProviderId, setSavingProviderId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -264,7 +263,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setError(null);
 		try {
 			const models = await window.provider.listCustomModels({ baseUrl, apiKey });
-			setCustomModels(models);
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not load models from the custom provider.'));
 		} finally {
