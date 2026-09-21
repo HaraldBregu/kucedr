@@ -17,14 +17,6 @@ import {
 import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
-import { Label } from '@/components/ui/label';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 import { updateModelOptions } from '@/lib/options';
 import type { Model } from '@/lib/compat';
 import type { PublicProvider } from '../../../../../../shared';
@@ -56,7 +48,7 @@ function getProviderLlmModels(providerId: string): Model[] {
 	return providerModels(providerId, 'llm');
 }
 
-const localModelProvider: PublicProvider = { id: 'custom', name: 'Local model', baseUrl: '' };
+const localModelProvider: PublicProvider = { id: 'custom', name: 'Ollama', baseUrl: '' };
 const localModelOption: Model = { id: 'local', name: 'Local model' };
 
 async function loadAssistantState(): Promise<ModelConfigurationState> {
@@ -68,15 +60,19 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		const provider = getCatalogProviderById(providerId);
 		return provider && getProviderLlmModels(providerId).length > 0 ? [provider] : [];
 	});
+	const localModel =
+		storedProvider?.id === 'custom' && storedModelId
+			? { id: storedModelId, name: storedModelId }
+			: localModelOption;
 	const modelGroups: ProviderModelGroup[] = [...providers, localModelProvider].map((provider) => ({
 		provider,
-		models: provider.id === 'custom' ? [localModelOption] : getProviderLlmModels(provider.id),
+		models: provider.id === 'custom' ? [localModel] : getProviderLlmModels(provider.id),
 	}));
 	const preferredGroup =
 		modelGroups.find((group) => group.provider.id === storedProvider?.id) ?? modelGroups[0];
 	const preferredModel =
 		storedProvider?.id === 'custom'
-			? localModelOption
+			? localModel
 			: (preferredGroup?.models.find((model) => model.id === storedModelId) ??
 				preferredGroup?.models[0]);
 
@@ -99,8 +95,7 @@ const AssistantPage: React.FC = () => {
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
 	const [modelOptions, setModelOptions] = useState<Record<string, unknown>>({});
 	const [localProvider, setLocalProvider] = useState<PublicProvider>();
-	const [localModels, setLocalModels] = useState<string[]>([]);
-	const [loadingLocalModels, setLoadingLocalModels] = useState(false);
+	const [hasLoadedLocalModels, setHasLoadedLocalModels] = useState(false);
 	const model = modelsFor('llm').find(
 		(item) => item.provider.id === state.providerId && item.id === state.modelId
 	);
@@ -133,8 +128,8 @@ const AssistantPage: React.FC = () => {
 		void window.agent.setModelOptions(next);
 	};
 	const loadLocalModels = async (): Promise<void> => {
-		setLoadingLocalModels(true);
 		try {
+			if (!window.provider) return;
 			const provider = (await window.provider.list('models')).find((item) => item.id === 'custom');
 			if (!provider) return;
 			setLocalProvider(provider);
@@ -142,22 +137,26 @@ const AssistantPage: React.FC = () => {
 				baseUrl: provider.baseUrl,
 				apiKey: provider.apiKey,
 			});
-			setLocalModels(models);
 			setState((current) => ({
 				...current,
 				modelGroups: current.modelGroups.map((group) =>
 					group.provider.id === 'custom'
-						? { ...group, models: models.map((id) => ({ id, name: id })) }
+						? {
+							...group,
+							provider: { ...group.provider, name: 'Ollama', baseUrl: provider.baseUrl },
+							models: models.map((id) => ({ id, name: id })),
+						}
 						: group
 				),
 			}));
 		} finally {
-			setLoadingLocalModels(false);
+			setHasLoadedLocalModels(true);
 		}
 	};
 	useEffect(() => {
-		void loadLocalModels();
-	}, []);
+		if (state.loading || hasLoadedLocalModels) return;
+		void loadLocalModels().catch(() => undefined);
+	}, [hasLoadedLocalModels, state.loading]);
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
 		saveModelOptions(updateModelOptions(modelOptions, path, value));
@@ -167,7 +166,7 @@ const AssistantPage: React.FC = () => {
 		if (nextProviderId === 'custom') {
 			const provider =
 				localProvider ??
-				(await window.provider.list('models')).find((item) => item.id === 'custom');
+				(await window.provider?.list('models'))?.find((item) => item.id === 'custom');
 			if (!provider) return;
 			setState((current) => ({
 				...current,
@@ -217,17 +216,6 @@ const AssistantPage: React.FC = () => {
 			}));
 		}
 	};
-	const handleLocalModelChange = async (modelId: string): Promise<void> => {
-		if (!localProvider || !modelId) return;
-		await window.agent.setProvider({
-			id: 'custom',
-			name: 'Ollama',
-			baseUrl: localProvider.baseUrl,
-		});
-		await window.agent.setModelId(modelId);
-		setState((current) => ({ ...current, providerId: 'custom', modelId: 'local', saved: true }));
-	};
-
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -256,49 +244,6 @@ const AssistantPage: React.FC = () => {
 					showContentSeparator={false}
 					onChange={(providerId, modelId) => void handleChange(providerId, modelId)}
 				>
-					{state.providerId === 'custom' && state.modelId === 'local' && (
-						<div className="grid gap-3 pt-3">
-							<div className="grid gap-1.5">
-								<Label htmlFor="assistant-local-provider">
-									{t('settings.modelServices.localProvider')}
-								</Label>
-								<Select value="ollama" disabled>
-									<SelectTrigger id="assistant-local-provider">
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="ollama">Ollama</SelectItem>
-									</SelectContent>
-								</Select>
-							</div>
-							<div className="grid gap-1.5">
-								<Label htmlFor="assistant-local-model">
-									{t('settings.modelServices.localModel')}
-								</Label>
-								<Select
-									disabled={loadingLocalModels || localModels.length === 0}
-									onValueChange={(value) => void handleLocalModelChange(String(value))}
-								>
-									<SelectTrigger id="assistant-local-model">
-										<SelectValue
-											placeholder={
-												loadingLocalModels
-													? t('settings.modelServices.modelsLoading')
-													: t('settings.modelServices.modelPlaceholder')
-											}
-										/>
-									</SelectTrigger>
-									<SelectContent>
-										{localModels.map((model) => (
-											<SelectItem key={model} value={model}>
-												{model}
-											</SelectItem>
-										))}
-									</SelectContent>
-								</Select>
-							</div>
-						</div>
-					)}
 					<ModelOptions
 						key={`${state.providerId}:${state.modelId}`}
 						inputs={inputs}
