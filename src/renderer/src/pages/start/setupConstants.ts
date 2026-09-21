@@ -183,7 +183,7 @@ export const ONBOARDING_STEP_TITLES: Record<OnboardingStep, string> = {
 	landing: 'Welcome',
 	auth: 'Account',
 	modelProvider: 'Model',
-	search: 'Search',
+	search: 'Search providers',
 	models: 'Models',
 };
 
@@ -196,8 +196,9 @@ export const STEP_COPY: Record<SetupStep, { title: string; description: string }
 			'Connect the model providers you want to use. You can add more providers at any time.',
 	},
 	search: {
-		title: 'Search Engine',
-		description: 'Add an API key for the search engine you want Kucedr to use.',
+		title: 'Search providers',
+		description:
+			'Connect the search provider you want Kucedr to use. You can add more providers at any time.',
 	},
 	models: {
 		title: 'Assistant setup',
