@@ -358,26 +358,15 @@ export function McpServerForm({
 
 			{type === 'http' ? (
 				<>
-					<SettingsRow
-						className="border-b-0!"
+					<McpFormItem
 						title={<Label htmlFor="mcp-url">Server URL</Label>}
-						actions={
-							<Input
-								id="mcp-url"
-								value={url}
-								onChange={(e) => setUrl(e.target.value)}
-								placeholder="https://example.com/mcp"
-								className="sm:w-80"
-							/>
-						}
-					/>
+						description="The MCP endpoint Kucedr connects to."
+					>
+						<Input id="mcp-url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com/mcp" className={CONTROL_CLASS} />
+					</McpFormItem>
 					{isGitHubRemote ? (
-						<SettingsRow
-							className="border-b-0!"
-							title={<Label htmlFor="mcp-token">GitHub personal access token</Label>}
-							description="GitHub remote MCP requires a bearer token."
-							actions={
-								<div className="flex w-full flex-col items-stretch gap-2 sm:w-80">
+						<McpFormItem title={<Label htmlFor="mcp-token">GitHub personal access token</Label>} description="GitHub remote MCP requires a bearer token.">
+							<div className="flex w-full flex-col items-stretch gap-2">
 									<Input
 										id="mcp-token"
 										type="password"
@@ -398,20 +387,13 @@ export function McpServerForm({
 										Create GitHub token
 									</Button>
 								</div>
-							}
-						/>
+						</McpFormItem>
 					) : isEdit && isValid ? (
-						<SettingsRow
-							className="border-b-0!"
-							title="Authentication"
-							actions={<McpOAuthButton id={serverId} beforeStart={persist} />}
-						/>
+						<McpFormItem title="Authentication" description="Connect this server with OAuth.">
+							<McpOAuthButton id={serverId} beforeStart={persist} />
+						</McpFormItem>
 					) : (
-						<SettingsRow
-							className="border-b-0!"
-							title="Authentication"
-							description="Save the server before connecting with OAuth."
-						/>
+						<McpFormItem title="Authentication" description="Save the server before connecting with OAuth." />
 					)}
 					{isGoogleRemote ? (
 						removeAction()
