@@ -225,6 +225,15 @@ beforeEach(() => {
 			]),
 		},
 	});
+	Object.defineProperty(window, 'provider', {
+		configurable: true,
+		value: {
+			list: jest.fn().mockResolvedValue([
+				{ id: 'custom', name: 'Ollama', baseUrl: 'http://localhost:11434' },
+			]),
+			listCustomModels: jest.fn().mockResolvedValue(['gemma3:4b', 'llama3.2:1b']),
+		},
+	});
 	Object.defineProperty(window, 'models', {
 		configurable: true,
 		value: {
@@ -351,6 +360,40 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 
 	await user.click(screen.getByRole('link', { name: /^Tools/ }));
 	expect(await screen.findByRole('heading', { name: 'Tools' })).toBeInTheDocument();
+});
+
+it('loads Ollama models into the Agent model picker and saves the selected model', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<AssistantPage />
+		</MemoryRouter>
+	);
+
+	const trigger = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
+		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
+	);
+	expect(trigger).toBeDefined();
+	if (!trigger) return;
+	await user.click(trigger);
+	const selector = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
+		(element) => element.getAttribute('aria-haspopup') === 'dialog'
+	);
+	expect(selector).toBeDefined();
+	if (!selector) return;
+	await user.click(selector);
+
+	const model = await screen.findByRole('menuitemradio', { name: /gemma3:4b.*Ollama/ });
+	await user.click(model);
+
+	await waitFor(() => {
+		expect(window.agent.setProvider).toHaveBeenCalledWith({
+			id: 'custom',
+			name: 'Ollama',
+			baseUrl: 'http://localhost:11434',
+		});
+		expect(window.agent.setModelId).toHaveBeenCalledWith('gemma3:4b');
+	});
 });
 
 it('keeps media permissions and search configuration on Tools without model selection', async () => {
