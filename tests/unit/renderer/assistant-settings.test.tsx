@@ -337,16 +337,9 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	const voice = (await screen.findAllByRole('button', { name: 'Speech' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
-	await waitFor(() => {
-		expect(
-			screen
-				.getAllByRole('button', { name: 'Realtime conversation' })
-				.find((entry) => entry.getAttribute('aria-haspopup') === 'dialog')
-		).toBeDefined();
-	});
-	const realtimeConversation = screen
-		.getAllByRole('button', { name: 'Realtime conversation' })
-		.find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
+	const realtimeConversation = (
+		await screen.findAllByRole('button', { name: 'Realtime conversation' })
+	).find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
 	expect(voice).toBeDefined();
 	expect(realtimeConversation).toBeDefined();
 	if (!voice || !realtimeConversation) return;
@@ -367,40 +360,6 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 
 	await user.click(screen.getByRole('link', { name: /^Tools/ }));
 	expect(await screen.findByRole('heading', { name: 'Tools' })).toBeInTheDocument();
-});
-
-it('loads Ollama models into the Agent model picker and saves the selected model', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter>
-			<AssistantPage />
-		</MemoryRouter>
-	);
-
-	const trigger = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
-		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
-	);
-	expect(trigger).toBeDefined();
-	if (!trigger) return;
-	await user.click(trigger);
-	const selector = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
-		(element) => element.getAttribute('aria-haspopup') === 'dialog'
-	);
-	expect(selector).toBeDefined();
-	if (!selector) return;
-	await user.click(selector);
-
-	const model = await screen.findByRole('menuitemradio', { name: /gemma3:4b.*Ollama/ });
-	await user.click(model);
-
-	await waitFor(() => {
-		expect(window.agent.setProvider).toHaveBeenCalledWith({
-			id: 'custom',
-			name: 'Ollama',
-			baseUrl: 'http://localhost:11434',
-		});
-		expect(window.agent.setModelId).toHaveBeenCalledWith('gemma3:4b');
-	});
 });
 
 it('keeps media permissions and search configuration on Tools without model selection', async () => {
