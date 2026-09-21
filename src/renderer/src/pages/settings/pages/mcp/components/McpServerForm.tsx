@@ -45,7 +45,7 @@ function serializeEnvEntries(entries: readonly EnvVariable[]): Record<string, st
 const TYPE_LABELS = { http: 'Remote (HTTP)', stdio: 'Local (command)' } as const;
 const ITEM_CLASS = 'border-b border-border/60 px-5 py-4';
 const CONTROL_CLASS = 'h-8 w-full text-xs';
-const CONTROL_ACTIONS_CLASS = 'ml-auto w-full flex-none justify-end sm:w-64';
+const CONTROL_ACTIONS_CLASS = 'ml-auto w-full flex-none justify-end sm:w-52';
 
 function McpFormItem({
 	title,
@@ -386,7 +386,7 @@ export function McpServerForm({
 												value={token}
 												onChange={(e) => setToken(e.target.value)}
 												autoComplete="off"
-												className="sm:w-80"
+												className="h-8 w-full text-xs sm:w-52"
 											/>
 										}
 									/>
@@ -401,7 +401,7 @@ export function McpServerForm({
 												value={clientId}
 												onChange={(e) => setClientId(e.target.value)}
 												autoComplete="off"
-												className="sm:w-80"
+												className="h-8 w-full text-xs sm:w-52"
 											/>
 										}
 									/>
@@ -416,7 +416,7 @@ export function McpServerForm({
 												value={clientSecret}
 												onChange={(e) => setClientSecret(e.target.value)}
 												autoComplete="off"
-												className="sm:w-80"
+												className="h-8 w-full text-xs sm:w-52"
 											/>
 										}
 									/>
@@ -437,7 +437,7 @@ export function McpServerForm({
 								onChange={(e) => setCommand(e.target.value)}
 								placeholder="npx"
 								autoComplete="off"
-								className="sm:w-80"
+								className="h-8 w-full text-xs sm:w-52"
 							/>
 						}
 					/>
@@ -451,7 +451,7 @@ export function McpServerForm({
 								onChange={(e) => setArgs(e.target.value)}
 								placeholder="-y @modelcontextprotocol/server-filesystem /tmp"
 								autoComplete="off"
-								className="sm:w-80"
+								className="h-8 w-full text-xs sm:w-52"
 							/>
 						}
 					/>
@@ -459,7 +459,7 @@ export function McpServerForm({
 						className="border-b-0!"
 						title={<Label htmlFor="mcp-env-key">Environment variables (optional)</Label>}
 						actions={
-							<div className="grid w-full gap-2 sm:w-80">
+							<div className="grid w-full gap-2 sm:w-52">
 								{env.map((entry, index) => (
 									<div
 										key={`${entry.key}-${index}`}
@@ -549,7 +549,7 @@ export function McpServerForm({
 								onChange={(e) => setCwd(e.target.value)}
 								placeholder="/path/to/server"
 								autoComplete="off"
-								className="sm:w-80"
+								className="h-8 w-full text-xs sm:w-52"
 							/>
 						}
 					/>
