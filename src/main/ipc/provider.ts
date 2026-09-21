@@ -55,12 +55,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		registerCommandWithEvent(ProviderStoreChannels.set, (event, value) => {
 			trusted.assert(event);
 			const input = this.credential(value);
-		const provider = this.catalogProvider(
-				input.kind,
-				input.id,
-				input.apiKey,
-				input.baseUrl
-			);
+			const provider = this.catalogProvider(input.kind, input.id, input.apiKey, input.baseUrl);
 			return setProvider(provider, input.kind);
 		});
 		registerQueryWithEvent(ProviderStoreChannels.listCustomModels, async (event, value) => {
@@ -102,8 +97,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		kind: SavedCredentialKind,
 		id: string,
 		apiKey: string,
-		baseUrl?: string,
-
+		baseUrl?: string
 	): StoredProvider {
 		if (id === 'custom') {
 			if (!baseUrl) throw new Error('Custom provider configuration is invalid.');

@@ -417,9 +417,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const renderCustomProviderCard = (): React.ReactElement => {
 		const connected = Boolean(customProvider.savedBaseUrl);
 		const saving = savingProviderId === 'custom';
-		const canSave = Boolean(
-			customProvider.apiKey.trim() && customProvider.baseUrl.trim()
-		);
+		const canSave = Boolean(customProvider.apiKey.trim() && customProvider.baseUrl.trim());
 		return (
 			<Card
 				className={cn(
@@ -495,22 +493,22 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								/>
 							</div>
 							<div className="flex sm:ml-[10.75rem]">
-									<Button
-										type="button"
-										variant="outline"
-										size="sm"
-										aria-label={t('settings.providers.localModels.refresh')}
-										disabled={saving || loadingCustomModels || !customProvider.baseUrl.trim()}
-										onClick={() => void loadCustomModels()}
-									>
-										{loadingCustomModels ? (
-											<LoaderCircle className="size-3.5 animate-spin" />
-										) : (
-											<RefreshCw className="size-3.5" />
-										)}
-										{t('settings.providers.localModels.refresh')}
-									</Button>
-								</div>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									aria-label={t('settings.providers.localModels.refresh')}
+									disabled={saving || loadingCustomModels || !customProvider.baseUrl.trim()}
+									onClick={() => void loadCustomModels()}
+								>
+									{loadingCustomModels ? (
+										<LoaderCircle className="size-3.5 animate-spin" />
+									) : (
+										<RefreshCw className="size-3.5" />
+									)}
+									{t('settings.providers.localModels.refresh')}
+								</Button>
+							</div>
 							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
 								<Label htmlFor="local-model-token" className="sm:text-right">
 									{t('settings.providers.localModels.token')}
