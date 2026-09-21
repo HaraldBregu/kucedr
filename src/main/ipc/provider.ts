@@ -133,9 +133,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	private async listCustomModels(value: unknown): Promise<string[]> {
 		const record = this.record(value);
 		const baseUrl = this.baseUrl(record.baseUrl);
-		const url = new URL(baseUrl);
-		url.pathname = '/api/tags';
-		url.search = '';
+		const url = new URL('tags', `${baseUrl}/`);
 		const signal = AbortSignal.timeout(10_000);
 		let response: Response;
 		try {

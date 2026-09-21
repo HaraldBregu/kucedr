@@ -127,7 +127,7 @@ describe('provider credential IPC boundary', () => {
 			id: 'custom',
 			name: 'Ollama',
 			apiKey: 'ollama',
-			baseUrl: 'http://localhost:11434',
+			baseUrl: 'http://localhost:11434/api',
 		};
 		setProvider.mockReturnValue(provider);
 
@@ -137,7 +137,7 @@ describe('provider credential IPC boundary', () => {
 				kind: 'models',
 				id: 'custom',
 				apiKey: 'ollama',
-				baseUrl: 'http://localhost:11434/',
+				baseUrl: 'http://localhost:11434/api/',
 			}
 		);
 
@@ -173,7 +173,7 @@ describe('provider credential IPC boundary', () => {
 
 		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
 			{},
-			{ baseUrl: 'http://localhost:11434', apiKey: 'ollama' }
+			{ baseUrl: 'http://localhost:11434/api', apiKey: 'ollama' }
 		);
 
 		expect(result).toEqual(['llama3.2:3b', 'qwen3:8b']);
@@ -192,7 +192,7 @@ describe('provider credential IPC boundary', () => {
 
 		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
 			{},
-			{ baseUrl: 'http://localhost:11434', apiKey: '' }
+			{ baseUrl: 'http://localhost:11434/api', apiKey: '' }
 		);
 
 		expect(result).toEqual(['llama3.2:3b']);
