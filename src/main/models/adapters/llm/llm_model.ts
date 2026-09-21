@@ -681,7 +681,7 @@ export class LlmModel implements LlmAdapter {
 		if (!provider.apiKey) throw new LlmProviderAuthError(missingKeyMessage);
 		const factory =
 			this.openAIClientFactory ?? ((c) => new OpenAI({ apiKey: c.apiKey, baseURL: c.baseURL }));
-		return factory({ apiKey: provider.apiKey, baseURL: provider.baseURL });
+		return factory({ apiKey: provider.apiKey, baseURL: llmBaseUrl(provider) });
 	}
 
 	private createAnthropicClient(provider: LlmProviderSpec): Anthropic {
@@ -705,4 +705,9 @@ export class LlmModel implements LlmAdapter {
 
 function isLlmRequest(request: LlmRequest | LlmStreamRequest): request is LlmRequest {
 	return 'provider' in request;
+}
+
+function llmBaseUrl(provider: LlmProviderSpec): string | undefined {
+	if (provider.id.toLowerCase() !== 'custom' || !provider.baseURL) return provider.baseURL;
+	return new URL('/v1', provider.baseURL).toString();
 }

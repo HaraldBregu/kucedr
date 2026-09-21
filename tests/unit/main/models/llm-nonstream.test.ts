@@ -233,6 +233,30 @@ describe('LlmModel non-streaming transport', () => {
 		);
 	});
 
+	it('uses Ollama\'s OpenAI-compatible endpoint for a configured API URL', async () => {
+		const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
+		const openAIClientFactory = jest.fn(
+			() => ({ chat: { completions: { create } } }) as never
+		);
+		const model = new LlmModel({ openAIClientFactory });
+
+		for await (const _event of model.stream({
+			...request('custom'),
+			provider: { id: 'custom', apiKey: 'key', baseURL: 'http://localhost:11434/api' },
+		})) {
+			// Consume the provider stream.
+		}
+
+		expect(openAIClientFactory).toHaveBeenCalledWith({
+			apiKey: 'key',
+			baseURL: 'http://localhost:11434/v1',
+		});
+		expect(create).toHaveBeenCalledWith(
+			expect.objectContaining({ model: 'model', stream: false }),
+			expect.objectContaining({ signal: undefined })
+		);
+	});
+
 	it('uses the targeted Reka PDF payload for batch requests', async () => {
 		const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
 		const model = new LlmModel({
