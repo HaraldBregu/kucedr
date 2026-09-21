@@ -130,7 +130,7 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 	await user.click(modelInput);
 	await user.type(modelInput, 'qwen');
 	await user.click(await screen.findByRole('option', { name: 'qwen3:8b' }));
-	expect(onLocalModelChange).toHaveBeenCalledWith('qwen3:8b');
+	expect(onLocalModelChange).toHaveBeenCalledWith('assistant', 'qwen3:8b');
 	expect(window.provider.listCustomModels).toHaveBeenCalledWith({
 		baseUrl: 'http://localhost:11434/api',
 		apiKey: 'ollama',
