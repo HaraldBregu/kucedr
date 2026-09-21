@@ -194,6 +194,7 @@ export function McpServerForm({
 					variant="destructive"
 					size="sm"
 					onClick={() => setConfirmDeleteOpen(true)}
+					disabled={saving || deleting}
 				>
 					<Trash2 className="size-3.5" />
 					Remove MCP server
@@ -606,8 +607,8 @@ export function McpServerForm({
 			)}
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 
-			<div className="flex items-center gap-2">
-				<div className="flex items-center gap-2">
+			<div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 px-5 py-3">
+				<div className="flex flex-wrap items-center gap-2">
 					{action}
 					{removeAction()}
 				</div>
