@@ -153,35 +153,35 @@ export function ModelProviderSelect({
 					className="max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)] min-w-0 overflow-y-auto"
 				>
 					{matchingModels.map(({ group, model }) => {
-							const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
-							const isSelected = value === `${providerId}${VALUE_SEPARATOR}${modelId}`;
-							return (
-								<button
-									key={value}
-									type="button"
-									role="menuitemradio"
-									aria-checked={isSelected}
-									onClick={() => {
-										onChange(group.id, model.id);
-										setButtonOpen(false);
-									}}
-									className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
-								>
-									<span className="flex min-w-0 flex-col items-start gap-0.5 leading-tight">
-										<span className="min-w-0 truncate whitespace-nowrap text-sm text-foreground capitalize">
-											{modelName(model)}
-										</span>
-										<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground capitalize">
-											{getProviderCatalogItem(group.id).name}
-										</span>
+						const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
+						const isSelected = value === `${providerId}${VALUE_SEPARATOR}${modelId}`;
+						return (
+							<button
+								key={value}
+								type="button"
+								role="menuitemradio"
+								aria-checked={isSelected}
+								onClick={() => {
+									onChange(group.id, model.id);
+									setButtonOpen(false);
+								}}
+								className="flex w-full min-w-0 items-center justify-between gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent"
+							>
+								<span className="flex min-w-0 flex-col items-start gap-0.5 leading-tight">
+									<span className="min-w-0 truncate whitespace-nowrap text-sm text-foreground capitalize">
+										{modelName(model)}
 									</span>
-									<Check
-										className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
-										aria-hidden="true"
-									/>
-								</button>
-							);
-						})}
+									<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground capitalize">
+										{getProviderCatalogItem(group.id).name}
+									</span>
+								</span>
+								<Check
+									className={cn('size-4 shrink-0', isSelected ? 'opacity-100' : 'opacity-0')}
+									aria-hidden="true"
+								/>
+							</button>
+						);
+					})}
 					{matchingModels.length === 0 && (
 						<p className="px-2 py-3 text-xs text-muted-foreground">
 							{t('settings.modelServices.noMatchingModels')}
