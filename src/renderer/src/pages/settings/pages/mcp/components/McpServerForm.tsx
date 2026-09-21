@@ -470,6 +470,7 @@ export function McpServerForm({
 									>
 										<Input
 											id={`mcp-env-key-${index}`}
+											aria-label="Key"
 											value={entry.key}
 											onChange={(e) => updateEnvironmentVariable(index, { key: e.target.value })}
 											autoComplete="off"
@@ -478,6 +479,7 @@ export function McpServerForm({
 										/>
 										<Input
 											id={`mcp-env-value-${index}`}
+											aria-label="Value"
 											value={entry.value}
 											onChange={(e) => updateEnvironmentVariable(index, { value: e.target.value })}
 											autoComplete="off"
@@ -501,6 +503,7 @@ export function McpServerForm({
 								<div className="mt-1 grid grid-cols-[1fr_1fr_auto] gap-2">
 									<Input
 										id="mcp-env-key"
+										aria-label="Environment variables (optional)"
 										value={envKey}
 										onChange={(e) => setEnvKey(e.target.value)}
 										placeholder="KEY"
@@ -509,6 +512,7 @@ export function McpServerForm({
 									/>
 									<Input
 										id="mcp-env-value"
+										aria-label="Value"
 										value={envValue}
 										onChange={(e) => setEnvValue(e.target.value)}
 										placeholder="VALUE"
