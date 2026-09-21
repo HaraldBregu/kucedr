@@ -1,0 +1,8 @@
+{
+	"providerId": "ollama",
+	"providerName": "Ollama",
+	"images_url": "/images",
+	"icon_dark_url": "/images/official/ollama.svg",
+	"icon_light_url": "/images/official/ollama.svg",
+	"services": []
+}
