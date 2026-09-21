@@ -20,14 +20,17 @@ jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => 
 jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/conversation', () => ({
 	__esModule: true,
 	default: ({
+		icon,
 		selectDefaultModel,
 		showFieldLabel,
 	}: {
+		icon?: unknown;
 		selectDefaultModel?: boolean;
 		showFieldLabel?: boolean;
 	}) => (
 		<div
 			data-default-model={String(selectDefaultModel)}
+			data-has-icon={String(Boolean(icon))}
 			data-show-field-label={String(showFieldLabel)}
 			data-testid="setup-realtime"
 		>
@@ -81,10 +84,15 @@ it('groups the chat and voice Assistant configurations', () => {
 		'data-show-field-label',
 		'false'
 	);
+	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
+		'data-has-icon',
+		'true'
+	);
 	expect(within(toolsGroup).getByTestId('setup-search')).toBeInTheDocument();
 	for (const id of ['image', 'video', 'audio']) {
 		expect(within(toolsGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
 		expect(within(toolsGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+		expect(within(toolsGroup).getByTestId(`setup-${id}`).querySelector('svg')).toBeInTheDocument();
 	}
 	expect(screen.queryByTestId('setup-health')).not.toBeInTheDocument();
 	expect(screen.queryByTestId('setup-tasks')).not.toBeInTheDocument();
