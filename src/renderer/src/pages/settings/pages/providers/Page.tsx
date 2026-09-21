@@ -70,12 +70,12 @@ interface ProvidersPageProps {
 const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section }) => {
 	const { t } = useTranslation();
 	const [providerEntries, setProviderEntries] = useState<ProviderSetupEntry[]>(() =>
-		allCatalogItems(section).map((provider, index) => ({
+		allCatalogItems(section).map((provider) => ({
 			providerId: provider.id,
 			apiKey: '',
 			savedApiKey: '',
 			apiKeySaved: false,
-			editing: index === 0,
+			editing: false,
 		}))
 	);
 	const [customProvider, setCustomProvider] = useState({
@@ -110,7 +110,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				);
 
 				setProviderEntries((currentEntries) =>
-					allCatalogItems(section).map((provider, index) => {
+					allCatalogItems(section).map((provider) => {
 						const current = currentEntries.find((entry) => entry.providerId === provider.id);
 						const savedApiKey = savedProviders.get(provider.id)?.apiKey ?? '';
 						const saved = Boolean(savedApiKey.trim());
@@ -120,10 +120,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							apiKey: current?.apiKey || savedApiKey,
 							savedApiKey,
 							apiKeySaved: saved,
-							editing:
-								saved && !current?.savedApiKey
-									? false
-									: (current?.editing ?? (!hasSavedProvider && index === 0)),
+							editing: saved && !current?.savedApiKey ? false : (current?.editing ?? false),
 						};
 					})
 				);

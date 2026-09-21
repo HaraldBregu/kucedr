@@ -129,6 +129,8 @@ it('saves Database credentials in the databases collection', async () => {
 			<ProvidersPage section="databases" />
 		</MemoryRouter>
 	);
+	expect(screen.queryByLabelText('Pinecone API key')).not.toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
 	const input = await screen.findByLabelText('Pinecone API key');
 	await user.type(input, '  database-secret  ');
 	await user.click(screen.getByRole('button', { name: 'Save', exact: true }));
@@ -274,6 +276,7 @@ it('keeps the Database key editable when saving fails', async () => {
 			<ProvidersPage section="databases" />
 		</MemoryRouter>
 	);
+	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
 	await user.type(await screen.findByLabelText('Pinecone API key'), 'database-secret');
 	await user.click(screen.getByRole('button', { name: 'Save', exact: true }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not store database key');
