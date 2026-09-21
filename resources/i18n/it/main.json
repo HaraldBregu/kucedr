@@ -1371,6 +1371,8 @@
 			"model": "Modello",
 			"modelDescription": "Modello usato da questo servizio per le risposte testuali.",
 			"modelPlaceholder": "Seleziona modello",
+			"searchModels": "Cerca modelli",
+			"noMatchingModels": "Nessun modello corrispondente.",
 			"localProvider": "Provider locale",
 			"localModel": "Modello locale",
 			"modelsLoading": "Caricamento…",

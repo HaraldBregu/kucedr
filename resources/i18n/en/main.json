@@ -1372,6 +1372,8 @@
 			"model": "Model",
 			"modelDescription": "Model this service uses for text responses.",
 			"modelPlaceholder": "Select model",
+			"searchModels": "Search models",
+			"noMatchingModels": "No matching models.",
 			"localProvider": "Local provider",
 			"localModel": "Local model",
 			"modelsLoading": "Loading…",

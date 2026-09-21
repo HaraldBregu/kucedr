@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Check, ChevronDown } from 'lucide-react';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
 	Select,
@@ -92,6 +93,7 @@ export function ModelProviderSelect({
 }: ModelProviderSelectProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [buttonOpen, setButtonOpen] = useState(false);
+	const [modelSearch, setModelSearch] = useState('');
 	const selectedGroup = providerGroups.find((group) => group.id === providerId);
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
 	const selectedLabel = selectedModel ? modelLabel(providerId, selectedModel) : undefined;
@@ -99,9 +101,26 @@ export function ModelProviderSelect({
 	const buttonLabel = selectedModel
 		? modelName(selectedModel)
 		: (labels?.placeholder ?? t('settings.modelServices.modelPlaceholder'));
+	const normalizedModelSearch = modelSearch.trim().toLocaleLowerCase();
+	const matchingModels = providerGroups.flatMap((group) =>
+		group.models
+			.filter((model) => {
+				if (!normalizedModelSearch) return true;
+				return [model.id, model.name, getProviderCatalogItem(group.id).name].some((value) =>
+					value.toLocaleLowerCase().includes(normalizedModelSearch)
+				);
+			})
+			.map((model) => ({ group, model }))
+	);
 
 	const buttonSelect = (
-		<Popover open={buttonOpen} onOpenChange={setButtonOpen}>
+		<Popover
+			open={buttonOpen}
+			onOpenChange={(open) => {
+				setButtonOpen(open);
+				if (!open) setModelSearch('');
+			}}
+		>
 			<PopoverTrigger asChild>
 				<Button
 					type="button"
@@ -118,11 +137,22 @@ export function ModelProviderSelect({
 			<PopoverContent
 				align="end"
 				collisionPadding={12}
-				className="max-h-[var(--radix-popover-content-available-height)] w-max max-w-[calc(100vw-2rem)] overflow-y-auto p-1"
+				className="max-h-[var(--radix-popover-content-available-height)] w-72 max-w-[calc(100vw-2rem)] overflow-hidden p-1"
 			>
-				<div role="menu" aria-label={accessibleLabel} className="min-w-0">
-					{providerGroups.flatMap((group) =>
-						group.models.map((model) => {
+				<Input
+					autoFocus
+					aria-label={t('settings.modelServices.searchModels')}
+					className="mb-1 h-8 text-xs"
+					placeholder={t('settings.modelServices.searchModels')}
+					value={modelSearch}
+					onChange={(event) => setModelSearch(event.target.value)}
+				/>
+				<div
+					role="menu"
+					aria-label={accessibleLabel}
+					className="max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)] min-w-0 overflow-y-auto"
+				>
+					{matchingModels.map(({ group, model }) => {
 							const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
 							const isSelected = value === `${providerId}${VALUE_SEPARATOR}${modelId}`;
 							return (
@@ -151,7 +181,11 @@ export function ModelProviderSelect({
 									/>
 								</button>
 							);
-						})
+						})}
+					{matchingModels.length === 0 && (
+						<p className="px-2 py-3 text-xs text-muted-foreground">
+							{t('settings.modelServices.noMatchingModels')}
+						</p>
 					)}
 				</div>
 			</PopoverContent>
