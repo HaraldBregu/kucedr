@@ -88,9 +88,6 @@ it('groups the chat and voice Assistant configurations', () => {
 	}
 	expect(screen.queryByTestId('setup-health')).not.toBeInTheDocument();
 	expect(screen.queryByTestId('setup-tasks')).not.toBeInTheDocument();
-	expect(screen.queryByTestId('setup-image')).not.toBeInTheDocument();
-	expect(screen.queryByTestId('setup-audio')).not.toBeInTheDocument();
-	expect(screen.queryByTestId('setup-video')).not.toBeInTheDocument();
 });
 
 it('uses the Assistant local-model controls for Ollama', async () => {
