@@ -213,8 +213,7 @@ const McpDetailsPage: React.FC = () => {
 				<SettingsPanel>
 					<McpServerForm initial={{ id: server.id, entry: server.data }} onSubmit={save} />
 				</SettingsPanel>
-				<SettingsPanel>
-					<div className="flex flex-wrap items-center gap-2 px-4 py-3">
+				<div className="flex flex-wrap items-center gap-2 px-0.5 py-1">
 						<Button
 							type="button"
 							variant="outline"
@@ -268,8 +267,7 @@ const McpDetailsPage: React.FC = () => {
 								</DialogContent>
 							</Dialog>
 						)}
-					</div>
-				</SettingsPanel>
+				</div>
 			</SettingsSection>
 		</SettingsPageShell>
 	);
