@@ -2,6 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { BrainCircuit, Mic, Volume2, type LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
+	Combobox,
+	ComboboxContent,
+	ComboboxEmpty,
+	ComboboxInput,
+	ComboboxItem,
+	ComboboxList,
+} from '@/components/ui/combobox';
+import {
 	Select,
 	SelectContent,
 	SelectItem,
@@ -99,26 +107,32 @@ function SetupLocalModelSelector({
 					<ItemTitle>Local model</ItemTitle>
 				</ItemContent>
 				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-52">
-					<Select
+					<Combobox
+						items={models}
 						value={selectedModelId}
 						disabled={loading || models.length === 0}
-						onValueChange={(value) => onChange(String(value))}
+						onValueChange={(value) => {
+							if (value) onChange(value);
+						}}
 					>
-						<SelectTrigger
+						<ComboboxInput
 							id="setup-assistant-local-model"
 							aria-label="Local model"
-							className="h-8 w-52"
+							className="w-52"
 						>
-							<SelectValue placeholder={loading ? 'Loading models...' : 'Select a model'} />
-						</SelectTrigger>
-						<SelectContent>
-							{models.map((model) => (
-								<SelectItem key={model} value={model}>
-									{model}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
+							{loading ? 'Loading models...' : 'Search models...'}
+						</ComboboxInput>
+						<ComboboxContent>
+							<ComboboxEmpty>No matching models.</ComboboxEmpty>
+							<ComboboxList>
+								{(model: string) => (
+									<ComboboxItem key={model} value={model}>
+										{model}
+									</ComboboxItem>
+								)}
+							</ComboboxList>
+						</ComboboxContent>
+					</Combobox>
 				</ItemActions>
 			</Item>
 		</div>
