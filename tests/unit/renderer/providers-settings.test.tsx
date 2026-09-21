@@ -140,7 +140,7 @@ it('saves Database credentials in the databases collection', async () => {
 		})
 	);
 	expect(window.provider.list).toHaveBeenCalledWith('databases');
-	expect(screen.getByText('************')).toBeInTheDocument();
+	expect(screen.getByText('Configured')).toBeInTheDocument();
 	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
 });
 
@@ -162,7 +162,8 @@ it('loads and displays saved Database keys', async () => {
 	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('button', { name: 'Edit Pinecone API key' }));
-	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('database-secret');
+	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('');
+	expect(screen.getByLabelText('Pinecone API key')).toHaveAttribute('placeholder', '************');
 });
 
 it('masks saved model keys until editing', async () => {
@@ -179,7 +180,7 @@ it('masks saved model keys until editing', async () => {
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByText('************')).toBeInTheDocument();
+	expect(await screen.findByText('Configured')).toBeInTheDocument();
 	expect(screen.queryByText('model-secret')).not.toBeInTheDocument();
 
 	const user = userEvent.setup();
@@ -256,12 +257,13 @@ it('masks saved Search keys until editing', async () => {
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByText('************')).toBeInTheDocument();
+	expect(await screen.findByText('Configured')).toBeInTheDocument();
 	expect(screen.queryByText('search-secret')).not.toBeInTheDocument();
 
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('button', { name: 'Edit Brave API key' }));
-	expect(screen.getByLabelText('Brave API key')).toHaveValue('search-secret');
+	expect(screen.getByLabelText('Brave API key')).toHaveValue('');
+	expect(screen.getByLabelText('Brave API key')).toHaveAttribute('placeholder', '************');
 });
 
 it('keeps the Database key editable when saving fails', async () => {
