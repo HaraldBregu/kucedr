@@ -82,15 +82,11 @@ pre-registered client requiring an exact fixed port. A dynamically registered cl
 registered callback differs is registered again before starting a new interactive flow.
 
 Google Workspace uses the same callback and PKCE/state flow. Its provider-specific adapter
-adds Google scopes and consent parameters. Configure the Client ID and optional Client secret
-in each server's MCP settings; this works in both the packaged app and development. Saved
-secrets use encrypted operating-system storage when available and remain memory-only when
-secure storage is unavailable. Secret fields reopen blank; leaving them blank keeps the saved
-secret. `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are optional environment
-fallbacks. Per-server credentials take precedence as a pair; the packaged app does not need
-to load a repository `.env` file. For a Google Desktop app OAuth client, variable loopback ports
-are supported. A Google Web application OAuth client requires the exact registered callback.
-Never reuse an account sign-in callback for an MCP connection.
+adds Google scopes and consent parameters. Gmail, Google Calendar, and Google Drive always
+read their OAuth client from `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; their settings
+pages do not accept or display credentials. For a Google Desktop app OAuth client, variable
+loopback ports are supported. A Google Web application OAuth client requires the exact
+registered callback. Never reuse an account sign-in callback for an MCP connection.
 
 The generic client supports pre-registered clients and dynamic client registration, with
 SDK authorization-server discovery, PKCE S256, per-attempt state validation, and token

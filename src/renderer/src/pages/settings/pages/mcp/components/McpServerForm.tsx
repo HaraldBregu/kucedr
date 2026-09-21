@@ -112,8 +112,8 @@ export function McpServerForm({
 					type: 'http',
 					url: url.trim(),
 					token: token.trim() || undefined,
-					client_id: clientId.trim() || undefined,
-					client_secret: clientSecret.trim() || undefined,
+					client_id: isGoogleRemote ? undefined : clientId.trim() || undefined,
+					client_secret: isGoogleRemote ? undefined : clientSecret.trim() || undefined,
 				}
 			: {
 					...(initial?.entry.type === 'stdio' ? initial.entry : {}),
@@ -341,27 +341,18 @@ export function McpServerForm({
 							Save the server before connecting with OAuth.
 						</p>
 					)}
-					<details open={isGoogleRemote || undefined}>
+					{isGoogleRemote ? (
+						removeAction()
+					) : (
+						<details>
 						<summary className="cursor-pointer text-[13px] text-muted-foreground">Advanced</summary>
 						<div className="grid gap-4 pt-4">
-							{isGoogleRemote && (
-								<p className="text-[12px] text-muted-foreground">
-									Google requires a registered OAuth client. Enable the product API and its MCP
-									service, then configure the consent screen. Enter the Client ID and, if required,
-									the Client secret below, then connect with OAuth. These settings work in the
-									installed app and development. GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
-									are optional environment fallbacks; this server's credentials take precedence.
-									Desktop clients support loopback callbacks; Web clients must register the exact
-									MCP callback URL. Workspace MCP access may require enrollment in the Developer
-									Preview.
-								</p>
-							)}
 							<p className="text-[12px] text-muted-foreground">
 								The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
 								URL if your authorization server requires it. To use another loopback URL, set
 								CLIENT_REDIRECT_URL in .env and restart Kucedr.
 							</p>
-							{!isGitHubRemote && !isGoogleRemote && (
+							{!isGitHubRemote && (
 								<Field>
 									<Label htmlFor="mcp-token">Access token (optional)</Label>
 									<Input
@@ -400,7 +391,8 @@ export function McpServerForm({
 							</>
 							{removeAction()}
 						</div>
-					</details>
+						</details>
+					)}
 				</>
 			) : (
 				<>
