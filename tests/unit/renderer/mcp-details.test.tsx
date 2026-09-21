@@ -142,8 +142,11 @@ describe('MCP details', () => {
 			)
 		);
 
-		await user.click(screen.getByText('Advanced'));
-		await user.click(screen.getByRole('button', { name: 'Remove MCP server' }));
+		const removeButton = screen.getByRole('button', { name: 'Remove MCP server' });
+		expect(
+			removeButton.compareDocumentPosition(saveButton) & Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
+		await user.click(removeButton);
 		await user.click(screen.getByRole('button', { name: 'Delete' }));
 		await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('remote'));
 		expect(await screen.findByText('MCP list')).toBeInTheDocument();

@@ -189,17 +189,15 @@ export function McpServerForm({
 
 		return (
 			<Dialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
-				<div className="border-t border-border pt-4">
-					<Button
-						type="button"
-						variant="destructive"
-						size="sm"
-						onClick={() => setConfirmDeleteOpen(true)}
-					>
-						<Trash2 className="size-3.5" />
-						Remove MCP server
-					</Button>
-				</div>
+				<Button
+					type="button"
+					variant="destructive"
+					size="sm"
+					onClick={() => setConfirmDeleteOpen(true)}
+				>
+					<Trash2 className="size-3.5" />
+					Remove MCP server
+				</Button>
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Delete MCP server</DialogTitle>
@@ -408,9 +406,7 @@ export function McpServerForm({
 							description="Save the server before connecting with OAuth."
 						/>
 					)}
-					{isGoogleRemote ? (
-						removeAction()
-					) : (
+					{!isGoogleRemote && (
 						<details className="p-4">
 							<summary className="cursor-pointer text-[13px] text-muted-foreground">
 								Advanced
@@ -467,7 +463,6 @@ export function McpServerForm({
 										}
 									/>
 								</>
-								{removeAction()}
 							</div>
 						</details>
 					)}
@@ -600,14 +595,6 @@ export function McpServerForm({
 							/>
 						}
 					/>
-					{onRemove && (
-						<details>
-							<summary className="cursor-pointer text-[13px] text-muted-foreground">
-								Advanced
-							</summary>
-							{removeAction()}
-						</details>
-					)}
 				</>
 			)}
 
@@ -620,7 +607,10 @@ export function McpServerForm({
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 
 			<div className="flex items-center gap-2">
-				{action}
+				<div className="flex items-center gap-2">
+					{action}
+					{removeAction()}
+				</div>
 				<div className="ml-auto flex items-center gap-2">
 					<Button type="button" variant="ghost" onClick={onCancel}>
 						Cancel
