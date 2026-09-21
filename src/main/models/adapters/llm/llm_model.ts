@@ -720,7 +720,10 @@ export class LlmModel implements LlmAdapter {
 		let stopReason = 'end_turn';
 		let toolIndex = 0;
 		const emit = function* (chunk: {
-			message?: { content?: string; tool_calls?: Array<{ function?: { name?: string; arguments?: unknown } }> };
+			message?: {
+				content?: string;
+				tool_calls?: Array<{ function?: { name?: string; arguments?: unknown } }>;
+			};
 			done?: boolean;
 			done_reason?: string;
 			prompt_eval_count?: number;
