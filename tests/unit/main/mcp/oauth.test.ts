@@ -338,7 +338,11 @@ it.each(['https://gmailmcp.googleapis.com/mcp/v1', 'https://generic.example/mcp'
 				load: () => ({
 					client_id: 'old-client',
 					tokensClientId: 'old-client',
-					tokens: { access_token: 'old-access', refresh_token: 'old-refresh', token_type: 'Bearer' },
+					tokens: {
+						access_token: 'old-access',
+						refresh_token: 'old-refresh',
+						token_type: 'Bearer',
+					},
 				}),
 				save: jest.fn(),
 			},
