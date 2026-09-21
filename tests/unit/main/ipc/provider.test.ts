@@ -125,7 +125,7 @@ describe('provider credential IPC boundary', () => {
 		register();
 		const provider = {
 			id: 'custom',
-			name: 'Ollama',
+			name: 'Local model provider',
 			apiKey: 'ollama',
 			baseUrl: 'http://localhost:11434/api',
 		};

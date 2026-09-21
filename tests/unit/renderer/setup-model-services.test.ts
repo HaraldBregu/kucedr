@@ -42,7 +42,7 @@ describe('onboarding model service state', () => {
 		});
 	});
 
-	it('includes the Ollama option for the Assistant setup', async () => {
+	it('includes the local provider option for the Assistant setup', async () => {
 		const assistant = (
 			await import('../../../src/renderer/src/pages/start/setupConstants')
 		).MODEL_SERVICE_DEFINITIONS.find((item) => item.id === 'assistant');
@@ -50,7 +50,7 @@ describe('onboarding model service state', () => {
 		await expect(assistant!.loadModelGroups()).resolves.toEqual(
 			expect.arrayContaining([
 				expect.objectContaining({
-					provider: expect.objectContaining({ id: 'ollama', name: 'Ollama' }),
+					provider: expect.objectContaining({ id: 'ollama', name: 'Local model provider' }),
 					models: [{ id: 'local', name: 'Local model' }],
 				}),
 			])
