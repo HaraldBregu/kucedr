@@ -337,9 +337,16 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 	const voice = (await screen.findAllByRole('button', { name: 'Speech' })).find(
 		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
 	);
-	const realtimeConversation = (
-		await screen.findAllByRole('button', { name: 'Realtime conversation' })
-	).find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
+	await waitFor(() => {
+		expect(
+			screen
+				.getAllByRole('button', { name: 'Realtime conversation' })
+				.find((entry) => entry.getAttribute('aria-haspopup') === 'dialog')
+		).toBeDefined();
+	});
+	const realtimeConversation = screen
+		.getAllByRole('button', { name: 'Realtime conversation' })
+		.find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
 	expect(voice).toBeDefined();
 	expect(realtimeConversation).toBeDefined();
 	if (!voice || !realtimeConversation) return;
