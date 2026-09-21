@@ -17,6 +17,7 @@ interface RealtimeConversationConfigurationProps {
 	readonly showFieldLabel?: boolean;
 	readonly showSelectedModel?: boolean;
 	readonly buttonDropdown?: boolean;
+	readonly buttonClassName?: string;
 	readonly showContentSeparator?: boolean;
 	readonly icon?: LucideIcon;
 }
@@ -26,6 +27,7 @@ export default function RealtimeConversationConfiguration({
 	showFieldLabel = true,
 	showSelectedModel = false,
 	buttonDropdown = false,
+	buttonClassName,
 	showContentSeparator = true,
 	icon,
 }: RealtimeConversationConfigurationProps): React.JSX.Element {
@@ -185,6 +187,7 @@ export default function RealtimeConversationConfiguration({
 				showFieldLabel={showFieldLabel}
 				showSelectedModel={showSelectedModel}
 				buttonDropdown={buttonDropdown}
+				buttonClassName={buttonClassName}
 				showContentSeparator={showContentSeparator}
 				grouped
 				onChange={handleModelChange}
