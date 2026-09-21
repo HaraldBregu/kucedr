@@ -101,7 +101,11 @@ describe('Providers settings', () => {
 			</MemoryRouter>
 		);
 
-		expect(screen.getByRole('heading', { name: 'Models' })).toBeInTheDocument();
+		const modelsSection = screen.getByRole('heading', { name: 'Models' }).closest('section');
+		expect(modelsSection).not.toBeNull();
+		expect(
+			within(modelsSection!).getAllByRole('heading').map((heading) => heading.textContent)
+		).toEqual(['Models', 'Ollama', 'OpenAI']);
 		expect(screen.queryByRole('heading', { name: 'Local models' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Ollama' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
