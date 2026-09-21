@@ -298,7 +298,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					<div
 						className={cn(
 							'grid min-h-12 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2.5 px-4 py-3.5',
-							editing && 'pb-3'
+							editing && kind !== 'models' && 'pb-3',
+							editing && kind === 'models' && 'sm:grid-cols-[2rem_minmax(0,1fr)_minmax(21rem,26rem)]'
 						)}
 					>
 						<ProviderAvatar
@@ -327,9 +328,51 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								{connected ? '************' : provider.capabilities}
 							</p>
 						</div>
-						<div className="flex shrink-0 justify-end gap-2">
+						<div className="flex min-w-0 shrink-0 justify-end gap-2">
 							{provider.supported ? (
-								connected && !editing ? (
+								editing && kind === 'models' && entry ? (
+									<>
+										<Input
+											aria-label={`${provider.name} API key`}
+											autoComplete="off"
+											className="h-8 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground"
+											disabled={savingThisProvider}
+											onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
+											onKeyDown={(event) => {
+												if (event.key === 'Enter' && canSaveProvider) {
+													void saveProviderEntry(provider.id, kind);
+												}
+											}}
+											placeholder={t('settings.providers.apiKeyPlaceholder')}
+											spellCheck={false}
+											type="text"
+											value={entry.apiKey}
+										/>
+										<Button
+											type="button"
+											variant="outline"
+											size="sm"
+											disabled={savingThisProvider}
+											onClick={() =>
+												updateProviderEntry(provider.id, {
+													apiKey: entry.savedApiKey,
+													editing: false,
+												})
+											}
+										>
+											{t('common.cancel')}
+										</Button>
+										<Button
+											type="button"
+											size="sm"
+											disabled={!canSaveProvider}
+											onClick={() => void saveProviderEntry(provider.id, kind)}
+										>
+											{savingThisProvider ? <LoaderCircle className="size-3.5 animate-spin" /> : null}
+											{t('common.save')}
+										</Button>
+									</>
+								) : connected && !editing ? (
 									<Button
 										type="button"
 										variant="ghost"
@@ -362,7 +405,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						</div>
 					</div>
 
-					{provider.supported && editing && entry ? (
+					{provider.supported && editing && entry && kind !== 'models' ? (
 						<div className="flex items-center gap-2 px-4 pb-4">
 							<Input
 								aria-label={`${provider.name} API key`}
