@@ -5,8 +5,14 @@ import { SetupModelsStep } from '../../../src/renderer/src/pages/start/component
 import type { ModelServiceStateMap } from '../../../src/renderer/src/pages/start/setupTypes';
 
 jest.mock('@/components/model-provider-select', () => ({
-	ModelProviderSelect: ({ idPrefix }: { idPrefix: string }) => (
-		<button data-testid={`${idPrefix}-select`} type="button">
+	ModelProviderSelect: ({
+		buttonClassName,
+		idPrefix,
+	}: {
+		buttonClassName?: string;
+		idPrefix: string;
+	}) => (
+		<button className={buttonClassName} data-testid={`${idPrefix}-select`} type="button">
 			Select model
 		</button>
 	),
@@ -80,6 +86,7 @@ it('groups the chat and voice Assistant configurations', () => {
 			'item'
 		);
 		expect(within(chatAssistantGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+		expect(within(chatAssistantGroup).getByTestId(`setup-${id}-select`)).toHaveClass('w-40');
 	}
 	expect(within(chatAssistantGroup).getByTestId('setup-assistant')).toHaveTextContent('LLM Model');
 	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
@@ -106,6 +113,7 @@ it('groups the chat and voice Assistant configurations', () => {
 	for (const id of ['image', 'video', 'audio']) {
 		expect(within(toolsGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
 		expect(within(toolsGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+		expect(within(toolsGroup).getByTestId(`setup-${id}-select`)).toHaveClass('w-40');
 		expect(within(toolsGroup).getByTestId(`setup-${id}`).querySelector('svg')).toBeInTheDocument();
 	}
 	expect(screen.queryByTestId('setup-health')).not.toBeInTheDocument();
@@ -155,6 +163,7 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 	expect(await screen.findByLabelText('Local provider')).toHaveTextContent(/ollama/i);
 	const modelInput = await screen.findByLabelText('Local model');
 	expect(modelInput).toBeInTheDocument();
+	expect(modelInput).toHaveClass('w-40');
 	const user = userEvent.setup();
 	await user.click(modelInput);
 	await user.type(modelInput, 'qwen');
