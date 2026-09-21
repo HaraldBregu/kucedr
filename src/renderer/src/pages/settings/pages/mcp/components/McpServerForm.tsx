@@ -113,7 +113,7 @@ export function McpServerForm({
 					...base,
 					type: 'http',
 					url: url.trim(),
-					token: token.trim() || undefined,
+					token: isGoogleRemote ? undefined : token.trim() || undefined,
 					client_id: isGoogleRemote ? undefined : clientId.trim() || undefined,
 					client_secret: isGoogleRemote ? undefined : clientSecret.trim() || undefined,
 				}

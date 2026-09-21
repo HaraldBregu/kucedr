@@ -93,7 +93,12 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		jest
 			.mocked(getMcpOauth)
 			.mockReturnValue({ client_id: 'saved-id', client_secret: 'saved-secret' });
-		buildTransport('saved-google', { type: 'http', url: `https://${host}.googleapis.com/mcp/v1` });
+		buildTransport('saved-google', {
+			type: 'http',
+			url: `https://${host}.googleapis.com/mcp/v1`,
+			client_id: 'configured-id',
+			client_secret: 'configured-secret',
+		});
 		expect(createOAuthProvider).toHaveBeenCalledWith(
 			expect.objectContaining({ clientId: 'environment-id', clientSecret: 'environment-secret' })
 		);
