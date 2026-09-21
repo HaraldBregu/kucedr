@@ -1,20 +1,14 @@
 import { googleMcpScopes } from '../../shared/google_mcp';
-import type { McpOAuthProviderParams, McpOAuthState } from './mcp_types';
+import type { McpOAuthProviderParams } from './mcp_types';
 
-export function googleOAuthOptions(
-	serverUrl: string,
-	credentials: Pick<McpOAuthState, 'client_id' | 'client_secret'> = {}
-): Partial<McpOAuthProviderParams> {
+export function googleOAuthOptions(serverUrl: string): Partial<McpOAuthProviderParams> {
 	const scope = googleMcpScopes(serverUrl);
 	if (!scope) return {};
-	const configuredId = credentials.client_id?.trim();
-	const clientId = configuredId || process.env.GOOGLE_CLIENT_ID?.trim();
-	const clientSecret =
-		(configuredId ? credentials.client_secret : process.env.GOOGLE_CLIENT_SECRET)?.trim() ||
-		undefined;
-	if (!clientId) {
+	const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+	const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+	if (!clientId || !clientSecret) {
 		throw new Error(
-			'Enter the Google OAuth Client ID and optional Client secret in this MCP server’s settings. GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are optional environment defaults.'
+			'Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in the environment before connecting a Google MCP server.'
 		);
 	}
 	return {

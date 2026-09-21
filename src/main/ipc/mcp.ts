@@ -29,6 +29,7 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
 import { parseMcpUrl } from '../mcp/url';
+import { googleMcpScopes } from '../../shared/google_mcp';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -231,19 +232,14 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
 				const state = randomBytes(32).toString('hex');
-				const options = googleOAuthOptions(
-					server.url,
-					server.clientId
-						? { client_id: server.clientId, client_secret: server.clientSecret }
-						: getMcpOauth(server.id)
-				);
+				const options = googleOAuthOptions(server.url);
 				const callback = await startOauthCallbackServer(state);
 				try {
 					let authorizationUrl: string | undefined;
 					const provider = createOAuthProvider({
 						...options,
 						storage: oauthStorage(server.id),
-						...(server.clientId
+						...(!googleMcpScopes(server.url) && server.clientId
 							? { clientId: server.clientId, clientSecret: server.clientSecret }
 							: {}),
 						redirectUrl: callback.redirectUrl,
