@@ -485,9 +485,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						) : null}
 					</div>
 					{customProvider.editing && (
-						<div className="grid gap-2 px-4 pb-4 sm:grid-cols-3">
-							<div className="grid gap-1.5">
-								<Label htmlFor="local-model-url">{t('settings.providers.localModels.url')}</Label>
+						<div className="grid gap-3 px-4 pb-4">
+							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
+								<Label htmlFor="local-model-url" className="sm:text-right">
+									{t('settings.providers.localModels.url')}
+								</Label>
 								<Input
 									id="local-model-url"
 									autoComplete="off"
@@ -504,8 +506,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									}
 								/>
 							</div>
-							<div className="grid gap-1.5">
-								<Label htmlFor="local-model-id">
+							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
+								<Label htmlFor="local-model-id" className="sm:text-right">
 									{t('settings.providers.localModels.modelId')}
 								</Label>
 								<div className="flex gap-2">
@@ -547,8 +549,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									))}
 								</datalist>
 							</div>
-							<div className="grid gap-1.5">
-								<Label htmlFor="local-model-token">
+							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
+								<Label htmlFor="local-model-token" className="sm:text-right">
 									{t('settings.providers.localModels.token')}
 								</Label>
 								<Input
@@ -568,7 +570,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									}
 								/>
 							</div>
-							<div className="flex gap-2 sm:col-span-3 sm:justify-end">
+							<div className="flex gap-2 sm:ml-[10.75rem] sm:justify-end">
 								<Button
 									type="button"
 									variant="outline"
