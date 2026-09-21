@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { McpData } from '@shared/mcp_types';
 import { googleMcpScopes } from '@shared/google_mcp';
 import { isGitHubRemoteMcpUrl } from '@shared/github_mcp';
 import { Button } from '@/components/ui/button';
-import {
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Label } from '@/components/ui/label';
@@ -72,12 +70,10 @@ function McpFormItem({
 export function McpServerForm({
 	initial,
 	onSubmit,
-	onCancel,
 	action,
 }: {
 	readonly initial?: { readonly id: string; readonly entry: McpData };
 	readonly onSubmit: (id: string, entry: McpData) => Promise<void>;
-	readonly onCancel: () => void;
 	readonly action?: React.ReactNode;
 }): React.JSX.Element {
 	const isEdit = Boolean(initial);
@@ -105,6 +101,12 @@ export function McpServerForm({
 	const [deferLoading, setDeferLoading] = useState(entry?.defer_loading ?? false);
 	const [error, setError] = useState<string | null>(null);
 	const [saving, setSaving] = useState(false);
+	const initialized = useRef(false);
+	const submitRef = useRef(onSubmit);
+
+	useEffect(() => {
+		submitRef.current = onSubmit;
+	}, [onSubmit]);
 
 	const serverId = id.trim().toLowerCase();
 	const isGitHubRemote = type === 'http' && isGitHubRemoteMcpUrl(url);
@@ -161,18 +163,12 @@ export function McpServerForm({
 	};
 
 	const isValid = Boolean(serverId && (type === 'http' ? url.trim() : command.trim()));
-	const submit = async (event: React.FormEvent): Promise<void> => {
-		event.preventDefault();
-		if (!isValid) {
-			setError(
-				type === 'http' ? 'ID and server URL are required.' : 'ID and command are required.'
-			);
-			return;
-		}
+	const save = async (): Promise<void> => {
+		if (!isValid) return;
 		setSaving(true);
 		setError(null);
 		try {
-			await onSubmit(serverId, buildEntry());
+			await submitRef.current(serverId, buildEntry());
 		} catch (err) {
 			setError(err instanceof Error ? err.message : String(err));
 		} finally {
@@ -180,13 +176,23 @@ export function McpServerForm({
 		}
 	};
 
+	useEffect(() => {
+		if (!initialized.current) {
+			initialized.current = true;
+			return;
+		}
+		if (!isValid) return;
+		const timeout = window.setTimeout(() => void save(), 500);
+		return () => window.clearTimeout(timeout);
+	}, [approval, args, clientId, clientSecret, command, cwd, deferLoading, env, id, isValid, name, token, type, url]);
+
 	// ponytail: OAuth needs the server in the store first, so persist before starting
 	const persist = async (): Promise<void> => {
 		await window.mcp.upsert(serverId, buildEntry());
 	};
 
 	return (
-		<form onSubmit={submit}>
+		<div>
 			<Item variant="outline" size="md" className={ITEM_CLASS}>
 				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
 					<ItemTitle>
@@ -543,17 +549,10 @@ export function McpServerForm({
 			)}
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 
-			<div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 px-5 py-3">
-				<div className="flex flex-wrap items-center gap-2">{action}</div>
-				<div className="ml-auto flex items-center gap-2">
-					<Button type="button" variant="ghost" onClick={onCancel}>
-						Cancel
-					</Button>
-					<Button type="submit" disabled={saving}>
-						{saving ? 'Saving' : type === 'stdio' ? 'Save' : isEdit ? 'Save' : 'Add MCP server'}
-					</Button>
-				</div>
+			<div className="flex flex-wrap items-center gap-2 border-t border-border/60 px-5 py-3">
+				{action}
+				{saving && <span className="text-xs text-muted-foreground">Saving…</span>}
 			</div>
-		</form>
+		</div>
 	);
 }
