@@ -76,6 +76,10 @@ beforeEach(() => {
 				engineId: null,
 				configured: { brave: false, tavily: false },
 			}),
+			saveEngine: jest.fn().mockResolvedValue({
+				engineId: 'brave',
+				configured: { brave: true, tavily: false },
+			}),
 		},
 	});
 	Object.defineProperty(window, 'mcp', {
@@ -244,6 +248,26 @@ it('masks saved Search keys until editing', async () => {
 	await user.click(screen.getByRole('button', { name: 'Edit Brave API key' }));
 	expect(screen.getByLabelText('Brave API key')).toHaveValue('');
 	expect(screen.getByLabelText('Brave API key')).toHaveAttribute('placeholder', '************');
+});
+
+it('edits Search provider credentials in the card row', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="search" />
+		</MemoryRouter>
+	);
+
+	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
+	const input = screen.getByLabelText('Brave API key');
+	const card = input.closest('[data-slot="card"]');
+	expect(card).not.toBeNull();
+	expect(input.parentElement).toHaveClass('flex', 'min-w-0', 'shrink-0');
+	await user.type(input, 'brave-secret');
+	await user.click(within(card!).getByRole('button', { name: 'Save', exact: true }));
+	await waitFor(() =>
+		expect(window.search.saveEngine).toHaveBeenCalledWith('brave', { apiKey: 'brave-secret' })
+	);
 });
 
 it('keeps the Database key editable when saving fails', async () => {

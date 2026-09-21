@@ -274,9 +274,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					<div
 						className={cn(
 							'grid min-h-12 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2.5 px-4 py-3.5',
-							editing && kind !== 'models' && 'pb-3',
+							editing && kind === 'databases' && 'pb-3',
 							editing &&
-								kind === 'models' &&
+								(kind === 'models' || kind === 'search') &&
 								'sm:grid-cols-[2rem_minmax(0,1fr)_minmax(21rem,26rem)]'
 						)}
 					>
@@ -310,7 +310,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						</div>
 						<div className="flex min-w-0 shrink-0 justify-end gap-2">
 							{provider.supported ? (
-								editing && kind === 'models' && entry ? (
+								editing && (kind === 'models' || kind === 'search') && entry ? (
 									<>
 										<Input
 											aria-label={`${provider.name} API key`}
@@ -322,7 +322,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											}
 											onKeyDown={(event) => {
 												if (event.key === 'Enter' && canSaveProvider) {
-													void saveProviderEntry(provider.id, kind);
+											void (kind === 'search'
+												? saveSearchEntry(provider.id)
+												: saveProviderEntry(provider.id, kind));
 												}
 											}}
 											placeholder={
@@ -393,7 +395,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						</div>
 					</div>
 
-					{provider.supported && editing && entry && kind !== 'models' ? (
+					{provider.supported && editing && entry && kind === 'databases' ? (
 						<div className="flex items-center gap-2 px-4 pb-4">
 							<Input
 								aria-label={`${provider.name} API key`}
