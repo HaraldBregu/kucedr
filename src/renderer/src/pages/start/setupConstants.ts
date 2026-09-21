@@ -34,6 +34,28 @@ function getLlmModelGroups(): ProviderModelGroup[] {
 	return toModelGroups('llm');
 }
 
+async function getAssistantLlmModelGroups(): Promise<ProviderModelGroup[]> {
+	const modelGroups = getLlmModelGroups();
+	const localProvider = (await window.provider.list('models')).find(
+		(provider) => provider.id === 'custom' && provider.baseUrl.trim()
+	);
+	if (!localProvider) return modelGroups;
+
+	const models = await window.provider.listCustomModels({
+		baseUrl: localProvider.baseUrl,
+		apiKey: localProvider.apiKey,
+	});
+	if (models.length === 0) return modelGroups;
+
+	return [
+		...modelGroups,
+		{
+			provider: { id: 'custom', name: 'Ollama', baseUrl: localProvider.baseUrl },
+			models: models.map((id) => ({ id, name: id })),
+		},
+	];
+}
+
 type ModelIdApi = {
 	getProviderId: () => Promise<string | undefined>;
 	setProviderId: (providerId: string) => Promise<void>;
@@ -81,7 +103,7 @@ export const MODEL_SERVICE_DEFINITIONS: readonly ModelServiceDefinition[] = [
 			]);
 			return provider && modelId ? { providerId: provider.id, modelId } : undefined;
 		},
-		loadModelGroups: () => Promise.resolve(getLlmModelGroups()),
+		loadModelGroups: getAssistantLlmModelGroups,
 		saveSelection: async (provider, model) => {
 			await window.agent.setProvider(provider);
 			return window.agent.setModelId(model.id);

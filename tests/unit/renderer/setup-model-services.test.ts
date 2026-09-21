@@ -42,6 +42,35 @@ describe('onboarding model service state', () => {
 		});
 	});
 
+	it('includes configured Ollama models for the Assistant setup', async () => {
+		Object.defineProperty(window, 'provider', {
+			configurable: true,
+			value: {
+				list: jest.fn().mockResolvedValue([
+					{
+						id: 'custom',
+						name: 'Ollama',
+						apiKey: 'ollama',
+						baseUrl: 'http://localhost:11434/api',
+					},
+				]),
+				listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b']),
+			},
+		});
+
+		const assistant = (await import('../../../src/renderer/src/pages/start/setupConstants'))
+			.MODEL_SERVICE_DEFINITIONS.find((item) => item.id === 'assistant');
+		expect(assistant).toBeDefined();
+		await expect(assistant!.loadModelGroups()).resolves.toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					provider: expect.objectContaining({ id: 'custom', name: 'Ollama' }),
+					models: [{ id: 'llama3.2:3b', name: 'llama3.2:3b' }],
+				}),
+			])
+		);
+	});
+
 	it('persists voice and transcription selections when they change', async () => {
 		const voiceProvider = {
 			id: 'elevenlabs',

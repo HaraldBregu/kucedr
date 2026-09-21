@@ -52,7 +52,7 @@ function getSelectionSummary(serviceState: ModelServiceState, fallback: string):
 	);
 	const model = group?.models.find((item) => item.id === serviceState.modelId);
 	return group && model
-		? `${getProviderCatalogItem(group.provider.id).name} - ${model.name || model.id}`
+		? `${group.provider.name || getProviderCatalogItem(group.provider.id).name} - ${model.name || model.id}`
 		: fallback;
 }
 
