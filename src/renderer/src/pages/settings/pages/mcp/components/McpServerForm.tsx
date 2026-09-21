@@ -428,38 +428,40 @@ export function McpServerForm({
 				</>
 			) : (
 				<>
-					<Field>
-						<Label htmlFor="mcp-command">Command</Label>
+					<SettingsRow
+						className="border-b-0!"
+						title={<Label htmlFor="mcp-command">Command</Label>}
+						actions={
 						<Input
 							id="mcp-command"
 							value={command}
 							onChange={(e) => setCommand(e.target.value)}
 							placeholder="npx"
 							autoComplete="off"
+							className="sm:w-80"
 						/>
-					</Field>
-					<Field>
-						<Label htmlFor="mcp-args">Arguments (optional)</Label>
+						}
+					/>
+					<SettingsRow
+						className="border-b-0!"
+						title={<Label htmlFor="mcp-args">Arguments (optional)</Label>}
+						actions={
 						<Input
 							id="mcp-args"
 							value={args}
 							onChange={(e) => setArgs(e.target.value)}
 							placeholder="-y @modelcontextprotocol/server-filesystem /tmp"
 							autoComplete="off"
+							className="sm:w-80"
 						/>
-					</Field>
-					<Field>
-						<Label htmlFor="mcp-env-key">Environment variables (optional)</Label>
-						<div className="grid gap-2">
+						}
+					/>
+					<SettingsRow
+						className="border-b-0!"
+						title={<Label htmlFor="mcp-env-key">Environment variables (optional)</Label>}
+						actions={<div className="grid w-full gap-2 sm:w-80">
 							{env.map((entry, index) => (
 								<div key={`${entry.key}-${index}`} className="grid grid-cols-[1fr_1fr_auto] gap-2">
-									<Field className="mb-0">
-										<Label
-											htmlFor={`mcp-env-key-${index}`}
-											className="text-xs text-muted-foreground"
-										>
-											Key
-										</Label>
 										<Input
 											id={`mcp-env-key-${index}`}
 											value={entry.key}
@@ -468,14 +470,6 @@ export function McpServerForm({
 											placeholder="KEY"
 											spellCheck={false}
 										/>
-									</Field>
-									<Field className="mb-0">
-										<Label
-											htmlFor={`mcp-env-value-${index}`}
-											className="text-xs text-muted-foreground"
-										>
-											Value
-										</Label>
 										<Input
 											id={`mcp-env-value-${index}`}
 											value={entry.value}
@@ -484,7 +478,6 @@ export function McpServerForm({
 											placeholder="VALUE"
 											spellCheck={false}
 										/>
-									</Field>
 									<div className="flex items-end">
 										<Button
 											type="button"
@@ -500,10 +493,6 @@ export function McpServerForm({
 								</div>
 							))}
 							<div className="mt-1 grid grid-cols-[1fr_1fr_auto] gap-2">
-								<Field className="mb-0">
-									<Label htmlFor="mcp-env-key" className="text-xs text-muted-foreground">
-										Key
-									</Label>
 									<Input
 										id="mcp-env-key"
 										value={envKey}
@@ -512,11 +501,6 @@ export function McpServerForm({
 										autoComplete="off"
 										spellCheck={false}
 									/>
-								</Field>
-								<Field className="mb-0">
-									<Label htmlFor="mcp-env-value" className="text-xs text-muted-foreground">
-										Value
-									</Label>
 									<Input
 										id="mcp-env-value"
 										value={envValue}
@@ -531,7 +515,6 @@ export function McpServerForm({
 											}
 										}}
 									/>
-								</Field>
 								<div className="flex items-end">
 									<Button
 										type="button"
@@ -545,19 +528,23 @@ export function McpServerForm({
 										Add
 									</Button>
 								</div>
-							</div>
-						</div>
-					</Field>
-					<Field>
-						<Label htmlFor="mcp-cwd">Working directory (optional)</Label>
+								</div>
+						</div>}
+					/>
+					<SettingsRow
+						className="border-b-0!"
+						title={<Label htmlFor="mcp-cwd">Working directory (optional)</Label>}
+						actions={
 						<Input
 							id="mcp-cwd"
 							value={cwd}
 							onChange={(e) => setCwd(e.target.value)}
 							placeholder="/path/to/server"
 							autoComplete="off"
+							className="sm:w-80"
 						/>
-					</Field>
+						}
+					/>
 					{onRemove && (
 						<details>
 							<summary className="cursor-pointer text-[13px] text-muted-foreground">
