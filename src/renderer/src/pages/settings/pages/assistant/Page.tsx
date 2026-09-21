@@ -48,7 +48,7 @@ function getProviderLlmModels(providerId: string): Model[] {
 	return providerModels(providerId, 'llm');
 }
 
-const localModelProvider: PublicProvider = { id: 'custom', name: 'Ollama', baseUrl: '' };
+const localModelProvider: PublicProvider = { id: 'ollama', name: 'Ollama', baseUrl: '' };
 const localModelOption: Model = { id: 'local', name: 'Local model' };
 
 async function loadAssistantState(): Promise<ModelConfigurationState> {
@@ -61,17 +61,17 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		return provider && getProviderLlmModels(providerId).length > 0 ? [provider] : [];
 	});
 	const localModel =
-		storedProvider?.id === 'custom' && storedModelId
+		(storedProvider?.id === 'ollama' || storedProvider?.id === 'custom') && storedModelId
 			? { id: storedModelId, name: storedModelId }
 			: localModelOption;
 	const modelGroups: ProviderModelGroup[] = [...providers, localModelProvider].map((provider) => ({
 		provider,
-		models: provider.id === 'custom' ? [localModel] : getProviderLlmModels(provider.id),
+		models: provider.id === 'ollama' ? [localModel] : getProviderLlmModels(provider.id),
 	}));
 	const preferredGroup =
 		modelGroups.find((group) => group.provider.id === storedProvider?.id) ?? modelGroups[0];
 	const preferredModel =
-		storedProvider?.id === 'custom'
+		storedProvider?.id === 'ollama' || storedProvider?.id === 'custom'
 			? localModel
 			: (preferredGroup?.models.find((model) => model.id === storedModelId) ??
 				preferredGroup?.models[0]);
@@ -140,7 +140,7 @@ const AssistantPage: React.FC = () => {
 			setState((current) => ({
 				...current,
 				modelGroups: current.modelGroups.map((group) =>
-					group.provider.id === 'custom'
+					group.provider.id === 'ollama'
 						? {
 								...group,
 								provider: { ...group.provider, name: 'Ollama', baseUrl: provider.baseUrl },
@@ -163,7 +163,7 @@ const AssistantPage: React.FC = () => {
 	};
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
-		if (nextProviderId === 'custom') {
+		if (nextProviderId === 'ollama') {
 			if (nextModelId === localModelOption.id) return;
 			const provider =
 				localProvider ??
@@ -171,12 +171,12 @@ const AssistantPage: React.FC = () => {
 			if (!provider) return;
 			setState((current) => ({
 				...current,
-				providerId: 'custom',
+				providerId: 'ollama',
 				modelId: nextModelId,
 				saving: true,
 			}));
 			try {
-				await window.agent.setProvider({ id: 'custom', name: 'Ollama', baseUrl: provider.baseUrl });
+				await window.agent.setProvider({ id: 'ollama', name: 'Ollama', baseUrl: provider.baseUrl });
 				if (!(await window.agent.setModelId(nextModelId)))
 					throw new Error(t('settings.modelServices.saveError'));
 				setState((current) => ({ ...current, saving: false, saved: true }));

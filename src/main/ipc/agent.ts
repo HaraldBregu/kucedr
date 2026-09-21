@@ -13,6 +13,7 @@ import type { Conversation } from '../agent/conversation';
 import type { LoggerService } from '../shared';
 import type { PublicProvider } from '../../shared/provider_types';
 import { loadProviders } from '../models';
+import { getProvider } from '../settings_store';
 import type {
 	AgentContextMode,
 	AgentMediaModelSettings,
@@ -230,6 +231,12 @@ function isModelReasoningEffort(value: unknown): value is ModelReasoningEffort {
 }
 
 function toPublicProvider(providerId: string): PublicProvider | undefined {
+	if (providerId === 'ollama') {
+		const provider = getProvider('custom', 'models');
+		return provider
+			? { id: 'ollama', name: provider.name, baseUrl: provider.baseUrl, capabilities: 'Local models' }
+			: undefined;
+	}
 	const catalogProvider = loadProviders().find((provider) => provider.id === providerId);
 	if (!catalogProvider) return undefined;
 	return {
@@ -715,7 +722,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				(provider: PublicProvider): boolean => {
 					if (!provider.id) return false;
-					setProviderId(provider.id);
+					setProviderId(provider.id === 'custom' ? 'ollama' : provider.id);
 					return true;
 				},
 				AgentChannels.setProvider

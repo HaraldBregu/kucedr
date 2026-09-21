@@ -38,7 +38,7 @@ function getAssistantLlmModelGroups(): ProviderModelGroup[] {
 	return [
 		...getLlmModelGroups(),
 		{
-			provider: { id: 'custom', name: 'Local model', baseUrl: '' },
+			provider: { id: 'ollama', name: 'Ollama', baseUrl: '' },
 			models: [{ id: 'local', name: 'Local model' }],
 		},
 	];
@@ -258,8 +258,8 @@ export function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 export function getProviderCatalogItem(providerId: string): ProviderCatalogItem {
-	if (providerId === 'custom') {
-		return { id: 'custom', name: 'Ollama', capabilities: 'Local models', supported: true };
+	if (providerId === 'custom' || providerId === 'ollama') {
+		return { id: providerId, name: 'Ollama', capabilities: 'Local models', supported: true };
 	}
 	return (
 		actionableProviderCatalog().find((provider) => provider.id === providerId) ?? {
@@ -290,7 +290,7 @@ export function getSelectedServiceModel(
 	);
 	const selectedModel = selectedProvider?.models.find((model) => model.id === serviceState.modelId);
 	if (
-		selectedProvider?.provider.id === 'custom' &&
+		selectedProvider?.provider.id === 'ollama' &&
 		selectedModel?.id === 'local' &&
 		serviceState.localModelId
 	) {

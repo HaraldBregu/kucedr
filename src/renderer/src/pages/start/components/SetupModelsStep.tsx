@@ -167,7 +167,7 @@ export function SetupModelsStep({
 	const assistantModelGroups = useMemo(
 		() =>
 			serviceStates.assistant.modelGroups.map((group) =>
-				group.provider.id === 'custom' && availableLocalModels.length > 0
+				group.provider.id === 'ollama' && availableLocalModels.length > 0
 					? { ...group, models: availableLocalModels.map((id) => ({ id, name: id })) }
 					: group
 			),
@@ -212,7 +212,7 @@ export function SetupModelsStep({
 								const providerGroups =
 									service.id === 'assistant' ? assistantModelGroups : serviceState.modelGroups;
 								const selectedModelId =
-									service.id === 'assistant' && serviceState.providerId === 'custom'
+					service.id === 'assistant' && serviceState.providerId === 'ollama'
 										? (serviceState.localModelId ?? serviceState.modelId)
 										: serviceState.modelId;
 								return (
@@ -249,8 +249,8 @@ export function SetupModelsStep({
 													showFieldLabel={false}
 													labels={{ label: title, placeholder: 'Select a model' }}
 													onChange={(providerId, modelId) => {
-														if (service.id === 'assistant' && providerId === 'custom') {
-														onServiceChange('assistant', 'custom', modelId);
+										if (service.id === 'assistant' && providerId === 'ollama') {
+											onServiceChange('assistant', 'ollama', modelId);
 															return;
 														}
 														onServiceChange(service.id, providerId, modelId);

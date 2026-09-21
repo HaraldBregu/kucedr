@@ -58,7 +58,7 @@ const StartPage: React.FC = () => {
 					actionableProviderCatalog().map((provider) => provider.id)
 				);
 				const hasSavedKey = storedProviders.some((provider) =>
-					provider.id === 'custom'
+					provider.id === 'ollama'
 						? Boolean(provider.apiKey.trim() && provider.baseUrl.trim())
 						: modelProviderIds.has(provider.id) && Boolean(provider.apiKey.trim())
 				);

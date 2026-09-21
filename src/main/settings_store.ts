@@ -257,7 +257,7 @@ export function clearProviders(): void {
 /** The selected provider resolved to the shape model adapters consume. */
 export function getResolvedProvider(providerId: string | undefined): ResolvedProvider | undefined {
 	if (!providerId) return undefined;
-	const provider = getProvider(providerId, 'models');
+	const provider = getProvider(providerId === 'ollama' ? 'custom' : providerId, 'models');
 	if (!provider) return undefined;
 	return {
 		id: providerId,
