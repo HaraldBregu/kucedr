@@ -233,26 +233,40 @@ describe('LlmModel non-streaming transport', () => {
 		);
 	});
 
-	it('uses the local provider OpenAI-compatible endpoint for a configured API URL', async () => {
-		const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
-		const openAIClientFactory = jest.fn(() => ({ chat: { completions: { create } } }) as never);
-		const model = new LlmModel({ openAIClientFactory });
-
-		for await (const _event of model.stream({
+	it('uses the local provider native chat endpoint for a configured API URL', async () => {
+		const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue(
+			new Response(
+				JSON.stringify({
+					message: { content: 'local reply' },
+					done: true,
+					prompt_eval_count: 4,
+					eval_count: 2,
+				}),
+				{ status: 200, headers: { 'content-type': 'application/json' } }
+			)
+		);
+		const events: LlmEvent[] = [];
+		for await (const event of new LlmModel().stream({
 			...request('ollama'),
 			provider: { id: 'ollama', apiKey: 'key', baseURL: 'http://localhost:11434/api' },
 		})) {
-			// Consume the provider stream.
+			events.push(event);
 		}
 
-		expect(openAIClientFactory).toHaveBeenCalledWith({
-			apiKey: 'key',
-			baseURL: 'http://localhost:11434/v1',
-		});
-		expect(create).toHaveBeenCalledWith(
-			expect.objectContaining({ model: 'model', stream: false }),
-			expect.objectContaining({ signal: undefined })
+		expect(fetchMock).toHaveBeenCalledWith(
+			'http://localhost:11434/api/chat',
+			expect.objectContaining({ method: 'POST' })
 		);
+		expect(events).toEqual(
+			expect.arrayContaining([
+				{ type: 'model_call_delta', delta: 'local reply' },
+				expect.objectContaining({
+					type: 'model_call_end',
+					usage: { inputTokens: 4, outputTokens: 2 },
+				}),
+			])
+		);
+		fetchMock.mockRestore();
 	});
 
 	it('uses the targeted Reka PDF payload for batch requests', async () => {
