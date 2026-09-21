@@ -428,11 +428,7 @@ it('lists every built-in agent tool on the Tools page', async () => {
 
 it('shows discovery as required and searchable without permission controls', async () => {
 	const user = userEvent.setup();
-	render(
-		<MemoryRouter>
-			<ToolsPage />
-		</MemoryRouter>
-	);
+	render(<MemoryRouter><ToolsPage /></MemoryRouter>);
 	const discoveryTitle = await screen.findByText('Discover tools');
 	const discoveryRow = discoveryTitle.closest('.grid');
 	expect(discoveryRow?.querySelector('svg')).toHaveClass('size-5');
@@ -624,22 +620,12 @@ it.each([
 ] as const)(
 	'loads the saved %s configuration on its dedicated page',
 	async (name, kind, model, Page) => {
-		render(
-			<MemoryRouter>
-				<Page />
-			</MemoryRouter>
-		);
+		render(<MemoryRouter><Page /></MemoryRouter>);
 		expect(screen.getByRole('heading', { name: `settings.tabs.${name}` })).toBeInTheDocument();
-		await waitFor(() =>
-			expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(
-				model
-			)
-		);
+		await waitFor(() => expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(model));
 		expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
 		expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
 		expect(window.agent.getToolModel).toHaveBeenCalledWith(kind);
-		expect(window.agent.getToolModel).not.toHaveBeenCalledWith(
-			kind === 'audio' ? 'image' : 'audio'
-		);
+		expect(window.agent.getToolModel).not.toHaveBeenCalledWith(kind === 'audio' ? 'image' : 'audio');
 	}
 );

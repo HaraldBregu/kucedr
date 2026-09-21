@@ -164,6 +164,7 @@ const AssistantPage: React.FC = () => {
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
 		if (nextProviderId === 'custom') {
+			if (nextModelId === localModelOption.id) return;
 			const provider =
 				localProvider ??
 				(await window.provider?.list('models'))?.find((item) => item.id === 'custom');
