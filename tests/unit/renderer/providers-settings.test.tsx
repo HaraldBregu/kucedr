@@ -195,7 +195,7 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 	const baseUrlInput = screen.getByLabelText('URL');
 	const customCard = baseUrlInput.closest('[data-slot="card"]');
 	expect(customCard).not.toBeNull();
-	await user.type(baseUrlInput, 'http://localhost:11434/v1');
+	await user.type(baseUrlInput, 'http://localhost:11434');
 	await user.type(screen.getByLabelText('Token'), 'ollama');
 	await user.click(within(customCard!).getByRole('button', { name: 'Save', exact: true }));
 
@@ -204,7 +204,7 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 			id: 'custom',
 			kind: 'models',
 			apiKey: 'ollama',
-			baseUrl: 'http://localhost:11434/v1',
+			baseUrl: 'http://localhost:11434',
 		})
 	);
 	expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
@@ -219,12 +219,12 @@ it('loads available custom provider models', async () => {
 	);
 
 	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
-	await user.type(screen.getByLabelText('URL'), 'http://localhost:11434/v1');
+	await user.type(screen.getByLabelText('URL'), 'http://localhost:11434');
 	await user.click(screen.getByRole('button', { name: 'Get available models' }));
 
 	await waitFor(() =>
 		expect(window.provider.listCustomModels).toHaveBeenCalledWith({
-			baseUrl: 'http://localhost:11434/v1',
+			baseUrl: 'http://localhost:11434',
 			apiKey: '',
 		})
 	);

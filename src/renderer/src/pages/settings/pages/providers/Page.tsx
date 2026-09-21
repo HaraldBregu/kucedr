@@ -483,7 +483,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									autoComplete="off"
 									className="h-8"
 									disabled={saving}
-									placeholder="http://localhost:11434/v1"
+									placeholder="http://localhost:11434"
 									spellCheck={false}
 									value={customProvider.baseUrl}
 									onChange={(event) =>

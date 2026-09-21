@@ -133,27 +133,24 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	private async listCustomModels(value: unknown): Promise<string[]> {
 		const record = this.record(value);
 		const baseUrl = this.baseUrl(record.baseUrl);
-		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
-		if (apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
+		const url = new URL(baseUrl);
+		url.pathname = '/api/tags';
+		url.search = '';
 		const signal = AbortSignal.timeout(10_000);
 		let response: Response;
 		try {
-			response = await fetch(new URL('models', `${baseUrl}/`).toString(), {
-				...(apiKey ? { headers: { Authorization: `Bearer ${apiKey}` } } : {}),
-				signal,
-			});
+			response = await fetch(url.toString(), { signal });
 		} catch {
 			throw new Error('Could not reach the custom model provider.');
 		}
 		if (!response.ok) throw new Error('Could not load models from the custom provider.');
-		const body = (await response.json()) as { data?: unknown };
-		if (!Array.isArray(body.data))
-			throw new Error('The custom provider returned an invalid model list.');
+		const body = (await response.json()) as { models?: unknown };
+		if (!Array.isArray(body.models)) throw new Error('Ollama returned an invalid model list.');
 		return [
 			...new Set(
-				body.data
+				body.models
 					.map((entry) =>
-						entry && typeof entry === 'object' ? (entry as { id?: unknown }).id : ''
+						entry && typeof entry === 'object' ? (entry as { name?: unknown }).name : ''
 					)
 					.filter(
 						(id): id is string => typeof id === 'string' && id.trim().length > 0 && id.length <= 256

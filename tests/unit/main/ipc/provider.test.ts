@@ -127,7 +127,7 @@ describe('provider credential IPC boundary', () => {
 			id: 'custom',
 			name: 'Ollama',
 			apiKey: 'ollama',
-			baseUrl: 'http://localhost:11434/v1',
+			baseUrl: 'http://localhost:11434',
 		};
 		setProvider.mockReturnValue(provider);
 
@@ -137,7 +137,7 @@ describe('provider credential IPC boundary', () => {
 				kind: 'models',
 				id: 'custom',
 				apiKey: 'ollama',
-				baseUrl: 'http://localhost:11434/v1/',
+				baseUrl: 'http://localhost:11434/',
 			}
 		);
 
@@ -166,19 +166,23 @@ describe('provider credential IPC boundary', () => {
 		const fetchMock = jest.fn().mockResolvedValue({
 			ok: true,
 			json: async () => ({
-				data: [{ id: 'llama3.2:3b' }, { id: 'qwen3:8b' }, { id: 'llama3.2:3b' }, {}],
+				models: [
+					{ name: 'llama3.2:3b' },
+					{ name: 'qwen3:8b' },
+					{ name: 'llama3.2:3b' },
+					{},
+				],
 			}),
 		});
 		global.fetch = fetchMock;
 
 		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
 			{},
-			{ baseUrl: 'http://localhost:11434/v1', apiKey: 'ollama' }
+			{ baseUrl: 'http://localhost:11434', apiKey: 'ollama' }
 		);
 
 		expect(result).toEqual(['llama3.2:3b', 'qwen3:8b']);
-		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/v1/models', {
-			headers: { Authorization: 'Bearer ollama' },
+		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/api/tags', {
 			signal: expect.any(AbortSignal),
 		});
 	});
@@ -187,17 +191,17 @@ describe('provider credential IPC boundary', () => {
 		register();
 		const fetchMock = jest.fn().mockResolvedValue({
 			ok: true,
-			json: async () => ({ data: [{ id: 'llama3.2:3b' }] }),
+			json: async () => ({ models: [{ name: 'llama3.2:3b' }] }),
 		});
 		global.fetch = fetchMock;
 
 		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
 			{},
-			{ baseUrl: 'http://localhost:11434/v1', apiKey: '' }
+			{ baseUrl: 'http://localhost:11434', apiKey: '' }
 		);
 
 		expect(result).toEqual(['llama3.2:3b']);
-		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/v1/models', {
+		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/api/tags', {
 			signal: expect.any(AbortSignal),
 		});
 	});
