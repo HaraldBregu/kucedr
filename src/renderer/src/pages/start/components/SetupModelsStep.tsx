@@ -10,21 +10,6 @@ import {
 	type LucideIcon,
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-	Combobox,
-	ComboboxContent,
-	ComboboxEmpty,
-	ComboboxInput,
-	ComboboxItem,
-	ComboboxList,
-} from '@/components/ui/combobox';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
@@ -55,101 +40,6 @@ type SetupModelsStepProps = {
 		modelId: string
 	) => void;
 };
-
-export function SetupLocalModelSelector({
-	selectedModelId,
-	onChange,
-}: {
-	readonly selectedModelId?: string;
-	readonly onChange: (modelId: string) => void;
-}): React.JSX.Element {
-	const [models, setModels] = useState<string[]>([]);
-	const [loading, setLoading] = useState(true);
-
-	useEffect(() => {
-		if (!window.provider) return;
-		let cancelled = false;
-		void window.provider
-			.list('models')
-			.then((providers) => providers.find((provider) => provider.id === 'custom'))
-			.then((provider) =>
-				provider
-					? window.provider.listCustomModels({
-							baseUrl: provider.baseUrl,
-							apiKey: provider.apiKey,
-						})
-					: []
-			)
-			.then((availableModels) => {
-				if (!cancelled) setModels(availableModels);
-			})
-			.catch(() => {
-				if (!cancelled) setModels([]);
-			})
-			.finally(() => {
-				if (!cancelled) setLoading(false);
-			});
-		return () => {
-			cancelled = true;
-		};
-	}, []);
-
-	return (
-		<div className="border-t border-border/60 pt-1">
-			<Item variant="outline" size="md" className="border-b border-border/60 px-4 py-3">
-				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-					<ItemTitle>Local provider</ItemTitle>
-				</ItemContent>
-				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-40">
-					<Select value="ollama" disabled>
-						<SelectTrigger
-							id="setup-assistant-local-provider"
-							aria-label="Local provider"
-							className="h-8 w-40"
-						>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="ollama">Ollama</SelectItem>
-						</SelectContent>
-					</Select>
-				</ItemActions>
-			</Item>
-			<Item variant="outline" size="md" className="px-4 py-3">
-				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-					<ItemTitle>Local model</ItemTitle>
-				</ItemContent>
-				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-40">
-					<Combobox
-						items={models}
-						value={selectedModelId}
-						disabled={loading || models.length === 0}
-						onValueChange={(value) => {
-							if (value) onChange(value);
-						}}
-					>
-						<ComboboxInput
-							id="setup-assistant-local-model"
-							aria-label="Local model"
-							className="w-40"
-							placeholder={loading ? 'Loading models...' : 'Search models...'}
-						/>
-						<ComboboxContent>
-							<ComboboxEmpty>No matching models.</ComboboxEmpty>
-							<ComboboxList>
-								{(model: string) => (
-									<ComboboxItem key={model} value={model}>
-										{model}
-									</ComboboxItem>
-								)}
-							</ComboboxList>
-						</ComboboxContent>
-					</Combobox>
-				</ItemActions>
-			</Item>
-		</div>
-	);
-}
 
 export function SetupModelsStep({
 	serviceStates,
