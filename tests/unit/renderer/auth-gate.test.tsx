@@ -256,7 +256,7 @@ it('takes a restored unconfigured signed-in user directly to setup', async () =>
 	});
 	renderFlow('/start');
 
-	expect(await screen.findByRole('heading', { name: 'Model API keys' })).toBeInTheDocument();
+	expect(await screen.findByRole('heading', { name: 'Model providers' })).toBeInTheDocument();
 	expect(screen.getByText('Model').parentElement).toHaveTextContent('Model · 1 of 3');
 	expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
 });
@@ -282,7 +282,7 @@ it('takes skipped sign-in to setup in place when configuration is incomplete', a
 
 	await user.click(await screen.findByRole('button', { name: 'Get started' }));
 	await user.click(await screen.findByRole('button', { name: 'Skip' }));
-	expect(await screen.findByRole('heading', { name: 'Model API keys' })).toBeInTheDocument();
+	expect(await screen.findByRole('heading', { name: 'Model providers' })).toBeInTheDocument();
 	expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
 	expect(localStorage.getItem('kucedr-auth-local-only')).toBeNull();
 });
@@ -329,7 +329,7 @@ it('moves a successful sign-in to setup in place', async () => {
 	await user.type(screen.getByLabelText('Password'), 'valid-password');
 	await user.click(screen.getByRole('button', { name: 'Sign in' }));
 
-	expect(await screen.findByRole('heading', { name: 'Model API keys' })).toBeInTheDocument();
+	expect(await screen.findByRole('heading', { name: 'Model providers' })).toBeInTheDocument();
 	expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
 });
 
@@ -347,7 +347,7 @@ it('leaves setup for home after configuration is refreshed', async () => {
 	} as never;
 	renderFlow('/start');
 
-	expect(await screen.findByRole('heading', { name: 'Model API keys' })).toBeInTheDocument();
+	expect(await screen.findByRole('heading', { name: 'Model providers' })).toBeInTheDocument();
 	configured = true;
 	await user.click(screen.getByRole('button', { name: 'Refresh configuration' }));
 	await waitFor(() => expect(screen.getByLabelText('Current route')).toHaveTextContent('/home'));
