@@ -57,11 +57,13 @@ export function McpServerForm({
 	onSubmit,
 	onCancel,
 	onRemove,
+	action,
 }: {
 	readonly initial?: { readonly id: string; readonly entry: McpData };
 	readonly onSubmit: (id: string, entry: McpData) => Promise<void>;
 	readonly onCancel: () => void;
 	readonly onRemove?: () => Promise<void>;
+	readonly action?: React.ReactNode;
 }): React.JSX.Element {
 	const isEdit = Boolean(initial);
 	const entry = initial?.entry;
@@ -552,13 +554,16 @@ export function McpServerForm({
 			)}
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 
-			<div className="flex justify-end gap-2">
-				<Button type="button" variant="ghost" onClick={onCancel}>
-					Cancel
-				</Button>
-				<Button type="submit" disabled={saving}>
-					{saving ? 'Saving' : type === 'stdio' ? 'Save' : isEdit ? 'Save' : 'Add MCP server'}
-				</Button>
+			<div className="flex items-center gap-2">
+				{action}
+				<div className="ml-auto flex items-center gap-2">
+					<Button type="button" variant="ghost" onClick={onCancel}>
+						Cancel
+					</Button>
+					<Button type="submit" disabled={saving}>
+						{saving ? 'Saving' : type === 'stdio' ? 'Save' : isEdit ? 'Save' : 'Add MCP server'}
+					</Button>
+				</div>
 			</div>
 		</form>
 	);

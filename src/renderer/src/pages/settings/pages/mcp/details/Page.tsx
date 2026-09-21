@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AlertTriangle, ArrowLeft, FlaskConical, Plug, RefreshCw } from 'lucide-react';
+import { AlertTriangle, FlaskConical, Plug, RefreshCw } from 'lucide-react';
 import type { McpData, McpServerInfo, McpTestResult } from '@shared/mcp_types';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -118,15 +118,7 @@ const McpDetailsPage: React.FC = () => {
 	if (!server) {
 		return (
 			<SettingsPageShell>
-				<SettingsPageHeader
-					title="MCP server"
-					action={
-						<Button variant="outline" size="xs" onClick={() => navigate('/settings/agent/mcp')}>
-							<ArrowLeft className="size-3" />
-							All servers
-						</Button>
-					}
-				/>
+				<SettingsPageHeader title="MCP server" />
 				{error && (
 					<SettingsNotice variant="destructive" icon={AlertTriangle}>
 						{error}
@@ -158,24 +150,7 @@ const McpDetailsPage: React.FC = () => {
 				title={title}
 				description={description}
 				action={
-					<div className="flex flex-wrap items-center gap-1.5">
-						<Button variant="ghost" size="xs" onClick={() => navigate('/settings/agent/mcp')}>
-							<ArrowLeft className="size-3" />
-							All servers
-						</Button>
-						<Button
-							variant="outline"
-							size="xs"
-							onClick={() => void test()}
-							disabled={testing || saving}
-						>
-							{testing ? (
-								<RefreshCw className="size-3 animate-spin" />
-							) : (
-								<FlaskConical className="size-3" />
-							)}
-							{testing ? 'Testing' : 'Test'}
-						</Button>
+					<div className="flex items-center">
 						<label className="flex items-center gap-1.5 text-xs text-muted-foreground">
 							<Switch
 								checked={server.data.enabled !== false}
@@ -235,6 +210,21 @@ const McpDetailsPage: React.FC = () => {
 							onSubmit={save}
 							onCancel={() => navigate('/settings/agent/mcp')}
 							onRemove={server.source === 'configured' ? remove : undefined}
+							action={
+								<Button
+									type="button"
+									variant="outline"
+									onClick={() => void test()}
+									disabled={testing || saving}
+								>
+									{testing ? (
+										<RefreshCw className="size-3.5 animate-spin" />
+									) : (
+										<FlaskConical className="size-3.5" />
+									)}
+									{testing ? 'Testing' : 'Test'}
+								</Button>
+							}
 						/>
 					</div>
 				</SettingsPanel>

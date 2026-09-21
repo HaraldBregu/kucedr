@@ -121,7 +121,13 @@ describe('MCP details', () => {
 		renderDetails('remote');
 		await screen.findByRole('heading', { name: 'Remote docs' });
 
-		await user.click(screen.getByRole('button', { name: 'Test' }));
+		expect(screen.queryByRole('button', { name: 'All servers' })).not.toBeInTheDocument();
+		const testButton = screen.getByRole('button', { name: 'Test' });
+		const saveButton = screen.getByRole('button', { name: 'Save' });
+		expect(
+			testButton.compareDocumentPosition(saveButton) & Node.DOCUMENT_POSITION_FOLLOWING
+		).toBeTruthy();
+		await user.click(testButton);
 		expect(await screen.findByText('2 tools · 25 ms')).toBeInTheDocument();
 
 		const url = screen.getByLabelText('Server URL');
