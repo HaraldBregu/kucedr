@@ -616,7 +616,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
-						<div className="space-y-3">{renderCustomProviderCard()}</div>
+						{!embedded && <div className="space-y-3">{renderCustomProviderCard()}</div>}
 						{embedded ? (
 							<div className="space-y-3 pb-4">
 								{featuredProviders.map((provider) => renderProviderCard(provider, 'models'))}
@@ -631,6 +631,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						)}
 					</SettingsSection>
 				)}
+			{embedded && section === 'models' && (
+				<SettingsSection title={t('settings.modelServices.localProvider')}>
+					<div className="space-y-3 pb-4">{renderCustomProviderCard()}</div>
+				</SettingsSection>
+			)}
 
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>
