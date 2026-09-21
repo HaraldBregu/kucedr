@@ -181,7 +181,9 @@ export function SetupModelsStep({
 			.list('models')
 			.then((providers) => providers.find((provider) => provider.id === 'custom'))
 			.then((provider) =>
-				provider ? window.provider.listCustomModels({ baseUrl: provider.baseUrl, apiKey: provider.apiKey }) : []
+				provider
+					? window.provider.listCustomModels({ baseUrl: provider.baseUrl, apiKey: provider.apiKey })
+					: []
 			)
 			.then((models) => {
 				if (!cancelled) setAvailableLocalModels(models);
