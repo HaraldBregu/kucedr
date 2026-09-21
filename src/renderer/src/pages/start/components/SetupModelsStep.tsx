@@ -19,7 +19,6 @@ import {
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
-import { SetupSearch } from './SetupSearch';
 import { SetupStepHeader } from './SetupStepHeader';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
 import type { ModelServiceId, ModelServiceStateMap } from '../setupTypes';
@@ -154,12 +153,16 @@ export function SetupModelsStep({
 			<SetupStepHeader title={STEP_COPY.models.title} description={STEP_COPY.models.description} />
 
 			<div className="mt-6 grid min-w-0 gap-6">
-				<section aria-label="Model providers" className="min-w-0">
+				<section aria-label="Chat Assistant" className="min-w-0">
+					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+						Chat Assistant
+					</h2>
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
 							{assistantServices.map((service) => {
 								const Icon = SERVICE_ICONS[service.id];
 								const serviceState = serviceStates[service.id];
+								const title = service.id === 'assistant' ? 'LLM Model' : service.title;
 								return (
 									<React.Fragment key={service.id}>
 										<Item
@@ -174,7 +177,7 @@ export function SetupModelsStep({
 												</ItemMedia>
 											)}
 											<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-												<ItemTitle>{service.title}</ItemTitle>
+												<ItemTitle>{title}</ItemTitle>
 												<p className="text-[11px] leading-4 text-muted-foreground">
 													{service.description}
 												</p>
@@ -191,7 +194,7 @@ export function SetupModelsStep({
 														loadingModels || savingConfig || serviceState.modelGroups.length === 0
 													}
 													showFieldLabel={false}
-													labels={{ label: service.title, placeholder: 'Select a model' }}
+													labels={{ label: title, placeholder: 'Select a model' }}
 													onChange={(providerId, modelId) =>
 														onServiceChange(service.id, providerId, modelId)
 													}
@@ -205,16 +208,22 @@ export function SetupModelsStep({
 													onChange={(modelId) => onLocalModelChange('assistant', modelId)}
 												/>
 											)}
-										{service.id === 'assistant' && (
-											<RealtimeConversationConfiguration
-												selectDefaultModel={false}
-												showFieldLabel={false}
-											/>
-										)}
 									</React.Fragment>
 								);
 							})}
-							<SetupSearch />
+						</CardContent>
+					</Card>
+				</section>
+				<section aria-label="Voice Assistant" className="min-w-0">
+					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+						Voice Assistant
+					</h2>
+					<Card size="sm" className="gap-0! p-0!">
+						<CardContent className="p-0!">
+							<RealtimeConversationConfiguration
+								selectDefaultModel={false}
+								showFieldLabel={false}
+							/>
 						</CardContent>
 					</Card>
 				</section>

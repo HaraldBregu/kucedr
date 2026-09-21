@@ -13,10 +13,6 @@ jest.mock('@/components/model-provider-select', () => ({
 	toModelProviderGroups: () => [],
 }));
 
-jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => ({
-	SetupSearch: () => <div data-testid="setup-search">SetupSearch Engine</div>,
-}));
-
 jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/conversation', () => ({
 	__esModule: true,
 	default: ({
@@ -48,7 +44,7 @@ const SERVICE_STATES: ModelServiceStateMap = {
 	audio: EMPTY_SERVICE,
 };
 
-it('groups model services in one card', () => {
+it('groups the chat and voice Assistant configurations', () => {
 	const { container } = render(
 		<SetupModelsStep
 			serviceStates={SERVICE_STATES}
@@ -59,20 +55,21 @@ it('groups model services in one card', () => {
 		/>
 	);
 
-	const assistantGroup = screen.getByRole('region', { name: 'Model providers' });
+	const chatAssistantGroup = screen.getByRole('region', { name: 'Chat Assistant' });
+	const voiceAssistantGroup = screen.getByRole('region', { name: 'Voice Assistant' });
 	expect(container.firstElementChild).not.toHaveClass('px-4', 'sm:px-6');
-	expect(assistantGroup.parentElement).toHaveClass('mt-6');
+	expect(chatAssistantGroup.parentElement).toHaveClass('mt-6');
 	const serviceIds = ['assistant', 'voice', 'transcription'];
 	for (const id of serviceIds) {
-		expect(within(assistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
-		expect(within(assistantGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+		expect(within(chatAssistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
+		expect(within(chatAssistantGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
-	expect(within(assistantGroup).getByTestId('setup-assistant')).toHaveTextContent('Model');
-	expect(within(assistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
+	expect(within(chatAssistantGroup).getByTestId('setup-assistant')).toHaveTextContent('LLM Model');
+	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
 		'data-default-model',
 		'false'
 	);
-	expect(within(assistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
+	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
 		'data-show-field-label',
 		'false'
 	);
