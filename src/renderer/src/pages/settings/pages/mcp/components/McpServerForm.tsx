@@ -54,6 +54,26 @@ const ITEM_CLASS = 'border-b border-border/60 px-5 py-4';
 const CONTROL_CLASS = 'h-8 w-full text-xs';
 const CONTROL_ACTIONS_CLASS = 'ml-auto w-full flex-none justify-end sm:w-64';
 
+function McpFormItem({
+	title,
+	description,
+	children,
+}: {
+	readonly title: React.ReactNode;
+	readonly description: React.ReactNode;
+	readonly children?: React.ReactNode;
+}): React.JSX.Element {
+	return (
+		<Item variant="outline" size="md" className={ITEM_CLASS}>
+			<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+				<ItemTitle>{title}</ItemTitle>
+				<p className="text-[11px] leading-4 text-muted-foreground">{description}</p>
+			</ItemContent>
+			{children && <ItemActions className={CONTROL_ACTIONS_CLASS}>{children}</ItemActions>}
+		</Item>
+	);
+}
+
 export function McpServerForm({
 	initial,
 	onSubmit,
