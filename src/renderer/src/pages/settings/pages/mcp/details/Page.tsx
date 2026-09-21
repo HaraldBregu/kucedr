@@ -161,17 +161,14 @@ const McpDetailsPage: React.FC = () => {
 				description={description}
 				action={
 					<div className="flex items-center">
-						<label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-							<Switch
-								checked={server.data.enabled !== false}
-								disabled={saving || testing}
-								onCheckedChange={(enabled) =>
-									void save(server.id, { ...server.data, enabled }).catch(() => undefined)
-								}
-								aria-label={`${server.data.enabled === false ? 'Enable' : 'Disable'} ${title}`}
-							/>
-							{server.data.enabled === false ? 'Disabled' : 'Enabled'}
-						</label>
+						<Switch
+							checked={server.data.enabled !== false}
+							disabled={saving || testing}
+							onCheckedChange={(enabled) =>
+								void save(server.id, { ...server.data, enabled }).catch(() => undefined)
+							}
+							aria-label={`${server.data.enabled === false ? 'Enable' : 'Disable'} ${title}`}
+						/>
 					</div>
 				}
 			/>
