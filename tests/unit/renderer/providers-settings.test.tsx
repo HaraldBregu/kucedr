@@ -61,7 +61,7 @@ jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
 beforeEach(() => {
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
-	value: {
+		value: {
 			list: jest.fn().mockResolvedValue([]),
 			set: jest.fn().mockResolvedValue({ id: 'pinecone', apiKey: 'database-secret' }),
 			listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b', 'qwen3:8b']),
@@ -104,7 +104,9 @@ describe('Providers settings', () => {
 		const modelsSection = screen.getByRole('heading', { name: 'Models' }).closest('section');
 		expect(modelsSection).not.toBeNull();
 		expect(
-			within(modelsSection!).getAllByRole('heading').map((heading) => heading.textContent)
+			within(modelsSection!)
+				.getAllByRole('heading')
+				.map((heading) => heading.textContent)
 		).toEqual(['Models', 'Ollama', 'OpenAI']);
 		expect(screen.queryByRole('heading', { name: 'Local models' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Ollama' })).toBeInTheDocument();

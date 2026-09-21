@@ -469,9 +469,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								variant="ghost"
 								size="icon-xs"
 								aria-label={t('settings.providers.localModels.edit')}
-								onClick={() =>
-									setCustomProvider((current) => ({ ...current, editing: true }))
-								}
+								onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}
 							>
 								<Pencil className="size-3.5" />
 							</Button>
@@ -480,9 +478,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								type="button"
 								variant="outline"
 								size="xs"
-								onClick={() =>
-									setCustomProvider((current) => ({ ...current, editing: true }))
-								}
+								onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}
 							>
 								{t('settings.providers.localModels.connect')}
 							</Button>
@@ -491,9 +487,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					{customProvider.editing && (
 						<div className="grid gap-2 px-4 pb-4 sm:grid-cols-3">
 							<div className="grid gap-1.5">
-								<Label htmlFor="local-model-url">
-									{t('settings.providers.localModels.url')}
-								</Label>
+								<Label htmlFor="local-model-url">{t('settings.providers.localModels.url')}</Label>
 								<Input
 									id="local-model-url"
 									autoComplete="off"
