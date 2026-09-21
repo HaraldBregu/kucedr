@@ -11,6 +11,8 @@ jest.mock('../../../../src/main/mcp/mcp_store', () => ({
 	saveMcpOauth: jest.fn(),
 }));
 
+import { getMcpOauth } from '../../../../src/main/mcp/mcp_store';
+import { createOAuthProvider } from '../../../../src/main/mcp/mcp_oauth_create_provider';
 import { buildTransport } from '../../../../src/main/mcp/mcp_client_build_transport';
 
 const originalFetch = global.fetch;
@@ -76,3 +78,16 @@ it('creates local transports directly from the shared MCP configuration', () => 
 		buildTransport('local', { type: 'stdio', command: process.execPath, args: ['server.mjs'] })
 	).not.toThrow();
 });
+
+it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+	'uses persisted %s credentials when server data excludes secrets',
+	(host) => {
+		jest
+			.mocked(getMcpOauth)
+			.mockReturnValue({ client_id: 'saved-id', client_secret: 'saved-secret' });
+		buildTransport('saved-google', { type: 'http', url: `https://${host}.googleapis.com/mcp/v1` });
+		expect(createOAuthProvider).toHaveBeenCalledWith(
+			expect.objectContaining({ clientId: 'saved-id', clientSecret: 'saved-secret' })
+		);
+	}
+);

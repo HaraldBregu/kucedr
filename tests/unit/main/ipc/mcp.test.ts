@@ -125,3 +125,42 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 		if (scenario === 'port busy') expect(auth).not.toHaveBeenCalled();
 	}
 );
+
+it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+	'connects %s with the encrypted-store credentials',
+	async (host) => {
+		jest.clearAllMocks();
+		const mainFrame = {};
+		const sender = { id: 21, mainFrame };
+		jest
+			.mocked(BrowserWindow.fromWebContents)
+			.mockReturnValue({ id: 1, webContents: sender } as never);
+		new McpIpc().register(
+			{ windows: { has: () => true }, apps: { has: () => false } } as never,
+			{} as never
+		);
+		jest
+			.mocked(getMcpServers)
+			.mockReturnValue({ google: { type: 'http', url: `https://${host}.googleapis.com/mcp/v1` } });
+		jest
+			.mocked(getMcpOauth)
+			.mockReturnValue({ client_id: 'saved-google-id', client_secret: 'saved-google-secret' });
+		jest
+			.mocked(startOauthCallbackServer)
+			.mockResolvedValue({
+				redirectUrl: 'http://127.0.0.1:3001/oauth/callback',
+				code: Promise.resolve('code'),
+				close: jest.fn(),
+			});
+		jest.mocked(createOAuthProvider).mockReturnValue({} as never);
+		jest.mocked(auth).mockResolvedValue('AUTHORIZED');
+		const handler = jest
+			.mocked(ipcMain.handle)
+			.mock.calls.find(([channel]) => channel === McpChannels.oauthStart)![1];
+		const result = await handler({ sender, senderFrame: mainFrame } as never, 'google');
+		expect(result.success).toBe(true);
+		expect(createOAuthProvider).toHaveBeenCalledWith(
+			expect.objectContaining({ clientId: 'saved-google-id', clientSecret: 'saved-google-secret' })
+		);
+	}
+);
