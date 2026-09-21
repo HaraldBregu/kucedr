@@ -13,6 +13,7 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Label } from '@/components/ui/label';
 import {
 	Select,
@@ -22,7 +23,6 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { SettingsRow } from '../../../components';
 import { McpOAuthButton } from './McpOAuthButton';
 
 type EnvVariable = {
@@ -50,6 +50,9 @@ function serializeEnvEntries(entries: readonly EnvVariable[]): Record<string, st
 }
 
 const TYPE_LABELS = { http: 'Remote (HTTP)', stdio: 'Local (command)' } as const;
+const ITEM_CLASS = 'border-b border-border/60 px-5 py-4';
+const CONTROL_CLASS = 'h-8 w-full text-xs';
+const CONTROL_ACTIONS_CLASS = 'ml-auto w-full flex-none justify-end sm:w-64';
 
 export function McpServerForm({
 	initial,
