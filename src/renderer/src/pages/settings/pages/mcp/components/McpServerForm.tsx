@@ -347,11 +347,12 @@ export function McpServerForm({
 							{isGoogleRemote && (
 								<p className="text-[12px] text-muted-foreground">
 									Google requires a registered OAuth client. Enable the product API and its MCP
-									service, then configure the consent screen. Set MCP_GOOGLE_CLIENT_ID and, if
-									required, MCP_GOOGLE_CLIENT_SECRET in .env. Desktop clients support loopback
-									callbacks; Web clients must register the exact MCP callback URL. Restart Kucedr,
-									then connect with OAuth. Workspace MCP access may require enrollment in the
-									Developer Preview.
+									service, then configure the consent screen. Enter the Client ID and, if required,
+									the Client secret below, then connect with OAuth. These settings work in the
+									installed app and development. MCP_GOOGLE_CLIENT_ID and MCP_GOOGLE_CLIENT_SECRET
+									are optional environment fallbacks; this server's credentials take precedence.
+									Desktop clients support loopback callbacks; Web clients must register the exact
+									MCP callback URL. Workspace MCP access may require enrollment in the Developer Preview.
 								</p>
 							)}
 							<p className="text-[12px] text-muted-foreground">
@@ -372,8 +373,7 @@ export function McpServerForm({
 									/>
 								</Field>
 							)}
-							{!isGoogleRemote && (
-								<>
+							<>
 									<Field>
 										<Label htmlFor="mcp-client-id">Client ID (optional)</Label>
 										<Input
@@ -396,8 +396,7 @@ export function McpServerForm({
 											className={SMALL_INPUT_CLASS}
 										/>
 									</Field>
-								</>
-							)}
+							</>
 							{removeAction()}
 						</div>
 					</details>

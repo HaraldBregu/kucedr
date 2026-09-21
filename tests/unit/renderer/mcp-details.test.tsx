@@ -171,7 +171,7 @@ describe('MCP details', () => {
 });
 
 it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
-	'authenticates %s using env configuration without exposing credential inputs or submitting the form',
+	'saves and authenticates %s using editable client credentials',
 	async (host) => {
 		const user = userEvent.setup();
 		server = {
@@ -182,15 +182,36 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		mcpApi.oauthStart.mockResolvedValue({ status: 'authorized' });
 		renderDetails('google');
 		await screen.findByText(/MCP_GOOGLE_CLIENT_ID/);
-		expect(screen.queryByLabelText(/Client ID/)).not.toBeInTheDocument();
-		expect(screen.queryByLabelText(/Client secret/)).not.toBeInTheDocument();
+		await user.type(screen.getByLabelText(/Client ID/), 'configured-client');
+		await user.type(screen.getByLabelText(/Client secret/), 'configured-secret');
 		await user.click(screen.getByRole('button', { name: 'Connect with OAuth' }));
 		await screen.findByText('Authenticated');
 		expect(mcpApi.upsert).toHaveBeenCalledTimes(1);
 		expect(mcpApi.upsert).toHaveBeenCalledWith(
 			'google',
-			expect.objectContaining({ type: 'http', url: `https://${host}.googleapis.com/mcp/v1` })
+			expect.objectContaining({ type: 'http', url: `https://${host}.googleapis.com/mcp/v1`, client_id: 'configured-client', client_secret: 'configured-secret' })
 		);
 		expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
+	}
+);
+
+
+it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+	'reopens %s with its client ID and keeps a redacted secret unchanged',
+	async (host) => {
+		const user = userEvent.setup();
+		server = {
+			id: 'google',
+			source: 'configured',
+			data: { type: 'http', url: `https://${host}.googleapis.com/mcp/v1`, client_id: 'saved-client' },
+		};
+		renderDetails('google');
+		expect(await screen.findByLabelText(/Client ID/)).toHaveValue('saved-client');
+		const secret = screen.getByLabelText(/Client secret/);
+		expect(secret).toHaveValue('');
+		expect(secret).toHaveAttribute('type', 'password');
+		expect(secret).toHaveAttribute('placeholder', 'Leave blank to keep the saved secret');
+		await user.click(screen.getByRole('button', { name: 'Save' }));
+		await waitFor(() => expect(mcpApi.upsert).toHaveBeenCalledWith('google', expect.objectContaining({ client_id: 'saved-client', client_secret: undefined })));
 	}
 );
