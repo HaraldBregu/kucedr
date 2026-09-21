@@ -72,6 +72,7 @@ export type McpLocalImportResult = {
 export type McpTestResult = {
 	readonly ok: boolean;
 	readonly tools: readonly string[];
+	readonly toolDetails?: readonly { readonly name: string; readonly description?: string }[];
 	readonly toolCount: number;
 	readonly durationMs: number;
 	readonly error?: string;

@@ -48,6 +48,10 @@ beforeEach(() => {
 	mcpApi.test.mockResolvedValue({
 		ok: true,
 		tools: ['search', 'read'],
+		toolDetails: [
+			{ name: 'search', description: 'Search indexed documents.' },
+			{ name: 'read', description: 'Read a document.' },
+		],
 		toolCount: 2,
 		durationMs: 25,
 	});
@@ -124,6 +128,8 @@ describe('MCP details', () => {
 		expect(screen.getByLabelText('Server URL')).toHaveClass('h-8');
 		await user.click(testButton);
 		expect(await screen.findByText('2 tools · 25 ms')).toBeInTheDocument();
+		expect(screen.getByText('search')).toBeInTheDocument();
+		expect(screen.getByText('Search indexed documents.')).toBeInTheDocument();
 
 		const url = screen.getByLabelText('Server URL');
 		await user.clear(url);

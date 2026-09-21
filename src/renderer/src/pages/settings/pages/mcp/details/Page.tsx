@@ -263,9 +263,26 @@ const McpDetailsPage: React.FC = () => {
 						variant={testResult.ok ? 'default' : 'destructive'}
 						icon={testResult.ok ? undefined : AlertTriangle}
 					>
-						{testResult.ok
-							? `${testResult.toolCount} tool${testResult.toolCount === 1 ? '' : 's'} · ${testResult.durationMs} ms`
-							: testResult.error || 'Unable to connect.'}
+						{testResult.ok ? (
+							<span className="grid gap-2">
+								<span>
+									{testResult.toolCount} tool{testResult.toolCount === 1 ? '' : 's'} ·{' '}
+									{testResult.durationMs} ms
+								</span>
+								<span className="grid gap-1">
+									{(testResult.toolDetails ?? testResult.tools.map((name) => ({ name }))).map(
+										(tool) => (
+											<span key={tool.name}>
+												<span className="font-medium text-foreground">{tool.name}</span>
+												{tool.description && ` · ${tool.description}`}
+											</span>
+										)
+									)}
+								</span>
+							</span>
+						) : (
+							testResult.error || 'Unable to connect.'
+						)}
 					</SettingsNotice>
 				)}
 			</SettingsSection>

@@ -15,8 +15,16 @@ export async function testMcpServer(id: string): Promise<McpTestResult> {
 	try {
 		client = await connect(id, data, 15_000);
 		const result = await listTools(client, 15_000);
-		const tools = result.tools.map((tool) => tool.name).sort((a, b) => a.localeCompare(b));
-		return { ok: true, tools, toolCount: tools.length, durationMs: Date.now() - started };
+		const toolDetails = result.tools
+			.map((tool) => ({ name: tool.name, description: tool.description }))
+			.sort((a, b) => a.name.localeCompare(b.name));
+		return {
+			ok: true,
+			tools: toolDetails.map((tool) => tool.name),
+			toolDetails,
+			toolCount: toolDetails.length,
+			durationMs: Date.now() - started,
+		};
 	} catch (error) {
 		return {
 			ok: false,
