@@ -232,46 +232,46 @@ export function McpServerForm({
 				className="border-b-0!"
 				title={<Label htmlFor="mcp-type">Type</Label>}
 				actions={
-				<Select
-					value={type}
-					onValueChange={(value) => setType(value as McpData['type'])}
-					disabled={isEdit}
-				>
-					<SelectTrigger id="mcp-type" className="w-full sm:w-80">
-						<SelectValue>{TYPE_LABELS[type]}</SelectValue>
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="http">{TYPE_LABELS.http}</SelectItem>
-						<SelectItem value="stdio">{TYPE_LABELS.stdio}</SelectItem>
-					</SelectContent>
-				</Select>
+					<Select
+						value={type}
+						onValueChange={(value) => setType(value as McpData['type'])}
+						disabled={isEdit}
+					>
+						<SelectTrigger id="mcp-type" className="w-full sm:w-80">
+							<SelectValue>{TYPE_LABELS[type]}</SelectValue>
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="http">{TYPE_LABELS.http}</SelectItem>
+							<SelectItem value="stdio">{TYPE_LABELS.stdio}</SelectItem>
+						</SelectContent>
+					</Select>
 				}
 			/>
 			<SettingsRow
 				className="border-b-0!"
 				title={<Label htmlFor="mcp-id">ID</Label>}
 				actions={
-				<Input
-					id="mcp-id"
-					value={id}
-					disabled={isEdit}
-					onChange={(e) => setId(e.target.value)}
-					placeholder="my-server"
-					className="sm:w-80"
-				/>
+					<Input
+						id="mcp-id"
+						value={id}
+						disabled={isEdit}
+						onChange={(e) => setId(e.target.value)}
+						placeholder="my-server"
+						className="sm:w-80"
+					/>
 				}
 			/>
 			<SettingsRow
 				className="border-b-0!"
 				title={<Label htmlFor="mcp-name">Name</Label>}
 				actions={
-				<Input
-					id="mcp-name"
-					value={name}
-					onChange={(e) => setName(e.target.value)}
-					placeholder="My Server"
-					className="sm:w-80"
-				/>
+					<Input
+						id="mcp-name"
+						value={name}
+						onChange={(e) => setName(e.target.value)}
+						placeholder="My Server"
+						className="sm:w-80"
+					/>
 				}
 			/>
 			<SettingsRow
@@ -279,30 +279,32 @@ export function McpServerForm({
 				title={<Label htmlFor="mcp-approval">Tool approval</Label>}
 				description="Choose when Kucedr asks before using this server’s tools."
 				actions={
-				<Select
-					value={approval}
-					onValueChange={(value) => setApproval(value as 'default' | 'always' | 'never')}
-				>
-					<SelectTrigger id="mcp-approval" className="w-full sm:w-80">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="default">Default</SelectItem>
-						<SelectItem value="always">Always require approval</SelectItem>
-						<SelectItem value="never">Never require approval</SelectItem>
-					</SelectContent>
-				</Select>
+					<Select
+						value={approval}
+						onValueChange={(value) => setApproval(value as 'default' | 'always' | 'never')}
+					>
+						<SelectTrigger id="mcp-approval" className="w-full sm:w-80">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="default">Default</SelectItem>
+							<SelectItem value="always">Always require approval</SelectItem>
+							<SelectItem value="never">Never require approval</SelectItem>
+						</SelectContent>
+					</Select>
 				}
 			/>
 			<SettingsRow
 				className="border-b-0!"
 				title="Defer tool loading"
 				description="Load this server’s tools only when needed."
-				actions={<Switch
-					checked={deferLoading}
-					onCheckedChange={setDeferLoading}
-					aria-label="Defer tool loading"
-				/>}
+				actions={
+					<Switch
+						checked={deferLoading}
+						onCheckedChange={setDeferLoading}
+						aria-label="Defer tool loading"
+					/>
+				}
 			/>
 
 			{type === 'http' ? (
@@ -311,13 +313,13 @@ export function McpServerForm({
 						className="border-b-0!"
 						title={<Label htmlFor="mcp-url">Server URL</Label>}
 						actions={
-						<Input
-							id="mcp-url"
-							value={url}
-							onChange={(e) => setUrl(e.target.value)}
-							placeholder="https://example.com/mcp"
-							className="sm:w-80"
-						/>
+							<Input
+								id="mcp-url"
+								value={url}
+								onChange={(e) => setUrl(e.target.value)}
+								placeholder="https://example.com/mcp"
+								className="sm:w-80"
+							/>
 						}
 					/>
 					{isGitHubRemote ? (
@@ -380,14 +382,14 @@ export function McpServerForm({
 										className="border-b-0! px-0!"
 										title={<Label htmlFor="mcp-token">Access token (optional)</Label>}
 										actions={
-										<Input
-											id="mcp-token"
-											type="password"
-											value={token}
-											onChange={(e) => setToken(e.target.value)}
-											autoComplete="off"
-											className="sm:w-80"
-										/>
+											<Input
+												id="mcp-token"
+												type="password"
+												value={token}
+												onChange={(e) => setToken(e.target.value)}
+												autoComplete="off"
+												className="sm:w-80"
+											/>
 										}
 									/>
 								)}
@@ -396,28 +398,28 @@ export function McpServerForm({
 										className="border-b-0! px-0!"
 										title={<Label htmlFor="mcp-client-id">Client ID (optional)</Label>}
 										actions={
-										<Input
-											id="mcp-client-id"
-											value={clientId}
-											onChange={(e) => setClientId(e.target.value)}
-											autoComplete="off"
-											className="sm:w-80"
-										/>
+											<Input
+												id="mcp-client-id"
+												value={clientId}
+												onChange={(e) => setClientId(e.target.value)}
+												autoComplete="off"
+												className="sm:w-80"
+											/>
 										}
 									/>
 									<SettingsRow
 										className="border-b-0! px-0!"
 										title={<Label htmlFor="mcp-client-secret">Client secret (optional)</Label>}
 										actions={
-										<Input
-											id="mcp-client-secret"
-											type="password"
-											placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
-											value={clientSecret}
-											onChange={(e) => setClientSecret(e.target.value)}
-											autoComplete="off"
-											className="sm:w-80"
-										/>
+											<Input
+												id="mcp-client-secret"
+												type="password"
+												placeholder={isEdit ? 'Leave blank to keep the saved secret' : undefined}
+												value={clientSecret}
+												onChange={(e) => setClientSecret(e.target.value)}
+												autoComplete="off"
+												className="sm:w-80"
+											/>
 										}
 									/>
 								</>
@@ -432,36 +434,40 @@ export function McpServerForm({
 						className="border-b-0!"
 						title={<Label htmlFor="mcp-command">Command</Label>}
 						actions={
-						<Input
-							id="mcp-command"
-							value={command}
-							onChange={(e) => setCommand(e.target.value)}
-							placeholder="npx"
-							autoComplete="off"
-							className="sm:w-80"
-						/>
+							<Input
+								id="mcp-command"
+								value={command}
+								onChange={(e) => setCommand(e.target.value)}
+								placeholder="npx"
+								autoComplete="off"
+								className="sm:w-80"
+							/>
 						}
 					/>
 					<SettingsRow
 						className="border-b-0!"
 						title={<Label htmlFor="mcp-args">Arguments (optional)</Label>}
 						actions={
-						<Input
-							id="mcp-args"
-							value={args}
-							onChange={(e) => setArgs(e.target.value)}
-							placeholder="-y @modelcontextprotocol/server-filesystem /tmp"
-							autoComplete="off"
-							className="sm:w-80"
-						/>
+							<Input
+								id="mcp-args"
+								value={args}
+								onChange={(e) => setArgs(e.target.value)}
+								placeholder="-y @modelcontextprotocol/server-filesystem /tmp"
+								autoComplete="off"
+								className="sm:w-80"
+							/>
 						}
 					/>
 					<SettingsRow
 						className="border-b-0!"
 						title={<Label htmlFor="mcp-env-key">Environment variables (optional)</Label>}
-						actions={<div className="grid w-full gap-2 sm:w-80">
-							{env.map((entry, index) => (
-								<div key={`${entry.key}-${index}`} className="grid grid-cols-[1fr_1fr_auto] gap-2">
+						actions={
+							<div className="grid w-full gap-2 sm:w-80">
+								{env.map((entry, index) => (
+									<div
+										key={`${entry.key}-${index}`}
+										className="grid grid-cols-[1fr_1fr_auto] gap-2"
+									>
 										<Input
 											id={`mcp-env-key-${index}`}
 											value={entry.key}
@@ -478,21 +484,21 @@ export function McpServerForm({
 											placeholder="VALUE"
 											spellCheck={false}
 										/>
-									<div className="flex items-end">
-										<Button
-											type="button"
-											variant="ghost"
-											size="icon-sm"
-											className="h-8 w-8"
-											aria-label={`Remove ${entry.key || 'environment'} variable`}
-											onClick={() => removeEnvironmentVariable(index)}
-										>
-											<Trash2 className="size-3.5" />
-										</Button>
+										<div className="flex items-end">
+											<Button
+												type="button"
+												variant="ghost"
+												size="icon-sm"
+												className="h-8 w-8"
+												aria-label={`Remove ${entry.key || 'environment'} variable`}
+												onClick={() => removeEnvironmentVariable(index)}
+											>
+												<Trash2 className="size-3.5" />
+											</Button>
+										</div>
 									</div>
-								</div>
-							))}
-							<div className="mt-1 grid grid-cols-[1fr_1fr_auto] gap-2">
+								))}
+								<div className="mt-1 grid grid-cols-[1fr_1fr_auto] gap-2">
 									<Input
 										id="mcp-env-key"
 										value={envKey}
@@ -515,34 +521,35 @@ export function McpServerForm({
 											}
 										}}
 									/>
-								<div className="flex items-end">
-									<Button
-										type="button"
-										size="sm"
-										className="h-8"
-										disabled={!envKey.trim()}
-										onClick={addEnvironmentVariable}
-										aria-label="Add environment variable"
-									>
-										<Plus className="size-3.5" />
-										Add
-									</Button>
+									<div className="flex items-end">
+										<Button
+											type="button"
+											size="sm"
+											className="h-8"
+											disabled={!envKey.trim()}
+											onClick={addEnvironmentVariable}
+											aria-label="Add environment variable"
+										>
+											<Plus className="size-3.5" />
+											Add
+										</Button>
+									</div>
 								</div>
-								</div>
-						</div>}
+							</div>
+						}
 					/>
 					<SettingsRow
 						className="border-b-0!"
 						title={<Label htmlFor="mcp-cwd">Working directory (optional)</Label>}
 						actions={
-						<Input
-							id="mcp-cwd"
-							value={cwd}
-							onChange={(e) => setCwd(e.target.value)}
-							placeholder="/path/to/server"
-							autoComplete="off"
-							className="sm:w-80"
-						/>
+							<Input
+								id="mcp-cwd"
+								value={cwd}
+								onChange={(e) => setCwd(e.target.value)}
+								placeholder="/path/to/server"
+								autoComplete="off"
+								className="sm:w-80"
+							/>
 						}
 					/>
 					{onRemove && (
