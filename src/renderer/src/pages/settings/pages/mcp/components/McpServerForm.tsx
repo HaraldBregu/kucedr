@@ -12,7 +12,6 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import { Field } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -23,6 +22,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { SettingsRow } from '../../../components';
 import { McpOAuthButton } from './McpOAuthButton';
 
 type EnvVariable = {
@@ -227,15 +227,17 @@ export function McpServerForm({
 	};
 
 	return (
-		<form onSubmit={submit} className="grid gap-4">
-			<Field>
-				<Label htmlFor="mcp-type">Type</Label>
+		<form onSubmit={submit} className="divide-y divide-border/60">
+			<SettingsRow
+				className="border-b-0!"
+				title={<Label htmlFor="mcp-type">Type</Label>}
+				actions={
 				<Select
 					value={type}
 					onValueChange={(value) => setType(value as McpData['type'])}
 					disabled={isEdit}
 				>
-					<SelectTrigger id="mcp-type" className="w-full">
+					<SelectTrigger id="mcp-type" className="w-full sm:w-80">
 						<SelectValue>{TYPE_LABELS[type]}</SelectValue>
 					</SelectTrigger>
 					<SelectContent>
@@ -243,33 +245,45 @@ export function McpServerForm({
 						<SelectItem value="stdio">{TYPE_LABELS.stdio}</SelectItem>
 					</SelectContent>
 				</Select>
-			</Field>
-			<Field>
-				<Label htmlFor="mcp-id">ID</Label>
+				}
+			/>
+			<SettingsRow
+				className="border-b-0!"
+				title={<Label htmlFor="mcp-id">ID</Label>}
+				actions={
 				<Input
 					id="mcp-id"
 					value={id}
 					disabled={isEdit}
 					onChange={(e) => setId(e.target.value)}
 					placeholder="my-server"
+					className="sm:w-80"
 				/>
-			</Field>
-			<Field>
-				<Label htmlFor="mcp-name">Name</Label>
+				}
+			/>
+			<SettingsRow
+				className="border-b-0!"
+				title={<Label htmlFor="mcp-name">Name</Label>}
+				actions={
 				<Input
 					id="mcp-name"
 					value={name}
 					onChange={(e) => setName(e.target.value)}
 					placeholder="My Server"
+					className="sm:w-80"
 				/>
-			</Field>
-			<Field>
-				<Label htmlFor="mcp-approval">Tool approval</Label>
+				}
+			/>
+			<SettingsRow
+				className="border-b-0!"
+				title={<Label htmlFor="mcp-approval">Tool approval</Label>}
+				description="Choose when Kucedr asks before using this server’s tools."
+				actions={
 				<Select
 					value={approval}
 					onValueChange={(value) => setApproval(value as 'default' | 'always' | 'never')}
 				>
-					<SelectTrigger id="mcp-approval" className="w-full">
+					<SelectTrigger id="mcp-approval" className="w-full sm:w-80">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -278,20 +292,18 @@ export function McpServerForm({
 						<SelectItem value="never">Never require approval</SelectItem>
 					</SelectContent>
 				</Select>
-			</Field>
-			<label className="flex items-center justify-between gap-3 rounded-md border border-border px-4 py-3">
-				<span>
-					<span className="block text-[13px] font-medium text-foreground">Defer tool loading</span>
-					<span className="block text-[11px] text-muted-foreground">
-						Load this server’s tools only when needed.
-					</span>
-				</span>
-				<Switch
+				}
+			/>
+			<SettingsRow
+				className="border-b-0!"
+				title="Defer tool loading"
+				description="Load this server’s tools only when needed."
+				actions={<Switch
 					checked={deferLoading}
 					onCheckedChange={setDeferLoading}
 					aria-label="Defer tool loading"
-				/>
-			</label>
+				/>}
+			/>
 
 			{type === 'http' ? (
 				<>
