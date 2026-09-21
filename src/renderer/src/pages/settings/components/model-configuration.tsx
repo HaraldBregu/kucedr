@@ -134,9 +134,24 @@ export function ModelProviderConfiguration({
 					className={padded ? undefined : 'px-0 sm:px-0'}
 					title={rowTitle}
 					description={triggerDescription ?? description}
+					media={
+						showIcon &&
+						(FunctionIcon ? (
+							<FunctionIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						) : provider ? (
+							<ProviderAvatar
+								providerId={provider.id}
+								name={providerName}
+								iconDarkUrl={provider.iconDarkUrl}
+								iconLightUrl={provider.iconLightUrl}
+								className="size-5"
+							/>
+						) : undefined)
+					}
 					actions={
 						<ModelProviderSelect
 							inline
+							buttonDropdown={buttonDropdown}
 							idPrefix={idPrefix}
 							providerGroups={toModelProviderGroups(configState.modelGroups)}
 							providerId={configState.providerId}

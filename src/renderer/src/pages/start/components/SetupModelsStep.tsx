@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { BrainCircuit, ImageIcon, Mic, Music2, Video, Volume2, type LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
 	Select,
@@ -24,6 +25,15 @@ const ASSISTANT_SERVICE_IDS = new Set<ModelServiceId>([
 	'video',
 	'audio',
 ]);
+
+const SERVICE_ICONS: Partial<Record<ModelServiceId, LucideIcon>> = {
+	assistant: BrainCircuit,
+	voice: Volume2,
+	transcription: Mic,
+	image: ImageIcon,
+	audio: Music2,
+	video: Video,
+};
 
 type SetupModelsStepProps = {
 	readonly serviceStates: ModelServiceStateMap;
@@ -188,10 +198,14 @@ export function SetupModelsStep({
 											serviceStates[service.id],
 											'Select a model'
 										)}
-										showIcon={false}
+										showIcon
+										icon={SERVICE_ICONS[service.id]}
 										showFieldLabel={false}
 										grouped
-										defaultOpen={index === 0}
+										collapsible={false}
+										padded={false}
+										showSelectedModel
+										buttonDropdown
 										onChange={(providerId, modelId) =>
 											onServiceChange(service.id, providerId, modelId)
 										}
