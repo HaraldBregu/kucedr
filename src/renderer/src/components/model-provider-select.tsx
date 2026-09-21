@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils';
 
 export interface ModelProviderGroup {
 	readonly id: string;
+	readonly name?: string;
 	readonly models: readonly { readonly id: string; readonly name: string }[];
 }
 
@@ -40,20 +41,25 @@ export function resolveStoredModelProvider(
 
 export function toModelProviderGroups(
 	groups: readonly {
-		readonly provider: { readonly id: string };
+		readonly provider: { readonly id: string; readonly name: string };
 		readonly models: readonly { readonly id: string; readonly name: string }[];
 	}[]
 ): readonly ModelProviderGroup[] {
 	return groups.map((group) => ({
 		id: group.provider.id,
+		name: group.provider.name,
 		models: group.models,
 	}));
 }
 
 const VALUE_SEPARATOR = '\u001F';
 
-function modelLabel(providerId: string, model: { id: string; name: string }): string {
-	return `${getProviderCatalogItem(providerId).name} / ${model.name || model.id}`;
+function providerName(group: ModelProviderGroup): string {
+	return group.name ?? getProviderCatalogItem(group.id).name;
+}
+
+function modelLabel(group: ModelProviderGroup, model: { id: string; name: string }): string {
+	return `${providerName(group)} / ${model.name || model.id}`;
 }
 
 function modelName(model: { id: string; name: string }): string {
@@ -98,7 +104,7 @@ export function ModelProviderSelect({
 	const [modelSearch, setModelSearch] = useState('');
 	const selectedGroup = providerGroups.find((group) => group.id === providerId);
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
-	const selectedLabel = selectedModel ? modelLabel(providerId, selectedModel) : undefined;
+	const selectedLabel = selectedModel && selectedGroup ? modelLabel(selectedGroup, selectedModel) : undefined;
 	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
 	const buttonLabel = selectedModel
 		? modelName(selectedModel)
@@ -108,7 +114,7 @@ export function ModelProviderSelect({
 		group.models
 			.filter((model) => {
 				if (!normalizedModelSearch) return true;
-				return [model.id, model.name, getProviderCatalogItem(group.id).name].some((value) =>
+				return [model.id, model.name, providerName(group)].some((value) =>
 					value.toLocaleLowerCase().includes(normalizedModelSearch)
 				);
 			})
@@ -174,7 +180,7 @@ export function ModelProviderSelect({
 										{modelName(model)}
 									</span>
 									<span className="min-w-0 truncate whitespace-nowrap text-xs text-muted-foreground capitalize">
-										{getProviderCatalogItem(group.id).name}
+										{providerName(group)}
 									</span>
 								</span>
 								<Check
@@ -226,7 +232,7 @@ export function ModelProviderSelect({
 							key={`${group.id}${VALUE_SEPARATOR}${model.id}`}
 							value={`${group.id}${VALUE_SEPARATOR}${model.id}`}
 						>
-							{modelLabel(group.id, model)}
+							{modelLabel(group, model)}
 						</SelectItem>
 					))
 				)}

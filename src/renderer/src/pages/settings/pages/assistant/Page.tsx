@@ -48,7 +48,8 @@ function getProviderLlmModels(providerId: string): Model[] {
 	return providerModels(providerId, 'llm');
 }
 
-const localModelProvider: PublicProvider = { id: 'ollama', name: 'Ollama', baseUrl: '' };
+const localModelProvider: PublicProvider =
+	getCatalogProviderById('ollama') ?? { id: 'ollama', name: 'Local model provider', baseUrl: '' };
 const localModelOption: Model = { id: 'local', name: 'Local model' };
 
 async function loadAssistantState(): Promise<ModelConfigurationState> {
@@ -144,7 +145,7 @@ const AssistantPage: React.FC = () => {
 					group.provider.id === 'ollama'
 						? {
 								...group,
-								provider: { ...group.provider, name: 'Ollama', baseUrl: provider.baseUrl },
+							provider: { ...group.provider, name: provider.name, baseUrl: provider.baseUrl },
 								models: models.map((id) => ({ id, name: id })),
 							}
 						: group
@@ -177,7 +178,7 @@ const AssistantPage: React.FC = () => {
 				saving: true,
 			}));
 			try {
-				await window.agent.setProvider({ id: 'ollama', name: 'Ollama', baseUrl: provider.baseUrl });
+				await window.agent.setProvider({ id: 'ollama', name: provider.name, baseUrl: provider.baseUrl });
 				if (!(await window.agent.setModelId(nextModelId)))
 					throw new Error(t('settings.modelServices.saveError'));
 				setState((current) => ({ ...current, saving: false, saved: true }));

@@ -101,7 +101,8 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	): StoredProvider {
 		if (id === 'custom') {
 			if (!baseUrl) throw new Error('Custom provider configuration is invalid.');
-			return { id, name: 'Ollama', apiKey, baseUrl };
+			const provider = loadProviders().find((entry) => entry.id === 'ollama');
+			return { id, name: provider?.name ?? 'Local model provider', apiKey, baseUrl };
 		}
 		if (kind === 'models') {
 			const provider = loadProviders().find((entry) => entry.id === id);
