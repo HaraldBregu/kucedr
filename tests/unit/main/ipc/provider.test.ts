@@ -186,6 +186,25 @@ describe('provider credential IPC boundary', () => {
 		});
 	});
 
+	it('lists Ollama models without a token', async () => {
+		register();
+		const fetchMock = jest.fn().mockResolvedValue({
+			ok: true,
+			json: async () => ({ data: [{ id: 'llama3.2:3b' }] }),
+		});
+		global.fetch = fetchMock;
+
+		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
+			{},
+			{ baseUrl: 'http://localhost:11434/v1', apiKey: '' }
+		);
+
+		expect(result).toEqual(['llama3.2:3b']);
+		expect(fetchMock).toHaveBeenCalledWith('http://localhost:11434/v1/models', {
+			signal: expect.any(AbortSignal),
+		});
+	});
+
 	it('saves and lists database credentials separately from model credentials', () => {
 		setProvider.mockClear();
 		register();
