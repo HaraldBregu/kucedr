@@ -409,9 +409,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
 								onKeyDown={(event) => {
 									if (event.key === 'Enter' && canSaveProvider) {
-										void (kind === 'search'
-											? saveSearchEntry(provider.id)
-											: saveProviderEntry(provider.id, kind));
+										void saveProviderEntry(provider.id, kind);
 									}
 								}}
 								placeholder={
@@ -439,11 +437,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								type="button"
 								size="sm"
 								disabled={!canSaveProvider}
-								onClick={() =>
-									void (kind === 'search'
-										? saveSearchEntry(provider.id)
-										: saveProviderEntry(provider.id, kind))
-								}
+								onClick={() => void saveProviderEntry(provider.id, kind)}
 							>
 								{savingThisProvider ? <LoaderCircle className="size-3.5 animate-spin" /> : null}
 								{t('common.save')}
