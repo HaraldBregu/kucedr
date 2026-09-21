@@ -231,7 +231,12 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
 				const state = randomBytes(32).toString('hex');
-				const options = googleOAuthOptions(server.url);
+				const options = googleOAuthOptions(
+					server.url,
+					server.clientId
+						? { client_id: server.clientId, client_secret: server.clientSecret }
+						: getMcpOauth(server.id)
+				);
 				const callback = await startOauthCallbackServer(state);
 				try {
 					let authorizationUrl: string | undefined;

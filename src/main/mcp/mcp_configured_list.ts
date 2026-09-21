@@ -8,6 +8,7 @@ export function listConfiguredMcpServers(): McpSettings {
 		const { id } = record;
 		const data = { ...record } as Record<string, unknown>;
 		delete data.id;
+		delete data.tokensClientId;
 		for (const key of MCP_SECRET_KEYS) delete data[key];
 		servers[id] = data as unknown as McpData;
 	}

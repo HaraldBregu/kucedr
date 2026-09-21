@@ -19,6 +19,7 @@ describe('configured MCP renderer settings', () => {
 				refresh_token: 'refresh-secret',
 				tokens: { access_token: 'oauth-secret' },
 				codeVerifier: 'verifier',
+				tokensClientId: 'public-client-id',
 			},
 		]);
 

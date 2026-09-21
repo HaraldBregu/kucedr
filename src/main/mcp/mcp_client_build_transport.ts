@@ -33,7 +33,12 @@ export function buildTransport(id: string, data: McpData): Transport {
 	return new StreamableHTTPClientTransport(url, {
 		fetch: createMcpFetch(),
 		authProvider: createOAuthProvider({
-			...googleOAuthOptions(data.url),
+			...googleOAuthOptions(
+				data.url,
+				data.client_id
+					? { client_id: data.client_id, client_secret: data.client_secret }
+					: getMcpOauth(id)
+			),
 			storage: {
 				load: () => getMcpOauth(id),
 				save: (state) => saveMcpOauth(id, state),
