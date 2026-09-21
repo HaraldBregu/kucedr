@@ -307,48 +307,60 @@ export function McpServerForm({
 
 			{type === 'http' ? (
 				<>
-					<Field>
-						<Label htmlFor="mcp-url">Server URL</Label>
+					<SettingsRow
+						className="border-b-0!"
+						title={<Label htmlFor="mcp-url">Server URL</Label>}
+						actions={
 						<Input
 							id="mcp-url"
 							value={url}
 							onChange={(e) => setUrl(e.target.value)}
 							placeholder="https://example.com/mcp"
+							className="sm:w-80"
 						/>
-					</Field>
+						}
+					/>
 					{isGitHubRemote ? (
-						<Field>
-							<Label htmlFor="mcp-token">GitHub personal access token</Label>
-							<Input
-								id="mcp-token"
-								type="password"
-								value={token}
-								onChange={(e) => setToken(e.target.value)}
-								autoComplete="off"
-							/>
-							<p className="text-[12px] text-muted-foreground">
-								GitHub remote MCP requires a bearer token. Dynamic client registration is not
-								supported.
-							</p>
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								onClick={() =>
-									void window.app.openExternalUrl(
-										'https://github.com/settings/personal-access-tokens/new'
-									)
-								}
-							>
-								Create GitHub token
-							</Button>
-						</Field>
+						<SettingsRow
+							className="border-b-0!"
+							title={<Label htmlFor="mcp-token">GitHub personal access token</Label>}
+							description="GitHub remote MCP requires a bearer token."
+							actions={
+								<div className="flex w-full flex-col items-stretch gap-2 sm:w-80">
+									<Input
+										id="mcp-token"
+										type="password"
+										value={token}
+										onChange={(e) => setToken(e.target.value)}
+										autoComplete="off"
+									/>
+									<Button
+										type="button"
+										variant="outline"
+										size="sm"
+										onClick={() =>
+											void window.app.openExternalUrl(
+												'https://github.com/settings/personal-access-tokens/new'
+											)
+										}
+									>
+										Create GitHub token
+									</Button>
+								</div>
+							}
+						/>
 					) : isEdit && isValid ? (
-						<McpOAuthButton id={serverId} beforeStart={persist} />
+						<SettingsRow
+							className="border-b-0!"
+							title="Authentication"
+							actions={<McpOAuthButton id={serverId} beforeStart={persist} />}
+						/>
 					) : (
-						<p className="text-[12px] text-muted-foreground">
-							Save the server before connecting with OAuth.
-						</p>
+						<SettingsRow
+							className="border-b-0!"
+							title="Authentication"
+							description="Save the server before connecting with OAuth."
+						/>
 					)}
 					{isGoogleRemote ? (
 						removeAction()
