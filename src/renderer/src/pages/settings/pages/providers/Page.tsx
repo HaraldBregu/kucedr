@@ -192,7 +192,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		kind: Exclude<StoredProviderKind, 'channels'>
 	): Promise<void> => {
 		const entry = providerEntries.find((item) => item.providerId === providerId);
-		const apiKey = entry?.apiKey.trim() ?? '';
+		const apiKey = entry?.apiKey.trim() || entry?.savedApiKey.trim() || '';
 		if (!entry || !apiKey) return;
 
 		setSavingProviderId(providerId);
@@ -235,7 +235,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	};
 
 	const saveCustomProvider = async (): Promise<void> => {
-		const apiKey = customProvider.apiKey.trim();
+		const apiKey = customProvider.apiKey.trim() || customProvider.savedApiKey;
 		const baseUrl = customProvider.baseUrl.trim();
 		if (!apiKey || !baseUrl) return;
 		setSavingProviderId('custom');
@@ -283,7 +283,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				: (entry?.apiKeySaved ?? false);
 		const editing = entry?.editing ?? false;
 		const savingThisProvider = savingProviderId === provider.id;
-		const canSaveProvider = !!entry && !savingThisProvider && entry.apiKey.trim().length > 0;
+		const canSaveProvider =
+			!!entry && !savingThisProvider && Boolean(entry.apiKey.trim() || entry.savedApiKey.trim());
 
 		return (
 			<Card
@@ -384,11 +385,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										variant="ghost"
 										size="icon-xs"
 										aria-label={`Edit ${provider.name} API key`}
-										onClick={() =>
-											updateProviderEntry(provider.id, {
-												editing: true,
-												apiKey: entry?.savedApiKey ?? '',
-											})
+									onClick={() =>
+										updateProviderEntry(provider.id, {
+											editing: true,
+											apiKey: '',
+										})
 										}
 									>
 										<Pencil className="size-3.5" />
@@ -426,7 +427,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											: saveProviderEntry(provider.id, kind));
 									}
 								}}
-								placeholder={t('settings.providers.apiKeyPlaceholder')}
+								placeholder={entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')}
 								spellCheck={false}
 								type="text"
 								value={entry.apiKey}
@@ -468,7 +469,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const renderCustomProviderCard = (): React.ReactElement => {
 		const connected = Boolean(customProvider.savedBaseUrl);
 		const saving = savingProviderId === 'custom';
-		const canSave = Boolean(customProvider.apiKey.trim() && customProvider.baseUrl.trim());
+		const canSave = Boolean(
+			(customProvider.apiKey.trim() || customProvider.savedApiKey) && customProvider.baseUrl.trim()
+		);
 		return (
 			<Card
 				className={cn(
@@ -506,7 +509,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								variant="ghost"
 								size="icon-xs"
 								aria-label={t('settings.providers.localModels.edit')}
-								onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}
+								onClick={() =>
+									setCustomProvider((current) => ({ ...current, apiKey: '', editing: true }))
+								}
 							>
 								<Pencil className="size-3.5" />
 							</Button>
@@ -576,7 +581,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									autoComplete="off"
 									className="h-8"
 									disabled={saving}
-									placeholder="ollama"
+									placeholder={customProvider.savedApiKey ? '************' : 'ollama'}
 									spellCheck={false}
 									type="text"
 									value={customProvider.apiKey}

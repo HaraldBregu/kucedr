@@ -182,7 +182,8 @@ it('masks saved model keys until editing', async () => {
 
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('button', { name: 'Edit OpenAI API key' }));
-	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('model-secret');
+	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('');
+	expect(screen.getByLabelText('OpenAI API key')).toHaveAttribute('placeholder', '************');
 });
 
 it('saves a custom OpenAI-compatible model provider', async () => {
