@@ -105,10 +105,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				const savedProviders = new Map(
 					[...storedProviders, ...storedSearchProviders].map((provider) => [provider.id, provider])
 				);
-				const hasSavedProvider = allCatalogItems(section).some((provider) =>
-					Boolean(savedProviders.get(provider.id)?.apiKey.trim())
-				);
-
 				setProviderEntries((currentEntries) =>
 					allCatalogItems(section).map((provider) => {
 						const current = currentEntries.find((entry) => entry.providerId === provider.id);
