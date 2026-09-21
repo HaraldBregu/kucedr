@@ -160,7 +160,7 @@ it('loads and displays saved Database keys', async () => {
 			<ProvidersPage section="databases" />
 		</MemoryRouter>
 	);
-	expect(await screen.findByText('Configured')).toBeInTheDocument();
+	expect((await screen.findAllByText('Configured')).length).toBeGreaterThan(0);
 	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
 	const user = userEvent.setup();
 	await user.click(screen.getByRole('button', { name: 'Edit Pinecone API key' }));
@@ -199,7 +199,9 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
+	const ollamaCard = screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="card"]');
+	expect(ollamaCard).not.toBeNull();
+	await user.click(within(ollamaCard!).getByRole('button', { name: 'Connect', exact: true }));
 	const baseUrlInput = screen.getByLabelText('URL');
 	const customCard = baseUrlInput.closest('[data-slot="card"]');
 	expect(customCard).not.toBeNull();
@@ -226,7 +228,9 @@ it('loads available custom provider models', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
+	const ollamaCard = screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="card"]');
+	expect(ollamaCard).not.toBeNull();
+	await user.click(within(ollamaCard!).getByRole('button', { name: 'Connect', exact: true }));
 	await user.type(screen.getByLabelText('URL'), 'http://localhost:11434/api');
 	await user.click(screen.getByRole('button', { name: 'Get available models' }));
 
