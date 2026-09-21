@@ -74,6 +74,8 @@ export function McpServerForm({
 }: {
 	readonly initial?: { readonly id: string; readonly entry: McpData };
 	readonly onSubmit: (id: string, entry: McpData) => Promise<void>;
+	readonly onCancel?: () => void;
+	readonly onRemove?: () => Promise<void>;
 	readonly action?: React.ReactNode;
 }): React.JSX.Element {
 	const isEdit = Boolean(initial);
