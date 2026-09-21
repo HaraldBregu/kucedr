@@ -15,7 +15,6 @@ jest.mock('react-i18next', () => {
 		'settings.providers.localModels.token': 'Token',
 		'settings.providers.localModels.connect': 'Connect',
 		'settings.providers.localModels.edit': 'Edit Ollama',
-		'settings.providers.localModels.refresh': 'Get available models',
 		'settings.modelServices.localProvider': 'Local provider',
 		'settings.providers.configured': 'Configured',
 		'settings.providers.notConfigured': 'Not configured',
@@ -218,31 +217,6 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 		})
 	);
 	expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
-});
-
-it('loads available custom provider models', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter>
-			<ProvidersPage section="models" />
-		</MemoryRouter>
-	);
-
-	const ollamaCard = screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="card"]');
-	expect(ollamaCard).not.toBeNull();
-	await user.click(within(ollamaCard!).getByRole('button', { name: 'Connect', exact: true }));
-	await user.type(screen.getByLabelText('URL'), 'http://localhost:11434/api');
-	await user.click(screen.getByRole('button', { name: 'Get available models' }));
-
-	await waitFor(() =>
-		expect(window.provider.listCustomModels).toHaveBeenCalledWith({
-			baseUrl: 'http://localhost:11434/api',
-			apiKey: '',
-		})
-	);
-	expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
-	expect(screen.getByText('llama3.2:3b')).toBeInTheDocument();
-	expect(screen.getByText('qwen3:8b')).toBeInTheDocument();
 });
 
 it('masks saved Search keys until editing', async () => {

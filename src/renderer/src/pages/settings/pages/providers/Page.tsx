@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus, RefreshCw } from 'lucide-react';
+import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import ollamaLogo from '@resources/providers/ollama/images/official/ollama.svg';
@@ -85,8 +85,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		savedBaseUrl: '',
 		editing: false,
 	});
-	const [customModels, setCustomModels] = useState<string[]>([]);
-	const [loadingCustomModels, setLoadingCustomModels] = useState(false);
 	const [savingProviderId, setSavingProviderId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
@@ -246,22 +244,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			setError(getErrorMessage(err, 'Could not save custom model provider.'));
 		} finally {
 			setSavingProviderId(null);
-		}
-	};
-
-	const loadCustomModels = async (): Promise<void> => {
-		const baseUrl = customProvider.baseUrl.trim();
-		const apiKey = customProvider.apiKey.trim();
-		if (!baseUrl) return;
-		setLoadingCustomModels(true);
-		setError(null);
-		try {
-			const models = await window.provider.listCustomModels({ baseUrl, apiKey });
-			setCustomModels(models);
-		} catch (err) {
-			setError(getErrorMessage(err, 'Could not load models from the custom provider.'));
-		} finally {
-			setLoadingCustomModels(false);
 		}
 	};
 
@@ -548,30 +530,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										}))
 									}
 								/>
-							</div>
-							<div className="sm:ml-[10.75rem]">
-								<Button
-									type="button"
-									variant="outline"
-									size="sm"
-									aria-label={t('settings.providers.localModels.refresh')}
-									disabled={saving || loadingCustomModels || !customProvider.baseUrl.trim()}
-									onClick={() => void loadCustomModels()}
-								>
-									{loadingCustomModels ? (
-										<LoaderCircle className="size-3.5 animate-spin" />
-									) : (
-										<RefreshCw className="size-3.5" />
-									)}
-									{t('settings.providers.localModels.refresh')}
-								</Button>
-								{customModels.length > 0 && (
-									<ul className="mt-2 grid gap-1 text-xs text-muted-foreground">
-										{customModels.map((model) => (
-											<li key={model}>{model}</li>
-										))}
-									</ul>
-								)}
 							</div>
 							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
 								<Label htmlFor="local-model-token" className="sm:text-right">
