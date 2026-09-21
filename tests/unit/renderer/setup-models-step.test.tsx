@@ -145,11 +145,11 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 	const serviceStates = {
 		...SERVICE_STATES,
 		assistant: {
-			providerId: 'custom',
+			providerId: 'ollama',
 			modelId: 'local',
 			modelGroups: [
 				{
-					provider: { id: 'custom', name: 'Local model', baseUrl: '' },
+					provider: { id: 'ollama', name: 'Ollama', baseUrl: '' },
 					models: [{ id: 'local', name: 'Local model' }],
 				},
 			],
