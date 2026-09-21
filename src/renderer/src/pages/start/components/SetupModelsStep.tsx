@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { BrainCircuit, Mic, Volume2, type LucideIcon } from 'lucide-react';
+import {
+	BrainCircuit,
+	ImageIcon,
+	Mic,
+	Music,
+	Radio,
+	Video,
+	Volume2,
+	type LucideIcon,
+} from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
 	Combobox,
@@ -31,6 +40,9 @@ const SERVICE_ICONS: Partial<Record<ModelServiceId, LucideIcon>> = {
 	assistant: BrainCircuit,
 	voice: Volume2,
 	transcription: Mic,
+	image: ImageIcon,
+	video: Video,
+	audio: Music,
 };
 
 type SetupModelsStepProps = {
@@ -226,6 +238,7 @@ export function SetupModelsStep({
 							<RealtimeConversationConfiguration
 								selectDefaultModel={false}
 								showFieldLabel={false}
+								icon={Radio}
 							/>
 						</CardContent>
 					</Card>
