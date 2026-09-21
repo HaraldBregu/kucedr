@@ -68,7 +68,7 @@ client, register this exact URL with its authorization server. Set the connector
 ID and optional client secret in its advanced settings. Servers supporting dynamic client
 registration receive the callback URL automatically through the MCP SDK.
 
-`MCP_CLIENT_REDIRECT_URL` optionally overrides the callback for all HTTP MCP connections.
+`CLIENT_REDIRECT_URL` optionally overrides the callback for all HTTP MCP connections.
 Use an HTTP loopback address with an explicit port. Prefer `127.0.0.1` or `[::1]` over
 `localhost` to avoid hostname resolution differences. The listener is bound before OAuth
 registration or browser launch; its actual URL is used unchanged for registration,
@@ -76,7 +76,7 @@ authorization, and code exchange. An occupied fixed port fails rather than silen
 a registered URL. The listener closes on callback, cancellation, error, or timeout.
 
 For native OAuth clients that permit variable loopback ports, set
-`MCP_CLIENT_REDIRECT_URL=http://127.0.0.1:0/oauth/callback`. Port `0` asks the OS to allocate an
+`CLIENT_REDIRECT_URL=http://127.0.0.1:0/oauth/callback`. Port `0` asks the OS to allocate an
 available port; it is never sent to the authorization server. Do not use this option for a
 pre-registered client requiring an exact fixed port. A dynamically registered client whose
 registered callback differs is registered again before starting a new interactive flow.
@@ -86,7 +86,7 @@ adds Google scopes and consent parameters. Configure the Client ID and optional 
 in each server's MCP settings; this works in both the packaged app and development. Saved
 secrets use encrypted operating-system storage when available and remain memory-only when
 secure storage is unavailable. Secret fields reopen blank; leaving them blank keeps the saved
-secret. `MCP_GOOGLE_CLIENT_ID` and `MCP_GOOGLE_CLIENT_SECRET` are optional environment
+secret. `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` are optional environment
 fallbacks. Per-server credentials take precedence as a pair; the packaged app does not need
 to load a repository `.env` file. For a Google Desktop app OAuth client, variable loopback ports
 are supported. A Google Web application OAuth client requires the exact registered callback.

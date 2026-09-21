@@ -181,7 +181,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		};
 		mcpApi.oauthStart.mockResolvedValue({ status: 'authorized' });
 		renderDetails('google');
-		await screen.findByText(/MCP_GOOGLE_CLIENT_ID/);
+		await screen.findByText(/GOOGLE_CLIENT_ID/);
 		await user.type(screen.getByLabelText(/Client ID/), 'configured-client');
 		await user.type(screen.getByLabelText(/Client secret/), 'configured-secret');
 		await user.click(screen.getByRole('button', { name: 'Connect with OAuth' }));

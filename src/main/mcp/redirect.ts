@@ -1,5 +1,5 @@
 export function getMcpOAuthRedirectUrl(
-	value = process.env.MCP_CLIENT_REDIRECT_URL?.trim() || 'http://127.0.0.1:3001/oauth/callback'
+	value = process.env.CLIENT_REDIRECT_URL?.trim() || 'http://127.0.0.1:3001/oauth/callback'
 ): string {
 	const url = new URL(value);
 	if (
@@ -11,7 +11,7 @@ export function getMcpOAuthRedirectUrl(
 		url.search ||
 		url.hash
 	) {
-		throw new Error('MCP_CLIENT_REDIRECT_URL must be an HTTP loopback URL with an explicit port.');
+		throw new Error('CLIENT_REDIRECT_URL must be an HTTP loopback URL with an explicit port.');
 	}
 	return url.toString();
 }

@@ -349,7 +349,7 @@ export function McpServerForm({
 									Google requires a registered OAuth client. Enable the product API and its MCP
 									service, then configure the consent screen. Enter the Client ID and, if required,
 									the Client secret below, then connect with OAuth. These settings work in the
-									installed app and development. MCP_GOOGLE_CLIENT_ID and MCP_GOOGLE_CLIENT_SECRET
+									installed app and development. GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET
 									are optional environment fallbacks; this server's credentials take precedence.
 									Desktop clients support loopback callbacks; Web clients must register the exact
 									MCP callback URL. Workspace MCP access may require enrollment in the Developer
@@ -359,7 +359,7 @@ export function McpServerForm({
 							<p className="text-[12px] text-muted-foreground">
 								The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
 								URL if your authorization server requires it. To use another loopback URL, set
-								MCP_CLIENT_REDIRECT_URL in .env and restart Kucedr.
+								CLIENT_REDIRECT_URL in .env and restart Kucedr.
 							</p>
 							{!isGitHubRemote && !isGoogleRemote && (
 								<Field>

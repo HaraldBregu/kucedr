@@ -8,13 +8,13 @@ export function googleOAuthOptions(
 	const scope = googleMcpScopes(serverUrl);
 	if (!scope) return {};
 	const configuredId = credentials.client_id?.trim();
-	const clientId = configuredId || process.env.MCP_GOOGLE_CLIENT_ID?.trim();
+	const clientId = configuredId || process.env.GOOGLE_CLIENT_ID?.trim();
 	const clientSecret =
-		(configuredId ? credentials.client_secret : process.env.MCP_GOOGLE_CLIENT_SECRET)?.trim() ||
+		(configuredId ? credentials.client_secret : process.env.GOOGLE_CLIENT_SECRET)?.trim() ||
 		undefined;
 	if (!clientId) {
 		throw new Error(
-			'Enter the Google OAuth Client ID and optional Client secret in this MCP server’s settings. MCP_GOOGLE_CLIENT_ID and MCP_GOOGLE_CLIENT_SECRET are optional environment defaults.'
+			'Enter the Google OAuth Client ID and optional Client secret in this MCP server’s settings. GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET are optional environment defaults.'
 		);
 	}
 	return {

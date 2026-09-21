@@ -45,7 +45,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 				expect(body.get('client_id')).toBe('registered-client');
 				expect(body.get('client_secret')).toBe('saved-secret');
 				expect(body.get('code_verifier')).toBe(await provider.codeVerifier());
-				expect(body.get('redirect_uri')).toBe(process.env.MCP_CLIENT_REDIRECT_URL);
+				expect(body.get('redirect_uri')).toBe(process.env.CLIENT_REDIRECT_URL);
 				return Response.json({
 					access_token: 'access',
 					token_type: 'Bearer',
@@ -72,9 +72,9 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 );
 
 it('explains the Google credential requirement before attempting dynamic registration', () => {
-	delete process.env.MCP_GOOGLE_CLIENT_ID;
+	delete process.env.GOOGLE_CLIENT_ID;
 	expect(() => googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow(
-		'MCP_GOOGLE_CLIENT_ID'
+		'GOOGLE_CLIENT_ID'
 	);
 });
 
@@ -93,27 +93,27 @@ it('leaves generic OAuth registration and authorization parameters unchanged', (
 	expect(googleMcpScopes('https://gmailmcp.googleapis.com.evil.test/mcp/v1')).toBeUndefined();
 });
 
-const originalRedirectUrl = process.env.MCP_CLIENT_REDIRECT_URL;
-const originalGoogleClientId = process.env.MCP_GOOGLE_CLIENT_ID;
-const originalGoogleClientSecret = process.env.MCP_GOOGLE_CLIENT_SECRET;
+const originalRedirectUrl = process.env.CLIENT_REDIRECT_URL;
+const originalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
+const originalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
 beforeEach(() => {
-	process.env.MCP_CLIENT_REDIRECT_URL = 'http://127.0.0.1:3001/oauth/callback';
-	process.env.MCP_GOOGLE_CLIENT_ID = 'registered-client';
-	process.env.MCP_GOOGLE_CLIENT_SECRET = 'saved-secret';
+	process.env.CLIENT_REDIRECT_URL = 'http://127.0.0.1:3001/oauth/callback';
+	process.env.GOOGLE_CLIENT_ID = 'registered-client';
+	process.env.GOOGLE_CLIENT_SECRET = 'saved-secret';
 });
 
 afterEach(() => {
-	if (originalGoogleClientId === undefined) delete process.env.MCP_GOOGLE_CLIENT_ID;
-	else process.env.MCP_GOOGLE_CLIENT_ID = originalGoogleClientId;
-	if (originalGoogleClientSecret === undefined) delete process.env.MCP_GOOGLE_CLIENT_SECRET;
-	else process.env.MCP_GOOGLE_CLIENT_SECRET = originalGoogleClientSecret;
-	if (originalRedirectUrl === undefined) delete process.env.MCP_CLIENT_REDIRECT_URL;
-	else process.env.MCP_CLIENT_REDIRECT_URL = originalRedirectUrl;
+	if (originalGoogleClientId === undefined) delete process.env.GOOGLE_CLIENT_ID;
+	else process.env.GOOGLE_CLIENT_ID = originalGoogleClientId;
+	if (originalGoogleClientSecret === undefined) delete process.env.GOOGLE_CLIENT_SECRET;
+	else process.env.GOOGLE_CLIENT_SECRET = originalGoogleClientSecret;
+	if (originalRedirectUrl === undefined) delete process.env.CLIENT_REDIRECT_URL;
+	else process.env.CLIENT_REDIRECT_URL = originalRedirectUrl;
 });
 
 it('uses a dedicated callback independent of account authentication', () => {
-	delete process.env.MCP_CLIENT_REDIRECT_URL;
+	delete process.env.CLIENT_REDIRECT_URL;
 	expect(getMcpOAuthRedirectUrl()).toBe('http://127.0.0.1:3001/oauth/callback');
 });
 
@@ -122,12 +122,12 @@ it.each([
 	'http://example.com:3001/callback',
 	'http://127.0.0.1/callback',
 ])('rejects callbacks that cannot be owned by the desktop app: %s', (value) => {
-	process.env.MCP_CLIENT_REDIRECT_URL = value;
+	process.env.CLIENT_REDIRECT_URL = value;
 	expect(() => getMcpOAuthRedirectUrl()).toThrow('HTTP loopback');
 });
 
 it('uses the configured redirect consistently in client metadata and OAuth', () => {
-	process.env.MCP_CLIENT_REDIRECT_URL = '  http://127.0.0.1:3002/callback  ';
+	process.env.CLIENT_REDIRECT_URL = '  http://127.0.0.1:3002/callback  ';
 	const provider = createOAuthProvider({ storage: { load: () => ({}), save: jest.fn() } });
 	expect(provider.redirectUrl).toBe('http://127.0.0.1:3002/callback');
 	expect(provider.clientMetadata.redirect_uris).toEqual(['http://127.0.0.1:3002/callback']);
@@ -135,7 +135,7 @@ it('uses the configured redirect consistently in client metadata and OAuth', () 
 
 it('isolates Google options from generic MCP servers and permits public Google clients', () => {
 	expect(googleOAuthOptions('https://example.com/mcp')).toEqual({});
-	delete process.env.MCP_GOOGLE_CLIENT_SECRET;
+	delete process.env.GOOGLE_CLIENT_SECRET;
 	const provider = createOAuthProvider({
 		...googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1'),
 		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
