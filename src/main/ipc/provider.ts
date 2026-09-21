@@ -144,7 +144,8 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		}
 		if (!response.ok) throw new Error('Could not load models from the custom provider.');
 		const body = (await response.json()) as { models?: unknown };
-		if (!Array.isArray(body.models)) throw new Error('The local provider returned an invalid model list.');
+		if (!Array.isArray(body.models))
+			throw new Error('The local provider returned an invalid model list.');
 		return [
 			...new Set(
 				body.models

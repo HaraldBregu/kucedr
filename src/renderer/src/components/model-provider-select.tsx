@@ -104,7 +104,8 @@ export function ModelProviderSelect({
 	const [modelSearch, setModelSearch] = useState('');
 	const selectedGroup = providerGroups.find((group) => group.id === providerId);
 	const selectedModel = selectedGroup?.models.find((model) => model.id === modelId);
-	const selectedLabel = selectedModel && selectedGroup ? modelLabel(selectedGroup, selectedModel) : undefined;
+	const selectedLabel =
+		selectedModel && selectedGroup ? modelLabel(selectedGroup, selectedModel) : undefined;
 	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
 	const buttonLabel = selectedModel
 		? modelName(selectedModel)
