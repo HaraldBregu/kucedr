@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-	BrainCircuit,
-	Mic,
-	Volume2,
-	type LucideIcon,
-} from 'lucide-react';
+import { BrainCircuit, Mic, Volume2, type LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
 	Select,
@@ -13,13 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import {
-	Item,
-	ItemActions,
-	ItemContent,
-	ItemMedia,
-	ItemTitle,
-} from '@/components/ui/item';
+import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
 import { SetupSearch } from './SetupSearch';
@@ -27,11 +16,7 @@ import { SetupStepHeader } from './SetupStepHeader';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
 import type { ModelServiceId, ModelServiceStateMap } from '../setupTypes';
 
-const ASSISTANT_SERVICE_IDS = new Set<ModelServiceId>([
-	'assistant',
-	'voice',
-	'transcription',
-]);
+const ASSISTANT_SERVICE_IDS = new Set<ModelServiceId>(['assistant', 'voice', 'transcription']);
 
 const SERVICE_ICONS: Partial<Record<ModelServiceId, LucideIcon>> = {
 	assistant: BrainCircuit,
@@ -207,12 +192,12 @@ export function SetupModelsStep({
 													onChange={(modelId) => onLocalModelChange('assistant', modelId)}
 												/>
 											)}
-									{service.id === 'assistant' && (
-										<RealtimeConversationConfiguration
-											selectDefaultModel={false}
-											showFieldLabel={false}
-										/>
-									)}
+										{service.id === 'assistant' && (
+											<RealtimeConversationConfiguration
+												selectDefaultModel={false}
+												showFieldLabel={false}
+											/>
+										)}
 									</React.Fragment>
 								);
 							})}

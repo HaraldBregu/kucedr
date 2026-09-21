@@ -63,10 +63,7 @@ it('groups model services in one card', () => {
 	expect(assistantGroup.parentElement).toHaveClass('mt-6');
 	const serviceIds = ['assistant', 'voice', 'transcription'];
 	for (const id of serviceIds) {
-		expect(within(assistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute(
-			'data-slot',
-			'item'
-		);
+		expect(within(assistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
 		expect(within(assistantGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
 	expect(within(assistantGroup).getByTestId('setup-assistant')).toHaveTextContent('Model');
