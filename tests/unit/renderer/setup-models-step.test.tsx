@@ -13,6 +13,10 @@ jest.mock('@/components/model-provider-select', () => ({
 	toModelProviderGroups: () => [],
 }));
 
+jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => ({
+	SetupSearch: () => <div data-testid="setup-search">Search</div>,
+}));
+
 jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/conversation', () => ({
 	__esModule: true,
 	default: ({
@@ -57,6 +61,7 @@ it('groups the chat and voice Assistant configurations', () => {
 
 	const chatAssistantGroup = screen.getByRole('region', { name: 'Chat Assistant' });
 	const voiceAssistantGroup = screen.getByRole('region', { name: 'Voice Assistant' });
+	const toolsGroup = screen.getByRole('region', { name: 'Tools' });
 	expect(container.firstElementChild).not.toHaveClass('px-4', 'sm:px-6');
 	expect(chatAssistantGroup.parentElement).toHaveClass('mt-6');
 	const serviceIds = ['assistant', 'voice', 'transcription'];
@@ -76,6 +81,11 @@ it('groups the chat and voice Assistant configurations', () => {
 		'data-show-field-label',
 		'false'
 	);
+	expect(within(toolsGroup).getByTestId('setup-search')).toBeInTheDocument();
+	for (const id of ['image', 'video', 'audio']) {
+		expect(within(toolsGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
+		expect(within(toolsGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+	}
 	expect(screen.queryByTestId('setup-health')).not.toBeInTheDocument();
 	expect(screen.queryByTestId('setup-tasks')).not.toBeInTheDocument();
 	expect(screen.queryByTestId('setup-image')).not.toBeInTheDocument();

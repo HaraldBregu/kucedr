@@ -19,11 +19,13 @@ import {
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
+import { SetupSearch } from './SetupSearch';
 import { SetupStepHeader } from './SetupStepHeader';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
 import type { ModelServiceId, ModelServiceStateMap } from '../setupTypes';
 
 const ASSISTANT_SERVICE_IDS = new Set<ModelServiceId>(['assistant', 'voice', 'transcription']);
+const TOOL_SERVICE_IDS = new Set<ModelServiceId>(['image', 'video', 'audio']);
 
 const SERVICE_ICONS: Partial<Record<ModelServiceId, LucideIcon>> = {
 	assistant: BrainCircuit,
@@ -147,6 +149,7 @@ export function SetupModelsStep({
 	const assistantServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>
 		ASSISTANT_SERVICE_IDS.has(service.id)
 	);
+	const toolServices = MODEL_SERVICE_DEFINITIONS.filter((service) => TOOL_SERVICE_IDS.has(service.id));
 
 	return (
 		<div className="mx-auto flex min-h-full w-full min-w-0 max-w-2xl flex-col justify-center py-8">
@@ -224,6 +227,59 @@ export function SetupModelsStep({
 								selectDefaultModel={false}
 								showFieldLabel={false}
 							/>
+						</CardContent>
+					</Card>
+				</section>
+				<section aria-label="Tools" className="min-w-0">
+					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+						Tools
+					</h2>
+					<Card size="sm" className="gap-0! p-0!">
+						<CardContent className="p-0!">
+							<SetupSearch />
+							{toolServices.map((service) => {
+								const Icon = SERVICE_ICONS[service.id];
+								const serviceState = serviceStates[service.id];
+								return (
+									<Item
+										key={service.id}
+										data-testid={`setup-${service.id}`}
+										variant="outline"
+										size="md"
+										className="border-b border-border/60 px-4 py-3 last:border-b-0"
+									>
+										{Icon && (
+											<ItemMedia variant="icon" className="bg-transparent">
+												<Icon className="size-5" aria-hidden="true" />
+											</ItemMedia>
+										)}
+										<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+											<ItemTitle>{service.title}</ItemTitle>
+											<p className="text-[11px] leading-4 text-muted-foreground">
+												{service.description}
+											</p>
+										</ItemContent>
+										<ItemActions className="ml-auto w-full flex-none justify-end sm:w-80">
+											<ModelProviderSelect
+												inline
+												buttonDropdown
+												idPrefix={`setup-${service.id}`}
+												providerGroups={toModelProviderGroups(serviceState.modelGroups)}
+												providerId={serviceState.providerId}
+												modelId={serviceState.modelId}
+												disabled={
+													loadingModels || savingConfig || serviceState.modelGroups.length === 0
+												}
+												showFieldLabel={false}
+												labels={{ label: service.title, placeholder: 'Select a model' }}
+												onChange={(providerId, modelId) =>
+													onServiceChange(service.id, providerId, modelId)
+												}
+											/>
+										</ItemActions>
+									</Item>
+								);
+							})}
 						</CardContent>
 					</Card>
 				</section>
