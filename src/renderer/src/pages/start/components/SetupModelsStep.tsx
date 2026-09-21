@@ -240,22 +240,22 @@ export function SetupModelsStep({
 													buttonDropdown
 													buttonClassName="w-40 min-w-0"
 													idPrefix={`setup-${service.id}`}
-												providerGroups={toModelProviderGroups(providerGroups)}
-												providerId={serviceState.providerId}
-												modelId={selectedModelId}
+													providerGroups={toModelProviderGroups(providerGroups)}
+													providerId={serviceState.providerId}
+													modelId={selectedModelId}
 													disabled={
 														loadingModels || savingConfig || serviceState.modelGroups.length === 0
 													}
 													showFieldLabel={false}
 													labels={{ label: title, placeholder: 'Select a model' }}
-												onChange={(providerId, modelId) => {
-													if (service.id === 'assistant' && providerId === 'custom') {
-														onServiceChange('assistant', 'custom', 'local');
-														onLocalModelChange('assistant', modelId);
-														return;
-													}
-													onServiceChange(service.id, providerId, modelId);
-												}}
+													onChange={(providerId, modelId) => {
+														if (service.id === 'assistant' && providerId === 'custom') {
+															onServiceChange('assistant', 'custom', 'local');
+															onLocalModelChange('assistant', modelId);
+															return;
+														}
+														onServiceChange(service.id, providerId, modelId);
+													}}
 												/>
 											</ItemActions>
 										</Item>
