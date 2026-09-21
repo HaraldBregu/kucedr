@@ -201,7 +201,7 @@ export const STEP_COPY: Record<SetupStep, { title: string; description: string }
 			'Connect the search provider you want Kucedr to use. You can add more providers at any time.',
 	},
 	models: {
-		title: 'Assistant setup',
+		title: 'Agent configuration',
 		description:
 			'Choose the model each service should use. Only the model is required — you can change any of these later in settings.',
 	},

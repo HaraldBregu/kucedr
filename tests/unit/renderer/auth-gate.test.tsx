@@ -18,7 +18,7 @@ jest.mock('../../../src/renderer/src/pages/start/components/SetupProviderStep', 
 }));
 
 jest.mock('../../../src/renderer/src/pages/start/components/SetupModelsStep', () => ({
-	SetupModelsStep: () => <h1>Assistant setup</h1>,
+	SetupModelsStep: () => <h1>Agent configuration</h1>,
 }));
 
 function Location(): React.JSX.Element {
