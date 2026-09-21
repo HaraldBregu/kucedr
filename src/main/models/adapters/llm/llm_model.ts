@@ -708,6 +708,7 @@ function isLlmRequest(request: LlmRequest | LlmStreamRequest): request is LlmReq
 }
 
 function llmBaseUrl(provider: LlmProviderSpec): string | undefined {
-	if (provider.id.toLowerCase() !== 'custom' || !provider.baseURL) return provider.baseURL;
+	if (!['custom', 'ollama'].includes(provider.id.toLowerCase()) || !provider.baseURL)
+		return provider.baseURL;
 	return new URL('/v1', provider.baseURL).toString();
 }

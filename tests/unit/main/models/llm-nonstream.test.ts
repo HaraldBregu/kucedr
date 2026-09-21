@@ -233,7 +233,7 @@ describe('LlmModel non-streaming transport', () => {
 		);
 	});
 
-	it('uses Ollama\'s OpenAI-compatible endpoint for a configured API URL', async () => {
+	it('uses the local provider OpenAI-compatible endpoint for a configured API URL', async () => {
 		const create = jest.fn().mockResolvedValue({ choices: [], usage: {} });
 		const openAIClientFactory = jest.fn(
 			() => ({ chat: { completions: { create } } }) as never
@@ -241,8 +241,8 @@ describe('LlmModel non-streaming transport', () => {
 		const model = new LlmModel({ openAIClientFactory });
 
 		for await (const _event of model.stream({
-			...request('custom'),
-			provider: { id: 'custom', apiKey: 'key', baseURL: 'http://localhost:11434/api' },
+			...request('ollama'),
+			provider: { id: 'ollama', apiKey: 'key', baseURL: 'http://localhost:11434/api' },
 		})) {
 			// Consume the provider stream.
 		}
