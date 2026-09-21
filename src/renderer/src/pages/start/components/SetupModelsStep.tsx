@@ -240,17 +240,22 @@ export function SetupModelsStep({
 													buttonDropdown
 													buttonClassName="w-40 min-w-0"
 													idPrefix={`setup-${service.id}`}
-													providerGroups={toModelProviderGroups(serviceState.modelGroups)}
-													providerId={serviceState.providerId}
-													modelId={serviceState.modelId}
+												providerGroups={toModelProviderGroups(providerGroups)}
+												providerId={serviceState.providerId}
+												modelId={selectedModelId}
 													disabled={
 														loadingModels || savingConfig || serviceState.modelGroups.length === 0
 													}
 													showFieldLabel={false}
 													labels={{ label: title, placeholder: 'Select a model' }}
-													onChange={(providerId, modelId) =>
-														onServiceChange(service.id, providerId, modelId)
+												onChange={(providerId, modelId) => {
+													if (service.id === 'assistant' && providerId === 'custom') {
+														onServiceChange('assistant', 'custom', 'local');
+														onLocalModelChange('assistant', modelId);
+														return;
 													}
+													onServiceChange(service.id, providerId, modelId);
+												}}
 												/>
 											</ItemActions>
 										</Item>
@@ -312,22 +317,17 @@ export function SetupModelsStep({
 												buttonDropdown
 												buttonClassName="w-40 min-w-0"
 												idPrefix={`setup-${service.id}`}
-												providerGroups={toModelProviderGroups(providerGroups)}
+												providerGroups={toModelProviderGroups(serviceState.modelGroups)}
 												providerId={serviceState.providerId}
-												modelId={selectedModelId}
+												modelId={serviceState.modelId}
 												disabled={
 													loadingModels || savingConfig || serviceState.modelGroups.length === 0
 												}
 												showFieldLabel={false}
 												labels={{ label: service.title, placeholder: 'Select a model' }}
-												onChange={(providerId, modelId) => {
-													if (service.id === 'assistant' && providerId === 'custom') {
-														onServiceChange('assistant', 'custom', 'local');
-														onLocalModelChange('assistant', modelId);
-														return;
-													}
-													onServiceChange(service.id, providerId, modelId);
-												}}
+												onChange={(providerId, modelId) =>
+													onServiceChange(service.id, providerId, modelId)
+												}
 											/>
 										</ItemActions>
 									</Item>
