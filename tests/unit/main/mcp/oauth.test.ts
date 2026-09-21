@@ -327,3 +327,117 @@ it('registers a changed dynamic callback again without reusing tokens for the ol
 	expect(provider.clientInformation()).toMatchObject({ client_id: 'new-client' });
 	expect(provider.tokens()).toBeUndefined();
 });
+
+it.each(['https://gmailmcp.googleapis.com/mcp/v1', 'https://generic.example/mcp'])(
+	'rejects tokens issued to another configured client for %s',
+	(serverUrl) => {
+		const provider = createOAuthProvider({
+			...googleOAuthOptions(serverUrl),
+			clientId: 'registered-client',
+			storage: {
+				load: () => ({
+					client_id: 'old-client',
+					tokensClientId: 'old-client',
+					tokens: { access_token: 'old-access', refresh_token: 'old-refresh', token_type: 'Bearer' },
+				}),
+				save: jest.fn(),
+			},
+		});
+		expect(provider.tokens()).toBeUndefined();
+	}
+);
+
+it.each([undefined, 'another-client'])('rejects an unknown token client binding: %s', (binding) => {
+	const provider = createOAuthProvider({
+		storage: {
+			load: () => ({
+				client_id: 'dynamic-client',
+				tokensClientId: binding,
+				tokens: { access_token: 'old-access', token_type: 'Bearer' },
+			}),
+			save: jest.fn(),
+		},
+	});
+	expect(provider.tokens()).toBeUndefined();
+});
+
+it.each([
+	{ binding: 'old-client', newGrant: false },
+	{ binding: 'current-client', newGrant: true },
+])('does not retain an unrelated refresh token: %j', async ({ binding, newGrant }) => {
+	let stored: McpOAuthState = {
+		tokensClientId: binding,
+		tokens: { access_token: 'old-access', refresh_token: 'old-refresh', token_type: 'Bearer' },
+	};
+	const provider = createOAuthProvider({
+		clientId: 'current-client',
+		storage: {
+			load: () => stored,
+			save: (value) => {
+				stored = value;
+			},
+		},
+	});
+	if (newGrant) await provider.saveCodeVerifier('new-grant');
+	await provider.saveTokens({ access_token: 'new-access', token_type: 'Bearer' });
+	expect(stored.tokens?.refresh_token).toBeUndefined();
+	expect(stored.tokensClientId).toBe('current-client');
+	expect(stored.client_id).toBeUndefined();
+	expect(provider.tokens()?.access_token).toBe('new-access');
+	expect(() => provider.codeVerifier()).toThrow('Missing OAuth code verifier');
+});
+
+it.each(['dynamic-client', 'another-client'])(
+	'preserves dynamic client tokens only for their bound identity: %s',
+	async (clientId) => {
+		let stored: McpOAuthState = {
+			client_id: 'dynamic-client',
+			tokensClientId: 'dynamic-client',
+			tokens: { access_token: 'access', token_type: 'Bearer' },
+		};
+		const provider = createOAuthProvider({
+			storage: {
+				load: () => stored,
+				save: (value) => {
+					stored = value;
+				},
+			},
+		});
+		expect(provider.clientInformation()).toEqual({ client_id: 'dynamic-client' });
+		await provider.saveClientInformation!({ client_id: clientId });
+		if (clientId === 'dynamic-client') {
+			expect(provider.tokens()?.access_token).toBe('access');
+			expect(stored.tokensClientId).toBe(clientId);
+		} else {
+			expect(provider.tokens()).toBeUndefined();
+			expect(stored.tokensClientId).toBeUndefined();
+		}
+	}
+);
+
+it.each(['tokens', 'client', 'all', 'verifier'] as const)(
+	'keeps token binding consistent when invalidating %s',
+	async (scope) => {
+		let stored: McpOAuthState = {
+			client_id: 'client',
+			tokensClientId: 'client',
+			tokens: { access_token: 'access', token_type: 'Bearer' },
+		};
+		const provider = createOAuthProvider({
+			storage: {
+				load: () => stored,
+				save: (value) => {
+					stored = value;
+				},
+			},
+		});
+		await provider.invalidateCredentials!(scope);
+		if (scope === 'verifier') {
+			expect(stored.tokensClientId).toBe('client');
+			expect(provider.tokens()?.access_token).toBe('access');
+		} else {
+			expect(stored.tokens).toBeUndefined();
+			expect(stored.tokensClientId).toBeUndefined();
+		}
+	}
+);
