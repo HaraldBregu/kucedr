@@ -36,15 +36,17 @@ function getLlmModelGroups(): ProviderModelGroup[] {
 
 async function getAssistantLlmModelGroups(): Promise<ProviderModelGroup[]> {
 	const modelGroups = getLlmModelGroups();
-	const localProvider = (await window.provider.list('models')).find(
+	const localProvider = (await window.provider.list('models').catch(() => [])).find(
 		(provider) => provider.id === 'custom' && provider.baseUrl.trim()
 	);
 	if (!localProvider) return modelGroups;
 
-	const models = await window.provider.listCustomModels({
-		baseUrl: localProvider.baseUrl,
-		apiKey: localProvider.apiKey,
-	});
+	const models = await window.provider
+		.listCustomModels({
+			baseUrl: localProvider.baseUrl,
+			apiKey: localProvider.apiKey,
+		})
+		.catch(() => []);
 	if (models.length === 0) return modelGroups;
 
 	return [

@@ -56,9 +56,9 @@ const StartPage: React.FC = () => {
 				);
 				const hasSavedKey = storedProviders.some(
 					(provider) =>
-						(modelProviderIds.has(provider.id) || provider.id === 'custom') &&
-						Boolean(provider.apiKey.trim()) &&
-						Boolean(provider.baseUrl.trim())
+						(provider.id === 'custom'
+							? Boolean(provider.apiKey.trim() && provider.baseUrl.trim())
+							: modelProviderIds.has(provider.id) && Boolean(provider.apiKey.trim()))
 				);
 				if (hasSavedKey) {
 					dispatch({ type: 'GO_TO_STEP', step: 'search' });
