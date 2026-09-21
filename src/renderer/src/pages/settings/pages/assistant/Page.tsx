@@ -56,12 +56,13 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		window.agent.getProvider(),
 		window.agent.getModelId(),
 	]);
+	const storedProviderId = storedProvider?.id === 'custom' ? 'ollama' : storedProvider?.id;
 	const providers = providerIdsFor('llm').flatMap((providerId) => {
 		const provider = getCatalogProviderById(providerId);
 		return provider && getProviderLlmModels(providerId).length > 0 ? [provider] : [];
 	});
 	const localModel =
-		(storedProvider?.id === 'ollama' || storedProvider?.id === 'custom') && storedModelId
+		storedProviderId === 'ollama' && storedModelId
 			? { id: storedModelId, name: storedModelId }
 			: localModelOption;
 	const modelGroups: ProviderModelGroup[] = [...providers, localModelProvider].map((provider) => ({
@@ -69,9 +70,9 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		models: provider.id === 'ollama' ? [localModel] : getProviderLlmModels(provider.id),
 	}));
 	const preferredGroup =
-		modelGroups.find((group) => group.provider.id === storedProvider?.id) ?? modelGroups[0];
+		modelGroups.find((group) => group.provider.id === storedProviderId) ?? modelGroups[0];
 	const preferredModel =
-		storedProvider?.id === 'ollama' || storedProvider?.id === 'custom'
+		storedProviderId === 'ollama'
 			? localModel
 			: (preferredGroup?.models.find((model) => model.id === storedModelId) ??
 				preferredGroup?.models[0]);
