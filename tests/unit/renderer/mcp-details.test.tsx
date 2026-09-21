@@ -94,8 +94,6 @@ describe('MCP details', () => {
 		await user.type(envKey, 'DEMO_COMPANY');
 		await user.type(envValue, 'Kucedr Studio');
 		await user.click(screen.getByRole('button', { name: 'Add environment variable' }));
-		await user.click(screen.getByRole('button', { name: 'Save' }));
-
 		await waitFor(() =>
 			expect(mcpApi.configureLocal).toHaveBeenCalledWith(
 				'local',
@@ -123,10 +121,6 @@ describe('MCP details', () => {
 
 		expect(screen.queryByRole('button', { name: 'All servers' })).not.toBeInTheDocument();
 		const testButton = screen.getByRole('button', { name: 'Test' });
-		const saveButton = screen.getByRole('button', { name: 'Save' });
-		expect(
-			testButton.compareDocumentPosition(saveButton) & Node.DOCUMENT_POSITION_FOLLOWING
-		).toBeTruthy();
 		expect(screen.getByLabelText('Server URL')).toHaveClass('h-8');
 		await user.click(testButton);
 		expect(await screen.findByText('2 tools · 25 ms')).toBeInTheDocument();
@@ -134,7 +128,6 @@ describe('MCP details', () => {
 		const url = screen.getByLabelText('Server URL');
 		await user.clear(url);
 		await user.type(url, 'https://new.test');
-		await user.click(screen.getByRole('button', { name: 'Save' }));
 		await waitFor(() =>
 			expect(mcpApi.upsert).toHaveBeenCalledWith(
 				'remote',
@@ -143,9 +136,6 @@ describe('MCP details', () => {
 		);
 
 		const removeButton = screen.getByRole('button', { name: 'Remove MCP server' });
-		expect(
-			removeButton.compareDocumentPosition(saveButton) & Node.DOCUMENT_POSITION_FOLLOWING
-		).toBeTruthy();
 		await user.click(removeButton);
 		await user.click(screen.getByRole('button', { name: 'Delete' }));
 		await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('remote'));
@@ -169,8 +159,6 @@ describe('MCP details', () => {
 		const token = await screen.findByLabelText('GitHub personal access token');
 		expect(screen.queryByRole('button', { name: 'Connect with OAuth' })).not.toBeInTheDocument();
 		await user.type(token, 'github-token');
-		await user.click(screen.getByRole('button', { name: 'Save' }));
-
 		await waitFor(() =>
 			expect(mcpApi.upsert).toHaveBeenCalledWith(
 				'github',
