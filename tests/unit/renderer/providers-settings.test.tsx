@@ -228,7 +228,7 @@ it('loads available custom provider models', async () => {
 	await waitFor(() =>
 		expect(window.provider.listCustomModels).toHaveBeenCalledWith({
 			baseUrl: 'http://localhost:11434/v1',
-		apiKey: '',
+			apiKey: '',
 		})
 	);
 	expect(screen.getByLabelText('Model')).toHaveValue('llama3.2:3b');

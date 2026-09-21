@@ -530,12 +530,14 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										variant="outline"
 										size="sm"
 										aria-label={t('settings.providers.localModels.refresh')}
-										disabled={
-											saving || loadingCustomModels || !customProvider.baseUrl.trim()
-										}
+										disabled={saving || loadingCustomModels || !customProvider.baseUrl.trim()}
 										onClick={() => void loadCustomModels()}
 									>
-										{loadingCustomModels ? <LoaderCircle className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+										{loadingCustomModels ? (
+											<LoaderCircle className="size-3.5 animate-spin" />
+										) : (
+											<RefreshCw className="size-3.5" />
+										)}
 										{t('settings.providers.localModels.refresh')}
 									</Button>
 								</div>

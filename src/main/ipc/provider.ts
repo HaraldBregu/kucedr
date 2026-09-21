@@ -161,13 +161,20 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		}
 		if (!response.ok) throw new Error('Could not load models from the custom provider.');
 		const body = (await response.json()) as { data?: unknown };
-		if (!Array.isArray(body.data)) throw new Error('The custom provider returned an invalid model list.');
-		return [...new Set(
-			body.data
-				.map((entry) => (entry && typeof entry === 'object' ? (entry as { id?: unknown }).id : ''))
-				.filter((id): id is string => typeof id === 'string' && id.trim().length > 0 && id.length <= 256)
-				.map((id) => id.trim())
-		)].sort((left, right) => left.localeCompare(right));
+		if (!Array.isArray(body.data))
+			throw new Error('The custom provider returned an invalid model list.');
+		return [
+			...new Set(
+				body.data
+					.map((entry) =>
+						entry && typeof entry === 'object' ? (entry as { id?: unknown }).id : ''
+					)
+					.filter(
+						(id): id is string => typeof id === 'string' && id.trim().length > 0 && id.length <= 256
+					)
+					.map((id) => id.trim())
+			),
+		].sort((left, right) => left.localeCompare(right));
 	}
 
 	private channelInput(value: unknown): ChannelCredentialSaveInput {
