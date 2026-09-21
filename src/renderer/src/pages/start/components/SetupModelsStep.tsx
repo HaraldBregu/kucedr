@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { BrainCircuit, ImageIcon, Mic, Music2, Video, Volume2, type LucideIcon } from 'lucide-react';
+import {
+	BrainCircuit,
+	ImageIcon,
+	Mic,
+	Music2,
+	Video,
+	Volume2,
+	type LucideIcon,
+} from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import {
 	Select,
