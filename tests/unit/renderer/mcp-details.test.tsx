@@ -127,6 +127,7 @@ describe('MCP details', () => {
 		expect(
 			testButton.compareDocumentPosition(saveButton) & Node.DOCUMENT_POSITION_FOLLOWING
 		).toBeTruthy();
+		expect(screen.getByLabelText('Server URL')).toHaveClass('h-10');
 		await user.click(testButton);
 		expect(await screen.findByText('2 tools · 25 ms')).toBeInTheDocument();
 
