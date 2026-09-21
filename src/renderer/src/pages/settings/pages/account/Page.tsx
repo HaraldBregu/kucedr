@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AlertCircle, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -16,7 +16,27 @@ const AccountPage: React.FC = () => {
 	const { state, localOnly, requireSignIn } = useAuth();
 	const [sessionBusy, setSessionBusy] = useState(false);
 	const [error, setError] = useState('');
+	const [profileName, setProfileName] = useState<string>();
 	const signedIn = state.status === 'signedIn' && !localOnly;
+
+	useEffect(() => {
+		if (!signedIn) {
+			setProfileName(undefined);
+			return;
+		}
+		let active = true;
+		void window.auth
+			.getProfile()
+			.then(({ firstName, lastName }) => {
+				if (active) setProfileName([firstName, lastName].filter(Boolean).join(' ') || undefined);
+			})
+			.catch(() => {
+				if (active) setProfileName(undefined);
+			});
+		return () => {
+			active = false;
+		};
+	}, [signedIn]);
 
 	return (
 		<SettingsPageShell>
@@ -32,9 +52,19 @@ const AccountPage: React.FC = () => {
 						<SettingsValue>{signedIn ? 'Signed in' : 'Not signed in'}</SettingsValue>
 					</SettingsRow>
 					{signedIn ? (
-						<SettingsRow title="Email">
-							<SettingsValue>{state.user?.email ?? 'Unavailable'}</SettingsValue>
-						</SettingsRow>
+						<>
+							{profileName || state.user?.displayName ? (
+								<SettingsRow title="Name">
+									<SettingsValue>{profileName ?? state.user?.displayName}</SettingsValue>
+								</SettingsRow>
+							) : null}
+							<SettingsRow title="Email">
+								<SettingsValue>{state.user?.email ?? 'Unavailable'}</SettingsValue>
+							</SettingsRow>
+							<SettingsRow title="Account ID">
+								<SettingsValue>{state.user?.id ?? 'Unavailable'}</SettingsValue>
+							</SettingsRow>
+						</>
 					) : null}
 				</SettingsPanel>
 			</SettingsSection>

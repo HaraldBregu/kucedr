@@ -46,10 +46,8 @@ it('shows account session data and switches to local use after sign-out', async 
 	);
 
 	expect(await screen.findByText('user@example.test')).toBeInTheDocument();
-	expect(screen.queryByLabelText('First name')).not.toBeInTheDocument();
-	expect(screen.queryByLabelText('Last name')).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'Save changes' })).not.toBeInTheDocument();
-	expect(auth.getProfile).not.toHaveBeenCalled();
+	expect(await screen.findByText('Ada Byron')).toBeInTheDocument();
+	expect(screen.getByText('user-id')).toBeInTheDocument();
 	expect(auth.updateProfile).not.toHaveBeenCalled();
 	expect(container.querySelector('header svg')).toBeNull();
 	await user.click(screen.getByRole('button', { name: 'Sign out' }));
