@@ -19,7 +19,14 @@ jest.mock('../../../../src/main/mcp', () => ({
 
 jest.mock('@modelcontextprotocol/sdk/client/auth.js', () => ({ auth: jest.fn() }));
 
-import { BrowserWindow, ipcMain } from 'electron';
+import { BrowserWindow, ipcMain, shell } from 'electron';
+import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
+import {
+	createOAuthProvider,
+	getMcpServers,
+	getMcpOauth,
+	startOauthCallbackServer,
+} from '../../../../src/main/mcp';
 import { McpChannels } from '../../../../src/shared/ipc_channels_definitions';
 import { McpIpc } from '../../../../src/main/ipc/mcp';
 
@@ -59,3 +66,62 @@ describe('MCP IPC', () => {
 		expect(testMcpServer).toHaveBeenCalledWith('safe');
 	});
 });
+
+it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port busy'])(
+	'owns and cleans up the generic OAuth callback on %s',
+	async (scenario) => {
+		jest.clearAllMocks();
+		const mainFrame = {};
+		const sender = { id: 21, mainFrame };
+		jest
+			.mocked(BrowserWindow.fromWebContents)
+			.mockReturnValue({ id: 1, webContents: sender } as never);
+		new McpIpc().register(
+			{ windows: { has: () => true }, apps: { has: () => false } } as never,
+			{} as never
+		);
+		jest
+			.mocked(getMcpServers)
+			.mockReturnValue({ generic: { type: 'http', url: 'https://generic.example/mcp' } });
+		jest.mocked(getMcpOauth).mockReturnValue({ client_id: 'registered-client' });
+		const close = jest.fn();
+		const boundUrl = 'http://127.0.0.1:49201/oauth/callback';
+		jest.mocked(startOauthCallbackServer).mockImplementation(async () => {
+			if (scenario === 'port busy') throw new Error('Port busy');
+			return { redirectUrl: boundUrl, code: Promise.resolve('verified-code'), close };
+		});
+		const provider = { redirectUrl: boundUrl };
+		let redirect: ((url: URL) => void) | undefined;
+		jest.mocked(createOAuthProvider).mockImplementation((options) => {
+			expect(startOauthCallbackServer).toHaveBeenCalled();
+			expect(options.redirectUrl).toBe(boundUrl);
+			expect(options.state).toBe(jest.mocked(startOauthCallbackServer).mock.calls[0][0]);
+			expect(options.clientId).toBeUndefined();
+			redirect = options.onRedirect;
+			return provider as never;
+		});
+		jest.mocked(auth).mockImplementation(async (actual, options) => {
+			expect(actual).toBe(provider);
+			if (scenario === 'discovery failure') throw new Error('Discovery failed');
+			if (scenario === 'refresh' || options.authorizationCode) return 'AUTHORIZED';
+			redirect!(new URL('https://issuer.example/authorize'));
+			return 'REDIRECT';
+		});
+		jest.mocked(shell.openExternal).mockImplementation(async () => {
+			if (scenario === 'browser failure') throw new Error('Browser failed');
+		});
+		const handler = jest
+			.mocked(ipcMain.handle)
+			.mock.calls.find(([channel]) => channel === McpChannels.oauthStart)![1];
+		const result = await handler({ sender, senderFrame: mainFrame } as never, 'generic');
+		expect(result.success).toBe(scenario === 'exchange' || scenario === 'refresh');
+		expect(close).toHaveBeenCalledTimes(scenario === 'port busy' ? 0 : 1);
+		if (scenario === 'exchange') {
+			expect(auth).toHaveBeenLastCalledWith(provider, {
+				serverUrl: 'https://generic.example/mcp',
+				authorizationCode: 'verified-code',
+			});
+		}
+		if (scenario === 'port busy') expect(auth).not.toHaveBeenCalled();
+	}
+);

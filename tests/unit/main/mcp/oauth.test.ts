@@ -298,3 +298,28 @@ it('does not mix an explicit public client with a previously registered confiden
 	});
 	expect(provider.clientMetadata.token_endpoint_auth_method).toBe('none');
 });
+
+it('registers a changed dynamic callback again without reusing tokens for the old client', async () => {
+	let stored: McpOAuthState = {
+		client_id: 'old-dynamic-client',
+		redirect_uris: ['http://127.0.0.1:4000/oauth/callback'],
+		tokens: { access_token: 'old-access', refresh_token: 'old-refresh', token_type: 'Bearer' },
+	};
+	const provider = createOAuthProvider({
+		redirectUrl: 'http://127.0.0.1:4001/oauth/callback',
+		onRedirect: jest.fn(),
+		storage: {
+			load: () => stored,
+			save: (value) => {
+				stored = value;
+			},
+		},
+	});
+	expect(provider.clientInformation()).toBeUndefined();
+	await provider.saveClientInformation!({
+		client_id: 'new-client',
+		redirect_uris: ['http://127.0.0.1:4001/oauth/callback'],
+	});
+	expect(provider.clientInformation()).toMatchObject({ client_id: 'new-client' });
+	expect(provider.tokens()).toBeUndefined();
+});
