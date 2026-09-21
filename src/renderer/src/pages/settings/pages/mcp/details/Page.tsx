@@ -247,14 +247,24 @@ const McpDetailsPage: React.FC = () => {
 								<DialogHeader>
 									<DialogTitle>Delete MCP server</DialogTitle>
 									<DialogDescription>
-										Remove <span className="font-medium text-foreground">{title}</span>? This cannot be undone.
+										Remove <span className="font-medium text-foreground">{title}</span>? This cannot
+										be undone.
 									</DialogDescription>
 								</DialogHeader>
 								<DialogFooter>
-									<Button type="button" variant="outline" onClick={() => setConfirmRemoveOpen(false)}>
+									<Button
+										type="button"
+										variant="outline"
+										onClick={() => setConfirmRemoveOpen(false)}
+									>
 										Cancel
 									</Button>
-									<Button type="button" variant="destructive" disabled={saving} onClick={() => void remove()}>
+									<Button
+										type="button"
+										variant="destructive"
+										disabled={saving}
+										onClick={() => void remove()}
+									>
 										Delete
 									</Button>
 								</DialogFooter>

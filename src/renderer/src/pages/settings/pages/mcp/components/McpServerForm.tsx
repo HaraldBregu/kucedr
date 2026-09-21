@@ -184,7 +184,22 @@ export function McpServerForm({
 		if (!isValid) return;
 		const timeout = window.setTimeout(() => void save(), 500);
 		return () => window.clearTimeout(timeout);
-	}, [approval, args, clientId, clientSecret, command, cwd, deferLoading, env, id, isValid, name, token, type, url]);
+	}, [
+		approval,
+		args,
+		clientId,
+		clientSecret,
+		command,
+		cwd,
+		deferLoading,
+		env,
+		id,
+		isValid,
+		name,
+		token,
+		type,
+		url,
+	]);
 
 	// ponytail: OAuth needs the server in the store first, so persist before starting
 	const persist = async (): Promise<void> => {
