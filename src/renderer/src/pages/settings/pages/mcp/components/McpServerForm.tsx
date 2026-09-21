@@ -363,38 +363,50 @@ export function McpServerForm({
 						title={<Label htmlFor="mcp-url">Server URL</Label>}
 						description="The MCP endpoint Kucedr connects to."
 					>
-						<Input id="mcp-url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com/mcp" className={CONTROL_CLASS} />
+						<Input
+							id="mcp-url"
+							value={url}
+							onChange={(e) => setUrl(e.target.value)}
+							placeholder="https://example.com/mcp"
+							className={CONTROL_CLASS}
+						/>
 					</McpFormItem>
 					{isGitHubRemote ? (
-						<McpFormItem title={<Label htmlFor="mcp-token">GitHub personal access token</Label>} description="GitHub remote MCP requires a bearer token.">
+						<McpFormItem
+							title={<Label htmlFor="mcp-token">GitHub personal access token</Label>}
+							description="GitHub remote MCP requires a bearer token."
+						>
 							<div className="flex w-full flex-col items-stretch gap-2">
-									<Input
-										id="mcp-token"
-										type="password"
-										value={token}
-										onChange={(e) => setToken(e.target.value)}
-										autoComplete="off"
-									/>
-									<Button
-										type="button"
-										variant="outline"
-										size="sm"
-										onClick={() =>
-											void window.app.openExternalUrl(
-												'https://github.com/settings/personal-access-tokens/new'
-											)
-										}
-									>
-										Create GitHub token
-									</Button>
-								</div>
+								<Input
+									id="mcp-token"
+									type="password"
+									value={token}
+									onChange={(e) => setToken(e.target.value)}
+									autoComplete="off"
+								/>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									onClick={() =>
+										void window.app.openExternalUrl(
+											'https://github.com/settings/personal-access-tokens/new'
+										)
+									}
+								>
+									Create GitHub token
+								</Button>
+							</div>
 						</McpFormItem>
 					) : isEdit && isValid ? (
 						<McpFormItem title="Authentication" description="Connect this server with OAuth.">
 							<McpOAuthButton id={serverId} beforeStart={persist} />
 						</McpFormItem>
 					) : (
-						<McpFormItem title="Authentication" description="Save the server before connecting with OAuth." />
+						<McpFormItem
+							title="Authentication"
+							description="Save the server before connecting with OAuth."
+						/>
 					)}
 					{isGoogleRemote ? (
 						removeAction()
