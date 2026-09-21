@@ -73,8 +73,9 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 
 it('explains the Google credential requirement before attempting dynamic registration', () => {
 	delete process.env.GOOGLE_CLIENT_ID;
+	delete process.env.GOOGLE_CLIENT_SECRET;
 	expect(() => googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow(
-		'GOOGLE_CLIENT_ID'
+		'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET'
 	);
 });
 
@@ -133,18 +134,12 @@ it('uses the configured redirect consistently in client metadata and OAuth', () 
 	expect(provider.clientMetadata.redirect_uris).toEqual(['http://127.0.0.1:3002/callback']);
 });
 
-it('isolates Google options from generic MCP servers and permits public Google clients', () => {
+it('isolates Google options from generic MCP servers and requires the Google secret', () => {
 	expect(googleOAuthOptions('https://example.com/mcp')).toEqual({});
 	delete process.env.GOOGLE_CLIENT_SECRET;
-	const provider = createOAuthProvider({
-		...googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1'),
-		storage: { load: () => ({ client_id: 'stored', client_secret: 'stored' }), save: jest.fn() },
-	});
-	expect(provider.clientInformation()).toEqual({
-		client_id: 'registered-client',
-		client_secret: undefined,
-	});
-	expect(provider.clientMetadata.token_endpoint_auth_method).toBe('none');
+	expect(() => googleOAuthOptions('https://gmailmcp.googleapis.com/mcp/v1')).toThrow(
+		'GOOGLE_CLIENT_SECRET'
+	);
 });
 
 it('isolates pending PKCE verifiers and state between attempts', async () => {

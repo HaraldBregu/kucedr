@@ -16,14 +16,22 @@ import { createOAuthProvider } from '../../../../src/main/mcp/mcp_oauth_create_p
 import { buildTransport } from '../../../../src/main/mcp/mcp_client_build_transport';
 
 const originalFetch = global.fetch;
+const originalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
+const originalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	process.env.GOOGLE_CLIENT_ID = 'environment-id';
+	process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
 	mockHttpTransport.mockImplementation((_url, options) => ({ options }));
 });
 
 afterAll(() => {
 	global.fetch = originalFetch;
+	if (originalGoogleClientId === undefined) delete process.env.GOOGLE_CLIENT_ID;
+	else process.env.GOOGLE_CLIENT_ID = originalGoogleClientId;
+	if (originalGoogleClientSecret === undefined) delete process.env.GOOGLE_CLIENT_SECRET;
+	else process.env.GOOGLE_CLIENT_SECRET = originalGoogleClientSecret;
 });
 
 it('rejects oversized streamed HTTP responses before the MCP SDK parses them', async () => {
@@ -80,14 +88,14 @@ it('creates local transports directly from the shared MCP configuration', () => 
 });
 
 it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
-	'uses persisted %s credentials when server data excludes secrets',
+	'ignores persisted credentials and uses the environment for %s',
 	(host) => {
 		jest
 			.mocked(getMcpOauth)
 			.mockReturnValue({ client_id: 'saved-id', client_secret: 'saved-secret' });
 		buildTransport('saved-google', { type: 'http', url: `https://${host}.googleapis.com/mcp/v1` });
 		expect(createOAuthProvider).toHaveBeenCalledWith(
-			expect.objectContaining({ clientId: 'saved-id', clientSecret: 'saved-secret' })
+			expect.objectContaining({ clientId: 'environment-id', clientSecret: 'environment-secret' })
 		);
 	}
 );
