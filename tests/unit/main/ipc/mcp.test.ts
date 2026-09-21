@@ -30,6 +30,16 @@ import {
 import { McpChannels } from '../../../../src/shared/ipc_channels_definitions';
 import { McpIpc } from '../../../../src/main/ipc/mcp';
 
+const originalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
+const originalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+afterAll(() => {
+	if (originalGoogleClientId === undefined) delete process.env.GOOGLE_CLIENT_ID;
+	else process.env.GOOGLE_CLIENT_ID = originalGoogleClientId;
+	if (originalGoogleClientSecret === undefined) delete process.env.GOOGLE_CLIENT_SECRET;
+	else process.env.GOOGLE_CLIENT_SECRET = originalGoogleClientSecret;
+});
+
 describe('MCP IPC', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -127,9 +137,11 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 );
 
 it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
-	'connects %s with the encrypted-store credentials',
+	'connects %s with environment credentials',
 	async (host) => {
 		jest.clearAllMocks();
+		process.env.GOOGLE_CLIENT_ID = 'environment-google-id';
+		process.env.GOOGLE_CLIENT_SECRET = 'environment-google-secret';
 		const mainFrame = {};
 		const sender = { id: 21, mainFrame };
 		jest
@@ -141,7 +153,14 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		);
 		jest
 			.mocked(getMcpServers)
-			.mockReturnValue({ google: { type: 'http', url: `https://${host}.googleapis.com/mcp/v1` } });
+			.mockReturnValue({
+				google: {
+					type: 'http',
+					url: `https://${host}.googleapis.com/mcp/v1`,
+					client_id: 'configured-google-id',
+					client_secret: 'configured-google-secret',
+				},
+			});
 		jest
 			.mocked(getMcpOauth)
 			.mockReturnValue({ client_id: 'saved-google-id', client_secret: 'saved-google-secret' });
@@ -160,7 +179,10 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		const result = await handler({ sender, senderFrame: mainFrame } as never, 'google');
 		expect(result.success).toBe(true);
 		expect(createOAuthProvider).toHaveBeenCalledWith(
-			expect.objectContaining({ clientId: 'saved-google-id', clientSecret: 'saved-google-secret' })
+			expect.objectContaining({
+				clientId: 'environment-google-id',
+				clientSecret: 'environment-google-secret',
+			})
 		);
 	}
 );
