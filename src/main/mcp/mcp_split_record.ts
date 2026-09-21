@@ -14,6 +14,7 @@ const OAUTH_KEYS = [
 	'client_secret_expires_at',
 	'scope',
 	'tokens',
+	'tokensClientId',
 	'codeVerifier',
 ] as const satisfies readonly (keyof McpOAuthState)[];
 

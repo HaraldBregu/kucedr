@@ -27,7 +27,12 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			);
 		},
 		clientInformation() {
-			const { tokens: _tokens, codeVerifier: _verifier, ...storedClient } = storage.load();
+			const {
+				tokens: _tokens,
+				tokensClientId: _tokensClientId,
+				codeVerifier: _verifier,
+				...storedClient
+			} = storage.load();
 			if (
 				!staticClient &&
 				params.onRedirect &&
@@ -43,21 +48,34 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			const previous = storage.load();
 			storage.save({
 				...clientInformation,
-				...(previous.client_id === clientInformation.client_id ? { tokens: previous.tokens } : {}),
+				...(previous.tokensClientId === clientInformation.client_id
+					? { tokens: previous.tokens, tokensClientId: previous.tokensClientId }
+					: {}),
 			});
 		},
 		tokens() {
-			return storage.load().tokens;
+			const stored = storage.load();
+			const currentClientId = staticClient?.client_id ?? stored.client_id;
+			return currentClientId && stored.tokensClientId === currentClientId
+				? stored.tokens
+				: undefined;
 		},
 		saveTokens(tokens) {
 			const previous = storage.load();
+			const currentClientId = staticClient?.client_id ?? previous.client_id;
 			storage.save({
 				...previous,
+				tokensClientId: currentClientId,
 				tokens: {
 					...tokens,
-					refresh_token: tokens.refresh_token ?? previous.tokens?.refresh_token,
+					refresh_token:
+						tokens.refresh_token ??
+						(!codeVerifier && currentClientId && previous.tokensClientId === currentClientId
+							? previous.tokens?.refresh_token
+							: undefined),
 				},
 			});
+			codeVerifier = undefined;
 		},
 		redirectToAuthorization(url) {
 			for (const [key, value] of Object.entries(params.authorizationParams ?? {})) {
@@ -81,10 +99,13 @@ export function createOAuthProvider(params: McpOAuthProviderParams): OAuthClient
 			discovery = value;
 		},
 		invalidateCredentials(scope) {
-			const { tokens, codeVerifier: _storedVerifier, ...client } = storage.load();
+			const { tokens, tokensClientId, codeVerifier: _storedVerifier, ...client } = storage.load();
 			if (scope === 'all' || scope === 'verifier') codeVerifier = undefined;
 			const next: McpOAuthState = scope === 'all' || scope === 'client' ? {} : client;
-			if (scope !== 'all' && scope !== 'tokens') next.tokens = tokens;
+			if (scope === 'verifier') {
+				next.tokens = tokens;
+				next.tokensClientId = tokensClientId;
+			}
 			storage.save(next);
 		},
 	};

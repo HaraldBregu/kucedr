@@ -18,6 +18,7 @@ export type McpCallToolResult = ReturnType<Client['callTool']>;
 
 export type McpOAuthState = Partial<OAuthClientInformationFull> & {
 	tokens?: OAuthTokens;
+	tokensClientId?: string;
 	codeVerifier?: string;
 };
 

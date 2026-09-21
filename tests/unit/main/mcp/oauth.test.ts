@@ -67,6 +67,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			'AUTHORIZED'
 		);
 		expect(state.tokens?.refresh_token).toBe('refresh');
+		expect(state.tokensClientId).toBe('registered-client');
 	}
 );
 
@@ -236,10 +237,12 @@ it('registers and authorizes a generic public MCP client with discovered metadat
 	).resolves.toBe('AUTHORIZED');
 	expect(discoveryRequests).toBe(beforeExchange);
 	expect(stored.tokens?.access_token).toBe('generic-access');
+	expect(stored.tokensClientId).toBe('dynamic-client');
 });
 
 it('refreshes generic OAuth tokens without losing a refresh token omitted by the issuer', async () => {
 	let stored: McpOAuthState = {
+		tokensClientId: 'public-client',
 		tokens: { access_token: 'old', refresh_token: 'keep-refresh', token_type: 'Bearer' },
 	};
 	const provider = createOAuthProvider({
@@ -302,6 +305,7 @@ it('does not mix an explicit public client with a previously registered confiden
 it('registers a changed dynamic callback again without reusing tokens for the old client', async () => {
 	let stored: McpOAuthState = {
 		client_id: 'old-dynamic-client',
+		tokensClientId: 'old-dynamic-client',
 		redirect_uris: ['http://127.0.0.1:4000/oauth/callback'],
 		tokens: { access_token: 'old-access', refresh_token: 'old-refresh', token_type: 'Bearer' },
 	};
