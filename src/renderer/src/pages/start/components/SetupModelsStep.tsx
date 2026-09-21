@@ -100,12 +100,12 @@ function SetupLocalModelSelector({
 				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
 					<ItemTitle>Local provider</ItemTitle>
 				</ItemContent>
-				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-52">
+				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-40">
 					<Select value="ollama" disabled>
 						<SelectTrigger
 							id="setup-assistant-local-provider"
 							aria-label="Local provider"
-							className="h-8 w-52"
+							className="h-8 w-40"
 						>
 							<SelectValue />
 						</SelectTrigger>
@@ -119,7 +119,7 @@ function SetupLocalModelSelector({
 				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
 					<ItemTitle>Local model</ItemTitle>
 				</ItemContent>
-				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-52">
+				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-40">
 					<Combobox
 						items={models}
 						value={selectedModelId}
@@ -131,7 +131,7 @@ function SetupLocalModelSelector({
 						<ComboboxInput
 							id="setup-assistant-local-model"
 							aria-label="Local model"
-							className="w-52"
+							className="w-40"
 							placeholder={loading ? 'Loading models...' : 'Search models...'}
 						/>
 						<ComboboxContent>
@@ -203,6 +203,7 @@ export function SetupModelsStep({
 												<ModelProviderSelect
 													inline
 													buttonDropdown
+													buttonClassName="w-40 min-w-0"
 													idPrefix={`setup-${service.id}`}
 													providerGroups={toModelProviderGroups(serviceState.modelGroups)}
 													providerId={serviceState.providerId}
@@ -242,6 +243,7 @@ export function SetupModelsStep({
 								showFieldLabel={false}
 								showSelectedModel
 								buttonDropdown
+								buttonClassName="w-40 min-w-0"
 								icon={Radio}
 							/>
 						</CardContent>
@@ -280,6 +282,7 @@ export function SetupModelsStep({
 											<ModelProviderSelect
 												inline
 												buttonDropdown
+												buttonClassName="w-40 min-w-0"
 												idPrefix={`setup-${service.id}`}
 												providerGroups={toModelProviderGroups(serviceState.modelGroups)}
 												providerId={serviceState.providerId}

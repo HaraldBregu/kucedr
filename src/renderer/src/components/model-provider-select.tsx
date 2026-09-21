@@ -75,6 +75,7 @@ interface ModelProviderSelectProps {
 	readonly disabled?: boolean;
 	readonly inline?: boolean;
 	readonly buttonDropdown?: boolean;
+	readonly buttonClassName?: string;
 	readonly showFieldLabel?: boolean;
 	readonly labels?: ModelProviderSelectLabels;
 }
@@ -88,6 +89,7 @@ export function ModelProviderSelect({
 	disabled = false,
 	inline = false,
 	buttonDropdown = false,
+	buttonClassName,
 	showFieldLabel = true,
 	labels,
 }: ModelProviderSelectProps): React.JSX.Element {
@@ -128,7 +130,7 @@ export function ModelProviderSelect({
 					size="sm"
 					disabled={disabled || providerGroups.length === 0}
 					aria-label={accessibleLabel}
-					className="min-w-40 max-w-full justify-between text-xs"
+					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
 				>
 					<span className="min-w-0 truncate">{buttonLabel}</span>
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />

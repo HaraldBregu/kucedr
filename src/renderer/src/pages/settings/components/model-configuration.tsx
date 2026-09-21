@@ -25,6 +25,7 @@ interface ModelProviderConfigurationProps {
 	readonly padded?: boolean;
 	readonly showSelectedModel?: boolean;
 	readonly buttonDropdown?: boolean;
+	readonly buttonClassName?: string;
 	readonly showContentSeparator?: boolean;
 	readonly defaultOpen?: boolean;
 	readonly action?: ReactNode;
@@ -47,6 +48,7 @@ export function ModelProviderConfiguration({
 	padded = true,
 	showSelectedModel = false,
 	buttonDropdown = false,
+	buttonClassName,
 	showContentSeparator = true,
 	defaultOpen = false,
 	action,
@@ -70,6 +72,7 @@ export function ModelProviderConfiguration({
 		<ModelProviderSelect
 			inline={showSelectedModel}
 			buttonDropdown={buttonDropdown}
+			buttonClassName={buttonClassName}
 			idPrefix={idPrefix}
 			providerGroups={toModelProviderGroups(configState.modelGroups)}
 			providerId={configState.providerId}
@@ -152,6 +155,7 @@ export function ModelProviderConfiguration({
 						<ModelProviderSelect
 							inline
 							buttonDropdown={buttonDropdown}
+							buttonClassName={buttonClassName}
 							idPrefix={idPrefix}
 							providerGroups={toModelProviderGroups(configState.modelGroups)}
 							providerId={configState.providerId}
