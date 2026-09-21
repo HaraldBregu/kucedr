@@ -14,6 +14,6 @@ export function googleOAuthOptions(serverUrl: string): Partial<McpOAuthProviderP
 	return {
 		clientId,
 		clientSecret,
-		authorizationParams: { scope, access_type: 'offline', prompt: 'consent' },
+		authorizationParams: { scope, access_type: 'offline', prompt: 'consent select_account' },
 	};
 }

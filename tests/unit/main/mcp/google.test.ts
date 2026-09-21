@@ -30,6 +30,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		expect(googleOAuthOptions(url)).toMatchObject({
 			clientId: 'environment-id',
 			clientSecret: 'environment-secret',
+			authorizationParams: { prompt: 'consent select_account' },
 		});
 	}
 );

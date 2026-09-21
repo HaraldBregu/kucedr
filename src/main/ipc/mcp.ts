@@ -233,13 +233,14 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				const server = getHttpMcpServer(id);
 				const state = randomBytes(32).toString('hex');
 				const options = googleOAuthOptions(server.url);
+				const google = Boolean(googleMcpScopes(server.url));
 				const callback = await startOauthCallbackServer(state);
 				try {
 					let authorizationUrl: string | undefined;
 					const provider = createOAuthProvider({
 						...options,
 						storage: oauthStorage(server.id),
-						...(!googleMcpScopes(server.url) && server.clientId
+						...(!google && server.clientId
 							? { clientId: server.clientId, clientSecret: server.clientSecret }
 							: {}),
 						redirectUrl: callback.redirectUrl,
@@ -248,6 +249,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 							authorizationUrl = url.toString();
 						},
 					});
+					if (google) await provider.invalidateCredentials?.('tokens');
 					const result = await auth(provider, { serverUrl: server.url });
 					if (result === 'AUTHORIZED') return { status: 'authorized' };
 					if (!authorizationUrl)

@@ -167,7 +167,8 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			code: Promise.resolve('code'),
 			close: jest.fn(),
 		});
-		jest.mocked(createOAuthProvider).mockReturnValue({} as never);
+		const invalidateCredentials = jest.fn();
+		jest.mocked(createOAuthProvider).mockReturnValue({ invalidateCredentials } as never);
 		jest.mocked(auth).mockResolvedValue('AUTHORIZED');
 		const handler = jest
 			.mocked(ipcMain.handle)
@@ -179,6 +180,10 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 				clientId: 'environment-google-id',
 				clientSecret: 'environment-google-secret',
 			})
+		);
+		expect(invalidateCredentials).toHaveBeenCalledWith('tokens');
+		expect(invalidateCredentials.mock.invocationCallOrder[0]).toBeLessThan(
+			jest.mocked(auth).mock.invocationCallOrder[0]
 		);
 	}
 );

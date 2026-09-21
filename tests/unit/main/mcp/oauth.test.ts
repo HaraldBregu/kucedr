@@ -59,7 +59,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		expect(url.searchParams.get('client_id')).toBe('registered-client');
 		expect(url.searchParams.get('scope')).toBe(googleMcpScopes(serverUrl));
 		expect(url.searchParams.get('access_type')).toBe('offline');
-		expect(url.searchParams.get('prompt')).toBe('consent');
+		expect(url.searchParams.get('prompt')).toBe('consent select_account');
 		expect(url.searchParams.get('code_challenge_method')).toBe('S256');
 		expect(url.searchParams.get('state')).toBe(await provider.state!());
 		expect(url.searchParams.get('state')).toMatch(/^[a-f0-9]{64}$/);
