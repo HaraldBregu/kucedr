@@ -733,6 +733,7 @@ export class LlmModel implements LlmAdapter {
 				yield { type: 'text_delta', text: chunk.message.content };
 			}
 			for (const toolCall of chunk.message?.tool_calls ?? []) {
+				stopReason = 'tool_calls';
 				const id = `ollama-tool-${toolIndex++}`;
 				const name = toolCall.function?.name ?? '';
 				if (!name) continue;
@@ -777,6 +778,11 @@ export class LlmModel implements LlmAdapter {
 					yield* emit(chunk);
 				}
 				if (done) break;
+			}
+			if (buffer.trim()) {
+				const chunk = JSON.parse(buffer) as Parameters<typeof emit>[0];
+				consume(chunk);
+				yield* emit(chunk);
 			}
 		}
 
