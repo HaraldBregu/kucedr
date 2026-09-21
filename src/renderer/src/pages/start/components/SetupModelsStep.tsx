@@ -16,14 +16,19 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { SettingsRow } from '@pages/settings/components';
-import { ModelProviderConfiguration } from '@pages/settings/components/model-configuration';
+import {
+	Item,
+	ItemActions,
+	ItemContent,
+	ItemMedia,
+	ItemTitle,
+} from '@/components/ui/item';
+import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
 import { SetupSearch } from './SetupSearch';
 import { SetupStepHeader } from './SetupStepHeader';
-import { getProviderCatalogItem, MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
-import type { ModelConfigurationState } from '@pages/settings/components/model-configuration-state';
-import type { ModelServiceId, ModelServiceState, ModelServiceStateMap } from '../setupTypes';
+import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
+import type { ModelServiceId, ModelServiceStateMap } from '../setupTypes';
 
 const ASSISTANT_SERVICE_IDS = new Set<ModelServiceId>([
 	'assistant',
@@ -54,34 +59,6 @@ type SetupModelsStepProps = {
 	) => void;
 	readonly onLocalModelChange: (serviceId: ModelServiceId, modelId: string) => void;
 };
-
-function toModelConfigurationState(
-	serviceState: ModelServiceState,
-	loadingModels: boolean,
-	savingConfig: boolean
-): ModelConfigurationState {
-	return {
-		providers: serviceState.modelGroups.map((group) => group.provider),
-		modelGroups: serviceState.modelGroups,
-		providerId: serviceState.providerId,
-		modelId: serviceState.modelId,
-		loading: loadingModels && serviceState.modelGroups.length === 0,
-		loadingModels,
-		saving: savingConfig,
-		saved: false,
-		error: null,
-	};
-}
-
-function getSelectionSummary(serviceState: ModelServiceState, fallback: string): string {
-	const group = serviceState.modelGroups.find(
-		(item) => item.provider.id === serviceState.providerId
-	);
-	const model = group?.models.find((item) => item.id === serviceState.modelId);
-	return group && model
-		? `${group.provider.name || getProviderCatalogItem(group.provider.id).name} - ${model.name || model.id}`
-		: fallback;
-}
 
 function SetupLocalModelSelector({
 	selectedModelId,
@@ -122,11 +99,11 @@ function SetupLocalModelSelector({
 
 	return (
 		<div className="border-t border-border/60 pt-1">
-			<SettingsRow
-				title="Local provider"
-				className="px-0 py-2"
-				actionClassName="w-auto"
-				actions={
+			<Item variant="outline" size="md" className="border-b border-border/60 px-4 py-3">
+				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+					<ItemTitle>Local provider</ItemTitle>
+				</ItemContent>
+				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-52">
 					<Select value="ollama" disabled>
 						<SelectTrigger
 							id="setup-assistant-local-provider"
@@ -139,13 +116,13 @@ function SetupLocalModelSelector({
 							<SelectItem value="ollama">Ollama</SelectItem>
 						</SelectContent>
 					</Select>
-				}
-			/>
-			<SettingsRow
-				title="Local model"
-				className="px-0 py-2"
-				actionClassName="w-auto"
-				actions={
+				</ItemActions>
+			</Item>
+			<Item variant="outline" size="md" className="px-4 py-3">
+				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+					<ItemTitle>Local model</ItemTitle>
+				</ItemContent>
+				<ItemActions className="ml-auto w-full flex-none justify-end sm:w-52">
 					<Select
 						value={selectedModelId}
 						disabled={loading || models.length === 0}
@@ -166,8 +143,8 @@ function SetupLocalModelSelector({
 							))}
 						</SelectContent>
 					</Select>
-				}
-			/>
+				</ItemActions>
+			</Item>
 		</div>
 	);
 }
@@ -191,33 +168,47 @@ export function SetupModelsStep({
 				<section aria-label="Model providers" className="min-w-0">
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
-							{assistantServices.map((service) => (
-								<React.Fragment key={service.id}>
-									<ModelProviderConfiguration
-										configState={toModelConfigurationState(
-											serviceStates[service.id],
-											loadingModels,
-											savingConfig
-										)}
-										idPrefix={`setup-${service.id}`}
-										description={service.description}
-										triggerTitle={service.title}
-										triggerDescription={getSelectionSummary(
-											serviceStates[service.id],
-											'Select a model'
-										)}
-										showIcon
-										icon={SERVICE_ICONS[service.id]}
-										showFieldLabel={false}
-										grouped
-										collapsible={false}
-										padded={false}
-										showSelectedModel
-										buttonDropdown
-										onChange={(providerId, modelId) =>
-											onServiceChange(service.id, providerId, modelId)
-										}
-									>
+							{assistantServices.map((service) => {
+								const Icon = SERVICE_ICONS[service.id];
+								const serviceState = serviceStates[service.id];
+								return (
+									<React.Fragment key={service.id}>
+										<Item
+											data-testid={`setup-${service.id}`}
+											variant="outline"
+											size="md"
+											className="border-b border-border/60 px-4 py-3 last:border-b-0"
+										>
+											{Icon && (
+												<ItemMedia variant="icon" className="bg-transparent">
+													<Icon className="size-5" aria-hidden="true" />
+												</ItemMedia>
+											)}
+											<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+												<ItemTitle>{service.title}</ItemTitle>
+												<p className="text-[11px] leading-4 text-muted-foreground">
+													{service.description}
+												</p>
+											</ItemContent>
+											<ItemActions className="ml-auto w-full flex-none justify-end sm:w-80">
+												<ModelProviderSelect
+													inline
+													buttonDropdown
+													idPrefix={`setup-${service.id}`}
+													providerGroups={toModelProviderGroups(serviceState.modelGroups)}
+													providerId={serviceState.providerId}
+													modelId={serviceState.modelId}
+													disabled={
+														loadingModels || savingConfig || serviceState.modelGroups.length === 0
+													}
+													showFieldLabel={false}
+													labels={{ label: service.title, placeholder: 'Select a model' }}
+													onChange={(providerId, modelId) =>
+														onServiceChange(service.id, providerId, modelId)
+													}
+												/>
+											</ItemActions>
+										</Item>
 										{service.id === 'assistant' &&
 											serviceStates.assistant.providerId === 'custom' && (
 												<SetupLocalModelSelector
@@ -225,15 +216,15 @@ export function SetupModelsStep({
 													onChange={(modelId) => onLocalModelChange('assistant', modelId)}
 												/>
 											)}
-									</ModelProviderConfiguration>
 									{service.id === 'assistant' && (
 										<RealtimeConversationConfiguration
 											selectDefaultModel={false}
 											showFieldLabel={false}
 										/>
 									)}
-								</React.Fragment>
-							))}
+									</React.Fragment>
+								);
+							})}
 							<SetupSearch />
 						</CardContent>
 					</Card>
