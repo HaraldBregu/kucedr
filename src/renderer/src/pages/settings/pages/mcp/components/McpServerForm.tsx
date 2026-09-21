@@ -23,6 +23,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { SettingsRow } from '../../../components';
 import { McpOAuthButton } from './McpOAuthButton';
 
 type EnvVariable = {
