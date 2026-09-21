@@ -26,10 +26,7 @@ const StartPage: React.FC = () => {
 	const { phase, start, restart, refreshConfiguration } = useOnboarding();
 	const [state, dispatch] = useReducer(setupReducer, undefined, createInitialSetupState);
 	const { step, serviceStates, loadingModels, savingConfig, errorMessage } = state;
-	const { handleServiceChange, handleSaveModels } = useSetupModelServices(
-		state,
-		dispatch
-	);
+	const { handleServiceChange, handleSaveModels } = useSetupModelServices(state, dispatch);
 	const stepIndex = SETUP_STEPS.indexOf(step);
 	const canContinueModels =
 		getSelectedServiceModel(serviceStates.assistant) !== undefined &&

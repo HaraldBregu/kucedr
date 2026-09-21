@@ -43,8 +43,9 @@ describe('onboarding model service state', () => {
 	});
 
 	it('includes the Ollama option for the Assistant setup', async () => {
-		const assistant = (await import('../../../src/renderer/src/pages/start/setupConstants'))
-			.MODEL_SERVICE_DEFINITIONS.find((item) => item.id === 'assistant');
+		const assistant = (
+			await import('../../../src/renderer/src/pages/start/setupConstants')
+		).MODEL_SERVICE_DEFINITIONS.find((item) => item.id === 'assistant');
 		expect(assistant).toBeDefined();
 		await expect(assistant!.loadModelGroups()).resolves.toEqual(
 			expect.arrayContaining([

@@ -164,11 +164,7 @@ function optionalTrimmedString(value: unknown): string | undefined {
 }
 
 function toToolModelKind(value: unknown): AgentToolModelKind {
-	if (
-		value === 'image' ||
-		value === 'audio' ||
-		value === 'video'
-	) {
+	if (value === 'image' || value === 'audio' || value === 'video') {
 		return value;
 	}
 	throw new Error('Invalid tool model kind.');
@@ -234,7 +230,12 @@ function toPublicProvider(providerId: string): PublicProvider | undefined {
 	if (providerId === 'ollama') {
 		const provider = getProvider('custom', 'models');
 		return provider
-			? { id: 'ollama', name: provider.name, baseUrl: provider.baseUrl, capabilities: 'Local models' }
+			? {
+					id: 'ollama',
+					name: provider.name,
+					baseUrl: provider.baseUrl,
+					capabilities: 'Local models',
+				}
 			: undefined;
 	}
 	const catalogProvider = loadProviders().find((provider) => provider.id === providerId);

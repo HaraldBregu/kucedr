@@ -212,7 +212,7 @@ export function SetupModelsStep({
 								const providerGroups =
 									service.id === 'assistant' ? assistantModelGroups : serviceState.modelGroups;
 								const selectedModelId =
-					service.id === 'assistant' && serviceState.providerId === 'ollama'
+									service.id === 'assistant' && serviceState.providerId === 'ollama'
 										? (serviceState.localModelId ?? serviceState.modelId)
 										: serviceState.modelId;
 								return (
@@ -249,8 +249,8 @@ export function SetupModelsStep({
 													showFieldLabel={false}
 													labels={{ label: title, placeholder: 'Select a model' }}
 													onChange={(providerId, modelId) => {
-										if (service.id === 'assistant' && providerId === 'ollama') {
-											onServiceChange('assistant', 'ollama', modelId);
+														if (service.id === 'assistant' && providerId === 'ollama') {
+															onServiceChange('assistant', 'ollama', modelId);
 															return;
 														}
 														onServiceChange(service.id, providerId, modelId);
