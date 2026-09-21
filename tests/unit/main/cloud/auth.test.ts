@@ -23,7 +23,7 @@ const config = {
 	publishableKey: 'sb_publishable_test',
 	redirectUrl: 'kucedr://auth/callback',
 };
-const binding = { accept: jest.fn(() => true) };
+const binding = { accept: jest.fn(() => true), clear: jest.fn() };
 
 function accountProvider(storage: AuthStorage): SupabaseAccountProvider {
 	return new SupabaseAccountProvider(createSupabaseClient(config, storage), config, storage);
