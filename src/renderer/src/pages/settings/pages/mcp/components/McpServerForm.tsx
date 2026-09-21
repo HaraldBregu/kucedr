@@ -70,13 +70,11 @@ function McpFormItem({
 export function McpServerForm({
 	initial,
 	onSubmit,
-	action,
 }: {
 	readonly initial?: { readonly id: string; readonly entry: McpData };
 	readonly onSubmit: (id: string, entry: McpData) => Promise<void>;
 	readonly onCancel?: () => void;
 	readonly onRemove?: () => Promise<void>;
-	readonly action?: React.ReactNode;
 }): React.JSX.Element {
 	const isEdit = Boolean(initial);
 	const entry = initial?.entry;
@@ -566,10 +564,7 @@ export function McpServerForm({
 			)}
 			{error && <p className="text-[13px] text-destructive">{error}</p>}
 
-			<div className="flex flex-wrap items-center gap-2 border-t border-border/60 px-5 py-3">
-				{action}
-				{saving && <span className="text-xs text-muted-foreground">Saving…</span>}
-			</div>
+			{saving && <p className="px-5 py-3 text-xs text-muted-foreground">Saving…</p>}
 		</div>
 	);
 }

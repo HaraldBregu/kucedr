@@ -214,25 +214,21 @@ const McpDetailsPage: React.FC = () => {
 					<McpServerForm
 						initial={{ id: server.id, entry: server.data }}
 						onSubmit={save}
-						action={
-							<Button
-								type="button"
-								variant="outline"
-								onClick={() => void test()}
-								disabled={testing || saving}
-							>
-								{testing ? (
-									<RefreshCw className="size-3.5 animate-spin" />
-								) : (
-									<FlaskConical className="size-3.5" />
-								)}
-								{testing ? 'Testing' : 'Test'}
-							</Button>
-						}
 					/>
 				</SettingsPanel>
-				{server.source === 'configured' && (
-					<SettingsPanel className="p-4!">
+				<SettingsPanel>
+					<div className="flex flex-wrap items-center gap-2 px-4 py-3">
+						<Button
+							type="button"
+							variant="outline"
+							size="sm"
+							onClick={() => void test()}
+							disabled={testing || saving}
+						>
+							{testing ? <RefreshCw className="size-3.5 animate-spin" /> : <FlaskConical className="size-3.5" />}
+							{testing ? 'Testing' : 'Test'}
+						</Button>
+						{server.source === 'configured' && (
 						<Dialog open={confirmRemoveOpen} onOpenChange={setConfirmRemoveOpen}>
 							<Button
 								type="button"
@@ -270,8 +266,9 @@ const McpDetailsPage: React.FC = () => {
 								</DialogFooter>
 							</DialogContent>
 						</Dialog>
-					</SettingsPanel>
-				)}
+						)}
+					</div>
+				</SettingsPanel>
 			</SettingsSection>
 		</SettingsPageShell>
 	);
