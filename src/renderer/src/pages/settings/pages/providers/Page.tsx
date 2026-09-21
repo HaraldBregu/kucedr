@@ -329,9 +329,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							</div>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
 								{t(
-									connected
-										? 'settings.providers.configured'
-										: 'settings.providers.notConfigured'
+									connected ? 'settings.providers.configured' : 'settings.providers.notConfigured'
 								)}
 							</p>
 						</div>
@@ -353,7 +351,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 												}
 											}}
 											placeholder={
-												entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
+												entry.savedApiKey
+													? '************'
+													: t('settings.providers.apiKeyPlaceholder')
 											}
 											spellCheck={false}
 											type="text"
@@ -391,11 +391,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										variant="ghost"
 										size="icon-xs"
 										aria-label={`Edit ${provider.name} API key`}
-									onClick={() =>
-										updateProviderEntry(provider.id, {
-											editing: true,
-											apiKey: '',
-										})
+										onClick={() =>
+											updateProviderEntry(provider.id, {
+												editing: true,
+												apiKey: '',
+											})
 										}
 									>
 										<Pencil className="size-3.5" />
@@ -433,7 +433,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											: saveProviderEntry(provider.id, kind));
 									}
 								}}
-								placeholder={entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')}
+								placeholder={
+									entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
+								}
 								spellCheck={false}
 								type="text"
 								value={entry.apiKey}
@@ -505,9 +507,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							</h3>
 							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
 								{t(
-									connected
-										? 'settings.providers.configured'
-										: 'settings.providers.notConfigured'
+									connected ? 'settings.providers.configured' : 'settings.providers.notConfigured'
 								)}
 							</p>
 						</div>
