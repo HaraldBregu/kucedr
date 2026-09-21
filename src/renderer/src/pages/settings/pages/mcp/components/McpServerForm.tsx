@@ -230,17 +230,23 @@ export function McpServerForm({
 	};
 
 	return (
-		<form onSubmit={submit} className="divide-y divide-border/60">
-			<SettingsRow
-				className="border-b-0!"
-				title={<Label htmlFor="mcp-type">Type</Label>}
-				actions={
+		<form onSubmit={submit}>
+			<Item variant="outline" size="md" className={ITEM_CLASS}>
+				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+					<ItemTitle>
+						<Label htmlFor="mcp-type">Type</Label>
+					</ItemTitle>
+					<p className="text-[11px] leading-4 text-muted-foreground">
+						Choose a remote HTTP service or a local command.
+					</p>
+				</ItemContent>
+				<ItemActions className={CONTROL_ACTIONS_CLASS}>
 					<Select
 						value={type}
 						onValueChange={(value) => setType(value as McpData['type'])}
 						disabled={isEdit}
 					>
-						<SelectTrigger id="mcp-type" className="w-full sm:w-80">
+						<SelectTrigger id="mcp-type" size="sm" className="w-full">
 							<SelectValue>{TYPE_LABELS[type]}</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
@@ -248,45 +254,62 @@ export function McpServerForm({
 							<SelectItem value="stdio">{TYPE_LABELS.stdio}</SelectItem>
 						</SelectContent>
 					</Select>
-				}
-			/>
-			<SettingsRow
-				className="border-b-0!"
-				title={<Label htmlFor="mcp-id">ID</Label>}
-				actions={
+				</ItemActions>
+			</Item>
+			<Item variant="outline" size="md" className={ITEM_CLASS}>
+				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+					<ItemTitle>
+						<Label htmlFor="mcp-id">ID</Label>
+					</ItemTitle>
+					<p className="text-[11px] leading-4 text-muted-foreground">
+						Use a unique identifier for this server.
+					</p>
+				</ItemContent>
+				<ItemActions className={CONTROL_ACTIONS_CLASS}>
 					<Input
 						id="mcp-id"
 						value={id}
 						disabled={isEdit}
 						onChange={(e) => setId(e.target.value)}
 						placeholder="my-server"
-						className="sm:w-80"
+						className={CONTROL_CLASS}
 					/>
-				}
-			/>
-			<SettingsRow
-				className="border-b-0!"
-				title={<Label htmlFor="mcp-name">Name</Label>}
-				actions={
+				</ItemActions>
+			</Item>
+			<Item variant="outline" size="md" className={ITEM_CLASS}>
+				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+					<ItemTitle>
+						<Label htmlFor="mcp-name">Name</Label>
+					</ItemTitle>
+					<p className="text-[11px] leading-4 text-muted-foreground">
+						Shown in the MCP servers list.
+					</p>
+				</ItemContent>
+				<ItemActions className={CONTROL_ACTIONS_CLASS}>
 					<Input
 						id="mcp-name"
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						placeholder="My Server"
-						className="sm:w-80"
+						className={CONTROL_CLASS}
 					/>
-				}
-			/>
-			<SettingsRow
-				className="border-b-0!"
-				title={<Label htmlFor="mcp-approval">Tool approval</Label>}
-				description="Choose when Kucedr asks before using this server’s tools."
-				actions={
+				</ItemActions>
+			</Item>
+			<Item variant="outline" size="md" className={ITEM_CLASS}>
+				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+					<ItemTitle>
+						<Label htmlFor="mcp-approval">Tool approval</Label>
+					</ItemTitle>
+					<p className="text-[11px] leading-4 text-muted-foreground">
+						Choose when Kucedr asks before using this server’s tools.
+					</p>
+				</ItemContent>
+				<ItemActions className={CONTROL_ACTIONS_CLASS}>
 					<Select
 						value={approval}
 						onValueChange={(value) => setApproval(value as 'default' | 'always' | 'never')}
 					>
-						<SelectTrigger id="mcp-approval" className="w-full sm:w-80">
+						<SelectTrigger id="mcp-approval" size="sm" className="w-full">
 							<SelectValue />
 						</SelectTrigger>
 						<SelectContent>
@@ -295,20 +318,23 @@ export function McpServerForm({
 							<SelectItem value="never">Never require approval</SelectItem>
 						</SelectContent>
 					</Select>
-				}
-			/>
-			<SettingsRow
-				className="border-b-0!"
-				title="Defer tool loading"
-				description="Load this server’s tools only when needed."
-				actions={
+				</ItemActions>
+			</Item>
+			<Item variant="outline" size="md" className={ITEM_CLASS}>
+				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+					<ItemTitle>Defer tool loading</ItemTitle>
+					<p className="text-[11px] leading-4 text-muted-foreground">
+						Load this server’s tools only when needed.
+					</p>
+				</ItemContent>
+				<ItemActions className="ml-auto flex-none justify-end">
 					<Switch
 						checked={deferLoading}
 						onCheckedChange={setDeferLoading}
 						aria-label="Defer tool loading"
 					/>
-				}
-			/>
+				</ItemActions>
+			</Item>
 
 			{type === 'http' ? (
 				<>
