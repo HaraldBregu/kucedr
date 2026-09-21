@@ -247,7 +247,7 @@ const AssistantPage: React.FC = () => {
 								</Label>
 								<Select
 									disabled={loadingLocalModels || localModels.length === 0}
-								onValueChange={(value) => void handleLocalModelChange(String(value))}
+									onValueChange={(value) => void handleLocalModelChange(String(value))}
 								>
 									<SelectTrigger id="assistant-local-model">
 										<SelectValue
