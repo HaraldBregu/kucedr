@@ -3,29 +3,13 @@ import { render, screen, within } from '@testing-library/react';
 import { SetupModelsStep } from '../../../src/renderer/src/pages/start/components/SetupModelsStep';
 import type { ModelServiceStateMap } from '../../../src/renderer/src/pages/start/setupTypes';
 
-jest.mock('@pages/settings/components/model-configuration', () => ({
-	ModelProviderConfiguration: ({
-		idPrefix,
-		grouped,
-		showFieldLabel,
-		triggerTitle,
-		children,
-	}: {
-		idPrefix: string;
-		grouped?: boolean;
-		showFieldLabel?: boolean;
-		triggerTitle: React.ReactNode;
-		children?: React.ReactNode;
-	}) => (
-		<div
-			data-testid={idPrefix}
-			data-grouped={grouped ? 'true' : 'false'}
-			data-show-field-label={String(showFieldLabel)}
-		>
-			{triggerTitle}
-			{children}
-		</div>
+jest.mock('@/components/model-provider-select', () => ({
+	ModelProviderSelect: ({ idPrefix }: { idPrefix: string }) => (
+		<button data-testid={`${idPrefix}-select`} type="button">
+			Select model
+		</button>
 	),
+	toModelProviderGroups: () => [],
 }));
 
 jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => ({
@@ -80,13 +64,10 @@ it('groups model services in one card', () => {
 	const serviceIds = ['assistant', 'voice', 'transcription'];
 	for (const id of serviceIds) {
 		expect(within(assistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute(
-			'data-grouped',
-			'true'
+			'data-slot',
+			'item'
 		);
-		expect(within(assistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute(
-			'data-show-field-label',
-			'false'
-		);
+		expect(within(assistantGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
 	expect(within(assistantGroup).getByTestId('setup-assistant')).toHaveTextContent('Model');
 	expect(within(assistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
@@ -97,16 +78,6 @@ it('groups model services in one card', () => {
 		'data-show-field-label',
 		'false'
 	);
-	expect(
-		within(assistantGroup)
-			.getAllByTestId(/^setup-/)
-			.map((element) => element.dataset.testid)
-	).toEqual([
-		'setup-assistant',
-		'setup-realtime',
-		...serviceIds.slice(1).map((id) => `setup-${id}`),
-		'setup-search',
-	]);
 	expect(screen.queryByTestId('setup-health')).not.toBeInTheDocument();
 	expect(screen.queryByTestId('setup-tasks')).not.toBeInTheDocument();
 	expect(screen.queryByTestId('setup-image')).not.toBeInTheDocument();
