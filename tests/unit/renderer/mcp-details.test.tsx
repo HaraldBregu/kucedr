@@ -177,37 +177,7 @@ describe('MCP details', () => {
 });
 
 it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
-	'saves and authenticates %s using editable client credentials',
-	async (host) => {
-		const user = userEvent.setup();
-		server = {
-			id: 'google',
-			source: 'configured',
-			data: { type: 'http', url: `https://${host}.googleapis.com/mcp/v1` },
-		};
-		mcpApi.oauthStart.mockResolvedValue({ status: 'authorized' });
-		renderDetails('google');
-		await screen.findByText(/GOOGLE_CLIENT_ID/);
-		await user.type(screen.getByLabelText(/Client ID/), 'configured-client');
-		await user.type(screen.getByLabelText(/Client secret/), 'configured-secret');
-		await user.click(screen.getByRole('button', { name: 'Connect with OAuth' }));
-		await screen.findByText('Authenticated');
-		expect(mcpApi.upsert).toHaveBeenCalledTimes(1);
-		expect(mcpApi.upsert).toHaveBeenCalledWith(
-			'google',
-			expect.objectContaining({
-				type: 'http',
-				url: `https://${host}.googleapis.com/mcp/v1`,
-				client_id: 'configured-client',
-				client_secret: 'configured-secret',
-			})
-		);
-		expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
-	}
-);
-
-it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
-	'reopens %s with its client ID and keeps a redacted secret unchanged',
+	'shows only OAuth controls for %s and clears stored credentials',
 	async (host) => {
 		const user = userEvent.setup();
 		server = {
@@ -216,21 +186,32 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			data: {
 				type: 'http',
 				url: `https://${host}.googleapis.com/mcp/v1`,
-				client_id: 'saved-client',
+				token: 'old-token',
+				client_id: 'old-client',
+				client_secret: 'old-secret',
 			},
 		};
+		mcpApi.oauthStart.mockResolvedValue({ status: 'authorized' });
 		renderDetails('google');
-		expect(await screen.findByLabelText(/Client ID/)).toHaveValue('saved-client');
-		const secret = screen.getByLabelText(/Client secret/);
-		expect(secret).toHaveValue('');
-		expect(secret).toHaveAttribute('type', 'password');
-		expect(secret).toHaveAttribute('placeholder', 'Leave blank to keep the saved secret');
-		await user.click(screen.getByRole('button', { name: 'Save' }));
-		await waitFor(() =>
-			expect(mcpApi.upsert).toHaveBeenCalledWith(
-				'google',
-				expect.objectContaining({ client_id: 'saved-client', client_secret: undefined })
-			)
-		);
-	}
+		const connect = await screen.findByRole('button', { name: 'Connect with OAuth' });
+		expect(screen.queryByLabelText(/Access token/i)).not.toBeInTheDocument();
+		expect(screen.queryByLabelText(/Client ID/i)).not.toBeInTheDocument();
+		expect(screen.queryByLabelText(/Client secret/i)).not.toBeInTheDocument();
+		expect(screen.queryByText(/GOOGLE_CLIENT_ID|GOOGLE_CLIENT_SECRET/)).not.toBeInTheDocument();
+		expect(screen.queryByText('Advanced')).not.toBeInTheDocument();
+		await user.click(connect);
+		await screen.findByText('Authenticated');
+		expect(mcpApi.upsert).toHaveBeenCalledTimes(1);
+		expect(mcpApi.upsert).toHaveBeenCalledWith(
+			'google',
+				expect.objectContaining({
+					type: 'http',
+					url: `https://${host}.googleapis.com/mcp/v1`,
+					token: undefined,
+					client_id: undefined,
+					client_secret: undefined,
+				})
+			);
+			expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
+		}
 );
