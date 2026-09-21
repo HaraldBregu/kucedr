@@ -191,7 +191,7 @@ export const MASKED_API_KEY_LABEL = 'sk-************' as const;
 
 export const STEP_COPY: Record<SetupStep, { title: string; description: string }> = {
 	modelProvider: {
-		title: 'Model API keys',
+		title: 'Model providers',
 		description:
 			'Add an API key for the model provider you want to use. You can connect more providers at any time.',
 	},
