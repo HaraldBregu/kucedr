@@ -165,15 +165,27 @@ const AssistantPage: React.FC = () => {
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
 		if (nextProviderId === 'custom') {
-			const provider = localProvider ?? (await window.provider.list('models')).find((item) => item.id === 'custom');
+			const provider =
+				localProvider ??
+				(await window.provider.list('models')).find((item) => item.id === 'custom');
 			if (!provider) return;
-			setState((current) => ({ ...current, providerId: 'custom', modelId: nextModelId, saving: true }));
+			setState((current) => ({
+				...current,
+				providerId: 'custom',
+				modelId: nextModelId,
+				saving: true,
+			}));
 			try {
 				await window.agent.setProvider({ id: 'custom', name: 'Ollama', baseUrl: provider.baseUrl });
-				if (!(await window.agent.setModelId(nextModelId))) throw new Error(t('settings.modelServices.saveError'));
+				if (!(await window.agent.setModelId(nextModelId)))
+					throw new Error(t('settings.modelServices.saveError'));
 				setState((current) => ({ ...current, saving: false, saved: true }));
 			} catch (error) {
-				setState((current) => ({ ...current, saving: false, error: firstErrorMessage(error, t('settings.modelServices.saveError')) }));
+				setState((current) => ({
+					...current,
+					saving: false,
+					error: firstErrorMessage(error, t('settings.modelServices.saveError')),
+				}));
 			}
 			return;
 		}
