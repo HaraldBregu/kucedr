@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
 	BrainCircuit,
-	ImageIcon,
 	Mic,
-	Music2,
-	Video,
 	Volume2,
 	type LucideIcon,
 } from 'lucide-react';
@@ -34,18 +31,12 @@ const ASSISTANT_SERVICE_IDS = new Set<ModelServiceId>([
 	'assistant',
 	'voice',
 	'transcription',
-	'image',
-	'video',
-	'audio',
 ]);
 
 const SERVICE_ICONS: Partial<Record<ModelServiceId, LucideIcon>> = {
 	assistant: BrainCircuit,
 	voice: Volume2,
 	transcription: Mic,
-	image: ImageIcon,
-	audio: Music2,
-	video: Video,
 };
 
 type SetupModelsStepProps = {
