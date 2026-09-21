@@ -1377,6 +1377,7 @@
 			"searchModels": "Search models",
 			"noMatchingModels": "No matching models.",
 			"localProvider": "Local provider",
+			"localModels": "Local models",
 			"localModel": "Local model",
 			"modelsLoading": "Loading…",
 			"modelsLoadError": "Unable to load models for this provider.",

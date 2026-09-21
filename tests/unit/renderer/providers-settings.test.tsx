@@ -15,7 +15,7 @@ jest.mock('react-i18next', () => {
 		'settings.providers.localModels.token': 'Token',
 		'settings.providers.localModels.connect': 'Connect',
 		'settings.providers.localModels.edit': 'Edit Ollama',
-		'settings.modelServices.localProvider': 'Local provider',
+		'settings.modelServices.localModels': 'Local models',
 		'settings.providers.configured': 'Configured',
 		'settings.providers.notConfigured': 'Not configured',
 		'settings.tabs.channels': 'Channels',
@@ -93,7 +93,7 @@ describe('Providers settings', () => {
 		);
 
 		expect(container.firstElementChild).toHaveClass('p-0', 'sm:p-0');
-		expect(screen.getByRole('heading', { name: 'Local provider' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Local models' })).toBeInTheDocument();
 	});
 
 	it('shows provider connections without object storage', async () => {

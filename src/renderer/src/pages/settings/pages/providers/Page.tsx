@@ -645,7 +645,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					</SettingsSection>
 				)}
 			{embedded && section === 'models' && (
-				<SettingsSection title={t('settings.modelServices.localProvider')}>
+				<SettingsSection title={t('settings.modelServices.localModels')}>
 					<div className="space-y-3 pb-4">{renderCustomProviderCard()}</div>
 				</SettingsSection>
 			)}

@@ -1376,6 +1376,7 @@
 			"searchModels": "Cerca modelli",
 			"noMatchingModels": "Nessun modello corrispondente.",
 			"localProvider": "Provider locale",
+			"localModels": "Modelli locali",
 			"localModel": "Modello locale",
 			"modelsLoading": "Caricamento…",
 			"modelsLoadError": "Impossibile caricare i modelli per questo provider.",
