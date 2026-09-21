@@ -119,9 +119,8 @@ function SetupLocalModelSelector({
 							id="setup-assistant-local-model"
 							aria-label="Local model"
 							className="w-52"
-						>
-							{loading ? 'Loading models...' : 'Search models...'}
-						</ComboboxInput>
+							placeholder={loading ? 'Loading models...' : 'Search models...'}
+						/>
 						<ComboboxContent>
 							<ComboboxEmpty>No matching models.</ComboboxEmpty>
 							<ComboboxList>
