@@ -24,7 +24,7 @@ it('stays empty when a provider is configured but no search engine is selected',
 
 	const trigger = await screen.findByRole('combobox', { name: 'Search Engine' });
 	expect(trigger).not.toHaveTextContent('Brave');
-	expect(trigger).toHaveClass('h-8', 'w-52');
+	expect(trigger).toHaveClass('h-8', 'w-40');
 	await user.click(trigger);
 });
 
