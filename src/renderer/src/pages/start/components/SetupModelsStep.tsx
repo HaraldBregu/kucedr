@@ -177,6 +177,7 @@ export function SetupModelsStep({
 	);
 
 	useEffect(() => {
+		if (!window.provider) return;
 		let cancelled = false;
 		void window.provider
 			.list('models')
