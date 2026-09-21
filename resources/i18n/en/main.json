@@ -1020,7 +1020,8 @@
 				"token": "Token",
 				"connect": "Connect",
 				"edit": "Edit Ollama",
-				"refresh": "Get available models"
+				"refresh": "Get available models",
+				"available": "{{count}} models available"
 			},
 			"addProvider": "Add Provider",
 			"saving": "Saving...",
