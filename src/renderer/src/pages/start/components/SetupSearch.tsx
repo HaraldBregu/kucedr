@@ -34,7 +34,9 @@ export function SetupSearch(): React.JSX.Element {
 		<div className="flex w-full items-center gap-4 border-b border-border/60 px-4 py-3 last:border-b-0">
 			<Search className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 			<div className="min-w-0 flex-1">
-				<div className="truncate text-[13px] font-medium leading-4 text-foreground">Search Engine</div>
+				<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+					Search Engine
+				</div>
 				<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
 					{selectedEngine?.name ?? 'Select a search engine'}
 				</p>
