@@ -166,12 +166,7 @@ describe('provider credential IPC boundary', () => {
 		const fetchMock = jest.fn().mockResolvedValue({
 			ok: true,
 			json: async () => ({
-				models: [
-					{ name: 'llama3.2:3b' },
-					{ name: 'qwen3:8b' },
-					{ name: 'llama3.2:3b' },
-					{},
-				],
+				models: [{ name: 'llama3.2:3b' }, { name: 'qwen3:8b' }, { name: 'llama3.2:3b' }, {}],
 			}),
 		});
 		global.fetch = fetchMock;
