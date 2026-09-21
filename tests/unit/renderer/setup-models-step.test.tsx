@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SetupModelsStep } from '../../../src/renderer/src/pages/start/components/SetupModelsStep';
 import type { ModelServiceStateMap } from '../../../src/renderer/src/pages/start/setupTypes';
 
@@ -94,7 +95,7 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 					baseUrl: 'http://localhost:11434/api',
 				},
 			]),
-			listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b']),
+			listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b', 'qwen3:8b']),
 		},
 	});
 	const serviceStates = {
@@ -111,18 +112,25 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 		},
 	};
 
+	const onLocalModelChange = jest.fn();
 	render(
 		<SetupModelsStep
 			serviceStates={serviceStates}
 			loadingModels={false}
 			savingConfig={false}
 			onServiceChange={jest.fn()}
-			onLocalModelChange={jest.fn()}
+			onLocalModelChange={onLocalModelChange}
 		/>
 	);
 
 	expect(await screen.findByLabelText('Local provider')).toHaveTextContent(/ollama/i);
-	expect(await screen.findByLabelText('Local model')).toBeInTheDocument();
+	const modelInput = await screen.findByLabelText('Local model');
+	expect(modelInput).toBeInTheDocument();
+	const user = userEvent.setup();
+	await user.click(modelInput);
+	await user.type(modelInput, 'qwen');
+	await user.click(await screen.findByRole('option', { name: 'qwen3:8b' }));
+	expect(onLocalModelChange).toHaveBeenCalledWith('qwen3:8b');
 	expect(window.provider.listCustomModels).toHaveBeenCalledWith({
 		baseUrl: 'http://localhost:11434/api',
 		apiKey: 'ollama',
