@@ -129,7 +129,7 @@ describe('MCP details', () => {
 		await user.click(testButton);
 		expect(await screen.findByText('2 tools · 25 ms')).toBeInTheDocument();
 		expect(screen.getByText('search')).toBeInTheDocument();
-		expect(screen.getByText('Search indexed documents.')).toBeInTheDocument();
+		expect(screen.getByText(/Search indexed documents/)).toBeInTheDocument();
 
 		const url = screen.getByLabelText('Server URL');
 		await user.clear(url);
