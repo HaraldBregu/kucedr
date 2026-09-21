@@ -38,6 +38,19 @@ export function setupReducer(state: SetupState, action: SetupAction): SetupState
 						...state.serviceStates[action.serviceId],
 						providerId: action.providerId,
 						modelId: action.modelId,
+						localModelId: undefined,
+					},
+				},
+			};
+
+		case 'SET_LOCAL_MODEL':
+			return {
+				...state,
+				serviceStates: {
+					...state.serviceStates,
+					[action.serviceId]: {
+						...state.serviceStates[action.serviceId],
+						localModelId: action.modelId,
 					},
 				},
 			};

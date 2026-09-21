@@ -34,26 +34,12 @@ function getLlmModelGroups(): ProviderModelGroup[] {
 	return toModelGroups('llm');
 }
 
-async function getAssistantLlmModelGroups(): Promise<ProviderModelGroup[]> {
-	const modelGroups = getLlmModelGroups();
-	const localProvider = (await window.provider.list('models').catch(() => [])).find(
-		(provider) => provider.id === 'custom' && provider.baseUrl.trim()
-	);
-	if (!localProvider) return modelGroups;
-
-	const models = await window.provider
-		.listCustomModels({
-			baseUrl: localProvider.baseUrl,
-			apiKey: localProvider.apiKey,
-		})
-		.catch(() => []);
-	if (models.length === 0) return modelGroups;
-
+function getAssistantLlmModelGroups(): ProviderModelGroup[] {
 	return [
-		...modelGroups,
+		...getLlmModelGroups(),
 		{
-			provider: { id: 'custom', name: 'Ollama', baseUrl: localProvider.baseUrl },
-			models: models.map((id) => ({ id, name: id })),
+			provider: { id: 'custom', name: 'Local model', baseUrl: '' },
+			models: [{ id: 'local', name: 'Local model' }],
 		},
 	];
 }
@@ -105,7 +91,7 @@ export const MODEL_SERVICE_DEFINITIONS: readonly ModelServiceDefinition[] = [
 			]);
 			return provider && modelId ? { providerId: provider.id, modelId } : undefined;
 		},
-		loadModelGroups: getAssistantLlmModelGroups,
+		loadModelGroups: () => Promise.resolve(getAssistantLlmModelGroups()),
 		saveSelection: async (provider, model) => {
 			await window.agent.setProvider(provider);
 			return window.agent.setModelId(model.id);
@@ -299,6 +285,13 @@ export function getSelectedServiceModel(
 		(group) => group.provider.id === serviceState.providerId
 	);
 	const selectedModel = selectedProvider?.models.find((model) => model.id === serviceState.modelId);
+	if (
+		selectedProvider?.provider.id === 'custom' &&
+		selectedModel?.id === 'local' &&
+		serviceState.localModelId
+	) {
+		return { provider: selectedProvider.provider, model: { id: serviceState.localModelId, name: serviceState.localModelId } };
+	}
 	return selectedProvider && selectedModel
 		? { provider: selectedProvider.provider, model: selectedModel }
 		: undefined;

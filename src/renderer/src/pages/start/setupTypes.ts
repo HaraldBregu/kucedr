@@ -57,6 +57,7 @@ export type ModelServiceDefinition = {
 export type ModelServiceState = {
 	providerId: string;
 	modelId: string;
+	localModelId?: string;
 	modelGroups: ProviderModelGroup[];
 };
 

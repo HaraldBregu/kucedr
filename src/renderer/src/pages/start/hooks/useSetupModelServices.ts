@@ -21,6 +21,14 @@ export async function loadModelServiceState(
 		? modelGroups.find((group) => group.provider.id === selection.providerId)
 		: undefined;
 	const selectedModel = selectedGroup?.models.find((model) => model.id === selection?.modelId);
+	if (selection?.providerId === 'custom' && selectedGroup) {
+		return {
+			providerId: 'custom',
+			modelId: 'local',
+			localModelId: selection.modelId,
+			modelGroups,
+		};
+	}
 	return {
 		providerId: selectedModel ? (selectedGroup?.provider.id ?? '') : '',
 		modelId: selectedModel?.id ?? '',
@@ -110,6 +118,11 @@ export function useSetupModelServices(state: SetupState, dispatch: Dispatch<Setu
 		}
 	}
 
+	function handleLocalModelChange(serviceId: ModelServiceId, modelId: string): void {
+		dispatch({ type: 'CLEAR_ERROR' });
+		dispatch({ type: 'SET_LOCAL_MODEL', serviceId, modelId });
+	}
+
 	async function handleSaveModels(): Promise<boolean> {
 		if (savingConfig) return false;
 
@@ -139,6 +152,7 @@ export function useSetupModelServices(state: SetupState, dispatch: Dispatch<Setu
 
 	return {
 		handleServiceChange,
+		handleLocalModelChange,
 		handleSaveModels,
 	};
 }
