@@ -252,13 +252,6 @@ export function SetupModelsStep({
 												/>
 											</ItemActions>
 										</Item>
-										{service.id === 'assistant' &&
-											serviceStates.assistant.providerId === 'custom' && (
-												<SetupLocalModelSelector
-													selectedModelId={serviceStates.assistant.localModelId}
-													onChange={(modelId) => onLocalModelChange('assistant', modelId)}
-												/>
-											)}
 									</React.Fragment>
 								);
 							})}
