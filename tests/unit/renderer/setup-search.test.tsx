@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetupSearch } from '../../../src/renderer/src/pages/start/components/SetupSearch';
 
@@ -35,5 +35,7 @@ it('shows a configured search engine selection', async () => {
 	});
 	render(<SetupSearch />);
 
-	expect(await screen.findByRole('combobox', { name: 'Search Engine' })).toHaveTextContent('Brave');
+	await waitFor(() =>
+		expect(screen.getByRole('combobox', { name: 'Search Engine' })).toHaveTextContent('Brave')
+	);
 });
