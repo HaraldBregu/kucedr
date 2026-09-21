@@ -142,10 +142,10 @@ const AssistantPage: React.FC = () => {
 				modelGroups: current.modelGroups.map((group) =>
 					group.provider.id === 'custom'
 						? {
-							...group,
-							provider: { ...group.provider, name: 'Ollama', baseUrl: provider.baseUrl },
-							models: models.map((id) => ({ id, name: id })),
-						}
+								...group,
+								provider: { ...group.provider, name: 'Ollama', baseUrl: provider.baseUrl },
+								models: models.map((id) => ({ id, name: id })),
+							}
 						: group
 				),
 			}));

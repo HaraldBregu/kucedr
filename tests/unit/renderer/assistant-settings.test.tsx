@@ -228,9 +228,9 @@ beforeEach(() => {
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
 		value: {
-			list: jest.fn().mockResolvedValue([
-				{ id: 'custom', name: 'Ollama', baseUrl: 'http://localhost:11434' },
-			]),
+			list: jest
+				.fn()
+				.mockResolvedValue([{ id: 'custom', name: 'Ollama', baseUrl: 'http://localhost:11434' }]),
 			listCustomModels: jest.fn().mockResolvedValue(['gemma3:4b', 'llama3.2:1b']),
 		},
 	});
@@ -462,7 +462,11 @@ it('lists every built-in agent tool on the Tools page', async () => {
 
 it('shows discovery as required and searchable without permission controls', async () => {
 	const user = userEvent.setup();
-	render(<MemoryRouter><ToolsPage /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<ToolsPage />
+		</MemoryRouter>
+	);
 	const discoveryTitle = await screen.findByText('Discover tools');
 	const discoveryRow = discoveryTitle.closest('.grid');
 	expect(discoveryRow?.querySelector('svg')).toHaveClass('size-5');
@@ -651,12 +655,25 @@ it.each([
 	['music', 'audio', 'Eleven Music', MusicPage],
 	['video', 'video', 'Veo', VideoPage],
 	['image', 'image', 'Gemini Image', ImagePage],
-] as const)('loads the saved %s configuration on its dedicated page', async (name, kind, model, Page) => {
-	render(<MemoryRouter><Page /></MemoryRouter>);
-	expect(screen.getByRole('heading', { name: `settings.tabs.${name}` })).toBeInTheDocument();
-	await waitFor(() => expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(model));
-	expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
-	expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
-	expect(window.agent.getToolModel).toHaveBeenCalledWith(kind);
-	expect(window.agent.getToolModel).not.toHaveBeenCalledWith(kind === 'audio' ? 'image' : 'audio');
-});
+] as const)(
+	'loads the saved %s configuration on its dedicated page',
+	async (name, kind, model, Page) => {
+		render(
+			<MemoryRouter>
+				<Page />
+			</MemoryRouter>
+		);
+		expect(screen.getByRole('heading', { name: `settings.tabs.${name}` })).toBeInTheDocument();
+		await waitFor(() =>
+			expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(
+				model
+			)
+		);
+		expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
+		expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
+		expect(window.agent.getToolModel).toHaveBeenCalledWith(kind);
+		expect(window.agent.getToolModel).not.toHaveBeenCalledWith(
+			kind === 'audio' ? 'image' : 'audio'
+		);
+	}
+);
