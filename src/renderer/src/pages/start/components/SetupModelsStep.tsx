@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
 	BrainCircuit,
 	ImageIcon,
@@ -158,12 +158,39 @@ export function SetupModelsStep({
 	onServiceChange,
 	onLocalModelChange,
 }: SetupModelsStepProps): React.JSX.Element {
+	const [availableLocalModels, setAvailableLocalModels] = useState<string[]>([]);
 	const assistantServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>
 		ASSISTANT_SERVICE_IDS.has(service.id)
 	);
 	const toolServices = MODEL_SERVICE_DEFINITIONS.filter((service) =>
 		TOOL_SERVICE_IDS.has(service.id)
 	);
+	const assistantModelGroups = useMemo(
+		() =>
+			serviceStates.assistant.modelGroups.map((group) =>
+				group.provider.id === 'custom' && availableLocalModels.length > 0
+					? { ...group, models: availableLocalModels.map((id) => ({ id, name: id })) }
+					: group
+			),
+		[availableLocalModels, serviceStates.assistant.modelGroups]
+	);
+
+	useEffect(() => {
+		let cancelled = false;
+		void window.provider
+			.list('models')
+			.then((providers) => providers.find((provider) => provider.id === 'custom'))
+			.then((provider) =>
+				provider ? window.provider.listCustomModels({ baseUrl: provider.baseUrl, apiKey: provider.apiKey }) : []
+			)
+			.then((models) => {
+				if (!cancelled) setAvailableLocalModels(models);
+			})
+			.catch(() => undefined);
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	return (
 		<div className="mx-auto flex min-h-full w-full min-w-0 max-w-2xl flex-col justify-center py-8">
@@ -180,6 +207,12 @@ export function SetupModelsStep({
 								const Icon = SERVICE_ICONS[service.id];
 								const serviceState = serviceStates[service.id];
 								const title = service.id === 'assistant' ? 'LLM Model' : service.title;
+								const providerGroups =
+									service.id === 'assistant' ? assistantModelGroups : serviceState.modelGroups;
+								const selectedModelId =
+									service.id === 'assistant' && serviceState.providerId === 'custom'
+										? (serviceState.localModelId ?? serviceState.modelId)
+										: serviceState.modelId;
 								return (
 									<React.Fragment key={service.id}>
 										<Item
@@ -284,17 +317,22 @@ export function SetupModelsStep({
 												buttonDropdown
 												buttonClassName="w-40 min-w-0"
 												idPrefix={`setup-${service.id}`}
-												providerGroups={toModelProviderGroups(serviceState.modelGroups)}
+												providerGroups={toModelProviderGroups(providerGroups)}
 												providerId={serviceState.providerId}
-												modelId={serviceState.modelId}
+												modelId={selectedModelId}
 												disabled={
 													loadingModels || savingConfig || serviceState.modelGroups.length === 0
 												}
 												showFieldLabel={false}
 												labels={{ label: service.title, placeholder: 'Select a model' }}
-												onChange={(providerId, modelId) =>
-													onServiceChange(service.id, providerId, modelId)
-												}
+												onChange={(providerId, modelId) => {
+													if (service.id === 'assistant' && providerId === 'custom') {
+														onServiceChange('assistant', 'custom', 'local');
+														onLocalModelChange('assistant', modelId);
+														return;
+													}
+													onServiceChange(service.id, providerId, modelId);
+												}}
 											/>
 										</ItemActions>
 									</Item>
