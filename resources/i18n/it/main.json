@@ -1019,8 +1019,7 @@
 				"token": "Token",
 				"connect": "Connetti",
 				"edit": "Modifica Ollama",
-				"refresh": "Ottieni modelli disponibili",
-				"available": "{{count}} modelli disponibili"
+				"refresh": "Ottieni modelli disponibili"
 			},
 			"addProvider": "Aggiungi Provider",
 			"saving": "Salvataggio...",

@@ -208,6 +208,8 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 		})
 	);
 	expect(screen.queryByLabelText('Model')).not.toBeInTheDocument();
+	expect(screen.getByText('llama3.2:3b')).toBeInTheDocument();
+	expect(screen.getByText('qwen3:8b')).toBeInTheDocument();
 });
 
 it('loads available custom provider models', async () => {

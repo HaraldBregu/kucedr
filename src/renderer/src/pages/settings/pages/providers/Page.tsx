@@ -85,7 +85,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		savedBaseUrl: '',
 		editing: false,
 	});
-	const [customModelCount, setCustomModelCount] = useState<number | null>(null);
+	const [customModels, setCustomModels] = useState<string[]>([]);
 	const [loadingCustomModels, setLoadingCustomModels] = useState(false);
 	const [savingProviderId, setSavingProviderId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -264,7 +264,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setError(null);
 		try {
 			const models = await window.provider.listCustomModels({ baseUrl, apiKey });
-			setCustomModelCount(models.length);
+			setCustomModels(models);
 		} catch (err) {
 			setError(getErrorMessage(err, 'Could not load models from the custom provider.'));
 		} finally {
@@ -494,7 +494,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									}
 								/>
 							</div>
-							<div className="flex sm:ml-[10.75rem]">
+							<div className="sm:ml-[10.75rem]">
 								<Button
 									type="button"
 									variant="outline"
@@ -510,10 +510,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									)}
 									{t('settings.providers.localModels.refresh')}
 								</Button>
-								{customModelCount !== null && (
-									<p className="ml-2 text-xs text-muted-foreground">
-										{t('settings.providers.localModels.available', { count: customModelCount })}
-									</p>
+								{customModels.length > 0 && (
+									<ul className="mt-2 grid gap-1 text-xs text-muted-foreground">
+										{customModels.map((model) => (
+											<li key={model}>{model}</li>
+										))}
+									</ul>
 								)}
 							</div>
 							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
