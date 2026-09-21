@@ -170,3 +170,42 @@ it('allows a different account to sign in after an explicit sign-out', async () 
 		user: currentSession.user,
 	});
 });
+
+it('replaces a stale account binding when a Google callback signs in another account', async () => {
+	let emit!: (event: AccountSessionEvent, session: AccountSession | null) => void;
+	let boundUserId = staleSession.user.id;
+	const binding = {
+		accept: jest.fn((userId: string) => {
+			if (boundUserId && boundUserId !== userId) return false;
+			boundUserId = userId;
+			return true;
+		}),
+		clear: jest.fn(() => {
+			boundUserId = '';
+		}),
+	};
+	const provider = accountProvider({
+		restore: jest.fn(async () => staleSession),
+		subscribe: jest.fn((listener) => {
+			emit = listener;
+			return jest.fn();
+		}),
+		exchangeCode: jest.fn(async () => {
+			emit('session', currentSession);
+			return currentSession;
+		}),
+	});
+	const service = new AuthService(provider, binding);
+	await service.initialize();
+
+	await expect(
+		service.handleDeepLink('kucedr://auth/callback?code=google-authorization-code')
+	).resolves.toEqual({
+		status: 'signedIn',
+		persistence: 'encrypted',
+		user: currentSession.user,
+	});
+
+	expect(binding.clear).toHaveBeenCalledTimes(1);
+	expect(provider.signOut).not.toHaveBeenCalled();
+});

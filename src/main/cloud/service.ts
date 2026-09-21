@@ -21,6 +21,7 @@ export class AuthService {
 	private session: AccountSession | null = null;
 	private providerSessionVersion = 0;
 	private initialized = false;
+	private accountChangeAllowed = false;
 	private readonly stateListeners = new Set<(state: AuthState) => void>();
 	private readonly sessionListeners = new Set<(session: AccountSession | null) => void>();
 	private state: AuthState = { status: 'loading', persistence: 'memory' };
@@ -87,9 +88,14 @@ export class AuthService {
 	}
 
 	async signIn(credentials: AuthCredentials): Promise<AuthState> {
-		this.applySession('session', await this.accountProvider().signIn(credentials));
-		if (this.state.status !== 'signedIn') throw this.accountMismatchError();
-		return this.getState();
+		this.accountChangeAllowed = true;
+		try {
+			this.applySession('session', await this.accountProvider().signIn(credentials));
+			if (this.state.status !== 'signedIn') throw this.accountMismatchError();
+			return this.getState();
+		} finally {
+			this.accountChangeAllowed = false;
+		}
 	}
 
 	signInWithGoogle(): Promise<string> {
@@ -101,18 +107,23 @@ export class AuthService {
 	}
 
 	async signUp(input: SignUpInput): Promise<AuthState> {
-		const session = await this.accountProvider().signUp(input);
-		if (session) {
-			this.applySession('session', session);
-			if (this.state.status !== 'signedIn') throw this.accountMismatchError();
-		} else {
-			this.setState({
-				status: 'confirmationRequired',
-				email: input.email,
-				persistence: this.persistence(),
-			});
+		this.accountChangeAllowed = true;
+		try {
+			const session = await this.accountProvider().signUp(input);
+			if (session) {
+				this.applySession('session', session);
+				if (this.state.status !== 'signedIn') throw this.accountMismatchError();
+			} else {
+				this.setState({
+					status: 'confirmationRequired',
+					email: input.email,
+					persistence: this.persistence(),
+				});
+			}
+			return this.getState();
+		} finally {
+			this.accountChangeAllowed = false;
 		}
-		return this.getState();
 	}
 
 	resendConfirmation(email: string): Promise<void> {
@@ -146,6 +157,7 @@ export class AuthService {
 			if (url.searchParams.has('error')) throw new Error('The authentication link was rejected.');
 			const code = url.searchParams.get('code');
 			if (!code || code.length > 2048) throw new Error('The authentication link has expired.');
+			this.accountChangeAllowed = true;
 			const session = await this.accountProvider().exchangeCode(code);
 			const recovery =
 				url.searchParams.get('type') === 'recovery' || this.state.status === 'recovery';
@@ -161,6 +173,8 @@ export class AuthService {
 					: 'Sign-in could not be completed. Please try again.';
 			this.setState({ ...this.state, error });
 			throw new Error(error);
+		} finally {
+			this.accountChangeAllowed = false;
 		}
 	}
 
@@ -173,7 +187,7 @@ export class AuthService {
 	}
 
 	private applySession(event: AccountSessionEvent, session: AccountSession | null): void {
-		if (session && !this.binding?.accept(session.user.id)) {
+		if (session && !this.accepts(session.user.id)) {
 			this.session = null;
 			this.sessionListeners.forEach((listener) => listener(null));
 			this.setState({ status: 'signedOut', persistence: this.persistence() });
@@ -191,6 +205,13 @@ export class AuthService {
 			persistence: this.persistence(),
 			user: structuredClone(session.user),
 		});
+	}
+
+	private accepts(userId: string): boolean {
+		if (!this.binding || this.binding.accept(userId)) return true;
+		if (!this.accountChangeAllowed) return false;
+		this.binding.clear();
+		return this.binding.accept(userId);
 	}
 
 	private accountProvider(): AccountProvider {
