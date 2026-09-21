@@ -1019,7 +1019,7 @@
 				"compatibility": "OpenAI-compatible API",
 				"url": "URL",
 				"modelId": "Model",
-				"token": "Token",
+				"token": "API key",
 				"connect": "Connect",
 				"edit": "Edit Ollama",
 				"refresh": "Get available models"

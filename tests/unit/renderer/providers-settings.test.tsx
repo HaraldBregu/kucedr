@@ -12,7 +12,7 @@ jest.mock('react-i18next', () => {
 		'settings.providers.localModels.model': 'Ollama',
 		'settings.providers.localModels.compatibility': 'OpenAI-compatible API',
 		'settings.providers.localModels.url': 'URL',
-		'settings.providers.localModels.token': 'Token',
+		'settings.providers.localModels.token': 'API key',
 		'settings.providers.localModels.connect': 'Connect',
 		'settings.providers.localModels.edit': 'Edit Ollama',
 		'settings.modelServices.localModels': 'Local models',
@@ -205,7 +205,7 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 	const customCard = baseUrlInput.closest('[data-slot="card"]');
 	expect(customCard).not.toBeNull();
 	await user.type(baseUrlInput, 'http://localhost:11434/api');
-	await user.type(screen.getByLabelText('Token'), 'ollama');
+	await user.type(screen.getByLabelText('API key'), 'ollama');
 	await user.click(within(customCard!).getByRole('button', { name: 'Save', exact: true }));
 
 	await waitFor(() =>

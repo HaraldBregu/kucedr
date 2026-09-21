@@ -1018,7 +1018,7 @@
 				"compatibility": "API compatibile con OpenAI",
 				"url": "URL",
 				"modelId": "Modello",
-				"token": "Token",
+				"token": "Chiave API",
 				"connect": "Connetti",
 				"edit": "Modifica Ollama",
 				"refresh": "Ottieni modelli disponibili"
