@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import {
 	Select,
 	SelectContent,
@@ -8,6 +7,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
+import { SettingsRow } from '@pages/settings/components';
 import { ModelProviderConfiguration } from '@pages/settings/components/model-configuration';
 import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
 import { SetupSearch } from './SetupSearch';
@@ -103,37 +103,53 @@ function SetupLocalModelSelector({
 	}, []);
 
 	return (
-		<div className="grid gap-3 pt-3">
-			<div className="grid gap-1.5">
-				<Label htmlFor="setup-assistant-local-provider">Local provider</Label>
-				<Select value="ollama" disabled>
-					<SelectTrigger id="setup-assistant-local-provider">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="ollama">Ollama</SelectItem>
-					</SelectContent>
-				</Select>
-			</div>
-			<div className="grid gap-1.5">
-				<Label htmlFor="setup-assistant-local-model">Local model</Label>
-				<Select
-					value={selectedModelId}
-					disabled={loading || models.length === 0}
-					onValueChange={(value) => onChange(String(value))}
-				>
-					<SelectTrigger id="setup-assistant-local-model">
-						<SelectValue placeholder={loading ? 'Loading models...' : 'Select a model'} />
-					</SelectTrigger>
-					<SelectContent>
-						{models.map((model) => (
-							<SelectItem key={model} value={model}>
-								{model}
-							</SelectItem>
-						))}
-					</SelectContent>
-				</Select>
-			</div>
+		<div className="border-t border-border/60 pt-1">
+			<SettingsRow
+				title="Local provider"
+				className="px-0 py-2"
+				actionClassName="w-auto"
+				actions={
+					<Select value="ollama" disabled>
+						<SelectTrigger
+							id="setup-assistant-local-provider"
+							aria-label="Local provider"
+							className="h-8 w-52"
+						>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="ollama">Ollama</SelectItem>
+						</SelectContent>
+					</Select>
+				}
+			/>
+			<SettingsRow
+				title="Local model"
+				className="px-0 py-2"
+				actionClassName="w-auto"
+				actions={
+					<Select
+						value={selectedModelId}
+						disabled={loading || models.length === 0}
+						onValueChange={(value) => onChange(String(value))}
+					>
+						<SelectTrigger
+							id="setup-assistant-local-model"
+							aria-label="Local model"
+							className="h-8 w-52"
+						>
+							<SelectValue placeholder={loading ? 'Loading models...' : 'Select a model'} />
+						</SelectTrigger>
+						<SelectContent>
+							{models.map((model) => (
+								<SelectItem key={model} value={model}>
+									{model}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				}
+			/>
 		</div>
 	);
 }
