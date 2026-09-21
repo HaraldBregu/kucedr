@@ -193,7 +193,7 @@ export const STEP_COPY: Record<SetupStep, { title: string; description: string }
 	modelProvider: {
 		title: 'Model providers',
 		description:
-			'Add an API key for the model provider you want to use. You can connect more providers at any time.',
+			'Connect the model providers you want to use. You can add more providers at any time.',
 	},
 	search: {
 		title: 'Search Engine',
