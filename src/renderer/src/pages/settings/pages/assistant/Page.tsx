@@ -138,25 +138,43 @@ const AssistantPage: React.FC = () => {
 			const provider = (await window.provider.list('models')).find((item) => item.id === 'custom');
 			if (!provider) return;
 			setLocalProvider(provider);
-			setLocalModels(
-				await window.provider.listCustomModels({
-					baseUrl: provider.baseUrl,
-					apiKey: provider.apiKey,
-				})
-			);
+			const models = await window.provider.listCustomModels({
+				baseUrl: provider.baseUrl,
+				apiKey: provider.apiKey,
+			});
+			setLocalModels(models);
+			setState((current) => ({
+				...current,
+				modelGroups: current.modelGroups.map((group) =>
+					group.provider.id === 'custom'
+						? { ...group, models: models.map((id) => ({ id, name: id })) }
+						: group
+				),
+			}));
 		} finally {
 			setLoadingLocalModels(false);
 		}
 	};
+	useEffect(() => {
+		void loadLocalModels();
+	}, []);
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
 		saveModelOptions(updateModelOptions(modelOptions, path, value));
 	};
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
-		if (nextProviderId === 'custom' && nextModelId === 'local') {
-			setState((current) => ({ ...current, providerId: nextProviderId, modelId: nextModelId }));
-			void loadLocalModels();
+		if (nextProviderId === 'custom') {
+			const provider = localProvider ?? (await window.provider.list('models')).find((item) => item.id === 'custom');
+			if (!provider) return;
+			setState((current) => ({ ...current, providerId: 'custom', modelId: nextModelId, saving: true }));
+			try {
+				await window.agent.setProvider({ id: 'custom', name: 'Ollama', baseUrl: provider.baseUrl });
+				if (!(await window.agent.setModelId(nextModelId))) throw new Error(t('settings.modelServices.saveError'));
+				setState((current) => ({ ...current, saving: false, saved: true }));
+			} catch (error) {
+				setState((current) => ({ ...current, saving: false, error: firstErrorMessage(error, t('settings.modelServices.saveError')) }));
+			}
 			return;
 		}
 		const group = state.modelGroups.find((item) => item.provider.id === nextProviderId);
@@ -226,7 +244,7 @@ const AssistantPage: React.FC = () => {
 					showContentSeparator={false}
 					onChange={(providerId, modelId) => void handleChange(providerId, modelId)}
 				>
-					{state.providerId === 'custom' && (
+					{state.providerId === 'custom' && state.modelId === 'local' && (
 						<div className="grid gap-3 pt-3">
 							<div className="grid gap-1.5">
 								<Label htmlFor="assistant-local-provider">
