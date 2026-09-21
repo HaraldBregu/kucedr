@@ -68,6 +68,7 @@ function SetupLocalModelSelector({
 	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
+		if (!window.provider) return;
 		let cancelled = false;
 		void window.provider
 			.list('models')
