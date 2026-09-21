@@ -90,7 +90,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 	private credential(value: unknown): ProviderCredentialSaveInput {
 		const record = this.record(value);
 		const apiKey = typeof record.apiKey === 'string' ? record.apiKey.trim() : '';
-		if (!apiKey || apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
+		if (apiKey.length > 16_384) throw new Error('The provider API key is invalid.');
 		const kind = this.kind(record.kind);
 		const id = this.id(record.id);
 		if (id !== 'custom') return { kind, id, apiKey };
@@ -153,7 +153,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		let response: Response;
 		try {
 			response = await fetch(new URL('models', `${baseUrl}/`).toString(), {
-				headers: { Authorization: `Bearer ${apiKey}` },
+				...(apiKey ? { headers: { Authorization: `Bearer ${apiKey}` } } : {}),
 				signal,
 			});
 		} catch {

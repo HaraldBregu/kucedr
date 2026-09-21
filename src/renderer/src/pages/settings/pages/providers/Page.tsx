@@ -266,7 +266,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const loadCustomModels = async (): Promise<void> => {
 		const baseUrl = customProvider.baseUrl.trim();
 		const apiKey = customProvider.apiKey.trim();
-		if (!baseUrl || !apiKey) return;
+		if (!baseUrl) return;
 		setLoadingCustomModels(true);
 		setError(null);
 		try {
@@ -528,21 +528,15 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									<Button
 										type="button"
 										variant="outline"
-										size="icon-sm"
+										size="sm"
 										aria-label={t('settings.providers.localModels.refresh')}
 										disabled={
-											saving ||
-											loadingCustomModels ||
-											!customProvider.baseUrl.trim() ||
-											!customProvider.apiKey.trim()
+											saving || loadingCustomModels || !customProvider.baseUrl.trim()
 										}
 										onClick={() => void loadCustomModels()}
 									>
-										{loadingCustomModels ? (
-											<LoaderCircle className="size-3.5 animate-spin" />
-										) : (
-											<RefreshCw className="size-3.5" />
-										)}
+										{loadingCustomModels ? <LoaderCircle className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
+										{t('settings.providers.localModels.refresh')}
 									</Button>
 								</div>
 								<datalist id="custom-provider-models">

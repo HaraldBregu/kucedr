@@ -1019,7 +1019,7 @@
 				"token": "Token",
 				"connect": "Connetti",
 				"edit": "Modifica Ollama",
-				"refresh": "Aggiorna modelli locali"
+				"refresh": "Ottieni modelli disponibili"
 			},
 			"addProvider": "Aggiungi Provider",
 			"saving": "Salvataggio...",

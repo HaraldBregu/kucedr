@@ -16,7 +16,7 @@ jest.mock('react-i18next', () => {
 		'settings.providers.localModels.token': 'Token',
 		'settings.providers.localModels.connect': 'Connect',
 		'settings.providers.localModels.edit': 'Edit Ollama',
-		'settings.providers.localModels.refresh': 'Refresh local models',
+		'settings.providers.localModels.refresh': 'Get available models',
 		'settings.tabs.channels': 'Channels',
 		'settings.tabs.databases': 'Database',
 		'common.save': 'Save',
@@ -223,13 +223,12 @@ it('loads available custom provider models', async () => {
 
 	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
 	await user.type(screen.getByLabelText('URL'), 'http://localhost:11434/v1');
-	await user.type(screen.getByLabelText('Token'), 'ollama');
-	await user.click(screen.getByRole('button', { name: 'Refresh local models' }));
+	await user.click(screen.getByRole('button', { name: 'Get available models' }));
 
 	await waitFor(() =>
 		expect(window.provider.listCustomModels).toHaveBeenCalledWith({
 			baseUrl: 'http://localhost:11434/v1',
-			apiKey: 'ollama',
+		apiKey: '',
 		})
 	);
 	expect(screen.getByLabelText('Model')).toHaveValue('llama3.2:3b');
