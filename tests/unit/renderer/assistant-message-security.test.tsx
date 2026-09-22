@@ -41,6 +41,14 @@ function message(content: string, tools: AgentMessage['tools'] = []): AgentMessa
 	};
 }
 
+it('shows a lightbulb beside the active Thinking label', () => {
+	const thinking = { ...message(''), state: 'thinking' as const };
+	const { container } = render(<AssistantMessage message={thinking} isStreaming />);
+
+	expect(screen.getByText('Thinking')).toBeInTheDocument();
+	expect(container.querySelector('.lucide-lightbulb')).toBeInTheDocument();
+});
+
 it('does not load an arbitrary absolute image path from assistant Markdown', () => {
 	render(<AssistantMessage message={message('![private](/Users/alice/private.png)')} />);
 
