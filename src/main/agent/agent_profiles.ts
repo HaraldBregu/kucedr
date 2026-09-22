@@ -28,11 +28,17 @@ type AgentProfileStore = {
 const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
 const DEFAULT_TOOL: AgentToolConfiguration = { enabled: true, permission: 'allow' };
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
-const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['voice', 'tasks', 'health', 'channels']);
+const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
+	'chat',
+	'voice',
+	'tasks',
+	'health',
+	'channels',
+]);
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {
-	chat: AGENT_PROFILE_MODEL_KEYS,
+	chat: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
 	voice: AGENT_PROFILE_MODEL_KEYS,
 	tasks: ['textToText'],
 	health: AGENT_PROFILE_MODEL_KEYS,
@@ -42,7 +48,15 @@ const storedModelKey = (
 	profileId: AgentToolProfileId,
 	modelKey: AgentProfileModelKey
 ): keyof AgentProfileStore =>
-	profileId === 'tasks' && modelKey === 'textToText' ? 'llm' : modelKey;
+	profileId === 'tasks' && modelKey === 'textToText'
+		? 'llm'
+		: profileId === 'chat' && modelKey === 'textToText'
+			? 'llm'
+			: profileId === 'chat' && modelKey === 'textToSpeech'
+				? 'tts'
+				: profileId === 'chat' && modelKey === 'speechToText'
+					? 'stt'
+					: modelKey;
 
 const stores = Object.fromEntries(
 	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
@@ -116,7 +130,7 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 					'ttsModelId',
 				]
 			: ['providerId', 'modelId', 'modelOptions'];
-	const profileKeys = ['llm', ...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
+	const profileKeys = ['llm', 'tts', 'stt', ...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
 	const preserved = SHARED_PROFILE_IDS.has(profileId)
 		? Object.fromEntries(
 				Object.entries(existing).filter(

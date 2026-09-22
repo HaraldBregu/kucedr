@@ -70,9 +70,9 @@ it('creates clean independent agent profile stores without migration metadata', 
 		modelId: '',
 		options: {},
 	});
-	expect(stores.get('chat-agent')).not.toHaveProperty('schemaVersion');
-	expect(stores.get('chat-agent')).not.toHaveProperty('migrations');
-	expect(agentProfileStorePath('chat')).toMatch(/chat-agent\.json$/);
+	expect(stores.get('chat')).not.toHaveProperty('schemaVersion');
+	expect(stores.get('chat')).not.toHaveProperty('migrations');
+	expect(agentProfileStorePath('chat')).toMatch(/chat\.json$/);
 	expect(agentProfileStorePath('voice')).toMatch(/voice\.json$/);
 	expect(agentProfileStorePath('tasks')).toMatch(/tasks\.json$/);
 	expect(agentProfileStorePath('health')).toMatch(/health\.json$/);
@@ -80,6 +80,21 @@ it('creates clean independent agent profile stores without migration metadata', 
 });
 
 it('keeps model selections isolated between agent profiles', () => {
+	setAgentProfileModel('chat', 'textToText', {
+		providerId: 'openai',
+		modelId: 'gpt-5',
+		options: {},
+	});
+	setAgentProfileModel('chat', 'textToSpeech', {
+		providerId: 'openai',
+		modelId: 'gpt-4o-mini-tts',
+		options: {},
+	});
+	setAgentProfileModel('chat', 'speechToText', {
+		providerId: 'openai',
+		modelId: 'gpt-4o-transcribe',
+		options: {},
+	});
 	setAgentProfileModel('tasks', 'textToText', {
 		providerId: 'anthropic',
 		modelId: 'claude-sonnet-4',
@@ -98,8 +113,13 @@ it('keeps model selections isolated between agent profiles', () => {
 	expect(getAgentProfileDocument('tasks')).not.toHaveProperty('textToSpeech');
 	expect(getAgentProfileDocument('tasks')).not.toHaveProperty('speechToText');
 	expect(getAgentProfileDocument('tasks')).not.toHaveProperty('realtimeVoice');
-	expect(getAgentProfileModel('chat', 'textToText')).toMatchObject({
-		providerId: '',
-		modelId: '',
+	expect(getAgentProfileDocument('chat')).toMatchObject({
+		llm: { providerId: 'openai', modelId: 'gpt-5' },
+		tts: { providerId: 'openai', modelId: 'gpt-4o-mini-tts' },
+		stt: { providerId: 'openai', modelId: 'gpt-4o-transcribe' },
 	});
+	expect(getAgentProfileDocument('chat')).not.toHaveProperty('textToText');
+	expect(getAgentProfileDocument('chat')).not.toHaveProperty('textToSpeech');
+	expect(getAgentProfileDocument('chat')).not.toHaveProperty('speechToText');
+	expect(getAgentProfileDocument('chat')).not.toHaveProperty('realtimeVoice');
 });
