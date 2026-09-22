@@ -20,7 +20,7 @@ const store = new Store<HealthSettings>({
 
 export const healthStorePath = store.path;
 
-export function getHealthSettings(): HealthSettings {
+function ensureHealthProfile(): void {
 	initializeAgentProfile(
 		'health',
 		{
@@ -32,6 +32,10 @@ export function getHealthSettings(): HealthSettings {
 		},
 		'health-settings'
 	);
+}
+
+export function getHealthSettings(): HealthSettings {
+	ensureHealthProfile();
 	const model = getAgentProfileModel('health', 'textToText');
 	return {
 		...DEFAULT_HEALTH_SETTINGS,
@@ -43,6 +47,7 @@ export function getHealthSettings(): HealthSettings {
 }
 
 export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSettings {
+	ensureHealthProfile();
 	const { providerId, modelId, modelOptions, ...schedule } = patch;
 	if (providerId !== undefined || modelId !== undefined || modelOptions !== undefined) {
 		setAgentProfileModel('health', 'textToText', {
@@ -58,5 +63,10 @@ export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSett
 
 export function resetHealthSettings(): HealthSettings {
 	store.store = DEFAULT_HEALTH_SETTINGS;
+	setAgentProfileModel('health', 'textToText', {
+		providerId: '',
+		modelId: '',
+		options: {},
+	});
 	return getHealthSettings();
 }

@@ -1,8 +1,10 @@
 let persisted: Record<string, unknown> = {};
+const stores = new Map<string, Record<string, unknown>>();
 
 jest.mock('electron-store', () =>
-	jest.fn().mockImplementation(() => {
-		let backing: Record<string, unknown> = {
+	jest.fn().mockImplementation((options: { name?: string }) => {
+		const name = options.name ?? 'config';
+		let backing = stores.get(name) ?? {
 			providerId: 'openai',
 			modelId: 'gpt-5',
 			modelOptions: { reasoning: 'high' },
@@ -26,6 +28,7 @@ jest.mock('electron-store', () =>
 				tools: { save_memory: 'allow', list_memories: 'allow', forget_memory: 'allow' },
 			},
 		};
+		stores.set(name, backing);
 		return {
 			get: (key: string) => backing[key],
 			set: (key: string, value: unknown) => {
@@ -36,45 +39,43 @@ jest.mock('electron-store', () =>
 			},
 			set store(value: Record<string, unknown>) {
 				backing = value;
-				persisted = value;
+				stores.set(name, value);
+				if (name === 'agent') persisted = value;
 			},
 		};
 	})
 );
 
-import '../../../../src/main/agent/agent_store';
+import {
+	getProviderId,
+	getToolProfile,
+} from '../../../../src/main/agent/agent_store';
+import { getAgentProfileModel } from '../../../../src/main/agent/agent_profiles';
 
-it('migrates legacy agent settings into chatbot and tools branches', () => {
-	expect(persisted).toMatchObject({
-		chatbot: {
-			textToText: {
-				providerId: 'openai',
-				modelId: 'gpt-5',
-				options: { reasoning: 'high' },
-			},
-			textToSpeech: {
-				providerId: 'openai',
-				modelId: 'tts-1',
-				options: { voice: 'alloy' },
-			},
-			speechToText: { providerId: 'deepgram', modelId: 'nova-3', options: {} },
-		},
-		voice: {
-			realtimeVoice: { providerId: 'openai', modelId: 'realtime-1', options: {} },
-		},
-		tools: {
-			webSearch: { providerId: 'brave', providerName: 'Brave', enabled: true },
-			create_image: { providerId: 'openai', modelId: 'image-1', options: {} },
-			create_sound: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
-			create_video: { providerId: 'google', modelId: 'veo-3', options: {} },
-		},
-		toolProfiles: {
-			chat: { tools: { read: { enabled: false, permission: 'ask' } } },
-			voice: { tools: { read: { enabled: false, permission: 'ask' } } },
-			tasks: { tools: { read: { enabled: false, permission: 'ask' } } },
-			health: { tools: { read: { enabled: false, permission: 'ask' } } },
-			channels: { tools: { read: { enabled: false, permission: 'ask' } } },
-		},
+it('migrates legacy agent settings into independent agent profile stores', () => {
+	expect(getProviderId()).toBe('openai');
+	expect(getAgentProfileModel('chat', 'textToText')).toEqual({
+		providerId: 'openai',
+		modelId: 'gpt-5',
+		options: { reasoning: 'high' },
+	});
+	expect(getAgentProfileModel('chat', 'textToSpeech')).toEqual({
+		providerId: 'openai',
+		modelId: 'tts-1',
+		options: { voice: 'alloy' },
+	});
+	expect(getAgentProfileModel('voice', 'realtimeVoice')).toEqual({
+		providerId: 'openai',
+		modelId: 'realtime-1',
+		options: {},
+	});
+	expect(getToolProfile('health').tools.read).toEqual({ enabled: false, permission: 'ask' });
+	expect(stores.get('chat-agent')).toMatchObject({
+		textToText: { providerId: 'openai', modelId: 'gpt-5' },
+		tools: { read: { enabled: false, permission: 'ask' } },
+	});
+	expect(stores.get('voice-agent')).toMatchObject({
+		realtimeVoice: { providerId: 'openai', modelId: 'realtime-1' },
 	});
 	expect(persisted).not.toHaveProperty('providerId');
 	expect(persisted).not.toHaveProperty('modelId');
