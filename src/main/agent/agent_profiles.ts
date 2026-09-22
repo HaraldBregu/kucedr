@@ -46,11 +46,11 @@ const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {
-	chat: ['textToText', 'textToSpeech', 'speechToText'],
-	voice: ['realtimeVoice'],
-	tasks: ['textToText'],
+	chat: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
+	voice: ['realtimeVoice', 'image', 'audio', 'video'],
+	tasks: ['textToText', 'image', 'audio', 'video'],
 	health: ['textToText'],
-	channels: ['textToText', 'textToSpeech', 'speechToText'],
+	channels: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
 };
 const storedModelKey = (
 	profileId: AgentToolProfileId,

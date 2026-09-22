@@ -1,5 +1,4 @@
 import path from 'node:path';
-import Store from 'electron-store';
 import type {
 	AgentChatbotModelKind,
 	AgentMediaModelSettings,
@@ -39,8 +38,6 @@ export type SearchEngineSettings = {
 	enabled: boolean;
 };
 
-type MediaStore = Record<AgentToolModelKind, AgentMediaModelSettings>;
-
 export const AGENT_DIRECTORY = path.resolve(agentLocation());
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
 const workspacePattern = `${AGENT_DIRECTORY.replaceAll(path.sep, '/')}/**`;
@@ -49,7 +46,6 @@ const DEFAULT_AGENT_PERMISSIONS: PermissionsSchema = {
 	write: { allow: [workspacePattern], deny: [] },
 	exec: { allow: [workspacePattern], deny: [] },
 };
-const EMPTY_MEDIA_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
 const RUNTIME_TOOL_KEYS = {
 	list_a2a_agents: 'list_remote_agents',
 	delegate_a2a: 'delegate_to_remote_agent',
@@ -99,13 +95,6 @@ const RUNTIME_TOOL_KEYS = {
 	update_health_settings: 'update_health_settings',
 	complete_bootstrap: 'complete_bootstrap',
 } as const;
-const mediaStore = new Store<MediaStore>({
-	name: 'models',
-	cwd: settingsDirectory,
-	accessPropertiesByDotNotation: false,
-	defaults: { image: EMPTY_MEDIA_MODEL, audio: EMPTY_MEDIA_MODEL, video: EMPTY_MEDIA_MODEL },
-});
-
 function isSearchEngineSettings(value: unknown): value is SearchEngineSettings {
 	if (!value || typeof value !== 'object') return false;
 	const settings = value as Partial<SearchEngineSettings>;
@@ -171,11 +160,18 @@ export function getVoiceModel(kind: AgentVoiceModelKind): AgentMediaModelSetting
 export function setVoiceModel(kind: AgentVoiceModelKind, settings: AgentMediaModelSettings): void {
 	setAgentProfileModel('voice', kind, settings);
 }
-export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
-	return structuredClone(mediaStore.get(kind));
+export function getToolModel(
+	kind: AgentToolModelKind,
+	profileId: AgentToolProfileId = 'chat'
+): AgentMediaModelSettings {
+	return getAgentProfileModel(profileId, kind);
 }
-export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
-	mediaStore.set(kind, structuredClone(settings));
+export function setToolModel(
+	kind: AgentToolModelKind,
+	settings: AgentMediaModelSettings,
+	profileId: AgentToolProfileId = 'chat'
+): void {
+	setAgentProfileModel(profileId, kind, settings);
 }
 export function getToolProfile(profileId: AgentToolProfileId): AgentToolProfile {
 	return getAgentProfileTools(profileId);

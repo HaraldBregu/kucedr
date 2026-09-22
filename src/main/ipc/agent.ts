@@ -819,7 +819,8 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.getToolModel,
 			wrapAgentHandler(
 				mainAccess,
-				(kind: unknown) => getToolModel(toToolModelKind(kind)),
+				(kind: unknown, profileId: unknown = 'chat') =>
+					getToolModel(toToolModelKind(kind), toToolProfileId(profileId)),
 				AgentChannels.getToolModel
 			)
 		);
@@ -827,11 +828,12 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.setToolModel,
 			wrapAgentHandler(
 				mainAccess,
-				(kind: unknown, settings: unknown) => {
+				(kind: unknown, settings: unknown, profileId: unknown = 'chat') => {
 					const toolKind = toToolModelKind(kind);
+					const toolProfileId = toToolProfileId(profileId);
 					const next = toAgentMediaModelSettings(settings);
-					setToolModel(toolKind, next);
-					return getToolModel(toolKind);
+					setToolModel(toolKind, next, toolProfileId);
+					return getToolModel(toolKind, toolProfileId);
 				},
 				AgentChannels.setToolModel
 			)

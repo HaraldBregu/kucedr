@@ -224,13 +224,14 @@ export interface AgentInvokeChannelMap {
 		result: Record<string, unknown>;
 	};
 	[AgentChannels.getToolModel]: {
-		args: [kind: import('./agent_types').AgentToolModelKind];
+		args: [kind: import('./agent_types').AgentToolModelKind, profileId?: import('./agent_tools').AgentToolProfileId];
 		result: import('./agent_types').AgentMediaModelSettings;
 	};
 	[AgentChannels.setToolModel]: {
 		args: [
 			kind: import('./agent_types').AgentToolModelKind,
 			settings: import('./agent_types').AgentMediaModelSettings,
+			profileId?: import('./agent_tools').AgentToolProfileId,
 		];
 		result: import('./agent_types').AgentMediaModelSettings;
 	};

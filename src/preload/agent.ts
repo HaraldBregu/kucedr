@@ -280,11 +280,11 @@ export const agent: AgentApi = {
 	setModelOptions: (options: Record<string, unknown>): Promise<Record<string, unknown>> => {
 		return typedInvokeUnwrap(AgentChannels.setModelOptions, options);
 	},
-	getToolModel: (kind) => {
-		return typedInvokeUnwrap(AgentChannels.getToolModel, kind);
+	getToolModel: (kind, profileId) => {
+		return typedInvokeUnwrap(AgentChannels.getToolModel, kind, profileId);
 	},
-	setToolModel: (kind, settings) => {
-		return typedInvokeUnwrap(AgentChannels.setToolModel, kind, settings);
+	setToolModel: (kind, settings, profileId) => {
+		return typedInvokeUnwrap(AgentChannels.setToolModel, kind, settings, profileId);
 	},
 	getToolProfile: (profileId) => {
 		return typedInvokeUnwrap(AgentChannels.getToolProfile, profileId);

@@ -201,11 +201,13 @@ export interface AgentApi {
 	getModelOptions: () => Promise<Record<string, unknown>>;
 	setModelOptions: (options: Record<string, unknown>) => Promise<Record<string, unknown>>;
 	getToolModel: (
-		kind: import('./agent_types').AgentToolModelKind
+		kind: import('./agent_types').AgentToolModelKind,
+		profileId?: AgentToolProfileId
 	) => Promise<import('./agent_types').AgentMediaModelSettings>;
 	setToolModel: (
 		kind: import('./agent_types').AgentToolModelKind,
-		settings: import('./agent_types').AgentMediaModelSettings
+		settings: import('./agent_types').AgentMediaModelSettings,
+		profileId?: AgentToolProfileId
 	) => Promise<import('./agent_types').AgentMediaModelSettings>;
 	getToolProfile: (profileId: AgentToolProfileId) => Promise<AgentToolProfile>;
 	setToolProfileTool: (
