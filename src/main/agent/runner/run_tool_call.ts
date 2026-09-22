@@ -3,6 +3,7 @@ import { fileToolState, isFileCreation, rememberTool, type FileAccessContext } f
 import { agentLocation } from '../../shared/agent_location';
 import {
 	addPermissionRule,
+	getPermissions,
 	recursivePermissionRule,
 	resolveToolPermissionDetails,
 	waitForToolPermission,
@@ -75,6 +76,8 @@ export async function* runToolCall(
 		tool && security.toolProfile
 			? getToolConfiguration(security.toolProfile, tool.policy ?? { kind: 'builtin', id: tool.id })
 			: undefined;
+	const profilePermissions = (): import('../permissions').PermissionsSchema =>
+		getPermissions(security.toolProfile ?? 'chat');
 
 	yield {
 		type: 'tool_call_start',
@@ -193,7 +196,7 @@ export async function* runToolCall(
 				context,
 				true,
 				'ask',
-				undefined,
+				profilePermissions(),
 				history,
 				profileToolConfiguration()
 			)
@@ -267,7 +270,12 @@ export async function* runToolCall(
 			permissionOutcome = effectiveDecision;
 			if (effectiveDecision === 'approve_always' && resolution.persistable && resolution.kind) {
 				for (const target of resolution.approvalTargets) {
-					addPermissionRule(resolution.kind, 'allow', recursivePermissionRule(target));
+					addPermissionRule(
+						resolution.kind,
+						'allow',
+						recursivePermissionRule(target),
+						security.toolProfile ?? 'chat'
+					);
 				}
 			}
 			permission = effectiveDecision === 'reject' ? 'deny' : 'allow';
@@ -308,8 +316,8 @@ export async function* runToolCall(
 							canonicalInput,
 							context,
 							true,
-							'ask',
-							undefined,
+						'ask',
+						profilePermissions(),
 							history,
 							profileToolConfiguration()
 						)

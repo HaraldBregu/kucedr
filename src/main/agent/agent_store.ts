@@ -19,7 +19,6 @@ import {
 	type PermissionBucket,
 	type PermissionKind,
 	type PermissionsSchema,
-	type ToolConfiguration,
 } from './permissions/permissions_types';
 import { withWorkspacePermissions } from './permissions/with_workspace_permissions';
 import {
@@ -51,6 +50,55 @@ const DEFAULT_AGENT_PERMISSIONS: PermissionsSchema = {
 	exec: { allow: [workspacePattern], deny: [] },
 };
 const EMPTY_MEDIA_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
+const RUNTIME_TOOL_KEYS = {
+	list_a2a_agents: 'list_remote_agents',
+	delegate_a2a: 'delegate_to_remote_agent',
+	get_a2a_task: 'get_remote_task',
+	cancel_a2a_task: 'cancel_remote_task',
+	subagent: 'subagent',
+	subagents: 'subagents',
+	read: 'read_file',
+	write: 'write_file',
+	edit: 'edit_file',
+	patch: 'apply_patch',
+	undo: 'undo_file_operation',
+	redo: 'redo_file_operation',
+	bash: 'execute_command',
+	process: 'manage_process',
+	search_web: 'search_web',
+	fetch_web_page: 'fetch_web_page',
+	use_web_browser: 'use_web_browser',
+	create_image: 'create_image',
+	create_video: 'create_video',
+	create_sound: 'create_sound',
+	microphone_recorder: 'microphone_recorder',
+	microphone_recorder_status: 'microphone_recorder_status',
+	microphone_recorder_stop: 'microphone_recorder_stop',
+	camera_recorder: 'camera_recorder',
+	camera_recorder_status: 'camera_recorder_status',
+	camera_recorder_stop: 'camera_recorder_stop',
+	screen_recorder: 'screen_recorder',
+	select_screen_source: 'select_screen_source',
+	screen_recorder_status: 'screen_recorder_status',
+	screen_recorder_stop: 'screen_recorder_stop',
+	query_knowledge: 'query_knowledge',
+	create_task: 'create_task',
+	update_task: 'update_task',
+	delete_task: 'delete_task',
+	list_tasks: 'list_tasks',
+	run_task_now: 'run_task_now',
+	list_skills: 'list_skills',
+	load_skill: 'load_skill',
+	get_goal: 'get_goal',
+	update_goal_plan: 'update_goal_plan',
+	record_goal_evidence: 'record_goal_evidence',
+	request_goal_completion: 'request_goal_completion',
+	report_goal_blocker: 'report_goal_blocker',
+	ask: 'request_user_input',
+	update_health: 'update_health',
+	update_health_settings: 'update_health_settings',
+	complete_bootstrap: 'complete_bootstrap',
+} as const;
 const mediaStore = new Store<MediaStore>({
 	name: 'models',
 	cwd: settingsDirectory,
@@ -171,8 +219,8 @@ export function setPermissions(
 	setAgentProfilePermissions(
 		profileId,
 		withWorkspacePermissions(
-		normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
-		workspacePattern
+			normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
+			workspacePattern
 		)
 	);
 	if (tools) {
