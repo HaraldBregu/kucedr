@@ -12,9 +12,7 @@ const mcpApi = {
 	registry: jest.fn(),
 	importLocal: jest.fn(),
 	configureLocal: jest.fn(),
-	getRoot: jest.fn(),
-	openRoot: jest.fn(),
-	test: jest.fn(),
+		test: jest.fn(),
 	oauthStatus: jest.fn(),
 	oauthStart: jest.fn(),
 };
@@ -39,8 +37,7 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'mcp', { configurable: true, value: mcpApi });
-	mcpApi.getRoot.mockResolvedValue('/home/user/.kucedr/mcp/servers');
-	mcpApi.registry.mockResolvedValue({
+		mcpApi.registry.mockResolvedValue({
 		servers: [
 			{
 				id: 'remote',
@@ -62,8 +59,7 @@ beforeEach(() => {
 		],
 		diagnostics: [],
 	});
-	mcpApi.importLocal.mockResolvedValue({ imported: [], skipped: [] });
-	mcpApi.upsert.mockResolvedValue({});
+		mcpApi.upsert.mockResolvedValue({});
 });
 
 describe('MCP settings', () => {
@@ -76,15 +72,14 @@ describe('MCP settings', () => {
 		expect(screen.getByText('node server.mjs')).toBeInTheDocument();
 		expect(screen.getAllByRole('heading', { name: 'MCP servers' })).toHaveLength(1);
 		expect(screen.queryByText(/Remote services, configured commands/)).not.toBeInTheDocument();
-		expect(mcpApi.getRoot).not.toHaveBeenCalled();
 		expect(screen.queryByRole('heading', { name: 'Remote servers' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Local servers' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Available remote servers' })).not.toBeInTheDocument();
-		expect(screen.queryByText('/home/user/.kucedr/mcp/servers/local')).not.toBeInTheDocument();
 		expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(2);
 		expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
-		expect(screen.getByRole('button', { name: 'Open folder' })).toBeInTheDocument();
-		expect(screen.queryByText('Open folder')).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Open folder' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Refresh' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('button', { name: 'Upload' })).not.toBeInTheDocument();
 	});
 
 	it('opens a server detail route from the list Item', async () => {
@@ -115,14 +110,4 @@ describe('MCP settings', () => {
 		expect(screen.queryByRole('heading', { name: 'Add MCP server' })).not.toBeInTheDocument();
 	});
 
-	it('uploads local packages and refreshes the unified registry', async () => {
-		const user = userEvent.setup();
-		renderPage();
-		await screen.findByText('Local files');
-
-		await user.click(screen.getByRole('button', { name: 'Upload' }));
-		await waitFor(() => expect(mcpApi.importLocal).toHaveBeenCalledTimes(1));
-		expect(mcpApi.registry).toHaveBeenCalledTimes(2);
-		expect(await screen.findByText('Uploaded 0 local MCP servers.')).toBeInTheDocument();
-	});
 });
