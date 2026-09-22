@@ -238,8 +238,8 @@ const AppsPage: React.FC = () => {
 				) : (
 					<div className="grid gap-3 md:grid-cols-2">
 						{apps.map((app) => (
-							<Card key={app.id} size="sm" className="min-h-36 gap-3">
-								<CardContent className="flex h-full min-w-0 flex-col gap-3">
+							<Card key={app.id} size="sm" className="min-h-28 gap-2">
+								<CardContent className="flex h-full min-w-0 flex-col gap-2">
 									<div className="flex min-w-0 items-start gap-3">
 										{app.imageUrl ? (
 											<img
