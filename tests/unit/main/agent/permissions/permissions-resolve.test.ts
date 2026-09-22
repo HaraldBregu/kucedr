@@ -44,8 +44,8 @@ describe('resolveToolPermission', () => {
 		const configured: PermissionsSchema = {
 			...defaults,
 			tools: {
-				read: { enabled: true, permission: 'deny' },
-				edit: { enabled: true, permission: 'allow' },
+				read: { permission: 'deny' },
+				edit: { permission: 'allow' },
 			},
 		};
 

@@ -378,7 +378,7 @@ it('keeps media permissions and search configuration on Tools without model sele
 
 	for (const name of ['Text to image', 'Text to audio', 'Text to video']) {
 		expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
-		expect(await screen.findByRole('switch', { name: `${name} enabled` })).toBeEnabled();
+		expect(await screen.findByRole('button', { name: `${name}: Always Allow` })).toBeEnabled();
 	}
 	expect(
 		screen.queryByRole('link', { name: /settings\.permissions\.toolsTitle/ })
@@ -440,7 +440,7 @@ it('lists every built-in agent tool on the Tools page', async () => {
 		'close_apps',
 	])
 		expect(screen.queryByText(removed)).not.toBeInTheDocument();
-	expect(screen.getAllByRole('switch')).toHaveLength(47);
+	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
 	expect(
 		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
@@ -475,7 +475,7 @@ it('saves a file tools permission choice', async () => {
 		expect(window.agent.setToolProfileTool).toHaveBeenCalledWith(
 			'chat',
 			{ kind: 'builtin', id: 'read' },
-			{ enabled: true, permission: 'ask' }
+			{ permission: 'ask' }
 		);
 	});
 });

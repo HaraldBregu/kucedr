@@ -101,16 +101,16 @@ describe('agent store permissions', () => {
 			write: { allow: [], deny: [] },
 			exec: { allow: [], deny: [] },
 			tools: {
-				read: { enabled: true, permission: 'ask' },
-				edit: { enabled: true, permission: 'allow' },
-				patch: { enabled: true, permission: 'deny' },
+				read: { permission: 'ask' },
+				edit: { permission: 'allow' },
+				patch: { permission: 'deny' },
 			},
 		});
 
 		expect(saved.tools).toMatchObject({
-			read: { enabled: true, permission: 'ask' },
-			edit: { enabled: true, permission: 'allow' },
-			patch: { enabled: true, permission: 'deny' },
+			read: { permission: 'ask' },
+			edit: { permission: 'allow' },
+			patch: { permission: 'deny' },
 		});
 	});
 
@@ -123,14 +123,14 @@ describe('agent store permissions', () => {
 					read: { allow: [rule], deny: [] },
 					write: { allow: [], deny: [] },
 					exec: { allow: [], deny: [] },
-					tools: { read: { enabled: true, permission: 'ask' } },
+					tools: { read: { permission: 'ask' } },
 				},
 				profileId
 			);
 
 			expect(getAgentProfileDocument(profileId)).toMatchObject({
 				permissions: { read: { allow: [workspaceRule, rule], deny: [] } },
-				tools: { read: { enabled: true, permission: 'ask' } },
+				tools: { read: { permission: 'ask' } },
 			});
 			expect(getPermissions('chat').read.allow).toEqual(
 				profileId === 'chat' ? [workspaceRule, rule] : [workspaceRule]
@@ -146,26 +146,21 @@ describe('agent store permissions', () => {
 		setToolProfileTool(
 			'voice',
 			{ kind: 'builtin', id: 'read' },
-			{ enabled: false, permission: 'deny' }
+			{ permission: 'deny' }
 		);
 		setToolProfileTool(
 			'chat',
 			{ kind: 'mcp', serverId: 'gmail', toolName: 'list_messages' },
-			{ enabled: true, permission: 'ask' }
+			{ permission: 'ask' }
 		);
 
 		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' })).toEqual({
-			enabled: false,
 			permission: 'deny',
 		});
 		expect(getToolConfiguration('chat', { kind: 'builtin', id: 'read' })).toEqual({
-			enabled: true,
 			permission: 'allow',
 		});
-		expect(getToolProfile('chat').mcp.gmail.list_messages).toEqual({
-			enabled: true,
-			permission: 'ask',
-		});
+		expect(getToolProfile('chat').mcp.gmail.list_messages).toEqual({ permission: 'ask' });
 	});
 
 	it('preserves explicit blocked rules inside the workspace', () => {

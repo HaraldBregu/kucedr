@@ -67,7 +67,7 @@ it('changes a discovered MCP tool permission with the segmented control', async 
 
 	expect(mcpProps.onChange).toHaveBeenCalledWith(
 		{ kind: 'mcp', serverId: 'mail', toolName: 'read_mail' },
-		{ enabled: true, permission: 'ask' }
+		{ permission: 'ask' }
 	);
 });
 

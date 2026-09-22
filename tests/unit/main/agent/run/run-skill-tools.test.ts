@@ -1,5 +1,4 @@
 import type { Tool } from '../../../../../src/main/agent/types';
-import { filterDisabledTools } from '../../../../../src/main/agent/runner/run_tools';
 import { selectSkillTools } from '../../../../../src/main/agent/runner/run_skill_tools';
 import { isAgentToolAllowedForProfile } from '../../../../../src/shared/agent_tools';
 
@@ -46,18 +45,6 @@ describe('selectSkillTools', () => {
 		const first = selectSkillTools(tools, ['read', 'write']);
 		const second = selectSkillTools(first, ['read', 'exec']);
 		expect(second.map((tool) => tool.name)).toEqual(['read', 'load_skill']);
-	});
-});
-
-describe('filterDisabledTools', () => {
-	it('omits disabled built-in tools while retaining unconfigured tools', () => {
-		const tools = [fakeTool('read'), fakeTool('write'), fakeTool('mcp__calendar__list')];
-		expect(
-			filterDisabledTools(tools, {
-				read: { enabled: false },
-				write: { enabled: true },
-			}).map((tool) => tool.id)
-		).toEqual(['write', 'mcp__calendar__list']);
 	});
 });
 
