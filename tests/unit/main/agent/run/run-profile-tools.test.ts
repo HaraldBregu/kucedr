@@ -1,0 +1,111 @@
+const successfulTurn = async function* () {
+	yield* [];
+	return { content: 'done', model: 'test-model', toolCalls: [] };
+};
+const runModelTurnMock = jest.fn(successfulTurn);
+
+jest.mock('../../../../../src/main/settings_store', () => ({
+	getResolvedProvider: jest.fn(() => ({ id: 'test-provider', apiKey: 'key' })),
+}));
+
+jest.mock('../../../../../src/main/agent/runner/run_model_turn', () => ({
+	runModelTurn: (...args: unknown[]) => runModelTurnMock(...args),
+}));
+
+jest.mock('../../../../../src/main/agent/session/session_append_run', () => ({
+	appendRun: jest.fn(),
+}));
+
+import {
+	AGENT_RUNTIME_TOOL_IDS,
+	resetPermissions,
+	setToolProfileTool,
+} from '../../../../../src/main/agent/agent_store';
+import { createSessionState } from '../../../../../src/main/agent/session';
+import { jsonTool } from '../../../../../src/main/agent/tools/tool';
+import { stream } from '../../../../../src/main/agent/runner/run_stream';
+
+const input = {
+	runId: 'profile-tool-test',
+	task: 'chat',
+	message: 'Use the enabled tool.',
+	model: 'test-model',
+	type: 'default',
+	agentId: 'main',
+	contextMode: 'minimal',
+	interactionMode: 'default',
+	toolProfile: 'chat',
+} as const;
+
+describe('chat agent tool controls', () => {
+	beforeEach(() => {
+		runModelTurnMock.mockReset().mockImplementation(successfulTurn);
+		resetPermissions('chat');
+		for (const toolId of AGENT_RUNTIME_TOOL_IDS) {
+			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
+		}
+	});
+
+	it.each(AGENT_RUNTIME_TOOL_IDS)('enables, uses, and disables %s in isolation', async (toolId) => {
+		const execute = jest.fn().mockResolvedValue({ used: toolId });
+		const selectedTool = jsonTool({
+			id: toolId,
+			name: toolId,
+			description: `Test ${toolId}`,
+			schema: { type: 'object' },
+			execute,
+		});
+
+		setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'allow' });
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [{ id: `call-${toolId}`, name: toolId, args: {} }],
+				};
+			})
+			.mockImplementationOnce(successfulTurn);
+
+		const enabledEvents = [];
+		for await (const event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			input,
+			new AbortController().signal,
+			{ tools: [selectedTool] }
+		)) {
+			enabledEvents.push(event);
+		}
+
+		expect(enabledEvents[0]).toMatchObject({ type: 'run_started', tools: [toolId] });
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual([
+			toolId,
+		]);
+		expect(execute).toHaveBeenCalledTimes(1);
+		expect(enabledEvents).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ type: 'tool_call_start', toolCall: { name: toolId } }),
+				expect.objectContaining({ type: 'tool_call_end', toolCall: { name: toolId } }),
+			])
+		);
+
+		setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
+		runModelTurnMock.mockReset().mockImplementation(successfulTurn);
+		const disabledEvents = [];
+		for await (const event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			input,
+			new AbortController().signal,
+			{ tools: [selectedTool] }
+		)) {
+			disabledEvents.push(event);
+		}
+
+		expect(disabledEvents[0]).toMatchObject({ type: 'run_started', tools: [] });
+		expect(runModelTurnMock.mock.calls[0][5]).toEqual([]);
+		expect(execute).toHaveBeenCalledTimes(1);
+	});
+});

@@ -93,6 +93,7 @@ const RUNTIME_TOOL_KEYS = {
 	update_health_settings: 'update_health_settings',
 	complete_bootstrap: 'complete_bootstrap',
 } as const;
+export const AGENT_RUNTIME_TOOL_IDS = Object.keys(RUNTIME_TOOL_KEYS);
 function isSearchEngineSettings(value: unknown): value is SearchEngineSettings {
 	if (!value || typeof value !== 'object') return false;
 	const settings = value as Partial<SearchEngineSettings>;
