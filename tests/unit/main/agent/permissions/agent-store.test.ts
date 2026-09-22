@@ -40,6 +40,7 @@ import {
 	setProviderId,
 } from '../../../../../src/main/agent/agent_store';
 import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_profiles';
+import { setAgentProfileTool } from '../../../../../src/main/agent/agent_profiles';
 
 const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
 
@@ -159,6 +160,8 @@ describe('agent store permissions', () => {
 	});
 
 	it.each(['ask', 'complete_bootstrap'])('keeps required system tool %s enabled', (toolId) => {
+		setAgentProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
+
 		expect(() =>
 			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'ask' })
 		).toThrow('Required system tools cannot be disabled.');
@@ -168,6 +171,8 @@ describe('agent store permissions', () => {
 		expect(getToolConfiguration('chat', { kind: 'builtin', id: toolId })).toEqual({
 			permission: 'allow',
 		});
+		expect(getToolProfile('chat').tools).not.toHaveProperty(toolId);
+		expect(getPermissions('chat').tools).not.toHaveProperty(toolId);
 	});
 
 	it('preserves explicit blocked rules inside the workspace', () => {

@@ -172,7 +172,15 @@ export function setToolModel(
 	setAgentProfileModel(profileId, kind, settings);
 }
 export function getToolProfile(profileId: AgentToolProfileId): AgentToolProfile {
-	return getAgentProfileTools(profileId);
+	const profile = getAgentProfileTools(profileId);
+	return {
+		...profile,
+		tools: Object.fromEntries(
+			Object.entries(profile.tools).filter(([id]) =>
+				isAgentToolConfigurable({ kind: 'builtin', id })
+			)
+		),
+	};
 }
 export function setToolProfileTool(
 	profileId: AgentToolProfileId,
@@ -206,7 +214,7 @@ export function getPermissions(profileId: AgentToolProfileId = 'chat'): Permissi
 	);
 	return {
 		...permissions,
-		tools: getAgentProfileTools(profileId).tools,
+		tools: getToolProfile(profileId).tools,
 	};
 }
 export function setPermissions(
@@ -223,6 +231,7 @@ export function setPermissions(
 	);
 	if (tools) {
 		for (const [toolId, settings] of Object.entries(tools)) {
+			if (!isAgentToolConfigurable({ kind: 'builtin', id: toolId })) continue;
 			setAgentProfileTool(profileId, { kind: 'builtin', id: toolId }, settings);
 		}
 	}
