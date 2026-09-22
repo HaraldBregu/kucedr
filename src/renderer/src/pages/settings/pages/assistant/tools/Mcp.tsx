@@ -7,7 +7,6 @@ import type {
 	AgentToolReference,
 } from '../../../../../../../shared/agent_tools';
 import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import { ToolPermissionControl } from './Permission';
@@ -119,7 +118,6 @@ export default function Mcp({ search, settings, disabled, onChange }: McpProps):
 										.filter((name) => serverMatches || name.toLocaleLowerCase().includes(query))
 										.map((name) => {
 											const settingsForTool = settings[server.id]?.[name] ?? {
-												enabled: true,
 												permission: 'allow' as const,
 											};
 											const tool: AgentToolReference = {
@@ -133,24 +131,12 @@ export default function Mcp({ search, settings, disabled, onChange }: McpProps):
 													title={name}
 													description={server.data.name || server.id}
 													actions={
-														<>
-															<ToolPermissionControl
-																name={name}
-																value={settingsForTool.permission}
-																disabled={disabled}
-																onChange={(permission) =>
-																	onChange(tool, { ...settingsForTool, permission })
-																}
-															/>
-															<Switch
-																checked={settingsForTool.enabled}
-																onCheckedChange={(enabled) =>
-																	onChange(tool, { ...settingsForTool, enabled })
-																}
-																disabled={disabled}
-																aria-label={`${name} enabled`}
-															/>
-														</>
+																	<ToolPermissionControl
+																		name={name}
+																		value={settingsForTool.permission}
+																		disabled={disabled}
+																		onChange={(permission) => onChange(tool, { permission })}
+																	/>
 													}
 												/>
 											);

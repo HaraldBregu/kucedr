@@ -463,51 +463,13 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 													</p>
 												</div>
 											</CollapsibleTrigger>
-											<Select
+											<ToolPermissionControl
+												name="Search web"
 												value={toolProfile?.tools?.search_web?.permission ?? 'allow'}
-												onValueChange={(value) =>
-													handleFileToolsPermissionChange('search_web', {
-														...(toolProfile?.tools?.search_web ?? {
-															enabled: true,
-															permission: 'allow',
-														}),
-														permission: value as ToolPermission,
-													})
-												}
 												disabled={!toolProfile || fileToolsSaving}
-											>
-												<SelectTrigger
-													size="sm"
-													className="w-24 text-xs [&_svg]:size-3"
-													aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Search web`}
-												>
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="ask">
-														{t('settings.modelServices.agentTools.permissions.ask')}
-													</SelectItem>
-													<SelectItem value="allow">
-														{t('settings.modelServices.agentTools.permissions.allow')}
-													</SelectItem>
-													<SelectItem value="deny">
-														{t('settings.modelServices.agentTools.permissions.deny')}
-													</SelectItem>
-												</SelectContent>
-											</Select>
-											<Switch
-												checked={toolProfile?.tools?.search_web?.enabled ?? true}
-												onCheckedChange={(enabled) =>
-													handleFileToolsPermissionChange('search_web', {
-														...(toolProfile?.tools?.search_web ?? {
-															enabled: true,
-															permission: 'allow',
-														}),
-														enabled,
-													})
+												onChange={(permission) =>
+													handleFileToolsPermissionChange('search_web', { permission })
 												}
-												aria-label="Search web enabled"
-												disabled={!toolProfile || fileToolsSaving}
 											/>
 										</div>
 										{profile === 'chat' && (
@@ -561,10 +523,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 									</Collapsible>
 								)}
 								{group.tools.map(([name, id, description]) => {
-									const settings = toolProfile?.tools?.[id] ?? {
-										enabled: true,
-										permission: 'allow',
-									};
+									const settings = toolProfile?.tools?.[id] ?? { permission: 'allow' };
 									return (
 										<SettingsRow
 											key={id}
@@ -576,29 +535,16 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 												/>
 											}
 											description={description}
-											actions={
-												<>
-													<ToolPermissionControl
-														name={name}
-														value={settings.permission}
-														disabled={!toolProfile || fileToolsSaving}
-														onChange={(permission) =>
-															handleFileToolsPermissionChange(id, {
-																...settings,
-																permission,
-															})
-														}
-													/>
-													<Switch
-														checked={settings.enabled}
-														onCheckedChange={(enabled) =>
-															handleFileToolsPermissionChange(id, { ...settings, enabled })
-														}
-														disabled={!toolProfile || fileToolsSaving}
-														aria-label={`${name} enabled`}
-													/>
-												</>
-											}
+										actions={
+											<ToolPermissionControl
+												name={name}
+												value={settings.permission}
+												disabled={!toolProfile || fileToolsSaving}
+												onChange={(permission) =>
+													handleFileToolsPermissionChange(id, { permission })
+												}
+											/>
+										}
 										/>
 									);
 								})}
