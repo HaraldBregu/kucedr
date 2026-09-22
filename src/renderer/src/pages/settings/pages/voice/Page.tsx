@@ -1,4 +1,4 @@
-import { ChevronRight, History, Radio } from 'lucide-react';
+import { ChevronRight, History, Radio, Wrench } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
@@ -30,6 +30,16 @@ export default function VoicePage(): React.JSX.Element {
 			</SettingsPanel>
 
 			<SettingsPanel>
+				<Link to="/settings/voice/tools" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.modelServices.tools')}
+						description={t('settings.modelServices.toolsDescription')}
+						media={<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto]"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
 				<Link to="/settings/voice/history" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.modelServices.voiceHistoryTitle')}

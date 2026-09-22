@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, BrainCircuit, ChevronRight, History, ListChecks } from 'lucide-react';
+import { AlertTriangle, BrainCircuit, ChevronRight, History, ListChecks, Wrench } from 'lucide-react';
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';
@@ -291,6 +291,16 @@ const TasksPage: React.FC = () => {
 			</SettingsSection>
 
 			<SettingsPanel>
+				<Link to="/settings/agent/tasks/tools" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.modelServices.tools')}
+						description={t('settings.modelServices.toolsDescription')}
+						media={<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto]"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
 				<Link to="/settings/agent/tasks/history" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.cron.history.pageTitle')}
