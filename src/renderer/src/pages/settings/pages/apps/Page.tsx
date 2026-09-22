@@ -285,7 +285,6 @@ const AppsPage: React.FC = () => {
 											</div>
 										</div>
 										<div className="flex shrink-0 items-center gap-1">
-											<div className="flex shrink-0 items-center gap-1">
 												<Button
 													type="button"
 													variant="outline"
