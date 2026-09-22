@@ -118,8 +118,8 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	await user.click(older);
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
-	expect(screen.getByText('settings.sidebar.account')).toBeInTheDocument();
-	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')).toBeInTheDocument();
+	expect(screen.getByText('settings.tabs.account')).toBeInTheDocument();
+	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('A')).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
 	).not.toBeInTheDocument();
@@ -132,7 +132,7 @@ it.each<[AuthState, string]>([
 			persistence: 'encrypted',
 			user: { id: 'user-1', email: 'ada@example.com', displayName: 'Ada Lovelace' },
 		},
-		'Ada Lovelace',
+		'settings.tabs.account',
 	],
 	[
 		{
@@ -140,7 +140,7 @@ it.each<[AuthState, string]>([
 			persistence: 'encrypted',
 			user: { id: 'user-2', email: 'grace@example.com' },
 		},
-		'grace@example.com',
+		'settings.tabs.account',
 	],
 ])('shows authenticated account identity and actions', async (state, accountName) => {
 	const user = userEvent.setup();
@@ -165,9 +165,8 @@ it.each<[AuthState, string]>([
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
 	expect(footer).not.toBeNull();
-	expect(within(footer!).getByText('settings.tabs.account')).toBeInTheDocument();
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
-	if (state.status === 'signedIn' && state.user.displayName) {
+	if (state.status === 'signedIn') {
 		expect(within(accountMenu).getByText(state.user.email)).toHaveClass('text-[10px]');
 	}
 	await user.click(accountMenu);
