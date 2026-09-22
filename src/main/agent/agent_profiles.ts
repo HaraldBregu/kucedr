@@ -13,8 +13,6 @@ import {
 import { userDataLocation } from '../shared/user_data_location';
 
 type AgentProfileStore = {
-	schemaVersion: number;
-	migrations: string[];
 	textToText: AgentMediaModelSettings;
 	textToSpeech: AgentMediaModelSettings;
 	speechToText: AgentMediaModelSettings;
@@ -43,8 +41,6 @@ const stores = Object.fromEntries(
 
 function defaults(): AgentProfileStore {
 	return {
-		schemaVersion: 1,
-		migrations: [],
 		textToText: { ...EMPTY_MODEL },
 		textToSpeech: { ...EMPTY_MODEL },
 		speechToText: { ...EMPTY_MODEL },
@@ -62,8 +58,6 @@ function read(profileId: AgentToolProfileId): AgentProfileStore {
 	const fallback = defaults();
 	return {
 		...fallback,
-		...stored,
-		migrations: [...(stored.migrations ?? [])],
 		tools: { ...(stored.tools ?? {}) },
 		mcpTools: structuredClone(stored.mcpTools ?? {}),
 		...Object.fromEntries(
@@ -76,24 +70,19 @@ function read(profileId: AgentToolProfileId): AgentProfileStore {
 }
 
 function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
-	stores[profileId].store = next;
+	stores[profileId].store = {
+		...Object.fromEntries(
+			AGENT_PROFILE_MODEL_KEYS.map((key) => [
+				key,
+				{ ...EMPTY_MODEL, ...next[key], options: { ...next[key].options } },
+			])
+		),
+		tools: { ...next.tools },
+		mcpTools: structuredClone(next.mcpTools),
+	} as AgentProfileStore;
 }
 
-export function initializeAgentProfile(
-	profileId: AgentToolProfileId,
-	patch: Partial<AgentProfileStore>,
-	migration: string
-): void {
-	const current = read(profileId);
-	if (current.migrations.includes(migration)) return;
-	write(profileId, {
-		...current,
-		...patch,
-		migrations: [...current.migrations, migration],
-		tools: patch.tools ? { ...patch.tools } : current.tools,
-		mcpTools: patch.mcpTools ? structuredClone(patch.mcpTools) : current.mcpTools,
-	});
-}
+for (const profileId of AGENT_TOOL_PROFILE_IDS) write(profileId, read(profileId));
 
 export function getAgentProfileModel(
 	profileId: AgentToolProfileId,

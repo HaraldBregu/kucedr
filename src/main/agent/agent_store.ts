@@ -28,7 +28,6 @@ import {
 	getAgentProfileModel,
 	getAgentProfileTool,
 	getAgentProfileTools,
-	initializeAgentProfile,
 	setAgentProfileModel,
 	setAgentProfileTool,
 } from './agent_profiles';
@@ -338,39 +337,6 @@ store.store = {
 	) as Record<AgentToolProfileId, AgentToolProfile>,
 	permissions: persistedPermissions,
 };
-
-const migratedProfiles = store.get('toolProfiles');
-for (const profileId of AGENT_TOOL_PROFILE_IDS) {
-	initializeAgentProfile(
-		profileId,
-		{
-			tools: migratedProfiles[profileId].tools,
-			mcpTools: migratedProfiles[profileId].mcp,
-		},
-		'agent-tools'
-	);
-}
-initializeAgentProfile(
-	'chat',
-	{
-		textToText: store.get('chatbot').textToText,
-		textToSpeech: store.get('chatbot').textToSpeech,
-		speechToText: store.get('chatbot').speechToText,
-		image: mediaToolSettings(store.get('tools').create_image as AgentMediaModelSettings),
-		audio: mediaToolSettings(store.get('tools').create_sound as AgentMediaModelSettings),
-		video: mediaToolSettings(store.get('tools').create_video as AgentMediaModelSettings),
-	},
-	'chat-models'
-);
-initializeAgentProfile(
-	'voice',
-	{
-		textToSpeech: store.get('chatbot').textToSpeech,
-		speechToText: store.get('chatbot').speechToText,
-		realtimeVoice: store.get('voice').realtimeVoice,
-	},
-	'voice-models'
-);
 
 export function getProviderId(): string | undefined {
 	return getAgentProfileModel('chat', 'textToText').providerId || undefined;

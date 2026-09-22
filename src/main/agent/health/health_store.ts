@@ -4,7 +4,6 @@ import { userDataLocation } from '../../shared/user_data_location';
 import { DEFAULT_HEALTH_SETTINGS, type HealthSettings } from './health_types';
 import {
 	getAgentProfileModel,
-	initializeAgentProfile,
 	setAgentProfileModel,
 } from '../agent_profiles';
 
@@ -20,22 +19,7 @@ const store = new Store<HealthSettings>({
 
 export const healthStorePath = store.path;
 
-function ensureHealthProfile(): void {
-	initializeAgentProfile(
-		'health',
-		{
-			textToText: {
-				providerId: store.store.providerId ?? '',
-				modelId: store.store.modelId ?? '',
-				options: store.store.modelOptions ?? {},
-			},
-		},
-		'health-settings'
-	);
-}
-
 export function getHealthSettings(): HealthSettings {
-	ensureHealthProfile();
 	const model = getAgentProfileModel('health', 'textToText');
 	return {
 		...DEFAULT_HEALTH_SETTINGS,
@@ -47,7 +31,6 @@ export function getHealthSettings(): HealthSettings {
 }
 
 export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSettings {
-	ensureHealthProfile();
 	const { providerId, modelId, modelOptions, ...schedule } = patch;
 	if (providerId !== undefined || modelId !== undefined || modelOptions !== undefined) {
 		setAgentProfileModel('health', 'textToText', {

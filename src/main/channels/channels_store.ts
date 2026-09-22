@@ -2,39 +2,17 @@ import path from 'node:path';
 import Store from 'electron-store';
 import type { ChannelModelKind, ChannelModelSelection, StoredChannelProvider } from '../../shared';
 import { userDataLocation } from '../shared/user_data_location';
-import { getModelId, getProviderId } from '../models/selection';
 import { safeStorage } from 'electron';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
 import {
 	getAgentProfileModel,
-	initializeAgentProfile,
 	setAgentProfileModel,
 } from '../agent/agent_profiles';
 
 type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & {
 	readonly apiKey?: string;
 };
-
-type ChannelModelKeys = {
-	providerId: keyof ChannelsStoreState;
-	modelId: keyof ChannelsStoreState;
-};
-
-const CHANNEL_MODEL_KEYS: Record<ChannelModelKind, ChannelModelKeys> = {
-	llm: {
-		providerId: 'llmProviderId',
-		modelId: 'llmModelId',
-	},
-	stt: {
-		providerId: 'sttProviderId',
-		modelId: 'sttModelId',
-	},
-	tts: {
-		providerId: 'ttsProviderId',
-		modelId: 'ttsModelId',
-	},
-} as const;
 
 export interface ChannelsStoreState {
 	readonly providers: PersistedChannelProvider[];
@@ -46,12 +24,6 @@ export interface ChannelsStoreState {
 	readonly ttsProviderId?: string;
 	readonly ttsModelId?: string;
 }
-
-const CHANNEL_MODELS_FALLBACKS: Record<ChannelModelKind, () => ChannelModelSelection> = {
-	llm: () => ({ providerId: getProviderId('text'), modelId: getModelId('text') }),
-	stt: () => ({ providerId: getProviderId('transcribe'), modelId: getModelId('transcribe') }),
-	tts: () => ({ providerId: getProviderId('voice'), modelId: getModelId('voice') }),
-};
 
 const CHANNEL_PROFILE_MODELS: Record<
 	ChannelModelKind,
@@ -155,20 +127,7 @@ export function setChannelProvider(provider: StoredChannelProvider): StoredChann
 }
 
 export function getChannelModelSelection(kind: ChannelModelKind): ChannelModelSelection {
-	const keys = CHANNEL_MODEL_KEYS[kind];
-	const fallback = CHANNEL_MODELS_FALLBACKS[kind]();
 	const modelKey = CHANNEL_PROFILE_MODELS[kind];
-	initializeAgentProfile(
-		'channels',
-		{
-			[modelKey]: {
-				providerId: trimValue(store.get(keys.providerId)) ?? trimValue(fallback.providerId) ?? '',
-				modelId: trimValue(store.get(keys.modelId)) ?? trimValue(fallback.modelId) ?? '',
-				options: {},
-			},
-		},
-		`channels-${kind}`
-	);
 	const model = getAgentProfileModel('channels', modelKey);
 
 	return {
