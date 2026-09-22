@@ -469,7 +469,7 @@ it('saves a file tools permission choice', async () => {
 		</MemoryRouter>
 	);
 
-	await user.click(await screen.findByRole('radio', { name: 'Read file: Ask' }));
+	await user.click(await screen.findByRole('button', { name: 'Read file: Ask' }));
 
 	await waitFor(() => {
 		expect(window.agent.setToolProfileTool).toHaveBeenCalledWith(

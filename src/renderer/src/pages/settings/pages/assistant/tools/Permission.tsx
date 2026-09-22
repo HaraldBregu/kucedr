@@ -41,7 +41,7 @@ export function ToolPermissionControl({
 								<ToggleGroupItem
 									value={optionValue}
 									aria-label={`${name}: ${label}`}
-									className="size-7 min-w-0 rounded-md p-0 text-muted-foreground hover:text-foreground data-[state=on]:bg-background data-[state=on]:text-foreground data-[state=on]:shadow-sm"
+									className="size-7 min-w-0 rounded-md p-0 text-muted-foreground hover:text-foreground data-[pressed]:bg-background data-[pressed]:text-foreground data-[pressed]:shadow-sm"
 								>
 									<Icon aria-hidden="true" />
 								</ToggleGroupItem>
