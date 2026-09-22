@@ -27,17 +27,22 @@ type AgentProfileStore = {
 const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
 const DEFAULT_TOOL: AgentToolConfiguration = { enabled: true, permission: 'allow' };
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
+const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['tasks', 'health']);
+const profileStoreName = (profileId: AgentToolProfileId): string =>
+	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 
-const stores = Object.fromEntries(
-	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
+	const stores = Object.fromEntries(
+	AGENT_TOOL_PROFILE_IDS.filter((profileId) => !SHARED_PROFILE_IDS.has(profileId)).map(
+		(profileId) => [
 		profileId,
 		new Store<Partial<AgentProfileStore>>({
-			name: `${profileId}-agent`,
+			name: profileStoreName(profileId),
 			cwd: settingsDirectory,
 			accessPropertiesByDotNotation: false,
 		}),
-	])
-) as Record<AgentToolProfileId, Store<Partial<AgentProfileStore>>>;
+	]
+	)
+) as Partial<Record<AgentToolProfileId, Store<Partial<AgentProfileStore>>>>;
 
 function defaults(): AgentProfileStore {
 	return {
@@ -53,8 +58,18 @@ function defaults(): AgentProfileStore {
 	};
 }
 
+function profileStore(profileId: AgentToolProfileId): Store<Partial<AgentProfileStore>> {
+	const existing = stores[profileId];
+	if (existing) return existing;
+	return new Store<Partial<AgentProfileStore>>({
+		name: profileStoreName(profileId),
+		cwd: settingsDirectory,
+		accessPropertiesByDotNotation: false,
+	});
+}
+
 function read(profileId: AgentToolProfileId): AgentProfileStore {
-	const stored = stores[profileId].store;
+	const stored = profileStore(profileId).store;
 	const fallback = defaults();
 	return {
 		...fallback,
@@ -70,7 +85,7 @@ function read(profileId: AgentToolProfileId): AgentProfileStore {
 }
 
 function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
-	stores[profileId].store = {
+	const profile = {
 		...Object.fromEntries(
 			AGENT_PROFILE_MODEL_KEYS.map((key) => [
 				key,
@@ -80,6 +95,15 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 		tools: { ...next.tools },
 		mcpTools: structuredClone(next.mcpTools),
 	} as AgentProfileStore;
+	const existing = profileStore(profileId).store;
+	const preserved = SHARED_PROFILE_IDS.has(profileId)
+		? Object.fromEntries(
+				Object.entries(existing).filter(([key]) =>
+					!['providerId', 'modelId', 'modelOptions', 'schemaVersion', 'migrations'].includes(key)
+				)
+			)
+		: {};
+	profileStore(profileId).store = { ...preserved, ...profile };
 }
 
 for (const profileId of AGENT_TOOL_PROFILE_IDS) write(profileId, read(profileId));
@@ -140,5 +164,5 @@ export function getAgentProfileTool(
 }
 
 export function agentProfileStorePath(profileId: AgentToolProfileId): string {
-	return stores[profileId].path;
+	return profileStore(profileId).path;
 }
