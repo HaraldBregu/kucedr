@@ -23,6 +23,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
+	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import {
@@ -32,6 +33,7 @@ import {
 } from '../../components/model-configuration-state';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import { AgentMediaModelConfiguration } from './media';
+import { ProfileMediaModels } from './profilemodels';
 
 type CatalogProvider = PublicProvider;
 
@@ -297,6 +299,12 @@ const AssistantPage: React.FC = () => {
 					showOptions={false}
 				/>
 			</SettingsPanel>
+
+			<SettingsSection title={t('settings.overview.groups.mlModels')}>
+				<SettingsPanel>
+					<ProfileMediaModels profileId="chat" />
+				</SettingsPanel>
+			</SettingsSection>
 
 			<SettingsPanel>
 				<Link to="/settings/agent/tools" className="block hover:bg-muted/40">

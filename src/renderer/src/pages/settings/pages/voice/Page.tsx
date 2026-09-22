@@ -6,8 +6,10 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
+	SettingsSection,
 } from '../../components';
 import RealtimeConversationConfiguration from '../assistant/conversation';
+import { ProfileMediaModels } from '../assistant/profilemodels';
 
 export default function VoicePage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -28,6 +30,12 @@ export default function VoicePage(): React.JSX.Element {
 					showContentSeparator={false}
 				/>
 			</SettingsPanel>
+
+			<SettingsSection title={t('settings.overview.groups.mlModels')}>
+				<SettingsPanel>
+					<ProfileMediaModels profileId="voice" />
+				</SettingsPanel>
+			</SettingsSection>
 
 			<SettingsPanel>
 				<Link to="/settings/voice/tools" className="block hover:bg-muted/40">

@@ -14,6 +14,7 @@ import {
 } from '../../components';
 import { ChannelModelConfiguration } from './Model';
 import { TelegramConnection } from './Connection';
+import { ProfileMediaModels } from '../assistant/profilemodels';
 
 export default function ChannelsPage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -55,6 +56,11 @@ export default function ChannelsPage(): React.JSX.Element {
 				<ChannelModelConfiguration kind="stt" />
 				<ChannelModelConfiguration kind="tts" />
 			</SettingsPanel>
+			<SettingsSection title={t('settings.overview.groups.mlModels')}>
+				<SettingsPanel>
+					<ProfileMediaModels profileId="channels" />
+				</SettingsPanel>
+			</SettingsSection>
 			<SettingsPanel>
 				<Link to="/settings/channels/tools" className="block hover:bg-muted/40">
 					<SettingsRow

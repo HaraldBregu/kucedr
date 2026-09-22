@@ -12,7 +12,6 @@ import type {
 	AgentToolReference,
 } from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
-import { userDataLocation } from '../shared/user_data_location';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
 import {
 	type PermissionBucket,
@@ -39,7 +38,6 @@ export type SearchEngineSettings = {
 };
 
 export const AGENT_DIRECTORY = path.resolve(agentLocation());
-const settingsDirectory = path.resolve(userDataLocation(), 'settings');
 const workspacePattern = `${AGENT_DIRECTORY.replaceAll(path.sep, '/')}/**`;
 const DEFAULT_AGENT_PERMISSIONS: PermissionsSchema = {
 	read: { allow: [workspacePattern], deny: [] },

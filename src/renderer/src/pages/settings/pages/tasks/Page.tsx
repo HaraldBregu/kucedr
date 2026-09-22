@@ -27,6 +27,7 @@ import {
 	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
+import { ProfileMediaModels } from '../assistant/profilemodels';
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
 
@@ -213,6 +214,12 @@ const TasksPage: React.FC = () => {
 					/>
 				</ModelProviderConfiguration>
 			</SettingsPanel>
+
+			<SettingsSection title={t('settings.overview.groups.mlModels')}>
+				<SettingsPanel>
+					<ProfileMediaModels profileId="tasks" />
+				</SettingsPanel>
+			</SettingsSection>
 
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
