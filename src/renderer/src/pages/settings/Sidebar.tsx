@@ -30,7 +30,9 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/voice', '/settings/tasks', '/settings/health'].includes(item.path)
+				['/settings/voice', '/settings/tasks', '/settings/health', '/settings/channels'].includes(
+					item.path
+				)
 			),
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.coding),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
@@ -55,7 +57,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'integrations',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/channels', '/settings/integrations', '/settings/apps', '/settings/a2a'].includes(
+			['/settings/integrations', '/settings/apps', '/settings/a2a'].includes(
 				item.path
 			)
 		),

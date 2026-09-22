@@ -174,20 +174,21 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.health' })
 	).toHaveAttribute('href', '/settings/health');
 	expect(
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.channels' })
+	).toHaveAttribute('href', '/settings/channels');
+	expect(
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.rag.title' })
 	).toHaveAttribute('href', '/settings/knowledge-base');
 	expect(
-		within(navigation)
+		within(assistantGroup as HTMLElement)
 			.getByRole('link', { name: 'settings.tabs.channels' })
-			.closest('[data-slot="split-pane-group"]')
-	).toBe(
-		within(navigation)
-			.getByRole('link', { name: 'settings.tabs.apps' })
-			.closest('[data-slot="split-pane-group"]')
-	);
+			.closest('li')
+			?.previousElementSibling
+			?.textContent
+	).toBe('settings.tabs.health');
 	expect(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.integrations' })
