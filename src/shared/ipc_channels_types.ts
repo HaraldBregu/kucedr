@@ -341,7 +341,7 @@ export interface TaskInvokeChannelMap {
 		result: import('../main/tasks').TaskRuntime | undefined;
 	};
 	[TaskChannels.setRuntime]: {
-		args: [providerId: string, modelId: string];
+		args: [providerId: string, modelId: string, options?: Record<string, unknown>];
 		result: import('../main/tasks').TaskRuntime;
 	};
 	[TaskChannels.configureCapabilities]: {

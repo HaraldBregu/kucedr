@@ -110,9 +110,8 @@ const TasksPage: React.FC = () => {
 		void Promise.all([
 			window.tasks.list(),
 			window.tasks.getRuntime(),
-			window.agent.getModelOptions(),
 		])
-			.then(([list, runtime, options]) => {
+			.then(([list, runtime]) => {
 				if (!mounted) return;
 				setTasks(list);
 				const groups = taskModelGroups();
@@ -121,7 +120,7 @@ const TasksPage: React.FC = () => {
 					group?.models.find((item) => item.id === runtime?.modelId) ?? group?.models[0];
 				setProviderId(group?.provider.id ?? '');
 				setModelId(model?.id ?? '');
-				setModelOptions(options);
+				setModelOptions(runtime?.options ?? {});
 			})
 			.catch((err: unknown) => {
 				if (mounted) setError(err instanceof Error ? err.message : String(err));
@@ -142,8 +141,7 @@ const TasksPage: React.FC = () => {
 		setSaved(false);
 		setRuntimeError(null);
 		try {
-			await window.tasks.setRuntime(nextProviderId, nextModelId);
-			await window.agent.setModelOptions({});
+			await window.tasks.setRuntime(nextProviderId, nextModelId, {});
 			setSaved(true);
 		} catch (err) {
 			setRuntimeError(
@@ -156,7 +154,7 @@ const TasksPage: React.FC = () => {
 
 	const saveModelOptions = (next: Record<string, unknown>): void => {
 		setModelOptions(next);
-		void window.agent.setModelOptions(next);
+		void window.tasks.setRuntime(providerId, modelId, next);
 	};
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {

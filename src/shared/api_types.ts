@@ -270,7 +270,11 @@ export interface TaskApi {
 	delete: (scheduleId: string) => Promise<void>;
 	setEnabled: (scheduleId: string, enabled: boolean) => Promise<TaskSchedule>;
 	getRuntime: () => Promise<TaskRuntime | undefined>;
-	setRuntime: (providerId: string, modelId: string) => Promise<TaskRuntime>;
+	setRuntime: (
+		providerId: string,
+		modelId: string,
+		options?: Record<string, unknown>
+	) => Promise<TaskRuntime>;
 	configureCapabilities: (
 		scheduleId: string,
 		enabled: boolean,

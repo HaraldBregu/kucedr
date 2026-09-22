@@ -66,9 +66,12 @@ export class TaskIpc implements IpcModule<TaskIpcDependencies> {
 		});
 		registerCommandWithEvent(
 			TaskChannels.setRuntime,
-			(event, providerId: string, modelId: string) => {
+			(event, providerId: string, modelId: string, options: Record<string, unknown> = {}) => {
 				trusted.assert(event);
-				return setRuntime(providerId, modelId);
+				if (!options || typeof options !== 'object' || Array.isArray(options)) {
+					throw new Error('Invalid task model options.');
+				}
+				return setRuntime(providerId, modelId, options);
 			}
 		);
 		registerCommandWithEvent(

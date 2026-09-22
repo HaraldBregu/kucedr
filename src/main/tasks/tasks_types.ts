@@ -43,6 +43,7 @@ export type TaskScheduleUpdateRequest = Partial<
 export interface TaskRuntime {
 	providerId: string;
 	modelId: string;
+	options: Record<string, unknown>;
 }
 
 /** Shape persisted to the tasks electron-store file. */

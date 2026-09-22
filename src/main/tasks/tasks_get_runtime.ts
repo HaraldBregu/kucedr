@@ -14,6 +14,6 @@ export function getRuntime(): TaskRuntime | undefined {
 	);
 	const runtime = getAgentProfileModel('tasks', 'textToText');
 	return runtime.providerId && runtime.modelId
-		? clone({ providerId: runtime.providerId, modelId: runtime.modelId })
+		? clone({ providerId: runtime.providerId, modelId: runtime.modelId, options: runtime.options })
 		: undefined;
 }

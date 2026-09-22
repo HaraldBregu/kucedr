@@ -21,8 +21,8 @@ export const tasks: TaskApi = {
 	getRuntime: () => {
 		return typedInvokeUnwrap(TaskChannels.getRuntime);
 	},
-	setRuntime: (providerId: string, modelId: string) => {
-		return typedInvokeUnwrap(TaskChannels.setRuntime, providerId, modelId);
+	setRuntime: (providerId: string, modelId: string, options?: Record<string, unknown>) => {
+		return typedInvokeUnwrap(TaskChannels.setRuntime, providerId, modelId, options);
 	},
 	configureCapabilities: (scheduleId: string, enabled: boolean, toolsAllow: string[]) => {
 		return typedInvokeUnwrap(TaskChannels.configureCapabilities, scheduleId, enabled, toolsAllow);
