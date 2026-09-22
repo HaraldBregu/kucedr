@@ -167,6 +167,10 @@ async function* loop(
 		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
 		!input.toolsDeny?.includes('list_skills') &&
 		profileToolEnabled('list_skills');
+	const discoveryEnabled =
+		(input.toolsAllow === undefined || input.toolsAllow.includes('discover_tools')) &&
+		!input.toolsDeny?.includes('discover_tools') &&
+		profileToolEnabled('discover_tools');
 	const skillSnapshot =
 		skillLoadingEnabled || skillListingEnabled
 			? createSkillRegistrySnapshot({ projectRoot: config.location })
@@ -266,6 +270,7 @@ async function* loop(
 				discovery = createToolDiscovery({
 					eligible,
 					required: eligible.filter((tool) => requiredIds.has(tool.id)),
+					discoveryEnabled,
 					deferredMcpServers: mcp.deferredServers,
 					loadMcpServers: mcp.loadDeferred,
 					filterEligible: filterEligibleTools,
@@ -309,6 +314,7 @@ async function* loop(
 			discovery = createToolDiscovery({
 				eligible: tools,
 				required: tools.filter((tool) => requiredIds.has(tool.id)),
+				discoveryEnabled,
 				filterEligible: filterEligibleTools,
 			});
 		}

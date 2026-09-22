@@ -22,6 +22,7 @@ export interface DeferredMcpServer {
 interface ToolDiscoveryOptions {
 	eligible: Tool[];
 	required: Tool[];
+	discoveryEnabled?: boolean;
 	deferredMcpServers?: DeferredMcpServer[];
 	loadMcpServers?: (serverIds: string[], signal?: AbortSignal) => Promise<DiscoveredMcpTool[]>;
 	filterEligible?: (tools: Tool[]) => Tool[];
@@ -91,7 +92,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 			};
 		},
 	});
-	active.set(discoveryTool.id, discoveryTool);
+	if (options.discoveryEnabled !== false) active.set(discoveryTool.id, discoveryTool);
 
 	return {
 		tool: discoveryTool,
