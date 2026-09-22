@@ -321,7 +321,6 @@ const TasksPage: React.FC = () => {
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}
 					/>
 				</Link>
-				<Link to="/settings/agent/tasks/history" className="block hover:bg-muted/40">
 			</SettingsPanel>
 
 			<SettingsPanel>

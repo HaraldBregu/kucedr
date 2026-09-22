@@ -52,7 +52,6 @@ export default function VoicePage(): React.JSX.Element {
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}
 					/>
 				</Link>
-				<Link to="/settings/voice/history" className="block hover:bg-muted/40">
 			</SettingsPanel>
 
 			<SettingsPanel>
