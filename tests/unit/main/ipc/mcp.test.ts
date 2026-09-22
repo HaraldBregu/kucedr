@@ -176,7 +176,10 @@ it('cancels a pending OAuth callback before retrying', async () => {
 		close: jest.fn(() => rejectSecondCode(new Error('OAuth authorization was cancelled.'))),
 	};
 	jest.mocked(startOauthCallbackServer).mockResolvedValueOnce(first).mockResolvedValueOnce(second);
-	jest.mocked(createOAuthProvider).mockReturnValue({} as never);
+	jest.mocked(createOAuthProvider).mockImplementation((options) => {
+		options.onRedirect?.(new URL('https://issuer.example/authorize'));
+		return {} as never;
+	});
 	jest.mocked(auth).mockResolvedValue('REDIRECT');
 
 	const handler = jest
