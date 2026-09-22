@@ -46,10 +46,7 @@ jest.mock('electron-store', () =>
 	})
 );
 
-import {
-	getProviderId,
-	getToolProfile,
-} from '../../../../src/main/agent/agent_store';
+import { getProviderId, getToolProfile } from '../../../../src/main/agent/agent_store';
 import { getAgentProfileModel } from '../../../../src/main/agent/agent_profiles';
 
 it('migrates legacy agent settings into independent agent profile stores', () => {
