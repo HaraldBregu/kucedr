@@ -79,6 +79,7 @@ export async function runChild(
 	const events = stream(config, session, input, signal, {
 		tools,
 		instructions,
+		progressiveDiscovery: true,
 		...streamOptions,
 	});
 	try {

@@ -62,6 +62,7 @@ export interface StreamOptions {
 	budget?: ExecutionBudget;
 	modelOptions?: Record<string, unknown>;
 	sandbox?: ExecSandbox;
+	progressiveDiscovery?: boolean;
 }
 
 const MAX_TOOL_CALLS = 100;
@@ -294,7 +295,7 @@ async function* loop(
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
 		discovery?.replaceEligible(tools);
-		if (!discovery) {
+		if (!discovery && (!options.tools || options.progressiveDiscovery === true)) {
 			const requiredIds = new Set([
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
@@ -316,7 +317,7 @@ async function* loop(
 		if (input.explicitSkill) {
 			const skill = await activateSkill(skillSnapshot, input.explicitSkill);
 			applyActivatedSkill(skill);
-			discovery.activateImmediate(skill.allowedTools ?? []);
+			discovery?.activateImmediate(skill.allowedTools ?? []);
 		}
 
 		yield {
@@ -325,7 +326,7 @@ async function* loop(
 			interactionMode: input.interactionMode,
 			model: modelId,
 			providerId: provider.id,
-			tools: discovery.active().map((tool) => tool.id),
+			tools: (discovery?.active() ?? tools).map((tool) => tool.id),
 			skillDiagnostics: skillSnapshot.diagnostics,
 			skillActivations: session.runContext.loadedSkills.map((skill) => ({
 				id: skill.id,
@@ -340,7 +341,7 @@ async function* loop(
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
-			const turnTools = synthesisOnly ? [] : discovery.active();
+			const turnTools = synthesisOnly ? [] : (discovery?.active() ?? tools);
 			const systemPrompt = await buildSystemPrompt(
 				config,
 				turnTools,
@@ -521,7 +522,7 @@ async function* loop(
 				);
 				yield {
 					type: 'capability_resolution_result',
-					tools: discovery.active()
+					tools: (discovery?.active() ?? tools)
 						.filter((tool) => selectedIds.has(tool.id))
 						.map((tool) => ({ id: tool.id, name: tool.name })),
 				};
