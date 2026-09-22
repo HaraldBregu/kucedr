@@ -6,7 +6,6 @@ import { Home, Settings, type LucideIcon } from 'lucide-react';
 import {
 	CommandDialog,
 	CommandEmpty,
-	CommandGroup,
 	CommandInput,
 	CommandItem,
 	CommandList,
@@ -228,9 +227,10 @@ export function CommandMenu({
 	const [search, setSearch] = useState('');
 	const listRef = useRef<HTMLDivElement>(null);
 	const { groups, searchOnlyItems } = useMemo(() => buildCommandGroups(t), [t]);
+	const visibleItems = useMemo(() => groups.flatMap((group) => group.items), [groups]);
 	const allItems = useMemo(
-		() => [...groups.flatMap((group) => group.items), ...searchOnlyItems],
-		[groups, searchOnlyItems]
+		() => [...visibleItems, ...searchOnlyItems],
+		[visibleItems, searchOnlyItems]
 	);
 	const isSearching = search.trim().length >= MIN_SEARCH_LENGTH;
 	const searchEnabled =
@@ -307,17 +307,9 @@ export function CommandMenu({
 			/>
 			<CommandList ref={listRef}>
 				<CommandEmpty>{t('command.empty', 'No matching route or setting.')}</CommandEmpty>
-				{isSearching
-					? allItems.map((item) => (
-							<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
-						))
-					: groups.map((group) => (
-							<CommandGroup key={group.heading} heading={group.heading}>
-								{group.items.map((item) => (
-									<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
-								))}
-							</CommandGroup>
-						))}
+				{(isSearching ? allItems : visibleItems).map((item) => (
+					<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
+				))}
 			</CommandList>
 		</CommandDialog>
 	);

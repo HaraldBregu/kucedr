@@ -66,3 +66,16 @@ it('opens General settings with the settings shortcut', () => {
 
 	expect(screen.getByText('General settings')).toBeInTheDocument();
 });
+
+it('shows command items in one list without section headings', () => {
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<CommandMenu open />
+		</MemoryRouter>
+	);
+
+	expect(screen.getByText('Home')).toBeInTheDocument();
+	expect(screen.getByText('General')).toBeInTheDocument();
+	expect(screen.queryByText('Routes')).not.toBeInTheDocument();
+	expect(screen.queryByText('Settings routes')).not.toBeInTheDocument();
+});
