@@ -176,7 +176,6 @@ export function setChannelModelSelection(
 	kind: ChannelModelKind,
 	selection: ChannelModelSelection
 ): void {
-	const keys = CHANNEL_MODEL_KEYS[kind];
 	const modelKey = CHANNEL_PROFILE_MODELS[kind];
 	setAgentProfileModel('channels', modelKey, {
 		...getAgentProfileModel('channels', modelKey),
