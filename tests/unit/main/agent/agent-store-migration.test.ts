@@ -1,4 +1,3 @@
-let persisted: Record<string, unknown> = {};
 const stores = new Map<string, Record<string, unknown>>();
 
 jest.mock('electron-store', () =>
@@ -41,7 +40,6 @@ jest.mock('electron-store', () =>
 			set store(value: Record<string, unknown>) {
 				backing = value;
 				stores.set(name, value);
-				if (name === 'agent') persisted = value;
 			},
 		};
 	})
