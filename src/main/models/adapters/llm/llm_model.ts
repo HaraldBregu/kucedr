@@ -488,6 +488,7 @@ export class LlmModel implements LlmAdapter {
 			name: t.name,
 			description: t.description,
 			input_schema: t.schema as Anthropic.Messages.Tool.InputSchema,
+			...(t.inputExamples?.length ? { input_examples: [...t.inputExamples] } : {}),
 		}));
 
 		yield { type: 'message_start' };

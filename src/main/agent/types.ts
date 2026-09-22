@@ -37,6 +37,7 @@ export interface Tool {
 	readonly name: string;
 	readonly description: string;
 	readonly schema: JSONSchema;
+	readonly inputExamples?: readonly Record<string, unknown>[];
 	readonly timeoutMs: number;
 	readonly maxOutputBytes: number;
 	readonly planSafe?: boolean;
@@ -55,6 +56,7 @@ export type ToolConfig<T extends z.ZodType> = {
 	id: string;
 	name: string;
 	description: string;
+	inputExamples?: readonly unknown[];
 	timeoutMs?: number;
 	maxOutputBytes?: number;
 	planSafe?: boolean;
@@ -69,6 +71,7 @@ export type JsonToolConfig = {
 	id: string;
 	name: string;
 	description: string;
+	inputExamples?: readonly unknown[];
 	timeoutMs?: number;
 	maxOutputBytes?: number;
 	planSafe?: boolean;

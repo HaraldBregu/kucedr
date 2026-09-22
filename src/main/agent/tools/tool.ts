@@ -12,6 +12,7 @@ export function tool<T extends z.ZodType>({
 	id,
 	name,
 	description,
+	inputExamples,
 	timeoutMs = 10 * 60_000,
 	maxOutputBytes = 200_000,
 	planSafe,
@@ -21,10 +22,14 @@ export function tool<T extends z.ZodType>({
 	inputSchema,
 	execute,
 }: ToolConfig<T>): Tool {
+	const validatedExamples = inputExamples?.map(
+		(example) => inputSchema.parse(example) as Record<string, unknown>
+	);
 	return {
 		id,
 		name,
 		description,
+		inputExamples: validatedExamples,
 		timeoutMs,
 		maxOutputBytes,
 		planSafe,
@@ -48,6 +53,7 @@ export function jsonTool({
 	id,
 	name,
 	description,
+	inputExamples,
 	timeoutMs = 10 * 60_000,
 	maxOutputBytes = 200_000,
 	planSafe,
@@ -58,10 +64,18 @@ export function jsonTool({
 	schema,
 	execute,
 }: JsonToolConfig): Tool {
+	const validate = (input: unknown): Record<string, unknown> => {
+		if (parseInput) return parseInput(input);
+		if (!input || typeof input !== 'object' || Array.isArray(input)) {
+			throw new Error('Tool input must be an object.');
+		}
+		return input as Record<string, unknown>;
+	};
 	return {
 		id,
 		name,
 		description,
+		inputExamples: inputExamples?.map(validate),
 		timeoutMs,
 		maxOutputBytes,
 		planSafe,
@@ -70,11 +84,7 @@ export function jsonTool({
 		capability: capability ?? ((input) => builtinCapability(id, input)),
 		schema,
 		parseInput(input: unknown) {
-			if (parseInput) return parseInput(input);
-			if (!input || typeof input !== 'object' || Array.isArray(input)) {
-				throw new Error('Tool input must be an object.');
-			}
-			return input as Record<string, unknown>;
+			return validate(input);
 		},
 		async run(input: Record<string, unknown>, signal?: AbortSignal) {
 			return execute(parseInput ? parseInput(input) : input, signal);

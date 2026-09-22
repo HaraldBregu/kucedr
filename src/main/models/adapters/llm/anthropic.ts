@@ -10,6 +10,7 @@ export async function* anthropic(
 		name: tool.name,
 		description: tool.description,
 		input_schema: tool.schema as Anthropic.Messages.Tool.InputSchema,
+		...(tool.inputExamples?.length ? { input_examples: [...tool.inputExamples] } : {}),
 	}));
 	const response = await client.messages.create(
 		{
