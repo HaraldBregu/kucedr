@@ -29,6 +29,7 @@ import {
 	SettingsRow,
 	SettingsSection,
 } from '../../components';
+import { MediaPermissionsSection } from '../../components/media';
 
 interface LanguageOption {
 	readonly value: AppLanguage;
@@ -243,6 +244,10 @@ const GeneralPage: React.FC = () => {
 						actions={<ThemeSwitcher value={theme} onChange={setTheme} />}
 					/>
 				</SettingsPanel>
+			</SettingsSection>
+
+			<SettingsSection title={t('settings.system.mediaPermissions.title')}>
+				<MediaPermissionsSection />
 			</SettingsSection>
 
 			<SettingsSection title={t('settings.application.data')}>

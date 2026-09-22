@@ -194,7 +194,6 @@
 				"general": "App info and appearance",
 				"account": "Cloud identity and session",
 				"modelServices": "Model service setup",
-				"system": "System access and permissions",
 				"channels": "Messaging integrations",
 				"integrations": "Connected services and work apps",
 				"skills": "Installed agent skills",
@@ -237,7 +236,6 @@
 			"media": "Media",
 			"devices": "Devices",
 			"tools": "Tools",
-			"system": "System",
 			"themes": "Themes",
 			"editor": "Editor",
 			"taskScheduler": "Tasks",
@@ -345,7 +343,6 @@
 			"openDataFolder": "Open Folder"
 		},
 		"system": {
-			"description": "Manage operating system permissions.",
 			"actionsDescription": "Open required operating system panels and control background power behavior.",
 			"mediaPermissions": {
 				"title": "Media permissions",

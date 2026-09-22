@@ -194,7 +194,6 @@
 				"general": "Info e aspetto dell'app",
 				"account": "Identità cloud e sessione",
 				"modelServices": "Setup servizi modello",
-				"system": "Permessi e funzioni desktop",
 				"channels": "Integrazioni messaggi",
 				"integrations": "Servizi collegati e app di lavoro",
 				"skills": "Abilita agente installate",
@@ -237,7 +236,6 @@
 			"media": "Media",
 			"devices": "Dispositivi",
 			"tools": "Strumenti",
-			"system": "Sistema",
 			"themes": "Temi",
 			"editor": "Editor",
 			"taskScheduler": "Attività",
@@ -345,7 +343,6 @@
 			"openDataFolder": "Apri Cartella"
 		},
 		"system": {
-			"description": "Gestisci i permessi del sistema operativo.",
 			"actionsDescription": "Apri i pannelli richiesti del sistema operativo e controlla il comportamento energetico in background.",
 			"mediaPermissions": {
 				"title": "Permessi media",

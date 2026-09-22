@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useMatch } from 'react-router-dom';
 import { getChannelCatalogEntry } from '../../../../../shared';
 import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from '../navigation';
-import { getSystemMedia } from '../pages/system/detail/media';
+import { getSystemMedia } from '../pages/general/media/media';
 
 interface SettingsBreadcrumbItem {
 	readonly label: string;
@@ -168,10 +168,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		items.push({ label: skillId });
 	}
 
-	if (location.pathname.startsWith('/settings/system/media/')) {
+	if (location.pathname.startsWith('/settings/general/media/')) {
 		const media = getSystemMedia(decodeURIComponent(location.pathname.split('/').at(-1) ?? ''));
 		items[0] = { ...items[0], path: current.path };
-		items.push({ label: media ? t(media.titleKey) : t('settings.tabs.system') });
+		items.push({ label: media ? t(media.titleKey) : t('settings.tabs.general') });
 	}
 
 	if (location.pathname.startsWith('/settings/agent/')) {

@@ -49,19 +49,19 @@ export function MediaPermissionsSection({
 				icon={Mic}
 				title={t('settings.system.media.microphone.label')}
 				description={t('settings.system.media.microphone.description')}
-				detailPath="/settings/system/media/microphone"
+				detailPath="/settings/general/media/microphone"
 			/>
 			<MediaRow
 				icon={Camera}
 				title={t('settings.system.media.camera.label')}
 				description={t('settings.system.media.camera.description')}
-				detailPath="/settings/system/media/camera"
+				detailPath="/settings/general/media/camera"
 			/>
 			<MediaRow
 				icon={MonitorUp}
 				title={t('settings.system.media.screen.label')}
 				description={t('settings.system.media.screen.description')}
-				detailPath="/settings/system/media/screen"
+				detailPath="/settings/general/media/screen"
 			/>
 		</SettingsPanel>
 	);

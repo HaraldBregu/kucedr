@@ -39,7 +39,7 @@ const routes = [
 	'/settings/general',
 	'/settings/general/persona',
 	'/settings/cloud',
-	'/settings/system',
+	'/settings/general/media/microphone',
 	'/settings/channels',
 	'/settings/integrations',
 	'/settings/skills',

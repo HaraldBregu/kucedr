@@ -10,7 +10,6 @@ import {
 	Info,
 	Library,
 	ListChecks,
-	MonitorCog,
 	Plug,
 	PlugZap,
 	Radio,
@@ -124,33 +123,33 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.voiceAgent.description',
 		keywords: 'voice agent orb appearance idle listening thinking speaking',
 	},
-	// System — permissions
+	// Media permissions
 	{
-		path: '/settings/system',
+		path: '/settings/general',
 		labelKey: 'settings.microphone.title',
 		descriptionKey: 'settings.microphone.systemPermissionDescription',
 		keywords: 'microphone audio recorder permission activate disable',
 	},
 	{
-		path: '/settings/system',
+		path: '/settings/general',
 		labelKey: 'settings.camera.title',
 		descriptionKey: 'settings.camera.systemPermissionDescription',
 		keywords: 'camera webcam video permission activate disable',
 	},
 	{
-		path: '/settings/system',
+		path: '/settings/general',
 		labelKey: 'settings.application.accessibility',
 		descriptionKey: 'settings.application.accessibilityDescription',
 		keywords: 'permission system',
 	},
 	{
-		path: '/settings/system',
+		path: '/settings/general',
 		labelKey: 'settings.application.screenRecording',
 		descriptionKey: 'settings.application.screenRecordingDescription',
 		keywords: 'permission capture screen',
 	},
 	{
-		path: '/settings/system',
+		path: '/settings/general',
 		labelKey: 'settings.system.capabilities.title',
 		descriptionKey: 'settings.system.capabilities.description',
 		keywords:
@@ -305,12 +304,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.general',
 		descriptionKey: 'settings.overview.descriptions.general',
 		icon: Info,
-	},
-	{
-		path: '/settings/system',
-		labelKey: 'settings.tabs.system',
-		descriptionKey: 'settings.overview.descriptions.system',
-		icon: MonitorCog,
 	},
 	{
 		path: '/settings/cloud',

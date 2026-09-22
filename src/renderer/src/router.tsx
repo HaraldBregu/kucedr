@@ -39,8 +39,7 @@ const TasksPage = lazy(() => import('./pages/settings/pages/tasks/Page'));
 const TaskDetailsPage = lazy(() => import('./pages/settings/pages/tasks/detail/Page'));
 const GeneralPage = lazy(() => import('./pages/settings/pages/general/Page'));
 const PersonaPage = lazy(() => import('./pages/settings/pages/general/persona/Page'));
-const SystemPage = lazy(() => import('./pages/settings/pages/system/Page'));
-const SystemMediaDetailPage = lazy(() => import('./pages/settings/pages/system/detail/Page'));
+const GeneralMediaDetailPage = lazy(() => import('./pages/settings/pages/general/media/Page'));
 const ChannelsPage = lazy(() => import('./pages/settings/pages/channels/Page'));
 const IntegrationsPage = lazy(() => import('./pages/settings/pages/integrations/Page'));
 const ChannelDetailPage = lazy(() => import('./pages/settings/pages/channels/detail/Page'));
@@ -272,24 +271,11 @@ const routes: RouteObject[] = [
 									</SettingsRouteWrapper>
 								),
 							},
-						],
-					},
-					{
-						path: 'system',
-						children: [
-							{
-								index: true,
-								element: (
-									<SettingsRouteWrapper>
-										<SystemPage />
-									</SettingsRouteWrapper>
-								),
-							},
 							{
 								path: 'media/:mediaId',
 								element: (
 									<SettingsRouteWrapper>
-										<SystemMediaDetailPage />
+										<GeneralMediaDetailPage />
 									</SettingsRouteWrapper>
 								),
 							},

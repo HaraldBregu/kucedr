@@ -278,7 +278,7 @@ function MediaDetail({ media }: { readonly media: SystemMedia }): React.JSX.Elem
 const SystemMediaDetailPage: React.FC = () => {
 	const { mediaId } = useParams<{ mediaId: string }>();
 	const media = getSystemMedia(mediaId);
-	if (!media) return <Navigate to="/settings/system" replace />;
+	if (!media) return <Navigate to="/settings/general" replace />;
 	return <MediaDetail key={media.id} media={media} />;
 };
 

@@ -19,7 +19,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'general',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/account', '/settings/general', '/settings/system', '/settings/cloud', '/settings/providers'].includes(
+			['/settings/account', '/settings/general', '/settings/cloud', '/settings/providers'].includes(
 				item.path
 			)
 		),
