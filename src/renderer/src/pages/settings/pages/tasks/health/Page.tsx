@@ -143,11 +143,7 @@ const HealthPage: React.FC = () => {
 				<SettingsLoadingRows rows={3} />
 			) : (
 				<>
-					<SettingsSection
-						title={t('settings.health.settingsTitle')}
-						description={t('settings.health.settingsDescription')}
-					>
-						<SettingsPanel>
+					<SettingsPanel>
 							<ModelProviderConfiguration
 								configState={{
 									providers: modelGroups.map((group) => group.provider),
@@ -368,8 +364,7 @@ const HealthPage: React.FC = () => {
 									onChange={updateModelOption}
 								/>
 							</ModelProviderConfiguration>
-						</SettingsPanel>
-					</SettingsSection>
+					</SettingsPanel>
 
 					<SettingsSection
 						title={t('settings.health.checklistTitle')}
