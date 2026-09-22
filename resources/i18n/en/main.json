@@ -671,12 +671,6 @@
 		},
 		"cron": {
 			"description": "View, run, pause, and delete scheduled agent tasks.",
-			"history": {
-				"pageTitle": "Task history",
-				"pageDescription": "Previous scheduled task runs.",
-				"pageEmptyTitle": "No task history yet",
-				"pageEmptyDescription": "Scheduled task runs will appear here."
-			},
 			"columns": {
 				"id": "Id",
 				"message": "Message",
@@ -783,6 +777,10 @@
 				"enabledDescription": "Allow this schedule to run at its configured time."
 			},
 			"history": {
+				"pageTitle": "Task history",
+				"pageDescription": "Previous scheduled task runs.",
+				"pageEmptyTitle": "No task history yet",
+				"pageEmptyDescription": "Scheduled task runs will appear here.",
 				"title": "Session History",
 				"emptyTitle": "No history yet",
 				"emptyDescription": "Agent sessions created by this task will appear here.",
@@ -1303,6 +1301,10 @@
 			"realtimeVoiceModelDescription": "OpenAI realtime model used for live conversations.",
 			"realtimeConversationConfiguration": "Realtime conversation",
 			"realtimeConversationDescription": "Model and voice used for live voice conversations.",
+			"voiceHistoryTitle": "Voice history",
+			"voiceHistoryDescription": "Previous voice conversations.",
+			"voiceHistoryEmptyTitle": "No voice history yet",
+			"voiceHistoryEmptyDescription": "Voice conversations will appear here.",
 			"readAloudConfiguration": "Read aloud",
 			"textToSpeechConfigurationSubtitle": "Voice output settings are listed here.",
 			"textToSpeechProviderDescription": "Provider used for spoken responses.",

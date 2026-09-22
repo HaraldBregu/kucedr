@@ -776,6 +776,10 @@
 				"enabledDescription": "Consenti l'esecuzione dell'attività all'orario configurato."
 			},
 			"history": {
+				"pageTitle": "Cronologia attività",
+				"pageDescription": "Esecuzioni precedenti delle attività programmate.",
+				"pageEmptyTitle": "Nessuna cronologia attività",
+				"pageEmptyDescription": "Le esecuzioni delle attività programmate appariranno qui.",
 				"title": "Cronologia sessioni",
 				"emptyTitle": "Nessuna cronologia",
 				"emptyDescription": "Le sessioni agente create da questa attività appariranno qui.",
@@ -1296,6 +1300,10 @@
 			"realtimeVoiceModelDescription": "Modello realtime OpenAI usato per le conversazioni dal vivo.",
 			"realtimeConversationConfiguration": "Conversazione realtime",
 			"realtimeConversationDescription": "Modello e voce usati per le conversazioni vocali dal vivo.",
+			"voiceHistoryTitle": "Cronologia voce",
+			"voiceHistoryDescription": "Conversazioni vocali precedenti.",
+			"voiceHistoryEmptyTitle": "Nessuna cronologia voce",
+			"voiceHistoryEmptyDescription": "Le conversazioni vocali appariranno qui.",
 			"readAloudConfiguration": "Leggi ad alta voce",
 			"textToSpeechConfigurationSubtitle": "Le impostazioni della voce in uscita sono elencate qui.",
 			"textToSpeechProviderDescription": "Provider usato per le risposte vocali.",

@@ -33,25 +33,25 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 	const [actionsOpen, setActionsOpen] = useState(false);
 	const titleKey =
 		category === 'voice'
-			? 'settings.voice.history.title'
+			? 'settings.modelServices.voiceHistoryTitle'
 			: category === 'task'
 				? 'settings.cron.history.pageTitle'
 				: 'settings.chatHistory.title';
 	const descriptionKey =
 		category === 'voice'
-			? 'settings.voice.history.description'
+			? 'settings.modelServices.voiceHistoryDescription'
 			: category === 'task'
 				? 'settings.cron.history.pageDescription'
 				: 'settings.chatHistory.description';
 	const emptyTitleKey =
 		category === 'voice'
-			? 'settings.voice.history.emptyTitle'
+			? 'settings.modelServices.voiceHistoryEmptyTitle'
 			: category === 'task'
 				? 'settings.cron.history.pageEmptyTitle'
 				: 'settings.chatHistory.empty';
 	const emptyDescriptionKey =
 		category === 'voice'
-			? 'settings.voice.history.emptyDescription'
+			? 'settings.modelServices.voiceHistoryEmptyDescription'
 			: category === 'task'
 				? 'settings.cron.history.pageEmptyDescription'
 				: 'settings.chatHistory.emptyDescription';
