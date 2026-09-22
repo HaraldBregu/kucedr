@@ -198,7 +198,7 @@ function CommandMenuItem({
 				<Icon className="size-4" aria-hidden="true" strokeWidth={1.8} />
 			</span>
 			<span className="flex min-w-0 flex-1 flex-col">
-				<span className="truncate text-sm font-medium leading-4">{item.label}</span>
+				<span className="truncate text-xs font-medium leading-4">{item.label}</span>
 				{item.description && (
 					<span className="truncate text-xs leading-4 text-muted-foreground">
 						{item.description}
