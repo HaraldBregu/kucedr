@@ -313,7 +313,9 @@ const AssistantPage: React.FC = () => {
 					<SettingsRow
 						title={t('settings.tabs.permissions')}
 						description={t('settings.overview.descriptions.permissions')}
-						media={<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}
@@ -344,7 +346,6 @@ const AssistantPage: React.FC = () => {
 					/>
 				</div>
 			</SettingsPanel>
-
 		</SettingsPageShell>
 	);
 };
