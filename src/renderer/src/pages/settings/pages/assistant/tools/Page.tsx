@@ -29,7 +29,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import {
 	SettingsNotice,
 	SettingsPageHeader,
@@ -384,54 +383,14 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 							description={t('settings.modelServices.imageModelDescription')}
 							icon={ImageIcon}
 							actions={
-								<>
-									<Select
-										value={toolProfile?.tools?.create_image?.permission ?? 'allow'}
-										onValueChange={(permission) =>
-											handleFileToolsPermissionChange('create_image', {
-												...(toolProfile?.tools?.create_image ?? {
-													enabled: true,
-													permission: 'allow',
-												}),
-												permission: permission as ToolPermission,
-											})
-										}
-										disabled={!toolProfile || fileToolsSaving}
-									>
-										<SelectTrigger
-											size="sm"
-											className="w-24 text-xs [&_svg]:size-3"
-											aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to image`}
-										>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="ask">
-												{t('settings.modelServices.agentTools.permissions.ask')}
-											</SelectItem>
-											<SelectItem value="allow">
-												{t('settings.modelServices.agentTools.permissions.allow')}
-											</SelectItem>
-											<SelectItem value="deny">
-												{t('settings.modelServices.agentTools.permissions.deny')}
-											</SelectItem>
-										</SelectContent>
-									</Select>
-									<Switch
-										checked={toolProfile?.tools?.create_image?.enabled ?? true}
-										onCheckedChange={(enabled) =>
-											handleFileToolsPermissionChange('create_image', {
-												...(toolProfile?.tools?.create_image ?? {
-													enabled: true,
-													permission: 'allow',
-												}),
-												enabled,
-											})
-										}
-										aria-label="Text to image enabled"
-										disabled={!toolProfile || fileToolsSaving}
-									/>
-								</>
+								<ToolPermissionControl
+									name={t('settings.modelServices.imageAssistantName')}
+									value={toolProfile?.tools?.create_image?.permission ?? 'allow'}
+									disabled={!toolProfile || fileToolsSaving}
+									onChange={(permission) =>
+										handleFileToolsPermissionChange('create_image', { permission })
+									}
+								/>
 							}
 						/>
 
@@ -440,54 +399,14 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 							description={t('settings.modelServices.musicModelDescription')}
 							icon={Music2}
 							actions={
-								<>
-									<Select
-										value={toolProfile?.tools?.create_sound?.permission ?? 'allow'}
-										onValueChange={(permission) =>
-											handleFileToolsPermissionChange('create_sound', {
-												...(toolProfile?.tools?.create_sound ?? {
-													enabled: true,
-													permission: 'allow',
-												}),
-												permission: permission as ToolPermission,
-											})
-										}
-										disabled={!toolProfile || fileToolsSaving}
-									>
-										<SelectTrigger
-											size="sm"
-											className="w-24 text-xs [&_svg]:size-3"
-											aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to audio`}
-										>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="ask">
-												{t('settings.modelServices.agentTools.permissions.ask')}
-											</SelectItem>
-											<SelectItem value="allow">
-												{t('settings.modelServices.agentTools.permissions.allow')}
-											</SelectItem>
-											<SelectItem value="deny">
-												{t('settings.modelServices.agentTools.permissions.deny')}
-											</SelectItem>
-										</SelectContent>
-									</Select>
-									<Switch
-										checked={toolProfile?.tools?.create_sound?.enabled ?? true}
-										onCheckedChange={(enabled) =>
-											handleFileToolsPermissionChange('create_sound', {
-												...(toolProfile?.tools?.create_sound ?? {
-													enabled: true,
-													permission: 'allow',
-												}),
-												enabled,
-											})
-										}
-										aria-label="Text to audio enabled"
-										disabled={!toolProfile || fileToolsSaving}
-									/>
-								</>
+								<ToolPermissionControl
+									name={t('settings.modelServices.musicCreatorName')}
+									value={toolProfile?.tools?.create_sound?.permission ?? 'allow'}
+									disabled={!toolProfile || fileToolsSaving}
+									onChange={(permission) =>
+										handleFileToolsPermissionChange('create_sound', { permission })
+									}
+								/>
 							}
 						/>
 
@@ -496,54 +415,14 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 							description={t('settings.modelServices.videoModelDescription')}
 							icon={Video}
 							actions={
-								<>
-									<Select
-										value={toolProfile?.tools?.create_video?.permission ?? 'allow'}
-										onValueChange={(permission) =>
-											handleFileToolsPermissionChange('create_video', {
-												...(toolProfile?.tools?.create_video ?? {
-													enabled: true,
-													permission: 'allow',
-												}),
-												permission: permission as ToolPermission,
-											})
-										}
-										disabled={!toolProfile || fileToolsSaving}
-									>
-										<SelectTrigger
-											size="sm"
-											className="w-24 text-xs [&_svg]:size-3"
-											aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to video`}
-										>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="ask">
-												{t('settings.modelServices.agentTools.permissions.ask')}
-											</SelectItem>
-											<SelectItem value="allow">
-												{t('settings.modelServices.agentTools.permissions.allow')}
-											</SelectItem>
-											<SelectItem value="deny">
-												{t('settings.modelServices.agentTools.permissions.deny')}
-											</SelectItem>
-										</SelectContent>
-									</Select>
-									<Switch
-										checked={toolProfile?.tools?.create_video?.enabled ?? true}
-										onCheckedChange={(enabled) =>
-											handleFileToolsPermissionChange('create_video', {
-												...(toolProfile?.tools?.create_video ?? {
-													enabled: true,
-													permission: 'allow',
-												}),
-												enabled,
-											})
-										}
-										aria-label="Text to video enabled"
-										disabled={!toolProfile || fileToolsSaving}
-									/>
-								</>
+								<ToolPermissionControl
+									name={t('settings.modelServices.videoCreatorName')}
+									value={toolProfile?.tools?.create_video?.permission ?? 'allow'}
+									disabled={!toolProfile || fileToolsSaving}
+									onChange={(permission) =>
+										handleFileToolsPermissionChange('create_video', { permission })
+									}
+								/>
 							}
 						/>
 					</SettingsPanel>
