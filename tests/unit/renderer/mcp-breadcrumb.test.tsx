@@ -45,8 +45,8 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 	);
 	expect(breadcrumb).toHaveClass('h-12', 'items-center');
 	expect(breadcrumb).not.toHaveClass('justify-center', 'pt-6');
-	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).not.toHaveClass(
-		'bg-muted/95',
+	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).toHaveClass(
+		'bg-background/80',
 		'backdrop-blur-sm'
 	);
 	expect(within(breadcrumb).queryByRole('link', { name: 'settings.title' })).not.toBeInTheDocument();
