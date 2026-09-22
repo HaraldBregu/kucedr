@@ -441,6 +441,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 		<VoicePage />
 		</MemoryRouter>
 	);
+	expect(screen.getByText('settings.modelServices.voiceHistoryTitle')).toBeInTheDocument();
 
 	const trigger = (await screen.findAllByRole('button', { name: /Realtime conversation/ })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
@@ -524,6 +525,7 @@ it('uses the Agent model picker UI and task switches', async () => {
 	expect(screen.getByText('Every 12 minutes')).toBeInTheDocument();
 	const taskSwitch = await screen.findByRole('switch', { name: 'Disable Demo task' });
 	const taskItem = screen.getByRole('button', { name: 'Demo task' });
+	expect(screen.getByText('settings.cron.history.pageTitle')).toBeInTheDocument();
 	expect(taskItem.querySelector('[data-slot="switch"]')).toBe(taskSwitch);
 	expect(taskItem).toHaveClass('cursor-pointer', 'hover:bg-muted/40');
 	expect(taskSwitch).toBeChecked();
