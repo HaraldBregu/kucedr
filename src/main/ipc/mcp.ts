@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { googleOAuthOptions } from '../mcp/google';
-import { dialog, shell } from 'electron';
+import { BrowserWindow, dialog, shell } from 'electron';
 import { mkdirSync } from 'node:fs';
 import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
 import type { EventBus } from '../event_bus';
