@@ -57,12 +57,14 @@ export type ProviderServiceType =
 /** A service as represented in a provider manifest. */
 export interface ProviderManifestService extends Omit<CatalogEntryModel, 'type'> {
 	readonly type: ProviderServiceType;
+	readonly description?: string;
 }
 
 /** A non-model service in resources/providers/<id>/manifest.json. */
 export interface CatalogEntryService {
 	readonly id: string;
 	readonly name: string;
+	readonly description?: string;
 	readonly type: string;
 	/** Base URL of the API serving this service. */
 	readonly url?: string;

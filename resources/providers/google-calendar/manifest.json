@@ -8,6 +8,7 @@
 		{
 			"id": "google-calendar",
 			"name": "Google Calendar",
+			"description": "Manage calendars and events.",
 			"type": "mcp",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1"
 		}

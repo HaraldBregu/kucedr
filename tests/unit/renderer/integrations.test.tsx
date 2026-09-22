@@ -7,6 +7,7 @@ const catalog = ['gmail', 'google-calendar', 'google-drive', 'github', 'notion']
 	(id): CatalogService => ({
 		id,
 		name: id,
+		description: `Use ${id}.`,
 		type: 'mcp',
 		url: `https://${id}.example/mcp`,
 		provider: {
@@ -42,7 +43,7 @@ beforeEach(() => {
 	mcpApi.delete.mockResolvedValue(undefined);
 });
 
-it('renders the five integration providers as model-provider cards', async () => {
+it('renders the five integration providers as borderless items with descriptions', async () => {
 	const { container } = render(<IntegrationsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
@@ -54,7 +55,9 @@ it('renders the five integration providers as model-provider cards', async () =>
 		'notion',
 	]);
 	await waitFor(() => expect(screen.getByRole('switch', { name: 'gmail' })).toBeChecked());
-	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(5);
+	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(5);
+	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
+	expect(screen.getByText('Use gmail.')).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
 });
 

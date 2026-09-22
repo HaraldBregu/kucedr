@@ -8,6 +8,7 @@
 		{
 			"id": "github",
 			"name": "GitHub",
+			"description": "Work with repositories and issues.",
 			"type": "mcp",
 			"url": "https://api.githubcopilot.com/mcp/"
 		}

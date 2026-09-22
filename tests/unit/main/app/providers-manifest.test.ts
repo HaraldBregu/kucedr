@@ -43,6 +43,13 @@ describe('provider manifests', () => {
 			'https://drivemcp.googleapis.com/mcp/v1',
 			'https://mcp.notion.com/mcp',
 		]);
+		expect(integrations.map((service) => service.description)).toEqual([
+			'Work with repositories and issues.',
+			'Search and manage email.',
+			'Manage calendars and events.',
+			'Search and manage Drive files.',
+			'Search and manage Notion pages.',
+		]);
 		expect(integrations.every((service) => service.provider.iconLightUrl?.endsWith('.png'))).toBe(
 			true
 		);

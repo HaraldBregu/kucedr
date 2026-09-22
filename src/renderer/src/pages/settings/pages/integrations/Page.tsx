@@ -108,7 +108,7 @@ const IntegrationsPage = (): React.JSX.Element => {
 									{service.name}
 								</ItemTitle>
 								<p className="max-w-full truncate text-xs font-medium leading-tight text-muted-foreground">
-									{service.provider.name}
+									{service.description}
 								</p>
 							</ItemContent>
 							<ItemActions className="ml-auto flex-none justify-end">

@@ -8,6 +8,7 @@
 		{
 			"id": "gmail",
 			"name": "Gmail",
+			"description": "Search and manage email.",
 			"type": "mcp",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1"
 		}

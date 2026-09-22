@@ -106,6 +106,11 @@ export function validateProviderManifest(value: unknown): string[] {
 			serviceErrors.push(`manifest.json: services[${index}].id must be a non-empty string.`);
 		if (!isNonEmptyString(service.name))
 			serviceErrors.push(`manifest.json: services[${index}].name must be a non-empty string.`);
+		if (service.description !== undefined && !isNonEmptyString(service.description)) {
+			serviceErrors.push(
+				`manifest.json: services[${index}].description must be a non-empty string when present.`
+			);
+		}
 		if (!SERVICE_TYPES.includes(service.type as (typeof SERVICE_TYPES)[number])) {
 			serviceErrors.push(
 				`manifest.json: services[${index}].type must be one of ${SERVICE_TYPES.join(', ')}.`

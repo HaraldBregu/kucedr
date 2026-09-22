@@ -8,6 +8,7 @@
 		{
 			"id": "notion",
 			"name": "Notion",
+			"description": "Search and manage Notion pages.",
 			"type": "mcp",
 			"url": "https://mcp.notion.com/mcp"
 		}

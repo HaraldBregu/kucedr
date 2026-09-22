@@ -8,6 +8,7 @@
 		{
 			"id": "google-drive",
 			"name": "Google Drive",
+			"description": "Search and manage Drive files.",
 			"type": "mcp",
 			"url": "https://drivemcp.googleapis.com/mcp/v1"
 		}
