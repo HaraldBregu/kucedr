@@ -28,9 +28,13 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'assistant',
 		titleKey: 'settings.overview.groups.assistant',
 		items: [
-			...SETTINGS_MODEL_SERVICE_ITEMS.filter(
-				(item) => item.id === AGENTS.assistant || item.id === AGENTS.coding
+			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
+			...SETTINGS_NAVIGATION.filter((item) =>
+				['/settings/agent/voice', '/settings/agent/tasks', '/settings/agent/health'].includes(
+					item.path
+				)
 			),
+			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.coding),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
 		],
 	},

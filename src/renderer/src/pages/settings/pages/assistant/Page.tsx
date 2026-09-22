@@ -5,13 +5,9 @@ import {
 	AlertTriangle,
 	BrainCircuit,
 	ChevronRight,
-	HeartPulse,
 	History,
 	ShieldCheck,
 	Library,
-	Mic,
-	Radio,
-	Volume2,
 	Wrench,
 } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
@@ -34,8 +30,6 @@ import {
 	type ModelConfigurationState,
 } from '../../components/model-configuration-state';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
-import { AgentMediaModelConfiguration } from './media';
-import RealtimeConversationConfiguration from './conversation';
 import { SETTINGS_AGENT_RESOURCE_ITEMS } from '../../navigation';
 
 type CatalogProvider = PublicProvider;
@@ -236,7 +230,7 @@ const AssistantPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.modelServices.assistantName')}
+				title={t('settings.modelServices.chatName')}
 				description={t('settings.modelServices.kucedrDescription')}
 			/>
 
@@ -269,48 +263,6 @@ const AssistantPage: React.FC = () => {
 						onChange={updateModelOption}
 					/>
 				</ModelProviderConfiguration>
-
-				<AgentMediaModelConfiguration
-					api={window.models.voice}
-					capability="text-to-speech"
-					idPrefix="agent-voice"
-					title={t('settings.modelServices.voiceName')}
-					description={t('settings.modelServices.textToSpeechModelDescription')}
-					showIcon
-					icon={Volume2}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					buttonDropdown
-					showContentSeparator={false}
-					inlineAdvanced
-				/>
-
-				<AgentMediaModelConfiguration
-					api={window.models.transcribe}
-					capability="speech-to-text"
-					idPrefix="agent-transcription"
-					title={t('settings.modelServices.transcriptionName')}
-					description={t('settings.modelServices.transcriptionDescription')}
-					showIcon
-					icon={Mic}
-					showFieldLabel={false}
-					grouped
-					showSelectedModel
-					buttonDropdown
-					showContentSeparator={false}
-					showOptions={false}
-				/>
-			</SettingsPanel>
-
-			<SettingsPanel>
-				<RealtimeConversationConfiguration
-					icon={Radio}
-					showFieldLabel={false}
-					showSelectedModel
-					buttonDropdown
-					showContentSeparator={false}
-				/>
 			</SettingsPanel>
 
 			<SettingsPanel>
@@ -368,29 +320,6 @@ const AssistantPage: React.FC = () => {
 			</SettingsPanel>
 
 			<SettingsPanel>
-				<div
-					role="button"
-					tabIndex={0}
-					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/agent/health')}
-					onKeyDown={(event) => {
-						if (event.key === 'Enter' || event.key === ' ') {
-							event.preventDefault();
-							navigate('/settings/agent/health');
-						}
-					}}
-				>
-					<SettingsRow
-						title={t('settings.tabs.health')}
-						media={
-							<HeartPulse className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-						}
-						description={t('settings.overview.descriptions.health')}
-						className="grid-cols-[minmax(0,1fr)_auto]"
-						actionClassName="w-auto justify-end"
-						actions={<ChevronRight className="size-4 text-muted-foreground" />}
-					/>
-				</div>
 				<div
 					role="button"
 					tabIndex={0}

@@ -15,6 +15,7 @@ import {
 	Info,
 	Library,
 	ListChecks,
+	Mic,
 	MonitorCog,
 	Plug,
 	PlugZap,
@@ -58,7 +59,7 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 	{
 		id: AGENTS.assistant,
 		path: '/settings/agent',
-		labelKey: 'settings.modelServices.assistantName',
+		labelKey: 'settings.modelServices.chatName',
 		descriptionKey: 'settings.modelServices.kucedrDescription',
 		keywords: 'kucedr service default provider model',
 		icon: Bot,
@@ -317,6 +318,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Cloud,
 	},
 	{
+		path: '/settings/agent/voice',
+		labelKey: 'settings.tabs.voice',
+		descriptionKey: 'settings.modelServices.voiceDescription',
+		icon: Mic,
+	},
+	{
 		path: '/settings/agent/tasks',
 		labelKey: 'settings.tabs.taskScheduler',
 		descriptionKey: 'settings.overview.descriptions.cron',
@@ -404,6 +411,5 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 
 export const SETTINGS_AGENT_RESOURCE_ITEMS = [
 	'/settings/agent/skills',
-	'/settings/agent/tasks',
 	'/settings/agent/mcp',
 ].flatMap((path) => SETTINGS_NAVIGATION.filter((item) => item.path === path));

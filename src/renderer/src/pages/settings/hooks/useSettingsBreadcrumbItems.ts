@@ -12,6 +12,7 @@ interface SettingsBreadcrumbItem {
 
 const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/chathistory': 'settings.chatHistory.title',
+	'/settings/agent/voice': 'settings.tabs.voice',
 	'/settings/agent/health': 'settings.tabs.health',
 	'/settings/agent/rag': 'settings.rag.title',
 	'/settings/agent/permissions': 'settings.tabs.permissions',
@@ -65,7 +66,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{
 				label: assistantItem
 					? t(assistantItem.labelKey)
-					: t('settings.modelServices.assistantName'),
+					: t('settings.modelServices.chatName'),
 				path: '/settings/agent',
 			},
 			{ label: t(assistantSubpageLabelKey) },
@@ -85,7 +86,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	if (mcpDetailMatch) {
 		return [
-			{ label: t('settings.modelServices.assistantName'), path: '/settings/agent' },
+			{ label: t('settings.modelServices.chatName'), path: '/settings/agent' },
 			{ label: t('settings.tabs.mcp'), path: '/settings/agent/mcp' },
 			{ label: mcpDetailMatch.params.mcpServerId ?? '' },
 		];
@@ -133,7 +134,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	}
 
 	if (location.pathname.startsWith('/settings/agent/')) {
-		items.unshift({ label: t('settings.modelServices.assistantName'), path: '/settings/agent' });
+		items.unshift({ label: t('settings.modelServices.chatName'), path: '/settings/agent' });
 	}
 
 	return items;
