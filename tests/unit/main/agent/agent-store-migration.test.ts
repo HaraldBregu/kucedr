@@ -48,6 +48,7 @@ jest.mock('electron-store', () =>
 import { getProviderId } from '../../../../src/main/agent/agent_store';
 import {
 	agentProfileStorePath,
+	getAgentProfileDocument,
 	getAgentProfileModel,
 	setAgentProfileModel,
 } from '../../../../src/main/agent/agent_profiles';
@@ -89,6 +90,9 @@ it('keeps model selections isolated between agent profiles', () => {
 		modelId: 'claude-sonnet-4',
 		options: { temperature: 0.1 },
 	});
+	expect(getAgentProfileDocument('tasks')).not.toHaveProperty('textToSpeech');
+	expect(getAgentProfileDocument('tasks')).not.toHaveProperty('speechToText');
+	expect(getAgentProfileDocument('tasks')).not.toHaveProperty('realtimeVoice');
 	expect(getAgentProfileModel('chat', 'textToText')).toMatchObject({
 		providerId: '',
 		modelId: '',

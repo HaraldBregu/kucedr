@@ -30,6 +30,13 @@ const settingsDirectory = path.resolve(userDataLocation(), 'settings');
 const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['tasks', 'health', 'channels']);
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
+const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {
+	chat: AGENT_PROFILE_MODEL_KEYS,
+	voice: AGENT_PROFILE_MODEL_KEYS,
+	tasks: ['textToText'],
+	health: AGENT_PROFILE_MODEL_KEYS,
+	channels: AGENT_PROFILE_MODEL_KEYS,
+};
 
 const stores = Object.fromEntries(
 	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
@@ -79,7 +86,7 @@ function read(profileId: AgentToolProfileId): AgentProfileStore {
 function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 	const profile = {
 		...Object.fromEntries(
-			AGENT_PROFILE_MODEL_KEYS.map((key) => [
+			PROFILE_MODEL_KEYS[profileId].map((key) => [
 				key,
 				{ ...EMPTY_MODEL, ...next[key], options: { ...next[key].options } },
 			])
@@ -99,10 +106,11 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 					'ttsModelId',
 				]
 			: ['providerId', 'modelId', 'modelOptions'];
+	const profileKeys = [...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
 	const preserved = SHARED_PROFILE_IDS.has(profileId)
 		? Object.fromEntries(
 				Object.entries(existing).filter(
-					([key]) => ![...legacyKeys, 'schemaVersion', 'migrations'].includes(key)
+					([key]) => ![...legacyKeys, ...profileKeys, 'schemaVersion', 'migrations'].includes(key)
 				)
 			)
 		: {};
@@ -135,6 +143,9 @@ export function setAgentProfileModel(
 	modelKey: AgentProfileModelKey,
 	settings: AgentMediaModelSettings
 ): AgentMediaModelSettings {
+	if (!PROFILE_MODEL_KEYS[profileId].includes(modelKey)) {
+		throw new Error(`Unsupported ${modelKey} model for ${profileId}.`);
+	}
 	const current = read(profileId);
 	const next = {
 		providerId: settings.providerId.trim(),
