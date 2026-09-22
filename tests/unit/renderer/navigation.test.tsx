@@ -2,6 +2,8 @@ import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
 import { SettingsPageHeader } from '../../../src/renderer/src/pages/settings/components';
+import en from '../../../resources/i18n/en/main.json';
+import it from '../../../resources/i18n/it/main.json';
 import {
 	SETTINGS_DETAIL_ITEMS,
 	SETTINGS_MODEL_SERVICE_ITEMS,
@@ -26,6 +28,32 @@ beforeEach(() => {
 			dispatchEvent: jest.fn(),
 		})),
 	});
+});
+
+function hasTranslation(resource: object, key: string): boolean {
+	let value: unknown = resource;
+	for (const part of key.split('.')) {
+		if (!value || typeof value !== 'object' || !(part in value)) return false;
+		value = (value as Record<string, unknown>)[part];
+	}
+	return typeof value === 'string' && value.length > 0;
+}
+
+it('provides English and Italian translations for every settings navigation item', () => {
+	const keys = [
+		...SETTINGS_NAVIGATION.flatMap((item) => [
+			item.labelKey,
+			item.sidebarLabelKey,
+			item.descriptionKey,
+		]),
+		...SETTINGS_DETAIL_ITEMS.flatMap((item) => [item.labelKey, item.descriptionKey]),
+		...SETTINGS_MODEL_SERVICE_ITEMS.flatMap((item) => [item.labelKey, item.descriptionKey]),
+	].filter((key): key is string => Boolean(key));
+
+	for (const key of keys) {
+		expect(hasTranslation(en, key)).toBe(true);
+		expect(hasTranslation(it, key)).toBe(true);
+	}
 });
 
 it.each([

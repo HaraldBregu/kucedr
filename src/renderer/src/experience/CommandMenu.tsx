@@ -280,17 +280,17 @@ export function CommandMenu({
 		<CommandDialog
 			open={searchEnabled && open}
 			onOpenChange={handleOpenChange}
-			label={t('command.label', 'Route search')}
+			label={t('command.label')}
 			filter={filterCommandItem}
 			loop
 		>
 			<CommandInput
 				value={search}
 				onValueChange={setSearch}
-				placeholder={t('command.placeholder', 'Search routes and settings...')}
+				placeholder={t('command.placeholder')}
 			/>
 			<CommandList ref={listRef}>
-				<CommandEmpty>{t('command.empty', 'No matching route or setting.')}</CommandEmpty>
+				<CommandEmpty>{t('command.empty')}</CommandEmpty>
 				{(isSearching ? allItems : visibleItems).map((item) => (
 					<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
 				))}
