@@ -68,12 +68,6 @@ describe('LlmModel non-streaming transport', () => {
 			expect.objectContaining({
 				stream: false,
 				model: 'model',
-				tools: [
-					expect.objectContaining({
-						name: 'lookup',
-						input_examples: [{ id: 'item-1' }],
-					}),
-				],
 				input: [
 					{
 						role: 'user',
@@ -139,6 +133,12 @@ describe('LlmModel non-streaming transport', () => {
 			expect.objectContaining({
 				stream: false,
 				model: 'model',
+				tools: [
+					expect.objectContaining({
+						name: 'lookup',
+						input_examples: [{ id: 'item-1' }],
+					}),
+				],
 				messages: [
 					{
 						role: 'user',
