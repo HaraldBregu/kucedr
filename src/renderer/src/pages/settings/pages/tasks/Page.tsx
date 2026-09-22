@@ -309,6 +309,16 @@ const TasksPage: React.FC = () => {
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}
 					/>
 				</Link>
+				<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.tabs.permissions')}
+						description={t('settings.overview.descriptions.permissions')}
+						media={<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto]"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
 				<Link to="/settings/agent/tasks/history" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.cron.history.pageTitle')}
