@@ -58,7 +58,7 @@ export function builtinCapability(
 	if (id === 'microphone_recorder' || id === 'screen_recorder') {
 		return { effects: ['sensor', 'write'] };
 	}
-	if (RECORD.has(id)) return { effects: ['sensor', 'write'] };
+	if (RECORD.has(id)) return { effects: ['sensor', 'write'], approval: id === 'camera_recorder' };
 	if (CONTROL.has(id)) return { effects: ['sensor'] };
 	if (PAID.has(id)) return { effects: ['paid', 'write'] };
 	if (EXTERNAL.has(id)) return { effects: ['external'], approval: true };
