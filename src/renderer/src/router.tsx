@@ -262,10 +262,6 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
-								path: 'tools',
-								element: <SettingsRouteWrapper><ToolsPage profile="channels" /></SettingsRouteWrapper>,
-							},
-							{
 								path: 'persona',
 								element: (
 									<SettingsRouteWrapper>
@@ -314,6 +310,10 @@ const routes: RouteObject[] = [
 										<ChannelDetailPage />
 									</SettingsRouteWrapper>
 								),
+							},
+							{
+								path: 'tools',
+								element: <SettingsRouteWrapper><ToolsPage profile="channels" /></SettingsRouteWrapper>,
 							},
 						],
 					},
