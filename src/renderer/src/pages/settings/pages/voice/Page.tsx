@@ -5,6 +5,7 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsRow,
 } from '../../components';
 import RealtimeConversationConfiguration from '../assistant/conversation';
 

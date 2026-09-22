@@ -15,6 +15,7 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsRow,
 	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
