@@ -20,14 +20,16 @@ export function McpServerRow({
 		<Item
 			as="button"
 			type="button"
-			variant="outline"
+			variant="ghost"
 			size="md"
 			onClick={onOpen}
-			className="cursor-pointer border-b border-border/60 text-left hover:bg-muted/50 last:border-b-0 px-5 py-4"
+			className="cursor-pointer px-0 py-3.5 text-left hover:bg-muted/50"
 		>
-			<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-				<ItemTitle className="min-w-0 truncate">{title}</ItemTitle>
-				<p className="max-w-full truncate font-mono text-[11px] text-muted-foreground">
+			<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+				<ItemTitle className="min-w-0 max-w-full truncate text-sm font-semibold leading-tight">
+					{title}
+				</ItemTitle>
+				<p className="max-w-full truncate text-xs font-medium leading-tight text-muted-foreground">
 					{description}
 				</p>
 			</ItemContent>

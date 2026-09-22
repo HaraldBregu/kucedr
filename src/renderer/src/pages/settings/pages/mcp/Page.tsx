@@ -140,25 +140,25 @@ const McpPage = (): React.JSX.Element => {
 				</SettingsSection>
 			)}
 
-			<SettingsPanel>
-				{loading ? (
-					<SettingsLoadingRows rows={2} />
-				) : registry.servers.length === 0 ? (
-					<SettingsEmptyState
-						icon={PlugZap}
-						title="No MCP servers"
-						description="Add a server or upload a local package to make its tools available to Kucedr."
-					/>
-				) : (
-					registry.servers.map((server) => (
+			{loading ? (
+				<SettingsLoadingRows rows={2} />
+			) : registry.servers.length === 0 ? (
+				<SettingsEmptyState
+					icon={PlugZap}
+					title="No MCP servers"
+					description="Add a server or upload a local package to make its tools available to Kucedr."
+				/>
+			) : (
+				<div className="space-y-1 pb-4">
+					{registry.servers.map((server) => (
 						<McpServerRow
 							key={server.id}
 							server={server}
 							onOpen={() => navigate(`/settings/agent/mcp/${encodeURIComponent(server.id)}`)}
 						/>
-					))
-				)}
-			</SettingsPanel>
+					))}
+				</div>
+			)}
 		</SettingsPageShell>
 	);
 };

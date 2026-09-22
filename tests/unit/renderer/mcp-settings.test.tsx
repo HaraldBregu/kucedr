@@ -68,7 +68,7 @@ beforeEach(() => {
 
 describe('MCP settings', () => {
 	it('shows remote and local servers in one simple list', async () => {
-		renderPage();
+		const { container } = renderPage();
 
 		expect(await screen.findByText('Remote docs')).toBeInTheDocument();
 		expect(screen.getByText('Local files')).toBeInTheDocument();
@@ -81,6 +81,8 @@ describe('MCP settings', () => {
 		expect(screen.queryByRole('heading', { name: 'Local servers' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Available remote servers' })).not.toBeInTheDocument();
 		expect(screen.queryByText('/home/user/.kucedr/mcp/servers/local')).not.toBeInTheDocument();
+		expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(2);
+		expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
 		expect(screen.getByRole('button', { name: 'Open folder' })).toBeInTheDocument();
 		expect(screen.queryByText('Open folder')).not.toBeInTheDocument();
 	});
