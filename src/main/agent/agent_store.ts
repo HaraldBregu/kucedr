@@ -433,7 +433,14 @@ export function setVoiceModel(kind: AgentVoiceModelKind, settings: AgentMediaMod
 }
 
 export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
-	return getAgentProfileModel('chat', TOOL_MODEL_KEYS[kind] === 'create_image' ? 'image' : TOOL_MODEL_KEYS[kind] === 'create_sound' ? 'audio' : 'video');
+	return getAgentProfileModel(
+		'chat',
+		TOOL_MODEL_KEYS[kind] === 'create_image'
+			? 'image'
+			: TOOL_MODEL_KEYS[kind] === 'create_sound'
+				? 'audio'
+				: 'video'
+	);
 }
 
 export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
