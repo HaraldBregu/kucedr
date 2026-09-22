@@ -18,10 +18,7 @@ import { realtimeVoiceConversationFactory } from './conversation';
 import { RealtimeVoiceManager } from './manager';
 import { openAppWindows } from '../../apps/app_render';
 
-export function createRealtimeVoiceManager(
-	agent: Agent,
-	eventBus: EventBus
-): RealtimeVoiceManager {
+export function createRealtimeVoiceManager(agent: Agent, eventBus: EventBus): RealtimeVoiceManager {
 	const manager = new RealtimeVoiceManager({
 		createAdapter: buildRealtimeVoiceAdapter,
 		resources: agent.resources,

@@ -101,9 +101,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		const assistantItem = SETTINGS_MODEL_SERVICE_ITEMS.find((item) => item.id === 'assistant');
 		return [
 			{
-				label: assistantItem
-					? t(assistantItem.labelKey)
-					: t('settings.modelServices.chatName'),
+				label: assistantItem ? t(assistantItem.labelKey) : t('settings.modelServices.chatName'),
 				path: '/settings/agent',
 			},
 			{ label: t(assistantSubpageLabelKey) },

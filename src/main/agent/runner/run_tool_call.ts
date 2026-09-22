@@ -73,10 +73,7 @@ export async function* runToolCall(
 	const createsFile = state ? isFileCreation(state) : false;
 	const profileToolConfiguration = (): import('../permissions').ToolConfiguration | undefined =>
 		tool && security.toolProfile
-			? getToolConfiguration(
-					security.toolProfile,
-					tool.policy ?? { kind: 'builtin', id: tool.id }
-				)
+			? getToolConfiguration(security.toolProfile, tool.policy ?? { kind: 'builtin', id: tool.id })
 			: undefined;
 
 	yield {
@@ -302,10 +299,10 @@ export async function* runToolCall(
 							canonicalInput,
 							context,
 							true,
-						'ask',
-						undefined,
-						history,
-						profileToolConfiguration()
+							'ask',
+							undefined,
+							history,
+							profileToolConfiguration()
 						)
 					);
 					if (

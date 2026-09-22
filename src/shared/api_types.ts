@@ -46,7 +46,12 @@ import type {
 	WorkspaceChangeEvent,
 	WorkspaceTreeEntry,
 } from './agent_types';
-import type { AgentToolConfiguration, AgentToolProfile, AgentToolProfileId, AgentToolReference } from './agent_tools';
+import type {
+	AgentToolConfiguration,
+	AgentToolProfile,
+	AgentToolProfileId,
+	AgentToolReference,
+} from './agent_tools';
 import type { CatalogModel, ProviderModel } from './model_types';
 import type {
 	ChannelModelKind,
@@ -137,7 +142,9 @@ export interface WindowApi {
 	isFullScreen: () => Promise<boolean>;
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void) => () => void;
 	setNavigationBarOptions: (options: AppNavigationBarOptions | null) => void;
-	onNavigationBarOptionsChanged: (callback: (options: AppNavigationBarOptions | null) => void) => () => void;
+	onNavigationBarOptionsChanged: (
+		callback: (options: AppNavigationBarOptions | null) => void
+	) => () => void;
 	clickNavigationBarButton: (buttonId: string) => void;
 	onNavigationBarButtonClick: (callback: (buttonId: string) => void) => () => void;
 	setNavigationBarSidebarWidth: (width: number | null) => void;

@@ -262,12 +262,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
 		...group,
 		tools: group.tools.filter(([name, id, description]) =>
-			[
-				name,
-				id,
-				description,
-				t(`settings.modelServices.agentTools.groups.${group.titleKey}`),
-			]
+			[name, id, description, t(`settings.modelServices.agentTools.groups.${group.titleKey}`)]
 				.join(' ')
 				.toLocaleLowerCase()
 				.includes(normalizedToolSearch)
@@ -330,10 +325,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 			});
 	};
 
-	const updateProfileTool = (
-		tool: AgentToolReference,
-		settings: AgentToolConfiguration
-	): void => {
+	const updateProfileTool = (tool: AgentToolReference, settings: AgentToolConfiguration): void => {
 		if (!toolProfile || fileToolsSaving) return;
 		setFileToolsSaving(true);
 		setFileToolsError(null);
@@ -381,282 +373,381 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 				)}
 			</div>
 
-			{mediaSearchText.includes(normalizedToolSearch) && <SettingsSection
-				title={t('settings.modelServices.agentTools.groups.media')}
-				className="order-2"
-			>
-				<SettingsPanel>
-					<SettingsRow
-						title={t('settings.modelServices.imageAssistantName')}
-						description={t('settings.modelServices.imageModelDescription')}
-						icon={ImageIcon}
-						actions={<>
-							<Select
-								value={toolProfile?.tools?.create_image?.permission ?? 'allow'}
-								onValueChange={(permission) => handleFileToolsPermissionChange('create_image', {
-									...(toolProfile?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
-									permission: permission as ToolPermission,
-								})}
-								disabled={!toolProfile || fileToolsSaving}
-							>
-								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to image`}>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
-							</Select>
-							<Switch
-								checked={toolProfile?.tools?.create_image?.enabled ?? true}
-								onCheckedChange={(enabled) =>
-									handleFileToolsPermissionChange('create_image', {
-																...(toolProfile?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
-										enabled,
-									})
-								}
-								aria-label="Text to image enabled"
-								disabled={!toolProfile || fileToolsSaving}
-							/>
-						</>}
-					/>
-
-					<SettingsRow
-						title={t('settings.modelServices.musicCreatorName')}
-						description={t('settings.modelServices.musicModelDescription')}
-						icon={Music2}
-						actions={<>
-							<Select
-								value={toolProfile?.tools?.create_sound?.permission ?? 'allow'}
-								onValueChange={(permission) => handleFileToolsPermissionChange('create_sound', {
-									...(toolProfile?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
-									permission: permission as ToolPermission,
-								})}
-								disabled={!toolProfile || fileToolsSaving}
-							>
-								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to audio`}>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
-							</Select>
-							<Switch
-								checked={toolProfile?.tools?.create_sound?.enabled ?? true}
-								onCheckedChange={(enabled) =>
-									handleFileToolsPermissionChange('create_sound', {
-																...(toolProfile?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
-										enabled,
-									})
-								}
-								aria-label="Text to audio enabled"
-								disabled={!toolProfile || fileToolsSaving}
-							/>
-						</>}
-					/>
-
-					<SettingsRow
-						title={t('settings.modelServices.videoCreatorName')}
-						description={t('settings.modelServices.videoModelDescription')}
-						icon={Video}
-						actions={<>
-							<Select
-								value={toolProfile?.tools?.create_video?.permission ?? 'allow'}
-								onValueChange={(permission) => handleFileToolsPermissionChange('create_video', {
-									...(toolProfile?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
-									permission: permission as ToolPermission,
-								})}
-								disabled={!toolProfile || fileToolsSaving}
-							>
-								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to video`}>
-									<SelectValue />
-								</SelectTrigger>
-								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
-							</Select>
-							<Switch
-								checked={toolProfile?.tools?.create_video?.enabled ?? true}
-								onCheckedChange={(enabled) =>
-									handleFileToolsPermissionChange('create_video', {
-																...(toolProfile?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
-										enabled,
-									})
-								}
-								aria-label="Text to video enabled"
-								disabled={!toolProfile || fileToolsSaving}
-							/>
-						</>}
-					/>
-
-				</SettingsPanel>
-			</SettingsSection>}
-
-			{filteredToolGroups.filter((group) => group.titleKey !== 'media' && (
-				group.tools.length > 0 || (
-					group.titleKey === 'web' && 'search web search_web'.includes(normalizedToolSearch)
-				)
-			)).map((group) => {
-				const Icon = group.icon;
-				return (
-					<SettingsSection
-						key={group.titleKey}
-						title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
-					>
-						<SettingsPanel>
-							{group.titleKey === 'web' && (
-								<Collapsible className="min-w-0 max-w-full overflow-hidden border-b border-border/60">
-									<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
-										<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-4 text-left">
-											<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-											<div className="min-w-0 flex-1">
-												<div className="truncate text-[13px] font-medium leading-4 text-foreground">
-													Search web
-												</div>
-												<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
-													{selectedSearchEngineDescription}
-												</p>
-											</div>
-										</CollapsibleTrigger>
-										<Select
-											value={toolProfile?.tools?.search_web?.permission ?? 'allow'}
-											onValueChange={(value) =>
-												handleFileToolsPermissionChange('search_web', {
-													...(toolProfile?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
-													permission: value as ToolPermission,
-												})
-											}
-											disabled={!toolProfile || fileToolsSaving}
+			{mediaSearchText.includes(normalizedToolSearch) && (
+				<SettingsSection
+					title={t('settings.modelServices.agentTools.groups.media')}
+					className="order-2"
+				>
+					<SettingsPanel>
+						<SettingsRow
+							title={t('settings.modelServices.imageAssistantName')}
+							description={t('settings.modelServices.imageModelDescription')}
+							icon={ImageIcon}
+							actions={
+								<>
+									<Select
+										value={toolProfile?.tools?.create_image?.permission ?? 'allow'}
+										onValueChange={(permission) =>
+											handleFileToolsPermissionChange('create_image', {
+												...(toolProfile?.tools?.create_image ?? {
+													enabled: true,
+													permission: 'allow',
+												}),
+												permission: permission as ToolPermission,
+											})
+										}
+										disabled={!toolProfile || fileToolsSaving}
+									>
+										<SelectTrigger
+											size="sm"
+											className="w-24 text-xs [&_svg]:size-3"
+											aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to image`}
 										>
-											<SelectTrigger
-												size="sm"
-												className="w-24 text-xs [&_svg]:size-3"
-												aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Search web`}
-											>
-												<SelectValue />
-											</SelectTrigger>
-											<SelectContent>
-												<SelectItem value="ask">
-													{t('settings.modelServices.agentTools.permissions.ask')}
-												</SelectItem>
-												<SelectItem value="allow">
-													{t('settings.modelServices.agentTools.permissions.allow')}
-												</SelectItem>
-												<SelectItem value="deny">
-													{t('settings.modelServices.agentTools.permissions.deny')}
-												</SelectItem>
-											</SelectContent>
-										</Select>
-										<Switch
-											checked={toolProfile?.tools?.search_web?.enabled ?? true}
-											onCheckedChange={(enabled) =>
-												handleFileToolsPermissionChange('search_web', {
-													...(toolProfile?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
-													enabled,
-												})
-											}
-											aria-label="Search web enabled"
-											disabled={!toolProfile || fileToolsSaving}
-										/>
-									</div>
-									{profile === 'chat' && <CollapsibleContent>
-										<div className="border-t border-border/60">
-											<SettingsRow
-												title={t('settings.searchEngine.defaultTitle')}
-												description={t('settings.searchEngine.defaultDescription')}
-												actions={
-													<Select
-														value={searchSettings?.engineId ?? null}
-														onValueChange={handleSearchEngineChange}
-														disabled={!searchSettings || searchSavingEngineId !== null}
-													>
-														<SelectTrigger
-															className="w-40 max-w-full text-xs [&_svg]:size-3"
-															aria-label="Search web"
-														>
-															<SelectValue placeholder={t('settings.searchEngine.defaultTitle')}>
-																{selectedSearchEngine?.name}
-															</SelectValue>
-														</SelectTrigger>
-														<SelectContent>
-															{SEARCH_ENGINES.map((engine) => (
-																<SelectItem
-																	key={engine.id}
-																	value={engine.id}
-																	disabled={!searchSettings?.configured[engine.id]}
-																>
-																	{engine.name}
-																</SelectItem>
-															))}
-														</SelectContent>
-													</Select>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="ask">
+												{t('settings.modelServices.agentTools.permissions.ask')}
+											</SelectItem>
+											<SelectItem value="allow">
+												{t('settings.modelServices.agentTools.permissions.allow')}
+											</SelectItem>
+											<SelectItem value="deny">
+												{t('settings.modelServices.agentTools.permissions.deny')}
+											</SelectItem>
+										</SelectContent>
+									</Select>
+									<Switch
+										checked={toolProfile?.tools?.create_image?.enabled ?? true}
+										onCheckedChange={(enabled) =>
+											handleFileToolsPermissionChange('create_image', {
+												...(toolProfile?.tools?.create_image ?? {
+													enabled: true,
+													permission: 'allow',
+												}),
+												enabled,
+											})
+										}
+										aria-label="Text to image enabled"
+										disabled={!toolProfile || fileToolsSaving}
+									/>
+								</>
+							}
+						/>
+
+						<SettingsRow
+							title={t('settings.modelServices.musicCreatorName')}
+							description={t('settings.modelServices.musicModelDescription')}
+							icon={Music2}
+							actions={
+								<>
+									<Select
+										value={toolProfile?.tools?.create_sound?.permission ?? 'allow'}
+										onValueChange={(permission) =>
+											handleFileToolsPermissionChange('create_sound', {
+												...(toolProfile?.tools?.create_sound ?? {
+													enabled: true,
+													permission: 'allow',
+												}),
+												permission: permission as ToolPermission,
+											})
+										}
+										disabled={!toolProfile || fileToolsSaving}
+									>
+										<SelectTrigger
+											size="sm"
+											className="w-24 text-xs [&_svg]:size-3"
+											aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to audio`}
+										>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="ask">
+												{t('settings.modelServices.agentTools.permissions.ask')}
+											</SelectItem>
+											<SelectItem value="allow">
+												{t('settings.modelServices.agentTools.permissions.allow')}
+											</SelectItem>
+											<SelectItem value="deny">
+												{t('settings.modelServices.agentTools.permissions.deny')}
+											</SelectItem>
+										</SelectContent>
+									</Select>
+									<Switch
+										checked={toolProfile?.tools?.create_sound?.enabled ?? true}
+										onCheckedChange={(enabled) =>
+											handleFileToolsPermissionChange('create_sound', {
+												...(toolProfile?.tools?.create_sound ?? {
+													enabled: true,
+													permission: 'allow',
+												}),
+												enabled,
+											})
+										}
+										aria-label="Text to audio enabled"
+										disabled={!toolProfile || fileToolsSaving}
+									/>
+								</>
+							}
+						/>
+
+						<SettingsRow
+							title={t('settings.modelServices.videoCreatorName')}
+							description={t('settings.modelServices.videoModelDescription')}
+							icon={Video}
+							actions={
+								<>
+									<Select
+										value={toolProfile?.tools?.create_video?.permission ?? 'allow'}
+										onValueChange={(permission) =>
+											handleFileToolsPermissionChange('create_video', {
+												...(toolProfile?.tools?.create_video ?? {
+													enabled: true,
+													permission: 'allow',
+												}),
+												permission: permission as ToolPermission,
+											})
+										}
+										disabled={!toolProfile || fileToolsSaving}
+									>
+										<SelectTrigger
+											size="sm"
+											className="w-24 text-xs [&_svg]:size-3"
+											aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to video`}
+										>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="ask">
+												{t('settings.modelServices.agentTools.permissions.ask')}
+											</SelectItem>
+											<SelectItem value="allow">
+												{t('settings.modelServices.agentTools.permissions.allow')}
+											</SelectItem>
+											<SelectItem value="deny">
+												{t('settings.modelServices.agentTools.permissions.deny')}
+											</SelectItem>
+										</SelectContent>
+									</Select>
+									<Switch
+										checked={toolProfile?.tools?.create_video?.enabled ?? true}
+										onCheckedChange={(enabled) =>
+											handleFileToolsPermissionChange('create_video', {
+												...(toolProfile?.tools?.create_video ?? {
+													enabled: true,
+													permission: 'allow',
+												}),
+												enabled,
+											})
+										}
+										aria-label="Text to video enabled"
+										disabled={!toolProfile || fileToolsSaving}
+									/>
+								</>
+							}
+						/>
+					</SettingsPanel>
+				</SettingsSection>
+			)}
+
+			{filteredToolGroups
+				.filter(
+					(group) =>
+						group.titleKey !== 'media' &&
+						(group.tools.length > 0 ||
+							(group.titleKey === 'web' && 'search web search_web'.includes(normalizedToolSearch)))
+				)
+				.map((group) => {
+					const Icon = group.icon;
+					return (
+						<SettingsSection
+							key={group.titleKey}
+							title={t(`settings.modelServices.agentTools.groups.${group.titleKey}`)}
+						>
+							<SettingsPanel>
+								{group.titleKey === 'web' && (
+									<Collapsible className="min-w-0 max-w-full overflow-hidden border-b border-border/60">
+										<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
+											<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-4 text-left">
+												<SearchIcon
+													className="size-5 shrink-0 text-muted-foreground"
+													aria-hidden="true"
+												/>
+												<div className="min-w-0 flex-1">
+													<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+														Search web
+													</div>
+													<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+														{selectedSearchEngineDescription}
+													</p>
+												</div>
+											</CollapsibleTrigger>
+											<Select
+												value={toolProfile?.tools?.search_web?.permission ?? 'allow'}
+												onValueChange={(value) =>
+													handleFileToolsPermissionChange('search_web', {
+														...(toolProfile?.tools?.search_web ?? {
+															enabled: true,
+															permission: 'allow',
+														}),
+														permission: value as ToolPermission,
+													})
 												}
+												disabled={!toolProfile || fileToolsSaving}
+											>
+												<SelectTrigger
+													size="sm"
+													className="w-24 text-xs [&_svg]:size-3"
+													aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Search web`}
+												>
+													<SelectValue />
+												</SelectTrigger>
+												<SelectContent>
+													<SelectItem value="ask">
+														{t('settings.modelServices.agentTools.permissions.ask')}
+													</SelectItem>
+													<SelectItem value="allow">
+														{t('settings.modelServices.agentTools.permissions.allow')}
+													</SelectItem>
+													<SelectItem value="deny">
+														{t('settings.modelServices.agentTools.permissions.deny')}
+													</SelectItem>
+												</SelectContent>
+											</Select>
+											<Switch
+												checked={toolProfile?.tools?.search_web?.enabled ?? true}
+												onCheckedChange={(enabled) =>
+													handleFileToolsPermissionChange('search_web', {
+														...(toolProfile?.tools?.search_web ?? {
+															enabled: true,
+															permission: 'allow',
+														}),
+														enabled,
+													})
+												}
+												aria-label="Search web enabled"
+												disabled={!toolProfile || fileToolsSaving}
 											/>
 										</div>
-										{searchEngineError && (
-											<SettingsNotice variant="destructive" icon={AlertTriangle} className="mx-3 mt-3">
-												{searchEngineError}
-											</SettingsNotice>
-										)}
-									</CollapsibleContent>}
-								</Collapsible>
-							)}
-							{group.tools.map(([name, id, description]) => {
-								const settings = toolProfile?.tools?.[id] ?? { enabled: true, permission: 'allow' };
-								return (
-									<SettingsRow
-										key={id}
-										title={name}
-										media={
-											<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-										}
-									description={description}
-										actions={
-											<>
-												<Select
-													value={settings.permission}
-													onValueChange={(value) =>
-														handleFileToolsPermissionChange(id, {
-															...settings,
-															permission: value as ToolPermission,
-														})
-													}
-													disabled={!toolProfile || fileToolsSaving}
-												>
-													<SelectTrigger
-														size="sm"
-														className="w-24 text-xs [&_svg]:size-3"
-														aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}
+										{profile === 'chat' && (
+											<CollapsibleContent>
+												<div className="border-t border-border/60">
+													<SettingsRow
+														title={t('settings.searchEngine.defaultTitle')}
+														description={t('settings.searchEngine.defaultDescription')}
+														actions={
+															<Select
+																value={searchSettings?.engineId ?? null}
+																onValueChange={handleSearchEngineChange}
+																disabled={!searchSettings || searchSavingEngineId !== null}
+															>
+																<SelectTrigger
+																	className="w-40 max-w-full text-xs [&_svg]:size-3"
+																	aria-label="Search web"
+																>
+																	<SelectValue
+																		placeholder={t('settings.searchEngine.defaultTitle')}
+																	>
+																		{selectedSearchEngine?.name}
+																	</SelectValue>
+																</SelectTrigger>
+																<SelectContent>
+																	{SEARCH_ENGINES.map((engine) => (
+																		<SelectItem
+																			key={engine.id}
+																			value={engine.id}
+																			disabled={!searchSettings?.configured[engine.id]}
+																		>
+																			{engine.name}
+																		</SelectItem>
+																	))}
+																</SelectContent>
+															</Select>
+														}
+													/>
+												</div>
+												{searchEngineError && (
+													<SettingsNotice
+														variant="destructive"
+														icon={AlertTriangle}
+														className="mx-3 mt-3"
 													>
-														<SelectValue />
-													</SelectTrigger>
-													<SelectContent>
-														<SelectItem value="ask">
-															{t('settings.modelServices.agentTools.permissions.ask')}
-														</SelectItem>
-														<SelectItem value="allow">
-															{t('settings.modelServices.agentTools.permissions.allow')}
-														</SelectItem>
-														<SelectItem value="deny">
-															{t('settings.modelServices.agentTools.permissions.deny')}
-														</SelectItem>
-													</SelectContent>
-												</Select>
-												<Switch
-													checked={settings.enabled}
-													onCheckedChange={(enabled) =>
-														handleFileToolsPermissionChange(id, { ...settings, enabled })
-													}
-												disabled={!toolProfile || fileToolsSaving}
-													aria-label={`${name} enabled`}
+														{searchEngineError}
+													</SettingsNotice>
+												)}
+											</CollapsibleContent>
+										)}
+									</Collapsible>
+								)}
+								{group.tools.map(([name, id, description]) => {
+									const settings = toolProfile?.tools?.[id] ?? {
+										enabled: true,
+										permission: 'allow',
+									};
+									return (
+										<SettingsRow
+											key={id}
+											title={name}
+											media={
+												<Icon
+													className="size-5 shrink-0 text-muted-foreground"
+													aria-hidden="true"
 												/>
-											</>
-										}
-									/>
-								);
-							})}
-						</SettingsPanel>
-						{group.titleKey === 'files' && fileToolsError && (
-							<SettingsNotice variant="destructive" icon={AlertTriangle}>
-								{fileToolsError}
-							</SettingsNotice>
-						)}
-					</SettingsSection>
-				);
-			})}
+											}
+											description={description}
+											actions={
+												<>
+													<Select
+														value={settings.permission}
+														onValueChange={(value) =>
+															handleFileToolsPermissionChange(id, {
+																...settings,
+																permission: value as ToolPermission,
+															})
+														}
+														disabled={!toolProfile || fileToolsSaving}
+													>
+														<SelectTrigger
+															size="sm"
+															className="w-24 text-xs [&_svg]:size-3"
+															aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}
+														>
+															<SelectValue />
+														</SelectTrigger>
+														<SelectContent>
+															<SelectItem value="ask">
+																{t('settings.modelServices.agentTools.permissions.ask')}
+															</SelectItem>
+															<SelectItem value="allow">
+																{t('settings.modelServices.agentTools.permissions.allow')}
+															</SelectItem>
+															<SelectItem value="deny">
+																{t('settings.modelServices.agentTools.permissions.deny')}
+															</SelectItem>
+														</SelectContent>
+													</Select>
+													<Switch
+														checked={settings.enabled}
+														onCheckedChange={(enabled) =>
+															handleFileToolsPermissionChange(id, { ...settings, enabled })
+														}
+														disabled={!toolProfile || fileToolsSaving}
+														aria-label={`${name} enabled`}
+													/>
+												</>
+											}
+										/>
+									);
+								})}
+							</SettingsPanel>
+							{group.titleKey === 'files' && fileToolsError && (
+								<SettingsNotice variant="destructive" icon={AlertTriangle}>
+									{fileToolsError}
+								</SettingsNotice>
+							)}
+						</SettingsSection>
+					);
+				})}
 			<McpTools
 				search={normalizedToolSearch}
 				settings={toolProfile?.mcp ?? {}}

@@ -90,7 +90,12 @@ function AgentRouteLegacyRedirect({
 }): React.JSX.Element {
 	const location = useLocation();
 	const source = `/settings/agent/${section}`;
-	return <Navigate to={`${target}${location.pathname.slice(source.length)}${location.search}${location.hash}`} replace />;
+	return (
+		<Navigate
+			to={`${target}${location.pathname.slice(source.length)}${location.search}${location.hash}`}
+			replace
+		/>
+	);
 }
 
 function RouteWrapper({
@@ -133,48 +138,48 @@ function RootRouteComponent(): React.JSX.Element {
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
 			<ChatModeContext.Provider value={{ mode: chatMode, setMode: setChatMode }}>
 				<ChatSessionContext.Provider
-				value={{
-					sessionId: chatSessionId,
-					sessionTitle: chatSessionTitle,
-					sessionTitleSessionId: chatSessionTitleSessionId,
-					setSessionTitle: (title, sessionId) => {
-						setChatSessionTitle(title);
-						setChatSessionTitleSessionId(sessionId);
-					},
-					setSessionId: (sessionId) => {
-						setChatSessionId(sessionId);
-						setChatSessionTitle(undefined);
-						setChatSessionTitleSessionId(undefined);
-						persistChatSessionId(sessionId);
-					},
-				}}
-			>
-				<div
-					className={cn(
-						'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
-					)}
+					value={{
+						sessionId: chatSessionId,
+						sessionTitle: chatSessionTitle,
+						sessionTitleSessionId: chatSessionTitleSessionId,
+						setSessionTitle: (title, sessionId) => {
+							setChatSessionTitle(title);
+							setChatSessionTitleSessionId(sessionId);
+						},
+						setSessionId: (sessionId) => {
+							setChatSessionId(sessionId);
+							setChatSessionTitle(undefined);
+							setChatSessionTitleSessionId(undefined);
+							persistChatSessionId(sessionId);
+						},
+					}}
 				>
-					<NavigationBar
-						rightContent={
-							phase === 'auth' && authState.status !== 'recovery' ? (
-								<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>
-									Skip
-								</Button>
-							) : undefined
-						}
-						onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
-					/>
-					<div className="min-h-0 flex-1 overflow-hidden pt-12">
-						<PageTransition>
-							<Outlet />
-						</PageTransition>
+					<div
+						className={cn(
+							'app-translucent-window flex h-screen flex-col overflow-hidden bg-background text-foreground'
+						)}
+					>
+						<NavigationBar
+							rightContent={
+								phase === 'auth' && authState.status !== 'recovery' ? (
+									<Button type="button" variant="ghost" size="sm" onClick={skipSignIn}>
+										Skip
+									</Button>
+								) : undefined
+							}
+							onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
+						/>
+						<div className="min-h-0 flex-1 overflow-hidden pt-12">
+							<PageTransition>
+								<Outlet />
+							</PageTransition>
+						</div>
+						<CommandMenu
+							key={location.pathname}
+							open={commandMenuOpen}
+							onOpenChange={setCommandMenuOpen}
+						/>
 					</div>
-					<CommandMenu
-						key={location.pathname}
-						open={commandMenuOpen}
-						onOpenChange={setCommandMenuOpen}
-					/>
-				</div>
 				</ChatSessionContext.Provider>
 			</ChatModeContext.Provider>
 		</CommandMenuProvider>
@@ -313,7 +318,11 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'tools',
-								element: <SettingsRouteWrapper><ToolsPage profile="channels" /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<ToolsPage profile="channels" />
+									</SettingsRouteWrapper>
+								),
 							},
 						],
 					},
@@ -384,18 +393,30 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'knowledge-base',
-						element: <SettingsRouteWrapper><RagPage /></SettingsRouteWrapper>,
+						element: (
+							<SettingsRouteWrapper>
+								<RagPage />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'skills',
 						children: [
 							{
 								index: true,
-								element: <SettingsRouteWrapper><SkillsPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<SkillsPage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'skilldetails/:skillId',
-								element: <SettingsRouteWrapper><SkillDetailsPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<SkillDetailsPage />
+									</SettingsRouteWrapper>
+								),
 							},
 						],
 					},
@@ -404,17 +425,29 @@ const routes: RouteObject[] = [
 						children: [
 							{
 								index: true,
-								element: <SettingsRouteWrapper><McpPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<McpPage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: ':mcpServerId',
-								element: <SettingsRouteWrapper><McpDetailsPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<McpDetailsPage />
+									</SettingsRouteWrapper>
+								),
 							},
 						],
 					},
 					{
 						path: 'memory',
-						element: <SettingsRouteWrapper><MemoryPage /></SettingsRouteWrapper>,
+						element: (
+							<SettingsRouteWrapper>
+								<MemoryPage />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'coding',
@@ -442,28 +475,44 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'voice/tools',
-						element: <SettingsRouteWrapper><ToolsPage profile="voice" /></SettingsRouteWrapper>,
+						element: (
+							<SettingsRouteWrapper>
+								<ToolsPage profile="voice" />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'agent',
 						children: [
 							{
 								path: 'music',
-								element: <SettingsRouteWrapper><MusicPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<MusicPage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'video',
-								element: <SettingsRouteWrapper><VideoPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<VideoPage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'image',
-								element: <SettingsRouteWrapper><ImagePage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<ImagePage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'tools',
 								element: (
 									<SettingsRouteWrapper>
-									<ToolsPage profile="chat" />
+										<ToolsPage profile="chat" />
 									</SettingsRouteWrapper>
 								),
 							},
@@ -500,7 +549,11 @@ const routes: RouteObject[] = [
 									},
 									{
 										path: 'tools',
-										element: <SettingsRouteWrapper><ToolsPage profile="tasks" /></SettingsRouteWrapper>,
+										element: (
+											<SettingsRouteWrapper>
+												<ToolsPage profile="tasks" />
+											</SettingsRouteWrapper>
+										),
 									},
 								],
 							},
@@ -542,7 +595,11 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'health/tools',
-								element: <SettingsRouteWrapper><ToolsPage profile="health" /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<ToolsPage profile="health" />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'permissions',

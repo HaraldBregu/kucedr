@@ -371,9 +371,10 @@ it('keeps media permissions and search configuration on Tools without model sele
 		expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
 		expect(await screen.findByRole('switch', { name: `${name} enabled` })).toBeEnabled();
 	}
-	expect(
-		screen.getByRole('link', { name: /settings\.permissions\.toolsTitle/ })
-	).toHaveAttribute('href', '/settings/agent/permissions');
+	expect(screen.getByRole('link', { name: /settings\.permissions\.toolsTitle/ })).toHaveAttribute(
+		'href',
+		'/settings/agent/permissions'
+	);
 	expect(window.agent.getToolModel).not.toHaveBeenCalled();
 
 	const searchTrigger = (await screen.findAllByRole('button', { name: /Search web/ })).find(
@@ -425,7 +426,6 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });
 
-
 it('saves a file tools permission choice', async () => {
 	const user = userEvent.setup();
 	render(
@@ -453,13 +453,12 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-		<VoicePage />
+			<VoicePage />
 		</MemoryRouter>
 	);
-	expect(screen.getByRole('link', { name: /settings\.modelServices\.voiceHistoryTitle/ })).toHaveAttribute(
-		'href',
-		'/settings/voice/history'
-	);
+	expect(
+		screen.getByRole('link', { name: /settings\.modelServices\.voiceHistoryTitle/ })
+	).toHaveAttribute('href', '/settings/voice/history');
 
 	const trigger = (await screen.findAllByRole('button', { name: /Realtime conversation/ })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
@@ -564,7 +563,7 @@ it('announces a realtime conversation setup save error', async () => {
 	realtimeSetSetup.mockRejectedValueOnce(new Error('Realtime setup could not be saved.'));
 	render(
 		<MemoryRouter>
-		<VoicePage />
+			<VoicePage />
 		</MemoryRouter>
 	);
 
@@ -592,12 +591,22 @@ it.each([
 ] as const)(
 	'loads the saved %s configuration on its dedicated page',
 	async (name, kind, model, Page) => {
-		render(<MemoryRouter><Page /></MemoryRouter>);
+		render(
+			<MemoryRouter>
+				<Page />
+			</MemoryRouter>
+		);
 		expect(screen.getByRole('heading', { name: `settings.tabs.${name}` })).toBeInTheDocument();
-		await waitFor(() => expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(model));
+		await waitFor(() =>
+			expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(
+				model
+			)
+		);
 		expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
 		expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
 		expect(window.agent.getToolModel).toHaveBeenCalledWith(kind);
-		expect(window.agent.getToolModel).not.toHaveBeenCalledWith(kind === 'audio' ? 'image' : 'audio');
+		expect(window.agent.getToolModel).not.toHaveBeenCalledWith(
+			kind === 'audio' ? 'image' : 'audio'
+		);
 	}
 );

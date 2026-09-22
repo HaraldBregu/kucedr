@@ -223,7 +223,9 @@ const normalizeToolProfile = (value: unknown, fallback: AgentToolProfile): Agent
 	const mcp = Object.fromEntries(
 		Object.entries(profile.mcp ?? {}).flatMap(([serverId, serverTools]) => {
 			if (!serverTools || typeof serverTools !== 'object') return [];
-			const entries = Object.entries(serverTools).filter(([, settings]) => isToolSettings(settings));
+			const entries = Object.entries(serverTools).filter(([, settings]) =>
+				isToolSettings(settings)
+			);
 			return entries.length > 0 ? [[serverId, Object.fromEntries(entries)]] : [];
 		})
 	);

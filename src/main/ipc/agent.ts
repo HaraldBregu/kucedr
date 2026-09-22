@@ -230,7 +230,13 @@ function toPermissions(value: unknown): PermissionsSchema {
 }
 
 function toToolProfileId(value: unknown): AgentToolProfileId {
-	if (value === 'chat' || value === 'voice' || value === 'tasks' || value === 'health' || value === 'channels')
+	if (
+		value === 'chat' ||
+		value === 'voice' ||
+		value === 'tasks' ||
+		value === 'health' ||
+		value === 'channels'
+	)
 		return value;
 	throw new Error('Invalid tool profile.');
 }

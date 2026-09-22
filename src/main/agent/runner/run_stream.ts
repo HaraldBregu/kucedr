@@ -1,11 +1,6 @@
 import type { MemoryService } from '../../../shared/memory_types';
 import { getResolvedProvider } from '../../settings_store';
-import {
-	getModelId,
-	getModelOptions,
-	getProviderId,
-	getToolConfiguration,
-} from '../agent_store';
+import { getModelId, getModelOptions, getProviderId, getToolConfiguration } from '../agent_store';
 import {
 	addAssistantMessage,
 	addToolResults,
@@ -236,65 +231,65 @@ async function* loop(
 	let closeMcp: (() => Promise<void>) | undefined;
 	let mcpDiscovery: McpDiscoveryDiagnostics | undefined;
 	try {
-	if (!options.tools) {
-		if (
-			input.interactionMode !== 'plan' &&
-			(input.toolsAllow === undefined ||
-				input.toolsAllow.some((toolId) => toolId.startsWith('mcp__')))
-		) {
-			const mcp = await loadMcpTools(signal);
-			tools.push(...mcp.tools);
-			closeMcp = mcp.close;
-			mcpDiscovery = mcp.diagnostics;
+		if (!options.tools) {
+			if (
+				input.interactionMode !== 'plan' &&
+				(input.toolsAllow === undefined ||
+					input.toolsAllow.some((toolId) => toolId.startsWith('mcp__')))
+			) {
+				const mcp = await loadMcpTools(signal);
+				tools.push(...mcp.tools);
+				closeMcp = mcp.close;
+				mcpDiscovery = mcp.diagnostics;
+			}
+			const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
+			const childRuntime = {
+				type: input.type,
+				interactionMode: input.interactionMode,
+				...(options.resources ? { resources: options.resources } : {}),
+				...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
+				...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
+				budget,
+				modelOptions,
+				providerId: provider.id,
+				model: modelId,
+				...(input.effort ? { effort: input.effort } : {}),
+				...(promptCapabilities ? { promptCapabilities } : {}),
+				...(input.scope ? { scope: input.scope } : {}),
+				toolProfile,
+			};
+			tools.push(
+				subagentTool(config, childTools, childRuntime),
+				subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
+			);
 		}
-		const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
-		const childRuntime = {
-			type: input.type,
+		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
+		tools = filterPlanTools(tools, input.interactionMode);
+		if (input.explicitSkill && !skillLoadingEnabled)
+			throw new Error('Skill loading is unavailable for this run.');
+		if (input.explicitSkill) {
+			applyActivatedSkill(await activateSkill(skillSnapshot, input.explicitSkill));
+		}
+
+		yield {
+			type: 'run_started',
+			sessionId: session.id,
 			interactionMode: input.interactionMode,
-			...(options.resources ? { resources: options.resources } : {}),
-			...(options.providerLimiter ? { providerLimiter: options.providerLimiter } : {}),
-			...(options.subagentLimiter ? { subagentLimiter: options.subagentLimiter } : {}),
-			budget,
-			modelOptions,
-			providerId: provider.id,
 			model: modelId,
-			...(input.effort ? { effort: input.effort } : {}),
-			...(promptCapabilities ? { promptCapabilities } : {}),
-			...(input.scope ? { scope: input.scope } : {}),
-			toolProfile,
+			providerId: provider.id,
+			tools: tools.map((tool) => tool.id),
+			skillDiagnostics: skillSnapshot.diagnostics,
+			skillActivations: session.runContext.loadedSkills.map((skill) => ({
+				id: skill.id,
+				name: skill.name,
+				hash: skill.hash,
+				trust: skill.trust,
+			})),
+			...(mcpDiscovery ? { mcpDiscovery } : {}),
 		};
-		tools.push(
-			subagentTool(config, childTools, childRuntime),
-			subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
-		);
-	}
-	tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
-	tools = filterPlanTools(tools, input.interactionMode);
-	if (input.explicitSkill && !skillLoadingEnabled)
-		throw new Error('Skill loading is unavailable for this run.');
-	if (input.explicitSkill) {
-		applyActivatedSkill(await activateSkill(skillSnapshot, input.explicitSkill));
-	}
 
-	yield {
-		type: 'run_started',
-		sessionId: session.id,
-		interactionMode: input.interactionMode,
-		model: modelId,
-		providerId: provider.id,
-		tools: tools.map((tool) => tool.id),
-		skillDiagnostics: skillSnapshot.diagnostics,
-		skillActivations: session.runContext.loadedSkills.map((skill) => ({
-			id: skill.id,
-			name: skill.name,
-			hash: skill.hash,
-			trust: skill.trust,
-		})),
-		...(mcpDiscovery ? { mcpDiscovery } : {}),
-	};
-
-	let finalization: { instruction: string; stopReason?: string } | undefined;
-	while (true) {
+		let finalization: { instruction: string; stopReason?: string } | undefined;
+		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
 			const turnTools = synthesisOnly ? [] : tools;
@@ -477,7 +472,7 @@ async function* loop(
 						'Recording started in the background. Confirm its current status without waiting for completion or stopping it.',
 				};
 			}
-	}
+		}
 	} finally {
 		await closeMcp?.();
 	}

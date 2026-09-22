@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { AlertTriangle, BrainCircuit, ChevronRight, History, ListChecks, Wrench } from 'lucide-react';
+import {
+	AlertTriangle,
+	BrainCircuit,
+	ChevronRight,
+	History,
+	ListChecks,
+	Wrench,
+} from 'lucide-react';
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';

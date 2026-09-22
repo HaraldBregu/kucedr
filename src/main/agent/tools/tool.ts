@@ -30,9 +30,10 @@ export function tool<T extends z.ZodType>({
 		planSafe,
 		policy,
 		capability: capability ?? ((input) => builtinCapability(id, input)),
-		hardApproval: typeof hardApproval === 'function'
-			? (input) => hardApproval(inputSchema.parse(input))
-			: hardApproval,
+		hardApproval:
+			typeof hardApproval === 'function'
+				? (input) => hardApproval(inputSchema.parse(input))
+				: hardApproval,
 		schema: toJsonSchema(inputSchema),
 		parseInput(input: unknown) {
 			return inputSchema.parse(input) as Record<string, unknown>;
