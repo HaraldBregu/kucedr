@@ -34,7 +34,7 @@ it.each([
 	['/settings/agent/image', 'settings.tabs.image'],
 	['/settings/agent/rag', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
-	['/settings/agent/voice', 'settings.tabs.voice'],
+	['/settings/voice', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/agent/skills', 'settings.tabs.skills'],
@@ -161,7 +161,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).not.toBeInTheDocument();
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.voice' })
-	).toHaveAttribute('href', '/settings/agent/voice');
+	).toHaveAttribute('href', '/settings/voice');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.taskScheduler' })
 	).toHaveAttribute('href', '/settings/agent/tasks');

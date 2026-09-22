@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AssistantPage from '../../../src/renderer/src/pages/settings/pages/assistant/Page';
 import RealtimeConversationConfiguration from '../../../src/renderer/src/pages/settings/pages/assistant/conversation';
-import VoicePage from '../../../src/renderer/src/pages/settings/pages/assistant/voice/Page';
+import VoicePage from '../../../src/renderer/src/pages/settings/pages/voice/Page';
 import ToolsPage from '../../../src/renderer/src/pages/settings/pages/assistant/tools/Page';
 import TasksPage from '../../../src/renderer/src/pages/settings/pages/tasks/Page';
 

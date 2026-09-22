@@ -30,7 +30,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/agent/voice', '/settings/agent/tasks', '/settings/agent/health'].includes(
+				['/settings/voice', '/settings/agent/tasks', '/settings/agent/health'].includes(
 					item.path
 				)
 			),

@@ -55,7 +55,7 @@ const RagPage = lazy(() => import('./pages/settings/pages/rag/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
-const VoicePage = lazy(() => import('./pages/settings/pages/assistant/voice/Page'));
+const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
 const CodingPage = lazy(() => import('./pages/settings/pages/coding/Page'));
 const MusicPage = lazy(() => import('./pages/settings/pages/music/Page'));
@@ -383,6 +383,14 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'voice',
+						element: (
+							<SettingsRouteWrapper>
+								<VoicePage />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'agent',
 						children: [
 							{
@@ -473,14 +481,6 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<AssistantPage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
-								path: 'voice',
-								element: (
-									<SettingsRouteWrapper>
-										<VoicePage />
 									</SettingsRouteWrapper>
 								),
 							},

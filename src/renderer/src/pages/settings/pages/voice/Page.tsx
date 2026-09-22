@@ -4,8 +4,8 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
-} from '../../../components';
-import RealtimeConversationConfiguration from '../conversation';
+} from '../../components';
+import RealtimeConversationConfiguration from '../assistant/conversation';
 
 export default function VoicePage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -14,7 +14,7 @@ export default function VoicePage(): React.JSX.Element {
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.voice')}
-				description={t('settings.modelServices.voiceDescription')}
+				description={t('settings.modelServices.realtimeConversationDescription')}
 			/>
 
 			<SettingsPanel>

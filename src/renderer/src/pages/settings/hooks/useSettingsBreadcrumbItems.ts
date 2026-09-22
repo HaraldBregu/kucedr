@@ -12,7 +12,6 @@ interface SettingsBreadcrumbItem {
 
 const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/chathistory': 'settings.chatHistory.title',
-	'/settings/agent/voice': 'settings.tabs.voice',
 	'/settings/agent/health': 'settings.tabs.health',
 	'/settings/agent/rag': 'settings.rag.title',
 	'/settings/agent/permissions': 'settings.tabs.permissions',
