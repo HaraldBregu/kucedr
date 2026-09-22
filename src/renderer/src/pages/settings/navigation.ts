@@ -12,7 +12,6 @@ import {
 	Folder,
 	HardDrive,
 	HeartPulse,
-	History,
 	Info,
 	Library,
 	ListChecks,
@@ -325,22 +324,10 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Radio,
 	},
 	{
-		path: '/settings/voice/history',
-		labelKey: 'settings.modelServices.voiceHistoryTitle',
-		descriptionKey: 'settings.modelServices.voiceHistoryDescription',
-		icon: History,
-	},
-	{
 		path: '/settings/agent/tasks',
 		labelKey: 'settings.tabs.taskScheduler',
 		descriptionKey: 'settings.overview.descriptions.cron',
 		icon: ListChecks,
-	},
-	{
-		path: '/settings/agent/tasks/history',
-		labelKey: 'settings.cron.history.pageTitle',
-		descriptionKey: 'settings.cron.history.pageDescription',
-		icon: History,
 	},
 	{
 		path: '/settings/providers/models',

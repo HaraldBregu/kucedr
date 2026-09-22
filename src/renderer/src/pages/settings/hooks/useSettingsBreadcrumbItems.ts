@@ -57,19 +57,6 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.voiceAgent.title') },
 		];
 	}
-	if (location.pathname === '/settings/voice/history') {
-		return [
-			{ label: t('settings.tabs.voice'), path: '/settings/voice' },
-			{ label: t('settings.modelServices.voiceHistoryTitle') },
-		];
-	}
-	if (location.pathname === '/settings/agent/tasks/history') {
-		return [
-			{ label: t('settings.modelServices.chatName'), path: '/settings/agent' },
-			{ label: t('settings.tabs.taskScheduler'), path: '/settings/agent/tasks' },
-			{ label: t('settings.cron.history.pageTitle') },
-		];
-	}
 	const assistantSubpageLabelKey = ASSISTANT_SUBPAGE_LABEL_KEYS[location.pathname];
 	if (assistantSubpageLabelKey) {
 		const assistantItem = SETTINGS_MODEL_SERVICE_ITEMS.find((item) => item.id === 'assistant');

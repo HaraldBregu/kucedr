@@ -32,9 +32,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_NAVIGATION.filter((item) =>
 				[
 					'/settings/voice',
-					'/settings/voice/history',
 					'/settings/agent/tasks',
-					'/settings/agent/tasks/history',
 					'/settings/agent/health',
 				].includes(
 					item.path
