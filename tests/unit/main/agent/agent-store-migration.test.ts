@@ -77,6 +77,17 @@ it('creates clean independent agent profile stores without migration metadata', 
 	expect(agentProfileStorePath('tasks')).toMatch(/tasks\.json$/);
 	expect(agentProfileStorePath('health')).toMatch(/health\.json$/);
 	expect(agentProfileStorePath('channels')).toMatch(/channels\.json$/);
+	setAgentProfileModel('voice', 'realtimeVoice', {
+		providerId: 'openai',
+		modelId: 'gpt-realtime',
+		options: {},
+	});
+	expect(getAgentProfileDocument('voice')).toMatchObject({
+		rtv: { providerId: 'openai', modelId: 'gpt-realtime' },
+	});
+	expect(getAgentProfileDocument('voice')).not.toHaveProperty('textToSpeech');
+	expect(getAgentProfileDocument('voice')).not.toHaveProperty('speechToText');
+	expect(getAgentProfileDocument('voice')).not.toHaveProperty('realtimeVoice');
 });
 
 it('keeps model selections isolated between agent profiles', () => {

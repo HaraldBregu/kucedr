@@ -41,7 +41,7 @@ const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {
 	chat: ['textToText', 'textToSpeech', 'speechToText'],
-	voice: ['textToSpeech', 'speechToText', 'realtimeVoice'],
+	voice: ['realtimeVoice'],
 	tasks: ['textToText'],
 	health: ['textToText'],
 	channels: ['textToText', 'textToSpeech', 'speechToText'],
@@ -56,9 +56,11 @@ const storedModelKey = (
 			? 'llm'
 			: (profileId === 'chat' || profileId === 'channels') && modelKey === 'textToSpeech'
 				? 'tts'
-				: (profileId === 'chat' || profileId === 'channels') && modelKey === 'speechToText'
+		: (profileId === 'chat' || profileId === 'channels') && modelKey === 'speechToText'
 					? 'stt'
-					: modelKey;
+					: profileId === 'voice' && modelKey === 'realtimeVoice'
+						? 'rtv'
+						: modelKey;
 
 const stores = Object.fromEntries(
 	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
@@ -132,7 +134,7 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 					'ttsModelId',
 				]
 			: ['providerId', 'modelId', 'modelOptions'];
-	const profileKeys = ['llm', 'tts', 'stt', ...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
+	const profileKeys = ['llm', 'tts', 'stt', 'rtv', ...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
 	const preserved = SHARED_PROFILE_IDS.has(profileId)
 		? Object.fromEntries(
 				Object.entries(existing).filter(
