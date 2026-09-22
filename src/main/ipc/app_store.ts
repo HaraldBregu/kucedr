@@ -9,12 +9,8 @@ export interface AppStoreIpcDeps {
 	appStorage: AppStorage;
 }
 
-export function registerAppStoreIpc({
-	appRegistry,
-	appStorage,
-}: AppStoreIpcDeps): void {
-	const appId = (event: IpcMainInvokeEvent): string =>
-		appRegistry.resolve(event.sender);
+export function registerAppStoreIpc({ appRegistry, appStorage }: AppStoreIpcDeps): void {
+	const appId = (event: IpcMainInvokeEvent): string => appRegistry.resolve(event.sender);
 
 	registerQueryWithEvent(AppChannels.getAppStoreValue, (event, key) =>
 		appStorage.get(appId(event), key)

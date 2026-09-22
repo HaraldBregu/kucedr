@@ -1,21 +1,21 @@
 {
-  "providerId": "pika",
-  "providerName": "Pika",
-  "apiKeyUrl": "https://pika.art",
-  "images_url": "/images",
-  "icon_dark_url": "/images/fallback_lobehub/png_dark/pika.png",
-  "icon_light_url": "/images/fallback_lobehub/png_light/pika.png",
-  "services": [
-    {
-      "id": "pika-2.2",
-      "name": "Pika 2.2",
-      "type": "text-to-video-model",
-      "url": "https://pika.art",
-      "metadata": {
-        "documentationUrl": "https://pika.art",
-        "documentationStatus": "unverified",
-        "inputs": {}
-      }
-    }
-  ]
+	"providerId": "pika",
+	"providerName": "Pika",
+	"apiKeyUrl": "https://pika.art",
+	"images_url": "/images",
+	"icon_dark_url": "/images/fallback_lobehub/png_dark/pika.png",
+	"icon_light_url": "/images/fallback_lobehub/png_light/pika.png",
+	"services": [
+		{
+			"id": "pika-2.2",
+			"name": "Pika 2.2",
+			"type": "text-to-video-model",
+			"url": "https://pika.art",
+			"metadata": {
+				"documentationUrl": "https://pika.art",
+				"documentationStatus": "unverified",
+				"inputs": {}
+			}
+		}
+	]
 }

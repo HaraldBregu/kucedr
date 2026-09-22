@@ -35,13 +35,25 @@ describe('mcpTool', () => {
 		['always', false, true],
 		['never', true, false],
 		['never', false, false],
-	] as const)('applies approval policy %s to read-only hint %s', (approval, readOnly, requiresApproval) => {
-		const configured = mcpTool(client, 'lookup', '', schema, 'safe', approval, undefined, readOnly);
-		expect(configured.capability).toEqual({
-			effects: readOnly ? ['read'] : ['external'],
-			approval: requiresApproval,
-		});
-	});
+	] as const)(
+		'applies approval policy %s to read-only hint %s',
+		(approval, readOnly, requiresApproval) => {
+			const configured = mcpTool(
+				client,
+				'lookup',
+				'',
+				schema,
+				'safe',
+				approval,
+				undefined,
+				readOnly
+			);
+			expect(configured.capability).toEqual({
+				effects: readOnly ? ['read'] : ['external'],
+				approval: requiresApproval,
+			});
+		}
+	);
 
 	it('requires default approval when read-only metadata is absent', () => {
 		const configured = mcpTool(client, 'lookup', '', schema, 'safe');

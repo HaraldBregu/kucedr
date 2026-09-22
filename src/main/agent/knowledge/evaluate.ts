@@ -50,7 +50,9 @@ export function evaluateKnowledge(
 			}
 		}
 		totalCitations += observation.citedSourceIds.length;
-		relevantCitations += observation.citedSourceIds.filter((sourceId) => relevant.has(sourceId)).length;
+		relevantCitations += observation.citedSourceIds.filter((sourceId) =>
+			relevant.has(sourceId)
+		).length;
 		expectedCitations += item.relevantSourceIds.length;
 		for (const claimId of item.expectedClaimIds) {
 			totalClaims += 1;
@@ -78,8 +80,7 @@ export function evaluateKnowledge(
 		citationRecall: expectedCitations === 0 ? 1 : relevantCitations / expectedCitations,
 		groundedAnswerFaithfulness: totalClaims === 0 ? 1 : groundedClaims / totalClaims,
 		abstentionAccuracy: abstentionCases === 0 ? 1 : correctAbstentions / abstentionCases,
-		memorySavePrecision:
-			predictedMemorySaves === 0 ? 1 : correctMemorySaves / predictedMemorySaves,
+		memorySavePrecision: predictedMemorySaves === 0 ? 1 : correctMemorySaves / predictedMemorySaves,
 		averageLatencyMs: latencyMs / corpus.length,
 		totalTokens,
 		estimatedCostUsd,

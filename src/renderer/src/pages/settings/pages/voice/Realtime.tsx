@@ -35,8 +35,7 @@ export default function RealtimeVoiceConfiguration(): React.JSX.Element {
 	const group = state.modelGroups.find((item) => item.provider.id === state.providerId);
 	const model = group?.models.find((item) => item.id === state.modelId);
 	const voiceInput = model?.metadata?.inputs.voice;
-	const defaultVoice =
-		typeof voiceInput?.default === 'string' ? voiceInput.default : DEFAULT_VOICE;
+	const defaultVoice = typeof voiceInput?.default === 'string' ? voiceInput.default : DEFAULT_VOICE;
 	const selectedVoice =
 		typeof options.voice === 'string' && options.voice.trim() ? options.voice : defaultVoice;
 

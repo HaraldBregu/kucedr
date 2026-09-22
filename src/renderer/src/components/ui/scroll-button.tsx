@@ -27,9 +27,7 @@ function ScrollButton({
 			size={size}
 			className={cn(
 				'h-8 w-8 rounded-full transition-all duration-150 ease-out',
-				isAtBottom
-					? 'pointer-events-none translate-y-2 opacity-0'
-					: 'translate-y-0 opacity-100',
+				isAtBottom ? 'pointer-events-none translate-y-2 opacity-0' : 'translate-y-0 opacity-100',
 				className
 			)}
 			onClick={() => scrollToBottom()}

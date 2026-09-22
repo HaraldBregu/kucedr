@@ -54,9 +54,7 @@ describe('TextEditor', () => {
 		} as Range);
 
 		const onVisualLineChange = jest.fn();
-		const { rerender } = render(
-			<TextEditor value="" onVisualLineChange={onVisualLineChange} />
-		);
+		const { rerender } = render(<TextEditor value="" onVisualLineChange={onVisualLineChange} />);
 
 		rerender(
 			<TextEditor

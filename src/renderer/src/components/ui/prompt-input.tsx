@@ -729,18 +729,12 @@ function PromptInputAction({
 			children.props.onClick?.(event);
 		},
 	});
-	const trigger = showTooltipWhenDisabled && isDisabled ? (
-		<span className="inline-flex">{child}</span>
-	) : (
-		child
-	);
+	const trigger =
+		showTooltipWhenDisabled && isDisabled ? <span className="inline-flex">{child}</span> : child;
 
 	return (
 		<Tooltip {...props}>
-			<TooltipTrigger
-				render={trigger}
-				disabled={showTooltipWhenDisabled ? false : disabled}
-			/>
+			<TooltipTrigger render={trigger} disabled={showTooltipWhenDisabled ? false : disabled} />
 			<TooltipContent side={side} className={className}>
 				{tooltip}
 			</TooltipContent>

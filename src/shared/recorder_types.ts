@@ -5,13 +5,7 @@ export interface RecordConfig {
 }
 
 export type RecordingStatus =
-	| 'selecting'
-	| 'recording'
-	| 'stopping'
-	| 'saving'
-	| 'completed'
-	| 'cancelled'
-	| 'error';
+	'selecting' | 'recording' | 'stopping' | 'saving' | 'completed' | 'cancelled' | 'error';
 
 export interface Recording {
 	id: string;

@@ -1,10 +1,5 @@
 export type CloudJson =
-	| string
-	| number
-	| boolean
-	| null
-	| { [key: string]: CloudJson | undefined }
-	| CloudJson[];
+	string | number | boolean | null | { [key: string]: CloudJson | undefined } | CloudJson[];
 
 export interface CloudChatSession {
 	id: string;

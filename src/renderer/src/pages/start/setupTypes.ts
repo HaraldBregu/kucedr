@@ -30,14 +30,7 @@ export type ProviderModelGroup = {
 };
 
 export type ModelServiceId =
-	| 'assistant'
-	| 'health'
-	| 'tasks'
-	| 'voice'
-	| 'transcription'
-	| 'image'
-	| 'video'
-	| 'audio';
+	'assistant' | 'health' | 'tasks' | 'voice' | 'transcription' | 'image' | 'video' | 'audio';
 
 export type ModelServiceSelection = {
 	providerId: string;

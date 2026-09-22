@@ -8,7 +8,11 @@ import { isAppWindowSettings } from '../../shared/app_window_validate';
 import type { AppManifest } from './app_types';
 
 function cleanAppEntry(value: string): string {
-	const trimmed = value.trim().replace(/\\+/g, '/').replace(/^\.?\//, '').replace(/\/+$/g, '');
+	const trimmed = value
+		.trim()
+		.replace(/\\+/g, '/')
+		.replace(/^\.?\//, '')
+		.replace(/\/+$/g, '');
 	return trimmed;
 }
 
@@ -20,7 +24,16 @@ function extractEntryFromExports(value: unknown): string | null {
 
 	if (!value || typeof value !== 'object') return null;
 	const record = value as Record<string, unknown>;
-	const candidates = ['import', 'module', 'require', 'browser', 'default', 'node', 'development', 'production'];
+	const candidates = [
+		'import',
+		'module',
+		'require',
+		'browser',
+		'default',
+		'node',
+		'development',
+		'production',
+	];
 
 	for (const candidate of candidates) {
 		const entry = extractEntryFromExports(record[candidate]);
@@ -51,23 +64,28 @@ function readPackageManifestFromStandardFields(directory: string): AppManifest |
 		};
 		if (
 			packageJson.kucedr !== undefined &&
-			(!packageJson.kucedr || typeof packageJson.kucedr !== 'object' || Array.isArray(packageJson.kucedr))
-		) return null;
+			(!packageJson.kucedr ||
+				typeof packageJson.kucedr !== 'object' ||
+				Array.isArray(packageJson.kucedr))
+		)
+			return null;
 		const window = packageJson.kucedr?.window;
 		if (window !== undefined && !isAppWindowSettings(window)) return null;
 
 		const title = typeof packageJson.name === 'string' ? packageJson.name.trim() : '';
-		const description = typeof packageJson.description === 'string' ? packageJson.description.trim() : '';
+		const description =
+			typeof packageJson.description === 'string' ? packageJson.description.trim() : '';
 		const version = typeof packageJson.version === 'string' ? packageJson.version.trim() : '';
 		if (!title || !description || !version) return null;
 
 		const category =
-			Array.isArray(packageJson.keywords) && packageJson.keywords.length > 0 && packageJson.keywords[0].trim()
+			Array.isArray(packageJson.keywords) &&
+			packageJson.keywords.length > 0 &&
+			packageJson.keywords[0].trim()
 				? packageJson.keywords[0].trim()
 				: 'utility';
 
-		const main =
-			typeof packageJson.main === 'string' ? cleanAppEntry(packageJson.main) : null;
+		const main = typeof packageJson.main === 'string' ? cleanAppEntry(packageJson.main) : null;
 		const fromExports = extractEntryFromExports(packageJson.exports);
 		const entry = main && isAppEntry(main) ? main : fromExports;
 		if (!entry) return null;

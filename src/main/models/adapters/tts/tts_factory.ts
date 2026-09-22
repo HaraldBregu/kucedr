@@ -9,9 +9,7 @@ import { createOpenAISpeechAdapter } from './tts_openai';
 import { SpeechProviderUnsupportedError } from './tts_errors';
 import type { SpeechAdapter, SpeechProviderSpec } from './tts_types';
 
-const SPEECH_ADAPTERS: Readonly<
-	Record<string, (spec: SpeechProviderSpec) => SpeechAdapter>
-> = {
+const SPEECH_ADAPTERS: Readonly<Record<string, (spec: SpeechProviderSpec) => SpeechAdapter>> = {
 	cartesia: createCartesiaSpeechAdapter,
 	deepgram: createDeepgramSpeechAdapter,
 	elevenlabs: createElevenLabsSpeechAdapter,

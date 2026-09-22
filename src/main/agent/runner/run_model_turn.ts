@@ -148,7 +148,11 @@ export async function* runModelTurn(
 				throw error;
 			retryDelay = retryAfterMs(error) ?? Math.min(250 * 2 ** attempt, 2_000);
 		} finally {
-			settleUsage?.(usage ? { inputTokens: usage.inputTokens ?? 0, outputTokens: usage.outputTokens ?? 0 } : undefined);
+			settleUsage?.(
+				usage
+					? { inputTokens: usage.inputTokens ?? 0, outputTokens: usage.outputTokens ?? 0 }
+					: undefined
+			);
 			lease?.release();
 		}
 		if (retryDelay !== undefined) await wait(retryDelay, undefined, { signal });

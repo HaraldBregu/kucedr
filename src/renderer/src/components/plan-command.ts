@@ -25,10 +25,7 @@ export const PlanCommand = Node.create({
 				find: /^\/plan$/,
 				handler: ({ state, range }) => {
 					if (range.from !== 1) return null;
-					state.tr.replaceWith(range.from, range.to, [
-						type.create(),
-						state.schema.text(' '),
-					]);
+					state.tr.replaceWith(range.from, range.to, [type.create(), state.schema.text(' ')]);
 					return undefined;
 				},
 			}),

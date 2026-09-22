@@ -18,7 +18,10 @@ export function chunkText(text: string): string[] {
 
 		while (section.length > CHUNK_SIZE - current.length - (current ? 2 : 0)) {
 			const available = CHUNK_SIZE - current.length - (current ? 2 : 0);
-			const splitAt = Math.max(section.lastIndexOf('\n', available), section.lastIndexOf(' ', available));
+			const splitAt = Math.max(
+				section.lastIndexOf('\n', available),
+				section.lastIndexOf(' ', available)
+			);
 			const end = splitAt > 0 ? splitAt : available;
 			const prefix = section.slice(0, end).trim();
 			if (prefix) chunks.push([current, prefix].filter(Boolean).join('\n\n'));

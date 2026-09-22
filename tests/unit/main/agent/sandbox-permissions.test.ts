@@ -1,7 +1,9 @@
 import path from 'node:path';
 
 const initialize = jest.fn().mockResolvedValue(undefined);
-const wrapWithSandboxArgv = jest.fn().mockResolvedValue({ argv: ['/bin/sh', '-lc', 'pwd'], env: {} });
+const wrapWithSandboxArgv = jest
+	.fn()
+	.mockResolvedValue({ argv: ['/bin/sh', '-lc', 'pwd'], env: {} });
 const writeFile = jest.fn().mockResolvedValue(undefined);
 
 jest.mock('node:fs/promises', () => ({
@@ -56,19 +58,36 @@ describe('ExecSandbox permissions', () => {
 
 	it('includes the cache ancestor in canonical command input before approval, preserving the working directory', () => {
 		const configured = execTool(new ExecSandbox());
-		const input = configured.parseInput({ command: 'pwd', workdir: '/tmp/claude/project', additionalRoots: ['.'] });
-		expect(input).toEqual({ command: 'pwd', workdir: '/tmp/claude/project', additionalRoots: ['.', realPath('/tmp/claude')] });
+		const input = configured.parseInput({
+			command: 'pwd',
+			workdir: '/tmp/claude/project',
+			additionalRoots: ['.'],
+		});
+		expect(input).toEqual({
+			command: 'pwd',
+			workdir: '/tmp/claude/project',
+			additionalRoots: ['.', realPath('/tmp/claude')],
+		});
 		expect(configured.parseInput(input)).toEqual(input);
-		expect(configured.parseInput({ command: 'pwd', additionalRoots: ['/tmp/claude/project'] })).toMatchObject({ additionalRoots: ['/tmp/claude/project', realPath('/tmp/claude')] });
+		expect(
+			configured.parseInput({ command: 'pwd', additionalRoots: ['/tmp/claude/project'] })
+		).toMatchObject({ additionalRoots: ['/tmp/claude/project', realPath('/tmp/claude')] });
 	});
 
 	it('does not expand cache scope without a write request, or for elevated or Plan commands', () => {
 		const sandbox = new ExecSandbox();
-		expect(execTool(sandbox).parseInput({ command: 'pwd', workdir: '/tmp/claude/project' })).toEqual({ command: 'pwd', workdir: '/tmp/claude/project' });
-		expect(execTool(sandbox).parseInput({ command: 'pwd', workdir: '/workspace' })).toEqual({ command: 'pwd', workdir: '/workspace' });
+		expect(
+			execTool(sandbox).parseInput({ command: 'pwd', workdir: '/tmp/claude/project' })
+		).toEqual({ command: 'pwd', workdir: '/tmp/claude/project' });
+		expect(execTool(sandbox).parseInput({ command: 'pwd', workdir: '/workspace' })).toEqual({
+			command: 'pwd',
+			workdir: '/workspace',
+		});
 		const input = { command: 'pwd', workdir: '/tmp/claude/project', elevated: true };
 		expect(execTool(sandbox).parseInput(input)).toEqual(input);
-		expect(execTool(sandbox, 'plan').parseInput({ command: 'pwd', workdir: '/tmp/claude/project' })).toEqual({ command: 'pwd', workdir: '/tmp/claude/project' });
+		expect(
+			execTool(sandbox, 'plan').parseInput({ command: 'pwd', workdir: '/tmp/claude/project' })
+		).toEqual({ command: 'pwd', workdir: '/tmp/claude/project' });
 	});
 
 	it('applies typed read and write denies to command execution', async () => {
@@ -86,8 +105,15 @@ describe('ExecSandbox permissions', () => {
 			expect.arrayContaining(['/shared/private/**'])
 		);
 		expect(configuration.config.filesystem.denyRead).toContain('/workspace/private/**');
-		expect(configuration.config.filesystem.denyWrite).toEqual(['/shared/private/**', '/workspace/private/**', '/tmp/claude', '/home/user/.npm/_logs']);
-		expect(configuration.config.filesystem.denyRead).not.toContain(path.parse(agentLocation()).root);
+		expect(configuration.config.filesystem.denyWrite).toEqual([
+			'/shared/private/**',
+			'/workspace/private/**',
+			'/tmp/claude',
+			'/home/user/.npm/_logs',
+		]);
+		expect(configuration.config.filesystem.denyRead).not.toContain(
+			path.parse(agentLocation()).root
+		);
 	});
 
 	it('removes a runtime cache write restriction only for its approved invocation', async () => {
@@ -97,7 +123,9 @@ describe('ExecSandbox permissions', () => {
 		expect(approved.filesystem.denyWrite).not.toContain('/tmp/claude');
 		expect(approved.filesystem.allowWrite).toContain('/tmp/claude/**');
 		await sandbox.wrap('pwd', '/workspace', 'unapproved-cache');
-		expect(wrapWithSandboxArgv.mock.calls.at(-1)?.[2].filesystem.denyWrite).toContain('/tmp/claude');
+		expect(wrapWithSandboxArgv.mock.calls.at(-1)?.[2].filesystem.denyWrite).toContain(
+			'/tmp/claude'
+		);
 	});
 
 	it('adds an approved outside root only to the wrapped invocation', async () => {
@@ -148,14 +176,15 @@ describe('ExecSandbox permissions', () => {
 			denyRead: ['/', '/shared/private/**', '/workspace/private/**'],
 			allowRead: expect.arrayContaining([agentLocation()]),
 			allowWrite: expect.any(Array),
-			denyWrite: expect.arrayContaining([
-				agentLocation(),
-				'/tmp/claude',
-				'/home/user/.npm/_logs',
-			]),
+			denyWrite: expect.arrayContaining([agentLocation(), '/tmp/claude', '/home/user/.npm/_logs']),
 		});
 		expect(wrapped.args).toEqual(
-			expect.arrayContaining(['--settings', expect.stringContaining('plan-command.json'), '-c', 'git status'])
+			expect.arrayContaining([
+				'--settings',
+				expect.stringContaining('plan-command.json'),
+				'-c',
+				'git status',
+			])
 		);
 		expect(wrapWithSandboxArgv).not.toHaveBeenCalledWith(
 			expect.anything(),

@@ -28,7 +28,11 @@ export function createMinimaxVideoAdapter(spec: VideoProviderSpec): VideoAdapter
 				{
 					method: 'POST',
 					headers,
-					body: JSON.stringify({ model: request.modelId, prompt: request.prompt, ...request.options }),
+					body: JSON.stringify({
+						model: request.modelId,
+						prompt: request.prompt,
+						...request.options,
+					}),
 					signal: request.signal,
 				}
 			);

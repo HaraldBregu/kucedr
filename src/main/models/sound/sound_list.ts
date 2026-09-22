@@ -16,8 +16,7 @@ export async function listSounds(): Promise<SoundFile[]> {
 	const files = await Promise.all(
 		entries
 			.filter(
-				(entry) =>
-					entry.isFile() && AUDIO_EXTENSIONS.has(path.extname(entry.name).toLowerCase())
+				(entry) => entry.isFile() && AUDIO_EXTENSIONS.has(path.extname(entry.name).toLowerCase())
 			)
 			.map(async (entry) => {
 				const filePath = path.join(soundDir, entry.name);

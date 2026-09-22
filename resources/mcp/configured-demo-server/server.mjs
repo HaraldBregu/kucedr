@@ -94,7 +94,9 @@ const callTool = (name, args) => {
 			args.quantity <= 0 ||
 			args.unitPrice < 0
 		) {
-			return toolError('customer and item must be strings; quantity and unitPrice must be valid numbers.');
+			return toolError(
+				'customer and item must be strings; quantity and unitPrice must be valid numbers.'
+			);
 		}
 		const subtotal = args.quantity * args.unitPrice;
 		const tax = subtotal * (configuration.taxRate / 100);
@@ -157,7 +159,11 @@ const callTool = (name, args) => {
 const handle = (message) => {
 	if (!message || message.jsonrpc !== '2.0' || typeof message.method !== 'string') {
 		if (message?.id !== undefined) {
-			send({ jsonrpc: '2.0', id: message.id, error: { code: -32600, message: 'Invalid request.' } });
+			send({
+				jsonrpc: '2.0',
+				id: message.id,
+				error: { code: -32600, message: 'Invalid request.' },
+			});
 		}
 		return;
 	}
@@ -193,7 +199,10 @@ const handle = (message) => {
 		send({
 			jsonrpc: '2.0',
 			id: message.id,
-			result: callTool(typeof name === 'string' ? name : '', args && typeof args === 'object' ? args : {}),
+			result: callTool(
+				typeof name === 'string' ? name : '',
+				args && typeof args === 'object' ? args : {}
+			),
 		});
 		return;
 	}

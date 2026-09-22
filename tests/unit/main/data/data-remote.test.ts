@@ -39,7 +39,11 @@ it('purges an explicitly scoped remote namespace through the selected adapter', 
 	await expect(controller.purge(scope, preview.confirmationId)).resolves.toEqual(
 		expect.objectContaining({ remoteDataDeleted: true })
 	);
-	expect(purge).toHaveBeenCalledWith('synthetic-mirror-account', 'knowledge-base', scope.generation);
+	expect(purge).toHaveBeenCalledWith(
+		'synthetic-mirror-account',
+		'knowledge-base',
+		scope.generation
+	);
 });
 
 it('delegates all Kucedr namespace cleanup to the selected adapter', async () => {
@@ -49,7 +53,11 @@ it('delegates all Kucedr namespace cleanup to the selected adapter', async () =>
 		listSessions: () => [],
 		deleteSession: jest.fn(),
 	});
-	const scope = { kind: 'rag' as const, mode: 'remote_all_namespaces' as const, indexName: 'knowledge-base' };
+	const scope = {
+		kind: 'rag' as const,
+		mode: 'remote_all_namespaces' as const,
+		indexName: 'knowledge-base',
+	};
 	const preview = await controller.previewPurge(scope);
 	await expect(controller.purge(scope, preview.confirmationId)).resolves.toMatchObject({
 		remoteDataDeleted: true,

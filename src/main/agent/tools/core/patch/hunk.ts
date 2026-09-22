@@ -63,4 +63,3 @@ export function parseHunk(lines: string[], lineNumber: number): { hunk: Hunk; co
 		`Invalid patch hunk at line ${lineNumber}: '${lines[0]}' is not a valid hunk header. Valid hunk headers: '*** Add File: {path}', '*** Delete File: {path}', '*** Update File: {path}'`
 	);
 }
-

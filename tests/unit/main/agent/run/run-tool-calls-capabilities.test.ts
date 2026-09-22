@@ -27,13 +27,9 @@ describe('runToolCalls capability changes', () => {
 		];
 		const outputs: unknown[] = [];
 
-		for await (const event of runToolCalls(
-			tools,
-			calls,
-			new AbortController().signal,
-			undefined,
-			{ runId: 'run' }
-		)) {
+		for await (const event of runToolCalls(tools, calls, new AbortController().signal, undefined, {
+			runId: 'run',
+		})) {
 			if (event.type !== 'tool_call_end') continue;
 			outputs.push(event.output);
 			if (event.toolName === 'activate') tools.splice(0, tools.length, load);
@@ -65,13 +61,11 @@ describe('runToolCalls capability changes', () => {
 			},
 			{ id: 'read', name: 'read', args: {} },
 		];
-		const events = runToolCalls(
-			[requestUserInputTool, read],
-			calls,
-			controller.signal,
-			undefined,
-			{ runId: 'run', windowId: 1, interactionMode: 'plan' }
-		);
+		const events = runToolCalls([requestUserInputTool, read], calls, controller.signal, undefined, {
+			runId: 'run',
+			windowId: 1,
+			interactionMode: 'plan',
+		});
 		expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
 		expect((await events.next()).value).toMatchObject({ type: 'user_input_request' });
 		const result = events.next();

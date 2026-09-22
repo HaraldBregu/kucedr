@@ -1,7 +1,11 @@
 import { seekSequence } from './sequence';
 import type { UpdateChunk } from './types';
 
-export function applyUpdateChunks(filePath: string, contents: string, chunks: UpdateChunk[]): string {
+export function applyUpdateChunks(
+	filePath: string,
+	contents: string,
+	chunks: UpdateChunk[]
+): string {
 	const lines = contents.split('\n');
 	if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
 
@@ -47,4 +51,3 @@ export function applyUpdateChunks(filePath: string, contents: string, chunks: Up
 	if (result.length === 0 || result[result.length - 1] !== '') result.push('');
 	return result.join('\n');
 }
-

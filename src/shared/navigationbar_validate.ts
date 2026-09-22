@@ -8,9 +8,7 @@ const icons = new Set<string>(APP_NAVIGATION_BAR_BUTTON_ICONS);
 const maxButtonsPerSide = 6;
 const maxTextLength = 120;
 
-export function isAppNavigationBarOptions(
-	value: unknown
-): value is AppNavigationBarOptions | null {
+export function isAppNavigationBarOptions(value: unknown): value is AppNavigationBarOptions | null {
 	if (value === null) return true;
 	if (typeof value !== 'object' || Array.isArray(value)) return false;
 	const options = value as Record<string, unknown>;

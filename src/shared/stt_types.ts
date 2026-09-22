@@ -50,9 +50,7 @@ export function normalizeTextToSpeechSynthesisRequest(
 	}
 
 	const voiceId =
-		typeof source.voiceId === 'string' && source.voiceId.trim()
-			? source.voiceId.trim()
-			: undefined;
+		typeof source.voiceId === 'string' && source.voiceId.trim() ? source.voiceId.trim() : undefined;
 	const format = source.format;
 	if (format !== undefined && !TEXT_TO_SPEECH_AUDIO_FORMATS.includes(format)) {
 		throw new Error(`Unsupported text-to-speech audio format: ${String(format)}`);

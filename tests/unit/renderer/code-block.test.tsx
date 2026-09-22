@@ -11,9 +11,10 @@ it('ignores stale highlighting and keeps current code when highlighting fails', 
 	let resolveOld: (html: string) => void = () => undefined;
 	codeToHtml
 		.mockImplementationOnce(
-			() => new Promise<string>((resolve) => {
-				resolveOld = resolve;
-			})
+			() =>
+				new Promise<string>((resolve) => {
+					resolveOld = resolve;
+				})
 		)
 		.mockResolvedValueOnce('<pre><code>new highlighted</code></pre>')
 		.mockRejectedValueOnce(new Error('Unsupported language'));

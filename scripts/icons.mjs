@@ -5,7 +5,9 @@ import sharp from 'sharp';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const source = await readFile(path.join(root, 'resources/icons/icon.svg'));
-const sourceWithoutBackground = source.toString().replace(/\s*<rect id="app-background"[^>]*\/>/, '');
+const sourceWithoutBackground = source
+	.toString()
+	.replace(/\s*<rect id="app-background"[^>]*\/>/, '');
 
 if (sourceWithoutBackground === source.toString()) {
 	throw new Error('Missing app-background rectangle in resources/icons/icon.svg.');

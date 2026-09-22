@@ -49,10 +49,7 @@ export const setA2aAgents = (agents: A2aAgent[]): void => {
 	const records = agents.map((agent) => {
 		const preserved = preservedRecords.get(agent.id);
 		const preservedRecord = preserved ? preserveA2aCredential(agent, preserved) : undefined;
-		if (
-			preservedRecord &&
-			(!isA2aSecureStorageAvailable() || !agent.credential)
-		) {
+		if (preservedRecord && (!isA2aSecureStorageAvailable() || !agent.credential)) {
 			nextPreservedRecords.set(agent.id, preservedRecord);
 			return preservedRecord;
 		}

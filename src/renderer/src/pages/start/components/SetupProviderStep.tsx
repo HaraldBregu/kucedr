@@ -1,7 +1,5 @@
 import React from 'react';
-import ProvidersPage, {
-	type ProviderSetupSection,
-} from '../../settings/pages/providers/Page';
+import ProvidersPage, { type ProviderSetupSection } from '../../settings/pages/providers/Page';
 import { SetupStepHeader } from './SetupStepHeader';
 
 type SetupProviderStepProps = {
@@ -10,8 +8,11 @@ type SetupProviderStepProps = {
 	readonly description: string;
 };
 
-export function SetupProviderStep({ section, title, description }: SetupProviderStepProps): React.JSX.Element {
-
+export function SetupProviderStep({
+	section,
+	title,
+	description,
+}: SetupProviderStepProps): React.JSX.Element {
 	return (
 		<div className="mx-auto flex min-h-full w-full max-w-2xl flex-col py-8">
 			<SetupStepHeader title={title} description={description} />

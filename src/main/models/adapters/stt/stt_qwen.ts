@@ -155,9 +155,7 @@ function qwenRealtimeUrl(
 	baseURL: string | undefined,
 	request: SttAdapterRealtimeStartRequest
 ): string {
-	const url = new URL(
-		baseURL ?? speechToTextBaseUrl('qwen')
-	);
+	const url = new URL(baseURL ?? speechToTextBaseUrl('qwen'));
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	url.searchParams.set('model', request.modelId || realtimeSpeechToTextModelId('qwen'));
 	return url.toString();

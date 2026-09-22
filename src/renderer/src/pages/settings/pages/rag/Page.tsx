@@ -382,7 +382,7 @@ const RagPage: React.FC = () => {
 									className="w-56 max-w-full text-xs"
 								>
 									<SelectValue placeholder={t('settings.rag.databasePlaceholder')}>
-									{selectedDatabase &&
+										{selectedDatabase &&
 											`${selectedDatabase.providerName} / ${selectedDatabase.databaseName}`}
 									</SelectValue>
 								</SelectTrigger>

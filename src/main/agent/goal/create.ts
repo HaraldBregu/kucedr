@@ -13,9 +13,7 @@ export function createGoal(sessionDirectory: string, objective: string): Session
 		id: randomUUID(),
 		objective: value,
 		status: 'active',
-		criteria: [
-			{ id: 'criterion-1', description: value, satisfied: false, evidenceIds: [] },
-		],
+		criteria: [{ id: 'criterion-1', description: value, satisfied: false, evidenceIds: [] }],
 		steps: [],
 		evidence: [],
 		limits: { maxRuns: 20 },

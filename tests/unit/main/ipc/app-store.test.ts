@@ -52,11 +52,7 @@ describe('app store IPC', () => {
 		expect(appStorage.set).toHaveBeenCalledWith('draw', 'config', { ready: true });
 		expect(appStorage.delete).toHaveBeenCalledWith('draw', 'config');
 		expect(appStorage.readFile).toHaveBeenCalledWith('draw', 'data.bin');
-		expect(appStorage.writeFile).toHaveBeenCalledWith(
-			'draw',
-			'data.bin',
-			new Uint8Array([2])
-		);
+		expect(appStorage.writeFile).toHaveBeenCalledWith('draw', 'data.bin', new Uint8Array([2]));
 		expect(appStorage.deleteFile).toHaveBeenCalledWith('draw', 'data.bin');
 	});
 

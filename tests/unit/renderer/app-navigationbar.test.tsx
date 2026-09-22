@@ -1,10 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AppNavigationBar } from '../../../src/renderer/src/components/app/navigationbar/AppNavigationBar';
 
-jest.mock(
-	'../../../src/renderer/src/components/app/navigationbar/hooks/useAppWindowState',
-	() => ({ useAppWindowState: jest.fn(() => false) })
-);
+jest.mock('../../../src/renderer/src/components/app/navigationbar/hooks/useAppWindowState', () => ({
+	useAppWindowState: jest.fn(() => false),
+}));
 
 beforeEach(() => {
 	Object.defineProperty(window, 'win', {

@@ -79,7 +79,7 @@ export function DataControls({ kinds }: DataControlsProps): React.JSX.Element {
 
 	const scopeFor = (kind: DataControlKind): DataScope | undefined => {
 		return scopes?.find((scope) => {
-				if (kind === 'memory' || kind === 'sessions') {
+			if (kind === 'memory' || kind === 'sessions') {
 				return scope.kind === kind;
 			}
 			return scope.kind === 'rag' && scope.mode === kind;

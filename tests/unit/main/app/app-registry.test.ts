@@ -28,9 +28,7 @@ describe('app registry', () => {
 		const contents = webContents(7);
 		const conflicting = webContents(7);
 		expect(() => registry.register(invalid.value as never, 'draw')).toThrow('web contents ID');
-		expect(() => registry.register(contents.value as never, '../draw')).toThrow(
-			'Invalid app ID'
-		);
+		expect(() => registry.register(contents.value as never, '../draw')).toThrow('Invalid app ID');
 
 		registry.register(contents.value as never, 'draw');
 		expect(() => registry.register(conflicting.value as never, 'demo')).toThrow(

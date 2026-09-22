@@ -1,8 +1,5 @@
 import { listSkillsTool } from '../../../../../src/main/agent/tools/skills/list_skills';
-import type {
-	SkillInfo,
-	SkillRegistrySnapshot,
-} from '../../../../../src/shared/skills_types';
+import type { SkillInfo, SkillRegistrySnapshot } from '../../../../../src/shared/skills_types';
 
 function skill(name: string, overrides: Partial<SkillInfo> = {}): SkillInfo {
 	return {

@@ -47,13 +47,9 @@ it('renders the five integration providers as borderless items with descriptions
 	const { container } = render(<IntegrationsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
-	expect(screen.getAllByRole('switch').map((control) => control.getAttribute('aria-label'))).toEqual([
-		'gmail',
-		'google-calendar',
-		'google-drive',
-		'github',
-		'notion',
-	]);
+	expect(
+		screen.getAllByRole('switch').map((control) => control.getAttribute('aria-label'))
+	).toEqual(['gmail', 'google-calendar', 'google-drive', 'github', 'notion']);
 	await waitFor(() => expect(screen.getByRole('switch', { name: 'gmail' })).toBeChecked());
 	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(5);
 	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);

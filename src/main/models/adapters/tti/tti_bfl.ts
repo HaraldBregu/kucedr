@@ -41,7 +41,8 @@ export function createBflImageAdapter(spec: ImageProviderSpec): ImageAdapter {
 				signal: request.signal,
 			});
 			const pollingUrl =
-				submitted.polling_url ?? `${baseURL}/get_result?id=${encodeURIComponent(submitted.id ?? '')}`;
+				submitted.polling_url ??
+				`${baseURL}/get_result?id=${encodeURIComponent(submitted.id ?? '')}`;
 
 			const sample = await poll(spec.name, 120, 2000, async () => {
 				const result = await requestJson<BflResultResponse>(spec.name, pollingUrl, {

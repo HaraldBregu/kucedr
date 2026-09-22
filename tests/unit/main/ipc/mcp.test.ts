@@ -83,15 +83,13 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 		jest.clearAllMocks();
 		const mainFrame = {};
 		const sender = { id: 21, mainFrame };
-		jest
-			.mocked(BrowserWindow.fromWebContents)
-			.mockReturnValue({
-				id: 1,
-				webContents: sender,
-				isMinimized: () => false,
-				show: jest.fn(),
-				focus: jest.fn(),
-			} as never);
+		jest.mocked(BrowserWindow.fromWebContents).mockReturnValue({
+			id: 1,
+			webContents: sender,
+			isMinimized: () => false,
+			show: jest.fn(),
+			focus: jest.fn(),
+		} as never);
 		new McpIpc().register(
 			{ windows: { has: () => true }, apps: { has: () => false } } as never,
 			{} as never

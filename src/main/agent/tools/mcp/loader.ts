@@ -55,7 +55,7 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 			discoverySignal?: AbortSignal
 		): Promise<DiscoveredMcpTool[]> => {
 			const discovered = await Promise.allSettled(
-			selected.map(async ([id, data]): Promise<DiscoveredServer> => {
+				selected.map(async ([id, data]): Promise<DiscoveredServer> => {
 					discoverySignal?.throwIfAborted();
 					let client: McpClient;
 					try {
@@ -78,18 +78,18 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 						await close(client).catch(() => undefined);
 						return { id, client, failure: 'list' };
 					}
-			})
+				})
 			);
-		const rejected = discovered.find(
-			(result): result is PromiseRejectedResult => result.status === 'rejected'
-		);
-		if (rejected) {
-			await closeMcpClients(clients);
-			throw rejected.reason;
-		}
+			const rejected = discovered.find(
+				(result): result is PromiseRejectedResult => result.status === 'rejected'
+			);
+			if (rejected) {
+				await closeMcpClients(clients);
+				throw rejected.reason;
+			}
 
-		const newlyDiscovered: DiscoveredMcpTool[] = [];
-		for (const settled of discovered) {
+			const newlyDiscovered: DiscoveredMcpTool[] = [];
+			for (const settled of discovered) {
 				if (settled.status !== 'fulfilled') continue;
 				const result = settled.value;
 				if ('failure' in result) {
@@ -120,7 +120,7 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 					}
 					try {
 						const runtimeName = mcpToolName(result.id, listedTool.name, usedNames);
-					const configured = mcpTool(
+						const configured = mcpTool(
 							result.client,
 							listedTool.name,
 							listedTool.description ?? '',
@@ -130,14 +130,14 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 							runtimeName,
 							listedTool.annotations?.readOnlyHint === true
 						);
-					tools.push(configured);
-					const entry = {
-						tool: configured,
-						serverId: result.id,
-						serverName: serverData.get(result.id)?.name?.trim() || result.id,
-					};
-					entries.push(entry);
-					newlyDiscovered.push(entry);
+						tools.push(configured);
+						const entry = {
+							tool: configured,
+							serverId: result.id,
+							serverName: serverData.get(result.id)?.name?.trim() || result.id,
+						};
+						entries.push(entry);
+						newlyDiscovered.push(entry);
 						usedNames.add(runtimeName);
 						diagnostics.loadedTools += 1;
 					} catch {
@@ -148,9 +148,9 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 							toolName: listedTool.name,
 						});
 					}
+				}
 			}
-		}
-		return newlyDiscovered;
+			return newlyDiscovered;
 		};
 
 		await discover(eagerServers, signal);
@@ -162,7 +162,9 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 				const selected = [...new Set(serverIds)].flatMap((id) => {
 					if (loadedServerIds.has(id) || failedServerIds.has(id)) return [];
 					const data = serverData.get(id);
-					return data?.defer_loading === true ? [[id, data] as (typeof enabledServers)[number]] : [];
+					return data?.defer_loading === true
+						? [[id, data] as (typeof enabledServers)[number]]
+						: [];
 				});
 				return selected.length > 0 ? discover(selected, discoverySignal) : [];
 			},

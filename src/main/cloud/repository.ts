@@ -18,10 +18,7 @@ export interface CloudRepository {
 	uploadFile(ownerId: string, input: CloudFileUpload): Promise<CloudFile>;
 	downloadFile(fileId: string): Promise<ArrayBuffer>;
 	deleteFile(fileId: string): Promise<void>;
-	watchSession(
-		sessionId: string,
-		listener: (event: CloudChange['event']) => void
-	): Promise<void>;
+	watchSession(sessionId: string, listener: (event: CloudChange['event']) => void): Promise<void>;
 	unwatchSession(sessionId: string): Promise<void>;
 	clearWatches(): Promise<void>;
 }

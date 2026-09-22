@@ -17,10 +17,17 @@ const render = (): void => {
 	root.render(
 		<StrictMode>
 			<App />
-		</StrictMode>,
+		</StrictMode>
 	);
 };
 
 render();
-void loadModels().then(render).catch(() => undefined);
-window.app.onModelsChanged(() => void loadModels().then(render).catch(() => undefined));
+void loadModels()
+	.then(render)
+	.catch(() => undefined);
+window.app.onModelsChanged(
+	() =>
+		void loadModels()
+			.then(render)
+			.catch(() => undefined)
+);

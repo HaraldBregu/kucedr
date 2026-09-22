@@ -21,6 +21,7 @@ export function formatA2aTaskOutcome(
 	if (state === TaskState.TASK_STATE_AUTH_REQUIRED) {
 		return `Remote task ${reference} requires authentication${content ? `: ${content}` : '.'}`;
 	}
-	if (state === TaskState.TASK_STATE_COMPLETED) return content || `Remote task ${reference} is completed.`;
+	if (state === TaskState.TASK_STATE_COMPLETED)
+		return content || `Remote task ${reference} is completed.`;
 	return `Remote task ${reference} is ${label}${content ? `: ${content}` : '.'}`;
 }

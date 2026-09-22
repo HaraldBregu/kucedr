@@ -28,10 +28,13 @@ describe('package app window configuration', () => {
 
 	it('imports and discovers package-only window settings', () => {
 		const window = { width: 480, height: 320, resizable: false, maximizable: false };
-		fs.writeFileSync(path.join(source, 'package.json'), JSON.stringify({
-			...packageJson,
-			kucedr: { window },
-		}));
+		fs.writeFileSync(
+			path.join(source, 'package.json'),
+			JSON.stringify({
+				...packageJson,
+				kucedr: { window },
+			})
+		);
 
 		const result = importApps([source], location);
 		expect(result.skipped).toEqual([]);
@@ -57,25 +60,34 @@ describe('package app window configuration', () => {
 		null,
 		[],
 	])('rejects invalid package window settings: %j', (window) => {
-		fs.writeFileSync(path.join(source, 'package.json'), JSON.stringify({
-			...packageJson,
-			kucedr: { window },
-		}));
+		fs.writeFileSync(
+			path.join(source, 'package.json'),
+			JSON.stringify({
+				...packageJson,
+				kucedr: { window },
+			})
+		);
 		expect(readAppManifestFromDirectory(source)).toBeNull();
 		expect(importApps([source], location).imported).toEqual([]);
 	});
 
 	it('uses manifest configuration before package configuration', () => {
-		fs.writeFileSync(path.join(source, 'package.json'), JSON.stringify({
-			...packageJson,
-			kucedr: { window: { width: 0 } },
-		}));
-		fs.writeFileSync(path.join(source, 'manifest.json'), JSON.stringify({
-			title: 'Notes',
-			description: 'A notes app',
-			metadata: { version: '1.0.0', category: 'utility', entry: 'index.html' },
-			window: { width: 960 },
-		}));
+		fs.writeFileSync(
+			path.join(source, 'package.json'),
+			JSON.stringify({
+				...packageJson,
+				kucedr: { window: { width: 0 } },
+			})
+		);
+		fs.writeFileSync(
+			path.join(source, 'manifest.json'),
+			JSON.stringify({
+				title: 'Notes',
+				description: 'A notes app',
+				metadata: { version: '1.0.0', category: 'utility', entry: 'index.html' },
+				window: { width: 960 },
+			})
+		);
 		expect(readAppManifestFromDirectory(source)).toMatchObject({ window: { width: 960 } });
 	});
 });

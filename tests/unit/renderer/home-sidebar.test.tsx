@@ -119,7 +119,9 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
 	expect(screen.getByText('settings.tabs.account')).toBeInTheDocument();
-	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')).toBeInTheDocument();
+	expect(
+		within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')
+	).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
 	).not.toBeInTheDocument();
@@ -180,8 +182,12 @@ it.each<[AuthState, string]>([
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
-	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.cloud' })).not.toBeInTheDocument();
-	expect(within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })).not.toBeInTheDocument();
+	expect(
+		within(menu).queryByRole('menuitem', { name: 'settings.tabs.cloud' })
+	).not.toBeInTheDocument();
+	expect(
+		within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })
+	).not.toBeInTheDocument();
 	await user.click(within(menu).getByRole('menuitem', { name: 'settings.sidebar.signOut' }));
 	expect(confirmSignOut).toHaveBeenCalledTimes(1);
 	await waitFor(() => expect(signOut).toHaveBeenCalledTimes(1));
@@ -369,10 +375,7 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
 	await screen.findByText('settings.chatHistory.empty');
 	expect(sidebar).not.toContainElement(toggle);
-	expect(toggle).toHaveClass(
-		'aria-expanded:bg-transparent',
-		'aria-expanded:text-muted-foreground'
-	);
+	expect(toggle).toHaveClass('aria-expanded:bg-transparent', 'aria-expanded:text-muted-foreground');
 	expect(sidebar).toHaveClass('top-12', 'bottom-0', 'border-r', 'bg-background');
 
 	fireEvent.keyDown(resizer, { key: 'ArrowRight' });

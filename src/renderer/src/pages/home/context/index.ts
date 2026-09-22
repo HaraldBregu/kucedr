@@ -1,10 +1,7 @@
 export { Provider } from './Provider';
 export { useHomeAgentContext } from './useHomeAgentContext';
 export type { AgentChatAction } from './actions';
-export {
-	agentChatReducer,
-	historyToChatMessages,
-} from './reducer';
+export { agentChatReducer, historyToChatMessages } from './reducer';
 export {
 	initialAgentChatState,
 	welcomeMessage,

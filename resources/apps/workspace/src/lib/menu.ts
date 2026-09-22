@@ -1,22 +1,22 @@
-import { isKucedr, win, type ContextMenuDescriptor } from "@kucedr/sdk"
+import { isKucedr, win, type ContextMenuDescriptor } from '@kucedr/sdk';
 
 interface ContextMenuEvent {
-  preventDefault: () => void
-  stopPropagation: () => void
+	preventDefault: () => void;
+	stopPropagation: () => void;
 }
 
-type ContextMenuActions = Record<string, () => void | Promise<void>>
+type ContextMenuActions = Record<string, () => void | Promise<void>>;
 
 export function showNativeContextMenu(
-  event: ContextMenuEvent,
-  items: ContextMenuDescriptor[],
-  actions: ContextMenuActions = {},
+	event: ContextMenuEvent,
+	items: ContextMenuDescriptor[],
+	actions: ContextMenuActions = {}
 ) {
-  if (!isKucedr()) return
-  event.preventDefault()
-  event.stopPropagation()
-  void win
-    .showContextMenu(items)
-    .then((action) => (action ? actions[action]?.() : undefined))
-    .catch(() => undefined)
+	if (!isKucedr()) return;
+	event.preventDefault();
+	event.stopPropagation();
+	void win
+		.showContextMenu(items)
+		.then((action) => (action ? actions[action]?.() : undefined))
+		.catch(() => undefined);
 }

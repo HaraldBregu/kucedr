@@ -32,7 +32,7 @@ describe('realPath', () => {
 		fs.symlinkSync(outside, link);
 
 		expect(realPath(path.join(link, 'new', 'file.txt'))).toBe(
-			path.join(fs.realpathSync(outside), 'new', 'file.txt'),
+			path.join(fs.realpathSync(outside), 'new', 'file.txt')
 		);
 	});
 });

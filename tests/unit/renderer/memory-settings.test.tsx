@@ -64,7 +64,9 @@ it('shows memory settings without collapsible items or a header icon', async () 
 	expect(screen.queryByRole('spinbutton', { name: 'Creativity' })).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Advanced' })).toBeInTheDocument();
 	expect(heading.closest('header')?.querySelector('svg')).toBeNull();
-	expect(screen.queryByRole('button', { name: 'settings.memory.saveSettings' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.memory.saveSettings' })
+	).not.toBeInTheDocument();
 });
 
 it('saves independent memory configuration automatically', async () => {

@@ -17,10 +17,7 @@ export function recall(markdown: string, query: string): string {
 			.toLocaleLowerCase()
 			.replace(/\s+/g, ' ');
 		const core = /\b(profile|preference|preferences|profilo|preferenze)\b/.test(section);
-		const score = terms.reduce(
-			(total, term) => total + (normalized.includes(term) ? 1 : 0),
-			0
-		);
+		const score = terms.reduce((total, term) => total + (normalized.includes(term) ? 1 : 0), 0);
 		return [{ line, normalized, index, core, score }];
 	});
 	const unique = <T extends { normalized: string }>(items: T[]): T[] => {

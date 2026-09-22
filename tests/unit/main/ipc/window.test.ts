@@ -83,7 +83,10 @@ it('shows a native confirmation before signing out', async () => {
 		([channel]) => channel === WindowChannels.confirmSignOut
 	)?.[1];
 
-	await expect(handler({ sender: {} } as IpcMainInvokeEvent)).resolves.toEqual({ success: true, data: true });
+	await expect(handler({ sender: {} } as IpcMainInvokeEvent)).resolves.toEqual({
+		success: true,
+		data: true,
+	});
 	expect(dialog.showMessageBox).toHaveBeenCalledWith(
 		window,
 		expect.objectContaining({

@@ -99,7 +99,10 @@ const noteEditorTheme = EditorView.theme({
 const codeEditorTheme = EditorView.theme({
 	'&': { height: '100%', backgroundColor: 'transparent', color: 'var(--foreground)' },
 	'&.cm-focused': { outline: 'none' },
-	'.cm-scroller': { overflow: 'auto', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace' },
+	'.cm-scroller': {
+		overflow: 'auto',
+		fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
+	},
 	'.cm-content': { minHeight: '100%', padding: '12px 0', caretColor: 'var(--primary)' },
 	'.cm-line': { padding: '0 16px' },
 	'.cm-gutters': {

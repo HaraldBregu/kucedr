@@ -18,16 +18,26 @@ function browserContext() {
 		locator: jest.fn(() => ({ click })),
 		url: jest.fn(() => url),
 		title: jest.fn(async () => url),
-		goto: jest.fn(async (nextUrl: string) => { url = nextUrl; }),
-		close: jest.fn(async () => { pageEvents.emit('close'); }),
+		goto: jest.fn(async (nextUrl: string) => {
+			url = nextUrl;
+		}),
+		close: jest.fn(async () => {
+			pageEvents.emit('close');
+		}),
 	});
 	const events = new EventEmitter();
 	return Object.assign(events, {
 		page,
 		pages: jest.fn(() => []),
-		newPage: jest.fn(async () => { events.emit('page', page); return page; }),
+		newPage: jest.fn(async () => {
+			events.emit('page', page);
+			return page;
+		}),
 		setDefaultTimeout: jest.fn(),
-		close: jest.fn(async () => { pageEvents.emit('close'); events.emit('close'); }),
+		close: jest.fn(async () => {
+			pageEvents.emit('close');
+			events.emit('close');
+		}),
 	});
 }
 
@@ -61,7 +71,12 @@ it('isolates background browsers from one another and the interactive profile', 
 		for (const call of launchPersistentContext.mock.calls.slice(1)) {
 			expect(call).toEqual([
 				'',
-				expect.objectContaining({ channel: 'chrome', headless: true, viewport: null, timeout: 15_000 }),
+				expect.objectContaining({
+					channel: 'chrome',
+					headless: true,
+					viewport: null,
+					timeout: 15_000,
+				}),
 			]);
 		}
 		expect(JSON.parse(String(await first.tool.run({ action: 'tabs' })))).toEqual({
@@ -101,7 +116,11 @@ it('closes a launch that finishes after the background browser is disposed', asy
 	const browser = createBackgroundBrowser();
 	const context = browserContext();
 	let resolveLaunch!: (value: ReturnType<typeof browserContext>) => void;
-	launchPersistentContext.mockReturnValue(new Promise((resolve) => { resolveLaunch = resolve; }));
+	launchPersistentContext.mockReturnValue(
+		new Promise((resolve) => {
+			resolveLaunch = resolve;
+		})
+	);
 	const start = browser.tool.run({ action: 'start' });
 	const result = expect(start).rejects.toThrow();
 	await Promise.resolve();
@@ -119,7 +138,11 @@ it('closes a context when cancellation happens while Chrome is launching', async
 	const context = browserContext();
 	const controller = new AbortController();
 	let resolveLaunch!: (value: ReturnType<typeof browserContext>) => void;
-	launchPersistentContext.mockReturnValue(new Promise((resolve) => { resolveLaunch = resolve; }));
+	launchPersistentContext.mockReturnValue(
+		new Promise((resolve) => {
+			resolveLaunch = resolve;
+		})
+	);
 	const start = browser.tool.run({ action: 'start' }, controller.signal);
 	const result = expect(start).rejects.toThrow('cancel browser');
 	await Promise.resolve();
@@ -137,7 +160,9 @@ it('reports a missing Chrome installation and permits retrying the launch', asyn
 		.mockRejectedValueOnce(new Error('Executable does not exist'))
 		.mockResolvedValueOnce(context);
 	try {
-		await expect(browser.tool.run({ action: 'start' })).rejects.toThrow('could not start Google Chrome');
+		await expect(browser.tool.run({ action: 'start' })).rejects.toThrow(
+			'could not start Google Chrome'
+		);
 		await browser.tool.run({ action: 'start' });
 		expect(launchPersistentContext).toHaveBeenCalledTimes(2);
 	} finally {
@@ -150,21 +175,32 @@ it('allows unattended background navigation and browser interactions without app
 	const context = browserContext();
 	launchPersistentContext.mockResolvedValue(context);
 	const open: ToolCall = {
-		id: 'open', name: 'use_web_browser', args: { action: 'open', url: 'https://example.com/' },
+		id: 'open',
+		name: 'use_web_browser',
+		args: { action: 'open', url: 'https://example.com/' },
 	};
 	const click: ToolCall = {
-		id: 'click', name: 'use_web_browser', args: { action: 'act', kind: 'click', ref: 'e1' },
+		id: 'click',
+		name: 'use_web_browser',
+		args: { action: 'act', kind: 'click', ref: 'e1' },
 	};
 	const events = [];
 	try {
 		for (const call of [open, click]) {
 			for await (const event of runToolCall(
-				browser.tool, call, new AbortController().signal, undefined, { runId: 'background' }
-			)) events.push(event);
+				browser.tool,
+				call,
+				new AbortController().signal,
+				undefined,
+				{ runId: 'background' }
+			))
+				events.push(event);
 		}
 		expect(open.result?.isError).toBeUndefined();
 		expect(open.result?.content).toContain('https://example.com/');
-		expect(context.page.goto).toHaveBeenCalledWith('https://example.com/', { waitUntil: 'domcontentloaded' });
+		expect(context.page.goto).toHaveBeenCalledWith('https://example.com/', {
+			waitUntil: 'domcontentloaded',
+		});
 		expect(click.result).toMatchObject({ content: '{"result":"clicked"}', isError: undefined });
 		expect(context.page.locator).toHaveBeenCalledWith('[data-agent-ref="e1"]');
 		expect(context.page.click).toHaveBeenCalledTimes(1);

@@ -29,7 +29,12 @@ export async function createProjectFile(
 	const normalizedPath = filePath.trim().replaceAll('\\', '/');
 	const targetPath = path.resolve(project.directory, normalizedPath);
 	const relative = path.relative(project.directory, targetPath);
-	if (!relative || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+	if (
+		!relative ||
+		relative === '..' ||
+		relative.startsWith(`..${path.sep}`) ||
+		path.isAbsolute(relative)
+	) {
 		throw new Error('Coding files must stay inside the project directory.');
 	}
 	await mkdir(path.dirname(targetPath), { recursive: true });

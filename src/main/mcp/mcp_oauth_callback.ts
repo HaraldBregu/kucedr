@@ -60,7 +60,9 @@ export function startOauthCallbackServer(
 			} else {
 				res
 					.writeHead(200, { 'Content-Type': 'text/html' })
-					.end('<html><body>Authorization response received. Return to Kucedr to finish connecting.</body></html>');
+					.end(
+						'<html><body>Authorization response received. Return to Kucedr to finish connecting.</body></html>'
+					);
 				resolveCode(authCode!);
 			}
 			close();

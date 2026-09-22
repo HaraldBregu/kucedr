@@ -162,9 +162,7 @@ export class Memory implements MemoryService {
 		return this.lock(async () => {
 			const markdown = await this.read();
 			const entries = parseMemories(markdown).filter((entry) =>
-				query.startsWith('memory-')
-					? entry.id === query
-					: entry.fact.toLowerCase().includes(query)
+				query.startsWith('memory-') ? entry.id === query : entry.fact.toLowerCase().includes(query)
 			);
 			if (!entries.length) return { removed: 0 };
 			const lines = new Set(entries.map((entry) => entry.lineIndex));

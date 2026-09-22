@@ -66,9 +66,7 @@ export function AppProvider({ children, initialState }: AppProviderProps): React
 	const [language, setLanguageState] = useState<AppLanguage>(
 		initialState?.language ?? readPersistedLanguage()
 	);
-	const [theme, setThemeState] = useState<AppTheme>(
-		initialState?.theme ?? readPersistedTheme()
-	);
+	const [theme, setThemeState] = useState<AppTheme>(initialState?.theme ?? readPersistedTheme());
 
 	// localStorage is the synchronous paint cache (avoids a theme/language flash);
 	// the app settings store is the durable source of truth, hydrated on mount.

@@ -208,10 +208,7 @@ function createMistralRealtimeConnection(
 }
 
 function realtimeBaseUrl(baseURL: string | undefined): string {
-	return (baseURL ?? speechToTextBaseUrl('mistral')).replace(
-		/\/v1\/?$/,
-		''
-	);
+	return (baseURL ?? speechToTextBaseUrl('mistral')).replace(/\/v1\/?$/, '');
 }
 
 function errorMessage(error: unknown, fallback: string): string {

@@ -10,22 +10,47 @@ it.each(['interactive', 'task', 'child'] as const)(
 		const tool = { ...(source === 'interactive' ? useWebBrowserTool : browser.tool), run };
 		try {
 			for (const action of [
-				'status', 'start', 'stop', 'tabs', 'open', 'focus', 'close', 'navigate',
-				'snapshot', 'screenshot', 'pdf', 'console', 'act',
+				'status',
+				'start',
+				'stop',
+				'tabs',
+				'open',
+				'focus',
+				'close',
+				'navigate',
+				'snapshot',
+				'screenshot',
+				'pdf',
+				'console',
+				'act',
 			]) {
-				const events = runToolCall(tool, {
-					id: action, name: tool.id, args: { action, url: 'https://example.com/', kind: 'click', ref: 'e1' },
-				}, undefined, undefined, {
-					runId: 'browser-permissions',
-					...(source === 'interactive' ? { windowId: 1 } : {}),
-					scope: { ownerId: source, source, sessionId: source, runId: 'browser-permissions' },
-				});
+				const events = runToolCall(
+					tool,
+					{
+						id: action,
+						name: tool.id,
+						args: { action, url: 'https://example.com/', kind: 'click', ref: 'e1' },
+					},
+					undefined,
+					undefined,
+					{
+						runId: 'browser-permissions',
+						...(source === 'interactive' ? { windowId: 1 } : {}),
+						scope: { ownerId: source, source, sessionId: source, runId: 'browser-permissions' },
+					}
+				);
 				try {
 					expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
 					expect((await events.next()).value).toMatchObject({
-						type: 'tool_call_end', permissionOutcome: 'allow', output: 'completed', isError: undefined,
+						type: 'tool_call_end',
+						permissionOutcome: 'allow',
+						output: 'completed',
+						isError: undefined,
 					});
-					expect(run).toHaveBeenLastCalledWith(expect.objectContaining({ action }), expect.any(AbortSignal));
+					expect(run).toHaveBeenLastCalledWith(
+						expect.objectContaining({ action }),
+						expect.any(AbortSignal)
+					);
 				} finally {
 					await events.return();
 				}

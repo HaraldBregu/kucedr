@@ -87,7 +87,14 @@ export const PageHeaderDescription = memo(function PageHeaderDescription({
 	className,
 }: PageHeaderDescriptionProps): React.ReactElement {
 	return (
-		<p className={cn('text-sm text-muted-foreground flex items-center gap-3 flex-1 min-w-0', className)}>{children}</p>
+		<p
+			className={cn(
+				'text-sm text-muted-foreground flex items-center gap-3 flex-1 min-w-0',
+				className
+			)}
+		>
+			{children}
+		</p>
 	);
 });
 
@@ -101,7 +108,9 @@ export const PageBody = memo(function PageBody({
 	className,
 }: PageBodyProps): React.ReactElement {
 	return (
-		<div className={cn('flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pb-4 pt-16', className)}>{children}</div>
+		<div className={cn('flex min-h-0 flex-1 flex-col overflow-y-auto px-6 pb-4 pt-16', className)}>
+			{children}
+		</div>
 	);
 });
 
@@ -139,6 +148,8 @@ export const PageSidebarInset = memo(function PageSidebarInset({
 	className,
 }: PageSidebarInsetProps): React.ReactElement {
 	return (
-		<div className={cn('flex min-w-0 flex-1 flex-col overflow-y-auto px-4 py-2', className)}>{children}</div>
+		<div className={cn('flex min-w-0 flex-1 flex-col overflow-y-auto px-4 py-2', className)}>
+			{children}
+		</div>
 	);
 });

@@ -54,4 +54,3 @@ export function parseUpdateChunk(
 		);
 	return { chunk, consumed: parsedLines + startIndex };
 }
-

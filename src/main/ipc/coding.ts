@@ -35,10 +35,7 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 			trusted.assert(event);
 		};
 		const assertCodingAppCaller = (event: Electron.IpcMainInvokeEvent): void => {
-			if (
-				!appRegistry.has(event.sender) ||
-				appRegistry.resolve(event.sender) !== CODING_APP_ID
-			) {
+			if (!appRegistry.has(event.sender) || appRegistry.resolve(event.sender) !== CODING_APP_ID) {
 				throw new Error('Project instructions are only available to the Coding app.');
 			}
 		};
@@ -97,7 +94,11 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 		});
 		registerCommandWithEvent(CodingChannels.createProjectFile, (event, projectId, filePath) => {
 			assertCodingAppCaller(event);
-			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingProjectFilePath(filePath)) {
+			if (
+				typeof projectId !== 'string' ||
+				!projectId.trim() ||
+				!isCodingProjectFilePath(filePath)
+			) {
 				throw new Error('Invalid coding project file path.');
 			}
 			return coding.createProjectFile(projectId.trim(), filePath);

@@ -115,9 +115,7 @@ const IntegrationsPage = (): React.JSX.Element => {
 								<Switch
 									checked={servers[service.id]?.enabled === true}
 									disabled={savingId === service.id}
-									onCheckedChange={(enabled) =>
-										void setIntegrationEnabled(service, enabled)
-									}
+									onCheckedChange={(enabled) => void setIntegrationEnabled(service, enabled)}
 									aria-label={service.name}
 								/>
 							</ItemActions>

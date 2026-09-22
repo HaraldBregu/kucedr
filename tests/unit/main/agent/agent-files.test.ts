@@ -8,7 +8,11 @@ describe('normalizeAgentInputFiles', () => {
 	it('accepts bounded base64 attachments', () => {
 		expect(
 			normalizeAgentInputFiles([
-				{ name: 'note.txt', mimeType: ' text/plain ', data: Buffer.from('hello').toString('base64') },
+				{
+					name: 'note.txt',
+					mimeType: ' text/plain ',
+					data: Buffer.from('hello').toString('base64'),
+				},
 			])
 		).toEqual([
 			{ name: 'note.txt', mimeType: 'text/plain', data: Buffer.from('hello').toString('base64') },
@@ -28,7 +32,9 @@ describe('normalizeAgentInputFiles', () => {
 		).toThrow('base64');
 		const oversized = Buffer.alloc(AGENT_MAX_ATTACHMENT_BYTES + 1).toString('base64');
 		expect(() =>
-			normalizeAgentInputFiles([{ name: 'large', mimeType: 'application/octet-stream', data: oversized }])
+			normalizeAgentInputFiles([
+				{ name: 'large', mimeType: 'application/octet-stream', data: oversized },
+			])
 		).toThrow('at most');
 	});
 

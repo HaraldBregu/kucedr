@@ -5,7 +5,9 @@ export function sanitizeA2aError(
 	authentication?: Pick<A2aAgent, 'credential'>
 ): Error {
 	const record =
-		typeof error === 'object' && error !== null ? (error as { message?: unknown; name?: unknown }) : {};
+		typeof error === 'object' && error !== null
+			? (error as { message?: unknown; name?: unknown })
+			: {};
 	let message =
 		error instanceof Error
 			? error.message
@@ -13,11 +15,7 @@ export function sanitizeA2aError(
 				? record.message
 				: String(error);
 	const name =
-		error instanceof Error
-			? error.name
-			: typeof record.name === 'string'
-				? record.name
-				: 'Error';
+		error instanceof Error ? error.name : typeof record.name === 'string' ? record.name : 'Error';
 	const credential = authentication?.credential;
 	if (credential) {
 		message = message.replaceAll(credential, '[REDACTED]');

@@ -28,11 +28,7 @@ export function SetupStepProgress({ currentStep }: SetupStepProgressProps): Reac
 					/>
 				))}
 			</div>
-			<p
-				className="truncate text-[11px] text-muted-foreground"
-				role="status"
-				aria-live="polite"
-			>
+			<p className="truncate text-[11px] text-muted-foreground" role="status" aria-live="polite">
 				<span className="font-medium text-foreground">{currentStepName}</span>
 				{` · ${currentIndex + 1} of ${ONBOARDING_STEPS.length}`}
 			</p>

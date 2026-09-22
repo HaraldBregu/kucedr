@@ -1,44 +1,43 @@
 {
-  "providerId": "kling",
-  "providerName": "Kuaishou / Kling AI",
-  "apiKeyUrl": "https://app.klingai.com/global/dev",
-  "images_url": "/images",
-  "icon_dark_url": "/images/fallback_lobehub/png_dark/kling-color.png",
-  "icon_light_url": "/images/fallback_lobehub/png_light/kling-color.png",
-  "services": [
-    {
-      "id": "kling-v2.5-turbo",
-      "name": "Kling v2.5 Turbo",
-      "type": "text-to-video-model",
-      "url": "https://kling.ai",
-      "metadata": {
-        "documentationUrl": "https://kling.ai",
-        "documentationStatus": "unverified",
-        "inputs": {}
-      }
-    },
-    {
-      "id": "kling-v2.1-master",
-      "name": "Kling v2.1 Master",
-      "type": "text-to-video-model",
-      "url": "https://kling.ai",
-      "metadata": {
-        "documentationUrl": "https://kling.ai",
-        "documentationStatus": "unverified",
-        "inputs": {}
-      }
-    },
-    {
-      "id": "kling-audio",
-      "name": "Kling Audio",
-      "type": "text-to-audio-model",
-      "url": "https://kling.ai",
-      "metadata": {
-        "documentationUrl": "https://kling.ai",
-        "documentationStatus": "unverified",
-        "inputs": {}
-      }
-    }
-  ]
+	"providerId": "kling",
+	"providerName": "Kuaishou / Kling AI",
+	"apiKeyUrl": "https://app.klingai.com/global/dev",
+	"images_url": "/images",
+	"icon_dark_url": "/images/fallback_lobehub/png_dark/kling-color.png",
+	"icon_light_url": "/images/fallback_lobehub/png_light/kling-color.png",
+	"services": [
+		{
+			"id": "kling-v2.5-turbo",
+			"name": "Kling v2.5 Turbo",
+			"type": "text-to-video-model",
+			"url": "https://kling.ai",
+			"metadata": {
+				"documentationUrl": "https://kling.ai",
+				"documentationStatus": "unverified",
+				"inputs": {}
+			}
+		},
+		{
+			"id": "kling-v2.1-master",
+			"name": "Kling v2.1 Master",
+			"type": "text-to-video-model",
+			"url": "https://kling.ai",
+			"metadata": {
+				"documentationUrl": "https://kling.ai",
+				"documentationStatus": "unverified",
+				"inputs": {}
+			}
+		},
+		{
+			"id": "kling-audio",
+			"name": "Kling Audio",
+			"type": "text-to-audio-model",
+			"url": "https://kling.ai",
+			"metadata": {
+				"documentationUrl": "https://kling.ai",
+				"documentationStatus": "unverified",
+				"inputs": {}
+			}
+		}
+	]
 }
-

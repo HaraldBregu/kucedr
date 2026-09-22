@@ -26,6 +26,11 @@ export interface VectorDatabaseAdapter {
 	readonly service: VectorDatabaseService;
 	consentRecipient(apiKey: string, indexName: string): readonly string[];
 	upload(input: VectorDatabaseUpload): Promise<void>;
-	discard(apiKey: string, indexName: string, generation: string, signal?: AbortSignal): Promise<void>;
+	discard(
+		apiKey: string,
+		indexName: string,
+		generation: string,
+		signal?: AbortSignal
+	): Promise<void>;
 	purge(apiKey: string, indexName: string, generation?: string): Promise<number>;
 }

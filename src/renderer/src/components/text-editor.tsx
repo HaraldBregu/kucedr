@@ -155,10 +155,7 @@ function TextEditor({
 			contentType: 'markdown',
 		});
 		if (planCommandActive) {
-			chain.insertContentAt(1, [
-				{ type: PlanCommand.name },
-				{ type: 'text', text: ' ' },
-			]);
+			chain.insertContentAt(1, [{ type: PlanCommand.name }, { type: 'text', text: ' ' }]);
 		}
 		if (editor.isFocused) chain.focus('end');
 		chain.run();

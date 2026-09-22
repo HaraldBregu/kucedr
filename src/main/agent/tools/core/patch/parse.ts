@@ -23,4 +23,3 @@ export function parsePatch(input: string): Hunk[] {
 	if (hunks.length === 0) throw new Error('Patch contains no file hunks.');
 	return hunks;
 }
-

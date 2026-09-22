@@ -41,8 +41,12 @@ class SessionRegistry {
 	list(): ProcessSession[] {
 		const scope = executionScope.getStore();
 		if (!scope) throw new Error('Process access requires an owning session.');
-		return [...this.sessions.values()].filter((session) => session.scope.ownerId === scope.ownerId &&
-			session.scope.source === scope.source && session.scope.sessionId === scope.sessionId);
+		return [...this.sessions.values()].filter(
+			(session) =>
+				session.scope.ownerId === scope.ownerId &&
+				session.scope.source === scope.source &&
+				session.scope.sessionId === scope.sessionId
+		);
 	}
 
 	owned(id: string): ProcessSession | undefined {

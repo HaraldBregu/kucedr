@@ -10,7 +10,11 @@ type ConfigurationState = {
 
 const ONBOARDING_STARTED_SESSION_KEY = 'kucedr-onboarding-started';
 
-export function OnboardingProvider({ children }: { readonly children: ReactNode }): React.JSX.Element {
+export function OnboardingProvider({
+	children,
+}: {
+	readonly children: ReactNode;
+}): React.JSX.Element {
 	const { state, localOnly } = useAuth();
 	const [started, setStarted] = useState(
 		() => window.sessionStorage.getItem(ONBOARDING_STARTED_SESSION_KEY) === 'true'

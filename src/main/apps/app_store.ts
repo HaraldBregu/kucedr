@@ -12,10 +12,7 @@ export class AppStorage {
 		this.values = new AppValueStorage(root);
 	}
 
-	get<T extends AppStoreValue = AppStoreValue>(
-		appId: string,
-		key: string
-	): T | undefined {
+	get<T extends AppStoreValue = AppStoreValue>(appId: string, key: string): T | undefined {
 		return this.values.get<T>(appId, key);
 	}
 

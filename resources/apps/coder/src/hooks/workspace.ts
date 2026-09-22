@@ -92,9 +92,9 @@ export function useCodingWorkspace(): CodingController {
 		preview ? previewSettings : previewSettings
 	);
 	const [projects, setProjects] = useState<CodingProject[]>(preview ? previewProjects : []);
-	const [sessionsByProject, setSessionsByProject] = useState<Record<string, CodingSessionSummary[]>>(
-		preview ? previewSessionsByProject : {}
-	);
+	const [sessionsByProject, setSessionsByProject] = useState<
+		Record<string, CodingSessionSummary[]>
+	>(preview ? previewSessionsByProject : {});
 	const [blocks, setBlocks] = useState<CodingBlock[]>(preview ? previewBlocks : []);
 	const [activeProjectId, setActiveProjectId] = useState<string | undefined>(
 		preview ? 'kucedr' : undefined
@@ -140,9 +140,8 @@ export function useCodingWorkspace(): CodingController {
 				if (sequence !== loadSequenceRef.current) return;
 				setActiveSessionId(session.id);
 				setBlocks(
-					snapshot.blocks.map(
-						(block: CodingSessionBlock): CodingBlock =>
-							block.type === 'message' ? { ...block, status: 'complete' } : block
+					snapshot.blocks.map((block: CodingSessionBlock): CodingBlock =>
+						block.type === 'message' ? { ...block, status: 'complete' } : block
 					)
 				);
 			} catch (reason) {
@@ -275,9 +274,8 @@ export function useCodingWorkspace(): CodingController {
 					setActiveProjectId(projectId);
 					setActiveSessionId(sessionId);
 					setBlocks(
-						snapshot.blocks.map(
-							(block: CodingSessionBlock): CodingBlock =>
-								block.type === 'message' ? { ...block, status: 'complete' } : block
+						snapshot.blocks.map((block: CodingSessionBlock): CodingBlock =>
+							block.type === 'message' ? { ...block, status: 'complete' } : block
 						)
 					);
 					await app.setAppStoreValue(ACTIVE_PROJECT_KEY, projectId);

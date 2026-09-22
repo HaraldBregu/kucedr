@@ -64,17 +64,24 @@ describe('app import', () => {
 
 		expect(importApps([source], appLocation)).toMatchObject({
 			imported: [
-					expect.objectContaining({
-						id: 'coder',
-						window: { width: 1440, height: 960, minWidth: 1024, minHeight: 720, resizable: true, maximizable: true },
-						metadata: expect.objectContaining({ image: 'assets/images/logo.png' }),
+				expect.objectContaining({
+					id: 'coder',
+					window: {
+						width: 1440,
+						height: 960,
+						minWidth: 1024,
+						minHeight: 720,
+						resizable: true,
+						maximizable: true,
+					},
+					metadata: expect.objectContaining({ image: 'assets/images/logo.png' }),
 				}),
 			],
 			skipped: [],
 		});
-		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'assets', 'images', 'logo.png'))).toBe(
-			true
-		);
+		expect(
+			fs.existsSync(path.join(appLocation, 'apps', 'coder', 'assets', 'images', 'logo.png'))
+		).toBe(true);
 		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'data'))).toBe(true);
 	});
 

@@ -90,7 +90,14 @@ A provider contribution only declares its `id`; the definition lives in `provide
 	"providerId": "acme",
 	"providerName": "Acme AI",
 	"apiKeyUrl": "https://acme.test/keys",
-	"services": [{ "id": "acme-chat", "name": "Acme Chat", "type": "large-language-model", "url": "https://api.acme.test/v1" }]
+	"services": [
+		{
+			"id": "acme-chat",
+			"name": "Acme Chat",
+			"type": "large-language-model",
+			"url": "https://api.acme.test/v1"
+		}
+	]
 }
 ```
 

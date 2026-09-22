@@ -1,10 +1,5 @@
 export type AuthStatus =
-	| 'loading'
-	| 'unconfigured'
-	| 'signedOut'
-	| 'confirmationRequired'
-	| 'signedIn'
-	| 'recovery';
+	'loading' | 'unconfigured' | 'signedOut' | 'confirmationRequired' | 'signedIn' | 'recovery';
 
 export interface AuthUser {
 	id: string;

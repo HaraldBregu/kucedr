@@ -6,13 +6,13 @@ export async function getScreenRecordingStream(
 ): Promise<{ stream: MediaStream; hasMicrophone: boolean }> {
 	const stream = sourceId
 		? await navigator.mediaDevices.getUserMedia({
-			video: {
-				mandatory: {
-					chromeMediaSource: 'desktop',
-					chromeMediaSourceId: sourceId,
+				video: {
+					mandatory: {
+						chromeMediaSource: 'desktop',
+						chromeMediaSourceId: sourceId,
+					},
 				},
-			},
-		} as MediaStreamConstraints)
+			} as MediaStreamConstraints)
 		: await navigator.mediaDevices.getDisplayMedia(constraints);
 	let microphone: MediaStream | null = null;
 	try {

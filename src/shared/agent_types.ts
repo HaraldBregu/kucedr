@@ -67,13 +67,7 @@ export type AgentContextMode = 'minimal' | 'workspace';
 export type AgentToolRisk = 'low' | 'medium' | 'high' | 'critical';
 
 export type AgentToolEffect =
-	| 'read'
-	| 'write'
-	| 'execute'
-	| 'external'
-	| 'sensor'
-	| 'paid'
-	| 'persistence';
+	'read' | 'write' | 'execute' | 'external' | 'sensor' | 'paid' | 'persistence';
 
 export type AgentChatbotModelKind = 'textToText' | 'textToSpeech' | 'speechToText';
 
@@ -235,10 +229,7 @@ export interface AgentIntentResolutionSummary {
 }
 
 export type AgentCapabilityDecisionMode =
-	| 'direct_answer'
-	| 'use_tools'
-	| 'use_skills'
-	| 'use_tools_and_skills';
+	'direct_answer' | 'use_tools' | 'use_skills' | 'use_tools_and_skills';
 
 export interface AgentCapabilityDecisionSummary {
 	mode: AgentCapabilityDecisionMode;

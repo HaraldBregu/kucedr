@@ -20,8 +20,7 @@ export function scanSkillFolders(root: string): string[] {
 		}
 		if (
 			entries.some(
-				(entry) =>
-					entry.name === SKILL_FILE && (entry.isFile() || entry.isSymbolicLink())
+				(entry) => entry.name === SKILL_FILE && (entry.isFile() || entry.isSymbolicLink())
 			)
 		) {
 			folders.push(current.folder);

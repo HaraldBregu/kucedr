@@ -1,10 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { PromptEditor } from '@/components/prompt-editor';
-import {
-	PromptInput,
-	PromptInputAction,
-	PromptInputActions,
-} from '@/components/ui/prompt-input';
+import { PromptInput, PromptInputAction, PromptInputActions } from '@/components/ui/prompt-input';
 
 jest.mock('@/components/ui/bar-wave-animation', () => ({
 	BarWaveAnimation: () => <div data-testid="voice-waveform" />,

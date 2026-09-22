@@ -42,6 +42,7 @@ export function mergeProviders(
 	selectedProvider?: PublicProvider
 ): PublicProvider[] {
 	const byId = new Map(providers.map((provider) => [provider.id, provider]));
-	if (selectedProvider && !byId.has(selectedProvider.id)) byId.set(selectedProvider.id, selectedProvider);
+	if (selectedProvider && !byId.has(selectedProvider.id))
+		byId.set(selectedProvider.id, selectedProvider);
 	return [...byId.values()];
 }

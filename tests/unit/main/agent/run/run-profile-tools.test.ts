@@ -141,9 +141,9 @@ describe('chat agent tool controls', () => {
 		}
 
 		expect(enabledEvents[0]).toMatchObject({ type: 'run_started', tools: [toolId] });
-		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual([
-			toolId,
-		]);
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toEqual([toolId]);
 		expect(execute).toHaveBeenCalledTimes(['ask', 'select_screen_source'].includes(toolId) ? 0 : 1);
 		expect(enabledEvents).toEqual(
 			expect.arrayContaining([
@@ -173,38 +173,41 @@ describe('chat agent tool controls', () => {
 	it.each([
 		['ask', 'plan'],
 		['complete_bootstrap', 'default'],
-	] as const)('keeps required system tool %s visible with stale denied settings', async (toolId, interactionMode) => {
-		setAgentProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
-		const requiredTool = jsonTool({
-			id: toolId,
-			name: toolId,
-			description: toolId,
-			schema: { type: 'object' },
-			planSafe: true,
-			capability: { effects: [] },
-			execute: () => undefined,
-		});
-		if (interactionMode === 'plan') {
-			runModelTurnMock.mockImplementation(async function* () {
-				yield* [];
-				return {
-					content: '<proposed_plan>Continue.</proposed_plan>',
-					model: 'test-model',
-					toolCalls: [],
-				};
+	] as const)(
+		'keeps required system tool %s visible with stale denied settings',
+		async (toolId, interactionMode) => {
+			setAgentProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
+			const requiredTool = jsonTool({
+				id: toolId,
+				name: toolId,
+				description: toolId,
+				schema: { type: 'object' },
+				planSafe: true,
+				capability: { effects: [] },
+				execute: () => undefined,
 			});
-		}
-		const events = [];
-		for await (const event of stream(
-			{ location: '/workspace' },
-			createSessionState(),
-			{ ...input, interactionMode },
-			new AbortController().signal,
-			{ tools: [requiredTool] }
-		)) {
-			events.push(event);
-		}
+			if (interactionMode === 'plan') {
+				runModelTurnMock.mockImplementation(async function* () {
+					yield* [];
+					return {
+						content: '<proposed_plan>Continue.</proposed_plan>',
+						model: 'test-model',
+						toolCalls: [],
+					};
+				});
+			}
+			const events = [];
+			for await (const event of stream(
+				{ location: '/workspace' },
+				createSessionState(),
+				{ ...input, interactionMode },
+				new AbortController().signal,
+				{ tools: [requiredTool] }
+			)) {
+				events.push(event);
+			}
 
-		expect(events[0]).toMatchObject({ type: 'run_started', tools: [toolId] });
-	});
+			expect(events[0]).toMatchObject({ type: 'run_started', tools: [toolId] });
+		}
+	);
 });

@@ -4,10 +4,12 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import type { AgentUserInputAnswer, AgentUserInputQuestion } from '@/lib/compat';
 import type { AgentToolPart, PendingUserInput } from '../context';
 
-function resultFromTool(tool: AgentToolPart): {
-	status: 'resolved' | 'interrupted';
-	answers: AgentUserInputAnswer[];
-} | undefined {
+function resultFromTool(tool: AgentToolPart):
+	| {
+			status: 'resolved' | 'interrupted';
+			answers: AgentUserInputAnswer[];
+	  }
+	| undefined {
 	let value = tool.output;
 	if (typeof value === 'string') {
 		try {
@@ -60,12 +62,12 @@ export function UserInputCard({
 					{questions.map((question) => {
 						const answer = result.answers.find((candidate) => candidate.questionId === question.id);
 						return (
-						<div key={question.id}>
-							<span className="block font-medium">{question.question}</span>
-							<span className="text-muted-foreground">
-								{answer?.answer ?? 'Interrupted before an answer was submitted.'}
-							</span>
-						</div>
+							<div key={question.id}>
+								<span className="block font-medium">{question.question}</span>
+								<span className="text-muted-foreground">
+									{answer?.answer ?? 'Interrupted before an answer was submitted.'}
+								</span>
+							</div>
 						);
 					})}
 				</CardContent>
@@ -79,9 +81,10 @@ export function UserInputCard({
 		event.preventDefault();
 		const answers = questions.map((question) => ({
 			questionId: question.id,
-			answer: selected[question.id] === '__other__'
-				? (other[question.id] ?? '').trim()
-				: (selected[question.id] ?? '').trim(),
+			answer:
+				selected[question.id] === '__other__'
+					? (other[question.id] ?? '').trim()
+					: (selected[question.id] ?? '').trim(),
 		}));
 		if (answers.some((answer) => !answer.answer)) {
 			setError('Choose an answer for every question and complete any selected Other field.');
@@ -112,31 +115,36 @@ export function UserInputCard({
 								<span className="mr-2 text-xs text-muted-foreground">{question.header}</span>
 								{question.question}
 							</legend>
-							{[...question.options, { label: 'Other', description: 'Enter a different answer.' }].map(
-								(option) => {
-									const value = option.label === 'Other' ? '__other__' : option.label;
-									return (
-										<label
-											key={value}
-											className="flex cursor-pointer items-start gap-2 rounded-lg border border-border/60 p-2 text-sm focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/40"
-										>
-											<input
-												type="radio"
-												name={question.id}
-												value={value}
-												checked={selected[question.id] === value}
-												disabled={submitting}
-												onChange={() => setSelected((current) => ({ ...current, [question.id]: value }))}
-												className="mt-1"
-											/>
-											<span>
-												<span className="block font-medium">{option.label}</span>
-												<span className="block text-xs text-muted-foreground">{option.description}</span>
+							{[
+								...question.options,
+								{ label: 'Other', description: 'Enter a different answer.' },
+							].map((option) => {
+								const value = option.label === 'Other' ? '__other__' : option.label;
+								return (
+									<label
+										key={value}
+										className="flex cursor-pointer items-start gap-2 rounded-lg border border-border/60 p-2 text-sm focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/40"
+									>
+										<input
+											type="radio"
+											name={question.id}
+											value={value}
+											checked={selected[question.id] === value}
+											disabled={submitting}
+											onChange={() =>
+												setSelected((current) => ({ ...current, [question.id]: value }))
+											}
+											className="mt-1"
+										/>
+										<span>
+											<span className="block font-medium">{option.label}</span>
+											<span className="block text-xs text-muted-foreground">
+												{option.description}
 											</span>
-										</label>
-									);
-								}
-							)}
+										</span>
+									</label>
+								);
+							})}
 							{selected[question.id] === '__other__' ? (
 								<input
 									type="text"
@@ -151,7 +159,9 @@ export function UserInputCard({
 							) : null}
 						</fieldset>
 					))}
-					<p aria-live="polite" className="text-sm text-destructive">{error}</p>
+					<p aria-live="polite" className="text-sm text-destructive">
+						{error}
+					</p>
 				</CardContent>
 				<CardFooter className="justify-end px-4 pt-4">
 					<Button type="submit" size="sm" disabled={submitting}>

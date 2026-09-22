@@ -8,8 +8,9 @@ function readModes(): Record<string, AgentInteractionMode> {
 		const value = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as unknown;
 		if (!value || typeof value !== 'object' || Array.isArray(value)) return {};
 		return Object.fromEntries(
-			Object.entries(value).filter((entry): entry is [string, AgentInteractionMode] =>
-				entry[1] === 'default' || entry[1] === 'plan'
+			Object.entries(value).filter(
+				(entry): entry is [string, AgentInteractionMode] =>
+					entry[1] === 'default' || entry[1] === 'plan'
 			)
 		);
 	} catch {

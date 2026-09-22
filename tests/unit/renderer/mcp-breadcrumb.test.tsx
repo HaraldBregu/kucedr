@@ -47,7 +47,9 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 		'bg-background/80',
 		'backdrop-blur-sm'
 	);
-	expect(within(breadcrumb).queryByRole('link', { name: 'settings.title' })).not.toBeInTheDocument();
+	expect(
+		within(breadcrumb).queryByRole('link', { name: 'settings.title' })
+	).not.toBeInTheDocument();
 	expect(within(breadcrumb).queryByText('settings.tabs.providers')).not.toBeInTheDocument();
 	expect(within(breadcrumb).getByText('demo-server')).toBeInTheDocument();
 

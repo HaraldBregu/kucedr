@@ -6,9 +6,11 @@ interface NavigationBarCenterContainerTitleProps {
 	readonly children: string;
 }
 
-export const NavigationBarCenterContainerTitle = memo(function AppNavigationBarCenterContainerTitle({
-	className,
-	children,
-}: NavigationBarCenterContainerTitleProps): ReactElement {
-	return <span className={cn('text-sm font-normal tracking-wide', className)}>{children}</span>;
-});
+export const NavigationBarCenterContainerTitle = memo(
+	function AppNavigationBarCenterContainerTitle({
+		className,
+		children,
+	}: NavigationBarCenterContainerTitleProps): ReactElement {
+		return <span className={cn('text-sm font-normal tracking-wide', className)}>{children}</span>;
+	}
+);

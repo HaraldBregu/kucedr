@@ -1,5 +1,17 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { CircleHelp, Code2, Layers, LogOut, MessageCirclePlus, MoreVertical, RadioTower, Search, Server, Settings, UserRound } from 'lucide-react';
+import {
+	CircleHelp,
+	Code2,
+	Layers,
+	LogOut,
+	MessageCirclePlus,
+	MoreVertical,
+	RadioTower,
+	Search,
+	Server,
+	Settings,
+	UserRound,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -16,7 +28,12 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+	SidebarFooter,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+} from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
@@ -174,14 +191,14 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													const nextTitle = event.currentTarget.value.trim();
 													setEditingSessionId(undefined);
 													if (!nextTitle || nextTitle === title) return;
-															void window.agent.renameSession(session.id, nextTitle).then(() => {
-																setSessions((current) =>
-																	current.map((item) =>
-																		item.id === session.id ? { ...item, title: nextTitle } : item
-																	)
-																);
-																if (isActive) setSessionTitle?.(nextTitle, session.id);
-															});
+													void window.agent.renameSession(session.id, nextTitle).then(() => {
+														setSessions((current) =>
+															current.map((item) =>
+																item.id === session.id ? { ...item, title: nextTitle } : item
+															)
+														);
+														if (isActive) setSessionTitle?.(nextTitle, session.id);
+													});
 												}}
 												aria-label={`Rename ${title}`}
 												className="h-8 min-w-0 flex-1"
@@ -204,20 +221,23 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												onContextMenu={(event) => {
 													event.preventDefault();
 													void window.win
-												.showContextMenu([
-													{ id: 'rename', label: t('common.rename', 'Rename') },
-													{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
-													{ id: 'delete', label: t('common.delete', 'Delete') },
-												])
+														.showContextMenu([
+															{ id: 'rename', label: t('common.rename', 'Rename') },
+															{
+																id: 'open-location',
+																label: t('navigationBar.openLocation', 'Open location'),
+															},
+															{ id: 'delete', label: t('common.delete', 'Delete') },
+														])
 														.then((action) => {
 															if (action === 'rename') {
 																setEditingTitle(title);
-														setEditingSessionId(session.id);
-													}
-													if (action === 'open-location') {
-														void window.agent.openSessionFolder(session.id);
-													}
-													if (action === 'delete') {
+																setEditingSessionId(session.id);
+															}
+															if (action === 'open-location') {
+																void window.agent.openSessionFolder(session.id);
+															}
+															if (action === 'delete') {
 																if (
 																	!window.confirm(
 																		t('settings.chatHistory.confirmDeleteSession', { title })
@@ -271,7 +291,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>
-						<SidebarMenuButton type="button" onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}>
+						<SidebarMenuButton
+							type="button"
+							onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}
+						>
 							<CircleHelp className="size-4" />
 							<span>{t('settings.sidebar.getHelp')}</span>
 						</SidebarMenuButton>
@@ -301,17 +324,15 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 									<span className="grid min-w-0 flex-1 text-left text-xs leading-tight">
 										<span className="truncate font-medium">{accountItem.title}</span>
 										{accountItem.description ? (
-											<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
+											<span className="truncate text-[10px] text-muted-foreground">
+												{accountItem.description}
+											</span>
 										) : null}
 									</span>
 									<MoreVertical className="ml-auto size-4" aria-hidden="true" />
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								className="w-52 rounded-lg"
-								side="right"
-								align="end"
-							>
+							<DropdownMenuContent className="w-52 rounded-lg" side="right" align="end">
 								<DropdownMenuLabel className="p-0 font-normal">
 									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 										<Avatar className="size-8 rounded-full">
@@ -323,7 +344,9 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 										<div className="grid min-w-0 flex-1 text-left text-xs leading-tight">
 											<span className="truncate font-medium">{accountItem.title}</span>
 											{accountItem.description ? (
-												<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
+												<span className="truncate text-[10px] text-muted-foreground">
+													{accountItem.description}
+												</span>
 											) : null}
 										</div>
 									</div>
@@ -334,7 +357,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 										const Icon = item.icon;
 										return (
 											<DropdownMenuItem key={item.path} asChild>
-												<Link to={item.path}><Icon />{item.label}</Link>
+												<Link to={item.path}>
+													<Icon />
+													{item.label}
+												</Link>
 											</DropdownMenuItem>
 										);
 									})}

@@ -58,7 +58,8 @@ export function screenRecorderTool(): Tool {
 			}
 			const workspaceName = path.basename(agentLocation()).toLocaleLowerCase();
 			const applicationSource = sources.find(
-				(source) => !source.id.startsWith('screen:') && source.name.toLocaleLowerCase().includes('kucedr')
+				(source) =>
+					!source.id.startsWith('screen:') && source.name.toLocaleLowerCase().includes('kucedr')
 			);
 			const windowSource = sources.find((source) => !source.id.startsWith('screen:'));
 			const selectedSource = sourceId
@@ -66,15 +67,15 @@ export function screenRecorderTool(): Tool {
 				: target === 'full_screen'
 					? sources.find((source) => source.id.startsWith('screen:'))
 					: target === 'workspace'
-						? sources.find(
+						? (sources.find(
 								(source) =>
 									!source.id.startsWith('screen:') &&
 									source.name.toLocaleLowerCase().includes(workspaceName)
-							)
-							?? applicationSource
-							?? windowSource
+							) ??
+							applicationSource ??
+							windowSource)
 						: target === 'application'
-							? applicationSource ?? windowSource
+							? (applicationSource ?? windowSource)
 							: undefined;
 			if (!selectedSource && !target && !sourceId) {
 				return {
@@ -90,7 +91,9 @@ export function screenRecorderTool(): Tool {
 				if (target) {
 					throw new Error(`No ${target.replace('_', ' ')} source is available to record.`);
 				}
-				throw new Error('The selected screen source is no longer available. Start again to choose a source.');
+				throw new Error(
+					'The selected screen source is no longer available. Start again to choose a source.'
+				);
 			}
 			const owner = recordingOwner(screen);
 			const targetDir = resolveUserPath(directory ?? '.', agentLocation());

@@ -3,7 +3,9 @@
 	"private": true,
 	"version": "1.0.0",
 	"description": "Research trends, explore markets, and turn questions into focused discovery briefs.",
-	"keywords": ["research"],
+	"keywords": [
+		"research"
+	],
 	"main": "dist/index.html",
 	"type": "module",
 	"scripts": {

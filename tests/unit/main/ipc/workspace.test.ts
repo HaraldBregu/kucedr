@@ -23,7 +23,9 @@ describe('workspace files', () => {
 
 		await expect(duplicateWorkspaceFile(root, 'image.bin')).resolves.toBe('image copy.bin');
 		await expect(duplicateWorkspaceFile(root, 'image.bin')).resolves.toBe('image copy 2.bin');
-		expect(await fs.readFile(path.join(root, 'image copy.bin'))).toEqual(Buffer.from([0, 1, 2, 255]));
+		expect(await fs.readFile(path.join(root, 'image copy.bin'))).toEqual(
+			Buffer.from([0, 1, 2, 255])
+		);
 		await fs.rm(root, { recursive: true });
 	});
 
@@ -68,7 +70,10 @@ describe('workspace files', () => {
 			kind: 'pdf',
 			mimeType: 'application/pdf',
 		});
-		expect(workspaceFileType('src/component.vue')).toEqual({ kind: 'text', mimeType: 'text/plain' });
+		expect(workspaceFileType('src/component.vue')).toEqual({
+			kind: 'text',
+			mimeType: 'text/plain',
+		});
 		expect(workspaceFileType('script.rb')).toEqual({ kind: 'text', mimeType: 'text/plain' });
 		expect(workspaceFileType('archive.zip')).toEqual({ kind: 'unsupported' });
 	});

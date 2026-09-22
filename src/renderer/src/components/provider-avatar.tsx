@@ -29,10 +29,7 @@ export function ProviderAvatar({
 			<div
 				className={cn(
 					'flex size-8 shrink-0 items-center justify-center overflow-hidden rounded-md border border-border bg-background p-1',
-					(providerId === 'brave' ||
-						providerId === 'reka' ||
-						providerId === 'tavily') &&
-						'p-0',
+					(providerId === 'brave' || providerId === 'reka' || providerId === 'tavily') && 'p-0',
 					className
 				)}
 			>

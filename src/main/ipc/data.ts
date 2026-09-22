@@ -58,7 +58,7 @@ export class DataIpc implements IpcModule<DataIpcDeps> {
 				message: remoteNamespace
 					? 'Permanently purge the selected remote data?'
 					: 'Permanently purge the selected local data?',
-					detail: `${this.scopeDescription(scope)}\n\n${
+				detail: `${this.scopeDescription(scope)}\n\n${
 					remoteNamespace
 						? scope.kind === 'rag' && scope.mode === 'remote_all_namespaces'
 							? 'Every Kucedr-owned namespace in this remote vector index will be deleted. The index and unrelated namespaces will remain.'

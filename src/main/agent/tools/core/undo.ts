@@ -14,7 +14,8 @@ export function undoFileTool(history: FileHistory) {
 			'Undo the most recent write, edit, or patch operation in this session. Refuses if a file changed afterward.',
 		inputSchema: z.object({}),
 		execute: () => {
-			for (const target of fileHistoryTargets(history, 'undo')) validateFilePath(authorizeFilePath(target), true);
+			for (const target of fileHistoryTargets(history, 'undo'))
+				validateFilePath(authorizeFilePath(target), true);
 			const operation = undoFileOperation(history);
 			return {
 				operationId: operation.id,

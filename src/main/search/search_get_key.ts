@@ -3,7 +3,9 @@ import { getStoredSearchProviders } from './search_get_providers';
 
 export function getSearchKey(engineId: SearchEngineId): string | undefined {
 	const storedKey =
-		getStoredSearchProviders().find((provider) => provider.id === engineId)?.apiKey.trim() ?? '';
+		getStoredSearchProviders()
+			.find((provider) => provider.id === engineId)
+			?.apiKey.trim() ?? '';
 	if (storedKey) return storedKey;
 
 	const environmentKey =

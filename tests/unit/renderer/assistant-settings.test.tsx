@@ -458,14 +458,18 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	])
 		expect(screen.queryByText(removed)).not.toBeInTheDocument();
 	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: /Request user input: (Always Allow|Ask|Deny)/ })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: /Complete bootstrap: (Always Allow|Ask|Deny)/ })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: /Request user input: (Always Allow|Ask|Deny)/ })
+	).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: /Complete bootstrap: (Always Allow|Ask|Deny)/ })
+	).not.toBeInTheDocument();
 	expect(screen.getByText('Core')).toBeInTheDocument();
 	expect(screen.queryByText('Files')).not.toBeInTheDocument();
 	expect(screen.queryByText('Commands')).not.toBeInTheDocument();
-	expect(
-		screen.getByText('System').compareDocumentPosition(screen.getByText('Core'))
-	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+	expect(screen.getByText('System').compareDocumentPosition(screen.getByText('Core'))).toBe(
+		Node.DOCUMENT_POSITION_FOLLOWING
+	);
 	expect(
 		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);

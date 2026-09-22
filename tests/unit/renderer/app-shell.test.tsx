@@ -21,10 +21,12 @@ jest.mock('../../../src/renderer/src/components/app/navigationbar/AppNavigationB
 	),
 }));
 
-let navigationBarOptionsChanged: (options: {
-	leftButtons?: Array<{ id: string }>;
-	rightButtons?: Array<{ id: string }>;
-} | null) => void;
+let navigationBarOptionsChanged: (
+	options: {
+		leftButtons?: Array<{ id: string }>;
+		rightButtons?: Array<{ id: string }>;
+	} | null
+) => void;
 const stopOptions = jest.fn();
 
 beforeEach(() => {
@@ -70,10 +72,7 @@ it('renders app buttons from the navigation bar snapshot and unsubscribes', () =
 		'data-left-buttons',
 		'toggle-sidebar'
 	);
-	expect(screen.getByTestId('app-navigationbar')).toHaveAttribute(
-		'data-right-buttons',
-		'settings'
-	);
+	expect(screen.getByTestId('app-navigationbar')).toHaveAttribute('data-right-buttons', 'settings');
 
 	unmount();
 	expect(stopOptions).toHaveBeenCalledTimes(1);

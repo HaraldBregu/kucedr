@@ -33,14 +33,12 @@ it.each([
 	expect(tool.alwaysAsk).toBeUndefined();
 });
 
-it.each([
-	createTaskTool,
-	updateTaskTool,
-	deleteTaskTool,
-	runTaskNowTool,
-])('%s uses its scoped permission without forced approval', (tool) => {
-	expect(tool.hardApproval).not.toBe(true);
-});
+it.each([createTaskTool, updateTaskTool, deleteTaskTool, runTaskNowTool])(
+	'%s uses its scoped permission without forced approval',
+	(tool) => {
+		expect(tool.hardApproval).not.toBe(true);
+	}
+);
 
 it.each([
 	['create_task', createTaskTool],

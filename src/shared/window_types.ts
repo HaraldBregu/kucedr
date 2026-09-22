@@ -1,12 +1,5 @@
 export type ContextMenuRole =
-	| 'undo'
-	| 'redo'
-	| 'cut'
-	| 'copy'
-	| 'paste'
-	| 'pasteAndMatchStyle'
-	| 'delete'
-	| 'selectAll';
+	'undo' | 'redo' | 'cut' | 'copy' | 'paste' | 'pasteAndMatchStyle' | 'delete' | 'selectAll';
 
 export type ContextMenuDescriptor =
 	| { type: 'separator' }
@@ -34,8 +27,7 @@ export const APP_NAVIGATION_BAR_BUTTON_ICONS = [
 	'more-horizontal',
 ] as const;
 
-export type AppNavigationBarButtonIcon =
-	(typeof APP_NAVIGATION_BAR_BUTTON_ICONS)[number];
+export type AppNavigationBarButtonIcon = (typeof APP_NAVIGATION_BAR_BUTTON_ICONS)[number];
 
 export interface AppNavigationBarButton {
 	id: string;

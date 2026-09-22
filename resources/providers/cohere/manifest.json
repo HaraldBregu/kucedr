@@ -1,60 +1,44 @@
 {
-  "providerId": "cohere",
-  "providerName": "Cohere",
-  "apiKeyUrl": "https://dashboard.cohere.com/api-keys",
-  "images_url": "/images",
-  "icon_dark_url": "/images/Digital (RGB)/White/cohere_logo_white_rgb.png",
-  "icon_light_url": "/images/Digital (RGB)/Black/cohere_logo_black_rgb.png",
-  "services": [
-    {
-      "id": "embed-v4.0",
-      "name": "Embed v4",
-      "type": "embedding-model",
-      "url": "https://api.cohere.com/v2",
-      "metadata": {
-        "documentationUrl": "https://docs.cohere.com/v2/reference/embed",
-        "documentationStatus": "verified",
-        "inputs": {
-          "input_type": {
-            "type": "string",
-            "enum": [
-              "search_document",
-              "search_query",
-              "classification",
-              "clustering",
-              "image"
-            ],
-            "required": true
-          },
-          "output_dimension": {
-            "type": "integer",
-            "enum": [
-              256,
-              512,
-              1024,
-              1536
-            ]
-          },
-          "embedding_types": {
-            "type": "array"
-          },
-          "truncate": {
-            "type": "string",
-            "enum": [
-              "NONE",
-              "START",
-              "END"
-            ]
-          },
-          "max_tokens": {
-            "type": "integer"
-          },
-          "priority": {
-            "type": "integer"
-          }
-        }
-      }
-    }
-  ]
+	"providerId": "cohere",
+	"providerName": "Cohere",
+	"apiKeyUrl": "https://dashboard.cohere.com/api-keys",
+	"images_url": "/images",
+	"icon_dark_url": "/images/Digital (RGB)/White/cohere_logo_white_rgb.png",
+	"icon_light_url": "/images/Digital (RGB)/Black/cohere_logo_black_rgb.png",
+	"services": [
+		{
+			"id": "embed-v4.0",
+			"name": "Embed v4",
+			"type": "embedding-model",
+			"url": "https://api.cohere.com/v2",
+			"metadata": {
+				"documentationUrl": "https://docs.cohere.com/v2/reference/embed",
+				"documentationStatus": "verified",
+				"inputs": {
+					"input_type": {
+						"type": "string",
+						"enum": ["search_document", "search_query", "classification", "clustering", "image"],
+						"required": true
+					},
+					"output_dimension": {
+						"type": "integer",
+						"enum": [256, 512, 1024, 1536]
+					},
+					"embedding_types": {
+						"type": "array"
+					},
+					"truncate": {
+						"type": "string",
+						"enum": ["NONE", "START", "END"]
+					},
+					"max_tokens": {
+						"type": "integer"
+					},
+					"priority": {
+						"type": "integer"
+					}
+				}
+			}
+		}
+	]
 }
-

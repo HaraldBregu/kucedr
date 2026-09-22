@@ -50,10 +50,7 @@ function PromptSuggestion({
 			<Button
 				variant={variant ?? 'ghost'}
 				size={size ?? 'sm'}
-				className={cn(
-					'w-full justify-start rounded-md text-left text-sm font-normal',
-					className
-				)}
+				className={cn('w-full justify-start rounded-md text-left text-sm font-normal', className)}
 				{...props}
 			>
 				{highlightText(children, highlight ?? '')}

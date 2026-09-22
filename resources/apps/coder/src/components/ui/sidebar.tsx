@@ -57,7 +57,7 @@ export function Sidebar({ className, ...props }: ComponentProps<'aside'>) {
 				)}
 			/>
 			<aside
-			id="coder-sidebar"
+				id="coder-sidebar"
 				data-state={context.open ? 'expanded' : 'collapsed'}
 				className={cn(
 					'fixed inset-y-0 left-0 z-30 flex w-64 flex-col overflow-hidden border-r border-sidebar-border bg-sidebar text-sidebar-foreground transition-transform duration-200 ease-linear motion-reduce:transition-none',

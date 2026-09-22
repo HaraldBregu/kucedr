@@ -144,9 +144,11 @@ export class Coding {
 		if (!normalizedTitle || normalizedTitle.length > 120) {
 			throw new Error('Coding session title must be between 1 and 120 characters.');
 		}
-		SessionManager.open(session.path, codingSessionsLocation(), project.directory).appendSessionInfo(
-			normalizedTitle
-		);
+		SessionManager.open(
+			session.path,
+			codingSessionsLocation(),
+			project.directory
+		).appendSessionInfo(normalizedTitle);
 		const updated = await this.requireSession(project, sessionId);
 		return this.sessionSummary(project.id, updated);
 	}

@@ -3,12 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { SttRealtimeEvent } from '@shared/stt_transcription';
 
 export type RealtimeDictationStatus =
-	| 'idle'
-	| 'checking-permission'
-	| 'connecting'
-	| 'recording'
-	| 'finishing'
-	| 'error';
+	'idle' | 'checking-permission' | 'connecting' | 'recording' | 'finishing' | 'error';
 
 const AUDIO_BUFFER_SIZE = 4096;
 const CLOCK_INTERVAL_MS = 250;
@@ -16,15 +11,19 @@ const CLOCK_INTERVAL_MS = 250;
 function canCaptureAudio(): boolean {
 	return Boolean(
 		navigator.mediaDevices &&
-			typeof navigator.mediaDevices.getUserMedia === 'function' &&
-			typeof AudioContext !== 'undefined'
+		typeof navigator.mediaDevices.getUserMedia === 'function' &&
+		typeof AudioContext !== 'undefined'
 	);
 }
 
 async function getAppMicrophoneEnabled(): Promise<boolean> {
 	try {
 		const settings = await window.app.getMicrophonePermission();
-		return settings.enabled && settings.systemStatus !== 'denied' && settings.systemStatus !== 'restricted';
+		return (
+			settings.enabled &&
+			settings.systemStatus !== 'denied' &&
+			settings.systemStatus !== 'restricted'
+		);
 	} catch {
 		return true;
 	}
@@ -66,10 +65,7 @@ function resampleToPcm16(input: Float32Array, inputRate: number, outputRate: num
 	let inputOffset = 0;
 
 	for (let outputOffset = 0; outputOffset < outputLength; outputOffset += 1) {
-		const nextInputOffset = Math.min(
-			input.length,
-			Math.round((outputOffset + 1) * ratio)
-		);
+		const nextInputOffset = Math.min(input.length, Math.round((outputOffset + 1) * ratio));
 		let sum = 0;
 		let count = 0;
 
@@ -356,7 +352,8 @@ export function useRealtimeDictation({
 			sessionIdRef.current = null;
 			stopClock();
 			stopAudio();
-			if (sessionId) void window.models.transcribe?.cancelRealtime(sessionId).catch(() => undefined);
+			if (sessionId)
+				void window.models.transcribe?.cancelRealtime(sessionId).catch(() => undefined);
 		};
 	}, [stopAudio, stopClock]);
 

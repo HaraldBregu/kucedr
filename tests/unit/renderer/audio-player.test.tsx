@@ -9,16 +9,11 @@ jest.mock('@/components/kibo-ui/video-player', () => {
 				...props,
 				audio: audio ? '' : undefined,
 			}),
-		VideoPlayerControlBar: (props: object) =>
-			React.createElement('media-control-bar', props),
-		VideoPlayerMuteButton: (props: object) =>
-			React.createElement('media-mute-button', props),
-		VideoPlayerPlayButton: (props: object) =>
-			React.createElement('media-play-button', props),
-		VideoPlayerTimeDisplay: (props: object) =>
-			React.createElement('media-time-display', props),
-		VideoPlayerTimeRange: (props: object) =>
-			React.createElement('media-time-range', props),
+		VideoPlayerControlBar: (props: object) => React.createElement('media-control-bar', props),
+		VideoPlayerMuteButton: (props: object) => React.createElement('media-mute-button', props),
+		VideoPlayerPlayButton: (props: object) => React.createElement('media-play-button', props),
+		VideoPlayerTimeDisplay: (props: object) => React.createElement('media-time-display', props),
+		VideoPlayerTimeRange: (props: object) => React.createElement('media-time-range', props),
 	};
 });
 
@@ -42,9 +37,7 @@ describe('AudioPlayer', () => {
 	});
 
 	it('updates the native audio source', () => {
-		const { container, rerender } = render(
-			<AudioPlayer src="local-resource://file/first.mp3" />
-		);
+		const { container, rerender } = render(<AudioPlayer src="local-resource://file/first.mp3" />);
 
 		rerender(<AudioPlayer src="local-resource://file/second.mp3" />);
 

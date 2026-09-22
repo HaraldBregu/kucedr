@@ -10,7 +10,9 @@ import { undoFileOperation } from '../../../../../src/main/agent/history/undo';
 const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-history-')));
 let history: FileHistory;
 
-beforeEach(() => { history = { operations: [] }; });
+beforeEach(() => {
+	history = { operations: [] };
+});
 afterEach(() => fs.rmSync(root, { recursive: true, force: true }));
 
 it('undoes and redoes a file creation in session memory', () => {
@@ -66,7 +68,14 @@ it('rejects symlinked history targets instead of following them', () => {
 it('evicts oldest history entries to bound retained snapshot bytes', () => {
 	const content = 'a'.repeat(1024 * 1024);
 	for (let index = 0; index < 20; index += 1) {
-		recordFileOperation(history, 'run', String(index), 'write', [{ path: String(index), exists: false }], [{ path: String(index), exists: true, content }]);
+		recordFileOperation(
+			history,
+			'run',
+			String(index),
+			'write',
+			[{ path: String(index), exists: false }],
+			[{ path: String(index), exists: true, content }]
+		);
 	}
 	expect(history.operations).toHaveLength(16);
 	expect(history.operations[0].toolCallId).toBe('4');
