@@ -13,6 +13,7 @@ import {
 import { userDataLocation } from '../shared/user_data_location';
 
 type AgentProfileStore = {
+	llm?: AgentMediaModelSettings;
 	textToText: AgentMediaModelSettings;
 	textToSpeech: AgentMediaModelSettings;
 	speechToText: AgentMediaModelSettings;
@@ -37,6 +38,11 @@ const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelK
 	health: AGENT_PROFILE_MODEL_KEYS,
 	channels: AGENT_PROFILE_MODEL_KEYS,
 };
+const storedModelKey = (
+	profileId: AgentToolProfileId,
+	modelKey: AgentProfileModelKey
+): keyof AgentProfileStore =>
+	profileId === 'tasks' && modelKey === 'textToText' ? 'llm' : modelKey;
 
 const stores = Object.fromEntries(
 	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
@@ -77,7 +83,11 @@ function read(profileId: AgentToolProfileId): AgentProfileStore {
 		...Object.fromEntries(
 			AGENT_PROFILE_MODEL_KEYS.map((key) => [
 				key,
-				{ ...fallback[key], ...(stored[key] ?? {}), options: { ...(stored[key]?.options ?? {}) } },
+				{
+					...fallback[key],
+					...(stored[storedModelKey(profileId, key)] ?? {}),
+					options: { ...(stored[storedModelKey(profileId, key)]?.options ?? {}) },
+				},
 			])
 		),
 	};
@@ -87,7 +97,7 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 	const profile = {
 		...Object.fromEntries(
 			PROFILE_MODEL_KEYS[profileId].map((key) => [
-				key,
+				storedModelKey(profileId, key),
 				{ ...EMPTY_MODEL, ...next[key], options: { ...next[key].options } },
 			])
 		),
@@ -106,7 +116,7 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 					'ttsModelId',
 				]
 			: ['providerId', 'modelId', 'modelOptions'];
-	const profileKeys = [...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
+	const profileKeys = ['llm', ...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
 	const preserved = SHARED_PROFILE_IDS.has(profileId)
 		? Object.fromEntries(
 				Object.entries(existing).filter(

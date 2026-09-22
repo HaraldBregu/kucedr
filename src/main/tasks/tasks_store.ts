@@ -9,6 +9,7 @@ export const taskStorePath = agentProfileStorePath('tasks');
 
 export function getTaskState(): PersistedTaskState {
 	const {
+		llm: _llm,
 		textToText: _textToText,
 		textToSpeech: _textToSpeech,
 		speechToText: _speechToText,
