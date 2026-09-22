@@ -355,6 +355,9 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 			.some((element) => element.getAttribute('data-slot') === 'collapsible-trigger')
 	).toBe(true);
 	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
+	expect(document.querySelector('.lucide-music-2')).toBeInTheDocument();
+	expect(document.querySelector('.lucide-image')).toBeInTheDocument();
+	expect(document.querySelector('.lucide-video')).toBeInTheDocument();
 	expect(screen.queryByRole('link', { name: 'settings.tabs.skills' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('link', { name: 'settings.tabs.mcp' })).not.toBeInTheDocument();
 

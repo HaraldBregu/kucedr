@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { Image, Music2, Video } from 'lucide-react';
 import type { AgentToolProfileId } from '@shared/agent_tools';
 import { AgentMediaModelConfiguration } from './media';
 import { toolModelApi } from './toolmodel';
@@ -19,7 +20,7 @@ export function ProfileMediaModels({
 				idPrefix={`${profileId}-music`}
 				title={t('settings.tabs.music')}
 				description={t('settings.modelServices.musicModelDescription')}
-				showIcon={false}
+				icon={Music2}
 				grouped
 				showSelectedModel
 				buttonDropdown
@@ -32,7 +33,7 @@ export function ProfileMediaModels({
 				idPrefix={`${profileId}-image`}
 				title={t('settings.tabs.image')}
 				description={t('settings.modelServices.imageModelDescription')}
-				showIcon={false}
+				icon={Image}
 				grouped
 				showSelectedModel
 				buttonDropdown
@@ -45,7 +46,7 @@ export function ProfileMediaModels({
 				idPrefix={`${profileId}-video`}
 				title={t('settings.tabs.video')}
 				description={t('settings.modelServices.videoModelDescription')}
-				showIcon={false}
+				icon={Video}
 				grouped
 				showSelectedModel
 				buttonDropdown
