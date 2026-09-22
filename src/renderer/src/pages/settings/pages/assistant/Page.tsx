@@ -6,7 +6,6 @@ import {
 	BrainCircuit,
 	ChevronRight,
 	History,
-	ShieldCheck,
 	Mic,
 	Volume2,
 	Wrench,
@@ -335,31 +334,6 @@ const AssistantPage: React.FC = () => {
 				</div>
 			</SettingsPanel>
 
-			<SettingsPanel>
-				<div
-					role="button"
-					tabIndex={0}
-					className="cursor-pointer hover:bg-muted/40"
-					onClick={() => navigate('/settings/agent/permissions')}
-					onKeyDown={(event) => {
-						if (event.key === 'Enter' || event.key === ' ') {
-							event.preventDefault();
-							navigate('/settings/agent/permissions');
-						}
-					}}
-				>
-					<SettingsRow
-						title={t('settings.tabs.permissions')}
-						media={
-							<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-						}
-						description={t('settings.overview.descriptions.permissions')}
-						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
-						actionClassName="w-auto justify-end"
-						actions={<ChevronRight className="size-4 text-muted-foreground" />}
-					/>
-				</div>
-			</SettingsPanel>
 		</SettingsPageShell>
 	);
 };

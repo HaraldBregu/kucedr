@@ -336,8 +336,7 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 	expect(screen.queryByRole('link', { name: 'settings.tabs.skills' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('link', { name: 'settings.tabs.mcp' })).not.toBeInTheDocument();
 
-	const permissions = screen.getByRole('button', { name: /Permissions/ });
-	expect(permissions).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: /Permissions/ })).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /Data management/ })).not.toBeInTheDocument();
 
 	await user.click(screen.getByRole('link', { name: /^Tools/ }));
