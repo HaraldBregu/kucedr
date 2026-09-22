@@ -112,7 +112,7 @@ const permissionsStore = new Store<PermissionsStore>({
 	defaults: { permissions: DEFAULT_AGENT_PERMISSIONS, tools: DEFAULT_RUNTIME_TOOL_SETTINGS },
 });
 const mediaStore = new Store<MediaStore>({
-	name: 'media',
+	name: 'models',
 	cwd: settingsDirectory,
 	accessPropertiesByDotNotation: false,
 	defaults: { image: EMPTY_MEDIA_MODEL, audio: EMPTY_MEDIA_MODEL, video: EMPTY_MEDIA_MODEL },
