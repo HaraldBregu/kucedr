@@ -30,6 +30,7 @@ import {
 	SettingsPanel,
 	SettingsRow,
 	SettingsSection,
+	SettingsValue,
 } from '../../../components';
 import { ModelProviderConfiguration } from '../../../components/model-configuration';
 
@@ -109,6 +110,8 @@ const HealthPage: React.FC = () => {
 	};
 
 	const modelGroups = llmModelGroups();
+	const selectedModelGroup = modelGroups.find((group) => group.provider.id === settings?.providerId);
+	const selectedModel = selectedModelGroup?.models.find((model) => model.id === settings?.modelId);
 
 	const targetOptions =
 		settings && settings.target !== 'none' && settings.target !== 'last'
@@ -160,7 +163,19 @@ const HealthPage: React.FC = () => {
 								buttonDropdown
 								showContentSeparator={false}
 								onChange={(providerId, modelId) => updateAndSave({ providerId, modelId })}
-							/>
+							>
+								<div className="-mx-4 -mb-4">
+									<SettingsRow
+										title={t('settings.coding.provider')}
+										actions={<SettingsValue>{selectedModelGroup?.provider.name ?? '—'}</SettingsValue>}
+									/>
+									<SettingsRow
+										title={t('settings.coding.model')}
+										description={selectedModel?.id}
+										actions={<SettingsValue>{selectedModel?.name ?? '—'}</SettingsValue>}
+									/>
+								</div>
+							</ModelProviderConfiguration>
 						</SettingsPanel>
 						<SettingsPanel>
 							<SettingsRow
