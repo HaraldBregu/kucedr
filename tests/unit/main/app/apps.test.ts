@@ -74,6 +74,7 @@ describe('app discovery and loading', () => {
 	let appLocation: string;
 	const projectManifest: AppManifest = {
 		title: 'Project',
+		handle: '@project',
 		description: 'A compact project board for tracking work from backlog to completion.',
 		metadata: {
 			version: '1.0.0',
@@ -132,6 +133,12 @@ describe('app discovery and loading', () => {
 			appManifestPath('notes', appLocation),
 			JSON.stringify({ name: 'Notes', description: 'Old schema', metadata: {} })
 		);
+		expect(listApps(appLocation)).toEqual([]);
+	});
+
+	it('rejects malformed app handles', () => {
+		installApp(appLocation, 'project', { ...projectManifest, handle: 'project' });
+
 		expect(listApps(appLocation)).toEqual([]);
 	});
 
