@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Bot, Cloud, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
+import { Bot, Cloud, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Search, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -117,10 +117,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					<Layers className="size-4" />
 					<span>{t('settings.tabs.apps')}</span>
 				</Link>
-				<button type="button" className={SPLIT_ITEM_CLASS} onClick={openCommandMenu}>
-					<Search className="size-4" />
-					<span>{t('navigationBar.search')}</span>
-				</button>
 				<button
 					type="button"
 					className={SPLIT_ITEM_CLASS}
@@ -273,6 +269,22 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				)}
 			</section>
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton asChild>
+							<Link to="/settings/general">
+								<Settings />
+								<span>{t('settings.title')}</span>
+							</Link>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton type="button" onClick={openCommandMenu}>
+							<Search />
+							<span>{t('navigationBar.search')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>

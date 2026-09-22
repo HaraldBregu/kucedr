@@ -286,7 +286,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('keeps Apps, Search, and New chat in the fixed sidebar action group', async () => {
+it('keeps Settings and Search in the sticky sidebar footer', async () => {
 	const user = userEvent.setup();
 	const openCommandMenu = jest.fn();
 	listSessions.mockResolvedValue([]);
@@ -307,14 +307,20 @@ it('keeps Apps, Search, and New chat in the fixed sidebar action group', async (
 					}
 				/>
 				<Route path="/settings/apps" element={<p>Apps page</p>} />
+				<Route path="/settings/general" element={<p>Settings page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
 
 	expect(await screen.findByRole('link', { name: 'settings.tabs.apps' })).toHaveAttribute('href', '/settings/apps');
+	const settings = screen.getByRole('link', { name: 'settings.title' });
+	expect(settings).toHaveAttribute('href', '/settings/general');
+	expect(settings.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	await user.click(screen.getByRole('button', { name: 'navigationBar.search' }));
 	expect(openCommandMenu).toHaveBeenCalledTimes(1);
 	expect(screen.getByRole('button', { name: 'navigationBar.newChat' })).toBeInTheDocument();
+	await user.click(settings);
+	expect(screen.getByText('Settings page')).toBeInTheDocument();
 	await user.click(screen.getByRole('link', { name: 'settings.tabs.apps' }));
 	expect(screen.getByText('Apps page')).toBeInTheDocument();
 });
