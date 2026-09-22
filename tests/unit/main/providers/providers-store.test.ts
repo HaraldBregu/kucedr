@@ -10,6 +10,7 @@ jest.mock('../../../../src/main/shared/user_data_location', () => ({
 
 beforeEach(() => {
 	rmSync(root, { recursive: true, force: true });
+	mkdirSync(`${root}/settings`, { recursive: true });
 	mkdirSync(`${root}/providers`, { recursive: true });
 	writeFileSync(`${root}/providers/settings.json`, '{}');
 	jest.mocked(safeStorage.isEncryptionAvailable).mockReturnValue(true);
