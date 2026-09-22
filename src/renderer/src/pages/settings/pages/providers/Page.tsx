@@ -592,6 +592,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		modelCatalog.filter((provider) => provider.id === id)
 	);
 	const otherProviders = modelCatalog.filter((provider) => !featuredIds.has(provider.id));
+	const orderedModelProviders = [...featuredProviders, ...otherProviders];
 	const searchCatalog = actionableSearchCatalog();
 	const mcpCatalog = mcps();
 	const catalogMcpIds = new Set(mcpCatalog.map((service) => service.id));
@@ -629,22 +630,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
-						{!embedded && <div className="space-y-3">{renderCustomProviderCard()}</div>}
-						{embedded ? (
-							<div className="space-y-3 pb-4">
-								{featuredProviders.map((provider) => renderProviderCard(provider, 'models'))}
-								{otherProviders.map((provider) => renderProviderCard(provider, 'models'))}
-							</div>
-						) : (
-							<div className="space-y-3 pb-4">
-								{actionableProviderCatalog().map((provider) =>
-									renderProviderCard(provider, 'models')
-								)}
-							</div>
-						)}
+						{section === undefined && <div className="space-y-3">{renderCustomProviderCard()}</div>}
+						<div className="space-y-3 pb-4">
+							{orderedModelProviders.map((provider) => renderProviderCard(provider, 'models'))}
+						</div>
 					</SettingsSection>
 				)}
-			{embedded && section === 'models' && (
+			{section === 'models' && (
 				<SettingsSection title={t('settings.modelServices.localModels')}>
 					<div className="space-y-3 pb-4">{renderCustomProviderCard()}</div>
 				</SettingsSection>
