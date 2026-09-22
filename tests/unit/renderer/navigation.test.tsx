@@ -34,6 +34,7 @@ it.each([
 	['/settings/agent/image', 'settings.tabs.image'],
 	['/settings/agent/rag', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
+	['/settings/agent/voice', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/agent/skills', 'settings.tabs.skills'],
@@ -68,7 +69,7 @@ it.each([
 	expect(within(breadcrumb).getByText(labelKey)).toBeInTheDocument();
 	if (path.startsWith('/settings/agent/')) {
 		expect(
-			within(breadcrumb).getByRole('link', { name: 'settings.modelServices.assistantName' })
+			within(breadcrumb).getByRole('link', { name: 'settings.modelServices.chatName' })
 		).toHaveAttribute('href', '/settings/agent');
 	}
 });
@@ -92,7 +93,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	});
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
 	const currentSection = within(navigation).getByRole('link', {
-		name: 'settings.modelServices.assistantName',
+		name: 'settings.modelServices.chatName',
 	});
 	const assistantGroup = within(navigation)
 		.getByText('settings.overview.groups.assistant')
@@ -159,11 +160,14 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })
 	).not.toBeInTheDocument();
 	expect(
-		within(navigation).queryByRole('link', { name: 'settings.tabs.taskScheduler' })
-	).not.toBeInTheDocument();
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.voice' })
+	).toHaveAttribute('href', '/settings/agent/voice');
 	expect(
-		within(navigation).queryByRole('link', { name: 'settings.tabs.health' })
-	).not.toBeInTheDocument();
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.taskScheduler' })
+	).toHaveAttribute('href', '/settings/agent/tasks');
+	expect(
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.health' })
+	).toHaveAttribute('href', '/settings/agent/health');
 	expect(
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();

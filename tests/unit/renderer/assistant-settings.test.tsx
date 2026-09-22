@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AssistantPage from '../../../src/renderer/src/pages/settings/pages/assistant/Page';
 import RealtimeConversationConfiguration from '../../../src/renderer/src/pages/settings/pages/assistant/conversation';
+import VoicePage from '../../../src/renderer/src/pages/settings/pages/assistant/voice/Page';
 import ToolsPage from '../../../src/renderer/src/pages/settings/pages/assistant/tools/Page';
 import TasksPage from '../../../src/renderer/src/pages/settings/pages/tasks/Page';
 
@@ -105,6 +106,7 @@ const mockCatalog = [
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
 		'settings.modelServices.assistantName': 'Agent',
+		'settings.modelServices.chatName': 'Chat',
 		'settings.modelServices.kucedrDescription': 'Chat, tools, and planning',
 		'settings.modelServices.configuration': 'Configuration',
 		'settings.modelServices.tools': 'Tools',
@@ -112,6 +114,8 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.subtitle': 'Configure model assignments',
 		'settings.modelServices.imageAssistantName': 'Text to image',
 		'settings.modelServices.voiceName': 'Speech',
+		'settings.modelServices.voiceDescription': 'Realtime conversations and spoken output',
+		'settings.tabs.voice': 'Voice',
 		'settings.modelServices.textToSpeechModelDescription': 'Text to speech model',
 		'settings.modelServices.transcriptionName': 'Transcription',
 		'settings.modelServices.transcriptionDescription': 'Speech-to-text transcription',
@@ -454,7 +458,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<AssistantPage />
+		<VoicePage />
 		</MemoryRouter>
 	);
 
@@ -557,7 +561,7 @@ it('announces a realtime conversation setup save error', async () => {
 	realtimeSetSetup.mockRejectedValueOnce(new Error('Realtime setup could not be saved.'));
 	render(
 		<MemoryRouter>
-			<AssistantPage />
+		<VoicePage />
 		</MemoryRouter>
 	);
 
@@ -580,7 +584,6 @@ it('announces a realtime conversation setup save error', async () => {
 
 it.each([
 	['settings.tabs.skills', '/settings/agent/skills', 'link'],
-	['settings.tabs.taskScheduler', '/settings/agent/tasks', 'link'],
 	['settings.tabs.mcp', '/settings/agent/mcp', 'link'],
 	['Knowledge Base', '/settings/agent/rag', 'button'],
 ])('opens %s from the Agent settings page', async (label, path, role) => {
