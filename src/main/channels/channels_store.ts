@@ -6,6 +6,11 @@ import { getModelId, getProviderId } from '../models/selection';
 import { safeStorage } from 'electron';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
+import {
+	getAgentProfileModel,
+	initializeAgentProfile,
+	setAgentProfileModel,
+} from '../agent/agent_profiles';
 
 type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & { readonly apiKey?: string };
 
@@ -44,6 +49,12 @@ const CHANNEL_MODELS_FALLBACKS: Record<ChannelModelKind, () => ChannelModelSelec
 	llm: () => ({ providerId: getProviderId('text'), modelId: getModelId('text') }),
 	stt: () => ({ providerId: getProviderId('transcribe'), modelId: getModelId('transcribe') }),
 	tts: () => ({ providerId: getProviderId('voice'), modelId: getModelId('voice') }),
+};
+
+const CHANNEL_PROFILE_MODELS: Record<ChannelModelKind, 'textToText' | 'speechToText' | 'textToSpeech'> = {
+	llm: 'textToText',
+	stt: 'speechToText',
+	tts: 'textToSpeech',
 };
 
 const store = new Store<ChannelsStoreState>({
@@ -141,12 +152,23 @@ export function setChannelProvider(provider: StoredChannelProvider): StoredChann
 export function getChannelModelSelection(kind: ChannelModelKind): ChannelModelSelection {
 	const keys = CHANNEL_MODEL_KEYS[kind];
 	const fallback = CHANNEL_MODELS_FALLBACKS[kind]();
-	const providerId = trimValue(store.get(keys.providerId)) ?? trimValue(fallback.providerId);
-	const modelId = trimValue(store.get(keys.modelId)) ?? trimValue(fallback.modelId);
+	const modelKey = CHANNEL_PROFILE_MODELS[kind];
+	initializeAgentProfile(
+		'channels',
+		{
+			[modelKey]: {
+				providerId: trimValue(store.get(keys.providerId)) ?? trimValue(fallback.providerId) ?? '',
+				modelId: trimValue(store.get(keys.modelId)) ?? trimValue(fallback.modelId) ?? '',
+				options: {},
+			},
+		},
+		`channels-${kind}`
+	);
+	const model = getAgentProfileModel('channels', modelKey);
 
 	return {
-		providerId,
-		modelId,
+		providerId: trimValue(model.providerId),
+		modelId: trimValue(model.modelId),
 	};
 }
 
@@ -155,8 +177,12 @@ export function setChannelModelSelection(
 	selection: ChannelModelSelection
 ): void {
 	const keys = CHANNEL_MODEL_KEYS[kind];
-	store.set(keys.providerId, trimValue(selection.providerId) ?? '');
-	store.set(keys.modelId, trimValue(selection.modelId) ?? '');
+	const modelKey = CHANNEL_PROFILE_MODELS[kind];
+	setAgentProfileModel('channels', modelKey, {
+		...getAgentProfileModel('channels', modelKey),
+		providerId: trimValue(selection.providerId) ?? '',
+		modelId: trimValue(selection.modelId) ?? '',
+	});
 }
 
 export function getChannelModelSelections(): Record<ChannelModelKind, ChannelModelSelection> {
