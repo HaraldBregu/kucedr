@@ -75,7 +75,7 @@ it('shows command items in one list without section headings', () => {
 	);
 
 	expect(screen.getByText('Home')).toBeInTheDocument();
-	expect(screen.getByText('General')).toBeInTheDocument();
+	expect(screen.getByText('Settings')).toBeInTheDocument();
 	expect(screen.queryByText('Routes')).not.toBeInTheDocument();
 	expect(screen.queryByText('Settings routes')).not.toBeInTheDocument();
 });
