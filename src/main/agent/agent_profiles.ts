@@ -28,7 +28,7 @@ type AgentProfileStore = {
 const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
 const DEFAULT_TOOL: AgentToolConfiguration = { enabled: true, permission: 'allow' };
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
-const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['tasks', 'health', 'channels']);
+const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['voice', 'tasks', 'health', 'channels']);
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {

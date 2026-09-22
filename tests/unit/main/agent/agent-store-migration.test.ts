@@ -73,6 +73,7 @@ it('creates clean independent agent profile stores without migration metadata', 
 	expect(stores.get('chat-agent')).not.toHaveProperty('schemaVersion');
 	expect(stores.get('chat-agent')).not.toHaveProperty('migrations');
 	expect(agentProfileStorePath('chat')).toMatch(/chat-agent\.json$/);
+	expect(agentProfileStorePath('voice')).toMatch(/voice\.json$/);
 	expect(agentProfileStorePath('tasks')).toMatch(/tasks\.json$/);
 	expect(agentProfileStorePath('health')).toMatch(/health\.json$/);
 	expect(agentProfileStorePath('channels')).toMatch(/channels\.json$/);
