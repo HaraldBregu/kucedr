@@ -10,16 +10,18 @@ import {
 const HEALTH_STORE_NAME = 'health';
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
 
-const store = new Store<HealthSettings>({
-	name: HEALTH_STORE_NAME,
-	cwd: settingsDirectory,
-	accessPropertiesByDotNotation: false,
-	defaults: DEFAULT_HEALTH_SETTINGS,
-});
+const healthStore = (): Store<HealthSettings> =>
+	new Store<HealthSettings>({
+		name: HEALTH_STORE_NAME,
+		cwd: settingsDirectory,
+		accessPropertiesByDotNotation: false,
+		defaults: DEFAULT_HEALTH_SETTINGS,
+	});
 
-export const healthStorePath = store.path;
+export const healthStorePath = healthStore().path;
 
 export function getHealthSettings(): HealthSettings {
+	const store = healthStore();
 	const model = getAgentProfileModel('health', 'textToText');
 	return {
 		...DEFAULT_HEALTH_SETTINGS,
@@ -31,7 +33,9 @@ export function getHealthSettings(): HealthSettings {
 }
 
 export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSettings {
+	const store = healthStore();
 	const { providerId, modelId, modelOptions, ...schedule } = patch;
+	store.store = { ...store.store, ...schedule };
 	if (providerId !== undefined || modelId !== undefined || modelOptions !== undefined) {
 		setAgentProfileModel('health', 'textToText', {
 			...getAgentProfileModel('health', 'textToText'),
@@ -40,12 +44,11 @@ export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSett
 			...(modelOptions === undefined ? {} : { options: modelOptions }),
 		});
 	}
-	store.store = { ...store.store, ...schedule };
 	return getHealthSettings();
 }
 
 export function resetHealthSettings(): HealthSettings {
-	store.store = DEFAULT_HEALTH_SETTINGS;
+	healthStore().store = DEFAULT_HEALTH_SETTINGS;
 	setAgentProfileModel('health', 'textToText', {
 		providerId: '',
 		modelId: '',

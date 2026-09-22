@@ -281,11 +281,22 @@ export function saveStorageSettings(settings: StorageSyncSettings): StorageSyncS
 }
 
 export function getTaskConfiguration(): PersistedTaskState {
-	const configuration = taskConfigurationStore.store;
+	const configuration = new Store<PersistedTaskState>({
+		name: 'tasks',
+		cwd: settingsDirectory,
+		accessPropertiesByDotNotation: false,
+		defaults: DEFAULT_TASK_CONFIGURATION,
+	}).store;
 	// Fresh array so in-place mutations never touch the shared defaults object
 	return { ...configuration, schedules: [...(configuration.schedules ?? [])] };
 }
 
 export function setTaskConfiguration(configuration: PersistedTaskState): void {
-	taskConfigurationStore.store = configuration;
+	const store = new Store<PersistedTaskState>({
+		name: 'tasks',
+		cwd: settingsDirectory,
+		accessPropertiesByDotNotation: false,
+		defaults: DEFAULT_TASK_CONFIGURATION,
+	});
+	store.store = { ...store.store, ...configuration };
 }
