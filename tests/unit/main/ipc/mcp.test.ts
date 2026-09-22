@@ -85,7 +85,13 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 		const sender = { id: 21, mainFrame };
 		jest
 			.mocked(BrowserWindow.fromWebContents)
-			.mockReturnValue({ id: 1, webContents: sender } as never);
+			.mockReturnValue({
+				id: 1,
+				webContents: sender,
+				isMinimized: () => false,
+				show: jest.fn(),
+				focus: jest.fn(),
+			} as never);
 		new McpIpc().register(
 			{ windows: { has: () => true }, apps: { has: () => false } } as never,
 			{} as never
@@ -131,6 +137,9 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 				serverUrl: 'https://generic.example/mcp',
 				authorizationCode: 'verified-code',
 			});
+			const window = jest.mocked(BrowserWindow.fromWebContents).mock.results[0].value;
+			expect(window.show).toHaveBeenCalled();
+			expect(window.focus).toHaveBeenCalled();
 		}
 		if (scenario === 'port busy') expect(auth).not.toHaveBeenCalled();
 	}

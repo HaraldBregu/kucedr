@@ -258,6 +258,12 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 					const code = await callback.code;
 					const finish = await auth(provider, { serverUrl: server.url, authorizationCode: code });
 					if (finish !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);
+					const window = BrowserWindow.fromWebContents(event.sender);
+					if (window) {
+						if (window.isMinimized()) window.restore();
+						window.show();
+						window.focus();
+					}
 					return { status: 'authorized' };
 				} finally {
 					callback.close();
