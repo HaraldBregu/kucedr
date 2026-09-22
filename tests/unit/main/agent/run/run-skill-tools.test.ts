@@ -1,6 +1,7 @@
 import type { Tool } from '../../../../../src/main/agent/types';
 import { filterDisabledTools } from '../../../../../src/main/agent/runner/run_tools';
 import { selectSkillTools } from '../../../../../src/main/agent/runner/run_skill_tools';
+import { isAgentToolAllowedForProfile } from '../../../../../src/shared/agent_tools';
 
 function fakeTool(name: string): Tool {
 	return {
@@ -57,5 +58,20 @@ describe('filterDisabledTools', () => {
 				write: { enabled: true },
 			}).map((tool) => tool.id)
 		).toEqual(['write', 'mcp__calendar__list']);
+	});
+});
+
+describe('agent tool profiles', () => {
+	it('limits Health to file and command tools', () => {
+		expect(isAgentToolAllowedForProfile('health', { kind: 'builtin', id: 'read' })).toBe(true);
+		expect(isAgentToolAllowedForProfile('health', { kind: 'builtin', id: 'bash' })).toBe(true);
+		expect(isAgentToolAllowedForProfile('health', { kind: 'builtin', id: 'search_web' })).toBe(false);
+		expect(
+			isAgentToolAllowedForProfile('health', {
+				kind: 'mcp',
+				serverId: 'gmail',
+				toolName: 'list_messages',
+			})
+		).toBe(false);
 	});
 });

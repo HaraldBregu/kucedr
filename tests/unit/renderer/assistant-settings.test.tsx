@@ -426,6 +426,21 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });
 
+it('limits Health tools to file and command capabilities', async () => {
+	render(
+		<MemoryRouter>
+			<ToolsPage profile="health" />
+		</MemoryRouter>
+	);
+
+	expect(await screen.findByText('Read file')).toBeInTheDocument();
+	expect(screen.getByText('Execute command')).toBeInTheDocument();
+	expect(screen.queryByText('Search web')).not.toBeInTheDocument();
+	expect(screen.queryByText('Query knowledge')).not.toBeInTheDocument();
+	expect(screen.queryByText('Text to image')).not.toBeInTheDocument();
+	expect(window.mcp.registry).not.toHaveBeenCalled();
+});
+
 it('saves a file tools permission choice', async () => {
 	const user = userEvent.setup();
 	render(
