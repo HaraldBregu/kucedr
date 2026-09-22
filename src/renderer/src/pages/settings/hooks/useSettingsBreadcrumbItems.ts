@@ -63,11 +63,37 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.modelServices.voiceHistoryTitle') },
 		];
 	}
+	if (location.pathname === '/settings/voice/tools') {
+		return [
+			{ label: t('settings.tabs.voice'), path: '/settings/voice' },
+			{ label: t('settings.modelServices.tools') },
+		];
+	}
 	if (location.pathname === '/settings/agent/tasks/history') {
 		return [
 			{ label: t('settings.modelServices.chatName'), path: '/settings/agent' },
 			{ label: t('settings.tabs.taskScheduler'), path: '/settings/agent/tasks' },
 			{ label: t('settings.cron.history.pageTitle') },
+		];
+	}
+	if (location.pathname === '/settings/agent/tasks/tools') {
+		return [
+			{ label: t('settings.modelServices.chatName'), path: '/settings/agent' },
+			{ label: t('settings.tabs.taskScheduler'), path: '/settings/agent/tasks' },
+			{ label: t('settings.modelServices.tools') },
+		];
+	}
+	if (location.pathname === '/settings/agent/health/tools') {
+		return [
+			{ label: t('settings.modelServices.chatName'), path: '/settings/agent' },
+			{ label: t('settings.tabs.health'), path: '/settings/agent/health' },
+			{ label: t('settings.modelServices.tools') },
+		];
+	}
+	if (location.pathname === '/settings/channels/tools') {
+		return [
+			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
+			{ label: t('settings.modelServices.tools') },
 		];
 	}
 	const assistantSubpageLabelKey = ASSISTANT_SUBPAGE_LABEL_KEYS[location.pathname];
