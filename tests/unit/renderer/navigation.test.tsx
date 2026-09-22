@@ -146,7 +146,6 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(pageContainer).not.toHaveClass('pt-6', 'py-6');
 	expect(screen.getByRole('heading', { name: 'Settings page' })).toHaveClass('text-lg');
 	expect(returnToChat).toHaveAttribute('href', '/home');
-	expect(returnToChat.querySelector('.lucide-message-circle')).toBeInTheDocument();
 	expect(within(sidebar as HTMLElement).getAllByRole('link')[0]).toBe(returnToChat);
 	expect(
 		within(workspace as HTMLElement).getByRole('navigation', {
@@ -218,6 +217,25 @@ it('renders settings navigation beside the workspace and marks the current secti
 			.closest('[data-slot="split-pane-group"]')
 	);
 	expect(currentSection).toHaveAttribute('data-active');
+});
+
+it('uses the Chat icon for the sidebar Chat item', () => {
+	const { container } = render(
+		<MemoryRouter initialEntries={['/settings/agent']}>
+			<Routes>
+				<Route path="/settings" element={<Layout />}>
+					<Route path="*" element={<p>Settings page</p>} />
+				</Route>
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
+	const chat = within(sidebar as HTMLElement).getByRole('link', {
+		name: 'settings.returnToChat',
+	});
+
+	expect(chat.querySelector('.lucide-message-circle')).toBeInTheDocument();
 });
 
 it('places Channels directly after Health in the Assistant sidebar group', () => {
