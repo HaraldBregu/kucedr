@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import {
 	AlertTriangle,
 	BrainCircuit,
 	Calendar as CalendarIcon,
+	ChevronRight,
 	LoaderCircle,
 	Save,
+	Wrench,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
@@ -364,6 +367,19 @@ const HealthPage: React.FC = () => {
 								onChange={updateModelOption}
 							/>
 						</ModelProviderConfiguration>
+					</SettingsPanel>
+
+					<SettingsPanel>
+						<Link to="/settings/agent/health/tools" className="block hover:bg-muted/40">
+							<SettingsRow
+								title={t('settings.modelServices.tools')}
+								description={t('settings.modelServices.toolsDescription')}
+								media={<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+								className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+								actionClassName="w-auto justify-end"
+								actions={<ChevronRight className="size-4 text-muted-foreground" />}
+							/>
+						</Link>
 					</SettingsPanel>
 
 					<SettingsSection
