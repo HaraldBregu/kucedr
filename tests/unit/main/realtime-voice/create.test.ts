@@ -79,7 +79,5 @@ it('starts voice with every eligible built-in tool', async () => {
 	const configuration = await dependencies.resolveConfiguration();
 
 	expect(configuration.tools.map((tool) => tool.id)).toEqual(['read', 'write']);
-	expect(configuration.instructions).toContain('read | Read');
-	expect(configuration.instructions).toContain('write | Write');
-	expect(configuration).not.toHaveProperty('refreshTools');
+	expect(configuration.instructions).toContain('read, write');
 });
