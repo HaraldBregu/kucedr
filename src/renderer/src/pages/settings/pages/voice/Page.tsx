@@ -1,13 +1,12 @@
-import { Radio } from 'lucide-react';
+import { ChevronRight, History, Radio } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
-	SettingsSection,
 } from '../../components';
 import RealtimeConversationConfiguration from '../assistant/conversation';
-import ChatHistoryPage from '../assistant/chathistory/Page';
 
 export default function VoicePage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -29,12 +28,18 @@ export default function VoicePage(): React.JSX.Element {
 				/>
 			</SettingsPanel>
 
-			<SettingsSection
-				title={t('settings.modelServices.voiceHistoryTitle')}
-				description={t('settings.modelServices.voiceHistoryDescription')}
-			>
-				<ChatHistoryPage category="voice" embedded />
-			</SettingsSection>
+			<SettingsPanel>
+				<Link to="/settings/voice/history" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.modelServices.voiceHistoryTitle')}
+						description={t('settings.modelServices.voiceHistoryDescription')}
+						media={<History className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+			</SettingsPanel>
 		</SettingsPageShell>
 	);
 }

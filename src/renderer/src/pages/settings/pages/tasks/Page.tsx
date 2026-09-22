@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
-import { AlertTriangle, BrainCircuit, ListChecks } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AlertTriangle, BrainCircuit, ChevronRight, History, ListChecks } from 'lucide-react';
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { ModelOptions } from '@/components/model-options';
@@ -18,7 +18,6 @@ import {
 	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
-import ChatHistoryPage from '../assistant/chathistory/Page';
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
 
@@ -290,12 +289,18 @@ const TasksPage: React.FC = () => {
 				</SettingsPanel>
 			</SettingsSection>
 
-			<SettingsSection
-				title={t('settings.cron.history.pageTitle')}
-				description={t('settings.cron.history.pageDescription')}
-			>
-				<ChatHistoryPage category="task" embedded />
-			</SettingsSection>
+			<SettingsPanel>
+				<Link to="/settings/agent/tasks/history" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.cron.history.pageTitle')}
+						description={t('settings.cron.history.pageDescription')}
+						media={<History className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+			</SettingsPanel>
 		</SettingsPageShell>
 	);
 };

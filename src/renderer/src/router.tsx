@@ -429,6 +429,14 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'voice/history',
+						element: (
+							<SettingsRouteWrapper>
+								<ChatHistoryPage category="voice" />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'agent',
 						children: [
 							{
@@ -471,6 +479,14 @@ const routes: RouteObject[] = [
 										element: (
 											<SettingsRouteWrapper>
 												<TaskDetailsPage />
+											</SettingsRouteWrapper>
+										),
+									},
+									{
+										path: 'history',
+										element: (
+											<SettingsRouteWrapper>
+												<ChatHistoryPage category="task" />
 											</SettingsRouteWrapper>
 										),
 									},
