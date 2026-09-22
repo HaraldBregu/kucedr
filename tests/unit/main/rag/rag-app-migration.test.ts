@@ -7,7 +7,7 @@ jest.mock('electron-store', () =>
 	jest.fn().mockImplementation(({ name, defaults }) => {
 		mockStoreNames.push(name);
 		let backing: Record<string, unknown> =
-			name === 'app'
+			name === 'settings'
 				? {
 						...defaults,
 						databaseConfiguration: {
@@ -27,7 +27,7 @@ jest.mock('electron-store', () =>
 						},
 					}
 				: { ...defaults };
-		if (name === 'app') mockAppStore = backing;
+		if (name === 'settings') mockAppStore = backing;
 		return {
 			path: `/settings/${name}.json`,
 			get(key: string) {
@@ -41,7 +41,7 @@ jest.mock('electron-store', () =>
 			},
 			set store(value: Record<string, unknown>) {
 				backing = value;
-				if (name === 'app') {
+				if (name === 'settings') {
 					mockAppStore = backing;
 					mockOperations.push('app');
 				}

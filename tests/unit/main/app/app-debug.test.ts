@@ -48,6 +48,7 @@ describe('debug app folders', () => {
 	afterAll(() => fs.rmSync(userData, { recursive: true, force: true }));
 
 	it('registers and discovers an app without copying its folder', () => {
+		expect(debugAppsStore.path).toBe(path.join(userData, 'apps', 'debug.json'));
 		const directory = createApp(root);
 		expect(addDebugApp(directory)).toEqual({ id: 'debug-app', ...manifest, debugPath: directory });
 		fs.mkdirSync(path.join(userData, 'apps', 'debug-app', 'data'), { recursive: true });

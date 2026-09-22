@@ -1,10 +1,9 @@
-import path from 'node:path';
 import Store from 'electron-store';
-import { userDataLocation } from '../shared/user_data_location';
+import { appsRoot } from './app_root';
 
 export const debugAppsStore = new Store<{ paths: string[] }>({
-	name: 'apps-debug',
-	cwd: path.resolve(userDataLocation(), 'settings'),
+	name: 'debug',
+	cwd: appsRoot(),
 	accessPropertiesByDotNotation: false,
 	defaults: { paths: [] },
 });

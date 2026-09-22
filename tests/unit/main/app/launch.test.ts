@@ -1,11 +1,13 @@
+import path from 'node:path';
+
 let mockAppStore: Record<string, unknown> = {};
 
 jest.mock('electron-store', () =>
 	jest.fn().mockImplementation(({ name, defaults }: { name: string; defaults: object }) => {
 		let backing: Record<string, unknown> = { ...defaults };
-		if (name === 'app') mockAppStore = backing;
+		if (name === 'settings') mockAppStore = backing;
 		return {
-			path: `/settings/${name}.json`,
+			path: `/apps/${name}.json`,
 			get(key: string) {
 				return backing[key];
 			},
@@ -17,16 +19,25 @@ jest.mock('electron-store', () =>
 			},
 			set store(value: Record<string, unknown>) {
 				backing = value;
-				if (name === 'app') mockAppStore = backing;
+				if (name === 'settings') mockAppStore = backing;
 			},
 		};
 	})
 );
 
-import { getLaunchState, recordAppLaunch } from '../../../../src/main/settings_store';
+import {
+	appSettingsStorePath,
+	getLaunchState,
+	recordAppLaunch,
+} from '../../../../src/main/settings_store';
+import { userDataLocation } from '../../../../src/main/shared/user_data_location';
 
 beforeEach(() => {
 	mockAppStore.launchCount = 0;
+});
+
+it('stores app settings under the apps folder', () => {
+	expect(appSettingsStorePath).toBe(path.join(userDataLocation(), 'apps', 'settings.json'));
 });
 
 it('records the initial launch as the first launch', () => {

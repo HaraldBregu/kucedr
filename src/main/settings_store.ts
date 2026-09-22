@@ -7,6 +7,7 @@ import type {
 } from '../shared/provider_types';
 import type { StorageSyncSettings } from '../shared/storage_types';
 import { userDataLocation } from './shared/user_data_location';
+import { appsRoot } from './apps/app_root';
 import { DEFAULT_SYNC_CRON_EXPRESSION } from './storage/storage_sync_types';
 import { normalizeStorageSettings } from './storage/storage_config';
 import { storageProviders } from './storage/providers';
@@ -39,7 +40,7 @@ export type AppSettingsState = {
 	cloud: StorageSyncSettings;
 };
 
-const APP_SETTINGS_STORE_NAME = 'app';
+const APP_SETTINGS_STORE_NAME = 'settings';
 
 const DEFAULT_STORAGE_SETTINGS: StorageSyncSettings = {
 	paths: [],
@@ -58,7 +59,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	cloud: DEFAULT_STORAGE_SETTINGS,
 };
 
-const settingsDirectory = path.resolve(userDataLocation(), 'settings');
+const settingsDirectory = appsRoot();
 
 const store = new Store<AppSettingsState>({
 	name: APP_SETTINGS_STORE_NAME,
