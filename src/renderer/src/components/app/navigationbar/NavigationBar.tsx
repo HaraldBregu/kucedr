@@ -40,7 +40,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
 	const settingsLabel = t('settings.title', 'Settings');
-	const homeButtonLabel = t('navigationBar.home', 'Home');
+	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search', 'Search');
 	const navigationBarMenuItems = [
 		{ path: '/settings/general', label: t('settings.tabs.general') },
@@ -67,11 +67,11 @@ export const NavigationBar = React.memo(function NavigationBar({
 			variant="secondary"
 			className="rounded-full"
 			onClick={() => navigate('/home')}
-			title={homeButtonLabel}
-			aria-label={homeButtonLabel}
+			title={chatButtonLabel}
+			aria-label={chatButtonLabel}
 		>
 			<LogoView className="pointer-events-none size-[18px]" />
-			{homeButtonLabel}
+			{chatButtonLabel}
 		</Button>
 	) : !isOnboarding ? (
 		<Button
@@ -125,9 +125,9 @@ export const NavigationBar = React.memo(function NavigationBar({
 							variant="default"
 							size="xs"
 							onClick={() => navigate('/home')}
-							title={homeButtonLabel}
+							title={chatButtonLabel}
 						>
-							{homeButtonLabel}
+							{chatButtonLabel}
 						</Button>
 					)}
 

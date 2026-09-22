@@ -2045,6 +2045,7 @@
 	},
 	"navigationBar": {
 		"applicationMenu": "Menu applicazione",
+		"chat": "Chat",
 		"openLocation": "Apri posizione",
 		"search": "Cerca",
 		"toggleSidebar": "Mostra/nascondi barra laterale",

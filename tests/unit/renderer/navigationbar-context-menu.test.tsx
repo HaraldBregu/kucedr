@@ -94,7 +94,7 @@ it('hides application navigation during onboarding', () => {
 	expect(navigationBar).toHaveClass('bg-background');
 	expect(navigationBar).not.toHaveClass('bg-transparent');
 	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'navigationBar.home' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
 });
 
 it('shows the settings icon on Home', async () => {
@@ -128,7 +128,7 @@ it('does not render a chat title in the navigationbar', () => {
 	expect(container.querySelector('[data-slot="navigationbar-chat-context"]')).not.toBeInTheDocument();
 });
 
-it('renders search immediately before the Home or Settings button', async () => {
+it('renders search immediately before the Chat or Settings button', async () => {
 	const user = userEvent.setup();
 	const onSearch = jest.fn();
 
@@ -160,7 +160,7 @@ it('renders one solid navigationbar color without visible title text', () => {
 	expect(within(navigationBar as HTMLElement).queryByText('Kucedr')).not.toBeInTheDocument();
 });
 
-it('shows the Kucedr logo and Home label inside the Settings button', async () => {
+it('shows the Kucedr logo and Chat label inside the Settings button', async () => {
 	const user = userEvent.setup();
 
 	render(
@@ -172,10 +172,10 @@ it('shows the Kucedr logo and Home label inside the Settings button', async () =
 			</Routes>
 		</MemoryRouter>
 	);
-	const homeButton = screen.getByRole('button', { name: 'navigationBar.home' });
+	const homeButton = screen.getByRole('button', { name: 'navigationBar.chat' });
 
 	expect(within(homeButton).getByRole('img', { name: 'Kucedr logo' })).toBeInTheDocument();
-	expect(within(homeButton).getByText('navigationBar.home')).toBeInTheDocument();
+	expect(within(homeButton).getByText('navigationBar.chat')).toBeInTheDocument();
 
 	await user.click(homeButton);
 
