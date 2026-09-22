@@ -163,7 +163,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			.mocked(getMcpOauth)
 			.mockReturnValue({ client_id: 'saved-google-id', client_secret: 'saved-google-secret' });
 		jest.mocked(startOauthCallbackServer).mockResolvedValue({
-			redirectUrl: 'http://localhost:4321/oauth/callback',
+			redirectUrl: 'http://127.0.0.1:3001/oauth/callback',
 			code: Promise.resolve('code'),
 			close: jest.fn(),
 		});

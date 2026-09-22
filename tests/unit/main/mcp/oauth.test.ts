@@ -99,7 +99,7 @@ const originalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
 const originalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
 beforeEach(() => {
-	process.env.CLIENT_REDIRECT_URL = 'http://localhost:4321/oauth/callback';
+	process.env.CLIENT_REDIRECT_URL = 'http://127.0.0.1:3001/oauth/callback';
 	process.env.GOOGLE_CLIENT_ID = 'registered-client';
 	process.env.GOOGLE_CLIENT_SECRET = 'saved-secret';
 });
@@ -115,7 +115,7 @@ afterEach(() => {
 
 it('uses a dedicated callback independent of account authentication', () => {
 	delete process.env.CLIENT_REDIRECT_URL;
-	expect(getMcpOAuthRedirectUrl()).toBe('http://localhost:4321/oauth/callback');
+	expect(getMcpOAuthRedirectUrl()).toBe('http://127.0.0.1:3001/oauth/callback');
 });
 
 it.each([

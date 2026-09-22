@@ -371,7 +371,7 @@ export function McpServerForm({
 							</summary>
 							<div className="mt-3 divide-y divide-border/60 border-y border-border/60">
 								<p className="text-[12px] text-muted-foreground">
-									The default OAuth callback is http://localhost:4321/oauth/callback. Register this
+									The default OAuth callback is http://127.0.0.1:3001/oauth/callback. Register this
 									URL if your authorization server requires it. To use another loopback URL, set
 									CLIENT_REDIRECT_URL in .env and restart Kucedr.
 								</p>

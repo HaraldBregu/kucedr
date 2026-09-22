@@ -1,5 +1,5 @@
 export function getMcpOAuthRedirectUrl(
-	value = process.env.CLIENT_REDIRECT_URL?.trim() || 'http://localhost:4321/oauth/callback'
+	value = process.env.CLIENT_REDIRECT_URL?.trim() || 'http://127.0.0.1:3001/oauth/callback'
 ): string {
 	const url = new URL(value);
 	if (

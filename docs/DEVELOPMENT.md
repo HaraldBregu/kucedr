@@ -63,7 +63,7 @@ Do not create lockfiles inside `packages/sdk` or `packages/cli`.
 HTTP MCP authorization runs directly between Kucedr and the authorization server discovered
 from the MCP server. It does not use Supabase.
 
-The default callback is `http://localhost:4321/oauth/callback`. For a pre-registered OAuth
+The default callback is `http://127.0.0.1:3001/oauth/callback`. For a pre-registered OAuth
 client, register this exact URL with its authorization server. Set the connector's client
 ID and optional client secret in its advanced settings. Servers supporting dynamic client
 registration receive the callback URL automatically through the MCP SDK.
