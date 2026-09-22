@@ -28,7 +28,9 @@ export function isAgentToolAllowedForProfile(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
 ): boolean {
-	return profileId !== 'health' || (tool.kind === 'builtin' && HEALTH_BUILTIN_TOOL_IDS.has(tool.id));
+	return (
+		profileId !== 'health' || (tool.kind === 'builtin' && HEALTH_BUILTIN_TOOL_IDS.has(tool.id))
+	);
 }
 
 export interface AgentToolProfile {

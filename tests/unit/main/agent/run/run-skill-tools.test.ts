@@ -65,7 +65,9 @@ describe('agent tool profiles', () => {
 	it('limits Health to file and command tools', () => {
 		expect(isAgentToolAllowedForProfile('health', { kind: 'builtin', id: 'read' })).toBe(true);
 		expect(isAgentToolAllowedForProfile('health', { kind: 'builtin', id: 'bash' })).toBe(true);
-		expect(isAgentToolAllowedForProfile('health', { kind: 'builtin', id: 'search_web' })).toBe(false);
+		expect(isAgentToolAllowedForProfile('health', { kind: 'builtin', id: 'search_web' })).toBe(
+			false
+		);
 		expect(
 			isAgentToolAllowedForProfile('health', {
 				kind: 'mcp',
