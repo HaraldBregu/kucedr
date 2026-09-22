@@ -11,6 +11,7 @@ jest.mock('electron-store', () =>
 			audio_model: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
 			video_model: { providerId: 'google', modelId: 'veo-3', options: {} },
 			tools: {
+				read_file: { enabled: false, permission: 'ask' },
 				list_apps: { enabled: true, permission: 'allow' },
 				open_apps: { enabled: true, permission: 'allow' },
 				close_apps: { enabled: true, permission: 'allow' },
@@ -66,6 +67,13 @@ it('migrates legacy agent settings into chatbot and tools branches', () => {
 			create_image: { providerId: 'openai', modelId: 'image-1', options: {} },
 			create_sound: { providerId: 'elevenlabs', modelId: 'sound-1', options: {} },
 			create_video: { providerId: 'google', modelId: 'veo-3', options: {} },
+		},
+		toolProfiles: {
+			chat: { tools: { read: { enabled: false, permission: 'ask' } } },
+			voice: { tools: { read: { enabled: false, permission: 'ask' } } },
+			tasks: { tools: { read: { enabled: false, permission: 'ask' } } },
+			health: { tools: { read: { enabled: false, permission: 'ask' } } },
+			channels: { tools: { read: { enabled: false, permission: 'ask' } } },
 		},
 	});
 	expect(persisted).not.toHaveProperty('providerId');
