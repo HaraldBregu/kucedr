@@ -1,4 +1,5 @@
-import { jsonTool } from '../../../../../src/main/agent/tools/tool';
+import { z } from 'zod';
+import { jsonTool, tool } from '../../../../../src/main/agent/tools/tool';
 
 it('does not cut native tools off at thirty seconds by default', () => {
 	const nativeTool = jsonTool({
@@ -10,6 +11,29 @@ it('does not cut native tools off at thirty seconds by default', () => {
 	});
 
 	expect(nativeTool.timeoutMs).toBe(10 * 60_000);
+});
+
+it('validates optional input examples against the runtime schema', () => {
+	const configured = tool({
+		id: 'lookup',
+		name: 'Lookup',
+		description: 'Look up an item when an exact identifier is known.',
+		inputSchema: z.object({ id: z.string().min(1) }),
+		inputExamples: [{ id: 'item-1' }],
+		execute: () => undefined,
+	});
+
+	expect(configured.inputExamples).toEqual([{ id: 'item-1' }]);
+	expect(() =>
+		tool({
+			id: 'invalid',
+			name: 'Invalid',
+			description: 'Invalid example',
+			inputSchema: z.object({ id: z.string() }),
+			inputExamples: [{ id: 1 }],
+			execute: () => undefined,
+		})
+	).toThrow();
 });
 
 it('keeps the runtime ID separate from the human-readable name', () => {
