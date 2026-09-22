@@ -266,17 +266,9 @@ const AppsPage: React.FC = () => {
 													</Badge>
 												)}
 											</div>
-											<div className="mt-1 flex flex-wrap items-center gap-1.5">
-												<span className="truncate text-[11px] leading-none text-muted-foreground">
-													{app.handle ?? `@${app.id}`}
-												</span>
-												<Badge variant="secondary" className="text-[10px] leading-none">
-													{app.metadata.category}
-												</Badge>
-												<Badge variant="outline" className="text-[10px] leading-none">
-													{app.metadata.version}
-												</Badge>
-											</div>
+											<p className="mt-1 truncate text-[11px] leading-none text-muted-foreground">
+												{app.handle ?? `@${app.id}`}
+											</p>
 										</div>
 										<div className="shrink-0">
 											<Button

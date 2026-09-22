@@ -106,6 +106,8 @@ it('shows only an open action on app cards', async () => {
 
 	await screen.findByText('Demo App');
 	expect(screen.getByText('@example')).toBeInTheDocument();
+	expect(screen.queryByText('Demo')).not.toBeInTheDocument();
+	expect(screen.queryByText('1.0.0')).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
 	expect(
