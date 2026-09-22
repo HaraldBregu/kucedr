@@ -152,6 +152,7 @@ export class LlmModel implements LlmAdapter {
 				name: tool.id,
 				description: tool.description ?? '',
 				schema: tool.schema ?? { type: 'object', properties: {}, additionalProperties: true },
+				...(tool.inputExamples?.length ? { inputExamples: tool.inputExamples } : {}),
 			})),
 			maxTokens: request.maxTokens,
 			signal: request.signal,
