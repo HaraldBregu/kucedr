@@ -1,11 +1,14 @@
-import path from 'node:path';
-import Store from 'electron-store';
 import type { ChannelModelKind, ChannelModelSelection, StoredChannelProvider } from '../../shared';
-import { userDataLocation } from '../shared/user_data_location';
 import { safeStorage } from 'electron';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
-import { getAgentProfileModel, setAgentProfileModel } from '../agent/agent_profiles';
+import {
+	agentProfileStorePath,
+	getAgentProfileDocument,
+	getAgentProfileModel,
+	setAgentProfileDocument,
+	setAgentProfileModel,
+} from '../agent/agent_profiles';
 
 type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & {
 	readonly apiKey?: string;
@@ -31,20 +34,22 @@ const CHANNEL_PROFILE_MODELS: Record<
 	tts: 'textToSpeech',
 };
 
-const channelStore = (): Store<ChannelsStoreState> =>
-	new Store<ChannelsStoreState>({
-		name: 'channels',
-		cwd: path.resolve(userDataLocation(), 'settings'),
-		accessPropertiesByDotNotation: false,
-		defaults: {
-			providers: [],
-			encryptedApiKeys: {},
-		},
-	});
-
-export const channelsStorePath = channelStore().path;
+export const channelsStorePath = agentProfileStorePath('channels');
 restrictSettingsFile(channelsStorePath);
 const volatileApiKeys = new Map<string, string>();
+
+function readChannelsState(): ChannelsStoreState {
+	const stored = getAgentProfileDocument('channels') as Partial<ChannelsStoreState>;
+	return {
+		...stored,
+		providers: stored.providers ?? [],
+		encryptedApiKeys: stored.encryptedApiKeys ?? {},
+	};
+}
+
+function writeChannelsState(next: ChannelsStoreState): void {
+	setAgentProfileDocument('channels', { ...getAgentProfileDocument('channels'), ...next });
+}
 
 function trimValue(value: unknown): string | undefined {
 	if (typeof value !== 'string') return undefined;
@@ -53,10 +58,10 @@ function trimValue(value: unknown): string | undefined {
 }
 
 export function listChannelProviders(): StoredChannelProvider[] {
-	const store = channelStore();
-	const encryptedApiKeys = { ...(store.get('encryptedApiKeys') ?? {}) };
+	const state = readChannelsState();
+	const encryptedApiKeys = { ...state.encryptedApiKeys };
 	let migrated = false;
-	const providers = store.get('providers').map((provider) => {
+	const providers = state.providers.map((provider) => {
 		const { apiKey: plaintextApiKey, ...metadata } = provider;
 		let apiKey = volatileApiKeys.get(provider.id) ?? '';
 		if (plaintextApiKey) {
@@ -82,11 +87,11 @@ export function listChannelProviders(): StoredChannelProvider[] {
 		return { ...metadata, apiKey };
 	});
 	if (migrated) {
-		store.set(
-			'providers',
-			providers.map(({ apiKey: _apiKey, ...provider }) => provider)
-		);
-		store.set('encryptedApiKeys', encryptedApiKeys);
+		writeChannelsState({
+			...state,
+			providers: providers.map(({ apiKey: _apiKey, ...provider }) => provider),
+			encryptedApiKeys,
+		});
 		restrictSettingsFile(channelsStorePath);
 	}
 	return providers;
@@ -98,15 +103,11 @@ export function getChannelProvider(id: string): StoredChannelProvider | undefine
 
 export function setChannelProvider(provider: StoredChannelProvider): StoredChannelProvider {
 	const providers = listChannelProviders();
-	const store = channelStore();
+	const state = readChannelsState();
 	const index = providers.findIndex((entry) => entry.id === provider.id);
 	if (index === -1) providers.push(provider);
 	else providers[index] = provider;
-	store.set(
-		'providers',
-		providers.map(({ apiKey: _apiKey, ...entry }) => entry)
-	);
-	const encryptedApiKeys = { ...(store.get('encryptedApiKeys') ?? {}) };
+	const encryptedApiKeys = { ...state.encryptedApiKeys };
 	if (provider.apiKey) {
 		if (isSafeStorageAvailable()) {
 			encryptedApiKeys[provider.id] = safeStorage
@@ -121,7 +122,11 @@ export function setChannelProvider(provider: StoredChannelProvider): StoredChann
 		delete encryptedApiKeys[provider.id];
 		volatileApiKeys.delete(provider.id);
 	}
-	store.set('encryptedApiKeys', encryptedApiKeys);
+	writeChannelsState({
+		...state,
+		providers: providers.map(({ apiKey: _apiKey, ...entry }) => entry),
+		encryptedApiKeys,
+	});
 	restrictSettingsFile(channelsStorePath);
 	return provider;
 }
