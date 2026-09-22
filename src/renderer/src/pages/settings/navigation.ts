@@ -10,6 +10,7 @@ import {
 	Info,
 	Library,
 	ListChecks,
+	MessageCircle,
 	Plug,
 	PlugZap,
 	Radio,
@@ -56,7 +57,7 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		labelKey: 'settings.modelServices.chatName',
 		descriptionKey: 'settings.modelServices.kucedrDescription',
 		keywords: 'kucedr service default provider model',
-		icon: Bot,
+		icon: MessageCircle,
 	},
 	{
 		id: AGENTS.coding,

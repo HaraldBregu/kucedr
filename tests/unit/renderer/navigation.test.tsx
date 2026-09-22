@@ -219,7 +219,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(currentSection).toHaveAttribute('data-active');
 });
 
-it('uses the Chat icon for the sidebar Chat item', () => {
+it('uses the Chat icon for the Agent Chat sidebar item', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/agent']}>
 			<Routes>
@@ -231,8 +231,11 @@ it('uses the Chat icon for the sidebar Chat item', () => {
 	);
 
 	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
-	const chat = within(sidebar as HTMLElement).getByRole('link', {
-		name: 'settings.returnToChat',
+	const navigation = within(sidebar as HTMLElement).getByRole('navigation', {
+		name: 'settings.title',
+	});
+	const chat = within(navigation).getByRole('link', {
+		name: 'settings.modelServices.chatName',
 	});
 
 	expect(chat.querySelector('.lucide-message-circle')).toBeInTheDocument();

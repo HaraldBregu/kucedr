@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageCircle } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -77,7 +77,7 @@ export function SettingsSidebar(): React.JSX.Element {
 						if (isMobile) dispatch({ type: 'SIDEBAR_OPEN_MOBILE_SET', open: false });
 					}}
 				>
-					<MessageCircle className="size-4 shrink-0" strokeWidth={1.8} />
+					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
 					<span className="text-xs">{t('settings.returnToChat', 'Return to Home')}</span>
 				</Link>
 			</div>
