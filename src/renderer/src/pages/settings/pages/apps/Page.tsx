@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Blocks,
@@ -17,7 +16,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { App } from '../../../../../../shared/installed_app_types';
-import Delete from './Delete';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -37,14 +35,12 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 const AppsPage: React.FC = () => {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const [apps, setApps] = useState<App[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [importing, setImporting] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 	const [successMessage, setSuccessMessage] = useState('');
 	const [actionsOpen, setActionsOpen] = useState(false);
-	const [appActionsOpen, setAppActionsOpen] = useState<string | null>(null);
 	const [openingAppId, setOpeningAppId] = useState<string | null>(null);
 	const [debugPath, setDebugPath] = useState('');
 	const [addingDebug, setAddingDebug] = useState(false);
@@ -149,13 +145,6 @@ const AppsPage: React.FC = () => {
 			setSelectingDebug(false);
 		}
 	}, [t]);
-
-	const handleDetails = useCallback(
-		(appId: string): void => {
-			navigate(`/settings/apps/${encodeURIComponent(appId)}`);
-		},
-		[navigate]
-	);
 
 	return (
 		<SettingsPageShell>
@@ -286,16 +275,7 @@ const AppsPage: React.FC = () => {
 												</Badge>
 											</div>
 										</div>
-										<div className="flex shrink-0 items-center gap-1">
-											<Button
-												type="button"
-												variant="outline"
-												size="xs"
-												disabled={importing || openingAppId === app.id}
-												onClick={() => handleDetails(app.id)}
-											>
-												{t('settings.apps.details')}
-											</Button>
+										<div className="shrink-0">
 											<Button
 												type="button"
 												size="xs"
@@ -309,43 +289,6 @@ const AppsPage: React.FC = () => {
 												<ExternalLink className="size-3" />
 												{t('settings.apps.open')}
 											</Button>
-											<Popover
-												open={appActionsOpen === app.id}
-												onOpenChange={(open) => setAppActionsOpen(open ? app.id : null)}
-											>
-												<PopoverTrigger asChild>
-													<Button
-														variant="outline"
-														size="icon-xs"
-														disabled={importing || openingAppId === app.id}
-														aria-label={t('settings.apps.deleteAction', { name: app.title })}
-														onClick={(event) => event.stopPropagation()}
-														onKeyDown={(event) => event.stopPropagation()}
-													>
-														<MoreHorizontal className="size-3.5" />
-													</Button>
-												</PopoverTrigger>
-												<PopoverContent
-													align="end"
-													collisionPadding={12}
-													className="w-44 p-1"
-													onClick={(event) => event.stopPropagation()}
-													onKeyDown={(event) => event.stopPropagation()}
-												>
-													<div role="menu" aria-label={t('common.moreOptions')}>
-														<Delete
-															app={app}
-															disabled={importing || openingAppId === app.id}
-															menuItem
-															onDeleted={(appId) => {
-																setAppActionsOpen(null);
-																setApps((current) => current.filter(({ id }) => id !== appId));
-															}}
-															onError={setErrorMessage}
-														/>
-													</div>
-												</PopoverContent>
-											</Popover>
 										</div>
 									</div>
 									<p className="line-clamp-2 text-[11px] leading-4 text-muted-foreground">

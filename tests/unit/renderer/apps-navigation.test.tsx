@@ -96,8 +96,7 @@ it('shows a debug app badge and image preview', async () => {
 	);
 });
 
-it('shows details, open, and an overflow delete action on app cards', async () => {
-	const user = userEvent.setup();
+it('shows only an open action on app cards', async () => {
 	render(
 		<MemoryRouter>
 			<AppsPage />
@@ -105,12 +104,9 @@ it('shows details, open, and an overflow delete action on app cards', async () =
 	);
 
 	await screen.findByText('Demo App');
-	expect(screen.getByRole('button', { name: 'settings.apps.details' })).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: /settings.apps.deleteAction/ }));
-	expect(
-		await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ })
-	).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: /settings.apps.deleteAction/ })).not.toBeInTheDocument();
 });
 
 it('opens the apps folder from the page header', async () => {
@@ -215,43 +211,6 @@ it('opens an app from its card action', async () => {
 	await user.click(await screen.findByRole('button', { name: 'settings.apps.open' }));
 
 	expect(window.apps.open).toHaveBeenCalledWith('demo-app');
-});
-
-it('navigates to an app detail only from its details button', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter initialEntries={['/settings/apps']}>
-			<Routes>
-				<Route path="/settings/apps" element={<AppsPage />} />
-				<Route path="/settings/apps/:appId" element={<p>App detail</p>} />
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await screen.findByText('Demo App');
-	expect(screen.queryByRole('link', { name: /Demo App/ })).not.toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: 'settings.apps.details' }));
-
-	expect(await screen.findByText('App detail')).toBeInTheDocument();
-	expect(window.apps.open).not.toHaveBeenCalled();
-});
-
-it('does not navigate to app detail when an overflow action is clicked', async () => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter initialEntries={['/settings/apps']}>
-			<Routes>
-				<Route path="/settings/apps" element={<AppsPage />} />
-				<Route path="/settings/apps/:appId" element={<p>App detail</p>} />
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await user.click(await screen.findByRole('button', { name: /settings.apps.deleteAction/ }));
-	await user.click(await screen.findByRole('menuitem', { name: /settings.apps.deleteAction/ }));
-
-	expect(window.apps.delete).toHaveBeenCalledWith('demo-app');
-	expect(screen.queryByText('App detail')).not.toBeInTheDocument();
 });
 
 it('treats an app detail route as a child of the apps breadcrumb', async () => {
