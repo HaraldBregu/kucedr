@@ -268,12 +268,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<SidebarMenuButton type="button" onClick={() => navigate('/settings/apps')}>
-							<Layers className="size-4" />
-							<span>{t('settings.tabs.apps')}</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-					<SidebarMenuItem>
 						<SidebarMenuButton type="button" onClick={() => navigate('/settings/general')}>
 							<Settings className="size-4" />
 							<span>{t('settings.title')}</span>

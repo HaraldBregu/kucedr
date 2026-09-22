@@ -289,7 +289,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('keeps Apps, Settings, Help, and Search in the sticky sidebar footer', async () => {
+it('keeps Settings, Help, and Search in the sticky sidebar footer', async () => {
 	const user = userEvent.setup();
 	const openCommandMenu = jest.fn();
 	listSessions.mockResolvedValue([]);
@@ -316,8 +316,6 @@ it('keeps Apps, Settings, Help, and Search in the sticky sidebar footer', async 
 	);
 
 	await screen.findByText('settings.chatHistory.empty');
-	const apps = screen.getByRole('button', { name: 'settings.tabs.apps' });
-	expect(apps.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	const settings = screen.getByRole('button', { name: 'settings.title' });
 	expect(settings.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	const help = screen.getByRole('button', { name: 'settings.sidebar.getHelp' });
