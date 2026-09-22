@@ -44,6 +44,12 @@ import {
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import { SEARCH_ENGINES } from '../../search/catalog';
 import type { SearchEngineId, SearchSettings } from '../../../../../../../shared/search_types';
+import type {
+	AgentToolConfiguration,
+	AgentToolProfile,
+	AgentToolProfileId,
+	AgentToolReference,
+} from '../../../../../../../shared/agent_tools';
 import McpTools from './Mcp';
 
 type AgentTool = readonly [name: string, id: string, description: string];
@@ -54,7 +60,15 @@ type AgentToolGroup = {
 	readonly tools: readonly AgentTool[];
 };
 
-type FileToolsPermission = 'ask' | 'allow' | 'deny';
+type ToolPermission = AgentToolConfiguration['permission'];
+
+const PROFILE_LABEL_KEYS: Record<AgentToolProfileId, string> = {
+	chat: 'settings.modelServices.chatName',
+	voice: 'settings.tabs.voice',
+	tasks: 'settings.tabs.taskScheduler',
+	health: 'settings.tabs.health',
+	channels: 'settings.tabs.channels',
+};
 
 const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 	{
@@ -237,15 +251,13 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 	'system',
 ].map((titleKey) => AGENT_TOOL_GROUPS.find((group) => group.titleKey === titleKey)!);
 
-const ToolsPage: React.FC = () => {
+const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {
 	const { t } = useTranslation();
 	const [toolSearch, setToolSearch] = useState('');
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
 	const [searchEngineError, setSearchEngineError] = useState<string | null>(null);
 	const [searchSavingEngineId, setSearchSavingEngineId] = useState<SearchEngineId | null>(null);
-	const [permissions, setPermissions] = useState<Awaited<
-		ReturnType<typeof window.agent.policyGet>
-	> | null>(null);
+	const [toolProfile, setToolProfile] = useState<AgentToolProfile | null>(null);
 	const [fileToolsSaving, setFileToolsSaving] = useState(false);
 	const [fileToolsError, setFileToolsError] = useState<string | null>(null);
 	const selectedSearchEngine = SEARCH_ENGINES.find(
@@ -301,10 +313,10 @@ const ToolsPage: React.FC = () => {
 	}, [t]);
 
 	useEffect(() => {
-		void window.agent.policyGet().then(setPermissions, (error) => {
+		void window.agent.getToolProfile(profile).then(setToolProfile, (error) => {
 			setFileToolsError(firstErrorMessage(error, t('settings.modelServices.loadError')));
 		});
-	}, [t]);
+	}, [profile, t]);
 
 	const handleSearchEngineChange = (value: SearchEngineId | null): void => {
 		if (!value) return;
@@ -325,30 +337,32 @@ const ToolsPage: React.FC = () => {
 			});
 	};
 
-	const handleFileToolsPermissionChange = (
-		toolId: string,
-		settings: { enabled: boolean; permission: FileToolsPermission }
+	const updateProfileTool = (
+		tool: AgentToolReference,
+		settings: AgentToolConfiguration
 	): void => {
-		if (!permissions || fileToolsSaving) return;
-		const next = { ...permissions, tools: { ...permissions.tools, [toolId]: settings } };
-		setPermissions(next);
+		if (!toolProfile || fileToolsSaving) return;
 		setFileToolsSaving(true);
 		setFileToolsError(null);
 		void window.agent
-			.policySet(next)
-			.then(setPermissions, (error) => {
+			.setToolProfileTool(profile, tool, settings)
+			.then(setToolProfile, (error) => {
 				setFileToolsError(firstErrorMessage(error, t('settings.modelServices.saveError')));
-				setPermissions(permissions);
 			})
-			.finally(() => {
-				setFileToolsSaving(false);
-			});
+			.finally(() => setFileToolsSaving(false));
+	};
+
+	const handleFileToolsPermissionChange = (
+		toolId: string,
+		settings: AgentToolConfiguration
+	): void => {
+		updateProfileTool({ kind: 'builtin', id: toolId }, settings);
 	};
 
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.modelServices.tools')}
+				title={`${t(PROFILE_LABEL_KEYS[profile])} ${t('settings.modelServices.tools')}`}
 				description={t('settings.modelServices.toolsDescription')}
 			/>
 			<div className="relative">
