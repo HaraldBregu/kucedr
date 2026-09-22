@@ -94,7 +94,7 @@ const IntegrationsPage = (): React.JSX.Element => {
 							key={`${service.provider.id}-${service.id}`}
 							variant="ghost"
 							size="md"
-							className="border-b border-border/60 px-0 py-3.5"
+							className="px-0 py-3.5"
 						>
 							<ProviderAvatar
 								providerId={service.provider.id}
