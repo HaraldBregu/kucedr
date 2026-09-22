@@ -28,6 +28,7 @@ jest.mock('../../../../src/main/agent/system', () => ({
 }));
 jest.mock('../../../../src/main/agent/agent_store', () => ({
 	getPermissions: () => ({ tools: {} }),
+	getToolConfiguration: () => ({ enabled: true, permission: 'allow' }),
 }));
 jest.mock('../../../../src/main/settings_store', () => ({
 	getProvider: () => ({ id: 'openai', name: 'OpenAI', apiKey: 'key' }),
