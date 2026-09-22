@@ -25,8 +25,11 @@ import {
 	getModelId,
 	getPermissions,
 	getProviderId,
+	getToolConfiguration,
+	getToolProfile,
 	resetPermissions,
 	setToolModel,
+	setToolProfileTool,
 	setChatbotModel,
 	setVoiceModel,
 	setModelId,
@@ -87,6 +90,32 @@ describe('agent store permissions', () => {
 			read: { enabled: true, permission: 'ask' },
 			edit: { enabled: true, permission: 'allow' },
 			patch: { enabled: true, permission: 'deny' },
+		});
+	});
+
+	it('keeps built-in and MCP tools independent for each agent profile', () => {
+		setToolProfileTool(
+			'voice',
+			{ kind: 'builtin', id: 'read' },
+			{ enabled: false, permission: 'deny' }
+		);
+		setToolProfileTool(
+			'chat',
+			{ kind: 'mcp', serverId: 'gmail', toolName: 'list_messages' },
+			{ enabled: true, permission: 'ask' }
+		);
+
+		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' })).toEqual({
+			enabled: false,
+			permission: 'deny',
+		});
+		expect(getToolConfiguration('chat', { kind: 'builtin', id: 'read' })).toEqual({
+			enabled: true,
+			permission: 'allow',
+		});
+		expect(getToolProfile('chat').mcp.gmail.list_messages).toEqual({
+			enabled: true,
+			permission: 'ask',
 		});
 	});
 
