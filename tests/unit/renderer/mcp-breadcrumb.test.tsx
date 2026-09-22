@@ -22,7 +22,7 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 			dispatchEvent: jest.fn(),
 		})),
 	});
-	render(
+	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/agent/mcp/demo-server']}>
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
@@ -38,6 +38,11 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 	);
 
 	const breadcrumb = screen.getByRole('navigation', { name: 'settings.breadcrumb.label' });
+	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).toHaveClass(
+		'sticky',
+		'top-0',
+		'z-10'
+	);
 	expect(within(breadcrumb).queryByRole('link', { name: 'settings.title' })).not.toBeInTheDocument();
 	expect(within(breadcrumb).queryByText('settings.tabs.providers')).not.toBeInTheDocument();
 	expect(within(breadcrumb).getByText('demo-server')).toBeInTheDocument();

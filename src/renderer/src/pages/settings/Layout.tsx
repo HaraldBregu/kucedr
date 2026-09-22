@@ -10,7 +10,12 @@ export function Layout(): React.JSX.Element {
 			<Split sidebar={<SettingsSidebar />}>
 				<div data-slot="settings-workspace" className="min-h-0 flex-1 overflow-y-auto">
 					<div className="pb-6">
-						<SettingsBreadcrumb />
+						<div
+							data-slot="settings-breadcrumb-shell"
+							className="sticky top-0 z-10 bg-muted/95 backdrop-blur-sm"
+						>
+							<SettingsBreadcrumb />
+						</div>
 						<Outlet />
 					</div>
 				</div>
