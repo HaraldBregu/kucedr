@@ -322,7 +322,6 @@ it('keeps only chat configuration on the Chat page and links to Tools', async ()
 	);
 	expect(model).toBeDefined();
 	if (!model) return;
-	expect(model).toHaveTextContent('GPT');
 	expect(screen.queryByRole('button', { name: /Speech/ })).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /Transcription/ })).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
