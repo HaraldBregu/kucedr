@@ -42,7 +42,7 @@ const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelK
 	voice: AGENT_PROFILE_MODEL_KEYS,
 	tasks: ['textToText'],
 	health: ['textToText'],
-	channels: AGENT_PROFILE_MODEL_KEYS,
+	channels: ['textToText', 'textToSpeech', 'speechToText'],
 };
 const storedModelKey = (
 	profileId: AgentToolProfileId,
@@ -50,11 +50,11 @@ const storedModelKey = (
 ): keyof AgentProfileStore =>
 	(profileId === 'tasks' || profileId === 'health') && modelKey === 'textToText'
 		? 'llm'
-		: profileId === 'chat' && modelKey === 'textToText'
+		: (profileId === 'chat' || profileId === 'channels') && modelKey === 'textToText'
 			? 'llm'
-			: profileId === 'chat' && modelKey === 'textToSpeech'
+			: (profileId === 'chat' || profileId === 'channels') && modelKey === 'textToSpeech'
 				? 'tts'
-				: profileId === 'chat' && modelKey === 'speechToText'
+				: (profileId === 'chat' || profileId === 'channels') && modelKey === 'speechToText'
 					? 'stt'
 					: modelKey;
 

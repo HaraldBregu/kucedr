@@ -134,4 +134,28 @@ it('keeps model selections isolated between agent profiles', () => {
 	expect(getAgentProfileDocument('health')).not.toHaveProperty('textToSpeech');
 	expect(getAgentProfileDocument('health')).not.toHaveProperty('speechToText');
 	expect(getAgentProfileDocument('health')).not.toHaveProperty('realtimeVoice');
+	setAgentProfileModel('channels', 'textToText', {
+		providerId: 'openai',
+		modelId: 'gpt-5-mini',
+		options: {},
+	});
+	setAgentProfileModel('channels', 'textToSpeech', {
+		providerId: 'openai',
+		modelId: 'gpt-4o-mini-tts',
+		options: {},
+	});
+	setAgentProfileModel('channels', 'speechToText', {
+		providerId: 'openai',
+		modelId: 'gpt-4o-transcribe',
+		options: {},
+	});
+	expect(getAgentProfileDocument('channels')).toMatchObject({
+		llm: { providerId: 'openai', modelId: 'gpt-5-mini' },
+		tts: { providerId: 'openai', modelId: 'gpt-4o-mini-tts' },
+		stt: { providerId: 'openai', modelId: 'gpt-4o-transcribe' },
+	});
+	expect(getAgentProfileDocument('channels')).not.toHaveProperty('realtimeVoice');
+	expect(getAgentProfileDocument('channels')).not.toHaveProperty('image');
+	expect(getAgentProfileDocument('channels')).not.toHaveProperty('audio');
+	expect(getAgentProfileDocument('channels')).not.toHaveProperty('video');
 });
