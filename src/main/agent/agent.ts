@@ -66,6 +66,7 @@ import { getModelId, getProviderId } from './agent_store';
 import { preflightPromptAttachments, resolvePromptInputCapabilities } from './attachments';
 import { workspacePath } from './system';
 import { formatReplyMessage } from '../../shared/reply';
+import type { AgentToolProfileId } from '../../shared/agent_tools';
 
 const RUN_PRIORITIES: Record<SessionCategory, AgentRunPriority> = {
 	main: 'high',
@@ -80,6 +81,13 @@ const AGENT_CATEGORIES: Record<string, SessionCategory> = {
 	main: 'main',
 	channels: 'bot',
 	tasks: 'task',
+	health: 'health',
+};
+
+const AGENT_TOOL_PROFILES: Record<string, AgentToolProfileId> = {
+	main: 'chat',
+	channels: 'channels',
+	tasks: 'tasks',
 	health: 'health',
 };
 
@@ -156,6 +164,7 @@ export class Agent {
 	async send(message: string, agentId: string, options: AgentSendOptions): Promise<string> {
 		const normalizedAgentId = agentId.trim();
 		const category = AGENT_CATEGORIES[normalizedAgentId] ?? 'main';
+		const toolProfile = AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat';
 		const sessionId = resolveSessionId(options.sessionId, this.config.location, category);
 		const runId = options.runId ?? randomUUID();
 		const pinnedProviderId = options.providerId?.trim() || getProviderId();
@@ -245,6 +254,7 @@ export class Agent {
 					runId: request.id,
 				},
 				agentId: request.agentId,
+				toolProfile,
 				contextMode:
 					options.contextMode ??
 					(options.lightContext === true || request.category !== 'main' ? 'minimal' : 'workspace'),

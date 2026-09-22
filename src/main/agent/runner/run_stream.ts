@@ -1,6 +1,11 @@
 import type { MemoryService } from '../../../shared/memory_types';
 import { getResolvedProvider } from '../../settings_store';
-import { getModelId, getModelOptions, getPermissions, getProviderId } from '../agent_store';
+import {
+	getModelId,
+	getModelOptions,
+	getProviderId,
+	getToolConfiguration,
+} from '../agent_store';
 import {
 	addAssistantMessage,
 	addToolResults,
@@ -29,7 +34,7 @@ import { subagentTool, subagentsTool } from '../tools/core/subagents';
 import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool } from '../types';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
-import { filterDisabledTools, filterTools } from './run_tools';
+import { filterProfileTools, filterTools } from './run_tools';
 import { selectSkillTools } from './run_skill_tools';
 import { activateSkill, createSkillRegistrySnapshot } from '../skills';
 import type { SkillLoadResult } from '../../../shared/skills_types';
@@ -139,15 +144,19 @@ async function* loop(
 			output: MAX_TOOL_OUTPUT_BYTES,
 			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
-	const configuredToolSettings = getPermissions().tools;
+	const toolProfile = input.toolProfile ?? 'chat';
+	const profileToolEnabled = (toolId: string): boolean => {
+		const settings = getToolConfiguration(toolProfile, { kind: 'builtin', id: toolId });
+		return settings.enabled && settings.permission !== 'deny';
+	};
 	const skillLoadingEnabled =
 		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
 		!input.toolsDeny?.includes('load_skill') &&
-		configuredToolSettings?.load_skill?.enabled !== false;
+		profileToolEnabled('load_skill');
 	const skillListingEnabled =
 		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
 		!input.toolsDeny?.includes('list_skills') &&
-		configuredToolSettings?.list_skills?.enabled !== false;
+		profileToolEnabled('list_skills');
 	const skillSnapshot =
 		skillLoadingEnabled || skillListingEnabled
 			? createSkillRegistrySnapshot({ projectRoot: config.location })
@@ -187,15 +196,15 @@ async function* loop(
 		tools.push(...goalTools(sessionDir(session)));
 	}
 	tools = filterPlanTools(tools, input.interactionMode);
-	tools = filterDisabledTools(tools, configuredToolSettings);
+	tools = filterProfileTools(tools, toolProfile);
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
-		let filtered = filterDisabledTools(
+		let filtered = filterProfileTools(
 			filterPlanTools(
 				filterTools(candidates, input.toolsAllow, input.toolsDeny),
 				input.interactionMode
 			),
-			configuredToolSettings
+			toolProfile
 		);
 		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
@@ -252,6 +261,7 @@ async function* loop(
 			...(input.effort ? { effort: input.effort } : {}),
 			...(promptCapabilities ? { promptCapabilities } : {}),
 			...(input.scope ? { scope: input.scope } : {}),
+			toolProfile,
 		};
 		tools.push(
 			subagentTool(config, childTools, childRuntime),
@@ -259,7 +269,7 @@ async function* loop(
 		);
 	}
 	tools = filterTools(tools, input.toolsAllow, input.toolsDeny);
-	tools = filterDisabledTools(tools, configuredToolSettings);
+	tools = filterProfileTools(tools, toolProfile);
 	tools = filterPlanTools(tools, input.interactionMode);
 	if (input.explicitSkill && !skillLoadingEnabled)
 		throw new Error('Skill loading is unavailable for this run.');
@@ -442,6 +452,7 @@ async function* loop(
 					...(input.scope ? { scope: input.scope } : {}),
 					budget,
 					interactionMode: input.interactionMode,
+					toolProfile,
 					...(input.approvalWindowId === undefined ? {} : { windowId: input.approvalWindowId }),
 				},
 				options.resources,

@@ -5,6 +5,7 @@ import { stream, type StreamOptions } from '../../runner/run_stream';
 import { createSessionState } from '../../session';
 import type { Config, RuntimeInput, SessionResult, Tool } from '../../types';
 import type { AgentRunType } from '../../../../shared/agent_types';
+import type { AgentToolProfileId } from '../../../../shared/agent_tools';
 import { tool } from '../tool';
 
 export interface ChildRuntime extends Pick<
@@ -18,6 +19,7 @@ export interface ChildRuntime extends Pick<
 	effort?: RuntimeInput['effort'];
 	promptCapabilities?: RuntimeInput['promptCapabilities'];
 	scope?: RuntimeInput['scope'];
+	toolProfile?: AgentToolProfileId;
 }
 
 export interface ChildOutcome {
@@ -53,6 +55,7 @@ export async function runChild(
 		agentId: 'subagent',
 		contextMode: 'minimal' as const,
 		interactionMode: runtime.interactionMode,
+		...(runtime.toolProfile ? { toolProfile: runtime.toolProfile } : {}),
 		toolsAllow: tools.map((candidate) => candidate.id),
 		...(runtime.providerId ? { providerId: runtime.providerId } : {}),
 		...(runtime.model ? { model: runtime.model } : {}),

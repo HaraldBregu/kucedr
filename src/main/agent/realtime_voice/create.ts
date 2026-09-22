@@ -2,7 +2,7 @@ import { normalizeProviderId } from '../../../shared/provider_types';
 import { RealtimeVoiceChannels } from '../../../shared/ipc_channels_definitions';
 import type { Agent } from '../agent';
 import { builtinTools } from '../runner/run_builtin_tools';
-import { filterDisabledTools } from '../runner/run_tools';
+import { filterProfileTools } from '../runner/run_tools';
 import { buildSystemPrompt, buildWorkspaceContext } from '../system';
 import type { EventBus } from '../../event_bus';
 import { defaultProviderId, loadModels } from '../../models';
@@ -17,7 +17,6 @@ import { getProvider } from '../../settings_store';
 import { realtimeVoiceConversationFactory } from './conversation';
 import { RealtimeVoiceManager } from './manager';
 import { openAppWindows } from '../../apps/app_render';
-import { getPermissions } from '../agent_store';
 
 export function createRealtimeVoiceManager(
 	agent: Agent,
@@ -82,7 +81,7 @@ export function createRealtimeVoiceManager(
 						: (realtimeVoiceDefaultVoice(providerId) ?? '');
 			const supportsTools = supportsRealtimeVoiceTools(providerId, model.id);
 			const tools = supportsTools
-				? filterDisabledTools(builtinTools(agent.config, agent.sandbox, 'default'), getPermissions().tools)
+				? filterProfileTools(builtinTools(agent.config, agent.sandbox, 'default'), 'voice')
 				: [];
 			const instructions = await buildSystemPrompt(agent.config, tools);
 			const workspaceContext = await buildWorkspaceContext(agent.config);
