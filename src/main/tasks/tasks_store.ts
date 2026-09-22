@@ -1,16 +1,21 @@
 import {
-	taskConfigurationStorePath,
-	getTaskConfiguration,
-	setTaskConfiguration,
-} from '../settings_store';
-import type { PersistedTaskState } from './tasks_types';
+ 	agentProfileStorePath,
+	getAgentProfileDocument,
+	setAgentProfileDocument,
+} from '../agent/agent_profiles';
+import { DEFAULT_TASK_STATE, type PersistedTaskState } from './tasks_types';
 
-export const taskStorePath = taskConfigurationStorePath;
+export const taskStorePath = agentProfileStorePath('tasks');
 
 export function getTaskState(): PersistedTaskState {
-	return getTaskConfiguration();
+	const stored = getAgentProfileDocument('tasks') as Partial<PersistedTaskState>;
+	return {
+		...DEFAULT_TASK_STATE,
+		...stored,
+		schedules: [...(stored.schedules ?? [])],
+	};
 }
 
 export function setTaskState(value: PersistedTaskState): void {
-	setTaskConfiguration(value);
+	setAgentProfileDocument('tasks', { ...getAgentProfileDocument('tasks'), ...value });
 }

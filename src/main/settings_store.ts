@@ -11,7 +11,6 @@ import { DEFAULT_SYNC_CRON_EXPRESSION } from './storage/storage_sync_types';
 import { normalizeStorageSettings } from './storage/storage_config';
 import { storageProviders } from './storage/providers';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
-import type { PersistedTaskState } from './tasks/tasks_types';
 import {
 	TRAY_CLICK_ACTIONS,
 	type AppLanguage,
@@ -45,8 +44,6 @@ const DEFAULT_STORAGE_SETTINGS: StorageSyncSettings = {
 	syncEnabled: false,
 	syncCronExpression: DEFAULT_SYNC_CRON_EXPRESSION,
 };
-
-const DEFAULT_TASK_CONFIGURATION: PersistedTaskState = { schedules: [] };
 
 const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	trayEnabled: true,
@@ -119,15 +116,6 @@ store.store = {
 };
 
 export const appSettingsStorePath = store.path;
-
-const taskConfigurationStore = new Store<PersistedTaskState>({
-	name: 'tasks',
-	cwd: settingsDirectory,
-	accessPropertiesByDotNotation: false,
-	defaults: DEFAULT_TASK_CONFIGURATION,
-});
-
-export const taskConfigurationStorePath = taskConfigurationStore.path;
 
 export function getTrayEnabled(): boolean {
 	return store.get('trayEnabled');
@@ -278,25 +266,4 @@ export function saveStorageSettings(settings: StorageSyncSettings): StorageSyncS
 	if (saved.providerId || saved.syncEnabled) storageProviders.resolve(saved.providerId);
 	store.set('cloud', saved);
 	return saved;
-}
-
-export function getTaskConfiguration(): PersistedTaskState {
-	const configuration = new Store<PersistedTaskState>({
-		name: 'tasks',
-		cwd: settingsDirectory,
-		accessPropertiesByDotNotation: false,
-		defaults: DEFAULT_TASK_CONFIGURATION,
-	}).store;
-	// Fresh array so in-place mutations never touch the shared defaults object
-	return { ...configuration, schedules: [...(configuration.schedules ?? [])] };
-}
-
-export function setTaskConfiguration(configuration: PersistedTaskState): void {
-	const store = new Store<PersistedTaskState>({
-		name: 'tasks',
-		cwd: settingsDirectory,
-		accessPropertiesByDotNotation: false,
-		defaults: DEFAULT_TASK_CONFIGURATION,
-	});
-	store.store = { ...store.store, ...configuration };
 }
