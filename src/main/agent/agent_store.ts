@@ -11,6 +11,7 @@ import type {
 	AgentToolProfileId,
 	AgentToolReference,
 } from '../../shared/agent_tools';
+import { isAgentToolConfigurable } from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
 import {
@@ -180,6 +181,9 @@ export function setToolProfileTool(
 ): AgentToolProfile {
 	if (tool.kind === 'builtin') {
 		if (!(tool.id in RUNTIME_TOOL_KEYS)) throw new Error('Unknown built-in tool.');
+		if (!isAgentToolConfigurable(tool) && settings.permission !== 'allow') {
+			throw new Error('Required system tools cannot be disabled.');
+		}
 		return setAgentProfileTool(profileId, tool, settings);
 	}
 	const serverId = tool.serverId.trim();
@@ -191,6 +195,7 @@ export function getToolConfiguration(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
 ): AgentToolConfiguration {
+	if (!isAgentToolConfigurable(tool)) return { permission: 'allow' };
 	return getAgentProfileTool(profileId, tool);
 }
 

@@ -158,6 +158,18 @@ describe('agent store permissions', () => {
 		expect(getToolProfile('chat').mcp.gmail.list_messages).toEqual({ permission: 'ask' });
 	});
 
+	it.each(['ask', 'complete_bootstrap'])('keeps required system tool %s enabled', (toolId) => {
+		expect(() =>
+			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'ask' })
+		).toThrow('Required system tools cannot be disabled.');
+		expect(() =>
+			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' })
+		).toThrow('Required system tools cannot be disabled.');
+		expect(getToolConfiguration('chat', { kind: 'builtin', id: toolId })).toEqual({
+			permission: 'allow',
+		});
+	});
+
 	it('preserves explicit blocked rules inside the workspace', () => {
 		const saved = setPermissions({
 			read: { allow: [], deny: [`${AGENT_DIRECTORY}/private/**`] },

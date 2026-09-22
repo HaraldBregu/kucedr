@@ -21,6 +21,7 @@ import {
 	resetPermissions,
 	setToolProfileTool,
 } from '../../../../../src/main/agent/agent_store';
+import { isAgentToolConfigurable } from '../../../../../src/shared/agent_tools';
 import { createSessionState } from '../../../../../src/main/agent/session';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
@@ -39,15 +40,19 @@ const input = {
 } as const;
 
 describe('chat agent tool controls', () => {
+	const configurableToolIds = AGENT_RUNTIME_TOOL_IDS.filter((toolId) =>
+		isAgentToolConfigurable({ kind: 'builtin', id: toolId })
+	);
+
 	beforeEach(() => {
 		runModelTurnMock.mockReset().mockImplementation(successfulTurn);
 		resetPermissions('chat');
-		for (const toolId of AGENT_RUNTIME_TOOL_IDS) {
+		for (const toolId of configurableToolIds) {
 			setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
 		}
 	});
 
-	it.each(AGENT_RUNTIME_TOOL_IDS)('enables, uses, and disables %s in isolation', async (toolId) => {
+	it.each(configurableToolIds)('enables, uses, and disables %s in isolation', async (toolId) => {
 		const execute = jest.fn().mockResolvedValue({ used: toolId });
 		const args =
 			toolId === 'ask'

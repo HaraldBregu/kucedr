@@ -43,6 +43,7 @@ import type {
 	AgentToolReference,
 } from '../../../../../../../shared/agent_tools';
 import { isAgentToolAllowedForProfile } from '../../../../../../../shared/agent_tools';
+import { isAgentToolConfigurable } from '../../../../../../../shared/agent_tools';
 import { ToolPermissionControl } from './Permission';
 
 type AgentTool = readonly [name: string, id: string, description: string];
@@ -475,7 +476,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 												/>
 											}
 											description={description}
-											actions={
+											actions={isAgentToolConfigurable({ kind: 'builtin', id }) ? (
 												<ToolPermissionControl
 													name={name}
 													value={settings.permission}
@@ -484,7 +485,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 														handleFileToolsPermissionChange(id, { permission })
 													}
 												/>
-											}
+											) : undefined}
 										/>
 									);
 								})}

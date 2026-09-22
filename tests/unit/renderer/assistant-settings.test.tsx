@@ -454,6 +454,8 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	])
 		expect(screen.queryByText(removed)).not.toBeInTheDocument();
 	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: /Request user input: (Always Allow|Ask|Deny)/ })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: /Complete bootstrap: (Always Allow|Ask|Deny)/ })).not.toBeInTheDocument();
 	expect(screen.getByText('Core')).toBeInTheDocument();
 	expect(screen.queryByText('Files')).not.toBeInTheDocument();
 	expect(screen.queryByText('Commands')).not.toBeInTheDocument();
