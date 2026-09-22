@@ -23,6 +23,7 @@ interface ToolDiscoveryOptions {
 	eligible: Tool[];
 	required: Tool[];
 	discoveryEnabled?: boolean;
+	mcpTools?: DiscoveredMcpTool[];
 	deferredMcpServers?: DeferredMcpServer[];
 	loadMcpServers?: (serverIds: string[], signal?: AbortSignal) => Promise<DiscoveredMcpTool[]>;
 	filterEligible?: (tools: Tool[]) => Tool[];
@@ -41,6 +42,9 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 	const active = new Map(required);
 	const deferredServers = new Map(
 		(options.deferredMcpServers ?? []).map((server) => [server.id, server])
+	);
+	const mcpMetadata = new Map(
+		(options.mcpTools ?? []).map((entry) => [entry.tool.id, entry.serverId])
 	);
 	let selectedCount = 0;
 
@@ -79,6 +83,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 					? options.filterEligible(loaded.map((entry) => entry.tool))
 					: loaded.map((entry) => entry.tool);
 				for (const candidate of filtered) eligible.set(candidate.id, candidate);
+				for (const entry of loaded) mcpMetadata.set(entry.tool.id, entry.serverId);
 			}
 
 			const remaining = Math.max(0, DISCOVERY_RUN_LIMIT - selectedCount);
@@ -92,6 +97,9 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 			selectedCount += selected.length;
 			return {
 				selectedToolIds: selected.map((candidate) => candidate.id),
+				selectedServiceIds: [
+					...new Set(selected.flatMap((candidate) => mcpMetadata.get(candidate.id) ?? [])),
+				],
 				selectedCount: selected.length,
 				limitReached: selectedCount >= DISCOVERY_RUN_LIMIT,
 			};

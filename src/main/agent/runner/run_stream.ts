@@ -271,6 +271,7 @@ async function* loop(
 					eligible,
 					required: eligible.filter((tool) => requiredIds.has(tool.id)),
 					discoveryEnabled,
+					mcpTools: mcp.entries,
 					deferredMcpServers: mcp.deferredServers,
 					loadMcpServers: mcp.loadDeferred,
 					filterEligible: filterEligibleTools,
@@ -513,12 +514,19 @@ async function* loop(
 				yield event;
 			}
 			if (pendingToolCalls.some((call) => call.name === 'discover_tools')) {
+				const serviceIds = new Set<string>();
 				const selectedIds = new Set(
 					pendingToolCalls.flatMap((call) => {
 						if (call.name !== 'discover_tools' || typeof call.result?.content !== 'string')
 							return [];
 						try {
-							const parsed = JSON.parse(call.result.content) as { selectedToolIds?: unknown };
+							const parsed = JSON.parse(call.result.content) as {
+								selectedToolIds?: unknown;
+								selectedServiceIds?: unknown;
+							};
+							if (Array.isArray(parsed.selectedServiceIds)) {
+								for (const id of parsed.selectedServiceIds) if (typeof id === 'string') serviceIds.add(id);
+							}
 							return Array.isArray(parsed.selectedToolIds)
 								? parsed.selectedToolIds.filter((id): id is string => typeof id === 'string')
 								: [];
@@ -527,8 +535,9 @@ async function* loop(
 						}
 					})
 				);
-				yield {
-					type: 'capability_resolution_result',
+					yield {
+						type: 'capability_resolution_result',
+						serviceIds: [...serviceIds],
 					tools: (discovery?.active() ?? tools)
 						.filter((tool) => selectedIds.has(tool.id))
 						.map((tool) => ({ id: tool.id, name: tool.name })),

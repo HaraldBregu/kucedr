@@ -192,7 +192,11 @@ export type RuntimeEvent =
 	| { type: 'provider_queue_metrics'; providerId: string; queueDelayMs: number; attempt: number }
 	| { type: 'run_error'; message: string }
 	| { type: 'capability_resolution_start' }
-	| { type: 'capability_resolution_result'; tools: Array<{ id: string; name: string }> }
+	| {
+			type: 'capability_resolution_result';
+			tools: Array<{ id: string; name: string }>;
+			serviceIds: string[];
+	  }
 	| {
 			type: 'run_started';
 			sessionId: string;

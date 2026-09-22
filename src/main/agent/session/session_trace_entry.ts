@@ -71,6 +71,22 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 			toolCallCount: Array.isArray(event.toolCalls) ? event.toolCalls.length : 0,
 		};
 	}
+	if (event.type === 'capability_resolution_result') {
+		const tools = Array.isArray(event.tools) ? event.tools : [];
+		const serviceIds = Array.isArray(event.serviceIds)
+			? event.serviceIds.filter((id): id is string => typeof id === 'string')
+			: [];
+		return {
+			type: event.type,
+			selectedToolIds: tools.flatMap((tool) => {
+				if (!tool || typeof tool !== 'object' || Array.isArray(tool)) return [];
+				const id = (tool as Record<string, unknown>).id;
+				return typeof id === 'string' ? [id] : [];
+			}),
+			selectedServiceCount: serviceIds.length,
+			selectedServiceIds: serviceIds,
+		};
+	}
 	if (event.type === 'model_call_start' || event.type === 'model_call_end') {
 		const usage =
 			event.usage && typeof event.usage === 'object' && !Array.isArray(event.usage)
