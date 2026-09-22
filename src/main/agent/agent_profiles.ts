@@ -32,8 +32,7 @@ const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 
 const stores = Object.fromEntries(
-	AGENT_TOOL_PROFILE_IDS.filter((profileId) => !SHARED_PROFILE_IDS.has(profileId)).map(
-		(profileId) => [
+	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
 			profileId,
 			new Store<Partial<AgentProfileStore>>({
 				name: profileStoreName(profileId),
@@ -42,7 +41,7 @@ const stores = Object.fromEntries(
 			}),
 		]
 	)
-) as Partial<Record<AgentToolProfileId, Store<Partial<AgentProfileStore>>>>;
+) as Record<AgentToolProfileId, Store<Partial<AgentProfileStore>>>;
 
 function defaults(): AgentProfileStore {
 	return {
@@ -59,13 +58,7 @@ function defaults(): AgentProfileStore {
 }
 
 function profileStore(profileId: AgentToolProfileId): Store<Partial<AgentProfileStore>> {
-	const existing = stores[profileId];
-	if (existing) return existing;
-	return new Store<Partial<AgentProfileStore>>({
-		name: profileStoreName(profileId),
-		cwd: settingsDirectory,
-		accessPropertiesByDotNotation: false,
-	});
+	return stores[profileId];
 }
 
 function read(profileId: AgentToolProfileId): AgentProfileStore {
@@ -118,6 +111,18 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 }
 
 for (const profileId of AGENT_TOOL_PROFILE_IDS) write(profileId, read(profileId));
+
+export function getAgentProfileDocument(profileId: AgentToolProfileId): Record<string, unknown> {
+	return structuredClone(profileStore(profileId).store);
+}
+
+export function setAgentProfileDocument(
+	profileId: AgentToolProfileId,
+	document: Record<string, unknown>
+): void {
+	const { schemaVersion: _schemaVersion, migrations: _migrations, ...next } = document;
+	profileStore(profileId).store = next as Partial<AgentProfileStore>;
+}
 
 export function getAgentProfileModel(
 	profileId: AgentToolProfileId,
