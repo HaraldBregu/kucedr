@@ -21,7 +21,6 @@ const McpPage = (): React.JSX.Element => {
 	const [loading, setLoading] = useState(true);
 	const [addingServer, setAddingServer] = useState(false);
 	const [error, setError] = useState('');
-	const [success, setSuccess] = useState('');
 
 	const load = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -68,7 +67,6 @@ const McpPage = (): React.JSX.Element => {
 					{error}
 				</SettingsNotice>
 			)}
-			{success && <SettingsNotice autoDismiss>{success}</SettingsNotice>}
 			{registry.diagnostics.map((diagnostic) => (
 				<SettingsNotice key={diagnostic.path} variant="destructive" icon={AlertTriangle}>
 					{diagnostic.name}: {diagnostic.error}

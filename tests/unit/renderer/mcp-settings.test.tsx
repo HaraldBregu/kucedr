@@ -3,6 +3,22 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes, useParams } from 'react-router-dom';
 import McpPage from '../../../src/renderer/src/pages/settings/pages/mcp/Page';
 
+jest.mock('../../../src/renderer/src/lib/providers', () => ({
+	mcps: () => [
+		{
+			id: 'remote',
+			url: 'https://mcp.test',
+			provider: {
+				id: 'remote-provider',
+				name: 'Remote provider',
+				baseUrl: 'https://mcp.test',
+				iconDarkUrl: '/icon-dark.png',
+				iconLightUrl: '/icon-light.png',
+			},
+		},
+	],
+}));
+
 const mcpApi = {
 	list: jest.fn(),
 	get: jest.fn(),
@@ -77,6 +93,7 @@ describe('MCP settings', () => {
 		expect(screen.queryByRole('heading', { name: 'Available remote servers' })).not.toBeInTheDocument();
 		expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(2);
 		expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
+		expect(container.querySelector('img[src="/icon-light.png"]')).toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Open folder' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Refresh' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Upload' })).not.toBeInTheDocument();
