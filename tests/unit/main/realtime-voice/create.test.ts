@@ -61,7 +61,7 @@ import { createRealtimeVoiceManager } from '../../../../src/main/agent/realtime_
 import type { Agent } from '../../../../src/main/agent/agent';
 import type { ResolvedRealtimeVoiceConfiguration } from '../../../../src/main/agent/realtime_voice/manager';
 
-it('starts voice with only the loader and exposes selected tools after refresh', async () => {
+it('starts voice with every eligible built-in tool', async () => {
 	const manager = createRealtimeVoiceManager(
 		{
 			config: { location: '/workspace' },
@@ -78,15 +78,8 @@ it('starts voice with only the loader and exposes selected tools after refresh',
 	).dependencies;
 	const configuration = await dependencies.resolveConfiguration();
 
-	expect(configuration.tools.map((tool) => tool.id)).toEqual(['discover_tools']);
-	expect(configuration.instructions).toContain('read | Read | Not loaded; use discover_tools');
-	await configuration.tools[0].run({
-		query: 'Read and write files',
-		toolIds: ['read', 'write'],
-		mcpServerIds: [],
-	});
-	const refreshed = await configuration.refreshTools?.();
-	expect(refreshed?.tools.map((tool) => tool.id)).toEqual(['discover_tools', 'read', 'write']);
-	expect(refreshed?.instructions).toContain('read | Read | Loaded');
-	expect(refreshed?.instructions).toContain('write | Write | Loaded');
+	expect(configuration.tools.map((tool) => tool.id)).toEqual(['read', 'write']);
+	expect(configuration.instructions).toContain('read | Read');
+	expect(configuration.instructions).toContain('write | Write');
+	expect(configuration).not.toHaveProperty('refreshTools');
 });

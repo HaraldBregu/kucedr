@@ -56,7 +56,7 @@ it('distinguishes an omitted background allowlist from an explicit empty allowli
 		return started.tools;
 	};
 
-	await expect(run()).resolves.toEqual(['discover_tools']);
-	await expect(run([])).resolves.toEqual(['discover_tools']);
-	await expect(run(['read'])).resolves.toEqual(['discover_tools']);
+	await expect(run()).resolves.toEqual(['read', 'bash']);
+	await expect(run([])).resolves.toEqual([]);
+	await expect(run(['read'])).resolves.toEqual(['read']);
 });

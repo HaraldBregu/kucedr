@@ -396,7 +396,6 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	);
 
 	for (const tool of [
-		'Discover tools',
 		'List remote agents',
 		'Read file',
 		'Screen recorder',
@@ -426,20 +425,6 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 });
 
-it('shows discovery as required and searchable without permission controls', async () => {
-	const user = userEvent.setup();
-	render(<MemoryRouter><ToolsPage /></MemoryRouter>);
-	const discoveryTitle = await screen.findByText('Discover tools');
-	const discoveryRow = discoveryTitle.closest('.grid');
-	expect(discoveryRow?.querySelector('svg')).toHaveClass('size-5');
-	expect(screen.queryByText('discover_tools')).not.toBeInTheDocument();
-	await user.type(screen.getByRole('textbox'), 'discover_tools');
-	expect(screen.getByText('Discover tools')).toBeInTheDocument();
-	expect(screen.getByText('Required')).toBeInTheDocument();
-	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
-	expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
-	expect(window.mcp.test).not.toHaveBeenCalled();
-});
 
 it('saves a file tools permission choice', async () => {
 	const user = userEvent.setup();
