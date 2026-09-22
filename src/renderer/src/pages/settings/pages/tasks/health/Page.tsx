@@ -110,7 +110,9 @@ const HealthPage: React.FC = () => {
 	};
 
 	const modelGroups = llmModelGroups();
-	const selectedModelGroup = modelGroups.find((group) => group.provider.id === settings?.providerId);
+	const selectedModelGroup = modelGroups.find(
+		(group) => group.provider.id === settings?.providerId
+	);
 	const selectedModel = selectedModelGroup?.models.find((model) => model.id === settings?.modelId);
 
 	const targetOptions =
@@ -167,7 +169,9 @@ const HealthPage: React.FC = () => {
 								<div className="-mx-4 -mb-4">
 									<SettingsRow
 										title={t('settings.coding.provider')}
-										actions={<SettingsValue>{selectedModelGroup?.provider.name ?? '—'}</SettingsValue>}
+										actions={
+											<SettingsValue>{selectedModelGroup?.provider.name ?? '—'}</SettingsValue>
+										}
 									/>
 									<SettingsRow
 										title={t('settings.coding.model')}
