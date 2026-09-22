@@ -295,6 +295,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 		.toLocaleLowerCase();
 
 	useEffect(() => {
+		if (profile !== 'chat') return;
 		let mounted = true;
 		void window.search.getSettings().then(
 			(next) => {
@@ -310,7 +311,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 		return () => {
 			mounted = false;
 		};
-	}, [t]);
+	}, [profile, t]);
 
 	useEffect(() => {
 		void window.agent.getToolProfile(profile).then(setToolProfile, (error) => {
@@ -399,12 +400,12 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						icon={ImageIcon}
 						actions={<>
 							<Select
-								value={permissions?.tools?.create_image?.permission ?? 'allow'}
+								value={toolProfile?.tools?.create_image?.permission ?? 'allow'}
 								onValueChange={(permission) => handleFileToolsPermissionChange('create_image', {
-									...(permissions?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
-									permission: permission as FileToolsPermission,
+									...(toolProfile?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
+									permission: permission as ToolPermission,
 								})}
-								disabled={!permissions || fileToolsSaving}
+								disabled={!toolProfile || fileToolsSaving}
 							>
 								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to image`}>
 									<SelectValue />
@@ -412,15 +413,15 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
 							</Select>
 							<Switch
-								checked={permissions?.tools?.create_image?.enabled ?? true}
+								checked={toolProfile?.tools?.create_image?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('create_image', {
-																...(permissions?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
+																...(toolProfile?.tools?.create_image ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
 								aria-label="Text to image enabled"
-								disabled={!permissions || fileToolsSaving}
+								disabled={!toolProfile || fileToolsSaving}
 							/>
 						</>}
 					/>
@@ -431,12 +432,12 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						icon={Music2}
 						actions={<>
 							<Select
-								value={permissions?.tools?.create_sound?.permission ?? 'allow'}
+								value={toolProfile?.tools?.create_sound?.permission ?? 'allow'}
 								onValueChange={(permission) => handleFileToolsPermissionChange('create_sound', {
-									...(permissions?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
-									permission: permission as FileToolsPermission,
+									...(toolProfile?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
+									permission: permission as ToolPermission,
 								})}
-								disabled={!permissions || fileToolsSaving}
+								disabled={!toolProfile || fileToolsSaving}
 							>
 								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to audio`}>
 									<SelectValue />
@@ -444,15 +445,15 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
 							</Select>
 							<Switch
-								checked={permissions?.tools?.create_sound?.enabled ?? true}
+								checked={toolProfile?.tools?.create_sound?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('create_sound', {
-																...(permissions?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
+																...(toolProfile?.tools?.create_sound ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
 								aria-label="Text to audio enabled"
-								disabled={!permissions || fileToolsSaving}
+								disabled={!toolProfile || fileToolsSaving}
 							/>
 						</>}
 					/>
@@ -463,12 +464,12 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						icon={Video}
 						actions={<>
 							<Select
-								value={permissions?.tools?.create_video?.permission ?? 'allow'}
+								value={toolProfile?.tools?.create_video?.permission ?? 'allow'}
 								onValueChange={(permission) => handleFileToolsPermissionChange('create_video', {
-									...(permissions?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
-									permission: permission as FileToolsPermission,
+									...(toolProfile?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
+									permission: permission as ToolPermission,
 								})}
-								disabled={!permissions || fileToolsSaving}
+								disabled={!toolProfile || fileToolsSaving}
 							>
 								<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: Text to video`}>
 									<SelectValue />
@@ -476,15 +477,15 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 								<SelectContent><SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem><SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem><SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem></SelectContent>
 							</Select>
 							<Switch
-								checked={permissions?.tools?.create_video?.enabled ?? true}
+								checked={toolProfile?.tools?.create_video?.enabled ?? true}
 								onCheckedChange={(enabled) =>
 									handleFileToolsPermissionChange('create_video', {
-																...(permissions?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
+																...(toolProfile?.tools?.create_video ?? { enabled: true, permission: 'allow' }),
 										enabled,
 									})
 								}
 								aria-label="Text to video enabled"
-								disabled={!permissions || fileToolsSaving}
+								disabled={!toolProfile || fileToolsSaving}
 							/>
 						</>}
 					/>
@@ -519,14 +520,14 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 											</div>
 										</CollapsibleTrigger>
 										<Select
-											value={permissions?.tools?.search_web?.permission ?? 'allow'}
+											value={toolProfile?.tools?.search_web?.permission ?? 'allow'}
 											onValueChange={(value) =>
 												handleFileToolsPermissionChange('search_web', {
-													...(permissions?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
-													permission: value as FileToolsPermission,
+													...(toolProfile?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
+													permission: value as ToolPermission,
 												})
 											}
-											disabled={!permissions || fileToolsSaving}
+											disabled={!toolProfile || fileToolsSaving}
 										>
 											<SelectTrigger
 												size="sm"
@@ -548,18 +549,18 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 											</SelectContent>
 										</Select>
 										<Switch
-											checked={permissions?.tools?.search_web?.enabled ?? true}
+											checked={toolProfile?.tools?.search_web?.enabled ?? true}
 											onCheckedChange={(enabled) =>
 												handleFileToolsPermissionChange('search_web', {
-													...(permissions?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
+													...(toolProfile?.tools?.search_web ?? { enabled: true, permission: 'allow' }),
 													enabled,
 												})
 											}
 											aria-label="Search web enabled"
-											disabled={!permissions || fileToolsSaving}
+											disabled={!toolProfile || fileToolsSaving}
 										/>
 									</div>
-									<CollapsibleContent>
+									{profile === 'chat' && <CollapsibleContent>
 										<div className="border-t border-border/60">
 											<SettingsRow
 												title={t('settings.searchEngine.defaultTitle')}
@@ -598,11 +599,11 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 												{searchEngineError}
 											</SettingsNotice>
 										)}
-									</CollapsibleContent>
+									</CollapsibleContent>}
 								</Collapsible>
 							)}
 							{group.tools.map(([name, id, description]) => {
-								const settings = permissions?.tools?.[id] ?? { enabled: true, permission: 'allow' };
+								const settings = toolProfile?.tools?.[id] ?? { enabled: true, permission: 'allow' };
 								return (
 									<SettingsRow
 										key={id}
@@ -618,10 +619,10 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 													onValueChange={(value) =>
 														handleFileToolsPermissionChange(id, {
 															...settings,
-															permission: value as FileToolsPermission,
+															permission: value as ToolPermission,
 														})
 													}
-													disabled={!permissions || fileToolsSaving}
+													disabled={!toolProfile || fileToolsSaving}
 												>
 													<SelectTrigger
 														size="sm"
@@ -647,7 +648,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 													onCheckedChange={(enabled) =>
 														handleFileToolsPermissionChange(id, { ...settings, enabled })
 													}
-													disabled={!permissions || fileToolsSaving}
+												disabled={!toolProfile || fileToolsSaving}
 													aria-label={`${name} enabled`}
 												/>
 											</>
@@ -664,7 +665,12 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 					</SettingsSection>
 				);
 			})}
-			<McpTools search={normalizedToolSearch} />
+			<McpTools
+				search={normalizedToolSearch}
+				settings={toolProfile?.mcp ?? {}}
+				disabled={!toolProfile || fileToolsSaving}
+				onChange={updateProfileTool}
+			/>
 			<SettingsSection title={t('settings.permissions.toolsTitle')}>
 				<SettingsPanel>
 					<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
