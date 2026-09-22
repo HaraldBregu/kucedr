@@ -273,13 +273,13 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<SidebarMenuButton type="button" onClick={() => navigate('/settings/general')}>
-							<Settings />
+							<Settings className="size-4" />
 							<span>{t('settings.title')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>
 						<SidebarMenuButton type="button" onClick={openCommandMenu}>
-							<Search />
+							<Search className="size-4" />
 							<span>{t('navigationBar.search')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
