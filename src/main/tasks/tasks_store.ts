@@ -1,5 +1,5 @@
 import {
- 	agentProfileStorePath,
+	agentProfileStorePath,
 	getAgentProfileDocument,
 	setAgentProfileDocument,
 } from '../agent/agent_profiles';

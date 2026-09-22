@@ -33,14 +33,13 @@ const profileStoreName = (profileId: AgentToolProfileId): string =>
 
 const stores = Object.fromEntries(
 	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
-			profileId,
-			new Store<Partial<AgentProfileStore>>({
-				name: profileStoreName(profileId),
-				cwd: settingsDirectory,
-				accessPropertiesByDotNotation: false,
-			}),
-		]
-	)
+		profileId,
+		new Store<Partial<AgentProfileStore>>({
+			name: profileStoreName(profileId),
+			cwd: settingsDirectory,
+			accessPropertiesByDotNotation: false,
+		}),
+	])
 ) as Record<AgentToolProfileId, Store<Partial<AgentProfileStore>>>;
 
 function defaults(): AgentProfileStore {
