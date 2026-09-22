@@ -72,6 +72,15 @@ it('creates clean independent agent profile stores without migration metadata', 
 	});
 	expect(stores.get('chat')).not.toHaveProperty('schemaVersion');
 	expect(stores.get('chat')).not.toHaveProperty('migrations');
+	expect(stores.get('chat')).toMatchObject({
+		tools: {
+			read_file: { permission: 'ask' },
+			list_apps: { permission: 'allow' },
+		},
+	});
+	expect((stores.get('chat')?.tools as Record<string, unknown>).read_file).not.toHaveProperty(
+		'enabled'
+	);
 	expect(agentProfileStorePath('chat')).toMatch(/chat\.json$/);
 	expect(agentProfileStorePath('voice')).toMatch(/voice\.json$/);
 	expect(agentProfileStorePath('tasks')).toMatch(/tasks\.json$/);

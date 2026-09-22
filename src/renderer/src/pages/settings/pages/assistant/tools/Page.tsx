@@ -57,8 +57,6 @@ type AgentToolGroup = {
 	readonly tools: readonly AgentTool[];
 };
 
-type ToolPermission = AgentToolConfiguration['permission'];
-
 const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 	{
 		titleKey: 'coordination',

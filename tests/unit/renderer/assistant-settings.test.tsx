@@ -378,7 +378,8 @@ it('keeps media permissions and search configuration on Tools without model sele
 
 	for (const name of ['Text to image', 'Text to audio', 'Text to video']) {
 		expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
-		expect(await screen.findByRole('button', { name: `${name}: Always Allow` })).toBeEnabled();
+		const permission = await screen.findByRole('button', { name: `${name}: Always Allow` });
+		await waitFor(() => expect(permission).toBeEnabled());
 	}
 	expect(
 		screen.queryByRole('link', { name: /settings\.permissions\.toolsTitle/ })
