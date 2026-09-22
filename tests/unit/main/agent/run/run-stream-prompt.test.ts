@@ -540,7 +540,7 @@ describe('run stream system prompt', () => {
 			execute: search,
 		});
 		runModelTurnMock
-			.mockImplementationOnce(discoveryTurn(['search_web']))
+			.mockImplementationOnce(toolTurn(['search_web']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return { content: '', model: 'test-model', toolCalls: calls };
@@ -571,7 +571,7 @@ describe('run stream system prompt', () => {
 		});
 
 		runModelTurnMock
-			.mockImplementationOnce(discoveryTurn(['search_web']))
+			.mockImplementationOnce(toolTurn(['search_web']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return { content: '', model: 'test-model', toolCalls: calls };
@@ -609,7 +609,7 @@ describe('run stream system prompt', () => {
 				execute: () => ({ id: 'recording-1', status: 'recording' }),
 			});
 			runModelTurnMock
-				.mockImplementationOnce(discoveryTurn([id]))
+				.mockImplementationOnce(toolTurn([id]))
 				.mockImplementationOnce(async function* () {
 					yield* [];
 					return {
@@ -1179,11 +1179,11 @@ describe('run stream system prompt', () => {
 		expect(writeExecute).toHaveBeenCalledTimes(1);
 		expect(budget.calls).toBe(2);
 		expect(session.toolCalls.find((call) => call.id === 'early-bash')).toMatchObject({
-			name: 'discover_tools',
-			args: { toolIds: ['bash', 'write'] },
+			name: 'bash',
+			args: { command: 'pwd' },
 			result: { isError: undefined },
 		});
-		expect(session.toolCalls.some((call) => call.id === 'early-write')).toBe(false);
+		expect(session.toolCalls.some((call) => call.id === 'early-write')).toBe(true);
 		expect(
 			session.messages
 				.find((message) => message.toolCalls?.some((call) => call.id === 'early-bash'))
@@ -1215,8 +1215,7 @@ describe('run stream system prompt', () => {
 		});
 		mockLoadMcpTools.mockResolvedValue({
 			tools: [mcpTool],
-			entries: [{ tool: mcpTool, serverId: 'files', serverName: 'Files' }],
-			deferredServers: [],
+			diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 1, listedTools: 1, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
 		runModelTurnMock
@@ -1257,8 +1256,8 @@ describe('run stream system prompt', () => {
 			void _event;
 
 		expect(session.toolCalls.find((call) => call.id === 'early-mcp')).toMatchObject({
-			name: 'discover_tools',
-			args: { toolIds: [mcpTool.id] },
+			name: mcpTool.id,
+			args: { path: 'demo.txt' },
 		});
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
