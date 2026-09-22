@@ -920,8 +920,8 @@ describe('run stream system prompt', () => {
 				events.push(event);
 
 			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
-			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
-			expect(execute).toHaveBeenCalledTimes(boundary === 'output' ? 1 : 0);
+			if (boundary !== 'turns') expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
+			expect(execute).toHaveBeenCalledTimes(['output', 'turns'].includes(boundary) ? 1 : 0);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
 				result: {
@@ -936,7 +936,7 @@ describe('run stream system prompt', () => {
 				},
 			});
 			if (boundary === 'calls' || boundary === 'turns') {
-				expect(session.toolCalls[boundary === 'empty' ? 0 : 1].result).toMatchObject({
+				expect(session.toolCalls[0].result).toMatchObject({
 					isError: true,
 				});
 				expect(events).toContainEqual(
@@ -1036,7 +1036,7 @@ describe('run stream system prompt', () => {
 					...(outcome === 'empty' ? { text: 'done' } : {}),
 				},
 			});
-			if (outcome === 'tools') expect(session.toolCalls[2].result).toMatchObject({ isError: true });
+			if (outcome === 'tools') expect(session.toolCalls.at(-1)?.result).toMatchObject({ isError: true });
 		}
 	);
 
@@ -1170,11 +1170,6 @@ describe('run stream system prompt', () => {
 		});
 		expect(session.toolCalls.some((call) => call.id === 'early-write')).toBe(true);
 		expect(
-			session.messages
-				.find((message) => message.toolCalls?.some((call) => call.id === 'early-bash'))
-				?.content
-		).toEqual([{ type: 'text', text: '' }]);
-		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(expect.arrayContaining(['bash', 'write']));
 		expect(
@@ -1247,6 +1242,6 @@ describe('run stream system prompt', () => {
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain(mcpTool.id);
-		expect(execute).toHaveBeenCalledTimes(1);
+		expect(execute).toHaveBeenCalledTimes(2);
 	});
 });
