@@ -268,7 +268,9 @@ const AppsPage: React.FC = () => {
 										)}
 										<div className="min-w-0 flex-1">
 											<div className="flex min-w-0 items-center gap-1.5">
-												<h3 className="truncate text-sm font-medium text-foreground">{app.title}</h3>
+												<h3 className="truncate text-sm font-medium text-foreground">
+													{app.title}
+												</h3>
 												{app.debugPath && (
 													<Badge variant="outline" className="shrink-0 text-[10px] leading-none">
 														{t('settings.apps.debug.badge')}
@@ -285,65 +287,65 @@ const AppsPage: React.FC = () => {
 											</div>
 										</div>
 										<div className="flex shrink-0 items-center gap-1">
-												<Button
-													type="button"
-													variant="outline"
-													size="xs"
-													disabled={importing || openingAppId === app.id}
-													onClick={() => handleDetails(app.id)}
-												>
-													{t('settings.apps.details')}
-												</Button>
-												<Button
-													type="button"
-													size="xs"
-													disabled={importing || openingAppId === app.id}
-													onClick={(event) => {
-														event.stopPropagation();
-														void handleOpen(app.id);
-													}}
-													onKeyDown={(event) => event.stopPropagation()}
-												>
-													<ExternalLink className="size-3" />
-													{t('settings.apps.open')}
-												</Button>
-												<Popover
-													open={appActionsOpen === app.id}
-													onOpenChange={(open) => setAppActionsOpen(open ? app.id : null)}
-												>
-													<PopoverTrigger asChild>
-														<Button
-															variant="outline"
-															size="icon-xs"
-															disabled={importing || openingAppId === app.id}
-															aria-label={t('settings.apps.deleteAction', { name: app.title })}
-															onClick={(event) => event.stopPropagation()}
-															onKeyDown={(event) => event.stopPropagation()}
-														>
-															<MoreHorizontal className="size-3.5" />
-														</Button>
-													</PopoverTrigger>
-													<PopoverContent
-														align="end"
-														collisionPadding={12}
-														className="w-44 p-1"
+											<Button
+												type="button"
+												variant="outline"
+												size="xs"
+												disabled={importing || openingAppId === app.id}
+												onClick={() => handleDetails(app.id)}
+											>
+												{t('settings.apps.details')}
+											</Button>
+											<Button
+												type="button"
+												size="xs"
+												disabled={importing || openingAppId === app.id}
+												onClick={(event) => {
+													event.stopPropagation();
+													void handleOpen(app.id);
+												}}
+												onKeyDown={(event) => event.stopPropagation()}
+											>
+												<ExternalLink className="size-3" />
+												{t('settings.apps.open')}
+											</Button>
+											<Popover
+												open={appActionsOpen === app.id}
+												onOpenChange={(open) => setAppActionsOpen(open ? app.id : null)}
+											>
+												<PopoverTrigger asChild>
+													<Button
+														variant="outline"
+														size="icon-xs"
+														disabled={importing || openingAppId === app.id}
+														aria-label={t('settings.apps.deleteAction', { name: app.title })}
 														onClick={(event) => event.stopPropagation()}
 														onKeyDown={(event) => event.stopPropagation()}
 													>
-														<div role="menu" aria-label={t('common.moreOptions')}>
-															<Delete
-																app={app}
-																disabled={importing || openingAppId === app.id}
-																menuItem
-																onDeleted={(appId) => {
-																	setAppActionsOpen(null);
-																	setApps((current) => current.filter(({ id }) => id !== appId));
-																}}
-																onError={setErrorMessage}
-															/>
-														</div>
-													</PopoverContent>
-												</Popover>
+														<MoreHorizontal className="size-3.5" />
+													</Button>
+												</PopoverTrigger>
+												<PopoverContent
+													align="end"
+													collisionPadding={12}
+													className="w-44 p-1"
+													onClick={(event) => event.stopPropagation()}
+													onKeyDown={(event) => event.stopPropagation()}
+												>
+													<div role="menu" aria-label={t('common.moreOptions')}>
+														<Delete
+															app={app}
+															disabled={importing || openingAppId === app.id}
+															menuItem
+															onDeleted={(appId) => {
+																setAppActionsOpen(null);
+																setApps((current) => current.filter(({ id }) => id !== appId));
+															}}
+															onError={setErrorMessage}
+														/>
+													</div>
+												</PopoverContent>
+											</Popover>
 										</div>
 									</div>
 									<p className="line-clamp-2 text-[11px] leading-4 text-muted-foreground">
