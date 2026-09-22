@@ -153,7 +153,7 @@ describe('loadMcpTools', () => {
 		await expect(loading).resolves.toMatchObject({ tools: [] });
 	});
 
-	it('eagerly loads enabled legacy deferred servers', async () => {
+	it('keeps legacy servers eager and connects deferred servers only when selected', async () => {
 		getMcpServersMock.mockReturnValue({
 			eager: { type: 'http', url: 'https://eager.test', name: 'Eager' },
 			deferred: {
@@ -174,16 +174,22 @@ describe('loadMcpTools', () => {
 		}));
 
 		const result = await loadMcpTools();
-		expect(connectMock).toHaveBeenCalledTimes(3);
+		expect(connectMock).toHaveBeenCalledTimes(1);
+		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__eager__eager_tool']);
+		expect(result.deferredServers).toEqual([
+			{ id: 'deferred', name: 'Deferred' },
+			{ id: 'unrelated', name: 'unrelated' },
+		]);
+		await result.loadDeferred(['deferred']);
+		expect(connectMock).toHaveBeenCalledTimes(2);
 		expect(result.tools.map((tool) => tool.id)).toEqual([
-			'mcp__deferred__deferred_tool',
 			'mcp__eager__eager_tool',
-			'mcp__unrelated__unrelated_tool',
+			'mcp__deferred__deferred_tool',
 		]);
 		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(3);
+		expect(closeMock).toHaveBeenCalledTimes(2);
 		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(3);
+		expect(closeMock).toHaveBeenCalledTimes(2);
 	});
 });
 
