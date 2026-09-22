@@ -614,7 +614,7 @@ it('loads every saved media model configuration on the Models page', async () =>
 		['video', 'Veo'],
 	] as const) {
 		await waitFor(() =>
-			expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(
+			expect(screen.getByRole('button', { name: `settings.tabs.${name}` })).toHaveTextContent(
 				model
 			)
 		);
