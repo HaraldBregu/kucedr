@@ -107,6 +107,23 @@ describe('MCP settings', () => {
 		expect(await screen.findByText('Detail: local')).toBeInTheDocument();
 	});
 
+	it('enables and disables a server without opening its detail page', async () => {
+		const user = userEvent.setup();
+		renderPage();
+
+		await user.click(await screen.findByRole('switch', { name: 'Enable Remote docs' }));
+
+		await waitFor(() =>
+			expect(mcpApi.upsert).toHaveBeenCalledWith('remote', {
+				type: 'http',
+				name: 'Remote docs',
+				url: 'https://mcp.test',
+				enabled: false,
+			})
+		);
+		expect(screen.queryByText('Detail: remote')).not.toBeInTheDocument();
+	});
+
 	it('adds a server from an inline form', async () => {
 		const user = userEvent.setup();
 		renderPage();

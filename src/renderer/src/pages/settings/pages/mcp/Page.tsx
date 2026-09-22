@@ -20,6 +20,7 @@ const McpPage = (): React.JSX.Element => {
 	const [registry, setRegistry] = useState<McpRegistry>({ servers: [], diagnostics: [] });
 	const [loading, setLoading] = useState(true);
 	const [addingServer, setAddingServer] = useState(false);
+	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
 
 	const load = useCallback(async (): Promise<void> => {
@@ -102,6 +103,17 @@ const McpPage = (): React.JSX.Element => {
 							key={server.id}
 							server={server}
 							onOpen={() => navigate(`/settings/agent/mcp/${encodeURIComponent(server.id)}`)}
+							onEnabledChange={async (enabled) => {
+								setSavingId(server.id);
+								try {
+									await save(server.id, { ...server.data, enabled });
+								} catch {
+									// save() already exposes the error in the page notice.
+								} finally {
+									setSavingId(null);
+								}
+							}}
+							saving={savingId === server.id}
 						/>
 					))}
 				</div>
