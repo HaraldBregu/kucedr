@@ -127,9 +127,9 @@ describe('loadMcpTools', () => {
 			],
 		});
 		expect(JSON.stringify(result.diagnostics)).not.toContain('secret');
-		expect(closeMock).toHaveBeenCalledTimes(3);
+		expect(closeMock).toHaveBeenCalledTimes(1);
 		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(3);
+		expect(closeMock).toHaveBeenCalledTimes(1);
 	});
 
 	it('starts discovery for enabled servers concurrently', async () => {
@@ -181,9 +181,9 @@ describe('loadMcpTools', () => {
 			'mcp__unrelated__unrelated_tool',
 		]);
 		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(1);
+		expect(closeMock).toHaveBeenCalledTimes(3);
 		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(1);
+		expect(closeMock).toHaveBeenCalledTimes(3);
 	});
 });
 
