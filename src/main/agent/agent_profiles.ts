@@ -28,6 +28,7 @@ type AgentProfileStore = {
 	tools: Record<string, AgentToolConfiguration>;
 	mcpTools: Record<string, Record<string, AgentToolConfiguration>>;
 };
+type StoredModelKey = Exclude<keyof AgentProfileStore, 'permissions' | 'tools' | 'mcpTools'>;
 
 const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
 const DEFAULT_TOOL: AgentToolConfiguration = { enabled: true, permission: 'allow' };
@@ -54,7 +55,7 @@ const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelK
 const storedModelKey = (
 	profileId: AgentToolProfileId,
 	modelKey: AgentProfileModelKey
-): keyof AgentProfileStore =>
+): StoredModelKey =>
 	(profileId === 'tasks' || profileId === 'health') && modelKey === 'textToText'
 		? 'llm'
 		: (profileId === 'chat' || profileId === 'channels') && modelKey === 'textToText'
