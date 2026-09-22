@@ -360,7 +360,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: PlugZap,
 	},
 	{
-		path: '/settings/agent/rag',
+		path: '/settings/knowledge-base',
 		labelKey: 'settings.rag.title',
 		descriptionKey: 'settings.overview.descriptions.rag',
 		icon: Library,

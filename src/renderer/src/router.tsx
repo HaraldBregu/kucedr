@@ -368,7 +368,7 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'knowledge-base',
-						element: <Navigate to="/settings/agent/rag" replace />,
+						element: <SettingsRouteWrapper><RagPage /></SettingsRouteWrapper>,
 					},
 					{
 						path: 'memory',
@@ -494,15 +494,11 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'rag',
-								element: (
-									<SettingsRouteWrapper>
-										<RagPage />
-									</SettingsRouteWrapper>
-								),
+								element: <Navigate to="/settings/knowledge-base" replace />,
 							},
 							{
 								path: 'knowledge-base',
-								element: <Navigate to="/settings/agent/rag" replace />,
+								element: <Navigate to="/settings/knowledge-base" replace />,
 							},
 							{
 								path: 'health',

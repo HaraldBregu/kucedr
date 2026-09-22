@@ -334,11 +334,8 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 	).toBe(true);
 	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
 
-	const knowledgeBase = screen.getByRole('button', { name: /Knowledge Base/ });
 	const permissions = screen.getByRole('button', { name: /Permissions/ });
-	expect(permissions.closest('[data-slot="card"]')).not.toBe(
-		knowledgeBase.closest('[data-slot="card"]')
-	);
+	expect(permissions).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /Data management/ })).not.toBeInTheDocument();
 
 	await user.click(screen.getByRole('link', { name: /^Tools/ }));
@@ -564,7 +561,6 @@ it('announces a realtime conversation setup save error', async () => {
 it.each([
 	['settings.tabs.skills', '/settings/agent/skills', 'link'],
 	['settings.tabs.mcp', '/settings/agent/mcp', 'link'],
-	['Knowledge Base', '/settings/agent/rag', 'button'],
 ])('opens %s from the Agent settings page', async (label, path, role) => {
 	const user = userEvent.setup();
 	render(

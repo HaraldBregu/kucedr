@@ -32,7 +32,7 @@ it.each([
 	['/settings/agent/music', 'settings.tabs.music'],
 	['/settings/agent/video', 'settings.tabs.video'],
 	['/settings/agent/image', 'settings.tabs.image'],
-	['/settings/agent/rag', 'settings.rag.title'],
+	['/settings/knowledge-base', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/voice', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
@@ -172,8 +172,8 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();
 	expect(
-		within(navigation).queryByRole('link', { name: 'settings.rag.title' })
-	).not.toBeInTheDocument();
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.rag.title' })
+	).toHaveAttribute('href', '/settings/knowledge-base');
 	expect(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.channels' })
