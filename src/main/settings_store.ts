@@ -11,6 +11,8 @@ import { DEFAULT_SYNC_CRON_EXPRESSION } from './storage/storage_sync_types';
 import { normalizeStorageSettings } from './storage/storage_config';
 import { storageProviders } from './storage/providers';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
+import { getTaskState, setTaskState, taskStorePath } from './tasks/tasks_store';
+import type { PersistedTaskState } from './tasks/tasks_types';
 import {
 	TRAY_CLICK_ACTIONS,
 	type AppLanguage,
@@ -117,6 +119,8 @@ store.store = {
 
 export const appSettingsStorePath = store.path;
 
+export const taskConfigurationStorePath = taskStorePath;
+
 export function getTrayEnabled(): boolean {
 	return store.get('trayEnabled');
 }
@@ -182,6 +186,14 @@ export function recordAppLaunch(): AppLaunchState {
 export function getLaunchState(): AppLaunchState {
 	const launchCount = store.get('launchCount');
 	return { launchCount, isFirstLaunch: launchCount === 1 };
+}
+
+export function getTaskConfiguration(): PersistedTaskState {
+	return getTaskState();
+}
+
+export function setTaskConfiguration(configuration: PersistedTaskState): void {
+	setTaskState(configuration);
 }
 
 function readProviders(kind: StoredProviderKind): StoredProvider[] {
