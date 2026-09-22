@@ -116,8 +116,8 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				 title={t(titleKey)}
-				 description={t(descriptionKey)}
+				title={t(titleKey)}
+				description={t(descriptionKey)}
 				action={
 					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
 						<PopoverTrigger asChild>
