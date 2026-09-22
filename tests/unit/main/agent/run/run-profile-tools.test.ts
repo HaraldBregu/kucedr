@@ -24,6 +24,7 @@ import {
 import { createSessionState } from '../../../../../src/main/agent/session';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
+import { respondUserInput } from '../../../../../src/main/agent/user_input/user_input_pending';
 
 const input = {
 	runId: 'profile-tool-test',
@@ -48,13 +49,35 @@ describe('chat agent tool controls', () => {
 
 	it.each(AGENT_RUNTIME_TOOL_IDS)('enables, uses, and disables %s in isolation', async (toolId) => {
 		const execute = jest.fn().mockResolvedValue({ used: toolId });
+		const args =
+			toolId === 'ask'
+				? {
+						questions: [
+							{
+								id: 'choice',
+								header: 'Choice',
+								question: 'Continue?',
+								options: [{ label: 'Yes', description: 'Continue.' }],
+							},
+						],
+					}
+				: toolId === 'select_screen_source'
+					? { sources: [{ id: 'screen:1', name: 'Display 1', type: 'screen' }] }
+					: {};
 		const selectedTool = jsonTool({
 			id: toolId,
 			name: toolId,
 			description: `Test ${toolId}`,
 			schema: { type: 'object' },
+			planSafe: true,
+			capability: { effects: [] },
 			execute,
 		});
+		const runInput = {
+			...input,
+			...(toolId === 'ask' ? { interactionMode: 'plan' as const } : {}),
+			...(['ask', 'select_screen_source'].includes(toolId) ? { approvalWindowId: 7 } : {}),
+		};
 
 		setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'allow' });
 		runModelTurnMock
@@ -63,31 +86,59 @@ describe('chat agent tool controls', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: `call-${toolId}`, name: toolId, args: {} }],
+					toolCalls: [{ id: `call-${toolId}`, name: toolId, args }],
 				};
 			})
-			.mockImplementationOnce(successfulTurn);
+			.mockImplementationOnce(
+				toolId === 'ask'
+					? async function* () {
+							yield* [];
+							return {
+								content: '<proposed_plan>Continue.</proposed_plan>',
+								model: 'test-model',
+								toolCalls: [],
+							};
+						}
+					: successfulTurn
+			);
 
 		const enabledEvents = [];
 		for await (const event of stream(
 			{ location: '/workspace' },
 			createSessionState(),
-			input,
+			runInput,
 			new AbortController().signal,
 			{ tools: [selectedTool] }
 		)) {
 			enabledEvents.push(event);
+			if (event.type === 'user_input_request') {
+				respondUserInput(
+					{
+						requestId: event.requestId,
+						runId: input.runId,
+						toolCallId: event.toolCallId,
+						inputFingerprint: event.inputFingerprint,
+					},
+					[
+						{
+							questionId: toolId === 'ask' ? 'choice' : 'screen-source',
+							answer: toolId === 'ask' ? 'Yes' : 'screen:1',
+						},
+					],
+					7
+				);
+			}
 		}
 
 		expect(enabledEvents[0]).toMatchObject({ type: 'run_started', tools: [toolId] });
 		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual([
 			toolId,
 		]);
-		expect(execute).toHaveBeenCalledTimes(1);
+		expect(execute).toHaveBeenCalledTimes(['ask', 'select_screen_source'].includes(toolId) ? 0 : 1);
 		expect(enabledEvents).toEqual(
 			expect.arrayContaining([
-				expect.objectContaining({ type: 'tool_call_start', toolCall: { name: toolId } }),
-				expect.objectContaining({ type: 'tool_call_end', toolCall: { name: toolId } }),
+				expect.objectContaining({ type: 'tool_call_start', toolName: toolId }),
+				expect.objectContaining({ type: 'tool_call_end', toolName: toolId }),
 			])
 		);
 
@@ -97,7 +148,7 @@ describe('chat agent tool controls', () => {
 		for await (const event of stream(
 			{ location: '/workspace' },
 			createSessionState(),
-			input,
+			runInput,
 			new AbortController().signal,
 			{ tools: [selectedTool] }
 		)) {
@@ -106,6 +157,6 @@ describe('chat agent tool controls', () => {
 
 		expect(disabledEvents[0]).toMatchObject({ type: 'run_started', tools: [] });
 		expect(runModelTurnMock.mock.calls[0][5]).toEqual([]);
-		expect(execute).toHaveBeenCalledTimes(1);
+		expect(execute).toHaveBeenCalledTimes(['ask', 'select_screen_source'].includes(toolId) ? 0 : 1);
 	});
 });
