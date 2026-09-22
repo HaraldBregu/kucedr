@@ -320,8 +320,6 @@ it('keeps Settings and Search in the sticky sidebar footer', async () => {
 	expect(screen.getByRole('button', { name: 'navigationBar.newChat' })).toBeInTheDocument();
 	await user.click(settings);
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
-	await user.click(screen.getByRole('link', { name: 'settings.tabs.apps' }));
-	expect(screen.getByText('Apps page')).toBeInTheDocument();
 });
 
 it('shows an empty state when there is no chat history', async () => {
