@@ -1292,7 +1292,7 @@
 			"testVoicePlaceholder": "Enter text to speak",
 			"testVoiceSpeak": "Speak",
 			"testVoiceSpeaking": "Speaking…",
-			"voiceName": "Speech",
+			"voiceName": "Speech synthesis",
 			"voiceDescription": "Realtime conversations and spoken output",
 			"transcriptionName": "Transcription",
 			"transcriptionDescription": "Speech-to-text transcription",

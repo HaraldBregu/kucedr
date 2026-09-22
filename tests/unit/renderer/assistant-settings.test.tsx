@@ -113,7 +113,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.toolModels': 'Tool models',
 		'settings.modelServices.subtitle': 'Configure model assignments',
 		'settings.modelServices.imageAssistantName': 'Text to image',
-		'settings.modelServices.voiceName': 'Speech',
+		'settings.modelServices.voiceName': 'Speech synthesis',
 		'settings.modelServices.voiceDescription': 'Realtime conversations and spoken output',
 		'settings.tabs.voice': 'Voice',
 		'settings.modelServices.textToSpeechModelDescription': 'Text to speech model',
