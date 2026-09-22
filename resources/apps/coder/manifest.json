@@ -1,5 +1,6 @@
 {
 	"title": "Coder",
+	"handle": "@coder",
 	"description": "A project-based Pi Coder agent with persistent sessions and recorded shell commands.",
 	"window": {
 		"width": 1440,

@@ -10,6 +10,7 @@ export type AppMetadata = {
 
 export type AppManifest = {
 	title: string;
+	handle?: string;
 	description: string;
 	metadata: AppMetadata;
 	window?: AppWindowSettings;

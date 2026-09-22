@@ -1,5 +1,6 @@
 {
 	"title": "Discover",
+	"handle": "@discover",
 	"description": "Research trends, explore markets, and turn questions into focused discovery briefs.",
 	"window": {
 		"width": 1200,

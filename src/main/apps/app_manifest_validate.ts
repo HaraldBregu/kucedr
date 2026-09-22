@@ -10,6 +10,8 @@ export function isAppManifest(value: unknown): value is AppManifest {
 	return (
 		typeof manifest.title === 'string' &&
 		manifest.title.trim().length > 0 &&
+		(manifest.handle === undefined ||
+			(typeof manifest.handle === 'string' && /^@[a-z0-9][a-z0-9._-]*$/i.test(manifest.handle))) &&
 		typeof manifest.description === 'string' &&
 		manifest.description.trim().length > 0 &&
 		Boolean(metadata) &&

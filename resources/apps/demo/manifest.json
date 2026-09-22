@@ -1,5 +1,6 @@
 {
 	"title": "Demo",
+	"handle": "@demo",
 	"description": "Minimal Kucedr app-data demo app.",
 	"metadata": {
 		"version": "1.0.0",

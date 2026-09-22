@@ -1,5 +1,6 @@
 {
 	"title": "Workspace",
+	"handle": "@workspace",
 	"description": "Kucedr workspace app.",
 	"metadata": {
 		"version": "1.0.0",

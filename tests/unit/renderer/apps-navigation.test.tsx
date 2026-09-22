@@ -15,6 +15,7 @@ const apps: App[] = [
 	{
 		id: 'demo-app',
 		title: 'Demo App',
+		handle: '@example',
 		description: 'A demo app.',
 		metadata: {
 			version: '1.0.0',
@@ -104,7 +105,7 @@ it('shows only an open action on app cards', async () => {
 	);
 
 	await screen.findByText('Demo App');
-	expect(screen.getByText('@demo-app')).toBeInTheDocument();
+	expect(screen.getByText('@example')).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
 	expect(
