@@ -152,8 +152,6 @@ async function* loop(
 		skillLoadingEnabled || skillListingEnabled
 			? createSkillRegistrySnapshot({ projectRoot: config.location })
 			: { skills: [], diagnostics: [] };
-	const skillDisclosureEnabled =
-		!options.tools && skillLoadingEnabled && skillSnapshot.skills.length > 0;
 
 	if (!provider || !modelId) throw new Error('Agent requires a configured provider and model.');
 	const promptCapabilities =
@@ -287,8 +285,7 @@ async function* loop(
 	};
 
 	let finalization: { instruction: string; stopReason?: string } | undefined;
-	try {
-		while (true) {
+	while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
 			const turnTools = synthesisOnly ? [] : tools;
@@ -470,9 +467,6 @@ async function* loop(
 						'Recording started in the background. Confirm its current status without waiting for completion or stopping it.',
 				};
 			}
-		}
-	} finally {
-		await closeMcp?.();
 	}
 	} finally {
 		await closeMcp?.();
