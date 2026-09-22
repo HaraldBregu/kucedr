@@ -322,8 +322,16 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 	);
 	expect(model).toBeDefined();
 	if (!model) return;
-	expect(screen.getByRole('button', { name: /Speech/ })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: /Transcription/ })).toBeInTheDocument();
+	expect(
+		screen
+			.getAllByRole('button', { name: /Speech/ })
+			.some((element) => element.getAttribute('data-slot') === 'collapsible-trigger')
+	).toBe(true);
+	expect(
+		screen
+			.getAllByRole('button', { name: /Transcription/ })
+			.some((element) => element.getAttribute('data-slot') === 'collapsible-trigger')
+	).toBe(true);
 	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
 
 	const knowledgeBase = screen.getByRole('button', { name: /Knowledge Base/ });
