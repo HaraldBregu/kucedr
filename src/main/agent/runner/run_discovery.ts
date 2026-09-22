@@ -52,7 +52,12 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 		planSafe: true,
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
-			query: z.string().trim().min(1).max(240).describe('A concise description of the needed capability.'),
+			query: z
+				.string()
+				.trim()
+				.min(1)
+				.max(240)
+				.describe('A concise description of the needed capability.'),
 			limit: z.number().int().min(1).max(DISCOVERY_CALL_LIMIT).default(DISCOVERY_DEFAULT_LIMIT),
 		}),
 		execute: async ({ query, limit }, signal) => {

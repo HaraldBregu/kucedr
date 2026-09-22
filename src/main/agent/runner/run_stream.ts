@@ -515,7 +515,8 @@ async function* loop(
 			if (pendingToolCalls.some((call) => call.name === 'discover_tools')) {
 				const selectedIds = new Set(
 					pendingToolCalls.flatMap((call) => {
-						if (call.name !== 'discover_tools' || typeof call.result?.content !== 'string') return [];
+						if (call.name !== 'discover_tools' || typeof call.result?.content !== 'string')
+							return [];
 						try {
 							const parsed = JSON.parse(call.result.content) as { selectedToolIds?: unknown };
 							return Array.isArray(parsed.selectedToolIds)
