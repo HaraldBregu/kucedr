@@ -7,16 +7,10 @@ import type {
 	AgentToolReference,
 } from '../../../../../../../shared/agent_tools';
 import { Button } from '@/components/ui/button';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
+import { ToolPermissionControl } from './Permission';
 
 type McpProps = {
 	search: string;
@@ -140,35 +134,14 @@ export default function Mcp({ search, settings, disabled, onChange }: McpProps):
 													description={server.data.name || server.id}
 													actions={
 														<>
-															<Select
-																value={settingsForTool.permission}
-																onValueChange={(permission) =>
-																	onChange(tool, {
-																		...settingsForTool,
-																		permission: permission as AgentToolConfiguration['permission'],
-																	})
-																}
-																disabled={disabled}
-															>
-																<SelectTrigger
-																	size="sm"
-																	className="w-24 text-xs [&_svg]:size-3"
-																	aria-label={`${name} permission`}
-																>
-																	<SelectValue />
-																</SelectTrigger>
-																<SelectContent>
-																	<SelectItem value="ask">
-																		{t('settings.modelServices.agentTools.permissions.ask')}
-																	</SelectItem>
-																	<SelectItem value="allow">
-																		{t('settings.modelServices.agentTools.permissions.allow')}
-																	</SelectItem>
-																	<SelectItem value="deny">
-																		{t('settings.modelServices.agentTools.permissions.deny')}
-																	</SelectItem>
-																</SelectContent>
-															</Select>
+																	<ToolPermissionControl
+																		name={name}
+																		value={settingsForTool.permission}
+																		disabled={disabled}
+																		onChange={(permission) =>
+																			onChange(tool, { ...settingsForTool, permission })
+																		}
+																	/>
 															<Switch
 																checked={settingsForTool.enabled}
 																onCheckedChange={(enabled) =>

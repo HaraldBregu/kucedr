@@ -469,17 +469,13 @@ it('saves a file tools permission choice', async () => {
 		</MemoryRouter>
 	);
 
-	const selector = await screen.findByRole('combobox', {
-		name: 'File Tools Permission: Read file',
-	});
-	await user.click(selector);
-	await user.click(await screen.findByRole('option', { name: 'Always Allow' }));
+	await user.click(await screen.findByRole('radio', { name: 'Read file: Ask' }));
 
 	await waitFor(() => {
 		expect(window.agent.setToolProfileTool).toHaveBeenCalledWith(
 			'chat',
 			{ kind: 'builtin', id: 'read' },
-			{ enabled: true, permission: 'allow' }
+			{ enabled: true, permission: 'ask' }
 		);
 	});
 });

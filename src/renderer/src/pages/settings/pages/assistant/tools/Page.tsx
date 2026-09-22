@@ -48,6 +48,7 @@ import type {
 	AgentToolReference,
 } from '../../../../../../../shared/agent_tools';
 import { isAgentToolAllowedForProfile } from '../../../../../../../shared/agent_tools';
+import { ToolPermissionControl } from './Permission';
 
 type AgentTool = readonly [name: string, id: string, description: string];
 
@@ -698,35 +699,17 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 											description={description}
 											actions={
 												<>
-													<Select
-														value={settings.permission}
-														onValueChange={(value) =>
-															handleFileToolsPermissionChange(id, {
-																...settings,
-																permission: value as ToolPermission,
-															})
-														}
-														disabled={!toolProfile || fileToolsSaving}
-													>
-														<SelectTrigger
-															size="sm"
-															className="w-24 text-xs [&_svg]:size-3"
-															aria-label={`${t('settings.modelServices.agentTools.filePermissionLabel')}: ${name}`}
-														>
-															<SelectValue />
-														</SelectTrigger>
-														<SelectContent>
-															<SelectItem value="ask">
-																{t('settings.modelServices.agentTools.permissions.ask')}
-															</SelectItem>
-															<SelectItem value="allow">
-																{t('settings.modelServices.agentTools.permissions.allow')}
-															</SelectItem>
-															<SelectItem value="deny">
-																{t('settings.modelServices.agentTools.permissions.deny')}
-															</SelectItem>
-														</SelectContent>
-													</Select>
+											<ToolPermissionControl
+												name={name}
+												value={settings.permission}
+												disabled={!toolProfile || fileToolsSaving}
+												onChange={(permission) =>
+													handleFileToolsPermissionChange(id, {
+														...settings,
+														permission,
+													})
+												}
+											/>
 													<Switch
 														checked={settings.enabled}
 														onCheckedChange={(enabled) =>
