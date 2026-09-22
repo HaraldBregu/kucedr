@@ -145,6 +145,55 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 	}
 );
 
+it('cancels a pending OAuth callback before retrying', async () => {
+	const mainFrame = {};
+	const sender = { id: 21, mainFrame };
+	jest
+		.mocked(BrowserWindow.fromWebContents)
+		.mockReturnValue({ id: 1, webContents: sender } as never);
+	new McpIpc().register(
+		{ windows: { has: () => true }, apps: { has: () => false } } as never,
+		{} as never
+	);
+	jest
+		.mocked(getMcpServers)
+		.mockReturnValue({ gmail: { type: 'http', url: 'https://generic.example/mcp' } });
+
+	let rejectFirstCode!: (error: Error) => void;
+	let rejectSecondCode!: (error: Error) => void;
+	const first = {
+		redirectUrl: 'http://127.0.0.1:3001/oauth/callback',
+		code: new Promise<string>((_resolve, reject) => {
+			rejectFirstCode = reject;
+		}),
+		close: jest.fn(() => rejectFirstCode(new Error('OAuth authorization was cancelled.'))),
+	};
+	const second = {
+		redirectUrl: 'http://127.0.0.1:3001/oauth/callback',
+		code: new Promise<string>((_resolve, reject) => {
+			rejectSecondCode = reject;
+		}),
+		close: jest.fn(() => rejectSecondCode(new Error('OAuth authorization was cancelled.'))),
+	};
+	jest.mocked(startOauthCallbackServer).mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+	jest.mocked(createOAuthProvider).mockReturnValue({} as never);
+	jest.mocked(auth).mockResolvedValue('REDIRECT');
+
+	const handler = jest
+		.mocked(ipcMain.handle)
+		.mock.calls.find(([channel]) => channel === McpChannels.oauthStart)![1];
+	const firstAttempt = handler({ sender, senderFrame: mainFrame } as never, 'gmail');
+	await Promise.resolve();
+	const secondAttempt = handler({ sender, senderFrame: mainFrame } as never, 'gmail');
+	await Promise.resolve();
+
+	expect(first.close).toHaveBeenCalledTimes(1);
+	expect(startOauthCallbackServer).toHaveBeenCalledTimes(2);
+
+	second.close();
+	await Promise.all([firstAttempt, secondAttempt]);
+});
+
 it('reports whether OAuth credentials exist without returning them', async () => {
 	const mainFrame = {};
 	const sender = { id: 21, mainFrame };
