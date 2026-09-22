@@ -46,7 +46,7 @@ export class CodingStore {
 	private readonly store: Store<StoredCodingSettings>;
 	private readonly legacyWorkingDirectory?: string;
 
-	constructor(directory = path.resolve(userDataLocation(), 'settings')) {
+	constructor(directory = path.resolve(userDataLocation(), 'coder')) {
 		this.store = new Store<StoredCodingSettings>({
 			name: 'coder',
 			cwd: directory,
