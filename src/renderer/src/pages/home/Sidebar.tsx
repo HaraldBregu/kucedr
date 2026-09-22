@@ -286,6 +286,9 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
+				<p className="px-2 pt-1 text-xs font-medium text-sidebar-foreground/70">
+					{t('settings.tabs.account')}
+				</p>
 				<SidebarMenu>
 					<SidebarMenuItem>
 						<DropdownMenu>
@@ -304,7 +307,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 									<span className="grid min-w-0 flex-1 text-left text-xs leading-tight">
 										<span className="truncate font-medium">{accountItem.title}</span>
 										{accountItem.description ? (
-											<span className="truncate text-[11px] text-muted-foreground">{accountItem.description}</span>
+											<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
 										) : null}
 									</span>
 									<MoreVertical className="ml-auto size-4" aria-hidden="true" />
@@ -326,7 +329,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 										<div className="grid min-w-0 flex-1 text-left text-xs leading-tight">
 											<span className="truncate font-medium">{accountItem.title}</span>
 											{accountItem.description ? (
-												<span className="truncate text-[11px] text-muted-foreground">{accountItem.description}</span>
+												<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
 											) : null}
 										</div>
 									</div>

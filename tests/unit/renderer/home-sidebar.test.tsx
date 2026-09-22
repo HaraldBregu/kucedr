@@ -163,9 +163,12 @@ it.each<[AuthState, string]>([
 	);
 
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
+	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
+	expect(footer).not.toBeNull();
+	expect(within(footer!).getByText('settings.tabs.account')).toBeInTheDocument();
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
 	if (state.status === 'signedIn' && state.user.displayName) {
-		expect(within(accountMenu).getByText(state.user.email)).toBeInTheDocument();
+		expect(within(accountMenu).getByText(state.user.email)).toHaveClass('text-[10px]');
 	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('menu');
