@@ -99,7 +99,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 		replaceEligible(tools) {
 			eligible = new Map(tools.map((candidate) => [candidate.id, candidate]));
 			for (const id of active.keys()) {
-				if (id !== DISCOVER_TOOLS_ID && !required.has(id) && !eligible.has(id)) active.delete(id);
+				if (id !== DISCOVER_TOOLS_ID && !eligible.has(id)) active.delete(id);
 			}
 		},
 		activateImmediate(toolIds) {
