@@ -11,6 +11,7 @@ import { googleOAuthOptions } from './google';
 import { createOAuthProvider } from './mcp_oauth_create_provider';
 import { getMcpOauth, saveMcpOauth } from './mcp_store';
 import { createMcpFetch } from './mcp_fetch';
+import { createGoogleMcpFetch } from './mcp_google_fetch';
 import { parseMcpUrl } from './url';
 
 export function buildTransport(id: string, data: McpData): Transport {
@@ -30,16 +31,17 @@ export function buildTransport(id: string, data: McpData): Transport {
 		);
 	}
 	const headers = data.token ? { Authorization: `Bearer ${data.token}` } : undefined;
+	const googleScopes = googleMcpScopes(data.url);
 
 	return new StreamableHTTPClientTransport(url, {
-		fetch: createMcpFetch(),
+		fetch: googleScopes ? createGoogleMcpFetch() : createMcpFetch(),
 		authProvider: createOAuthProvider({
 			...googleOAuthOptions(data.url),
 			storage: {
 				load: () => getMcpOauth(id),
 				save: (state) => saveMcpOauth(id, state),
 			},
-			...(googleMcpScopes(data.url)
+			...(googleScopes
 				? {}
 				: data.client_id
 					? { clientId: data.client_id, clientSecret: data.client_secret }

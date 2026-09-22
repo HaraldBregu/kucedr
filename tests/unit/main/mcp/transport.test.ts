@@ -10,9 +10,13 @@ jest.mock('../../../../src/main/mcp/mcp_store', () => ({
 	getMcpOauth: jest.fn(() => ({})),
 	saveMcpOauth: jest.fn(),
 }));
+jest.mock('../../../../src/main/mcp/mcp_google_fetch', () => ({
+	createGoogleMcpFetch: jest.fn(() => 'google-fetch'),
+}));
 
 import { getMcpOauth } from '../../../../src/main/mcp/mcp_store';
 import { createOAuthProvider } from '../../../../src/main/mcp/mcp_oauth_create_provider';
+import { createGoogleMcpFetch } from '../../../../src/main/mcp/mcp_google_fetch';
 import { buildTransport } from '../../../../src/main/mcp/mcp_client_build_transport';
 
 const originalFetch = global.fetch;
@@ -104,3 +108,9 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		);
 	}
 );
+
+it('uses the Google compatibility fetch only for Google MCP endpoints', () => {
+	buildTransport('gmail', { type: 'http', url: 'https://gmailmcp.googleapis.com/mcp/v1' });
+	expect(createGoogleMcpFetch).toHaveBeenCalledTimes(1);
+	expect(mockHttpTransport.mock.calls[0]?.[1]?.fetch).toBe('google-fetch');
+});
