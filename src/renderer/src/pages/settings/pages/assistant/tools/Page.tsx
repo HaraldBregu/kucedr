@@ -50,6 +50,7 @@ import type {
 	AgentToolProfileId,
 	AgentToolReference,
 } from '../../../../../../../shared/agent_tools';
+import { isAgentToolAllowedForProfile } from '../../../../../../../shared/agent_tools';
 import McpTools from './Mcp';
 
 type AgentTool = readonly [name: string, id: string, description: string];
@@ -261,11 +262,13 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 	const normalizedToolSearch = toolSearch.trim().toLocaleLowerCase();
 	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
 		...group,
-		tools: group.tools.filter(([name, id, description]) =>
-			[name, id, description, t(`settings.modelServices.agentTools.groups.${group.titleKey}`)]
-				.join(' ')
-				.toLocaleLowerCase()
-				.includes(normalizedToolSearch)
+		tools: group.tools.filter(
+			([name, id, description]) =>
+				isAgentToolAllowedForProfile(profile, { kind: 'builtin', id }) &&
+				[name, id, description, t(`settings.modelServices.agentTools.groups.${group.titleKey}`)]
+					.join(' ')
+					.toLocaleLowerCase()
+					.includes(normalizedToolSearch)
 		),
 	}));
 	const mediaSearchText = [
@@ -373,7 +376,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 				)}
 			</div>
 
-			{mediaSearchText.includes(normalizedToolSearch) && (
+			{profile !== 'health' && mediaSearchText.includes(normalizedToolSearch) && (
 				<SettingsSection
 					title={t('settings.modelServices.agentTools.groups.media')}
 					className="order-2"
@@ -748,13 +751,13 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						</SettingsSection>
 					);
 				})}
-			<McpTools
+			{profile !== 'health' && <McpTools
 				search={normalizedToolSearch}
 				settings={toolProfile?.mcp ?? {}}
 				disabled={!toolProfile || fileToolsSaving}
 				onChange={updateProfileTool}
-			/>
-			<SettingsSection title={t('settings.permissions.toolsTitle')}>
+			/>}
+			{profile !== 'health' && <SettingsSection title={t('settings.permissions.toolsTitle')}>
 				<SettingsPanel>
 					<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
 						<SettingsRow
@@ -769,7 +772,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						/>
 					</Link>
 				</SettingsPanel>
-			</SettingsSection>
+			</SettingsSection>}
 		</SettingsPageShell>
 	);
 };
