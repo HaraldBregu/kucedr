@@ -66,13 +66,9 @@ beforeEach(() => {
 				model: 'test-model',
 				toolCalls: [
 					{
-						id: 'discover-browser',
-						name: 'discover_tools',
-						args: {
-							query: 'browser',
-							toolIds: ['use_web_browser'],
-							mcpServerIds: [],
-						},
+						id: 'browser-start',
+						name: 'use_web_browser',
+						args: { action: 'start' },
 					},
 				],
 			};
@@ -219,13 +215,9 @@ it('does not let channel agents delegate browser access to a background child', 
 				model: 'test-model',
 				toolCalls: [
 					{
-						id: `discover-${input.agentId}`,
-						name: 'discover_tools',
-						args: {
-							query: input.agentId === 'channels' ? 'delegate' : 'browser',
-							toolIds: [input.agentId === 'channels' ? 'subagent' : 'use_web_browser'],
-							mcpServerIds: [],
-						},
+						id: input.agentId === 'channels' ? 'delegate' : 'child-start',
+						name: input.agentId === 'channels' ? 'subagent' : 'use_web_browser',
+						args: input.agentId === 'channels' ? { task: 'Open a browser' } : { action: 'start' },
 					},
 				],
 			};
