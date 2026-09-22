@@ -234,17 +234,9 @@ const HealthPage: React.FC = () => {
 									}
 								/>
 
-								<Item
-									variant="outline"
-									size="md"
-									className="border-b border-border/60 last:border-b-0 px-5 py-4"
-								>
-									<ItemContent className="min-w-0 flex-1">
-										<ItemTitle className="max-w-full truncate">
-											{t('settings.health.fields.activeHoursStart')}
-										</ItemTitle>
-									</ItemContent>
-									<ItemActions className="ml-auto flex-none justify-end">
+							<SettingsRow
+								title={t('settings.health.fields.activeHoursStart')}
+								actions={
 										<Popover
 											open={openPicker === 'start'}
 											onOpenChange={(open) => setOpenPicker(open ? 'start' : null)}
@@ -293,20 +285,12 @@ const HealthPage: React.FC = () => {
 												/>
 											</PopoverContent>
 										</Popover>
-									</ItemActions>
-								</Item>
+									}
+								/>
 
-								<Item
-									variant="outline"
-									size="md"
-									className="border-b border-border/60 last:border-b-0 px-5 py-4"
-								>
-									<ItemContent className="min-w-0 flex-1">
-										<ItemTitle className="max-w-full truncate">
-											{t('settings.health.fields.activeHoursEnd')}
-										</ItemTitle>
-									</ItemContent>
-									<ItemActions className="ml-auto flex-none justify-end">
+							<SettingsRow
+								title={t('settings.health.fields.activeHoursEnd')}
+								actions={
 										<Popover
 											open={openPicker === 'end'}
 											onOpenChange={(open) => setOpenPicker(open ? 'end' : null)}
@@ -355,28 +339,31 @@ const HealthPage: React.FC = () => {
 												/>
 											</PopoverContent>
 										</Popover>
-									</ItemActions>
-								</Item>
+									}
+								/>
 							</SettingsPanel>
-						</div>
 					</SettingsSection>
 
 					<SettingsSection
 						title={t('settings.health.checklistTitle')}
 						description={t('settings.health.checklistDescription')}
 					>
-						<Textarea
-							value={checklist}
-							onChange={(event) => {
-								setChecklist(event.target.value);
-								setSaved(false);
-							}}
-							rows={10}
-							spellCheck={false}
-							className="font-mono text-xs"
-							disabled={saving}
-							aria-label={t('settings.health.checklistTitle')}
-						/>
+						<SettingsPanel>
+							<div className="p-3">
+								<Textarea
+									value={checklist}
+									onChange={(event) => {
+										setChecklist(event.target.value);
+										setSaved(false);
+									}}
+									rows={10}
+									spellCheck={false}
+									className="font-mono text-xs"
+									disabled={saving}
+									aria-label={t('settings.health.checklistTitle')}
+								/>
+							</div>
+						</SettingsPanel>
 					</SettingsSection>
 
 					{saved && (
