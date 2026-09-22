@@ -556,11 +556,11 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 			{filteredToolGroups
 				.filter(
 					(group) =>
-					group.titleKey !== 'media' &&
-					(group.tools.length > 0 ||
-						(profile !== 'health' &&
-							group.titleKey === 'web' &&
-							'search web search_web'.includes(normalizedToolSearch)))
+						group.titleKey !== 'media' &&
+						(group.tools.length > 0 ||
+							(profile !== 'health' &&
+								group.titleKey === 'web' &&
+								'search web search_web'.includes(normalizedToolSearch)))
 				)
 				.map((group) => {
 					const Icon = group.icon;
