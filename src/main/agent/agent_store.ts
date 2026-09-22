@@ -356,9 +356,9 @@ initializeAgentProfile(
 		textToText: store.get('chatbot').textToText,
 		textToSpeech: store.get('chatbot').textToSpeech,
 		speechToText: store.get('chatbot').speechToText,
-		image: getToolModel('image'),
-		audio: getToolModel('audio'),
-		video: getToolModel('video'),
+		image: mediaToolSettings(store.get('tools').create_image as AgentMediaModelSettings),
+		audio: mediaToolSettings(store.get('tools').create_sound as AgentMediaModelSettings),
+		video: mediaToolSettings(store.get('tools').create_video as AgentMediaModelSettings),
 	},
 	'chat-models'
 );
