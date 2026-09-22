@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { format, parseISO } from 'date-fns';
-import { AlertTriangle, Calendar as CalendarIcon, LoaderCircle, Save } from 'lucide-react';
+import { AlertTriangle, BrainCircuit, Calendar as CalendarIcon, LoaderCircle, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
 	Select,
@@ -23,6 +22,7 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsRow,
 	SettingsSection,
 } from '../../../components';
 import { ModelProviderConfiguration } from '../../../components/model-configuration';
@@ -130,7 +130,7 @@ const HealthPage: React.FC = () => {
 						title={t('settings.health.settingsTitle')}
 						description={t('settings.health.settingsDescription')}
 					>
-						<div className="grid gap-3">
+						<SettingsPanel>
 							<ModelProviderConfiguration
 								configState={{
 									providers: modelGroups.map((group) => group.provider),
@@ -144,21 +144,22 @@ const HealthPage: React.FC = () => {
 									error: null,
 								}}
 								idPrefix="health"
+								triggerTitle={t('settings.modelServices.llmModel')}
 								description={t('settings.modelServices.modelDescription')}
+								showIcon
+								icon={BrainCircuit}
+								showFieldLabel={false}
+								grouped
+								showSelectedModel
+								buttonDropdown
+								showContentSeparator={false}
 								onChange={(providerId, modelId) => updateAndSave({ providerId, modelId })}
 							/>
-							<SettingsPanel>
-								<Item
-									variant="outline"
-									size="md"
-									className="border-b border-border/60 last:border-b-0 px-5 py-4"
-								>
-									<ItemContent className="min-w-0 flex-1">
-										<ItemTitle className="max-w-full truncate">
-											{t('settings.health.fields.every')}
-										</ItemTitle>
-									</ItemContent>
-									<ItemActions className="ml-auto flex-none justify-end">
+						</SettingsPanel>
+						<SettingsPanel>
+							<SettingsRow
+								title={t('settings.health.fields.every')}
+								actions={
 										<Select
 											value={settings.every}
 											onValueChange={(value) =>
@@ -177,20 +178,12 @@ const HealthPage: React.FC = () => {
 												))}
 											</SelectContent>
 										</Select>
-									</ItemActions>
-								</Item>
+									}
+								/>
 
-								<Item
-									variant="outline"
-									size="md"
-									className="border-b border-border/60 last:border-b-0 px-5 py-4"
-								>
-									<ItemContent className="min-w-0 flex-1">
-										<ItemTitle className="max-w-full truncate">
-											{t('settings.health.fields.target')}
-										</ItemTitle>
-									</ItemContent>
-									<ItemActions className="ml-auto flex-none justify-end">
+							<SettingsRow
+								title={t('settings.health.fields.target')}
+								actions={
 										<Select
 											value={settings.target}
 											onValueChange={(value) => update({ target: value ?? 'none' })}
@@ -211,20 +204,12 @@ const HealthPage: React.FC = () => {
 												))}
 											</SelectContent>
 										</Select>
-									</ItemActions>
-								</Item>
+									}
+								/>
 
-								<Item
-									variant="outline"
-									size="md"
-									className="border-b border-border/60 last:border-b-0 px-5 py-4"
-								>
-									<ItemContent className="min-w-0 flex-1">
-										<ItemTitle className="max-w-full truncate">
-											{t('settings.health.fields.directPolicy')}
-										</ItemTitle>
-									</ItemContent>
-									<ItemActions className="ml-auto flex-none justify-end">
+							<SettingsRow
+								title={t('settings.health.fields.directPolicy')}
+								actions={
 										<Select
 											value={settings.directPolicy}
 											onValueChange={(value) =>
@@ -246,8 +231,8 @@ const HealthPage: React.FC = () => {
 												</SelectItem>
 											</SelectContent>
 										</Select>
-									</ItemActions>
-								</Item>
+									}
+								/>
 
 								<Item
 									variant="outline"
