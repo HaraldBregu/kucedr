@@ -13,17 +13,18 @@ type LegacyProvidersState = {
 	mcp_servers?: unknown;
 };
 
-const settingsDirectory = path.resolve(userDataLocation(), 'settings');
+const legacySettingsDirectory = path.resolve(userDataLocation(), 'settings');
+const mcpDirectory = path.resolve(userDataLocation(), 'mcp');
 
 const legacyStore = new Store<LegacyProvidersState>({
 	name: 'providers',
-	cwd: settingsDirectory,
+	cwd: legacySettingsDirectory,
 	accessPropertiesByDotNotation: false,
 });
 
 const store = new Store<McpStoreSchema>({
-	name: 'mcp',
-	cwd: settingsDirectory,
+	name: 'settings',
+	cwd: mcpDirectory,
 	accessPropertiesByDotNotation: false,
 	defaults: { servers: [], localEnvironments: {} },
 });
