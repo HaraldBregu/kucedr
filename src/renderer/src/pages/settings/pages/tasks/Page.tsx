@@ -7,6 +7,7 @@ import {
 	ChevronRight,
 	History,
 	ListChecks,
+	ShieldCheck,
 	Wrench,
 } from 'lucide-react';
 import { Item, ItemContent, ItemTitle } from '@/components/ui/item';

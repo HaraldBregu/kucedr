@@ -7,6 +7,7 @@ import {
 	ChevronRight,
 	History,
 	Mic,
+	ShieldCheck,
 	Volume2,
 	Wrench,
 } from 'lucide-react';

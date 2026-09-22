@@ -1,4 +1,4 @@
-import { ChevronRight, History, Radio, Wrench } from 'lucide-react';
+import { ChevronRight, History, Radio, ShieldCheck, Wrench } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {

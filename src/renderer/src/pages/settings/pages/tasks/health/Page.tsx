@@ -9,6 +9,7 @@ import {
 	ChevronRight,
 	LoaderCircle,
 	Save,
+	ShieldCheck,
 	Wrench,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
