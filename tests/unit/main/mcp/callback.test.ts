@@ -2,7 +2,7 @@ import http from 'node:http';
 import { startOauthCallbackServer } from '../../../../src/main/mcp/mcp_oauth_callback';
 
 jest.mock('../../../../src/main/mcp/redirect', () => ({
-	getMcpOAuthRedirectUrl: () => 'http://127.0.0.1:3001/oauth/callback',
+	getMcpOAuthRedirectUrl: () => 'http://localhost:4321/oauth/callback',
 }));
 
 let handle: (req: http.IncomingMessage, res: http.ServerResponse) => void;
