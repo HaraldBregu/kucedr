@@ -109,6 +109,24 @@ describe('provider manifest validation', () => {
 		expect(errors).toContainEqual(expect.stringContaining('promptAttachments must be declared'));
 	});
 
+	it('rejects empty service descriptions', () => {
+		const errors = validateProviderManifest({
+			providerId: 'acme',
+			providerName: 'Acme',
+			services: [
+				{
+					id: 'acme-mcp',
+					name: 'Acme MCP',
+					description: '',
+					type: 'mcp',
+					url: 'https://mcp.acme.test',
+				},
+			],
+		});
+
+		expect(errors).toContainEqual(expect.stringContaining('services[0].description'));
+	});
+
 	it('requires promptAttachments to be an array', () => {
 		const errors = validateProviderManifest({
 			providerId: 'acme',
