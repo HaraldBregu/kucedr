@@ -1,7 +1,7 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { getMicrophoneInputs } from '../../../src/renderer/src/lib/microphone/inputs';
-import { MicrophoneInput } from '../../../src/renderer/src/pages/settings/pages/system/detail/Input';
+import { MicrophoneInput } from '../../../src/renderer/src/pages/settings/pages/general/media/Input';
 
 jest.mock('react-i18next', () => {
 	const t = (key: string, options?: { number: number }): string =>
