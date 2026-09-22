@@ -262,6 +262,10 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
+								path: 'tools',
+								element: <SettingsRouteWrapper><ToolsPage profile="channels" /></SettingsRouteWrapper>,
+							},
+							{
 								path: 'persona',
 								element: (
 									<SettingsRouteWrapper>
@@ -437,6 +441,10 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'voice/tools',
+						element: <SettingsRouteWrapper><ToolsPage profile="voice" /></SettingsRouteWrapper>,
+					},
+					{
 						path: 'agent',
 						children: [
 							{
@@ -455,7 +463,7 @@ const routes: RouteObject[] = [
 								path: 'tools',
 								element: (
 									<SettingsRouteWrapper>
-										<ToolsPage />
+									<ToolsPage profile="chat" />
 									</SettingsRouteWrapper>
 								),
 							},
@@ -489,6 +497,10 @@ const routes: RouteObject[] = [
 												<ChatHistoryPage category="task" />
 											</SettingsRouteWrapper>
 										),
+									},
+									{
+										path: 'tools',
+										element: <SettingsRouteWrapper><ToolsPage profile="tasks" /></SettingsRouteWrapper>,
 									},
 								],
 							},
@@ -527,6 +539,10 @@ const routes: RouteObject[] = [
 										<HealthPage />
 									</SettingsRouteWrapper>
 								),
+							},
+							{
+								path: 'health/tools',
+								element: <SettingsRouteWrapper><ToolsPage profile="health" /></SettingsRouteWrapper>,
 							},
 							{
 								path: 'permissions',
