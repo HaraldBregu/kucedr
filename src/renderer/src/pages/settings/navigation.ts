@@ -237,7 +237,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'task scheduled tools permissions allow deny ask',
 	},
 	{
-		path: '/settings/agent/health/tools',
+		path: '/settings/health/tools',
 		labelKey: 'settings.modelServices.tools',
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'health tools permissions allow deny ask',
@@ -270,13 +270,13 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Health
 	{
-		path: '/settings/agent/health',
+		path: '/settings/health',
 		labelKey: 'settings.health.settingsTitle',
 		descriptionKey: 'settings.health.settingsDescription',
 		keywords: 'periodic health check interval provider model',
 	},
 	{
-		path: '/settings/agent/health',
+		path: '/settings/health',
 		labelKey: 'settings.health.checklistTitle',
 		descriptionKey: 'settings.health.checklistDescription',
 		keywords: 'health checklist instructions agent HEALTH.md',
@@ -396,7 +396,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Sparkles,
 	},
 	{
-		path: '/settings/agent/health',
+		path: '/settings/health',
 		labelKey: 'settings.tabs.health',
 		descriptionKey: 'settings.overview.descriptions.health',
 		icon: HeartPulse,

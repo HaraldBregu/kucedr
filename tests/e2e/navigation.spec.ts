@@ -54,7 +54,7 @@ const routes = [
 	'/settings/agent',
 	'/settings/coding',
 	'/settings/agent/chathistory',
-	'/settings/agent/health',
+	'/settings/health',
 	'/settings/agent/permissions',
 ];
 

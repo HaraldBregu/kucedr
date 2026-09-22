@@ -371,7 +371,7 @@ const HealthPage: React.FC = () => {
 					</SettingsPanel>
 
 					<SettingsPanel>
-						<Link to="/settings/agent/health/tools" className="block hover:bg-muted/40">
+						<Link to="/settings/health/tools" className="block hover:bg-muted/40">
 							<SettingsRow
 								title={t('settings.modelServices.tools')}
 								description={t('settings.modelServices.toolsDescription')}

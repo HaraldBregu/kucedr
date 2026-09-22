@@ -170,7 +170,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).toHaveAttribute('href', '/settings/agent/tasks');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.health' })
-	).toHaveAttribute('href', '/settings/agent/health');
+	).toHaveAttribute('href', '/settings/health');
 	expect(
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();

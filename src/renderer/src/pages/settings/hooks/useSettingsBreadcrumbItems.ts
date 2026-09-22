@@ -12,7 +12,6 @@ interface SettingsBreadcrumbItem {
 
 const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/chathistory': 'settings.chatHistory.title',
-	'/settings/agent/health': 'settings.tabs.health',
 	'/settings/agent/permissions': 'settings.tabs.permissions',
 	'/settings/agent/tools': 'settings.modelServices.tools',
 };
@@ -83,10 +82,9 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.modelServices.tools') },
 		];
 	}
-	if (location.pathname === '/settings/agent/health/tools') {
+	if (location.pathname === '/settings/health/tools') {
 		return [
-			{ label: t('settings.modelServices.chatName'), path: '/settings/agent' },
-			{ label: t('settings.tabs.health'), path: '/settings/agent/health' },
+			{ label: t('settings.tabs.health'), path: '/settings/health' },
 			{ label: t('settings.modelServices.tools') },
 		];
 	}
