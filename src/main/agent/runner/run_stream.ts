@@ -47,12 +47,6 @@ import { createBackgroundBrowser } from '../tools/web/browser/background';
 import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
-import {
-	createToolDiscovery,
-	DISCOVER_TOOLS_ID,
-	type ToolDiscovery,
-	type ToolDiscoveryResult,
-} from './run_discovery';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -196,8 +190,6 @@ async function* loop(
 	}
 	tools = filterPlanTools(tools, input.interactionMode);
 	tools = filterDisabledTools(tools, configuredToolSettings);
-	let discovery: ToolDiscovery | undefined;
-	let explicitSkill: SkillLoadResult | undefined;
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
 		let filtered = filterDisabledTools(
@@ -222,8 +214,7 @@ async function* loop(
 			resources: skill.resources,
 			warnings: skill.warnings,
 		});
-		tools = filterEligibleTools(discovery?.eligible() ?? tools);
-		discovery?.replaceEligible(tools);
+		tools = filterEligibleTools(tools);
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));
 	if (!options.tools && skillLoadingEnabled) {
@@ -233,9 +224,7 @@ async function* loop(
 
 	let closeMcp: (() => Promise<void>) | undefined;
 	let mcpDiscovery: McpDiscoveryDiagnostics | undefined;
-	let mcpEntries: Awaited<ReturnType<typeof loadMcpTools>>['entries'] = [];
-	let deferredMcpServers: Awaited<ReturnType<typeof loadMcpTools>>['deferredServers'] = [];
-	let loadDeferredMcp: Awaited<ReturnType<typeof loadMcpTools>>['loadDeferred'] | undefined;
+	try {
 	if (!options.tools) {
 		if (
 			input.interactionMode !== 'plan' &&
@@ -246,18 +235,6 @@ async function* loop(
 			tools.push(...mcp.tools);
 			closeMcp = mcp.close;
 			mcpDiscovery = mcp.diagnostics;
-			mcpEntries = mcp.entries ?? [];
-			deferredMcpServers = (mcp.deferredServers ?? []).filter((server) => {
-				if (input.toolsAllow === undefined) return true;
-				const normalized =
-					server.id
-						.normalize('NFKC')
-						.replace(/[^a-zA-Z0-9_-]/g, '_')
-						.replace(/_+/g, '_')
-						.replace(/^_+|_+$/g, '') || 'server';
-				return input.toolsAllow.some((id) => id.startsWith(`mcp__${normalized}__`));
-			});
-			loadDeferredMcp = mcp.loadDeferred;
 		}
 		const childTools = filterTools(tools, input.toolsAllow, input.toolsDeny).filter(
 			(tool) =>
@@ -289,28 +266,8 @@ async function* loop(
 	if (input.explicitSkill && !skillLoadingEnabled)
 		throw new Error('Skill loading is unavailable for this run.');
 	if (input.explicitSkill) {
-		explicitSkill = await activateSkill(skillSnapshot, input.explicitSkill);
-		applyActivatedSkill(explicitSkill);
+		applyActivatedSkill(await activateSkill(skillSnapshot, input.explicitSkill));
 	}
-	const requiredToolIds = new Set([
-		...(input.interactionMode === 'plan' ? ['ask'] : []),
-		...(skillDisclosureEnabled ? ['load_skill'] : []),
-		'get_goal',
-		'update_goal_plan',
-		'record_goal_evidence',
-		'request_goal_completion',
-		'report_goal_blocker',
-	]);
-	discovery = createToolDiscovery({
-		eligible: tools,
-		required: tools.filter((candidate) => requiredToolIds.has(candidate.id)),
-		mcpTools: mcpEntries.filter((entry) =>
-			tools.some((candidate) => candidate.id === entry.tool.id)
-		),
-		deferredMcpServers,
-		...(loadDeferredMcp ? { loadMcpServers: loadDeferredMcp } : {}),
-		filterEligible: filterEligibleTools,
-	});
 
 	yield {
 		type: 'run_started',
@@ -318,7 +275,7 @@ async function* loop(
 		interactionMode: input.interactionMode,
 		model: modelId,
 		providerId: provider.id,
-		tools: discovery.active().map((tool) => tool.id),
+		tools: tools.map((tool) => tool.id),
 		skillDiagnostics: skillSnapshot.diagnostics,
 		skillActivations: session.runContext.loadedSkills.map((skill) => ({
 			id: skill.id,
@@ -334,19 +291,18 @@ async function* loop(
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
-			const turnTools = synthesisOnly ? [] : discovery.active();
+			const turnTools = synthesisOnly ? [] : tools;
 			const systemPrompt = await buildSystemPrompt(
 				config,
 				turnTools,
 				session.runContext.loadedSkills,
 				options.instructions,
 				contextMode,
-				skillDisclosureEnabled
+				turnTools.some((tool) => tool.id === 'load_skill')
 			);
 			const loadedSkillPrompt = buildLoadedSkillPrompt(session.runContext.loadedSkills);
 			const protectedSkillPrompt = [
 				input.interactionMode === 'plan' ? addPlanPrompt(loadedSkillPrompt) : loadedSkillPrompt,
-				synthesisOnly ? '' : discovery.prompt(),
 				finalization?.instruction,
 				synthesisOnly
 					? 'Provide a non-empty final answer using the available results. Do not call tools or claim unexecuted actions succeeded.'
@@ -442,45 +398,6 @@ async function* loop(
 				yield { type: 'run_finished', result };
 				return;
 			}
-			const activeToolIds = new Set(turnTools.map((tool) => tool.id));
-			const eligibleToolIds = new Set(discovery.eligible().map((tool) => tool.id));
-			const requestedUnavailableToolIds = [
-				...new Set(
-					turn.toolCalls
-						.map((call) => call.name)
-						.filter((id) => !activeToolIds.has(id) && eligibleToolIds.has(id))
-				),
-			];
-			const discoveryCalls = turn.toolCalls.filter((call) => call.name === DISCOVER_TOOLS_ID);
-			if (discoveryCalls.length > 0 || requestedUnavailableToolIds.length > 0) {
-				const loader =
-					discoveryCalls[0] ??
-					turn.toolCalls.find((call) => requestedUnavailableToolIds.includes(call.name))!;
-				const requestedToolIds = discoveryCalls.flatMap((call) =>
-					Array.isArray(call.args.toolIds)
-						? call.args.toolIds.filter((id): id is string => typeof id === 'string')
-						: []
-				);
-				const requestedMcpServerIds = discoveryCalls.flatMap((call) =>
-					Array.isArray(call.args.mcpServerIds)
-						? call.args.mcpServerIds.filter((id): id is string => typeof id === 'string')
-						: []
-				);
-				const requestedQuery = discoveryCalls.find(
-					(call) => typeof call.args.query === 'string' && call.args.query.trim()
-				)?.args.query;
-				loader.name = DISCOVER_TOOLS_ID;
-				loader.args = {
-					query:
-						typeof requestedQuery === 'string'
-							? requestedQuery
-							: `Load tools needed for the next step: ${requestedUnavailableToolIds.join(', ')}`,
-					toolIds: [...new Set([...requestedToolIds, ...requestedUnavailableToolIds])],
-					mcpServerIds: [...new Set(requestedMcpServerIds)],
-				};
-				turn.toolCalls = [loader];
-				turn.providerItems = [];
-			}
 			recordTurn(session, turn);
 			yield {
 				type: 'assistant_message',
@@ -533,19 +450,6 @@ async function* loop(
 				options.resources,
 				session.runContext.fileHistory
 			)) {
-				if (event.type === 'tool_call_start' && event.toolName === DISCOVER_TOOLS_ID) {
-					yield { type: 'capability_resolution_start' };
-					continue;
-				}
-				if (event.type === 'tool_call_end' && event.toolName === DISCOVER_TOOLS_ID) {
-					const output = event.output as ToolDiscoveryResult | undefined;
-					yield {
-						type: 'capability_resolution_result',
-						tools: output?.selectedTools ?? [],
-						serviceIds: output?.selectedServiceIds ?? [],
-					};
-					continue;
-				}
 				yield event;
 			}
 			addToolResults(session, turn.toolCalls);
@@ -567,6 +471,9 @@ async function* loop(
 				};
 			}
 		}
+	} finally {
+		await closeMcp?.();
+	}
 	} finally {
 		await closeMcp?.();
 	}
