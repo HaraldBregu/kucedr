@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
 import {
 	AlertTriangle,
 	BookOpen,
-	ChevronRight,
 	FileText,
 	Globe,
 	Image as ImageIcon,
@@ -14,7 +12,6 @@ import {
 	Network,
 	Search as SearchIcon,
 	Settings,
-	ShieldCheck,
 	Sparkles,
 	Target,
 	Terminal,
@@ -752,27 +749,6 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						</SettingsSection>
 					);
 				})}
-			{profile !== 'health' && (
-				<SettingsSection title={t('settings.permissions.toolsTitle')}>
-					<SettingsPanel>
-						<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
-							<SettingsRow
-								title={t('settings.permissions.toolsTitle')}
-								description={t('settings.permissions.toolsDescription')}
-								media={
-									<ShieldCheck
-										className="size-5 shrink-0 text-muted-foreground"
-										aria-hidden="true"
-									/>
-								}
-								className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
-								actionClassName="w-auto justify-end"
-								actions={<ChevronRight className="size-4 text-muted-foreground" />}
-							/>
-						</Link>
-					</SettingsPanel>
-				</SettingsSection>
-			)}
 		</SettingsPageShell>
 	);
 };

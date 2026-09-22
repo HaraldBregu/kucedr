@@ -380,10 +380,9 @@ it('keeps media permissions and search configuration on Tools without model sele
 		expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
 		expect(await screen.findByRole('switch', { name: `${name} enabled` })).toBeEnabled();
 	}
-	expect(screen.getByRole('link', { name: /settings\.permissions\.toolsTitle/ })).toHaveAttribute(
-		'href',
-		'/settings/agent/permissions'
-	);
+	expect(
+		screen.queryByRole('link', { name: /settings\.permissions\.toolsTitle/ })
+	).not.toBeInTheDocument();
 	expect(window.agent.getToolModel).not.toHaveBeenCalled();
 	expect(window.mcp.registry).not.toHaveBeenCalled();
 
