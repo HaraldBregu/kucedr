@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import {
 	AlertTriangle,
 	Blocks,
@@ -35,6 +36,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 
 const AppsPage: React.FC = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [apps, setApps] = useState<App[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [importing, setImporting] = useState(false);
@@ -238,7 +240,19 @@ const AppsPage: React.FC = () => {
 				) : (
 					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
 						{apps.map((app) => (
-							<Card key={app.id} size="sm" className="min-h-28 gap-2">
+							<Card
+								key={app.id}
+								size="sm"
+								role="link"
+								tabIndex={0}
+								className="min-h-28 cursor-pointer gap-2 transition-colors hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+								onClick={() => navigate(`/settings/apps/${encodeURIComponent(app.id)}`)}
+								onKeyDown={(event) => {
+									if (event.key !== 'Enter' && event.key !== ' ') return;
+									event.preventDefault();
+									navigate(`/settings/apps/${encodeURIComponent(app.id)}`);
+								}}
+							>
 								<CardContent className="flex h-full min-w-0 flex-col gap-2">
 									<div className="flex min-w-0 items-start gap-3">
 										{app.imageUrl ? (
