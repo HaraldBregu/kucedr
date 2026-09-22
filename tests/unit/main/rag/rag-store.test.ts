@@ -1,14 +1,28 @@
+import path from 'node:path';
+
 const validate = jest.fn();
+const root = '/tmp/kucedr-rag-store-test';
 
 jest.mock('node-cron', () => ({
 	__esModule: true,
 	default: { validate },
 }));
+jest.mock('../../../../src/main/shared/user_data_location', () => ({
+	userDataLocation: () => root,
+}));
+jest.mock('../../../../src/main/shared/restrict_settings_file', () => ({
+	restrictSettingsFile: jest.fn(),
+}));
 
-import { getRagConfiguration, saveRagConfiguration } from '../../../../src/main/agent/knowledge/rag/rag_store';
+import {
+	getRagConfiguration,
+	ragConfigurationStorePath,
+	saveRagConfiguration,
+} from '../../../../src/main/agent/knowledge/rag/rag_store';
 
 it('defaults, normalizes, and validates the configured RAG index name', () => {
 	validate.mockReturnValue(true);
+	expect(ragConfigurationStorePath).toBe(path.join(root, 'rag', 'settings.json'));
 	expect(getRagConfiguration()).toEqual(
 		expect.objectContaining({
 			enabled: false,

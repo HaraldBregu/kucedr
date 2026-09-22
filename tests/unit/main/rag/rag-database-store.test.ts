@@ -3,7 +3,7 @@ const saveRagConfiguration = jest.fn();
 
 jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({
 	getRagConfiguration,
-	ragConfigurationStorePath: '/settings/rag.json',
+	ragConfigurationStorePath: '/rag/settings.json',
 	saveRagConfiguration,
 }));
 jest.mock('../../../../src/main/models', () => ({
@@ -39,7 +39,7 @@ beforeEach(() => {
 });
 
 it('reads and writes database selection through the RAG store', () => {
-	expect(databaseConfigurationStorePath).toBe('/settings/rag.json');
+	expect(databaseConfigurationStorePath).toBe('/rag/settings.json');
 	expect(getDatabaseConfiguration()).toEqual({
 		providerId: 'pinecone',
 		databaseId: 'pinecone',
