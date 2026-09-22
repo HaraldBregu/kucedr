@@ -119,7 +119,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
 	expect(screen.getByText('settings.tabs.account')).toBeInTheDocument();
-	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('A')).toBeInTheDocument();
+	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
 	).not.toBeInTheDocument();
