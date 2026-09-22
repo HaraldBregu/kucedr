@@ -19,7 +19,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'general',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/account', '/settings/general', '/settings/system', '/settings/cloud'].includes(
+			['/settings/account', '/settings/general', '/settings/system', '/settings/cloud', '/settings/providers'].includes(
 				item.path
 			)
 		),
@@ -44,11 +44,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'models',
 		items: SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/agent/models'),
-	},
-	{
-		id: 'providers',
-		titleKey: 'settings.tabs.providers',
-		items: SETTINGS_NAVIGATION.filter((item) => item.path.startsWith('/settings/providers/')),
 	},
 	{
 		id: 'integrations',

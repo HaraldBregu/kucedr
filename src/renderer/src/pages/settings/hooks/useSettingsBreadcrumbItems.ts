@@ -16,6 +16,13 @@ const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/tools': 'settings.modelServices.tools',
 };
 
+const PROVIDER_SUBPAGE_LABEL_KEYS: Record<string, string> = {
+	'/settings/providers/models': 'settings.overview.groups.mlModels',
+	'/settings/providers/search': 'settings.tabs.searchEngines',
+	'/settings/providers/database': 'settings.tabs.databases',
+	'/settings/providers/storage': 'settings.tabs.storage',
+};
+
 function formatAppLabel(appId: string): string {
 	return appId
 		.split(/[-_\s]+/)
@@ -101,6 +108,13 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 				path: '/settings/agent',
 			},
 			{ label: t(assistantSubpageLabelKey) },
+		];
+	}
+	const providerSubpageLabelKey = PROVIDER_SUBPAGE_LABEL_KEYS[location.pathname];
+	if (providerSubpageLabelKey) {
+		return [
+			{ label: t('settings.tabs.providers'), path: '/settings/providers' },
+			{ label: t(providerSubpageLabelKey) },
 		];
 	}
 

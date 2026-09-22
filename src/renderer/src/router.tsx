@@ -47,6 +47,7 @@ const ChannelDetailPage = lazy(() => import('./pages/settings/pages/channels/det
 const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
 const ProvidersPage = lazy(() => import('./pages/settings/pages/providers/Page'));
+const ProvidersOverviewPage = lazy(() => import('./pages/settings/pages/providers/Overview'));
 const StorageProvidersPage = lazy(() => import('./pages/settings/pages/providers/storage/Page'));
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const A2aPage = lazy(() => import('./pages/settings/pages/a2a/Page'));
@@ -345,7 +346,11 @@ const routes: RouteObject[] = [
 						children: [
 							{
 								index: true,
-								element: <Navigate to="/settings/providers/models" replace />,
+								element: (
+									<SettingsRouteWrapper>
+										<ProvidersOverviewPage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'models',

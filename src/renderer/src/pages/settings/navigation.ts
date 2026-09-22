@@ -328,6 +328,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Cloud,
 	},
 	{
+		path: '/settings/providers',
+		labelKey: 'settings.tabs.providers',
+		descriptionKey: 'settings.overview.descriptions.providers',
+		icon: Server,
+	},
+	{
 		path: '/settings/voice',
 		labelKey: 'settings.tabs.voice',
 		sidebarLabelKey: 'settings.sidebar.voiceConversation',
@@ -339,30 +345,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.taskScheduler',
 		descriptionKey: 'settings.overview.descriptions.cron',
 		icon: ListChecks,
-	},
-	{
-		path: '/settings/providers/models',
-		labelKey: 'settings.overview.groups.mlModels',
-		descriptionKey: 'settings.overview.descriptions.providers',
-		icon: Server,
-	},
-	{
-		path: '/settings/providers/search',
-		labelKey: 'settings.tabs.searchEngines',
-		descriptionKey: 'settings.overview.descriptions.searchEngine',
-		icon: Search,
-	},
-	{
-		path: '/settings/providers/database',
-		labelKey: 'settings.tabs.databases',
-		descriptionKey: 'settings.overview.descriptions.databases',
-		icon: Database,
-	},
-	{
-		path: '/settings/providers/storage',
-		labelKey: 'settings.tabs.storage',
-		descriptionKey: 'settings.storageProviders.description',
-		icon: HardDrive,
 	},
 	{
 		path: '/settings/mcp',
