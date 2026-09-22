@@ -30,6 +30,7 @@ jest.mock('electron-store', () =>
 		};
 		stores.set(name, backing);
 		return {
+			path: `/tmp/kucedr-settings/${name}.json`,
 			get: (key: string) => backing[key],
 			set: (key: string, value: unknown) => {
 				backing[key] = value;
