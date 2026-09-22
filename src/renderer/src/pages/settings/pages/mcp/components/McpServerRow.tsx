@@ -18,7 +18,9 @@ export function McpServerRow({
 			? server.data.url
 			: [server.data.command, ...(server.data.args ?? [])].join(' ');
 	const provider = mcps().find(
-		(service) => service.id === server.id || service.url === server.data.url
+		(service) =>
+			service.id === server.id ||
+			(server.data.type === 'http' && service.url === server.data.url)
 	)?.provider;
 
 	return (
