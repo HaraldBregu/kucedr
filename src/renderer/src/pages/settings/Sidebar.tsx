@@ -42,10 +42,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		],
 	},
 	{
-		id: 'models',
-		items: SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/agent/models'),
-	},
-	{
 		id: 'integrations',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>

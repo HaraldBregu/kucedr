@@ -59,7 +59,6 @@ const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page')
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
 const CodingPage = lazy(() => import('./pages/settings/pages/coding/Page'));
-const ModelsPage = lazy(() => import('./pages/settings/pages/assistant/models'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
@@ -545,26 +544,6 @@ const routes: RouteObject[] = [
 					{
 						path: 'agent',
 						children: [
-					{
-						path: 'models',
-						element: (
-							<SettingsRouteWrapper>
-								<ModelsPage />
-							</SettingsRouteWrapper>
-						),
-					},
-					{
-						path: 'music',
-						element: <Navigate to="/settings/agent/models" replace />,
-					},
-					{
-						path: 'video',
-						element: <Navigate to="/settings/agent/models" replace />,
-					},
-					{
-						path: 'image',
-						element: <Navigate to="/settings/agent/models" replace />,
-							},
 							{
 								path: 'tools',
 								element: (

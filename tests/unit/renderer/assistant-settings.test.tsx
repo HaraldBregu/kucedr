@@ -1,4 +1,3 @@
-import ModelsPage from '../../../src/renderer/src/pages/settings/pages/assistant/models';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -596,32 +595,4 @@ it('announces a realtime conversation setup save error', async () => {
 	await user.click(await screen.findByRole('menuitemradio', { name: /Grok Voice/ }));
 
 	expect(await screen.findByRole('alert')).toHaveTextContent('Realtime setup could not be saved.');
-});
-
-it('loads every saved media model configuration on the Models page', async () => {
-	render(
-		<MemoryRouter>
-			<ModelsPage />
-		</MemoryRouter>
-	);
-
-	expect(
-		screen.getByRole('heading', { name: 'settings.overview.groups.mlModels' })
-	).toBeInTheDocument();
-	for (const [name, model] of [
-		['music', 'Eleven Music'],
-		['image', 'Gemini Image'],
-		['video', 'Veo'],
-	] as const) {
-		await waitFor(() =>
-			expect(screen.getByRole('button', { name: `settings.tabs.${name}` })).toHaveTextContent(
-				model
-			)
-		);
-	}
-	expect(document.querySelector('[data-slot="card"]')).toBeInTheDocument();
-	expect(document.querySelectorAll('[data-slot="collapsible-trigger"]')).toHaveLength(3);
-	expect(window.agent.getToolModel).toHaveBeenCalledWith('audio', 'chat');
-	expect(window.agent.getToolModel).toHaveBeenCalledWith('image', 'chat');
-	expect(window.agent.getToolModel).toHaveBeenCalledWith('video', 'chat');
 });

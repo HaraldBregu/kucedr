@@ -295,12 +295,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Brain,
 	},
 	{
-		path: '/settings/agent/models',
-		labelKey: 'settings.overview.groups.mlModels',
-		descriptionKey: 'settings.modelServices.mediaModelsDescription',
-		icon: Server,
-	},
-	{
 		path: '/settings/account',
 		labelKey: 'settings.tabs.account',
 		descriptionKey: 'settings.overview.descriptions.account',
