@@ -1,4 +1,5 @@
 import type {
+	AgentSessionCategory,
 	AgentPromptInputCapabilities,
 	ModelReasoningEffort,
 } from '../../../shared/agent_types';
@@ -8,7 +9,7 @@ import type { Message, MessageContentBlock, ToolCall } from '../types';
 
 export const DEFAULT_CATEGORY: SessionCategory = 'main';
 
-export type SessionCategory = 'main' | 'bot' | 'health' | 'task' | 'subagent' | 'voice';
+export type SessionCategory = AgentSessionCategory;
 
 export type SessionResultSubtype = 'success' | 'error_max_turns';
 

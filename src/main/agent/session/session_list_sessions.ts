@@ -52,6 +52,7 @@ export function listSessions(
 					id: entry.name,
 					createdAtMs: stats.birthtimeMs || stats.ctimeMs || stats.mtimeMs,
 					title: sessionTitle(entry.name, location),
+					category,
 				};
 			})
 			.sort((a, b) => b.createdAtMs - a.createdAtMs || b.id.localeCompare(a.id));

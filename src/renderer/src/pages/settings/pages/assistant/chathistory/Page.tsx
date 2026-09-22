@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AlertTriangle, FolderOpen, LoaderCircle, MoreHorizontal, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import type { AgentSessionSummary } from '@/lib/compat';
+import type { AgentSessionCategory, AgentSessionSummary } from '@/lib/compat';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -19,7 +19,11 @@ function formatSessionDate(createdAtMs: number): string {
 	return new Date(createdAtMs).toLocaleString();
 }
 
-const ChatHistoryPage: React.FC = () => {
+interface ChatHistoryPageProps {
+	readonly category?: Extract<AgentSessionCategory, 'task' | 'voice'>;
+}
+
+const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 	const { t } = useTranslation();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -27,19 +31,43 @@ const ChatHistoryPage: React.FC = () => {
 	const [deletingSessionId, setDeletingSessionId] = useState<string | null>(null);
 	const [deletingAll, setDeletingAll] = useState(false);
 	const [actionsOpen, setActionsOpen] = useState(false);
+	const titleKey =
+		category === 'voice'
+			? 'settings.voice.history.title'
+			: category === 'task'
+				? 'settings.cron.history.pageTitle'
+				: 'settings.chatHistory.title';
+	const descriptionKey =
+		category === 'voice'
+			? 'settings.voice.history.description'
+			: category === 'task'
+				? 'settings.cron.history.pageDescription'
+				: 'settings.chatHistory.description';
+	const emptyTitleKey =
+		category === 'voice'
+			? 'settings.voice.history.emptyTitle'
+			: category === 'task'
+				? 'settings.cron.history.pageEmptyTitle'
+				: 'settings.chatHistory.empty';
+	const emptyDescriptionKey =
+		category === 'voice'
+			? 'settings.voice.history.emptyDescription'
+			: category === 'task'
+				? 'settings.cron.history.pageEmptyDescription'
+				: 'settings.chatHistory.emptyDescription';
 
 	const loadSessions = useCallback(async (): Promise<void> => {
 		setLoading(true);
 		setError(null);
 		try {
 			const nextSessions = await window.agent.listSessions(true);
-			setSessions(nextSessions);
+			setSessions(category ? nextSessions.filter((session) => session.category === category) : nextSessions);
 		} catch (loadError) {
 			setError(firstErrorMessage(loadError, t('settings.chatHistory.errors.load')));
 		} finally {
 			setLoading(false);
 		}
-	}, [t]);
+	}, [category, t]);
 
 	useEffect(() => {
 		void loadSessions();
@@ -88,8 +116,8 @@ const ChatHistoryPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.chatHistory.title')}
-				description={t('settings.chatHistory.description')}
+				 title={t(titleKey)}
+				 description={t(descriptionKey)}
 				action={
 					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
 						<PopoverTrigger asChild>
@@ -144,8 +172,8 @@ const ChatHistoryPage: React.FC = () => {
 					<SettingsLoadingRows rows={4} />
 				) : sessions.length === 0 ? (
 					<SettingsEmptyState
-						title={t('settings.chatHistory.empty')}
-						description={t('settings.chatHistory.emptyDescription')}
+						title={t(emptyTitleKey)}
+						description={t(emptyDescriptionKey)}
 					/>
 				) : (
 					sessions.map((session) => {

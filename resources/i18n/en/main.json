@@ -671,6 +671,12 @@
 		},
 		"cron": {
 			"description": "View, run, pause, and delete scheduled agent tasks.",
+			"history": {
+				"pageTitle": "Task history",
+				"pageDescription": "Previous scheduled task runs.",
+				"pageEmptyTitle": "No task history yet",
+				"pageEmptyDescription": "Scheduled task runs will appear here."
+			},
 			"columns": {
 				"id": "Id",
 				"message": "Message",

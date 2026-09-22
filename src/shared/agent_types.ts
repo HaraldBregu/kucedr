@@ -175,10 +175,13 @@ export interface AgentHistoryMessage {
 	usage?: AgentTokenUsage;
 }
 
+export type AgentSessionCategory = 'main' | 'bot' | 'health' | 'task' | 'subagent' | 'voice';
+
 export interface AgentSessionSummary {
 	id: string;
 	createdAtMs: number;
 	title: string;
+	category: AgentSessionCategory;
 	runStatus?: 'queued' | 'running' | 'cancelling';
 }
 

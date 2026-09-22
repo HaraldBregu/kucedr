@@ -413,6 +413,7 @@ export class Agent {
 				id: record.request.sessionId,
 				createdAtMs: stored?.createdAtMs ?? record.request.queuedAt,
 				title: stored?.title ?? record.request.message.slice(0, 80),
+				category,
 				runStatus: record.lifecycle.status,
 			});
 		}
