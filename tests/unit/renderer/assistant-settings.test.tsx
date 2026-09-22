@@ -356,7 +356,7 @@ it('keeps media permissions and search configuration on Tools without model sele
 		expect(await screen.findByRole('switch', { name: `${name} enabled` })).toBeEnabled();
 	}
 	expect(
-		screen.getByRole('link', { name: 'settings.permissions.toolsTitle' })
+		screen.getByRole('link', { name: /settings\.permissions\.toolsTitle/ })
 	).toHaveAttribute('href', '/settings/agent/permissions');
 	expect(window.agent.getToolModel).not.toHaveBeenCalled();
 
