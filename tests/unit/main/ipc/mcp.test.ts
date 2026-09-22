@@ -146,6 +146,7 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 );
 
 it('cancels a pending OAuth callback before retrying', async () => {
+	jest.clearAllMocks();
 	const mainFrame = {};
 	const sender = { id: 21, mainFrame };
 	jest
