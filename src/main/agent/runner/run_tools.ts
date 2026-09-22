@@ -1,8 +1,6 @@
 import type { Tool } from '../types';
 import { getToolConfiguration } from '../agent_store';
 import type { AgentToolProfileId } from '../../../shared/agent_tools';
-import { getToolConfiguration } from '../agent_store';
-import type { AgentToolProfileId } from '../../../shared/agent_tools';
 
 export function filterTools(
 	tools: Tool[],
@@ -19,16 +17,6 @@ export function filterDisabledTools(
 	settings: Readonly<Record<string, { enabled: boolean }>> | undefined
 ): Tool[] {
 	return tools.filter((tool) => settings?.[tool.id]?.enabled !== false);
-}
-
-export function filterProfileTools(tools: Tool[], profileId: AgentToolProfileId): Tool[] {
-	return tools.filter((tool) => {
-		const settings = getToolConfiguration(
-			profileId,
-			tool.policy ?? { kind: 'builtin', id: tool.id }
-		);
-		return settings.enabled && settings.permission !== 'deny';
-	});
 }
 
 export function filterProfileTools(tools: Tool[], profileId: AgentToolProfileId): Tool[] {
