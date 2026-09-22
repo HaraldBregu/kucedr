@@ -241,6 +241,25 @@ it('uses the Chat icon for the Agent Chat sidebar item', () => {
 	expect(chat.querySelector('.lucide-message-circle')).toBeInTheDocument();
 });
 
+it('uses the audio waveform icon for Voice conversation', () => {
+	const { container } = render(
+		<MemoryRouter initialEntries={['/settings/voice']}>
+			<Routes>
+				<Route path="/settings" element={<Layout />}>
+					<Route path="*" element={<p>Settings page</p>} />
+				</Route>
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
+	const voice = within(sidebar as HTMLElement).getByRole('link', {
+		name: 'settings.sidebar.voiceConversation',
+	});
+
+	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
+});
+
 it('places Channels directly after Health in the Assistant sidebar group', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/health']}>

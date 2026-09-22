@@ -1,4 +1,5 @@
 import {
+	AudioLines,
 	Brain,
 	Bot,
 	Layers,
@@ -13,7 +14,6 @@ import {
 	MessageCircle,
 	Plug,
 	PlugZap,
-	Radio,
 	RadioTower,
 	Server,
 	ShieldCheck,
@@ -372,7 +372,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.voice',
 		sidebarLabelKey: 'settings.sidebar.voiceConversation',
 		descriptionKey: 'settings.modelServices.realtimeConversationDescription',
-		icon: Radio,
+		icon: AudioLines,
 	},
 	{
 		path: '/settings/tasks',
