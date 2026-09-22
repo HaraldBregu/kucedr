@@ -125,6 +125,12 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).not.toBeInTheDocument();
 	expect(assistantGroup).not.toBeNull();
 	expect(generalGroup).not.toBeNull();
+	expect(SETTINGS_NAVIGATION).not.toContainEqual(
+		expect.objectContaining({ path: '/settings/agent/models' })
+	);
+	expect(
+		within(navigation).queryByRole('link', { name: 'settings.overview.groups.mlModels' })
+	).not.toBeInTheDocument();
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
 	).not.toBeInTheDocument();
