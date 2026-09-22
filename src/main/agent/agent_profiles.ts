@@ -14,6 +14,8 @@ import { userDataLocation } from '../shared/user_data_location';
 
 type AgentProfileStore = {
 	llm?: AgentMediaModelSettings;
+	tts?: AgentMediaModelSettings;
+	stt?: AgentMediaModelSettings;
 	textToText: AgentMediaModelSettings;
 	textToSpeech: AgentMediaModelSettings;
 	speechToText: AgentMediaModelSettings;
@@ -38,8 +40,8 @@ const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 const PROFILE_MODEL_KEYS: Record<AgentToolProfileId, readonly AgentProfileModelKey[]> = {
-	chat: ['textToText', 'textToSpeech', 'speechToText', 'image', 'audio', 'video'],
-	voice: AGENT_PROFILE_MODEL_KEYS,
+	chat: ['textToText', 'textToSpeech', 'speechToText'],
+	voice: ['textToSpeech', 'speechToText', 'realtimeVoice'],
 	tasks: ['textToText'],
 	health: ['textToText'],
 	channels: ['textToText', 'textToSpeech', 'speechToText'],
