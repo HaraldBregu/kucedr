@@ -325,7 +325,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						<SettingsRow
 							title={t('settings.modelServices.imageAssistantName')}
 							description={t('settings.modelServices.imageModelDescription')}
-							icon={ImageIcon}
+							media={<ImageIcon className="size-5 shrink-0 text-muted-foreground" />}
 							actions={
 								<ToolPermissionControl
 									name={t('settings.modelServices.imageAssistantName')}
@@ -341,7 +341,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						<SettingsRow
 							title={t('settings.modelServices.musicCreatorName')}
 							description={t('settings.modelServices.musicModelDescription')}
-							icon={Music2}
+							media={<Music2 className="size-5 shrink-0 text-muted-foreground" />}
 							actions={
 								<ToolPermissionControl
 									name={t('settings.modelServices.musicCreatorName')}
@@ -357,7 +357,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						<SettingsRow
 							title={t('settings.modelServices.videoCreatorName')}
 							description={t('settings.modelServices.videoModelDescription')}
-							icon={Video}
+							media={<Video className="size-5 shrink-0 text-muted-foreground" />}
 							actions={
 								<ToolPermissionControl
 									name={t('settings.modelServices.videoCreatorName')}

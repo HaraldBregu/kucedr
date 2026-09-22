@@ -386,6 +386,9 @@ it('keeps media permissions and search configuration on Tools without model sele
 		const permission = await screen.findByRole('button', { name: `${name}: Always Allow` });
 		await waitFor(() => expect(permission).toBeEnabled());
 	}
+	for (const selector of ['.lucide-image', '.lucide-music-2', '.lucide-video']) {
+		expect(document.querySelector(selector)).toHaveClass('size-5', 'text-muted-foreground');
+	}
 	expect(
 		screen.queryByRole('link', { name: /settings\.permissions\.toolsTitle/ })
 	).not.toBeInTheDocument();
