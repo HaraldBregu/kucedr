@@ -1,28 +1,20 @@
-import path from 'node:path';
-import Store from 'electron-store';
-import { userDataLocation } from '../../shared/user_data_location';
 import { DEFAULT_HEALTH_SETTINGS, type HealthSettings } from './health_types';
-import { getAgentProfileModel, setAgentProfileModel } from '../agent_profiles';
+import {
+	agentProfileStorePath,
+	getAgentProfileDocument,
+	getAgentProfileModel,
+	setAgentProfileDocument,
+	setAgentProfileModel,
+} from '../agent_profiles';
 
-const HEALTH_STORE_NAME = 'health';
-const settingsDirectory = path.resolve(userDataLocation(), 'settings');
-
-const healthStore = (): Store<HealthSettings> =>
-	new Store<HealthSettings>({
-		name: HEALTH_STORE_NAME,
-		cwd: settingsDirectory,
-		accessPropertiesByDotNotation: false,
-		defaults: DEFAULT_HEALTH_SETTINGS,
-	});
-
-export const healthStorePath = healthStore().path;
+export const healthStorePath = agentProfileStorePath('health');
 
 export function getHealthSettings(): HealthSettings {
-	const store = healthStore();
+	const stored = getAgentProfileDocument('health') as Partial<HealthSettings>;
 	const model = getAgentProfileModel('health', 'textToText');
 	return {
 		...DEFAULT_HEALTH_SETTINGS,
-		...store.store,
+		...stored,
 		providerId: model.providerId || undefined,
 		modelId: model.modelId || undefined,
 		modelOptions: model.options,
@@ -30,9 +22,8 @@ export function getHealthSettings(): HealthSettings {
 }
 
 export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSettings {
-	const store = healthStore();
 	const { providerId, modelId, modelOptions, ...schedule } = patch;
-	store.store = { ...store.store, ...schedule };
+	setAgentProfileDocument('health', { ...getAgentProfileDocument('health'), ...schedule });
 	if (providerId !== undefined || modelId !== undefined || modelOptions !== undefined) {
 		setAgentProfileModel('health', 'textToText', {
 			...getAgentProfileModel('health', 'textToText'),
@@ -45,7 +36,10 @@ export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSett
 }
 
 export function resetHealthSettings(): HealthSettings {
-	healthStore().store = DEFAULT_HEALTH_SETTINGS;
+	setAgentProfileDocument('health', {
+		...getAgentProfileDocument('health'),
+		...DEFAULT_HEALTH_SETTINGS,
+	});
 	setAgentProfileModel('health', 'textToText', {
 		providerId: '',
 		modelId: '',
