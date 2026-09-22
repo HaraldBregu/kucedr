@@ -46,6 +46,7 @@ import type {
 	WorkspaceChangeEvent,
 	WorkspaceTreeEntry,
 } from './agent_types';
+import type { AgentToolConfiguration, AgentToolProfile, AgentToolProfileId, AgentToolReference } from './agent_tools';
 import type { CatalogModel, ProviderModel } from './model_types';
 import type {
 	ChannelModelKind,
@@ -199,6 +200,12 @@ export interface AgentApi {
 		kind: import('./agent_types').AgentToolModelKind,
 		settings: import('./agent_types').AgentMediaModelSettings
 	) => Promise<import('./agent_types').AgentMediaModelSettings>;
+	getToolProfile: (profileId: AgentToolProfileId) => Promise<AgentToolProfile>;
+	setToolProfileTool: (
+		profileId: AgentToolProfileId,
+		tool: AgentToolReference,
+		settings: AgentToolConfiguration
+	) => Promise<AgentToolProfile>;
 	policyGet: () => Promise<PermissionsSchema>;
 	policySet: (permissions: PermissionsSchema) => Promise<PermissionsSchema>;
 	policyReset: () => Promise<PermissionsSchema>;

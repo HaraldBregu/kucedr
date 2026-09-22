@@ -18,6 +18,9 @@ import type {
 	AgentContextMode,
 	AgentMediaModelSettings,
 	AgentRunOptions,
+	AgentToolConfiguration,
+	AgentToolProfileId,
+	AgentToolReference,
 	AgentToolModelKind,
 	AgentToolPermissionDecision,
 	AgentToolPermissionScope,
@@ -50,9 +53,11 @@ import {
 	getModelOptions,
 	getProviderId,
 	getToolModel,
+	getToolProfile,
 	setModelId,
 	setModelOptions,
 	setProviderId,
+	setToolProfileTool,
 	setToolModel,
 } from '../agent/agent_store';
 import {
@@ -220,6 +225,36 @@ function toPermissions(value: unknown): PermissionsSchema {
 		exec: toPermissionRules(value.exec),
 		...(tools ? { tools } : {}),
 	};
+}
+
+function toToolProfileId(value: unknown): AgentToolProfileId {
+	if (value === 'chat' || value === 'voice' || value === 'tasks' || value === 'health' || value === 'channels')
+		return value;
+	throw new Error('Invalid tool profile.');
+}
+
+function toToolReference(value: unknown): AgentToolReference {
+	if (!isRecord(value) || (value.kind !== 'builtin' && value.kind !== 'mcp'))
+		throw new Error('Invalid tool reference.');
+	if (value.kind === 'builtin') {
+		const id = optionalTrimmedString(value.id);
+		if (!id) throw new Error('Invalid built-in tool.');
+		return { kind: 'builtin', id };
+	}
+	const serverId = optionalTrimmedString(value.serverId);
+	const toolName = optionalTrimmedString(value.toolName);
+	if (!serverId || !toolName) throw new Error('Invalid MCP tool.');
+	return { kind: 'mcp', serverId, toolName };
+}
+
+function toToolConfiguration(value: unknown): AgentToolConfiguration {
+	if (
+		!isRecord(value) ||
+		typeof value.enabled !== 'boolean' ||
+		(value.permission !== 'ask' && value.permission !== 'allow' && value.permission !== 'deny')
+	)
+		throw new Error('Invalid tool configuration.');
+	return { enabled: value.enabled, permission: value.permission };
 }
 
 function isModelReasoningEffort(value: unknown): value is ModelReasoningEffort {
@@ -791,6 +826,29 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					return getToolModel(toolKind);
 				},
 				AgentChannels.setToolModel
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.getToolProfile,
+			wrapAgentHandler(
+				mainAccess,
+				(profileId: unknown) => getToolProfile(toToolProfileId(profileId)),
+				AgentChannels.getToolProfile
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.setToolProfileTool,
+			wrapAgentHandler(
+				mainAccess,
+				(profileId: unknown, tool: unknown, settings: unknown) =>
+					setToolProfileTool(
+						toToolProfileId(profileId),
+						toToolReference(tool),
+						toToolConfiguration(settings)
+					),
+				AgentChannels.setToolProfileTool
 			)
 		);
 

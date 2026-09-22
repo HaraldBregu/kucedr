@@ -36,6 +36,8 @@ export const AgentChannels = {
 	setModelOptions: 'agent:set-model-options',
 	getToolModel: 'agent:tool-model:get',
 	setToolModel: 'agent:tool-model:set',
+	getToolProfile: 'agent:tool-profile:get',
+	setToolProfileTool: 'agent:tool-profile:tool:set',
 	policyGet: 'agent:policy:get',
 	policySet: 'agent:policy:set',
 	policyReset: 'agent:policy:reset',

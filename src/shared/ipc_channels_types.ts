@@ -234,6 +234,18 @@ export interface AgentInvokeChannelMap {
 		];
 		result: import('./agent_types').AgentMediaModelSettings;
 	};
+	[AgentChannels.getToolProfile]: {
+		args: [profileId: import('./agent_tools').AgentToolProfileId];
+		result: import('./agent_tools').AgentToolProfile;
+	};
+	[AgentChannels.setToolProfileTool]: {
+		args: [
+			profileId: import('./agent_tools').AgentToolProfileId,
+			tool: import('./agent_tools').AgentToolReference,
+			settings: import('./agent_tools').AgentToolConfiguration,
+		];
+		result: import('./agent_tools').AgentToolProfile;
+	};
 	[AgentChannels.policyGet]: {
 		args: [];
 		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;

@@ -1,6 +1,7 @@
 import type { z } from 'zod';
 import type { LlmEvent } from '../models/adapters/llm';
 import type { SkillDiagnostic, SkillTrust } from '../../shared/skills_types';
+import type { AgentToolReference, AgentToolProfileId } from '../../shared/agent_tools';
 
 export interface Config {
 	location: string;
@@ -44,7 +45,8 @@ export interface Tool {
 		| import('./execution/capability').ToolCapability
 		| ((
 				input: Record<string, unknown>
-		  ) => import('./execution/capability').ToolCapability | undefined);
+		) => import('./execution/capability').ToolCapability | undefined);
+	readonly policy?: AgentToolReference;
 	parseInput(input: unknown): Record<string, unknown>;
 	run(input: Record<string, unknown>, signal?: AbortSignal): Promise<unknown> | unknown;
 }
@@ -132,6 +134,7 @@ type RuntimeInputBase = Pick<
 	agentId: string;
 	contextMode: 'minimal' | 'workspace';
 	interactionMode: import('../../shared/agent_types').AgentInteractionMode;
+	toolProfile: AgentToolProfileId;
 	toolsDeny?: string[];
 	approvalWindowId?: number;
 	explicitSkill?: string;

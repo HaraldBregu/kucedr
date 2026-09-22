@@ -6,6 +6,13 @@ import type {
 	AgentToolModelKind,
 	AgentVoiceModelKind,
 } from '../../shared/agent_types';
+import {
+	AGENT_TOOL_PROFILE_IDS,
+	type AgentToolConfiguration,
+	type AgentToolProfile,
+	type AgentToolProfileId,
+	type AgentToolReference,
+} from '../../shared/agent_tools';
 import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
 import { normalizePermissionsSchema } from './permissions/normalize_permissions_schema';
@@ -39,6 +46,7 @@ type AgentStoreSchema = {
 		realtimeVoice: AgentMediaModelSettings;
 	};
 	tools: AgentToolsStore;
+	toolProfiles: Record<AgentToolProfileId, AgentToolProfile>;
 	permissions: PermissionsSchema;
 };
 
@@ -142,6 +150,17 @@ const RUNTIME_TOOL_KEYS = {
 const DEFAULT_RUNTIME_TOOL_SETTINGS: Record<string, ToolSettings> = Object.fromEntries(
 	Object.values(RUNTIME_TOOL_KEYS).map((key) => [key, { enabled: true, permission: 'allow' }])
 );
+const DEFAULT_TOOL_CONFIGURATION: AgentToolConfiguration = { enabled: true, permission: 'allow' };
+const defaultToolProfile = (): AgentToolProfile => ({
+	tools: Object.fromEntries(
+		Object.keys(RUNTIME_TOOL_KEYS).map((toolId) => [toolId, { ...DEFAULT_TOOL_CONFIGURATION }])
+	),
+	mcp: {},
+});
+const defaultToolProfiles = (): Record<AgentToolProfileId, AgentToolProfile> =>
+	Object.fromEntries(
+		AGENT_TOOL_PROFILE_IDS.map((profileId) => [profileId, defaultToolProfile()])
+	) as Record<AgentToolProfileId, AgentToolProfile>;
 const TOOL_MODEL_KEYS: Record<AgentToolModelKind, string> = {
 	image: 'create_image',
 	audio: 'create_sound',
@@ -171,6 +190,7 @@ const DEFAULT_AGENT_STORE: AgentStoreSchema = {
 		create_sound: mediaToolSettings(EMPTY_MEDIA_MODEL),
 		create_video: mediaToolSettings(EMPTY_MEDIA_MODEL),
 	},
+	toolProfiles: defaultToolProfiles(),
 	permissions: DEFAULT_AGENT_PERMISSIONS,
 };
 
@@ -189,6 +209,37 @@ const isToolSettings = (value: unknown): value is ToolSettings =>
 	typeof value === 'object' &&
 	typeof (value as ToolSettings).enabled === 'boolean' &&
 	(['ask', 'allow', 'deny'] as const).includes((value as ToolSettings).permission);
+const normalizeToolProfile = (value: unknown, fallback: AgentToolProfile): AgentToolProfile => {
+	if (!value || typeof value !== 'object') return structuredClone(fallback);
+	const profile = value as Partial<AgentToolProfile>;
+	const tools = Object.fromEntries(
+		Object.keys(RUNTIME_TOOL_KEYS).map((toolId) => [
+			toolId,
+			isToolSettings(profile.tools?.[toolId])
+				? { ...profile.tools[toolId] }
+				: { ...fallback.tools[toolId] },
+		])
+	);
+	const mcp = Object.fromEntries(
+		Object.entries(profile.mcp ?? {}).flatMap(([serverId, serverTools]) => {
+			if (!serverTools || typeof serverTools !== 'object') return [];
+			const entries = Object.entries(serverTools).filter(([, settings]) => isToolSettings(settings));
+			return entries.length > 0 ? [[serverId, Object.fromEntries(entries)]] : [];
+		})
+	);
+	return { tools, mcp };
+};
+const legacyToolProfile = (): AgentToolProfile => {
+	const profile = defaultToolProfile();
+	for (const [toolId, key] of Object.entries(RUNTIME_TOOL_KEYS)) {
+		const settings = persisted.tools?.[key];
+		if (isToolSettings(settings)) profile.tools[toolId] = { ...settings };
+		else if (legacyToolPermissions?.[toolId]) {
+			profile.tools[toolId] = { enabled: true, permission: legacyToolPermissions[toolId] };
+		}
+	}
+	return profile;
+};
 const chatbotTextToText =
 	persisted.chatbot?.textToText?.providerId || persisted.chatbot?.textToText?.modelId
 		? persisted.chatbot.textToText
@@ -264,6 +315,12 @@ store.store = {
 				])
 		),
 	},
+	toolProfiles: Object.fromEntries(
+		AGENT_TOOL_PROFILE_IDS.map((profileId) => {
+			const fallback = legacyToolProfile();
+			return [profileId, normalizeToolProfile(persisted.toolProfiles?.[profileId], fallback)];
+		})
+	) as Record<AgentToolProfileId, AgentToolProfile>,
 	permissions: persistedPermissions,
 };
 
@@ -337,6 +394,40 @@ export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModel
 	const key = TOOL_MODEL_KEYS[kind];
 	const current = store.get('tools')[key] as ToolSettings;
 	store.set('tools', { ...store.get('tools'), [key]: { ...current, ...settings } });
+}
+
+export function getToolProfile(profileId: AgentToolProfileId): AgentToolProfile {
+	return structuredClone(store.get('toolProfiles')[profileId]);
+}
+
+export function setToolProfileTool(
+	profileId: AgentToolProfileId,
+	tool: AgentToolReference,
+	settings: AgentToolConfiguration
+): AgentToolProfile {
+	const profiles = store.get('toolProfiles');
+	const profile = structuredClone(profiles[profileId]);
+	if (tool.kind === 'builtin') {
+		if (!(tool.id in RUNTIME_TOOL_KEYS)) throw new Error('Unknown built-in tool.');
+		profile.tools[tool.id] = { ...settings };
+	} else {
+		const serverId = tool.serverId.trim();
+		const toolName = tool.toolName.trim();
+		if (!serverId || !toolName) throw new Error('Invalid MCP tool.');
+		profile.mcp[serverId] = { ...profile.mcp[serverId], [toolName]: { ...settings } };
+	}
+	store.set('toolProfiles', { ...profiles, [profileId]: profile });
+	return getToolProfile(profileId);
+}
+
+export function getToolConfiguration(
+	profileId: AgentToolProfileId,
+	tool: AgentToolReference
+): AgentToolConfiguration {
+	const profile = store.get('toolProfiles')[profileId];
+	return tool.kind === 'builtin'
+		? (profile.tools[tool.id] ?? DEFAULT_TOOL_CONFIGURATION)
+		: (profile.mcp[tool.serverId]?.[tool.toolName] ?? DEFAULT_TOOL_CONFIGURATION);
 }
 
 export function getPermissions(): PermissionsSchema {

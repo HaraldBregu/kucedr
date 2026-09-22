@@ -22,6 +22,7 @@ export function mcpTool(
 		id: runtimeName,
 		name: toolName.charAt(0).toUpperCase() + toolName.slice(1).replaceAll('_', ' '),
 		description,
+		policy: { kind: 'mcp', serverId, toolName },
 		capability: {
 			effects: readOnly ? ['read'] : ['external'],
 			approval: approval === 'always' || (approval !== 'never' && !readOnly),

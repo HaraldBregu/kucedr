@@ -286,6 +286,12 @@ export const agent: AgentApi = {
 	setToolModel: (kind, settings) => {
 		return typedInvokeUnwrap(AgentChannels.setToolModel, kind, settings);
 	},
+	getToolProfile: (profileId) => {
+		return typedInvokeUnwrap(AgentChannels.getToolProfile, profileId);
+	},
+	setToolProfileTool: (profileId, tool, settings) => {
+		return typedInvokeUnwrap(AgentChannels.setToolProfileTool, profileId, tool, settings);
+	},
 	policyGet: (): Promise<PermissionsSchema> => {
 		return typedInvokeUnwrap(AgentChannels.policyGet);
 	},

@@ -1,4 +1,6 @@
-export type PermissionMode = 'allow' | 'deny' | 'ask';
+import type { AgentToolConfiguration, AgentToolPermission } from '../../../shared/agent_tools';
+
+export type PermissionMode = AgentToolPermission;
 
 export type PermissionBucket = 'allow' | 'deny';
 export type PermissionKind = 'read' | 'write' | 'exec';
@@ -8,10 +10,7 @@ export interface PermissionRules {
 	deny: string[];
 }
 
-export interface ToolConfiguration {
-	enabled: boolean;
-	permission: PermissionMode;
-}
+export type ToolConfiguration = AgentToolConfiguration;
 
 export interface PermissionsSchema {
 	read: PermissionRules;
