@@ -2,6 +2,18 @@ export const AGENT_TOOL_PROFILE_IDS = ['chat', 'voice', 'tasks', 'health', 'chan
 
 export type AgentToolProfileId = (typeof AGENT_TOOL_PROFILE_IDS)[number];
 
+export const AGENT_PROFILE_MODEL_KEYS = [
+	'textToText',
+	'textToSpeech',
+	'speechToText',
+	'realtimeVoice',
+	'image',
+	'audio',
+	'video',
+] as const;
+
+export type AgentProfileModelKey = (typeof AGENT_PROFILE_MODEL_KEYS)[number];
+
 export type AgentToolPermission = 'ask' | 'allow' | 'deny';
 
 export interface AgentToolConfiguration {
