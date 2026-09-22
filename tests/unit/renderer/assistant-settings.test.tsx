@@ -1,6 +1,4 @@
-import MusicPage from '../../../src/renderer/src/pages/settings/pages/music/Page';
-import VideoPage from '../../../src/renderer/src/pages/settings/pages/video/Page';
-import ImagePage from '../../../src/renderer/src/pages/settings/pages/image/Page';
+import ModelsPage from '../../../src/renderer/src/pages/settings/pages/assistant/models';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -600,29 +598,30 @@ it('announces a realtime conversation setup save error', async () => {
 	expect(await screen.findByRole('alert')).toHaveTextContent('Realtime setup could not be saved.');
 });
 
-it.each([
-	['music', 'audio', 'Eleven Music', MusicPage],
-	['video', 'video', 'Veo', VideoPage],
-	['image', 'image', 'Gemini Image', ImagePage],
-] as const)(
-	'loads the saved %s configuration on its dedicated page',
-	async (name, kind, model, Page) => {
-		render(
-			<MemoryRouter>
-				<Page />
-			</MemoryRouter>
-		);
-		expect(screen.getByRole('heading', { name: `settings.tabs.${name}` })).toBeInTheDocument();
+it('loads every saved media model configuration on the Models page', async () => {
+	render(
+		<MemoryRouter>
+			<ModelsPage />
+		</MemoryRouter>
+	);
+
+	expect(
+		screen.getByRole('heading', { name: 'settings.overview.groups.mlModels' })
+	).toBeInTheDocument();
+	for (const [name, model] of [
+		['music', 'Eleven Music'],
+		['image', 'Gemini Image'],
+		['video', 'Veo'],
+	] as const) {
 		await waitFor(() =>
 			expect(screen.getByRole('combobox', { name: `settings.tabs.${name}` })).toHaveTextContent(
 				model
 			)
 		);
-		expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
-		expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
-		expect(window.agent.getToolModel).toHaveBeenCalledWith(kind);
-		expect(window.agent.getToolModel).not.toHaveBeenCalledWith(
-			kind === 'audio' ? 'image' : 'audio'
-		);
 	}
-);
+	expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
+	expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
+	expect(window.agent.getToolModel).toHaveBeenCalledWith('audio');
+	expect(window.agent.getToolModel).toHaveBeenCalledWith('image');
+	expect(window.agent.getToolModel).toHaveBeenCalledWith('video');
+});
