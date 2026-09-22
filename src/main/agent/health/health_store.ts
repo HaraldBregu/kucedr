@@ -16,7 +16,7 @@ const store = new Store<HealthSettings>({
 export const healthStorePath = store.path;
 
 export function getHealthSettings(): HealthSettings {
-	return store.store;
+	return { ...DEFAULT_HEALTH_SETTINGS, ...store.store, modelOptions: store.store.modelOptions ?? {} };
 }
 
 export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSettings {

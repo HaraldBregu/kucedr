@@ -19,6 +19,8 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { ModelOptions } from '@/components/model-options';
+import { updateModelOptions } from '@/lib/options';
 import { providerIdsFor, providerModels, providers } from '@/lib/providers';
 import type { ProviderModelGroup } from '@pages/start/setupTypes';
 import {
@@ -109,10 +111,20 @@ const HealthPage: React.FC = () => {
 	};
 
 	const modelGroups = llmModelGroups();
+	const selectedModel = modelGroups
+		.find((group) => group.provider.id === settings?.providerId)
+		?.models.find((model) => model.id === settings?.modelId);
+	const inputs =
+		selectedModel?.metadata?.documentationStatus === 'verified'
+			? selectedModel.metadata.inputs
+			: {};
 	const targetOptions =
 		settings && settings.target !== 'none' && settings.target !== 'last'
 			? (['none', 'last', settings.target] as const)
 			: (['none', 'last'] as const);
+	const updateModelOption = (path: readonly string[], value: unknown): void => {
+		updateAndSave({ modelOptions: updateModelOptions(settings?.modelOptions ?? {}, path, value) });
+	};
 
 	return (
 		<SettingsPageShell>
@@ -158,9 +170,11 @@ const HealthPage: React.FC = () => {
 								showSelectedModel
 								buttonDropdown
 								showContentSeparator={false}
-								onChange={(providerId, modelId) => updateAndSave({ providerId, modelId })}
+								onChange={(providerId, modelId) =>
+									updateAndSave({ providerId, modelId, modelOptions: {} })
+								}
 							>
-								<div className="-mx-4 -mb-4">
+								<div className="-mx-4">
 							<SettingsRow
 								title={t('settings.health.fields.every')}
 								actions={
@@ -341,6 +355,15 @@ const HealthPage: React.FC = () => {
 									</Popover>
 								}
 							/>
+								</div>
+								<ModelOptions
+									key={`${settings.providerId}:${settings.modelId}`}
+									inputs={inputs}
+									values={settings.modelOptions ?? {}}
+									inlineAdvanced
+									onChange={updateModelOption}
+								/>
+							</ModelProviderConfiguration>
 						</SettingsPanel>
 					</SettingsSection>
 
