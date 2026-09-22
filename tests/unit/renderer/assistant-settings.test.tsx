@@ -355,6 +355,9 @@ it('keeps media permissions and search configuration on Tools without model sele
 		expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
 		expect(await screen.findByRole('switch', { name: `${name} enabled` })).toBeEnabled();
 	}
+	expect(
+		screen.getByRole('link', { name: 'settings.permissions.toolsTitle' })
+	).toHaveAttribute('href', '/settings/agent/permissions');
 	expect(window.agent.getToolModel).not.toHaveBeenCalled();
 
 	const searchTrigger = (await screen.findAllByRole('button', { name: /Search web/ })).find(
