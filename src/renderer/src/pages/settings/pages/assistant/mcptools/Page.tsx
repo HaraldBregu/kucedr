@@ -8,11 +8,7 @@ import type {
 } from '../../../../../../../shared/agent_tools';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-	SettingsNotice,
-	SettingsPageHeader,
-	SettingsPageShell,
-} from '../../../components';
+import { SettingsNotice, SettingsPageHeader, SettingsPageShell } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 import McpTools from '../tools/Mcp';
 

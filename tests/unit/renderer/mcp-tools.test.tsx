@@ -21,13 +21,30 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	registry.mockResolvedValue({
 		servers: [
-			{ id: 'mail', source: 'configured', data: { type: 'http', url: 'https://mail.example', name: 'Mail' } },
-			{ id: 'calendar', source: 'configured', data: { type: 'http', url: 'https://calendar.example', name: 'Calendar' } },
-			{ id: 'disabled', source: 'configured', data: { type: 'http', url: 'https://disabled.example', name: 'Disabled', enabled: false } },
+			{
+				id: 'mail',
+				source: 'configured',
+				data: { type: 'http', url: 'https://mail.example', name: 'Mail' },
+			},
+			{
+				id: 'calendar',
+				source: 'configured',
+				data: { type: 'http', url: 'https://calendar.example', name: 'Calendar' },
+			},
+			{
+				id: 'disabled',
+				source: 'configured',
+				data: { type: 'http', url: 'https://disabled.example', name: 'Disabled', enabled: false },
+			},
 		],
 		diagnostics: [],
 	});
-	inspect.mockResolvedValue({ ok: true, tools: ['read_mail', 'send_mail'], toolCount: 2, durationMs: 1 });
+	inspect.mockResolvedValue({
+		ok: true,
+		tools: ['read_mail', 'send_mail'],
+		toolCount: 2,
+		durationMs: 1,
+	});
 	Object.defineProperty(window, 'mcp', { configurable: true, value: { registry, test: inspect } });
 });
 
