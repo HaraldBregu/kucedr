@@ -53,6 +53,10 @@ export default function VoicePage(): React.JSX.Element {
 					/>
 				</Link>
 				<Link to="/settings/voice/history" className="block hover:bg-muted/40">
+			</SettingsPanel>
+
+			<SettingsPanel>
+				<Link to="/settings/voice/history" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.modelServices.voiceHistoryTitle')}
 						description={t('settings.modelServices.voiceHistoryDescription')}

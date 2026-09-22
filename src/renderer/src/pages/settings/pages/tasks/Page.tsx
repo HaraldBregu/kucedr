@@ -322,6 +322,10 @@ const TasksPage: React.FC = () => {
 					/>
 				</Link>
 				<Link to="/settings/agent/tasks/history" className="block hover:bg-muted/40">
+			</SettingsPanel>
+
+			<SettingsPanel>
+				<Link to="/settings/agent/tasks/history" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.cron.history.pageTitle')}
 						description={t('settings.cron.history.pageDescription')}
