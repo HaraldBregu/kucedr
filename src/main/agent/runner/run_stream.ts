@@ -527,7 +527,8 @@ async function* loop(
 								latencyMs?: unknown;
 							};
 							if (Array.isArray(parsed.selectedServiceIds)) {
-								for (const id of parsed.selectedServiceIds) if (typeof id === 'string') serviceIds.add(id);
+								for (const id of parsed.selectedServiceIds)
+									if (typeof id === 'string') serviceIds.add(id);
 							}
 							if (typeof parsed.latencyMs === 'number') discoveryLatencyMs = parsed.latencyMs;
 							return Array.isArray(parsed.selectedToolIds)
@@ -538,10 +539,10 @@ async function* loop(
 						}
 					})
 				);
-					yield {
-						type: 'capability_resolution_result',
-						serviceIds: [...serviceIds],
-						...(discoveryLatencyMs === undefined ? {} : { latencyMs: discoveryLatencyMs }),
+				yield {
+					type: 'capability_resolution_result',
+					serviceIds: [...serviceIds],
+					...(discoveryLatencyMs === undefined ? {} : { latencyMs: discoveryLatencyMs }),
 					tools: (discovery?.active() ?? tools)
 						.filter((tool) => selectedIds.has(tool.id))
 						.map((tool) => ({ id: tool.id, name: tool.name })),
