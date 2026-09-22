@@ -31,16 +31,16 @@ const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['tasks', 'health', 'chan
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 
-	const stores = Object.fromEntries(
+const stores = Object.fromEntries(
 	AGENT_TOOL_PROFILE_IDS.filter((profileId) => !SHARED_PROFILE_IDS.has(profileId)).map(
 		(profileId) => [
-		profileId,
-		new Store<Partial<AgentProfileStore>>({
-			name: profileStoreName(profileId),
-			cwd: settingsDirectory,
-			accessPropertiesByDotNotation: false,
-		}),
-	]
+			profileId,
+			new Store<Partial<AgentProfileStore>>({
+				name: profileStoreName(profileId),
+				cwd: settingsDirectory,
+				accessPropertiesByDotNotation: false,
+			}),
+		]
 	)
 ) as Partial<Record<AgentToolProfileId, Store<Partial<AgentProfileStore>>>>;
 
@@ -98,12 +98,19 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 	const existing = profileStore(profileId).store;
 	const legacyKeys =
 		profileId === 'channels'
-			? ['llmProviderId', 'llmModelId', 'sttProviderId', 'sttModelId', 'ttsProviderId', 'ttsModelId']
+			? [
+					'llmProviderId',
+					'llmModelId',
+					'sttProviderId',
+					'sttModelId',
+					'ttsProviderId',
+					'ttsModelId',
+				]
 			: ['providerId', 'modelId', 'modelOptions'];
 	const preserved = SHARED_PROFILE_IDS.has(profileId)
 		? Object.fromEntries(
-				Object.entries(existing).filter(([key]) =>
-					![...legacyKeys, 'schemaVersion', 'migrations'].includes(key)
+				Object.entries(existing).filter(
+					([key]) => ![...legacyKeys, 'schemaVersion', 'migrations'].includes(key)
 				)
 			)
 		: {};

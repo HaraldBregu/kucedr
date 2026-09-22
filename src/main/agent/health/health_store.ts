@@ -2,10 +2,7 @@ import path from 'node:path';
 import Store from 'electron-store';
 import { userDataLocation } from '../../shared/user_data_location';
 import { DEFAULT_HEALTH_SETTINGS, type HealthSettings } from './health_types';
-import {
-	getAgentProfileModel,
-	setAgentProfileModel,
-} from '../agent_profiles';
+import { getAgentProfileModel, setAgentProfileModel } from '../agent_profiles';
 
 const HEALTH_STORE_NAME = 'health';
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');

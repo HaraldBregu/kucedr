@@ -5,10 +5,7 @@ import { userDataLocation } from '../shared/user_data_location';
 import { safeStorage } from 'electron';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
-import {
-	getAgentProfileModel,
-	setAgentProfileModel,
-} from '../agent/agent_profiles';
+import { getAgentProfileModel, setAgentProfileModel } from '../agent/agent_profiles';
 
 type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & {
 	readonly apiKey?: string;
