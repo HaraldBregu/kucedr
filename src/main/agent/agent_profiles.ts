@@ -24,6 +24,7 @@ type AgentProfileStore = {
 	image: AgentMediaModelSettings;
 	audio: AgentMediaModelSettings;
 	video: AgentMediaModelSettings;
+	permissions?: unknown;
 	tools: Record<string, AgentToolConfiguration>;
 	mcpTools: Record<string, Record<string, AgentToolConfiguration>>;
 };
@@ -158,6 +159,14 @@ for (const profileId of AGENT_TOOL_PROFILE_IDS) write(profileId, read(profileId)
 
 export function getAgentProfileDocument(profileId: AgentToolProfileId): Record<string, unknown> {
 	return structuredClone(profileStore(profileId).store);
+}
+
+export function getAgentProfilePermissions(profileId: AgentToolProfileId): unknown {
+	return structuredClone(profileStore(profileId).get('permissions'));
+}
+
+export function setAgentProfilePermissions(profileId: AgentToolProfileId, permissions: unknown): void {
+	profileStore(profileId).set('permissions', structuredClone(permissions));
 }
 
 export function setAgentProfileDocument(
