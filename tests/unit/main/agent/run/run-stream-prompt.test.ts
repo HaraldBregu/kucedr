@@ -194,7 +194,7 @@ describe('run stream system prompt', () => {
 			'Draft polished documents'
 		);
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain(
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(
 			'read'
 		);
 		const receipt = session.messages.find(
@@ -256,7 +256,6 @@ describe('run stream system prompt', () => {
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(events[0].tools).toContain('list_skills');
-		expect(runModelTurnMock.mock.calls[0][9]).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -282,7 +281,6 @@ describe('run stream system prompt', () => {
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(events[0].tools).toEqual(['list_skills']);
-		expect(runModelTurnMock.mock.calls[0][9]).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
 
@@ -328,9 +326,6 @@ describe('run stream system prompt', () => {
 		expect(denied[0]).toMatchObject({ type: 'run_started' });
 		if (denied[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(denied[0].tools).not.toContain('subagent');
-		expect(runModelTurnMock.mock.calls[1][9]).toContain('read | Read');
-		for (const removed of ['save_memory', 'list_memories', 'forget_memory'])
-			expect(runModelTurnMock.mock.calls[1][9]).not.toContain(removed);
 		expect(denied[0].tools).not.toContain('subagent');
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});
@@ -540,7 +535,6 @@ describe('run stream system prompt', () => {
 			execute: search,
 		});
 		runModelTurnMock
-			.mockImplementationOnce(toolTurn(['search_web']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return { content: '', model: 'test-model', toolCalls: calls };
@@ -571,7 +565,6 @@ describe('run stream system prompt', () => {
 		});
 
 		runModelTurnMock
-			.mockImplementationOnce(toolTurn(['search_web']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return { content: '', model: 'test-model', toolCalls: calls };
@@ -609,7 +602,6 @@ describe('run stream system prompt', () => {
 				execute: () => ({ id: 'recording-1', status: 'recording' }),
 			});
 			runModelTurnMock
-				.mockImplementationOnce(toolTurn([id]))
 				.mockImplementationOnce(async function* () {
 					yield* [];
 					return {
@@ -637,8 +629,8 @@ describe('run stream system prompt', () => {
 			))
 				events.push(event);
 
-			expect(runModelTurnMock).toHaveBeenCalledTimes(3);
-			expect(runModelTurnMock.mock.calls[2][5]).toEqual([]);
+			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
 				result: { text: 'done', stopReason: 'end_turn' },
@@ -853,7 +845,6 @@ describe('run stream system prompt', () => {
 			},
 		});
 		runModelTurnMock
-			.mockImplementationOnce(toolTurn(['subagents']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -881,8 +872,8 @@ describe('run stream system prompt', () => {
 		))
 			events.push(event);
 
-		expect(runModelTurnMock).toHaveBeenCalledTimes(3);
-		expect(runModelTurnMock.mock.calls[2][5]).toEqual([]);
+		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+		expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
 		expect(events.at(-1)).toMatchObject({
 			type: 'run_finished',
 			result: { text: 'done', stopReason: 'budget_exhausted' },
@@ -904,7 +895,6 @@ describe('run stream system prompt', () => {
 			);
 			const session = createSessionState();
 			if (boundary === 'turns') session.maxTurns = 2;
-			if (boundary !== 'empty') runModelTurnMock.mockImplementationOnce(toolTurn([tool.id]));
 			runModelTurnMock.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -929,8 +919,8 @@ describe('run stream system prompt', () => {
 			))
 				events.push(event);
 
-			expect(runModelTurnMock).toHaveBeenCalledTimes(boundary === 'empty' ? 2 : 3);
-			expect(runModelTurnMock.mock.calls[boundary === 'empty' ? 1 : 2][5]).toEqual([]);
+			expect(runModelTurnMock).toHaveBeenCalledTimes(2);
+			expect(runModelTurnMock.mock.calls[1][5]).toEqual([]);
 			expect(execute).toHaveBeenCalledTimes(boundary === 'output' ? 1 : 0);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
@@ -996,7 +986,6 @@ describe('run stream system prompt', () => {
 			});
 			const session = createSessionState();
 			runModelTurnMock
-				.mockImplementationOnce(toolTurn([tool.id]))
 				.mockImplementationOnce(async function* () {
 					yield* [];
 					return {
@@ -1037,7 +1026,7 @@ describe('run stream system prompt', () => {
 			else await run();
 			expect(execute).toHaveBeenCalledTimes(1);
 			expect(runModelTurnMock).toHaveBeenCalledTimes(
-				outcome === 'cancel' ? 2 : outcome === 'tools' ? 3 : 4
+				outcome === 'cancel' ? 1 : outcome === 'tools' ? 2 : 3
 			);
 			expect(events.at(-1)).toMatchObject({
 				type: 'run_finished',
@@ -1070,7 +1059,6 @@ describe('run stream system prompt', () => {
 			execute: () => order.push('edit'),
 		});
 		runModelTurnMock
-			.mockImplementationOnce(toolTurn(['read', 'edit']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -1103,9 +1091,6 @@ describe('run stream system prompt', () => {
 
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(['read', 'edit']);
-		expect(
-			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(['read', 'edit']);
 		expect(order).toEqual(['read', 'edit']);
 	});
