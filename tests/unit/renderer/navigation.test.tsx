@@ -220,6 +220,37 @@ it('places Channels directly after Health in the Assistant sidebar group', () =>
 	expect(links.indexOf(channels)).toBe(links.indexOf(health) + 1);
 });
 
+it('places Providers directly after Cloud without provider subpages in the sidebar', () => {
+	render(
+		<MemoryRouter initialEntries={['/settings/providers']}>
+			<Routes>
+				<Route path="/settings" element={<Layout />}>
+					<Route path="*" element={<SettingsPageHeader title="Settings page" />} />
+				</Route>
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
+	const cloud = within(navigation).getByRole('link', { name: 'settings.tabs.cloud' });
+	const group = cloud.closest('[data-slot="split-pane-group"]');
+	const links = within(group as HTMLElement).getAllByRole('link');
+	const providers = within(group as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.providers',
+	});
+
+	expect(providers).toHaveAttribute('href', '/settings/providers');
+	expect(links.indexOf(providers)).toBe(links.indexOf(cloud) + 1);
+	for (const path of [
+		'/settings/providers/models',
+		'/settings/providers/search',
+		'/settings/providers/database',
+		'/settings/providers/storage',
+	]) {
+		expect(links.some((link) => link.getAttribute('href') === path)).toBe(false);
+	}
+});
+
 it('marks Models active inside its sidebar group', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/agent/models']}>
