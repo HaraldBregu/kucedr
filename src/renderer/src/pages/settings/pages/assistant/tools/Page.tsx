@@ -62,14 +62,6 @@ type AgentToolGroup = {
 
 type ToolPermission = AgentToolConfiguration['permission'];
 
-const PROFILE_LABEL_KEYS: Record<AgentToolProfileId, string> = {
-	chat: 'settings.modelServices.chatName',
-	voice: 'settings.tabs.voice',
-	tasks: 'settings.tabs.taskScheduler',
-	health: 'settings.tabs.health',
-	channels: 'settings.tabs.channels',
-};
-
 const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 	{
 		titleKey: 'coordination',
@@ -363,7 +355,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={`${t(PROFILE_LABEL_KEYS[profile])} ${t('settings.modelServices.tools')}`}
+				title={t('settings.modelServices.tools')}
 				description={t('settings.modelServices.toolsDescription')}
 			/>
 			<div className="relative">
