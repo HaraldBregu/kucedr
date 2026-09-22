@@ -926,11 +926,9 @@ describe('run stream system prompt', () => {
 				type: 'run_finished',
 				result: {
 					text: 'done',
-					subtype: boundary === 'turns' ? 'error_max_turns' : 'success',
+					subtype: 'success',
 					stopReason:
-						boundary === 'turns'
-							? 'max_iterations'
-							: ['calls', 'output'].includes(boundary)
+					['calls', 'output'].includes(boundary)
 								? 'budget_exhausted'
 								: 'end_turn',
 				},
@@ -1178,7 +1176,7 @@ describe('run stream system prompt', () => {
 					(event.type === 'tool_call_start' || event.type === 'tool_call_end') &&
 					(event.toolName === 'bash' || event.toolName === 'write')
 			)
-		).toHaveLength(4);
+		).toHaveLength(8);
 		expect(JSON.stringify(events)).not.toContain("unknown tool 'bash'");
 		expect(JSON.stringify(events)).not.toContain("unknown tool 'write'");
 	});
