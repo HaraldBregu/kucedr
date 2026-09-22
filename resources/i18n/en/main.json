@@ -150,19 +150,17 @@
 			"both": "Facts and summaries"
 		},
 		"title": "Settings",
+		"returnToChat": "Return to Home",
+		"description": "Configure your application preferences",
+		"search": "Search",
+		"searchLabel": "Search settings",
 		"sidebar": {
 			"account": "Settings",
 			"assistant": "Assistant",
 			"getHelp": "Get help",
 			"accountMenu": "Account menu for {{name}}",
 			"manageAccount": "Manage account",
-			"signOut": "Sign out"
-		},
-		"returnToChat": "Return to Home",
-		"description": "Configure your application preferences",
-		"search": "Search",
-		"searchLabel": "Search settings",
-		"sidebar": {
+			"signOut": "Sign out",
 			"voiceConversation": "Voice conversation"
 		},
 		"overview": {

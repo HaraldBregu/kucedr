@@ -150,19 +150,17 @@
 			"both": "Fatti e riepiloghi"
 		},
 		"title": "Impostazioni",
+		"returnToChat": "Torna alla Home",
+		"description": "Configura le preferenze dell'applicazione",
+		"search": "Cerca",
+		"searchLabel": "Cerca nelle impostazioni",
 		"sidebar": {
 			"account": "Impostazioni",
 			"assistant": "Assistente",
 			"getHelp": "Ottieni aiuto",
 			"accountMenu": "Menu account per {{name}}",
 			"manageAccount": "Gestisci account",
-			"signOut": "Esci"
-		},
-		"returnToChat": "Torna alla Home",
-		"description": "Configura le preferenze dell'applicazione",
-		"search": "Cerca",
-		"searchLabel": "Cerca nelle impostazioni",
-		"sidebar": {
+			"signOut": "Esci",
 			"voiceConversation": "Conversazione vocale"
 		},
 		"overview": {
