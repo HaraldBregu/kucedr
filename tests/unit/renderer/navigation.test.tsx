@@ -1,7 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
-import { SettingsBreadcrumb } from '../../../src/renderer/src/pages/settings/Breadcrumb';
 import { SettingsPageHeader } from '../../../src/renderer/src/pages/settings/components';
 import {
 	SETTINGS_DETAIL_ITEMS,
@@ -57,7 +56,6 @@ it.each([
 
 	render(
 		<MemoryRouter initialEntries={[path]}>
-			<SettingsBreadcrumb />
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
 					<Route path="*" element={<p>Settings page</p>} />
@@ -114,10 +112,10 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(returnToChat).toHaveAttribute('href', '/home');
 	expect(within(sidebar as HTMLElement).getAllByRole('link')[0]).toBe(returnToChat);
 	expect(
-		within(workspace as HTMLElement).queryByRole('navigation', {
+		within(workspace as HTMLElement).getByRole('navigation', {
 			name: 'settings.breadcrumb.label',
 		})
-	).not.toBeInTheDocument();
+	).toBeInTheDocument();
 	expect(screen.getByRole('separator', { name: 'Resize sidebar' })).toBeInTheDocument();
 	expect(
 		within(navigation).queryByRole('link', { name: 'settings.title' })

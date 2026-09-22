@@ -2,7 +2,6 @@ import { act, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
-import { SettingsBreadcrumb } from '../../../src/renderer/src/pages/settings/Breadcrumb';
 import AppsPage from '../../../src/renderer/src/pages/settings/pages/apps/Page';
 import type { App } from '../../../src/shared/installed_app_types';
 
@@ -261,7 +260,6 @@ it('treats an app detail route as a child of the apps breadcrumb', async () => {
 
 	render(
 		<MemoryRouter initialEntries={['/settings/apps/demo-app']}>
-			<SettingsBreadcrumb />
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
 					<Route path="apps">

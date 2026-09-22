@@ -14,7 +14,7 @@ export function SettingsBreadcrumb(): React.JSX.Element | null {
 		<nav
 			data-slot="settings-breadcrumb"
 			aria-label={t('settings.breadcrumb.label')}
-			className="flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground"
+			className="mx-auto flex w-full max-w-4xl min-w-0 items-center gap-1 px-6 pt-6 text-[11px] text-muted-foreground sm:px-10"
 		>
 			{items.map((item, index) => (
 				<React.Fragment key={`${item.label}-${index}`}>
