@@ -3,11 +3,12 @@ import path from 'node:path';
 let mockAppStore: Record<string, unknown> = {};
 
 jest.mock('electron-store', () =>
-	jest.fn().mockImplementation(({ name, defaults }: { name: string; defaults: object }) => {
+	jest.fn().mockImplementation(
+		({ name, cwd, defaults }: { name: string; cwd?: string; defaults: object }) => {
 		let backing: Record<string, unknown> = { ...defaults };
 		if (name === 'settings') mockAppStore = backing;
 		return {
-			path: `/apps/${name}.json`,
+			path: `${cwd ?? '/tmp'}/${name}.json`,
 			get(key: string) {
 				return backing[key];
 			},
@@ -22,7 +23,8 @@ jest.mock('electron-store', () =>
 				if (name === 'settings') mockAppStore = backing;
 			},
 		};
-	})
+		}
+	)
 );
 
 import {

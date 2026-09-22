@@ -1,4 +1,3 @@
-import path from 'node:path';
 import Store from 'electron-store';
 import type {
 	ResolvedProvider,
@@ -6,7 +5,6 @@ import type {
 	StoredProviderKind,
 } from '../shared/provider_types';
 import type { StorageSyncSettings } from '../shared/storage_types';
-import { userDataLocation } from './shared/user_data_location';
 import { appsRoot } from './apps/app_root';
 import { DEFAULT_SYNC_CRON_EXPRESSION } from './storage/storage_sync_types';
 import { normalizeStorageSettings } from './storage/storage_config';
