@@ -96,9 +96,10 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const assistantGroup = within(navigation)
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
-	const modelsGroup = within(navigation)
-		.getByRole('link', { name: 'settings.overview.groups.mlModels' })
-		.closest('[data-slot="split-pane-group"]');
+	const modelsLink = within(navigation)
+		.getAllByRole('link', { name: 'settings.overview.groups.mlModels' })
+		.find((link) => link.getAttribute('href') === '/settings/agent/models');
+	const modelsGroup = modelsLink?.closest('[data-slot="split-pane-group"]');
 	const providersGroup = within(navigation)
 		.getByText('settings.tabs.providers')
 		.closest('[data-slot="split-pane-group"]');
@@ -120,6 +121,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.title' })
 	).not.toBeInTheDocument();
 	expect(assistantGroup).not.toBeNull();
+	expect(modelsLink).toBeDefined();
 	expect(modelsGroup).not.toBeNull();
 	expect(providersGroup).not.toBeNull();
 	expect(
@@ -223,7 +225,11 @@ it('marks Models active inside its sidebar group', () => {
 		</MemoryRouter>
 	);
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const link = within(navigation).getByRole('link', { name: 'settings.overview.groups.mlModels' });
+	const link = within(navigation)
+		.getAllByRole('link', { name: 'settings.overview.groups.mlModels' })
+		.find((item) => item.getAttribute('href') === '/settings/agent/models');
+	expect(link).toBeDefined();
+	if (!link) return;
 	expect(link).toHaveAttribute('href', '/settings/agent/models');
 	expect(link).toHaveAttribute('aria-current', 'page');
 	expect(container.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
