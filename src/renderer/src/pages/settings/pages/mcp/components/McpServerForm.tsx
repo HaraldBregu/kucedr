@@ -115,7 +115,7 @@ export function McpServerForm({
 		const base = {
 			name: name.trim() || undefined,
 			require_approval: approval === 'default' ? undefined : approval,
-			defer_loading: initial?.entry.defer_loading,
+			defer_loading: initial?.entry.defer_loading ?? true,
 			enabled: initial?.entry.enabled ?? true,
 			created_at: initial?.entry.created_at ?? now,
 			updated_at: now,
