@@ -226,6 +226,11 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 			return testMcpServer(connectorId);
 		});
 
+		registerQueryWithEvent(McpChannels.oauthStatus, (event, id: string) => {
+			trusted.assert(event);
+			return Boolean(getMcpOauth(resolveMcpId(id)).tokens?.access_token);
+		});
+
 		registerCommandWithEvent(
 			McpChannels.oauthStart,
 			async (event, id: string): Promise<McpOAuthStart> => {

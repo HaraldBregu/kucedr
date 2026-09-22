@@ -286,6 +286,7 @@ export interface McpApi {
 	getRoot: () => Promise<string>;
 	openRoot: () => Promise<void>;
 	test: (id: string) => Promise<McpTestResult>;
+	oauthStatus: (id: string) => Promise<boolean>;
 	oauthStart: (id: string) => Promise<McpOAuthStart>;
 }
 

@@ -16,6 +16,7 @@ const mcpApi = {
 	getRoot: jest.fn(),
 	openRoot: jest.fn(),
 	test: jest.fn(),
+	oauthStatus: jest.fn(),
 	oauthStart: jest.fn(),
 };
 
@@ -55,6 +56,7 @@ beforeEach(() => {
 		toolCount: 2,
 		durationMs: 25,
 	});
+	mcpApi.oauthStatus.mockResolvedValue(false);
 	mcpApi.delete.mockResolvedValue(undefined);
 });
 
@@ -213,3 +215,16 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		expect(mcpApi.oauthStart).toHaveBeenCalledWith('google');
 	}
 );
+
+it('shows saved OAuth credentials as authenticated without exposing them', async () => {
+	server = {
+		id: 'google',
+		source: 'configured',
+		data: { type: 'http', name: 'Gmail', url: 'https://gmailmcp.googleapis.com/mcp/v1' },
+	};
+	mcpApi.oauthStatus.mockResolvedValue(true);
+	renderDetails('google');
+
+	expect(await screen.findByText('Authenticated')).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Connect with OAuth' })).not.toBeInTheDocument();
+});

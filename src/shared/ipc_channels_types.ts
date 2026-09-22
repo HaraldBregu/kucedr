@@ -400,6 +400,7 @@ export interface McpInvokeChannelMap {
 		args: [id: string];
 		result: import('./mcp_types').McpTestResult;
 	};
+	[McpChannels.oauthStatus]: { args: [id: string]; result: boolean };
 	[McpChannels.oauthStart]: {
 		args: [id: string];
 		result: import('./mcp_types').McpOAuthStart;

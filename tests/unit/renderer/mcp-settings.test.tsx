@@ -15,6 +15,7 @@ const mcpApi = {
 	getRoot: jest.fn(),
 	openRoot: jest.fn(),
 	test: jest.fn(),
+	oauthStatus: jest.fn(),
 	oauthStart: jest.fn(),
 };
 
