@@ -24,16 +24,11 @@ export function McpServerRow({
 			: [server.data.command, ...(server.data.args ?? [])].join(' ');
 	const provider = mcps().find(
 		(service) =>
-			service.id === server.id ||
-			(server.data.type === 'http' && service.url === server.data.url)
+			service.id === server.id || (server.data.type === 'http' && service.url === server.data.url)
 	)?.provider;
 
 	return (
-		<Item
-			variant="ghost"
-			size="md"
-			className="px-0 py-3.5"
-		>
+		<Item variant="ghost" size="md" className="px-0 py-3.5">
 			<button
 				type="button"
 				onClick={onOpen}

@@ -28,7 +28,7 @@ const mcpApi = {
 	registry: jest.fn(),
 	importLocal: jest.fn(),
 	configureLocal: jest.fn(),
-		test: jest.fn(),
+	test: jest.fn(),
 	oauthStatus: jest.fn(),
 	oauthStart: jest.fn(),
 };
@@ -53,7 +53,7 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'mcp', { configurable: true, value: mcpApi });
-		mcpApi.registry.mockResolvedValue({
+	mcpApi.registry.mockResolvedValue({
 		servers: [
 			{
 				id: 'remote',
@@ -75,7 +75,7 @@ beforeEach(() => {
 		],
 		diagnostics: [],
 	});
-		mcpApi.upsert.mockResolvedValue({});
+	mcpApi.upsert.mockResolvedValue({});
 });
 
 describe('MCP settings', () => {
@@ -90,7 +90,9 @@ describe('MCP settings', () => {
 		expect(screen.queryByText(/Remote services, configured commands/)).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Remote servers' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Local servers' })).not.toBeInTheDocument();
-		expect(screen.queryByRole('heading', { name: 'Available remote servers' })).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('heading', { name: 'Available remote servers' })
+		).not.toBeInTheDocument();
 		expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(2);
 		expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
 		expect(container.querySelector('img[src="/icon-light.png"]')).toBeInTheDocument();
@@ -143,5 +145,4 @@ describe('MCP settings', () => {
 		);
 		expect(screen.queryByRole('heading', { name: 'Add MCP server' })).not.toBeInTheDocument();
 	});
-
 });

@@ -107,7 +107,8 @@ const McpPage = (): React.JSX.Element => {
 								setSavingId(server.id);
 								try {
 									await save(server.id, { ...server.data, enabled });
-								} catch {} finally {
+								} catch {
+								} finally {
 									setSavingId(null);
 								}
 							}}
