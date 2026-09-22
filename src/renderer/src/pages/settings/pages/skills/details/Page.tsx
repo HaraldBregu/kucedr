@@ -97,7 +97,7 @@ const SkillDetailsPage: React.FC = () => {
 		setSuccessMessage('');
 		try {
 			await window.skills.delete(skill.id);
-			navigate('/settings/agent/skills');
+			navigate('/settings/skills');
 		} catch (error) {
 			setErrorMessage(getErrorMessage(error, t('settings.skills.deleteError')));
 		} finally {

@@ -81,6 +81,18 @@ function AppDetailsLegacyRedirect(): React.JSX.Element {
 	return <Navigate to={`/settings/apps/${appId ?? ''}`} replace />;
 }
 
+function AgentRouteLegacyRedirect({
+	section,
+	target,
+}: {
+	readonly section: string;
+	readonly target: string;
+}): React.JSX.Element {
+	const location = useLocation();
+	const source = `/settings/agent/${section}`;
+	return <Navigate to={`${target}${location.pathname.slice(source.length)}${location.search}${location.hash}`} replace />;
+}
+
 function RouteWrapper({
 	children,
 	fallback = <PageLoadingSkeleton />,
@@ -371,6 +383,32 @@ const routes: RouteObject[] = [
 						element: <SettingsRouteWrapper><RagPage /></SettingsRouteWrapper>,
 					},
 					{
+						path: 'skills',
+						children: [
+							{
+								index: true,
+								element: <SettingsRouteWrapper><SkillsPage /></SettingsRouteWrapper>,
+							},
+							{
+								path: 'skilldetails/:skillId',
+								element: <SettingsRouteWrapper><SkillDetailsPage /></SettingsRouteWrapper>,
+							},
+						],
+					},
+					{
+						path: 'mcp',
+						children: [
+							{
+								index: true,
+								element: <SettingsRouteWrapper><McpPage /></SettingsRouteWrapper>,
+							},
+							{
+								path: ':mcpServerId',
+								element: <SettingsRouteWrapper><McpDetailsPage /></SettingsRouteWrapper>,
+							},
+						],
+					},
+					{
 						path: 'memory',
 						element: <SettingsRouteWrapper><MemoryPage /></SettingsRouteWrapper>,
 					},
@@ -414,25 +452,8 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
-								path: 'skills',
-								children: [
-									{
-										index: true,
-										element: (
-											<SettingsRouteWrapper>
-												<SkillsPage />
-											</SettingsRouteWrapper>
-										),
-									},
-									{
-										path: 'skilldetails/:skillId',
-										element: (
-											<SettingsRouteWrapper>
-												<SkillDetailsPage />
-											</SettingsRouteWrapper>
-										),
-									},
-								],
+								path: 'skills/*',
+								element: <AgentRouteLegacyRedirect section="skills" target="/settings/skills" />,
 							},
 							{
 								path: 'tasks',
@@ -456,25 +477,8 @@ const routes: RouteObject[] = [
 								],
 							},
 							{
-								path: 'mcp',
-								children: [
-									{
-										index: true,
-										element: (
-											<SettingsRouteWrapper>
-												<McpPage />
-											</SettingsRouteWrapper>
-										),
-									},
-									{
-										path: ':mcpServerId',
-										element: (
-											<SettingsRouteWrapper>
-												<McpDetailsPage />
-											</SettingsRouteWrapper>
-										),
-									},
-								],
+								path: 'mcp/*',
+								element: <AgentRouteLegacyRedirect section="mcp" target="/settings/mcp" />,
 							},
 							{
 								index: true,

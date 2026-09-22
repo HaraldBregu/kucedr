@@ -106,7 +106,7 @@ const McpDetailsPage: React.FC = () => {
 		try {
 			await window.mcp.delete(server.id);
 			setConfirmRemoveOpen(false);
-			navigate('/settings/agent/mcp');
+			navigate('/settings/mcp');
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {

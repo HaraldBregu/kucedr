@@ -37,8 +37,8 @@ it.each([
 	['/settings/voice', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
-	['/settings/agent/skills', 'settings.tabs.skills'],
-	['/settings/agent/mcp', 'settings.tabs.mcp'],
+	['/settings/skills', 'settings.tabs.skills'],
+	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/coding', 'settings.coding.title'],
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
@@ -157,8 +157,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 		})
 	).toHaveAttribute('href', '/settings/providers/storage');
 	expect(
-		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })
-	).not.toBeInTheDocument();
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
+	).toHaveAttribute('href', '/settings/skills');
+	expect(
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.mcp' })
+	).toHaveAttribute('href', '/settings/mcp');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.voice' })
 	).toHaveAttribute('href', '/settings/voice');

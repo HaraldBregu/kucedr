@@ -354,7 +354,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: HardDrive,
 	},
 	{
-		path: '/settings/agent/mcp',
+		path: '/settings/mcp',
 		labelKey: 'settings.tabs.mcp',
 		descriptionKey: 'settings.overview.descriptions.mcp',
 		icon: PlugZap,
@@ -366,7 +366,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Library,
 	},
 	{
-		path: '/settings/agent/skills',
+		path: '/settings/skills',
 		labelKey: 'settings.tabs.skills',
 		descriptionKey: 'settings.overview.descriptions.skills',
 		icon: Sparkles,
@@ -408,8 +408,3 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Layers,
 	},
 ] satisfies readonly SettingsNavigationItem[];
-
-export const SETTINGS_AGENT_RESOURCE_ITEMS = [
-	'/settings/agent/skills',
-	'/settings/agent/mcp',
-].flatMap((path) => SETTINGS_NAVIGATION.filter((item) => item.path === path));

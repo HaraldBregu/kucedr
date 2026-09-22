@@ -32,7 +32,6 @@ import {
 } from '../../components/model-configuration-state';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 import { AgentMediaModelConfiguration } from './media';
-import { SETTINGS_AGENT_RESOURCE_ITEMS } from '../../navigation';
 
 type CatalogProvider = PublicProvider;
 
@@ -310,23 +309,6 @@ const AssistantPage: React.FC = () => {
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}
 					/>
 				</Link>
-			</SettingsPanel>
-
-			<SettingsPanel>
-				{SETTINGS_AGENT_RESOURCE_ITEMS.map((item) => (
-					<Link key={item.path} to={item.path} className="block hover:bg-muted/40">
-						<SettingsRow
-							title={t(item.labelKey)}
-							media={
-								<item.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-							}
-							description={t(item.descriptionKey)}
-							className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
-							actionClassName="w-auto justify-end"
-							actions={<ChevronRight className="size-4 text-muted-foreground" />}
-						/>
-					</Link>
-				))}
 			</SettingsPanel>
 
 			<SettingsPanel>

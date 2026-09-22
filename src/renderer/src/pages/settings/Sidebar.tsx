@@ -37,6 +37,8 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.coding),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/knowledge-base'),
+			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
+			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
 		],
 	},
 	{

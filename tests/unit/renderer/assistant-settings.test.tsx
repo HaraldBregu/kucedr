@@ -333,6 +333,8 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 			.some((element) => element.getAttribute('data-slot') === 'collapsible-trigger')
 	).toBe(true);
 	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
+	expect(screen.queryByRole('link', { name: 'settings.tabs.skills' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('link', { name: 'settings.tabs.mcp' })).not.toBeInTheDocument();
 
 	const permissions = screen.getByRole('button', { name: /Permissions/ });
 	expect(permissions).toBeInTheDocument();
@@ -556,24 +558,6 @@ it('announces a realtime conversation setup save error', async () => {
 	await user.click(await screen.findByRole('menuitemradio', { name: /Grok Voice/ }));
 
 	expect(await screen.findByRole('alert')).toHaveTextContent('Realtime setup could not be saved.');
-});
-
-it.each([
-	['settings.tabs.skills', '/settings/agent/skills', 'link'],
-	['settings.tabs.mcp', '/settings/agent/mcp', 'link'],
-])('opens %s from the Agent settings page', async (label, path, role) => {
-	const user = userEvent.setup();
-	render(
-		<MemoryRouter initialEntries={['/settings/agent']}>
-			<Routes>
-				<Route path="/settings/agent" element={<AssistantPage />} />
-				<Route path={path} element={<p>{label} page</p>} />
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await user.click(screen.getByRole(role, { name: new RegExp(label) }));
-	expect(await screen.findByText(`${label} page`)).toBeInTheDocument();
 });
 
 it.each([

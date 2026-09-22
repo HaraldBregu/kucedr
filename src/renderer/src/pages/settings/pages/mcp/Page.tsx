@@ -102,7 +102,7 @@ const McpPage = (): React.JSX.Element => {
 						<McpServerRow
 							key={server.id}
 							server={server}
-							onOpen={() => navigate(`/settings/agent/mcp/${encodeURIComponent(server.id)}`)}
+							onOpen={() => navigate(`/settings/mcp/${encodeURIComponent(server.id)}`)}
 							onEnabledChange={async (enabled) => {
 								setSavingId(server.id);
 								try {

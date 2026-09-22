@@ -28,7 +28,7 @@ function formatAppLabel(appId: string): string {
 export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] {
 	const { t } = useTranslation();
 	const location = useLocation();
-	const mcpDetailMatch = useMatch('/settings/agent/mcp/:mcpServerId');
+	const mcpDetailMatch = useMatch('/settings/mcp/:mcpServerId');
 	const appDetailMatch = useMatch('/settings/apps/:appId');
 	const appId = decodeURIComponent(appDetailMatch?.params.appId ?? '');
 	const [appLabel, setAppLabel] = useState<{ id: string; label: string } | null>(null);
@@ -84,8 +84,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	if (mcpDetailMatch) {
 		return [
-			{ label: t('settings.modelServices.chatName'), path: '/settings/agent' },
-			{ label: t('settings.tabs.mcp'), path: '/settings/agent/mcp' },
+			{ label: t('settings.tabs.mcp'), path: '/settings/mcp' },
 			{ label: mcpDetailMatch.params.mcpServerId ?? '' },
 		];
 	}
@@ -119,7 +118,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		items.push({ label: channelLabel });
 	}
 
-	if (location.pathname.startsWith('/settings/agent/skills/skilldetails/')) {
+	if (location.pathname.startsWith('/settings/skills/skilldetails/')) {
 		const skillId = decodeURIComponent(location.pathname.split('/').at(-1) ?? '');
 		items[0] = { ...items[0], path: current.path };
 		items.push({ label: skillId });
