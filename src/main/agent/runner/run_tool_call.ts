@@ -25,6 +25,8 @@ import { executionScope, type ExecutionScope } from '../execution/scope';
 import { authorizedPaths } from '../permissions/access';
 import type { ExecutionBudget } from '../execution/budget';
 import { captureAccess } from '../permissions/capture_access';
+import { getToolConfiguration } from '../agent_store';
+import type { AgentToolProfileId } from '../../../shared/agent_tools';
 
 export interface ToolCallSecurityContext {
 	runId: string;
@@ -32,6 +34,7 @@ export interface ToolCallSecurityContext {
 	budget?: ExecutionBudget;
 	windowId?: number;
 	interactionMode?: AgentInteractionMode;
+	toolProfile?: AgentToolProfileId;
 }
 
 export async function* runToolCall(
@@ -68,6 +71,13 @@ export async function* runToolCall(
 	}
 	const state = fileToolState(toolCall.name, canonicalInput, agentLocation());
 	const createsFile = state ? isFileCreation(state) : false;
+	const profileToolConfiguration = (): import('../permissions').ToolConfiguration | undefined =>
+		tool && security.toolProfile
+			? getToolConfiguration(
+					security.toolProfile,
+					tool.policy ?? { kind: 'builtin', id: tool.id }
+				)
+			: undefined;
 
 	yield {
 		type: 'tool_call_start',
@@ -178,7 +188,8 @@ export async function* runToolCall(
 				true,
 				'ask',
 				undefined,
-				history
+				history,
+				profileToolConfiguration()
 			)
 		);
 		const capability =
@@ -291,9 +302,10 @@ export async function* runToolCall(
 							canonicalInput,
 							context,
 							true,
-							'ask',
-							undefined,
-							history
+						'ask',
+						undefined,
+						history,
+						profileToolConfiguration()
 						)
 					);
 					if (

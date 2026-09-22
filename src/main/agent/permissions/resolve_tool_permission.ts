@@ -21,17 +21,29 @@ export function resolveToolPermissionDetails(
 	reuseContext = true,
 	fallback: PermissionMode = 'ask',
 	configuredPermissions?: PermissionsSchema,
-	history?: FileHistory
+	history?: FileHistory,
+	configuredTool?: import('./permissions_types').ToolConfiguration
 ): ToolPermissionResolution {
 	let kind: PermissionKind | undefined;
 	if (toolName === 'read') kind = 'read';
 	else if (isWritePermissionTool(toolName, args)) kind = 'write';
 	else if (toolName === 'bash' || toolName === 'process') kind = 'exec';
 	const permissions = configuredPermissions ?? getPermissions();
-	const toolSettings = permissions.tools?.[toolName];
+	const toolSettings = configuredTool ?? permissions.tools?.[toolName];
 	if (toolSettings && (!toolSettings.enabled || toolSettings.permission === 'deny'))
 		return { mode: 'deny', kind, targets: [], approvalTargets: [], persistable: false };
-	if (!kind) return { mode: 'allow', targets: [], approvalTargets: [], persistable: false };
+	if (!kind) {
+		if (toolSettings?.permission === 'ask') {
+			return {
+				mode: 'ask',
+				targets: [],
+				approvalTargets: [],
+				reason: 'outside_trusted_location',
+				persistable: false,
+			};
+		}
+		return { mode: 'allow', targets: [], approvalTargets: [], persistable: false };
+	}
 
 	if (toolName === 'process') {
 		const session = typeof args.sessionId === 'string' ? registry.owned(args.sessionId) : undefined;
@@ -65,6 +77,16 @@ export function resolveToolPermissionDetails(
 			? directoryPermissionTargets(toolName, args, AGENT_DIRECTORY, history)
 			: toolPermissionTargets(toolName, args, AGENT_DIRECTORY);
 	const decisions = targets.map((target) => permissionFor(permissions[kind], target, kind));
+	if (toolSettings?.permission === 'ask') {
+		return {
+			mode: 'ask',
+			kind,
+			targets,
+			approvalTargets: toolApprovalTargets(toolName, args, AGENT_DIRECTORY, history),
+			reason: 'outside_trusted_location',
+			persistable: false,
+		};
+	}
 	if (toolSettings?.permission === 'allow') {
 		return {
 			mode: 'allow',

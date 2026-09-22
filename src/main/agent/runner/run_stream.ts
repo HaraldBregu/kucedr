@@ -145,6 +145,11 @@ async function* loop(
 			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
+	const channelAllowedTools = new Set(['search_web', 'fetch_web_page', 'subagent', 'subagents']);
+	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
+		filterProfileTools(candidates, toolProfile).filter(
+			(tool) => input.agentId !== 'channels' || channelAllowedTools.has(tool.id)
+		);
 	const profileToolEnabled = (toolId: string): boolean => {
 		const settings = getToolConfiguration(toolProfile, { kind: 'builtin', id: toolId });
 		return settings.enabled && settings.permission !== 'deny';
@@ -196,15 +201,14 @@ async function* loop(
 		tools.push(...goalTools(sessionDir(session)));
 	}
 	tools = filterPlanTools(tools, input.interactionMode);
-	tools = filterProfileTools(tools, toolProfile);
+	tools = filterRuntimeTools(tools);
 	const skillToolScopes: Array<string[] | undefined> = [];
 	const filterEligibleTools = (candidates: Tool[]): Tool[] => {
-		let filtered = filterProfileTools(
+		let filtered = filterRuntimeTools(
 			filterPlanTools(
 				filterTools(candidates, input.toolsAllow, input.toolsDeny),
 				input.interactionMode
-			),
-			toolProfile
+			)
 		);
 		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
@@ -243,11 +247,7 @@ async function* loop(
 			closeMcp = mcp.close;
 			mcpDiscovery = mcp.diagnostics;
 		}
-		const childTools = filterTools(tools, input.toolsAllow, input.toolsDeny).filter(
-			(tool) =>
-				tool.id !== 'use_web_browser' ||
-				(input.agentId !== 'channels' && input.scope?.source !== 'channel')
-		);
+		const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		const childRuntime = {
 			type: input.type,
 			interactionMode: input.interactionMode,
@@ -268,8 +268,7 @@ async function* loop(
 			subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
 		);
 	}
-	tools = filterTools(tools, input.toolsAllow, input.toolsDeny);
-	tools = filterProfileTools(tools, toolProfile);
+	tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 	tools = filterPlanTools(tools, input.interactionMode);
 	if (input.explicitSkill && !skillLoadingEnabled)
 		throw new Error('Skill loading is unavailable for this run.');
