@@ -80,6 +80,17 @@ describe('chat agent tool controls', () => {
 			...(toolId === 'ask' ? { interactionMode: 'plan' as const } : {}),
 			...(['ask', 'select_screen_source'].includes(toolId) ? { approvalWindowId: 7 } : {}),
 		};
+		const finalTurn =
+			toolId === 'ask'
+				? async function* () {
+						yield* [];
+						return {
+							content: '<proposed_plan>Continue.</proposed_plan>',
+							model: 'test-model',
+							toolCalls: [],
+						};
+					}
+				: successfulTurn;
 
 		setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'allow' });
 		runModelTurnMock
@@ -91,18 +102,7 @@ describe('chat agent tool controls', () => {
 					toolCalls: [{ id: `call-${toolId}`, name: toolId, args }],
 				};
 			})
-			.mockImplementationOnce(
-				toolId === 'ask'
-					? async function* () {
-							yield* [];
-							return {
-								content: '<proposed_plan>Continue.</proposed_plan>',
-								model: 'test-model',
-								toolCalls: [],
-							};
-						}
-					: successfulTurn
-			);
+			.mockImplementationOnce(finalTurn);
 
 		const enabledEvents = [];
 		for await (const event of stream(
@@ -147,7 +147,7 @@ describe('chat agent tool controls', () => {
 		);
 
 		setToolProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
-		runModelTurnMock.mockReset().mockImplementation(successfulTurn);
+		runModelTurnMock.mockReset().mockImplementation(finalTurn);
 		const disabledEvents = [];
 		for await (const event of stream(
 			{ location: '/workspace' },
