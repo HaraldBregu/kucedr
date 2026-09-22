@@ -247,47 +247,44 @@ const AppsPage: React.FC = () => {
 						/>
 					</SettingsPanel>
 				) : (
-					<div className="grid gap-3">
+					<div className="grid gap-3 md:grid-cols-2">
 						{apps.map((app) => (
-							<Card
-								key={app.id}
-								size="sm"
-								className="h-28 gap-0! p-0!"
-							>
-								<CardContent className="grid h-full grid-cols-[7rem_minmax(0,1fr)] gap-0 p-0!">
-									{app.imageUrl ? (
-										<div className="flex h-full items-center justify-center">
+							<Card key={app.id} size="sm" className="min-h-36 gap-3">
+								<CardContent className="flex h-full min-w-0 flex-col gap-3">
+									<div className="flex min-w-0 items-start gap-3">
+										{app.imageUrl ? (
 											<img
 												src={app.imageUrl}
 												alt=""
-												className="size-22 rounded-xl border border-border/70 object-cover"
+												className="size-12 shrink-0 rounded-lg border border-border/70 object-cover"
 											/>
-										</div>
-									) : (
-										<div
-											aria-hidden="true"
-											className="flex h-full items-center justify-center text-muted-foreground"
-										>
-											<Blocks className="size-4" strokeWidth={1.5} />
-										</div>
-									)}
-									<div className="flex min-w-0 flex-col py-3 pr-3">
-										<div className="flex min-w-0 items-start justify-between gap-3">
-											<div className="min-w-0">
-												<div className="flex min-w-0 items-center gap-1.5">
-													<h3 className="truncate text-sm font-medium text-foreground">
-														{app.title}
-													</h3>
-													{app.debugPath && (
-														<Badge variant="outline" className="shrink-0 text-[10px] leading-none">
-															{t('settings.apps.debug.badge')}
-														</Badge>
-													)}
-												</div>
-												<p className="mt-0.5 line-clamp-2 text-[11px] leading-4 text-muted-foreground">
-													{app.description}
-												</p>
+										) : (
+											<div
+												aria-hidden="true"
+												className="flex size-12 shrink-0 items-center justify-center rounded-lg border border-border/70 text-muted-foreground"
+											>
+												<Blocks className="size-4" strokeWidth={1.5} />
 											</div>
+										)}
+										<div className="min-w-0 flex-1">
+											<div className="flex min-w-0 items-center gap-1.5">
+												<h3 className="truncate text-sm font-medium text-foreground">{app.title}</h3>
+												{app.debugPath && (
+													<Badge variant="outline" className="shrink-0 text-[10px] leading-none">
+														{t('settings.apps.debug.badge')}
+													</Badge>
+												)}
+											</div>
+											<div className="mt-1 flex flex-wrap items-center gap-1.5">
+												<Badge variant="secondary" className="text-[10px] leading-none">
+													{app.metadata.category}
+												</Badge>
+												<Badge variant="outline" className="text-[10px] leading-none">
+													{app.metadata.version}
+												</Badge>
+											</div>
+										</div>
+										<div className="flex shrink-0 items-center gap-1">
 											<div className="flex shrink-0 items-center gap-1">
 												<Button
 													type="button"
@@ -348,19 +345,11 @@ const AppsPage: React.FC = () => {
 														</div>
 													</PopoverContent>
 												</Popover>
-											</div>
-										</div>
-										<div className="mt-auto flex flex-wrap items-center gap-2 pt-3">
-											<div className="flex flex-wrap items-center gap-1.5">
-												<Badge variant="secondary" className="text-[10px] leading-none">
-													{app.metadata.category}
-												</Badge>
-								<Badge variant="outline" className="text-[10px] leading-none">
-									{app.metadata.version}
-								</Badge>
-											</div>
 										</div>
 									</div>
+									<p className="line-clamp-2 text-[11px] leading-4 text-muted-foreground">
+										{app.description}
+									</p>
 								</CardContent>
 							</Card>
 						))}
