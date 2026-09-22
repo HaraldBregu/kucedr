@@ -44,6 +44,10 @@ export function isAgentToolAllowedForProfile(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
 ): boolean {
+	if (tool.kind === 'builtin' && tool.id === 'ask') return profileId === 'chat';
+	if (tool.kind === 'builtin' && tool.id === 'complete_bootstrap') {
+		return profileId === 'chat' || profileId === 'voice';
+	}
 	return (
 		profileId !== 'health' || (tool.kind === 'builtin' && HEALTH_BUILTIN_TOOL_IDS.has(tool.id))
 	);

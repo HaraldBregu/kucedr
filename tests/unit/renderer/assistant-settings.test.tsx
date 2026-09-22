@@ -433,6 +433,7 @@ it('lists every built-in agent tool on the Tools page', async () => {
 		'Run task now',
 		'Load skill',
 		'Get goal',
+		'Request user input',
 		'Complete bootstrap',
 	]) {
 		expect(await screen.findByText(tool)).toBeInTheDocument();
@@ -481,6 +482,26 @@ it('limits Health tools to file and command capabilities', async () => {
 	expect(screen.queryByText('Text to image')).not.toBeInTheDocument();
 	expect(window.mcp.registry).not.toHaveBeenCalled();
 });
+
+it.each([
+	['voice', false, true],
+	['tasks', false, false],
+	['health', false, false],
+	['channels', false, false],
+] as const)(
+	'applies system tool eligibility to the %s tools page',
+	async (profile, showsAsk, showsBootstrap) => {
+		render(
+			<MemoryRouter>
+				<ToolsPage profile={profile} />
+			</MemoryRouter>
+		);
+
+		expect(await screen.findByText('Read file')).toBeInTheDocument();
+		expect(screen.queryByText('Request user input') !== null).toBe(showsAsk);
+		expect(screen.queryByText('Complete bootstrap') !== null).toBe(showsBootstrap);
+	}
+);
 
 it('saves a file tools permission choice', async () => {
 	const user = userEvent.setup();

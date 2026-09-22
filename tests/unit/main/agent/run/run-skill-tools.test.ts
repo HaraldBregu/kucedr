@@ -63,4 +63,22 @@ describe('agent tool profiles', () => {
 			})
 		).toBe(false);
 	});
+
+	it.each([
+		['chat', true, true],
+		['voice', false, true],
+		['tasks', false, false],
+		['health', false, false],
+		['channels', false, false],
+	] as const)(
+		'applies required system tool eligibility to %s',
+		(profileId, allowsAsk, allowsBootstrap) => {
+			expect(isAgentToolAllowedForProfile(profileId, { kind: 'builtin', id: 'ask' })).toBe(
+				allowsAsk
+			);
+			expect(
+				isAgentToolAllowedForProfile(profileId, { kind: 'builtin', id: 'complete_bootstrap' })
+			).toBe(allowsBootstrap);
+		}
+	);
 });
