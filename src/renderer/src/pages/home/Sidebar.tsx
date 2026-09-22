@@ -103,7 +103,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
 		{ path: '/settings/coding', label: t('settings.coding.title'), icon: Code2 },
-		{ path: '/settings/providers/models', label: t('settings.sidebar.provider'), icon: Server },
+		{ path: '/settings/providers', label: t('settings.sidebar.provider'), icon: Server },
 		{ path: '/settings/channels', label: t('settings.tabs.channels'), icon: RadioTower },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
 	];

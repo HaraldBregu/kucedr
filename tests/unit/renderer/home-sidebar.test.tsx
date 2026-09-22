@@ -174,7 +174,7 @@ it.each<[AuthState, string]>([
 	[
 		['settings.tabs.account', '/settings/account'],
 		['settings.coding.title', '/settings/coding'],
-		['settings.sidebar.provider', '/settings/providers/models'],
+		['settings.sidebar.provider', '/settings/providers'],
 		['settings.tabs.channels', '/settings/channels'],
 		['settings.tabs.apps', '/settings/apps'],
 	].forEach(([name, href]) => {
