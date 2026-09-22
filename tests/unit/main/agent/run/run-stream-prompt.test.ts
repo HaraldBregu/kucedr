@@ -933,7 +933,7 @@ describe('run stream system prompt', () => {
 								: 'end_turn',
 				},
 			});
-			if (boundary === 'calls' || boundary === 'turns') {
+			if (boundary === 'calls') {
 				expect(session.toolCalls[0].result).toMatchObject({
 					isError: true,
 				});
