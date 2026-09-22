@@ -164,7 +164,6 @@ export class Agent {
 	async send(message: string, agentId: string, options: AgentSendOptions): Promise<string> {
 		const normalizedAgentId = agentId.trim();
 		const category = AGENT_CATEGORIES[normalizedAgentId] ?? 'main';
-		const toolProfile = AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat';
 		const sessionId = resolveSessionId(options.sessionId, this.config.location, category);
 		const runId = options.runId ?? randomUUID();
 		const pinnedProviderId = options.providerId?.trim() || getProviderId();
@@ -211,6 +210,7 @@ export class Agent {
 	): Promise<AgentRunOutcome> {
 		const { request, controller } = record;
 		const { options } = request;
+		const toolProfile = AGENT_TOOL_PROFILES[request.agentId] ?? 'chat';
 		const session = createSessionState();
 		if (!beginRun(record, session)) return { text: '', stopReason: 'cancelled' };
 

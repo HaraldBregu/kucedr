@@ -234,8 +234,13 @@ const legacyToolProfile = (): AgentToolProfile => {
 	for (const [toolId, key] of Object.entries(RUNTIME_TOOL_KEYS)) {
 		const settings = persisted.tools?.[key];
 		if (isToolSettings(settings)) profile.tools[toolId] = { ...settings };
-		else if (legacyToolPermissions?.[toolId]) {
-			profile.tools[toolId] = { enabled: true, permission: legacyToolPermissions[toolId] };
+		else if (typeof legacyToolPermissions?.[toolId] === 'string') {
+			profile.tools[toolId] = {
+				enabled: true,
+				permission: legacyToolPermissions[toolId] as PermissionMode,
+			};
+		} else if (isToolSettings(legacyToolPermissions?.[toolId])) {
+			profile.tools[toolId] = { ...legacyToolPermissions[toolId] };
 		}
 	}
 	return profile;

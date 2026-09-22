@@ -178,7 +178,6 @@ export class RealtimeVoiceToolRuntime {
 					runId: response.runId,
 					windowId: this.dependencies.windowId,
 					toolProfile: 'voice',
-					toolProfile: 'voice',
 					...(this.dependencies.chatSessionId
 						? {
 								scope: {
