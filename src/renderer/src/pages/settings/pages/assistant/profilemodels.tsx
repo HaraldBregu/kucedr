@@ -20,8 +20,10 @@ export function ProfileMediaModels({
 				title={t('settings.tabs.music')}
 				description={t('settings.modelServices.musicModelDescription')}
 				showIcon={false}
-				collapsible={false}
-				padded={false}
+				grouped
+				showSelectedModel
+				buttonDropdown
+				showContentSeparator={false}
 				inlineAdvanced
 			/>
 			<AgentMediaModelConfiguration
@@ -31,8 +33,10 @@ export function ProfileMediaModels({
 				title={t('settings.tabs.image')}
 				description={t('settings.modelServices.imageModelDescription')}
 				showIcon={false}
-				collapsible={false}
-				padded={false}
+				grouped
+				showSelectedModel
+				buttonDropdown
+				showContentSeparator={false}
 				inlineAdvanced
 			/>
 			<AgentMediaModelConfiguration
@@ -42,8 +46,10 @@ export function ProfileMediaModels({
 				title={t('settings.tabs.video')}
 				description={t('settings.modelServices.videoModelDescription')}
 				showIcon={false}
-				collapsible={false}
-				padded={false}
+				grouped
+				showSelectedModel
+				buttonDropdown
+				showContentSeparator={false}
 				inlineAdvanced
 			/>
 		</>
