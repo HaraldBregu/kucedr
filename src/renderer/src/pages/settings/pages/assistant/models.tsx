@@ -4,9 +4,9 @@ import { SettingsPageHeader, SettingsPageShell } from '../../components';
 import { AgentMediaModelConfiguration } from './media';
 import { toolModelApi } from './toolmodel';
 
-const audioApi = toolModelApi('audio');
-const imageApi = toolModelApi('image');
-const videoApi = toolModelApi('video');
+const audioApi = toolModelApi('audio', 'chat');
+const imageApi = toolModelApi('image', 'chat');
+const videoApi = toolModelApi('video', 'chat');
 
 export default function ModelsPage(): React.JSX.Element {
 	const { t } = useTranslation();

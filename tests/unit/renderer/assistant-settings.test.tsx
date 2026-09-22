@@ -621,7 +621,7 @@ it('loads every saved media model configuration on the Models page', async () =>
 	}
 	expect(document.querySelector('[data-slot="card"]')).not.toBeInTheDocument();
 	expect(document.querySelector('[data-slot="collapsible-trigger"]')).not.toBeInTheDocument();
-	expect(window.agent.getToolModel).toHaveBeenCalledWith('audio');
-	expect(window.agent.getToolModel).toHaveBeenCalledWith('image');
-	expect(window.agent.getToolModel).toHaveBeenCalledWith('video');
+	expect(window.agent.getToolModel).toHaveBeenCalledWith('audio', 'chat');
+	expect(window.agent.getToolModel).toHaveBeenCalledWith('image', 'chat');
+	expect(window.agent.getToolModel).toHaveBeenCalledWith('video', 'chat');
 });

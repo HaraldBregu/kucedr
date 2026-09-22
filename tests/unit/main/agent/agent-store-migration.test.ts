@@ -111,6 +111,14 @@ it('keeps model selections isolated between agent profiles', () => {
 		modelId: 'claude-sonnet-4',
 		options: { temperature: 0.1 },
 	});
+	for (const [profileId, providerId, modelId] of [
+		['chat', 'openai', 'chat-image'],
+		['voice', 'google', 'voice-image'],
+		['tasks', 'xai', 'tasks-image'],
+		['channels', 'anthropic', 'channels-image'],
+	] as const) {
+		setAgentProfileModel(profileId, 'image', { providerId, modelId, options: {} });
+	}
 
 	expect(getAgentProfileModel('tasks', 'textToText')).toEqual({
 		providerId: 'anthropic',
@@ -128,6 +136,7 @@ it('keeps model selections isolated between agent profiles', () => {
 		llm: { providerId: 'openai', modelId: 'gpt-5' },
 		tts: { providerId: 'openai', modelId: 'gpt-4o-mini-tts' },
 		stt: { providerId: 'openai', modelId: 'gpt-4o-transcribe' },
+		image: { providerId: 'openai', modelId: 'chat-image' },
 	});
 	expect(getAgentProfileDocument('chat')).not.toHaveProperty('textToText');
 	expect(getAgentProfileDocument('chat')).not.toHaveProperty('textToSpeech');
@@ -164,9 +173,13 @@ it('keeps model selections isolated between agent profiles', () => {
 		llm: { providerId: 'openai', modelId: 'gpt-5-mini' },
 		tts: { providerId: 'openai', modelId: 'gpt-4o-mini-tts' },
 		stt: { providerId: 'openai', modelId: 'gpt-4o-transcribe' },
+		image: { providerId: 'anthropic', modelId: 'channels-image' },
 	});
 	expect(getAgentProfileDocument('channels')).not.toHaveProperty('realtimeVoice');
-	expect(getAgentProfileDocument('channels')).not.toHaveProperty('image');
-	expect(getAgentProfileDocument('channels')).not.toHaveProperty('audio');
-	expect(getAgentProfileDocument('channels')).not.toHaveProperty('video');
+	expect(getAgentProfileDocument('voice')).toMatchObject({
+		image: { providerId: 'google', modelId: 'voice-image' },
+	});
+	expect(getAgentProfileDocument('tasks')).toMatchObject({
+		image: { providerId: 'xai', modelId: 'tasks-image' },
+	});
 });

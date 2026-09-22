@@ -59,6 +59,22 @@ describe('agent store permissions', () => {
 		});
 	});
 
+	it.each(['chat', 'voice', 'tasks', 'channels'] as const)(
+		'stores media models independently in the %s profile',
+		(profileId) => {
+			setToolModel(
+				'image',
+				{ providerId: 'google', modelId: `${profileId}-image`, options: {} },
+				profileId
+			);
+
+			expect(getToolModel('image', profileId)).toMatchObject({
+				providerId: 'google',
+				modelId: `${profileId}-image`,
+			});
+		}
+	);
+
 	it('trusts the workspace recursively for every filesystem capability', () => {
 		expect(resetPermissions()).toMatchObject({
 			read: { allow: [workspaceRule], deny: [] },
