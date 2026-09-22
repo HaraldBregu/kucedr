@@ -32,6 +32,7 @@ import { AGENTS, type AgentId } from '@/lib/compat';
 export interface SettingsNavigationItem {
 	readonly path: string;
 	readonly labelKey: string;
+	readonly sidebarLabelKey?: string;
 	readonly descriptionKey: string;
 	readonly icon: LucideIcon;
 	readonly comingSoon?: boolean;
@@ -343,7 +344,8 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 	},
 	{
 		path: '/settings/voice',
-		labelKey: 'settings.sidebar.voiceConversation',
+		labelKey: 'settings.tabs.voice',
+		sidebarLabelKey: 'settings.sidebar.voiceConversation',
 		descriptionKey: 'settings.modelServices.realtimeConversationDescription',
 		icon: Radio,
 	},

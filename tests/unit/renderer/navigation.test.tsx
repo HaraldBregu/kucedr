@@ -34,7 +34,7 @@ it.each([
 	['/settings/agent/image', 'settings.tabs.image'],
 	['/settings/knowledge-base', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
-	['/settings/voice', 'settings.sidebar.voiceConversation', 'settings.tabs.voice'],
+	['/settings/voice', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
@@ -44,7 +44,7 @@ it.each([
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/integrations', 'settings.tabs.integrations'],
-])('uses the canonical %s route and breadcrumb', (path, labelKey, breadcrumbLabelKey = labelKey) => {
+])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
 	if (path === '/settings/general/persona' || path === '/settings/agent/tools') {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else if (path === '/settings/coding') {
@@ -66,7 +66,7 @@ it.each([
 	);
 
 	const breadcrumb = screen.getByRole('navigation', { name: 'settings.breadcrumb.label' });
-	expect(within(breadcrumb).getByText(breadcrumbLabelKey)).toBeInTheDocument();
+	expect(within(breadcrumb).getByText(labelKey)).toBeInTheDocument();
 	if (path.startsWith('/settings/agent/')) {
 		expect(
 			within(breadcrumb).getByRole('link', { name: 'settings.modelServices.chatName' })
