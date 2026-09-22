@@ -294,6 +294,7 @@ async function* loop(
 		}
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
+		discovery?.replaceEligible(tools);
 		if (!discovery) {
 			const requiredIds = new Set([
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
