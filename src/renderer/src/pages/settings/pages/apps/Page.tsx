@@ -236,7 +236,7 @@ const AppsPage: React.FC = () => {
 						/>
 					</SettingsPanel>
 				) : (
-					<div className="grid grid-cols-2 gap-3 xl:grid-cols-3 2xl:grid-cols-4">
+					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
 						{apps.map((app) => (
 							<Card key={app.id} size="sm" className="min-h-28 gap-2">
 								<CardContent className="flex h-full min-w-0 flex-col gap-2">
