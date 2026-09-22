@@ -43,7 +43,8 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 		'top-0',
 		'z-10'
 	);
-	expect(breadcrumb).toHaveClass('justify-center');
+	expect(breadcrumb).toHaveClass('h-12', 'items-center');
+	expect(breadcrumb).not.toHaveClass('justify-center', 'pt-6');
 	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).not.toHaveClass(
 		'bg-muted/95',
 		'backdrop-blur-sm'
