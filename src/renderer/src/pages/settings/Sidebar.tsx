@@ -42,11 +42,8 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		],
 	},
 	{
-		id: 'media',
-		titleKey: 'settings.tabs.media',
-		items: ['/settings/agent/music', '/settings/agent/image', '/settings/agent/video'].flatMap(
-			(path) => SETTINGS_NAVIGATION.filter((item) => item.path === path)
-		),
+		id: 'models',
+		items: SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/agent/models'),
 	},
 	{
 		id: 'providers',

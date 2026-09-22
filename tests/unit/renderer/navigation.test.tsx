@@ -29,9 +29,7 @@ beforeEach(() => {
 });
 
 it.each([
-	['/settings/agent/music', 'settings.tabs.music'],
-	['/settings/agent/video', 'settings.tabs.video'],
-	['/settings/agent/image', 'settings.tabs.image'],
+	['/settings/agent/models', 'settings.overview.groups.mlModels'],
 	['/settings/knowledge-base', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/voice', 'settings.tabs.voice'],
@@ -98,8 +96,8 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const assistantGroup = within(navigation)
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
-	const mediaGroup = within(navigation)
-		.getByText('settings.tabs.media')
+	const modelsGroup = within(navigation)
+		.getByRole('link', { name: 'settings.overview.groups.mlModels' })
 		.closest('[data-slot="split-pane-group"]');
 	const providersGroup = within(navigation)
 		.getByText('settings.tabs.providers')
@@ -122,7 +120,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.title' })
 	).not.toBeInTheDocument();
 	expect(assistantGroup).not.toBeNull();
-	expect(mediaGroup).not.toBeNull();
+	expect(modelsGroup).not.toBeNull();
 	expect(providersGroup).not.toBeNull();
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
@@ -130,14 +128,12 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.coding.title' })
 	).toBeInTheDocument();
+	expect(within(modelsGroup as HTMLElement).getAllByRole('link')).toHaveLength(1);
 	expect(
-		within(mediaGroup as HTMLElement)
-			.getAllByRole('link')
-			.map((link) => link.textContent)
-	).toEqual(['settings.tabs.music', 'settings.tabs.image', 'settings.tabs.video']);
-	expect(
-		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.music' })
-	).not.toBeInTheDocument();
+		within(modelsGroup as HTMLElement).getByRole('link', {
+			name: 'settings.overview.groups.mlModels',
+		})
+	).toHaveAttribute('href', '/settings/agent/models');
 	expect(
 		within(providersGroup as HTMLElement).getByRole('link', {
 			name: 'settings.overview.groups.mlModels',
@@ -220,16 +216,15 @@ it('places Channels directly after Health in the Assistant sidebar group', () =>
 	expect(links.indexOf(channels)).toBe(links.indexOf(health) + 1);
 });
 
-it.each(['music', 'image', 'video'])('marks %s active inside the Media sidebar group', (name) => {
+it('marks Models active inside its sidebar group', () => {
 	const { container } = render(
-		<MemoryRouter initialEntries={[`/settings/agent/${name}`]}>
+		<MemoryRouter initialEntries={['/settings/agent/models']}>
 			<Layout />
 		</MemoryRouter>
 	);
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const group = within(navigation).getByText('settings.tabs.media').closest('section');
-	const link = within(group as HTMLElement).getByRole('link', { name: `settings.tabs.${name}` });
-	expect(link).toHaveAttribute('href', `/settings/agent/${name}`);
+	const link = within(navigation).getByRole('link', { name: 'settings.overview.groups.mlModels' });
+	expect(link).toHaveAttribute('href', '/settings/agent/models');
 	expect(link).toHaveAttribute('aria-current', 'page');
 	expect(container.querySelectorAll('[aria-current="page"]')).toHaveLength(1);
 });

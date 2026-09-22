@@ -52,6 +52,7 @@ const routes = [
 	'/settings/agent/rag',
 	'/settings/tasks',
 	'/settings/agent',
+	'/settings/agent/models',
 	'/settings/coding',
 	'/settings/agent/chathistory',
 	'/settings/health',

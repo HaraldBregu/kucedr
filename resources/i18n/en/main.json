@@ -1326,6 +1326,7 @@
 			"videoModel": "Video model",
 			"videoModelDescription": "Model used to create videos.",
 			"musicCreatorName": "Text to audio",
+			"mediaModelsDescription": "Configure the image, audio, and video models used by Kucedr.",
 			"toolsDescription": "Configure the models and search service available to agent tools.",
 			"agentTools": {
 				"mcp": {

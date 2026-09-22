@@ -1,8 +1,5 @@
 import {
 	Brain,
-	Image,
-	Music2,
-	Video,
 	Bot,
 	Layers,
 	BotMessageSquare,
@@ -301,22 +298,10 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Brain,
 	},
 	{
-		path: '/settings/agent/music',
-		labelKey: 'settings.tabs.music',
-		descriptionKey: 'settings.modelServices.musicModelDescription',
-		icon: Music2,
-	},
-	{
-		path: '/settings/agent/video',
-		labelKey: 'settings.tabs.video',
-		descriptionKey: 'settings.modelServices.videoModelDescription',
-		icon: Video,
-	},
-	{
-		path: '/settings/agent/image',
-		labelKey: 'settings.tabs.image',
-		descriptionKey: 'settings.modelServices.imageModelDescription',
-		icon: Image,
+		path: '/settings/agent/models',
+		labelKey: 'settings.overview.groups.mlModels',
+		descriptionKey: 'settings.modelServices.mediaModelsDescription',
+		icon: Server,
 	},
 	{
 		path: '/settings/account',
