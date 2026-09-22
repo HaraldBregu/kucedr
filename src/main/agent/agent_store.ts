@@ -24,6 +24,14 @@ import {
 	type ToolConfiguration,
 } from './permissions/permissions_types';
 import { withWorkspacePermissions } from './permissions/with_workspace_permissions';
+import {
+	getAgentProfileModel,
+	getAgentProfileTool,
+	getAgentProfileTools,
+	initializeAgentProfile,
+	setAgentProfileModel,
+	setAgentProfileTool,
+} from './agent_profiles';
 
 export type SearchEngineSettings = {
 	providerId: string;
@@ -331,48 +339,81 @@ store.store = {
 	permissions: persistedPermissions,
 };
 
+const migratedProfiles = store.get('toolProfiles');
+for (const profileId of AGENT_TOOL_PROFILE_IDS) {
+	initializeAgentProfile(
+		profileId,
+		{
+			tools: migratedProfiles[profileId].tools,
+			mcpTools: migratedProfiles[profileId].mcp,
+		},
+		'agent-tools'
+	);
+}
+initializeAgentProfile(
+	'chat',
+	{
+		textToText: store.get('chatbot').textToText,
+		textToSpeech: store.get('chatbot').textToSpeech,
+		speechToText: store.get('chatbot').speechToText,
+		image: getToolModel('image'),
+		audio: getToolModel('audio'),
+		video: getToolModel('video'),
+	},
+	'chat-models'
+);
+initializeAgentProfile(
+	'voice',
+	{
+		textToSpeech: store.get('chatbot').textToSpeech,
+		speechToText: store.get('chatbot').speechToText,
+		realtimeVoice: store.get('voice').realtimeVoice,
+	},
+	'voice-models'
+);
+
 export function getProviderId(): string | undefined {
-	return store.get('chatbot').textToText.providerId || undefined;
+	return getAgentProfileModel('chat', 'textToText').providerId || undefined;
 }
 
 export function setProviderId(providerId: string): void {
-	store.set('chatbot', {
-		...store.get('chatbot'),
-		textToText: { ...store.get('chatbot').textToText, providerId },
+	setAgentProfileModel('chat', 'textToText', {
+		...getAgentProfileModel('chat', 'textToText'),
+		providerId,
 	});
 }
 
 export function getModelId(): string | undefined {
-	return store.get('chatbot').textToText.modelId || undefined;
+	return getAgentProfileModel('chat', 'textToText').modelId || undefined;
 }
 
 export function setModelId(modelId: string): void {
-	store.set('chatbot', {
-		...store.get('chatbot'),
-		textToText: { ...store.get('chatbot').textToText, modelId },
+	setAgentProfileModel('chat', 'textToText', {
+		...getAgentProfileModel('chat', 'textToText'),
+		modelId,
 	});
 }
 
 export function getModelOptions(): Record<string, unknown> {
-	return store.get('chatbot').textToText.options;
+	return getAgentProfileModel('chat', 'textToText').options;
 }
 
 export function setModelOptions(modelOptions: Record<string, unknown>): void {
-	store.set('chatbot', {
-		...store.get('chatbot'),
-		textToText: { ...store.get('chatbot').textToText, options: modelOptions },
+	setAgentProfileModel('chat', 'textToText', {
+		...getAgentProfileModel('chat', 'textToText'),
+		options: modelOptions,
 	});
 }
 
 export function getChatbotModel(kind: AgentChatbotModelKind): AgentMediaModelSettings {
-	return store.get('chatbot')[kind];
+	return getAgentProfileModel('chat', kind);
 }
 
 export function setChatbotModel(
 	kind: AgentChatbotModelKind,
 	settings: AgentMediaModelSettings
 ): void {
-	store.set('chatbot', { ...store.get('chatbot'), [kind]: settings });
+	setAgentProfileModel('chat', kind, settings);
 }
 
 export function getSearchEngine(): SearchEngineSettings {
@@ -384,27 +425,31 @@ export function setSearchEngine(searchEngine: SearchEngineSettings): void {
 }
 
 export function getVoiceModel(kind: AgentVoiceModelKind): AgentMediaModelSettings {
-	return store.get('voice')[kind];
+	return getAgentProfileModel('voice', kind);
 }
 
 export function setVoiceModel(kind: AgentVoiceModelKind, settings: AgentMediaModelSettings): void {
-	store.set('voice', { ...store.get('voice'), [kind]: settings });
+	setAgentProfileModel('voice', kind, settings);
 }
 
 export function getToolModel(kind: AgentToolModelKind): AgentMediaModelSettings {
-	return mediaToolSettings(
-		store.get('tools')[TOOL_MODEL_KEYS[kind]] as Partial<AgentMediaModelSettings & ToolSettings>
-	);
+	return getAgentProfileModel('chat', TOOL_MODEL_KEYS[kind] === 'create_image' ? 'image' : TOOL_MODEL_KEYS[kind] === 'create_sound' ? 'audio' : 'video');
 }
 
 export function setToolModel(kind: AgentToolModelKind, settings: AgentMediaModelSettings): void {
-	const key = TOOL_MODEL_KEYS[kind];
-	const current = store.get('tools')[key] as ToolSettings;
-	store.set('tools', { ...store.get('tools'), [key]: { ...current, ...settings } });
+	setAgentProfileModel(
+		'chat',
+		TOOL_MODEL_KEYS[kind] === 'create_image'
+			? 'image'
+			: TOOL_MODEL_KEYS[kind] === 'create_sound'
+				? 'audio'
+				: 'video',
+		settings
+	);
 }
 
 export function getToolProfile(profileId: AgentToolProfileId): AgentToolProfile {
-	return structuredClone(store.get('toolProfiles')[profileId]);
+	return getAgentProfileTools(profileId);
 }
 
 export function setToolProfileTool(
@@ -412,29 +457,22 @@ export function setToolProfileTool(
 	tool: AgentToolReference,
 	settings: AgentToolConfiguration
 ): AgentToolProfile {
-	const profiles = store.get('toolProfiles');
-	const profile = structuredClone(profiles[profileId]);
 	if (tool.kind === 'builtin') {
 		if (!(tool.id in RUNTIME_TOOL_KEYS)) throw new Error('Unknown built-in tool.');
-		profile.tools[tool.id] = { ...settings };
 	} else {
 		const serverId = tool.serverId.trim();
 		const toolName = tool.toolName.trim();
 		if (!serverId || !toolName) throw new Error('Invalid MCP tool.');
-		profile.mcp[serverId] = { ...profile.mcp[serverId], [toolName]: { ...settings } };
+		return setAgentProfileTool(profileId, { kind: 'mcp', serverId, toolName }, settings);
 	}
-	store.set('toolProfiles', { ...profiles, [profileId]: profile });
-	return getToolProfile(profileId);
+	return setAgentProfileTool(profileId, tool, settings);
 }
 
 export function getToolConfiguration(
 	profileId: AgentToolProfileId,
 	tool: AgentToolReference
 ): AgentToolConfiguration {
-	const profile = store.get('toolProfiles')[profileId];
-	return tool.kind === 'builtin'
-		? (profile.tools[tool.id] ?? DEFAULT_TOOL_CONFIGURATION)
-		: (profile.mcp[tool.serverId]?.[tool.toolName] ?? DEFAULT_TOOL_CONFIGURATION);
+	return getAgentProfileTool(profileId, tool);
 }
 
 export function getPermissions(): PermissionsSchema {
