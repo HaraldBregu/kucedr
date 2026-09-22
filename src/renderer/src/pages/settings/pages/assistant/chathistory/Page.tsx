@@ -21,10 +21,9 @@ function formatSessionDate(createdAtMs: number): string {
 
 interface ChatHistoryPageProps {
 	readonly category?: Extract<AgentSessionCategory, 'task' | 'voice'>;
-	readonly embedded?: boolean;
 }
 
-const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category, embedded = false }) => {
+const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 	const { t } = useTranslation();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -165,8 +164,6 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category, embedded = 
 			</SettingsPanel>
 		</>
 	);
-
-	if (embedded) return content;
 
 	return (
 		<SettingsPageShell>
