@@ -40,10 +40,10 @@ function DetailTarget(): React.JSX.Element {
 
 function renderPage(): ReturnType<typeof render> {
 	return render(
-		<MemoryRouter initialEntries={['/settings/agent/mcp']}>
+		<MemoryRouter initialEntries={['/settings/mcp']}>
 			<Routes>
-				<Route path="/settings/agent/mcp" element={<McpPage />} />
-				<Route path="/settings/agent/mcp/:mcpServerId" element={<DetailTarget />} />
+				<Route path="/settings/mcp" element={<McpPage />} />
+				<Route path="/settings/mcp/:mcpServerId" element={<DetailTarget />} />
 			</Routes>
 		</MemoryRouter>
 	);

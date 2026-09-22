@@ -24,10 +24,10 @@ let server: McpServerInfo;
 
 function renderDetails(id: string): ReturnType<typeof render> {
 	return render(
-		<MemoryRouter initialEntries={[`/settings/agent/mcp/${encodeURIComponent(id)}`]}>
+		<MemoryRouter initialEntries={[`/settings/mcp/${encodeURIComponent(id)}`]}>
 			<Routes>
-				<Route path="/settings/agent/mcp" element={<p>MCP list</p>} />
-				<Route path="/settings/agent/mcp/:mcpServerId" element={<McpDetailsPage />} />
+				<Route path="/settings/mcp" element={<p>MCP list</p>} />
+				<Route path="/settings/mcp/:mcpServerId" element={<McpDetailsPage />} />
 			</Routes>
 		</MemoryRouter>
 	);

@@ -213,7 +213,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Skills
 	{
-		path: '/settings/agent/skills',
+		path: '/settings/skills',
 		labelKey: 'settings.skills.title',
 		keywords: 'plugins import folder delete refresh',
 	},
