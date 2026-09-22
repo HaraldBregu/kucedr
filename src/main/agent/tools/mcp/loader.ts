@@ -4,7 +4,6 @@ import { MCP_MAX_TOOLS } from './limits';
 import { mcpToolName } from './name';
 import { mcpTool } from './tool';
 import { closeMcpClients } from './close';
-import type { DeferredMcpServer, DiscoveredMcpTool } from '../../runner/run_discovery';
 
 type DiscoveredServer =
 	| { id: string; failure: 'connect' }
@@ -18,14 +17,10 @@ type DiscoveredServer =
 
 export async function loadMcpTools(signal?: AbortSignal): Promise<{
 	tools: Tool[];
-	entries: DiscoveredMcpTool[];
-	deferredServers: DeferredMcpServer[];
-	loadDeferred: (serverIds: string[], signal?: AbortSignal) => Promise<DiscoveredMcpTool[]>;
 	diagnostics: McpDiscoveryDiagnostics;
 	close: () => Promise<void>;
 }> {
 	const tools: Tool[] = [];
-	const entries: DiscoveredMcpTool[] = [];
 	const clients = new Set<McpClient>();
 	const usedNames = new Set<string>();
 	const servers = Object.entries(getMcpServers()).sort(([left], [right]) =>
@@ -42,26 +37,15 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 		failures: [],
 	};
 	const enabledServers = servers.filter(([, data]) => data.enabled !== false);
-	const deferredServers = enabledServers.map(([id, data]) => ({
-		id,
-		name: data.name?.trim() || id,
-	}));
-	const loadedServerIds = new Set<string>();
-	const failedServerIds = new Set<string>();
-	const serverData = new Map(enabledServers);
 	try {
-		const discover = async (
-			selected: Array<readonly [string, (typeof enabledServers)[number][1]]>,
-			discoverySignal?: AbortSignal
-		): Promise<DiscoveredMcpTool[]> => {
-			const discovered = await Promise.allSettled(
-				selected.map(async ([id, data]): Promise<DiscoveredServer> => {
-					discoverySignal?.throwIfAborted();
+		const discovered = await Promise.allSettled(
+			enabledServers.map(async ([id, data]): Promise<DiscoveredServer> => {
+					signal?.throwIfAborted();
 					let client: McpClient;
 					try {
-						client = await connect(id, data, 30_000, discoverySignal);
+						client = await connect(id, data, 30_000, signal);
 					} catch (error) {
-						if (discoverySignal?.aborted) throw error;
+						if (signal?.aborted) throw error;
 						return { id, failure: 'connect' };
 					}
 					clients.add(client);
@@ -70,30 +54,28 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 							id,
 							client,
 							approval: data.require_approval,
-							listed: await listTools(client, 30_000, discoverySignal),
+							listed: await listTools(client, 30_000, signal),
 						};
 					} catch (error) {
-						if (discoverySignal?.aborted) throw error;
+						if (signal?.aborted) throw error;
 						clients.delete(client);
 						await close(client).catch(() => undefined);
 						return { id, client, failure: 'list' };
 					}
-				})
-			);
-			const rejected = discovered.find(
-				(result): result is PromiseRejectedResult => result.status === 'rejected'
-			);
-			if (rejected) {
-				await closeMcpClients(clients);
-				throw rejected.reason;
-			}
+			})
+		);
+		const rejected = discovered.find(
+			(result): result is PromiseRejectedResult => result.status === 'rejected'
+		);
+		if (rejected) {
+			await closeMcpClients(clients);
+			throw rejected.reason;
+		}
 
-			const newlyDiscovered: DiscoveredMcpTool[] = [];
-			for (const settled of discovered) {
+		for (const settled of discovered) {
 				if (settled.status !== 'fulfilled') continue;
 				const result = settled.value;
 				if ('failure' in result) {
-					failedServerIds.add(result.id);
 					if (result.failure === 'connect') {
 						diagnostics.failures.push({ serverId: result.id, phase: 'connect' });
 						continue;
@@ -102,7 +84,6 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 					diagnostics.failures.push({ serverId: result.id, phase: 'list' });
 					continue;
 				}
-				loadedServerIds.add(result.id);
 				diagnostics.connectedServers += 1;
 				diagnostics.listedTools += result.listed.tools.length;
 				if (tools.length >= MCP_MAX_TOOLS) {
@@ -120,7 +101,8 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 					}
 					try {
 						const runtimeName = mcpToolName(result.id, listedTool.name, usedNames);
-						const configured = mcpTool(
+					tools.push(
+						mcpTool(
 							result.client,
 							listedTool.name,
 							listedTool.description ?? '',
@@ -129,15 +111,8 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 							result.approval,
 							runtimeName,
 							listedTool.annotations?.readOnlyHint === true
-						);
-						tools.push(configured);
-						const entry = {
-							tool: configured,
-							serverId: result.id,
-							serverName: serverData.get(result.id)?.name?.trim() || result.id,
-						};
-						entries.push(entry);
-						newlyDiscovered.push(entry);
+						)
+					);
 						usedNames.add(runtimeName);
 						diagnostics.loadedTools += 1;
 					} catch {
@@ -150,28 +125,8 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 					}
 				}
 			}
-			return newlyDiscovered;
-		};
-
 		return {
 			tools,
-			entries,
-			deferredServers,
-			loadDeferred: async (serverIds, discoverySignal = signal) => {
-				const selected = [...new Set(serverIds)]
-					.filter((id) => !loadedServerIds.has(id) && !failedServerIds.has(id))
-					.flatMap((id) => {
-						const data = serverData.get(id);
-						return data ? [[id, data] as const] : [];
-					});
-				if (selected.length === 0) return [];
-				try {
-					return await discover(selected, discoverySignal);
-				} catch (error) {
-					await closeMcpClients(clients);
-					throw error;
-				}
-			},
 			diagnostics,
 			close: () => closeMcpClients(clients),
 		};
