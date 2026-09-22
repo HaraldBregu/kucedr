@@ -503,6 +503,27 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
+						path: 'tasks',
+						children: [
+							{
+								index: true,
+								element: <SettingsRouteWrapper><TasksPage /></SettingsRouteWrapper>,
+							},
+							{
+								path: ':taskId/detail',
+								element: <SettingsRouteWrapper><TaskDetailsPage /></SettingsRouteWrapper>,
+							},
+							{
+								path: 'history',
+								element: <SettingsRouteWrapper><ChatHistoryPage category="task" /></SettingsRouteWrapper>,
+							},
+							{
+								path: 'tools',
+								element: <SettingsRouteWrapper><ToolsPage profile="tasks" /></SettingsRouteWrapper>,
+							},
+						],
+					},
+					{
 						path: 'agent',
 						children: [
 							{
@@ -542,41 +563,8 @@ const routes: RouteObject[] = [
 								element: <AgentRouteLegacyRedirect section="skills" target="/settings/skills" />,
 							},
 							{
-								path: 'tasks',
-								children: [
-									{
-										index: true,
-										element: (
-											<SettingsRouteWrapper>
-												<TasksPage />
-											</SettingsRouteWrapper>
-										),
-									},
-									{
-										path: ':taskId/detail',
-										element: (
-											<SettingsRouteWrapper>
-												<TaskDetailsPage />
-											</SettingsRouteWrapper>
-										),
-									},
-									{
-										path: 'history',
-										element: (
-											<SettingsRouteWrapper>
-												<ChatHistoryPage category="task" />
-											</SettingsRouteWrapper>
-										),
-									},
-									{
-										path: 'tools',
-										element: (
-											<SettingsRouteWrapper>
-												<ToolsPage profile="tasks" />
-											</SettingsRouteWrapper>
-										),
-									},
-								],
+								path: 'tasks/*',
+								element: <AgentRouteLegacyRedirect section="tasks" target="/settings/tasks" />,
 							},
 							{
 								path: 'mcp/*',
