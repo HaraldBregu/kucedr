@@ -141,6 +141,7 @@ export interface LlmToolSpec {
 	name: string;
 	description: string;
 	schema: LlmJsonSchema;
+	inputExamples?: readonly Record<string, unknown>[];
 }
 
 export interface LlmStreamRequest {

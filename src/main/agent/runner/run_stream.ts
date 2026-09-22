@@ -253,7 +253,6 @@ async function* loop(
 				closeMcp = mcp.close;
 				mcpDiscovery = mcp.diagnostics;
 				const requiredIds = new Set([
-					...(input.interactionMode === 'plan' ? ['ask'] : []),
 					...(skillListingEnabled ? ['list_skills'] : []),
 					...(skillLoadingEnabled ? ['load_skill'] : []),
 					'get_goal',

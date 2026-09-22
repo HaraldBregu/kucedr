@@ -365,7 +365,7 @@ export class LlmModel implements LlmAdapter {
 				break;
 			}
 			case 'response.function_call_arguments.done': {
-				const state = stateFor(event.output_index, event.item_id, event.name);
+				const state = stateFor(event.output_index, event.item_id);
 				for (const providerEvent of emitToolStart(state)) yield providerEvent;
 				if (!state.argsStr && event.arguments) {
 					state.argsStr = event.arguments;
