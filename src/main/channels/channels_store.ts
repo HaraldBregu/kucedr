@@ -34,17 +34,18 @@ const CHANNEL_PROFILE_MODELS: Record<
 	tts: 'textToSpeech',
 };
 
-const store = new Store<ChannelsStoreState>({
-	name: 'channels',
-	cwd: path.resolve(userDataLocation(), 'settings'),
-	accessPropertiesByDotNotation: false,
-	defaults: {
-		providers: [],
-		encryptedApiKeys: {},
-	},
-});
+const channelStore = (): Store<ChannelsStoreState> =>
+	new Store<ChannelsStoreState>({
+		name: 'channels',
+		cwd: path.resolve(userDataLocation(), 'settings'),
+		accessPropertiesByDotNotation: false,
+		defaults: {
+			providers: [],
+			encryptedApiKeys: {},
+		},
+	});
 
-export const channelsStorePath = store.path;
+export const channelsStorePath = channelStore().path;
 restrictSettingsFile(channelsStorePath);
 const volatileApiKeys = new Map<string, string>();
 
@@ -55,6 +56,7 @@ function trimValue(value: unknown): string | undefined {
 }
 
 export function listChannelProviders(): StoredChannelProvider[] {
+	const store = channelStore();
 	const encryptedApiKeys = { ...(store.get('encryptedApiKeys') ?? {}) };
 	let migrated = false;
 	const providers = store.get('providers').map((provider) => {
@@ -99,6 +101,7 @@ export function getChannelProvider(id: string): StoredChannelProvider | undefine
 
 export function setChannelProvider(provider: StoredChannelProvider): StoredChannelProvider {
 	const providers = listChannelProviders();
+	const store = channelStore();
 	const index = providers.findIndex((entry) => entry.id === provider.id);
 	if (index === -1) providers.push(provider);
 	else providers[index] = provider;

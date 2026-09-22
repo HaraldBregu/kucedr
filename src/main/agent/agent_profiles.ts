@@ -27,7 +27,7 @@ type AgentProfileStore = {
 const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
 const DEFAULT_TOOL: AgentToolConfiguration = { enabled: true, permission: 'allow' };
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
-const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['tasks', 'health']);
+const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>(['tasks', 'health', 'channels']);
 const profileStoreName = (profileId: AgentToolProfileId): string =>
 	SHARED_PROFILE_IDS.has(profileId) ? profileId : `${profileId}-agent`;
 
@@ -96,10 +96,14 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 		mcpTools: structuredClone(next.mcpTools),
 	} as AgentProfileStore;
 	const existing = profileStore(profileId).store;
+	const legacyKeys =
+		profileId === 'channels'
+			? ['llmProviderId', 'llmModelId', 'sttProviderId', 'sttModelId', 'ttsProviderId', 'ttsModelId']
+			: ['providerId', 'modelId', 'modelOptions'];
 	const preserved = SHARED_PROFILE_IDS.has(profileId)
 		? Object.fromEntries(
 				Object.entries(existing).filter(([key]) =>
-					!['providerId', 'modelId', 'modelOptions', 'schemaVersion', 'migrations'].includes(key)
+					![...legacyKeys, 'schemaVersion', 'migrations'].includes(key)
 				)
 			)
 		: {};
