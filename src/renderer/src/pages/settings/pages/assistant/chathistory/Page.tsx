@@ -21,9 +21,10 @@ function formatSessionDate(createdAtMs: number): string {
 
 interface ChatHistoryPageProps {
 	readonly category?: Extract<AgentSessionCategory, 'task' | 'voice'>;
+	readonly embedded?: boolean;
 }
 
-const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
+const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category, embedded = false }) => {
 	const { t } = useTranslation();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -113,54 +114,8 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 		}
 	};
 
-	return (
-		<SettingsPageShell>
-			<SettingsPageHeader
-				title={t(titleKey)}
-				description={t(descriptionKey)}
-				action={
-					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
-						<PopoverTrigger asChild>
-							<Button variant="outline" size="icon-sm" aria-label={t('common.moreOptions')}>
-								<MoreHorizontal className="size-3.5" />
-							</Button>
-						</PopoverTrigger>
-						<PopoverContent align="end" collisionPadding={12} className="w-56 p-1">
-							<div role="menu" aria-label={t('settings.chatHistory.actions')}>
-								<button
-									type="button"
-									role="menuitem"
-									disabled={deletingAll || deletingSessionId !== null}
-									onClick={() => void handleOpenFolder()}
-									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
-								>
-									<FolderOpen className="size-3.5" />
-									{t('settings.chatHistory.openFolder')}
-								</button>
-								<button
-									type="button"
-									role="menuitem"
-									disabled={
-										loading || sessions.length === 0 || deletingAll || deletingSessionId !== null
-									}
-									onClick={() => void handleDeleteAll()}
-									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
-								>
-									{deletingAll ? (
-										<LoaderCircle className="size-3.5 animate-spin" />
-									) : (
-										<Trash2 className="size-3.5" />
-									)}
-									{deletingAll
-										? t('settings.chatHistory.deleting')
-										: t('settings.chatHistory.delete')}
-								</button>
-							</div>
-						</PopoverContent>
-					</Popover>
-				}
-			/>
-
+	const content = (
+		<>
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					{error}
@@ -208,6 +163,59 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 					})
 				)}
 			</SettingsPanel>
+		</>
+	);
+
+	if (embedded) return content;
+
+	return (
+		<SettingsPageShell>
+			<SettingsPageHeader
+				title={t(titleKey)}
+				description={t(descriptionKey)}
+				action={
+					<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
+						<PopoverTrigger asChild>
+							<Button variant="outline" size="icon-sm" aria-label={t('common.moreOptions')}>
+								<MoreHorizontal className="size-3.5" />
+							</Button>
+						</PopoverTrigger>
+						<PopoverContent align="end" collisionPadding={12} className="w-56 p-1">
+							<div role="menu" aria-label={t('settings.chatHistory.actions')}>
+								<button
+									type="button"
+									role="menuitem"
+									disabled={deletingAll || deletingSessionId !== null}
+									onClick={() => void handleOpenFolder()}
+									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
+								>
+									<FolderOpen className="size-3.5" />
+									{t('settings.chatHistory.openFolder')}
+								</button>
+								<button
+									type="button"
+									role="menuitem"
+									disabled={
+										loading || sessions.length === 0 || deletingAll || deletingSessionId !== null
+									}
+									onClick={() => void handleDeleteAll()}
+									className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
+								>
+									{deletingAll ? (
+										<LoaderCircle className="size-3.5 animate-spin" />
+									) : (
+										<Trash2 className="size-3.5" />
+									)}
+									{deletingAll
+										? t('settings.chatHistory.deleting')
+										: t('settings.chatHistory.delete')}
+								</button>
+							</div>
+						</PopoverContent>
+					</Popover>
+				}
+			/>
+			{content}
 		</SettingsPageShell>
 	);
 };

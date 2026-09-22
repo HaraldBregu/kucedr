@@ -4,8 +4,10 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
+	SettingsSection,
 } from '../../components';
 import RealtimeConversationConfiguration from '../assistant/conversation';
+import ChatHistoryPage from '../assistant/chathistory/Page';
 
 export default function VoicePage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -26,6 +28,13 @@ export default function VoicePage(): React.JSX.Element {
 					showContentSeparator={false}
 				/>
 			</SettingsPanel>
+
+			<SettingsSection
+				title={t('settings.modelServices.voiceHistoryTitle')}
+				description={t('settings.modelServices.voiceHistoryDescription')}
+			>
+				<ChatHistoryPage category="voice" embedded />
+			</SettingsSection>
 		</SettingsPageShell>
 	);
 }

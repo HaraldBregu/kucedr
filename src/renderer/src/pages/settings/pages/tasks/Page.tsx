@@ -18,6 +18,7 @@ import {
 	SettingsSection,
 } from '../../components';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
+import ChatHistoryPage from '../assistant/chathistory/Page';
 
 type Task = Awaited<ReturnType<typeof window.tasks.list>>[number];
 
@@ -287,6 +288,13 @@ const TasksPage: React.FC = () => {
 						))
 					)}
 				</SettingsPanel>
+			</SettingsSection>
+
+			<SettingsSection
+				title={t('settings.cron.history.pageTitle')}
+				description={t('settings.cron.history.pageDescription')}
+			>
+				<ChatHistoryPage category="task" embedded />
 			</SettingsSection>
 		</SettingsPageShell>
 	);
