@@ -298,7 +298,7 @@ beforeEach(() => {
 	jest.clearAllMocks();
 });
 
-it('keeps chat configuration on the Agent page and links to Tools', async () => {
+it('keeps only chat configuration on the Chat page and links to Tools', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/agent']}>
@@ -311,49 +311,21 @@ it('keeps chat configuration on the Agent page and links to Tools', async () => 
 
 	expect(screen.queryByRole('heading', { name: 'Configuration' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('heading', { name: 'History' })).not.toBeInTheDocument();
+	expect(screen.getByRole('heading', { name: 'Chat' })).toBeInTheDocument();
 	expect(screen.getByRole('link', { name: /^Tools/ })).toHaveAttribute(
 		'href',
 		'/settings/agent/tools'
 	);
 	expect(screen.queryByRole('button', { name: 'Text to image' })).not.toBeInTheDocument();
-	for (const name of [/Model/, /Realtime conversation/, /Speech/, /Transcription/]) {
-		const trigger = (await screen.findAllByRole('button', { name })).find(
-			(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
-		);
-		expect(trigger).toBeDefined();
-		if (!trigger) continue;
-		if (trigger.getAttribute('aria-expanded') === 'false') await user.click(trigger);
-		expect(trigger).toHaveAttribute('aria-expanded', 'true');
-	}
 	const model = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
 		(element) => element.getAttribute('aria-haspopup') === 'dialog'
 	);
 	expect(model).toBeDefined();
 	if (!model) return;
-	const voiceTrigger = (await screen.findAllByRole('button', { name: /Speech/ })).find(
-		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
-	);
-	expect(voiceTrigger).toBeDefined();
-	if (!voiceTrigger) return;
-	expect(voiceTrigger).toHaveTextContent('Text to speech model');
-	expect(voiceTrigger.nextElementSibling).not.toHaveClass('border-t');
-	expect(screen.getAllByText('Text to speech model').length).toBeGreaterThan(0);
-	const voice = (await screen.findAllByRole('button', { name: 'Speech' })).find(
-		(entry) => entry.getAttribute('aria-haspopup') === 'dialog'
-	);
-	const realtimeConversation = (
-		await screen.findAllByRole('button', { name: 'Realtime conversation' })
-	).find((entry) => entry.getAttribute('aria-haspopup') === 'dialog');
-	expect(voice).toBeDefined();
-	expect(realtimeConversation).toBeDefined();
-	if (!voice || !realtimeConversation) return;
-	expect(voice).toHaveTextContent('Eleven v3');
 	expect(model).toHaveTextContent('GPT');
-	expect(realtimeConversation).toHaveTextContent('GPT Realtime');
-	expect(voice.closest('[data-slot="card"]')).toBe(model.closest('[data-slot="card"]'));
-	expect(realtimeConversation.closest('[data-slot="card"]')).not.toBe(
-		model.closest('[data-slot="card"]')
-	);
+	expect(screen.queryByRole('button', { name: /Speech/ })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: /Transcription/ })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
 
 	const knowledgeBase = screen.getByRole('button', { name: /Knowledge Base/ });
 	const permissions = screen.getByRole('button', { name: /Permissions/ });
