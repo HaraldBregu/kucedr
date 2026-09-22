@@ -386,8 +386,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 				.filter(
 					(group) =>
 						group.titleKey !== 'media' &&
-						(group.tools.length > 0 ||
-							(profile !== 'health' && group.titleKey === 'web'))
+						(group.tools.length > 0 || (profile !== 'health' && group.titleKey === 'web'))
 				)
 				.map((group) => {
 					const Icon = group.icon;

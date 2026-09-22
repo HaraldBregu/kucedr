@@ -40,11 +40,7 @@ export default function McpToolsPage(): React.JSX.Element {
 				description={t('settings.modelServices.agentTools.mcp.description')}
 			/>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
-			<McpTools
-				settings={profile?.mcp ?? {}}
-				disabled={!profile || saving}
-				onChange={updateTool}
-			/>
+			<McpTools settings={profile?.mcp ?? {}} disabled={!profile || saving} onChange={updateTool} />
 		</SettingsPageShell>
 	);
 }

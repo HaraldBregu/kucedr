@@ -46,9 +46,7 @@ export default function Mcp({ settings, disabled, onChange }: McpProps): React.J
 		<SettingsSection title={t(`${prefix}.title`)} description={t(`${prefix}.description`)}>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{!registry && !error && <SettingsNotice>{t(`${prefix}.loading`)}</SettingsNotice>}
-			{registry && servers.length === 0 && (
-				<SettingsNotice>{t(`${prefix}.empty`)}</SettingsNotice>
-			)}
+			{registry && servers.length === 0 && <SettingsNotice>{t(`${prefix}.empty`)}</SettingsNotice>}
 			{servers.length > 0 && (
 				<SettingsPanel>
 					{servers.map((server) => {
@@ -103,30 +101,30 @@ export default function Mcp({ settings, disabled, onChange }: McpProps): React.J
 								)}
 								{result?.ok &&
 									result.tools.map((name) => {
-											const settingsForTool = settings[server.id]?.[name] ?? {
-												permission: 'allow' as const,
-											};
-											const tool: AgentToolReference = {
-												kind: 'mcp',
-												serverId: server.id,
-												toolName: name,
-											};
-											return (
-												<SettingsRow
-													key={name}
-													title={name}
-													description={server.data.name || server.id}
-													actions={
-														<ToolPermissionControl
-															name={name}
-															value={settingsForTool.permission}
-															disabled={disabled}
-															onChange={(permission) => onChange(tool, { permission })}
-														/>
-													}
-												/>
-											);
-										})}
+										const settingsForTool = settings[server.id]?.[name] ?? {
+											permission: 'allow' as const,
+										};
+										const tool: AgentToolReference = {
+											kind: 'mcp',
+											serverId: server.id,
+											toolName: name,
+										};
+										return (
+											<SettingsRow
+												key={name}
+												title={name}
+												description={server.data.name || server.id}
+												actions={
+													<ToolPermissionControl
+														name={name}
+														value={settingsForTool.permission}
+														disabled={disabled}
+														onChange={(permission) => onChange(tool, { permission })}
+													/>
+												}
+											/>
+										);
+									})}
 							</div>
 						);
 					})}
