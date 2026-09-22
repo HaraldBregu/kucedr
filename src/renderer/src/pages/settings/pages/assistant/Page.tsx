@@ -8,6 +8,8 @@ import {
 	History,
 	ShieldCheck,
 	Library,
+	Mic,
+	Volume2,
 	Wrench,
 } from 'lucide-react';
 import { modelsFor, providers } from '@/lib/providers';
@@ -30,6 +32,7 @@ import {
 	type ModelConfigurationState,
 } from '../../components/model-configuration-state';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
+import { AgentMediaModelConfiguration } from './media';
 import { SETTINGS_AGENT_RESOURCE_ITEMS } from '../../navigation';
 
 type CatalogProvider = PublicProvider;
@@ -263,6 +266,38 @@ const AssistantPage: React.FC = () => {
 						onChange={updateModelOption}
 					/>
 				</ModelProviderConfiguration>
+
+				<AgentMediaModelConfiguration
+					api={window.models.voice}
+					capability="text-to-speech"
+					idPrefix="agent-voice"
+					title={t('settings.modelServices.voiceName')}
+					description={t('settings.modelServices.textToSpeechModelDescription')}
+					showIcon
+					icon={Volume2}
+					showFieldLabel={false}
+					grouped
+					showSelectedModel
+					buttonDropdown
+					showContentSeparator={false}
+					inlineAdvanced
+				/>
+
+				<AgentMediaModelConfiguration
+					api={window.models.transcribe}
+					capability="speech-to-text"
+					idPrefix="agent-transcription"
+					title={t('settings.modelServices.transcriptionName')}
+					description={t('settings.modelServices.transcriptionDescription')}
+					showIcon
+					icon={Mic}
+					showFieldLabel={false}
+					grouped
+					showSelectedModel
+					buttonDropdown
+					showContentSeparator={false}
+					showOptions={false}
+				/>
 			</SettingsPanel>
 
 			<SettingsPanel>

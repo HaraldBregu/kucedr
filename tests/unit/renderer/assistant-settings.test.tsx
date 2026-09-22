@@ -298,7 +298,7 @@ beforeEach(() => {
 	jest.clearAllMocks();
 });
 
-it('keeps only chat configuration on the Chat page and links to Tools', async () => {
+it('keeps chat, speech, and transcription configuration on the Chat page and links to Tools', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/agent']}>
@@ -322,8 +322,8 @@ it('keeps only chat configuration on the Chat page and links to Tools', async ()
 	);
 	expect(model).toBeDefined();
 	if (!model) return;
-	expect(screen.queryByRole('button', { name: /Speech/ })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: /Transcription/ })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: /Speech/ })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: /Transcription/ })).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
 
 	const knowledgeBase = screen.getByRole('button', { name: /Knowledge Base/ });
