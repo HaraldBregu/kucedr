@@ -40,6 +40,7 @@ import {
 	setPermissions,
 	setProviderId,
 } from '../../../../../src/main/agent/agent_store';
+import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_profiles';
 
 const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
 
@@ -97,8 +98,26 @@ describe('agent store permissions', () => {
 		});
 	});
 
-	it('does not create a persistent permissions store', () => {
-	expect(mockStoreNames).not.toContain('permissions');
+	it('stores permissions in the selected agent profile', () => {
+		setPermissions(
+			{
+				read: { allow: ['/voice/**'], deny: [] },
+				write: { allow: [], deny: [] },
+				exec: { allow: [], deny: [] },
+				tools: { read: { enabled: true, permission: 'ask' } },
+			},
+			'voice'
+		);
+
+		expect(getAgentProfileDocument('voice')).toMatchObject({
+			permissions: { read: { allow: [workspaceRule, '/voice/**'], deny: [] } },
+			tools: { read: { enabled: true, permission: 'ask' } },
+		});
+		expect(getPermissions('chat').read.allow).not.toContain('/voice/**');
+	});
+
+	it('does not create a separate persistent permissions store', () => {
+		expect(mockStoreNames).not.toContain('permissions');
 	});
 
 	it('keeps built-in and MCP tools independent for each agent profile', () => {
