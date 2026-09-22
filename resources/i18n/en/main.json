@@ -1,5 +1,20 @@
 {
 	"appTitle": "Kucedr",
+	"command": {
+		"label": "Route search",
+		"placeholder": "Search routes and settings...",
+		"empty": "No matching route or setting.",
+		"routes": {
+			"home": {
+				"title": "Home",
+				"description": "Chat with Kucedr"
+			},
+			"settings": {
+				"title": "Settings",
+				"description": "Configure Kucedr"
+			}
+		}
+	},
 	"welcome": {
 		"tagline": "An intelligent text editor for developers and writers. Create or open a workspace to get started.",
 		"freePlan": "Free Plan",

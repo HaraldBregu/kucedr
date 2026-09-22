@@ -21,22 +21,16 @@ interface AppRouteItem {
 	readonly id: string;
 	readonly label: string;
 	readonly description?: string;
-	readonly group: string;
 	readonly icon: LucideIcon;
 	readonly path: string;
 	readonly searchValue: string;
 	readonly keywords: string[];
 }
 
-interface AppRouteGroup {
-	readonly heading: string;
-	readonly items: AppRouteItem[];
-}
-
 interface StaticRouteDefinition {
 	readonly id: string;
-	readonly label: string;
-	readonly description: string;
+	readonly labelKey: string;
+	readonly descriptionKey: string;
 	readonly icon: LucideIcon;
 	readonly path: string;
 	readonly keywords: string;
@@ -54,16 +48,16 @@ function filterCommandItem(value: string, query: string, keywords?: string[]): n
 const TOP_LEVEL_ROUTES: readonly StaticRouteDefinition[] = [
 	{
 		id: 'route-home',
-		label: 'Home',
-		description: 'Chat with Kucedr',
+		labelKey: 'command.routes.home.title',
+		descriptionKey: 'command.routes.home.description',
 		icon: Home,
 		path: '/home',
 		keywords: 'chat agent ai assistant kucedr',
 	},
 	{
 		id: 'route-settings',
-		label: 'Settings',
-		description: 'Configure Kucedr',
+		labelKey: 'command.routes.settings.title',
+		descriptionKey: 'command.routes.settings.description',
 		icon: Settings,
 		path: '/settings/general',
 		keywords: 'preferences configuration settings',
@@ -89,7 +83,6 @@ function createCommandItem({
 	id,
 	label,
 	description,
-	group,
 	icon,
 	path,
 	keywords,
@@ -102,7 +95,6 @@ function createCommandItem({
 		id,
 		label,
 		description,
-		group,
 		icon,
 		path,
 		keywords: keywordList,
@@ -117,34 +109,31 @@ function getSettingsRouteIcon(path: string): LucideIcon {
 	);
 }
 
-function mapSettingsDetailItem(
-	item: SettingsDetailItem,
-	group: string,
-	t: TFunction
-): AppRouteItem {
+function mapSettingsDetailItem(item: SettingsDetailItem, t: TFunction): AppRouteItem {
 	return createCommandItem({
 		id: `settings-detail-${item.path}-${item.labelKey}`,
 		label: t(item.labelKey),
 		description: item.descriptionKey ? t(item.descriptionKey) : undefined,
-		group,
 		icon: item.icon ?? getSettingsRouteIcon(item.path),
 		path: item.path,
 		keywords: item.keywords,
 	});
 }
 
-function buildCommandGroups(t: TFunction): {
-	readonly groups: AppRouteGroup[];
+function buildCommandItems(t: TFunction): {
+	readonly visibleItems: AppRouteItem[];
 	readonly searchOnlyItems: AppRouteItem[];
 } {
-	const routesHeading = t('command.groups.routes', 'Routes');
-	const settingsRoutesHeading = t('command.groups.settingsRoutes', 'Settings routes');
 	const settingsPagePaths = new Set(SETTINGS_NAVIGATION.map((item) => item.path));
 
 	const routes = TOP_LEVEL_ROUTES.map((route) =>
 		createCommandItem({
-			...route,
-			group: routesHeading,
+			id: route.id,
+			label: t(route.labelKey),
+			description: t(route.descriptionKey),
+			icon: route.icon,
+			path: route.path,
+			keywords: route.keywords,
 		})
 	);
 
@@ -153,23 +142,19 @@ function buildCommandGroups(t: TFunction): {
 			id: `settings-route-${item.path}`,
 			label: t(item.labelKey),
 			description: t(item.descriptionKey),
-			group: settingsRoutesHeading,
 			icon: item.icon,
 			path: item.path,
 		})
 	);
 	const deepSettingsItems = SETTINGS_DETAIL_ITEMS.filter(
 		(item) => item.path.startsWith('/settings/') && !settingsPagePaths.has(item.path)
-	).map((item) => mapSettingsDetailItem(item, settingsRoutesHeading, t));
+	).map((item) => mapSettingsDetailItem(item, t));
 	const searchOnlyItems = SETTINGS_DETAIL_ITEMS.filter(
 		(item) => item.path.startsWith('/settings/') && settingsPagePaths.has(item.path)
-	).map((item) => mapSettingsDetailItem(item, settingsRoutesHeading, t));
+	).map((item) => mapSettingsDetailItem(item, t));
 
 	return {
-		groups: [
-			{ heading: routesHeading, items: routes },
-			{ heading: settingsRoutesHeading, items: [...settingsRoutes, ...deepSettingsItems] },
-		],
+		visibleItems: [...routes, ...settingsRoutes, ...deepSettingsItems],
 		searchOnlyItems,
 	};
 }
@@ -226,8 +211,7 @@ export function CommandMenu({
 	const [internalOpen, setInternalOpen] = useState(false);
 	const [search, setSearch] = useState('');
 	const listRef = useRef<HTMLDivElement>(null);
-	const { groups, searchOnlyItems } = useMemo(() => buildCommandGroups(t), [t]);
-	const visibleItems = useMemo(() => groups.flatMap((group) => group.items), [groups]);
+	const { visibleItems, searchOnlyItems } = useMemo(() => buildCommandItems(t), [t]);
 	const allItems = useMemo(
 		() => [...visibleItems, ...searchOnlyItems],
 		[visibleItems, searchOnlyItems]

@@ -309,14 +309,6 @@ const routes: RouteObject[] = [
 									</SettingsRouteWrapper>
 								),
 							},
-							{
-								path: 'mcp-tools',
-								element: (
-									<SettingsRouteWrapper>
-										<McpToolsPage />
-									</SettingsRouteWrapper>
-								),
-							},
 						],
 					},
 					{
@@ -494,6 +486,14 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<ToolsPage profile="health" />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'mcp-tools',
+								element: (
+									<SettingsRouteWrapper>
+										<McpToolsPage />
 									</SettingsRouteWrapper>
 								),
 							},

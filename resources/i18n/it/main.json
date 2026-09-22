@@ -1,5 +1,20 @@
 {
 	"appTitle": "Kucedr",
+	"command": {
+		"label": "Ricerca pagine",
+		"placeholder": "Cerca pagine e impostazioni...",
+		"empty": "Nessuna pagina o impostazione corrispondente.",
+		"routes": {
+			"home": {
+				"title": "Home",
+				"description": "Chatta con Kucedr"
+			},
+			"settings": {
+				"title": "Impostazioni",
+				"description": "Configura Kucedr"
+			}
+		}
+	},
 	"welcome": {
 		"tagline": "Un editor di testo intelligente per sviluppatori e scrittori. Crea o apri un workspace per iniziare.",
 		"freePlan": "Piano Gratuito",

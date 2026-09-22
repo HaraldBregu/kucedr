@@ -205,6 +205,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		labelKey: 'settings.channels.status',
 		keywords: 'connected disconnected runtime start stop',
 	},
+	{
+		path: '/settings/channels/channelDetail/telegram',
+		labelKey: 'channels.telegram',
+		descriptionKey: 'channels.telegramDescription',
+		keywords: 'telegram bot channel configuration token',
+	},
 	// Skills
 	{
 		path: '/settings/skills',
@@ -248,12 +254,43 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'channel tools permissions allow deny ask',
 	},
+	// Provider pages
+	{
+		path: '/settings/providers/models',
+		labelKey: 'settings.overview.groups.mlModels',
+		descriptionKey: 'settings.overview.descriptions.providers',
+		keywords: 'models llm provider api keys',
+	},
+	{
+		path: '/settings/providers/search',
+		labelKey: 'settings.tabs.searchEngines',
+		descriptionKey: 'settings.overview.descriptions.searchEngine',
+		keywords: 'web search provider api key',
+	},
+	{
+		path: '/settings/providers/database',
+		labelKey: 'settings.tabs.databases',
+		descriptionKey: 'settings.overview.descriptions.databases',
+		keywords: 'database vector provider api key',
+	},
+	{
+		path: '/settings/providers/storage',
+		labelKey: 'settings.tabs.storage',
+		descriptionKey: 'settings.storageProviders.description',
+		keywords: 'storage s3 bucket provider',
+	},
 	// Tasks
 	{
 		path: '/settings/cloud',
 		labelKey: 'settings.cron.runtime.title',
 		descriptionKey: 'settings.cron.runtime.description',
 		keywords: 'scheduled agent provider model runtime',
+	},
+	{
+		path: '/settings/tasks/history',
+		labelKey: 'settings.cron.history.pageTitle',
+		descriptionKey: 'settings.cron.history.pageDescription',
+		keywords: 'scheduled task history runs sessions',
 	},
 	{
 		path: '/settings/cloud',
@@ -264,8 +301,8 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	// Permissions
 	{
 		path: '/settings/agent/permissions',
-		labelKey: 'settings.permissions.toolsTitle',
-		descriptionKey: 'settings.permissions.toolsDescription',
+		labelKey: 'settings.tabs.permissions',
+		descriptionKey: 'settings.overview.descriptions.permissions',
 		keywords: 'permissions permission directory recursive tool write edit exec allow deny ask',
 	},
 	// Health
@@ -289,6 +326,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.chatHistory.description',
 		keywords: 'chat history transcript messages context delete clear folder',
 		icon: Bot,
+	},
+	{
+		path: '/settings/voice/history',
+		labelKey: 'settings.modelServices.voiceHistoryTitle',
+		descriptionKey: 'settings.modelServices.voiceHistoryDescription',
+		keywords: 'voice conversation history transcript sessions',
 	},
 ] as const;
 
