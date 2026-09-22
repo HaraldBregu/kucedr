@@ -194,6 +194,7 @@ beforeEach(() => {
 		write: { allow: [], deny: [] },
 		exec: { allow: [], deny: [] },
 	};
+	let toolProfile = { tools: {}, mcp: {} };
 	if (!window.PointerEvent) {
 		Object.defineProperty(window, 'PointerEvent', {
 			configurable: true,
@@ -218,6 +219,21 @@ beforeEach(() => {
 			policySet: jest.fn().mockImplementation(async (next) => {
 				permissions = next;
 				return next;
+			}),
+			getToolProfile: jest.fn().mockImplementation(async () => toolProfile),
+			setToolProfileTool: jest.fn().mockImplementation(async (_profile, tool, settings) => {
+				if (tool.kind === 'builtin') {
+					toolProfile = { ...toolProfile, tools: { ...toolProfile.tools, [tool.id]: settings } };
+				} else {
+					toolProfile = {
+						...toolProfile,
+						mcp: {
+							...toolProfile.mcp,
+							[tool.serverId]: { ...toolProfile.mcp[tool.serverId], [tool.toolName]: settings },
+						},
+					};
+				}
+				return toolProfile;
 			}),
 			ragGetConfiguration: jest.fn().mockResolvedValue({ indexName: 'knowledge-base' }),
 			listSessions: jest.fn().mockResolvedValue([
@@ -425,12 +441,11 @@ it('saves a file tools permission choice', async () => {
 	await user.click(await screen.findByRole('option', { name: 'Always Allow' }));
 
 	await waitFor(() => {
-		expect(window.agent.policySet).toHaveBeenCalledWith({
-			read: { allow: [], deny: [] },
-			write: { allow: [], deny: [] },
-			exec: { allow: [], deny: [] },
-			tools: { read: { enabled: true, permission: 'allow' } },
-		});
+		expect(window.agent.setToolProfileTool).toHaveBeenCalledWith(
+			'chat',
+			{ kind: 'builtin', id: 'read' },
+			{ enabled: true, permission: 'allow' }
+		);
 	});
 });
 
