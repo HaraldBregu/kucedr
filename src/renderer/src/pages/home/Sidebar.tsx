@@ -93,9 +93,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	}, [currentSessionId, sessions, setSessionTitle, t]);
 
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
+	const displayName = authenticatedUser?.displayName?.trim();
 	const accountItem = {
-		title: authenticatedUser ? t('settings.tabs.account') : t('settings.sidebar.account'),
-		description: authenticatedUser?.email,
+		title: displayName || authenticatedUser?.email || t('settings.sidebar.account'),
+		description: displayName ? authenticatedUser?.email : undefined,
 		avatarPath: authenticatedUser?.avatarPath,
 	};
 	const accountInitial = accountItem.title.charAt(0).toUpperCase();
