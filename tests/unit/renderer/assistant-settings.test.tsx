@@ -128,6 +128,8 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.agentTools.permissions.deny': 'Deny',
 		'settings.modelServices.agentTools.discovery.name': 'Discover tools',
 		'settings.modelServices.agentTools.discovery.description': 'Find and load tools when needed.',
+		'settings.modelServices.agentTools.groups.core': 'Core',
+		'settings.modelServices.agentTools.groups.system': 'System',
 		'settings.modelServices.agentTools.discovery.required': 'Required',
 		'settings.modelServices.imageModelDescription': 'Image defaults',
 		'settings.modelServices.musicModelDescription': 'Audio defaults',
@@ -448,6 +450,12 @@ it('lists every built-in agent tool on the Tools page', async () => {
 	])
 		expect(screen.queryByText(removed)).not.toBeInTheDocument();
 	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+	expect(screen.getByText('Core')).toBeInTheDocument();
+	expect(screen.queryByText('Files')).not.toBeInTheDocument();
+	expect(screen.queryByText('Commands')).not.toBeInTheDocument();
+	expect(
+		screen.getByText('System').compareDocumentPosition(screen.getByText('Core'))
+	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
 	expect(
 		screen.getByText('Read file').compareDocumentPosition(screen.getByText('List remote agents'))
 	).toBe(Node.DOCUMENT_POSITION_FOLLOWING);

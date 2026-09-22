@@ -72,7 +72,7 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		],
 	},
 	{
-		titleKey: 'files',
+		titleKey: 'core',
 		icon: FileText,
 		tools: [
 			['Read file', 'read', 'Reads file contents from the workspace.'],
@@ -81,12 +81,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 			['Apply patch', 'patch', 'Applies a structured patch to one or more files.'],
 			['Undo file operation', 'undo', 'Reverts the most recent tracked file operation.'],
 			['Redo file operation', 'redo', 'Reapplies a previously undone file operation.'],
-		],
-	},
-	{
-		titleKey: 'commands',
-		icon: Terminal,
-		tools: [
 			['Execute command', 'bash', 'Runs a shell command in the workspace.'],
 			['Manage process', 'process', 'Inspects, waits for, or stops managed processes.'],
 		],
@@ -222,8 +216,8 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 ] as const;
 
 const ORDERED_AGENT_TOOL_GROUPS = [
-	'files',
-	'commands',
+	'system',
+	'core',
 	'web',
 	'media',
 	'recording',
@@ -232,7 +226,6 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 	'tasks',
 	'coordination',
 	'goals',
-	'system',
 ].map((titleKey) => AGENT_TOOL_GROUPS.find((group) => group.titleKey === titleKey)!);
 
 const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {

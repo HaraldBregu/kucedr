@@ -1366,8 +1366,7 @@
 				},
 				"groups": {
 					"coordination": "Coordinamento agenti",
-					"files": "File",
-					"commands": "Comandi",
+					"core": "Core",
 					"web": "Web",
 					"media": "Media",
 					"recording": "Registrazione",

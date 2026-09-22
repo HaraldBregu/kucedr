@@ -1366,8 +1366,7 @@
 				},
 				"groups": {
 					"coordination": "Agent coordination",
-					"files": "Files",
-					"commands": "Commands",
+					"core": "Core",
 					"web": "Web",
 					"media": "Media",
 					"recording": "Recording",
