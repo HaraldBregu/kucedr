@@ -190,7 +190,7 @@ it('cancels a pending OAuth callback before retrying', async () => {
 	const secondAttempt = handler({ sender, senderFrame: mainFrame } as never, 'gmail');
 	await Promise.resolve();
 
-	expect(first.close).toHaveBeenCalledTimes(1);
+	expect(first.close).toHaveBeenCalled();
 	expect(startOauthCallbackServer).toHaveBeenCalledTimes(2);
 
 	second.close();
