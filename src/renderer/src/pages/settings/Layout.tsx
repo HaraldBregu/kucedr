@@ -12,7 +12,7 @@ export function Layout(): React.JSX.Element {
 					<div className="pb-6">
 						<div
 							data-slot="settings-breadcrumb-shell"
-							className="sticky top-0 z-10 bg-muted/95 backdrop-blur-sm"
+							className="sticky top-0 z-10"
 						>
 							<SettingsBreadcrumb />
 						</div>

@@ -43,6 +43,11 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 		'top-0',
 		'z-10'
 	);
+	expect(breadcrumb).toHaveClass('justify-center');
+	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).not.toHaveClass(
+		'bg-muted/95',
+		'backdrop-blur-sm'
+	);
 	expect(within(breadcrumb).queryByRole('link', { name: 'settings.title' })).not.toBeInTheDocument();
 	expect(within(breadcrumb).queryByText('settings.tabs.providers')).not.toBeInTheDocument();
 	expect(within(breadcrumb).getByText('demo-server')).toBeInTheDocument();
