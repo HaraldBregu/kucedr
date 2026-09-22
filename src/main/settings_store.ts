@@ -1,5 +1,5 @@
-import Store from 'electron-store';
 import path from 'node:path';
+import Store from 'electron-store';
 import type {
 	ResolvedProvider,
 	StoredProvider,
