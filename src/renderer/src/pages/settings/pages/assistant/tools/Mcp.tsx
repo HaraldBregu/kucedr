@@ -2,11 +2,21 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Network } from 'lucide-react';
 import type { McpRegistry, McpTestResult } from '@shared/mcp_types';
+import type { AgentToolConfiguration, AgentToolReference } from '../../../../../../../shared/agent_tools';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { SettingsNotice, SettingsPanel, SettingsRow, SettingsSection } from '../../../components';
 import { firstErrorMessage } from '../../../components/model-configuration-state';
 
-export default function Mcp({ search }: { search: string }): React.JSX.Element {
+type McpProps = {
+	search: string;
+	settings: Record<string, Record<string, AgentToolConfiguration>>;
+	disabled: boolean;
+	onChange: (tool: AgentToolReference, settings: AgentToolConfiguration) => void;
+};
+
+export default function Mcp({ search, settings, disabled, onChange }: McpProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [registry, setRegistry] = useState<McpRegistry | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -64,9 +74,40 @@ export default function Mcp({ search }: { search: string }): React.JSX.Element {
 						/>
 						{result && !result.ok && <SettingsNotice variant="destructive">{result.error || t(`${prefix}.inspectError`)}</SettingsNotice>}
 						{result?.ok && result.tools.length === 0 && <SettingsNotice>{t(`${prefix}.noTools`)}</SettingsNotice>}
-						{result?.ok && result.tools.filter((name) => serverMatches || name.toLocaleLowerCase().includes(query)).map((name) =>
-							<SettingsRow key={name} title={name} description={server.data.name || server.id} />
-						)}
+						{result?.ok && result.tools.filter((name) => serverMatches || name.toLocaleLowerCase().includes(query)).map((name) => {
+							const settingsForTool = settings[server.id]?.[name] ?? { enabled: true, permission: 'allow' as const };
+							const tool: AgentToolReference = { kind: 'mcp', serverId: server.id, toolName: name };
+							return <SettingsRow
+								key={name}
+								title={name}
+								description={server.data.name || server.id}
+								actions={<>
+									<Select
+										value={settingsForTool.permission}
+										onValueChange={(permission) => onChange(tool, {
+											...settingsForTool,
+											permission: permission as AgentToolConfiguration['permission'],
+										})}
+										disabled={disabled}
+									>
+										<SelectTrigger size="sm" className="w-24 text-xs [&_svg]:size-3" aria-label={`${name} permission`}>
+											<SelectValue />
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="ask">{t('settings.modelServices.agentTools.permissions.ask')}</SelectItem>
+											<SelectItem value="allow">{t('settings.modelServices.agentTools.permissions.allow')}</SelectItem>
+											<SelectItem value="deny">{t('settings.modelServices.agentTools.permissions.deny')}</SelectItem>
+										</SelectContent>
+									</Select>
+									<Switch
+										checked={settingsForTool.enabled}
+										onCheckedChange={(enabled) => onChange(tool, { ...settingsForTool, enabled })}
+										disabled={disabled}
+										aria-label={`${name} enabled`}
+									/>
+								</>}
+							/>;
+						})}
 					</div>;
 				})}
 			</SettingsPanel>}
