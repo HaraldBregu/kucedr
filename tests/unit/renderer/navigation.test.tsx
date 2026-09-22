@@ -131,7 +131,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.coding.title' })
 	).toBeInTheDocument();
 	expect(
-		within(mediaGroup as HTMLElement).getAllByRole('link').map((link) => link.textContent)
+		within(mediaGroup as HTMLElement)
+			.getAllByRole('link')
+			.map((link) => link.textContent)
 	).toEqual(['settings.tabs.music', 'settings.tabs.image', 'settings.tabs.video']);
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.music' })
@@ -199,7 +201,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 });
 
 it.each(['music', 'image', 'video'])('marks %s active inside the Media sidebar group', (name) => {
-	const { container } = render(<MemoryRouter initialEntries={[`/settings/agent/${name}`]}><Layout /></MemoryRouter>);
+	const { container } = render(
+		<MemoryRouter initialEntries={[`/settings/agent/${name}`]}>
+			<Layout />
+		</MemoryRouter>
+	);
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
 	const group = within(navigation).getByText('settings.tabs.media').closest('section');
 	const link = within(group as HTMLElement).getByRole('link', { name: `settings.tabs.${name}` });

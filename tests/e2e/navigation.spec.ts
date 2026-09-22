@@ -160,7 +160,9 @@ test('the leading /plan command activates Plan mode and requires prompt text', a
 	await expect(page.getByRole('button', { name: 'Send message' })).toBeEnabled();
 });
 
-test('Agent resources have icons and open their nested settings pages', async ({ browserName: _browserName }, testInfo) => {
+test('Agent resources have icons and open their nested settings pages', async ({
+	browserName: _browserName,
+}, testInfo) => {
 	await app.evaluate(({ BrowserWindow }) => {
 		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
 	});
@@ -173,7 +175,9 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		{ name: 'Knowledge Base', path: 'rag', icon: 'library' },
 	];
 	for (const resource of resources) {
-		await page.evaluate(() => { window.location.hash = '#/settings/agent'; });
+		await page.evaluate(() => {
+			window.location.hash = '#/settings/agent';
+		});
 		const name = new RegExp(resource.name, 'i');
 		const sidebarLink = page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name });
 		await expect(sidebarLink).toHaveCount(0);
@@ -182,12 +186,22 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		await expect(pageLink.locator(`svg.lucide-${resource.icon}`)).toBeVisible();
 		await pageLink.click();
 		await expect(page).toHaveURL(new RegExp(`#/settings/agent/${resource.path}$`));
-		await expect(page.locator('[data-slot="settings-sidebar"]').getByRole('link', { name: 'Agent', exact: true })).toHaveAttribute('aria-current', 'page');
+		await expect(
+			page
+				.locator('[data-slot="settings-sidebar"]')
+				.getByRole('link', { name: 'Agent', exact: true })
+		).toHaveAttribute('aria-current', 'page');
 		await expect(page.getByRole('heading', { name, level: 1 })).toBeVisible();
-		await page.getByRole('navigation', { name: 'Settings navigation' }).getByRole('link', { name: 'Agent', exact: true }).click();
+		await page
+			.getByRole('navigation', { name: 'Settings navigation' })
+			.getByRole('link', { name: 'Agent', exact: true })
+			.click();
 	}
 	await expect(page.getByRole('heading', { name: 'Agent', exact: true })).toBeVisible();
-	await page.locator('[data-slot="settings-workspace"]').getByRole('link', { name: /Skills/ }).scrollIntoViewIfNeeded();
+	await page
+		.locator('[data-slot="settings-workspace"]')
+		.getByRole('link', { name: /Skills/ })
+		.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-desktop.png'), fullPage: true });
 	await app.evaluate(({ BrowserWindow }) => {
 		const window = BrowserWindow.getAllWindows()[0];
@@ -195,46 +209,82 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		window.setSize(390, 800);
 	});
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
-	const skills = page.locator('[data-slot="settings-workspace"]').getByRole('link', { name: /Skills/ });
+	const skills = page
+		.locator('[data-slot="settings-workspace"]')
+		.getByRole('link', { name: /Skills/ });
 	await skills.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('agent-narrow.png'), fullPage: true });
-	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+		true
+	);
 });
 
-
-test('Channels includes provider credentials and the sidebar has bottom spacing', async ({ browserName: _browserName }, testInfo) => {
-	await app.evaluate(({ BrowserWindow }) => { BrowserWindow.getAllWindows()[0].setSize(1100, 850); });
-	await page.evaluate(() => { window.location.hash = '#/settings/channels'; });
+test('Channels includes provider credentials and the sidebar has bottom spacing', async ({
+	browserName: _browserName,
+}, testInfo) => {
+	await app.evaluate(({ BrowserWindow }) => {
+		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
+	});
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/channels';
+	});
 	const sidebar = page.locator('[data-slot="settings-sidebar"]');
 	await expect(sidebar.getByRole('link', { name: 'Bots', exact: true })).toHaveCount(0);
 	await expect(sidebar.getByRole('link', { name: 'Channels', exact: true })).toHaveCount(1);
-	await expect(sidebar.getByRole('link', { name: 'Channels', exact: true }).locator('svg.lucide-radio-tower')).toBeVisible();
+	await expect(
+		sidebar.getByRole('link', { name: 'Channels', exact: true }).locator('svg.lucide-radio-tower')
+	).toBeVisible();
 	await expect(sidebar.locator('.overflow-y-auto')).toHaveCSS('padding-bottom', '16px');
-	const telegram = page.getByRole('heading', { name: 'Telegram', exact: true }).locator('xpath=ancestor::*[@data-slot="card"][1]');
+	const telegram = page
+		.getByRole('heading', { name: 'Telegram', exact: true })
+		.locator('xpath=ancestor::*[@data-slot="card"][1]');
 	await telegram.getByRole('button', { name: 'Connect', exact: true }).click();
 	await telegram.getByLabel('Bot token', { exact: true }).fill('channel-test-token');
 	await telegram.getByRole('button', { name: 'Save', exact: true }).click();
 	await expect(telegram.getByRole('button', { name: 'Edit token' })).toBeVisible();
 	await expect(telegram).toContainText('Configured');
 	await expect(page.getByRole('heading', { name: 'Telegram', exact: true })).toHaveCount(1);
-	await expect(sidebar.locator('[data-slot="split-pane-group"]').filter({ has: page.getByRole('link', { name: 'Channels', exact: true }) })).toHaveCSS('border-top-width', '1px');
-	expect(await page.evaluate(() => window.provider.getChannel('telegram'))).toMatchObject({ id: 'telegram', configured: true });
-	await page.screenshot({ path: testInfo.outputPath('channels-configuration.png'), fullPage: true });
+	await expect(
+		sidebar
+			.locator('[data-slot="split-pane-group"]')
+			.filter({ has: page.getByRole('link', { name: 'Channels', exact: true }) })
+	).toHaveCSS('border-top-width', '1px');
+	expect(await page.evaluate(() => window.provider.getChannel('telegram'))).toMatchObject({
+		id: 'telegram',
+		configured: true,
+	});
+	await page.screenshot({
+		path: testInfo.outputPath('channels-configuration.png'),
+		fullPage: true,
+	});
 	await telegram.getByRole('link', { name: 'Configuration', exact: true }).click();
 	await expect(page).toHaveURL(/#\/settings\/channels\/channelDetail\/telegram$/);
 	await expect(page.getByRole('heading', { name: 'Telegram', exact: true })).toBeVisible();
-	await page.evaluate(() => { window.location.hash = '#/settings/channels'; });
-	await app.evaluate(({ BrowserWindow }) => { const win = BrowserWindow.getAllWindows()[0]; win.setMinimumSize(390, 600); win.setSize(390, 800); });
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/channels';
+	});
+	await app.evaluate(({ BrowserWindow }) => {
+		const win = BrowserWindow.getAllWindows()[0];
+		win.setMinimumSize(390, 600);
+		win.setSize(390, 800);
+	});
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
 	await telegram.scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('channels-narrow.png'), fullPage: true });
-	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+		true
+	);
 });
 
-
-test('Database saves and reloads database credentials from Providers', async ({ browserName: _browserName }, testInfo) => {
-	await app.evaluate(({ BrowserWindow }) => { BrowserWindow.getAllWindows()[0].setSize(1100, 850); });
-	await page.evaluate(() => { window.location.hash = '#/settings/providers/models'; });
+test('Database saves and reloads database credentials from Providers', async ({
+	browserName: _browserName,
+}, testInfo) => {
+	await app.evaluate(({ BrowserWindow }) => {
+		BrowserWindow.getAllWindows()[0].setSize(1100, 850);
+	});
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/providers/models';
+	});
 	const sidebar = page.locator('[data-slot="settings-sidebar"]');
 	const link = sidebar.getByRole('link', { name: 'Database', exact: true });
 	await expect(link.locator('svg.lucide-database')).toBeVisible();
@@ -244,7 +294,11 @@ test('Database saves and reloads database credentials from Providers', async ({ 
 	await page.getByLabel('Pinecone API key', { exact: true }).fill('database-test-key');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
-	expect(await page.evaluate(() => window.provider.get('pinecone', 'databases'))).toMatchObject({ id: 'pinecone', kind: 'databases', configured: true });
+	expect(await page.evaluate(() => window.provider.get('pinecone', 'databases'))).toMatchObject({
+		id: 'pinecone',
+		kind: 'databases',
+		configured: true,
+	});
 	expect(await page.evaluate(() => window.provider.get('pinecone', 'models'))).toBeUndefined();
 	await page.reload();
 	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
@@ -254,8 +308,14 @@ test('Database saves and reloads database credentials from Providers', async ({ 
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'Edit Pinecone API key' })).toBeVisible();
 	await page.screenshot({ path: testInfo.outputPath('vector-db-desktop.png'), fullPage: true });
-	await app.evaluate(({ BrowserWindow }) => { const win = BrowserWindow.getAllWindows()[0]; win.setMinimumSize(390, 600); win.setSize(390, 800); });
+	await app.evaluate(({ BrowserWindow }) => {
+		const win = BrowserWindow.getAllWindows()[0];
+		win.setMinimumSize(390, 600);
+		win.setSize(390, 800);
+	});
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
 	await page.screenshot({ path: testInfo.outputPath('vector-db-narrow.png'), fullPage: true });
-	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+		true
+	);
 });
