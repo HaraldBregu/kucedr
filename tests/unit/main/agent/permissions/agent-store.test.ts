@@ -1,4 +1,3 @@
-
 const mockStoreNames: string[] = [];
 
 jest.mock('electron-store', () =>
@@ -143,11 +142,7 @@ describe('agent store permissions', () => {
 	});
 
 	it('keeps built-in and MCP tools independent for each agent profile', () => {
-		setToolProfileTool(
-			'voice',
-			{ kind: 'builtin', id: 'read' },
-			{ permission: 'deny' }
-		);
+		setToolProfileTool('voice', { kind: 'builtin', id: 'read' }, { permission: 'deny' });
 		setToolProfileTool(
 			'chat',
 			{ kind: 'mcp', serverId: 'gmail', toolName: 'list_messages' },

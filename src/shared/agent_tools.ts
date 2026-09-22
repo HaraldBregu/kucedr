@@ -21,8 +21,7 @@ export interface AgentToolConfiguration {
 }
 
 export type AgentToolReference =
-	| { kind: 'builtin'; id: string }
-	| { kind: 'mcp'; serverId: string; toolName: string };
+	{ kind: 'builtin'; id: string } | { kind: 'mcp'; serverId: string; toolName: string };
 
 const HEALTH_BUILTIN_TOOL_IDS = new Set([
 	'read',

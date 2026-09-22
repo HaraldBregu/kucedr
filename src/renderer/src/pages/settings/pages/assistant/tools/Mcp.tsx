@@ -131,12 +131,12 @@ export default function Mcp({ search, settings, disabled, onChange }: McpProps):
 													title={name}
 													description={server.data.name || server.id}
 													actions={
-																	<ToolPermissionControl
-																		name={name}
-																		value={settingsForTool.permission}
-																		disabled={disabled}
-																		onChange={(permission) => onChange(tool, { permission })}
-																	/>
+														<ToolPermissionControl
+															name={name}
+															value={settingsForTool.permission}
+															disabled={disabled}
+															onChange={(permission) => onChange(tool, { permission })}
+														/>
 													}
 												/>
 											);

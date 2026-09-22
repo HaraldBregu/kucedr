@@ -194,7 +194,10 @@ export function getAgentProfilePermissions(profileId: AgentToolProfileId): unkno
 	return structuredClone(profileStore(profileId).get('permissions'));
 }
 
-export function setAgentProfilePermissions(profileId: AgentToolProfileId, permissions: unknown): void {
+export function setAgentProfilePermissions(
+	profileId: AgentToolProfileId,
+	permissions: unknown
+): void {
 	profileStore(profileId).set('permissions', structuredClone(permissions));
 }
 
