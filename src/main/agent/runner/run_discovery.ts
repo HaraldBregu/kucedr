@@ -65,6 +65,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 			limit: z.number().int().min(1).max(DISCOVERY_CALL_LIMIT).default(DISCOVERY_DEFAULT_LIMIT),
 		}),
 		execute: async ({ query, limit }, signal) => {
+			const startedAt = Date.now();
 			signal?.throwIfAborted();
 			const matchingServers = rankTools(
 				query,
@@ -101,6 +102,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 					...new Set(selected.flatMap((candidate) => mcpMetadata.get(candidate.id) ?? [])),
 				],
 				selectedCount: selected.length,
+				latencyMs: Date.now() - startedAt,
 				limitReached: selectedCount >= DISCOVERY_RUN_LIMIT,
 			};
 		},

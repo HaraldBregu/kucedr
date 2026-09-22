@@ -196,6 +196,7 @@ export type RuntimeEvent =
 			type: 'capability_resolution_result';
 			tools: Array<{ id: string; name: string }>;
 			serviceIds: string[];
+			latencyMs?: number;
 	  }
 	| {
 			type: 'run_started';

@@ -85,6 +85,7 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 			}),
 			selectedServiceCount: serviceIds.length,
 			selectedServiceIds: serviceIds,
+			...(typeof event.latencyMs === 'number' ? { latencyMs: event.latencyMs } : {}),
 		};
 	}
 	if (event.type === 'model_call_start' || event.type === 'model_call_end') {

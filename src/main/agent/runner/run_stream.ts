@@ -515,6 +515,7 @@ async function* loop(
 			}
 			if (pendingToolCalls.some((call) => call.name === 'discover_tools')) {
 				const serviceIds = new Set<string>();
+				let discoveryLatencyMs: number | undefined;
 				const selectedIds = new Set(
 					pendingToolCalls.flatMap((call) => {
 						if (call.name !== 'discover_tools' || typeof call.result?.content !== 'string')
@@ -523,10 +524,12 @@ async function* loop(
 							const parsed = JSON.parse(call.result.content) as {
 								selectedToolIds?: unknown;
 								selectedServiceIds?: unknown;
+								latencyMs?: unknown;
 							};
 							if (Array.isArray(parsed.selectedServiceIds)) {
 								for (const id of parsed.selectedServiceIds) if (typeof id === 'string') serviceIds.add(id);
 							}
+							if (typeof parsed.latencyMs === 'number') discoveryLatencyMs = parsed.latencyMs;
 							return Array.isArray(parsed.selectedToolIds)
 								? parsed.selectedToolIds.filter((id): id is string => typeof id === 'string')
 								: [];
@@ -538,6 +541,7 @@ async function* loop(
 					yield {
 						type: 'capability_resolution_result',
 						serviceIds: [...serviceIds],
+						...(discoveryLatencyMs === undefined ? {} : { latencyMs: discoveryLatencyMs }),
 					tools: (discovery?.active() ?? tools)
 						.filter((tool) => selectedIds.has(tool.id))
 						.map((tool) => ({ id: tool.id, name: tool.name })),
