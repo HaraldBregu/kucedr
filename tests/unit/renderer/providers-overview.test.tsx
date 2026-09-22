@@ -20,6 +20,6 @@ it('links to every provider configuration from the Providers overview', () => {
 		['settings.tabs.databases', '/settings/providers/database'],
 		['settings.tabs.storage', '/settings/providers/storage'],
 	] as const) {
-		expect(screen.getByRole('link', { name })).toHaveAttribute('href', path);
+		expect(screen.getByText(name).closest('a')).toHaveAttribute('href', path);
 	}
 });
