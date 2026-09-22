@@ -56,7 +56,7 @@ const storedModelKey = (
 			? 'llm'
 			: (profileId === 'chat' || profileId === 'channels') && modelKey === 'textToSpeech'
 				? 'tts'
-		: (profileId === 'chat' || profileId === 'channels') && modelKey === 'speechToText'
+				: (profileId === 'chat' || profileId === 'channels') && modelKey === 'speechToText'
 					? 'stt'
 					: profileId === 'voice' && modelKey === 'realtimeVoice'
 						? 'rtv'
@@ -134,7 +134,15 @@ function write(profileId: AgentToolProfileId, next: AgentProfileStore): void {
 					'ttsModelId',
 				]
 			: ['providerId', 'modelId', 'modelOptions'];
-	const profileKeys = ['llm', 'tts', 'stt', 'rtv', ...AGENT_PROFILE_MODEL_KEYS, 'tools', 'mcpTools'];
+	const profileKeys = [
+		'llm',
+		'tts',
+		'stt',
+		'rtv',
+		...AGENT_PROFILE_MODEL_KEYS,
+		'tools',
+		'mcpTools',
+	];
 	const preserved = SHARED_PROFILE_IDS.has(profileId)
 		? Object.fromEntries(
 				Object.entries(existing).filter(
