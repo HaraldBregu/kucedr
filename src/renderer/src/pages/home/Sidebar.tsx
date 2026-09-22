@@ -114,10 +114,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
-				<Link to="/settings/apps" className={SPLIT_ITEM_CLASS}>
-					<Layers className="size-4" />
-					<span>{t('settings.tabs.apps')}</span>
-				</Link>
 				<button
 					type="button"
 					className={SPLIT_ITEM_CLASS}
@@ -271,6 +267,12 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 			</section>
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton type="button" onClick={() => navigate('/settings/apps')}>
+							<Layers className="size-4" />
+							<span>{t('settings.tabs.apps')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
 					<SidebarMenuItem>
 						<SidebarMenuButton type="button" onClick={() => navigate('/settings/general')}>
 							<Settings className="size-4" />
