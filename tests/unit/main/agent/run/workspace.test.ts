@@ -65,13 +65,11 @@ it.each([undefined, 'task', 'health', 'child'] as const)('creates, reads, overwr
 	expect(history.operations).toHaveLength(5);
 });
 
-it.each(['task', 'health', 'child'] as const)('allows workspace commands and health updates without a window for %s', async (source) => {
-	for (const id of ['bash', 'update_health']) {
-		const run = jest.fn().mockResolvedValue('done');
-		const tool = jsonTool({ id, name: id, description: id, schema: {}, execute: run });
-		expect((await execute(tool, id === 'bash' ? { command: 'node tools/example.js' } : {}, undefined, source)).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
-		expect(run).toHaveBeenCalled();
-	}
+it.each(['task', 'health', 'child'] as const)('allows workspace commands without a window for %s', async (source) => {
+	const run = jest.fn().mockResolvedValue('done');
+	const tool = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	expect((await execute(tool, { command: 'node tools/example.js' }, undefined, source)).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
+	expect(run).toHaveBeenCalled();
 });
 
 it.each(['task', 'health', 'child'] as const)('blocks unapproved outside access without a window for %s', async (source) => {
@@ -89,10 +87,10 @@ it.each(['task', 'health', 'child'] as const)('blocks unapproved outside access 
 	expect(fs.existsSync(path.resolve(workspace, '../background-outside.txt'))).toBe(false);
 });
 
-it.each(['update_health', 'bash'])('allows workspace %s without approval', async (id) => {
+it('allows workspace bash without approval', async () => {
 	const run = jest.fn().mockResolvedValue('done');
-	const tool = jsonTool({ id, name: id, description: id, schema: {}, execute: run });
-	expect((await execute(tool, id === 'bash' ? { command: 'node tools/example.js' } : {})).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
+	const tool = jsonTool({ id: 'bash', name: 'bash', description: 'bash', schema: {}, execute: run });
+	expect((await execute(tool, { command: 'node tools/example.js' })).at(-1)).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'allow' });
 	expect(run).toHaveBeenCalled();
 });
 

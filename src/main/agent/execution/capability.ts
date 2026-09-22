@@ -25,8 +25,6 @@ const READ = new Set([
 ]);
 const WRITE = new Set(['write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap']);
 const PERSIST = new Set([
-	'update_health',
-	'update_health_settings',
 	'create_task',
 	'update_task',
 	'delete_task',

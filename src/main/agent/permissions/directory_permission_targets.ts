@@ -2,7 +2,6 @@ import path from 'node:path';
 import { realPath } from '../../shared/real_path';
 import { resolveUserPath } from '../../shared/user_path';
 import { taskStorePath } from '../../tasks/tasks_store';
-import { healthStorePath } from '../health/health_store';
 import { registry } from '../tools/core/process';
 import { toolPermissionTargets } from './tool_permission_targets';
 import { resolveExecRoots } from './resolve_exec_roots';
@@ -10,7 +9,6 @@ import { fileHistoryTargets } from '../history/targets';
 import type { FileHistory } from '../history/types';
 
 const AGENT_FILES: Record<string, string> = {
-	update_health: 'HEALTH.md',
 	complete_bootstrap: 'BOOTSTRAP.md',
 };
 export const MEDIA_TOOLS = new Set([
@@ -31,7 +29,6 @@ export function isWritePermissionTool(toolName: string, _args: Record<string, un
 		toolName === 'undo' ||
 		toolName === 'redo' ||
 		toolName in AGENT_FILES ||
-		toolName === 'update_health_settings' ||
 		MEDIA_TOOLS.has(toolName) ||
 		TASK_TOOLS.has(toolName)
 	);
@@ -60,7 +57,6 @@ export function directoryPermissionTargets(
 	}
 	const fileName = AGENT_FILES[toolName];
 	if (fileName) return [realPath(path.join(baseDir, fileName))];
-	if (toolName === 'update_health_settings') return [realPath(healthStorePath)];
 	if (MEDIA_TOOLS.has(toolName)) {
 		const directory = typeof args.directory === 'string' && args.directory ? args.directory : '.';
 		return [realPath(resolveUserPath(directory, baseDir))];

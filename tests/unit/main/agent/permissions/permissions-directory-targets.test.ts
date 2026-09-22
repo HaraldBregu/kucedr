@@ -1,7 +1,6 @@
 import path from 'node:path';
 import { directoryPermissionTargets } from '../../../../../src/main/agent/permissions/directory_permission_targets';
 import { taskStorePath } from '../../../../../src/main/tasks/tasks_store';
-import { healthStorePath } from '../../../../../src/main/agent/health/health_store';
 import { registry, type ProcessSession } from '../../../../../src/main/agent/tools/core/process';
 
 const agentDir = path.resolve('/appdata/agent');
@@ -49,23 +48,14 @@ describe('directoryPermissionTargets', () => {
 		]);
 	});
 
-	it.each([
-		['update_health', 'HEALTH.md'],
-		['complete_bootstrap', 'BOOTSTRAP.md'],
-	] as const)('maps %s to its agent-owned resource', (toolName, fileName) => {
-		expect(directoryPermissionTargets(toolName, {}, agentDir)).toEqual([
-			path.join(agentDir, fileName),
+	it('maps bootstrap completion to its agent-owned resource', () => {
+		expect(directoryPermissionTargets('complete_bootstrap', {}, agentDir)).toEqual([
+			path.join(agentDir, 'BOOTSTRAP.md'),
 		]);
 	});
 
 	it('maps schedule changes to the shared cron store', () => {
 		expect(directoryPermissionTargets('create_task', {}, agentDir)).toEqual([taskStorePath]);
-	});
-
-	it('maps health settings changes to the shared health store', () => {
-		expect(directoryPermissionTargets('update_health_settings', {}, agentDir)).toEqual([
-			healthStorePath,
-		]);
 	});
 
 	it('maps generated media and keeps skill activation path-independent', () => {

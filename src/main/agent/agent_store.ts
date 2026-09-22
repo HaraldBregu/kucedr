@@ -89,8 +89,6 @@ const RUNTIME_TOOL_KEYS = {
 	request_goal_completion: 'request_goal_completion',
 	report_goal_blocker: 'report_goal_blocker',
 	ask: 'request_user_input',
-	update_health: 'update_health',
-	update_health_settings: 'update_health_settings',
 	complete_bootstrap: 'complete_bootstrap',
 } as const;
 export const AGENT_RUNTIME_TOOL_IDS = Object.keys(RUNTIME_TOOL_KEYS);

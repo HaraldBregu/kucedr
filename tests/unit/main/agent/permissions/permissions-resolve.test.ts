@@ -109,8 +109,6 @@ describe('resolveToolPermission', () => {
 	});
 
 	it.each([
-		['update_health', {}],
-		['update_health_settings', {}],
 		['complete_bootstrap', {}],
 		['create_task', {}],
 		['update_task', {}],

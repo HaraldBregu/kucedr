@@ -441,6 +441,10 @@ it('lists every built-in agent tool on the Tools page', async () => {
 
 	expect(document.querySelectorAll('code')).toHaveLength(0);
 	for (const removed of [
+		'Update health',
+		'Update health settings',
+		'update_health',
+		'update_health_settings',
 		'save_memory',
 		'list_memories',
 		'forget_memory',

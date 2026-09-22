@@ -207,8 +207,6 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		icon: Settings,
 		tools: [
 			['Request user input', 'ask', 'Asks the user for information needed to continue.'],
-			['Update health', 'update_health', 'Updates the agent health status.'],
-			['Update health settings', 'update_health_settings', 'Changes the agent health settings.'],
 			['Complete bootstrap', 'complete_bootstrap', 'Marks initial agent setup as complete.'],
 		],
 	},

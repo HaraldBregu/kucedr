@@ -6,8 +6,6 @@ jest.mock('../../../../../src/main/models/voice', () => ({ synthesize: jest.fn()
 
 import { completeBootstrapTool } from '../../../../../src/main/agent/tools/assistant/complete_bootstrap';
 import { editTool } from '../../../../../src/main/agent/tools/core/edit';
-import { updateHealthSettingsTool } from '../../../../../src/main/agent/tools/health/update_health_settings';
-import { updateHealthTool } from '../../../../../src/main/agent/tools/health/update_health';
 import { createImageTool } from '../../../../../src/main/agent/tools/media/create_image';
 import { createSoundTool } from '../../../../../src/main/agent/tools/media/create_sound';
 import { createVideoTool } from '../../../../../src/main/agent/tools/media/create_video';
@@ -22,8 +20,6 @@ import { updateTaskTool } from '../../../../../src/main/agent/tools/tasks/update
 import { useWebBrowserTool } from '../../../../../src/main/agent/tools/web/use_web_browser';
 
 it.each([
-	updateHealthTool({ location: '/workspace' }),
-	updateHealthSettingsTool,
 	completeBootstrapTool,
 	createImageTool(),
 	createVideoTool(),

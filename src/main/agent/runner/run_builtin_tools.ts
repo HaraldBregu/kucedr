@@ -13,8 +13,6 @@ import { processTool } from '../tools/core/process';
 import { readTool } from '../tools/core/read';
 import { requestUserInputTool } from '../tools/core/ask';
 import { writeTool } from '../tools/core/write';
-import { updateHealthSettingsTool } from '../tools/health/update_health_settings';
-import { updateHealthTool } from '../tools/health/update_health';
 import { getKnowledgeTools } from '../tools/knowledge';
 import { createImageTool } from '../tools/media/create_image';
 import { createSoundTool } from '../tools/media/create_sound';
@@ -72,8 +70,6 @@ export function builtinTools(
 		screenRecorderStatusTool,
 		screenRecorderStopTool,
 		...getKnowledgeTools(),
-		updateHealthTool(config),
-		updateHealthSettingsTool,
 		createTaskTool,
 		updateTaskTool,
 		deleteTaskTool,
