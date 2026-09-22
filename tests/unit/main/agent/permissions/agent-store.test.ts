@@ -44,7 +44,11 @@ import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_pro
 
 const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
 
-beforeEach(() => resetPermissions());
+beforeEach(() => {
+	for (const profileId of ['chat', 'voice', 'health', 'tasks'] as const) {
+		resetPermissions(profileId);
+	}
+});
 
 describe('agent store permissions', () => {
 	it('keeps model fields on media tool configurations', () => {
@@ -60,11 +64,7 @@ describe('agent store permissions', () => {
 			read: { allow: [workspaceRule], deny: [] },
 			write: { allow: [workspaceRule], deny: [] },
 			exec: { allow: [workspaceRule], deny: [] },
-			tools: {
-				read: { enabled: true, permission: 'allow' },
-				edit: { enabled: true, permission: 'allow' },
-				patch: { enabled: true, permission: 'allow' },
-			},
+			tools: {},
 		});
 	});
 
@@ -79,7 +79,7 @@ describe('agent store permissions', () => {
 		expect(saved.exec.allow).toEqual([workspaceRule]);
 	});
 
-	it('keeps per-tool permission choices for the current run', () => {
+	it('keeps per-tool permission choices with the chat profile', () => {
 		const saved = setPermissions({
 			read: { allow: [], deny: [] },
 			write: { allow: [], deny: [] },
@@ -98,23 +98,29 @@ describe('agent store permissions', () => {
 		});
 	});
 
-	it('stores permissions in the selected agent profile', () => {
-		setPermissions(
-			{
-				read: { allow: ['/voice/**'], deny: [] },
-				write: { allow: [], deny: [] },
-				exec: { allow: [], deny: [] },
-				tools: { read: { enabled: true, permission: 'ask' } },
-			},
-			'voice'
-		);
+	it.each(['chat', 'voice', 'health', 'tasks'] as const)(
+		'stores %s permissions in its agent profile',
+		(profileId) => {
+			const rule = `/${profileId}/**`;
+			setPermissions(
+				{
+					read: { allow: [rule], deny: [] },
+					write: { allow: [], deny: [] },
+					exec: { allow: [], deny: [] },
+					tools: { read: { enabled: true, permission: 'ask' } },
+				},
+				profileId
+			);
 
-		expect(getAgentProfileDocument('voice')).toMatchObject({
-			permissions: { read: { allow: [workspaceRule, '/voice/**'], deny: [] } },
-			tools: { read: { enabled: true, permission: 'ask' } },
-		});
-		expect(getPermissions('chat').read.allow).not.toContain('/voice/**');
-	});
+			expect(getAgentProfileDocument(profileId)).toMatchObject({
+				permissions: { read: { allow: [workspaceRule, rule], deny: [] } },
+				tools: { read: { enabled: true, permission: 'ask' } },
+			});
+			expect(getPermissions('chat').read.allow).toEqual(
+				profileId === 'chat' ? [workspaceRule, rule] : [workspaceRule]
+			);
+		}
+	);
 
 	it('does not create a separate persistent permissions store', () => {
 		expect(mockStoreNames).not.toContain('permissions');
