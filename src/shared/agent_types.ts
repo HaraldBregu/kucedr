@@ -114,6 +114,7 @@ export interface AgentRunOptions {
 	replyTo?: string;
 	providerId?: string;
 	model?: string;
+	modelOptions?: Record<string, unknown>;
 	effort?: ModelReasoningEffort;
 	contextMode?: AgentContextMode;
 	interactionMode?: AgentInteractionMode;

@@ -17,5 +17,6 @@ it('runs health checklists with the default background tools and no approval win
 		streaming: false,
 		contextMode: 'minimal',
 		sessionId: 'health',
+		modelOptions: {},
 	});
 });

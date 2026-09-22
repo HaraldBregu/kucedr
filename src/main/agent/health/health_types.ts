@@ -25,6 +25,7 @@ export interface HealthSettings {
 	includeReasoning?: boolean;
 	providerId?: string;
 	modelId?: string;
+	modelOptions: Record<string, unknown>;
 }
 
 export const DEFAULT_HEALTH_SETTINGS: HealthSettings = {
@@ -34,4 +35,5 @@ export const DEFAULT_HEALTH_SETTINGS: HealthSettings = {
 	lightContext: true,
 	isolatedSession: true,
 	skipWhenBusy: true,
+	modelOptions: {},
 };

@@ -321,6 +321,7 @@ export class Agent {
 			]);
 			const events = stream(this.config, session, input, runSignal, {
 				streaming: options.streaming ?? true,
+				...(options.modelOptions ? { modelOptions: options.modelOptions } : {}),
 				resources: this.resources,
 				sandbox: this.sandbox,
 				memory: this.memory,
