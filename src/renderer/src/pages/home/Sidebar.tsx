@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Bot, Cloud, Code2, Layers, LogOut, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
+import { Bot, Cloud, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Search, Server, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -278,28 +278,29 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<SidebarMenuButton
-									size="default"
+									size="lg"
 									aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-									className="h-9 py-1.5 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+									className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 								>
-									<Avatar className="size-6 rounded-full grayscale">
+									<Avatar className="size-8 rounded-full grayscale">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
 										<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
-									<span className="grid min-w-0 flex-1 text-left text-xs leading-tight">
+									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
 										<span className="truncate font-medium">{accountItem.title}</span>
 										{accountItem.description ? (
 											<span className="truncate text-xs text-muted-foreground">{accountItem.description}</span>
 										) : null}
 									</span>
+									<MoreVertical className="ml-auto size-4" aria-hidden="true" />
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
 								className="w-52 rounded-lg"
-								side="top"
-								align="center"
+								side="right"
+								align="end"
 							>
 								<DropdownMenuLabel className="p-0 font-normal">
 									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
