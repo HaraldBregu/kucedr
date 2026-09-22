@@ -219,6 +219,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'tools image audio video speech text to speech transcription search engine',
 	},
 	{
+		path: '/settings/agent/mcp-tools',
+		labelKey: 'settings.modelServices.agentTools.mcp.title',
+		descriptionKey: 'settings.modelServices.agentTools.mcp.description',
+		keywords: 'mcp tools servers permissions allow deny ask',
+	},
+	{
 		path: '/settings/voice/tools',
 		labelKey: 'settings.modelServices.tools',
 		descriptionKey: 'settings.modelServices.toolsDescription',

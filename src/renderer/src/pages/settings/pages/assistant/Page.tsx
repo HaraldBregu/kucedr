@@ -7,6 +7,7 @@ import {
 	ChevronRight,
 	History,
 	Mic,
+	Network,
 	ShieldCheck,
 	Volume2,
 	Wrench,
@@ -312,6 +313,16 @@ const AssistantPage: React.FC = () => {
 						title={t('settings.modelServices.tools')}
 						description={t('settings.modelServices.toolsDescription')}
 						media={<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+				<Link to="/settings/agent/mcp-tools" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.modelServices.agentTools.mcp.title')}
+						description={t('settings.modelServices.agentTools.mcp.description')}
+						media={<Network className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}

@@ -14,6 +14,7 @@ const ASSISTANT_SUBPAGE_LABEL_KEYS: Record<string, string> = {
 	'/settings/agent/chathistory': 'settings.chatHistory.title',
 	'/settings/agent/permissions': 'settings.tabs.permissions',
 	'/settings/agent/tools': 'settings.modelServices.tools',
+	'/settings/agent/mcp-tools': 'settings.modelServices.agentTools.mcp.title',
 };
 
 const PROVIDER_SUBPAGE_LABEL_KEYS: Record<string, string> = {

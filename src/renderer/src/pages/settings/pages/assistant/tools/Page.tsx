@@ -51,7 +51,6 @@ import type {
 	AgentToolReference,
 } from '../../../../../../../shared/agent_tools';
 import { isAgentToolAllowedForProfile } from '../../../../../../../shared/agent_tools';
-import McpTools from './Mcp';
 
 type AgentTool = readonly [name: string, id: string, description: string];
 
@@ -753,14 +752,6 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 						</SettingsSection>
 					);
 				})}
-			{profile !== 'health' && (
-				<McpTools
-					search={normalizedToolSearch}
-					settings={toolProfile?.mcp ?? {}}
-					disabled={!toolProfile || fileToolsSaving}
-					onChange={updateProfileTool}
-				/>
-			)}
 			{profile !== 'health' && (
 				<SettingsSection title={t('settings.permissions.toolsTitle')}>
 					<SettingsPanel>

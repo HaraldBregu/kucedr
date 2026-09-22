@@ -5,6 +5,7 @@ import AssistantPage from '../../../src/renderer/src/pages/settings/pages/assist
 import RealtimeConversationConfiguration from '../../../src/renderer/src/pages/settings/pages/assistant/conversation';
 import VoicePage from '../../../src/renderer/src/pages/settings/pages/voice/Page';
 import ToolsPage from '../../../src/renderer/src/pages/settings/pages/assistant/tools/Page';
+import McpToolsPage from '../../../src/renderer/src/pages/settings/pages/assistant/mcptools/Page';
 import TasksPage from '../../../src/renderer/src/pages/settings/pages/tasks/Page';
 
 const mockProviders = [
@@ -107,6 +108,8 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.kucedrDescription': 'Chat, tools, and planning',
 		'settings.modelServices.configuration': 'Configuration',
 		'settings.modelServices.tools': 'Tools',
+		'settings.modelServices.agentTools.mcp.title': 'MCP Tools',
+		'settings.modelServices.agentTools.mcp.description': 'Configure MCP tools for chat.',
 		'settings.modelServices.toolModels': 'Tool models',
 		'settings.modelServices.subtitle': 'Configure model assignments',
 		'settings.modelServices.imageAssistantName': 'Text to image',
@@ -319,6 +322,7 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 			<Routes>
 				<Route path="/settings/agent" element={<AssistantPage />} />
 				<Route path="/settings/agent/tools" element={<ToolsPage />} />
+				<Route path="/settings/agent/mcp-tools" element={<McpToolsPage />} />
 			</Routes>
 		</MemoryRouter>
 	);
@@ -329,6 +333,10 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 	expect(screen.getByRole('link', { name: /^Tools/ })).toHaveAttribute(
 		'href',
 		'/settings/agent/tools'
+	);
+	expect(screen.getByRole('link', { name: /^MCP Tools/ })).toHaveAttribute(
+		'href',
+		'/settings/agent/mcp-tools'
 	);
 	expect(screen.queryByRole('button', { name: 'Text to image' })).not.toBeInTheDocument();
 	const model = (await screen.findAllByRole('button', { name: 'LLM Model' })).find(
@@ -374,6 +382,7 @@ it('keeps media permissions and search configuration on Tools without model sele
 		'/settings/agent/permissions'
 	);
 	expect(window.agent.getToolModel).not.toHaveBeenCalled();
+	expect(window.mcp.registry).not.toHaveBeenCalled();
 
 	const searchTrigger = (await screen.findAllByRole('button', { name: /Search web/ })).find(
 		(entry) => entry.getAttribute('data-slot') === 'collapsible-trigger'
@@ -385,6 +394,17 @@ it('keeps media permissions and search configuration on Tools without model sele
 	expect(search).toHaveTextContent('Brave');
 	expect(screen.queryByText('Text to speech')).not.toBeInTheDocument();
 	expect(screen.queryByText('Speech to text')).not.toBeInTheDocument();
+});
+
+it('shows MCP tools on their own Chat subpage', async () => {
+	render(
+		<MemoryRouter>
+			<McpToolsPage />
+		</MemoryRouter>
+	);
+
+	expect(await screen.findByRole('heading', { name: 'MCP Tools' })).toBeInTheDocument();
+	expect(window.mcp.registry).toHaveBeenCalledTimes(1);
 });
 
 it('lists every built-in agent tool on the Tools page', async () => {

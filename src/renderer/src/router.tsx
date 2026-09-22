@@ -57,6 +57,7 @@ const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page')
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
+const McpToolsPage = lazy(() => import('./pages/settings/pages/assistant/mcptools/Page'));
 const CodingPage = lazy(() => import('./pages/settings/pages/coding/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
@@ -305,6 +306,14 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<ToolsPage profile="channels" />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'mcp-tools',
+								element: (
+									<SettingsRouteWrapper>
+										<McpToolsPage />
 									</SettingsRouteWrapper>
 								),
 							},

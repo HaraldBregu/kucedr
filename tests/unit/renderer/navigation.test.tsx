@@ -31,6 +31,7 @@ beforeEach(() => {
 it.each([
 	['/settings/knowledge-base', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
+	['/settings/agent/mcp-tools', 'settings.modelServices.agentTools.mcp.title'],
 	['/settings/voice', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
@@ -43,7 +44,11 @@ it.each([
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/integrations', 'settings.tabs.integrations'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
-	if (path === '/settings/general/persona' || path === '/settings/agent/tools') {
+	if (
+		path === '/settings/general/persona' ||
+		path === '/settings/agent/tools' ||
+		path === '/settings/agent/mcp-tools'
+	) {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else if (path === '/settings/coding') {
 		expect(SETTINGS_MODEL_SERVICE_ITEMS).toContainEqual(
