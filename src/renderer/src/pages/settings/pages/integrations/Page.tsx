@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
-import { Card, CardContent } from '@/components/ui/card';
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Switch } from '@/components/ui/switch';
 import { mcps } from '@/lib/providers';
 import {
@@ -90,40 +90,38 @@ const IntegrationsPage = (): React.JSX.Element => {
 			{catalog.length > 0 ? (
 				<div className="space-y-3 pb-4">
 					{catalog.map((service) => (
-						<Card
+						<Item
 							key={`${service.provider.id}-${service.id}`}
-							className="rounded-lg border-border bg-card py-0 shadow-none"
+							variant="ghost"
+							size="md"
+							className="px-0 py-3.5"
 						>
-							<CardContent className="p-0">
-								<div className="grid min-h-12 grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-2.5 px-4 py-3.5">
-								<ProviderAvatar
-									providerId={service.provider.id}
-									name={service.provider.name}
-									iconDarkUrl={service.provider.iconDarkUrl}
-									iconLightUrl={service.provider.iconLightUrl}
-									className="size-10"
+							<ProviderAvatar
+								providerId={service.provider.id}
+								name={service.provider.name}
+								iconDarkUrl={service.provider.iconDarkUrl}
+								iconLightUrl={service.provider.iconLightUrl}
+								className="size-10"
+							/>
+							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-semibold leading-tight">
+									{service.name}
+								</ItemTitle>
+								<p className="max-w-full truncate text-xs font-medium leading-tight text-muted-foreground">
+									{service.provider.name}
+								</p>
+							</ItemContent>
+							<ItemActions className="ml-auto flex-none justify-end">
+								<Switch
+									checked={servers[service.id]?.enabled === true}
+									disabled={savingId === service.id}
+									onCheckedChange={(enabled) =>
+										void setIntegrationEnabled(service, enabled)
+									}
+									aria-label={service.name}
 								/>
-									<div className="min-w-0 flex-1">
-										<h2 className="truncate text-sm font-semibold leading-tight text-foreground">
-											{service.name}
-										</h2>
-										<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
-											{service.provider.name}
-										</p>
-									</div>
-									<div className="flex shrink-0 justify-end">
-										<Switch
-											checked={servers[service.id]?.enabled === true}
-											disabled={savingId === service.id}
-											onCheckedChange={(enabled) =>
-												void setIntegrationEnabled(service, enabled)
-											}
-											aria-label={service.name}
-										/>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
+							</ItemActions>
+						</Item>
 					))}
 				</div>
 			) : (
