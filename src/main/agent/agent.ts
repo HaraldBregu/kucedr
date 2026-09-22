@@ -63,6 +63,7 @@ import {
 	type AgentRunRecord,
 } from './state';
 import { getModelId, getProviderId } from './agent_store';
+import { getAgentProfileModel } from './agent_profiles';
 import { preflightPromptAttachments, resolvePromptInputCapabilities } from './attachments';
 import { workspacePath } from './system';
 import { formatReplyMessage } from '../../shared/reply';
@@ -166,8 +167,13 @@ export class Agent {
 		const category = AGENT_CATEGORIES[normalizedAgentId] ?? 'main';
 		const sessionId = resolveSessionId(options.sessionId, this.config.location, category);
 		const runId = options.runId ?? randomUUID();
-		const pinnedProviderId = options.providerId?.trim() || getProviderId();
-		const pinnedModelId = (options.model ?? options.modelId)?.trim() || getModelId();
+		const profileModel = getAgentProfileModel(
+			AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat',
+			'textToText'
+		);
+		const pinnedProviderId = options.providerId?.trim() || profileModel.providerId || getProviderId();
+		const pinnedModelId =
+			(options.model ?? options.modelId)?.trim() || profileModel.modelId || getModelId();
 		const commandOptions: InternalAgentSendOptions = {
 			...options,
 			sessionId,

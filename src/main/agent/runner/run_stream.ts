@@ -1,6 +1,7 @@
 import type { MemoryService } from '../../../shared/memory_types';
 import { getResolvedProvider } from '../../settings_store';
-import { getModelId, getModelOptions, getProviderId, getToolConfiguration } from '../agent_store';
+import { getToolConfiguration } from '../agent_store';
+import { getAgentProfileModel } from '../agent_profiles';
 import {
 	addAssistantMessage,
 	addToolResults,
@@ -128,9 +129,10 @@ async function* loop(
 	options: StreamOptions,
 	backgroundBrowser?: Tool
 ): AsyncGenerator<RuntimeEvent> {
-	const provider = getResolvedProvider(input.providerId ?? getProviderId());
-	const modelId = input.model ?? getModelId();
-	const modelOptions = options.modelOptions ?? structuredClone(getModelOptions());
+	const selectedModel = getAgentProfileModel(input.toolProfile ?? 'chat', 'textToText');
+	const provider = getResolvedProvider(input.providerId ?? selectedModel.providerId);
+	const modelId = input.model ?? selectedModel.modelId;
+	const modelOptions = options.modelOptions ?? structuredClone(selectedModel.options);
 	const runId = input.runId ?? session.id;
 	const budget =
 		options.budget ??

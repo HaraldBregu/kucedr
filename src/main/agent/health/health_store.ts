@@ -2,6 +2,11 @@ import path from 'node:path';
 import Store from 'electron-store';
 import { userDataLocation } from '../../shared/user_data_location';
 import { DEFAULT_HEALTH_SETTINGS, type HealthSettings } from './health_types';
+import {
+	getAgentProfileModel,
+	initializeAgentProfile,
+	setAgentProfileModel,
+} from '../agent_profiles';
 
 const HEALTH_STORE_NAME = 'health';
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
@@ -16,17 +21,39 @@ const store = new Store<HealthSettings>({
 export const healthStorePath = store.path;
 
 export function getHealthSettings(): HealthSettings {
+	initializeAgentProfile(
+		'health',
+		{
+			textToText: {
+				providerId: store.store.providerId ?? '',
+				modelId: store.store.modelId ?? '',
+				options: store.store.modelOptions ?? {},
+			},
+		},
+		'health-settings'
+	);
+	const model = getAgentProfileModel('health', 'textToText');
 	return {
 		...DEFAULT_HEALTH_SETTINGS,
 		...store.store,
-		modelOptions: store.store.modelOptions ?? {},
+		providerId: model.providerId || undefined,
+		modelId: model.modelId || undefined,
+		modelOptions: model.options,
 	};
 }
 
 export function updateHealthSettings(patch: Partial<HealthSettings>): HealthSettings {
-	const next = { ...getHealthSettings(), ...patch };
-	store.store = next;
-	return next;
+	const { providerId, modelId, modelOptions, ...schedule } = patch;
+	if (providerId !== undefined || modelId !== undefined || modelOptions !== undefined) {
+		setAgentProfileModel('health', 'textToText', {
+			...getAgentProfileModel('health', 'textToText'),
+			...(providerId === undefined ? {} : { providerId }),
+			...(modelId === undefined ? {} : { modelId }),
+			...(modelOptions === undefined ? {} : { options: modelOptions }),
+		});
+	}
+	store.store = { ...store.store, ...schedule };
+	return getHealthSettings();
 }
 
 export function resetHealthSettings(): HealthSettings {
