@@ -286,6 +286,7 @@ it('starts a new chat from the sidebar', async () => {
 
 	const newChat = screen.getByRole('button', { name: 'navigationBar.newChat' });
 	expect(newChat).toHaveAttribute('class', SPLIT_ITEM_CLASS);
+	expect(newChat.querySelector('.lucide-message-circle-plus')).toBeInTheDocument();
 	await user.click(newChat);
 	expect(setSessionId).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { CircleHelp, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Search, Server, Settings, UserRound } from 'lucide-react';
+import { CircleHelp, Code2, Layers, LogOut, MessageCirclePlus, MoreVertical, RadioTower, Search, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -119,7 +119,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						if (sessions.length === 0) setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
 					}}
 				>
-					<Plus className="size-4" />
+					<MessageCirclePlus className="size-4" />
 					<span>{t('navigationBar.newChat', 'New chat')}</span>
 				</button>
 			</header>
