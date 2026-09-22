@@ -10,6 +10,7 @@ const request = (
 	messages: [{ role: 'user', content }],
 	tools: [
 		{
+			id: 'lookup',
 			name: 'lookup',
 			description: 'Lookup data',
 			schema: { type: 'object' },
