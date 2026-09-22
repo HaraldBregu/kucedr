@@ -103,7 +103,6 @@ describe('MCP settings', () => {
 		expect(screen.getByRole('heading', { name: 'Add MCP server' })).toBeInTheDocument();
 		await user.type(screen.getByLabelText('ID'), 'docs');
 		await user.type(screen.getByLabelText('Server URL'), 'https://docs.test/mcp');
-		await user.click(screen.getByRole('button', { name: 'Add MCP server' }));
 
 		await waitFor(() =>
 			expect(mcpApi.upsert).toHaveBeenCalledWith(
