@@ -6,19 +6,13 @@ const successfulTurn = async function* () {
 	yield* [];
 	return { content: 'done', model: 'test-model', toolCalls: [] };
 };
-const discoveryTurn = (toolIds: string[]) =>
+const toolTurn = (toolIds: string[]) =>
 	async function* () {
 		yield* [];
 		return {
 			content: '',
 			model: 'test-model',
-			toolCalls: [
-				{
-					id: `discover-${toolIds.join('-')}`,
-					name: 'discover_tools',
-					args: { query: toolIds.join(' '), toolIds, mcpServerIds: [] },
-				},
-			],
+			toolCalls: toolIds.map((name) => ({ id: `call-${name}`, name, args: {} })),
 		};
 	};
 const runModelTurnMock = jest.fn(successfulTurn);
@@ -26,8 +20,7 @@ const appendRunMock = jest.fn();
 const closeMcpMock = jest.fn();
 const mockLoadMcpTools = jest.fn(async () => ({
 	tools: [],
-	entries: [],
-	deferredServers: [],
+		diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 	close: closeMcpMock,
 }));
 const createSkillRegistrySnapshotMock = jest.fn((_options?: unknown) => ({
@@ -74,8 +67,7 @@ describe('run stream system prompt', () => {
 		closeMcpMock.mockReset();
 		mockLoadMcpTools.mockReset().mockResolvedValue({
 			tools: [],
-			entries: [],
-			deferredServers: [],
+			diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
 		createSkillRegistrySnapshotMock.mockReset().mockReturnValue({ skills: [], diagnostics: [] });
@@ -148,10 +140,10 @@ describe('run stream system prompt', () => {
 				expect(protectedPrompt).toContain('references/style.md');
 				expect(events[0]).toMatchObject({
 					type: 'run_started',
-					tools: expect.arrayContaining(['discover_tools', 'load_skill']),
+					tools: expect.arrayContaining(['load_skill']),
 				});
 				if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
-				expect(events[0].tools).not.toContain('read');
+		expect(events[0].tools).toEqual(expect.arrayContaining(['read', 'load_skill']));
 			} finally {
 				await fs.rm(root, { recursive: true, force: true });
 			}
@@ -192,7 +184,7 @@ describe('run stream system prompt', () => {
 
 		expect(createSkillRegistrySnapshotMock).toHaveBeenCalledWith({ projectRoot: '/workspace' });
 		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(
-			expect.arrayContaining(['discover_tools', 'load_skill'])
+			expect.arrayContaining(['read', 'load_skill'])
 		);
 		const firstTurnTools = runModelTurnMock.mock.calls[0][5] as Array<{
 			id: string;
@@ -263,7 +255,7 @@ describe('run stream system prompt', () => {
 			events.push(event);
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
-		expect(events[0].tools).toEqual(['discover_tools']);
+		expect(events[0].tools).toContain('list_skills');
 		expect(runModelTurnMock.mock.calls[0][9]).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
@@ -289,7 +281,7 @@ describe('run stream system prompt', () => {
 			events.push(event);
 		expect(events[0]).toMatchObject({ type: 'run_started' });
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
-		expect(events[0].tools).toEqual(['discover_tools']);
+		expect(events[0].tools).toEqual(['list_skills']);
 		expect(runModelTurnMock.mock.calls[0][9]).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
 	});
@@ -313,7 +305,7 @@ describe('run stream system prompt', () => {
 			{ sandbox }
 		))
 			noTools.push(event);
-		expect(noTools[0]).toMatchObject({ type: 'run_started', tools: ['discover_tools'] });
+		expect(noTools[0]).toMatchObject({ type: 'run_started', tools: [] });
 
 		const denied = [];
 		for await (const event of stream(
@@ -335,7 +327,7 @@ describe('run stream system prompt', () => {
 			denied.push(event);
 		expect(denied[0]).toMatchObject({ type: 'run_started' });
 		if (denied[0]?.type !== 'run_started') throw new Error('Expected run_started');
-		expect(denied[0].tools).toEqual(['discover_tools']);
+		expect(denied[0].tools).not.toContain('subagent');
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('read | Read');
 		for (const removed of ['save_memory', 'list_memories', 'forget_memory'])
 			expect(runModelTurnMock.mock.calls[1][9]).not.toContain(removed);
@@ -800,9 +792,9 @@ describe('run stream system prompt', () => {
 						model: 'pinned-model',
 						toolCalls: [
 							{
-								id: 'discover-subagent',
-								name: 'discover_tools',
-								args: { query: 'delegate', toolIds: ['subagent'], mcpServerIds: [] },
+								id: 'delegate',
+								name: 'subagent',
+								args: { task: 'inspect' },
 							},
 						],
 					}
@@ -845,8 +837,7 @@ describe('run stream system prompt', () => {
 			scope,
 		});
 		expect(childCall?.[7]).toEqual({ temperature: 0.2 });
-		expect(childCall?.[9]).toContain('## Tool loading and availability');
-		expect(childCall?.[9]).toContain('Never call a tool to test whether it is loaded');
+		expect(childCall?.[9]).toBe('');
 	});
 
 	it('allows one final synthesis turn after a delegation exhausts its work budget', async () => {
@@ -862,7 +853,7 @@ describe('run stream system prompt', () => {
 			},
 		});
 		runModelTurnMock
-			.mockImplementationOnce(discoveryTurn(['subagents']))
+			.mockImplementationOnce(toolTurn(['subagents']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -913,7 +904,7 @@ describe('run stream system prompt', () => {
 			);
 			const session = createSessionState();
 			if (boundary === 'turns') session.maxTurns = 2;
-			if (boundary !== 'empty') runModelTurnMock.mockImplementationOnce(discoveryTurn([tool.id]));
+			if (boundary !== 'empty') runModelTurnMock.mockImplementationOnce(toolTurn([tool.id]));
 			runModelTurnMock.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -1005,7 +996,7 @@ describe('run stream system prompt', () => {
 			});
 			const session = createSessionState();
 			runModelTurnMock
-				.mockImplementationOnce(discoveryTurn([tool.id]))
+				.mockImplementationOnce(toolTurn([tool.id]))
 				.mockImplementationOnce(async function* () {
 					yield* [];
 					return {
@@ -1079,7 +1070,7 @@ describe('run stream system prompt', () => {
 			execute: () => order.push('edit'),
 		});
 		runModelTurnMock
-			.mockImplementationOnce(discoveryTurn(['read', 'edit']))
+			.mockImplementationOnce(toolTurn(['read', 'edit']))
 			.mockImplementationOnce(async function* () {
 				yield* [];
 				return {
@@ -1112,14 +1103,11 @@ describe('run stream system prompt', () => {
 
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(['discover_tools']);
+		).toEqual(['read', 'edit']);
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(['discover_tools', 'read', 'edit']);
+		).toEqual(['read', 'edit']);
 		expect(order).toEqual(['read', 'edit']);
-		expect(runModelTurnMock.mock.calls[0][9]).toContain('edit | Edit | Not loaded; use discover_tools | Edit a file');
-		expect(runModelTurnMock.mock.calls[1][9]).toContain('edit | Edit | Loaded | Edit a file');
-		expect(runModelTurnMock.mock.calls[0][9]).toContain('Never call a tool to test whether it is loaded');
 	});
 
 	it('consolidates premature calls into one loader turn and executes them once on the next turn', async () => {
