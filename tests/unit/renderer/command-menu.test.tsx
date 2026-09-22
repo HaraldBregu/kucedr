@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { CommandMenu } from '../../../src/renderer/src/experience/CommandMenu';
 import en from '../../../resources/i18n/en/main.json';
-import it from '../../../resources/i18n/it/main.json';
+import italian from '../../../resources/i18n/it/main.json';
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({
@@ -121,7 +121,7 @@ it('includes every canonical static settings subpage', () => {
 });
 
 it('provides complete English and Italian command translations', () => {
-	for (const resource of [en, it]) {
+	for (const resource of [en, italian]) {
 		expect(resource.command).toEqual({
 			label: expect.any(String),
 			placeholder: expect.any(String),
@@ -132,5 +132,5 @@ it('provides complete English and Italian command translations', () => {
 			},
 		});
 	}
-	expect(it.command.routes.settings.title).toBe('Impostazioni');
+	expect(italian.command.routes.settings.title).toBe('Impostazioni');
 });

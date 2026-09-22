@@ -3,7 +3,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
 import { SettingsPageHeader } from '../../../src/renderer/src/pages/settings/components';
 import en from '../../../resources/i18n/en/main.json';
-import it from '../../../resources/i18n/it/main.json';
+import italian from '../../../resources/i18n/it/main.json';
 import {
 	SETTINGS_DETAIL_ITEMS,
 	SETTINGS_MODEL_SERVICE_ITEMS,
@@ -52,7 +52,7 @@ it('provides English and Italian translations for every settings navigation item
 
 	for (const key of keys) {
 		expect(hasTranslation(en, key)).toBe(true);
-		expect(hasTranslation(it, key)).toBe(true);
+		expect(hasTranslation(italian, key)).toBe(true);
 	}
 });
 
