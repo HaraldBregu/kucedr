@@ -88,7 +88,7 @@ const IntegrationsPage = (): React.JSX.Element => {
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
 			{catalog.length > 0 ? (
-				<div className="space-y-3 pb-4">
+				<div className="space-y-2 pb-4">
 					{catalog.map((service) => (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
