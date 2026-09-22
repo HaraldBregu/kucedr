@@ -375,6 +375,9 @@ it('keeps media permissions and search configuration on Tools without model sele
 			<ToolsPage />
 		</MemoryRouter>
 	);
+	expect(
+		screen.queryByRole('textbox', { name: 'settings.modelServices.agentTools.searchPlaceholder' })
+	).not.toBeInTheDocument();
 
 	for (const name of ['Text to image', 'Text to audio', 'Text to video']) {
 		expect(screen.queryByRole('combobox', { name })).not.toBeInTheDocument();
@@ -407,6 +410,9 @@ it('shows MCP tools on their own Chat subpage', async () => {
 	);
 
 	expect(await screen.findByRole('heading', { name: 'MCP Tools', level: 1 })).toBeInTheDocument();
+	expect(
+		screen.queryByRole('textbox', { name: 'settings.modelServices.agentTools.searchPlaceholder' })
+	).not.toBeInTheDocument();
 	expect(window.mcp.registry).toHaveBeenCalledTimes(1);
 });
 
