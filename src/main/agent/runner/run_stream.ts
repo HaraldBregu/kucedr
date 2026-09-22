@@ -155,7 +155,7 @@ async function* loop(
 		);
 	const profileToolEnabled = (toolId: string): boolean => {
 		const settings = getToolConfiguration(toolProfile, { kind: 'builtin', id: toolId });
-		return settings.enabled && settings.permission !== 'deny';
+		return settings.permission !== 'deny';
 	};
 	const skillLoadingEnabled =
 		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&

@@ -17,7 +17,6 @@ export type AgentProfileModelKey = (typeof AGENT_PROFILE_MODEL_KEYS)[number];
 export type AgentToolPermission = 'ask' | 'allow' | 'deny';
 
 export interface AgentToolConfiguration {
-	enabled: boolean;
 	permission: AgentToolPermission;
 }
 

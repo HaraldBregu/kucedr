@@ -30,7 +30,7 @@ export function resolveToolPermissionDetails(
 	else if (toolName === 'bash' || toolName === 'process') kind = 'exec';
 	const permissions = configuredPermissions ?? getPermissions();
 	const toolSettings = configuredTool ?? permissions.tools?.[toolName];
-	if (toolSettings && (!toolSettings.enabled || toolSettings.permission === 'deny'))
+	if (toolSettings?.permission === 'deny')
 		return { mode: 'deny', kind, targets: [], approvalTargets: [], persistable: false };
 	if (toolSettings?.permission === 'ask') {
 		return {

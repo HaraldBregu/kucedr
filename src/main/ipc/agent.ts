@@ -212,7 +212,6 @@ function toPermissions(value: unknown): PermissionsSchema {
 						Object.entries(value.tools).filter(
 							([, settings]) =>
 								isRecord(settings) &&
-								typeof settings.enabled === 'boolean' &&
 								(settings.permission === 'ask' ||
 									settings.permission === 'allow' ||
 									settings.permission === 'deny')
@@ -258,11 +257,10 @@ function toToolReference(value: unknown): AgentToolReference {
 function toToolConfiguration(value: unknown): AgentToolConfiguration {
 	if (
 		!isRecord(value) ||
-		typeof value.enabled !== 'boolean' ||
 		(value.permission !== 'ask' && value.permission !== 'allow' && value.permission !== 'deny')
 	)
 		throw new Error('Invalid tool configuration.');
-	return { enabled: value.enabled, permission: value.permission };
+	return { permission: value.permission };
 }
 
 function isModelReasoningEffort(value: unknown): value is ModelReasoningEffort {

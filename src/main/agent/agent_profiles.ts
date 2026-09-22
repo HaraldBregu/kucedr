@@ -31,9 +31,9 @@ type AgentProfileStore = {
 type StoredModelKey = Exclude<keyof AgentProfileStore, 'permissions' | 'tools' | 'mcpTools'>;
 
 const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
-const DEFAULT_TOOL: AgentToolConfiguration = { enabled: true, permission: 'allow' };
+const DEFAULT_TOOL: AgentToolConfiguration = { permission: 'allow' };
 const DEFAULT_TOOL_SETTINGS: Record<string, AgentToolConfiguration> = {
-	camera_recorder: { enabled: true, permission: 'ask' },
+	camera_recorder: { permission: 'ask' },
 };
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
 const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
@@ -97,13 +97,38 @@ function profileStore(profileId: AgentToolProfileId): Store<Partial<AgentProfile
 	return stores[profileId];
 }
 
+function normalizeToolConfiguration(value: unknown): AgentToolConfiguration {
+	if (value && typeof value === 'object') {
+		const permission = (value as { permission?: unknown }).permission;
+		if (permission === 'ask' || permission === 'allow' || permission === 'deny') {
+			return { permission };
+		}
+	}
+	return { ...DEFAULT_TOOL };
+}
+
 function read(profileId: AgentToolProfileId): AgentProfileStore {
 	const stored = profileStore(profileId).store;
 	const fallback = defaults();
 	return {
 		...fallback,
-		tools: { ...(stored.tools ?? {}) },
-		mcpTools: structuredClone(stored.mcpTools ?? {}),
+		tools: Object.fromEntries(
+			Object.entries(stored.tools ?? {}).map(([id, settings]) => [
+				id,
+				normalizeToolConfiguration(settings),
+			])
+		),
+		mcpTools: Object.fromEntries(
+			Object.entries(stored.mcpTools ?? {}).map(([serverId, settings]) => [
+				serverId,
+				Object.fromEntries(
+					Object.entries(settings).map(([toolName, configuration]) => [
+						toolName,
+						normalizeToolConfiguration(configuration),
+					])
+				),
+			])
+		),
 		...Object.fromEntries(
 			AGENT_PROFILE_MODEL_KEYS.map((key) => [
 				key,
