@@ -146,6 +146,7 @@ export interface McpIpcDeps {
 
 export class McpIpc implements IpcModule<McpIpcDeps> {
 	readonly name = 'mcp';
+	private activeOAuthCallback?: { close: () => void };
 
 	register({ windows, apps }: McpIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, apps);
@@ -239,7 +240,9 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				const state = randomBytes(32).toString('hex');
 				const options = googleOAuthOptions(server.url);
 				const google = Boolean(googleMcpScopes(server.url));
+				this.activeOAuthCallback?.close();
 				const callback = await startOauthCallbackServer(state);
+				this.activeOAuthCallback = callback;
 				try {
 					let authorizationUrl: string | undefined;
 					const provider = createOAuthProvider({
@@ -271,6 +274,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 					}
 					return { status: 'authorized' };
 				} finally {
+					if (this.activeOAuthCallback === callback) this.activeOAuthCallback = undefined;
 					callback.close();
 				}
 			}
