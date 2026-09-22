@@ -13,6 +13,7 @@ const request = (
 			name: 'lookup',
 			description: 'Lookup data',
 			schema: { type: 'object' },
+			inputExamples: [{ id: 'item-1' }],
 			risk: 'low',
 			effect: 'read',
 			timeoutMs: 1_000,
@@ -67,6 +68,12 @@ describe('LlmModel non-streaming transport', () => {
 			expect.objectContaining({
 				stream: false,
 				model: 'model',
+				tools: [
+					expect.objectContaining({
+						name: 'lookup',
+						input_examples: [{ id: 'item-1' }],
+					}),
+				],
 				input: [
 					{
 						role: 'user',
