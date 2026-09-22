@@ -1328,7 +1328,7 @@
 			"agentTools": {
 				"mcp": {
 					"title": "MCP tools",
-					"description": "Show tools connects only the selected server to list its tool names. It does not load them into the agent; the agent selects tools on demand.",
+					"description": "Configure MCP tools for chat.",
 					"show": "Show tools",
 					"loading": "Loading…",
 					"onDemand": "Available on demand",

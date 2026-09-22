@@ -1328,7 +1328,7 @@
 			"agentTools": {
 				"mcp": {
 					"title": "Strumenti MCP",
-					"description": "Mostra strumenti si connette solo al server selezionato per elencare i nomi degli strumenti. Non li carica nell'agente: l'agente li seleziona su richiesta.",
+					"description": "Configura gli strumenti MCP per la chat.",
 					"show": "Mostra strumenti",
 					"loading": "Caricamento…",
 					"onDemand": "Disponibile su richiesta",

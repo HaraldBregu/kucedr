@@ -10,6 +10,12 @@ const mockTranslate = (key: string): string => key;
 const prefix = 'settings.modelServices.agentTools.mcp';
 const registry = jest.fn();
 const inspect = jest.fn();
+const mcpProps = {
+	search: '',
+	settings: {},
+	disabled: false,
+	onChange: jest.fn(),
+};
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -26,7 +32,7 @@ beforeEach(() => {
 });
 
 it('reads only server metadata on mount and inspects only the selected server', async () => {
-	render(<Mcp search="" />);
+	render(<Mcp {...mcpProps} />);
 	const show = await screen.findByRole('button', { name: `${prefix}.show: Mail` });
 	expect(registry).toHaveBeenCalledTimes(1);
 	expect(inspect).not.toHaveBeenCalled();
@@ -38,7 +44,7 @@ it('reads only server metadata on mount and inspects only the selected server', 
 });
 
 it('does not inspect disabled servers', async () => {
-	render(<Mcp search="" />);
+	render(<Mcp {...mcpProps} />);
 	const show = await screen.findByRole('button', { name: `${prefix}.show: Disabled` });
 	expect(show).toBeDisabled();
 	await userEvent.click(show);
@@ -46,10 +52,10 @@ it('does not inspect disabled servers', async () => {
 });
 
 it('filters discovered tool names without connecting other servers', async () => {
-	const { rerender } = render(<Mcp search="" />);
+	const { rerender } = render(<Mcp {...mcpProps} />);
 	await userEvent.click(await screen.findByRole('button', { name: `${prefix}.show: Mail` }));
 	await screen.findByText('read_mail');
-	rerender(<Mcp search="read_mail" />);
+	rerender(<Mcp {...mcpProps} search="read_mail" />);
 	expect(screen.getByText('read_mail')).toBeInTheDocument();
 	expect(screen.queryByText('send_mail')).not.toBeInTheDocument();
 	expect(screen.queryByText('Calendar')).not.toBeInTheDocument();
@@ -58,7 +64,7 @@ it('filters discovered tool names without connecting other servers', async () =>
 
 it('shows inspection errors and allows retry', async () => {
 	inspect.mockRejectedValueOnce(new Error('Server offline'));
-	render(<Mcp search="" />);
+	render(<Mcp {...mcpProps} />);
 	const show = await screen.findByRole('button', { name: `${prefix}.show: Mail` });
 	await userEvent.click(show);
 	expect(await screen.findByText('Server offline')).toBeInTheDocument();
@@ -70,7 +76,7 @@ it('shows inspection errors and allows retry', async () => {
 
 it('shows metadata loading errors without inspecting servers', async () => {
 	registry.mockRejectedValueOnce(new Error('Registry unavailable'));
-	render(<Mcp search="" />);
+	render(<Mcp {...mcpProps} />);
 	expect(await screen.findByText('Registry unavailable')).toBeInTheDocument();
 	expect(inspect).not.toHaveBeenCalled();
 });

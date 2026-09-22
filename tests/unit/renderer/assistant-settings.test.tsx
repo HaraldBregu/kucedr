@@ -403,7 +403,7 @@ it('shows MCP tools on their own Chat subpage', async () => {
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByRole('heading', { name: 'MCP Tools' })).toBeInTheDocument();
+	expect(await screen.findByRole('heading', { name: 'MCP Tools', level: 1 })).toBeInTheDocument();
 	expect(window.mcp.registry).toHaveBeenCalledTimes(1);
 });
 
