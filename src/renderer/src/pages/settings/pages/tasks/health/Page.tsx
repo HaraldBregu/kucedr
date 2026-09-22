@@ -156,9 +156,6 @@ const HealthPage: React.FC = () => {
 								icon={BrainCircuit}
 								showFieldLabel={false}
 								grouped
-								showSelectedModel
-								buttonDropdown
-								showContentSeparator={false}
 								onChange={(providerId, modelId) => updateAndSave({ providerId, modelId })}
 							/>
 						</SettingsPanel>
