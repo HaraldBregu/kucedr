@@ -106,7 +106,9 @@ it('shows only an open action on app cards', async () => {
 	await screen.findByText('Demo App');
 	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'settings.apps.details' })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: /settings.apps.deleteAction/ })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: /settings.apps.deleteAction/ })
+	).not.toBeInTheDocument();
 });
 
 it('opens the apps folder from the page header', async () => {
