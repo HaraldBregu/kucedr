@@ -16,6 +16,7 @@ type AgentProfileStore = {
 	llm?: AgentMediaModelSettings;
 	tts?: AgentMediaModelSettings;
 	stt?: AgentMediaModelSettings;
+	rtv?: AgentMediaModelSettings;
 	textToText: AgentMediaModelSettings;
 	textToSpeech: AgentMediaModelSettings;
 	speechToText: AgentMediaModelSettings;
