@@ -47,7 +47,11 @@ jest.mock('electron-store', () =>
 );
 
 import { getProviderId, getToolProfile } from '../../../../src/main/agent/agent_store';
-import { getAgentProfileModel } from '../../../../src/main/agent/agent_profiles';
+import {
+	agentProfileStorePath,
+	getAgentProfileModel,
+	setAgentProfileModel,
+} from '../../../../src/main/agent/agent_profiles';
 
 it('migrates legacy agent settings into independent agent profile stores', () => {
 	expect(getProviderId()).toBe('openai');
@@ -74,6 +78,7 @@ it('migrates legacy agent settings into independent agent profile stores', () =>
 	expect(stores.get('voice-agent')).toMatchObject({
 		realtimeVoice: { providerId: 'openai', modelId: 'realtime-1' },
 	});
+	expect(agentProfileStorePath('chat')).toMatch(/chat-agent\.json$/);
 	expect(persisted).not.toHaveProperty('providerId');
 	expect(persisted).not.toHaveProperty('modelId');
 	expect(persisted).not.toHaveProperty('modelOptions');
@@ -91,4 +96,22 @@ it('migrates legacy agent settings into independent agent profile stores', () =>
 	expect(persisted.tools).not.toHaveProperty('list_apps');
 	expect(persisted.tools).not.toHaveProperty('open_apps');
 	expect(persisted.tools).not.toHaveProperty('close_apps');
+});
+
+it('keeps model selections isolated between agent profiles', () => {
+	setAgentProfileModel('tasks', 'textToText', {
+		providerId: 'anthropic',
+		modelId: 'claude-sonnet-4',
+		options: { temperature: 0.1 },
+	});
+
+	expect(getAgentProfileModel('tasks', 'textToText')).toEqual({
+		providerId: 'anthropic',
+		modelId: 'claude-sonnet-4',
+		options: { temperature: 0.1 },
+	});
+	expect(getAgentProfileModel('chat', 'textToText')).toMatchObject({
+		providerId: 'openai',
+		modelId: 'gpt-5',
+	});
 });
