@@ -15,11 +15,9 @@ export function isAppWindowSettings(value: unknown): value is AppWindowSettings 
 		}
 	}
 	return !(
-		(typeof settings.width === 'number' &&
-			typeof settings.minWidth === 'number' &&
+		(typeof settings.width === 'number' && typeof settings.minWidth === 'number' &&
 			settings.minWidth > settings.width) ||
-		(typeof settings.height === 'number' &&
-			typeof settings.minHeight === 'number' &&
+		(typeof settings.height === 'number' && typeof settings.minHeight === 'number' &&
 			settings.minHeight > settings.height)
 	);
 }

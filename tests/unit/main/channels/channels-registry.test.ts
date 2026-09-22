@@ -90,9 +90,7 @@ describe('createChannelRegistry', () => {
 	it('rejects unsupported channel identifiers before loading credentials or starting an adapter', async () => {
 		const registry = createChannelRegistry(deps());
 
-		await expect(registry.start('unsupported' as never)).rejects.toThrow(
-			'Unknown channel provider.'
-		);
+		await expect(registry.start('unsupported' as never)).rejects.toThrow('Unknown channel provider.');
 		expect(mockGetChannelProvider).not.toHaveBeenCalled();
 		expect(mockAdapterStart).not.toHaveBeenCalled();
 	});

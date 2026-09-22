@@ -1,4 +1,8 @@
-import type { AccountProfile, AuthCredentials, SignUpInput } from '../../shared/auth_types';
+import type {
+	AccountProfile,
+	AuthCredentials,
+	SignUpInput,
+} from '../../shared/auth_types';
 
 export interface AccountUser {
 	id: string;

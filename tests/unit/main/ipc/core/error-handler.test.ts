@@ -1,5 +1,8 @@
 import type { IpcMainInvokeEvent } from 'electron';
-import { wrapIpcHandler, wrapSimpleHandler } from '../../../../../src/main/ipc/core/error_handler';
+import {
+	wrapIpcHandler,
+	wrapSimpleHandler,
+} from '../../../../../src/main/ipc/core/error_handler';
 
 const event = {} as IpcMainInvokeEvent;
 

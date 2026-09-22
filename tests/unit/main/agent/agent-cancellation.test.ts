@@ -83,47 +83,45 @@ describe('Agent scoped cancellation', () => {
 		controls = new Map();
 		contexts = new Map();
 		mockRejectPendingToolPermissions.mockReset();
-		mockStream
-			.mockReset()
-			.mockImplementation(
-				(
-					_config: unknown,
-					session: { runContext: RunContext },
-					input: { runId: string; agentId: string; sessionId: string },
-					signal: AbortSignal
-				) =>
-					(async function* () {
-						const control = controls.get(input.runId) as ControlledRun & {
-							markStarted: () => void;
-							wait: Promise<void>;
-						};
-						contexts.set(input.runId, session.runContext);
-						control.signal = signal;
-						control.markStarted();
-						yield { type: 'model_call_delta', delta: `${input.runId}:partial` };
-						await Promise.race([
-							control.wait,
-							new Promise<void>((resolve) => {
-								if (signal.aborted) resolve();
-								else signal.addEventListener('abort', () => resolve(), { once: true });
-							}),
-						]);
-						if (signal.aborted) return;
-						if (input.runId === 'failure') throw new Error('boom');
-						yield {
-							type: 'run_finished',
-							result: {
-								text: `${input.agentId === 'channels' ? 'bot' : input.runId} reply`,
-								model: 'model',
-								toolCalls: [],
-								numTurns: 1,
-								subtype: 'success',
-								sessionId: input.sessionId,
-								stopReason: 'end_turn',
-							},
-						};
-					})()
-			);
+		mockStream.mockReset().mockImplementation(
+			(
+				_config: unknown,
+				session: { runContext: RunContext },
+				input: { runId: string; agentId: string; sessionId: string },
+				signal: AbortSignal
+			) =>
+				(async function* () {
+					const control = controls.get(input.runId) as ControlledRun & {
+						markStarted: () => void;
+						wait: Promise<void>;
+					};
+					contexts.set(input.runId, session.runContext);
+					control.signal = signal;
+					control.markStarted();
+					yield { type: 'model_call_delta', delta: `${input.runId}:partial` };
+					await Promise.race([
+						control.wait,
+						new Promise<void>((resolve) => {
+							if (signal.aborted) resolve();
+							else signal.addEventListener('abort', () => resolve(), { once: true });
+						}),
+					]);
+					if (signal.aborted) return;
+					if (input.runId === 'failure') throw new Error('boom');
+					yield {
+						type: 'run_finished',
+						result: {
+							text: `${input.agentId === 'channels' ? 'bot' : input.runId} reply`,
+							model: 'model',
+							toolCalls: [],
+							numTurns: 1,
+							subtype: 'success',
+							sessionId: input.sessionId,
+							stopReason: 'end_turn',
+						},
+					};
+				})()
+		);
 	});
 
 	it('cancels only the owned UI run and returns its accumulated text', async () => {
@@ -257,7 +255,9 @@ describe('Agent scoped cancellation', () => {
 
 		expect(contexts.get('first')).not.toBe(contexts.get('concurrent'));
 		expect(contexts.get('first')).not.toBe(contexts.get('sequential'));
-		expect(contexts.get('first')?.loadedSkills).not.toBe(contexts.get('sequential')?.loadedSkills);
+		expect(contexts.get('first')?.loadedSkills).not.toBe(
+			contexts.get('sequential')?.loadedSkills
+		);
 		expect(contexts.get('first')?.fileAccess.readDirectories).not.toBe(
 			contexts.get('sequential')?.fileAccess.readDirectories
 		);

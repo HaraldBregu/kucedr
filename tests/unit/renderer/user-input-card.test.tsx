@@ -1,7 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { UserInputCard } from '../../../src/renderer/src/pages/home/components/UserInputCard';
-import type { AgentToolPart, PendingUserInput } from '../../../src/renderer/src/pages/home/context';
+import type {
+	AgentToolPart,
+	PendingUserInput,
+} from '../../../src/renderer/src/pages/home/context';
 
 const respondUserInput = jest.fn();
 const pending: PendingUserInput = {

@@ -96,11 +96,11 @@ export function ModelOptions({
 		let node: React.JSX.Element;
 		if (choices.length > 0) {
 			const selectedIndex = choices.findIndex((choice) => Object.is(choice.value, value));
-			node = (
-				<SettingsRow
-					key={key}
-					className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
+						title={label}
 					actions={
 						<Select
 							value={selectedIndex < 0 ? '__default__' : String(selectedIndex)}
@@ -127,11 +127,11 @@ export function ModelOptions({
 			);
 		} else if (schema.type === 'boolean') {
 			const checked = value === undefined ? schema.default === true : value === true;
-			node = (
-				<SettingsRow
-					key={key}
-					className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
+						title={label}
 					actions={
 						<Switch
 							aria-label={label}
@@ -142,11 +142,11 @@ export function ModelOptions({
 				/>
 			);
 		} else if (schema.type === 'array' || schema.type === 'object') {
-			node = (
-				<SettingsRow
-					key={key}
-					className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
+						title={label}
 					description={schema.description}
 					actionClassName="sm:max-w-[60%]"
 					actions={
@@ -157,11 +157,11 @@ export function ModelOptions({
 		} else {
 			const numeric = schema.type === 'number' || schema.type === 'integer';
 			const displayedValue = value === undefined ? schema.default : value;
-			node = (
-				<SettingsRow
-					key={key}
-					className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
-					title={label}
+				node = (
+					<SettingsRow
+						key={key}
+						className={cn(inlineAdvanced && 'border-b-0', !padded && 'px-0 sm:px-0')}
+						title={label}
 					actions={
 						<Input
 							aria-label={label}
@@ -206,20 +206,12 @@ export function ModelOptions({
 	const advanced = rendered.filter((entry) => !entry.primary).map((entry) => entry.node);
 
 	return (
-		<div
-			className={cn(
-				'-mb-4 mt-1',
-				padded && '-mx-4',
-				!inlineAdvanced && 'border-t border-border/60'
-			)}
-		>
+		<div className={cn('-mb-4 mt-1', padded && '-mx-4', !inlineAdvanced && 'border-t border-border/60')}>
 			{primary}
-			{advanced.length > 0 &&
-				(inlineAdvanced ? (
+			{advanced.length > 0 && (
+				inlineAdvanced ? (
 					<>
-						<div
-							className={cn('py-3 text-[12px] font-medium text-muted-foreground', padded && 'px-4')}
-						>
+						<div className={cn('py-3 text-[12px] font-medium text-muted-foreground', padded && 'px-4')}>
 							Advanced properties
 						</div>
 						{advanced}
@@ -230,11 +222,10 @@ export function ModelOptions({
 							<span>Advanced</span>
 							<ChevronDown className="size-3.5 transition-transform group-data-panel-open:rotate-180" />
 						</CollapsibleTrigger>
-						<CollapsibleContent className="border-t border-border/60">
-							{advanced}
-						</CollapsibleContent>
+						<CollapsibleContent className="border-t border-border/60">{advanced}</CollapsibleContent>
 					</Collapsible>
-				))}
+				)
+			)}
 		</div>
 	);
 }

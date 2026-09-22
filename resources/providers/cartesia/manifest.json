@@ -1,386 +1,182 @@
 {
-	"providerId": "cartesia",
-	"providerName": "Cartesia",
-	"apiKeyUrl": "https://play.cartesia.ai/keys",
-	"images_url": "/images",
-	"icon_dark_url": "/images/Archie/png/white-archie.png",
-	"icon_light_url": "/images/Archie/png/black-archie.png",
-	"services": [
-		{
-			"id": "sonic-3.5",
-			"name": "Sonic 3.5",
-			"type": "text-to-speech-model",
-			"url": "https://api.cartesia.ai",
-			"metadata": {
-				"documentationUrl": "https://docs.cartesia.ai/api-reference/tts/bytes",
-				"documentationStatus": "verified",
-				"inputs": {
-					"model_id": {
-						"type": "string",
-						"required": true
-					},
-					"transcript": {
-						"type": "string",
-						"required": true
-					},
-					"voice": {
-						"type": "object",
-						"required": true,
-						"properties": {
-							"id": {
-								"type": "string",
-								"title": "Voice ID"
-							}
-						}
-					},
-					"output_format": {
-						"type": "object",
-						"required": true,
-						"properties": {
-							"container": {
-								"type": "string",
-								"default": "mp3",
-								"enum": ["mp3", "wav", "raw"]
-							},
-							"encoding": {
-								"type": "string",
-								"enum": ["pcm_f32le", "pcm_s16le", "pcm_alaw", "pcm_mulaw"]
-							},
-							"sample_rate": {
-								"type": "integer",
-								"enum": [8000, 16000, 22050, 24000, 32000, 44100, 48000]
-							},
-							"bit_rate": {
-								"type": "integer",
-								"enum": [32000, 64000, 96000, 128000, 192000]
-							}
-						}
-					},
-					"language": {
-						"type": "string",
-						"enum": [
-							"en",
-							"fr",
-							"de",
-							"es",
-							"pt",
-							"zh",
-							"ja",
-							"hi",
-							"it",
-							"ko",
-							"nl",
-							"pl",
-							"ru",
-							"sv",
-							"tr",
-							"tl",
-							"bg",
-							"ro",
-							"ar",
-							"cs",
-							"el",
-							"fi",
-							"hr",
-							"ms",
-							"sk",
-							"da",
-							"ta",
-							"uk",
-							"hu",
-							"no",
-							"vi",
-							"bn",
-							"th",
-							"he",
-							"ka",
-							"id",
-							"te",
-							"gu",
-							"kn",
-							"ml",
-							"mr",
-							"pa"
-						]
-					},
-					"pronunciation_dict_id": {
-						"type": "string"
-					},
-					"generation_config": {
-						"type": "object",
-						"properties": {
-							"volume": {
-								"type": "number",
-								"minimum": 0.5,
-								"maximum": 2,
-								"default": 1
-							},
-							"speed": {
-								"type": "number",
-								"minimum": 0.6,
-								"maximum": 1.5,
-								"default": 1
-							},
-							"emotion": {
-								"type": "string",
-								"enum": [
-									"neutral",
-									"happy",
-									"excited",
-									"enthusiastic",
-									"elated",
-									"euphoric",
-									"triumphant",
-									"amazed",
-									"surprised",
-									"flirtatious",
-									"curious",
-									"content",
-									"peaceful",
-									"serene",
-									"calm",
-									"grateful",
-									"affectionate",
-									"trust",
-									"sympathetic",
-									"anticipation",
-									"mysterious",
-									"angry",
-									"mad",
-									"outraged",
-									"frustrated",
-									"agitated",
-									"threatened",
-									"disgusted",
-									"contempt",
-									"envious",
-									"sarcastic",
-									"ironic",
-									"sad",
-									"dejected",
-									"melancholic",
-									"disappointed",
-									"hurt",
-									"guilty",
-									"bored",
-									"tired",
-									"rejected",
-									"nostalgic",
-									"wistful",
-									"apologetic",
-									"hesitant",
-									"insecure",
-									"confused",
-									"resigned",
-									"anxious",
-									"panicked",
-									"alarmed",
-									"scared",
-									"proud",
-									"confident",
-									"distant",
-									"skeptical",
-									"contemplative",
-									"determined"
-								]
-							}
-						}
-					},
-					"speed": {
-						"type": "string",
-						"default": "normal",
-						"enum": ["slow", "normal", "fast"]
-					}
-				}
-			}
-		},
-		{
-			"id": "sonic-3",
-			"name": "Sonic 3",
-			"type": "text-to-speech-model",
-			"url": "https://api.cartesia.ai",
-			"metadata": {
-				"documentationUrl": "https://docs.cartesia.ai/api-reference/tts/bytes",
-				"documentationStatus": "verified",
-				"inputs": {
-					"model_id": {
-						"type": "string",
-						"required": true
-					},
-					"transcript": {
-						"type": "string",
-						"required": true
-					},
-					"voice": {
-						"type": "object",
-						"required": true,
-						"properties": {
-							"id": {
-								"type": "string",
-								"title": "Voice ID"
-							}
-						}
-					},
-					"output_format": {
-						"type": "object",
-						"required": true,
-						"properties": {
-							"container": {
-								"type": "string",
-								"default": "mp3",
-								"enum": ["mp3", "wav", "raw"]
-							},
-							"encoding": {
-								"type": "string",
-								"enum": ["pcm_f32le", "pcm_s16le", "pcm_alaw", "pcm_mulaw"]
-							},
-							"sample_rate": {
-								"type": "integer",
-								"enum": [8000, 16000, 22050, 24000, 32000, 44100, 48000]
-							},
-							"bit_rate": {
-								"type": "integer",
-								"enum": [32000, 64000, 96000, 128000, 192000]
-							}
-						}
-					},
-					"language": {
-						"type": "string",
-						"enum": [
-							"en",
-							"fr",
-							"de",
-							"es",
-							"pt",
-							"zh",
-							"ja",
-							"hi",
-							"it",
-							"ko",
-							"nl",
-							"pl",
-							"ru",
-							"sv",
-							"tr",
-							"tl",
-							"bg",
-							"ro",
-							"ar",
-							"cs",
-							"el",
-							"fi",
-							"hr",
-							"ms",
-							"sk",
-							"da",
-							"ta",
-							"uk",
-							"hu",
-							"no",
-							"vi",
-							"bn",
-							"th",
-							"he",
-							"ka",
-							"id",
-							"te",
-							"gu",
-							"kn",
-							"ml",
-							"mr",
-							"pa"
-						]
-					},
-					"pronunciation_dict_id": {
-						"type": "string"
-					},
-					"generation_config": {
-						"type": "object",
-						"properties": {
-							"volume": {
-								"type": "number",
-								"minimum": 0.5,
-								"maximum": 2,
-								"default": 1
-							},
-							"speed": {
-								"type": "number",
-								"minimum": 0.6,
-								"maximum": 1.5,
-								"default": 1
-							},
-							"emotion": {
-								"type": "string",
-								"enum": [
-									"neutral",
-									"happy",
-									"excited",
-									"enthusiastic",
-									"elated",
-									"euphoric",
-									"triumphant",
-									"amazed",
-									"surprised",
-									"flirtatious",
-									"curious",
-									"content",
-									"peaceful",
-									"serene",
-									"calm",
-									"grateful",
-									"affectionate",
-									"trust",
-									"sympathetic",
-									"anticipation",
-									"mysterious",
-									"angry",
-									"mad",
-									"outraged",
-									"frustrated",
-									"agitated",
-									"threatened",
-									"disgusted",
-									"contempt",
-									"envious",
-									"sarcastic",
-									"ironic",
-									"sad",
-									"dejected",
-									"melancholic",
-									"disappointed",
-									"hurt",
-									"guilty",
-									"bored",
-									"tired",
-									"rejected",
-									"nostalgic",
-									"wistful",
-									"apologetic",
-									"hesitant",
-									"insecure",
-									"confused",
-									"resigned",
-									"anxious",
-									"panicked",
-									"alarmed",
-									"scared",
-									"proud",
-									"confident",
-									"distant",
-									"skeptical",
-									"contemplative",
-									"determined"
-								]
-							}
-						}
-					},
-					"speed": {
-						"type": "string",
-						"default": "normal",
-						"enum": ["slow", "normal", "fast"]
-					}
-				}
-			}
-		}
-	]
+  "providerId": "cartesia",
+  "providerName": "Cartesia",
+  "apiKeyUrl": "https://play.cartesia.ai/keys",
+  "images_url": "/images",
+  "icon_dark_url": "/images/Archie/png/white-archie.png",
+  "icon_light_url": "/images/Archie/png/black-archie.png",
+  "services": [
+    {
+      "id": "sonic-3.5",
+      "name": "Sonic 3.5",
+      "type": "text-to-speech-model",
+      "url": "https://api.cartesia.ai",
+      "metadata": {
+        "documentationUrl": "https://docs.cartesia.ai/api-reference/tts/bytes",
+        "documentationStatus": "verified",
+        "inputs": {
+          "model_id": {
+            "type": "string",
+            "required": true
+          },
+          "transcript": {
+            "type": "string",
+            "required": true
+          },
+          "voice": {
+            "type": "object",
+            "required": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Voice ID"
+              }
+            }
+          },
+          "output_format": {
+            "type": "object",
+            "required": true,
+            "properties": {
+              "container": {
+                "type": "string",
+                "default": "mp3",
+                "enum": ["mp3", "wav", "raw"]
+              },
+              "encoding": {
+                "type": "string",
+                "enum": ["pcm_f32le", "pcm_s16le", "pcm_alaw", "pcm_mulaw"]
+              },
+              "sample_rate": {
+                "type": "integer",
+                "enum": [8000, 16000, 22050, 24000, 32000, 44100, 48000]
+              },
+              "bit_rate": {
+                "type": "integer",
+                "enum": [32000, 64000, 96000, 128000, 192000]
+              }
+            }
+          },
+          "language": {
+            "type": "string",
+            "enum": ["en", "fr", "de", "es", "pt", "zh", "ja", "hi", "it", "ko", "nl", "pl", "ru", "sv", "tr", "tl", "bg", "ro", "ar", "cs", "el", "fi", "hr", "ms", "sk", "da", "ta", "uk", "hu", "no", "vi", "bn", "th", "he", "ka", "id", "te", "gu", "kn", "ml", "mr", "pa"]
+          },
+          "pronunciation_dict_id": {
+            "type": "string"
+          },
+          "generation_config": {
+            "type": "object",
+            "properties": {
+              "volume": {
+                "type": "number",
+                "minimum": 0.5,
+                "maximum": 2,
+                "default": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.6,
+                "maximum": 1.5,
+                "default": 1
+              },
+              "emotion": {
+                "type": "string",
+                "enum": ["neutral", "happy", "excited", "enthusiastic", "elated", "euphoric", "triumphant", "amazed", "surprised", "flirtatious", "curious", "content", "peaceful", "serene", "calm", "grateful", "affectionate", "trust", "sympathetic", "anticipation", "mysterious", "angry", "mad", "outraged", "frustrated", "agitated", "threatened", "disgusted", "contempt", "envious", "sarcastic", "ironic", "sad", "dejected", "melancholic", "disappointed", "hurt", "guilty", "bored", "tired", "rejected", "nostalgic", "wistful", "apologetic", "hesitant", "insecure", "confused", "resigned", "anxious", "panicked", "alarmed", "scared", "proud", "confident", "distant", "skeptical", "contemplative", "determined"]
+              }
+            }
+          },
+          "speed": {
+            "type": "string",
+            "default": "normal",
+            "enum": ["slow", "normal", "fast"]
+          }
+        }
+      }
+    },
+    {
+      "id": "sonic-3",
+      "name": "Sonic 3",
+      "type": "text-to-speech-model",
+      "url": "https://api.cartesia.ai",
+      "metadata": {
+        "documentationUrl": "https://docs.cartesia.ai/api-reference/tts/bytes",
+        "documentationStatus": "verified",
+        "inputs": {
+          "model_id": {
+            "type": "string",
+            "required": true
+          },
+          "transcript": {
+            "type": "string",
+            "required": true
+          },
+          "voice": {
+            "type": "object",
+            "required": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Voice ID"
+              }
+            }
+          },
+          "output_format": {
+            "type": "object",
+            "required": true,
+            "properties": {
+              "container": {
+                "type": "string",
+                "default": "mp3",
+                "enum": ["mp3", "wav", "raw"]
+              },
+              "encoding": {
+                "type": "string",
+                "enum": ["pcm_f32le", "pcm_s16le", "pcm_alaw", "pcm_mulaw"]
+              },
+              "sample_rate": {
+                "type": "integer",
+                "enum": [8000, 16000, 22050, 24000, 32000, 44100, 48000]
+              },
+              "bit_rate": {
+                "type": "integer",
+                "enum": [32000, 64000, 96000, 128000, 192000]
+              }
+            }
+          },
+          "language": {
+            "type": "string",
+            "enum": ["en", "fr", "de", "es", "pt", "zh", "ja", "hi", "it", "ko", "nl", "pl", "ru", "sv", "tr", "tl", "bg", "ro", "ar", "cs", "el", "fi", "hr", "ms", "sk", "da", "ta", "uk", "hu", "no", "vi", "bn", "th", "he", "ka", "id", "te", "gu", "kn", "ml", "mr", "pa"]
+          },
+          "pronunciation_dict_id": {
+            "type": "string"
+          },
+          "generation_config": {
+            "type": "object",
+            "properties": {
+              "volume": {
+                "type": "number",
+                "minimum": 0.5,
+                "maximum": 2,
+                "default": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.6,
+                "maximum": 1.5,
+                "default": 1
+              },
+              "emotion": {
+                "type": "string",
+                "enum": ["neutral", "happy", "excited", "enthusiastic", "elated", "euphoric", "triumphant", "amazed", "surprised", "flirtatious", "curious", "content", "peaceful", "serene", "calm", "grateful", "affectionate", "trust", "sympathetic", "anticipation", "mysterious", "angry", "mad", "outraged", "frustrated", "agitated", "threatened", "disgusted", "contempt", "envious", "sarcastic", "ironic", "sad", "dejected", "melancholic", "disappointed", "hurt", "guilty", "bored", "tired", "rejected", "nostalgic", "wistful", "apologetic", "hesitant", "insecure", "confused", "resigned", "anxious", "panicked", "alarmed", "scared", "proud", "confident", "distant", "skeptical", "contemplative", "determined"]
+              }
+            }
+          },
+          "speed": {
+            "type": "string",
+            "default": "normal",
+            "enum": ["slow", "normal", "fast"]
+          }
+        }
+      }
+    }
+  ]
 }

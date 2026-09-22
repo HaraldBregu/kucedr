@@ -111,7 +111,11 @@ export function WorkspaceTreeItem({
 							},
 							{ type: 'separator' },
 							{ id: 'new-file', label: 'New File' },
-							...(isDirectory ? ([{ id: 'new-folder', label: 'New Folder' }] as const) : []),
+							...(isDirectory
+								? ([
+										{ id: 'new-folder', label: 'New Folder' },
+									] as const)
+								: []),
 							{ type: 'separator' },
 							{ id: 'rename', label: isDirectory ? 'Rename Folder' : 'Rename File' },
 							...(isDirectory ? [] : ([{ id: 'duplicate', label: 'Duplicate' }] as const)),
@@ -198,7 +202,9 @@ export function WorkspaceTreeItem({
 							const extensionStart = renameName.lastIndexOf('.');
 							event.currentTarget.setSelectionRange(
 								0,
-								entry.type === 'file' && extensionStart > 0 ? extensionStart : renameName.length
+								entry.type === 'file' && extensionStart > 0
+									? extensionStart
+									: renameName.length
 							);
 						}}
 						onKeyDown={(event) => {

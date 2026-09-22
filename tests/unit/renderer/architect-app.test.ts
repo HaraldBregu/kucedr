@@ -68,9 +68,7 @@ describe('Architect app workflow', () => {
 	it('constrains revisions to the requested design change', () => {
 		const prompt = buildRevisionPrompt('replace the sofa with a low modular sectional', 'interior');
 		expect(prompt).toContain('apply only this design revision');
-		expect(prompt).toContain(
-			'Preserve the structure and spatial geometry, camera position, perspective'
-		);
+		expect(prompt).toContain('Preserve the structure and spatial geometry, camera position, perspective');
 	});
 
 	it('selects a compatible edit model without switching providers', () => {

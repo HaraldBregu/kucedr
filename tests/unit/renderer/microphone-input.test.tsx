@@ -11,21 +11,13 @@ jest.mock('react-i18next', () => {
 
 const key = 'settings.system.media.microphone';
 const builtIn = {
-	kind: 'audioinput',
-	deviceId: 'built-in',
-	groupId: 'built-in-group',
-	label: 'MacBook Microphone',
+	kind: 'audioinput', deviceId: 'built-in', groupId: 'built-in-group', label: 'MacBook Microphone',
 } as MediaDeviceInfo;
 const usb = {
-	kind: 'audioinput',
-	deviceId: 'usb',
-	groupId: 'usb-group',
-	label: 'USB Microphone',
+	kind: 'audioinput', deviceId: 'usb', groupId: 'usb-group', label: 'USB Microphone',
 } as MediaDeviceInfo;
 const systemDefault = {
-	...builtIn,
-	deviceId: 'default',
-	label: 'Default - MacBook Microphone',
+	...builtIn, deviceId: 'default', label: 'Default - MacBook Microphone',
 } as MediaDeviceInfo;
 const api = {
 	getMicrophoneInputId: jest.fn(),
@@ -74,10 +66,7 @@ it('refreshes connected inputs without replacing the saved choice', async () => 
 	});
 	expect(screen.queryByRole('option', { name: 'USB Microphone' })).not.toBeInTheDocument();
 	expect(select).toHaveTextContent(`${key}.unavailable`);
-	expect(screen.getByRole('option', { name: `${key}.unavailable` })).toHaveAttribute(
-		'aria-disabled',
-		'true'
-	);
+	expect(screen.getByRole('option', { name: `${key}.unavailable` })).toHaveAttribute('aria-disabled', 'true');
 	await act(async () => {
 		devices = [systemDefault, builtIn, usb];
 		mediaDevices.dispatchEvent(new Event('devicechange'));
@@ -93,9 +82,7 @@ it('shows the current system microphone and saves the system default selection',
 	const select = screen.getByRole('combobox', { name: `${key}.label` });
 	await waitFor(() => expect(select).toHaveTextContent('USB Microphone'));
 	await user.click(select);
-	await user.click(
-		await screen.findByRole('option', { name: `${key}.systemDefault (MacBook Microphone)` })
-	);
+	await user.click(await screen.findByRole('option', { name: `${key}.systemDefault (MacBook Microphone)` }));
 	await waitFor(() => expect(api.setMicrophoneInputId).toHaveBeenCalledWith('default'));
 	expect(select).toHaveTextContent(`${key}.systemDefault`);
 });
@@ -116,9 +103,6 @@ it('keeps the previous selection and reports a failed save', async () => {
 it('labels a selected input without a device name using its numbered fallback', async () => {
 	devices = [systemDefault, builtIn, { ...usb, label: '' }];
 	render(<MicrophoneInput refreshKey="granted-idle" disabled={false} />);
-	await waitFor(() =>
-		expect(screen.getByRole('combobox', { name: `${key}.label` })).toHaveTextContent(
-			`${key}.unnamed 2`
-		)
-	);
+	await waitFor(() => expect(screen.getByRole('combobox', { name: `${key}.label` }))
+		.toHaveTextContent(`${key}.unnamed 2`));
 });

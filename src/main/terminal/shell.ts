@@ -26,8 +26,8 @@ export class ShellDetector {
 		if (this.platform === 'win32') return this.detectWindowsShell();
 
 		const candidates = [this.environment.SHELL, '/bin/zsh', '/bin/bash', '/bin/sh'];
-		const executable = candidates.find((candidate): candidate is string =>
-			Boolean(candidate && this.isExecutable(candidate))
+		const executable = candidates.find(
+			(candidate): candidate is string => Boolean(candidate && this.isExecutable(candidate))
 		);
 		if (!executable) throw new Error('No supported shell executable was found.');
 		return { executable, args: this.platform === 'darwin' ? ['-l'] : [] };
@@ -55,8 +55,7 @@ export class ShellDetector {
 	}
 
 	private resolveWindowsExecutable(candidate: string): string | undefined {
-		if (path.win32.isAbsolute(candidate))
-			return this.isExecutable(candidate) ? candidate : undefined;
+		if (path.win32.isAbsolute(candidate)) return this.isExecutable(candidate) ? candidate : undefined;
 		const pathValue = this.environment.PATH ?? this.environment.Path ?? '';
 		for (const directory of pathValue.split(';').filter(Boolean)) {
 			const executable = path.win32.join(directory, candidate);

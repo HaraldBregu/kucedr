@@ -1,9 +1,5 @@
 import type { StoredProvider } from '../../shared/provider_types';
-import {
-	getSearchEngines,
-	providersStorePath,
-	setSearchEngines,
-} from '../providers/providers_index';
+import { getSearchEngines, providersStorePath, setSearchEngines } from '../providers/providers_index';
 
 export const searchStorePath = providersStorePath;
 

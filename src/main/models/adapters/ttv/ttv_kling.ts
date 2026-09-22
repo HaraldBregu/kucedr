@@ -48,11 +48,7 @@ export function createKlingVideoAdapter(spec: VideoProviderSpec): VideoAdapter {
 			const submitted = await requestJson<KlingTask>(spec.name, `${baseURL}/v1/videos/text2video`, {
 				method: 'POST',
 				headers: buildHeaders(),
-				body: JSON.stringify({
-					model_name: request.modelId,
-					prompt: request.prompt,
-					...request.options,
-				}),
+				body: JSON.stringify({ model_name: request.modelId, prompt: request.prompt, ...request.options }),
 				signal: request.signal,
 			});
 			const taskId = submitted.data?.task_id;

@@ -1,5 +1,9 @@
 import { useState, type ReactElement } from 'react';
-import { PromptInput, usePromptInput, type PromptInputProps } from '@/components/ui/prompt-input';
+import {
+	PromptInput,
+	usePromptInput,
+	type PromptInputProps,
+} from '@/components/ui/prompt-input';
 import { TextEditor } from './text-editor';
 
 export type PromptEditorProps = Omit<PromptInputProps, 'children'> & {

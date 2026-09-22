@@ -33,7 +33,7 @@ it('measures the offline knowledge acceptance metrics', () => {
 				inputTokens: 30,
 				outputTokens: 5,
 				estimatedCostUsd: 0,
-			})
+			}),
 		),
 	];
 

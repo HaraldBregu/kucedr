@@ -30,17 +30,19 @@ export function resolvePromptInputCapabilities(
 			: undefined;
 	const rules = (declared ?? [])
 		.filter((rule) => adapterKinds.includes(rule.kind))
-		.map((rule): PromptAttachmentRule => ({
-			...rule,
-			mimeTypes: [...rule.mimeTypes],
-			extensions: [...rule.extensions],
-			maxFiles: Math.min(rule.maxFiles ?? AGENT_MAX_ATTACHMENT_COUNT, AGENT_MAX_ATTACHMENT_COUNT),
-			maxBytes: Math.min(rule.maxBytes ?? AGENT_MAX_ATTACHMENT_BYTES, AGENT_MAX_ATTACHMENT_BYTES),
-			maxTotalBytes: Math.min(
-				rule.maxTotalBytes ?? AGENT_MAX_ATTACHMENT_TOTAL_BYTES,
-				AGENT_MAX_ATTACHMENT_TOTAL_BYTES
-			),
-		}));
+		.map(
+			(rule): PromptAttachmentRule => ({
+				...rule,
+				mimeTypes: [...rule.mimeTypes],
+				extensions: [...rule.extensions],
+				maxFiles: Math.min(rule.maxFiles ?? AGENT_MAX_ATTACHMENT_COUNT, AGENT_MAX_ATTACHMENT_COUNT),
+				maxBytes: Math.min(rule.maxBytes ?? AGENT_MAX_ATTACHMENT_BYTES, AGENT_MAX_ATTACHMENT_BYTES),
+				maxTotalBytes: Math.min(
+					rule.maxTotalBytes ?? AGENT_MAX_ATTACHMENT_TOTAL_BYTES,
+					AGENT_MAX_ATTACHMENT_TOTAL_BYTES
+				),
+			})
+		);
 	const accept = [
 		...AGENT_TEXT_ATTACHMENT_EXTENSIONS,
 		...rules.flatMap((rule) => [...rule.mimeTypes, ...rule.extensions]),

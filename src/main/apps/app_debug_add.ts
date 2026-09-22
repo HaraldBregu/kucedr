@@ -26,8 +26,7 @@ export function addDebugApp(folderPath: string): App {
 		throw new Error('Missing or invalid manifest. Expected manifest.json or package.json.');
 	}
 	const entry = path.join(directory, ...manifest.metadata.entry.split('/'));
-	if (!existsSync(entry) || !statSync(entry).isFile())
-		throw new Error('App entry file is missing.');
+	if (!existsSync(entry) || !statSync(entry).isFile()) throw new Error('App entry file is missing.');
 	const resolvedEntry = realpathSync(entry);
 	const relativeEntry = path.relative(realpathSync(directory), resolvedEntry);
 	if (relativeEntry.startsWith(`..${path.sep}`) || path.isAbsolute(relativeEntry)) {

@@ -123,9 +123,7 @@ it('does not render a chat title in the navigationbar', () => {
 	);
 
 	expect(container.querySelector('[data-slot="navigationbar-chat-title"]')).not.toBeInTheDocument();
-	expect(
-		container.querySelector('[data-slot="navigationbar-chat-context"]')
-	).not.toBeInTheDocument();
+	expect(container.querySelector('[data-slot="navigationbar-chat-context"]')).not.toBeInTheDocument();
 });
 
 it('renders search immediately before the Chat or Settings button', async () => {
@@ -156,9 +154,7 @@ it('renders one solid navigationbar color without visible title text', () => {
 	expect(navigationBar).toHaveClass('bg-background');
 	expect(navigationBar).not.toHaveClass('bg-transparent');
 	expect(navigationBar).not.toHaveClass('app-translucent-surface');
-	expect(
-		within(navigationBar as HTMLElement).queryByText('Application Name')
-	).not.toBeInTheDocument();
+	expect(within(navigationBar as HTMLElement).queryByText('Application Name')).not.toBeInTheDocument();
 	expect(within(navigationBar as HTMLElement).queryByText('Kucedr')).not.toBeInTheDocument();
 });
 
@@ -191,9 +187,7 @@ it('does not render the sidebar toggle in the navigationbar', () => {
 		</MemoryRouter>
 	);
 
-	expect(
-		screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })
-	).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })).not.toBeInTheDocument();
 });
 
 it('does not render route titles inside the navigationbar', () => {

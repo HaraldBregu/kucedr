@@ -12,7 +12,8 @@ export interface ChannelInboundVoice {
 }
 
 export type ChannelInboundContent =
-	{ type: 'text'; text: string } | { type: 'voice'; voice: ChannelInboundVoice };
+	| { type: 'text'; text: string }
+	| { type: 'voice'; voice: ChannelInboundVoice };
 
 export interface ChannelOutboundVoice {
 	data: string;

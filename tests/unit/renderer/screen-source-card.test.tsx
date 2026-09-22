@@ -56,11 +56,7 @@ it('submits a selected source immediately without a confirmation button', async 
 it('renders the selected source as a compact title and detail row', () => {
 	render(
 		<ScreenSourceCard
-			tool={{
-				...tool,
-				state: 'output-available',
-				output: { status: 'resolved', sourceId: 'window:2' },
-			}}
+			tool={{ ...tool, state: 'output-available', output: { status: 'resolved', sourceId: 'window:2' } }}
 		/>
 	);
 

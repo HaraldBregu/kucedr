@@ -58,7 +58,10 @@ export class SupabaseCloudRepository implements CloudRepository {
 		return (data as SessionRow[]).map((row) => this.session(row));
 	}
 
-	async upsertSession(ownerId: string, input: CloudChatSessionInput): Promise<CloudChatSession> {
+	async upsertSession(
+		ownerId: string,
+		input: CloudChatSessionInput
+	): Promise<CloudChatSession> {
 		const { data, error } = await this.client
 			.from('chat_sessions')
 			.upsert(
@@ -102,7 +105,10 @@ export class SupabaseCloudRepository implements CloudRepository {
 		return (data as MessageRow[]).map((row) => this.message(row));
 	}
 
-	async upsertMessage(ownerId: string, input: CloudChatMessageInput): Promise<CloudChatMessage> {
+	async upsertMessage(
+		ownerId: string,
+		input: CloudChatMessageInput
+	): Promise<CloudChatMessage> {
 		const { data, error } = await this.client
 			.from('chat_messages')
 			.upsert(
@@ -145,10 +151,7 @@ export class SupabaseCloudRepository implements CloudRepository {
 			.select('id,session_id,file_name,mime_type,size_bytes,created_at')
 			.single();
 		if (error) {
-			await this.client.storage
-				.from('user-files')
-				.remove([objectPath])
-				.catch(() => undefined);
+			await this.client.storage.from('user-files').remove([objectPath]).catch(() => undefined);
 			throw publicCloudError(error);
 		}
 		return this.file(data as FileRow);

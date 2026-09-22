@@ -85,11 +85,11 @@ export function Instructions({
 						</div>
 					) : editor.instructions ? (
 						<div className="flex min-h-[360px] flex-1 flex-col gap-2">
-							<label htmlFor="coder-agent-instructions" className="text-xs font-medium">
+								<label htmlFor="coder-agent-instructions" className="text-xs font-medium">
 								Workspace instructions
 							</label>
 							<Textarea
-								id="coder-agent-instructions"
+									id="coder-agent-instructions"
 								value={editor.content}
 								disabled={!editor.instructions.editable || editor.saving}
 								onChange={(event) => editor.setContent(event.target.value)}

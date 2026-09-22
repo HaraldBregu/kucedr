@@ -121,8 +121,8 @@ it('prioritizes an exact ID and forwards continuation IDs, credentials, and canc
 		expect.objectContaining({
 			message: expect.objectContaining({ taskId: 'task-1', contextId: 'context-1', role: 1 }),
 		}),
-		expect.objectContaining({ signal: controller.signal })
-	);
+			expect.objectContaining({ signal: controller.signal })
+		);
 });
 
 it('returns artifacts from a completed initial Task-only stream', async () => {

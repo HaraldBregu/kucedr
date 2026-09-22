@@ -369,9 +369,7 @@ input[type='range']::-webkit-slider-thumb {
 	border-radius: 50%;
 	background-color: var(--foreground);
 	margin-top: -5px;
-	transition:
-		transform 0.1s ease,
-		box-shadow 0.1s ease;
+	transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 input[type='range']:hover::-webkit-slider-thumb,
@@ -542,8 +540,10 @@ input[type='range']:hover::-moz-range-thumb {
 		#ef4444
 	);
 	background-size: 300% 100%;
-	filter: drop-shadow(-2px 0 3px rgba(239, 68, 68, 0.3))
-		drop-shadow(0 -2px 3px rgba(234, 179, 8, 0.25)) drop-shadow(2px 0 3px rgba(6, 182, 212, 0.3))
+	filter:
+		drop-shadow(-2px 0 3px rgba(239, 68, 68, 0.3))
+		drop-shadow(0 -2px 3px rgba(234, 179, 8, 0.25))
+		drop-shadow(2px 0 3px rgba(6, 182, 212, 0.3))
 		drop-shadow(0 2px 3px rgba(168, 85, 247, 0.3));
 	animation: plan-prompt-rainbow 5s linear infinite;
 	pointer-events: none;

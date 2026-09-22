@@ -18,12 +18,7 @@ const card: AgentCard = {
 	name: 'Remote',
 	description: 'Remote agent',
 	supportedInterfaces: [
-		{
-			url: 'https://agent.example/a2a',
-			protocolBinding: 'JSONRPC',
-			protocolVersion: '1.0',
-			tenant: '',
-		},
+		{ url: 'https://agent.example/a2a', protocolBinding: 'JSONRPC', protocolVersion: '1.0', tenant: '' },
 	],
 	provider: undefined,
 	version: '1.0.0',
@@ -62,7 +57,11 @@ it('accepts a configured API key header declared by the Agent Card', async () =>
 
 it('rejects credentials that do not satisfy the Agent Card security requirement', async () => {
 	await expect(
-		createA2aClient(card, { authType: 'bearer', credential: 'secret' }, 'https://agent.example')
+		createA2aClient(
+			card,
+			{ authType: 'bearer', credential: 'secret' },
+			'https://agent.example'
+		)
 	).rejects.toThrow('authentication requirements');
 });
 
@@ -71,7 +70,9 @@ it('pins authenticated interfaces to the configured HTTPS origin', async () => {
 		createA2aClient(
 			{
 				...card,
-				supportedInterfaces: [{ ...card.supportedInterfaces[0], url: 'https://other.example/a2a' }],
+				supportedInterfaces: [
+					{ ...card.supportedInterfaces[0], url: 'https://other.example/a2a' },
+				],
 			},
 			{ authType: 'api-key', credential: 'secret', apiKeyHeader: 'X-API-Key' },
 			'https://agent.example'

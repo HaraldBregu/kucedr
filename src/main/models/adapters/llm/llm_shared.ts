@@ -307,7 +307,10 @@ export function llmBuildAnthropicMessages(
 									source: {
 										type: 'base64' as const,
 										media_type: (c.mimeType ?? 'image/png') as
-											'image/png' | 'image/jpeg' | 'image/gif' | 'image/webp',
+											| 'image/png'
+											| 'image/jpeg'
+											| 'image/gif'
+											| 'image/webp',
 										data: c.base64 ?? '',
 									},
 								}

@@ -18,9 +18,7 @@ export default function App() {
 	useTheme();
 	const coding = useCodingWorkspace();
 	const setLeftOpen = coding.setLeftOpen;
-	const [page, setPage] = useState<
-		'workspace' | 'configuration' | 'instructions' | 'files' | 'project'
-	>('workspace');
+	const [page, setPage] = useState<'workspace' | 'configuration' | 'instructions' | 'files' | 'project'>('workspace');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const [rightOpen, setRightOpen] = useState(true);
 	const setSidebarVisibility = useCallback(
@@ -30,9 +28,7 @@ export default function App() {
 		[setLeftOpen]
 	);
 
-	const openPage = (
-		nextPage: 'workspace' | 'configuration' | 'instructions' | 'files' | 'project'
-	): boolean => {
+	const openPage = (nextPage: 'workspace' | 'configuration' | 'instructions' | 'files' | 'project'): boolean => {
 		if (nextPage !== 'instructions' && !canLeaveInstructions(page, instructionsDirty)) {
 			return false;
 		}
@@ -49,18 +45,9 @@ export default function App() {
 						<ProjectSidebar
 							coding={coding}
 							onOpenWorkspace={() => openPage('workspace')}
-							onOpenFiles={(projectId) => {
-								void coding.selectProject(projectId);
-								void openPage('files');
-							}}
-							onOpenInstructions={(projectId) => {
-								void coding.selectProject(projectId);
-								void openPage('instructions');
-							}}
-							onOpenProject={(projectId) => {
-								void coding.selectProject(projectId);
-								void openPage('project');
-							}}
+							onOpenFiles={(projectId) => { void coding.selectProject(projectId); void openPage('files'); }}
+							onOpenInstructions={(projectId) => { void coding.selectProject(projectId); void openPage('instructions'); }}
+							onOpenProject={(projectId) => { void coding.selectProject(projectId); void openPage('project'); }}
 						/>
 					</Sidebar>
 					<SidebarInset>
@@ -90,19 +77,9 @@ export default function App() {
 							) : page === 'files' && coding.activeProject ? (
 								<Files coding={coding} onDone={() => void openPage('workspace')} />
 							) : page === 'project' && coding.activeProject ? (
-								<Project
-									coding={coding}
-									onOpenConfiguration={() => void openPage('configuration')}
-									onOpenFiles={() => void openPage('files')}
-									onOpenInstructions={() => void openPage('instructions')}
-								/>
+								<Project coding={coding} onOpenConfiguration={() => void openPage('configuration')} onOpenFiles={() => void openPage('files')} onOpenInstructions={() => void openPage('instructions')} />
 							) : coding.activeProject ? (
-								<Project
-									coding={coding}
-									onOpenConfiguration={() => void openPage('configuration')}
-									onOpenFiles={() => void openPage('files')}
-									onOpenInstructions={() => void openPage('instructions')}
-								/>
+								<Project coding={coding} onOpenConfiguration={() => void openPage('configuration')} onOpenFiles={() => void openPage('files')} onOpenInstructions={() => void openPage('instructions')} />
 							) : null}
 						</div>
 					</SidebarInset>

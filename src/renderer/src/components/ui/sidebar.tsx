@@ -1,39 +1,28 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 
-const SidebarFooter = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<'div'>>(
-	({ className, ...props }, ref) => (
-		<div
-			ref={ref}
-			data-slot="sidebar-footer"
-			className={cn('flex flex-col gap-2 p-2', className)}
-			{...props}
-		/>
-	)
-);
+const SidebarFooter = React.forwardRef<
+	HTMLDivElement,
+	React.ComponentPropsWithoutRef<'div'>
+>(({ className, ...props }, ref) => (
+	<div
+		ref={ref}
+		data-slot="sidebar-footer"
+		className={cn('flex flex-col gap-2 p-2', className)}
+		{...props}
+	/>
+));
 SidebarFooter.displayName = 'SidebarFooter';
 
 const SidebarMenu = React.forwardRef<HTMLUListElement, React.ComponentPropsWithoutRef<'ul'>>(
 	({ className, ...props }, ref) => (
-		<ul
-			ref={ref}
-			data-sidebar="menu"
-			className={cn('flex w-full min-w-0 flex-col gap-1', className)}
-			{...props}
-		/>
+		<ul ref={ref} data-sidebar="menu" className={cn('flex w-full min-w-0 flex-col gap-1', className)} {...props} />
 	)
 );
 SidebarMenu.displayName = 'SidebarMenu';
 
 const SidebarMenuItem = React.forwardRef<HTMLLIElement, React.ComponentPropsWithoutRef<'li'>>(
-	({ className, ...props }, ref) => (
-		<li
-			ref={ref}
-			data-sidebar="menu-item"
-			className={cn('group/menu-item relative', className)}
-			{...props}
-		/>
-	)
+	({ className, ...props }, ref) => <li ref={ref} data-sidebar="menu-item" className={cn('group/menu-item relative', className)} {...props} />
 );
 SidebarMenuItem.displayName = 'SidebarMenuItem';
 

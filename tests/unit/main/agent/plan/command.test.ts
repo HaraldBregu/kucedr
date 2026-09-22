@@ -2,9 +2,7 @@ import { planCommandError } from '../../../../../src/main/agent/plan/command';
 
 describe('Plan command policy', () => {
 	it('allows inspection commands inside the workspace', () => {
-		expect(
-			planCommandError({ command: 'git status', workdir: 'src' }, '/workspace')
-		).toBeUndefined();
+		expect(planCommandError({ command: 'git status', workdir: 'src' }, '/workspace')).toBeUndefined();
 	});
 
 	it.each([

@@ -1,11 +1,6 @@
 jest.mock('electron-store', () => ({ __esModule: true, default: jest.fn() }));
 jest.mock('node:fs', () => ({ watch: jest.fn() }));
-jest.mock('node:fs/promises', () => ({
-	access: jest.fn(),
-	readFile: jest.fn(),
-	mkdir: jest.fn(),
-	rm: jest.fn(),
-}));
+jest.mock('node:fs/promises', () => ({ access: jest.fn(), readFile: jest.fn(), mkdir: jest.fn(), rm: jest.fn() }));
 jest.mock('../../../../../src/main/agent/agent_store', () => ({ getChatbotModel: jest.fn() }));
 jest.mock('../../../../../src/main/models/adapters/llm', () => ({ LlmModel: jest.fn() }));
 jest.mock('../../../../../src/main/settings_store', () => ({ getProvider: jest.fn() }));
@@ -117,10 +112,7 @@ it('persists independent configuration and invokes the configured provider direc
 			signal: expect.any(AbortSignal),
 			messages: [
 				{ role: 'system', content: expect.stringContaining('complete MEMORY.md') },
-				{
-					role: 'user',
-					content: expect.stringContaining('Generate the complete updated MEMORY.md'),
-				},
+				{ role: 'user', content: expect.stringContaining('Generate the complete updated MEMORY.md') },
 			],
 		})
 	);

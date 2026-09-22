@@ -6,7 +6,12 @@ export interface AppLogEntry {
 }
 
 export type MicrophoneSystemPermissionStatus =
-	'not-determined' | 'granted' | 'denied' | 'restricted' | 'unknown' | 'unsupported';
+	| 'not-determined'
+	| 'granted'
+	| 'denied'
+	| 'restricted'
+	| 'unknown'
+	| 'unsupported';
 
 export interface MicrophonePermissionSettings {
 	readonly enabled: boolean;
@@ -15,7 +20,12 @@ export interface MicrophonePermissionSettings {
 }
 
 export type CameraSystemPermissionStatus =
-	'not-determined' | 'granted' | 'denied' | 'restricted' | 'unknown' | 'unsupported';
+	| 'not-determined'
+	| 'granted'
+	| 'denied'
+	| 'restricted'
+	| 'unknown'
+	| 'unsupported';
 
 export interface CameraPermissionSettings {
 	readonly enabled: boolean;
@@ -154,7 +164,10 @@ export interface AgentParentRoutePeer {
 }
 
 export type AgentRouteSessionScope =
-	'main' | 'per-peer' | 'per-channel-peer' | 'per-account-channel-peer';
+	| 'main'
+	| 'per-peer'
+	| 'per-channel-peer'
+	| 'per-account-channel-peer';
 
 export interface AgentRouteBinding {
 	agentId: string;

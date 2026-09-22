@@ -21,7 +21,12 @@ export async function cancelA2aTask(
 		);
 		const statusParts = task.status?.message?.parts ?? [];
 		assertA2aPartsSize(statusParts);
-		return formatA2aTaskOutcome(task.id, task.contextId, task.status?.state, a2aText(statusParts));
+		return formatA2aTaskOutcome(
+			task.id,
+			task.contextId,
+			task.status?.state,
+			a2aText(statusParts)
+		);
 	} catch (error) {
 		throw sanitizeA2aError(error, remote);
 	}

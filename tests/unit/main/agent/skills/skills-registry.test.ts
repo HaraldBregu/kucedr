@@ -27,7 +27,10 @@ describe('createSkillRegistrySnapshot', () => {
 
 			const snapshot = createSkillRegistrySnapshot({ projectRoot, userRoot });
 
-			expect(snapshot.skills.map((skill) => skill.name)).toEqual(['project-writer', 'user-reader']);
+			expect(snapshot.skills.map((skill) => skill.name)).toEqual([
+				'project-writer',
+				'user-reader',
+			]);
 			expect(snapshot.diagnostics).toEqual([]);
 		} finally {
 			fs.rmSync(root, { recursive: true, force: true });

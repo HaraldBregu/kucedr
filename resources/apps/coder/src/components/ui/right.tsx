@@ -49,10 +49,7 @@ export function RightSidebar({
 					event.currentTarget.releasePointerCapture(event.pointerId);
 				}}
 			/>
-			<div
-				className="flex h-12 shrink-0 items-center border-b border-sidebar-border px-3"
-				style={{ width }}
-			>
+			<div className="flex h-12 shrink-0 items-center border-b border-sidebar-border px-3" style={{ width }}>
 				<span className="text-xs font-medium">Chat</span>
 				<Button
 					variant="ghost"

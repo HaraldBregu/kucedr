@@ -25,9 +25,9 @@ describe('GoalCommand', () => {
 
 		typeText(editor, 'Keep tests green');
 		expect(editor.state.doc.textContent.trim()).toBe('Keep tests green');
-		expect(
-			GoalCommand.config.renderMarkdown?.({ node: editor.state.doc.firstChild! } as never)
-		).toBe('/goal');
+		expect(GoalCommand.config.renderMarkdown?.({ node: editor.state.doc.firstChild! } as never)).toBe(
+			'/goal'
+		);
 		editor.destroy();
 	});
 

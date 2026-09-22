@@ -112,11 +112,7 @@ export function workspaceFileType(filePath: string): WorkspaceFileType {
 	if (extension === 'tldr' || extension === 'tldraw') {
 		return { kind: 'tldraw', mimeType: 'application/vnd.tldraw+json' };
 	}
-	if (
-		!BINARY_EXTENSIONS.has(extension) ||
-		TEXT_EXTENSIONS.has(extension) ||
-		TEXT_FILENAMES.has(name)
-	)
+	if (!BINARY_EXTENSIONS.has(extension) || TEXT_EXTENSIONS.has(extension) || TEXT_FILENAMES.has(name))
 		return { kind: 'text', mimeType: 'text/plain' };
 	return { kind: 'unsupported' };
 }

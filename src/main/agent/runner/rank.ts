@@ -26,9 +26,7 @@ export function rankTools<T>(query: string, documents: RankedDocument<T>[]): T[]
 				const containing = tokenized.filter((entry) =>
 					(entry.tokens as string[]).includes(term)
 				).length;
-				const inverseFrequency = Math.log(
-					1 + (documents.length - containing + 0.5) / (containing + 0.5)
-				);
+				const inverseFrequency = Math.log(1 + (documents.length - containing + 0.5) / (containing + 0.5));
 				const normalized =
 					(frequency * 2.2) /
 					(frequency + 1.2 * (0.25 + (0.75 * document.tokens.length) / Math.max(1, averageLength)));

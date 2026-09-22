@@ -2,10 +2,14 @@ import { getMicrophoneConstraints } from '@/lib/microphone/constraints';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { MicrophonePermissionSettings } from '@shared/app_types';
 
-export type AudioRecorderStatus =
-	'idle' | 'checking-permission' | 'recording' | 'stopping' | 'error';
+export type AudioRecorderStatus = 'idle' | 'checking-permission' | 'recording' | 'stopping' | 'error';
 export type AudioRecorderPermissionState =
-	'unknown' | 'prompt' | 'granted' | 'denied' | 'disabled' | 'unsupported';
+	| 'unknown'
+	| 'prompt'
+	| 'granted'
+	| 'denied'
+	| 'disabled'
+	| 'unsupported';
 
 export type AudioRecording = {
 	readonly id: string;
@@ -30,8 +34,8 @@ function canRecordAudio(): boolean {
 	const mediaDevices = navigator.mediaDevices as MediaDevices | undefined;
 	return Boolean(
 		mediaDevices &&
-		typeof mediaDevices.getUserMedia === 'function' &&
-		typeof MediaRecorder !== 'undefined'
+			typeof mediaDevices.getUserMedia === 'function' &&
+			typeof MediaRecorder !== 'undefined'
 	);
 }
 
@@ -112,7 +116,8 @@ function objectUrlForBlob(blob: Blob): string | undefined {
 
 export function useAudioRecorder() {
 	const [status, setStatus] = useState<AudioRecorderStatus>('idle');
-	const [permissionState, setPermissionState] = useState<AudioRecorderPermissionState>('unknown');
+	const [permissionState, setPermissionState] =
+		useState<AudioRecorderPermissionState>('unknown');
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [elapsedMs, setElapsedMs] = useState(0);
 	const [isMuted, setIsMuted] = useState(false);

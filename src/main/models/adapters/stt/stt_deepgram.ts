@@ -208,7 +208,10 @@ function deepgramRealtimeUrl(
 		request.modelId === realtimeSpeechToTextModelId('deepgram')
 			? DEEPGRAM_FLUX_LISTEN_PATH
 			: DEEPGRAM_LISTEN_PATH;
-	const url = new URL(path, `${baseURL ?? speechToTextBaseUrl('deepgram')}/`);
+	const url = new URL(
+		path,
+		`${baseURL ?? speechToTextBaseUrl('deepgram')}/`
+	);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	url.searchParams.set('model', request.modelId);
 	url.searchParams.set('encoding', DEEPGRAM_LINEAR16_ENCODING);

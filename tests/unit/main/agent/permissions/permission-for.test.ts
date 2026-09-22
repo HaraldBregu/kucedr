@@ -26,11 +26,7 @@ describe('permissionFor', () => {
 		fs.mkdirSync(outside);
 		fs.symlinkSync(outside, path.join(workspace, 'linked'));
 		expect(
-			permissionFor(
-				{ allow: [`${workspace}/**`], deny: [] },
-				path.join(workspace, 'linked', 'a'),
-				'exec'
-			)
+			permissionFor({ allow: [`${workspace}/**`], deny: [] }, path.join(workspace, 'linked', 'a'), 'exec')
 		).toBeUndefined();
 	});
 

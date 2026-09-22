@@ -10,7 +10,12 @@ export function parsePlanEnvelope(content: string, streaming: boolean): ParsedPl
 	const trimmed = content.trim();
 	const openCount = trimmed.split(OPEN).length - 1;
 	const closeCount = trimmed.split(CLOSE).length - 1;
-	if (openCount === 1 && closeCount === 1 && trimmed.startsWith(OPEN) && trimmed.endsWith(CLOSE)) {
+	if (
+		openCount === 1 &&
+		closeCount === 1 &&
+		trimmed.startsWith(OPEN) &&
+		trimmed.endsWith(CLOSE)
+	) {
 		const body = trimmed.slice(OPEN.length, -CLOSE.length).trim();
 		if (body.length > 0 && !body.includes(OPEN) && !body.includes(CLOSE))
 			return { kind: 'complete', content: body };

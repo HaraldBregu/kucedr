@@ -6,8 +6,7 @@ import { readGoal } from './read';
 import { updateGoalStatus } from './status';
 
 export function applyGoalCommand(sessionDirectory: string, command: GoalCommand): string {
-	if (command.action === 'create')
-		return formatGoal(createGoal(sessionDirectory, command.objective));
+	if (command.action === 'create') return formatGoal(createGoal(sessionDirectory, command.objective));
 	if (command.action === 'pause') {
 		return formatGoal(updateGoalStatus(sessionDirectory, 'paused', command.note));
 	}

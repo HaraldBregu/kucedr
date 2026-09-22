@@ -61,11 +61,7 @@ export function ScreenSourceCard({
 		return (
 			<Card size="sm" className="max-w-2xl border-border/70">
 				<CardContent>
-					<div
-						ref={resolvedRef}
-						tabIndex={-1}
-						className="flex items-center justify-between gap-3 outline-none"
-					>
+					<div ref={resolvedRef} tabIndex={-1} className="flex items-center justify-between gap-3 outline-none">
 						<CardTitle className="min-w-0 truncate text-sm">
 							{result.status === 'resolved' ? 'Screen selected' : 'Screen selection interrupted'}
 						</CardTitle>

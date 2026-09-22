@@ -14,14 +14,7 @@ export function authorizeFilePath(filePath: string): string {
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 	}
-	if (
-		Boolean(stat) !== grant.exists ||
-		(stat &&
-			(stat.isSymbolicLink() ||
-				stat.dev !== grant.dev ||
-				stat.ino !== grant.ino ||
-				(stat.isFile() && (stat.size !== grant.size || stat.mtimeMs !== grant.modifiedAt))))
-	) {
+	if (Boolean(stat) !== grant.exists || (stat && (stat.isSymbolicLink() || stat.dev !== grant.dev || stat.ino !== grant.ino || (stat.isFile() && (stat.size !== grant.size || stat.mtimeMs !== grant.modifiedAt))))) {
 		throw new Error('File changed after authorization; request permission again.');
 	}
 	return resolved;

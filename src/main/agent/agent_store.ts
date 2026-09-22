@@ -245,13 +245,10 @@ export function addPermissionRule(
 ): void {
 	const permissions = getPermissions(profileId);
 	if (permissions[kind][bucket].includes(rule)) return;
-	setPermissions(
-		{
-			...permissions,
-			[kind]: { ...permissions[kind], [bucket]: [...permissions[kind][bucket], rule] },
-		},
-		profileId
-	);
+	setPermissions({
+		...permissions,
+		[kind]: { ...permissions[kind], [bucket]: [...permissions[kind][bucket], rule] },
+	}, profileId);
 }
 export function resetPermissions(profileId: AgentToolProfileId = 'chat'): PermissionsSchema {
 	setAgentProfilePermissions(profileId, structuredClone(DEFAULT_AGENT_PERMISSIONS));

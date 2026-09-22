@@ -48,9 +48,7 @@ const Sandbox: React.FC = () => {
 		try {
 			setStatus(await window.app.setupSandbox());
 		} catch (cause) {
-			setError(
-				cause instanceof Error ? cause.message : t('settings.permissions.sandboxSetupFailed')
-			);
+			setError(cause instanceof Error ? cause.message : t('settings.permissions.sandboxSetupFailed'));
 		} finally {
 			setBusy(false);
 		}
@@ -88,13 +86,7 @@ const Sandbox: React.FC = () => {
 					</p>
 				)}
 				<div className="flex justify-end gap-2">
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						onClick={() => void check()}
-						disabled={busy}
-					>
+					<Button type="button" variant="outline" size="sm" onClick={() => void check()} disabled={busy}>
 						<RefreshCw className="size-3" />
 						{t('settings.permissions.sandboxRecheck')}
 					</Button>

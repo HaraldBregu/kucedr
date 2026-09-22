@@ -71,6 +71,9 @@ export async function runStorageTest(): Promise<string[]> {
 			'deleteAppStoreFile: delete',
 		];
 	} finally {
-		await Promise.allSettled([app.deleteAppStoreValue(key), app.deleteAppStoreFile(path)]);
+		await Promise.allSettled([
+			app.deleteAppStoreValue(key),
+			app.deleteAppStoreFile(path),
+		]);
 	}
 }

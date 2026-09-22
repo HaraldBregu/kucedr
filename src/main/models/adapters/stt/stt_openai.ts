@@ -199,7 +199,10 @@ function createOpenAIRealtimeConnection(
 }
 
 function openAIRealtimeUrl(baseURL: string | undefined): string {
-	const url = new URL(OPENAI_REALTIME_PATH, `${baseURL ?? speechToTextBaseUrl('openai')}/`);
+	const url = new URL(
+		OPENAI_REALTIME_PATH,
+		`${baseURL ?? speechToTextBaseUrl('openai')}/`
+	);
 	url.protocol = url.protocol === 'http:' ? 'ws:' : 'wss:';
 	url.searchParams.set('model', realtimeSpeechToTextModelId('openai'));
 	return url.toString();

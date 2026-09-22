@@ -1,27 +1,13 @@
 const mk = (tag: string) => jest.fn((spec: unknown) => ({ tag, spec }));
 const google = mk('google');
 
-jest.mock('../../../../src/main/models/adapters/tti/tti_bfl', () => ({
-	createBflImageAdapter: mk('bfl'),
-}));
-jest.mock('../../../../src/main/models/adapters/tti/tti_google', () => ({
-	createGoogleImageAdapter: google,
-}));
-jest.mock('../../../../src/main/models/adapters/tti/tti_ideogram', () => ({
-	createIdeogramImageAdapter: mk('id'),
-}));
-jest.mock('../../../../src/main/models/adapters/tti/tti_luma', () => ({
-	createLumaImageAdapter: mk('luma'),
-}));
-jest.mock('../../../../src/main/models/adapters/tti/tti_qwen', () => ({
-	createQwenImageAdapter: mk('qwen'),
-}));
-jest.mock('../../../../src/main/models/adapters/tti/tti_stability', () => ({
-	createStabilityImageAdapter: mk('stab'),
-}));
-jest.mock('../../../../src/main/models/adapters/tti/tti_xai', () => ({
-	createXaiImageAdapter: mk('xai'),
-}));
+jest.mock('../../../../src/main/models/adapters/tti/tti_bfl', () => ({ createBflImageAdapter: mk('bfl') }));
+jest.mock('../../../../src/main/models/adapters/tti/tti_google', () => ({ createGoogleImageAdapter: google }));
+jest.mock('../../../../src/main/models/adapters/tti/tti_ideogram', () => ({ createIdeogramImageAdapter: mk('id') }));
+jest.mock('../../../../src/main/models/adapters/tti/tti_luma', () => ({ createLumaImageAdapter: mk('luma') }));
+jest.mock('../../../../src/main/models/adapters/tti/tti_qwen', () => ({ createQwenImageAdapter: mk('qwen') }));
+jest.mock('../../../../src/main/models/adapters/tti/tti_stability', () => ({ createStabilityImageAdapter: mk('stab') }));
+jest.mock('../../../../src/main/models/adapters/tti/tti_xai', () => ({ createXaiImageAdapter: mk('xai') }));
 
 import { buildImageAdapter } from '../../../../src/main/models/adapters/tti/tti_factory';
 import { ImageProviderUnsupportedError } from '../../../../src/main/models/adapters/tti/tti_errors';

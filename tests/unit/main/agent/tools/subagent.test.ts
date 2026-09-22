@@ -23,7 +23,11 @@ describe('subagentTool', () => {
 				yield { type: 'assistant_message', content: 'done', toolCalls: [] };
 			})()
 		);
-		const tool = subagentTool({ location: '/agent' }, [], { type: 'default' });
+		const tool = subagentTool(
+			{ location: '/agent' },
+			[],
+			{ type: 'default' }
+		);
 
 		await tool.run({ task: 'inspect context', systemPrompt: 'Act as a test reviewer.' });
 

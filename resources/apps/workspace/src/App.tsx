@@ -103,8 +103,9 @@ export default function App() {
 	const [sidebarWidth, setSidebarWidth] = useState(sidebarDefaultWidth);
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [view, setView] = useState<'workspace' | 'settings'>('workspace');
-	const [workspaceSettings, setWorkspaceSettings] =
-		useState<WorkspaceSettings>(workspaceSettingsDefaults);
+	const [workspaceSettings, setWorkspaceSettings] = useState<WorkspaceSettings>(
+		workspaceSettingsDefaults
+	);
 	const [sidebarSearchOpen, setSidebarSearchOpen] = useState(false);
 	const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
 	const selectedPathRef = useRef<string | null>(null);
@@ -149,28 +150,28 @@ export default function App() {
 		void app
 			.getAppStoreValue<Record<string, string | number | boolean>>(workspaceSettingsKey)
 			.then((stored) => {
-				if (!stored) return;
-				const settings = {
-					fontSize:
-						typeof stored.fontSize === 'number'
-							? Math.min(24, Math.max(10, stored.fontSize))
-							: workspaceSettingsDefaults.fontSize,
-					formatted:
-						typeof stored.formatted === 'boolean'
-							? stored.formatted
-							: workspaceSettingsDefaults.formatted,
-					lineNumbers:
-						typeof stored.lineNumbers === 'boolean'
-							? stored.lineNumbers
-							: workspaceSettingsDefaults.lineNumbers,
-					wordWrap:
-						typeof stored.wordWrap === 'boolean'
-							? stored.wordWrap
-							: workspaceSettingsDefaults.wordWrap,
-				};
-				setWorkspaceSettings(settings);
-				setMarkdownMode(settings.formatted ? 'preview' : 'source');
-			});
+			if (!stored) return;
+			const settings = {
+				fontSize:
+					typeof stored.fontSize === 'number'
+						? Math.min(24, Math.max(10, stored.fontSize))
+						: workspaceSettingsDefaults.fontSize,
+				formatted:
+					typeof stored.formatted === 'boolean'
+						? stored.formatted
+						: workspaceSettingsDefaults.formatted,
+				lineNumbers:
+					typeof stored.lineNumbers === 'boolean'
+						? stored.lineNumbers
+						: workspaceSettingsDefaults.lineNumbers,
+				wordWrap:
+					typeof stored.wordWrap === 'boolean'
+						? stored.wordWrap
+						: workspaceSettingsDefaults.wordWrap,
+			};
+			setWorkspaceSettings(settings);
+			setMarkdownMode(settings.formatted ? 'preview' : 'source');
+		});
 	}, []);
 
 	useEffect(() => {
@@ -709,10 +710,7 @@ export default function App() {
 						style={{ WebkitAppRegion: 'drag' } as CSSProperties}
 					>
 						<span className="min-w-0 flex-1 truncate px-1 text-xs font-semibold">Workspace</span>
-						<div
-							className="flex items-center gap-0.5"
-							style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}
-						>
+						<div className="flex items-center gap-0.5" style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
 							<Button
 								variant="ghost"
 								size="icon"
@@ -828,42 +826,42 @@ export default function App() {
 							}}
 						/>
 					) : (
-						<WorkspaceViewer
-							content={selectedContent}
-							dirty={selectedDirty}
-							error={selectedError}
-							file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
-							kind={selectedKind}
-							isDark={theme.isDark}
-							loading={selectedLoading}
-							markdownMode={markdownMode}
-							mediaUrl={selectedMediaUrl}
-							onChange={(content) => {
-								selectedContentRef.current = content;
-								setSelectedContent(content);
-								setSelectedSaveError('');
-							}}
-							onMarkdownModeChange={(mode) => {
-								setMarkdownMode(mode);
-								const settings = { ...workspaceSettings, formatted: mode === 'preview' };
-								setWorkspaceSettings(settings);
-								if (isKucedr()) {
-									void app.setAppStoreValue(workspaceSettingsKey, settings);
-								}
-							}}
-							onRename={() => {
-								if (!selectedWorkspacePath) return;
-								startRenameWorkspaceEntry({
-									name: selectedWorkspacePath.split(/[\\/]/).pop() ?? selectedWorkspacePath,
-									path: selectedWorkspacePath,
-									type: 'file',
-								});
-							}}
-							onSave={() => saveWorkspaceFile(selectedPathRef.current, selectedContent)}
-							path={selectedWorkspacePath}
-							saving={selectedSaving}
-							settings={workspaceSettings}
-						/>
+					<WorkspaceViewer
+						content={selectedContent}
+						dirty={selectedDirty}
+						error={selectedError}
+						file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
+						kind={selectedKind}
+						isDark={theme.isDark}
+						loading={selectedLoading}
+						markdownMode={markdownMode}
+						mediaUrl={selectedMediaUrl}
+						onChange={(content) => {
+							selectedContentRef.current = content;
+							setSelectedContent(content);
+							setSelectedSaveError('');
+						}}
+						onMarkdownModeChange={(mode) => {
+							setMarkdownMode(mode);
+							const settings = { ...workspaceSettings, formatted: mode === 'preview' };
+							setWorkspaceSettings(settings);
+							if (isKucedr()) {
+								void app.setAppStoreValue(workspaceSettingsKey, settings);
+							}
+						}}
+						onRename={() => {
+							if (!selectedWorkspacePath) return;
+							startRenameWorkspaceEntry({
+								name: selectedWorkspacePath.split(/[\\/]/).pop() ?? selectedWorkspacePath,
+								path: selectedWorkspacePath,
+								type: 'file',
+							});
+						}}
+						onSave={() => saveWorkspaceFile(selectedPathRef.current, selectedContent)}
+						path={selectedWorkspacePath}
+						saving={selectedSaving}
+						settings={workspaceSettings}
+					/>
 					)}
 				</SidebarInset>
 			</SidebarProvider>
@@ -904,7 +902,9 @@ export default function App() {
 						}}
 					>
 						<DialogHeader>
-							<DialogTitle>Create Folder</DialogTitle>
+							<DialogTitle>
+								Create Folder
+							</DialogTitle>
 							<DialogDescription>
 								{createRequest?.parentPath
 									? `Create it inside ${createRequest.parentPath}.`
@@ -916,27 +916,27 @@ export default function App() {
 								Name
 							</label>
 							<Input
-								id="workspace-entry-name"
-								autoFocus
-								value={createName}
-								disabled={creating}
-								onChange={(event) => {
-									setCreateName(event.target.value);
-									setCreateError('');
-								}}
-								onContextMenu={(event) => {
-									showNativeContextMenu(event, [
-										{ type: 'role', role: 'undo' },
-										{ type: 'role', role: 'redo' },
-										{ type: 'separator' },
-										{ type: 'role', role: 'cut' },
-										{ type: 'role', role: 'copy' },
-										{ type: 'role', role: 'paste' },
-										{ type: 'separator' },
-										{ type: 'role', role: 'selectAll' },
-									]);
-								}}
-							/>
+									id="workspace-entry-name"
+									autoFocus
+									value={createName}
+									disabled={creating}
+									onChange={(event) => {
+										setCreateName(event.target.value);
+										setCreateError('');
+									}}
+									onContextMenu={(event) => {
+										showNativeContextMenu(event, [
+											{ type: 'role', role: 'undo' },
+											{ type: 'role', role: 'redo' },
+											{ type: 'separator' },
+											{ type: 'role', role: 'cut' },
+											{ type: 'role', role: 'copy' },
+											{ type: 'role', role: 'paste' },
+											{ type: 'separator' },
+											{ type: 'role', role: 'selectAll' },
+										]);
+									}}
+								/>
 						</div>
 						{createError ? <p className="text-xs text-destructive">{createError}</p> : null}
 						<DialogFooter>
@@ -946,7 +946,9 @@ export default function App() {
 								</Button>
 							</DialogClose>
 							<Button type="submit" disabled={creating || !createName.trim()}>
-								{creating ? 'Creating…' : 'Create Folder'}
+								{creating
+									? 'Creating…'
+									: 'Create Folder'}
 							</Button>
 						</DialogFooter>
 					</form>

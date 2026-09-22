@@ -75,7 +75,11 @@ function ClassicLoader({ size = 'md', className }: { size?: LoaderSize; classNam
 function PulseLoader({ size = 'md', className }: { size?: LoaderSize; className?: string }) {
 	return (
 		<div
-			className={cn('animate-pulse rounded-full bg-current opacity-75', sizeMap[size], className)}
+			className={cn(
+				'animate-pulse rounded-full bg-current opacity-75',
+				sizeMap[size],
+				className
+			)}
 		/>
 	);
 }
@@ -149,7 +153,9 @@ function TextBlinkLoader({
 	className?: string;
 }) {
 	return (
-		<span className={cn('inline-block animate-pulse', textSizeMap[size], className)}>{text}</span>
+		<span className={cn('inline-block animate-pulse', textSizeMap[size], className)}>
+			{text}
+		</span>
 	);
 }
 

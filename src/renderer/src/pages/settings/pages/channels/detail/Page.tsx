@@ -297,10 +297,7 @@ function ListEditor({
 	);
 }
 
-function blankCredential(
-	providerId: string,
-	service: CatalogService | null
-): StoredChannelProvider {
+function blankCredential(providerId: string, service: CatalogService | null): StoredChannelProvider {
 	return {
 		id: providerId,
 		name: service?.provider.name ?? providerId,

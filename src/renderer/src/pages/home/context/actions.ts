@@ -1,4 +1,7 @@
-import type { AgentHistoryMessage, AgentResponseEvent } from '@/lib/compat';
+import type {
+	AgentHistoryMessage,
+	AgentResponseEvent,
+} from '@/lib/compat';
 
 export type AgentChatAction =
 	| {

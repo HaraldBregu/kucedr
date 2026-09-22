@@ -10,14 +10,7 @@ export function resolveExecRoots(args: Record<string, unknown>, baseDir: string)
 		)
 	);
 	const additionalRoots = Array.isArray(args.additionalRoots)
-		? args.additionalRoots.filter(
-				(value): value is string => typeof value === 'string' && value.length > 0
-			)
+		? args.additionalRoots.filter((value): value is string => typeof value === 'string' && value.length > 0)
 		: [];
-	return [
-		...new Set([
-			workdir,
-			...additionalRoots.map((root) => realPath(resolveUserPath(root, workdir))),
-		]),
-	];
+	return [...new Set([workdir, ...additionalRoots.map((root) => realPath(resolveUserPath(root, workdir)))])];
 }

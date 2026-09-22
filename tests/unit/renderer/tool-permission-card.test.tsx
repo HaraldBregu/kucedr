@@ -6,8 +6,7 @@ import type { PendingToolPermission } from '../../../src/renderer/src/pages/home
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({
 		t: (key: string, options?: { action?: string; defaultValue?: string }) =>
-			options?.defaultValue ??
-			(key === 'toolPermission.title' ? `Allow ${options?.action}?` : key.split('.').at(-1)),
+			options?.defaultValue ?? (key === 'toolPermission.title' ? `Allow ${options?.action}?` : key.split('.').at(-1)),
 	}),
 }));
 

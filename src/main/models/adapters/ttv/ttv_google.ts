@@ -51,7 +51,8 @@ export function createGoogleVideoAdapter(spec: VideoProviderSpec): VideoAdapter 
 						`${spec.name}: generation failed. ${status.error.message ?? ''}`.trim()
 					);
 				}
-				const uri = status.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
+				const uri =
+					status.response?.generateVideoResponse?.generatedSamples?.[0]?.video?.uri;
 				if (!uri) {
 					throw new VideoProviderRequestError(`${spec.name}: result contained no video.`);
 				}

@@ -21,9 +21,7 @@ export function openA2aAgent(
 	if (typeof data.encryptedCredential === 'string') {
 		if (isA2aSecureStorageAvailable()) {
 			try {
-				const decrypted = safeStorage.decryptString(
-					Buffer.from(data.encryptedCredential, 'base64')
-				);
+				const decrypted = safeStorage.decryptString(Buffer.from(data.encryptedCredential, 'base64'));
 				let parsed: unknown;
 				try {
 					parsed = JSON.parse(decrypted);

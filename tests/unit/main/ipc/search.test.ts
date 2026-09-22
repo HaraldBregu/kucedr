@@ -23,7 +23,10 @@ import { SearchChannels } from '../../../../src/shared/ipc_channels_definitions'
 
 describe('SearchIpc', () => {
 	it('registers the typed search settings handlers', () => {
-		new SearchIpc().register({ windows: {} as never, apps: {} as never }, {} as EventBus);
+		new SearchIpc().register(
+			{ windows: {} as never, apps: {} as never },
+			{} as EventBus
+		);
 
 		expect(registerQueryWithEvent).toHaveBeenCalledWith(
 			SearchChannels.getSettings,

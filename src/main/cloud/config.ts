@@ -5,7 +5,8 @@ export interface CloudConfig {
 }
 
 export function loadCloudConfig(): CloudConfig | null {
-	const url = import.meta.env.MAIN_VITE_SUPABASE_URL?.trim() ?? process.env.SUPABASE_URL?.trim();
+	const url =
+		import.meta.env.MAIN_VITE_SUPABASE_URL?.trim() ?? process.env.SUPABASE_URL?.trim();
 	const publishableKey =
 		import.meta.env.MAIN_VITE_SUPABASE_PUBLISHABLE_KEY?.trim() ??
 		process.env.SUPABASE_PUBLISHABLE_KEY?.trim();
@@ -29,13 +30,7 @@ export function loadCloudConfig(): CloudConfig | null {
 		const parsed = new URL(url);
 		const loopback = parsed.hostname === '127.0.0.1' || parsed.hostname === '[::1]';
 		if (parsed.protocol !== 'https:' && !(parsed.protocol === 'http:' && loopback)) return null;
-		if (
-			parsed.username ||
-			parsed.password ||
-			parsed.pathname !== '/' ||
-			parsed.search ||
-			parsed.hash
-		) {
+		if (parsed.username || parsed.password || parsed.pathname !== '/' || parsed.search || parsed.hash) {
 			return null;
 		}
 		return {

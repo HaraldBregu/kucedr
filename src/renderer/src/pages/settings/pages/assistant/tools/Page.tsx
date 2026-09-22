@@ -476,18 +476,16 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 												/>
 											}
 											description={description}
-											actions={
-												isAgentToolConfigurable({ kind: 'builtin', id }) ? (
-													<ToolPermissionControl
-														name={name}
-														value={settings.permission}
-														disabled={!toolProfile || fileToolsSaving}
-														onChange={(permission) =>
-															handleFileToolsPermissionChange(id, { permission })
-														}
-													/>
-												) : undefined
-											}
+											actions={isAgentToolConfigurable({ kind: 'builtin', id }) ? (
+												<ToolPermissionControl
+													name={name}
+													value={settings.permission}
+													disabled={!toolProfile || fileToolsSaving}
+													onChange={(permission) =>
+														handleFileToolsPermissionChange(id, { permission })
+													}
+												/>
+											) : undefined}
 										/>
 									);
 								})}

@@ -47,16 +47,9 @@ export class ExecSandbox {
 
 	requiredRoots(roots: readonly string[]): string[] {
 		const resolved = roots.map(realPath);
-		return [
-			...new Set(
-				getDefaultWritePaths()
-					.filter((value) => !value.startsWith('/dev/'))
-					.map(realPath)
-			),
-		].filter(
-			(root) =>
-				resolved.some((target) => isPathWithin(root, target)) &&
-				!resolved.some((target) => isPathWithin(target, root))
+		return [...new Set(getDefaultWritePaths().filter((value) => !value.startsWith('/dev/')).map(realPath))].filter((root) =>
+			resolved.some((target) => isPathWithin(root, target)) &&
+			!resolved.some((target) => isPathWithin(target, root))
 		);
 	}
 
@@ -77,15 +70,14 @@ export class ExecSandbox {
 		}
 		const { config } = await this.configuration(approvedRoots);
 		const approvedPatterns = approvedRoots.map(recursivePermissionRule);
-		const customConfig =
-			process.platform !== 'win32' || approvedPatterns.length > 0
-				? {
-						filesystem: {
-							...config.filesystem,
-							allowWrite: [...(config.filesystem.allowWrite ?? []), ...approvedPatterns],
-						},
-					}
-				: undefined;
+		const customConfig = process.platform !== 'win32' || approvedPatterns.length > 0
+			? {
+					filesystem: {
+						...config.filesystem,
+						allowWrite: [...(config.filesystem.allowWrite ?? []), ...approvedPatterns],
+					},
+			}
+			: undefined;
 		const wrapped = await SandboxManager.wrapWithSandboxArgv(
 			command,
 			process.platform === 'win32' ? undefined : '/bin/sh',
@@ -248,30 +240,20 @@ export class ExecSandbox {
 	}> {
 		const permissions = getPermissions();
 		const resolveRules = (rules: string[]): string[] =>
-			rules.map((rule) =>
-				rule === '*' ? path.parse(os.homedir()).root : resolveUserPath(rule, os.homedir())
-			);
+			rules.map((rule) => rule === '*' ? path.parse(os.homedir()).root : resolveUserPath(rule, os.homedir()));
 		const explicitReadDenies = resolveRules([...permissions.exec.deny, ...permissions.read.deny]);
 		const explicitWriteDenies = resolveRules([...permissions.exec.deny, ...permissions.write.deny]);
-		if (
-			[...explicitReadDenies, ...explicitWriteDenies].some((rule) =>
-				/[*?[\]{}]/.test(rule.replace(/[\\/]\*\*$/, ''))
-			)
-		)
-			throw new Error(
-				'Command sandbox rules must use exact paths or a trailing /**. Refine the blocked pattern before executing commands.'
-			);
-		const allowWrite = [...resolveRules(permissions.exec.allow), this.temporaryDirectory];
+		if ([...explicitReadDenies, ...explicitWriteDenies].some((rule) => /[*?[\]{}]/.test(rule.replace(/[\\/]\*\*$/, ''))))
+			throw new Error('Command sandbox rules must use exact paths or a trailing /**. Refine the blocked pattern before executing commands.');
+		const allowWrite = [
+			...resolveRules(permissions.exec.allow),
+			this.temporaryDirectory,
+		];
 		const denyWrite = [
 			...explicitWriteDenies,
-			...getDefaultWritePaths().filter(
-				(value) =>
-					!value.startsWith('/dev/') &&
-					permissionFor(
-						{ allow: [...allowWrite, ...approvedRoots.map(recursivePermissionRule)], deny: [] },
-						value,
-						'write'
-					) !== 'allow'
+			...getDefaultWritePaths().filter((value) =>
+				!value.startsWith('/dev/') &&
+				permissionFor({ allow: [...allowWrite, ...approvedRoots.map(recursivePermissionRule)], deny: [] }, value, 'write') !== 'allow'
 			),
 		];
 		const denyRead = explicitReadDenies;
@@ -301,10 +283,9 @@ export class ExecSandbox {
 		};
 		return {
 			config,
-			fingerprint:
-				process.platform === 'win32'
-					? JSON.stringify({ allowRead, allowWrite, denyRead, denyWrite })
-					: 'sandbox-runtime-v2',
+			fingerprint: process.platform === 'win32'
+				? JSON.stringify({ allowRead, allowWrite, denyRead, denyWrite })
+				: 'sandbox-runtime-v2',
 		};
 	}
 
@@ -319,8 +300,12 @@ export class ExecSandbox {
 			this.temporaryDirectory,
 			...sandboxSystemReads(),
 			...(process.platform === 'linux' ? [this.vendoredSeccompPath()] : []),
-		].filter((value) => permissionFor({ allow: [], deny: deniedReads }, value, 'read') !== 'deny');
-		const persistentDefaults = getDefaultWritePaths().filter((value) => !value.startsWith('/dev/'));
+		].filter((value) =>
+			permissionFor({ allow: [], deny: deniedReads }, value, 'read') !== 'deny'
+		);
+		const persistentDefaults = getDefaultWritePaths().filter(
+			(value) => !value.startsWith('/dev/')
+		);
 		const config: SandboxRuntimeConfig = {
 			network: {
 				allowedDomains: [],
@@ -330,12 +315,7 @@ export class ExecSandbox {
 				allowAllUnixSockets: false,
 			},
 			filesystem: {
-				denyRead: [
-					path.parse(agentLocation()).root,
-					...deniedReads.map((rule) =>
-						rule === '*' ? path.parse(agentLocation()).root : resolveUserPath(rule, os.homedir())
-					),
-				],
+				denyRead: [path.parse(agentLocation()).root, ...deniedReads.map((rule) => rule === '*' ? path.parse(agentLocation()).root : resolveUserPath(rule, os.homedir()))],
 				allowRead: readPaths,
 				allowWrite: [this.temporaryDirectory],
 				denyWrite: [agentLocation(), ...persistentDefaults],

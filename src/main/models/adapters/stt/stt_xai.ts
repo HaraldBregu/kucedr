@@ -173,7 +173,10 @@ function createXaiRealtimeConnection(
 }
 
 function xaiSttUrl(baseURL: string | undefined): URL {
-	return new URL(XAI_STT_PATH, `${baseURL ?? speechToTextBaseUrl('xai')}/`);
+	return new URL(
+		XAI_STT_PATH,
+		`${baseURL ?? speechToTextBaseUrl('xai')}/`
+	);
 }
 
 function xaiRealtimeUrl(baseURL: string | undefined): string {

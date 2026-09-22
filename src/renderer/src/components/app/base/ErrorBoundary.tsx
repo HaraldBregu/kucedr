@@ -157,9 +157,14 @@ export function RouteErrorElement(): React.JSX.Element {
 	let detail: string;
 
 	if (isRouteErrorResponse(error)) {
-		title = error.status === 404 ? t('errorBoundary.notFoundTitle') : t('errorBoundary.routeTitle');
+		title =
+			error.status === 404
+				? t('errorBoundary.notFoundTitle')
+				: t('errorBoundary.routeTitle');
 		message =
-			error.status === 404 ? t('errorBoundary.notFoundMessage') : t('errorBoundary.routeMessage');
+			error.status === 404
+				? t('errorBoundary.notFoundMessage')
+				: t('errorBoundary.routeMessage');
 		detail = `${error.status} ${error.statusText}${
 			typeof error.data === 'string' ? ` — ${error.data}` : ''
 		}`;

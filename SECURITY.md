@@ -2,10 +2,10 @@
 
 ## Supported Versions
 
-| Version              | Supported |
-| -------------------- | --------- |
-| 1.x (latest release) | ✅        |
-| Older releases       | ❌        |
+| Version | Supported |
+| ------- | --------- |
+| 1.x (latest release) | ✅ |
+| Older releases | ❌ |
 
 Only the latest release receives security fixes.
 

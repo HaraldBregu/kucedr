@@ -1,4 +1,7 @@
-import type { AgentUserInputAnswer, AgentUserInputScope } from '../../../shared/agent_types';
+import type {
+	AgentUserInputAnswer,
+	AgentUserInputScope,
+} from '../../../shared/agent_types';
 
 export interface PendingUserInput extends AgentUserInputScope {
 	questionIds: string[];
@@ -31,10 +34,7 @@ export function waitForUserInput(
 			signal?.removeEventListener('abort', abort);
 			resolve(answers);
 		};
-		const timer = setTimeout(
-			() => settle(undefined),
-			Math.max(0, request.expiresAtMs - Date.now())
-		);
+		const timer = setTimeout(() => settle(undefined), Math.max(0, request.expiresAtMs - Date.now()));
 		timer.unref?.();
 		pending.get(request.requestId)?.settle(undefined);
 		pending.set(request.requestId, { request, settle, timer });

@@ -95,11 +95,11 @@ it('rejects terminal creation from app views', async () => {
 	const event = createEvent();
 	(BrowserWindow.fromWebContents as jest.Mock).mockClear();
 
-	await expect(
-		handler(event, { id: 'terminal-coding', cols: 80, rows: 24 })
-	).resolves.toMatchObject({
-		success: false,
-		error: { message: 'Terminal IPC is unavailable to app views.' },
-	});
+	await expect(handler(event, { id: 'terminal-coding', cols: 80, rows: 24 })).resolves.toMatchObject(
+		{
+			success: false,
+			error: { message: 'Terminal IPC is unavailable to app views.' },
+		}
+	);
 	expect(manager.create).not.toHaveBeenCalled();
 });

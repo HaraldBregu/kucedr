@@ -4,7 +4,11 @@ import type {
 	AuthState,
 	SignUpInput,
 } from '../../shared/auth_types';
-import type { AccountProvider, AccountSession, AccountSessionEvent } from './account';
+import type {
+	AccountProvider,
+	AccountSession,
+	AccountSessionEvent,
+} from './account';
 import { DeviceAccountBinding } from './binding';
 
 interface AccountBinding {

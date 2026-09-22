@@ -3,30 +3,28 @@ import path from 'node:path';
 let mockAppStore: Record<string, unknown> = {};
 
 jest.mock('electron-store', () =>
-	jest
-		.fn()
-		.mockImplementation(
-			({ name, cwd, defaults }: { name: string; cwd?: string; defaults: object }) => {
-				let backing: Record<string, unknown> = { ...defaults };
-				if (name === 'app') mockAppStore = backing;
-				return {
-					path: `${cwd ?? '/tmp'}/${name}.json`,
-					get(key: string) {
-						return backing[key];
-					},
-					set(key: string, value: unknown) {
-						backing[key] = value;
-					},
-					get store() {
-						return backing;
-					},
-					set store(value: Record<string, unknown>) {
-						backing = value;
-						if (name === 'app') mockAppStore = backing;
-					},
-				};
-			}
-		)
+	jest.fn().mockImplementation(
+		({ name, cwd, defaults }: { name: string; cwd?: string; defaults: object }) => {
+			let backing: Record<string, unknown> = { ...defaults };
+			if (name === 'app') mockAppStore = backing;
+			return {
+				path: `${cwd ?? '/tmp'}/${name}.json`,
+				get(key: string) {
+					return backing[key];
+				},
+				set(key: string, value: unknown) {
+					backing[key] = value;
+				},
+				get store() {
+					return backing;
+				},
+				set store(value: Record<string, unknown>) {
+					backing = value;
+					if (name === 'app') mockAppStore = backing;
+				},
+			};
+		}
+	)
 );
 
 import {

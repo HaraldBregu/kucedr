@@ -9,7 +9,9 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 describe('provider manifests', () => {
 	it('routes manifest services to their matching catalog', () => {
 		const integrations = loadMcps().filter((service) =>
-			['gmail', 'google-calendar', 'google-drive', 'github', 'notion'].includes(service.provider.id)
+			['gmail', 'google-calendar', 'google-drive', 'github', 'notion'].includes(
+				service.provider.id
+			)
 		);
 		const openAi = loadModels().find(
 			(model) => model.provider.id === 'openai' && model.id === 'gpt-5.6-sol'

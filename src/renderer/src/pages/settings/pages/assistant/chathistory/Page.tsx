@@ -61,9 +61,7 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 		setError(null);
 		try {
 			const nextSessions = await window.agent.listSessions(true);
-			setSessions(
-				category ? nextSessions.filter((session) => session.category === category) : nextSessions
-			);
+			setSessions(category ? nextSessions.filter((session) => session.category === category) : nextSessions);
 		} catch (loadError) {
 			setError(firstErrorMessage(loadError, t('settings.chatHistory.errors.load')));
 		} finally {
@@ -127,7 +125,10 @@ const ChatHistoryPage: React.FC<ChatHistoryPageProps> = ({ category }) => {
 				{loading ? (
 					<SettingsLoadingRows rows={4} />
 				) : sessions.length === 0 ? (
-					<SettingsEmptyState title={t(emptyTitleKey)} description={t(emptyDescriptionKey)} />
+					<SettingsEmptyState
+						title={t(emptyTitleKey)}
+						description={t(emptyDescriptionKey)}
+					/>
 				) : (
 					sessions.map((session) => {
 						const title = session.title.trim() || t('settings.chatHistory.untitled');

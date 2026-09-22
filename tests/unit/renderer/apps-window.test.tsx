@@ -115,9 +115,7 @@ it('restores default window values without showing custom controls', async () =>
 	await user.click(await screen.findByRole('option', { name: 'settings.apps.window.default' }));
 
 	await waitFor(() => expect(window.apps.setSettings).toHaveBeenCalledWith('my-app', {}));
-	expect(
-		screen.queryByRole('spinbutton', { name: 'settings.apps.window.width' })
-	).not.toBeInTheDocument();
+	expect(screen.queryByRole('spinbutton', { name: 'settings.apps.window.width' })).not.toBeInTheDocument();
 	expect(await screen.findByText('settings.apps.window.saved')).toBeInTheDocument();
 });
 

@@ -21,9 +21,6 @@ export function mcpOutputText(result: McpCallResult): string {
 	if (bytes.length <= MCP_MAX_OUTPUT_BYTES) return text;
 	const suffix = `\n[truncated: ${bytes.length - MCP_MAX_OUTPUT_BYTES} bytes omitted]`;
 	const prefixBytes = Math.max(0, MCP_MAX_OUTPUT_BYTES - Buffer.byteLength(suffix, 'utf8'));
-	const prefix = bytes
-		.subarray(0, prefixBytes)
-		.toString('utf8')
-		.replace(/\uFFFD$/, '');
+	const prefix = bytes.subarray(0, prefixBytes).toString('utf8').replace(/\uFFFD$/, '');
 	return `${prefix}${suffix}`;
 }

@@ -12,10 +12,9 @@ export function toolPermissionTargets(
 	if (toolName === 'patch')
 		return typeof args.input === 'string'
 			? parsePatch(args.input).flatMap((hunk) =>
-					[hunk.path, ...(hunk.kind === 'update' && hunk.movePath ? [hunk.movePath] : [])].map(
-						(target) => realPath(resolveUserPath(target, baseDir))
-					)
-				)
+				[hunk.path, ...(hunk.kind === 'update' && hunk.movePath ? [hunk.movePath] : [])]
+					.map((target) => realPath(resolveUserPath(target, baseDir)))
+			)
 			: [];
 	if (toolName === 'bash')
 		return typeof args.command === 'string' && args.command.length > 0 ? [args.command] : [];

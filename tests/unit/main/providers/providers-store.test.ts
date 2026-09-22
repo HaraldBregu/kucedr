@@ -34,7 +34,10 @@ it('moves encrypted storage providers into settings.json', () => {
 			},
 		])
 	).toString('base64');
-	writeFileSync(`${root}/settings/storage.json`, JSON.stringify({ encryptedProviders }));
+	writeFileSync(
+		`${root}/settings/storage.json`,
+		JSON.stringify({ encryptedProviders })
+	);
 
 	let providersStore!: typeof import('../../../../src/main/providers/providers_store').providersStore;
 	jest.isolateModules(() => {
@@ -57,10 +60,7 @@ it('shares settings.json with storage connections', () => {
 	let setModelProvidersState!: typeof import('../../../../src/main/providers/providers_store').setModelProvidersState;
 	jest.isolateModules(() => {
 		({ storageProviders } = require('../../../../src/main/storage/providers'));
-		({
-			getModelProvidersState,
-			setModelProvidersState,
-		} = require('../../../../src/main/providers/providers_store'));
+		({ getModelProvidersState, setModelProvidersState } = require('../../../../src/main/providers/providers_store'));
 	});
 
 	const storage = storageProviders.save({

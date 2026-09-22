@@ -24,11 +24,13 @@ beforeEach(() => {
 		);
 		return response?.json();
 	});
-	global.fetch = jest.fn().mockResolvedValue(
-		new Response(JSON.stringify({ name: 'Agent' }), {
-			headers: { 'content-type': 'application/json' },
-		})
-	);
+	global.fetch = jest
+		.fn()
+		.mockResolvedValue(
+			new Response(JSON.stringify({ name: 'Agent' }), {
+				headers: { 'content-type': 'application/json' },
+			})
+		);
 });
 
 afterAll(() => {
@@ -55,7 +57,7 @@ it('preserves resolver headers and uses the root well-known path with bearer aut
 it.each(['file:///tmp/agent', 'relative-agent', 'https://user:pass@agent.example'])(
 	'rejects unsafe base URL %s',
 	async (url) => {
-		await expect(discoverA2aAgent(url, noAuthentication)).rejects.toThrow();
+			await expect(discoverA2aAgent(url, noAuthentication)).rejects.toThrow();
 		expect(mockDefaultAgentCardResolver).not.toHaveBeenCalled();
 	}
 );

@@ -20,13 +20,10 @@ it('shows a native context menu inside workspace PDF frames', () => {
 	});
 
 	setupPdfContextMenu(window);
-	contextMenu?.(
-		{} as never,
-		{
-			frameURL: 'local-resource://agent/reports/annual%20report.pdf',
-			selectionText: 'Selected text',
-		} as ContextMenuParams
-	);
+	contextMenu?.({} as never, {
+		frameURL: 'local-resource://agent/reports/annual%20report.pdf',
+		selectionText: 'Selected text',
+	} as ContextMenuParams);
 
 	expect(Menu.buildFromTemplate).toHaveBeenCalledTimes(1);
 	expect(template[0]).toMatchObject({ role: 'copy', enabled: true });

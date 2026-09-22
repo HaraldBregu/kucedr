@@ -48,7 +48,9 @@ describe('Permissions settings', () => {
 
 		const workspace = await screen.findByText('/workspace');
 		expect(workspace.closest('[class*="grid"]')).toHaveTextContent('workspaceDescription');
-		expect(screen.getByText('/blocked').closest('[class*="grid"]')).toHaveTextContent('blocked');
+		expect(screen.getByText('/blocked').closest('[class*="grid"]')).toHaveTextContent(
+			'blocked'
+		);
 		expect(screen.getAllByRole('button', { name: 'removeLocation' })).toHaveLength(2);
 	});
 
@@ -59,9 +61,7 @@ describe('Permissions settings', () => {
 		await screen.findByText('/workspace');
 
 		await user.click(screen.getByRole('button', { name: 'browse' }));
-		await waitFor(() =>
-			expect(screen.getByPlaceholderText('pathPlaceholder')).toHaveValue('/picked')
-		);
+		await waitFor(() => expect(screen.getByPlaceholderText('pathPlaceholder')).toHaveValue('/picked'));
 		await user.click(screen.getByRole('button', { name: 'add' }));
 		expect(await screen.findByText('/picked')).toBeInTheDocument();
 		await user.click(screen.getByRole('button', { name: 'save' }));

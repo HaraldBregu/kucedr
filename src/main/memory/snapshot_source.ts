@@ -17,11 +17,7 @@ export function snapshotSource(sessionId: string, markdown: string): SourceSessi
 		: /\*\*(User|Assistant):\*\*\n((?:>[^\n]*(?:\n|$))+)/g;
 	const occurrences = new Map<string, number>();
 	const date = markdown.match(/^# Session [^\n]+\n\n\*\*Date:\*\* ([^\n]+)\n/)?.[1];
-	const source: SourceSession = {
-		id: sessionId,
-		...(date ? { updatedAt: date } : {}),
-		messages: [],
-	};
+	const source: SourceSession = { id: sessionId, ...(date ? { updatedAt: date } : {}), messages: [] };
 	let match: RegExpExecArray | null;
 	while ((match = pattern.exec(markdown))) {
 		const lines = match[2].replace(/\n$/, '').split('\n');

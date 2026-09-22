@@ -1,473 +1,477 @@
 {
-	"providerId": "elevenlabs",
-	"providerName": "ElevenLabs",
-	"apiKeyUrl": "https://elevenlabs.io/app/settings/api-keys",
-	"images_url": "/images",
-	"icon_dark_url": "/images/fallback_lobehub/png_dark/elevenlabs.png",
-	"icon_light_url": "/images/fallback_lobehub/png_light/elevenlabs.png",
-	"services": [
-		{
-			"id": "scribe_v2",
-			"name": "Scribe v2",
-			"apiTypes": ["batch"],
-			"type": "speech-to-text-model",
-			"url": "https://api.elevenlabs.io/v1",
-			"sampleRate": 16000,
-			"metadata": {
-				"documentationUrl": "https://elevenlabs.io/docs/api-reference",
-				"documentationStatus": "verified",
-				"inputs": {
-					"language_code": {
-						"type": "string"
-					},
-					"tag_audio_events": {
-						"type": "boolean"
-					},
-					"diarize": {
-						"type": "boolean"
-					},
-					"additional_formats": {
-						"type": "array"
-					},
-					"timestamps_granularity": {
-						"type": "string"
-					}
-				}
-			}
-		},
-		{
-			"id": "scribe_v2_realtime",
-			"name": "Scribe v2 Realtime",
-			"apiTypes": ["stream"],
-			"realtime": true,
-			"type": "speech-to-text-model",
-			"url": "https://api.elevenlabs.io/v1",
-			"sampleRate": 16000,
-			"metadata": {
-				"documentationUrl": "https://elevenlabs.io/docs/api-reference",
-				"documentationStatus": "verified",
-				"inputs": {
-					"language_code": {
-						"type": "string"
-					},
-					"commit_strategy": {
-						"type": "string"
-					},
-					"vad_silence_threshold_secs": {
-						"type": "number"
-					}
-				}
-			}
-		},
-		{
-			"id": "eleven_v3",
-			"name": "Eleven v3",
-			"type": "text-to-speech-model",
-			"url": "https://api.elevenlabs.io/v1",
-			"default": true,
-			"metadata": {
-				"documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-speech/convert",
-				"documentationStatus": "verified",
-				"inputs": {
-					"voice_id": {
-						"type": "string",
-						"title": "Voice ID",
-						"default": "21m00Tcm4TlvDq8ikWAM",
-						"required": true
-					},
-					"language_code": {
-						"type": "string"
-					},
-					"voice_settings": {
-						"type": "object",
-						"properties": {
-							"stability": {
-								"type": "number",
-								"minimum": 0,
-								"maximum": 1,
-								"default": 0.5
-							},
-							"similarity_boost": {
-								"type": "number",
-								"minimum": 0,
-								"maximum": 1,
-								"default": 0.75
-							},
-							"style": {
-								"type": "number",
-								"default": 0
-							},
-							"use_speaker_boost": {
-								"type": "boolean",
-								"default": true
-							},
-							"speed": {
-								"type": "number",
-								"minimum": 0.7,
-								"maximum": 1.2,
-								"default": 1
-							}
-						}
-					},
-					"output_format": {
-						"type": "string",
-						"default": "mp3_44100_128"
-					},
-					"enable_logging": {
-						"type": "boolean",
-						"default": true
-					},
-					"optimize_streaming_latency": {
-						"type": "integer",
-						"minimum": 0,
-						"maximum": 4
-					},
-					"seed": {
-						"type": "integer",
-						"minimum": 0,
-						"maximum": 4294967295
-					},
-					"pronunciation_dictionary_locators": {
-						"type": "array",
-						"items": {
-							"type": "object",
-							"properties": {
-								"pronunciation_dictionary_id": {
-									"type": "string"
-								},
-								"version_id": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"previous_text": {
-						"type": "string"
-					},
-					"next_text": {
-						"type": "string"
-					},
-					"previous_request_ids": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					"next_request_ids": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					"apply_text_normalization": {
-						"type": "string",
-						"default": "auto",
-						"enum": ["auto", "on", "off"]
-					},
-					"apply_language_text_normalization": {
-						"type": "boolean",
-						"default": false
-					},
-					"use_pvc_as_ivc": {
-						"type": "boolean",
-						"default": false
-					}
-				}
-			}
-		},
-		{
-			"id": "eleven_multilingual_v2",
-			"name": "Eleven Multilingual v2",
-			"type": "text-to-speech-model",
-			"url": "https://api.elevenlabs.io/v1",
-			"default": true,
-			"metadata": {
-				"documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-speech/convert",
-				"documentationStatus": "verified",
-				"inputs": {
-					"voice_id": {
-						"type": "string",
-						"title": "Voice ID",
-						"default": "21m00Tcm4TlvDq8ikWAM",
-						"required": true
-					},
-					"language_code": {
-						"type": "string"
-					},
-					"voice_settings": {
-						"type": "object",
-						"properties": {
-							"stability": {
-								"type": "number",
-								"minimum": 0,
-								"maximum": 1,
-								"default": 0.5
-							},
-							"similarity_boost": {
-								"type": "number",
-								"minimum": 0,
-								"maximum": 1,
-								"default": 0.75
-							},
-							"style": {
-								"type": "number",
-								"default": 0
-							},
-							"use_speaker_boost": {
-								"type": "boolean",
-								"default": true
-							},
-							"speed": {
-								"type": "number",
-								"minimum": 0.7,
-								"maximum": 1.2,
-								"default": 1
-							}
-						}
-					},
-					"output_format": {
-						"type": "string",
-						"default": "mp3_44100_128"
-					},
-					"enable_logging": {
-						"type": "boolean",
-						"default": true
-					},
-					"optimize_streaming_latency": {
-						"type": "integer",
-						"minimum": 0,
-						"maximum": 4
-					},
-					"seed": {
-						"type": "integer",
-						"minimum": 0,
-						"maximum": 4294967295
-					},
-					"pronunciation_dictionary_locators": {
-						"type": "array",
-						"items": {
-							"type": "object",
-							"properties": {
-								"pronunciation_dictionary_id": {
-									"type": "string"
-								},
-								"version_id": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"previous_text": {
-						"type": "string"
-					},
-					"next_text": {
-						"type": "string"
-					},
-					"previous_request_ids": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					"next_request_ids": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					"apply_text_normalization": {
-						"type": "string",
-						"default": "auto",
-						"enum": ["auto", "on", "off"]
-					},
-					"apply_language_text_normalization": {
-						"type": "boolean",
-						"default": false
-					},
-					"use_pvc_as_ivc": {
-						"type": "boolean",
-						"default": false
-					}
-				}
-			}
-		},
-		{
-			"id": "eleven_flash_v2_5",
-			"name": "Eleven Flash v2.5",
-			"type": "text-to-speech-model",
-			"url": "https://api.elevenlabs.io/v1",
-			"default": true,
-			"metadata": {
-				"documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-speech/convert",
-				"documentationStatus": "verified",
-				"inputs": {
-					"voice_id": {
-						"type": "string",
-						"title": "Voice ID",
-						"default": "21m00Tcm4TlvDq8ikWAM",
-						"required": true
-					},
-					"language_code": {
-						"type": "string"
-					},
-					"voice_settings": {
-						"type": "object",
-						"properties": {
-							"stability": {
-								"type": "number",
-								"minimum": 0,
-								"maximum": 1,
-								"default": 0.5
-							},
-							"similarity_boost": {
-								"type": "number",
-								"minimum": 0,
-								"maximum": 1,
-								"default": 0.75
-							},
-							"style": {
-								"type": "number",
-								"default": 0
-							},
-							"use_speaker_boost": {
-								"type": "boolean",
-								"default": true
-							},
-							"speed": {
-								"type": "number",
-								"minimum": 0.7,
-								"maximum": 1.2,
-								"default": 1
-							}
-						}
-					},
-					"output_format": {
-						"type": "string",
-						"default": "mp3_44100_128"
-					},
-					"enable_logging": {
-						"type": "boolean",
-						"default": true
-					},
-					"optimize_streaming_latency": {
-						"type": "integer",
-						"minimum": 0,
-						"maximum": 4
-					},
-					"seed": {
-						"type": "integer",
-						"minimum": 0,
-						"maximum": 4294967295
-					},
-					"pronunciation_dictionary_locators": {
-						"type": "array",
-						"items": {
-							"type": "object",
-							"properties": {
-								"pronunciation_dictionary_id": {
-									"type": "string"
-								},
-								"version_id": {
-									"type": "string"
-								}
-							}
-						}
-					},
-					"previous_text": {
-						"type": "string"
-					},
-					"next_text": {
-						"type": "string"
-					},
-					"previous_request_ids": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					"next_request_ids": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					},
-					"apply_text_normalization": {
-						"type": "string",
-						"default": "auto",
-						"enum": ["auto", "on", "off"]
-					},
-					"apply_language_text_normalization": {
-						"type": "boolean",
-						"default": false
-					},
-					"use_pvc_as_ivc": {
-						"type": "boolean",
-						"default": false
-					}
-				}
-			}
-		},
-		{
-			"id": "eleven-music",
-			"name": "Eleven Music",
-			"type": "text-to-audio-model",
-			"url": "https://api.elevenlabs.io/v1",
-			"metadata": {
-				"documentationUrl": "https://elevenlabs.io/docs/api-reference",
-				"documentationStatus": "verified",
-				"inputs": {
-					"prompt": {
-						"type": "string"
-					},
-					"music_length_ms": {
-						"type": "integer",
-						"minimum": 3000,
-						"maximum": 600000
-					},
-					"force_instrumental": {
-						"type": "boolean",
-						"default": false
-					},
-					"output_format": {
-						"type": "string",
-						"default": "auto"
-					}
-				}
-			}
-		},
-		{
-			"id": "elevenlabs-sound-effects",
-			"name": "ElevenLabs Sound Effects",
-			"type": "text-to-audio-model",
-			"url": "https://api.elevenlabs.io/v1",
-			"metadata": {
-				"documentationUrl": "https://elevenlabs.io/docs/api-reference",
-				"documentationStatus": "verified",
-				"inputs": {
-					"text": {
-						"type": "string",
-						"required": true
-					},
-					"duration_seconds": {
-						"type": "number",
-						"minimum": 0.5,
-						"maximum": 30
-					},
-					"prompt_influence": {
-						"type": "number",
-						"minimum": 0,
-						"maximum": 1,
-						"default": 0.3
-					},
-					"output_format": {
-						"type": "string"
-					},
-					"loop": {
-						"type": "boolean",
-						"default": false
-					}
-				}
-			}
-		}
-	]
+  "providerId": "elevenlabs",
+  "providerName": "ElevenLabs",
+  "apiKeyUrl": "https://elevenlabs.io/app/settings/api-keys",
+  "images_url": "/images",
+  "icon_dark_url": "/images/fallback_lobehub/png_dark/elevenlabs.png",
+  "icon_light_url": "/images/fallback_lobehub/png_light/elevenlabs.png",
+  "services": [
+    {
+      "id": "scribe_v2",
+      "name": "Scribe v2",
+      "apiTypes": [
+        "batch"
+      ],
+      "type": "speech-to-text-model",
+      "url": "https://api.elevenlabs.io/v1",
+      "sampleRate": 16000,
+      "metadata": {
+        "documentationUrl": "https://elevenlabs.io/docs/api-reference",
+        "documentationStatus": "verified",
+        "inputs": {
+          "language_code": {
+            "type": "string"
+          },
+          "tag_audio_events": {
+            "type": "boolean"
+          },
+          "diarize": {
+            "type": "boolean"
+          },
+          "additional_formats": {
+            "type": "array"
+          },
+          "timestamps_granularity": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    {
+      "id": "scribe_v2_realtime",
+      "name": "Scribe v2 Realtime",
+      "apiTypes": [
+        "stream"
+      ],
+      "realtime": true,
+      "type": "speech-to-text-model",
+      "url": "https://api.elevenlabs.io/v1",
+      "sampleRate": 16000,
+      "metadata": {
+        "documentationUrl": "https://elevenlabs.io/docs/api-reference",
+        "documentationStatus": "verified",
+        "inputs": {
+          "language_code": {
+            "type": "string"
+          },
+          "commit_strategy": {
+            "type": "string"
+          },
+          "vad_silence_threshold_secs": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    {
+      "id": "eleven_v3",
+      "name": "Eleven v3",
+      "type": "text-to-speech-model",
+      "url": "https://api.elevenlabs.io/v1",
+      "default": true,
+      "metadata": {
+        "documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-speech/convert",
+        "documentationStatus": "verified",
+        "inputs": {
+          "voice_id": {
+            "type": "string",
+            "title": "Voice ID",
+            "default": "21m00Tcm4TlvDq8ikWAM",
+            "required": true
+          },
+          "language_code": {
+            "type": "string"
+          },
+          "voice_settings": {
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.5
+              },
+              "similarity_boost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.75
+              },
+              "style": {
+                "type": "number",
+                "default": 0
+              },
+              "use_speaker_boost": {
+                "type": "boolean",
+                "default": true
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2,
+                "default": 1
+              }
+            }
+          },
+          "output_format": {
+            "type": "string",
+            "default": "mp3_44100_128"
+          },
+          "enable_logging": {
+            "type": "boolean",
+            "default": true
+          },
+          "optimize_streaming_latency": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          "pronunciation_dictionary_locators": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pronunciation_dictionary_id": {
+                  "type": "string"
+                },
+                "version_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "previous_text": {
+            "type": "string"
+          },
+          "next_text": {
+            "type": "string"
+          },
+          "previous_request_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_request_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "apply_text_normalization": {
+            "type": "string",
+            "default": "auto",
+            "enum": ["auto", "on", "off"]
+          },
+          "apply_language_text_normalization": {
+            "type": "boolean",
+            "default": false
+          },
+          "use_pvc_as_ivc": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    {
+      "id": "eleven_multilingual_v2",
+      "name": "Eleven Multilingual v2",
+      "type": "text-to-speech-model",
+      "url": "https://api.elevenlabs.io/v1",
+      "default": true,
+      "metadata": {
+        "documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-speech/convert",
+        "documentationStatus": "verified",
+        "inputs": {
+          "voice_id": {
+            "type": "string",
+            "title": "Voice ID",
+            "default": "21m00Tcm4TlvDq8ikWAM",
+            "required": true
+          },
+          "language_code": {
+            "type": "string"
+          },
+          "voice_settings": {
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.5
+              },
+              "similarity_boost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.75
+              },
+              "style": {
+                "type": "number",
+                "default": 0
+              },
+              "use_speaker_boost": {
+                "type": "boolean",
+                "default": true
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2,
+                "default": 1
+              }
+            }
+          },
+          "output_format": {
+            "type": "string",
+            "default": "mp3_44100_128"
+          },
+          "enable_logging": {
+            "type": "boolean",
+            "default": true
+          },
+          "optimize_streaming_latency": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          "pronunciation_dictionary_locators": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pronunciation_dictionary_id": {
+                  "type": "string"
+                },
+                "version_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "previous_text": {
+            "type": "string"
+          },
+          "next_text": {
+            "type": "string"
+          },
+          "previous_request_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_request_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "apply_text_normalization": {
+            "type": "string",
+            "default": "auto",
+            "enum": ["auto", "on", "off"]
+          },
+          "apply_language_text_normalization": {
+            "type": "boolean",
+            "default": false
+          },
+          "use_pvc_as_ivc": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    {
+      "id": "eleven_flash_v2_5",
+      "name": "Eleven Flash v2.5",
+      "type": "text-to-speech-model",
+      "url": "https://api.elevenlabs.io/v1",
+      "default": true,
+      "metadata": {
+        "documentationUrl": "https://elevenlabs.io/docs/api-reference/text-to-speech/convert",
+        "documentationStatus": "verified",
+        "inputs": {
+          "voice_id": {
+            "type": "string",
+            "title": "Voice ID",
+            "default": "21m00Tcm4TlvDq8ikWAM",
+            "required": true
+          },
+          "language_code": {
+            "type": "string"
+          },
+          "voice_settings": {
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.5
+              },
+              "similarity_boost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1,
+                "default": 0.75
+              },
+              "style": {
+                "type": "number",
+                "default": 0
+              },
+              "use_speaker_boost": {
+                "type": "boolean",
+                "default": true
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2,
+                "default": 1
+              }
+            }
+          },
+          "output_format": {
+            "type": "string",
+            "default": "mp3_44100_128"
+          },
+          "enable_logging": {
+            "type": "boolean",
+            "default": true
+          },
+          "optimize_streaming_latency": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295
+          },
+          "pronunciation_dictionary_locators": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pronunciation_dictionary_id": {
+                  "type": "string"
+                },
+                "version_id": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "previous_text": {
+            "type": "string"
+          },
+          "next_text": {
+            "type": "string"
+          },
+          "previous_request_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_request_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "apply_text_normalization": {
+            "type": "string",
+            "default": "auto",
+            "enum": ["auto", "on", "off"]
+          },
+          "apply_language_text_normalization": {
+            "type": "boolean",
+            "default": false
+          },
+          "use_pvc_as_ivc": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    },
+    {
+      "id": "eleven-music",
+      "name": "Eleven Music",
+      "type": "text-to-audio-model",
+      "url": "https://api.elevenlabs.io/v1",
+      "metadata": {
+        "documentationUrl": "https://elevenlabs.io/docs/api-reference",
+        "documentationStatus": "verified",
+        "inputs": {
+          "prompt": {
+            "type": "string"
+          },
+          "music_length_ms": {
+            "type": "integer",
+            "minimum": 3000,
+            "maximum": 600000
+          },
+          "force_instrumental": {
+            "type": "boolean",
+            "default": false
+          },
+          "output_format": {
+            "type": "string",
+            "default": "auto"
+          }
+        }
+      }
+    },
+    {
+      "id": "elevenlabs-sound-effects",
+      "name": "ElevenLabs Sound Effects",
+      "type": "text-to-audio-model",
+      "url": "https://api.elevenlabs.io/v1",
+      "metadata": {
+        "documentationUrl": "https://elevenlabs.io/docs/api-reference",
+        "documentationStatus": "verified",
+        "inputs": {
+          "text": {
+            "type": "string",
+            "required": true
+          },
+          "duration_seconds": {
+            "type": "number",
+            "minimum": 0.5,
+            "maximum": 30
+          },
+          "prompt_influence": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "default": 0.3
+          },
+          "output_format": {
+            "type": "string"
+          },
+          "loop": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      }
+    }
+  ]
 }

@@ -126,7 +126,9 @@ function createElevenLabsRealtimeConnection(
 		}
 
 		if (data.message_type === 'partial_transcript' && data.text) {
-			const delta = data.text.startsWith(partial) ? data.text.slice(partial.length) : data.text;
+			const delta = data.text.startsWith(partial)
+				? data.text.slice(partial.length)
+				: data.text;
 			partial = data.text;
 			emit({
 				type: 'delta',

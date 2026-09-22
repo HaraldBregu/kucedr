@@ -43,9 +43,13 @@ describe('runToolCall', () => {
 		const call: ToolCall = { id: 'tool-2', name: 'inspect', args: { value: 'one' } };
 		const events = [];
 
-		for await (const event of runToolCall(tool, call, new AbortController().signal, undefined, {
-			runId: 'run',
-		})) {
+		for await (const event of runToolCall(
+			tool,
+			call,
+			new AbortController().signal,
+			undefined,
+			{ runId: 'run' }
+		)) {
 			events.push(event);
 		}
 
@@ -66,9 +70,13 @@ describe('runToolCall', () => {
 		});
 		const call: ToolCall = { id: 'destructive', name: tool.id, args: {} };
 
-		for await (const _event of runToolCall(tool, call, new AbortController().signal, undefined, {
-			runId: 'run',
-		}))
+		for await (const _event of runToolCall(
+			tool,
+			call,
+			new AbortController().signal,
+			undefined,
+			{ runId: 'run' }
+		))
 			void _event;
 
 		expect(run).not.toHaveBeenCalled();
@@ -88,9 +96,13 @@ describe('runToolCall', () => {
 		});
 		const call: ToolCall = { id: 'tool-3', name: 'inspect', args: {} };
 
-		for await (const _event of runToolCall(tool, call, new AbortController().signal, undefined, {
-			runId: 'run',
-		}))
+		for await (const _event of runToolCall(
+			tool,
+			call,
+			new AbortController().signal,
+			undefined,
+			{ runId: 'run' }
+		))
 			void _event;
 
 		expect(call.result).toMatchObject({ isError: true });
@@ -108,10 +120,13 @@ describe('runToolCall', () => {
 		});
 		const call: ToolCall = { id: 'plan-guard', name: tool.id, args: {} };
 
-		for await (const _event of runToolCall(tool, call, new AbortController().signal, undefined, {
-			runId: 'run',
-			interactionMode: 'plan',
-		}))
+		for await (const _event of runToolCall(
+			tool,
+			call,
+			new AbortController().signal,
+			undefined,
+			{ runId: 'run', interactionMode: 'plan' }
+		))
 			void _event;
 
 		expect(run).not.toHaveBeenCalled();
@@ -211,10 +226,7 @@ describe('runToolCall', () => {
 				7
 			)
 		).toBe(true);
-		expect((await resultEvent).value).toMatchObject({
-			type: 'user_input_result',
-			status: 'resolved',
-		});
+		expect((await resultEvent).value).toMatchObject({ type: 'user_input_result', status: 'resolved' });
 		await events.next();
 		expect(call.result).toMatchObject({
 			content: JSON.stringify({ status: 'resolved', sourceId: 'window:2' }),

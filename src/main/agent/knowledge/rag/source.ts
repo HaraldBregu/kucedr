@@ -28,10 +28,7 @@ export async function* collectRagSources(
 			throw new Error('The selected source is not a folder: ' + source);
 		for (const file of await listKnowledgeFiles(source, signal, budget)) {
 			signal?.throwIfAborted();
-			assertKnowledgeSourceSafe({
-				relativePath: path.join(path.basename(source), file),
-				content: '',
-			});
+			assertKnowledgeSourceSafe({ relativePath: path.join(path.basename(source), file), content: '' });
 			if (++files > KNOWLEDGE_MAX_FILES) throw new Error('Knowledge source file limit exceeded.');
 			const bytes = await readFileBounded(
 				path.join(source, file),

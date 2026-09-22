@@ -1,68 +1,77 @@
 {
-	"providerId": "tavily",
-	"providerName": "Tavily",
-	"apiKeyUrl": "https://app.tavily.com/home",
-	"images_url": "/images",
-	"icon_dark_url": "/images/official/tavily-offwhite.svg",
-	"icon_light_url": "/images/official/tavily-black.svg",
-	"services": [
-		{
-			"id": "tavily-web-search",
-			"name": "Tavily Web Search",
-			"url": "https://api.tavily.com/search",
-			"type": "web-search",
-			"metadata": {
-				"documentationUrl": "https://docs.tavily.com/documentation/api-reference/endpoint/search",
-				"documentationStatus": "verified",
-				"inputs": {
-					"search_depth": {
-						"type": "string",
-						"enum": ["basic", "advanced", "fast", "ultra-fast"]
-					},
-					"chunks_per_source": {
-						"type": "integer",
-						"minimum": 1,
-						"maximum": 3
-					},
-					"topic": {
-						"type": "string",
-						"enum": ["general", "news", "finance"]
-					},
-					"time_range": {
-						"type": "string"
-					},
-					"start_date": {
-						"type": "string"
-					},
-					"end_date": {
-						"type": "string"
-					},
-					"include_answer": {
-						"type": "boolean"
-					},
-					"include_raw_content": {
-						"type": "boolean"
-					},
-					"include_images": {
-						"type": "boolean"
-					},
-					"include_domains": {
-						"type": "array"
-					},
-					"exclude_domains": {
-						"type": "array"
-					},
-					"max_results": {
-						"type": "integer"
-					},
-					"country": {
-						"type": "string"
-					},
-					"auto_parameters": {
-						"type": "boolean"
-					}
-				}
-			}
-		}
-	]
+  "providerId": "tavily",
+  "providerName": "Tavily",
+  "apiKeyUrl": "https://app.tavily.com/home",
+  "images_url": "/images",
+  "icon_dark_url": "/images/official/tavily-offwhite.svg",
+  "icon_light_url": "/images/official/tavily-black.svg",
+  "services": [
+    {
+      "id": "tavily-web-search",
+      "name": "Tavily Web Search",
+      "url": "https://api.tavily.com/search",
+      "type": "web-search",
+      "metadata": {
+        "documentationUrl": "https://docs.tavily.com/documentation/api-reference/endpoint/search",
+        "documentationStatus": "verified",
+        "inputs": {
+          "search_depth": {
+            "type": "string",
+            "enum": [
+              "basic",
+              "advanced",
+              "fast",
+              "ultra-fast"
+            ]
+          },
+          "chunks_per_source": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 3
+          },
+          "topic": {
+            "type": "string",
+            "enum": [
+              "general",
+              "news",
+              "finance"
+            ]
+          },
+          "time_range": {
+            "type": "string"
+          },
+          "start_date": {
+            "type": "string"
+          },
+          "end_date": {
+            "type": "string"
+          },
+          "include_answer": {
+            "type": "boolean"
+          },
+          "include_raw_content": {
+            "type": "boolean"
+          },
+          "include_images": {
+            "type": "boolean"
+          },
+          "include_domains": {
+            "type": "array"
+          },
+          "exclude_domains": {
+            "type": "array"
+          },
+          "max_results": {
+            "type": "integer"
+          },
+          "country": {
+            "type": "string"
+          },
+          "auto_parameters": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  ]
 }

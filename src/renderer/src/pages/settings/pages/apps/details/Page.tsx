@@ -117,16 +117,11 @@ const AppDetailsPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={app.title}
+				 title={app.title}
 				description={app.description}
 				action={
 					<>
-						<Button
-							variant="outline"
-							size="xs"
-							onClick={() => void handleOpen()}
-							disabled={opening || deleting}
-						>
+						<Button variant="outline" size="xs" onClick={() => void handleOpen()} disabled={opening || deleting}>
 							<ExternalLink className="size-3" />
 							{t('settings.apps.open')}
 						</Button>
@@ -153,9 +148,7 @@ const AppDetailsPage: React.FC = () => {
 										}}
 										className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm text-destructive outline-none hover:bg-destructive/10 focus-visible:bg-destructive/10 disabled:pointer-events-none disabled:opacity-50"
 									>
-										{deleting
-											? t('settings.apps.deleting')
-											: t('settings.apps.deleteAction', { name: app.title })}
+										{deleting ? t('settings.apps.deleting') : t('settings.apps.deleteAction', { name: app.title })}
 									</button>
 								</div>
 							</PopoverContent>
@@ -173,9 +166,19 @@ const AppDetailsPage: React.FC = () => {
 			<SettingsSection title={t('settings.apps.information')}>
 				<SettingsPanel>
 					<AppDetail label={t('settings.apps.detailId')} value={app.id} mono />
-					<AppDetail label={t('settings.apps.detailVersion')} value={app.metadata.version} />
-					<AppDetail label={t('settings.apps.detailCategory')} value={app.metadata.category} />
-					<AppDetail label={t('settings.apps.detailEntry')} value={app.metadata.entry} mono />
+					<AppDetail
+						label={t('settings.apps.detailVersion')}
+						value={app.metadata.version}
+					/>
+					<AppDetail
+						label={t('settings.apps.detailCategory')}
+						value={app.metadata.category}
+					/>
+					<AppDetail
+						label={t('settings.apps.detailEntry')}
+						value={app.metadata.entry}
+						mono
+					/>
 					{extraMetadata.map(([key, value]) => (
 						<AppDetail
 							key={key}
@@ -201,11 +204,7 @@ function AppDetail({
 	readonly mono?: boolean;
 }): React.JSX.Element {
 	return (
-		<Item
-			variant="outline"
-			size="md"
-			className="border-b border-border/60 last:border-b-0 px-5 py-4"
-		>
+		<Item variant="outline" size="md" className="border-b border-border/60 last:border-b-0 px-5 py-4">
 			<ItemContent className="min-w-0">
 				<ItemTitle>{label}</ItemTitle>
 			</ItemContent>

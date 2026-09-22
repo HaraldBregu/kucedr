@@ -32,12 +32,12 @@ it('uses only selected database credentials and never an environment fallback', 
 });
 
 it('requires an explicit supported database selection and saved credential', () => {
-	expect(() =>
-		selectedVectorDatabaseConnection({ providerId: undefined, databaseId: undefined })
-	).toThrow('Select a vector database');
-	expect(() =>
-		selectedVectorDatabaseConnection({ providerId: 'other', databaseId: 'other' })
-	).toThrow('not supported');
+	expect(() => selectedVectorDatabaseConnection({ providerId: undefined, databaseId: undefined })).toThrow(
+		'Select a vector database'
+	);
+	expect(() => selectedVectorDatabaseConnection({ providerId: 'other', databaseId: 'other' })).toThrow(
+		'not supported'
+	);
 	getProvider.mockReturnValue(undefined);
 	expect(() =>
 		selectedVectorDatabaseConnection({ providerId: 'pinecone', databaseId: 'pinecone' })

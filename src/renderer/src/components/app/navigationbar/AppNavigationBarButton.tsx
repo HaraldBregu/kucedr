@@ -6,7 +6,9 @@ interface AppNavigationBarButtonProps {
 	readonly button: AppNavigationBarButtonDescriptor;
 }
 
-export function AppNavigationBarButton({ button }: AppNavigationBarButtonProps): React.JSX.Element {
+export function AppNavigationBarButton({
+	button,
+}: AppNavigationBarButtonProps): React.JSX.Element {
 	return (
 		<Button
 			type="button"

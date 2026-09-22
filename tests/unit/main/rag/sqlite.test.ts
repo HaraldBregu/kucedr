@@ -61,7 +61,13 @@ it('stores Float32 vectors, reuses source fingerprints, and performs exact cosin
 			)
 		).toEqual([expect.objectContaining({ id: 'guide#0', vector: [1, 0] })]);
 		expect(
-			store.getReusableSource('knowledge-base', 'guide', 'fingerprint', 'openai', 'another-model')
+			store.getReusableSource(
+				'knowledge-base',
+				'guide',
+				'fingerprint',
+				'openai',
+				'another-model'
+			)
 		).toBeUndefined();
 		expect(store.search('knowledge-base', [0.9, 0.1], 1)).toEqual([
 			expect.objectContaining({ id: 'guide#0', score: expect.any(Number) }),

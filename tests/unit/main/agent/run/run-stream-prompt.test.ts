@@ -20,16 +20,7 @@ const appendRunMock = jest.fn();
 const closeMcpMock = jest.fn();
 const mockLoadMcpTools = jest.fn(async () => ({
 	tools: [],
-	diagnostics: {
-		configuredServers: 0,
-		enabledServers: 0,
-		connectedServers: 0,
-		listedTools: 0,
-		loadedTools: 0,
-		rejectedTools: 0,
-		truncated: false,
-		failures: [],
-	},
+		diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 	close: closeMcpMock,
 }));
 const createSkillRegistrySnapshotMock = jest.fn((_options?: unknown) => ({
@@ -76,16 +67,7 @@ describe('run stream system prompt', () => {
 		closeMcpMock.mockReset();
 		mockLoadMcpTools.mockReset().mockResolvedValue({
 			tools: [],
-			diagnostics: {
-				configuredServers: 0,
-				enabledServers: 0,
-				connectedServers: 0,
-				listedTools: 0,
-				loadedTools: 0,
-				rejectedTools: 0,
-				truncated: false,
-				failures: [],
-			},
+			diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
 		createSkillRegistrySnapshotMock.mockReset().mockReturnValue({ skills: [], diagnostics: [] });
@@ -161,7 +143,7 @@ describe('run stream system prompt', () => {
 					tools: expect.arrayContaining(['load_skill']),
 				});
 				if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
-				expect(events[0].tools).toEqual(expect.arrayContaining(['read', 'load_skill']));
+		expect(events[0].tools).toEqual(expect.arrayContaining(['read', 'load_skill']));
 			} finally {
 				await fs.rm(root, { recursive: true, force: true });
 			}
@@ -201,9 +183,9 @@ describe('run stream system prompt', () => {
 			void event;
 
 		expect(createSkillRegistrySnapshotMock).toHaveBeenCalledWith({ projectRoot: '/workspace' });
-		expect(
-			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(expect.arrayContaining(['read', 'load_skill']));
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(
+			expect.arrayContaining(['read', 'load_skill'])
+		);
 		const firstTurnTools = runModelTurnMock.mock.calls[0][5] as Array<{
 			id: string;
 			description: string;
@@ -212,9 +194,9 @@ describe('run stream system prompt', () => {
 			'Draft polished documents'
 		);
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
-		expect(
-			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toContain('read');
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(
+			'read'
+		);
 		const receipt = session.messages.find(
 			(message) => message.toolCalls?.[0]?.name === 'load_skill'
 		)?.toolCalls?.[0]?.result?.content;
@@ -447,74 +429,64 @@ describe('run stream system prompt', () => {
 		}
 	});
 
-	it.each(['minimal', 'workspace'] as const)(
-		'injects untrusted automatic memory into %s main chat',
-		async (contextMode) => {
-			const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
-			const session = createSessionState();
-			session.category = 'main';
-			session.messages = [{ role: 'user', content: 'Current correction' }];
-			const context = jest.fn(async () => '- Prefers concise answers.');
-			for await (const event of stream(
-				{ location: root },
-				session,
-				{
-					runId: `memory-${contextMode}`,
-					task: 'chat',
-					message: 'Current correction',
-					model: 'test-model',
-					type: 'default',
-					agentId: 'main',
-					contextMode,
-					interactionMode: 'default',
-				},
-				new AbortController().signal,
-				{ tools: [], memory: { context } as never }
-			))
-				void event;
-			expect(context).toHaveBeenCalledWith('Current correction');
-			expect(runModelTurnMock.mock.calls[0][10]).toEqual([
-				expect.objectContaining({
-					role: 'user',
-					content: expect.stringContaining('explicit corrections override this recalled context'),
-				}),
-			]);
-			await fs.rm(root, { recursive: true, force: true });
-		}
-	);
+	it.each(['minimal', 'workspace'] as const)('injects untrusted automatic memory into %s main chat', async (contextMode) => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
+		const session = createSessionState();
+		session.category = 'main';
+		session.messages = [{ role: 'user', content: 'Current correction' }];
+		const context = jest.fn(async () => '- Prefers concise answers.');
+		for await (const event of stream(
+			{ location: root },
+			session,
+			{
+				runId: `memory-${contextMode}`,
+				task: 'chat',
+				message: 'Current correction',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode,
+				interactionMode: 'default',
+			},
+			new AbortController().signal,
+			{ tools: [], memory: { context } as never }
+		)) void event;
+		expect(context).toHaveBeenCalledWith('Current correction');
+		expect(runModelTurnMock.mock.calls[0][10]).toEqual([
+			expect.objectContaining({
+				role: 'user',
+				content: expect.stringContaining('explicit corrections override this recalled context'),
+			}),
+		]);
+		await fs.rm(root, { recursive: true, force: true });
+	});
 
-	it.each(['bot', 'task', 'health', 'subagent'] as const)(
-		'keeps personal memory out of %s runs even in workspace mode',
-		async (category) => {
-			const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-isolated-memory-'));
-			const session = createSessionState();
-			session.category = category;
-			session.messages = [{ role: 'user', content: 'Background request' }];
-			const context = jest.fn(async () => '- Private preference.');
-			for await (const event of stream(
-				{ location: root },
-				session,
-				{
-					runId: `isolated-${category}`,
-					task: 'chat',
-					message: 'Background request',
-					model: 'test-model',
-					type: 'background',
-					agentId: category,
-					contextMode: 'workspace',
-					interactionMode: 'default',
-				},
-				new AbortController().signal,
-				{ tools: [], memory: { context } as never }
-			))
-				void event;
-			expect(context).not.toHaveBeenCalled();
-			expect(JSON.stringify(runModelTurnMock.mock.calls[0][10])).not.toContain(
-				'Private preference'
-			);
-			await fs.rm(root, { recursive: true, force: true });
-		}
-	);
+	it.each(['bot', 'task', 'health', 'subagent'] as const)('keeps personal memory out of %s runs even in workspace mode', async (category) => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-isolated-memory-'));
+		const session = createSessionState();
+		session.category = category;
+		session.messages = [{ role: 'user', content: 'Background request' }];
+		const context = jest.fn(async () => '- Private preference.');
+		for await (const event of stream(
+			{ location: root },
+			session,
+			{
+				runId: `isolated-${category}`,
+				task: 'chat',
+				message: 'Background request',
+				model: 'test-model',
+				type: 'background',
+				agentId: category,
+				contextMode: 'workspace',
+				interactionMode: 'default',
+			},
+			new AbortController().signal,
+			{ tools: [], memory: { context } as never }
+		)) void event;
+		expect(context).not.toHaveBeenCalled();
+		expect(JSON.stringify(runModelTurnMock.mock.calls[0][10])).not.toContain('Private preference');
+		await fs.rm(root, { recursive: true, force: true });
+	});
 
 	it('keeps pending bootstrap context out of non-main minimal turns', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-bot-bootstrap-'));
@@ -562,10 +534,11 @@ describe('run stream system prompt', () => {
 			schema: { type: 'object' },
 			execute: search,
 		});
-		runModelTurnMock.mockImplementationOnce(async function* () {
-			yield* [];
-			return { content: '', model: 'test-model', toolCalls: calls };
-		});
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return { content: '', model: 'test-model', toolCalls: calls };
+			});
 		const botEvents = [];
 		const botSession = createSessionState();
 		botSession.messages = [{ role: 'user', content: 'public current-events question' }];
@@ -954,7 +927,10 @@ describe('run stream system prompt', () => {
 				result: {
 					text: 'done',
 					subtype: 'success',
-					stopReason: ['calls', 'output'].includes(boundary) ? 'budget_exhausted' : 'end_turn',
+					stopReason:
+					['calls', 'output'].includes(boundary)
+								? 'budget_exhausted'
+								: 'end_turn',
 				},
 			});
 			if (boundary === 'calls') {
@@ -1058,8 +1034,7 @@ describe('run stream system prompt', () => {
 					...(outcome === 'empty' ? { text: 'done' } : {}),
 				},
 			});
-			if (outcome === 'tools')
-				expect(session.toolCalls.at(-1)?.result).toMatchObject({ isError: true });
+			if (outcome === 'tools') expect(session.toolCalls.at(-1)?.result).toMatchObject({ isError: true });
 		}
 	);
 
@@ -1144,9 +1119,7 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					providerItems: [
-						{ type: 'provider_item', provider: 'openai', item: { type: 'reasoning' } },
-					],
+					providerItems: [{ type: 'provider_item', provider: 'openai', item: { type: 'reasoning' } }],
 					toolCalls: [
 						{ id: 'early-bash', name: 'bash', args: { command: 'pwd' } },
 						{ id: 'early-write', name: 'write', args: { path: 'demo.txt' } },
@@ -1220,16 +1193,7 @@ describe('run stream system prompt', () => {
 		});
 		mockLoadMcpTools.mockResolvedValue({
 			tools: [mcpTool],
-			diagnostics: {
-				configuredServers: 1,
-				enabledServers: 1,
-				connectedServers: 1,
-				listedTools: 1,
-				loadedTools: 1,
-				rejectedTools: 0,
-				truncated: false,
-				failures: [],
-			},
+			diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 1, listedTools: 1, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
 		runModelTurnMock

@@ -24,7 +24,12 @@ const READ = new Set([
 	'screen_recorder_status',
 ]);
 const WRITE = new Set(['write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap']);
-const PERSIST = new Set(['create_task', 'update_task', 'delete_task', 'run_task_now']);
+const PERSIST = new Set([
+	'create_task',
+	'update_task',
+	'delete_task',
+	'run_task_now',
+]);
 const GOAL = new Set([
 	'update_goal_plan',
 	'record_goal_evidence',

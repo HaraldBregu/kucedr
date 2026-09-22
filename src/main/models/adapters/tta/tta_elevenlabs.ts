@@ -12,20 +12,24 @@ export function createElevenLabsMusicAdapter(spec: MusicProviderSpec): MusicAdap
 	return {
 		generate(request) {
 			const soundEffects = request.modelId === 'elevenlabs-sound-effects';
-			return requestAudio(spec.name, `${baseURL}/${soundEffects ? 'sound-generation' : 'music'}`, {
-				method: 'POST',
-				headers: {
-					[ELEVENLABS_API_KEY_HEADER]: spec.apiKey,
-					Accept: 'audio/mpeg',
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify(
-					soundEffects
-						? { text: request.prompt, ...request.options }
-						: { prompt: request.prompt, ...request.options }
-				),
-				signal: request.signal,
-			});
+			return requestAudio(
+				spec.name,
+				`${baseURL}/${soundEffects ? 'sound-generation' : 'music'}`,
+				{
+					method: 'POST',
+					headers: {
+						[ELEVENLABS_API_KEY_HEADER]: spec.apiKey,
+						Accept: 'audio/mpeg',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify(
+						soundEffects
+							? { text: request.prompt, ...request.options }
+							: { prompt: request.prompt, ...request.options }
+					),
+					signal: request.signal,
+				}
+			);
 		},
 	};
 }

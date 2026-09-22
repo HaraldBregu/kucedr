@@ -6,5 +6,6 @@ export const data: DataApi = {
 	listScopes: () => typedInvokeUnwrap(DataChannels.listScopes),
 	export: (scope) => typedInvokeUnwrap(DataChannels.export, scope),
 	previewPurge: (scope) => typedInvokeUnwrap(DataChannels.previewPurge, scope),
-	purge: (scope, confirmationId) => typedInvokeUnwrap(DataChannels.purge, scope, confirmationId),
+	purge: (scope, confirmationId) =>
+		typedInvokeUnwrap(DataChannels.purge, scope, confirmationId),
 };

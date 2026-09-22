@@ -111,9 +111,9 @@ export async function sendA2aMessage(
 						{ tenant: '', id: remoteTaskId, metadata: undefined },
 						{ signal: AbortSignal.timeout(5_000) }
 					);
-				} catch {
-					void 0;
-				}
+					} catch {
+						void 0;
+					}
 			}
 			throw sanitizeA2aError(error, remote);
 		}

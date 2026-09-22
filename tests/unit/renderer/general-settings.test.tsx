@@ -141,7 +141,7 @@ it('opens Voice Agent settings from General settings', async () => {
 		<MemoryRouter initialEntries={['/settings/general']}>
 			<Routes>
 				<Route path="/settings/general" element={<GeneralPage />} />
-				<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
+			<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);

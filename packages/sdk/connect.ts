@@ -113,7 +113,8 @@ export function connect(options: ConnectOptions): KucedrClient {
 			body: JSON.stringify(encode({ channel, args })),
 		});
 		const result = decode(await response.json()) as
-			{ success: true; data: unknown } | { success: false; error: { message: string } };
+			| { success: true; data: unknown }
+			| { success: false; error: { message: string } };
 		if (!result.success) throw new Error(result.error.message);
 		return result.data;
 	};

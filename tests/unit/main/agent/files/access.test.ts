@@ -10,24 +10,18 @@ import { toolPermissionTargets } from '../../../../../src/main/agent/permissions
 import { applyPatchTool } from '../../../../../src/main/agent/tools/core/patch';
 
 let directory: string;
-beforeEach(() => {
-	directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'agent-file-access-')));
-});
+beforeEach(() => { directory = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'agent-file-access-'))); });
 afterEach(() => fs.rmSync(directory, { recursive: true, force: true }));
 
 it('rejects filesystem execution without a captured grant', async () => {
-	await expect(readTool.run({ path: path.join(directory, 'missing') })).rejects.toThrow(
-		'approved operation'
-	);
+	await expect(readTool.run({ path: path.join(directory, 'missing') })).rejects.toThrow('approved operation');
 });
 
 it('refuses to overwrite a file created while approval was pending', async () => {
 	const target = path.join(directory, 'new.txt');
 	const grants = captureAccess([target]);
 	fs.writeFileSync(target, 'keep');
-	await expect(
-		authorizedPaths.run(grants, () => writeAuthorizedFile(target, 'replace'))
-	).rejects.toThrow('changed after authorization');
+	await expect(authorizedPaths.run(grants, () => writeAuthorizedFile(target, 'replace'))).rejects.toThrow('changed after authorization');
 	expect(fs.readFileSync(target, 'utf8')).toBe('keep');
 });
 
@@ -42,17 +36,13 @@ it('rejects a replaced directory that redirects an approved read', async () => {
 	const grants = captureAccess([target]);
 	fs.renameSync(allowed, `${allowed}-before`);
 	fs.symlinkSync(outside, allowed, 'dir');
-	await expect(authorizedPaths.run(grants, () => readTool.run({ path: target }))).rejects.toThrow(
-		'approved operation'
-	);
+	await expect(authorizedPaths.run(grants, () => readTool.run({ path: target }))).rejects.toThrow('approved operation');
 });
 
 it('creates an approved missing file exclusively and reads its contents', async () => {
 	const target = path.join(directory, 'new.txt');
 	await authorizedPaths.run(captureAccess([target]), () => writeAuthorizedFile(target, 'new'));
-	await expect(
-		authorizedPaths.run(captureAccess([target]), () => readTool.run({ path: target }))
-	).resolves.toBe('new');
+	await expect(authorizedPaths.run(captureAccess([target]), () => readTool.run({ path: target }))).resolves.toBe('new');
 });
 
 it('includes every executable patch header in permission targets', () => {
@@ -66,9 +56,7 @@ it('requires hard approval when an Add File patch would overwrite an existing fi
 	const target = path.join(directory, 'existing');
 	fs.writeFileSync(target, 'keep');
 	const input = `*** Begin Patch\n*** Add File: ${target}\n+replace\n*** End Patch`;
-	expect(
-		typeof applyPatchTool.hardApproval === 'function' && applyPatchTool.hardApproval({ input })
-	).toBe(true);
+	expect(typeof applyPatchTool.hardApproval === 'function' && applyPatchTool.hardApproval({ input })).toBe(true);
 });
 
 it('rejects a changed file identity before an edit can execute', () => {
@@ -77,9 +65,7 @@ it('rejects a changed file identity before an edit can execute', () => {
 	const grants = captureAccess([target]);
 	fs.renameSync(target, `${target}-before`);
 	fs.writeFileSync(target, 'after');
-	expect(() => authorizedPaths.run(grants, () => authorizeFilePath(target))).toThrow(
-		'changed after authorization'
-	);
+	expect(() => authorizedPaths.run(grants, () => authorizeFilePath(target))).toThrow('changed after authorization');
 });
 
 it('rejects in-place edits made while file approval is pending', async () => {
@@ -87,8 +73,6 @@ it('rejects in-place edits made while file approval is pending', async () => {
 	fs.writeFileSync(target, 'before');
 	const grants = captureAccess([target]);
 	fs.writeFileSync(target, 'changed content');
-	await expect(
-		authorizedPaths.run(grants, () => writeAuthorizedFile(target, 'replace'))
-	).rejects.toThrow('changed after authorization');
+	await expect(authorizedPaths.run(grants, () => writeAuthorizedFile(target, 'replace'))).rejects.toThrow('changed after authorization');
 	expect(fs.readFileSync(target, 'utf8')).toBe('changed content');
 });

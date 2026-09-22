@@ -1,55 +1,55 @@
 {
-	"providerId": "brave",
-	"providerName": "Brave",
-	"apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
-	"images_url": "/images",
-	"icon_dark_url": "/images/official/brave-search.svg",
-	"icon_light_url": "/images/official/brave-search.svg",
-	"services": [
-		{
-			"id": "brave-web-search",
-			"name": "Brave Web Search",
-			"url": "https://api.search.brave.com/res/v1/web/search",
-			"type": "web-search",
-			"metadata": {
-				"documentationUrl": "https://api.search.brave.com/app/documentation/web-search/get-started",
-				"documentationStatus": "verified",
-				"inputs": {
-					"q": {
-						"type": "string",
-						"required": true
-					},
-					"count": {
-						"type": "integer",
-						"minimum": 1,
-						"maximum": 20
-					},
-					"offset": {
-						"type": "integer"
-					},
-					"country": {
-						"type": "string"
-					},
-					"search_lang": {
-						"type": "string"
-					},
-					"ui_lang": {
-						"type": "string"
-					},
-					"freshness": {
-						"type": "string"
-					},
-					"safesearch": {
-						"type": "string"
-					},
-					"result_filter": {
-						"type": "string"
-					},
-					"goggles": {
-						"type": "array"
-					}
-				}
-			}
-		}
-	]
+  "providerId": "brave",
+  "providerName": "Brave",
+  "apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
+  "images_url": "/images",
+  "icon_dark_url": "/images/official/brave-search.svg",
+  "icon_light_url": "/images/official/brave-search.svg",
+  "services": [
+    {
+      "id": "brave-web-search",
+      "name": "Brave Web Search",
+      "url": "https://api.search.brave.com/res/v1/web/search",
+      "type": "web-search",
+      "metadata": {
+        "documentationUrl": "https://api.search.brave.com/app/documentation/web-search/get-started",
+        "documentationStatus": "verified",
+        "inputs": {
+          "q": {
+            "type": "string",
+            "required": true
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "offset": {
+            "type": "integer"
+          },
+          "country": {
+            "type": "string"
+          },
+          "search_lang": {
+            "type": "string"
+          },
+          "ui_lang": {
+            "type": "string"
+          },
+          "freshness": {
+            "type": "string"
+          },
+          "safesearch": {
+            "type": "string"
+          },
+          "result_filter": {
+            "type": "string"
+          },
+          "goggles": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  ]
 }

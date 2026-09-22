@@ -13,7 +13,10 @@ export async function getA2aTask(
 	const remote = resolveA2aAgent(agentId);
 	try {
 		const { client } = await connectA2aAgent(remote.url, remote, signal);
-		const task = await client.getTask({ tenant: '', id: taskId, historyLength: 0 }, { signal });
+		const task = await client.getTask(
+			{ tenant: '', id: taskId, historyLength: 0 },
+			{ signal }
+		);
 		let receivedBytes = 0;
 		for (const artifact of task.artifacts) {
 			receivedBytes = assertA2aPartsSize(artifact.parts, receivedBytes);

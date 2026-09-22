@@ -31,7 +31,12 @@ it('prevents scheduled agents from mutating tasks while honoring saved tool rest
 	const send = jest.spyOn(agent, 'send').mockResolvedValue('done');
 	agent.start({ info: jest.fn(), error: jest.fn() });
 	const runner = mockSetTaskRunner.mock.calls[0][0] as TaskRunner;
-	const toolsDeny = ['create_task', 'update_task', 'delete_task', 'run_task_now'];
+	const toolsDeny = [
+		'create_task',
+		'update_task',
+		'delete_task',
+		'run_task_now',
+	];
 	const schedule = (toolsAllow?: string[]): TaskSchedule => ({
 		id: 'schedule-1',
 		name: 'Daily task',

@@ -1,10 +1,7 @@
 const getRagConfiguration = jest.fn();
 const searchRag = jest.fn();
 
-jest.mock('../../../../../src/main/agent/knowledge/rag', () => ({
-	getRagConfiguration,
-	searchRag,
-}));
+jest.mock('../../../../../src/main/agent/knowledge/rag', () => ({ getRagConfiguration, searchRag }));
 
 import { getKnowledgeTools } from '../../../../../src/main/agent/tools/knowledge';
 import { queryKnowledgeTool } from '../../../../../src/main/agent/tools/knowledge/query_knowledge';

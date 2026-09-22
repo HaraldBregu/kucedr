@@ -19,14 +19,10 @@ export function toolModelApi(kind: AgentToolModelKind, profileId: AgentToolProfi
 			(await window.agent.getToolModel(kind, profileId)).options,
 		setOptions: async (options: Record<string, unknown>): Promise<Record<string, unknown>> =>
 			(
-				await window.agent.setToolModel(
-					kind,
-					{
-						...(await window.agent.getToolModel(kind, profileId)),
-						options,
-					},
-					profileId
-				)
+				await window.agent.setToolModel(kind, {
+					...(await window.agent.getToolModel(kind, profileId)),
+					options,
+				}, profileId)
 			).options,
 	};
 }

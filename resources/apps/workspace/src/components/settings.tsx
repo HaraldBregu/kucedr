@@ -17,7 +17,11 @@ export function WorkspaceSettingsView({ onChange, settings }: WorkspaceSettingsP
 					<h1 className="text-sm font-semibold">Settings</h1>
 					<p className="mt-0.5 text-[11px] text-muted-foreground">Workspace editor preferences</p>
 				</div>
-				<Button variant="outline" size="sm" onClick={() => onChange(workspaceSettingsDefaults)}>
+				<Button
+					variant="outline"
+					size="sm"
+					onClick={() => onChange(workspaceSettingsDefaults)}
+				>
 					<RotateCcw /> Reset
 				</Button>
 			</header>
@@ -46,9 +50,7 @@ export function WorkspaceSettingsView({ onChange, settings }: WorkspaceSettingsP
 					<div className="flex items-center gap-4 px-4 py-3">
 						<div className="min-w-0 flex-1">
 							<p className="text-xs font-medium">Line numbers</p>
-							<p className="mt-0.5 text-[11px] text-muted-foreground">
-								Show numbers beside code lines.
-							</p>
+							<p className="mt-0.5 text-[11px] text-muted-foreground">Show numbers beside code lines.</p>
 						</div>
 						<Button
 							variant={settings.lineNumbers ? 'secondary' : 'outline'}
@@ -62,9 +64,7 @@ export function WorkspaceSettingsView({ onChange, settings }: WorkspaceSettingsP
 					<div className="flex items-center gap-4 px-4 py-3">
 						<div className="min-w-0 flex-1">
 							<p className="text-xs font-medium">Word wrap</p>
-							<p className="mt-0.5 text-[11px] text-muted-foreground">
-								Wrap long code lines inside the editor.
-							</p>
+							<p className="mt-0.5 text-[11px] text-muted-foreground">Wrap long code lines inside the editor.</p>
 						</div>
 						<Button
 							variant={settings.wordWrap ? 'secondary' : 'outline'}

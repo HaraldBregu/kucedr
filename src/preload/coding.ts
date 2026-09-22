@@ -37,11 +37,7 @@ export const coding: CodingApi = {
 		if (!normalizedProjectId || !isCodingProjectFilePath(filePath)) {
 			throw new Error('Invalid coding project file path.');
 		}
-		return typedInvokeUnwrap(
-			CodingChannels.createProjectFile,
-			normalizedProjectId,
-			filePath.trim()
-		);
+		return typedInvokeUnwrap(CodingChannels.createProjectFile, normalizedProjectId, filePath.trim());
 	},
 	getProjectInstructions: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
@@ -90,11 +86,7 @@ export const coding: CodingApi = {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		const normalizedSessionId = typeof sessionId === 'string' ? sessionId.trim() : '';
 		if (!normalizedProjectId || !normalizedSessionId) throw new Error('Invalid coding session.');
-		return typedInvokeUnwrap(
-			CodingChannels.deleteSession,
-			normalizedProjectId,
-			normalizedSessionId
-		);
+		return typedInvokeUnwrap(CodingChannels.deleteSession, normalizedProjectId, normalizedSessionId);
 	},
 	send: (request, onEvent) => {
 		if (!isCodingRunRequest(request)) throw new Error('Invalid coding run request.');

@@ -143,7 +143,8 @@ function bridge<T extends object>(name: string): T {
 	return new Proxy({} as T, {
 		get(_target, key) {
 			const api = (globalThis as Record<string, unknown>)[name] as
-				Record<string | symbol, unknown> | undefined;
+				| Record<string | symbol, unknown>
+				| undefined;
 			if (!api)
 				throw new Error(
 					`@kucedr/sdk: "${name}" is unavailable — this code must run inside the Kucedr app.`

@@ -1,140 +1,149 @@
 {
-	"providerId": "deepgram",
-	"providerName": "Deepgram",
-	"apiKeyUrl": "https://console.deepgram.com",
-	"images_url": "/images",
-	"icon_dark_url": "/images/official/deepgram-dark.svg",
-	"icon_light_url": "/images/official/deepgram-light.svg",
-	"services": [
-		{
-			"id": "nova-3",
-			"name": "Nova 3",
-			"apiTypes": ["batch", "stream"],
-			"type": "speech-to-text-model",
-			"url": "https://api.deepgram.com/v1",
-			"sampleRate": 24000,
-			"metadata": {
-				"documentationUrl": "https://developers.deepgram.com/docs/model",
-				"documentationStatus": "verified",
-				"inputs": {
-					"language": {
-						"type": "string"
-					},
-					"smart_format": {
-						"type": "boolean"
-					},
-					"punctuate": {
-						"type": "boolean"
-					},
-					"utterances": {
-						"type": "boolean"
-					},
-					"paragraphs": {
-						"type": "boolean"
-					},
-					"diarize_model": {
-						"type": "string",
-						"enum": ["latest", "v1", "v2"]
-					},
-					"keyterm": {
-						"type": "array"
-					},
-					"alternatives": {
-						"type": "integer"
-					},
-					"detect_language": {
-						"type": "boolean"
-					}
-				}
-			}
-		},
-		{
-			"id": "flux-general-en",
-			"name": "Flux",
-			"apiTypes": ["stream"],
-			"realtime": true,
-			"type": "speech-to-text-model",
-			"url": "https://api.deepgram.com/v1",
-			"sampleRate": 24000,
-			"metadata": {
-				"documentationUrl": "https://developers.deepgram.com/docs/model",
-				"documentationStatus": "verified",
-				"inputs": {
-					"language_hint": {
-						"type": "string"
-					},
-					"eot_threshold": {
-						"type": "number"
-					},
-					"eot_timeout_ms": {
-						"type": "integer"
-					},
-					"eager_eot_threshold": {
-						"type": "number"
-					},
-					"encoding": {
-						"type": "string"
-					},
-					"sample_rate": {
-						"type": "integer"
-					}
-				}
-			}
-		},
-		{
-			"id": "aura-2",
-			"name": "Aura 2",
-			"type": "text-to-speech-model",
-			"url": "https://api.deepgram.com/v1",
-			"metadata": {
-				"documentationUrl": "https://developers.deepgram.com/reference/text-to-speech/speak-request",
-				"documentationStatus": "verified",
-				"inputs": {
-					"voice": {
-						"type": "string",
-						"title": "Voice model",
-						"default": "aura-2-thalia-en"
-					},
-					"speed": {
-						"type": "number",
-						"minimum": 0.7,
-						"maximum": 1.5,
-						"default": 1
-					},
-					"encoding": {
-						"type": "string",
-						"enum": ["linear16", "mulaw", "alaw", "mp3", "opus", "flac", "aac"]
-					},
-					"sample_rate": {
-						"type": "integer"
-					},
-					"container": {
-						"type": "string",
-						"enum": ["none", "wav", "ogg"]
-					},
-					"bit_rate": {
-						"type": "integer"
-					},
-					"callback": {
-						"type": "string"
-					},
-					"callback_method": {
-						"type": "string",
-						"default": "POST",
-						"enum": ["POST", "PUT"]
-					},
-					"mip_opt_out": {
-						"type": "boolean",
-						"default": false
-					},
-					"tag": {
-						"type": "array",
-						"items": {
-							"type": "string"
-						}
-					}
-				}
-			}
-		}
-	]
+  "providerId": "deepgram",
+  "providerName": "Deepgram",
+  "apiKeyUrl": "https://console.deepgram.com",
+  "images_url": "/images",
+  "icon_dark_url": "/images/official/deepgram-dark.svg",
+  "icon_light_url": "/images/official/deepgram-light.svg",
+  "services": [
+    {
+      "id": "nova-3",
+      "name": "Nova 3",
+      "apiTypes": [
+        "batch",
+        "stream"
+      ],
+      "type": "speech-to-text-model",
+      "url": "https://api.deepgram.com/v1",
+      "sampleRate": 24000,
+      "metadata": {
+        "documentationUrl": "https://developers.deepgram.com/docs/model",
+        "documentationStatus": "verified",
+        "inputs": {
+          "language": {
+            "type": "string"
+          },
+          "smart_format": {
+            "type": "boolean"
+          },
+          "punctuate": {
+            "type": "boolean"
+          },
+          "utterances": {
+            "type": "boolean"
+          },
+          "paragraphs": {
+            "type": "boolean"
+          },
+          "diarize_model": {
+            "type": "string",
+            "enum": [
+              "latest",
+              "v1",
+              "v2"
+            ]
+          },
+          "keyterm": {
+            "type": "array"
+          },
+          "alternatives": {
+            "type": "integer"
+          },
+          "detect_language": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    {
+      "id": "flux-general-en",
+      "name": "Flux",
+      "apiTypes": [
+        "stream"
+      ],
+      "realtime": true,
+      "type": "speech-to-text-model",
+      "url": "https://api.deepgram.com/v1",
+      "sampleRate": 24000,
+      "metadata": {
+        "documentationUrl": "https://developers.deepgram.com/docs/model",
+        "documentationStatus": "verified",
+        "inputs": {
+          "language_hint": {
+            "type": "string"
+          },
+          "eot_threshold": {
+            "type": "number"
+          },
+          "eot_timeout_ms": {
+            "type": "integer"
+          },
+          "eager_eot_threshold": {
+            "type": "number"
+          },
+          "encoding": {
+            "type": "string"
+          },
+          "sample_rate": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    {
+      "id": "aura-2",
+      "name": "Aura 2",
+      "type": "text-to-speech-model",
+      "url": "https://api.deepgram.com/v1",
+      "metadata": {
+        "documentationUrl": "https://developers.deepgram.com/reference/text-to-speech/speak-request",
+        "documentationStatus": "verified",
+        "inputs": {
+          "voice": {
+            "type": "string",
+            "title": "Voice model",
+            "default": "aura-2-thalia-en"
+          },
+          "speed": {
+            "type": "number",
+            "minimum": 0.7,
+            "maximum": 1.5,
+            "default": 1
+          },
+          "encoding": {
+            "type": "string",
+            "enum": ["linear16", "mulaw", "alaw", "mp3", "opus", "flac", "aac"]
+          },
+          "sample_rate": {
+            "type": "integer"
+          },
+          "container": {
+            "type": "string",
+            "enum": ["none", "wav", "ogg"]
+          },
+          "bit_rate": {
+            "type": "integer"
+          },
+          "callback": {
+            "type": "string"
+          },
+          "callback_method": {
+            "type": "string",
+            "default": "POST",
+            "enum": ["POST", "PUT"]
+          },
+          "mip_opt_out": {
+            "type": "boolean",
+            "default": false
+          },
+          "tag": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  ]
 }

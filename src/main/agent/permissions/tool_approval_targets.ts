@@ -9,10 +9,9 @@ export function toolApprovalTargets(
 	baseDir: string,
 	history?: FileHistory
 ): string[] {
-	const targets =
-		toolName === 'read'
-			? toolPermissionTargets(toolName, args, baseDir)
-			: directoryPermissionTargets(toolName, args, baseDir, history);
+	const targets = toolName === 'read'
+		? toolPermissionTargets(toolName, args, baseDir)
+		: directoryPermissionTargets(toolName, args, baseDir, history);
 	return toolName === 'bash' || toolName === 'process' || MEDIA_TOOLS.has(toolName)
 		? targets
 		: targets.map((target) => path.dirname(target));

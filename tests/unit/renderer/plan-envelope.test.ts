@@ -2,9 +2,7 @@ import { parsePlanEnvelope } from '../../../src/renderer/src/pages/home/componen
 
 describe('plan envelope parsing', () => {
 	it('accepts one fully anchored envelope', () => {
-		expect(
-			parsePlanEnvelope('<proposed_plan>\n## Steps\n\n1. Inspect\n</proposed_plan>', false)
-		).toEqual({
+		expect(parsePlanEnvelope('<proposed_plan>\n## Steps\n\n1. Inspect\n</proposed_plan>', false)).toEqual({
 			kind: 'complete',
 			content: '## Steps\n\n1. Inspect',
 		});

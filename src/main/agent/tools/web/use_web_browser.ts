@@ -63,45 +63,37 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	if (session.context) return session.context;
 	if (!session.starting) {
 		const userDataDir = session.headless ? '' : path.join(userDataLocation(), 'agent-browser');
-		session.starting = chromium
-			.launchPersistentContext(userDataDir, {
-				channel: 'chrome',
-				headless: session.headless,
-				viewport: null,
-				timeout: DEFAULT_TIMEOUT_MS,
-			})
-			.then(
-				async (launched) => {
-					if (session.closed || signal?.aborted) {
-						await launched.close();
-						signal?.throwIfAborted();
-						throw new Error('Browser run has ended.');
-					}
-					session.context = launched;
-					launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
-					launched.on('page', (page) => {
-						if (![...session.pages.values()].includes(page)) trackPage(page, session);
-					});
-					launched.on('close', () => {
-						session.context = null;
-						session.pages.clear();
-						session.consoleLogs.clear();
-					});
-					for (const page of launched.pages()) trackPage(page, session);
-					return launched;
-				},
-				(cause: unknown) => {
-					signal?.throwIfAborted();
-					const detail = cause instanceof Error ? cause.message : String(cause);
-					throw new Error(
-						`Browser automation could not start Google Chrome. Make sure Chrome is installed, permitted by system policy, and able to write to the Kucedr profile.\n${detail}`,
-						{ cause }
-					);
-				}
-			)
-			.finally(() => {
-				session.starting = undefined;
+		session.starting = chromium.launchPersistentContext(userDataDir, {
+			channel: 'chrome',
+			headless: session.headless,
+			viewport: null,
+			timeout: DEFAULT_TIMEOUT_MS,
+		}).then(async (launched) => {
+			if (session.closed || signal?.aborted) {
+				await launched.close();
+				signal?.throwIfAborted();
+				throw new Error('Browser run has ended.');
+			}
+			session.context = launched;
+			launched.setDefaultTimeout(DEFAULT_TIMEOUT_MS);
+			launched.on('page', (page) => {
+				if (![...session.pages.values()].includes(page)) trackPage(page, session);
 			});
+			launched.on('close', () => {
+				session.context = null;
+				session.pages.clear();
+				session.consoleLogs.clear();
+			});
+			for (const page of launched.pages()) trackPage(page, session);
+			return launched;
+		}, (cause: unknown) => {
+			signal?.throwIfAborted();
+			const detail = cause instanceof Error ? cause.message : String(cause);
+			throw new Error(
+				`Browser automation could not start Google Chrome. Make sure Chrome is installed, permitted by system policy, and able to write to the Kucedr profile.\n${detail}`,
+				{ cause }
+			);
+		}).finally(() => { session.starting = undefined; });
 	}
 	const launched = await session.starting;
 	signal?.throwIfAborted();
@@ -130,8 +122,7 @@ function assertHttpUrl(url: string): string {
 }
 
 function refSelector(ref: string): string {
-	if (!/^e\d+$/.test(ref))
-		throw new Error(`Invalid ref "${ref}". Refs look like "e12" from snapshot output.`);
+	if (!/^e\d+$/.test(ref)) throw new Error(`Invalid ref "${ref}". Refs look like "e12" from snapshot output.`);
 	return `[data-agent-ref="${ref}"]`;
 }
 
@@ -164,9 +155,7 @@ const SNAPSHOT_SCRIPT = `(() => {
 	return { title: document.title, text: (document.body?.innerText || '').trim(), elements };
 })()`;
 
-async function tabList(
-	signal?: AbortSignal
-): Promise<{ targetId: string; url: string; title: string }[]> {
+async function tabList(signal?: AbortSignal): Promise<{ targetId: string; url: string; title: string }[]> {
 	const list: { targetId: string; url: string; title: string }[] = [];
 	for (const [targetId, page] of browserSession().pages) {
 		signal?.throwIfAborted();
@@ -176,34 +165,28 @@ async function tabList(
 }
 
 function tempFile(ext: string): string {
-	return path.join(
-		os.tmpdir(),
-		`browser-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
-	);
+	return path.join(os.tmpdir(), `browser-${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`);
 }
 
-async function runAct(
-	params: {
-		kind: (typeof ACT_KINDS)[number];
-		targetId?: string;
-		ref?: string;
-		text?: string;
-		key?: string;
-		values?: string[];
-		fields?: { ref: string; value: string }[];
-		startRef?: string;
-		endRef?: string;
-		submit?: boolean;
-		doubleClick?: boolean;
-		button?: 'left' | 'right' | 'middle';
-		fn?: string;
-		timeMs?: number;
-		selector?: string;
-		loadState?: 'load' | 'domcontentloaded' | 'networkidle';
-		timeoutMs?: number;
-	},
-	signal?: AbortSignal
-): Promise<string> {
+async function runAct(params: {
+	kind: (typeof ACT_KINDS)[number];
+	targetId?: string;
+	ref?: string;
+	text?: string;
+	key?: string;
+	values?: string[];
+	fields?: { ref: string; value: string }[];
+	startRef?: string;
+	endRef?: string;
+	submit?: boolean;
+	doubleClick?: boolean;
+	button?: 'left' | 'right' | 'middle';
+	fn?: string;
+	timeMs?: number;
+	selector?: string;
+	loadState?: 'load' | 'domcontentloaded' | 'networkidle';
+	timeoutMs?: number;
+}, signal?: AbortSignal): Promise<string> {
 	const { page } = getPage(params.targetId);
 	return runBrowserPageOperation(page, signal, async () => {
 		const timeout = params.timeoutMs;
@@ -214,51 +197,50 @@ async function runAct(
 		};
 
 		switch (params.kind) {
-			case 'click':
-				await locator(requireRef()).click({
-					button: params.button,
-					clickCount: params.doubleClick ? 2 : 1,
-					timeout,
-				});
-				return 'clicked';
-			case 'type': {
-				const target = locator(requireRef());
-				await target.fill(params.text ?? '', { timeout });
-				if (params.submit) await target.press('Enter', { timeout });
-				return 'typed';
+		case 'click':
+			await locator(requireRef()).click({
+				button: params.button,
+				clickCount: params.doubleClick ? 2 : 1,
+				timeout,
+			});
+			return 'clicked';
+		case 'type': {
+			const target = locator(requireRef());
+			await target.fill(params.text ?? '', { timeout });
+			if (params.submit) await target.press('Enter', { timeout });
+			return 'typed';
+		}
+		case 'press':
+			if (!params.key) throw new Error('act "press" requires a key (e.g. "Enter", "Tab").');
+			await page.keyboard.press(params.key);
+			return `pressed ${params.key}`;
+		case 'hover':
+			await locator(requireRef()).hover({ timeout });
+			return 'hovered';
+		case 'drag':
+			if (!params.startRef || !params.endRef)
+				throw new Error('act "drag" requires startRef and endRef.');
+			await locator(params.startRef).dragTo(locator(params.endRef), { timeout });
+			return 'dragged';
+		case 'select': {
+			if (!params.values?.length) throw new Error('act "select" requires values.');
+			const selected = await locator(requireRef()).selectOption(params.values, { timeout });
+			return `selected ${JSON.stringify(selected)}`;
+		}
+		case 'fill': {
+			if (!params.fields?.length) throw new Error('act "fill" requires fields: [{ref, value}].');
+			for (const field of params.fields) {
+				await locator(field.ref).fill(field.value ?? '', { timeout });
 			}
-			case 'press':
-				if (!params.key) throw new Error('act "press" requires a key (e.g. "Enter", "Tab").');
-				await page.keyboard.press(params.key);
-				return `pressed ${params.key}`;
-			case 'hover':
-				await locator(requireRef()).hover({ timeout });
-				return 'hovered';
-			case 'drag':
-				if (!params.startRef || !params.endRef)
-					throw new Error('act "drag" requires startRef and endRef.');
-				await locator(params.startRef).dragTo(locator(params.endRef), { timeout });
-				return 'dragged';
-			case 'select': {
-				if (!params.values?.length) throw new Error('act "select" requires values.');
-				const selected = await locator(requireRef()).selectOption(params.values, { timeout });
-				return `selected ${JSON.stringify(selected)}`;
-			}
-			case 'fill': {
-				if (!params.fields?.length) throw new Error('act "fill" requires fields: [{ref, value}].');
-				for (const field of params.fields) {
-					await locator(field.ref).fill(field.value ?? '', { timeout });
-				}
-				return `filled ${params.fields.length} field(s)`;
-			}
-			case 'wait':
-				if (params.selector) await page.waitForSelector(params.selector, { timeout });
-				else if (params.loadState) await page.waitForLoadState(params.loadState, { timeout });
-				else await page.waitForTimeout(params.timeMs ?? 1_000);
-				return 'waited';
-			case 'evaluate': {
-				if (!params.fn)
-					throw new Error('act "evaluate" requires fn (a JS expression or function).');
+			return `filled ${params.fields.length} field(s)`;
+		}
+		case 'wait':
+			if (params.selector) await page.waitForSelector(params.selector, { timeout });
+			else if (params.loadState) await page.waitForLoadState(params.loadState, { timeout });
+			else await page.waitForTimeout(params.timeMs ?? 1_000);
+			return 'waited';
+		case 'evaluate': {
+			if (!params.fn) throw new Error('act "evaluate" requires fn (a JS expression or function).');
 				const result = await page.evaluate(params.fn);
 				return JSON.stringify(result) ?? 'undefined';
 			}
@@ -273,10 +255,7 @@ export const useWebBrowserTool = tool({
 		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts.',
 	inputSchema: z.object({
 		action: z.enum(ACTIONS).describe('Browser command to run.'),
-		targetId: z
-			.string()
-			.optional()
-			.describe('Tab id from "tabs" output. Defaults to the most recent tab.'),
+		targetId: z.string().optional().describe('Tab id from "tabs" output. Defaults to the most recent tab.'),
 		url: z.string().optional().describe('URL for open/navigate.'),
 		back: z.boolean().optional().describe('navigate: go back in history instead of to a url.'),
 		forward: z.boolean().optional().describe('navigate: go forward in history.'),
@@ -328,8 +307,7 @@ export const useWebBrowserTool = tool({
 				const url = assertHttpUrl(params.url);
 				const ctx = await ensureStarted(signal);
 				const page = await ctx.newPage();
-				const targetId =
-					[...session.pages.entries()].find(([, p]) => p === page)?.[0] ?? trackPage(page);
+				const targetId = [...session.pages.entries()].find(([, p]) => p === page)?.[0] ?? trackPage(page);
 				await runBrowserPageOperation(page, signal, () =>
 					page.goto(url, { waitUntil: 'domcontentloaded' })
 				);
@@ -376,7 +354,7 @@ export const useWebBrowserTool = tool({
 						elements: snapshot.elements,
 					},
 					null,
-					2
+					2,
 				);
 			}
 			case 'screenshot': {

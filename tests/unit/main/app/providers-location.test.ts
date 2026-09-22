@@ -6,4 +6,5 @@ describe('providersDir', () => {
 	it('stores uploaded providers in Kucedr user data', () => {
 		expect(providersDir()).toBe(path.join(userDataLocation(), 'providers'));
 	});
+
 });

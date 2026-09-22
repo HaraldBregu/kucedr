@@ -171,7 +171,13 @@ async function runExec(
 						approvedRoots,
 						'plan'
 					)
-				: await sandbox.wrap(pty ? ptyCommand : command, cwd, commandId, abortSignal, approvedRoots)
+				: await sandbox.wrap(
+						pty ? ptyCommand : command,
+						cwd,
+						commandId,
+						abortSignal,
+						approvedRoots
+					)
 			: undefined;
 	const spawnCommand = wrapped?.command ?? hostCommand;
 	const spawnArgs = wrapped?.args ?? hostArgs;
@@ -285,65 +291,63 @@ async function runExec(
 		let aborted = false;
 		let ownedSessionId: string | undefined;
 		let timeoutTimer: NodeJS.Timeout | undefined;
-		const yieldTimer = planMode
-			? undefined
-			: setTimeout(() => {
-					if (settled || aborted) return;
-					settled = true;
+		const yieldTimer = planMode ? undefined : setTimeout(() => {
+			if (settled || aborted) return;
+			settled = true;
 
-					const sessionId = randomUUID();
-					ownedSessionId = sessionId;
-					const session = registry.register({
-						id: sessionId,
-						scope,
-						pid: child.pid,
-						command,
-						workdir: cwd,
-						roots: roots.slice(1),
-						startedAt,
-						executionMode,
-						stdout,
-						stderr,
-						exitCode: undefined,
-						exitSignal: undefined,
-						exited: false,
-						child,
-					});
+			const sessionId = randomUUID();
+			ownedSessionId = sessionId;
+			const session = registry.register({
+				id: sessionId,
+				scope,
+				pid: child.pid,
+				command,
+				workdir: cwd,
+				roots: roots.slice(1),
+				startedAt,
+				executionMode,
+				stdout,
+				stderr,
+				exitCode: undefined,
+				exitSignal: undefined,
+				exited: false,
+				child,
+			});
 
-					child.stdout.removeAllListeners('data');
-					child.stderr.removeAllListeners('data');
-					child.stdout.on('data', (chunk: Buffer | string) =>
-						registry.append(session, 'stdout', chunk.toString())
-					);
-					child.stderr.on('data', (chunk: Buffer | string) =>
-						registry.append(session, 'stderr', chunk.toString())
-					);
-					child.once('close', (exitCode, signal) => {
-						if (executionMode === 'sandbox') {
-							session.stderr = sandbox.annotate(commandId, session.stderr);
-						}
-						cleanupSandbox();
-						session.exited = true;
-						session.exitCode = exitCode;
-						session.exitSignal = signal;
-					});
+			child.stdout.removeAllListeners('data');
+			child.stderr.removeAllListeners('data');
+			child.stdout.on('data', (chunk: Buffer | string) =>
+				registry.append(session, 'stdout', chunk.toString())
+			);
+			child.stderr.on('data', (chunk: Buffer | string) =>
+				registry.append(session, 'stderr', chunk.toString())
+			);
+			child.once('close', (exitCode, signal) => {
+				if (executionMode === 'sandbox') {
+					session.stderr = sandbox.annotate(commandId, session.stderr);
+				}
+				cleanupSandbox();
+				session.exited = true;
+				session.exitCode = exitCode;
+				session.exitSignal = signal;
+			});
 
-					resolve({
-						command,
-						workdir: cwd,
-						roots,
-						background: true,
-						sessionId,
-						pty,
-						executionMode,
-						pid: child.pid,
-						stdout,
-						stderr,
-						durationMs: Date.now() - startedAt,
-						stdoutTruncated: stdoutTruncated || undefined,
-						stderrTruncated: stderrTruncated || undefined,
-					});
-				}, yieldMs);
+			resolve({
+				command,
+				workdir: cwd,
+				roots,
+				background: true,
+				sessionId,
+				pty,
+				executionMode,
+				pid: child.pid,
+				stdout,
+				stderr,
+				durationMs: Date.now() - startedAt,
+				stdoutTruncated: stdoutTruncated || undefined,
+				stderrTruncated: stderrTruncated || undefined,
+			});
+		}, yieldMs);
 		const abort = (): void => {
 			aborted = true;
 			terminateProcessTree(child);
@@ -404,7 +408,10 @@ async function runExec(
 	});
 }
 
-export function execTool(sandbox: ExecSandbox, interactionMode: AgentInteractionMode = 'default') {
+export function execTool(
+	sandbox: ExecSandbox,
+	interactionMode: AgentInteractionMode = 'default'
+) {
 	const configured = tool({
 		id: 'bash',
 		name: 'Execute command',
@@ -421,18 +428,10 @@ export function execTool(sandbox: ExecSandbox, interactionMode: AgentInteraction
 			const input = configured.parseInput(raw);
 			if (interactionMode === 'plan' || input.elevated === true) return input;
 			const roots = resolveExecRoots(input, agentLocation());
-			const requested = ((input.additionalRoots as string[] | undefined) ?? []).map((root) =>
-				resolveUserPath(root, roots[0] ?? agentLocation())
-			);
+			const requested = ((input.additionalRoots as string[] | undefined) ?? []).map((root) => resolveUserPath(root, roots[0] ?? agentLocation()));
 			const required = sandbox.requiredRoots(requested);
 			return required.length > 0
-				? {
-						...input,
-						additionalRoots: [
-							...((input.additionalRoots as string[] | undefined) ?? []),
-							...required,
-						],
-					}
+				? { ...input, additionalRoots: [...((input.additionalRoots as string[] | undefined) ?? []), ...required] }
 				: input;
 		},
 	};

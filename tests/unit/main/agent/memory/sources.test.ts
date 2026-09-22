@@ -15,11 +15,9 @@ it('scans UUID memory snapshots of every agent type with stable fingerprints and
 		for (const [index, id] of ids.entries()) {
 			await fs.writeFile(
 				path.join(root, `${id}.md`),
-				snapshotMarkdown(
-					id,
-					[{ role: 'user', content: index === 0 ? 'x'.repeat(9000) : 'original transcript' }],
-					new Date(`2026-09-${String(12 - index).padStart(2, '0')}T12:00:00.000Z`)
-				)
+				snapshotMarkdown(id, [
+					{ role: 'user', content: index === 0 ? 'x'.repeat(9000) : 'original transcript' },
+				], new Date(`2026-09-${String(12 - index).padStart(2, '0')}T12:00:00.000Z`))
 			);
 		}
 		await fs.writeFile(path.join(root, 'MEMORY.md'), '# Consolidated memory');

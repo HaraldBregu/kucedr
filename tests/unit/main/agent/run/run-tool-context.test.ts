@@ -117,11 +117,7 @@ describe('exec path approval', () => {
 		const run = jest.fn().mockResolvedValue('done');
 		const events = runToolCall(
 			fakeTool('bash', run),
-			{
-				id: 'exec',
-				name: 'bash',
-				args: { command: 'pwd', workdir: '/outside', additionalRoots: ['.'] },
-			},
+			{ id: 'exec', name: 'bash', args: { command: 'pwd', workdir: '/outside', additionalRoots: ['.'] } },
 			undefined,
 			undefined,
 			{ runId: 'run', windowId: 1 }
@@ -134,8 +130,7 @@ describe('exec path approval', () => {
 			reason: 'outside_trusted_location',
 			persistable: true,
 		});
-		if (!request || request.type !== 'tool_permission_request')
-			throw new Error('Expected approval');
+		if (!request || request.type !== 'tool_permission_request') throw new Error('Expected approval');
 		const end = events.next();
 		respondToolPermission(
 			{
@@ -148,11 +143,7 @@ describe('exec path approval', () => {
 			1
 		);
 		await end;
-		expect(addPermissionRule).toHaveBeenCalledWith(
-			'exec',
-			'allow',
-			`${path.resolve('/outside')}/**`
-		);
+		expect(addPermissionRule).toHaveBeenCalledWith('exec', 'allow', `${path.resolve('/outside')}/**`);
 		expect(run).toHaveBeenCalledTimes(1);
 	});
 
@@ -172,19 +163,14 @@ describe('exec path approval', () => {
 		} as unknown as ExecSandbox;
 		const events = runToolCall(
 			execTool(sandbox),
-			{
-				id: 'exec',
-				name: 'bash',
-				args: { command: 'pwd', workdir: '/outside', additionalRoots: ['.'] },
-			},
+			{ id: 'exec', name: 'bash', args: { command: 'pwd', workdir: '/outside', additionalRoots: ['.'] } },
 			undefined,
 			undefined,
 			{ runId: 'run', windowId: 1 }
 		);
 		await events.next();
 		const request = (await events.next()).value;
-		if (!request || request.type !== 'tool_permission_request')
-			throw new Error('Expected approval');
+		if (!request || request.type !== 'tool_permission_request') throw new Error('Expected approval');
 		const end = events.next();
 		respondToolPermission(
 			{
@@ -206,44 +192,36 @@ describe('exec path approval', () => {
 		);
 	});
 
-	it.each(['reject', 'approve_always'] as const)(
-		'rejects %s without persisting a host execution grant',
-		async (decision) => {
-			const events = runToolCall(
-				fakeTool('bash', jest.fn()),
-				{ id: 'host', name: 'bash', args: { command: 'pwd', elevated: true } },
-				undefined,
-				undefined,
-				{ runId: 'run', windowId: 1 }
-			);
-			await events.next();
-			const request = (await events.next()).value;
-			expect(request).toMatchObject({
-				type: 'tool_permission_request',
-				reason: 'host_execution',
-				persistable: false,
-			});
-			if (!request || request.type !== 'tool_permission_request')
-				throw new Error('Expected approval');
-			const end = events.next();
-			respondToolPermission(
-				{
-					approvalId: request.approvalId,
-					runId: 'run',
-					toolName: request.toolName,
-					inputFingerprint: request.inputFingerprint,
-				},
-				decision,
-				1
-			);
-			expect((await end).value).toMatchObject({
-				type: 'tool_call_end',
-				permissionOutcome: 'reject',
-				isError: true,
-			});
-			expect(addPermissionRule).not.toHaveBeenCalled();
-		}
-	);
+	it.each(['reject', 'approve_always'] as const)('rejects %s without persisting a host execution grant', async (decision) => {
+		const events = runToolCall(
+			fakeTool('bash', jest.fn()),
+			{ id: 'host', name: 'bash', args: { command: 'pwd', elevated: true } },
+			undefined,
+			undefined,
+			{ runId: 'run', windowId: 1 }
+		);
+		await events.next();
+		const request = (await events.next()).value;
+		expect(request).toMatchObject({
+			type: 'tool_permission_request',
+			reason: 'host_execution',
+			persistable: false,
+		});
+		if (!request || request.type !== 'tool_permission_request') throw new Error('Expected approval');
+		const end = events.next();
+		respondToolPermission(
+			{
+				approvalId: request.approvalId,
+				runId: 'run',
+				toolName: request.toolName,
+				inputFingerprint: request.inputFingerprint,
+			},
+			decision,
+			1
+		);
+		expect((await end).value).toMatchObject({ type: 'tool_call_end', permissionOutcome: 'reject', isError: true });
+		expect(addPermissionRule).not.toHaveBeenCalled();
+	});
 });
 
 describe('per-run file access', () => {
@@ -254,19 +232,9 @@ describe('per-run file access', () => {
 		const first = createRunContext().fileAccess;
 		const second = createRunContext().fileAccess;
 
-		await collect(
-			runToolCall(
-				tool,
-				{
-					id: 'first',
-					name: 'read',
-					args: { path: path.join(root, 'first.txt') },
-				},
-				undefined,
-				first,
-				{ runId: 'run-one' }
-			)
-		);
+		await collect(runToolCall(tool, {
+			id: 'first', name: 'read', args: { path: path.join(root, 'first.txt') },
+		}, undefined, first, { runId: 'run-one' }));
 
 		const reused = await collect(
 			runToolCall(
