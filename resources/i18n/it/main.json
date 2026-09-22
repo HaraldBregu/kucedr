@@ -153,6 +153,7 @@
 		"sidebar": {
 			"account": "Impostazioni",
 			"assistant": "Assistente",
+			"getHelp": "Ottieni aiuto",
 			"accountMenu": "Menu account per {{name}}",
 			"manageAccount": "Gestisci account",
 			"signOut": "Esci"

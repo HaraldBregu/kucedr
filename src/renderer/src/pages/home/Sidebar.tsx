@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { Bot, Cloud, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Search, Server, Settings, UserRound } from 'lucide-react';
+import { Bot, CircleHelp, Cloud, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Search, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -277,6 +277,12 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						<SidebarMenuButton type="button" onClick={() => navigate('/settings/general')}>
 							<Settings className="size-4" />
 							<span>{t('settings.title')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton type="button" onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}>
+							<CircleHelp className="size-4" />
+							<span>{t('settings.sidebar.getHelp')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>

@@ -28,12 +28,15 @@ const openSessionFolder = jest.fn();
 const showContextMenu = jest.fn();
 const signOut = jest.fn();
 const confirmSignOut = jest.fn();
+const openExternalUrl = jest.fn();
 
 beforeEach(() => {
 	signOut.mockReset();
 	signOut.mockResolvedValue(undefined);
 	confirmSignOut.mockReset();
 	confirmSignOut.mockResolvedValue(true);
+	openExternalUrl.mockReset();
+	openExternalUrl.mockResolvedValue(undefined);
 	mockUseAuth.mockReturnValue({
 		state: { status: 'signedOut', persistence: 'encrypted' },
 		localOnly: false,
@@ -70,7 +73,7 @@ beforeEach(() => {
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
-			openExternalUrl: jest.fn().mockResolvedValue(undefined),
+			openExternalUrl,
 		},
 	});
 	Object.defineProperty(window, 'auth', {
@@ -286,7 +289,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('keeps Apps, Settings, and Search in the sticky sidebar footer', async () => {
+it('keeps Apps, Settings, Help, and Search in the sticky sidebar footer', async () => {
 	const user = userEvent.setup();
 	const openCommandMenu = jest.fn();
 	listSessions.mockResolvedValue([]);
@@ -317,6 +320,10 @@ it('keeps Apps, Settings, and Search in the sticky sidebar footer', async () => 
 	expect(apps.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	const settings = screen.getByRole('button', { name: 'settings.title' });
 	expect(settings.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
+	const help = screen.getByRole('button', { name: 'settings.sidebar.getHelp' });
+	expect(help.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
+	await user.click(help);
+	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');
 	await user.click(screen.getByRole('button', { name: 'navigationBar.search' }));
 	expect(openCommandMenu).toHaveBeenCalledTimes(1);
 	expect(screen.getByRole('button', { name: 'navigationBar.newChat' })).toBeInTheDocument();
