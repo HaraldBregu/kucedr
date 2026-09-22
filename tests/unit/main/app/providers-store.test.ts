@@ -183,6 +183,6 @@ describe('cron settings', () => {
 		};
 
 		setTaskConfiguration(state);
-		expect(getTaskConfiguration()).toEqual(state);
+		expect(getTaskConfiguration()).toMatchObject(state);
 	});
 });

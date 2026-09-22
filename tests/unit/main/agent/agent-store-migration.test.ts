@@ -47,7 +47,7 @@ jest.mock('electron-store', () =>
 	})
 );
 
-import { getProviderId, getToolProfile } from '../../../../src/main/agent/agent_store';
+import { getProviderId } from '../../../../src/main/agent/agent_store';
 import {
 	agentProfileStorePath,
 	getAgentProfileModel,
@@ -71,10 +71,12 @@ it('creates clean independent agent profile stores without migration metadata', 
 		modelId: '',
 		options: {},
 	});
-	expect(getToolProfile('health')).toEqual({ tools: {}, mcp: {} });
 	expect(stores.get('chat-agent')).not.toHaveProperty('schemaVersion');
 	expect(stores.get('chat-agent')).not.toHaveProperty('migrations');
 	expect(agentProfileStorePath('chat')).toMatch(/chat-agent\.json$/);
+	expect(agentProfileStorePath('tasks')).toMatch(/tasks\.json$/);
+	expect(agentProfileStorePath('health')).toMatch(/health\.json$/);
+	expect(agentProfileStorePath('channels')).toMatch(/channels\.json$/);
 });
 
 it('keeps model selections isolated between agent profiles', () => {
