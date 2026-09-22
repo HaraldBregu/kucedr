@@ -146,6 +146,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(pageContainer).not.toHaveClass('pt-6', 'py-6');
 	expect(screen.getByRole('heading', { name: 'Settings page' })).toHaveClass('text-lg');
 	expect(returnToChat).toHaveAttribute('href', '/home');
+	expect(returnToChat.querySelector('.lucide-message-circle')).toBeInTheDocument();
 	expect(within(sidebar as HTMLElement).getAllByRole('link')[0]).toBe(returnToChat);
 	expect(
 		within(workspace as HTMLElement).getByRole('navigation', {
