@@ -38,6 +38,7 @@ it.each([
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/coding', 'settings.coding.title'],
+	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
@@ -48,6 +49,10 @@ it.each([
 	} else if (path === '/settings/coding') {
 		expect(SETTINGS_MODEL_SERVICE_ITEMS).toContainEqual(
 			expect.objectContaining({ path, labelKey })
+		);
+	} else if (path.startsWith('/settings/providers/')) {
+		expect(SETTINGS_NAVIGATION).toContainEqual(
+			expect.objectContaining({ path: '/settings/providers', labelKey: 'settings.tabs.providers' })
 		);
 	} else {
 		expect(SETTINGS_NAVIGATION).toContainEqual(expect.objectContaining({ path, labelKey }));
@@ -93,6 +98,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 	const currentSection = within(navigation).getByRole('link', {
 		name: 'settings.modelServices.chatName',
 	});
+	const generalGroup = within(navigation)
+		.getByRole('link', { name: 'settings.tabs.account' })
+		.closest('[data-slot="split-pane-group"]');
 	const assistantGroup = within(navigation)
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
@@ -100,9 +108,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 		.getAllByRole('link', { name: 'settings.overview.groups.mlModels' })
 		.find((link) => link.getAttribute('href') === '/settings/agent/models');
 	const modelsGroup = modelsLink?.closest('[data-slot="split-pane-group"]');
-	const providersGroup = within(navigation)
-		.getByText('settings.tabs.providers')
-		.closest('[data-slot="split-pane-group"]');
+	const providersLink = within(generalGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.providers',
+	});
 
 	expect(sidebar).toBeInTheDocument();
 	expect(workspace).toBeInTheDocument();
@@ -121,9 +129,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.title' })
 	).not.toBeInTheDocument();
 	expect(assistantGroup).not.toBeNull();
+	expect(generalGroup).not.toBeNull();
 	expect(modelsLink).toBeDefined();
 	expect(modelsGroup).not.toBeNull();
-	expect(providersGroup).not.toBeNull();
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
 	).not.toBeInTheDocument();
@@ -136,26 +144,20 @@ it('renders settings navigation beside the workspace and marks the current secti
 			name: 'settings.overview.groups.mlModels',
 		})
 	).toHaveAttribute('href', '/settings/agent/models');
-	expect(
-		within(providersGroup as HTMLElement).getByRole('link', {
-			name: 'settings.overview.groups.mlModels',
-		})
-	).toBeInTheDocument();
-	expect(
-		within(providersGroup as HTMLElement).getByRole('link', {
-			name: 'settings.tabs.searchEngines',
-		})
-	).toBeInTheDocument();
-	expect(
-		within(providersGroup as HTMLElement).getByRole('link', {
-			name: 'settings.tabs.databases',
-		})
-	).toHaveAttribute('href', '/settings/providers/database');
-	expect(
-		within(providersGroup as HTMLElement).getByRole('link', {
-			name: 'settings.tabs.storage',
-		})
-	).toHaveAttribute('href', '/settings/providers/storage');
+	expect(providersLink).toHaveAttribute('href', '/settings/providers');
+	const generalLinks = within(generalGroup as HTMLElement).getAllByRole('link');
+	const cloud = within(generalGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.cloud',
+	});
+	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(cloud) + 1);
+	for (const path of [
+		'/settings/providers/models',
+		'/settings/providers/search',
+		'/settings/providers/database',
+		'/settings/providers/storage',
+	]) {
+		expect(generalLinks.some((link) => link.getAttribute('href') === path)).toBe(false);
+	}
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.skills' })
 	).toHaveAttribute('href', '/settings/skills');
