@@ -29,7 +29,6 @@ export class ExecutionBudget {
 		let paid = this.paidCalls;
 		let web = this.webCalls;
 		for (const { tool, input } of calls) {
-			if (tool?.id === 'discover_tools') continue;
 			const capability =
 				typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
 			total += 1;
@@ -45,7 +44,6 @@ export class ExecutionBudget {
 	}
 
 	admit(tool: Tool | undefined, input: Record<string, unknown>): string | undefined {
-		if (tool?.id === 'discover_tools') return undefined;
 		const capability =
 			typeof tool?.capability === 'function' ? tool.capability(input) : tool?.capability;
 		const paid = capability?.effects.includes('paid') === true;

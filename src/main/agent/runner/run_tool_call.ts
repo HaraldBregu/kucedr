@@ -185,7 +185,7 @@ export async function* runToolCall(
 			typeof tool.capability === 'function' ? tool.capability(canonicalInput) : tool.capability;
 		const channelAllowed =
 			scope.source !== 'channel' ||
-			['discover_tools', 'search_web', 'fetch_web_page', 'subagent', 'subagents'].includes(tool.id);
+			['search_web', 'fetch_web_page', 'subagent', 'subagents'].includes(tool.id);
 		if (!capability || !channelAllowed)
 			resolution = { ...resolution, mode: 'deny', persistable: false };
 		const hardApproval =
@@ -366,10 +366,8 @@ export async function* runToolCall(
 		isError,
 	};
 
-	if (toolCall.name !== 'discover_tools') {
-		security.budget?.observeOutput(Buffer.byteLength(formatToolOutput(output), 'utf8'));
-		security.budget?.outcomes.set(toolCall.id, structuredClone(toolCall));
-	}
+	security.budget?.observeOutput(Buffer.byteLength(formatToolOutput(output), 'utf8'));
+	security.budget?.outcomes.set(toolCall.id, structuredClone(toolCall));
 	yield {
 		type: 'tool_call_end',
 		toolCallId: toolCall.id,

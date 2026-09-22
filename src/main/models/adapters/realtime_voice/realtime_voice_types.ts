@@ -54,7 +54,6 @@ export type RealtimeVoiceAdapterEventHandler = (event: RealtimeVoiceAdapterEvent
 export interface RealtimeVoiceConnection {
 	appendAudio(audio: string): Promise<void>;
 	interrupt(): Promise<void>;
-	updateTools?(tools: Tool[], instructions: string, signal?: AbortSignal): Promise<void>;
 	addToolResult(callId: string, output: string): Promise<void>;
 	stop(): Promise<void>;
 }

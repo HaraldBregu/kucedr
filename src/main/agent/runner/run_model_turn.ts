@@ -121,11 +121,6 @@ export async function* runModelTurn(
 					};
 					continue;
 				}
-				if (
-					event.type === 'model_tool_call_start' ||
-					event.type === 'model_tool_call_args_delta'
-				)
-					continue;
 				yield event;
 			}
 
