@@ -677,7 +677,6 @@ function runtimeEventToAgentEvents(
 		return [{ type: 'model_selected', model: event.model, effort: event.effort, agentId, runId }];
 	}
 	if (event.type === 'model_tool_call_start') {
-		if (event.name === 'discover_tools') return [];
 		streamingToolArgs.set(event.id, { name: event.name, argsText: '' });
 		return [
 			{
@@ -704,28 +703,6 @@ function runtimeEventToAgentEvents(
 				toolName: pending.name,
 				jsonDelta: event.jsonDelta,
 				argsText: pending.argsText,
-				agentId,
-				runId,
-			},
-		];
-	}
-	if (event.type === 'capability_resolution_start') {
-		return [{ type: 'capability_resolution_start', agentId, runId }];
-	}
-	if (event.type === 'capability_resolution_result') {
-		return [
-			{
-				type: 'capability_resolution_result',
-				tools: event.tools.map((entry) => entry.id),
-				services: event.tools.map((entry) => ({
-					name: entry.name,
-					displayName: entry.serviceName ?? entry.name,
-					serviceKind: entry.serviceId ? 'mcp' : 'tool',
-					...(entry.serviceId ? { serviceId: entry.serviceId } : {}),
-				})),
-				skills: [],
-				directAnswer: false,
-				decision: { mode: 'use_tools', reason: 'Tools selected for this run.' },
 				agentId,
 				runId,
 			},

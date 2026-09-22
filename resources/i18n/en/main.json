@@ -1328,12 +1328,6 @@
 					"loadError": "Unable to load MCP servers.",
 					"inspectError": "Unable to list this server's tools."
 				},
-				"discovery": {
-					"title": "Tool discovery",
-					"name": "Discover tools",
-					"description": "Find and load tools when needed.",
-					"required": "Required"
-				},
 				"title": "Agent tools",
 				"description": "Built-in capabilities available to agents. Availability can vary by run mode, permissions, and configuration. Installed MCP servers add their own tools dynamically.",
 				"searchPlaceholder": "Search tools",

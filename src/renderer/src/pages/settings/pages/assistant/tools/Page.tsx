@@ -252,10 +252,6 @@ const ToolsPage: React.FC = () => {
 		? t(selectedSearchEngine.descriptionKey)
 		: t('settings.searchEngine.defaultDescription');
 	const normalizedToolSearch = toolSearch.trim().toLocaleLowerCase();
-	const discoveryName = t('settings.modelServices.agentTools.discovery.name');
-	const discoveryDescription = t('settings.modelServices.agentTools.discovery.description');
-	const showDiscovery = ['discover_tools', discoveryName, discoveryDescription]
-		.join(' ').toLocaleLowerCase().includes(normalizedToolSearch);
 	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
 		...group,
 		tools: group.tools.filter(([name, id, description]) =>
@@ -374,20 +370,6 @@ const ToolsPage: React.FC = () => {
 					</Button>
 				)}
 			</div>
-			{showDiscovery && (
-				<SettingsSection title={t('settings.modelServices.agentTools.discovery.title')}>
-					<SettingsPanel>
-						<SettingsRow
-							title={discoveryName}
-							media={
-								<SearchIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-							}
-							description={discoveryDescription}
-							actions={<span className="text-xs text-muted-foreground">{t('settings.modelServices.agentTools.discovery.required')}</span>}
-						/>
-					</SettingsPanel>
-				</SettingsSection>
-			)}
 
 			{mediaSearchText.includes(normalizedToolSearch) && <SettingsSection
 				title={t('settings.modelServices.agentTools.groups.media')}

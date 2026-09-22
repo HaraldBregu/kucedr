@@ -254,7 +254,7 @@ The Skills settings area can:
 
 Validation requires frontmatter `name` and `description`. Names are lowercase alphanumeric/hyphen identifiers of 1–64 characters, and descriptions are limited to 1,024 characters. Importing an existing ID replaces its folder. Only enabled skills can be loaded by the agent.
 
-The Home slash menu searches installed skills. Every eligible run receives a bounded catalog of skill names and descriptions before its first model turn. An explicit selection or matching request activates the validated `SKILL.md` body on the next turn. The loader returns the canonical skill directory and a bounded resource inventory; bundled scripts, references, and assets are read separately only when the loaded instructions require them. Skill `allowed-tools` restrict eligibility but never bypasses the required `discover_tools` loading turn.
+The Home slash menu searches installed skills. An explicit selection or matching request activates the validated `SKILL.md` body on the next turn. The loader returns the canonical skill directory and a bounded resource inventory; bundled scripts, references, and assets are read separately only when the loaded instructions require them. Skill `allowed-tools` restricts eligibility after activation.
 
 ### MCP servers
 
@@ -299,7 +299,7 @@ At the start of each normal agent run, enabled servers connect in parallel, expo
 
 Current limits:
 
-- A stored `require_approval` field is enforced: it sets a loaded MCP tool's default permission to allow or ask. A stored `defer_loading` field is not yet enforced by the tool loader.
+- A stored `require_approval` field is enforced: it sets a loaded MCP tool's default permission to allow or ask. Enabled MCP tools are loaded for each eligible run; legacy `defer_loading` data is retained for compatibility.
 - Dynamically loaded MCP tools are not included in the built-in gated-tool list; only their own `require_approval`-derived default applies.
 
 ### Scheduled tasks
