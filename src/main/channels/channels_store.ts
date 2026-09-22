@@ -12,7 +12,9 @@ import {
 	setAgentProfileModel,
 } from '../agent/agent_profiles';
 
-type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & { readonly apiKey?: string };
+type PersistedChannelProvider = Omit<StoredChannelProvider, 'apiKey'> & {
+	readonly apiKey?: string;
+};
 
 type ChannelModelKeys = {
 	providerId: keyof ChannelsStoreState;
@@ -51,7 +53,10 @@ const CHANNEL_MODELS_FALLBACKS: Record<ChannelModelKind, () => ChannelModelSelec
 	tts: () => ({ providerId: getProviderId('voice'), modelId: getModelId('voice') }),
 };
 
-const CHANNEL_PROFILE_MODELS: Record<ChannelModelKind, 'textToText' | 'speechToText' | 'textToSpeech'> = {
+const CHANNEL_PROFILE_MODELS: Record<
+	ChannelModelKind,
+	'textToText' | 'speechToText' | 'textToSpeech'
+> = {
 	llm: 'textToText',
 	stt: 'speechToText',
 	tts: 'textToSpeech',

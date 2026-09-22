@@ -107,10 +107,7 @@ const TasksPage: React.FC = () => {
 
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([
-			window.tasks.list(),
-			window.tasks.getRuntime(),
-		])
+		void Promise.all([window.tasks.list(), window.tasks.getRuntime()])
 			.then(([list, runtime]) => {
 				if (!mounted) return;
 				setTasks(list);

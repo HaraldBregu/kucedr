@@ -171,7 +171,8 @@ export class Agent {
 			AGENT_TOOL_PROFILES[normalizedAgentId] ?? 'chat',
 			'textToText'
 		);
-		const pinnedProviderId = options.providerId?.trim() || profileModel.providerId || getProviderId();
+		const pinnedProviderId =
+			options.providerId?.trim() || profileModel.providerId || getProviderId();
 		const pinnedModelId =
 			(options.model ?? options.modelId)?.trim() || profileModel.modelId || getModelId();
 		const commandOptions: InternalAgentSendOptions = {
