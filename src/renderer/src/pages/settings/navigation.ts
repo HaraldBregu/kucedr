@@ -224,6 +224,30 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'tools image audio video speech text to speech transcription search engine',
 	},
+	{
+		path: '/settings/voice/tools',
+		labelKey: 'settings.modelServices.tools',
+		descriptionKey: 'settings.modelServices.toolsDescription',
+		keywords: 'voice tools permissions allow deny ask',
+	},
+	{
+		path: '/settings/agent/tasks/tools',
+		labelKey: 'settings.modelServices.tools',
+		descriptionKey: 'settings.modelServices.toolsDescription',
+		keywords: 'task scheduled tools permissions allow deny ask',
+	},
+	{
+		path: '/settings/agent/health/tools',
+		labelKey: 'settings.modelServices.tools',
+		descriptionKey: 'settings.modelServices.toolsDescription',
+		keywords: 'health tools permissions allow deny ask',
+	},
+	{
+		path: '/settings/channels/tools',
+		labelKey: 'settings.modelServices.tools',
+		descriptionKey: 'settings.modelServices.toolsDescription',
+		keywords: 'channel tools permissions allow deny ask',
+	},
 	// Tasks
 	{
 		path: '/settings/cloud',
