@@ -174,21 +174,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.health' })
 	).toHaveAttribute('href', '/settings/health');
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.channels' })
-	).toHaveAttribute('href', '/settings/channels');
-	expect(
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.rag.title' })
 	).toHaveAttribute('href', '/settings/knowledge-base');
-	expect(
-		within(assistantGroup as HTMLElement)
-			.getByRole('link', { name: 'settings.tabs.channels' })
-			.closest('li')
-			?.previousElementSibling
-			?.textContent
-	).toBe('settings.tabs.health');
 	expect(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.integrations' })
@@ -199,6 +189,33 @@ it('renders settings navigation beside the workspace and marks the current secti
 			.closest('[data-slot="split-pane-group"]')
 	);
 	expect(currentSection).toHaveAttribute('data-active');
+});
+
+it('places Channels directly after Health in the Assistant sidebar group', () => {
+	render(
+		<MemoryRouter initialEntries={['/settings/health']}>
+			<Routes>
+				<Route path="/settings" element={<Layout />}>
+					<Route path="*" element={<SettingsPageHeader title="Settings page" />} />
+				</Route>
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
+	const assistantGroup = within(navigation)
+		.getByText('settings.overview.groups.assistant')
+		.closest('[data-slot="split-pane-group"]');
+	const links = within(assistantGroup as HTMLElement).getAllByRole('link');
+	const health = within(assistantGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.health',
+	});
+	const channels = within(assistantGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.channels',
+	});
+
+	expect(channels).toHaveAttribute('href', '/settings/channels');
+	expect(links.indexOf(channels)).toBe(links.indexOf(health) + 1);
 });
 
 it.each(['music', 'image', 'video'])('marks %s active inside the Media sidebar group', (name) => {
