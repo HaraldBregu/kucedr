@@ -31,6 +31,9 @@ type AgentProfileStore = {
 
 const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', options: {} };
 const DEFAULT_TOOL: AgentToolConfiguration = { enabled: true, permission: 'allow' };
+const DEFAULT_TOOL_SETTINGS: Record<string, AgentToolConfiguration> = {
+	camera_recorder: { enabled: true, permission: 'ask' },
+};
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
 const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
 	'chat',
@@ -231,7 +234,7 @@ export function getAgentProfileTool(
 ): AgentToolConfiguration {
 	const profile = read(profileId);
 	return tool.kind === 'builtin'
-		? (profile.tools[tool.id] ?? DEFAULT_TOOL)
+		? (profile.tools[tool.id] ?? DEFAULT_TOOL_SETTINGS[tool.id] ?? DEFAULT_TOOL)
 		: (profile.mcpTools[tool.serverId]?.[tool.toolName] ?? DEFAULT_TOOL);
 }
 
