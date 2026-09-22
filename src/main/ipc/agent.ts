@@ -18,9 +18,6 @@ import type {
 	AgentContextMode,
 	AgentMediaModelSettings,
 	AgentRunOptions,
-	AgentToolConfiguration,
-	AgentToolProfileId,
-	AgentToolReference,
 	AgentToolModelKind,
 	AgentToolPermissionDecision,
 	AgentToolPermissionScope,
@@ -30,6 +27,11 @@ import type {
 	WorkspaceChangeEvent,
 	WorkspaceTreeEntry,
 } from '../../shared/agent_types';
+import type {
+	AgentToolConfiguration,
+	AgentToolProfileId,
+	AgentToolReference,
+} from '../../shared/agent_tools';
 import { normalizeAgentInputFiles } from '../../shared/agent_files';
 import { requireUuidSessionId, sessionPath, sessionsRoot } from '../agent/session';
 import { workspacePath } from '../agent/system';

@@ -17,6 +17,7 @@ export function tool<T extends z.ZodType>({
 	planSafe,
 	hardApproval,
 	capability,
+	policy,
 	inputSchema,
 	execute,
 }: ToolConfig<T>): Tool {
@@ -27,6 +28,7 @@ export function tool<T extends z.ZodType>({
 		timeoutMs,
 		maxOutputBytes,
 		planSafe,
+		policy,
 		capability: capability ?? ((input) => builtinCapability(id, input)),
 		hardApproval: typeof hardApproval === 'function'
 			? (input) => hardApproval(inputSchema.parse(input))
@@ -50,6 +52,7 @@ export function jsonTool({
 	planSafe,
 	hardApproval,
 	capability,
+	policy,
 	parseInput,
 	schema,
 	execute,
@@ -61,6 +64,7 @@ export function jsonTool({
 		timeoutMs,
 		maxOutputBytes,
 		planSafe,
+		policy,
 		hardApproval,
 		capability: capability ?? ((input) => builtinCapability(id, input)),
 		schema,

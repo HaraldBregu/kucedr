@@ -60,6 +60,7 @@ export type ToolConfig<T extends z.ZodType> = {
 	planSafe?: boolean;
 	hardApproval?: boolean | ((input: z.infer<T>) => boolean);
 	capability?: import('./execution/capability').ToolCapability;
+	policy?: AgentToolReference;
 	inputSchema: T;
 	execute: (input: z.infer<T>, signal?: AbortSignal) => Promise<unknown> | unknown;
 };
@@ -73,6 +74,7 @@ export type JsonToolConfig = {
 	planSafe?: boolean;
 	hardApproval?: boolean | ((input: Record<string, unknown>) => boolean);
 	capability?: import('./execution/capability').ToolCapability;
+	policy?: AgentToolReference;
 	parseInput?: (input: unknown) => Record<string, unknown>;
 	schema: JSONSchema;
 	execute: (input: Record<string, unknown>, signal?: AbortSignal) => Promise<unknown> | unknown;
@@ -134,7 +136,7 @@ type RuntimeInputBase = Pick<
 	agentId: string;
 	contextMode: 'minimal' | 'workspace';
 	interactionMode: import('../../shared/agent_types').AgentInteractionMode;
-	toolProfile: AgentToolProfileId;
+	toolProfile?: AgentToolProfileId;
 	toolsDeny?: string[];
 	approvalWindowId?: number;
 	explicitSkill?: string;
