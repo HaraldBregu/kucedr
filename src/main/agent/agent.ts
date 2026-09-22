@@ -736,6 +736,27 @@ function runtimeEventToAgentEvents(
 	if (event.type === 'model_call_end') {
 		return [{ type: 'model_usage', usage: event.usage, agentId, runId }];
 	}
+	if (event.type === 'capability_resolution_start') {
+		return [{ type: 'capability_resolution_start', agentId, runId }];
+	}
+	if (event.type === 'capability_resolution_result') {
+		return [
+			{
+				type: 'capability_resolution_result',
+				tools: event.tools.map((tool) => tool.id),
+				services: event.tools.map((tool) => ({
+					name: tool.name,
+					displayName: tool.name,
+					serviceKind: 'tool' as const,
+				})),
+				skills: [],
+				directAnswer: false,
+				decision: { mode: 'use_tools', reason: 'Tools selected for this run.' },
+				agentId,
+				runId,
+			},
+		];
+	}
 	if (event.type === 'model_call_delta') {
 		return [{ type: 'text_delta', delta: event.delta, agentId, runId }];
 	}

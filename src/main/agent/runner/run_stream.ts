@@ -484,6 +484,9 @@ async function* loop(
 				continue;
 			}
 
+			if (pendingToolCalls.some((call) => call.name === 'discover_tools')) {
+				yield { type: 'capability_resolution_start' };
+			}
 			for await (const event of runToolCalls(
 				turnTools,
 				pendingToolCalls,
@@ -501,6 +504,27 @@ async function* loop(
 				session.runContext.fileHistory
 			)) {
 				yield event;
+			}
+			if (pendingToolCalls.some((call) => call.name === 'discover_tools')) {
+				const selectedIds = new Set(
+					pendingToolCalls.flatMap((call) => {
+						if (call.name !== 'discover_tools' || typeof call.result?.content !== 'string') return [];
+						try {
+							const parsed = JSON.parse(call.result.content) as { selectedToolIds?: unknown };
+							return Array.isArray(parsed.selectedToolIds)
+								? parsed.selectedToolIds.filter((id): id is string => typeof id === 'string')
+								: [];
+						} catch {
+							return [];
+						}
+					})
+				);
+				yield {
+					type: 'capability_resolution_result',
+					tools: discovery.active()
+						.filter((tool) => selectedIds.has(tool.id))
+						.map((tool) => ({ id: tool.id, name: tool.name })),
+				};
 			}
 			addToolResults(session, turn.toolCalls);
 			if (budget.exhausted) {
