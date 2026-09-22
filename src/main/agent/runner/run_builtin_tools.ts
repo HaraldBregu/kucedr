@@ -37,7 +37,7 @@ import { getSearchWebTools } from '../tools/web/search_web';
 import { useWebBrowserTool } from '../tools/web/use_web_browser';
 
 export function builtinTools(
-	config: Config,
+	_config: Config,
 	sandbox: ExecSandbox,
 	interactionMode: AgentInteractionMode = 'default'
 ): Tool[] {
