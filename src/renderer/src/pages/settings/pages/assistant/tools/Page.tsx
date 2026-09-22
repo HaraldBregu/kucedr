@@ -699,17 +699,17 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 											description={description}
 											actions={
 												<>
-											<ToolPermissionControl
-												name={name}
-												value={settings.permission}
-												disabled={!toolProfile || fileToolsSaving}
-												onChange={(permission) =>
-													handleFileToolsPermissionChange(id, {
-														...settings,
-														permission,
-													})
-												}
-											/>
+													<ToolPermissionControl
+														name={name}
+														value={settings.permission}
+														disabled={!toolProfile || fileToolsSaving}
+														onChange={(permission) =>
+															handleFileToolsPermissionChange(id, {
+																...settings,
+																permission,
+															})
+														}
+													/>
 													<Switch
 														checked={settings.enabled}
 														onCheckedChange={(enabled) =>

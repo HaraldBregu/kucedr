@@ -134,14 +134,14 @@ export default function Mcp({ search, settings, disabled, onChange }: McpProps):
 													description={server.data.name || server.id}
 													actions={
 														<>
-																	<ToolPermissionControl
-																		name={name}
-																		value={settingsForTool.permission}
-																		disabled={disabled}
-																		onChange={(permission) =>
-																			onChange(tool, { ...settingsForTool, permission })
-																		}
-																	/>
+															<ToolPermissionControl
+																name={name}
+																value={settingsForTool.permission}
+																disabled={disabled}
+																onChange={(permission) =>
+																	onChange(tool, { ...settingsForTool, permission })
+																}
+															/>
 															<Switch
 																checked={settingsForTool.enabled}
 																onCheckedChange={(enabled) =>
