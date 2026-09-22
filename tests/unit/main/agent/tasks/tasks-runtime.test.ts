@@ -28,7 +28,6 @@ jest.mock('../../../../../src/main/agent/agent_profiles', () => ({
 
 import { getRuntime } from '../../../../../src/main/tasks/tasks_get_runtime';
 import { setRuntime } from '../../../../../src/main/tasks/tasks_set_runtime';
-import type { PersistedTaskState } from '../../../../../src/main/tasks/tasks_types';
 
 beforeEach(() => {
 	readState.mockReset();
