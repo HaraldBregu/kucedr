@@ -507,19 +507,35 @@ const routes: RouteObject[] = [
 						children: [
 							{
 								index: true,
-								element: <SettingsRouteWrapper><TasksPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<TasksPage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: ':taskId/detail',
-								element: <SettingsRouteWrapper><TaskDetailsPage /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<TaskDetailsPage />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'history',
-								element: <SettingsRouteWrapper><ChatHistoryPage category="task" /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<ChatHistoryPage category="task" />
+									</SettingsRouteWrapper>
+								),
 							},
 							{
 								path: 'tools',
-								element: <SettingsRouteWrapper><ToolsPage profile="tasks" /></SettingsRouteWrapper>,
+								element: (
+									<SettingsRouteWrapper>
+										<ToolsPage profile="tasks" />
+									</SettingsRouteWrapper>
+								),
 							},
 						],
 					},

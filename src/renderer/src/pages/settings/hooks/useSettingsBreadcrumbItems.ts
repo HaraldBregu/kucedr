@@ -136,10 +136,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	const items: SettingsBreadcrumbItem[] = [{ label: t(current.labelKey) }];
 
-	if (
-		location.pathname.startsWith('/settings/tasks/') &&
-		location.pathname.endsWith('/detail')
-	) {
+	if (location.pathname.startsWith('/settings/tasks/') && location.pathname.endsWith('/detail')) {
 		items[0] = { ...items[0], path: current.path };
 		items.push({ label: t('settings.cron.detail.title') });
 	}
