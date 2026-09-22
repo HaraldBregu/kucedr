@@ -63,7 +63,9 @@ describe('chat agent tool controls', () => {
 					}
 				: toolId === 'select_screen_source'
 					? { sources: [{ id: 'screen:1', name: 'Display 1', type: 'screen' }] }
-					: {};
+					: toolId === 'bash'
+						? { command: 'true' }
+						: {};
 		const selectedTool = jsonTool({
 			id: toolId,
 			name: toolId,
@@ -112,21 +114,23 @@ describe('chat agent tool controls', () => {
 		)) {
 			enabledEvents.push(event);
 			if (event.type === 'user_input_request') {
-				respondUserInput(
-					{
-						requestId: event.requestId,
-						runId: input.runId,
-						toolCallId: event.toolCallId,
-						inputFingerprint: event.inputFingerprint,
-					},
-					[
+				setTimeout(() => {
+					respondUserInput(
 						{
-							questionId: toolId === 'ask' ? 'choice' : 'screen-source',
-							answer: toolId === 'ask' ? 'Yes' : 'screen:1',
+							requestId: event.requestId,
+							runId: input.runId,
+							toolCallId: event.toolCallId,
+							inputFingerprint: event.inputFingerprint,
 						},
-					],
-					7
-				);
+						[
+							{
+								questionId: toolId === 'ask' ? 'choice' : 'screen-source',
+								answer: toolId === 'ask' ? 'Yes' : 'screen:1',
+							},
+						],
+						7
+					);
+				}, 0);
 			}
 		}
 
