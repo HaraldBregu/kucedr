@@ -482,6 +482,27 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'health',
+						children: [
+							{
+								index: true,
+								element: (
+									<SettingsRouteWrapper>
+										<HealthPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'tools',
+								element: (
+									<SettingsRouteWrapper>
+										<ToolsPage profile="health" />
+									</SettingsRouteWrapper>
+								),
+							},
+						],
+					},
+					{
 						path: 'agent',
 						children: [
 							{
@@ -587,19 +608,11 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'health',
-								element: (
-									<SettingsRouteWrapper>
-										<HealthPage />
-									</SettingsRouteWrapper>
-								),
+								element: <Navigate to="/settings/health" replace />,
 							},
 							{
 								path: 'health/tools',
-								element: (
-									<SettingsRouteWrapper>
-										<ToolsPage profile="health" />
-									</SettingsRouteWrapper>
-								),
+								element: <Navigate to="/settings/health/tools" replace />,
 							},
 							{
 								path: 'permissions',
