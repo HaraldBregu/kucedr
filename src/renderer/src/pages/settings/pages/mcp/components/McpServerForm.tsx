@@ -98,7 +98,6 @@ export function McpServerForm({
 	const [approval, setApproval] = useState<'default' | 'always' | 'never'>(
 		entry?.require_approval ?? 'default'
 	);
-	const [deferLoading, setDeferLoading] = useState(entry?.defer_loading ?? false);
 	const [error, setError] = useState<string | null>(null);
 	const [saving, setSaving] = useState(false);
 	const initialized = useRef(false);
@@ -117,7 +116,7 @@ export function McpServerForm({
 		const base = {
 			name: name.trim() || undefined,
 			require_approval: approval === 'default' ? undefined : approval,
-			defer_loading: deferLoading || undefined,
+			defer_loading: initial?.entry.defer_loading,
 			enabled: initial?.entry.enabled ?? true,
 			created_at: initial?.entry.created_at ?? now,
 			updated_at: now,
@@ -191,7 +190,6 @@ export function McpServerForm({
 		clientSecret,
 		command,
 		cwd,
-		deferLoading,
 		env,
 		id,
 		isValid,
@@ -297,22 +295,6 @@ export function McpServerForm({
 					</Select>
 				</ItemActions>
 			</Item>
-			<Item variant="outline" size="md" className={ITEM_CLASS}>
-				<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-					<ItemTitle>Defer tool loading</ItemTitle>
-					<p className="text-[11px] leading-4 text-muted-foreground">
-						Load this server’s tools only when needed.
-					</p>
-				</ItemContent>
-				<ItemActions className="ml-auto flex-none justify-end">
-					<Switch
-						checked={deferLoading}
-						onCheckedChange={setDeferLoading}
-						aria-label="Defer tool loading"
-					/>
-				</ItemActions>
-			</Item>
-
 			{type === 'http' ? (
 				<>
 					<McpFormItem
