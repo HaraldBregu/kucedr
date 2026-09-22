@@ -144,226 +144,226 @@ const HealthPage: React.FC = () => {
 			) : (
 				<>
 					<SettingsPanel>
-							<ModelProviderConfiguration
-								configState={{
-									providers: modelGroups.map((group) => group.provider),
-									modelGroups,
-									providerId: settings.providerId ?? '',
-									modelId: settings.modelId ?? '',
-									loading: false,
-									loadingModels: false,
-									saving,
-									saved,
-									error: null,
-								}}
-								idPrefix="health"
-								triggerTitle={t('settings.modelServices.llmModel')}
-								description={t('settings.modelServices.modelDescription')}
-								showIcon
-								icon={BrainCircuit}
-								showFieldLabel={false}
-								grouped
-								showSelectedModel
-								buttonDropdown
-								showContentSeparator={false}
-								onChange={(providerId, modelId) =>
-									updateAndSave({ providerId, modelId, modelOptions: {} })
-								}
-							>
-								<div className="-mx-4">
-									<SettingsRow
-										title={t('settings.health.fields.every')}
-										actions={
-											<Select
-												value={settings.every}
-												onValueChange={(value) =>
-													update({ every: (value ?? '0m') as HealthSettings['every'] })
-												}
-												disabled={saving}
-											>
-												<SelectTrigger id="health-every" className="h-7 w-44 text-xs">
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													{EVERY_OPTIONS.map((option) => (
-														<SelectItem key={option} value={option}>
-															{option === '0m' ? t('settings.health.fields.everyOff') : option}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										}
-									/>
-
-									<SettingsRow
-										title={t('settings.health.fields.target')}
-										actions={
-											<Select
-												value={settings.target}
-												onValueChange={(value) => update({ target: value ?? 'none' })}
-												disabled={saving}
-											>
-												<SelectTrigger id="health-target" className="h-7 w-44 text-xs">
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													{targetOptions.map((option) => (
-														<SelectItem key={option} value={option}>
-															{option === 'none'
-																? t('settings.health.fields.targetNone')
-																: option === 'last'
-																	? t('settings.health.fields.targetLast')
-																	: option}
-														</SelectItem>
-													))}
-												</SelectContent>
-											</Select>
-										}
-									/>
-
-									<SettingsRow
-										title={t('settings.health.fields.directPolicy')}
-										actions={
-											<Select
-												value={settings.directPolicy}
-												onValueChange={(value) =>
-													update({
-														directPolicy: (value ?? 'allow') as HealthSettings['directPolicy'],
-													})
-												}
-												disabled={saving}
-											>
-												<SelectTrigger id="health-direct-policy" className="h-7 w-44 text-xs">
-													<SelectValue />
-												</SelectTrigger>
-												<SelectContent>
-													<SelectItem value="allow">
-														{t('settings.health.fields.directAllow')}
+						<ModelProviderConfiguration
+							configState={{
+								providers: modelGroups.map((group) => group.provider),
+								modelGroups,
+								providerId: settings.providerId ?? '',
+								modelId: settings.modelId ?? '',
+								loading: false,
+								loadingModels: false,
+								saving,
+								saved,
+								error: null,
+							}}
+							idPrefix="health"
+							triggerTitle={t('settings.modelServices.llmModel')}
+							description={t('settings.modelServices.modelDescription')}
+							showIcon
+							icon={BrainCircuit}
+							showFieldLabel={false}
+							grouped
+							showSelectedModel
+							buttonDropdown
+							showContentSeparator={false}
+							onChange={(providerId, modelId) =>
+								updateAndSave({ providerId, modelId, modelOptions: {} })
+							}
+						>
+							<div className="-mx-4">
+								<SettingsRow
+									title={t('settings.health.fields.every')}
+									actions={
+										<Select
+											value={settings.every}
+											onValueChange={(value) =>
+												update({ every: (value ?? '0m') as HealthSettings['every'] })
+											}
+											disabled={saving}
+										>
+											<SelectTrigger id="health-every" className="h-7 w-44 text-xs">
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												{EVERY_OPTIONS.map((option) => (
+													<SelectItem key={option} value={option}>
+														{option === '0m' ? t('settings.health.fields.everyOff') : option}
 													</SelectItem>
-													<SelectItem value="block">
-														{t('settings.health.fields.directBlock')}
-													</SelectItem>
-												</SelectContent>
-											</Select>
-										}
-									/>
-
-									<SettingsRow
-										title={t('settings.health.fields.activeHoursStart')}
-										actions={
-											<Popover
-												open={openPicker === 'start'}
-												onOpenChange={(open) => setOpenPicker(open ? 'start' : null)}
-											>
-												<PopoverTrigger asChild>
-													<Button
-														id="health-active-start"
-														type="button"
-														variant="outline"
-														data-empty={!settings.activeHours?.start}
-														className="h-7 w-44 justify-start px-2 text-xs font-normal data-[empty=true]:text-muted-foreground"
-														disabled={saving}
-														aria-label={t('settings.health.fields.activeHoursStart')}
-													>
-														<CalendarIcon className="size-3 shrink-0 opacity-60" />
-														<span className="truncate">
-															{settings.activeHours?.start
-																? format(parseISO(settings.activeHours.start), 'PP')
-																: t('settings.health.fields.pickDate')}
-														</span>
-													</Button>
-												</PopoverTrigger>
-												<PopoverContent className="w-auto p-0" align="end" sideOffset={6}>
-													<Calendar
-														mode="single"
-														captionLayout="dropdown"
-														selected={
-															settings.activeHours?.start
-																? parseISO(settings.activeHours.start)
-																: undefined
-														}
-														defaultMonth={
-															settings.activeHours?.start
-																? parseISO(settings.activeHours.start)
-																: undefined
-														}
-														onSelect={(date) => {
-															update({
-																activeHours: {
-																	start: date ? format(date, 'yyyy-MM-dd') : '',
-																	end: settings.activeHours?.end ?? '',
-																},
-															});
-															setOpenPicker(null);
-														}}
-													/>
-												</PopoverContent>
-											</Popover>
-										}
-									/>
-
-									<SettingsRow
-										title={t('settings.health.fields.activeHoursEnd')}
-										actions={
-											<Popover
-												open={openPicker === 'end'}
-												onOpenChange={(open) => setOpenPicker(open ? 'end' : null)}
-											>
-												<PopoverTrigger asChild>
-													<Button
-														id="health-active-end"
-														type="button"
-														variant="outline"
-														data-empty={!settings.activeHours?.end}
-														className="h-7 w-44 justify-start px-2 text-xs font-normal data-[empty=true]:text-muted-foreground"
-														disabled={saving}
-														aria-label={t('settings.health.fields.activeHoursEnd')}
-													>
-														<CalendarIcon className="size-3 shrink-0 opacity-60" />
-														<span className="truncate">
-															{settings.activeHours?.end
-																? format(parseISO(settings.activeHours.end), 'PP')
-																: t('settings.health.fields.pickDate')}
-														</span>
-													</Button>
-												</PopoverTrigger>
-												<PopoverContent className="w-auto p-0" align="end" sideOffset={6}>
-													<Calendar
-														mode="single"
-														captionLayout="dropdown"
-														selected={
-															settings.activeHours?.end
-																? parseISO(settings.activeHours.end)
-																: undefined
-														}
-														defaultMonth={
-															settings.activeHours?.end
-																? parseISO(settings.activeHours.end)
-																: undefined
-														}
-														onSelect={(date) => {
-															update({
-																activeHours: {
-																	start: settings.activeHours?.start ?? '',
-																	end: date ? format(date, 'yyyy-MM-dd') : '',
-																},
-															});
-															setOpenPicker(null);
-														}}
-													/>
-												</PopoverContent>
-											</Popover>
-										}
-									/>
-								</div>
-								<ModelOptions
-									key={`${settings.providerId}:${settings.modelId}`}
-									inputs={inputs}
-									values={settings.modelOptions ?? {}}
-									inlineAdvanced
-									onChange={updateModelOption}
+												))}
+											</SelectContent>
+										</Select>
+									}
 								/>
-							</ModelProviderConfiguration>
+
+								<SettingsRow
+									title={t('settings.health.fields.target')}
+									actions={
+										<Select
+											value={settings.target}
+											onValueChange={(value) => update({ target: value ?? 'none' })}
+											disabled={saving}
+										>
+											<SelectTrigger id="health-target" className="h-7 w-44 text-xs">
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												{targetOptions.map((option) => (
+													<SelectItem key={option} value={option}>
+														{option === 'none'
+															? t('settings.health.fields.targetNone')
+															: option === 'last'
+																? t('settings.health.fields.targetLast')
+																: option}
+													</SelectItem>
+												))}
+											</SelectContent>
+										</Select>
+									}
+								/>
+
+								<SettingsRow
+									title={t('settings.health.fields.directPolicy')}
+									actions={
+										<Select
+											value={settings.directPolicy}
+											onValueChange={(value) =>
+												update({
+													directPolicy: (value ?? 'allow') as HealthSettings['directPolicy'],
+												})
+											}
+											disabled={saving}
+										>
+											<SelectTrigger id="health-direct-policy" className="h-7 w-44 text-xs">
+												<SelectValue />
+											</SelectTrigger>
+											<SelectContent>
+												<SelectItem value="allow">
+													{t('settings.health.fields.directAllow')}
+												</SelectItem>
+												<SelectItem value="block">
+													{t('settings.health.fields.directBlock')}
+												</SelectItem>
+											</SelectContent>
+										</Select>
+									}
+								/>
+
+								<SettingsRow
+									title={t('settings.health.fields.activeHoursStart')}
+									actions={
+										<Popover
+											open={openPicker === 'start'}
+											onOpenChange={(open) => setOpenPicker(open ? 'start' : null)}
+										>
+											<PopoverTrigger asChild>
+												<Button
+													id="health-active-start"
+													type="button"
+													variant="outline"
+													data-empty={!settings.activeHours?.start}
+													className="h-7 w-44 justify-start px-2 text-xs font-normal data-[empty=true]:text-muted-foreground"
+													disabled={saving}
+													aria-label={t('settings.health.fields.activeHoursStart')}
+												>
+													<CalendarIcon className="size-3 shrink-0 opacity-60" />
+													<span className="truncate">
+														{settings.activeHours?.start
+															? format(parseISO(settings.activeHours.start), 'PP')
+															: t('settings.health.fields.pickDate')}
+													</span>
+												</Button>
+											</PopoverTrigger>
+											<PopoverContent className="w-auto p-0" align="end" sideOffset={6}>
+												<Calendar
+													mode="single"
+													captionLayout="dropdown"
+													selected={
+														settings.activeHours?.start
+															? parseISO(settings.activeHours.start)
+															: undefined
+													}
+													defaultMonth={
+														settings.activeHours?.start
+															? parseISO(settings.activeHours.start)
+															: undefined
+													}
+													onSelect={(date) => {
+														update({
+															activeHours: {
+																start: date ? format(date, 'yyyy-MM-dd') : '',
+																end: settings.activeHours?.end ?? '',
+															},
+														});
+														setOpenPicker(null);
+													}}
+												/>
+											</PopoverContent>
+										</Popover>
+									}
+								/>
+
+								<SettingsRow
+									title={t('settings.health.fields.activeHoursEnd')}
+									actions={
+										<Popover
+											open={openPicker === 'end'}
+											onOpenChange={(open) => setOpenPicker(open ? 'end' : null)}
+										>
+											<PopoverTrigger asChild>
+												<Button
+													id="health-active-end"
+													type="button"
+													variant="outline"
+													data-empty={!settings.activeHours?.end}
+													className="h-7 w-44 justify-start px-2 text-xs font-normal data-[empty=true]:text-muted-foreground"
+													disabled={saving}
+													aria-label={t('settings.health.fields.activeHoursEnd')}
+												>
+													<CalendarIcon className="size-3 shrink-0 opacity-60" />
+													<span className="truncate">
+														{settings.activeHours?.end
+															? format(parseISO(settings.activeHours.end), 'PP')
+															: t('settings.health.fields.pickDate')}
+													</span>
+												</Button>
+											</PopoverTrigger>
+											<PopoverContent className="w-auto p-0" align="end" sideOffset={6}>
+												<Calendar
+													mode="single"
+													captionLayout="dropdown"
+													selected={
+														settings.activeHours?.end
+															? parseISO(settings.activeHours.end)
+															: undefined
+													}
+													defaultMonth={
+														settings.activeHours?.end
+															? parseISO(settings.activeHours.end)
+															: undefined
+													}
+													onSelect={(date) => {
+														update({
+															activeHours: {
+																start: settings.activeHours?.start ?? '',
+																end: date ? format(date, 'yyyy-MM-dd') : '',
+															},
+														});
+														setOpenPicker(null);
+													}}
+												/>
+											</PopoverContent>
+										</Popover>
+									}
+								/>
+							</div>
+							<ModelOptions
+								key={`${settings.providerId}:${settings.modelId}`}
+								inputs={inputs}
+								values={settings.modelOptions ?? {}}
+								inlineAdvanced
+								onChange={updateModelOption}
+							/>
+						</ModelProviderConfiguration>
 					</SettingsPanel>
 
 					<SettingsSection
