@@ -54,49 +54,27 @@ import {
 	setAgentProfileModel,
 } from '../../../../src/main/agent/agent_profiles';
 
-it('migrates legacy agent settings into independent agent profile stores', () => {
-	expect(getProviderId()).toBe('openai');
+it('creates clean independent agent profile stores without migration metadata', () => {
+	expect(getProviderId()).toBeUndefined();
 	expect(getAgentProfileModel('chat', 'textToText')).toEqual({
-		providerId: 'openai',
-		modelId: 'gpt-5',
-		options: { reasoning: 'high' },
-	});
-	expect(getAgentProfileModel('chat', 'textToSpeech')).toEqual({
-		providerId: 'openai',
-		modelId: 'tts-1',
-		options: { voice: 'alloy' },
-	});
-	expect(getAgentProfileModel('voice', 'realtimeVoice')).toEqual({
-		providerId: 'openai',
-		modelId: 'realtime-1',
+		providerId: '',
+		modelId: '',
 		options: {},
 	});
-	expect(getToolProfile('health').tools.read).toEqual({ enabled: false, permission: 'ask' });
-	expect(stores.get('chat-agent')).toMatchObject({
-		textToText: { providerId: 'openai', modelId: 'gpt-5' },
-		tools: { read: { enabled: false, permission: 'ask' } },
+	expect(getAgentProfileModel('chat', 'textToSpeech')).toEqual({
+		providerId: '',
+		modelId: '',
+		options: {},
 	});
-	expect(stores.get('voice-agent')).toMatchObject({
-		realtimeVoice: { providerId: 'openai', modelId: 'realtime-1' },
+	expect(getAgentProfileModel('voice', 'realtimeVoice')).toEqual({
+		providerId: '',
+		modelId: '',
+		options: {},
 	});
+	expect(getToolProfile('health')).toEqual({ tools: {}, mcp: {} });
+	expect(stores.get('chat-agent')).not.toHaveProperty('schemaVersion');
+	expect(stores.get('chat-agent')).not.toHaveProperty('migrations');
 	expect(agentProfileStorePath('chat')).toMatch(/chat-agent\.json$/);
-	expect(persisted).not.toHaveProperty('providerId');
-	expect(persisted).not.toHaveProperty('modelId');
-	expect(persisted).not.toHaveProperty('modelOptions');
-	expect(persisted).not.toHaveProperty('search_engine');
-	expect(persisted).not.toHaveProperty('image_model');
-	expect(persisted).not.toHaveProperty('audio_model');
-	expect(persisted).not.toHaveProperty('video_model');
-	expect(persisted).not.toHaveProperty('voice_model');
-	expect(persisted).not.toHaveProperty('large_language_model');
-	expect(persisted).not.toHaveProperty('text_to_speech_model');
-	expect(persisted).not.toHaveProperty('transcription_model');
-	expect(persisted.tools).not.toHaveProperty('save_memory');
-	expect(persisted.tools).not.toHaveProperty('list_memories');
-	expect(persisted.tools).not.toHaveProperty('forget_memory');
-	expect(persisted.tools).not.toHaveProperty('list_apps');
-	expect(persisted.tools).not.toHaveProperty('open_apps');
-	expect(persisted.tools).not.toHaveProperty('close_apps');
 });
 
 it('keeps model selections isolated between agent profiles', () => {
@@ -112,7 +90,7 @@ it('keeps model selections isolated between agent profiles', () => {
 		options: { temperature: 0.1 },
 	});
 	expect(getAgentProfileModel('chat', 'textToText')).toMatchObject({
-		providerId: 'openai',
-		modelId: 'gpt-5',
+		providerId: '',
+		modelId: '',
 	});
 });
