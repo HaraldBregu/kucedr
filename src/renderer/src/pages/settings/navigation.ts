@@ -231,7 +231,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'voice tools permissions allow deny ask',
 	},
 	{
-		path: '/settings/agent/tasks/tools',
+		path: '/settings/tasks/tools',
 		labelKey: 'settings.modelServices.tools',
 		descriptionKey: 'settings.modelServices.toolsDescription',
 		keywords: 'task scheduled tools permissions allow deny ask',
@@ -348,7 +348,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Radio,
 	},
 	{
-		path: '/settings/agent/tasks',
+		path: '/settings/tasks',
 		labelKey: 'settings.tabs.taskScheduler',
 		descriptionKey: 'settings.overview.descriptions.cron',
 		icon: ListChecks,

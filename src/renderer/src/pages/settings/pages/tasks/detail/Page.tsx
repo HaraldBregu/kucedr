@@ -103,7 +103,7 @@ const TaskDetailsPage: React.FC = () => {
 		setError(null);
 		try {
 			await window.tasks.delete(task.id);
-			navigate('/settings/agent/tasks');
+			navigate('/settings/tasks');
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 			setDeleting(false);

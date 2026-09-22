@@ -50,7 +50,7 @@ const routes = [
 	'/settings/providers/transcribe',
 	'/settings/providers/search',
 	'/settings/agent/rag',
-	'/settings/agent/tasks',
+	'/settings/tasks',
 	'/settings/agent',
 	'/settings/coding',
 	'/settings/agent/chathistory',

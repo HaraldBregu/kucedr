@@ -92,9 +92,9 @@ beforeEach(() => {
 it('shows task history and toggles the schedule state', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
+		<MemoryRouter initialEntries={['/settings/tasks/task-1/detail']}>
 			<Routes>
-				<Route path="/settings/agent/tasks/:taskId/detail" element={<TaskDetailsPage />} />
+				<Route path="/settings/tasks/:taskId/detail" element={<TaskDetailsPage />} />
 			</Routes>
 		</MemoryRouter>
 	);
@@ -112,9 +112,9 @@ it('shows task history and toggles the schedule state', async () => {
 it('opens the session folder from a history entry', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
+		<MemoryRouter initialEntries={['/settings/tasks/task-1/detail']}>
 			<Routes>
-				<Route path="/settings/agent/tasks/:taskId/detail" element={<TaskDetailsPage />} />
+				<Route path="/settings/tasks/:taskId/detail" element={<TaskDetailsPage />} />
 			</Routes>
 		</MemoryRouter>
 	);
@@ -127,9 +127,9 @@ it('opens the session folder from a history entry', async () => {
 it('deletes a session from its history item', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/agent/tasks/task-1/detail']}>
+		<MemoryRouter initialEntries={['/settings/tasks/task-1/detail']}>
 			<Routes>
-				<Route path="/settings/agent/tasks/:taskId/detail" element={<TaskDetailsPage />} />
+				<Route path="/settings/tasks/:taskId/detail" element={<TaskDetailsPage />} />
 			</Routes>
 		</MemoryRouter>
 	);

@@ -535,10 +535,10 @@ it('uses the Agent model picker UI and task switches', async () => {
 	(window.tasks.setEnabled as jest.Mock).mockResolvedValueOnce({ ...task, enabled: false });
 
 	render(
-		<MemoryRouter initialEntries={['/settings/agent/tasks']}>
+		<MemoryRouter initialEntries={['/settings/tasks']}>
 			<Routes>
-				<Route path="/settings/agent/tasks" element={<TasksPage />} />
-				<Route path="/settings/agent/tasks/:taskId/detail" element={<p>Task detail</p>} />
+				<Route path="/settings/tasks" element={<TasksPage />} />
+				<Route path="/settings/tasks/:taskId/detail" element={<p>Task detail</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
@@ -559,7 +559,7 @@ it('uses the Agent model picker UI and task switches', async () => {
 	const taskItem = screen.getByRole('button', { name: 'Demo task' });
 	expect(screen.getByRole('link', { name: /settings\.cron\.history\.pageTitle/ })).toHaveAttribute(
 		'href',
-		'/settings/agent/tasks/history'
+		'/settings/tasks/history'
 	);
 	expect(taskItem.querySelector('[data-slot="switch"]')).toBe(taskSwitch);
 	expect(taskItem).toHaveClass('cursor-pointer', 'hover:bg-muted/40');

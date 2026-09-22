@@ -36,7 +36,7 @@ it.each([
 	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/voice', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
-	['/settings/agent/tasks', 'settings.tabs.taskScheduler'],
+	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/coding', 'settings.coding.title'],
@@ -169,7 +169,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).toHaveAttribute('href', '/settings/voice');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.taskScheduler' })
-	).toHaveAttribute('href', '/settings/agent/tasks');
+	).toHaveAttribute('href', '/settings/tasks');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.health' })
 	).toHaveAttribute('href', '/settings/health');

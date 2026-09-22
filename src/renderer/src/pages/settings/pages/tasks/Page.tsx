@@ -255,12 +255,12 @@ const TasksPage: React.FC = () => {
 									) {
 										return;
 									}
-									navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`);
+									navigate(`/settings/tasks/${encodeURIComponent(task.id)}/detail`);
 								}}
 								onKeyDown={(event) => {
 									if (event.key === 'Enter' || event.key === ' ') {
 										event.preventDefault();
-										navigate(`/settings/agent/tasks/${encodeURIComponent(task.id)}/detail`);
+										navigate(`/settings/tasks/${encodeURIComponent(task.id)}/detail`);
 									}
 								}}
 							>
@@ -299,7 +299,7 @@ const TasksPage: React.FC = () => {
 			</SettingsSection>
 
 			<SettingsPanel>
-				<Link to="/settings/agent/tasks/tools" className="block hover:bg-muted/40">
+				<Link to="/settings/tasks/tools" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.modelServices.tools')}
 						description={t('settings.modelServices.toolsDescription')}
@@ -324,7 +324,7 @@ const TasksPage: React.FC = () => {
 			</SettingsPanel>
 
 			<SettingsPanel>
-				<Link to="/settings/agent/tasks/history" className="block hover:bg-muted/40">
+				<Link to="/settings/tasks/history" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.cron.history.pageTitle')}
 						description={t('settings.cron.history.pageDescription')}
