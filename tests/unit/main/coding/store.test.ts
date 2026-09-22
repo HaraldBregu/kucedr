@@ -18,6 +18,7 @@ it('defaults to Pi, Codex, and read-only tools', () => {
 	const store = new CodingStore();
 
 	expect(store.get()).toEqual(DEFAULT_CODING_SETTINGS);
+	store.set(DEFAULT_CODING_SETTINGS);
 	expect(existsSync(path.join(root, 'coder', 'coder.json'))).toBe(true);
 	expect(existsSync(path.join(root, 'settings', 'coder.json'))).toBe(false);
 });
