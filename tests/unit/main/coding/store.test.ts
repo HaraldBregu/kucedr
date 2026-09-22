@@ -13,7 +13,7 @@ it('defaults to Pi, Codex, and read-only tools', () => {
 
 	expect(store.get()).toEqual(DEFAULT_CODING_SETTINGS);
 	expect((store as unknown as { store: { path: string } }).store.path).toBe(
-		path.join(root, 'coder', 'coder.json')
+		path.join(root, 'coder', 'settings.json')
 	);
 });
 
