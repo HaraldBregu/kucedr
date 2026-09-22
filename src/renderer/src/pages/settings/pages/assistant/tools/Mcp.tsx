@@ -12,20 +12,18 @@ import { firstErrorMessage } from '../../../components/model-configuration-state
 import { ToolPermissionControl } from './Permission';
 
 type McpProps = {
-	search: string;
 	settings: Record<string, Record<string, AgentToolConfiguration>>;
 	disabled: boolean;
 	onChange: (tool: AgentToolReference, settings: AgentToolConfiguration) => void;
 };
 
-export default function Mcp({ search, settings, disabled, onChange }: McpProps): React.JSX.Element {
+export default function Mcp({ settings, disabled, onChange }: McpProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [registry, setRegistry] = useState<McpRegistry | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState<string | null>(null);
 	const [results, setResults] = useState<Record<string, McpTestResult>>({});
 	const prefix = 'settings.modelServices.agentTools.mcp';
-	const query = search.trim().toLocaleLowerCase();
 
 	useEffect(() => {
 		let mounted = true;
@@ -42,29 +40,19 @@ export default function Mcp({ search, settings, disabled, onChange }: McpProps):
 		};
 	}, [t]);
 
-	const servers =
-		registry?.servers.filter((server) =>
-			[t(`${prefix}.title`), server.id, server.data.name, ...(results[server.id]?.tools ?? [])]
-				.join(' ')
-				.toLocaleLowerCase()
-				.includes(query)
-		) ?? [];
+	const servers = registry?.servers ?? [];
 
 	return (
 		<SettingsSection title={t(`${prefix}.title`)} description={t(`${prefix}.description`)}>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			{!registry && !error && <SettingsNotice>{t(`${prefix}.loading`)}</SettingsNotice>}
 			{registry && servers.length === 0 && (
-				<SettingsNotice>{t(`${prefix}.${query ? 'noMatches' : 'empty'}`)}</SettingsNotice>
+				<SettingsNotice>{t(`${prefix}.empty`)}</SettingsNotice>
 			)}
 			{servers.length > 0 && (
 				<SettingsPanel>
 					{servers.map((server) => {
 						const result = results[server.id];
-						const serverMatches = [t(`${prefix}.title`), server.id, server.data.name]
-							.join(' ')
-							.toLocaleLowerCase()
-							.includes(query);
 						return (
 							<div key={server.id}>
 								<SettingsRow
@@ -114,9 +102,7 @@ export default function Mcp({ search, settings, disabled, onChange }: McpProps):
 									<SettingsNotice>{t(`${prefix}.noTools`)}</SettingsNotice>
 								)}
 								{result?.ok &&
-									result.tools
-										.filter((name) => serverMatches || name.toLocaleLowerCase().includes(query))
-										.map((name) => {
+									result.tools.map((name) => {
 											const settingsForTool = settings[server.id]?.[name] ?? {
 												permission: 'allow' as const,
 											};

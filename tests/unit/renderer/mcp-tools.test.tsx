@@ -11,7 +11,6 @@ const prefix = 'settings.modelServices.agentTools.mcp';
 const registry = jest.fn();
 const inspect = jest.fn();
 const mcpProps = {
-	search: '',
 	settings: {},
 	disabled: false,
 	onChange: jest.fn(),
@@ -77,17 +76,6 @@ it('does not inspect disabled servers', async () => {
 	expect(show).toBeDisabled();
 	await userEvent.click(show);
 	expect(inspect).not.toHaveBeenCalled();
-});
-
-it('filters discovered tool names without connecting other servers', async () => {
-	const { rerender } = render(<Mcp {...mcpProps} />);
-	await userEvent.click(await screen.findByRole('button', { name: `${prefix}.show: Mail` }));
-	await screen.findByText('read_mail');
-	rerender(<Mcp {...mcpProps} search="read_mail" />);
-	expect(screen.getByText('read_mail')).toBeInTheDocument();
-	expect(screen.queryByText('send_mail')).not.toBeInTheDocument();
-	expect(screen.queryByText('Calendar')).not.toBeInTheDocument();
-	expect(inspect).toHaveBeenCalledTimes(1);
 });
 
 it('shows inspection errors and allows retry', async () => {

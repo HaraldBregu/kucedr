@@ -16,12 +16,9 @@ import {
 	Target,
 	Terminal,
 	Video,
-	X,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Input } from '@/components/ui/input';
 import {
 	Select,
 	SelectContent,
@@ -240,7 +237,6 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 
 const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {
 	const { t } = useTranslation();
-	const [toolSearch, setToolSearch] = useState('');
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
 	const [searchEngineError, setSearchEngineError] = useState<string | null>(null);
 	const [searchSavingEngineId, setSearchSavingEngineId] = useState<SearchEngineId | null>(null);
@@ -253,30 +249,12 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 	const selectedSearchEngineDescription = selectedSearchEngine
 		? t(selectedSearchEngine.descriptionKey)
 		: t('settings.searchEngine.defaultDescription');
-	const normalizedToolSearch = toolSearch.trim().toLocaleLowerCase();
 	const filteredToolGroups = ORDERED_AGENT_TOOL_GROUPS.map((group) => ({
 		...group,
-		tools: group.tools.filter(
-			([name, id, description]) =>
-				isAgentToolAllowedForProfile(profile, { kind: 'builtin', id }) &&
-				[name, id, description, t(`settings.modelServices.agentTools.groups.${group.titleKey}`)]
-					.join(' ')
-					.toLocaleLowerCase()
-					.includes(normalizedToolSearch)
+		tools: group.tools.filter(([, id]) =>
+			isAgentToolAllowedForProfile(profile, { kind: 'builtin', id })
 		),
 	}));
-	const mediaSearchText = [
-		t('settings.modelServices.agentTools.groups.media'),
-		t('settings.modelServices.imageAssistantName'),
-		t('settings.modelServices.imageModelDescription'),
-		t('settings.modelServices.musicCreatorName'),
-		t('settings.modelServices.musicModelDescription'),
-		t('settings.modelServices.videoCreatorName'),
-		t('settings.modelServices.videoModelDescription'),
-		'create_image create_sound create_video',
-	]
-		.join(' ')
-		.toLocaleLowerCase();
 
 	useEffect(() => {
 		if (profile !== 'chat') return;
@@ -347,30 +325,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 				title={t('settings.modelServices.tools')}
 				description={t('settings.modelServices.toolsDescription')}
 			/>
-			<div className="relative">
-				<Input
-					type="text"
-					value={toolSearch}
-					onChange={(event) => setToolSearch(event.target.value)}
-					placeholder={t('settings.modelServices.agentTools.searchPlaceholder')}
-					aria-label={t('settings.modelServices.agentTools.searchPlaceholder')}
-					className="pr-10"
-				/>
-				{toolSearch && (
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						className="absolute right-1.5 top-1.5 text-muted-foreground"
-						onClick={() => setToolSearch('')}
-						aria-label={t('settings.modelServices.agentTools.clearSearch')}
-					>
-						<X aria-hidden="true" />
-					</Button>
-				)}
-			</div>
-
-			{profile !== 'health' && mediaSearchText.includes(normalizedToolSearch) && (
+			{profile !== 'health' && (
 				<SettingsSection
 					title={t('settings.modelServices.agentTools.groups.media')}
 					className="order-2"
@@ -432,9 +387,7 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 					(group) =>
 						group.titleKey !== 'media' &&
 						(group.tools.length > 0 ||
-							(profile !== 'health' &&
-								group.titleKey === 'web' &&
-								'search web search_web'.includes(normalizedToolSearch)))
+							(profile !== 'health' && group.titleKey === 'web'))
 				)
 				.map((group) => {
 					const Icon = group.icon;
