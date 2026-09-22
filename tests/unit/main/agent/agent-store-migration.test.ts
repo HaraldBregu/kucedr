@@ -122,4 +122,16 @@ it('keeps model selections isolated between agent profiles', () => {
 	expect(getAgentProfileDocument('chat')).not.toHaveProperty('textToSpeech');
 	expect(getAgentProfileDocument('chat')).not.toHaveProperty('speechToText');
 	expect(getAgentProfileDocument('chat')).not.toHaveProperty('realtimeVoice');
+	setAgentProfileModel('health', 'textToText', {
+		providerId: 'openai',
+		modelId: 'gpt-5-mini',
+		options: {},
+	});
+	expect(getAgentProfileDocument('health')).toMatchObject({
+		llm: { providerId: 'openai', modelId: 'gpt-5-mini' },
+	});
+	expect(getAgentProfileDocument('health')).not.toHaveProperty('textToText');
+	expect(getAgentProfileDocument('health')).not.toHaveProperty('textToSpeech');
+	expect(getAgentProfileDocument('health')).not.toHaveProperty('speechToText');
+	expect(getAgentProfileDocument('health')).not.toHaveProperty('realtimeVoice');
 });
