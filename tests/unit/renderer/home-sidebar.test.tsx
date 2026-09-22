@@ -173,15 +173,15 @@ it.each<[AuthState, string]>([
 	const menu = screen.getByRole('menu');
 	[
 		['settings.tabs.account', '/settings/account'],
-		['settings.tabs.cloud', '/settings/cloud'],
-		['settings.sidebar.assistant', '/settings/agent'],
 		['settings.coding.title', '/settings/coding'],
-		['settings.overview.groups.mlModels', '/settings/providers/models'],
+		['settings.sidebar.provider', '/settings/providers/models'],
 		['settings.tabs.channels', '/settings/channels'],
 		['settings.tabs.apps', '/settings/apps'],
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
+	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.cloud' })).not.toBeInTheDocument();
+	expect(within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })).not.toBeInTheDocument();
 	await user.click(within(menu).getByRole('menuitem', { name: 'settings.sidebar.signOut' }));
 	expect(confirmSignOut).toHaveBeenCalledTimes(1);
 	await waitFor(() => expect(signOut).toHaveBeenCalledTimes(1));

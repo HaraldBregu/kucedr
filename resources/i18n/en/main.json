@@ -158,6 +158,7 @@
 			"account": "Settings",
 			"assistant": "Assistant",
 			"getHelp": "Get help",
+			"provider": "Provider",
 			"accountMenu": "Account menu for {{name}}",
 			"manageAccount": "Manage account",
 			"signOut": "Sign out",

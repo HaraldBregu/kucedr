@@ -158,6 +158,7 @@
 			"account": "Impostazioni",
 			"assistant": "Assistente",
 			"getHelp": "Ottieni aiuto",
+			"provider": "Provider",
 			"accountMenu": "Menu account per {{name}}",
 			"manageAccount": "Gestisci account",
 			"signOut": "Esci",
