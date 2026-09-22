@@ -1,5 +1,9 @@
+
+const mockStoreNames: string[] = [];
+
 jest.mock('electron-store', () =>
-	jest.fn().mockImplementation((options: { defaults?: unknown }) => {
+	jest.fn().mockImplementation((options: { name?: string; defaults?: unknown }) => {
+		mockStoreNames.push(options.name ?? 'config');
 		let backing = structuredClone(options.defaults ?? {}) as Record<string, unknown>;
 		return {
 			get: (key: string) => backing[key],
@@ -74,7 +78,7 @@ describe('agent store permissions', () => {
 		expect(saved.exec.allow).toEqual([workspaceRule]);
 	});
 
-	it('persists per-tool permission choices', () => {
+	it('keeps per-tool permission choices for the current run', () => {
 		const saved = setPermissions({
 			read: { allow: [], deny: [] },
 			write: { allow: [], deny: [] },
@@ -91,6 +95,10 @@ describe('agent store permissions', () => {
 			edit: { enabled: true, permission: 'allow' },
 			patch: { enabled: true, permission: 'deny' },
 		});
+	});
+
+	it('does not create a persistent permissions store', () => {
+	expect(mockStoreNames).not.toContain('permissions');
 	});
 
 	it('keeps built-in and MCP tools independent for each agent profile', () => {

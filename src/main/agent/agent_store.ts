@@ -38,10 +38,6 @@ export type SearchEngineSettings = {
 	enabled: boolean;
 };
 
-type PermissionsStore = {
-	permissions: PermissionsSchema;
-	tools: Record<string, ToolConfiguration>;
-};
 type MediaStore = Record<AgentToolModelKind, AgentMediaModelSettings>;
 
 export const AGENT_DIRECTORY = path.resolve(agentLocation());
@@ -105,12 +101,8 @@ const RUNTIME_TOOL_KEYS = {
 const DEFAULT_RUNTIME_TOOL_SETTINGS: Record<string, ToolConfiguration> = Object.fromEntries(
 	Object.values(RUNTIME_TOOL_KEYS).map((key) => [key, { enabled: true, permission: 'allow' }])
 );
-const permissionsStore = new Store<PermissionsStore>({
-	name: 'permissions',
-	cwd: settingsDirectory,
-	accessPropertiesByDotNotation: false,
-	defaults: { permissions: DEFAULT_AGENT_PERMISSIONS, tools: DEFAULT_RUNTIME_TOOL_SETTINGS },
-});
+let permissionSettings = structuredClone(DEFAULT_AGENT_PERMISSIONS);
+let runtimeToolSettings = structuredClone(DEFAULT_RUNTIME_TOOL_SETTINGS);
 const mediaStore = new Store<MediaStore>({
 	name: 'models',
 	cwd: settingsDirectory,
@@ -215,39 +207,34 @@ export function getToolConfiguration(
 
 export function getPermissions(): PermissionsSchema {
 	const permissions = withWorkspacePermissions(
-		normalizePermissionsSchema(permissionsStore.get('permissions'), DEFAULT_AGENT_PERMISSIONS),
+		normalizePermissionsSchema(permissionSettings, DEFAULT_AGENT_PERMISSIONS),
 		workspacePattern
 	);
-	const tools = permissionsStore.get('tools');
 	return {
 		...permissions,
 		tools: Object.fromEntries(
 			Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => [
 				toolId,
-				{ ...(tools[key] ?? DEFAULT_RUNTIME_TOOL_SETTINGS[key]) },
+				{ ...(runtimeToolSettings[key] ?? DEFAULT_RUNTIME_TOOL_SETTINGS[key]) },
 			])
 		),
 	};
 }
 export function setPermissions(permissions: PermissionsSchema): PermissionsSchema {
 	const { tools, ...directoryPermissions } = permissions;
-	permissionsStore.set(
-		'permissions',
-		withWorkspacePermissions(
-			normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
-			workspacePattern
-		)
+	permissionSettings = withWorkspacePermissions(
+		normalizePermissionsSchema(directoryPermissions, DEFAULT_AGENT_PERMISSIONS),
+		workspacePattern
 	);
 	if (tools) {
-		const storedTools = permissionsStore.get('tools');
-		permissionsStore.set(
-			'tools',
-			Object.fromEntries(
-				Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => [
-					key,
-					{ ...(storedTools[key] ?? DEFAULT_RUNTIME_TOOL_SETTINGS[key]), ...(tools[toolId] ?? {}) },
-				])
-			)
+		runtimeToolSettings = Object.fromEntries(
+			Object.entries(RUNTIME_TOOL_KEYS).map(([toolId, key]) => [
+				key,
+				{
+					...(runtimeToolSettings[key] ?? DEFAULT_RUNTIME_TOOL_SETTINGS[key]),
+					...(tools[toolId] ?? {}),
+				},
+			])
 		);
 	}
 	return getPermissions();
@@ -265,7 +252,7 @@ export function addPermissionRule(
 	});
 }
 export function resetPermissions(): PermissionsSchema {
-	permissionsStore.set('permissions', DEFAULT_AGENT_PERMISSIONS);
-	permissionsStore.set('tools', DEFAULT_RUNTIME_TOOL_SETTINGS);
+	permissionSettings = structuredClone(DEFAULT_AGENT_PERMISSIONS);
+	runtimeToolSettings = structuredClone(DEFAULT_RUNTIME_TOOL_SETTINGS);
 	return getPermissions();
 }
