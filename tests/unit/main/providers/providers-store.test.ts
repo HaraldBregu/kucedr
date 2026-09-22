@@ -18,7 +18,7 @@ beforeEach(() => {
 
 afterAll(() => rmSync(root, { recursive: true, force: true }));
 
-it('moves encrypted storage providers into providers.json', () => {
+it('moves encrypted storage providers into settings.json', () => {
 	const encryptedProviders = Buffer.from(
 		JSON.stringify([
 			{
@@ -53,7 +53,7 @@ it('moves encrypted storage providers into providers.json', () => {
 	expect(existsSync(`${root}/settings/storage.json`)).toBe(false);
 });
 
-it('shares providers.json with storage connections', () => {
+it('shares settings.json with storage connections', () => {
 	let storageProviders!: typeof import('../../../../src/main/storage/providers').storageProviders;
 	let getModelProvidersState!: typeof import('../../../../src/main/providers/providers_store').getModelProvidersState;
 	let setModelProvidersState!: typeof import('../../../../src/main/providers/providers_store').setModelProvidersState;
