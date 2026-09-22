@@ -30,6 +30,7 @@ import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool 
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
 import { filterProfileTools, filterTools } from './run_tools';
+import { isAgentToolAllowedForProfile } from '../../../shared/agent_tools';
 import { selectSkillTools } from './run_skill_tools';
 import { activateSkill, createSkillRegistrySnapshot } from '../skills';
 import type { SkillLoadResult } from '../../../shared/skills_types';
@@ -143,7 +144,12 @@ async function* loop(
 	const channelAllowedTools = new Set(['search_web', 'fetch_web_page', 'subagent', 'subagents']);
 	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
 		filterProfileTools(candidates, toolProfile).filter(
-			(tool) => input.agentId !== 'channels' || channelAllowedTools.has(tool.id)
+			(tool) =>
+				isAgentToolAllowedForProfile(
+					toolProfile,
+					tool.policy ?? { kind: 'builtin', id: tool.id }
+				) &&
+				(input.agentId !== 'channels' || channelAllowedTools.has(tool.id))
 		);
 	const profileToolEnabled = (toolId: string): boolean => {
 		const settings = getToolConfiguration(toolProfile, { kind: 'builtin', id: toolId });

@@ -26,7 +26,7 @@ import { authorizedPaths } from '../permissions/access';
 import type { ExecutionBudget } from '../execution/budget';
 import { captureAccess } from '../permissions/capture_access';
 import { getToolConfiguration } from '../agent_store';
-import type { AgentToolProfileId } from '../../../shared/agent_tools';
+import { isAgentToolAllowedForProfile, type AgentToolProfileId } from '../../../shared/agent_tools';
 
 export interface ToolCallSecurityContext {
 	runId: string;
@@ -102,6 +102,15 @@ export async function* runToolCall(
 		isError = true;
 	} else if (security.interactionMode === 'plan' && tool.planSafe !== true) {
 		output = `Error: tool '${toolCall.name}' is unavailable in Plan mode`;
+		isError = true;
+	} else if (
+		security.toolProfile &&
+		!isAgentToolAllowedForProfile(
+			security.toolProfile,
+			tool.policy ?? { kind: 'builtin', id: tool.id }
+		)
+	) {
+		output = `Error: tool '${toolCall.name}' is unavailable for this agent`;
 		isError = true;
 	} else if (
 		security.interactionMode === 'plan' &&
