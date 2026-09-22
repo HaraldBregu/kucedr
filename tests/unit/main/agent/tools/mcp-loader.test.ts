@@ -40,7 +40,6 @@ describe('loadMcpTools', () => {
 		});
 
 		const result = await loadMcpTools();
-		await result.loadDeferred(['safe']);
 		expect(result.tools).toHaveLength(MCP_MAX_TOOLS);
 		expect(result.tools.map((tool) => tool.id)).not.toEqual(
 			expect.arrayContaining(['mcp__safe__invalid', 'mcp__safe__oversized'])
@@ -73,7 +72,6 @@ describe('loadMcpTools', () => {
 		});
 
 		const result = await loadMcpTools();
-		await result.loadDeferred(['safe']);
 		const names = result.tools.map((tool) => tool.id);
 		expect(new Set(names)).toHaveProperty('size', names.length);
 		expect(names[0]).toBe('mcp__safe__do_thing');
@@ -94,7 +92,6 @@ describe('loadMcpTools', () => {
 		});
 
 		const result = await loadMcpTools();
-		await result.loadDeferred(['safe']);
 		expect(result.tools.map((configured) => configured.capability)).toEqual([
 			{ effects: ['read'], approval: false },
 			{ effects: ['external'], approval: true },
@@ -114,7 +111,6 @@ describe('loadMcpTools', () => {
 		listToolsMock.mockRejectedValue(new Error('secret listing detail'));
 
 		const result = await loadMcpTools();
-		await result.loadDeferred(['connects', 'lists']);
 
 		expect(result.tools).toEqual([]);
 		expect(result.diagnostics).toMatchObject({
@@ -151,14 +147,13 @@ describe('loadMcpTools', () => {
 		});
 		listToolsMock.mockResolvedValue({ tools: [] });
 
-		const result = await loadMcpTools();
-		const loading = result.loadDeferred(['first', 'second']);
+		const loading = loadMcpTools();
 		expect(connectMock).toHaveBeenCalledTimes(2);
 		releaseFirst?.();
-		await expect(loading).resolves.toEqual([]);
+		await expect(loading).resolves.toMatchObject({ tools: [] });
 	});
 
-	it('leaves every enabled server disconnected until selected', async () => {
+	it('eagerly loads enabled legacy deferred servers', async () => {
 		getMcpServersMock.mockReturnValue({
 			eager: { type: 'http', url: 'https://eager.test', name: 'Eager' },
 			deferred: {
@@ -179,20 +174,12 @@ describe('loadMcpTools', () => {
 		}));
 
 		const result = await loadMcpTools();
-		expect(connectMock).not.toHaveBeenCalled();
-		expect(result.tools).toEqual([]);
-		expect(result.deferredServers).toEqual([
-			{ id: 'deferred', name: 'Deferred' },
-			{ id: 'eager', name: 'Eager' },
-			{ id: 'unrelated', name: 'unrelated' },
+		expect(connectMock).toHaveBeenCalledTimes(3);
+		expect(result.tools.map((tool) => tool.id)).toEqual([
+			'mcp__deferred__deferred_tool',
+			'mcp__eager__eager_tool',
+			'mcp__unrelated__unrelated_tool',
 		]);
-
-		await result.loadDeferred(['deferred']);
-		expect(connectMock).toHaveBeenCalledTimes(1);
-		expect(connectMock).not.toHaveBeenCalledWith('unrelated', expect.anything(), 30_000, undefined);
-		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__deferred__deferred_tool']);
-		await result.loadDeferred(['deferred']);
-		expect(connectMock).toHaveBeenCalledTimes(1);
 		await result.close();
 		expect(closeMock).toHaveBeenCalledTimes(1);
 		await result.close();
@@ -209,8 +196,7 @@ it('closes every acquired client if discovery postprocessing fails', async () =>
 	connectMock.mockImplementation(async (id: string) => ({ id }));
 	closeMock.mockResolvedValue(undefined);
 	listToolsMock.mockResolvedValue({ tools: null });
-	const result = await loadMcpTools();
-	await expect(result.loadDeferred(['one', 'two'])).rejects.toThrow();
+	await expect(loadMcpTools()).rejects.toThrow();
 	expect(closeMock).toHaveBeenCalledTimes(2);
 });
 
@@ -224,7 +210,6 @@ it('closes acquired clients exactly once on cancellation during listing', async 
 		controller.abort(new Error('cancel'));
 		throw controller.signal.reason;
 	});
-	const result = await loadMcpTools(controller.signal);
-	await expect(result.loadDeferred(['one'], controller.signal)).rejects.toThrow('cancel');
+	await expect(loadMcpTools(controller.signal)).rejects.toThrow('cancel');
 	expect(closeMock).toHaveBeenCalledTimes(1);
 });
