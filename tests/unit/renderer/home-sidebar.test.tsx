@@ -313,8 +313,7 @@ it('keeps Settings and Search in the sticky sidebar footer', async () => {
 	);
 
 	expect(await screen.findByRole('link', { name: 'settings.tabs.apps' })).toHaveAttribute('href', '/settings/apps');
-	const settings = screen.getByRole('link', { name: 'settings.title' });
-	expect(settings).toHaveAttribute('href', '/settings/general');
+	const settings = screen.getByRole('button', { name: 'settings.title' });
 	expect(settings.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	await user.click(screen.getByRole('button', { name: 'navigationBar.search' }));
 	expect(openCommandMenu).toHaveBeenCalledTimes(1);
