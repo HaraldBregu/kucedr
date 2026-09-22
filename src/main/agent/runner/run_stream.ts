@@ -49,6 +49,7 @@ import { createBackgroundBrowser } from '../tools/web/browser/background';
 import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
+import { createToolDiscovery, type ToolDiscovery } from './run_discovery';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -216,6 +217,7 @@ async function* loop(
 		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
 	};
+	let discovery: ToolDiscovery | undefined;
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
 		skillToolScopes.push(skill.allowedTools);
 		rememberSkill(session.runContext, {
@@ -229,6 +231,7 @@ async function* loop(
 			warnings: skill.warnings,
 		});
 		tools = filterEligibleTools(tools);
+		discovery?.replaceEligible(tools);
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));
 	if (!options.tools && skillLoadingEnabled) {
@@ -249,6 +252,24 @@ async function* loop(
 				tools.push(...mcp.tools);
 				closeMcp = mcp.close;
 				mcpDiscovery = mcp.diagnostics;
+				const requiredIds = new Set([
+					...(input.interactionMode === 'plan' ? ['ask'] : []),
+					...(skillListingEnabled ? ['list_skills'] : []),
+					...(skillLoadingEnabled ? ['load_skill'] : []),
+					'get_goal',
+					'update_goal_plan',
+					'record_goal_evidence',
+					'request_goal_completion',
+					'report_goal_blocker',
+				]);
+				const eligible = filterEligibleTools(tools);
+				discovery = createToolDiscovery({
+					eligible,
+					required: eligible.filter((tool) => requiredIds.has(tool.id)),
+					deferredMcpServers: mcp.deferredServers,
+					loadMcpServers: mcp.loadDeferred,
+					filterEligible: filterEligibleTools,
+				});
 			}
 			const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 			const childRuntime = {
@@ -273,10 +294,29 @@ async function* loop(
 		}
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
+		if (!discovery) {
+			const requiredIds = new Set([
+				...(input.interactionMode === 'plan' ? ['ask'] : []),
+				...(skillListingEnabled ? ['list_skills'] : []),
+				...(skillLoadingEnabled ? ['load_skill'] : []),
+				'get_goal',
+				'update_goal_plan',
+				'record_goal_evidence',
+				'request_goal_completion',
+				'report_goal_blocker',
+			]);
+			discovery = createToolDiscovery({
+				eligible: tools,
+				required: tools.filter((tool) => requiredIds.has(tool.id)),
+				filterEligible: filterEligibleTools,
+			});
+		}
 		if (input.explicitSkill && !skillLoadingEnabled)
 			throw new Error('Skill loading is unavailable for this run.');
 		if (input.explicitSkill) {
-			applyActivatedSkill(await activateSkill(skillSnapshot, input.explicitSkill));
+			const skill = await activateSkill(skillSnapshot, input.explicitSkill);
+			applyActivatedSkill(skill);
+			discovery.activateImmediate(skill.allowedTools ?? []);
 		}
 
 		yield {
@@ -285,7 +325,7 @@ async function* loop(
 			interactionMode: input.interactionMode,
 			model: modelId,
 			providerId: provider.id,
-			tools: tools.map((tool) => tool.id),
+			tools: discovery.active().map((tool) => tool.id),
 			skillDiagnostics: skillSnapshot.diagnostics,
 			skillActivations: session.runContext.loadedSkills.map((skill) => ({
 				id: skill.id,
@@ -300,7 +340,7 @@ async function* loop(
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
-			const turnTools = synthesisOnly ? [] : tools;
+			const turnTools = synthesisOnly ? [] : discovery.active();
 			const systemPrompt = await buildSystemPrompt(
 				config,
 				turnTools,
