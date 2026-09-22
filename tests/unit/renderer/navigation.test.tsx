@@ -34,7 +34,7 @@ it.each([
 	['/settings/agent/image', 'settings.tabs.image'],
 	['/settings/knowledge-base', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
-	['/settings/voice', 'settings.tabs.voice'],
+	['/settings/voice', 'settings.sidebar.voiceConversation', 'settings.tabs.voice'],
 	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
@@ -44,7 +44,7 @@ it.each([
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/integrations', 'settings.tabs.integrations'],
-])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
+])('uses the canonical %s route and breadcrumb', (path, labelKey, breadcrumbLabelKey = labelKey) => {
 	if (path === '/settings/general/persona' || path === '/settings/agent/tools') {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
 	} else if (path === '/settings/coding') {
@@ -66,7 +66,7 @@ it.each([
 	);
 
 	const breadcrumb = screen.getByRole('navigation', { name: 'settings.breadcrumb.label' });
-	expect(within(breadcrumb).getByText(labelKey)).toBeInTheDocument();
+	expect(within(breadcrumb).getByText(breadcrumbLabelKey)).toBeInTheDocument();
 	if (path.startsWith('/settings/agent/')) {
 		expect(
 			within(breadcrumb).getByRole('link', { name: 'settings.modelServices.chatName' })
@@ -165,7 +165,9 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.mcp' })
 	).toHaveAttribute('href', '/settings/mcp');
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.voice' })
+		within(assistantGroup as HTMLElement).getByRole('link', {
+			name: 'settings.sidebar.voiceConversation',
+		})
 	).toHaveAttribute('href', '/settings/voice');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.tabs.taskScheduler' })

@@ -116,6 +116,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.voiceName': 'Speech synthesis',
 		'settings.modelServices.voiceDescription': 'Realtime conversations and spoken output',
 		'settings.tabs.voice': 'Voice',
+		'settings.sidebar.voiceConversation': 'Voice conversation',
 		'settings.modelServices.textToSpeechModelDescription': 'Text to speech model',
 		'settings.modelServices.transcriptionName': 'Transcription',
 		'settings.modelServices.transcriptionDescription': 'Speech-to-text transcription',

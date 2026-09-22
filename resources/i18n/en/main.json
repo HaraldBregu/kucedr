@@ -161,6 +161,9 @@
 		"description": "Configure your application preferences",
 		"search": "Search",
 		"searchLabel": "Search settings",
+		"sidebar": {
+			"voiceConversation": "Voice conversation"
+		},
 		"overview": {
 			"backToSettings": "All settings",
 			"browseNormally": "Browse normally",
