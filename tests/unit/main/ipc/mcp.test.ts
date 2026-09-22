@@ -145,6 +145,30 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 	}
 );
 
+it('reports whether OAuth credentials exist without returning them', async () => {
+	const mainFrame = {};
+	const sender = { id: 21, mainFrame };
+	jest
+		.mocked(BrowserWindow.fromWebContents)
+		.mockReturnValue({ id: 1, webContents: sender } as never);
+	jest.mocked(getMcpOauth).mockReturnValue({
+		tokens: { access_token: 'secret-access-token', token_type: 'Bearer' },
+	});
+	new McpIpc().register(
+		{ windows: { has: () => true }, apps: { has: () => false } } as never,
+		{} as never
+	);
+
+	const handler = jest
+		.mocked(ipcMain.handle)
+		.mock.calls.find(([channel]) => channel === McpChannels.oauthStatus)![1];
+
+	await expect(handler({ sender, senderFrame: mainFrame } as never, 'gmail')).resolves.toEqual({
+		success: true,
+		data: true,
+	});
+});
+
 it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 	'connects %s with environment credentials',
 	async (host) => {
