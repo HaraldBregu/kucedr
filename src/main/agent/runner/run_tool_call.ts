@@ -316,8 +316,8 @@ export async function* runToolCall(
 							canonicalInput,
 							context,
 							true,
-						'ask',
-						profilePermissions(),
+							'ask',
+							profilePermissions(),
 							history,
 							profileToolConfiguration()
 						)
