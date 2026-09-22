@@ -13,7 +13,7 @@ beforeEach(() => {
 	rmSync(root, { recursive: true, force: true });
 	mkdirSync(`${root}/settings`, { recursive: true });
 	mkdirSync(`${root}/providers/openai`, { recursive: true });
-	writeFileSync(`${root}/settings/providers.json`, '{}');
+	writeFileSync(`${root}/providers/settings.json`, '{}');
 	writeFileSync(`${root}/settings/account.json`, '{}');
 	writeFileSync(`${root}/providers/openai/manifest.json`, '{}');
 	writeFileSync(`${root}/notes.md`, 'safe');
@@ -22,7 +22,7 @@ beforeEach(() => {
 afterAll(() => rmSync(root, { recursive: true, force: true }));
 
 it.each([
-	`${root}/settings/providers.json`,
+	`${root}/providers/settings.json`,
 	`${root}/settings/account.json`,
 	`${root}/settings`,
 	`${root}/providers`,

@@ -18,8 +18,8 @@ const defaults: ProvidersStoreState = {
 };
 
 export const providersStore = new Store<ProvidersStoreState>({
-	name: 'providers',
-	cwd: path.resolve(userDataLocation(), 'settings'),
+	name: 'settings',
+	cwd: path.resolve(userDataLocation(), 'providers'),
 	accessPropertiesByDotNotation: false,
 	defaults,
 });

@@ -10,8 +10,8 @@ jest.mock('../../../../src/main/shared/user_data_location', () => ({
 
 beforeEach(() => {
 	rmSync(root, { recursive: true, force: true });
-	mkdirSync(`${root}/settings`, { recursive: true });
-	writeFileSync(`${root}/settings/providers.json`, '{}');
+	mkdirSync(`${root}/providers`, { recursive: true });
+	writeFileSync(`${root}/providers/settings.json`, '{}');
 	jest.mocked(safeStorage.isEncryptionAvailable).mockReturnValue(true);
 	jest.mocked(safeStorage.decryptString).mockImplementation((value) => value.toString());
 });
@@ -49,7 +49,7 @@ it('moves encrypted storage providers into providers.json', () => {
 			encryptedSecretAccessKey: Buffer.from('secret-key').toString('base64'),
 		}),
 	]);
-	expect(providersStore.path).toBe(`${root}/settings/providers.json`);
+	expect(providersStore.path).toBe(`${root}/providers/settings.json`);
 	expect(existsSync(`${root}/settings/storage.json`)).toBe(false);
 });
 
