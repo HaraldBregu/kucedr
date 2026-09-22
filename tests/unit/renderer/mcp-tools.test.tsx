@@ -60,6 +60,17 @@ it('reads only server metadata on mount and inspects only the selected server', 
 	expect(inspect).toHaveBeenCalledWith('mail');
 });
 
+it('changes a discovered MCP tool permission with the segmented control', async () => {
+	render(<Mcp {...mcpProps} />);
+	await userEvent.click(await screen.findByRole('button', { name: `${prefix}.show: Mail` }));
+	await userEvent.click(await screen.findByRole('button', { name: 'read_mail: Ask' }));
+
+	expect(mcpProps.onChange).toHaveBeenCalledWith(
+		{ kind: 'mcp', serverId: 'mail', toolName: 'read_mail' },
+		{ enabled: true, permission: 'ask' }
+	);
+});
+
 it('does not inspect disabled servers', async () => {
 	render(<Mcp {...mcpProps} />);
 	const show = await screen.findByRole('button', { name: `${prefix}.show: Disabled` });
