@@ -250,14 +250,6 @@ const routes: RouteObject[] = [
 								),
 							},
 							{
-								path: 'voice',
-								element: (
-									<SettingsRouteWrapper>
-										<VoicePage />
-									</SettingsRouteWrapper>
-								),
-							},
-							{
 								path: 'persona',
 								element: (
 									<SettingsRouteWrapper>
@@ -481,6 +473,14 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<AssistantPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'voice',
+								element: (
+									<SettingsRouteWrapper>
+										<VoicePage />
 									</SettingsRouteWrapper>
 								),
 							},
