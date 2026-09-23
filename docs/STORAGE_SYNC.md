@@ -10,6 +10,10 @@ published versions or remove old settings or objects. Keep the backup path avail
 explicit, verified import can assign file identities and hashes to each existing object. Existing
 working files remain at their selected locations.
 
+Assumptions: legacy backup remains available during rollout; version synchronization requires a
+deployed Supabase schema and Edge Functions plus server-side AWS configuration. The desktop app
+must not treat a configured project URL or an S3 bucket alone as proof that those services exist.
+
 ## Local ownership and durability
 
 Resolve `storage/` under `userDataLocation()`, which normally returns `~/.kucedr` and supports

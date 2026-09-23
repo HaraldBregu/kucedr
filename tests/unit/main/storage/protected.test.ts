@@ -13,9 +13,12 @@ beforeEach(() => {
 	rmSync(root, { recursive: true, force: true });
 	mkdirSync(`${root}/settings`, { recursive: true });
 	mkdirSync(`${root}/providers/openai`, { recursive: true });
+	mkdirSync(`${root}/storage/blobs`, { recursive: true });
 	writeFileSync(`${root}/providers/settings.json`, '{}');
 	writeFileSync(`${root}/settings/account.json`, '{}');
 	writeFileSync(`${root}/providers/openai/manifest.json`, '{}');
+	writeFileSync(`${root}/storage/state.sqlite`, 'private');
+	writeFileSync(`${root}/storage/blobs/pending`, 'unsynced');
 	writeFileSync(`${root}/notes.md`, 'safe');
 });
 
@@ -27,11 +30,14 @@ it.each([
 	`${root}/settings`,
 	`${root}/providers`,
 	`${root}/providers/openai/manifest.json`,
+	`${root}/storage`,
+	`${root}/storage/state.sqlite`,
+	`${root}/storage/blobs/pending`,
 ])('rejects direct file synchronization of %s', (value) => {
 	expect(() => normalizeStoragePaths([value])).toThrow('Sensitive application data');
 });
 
-it('excludes provider data when a parent Kucedr folder is selected', async () => {
+it('excludes provider and sync state when a parent Kucedr folder is selected', async () => {
 	await expect(walkFiles(root)).resolves.toEqual([`${root}/notes.md`]);
 });
 
