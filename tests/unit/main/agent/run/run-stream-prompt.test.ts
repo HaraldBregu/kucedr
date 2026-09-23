@@ -184,7 +184,7 @@ describe('run stream system prompt', () => {
 
 		expect(createSkillRegistrySnapshotMock).toHaveBeenCalledWith({ projectRoot: '/workspace' });
 		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(
-			expect.arrayContaining(['read', 'load_skill'])
+			expect.arrayContaining(['load_skill'])
 		);
 		const firstTurnTools = runModelTurnMock.mock.calls[0][5] as Array<{
 			id: string;
@@ -194,7 +194,7 @@ describe('run stream system prompt', () => {
 			'Draft polished documents'
 		);
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain(
 			'read'
 		);
 		const receipt = session.messages.find(
@@ -1083,7 +1083,7 @@ describe('run stream system prompt', () => {
 				contextMode: 'minimal',
 			},
 			new AbortController().signal,
-			{ tools: [read, edit] }
+			{ tools: [read, edit], progressiveDiscovery: true }
 		))
 			void _event;
 
@@ -1154,7 +1154,7 @@ describe('run stream system prompt', () => {
 				contextMode: 'minimal',
 			},
 			new AbortController().signal,
-			{ tools: [bash, write], budget }
+			{ tools: [bash, write], budget, progressiveDiscovery: true }
 		))
 			events.push(_event);
 
@@ -1164,7 +1164,7 @@ describe('run stream system prompt', () => {
 		expect(session.toolCalls.find((call) => call.id === 'early-bash')).toMatchObject({
 			name: 'bash',
 			args: { command: 'pwd' },
-			result: { isError: undefined },
+			result: { content: expect.stringContaining('no arguments from this batch were executed') },
 		});
 		expect(session.toolCalls.some((call) => call.id === 'early-write')).toBe(true);
 		expect(
@@ -1222,7 +1222,7 @@ describe('run stream system prompt', () => {
 			{
 				runId: 'mcp-loader',
 				task: 'chat',
-				message: 'Read the file',
+				message: 'Hello there',
 				model: 'test-model',
 				type: 'default',
 				agentId: 'main',
@@ -1240,6 +1240,6 @@ describe('run stream system prompt', () => {
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain(mcpTool.id);
-		expect(execute).toHaveBeenCalledTimes(2);
+		expect(execute).toHaveBeenCalledTimes(1);
 	});
 });
