@@ -20,9 +20,9 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 				CREATE TABLE IF NOT EXISTS local_versions (
 					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
 					version_id TEXT NOT NULL, file_id TEXT NOT NULL, path TEXT NOT NULL,
-					content_hash TEXT NOT NULL, content_size INTEGER NOT NULL,
-					blob_path TEXT NOT NULL, device_id TEXT NOT NULL,
-					kind TEXT NOT NULL CHECK(kind IN ('content', 'rename', 'delete', 'restore', 'merge')),
+					content_hash TEXT, content_size INTEGER,
+					blob_path TEXT, device_id TEXT NOT NULL,
+					kind TEXT NOT NULL CHECK(kind IN ('content', 'rename', 'tombstone', 'restore')),
 					created_at TEXT NOT NULL,
 					PRIMARY KEY(account_id, workspace_id, version_id)
 				) STRICT;

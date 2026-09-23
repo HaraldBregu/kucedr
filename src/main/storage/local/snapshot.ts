@@ -9,37 +9,40 @@ export async function saveLocalSnapshot(
 	database: DatabaseSync,
 	input: LocalSnapshotInput
 ): Promise<LocalSnapshotResult> {
-	const hash = createHash('sha256').update(input.content).digest('hex');
+	if (input.kind !== 'tombstone' && !input.content) throw new Error('Snapshot content is required.');
+	const hash = input.content ? createHash('sha256').update(input.content).digest('hex') : null;
 	const scope = createHash('sha256')
 		.update(JSON.stringify([input.accountId, input.workspaceId]))
 		.digest('hex');
-	const blobDir = path.join(storageLocation(), 'blobs', scope);
-	const blobPath = path.join(blobDir, hash);
-	const stagingDir = path.join(storageLocation(), 'staging');
-	await fs.mkdir(blobDir, { recursive: true, mode: 0o700 });
-	await fs.mkdir(stagingDir, { recursive: true, mode: 0o700 });
-	const temporary = path.join(stagingDir, randomUUID());
-	try {
-		const handle = await fs.open(temporary, 'wx', 0o600);
+	const blobPath = hash ? path.join(storageLocation(), 'blobs', scope, hash) : null;
+	if (blobPath && input.content) {
+		const blobDir = path.dirname(blobPath);
+		const stagingDir = path.join(storageLocation(), 'staging');
+		await fs.mkdir(blobDir, { recursive: true, mode: 0o700 });
+		await fs.mkdir(stagingDir, { recursive: true, mode: 0o700 });
+		const temporary = path.join(stagingDir, randomUUID());
 		try {
-			await handle.writeFile(input.content);
-			await handle.sync();
+			const handle = await fs.open(temporary, 'wx', 0o600);
+			try {
+				await handle.writeFile(input.content);
+				await handle.sync();
+			} finally {
+				await handle.close();
+			}
+			try {
+				await fs.link(temporary, blobPath);
+			} catch (error) {
+				if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+			}
+			const dir = await fs.open(blobDir, 'r');
+			try {
+				await dir.sync();
+			} finally {
+				await dir.close();
+			}
 		} finally {
-			await handle.close();
+			await fs.rm(temporary, { force: true });
 		}
-		try {
-			await fs.link(temporary, blobPath);
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-		}
-		const dir = await fs.open(blobDir, 'r');
-		try {
-			await dir.sync();
-		} finally {
-			await dir.close();
-		}
-	} finally {
-		await fs.rm(temporary, { force: true });
 	}
 	database.exec('BEGIN IMMEDIATE');
 	try {
@@ -47,7 +50,7 @@ export async function saveLocalSnapshot(
 			(account_id, workspace_id, version_id, file_id, path, content_hash, content_size,
 			 blob_path, device_id, kind, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 			.run(input.accountId, input.workspaceId, input.versionId, input.fileId, input.path,
-				hash, input.content.byteLength, blobPath, input.deviceId, input.kind ?? 'content',
+				hash, input.content?.byteLength ?? null, blobPath, input.deviceId, input.kind ?? 'content',
 				new Date().toISOString());
 		const parent = database.prepare(`INSERT INTO version_parents
 			(account_id, workspace_id, version_id, parent_id) VALUES (?, ?, ?, ?)`);
@@ -68,5 +71,5 @@ export async function saveLocalSnapshot(
 		database.exec('ROLLBACK');
 		throw error;
 	}
-	return { hash, size: input.content.byteLength, blobPath, status: 'pending' };
+	return { hash, size: input.content?.byteLength ?? null, blobPath, status: 'pending' };
 }

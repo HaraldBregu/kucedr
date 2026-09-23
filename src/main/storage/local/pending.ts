@@ -15,7 +15,8 @@ export function listPendingOperations(
 		WHERE p.account_id = ? AND p.workspace_id = ? AND p.status != 'synced'
 		ORDER BY v.created_at, p.operation_id`).all(scope.accountId, scope.workspaceId) as Array<{
 		account_id: string; workspace_id: string; operation_id: string; file_id: string;
-		version_id: string; content_hash: string; content_size: number; blob_path: string;
+		version_id: string; content_hash: string | null; content_size: number | null;
+		blob_path: string | null;
 		status: 'pending' | 'uploaded'; attempts: number; next_retry_at: string | null;
 		kind: PendingOperation['kind']; path: string; uploaded_bytes: number; object_key: string | null;
 	}>;

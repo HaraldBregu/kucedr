@@ -17,15 +17,15 @@ export interface LocalSnapshotInput extends StorageScope {
 	operationId: string;
 	path: string;
 	parentIds: string[];
-	content: Uint8Array;
+	content?: Uint8Array;
 	deviceId: string;
-	kind?: 'content' | 'rename' | 'delete' | 'restore' | 'merge';
+	kind?: 'content' | 'rename' | 'tombstone' | 'restore';
 }
 
 export interface LocalSnapshotResult {
-	hash: string;
-	size: number;
-	blobPath: string;
+	hash: string | null;
+	size: number | null;
+	blobPath: string | null;
 	status: 'pending';
 }
 
@@ -33,13 +33,13 @@ export interface PendingOperation extends StorageScope {
 	operationId: string;
 	fileId: string;
 	versionId: string;
-	hash: string;
-	size: number;
-	blobPath: string;
+	hash: string | null;
+	size: number | null;
+	blobPath: string | null;
 	status: 'pending' | 'uploaded';
 	attempts: number;
 	nextRetryAt: string | null;
-	kind: 'content' | 'rename' | 'delete' | 'restore' | 'merge';
+	kind: 'content' | 'rename' | 'tombstone' | 'restore';
 	path: string;
 	parentIds: string[];
 	uploadedBytes: number;
