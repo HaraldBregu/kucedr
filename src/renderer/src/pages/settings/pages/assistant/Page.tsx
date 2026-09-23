@@ -310,7 +310,7 @@ const AssistantPage: React.FC = () => {
 							}
 							onValueChange={handleCompactModelChange}
 						>
-							<SelectTrigger className="w-52 max-w-full" size="sm" aria-label={t('settings.modelServices.compactModel')}>
+							<SelectTrigger className="min-w-40 max-w-full" size="sm" aria-label={t('settings.modelServices.compactModel')}>
 								<SelectValue placeholder={t('settings.modelServices.compactModelDisabled')}>
 									{selectedCompactModel?.name}
 								</SelectValue>
