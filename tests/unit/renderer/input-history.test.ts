@@ -1,6 +1,13 @@
 import type { AgentHistoryMessage } from '../../../src/shared/agent_types';
 import { historyToChatMessages } from '../../../src/renderer/src/pages/home/context';
 
+it('restores a persisted conversation summary as its own visible message', () => {
+	const messages = historyToChatMessages([{ role: 'summary', content: 'Keep the API private.' }]);
+	expect(messages).toEqual([
+		{ id: 'summary-history-0', role: 'summary', type: 'summary', content: 'Keep the API private.' },
+	]);
+});
+
 it('restores an unresolved structured input call as interrupted', () => {
 	const history: AgentHistoryMessage[] = [
 		{
