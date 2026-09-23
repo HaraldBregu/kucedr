@@ -17,6 +17,7 @@ export type WorkspaceAgentApi = Pick<
 	| 'writeWorkspaceMarkdown'
 	| 'createWorkspaceFile'
 	| 'duplicateWorkspaceFile'
+	| 'archiveWorkspaceEntry'
 	| 'createWorkspaceDirectory'
 	| 'moveWorkspaceEntry'
 	| 'renameWorkspaceEntry'
@@ -192,6 +193,10 @@ export function connect(options: ConnectOptions): KucedrClient {
 			duplicateWorkspaceFile: (filePath) =>
 				invoke(AgentChannels.duplicateWorkspaceFile, [filePath]) as ReturnType<
 					AgentApi['duplicateWorkspaceFile']
+				>,
+			archiveWorkspaceEntry: (entryPath, action) =>
+				invoke(AgentChannels.archiveWorkspaceEntry, [entryPath, action]) as ReturnType<
+					AgentApi['archiveWorkspaceEntry']
 				>,
 			createWorkspaceDirectory: (parentPath, name) =>
 				invoke(AgentChannels.createWorkspaceDirectory, [parentPath, name]) as ReturnType<

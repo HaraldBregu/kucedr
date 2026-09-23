@@ -224,6 +224,12 @@ export const agent: AgentApi = {
 		if (!normalizedFilePath) throw new Error('Invalid workspace file path.');
 		return typedInvokeUnwrap(AgentChannels.duplicateWorkspaceFile, normalizedFilePath);
 	},
+	archiveWorkspaceEntry: (entryPath, action) => {
+		const normalizedEntryPath = optionalTrimmedString(entryPath);
+		if (!normalizedEntryPath) throw new Error('Invalid workspace file path.');
+		if (action !== 'compress' && action !== 'extract') throw new Error('Invalid workspace archive action.');
+		return typedInvokeUnwrap(AgentChannels.archiveWorkspaceEntry, normalizedEntryPath, action);
+	},
 	createWorkspaceDirectory: (parentPath, name) => {
 		if (typeof parentPath !== 'string') throw new Error('Invalid workspace parent path.');
 		const normalizedName = optionalTrimmedString(name);

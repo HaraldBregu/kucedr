@@ -82,6 +82,7 @@ import { deleteWorkspaceDirectory } from './directory';
 import { writeWorkspaceMarkdown } from './markdown';
 import { writeWorkspaceFile } from './write';
 import { duplicateWorkspaceFile } from './duplicate';
+import { archiveWorkspaceEntry } from './archive';
 import { readWorkspaceTextFile } from './text';
 import { moveWorkspaceEntry } from './move';
 import { renameWorkspaceEntry } from './rename';
@@ -689,6 +690,22 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					return duplicateWorkspaceFile(workspacePath(agent.config), normalizedFilePath);
 				},
 				AgentChannels.duplicateWorkspaceFile
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.archiveWorkspaceEntry,
+			wrapAgentHandler(
+				workspaceAccess,
+				async (entryPath: unknown, action: unknown): Promise<string> => {
+					const normalizedEntryPath = optionalTrimmedString(entryPath);
+					if (!normalizedEntryPath) throw new Error('Invalid workspace file path.');
+					if (action !== 'compress' && action !== 'extract') {
+						throw new Error('Invalid workspace archive action.');
+					}
+					return archiveWorkspaceEntry(workspacePath(agent.config), normalizedEntryPath, action);
+				},
+				AgentChannels.archiveWorkspaceEntry
 			)
 		);
 

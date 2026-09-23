@@ -24,6 +24,7 @@ export const AgentChannels = {
 	writeWorkspaceMarkdown: 'agent:workspace:markdown:write',
 	createWorkspaceFile: 'agent:workspace:file:create',
 	duplicateWorkspaceFile: 'agent:workspace:file:duplicate',
+	archiveWorkspaceEntry: 'agent:workspace:archive',
 	createWorkspaceDirectory: 'agent:workspace:directory:create',
 	moveWorkspaceEntry: 'agent:workspace:entry:move',
 	renameWorkspaceEntry: 'agent:workspace:entry:rename',

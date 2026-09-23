@@ -186,6 +186,10 @@ export interface AgentInvokeChannelMap {
 		args: [filePath: string];
 		result: string;
 	};
+	[AgentChannels.archiveWorkspaceEntry]: {
+		args: [entryPath: string, action: 'compress' | 'extract'];
+		result: string;
+	};
 	[AgentChannels.createWorkspaceDirectory]: {
 		args: [parentPath: string, name: string];
 		result: string;
