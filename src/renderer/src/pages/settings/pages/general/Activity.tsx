@@ -49,7 +49,6 @@ export function Activity(): React.JSX.Element {
 					to={today}
 					shape="ring"
 					scale="log"
-					showLegend
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}
