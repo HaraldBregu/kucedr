@@ -9,6 +9,9 @@ export async function saveLocalSnapshot(
 	database: DatabaseSync,
 	input: LocalSnapshotInput
 ): Promise<LocalSnapshotResult> {
+	if (input.kind === 'tombstone' && input.content) {
+		throw new Error('A tombstone cannot contain content.');
+	}
 	if (input.kind !== 'tombstone' && !input.content) throw new Error('Snapshot content is required.');
 	const hash = input.content ? createHash('sha256').update(input.content).digest('hex') : null;
 	const scope = createHash('sha256')
@@ -33,6 +36,10 @@ export async function saveLocalSnapshot(
 				await fs.link(temporary, blobPath);
 			} catch (error) {
 				if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+				const existing = await fs.readFile(blobPath);
+				if (createHash('sha256').update(existing).digest('hex') !== hash) {
+					throw new Error('Local storage blob failed SHA-256 verification.');
+				}
 			}
 			const dir = await fs.open(blobDir, 'r');
 			try {

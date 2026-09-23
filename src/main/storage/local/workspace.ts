@@ -24,7 +24,10 @@ export function getOrCreateWorkspaceId(
 	database.prepare(`INSERT OR IGNORE INTO workspace_roots
 		(account_id, root_path, workspace_id) VALUES (?, ?, ?)`)
 		.run(accountId, normalized, sharedWorkspaceId);
-	return (database.prepare(`SELECT workspace_id FROM workspace_roots
-		WHERE account_id = ? AND root_path = ?`).get(accountId, normalized) as { workspace_id: string })
-		.workspace_id;
+	const inserted = database.prepare(`SELECT workspace_id FROM workspace_roots
+		WHERE account_id = ? AND root_path = ?`).get(accountId, normalized) as
+		| { workspace_id: string }
+		| undefined;
+	if (!inserted) throw new Error('Workspace ID is already paired with another root.');
+	return inserted.workspace_id;
 }
