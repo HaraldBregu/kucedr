@@ -62,7 +62,7 @@ export class StorageCloudApi {
 		return this.invoke('storage-publish', request);
 	}
 
-	async changes(workspaceId: string, after: number): Promise<StorageChange[]> {
+	async changes(workspaceId: string, after: string): Promise<StorageChange[]> {
 		const { data, error } = await this.client.from('storage_changes')
 			.select('workspace_id,sequence,file_id,version_id')
 			.eq('workspace_id', workspaceId).gt('sequence', after)

@@ -13,7 +13,7 @@ export async function catchUp(
 	let count = 0;
 	for (;;) {
 		const cursor = getSyncCursor(database, scope);
-		const changes = await cloud.changes(scope.workspaceId, Number(cursor));
+		const changes = await cloud.changes(scope.workspaceId, cursor);
 		if (changes.length === 0) return count;
 		for (const change of changes) {
 			const version = await cloud.version(scope.workspaceId, change.version_id);
