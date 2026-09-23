@@ -26,7 +26,8 @@ export function addDebugApp(folderPath: string): App {
 		throw new Error('Missing or invalid manifest. Expected manifest.json or package.json.');
 	}
 	const entry = path.join(directory, ...manifest.metadata.entry.split('/'));
-	if (!existsSync(entry) || !statSync(entry).isFile()) throw new Error('App entry file is missing.');
+	if (!existsSync(entry) || !statSync(entry).isFile())
+		throw new Error('App entry file is missing.');
 	const resolvedEntry = realpathSync(entry);
 	const relativeEntry = path.relative(realpathSync(directory), resolvedEntry);
 	if (relativeEntry.startsWith(`..${path.sep}`) || path.isAbsolute(relativeEntry)) {
@@ -37,7 +38,10 @@ export function addDebugApp(folderPath: string): App {
 		throw new Error(`An installed app already uses the ID “${id}”.`);
 	}
 	const paths = debugAppPaths();
-	if (!paths.includes(directory) || paths.some((value) => path.basename(value) === id && value !== directory)) {
+	if (
+		!paths.includes(directory) ||
+		paths.some((value) => path.basename(value) === id && value !== directory)
+	) {
 		debugAppsStore.set('paths', [
 			...paths.filter((value) => path.basename(value) !== id),
 			directory,
