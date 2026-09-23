@@ -18,7 +18,7 @@ export interface UploadGrant {
 export interface PublishRequest extends UploadRequest {
 	fileId: string;
 	kind: 'content' | 'tombstone' | 'rename' | 'restore';
-	path: string;
+	path: string | null;
 	parentIds: string[];
 	deviceId: string;
 	bucket?: string;
@@ -43,6 +43,7 @@ export interface StorageVersion {
 	workspace_id: string;
 	kind: PublishRequest['kind'];
 	path: string;
+	bucket: string | null;
 	sha256: string | null;
 	size_bytes: number | null;
 	object_key: string | null;
@@ -70,7 +71,7 @@ export class StorageCloudApi {
 
 	async version(workspaceId: string, versionId: string): Promise<StorageVersion> {
 		const { data, error } = await this.client.from('storage_versions')
-			.select('id,file_id,workspace_id,kind,path,sha256,size_bytes,object_key')
+			.select('id,file_id,workspace_id,kind,path,bucket,sha256,size_bytes,object_key')
 			.eq('workspace_id', workspaceId).eq('id', versionId).single();
 		if (error || !data) throw new Error(`Storage version lookup failed: ${error?.message ?? 'missing version'}.`);
 		return data as StorageVersion;
@@ -89,7 +90,9 @@ export class StorageCloudApi {
 			headers: grant.headers,
 			body: Buffer.from(content),
 		});
-		if (!response.ok) throw new Error(`Storage upload failed (${response.status}).`);
+		if (!response.ok && response.status !== 412) {
+			throw new Error(`Storage upload failed (${response.status}).`);
+		}
 	}
 
 	private async invoke<T>(name: string, body: unknown): Promise<T> {
