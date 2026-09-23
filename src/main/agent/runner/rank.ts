@@ -5,6 +5,34 @@ export interface RankedDocument<T> {
 	text: string;
 }
 
+const STOP_WORDS = new Set([
+	'a',
+	'an',
+	'and',
+	'for',
+	'in',
+	'of',
+	'on',
+	'or',
+	'the',
+	'this',
+	'to',
+	'with',
+]);
+
+function terms(value: string): string[] {
+	return value.toLocaleLowerCase().match(/[\p{L}\p{N}_-]+/gu) ?? [];
+}
+
+export function isStrongMatch(query: string, id: string, name: string, text: string): boolean {
+	const queryTerms = [...new Set(terms(query).filter((term) => !STOP_WORDS.has(term)))];
+	if (queryTerms.length === 0) return false;
+	const identityTerms = new Set(terms(`${id} ${name}`));
+	if (queryTerms.some((term) => identityTerms.has(term))) return true;
+	const documentTerms = new Set(terms(text).filter((term) => !STOP_WORDS.has(term)));
+	return queryTerms.filter((term) => documentTerms.has(term)).length >= 2;
+}
+
 export function rankTools<T>(query: string, documents: RankedDocument<T>[]): T[] {
 	const terms = [...new Set(query.toLocaleLowerCase().match(/[\p{L}\p{N}_-]+/gu) ?? [])];
 	if (terms.length === 0) return [];
@@ -44,9 +72,9 @@ export function rankTools<T>(query: string, documents: RankedDocument<T>[]): T[]
 export function toolSearchText(tool: Tool): string {
 	const properties = tool.schema.properties ?? {};
 	return [
-		tool.id,
-		tool.name,
-		tool.description,
+		...Array(4).fill(tool.id),
+		...Array(4).fill(tool.name),
+		...Array(2).fill(tool.description),
 		...Object.entries(properties).flatMap(([name, schema]) => [
 			name,
 			typeof schema === 'object' && schema && 'description' in schema

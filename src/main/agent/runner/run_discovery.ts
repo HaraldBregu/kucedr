@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { Tool } from '../types';
 import { tool } from '../tools/tool';
-import { rankTools, toolSearchText } from './rank';
+import { isStrongMatch, rankTools, toolSearchText } from './rank';
 
 export const DISCOVER_TOOLS_ID = 'discover_tools';
 export const DISCOVERY_DEFAULT_LIMIT = 5;
@@ -34,6 +34,8 @@ export interface ToolDiscovery {
 	active(): Tool[];
 	replaceEligible(tools: Tool[]): void;
 	activateImmediate(toolIds: readonly string[]): void;
+	preselect(query: string, signal?: AbortSignal): Promise<{ tools: Tool[]; serviceIds: string[] }>;
+	activateInactive(toolIds: readonly string[]): Tool[];
 }
 
 export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscovery {
@@ -47,6 +49,27 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 		(options.mcpTools ?? []).map((entry) => [entry.tool.id, entry.serverId])
 	);
 	let selectedCount = 0;
+
+	const loadMatchingServers = async (query: string, signal?: AbortSignal) => {
+		const matchingServers = rankTools(
+			query,
+			[...deferredServers.values()]
+				.filter((server) => isStrongMatch(query, server.id, server.name, `${server.id} ${server.name}`))
+				.map((server) => ({ value: server, text: `${server.id} ${server.name}` }))
+		).slice(0, DISCOVERY_DEFAULT_LIMIT);
+		if (matchingServers.length === 0 || !options.loadMcpServers) return [];
+		const loaded = await options.loadMcpServers(
+			matchingServers.map((server) => server.id),
+			signal
+		);
+		for (const server of matchingServers) deferredServers.delete(server.id);
+		const filtered = options.filterEligible
+			? options.filterEligible(loaded.map((entry) => entry.tool))
+			: loaded.map((entry) => entry.tool);
+		for (const candidate of filtered) eligible.set(candidate.id, candidate);
+		for (const entry of loaded) mcpMetadata.set(entry.tool.id, entry.serverId);
+		return matchingServers.map((server) => server.id);
+	};
 
 	const discoveryTool = tool({
 		id: DISCOVER_TOOLS_ID,
@@ -67,25 +90,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 		execute: async ({ query, limit }, signal) => {
 			const startedAt = Date.now();
 			signal?.throwIfAborted();
-			const matchingServers = rankTools(
-				query,
-				[...deferredServers.values()].map((server) => ({
-					value: server,
-					text: `${server.id} ${server.name}`,
-				}))
-			).slice(0, limit);
-			if (matchingServers.length > 0 && options.loadMcpServers) {
-				const loaded = await options.loadMcpServers(
-					matchingServers.map((server) => server.id),
-					signal
-				);
-				for (const server of matchingServers) deferredServers.delete(server.id);
-				const filtered = options.filterEligible
-					? options.filterEligible(loaded.map((entry) => entry.tool))
-					: loaded.map((entry) => entry.tool);
-				for (const candidate of filtered) eligible.set(candidate.id, candidate);
-				for (const entry of loaded) mcpMetadata.set(entry.tool.id, entry.serverId);
-			}
+			await loadMatchingServers(query, signal);
 
 			const remaining = Math.max(0, DISCOVERY_RUN_LIMIT - selectedCount);
 			const selected = rankTools(
@@ -123,6 +128,34 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 				const candidate = eligible.get(id);
 				if (candidate) active.set(id, candidate);
 			}
+		},
+		async preselect(query, signal) {
+			const serviceIds = await loadMatchingServers(query, signal);
+			const remaining = Math.max(0, DISCOVERY_RUN_LIMIT - selectedCount);
+			const selected = rankTools(
+				query,
+				[...eligible.values()]
+					.filter(
+						(candidate) =>
+							!active.has(candidate.id) &&
+							isStrongMatch(query, candidate.id, candidate.name, toolSearchText(candidate))
+					)
+					.map((candidate) => ({ value: candidate, text: toolSearchText(candidate) }))
+			).slice(0, Math.min(DISCOVERY_DEFAULT_LIMIT, remaining));
+			for (const candidate of selected) active.set(candidate.id, candidate);
+			selectedCount += selected.length;
+			return { tools: selected, serviceIds };
+		},
+		activateInactive(toolIds) {
+			const activated: Tool[] = [];
+			for (const id of new Set(toolIds)) {
+				if (active.has(id)) continue;
+				const candidate = eligible.get(id);
+				if (!candidate) continue;
+				active.set(id, candidate);
+				activated.push(candidate);
+			}
+			return activated;
 		},
 	};
 }
