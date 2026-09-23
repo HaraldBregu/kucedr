@@ -113,7 +113,7 @@ it('publishes tombstones without uploading content', async () => {
 it('publishes renames with the parent content reference without uploading again', async () => {
 	const database = openStorageState();
 	await saveLocalSnapshot(database, input({
-		kind: 'rename', parentIds: ['old-version'],
+		kind: 'rename', content: undefined, parentIds: ['old-version'],
 	}));
 	const remote = cloud();
 	expect(await drainPending(database, scope, remote as unknown as StorageCloudApi))
