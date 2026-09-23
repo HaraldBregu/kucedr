@@ -17,6 +17,7 @@ Deno.serve(async (request) => {
 			typeof operationId !== 'string' ||
 			typeof versionId !== 'string' ||
 			typeof sha256 !== 'string' ||
+			!/^[0-9a-f]{64}$/.test(sha256) ||
 			!Number.isSafeInteger(sizeBytes) ||
 			sizeBytes < 0 ||
 			sizeBytes > 52428800
