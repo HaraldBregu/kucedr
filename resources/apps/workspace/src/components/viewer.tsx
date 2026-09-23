@@ -1,5 +1,5 @@
 import { lazy, Suspense, useRef } from 'react';
-import { FileQuestion, LoaderCircle, Music2 } from 'lucide-react';
+import { FileQuestion, LoaderCircle, Music2, Search } from 'lucide-react';
 import type { WorkspaceFileKind } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
 
@@ -18,12 +18,13 @@ import { copyImage } from '@/lib/image';
 import { showMediaContextMenu } from '@/lib/media';
 import { showNativeContextMenu } from '@/lib/menu';
 import { isStructuredDataPath } from '@/lib/structured';
+import { Button } from '@/components/ui/button';
 
-const CodeMirrorEditor = lazy(() =>
-	import('@/components/code-mirror-editor').then(({ CodeMirrorEditor }) => ({
-		default: CodeMirrorEditor,
-	}))
-);
+const CodeMirrorEditor = lazy(async () => {
+	const module = await import('@/components/code-mirror-editor');
+	return { default: module.CodeMirrorEditor };
+});
+type CodeMirrorEditorHandle = import('@/components/code-mirror-editor').CodeMirrorEditorHandle;
 const MarkdownPreview = lazy(() =>
 	import('@/components/markdown').then(({ MarkdownPreview }) => ({ default: MarkdownPreview }))
 );
@@ -61,6 +62,7 @@ export function FileViewer({
 }: FileViewerProps) {
 	const name = path.split(/[\\/]/).pop() ?? path;
 	const mediaRef = useRef<HTMLMediaElement | null>(null);
+	const codeEditorRef = useRef<CodeMirrorEditorHandle>(null);
 
 	if (kind === 'markdown') {
 		return (
@@ -70,9 +72,21 @@ export function FileViewer({
 					forceMount
 					className="m-0 min-h-full data-[state=inactive]:hidden"
 				>
-					<article className="mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12">
+					<article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12">
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="absolute right-5 top-2.5 z-10 size-7 sm:right-8 lg:right-12"
+							title="Find in file (⌘/Ctrl+F)"
+							aria-label="Find in file"
+							onClick={() => codeEditorRef.current?.openSearch()}
+						>
+							<Search />
+						</Button>
 						<Suspense fallback={viewerFallback}>
 							<CodeMirrorEditor
+								ref={codeEditorRef}
 								key={path}
 								canSave={canSave}
 								value={content}
@@ -125,23 +139,37 @@ export function FileViewer({
 
 	if (kind === 'text') {
 		return (
-			<Suspense fallback={viewerFallback}>
-				<CodeMirrorEditor
-					key={path}
-					canSave={canSave}
-					className="min-h-full"
-					code
-					fontSize={settings.fontSize}
-					foldable={isStructuredDataPath(path)}
-					isDark={isDark}
-					lineNumbersVisible={settings.lineNumbers}
-					onChange={onChange}
-					onSave={onSave}
-					path={path}
-					value={content}
-					wordWrap={settings.wordWrap}
-				/>
-			</Suspense>
+			<div className="relative min-h-full">
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
+					className="absolute right-3 top-2.5 z-10 size-7"
+					title="Find in file (⌘/Ctrl+F)"
+					aria-label="Find in file"
+					onClick={() => codeEditorRef.current?.openSearch()}
+				>
+					<Search />
+				</Button>
+				<Suspense fallback={viewerFallback}>
+					<CodeMirrorEditor
+						ref={codeEditorRef}
+						key={path}
+						canSave={canSave}
+						className="min-h-full"
+						code
+						fontSize={settings.fontSize}
+						foldable={isStructuredDataPath(path)}
+						isDark={isDark}
+						lineNumbersVisible={settings.lineNumbers}
+						onChange={onChange}
+						onSave={onSave}
+						path={path}
+						value={content}
+						wordWrap={settings.wordWrap}
+					/>
+				</Suspense>
+			</div>
 		);
 	}
 

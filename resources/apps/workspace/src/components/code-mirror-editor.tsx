@@ -16,6 +16,7 @@ import {
 	syntaxHighlighting,
 } from '@codemirror/language';
 import { Compartment, EditorState, Transaction } from '@codemirror/state';
+import { openSearchPanel, search, searchKeymap } from '@codemirror/search';
 import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
 import { tags } from '@lezer/highlight';
@@ -24,8 +25,9 @@ import { showNativeContextMenu } from '@/lib/menu';
 import { languageForPath } from '@/lib/language';
 import { cn } from '@/lib/utils';
 
-interface CodeMirrorEditorHandle {
+export interface CodeMirrorEditorHandle {
 	focus: () => void;
+	openSearch: () => void;
 	prefixLines: (prefix: string) => void;
 	redo: () => void;
 	undo: () => void;
@@ -118,6 +120,16 @@ const codeEditorTheme = EditorView.theme({
 	'.cm-activeLine, .cm-activeLineGutter': {
 		backgroundColor: 'color-mix(in oklch, var(--muted) 45%, transparent)',
 	},
+	'.cm-panels': { backgroundColor: 'var(--background)', color: 'var(--foreground)' },
+	'.cm-panels-top': { borderBottom: '1px solid var(--border)' },
+	'.cm-search': { padding: '8px 12px', fontFamily: 'inherit', fontSize: '12px' },
+	'.cm-search input': {
+		border: '1px solid var(--border)',
+		borderRadius: '4px',
+		backgroundColor: 'var(--background)',
+		color: 'var(--foreground)',
+		padding: '3px 6px',
+	},
 	'.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--primary)' },
 	'&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
 		backgroundColor: 'color-mix(in oklch, var(--primary) 16%, transparent) !important',
@@ -160,6 +172,11 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		useImperativeHandle(
 			ref,
 			() => ({
+				openSearch() {
+					const view = viewRef.current;
+					if (!view) return;
+					openSearchPanel(view);
+				},
 				wrapSelection(prefix, suffix = prefix) {
 					const view = viewRef.current;
 					if (!view) return;
@@ -229,7 +246,9 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 						...defaultKeymap,
 						...historyKeymap,
 						...foldKeymap,
+						...searchKeymap,
 					]),
+					search({ top: true }),
 					languageRef.current.of(code ? [] : markdown()),
 					themeRef.current.of(
 						code
