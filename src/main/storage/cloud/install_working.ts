@@ -28,7 +28,7 @@ export async function installNewWorkingFile(
 		try {
 			await fs.link(temporary, target);
 		} catch (error) {
-			if (['EEXIST', 'EXDEV'].includes((error as NodeJS.ErrnoException).code ?? '')) {
+			if (['EEXIST', 'EXDEV', 'EPERM'].includes((error as NodeJS.ErrnoException).code ?? '')) {
 				return false;
 			}
 			throw error;
