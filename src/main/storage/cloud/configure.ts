@@ -23,7 +23,8 @@ export async function configureVersionedStorage(
 		providerId: provider.id,
 		s3: { bucket: provider.bucket, region: provider.region, prefix: existing?.s3.prefix ?? '' },
 		supabase: { url: supabaseUrl },
-		sync: { enabled: settings.syncEnabled, maxCacheBytes: existing?.sync.maxCacheBytes ?? 1_073_741_824 },
+		sync: { enabled: existing?.sync.enabled ?? false,
+			maxCacheBytes: existing?.sync.maxCacheBytes ?? 1_073_741_824 },
 		workspaces: existing?.workspaces ?? [],
 	};
 	for (const rootPath of settings.paths) {
