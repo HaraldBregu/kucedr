@@ -11,7 +11,8 @@ import { StorageCloudApi, type PublishRequest } from './api';
 export async function drainPending(
 	database: DatabaseSync,
 	scope: StorageScope,
-	cloud: StorageCloudApi
+	cloud: StorageCloudApi,
+	expected?: { bucket: string; prefix: string }
 ): Promise<{ synced: number; failed: number }> {
 	let synced = 0;
 	let failed = 0;
@@ -51,6 +52,10 @@ export async function drainPending(
 					versionId: operation.versionId, sha256: operation.hash,
 					sizeBytes: operation.size,
 				});
+				if (expected && (grant.bucket !== expected.bucket ||
+					(expected.prefix && !grant.key.startsWith(`${expected.prefix.replace(/\/$/, '')}/`)))) {
+					throw new Error('Storage backend does not match the saved S3 provider.');
+				}
 				if (operation.status !== 'uploaded') {
 					await cloud.upload(grant, content);
 					markOperationUploaded(database, scope, operation.operationId, grant.key);
