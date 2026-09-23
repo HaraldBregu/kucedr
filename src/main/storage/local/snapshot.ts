@@ -58,6 +58,12 @@ export async function saveLocalSnapshot(
 	}
 	database.exec('BEGIN IMMEDIATE');
 	try {
+		if (input.kind === 'rename') {
+			const renamed = database.prepare(`UPDATE local_files SET relative_path = ?
+				WHERE account_id = ? AND workspace_id = ? AND file_id = ?`)
+				.run(input.path, input.accountId, input.workspaceId, input.fileId);
+			if (renamed.changes !== 1) throw new Error('Unknown local file for rename.');
+		}
 		database.prepare(`INSERT INTO local_versions
 			(account_id, workspace_id, version_id, file_id, path, content_hash, content_size,
 			 blob_path, device_id, kind, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
