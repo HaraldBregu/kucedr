@@ -68,6 +68,8 @@ import { getAgentProfileModel } from './agent_profiles';
 import { preflightPromptAttachments, resolvePromptInputCapabilities } from './attachments';
 import { workspacePath } from './system';
 import { compactConversation } from './compaction/compact';
+import { sessionType } from './session/session_session_type';
+import { sessionsRoot } from './session/session_sessions_root';
 import { formatReplyMessage } from '../../shared/reply';
 import type { AgentToolProfileId } from '../../shared/agent_tools';
 
@@ -426,6 +428,8 @@ export class Agent {
 
 	compactSession(sessionId: string): Promise<AgentCompactSessionResult> {
 		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
+		if (sessionType(sessionsRoot(this.config.location), resolvedSessionId) !== 'main')
+			return Promise.reject(new Error('Only main chat sessions can be compacted.'));
 		return this.scheduler.run(
 			resolvedSessionId,
 			() => compactConversation(this.config, resolvedSessionId, this.providerLimiter),
