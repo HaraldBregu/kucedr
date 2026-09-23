@@ -47,6 +47,7 @@ import type {
 	AgentResponseEvent,
 	AgentRunStopReason,
 	AgentSessionSummary,
+	AgentCompactSessionResult,
 } from '../../shared/agent_types';
 import { toError } from '../ipc/core/error';
 import { AgentRunScheduler, type AgentRunPriority } from './agent_scheduler';
