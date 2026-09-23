@@ -50,8 +50,11 @@ export class StorageCloudApi {
 		if (!response.ok) throw new Error(`Storage upload failed (${response.status}).`);
 	}
 
-	private async invoke<T>(name: string, body: Record<string, unknown>): Promise<T> {
-		const { data, error } = await this.client.functions.invoke<T>(name, { body });
+	private async invoke<T>(name: string, body: unknown): Promise<T> {
+		const { data, error } = await this.client.functions.invoke<T>(name, {
+			body: JSON.stringify(body),
+			headers: { 'Content-Type': 'application/json' },
+		});
 		if (error || !data) throw new Error(`Storage ${name} failed: ${error?.message ?? 'empty response'}.`);
 		return data;
 	}
