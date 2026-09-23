@@ -181,7 +181,7 @@ declare
   v_stored_hash text;
   v_result jsonb;
   v_sequence bigint;
-  v_parents uuid[] := coalesce(p_parent_ids, '{}'::uuid[]);
+  v_parents uuid[] := array(select x from unnest(coalesce(p_parent_ids, '{}'::uuid[])) x order by x);
   v_exists boolean;
 begin
   if p_kind is null or p_kind not in ('content', 'rename', 'tombstone', 'restore')
@@ -255,3 +255,17 @@ revoke all on function public.storage_publish_version(uuid, uuid, uuid, uuid, uu
 grant execute on function public.storage_reserve_upload(uuid, uuid, uuid, uuid, text, text, bigint) to service_role;
 grant execute on function public.storage_confirm_upload(uuid, uuid, uuid, uuid, text, bigint) to service_role;
 grant execute on function public.storage_publish_version(uuid, uuid, uuid, uuid, uuid, text, text, uuid[], text, text, text, text, bigint) to service_role;
+
+create function public.storage_list_path_conflicts(p_workspace_id uuid)
+returns table (path text, file_ids uuid[])
+language sql security invoker set search_path = '' as $$
+  select v.path, array_agg(distinct h.file_id order by h.file_id)
+  from public.storage_heads h
+  join public.storage_versions v on v.workspace_id = h.workspace_id
+    and v.file_id = h.file_id and v.id = h.version_id
+  where h.workspace_id = p_workspace_id and v.path is not null
+  group by v.path
+  having count(distinct h.file_id) > 1
+$$;
+revoke all on function public.storage_list_path_conflicts(uuid) from public, anon;
+grant execute on function public.storage_list_path_conflicts(uuid) to authenticated;

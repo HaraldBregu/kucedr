@@ -30,7 +30,7 @@ Deno.serve(async (request) => {
       Bucket: bucket, Key: reservation.object_key, IfNoneMatch: '*', ChecksumSHA256: checksum,
     }), { expiresIn: 600 });
     return json({ bucket, key: reservation.object_key, uploadUrl, headers, verified: reservation.verified });
-  } catch (error) {
-    return json({ error: error instanceof Error ? error.message : 'Upload failed' }, 400);
+  } catch {
+    return json({ error: 'Upload request failed' }, 400);
   }
 });

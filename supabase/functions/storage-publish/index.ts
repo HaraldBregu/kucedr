@@ -40,7 +40,7 @@ Deno.serve(async (request) => {
     });
     if (error) throw error;
     return json(data);
-  } catch (error) {
-    return json({ error: error instanceof Error ? error.message : 'Publication failed' }, 400);
+  } catch {
+    return json({ error: 'Publication failed' }, 400);
   }
 });

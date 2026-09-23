@@ -17,7 +17,7 @@ Deno.serve(async (request) => {
       Bucket: data.bucket, Key: data.object_key,
     }), { expiresIn: 600 });
     return json({ url, sha256: data.sha256, sizeBytes: data.size_bytes });
-  } catch (error) {
-    return json({ error: error instanceof Error ? error.message : 'Download failed' }, 400);
+  } catch {
+    return json({ error: 'Download failed' }, 400);
   }
 });
