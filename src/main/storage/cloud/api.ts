@@ -35,7 +35,7 @@ export interface Publication {
 
 export interface StorageChange {
 	workspace_id: string;
-	sequence: number;
+	sequence: string;
 	file_id: string;
 	version_id: string;
 }
@@ -64,10 +64,9 @@ export class StorageCloudApi {
 	}
 
 	async changes(workspaceId: string, after: string): Promise<StorageChange[]> {
-		const { data, error } = await this.client.from('storage_changes')
-			.select('workspace_id,sequence,file_id,version_id')
-			.eq('workspace_id', workspaceId).gt('sequence', after)
-			.order('sequence', { ascending: true }).limit(100);
+		const { data, error } = await this.client.rpc('storage_changes_since', {
+			p_workspace_id: workspaceId, p_after: after,
+		});
 		if (error) throw new Error(`Storage change discovery failed: ${error.message}.`);
 		return data ?? [];
 	}
