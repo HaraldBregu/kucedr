@@ -64,6 +64,18 @@ const markdownHighlight = HighlightStyle.define([
 	},
 ]);
 
+const searchHighlight = EditorView.theme({
+	'.cm-searchMatch': {
+		backgroundColor: 'color-mix(in oklch, var(--primary) 22%, transparent)',
+		borderBottom: '1px solid color-mix(in oklch, var(--primary) 42%, transparent)',
+	},
+	'.cm-searchMatch.cm-searchMatch-selected': {
+		backgroundColor: 'color-mix(in oklch, var(--primary) 72%, transparent)',
+		color: 'var(--primary-foreground)',
+		outline: '1px solid color-mix(in oklch, var(--primary) 88%, var(--foreground))',
+	},
+});
+
 const noteEditorTheme = EditorView.theme({
 	'&': {
 		height: '100%',
@@ -266,8 +278,9 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 									EditorView.theme({ '&': { fontSize: `${fontSize}px` } }),
 								]),
 								codeEditorTheme,
+								searchHighlight,
 							]
-						: [EditorView.lineWrapping, noteEditorTheme]),
+						: [EditorView.lineWrapping, noteEditorTheme, searchHighlight]),
 					placeholder(code ? '' : 'Start writing...'),
 					editabilityRef.current.of([
 						EditorState.readOnly.of(initialReadOnlyRef.current),
