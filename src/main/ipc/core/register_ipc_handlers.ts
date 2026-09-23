@@ -41,6 +41,7 @@ export function registerIpcHandlers(
 		windowContextManager,
 		authService,
 		cloudService,
+		cloudClient,
 	} = services;
 
 	const safeRegister = (name: string, register: () => void): void => {
@@ -143,7 +144,7 @@ export function registerIpcHandlers(
 	);
 	safeRegister('storage', () =>
 		new StorageIpc().register(
-			{ appRegistry, storageOperations, windows: windowContextManager, authService },
+			{ appRegistry, storageOperations, windows: windowContextManager, authService, cloudClient },
 			eventBus
 		)
 	);

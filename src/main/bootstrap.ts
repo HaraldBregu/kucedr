@@ -31,6 +31,7 @@ import { loadCloudConfig } from './cloud/config';
 import { AuthSessionStorage } from './cloud/session';
 import { SupabaseAccountProvider } from './cloud/supabase/auth';
 import { createSupabaseClient } from './cloud/supabase/client';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { SupabaseCloudRepository } from './cloud/supabase/records';
 import { camera, microphone, screen } from './recorder';
 
@@ -51,6 +52,7 @@ export interface MainServices {
 	terminalManager: PtyManager;
 	authService: AuthService;
 	cloudService: CloudService;
+	cloudClient?: SupabaseClient;
 }
 
 export interface BootstrapResult extends MainServices {}
@@ -144,6 +146,7 @@ export function bootstrapServices(): BootstrapResult {
 		terminalManager,
 		authService,
 		cloudService,
+		cloudClient,
 	};
 }
 
