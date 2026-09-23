@@ -56,6 +56,13 @@ publication; ETag is not a full-file checksum.
 
 ## Sync and recovery
 
+After enabling Version history sync in Settings → Storage, the main process watches selected
+folders and snapshots added, changed, and removed files. It retries after sign-in and on a
+one-minute timer, including after missed filesystem or network notifications. A snapshot is
+durable locally before upload; until publication succeeds, loss of that device loses the only
+copy. The watcher and retry loop require the app to be running. Existing working files are kept
+during catch-up; new cloud files are installed only when the destination does not exist.
+
 An upload may succeed while publication fails. On restart, retry pending operations by stable
 operation ID, check publication status after an uncertain response, and reuse or verify the
 already uploaded immutable object. Mark local work synced only after confirmed publication.
