@@ -51,7 +51,6 @@ export function Activity(): React.JSX.Element {
 					scale="log"
 					showLegend
 					showMonthLabels
-					showWeekdayLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}
 					cellLabel={(day) =>
