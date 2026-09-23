@@ -169,6 +169,9 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 					view.dispatch({ effects: setSearchQuery.of(new SearchQuery({ search: query })) });
 					if (direction === 'next') findNext(view);
 					else findPrevious(view);
+					view.dispatch({
+						effects: EditorView.scrollIntoView(view.state.selection.main.from, { y: 'center' }),
+					});
 				},
 				clearSearch() {
 					viewRef.current?.dispatch({

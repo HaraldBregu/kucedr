@@ -1,4 +1,4 @@
-import { FileWarning, FileText, LoaderCircle } from 'lucide-react';
+import { FileWarning, FileText, LoaderCircle, Search } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { WorkspaceFileKind, WorkspaceTreeEntry } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
@@ -8,6 +8,7 @@ import { Find } from '@/components/find';
 import { FileInformation } from '@/components/information';
 import { FormatToggle } from '@/components/format-toggle';
 import { Tabs } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { showNativeContextMenu } from '@/lib/menu';
 import { cn } from '@/lib/utils';
 import { isUnreadableBinaryError } from '@/lib/binary';
@@ -61,6 +62,7 @@ export function WorkspaceViewer({
 	const editable = kind !== null && editableWorkspaceKinds.has(kind);
 	const canvas = kind === 'mermaid' || kind === 'excalidraw' || kind === 'tldraw';
 	const [fileFindControls, setFileFindControls] = useState<FileFindControls | null>(null);
+	const [findOpen, setFindOpen] = useState(false);
 	const [findQuery, setFindQuery] = useState('');
 	const fileName = path?.split(/[\\/]/).pop() ?? '';
 	const searchable = kind === 'text' || (kind === 'markdown' && markdownMode === 'source');
@@ -69,9 +71,13 @@ export function WorkspaceViewer({
 		setFileFindControls(controls);
 	}, []);
 	const clearFind = useCallback(() => {
+		setFindOpen(false);
 		setFindQuery('');
 		fileFindControls?.clear();
 	}, [fileFindControls]);
+	const openFind = useCallback(() => {
+		setFindOpen(true);
+	}, []);
 	const updateFindQuery = useCallback(
 		(query: string) => {
 			setFindQuery(query);
@@ -170,15 +176,29 @@ export function WorkspaceViewer({
 						{fileName}
 					</p>
 					{searchable ? (
-						<Find
-							className="ml-auto w-full max-w-md"
-							matchCount={findMatchCount}
-							onClose={clearFind}
-							onNext={() => fileFindControls?.find(findQuery, 'next')}
-							onPrevious={() => fileFindControls?.find(findQuery, 'previous')}
-							onQueryChange={updateFindQuery}
-							query={findQuery}
-						/>
+						findOpen ? (
+							<Find
+								autoFocus
+								className="ml-auto w-full max-w-md"
+								matchCount={findMatchCount}
+								onClose={clearFind}
+								onNext={() => fileFindControls?.find(findQuery, 'next')}
+								onPrevious={() => fileFindControls?.find(findQuery, 'previous')}
+								onQueryChange={updateFindQuery}
+								query={findQuery}
+							/>
+						) : (
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="ml-auto size-7"
+								aria-label="Find in file"
+								onClick={openFind}
+							>
+								<Search />
+							</Button>
+						)
 					) : null}
 				</header>
 				<div
