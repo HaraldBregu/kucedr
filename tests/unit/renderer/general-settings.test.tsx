@@ -11,12 +11,14 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		to,
 		cellLabel,
 		shape,
+		scale,
 	}: {
 		values: { date: string; value: number }[];
 		weeks: number;
 		to: string;
 		cellLabel: (day: { date: string; value: number }) => string;
 		shape: string;
+		scale: string;
 	}) => (
 		<div
 			data-testid="activity-heatmap"
@@ -24,6 +26,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 			data-to={to}
 			data-weeks={weeks}
 			data-shape={shape}
+			data-scale={scale}
 		>
 			{values.map((day) => (
 				<div
@@ -202,6 +205,7 @@ it('shows activity loaded from application logs in General settings', async () =
 	);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '30');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-shape', 'ring');
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'log');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 
 	const cell = screen.getByRole('img', { name: 'settings.activity.day' });
