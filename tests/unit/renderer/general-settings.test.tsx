@@ -8,6 +8,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 	CalendarHeatmap: ({
 		values,
 		weeks,
+		cellSize,
 		to,
 		cellLabel,
 		shape,
