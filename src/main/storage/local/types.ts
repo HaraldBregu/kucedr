@@ -6,6 +6,7 @@ export interface StorageScope {
 export interface StorageConfig {
 	version: 1;
 	provider: 's3';
+	providerId: string;
 	s3: { bucket: string; region: string; prefix: string };
 	supabase: { url: string };
 	sync: { enabled: boolean; maxCacheBytes: number };

@@ -6,6 +6,10 @@ export function normalizeStorageConfig(value: StorageConfig): StorageConfig {
 		!value.supabase || !value.sync || !Array.isArray(value.workspaces)) {
 		throw new Error('Invalid storage configuration.');
 	}
+	if (typeof value.providerId !== 'string' ||
+		!/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value.providerId)) {
+		throw new Error('Invalid storage provider identifier.');
+	}
 	const { bucket, region, prefix } = value.s3;
 	if (typeof bucket !== 'string' || !/^[a-z0-9][a-z0-9.-]{2,62}$/.test(bucket) ||
 		typeof region !== 'string' || !/^[a-z0-9-]{2,32}$/.test(region) ||
@@ -36,6 +40,7 @@ export function normalizeStorageConfig(value: StorageConfig): StorageConfig {
 	return {
 		version: 1,
 		provider: 's3',
+		providerId: value.providerId,
 		s3: { bucket, region, prefix },
 		supabase: { url: url.origin },
 		sync: { enabled: value.sync.enabled, maxCacheBytes: value.sync.maxCacheBytes },
