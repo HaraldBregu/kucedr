@@ -54,14 +54,15 @@ export function Activity(): React.JSX.Element {
 					to={today}
 					shape="rounded"
 					scale="linear"
-					levels={7}
+					levels={8}
 					colors={[
 						'#0e4429',
-						'#07592e',
-						'#006d32',
-						'#138a3a',
-						'#26a641',
-						'#30bd4a',
+						'#08562d',
+						'#026731',
+						'#0b7d36',
+						'#1b963d',
+						'#29ac44',
+						'#31c04b',
 						'#39d353',
 					]}
 					emptyColor="var(--activity-empty-color)"
