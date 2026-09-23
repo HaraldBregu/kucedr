@@ -15,6 +15,7 @@ import { createRealtimeVoiceManager } from './agent/realtime_voice';
 import { StorageOperations, pullFiles, pushFiles, withStorageLock } from './storage';
 import { transferStorage } from './storage/s3/transfer';
 import { storageProviders } from './storage/providers';
+import { runVersionedStorageSync } from './storage/cloud/sync';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
 import { Coding, CodingProjectStore, CodingStore } from './coding';
@@ -90,10 +91,16 @@ export function bootstrapServices(): BootstrapResult {
 			eventBus.broadcastToWindows(StorageChannels.operationStatusChanged, status);
 		},
 		{
-			backup: () =>
-				transferStorage(storageProviders.resolve(getStorageSettings().providerId), pushFiles),
-			restore: () =>
-				transferStorage(storageProviders.resolve(getStorageSettings().providerId), pullFiles),
+			backup: () => getStorageSettings().syncEnabled
+				? cloudClient && cloudConfig
+					? runVersionedStorageSync(cloudClient, authService, cloudConfig.url, 'backup')
+					: Promise.reject(new Error('Cloud account services are unavailable.'))
+				: transferStorage(storageProviders.resolve(getStorageSettings().providerId), pushFiles),
+			restore: () => getStorageSettings().syncEnabled
+				? cloudClient && cloudConfig
+					? runVersionedStorageSync(cloudClient, authService, cloudConfig.url, 'restore')
+					: Promise.reject(new Error('Cloud account services are unavailable.'))
+				: transferStorage(storageProviders.resolve(getStorageSettings().providerId), pullFiles),
 			lock: withStorageLock,
 			preventSuspension: preventStorageSuspension,
 		}
