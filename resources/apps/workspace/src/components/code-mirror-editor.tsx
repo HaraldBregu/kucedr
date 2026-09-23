@@ -44,7 +44,6 @@ interface CodeMirrorEditorProps {
 	isDark?: boolean;
 	lineNumbersVisible?: boolean;
 	onChange: (value: string) => void;
-	onSearch?: () => void;
 	onSave?: () => unknown;
 	path?: string;
 	readOnly?: boolean;
@@ -139,7 +138,6 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 			isDark = false,
 			lineNumbersVisible = true,
 			onChange,
-			onSearch,
 			onSave,
 			path = '',
 			readOnly = false,
@@ -152,7 +150,6 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		const viewRef = useRef<EditorView>(null);
 		const onChangeRef = useRef(onChange);
 		const onSaveRef = useRef(onSave);
-		const onSearchRef = useRef(onSearch);
 		const initialValueRef = useRef(value);
 		const initialReadOnlyRef = useRef(readOnly);
 		const initialIsDarkRef = useRef(isDark);
@@ -162,7 +159,6 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		const layoutRef = useRef(new Compartment());
 		onChangeRef.current = onChange;
 		onSaveRef.current = onSave;
-		onSearchRef.current = onSearch;
 
 		useImperativeHandle(
 			ref,
@@ -242,13 +238,6 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 							run: () => {
 								if (!onSaveRef.current) return false;
 								void onSaveRef.current();
-								return true;
-							},
-						},
-						{
-							key: 'Mod-f',
-							run: () => {
-								onSearchRef.current?.();
 								return true;
 							},
 						},

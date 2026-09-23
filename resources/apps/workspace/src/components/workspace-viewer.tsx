@@ -1,4 +1,4 @@
-import { FileText, LoaderCircle } from 'lucide-react';
+import { FileWarning, FileText, LoaderCircle } from 'lucide-react';
 import { useEffect } from 'react';
 import type { WorkspaceFileKind, WorkspaceTreeEntry } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
@@ -9,6 +9,7 @@ import { FormatToggle } from '@/components/format-toggle';
 import { Tabs } from '@/components/ui/tabs';
 import { showNativeContextMenu } from '@/lib/menu';
 import { cn } from '@/lib/utils';
+import { isUnreadableBinaryError } from '@/lib/binary';
 
 const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'markdown',
@@ -147,7 +148,14 @@ export function WorkspaceViewer({
 						</div>
 					) : error ? (
 						<div className="flex min-h-full items-center justify-center px-6 text-center">
-							<p className="max-w-md text-xs text-destructive">{error}</p>
+							{isUnreadableBinaryError(error) ? (
+								<FileWarning
+									className="size-5 text-muted-foreground"
+									aria-label="File cannot be previewed"
+								/>
+							) : (
+								<p className="max-w-md text-xs text-destructive">{error}</p>
+							)}
 						</div>
 					) : (
 						<FileViewer

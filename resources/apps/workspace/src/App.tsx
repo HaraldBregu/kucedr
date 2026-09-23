@@ -108,6 +108,7 @@ export default function App() {
 	);
 	const [sidebarSearchOpen, setSidebarSearchOpen] = useState(false);
 	const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
+	const sidebarSearchInputRef = useRef<HTMLInputElement>(null);
 	const selectedPathRef = useRef<string | null>(null);
 	const selectedContentRef = useRef('');
 	const saveInFlightRef = useRef<Promise<boolean> | null>(null);
@@ -181,6 +182,24 @@ export default function App() {
 			root.style.setProperty(`--${name}`, value);
 		}
 	}, [theme]);
+
+	useEffect(() => {
+		if (!sidebarSearchOpen) return;
+		sidebarSearchInputRef.current?.focus();
+	}, [sidebarSearchOpen]);
+
+	useEffect(() => {
+		const openGlobalFileSearch = (event: KeyboardEvent) => {
+			if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'f') return;
+			event.preventDefault();
+			event.stopPropagation();
+			setView('workspace');
+			setSidebarOpen(true);
+			setSidebarSearchOpen(true);
+		};
+		window.addEventListener('keydown', openGlobalFileSearch, true);
+		return () => window.removeEventListener('keydown', openGlobalFileSearch, true);
+	}, []);
 
 	const setSidebarVisibility = useCallback((open: boolean): void => {
 		setSidebarOpen(open);
@@ -750,6 +769,7 @@ export default function App() {
 					{sidebarSearchOpen ? (
 						<div className="shrink-0 border-b border-sidebar-border p-2">
 							<Input
+								ref={sidebarSearchInputRef}
 								autoFocus
 								value={sidebarSearchQuery}
 								placeholder="Search files..."

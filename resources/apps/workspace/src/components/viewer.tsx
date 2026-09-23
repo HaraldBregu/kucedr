@@ -126,7 +126,6 @@ export function FileViewer({
 								value={content}
 								onChange={onChange}
 								onSave={onSave}
-								onSearch={() => setFindOpen(true)}
 								className="min-h-[calc(100dvh-10rem)] flex-1"
 							/>
 						</Suspense>
@@ -210,7 +209,6 @@ export function FileViewer({
 						lineNumbersVisible={settings.lineNumbers}
 						onChange={onChange}
 						onSave={onSave}
-						onSearch={() => setFindOpen(true)}
 						path={path}
 						value={content}
 						wordWrap={settings.wordWrap}
