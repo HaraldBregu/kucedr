@@ -1,10 +1,14 @@
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { openStorageState } from '../../../../src/main/storage/local/state';
 import { saveLocalSnapshot } from '../../../../src/main/storage/local/snapshot';
 import { listPendingOperations } from '../../../../src/main/storage/local/pending';
 import { getOrCreateWorkspaceId } from '../../../../src/main/storage/local/workspace';
+import { readStorageConfig } from '../../../../src/main/storage/local/config';
+import { writeStorageConfig } from '../../../../src/main/storage/local/config_write';
+import { storageLocation } from '../../../../src/main/storage/local/paths';
+import type { StorageConfig } from '../../../../src/main/storage/local/types';
 
 const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
 let root: string;
@@ -102,4 +106,34 @@ it('keeps workspace identities stable and separate for distinct roots and accoun
 	expect(getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'other'))).not.toBe(first);
 	expect(getOrCreateWorkspaceId(database, 'account-b', path.join(root, 'work'))).not.toBe(first);
 	database.close();
+});
+
+const config: StorageConfig = {
+	version: 1,
+	provider: 's3',
+	s3: { bucket: 'bucket', region: 'eu-west-1', prefix: 'versions/' },
+	supabase: { url: 'https://example.supabase.co' },
+	sync: { enabled: true, maxCacheBytes: 1000 },
+};
+
+it('keeps secrets out of config.json and preserves an earlier valid config', async () => {
+	await writeStorageConfig(config);
+	const file = path.join(storageLocation(), 'config.json');
+	const original = readFileSync(file, 'utf8');
+	const withSecret = {
+		...config,
+		s3: { ...config.s3, secretAccessKey: 'must-never-be-written' },
+	};
+	await expect(writeStorageConfig(withSecret)).rejects.toThrow();
+	expect(readFileSync(file, 'utf8')).toBe(original);
+	expect(original).not.toContain('secretAccessKey');
+});
+
+it('rejects an incompatible config version without replacing it', async () => {
+	mkdirSync(storageLocation(), { recursive: true });
+	const file = path.join(storageLocation(), 'config.json');
+	const newer = JSON.stringify({ ...config, version: 2 });
+	writeFileSync(file, newer);
+	await expect(readStorageConfig()).rejects.toThrow('Unsupported storage configuration version');
+	expect(readFileSync(file, 'utf8')).toBe(newer);
 });
