@@ -101,10 +101,15 @@ it('rolls back duplicate local publication records without losing the first pend
 
 it('keeps workspace identities stable and separate for distinct roots and accounts', () => {
 	const database = openStorageState();
-	const first = getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'work'));
-	expect(getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'work'))).toBe(first);
-	expect(getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'other'))).not.toBe(first);
-	expect(getOrCreateWorkspaceId(database, 'account-b', path.join(root, 'work'))).not.toBe(first);
+	const first = getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'work'), 'workspace-a');
+	expect(getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'work'), 'workspace-a'))
+		.toBe(first);
+	expect(getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'other'), 'workspace-b'))
+		.not.toBe(first);
+	expect(getOrCreateWorkspaceId(database, 'account-b', path.join(root, 'work'), 'workspace-c'))
+		.not.toBe(first);
+	expect(() => getOrCreateWorkspaceId(database, 'account-a', path.join(root, 'work'), 'workspace-d'))
+		.toThrow('already paired');
 	database.close();
 });
 
@@ -114,19 +119,19 @@ const config: StorageConfig = {
 	s3: { bucket: 'bucket', region: 'eu-west-1', prefix: 'versions/' },
 	supabase: { url: 'https://example.supabase.co' },
 	sync: { enabled: true, maxCacheBytes: 1000 },
+	workspaces: [],
 };
 
-it('keeps secrets out of config.json and preserves an earlier valid config', async () => {
+it('keeps secrets out of config.json when writing a configuration', async () => {
 	await writeStorageConfig(config);
 	const file = path.join(storageLocation(), 'config.json');
-	const original = readFileSync(file, 'utf8');
 	const withSecret = {
 		...config,
 		s3: { ...config.s3, secretAccessKey: 'must-never-be-written' },
 	};
-	await expect(writeStorageConfig(withSecret)).rejects.toThrow();
-	expect(readFileSync(file, 'utf8')).toBe(original);
-	expect(original).not.toContain('secretAccessKey');
+	await writeStorageConfig(withSecret);
+	expect(readFileSync(file, 'utf8')).not.toContain('must-never-be-written');
+	expect(readFileSync(file, 'utf8')).not.toContain('secretAccessKey');
 });
 
 it('rejects an incompatible config version without replacing it', async () => {
