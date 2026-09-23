@@ -16,7 +16,7 @@ import {
 	syntaxHighlighting,
 } from '@codemirror/language';
 import { Compartment, EditorState, Transaction } from '@codemirror/state';
-import { openSearchPanel, search, searchKeymap } from '@codemirror/search';
+import { findNext, findPrevious, search, SearchQuery, setSearchQuery } from '@codemirror/search';
 import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
 import { tags } from '@lezer/highlight';
@@ -27,7 +27,8 @@ import { cn } from '@/lib/utils';
 
 export interface CodeMirrorEditorHandle {
 	focus: () => void;
-	openSearch: () => void;
+	find: (query: string, direction: 'next' | 'previous') => void;
+	clearSearch: () => void;
 	prefixLines: (prefix: string) => void;
 	redo: () => void;
 	undo: () => void;
@@ -43,6 +44,7 @@ interface CodeMirrorEditorProps {
 	isDark?: boolean;
 	lineNumbersVisible?: boolean;
 	onChange: (value: string) => void;
+	onSearch?: () => void;
 	onSave?: () => unknown;
 	path?: string;
 	readOnly?: boolean;
@@ -120,16 +122,6 @@ const codeEditorTheme = EditorView.theme({
 	'.cm-activeLine, .cm-activeLineGutter': {
 		backgroundColor: 'color-mix(in oklch, var(--muted) 45%, transparent)',
 	},
-	'.cm-panels': { backgroundColor: 'var(--background)', color: 'var(--foreground)' },
-	'.cm-panels-top': { borderBottom: '1px solid var(--border)' },
-	'.cm-search': { padding: '8px 12px', fontFamily: 'inherit', fontSize: '12px' },
-	'.cm-search input': {
-		border: '1px solid var(--border)',
-		borderRadius: '4px',
-		backgroundColor: 'var(--background)',
-		color: 'var(--foreground)',
-		padding: '3px 6px',
-	},
 	'.cm-cursor, .cm-dropCursor': { borderLeftColor: 'var(--primary)' },
 	'&.cm-focused .cm-selectionBackground, .cm-selectionBackground, ::selection': {
 		backgroundColor: 'color-mix(in oklch, var(--primary) 16%, transparent) !important',
@@ -147,6 +139,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 			isDark = false,
 			lineNumbersVisible = true,
 			onChange,
+			onSearch,
 			onSave,
 			path = '',
 			readOnly = false,
@@ -159,6 +152,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		const viewRef = useRef<EditorView>(null);
 		const onChangeRef = useRef(onChange);
 		const onSaveRef = useRef(onSave);
+		const onSearchRef = useRef(onSearch);
 		const initialValueRef = useRef(value);
 		const initialReadOnlyRef = useRef(readOnly);
 		const initialIsDarkRef = useRef(isDark);
@@ -168,14 +162,22 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 		const layoutRef = useRef(new Compartment());
 		onChangeRef.current = onChange;
 		onSaveRef.current = onSave;
+		onSearchRef.current = onSearch;
 
 		useImperativeHandle(
 			ref,
 			() => ({
-				openSearch() {
+				find(query, direction) {
 					const view = viewRef.current;
-					if (!view) return;
-					openSearchPanel(view);
+					if (!view || !query) return;
+					view.dispatch({ effects: setSearchQuery.of(new SearchQuery({ search: query })) });
+					if (direction === 'next') findNext(view);
+					else findPrevious(view);
+				},
+				clearSearch() {
+					viewRef.current?.dispatch({
+						effects: setSearchQuery.of(new SearchQuery({ search: '' })),
+					});
 				},
 				wrapSelection(prefix, suffix = prefix) {
 					const view = viewRef.current;
@@ -243,12 +245,18 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 								return true;
 							},
 						},
+						{
+							key: 'Mod-f',
+							run: () => {
+								onSearchRef.current?.();
+								return true;
+							},
+						},
 						...defaultKeymap,
 						...historyKeymap,
 						...foldKeymap,
-						...searchKeymap,
 					]),
-					search({ top: true }),
+					search(),
 					languageRef.current.of(code ? [] : markdown()),
 					themeRef.current.of(
 						code

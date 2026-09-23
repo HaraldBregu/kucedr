@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { FileQuestion, LoaderCircle, Music2, Search } from 'lucide-react';
 import type { WorkspaceFileKind } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
@@ -19,6 +19,8 @@ import { showMediaContextMenu } from '@/lib/media';
 import { showNativeContextMenu } from '@/lib/menu';
 import { isStructuredDataPath } from '@/lib/structured';
 import { Button } from '@/components/ui/button';
+import { Find } from '@/components/find';
+import { countMatches } from '@/lib/matches';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('@/components/code-mirror-editor');
@@ -63,6 +65,27 @@ export function FileViewer({
 	const name = path.split(/[\\/]/).pop() ?? path;
 	const mediaRef = useRef<HTMLMediaElement | null>(null);
 	const codeEditorRef = useRef<CodeMirrorEditorHandle>(null);
+	const [findOpen, setFindOpen] = useState(false);
+	const [findQuery, setFindQuery] = useState('');
+	const findMatchCount = useMemo(() => countMatches(content, findQuery), [content, findQuery]);
+
+	useEffect(() => {
+		setFindOpen(false);
+		setFindQuery('');
+		codeEditorRef.current?.clearSearch();
+	}, [path]);
+
+	const closeFind = () => {
+		setFindOpen(false);
+		setFindQuery('');
+		codeEditorRef.current?.clearSearch();
+	};
+
+	const updateFindQuery = (query: string) => {
+		setFindQuery(query);
+		if (query) codeEditorRef.current?.find(query, 'next');
+		else codeEditorRef.current?.clearSearch();
+	};
 
 	if (kind === 'markdown') {
 		return (
@@ -80,10 +103,21 @@ export function FileViewer({
 							className="absolute right-5 top-2.5 z-10 size-7 sm:right-8 lg:right-12"
 							title="Find in file (⌘/Ctrl+F)"
 							aria-label="Find in file"
-							onClick={() => codeEditorRef.current?.openSearch()}
+							onClick={() => setFindOpen(true)}
 						>
 							<Search />
 						</Button>
+						{findOpen ? (
+							<Find
+								className="absolute left-5 right-14 top-2.5 z-20 sm:left-8 lg:left-12"
+								matchCount={findMatchCount}
+								onClose={closeFind}
+								onNext={() => codeEditorRef.current?.find(findQuery, 'next')}
+								onPrevious={() => codeEditorRef.current?.find(findQuery, 'previous')}
+								onQueryChange={updateFindQuery}
+								query={findQuery}
+							/>
+						) : null}
 						<Suspense fallback={viewerFallback}>
 							<CodeMirrorEditor
 								ref={codeEditorRef}
@@ -92,6 +126,7 @@ export function FileViewer({
 								value={content}
 								onChange={onChange}
 								onSave={onSave}
+								onSearch={() => setFindOpen(true)}
 								className="min-h-[calc(100dvh-10rem)] flex-1"
 							/>
 						</Suspense>
@@ -147,10 +182,21 @@ export function FileViewer({
 					className="absolute right-3 top-2.5 z-10 size-7"
 					title="Find in file (⌘/Ctrl+F)"
 					aria-label="Find in file"
-					onClick={() => codeEditorRef.current?.openSearch()}
+					onClick={() => setFindOpen(true)}
 				>
 					<Search />
 				</Button>
+				{findOpen ? (
+					<Find
+						className="absolute left-3 right-12 top-2.5 z-20"
+						matchCount={findMatchCount}
+						onClose={closeFind}
+						onNext={() => codeEditorRef.current?.find(findQuery, 'next')}
+						onPrevious={() => codeEditorRef.current?.find(findQuery, 'previous')}
+						onQueryChange={updateFindQuery}
+						query={findQuery}
+					/>
+				) : null}
 				<Suspense fallback={viewerFallback}>
 					<CodeMirrorEditor
 						ref={codeEditorRef}
@@ -164,6 +210,7 @@ export function FileViewer({
 						lineNumbersVisible={settings.lineNumbers}
 						onChange={onChange}
 						onSave={onSave}
+						onSearch={() => setFindOpen(true)}
 						path={path}
 						value={content}
 						wordWrap={settings.wordWrap}
