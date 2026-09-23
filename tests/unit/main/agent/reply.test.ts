@@ -93,7 +93,7 @@ it('returns the complete stored session transcript for a snapshot', () => {
 		role: 'user' as const,
 		content: `Message ${index + 1}`,
 	}));
-	const directory = path.join(location, 'sessions', SESSION_ID);
+	const directory = path.join(path.dirname(location), 'sessions', SESSION_ID);
 	fs.mkdirSync(directory, { recursive: true });
 	fs.writeFileSync(path.join(directory, 'messages.json'), JSON.stringify(messages), 'utf8');
 
