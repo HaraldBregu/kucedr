@@ -10,6 +10,13 @@ export interface UserMessage {
 	readonly content: string;
 }
 
+export interface SummaryMessage {
+	readonly id: string;
+	readonly role: 'summary';
+	readonly type: 'summary';
+	readonly content: string;
+}
+
 export interface PendingToolPermission {
 	readonly approvalId: string;
 	readonly runId: string;
@@ -56,7 +63,7 @@ export interface AgentMessage {
 	};
 }
 
-export type HomeChatMessage = UserMessage | AgentMessage;
+export type HomeChatMessage = UserMessage | AgentMessage | SummaryMessage;
 
 export interface AgentChatState {
 	readonly messages: readonly HomeChatMessage[];

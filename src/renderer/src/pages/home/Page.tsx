@@ -800,6 +800,21 @@ function PageContent(): ReactElement {
 											);
 										}
 
+										if (message.role === 'summary') {
+											return (
+												<section
+													key={message.id}
+													aria-label="Conversation summary"
+													className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground"
+												>
+													<p className="mb-1 text-xs font-medium uppercase tracking-wide text-foreground">
+														Conversation summary
+													</p>
+													<p className="whitespace-pre-wrap">{message.content}</p>
+												</section>
+											);
+										}
+
 										return (
 											<AssistantMessage
 												key={message.id}

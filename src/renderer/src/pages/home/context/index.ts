@@ -15,6 +15,7 @@ export {
 	type HomeChatMessage,
 	type PendingToolPermission,
 	type PendingUserInput,
+	type SummaryMessage,
 	type UserMessage,
 } from './state';
 export {

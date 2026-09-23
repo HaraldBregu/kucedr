@@ -12,6 +12,7 @@ import {
 	type AgentChatState,
 	type AgentMessage,
 	type HomeChatMessage,
+	type SummaryMessage,
 	type UserMessage,
 } from './state';
 
@@ -352,7 +353,7 @@ function addToolResultToMessages(
 export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatMessage[] {
 	const out: HomeChatMessage[] = [];
 	history.forEach((message, index) => {
-		if (message.role === 'tool') {
+	if (message.role === 'tool') {
 			const next = addToolResultToMessages(
 				out,
 				message.toolUseId,
@@ -362,6 +363,14 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 				message.output
 			);
 			out.splice(0, out.length, ...next);
+			return;
+		}
+
+		if (message.role === 'summary') {
+			const content = typeof message.content === 'string' ? message.content : '';
+			if (content.length > 0) {
+				out.push({ id: `summary-history-${index}`, role: 'summary', type: 'summary', content });
+			}
 			return;
 		}
 
