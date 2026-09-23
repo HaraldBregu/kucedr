@@ -24,7 +24,16 @@ import {
 	SearchQuery,
 	setSearchQuery,
 } from '@codemirror/search';
-import { Decoration, EditorView, keymap, lineNumbers, placeholder, ViewPlugin } from '@codemirror/view';
+import {
+	Decoration,
+	type DecorationSet,
+	EditorView,
+	keymap,
+	lineNumbers,
+	placeholder,
+	ViewPlugin,
+	type ViewUpdate,
+} from '@codemirror/view';
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
 import { tags } from '@lezer/highlight';
 
@@ -87,14 +96,19 @@ const searchMatch = Decoration.mark({ class: 'cm-searchMatch' });
 const selectedSearchMatch = Decoration.mark({ class: 'cm-searchMatch cm-searchMatch-selected' });
 const searchMatches = ViewPlugin.fromClass(
 	class {
-		decorations: ReturnType<typeof Decoration.set>;
+		decorations: DecorationSet;
 
 		constructor(view: EditorView) {
 			this.decorations = this.highlight(view);
 		}
 
-		update(update: { docChanged: boolean; selectionSet: boolean; view: EditorView; viewportChanged: boolean }) {
-			if (update.docChanged || update.selectionSet || update.viewportChanged) {
+		update(update: ViewUpdate) {
+			if (
+				update.docChanged ||
+				update.selectionSet ||
+				update.viewportChanged ||
+				!getSearchQuery(update.startState).eq(getSearchQuery(update.state))
+			) {
 				this.decorations = this.highlight(update.view);
 			}
 		}
