@@ -106,6 +106,11 @@ is rejected to prevent accidental cross-account data exposure. Folder backups us
 they do not use this account adapter or require sign-in. Model, database, and search credentials
 remain in local provider settings. Vector databases serve RAG and are separate from file backup.
 
+Opt-in version history sync does require account sign-in. It uses the Supabase SDK client from
+the Electron main process and the storage Edge Functions; the matching S3 provider's secret
+remains in the existing secure local store and is never sent to the functions. Configure the
+server-side S3 credentials as described in [File sync backend](../supabase/README.md).
+
 Supabase session and PKCE values are encrypted with Electron `safeStorage`. On systems where
 secure encryption is unavailable, Kucedr keeps the session in memory and requires sign-in
 again after restart.

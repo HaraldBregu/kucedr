@@ -22,6 +22,10 @@ the renderer to application services; trusted settings views can edit provider c
 record services. Folder transfers resolve the selected storage provider and create an S3 client
 for each transfer through `storage/s3/transfer.ts`.
 
+Version history sync is an opt-in path described in [Cloud file synchronization design](STORAGE_SYNC.md).
+It uses the same saved S3 provider selection for public bucket settings, the account's Supabase
+SDK client for metadata, and trusted Edge Functions for narrow S3 upload/download grants.
+
 ## Security and lifecycle rules
 
 - Only `signedIn` grants a user ID or access token. Loading, signed-out, confirmation, recovery,
@@ -41,6 +45,12 @@ for each transfer through `storage/s3/transfer.ts`.
 Cloud Backup is an incremental upload plus an explicit restore, not bidirectional file-system
 synchronization. Backup overwrites matching remote objects and retains other remote objects.
 Restore atomically replaces matching local files and retains other local files.
+
+When Version history sync is enabled, the manual backup action instead snapshots edits to
+`~/.kucedr/storage/blobs/`, queues them in SQLite, publishes immutable S3 content with Supabase
+version ancestry, and catches up from the change feed. The fetch action verifies remote versions
+and creates only missing working files; it does not overwrite existing local work. The legacy
+backup objects and settings are retained separately.
 
 Kucedr rejects filesystem roots, symbolic-link crossings, sensitive settings/provider folders,
 and files larger than 50 MiB. Traversal and transfer are sequential to keep memory and open-file
