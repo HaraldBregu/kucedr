@@ -139,6 +139,6 @@ it('rejects an incompatible config version without replacing it', async () => {
 	const file = path.join(storageLocation(), 'config.json');
 	const newer = JSON.stringify({ ...config, version: 2 });
 	writeFileSync(file, newer);
-	await expect(readStorageConfig()).rejects.toThrow('Unsupported storage configuration version');
+	await expect(readStorageConfig()).rejects.toThrow('Invalid storage configuration');
 	expect(readFileSync(file, 'utf8')).toBe(newer);
 });
