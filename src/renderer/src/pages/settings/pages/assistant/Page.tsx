@@ -120,6 +120,9 @@ const AssistantPage: React.FC = () => {
 	const model = modelsFor('llm').find(
 		(item) => item.provider.id === state.providerId && item.id === state.modelId
 	);
+	const selectedCompactModel = modelsFor('llm').find(
+		(item) => item.provider.id === compactModel.providerId && item.id === compactModel.modelId
+	);
 	const inputs = model?.metadata?.documentationStatus === 'verified' ? model.metadata.inputs : {};
 
 	useEffect(() => {
@@ -308,7 +311,9 @@ const AssistantPage: React.FC = () => {
 							onValueChange={handleCompactModelChange}
 						>
 							<SelectTrigger className="w-52 max-w-full" size="sm" aria-label={t('settings.modelServices.compactModel')}>
-								<SelectValue placeholder={t('settings.modelServices.compactModelDisabled')} />
+								<SelectValue placeholder={t('settings.modelServices.compactModelDisabled')}>
+									{selectedCompactModel?.name}
+								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
 								{modelsFor('llm').map((item) => (
