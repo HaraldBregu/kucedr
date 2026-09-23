@@ -107,6 +107,10 @@ const GeneralPage: React.FC = () => {
 				description={t('settings.tabs.generalDescription')}
 			/>
 
+			<SettingsSection title={t('settings.activity.title')}>
+				<Activity />
+			</SettingsSection>
+
 			<SettingsSection title={t('settings.application.information')}>
 				<SettingsPanel>
 					<SettingsRow
@@ -249,10 +253,6 @@ const GeneralPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.system.mediaPermissions.title')}>
 				<MediaPermissionsSection />
-			</SettingsSection>
-
-			<SettingsSection title={t('settings.activity.title')}>
-				<Activity />
 			</SettingsSection>
 
 			<SettingsSection title={t('settings.application.data')}>

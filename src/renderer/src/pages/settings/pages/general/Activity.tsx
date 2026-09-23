@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { CalendarHeatmap } from '@thilakbhat/heatmap-ui';
 import '@thilakbhat/heatmap-ui/styles.css';
 import { useTranslation } from 'react-i18next';
-import { SettingsPanel } from '../../components';
 
 export function Activity(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -26,8 +25,7 @@ export function Activity(): React.JSX.Element {
 	}, []);
 
 	return (
-		<SettingsPanel>
-			<div className="overflow-x-auto px-4 py-3">
+		<div className="overflow-x-auto py-1">
 				<CalendarHeatmap
 					values={[...values]}
 					weeks={53}
@@ -49,7 +47,6 @@ export function Activity(): React.JSX.Element {
 						{t('settings.activity.empty')}
 					</p>
 				) : null}
-			</div>
-		</SettingsPanel>
+		</div>
 	);
 }
