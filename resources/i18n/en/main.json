@@ -357,6 +357,12 @@
 			"dataFolder": "Data Folder",
 			"openDataFolder": "Open Folder"
 		},
+		"activity": {
+			"title": "Activity",
+			"events": "events",
+			"day": "{{count}} events on {{date}}",
+			"empty": "Activity from application logs will appear here."
+		},
 		"system": {
 			"actionsDescription": "Open required operating system panels and control background power behavior.",
 			"mediaPermissions": {

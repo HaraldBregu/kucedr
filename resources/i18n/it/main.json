@@ -357,6 +357,12 @@
 			"dataFolder": "Cartella Dati",
 			"openDataFolder": "Apri Cartella"
 		},
+		"activity": {
+			"title": "Attivita",
+			"events": "eventi",
+			"day": "{{count}} eventi il {{date}}",
+			"empty": "Qui comparira l'attivita dai log dell'applicazione."
+		},
 		"system": {
 			"actionsDescription": "Apri i pannelli richiesti del sistema operativo e controlla il comportamento energetico in background.",
 			"mediaPermissions": {

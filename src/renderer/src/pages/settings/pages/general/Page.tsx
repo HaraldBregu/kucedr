@@ -30,6 +30,7 @@ import {
 	SettingsSection,
 } from '../../components';
 import { MediaPermissionsSection } from '../../components/media';
+import { Activity } from './Activity';
 
 interface LanguageOption {
 	readonly value: AppLanguage;
@@ -248,6 +249,10 @@ const GeneralPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.system.mediaPermissions.title')}>
 				<MediaPermissionsSection />
+			</SettingsSection>
+
+			<SettingsSection title={t('settings.activity.title')}>
+				<Activity />
 			</SettingsSection>
 
 			<SettingsSection title={t('settings.application.data')}>

@@ -3,6 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
 
+jest.mock('@thilakbhat/heatmap-ui', () => ({
+	CalendarHeatmap: () => <div data-testid="activity-heatmap" />,
+}));
+
 const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
@@ -149,4 +153,15 @@ it('opens Voice Agent settings from General settings', async () => {
 	await user.click(screen.getByRole('link', { name: /settings\.voiceAgent\.title/ }));
 
 	expect(screen.getByText('Voice Agent page')).toBeInTheDocument();
+});
+
+it('shows the activity heatmap in General settings', () => {
+	render(
+		<MemoryRouter>
+			<GeneralPage />
+		</MemoryRouter>
+	);
+
+	expect(screen.getByTestId('activity-heatmap')).toBeInTheDocument();
+	expect(screen.getByText('settings.activity.empty')).toBeInTheDocument();
 });
