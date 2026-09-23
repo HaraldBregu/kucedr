@@ -1,26 +1,20 @@
 import * as React from 'react';
-import { ChevronRight, File, Folder } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@kucedr/sdk';
 
 import { Button } from '@/components/ui/button';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { WorkspaceBreadcrumbItem } from '@/components/breadcrumb-item';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { findWorkspaceEntry } from '@/lib/find';
 
 interface WorkspaceBreadcrumbProps {
 	entries: WorkspaceTreeEntry[];
-	onDirectorySelect: (entry: WorkspaceTreeEntry) => void;
 	onFileSelect: (entry: WorkspaceTreeEntry) => void;
 	path: string;
 }
 
 export function WorkspaceBreadcrumb({
 	entries,
-	onDirectorySelect,
 	onFileSelect,
 	path,
 }: WorkspaceBreadcrumbProps) {
@@ -54,16 +48,11 @@ export function WorkspaceBreadcrumb({
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="start" className="max-h-80 min-w-56 overflow-y-auto">
 									{items.map((item) => (
-										<DropdownMenuItem
+										<WorkspaceBreadcrumbItem
 											key={item.path}
-											onSelect={() => {
-												if (item.type === 'file') onFileSelect(item);
-												else onDirectorySelect(item);
-											}}
-										>
-											{item.type === 'directory' ? <Folder /> : <File />}
-											<span className="truncate">{item.name}</span>
-										</DropdownMenuItem>
+											entry={item}
+											onFileSelect={onFileSelect}
+										/>
 									))}
 								</DropdownMenuContent>
 							</DropdownMenu>

@@ -35,7 +35,6 @@ interface WorkspaceViewerProps {
 	mediaUrl: string;
 	markdownMode: 'source' | 'preview';
 	onChange: (content: string) => void;
-	onDirectorySelect: (entry: WorkspaceTreeEntry) => void;
 	onFileSelect: (entry: WorkspaceTreeEntry) => void;
 	onMarkdownModeChange: (mode: 'source' | 'preview') => void;
 	onRename: () => void;
@@ -58,7 +57,6 @@ export function WorkspaceViewer({
 	mediaUrl,
 	markdownMode,
 	onChange,
-	onDirectorySelect,
 	onFileSelect,
 	onMarkdownModeChange,
 	onRename,
@@ -186,7 +184,6 @@ export function WorkspaceViewer({
 				>
 					<WorkspaceBreadcrumb
 						entries={workspaceFiles}
-						onDirectorySelect={onDirectorySelect}
 						onFileSelect={onFileSelect}
 						path={path}
 					/>

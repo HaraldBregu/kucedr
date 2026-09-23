@@ -906,11 +906,6 @@ export default function App() {
 							setSelectedContent(content);
 							setSelectedSaveError('');
 						}}
-						onDirectorySelect={(entry) => {
-							setSidebarOpen(true);
-							setSidebarSearchOpen(true);
-							setSidebarSearchQuery(entry.name);
-						}}
 						onFileSelect={(entry) => void selectWorkspaceEntry(entry)}
 						onMarkdownModeChange={(mode) => {
 							setMarkdownMode(mode);
