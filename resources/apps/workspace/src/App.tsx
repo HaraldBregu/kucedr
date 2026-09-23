@@ -894,6 +894,7 @@ export default function App() {
 						dirty={selectedDirty}
 						error={selectedError}
 						file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
+						workspaceFiles={workspaceFiles}
 						kind={selectedKind}
 						findRequest={fileFindRequest}
 						isDark={theme.isDark}
@@ -905,6 +906,12 @@ export default function App() {
 							setSelectedContent(content);
 							setSelectedSaveError('');
 						}}
+						onDirectorySelect={(entry) => {
+							setSidebarOpen(true);
+							setSidebarSearchOpen(true);
+							setSidebarSearchQuery(entry.name);
+						}}
+						onFileSelect={(entry) => void selectWorkspaceEntry(entry)}
 						onMarkdownModeChange={(mode) => {
 							setMarkdownMode(mode);
 							const settings = { ...workspaceSettings, formatted: mode === 'preview' };

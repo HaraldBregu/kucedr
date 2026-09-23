@@ -4,6 +4,7 @@ import type { WorkspaceFileKind, WorkspaceTreeEntry } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
 
 import { FileViewer, type FileFindControls } from '@/components/viewer';
+import { WorkspaceBreadcrumb } from '@/components/breadcrumb';
 import { Find } from '@/components/find';
 import { FileInformation } from '@/components/information';
 import { FormatToggle } from '@/components/format-toggle';
@@ -27,12 +28,15 @@ interface WorkspaceViewerProps {
 	dirty: boolean;
 	error: string;
 	file: WorkspaceTreeEntry | null;
+	workspaceFiles: WorkspaceTreeEntry[];
 	isDark: boolean;
 	kind: WorkspaceFileKind | null;
 	loading: boolean;
 	mediaUrl: string;
 	markdownMode: 'source' | 'preview';
 	onChange: (content: string) => void;
+	onDirectorySelect: (entry: WorkspaceTreeEntry) => void;
+	onFileSelect: (entry: WorkspaceTreeEntry) => void;
 	onMarkdownModeChange: (mode: 'source' | 'preview') => void;
 	onRename: () => void;
 	onSave: () => Promise<boolean>;
@@ -47,12 +51,15 @@ export function WorkspaceViewer({
 	dirty,
 	error,
 	file,
+	workspaceFiles,
 	isDark,
 	kind,
 	loading,
 	mediaUrl,
 	markdownMode,
 	onChange,
+	onDirectorySelect,
+	onFileSelect,
 	onMarkdownModeChange,
 	onRename,
 	onSave,
@@ -66,7 +73,6 @@ export function WorkspaceViewer({
 	const [fileFindControls, setFileFindControls] = useState<FileFindControls | null>(null);
 	const [findOpen, setFindOpen] = useState(false);
 	const [findQuery, setFindQuery] = useState('');
-	const fileName = path?.split(/[\\/]/).pop() ?? '';
 	const searchable = kind === 'text' || (kind === 'markdown' && markdownMode === 'source');
 	const findMatchCount = useMemo(() => countMatches(content, findQuery), [content, findQuery]);
 	const onFindReady = useCallback((controls: FileFindControls | null) => {
@@ -178,9 +184,12 @@ export function WorkspaceViewer({
 					aria-label="File navigation"
 					className="sticky top-0 z-20 flex h-11 shrink-0 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur sm:px-4"
 				>
-					<p className="min-w-0 max-w-[40%] flex-1 truncate text-xs font-medium" title={path}>
-						{fileName}
-					</p>
+					<WorkspaceBreadcrumb
+						entries={workspaceFiles}
+						onDirectorySelect={onDirectorySelect}
+						onFileSelect={onFileSelect}
+						path={path}
+					/>
 					{searchable ? (
 						findOpen ? (
 							<Find
