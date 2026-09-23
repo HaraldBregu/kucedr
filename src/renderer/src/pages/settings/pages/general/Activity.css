@@ -1,5 +1,10 @@
 .card-body {
+	--activity-empty-color: rgb(235, 237, 240);
 	overflow-x: auto;
 	margin: -44px -6px -6px;
 	padding: 44px 6px 6px;
+}
+
+.dark .card-body {
+	--activity-empty-color: rgb(44, 44, 46);
 }
