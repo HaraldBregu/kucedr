@@ -12,7 +12,6 @@ import {
 	type AgentChatState,
 	type AgentMessage,
 	type HomeChatMessage,
-	type SummaryMessage,
 	type UserMessage,
 } from './state';
 
