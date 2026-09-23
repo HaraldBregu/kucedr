@@ -42,6 +42,7 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 			...(mcp
 				? {
 						mcpDiscovery: {
+							phase: 'initial',
 							configuredServers: Number(mcp.configuredServers) || 0,
 							enabledServers: Number(mcp.enabledServers) || 0,
 							connectedServers: Number(mcp.connectedServers) || 0,
@@ -62,6 +63,37 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 						},
 					}
 				: {}),
+		};
+	}
+	if (event.type === 'mcp_discovery_result') {
+		const mcp =
+			event.mcpDiscovery &&
+			typeof event.mcpDiscovery === 'object' &&
+			!Array.isArray(event.mcpDiscovery)
+				? (event.mcpDiscovery as Record<string, unknown>)
+				: {};
+		return {
+			type: event.type,
+			mcpDiscovery: {
+				phase: 'final',
+				configuredServers: Number(mcp.configuredServers) || 0,
+				enabledServers: Number(mcp.enabledServers) || 0,
+				connectedServers: Number(mcp.connectedServers) || 0,
+				listedTools: Number(mcp.listedTools) || 0,
+				loadedTools: Number(mcp.loadedTools) || 0,
+				rejectedTools: Number(mcp.rejectedTools) || 0,
+				truncated: mcp.truncated === true,
+				failures: Array.isArray(mcp.failures)
+					? mcp.failures.slice(0, 32).map((failure) => {
+							const issue = failure as Record<string, unknown>;
+							return {
+								serverId: typeof issue.serverId === 'string' ? issue.serverId : 'unknown',
+								phase: typeof issue.phase === 'string' ? issue.phase : 'unknown',
+								...(typeof issue.toolName === 'string' ? { toolName: issue.toolName } : {}),
+							};
+						})
+					: [],
+			},
 		};
 	}
 	if (event.type === 'assistant_message') {

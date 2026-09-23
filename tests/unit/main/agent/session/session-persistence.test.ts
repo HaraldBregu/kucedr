@@ -168,28 +168,35 @@ describe('session persistence', () => {
 		state.id = SESSION_ID;
 		state.folderName = SESSION_ID;
 		state.sessionsPath = path.join(temporaryRoot, 'sessions');
+		const diagnostics = {
+			configuredServers: 1,
+			enabledServers: 1,
+			connectedServers: 0,
+			listedTools: 0,
+			loadedTools: 0,
+			rejectedTools: 0,
+			truncated: false,
+			failures: [{ serverId: 'resend', phase: 'connect' }],
+		};
 		appendRun(state, {
 			type: 'run_started',
 			sessionId: SESSION_ID,
 			model: 'model',
 			providerId: 'provider',
 			tools: ['read'],
-			mcpDiscovery: {
-				configuredServers: 1,
-				enabledServers: 1,
-				connectedServers: 0,
-				listedTools: 0,
-				loadedTools: 0,
-				rejectedTools: 0,
-				truncated: false,
-				failures: [{ serverId: 'resend', phase: 'connect' }],
-			},
+			mcpDiscovery: diagnostics,
 		});
+		diagnostics.connectedServers = 1;
+		diagnostics.listedTools = 3;
+		diagnostics.loadedTools = 2;
 		appendRun(state, { type: 'run_finished', result: { sessionId: SESSION_ID, text: '' } });
 
 		const trace = fs.readFileSync(runFilePath(state), 'utf8');
 		expect(trace).toContain(
-			'"mcpDiscovery":{"configuredServers":1,"enabledServers":1,"connectedServers":0'
+			'"mcpDiscovery":{"phase":"initial","configuredServers":1,"enabledServers":1,"connectedServers":0'
+		);
+		expect(trace).toContain(
+			'"type":"mcp_discovery_result","mcpDiscovery":{"phase":"final","configuredServers":1,"enabledServers":1,"connectedServers":1,"listedTools":3,"loadedTools":2'
 		);
 		expect(trace).toContain('"serverId":"resend","phase":"connect"');
 	});
