@@ -6,7 +6,7 @@ import { readIdentity } from './system_read_identity';
 import { readSoul } from './system_read_soul';
 import { readUser } from './system_read_user';
 
-export async function buildWorkspaceContext(config: Config): Promise<string> {
+export async function buildWorkspaceContext(config: Config, scope: 'full' | 'core' = 'full'): Promise<string> {
 	const resolvedWorkspacePath = path.resolve(config.location);
 	const files = [
 		['AGENTS.md', await readAgent(resolvedWorkspacePath)],
@@ -16,6 +16,7 @@ export async function buildWorkspaceContext(config: Config): Promise<string> {
 		['USER.md', await readUser(resolvedWorkspacePath)],
 	] as const;
 	const sections = files
+		.filter(([name]) => scope === 'full' || (name !== 'BOOTSTRAP.md' && name !== 'USER.md'))
 		.filter(([, content]) => content.trim())
 		.map(([name, content]) => `### ${name}\n${content.trim()}`);
 	if (sections.length === 0) return '';

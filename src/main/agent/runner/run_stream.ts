@@ -369,7 +369,10 @@ async function* loop(
 			]
 				.filter(Boolean)
 				.join('\n\n');
-			const workspaceContext = await buildWorkspaceContext(config);
+			const workspaceContext = await buildWorkspaceContext(
+				config,
+				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core'
+			);
 			const activeGoalContext =
 				session.category === 'main' && input.interactionMode !== 'plan' && session.folderName !== ''
 					? goalContext(sessionDir(session))
