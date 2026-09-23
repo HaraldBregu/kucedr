@@ -95,9 +95,7 @@ export function render(
 		workspaceSizeDirty = false;
 		try {
 			persistWorkspaceWindowSize(win, settings);
-		} catch {
-			// A resize must not prevent the app window from remaining usable.
-		}
+		} catch {}
 	};
 	const handleResize = (): void => {
 		resizeView();
