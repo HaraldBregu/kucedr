@@ -104,3 +104,17 @@ it('keeps concurrent edits and edit-versus-delete heads until a merge resolves t
 	expect(getSyncCursor(database, scope)).toBe('5');
 	database.close();
 });
+
+it('exposes separate file identities claiming the same path', () => {
+	const database = openStorageState();
+	for (const [index, fileId] of ['file-a', 'file-b'].entries()) {
+		applyRemoteChange(database, scope, {
+			sequence: String(index + 1), versionId: `version-${index}`,
+			fileId, path: 'same.txt', kind: 'content', hash: 'hash',
+			size: 4, bucket: 'bucket', key: `key-${index}`, parentIds: [],
+		});
+	}
+	expect(listStorageConflicts(database, scope).map((item) => item.fileId))
+		.toEqual(['file-a', 'file-b']);
+	database.close();
+});
