@@ -81,10 +81,10 @@ describe('progressive tool discovery', () => {
 	it('activates eligible inactive IDs without exposing unknown IDs', () => {
 		const write = fakeTool('write', 'Write a file');
 		const discovery = createToolDiscovery({ eligible: [write], required: [] });
-		expect(discovery.activateInactive(['missing', 'write']).map((tool) => tool.id)).toEqual([
+		expect(discovery.activateInactive(['missing', 'write']).tools.map((tool) => tool.id)).toEqual([
 			'write',
 		]);
-		expect(discovery.activateInactive(['missing'])).toEqual([]);
+		expect(discovery.activateInactive(['missing']).tools).toEqual([]);
 	});
 
 	it('removes active tools when later authorization narrows eligibility', async () => {

@@ -468,16 +468,16 @@ async function* loop(
 				outputTokens: turn.usage?.outputTokens ?? 0,
 			});
 			const pendingToolCalls = turn.toolCalls;
-			const activatedTools = discovery?.activateInactive(
+			const activation = discovery?.activateInactive(
 				pendingToolCalls.map((call) => call.name)
 			);
-			if (activatedTools && activatedTools.length > 0) {
+			if (activation && activation.tools.length > 0) {
 				yield { type: 'capability_resolution_start' };
-				yield* recoverToolCalls(pendingToolCalls, activatedTools);
+				yield* recoverToolCalls(pendingToolCalls, activation.tools);
 				yield {
 					type: 'capability_resolution_result',
-					tools: activatedTools.map((tool) => ({ id: tool.id, name: tool.name })),
-					serviceIds: [],
+					tools: activation.tools.map((tool) => ({ id: tool.id, name: tool.name })),
+					serviceIds: activation.serviceIds,
 				};
 				addToolResults(session, pendingToolCalls);
 				continue;

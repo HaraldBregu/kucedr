@@ -35,7 +35,7 @@ export interface ToolDiscovery {
 	replaceEligible(tools: Tool[]): void;
 	activateImmediate(toolIds: readonly string[]): void;
 	preselect(query: string, signal?: AbortSignal): Promise<{ tools: Tool[]; serviceIds: string[] }>;
-	activateInactive(toolIds: readonly string[]): Tool[];
+	activateInactive(toolIds: readonly string[]): { tools: Tool[]; serviceIds: string[] };
 }
 
 export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscovery {
@@ -155,7 +155,12 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 				active.set(id, candidate);
 				activated.push(candidate);
 			}
-			return activated;
+			return {
+				tools: activated,
+				serviceIds: [
+					...new Set(activated.flatMap((candidate) => mcpMetadata.get(candidate.id) ?? [])),
+				],
+			};
 		},
 	};
 }
