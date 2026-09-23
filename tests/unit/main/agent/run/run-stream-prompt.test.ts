@@ -456,7 +456,12 @@ describe('run stream system prompt', () => {
 				void event;
 
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
-			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
+			expect(runModelTurnMock.mock.calls[0][10]).toEqual([
+				{
+					role: 'user',
+					content: expect.stringContaining('## User profile\n# USER.md - User Profile'),
+				},
+			]);
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
