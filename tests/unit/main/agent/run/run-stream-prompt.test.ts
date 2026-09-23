@@ -372,6 +372,9 @@ describe('run stream system prompt', () => {
 	it('includes the user profile in a minimal main-agent turn', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-profile-'));
 		try {
+			await fs.writeFile(path.join(root, 'AGENTS.md'), '# Agent rules');
+			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
+			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 			const session = createSessionState();
 			session.messages = [{ role: 'user', content: 'Hello' }];
@@ -398,6 +401,9 @@ describe('run stream system prompt', () => {
 				role: 'user',
 				content: expect.stringContaining('### USER.md\n- **Name:** Alice'),
 			});
+			for (const name of ['AGENTS.md', 'IDENTITY.md', 'SOUL.md']) {
+				expect(contextMessages[0]?.content).toContain(`### ${name}`);
+			}
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}

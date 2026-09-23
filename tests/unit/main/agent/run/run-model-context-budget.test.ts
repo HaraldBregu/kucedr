@@ -130,6 +130,35 @@ describe('fitModelContext', () => {
 		expect(result.estimatedTokens).toBeLessThanOrEqual(850);
 	});
 
+	it('keeps required workspace context when older conversation is trimmed', () => {
+		const result = fitModelContext({
+			systemPrompt: 'System rules.',
+			requiredContextMessages: [{ role: 'user', content: '### AGENTS.md\nAgent rules' }],
+			messages: [
+				{ role: 'user', content: 'old request '.repeat(300) },
+				{ role: 'assistant', content: 'old answer' },
+				{ role: 'user', content: 'current request' },
+			],
+			tools: [],
+			maxInputTokens: 500,
+		});
+
+		expect(result.messages[0]?.content).toContain('### AGENTS.md');
+		expect(JSON.stringify(result.messages)).not.toContain('old request');
+	});
+
+	it('fails visibly when required workspace context cannot fit', () => {
+		expect(() =>
+			fitModelContext({
+				systemPrompt: 'System rules.',
+				requiredContextMessages: [{ role: 'user', content: '### SOUL.md\n' + 's'.repeat(2_000) }],
+				messages: [{ role: 'user', content: 'current request' }],
+				tools: [],
+				maxInputTokens: 500,
+			})
+		).toThrow('workspace context');
+	});
+
 	it('fails visibly when protected skill instructions cannot fit', () => {
 		expect(() =>
 			fitModelContext({
