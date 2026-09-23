@@ -14,6 +14,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		scale,
 		emptyColor,
 		colors,
+		'data-heatmap-theme': heatmapTheme,
 	}: {
 		values: { date: string; value: number }[];
 		weeks: number;
@@ -23,6 +24,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		scale: string;
 		emptyColor: string;
 		colors: string[];
+		'data-heatmap-theme'?: string;
 	}) => (
 		<div
 			data-testid="activity-heatmap"
@@ -33,6 +35,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 			data-scale={scale}
 			data-empty-color={emptyColor}
 			data-colors={colors.join(',')}
+			data-heatmap-theme={heatmapTheme}
 		>
 			{values.map((day) => (
 				<div
@@ -49,6 +52,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
+let appTheme = 'system';
 let notifyTrayEnabled: (enabled: boolean) => void;
 let notifyKeepAwake: (enabled: boolean) => void;
 
@@ -60,7 +64,7 @@ jest.mock('@/contexts', () => ({
 	useApp: () => ({
 		language: 'en',
 		setLanguage: jest.fn(),
-		theme: 'system',
+		theme: appTheme,
 		setTheme: mockSetTheme,
 	}),
 }));
@@ -72,6 +76,7 @@ beforeAll(() => {
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	appTheme = 'system';
 	mockSetKeepAwake.mockResolvedValue(undefined);
 	mockSetTrayClickAction.mockResolvedValue(undefined);
 	Object.defineProperty(window, 'PointerEvent', {
@@ -228,4 +233,15 @@ it('shows activity loaded from application logs in General settings', async () =
 	const tooltip = screen.getByRole('tooltip');
 	expect(tooltip).toHaveClass('fixed');
 	expect(screen.getByTestId('activity-scroll')).not.toContainElement(tooltip);
+});
+
+it('pins the heatmap to the light theme when selected', () => {
+	appTheme = 'light';
+	render(
+		<MemoryRouter>
+			<GeneralPage />
+		</MemoryRouter>
+	);
+
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-heatmap-theme', 'light');
 });

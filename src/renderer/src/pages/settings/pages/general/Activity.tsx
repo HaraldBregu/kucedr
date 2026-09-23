@@ -3,9 +3,11 @@ import { CalendarHeatmap } from '@thilakbhat/heatmap-ui';
 import '@thilakbhat/heatmap-ui/styles.css';
 import './Activity.css';
 import { useTranslation } from 'react-i18next';
+import { useApp } from '@/contexts';
 
 export function Activity(): React.JSX.Element {
 	const { t } = useTranslation();
+	const { theme } = useApp();
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
 	const [failed, setFailed] = useState(false);
 	const [tooltip, setTooltip] = useState<{
@@ -57,6 +59,7 @@ export function Activity(): React.JSX.Element {
 						'var(--activity-color-4)',
 					]}
 					emptyColor="var(--activity-empty-color)"
+					data-heatmap-theme={theme === 'system' ? undefined : theme}
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}
