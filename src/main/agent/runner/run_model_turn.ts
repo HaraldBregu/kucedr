@@ -34,13 +34,15 @@ export async function* runModelTurn(
 	streaming = true,
 	providerLimiter?: KeyedLimiter,
 	onContextAccepted?: () => void,
-	budget?: ExecutionBudget
+	budget?: ExecutionBudget,
+	requiredContextMessages: Message[] = []
 ): AsyncGenerator<RuntimeEvent, ModelTurn> {
 	const maxRetries = 2;
 	const maxTokens = modelOutputLimit(provider.id, modelId, modelOptions);
 	const context = fitModelContext({
 		systemPrompt,
 		protectedSystemPrompt,
+		requiredContextMessages,
 		contextMessages,
 		messages,
 		tools,
