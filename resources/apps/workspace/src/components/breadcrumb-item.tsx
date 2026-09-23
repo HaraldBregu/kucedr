@@ -1,4 +1,5 @@
 import { ChevronRight, File, Folder } from 'lucide-react';
+import { useState } from 'react';
 import type { WorkspaceTreeEntry } from '@kucedr/sdk';
 
 import {
@@ -14,6 +15,7 @@ interface WorkspaceBreadcrumbItemProps {
 }
 
 export function WorkspaceBreadcrumbItem({ entry, onFileSelect }: WorkspaceBreadcrumbItemProps) {
+	const [open, setOpen] = useState(false);
 	if (entry.type === 'file') {
 		return (
 			<DropdownMenuItem onSelect={() => onFileSelect(entry)}>
@@ -23,8 +25,8 @@ export function WorkspaceBreadcrumbItem({ entry, onFileSelect }: WorkspaceBreadc
 		);
 	}
 	return (
-		<DropdownMenuSub>
-			<DropdownMenuSubTrigger>
+		<DropdownMenuSub open={open} onOpenChange={setOpen}>
+			<DropdownMenuSubTrigger onClick={() => setOpen(true)}>
 				<Folder />
 				<span className="min-w-0 flex-1 truncate">{entry.name}</span>
 				<ChevronRight className="ml-auto size-3" />
