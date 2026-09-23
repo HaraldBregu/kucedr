@@ -4,8 +4,16 @@ const getStorageSettings = jest.fn();
 const saveStorageSettings = jest.fn();
 const rescheduleStorageSync = jest.fn();
 const storageProviders = { list: jest.fn(), save: jest.fn(), remove: jest.fn() };
+const readStorageConfig = jest.fn();
+const writeStorageConfig = jest.fn();
+const configureVersionedStorage = jest.fn();
+const loadCloudConfig = jest.fn();
 
 jest.mock('../../../../src/main/storage/providers', () => ({ storageProviders }));
+jest.mock('../../../../src/main/storage/local/config', () => ({ readStorageConfig }));
+jest.mock('../../../../src/main/storage/local/config_write', () => ({ writeStorageConfig }));
+jest.mock('../../../../src/main/storage/cloud/configure', () => ({ configureVersionedStorage }));
+jest.mock('../../../../src/main/cloud/config', () => ({ loadCloudConfig }));
 
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 	registerCommandWithEvent,
@@ -46,6 +54,11 @@ beforeEach(() => {
 	(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 1, webContents: sender });
 	storageOperations.getStatus.mockReturnValue(undefined);
 	storageOperations.isRunning.mockReturnValue(false);
+	readStorageConfig.mockResolvedValue(undefined);
+	writeStorageConfig.mockResolvedValue(undefined);
+	configureVersionedStorage.mockResolvedValue({ sync: { enabled: true } });
+	loadCloudConfig.mockReturnValue({ url: 'https://project.supabase.co' });
+	authService.getSignedInUserId.mockReturnValue(undefined);
 	getStorageSettings.mockReturnValue({
 		paths: [],
 		syncEnabled: false,
@@ -60,6 +73,14 @@ beforeEach(() => {
 		},
 		{} as never
 	);
+});
+
+it('requires account sign-in before enabling versioned storage', async () => {
+	const command = registerCommandWithEvent.mock.calls.find(
+		([channel]) => channel === StorageChannels.setVersionedEnabled
+	)?.[1];
+	await expect(command(event, true)).rejects.toThrow('Sign in');
+	expect(configureVersionedStorage).not.toHaveBeenCalled();
 });
 
 it('reads authoritative operation status and starts manual backups in main', () => {
