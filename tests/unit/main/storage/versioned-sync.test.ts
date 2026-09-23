@@ -6,6 +6,8 @@ import { catchUp } from '../../../../src/main/storage/cloud/catchup';
 import { scanWorkspace } from '../../../../src/main/storage/cloud/scan';
 import type { StorageCloudApi } from '../../../../src/main/storage/cloud/api';
 import { getSyncCursor } from '../../../../src/main/storage/local/cursor';
+import { applyRemoteChange } from '../../../../src/main/storage/local/change';
+import { listStorageConflicts } from '../../../../src/main/storage/local/conflicts';
 import { listPendingOperations } from '../../../../src/main/storage/local/pending';
 import { openStorageState } from '../../../../src/main/storage/local/state';
 
@@ -74,5 +76,31 @@ it('rejects corrupt downloads before advancing the cursor or changing a local ed
 	expect(getSyncCursor(database, scope)).toBe('1');
 	expect(readFileSync(local, 'utf8')).toBe('local edit');
 	expect(existsSync(path.join(root, 'storage', 'blobs'))).toBe(true);
+	database.close();
+});
+
+it('keeps concurrent edits and edit-versus-delete heads until a merge resolves them', () => {
+	const database = openStorageState();
+	const change = (sequence: number, versionId: string, parentIds: string[],
+		kind: 'content' | 'tombstone' = 'content') => applyRemoteChange(database, scope, {
+		sequence: String(sequence), versionId, fileId: 'file-a',
+		path: kind === 'tombstone' ? null : 'notes.txt', kind,
+		hash: kind === 'tombstone' ? null : 'hash',
+		size: kind === 'tombstone' ? null : 4,
+		bucket: kind === 'tombstone' ? null : 'bucket',
+		key: kind === 'tombstone' ? null : versionId,
+		parentIds,
+	});
+	change(1, 'base', []);
+	change(2, 'left', ['base']);
+	change(3, 'right', ['base']);
+	expect(listStorageConflicts(database, scope).map((item) => item.versionId))
+		.toEqual(['left', 'right']);
+	change(4, 'deleted', ['left'], 'tombstone');
+	expect(new Set(listStorageConflicts(database, scope).map((item) => item.versionId)))
+		.toEqual(new Set(['right', 'deleted']));
+	change(5, 'merged', ['right', 'deleted']);
+	expect(listStorageConflicts(database, scope)).toEqual([]);
+	expect(getSyncCursor(database, scope)).toBe('5');
 	database.close();
 });
