@@ -22,13 +22,27 @@ export async function scanWorkspace(
 	for (const file of files) {
 		const relative = rootStat.isDirectory()
 			? path.relative(root, file).split(path.sep).join('/') : path.basename(file);
-		const fileId = getOrCreateFileId(database, scope, relative);
-		seen.add(fileId);
 		const content = await fs.readFile(file);
 		if (content.byteLength > STORAGE_MAX_OBJECT_BYTES) {
 			throw new Error('Cloud sync files must be no larger than 50 MiB.');
 		}
 		const hash = createHash('sha256').update(content).digest('hex');
+		const cached = database.prepare(`SELECT file_id, version_id FROM remote_versions
+			WHERE account_id = ? AND workspace_id = ? AND path = ? AND content_hash = ?
+			ORDER BY rowid DESC LIMIT 1`).get(scope.accountId, scope.workspaceId,
+				relative, hash) as { file_id: string; version_id: string } | undefined;
+		if (cached) {
+			database.prepare(`INSERT OR IGNORE INTO local_files
+				(account_id, workspace_id, file_id, relative_path) VALUES (?, ?, ?, ?)`).run(
+					scope.accountId, scope.workspaceId, cached.file_id, relative);
+		}
+		const fileId = getOrCreateFileId(database, scope, relative);
+		seen.add(fileId);
+		if (cached?.file_id === fileId) {
+			database.prepare(`INSERT OR IGNORE INTO local_heads
+				(account_id, workspace_id, file_id, version_id) VALUES (?, ?, ?, ?)`).run(
+					scope.accountId, scope.workspaceId, fileId, cached.version_id);
+		}
 		const latest = database.prepare(`SELECT content_hash FROM local_versions
 			WHERE account_id = ? AND workspace_id = ? AND file_id = ?
 			ORDER BY rowid DESC LIMIT 1`).get(scope.accountId, scope.workspaceId, fileId) as
