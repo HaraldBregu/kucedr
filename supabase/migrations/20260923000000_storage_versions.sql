@@ -138,7 +138,8 @@ returns table (bucket text, object_key text, verified boolean)
 language plpgsql security definer set search_path = '' as $$
 declare v_key text := p_owner_id::text || '/' || p_workspace_id::text || '/' || p_version_id::text;
 begin
-  if p_bucket is null or p_bucket = '' or p_sha256 !~ '^[0-9a-f]{64}$' or p_size_bytes not between 0 and 52428800 then
+  if p_bucket is null or p_bucket = '' or p_sha256 is null or p_sha256 !~ '^[0-9a-f]{64}$'
+      or p_size_bytes is null or p_size_bytes not between 0 and 52428800 then
     raise exception 'Invalid upload reservation';
   end if;
   insert into public.storage_workspaces(id, owner_id) values (p_workspace_id, p_owner_id)
@@ -181,7 +182,8 @@ declare
   v_parents uuid[] := coalesce(p_parent_ids, '{}'::uuid[]);
   v_exists boolean;
 begin
-  if p_kind not in ('content', 'rename', 'tombstone', 'restore') or p_device_id is null or length(p_device_id) not between 1 and 200 then
+  if p_kind is null or p_kind not in ('content', 'rename', 'tombstone', 'restore')
+      or p_device_id is null or length(p_device_id) not between 1 and 200 then
     raise exception 'Invalid version';
   end if;
   v_hash := encode(extensions.digest(jsonb_build_array(p_owner_id, p_workspace_id, p_file_id, p_version_id,
@@ -209,6 +211,12 @@ begin
   if p_kind = 'tombstone' then
     if p_path is not null or p_bucket is not null or p_object_key is not null or p_sha256 is not null or p_size_bytes is not null then
       raise exception 'Tombstone cannot reference content';
+    end if;
+  elsif p_kind = 'rename' then
+    if not exists(select 1 from public.storage_versions v where v.workspace_id = p_workspace_id
+      and v.file_id = p_file_id and v.id = any(v_parents) and v.bucket = p_bucket
+      and v.object_key = p_object_key and v.sha256 = p_sha256 and v.size_bytes = p_size_bytes) then
+      raise exception 'Rename must preserve content from a parent';
     end if;
   elsif not exists(select 1 from public.storage_uploads u where u.workspace_id = p_workspace_id
       and u.owner_id = p_owner_id and u.operation_id = p_operation_id and u.version_id = p_version_id
