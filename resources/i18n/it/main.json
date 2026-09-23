@@ -1119,7 +1119,22 @@
 				"title": "Sincronizzazione con cronologia versioni",
 				"description": "Salva snapshot locali immutabili e pubblica versioni verificate tramite Supabase e S3. I backup esistenti restano disponibili.",
 				"enable": "Attiva la sincronizzazione delle versioni",
-				"enableDescription": "Richiede un account connesso e il backend Supabase corrispondente. Le modifiche in attesa restano su questo dispositivo fino alla pubblicazione."
+				"enableDescription": "Richiede un account connesso e il backend Supabase corrispondente. Le modifiche in attesa restano su questo dispositivo fino alla pubblicazione.",
+				"syncNow": "Sincronizza le versioni ora",
+				"catchUp": "Scarica le versioni cloud",
+				"catchUpDescription": "Scarica e verifica le versioni cloud nella cache locale. I file di lavoro esistenti restano disponibili per risolvere i conflitti.",
+				"backup": {
+					"running": "Sincronizzazione delle versioni in corso…",
+					"succeeded": "Snapshot locali salvati e versioni disponibili pubblicate.",
+					"partial": "Snapshot locali salvati; {{failed}} aree di lavoro attendono il caricamento.",
+					"failed": "Sincronizzazione delle versioni non riuscita. {{error}}"
+				},
+				"restore": {
+					"running": "Download delle versioni cloud in corso…",
+					"succeeded": "Le versioni cloud sono nella cache locale.",
+					"partial": "Versioni cloud nella cache; {{failed}} aree di lavoro richiedono attenzione.",
+					"failed": "Impossibile scaricare le versioni cloud. {{error}}"
+				}
 			},
 			"sync": {
 				"title": "Backup cloud",
