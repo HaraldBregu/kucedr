@@ -41,13 +41,14 @@ export function applyRemoteChange(
 		for (const parentId of new Set(change.parentIds)) {
 			parent.run(scope.accountId, scope.workspaceId, change.versionId, parentId);
 		}
-		database.prepare(`DELETE FROM remote_heads WHERE account_id = ? AND workspace_id = ?
-			AND file_id = ?`).run(scope.accountId, scope.workspaceId, change.fileId);
+		const removeParent = database.prepare(`DELETE FROM remote_heads WHERE account_id = ?
+			AND workspace_id = ? AND file_id = ? AND version_id = ?`);
+		for (const parentId of change.parentIds) {
+			removeParent.run(scope.accountId, scope.workspaceId, change.fileId, parentId);
+		}
 		const head = database.prepare(`INSERT INTO remote_heads
 			(account_id, workspace_id, file_id, version_id) VALUES (?, ?, ?, ?)`);
-		for (const versionId of new Set(change.heads)) {
-			head.run(scope.accountId, scope.workspaceId, change.fileId, versionId);
-		}
+		head.run(scope.accountId, scope.workspaceId, change.fileId, change.versionId);
 		database.prepare(`DELETE FROM conflicts WHERE account_id = ? AND workspace_id = ?`)
 			.run(scope.accountId, scope.workspaceId);
 		database.prepare(`INSERT INTO conflicts (account_id, workspace_id, file_id, version_id)
