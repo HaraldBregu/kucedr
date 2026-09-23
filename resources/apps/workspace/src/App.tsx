@@ -754,7 +754,7 @@ export default function App() {
 								variant="ghost"
 								size="icon"
 								className="size-7"
-								title="Search files"
+								title="Search files (⌘/Ctrl+F)"
 								aria-label="Search files"
 								aria-pressed={sidebarSearchOpen}
 								onClick={() => {
