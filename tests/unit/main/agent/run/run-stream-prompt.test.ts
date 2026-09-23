@@ -369,6 +369,39 @@ describe('run stream system prompt', () => {
 		}
 	});
 
+	it('includes the user profile in a minimal main-agent turn', async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-profile-'));
+		try {
+			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
+			const session = createSessionState();
+			session.messages = [{ role: 'user', content: 'Hello' }];
+
+			for await (const event of stream(
+				{ location: root },
+				session,
+				{
+					runId: 'minimal-profile',
+					task: 'chat',
+					message: 'Hello',
+					model: 'test-model',
+					type: 'default',
+					agentId: 'main',
+					contextMode: 'minimal',
+				},
+				new AbortController().signal,
+				{ tools: [] }
+			))
+				void event;
+
+			const contextMessages = runModelTurnMock.mock.calls[0][10] as Message[];
+			expect(contextMessages).toEqual([
+				{ role: 'user', content: '## User profile\n- **Name:** Alice' },
+			]);
+		} finally {
+			await fs.rm(root, { recursive: true, force: true });
+		}
+	});
+
 	it('loads a pending bootstrap for a minimal main-agent turn', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-bootstrap-'));
 		try {
