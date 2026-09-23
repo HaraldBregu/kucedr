@@ -47,7 +47,7 @@ export function Activity(): React.JSX.Element {
 			>
 				<CalendarHeatmap
 					values={[...values]}
-					weeks={30}
+					weeks={35}
 					weekStart={1}
 					to={today}
 					shape="rounded"
