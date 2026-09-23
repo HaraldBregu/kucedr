@@ -85,7 +85,7 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		providers,
 		modelGroups,
 		providerId: preferredGroup?.provider.id ?? '',
-		modelId: preferredModel?.id ?? '',
+		modelId: storedProviderId === 'ollama' ? (storedModelId ?? '') : (preferredModel?.id ?? ''),
 		loading: false,
 		loadingModels: false,
 		saving: false,
