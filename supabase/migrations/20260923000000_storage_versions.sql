@@ -262,6 +262,19 @@ grant execute on function public.storage_reserve_upload(uuid, uuid, uuid, uuid, 
 grant execute on function public.storage_confirm_upload(uuid, uuid, uuid, uuid, text, bigint) to service_role;
 grant execute on function public.storage_publish_version(uuid, uuid, uuid, uuid, uuid, text, text, uuid[], text, text, text, text, bigint) to service_role;
 
+create function public.storage_changes_since(p_workspace_id uuid, p_after bigint)
+returns table (workspace_id uuid, sequence text, file_id uuid, version_id uuid)
+language sql stable security invoker set search_path = '' as $$
+  select c.workspace_id, c.sequence::text, c.file_id, c.version_id
+  from public.storage_changes c
+  where c.workspace_id = p_workspace_id and c.sequence > p_after
+    and exists (select 1 from public.storage_workspaces w
+      where w.id = c.workspace_id and w.owner_id = (select auth.uid()))
+  order by c.sequence limit 100
+$$;
+revoke all on function public.storage_changes_since(uuid, bigint) from public, anon;
+grant execute on function public.storage_changes_since(uuid, bigint) to authenticated;
+
 create function public.storage_list_path_conflicts(p_workspace_id uuid)
 returns table (path text, file_ids uuid[])
 language sql security invoker set search_path = '' as $$
