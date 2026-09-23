@@ -1115,6 +1115,12 @@
 		"storage": {
 			"configurationTitle": "Cloud Backup",
 			"description": "Choose local folders to back up securely.",
+			"versioned": {
+				"title": "Version history sync",
+				"description": "Save immutable local snapshots, then publish verified versions through Supabase and S3. Existing backups stay available.",
+				"enable": "Enable version history sync",
+				"enableDescription": "Requires a signed-in account and the matching Supabase storage backend. Pending edits remain on this device until published."
+			},
 			"sync": {
 				"title": "Cloud Backup",
 				"description": "Choose local folders and back them up securely on a schedule.",
@@ -1143,6 +1149,7 @@
 				"custom": "Custom schedule"
 			},
 			"errors": {
+				"versioned": "Could not change version history sync. Check account sign-in and cloud backend setup.",
 				"load": "Could not load storage settings.",
 				"pickFolders": "Could not select folders.",
 				"saveSync": "Could not save backup settings.",

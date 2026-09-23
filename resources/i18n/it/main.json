@@ -1115,6 +1115,12 @@
 		"storage": {
 			"configurationTitle": "Backup cloud",
 			"description": "Scegli le cartelle locali di cui eseguire il backup in modo sicuro.",
+			"versioned": {
+				"title": "Sincronizzazione con cronologia versioni",
+				"description": "Salva snapshot locali immutabili e pubblica versioni verificate tramite Supabase e S3. I backup esistenti restano disponibili.",
+				"enable": "Attiva la sincronizzazione delle versioni",
+				"enableDescription": "Richiede un account connesso e il backend Supabase corrispondente. Le modifiche in attesa restano su questo dispositivo fino alla pubblicazione."
+			},
 			"sync": {
 				"title": "Backup cloud",
 				"description": "Scegli le cartelle locali ed eseguine il backup in modo sicuro secondo una pianificazione.",
@@ -1143,6 +1149,7 @@
 				"custom": "Pianificazione personalizzata"
 			},
 			"errors": {
+				"versioned": "Impossibile cambiare la sincronizzazione delle versioni. Controlla l'accesso e la configurazione del backend cloud.",
 				"load": "Impossibile caricare le impostazioni di archiviazione.",
 				"pickFolders": "Impossibile selezionare le cartelle.",
 				"saveSync": "Impossibile salvare le impostazioni di backup.",
