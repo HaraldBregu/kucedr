@@ -4,11 +4,13 @@ import { getSyncCursor } from '../local/cursor';
 import { installVerifiedDownload } from '../local/install';
 import type { StorageScope } from '../local/types';
 import { StorageCloudApi } from './api';
+import { installNewWorkingFile } from './install_working';
 
 export async function catchUp(
 	database: DatabaseSync,
 	scope: StorageScope,
-	cloud: StorageCloudApi
+	cloud: StorageCloudApi,
+	root?: string
 ): Promise<number> {
 	let count = 0;
 	for (;;) {
@@ -27,6 +29,18 @@ export async function catchUp(
 					throw new Error('Cloud download size mismatch.');
 				}
 				await installVerifiedDownload(scope, content, version.sha256);
+				if (root && version.path && await installNewWorkingFile(root, version.path, content)) {
+					database.prepare(`INSERT OR IGNORE INTO local_files
+						(account_id, workspace_id, file_id, relative_path) VALUES (?, ?, ?, ?)`).run(
+							scope.accountId, scope.workspaceId, version.file_id, version.path);
+					database.prepare(`INSERT OR IGNORE INTO working_files
+						(account_id, workspace_id, file_id, relative_path, content_hash)
+						VALUES (?, ?, ?, ?, ?)`).run(scope.accountId, scope.workspaceId,
+						version.file_id, version.path, version.sha256);
+					database.prepare(`INSERT OR IGNORE INTO local_heads
+						(account_id, workspace_id, file_id, version_id) VALUES (?, ?, ?, ?)`).run(
+							scope.accountId, scope.workspaceId, version.file_id, version.id);
+				}
 			}
 			applyRemoteChange(database, scope, {
 				sequence: String(change.sequence), versionId: change.version_id,

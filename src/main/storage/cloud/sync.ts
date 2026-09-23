@@ -50,7 +50,7 @@ export async function runVersionedStorageSync(
 					const result = await drainPending(database, scope, cloud, config.s3);
 					if (result.failed) throw new Error(`${result.failed} file version(s) remain pending.`);
 				}
-				const applied = await catchUp(database, scope, cloud);
+				const applied = await catchUp(database, scope, cloud, workspace.rootPath);
 				if (applied) downloaded.push(workspace.rootPath);
 			} catch (error) {
 				failed.push({ path: workspace.rootPath,
