@@ -35,6 +35,8 @@ export const AgentChannels = {
 	setModelId: 'agent:set-model-id',
 	getModelOptions: 'agent:get-model-options',
 	setModelOptions: 'agent:set-model-options',
+	getCompactModel: 'agent:compact-model:get',
+	setCompactModel: 'agent:compact-model:set',
 	getToolModel: 'agent:tool-model:get',
 	setToolModel: 'agent:tool-model:set',
 	getToolProfile: 'agent:tool-profile:get',

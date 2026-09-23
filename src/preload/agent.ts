@@ -285,6 +285,8 @@ export const agent: AgentApi = {
 	setModelOptions: (options: Record<string, unknown>): Promise<Record<string, unknown>> => {
 		return typedInvokeUnwrap(AgentChannels.setModelOptions, options);
 	},
+	getCompactModel: () => typedInvokeUnwrap(AgentChannels.getCompactModel),
+	setCompactModel: (settings) => typedInvokeUnwrap(AgentChannels.setCompactModel, settings),
 	getToolModel: (kind, profileId) => {
 		return typedInvokeUnwrap(AgentChannels.getToolModel, kind, profileId);
 	},

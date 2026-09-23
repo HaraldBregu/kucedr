@@ -53,11 +53,13 @@ import type { HealthSettings } from '../agent/health/health_types';
 import {
 	getModelId,
 	getModelOptions,
+	getCompactModel,
 	getProviderId,
 	getToolModel,
 	getToolProfile,
 	setModelId,
 	setModelOptions,
+	setCompactModel,
 	setProviderId,
 	setToolProfileTool,
 	setToolModel,
@@ -819,6 +821,20 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					return getModelOptions();
 				},
 				AgentChannels.setModelOptions
+			)
+		);
+		ipcMain.handle(
+			AgentChannels.getCompactModel,
+			wrapAgentHandler(mainAccess, () => getCompactModel() ?? {
+				providerId: '', modelId: '', options: {},
+			}, AgentChannels.getCompactModel)
+		);
+		ipcMain.handle(
+			AgentChannels.setCompactModel,
+			wrapAgentHandler(
+				mainAccess,
+				(settings: unknown) => setCompactModel(toAgentMediaModelSettings(settings)),
+				AgentChannels.setCompactModel
 			)
 		);
 
