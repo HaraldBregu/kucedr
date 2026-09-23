@@ -53,6 +53,7 @@ interface StoragePageProps {
 const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const { t } = useTranslation();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
+	const [versionedEnabled, setVersionedEnabled] = useState(false);
 	const [providers, setProviders] = useState<StorageProvider[]>([]);
 	const [settingsLoading, setSettingsLoading] = useState(true);
 	const [availableFolders, setAvailableFolders] = useState<StorageSyncFolder[]>([]);
@@ -82,17 +83,19 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 			window.storage.syncFolders(),
 			window.storage.getOperationStatus(),
 			window.storage.listProviders(),
-		]).then(([settingsResult, foldersResult, statusResult, providersResult]) => {
+			window.storage.getVersionedStatus(),
+		]).then(([settingsResult, foldersResult, statusResult, providersResult, versionedResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
 			if (foldersResult.status === 'fulfilled') setAvailableFolders(foldersResult.value);
 			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
+			if (versionedResult.status === 'fulfilled') setVersionedEnabled(versionedResult.value);
 			if (statusResult.status === 'fulfilled' && statusResult.value) {
 				applyOperationStatus(statusResult.value);
 			}
 
-			const failed = [settingsResult, foldersResult, statusResult, providersResult].some(
+			const failed = [settingsResult, foldersResult, statusResult, providersResult, versionedResult].some(
 				(result) => result.status === 'rejected'
 			);
 			setLoadFailed(failed);
@@ -227,6 +230,16 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		});
 	};
 
+	const setVersionHistory = async (enabled: boolean): Promise<void> => {
+		setError(null);
+		try {
+			await saveQueueRef.current;
+			setVersionedEnabled(await window.storage.setVersionedEnabled(enabled));
+		} catch {
+			setError(t('settings.storage.errors.versioned'));
+		}
+	};
+
 	return (
 		<SettingsPageShell className={inline ? 'max-w-none p-0 sm:p-0' : undefined}>
 			{!inline && (
@@ -255,6 +268,27 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 				</div>
 			) : storage ? (
 				<>
+					<SettingsSection
+						title={t('settings.storage.versioned.title')}
+						description={t('settings.storage.versioned.description')}
+					>
+						<Card size="sm" className="gap-0! py-0!">
+							<CardContent className="p-0!">
+								<SettingsRow
+									title={t('settings.storage.versioned.enable')}
+									description={t('settings.storage.versioned.enableDescription')}
+									actions={
+										<Switch
+											checked={versionedEnabled}
+											aria-label={t('settings.storage.versioned.enable')}
+											disabled={busy || !selectedProvider || storage.paths.length === 0}
+											onCheckedChange={(enabled) => void setVersionHistory(enabled)}
+										/>
+									}
+								/>
+							</CardContent>
+						</Card>
+					</SettingsSection>
 					<Provider
 						providers={providers}
 						providerId={storage.providerId}
