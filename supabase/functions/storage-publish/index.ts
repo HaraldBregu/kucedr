@@ -13,7 +13,10 @@ Deno.serve(async (request) => {
       || !Array.isArray(parentIds) || parentIds.some((id) => typeof id !== 'string')) {
       return json({ error: 'Invalid publication request' }, 400);
     }
-    if (kind === 'content' || kind === 'restore') {
+    const prior = await database.from('storage_operations').select('id')
+      .eq('workspace_id', workspaceId).eq('owner_id', ownerId).eq('id', operationId).maybeSingle();
+    if (prior.error) throw prior.error;
+    if (!prior.data && (kind === 'content' || kind === 'restore')) {
       const { data, error } = await database.from('storage_uploads')
         .select('bucket,object_key,sha256,size_bytes')
         .eq('workspace_id', workspaceId).eq('owner_id', ownerId)

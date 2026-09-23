@@ -34,7 +34,9 @@ create table public.storage_versions (
   primary key (workspace_id, file_id, id),
   unique (workspace_id, id),
   foreign key (workspace_id, file_id, owner_id) references public.storage_files(workspace_id, id, owner_id),
-  check (path is null or (length(path) between 1 and 4096 and path !~ '(^/|\\|(^|/)\.\.(/|$))')),
+  check (path is null or (length(path) between 1 and 4096 and path not like '/%'
+    and position(E'\\' in path) = 0 and path !~ '(^|/)(\.|\.\.)(/|$)'
+    and path !~ '(^|/)\.kucedr/storage(/|$)' and path !~ '//|/$')),
   check ((kind = 'tombstone' and path is null and bucket is null and object_key is null and sha256 is null and size_bytes is null)
       or (kind <> 'tombstone' and path is not null and bucket is not null and object_key is not null
           and sha256 ~ '^[0-9a-f]{64}$' and size_bytes between 0 and 52428800))
