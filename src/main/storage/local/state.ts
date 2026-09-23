@@ -67,6 +67,16 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 				CREATE TABLE IF NOT EXISTS migration_state (
 					name TEXT PRIMARY KEY, completed_at TEXT NOT NULL
 				) STRICT;
+				CREATE TABLE IF NOT EXISTS workspace_roots (
+					account_id TEXT NOT NULL, root_path TEXT NOT NULL, workspace_id TEXT NOT NULL,
+					PRIMARY KEY(account_id, root_path), UNIQUE(account_id, workspace_id)
+				) STRICT;
+				CREATE TABLE IF NOT EXISTS local_files (
+					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+					file_id TEXT NOT NULL, relative_path TEXT NOT NULL,
+					PRIMARY KEY(account_id, workspace_id, file_id),
+					UNIQUE(account_id, workspace_id, relative_path)
+				) STRICT;
 				PRAGMA user_version = 1;
 				COMMIT;
 			`);
