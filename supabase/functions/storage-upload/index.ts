@@ -9,11 +9,13 @@ Deno.serve(async (request) => {
 	try {
 		const { ownerId, database } = await authenticate(request);
 		const body = await request.json();
-		const { workspaceId, operationId, versionId, sha256, sizeBytes } = body;
+		const { providerId, workspaceId, operationId, versionId, sha256, sizeBytes } = body;
 		const bucket = Deno.env.get('S3_BUCKET');
+		const configuredProviderId = Deno.env.get('S3_PROVIDER_ID');
 		const prefix = Deno.env.get('S3_PREFIX') ?? '';
 		if (
 			!bucket ||
+			!configuredProviderId || providerId !== configuredProviderId ||
 			typeof workspaceId !== 'string' ||
 			typeof operationId !== 'string' ||
 			typeof versionId !== 'string' ||
