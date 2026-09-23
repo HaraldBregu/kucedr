@@ -139,7 +139,7 @@ export function ModelProviderSelect({
 					aria-label={accessibleLabel}
 					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
 				>
-					<span className="min-w-0 truncate">{buttonLabel}</span>
+					<span className="min-w-0 truncate capitalize">{buttonLabel}</span>
 					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 				</Button>
 			</PopoverTrigger>
@@ -219,7 +219,7 @@ export function ModelProviderSelect({
 				aria-label={inline || !showFieldLabel ? accessibleLabel : undefined}
 			>
 				<SelectValue
-					className="min-w-0 whitespace-normal break-words"
+					className="min-w-0 whitespace-normal break-words capitalize"
 					placeholder={labels?.placeholder ?? t('settings.modelServices.modelPlaceholder')}
 				>
 					{selectedLabel}
@@ -229,7 +229,7 @@ export function ModelProviderSelect({
 				{providerGroups.flatMap((group) =>
 					group.models.map((model) => (
 						<SelectItem
-							className="[&>span]:min-w-0 [&>span]:shrink [&>span]:whitespace-normal [&>span]:break-words"
+							className="capitalize [&>span]:min-w-0 [&>span]:shrink [&>span]:whitespace-normal [&>span]:break-words"
 							key={`${group.id}${VALUE_SEPARATOR}${model.id}`}
 							value={`${group.id}${VALUE_SEPARATOR}${model.id}`}
 						>
