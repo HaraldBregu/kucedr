@@ -18,6 +18,7 @@ export interface LocalSnapshotInput extends StorageScope {
 	operationId: string;
 	path: string;
 	parentIds: string[];
+	deviceId: string;
 	content?: Uint8Array;
 	deviceId: string;
 	kind?: 'content' | 'rename' | 'tombstone' | 'restore';
