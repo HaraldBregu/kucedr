@@ -1,0 +1,78 @@
+import { createHash } from 'node:crypto';
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { catchUp } from '../../../../src/main/storage/cloud/catchup';
+import { scanWorkspace } from '../../../../src/main/storage/cloud/scan';
+import type { StorageCloudApi } from '../../../../src/main/storage/cloud/api';
+import { getSyncCursor } from '../../../../src/main/storage/local/cursor';
+import { listPendingOperations } from '../../../../src/main/storage/local/pending';
+import { openStorageState } from '../../../../src/main/storage/local/state';
+
+const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
+const scope = { accountId: 'account-a', workspaceId: 'workspace-a' };
+let root: string;
+let working: string;
+
+beforeEach(() => {
+	root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-versioned-sync-'));
+	working = path.join(root, 'work');
+	mkdirSync(working);
+	process.env.KUCEDR_E2E_DATA_ROOT = root;
+});
+
+afterEach(() => {
+	if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
+	else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
+	rmSync(root, { recursive: true, force: true });
+});
+
+it('records edits and deletions as durable parented pending versions', async () => {
+	const database = openStorageState();
+	const file = path.join(working, 'notes.txt');
+	writeFileSync(file, 'first');
+	await scanWorkspace(database, scope, working, 'device-a');
+	writeFileSync(file, 'second');
+	await scanWorkspace(database, scope, working, 'device-a');
+	rmSync(file);
+	await scanWorkspace(database, scope, working, 'device-a');
+	const pending = listPendingOperations(database, scope);
+	expect(pending.map((operation) => operation.kind)).toEqual([
+		'content', 'content', 'tombstone',
+	]);
+	expect(pending[1].parentIds).toEqual([pending[0].versionId]);
+	expect(pending[2].parentIds).toEqual([pending[1].versionId]);
+	database.close();
+});
+
+it('rejects corrupt downloads before advancing the cursor or changing a local edit', async () => {
+	const database = openStorageState();
+	const local = path.join(working, 'notes.txt');
+	writeFileSync(local, 'local edit');
+	const expected = Buffer.from('cloud version');
+	const hash = createHash('sha256').update(expected).digest('hex');
+	const cloud = {
+		changes: jest.fn().mockResolvedValue([{
+			workspace_id: scope.workspaceId, sequence: 1,
+			file_id: 'file-a', version_id: 'version-a',
+		}]),
+		version: jest.fn().mockResolvedValue({
+			id: 'version-a', file_id: 'file-a', workspace_id: scope.workspaceId,
+			kind: 'content', path: 'notes.txt', bucket: 'bucket',
+			sha256: hash, size_bytes: expected.length, object_key: 'key',
+		}),
+		parents: jest.fn().mockResolvedValue([]),
+		heads: jest.fn().mockResolvedValue(['version-a']),
+		download: jest.fn().mockResolvedValue(Buffer.from('wrong content')),
+	};
+	await expect(catchUp(database, scope, cloud as unknown as StorageCloudApi, working))
+		.rejects.toThrow();
+	expect(getSyncCursor(database, scope)).toBe('0');
+	expect(readFileSync(local, 'utf8')).toBe('local edit');
+	cloud.download.mockResolvedValue(expected);
+	await catchUp(database, scope, cloud as unknown as StorageCloudApi, working);
+	expect(getSyncCursor(database, scope)).toBe('1');
+	expect(readFileSync(local, 'utf8')).toBe('local edit');
+	expect(existsSync(path.join(root, 'storage', 'blobs'))).toBe(true);
+	database.close();
+});
