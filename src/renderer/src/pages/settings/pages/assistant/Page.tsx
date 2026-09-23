@@ -168,9 +168,9 @@ const AssistantPage: React.FC = () => {
 		}
 	};
 	useEffect(() => {
-		if (state.loading || hasLoadedLocalModels || state.providerId !== 'ollama') return;
+		if (state.loading || hasLoadedLocalModels) return;
 		void loadLocalModels().catch(() => undefined);
-	}, [hasLoadedLocalModels, state.loading, state.providerId]);
+	}, [hasLoadedLocalModels, state.loading]);
 
 	const updateModelOption = (path: readonly string[], value: unknown): void => {
 		saveModelOptions(updateModelOptions(modelOptions, path, value));
