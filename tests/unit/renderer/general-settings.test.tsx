@@ -3,9 +3,18 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
 
+
 jest.mock('@thilakbhat/heatmap-ui', () => ({
-	CalendarHeatmap: ({ values }: { values: { date: string; value: number }[] }) => (
-		<div data-testid="activity-heatmap" data-count={values.length} />
+	CalendarHeatmap: ({
+		values,
+		weeks,
+		to,
+	}: {
+		values: { date: string; value: number }[];
+		weeks: number;
+		to: string;
+	}) => (
+		<div data-testid="activity-heatmap" data-count={values.length} data-to={to} data-weeks={weeks} />
 	),
 }));
 
@@ -168,5 +177,10 @@ it('shows activity loaded from application logs in General settings', async () =
 	await waitFor(() => {
 		expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
 	});
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
+		'data-to',
+		`${new Date().getUTCFullYear()}-12-31`
+	);
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '53');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 });

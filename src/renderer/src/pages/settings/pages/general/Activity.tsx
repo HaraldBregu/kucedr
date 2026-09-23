@@ -8,6 +8,7 @@ export function Activity(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
 	const [failed, setFailed] = useState(false);
+	const yearEnd = `${new Date().getUTCFullYear()}-12-31`;
 
 	useEffect(() => {
 		let active = true;
@@ -29,9 +30,9 @@ export function Activity(): React.JSX.Element {
 			<div className="overflow-x-auto px-4 py-3">
 				<CalendarHeatmap
 					values={[...values]}
-					weeks={20}
+					weeks={53}
 					weekStart={1}
-					to={new Date().toISOString().slice(0, 10)}
+					to={yearEnd}
 					showLegend
 					showMonthLabels
 					showWeekdayLabels
