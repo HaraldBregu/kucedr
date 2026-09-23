@@ -15,12 +15,14 @@ export interface UploadGrant {
 	headers: Record<string, string>;
 }
 
-export interface PublishRequest extends UploadRequest {
+export interface PublishRequest extends Omit<UploadRequest, 'sha256' | 'sizeBytes'> {
 	fileId: string;
 	kind: 'content' | 'tombstone' | 'rename' | 'restore';
 	path: string | null;
 	parentIds: string[];
 	deviceId: string;
+	sha256?: string;
+	sizeBytes?: number;
 	bucket?: string;
 	key?: string;
 }
