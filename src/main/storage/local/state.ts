@@ -13,7 +13,7 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 		if (check.quick_check !== 'ok') throw new Error('Local storage state is corrupt.');
 		const version = (database.prepare('PRAGMA user_version').get() as { user_version: number })
 			.user_version;
-		if (version > 1) throw new Error('Local storage state requires a newer application.');
+		if (version > 2) throw new Error('Local storage state requires a newer application.');
 		if (version === 0) {
 			database.exec(`
 				BEGIN IMMEDIATE;
@@ -91,6 +91,20 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 					UNIQUE(account_id, workspace_id, relative_path)
 				) STRICT;
 				PRAGMA user_version = 1;
+				COMMIT;
+			`);
+		}
+		if (version < 2) {
+			database.exec(`
+				BEGIN IMMEDIATE;
+				CREATE TABLE IF NOT EXISTS device_identity (
+					id INTEGER PRIMARY KEY CHECK(id = 1), device_id TEXT NOT NULL
+				) STRICT;
+				CREATE TABLE IF NOT EXISTS legacy_storage_sources (
+					source_path TEXT PRIMARY KEY, source_hash TEXT NOT NULL,
+					settings_json TEXT NOT NULL, recorded_at TEXT NOT NULL
+				) STRICT;
+				PRAGMA user_version = 2;
 				COMMIT;
 			`);
 		}
