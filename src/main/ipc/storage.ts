@@ -14,17 +14,23 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
 import { storageProviders } from '../storage/providers';
+import type { AuthService } from '../cloud/service';
+import { loadCloudConfig } from '../cloud/config';
+import { configureVersionedStorage } from '../storage/cloud/configure';
+import { readStorageConfig } from '../storage/local/config';
+import { writeStorageConfig } from '../storage/local/config_write';
 
 export interface StorageIpcDeps {
 	appRegistry: AppRegistry;
 	storageOperations: StorageOperations;
 	windows: WindowContextManager;
+	authService: AuthService;
 }
 
 export class StorageIpc implements IpcModule<StorageIpcDeps> {
 	readonly name = 'storage';
 
-	register({ appRegistry, storageOperations, windows }: StorageIpcDeps, _eventBus: EventBus): void {
+	register({ appRegistry, storageOperations, windows, authService }: StorageIpcDeps, _eventBus: EventBus): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		registerQueryWithEvent(StorageChannels.listProviders, (event) => {
 			trusted.assert(event);
@@ -71,6 +77,27 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			const saved = saveStorageSettings(settings);
 			rescheduleStorageSync();
 			return saved;
+		});
+		registerQueryWithEvent(StorageChannels.getVersionedStatus, async (event) => {
+			trusted.assert(event);
+			return (await readStorageConfig())?.sync.enabled ?? false;
+		});
+		registerCommandWithEvent(StorageChannels.setVersionedEnabled, async (event, enabled) => {
+			trusted.assert(event);
+			if (storageOperations.isRunning()) throw new Error('Wait for the current storage operation.');
+			if (typeof enabled !== 'boolean') throw new Error('Invalid storage mode.');
+			if (!enabled) {
+				const config = await readStorageConfig();
+				if (config) await writeStorageConfig({ ...config, sync: { ...config.sync, enabled: false } });
+				return false;
+			}
+			if (!authService.getSignedInUserId()) throw new Error('Sign in before enabling cloud file sync.');
+			const cloud = loadCloudConfig();
+			if (!cloud) throw new Error('Supabase account services are unavailable.');
+			const settings = getStorageSettings();
+			if (!settings.paths.length) throw new Error('Select at least one folder to synchronize.');
+			await configureVersionedStorage(settings, cloud.url, true);
+			return true;
 		});
 		registerQueryWithEvent(StorageChannels.syncFolders, (event) => {
 			trusted.assert(event);

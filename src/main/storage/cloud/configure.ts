@@ -7,7 +7,8 @@ import type { StorageConfig } from '../local/types';
 
 export async function configureVersionedStorage(
 	settings: StorageSyncSettings,
-	supabaseUrl: string
+	supabaseUrl: string,
+	enabled?: boolean
 ): Promise<StorageConfig> {
 	if (!settings.providerId) throw new Error('Select a saved S3 storage provider.');
 	const provider = storageProviders.list().find((entry) => entry.id === settings.providerId);
@@ -23,7 +24,7 @@ export async function configureVersionedStorage(
 		providerId: provider.id,
 		s3: { bucket: provider.bucket, region: provider.region, prefix: existing?.s3.prefix ?? '' },
 		supabase: { url: supabaseUrl },
-		sync: { enabled: existing?.sync.enabled ?? false,
+		sync: { enabled: enabled ?? existing?.sync.enabled ?? false,
 			maxCacheBytes: existing?.sync.maxCacheBytes ?? 1_073_741_824 },
 		workspaces: existing?.workspaces ?? [],
 	};

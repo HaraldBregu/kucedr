@@ -143,7 +143,7 @@ export function registerIpcHandlers(
 	);
 	safeRegister('storage', () =>
 		new StorageIpc().register(
-			{ appRegistry, storageOperations, windows: windowContextManager },
+			{ appRegistry, storageOperations, windows: windowContextManager, authService },
 			eventBus
 		)
 	);
