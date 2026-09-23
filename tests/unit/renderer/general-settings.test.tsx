@@ -211,7 +211,7 @@ it('shows activity loaded from application logs in General settings', async () =
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'log');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
 		'data-empty-color',
-		'color-mix(in srgb, var(--muted-foreground) 32%, var(--muted))'
+		'color-mix(in srgb, var(--muted) 75%, #000)'
 	);
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 
