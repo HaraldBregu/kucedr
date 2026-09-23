@@ -9,6 +9,7 @@ export interface StorageConfig {
 	s3: { bucket: string; region: string; prefix: string };
 	supabase: { url: string };
 	sync: { enabled: boolean; maxCacheBytes: number };
+	workspaces: Array<{ id: string; rootPath: string }>;
 }
 
 export interface LocalSnapshotInput extends StorageScope {
