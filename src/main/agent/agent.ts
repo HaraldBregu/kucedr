@@ -67,6 +67,7 @@ import { getModelId, getProviderId } from './agent_store';
 import { getAgentProfileModel } from './agent_profiles';
 import { preflightPromptAttachments, resolvePromptInputCapabilities } from './attachments';
 import { workspacePath } from './system';
+import { compactConversation } from './compaction/compact';
 import { formatReplyMessage } from '../../shared/reply';
 import type { AgentToolProfileId } from '../../shared/agent_tools';
 
