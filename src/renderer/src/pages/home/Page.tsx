@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
+import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
 import {
 	ChatContainerContent,
@@ -52,6 +53,7 @@ import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { AssistantMessage } from './components/AssistantMessage';
+import { markdownComponents } from './components/markdown';
 import { ReplyPreview } from './components/Reply';
 import { UserMessage } from './components/UserMessage';
 import { Provider, welcomeMessage } from './context';
@@ -812,7 +814,12 @@ function PageContent(): ReactElement {
 													<p className="mb-1 text-xs font-medium uppercase tracking-wide text-foreground">
 														{t('settings.chatHistory.summary')}
 													</p>
-													<p className="whitespace-pre-wrap">{message.content}</p>
+													<Markdown
+														className="min-w-0 max-w-full break-words [overflow-wrap:anywhere]"
+														components={markdownComponents}
+													>
+														{message.content}
+													</Markdown>
 												</section>
 											);
 										}
