@@ -424,6 +424,15 @@ export class Agent {
 		};
 	}
 
+	compactSession(sessionId: string): Promise<AgentCompactSessionResult> {
+		const resolvedSessionId = resolveStoredSessionId(sessionId, this.config.location);
+		return this.scheduler.run(
+			resolvedSessionId,
+			() => compactConversation(this.config, resolvedSessionId, this.providerLimiter),
+			{ priority: 'high' }
+		);
+	}
+
 	listSessions(category: SessionCategory | 'all' = 'main'): AgentSessionSummary[] {
 		if (category === 'all') {
 			return (['main', 'bot', 'health', 'task', 'subagent', 'voice'] as const)
