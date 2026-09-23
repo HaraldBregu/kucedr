@@ -9,22 +9,16 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		values,
 		weeks,
 		to,
-		cellSize,
-		gap,
 	}: {
 		values: { date: string; value: number }[];
 		weeks: number;
 		to: string;
-		cellSize: number;
-		gap: number;
 	}) => (
 		<div
 			data-testid="activity-heatmap"
 			data-count={values.length}
 			data-to={to}
 			data-weeks={weeks}
-			data-cell-size={cellSize}
-			data-gap={gap}
 		/>
 	),
 }));
@@ -34,7 +28,6 @@ const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
 let notifyTrayEnabled: (enabled: boolean) => void;
 let notifyKeepAwake: (enabled: boolean) => void;
-let resizeCallbacks: ResizeObserverCallback[];
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
@@ -56,17 +49,6 @@ beforeAll(() => {
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	resizeCallbacks = [];
-	Object.defineProperty(globalThis, 'ResizeObserver', {
-		configurable: true,
-		value: class {
-			constructor(callback: ResizeObserverCallback) {
-				resizeCallbacks.push(callback);
-			}
-			observe(): void {}
-			disconnect(): void {}
-		},
-	});
 	mockSetKeepAwake.mockResolvedValue(undefined);
 	mockSetTrayClickAction.mockResolvedValue(undefined);
 	Object.defineProperty(window, 'PointerEvent', {
@@ -200,17 +182,10 @@ it('shows activity loaded from application logs in General settings', async () =
 	await waitFor(() => {
 		expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
 	});
-	act(() => {
-		for (const callback of resizeCallbacks) {
-			callback([{ contentRect: { width: 640 } } as ResizeObserverEntry], {} as ResizeObserver);
-		}
-	});
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
 		'data-to',
 		`${new Date().getUTCFullYear()}-12-31`
 	);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '53');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-cell-size', '10');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-gap', '1');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 });
