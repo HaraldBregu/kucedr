@@ -25,6 +25,7 @@ export interface WorkspaceTreeItemProps {
 	onCreateFile: (parentPath: string) => void;
 	onDeleteRequest: (entry: WorkspaceTreeEntry) => void;
 	onDuplicateRequest: (entry: WorkspaceTreeEntry) => void;
+	onArchiveRequest: (entry: WorkspaceTreeEntry, action: 'compress' | 'extract') => void;
 	onRenameCancel: () => void;
 	onRenameCommit: () => void;
 	onRenameNameChange: (name: string) => void;
@@ -56,6 +57,7 @@ export function WorkspaceTreeItem({
 	onCreateFile,
 	onDeleteRequest,
 	onDuplicateRequest,
+	onArchiveRequest,
 	onRenameCancel,
 	onRenameCommit,
 	onRenameNameChange,
@@ -78,6 +80,7 @@ export function WorkspaceTreeItem({
 	const selected = selectedPath === entry.path;
 	const isDropTarget = dropTargetPath === entry.path;
 	const createParentPath = isDirectory ? entry.path : entry.path.split('/').slice(0, -1).join('/');
+	const isZipFile = entry.type === 'file' && entry.name.toLowerCase().endsWith('.zip');
 	const editing = renameTarget?.path === entry.path;
 	const renameInputRef = useRef<HTMLInputElement>(null);
 	const cancelBlurRef = useRef(false);
@@ -120,6 +123,11 @@ export function WorkspaceTreeItem({
 							{ id: 'rename', label: isDirectory ? 'Rename Folder' : 'Rename File' },
 							...(isDirectory ? [] : ([{ id: 'duplicate', label: 'Duplicate' }] as const)),
 							{ type: 'separator' },
+							{
+								id: isZipFile ? 'extract' : 'compress',
+								label: isZipFile ? 'Extract Here' : 'Compress to ZIP',
+							},
+							{ type: 'separator' },
 							{ id: 'copy-path', label: 'Copy Path' },
 							{ type: 'separator' },
 							{
@@ -134,6 +142,8 @@ export function WorkspaceTreeItem({
 							'new-folder': () => onCreateDirectory(entry.path),
 							rename: () => onRenameRequest(entry),
 							duplicate: () => onDuplicateRequest(entry),
+							compress: () => onArchiveRequest(entry, 'compress'),
+							extract: () => onArchiveRequest(entry, 'extract'),
 							'copy-path': () => navigator.clipboard.writeText(entry.path),
 							delete: () => onDeleteRequest(entry),
 						}

@@ -79,6 +79,7 @@ globalThis.agent = {
 	writeWorkspaceMarkdown: async () => undefined,
 	createWorkspaceFile: async (parentPath, name) => [parentPath, name].filter(Boolean).join('/'),
 	duplicateWorkspaceFile: async (filePath) => filePath.replace(/(\.[^.]*)?$/, ' copy$1'),
+	archiveWorkspaceEntry: async (entryPath) => `${entryPath}.zip`,
 	createWorkspaceDirectory: async (parentPath, name) =>
 		[parentPath, name].filter(Boolean).join('/'),
 	moveWorkspaceEntry: async (sourcePath, destinationDirectoryPath) =>
@@ -284,6 +285,7 @@ await agent.writeWorkspaceMarkdown('USER.md', '# Updated');
 await agent.writeWorkspaceFile('diagram.mmd', 'flowchart LR');
 assert.equal(await agent.createWorkspaceFile('', 'draft.md'), 'draft.md');
 assert.equal(await agent.duplicateWorkspaceFile('draft.md'), 'draft copy.md');
+assert.equal(await agent.archiveWorkspaceEntry('draft.md', 'compress'), 'draft.md.zip');
 assert.equal(await agent.createWorkspaceDirectory('notes', 'ideas'), 'notes/ideas');
 assert.equal(await agent.moveWorkspaceEntry('draft.md', 'notes'), 'notes/draft.md');
 assert.equal(await agent.renameWorkspaceEntry('notes/draft.md', 'idea.md'), 'notes/idea.md');
@@ -459,6 +461,7 @@ await kucedr.agent.writeWorkspaceMarkdown('USER.md', '# Updated');
 await kucedr.agent.writeWorkspaceFile('diagram.mmd', 'flowchart LR');
 await kucedr.agent.createWorkspaceFile('', 'draft.md');
 await kucedr.agent.duplicateWorkspaceFile('draft.md');
+await kucedr.agent.archiveWorkspaceEntry('draft.md', 'compress');
 await kucedr.agent.createWorkspaceDirectory('notes', 'ideas');
 await kucedr.agent.moveWorkspaceEntry('draft.md', 'notes');
 await kucedr.agent.renameWorkspaceEntry('notes/draft.md', 'idea.md');
@@ -477,6 +480,7 @@ assert.deepEqual(
 		'agent:workspace:file:write',
 		'agent:workspace:file:create',
 		'agent:workspace:file:duplicate',
+		'agent:workspace:archive',
 		'agent:workspace:directory:create',
 		'agent:workspace:entry:move',
 		'agent:workspace:entry:rename',

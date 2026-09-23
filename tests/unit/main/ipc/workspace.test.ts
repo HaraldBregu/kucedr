@@ -3,6 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { readWorkspaceAsset } from '../../../../src/main/ipc/asset';
+import { archiveWorkspaceEntry } from '../../../../src/main/ipc/archive';
 import { createWorkspaceEntry } from '../../../../src/main/ipc/create';
 import { deleteWorkspaceFile } from '../../../../src/main/ipc/delete';
 import { deleteWorkspaceDirectory } from '../../../../src/main/ipc/directory';
@@ -24,6 +25,20 @@ describe('workspace files', () => {
 		await expect(duplicateWorkspaceFile(root, 'image.bin')).resolves.toBe('image copy.bin');
 		await expect(duplicateWorkspaceFile(root, 'image.bin')).resolves.toBe('image copy 2.bin');
 		expect(await fs.readFile(path.join(root, 'image copy.bin'))).toEqual(Buffer.from([0, 1, 2, 255]));
+		await fs.rm(root, { recursive: true });
+	});
+
+	it('creates ZIP archives and extracts them without overwriting workspace files', async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-workspace-'));
+		await fs.mkdir(path.join(root, 'notes'));
+		await fs.writeFile(path.join(root, 'notes', 'idea.md'), '# Idea');
+
+		await expect(archiveWorkspaceEntry(root, 'notes', 'compress')).resolves.toBe('notes.zip');
+		await fs.rm(path.join(root, 'notes'), { recursive: true });
+		await expect(archiveWorkspaceEntry(root, 'notes.zip', 'extract')).resolves.toBe('');
+		await expect(fs.readFile(path.join(root, 'notes', 'idea.md'), 'utf8')).resolves.toBe('# Idea');
+		await expect(archiveWorkspaceEntry(root, 'notes.zip', 'extract')).rejects.toThrow('already exists');
+
 		await fs.rm(root, { recursive: true });
 	});
 

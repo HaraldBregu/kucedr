@@ -596,6 +596,24 @@ export default function App() {
 		}
 	}
 
+	async function archiveWorkspaceEntry(
+		entry: WorkspaceTreeEntry,
+		action: 'compress' | 'extract'
+	) {
+		if (!isKucedr()) return;
+		setWorkspaceError('');
+		try {
+			await agent.archiveWorkspaceEntry(entry.path, action);
+			setWorkspaceFiles(await agent.listWorkspaceFiles());
+		} catch (error) {
+			setWorkspaceError(
+				error instanceof Error
+					? error.message
+					: `Unable to ${action === 'compress' ? 'create' : 'extract'} the ZIP archive.`
+			);
+		}
+	}
+
 	async function moveWorkspaceEntry(
 		entry: WorkspaceTreeEntry,
 		destinationPath: string
@@ -668,6 +686,7 @@ export default function App() {
 				setDeleteTarget(entry);
 			}}
 			onDuplicateRequest={duplicateWorkspaceEntry}
+			onArchiveRequest={archiveWorkspaceEntry}
 			onMoveRequest={moveWorkspaceEntry}
 			onRenameRequest={startRenameWorkspaceEntry}
 			onRenameCancel={() => {
