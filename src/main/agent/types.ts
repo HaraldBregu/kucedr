@@ -7,7 +7,7 @@ export interface Config {
 	location: string;
 }
 
-export type MessageRole = 'system' | 'user' | 'assistant';
+export type MessageRole = 'system' | 'user' | 'assistant' | 'summary';
 
 export interface ToolResult {
 	content: MessageContent;

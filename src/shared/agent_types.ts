@@ -165,7 +165,7 @@ export type AgentHistoryContentBlock =
 	  };
 
 export interface AgentHistoryMessage {
-	role: 'user' | 'agent' | 'assistant' | 'tool';
+	role: 'user' | 'agent' | 'assistant' | 'tool' | 'summary';
 	content?: string | null;
 	blocks?: AgentHistoryContentBlock[];
 	contentBlocks?: AgentHistoryContentBlock[];
@@ -195,6 +195,10 @@ export interface AgentSessionSnapshot {
 		events: AgentResponseEvent[];
 	};
 }
+
+export type AgentCompactSessionResult =
+	| { status: 'compacted'; retainedMessages: number; removedMessages: number }
+	| { status: 'not_needed'; retainedMessages: number; removedMessages: 0 };
 
 export type AgentCapabilityServiceKind = 'tool' | 'connector' | 'mcp';
 

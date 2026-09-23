@@ -149,6 +149,11 @@ export const agent: AgentApi = {
 		if (!normalizedSessionId) throw new Error('Invalid assistant session id.');
 		return typedInvokeUnwrap(AgentChannels.sessionSnapshot, normalizedSessionId);
 	},
+	compactSession: (sessionId) => {
+		const normalizedSessionId = optionalTrimmedString(sessionId);
+		if (!normalizedSessionId) throw new Error('Invalid assistant session id.');
+		return typedInvokeUnwrap(AgentChannels.compactSession, normalizedSessionId);
+	},
 	editUserMessage: (
 		sessionId: string,
 		userOffsetFromEnd: number,

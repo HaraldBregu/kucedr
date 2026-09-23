@@ -150,6 +150,10 @@ export interface AgentInvokeChannelMap {
 		args: [sessionId: string];
 		result: import('./agent_types').AgentHistoryMessage[];
 	};
+	[AgentChannels.compactSession]: {
+		args: [sessionId: string];
+		result: import('./agent_types').AgentCompactSessionResult;
+	};
 	[AgentChannels.editUserMessage]: {
 		args: [sessionId: string, userOffsetFromEnd: number, content: string];
 		result: boolean;

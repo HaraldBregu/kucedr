@@ -34,6 +34,7 @@ import type { RagConfiguration } from './rag_types';
 import type { PermissionsSchema } from '../main/agent/permissions/permissions_types';
 import type {
 	AgentHistoryMessage,
+	AgentCompactSessionResult,
 	AgentPromptInputCapabilities,
 	AgentRunOptions,
 	AgentResponseEvent,
@@ -173,6 +174,7 @@ export interface AgentApi {
 	renameSession: (sessionId: string, title: string) => Promise<void>;
 	getLastMessages: (sessionId: string) => Promise<AgentHistoryMessage[]>;
 	getSessionSnapshot: (sessionId: string) => Promise<AgentSessionSnapshot>;
+	compactSession: (sessionId: string) => Promise<AgentCompactSessionResult>;
 	editUserMessage: (
 		sessionId: string,
 		userOffsetFromEnd: number,
