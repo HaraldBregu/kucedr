@@ -256,6 +256,7 @@ export function WorkspaceTreeItem({
 						onCreateFile={onCreateFile}
 						onDeleteRequest={onDeleteRequest}
 						onDuplicateRequest={onDuplicateRequest}
+						onArchiveRequest={onArchiveRequest}
 						onRenameCancel={onRenameCancel}
 						onRenameCommit={onRenameCommit}
 						onRenameNameChange={onRenameNameChange}
