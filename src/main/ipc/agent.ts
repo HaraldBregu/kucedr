@@ -510,6 +510,15 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.compactSession,
+			wrapAgentHandler(
+				mainAccess,
+				(sessionId: unknown) => agent.compactSession(requireUuidSessionId(sessionId)),
+				AgentChannels.compactSession
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.editUserMessage,
 			wrapAgentHandler(
 				mainAccess,
