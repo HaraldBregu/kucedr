@@ -26,6 +26,14 @@ export interface StorageSyncFolder {
 	path: string;
 }
 
+export interface StorageConflict {
+	workspaceId: string;
+	fileId: string;
+	versionId: string;
+	path: string | null;
+	kind: 'content' | 'rename' | 'tombstone' | 'restore';
+}
+
 export interface StorageObjectInfo {
 	key: string;
 	size: number;
