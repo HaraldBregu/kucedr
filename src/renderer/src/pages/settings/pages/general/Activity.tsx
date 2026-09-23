@@ -25,28 +25,30 @@ export function Activity(): React.JSX.Element {
 	}, []);
 
 	return (
-		<div className="overflow-x-auto py-1">
-				<CalendarHeatmap
-					values={[...values]}
-					weeks={53}
-					weekStart={1}
-					to={yearEnd}
-					showLegend
-					showMonthLabels
-					showWeekdayLabels
-					unitLabel={t('settings.activity.events')}
-					ariaLabel={t('settings.activity.title')}
-					tooltip={(day) => t('settings.activity.day', { date: day.date, count: day.value })}
-				/>
-				{failed ? (
-					<p className="mt-3 text-[11px] text-muted-foreground">
-						{t('settings.activity.error')}
-					</p>
-				) : values.length === 0 ? (
-					<p className="mt-3 text-[11px] text-muted-foreground">
-						{t('settings.activity.empty')}
-					</p>
-				) : null}
+		<div className="w-full py-1">
+			<CalendarHeatmap
+				values={[...values]}
+				weeks={53}
+				weekStart={1}
+				to={yearEnd}
+				cellSize={9}
+				gap={1}
+				showLegend
+				showMonthLabels
+				showWeekdayLabels
+				unitLabel={t('settings.activity.events')}
+				ariaLabel={t('settings.activity.title')}
+				tooltip={(day) => t('settings.activity.day', { date: day.date, count: day.value })}
+			/>
+			{failed ? (
+				<p className="mt-3 text-[11px] text-muted-foreground">
+					{t('settings.activity.error')}
+				</p>
+			) : values.length === 0 ? (
+				<p className="mt-3 text-[11px] text-muted-foreground">
+					{t('settings.activity.empty')}
+				</p>
+			) : null}
 		</div>
 	);
 }

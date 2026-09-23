@@ -9,12 +9,23 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		values,
 		weeks,
 		to,
+		cellSize,
+		gap,
 	}: {
 		values: { date: string; value: number }[];
 		weeks: number;
 		to: string;
+		cellSize: number;
+		gap: number;
 	}) => (
-		<div data-testid="activity-heatmap" data-count={values.length} data-to={to} data-weeks={weeks} />
+		<div
+			data-testid="activity-heatmap"
+			data-count={values.length}
+			data-to={to}
+			data-weeks={weeks}
+			data-cell-size={cellSize}
+			data-gap={gap}
+		/>
 	),
 }));
 
@@ -182,5 +193,7 @@ it('shows activity loaded from application logs in General settings', async () =
 		`${new Date().getUTCFullYear()}-12-31`
 	);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '53');
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-cell-size', '9');
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-gap', '1');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 });
