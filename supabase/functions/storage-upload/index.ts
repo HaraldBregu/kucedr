@@ -11,6 +11,7 @@ Deno.serve(async (request) => {
 		const body = await request.json();
 		const { workspaceId, operationId, versionId, sha256, sizeBytes } = body;
 		const bucket = Deno.env.get('S3_BUCKET');
+		const prefix = Deno.env.get('S3_PREFIX') ?? '';
 		if (
 			!bucket ||
 			typeof workspaceId !== 'string' ||
@@ -30,6 +31,7 @@ Deno.serve(async (request) => {
 			p_operation_id: operationId,
 			p_version_id: versionId,
 			p_bucket: bucket,
+			p_prefix: prefix,
 			p_sha256: sha256,
 			p_size_bytes: sizeBytes,
 		});

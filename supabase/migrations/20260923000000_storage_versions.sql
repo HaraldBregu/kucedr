@@ -67,6 +67,7 @@ create table public.storage_uploads (
   operation_id uuid not null,
   version_id uuid not null,
   bucket text not null,
+  prefix text not null default '',
   object_key text not null,
   sha256 text not null check (sha256 ~ '^[0-9a-f]{64}$'),
   size_bytes bigint not null check (size_bytes between 0 and 52428800),
@@ -76,7 +77,9 @@ create table public.storage_uploads (
   unique (workspace_id, version_id),
   unique (bucket, object_key),
   foreign key (workspace_id, owner_id) references public.storage_workspaces(id, owner_id),
-  check (object_key = owner_id::text || '/' || workspace_id::text || '/' || version_id::text)
+  check (prefix = '' or (length(prefix) <= 512 and prefix !~ '(^/|/$|//|\\|(^|/)(\.|\.\.)(/|$))')),
+  check (object_key = case when prefix = '' then '' else prefix || '/' end ||
+    owner_id::text || '/' || workspace_id::text || '/' || version_id::text)
 );
 
 create table public.storage_operations (
@@ -135,13 +138,15 @@ grant all on public.storage_workspaces, public.storage_files, public.storage_ver
   public.storage_operations, public.storage_cursors, public.storage_changes to service_role;
 
 create function public.storage_reserve_upload(p_owner_id uuid, p_workspace_id uuid,
-  p_operation_id uuid, p_version_id uuid, p_bucket text, p_sha256 text, p_size_bytes bigint)
+  p_operation_id uuid, p_version_id uuid, p_bucket text, p_prefix text, p_sha256 text, p_size_bytes bigint)
 returns table (bucket text, object_key text, verified boolean)
 language plpgsql security definer set search_path = '' as $$
-declare v_key text := p_owner_id::text || '/' || p_workspace_id::text || '/' || p_version_id::text;
+declare v_key text := (case when p_prefix = '' then '' else p_prefix || '/' end) ||
+  p_owner_id::text || '/' || p_workspace_id::text || '/' || p_version_id::text;
 begin
   if p_bucket is null or p_bucket = '' or p_sha256 is null or p_sha256 !~ '^[0-9a-f]{64}$'
-      or p_size_bytes is null or p_size_bytes not between 0 and 52428800 then
+      or p_size_bytes is null or p_size_bytes not between 0 and 52428800 or p_prefix is null
+      or p_prefix !~ '^[a-zA-Z0-9_./-]*$' then
     raise exception 'Invalid upload reservation';
   end if;
   insert into public.storage_workspaces(id, owner_id) values (p_workspace_id, p_owner_id)
@@ -149,11 +154,12 @@ begin
   if not exists (select 1 from public.storage_workspaces where id = p_workspace_id and owner_id = p_owner_id) then
     raise exception 'Workspace ownership mismatch';
   end if;
-  insert into public.storage_uploads(workspace_id, owner_id, operation_id, version_id, bucket, object_key, sha256, size_bytes)
-    values (p_workspace_id, p_owner_id, p_operation_id, p_version_id, p_bucket, v_key, p_sha256, p_size_bytes)
+  insert into public.storage_uploads(workspace_id, owner_id, operation_id, version_id, bucket, prefix, object_key, sha256, size_bytes)
+    values (p_workspace_id, p_owner_id, p_operation_id, p_version_id, p_bucket, p_prefix, v_key, p_sha256, p_size_bytes)
     on conflict (workspace_id, operation_id) do nothing;
   if not exists (select 1 from public.storage_uploads u where u.workspace_id = p_workspace_id and u.owner_id = p_owner_id
     and u.operation_id = p_operation_id and u.version_id = p_version_id and u.bucket = p_bucket
+    and u.prefix = p_prefix
     and u.object_key = v_key and u.sha256 = p_sha256 and u.size_bytes = p_size_bytes) then
     raise exception 'Upload operation was already reserved with different content';
   end if;
@@ -249,10 +255,10 @@ begin
   return v_result;
 end $$;
 
-revoke all on function public.storage_reserve_upload(uuid, uuid, uuid, uuid, text, text, bigint) from public, anon, authenticated;
+revoke all on function public.storage_reserve_upload(uuid, uuid, uuid, uuid, text, text, text, bigint) from public, anon, authenticated;
 revoke all on function public.storage_confirm_upload(uuid, uuid, uuid, uuid, text, bigint) from public, anon, authenticated;
 revoke all on function public.storage_publish_version(uuid, uuid, uuid, uuid, uuid, text, text, uuid[], text, text, text, text, bigint) from public, anon, authenticated;
-grant execute on function public.storage_reserve_upload(uuid, uuid, uuid, uuid, text, text, bigint) to service_role;
+grant execute on function public.storage_reserve_upload(uuid, uuid, uuid, uuid, text, text, text, bigint) to service_role;
 grant execute on function public.storage_confirm_upload(uuid, uuid, uuid, uuid, text, bigint) to service_role;
 grant execute on function public.storage_publish_version(uuid, uuid, uuid, uuid, uuid, text, text, uuid[], text, text, text, text, bigint) to service_role;
 
