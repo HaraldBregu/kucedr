@@ -15,13 +15,7 @@ import {
 import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
+import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
 import { updateModelOptions } from '@/lib/options';
 import type { Model } from '@/lib/compat';
 import type { PublicProvider } from '../../../../../../shared';
@@ -119,9 +113,6 @@ const AssistantPage: React.FC = () => {
 	});
 	const model = modelsFor('llm').find(
 		(item) => item.provider.id === state.providerId && item.id === state.modelId
-	);
-	const selectedCompactModel = modelsFor('llm').find(
-		(item) => item.provider.id === compactModel.providerId && item.id === compactModel.modelId
 	);
 	const inputs = model?.metadata?.documentationStatus === 'verified' ? model.metadata.inputs : {};
 
@@ -250,8 +241,7 @@ const AssistantPage: React.FC = () => {
 			}));
 		}
 	};
-	const handleCompactModelChange = (value: string | null): void => {
-		const [providerId, modelId] = value ? (JSON.parse(value) as [string, string]) : ['', ''];
+ 	const handleCompactModelChange = (providerId: string, modelId: string): void => {
 		const next = { providerId, modelId, options: {} };
 		setCompactModel({ providerId, modelId });
 		void window.agent.setCompactModel(next).catch((error) => {
@@ -302,27 +292,21 @@ const AssistantPage: React.FC = () => {
 					title={t('settings.modelServices.compactModel')}
 					description={t('settings.modelServices.compactModelDescription')}
 					actions={
-						<Select
-							value={
-								compactModel.providerId && compactModel.modelId
-									? JSON.stringify([compactModel.providerId, compactModel.modelId])
-									: null
-							}
-							onValueChange={handleCompactModelChange}
-						>
-							<SelectTrigger className="min-w-40 max-w-full" size="sm" aria-label={t('settings.modelServices.compactModel')}>
-								<SelectValue placeholder={t('settings.modelServices.compactModelDisabled')}>
-									{selectedCompactModel?.name}
-								</SelectValue>
-							</SelectTrigger>
-							<SelectContent>
-								{modelsFor('llm').map((item) => (
-									<SelectItem key={`${item.provider.id}:${item.id}`} value={JSON.stringify([item.provider.id, item.id])}>
-										{item.provider.name} — {item.name}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
+						<ModelProviderSelect
+							inline
+							buttonDropdown
+							idPrefix="compact"
+							providerGroups={toModelProviderGroups(state.modelGroups)}
+							providerId={compactModel.providerId}
+							modelId={compactModel.modelId}
+							onChange={handleCompactModelChange}
+							disabled={state.loading || state.saving || state.modelGroups.length === 0}
+							showFieldLabel={false}
+							labels={{
+								label: t('settings.modelServices.compactModel'),
+								placeholder: t('settings.modelServices.compactModelDisabled'),
+							}}
+						/>
 					}
 				/>
 
