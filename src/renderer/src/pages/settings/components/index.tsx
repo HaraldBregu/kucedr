@@ -99,7 +99,7 @@ export function SettingsSection({
 }: SettingsSectionProps): React.JSX.Element {
 	return (
 		<section className={cn('flex flex-col gap-2', className)}>
-			<div className="flex flex-col gap-1 px-0.5 sm:flex-row sm:items-end sm:justify-between">
+			<div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
 				<div className="min-w-0">
 					{!hideTitle && (
 						<h2 className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
