@@ -124,7 +124,9 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
 			? `settings.storage.operation.${operationStatus.operation}.scheduledRunning`
-			: `settings.storage.operation.${operationStatus.operation}.${operationStatus.state}`
+			: versionedEnabled
+				? `settings.storage.versioned.${operationStatus.operation}.${operationStatus.state}`
+				: `settings.storage.operation.${operationStatus.operation}.${operationStatus.state}`
 		: undefined;
 	const operationStatusText = operationStatusKey
 		? t(operationStatusKey, {
@@ -391,7 +393,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 											<Download className="size-3.5" />
 											{runningOperation?.operation === 'restore'
 												? t('settings.storage.pulling')
-												: t('settings.storage.restore')}
+												: t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restore')}
 										</button>
 										<button
 											type="button"
@@ -406,7 +408,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 											<Upload className="size-3.5" />
 											{runningOperation?.operation === 'backup'
 												? t('settings.storage.pushing')
-												: t('settings.storage.backup')}
+												: t(versionedEnabled ? 'settings.storage.versioned.syncNow' : 'settings.storage.backup')}
 										</button>
 									</div>
 								</PopoverContent>
@@ -502,9 +504,9 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 					<Dialog open={restoreOpen} onOpenChange={setRestoreOpen}>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>{t('settings.storage.restoreDialog.title')}</DialogTitle>
+								<DialogTitle>{t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restoreDialog.title')}</DialogTitle>
 								<DialogDescription>
-									{t('settings.storage.restoreDialog.description')}
+									{t(versionedEnabled ? 'settings.storage.versioned.catchUpDescription' : 'settings.storage.restoreDialog.description')}
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
@@ -516,7 +518,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 									onClick={() => void runRestore()}
 								>
 									<Download className="size-3" />
-									{t('settings.storage.restoreDialog.confirm')}
+									{t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restoreDialog.confirm')}
 								</Button>
 							</DialogFooter>
 						</DialogContent>
