@@ -5,5 +5,8 @@ export function s3() {
 	const accessKeyId = Deno.env.get('AWS_ACCESS_KEY_ID');
 	const secretAccessKey = Deno.env.get('AWS_SECRET_ACCESS_KEY');
 	if (!region || !accessKeyId || !secretAccessKey) throw new Error('S3 backend is not configured');
-	return new S3Client({ region, credentials: { accessKeyId, secretAccessKey } });
+	const endpoint = Deno.env.get('S3_ENDPOINT') || undefined;
+	const forcePathStyle = Deno.env.get('S3_FORCE_PATH_STYLE') === 'true';
+	return new S3Client({ region, endpoint, forcePathStyle,
+		credentials: { accessKeyId, secretAccessKey } });
 }
