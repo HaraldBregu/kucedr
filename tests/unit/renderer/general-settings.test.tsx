@@ -1,10 +1,12 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
 
 jest.mock('@thilakbhat/heatmap-ui', () => ({
-	CalendarHeatmap: () => <div data-testid="activity-heatmap" />,
+	CalendarHeatmap: ({ values }: { values: { date: string; value: number }[] }) => (
+		<div data-testid="activity-heatmap" data-count={values.length} />
+	),
 }));
 
 const mockSetTheme = jest.fn();
@@ -156,13 +158,15 @@ it('opens Voice Agent settings from General settings', async () => {
 	expect(screen.getByText('Voice Agent page')).toBeInTheDocument();
 });
 
-it('shows the activity heatmap in General settings', () => {
+it('shows activity loaded from application logs in General settings', async () => {
 	render(
 		<MemoryRouter>
 			<GeneralPage />
 		</MemoryRouter>
 	);
 
-	expect(screen.getByTestId('activity-heatmap')).toBeInTheDocument();
+	await waitFor(() => {
+		expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
+	});
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 });
