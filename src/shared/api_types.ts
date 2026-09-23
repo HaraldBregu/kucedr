@@ -342,6 +342,7 @@ export interface StorageApi {
 	getVersionedStatus: () => Promise<boolean>;
 	setVersionedEnabled: (enabled: boolean) => Promise<boolean>;
 	listConflicts: () => Promise<StorageConflict[]>;
+	restoreVersion: (workspaceId: string, versionId: string) => Promise<'synced' | 'pending'>;
 	syncFolders: () => Promise<StorageSyncFolder[]>;
 	pickFolders: () => Promise<string[]>;
 	getOperationStatus: () => Promise<StorageOperationStatus | undefined>;
