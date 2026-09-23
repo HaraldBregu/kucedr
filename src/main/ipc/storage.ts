@@ -19,6 +19,8 @@ import { loadCloudConfig } from '../cloud/config';
 import { configureVersionedStorage } from '../storage/cloud/configure';
 import { readStorageConfig } from '../storage/local/config';
 import { writeStorageConfig } from '../storage/local/config_write';
+import { openStorageState } from '../storage/local/state';
+import { listStorageConflicts } from '../storage/local/conflicts';
 
 export interface StorageIpcDeps {
 	appRegistry: AppRegistry;
@@ -98,6 +100,20 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			if (!settings.paths.length) throw new Error('Select at least one folder to synchronize.');
 			await configureVersionedStorage(settings, cloud.url, true);
 			return true;
+		});
+		registerQueryWithEvent(StorageChannels.listConflicts, async (event) => {
+			trusted.assert(event);
+			const accountId = authService.getSignedInUserId();
+			const config = await readStorageConfig();
+			if (!accountId || !config?.sync.enabled) return [];
+			const database = openStorageState();
+			try {
+				return config.workspaces.flatMap((workspace) => listStorageConflicts(database, {
+					accountId, workspaceId: workspace.id,
+				}));
+			} finally {
+				database.close();
+			}
 		});
 		registerQueryWithEvent(StorageChannels.syncFolders, (event) => {
 			trusted.assert(event);
