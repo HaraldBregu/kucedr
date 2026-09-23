@@ -9,10 +9,15 @@ export async function saveLocalSnapshot(
 	database: DatabaseSync,
 	input: LocalSnapshotInput
 ): Promise<LocalSnapshotResult> {
-	if (input.kind === 'tombstone' && input.content) {
-		throw new Error('A tombstone cannot contain content.');
+	if ((input.kind === 'tombstone' || input.kind === 'rename') && input.content) {
+		throw new Error('A metadata-only version cannot contain content.');
 	}
-	if (input.kind !== 'tombstone' && !input.content) throw new Error('Snapshot content is required.');
+	if (input.kind === 'rename' && input.parentIds.length !== 1) {
+		throw new Error('A rename must have one parent version.');
+	}
+	if (input.kind !== 'tombstone' && input.kind !== 'rename' && !input.content) {
+		throw new Error('Snapshot content is required.');
+	}
 	const hash = input.content ? createHash('sha256').update(input.content).digest('hex') : null;
 	const scope = createHash('sha256')
 		.update(JSON.stringify([input.accountId, input.workspaceId]))
