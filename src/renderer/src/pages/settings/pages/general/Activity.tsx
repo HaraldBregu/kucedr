@@ -49,7 +49,8 @@ export function Activity(): React.JSX.Element {
 					to={today}
 					shape="rounded"
 					scale="log"
-					emptyColor="color-mix(in srgb, var(--muted) 75%, #000)"
+					colors={['#0e4429', '#006d32', '#26a641', '#39d353']}
+					emptyColor="#161b22"
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}

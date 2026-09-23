@@ -13,6 +13,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		shape,
 		scale,
 		emptyColor,
+		colors,
 	}: {
 		values: { date: string; value: number }[];
 		weeks: number;
@@ -21,6 +22,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		shape: string;
 		scale: string;
 		emptyColor: string;
+		colors: string[];
 	}) => (
 		<div
 			data-testid="activity-heatmap"
@@ -30,6 +32,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 			data-shape={shape}
 			data-scale={scale}
 			data-empty-color={emptyColor}
+			data-colors={colors.join(',')}
 		>
 			{values.map((day) => (
 				<div
@@ -211,7 +214,11 @@ it('shows activity loaded from application logs in General settings', async () =
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'log');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
 		'data-empty-color',
-		'color-mix(in srgb, var(--muted) 75%, #000)'
+		'#161b22'
+	);
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
+		'data-colors',
+		'#0e4429,#006d32,#26a641,#39d353'
 	);
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 
