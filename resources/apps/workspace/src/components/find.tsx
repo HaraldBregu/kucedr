@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 
 interface FindProps {
+	autoFocus?: boolean;
 	className?: string;
 	matchCount: number;
 	onClose: () => void;
@@ -15,6 +16,7 @@ interface FindProps {
 }
 
 export function Find({
+	autoFocus = false,
 	className,
 	matchCount,
 	onClose,
@@ -34,7 +36,7 @@ export function Find({
 			)}
 		>
 			<Input
-				autoFocus
+				autoFocus={autoFocus}
 				value={query}
 				onChange={(event) => onQueryChange(event.target.value)}
 				onKeyDown={(event) => {

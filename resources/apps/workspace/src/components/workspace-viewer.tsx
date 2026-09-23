@@ -1,16 +1,17 @@
-import { FileWarning, FileText, LoaderCircle, Search } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { FileWarning, FileText, LoaderCircle } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { WorkspaceFileKind, WorkspaceTreeEntry } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
 
-import { FileViewer } from '@/components/viewer';
+import { FileViewer, type FileFindControls } from '@/components/viewer';
+import { Find } from '@/components/find';
 import { FileInformation } from '@/components/information';
 import { FormatToggle } from '@/components/format-toggle';
 import { Tabs } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
 import { showNativeContextMenu } from '@/lib/menu';
 import { cn } from '@/lib/utils';
 import { isUnreadableBinaryError } from '@/lib/binary';
+import { countMatches } from '@/lib/matches';
 
 const editableWorkspaceKinds = new Set<WorkspaceFileKind>([
 	'markdown',
@@ -59,12 +60,30 @@ export function WorkspaceViewer({
 }: WorkspaceViewerProps) {
 	const editable = kind !== null && editableWorkspaceKinds.has(kind);
 	const canvas = kind === 'mermaid' || kind === 'excalidraw' || kind === 'tldraw';
-	const [openFileFind, setOpenFileFind] = useState<(() => void) | null>(null);
+	const [fileFindControls, setFileFindControls] = useState<FileFindControls | null>(null);
+	const [findQuery, setFindQuery] = useState('');
 	const fileName = path?.split(/[\\/]/).pop() ?? '';
-	const searchable = kind === 'markdown' || kind === 'text';
-	const onFindReady = useCallback((open: (() => void) | null) => {
-		setOpenFileFind(() => open);
+	const searchable = kind === 'text' || (kind === 'markdown' && markdownMode === 'source');
+	const findMatchCount = useMemo(() => countMatches(content, findQuery), [content, findQuery]);
+	const onFindReady = useCallback((controls: FileFindControls | null) => {
+		setFileFindControls(controls);
 	}, []);
+	const clearFind = useCallback(() => {
+		setFindQuery('');
+		fileFindControls?.clear();
+	}, [fileFindControls]);
+	const updateFindQuery = useCallback(
+		(query: string) => {
+			setFindQuery(query);
+			if (query) fileFindControls?.find(query, 'next');
+			else fileFindControls?.clear();
+		},
+		[fileFindControls]
+	);
+
+	useEffect(() => {
+		clearFind();
+	}, [clearFind, path]);
 
 	useEffect(() => {
 		if (!editable) return;
@@ -145,24 +164,21 @@ export function WorkspaceViewer({
 			>
 				<header
 					aria-label="File navigation"
-					className="sticky top-0 z-20 flex h-10 shrink-0 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur sm:px-4"
+					className="sticky top-0 z-20 flex h-11 shrink-0 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur sm:px-4"
 				>
-					<p className="min-w-0 flex-1 truncate text-xs font-medium" title={path}>
+					<p className="min-w-0 max-w-[40%] flex-1 truncate text-xs font-medium" title={path}>
 						{fileName}
 					</p>
 					{searchable ? (
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							className="size-7"
-							title="Find in file"
-							aria-label="Find in file"
-							disabled={!openFileFind}
-							onClick={() => openFileFind?.()}
-						>
-							<Search />
-						</Button>
+						<Find
+							className="ml-auto w-full max-w-md"
+							matchCount={findMatchCount}
+							onClose={clearFind}
+							onNext={() => fileFindControls?.find(findQuery, 'next')}
+							onPrevious={() => fileFindControls?.find(findQuery, 'previous')}
+							onQueryChange={updateFindQuery}
+							query={findQuery}
+						/>
 					) : null}
 				</header>
 				<div
