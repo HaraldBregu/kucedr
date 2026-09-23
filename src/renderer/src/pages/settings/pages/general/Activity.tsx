@@ -47,6 +47,7 @@ export function Activity(): React.JSX.Element {
 					weeks={30}
 					weekStart={1}
 					to={today}
+					shape="ring"
 					showLegend
 					showMonthLabels
 					showWeekdayLabels
