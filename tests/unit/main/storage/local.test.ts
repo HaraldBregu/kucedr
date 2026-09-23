@@ -182,3 +182,18 @@ it('records legacy settings without removing or rewriting the source', async () 
 		.toEqual({ count: 1 });
 	database.close();
 });
+
+it('does not reset a corrupt or newer local state database', () => {
+	mkdirSync(storageLocation(), { recursive: true });
+	const file = path.join(storageLocation(), 'state.sqlite');
+	const corrupt = Buffer.from('not a sqlite database');
+	writeFileSync(file, corrupt);
+	expect(() => openStorageState()).toThrow();
+	expect(readFileSync(file)).toEqual(corrupt);
+	rmSync(file);
+	const database = openStorageState();
+	database.exec('PRAGMA user_version = 99');
+	database.close();
+	expect(() => openStorageState()).toThrow('newer application');
+	expect(readFileSync(file).length).toBeGreaterThan(0);
+});
