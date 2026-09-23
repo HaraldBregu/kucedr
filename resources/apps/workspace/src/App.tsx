@@ -963,7 +963,13 @@ export default function App() {
 										onClick={() => {
 											setGlobalSearchOpen(false);
 											setGlobalSearchQuery('');
-											if (entry.type === 'file') void selectWorkspaceEntry(entry);
+											if (entry.type === 'file') {
+												void selectWorkspaceEntry(entry);
+											} else {
+												setSidebarOpen(true);
+												setSidebarSearchOpen(true);
+												setSidebarSearchQuery(entry.name);
+											}
 										}}
 									>
 										{entry.type === 'directory' ? <Folder /> : <File />}
