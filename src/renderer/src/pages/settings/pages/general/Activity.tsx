@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CalendarHeatmap } from '@thilakbhat/heatmap-ui';
 import '@thilakbhat/heatmap-ui/styles.css';
 import { useTranslation } from 'react-i18next';
+
+const ACTIVITY_WEEKS = 53;
+const ACTIVITY_GAP = 1;
+const ACTIVITY_LABEL_WIDTH = 32;
 
 export function Activity(): React.JSX.Element {
 	const { t } = useTranslation();
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
 	const [failed, setFailed] = useState(false);
+	const [cellSize, setCellSize] = useState(9);
+	const containerRef = useRef<HTMLDivElement>(null);
 	const yearEnd = `${new Date().getUTCFullYear()}-12-31`;
 
 	useEffect(() => {
@@ -24,15 +30,32 @@ export function Activity(): React.JSX.Element {
 		};
 	}, []);
 
+	useEffect(() => {
+		const container = containerRef.current;
+		if (!container || typeof ResizeObserver === 'undefined') return;
+
+		const resize = (width: number): void => {
+			if (width <= 0) return;
+			const available = width - ACTIVITY_LABEL_WIDTH - (ACTIVITY_WEEKS - 1) * ACTIVITY_GAP;
+			const nextSize = Math.max(4, Math.min(12, Math.floor(available / ACTIVITY_WEEKS)));
+			setCellSize((current) => (current === nextSize ? current : nextSize));
+		};
+
+		resize(container.clientWidth);
+		const observer = new ResizeObserver((entries) => resize(entries[0]?.contentRect.width ?? 0));
+		observer.observe(container);
+		return () => observer.disconnect();
+	}, []);
+
 	return (
-		<div className="w-full py-1">
+		<div ref={containerRef} className="w-full py-1">
 			<CalendarHeatmap
 				values={[...values]}
-				weeks={53}
+				weeks={ACTIVITY_WEEKS}
 				weekStart={1}
 				to={yearEnd}
-				cellSize={9}
-				gap={1}
+				cellSize={cellSize}
+				gap={ACTIVITY_GAP}
 				showLegend
 				showMonthLabels
 				showWeekdayLabels
