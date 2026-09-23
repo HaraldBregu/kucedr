@@ -363,6 +363,17 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 	}, [dispatchChat, sessionId]);
 
 	useEffect(() => {
+		const refresh = (event: Event): void => {
+			if (!(event instanceof CustomEvent) || event.detail !== sessionId) return;
+			void getAgentApi()
+				?.getSessionSnapshot(sessionId)
+				.then((snapshot) => dispatchChat({ type: 'restore_history', history: snapshot.messages }));
+		};
+		window.addEventListener('kucedr:session-compacted', refresh);
+		return () => window.removeEventListener('kucedr:session-compacted', refresh);
+	}, [dispatchChat, sessionId]);
+
+	useEffect(() => {
 		return () => {
 			const runId = activeRunIdRef.current;
 			if (runId)
