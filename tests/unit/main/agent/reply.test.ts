@@ -86,3 +86,17 @@ it('includes reply context when restoring an active run', async () => {
 	release();
 	await response;
 });
+
+it('returns the complete stored session transcript for a snapshot', () => {
+	const agent = new Agent({} as ExecSandbox);
+	const messages = Array.from({ length: 55 }, (_, index) => ({
+		role: 'user' as const,
+		content: `Message ${index + 1}`,
+	}));
+	const directory = path.join(location, 'sessions', SESSION_ID);
+	fs.mkdirSync(directory, { recursive: true });
+	fs.writeFileSync(path.join(directory, 'messages.json'), JSON.stringify(messages), 'utf8');
+
+	expect(agent.getSessionSnapshot(SESSION_ID).messages).toHaveLength(55);
+	expect(agent.getSessionSnapshot(SESSION_ID).messages[0]).toMatchObject({ content: 'Message 1' });
+});
