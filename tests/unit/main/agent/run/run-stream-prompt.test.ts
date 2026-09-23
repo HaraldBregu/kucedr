@@ -463,7 +463,11 @@ describe('run stream system prompt', () => {
 				void event;
 
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
-			expect(runModelTurnMock.mock.calls[0][15]).toEqual([]);
+			const requiredContext = runModelTurnMock.mock.calls[0][15] as Message[];
+			expect(requiredContext[0]?.content).toContain('### AGENTS.md');
+			expect(requiredContext[0]?.content).toContain('### IDENTITY.md');
+			expect(requiredContext[0]?.content).toContain('### SOUL.md');
+			expect(requiredContext[0]?.content).not.toContain('### BOOTSTRAP.md');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
