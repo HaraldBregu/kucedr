@@ -28,8 +28,8 @@ it('copies a user message', async () => {
 
 it('shows long user messages in full without an expand control', () => {
 	const content = 'Long message '.repeat(60);
-	render(<UserMessage content={content} onEdit={jest.fn()} />);
-	expect(screen.getByText(content)).toBeInTheDocument();
+	const { container } = render(<UserMessage content={content} onEdit={jest.fn()} />);
+	expect(container.querySelector('[data-slot="user-message-content"]')).toHaveTextContent(content);
 	expect(screen.queryByRole('button', { name: 'More' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'Less' })).not.toBeInTheDocument();
 });
