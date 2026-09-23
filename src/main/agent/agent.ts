@@ -602,6 +602,7 @@ function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 		return [];
 
 	const content = toTextContent(message.content);
+	if (message.role === 'summary') return [{ role: 'summary', content }];
 
 	if (message.role === 'assistant') {
 		const messages: AgentHistoryMessage[] = [
