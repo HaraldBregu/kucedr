@@ -1123,6 +1123,9 @@
 				"syncNow": "Sync versions now",
 				"catchUp": "Fetch cloud versions",
 				"catchUpDescription": "Download and verify cloud versions into the local cache. Existing working files are kept for conflict review.",
+				"conflicts": "Unresolved conflicts",
+				"conflictsDescription": "Concurrent versions or files claiming the same path need review.",
+				"deleted": "Deleted file",
 				"backup": {
 					"running": "Version sync is running…",
 					"succeeded": "Saved local snapshots and published available versions.",

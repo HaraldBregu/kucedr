@@ -1123,6 +1123,9 @@
 				"syncNow": "Sincronizza le versioni ora",
 				"catchUp": "Scarica le versioni cloud",
 				"catchUpDescription": "Scarica e verifica le versioni cloud nella cache locale. I file di lavoro esistenti restano disponibili per risolvere i conflitti.",
+				"conflicts": "Conflitti non risolti",
+				"conflictsDescription": "Le versioni simultanee o i file con lo stesso percorso richiedono una verifica.",
+				"deleted": "File eliminato",
 				"backup": {
 					"running": "Sincronizzazione delle versioni in corso…",
 					"succeeded": "Snapshot locali salvati e versioni disponibili pubblicate.",
