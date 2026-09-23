@@ -59,7 +59,8 @@ export async function drainPending(
 				}
 				if (operation.status !== 'uploaded') {
 					await cloud.upload(grant, content);
-					markOperationUploaded(database, scope, operation.operationId, grant.key);
+					markOperationUploaded(database, scope, operation.operationId,
+						grant.key, operation.size);
 				}
 				Object.assign(request, {
 					bucket: grant.bucket, key: grant.key,

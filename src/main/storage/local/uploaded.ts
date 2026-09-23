@@ -5,11 +5,12 @@ export function markOperationUploaded(
 	database: DatabaseSync,
 	scope: StorageScope,
 	operationId: string,
-	objectKey: string
+	objectKey: string,
+	uploadedBytes: number
 ): void {
 	const result = database.prepare(`UPDATE pending_operations
-		SET status = 'uploaded', object_key = ?, last_error = NULL
+		SET status = 'uploaded', object_key = ?, uploaded_bytes = ?, last_error = NULL
 		WHERE account_id = ? AND workspace_id = ? AND operation_id = ? AND status != 'synced'`)
-		.run(objectKey, scope.accountId, scope.workspaceId, operationId);
+		.run(objectKey, uploadedBytes, scope.accountId, scope.workspaceId, operationId);
 	if (result.changes !== 1) throw new Error('Unknown pending storage operation.');
 }
