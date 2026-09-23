@@ -6,7 +6,10 @@ import { readIdentity } from './system_read_identity';
 import { readSoul } from './system_read_soul';
 import { readUser } from './system_read_user';
 
-export async function buildWorkspaceContext(config: Config, scope: 'full' | 'core' = 'full'): Promise<string> {
+export async function buildWorkspaceContext(
+	config: Config,
+	scope: 'full' | 'core' = 'full'
+): Promise<string> {
 	const resolvedWorkspacePath = path.resolve(config.location);
 	const files = [
 		['AGENTS.md', await readAgent(resolvedWorkspacePath)],

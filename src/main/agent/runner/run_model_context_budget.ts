@@ -124,8 +124,8 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 	if (mandatoryTokens > maxInputTokens) {
 		throw new Error(
 			protectedSystemPrompt
-					? 'The active skill instructions, workspace context, current user turn, and available tool schemas exceed the model context budget.'
-					: 'The workspace context, current user turn, and available tool schemas exceed the model context budget.'
+				? 'The active skill instructions, workspace context, current user turn, and available tool schemas exceed the model context budget.'
+				: 'The workspace context, current user turn, and available tool schemas exceed the model context budget.'
 		);
 	}
 
@@ -145,7 +145,7 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 			Math.ceil(
 				contextBytes({
 					systemPrompt: [systemPrompt, protectedSystemPrompt].filter(Boolean).join('\n\n'),
-						messages: [...requiredContextMessages, ...selectedMessages],
+					messages: [...requiredContextMessages, ...selectedMessages],
 					tools: toolView,
 				}) / CONTEXT_BYTES_PER_TOKEN
 			) +
@@ -167,7 +167,7 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 			Math.ceil(
 				contextBytes({
 					systemPrompt: [systemPrompt, protectedSystemPrompt].filter(Boolean).join('\n\n'),
-						messages: [...requiredContextMessages, ...optionalContextMessages, ...selectedMessages],
+					messages: [...requiredContextMessages, ...optionalContextMessages, ...selectedMessages],
 					tools: toolView,
 				}) / CONTEXT_BYTES_PER_TOKEN
 			) + 32;
@@ -187,7 +187,7 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 			Math.ceil(
 				contextBytes({
 					systemPrompt: [systemPrompt, protectedSystemPrompt].filter(Boolean).join('\n\n'),
-						messages: [...requiredContextMessages, ...optionalContextMessages, ...candidateMessages],
+					messages: [...requiredContextMessages, ...optionalContextMessages, ...candidateMessages],
 					tools: toolView,
 				}) / CONTEXT_BYTES_PER_TOKEN
 			) + 32;
@@ -209,7 +209,7 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 			Math.ceil(
 				contextBytes({
 					systemPrompt: [systemPrompt, protectedSystemPrompt].filter(Boolean).join('\n\n'),
-						messages: [...requiredContextMessages, ...optionalContextMessages, ...candidateMessages],
+					messages: [...requiredContextMessages, ...optionalContextMessages, ...candidateMessages],
 					tools: toolView,
 				}) / CONTEXT_BYTES_PER_TOKEN
 			) + 32;
@@ -226,7 +226,7 @@ export function fitModelContext(input: ModelContextBudgetInput): ModelContextBud
 		) + 32;
 	return {
 		systemPrompt: [systemPrompt, protectedSystemPrompt].filter(Boolean).join('\n\n') || undefined,
-			messages: [...requiredContextMessages, ...optionalContextMessages, ...selectedMessages],
+		messages: [...requiredContextMessages, ...optionalContextMessages, ...selectedMessages],
 		tools: selectedTools,
 		estimatedTokens,
 	};
