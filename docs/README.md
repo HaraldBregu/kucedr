@@ -29,6 +29,7 @@ These guides describe the checked-in implementation; provider availability and o
 ## Operate and maintain
 
 - [Account and cloud architecture](CLOUD.md): authentication, storage boundaries, and current limitations.
+- [Cloud file synchronization design](STORAGE_SYNC.md): local durability, version metadata, service setup, and recovery.
 - [Supabase](SUPABASE.md): account infrastructure and local backend setup.
 - [Releasing](RELEASING.md): release entry point and deployment references.
 - [Security](../SECURITY.md): security policy and vulnerability reporting.

@@ -71,3 +71,19 @@ newer local edits and pending snapshots. Evict only recoverable cached blobs; re
 by default. Enable S3 Versioning for additional object recovery. Recovering the service requires
 coordinating a Supabase metadata backup with the corresponding S3 objects; restoring either one
 alone can leave published versions without content or content without discoverable metadata.
+
+## Service setup
+
+Apply `supabase/migrations/20260923000000_storage_versions.sql` to the intended Supabase
+project before enabling version sync. Deploy the `storage-upload`, `storage-publish`, and
+`storage-download` Edge Functions from `supabase/functions/`. Configure function secrets
+`S3_BUCKET`, `S3_REGION`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` on the trusted
+backend; Supabase supplies its own URL and API keys to the functions. The AWS identity needs
+only object read/write access in the dedicated version prefix and must not be bundled into the
+desktop app. Configure the bucket to reject overwrites, retain objects, and enable S3 Versioning.
+
+The desktop build uses only the project's public Supabase URL and publishable key as described
+in [Supabase Adapter](SUPABASE.md). Validate with two separate accounts: each account must be
+unable to list or publish the other's workspace, versions, and objects. Keep the old backup
+settings and S3 objects until an explicit import has checked the object bytes and installed the
+corresponding metadata; the version-sync database migration does not convert them.
