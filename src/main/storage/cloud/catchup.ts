@@ -29,7 +29,11 @@ export async function catchUp(
 					throw new Error('Cloud download size mismatch.');
 				}
 				await installVerifiedDownload(scope, content, version.sha256);
-				if (root && version.path && await installNewWorkingFile(root, version.path, content)) {
+				const currentHeads = root && version.path
+					? await cloud.heads(scope.workspaceId, version.file_id) : [];
+				if (root && version.path && currentHeads.length === 1 &&
+					currentHeads[0] === version.id &&
+					await installNewWorkingFile(root, version.path, content)) {
 					database.prepare(`INSERT OR IGNORE INTO local_files
 						(account_id, workspace_id, file_id, relative_path) VALUES (?, ?, ?, ?)`).run(
 							scope.accountId, scope.workspaceId, version.file_id, version.path);
