@@ -136,6 +136,9 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.videoModelDescription': 'Video defaults',
 		'settings.modelServices.model': 'Model',
 		'settings.modelServices.llmModel': 'LLM Model',
+		'settings.modelServices.compactModel': 'Compaction model',
+		'settings.modelServices.compactModelDescription': 'Used to summarize older messages when you compact a conversation.',
+		'settings.modelServices.compactModelFallback': 'Use Chat LLM',
 		'settings.modelServices.modelDescription': 'Choose provider and model',
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.cron.actions.enable': 'Enable',
@@ -213,6 +216,8 @@ beforeEach(() => {
 			setModelId: jest.fn().mockResolvedValue(true),
 			getModelOptions: jest.fn().mockResolvedValue({}),
 			setModelOptions: jest.fn().mockResolvedValue({}),
+			getCompactModel: jest.fn().mockResolvedValue({ providerId: '', modelId: '', options: {} }),
+			setCompactModel: jest.fn().mockResolvedValue({ providerId: '', modelId: '', options: {} }),
 			getToolModel: jest.fn().mockImplementation(async (kind) => toolModels[kind]),
 			setToolModel: jest.fn().mockImplementation(async (kind, settings) => {
 				toolModels[kind] = settings;
