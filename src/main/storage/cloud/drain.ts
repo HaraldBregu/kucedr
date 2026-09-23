@@ -12,7 +12,7 @@ export async function drainPending(
 	database: DatabaseSync,
 	scope: StorageScope,
 	cloud: StorageCloudApi,
-	expected?: { bucket: string; prefix: string }
+	expected?: { providerId: string; bucket: string; prefix: string }
 ): Promise<{ synced: number; failed: number }> {
 	let synced = 0;
 	let failed = 0;
@@ -48,6 +48,7 @@ export async function drainPending(
 					throw new Error('Pending local content failed integrity verification.');
 				}
 				const grant = await cloud.reserveUpload({
+					providerId: expected?.providerId ?? '',
 					workspaceId: scope.workspaceId, operationId: operation.operationId,
 					versionId: operation.versionId, sha256: operation.hash,
 					sizeBytes: operation.size,

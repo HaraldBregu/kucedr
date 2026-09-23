@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 
 export interface UploadRequest {
+	providerId: string;
 	workspaceId: string;
 	operationId: string;
 	versionId: string;
@@ -15,7 +16,7 @@ export interface UploadGrant {
 	headers: Record<string, string>;
 }
 
-export interface PublishRequest extends Omit<UploadRequest, 'sha256' | 'sizeBytes'> {
+export interface PublishRequest extends Omit<UploadRequest, 'providerId' | 'sha256' | 'sizeBytes'> {
 	fileId: string;
 	kind: 'content' | 'tombstone' | 'rename' | 'restore';
 	path: string | null;

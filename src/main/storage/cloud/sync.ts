@@ -48,7 +48,8 @@ export async function runVersionedStorageSync(
 			try {
 				if (mode === 'backup') {
 					uploaded.push(...await scanWorkspace(database, scope, workspace.rootPath, deviceId));
-					const result = await drainPending(database, scope, cloud, config.s3);
+					const result = await drainPending(database, scope, cloud,
+						{ ...config.s3, providerId: config.providerId });
 					if (result.failed) throw new Error(`${result.failed} file version(s) remain pending.`);
 				}
 				const rootIsDirectory = (await fs.lstat(workspace.rootPath)).isDirectory();
