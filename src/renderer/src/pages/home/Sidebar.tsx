@@ -40,6 +40,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const [actionError, setActionError] = useState('');
 	const [editingSessionId, setEditingSessionId] = useState<string>();
 	const [editingTitle, setEditingTitle] = useState('');
+	const [compactingSessionId, setCompactingSessionId] = useState<string>();
 
 	useEffect(() => {
 		let active = true;
@@ -155,6 +156,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							{sessions.map((session) => {
 								const title = session.title.trim() || t('settings.chatHistory.untitled');
 								const isActive = session.id === currentSessionId;
+								const isCompacting = compactingSessionId === session.id;
 								return (
 									<li key={session.id} className="flex min-w-0 items-center">
 										{editingSessionId === session.id ? (
@@ -206,6 +208,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													void window.win
 												.showContextMenu([
 													{ id: 'rename', label: t('common.rename', 'Rename') },
+													{ id: 'compact', label: t('settings.chatHistory.compact') },
 													{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
 													{ id: 'delete', label: t('common.delete', 'Delete') },
 												])
@@ -216,6 +219,21 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													}
 													if (action === 'open-location') {
 														void window.agent.openSessionFolder(session.id);
+													}
+													if (action === 'compact') {
+														if (!window.confirm(t('settings.chatHistory.confirmCompact', { title }))) return;
+														setActionError('');
+														setCompactingSessionId(session.id);
+														void window.agent
+															.compactSession(session.id)
+															.then((result) => {
+																if (result.status === 'compacted')
+																	window.dispatchEvent(
+																		new CustomEvent('kucedr:session-compacted', { detail: session.id })
+																	);
+															})
+															.catch(() => setActionError(t('settings.chatHistory.errors.compact')))
+															.finally(() => setCompactingSessionId(undefined));
 													}
 													if (action === 'delete') {
 																if (
@@ -240,7 +258,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 														});
 												}}
 											>
-												{session.runStatus ? (
+											{session.runStatus || isCompacting ? (
 													<TextShimmer
 														duration={2}
 														className="truncate text-xs"
@@ -248,7 +266,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 															{ '--foreground': 'var(--sidebar-foreground)' } as React.CSSProperties
 														}
 													>
-														{title}
+												{isCompacting ? t('settings.chatHistory.compacting') : title}
 													</TextShimmer>
 												) : (
 													<span className="truncate text-xs">{title}</span>
