@@ -12,7 +12,6 @@ export interface RemoteChange {
 	bucket: string | null;
 	key: string | null;
 	parentIds: string[];
-	heads: string[];
 }
 
 export function applyRemoteChange(
