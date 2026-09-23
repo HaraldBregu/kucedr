@@ -50,6 +50,7 @@ import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
 import { createToolDiscovery, type ToolDiscovery } from './run_discovery';
+import { recoverToolCalls } from './recover';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -326,6 +327,7 @@ async function* loop(
 			applyActivatedSkill(skill);
 			discovery?.activateImmediate(skill.allowedTools ?? []);
 		}
+		await discovery?.preselect(input.message, signal);
 
 		yield {
 			type: 'run_started',
@@ -466,6 +468,20 @@ async function* loop(
 				outputTokens: turn.usage?.outputTokens ?? 0,
 			});
 			const pendingToolCalls = turn.toolCalls;
+			const activatedTools = discovery?.activateInactive(
+				pendingToolCalls.map((call) => call.name)
+			);
+			if (activatedTools && activatedTools.length > 0) {
+				yield { type: 'capability_resolution_start' };
+				yield* recoverToolCalls(pendingToolCalls, activatedTools);
+				yield {
+					type: 'capability_resolution_result',
+					tools: activatedTools.map((tool) => ({ id: tool.id, name: tool.name })),
+					serviceIds: [],
+				};
+				addToolResults(session, pendingToolCalls);
+				continue;
+			}
 			const budgetExceeded = budget.wouldExceed(
 				pendingToolCalls.map((call) => ({
 					tool: turnTools.find((tool) => tool.id === call.name),

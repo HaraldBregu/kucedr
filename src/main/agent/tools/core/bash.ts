@@ -416,7 +416,7 @@ export function execTool(
 		id: 'bash',
 		name: 'Execute command',
 		description:
-			'Run a shell command in a filesystem sandbox. Reads are allowed; writes are confined to the workspace and trusted locations. Declare outside directories that need write access in additionalRoots to request and optionally remember permission. ' +
+			'Run a shell command in a filesystem sandbox to create, edit, move, or delete files. Reads are allowed; writes are confined to the workspace and trusted locations. Declare outside directories that need write access in additionalRoots to request and optionally remember permission. ' +
 			'Runtime cache access may require approval for its containing cache directory. For an intentional host operation, retry with elevated: true to request approval. Set background or yieldMs for long-running commands, timeout to stop slow commands, and pty for TTY-only CLIs.',
 		planSafe: interactionMode === 'plan',
 		inputSchema: execInputSchema,
