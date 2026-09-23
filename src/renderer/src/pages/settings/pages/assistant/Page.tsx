@@ -15,6 +15,13 @@ import {
 import { modelsFor, providers } from '@/lib/providers';
 import { providerIdsFor, providerModels } from '@/lib/providers';
 import { ModelOptions } from '@/components/model-options';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { updateModelOptions } from '@/lib/options';
 import type { Model } from '@/lib/compat';
 import type { PublicProvider } from '../../../../../../shared';
@@ -106,6 +113,10 @@ const AssistantPage: React.FC = () => {
 	const [modelOptions, setModelOptions] = useState<Record<string, unknown>>({});
 	const [localProvider, setLocalProvider] = useState<PublicProvider>();
 	const [hasLoadedLocalModels, setHasLoadedLocalModels] = useState(false);
+	const [compactModel, setCompactModel] = useState<{ providerId: string; modelId: string }>({
+		providerId: '',
+		modelId: '',
+	});
 	const model = modelsFor('llm').find(
 		(item) => item.provider.id === state.providerId && item.id === state.modelId
 	);
@@ -132,6 +143,11 @@ const AssistantPage: React.FC = () => {
 	}, [t]);
 	useEffect(() => {
 		void window.agent.getModelOptions().then(setModelOptions);
+	}, []);
+	useEffect(() => {
+		void window.agent.getCompactModel().then((model) => {
+			setCompactModel({ providerId: model.providerId, modelId: model.modelId });
+		});
 	}, []);
 	const saveModelOptions = (next: Record<string, unknown>): void => {
 		setModelOptions(next);
@@ -231,6 +247,17 @@ const AssistantPage: React.FC = () => {
 			}));
 		}
 	};
+	const handleCompactModelChange = (value: string | null): void => {
+		const [providerId, modelId] = value ? (JSON.parse(value) as [string, string]) : ['', ''];
+		const next = { providerId, modelId, options: {} };
+		setCompactModel({ providerId, modelId });
+		void window.agent.setCompactModel(next).catch((error) => {
+			setState((current) => ({
+				...current,
+				error: firstErrorMessage(error, t('settings.modelServices.saveError')),
+			}));
+		});
+	};
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -267,6 +294,33 @@ const AssistantPage: React.FC = () => {
 						onChange={updateModelOption}
 					/>
 				</ModelProviderConfiguration>
+
+				<SettingsRow
+					title={t('settings.modelServices.compactModel')}
+					description={t('settings.modelServices.compactModelDescription')}
+					actions={
+						<Select
+							value={
+								compactModel.providerId && compactModel.modelId
+									? JSON.stringify([compactModel.providerId, compactModel.modelId])
+									: null
+							}
+							onValueChange={handleCompactModelChange}
+						>
+							<SelectTrigger className="w-52 max-w-full" size="sm" aria-label={t('settings.modelServices.compactModel')}>
+								<SelectValue placeholder={t('settings.modelServices.compactModelFallback')} />
+							</SelectTrigger>
+							<SelectContent>
+								<SelectItem value={null}>{t('settings.modelServices.compactModelFallback')}</SelectItem>
+								{modelsFor('llm').map((item) => (
+									<SelectItem key={`${item.provider.id}:${item.id}`} value={JSON.stringify([item.provider.id, item.id])}>
+										{item.provider.name} — {item.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					}
+				/>
 
 				<AgentMediaModelConfiguration
 					api={window.models.voice}
