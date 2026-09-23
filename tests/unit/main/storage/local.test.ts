@@ -119,6 +119,7 @@ it('keeps workspace identities stable and separate for distinct roots and accoun
 const config: StorageConfig = {
 	version: 1,
 	provider: 's3',
+	providerId: '123e4567-e89b-42d3-a456-426614174000',
 	s3: { bucket: 'bucket', region: 'eu-west-1', prefix: 'versions/' },
 	supabase: { url: 'https://example.supabase.co' },
 	sync: { enabled: true, maxCacheBytes: 1000 },
