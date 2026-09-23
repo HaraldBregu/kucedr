@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { storageLocation } from '../local/paths';
 import { storageTarget } from '../storage_target';
+import { isProtectedStoragePath } from '../storage_protected';
 
 export async function installNewWorkingFile(
 	root: string,
@@ -10,6 +11,7 @@ export async function installNewWorkingFile(
 	content: Uint8Array
 ): Promise<boolean> {
 	const target = await storageTarget(root, relativePath, '');
+	if (isProtectedStoragePath(target)) throw new Error('Cloud file path is protected.');
 	await fs.mkdir(path.dirname(target), { recursive: true });
 	await storageTarget(root, relativePath, '');
 	const staging = path.join(storageLocation(), 'staging');
