@@ -55,9 +55,6 @@ describe('progressive tool discovery', () => {
 			fakeTool('read', 'Read a file'),
 			fakeTool('edit', 'Edit a file'),
 			fakeTool('search_web', 'Search public websites'),
-			...Array.from({ length: 6 }, (_, index) =>
-				fakeTool(`file_${index}`, `Read and edit file ${index}`)
-			),
 		];
 		const greeting = createToolDiscovery({ eligible: tools, required: [] });
 		await greeting.preselect('hello there');
@@ -69,11 +66,16 @@ describe('progressive tool discovery', () => {
 
 		const files = createToolDiscovery({ eligible: tools, required: [] });
 		const selected = await files.preselect('read and edit this file');
-		expect(selected.tools).toHaveLength(5);
 		expect(selected.tools.map((tool) => tool.id)).toEqual(
 			expect.arrayContaining(['read', 'edit'])
 		);
 		expect(selected.tools.map((tool) => tool.id)).not.toContain('search_web');
+
+		const cappedTools = Array.from({ length: 6 }, (_, index) =>
+			fakeTool(`file_${index}`, `Read and edit file ${index}`)
+		);
+		const capped = createToolDiscovery({ eligible: cappedTools, required: [] });
+		expect((await capped.preselect('read and edit this file')).tools).toHaveLength(5);
 	});
 
 	it('activates eligible inactive IDs without exposing unknown IDs', () => {

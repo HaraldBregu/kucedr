@@ -1089,7 +1089,7 @@ describe('run stream system prompt', () => {
 
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(['read', 'edit']);
+		).toEqual(['discover_tools', 'read', 'edit']);
 		expect(order).toEqual(['read', 'edit']);
 	});
 
