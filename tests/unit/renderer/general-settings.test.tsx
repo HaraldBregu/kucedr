@@ -18,6 +18,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 	}: {
 		values: { date: string; value: number }[];
 		weeks: number;
+		cellSize: number;
 		to: string;
 		cellLabel: (day: { date: string; value: number }) => string;
 		shape: string;
@@ -31,6 +32,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 			data-count={values.length}
 			data-to={to}
 			data-weeks={weeks}
+			data-cell-size={cellSize}
 			data-shape={shape}
 			data-scale={scale}
 			data-empty-color={emptyColor}
@@ -216,6 +218,7 @@ it('shows activity loaded from application logs in General settings', async () =
 		new Date().toISOString().slice(0, 10)
 	);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '37');
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-cell-size', '12');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-shape', 'rounded');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'log');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
