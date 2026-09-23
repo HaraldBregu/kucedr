@@ -15,9 +15,16 @@ import {
 	HighlightStyle,
 	syntaxHighlighting,
 } from '@codemirror/language';
-import { Compartment, EditorState, Transaction } from '@codemirror/state';
-import { findNext, findPrevious, search, SearchQuery, setSearchQuery } from '@codemirror/search';
-import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
+import { Compartment, EditorState, RangeSetBuilder, Transaction } from '@codemirror/state';
+import {
+	findNext,
+	findPrevious,
+	getSearchQuery,
+	search,
+	SearchQuery,
+	setSearchQuery,
+} from '@codemirror/search';
+import { Decoration, EditorView, keymap, lineNumbers, placeholder, ViewPlugin } from '@codemirror/view';
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
 import { tags } from '@lezer/highlight';
 
@@ -75,6 +82,43 @@ const searchHighlight = EditorView.theme({
 		outline: '1px solid color-mix(in oklch, var(--primary) 88%, var(--foreground))',
 	},
 });
+
+const searchMatch = Decoration.mark({ class: 'cm-searchMatch' });
+const selectedSearchMatch = Decoration.mark({ class: 'cm-searchMatch cm-searchMatch-selected' });
+const searchMatches = ViewPlugin.fromClass(
+	class {
+		decorations: ReturnType<typeof Decoration.set>;
+
+		constructor(view: EditorView) {
+			this.decorations = this.highlight(view);
+		}
+
+		update(update: { docChanged: boolean; selectionSet: boolean; view: EditorView; viewportChanged: boolean }) {
+			if (update.docChanged || update.selectionSet || update.viewportChanged) {
+				this.decorations = this.highlight(update.view);
+			}
+		}
+
+		highlight(view: EditorView) {
+			const query = getSearchQuery(view.state);
+			if (!query.valid) return Decoration.none;
+
+			const matches = new RangeSetBuilder<Decoration>();
+			for (const { from, to } of view.visibleRanges) {
+				const cursor = query.getCursor(view.state, from, to);
+				for (let result = cursor.next(); !result.done; result = cursor.next()) {
+					const match = result.value;
+					const selected = view.state.selection.ranges.some(
+						(range) => range.from === match.from && range.to === match.to
+					);
+					matches.add(match.from, match.to, selected ? selectedSearchMatch : searchMatch);
+				}
+			}
+			return matches.finish();
+		}
+	},
+	{ decorations: (plugin) => plugin.decorations }
+);
 
 const noteEditorTheme = EditorView.theme({
 	'&': {
@@ -279,8 +323,9 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 								]),
 								codeEditorTheme,
 								searchHighlight,
+								searchMatches,
 							]
-						: [EditorView.lineWrapping, noteEditorTheme, searchHighlight]),
+						: [EditorView.lineWrapping, noteEditorTheme, searchHighlight, searchMatches]),
 					placeholder(code ? '' : 'Start writing...'),
 					editabilityRef.current.of([
 						EditorState.readOnly.of(initialReadOnlyRef.current),
