@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { CalendarHeatmap } from '@thilakbhat/heatmap-ui';
 import '@thilakbhat/heatmap-ui/styles.css';
+import './Activity.css';
 import { useTranslation } from 'react-i18next';
 
 export function Activity(): React.JSX.Element {
@@ -33,7 +34,7 @@ export function Activity(): React.JSX.Element {
 		<>
 			<div
 				data-testid="activity-scroll"
-				className="overflow-x-auto py-1"
+				className="card-body"
 				onPointerMove={(event) => {
 					const cell = (event.target as HTMLElement).closest('.heatmap__cell-slot');
 					const label = cell?.getAttribute('aria-label');
