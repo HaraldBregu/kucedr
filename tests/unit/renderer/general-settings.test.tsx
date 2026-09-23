@@ -197,7 +197,7 @@ it('shows activity loaded from application logs in General settings', async () =
 		'data-to',
 		new Date().toISOString().slice(0, 10)
 	);
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '53');
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '30');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 
 	const cell = screen.getByRole('img', { name: 'settings.activity.day' });
