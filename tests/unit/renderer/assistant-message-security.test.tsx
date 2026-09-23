@@ -175,16 +175,15 @@ it('shows image pickers from restored tool output', () => {
 	);
 });
 
-it('expands and collapses long assistant content', () => {
+it('shows long assistant content in full without an expand control', () => {
 	const { container } = render(
-		<AssistantMessage message={message('x'.repeat(700))} collapseLongContent />
+		<AssistantMessage message={message('x'.repeat(700))} />
 	);
 	const content = container.querySelector('[data-slot="assistant-message-content"]');
 
-	expect(content).toHaveClass('max-h-40', 'overflow-hidden');
-	fireEvent.click(screen.getByRole('button', { name: 'More' }));
 	expect(content).not.toHaveClass('max-h-40', 'overflow-hidden');
-	expect(screen.getByRole('button', { name: 'Less' })).toHaveAttribute('aria-expanded', 'true');
+	expect(screen.queryByRole('button', { name: 'More' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Less' })).not.toBeInTheDocument();
 });
 
 it('replies to the selected assistant message', () => {

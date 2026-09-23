@@ -26,27 +26,12 @@ it('copies a user message', async () => {
 	await waitFor(() => expect(writeText).toHaveBeenCalledWith('Copy this message.'));
 });
 
-it('toggles the long-message label inside the message container', () => {
-	render(
-		<UserMessage content={'Long message '.repeat(60)} collapseLongContent onEdit={jest.fn()} />
-	);
-	const copyButton = screen.getByRole('button', { name: 'Copy message' });
-	const moreButton = screen.getByRole('button', { name: 'More' });
-
-	const messageContainer = moreButton.closest('[data-slot="user-message-content"]');
-	expect(messageContainer).toContainElement(moreButton);
-	expect(messageContainer).not.toContainElement(copyButton);
-	expect(moreButton.parentElement).toHaveClass('justify-end');
-	expect(moreButton.parentElement).toHaveClass(
-		'bg-gradient-to-b',
-		'from-transparent',
-		'to-primary'
-	);
-	expect(moreButton).toHaveClass('h-auto', 'px-0');
-	expect(moreButton).toHaveClass('hover:bg-transparent');
-	expect(moreButton.querySelector('svg')).toBeNull();
-	fireEvent.click(moreButton);
-	expect(screen.getByRole('button', { name: 'Less' })).toHaveAttribute('aria-expanded', 'true');
+it('shows long user messages in full without an expand control', () => {
+	const content = 'Long message '.repeat(60);
+	render(<UserMessage content={content} onEdit={jest.fn()} />);
+	expect(screen.getByText(content)).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'More' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Less' })).not.toBeInTheDocument();
 });
 
 it('edits a user message inline', async () => {

@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Message, MessageActions } from '@/components/prompt-kit/message';
 import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
 import { userMarkdownComponents } from './markdown';
 
 export function UserMessage({
