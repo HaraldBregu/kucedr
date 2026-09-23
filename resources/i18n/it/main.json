@@ -1126,7 +1126,7 @@
 				"backup": {
 					"running": "Sincronizzazione delle versioni in corso…",
 					"succeeded": "Snapshot locali salvati e versioni disponibili pubblicate.",
-					"partial": "Snapshot locali salvati; {{failed}} aree di lavoro attendono il caricamento.",
+					"partial": "Salvato in locale / Caricamento in attesa: {{failed}} aree di lavoro richiedono un nuovo tentativo.",
 					"failed": "Sincronizzazione delle versioni non riuscita. {{error}}"
 				},
 				"restore": {

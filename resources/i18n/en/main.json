@@ -1126,7 +1126,7 @@
 				"backup": {
 					"running": "Version sync is running…",
 					"succeeded": "Saved local snapshots and published available versions.",
-					"partial": "Saved local snapshots; {{failed}} workspace(s) still need upload.",
+					"partial": "Saved locally / Pending upload: {{failed}} workspace(s) need retry.",
 					"failed": "Version sync failed. {{error}}"
 				},
 				"restore": {
