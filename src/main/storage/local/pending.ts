@@ -13,7 +13,7 @@ export function listPendingOperations(
 		ON v.account_id = p.account_id AND v.workspace_id = p.workspace_id
 		AND v.version_id = p.version_id
 		WHERE p.account_id = ? AND p.workspace_id = ? AND p.status != 'synced'
-		ORDER BY v.created_at, p.operation_id`).all(scope.accountId, scope.workspaceId) as Array<{
+		ORDER BY v.rowid`).all(scope.accountId, scope.workspaceId) as Array<{
 		account_id: string; workspace_id: string; operation_id: string; file_id: string;
 		version_id: string; content_hash: string | null; content_size: number | null;
 		blob_path: string | null;
