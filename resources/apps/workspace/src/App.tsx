@@ -7,7 +7,7 @@ import {
 	type CSSProperties,
 	type PointerEvent,
 } from 'react';
-import { FilePlus2, FolderPlus, Search, Settings } from 'lucide-react';
+import { File, FilePlus2, Folder, FolderPlus, Search, Settings } from 'lucide-react';
 
 import {
 	agent,
@@ -48,6 +48,7 @@ import { findWorkspaceEntry } from '@/lib/find';
 import { removeWorkspaceEntry } from '@/lib/remove';
 import { rebaseWorkspacePath } from '@/lib/rebase';
 import { isWorkspacePathWithin } from '@/lib/within';
+import { searchWorkspaceEntries } from '@/lib/search';
 import { useNavigationBar } from '@/hooks/navigationbar';
 import {
 	workspaceSettingsDefaults,
@@ -108,7 +109,11 @@ export default function App() {
 	);
 	const [sidebarSearchOpen, setSidebarSearchOpen] = useState(false);
 	const [sidebarSearchQuery, setSidebarSearchQuery] = useState('');
+	const [globalSearchOpen, setGlobalSearchOpen] = useState(false);
+	const [globalSearchQuery, setGlobalSearchQuery] = useState('');
+	const [fileFindRequest, setFileFindRequest] = useState(0);
 	const sidebarSearchInputRef = useRef<HTMLInputElement>(null);
+	const globalSearchInputRef = useRef<HTMLInputElement>(null);
 	const selectedPathRef = useRef<string | null>(null);
 	const selectedContentRef = useRef('');
 	const saveInFlightRef = useRef<Promise<boolean> | null>(null);
@@ -122,6 +127,10 @@ export default function App() {
 	const selectedWorkspaceEntry = useMemo(
 		() => findWorkspaceEntry(workspaceFiles, selectedWorkspacePath),
 		[workspaceFiles, selectedWorkspacePath]
+	);
+	const globalSearchResults = useMemo(
+		() => searchWorkspaceEntries(workspaceFiles, globalSearchQuery),
+		[globalSearchQuery, workspaceFiles]
 	);
 	useNavigationBar({ sidebarOpen, sidebarWidth, setSidebarOpen });
 	useEffect(() => {
@@ -189,17 +198,32 @@ export default function App() {
 	}, [sidebarSearchOpen]);
 
 	useEffect(() => {
-		const openGlobalFileSearch = (event: KeyboardEvent) => {
+		if (!globalSearchOpen) return;
+		globalSearchInputRef.current?.focus();
+	}, [globalSearchOpen]);
+
+	useEffect(() => {
+		const openFileSearch = (event: KeyboardEvent) => {
 			if (!(event.metaKey || event.ctrlKey) || event.key.toLowerCase() !== 'f') return;
 			event.preventDefault();
 			event.stopPropagation();
-			setView('workspace');
-			setSidebarOpen(true);
-			setSidebarSearchOpen(true);
+			const activeElement = document.activeElement;
+			if (activeElement?.closest('#workspace-sidebar')) {
+				setSidebarOpen(true);
+				setSidebarSearchOpen(true);
+				return;
+			}
+			const canFindInSelectedFile =
+				selectedKind === 'text' || (selectedKind === 'markdown' && markdownMode === 'source');
+			if (activeElement?.closest('[aria-label="Workspace file"]') && canFindInSelectedFile) {
+				setFileFindRequest((request) => request + 1);
+				return;
+			}
+			setGlobalSearchOpen(true);
 		};
-		window.addEventListener('keydown', openGlobalFileSearch, true);
-		return () => window.removeEventListener('keydown', openGlobalFileSearch, true);
-	}, []);
+		window.addEventListener('keydown', openFileSearch, true);
+		return () => window.removeEventListener('keydown', openFileSearch, true);
+	}, [markdownMode, selectedKind]);
 
 	const setSidebarVisibility = useCallback((open: boolean): void => {
 		setSidebarOpen(open);
@@ -871,6 +895,7 @@ export default function App() {
 						error={selectedError}
 						file={selectedWorkspaceEntry?.type === 'file' ? selectedWorkspaceEntry : null}
 						kind={selectedKind}
+						findRequest={fileFindRequest}
 						isDark={theme.isDark}
 						loading={selectedLoading}
 						markdownMode={markdownMode}
@@ -904,6 +929,59 @@ export default function App() {
 					)}
 				</SidebarInset>
 			</SidebarProvider>
+
+			<Dialog
+				open={globalSearchOpen}
+				onOpenChange={(open) => {
+					setGlobalSearchOpen(open);
+					if (!open) setGlobalSearchQuery('');
+				}}
+			>
+				<DialogContent className="top-16 max-w-lg -translate-y-0 gap-2 p-2">
+					<DialogTitle className="sr-only">Search workspace files and folders</DialogTitle>
+					<div className="flex items-center gap-2 px-1">
+						<Search className="size-4 shrink-0 text-muted-foreground" />
+						<Input
+							ref={globalSearchInputRef}
+							autoFocus
+							value={globalSearchQuery}
+							placeholder="Search files and folders"
+							aria-label="Search files and folders"
+							className="border-0 shadow-none focus-visible:ring-0"
+							onChange={(event) => setGlobalSearchQuery(event.target.value)}
+						/>
+					</div>
+					<div className="max-h-72 overflow-y-auto px-1 pb-1 scrollbar-subtle">
+						{globalSearchQuery.trim() ? (
+							globalSearchResults.length > 0 ? (
+								globalSearchResults.map((entry) => (
+									<Button
+										key={entry.path}
+										type="button"
+										variant="ghost"
+										className="h-auto w-full justify-start gap-2 px-2 py-2 text-left"
+										onClick={() => {
+											setGlobalSearchOpen(false);
+											setGlobalSearchQuery('');
+											if (entry.type === 'file') void selectWorkspaceEntry(entry);
+										}}
+									>
+										{entry.type === 'directory' ? <Folder /> : <File />}
+										<span className="min-w-0 flex-1 truncate">{entry.name}</span>
+										<span className="shrink-0 text-[11px] font-normal text-muted-foreground">
+											{entry.path}
+										</span>
+									</Button>
+								))
+							) : (
+								<p className="px-2 py-3 text-xs text-muted-foreground">No matching files or folders.</p>
+							)
+						) : (
+							<p className="px-2 py-3 text-xs text-muted-foreground">Search workspace files and folders.</p>
+						)}
+					</div>
+				</DialogContent>
+			</Dialog>
 
 			<Dialog
 				open={Boolean(createRequest)}

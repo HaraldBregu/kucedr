@@ -36,6 +36,7 @@ interface WorkspaceViewerProps {
 	onMarkdownModeChange: (mode: 'source' | 'preview') => void;
 	onRename: () => void;
 	onSave: () => Promise<boolean>;
+	findRequest: number;
 	path: string | null;
 	saving: boolean;
 	settings: WorkspaceSettings;
@@ -55,6 +56,7 @@ export function WorkspaceViewer({
 	onMarkdownModeChange,
 	onRename,
 	onSave,
+	findRequest,
 	path,
 	saving,
 	settings,
@@ -90,6 +92,10 @@ export function WorkspaceViewer({
 	useEffect(() => {
 		clearFind();
 	}, [clearFind, path]);
+
+	useEffect(() => {
+		if (findRequest > 0 && searchable) setFindOpen(true);
+	}, [findRequest, searchable]);
 
 	useEffect(() => {
 		if (!editable) return;
