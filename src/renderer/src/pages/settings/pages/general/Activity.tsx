@@ -54,11 +54,15 @@ export function Activity(): React.JSX.Element {
 					to={today}
 					shape="rounded"
 					scale="linear"
+					levels={7}
 					colors={[
-						'var(--activity-color-1)',
-						'var(--activity-color-2)',
-						'var(--activity-color-3)',
-						'var(--activity-color-4)',
+						'#0e4429',
+						'#07592e',
+						'#006d32',
+						'#138a3a',
+						'#26a641',
+						'#30bd4a',
+						'#39d353',
 					]}
 					emptyColor="var(--activity-empty-color)"
 					data-heatmap-theme={theme === 'system' ? undefined : theme}
