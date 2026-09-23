@@ -53,7 +53,7 @@ export function Activity(): React.JSX.Element {
 					weekStart={1}
 					to={today}
 					shape="rounded"
-					scale="log"
+					scale="linear"
 					colors={[
 						'var(--activity-color-1)',
 						'var(--activity-color-2)',
