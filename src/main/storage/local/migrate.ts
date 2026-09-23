@@ -5,6 +5,9 @@ import type { DatabaseSync } from 'node:sqlite';
 import { userDataLocation } from '../../shared/user_data_location';
 
 export async function migrateLegacyStorageSettings(database: DatabaseSync): Promise<void> {
+	const migrated = database.prepare(`SELECT 1 FROM migration_state
+		WHERE name = 'legacy-storage-settings'`).get();
+	if (migrated) return;
 	const source = path.join(userDataLocation(), 'settings', 'app.json');
 	let contents: string;
 	try {
@@ -36,7 +39,7 @@ export async function migrateLegacyStorageSettings(database: DatabaseSync): Prom
 		const stored = database.prepare(`SELECT source_hash, settings_json FROM legacy_storage_sources
 			WHERE source_path = ?`).get(source) as { source_hash: string; settings_json: string };
 		if (stored.source_hash !== hash || stored.settings_json !== settingsJson) {
-			throw new Error('Legacy storage settings changed after migration; review required.');
+			throw new Error('Legacy storage settings could not be verified.');
 		}
 		database.prepare(`INSERT INTO migration_state (name, completed_at) VALUES (?, ?)
 			ON CONFLICT(name) DO NOTHING`).run('legacy-storage-settings', new Date().toISOString());
