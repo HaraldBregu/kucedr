@@ -754,6 +754,10 @@ export interface StorageInvokeChannelMap {
 		args: [enabled: boolean];
 		result: boolean;
 	};
+	[StorageChannels.listConflicts]: {
+		args: [];
+		result: import('./storage_types').StorageConflict[];
+	};
 	[StorageChannels.syncFolders]: {
 		args: [];
 		result: import('./storage_types').StorageSyncFolder[];
