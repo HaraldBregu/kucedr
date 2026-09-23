@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
@@ -9,17 +9,28 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		values,
 		weeks,
 		to,
+		cellLabel,
 	}: {
 		values: { date: string; value: number }[];
 		weeks: number;
 		to: string;
+		cellLabel: (day: { date: string; value: number }) => string;
 	}) => (
 		<div
 			data-testid="activity-heatmap"
 			data-count={values.length}
 			data-to={to}
 			data-weeks={weeks}
-		/>
+		>
+			{values.map((day) => (
+				<div
+					key={day.date}
+					className="heatmap__cell-slot"
+					role="img"
+					aria-label={cellLabel(day)}
+				/>
+			))}
+		</div>
 	),
 }));
 
@@ -188,4 +199,10 @@ it('shows activity loaded from application logs in General settings', async () =
 	);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '53');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
+
+	const cell = screen.getByRole('img', { name: 'settings.activity.day' });
+	fireEvent.pointerMove(cell, { clientX: 160, clientY: 120 });
+	const tooltip = screen.getByRole('tooltip');
+	expect(tooltip).toHaveClass('fixed');
+	expect(screen.getByTestId('activity-scroll')).not.toContainElement(tooltip);
 });
