@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { STORAGE_MAX_OBJECT_BYTES } from '../limits';
 
 export interface UploadRequest {
 	providerId: string;
@@ -97,7 +98,20 @@ export class StorageCloudApi {
 		const grant = await this.invoke<{ url: string }>('storage-download', { workspaceId, versionId });
 		const response = await fetch(grant.url);
 		if (!response.ok) throw new Error(`Storage download failed (${response.status}).`);
-		return new Uint8Array(await response.arrayBuffer());
+		const declared = Number(response.headers.get('content-length'));
+		if (declared > STORAGE_MAX_OBJECT_BYTES) throw new Error('Cloud download is too large.');
+		if (!response.body) throw new Error('Cloud download has no content.');
+		const chunks: Uint8Array[] = [];
+		let size = 0;
+		for await (const chunk of response.body) {
+			size += chunk.byteLength;
+			if (size > STORAGE_MAX_OBJECT_BYTES) {
+				await response.body.cancel();
+				throw new Error('Cloud download is too large.');
+			}
+			chunks.push(chunk);
+		}
+		return Buffer.concat(chunks, size);
 	}
 
 	async upload(grant: UploadGrant, content: Uint8Array): Promise<void> {
