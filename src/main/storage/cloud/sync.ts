@@ -5,6 +5,7 @@ import { getStorageSettings } from '../../settings_store';
 import type { AuthService } from '../../cloud/service';
 import { getOrCreateDeviceId } from '../local/device';
 import { migrateLegacyStorageSettings } from '../local/migrate';
+import { writeStorageLog } from '../local/log';
 import { openStorageState } from '../local/state';
 import { getOrCreateWorkspaceId } from '../local/workspace';
 import { StorageCloudApi } from './api';
@@ -50,11 +51,14 @@ export async function runVersionedStorageSync(
 					uploaded.push(...await scanWorkspace(database, scope, workspace.rootPath, deviceId));
 					const result = await drainPending(database, scope, cloud,
 						{ ...config.s3, providerId: config.providerId });
+					void writeStorageLog(result.failed ? 'pending-retry' : 'published',
+						result.failed || result.synced).catch(() => undefined);
 					if (result.failed) throw new Error(`${result.failed} file version(s) remain pending.`);
 				}
 				const rootIsDirectory = (await fs.lstat(workspace.rootPath)).isDirectory();
 				const applied = await catchUp(database, scope, cloud,
 					rootIsDirectory ? workspace.rootPath : undefined);
+				if (applied) void writeStorageLog('caught-up', applied).catch(() => undefined);
 				if (applied) downloaded.push(workspace.rootPath);
 			} catch (error) {
 				failed.push({ path: workspace.rootPath,
