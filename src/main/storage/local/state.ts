@@ -18,7 +18,7 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 		if (check.quick_check !== 'ok') throw new Error('Local storage state is corrupt.');
 		const version = (database.prepare('PRAGMA user_version').get() as { user_version: number })
 			.user_version;
-		if (version > 2) throw new Error('Local storage state requires a newer application.');
+		if (version > 3) throw new Error('Local storage state requires a newer application.');
 		if (version === 0) {
 			database.exec(`
 				BEGIN IMMEDIATE;
@@ -110,6 +110,34 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 					settings_json TEXT NOT NULL, recorded_at TEXT NOT NULL
 				) STRICT;
 				PRAGMA user_version = 2;
+				COMMIT;
+			`);
+		}
+		if (version < 3) {
+			database.exec(`
+				BEGIN IMMEDIATE;
+				ALTER TABLE remote_versions RENAME TO remote_versions_old;
+				CREATE TABLE remote_versions (
+					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+					version_id TEXT NOT NULL, file_id TEXT NOT NULL,
+					path TEXT, kind TEXT NOT NULL,
+					content_hash TEXT, content_size INTEGER,
+					bucket TEXT, object_key TEXT,
+					PRIMARY KEY(account_id, workspace_id, version_id)
+				) STRICT;
+				INSERT INTO remote_versions
+					(account_id, workspace_id, version_id, file_id, path, kind,
+					 content_hash, content_size, object_key)
+				SELECT account_id, workspace_id, version_id, file_id, path,
+					CASE WHEN tombstone = 1 THEN 'tombstone' ELSE 'content' END,
+					content_hash, content_size, object_key FROM remote_versions_old;
+				DROP TABLE remote_versions_old;
+				CREATE TABLE remote_parents (
+					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+					version_id TEXT NOT NULL, parent_id TEXT NOT NULL,
+					PRIMARY KEY(account_id, workspace_id, version_id, parent_id)
+				) STRICT;
+				PRAGMA user_version = 3;
 				COMMIT;
 			`);
 		}
