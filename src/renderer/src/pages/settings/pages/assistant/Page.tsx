@@ -47,8 +47,6 @@ function getProviderLlmModels(providerId: string): Model[] {
 	return providerModels(providerId, 'llm');
 }
 
-const localModelOption: Model = { id: 'local', name: 'Local model' };
-
 function localModelProvider(): PublicProvider {
 	return (
 		getCatalogProviderById('ollama') ?? {
@@ -69,21 +67,17 @@ async function loadAssistantState(): Promise<ModelConfigurationState> {
 		const provider = getCatalogProviderById(providerId);
 		return provider && getProviderLlmModels(providerId).length > 0 ? [provider] : [];
 	});
-	const localModel =
-		storedProviderId === 'ollama' && storedModelId
-			? { id: storedModelId, name: storedModelId }
-			: localModelOption;
 	const modelGroups: ProviderModelGroup[] = [...providers, localModelProvider()].map(
 		(provider) => ({
 			provider,
-			models: provider.id === 'ollama' ? [localModel] : getProviderLlmModels(provider.id),
+			models: provider.id === 'ollama' ? [] : getProviderLlmModels(provider.id),
 		})
 	);
 	const preferredGroup =
 		modelGroups.find((group) => group.provider.id === storedProviderId) ?? modelGroups[0];
 	const preferredModel =
 		storedProviderId === 'ollama'
-			? localModel
+			? undefined
 			: (preferredGroup?.models.find((model) => model.id === storedModelId) ??
 				preferredGroup?.models[0]);
 
@@ -184,7 +178,6 @@ const AssistantPage: React.FC = () => {
 
 	const handleChange = async (nextProviderId: string, nextModelId: string): Promise<void> => {
 		if (nextProviderId === 'ollama') {
-			if (nextModelId === localModelOption.id) return;
 			const provider =
 				localProvider ??
 				(await window.provider?.list('models'))?.find((item) => item.id === 'custom');
