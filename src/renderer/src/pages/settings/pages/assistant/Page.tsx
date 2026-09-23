@@ -308,10 +308,9 @@ const AssistantPage: React.FC = () => {
 							onValueChange={handleCompactModelChange}
 						>
 							<SelectTrigger className="w-52 max-w-full" size="sm" aria-label={t('settings.modelServices.compactModel')}>
-								<SelectValue placeholder={t('settings.modelServices.compactModelFallback')} />
+								<SelectValue placeholder={t('settings.modelServices.compactModelDisabled')} />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value={null}>{t('settings.modelServices.compactModelFallback')}</SelectItem>
 								{modelsFor('llm').map((item) => (
 									<SelectItem key={`${item.provider.id}:${item.id}`} value={JSON.stringify([item.provider.id, item.id])}>
 										{item.provider.name} — {item.name}

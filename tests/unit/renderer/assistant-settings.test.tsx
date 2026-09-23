@@ -138,7 +138,7 @@ jest.mock('react-i18next', () => {
 		'settings.modelServices.llmModel': 'LLM Model',
 		'settings.modelServices.compactModel': 'Compaction model',
 		'settings.modelServices.compactModelDescription': 'Used to summarize older messages when you compact a conversation.',
-		'settings.modelServices.compactModelFallback': 'Use Chat LLM',
+		'settings.modelServices.compactModelDisabled': 'Disabled',
 		'settings.modelServices.modelDescription': 'Choose provider and model',
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.cron.actions.enable': 'Enable',
