@@ -526,6 +526,9 @@
 			"actionsDescription": "L'eliminazione della cronologia cancella anche la trascrizione della chat attiva.",
 			"refresh": "Aggiorna",
 			"openFolder": "Apri cartella cronologia chat",
+			"compact": "Compatta conversazione",
+			"compacting": "Compattazione conversazione...",
+			"confirmCompact": "Compattare la sessione chat \"{{title}}\"? I messaggi meno recenti verranno sostituiti definitivamente da un riepilogo. Questa azione non puo essere annullata.",
 			"delete": "Elimina tutta la cronologia chat",
 			"deleteSession": "Elimina {{title}}",
 			"deleting": "Eliminazione...",
@@ -538,6 +541,7 @@
 			"errors": {
 				"load": "Impossibile caricare la cronologia chat.",
 				"delete": "Impossibile eliminare la cronologia chat.",
+				"compact": "Impossibile compattare la conversazione.",
 				"openFolder": "Impossibile aprire la cartella della cronologia chat."
 			}
 		},

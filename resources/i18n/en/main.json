@@ -526,6 +526,9 @@
 			"actionsDescription": "Deleting history also clears the active chat transcript.",
 			"refresh": "Refresh",
 			"openFolder": "Open chat history folder",
+			"compact": "Compact conversation",
+			"compacting": "Compacting conversation...",
+			"confirmCompact": "Compact the chat session \"{{title}}\"? Older messages will be permanently replaced with a summary. This cannot be undone.",
 			"delete": "Delete all chat history",
 			"deleteSession": "Delete {{title}}",
 			"deleting": "Deleting...",
@@ -538,6 +541,7 @@
 			"errors": {
 				"load": "Could not load chat history.",
 				"delete": "Could not delete chat history.",
+				"compact": "Could not compact the conversation.",
 				"openFolder": "Could not open the chat history folder."
 			}
 		},
