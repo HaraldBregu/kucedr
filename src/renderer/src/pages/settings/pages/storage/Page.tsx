@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import type {
+	StorageConflict,
 	StorageOperationStatus,
 	StorageProvider,
 	StorageSyncFolder,
@@ -54,6 +55,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const { t } = useTranslation();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
 	const [versionedEnabled, setVersionedEnabled] = useState(false);
+	const [conflicts, setConflicts] = useState<StorageConflict[]>([]);
 	const [providers, setProviders] = useState<StorageProvider[]>([]);
 	const [settingsLoading, setSettingsLoading] = useState(true);
 	const [availableFolders, setAvailableFolders] = useState<StorageSyncFolder[]>([]);
@@ -84,18 +86,20 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 			window.storage.getOperationStatus(),
 			window.storage.listProviders(),
 			window.storage.getVersionedStatus(),
-		]).then(([settingsResult, foldersResult, statusResult, providersResult, versionedResult]) => {
+			window.storage.listConflicts(),
+		]).then(([settingsResult, foldersResult, statusResult, providersResult, versionedResult, conflictsResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
 			if (foldersResult.status === 'fulfilled') setAvailableFolders(foldersResult.value);
 			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
 			if (versionedResult.status === 'fulfilled') setVersionedEnabled(versionedResult.value);
+			if (conflictsResult.status === 'fulfilled') setConflicts(conflictsResult.value);
 			if (statusResult.status === 'fulfilled' && statusResult.value) {
 				applyOperationStatus(statusResult.value);
 			}
 
-			const failed = [settingsResult, foldersResult, statusResult, providersResult, versionedResult].some(
+			const failed = [settingsResult, foldersResult, statusResult, providersResult, versionedResult, conflictsResult].some(
 				(result) => result.status === 'rejected'
 			);
 			setLoadFailed(failed);
@@ -237,6 +241,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		try {
 			await saveQueueRef.current;
 			setVersionedEnabled(await window.storage.setVersionedEnabled(enabled));
+			setConflicts(enabled ? await window.storage.listConflicts() : []);
 		} catch {
 			setError(t('settings.storage.errors.versioned'));
 		}
@@ -291,6 +296,24 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 							</CardContent>
 						</Card>
 					</SettingsSection>
+					{versionedEnabled && conflicts.length > 0 && (
+						<SettingsSection
+							title={t('settings.storage.versioned.conflicts')}
+							description={t('settings.storage.versioned.conflictsDescription')}
+						>
+							<Card size="sm" className="gap-0! py-0!">
+								<CardContent className="p-0!">
+									{conflicts.map((conflict) => (
+										<SettingsRow
+											key={`${conflict.workspaceId}:${conflict.versionId}`}
+											title={conflict.path ?? t('settings.storage.versioned.deleted')}
+											description={`${conflict.kind} · ${conflict.versionId}`}
+										/>
+									))}
+								</CardContent>
+							</Card>
+						</SettingsSection>
+					)}
 					<Provider
 						providers={providers}
 						providerId={storage.providerId}
