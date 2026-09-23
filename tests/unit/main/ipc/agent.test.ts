@@ -98,6 +98,38 @@ describe('AgentIpc run ownership', () => {
 		expect(listSessions).toHaveBeenCalledWith('all');
 	});
 
+	it('validates and forwards compact-session requests', async () => {
+		const compactSession = jest.fn().mockResolvedValue({
+			status: 'compacted',
+			retainedMessages: 9,
+			removedMessages: 12,
+		});
+		const agent = { compactSession, config: { location: '/agent' } } as unknown as Agent;
+		const sender = { mainFrame: {} };
+		const event = { sender, senderFrame: sender.mainFrame };
+		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 7, webContents: sender });
+		new AgentIpc().register(
+			{
+				logger: { info: jest.fn() } as unknown as LoggerService,
+				agent,
+				conversation: { execute: jest.fn() } as unknown as Conversation,
+				windows: { has: (id: number) => id === 7 } as never,
+				apps: { has: () => false } as never,
+			},
+			{ sendTo: jest.fn() } as unknown as EventBus
+		);
+		const handler = (ipcMain.handle as jest.Mock).mock.calls.find(
+			([channel]) => channel === AgentChannels.compactSession
+		)?.[1];
+
+		await expect(handler(event, '11111111-1111-4111-8111-111111111111')).resolves.toEqual({
+			success: true,
+			data: { status: 'compacted', retainedMessages: 9, removedMessages: 12 },
+		});
+		expect(compactSession).toHaveBeenCalledWith('11111111-1111-4111-8111-111111111111');
+		await expect(handler(event, 'not-a-session')).resolves.toMatchObject({ success: false });
+	});
+
 	it('rejects cancellation without an originating window', async () => {
 		const cancel = jest.fn();
 		const agent = { cancel, config: { location: '/agent' } } as unknown as Agent;

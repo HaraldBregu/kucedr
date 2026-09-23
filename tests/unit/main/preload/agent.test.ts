@@ -42,3 +42,9 @@ it('opens a specific session folder through the dedicated agent channel', async 
 	await agent.openSessionFolder(' session-1 ');
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.openSessionFolder, 'session-1');
 });
+
+it('validates and forwards a compact-session request', async () => {
+	await agent.compactSession(' session-1 ');
+	expect(invoke).toHaveBeenCalledWith(AgentChannels.compactSession, 'session-1');
+	expect(() => agent.compactSession(' ')).toThrow('Invalid assistant session id.');
+});
