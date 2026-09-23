@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { promises as fs } from 'node:fs';
 import type { StoragePullResult, StoragePushResult } from '../../../shared/storage_types';
 import { getStorageSettings } from '../../settings_store';
 import type { AuthService } from '../../cloud/service';
@@ -50,7 +51,9 @@ export async function runVersionedStorageSync(
 					const result = await drainPending(database, scope, cloud, config.s3);
 					if (result.failed) throw new Error(`${result.failed} file version(s) remain pending.`);
 				}
-				const applied = await catchUp(database, scope, cloud, workspace.rootPath);
+				const rootIsDirectory = (await fs.lstat(workspace.rootPath)).isDirectory();
+				const applied = await catchUp(database, scope, cloud,
+					rootIsDirectory ? workspace.rootPath : undefined);
 				if (applied) downloaded.push(workspace.rootPath);
 			} catch (error) {
 				failed.push({ path: workspace.rootPath,
