@@ -4,6 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { catchUp } from '../../../../src/main/storage/cloud/catchup';
 import { scanWorkspace } from '../../../../src/main/storage/cloud/scan';
+import { restoreHistoricalVersion } from '../../../../src/main/storage/cloud/restore';
 import type { StorageCloudApi } from '../../../../src/main/storage/cloud/api';
 import { getSyncCursor } from '../../../../src/main/storage/local/cursor';
 import { applyRemoteChange } from '../../../../src/main/storage/local/change';
@@ -116,5 +117,27 @@ it('exposes separate file identities claiming the same path', () => {
 	}
 	expect(listStorageConflicts(database, scope).map((item) => item.fileId))
 		.toEqual(['file-a', 'file-b']);
+	database.close();
+});
+
+it('restores historical bytes as a new pending version with current heads as parents', async () => {
+	const database = openStorageState();
+	const content = Buffer.from('historical bytes');
+	const hash = createHash('sha256').update(content).digest('hex');
+	const cloud = {
+		version: jest.fn().mockResolvedValue({
+			id: 'historical', file_id: 'file-a', path: 'notes.txt',
+			sha256: hash, size_bytes: content.length,
+		}),
+		download: jest.fn().mockResolvedValue(content),
+		heads: jest.fn().mockResolvedValue(['current']),
+	};
+	const restoredId = await restoreHistoricalVersion(database, scope,
+		cloud as unknown as StorageCloudApi, 'historical', 'device-a');
+	const pending = listPendingOperations(database, scope);
+	expect(pending).toEqual([expect.objectContaining({
+		versionId: restoredId, kind: 'restore', parentIds: ['current'],
+	})]);
+	expect(readFileSync(pending[0].blobPath!, 'utf8')).toBe('historical bytes');
 	database.close();
 });
