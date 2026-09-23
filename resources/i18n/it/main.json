@@ -358,7 +358,8 @@
 			"openDataFolder": "Apri Cartella"
 		},
 		"activity": {
-			"title": "Attivita",
+			"title": "Attività",
+			"description": "La tua attività delle ultime 37 settimane, in base ai log dell'applicazione Kucedr.",
 			"events": "eventi",
 			"day": "{{count}} eventi il {{date}}",
 			"empty": "Non e stata ancora registrata alcuna attivita.",

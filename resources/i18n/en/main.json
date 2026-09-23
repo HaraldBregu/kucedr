@@ -359,6 +359,7 @@
 		},
 		"activity": {
 			"title": "Activity",
+			"description": "Your activity from the past 37 weeks, based on Kucedr application logs.",
 			"events": "events",
 			"day": "{{count}} events on {{date}}",
 			"empty": "No activity has been logged yet.",

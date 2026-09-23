@@ -107,7 +107,10 @@ const GeneralPage: React.FC = () => {
 				description={t('settings.tabs.generalDescription')}
 			/>
 
-			<SettingsSection title={t('settings.activity.title')}>
+			<SettingsSection
+				title={t('settings.activity.title')}
+				description={t('settings.activity.description')}
+			>
 				<Activity />
 			</SettingsSection>
 

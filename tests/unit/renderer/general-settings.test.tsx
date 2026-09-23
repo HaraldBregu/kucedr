@@ -213,6 +213,8 @@ it('shows activity loaded from application logs in General settings', async () =
 	await waitFor(() => {
 		expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
 	});
+	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
+	expect(screen.getByText('settings.activity.description')).toBeInTheDocument();
 	expect(screen.getByTestId('activity-scroll')).toHaveClass('card-body');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
 		'data-to',
