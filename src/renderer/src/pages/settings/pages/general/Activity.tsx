@@ -51,7 +51,7 @@ export function Activity(): React.JSX.Element {
 					shape="rounded"
 					scale="log"
 					colors={['#0e4429', '#006d32', '#26a641', '#39d353']}
-					emptyColor="#161b22"
+					emptyColor="#21262d"
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}
