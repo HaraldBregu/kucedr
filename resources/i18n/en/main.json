@@ -528,6 +528,7 @@
 			"openFolder": "Open chat history folder",
 			"compact": "Compact conversation",
 			"compacting": "Compacting conversation...",
+			"summary": "Conversation summary",
 			"confirmCompact": "Compact the chat session \"{{title}}\"? Older messages will be permanently replaced with a summary. This cannot be undone.",
 			"delete": "Delete all chat history",
 			"deleteSession": "Delete {{title}}",

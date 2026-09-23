@@ -20,6 +20,7 @@ import {
 	X,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
@@ -444,6 +445,7 @@ function SubmitButton({
 }
 
 function PageContent(): ReactElement {
+	const { t } = useTranslation();
 	const { mode, setMode } = useChatMode();
 	const { sessionId: chatSessionId } = useChatSession();
 	const navigate = useNavigate();
@@ -804,11 +806,11 @@ function PageContent(): ReactElement {
 											return (
 												<section
 													key={message.id}
-													aria-label="Conversation summary"
+													aria-label={t('settings.chatHistory.summary')}
 													className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground"
 												>
 													<p className="mb-1 text-xs font-medium uppercase tracking-wide text-foreground">
-														Conversation summary
+														{t('settings.chatHistory.summary')}
 													</p>
 													<p className="whitespace-pre-wrap">{message.content}</p>
 												</section>

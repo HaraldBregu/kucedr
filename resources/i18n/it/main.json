@@ -528,6 +528,7 @@
 			"openFolder": "Apri cartella cronologia chat",
 			"compact": "Compatta conversazione",
 			"compacting": "Compattazione conversazione...",
+			"summary": "Riepilogo conversazione",
 			"confirmCompact": "Compattare la sessione chat \"{{title}}\"? I messaggi meno recenti verranno sostituiti definitivamente da un riepilogo. Questa azione non puo essere annullata.",
 			"delete": "Elimina tutta la cronologia chat",
 			"deleteSession": "Elimina {{title}}",
