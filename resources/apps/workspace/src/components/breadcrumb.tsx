@@ -30,10 +30,7 @@ export function WorkspaceBreadcrumb({
 			{segments.map((segment, index) => {
 				const segmentPath = segments.slice(0, index + 1).join('/');
 				const isFile = index === segments.length - 1;
-				const parentPath = segments.slice(0, index).join('/');
-				const items = parentPath
-					? (findWorkspaceEntry(entries, parentPath)?.children ?? [])
-					: entries;
+				const items = findWorkspaceEntry(entries, segmentPath)?.children ?? [];
 				return (
 					<React.Fragment key={segmentPath}>
 						{index > 0 ? <ChevronRight className="mx-0.5 size-3 shrink-0 text-muted-foreground" /> : null}
