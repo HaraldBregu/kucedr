@@ -106,7 +106,6 @@ export class StorageCloudApi {
 		for await (const chunk of response.body) {
 			size += chunk.byteLength;
 			if (size > STORAGE_MAX_OBJECT_BYTES) {
-				await response.body.cancel();
 				throw new Error('Cloud download is too large.');
 			}
 			chunks.push(chunk);
