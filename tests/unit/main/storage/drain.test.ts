@@ -112,6 +112,8 @@ it('publishes tombstones without uploading content', async () => {
 
 it('publishes renames with the parent content reference without uploading again', async () => {
 	const database = openStorageState();
+	database.prepare(`INSERT INTO local_files (account_id, workspace_id, file_id, relative_path)
+		VALUES (?, ?, ?, ?)`).run(scope.accountId, scope.workspaceId, 'file-a', 'notes/old.md');
 	await saveLocalSnapshot(database, input({
 		kind: 'rename', content: undefined, parentIds: ['old-version'],
 	}));
