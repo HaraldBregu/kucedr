@@ -11,7 +11,6 @@ export const storage: StorageApi = {
 	getVersionedStatus: () => typedInvokeUnwrap(StorageChannels.getVersionedStatus),
 	setVersionedEnabled: (enabled) => typedInvokeUnwrap(StorageChannels.setVersionedEnabled, enabled),
 	listConflicts: () => typedInvokeUnwrap(StorageChannels.listConflicts),
-	restoreVersion: (workspaceId, versionId) => typedInvokeUnwrap(StorageChannels.restoreVersion, workspaceId, versionId),
 	syncFolders: () => typedInvokeUnwrap(StorageChannels.syncFolders),
 	pickFolders: () => typedInvokeUnwrap(StorageChannels.pickFolders),
 	getOperationStatus: () => typedInvokeUnwrap(StorageChannels.getOperationStatus),

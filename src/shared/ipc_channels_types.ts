@@ -758,10 +758,6 @@ export interface StorageInvokeChannelMap {
 		args: [];
 		result: import('./storage_types').StorageConflict[];
 	};
-	[StorageChannels.restoreVersion]: {
-		args: [workspaceId: string, versionId: string];
-		result: 'synced' | 'pending';
-	};
 	[StorageChannels.syncFolders]: {
 		args: [];
 		result: import('./storage_types').StorageSyncFolder[];

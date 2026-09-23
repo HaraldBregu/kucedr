@@ -300,7 +300,6 @@ export const StorageChannels = {
 	getVersionedStatus: 'storage:versioned:status',
 	setVersionedEnabled: 'storage:versioned:set-enabled',
 	listConflicts: 'storage:versioned:conflicts',
-	restoreVersion: 'storage:versioned:restore-version',
 	syncFolders: 'storage:sync-folders',
 	pickFolders: 'storage:pick-folders',
 	getOperationStatus: 'storage:operation-status:get',
