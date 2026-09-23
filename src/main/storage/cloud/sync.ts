@@ -12,6 +12,12 @@ import { configureVersionedStorage } from './configure';
 import { drainPending } from './drain';
 import { scanWorkspace } from './scan';
 
+export function runVersionedStorageSync(
+	client: SupabaseClient, auth: AuthService, projectUrl: string, mode: 'backup'
+): Promise<StoragePushResult>;
+export function runVersionedStorageSync(
+	client: SupabaseClient, auth: AuthService, projectUrl: string, mode: 'restore'
+): Promise<StoragePullResult>;
 export async function runVersionedStorageSync(
 	client: SupabaseClient,
 	auth: AuthService,
