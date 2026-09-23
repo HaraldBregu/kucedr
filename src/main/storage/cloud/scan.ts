@@ -20,6 +20,11 @@ export async function scanWorkspace(
 	const saved: string[] = [];
 	const seen = new Set<string>();
 	for (const file of files) {
+		const stat = await fs.lstat(file);
+		if (!stat.isFile() || stat.isSymbolicLink()) continue;
+		if (stat.size > STORAGE_MAX_OBJECT_BYTES) {
+			throw new Error('Cloud sync files must be no larger than 50 MiB.');
+		}
 		const relative = rootStat.isDirectory()
 			? path.relative(root, file).split(path.sep).join('/') : path.basename(file);
 		const content = await fs.readFile(file);
