@@ -50,7 +50,12 @@ export function Activity(): React.JSX.Element {
 					to={today}
 					shape="rounded"
 					scale="log"
-					colors={['#0e4429', '#006d32', '#26a641', '#39d353']}
+					colors={[
+						'var(--activity-color-1)',
+						'var(--activity-color-2)',
+						'var(--activity-color-3)',
+						'var(--activity-color-4)',
+					]}
 					emptyColor="var(--activity-empty-color)"
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
