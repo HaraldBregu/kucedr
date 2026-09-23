@@ -204,7 +204,7 @@ it('shows activity loaded from application logs in General settings', async () =
 		new Date().toISOString().slice(0, 10)
 	);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '30');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-shape', 'ring');
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-shape', 'rounded');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'log');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 

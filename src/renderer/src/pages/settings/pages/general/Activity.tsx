@@ -47,7 +47,7 @@ export function Activity(): React.JSX.Element {
 					weeks={30}
 					weekStart={1}
 					to={today}
-					shape="ring"
+					shape="rounded"
 					scale="log"
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
