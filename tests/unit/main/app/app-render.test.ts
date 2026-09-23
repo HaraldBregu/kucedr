@@ -2,6 +2,11 @@ import type { BrowserWindow, WebContentsView } from 'electron';
 import { closeApp } from '../../../../src/main/apps/app_close';
 import { openAppWindows, render } from '../../../../src/main/apps/app_render';
 import type { WindowFactory } from '../../../../src/main/window_factory';
+import { persistWorkspaceWindowSize } from '../../../../src/main/apps/size';
+
+jest.mock('../../../../src/main/apps/size', () => ({
+	persistWorkspaceWindowSize: jest.fn(),
+}));
 
 jest.mock('../../../../src/main/translucency', () => ({
 	getPlatformTranslucencyOptions: jest.fn(() => ({
@@ -52,6 +57,7 @@ function createHarness() {
 		destroy: jest.fn(),
 		focus: jest.fn(),
 		getContentBounds: jest.fn(() => ({ x: 0, y: 0, width: 820, height: 640 })),
+		getNormalBounds: jest.fn(() => ({ x: 0, y: 0, width: 820, height: 640 })),
 		isDestroyed: jest.fn(() => false),
 		isMinimized: jest.fn(() => false),
 		isVisible: jest.fn(() => false),
@@ -165,6 +171,23 @@ describe('app renderer', () => {
 
 		expect(harness.viewWebContents.navigationHistory.goBack).toHaveBeenCalledTimes(2);
 		expect(harness.viewWebContents.navigationHistory.goForward).toHaveBeenCalledTimes(2);
+	});
+
+	it('persists Workspace dimensions after resizing', () => {
+		jest.useFakeTimers();
+		const harness = createHarness();
+
+		render(harness.windowFactory, '/app/index.html', 'Workspace', 'workspace');
+		harness.handlers.get('resize')?.();
+		expect(persistWorkspaceWindowSize).not.toHaveBeenCalled();
+
+		jest.advanceTimersByTime(300);
+		expect(persistWorkspaceWindowSize).toHaveBeenCalledWith(
+			harness.win,
+			expect.objectContaining({ width: 820, height: 640 })
+		);
+		jest.useRealTimers();
+		harness.handlers.get('closed')?.();
 	});
 
 	it('keeps a failed app view hidden and closes its shell', async () => {
