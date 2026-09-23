@@ -45,7 +45,11 @@ jest.mock('electron-store', () =>
 	})
 );
 
-import { getProviderId } from '../../../../src/main/agent/agent_store';
+import {
+	getCompactModel,
+	getProviderId,
+	setCompactModel,
+} from '../../../../src/main/agent/agent_store';
 import {
 	agentProfileStorePath,
 	getAgentProfileDocument,
@@ -97,6 +101,17 @@ it('creates clean independent agent profile stores without migration metadata', 
 	expect(getAgentProfileDocument('voice')).not.toHaveProperty('textToSpeech');
 	expect(getAgentProfileDocument('voice')).not.toHaveProperty('speechToText');
 	expect(getAgentProfileDocument('voice')).not.toHaveProperty('realtimeVoice');
+});
+
+it('stores an optional compaction model in chat.json', () => {
+	expect(getCompactModel()).toBeUndefined();
+	setCompactModel({ providerId: 'openai', modelId: 'gpt-5-mini', options: {} });
+	expect(getCompactModel()).toEqual({ providerId: 'openai', modelId: 'gpt-5-mini', options: {} });
+	expect(getAgentProfileDocument('chat')).toMatchObject({
+		compact_llm: { providerId: 'openai', modelId: 'gpt-5-mini', options: {} },
+	});
+	setCompactModel({ providerId: '', modelId: '', options: {} });
+	expect(getCompactModel()).toBeUndefined();
 });
 
 it('keeps model selections isolated between agent profiles', () => {
