@@ -1,5 +1,6 @@
 import { getResolvedProvider } from '../../settings_store';
 import { getAgentProfileModel } from '../agent_profiles';
+import { getCompactModel } from '../agent_store';
 import { runModelTurn } from '../runner/run_model_turn';
 import { loadMessages, resolveStoredSessionId, sessionFolderName, sessionsRoot } from '../session';
 import { sessionPath } from '../session/session_session_path';
@@ -59,7 +60,7 @@ async function summarize(
 	const chunks = splitChunks(messages.map(transcriptLine).filter(Boolean).join('\n\n'));
 	let summary = '';
 	let inputTokens = 0;
-	const profile = getAgentProfileModel('chat', 'textToText');
+	const profile = getCompactModel() ?? getAgentProfileModel('chat', 'textToText');
 	const provider = getResolvedProvider(profile.providerId);
 	if (!provider || !profile.modelId) throw new Error('Chat compaction requires a configured text model.');
 	const deadline = AbortSignal.timeout(5 * 60_000);

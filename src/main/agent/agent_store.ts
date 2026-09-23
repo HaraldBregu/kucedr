@@ -22,11 +22,13 @@ import {
 import { withWorkspacePermissions } from './permissions/with_workspace_permissions';
 import {
 	getAgentProfileDocument,
+	getCompactChatModel,
 	getAgentProfileModel,
 	getAgentProfilePermissions,
 	getAgentProfileTool,
 	getAgentProfileTools,
 	setAgentProfileDocument,
+	setCompactChatModel,
 	setAgentProfileModel,
 	setAgentProfilePermissions,
 	setAgentProfileTool,
@@ -138,6 +140,15 @@ export function setChatbotModel(
 	settings: AgentMediaModelSettings
 ): void {
 	setAgentProfileModel('chat', kind, settings);
+}
+
+export function getCompactModel(): AgentMediaModelSettings | undefined {
+	const model = getCompactChatModel();
+	return model.providerId && model.modelId ? model : undefined;
+}
+
+export function setCompactModel(settings: AgentMediaModelSettings): AgentMediaModelSettings {
+	return setCompactChatModel(settings);
 }
 
 export function getSearchEngine(): SearchEngineSettings {

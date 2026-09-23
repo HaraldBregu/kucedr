@@ -14,6 +14,7 @@ import { userDataLocation } from '../shared/user_data_location';
 
 type AgentProfileStore = {
 	llm?: AgentMediaModelSettings;
+	compact_llm?: AgentMediaModelSettings;
 	tts?: AgentMediaModelSettings;
 	stt?: AgentMediaModelSettings;
 	rtv?: AgentMediaModelSettings;
@@ -81,6 +82,7 @@ const stores = Object.fromEntries(
 
 function defaults(): AgentProfileStore {
 	return {
+		compact_llm: { ...EMPTY_MODEL },
 		textToText: { ...EMPTY_MODEL },
 		textToSpeech: { ...EMPTY_MODEL },
 		speechToText: { ...EMPTY_MODEL },
@@ -214,6 +216,25 @@ export function getAgentProfileModel(
 	modelKey: AgentProfileModelKey
 ): AgentMediaModelSettings {
 	return structuredClone(read(profileId)[modelKey]);
+}
+
+export function getCompactChatModel(): AgentMediaModelSettings {
+	const model = profileStore('chat').get('compact_llm');
+	return {
+		...EMPTY_MODEL,
+		...(model ?? {}),
+		options: { ...(model?.options ?? {}) },
+	};
+}
+
+export function setCompactChatModel(settings: AgentMediaModelSettings): AgentMediaModelSettings {
+	const next = {
+		providerId: settings.providerId.trim(),
+		modelId: settings.modelId.trim(),
+		options: { ...settings.options },
+	};
+	profileStore('chat').set('compact_llm', next);
+	return structuredClone(next);
 }
 
 export function setAgentProfileModel(
