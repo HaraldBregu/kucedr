@@ -118,7 +118,6 @@ export class Agent {
 	readonly sessions = new SessionCoordinator();
 	private readonly providerLimiter = new KeyedLimiter(3);
 	private readonly subagentLimiter = new KeyedLimiter(3);
-	private readonly lastMessagesLimit = 50;
 	private isStarted = false;
 	readonly config: Config;
 
@@ -469,7 +468,6 @@ export class Agent {
 
 	getLastMessages(sessionId: string): AgentHistoryMessage[] {
 		return loadMessages(this.config, sessionId)
-			.slice(-this.lastMessagesLimit)
 			.flatMap(toHistoryMessages);
 	}
 
