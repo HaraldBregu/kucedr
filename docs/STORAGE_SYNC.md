@@ -95,3 +95,19 @@ in [Supabase Adapter](SUPABASE.md). Validate with two separate accounts: each ac
 unable to list or publish the other's workspace, versions, and objects. Keep the old backup
 settings and S3 objects until an explicit import has checked the object bytes and installed the
 corresponding metadata; the version-sync database migration does not convert them.
+
+## Current limitations
+
+- The backend migration and Edge Functions require deployment to the target Supabase project;
+  this checkout has no live storage provider configured and no local Docker daemon for database
+  integration tests.
+- Existing S3 backup objects remain intact but are not automatically converted to immutable
+  versions. Their old backup and restore path remains available when version history sync is off.
+- A backend deployment currently binds one saved provider ID to one server-configured S3 bucket.
+  Desktop S3 secrets remain in their existing secure store and are not sent to the backend.
+- Catch-up installs only new working files. Existing paths stay in place even when a newer cloud
+  version is available; the local cache and conflict list retain the alternative version. The
+  merge and historical-restore primitives are present in main-process code but have no conflict
+  resolution controls in Settings yet.
+- `maxCacheBytes` is reserved for future cache eviction. No immutable blob is automatically
+  deleted, so pending local work is never evicted, but the storage directory can grow.
