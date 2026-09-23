@@ -34,6 +34,7 @@ const storageOperations = {
 	backup: jest.fn(),
 	restore: jest.fn(),
 };
+const authService = { getSignedInUserId: jest.fn() };
 const mainFrame = {};
 const sender = { id: 1, mainFrame };
 const event = { sender, senderFrame: mainFrame };
@@ -55,6 +56,7 @@ beforeEach(() => {
 			appRegistry: appRegistry as never,
 			storageOperations: storageOperations as never,
 			windows: windows as never,
+			authService: authService as never,
 		},
 		{} as never
 	);
