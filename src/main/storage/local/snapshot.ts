@@ -45,14 +45,21 @@ export async function saveLocalSnapshot(
 	try {
 		database.prepare(`INSERT INTO local_versions
 			(account_id, workspace_id, version_id, file_id, path, content_hash, content_size,
-			 blob_path, device_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+			 blob_path, device_id, kind, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 			.run(input.accountId, input.workspaceId, input.versionId, input.fileId, input.path,
-				hash, input.content.byteLength, blobPath, input.deviceId, new Date().toISOString());
+				hash, input.content.byteLength, blobPath, input.deviceId, input.kind ?? 'content',
+				new Date().toISOString());
 		const parent = database.prepare(`INSERT INTO version_parents
 			(account_id, workspace_id, version_id, parent_id) VALUES (?, ?, ?, ?)`);
 		for (const parentId of new Set(input.parentIds)) {
 			parent.run(input.accountId, input.workspaceId, input.versionId, parentId);
+			database.prepare(`DELETE FROM local_heads WHERE account_id = ? AND workspace_id = ?
+				AND file_id = ? AND version_id = ?`).run(input.accountId, input.workspaceId,
+				input.fileId, parentId);
 		}
+		database.prepare(`INSERT INTO local_heads
+			(account_id, workspace_id, file_id, version_id) VALUES (?, ?, ?, ?)`)
+			.run(input.accountId, input.workspaceId, input.fileId, input.versionId);
 		database.prepare(`INSERT INTO pending_operations
 			(account_id, workspace_id, operation_id, version_id, status) VALUES (?, ?, ?, ?, 'pending')`)
 			.run(input.accountId, input.workspaceId, input.operationId, input.versionId);

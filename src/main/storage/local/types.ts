@@ -19,6 +19,7 @@ export interface LocalSnapshotInput extends StorageScope {
 	parentIds: string[];
 	content: Uint8Array;
 	deviceId: string;
+	kind?: 'content' | 'rename' | 'delete' | 'restore' | 'merge';
 }
 
 export interface LocalSnapshotResult {
@@ -38,4 +39,9 @@ export interface PendingOperation extends StorageScope {
 	status: 'pending' | 'uploaded';
 	attempts: number;
 	nextRetryAt: string | null;
+	kind: 'content' | 'rename' | 'delete' | 'restore' | 'merge';
+	path: string;
+	parentIds: string[];
+	uploadedBytes: number;
+	objectKey: string | null;
 }

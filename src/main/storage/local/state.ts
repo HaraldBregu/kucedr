@@ -22,6 +22,7 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 					version_id TEXT NOT NULL, file_id TEXT NOT NULL, path TEXT NOT NULL,
 					content_hash TEXT NOT NULL, content_size INTEGER NOT NULL,
 					blob_path TEXT NOT NULL, device_id TEXT NOT NULL,
+					kind TEXT NOT NULL CHECK(kind IN ('content', 'rename', 'delete', 'restore', 'merge')),
 					created_at TEXT NOT NULL,
 					PRIMARY KEY(account_id, workspace_id, version_id)
 				) STRICT;
@@ -37,6 +38,7 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 					operation_id TEXT NOT NULL, version_id TEXT NOT NULL,
 					status TEXT NOT NULL CHECK(status IN ('pending', 'uploaded', 'synced')),
 					attempts INTEGER NOT NULL DEFAULT 0, next_retry_at TEXT,
+					uploaded_bytes INTEGER NOT NULL DEFAULT 0, object_key TEXT,
 					remote_change_id TEXT, last_error TEXT,
 					PRIMARY KEY(account_id, workspace_id, operation_id),
 					FOREIGN KEY(account_id, workspace_id, version_id)
@@ -53,6 +55,17 @@ export function openStorageState(file = path.join(storageLocation(), 'state.sqli
 					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
 					file_id TEXT NOT NULL, version_id TEXT NOT NULL,
 					PRIMARY KEY(account_id, workspace_id, file_id, version_id)
+				) STRICT;
+				CREATE TABLE IF NOT EXISTS local_heads (
+					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+					file_id TEXT NOT NULL, version_id TEXT NOT NULL,
+					PRIMARY KEY(account_id, workspace_id, file_id, version_id)
+				) STRICT;
+				CREATE TABLE IF NOT EXISTS working_files (
+					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
+					file_id TEXT NOT NULL, relative_path TEXT NOT NULL,
+					content_hash TEXT, modified_ns TEXT, size_bytes INTEGER,
+					PRIMARY KEY(account_id, workspace_id, file_id)
 				) STRICT;
 				CREATE TABLE IF NOT EXISTS conflicts (
 					account_id TEXT NOT NULL, workspace_id TEXT NOT NULL,
