@@ -175,6 +175,7 @@ create function public.storage_publish_version(p_owner_id uuid, p_workspace_id u
 returns jsonb language plpgsql security definer set search_path = '' as $$
 declare
   v_hash text;
+  v_stored_hash text;
   v_result jsonb;
   v_sequence bigint;
   v_parents uuid[] := coalesce(p_parent_ids, '{}'::uuid[]);
@@ -187,11 +188,10 @@ begin
     p_kind, p_path, v_parents, p_device_id, p_bucket, p_object_key, p_sha256, p_size_bytes)::text, 'sha256'), 'hex');
   perform 1 from public.storage_workspaces where id = p_workspace_id and owner_id = p_owner_id for update;
   if not found then raise exception 'Workspace ownership mismatch'; end if;
-  select o.result, o.payload_hash into v_result, v_hash from public.storage_operations o
+  select o.result, o.payload_hash into v_result, v_stored_hash from public.storage_operations o
     where o.workspace_id = p_workspace_id and o.id = p_operation_id;
   if found then
-    if v_hash <> encode(extensions.digest(jsonb_build_array(p_owner_id, p_workspace_id, p_file_id, p_version_id,
-      p_kind, p_path, v_parents, p_device_id, p_bucket, p_object_key, p_sha256, p_size_bytes)::text, 'sha256'), 'hex') then
+    if v_hash <> v_stored_hash then
       raise exception 'Operation identity was reused with different data';
     end if;
     return v_result;
