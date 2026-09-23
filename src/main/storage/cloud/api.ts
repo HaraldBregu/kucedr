@@ -44,7 +44,7 @@ export interface StorageVersion {
 	file_id: string;
 	workspace_id: string;
 	kind: PublishRequest['kind'];
-	path: string;
+	path: string | null;
 	bucket: string | null;
 	sha256: string | null;
 	size_bytes: number | null;
@@ -77,6 +77,20 @@ export class StorageCloudApi {
 			.eq('workspace_id', workspaceId).eq('id', versionId).single();
 		if (error || !data) throw new Error(`Storage version lookup failed: ${error?.message ?? 'missing version'}.`);
 		return data as StorageVersion;
+	}
+
+	async parents(workspaceId: string, versionId: string): Promise<string[]> {
+		const { data, error } = await this.client.from('storage_version_parents')
+			.select('parent_id').eq('workspace_id', workspaceId).eq('version_id', versionId);
+		if (error) throw new Error(`Storage ancestry lookup failed: ${error.message}.`);
+		return (data ?? []).map((row) => row.parent_id);
+	}
+
+	async heads(workspaceId: string, fileId: string): Promise<string[]> {
+		const { data, error } = await this.client.from('storage_heads')
+			.select('version_id').eq('workspace_id', workspaceId).eq('file_id', fileId);
+		if (error) throw new Error(`Storage head lookup failed: ${error.message}.`);
+		return (data ?? []).map((row) => row.version_id);
 	}
 
 	async download(workspaceId: string, versionId: string): Promise<Uint8Array> {

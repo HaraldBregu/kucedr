@@ -9,6 +9,9 @@ import { readStorageConfig } from '../../../../src/main/storage/local/config';
 import { writeStorageConfig } from '../../../../src/main/storage/local/config_write';
 import { storageLocation } from '../../../../src/main/storage/local/paths';
 import type { StorageConfig } from '../../../../src/main/storage/local/types';
+import { installVerifiedDownload } from '../../../../src/main/storage/local/install';
+import { migrateLegacyStorageSettings } from '../../../../src/main/storage/local/migrate';
+import { createHash } from 'node:crypto';
 
 const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
 let root: string;
@@ -141,4 +144,40 @@ it('rejects an incompatible config version without replacing it', async () => {
 	writeFileSync(file, newer);
 	await expect(readStorageConfig()).rejects.toThrow('Invalid storage configuration');
 	expect(readFileSync(file, 'utf8')).toBe(newer);
+});
+
+it('rejects corrupt downloads and installs only hash-verified content', async () => {
+	const content = Buffer.from('published content');
+	const hash = createHash('sha256').update(content).digest('hex');
+	await expect(installVerifiedDownload(scope, Buffer.from('corrupt'), hash))
+		.rejects.toThrow('SHA-256');
+	const installed = await installVerifiedDownload(scope, content, hash);
+	expect(readFileSync(installed)).toEqual(content);
+});
+
+it('records legacy settings without removing or rewriting the source', async () => {
+	const database = openStorageState();
+	const settings = path.join(root, 'settings');
+	mkdirSync(settings, { recursive: true });
+	const source = path.join(settings, 'app.json');
+	const original = JSON.stringify({
+		cloud: {
+			providerId: 'old-provider', paths: ['/tmp/old-folder'],
+			syncEnabled: true, syncCronExpression: '0 3 * * *',
+		},
+	});
+	writeFileSync(source, original);
+	await migrateLegacyStorageSettings(database);
+	expect(readFileSync(source, 'utf8')).toBe(original);
+	expect(database.prepare('SELECT settings_json FROM legacy_storage_sources').get())
+		.toEqual({
+			settings_json: JSON.stringify({
+				providerId: 'old-provider', paths: ['/tmp/old-folder'],
+				syncEnabled: true, syncCronExpression: '0 3 * * *',
+			}),
+		});
+	await migrateLegacyStorageSettings(database);
+	expect(database.prepare('SELECT count(*) AS count FROM legacy_storage_sources').get())
+		.toEqual({ count: 1 });
+	database.close();
 });
