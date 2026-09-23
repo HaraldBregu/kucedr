@@ -235,13 +235,15 @@ it('shows activity loaded from application logs in General settings', async () =
 	expect(screen.getByTestId('activity-scroll')).not.toContainElement(tooltip);
 });
 
-it('pins the heatmap to the light theme when selected', () => {
+it('pins the heatmap to the light theme when selected', async () => {
 	appTheme = 'light';
-	render(
-		<MemoryRouter>
-			<GeneralPage />
-		</MemoryRouter>
-	);
+	await act(async () => {
+		render(
+			<MemoryRouter>
+				<GeneralPage />
+			</MemoryRouter>
+		);
+	});
 
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-heatmap-theme', 'light');
 });
