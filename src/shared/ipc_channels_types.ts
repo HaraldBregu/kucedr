@@ -746,6 +746,14 @@ export interface StorageInvokeChannelMap {
 		args: [settings: import('./storage_types').StorageSyncSettings];
 		result: import('./storage_types').StorageSyncSettings;
 	};
+	[StorageChannels.getVersionedStatus]: {
+		args: [];
+		result: boolean;
+	};
+	[StorageChannels.setVersionedEnabled]: {
+		args: [enabled: boolean];
+		result: boolean;
+	};
 	[StorageChannels.syncFolders]: {
 		args: [];
 		result: import('./storage_types').StorageSyncFolder[];

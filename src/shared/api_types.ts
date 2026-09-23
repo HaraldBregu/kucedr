@@ -338,6 +338,8 @@ export interface StorageApi {
 	removeProvider: (id: string) => Promise<boolean>;
 	getSettings: () => Promise<StorageSyncSettings>;
 	saveSettings: (settings: StorageSyncSettings) => Promise<StorageSyncSettings>;
+	getVersionedStatus: () => Promise<boolean>;
+	setVersionedEnabled: (enabled: boolean) => Promise<boolean>;
 	syncFolders: () => Promise<StorageSyncFolder[]>;
 	pickFolders: () => Promise<string[]>;
 	getOperationStatus: () => Promise<StorageOperationStatus | undefined>;

@@ -297,6 +297,8 @@ export const StorageChannels = {
 	removeProvider: 'storage:providers:remove',
 	getSettings: 'storage:settings:get',
 	saveSettings: 'storage:settings:save',
+	getVersionedStatus: 'storage:versioned:status',
+	setVersionedEnabled: 'storage:versioned:set-enabled',
 	syncFolders: 'storage:sync-folders',
 	pickFolders: 'storage:pick-folders',
 	getOperationStatus: 'storage:operation-status:get',
