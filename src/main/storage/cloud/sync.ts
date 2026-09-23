@@ -55,7 +55,16 @@ export async function runVersionedStorageSync(
 						result.failed || result.synced).catch(() => undefined);
 					if (result.failed) throw new Error(`${result.failed} file version(s) remain pending.`);
 				}
-				const rootIsDirectory = (await fs.lstat(workspace.rootPath)).isDirectory();
+				let rootIsDirectory: boolean;
+				try {
+					rootIsDirectory = (await fs.lstat(workspace.rootPath)).isDirectory();
+				} catch (error) {
+					if (mode !== 'restore' || (error as NodeJS.ErrnoException).code !== 'ENOENT') {
+						throw error;
+					}
+					await fs.mkdir(workspace.rootPath, { recursive: true });
+					rootIsDirectory = true;
+				}
 				const applied = await catchUp(database, scope, cloud,
 					rootIsDirectory ? workspace.rootPath : undefined);
 				if (applied) void writeStorageLog('caught-up', applied).catch(() => undefined);
