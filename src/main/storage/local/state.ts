@@ -6,6 +6,11 @@ import { storageLocation } from './paths';
 
 export function openStorageState(file = path.join(storageLocation(), 'state.sqlite')): DatabaseSync {
 	mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 });
+	if (file !== ':memory:') {
+		for (const directory of ['blobs', 'staging', 'locks', 'logs']) {
+			mkdirSync(path.join(storageLocation(), directory), { recursive: true, mode: 0o700 });
+		}
+	}
 	const database = new DatabaseSync(file);
 	try {
 		if (file !== ':memory:') restrictSettingsFile(file);
