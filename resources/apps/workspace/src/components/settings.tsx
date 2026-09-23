@@ -50,7 +50,9 @@ export function WorkspaceSettingsView({ onChange, settings }: WorkspaceSettingsP
 					<div className="flex items-center gap-4 px-4 py-3">
 						<div className="min-w-0 flex-1">
 							<p className="text-xs font-medium">Line numbers</p>
-							<p className="mt-0.5 text-[11px] text-muted-foreground">Show numbers beside code lines.</p>
+							<p className="mt-0.5 text-[11px] text-muted-foreground">
+								Show numbers beside code and structured-data rows.
+							</p>
 						</div>
 						<Button
 							variant={settings.lineNumbers ? 'secondary' : 'outline'}

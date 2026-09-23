@@ -17,6 +17,7 @@ import {
 import { copyImage } from '@/lib/image';
 import { showMediaContextMenu } from '@/lib/media';
 import { showNativeContextMenu } from '@/lib/menu';
+import { isStructuredDataPath } from '@/lib/structured';
 
 const CodeMirrorEditor = lazy(() =>
 	import('@/components/code-mirror-editor').then(({ CodeMirrorEditor }) => ({
@@ -131,6 +132,7 @@ export function FileViewer({
 					className="min-h-full"
 					code
 					fontSize={settings.fontSize}
+					foldable={isStructuredDataPath(path)}
 					isDark={isDark}
 					lineNumbersVisible={settings.lineNumbers}
 					onChange={onChange}

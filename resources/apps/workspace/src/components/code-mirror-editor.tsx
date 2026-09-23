@@ -8,7 +8,13 @@ import {
 	undo,
 } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
-import { defaultHighlightStyle, HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import {
+	defaultHighlightStyle,
+	foldGutter,
+	foldKeymap,
+	HighlightStyle,
+	syntaxHighlighting,
+} from '@codemirror/language';
 import { Compartment, EditorState, Transaction } from '@codemirror/state';
 import { EditorView, keymap, lineNumbers, placeholder } from '@codemirror/view';
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
@@ -31,6 +37,7 @@ interface CodeMirrorEditorProps {
 	className?: string;
 	code?: boolean;
 	fontSize?: number;
+	foldable?: boolean;
 	isDark?: boolean;
 	lineNumbersVisible?: boolean;
 	onChange: (value: string) => void;
@@ -124,6 +131,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 			className,
 			code = false,
 			fontSize = 13,
+			foldable = false,
 			isDark = false,
 			lineNumbersVisible = true,
 			onChange,
@@ -220,6 +228,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 						},
 						...defaultKeymap,
 						...historyKeymap,
+						...foldKeymap,
 					]),
 					languageRef.current.of(code ? [] : markdown()),
 					themeRef.current.of(
@@ -233,6 +242,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 						? [
 								layoutRef.current.of([
 									...(lineNumbersVisible ? [lineNumbers()] : []),
+									...(foldable ? [foldGutter()] : []),
 									...(wordWrap ? [EditorView.lineWrapping] : []),
 									EditorView.theme({ '&': { fontSize: `${fontSize}px` } }),
 								]),
@@ -296,11 +306,12 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 			view.dispatch({
 				effects: layoutRef.current.reconfigure([
 					...(lineNumbersVisible ? [lineNumbers()] : []),
+					...(foldable ? [foldGutter()] : []),
 					...(wordWrap ? [EditorView.lineWrapping] : []),
 					EditorView.theme({ '&': { fontSize: `${fontSize}px` } }),
 				]),
 			});
-		}, [code, fontSize, lineNumbersVisible, wordWrap]);
+		}, [code, foldable, fontSize, lineNumbersVisible, wordWrap]);
 
 		useEffect(() => {
 			const view = viewRef.current;
