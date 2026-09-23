@@ -6,6 +6,7 @@ import { addFilesystemPrompt } from '../../../../../src/main/agent/system/system
 import { buildLoadedSkillPrompt } from '../../../../../src/main/agent/system/system_build_loaded_skill_prompt';
 import { buildSystemPrompt } from '../../../../../src/main/agent/system/system_build_prompt';
 import { buildWorkspaceContext } from '../../../../../src/main/agent/system/system_build_workspace_context';
+import { workspacePath } from '../../../../../src/main/agent/system/system_workspace_path';
 
 describe('agent filesystem prompt', () => {
 	let root: string;
@@ -110,6 +111,7 @@ describe('agent filesystem prompt', () => {
 	});
 
 	it('ships bootstrap instructions that reference available tools', async () => {
+		workspacePath({ location: root });
 		const context = await buildWorkspaceContext({ location: root });
 
 		expect(context).toContain('call `complete_bootstrap`');

@@ -357,7 +357,7 @@ describe('run stream system prompt', () => {
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
-			const contextMessages = runModelTurnMock.mock.calls[0][10] as Message[];
+			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).not.toContain('Alice');
 			expect(contextMessages[0]).toMatchObject({
 				role: 'user',
@@ -393,10 +393,11 @@ describe('run stream system prompt', () => {
 			))
 				void event;
 
-			const contextMessages = runModelTurnMock.mock.calls[0][10] as Message[];
-			expect(contextMessages).toEqual([
-				{ role: 'user', content: '## User profile\n- **Name:** Alice' },
-			]);
+			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
+			expect(contextMessages[0]).toMatchObject({
+				role: 'user',
+				content: expect.stringContaining('### USER.md\n- **Name:** Alice'),
+			});
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
@@ -428,7 +429,7 @@ describe('run stream system prompt', () => {
 				void event;
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
-			const contextMessages = runModelTurnMock.mock.calls[0][10] as Message[];
+			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).toContain('\n\n## Workspace\n');
 			expect(contextMessages[0]).toMatchObject({
 				role: 'user',
@@ -456,12 +457,7 @@ describe('run stream system prompt', () => {
 				void event;
 
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
-			expect(runModelTurnMock.mock.calls[0][10]).toEqual([
-				{
-					role: 'user',
-					content: expect.stringContaining('## User profile\n# USER.md - User Profile'),
-				},
-			]);
+			expect(runModelTurnMock.mock.calls[0][15]).toEqual([]);
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
@@ -532,6 +528,10 @@ describe('run stream system prompt', () => {
 			const session = createSessionState();
 			session.category = 'bot';
 			session.messages = [{ role: 'user', content: 'Hello' }];
+			await fs.writeFile(path.join(root, 'AGENTS.md'), '# Agent rules');
+			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
+			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
+			await fs.writeFile(path.join(root, 'BOOTSTRAP.md'), '# Bootstrap');
 
 			for await (const event of stream(
 				{ location: root },
@@ -553,6 +553,11 @@ describe('run stream system prompt', () => {
 
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
 			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
+			const workspaceContext = runModelTurnMock.mock.calls[0][15] as Message[];
+			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### AGENTS.md'));
+			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### IDENTITY.md'));
+			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### SOUL.md'));
+			expect(workspaceContext[0]?.content).not.toContain('### BOOTSTRAP.md');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
