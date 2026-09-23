@@ -1,13 +1,13 @@
+import path from 'node:path';
 import type { Config } from '../types';
 import { readAgent } from './system_read_agent';
 import { readBootstrap } from './system_read_bootstrap';
 import { readIdentity } from './system_read_identity';
 import { readSoul } from './system_read_soul';
 import { readUser } from './system_read_user';
-import { workspacePath } from './system_workspace_path';
 
 export async function buildWorkspaceContext(config: Config): Promise<string> {
-	const resolvedWorkspacePath = workspacePath(config);
+	const resolvedWorkspacePath = path.resolve(config.location);
 	const files = [
 		['AGENTS.md', await readAgent(resolvedWorkspacePath)],
 		['BOOTSTRAP.md', await readBootstrap(resolvedWorkspacePath)],
