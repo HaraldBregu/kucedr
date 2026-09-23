@@ -59,8 +59,10 @@ skip_nonce_check = false
 
 ## Local infrastructure
 
-This repository currently does not version a `supabase/config.toml`, database migrations, or policy
-tests. The `supabase:*` npm scripts require a separately supplied local project configuration.
+This repository versions a file sync migration and Edge Functions under `supabase/`, but it does
+not include a `supabase/config.toml` or the existing account/chat backend schema. The `supabase:*`
+npm scripts require a separately supplied local project configuration. See
+[File sync backend](../supabase/README.md) for the storage deployment and recovery contract.
 Do not treat client-side owner IDs or object prefixes as authorization controls; deployed row-level
 security and private storage policies are mandatory.
 

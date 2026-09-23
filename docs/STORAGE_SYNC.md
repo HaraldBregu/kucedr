@@ -66,7 +66,8 @@ transaction that commits late.
 Concurrent edits remain separate heads. A merge creates a new version with both parents;
 edit/delete and rename/path collisions remain explicit conflicts. Deletions are tombstones and
 history restoration creates a new version. Download to `staging/`, verify SHA-256, and install
-only if the working-file generation still matches the one observed before download. Preserve
+new working files atomically when the destination is absent. Existing working files are never
+overwritten by catch-up, preserving edits made during download for conflict review. Preserve
 newer local edits and pending snapshots. Evict only recoverable cached blobs; retain cloud history
 by default. Enable S3 Versioning for additional object recovery. Recovering the service requires
 coordinating a Supabase metadata backup with the corresponding S3 objects; restoring either one

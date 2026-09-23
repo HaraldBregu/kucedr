@@ -11,6 +11,8 @@ Set these secrets in the Edge Function environment:
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only key for the restricted publication RPCs |
 | `S3_BUCKET` | Private immutable-content bucket |
 | `S3_REGION` | Bucket region |
+| `S3_PROVIDER_ID` | ID of the matching saved S3 provider selected in Kucedr |
+| `S3_ENDPOINT`, `S3_FORCE_PATH_STYLE` | Optional S3-compatible endpoint and path-style flag matching that provider |
 | `S3_PREFIX` | Optional server-controlled prefix, without surrounding slashes |
 | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | Server-only IAM credentials |
 
@@ -23,3 +25,11 @@ The `storage-upload` function reserves `{operationId, versionId, sha256, sizeByt
 For coordinated disaster recovery, restore S3 content and Supabase metadata to mutually consistent points. Check every restored version's object key, size, and SHA-256 before resuming publication. Keep orphaned uploaded objects until their operation status and any recovered metadata have been reconciled. Never restore metadata that points to missing content without marking those versions unavailable for repair.
 
 The migration and functions have not been applied to a live project by this repository. Run tenant-isolation, duplicate-operation, conflict, and object-integrity integration tests against the target project before release.
+
+In Settings → Storage, select the existing saved S3 provider and folders, sign in, then enable
+**Version history sync**. Kucedr stores only the provider ID and nonsecret bucket, region, and
+prefix in `~/.kucedr/storage/config.json`; its saved desktop AWS secret is not sent to the Edge
+Functions. Configure the same provider on the server with the environment values above. The
+server currently serves one provider per deployment. Keep the older backup mode available until
+the new backend is deployed and tested. Newly selected folders get workspace IDs in `config.json`;
+copy the corresponding ID when pairing the same workspace on another device.
