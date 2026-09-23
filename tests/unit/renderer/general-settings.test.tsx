@@ -195,7 +195,7 @@ it('shows activity loaded from application logs in General settings', async () =
 	});
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
 		'data-to',
-		`${new Date().getUTCFullYear()}-12-31`
+		new Date().toISOString().slice(0, 10)
 	);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '53');
 	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();

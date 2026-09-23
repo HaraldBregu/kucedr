@@ -12,7 +12,7 @@ export function Activity(): React.JSX.Element {
 		readonly x: number;
 		readonly y: number;
 	} | null>(null);
-	const yearEnd = `${new Date().getUTCFullYear()}-12-31`;
+	const today = new Date().toISOString().slice(0, 10);
 
 	useEffect(() => {
 		let active = true;
@@ -46,7 +46,7 @@ export function Activity(): React.JSX.Element {
 					values={[...values]}
 					weeks={53}
 					weekStart={1}
-					to={yearEnd}
+					to={today}
 					showLegend
 					showMonthLabels
 					showWeekdayLabels
