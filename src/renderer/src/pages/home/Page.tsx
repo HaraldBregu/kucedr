@@ -783,7 +783,6 @@ function PageContent(): ReactElement {
 								<>
 									{visibleMessages.map((message, index) => {
 										const previous = index > 0 ? visibleMessages[index - 1] : null;
-										const isPreviousMessage = index < visibleMessages.length - 1;
 										const showAssistantHeader = !previous || previous.role !== 'agent';
 										const groupedAssistantClassName = showAssistantHeader ? undefined : '-mt-5';
 
@@ -795,7 +794,6 @@ function PageContent(): ReactElement {
 												<UserMessage
 													key={message.id}
 													content={message.content}
-													collapseLongContent={isPreviousMessage}
 													canEdit={!agent.isLoading && voiceMode === null}
 													onEdit={(content) =>
 														agent.editUserMessage(message.id, userOffsetFromEnd, content)
@@ -832,7 +830,6 @@ function PageContent(): ReactElement {
 													agent.isLoading && message.id === agent.chatState.activeAgentId
 												}
 												showHeader={showAssistantHeader}
-												collapseLongContent={isPreviousMessage}
 												className={groupedAssistantClassName}
 												onReply={agent.replyToMessage}
 												canImplement={

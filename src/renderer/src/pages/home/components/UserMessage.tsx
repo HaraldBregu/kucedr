@@ -7,26 +7,20 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { userMarkdownComponents } from './markdown';
 
-const LONG_MESSAGE_LENGTH = 600;
-
 export function UserMessage({
 	content,
-	collapseLongContent = false,
 	canEdit = true,
 	onEdit,
 }: {
 	readonly content: string;
-	readonly collapseLongContent?: boolean;
 	readonly canEdit?: boolean;
 	readonly onEdit?: (content: string) => Promise<boolean>;
 }): ReactElement | null {
-	const [isContentExpanded, setIsContentExpanded] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
 	const [isSaving, setIsSaving] = useState(false);
 	const [draft, setDraft] = useState(content);
 	const [editError, setEditError] = useState<string | null>(null);
 	if (!content.trim()) return null;
-	const canToggleContent = collapseLongContent && content.trim().length > LONG_MESSAGE_LENGTH;
 
 	const copyMessage = (): void => {
 		void (async () => {
@@ -131,29 +125,11 @@ export function UserMessage({
 						className="relative min-w-0 w-fit max-w-full overflow-hidden rounded-xl bg-primary"
 					>
 						<Markdown
-							className={cn(
-								'min-w-0 max-w-full break-words px-5 py-3 text-sm font-medium leading-relaxed text-primary-foreground [overflow-wrap:anywhere] selection:bg-primary-foreground selection:text-primary',
-								canToggleContent && 'pb-10',
-								canToggleContent && !isContentExpanded && 'max-h-40 overflow-hidden'
-							)}
+						className="min-w-0 max-w-full break-words px-5 py-3 text-sm font-medium leading-relaxed text-primary-foreground [overflow-wrap:anywhere] selection:bg-primary-foreground selection:text-primary"
 							components={userMarkdownComponents}
 						>
 							{content}
 						</Markdown>
-						{canToggleContent ? (
-							<div className="absolute inset-x-0 bottom-0 flex justify-end bg-gradient-to-b from-transparent to-primary px-3 pb-1 pt-5">
-								<Button
-									type="button"
-									variant="link"
-									size="xs"
-									className="h-auto px-0 text-primary-foreground/70 hover:bg-transparent hover:text-primary-foreground"
-									aria-expanded={isContentExpanded}
-									onClick={() => setIsContentExpanded((expanded) => !expanded)}
-								>
-									{isContentExpanded ? 'Less' : 'More'}
-								</Button>
-							</div>
-						) : null}
 					</div>
 				)}
 				{!isEditing ? (

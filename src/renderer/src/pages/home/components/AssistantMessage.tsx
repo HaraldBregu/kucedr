@@ -1,4 +1,4 @@
-import { useState, type ReactElement, type ReactNode } from 'react';
+import { type ReactElement, type ReactNode } from 'react';
 import { defaultUrlTransform } from 'react-markdown';
 import { AudioPlayer } from '@/components/audio-player';
 import { VideoPlayer } from '@/components/video-player';
@@ -20,8 +20,6 @@ import { ScreenSourceCard } from './ScreenSourceCard';
 import { parsePlanEnvelope } from './plan';
 import { ImageGallery } from './ImageGallery';
 import { useTranslation } from 'react-i18next';
-
-const LONG_MESSAGE_LENGTH = 600;
 
 type GeneratedMedia = { type: string; paths: string[] };
 
@@ -179,7 +177,6 @@ function statusLabelContent(message: AgentMessage, isStreaming: boolean, label: 
 export function AssistantMessage({
 	message,
 	isStreaming = false,
-	collapseLongContent = false,
 	className,
 	onReply,
 	canImplement = false,
@@ -188,15 +185,11 @@ export function AssistantMessage({
 	readonly message: AgentMessage;
 	readonly isStreaming?: boolean;
 	readonly showHeader?: boolean;
-	readonly collapseLongContent?: boolean;
 	readonly className?: string;
 	readonly onReply?: (message: Pick<AgentMessage, 'id' | 'content'>) => void;
 	readonly canImplement?: boolean;
 	readonly onImplement?: () => void;
 }): ReactElement {
-	const canToggleContent =
-		collapseLongContent && message.content.trim().length > LONG_MESSAGE_LENGTH;
-	const [isContentExpanded, setIsContentExpanded] = useState(false);
 	const { t } = useTranslation();
 	const { speak, isSpeaking, errorMessage: speakErrorMessage, clearError } = useReadMessageAloud();
 
@@ -381,10 +374,7 @@ export function AssistantMessage({
 					<div
 						id={`assistant-message-${message.id}-content`}
 						data-slot="assistant-message-content"
-						className={cn(
-							'relative min-w-0 max-w-full',
-							canToggleContent && !isContentExpanded && 'max-h-40 overflow-hidden'
-						)}
+					className="relative min-w-0 max-w-full"
 					>
 						{parsedPlan.kind === 'complete' ? (
 							<Card className="w-full gap-4 border-info/30 py-4">
@@ -418,19 +408,6 @@ export function AssistantMessage({
 							</Markdown>
 						) : null}
 					</div>
-					{canToggleContent ? (
-						<Button
-							type="button"
-							variant="ghost"
-							size="xs"
-							className="self-start text-muted-foreground hover:text-foreground"
-							aria-expanded={isContentExpanded}
-							aria-controls={`assistant-message-${message.id}-content`}
-							onClick={() => setIsContentExpanded((expanded) => !expanded)}
-						>
-							{isContentExpanded ? 'Less' : 'More'}
-						</Button>
-					) : null}
 					<MessageActions className="mt-1 gap-1">
 						<Button
 							type="button"
