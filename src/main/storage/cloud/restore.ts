@@ -23,8 +23,8 @@ export async function restoreHistoricalVersion(
 		WHERE account_id = ? AND workspace_id = ? AND file_id = ?`).all(
 			scope.accountId, scope.workspaceId, version.file_id
 		) as Array<{ version_id: string }>;
-	const parentIds = local.length ? local.map((item) => item.version_id)
-		: await cloud.heads(scope.workspaceId, version.file_id);
+	const remote = await cloud.heads(scope.workspaceId, version.file_id);
+	const parentIds = [...new Set([...local.map((item) => item.version_id), ...remote])];
 	const restoredId = randomUUID();
 	await saveLocalSnapshot(database, {
 		...scope, fileId: version.file_id, versionId: restoredId,
