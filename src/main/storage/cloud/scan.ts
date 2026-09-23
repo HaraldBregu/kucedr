@@ -47,7 +47,7 @@ export async function scanWorkspace(
 			WHERE account_id = ? AND workspace_id = ? AND file_id = ?
 			ORDER BY rowid DESC LIMIT 1`).get(scope.accountId, scope.workspaceId, fileId) as
 			| { content_hash: string | null } | undefined;
-		if (latest?.content_hash === hash) {
+		if (latest?.content_hash === hash || (!latest && cached?.file_id === fileId)) {
 			database.prepare(`INSERT INTO working_files
 				(account_id, workspace_id, file_id, relative_path, content_hash)
 				VALUES (?, ?, ?, ?, ?) ON CONFLICT(account_id, workspace_id, file_id)
