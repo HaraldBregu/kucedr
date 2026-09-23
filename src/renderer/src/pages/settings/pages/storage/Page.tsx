@@ -113,6 +113,11 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		};
 	}, [applyOperationStatus, loadVersion, t]);
 
+	useEffect(() => {
+		if (!versionedEnabled || !operationStatus || operationStatus.state === 'running') return;
+		void window.storage.listConflicts().then(setConflicts).catch(() => undefined);
+	}, [versionedEnabled, operationStatus?.revision, operationStatus?.state]);
+
 	const storage = draft ?? settings;
 	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
 	const visibleFolders = availableFolders.filter((folder) => folder.key !== 'library');
