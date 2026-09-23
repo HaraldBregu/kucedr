@@ -1,5 +1,5 @@
-import { FileWarning, FileText, LoaderCircle } from 'lucide-react';
-import { useEffect } from 'react';
+import { FileWarning, FileText, LoaderCircle, Search } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
 import type { WorkspaceFileKind, WorkspaceTreeEntry } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
 
@@ -7,6 +7,7 @@ import { FileViewer } from '@/components/viewer';
 import { FileInformation } from '@/components/information';
 import { FormatToggle } from '@/components/format-toggle';
 import { Tabs } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { showNativeContextMenu } from '@/lib/menu';
 import { cn } from '@/lib/utils';
 import { isUnreadableBinaryError } from '@/lib/binary';
@@ -58,6 +59,12 @@ export function WorkspaceViewer({
 }: WorkspaceViewerProps) {
 	const editable = kind !== null && editableWorkspaceKinds.has(kind);
 	const canvas = kind === 'mermaid' || kind === 'excalidraw' || kind === 'tldraw';
+	const [openFileFind, setOpenFileFind] = useState<(() => void) | null>(null);
+	const fileName = path?.split(/[\\/]/).pop() ?? '';
+	const searchable = kind === 'markdown' || kind === 'text';
+	const onFindReady = useCallback((open: (() => void) | null) => {
+		setOpenFileFind(() => open);
+	}, []);
 
 	useEffect(() => {
 		if (!editable) return;
@@ -136,6 +143,28 @@ export function WorkspaceViewer({
 					);
 				}}
 			>
+				<header
+					aria-label="File navigation"
+					className="sticky top-0 z-20 flex h-10 shrink-0 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur sm:px-4"
+				>
+					<p className="min-w-0 flex-1 truncate text-xs font-medium" title={path}>
+						{fileName}
+					</p>
+					{searchable ? (
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="size-7"
+							title="Find in file"
+							aria-label="Find in file"
+							disabled={!openFileFind}
+							onClick={() => openFileFind?.()}
+						>
+							<Search />
+						</Button>
+					) : null}
+				</header>
 				<div
 					className={cn(
 						'min-h-0 flex-1',
@@ -168,6 +197,7 @@ export function WorkspaceViewer({
 							path={path}
 							url={mediaUrl}
 							settings={settings}
+							onFindReady={onFindReady}
 						/>
 					)}
 				</div>

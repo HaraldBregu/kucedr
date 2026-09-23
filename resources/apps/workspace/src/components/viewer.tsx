@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
-import { FileQuestion, LoaderCircle, Music2, Search } from 'lucide-react';
+import { FileQuestion, LoaderCircle, Music2 } from 'lucide-react';
 import type { WorkspaceFileKind } from '@kucedr/sdk';
 import type { WorkspaceSettings } from '@/lib/settings';
 
@@ -18,7 +18,6 @@ import { copyImage } from '@/lib/image';
 import { showMediaContextMenu } from '@/lib/media';
 import { showNativeContextMenu } from '@/lib/menu';
 import { isStructuredDataPath } from '@/lib/structured';
-import { Button } from '@/components/ui/button';
 import { Find } from '@/components/find';
 import { countMatches } from '@/lib/matches';
 
@@ -45,6 +44,7 @@ interface FileViewerProps {
 	isDark: boolean;
 	kind: WorkspaceFileKind;
 	onChange: (content: string) => void;
+	onFindReady?: (open: (() => void) | null) => void;
 	onSave: () => Promise<boolean>;
 	path: string;
 	url: string;
@@ -57,6 +57,7 @@ export function FileViewer({
 	isDark,
 	kind,
 	onChange,
+	onFindReady,
 	onSave,
 	path,
 	url,
@@ -74,6 +75,15 @@ export function FileViewer({
 		setFindQuery('');
 		codeEditorRef.current?.clearSearch();
 	}, [path]);
+
+	useEffect(() => {
+		if (kind !== 'markdown' && kind !== 'text') {
+			onFindReady?.(null);
+			return;
+		}
+		onFindReady?.(() => setFindOpen(true));
+		return () => onFindReady?.(null);
+	}, [kind, onFindReady]);
 
 	const closeFind = () => {
 		setFindOpen(false);
@@ -96,17 +106,6 @@ export function FileViewer({
 					className="m-0 min-h-full data-[state=inactive]:hidden"
 				>
 					<article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12">
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							className="absolute right-5 top-2.5 z-10 size-7 sm:right-8 lg:right-12"
-							title="Find in file (⌘/Ctrl+F)"
-							aria-label="Find in file"
-							onClick={() => setFindOpen(true)}
-						>
-							<Search />
-						</Button>
 						{findOpen ? (
 							<Find
 								className="absolute left-5 right-14 top-2.5 z-20 sm:left-8 lg:left-12"
@@ -174,17 +173,6 @@ export function FileViewer({
 	if (kind === 'text') {
 		return (
 			<div className="relative min-h-full">
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon"
-					className="absolute right-3 top-2.5 z-10 size-7"
-					title="Find in file (⌘/Ctrl+F)"
-					aria-label="Find in file"
-					onClick={() => setFindOpen(true)}
-				>
-					<Search />
-				</Button>
 				{findOpen ? (
 					<Find
 						className="absolute left-3 right-12 top-2.5 z-20"
