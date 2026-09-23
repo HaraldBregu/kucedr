@@ -27,8 +27,8 @@ content, even if its parent is selected.
 | `storage/state.sqlite` | Transactional local versions, parents, heads, operations, upload progress, conflicts, retry state, and change cursor. |
 | `storage/blobs/` | Immutable snapshots; pending snapshots are irreplaceable until publication is confirmed. |
 | `storage/staging/` | Partial transfers and temporary files; safe to remove only after examining pending operations. |
-| `storage/locks/` | Cross-process ownership when multiple processes can access the same partition. |
-| `storage/logs/` | Bounded diagnostics with credentials and file content redacted. |
+| `storage/locks/` | Reserved for process coordination; the app currently holds a single-instance lock. |
+| `storage/logs/` | Bounded event-count diagnostics without credentials, paths, or file content. |
 
 An edit is saved to a staged file, flushed, atomically installed in `blobs/`, then recorded with
 its pending operation in one SQLite transaction. The UI can then report “Saved locally / Pending
