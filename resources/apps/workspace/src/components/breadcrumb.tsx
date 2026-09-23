@@ -25,10 +25,11 @@ export function WorkspaceBreadcrumb({
 	path,
 }: WorkspaceBreadcrumbProps) {
 	const segments = path.split(/[\\/]/).filter(Boolean);
+	const separator = path.includes('\\') ? '\\' : '/';
 	return (
 		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center overflow-hidden text-xs">
 			{segments.map((segment, index) => {
-				const segmentPath = segments.slice(0, index + 1).join('/');
+				const segmentPath = segments.slice(0, index + 1).join(separator);
 				const isFile = index === segments.length - 1;
 				const items = findWorkspaceEntry(entries, segmentPath)?.children ?? [];
 				return (
