@@ -146,6 +146,34 @@ describe('workspace files', () => {
 		await fs.rm(root, { recursive: true });
 	});
 
+	it('omits operating system metadata from the workspace tree', async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-workspace-'));
+		const notes = path.join(root, 'notes');
+		await fs.mkdir(notes);
+		await fs.mkdir(path.join(root, '.Spotlight-V100'));
+		await fs.mkdir(path.join(root, '$RECYCLE.BIN'));
+		await fs.writeFile(path.join(root, '.DS_Store'), 'metadata');
+		await fs.writeFile(path.join(root, 'Thumbs.db'), 'metadata');
+		await fs.writeFile(path.join(root, 'desktop.ini'), 'metadata');
+		await fs.writeFile(path.join(root, '._notes.md'), 'metadata');
+		await fs.writeFile(path.join(root, '.gitignore'), 'node_modules');
+		await fs.writeFile(path.join(notes, '.DS_Store'), 'metadata');
+		await fs.writeFile(path.join(notes, 'idea.md'), '# Idea');
+
+		await expect(readWorkspaceTree(root)).resolves.toEqual([
+			{
+				name: 'notes',
+				path: 'notes',
+				type: 'directory',
+				children: [
+					expect.objectContaining({ name: 'idea.md', path: path.join('notes', 'idea.md') }),
+				],
+			},
+			expect.objectContaining({ name: '.gitignore', path: '.gitignore' }),
+		]);
+		await fs.rm(root, { recursive: true });
+	});
+
 	it('rejects traversal and symlink escapes', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-workspace-'));
 		const outside = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-outside-'));
