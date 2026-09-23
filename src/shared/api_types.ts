@@ -500,6 +500,7 @@ export interface AppApi extends AppStorageApi {
 	getPathForFile: (file: File) => string;
 	openAppDataFolder: () => Promise<void>;
 	openDataFolder: () => Promise<void>;
+	getActivity: () => Promise<import('./app_types').ActivityDay[]>;
 	openProvidersFolder: () => Promise<void>;
 	openExternalUrl: (url: string) => Promise<void>;
 	unfurlUrl: (url: string) => Promise<import('./app_types').UrlMetadata>;

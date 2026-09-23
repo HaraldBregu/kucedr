@@ -5,6 +5,11 @@ export interface AppLogEntry {
 	message: string;
 }
 
+export interface ActivityDay {
+	readonly date: string;
+	readonly value: number;
+}
+
 export type MicrophoneSystemPermissionStatus =
 	| 'not-determined'
 	| 'granted'

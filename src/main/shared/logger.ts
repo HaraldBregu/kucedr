@@ -3,6 +3,8 @@ import path from 'node:path';
 import { userDataLocation } from './user_data_location';
 import type { EventBus } from '../event_bus';
 import type { AppLogEntry } from '../../shared/app_types';
+import type { ActivityDay } from '../../shared/app_types';
+import { readActivity } from './activity';
 
 interface Disposable {
 	destroy(): void;
@@ -422,6 +424,11 @@ export class LoggerService implements Disposable {
 			source: e.source,
 			message: e.message,
 		}));
+	}
+
+	async getActivity(): Promise<ActivityDay[]> {
+		this.flushBuffer();
+		return readActivity(this.logDirectory);
 	}
 
 	/**

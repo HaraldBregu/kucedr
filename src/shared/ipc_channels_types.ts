@@ -446,6 +446,10 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: void;
 	};
+	[AppChannels.getActivity]: {
+		args: [];
+		result: import('./app_types').ActivityDay[];
+	};
 	[AppChannels.openProvidersFolder]: {
 		args: [];
 		result: void;

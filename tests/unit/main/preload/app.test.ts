@@ -19,3 +19,10 @@ it('reads launch state through the typed app channel', async () => {
 	await expect(app.getLaunchState()).resolves.toEqual({ launchCount: 1, isFirstLaunch: true });
 	expect(invoke).toHaveBeenCalledWith(AppChannels.getLaunchState);
 });
+
+it('reads daily activity through the typed app channel', async () => {
+	invoke.mockResolvedValue({ success: true, data: [{ date: '2026-09-23', value: 12 }] });
+
+	await expect(app.getActivity()).resolves.toEqual([{ date: '2026-09-23', value: 12 }]);
+	expect(invoke).toHaveBeenCalledWith(AppChannels.getActivity);
+});

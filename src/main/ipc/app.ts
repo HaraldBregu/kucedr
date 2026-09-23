@@ -455,6 +455,11 @@ export class AppIpc implements IpcModule {
 		);
 
 		ipcMain.handle(
+			AppChannels.getActivity,
+			wrapSimpleHandler(() => logger.getActivity(), AppChannels.getActivity)
+		);
+
+		ipcMain.handle(
 			AppChannels.openProvidersFolder,
 			wrapSimpleHandler(async () => {
 				await openPathOrThrow(providersDir());

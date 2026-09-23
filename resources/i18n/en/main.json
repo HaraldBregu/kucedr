@@ -361,7 +361,8 @@
 			"title": "Activity",
 			"events": "events",
 			"day": "{{count}} events on {{date}}",
-			"empty": "Activity from application logs will appear here."
+			"empty": "No activity has been logged yet.",
+			"error": "Unable to load activity from application logs."
 		},
 		"system": {
 			"actionsDescription": "Open required operating system panels and control background power behavior.",

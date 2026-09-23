@@ -68,6 +68,9 @@ export const app: AppApi = {
 	openDataFolder: (): Promise<void> => {
 		return typedInvokeUnwrap(AppChannels.openDataFolder);
 	},
+	getActivity: () => {
+		return typedInvokeUnwrap(AppChannels.getActivity);
+	},
 	openProvidersFolder: (): Promise<void> => {
 		return typedInvokeUnwrap(AppChannels.openProvidersFolder);
 	},

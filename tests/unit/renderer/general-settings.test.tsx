@@ -42,6 +42,7 @@ beforeEach(() => {
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
+			getActivity: jest.fn().mockResolvedValue([{ date: '2026-09-23', value: 12 }]),
 			getTrayEnabled: jest.fn().mockResolvedValue(true),
 			setTrayEnabled: jest.fn().mockResolvedValue(undefined),
 			getTrayClickAction: jest.fn().mockResolvedValue('toggle-chat'),
@@ -163,5 +164,5 @@ it('shows the activity heatmap in General settings', () => {
 	);
 
 	expect(screen.getByTestId('activity-heatmap')).toBeInTheDocument();
-	expect(screen.getByText('settings.activity.empty')).toBeInTheDocument();
+	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
 });

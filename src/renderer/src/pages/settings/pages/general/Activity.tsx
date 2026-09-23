@@ -1,20 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CalendarHeatmap } from '@thilakbhat/heatmap-ui';
 import '@thilakbhat/heatmap-ui/styles.css';
 import { useTranslation } from 'react-i18next';
 import { SettingsPanel } from '../../components';
 
-export interface ActivityDay {
-	readonly date: string;
-	readonly value: number;
-}
-
-interface ActivityProps {
-	readonly values?: readonly ActivityDay[];
-}
-
-export function Activity({ values = [] }: ActivityProps): React.JSX.Element {
+export function Activity(): React.JSX.Element {
 	const { t } = useTranslation();
+	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
+	const [failed, setFailed] = useState(false);
+
+	useEffect(() => {
+		let active = true;
+		void window.app
+			.getActivity()
+			.then((activity) => {
+				if (active) setValues(activity);
+			})
+			.catch(() => {
+				if (active) setFailed(true);
+			});
+		return () => {
+			active = false;
+		};
+	}, []);
 
 	return (
 		<SettingsPanel>
@@ -31,11 +39,15 @@ export function Activity({ values = [] }: ActivityProps): React.JSX.Element {
 					ariaLabel={t('settings.activity.title')}
 					tooltip={(day) => t('settings.activity.day', { date: day.date, count: day.value })}
 				/>
-				{values.length === 0 && (
+				{failed ? (
+					<p className="mt-3 text-[11px] text-muted-foreground">
+						{t('settings.activity.error')}
+					</p>
+				) : values.length === 0 ? (
 					<p className="mt-3 text-[11px] text-muted-foreground">
 						{t('settings.activity.empty')}
 					</p>
-				)}
+				) : null}
 			</div>
 		</SettingsPanel>
 	);

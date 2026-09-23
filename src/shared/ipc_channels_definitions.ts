@@ -163,6 +163,7 @@ export const McpChannels = {
 export const AppChannels = {
 	openAppDataFolder: 'app:open-app-data-folder',
 	openDataFolder: 'app:open-data-folder',
+	getActivity: 'app:get-activity',
 	openProvidersFolder: 'app:open-providers-folder',
 	openExternalUrl: 'app:open-external-url',
 	unfurlUrl: 'app:unfurl-url',

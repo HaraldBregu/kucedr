@@ -361,7 +361,8 @@
 			"title": "Attivita",
 			"events": "eventi",
 			"day": "{{count}} eventi il {{date}}",
-			"empty": "Qui comparira l'attivita dai log dell'applicazione."
+			"empty": "Non e stata ancora registrata alcuna attivita.",
+			"error": "Impossibile caricare l'attivita dai log dell'applicazione."
 		},
 		"system": {
 			"actionsDescription": "Apri i pannelli richiesti del sistema operativo e controlla il comportamento energetico in background.",
