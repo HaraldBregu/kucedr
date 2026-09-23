@@ -202,6 +202,7 @@ app.whenReady().then(() => {
 		if (state.status !== 'signedIn') return;
 		void readStorageConfig().then((config) => {
 			if (config?.sync.enabled) return runStorageSync(logger, services.storageOperations);
+			return undefined;
 		}).catch((error) => logger.error('Storage', 'Storage recovery failed', error));
 	});
 	app.once('before-quit', unsubscribeStorageRecovery);
