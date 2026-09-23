@@ -74,6 +74,27 @@ describe('debug app folders', () => {
 		expect(listApps()).toEqual([]);
 	});
 
+	it('replaces a previously registered debug path with the same ID', () => {
+		const previous = createApp(path.join(root, 'previous'), 'workspace');
+		const replacement = createApp(path.join(root, 'replacement'), 'workspace');
+		addDebugApp(previous);
+
+		expect(addDebugApp(replacement)).toEqual({
+			id: 'workspace',
+			...manifest,
+			debugPath: replacement,
+		});
+		expect(debugAppsStore.get('paths')).toEqual([replacement]);
+		expect(listApps()).toEqual([
+			{
+				id: 'workspace',
+				...manifest,
+				debugPath: replacement,
+				imageUrl: 'kucedr-app://workspace/assets/images/logo.png',
+			},
+		]);
+	});
+
 	it('rejects relative paths and entry symlinks that escape the app folder', () => {
 		expect(() => addDebugApp('relative/app')).toThrow('absolute');
 		const directory = createApp(root);

@@ -37,10 +37,11 @@ export function addDebugApp(folderPath: string): App {
 		throw new Error(`An installed app already uses the ID “${id}”.`);
 	}
 	const paths = debugAppPaths();
-	const existing = paths.find((value) => path.basename(value) === id);
-	if (existing && existing !== directory) {
-		throw new Error(`Another debug folder already uses the ID “${id}”.`);
+	if (!paths.includes(directory) || paths.some((value) => path.basename(value) === id && value !== directory)) {
+		debugAppsStore.set('paths', [
+			...paths.filter((value) => path.basename(value) !== id),
+			directory,
+		]);
 	}
-	if (!paths.includes(directory)) debugAppsStore.set('paths', [...paths, directory]);
 	return { id, ...manifest, debugPath: directory };
 }
