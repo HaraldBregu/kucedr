@@ -121,6 +121,9 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				>
 					<Plus className="size-4" />
 					<span>{t('navigationBar.new', 'New')}</span>
+					<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground">
+						{navigator.platform.startsWith('Mac') ? '⌘ N' : 'Ctrl + N'}
+					</kbd>
 				</button>
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
