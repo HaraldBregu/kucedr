@@ -119,6 +119,20 @@ it('does not send an empty reply or discard its selected context', async () => {
 	expect(result.current.replyTo).toEqual(firstMessage);
 });
 
+it('shows submitted file metadata immediately in an attachment-only turn', async () => {
+	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
+	const file = new File(['notes'], 'brief.txt', { type: 'text/plain' });
+	await act(async () => {
+		expect(await result.current.handleSubmit([file])).toBe(true);
+	});
+
+	expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({
+		type: 'submit_user_message',
+		content: '',
+		attachments: [{ type: 'attachment', kind: 'text', name: 'brief.txt', mimeType: 'text/plain', bytes: 5 }],
+	}));
+});
+
 it('keeps goal commands separate from reply context', async () => {
 	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
 	await act(async () => {

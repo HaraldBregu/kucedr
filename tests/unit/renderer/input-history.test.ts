@@ -70,7 +70,7 @@ it('restores an image tool without a result as stopped', () => {
 	});
 });
 
-it('does not render persisted attachment metadata in the thread', () => {
+it('restores attachment-only user messages from persisted history', () => {
 	const history: AgentHistoryMessage[] = [
 		{
 			role: 'user',
@@ -87,6 +87,17 @@ it('does not render persisted attachment metadata in the thread', () => {
 		},
 	];
 	const message = historyToChatMessages(history)[0];
-	expect(message).toBeUndefined();
-	expect(JSON.stringify(historyToChatMessages(history))).not.toContain('brief.pdf');
+	expect(message).toEqual({
+		id: 'user-history-0',
+		role: 'user',
+		type: 'user',
+		content: '',
+		attachments: [{
+			type: 'attachment',
+			kind: 'document',
+			name: 'brief.pdf',
+			mimeType: 'application/pdf',
+			bytes: 1234,
+		}],
+	});
 });
