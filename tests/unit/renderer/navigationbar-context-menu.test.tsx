@@ -64,9 +64,7 @@ it.each([
 it('does not open the navigationbar menu from a button', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<ChatSessionContext.Provider value={{ sessionId: 'session-123', setSessionId: jest.fn() }}>
-				<NavigationBar />
-			</ChatSessionContext.Provider>
+			<NavigationBar />
 		</MemoryRouter>
 	);
 
@@ -135,7 +133,9 @@ it('opens voice conversation for the current chat from the button before Setting
 
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<NavigationBar />
+			<ChatSessionContext.Provider value={{ sessionId: 'session-123', setSessionId: jest.fn() }}>
+				<NavigationBar />
+			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 	const voice = screen.getByRole('button', { name: 'Start voice conversation' });
