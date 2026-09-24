@@ -8,7 +8,19 @@ import {
 } from 'react';
 import type { AgentPromptInputCapabilities } from '@shared/agent_types';
 import { AnimatePresence, motion, resize } from 'motion/react';
-import { AlertCircle, ArrowUp, FileAudio, Mic, Paperclip, Plus, Square, X } from 'lucide-react';
+import {
+	AlertCircle,
+	ArrowUp,
+	FileAudioIcon,
+	FileCodeIcon,
+	FileImageIcon,
+	FileTextIcon,
+	Mic,
+	Plus,
+	Square,
+	TableIcon,
+	X,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
@@ -16,6 +28,16 @@ import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
+import {
+	Attachment,
+	AttachmentAction,
+	AttachmentActions,
+	AttachmentContent,
+	AttachmentDescription,
+	AttachmentGroup,
+	AttachmentMedia,
+	AttachmentTitle,
+} from '@/components/ui/attachment';
 import {
 	ChatContainerContent,
 	ChatContainerRoot,
@@ -57,6 +79,7 @@ import {
 import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
 import type { PromptAttachment } from './attachments/types';
 import { validatePromptAttachments } from './attachments/validation';
+import { Preview } from './attachments/Preview';
 import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
 
@@ -213,64 +236,55 @@ function AttachmentTray({
 	if (attachments.length === 0) return null;
 
 	return (
-		<div className="flex w-full flex-wrap gap-1.5" onClick={(event) => event.stopPropagation()}>
+		<AttachmentGroup className="w-full" onClick={(event) => event.stopPropagation()}>
 			{attachments.map((attachment) => {
 				const isAudio = attachment.kind === 'audio';
 				const title = isAudio
 					? `Audio ${formatDuration(attachment.durationMs ?? 0)}`
 					: attachment.file.name;
+				const extension = attachment.file.name.split('.').pop()?.toUpperCase() ?? 'FILE';
+				const isImage = attachment.file.type.startsWith('image/');
+				const Icon = isAudio || attachment.file.type.startsWith('audio/')
+					? FileAudioIcon
+					: isImage
+						? FileImageIcon
+						: /\.(csv|xlsx?|ods)$/i.test(attachment.file.name)
+							? TableIcon
+							: /\.(jsx?|tsx?|json|html|css|py|sh)$/i.test(attachment.file.name)
+								? FileCodeIcon
+								: FileTextIcon;
 
 				return (
-					<Tooltip key={attachment.id}>
-						<TooltipTrigger
-							render={
-								<div
-									className={cn(
-										'flex items-center gap-1 rounded-lg border border-border/50 bg-muted/50 py-0.5 pl-1.5 pr-0.5',
-										isAudio ? 'max-w-md flex-wrap' : 'max-w-64 flex-wrap',
-										attachment.error && 'border-destructive/40 bg-destructive/10 text-destructive'
-									)}
-								>
-									<span className="shrink-0 text-muted-foreground">
-										{isAudio ? (
-											<FileAudio className="size-2.5" />
-										) : (
-											<Paperclip className="size-2.5" />
-										)}
-									</span>
-									<span className="min-w-0 truncate text-[9px] leading-tight">{title}</span>
-									<span className="shrink-0 text-[8px] leading-tight text-muted-foreground">
-										{formatFileSize(attachment.file.size)}
-									</span>
-									{isAudio && attachment.url ? (
-										<AudioPlayer
-											src={attachment.url}
-											className="order-last basis-full border-0 bg-transparent px-1 py-1"
-										/>
-									) : null}
-									<Button
-										type="button"
-										variant="ghost"
-										size="icon"
-										className="size-4 shrink-0 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
-										aria-label={`Remove ${title}`}
-										onClick={() => onRemove(attachment.id)}
-									>
-										<X className="size-2.5" />
-									</Button>
-									{attachment.error ? (
-										<span className="basis-full truncate px-1 pb-0.5 text-[8px] leading-tight text-destructive">
-											{attachment.error}
-										</span>
-									) : null}
-								</div>
-							}
-						/>
-						<TooltipContent side="top">{attachment.error ?? attachment.file.name}</TooltipContent>
-					</Tooltip>
-				);
+					<Attachment
+						key={attachment.id}
+						state={attachment.error ? 'error' : 'done'}
+						size="sm"
+						className={isAudio ? 'w-80' : 'w-64'}
+					>
+						<AttachmentMedia variant={isImage ? 'image' : 'icon'}>
+							{isImage ? <Preview file={attachment.file} /> : <Icon />}
+						</AttachmentMedia>
+						<AttachmentContent>
+							<AttachmentTitle title={title}>{title}</AttachmentTitle>
+							<AttachmentDescription
+								title={attachment.error}
+								className={attachment.error ? 'whitespace-normal' : undefined}
+							>
+								{attachment.error ?? `${extension} · ${formatFileSize(attachment.file.size)}`}
+							</AttachmentDescription>
+						</AttachmentContent>
+						<AttachmentActions>
+							<AttachmentAction type="button" aria-label={`Remove ${title}`} onClick={() => onRemove(attachment.id)}>
+								<X className="size-3.5" />
+							</AttachmentAction>
+						</AttachmentActions>
+						{isAudio && attachment.url ? (
+							<AudioPlayer src={attachment.url} className="basis-full border-0 bg-transparent px-1 py-1" />
+						) : null}
+					</Attachment>
+			);
 			})}
-		</div>
+		</AttachmentGroup>
 	);
 }
 
