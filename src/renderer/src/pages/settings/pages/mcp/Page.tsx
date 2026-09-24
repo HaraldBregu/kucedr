@@ -97,7 +97,7 @@ const McpPage = (): React.JSX.Element => {
 					description="Add a server or upload a local package to make its tools available to Kucedr."
 				/>
 			) : (
-				<div className="space-y-1 pb-4">
+				<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
 					{registry.servers.map((server) => (
 						<McpServerRow
 							key={server.id}

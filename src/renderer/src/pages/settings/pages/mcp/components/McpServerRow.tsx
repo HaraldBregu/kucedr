@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronRight, PlugZap } from 'lucide-react';
+import { PlugZap } from 'lucide-react';
 import type { McpServerInfo } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
@@ -28,11 +28,15 @@ export function McpServerRow({
 	);
 
 	return (
-		<Item variant="ghost" size="md" className="px-0 py-3.5">
+		<Item
+			variant="ghost"
+			size="md"
+			className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+		>
 			<button
 				type="button"
 				onClick={onOpen}
-				className="flex min-w-0 flex-1 items-center gap-4 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+				className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 			>
 				{service ? (
 					<ProviderAvatar
@@ -40,20 +44,22 @@ export function McpServerRow({
 						name={service.name}
 						iconDarkUrl={service.iconDarkUrl}
 						iconLightUrl={service.iconLightUrl}
-						className="size-8 rounded-none border-0 bg-transparent p-0"
+						className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 					/>
 				) : (
-					<PlugZap className="size-8 shrink-0 text-muted-foreground" aria-hidden="true" />
+					<PlugZap
+						className="size-9 shrink-0 rounded-2xl bg-muted/50 p-1.5 text-muted-foreground group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+						aria-hidden="true"
+					/>
 				)}
 				<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-					<ItemTitle className="min-w-0 max-w-full truncate text-sm font-semibold leading-tight">
+					<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
 						{title}
 					</ItemTitle>
-					<p className="max-w-full truncate text-xs font-medium leading-tight text-muted-foreground">
+					<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 						{description}
 					</p>
 				</ItemContent>
-				<ChevronRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 			</button>
 			<ItemActions className="ml-auto flex-none justify-end">
 				<Switch
