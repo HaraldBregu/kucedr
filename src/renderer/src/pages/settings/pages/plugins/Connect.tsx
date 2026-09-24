@@ -12,7 +12,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { CatalogService } from '@shared/provider_types';
-import { MICROSOFT_365_SERVICES } from './Microsoft';
 
 export function MicrosoftConnect({
 	service,
@@ -30,9 +29,10 @@ export function MicrosoftConnect({
 	const { t } = useTranslation();
 	const [tenantId, setTenantId] = useState('');
 	const [clientId, setClientId] = useState('');
-	const server = MICROSOFT_365_SERVICES.find((entry) => entry.id === service?.id);
 	const valid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-	const canConnect = Boolean(server && valid.test(tenantId.trim()) && valid.test(clientId.trim()));
+	const canConnect = Boolean(
+		service?.url?.includes('{tenantId}') && valid.test(tenantId.trim()) && valid.test(clientId.trim())
+	);
 
 	return (
 		<Dialog open={Boolean(service)} onOpenChange={(open) => !open && onClose()}>
@@ -80,8 +80,8 @@ export function MicrosoftConnect({
 					<Button
 						disabled={!canConnect || saving}
 						onClick={() => {
-							if (!server) return;
-							const url = `https://agent365.svc.cloud.microsoft/agents/tenants/${tenantId.trim()}/servers/${server.serverId}`;
+							if (!service?.url?.includes('{tenantId}')) return;
+							const url = service.url.replace('{tenantId}', tenantId.trim());
 							void onConnect(url, clientId.trim()).then((connected) => {
 								if (connected) onClose();
 							});

@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { mcps } from '@/lib/providers';
-import { MICROSOFT_365_SERVICES } from '../../plugins/Microsoft';
 
 export function McpServerRow({
 	server,
@@ -30,14 +29,9 @@ export function McpServerRow({
 		(service) =>
 			service.id === server.id || (server.data.type === 'http' && service.url === server.data.url)
 	);
-	const microsoftService = MICROSOFT_365_SERVICES.find((entry) => entry.id === server.id);
 	const description =
 		service?.description ??
-		microsoftService?.description ??
 		(server.data.type === 'http' ? 'Remote MCP server.' : 'Local MCP server.');
-	const iconService =
-		service ??
-		(microsoftService ? mcps().find((entry) => entry.id === 'microsoft-learn') : undefined);
 
 	return (
 		<Item
@@ -46,10 +40,10 @@ export function McpServerRow({
 			className="relative min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 		>
 			<ProviderAvatar
-				providerId={iconService?.id ?? server.id}
-				name={iconService?.name ?? title}
-				iconDarkUrl={iconService?.iconDarkUrl}
-				iconLightUrl={iconService?.iconLightUrl}
+				providerId={service?.id ?? server.id}
+				name={service?.name ?? title}
+				iconDarkUrl={service?.iconDarkUrl}
+				iconLightUrl={service?.iconLightUrl}
 				className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 			/>
 			<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">

@@ -11,6 +11,69 @@
 			"description": "Search Microsoft documentation and code samples.",
 			"type": "mcp",
 			"url": "https://learn.microsoft.com/api/mcp"
+		},
+		{
+			"id": "microsoft-mail",
+			"name": "Outlook Mail",
+			"description": "Read, send, and manage email.",
+			"type": "mcp",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_MailTools",
+			"icon_dark_url": "/images/microsoft-outlook.svg",
+			"icon_light_url": "/images/microsoft-outlook.svg"
+		},
+		{
+			"id": "microsoft-calendar",
+			"name": "Outlook Calendar",
+			"description": "Manage events and availability.",
+			"type": "mcp",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_CalendarTools",
+			"icon_dark_url": "/images/outlook-calendar.svg",
+			"icon_light_url": "/images/outlook-calendar.svg"
+		},
+		{
+			"id": "microsoft-teams",
+			"name": "Microsoft Teams",
+			"description": "Work with chats, channels, and messages.",
+			"type": "mcp",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_TeamsServer",
+			"icon_dark_url": "/images/microsoft-teams.svg",
+			"icon_light_url": "/images/microsoft-teams.svg"
+		},
+		{
+			"id": "microsoft-onedrive",
+			"name": "OneDrive",
+			"description": "Find and manage personal files.",
+			"type": "mcp",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_OneDriveRemoteServer",
+			"icon_dark_url": "/images/microsoft-onedrive.svg",
+			"icon_light_url": "/images/microsoft-onedrive.svg"
+		},
+		{
+			"id": "microsoft-sharepoint",
+			"name": "SharePoint",
+			"description": "Work with sites, lists, and files.",
+			"type": "mcp",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_SharePointRemoteServer",
+			"icon_dark_url": "/images/microsoft-sharepoint.svg",
+			"icon_light_url": "/images/microsoft-sharepoint.svg"
+		},
+		{
+			"id": "microsoft-word",
+			"name": "Microsoft Word",
+			"description": "Create and read documents.",
+			"type": "mcp",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_WordServer",
+			"icon_dark_url": "/images/microsoft-word.svg",
+			"icon_light_url": "/images/microsoft-word.svg"
+		},
+		{
+			"id": "microsoft-search",
+			"name": "Microsoft 365 Search",
+			"description": "Find content across Microsoft 365.",
+			"type": "mcp",
+			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_M365Copilot",
+			"icon_dark_url": "/images/microsoft-365-copilot.svg",
+			"icon_light_url": "/images/microsoft-365-copilot.svg"
 		}
 	]
 }

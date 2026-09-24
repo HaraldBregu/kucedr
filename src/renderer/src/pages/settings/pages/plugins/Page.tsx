@@ -20,21 +20,6 @@ import {
 	SettingsPageShell,
 } from '../../components';
 import { MicrosoftConnect } from './Connect';
-import { MICROSOFT_365_SERVICES } from './Microsoft';
-
-const PLUGIN_SERVICE_IDS = [
-	'gmail',
-	'google-calendar',
-	'google-drive',
-	'google-contacts',
-	'google-docs',
-	'google-sheets',
-	'google-maps',
-	'github',
-	'gitlab',
-	'microsoft-learn',
-	'notion',
-] as const;
 
 const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
@@ -42,23 +27,7 @@ const PluginsPage = (): React.JSX.Element => {
 	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
 	const [selectedMicrosoft, setSelectedMicrosoft] = useState<CatalogService | null>(null);
-	const services = mcps();
-	const microsoft = services.find((service) => service.id === 'microsoft-learn');
-	const microsoftServices: CatalogService[] = microsoft
-		? MICROSOFT_365_SERVICES.map(({ id, name, description }) => ({
-				id,
-				name,
-				description,
-				type: 'mcp',
-				provider: microsoft.provider,
-				iconDarkUrl: microsoft.iconDarkUrl,
-				iconLightUrl: microsoft.iconLightUrl,
-			}))
-		: [];
-	const catalog = PLUGIN_SERVICE_IDS.flatMap((serviceId) => [
-		...services.filter((service) => service.id === serviceId),
-		...(serviceId === 'microsoft-learn' ? microsoftServices : []),
-	]);
+	const catalog = mcps();
 
 	useEffect(() => {
 		let cancelled = false;
@@ -187,7 +156,7 @@ const PluginsPage = (): React.JSX.Element => {
 										onClick={() => {
 											if (
 												!servers[service.id] &&
-												MICROSOFT_365_SERVICES.some((entry) => entry.id === service.id)
+												service.url?.includes('{tenantId}')
 											) {
 												setError('');
 												setSelectedMicrosoft(service);
