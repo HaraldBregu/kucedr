@@ -5,7 +5,12 @@ import { safeStorage } from 'electron';
 import Store from 'electron-store';
 import { userDataLocation } from '../shared/user_data_location';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
-import type { EnabledPluginProviders, PluginProviderKind, ProviderCredentialKind, StoredProvider } from '../../shared/provider_types';
+import type {
+	EnabledPluginProviders,
+	PluginProviderKind,
+	ProviderCredentialKind,
+	StoredProvider,
+} from '../../shared/provider_types';
 import type { PersistedStorageProvider } from '../storage/providers/types';
 import type { ProvidersStoreState } from './providers_types';
 import { restrictProviderPermissions } from './restrict';
@@ -30,12 +35,20 @@ export const providersStorePath = providersStore.path;
 export function getEnabledPluginProviders(): EnabledPluginProviders {
 	const saved = providersStore.get('enabledPlugins');
 	return {
-		database: Array.isArray(saved?.database) ? saved.database.filter((id): id is string => typeof id === 'string') : [],
-		storage: Array.isArray(saved?.storage) ? saved.storage.filter((id): id is string => typeof id === 'string') : [],
+		database: Array.isArray(saved?.database)
+			? saved.database.filter((id): id is string => typeof id === 'string')
+			: [],
+		storage: Array.isArray(saved?.storage)
+			? saved.storage.filter((id): id is string => typeof id === 'string')
+			: [],
 	};
 }
 
-export function setPluginProviderEnabled(kind: PluginProviderKind, id: string, enabled: boolean): EnabledPluginProviders {
+export function setPluginProviderEnabled(
+	kind: PluginProviderKind,
+	id: string,
+	enabled: boolean
+): EnabledPluginProviders {
 	const current = getEnabledPluginProviders();
 	const values = new Set(current[kind]);
 	if (enabled) values.add(id);
@@ -103,8 +116,11 @@ function migrateStorageProviders(): void {
 				safeStorage.decryptString(Buffer.from(encrypted, 'base64'))
 			) as Array<Record<string, unknown>>;
 			if (!Array.isArray(storage)) return;
-			const { encryptedProviders: _encryptedProviders, storageProviders: _storageProviders, ...providers } =
-				state;
+			const {
+				encryptedProviders: _encryptedProviders,
+				storageProviders: _storageProviders,
+				...providers
+			} = state;
 			providersStore.store = {
 				...providers,
 				storage: storage.map(

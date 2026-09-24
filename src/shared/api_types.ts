@@ -336,7 +336,11 @@ export interface ProviderApi {
 	setChannel: (input: ChannelCredentialSaveInput) => Promise<ChannelCredentialSummary>;
 	listChannels: () => Promise<ChannelCredentialSummary[]>;
 	listEnabledPlugins: () => Promise<EnabledPluginProviders>;
-	setPluginEnabled: (kind: PluginProviderKind, id: string, enabled: boolean) => Promise<EnabledPluginProviders>;
+	setPluginEnabled: (
+		kind: PluginProviderKind,
+		id: string,
+		enabled: boolean
+	) => Promise<EnabledPluginProviders>;
 	getModelProviders: () => Promise<PublicProvider[]>;
 	getDatabaseProviders: () => Promise<PublicProvider[]>;
 }

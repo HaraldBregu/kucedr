@@ -71,7 +71,9 @@ beforeEach(() => {
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
 		value: {
-			listEnabledPlugins: jest.fn().mockResolvedValue({ database: ['pinecone/pinecone'], storage: [] }),
+			listEnabledPlugins: jest
+				.fn()
+				.mockResolvedValue({ database: ['pinecone/pinecone'], storage: [] }),
 			list: jest.fn().mockResolvedValue([]),
 			set: jest.fn().mockResolvedValue({ id: 'pinecone', apiKey: 'database-secret' }),
 			remove: jest.fn().mockResolvedValue(undefined),

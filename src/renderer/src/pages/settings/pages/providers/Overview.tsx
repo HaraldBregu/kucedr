@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { ChevronRight, Database, HardDrive, Search, Server } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { SettingsPageHeader, SettingsPageShell, SettingsPanel, SettingsRow } from '../../components';
+import {
+	SettingsPageHeader,
+	SettingsPageShell,
+	SettingsPanel,
+	SettingsRow,
+} from '../../components';
 import type { EnabledPluginProviders } from '@shared/provider_types';
 
 const PROVIDER_ITEMS = [
@@ -41,7 +46,9 @@ export default function ProvidersOverviewPage(): React.JSX.Element {
 		void window.provider.listEnabledPlugins().then((value) => {
 			if (active) setEnabled(value);
 		});
-		return () => { active = false; };
+		return () => {
+			active = false;
+		};
 	}, []);
 
 	return (
@@ -60,7 +67,9 @@ export default function ProvidersOverviewPage(): React.JSX.Element {
 							<SettingsRow
 								title={t(item.labelKey)}
 								description={t(item.descriptionKey)}
-								media={<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+								media={
+									<Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+								}
 								className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 								actionClassName="w-auto justify-end"
 								actions={<ChevronRight className="size-4 text-muted-foreground" />}

@@ -3,7 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
-import type { CatalogService, EnabledPluginProviders, PluginProviderKind } from '@shared/provider_types';
+import type {
+	CatalogService,
+	EnabledPluginProviders,
+	PluginProviderKind,
+} from '@shared/provider_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +31,10 @@ const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const [servers, setServers] = useState<McpSettings>({});
-	const [enabledProviders, setEnabledProviders] = useState<EnabledPluginProviders>({ database: [], storage: [] });
+	const [enabledProviders, setEnabledProviders] = useState<EnabledPluginProviders>({
+		database: [],
+		storage: [],
+	});
 	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
 	const [selectedMicrosoft, setSelectedMicrosoft] = useState<CatalogService | null>(null);
@@ -53,7 +60,11 @@ const PluginsPage = (): React.JSX.Element => {
 		};
 	}, []);
 
-	const setProviderEnabled = async (kind: PluginProviderKind, id: string, enabled: boolean): Promise<void> => {
+	const setProviderEnabled = async (
+		kind: PluginProviderKind,
+		id: string,
+		enabled: boolean
+	): Promise<void> => {
 		setSavingId(id);
 		setError('');
 		try {
@@ -215,8 +226,12 @@ const PluginsPage = (): React.JSX.Element => {
 							onOpen={() =>
 								navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)
 							}
-							onAdd={() => void setProviderEnabled('database', `${database.provider.id}/${database.id}`, true)}
-							onRemove={() => void setProviderEnabled('database', `${database.provider.id}/${database.id}`, false)}
+							onAdd={() =>
+								void setProviderEnabled('database', `${database.provider.id}/${database.id}`, true)
+							}
+							onRemove={() =>
+								void setProviderEnabled('database', `${database.provider.id}/${database.id}`, false)
+							}
 						/>
 					))}
 					{storageCatalog.map((storage) => (
@@ -229,8 +244,12 @@ const PluginsPage = (): React.JSX.Element => {
 							onOpen={() =>
 								navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)
 							}
-							onAdd={() => void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, true)}
-							onRemove={() => void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, false)}
+							onAdd={() =>
+								void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, true)
+							}
+							onRemove={() =>
+								void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, false)
+							}
 						/>
 					))}
 				</div>

@@ -136,10 +136,12 @@ beforeEach(() => {
 	Object.defineProperty(window, 'mcp', { configurable: true, value: mcpApi });
 	Object.defineProperty(window, 'provider', { configurable: true, value: providerApi });
 	providerApi.listEnabledPlugins.mockResolvedValue({ database: [], storage: [] });
-	providerApi.setPluginEnabled.mockImplementation(async (kind: 'database' | 'storage', id: string, enabled: boolean) => ({
-		database: kind === 'database' && enabled ? [id] : [],
-		storage: kind === 'storage' && enabled ? [id] : [],
-	}));
+	providerApi.setPluginEnabled.mockImplementation(
+		async (kind: 'database' | 'storage', id: string, enabled: boolean) => ({
+			database: kind === 'database' && enabled ? [id] : [],
+			storage: kind === 'storage' && enabled ? [id] : [],
+		})
+	);
 	mcpApi.list.mockResolvedValue({
 		gmail: { type: 'http', name: 'gmail', url: 'https://gmail.example/mcp', enabled: true },
 	});
@@ -260,17 +262,34 @@ it('opens plugin details from rows while keeping add buttons separate', async ()
 	const storageRow = screen.getByText('Cloudflare R2').closest('[data-slot="item"]');
 	expect(storageRow).not.toBeNull();
 	await user.click(within(storageRow as HTMLElement).getByRole('button'));
-	await waitFor(() => expect(providerApi.setPluginEnabled).toHaveBeenCalledWith('storage', 'cloudflare/cloudflare-r2', true));
+	await waitFor(() =>
+		expect(providerApi.setPluginEnabled).toHaveBeenCalledWith(
+			'storage',
+			'cloudflare/cloudflare-r2',
+			true
+		)
+	);
 	expect(navigate).toHaveBeenLastCalledWith('/settings/providers/storage');
 });
 
 it('removes an enabled storage provider from Plugins', async () => {
 	const user = userEvent.setup();
-	providerApi.listEnabledPlugins.mockResolvedValue({ database: [], storage: ['supabase/supabase-storage'] });
+	providerApi.listEnabledPlugins.mockResolvedValue({
+		database: [],
+		storage: ['supabase/supabase-storage'],
+	});
 	render(<PluginsPage />);
 	const row = screen.getByText('Supabase Storage').closest('[data-slot="item"]');
 	expect(row).not.toBeNull();
-	await user.click(await within(row as HTMLElement).findByRole('button', { name: 'settings.integrations.options' }));
+	await user.click(
+		await within(row as HTMLElement).findByRole('button', { name: 'settings.integrations.options' })
+	);
 	await user.click(screen.getByRole('menuitem', { name: 'settings.integrations.remove' }));
-	await waitFor(() => expect(providerApi.setPluginEnabled).toHaveBeenCalledWith('storage', 'supabase/supabase-storage', false));
+	await waitFor(() =>
+		expect(providerApi.setPluginEnabled).toHaveBeenCalledWith(
+			'storage',
+			'supabase/supabase-storage',
+			false
+		)
+	);
 });

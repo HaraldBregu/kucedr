@@ -7,9 +7,17 @@ jest.mock('react-i18next', () => ({
 }));
 
 it('shows database and storage only when enabled from Plugins', async () => {
-	Object.defineProperty(window, 'provider', { configurable: true, value: {
-		listEnabledPlugins: jest.fn().mockResolvedValue({ database: ['pinecone/pinecone'], storage: ['supabase/supabase-storage'] }),
-	} });
+	Object.defineProperty(window, 'provider', {
+		configurable: true,
+		value: {
+			listEnabledPlugins: jest
+				.fn()
+				.mockResolvedValue({
+					database: ['pinecone/pinecone'],
+					storage: ['supabase/supabase-storage'],
+				}),
+		},
+	});
 	render(
 		<MemoryRouter>
 			<ProvidersOverviewPage />
@@ -28,10 +36,17 @@ it('shows database and storage only when enabled from Plugins', async () => {
 });
 
 it('hides database and storage before they are enabled', async () => {
-	Object.defineProperty(window, 'provider', { configurable: true, value: {
-		listEnabledPlugins: jest.fn().mockResolvedValue({ database: [], storage: [] }),
-	} });
-	render(<MemoryRouter><ProvidersOverviewPage /></MemoryRouter>);
+	Object.defineProperty(window, 'provider', {
+		configurable: true,
+		value: {
+			listEnabledPlugins: jest.fn().mockResolvedValue({ database: [], storage: [] }),
+		},
+	});
+	render(
+		<MemoryRouter>
+			<ProvidersOverviewPage />
+		</MemoryRouter>
+	);
 	await screen.findByText('settings.overview.groups.mlModels');
 	expect(screen.queryByText('settings.tabs.databases')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.tabs.storage')).not.toBeInTheDocument();

@@ -61,8 +61,10 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		});
 		registerCommandWithEvent(ProviderStoreChannels.setPluginEnabled, (event, kind, id, enabled) => {
 			trusted.assert(event);
-			if (kind !== 'database' && kind !== 'storage') throw new Error('Invalid plugin provider kind.');
-			if (typeof id !== 'string' || typeof enabled !== 'boolean') throw new Error('Invalid plugin provider state.');
+			if (kind !== 'database' && kind !== 'storage')
+				throw new Error('Invalid plugin provider kind.');
+			if (typeof id !== 'string' || typeof enabled !== 'boolean')
+				throw new Error('Invalid plugin provider state.');
 			const catalog = kind === 'database' ? loadDatabases() : loadStorages();
 			if (!catalog.some((entry) => `${entry.provider.id}/${entry.id}` === id)) {
 				throw new Error('Unknown plugin provider.');

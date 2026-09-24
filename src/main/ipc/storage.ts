@@ -33,7 +33,10 @@ export interface StorageIpcDeps {
 export class StorageIpc implements IpcModule<StorageIpcDeps> {
 	readonly name = 'storage';
 
-	register({ appRegistry, storageOperations, windows, authService }: StorageIpcDeps, _eventBus: EventBus): void {
+	register(
+		{ appRegistry, storageOperations, windows, authService }: StorageIpcDeps,
+		_eventBus: EventBus
+	): void {
 		const trusted = new TrustedRenderer(windows, appRegistry);
 		registerQueryWithEvent(StorageChannels.listProviders, (event) => {
 			trusted.assert(event);
@@ -94,10 +97,12 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			if (typeof enabled !== 'boolean') throw new Error('Invalid storage mode.');
 			if (!enabled) {
 				const config = await readStorageConfig();
-				if (config) await writeStorageConfig({ ...config, sync: { ...config.sync, enabled: false } });
+				if (config)
+					await writeStorageConfig({ ...config, sync: { ...config.sync, enabled: false } });
 				return false;
 			}
-			if (!authService.getSignedInUserId()) throw new Error('Sign in before enabling cloud file sync.');
+			if (!authService.getSignedInUserId())
+				throw new Error('Sign in before enabling cloud file sync.');
 			const cloud = loadCloudConfig();
 			if (!cloud) throw new Error('Supabase account services are unavailable.');
 			const settings = getStorageSettings();
@@ -112,9 +117,12 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			if (!accountId || !config?.sync.enabled) return [];
 			const database = openStorageState();
 			try {
-				return config.workspaces.flatMap((workspace) => listStorageConflicts(database, {
-					accountId, workspaceId: workspace.id,
-				}));
+				return config.workspaces.flatMap((workspace) =>
+					listStorageConflicts(database, {
+						accountId,
+						workspaceId: workspace.id,
+					})
+				);
 			} finally {
 				database.close();
 			}
