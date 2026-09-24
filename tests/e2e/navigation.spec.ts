@@ -123,6 +123,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const field = page.locator('[data-slot="prompt-input-field"]');
 	const attachmentButton = page.getByRole('button', { name: 'Add attachment' });
 	const sendButton = page.getByRole('button', { name: 'Start voice conversation' });
+	const transcriptionButton = field.getByRole('button', { name: /speech-to-text provider/ });
 	const modelButton = page.getByRole('button', { name: /Change model, currently/ });
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
@@ -135,10 +136,13 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	const fieldBounds = await field.boundingBox();
 	const sendBounds = await sendButton.boundingBox();
+	const transcriptionBounds = await transcriptionButton.boundingBox();
 	const attachmentBounds = await attachmentButton.boundingBox();
-	expect(fieldBounds && sendBounds && attachmentBounds).toBeTruthy();
+	expect(fieldBounds && sendBounds && transcriptionBounds && attachmentBounds).toBeTruthy();
 	expect(sendBounds!.x).toBeGreaterThan(fieldBounds!.x);
 	expect(sendBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
+	expect(transcriptionBounds!.x).toBeLessThan(sendBounds!.x);
+	expect(transcriptionBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
 	expect(attachmentBounds!.y).toBeGreaterThan(fieldBounds!.y + fieldBounds!.height);
 	await expect(page.locator('[data-slot="home-composer-shell"]')).toHaveCSS(
 		'padding-bottom',
