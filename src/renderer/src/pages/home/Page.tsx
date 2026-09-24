@@ -6,7 +6,6 @@ import {
 	useState,
 	type ReactElement,
 } from 'react';
-import type { AgentPromptInputCapabilities } from '@shared/agent_types';
 import { AnimatePresence, motion, resize } from 'motion/react';
 import {
 	AlertCircle,
@@ -77,7 +76,6 @@ import {
 } from './hooks';
 import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
 import type { PromptAttachment } from './attachments/types';
-import { validatePromptAttachments } from './attachments/validation';
 import { Preview } from './attachments/Preview';
 import { formatFileSize } from './attachments/size';
 import { HomeSidebar } from './Sidebar';
@@ -280,14 +278,12 @@ function AttachmentTray({
 
 function AttachmentButton({
 	disabled,
-	disabledReason,
 }: {
 	readonly disabled?: boolean;
-	readonly disabledReason?: string;
 }): ReactElement {
 	const { triggerFileUpload } = usePromptInput();
 	return (
-		<PromptInputAction tooltip={disabledReason ?? 'Add attachment'}>
+		<PromptInputAction tooltip="Add attachment">
 			<Button
 				type="button"
 				variant="ghost"
@@ -385,17 +381,11 @@ function VoiceButton({
 
 function SubmitButton({
 	isLoading,
-	canSubmit,
-	disabled,
 	onAction,
 }: {
 	readonly isLoading: boolean;
-	readonly canSubmit: boolean;
-	readonly disabled?: boolean;
 	readonly onAction: () => void;
-}): ReactElement | null {
-	if (!isLoading && !canSubmit) return null;
-
+}): ReactElement {
 	const label = isLoading ? 'Stop generation' : 'Send message';
 	const iconKey = isLoading ? 'stop' : 'send';
 	const icon = isLoading ? (
@@ -412,7 +402,6 @@ function SubmitButton({
 				size="icon"
 				className="size-10 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
 				aria-label={label}
-				disabled={disabled || (!isLoading && !canSubmit)}
 				onClick={onAction}
 			>
 				<AnimatePresence mode="wait" initial={false}>
@@ -478,8 +467,6 @@ function PageContent(): ReactElement {
 	const recorder = useAudioRecorder();
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
-	const [promptCapabilities, setPromptCapabilities] =
-		useState<AgentPromptInputCapabilities | null>();
 	const [planCommandActive, setPlanCommandActive] = useState(false);
 	const [goalCommandActive, setGoalCommandActive] = useState(false);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
@@ -493,13 +480,6 @@ function PageContent(): ReactElement {
 	const showPromptSuggestions = showEmptyConversation && voiceMode === null;
 	const hasPromptText = agent.input.trim().length > 0;
 	const hasGoalObjective = agent.input.replace(/^\/goal\s*/i, '').trim().length > 0;
-	const hasAttachmentErrors = attachments.some((attachment) => Boolean(attachment.error));
-	const canSubmit =
-		planCommandActive || goalCommandActive
-			? goalCommandActive
-				? hasGoalObjective
-				: hasPromptText
-			: hasPromptText || attachments.length > 0;
 	const dictationStatus = dictation.status;
 	const cancelDictationSession = dictation.cancel;
 	const recorderStatus = recorder.status;
@@ -513,8 +493,7 @@ function PageContent(): ReactElement {
 		recorderStatus === 'stopping' ||
 		transcribingRecording;
 	const voiceBusy = dictationBusy || recordingBusy;
-	const attachmentUnavailable = promptCapabilities === undefined || promptCapabilities === null;
-	const attachmentDisabled = voiceMode !== null || voiceBusy || attachmentUnavailable;
+	const attachmentDisabled = voiceMode !== null || voiceBusy;
 	const activeVoiceElapsedMs =
 		activeDictationMode === 'record' ? recorder.elapsedMs : dictation.elapsedMs;
 	const activeVoiceMuted = activeDictationMode === 'record' ? recorder.isMuted : dictation.isMuted;
@@ -558,30 +537,6 @@ function PageContent(): ReactElement {
 
 	useEffect(() => () => setMode('chat'), [setMode]);
 
-	useEffect(() => {
-		let active = true;
-		const refresh = (): void => {
-			void window.agent
-				.getPromptInputCapabilities()
-				.then((capabilities) => {
-					if (!active) return;
-					setPromptCapabilities(capabilities);
-					setAttachments((current) => validatePromptAttachments(current, capabilities));
-				})
-				.catch(() => {
-					if (!active) return;
-					setPromptCapabilities(null);
-					setAttachments((current) => validatePromptAttachments(current, null));
-				});
-		};
-		refresh();
-		const unsubscribe = window.app.onModelsChanged(refresh);
-		return () => {
-			active = false;
-			unsubscribe();
-		};
-	}, []);
-
 	const removeAttachment = useCallback((id: string): void => {
 		setAttachments((current) =>
 			current.filter((attachment) => {
@@ -608,11 +563,7 @@ function PageContent(): ReactElement {
 			await agent.handleSubmit();
 			return;
 		}
-		if (
-			(planCommandActive && !hasPromptText) ||
-			(goalCommandActive && !hasGoalObjective) ||
-			hasAttachmentErrors
-		)
+		if ((planCommandActive && !hasPromptText) || (goalCommandActive && !hasGoalObjective))
 			return;
 		const submittedFiles = attachments.map((attachment) => attachment.file);
 		clearAttachments();
@@ -859,9 +810,6 @@ function PageContent(): ReactElement {
 									voiceMode === 'dictation' ? undefined : (
 										<AttachmentButton
 											disabled={attachmentDisabled}
-											disabledReason={
-												attachmentUnavailable ? 'Attachment support is unavailable' : undefined
-											}
 										/>
 									)
 								}
@@ -874,13 +822,7 @@ function PageContent(): ReactElement {
 								onVoiceCancel={() => void cancelDictation()}
 								onVoiceConfirm={() => void confirmDictation()}
 								onFilesChange={(files) => {
-									if (!promptCapabilities) return;
-									setAttachments((current) =>
-										validatePromptAttachments(
-											[...current, ...filesToAttachments(files)],
-											promptCapabilities
-										)
-									);
+									setAttachments((current) => [...current, ...filesToAttachments(files)]);
 								}}
 								wrapperClassName="max-w-none"
 								detachedControls
@@ -904,13 +846,6 @@ function PageContent(): ReactElement {
 										/>
 										<SubmitButton
 											isLoading={agent.isLoading}
-											canSubmit={canSubmit}
-											disabled={
-												voiceBusy ||
-												hasAttachmentErrors ||
-												(planCommandActive && !hasPromptText) ||
-												(goalCommandActive && !hasGoalObjective)
-											}
 											onAction={() => void submitPrompt()}
 										/>
 									</PromptInputActions>
