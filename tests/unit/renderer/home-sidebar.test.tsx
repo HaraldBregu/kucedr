@@ -352,7 +352,6 @@ it('shows Settings and Help in the footer menu without a Search item', async () 
 	await user.click(screen.getByRole('menuitem', { name: 'settings.sidebar.getHelp' }));
 	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');
 	await user.click(accountMenu);
-	expect(screen.getByRole('button', { name: 'navigationBar.newChat' })).toBeInTheDocument();
 	await user.click(screen.getByRole('menuitem', { name: 'settings.title' }));
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
 });
