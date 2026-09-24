@@ -503,7 +503,12 @@ function PromptInput({
 									) : (
 										<>
 											{detached ? (
-												<div className={cn('col-span-3 col-start-1 row-start-1 grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-[1.75rem] border border-border/60 bg-card/95 px-4 py-2 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25', inputClassName)}>
+												<div
+													className={cn(
+														'col-span-3 col-start-1 row-start-1 grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-[1.75rem] border border-border/60 bg-card/95 px-4 py-2 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
+														inputClassName
+													)}
+												>
 													<div className="min-w-0">
 														{header ? <div className="mb-2">{header}</div> : null}
 														{children}
