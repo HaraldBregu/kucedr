@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { mcps } from '@/lib/providers';
+import { MICROSOFT_365_SERVICES } from '../../plugins/Microsoft';
 
 export function McpServerRow({
 	server,
@@ -33,6 +34,11 @@ export function McpServerRow({
 		(service) =>
 			service.id === server.id || (server.data.type === 'http' && service.url === server.data.url)
 	);
+	const iconService =
+		service ??
+		(MICROSOFT_365_SERVICES.some((entry) => entry.id === server.id)
+			? mcps().find((entry) => entry.id === 'microsoft-learn')
+			: undefined);
 
 	return (
 		<Item
@@ -45,12 +51,12 @@ export function McpServerRow({
 				onClick={onOpen}
 				className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 			>
-				{service ? (
+				{iconService ? (
 					<ProviderAvatar
-						providerId={service.id}
-						name={service.name}
-						iconDarkUrl={service.iconDarkUrl}
-						iconLightUrl={service.iconLightUrl}
+						providerId={iconService.id}
+						name={iconService.name}
+						iconDarkUrl={iconService.iconDarkUrl}
+						iconLightUrl={iconService.iconLightUrl}
 						className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 					/>
 				) : (

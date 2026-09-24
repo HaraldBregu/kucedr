@@ -272,10 +272,10 @@
 			"remove": "Rimuovi {{name}}",
 			"microsoft": {
 				"title": "Aggiungi {{name}}",
-				"description": "Microsoft 365 Work IQ richiede un tenant e un'app registrata in Entra.",
+				"description": "Microsoft 365 Work IQ è in anteprima e richiede un tenant Frontier, una licenza Microsoft 365 Copilot e un'app registrata in Entra.",
 				"tenantId": "ID tenant",
 				"clientId": "ID applicazione (client)",
-				"requirements": "Il tenant deve avere accesso a Work IQ e il consenso dell'amministratore per questo servizio. Registra il callback OAuth di Kucedr (http://127.0.0.1:3001/oauth/callback) nell'app Entra, poi connetti tramite OAuth in Server MCP dopo l'aggiunta.",
+				"requirements": "Concedi il consenso dell'amministratore per questo servizio. Registra il callback OAuth MCP di Kucedr (predefinito: http://127.0.0.1:3001/oauth/callback) nell'app Entra, poi connetti tramite OAuth in Server MCP dopo l'aggiunta.",
 				"add": "Aggiungi servizio"
 			},
 			"available": "Integrazioni disponibili",

@@ -272,10 +272,10 @@
 			"remove": "Remove {{name}}",
 			"microsoft": {
 				"title": "Add {{name}}",
-				"description": "Microsoft 365 Work IQ requires a tenant and an Entra app registration.",
+				"description": "Microsoft 365 Work IQ is in preview and requires a Frontier tenant, a Microsoft 365 Copilot license, and an Entra app registration.",
 				"tenantId": "Tenant ID",
 				"clientId": "Application (client) ID",
-				"requirements": "Your tenant needs Work IQ access and admin consent for this service. Register Kucedr's OAuth callback (http://127.0.0.1:3001/oauth/callback) in the Entra app, then connect with OAuth in MCP Servers after adding.",
+				"requirements": "Grant admin consent for this service. Register Kucedr's MCP OAuth callback (default: http://127.0.0.1:3001/oauth/callback) in the Entra app, then connect with OAuth in MCP Servers after adding.",
 				"add": "Add service"
 			},
 			"available": "Available integrations",
