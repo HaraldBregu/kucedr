@@ -80,7 +80,7 @@ export function SettingsSidebar(): React.JSX.Element {
 					}}
 				>
 					<ArrowLeft
-						className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transition-none"
+						className="size-4 shrink-0 transition-transform duration-300 ease-in-out group-hover:delay-75 group-hover:scale-110 motion-reduce:transition-none"
 						strokeWidth={1.8}
 					/>
 					<span className="text-xs">{t('settings.returnToChat', 'Return to Home')}</span>
@@ -113,7 +113,7 @@ export function SettingsSidebar(): React.JSX.Element {
 												)}
 											>
 												<Icon
-													className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transition-none"
+													className="size-4 shrink-0 transition-transform duration-300 ease-in-out group-hover:delay-75 group-hover:scale-110 motion-reduce:transition-none"
 													strokeWidth={1.8}
 												/>
 												<span className="text-xs">{t(item.sidebarLabelKey ?? item.labelKey)}</span>
