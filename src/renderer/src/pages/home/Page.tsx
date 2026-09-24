@@ -151,7 +151,7 @@ function RecorderErrorMessage({
 
 function EmptyConversation(): ReactElement {
 	return (
-		<Empty className="mx-auto max-w-xl border-0 p-0">
+		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
 			<EmptyHeader className="max-w-lg gap-4">
 				<EmptyMedia className="mb-2">
 					<img
@@ -750,7 +750,7 @@ function PageContent(): ReactElement {
 							className={cn(
 								'mx-auto w-full max-w-4xl gap-5 px-4',
 								showEmptyConversation
-									? 'h-full min-h-0 justify-center overflow-hidden pb-36 pt-20'
+									? 'min-h-full items-center justify-center pb-[var(--composer-height,7rem)]'
 									: 'min-h-full pt-6'
 							)}
 						>
