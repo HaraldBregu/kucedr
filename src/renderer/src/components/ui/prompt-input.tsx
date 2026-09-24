@@ -463,11 +463,12 @@ function PromptInput({
 										'relative shrink-0',
 										isConversationMode
 											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
-										: detached
-											? 'min-h-0'
+											: detached
+												? 'min-h-0'
 												: 'grid grid-cols-[auto_minmax(0,1fr)_auto] content-end items-center gap-x-2 p-1',
-										!isConversationMode && !detached &&
-											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12'),
+										!isConversationMode &&
+											!detached &&
+											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12')
 									)}
 								>
 									{isConversationMode ? (
@@ -549,52 +550,54 @@ function PromptInput({
 													{children}
 												</motion.div>
 											) : null}
-											{!detached ? <div
-												className={cn(
-													'relative flex min-w-0 self-end items-center justify-end',
-													isDictationMode
-														? leadingAction
-															? 'col-start-2 col-end-4'
-															: 'col-span-3 col-start-1'
-														: 'col-start-3',
-													controlsRow,
-													isPromptExpanded && footerClassName
-												)}
-											>
-												<AnimatePresence
-													initial={false}
-													mode="popLayout"
-													anchorX="right"
-													anchorY="bottom"
+											{!detached ? (
+												<div
+													className={cn(
+														'relative flex min-w-0 self-end items-center justify-end',
+														isDictationMode
+															? leadingAction
+																? 'col-start-2 col-end-4'
+																: 'col-span-3 col-start-1'
+															: 'col-start-3',
+														controlsRow,
+														isPromptExpanded && footerClassName
+													)}
 												>
-													<motion.div
-														key={isDictationMode ? 'dictation' : 'actions'}
-														initial={{ opacity: 0 }}
-														animate={{ opacity: 1 }}
-														exit={{ opacity: 0, pointerEvents: 'none' }}
-														transition={transition}
-														className={isDictationMode ? 'min-w-0 flex-1' : 'shrink-0'}
+													<AnimatePresence
+														initial={false}
+														mode="popLayout"
+														anchorX="right"
+														anchorY="bottom"
 													>
-														{isDictationMode ? (
-															<PromptInputVoicePanel
-																mode="dictation"
-																disabled={disabled}
-																elapsedMs={voiceElapsedMs}
-																muted={voiceMuted}
-																mediaStream={voiceMediaStream}
-																analyser={voiceAnalyser}
-																status={voiceStatus}
-																waveformActive={voiceWaveformActive}
-																onCancel={onVoiceCancel}
-																onConfirm={onVoiceConfirm ?? onSubmit}
-																onMutedChange={onVoiceMutedChange}
-															/>
-														) : (
-															actions
-														)}
-													</motion.div>
-												</AnimatePresence>
-											</div> : null}
+														<motion.div
+															key={isDictationMode ? 'dictation' : 'actions'}
+															initial={{ opacity: 0 }}
+															animate={{ opacity: 1 }}
+															exit={{ opacity: 0, pointerEvents: 'none' }}
+															transition={transition}
+															className={isDictationMode ? 'min-w-0 flex-1' : 'shrink-0'}
+														>
+															{isDictationMode ? (
+																<PromptInputVoicePanel
+																	mode="dictation"
+																	disabled={disabled}
+																	elapsedMs={voiceElapsedMs}
+																	muted={voiceMuted}
+																	mediaStream={voiceMediaStream}
+																	analyser={voiceAnalyser}
+																	status={voiceStatus}
+																	waveformActive={voiceWaveformActive}
+																	onCancel={onVoiceCancel}
+																	onConfirm={onVoiceConfirm ?? onSubmit}
+																	onMutedChange={onVoiceMutedChange}
+																/>
+															) : (
+																actions
+															)}
+														</motion.div>
+													</AnimatePresence>
+												</div>
+											) : null}
 										</>
 									)}
 								</div>
