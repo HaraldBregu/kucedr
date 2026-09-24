@@ -3,20 +3,29 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import type { DatabaseSync } from 'node:sqlite';
 import { userDataLocation } from '../../shared/user_data_location';
+import { storageLocation } from './paths';
 
 export async function migrateLegacyStorageSettings(database: DatabaseSync): Promise<void> {
 	const migrated = database.prepare(`SELECT 1 FROM migration_state
 		WHERE name = 'legacy-storage-settings'`).get();
 	if (migrated) return;
-	const source = path.join(userDataLocation(), 'settings', 'app.json');
+	let source = path.join(storageLocation(), 'settings.json');
 	let contents: string;
 	try {
 		contents = await fs.readFile(source, 'utf8');
 	} catch (error) {
-		if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
-		throw error;
+		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
+		source = path.join(userDataLocation(), 'settings', 'app.json');
+		try {
+			contents = await fs.readFile(source, 'utf8');
+		} catch (legacyError) {
+			if ((legacyError as NodeJS.ErrnoException).code === 'ENOENT') return;
+			throw legacyError;
+		}
 	}
-	const legacy = (JSON.parse(contents) as { cloud?: unknown }).cloud;
+	const legacy = source.endsWith('/app.json')
+		? (JSON.parse(contents) as { cloud?: unknown }).cloud
+		: JSON.parse(contents);
 	if (!legacy || typeof legacy !== 'object' || Array.isArray(legacy)) return;
 	const sourceSettings = legacy as Record<string, unknown>;
 	const safe = {
