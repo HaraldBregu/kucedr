@@ -120,17 +120,26 @@ test('the empty home state and composer use the intended spacing', async () => {
 		.getByText('What can I do for you?')
 		.locator('xpath=ancestor::*[contains(@class, "pt-20")][1]');
 	const composer = editor.locator('xpath=ancestor::*[@data-expanded][1]');
+	const field = page.locator('[data-slot="prompt-input-field"]');
 	const attachmentButton = page.getByRole('button', { name: 'Add attachment' });
-	const composerWidth = attachmentButton.locator(
-		'xpath=ancestor::div[contains(@class, "max-w-2xl")][1]'
-	);
+	const sendButton = page.getByRole('button', { name: 'Start voice conversation' });
+	const modelButton = page.getByRole('button', { name: /Change model, currently/ });
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
-	await expect(composer).toHaveCSS('height', '50px');
+	await expect(field).toHaveCSS('min-height', '56px');
+	await expect(field).toHaveCSS('border-radius', '28px');
 	await expect(attachmentButton).toHaveCSS('width', '40px');
 	await expect(attachmentButton).toHaveCSS('height', '40px');
 	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '20px');
-	await expect(composerWidth).toHaveCSS('max-width', '672px');
+	await expect(modelButton).toContainText('GPT-5.6 Luna');
+	await expect(composer).toHaveAttribute('data-expanded', 'false');
+	const fieldBounds = await field.boundingBox();
+	const sendBounds = await sendButton.boundingBox();
+	const attachmentBounds = await attachmentButton.boundingBox();
+	expect(fieldBounds && sendBounds && attachmentBounds).toBeTruthy();
+	expect(sendBounds!.x).toBeGreaterThan(fieldBounds!.x);
+	expect(sendBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
+	expect(attachmentBounds!.y).toBeGreaterThan(fieldBounds!.y + fieldBounds!.height);
 	await expect(page.locator('[data-slot="home-composer-shell"]')).toHaveCSS(
 		'padding-bottom',
 		'20px'
