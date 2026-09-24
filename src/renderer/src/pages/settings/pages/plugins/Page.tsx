@@ -154,10 +154,7 @@ const PluginsPage = (): React.JSX.Element => {
 										className="hover:bg-transparent dark:hover:bg-transparent"
 										disabled={savingId === service.id}
 										onClick={() => {
-											if (
-												!servers[service.id] &&
-												service.url?.includes('{tenantId}')
-											) {
+											if (!servers[service.id] && service.url?.includes('{tenantId}')) {
 												setError('');
 												setSelectedMicrosoft(service);
 											} else {

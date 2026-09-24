@@ -31,7 +31,9 @@ export function MicrosoftConnect({
 	const [clientId, setClientId] = useState('');
 	const valid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 	const canConnect = Boolean(
-		service?.url?.includes('{tenantId}') && valid.test(tenantId.trim()) && valid.test(clientId.trim())
+		service?.url?.includes('{tenantId}') &&
+		valid.test(tenantId.trim()) &&
+		valid.test(clientId.trim())
 	);
 
 	return (
