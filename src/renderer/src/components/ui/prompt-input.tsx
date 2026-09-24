@@ -6,7 +6,7 @@ import { BarWaveAnimation } from './bar-wave-animation';
 import { TypingLoader } from './loader';
 import { Persona, type PersonaState } from '@/components/persona';
 import { PromptInputControls } from './controls';
-import { PromptInputField } from './field';
+import { PromptInputField } from './composer-field';
 import { cn } from '@/lib/utils';
 import { Check, Mic, MicOff, X } from 'lucide-react';
 import { resize } from 'motion';
