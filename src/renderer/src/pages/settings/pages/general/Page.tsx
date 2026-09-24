@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import {
 	AudioWaveform,
 	ChevronRight,
+	CircleHelp,
 	Coffee,
 	FolderOpen,
 	Languages,
@@ -189,6 +190,21 @@ const GeneralPage: React.FC = () => {
 							/>
 						}
 					/>
+					<button
+						type="button"
+						className="block w-full text-left hover:bg-muted/40"
+						onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}
+					>
+						<SettingsRow
+							title={t('settings.sidebar.getHelp')}
+							media={
+								<CircleHelp className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+							}
+							className="grid-cols-[minmax(0,1fr)_auto]"
+							actionClassName="w-auto justify-end"
+							actions={<ChevronRight className="size-4 text-muted-foreground" />}
+						/>
+					</button>
 				</SettingsPanel>
 			</SettingsSection>
 
