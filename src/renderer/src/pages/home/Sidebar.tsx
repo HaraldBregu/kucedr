@@ -339,7 +339,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								</SidebarMenuButton>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent
-								className="w-[var(--radix-dropdown-menu-trigger-width)] rounded-xl"
+								className="w-[var(--radix-dropdown-menu-trigger-width)]"
 								side="top"
 								align="start"
 							>
