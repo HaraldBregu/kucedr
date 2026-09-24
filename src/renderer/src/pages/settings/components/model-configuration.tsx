@@ -214,7 +214,10 @@ export function ModelProviderConfiguration({
 				)}
 			>
 				<CollapsibleTrigger
-					className={cn('group flex min-w-0 flex-1 items-center gap-4 text-left', pluginItemStyle && 'gap-3')}
+					className={cn(
+						'group flex min-w-0 flex-1 items-center gap-4 text-left',
+						pluginItemStyle && 'gap-3'
+					)}
 				>
 					{showIcon &&
 						(FunctionIcon ? (
@@ -223,7 +226,10 @@ export function ModelProviderConfiguration({
 									<FunctionIcon className="size-5" aria-hidden="true" />
 								</div>
 							) : (
-								<FunctionIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+								<FunctionIcon
+									className="size-5 shrink-0 text-muted-foreground"
+									aria-hidden="true"
+								/>
 							)
 						) : provider ? (
 							<ProviderAvatar
@@ -234,15 +240,30 @@ export function ModelProviderConfiguration({
 								className={pluginItemStyle ? 'size-10 rounded-2xl bg-muted/50 p-1' : 'size-10'}
 							/>
 						) : (
-							<div className={cn('flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground', pluginItemStyle && 'rounded-2xl border-0 bg-muted/50')}>
+							<div
+								className={cn(
+									'flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground',
+									pluginItemStyle && 'rounded-2xl border-0 bg-muted/50'
+								)}
+							>
 								<Bot className="size-4" aria-hidden="true" />
 							</div>
 						))}
 					<div className="min-w-0 flex-1">
-						<div className={cn('truncate text-[13px] font-medium leading-4 text-foreground', pluginItemStyle && 'text-sm leading-tight')}>
+						<div
+							className={cn(
+								'truncate text-[13px] font-medium leading-4 text-foreground',
+								pluginItemStyle && 'text-sm leading-tight'
+							)}
+						>
 							{triggerTitle ?? providerName}
 						</div>
-						<p className={cn('mt-0.5 truncate text-[11px] leading-4 text-muted-foreground', pluginItemStyle && 'text-xs leading-tight')}>
+						<p
+							className={cn(
+								'mt-0.5 truncate text-[11px] leading-4 text-muted-foreground',
+								pluginItemStyle && 'text-xs leading-tight'
+							)}
+						>
 							{triggerDescription ?? (showSelectedModel ? description : modelName)}
 						</p>
 					</div>
