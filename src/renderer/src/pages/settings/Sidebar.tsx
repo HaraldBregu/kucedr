@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { SPLIT_ITEM_CLASS, usePageContext } from '@/components/app/base/page';
+import { SidebarFooter } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import {
 	SETTINGS_MODEL_SERVICE_ITEMS,
@@ -93,12 +94,14 @@ export function SettingsSidebar(): React.JSX.Element {
 						/>
 					))}
 				</div>
-				<Group
-					items={SETTINGS_SIDEBAR_BOTTOM_ITEMS}
-					titleKey="settings.overview.groups.extensions"
-					activePath={activePath}
-					className="shrink-0 border-t border-sidebar-border/50 py-3"
-				/>
+				<SidebarFooter className="shrink-0 gap-0 border-t border-sidebar-border/50 p-0">
+					<Group
+						items={SETTINGS_SIDEBAR_BOTTOM_ITEMS}
+						titleKey="settings.overview.groups.extensions"
+						activePath={activePath}
+						className="py-3"
+					/>
+				</SidebarFooter>
 			</nav>
 		</div>
 	);
