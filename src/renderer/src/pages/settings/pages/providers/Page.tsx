@@ -287,9 +287,21 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 					/>
 					<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-						<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-							<h2>{provider.name}</h2>
-						</ItemTitle>
+						<div className="flex min-w-0 max-w-full items-center gap-1.5">
+							<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+								<h2>{provider.name}</h2>
+							</ItemTitle>
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-xs"
+								className="size-5 text-muted-foreground hover:text-foreground"
+								aria-label={`Open ${provider.name} API setup`}
+								onClick={() => handleOpenProviderLink(provider)}
+							>
+								<ExternalLink className="size-3" />
+							</Button>
+						</div>
 						<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 							{t(
 								connected ? 'settings.providers.configured' : 'settings.providers.notConfigured'
@@ -315,13 +327,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
 							>
 								{connected ? 'Edit API key' : 'Connect'}
-							</DropdownMenuItem>
-							<DropdownMenuItem
-								disabled={!provider.apiConfigurationUrl}
-								onSelect={() => handleOpenProviderLink(provider)}
-							>
-								<ExternalLink className="size-4" />
-								API setup
 							</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
