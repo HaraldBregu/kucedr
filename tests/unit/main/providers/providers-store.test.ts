@@ -80,6 +80,19 @@ it('shares settings.json with storage connections', () => {
 	expect(getModelProvidersState()).toHaveLength(1);
 });
 
+it('persists enabled plugin providers separately from credentials', () => {
+	let getEnabledPluginProviders!: typeof import('../../../../src/main/providers/providers_store').getEnabledPluginProviders;
+	let setPluginProviderEnabled!: typeof import('../../../../src/main/providers/providers_store').setPluginProviderEnabled;
+	jest.isolateModules(() => {
+		({ getEnabledPluginProviders, setPluginProviderEnabled } = require('../../../../src/main/providers/providers_store'));
+	});
+	expect(getEnabledPluginProviders()).toEqual({ database: [], storage: [] });
+	setPluginProviderEnabled('database', 'pinecone/pinecone', true);
+	setPluginProviderEnabled('storage', 'supabase/supabase-storage', true);
+	setPluginProviderEnabled('database', 'pinecone/pinecone', false);
+	expect(getEnabledPluginProviders()).toEqual({ database: [], storage: ['supabase/supabase-storage'] });
+});
+
 it('migrates decryptable provider keys into the direct settings store', () => {
 	const key = randomBytes(32);
 	const vaultId = 'legacy-vault';

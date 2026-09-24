@@ -8,6 +8,9 @@ const readStorageConfig = jest.fn();
 const writeStorageConfig = jest.fn();
 const configureVersionedStorage = jest.fn();
 const loadCloudConfig = jest.fn();
+const getEnabledPluginProviders = jest.fn();
+
+jest.mock('../../../../src/main/providers/providers_store', () => ({ getEnabledPluginProviders }));
 
 jest.mock('../../../../src/main/storage/providers', () => ({ storageProviders }));
 jest.mock('../../../../src/main/storage/local/config', () => ({ readStorageConfig }));
@@ -58,6 +61,7 @@ beforeEach(() => {
 	writeStorageConfig.mockResolvedValue(undefined);
 	configureVersionedStorage.mockResolvedValue({ sync: { enabled: true } });
 	loadCloudConfig.mockReturnValue({ url: 'https://project.supabase.co' });
+	getEnabledPluginProviders.mockReturnValue({ database: [], storage: ['supabase/supabase-storage'] });
 	authService.getSignedInUserId.mockReturnValue(undefined);
 	getStorageSettings.mockReturnValue({
 		paths: [],
@@ -164,6 +168,15 @@ it('lists, saves and removes storage providers through the trusted renderer', ()
 	expect(remove(event, 'connection')).toBe(true);
 	expect(storageProviders.save).toHaveBeenCalledWith(input);
 	expect(storageProviders.remove).toHaveBeenCalledWith('connection');
+});
+
+it('requires an enabled storage plugin before adding a connection', () => {
+	getEnabledPluginProviders.mockReturnValue({ database: [], storage: [] });
+	const save = registerCommandWithEvent.mock.calls.find(
+		([channel]) => channel === StorageChannels.saveProvider
+	)?.[1];
+	expect(() => save(event, { name: 'Archive' })).toThrow('Enable a storage provider');
+	expect(storageProviders.save).not.toHaveBeenCalled();
 });
 
 it.each(['app view', 'untracked renderer', 'subframe'])(

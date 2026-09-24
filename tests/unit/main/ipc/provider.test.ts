@@ -7,6 +7,8 @@ const deleteProvider = jest.fn();
 const getChannelProvider = jest.fn();
 const listChannelProviders = jest.fn();
 const setChannelProvider = jest.fn();
+const getEnabledPluginProviders = jest.fn();
+const setPluginProviderEnabled = jest.fn();
 
 jest.mock('../../../../src/main/ipc/core/gateway', () => ({
 	registerQueryWithEvent,
@@ -24,6 +26,11 @@ jest.mock('../../../../src/main/settings_store', () => ({
 	listProviders,
 	setProvider,
 	deleteProvider,
+}));
+
+jest.mock('../../../../src/main/providers/providers_store', () => ({
+	getEnabledPluginProviders,
+	setPluginProviderEnabled,
 }));
 
 jest.mock('../../../../src/main/channels', () => ({
@@ -48,6 +55,7 @@ jest.mock('../../../../src/main/models', () => ({
 			url: 'https://api.pinecone.io',
 		},
 	],
+	loadStorages: () => [{ id: 'cloudflare-r2', provider: { id: 'cloudflare' } }],
 }));
 
 import type { EventBus } from '../../../../src/main/event_bus';
@@ -67,6 +75,7 @@ function register() {
 beforeEach(() => {
 	registerQueryWithEvent.mockClear();
 	registerCommandWithEvent.mockClear();
+	getEnabledPluginProviders.mockReturnValue({ database: [], storage: [] });
 });
 
 describe('provider credential IPC boundary', () => {
@@ -211,6 +220,7 @@ describe('provider credential IPC boundary', () => {
 
 	it('saves and lists database credentials separately from model credentials', () => {
 		setProvider.mockClear();
+		getEnabledPluginProviders.mockReturnValue({ database: ['pinecone/pinecone'], storage: [] });
 		register();
 		const provider = {
 			id: 'pinecone',
@@ -254,6 +264,15 @@ describe('provider credential IPC boundary', () => {
 			)
 		).toThrow('Unknown provider.');
 		expect(setProvider).toHaveBeenCalledTimes(1);
+	});
+
+	it('enables only database and storage entries in the catalog', () => {
+		register();
+		setPluginProviderEnabled.mockReturnValue({ database: ['pinecone/pinecone'], storage: [] });
+		const setEnabled = handler(registerCommandWithEvent, ProviderChannels.setPluginEnabled);
+		expect(setEnabled({}, 'database', 'pinecone/pinecone', true)).toEqual({ database: ['pinecone/pinecone'], storage: [] });
+		expect(() => setEnabled({}, 'database', 'unknown/provider', true)).toThrow('Unknown plugin provider');
+		expect(() => setEnabled({}, 'storage', 'unknown/provider', true)).toThrow('Unknown plugin provider');
 	});
 
 	it('rejects saving a channel that is absent from the supported catalog', () => {
