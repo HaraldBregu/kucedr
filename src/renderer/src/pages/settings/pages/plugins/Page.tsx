@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
+import type { CatalogService } from '@shared/provider_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,13 +19,20 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 } from '../../components';
+import { MicrosoftConnect } from './Connect';
+import { MICROSOFT_365_SERVICES } from './Microsoft';
 
 const PLUGIN_SERVICE_IDS = [
 	'gmail',
 	'google-calendar',
 	'google-drive',
 	'google-contacts',
+	'google-docs',
+	'google-sheets',
+	'google-maps',
 	'github',
+	'gitlab',
+	'microsoft-learn',
 	'notion',
 ] as const;
 
@@ -33,9 +41,24 @@ const PluginsPage = (): React.JSX.Element => {
 	const [servers, setServers] = useState<McpSettings>({});
 	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
-	const catalog = PLUGIN_SERVICE_IDS.flatMap((serviceId) =>
-		mcps().filter((service) => service.id === serviceId)
-	);
+	const [selectedMicrosoft, setSelectedMicrosoft] = useState<CatalogService | null>(null);
+	const services = mcps();
+	const microsoft = services.find((service) => service.id === 'microsoft-learn');
+	const microsoftServices: CatalogService[] = microsoft
+		? MICROSOFT_365_SERVICES.map(({ id, name, description }) => ({
+				id,
+				name,
+				description,
+				type: 'mcp',
+				provider: microsoft.provider,
+				iconDarkUrl: microsoft.iconDarkUrl,
+				iconLightUrl: microsoft.iconLightUrl,
+			}))
+		: [];
+	const catalog = PLUGIN_SERVICE_IDS.flatMap((serviceId) => [
+		...services.filter((service) => service.id === serviceId),
+		...(serviceId === 'microsoft-learn' ? microsoftServices : []),
+	]);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -54,8 +77,9 @@ const PluginsPage = (): React.JSX.Element => {
 
 	const setIntegrationEnabled = async (
 		service: (typeof catalog)[number],
-		enabled: boolean
-	): Promise<void> => {
+		enabled: boolean,
+		configuration?: { readonly url: string; readonly clientId: string }
+	): Promise<boolean> => {
 		setSavingId(service.id);
 		setError('');
 		const existing = servers[service.id];
@@ -67,7 +91,7 @@ const PluginsPage = (): React.JSX.Element => {
 					delete next[service.id];
 					return next;
 				});
-				return;
+				return true;
 			}
 
 			const entry: McpData = existing
@@ -75,13 +99,16 @@ const PluginsPage = (): React.JSX.Element => {
 				: {
 						type: 'http',
 						name: service.name,
-						url: service.url ?? '',
+						url: configuration?.url ?? service.url ?? '',
+						...(configuration ? { client_id: configuration.clientId } : {}),
 						enabled: true,
 					};
 			await window.mcp.upsert(service.id, entry);
 			setServers((current) => ({ ...current, [service.id]: entry }));
+			return true;
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
+			return false;
 		} finally {
 			setSavingId(null);
 		}
@@ -94,6 +121,17 @@ const PluginsPage = (): React.JSX.Element => {
 				description={t('settings.integrations.description')}
 			/>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
+			<MicrosoftConnect
+				service={selectedMicrosoft}
+				onClose={() => setSelectedMicrosoft(null)}
+				onConnect={(url, clientId) =>
+					selectedMicrosoft
+						? setIntegrationEnabled(selectedMicrosoft, true, { url, clientId })
+						: Promise.resolve(false)
+				}
+				saving={savingId === selectedMicrosoft?.id}
+				error={error}
+			/>
 
 			{catalog.length > 0 ? (
 				<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-1 pb-4 md:grid-cols-2">
@@ -146,7 +184,17 @@ const PluginsPage = (): React.JSX.Element => {
 										size="icon-sm"
 										className="hover:bg-transparent dark:hover:bg-transparent"
 										disabled={savingId === service.id}
-										onClick={() => void setIntegrationEnabled(service, true)}
+										onClick={() => {
+											if (
+												!servers[service.id] &&
+												MICROSOFT_365_SERVICES.some((entry) => entry.id === service.id)
+											) {
+												setError('');
+												setSelectedMicrosoft(service);
+											} else {
+												void setIntegrationEnabled(service, true);
+											}
+										}}
 										aria-label={t('settings.integrations.add', { name: service.name })}
 									>
 										<Plus className="size-4" />

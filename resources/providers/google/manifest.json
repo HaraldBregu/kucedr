@@ -451,6 +451,33 @@
 			"icon_light_url": "/images/google-drive.svg"
 		},
 		{
+			"id": "google-docs",
+			"name": "Google Docs",
+			"description": "Read and update documents.",
+			"type": "mcp",
+			"url": "https://docsmcp.googleapis.com/mcp/v1",
+			"icon_dark_url": "/images/google-docs.svg",
+			"icon_light_url": "/images/google-docs.svg"
+		},
+		{
+			"id": "google-sheets",
+			"name": "Google Sheets",
+			"description": "Read and update spreadsheets.",
+			"type": "mcp",
+			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
+			"icon_dark_url": "/images/google-sheets.svg",
+			"icon_light_url": "/images/google-sheets.svg"
+		},
+		{
+			"id": "google-maps",
+			"name": "Google Maps",
+			"description": "Find places, routes, and weather.",
+			"type": "mcp",
+			"url": "https://mapstools.googleapis.com/mcp",
+			"icon_dark_url": "/images/google-maps.svg",
+			"icon_light_url": "/images/google-maps.svg"
+		},
+		{
 			"id": "google-contacts",
 			"name": "Google Contacts",
 			"description": "Search contacts and directory profiles.",

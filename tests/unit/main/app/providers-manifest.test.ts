@@ -9,9 +9,19 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 describe('provider manifests', () => {
 	it('routes manifest services to their matching catalog', () => {
 		const integrations = loadMcps().filter((service) =>
-			['gmail', 'google-calendar', 'google-contacts', 'google-drive', 'github', 'notion'].includes(
-				service.id
-			)
+			[
+				'gmail',
+				'google-calendar',
+				'google-contacts',
+				'google-docs',
+				'google-drive',
+				'google-maps',
+				'google-sheets',
+				'github',
+				'gitlab',
+				'microsoft-learn',
+				'notion',
+			].includes(service.id)
 		);
 		const openAi = loadModels().find(
 			(model) => model.provider.id === 'openai' && model.id === 'gpt-5.6-sol'
@@ -46,43 +56,77 @@ describe('provider manifests', () => {
 		expect(google?.provider.name).toBe('Google DeepMind / Google');
 		expect(integrations.map((service) => service.provider.id)).toEqual([
 			'github',
+			'gitlab',
 			'google',
 			'google',
 			'google',
 			'google',
+			'google',
+			'google',
+			'google',
+			'microsoft',
 			'notion',
 		]);
 		expect(integrations.map((service) => service.id)).toEqual([
 			'github',
+			'gitlab',
 			'gmail',
 			'google-calendar',
 			'google-contacts',
+			'google-docs',
 			'google-drive',
+			'google-maps',
+			'google-sheets',
+			'microsoft-learn',
 			'notion',
 		]);
 		expect(integrations.map((service) => service.url)).toEqual([
 			'https://api.githubcopilot.com/mcp/',
+			'https://gitlab.com/api/v4/mcp',
 			'https://gmailmcp.googleapis.com/mcp/v1',
 			'https://calendarmcp.googleapis.com/mcp/v1',
 			'https://people.googleapis.com/mcp/v1',
+			'https://docsmcp.googleapis.com/mcp/v1',
 			'https://drivemcp.googleapis.com/mcp/v1',
+			'https://mapstools.googleapis.com/mcp',
+			'https://sheetsmcp.googleapis.com/mcp/v1',
+			'https://learn.microsoft.com/api/mcp',
 			'https://mcp.notion.com/mcp',
 		]);
 		expect(integrations.map((service) => service.description)).toEqual([
 			'Work with repositories and issues.',
+			'Work with projects, issues, and merge requests.',
 			'Search and manage email.',
 			'Manage calendars and events.',
 			'Search contacts and directory profiles.',
+			'Read and update documents.',
 			'Search and manage Drive files.',
+			'Find places, routes, and weather.',
+			'Read and update spreadsheets.',
+			'Search Microsoft documentation and code samples.',
 			'Search and manage Notion pages.',
 		]);
 		expect(integrations.every((service) => service.iconLightUrl?.endsWith('.svg'))).toBe(true);
-		for (const id of ['gmail', 'google-calendar', 'google-contacts', 'google-drive']) {
+		for (const id of [
+			'gmail',
+			'google-calendar',
+			'google-contacts',
+			'google-docs',
+			'google-drive',
+			'google-maps',
+			'google-sheets',
+		]) {
 			const service = integrations.find((entry) => entry.id === id);
 			const iconName = id === 'google-contacts' ? 'google-contact' : id;
 			expect(service?.iconDarkUrl).toContain(`/resources/providers/google/images/${iconName}.svg`);
 			expect(service?.iconLightUrl).toContain(`/resources/providers/google/images/${iconName}.svg`);
 		}
+		expect(integrations.find((service) => service.id === 'gitlab')?.iconLightUrl).toContain(
+			'/resources/providers/gitlab/images/gitlab.svg'
+		);
+		expect(
+			integrations.find((service) => service.id === 'microsoft-learn')?.iconLightUrl
+		).toContain('/resources/providers/microsoft/images/microsoft.svg');
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
 			expect.objectContaining({
 				iconDarkUrl: expect.stringContaining('/resources/providers/github/images/github-dark.svg'),

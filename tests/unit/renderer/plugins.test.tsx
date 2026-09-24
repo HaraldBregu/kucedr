@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { CatalogService } from '../../../src/shared/provider_types';
 import PluginsPage from '../../../src/renderer/src/pages/settings/pages/plugins/Page';
@@ -8,7 +8,12 @@ const catalog = [
 	'google-calendar',
 	'google-drive',
 	'google-contacts',
+	'google-docs',
+	'google-sheets',
+	'google-maps',
 	'github',
+	'gitlab',
+	'microsoft-learn',
 	'notion',
 ].map(
 	(id): CatalogService => ({
@@ -20,10 +25,26 @@ const catalog = [
 		iconDarkUrl: `https://icons.example/${id}.png`,
 		iconLightUrl: `https://icons.example/${id}.png`,
 		provider: {
-			id: ['gmail', 'google-calendar', 'google-drive', 'google-contacts'].includes(id)
+			id: [
+				'gmail',
+				'google-calendar',
+				'google-drive',
+				'google-contacts',
+				'google-docs',
+				'google-sheets',
+				'google-maps',
+			].includes(id)
 				? 'google'
 				: id,
-			name: ['gmail', 'google-calendar', 'google-drive', 'google-contacts'].includes(id)
+			name: [
+				'gmail',
+				'google-calendar',
+				'google-drive',
+				'google-contacts',
+				'google-docs',
+				'google-sheets',
+				'google-maps',
+			].includes(id)
 				? 'Google'
 				: id,
 			baseUrl: `https://${id}.example/mcp`,
@@ -56,7 +77,7 @@ beforeEach(() => {
 	mcpApi.delete.mockResolvedValue(undefined);
 });
 
-it('renders the six plugin providers with descriptions', async () => {
+it('renders the plugin providers with descriptions', async () => {
 	const { container } = render(<PluginsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
@@ -65,10 +86,12 @@ it('renders the six plugin providers with descriptions', async () => {
 			screen.getByRole('button', { name: 'settings.integrations.options' })
 		).toBeInTheDocument()
 	);
-	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(5);
-	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(6);
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(17);
+	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(18);
 	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
 	expect(screen.getByText('Use gmail.')).toBeInTheDocument();
+	expect(screen.getByText('Outlook Mail')).toBeInTheDocument();
+	expect(screen.getByText('Microsoft 365 Search')).toBeInTheDocument();
 	expect(
 		container.querySelector('img[src="https://icons.example/google-drive.png"]')
 	).toBeInTheDocument();
@@ -80,7 +103,7 @@ it('enables an integration without opening configuration UI', async () => {
 	render(<PluginsPage />);
 
 	await screen.findByRole('button', { name: 'settings.integrations.options' });
-	await user.click(screen.getAllByRole('button', { name: 'settings.integrations.add' })[4]);
+	await user.click(screen.getAllByRole('button', { name: 'settings.integrations.add' })[16]);
 
 	await waitFor(() =>
 		expect(mcpApi.upsert).toHaveBeenCalledWith('notion', {
@@ -102,5 +125,32 @@ it('removes the MCP server from the added plugin menu', async () => {
 
 	await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('gmail'));
 	expect(mcpApi.upsert).not.toHaveBeenCalled();
-	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(6);
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(18);
+});
+
+it('requires tenant configuration before adding a Microsoft 365 service', async () => {
+	const user = userEvent.setup();
+	render(<PluginsPage />);
+	const row = screen.getByText('Outlook Mail').closest('[data-slot="item"]');
+	expect(row).not.toBeNull();
+	await user.click(within(row as HTMLElement).getByRole('button'));
+	expect(mcpApi.upsert).not.toHaveBeenCalled();
+	await user.type(
+		screen.getByLabelText('settings.integrations.microsoft.tenantId'),
+		'11111111-1111-1111-1111-111111111111'
+	);
+	await user.type(
+		screen.getByLabelText('settings.integrations.microsoft.clientId'),
+		'22222222-2222-2222-2222-222222222222'
+	);
+	await user.click(screen.getByRole('button', { name: 'settings.integrations.microsoft.add' }));
+	await waitFor(() =>
+		expect(mcpApi.upsert).toHaveBeenCalledWith('microsoft-mail', {
+			type: 'http',
+			name: 'Outlook Mail',
+			url: 'https://agent365.svc.cloud.microsoft/agents/tenants/11111111-1111-1111-1111-111111111111/servers/mcp_MailTools',
+			client_id: '22222222-2222-2222-2222-222222222222',
+			enabled: true,
+		})
+	);
 });

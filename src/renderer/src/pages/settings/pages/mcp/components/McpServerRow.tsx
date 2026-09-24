@@ -1,10 +1,17 @@
 import React from 'react';
-import { ChevronRight, PlugZap } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import type { McpServerInfo } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
+import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { Switch } from '@/components/ui/switch';
 import { mcps } from '@/lib/providers';
+import { MICROSOFT_365_SERVICES } from '../../plugins/Microsoft';
 
 export function McpServerRow({
 	server,
@@ -18,6 +25,7 @@ export function McpServerRow({
 	readonly saving: boolean;
 }): React.JSX.Element {
 	const title = server.data.name ?? server.id;
+	const enabled = server.data.enabled !== false;
 	const description =
 		server.data.type === 'http'
 			? server.data.url
@@ -26,42 +34,58 @@ export function McpServerRow({
 		(service) =>
 			service.id === server.id || (server.data.type === 'http' && service.url === server.data.url)
 	);
+	const iconService =
+		service ??
+		(MICROSOFT_365_SERVICES.some((entry) => entry.id === server.id)
+			? mcps().find((entry) => entry.id === 'microsoft-learn')
+			: undefined);
 
 	return (
-		<Item variant="ghost" size="md" className="px-0 py-3.5">
+		<Item
+			variant="ghost"
+			size="md"
+			className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50 md:col-start-1"
+		>
 			<button
 				type="button"
 				onClick={onOpen}
-				className="flex min-w-0 flex-1 items-center gap-4 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+				className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 			>
-				{service ? (
-					<ProviderAvatar
-						providerId={service.id}
-						name={service.name}
-						iconDarkUrl={service.iconDarkUrl}
-						iconLightUrl={service.iconLightUrl}
-						className="size-8 rounded-none border-0 bg-transparent p-0"
-					/>
-				) : (
-					<PlugZap className="size-8 shrink-0 text-muted-foreground" aria-hidden="true" />
-				)}
+				<ProviderAvatar
+					providerId={iconService?.id ?? server.id}
+					name={iconService?.name ?? title}
+					iconDarkUrl={iconService?.iconDarkUrl}
+					iconLightUrl={iconService?.iconLightUrl}
+					className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+				/>
 				<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-					<ItemTitle className="min-w-0 max-w-full truncate text-sm font-semibold leading-tight">
+					<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
 						{title}
 					</ItemTitle>
-					<p className="max-w-full truncate text-xs font-medium leading-tight text-muted-foreground">
+					<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 						{description}
 					</p>
 				</ItemContent>
-				<ChevronRight className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
 			</button>
 			<ItemActions className="ml-auto flex-none justify-end">
-				<Switch
-					checked={server.data.enabled !== false}
-					disabled={saving}
-					onCheckedChange={(enabled) => void onEnabledChange(enabled)}
-					aria-label={`Enable ${title}`}
-				/>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon-sm"
+							className="hover:bg-transparent dark:hover:bg-transparent"
+							disabled={saving}
+							aria-label={`Options for ${title}`}
+						>
+							<MoreHorizontal className="size-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuItem onSelect={() => void onEnabledChange(!enabled)}>
+							{enabled ? 'Disable server' : 'Enable server'}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</ItemActions>
 		</Item>
 	);

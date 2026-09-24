@@ -1,0 +1,16 @@
+{
+	"providerId": "microsoft",
+	"providerName": "Microsoft",
+	"images_url": "/images",
+	"icon_dark_url": "/images/microsoft.svg",
+	"icon_light_url": "/images/microsoft.svg",
+	"services": [
+		{
+			"id": "microsoft-learn",
+			"name": "Microsoft Learn",
+			"description": "Search Microsoft documentation and code samples.",
+			"type": "mcp",
+			"url": "https://learn.microsoft.com/api/mcp"
+		}
+	]
+}
