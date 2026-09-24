@@ -24,8 +24,8 @@ const AccountPage: React.FC = () => {
 	const [activityRange, setActivityRange] = useState<ActivityRange>('untilToday');
 	const signedIn = state.status === 'signedIn' && !localOnly;
 	const userId = signedIn ? state.user?.id : undefined;
-	const currentProfile = profile?.userId === userId ? profile.details : undefined;
-	const currentProfileError = profileError?.userId === userId ? profileError.message : '';
+	const currentProfile = profile && profile.userId === userId ? profile.details : undefined;
+	const currentProfileError = profileError && profileError.userId === userId ? profileError.message : '';
 
 	useEffect(() => {
 		setProfile(undefined);
