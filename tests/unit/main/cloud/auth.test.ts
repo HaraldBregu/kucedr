@@ -53,7 +53,7 @@ it('reads and updates the signed-in account profile', async () => {
 		},
 		error: null,
 	});
-	const getSingle = jest.fn(async () => ({
+	const getMaybeSingle = jest.fn(async () => ({
 		data: { first_name: 'Ada', last_name: 'Byron' },
 		error: null,
 	}));
@@ -61,7 +61,7 @@ it('reads and updates the signed-in account profile', async () => {
 		data: { first_name: 'Grace', last_name: 'Hopper' },
 		error: null,
 	}));
-	const getEq = jest.fn(() => ({ single: getSingle }));
+	const getEq = jest.fn(() => ({ maybeSingle: getMaybeSingle }));
 	const updateSelect = jest.fn(() => ({ single: updateSingle }));
 	const updateEq = jest.fn(() => ({ select: updateSelect }));
 	const update = jest.fn(() => ({ eq: updateEq }));
@@ -79,6 +79,8 @@ it('reads and updates the signed-in account profile', async () => {
 	await service.initialize();
 
 	await expect(service.getProfile()).resolves.toEqual({ firstName: 'Ada', lastName: 'Byron' });
+	getMaybeSingle.mockResolvedValueOnce({ data: null, error: null } as never);
+	await expect(service.getProfile()).resolves.toEqual({ firstName: '', lastName: '' });
 	await expect(service.updateProfile({ firstName: 'Grace', lastName: 'Hopper' })).resolves.toEqual({
 		firstName: 'Grace',
 		lastName: 'Hopper',
