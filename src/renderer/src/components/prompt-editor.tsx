@@ -43,7 +43,7 @@ function PromptEditorArea({
 				// ponytail: PromptInput uses this ref to focus the editor and locate its container
 				textareaRef.current = editor.view.dom as unknown as HTMLTextAreaElement;
 			}}
-			className="max-h-[34vh] min-h-6 overflow-y-auto text-sm leading-6 text-foreground"
+			className="max-h-[34vh] min-h-6 overflow-y-auto text-base leading-6 text-foreground"
 		/>
 	);
 }
