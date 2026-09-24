@@ -78,6 +78,8 @@ import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
 import type { PromptAttachment } from './attachments/types';
 import { Preview } from './attachments/Preview';
 import { formatFileSize } from './attachments/size';
+import { attachmentPath } from './attachments/path';
+import { readDraftAttachments, saveDraftAttachments } from './attachments/draft';
 import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
 
@@ -134,6 +136,7 @@ function filesToAttachments(files: File[]): PromptAttachment[] {
 		id: attachmentId(),
 		kind: 'file',
 		file,
+		path: attachmentPath(file) || undefined,
 	}));
 }
 
@@ -467,6 +470,32 @@ function PageContent(): ReactElement {
 	const recorder = useAudioRecorder();
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
+	const [attachmentsSessionId, setAttachmentsSessionId] = useState<string | null>(null);
+	useEffect(() => {
+		let active = true;
+		setAttachments([]);
+		setAttachmentsSessionId(null);
+		void Promise.all(
+			readDraftAttachments(chatSessionId).map(async (entry): Promise<PromptAttachment | null> => {
+				try {
+					const bytes = await window.agent.readPromptFile(entry.path);
+					const file = new File([new Uint8Array(bytes)], entry.name, { type: entry.mimeType });
+					attachmentPath(file, entry.path);
+					return { id: attachmentId(), kind: 'file', file, path: entry.path };
+				} catch {
+					return null;
+				}
+			})
+		).then((restored) => {
+			if (!active) return;
+			setAttachments((current) => [...restored.filter((item): item is PromptAttachment => item !== null), ...current]);
+			setAttachmentsSessionId(chatSessionId);
+		});
+		return () => { active = false; };
+	}, [chatSessionId]);
+	useEffect(() => {
+		if (attachmentsSessionId === chatSessionId) saveDraftAttachments(chatSessionId, attachments);
+	}, [attachments, attachmentsSessionId, chatSessionId]);
 	const [planCommandActive, setPlanCommandActive] = useState(false);
 	const [goalCommandActive, setGoalCommandActive] = useState(false);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
@@ -566,6 +595,7 @@ function PageContent(): ReactElement {
 		if ((planCommandActive && !hasPromptText) || (goalCommandActive && !hasGoalObjective))
 			return;
 		const submittedFiles = attachments.map((attachment) => attachment.file);
+		saveDraftAttachments(chatSessionId, []);
 		clearAttachments();
 		if (goalCommandActive) setGoalCommandActive(false);
 		await agent.handleSubmit(submittedFiles, planCommandActive ? 'plan' : undefined);

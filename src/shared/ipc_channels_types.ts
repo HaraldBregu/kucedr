@@ -166,6 +166,7 @@ export interface AgentInvokeChannelMap {
 		result: import('./agent_types').WorkspaceTreeEntry[];
 	};
 	[AgentChannels.readWorkspaceFile]: { args: [filePath: string]; result: string };
+	[AgentChannels.readPromptFile]: { args: [filePath: string]; result: Uint8Array };
 	[AgentChannels.readWorkspaceAsset]: {
 		args: [filePath: string];
 		result: import('./workspace').WorkspaceAsset;

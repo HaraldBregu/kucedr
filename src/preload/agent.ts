@@ -196,6 +196,11 @@ export const agent: AgentApi = {
 		if (!normalizedFilePath) throw new Error('Invalid workspace file path.');
 		return typedInvokeUnwrap(AgentChannels.readWorkspaceFile, normalizedFilePath);
 	},
+	readPromptFile: (filePath: string): Promise<Uint8Array> => {
+		const normalizedFilePath = optionalTrimmedString(filePath);
+		if (!normalizedFilePath) throw new Error('Invalid prompt file path.');
+		return typedInvokeUnwrap(AgentChannels.readPromptFile, normalizedFilePath);
+	},
 	readWorkspaceAsset: (filePath) => {
 		const normalizedFilePath = optionalTrimmedString(filePath);
 		if (!normalizedFilePath) throw new Error('Invalid workspace file path.');

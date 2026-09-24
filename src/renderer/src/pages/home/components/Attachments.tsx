@@ -37,7 +37,7 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 							className="w-full min-w-0 overflow-hidden rounded-none border-0 has-data-[slot=attachment-media]:p-0"
 						>
 							<AttachmentMedia variant="image" className="w-full! rounded-[inherit]">
-								{attachment.file ? <Preview file={attachment.file} /> : <FileImageIcon />}
+								{attachment.file || attachment.path ? <Preview file={attachment.file} path={attachment.path} name={attachment.name} mimeType={attachment.mimeType} /> : <FileImageIcon />}
 							</AttachmentMedia>
 						</Attachment>
 					))}

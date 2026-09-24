@@ -602,6 +602,21 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 
 		ipcMain.handle(
+			AgentChannels.readPromptFile,
+			wrapAgentHandler(
+				mainAccess,
+				async (filePath: unknown): Promise<Uint8Array> => {
+					if (typeof filePath !== 'string' || !path.isAbsolute(filePath))
+						throw new Error('Invalid prompt file path.');
+					const stats = await fs.stat(filePath);
+					if (!stats.isFile()) throw new Error('Prompt attachment must be a file.');
+					return new Uint8Array(await fs.readFile(filePath));
+				},
+				AgentChannels.readPromptFile
+			)
+		);
+
+		ipcMain.handle(
 			AgentChannels.readWorkspaceAsset,
 			wrapAgentHandler(
 				workspaceAccess,

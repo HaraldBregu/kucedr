@@ -19,6 +19,7 @@ export const AgentChannels = {
 	listWorkspaceFiles: 'agent:workspace:files:list',
 	workspaceChanged: 'agent:workspace:changed',
 	readWorkspaceFile: 'agent:workspace:file:read',
+	readPromptFile: 'agent:prompt:file:read',
 	readWorkspaceAsset: 'agent:workspace:asset:read',
 	writeWorkspaceFile: 'agent:workspace:file:write',
 	writeWorkspaceMarkdown: 'agent:workspace:markdown:write',

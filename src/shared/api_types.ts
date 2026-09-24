@@ -192,6 +192,7 @@ export interface AgentApi {
 	listWorkspaceFiles: () => Promise<WorkspaceTreeEntry[]>;
 	onWorkspaceChanged: (callback: (event: WorkspaceChangeEvent) => void) => () => void;
 	readWorkspaceFile: (filePath: string) => Promise<string>;
+	readPromptFile: (filePath: string) => Promise<Uint8Array>;
 	readWorkspaceAsset: (filePath: string) => Promise<WorkspaceAsset>;
 	writeWorkspaceFile: (filePath: string, content: string) => Promise<void>;
 	writeWorkspaceMarkdown: (filePath: string, content: string) => Promise<void>;
