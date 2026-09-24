@@ -462,7 +462,7 @@ function PromptInput({
 										isConversationMode
 											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
 											: detached
-												? 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 p-0'
+												? 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 p-0'
 												: 'grid grid-cols-[auto_minmax(0,1fr)_auto] content-end items-center gap-x-2 p-1',
 										!isConversationMode &&
 											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12'),
@@ -533,8 +533,8 @@ function PromptInput({
 											{leadingAction ? (
 												<div
 													className={cn(
-														'col-start-1 flex h-10 self-end items-center',
-														detached ? 'row-start-2' : controlsRow
+													'col-start-1 flex self-end items-center',
+													detached ? 'row-start-2 h-8' : `${controlsRow} h-10`
 													)}
 												>
 													{leadingAction}
@@ -564,13 +564,13 @@ function PromptInput({
 											) : null}
 											<div
 												className={cn(
-													'relative flex h-10 min-w-0 self-end items-center justify-end',
+													'relative flex min-w-0 self-end items-center justify-end',
 													isDictationMode
 														? leadingAction
 															? 'col-start-2 col-end-4'
 															: 'col-span-3 col-start-1'
 														: 'col-start-3',
-													detached ? 'row-start-2' : controlsRow,
+													detached ? 'row-start-2 h-8' : `${controlsRow} h-10`,
 													isPromptExpanded && footerClassName
 												)}
 											>
