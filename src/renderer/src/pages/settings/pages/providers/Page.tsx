@@ -233,6 +233,38 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		}
 	};
 
+	const resetProviderEntry = async (providerId: string, kind: ProviderKind): Promise<void> => {
+		setSavingProviderId(providerId);
+		setError(null);
+		try {
+			if (kind === 'search') {
+				setSearchSettings(await window.search.removeEngine(providerId as SearchEngineId));
+			} else {
+				await window.provider.remove(providerId, kind);
+			}
+			if (providerId === 'custom') {
+				setCustomProvider({
+					apiKey: '',
+					baseUrl: '',
+					savedApiKey: '',
+					savedBaseUrl: '',
+					editing: false,
+				});
+			} else {
+				updateProviderEntry(providerId, {
+					apiKey: '',
+					savedApiKey: '',
+					apiKeySaved: false,
+					editing: false,
+				});
+			}
+		} catch (err) {
+			setError(getErrorMessage(err, 'Could not reset provider API key.'));
+		} finally {
+			setSavingProviderId(null);
+		}
+	};
+
 	const saveCustomProvider = async (): Promise<void> => {
 		const apiKey = customProvider.apiKey.trim() || customProvider.savedApiKey;
 		const baseUrl = customProvider.baseUrl.trim();
@@ -397,6 +429,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								>
 									Edit API key
 								</DropdownMenuItem>
+								<DropdownMenuItem onSelect={() => void resetProviderEntry(provider.id, kind)}>
+									Reset
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					)}
@@ -467,6 +502,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											}
 										>
 											{t('settings.providers.localModels.edit')}
+										</DropdownMenuItem>
+										<DropdownMenuItem onSelect={() => void resetProviderEntry('custom', 'models')}>
+											Reset
 										</DropdownMenuItem>
 									</DropdownMenuContent>
 								</DropdownMenu>
