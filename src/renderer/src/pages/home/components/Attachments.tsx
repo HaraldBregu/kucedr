@@ -29,16 +29,11 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 							role="group"
 							aria-label={attachment.name}
 							size="sm"
-							className="w-full min-w-0 flex-col rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5"
+							className="w-full min-w-0 rounded-[16px] has-data-[slot=attachment-media]:p-2.5"
 						>
 							<AttachmentMedia variant="image" className="w-full!">
 								{attachment.file ? <Preview file={attachment.file} /> : <FileImageIcon />}
 							</AttachmentMedia>
-							<AttachmentContent className="w-full">
-								<AttachmentDescription>
-									{attachment.name.split('.').pop()?.toUpperCase() ?? 'IMAGE'} · {formatFileSize(attachment.bytes)}
-								</AttachmentDescription>
-							</AttachmentContent>
 						</Attachment>
 					))}
 				</AttachmentGroup>

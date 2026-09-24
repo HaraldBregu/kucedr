@@ -35,6 +35,8 @@ it('shows files as a list and images as a collection without an empty text bubbl
 	expect(within(images).queryByText('diagram.webp')).not.toBeInTheDocument();
 	expect(within(images).getByRole('group', { name: 'workspace.png' })).toBeInTheDocument();
 	expect(within(images).getByRole('group', { name: 'diagram.webp' })).toBeInTheDocument();
+	expect(within(images).queryByText('PNG · 2 KB')).not.toBeInTheDocument();
+	expect(within(images).queryByText('WEBP · 4 KB')).not.toBeInTheDocument();
 	expect(images).toHaveClass('grid');
 	expect(files).toHaveClass('flex-col');
 	expect(container.querySelector('[data-slot="user-message-content"]')).toBeNull();
