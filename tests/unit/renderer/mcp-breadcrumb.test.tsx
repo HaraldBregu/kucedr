@@ -53,4 +53,5 @@ it('treats an MCP detail route as a child of the MCP list breadcrumb', async () 
 
 	await user.click(within(breadcrumb).getByRole('link', { name: 'settings.tabs.mcp' }));
 	expect(await screen.findByText('MCP list')).toBeInTheDocument();
+	expect(container.querySelector('[data-slot="settings-breadcrumb-shell"]')).not.toBeInTheDocument();
 });
