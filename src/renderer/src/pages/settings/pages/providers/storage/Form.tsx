@@ -31,6 +31,7 @@ interface StorageFormProps {
 	readonly onSaved: (provider: StorageProvider) => void;
 	readonly onCancel: () => void;
 	readonly enabledPresetIds: readonly string[];
+	readonly initialPresetId?: string;
 }
 
 export default function StorageForm({
@@ -38,22 +39,23 @@ export default function StorageForm({
 	onSaved,
 	onCancel,
 	enabledPresetIds,
+	initialPresetId,
 }: StorageFormProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const presets = storages().filter((entry) =>
 		enabledPresetIds.includes(`${entry.provider.id}/${entry.id}`)
 	);
-	const [presetId, setPresetId] = useState('custom');
+	const [presetId, setPresetId] = useState(initialPresetId ?? 'custom');
 	const preset = presets.find((entry) => entry.id === presetId);
 	const [draft, setDraft] = useState<StorageProviderInput>({
 		id: provider?.id,
-		name: provider?.name ?? '',
+		name: provider?.name ?? preset?.name ?? '',
 		bucket: provider?.bucket ?? '',
-		region: provider?.region ?? 'us-east-1',
+		region: provider?.region ?? preset?.metadata.region ?? 'us-east-1',
 		endpoint: provider?.endpoint ?? '',
 		accessKeyId: provider?.accessKeyId ?? '',
 		secretAccessKey: '',
-		forcePathStyle: provider?.forcePathStyle ?? false,
+		forcePathStyle: provider?.forcePathStyle ?? preset?.metadata.forcePathStyle ?? false,
 	});
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState('');

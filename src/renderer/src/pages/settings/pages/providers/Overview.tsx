@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ChevronRight, Database, HardDrive, Search, Server } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,6 @@ import {
 	SettingsPanel,
 	SettingsRow,
 } from '../../components';
-import type { EnabledPluginProviders } from '@shared/provider_types';
 
 const PROVIDER_ITEMS = [
 	{
@@ -39,17 +38,6 @@ const PROVIDER_ITEMS = [
 
 export default function ProvidersOverviewPage(): React.JSX.Element {
 	const { t } = useTranslation();
-	const [enabled, setEnabled] = useState<EnabledPluginProviders>({ database: [], storage: [] });
-
-	useEffect(() => {
-		let active = true;
-		void window.provider.listEnabledPlugins().then((value) => {
-			if (active) setEnabled(value);
-		});
-		return () => {
-			active = false;
-		};
-	}, []);
 
 	return (
 		<SettingsPageShell>
@@ -59,8 +47,6 @@ export default function ProvidersOverviewPage(): React.JSX.Element {
 			/>
 			<SettingsPanel>
 				{PROVIDER_ITEMS.map((item) => {
-					if (item.path.endsWith('/database') && enabled.database.length === 0) return null;
-					if (item.path.endsWith('/storage') && enabled.storage.length === 0) return null;
 					const Icon = item.icon;
 					return (
 						<Link key={item.path} to={item.path} className="block hover:bg-muted/40">
