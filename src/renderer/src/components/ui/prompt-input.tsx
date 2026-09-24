@@ -606,7 +606,7 @@ function PromptInput({
 							</div>
 						</motion.div>
 						{detached ? (
-							<PromptInputControls leadingAction={leadingAction} content={footerContent} />
+							<PromptInputControls leadingAction={leadingAction} content={footerContent} isLoading={isLoading} />
 						) : null}
 					</div>
 				) : (

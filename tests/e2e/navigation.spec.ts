@@ -123,6 +123,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const composer = editor.locator('xpath=ancestor::*[@data-expanded][1]');
 	const field = page.locator('[data-slot="prompt-input-field"]');
 	const controls = page.locator('[data-slot="prompt-input-controls"]');
+	const controlButtons = page.locator('[data-slot="prompt-input-control-buttons"]');
 	const attachmentButton = page.getByRole('button', { name: 'Add attachment' });
 	const sendButton = page.getByRole('button', { name: 'Start voice conversation' });
 	const transcriptionButton = field.getByRole('button', { name: /speech-to-text provider/ });
@@ -135,9 +136,10 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('border-radius', '16px');
 	await expect(composer).toHaveCSS('border-radius', '16px');
 	await expect(controls).toBeVisible();
-	await expect(controls).toHaveCSS('display', 'inline-flex');
-	await expect(controls).toHaveCSS('padding-left', '12px');
-	await expect(controls).toHaveCSS('padding-right', '12px');
+	await expect(controlButtons).toHaveCSS('display', 'inline-flex');
+	await expect(controlButtons).toHaveCSS('padding-left', '12px');
+	await expect(controlButtons).toHaveCSS('padding-right', '12px');
+	await expect(controls.getByRole('status', { name: 'Kucedr is responding' })).toHaveCount(0);
 	expect(
 		await controls.evaluate((element) =>
 			element.previousElementSibling?.hasAttribute('data-expanded')
@@ -149,7 +151,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '14px');
 	await attachmentButton.hover();
 	await expect(attachmentButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-	await expect(controls).toHaveCSS('column-gap', '2px');
+	await expect(controlButtons).toHaveCSS('column-gap', '2px');
 	await expect(controls.getByText('Auto', { exact: true })).toHaveCount(0);
 	await expect(modelButton).toContainText('GPT-5.6 Luna');
 	await expect(modelButton.locator('svg')).toHaveCount(0);
