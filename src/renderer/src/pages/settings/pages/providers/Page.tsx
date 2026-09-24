@@ -313,35 +313,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							{t(connected ? 'settings.providers.configured' : 'settings.providers.notConfigured')}
 						</p>
 					</ItemContent>
-					<ItemActions className="ml-auto flex-none justify-end">
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<Button
-									variant="ghost"
-									size="icon-sm"
-									className="hover:bg-transparent dark:hover:bg-transparent"
-									disabled={savingThisProvider}
-									aria-label={`Options for ${provider.name}`}
-								>
-									<MoreHorizontal className="size-4" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="end">
-								<DropdownMenuItem
-									disabled={!provider.supported}
-									onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
-								>
-									{connected ? 'Edit API key' : 'Connect'}
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</ItemActions>
-					{editing && entry && (
-						<div className="flex w-full flex-wrap items-center gap-2 pl-12">
+					<ItemActions className="ml-auto w-full flex-none justify-end gap-2 sm:w-auto">
+						{editing && entry ? (
+							<>
 							<Input
 								aria-label={`${provider.name} API key`}
 								autoComplete="off"
-								className="h-8 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground"
+								className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
 								disabled={savingThisProvider}
 								onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
 								onKeyDown={(event) => {
@@ -376,8 +354,31 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								{savingThisProvider && <LoaderCircle className="size-3.5 animate-spin" />}
 								{t('common.save')}
 							</Button>
-						</div>
-					)}
+							</>
+						) : (
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										variant="ghost"
+										size="icon-sm"
+										className="hover:bg-transparent dark:hover:bg-transparent"
+										disabled={savingThisProvider}
+										aria-label={`Options for ${provider.name}`}
+									>
+										<MoreHorizontal className="size-4" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuItem
+										disabled={!provider.supported}
+										onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
+									>
+										{connected ? 'Edit API key' : 'Connect'}
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						)}
+					</ItemActions>
 				</Item>
 			);
 		}
