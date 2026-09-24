@@ -121,7 +121,7 @@ export default function StorageForm({
 									}}
 								>
 									<SelectTrigger id="storage-preset" className="w-full">
-										<SelectValue />
+										<SelectValue>{preset?.name ?? t('settings.storageProviders.custom')}</SelectValue>
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="custom">{t('settings.storageProviders.custom')}</SelectItem>
