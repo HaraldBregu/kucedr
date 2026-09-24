@@ -233,7 +233,9 @@ describe('Home prompt attachments', () => {
 		]) {
 			expect(screen.getByText(label)).toBeInTheDocument();
 		}
-		expect(screen.getByLabelText('Prompt suggestions').children).toHaveLength(6);
+		const promptRows = screen.getByLabelText('Prompt suggestions').children;
+		expect(promptRows).toHaveLength(3);
+		for (const row of promptRows) expect(row.children).toHaveLength(2);
 		expect(screen.queryByText('Create music')).not.toBeInTheDocument();
 		expect(screen.getByLabelText('Quick settings')).toBeInTheDocument();
 		expect(screen.getByRole('combobox', { name: 'Language' })).toBeInTheDocument();
