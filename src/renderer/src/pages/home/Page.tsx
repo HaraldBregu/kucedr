@@ -300,7 +300,7 @@ function AttachmentButton({
 				type="button"
 				variant="ghost"
 				size="icon-xs"
-				className="size-5 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+				className="size-5 rounded-full text-muted-foreground hover:bg-transparent hover:text-foreground dark:hover:bg-transparent"
 				aria-label="Add attachment"
 				disabled={disabled}
 				onClick={triggerFileUpload}
