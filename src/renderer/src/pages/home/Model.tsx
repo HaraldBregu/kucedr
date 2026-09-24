@@ -18,7 +18,7 @@ export function Model(): ReactElement {
 				const [storedProvider, storedModelId, configuredProviders] = await Promise.all([
 					window.agent.getProvider(),
 					window.agent.getModelId(),
-					window.provider?.list('models') ?? Promise.resolve([]),
+					window.provider?.list('models').catch(() => []) ?? Promise.resolve([]),
 				]);
 				const custom = configuredProviders.find((provider) => provider.id === 'custom');
 				const catalogGroups = providerIdsFor('llm').map((id) => ({
@@ -26,10 +26,9 @@ export function Model(): ReactElement {
 					models: providerModels(id, 'llm'),
 				}));
 				if (custom) {
-					const models = await window.provider.listCustomModels({
-						baseUrl: custom.baseUrl,
-						apiKey: custom.apiKey,
-					});
+					const models = await window.provider
+						.listCustomModels({ baseUrl: custom.baseUrl, apiKey: custom.apiKey })
+						.catch(() => []);
 					catalogGroups.push({
 						id: 'ollama',
 						models: models.map((id) => ({ id, name: id })),
