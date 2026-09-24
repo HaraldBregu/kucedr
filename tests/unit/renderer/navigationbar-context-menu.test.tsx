@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
+import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
@@ -63,7 +64,9 @@ it.each([
 it('does not open the navigationbar menu from a button', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<NavigationBar />
+			<ChatSessionContext.Provider value={{ sessionId: 'session-123', setSessionId: jest.fn() }}>
+				<NavigationBar />
+			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
 
@@ -140,7 +143,7 @@ it('opens voice conversation for the current chat from the button before Setting
 	expect(voice.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 
 	await user.click(voice);
-	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('home'));
+	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-123'));
 	expect(getMicrophonePermission).toHaveBeenCalledTimes(1);
 });
 
