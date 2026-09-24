@@ -131,7 +131,11 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('min-height', '56px');
 	await expect(field).toHaveClass(/rounded-2xl/);
 	await expect(controls).toBeVisible();
-	expect(await controls.evaluate((element) => element.previousElementSibling?.hasAttribute('data-expanded'))).toBe(true);
+	expect(
+		await controls.evaluate((element) =>
+			element.previousElementSibling?.hasAttribute('data-expanded')
+		)
+	).toBe(true);
 	await expect(controls.getByRole('button', { name: 'Add attachment' })).toBeVisible();
 	await expect(attachmentButton).toHaveCSS('width', '32px');
 	await expect(attachmentButton).toHaveCSS('height', '32px');

@@ -553,7 +553,7 @@ function PromptInput({
 											{!detached ? (
 												<div
 													className={cn(
-													'relative flex h-10 min-w-0 self-end items-center justify-end',
+														'relative flex h-10 min-w-0 self-end items-center justify-end',
 														isDictationMode
 															? leadingAction
 																? 'col-start-2 col-end-4'
