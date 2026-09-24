@@ -212,7 +212,7 @@ describe('Home prompt attachments', () => {
 		replyTo = null;
 	});
 
-	it('shows three empty-state prompts and quick settings', async () => {
+	it('shows three rows of two empty-state prompts and quick settings', async () => {
 		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
 		renderPage(getCapabilities);
 		await waitFor(() =>
@@ -227,10 +227,13 @@ describe('Home prompt attachments', () => {
 			'Schedule a task',
 			'Create a sound',
 			'Create an image',
+			'Create a video',
+			'Brainstorm ideas',
+			'Draft a message',
 		]) {
 			expect(screen.getByText(label)).toBeInTheDocument();
 		}
-		expect(screen.getByLabelText('Prompt suggestions').children).toHaveLength(3);
+		expect(screen.getByLabelText('Prompt suggestions').children).toHaveLength(6);
 		expect(screen.queryByText('Create music')).not.toBeInTheDocument();
 		expect(screen.getByLabelText('Quick settings')).toBeInTheDocument();
 		expect(screen.getByRole('combobox', { name: 'Language' })).toBeInTheDocument();

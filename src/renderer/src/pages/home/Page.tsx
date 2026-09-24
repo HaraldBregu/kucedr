@@ -76,6 +76,18 @@ const promptSuggestions = [
 		label: 'Create an image',
 		prompt: 'Create an image of a cozy workspace at sunset.',
 	},
+	{
+		label: 'Create a video',
+		prompt: 'Create a short video of waves rolling onto a beach at dawn.',
+	},
+	{
+		label: 'Brainstorm ideas',
+		prompt: 'Help me brainstorm ideas for a new project.',
+	},
+	{
+		label: 'Draft a message',
+		prompt: 'Help me draft a clear message.',
+	},
 ] as const;
 
 function attachmentId(): string {
@@ -172,14 +184,14 @@ function PromptSuggestions({
 		<div
 			className="mx-auto mb-2 mt-3 grid w-full max-w-xl grid-cols-2 gap-8 px-1"
 		>
-			<div className="flex min-w-0 flex-col items-end gap-2" aria-label="Prompt suggestions">
+			<div className="grid min-w-0 grid-cols-2 gap-2" aria-label="Prompt suggestions">
 				{promptSuggestions.map((suggestion) => (
 					<PromptSuggestion
 						key={suggestion.label}
 						type="button"
 						variant="outline"
 						size="sm"
-						className="h-9 max-w-full border-border/70 bg-card/95 px-4 text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
+						className="h-9 min-w-0 border-border/70 bg-card/95 px-2 text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
 						aria-label={suggestion.prompt}
 						onClick={() => onUseSuggestion(suggestion.prompt)}
 					>
