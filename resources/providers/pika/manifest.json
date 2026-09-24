@@ -3,8 +3,8 @@
   "providerName": "Pika",
   "apiKeyUrl": "https://pika.art",
   "images_url": "/images",
-  "icon_dark_url": "/images/fallback_lobehub/png_dark/pika.png",
-  "icon_light_url": "/images/fallback_lobehub/png_light/pika.png",
+  "icon_dark_url": "/images/vectorized/pika-dark.svg",
+  "icon_light_url": "/images/vectorized/pika-light.svg",
   "services": [
     {
       "id": "pika-2.2",

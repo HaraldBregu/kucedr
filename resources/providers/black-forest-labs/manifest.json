@@ -3,8 +3,8 @@
   "providerName": "Black Forest Labs",
   "apiKeyUrl": "https://dashboard.bfl.ai",
   "images_url": "/images",
-  "icon_dark_url": "/images/fallback_lobehub/png_dark/bfl.png",
-  "icon_light_url": "/images/fallback_lobehub/png_light/bfl.png",
+  "icon_dark_url": "/images/vectorized/black-forest-labs-dark.svg",
+  "icon_light_url": "/images/vectorized/black-forest-labs-light.svg",
   "services": [
     {
       "id": "FLUX.2",

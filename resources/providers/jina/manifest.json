@@ -3,8 +3,8 @@
   "providerName": "Jina AI",
   "apiKeyUrl": "https://jina.ai/api-dashboard",
   "images_url": "/images",
-  "icon_dark_url": "/images/official/jina-white.png",
-  "icon_light_url": "/images/official/jina-color.png",
+  "icon_dark_url": "/images/vectorized/jina-dark.svg",
+  "icon_light_url": "/images/vectorized/jina-light.svg",
   "services": [
     {
       "id": "jina-embeddings-v3",

@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
 	parseProviderManifest,
@@ -260,7 +260,10 @@ describe('provider manifest validation', () => {
 	it('declares the expected attachment contract for every bundled prompt model', () => {
 		const providersDirectory = join(process.cwd(), 'resources', 'providers');
 		const manifests = readdirSync(providersDirectory, { withFileTypes: true })
-			.filter((entry) => entry.isDirectory())
+			.filter(
+				(entry) =>
+					entry.isDirectory() && existsSync(join(providersDirectory, entry.name, 'manifest.json'))
+			)
 			.map((entry) =>
 				JSON.parse(readFileSync(join(providersDirectory, entry.name, 'manifest.json'), 'utf8'))
 			);

@@ -3,8 +3,8 @@
 	"providerName": "Anthropic",
 	"apiKeyUrl": "https://console.anthropic.com/settings/keys",
 	"images_url": "/images",
-	"icon_dark_url": "/images/fallback_lobehub/png_dark/anthropic.png",
-	"icon_light_url": "/images/fallback_lobehub/png_light/anthropic.png",
+	"icon_dark_url": "/images/vectorized/anthropic-dark.svg",
+	"icon_light_url": "/images/vectorized/anthropic-light.svg",
 	"services": [
 		{
 			"id": "claude-fable-5",

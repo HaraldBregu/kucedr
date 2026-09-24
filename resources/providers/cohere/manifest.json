@@ -3,8 +3,8 @@
   "providerName": "Cohere",
   "apiKeyUrl": "https://dashboard.cohere.com/api-keys",
   "images_url": "/images",
-  "icon_dark_url": "/images/Digital (RGB)/White/cohere_logo_white_rgb.png",
-  "icon_light_url": "/images/Digital (RGB)/Black/cohere_logo_black_rgb.png",
+  "icon_dark_url": "/images/vectorized/cohere-dark.svg",
+  "icon_light_url": "/images/vectorized/cohere-light.svg",
   "services": [
     {
       "id": "embed-v4.0",
