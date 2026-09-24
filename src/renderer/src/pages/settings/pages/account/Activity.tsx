@@ -26,7 +26,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 	const endDate = range === 'lastYear' ? Date.UTC(year - 1, 11, 31) : Date.UTC(year, now.getMonth(), now.getDate());
 	const startOffset = (new Date(Date.UTC(selectedYear, 0, 1)).getUTCDay() + 6) % 7;
 	const weeks = range === 'untilToday'
-		? 39
+		? 36
 		: Math.ceil(((endDate - Date.UTC(selectedYear, 0, 1)) / 86400000 + 1 + startOffset) / 7);
 	const visibleValues = range === 'untilToday'
 		? values
