@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-	AlertTriangle,
-	ExternalLink,
-	LoaderCircle,
-	MoreHorizontal,
-	Plus,
-} from 'lucide-react';
+import { AlertTriangle, ExternalLink, LoaderCircle, MoreHorizontal, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import ollamaDarkLogo from '@resources/providers/ollama/images/ollama-dark.svg';
@@ -275,130 +269,130 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		const canSaveProvider =
 			!!entry && !savingThisProvider && Boolean(entry.apiKey.trim() || entry.savedApiKey.trim());
 		return (
-				<Item
-					key={provider.id}
-					variant="ghost"
-					size="md"
-					className={cn(
-						'min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50',
-						!provider.supported && 'opacity-70'
-					)}
+			<Item
+				key={provider.id}
+				variant="ghost"
+				size="md"
+				className={cn(
+					'min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50',
+					!provider.supported && 'opacity-70'
+				)}
+			>
+				<ProviderAvatar
+					providerId={provider.id}
+					name={provider.name}
+					iconDarkUrl={provider.iconDarkUrl}
+					iconLightUrl={provider.iconLightUrl}
+					className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+				/>
+				<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+					<div className="flex min-w-0 max-w-full items-center gap-1.5">
+						<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+							<h2>{provider.name}</h2>
+						</ItemTitle>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-xs"
+							className="size-5 text-muted-foreground hover:text-foreground"
+							aria-label={`Open ${provider.name} API setup`}
+							onClick={() => handleOpenProviderLink(provider)}
+						>
+							<ExternalLink className="size-3" />
+						</Button>
+					</div>
+					<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+						{t(connected ? 'settings.providers.configured' : 'settings.providers.notConfigured')}
+					</p>
+				</ItemContent>
+				<ItemActions
+					className={cn('ml-auto flex-none justify-end gap-2', editing && 'w-full sm:w-auto')}
 				>
-					<ProviderAvatar
-						providerId={provider.id}
-						name={provider.name}
-						iconDarkUrl={provider.iconDarkUrl}
-						iconLightUrl={provider.iconLightUrl}
-						className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-					/>
-					<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-						<div className="flex min-w-0 max-w-full items-center gap-1.5">
-							<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-								<h2>{provider.name}</h2>
-							</ItemTitle>
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-xs"
-								className="size-5 text-muted-foreground hover:text-foreground"
-								aria-label={`Open ${provider.name} API setup`}
-								onClick={() => handleOpenProviderLink(provider)}
-							>
-								<ExternalLink className="size-3" />
-							</Button>
-						</div>
-						<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-							{t(connected ? 'settings.providers.configured' : 'settings.providers.notConfigured')}
-						</p>
-					</ItemContent>
-					<ItemActions
-						className={cn('ml-auto flex-none justify-end gap-2', editing && 'w-full sm:w-auto')}
-					>
-						{editing && entry ? (
-							<>
-								<Input
-									aria-label={`${provider.name} API key`}
-									autoComplete="off"
-									className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
-									disabled={savingThisProvider}
-									onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
-									onKeyDown={(event) => {
-										if (event.key === 'Enter' && canSaveProvider) {
+					{editing && entry ? (
+						<>
+							<Input
+								aria-label={`${provider.name} API key`}
+								autoComplete="off"
+								className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
+								disabled={savingThisProvider}
+								onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
+								onKeyDown={(event) => {
+									if (event.key === 'Enter' && canSaveProvider) {
 										void (kind === 'search'
 											? saveSearchEntry(provider.id)
 											: saveProviderEntry(provider.id, kind));
-										}
-									}}
-									placeholder={
-										entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
 									}
-									spellCheck={false}
-									type="text"
-									value={entry.apiKey}
-								/>
-								<Button
-									type="button"
-									variant="outline"
-									size="sm"
-									disabled={savingThisProvider}
-									onClick={() =>
-										updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })
-									}
-								>
-									{t('common.cancel')}
-								</Button>
-								<Button
-									type="button"
-									size="sm"
-									disabled={!canSaveProvider}
-									onClick={() =>
+								}}
+								placeholder={
+									entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
+								}
+								spellCheck={false}
+								type="text"
+								value={entry.apiKey}
+							/>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								disabled={savingThisProvider}
+								onClick={() =>
+									updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })
+								}
+							>
+								{t('common.cancel')}
+							</Button>
+							<Button
+								type="button"
+								size="sm"
+								disabled={!canSaveProvider}
+								onClick={() =>
 									void (kind === 'search'
 										? saveSearchEntry(provider.id)
 										: saveProviderEntry(provider.id, kind))
 								}
-								>
-									{savingThisProvider && <LoaderCircle className="size-3.5 animate-spin" />}
-									{t('common.save')}
-								</Button>
-							</>
-						) : !provider.supported ? (
-							<Button type="button" variant="ghost" size="sm" disabled>
-								Soon
-							</Button>
-						) : !connected ? (
-							<Button
-								type="button"
-								variant="ghost"
-								size="sm"
-								onClick={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
 							>
-								Connect
+								{savingThisProvider && <LoaderCircle className="size-3.5 animate-spin" />}
+								{t('common.save')}
 							</Button>
-						) : (
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										variant="ghost"
-										size="icon-sm"
-										className="hover:bg-transparent dark:hover:bg-transparent"
-										disabled={savingThisProvider}
-										aria-label={`Options for ${provider.name}`}
-									>
-										<MoreHorizontal className="size-4" />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end">
-									<DropdownMenuItem
-										onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
-									>
-										Edit API key
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
-						)}
-					</ItemActions>
-				</Item>
-			);
+						</>
+					) : !provider.supported ? (
+						<Button type="button" variant="ghost" size="sm" disabled>
+							Soon
+						</Button>
+					) : !connected ? (
+						<Button
+							type="button"
+							variant="ghost"
+							size="sm"
+							onClick={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
+						>
+							Connect
+						</Button>
+					) : (
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									className="hover:bg-transparent dark:hover:bg-transparent"
+									disabled={savingThisProvider}
+									aria-label={`Options for ${provider.name}`}
+								>
+									<MoreHorizontal className="size-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+								<DropdownMenuItem
+									onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
+								>
+									Edit API key
+								</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					)}
+				</ItemActions>
+			</Item>
+		);
 	};
 
 	const renderCustomProviderCard = (): React.ReactElement => {
