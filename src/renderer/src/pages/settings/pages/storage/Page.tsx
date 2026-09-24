@@ -33,7 +33,6 @@ import type {
 	StorageConflict,
 	StorageOperationStatus,
 	StorageProvider,
-	StorageSyncFolder,
 	StorageSyncSettings,
 } from '@shared/storage_types';
 import {
@@ -58,7 +57,6 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	const [conflicts, setConflicts] = useState<StorageConflict[]>([]);
 	const [providers, setProviders] = useState<StorageProvider[]>([]);
 	const [settingsLoading, setSettingsLoading] = useState(true);
-	const [availableFolders, setAvailableFolders] = useState<StorageSyncFolder[]>([]);
 	const [draft, setDraft] = useState<StorageSyncSettings | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [syncStatus, setSyncStatus] = useState<string | null>(null);
@@ -82,16 +80,14 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 		});
 		void Promise.allSettled([
 			window.storage.getSettings(),
-			window.storage.syncFolders(),
 			window.storage.getOperationStatus(),
 			window.storage.listProviders(),
 			window.storage.getVersionedStatus(),
 			window.storage.listConflicts(),
-		]).then(([settingsResult, foldersResult, statusResult, providersResult, versionedResult, conflictsResult]) => {
+		]).then(([settingsResult, statusResult, providersResult, versionedResult, conflictsResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
-			if (foldersResult.status === 'fulfilled') setAvailableFolders(foldersResult.value);
 			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
 			if (versionedResult.status === 'fulfilled') setVersionedEnabled(versionedResult.value);
 			if (conflictsResult.status === 'fulfilled') setConflicts(conflictsResult.value);
@@ -99,7 +95,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 				applyOperationStatus(statusResult.value);
 			}
 
-			const failed = [settingsResult, foldersResult, statusResult, providersResult, versionedResult, conflictsResult].some(
+			const failed = [settingsResult, statusResult, providersResult, versionedResult, conflictsResult].some(
 				(result) => result.status === 'rejected'
 			);
 			setLoadFailed(failed);
@@ -120,10 +116,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 
 	const storage = draft ?? settings;
 	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
-	const visibleFolders = availableFolders.filter((folder) => folder.key !== 'library');
 	const runningOperation = operationStatus?.state === 'running' ? operationStatus : undefined;
-	const builtInPaths = new Set(availableFolders.map((folder) => folder.path));
-	const customPaths = storage?.paths.filter((entry) => !builtInPaths.has(entry)) ?? [];
 	const intervalValue = !storage?.syncEnabled
 		? 'off'
 		: (SYNC_INTERVALS.find((interval) => interval.cron === storage.syncCronExpression)?.key ??
@@ -333,7 +326,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 								variant="outline"
 								size="icon-sm"
 								aria-label={t('settings.storage.sync.addFolders')}
-								disabled={controlsDisabled}
+								disabled={busy}
 								onClick={() => void pickFolders()}
 							>
 								<Plus className="size-3" />
@@ -342,32 +335,12 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 					>
 						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 							<CardContent className="p-0!">
-								{visibleFolders.map((folder) => (
+								{storage.paths.length === 0 && (
 									<SettingsRow
-										key={folder.path}
-										title={t(`settings.storage.folders.${folder.key}`)}
-										description={folder.path}
-										className="grid-cols-[minmax(0,1fr)_auto]"
-										actionClassName="ml-auto w-auto justify-end"
-										actions={
-											<Switch
-												checked={storage.paths.includes(folder.path)}
-												aria-label={t(`settings.storage.folders.${folder.key}`)}
-												disabled={controlsDisabled}
-												onCheckedChange={(checked) =>
-													updateDraft({
-														...storage,
-														paths: checked
-															? [...new Set([...storage.paths, folder.path])]
-															: storage.paths.filter((entry) => entry !== folder.path),
-													})
-												}
-											/>
-										}
+										title={t('settings.storage.sync.empty')}
 									/>
-								))}
-
-								{customPaths.map((selectedPath) => (
+								)}
+								{storage.paths.map((selectedPath) => (
 									<SettingsRow
 										key={selectedPath}
 										title={t('settings.storage.sync.folder')}
@@ -452,7 +425,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 										<Select
 											value={intervalValue}
 											onValueChange={selectInterval}
-											disabled={controlsDisabled}
+											disabled={busy}
 										>
 											<SelectTrigger
 												size="sm"
