@@ -118,7 +118,8 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							aria-label={t('navigationBar.newChat', 'New chat')}
 							onClick={() => {
 								setSessionId(crypto.randomUUID());
-								if (sessions.length === 0) setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
+								if (sessions.length === 0)
+									setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
 							}}
 						>
 							<Plus className="size-4 shrink-0" />
