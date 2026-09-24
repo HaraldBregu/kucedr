@@ -324,12 +324,12 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 						action={
 							<Button
 								variant="outline"
-								size="icon-sm"
-								aria-label={t('settings.storage.sync.addFolders')}
+								size="sm"
 								disabled={busy}
 								onClick={() => void pickFolders()}
 							>
 								<Plus className="size-3" />
+								{t('settings.storage.sync.addFolders')}
 							</Button>
 						}
 					>
@@ -352,7 +352,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 												variant="ghost"
 												size="icon-sm"
 												aria-label={t('settings.storage.sync.removeFolder')}
-												disabled={controlsDisabled}
+												disabled={busy}
 												onClick={() =>
 													updateDraft({
 														...storage,

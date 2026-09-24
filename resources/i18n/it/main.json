@@ -1143,6 +1143,7 @@
 				"title": "Backup cloud",
 				"description": "Scegli le cartelle locali ed eseguine il backup in modo sicuro secondo una pianificazione.",
 				"addFolders": "Aggiungi cartelle",
+				"empty": "Nessuna cartella selezionata. Aggiungi le cartelle da salvare e sincronizzare.",
 				"folder": "Cartella selezionata",
 				"removeFolder": "Rimuovi cartella"
 			},

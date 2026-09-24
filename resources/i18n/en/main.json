@@ -1143,6 +1143,7 @@
 				"title": "Cloud Backup",
 				"description": "Choose local folders and back them up securely on a schedule.",
 				"addFolders": "Add folders",
+				"empty": "No folders selected. Add folders to back up and sync.",
 				"folder": "Selected folder",
 				"removeFolder": "Remove folder"
 			},
