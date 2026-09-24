@@ -318,44 +318,44 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					>
 						{editing && entry ? (
 							<>
-							<Input
-								aria-label={`${provider.name} API key`}
-								autoComplete="off"
-								className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
-								disabled={savingThisProvider}
-								onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
-								onKeyDown={(event) => {
-									if (event.key === 'Enter' && canSaveProvider) {
-										void saveProviderEntry(provider.id, 'models');
+								<Input
+									aria-label={`${provider.name} API key`}
+									autoComplete="off"
+									className="h-8 w-52 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground sm:flex-none"
+									disabled={savingThisProvider}
+									onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
+									onKeyDown={(event) => {
+										if (event.key === 'Enter' && canSaveProvider) {
+											void saveProviderEntry(provider.id, 'models');
+										}
+									}}
+									placeholder={
+										entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
 									}
-								}}
-								placeholder={
-									entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
-								}
-								spellCheck={false}
-								type="text"
-								value={entry.apiKey}
-							/>
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								disabled={savingThisProvider}
-								onClick={() =>
-									updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })
-								}
-							>
-								{t('common.cancel')}
-							</Button>
-							<Button
-								type="button"
-								size="sm"
-								disabled={!canSaveProvider}
-								onClick={() => void saveProviderEntry(provider.id, 'models')}
-							>
-								{savingThisProvider && <LoaderCircle className="size-3.5 animate-spin" />}
-								{t('common.save')}
-							</Button>
+									spellCheck={false}
+									type="text"
+									value={entry.apiKey}
+								/>
+								<Button
+									type="button"
+									variant="outline"
+									size="sm"
+									disabled={savingThisProvider}
+									onClick={() =>
+										updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })
+									}
+								>
+									{t('common.cancel')}
+								</Button>
+								<Button
+									type="button"
+									size="sm"
+									disabled={!canSaveProvider}
+									onClick={() => void saveProviderEntry(provider.id, 'models')}
+								>
+									{savingThisProvider && <LoaderCircle className="size-3.5 animate-spin" />}
+									{t('common.save')}
+								</Button>
 							</>
 						) : (
 							<DropdownMenu>
