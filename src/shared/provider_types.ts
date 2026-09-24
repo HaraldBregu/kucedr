@@ -1,5 +1,7 @@
 import type { ModelCapability, ModelMetadata, ProviderModel } from './model_types';
 
+export type AuthenticationType = 'api-key' | 'oauth2' | 'none';
+
 export interface ProviderApiConfiguration {
 	readonly credentialType: string | null;
 	readonly apiKeyManagementUrl: string | null;
@@ -18,6 +20,7 @@ export interface Provider {
 	readonly capabilities?: string;
 	/** Provider dashboard page where API keys are created. */
 	readonly apiKeyUrl?: string;
+	readonly authentication?: AuthenticationType;
 	readonly iconDarkUrl?: string;
 	readonly iconLightUrl?: string;
 	readonly apiConfiguration?: ProviderApiConfiguration;
@@ -29,6 +32,7 @@ export type ProviderInput = Provider;
 /** A model service in resources/providers/<id>/manifest.json. */
 export interface CatalogEntryModel extends ProviderModel {
 	readonly type: ModelCapability;
+	readonly authentication?: AuthenticationType;
 	/** Base URL of the API serving this model. */
 	readonly url: string;
 	/** Preferred provider for this model's capability when nothing is configured. */
@@ -68,6 +72,7 @@ export interface CatalogEntryService {
 	readonly name: string;
 	readonly description?: string;
 	readonly type: string;
+	readonly authentication?: AuthenticationType;
 	/** Base URL of the API serving this service. */
 	readonly url?: string;
 	/** Provider-documented, service-specific input controls. */
@@ -96,6 +101,7 @@ export interface CatalogWebSearch extends CatalogEntryWebSearch {
 export interface ProviderManifest {
 	readonly providerId: string;
 	readonly providerName: string;
+	readonly authentication?: AuthenticationType;
 	/** Provider dashboard page where API keys are created. */
 	readonly apiKeyUrl?: string;
 	/** Human-readable steps for obtaining credentials. */

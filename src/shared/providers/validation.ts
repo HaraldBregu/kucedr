@@ -13,6 +13,7 @@ const MODEL_SERVICE_TYPES = [
 ] as const;
 
 const SERVICE_TYPES = [...MODEL_SERVICE_TYPES, 'web-search', 'database', 'mcp', 'bot'] as const;
+const AUTHENTICATION_TYPES = ['api-key', 'oauth2', 'none'] as const;
 
 const PROMPT_MODEL_SERVICE_TYPES = ['large-language-model', 'research-chat-model'] as const;
 const PROMPT_ATTACHMENT_KINDS = ['image', 'document', 'audio', 'video'] as const;
@@ -80,6 +81,12 @@ export function validateProviderManifest(value: unknown): string[] {
 	if (!isNonEmptyString(manifest.providerName)) {
 		errors.push('manifest.json: "providerName" must be a non-empty string.');
 	}
+	if (
+		manifest.authentication !== undefined &&
+		!AUTHENTICATION_TYPES.includes(manifest.authentication as (typeof AUTHENTICATION_TYPES)[number])
+	) {
+		errors.push(`manifest.json: "authentication" must be one of ${AUTHENTICATION_TYPES.join(', ')}.`);
+	}
 	if (manifest.apiKeyUrl !== undefined && !isNonEmptyString(manifest.apiKeyUrl)) {
 		errors.push('manifest.json: "apiKeyUrl" must be a non-empty string when present.');
 	}
@@ -106,6 +113,14 @@ export function validateProviderManifest(value: unknown): string[] {
 			serviceErrors.push(`manifest.json: services[${index}].id must be a non-empty string.`);
 		if (!isNonEmptyString(service.name))
 			serviceErrors.push(`manifest.json: services[${index}].name must be a non-empty string.`);
+		if (
+			service.authentication !== undefined &&
+			!AUTHENTICATION_TYPES.includes(service.authentication as (typeof AUTHENTICATION_TYPES)[number])
+		) {
+			serviceErrors.push(
+				`manifest.json: services[${index}].authentication must be one of ${AUTHENTICATION_TYPES.join(', ')}.`
+			);
+		}
 		if (service.description !== undefined && !isNonEmptyString(service.description)) {
 			serviceErrors.push(
 				`manifest.json: services[${index}].description must be a non-empty string when present.`

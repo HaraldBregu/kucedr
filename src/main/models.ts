@@ -209,6 +209,7 @@ function toPublicProvider(entry: ProviderManifest, providerDir: string): PublicP
 		id: entry.providerId,
 		name: entry.providerName,
 		baseUrl,
+		...(entry.authentication ? { authentication: entry.authentication } : {}),
 		...(entry.apiKeyUrl ? { apiKeyUrl: entry.apiKeyUrl } : {}),
 		...(iconDarkUrl ? { iconDarkUrl } : {}),
 		...(iconLightUrl ? { iconLightUrl } : {}),
