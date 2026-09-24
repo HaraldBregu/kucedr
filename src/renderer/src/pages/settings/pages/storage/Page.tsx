@@ -425,7 +425,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 										<Select
 											value={intervalValue}
 											onValueChange={selectInterval}
-											disabled={busy}
+											disabled={controlsDisabled}
 										>
 											<SelectTrigger
 												size="sm"

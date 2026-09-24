@@ -49,6 +49,8 @@ const settings = { paths: ['/data/agent'], syncEnabled: false, syncCronExpressio
 const storageApi = {
 	listProviders: jest.fn(),
 	getSettings: jest.fn(),
+	getVersionedStatus: jest.fn(),
+	listConflicts: jest.fn(),
 	saveSettings: jest.fn(),
 	syncFolders: jest.fn(),
 	pickFolders: jest.fn(),
@@ -68,6 +70,8 @@ beforeEach(() => {
 	Object.defineProperty(window, 'storage', { configurable: true, value: storageApi });
 	storageApi.listProviders.mockResolvedValue(providers);
 	storageApi.getSettings.mockResolvedValue(settings);
+	storageApi.getVersionedStatus.mockResolvedValue(false);
+	storageApi.listConflicts.mockResolvedValue([]);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
 	storageApi.syncFolders.mockResolvedValue([
 		{ key: 'agent', path: '/data/agent' },
