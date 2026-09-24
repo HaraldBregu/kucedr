@@ -373,7 +373,7 @@ function PromptInput({
 	const textareaRef = externalTextareaRef ?? internalTextareaRef;
 	const triggerFileUpload = () => fileInputRef.current?.click();
 	const currentValue = value ?? internalValue;
-	const hasAdaptiveLayout = Boolean(leadingAction || actions);
+	const hasAdaptiveLayout = Boolean(leadingAction || actions || trailingAction || voiceMode);
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [contentHeight, setContentHeight] = useState<number>();
 	const transition = usePromptInputTransition();
