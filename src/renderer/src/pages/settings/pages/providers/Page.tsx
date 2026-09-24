@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus } from 'lucide-react';
+import { AlertTriangle, ExternalLink, LoaderCircle, MoreHorizontal, Pencil, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import ollamaDarkLogo from '@resources/providers/ollama/images/ollama-dark.svg';
 import ollamaLightLogo from '@resources/providers/ollama/images/ollama-light.svg';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { Label } from '@/components/ui/label';
 import { openExternalUrl } from '@/lib/external-links';
 import { cn } from '@/lib/utils';
@@ -261,6 +268,105 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		const savingThisProvider = savingProviderId === provider.id;
 		const canSaveProvider =
 			!!entry && !savingThisProvider && Boolean(entry.apiKey.trim() || entry.savedApiKey.trim());
+		if (kind === 'models') {
+			return (
+				<Item
+					key={provider.id}
+					variant="ghost"
+					size="md"
+					className={cn(
+						'min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50',
+						!provider.supported && 'opacity-70'
+					)}
+				>
+					<ProviderAvatar
+						providerId={provider.id}
+						name={provider.name}
+						iconDarkUrl={provider.iconDarkUrl}
+						iconLightUrl={provider.iconLightUrl}
+						className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+					/>
+					<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+						<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+							<h2>{provider.name}</h2>
+						</ItemTitle>
+						<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+							{t(
+								connected ? 'settings.providers.configured' : 'settings.providers.notConfigured'
+							)}
+						</p>
+					</ItemContent>
+					<ItemActions className="ml-auto flex-none justify-end">
+						<DropdownMenu>
+							<DropdownMenuTrigger asChild>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									className="hover:bg-transparent dark:hover:bg-transparent"
+									disabled={savingThisProvider}
+									aria-label={`Options for ${provider.name}`}
+								>
+									<MoreHorizontal className="size-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="end">
+							<DropdownMenuItem
+								disabled={!provider.supported}
+								onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
+							>
+								{connected ? 'Edit API key' : 'Connect'}
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								disabled={!provider.apiConfigurationUrl}
+								onSelect={() => handleOpenProviderLink(provider)}
+							>
+								<ExternalLink className="size-4" />
+								API setup
+							</DropdownMenuItem>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</ItemActions>
+					{editing && entry && (
+						<div className="flex w-full flex-wrap items-center gap-2 pl-12">
+							<Input
+								aria-label={`${provider.name} API key`}
+								autoComplete="off"
+								className="h-8 min-w-0 flex-1 rounded-md border-input bg-card px-2.5 text-xs font-semibold placeholder:text-muted-foreground"
+								disabled={savingThisProvider}
+								onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
+								onKeyDown={(event) => {
+									if (event.key === 'Enter' && canSaveProvider) {
+										void saveProviderEntry(provider.id, 'models');
+									}
+								}}
+								placeholder={entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')}
+								spellCheck={false}
+								type="text"
+								value={entry.apiKey}
+							/>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								disabled={savingThisProvider}
+								onClick={() => updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })}
+							>
+								{t('common.cancel')}
+							</Button>
+							<Button
+								type="button"
+								size="sm"
+								disabled={!canSaveProvider}
+								onClick={() => void saveProviderEntry(provider.id, 'models')}
+							>
+								{savingThisProvider && <LoaderCircle className="size-3.5 animate-spin" />}
+								{t('common.save')}
+							</Button>
+						</div>
+					)}
+				</Item>
+			);
+		}
 
 		return (
 			<Card
