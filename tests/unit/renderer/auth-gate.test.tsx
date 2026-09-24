@@ -248,7 +248,8 @@ it('takes a restored configured signed-in user directly to home', async () => {
 	await waitFor(() => expect(screen.getByLabelText('Current route')).toHaveTextContent('/home'));
 });
 
-it('takes a restored unconfigured signed-in user directly to setup', async () => {
+it('shows Welcome before setup for a restored unconfigured signed-in user', async () => {
+	const user = userEvent.setup();
 	window.auth = authApi({
 		status: 'signedIn',
 		persistence: 'memory',
@@ -256,6 +257,9 @@ it('takes a restored unconfigured signed-in user directly to setup', async () =>
 	});
 	renderFlow('/start');
 
+	expect(await screen.findByRole('button', { name: 'Get started' })).toBeEnabled();
+	expect(screen.queryByRole('heading', { name: 'Model providers' })).not.toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'Get started' }));
 	expect(await screen.findByRole('heading', { name: 'Model providers' })).toBeInTheDocument();
 	expect(screen.getByText('Model').parentElement).toHaveTextContent('Model · 1 of 3');
 	expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
@@ -347,6 +351,7 @@ it('leaves setup for home after configuration is refreshed', async () => {
 	} as never;
 	renderFlow('/start');
 
+	await user.click(await screen.findByRole('button', { name: 'Get started' }));
 	expect(await screen.findByRole('heading', { name: 'Model providers' })).toBeInTheDocument();
 	configured = true;
 	await user.click(screen.getByRole('button', { name: 'Refresh configuration' }));

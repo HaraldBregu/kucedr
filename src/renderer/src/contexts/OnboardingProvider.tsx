@@ -73,11 +73,12 @@ export function OnboardingProvider({ children }: { readonly children: ReactNode 
 	let phase: OnboardingPhase;
 	if (state.status === 'recovery') phase = 'auth';
 	else if (state.status === 'loading' && !localOnly) phase = 'checking';
-	else if (!active) phase = 'landing';
-	else if (!identity) phase = 'auth';
+	else if (identity && (configurationStatus === 'idle' || configurationStatus === 'checking'))
+		phase = 'checking';
 	else if (configurationStatus === 'complete') phase = 'ready';
-	else if (configurationStatus === 'incomplete') phase = 'setup';
-	else phase = 'checking';
+	else if (!started) phase = 'landing';
+	else if (!identity) phase = 'auth';
+	else phase = 'setup';
 
 	const value = useMemo<OnboardingContextValue>(
 		() => ({

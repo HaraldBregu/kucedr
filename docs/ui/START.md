@@ -2,15 +2,15 @@
 
 The start page is Kucedr's single entry point for first-run onboarding and incomplete assistant
 configuration. Visible onboarding should remain on `/start` until Kucedr has a stored assistant
-provider and model, then open `/home`. A restored signed-in user should be checked automatically
-and should not have to repeat Welcome or Account.
+provider and model, then open `/home`. A restored signed-in user with incomplete configuration
+should see Welcome before setup, without repeating Account.
 
 ## Flow at a glance
 
 ```text
 Open Kucedr
   -> Restore authentication
-       -> signed in: check assistant configuration
+       -> signed in: check assistant configuration, then Welcome if incomplete
        -> signed out: Welcome -> Account or local-only mode -> check assistant configuration
        -> password recovery: Account -> check assistant configuration
   -> configuration complete: Home
@@ -37,7 +37,7 @@ add another progress item.
 
 | Stage   | Expected action                                    | Required to continue |
 | ------- | -------------------------------------------------- | -------------------- |
-| Welcome | Start the onboarding flow                          | For signed-out users |
+| Welcome | Start the onboarding flow                          | For incomplete setup |
 | Account | Sign in, create an account, or continue local-only | No account required  |
 | Model   | Save an API key for a catalog model provider       | Yes                  |
 | Search  | Connect a web-search provider                      | No                   |
@@ -45,13 +45,13 @@ add another progress item.
 
 ### 1. Welcome
 
-For a signed-out user, the first stage should introduce Kucedr and provide one primary **Get
-started** action. While the authentication state is unresolved, that action should be disabled and
-labeled **Checking your session…**.
+For a user with incomplete setup, the first stage should introduce Kucedr and provide one primary
+**Get started** action. While the authentication or configuration state is unresolved, that action
+should be disabled and labeled **Checking your session…**.
 
 Selecting **Get started** records that onboarding has started for the current renderer session. A
-restored signed-in user should skip Welcome and Account, check the assistant configuration
-automatically, and go directly to Home or the Model stage.
+restored signed-in user should skip Account, check the assistant configuration automatically, and
+go directly to Home when configured or see Welcome before the Model stage when incomplete.
 
 ### 2. Account
 
