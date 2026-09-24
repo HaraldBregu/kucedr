@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
+import { SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import type { SettingsNavigationItem } from './navigation';
 
@@ -22,13 +23,13 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 					{t(titleKey)}
 				</h2>
 			)}
-			<ul className="flex min-w-0 flex-col gap-1">
+			<SidebarMenu>
 				{items.map((item) => {
 					const Icon = item.icon;
 					const isActive = item.path === activePath;
 
 					return (
-						<li key={item.path}>
+						<SidebarMenuItem key={item.path}>
 							<Link
 								to={item.path}
 								data-active={isActive ? '' : undefined}
@@ -45,10 +46,10 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 								/>
 								<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 							</Link>
-						</li>
+						</SidebarMenuItem>
 					);
 				})}
-			</ul>
+			</SidebarMenu>
 		</section>
 	);
 }
