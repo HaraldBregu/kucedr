@@ -29,9 +29,9 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 							role="group"
 							aria-label={attachment.name}
 							size="sm"
-							className="w-full min-w-0 rounded-[16px] has-data-[slot=attachment-media]:p-2.5"
+							className="w-full min-w-0 overflow-hidden rounded-[16px] has-data-[slot=attachment-media]:p-0"
 						>
-							<AttachmentMedia variant="image" className="w-full!">
+							<AttachmentMedia variant="image" className="w-full! rounded-[inherit]">
 								{attachment.file ? <Preview file={attachment.file} /> : <FileImageIcon />}
 							</AttachmentMedia>
 						</Attachment>
