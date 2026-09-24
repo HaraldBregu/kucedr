@@ -423,9 +423,9 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Plug,
 	},
 	{
-		path: '/settings/a2a',
-		labelKey: 'settings.tabs.a2a',
-		descriptionKey: 'settings.overview.descriptions.a2a',
+		path: '/settings/remote-agent',
+		labelKey: 'settings.tabs.remoteAgent',
+		descriptionKey: 'settings.overview.descriptions.remoteAgent',
 		icon: BotMessageSquare,
 	},
 	{

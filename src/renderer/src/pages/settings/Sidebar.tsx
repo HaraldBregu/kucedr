@@ -33,7 +33,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 					'/settings/tasks',
 					'/settings/health',
 					'/settings/channels',
-					'/settings/a2a',
+					'/settings/remote-agent',
 				].includes(item.path)
 			),
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.coding),

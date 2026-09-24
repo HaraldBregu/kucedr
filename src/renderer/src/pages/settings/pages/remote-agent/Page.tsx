@@ -57,7 +57,7 @@ export default function RemoteAgentPage(): React.JSX.Element {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				 title="Remote agent"
+				title="Remote agent"
 				description="Connect remote Agent2Agent-compatible agents and delegate work to them."
 				action={
 					<Button
@@ -193,7 +193,7 @@ export default function RemoteAgentPage(): React.JSX.Element {
 				{agents.length === 0 ? (
 					<SettingsEmptyState
 						icon={Bot}
-						title="No A2A agents"
+						title="No remote agents"
 						description="Add a remote agent to make delegation available to Kucedr."
 					/>
 				) : (

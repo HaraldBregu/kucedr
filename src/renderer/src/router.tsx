@@ -50,7 +50,7 @@ const ProvidersPage = lazy(() => import('./pages/settings/pages/providers/Page')
 const ProvidersOverviewPage = lazy(() => import('./pages/settings/pages/providers/Overview'));
 const StorageProvidersPage = lazy(() => import('./pages/settings/pages/providers/storage/Page'));
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
-const A2aPage = lazy(() => import('./pages/settings/pages/a2a/Page'));
+const RemoteAgentPage = lazy(() => import('./pages/settings/pages/remote-agent/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
 const RagPage = lazy(() => import('./pages/settings/pages/rag/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
@@ -329,10 +329,10 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'a2a',
+						path: 'remote-agent',
 						element: (
 							<SettingsRouteWrapper>
-								<A2aPage />
+								<RemoteAgentPage />
 							</SettingsRouteWrapper>
 						),
 					},
