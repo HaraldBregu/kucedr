@@ -27,6 +27,8 @@ it.each([
 	['https://sheetsmcp.googleapis.com/mcp/v1', 'spreadsheets.readonly', 'spreadsheets'],
 	['https://mapstools.googleapis.com/mcp', 'maps-platform.mapstools', undefined],
 ])('uses the documented Google scopes for %s', (url, readonlyScope, writeScope) => {
+	process.env.GOOGLE_CLIENT_ID = 'environment-id';
+	process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
 	const scopes = googleMcpScopes(url)?.split(' ');
 	expect(scopes).toContain(`https://www.googleapis.com/auth/${readonlyScope}`);
 	if (writeScope) expect(scopes).toContain(`https://www.googleapis.com/auth/${writeScope}`);
