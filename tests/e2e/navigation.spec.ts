@@ -163,7 +163,12 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(field).toHaveCSS('min-height', '56px');
 	await modelButton.click();
-	await expect(page.getByRole('menu', { name: 'Change model' })).toBeVisible();
+	const modelMenu = page.getByRole('menu', { name: 'Change model' });
+	const modelPopover = modelMenu.locator('xpath=..');
+	await expect(modelMenu).toBeVisible();
+	await expect(modelPopover).toHaveCSS('width', '224px');
+	await expect(modelPopover).toHaveCSS('max-height', '240px');
+	await expect(modelPopover.locator('input')).toHaveCount(0);
 	await page.getByRole('menuitemradio', { name: /GPT-5.6 Sol/ }).click();
 	await expect.poll(() => page.evaluate(() => window.agent.getModelId())).toBe('gpt-5.6-sol');
 	await modelButton.click();
