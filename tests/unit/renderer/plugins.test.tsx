@@ -8,7 +8,11 @@ const catalog = [
 	'google-calendar',
 	'google-drive',
 	'google-contacts',
+	'google-docs',
+	'google-sheets',
+	'google-maps',
 	'github',
+	'gitlab',
 	'notion',
 ].map(
 	(id): CatalogService => ({
@@ -20,10 +24,26 @@ const catalog = [
 		iconDarkUrl: `https://icons.example/${id}.png`,
 		iconLightUrl: `https://icons.example/${id}.png`,
 		provider: {
-			id: ['gmail', 'google-calendar', 'google-drive', 'google-contacts'].includes(id)
+			id: [
+				'gmail',
+				'google-calendar',
+				'google-drive',
+				'google-contacts',
+				'google-docs',
+				'google-sheets',
+				'google-maps',
+			].includes(id)
 				? 'google'
 				: id,
-			name: ['gmail', 'google-calendar', 'google-drive', 'google-contacts'].includes(id)
+			name: [
+				'gmail',
+				'google-calendar',
+				'google-drive',
+				'google-contacts',
+				'google-docs',
+				'google-sheets',
+				'google-maps',
+			].includes(id)
 				? 'Google'
 				: id,
 			baseUrl: `https://${id}.example/mcp`,
@@ -56,7 +76,7 @@ beforeEach(() => {
 	mcpApi.delete.mockResolvedValue(undefined);
 });
 
-it('renders the six plugin providers with descriptions', async () => {
+it('renders the plugin providers with descriptions', async () => {
 	const { container } = render(<PluginsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
@@ -65,8 +85,8 @@ it('renders the six plugin providers with descriptions', async () => {
 			screen.getByRole('button', { name: 'settings.integrations.options' })
 		).toBeInTheDocument()
 	);
-	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(5);
-	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(6);
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(9);
+	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(10);
 	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
 	expect(screen.getByText('Use gmail.')).toBeInTheDocument();
 	expect(
@@ -80,7 +100,7 @@ it('enables an integration without opening configuration UI', async () => {
 	render(<PluginsPage />);
 
 	await screen.findByRole('button', { name: 'settings.integrations.options' });
-	await user.click(screen.getAllByRole('button', { name: 'settings.integrations.add' })[4]);
+	await user.click(screen.getAllByRole('button', { name: 'settings.integrations.add' })[8]);
 
 	await waitFor(() =>
 		expect(mcpApi.upsert).toHaveBeenCalledWith('notion', {
@@ -102,5 +122,5 @@ it('removes the MCP server from the added plugin menu', async () => {
 
 	await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('gmail'));
 	expect(mcpApi.upsert).not.toHaveBeenCalled();
-	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(6);
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(10);
 });
