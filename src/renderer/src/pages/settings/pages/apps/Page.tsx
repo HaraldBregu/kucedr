@@ -149,7 +149,7 @@ const AppsPage: React.FC = () => {
 	}, [t]);
 
 	return (
-		<SettingsPageShell className="max-w-none">
+		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.apps')}
 				description={t('settings.apps.description')}
@@ -238,7 +238,7 @@ const AppsPage: React.FC = () => {
 						/>
 					</SettingsPanel>
 				) : (
-					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+					<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
 						{apps.map((app) => (
 							<Card
 								key={app.id}
