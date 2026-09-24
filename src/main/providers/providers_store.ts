@@ -116,11 +116,8 @@ function migrateStorageProviders(): void {
 				safeStorage.decryptString(Buffer.from(encrypted, 'base64'))
 			) as Array<Record<string, unknown>>;
 			if (!Array.isArray(storage)) return;
-			const {
-				encryptedProviders: _encryptedProviders,
-				storageProviders: _storageProviders,
-				...providers
-			} = state;
+			const { encryptedProviders: _encryptedProviders, storageProviders: _storageProviders, ...providers } =
+				state;
 			providersStore.store = {
 				...providers,
 				storage: storage.map(
