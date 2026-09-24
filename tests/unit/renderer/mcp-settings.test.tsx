@@ -105,7 +105,7 @@ describe('MCP settings', () => {
 		const user = userEvent.setup();
 		renderPage();
 
-		await user.click(await screen.findByRole('button', { name: 'Local files node server.mjs' }));
+		await user.click(await screen.findByRole('button', { name: 'Open Local files' }));
 		expect(await screen.findByText('Detail: local')).toBeInTheDocument();
 	});
 

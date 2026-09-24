@@ -44,30 +44,24 @@ export function McpServerRow({
 		<Item
 			variant="ghost"
 			size="md"
-			className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50 md:col-start-1"
+			className="relative min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50 md:col-start-1"
 		>
-			<button
-				type="button"
-				onClick={onOpen}
-				className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
-			>
-				<ProviderAvatar
-					providerId={iconService?.id ?? server.id}
-					name={iconService?.name ?? title}
-					iconDarkUrl={iconService?.iconDarkUrl}
-					iconLightUrl={iconService?.iconLightUrl}
-					className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-				/>
-				<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-					<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-						{title}
-					</ItemTitle>
-					<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-						{description}
-					</p>
-				</ItemContent>
-			</button>
-			<ItemActions className="ml-auto flex-none justify-end">
+			<ProviderAvatar
+				providerId={iconService?.id ?? server.id}
+				name={iconService?.name ?? title}
+				iconDarkUrl={iconService?.iconDarkUrl}
+				iconLightUrl={iconService?.iconLightUrl}
+				className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+			/>
+			<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+				<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+					{title}
+				</ItemTitle>
+				<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+					{description}
+				</p>
+			</ItemContent>
+			<ItemActions className="relative z-10 ml-auto flex-none justify-end">
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild>
 						<Button
@@ -87,6 +81,12 @@ export function McpServerRow({
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</ItemActions>
+			<button
+				type="button"
+				onClick={onOpen}
+				aria-label={`Open ${title}`}
+				className="absolute inset-0 rounded-2xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+			/>
 		</Item>
 	);
 }
