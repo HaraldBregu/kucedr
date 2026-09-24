@@ -103,9 +103,20 @@ export function SettingsSidebar(): React.JSX.Element {
 												to={item.path}
 												data-active={isActive ? '' : undefined}
 												aria-current={isActive ? 'page' : undefined}
-												className={cn(SPLIT_ITEM_CLASS, isActive && SPLIT_ITEM_ACTIVE_CLASS)}
+												className={cn(
+													SPLIT_ITEM_CLASS,
+													isActive && SPLIT_ITEM_ACTIVE_CLASS,
+													item.path === '/settings/voice' && 'group/voice'
+												)}
 											>
-												<Icon className="size-4 shrink-0" strokeWidth={1.8} />
+												<Icon
+													className={cn(
+														'size-4 shrink-0',
+														item.path === '/settings/voice' &&
+															'transition-transform duration-200 ease-out group-hover/voice:scale-110 motion-reduce:transition-none'
+													)}
+													strokeWidth={1.8}
+												/>
 												<span className="text-xs">{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 											</Link>
 										</li>
