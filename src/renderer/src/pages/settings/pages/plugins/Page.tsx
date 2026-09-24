@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
@@ -12,7 +13,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { mcps } from '@/lib/providers';
+import { databases, mcps, storages } from '@/lib/providers';
 import {
 	SettingsEmptyState,
 	SettingsNotice,
@@ -23,11 +24,14 @@ import { MicrosoftConnect } from './Connect';
 
 const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const [servers, setServers] = useState<McpSettings>({});
 	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
 	const [selectedMicrosoft, setSelectedMicrosoft] = useState<CatalogService | null>(null);
 	const catalog = mcps();
+	const databaseCatalog = databases();
+	const storageCatalog = storages();
 
 	useEffect(() => {
 		let cancelled = false;
@@ -102,7 +106,7 @@ const PluginsPage = (): React.JSX.Element => {
 				error={error}
 			/>
 
-			{catalog.length > 0 ? (
+			{catalog.length + databaseCatalog.length + storageCatalog.length > 0 ? (
 				<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-1 pb-4 md:grid-cols-2">
 					{catalog.map((service) => (
 						<Item
@@ -166,6 +170,76 @@ const PluginsPage = (): React.JSX.Element => {
 										<Plus className="size-4" />
 									</Button>
 								)}
+							</ItemActions>
+						</Item>
+					))}
+					{databaseCatalog.map((database) => (
+						<Item
+							key={`${database.provider.id}-${database.id}`}
+							variant="ghost"
+							size="md"
+							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+						>
+							<ProviderAvatar
+								providerId={database.provider.id}
+								name={database.name}
+								iconDarkUrl={database.provider.iconDarkUrl}
+								iconLightUrl={database.provider.iconLightUrl}
+								className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+							/>
+							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+									{database.name}
+								</ItemTitle>
+								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+									{t('settings.integrations.databaseType', { type: database.type })}
+								</p>
+							</ItemContent>
+							<ItemActions className="ml-auto flex-none justify-end">
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									className="hover:bg-transparent dark:hover:bg-transparent"
+									onClick={() => navigate('/settings/providers/database')}
+									aria-label={t('settings.integrations.add', { name: database.name })}
+								>
+									<Plus className="size-4" />
+								</Button>
+							</ItemActions>
+						</Item>
+					))}
+					{storageCatalog.map((storage) => (
+						<Item
+							key={`${storage.provider.id}-${storage.id}`}
+							variant="ghost"
+							size="md"
+							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+						>
+							<ProviderAvatar
+								providerId={storage.provider.id}
+								name={storage.name}
+								iconDarkUrl={storage.provider.iconDarkUrl}
+								iconLightUrl={storage.provider.iconLightUrl}
+								className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+							/>
+							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+									{storage.name}
+								</ItemTitle>
+								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+									{t('settings.integrations.storageType')}
+								</p>
+							</ItemContent>
+							<ItemActions className="ml-auto flex-none justify-end">
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									className="hover:bg-transparent dark:hover:bg-transparent"
+									onClick={() => navigate('/settings/providers/storage')}
+									aria-label={t('settings.integrations.add', { name: storage.name })}
+								>
+									<Plus className="size-4" />
+								</Button>
 							</ItemActions>
 						</Item>
 					))}
