@@ -19,8 +19,9 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 		<>
 			{images.length > 0 ? (
 				<AttachmentGroup
+					role="group"
 					aria-label="Attached images"
-					className="grid w-[min(22rem,100%)] grid-cols-2 gap-2 overflow-visible sm:grid-cols-3"
+					className="grid w-[min(22rem,100%)] grid-cols-2 gap-2 overflow-x-visible! sm:grid-cols-3"
 				>
 					{images.map((attachment, index) => (
 						<Attachment
@@ -43,8 +44,9 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 			) : null}
 			{files.length > 0 ? (
 				<AttachmentGroup
+					role="list"
 					aria-label="Attached files"
-					className="ml-auto w-64 max-w-full flex-col gap-2 overflow-visible"
+					className="ml-auto w-64 max-w-full flex-col gap-2 overflow-x-visible!"
 				>
 					{files.map((attachment, index) => {
 						const Icon = /\.(csv|xlsx?|ods)$/i.test(attachment.name)
@@ -55,6 +57,7 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 						return (
 							<Attachment
 								key={`${attachment.name}-${index}`}
+								role="listitem"
 								size="sm"
 								className="w-full rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5"
 							>
