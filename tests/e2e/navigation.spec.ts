@@ -128,7 +128,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
 	await expect(field).toHaveCSS('min-height', '56px');
-	await expect(field).toHaveCSS('border-radius', '28px');
+	await expect(field).toHaveCSS('border-radius', '16px');
 	await expect(attachmentButton).toHaveCSS('width', '32px');
 	await expect(attachmentButton).toHaveCSS('height', '32px');
 	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '16px');
