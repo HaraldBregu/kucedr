@@ -968,7 +968,7 @@ function PageContent(): ReactElement {
 									planCommandActive && 'plan-prompt-frame',
 									goalCommandActive && 'goal-prompt-frame'
 								)}
-								actions={
+								trailingAction={
 									<PromptInputActions className="justify-end gap-1.5">
 										<VoiceButton
 											onVoiceModeRequest={() => void startDictation()}
@@ -976,21 +976,19 @@ function PageContent(): ReactElement {
 											disabledReason={voiceButtonDisabledReason}
 											mode={voiceButtonMode}
 										/>
+										<SubmitButton
+											isLoading={agent.isLoading}
+											canSubmit={canSubmit}
+											forceSubmit={planCommandActive || goalCommandActive}
+											disabled={
+												voiceBusy ||
+												hasAttachmentErrors ||
+												(planCommandActive && !hasPromptText) ||
+												(goalCommandActive && !hasGoalObjective)
+											}
+											onAction={handlePrimaryAction}
+										/>
 									</PromptInputActions>
-								}
-								trailingAction={
-									<SubmitButton
-										isLoading={agent.isLoading}
-										canSubmit={canSubmit}
-										forceSubmit={planCommandActive || goalCommandActive}
-										disabled={
-											voiceBusy ||
-											hasAttachmentErrors ||
-											(planCommandActive && !hasPromptText) ||
-											(goalCommandActive && !hasGoalObjective)
-										}
-										onAction={handlePrimaryAction}
-									/>
 								}
 							/>
 						</div>
