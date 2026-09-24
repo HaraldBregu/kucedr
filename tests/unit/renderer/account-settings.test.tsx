@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { AuthApi, AuthState } from '../../../src/shared/auth_types';
 import { AuthProvider } from '../../../src/renderer/src/contexts/AuthContext';
@@ -116,6 +116,11 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(screen.getByRole('tooltip')).toHaveClass('fixed');
 	expect(auth.updateProfile).not.toHaveBeenCalled();
 	expect(container.querySelector('header svg')).toBeNull();
+	(auth.getProfile as jest.Mock).mockResolvedValueOnce({ firstName: 'Grace', lastName: 'Hopper' });
+	act(() => listener?.({ ...signedIn, user: { id: 'next-user', email: 'next@example.test' } }));
+	expect(await screen.findByText('Grace')).toBeInTheDocument();
+	expect(screen.getByText('Hopper')).toBeInTheDocument();
+	expect(screen.queryByText('Ada')).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'Sign out' }));
 
 	expect(confirmSignOut).toHaveBeenCalledTimes(1);
