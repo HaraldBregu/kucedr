@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { Activity, type ActivityRange } from './Activity';
 import { ActivityHeader } from './Header';
@@ -16,7 +15,6 @@ import {
 } from '../../components';
 
 const AccountPage: React.FC = () => {
-	const { t } = useTranslation();
 	const { state, localOnly, requireSignIn } = useAuth();
 	const [sessionBusy, setSessionBusy] = useState(false);
 	const [error, setError] = useState('');
