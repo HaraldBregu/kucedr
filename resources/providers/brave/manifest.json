@@ -3,8 +3,8 @@
   "providerName": "Brave",
   "apiKeyUrl": "https://api-dashboard.search.brave.com/app/keys",
   "images_url": "/images",
-  "icon_dark_url": "/images/brave-search.svg",
-  "icon_light_url": "/images/brave-search.svg",
+  "icon_dark_url": "/images/brave.svg",
+  "icon_light_url": "/images/brave.svg",
   "services": [
     {
       "id": "brave-web-search",

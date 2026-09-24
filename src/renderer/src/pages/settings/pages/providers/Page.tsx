@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
-import ollamaLogo from '@resources/providers/ollama/images/ollama.svg';
+import ollamaDarkLogo from '@resources/providers/ollama/images/ollama-dark.svg';
+import ollamaLightLogo from '@resources/providers/ollama/images/ollama-light.svg';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -472,8 +473,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						<ProviderAvatar
 							providerId="ollama"
 							name="Ollama"
-							iconDarkUrl={ollamaLogo}
-							iconLightUrl={ollamaLogo}
+							iconDarkUrl={ollamaDarkLogo}
+							iconLightUrl={ollamaLightLogo}
 							className="bg-white dark:bg-white"
 						/>
 						<div className="min-w-0 flex-1">

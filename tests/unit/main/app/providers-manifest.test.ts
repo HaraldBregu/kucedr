@@ -121,28 +121,34 @@ describe('provider manifests', () => {
 			'/resources/providers/jina/images/jina-light.svg'
 		);
 		expect(providersById.get('deepgram')?.iconDarkUrl).toContain(
-			'/resources/providers/deepgram/images/deepgram-dark.svg'
+			'/resources/providers/deepgram/images/deepgram.svg'
 		);
 		expect(providersById.get('deepgram')?.iconLightUrl).toContain(
-			'/resources/providers/deepgram/images/deepgram-light.svg'
+			'/resources/providers/deepgram/images/deepgram.svg'
 		);
 		expect(providersById.get('brave')?.iconDarkUrl).toContain(
-			'/resources/providers/brave/images/brave-search.svg'
+			'/resources/providers/brave/images/brave.svg'
 		);
 		expect(providersById.get('brave')?.iconLightUrl).toContain(
-			'/resources/providers/brave/images/brave-search.svg'
+			'/resources/providers/brave/images/brave.svg'
 		);
 		expect(providersById.get('tavily')?.iconDarkUrl).toContain(
-			'/resources/providers/tavily/images/tavily-offwhite.svg'
+			'/resources/providers/tavily/images/tavily.svg'
 		);
 		expect(providersById.get('tavily')?.iconLightUrl).toContain(
-			'/resources/providers/tavily/images/tavily-black.svg'
+			'/resources/providers/tavily/images/tavily.svg'
 		);
 		expect(providersById.get('pinecone')).toEqual(
 			expect.objectContaining({
 				id: 'pinecone',
 				name: 'Pinecone',
 				apiKeyUrl: 'https://app.pinecone.io',
+				iconDarkUrl: expect.stringContaining(
+					'/resources/providers/pinecone/images/pinecone-dark.svg'
+				),
+				iconLightUrl: expect.stringContaining(
+					'/resources/providers/pinecone/images/pinecone-light.svg'
+				),
 			})
 		);
 		expect(loadModels().some((model) => model.provider.id === 'pinecone')).toBe(false);
