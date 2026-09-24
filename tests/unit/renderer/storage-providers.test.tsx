@@ -101,7 +101,7 @@ it('uses a manifest storage preset without saving its endpoint template', async 
 	await screen.findByText('No storage connections');
 	await user.click(screen.getByRole('button', { name: 'Add provider' }));
 	await user.click(screen.getByRole('combobox', { name: 'Provider' }));
-	await user.click(screen.getByRole('option', { name: 'Supabase Storage' }));
+	await user.click(screen.getByRole('option', { name: 'Supabase Storage', hidden: true }));
 	const form = within(screen.getByRole('form'));
 	expect(form.getByLabelText('Name')).toHaveValue('Supabase Storage');
 	expect(form.getByLabelText('Endpoint URL')).toHaveAttribute(
