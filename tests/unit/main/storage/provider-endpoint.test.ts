@@ -12,6 +12,8 @@ it.each([
 	'https://127.0.0.1',
 	'https://169.254.169.254',
 	'https://localhost',
+	'https://localhost.',
+	'https://127.0.0.1.',
 	'https://internal.local',
 ])('rejects unsafe provider endpoint %s', (value) => {
 	expect(() => endpoint(value)).toThrow('Invalid S3 endpoint');
