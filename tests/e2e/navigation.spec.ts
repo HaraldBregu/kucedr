@@ -144,6 +144,13 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect(transcriptionBounds!.x).toBeLessThan(sendBounds!.x);
 	expect(transcriptionBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
 	expect(attachmentBounds!.y).toBeGreaterThan(fieldBounds!.y + fieldBounds!.height);
+	await editor.pressSequentially('H');
+	await expect(composer).toHaveAttribute('data-expanded', 'true');
+	await expect(field).toHaveCSS('min-height', '96px');
+	await editor.press(process.platform === 'darwin' ? 'Meta+A' : 'Control+A');
+	await editor.press('Backspace');
+	await expect(composer).toHaveAttribute('data-expanded', 'false');
+	await expect(field).toHaveCSS('min-height', '56px');
 	await expect(page.locator('[data-slot="home-composer-shell"]')).toHaveCSS(
 		'padding-bottom',
 		'20px'
