@@ -324,7 +324,7 @@ function VoiceButton({
 				type="button"
 				variant="ghost"
 				size="icon"
-				className="size-8 rounded-full text-foreground hover:bg-muted"
+				className="size-9 rounded-full text-foreground hover:bg-muted"
 				aria-label={tooltip}
 				disabled={isDisabled}
 				onClick={onVoiceModeRequest}
