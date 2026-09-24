@@ -1,0 +1,21 @@
+{
+	"providerId": "supabase",
+	"providerName": "Supabase",
+	"authentication": "api-key",
+	"images_url": "/images",
+	"icon_dark_url": "/images/supabase.svg",
+	"icon_light_url": "/images/supabase.svg",
+	"models": [],
+	"mcp_servers": [],
+	"databases": [],
+	"storage": {
+		"id": "supabase-storage",
+		"name": "Supabase Storage",
+		"authentication": "api-key",
+		"metadata": {
+			"protocol": "s3",
+			"endpointTemplate": "https://{projectRef}.storage.supabase.co/storage/v1/s3",
+			"forcePathStyle": true
+		}
+	}
+}

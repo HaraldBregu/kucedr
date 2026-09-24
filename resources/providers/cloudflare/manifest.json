@@ -1,0 +1,21 @@
+{
+	"providerId": "cloudflare",
+	"providerName": "Cloudflare",
+	"authentication": "api-key",
+	"images_url": "/images",
+	"icon_dark_url": "/images/cloudflare.svg",
+	"icon_light_url": "/images/cloudflare.svg",
+	"models": [],
+	"mcp_servers": [],
+	"databases": [],
+	"storage": {
+		"id": "cloudflare-r2",
+		"name": "Cloudflare R2",
+		"authentication": "api-key",
+		"metadata": {
+			"protocol": "s3",
+			"region": "auto",
+			"endpointTemplate": "https://{accountId}.r2.cloudflarestorage.com"
+		}
+	}
+}
