@@ -239,7 +239,6 @@
 			"generalDescription": "Configura informazioni, aspetto, lingua e dati dell'applicazione.",
 			"modelServices": "Servizi modello",
 			"channels": "Canali",
-			"integrations": "Plugin",
 			"connectors": "Connettori",
 			"mcp": "Server MCP",
 			"a2a": "A2A",
