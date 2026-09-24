@@ -1,7 +1,7 @@
 create table public.storage_provider_connections (
   owner_id uuid not null references auth.users(id),
   provider_id uuid not null,
-  bucket text not null check (length(bucket) between 3 and 255),
+  bucket text not null check (length(bucket) between 1 and 255),
   region text not null check (length(region) between 1 and 128),
   endpoint text check (endpoint is null or length(endpoint) between 1 and 2048),
   force_path_style boolean not null,
