@@ -125,9 +125,9 @@ export function UserMessage({
 								<span className="text-xs text-destructive" role="alert">
 									{editError}
 								</span>
-			) : content.trim() ? (
+							) : (
 								<span />
-			) : null}
+							)}
 							<div className="flex items-center gap-1">
 								<Button
 									type="button"
@@ -157,7 +157,7 @@ export function UserMessage({
 							</div>
 						</div>
 					</form>
-				) : (
+				) : content.trim() ? (
 					<div
 						data-slot="user-message-content"
 						className="relative min-w-0 w-fit max-w-full overflow-hidden rounded-xl bg-primary"
@@ -169,7 +169,7 @@ export function UserMessage({
 							{content}
 						</Markdown>
 					</div>
-				)}
+				) : null}
 				{!isEditing ? (
 					<MessageActions className="gap-1">
 						<Button

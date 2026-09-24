@@ -122,6 +122,7 @@ it('does not send an empty reply or discard its selected context', async () => {
 it('shows submitted file metadata immediately in an attachment-only turn', async () => {
 	const { result } = renderHook(() => useHomeAgent({ setMode: mockSetMode }));
 	const file = new File(['notes'], 'brief.txt', { type: 'text/plain' });
+	Object.defineProperty(file, 'arrayBuffer', { value: async () => new TextEncoder().encode('notes').buffer });
 	await act(async () => {
 		expect(await result.current.handleSubmit([file])).toBe(true);
 	});
