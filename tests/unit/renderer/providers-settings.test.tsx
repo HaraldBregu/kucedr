@@ -45,6 +45,7 @@ jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
 			name: 'OpenAI',
 			capabilities: 'AI provider',
 			supported: true,
+			apiConfigurationUrl: 'https://platform.openai.com/api-keys',
 		},
 	],
 	actionableSearchCatalog: () => [
@@ -60,6 +61,10 @@ jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
 }));
 
 beforeEach(() => {
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { openExternalUrl: jest.fn().mockResolvedValue(undefined) },
+	});
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
 		value: {
@@ -193,6 +198,23 @@ it('masks saved model keys until editing', async () => {
 	await user.click(screen.getByRole('menuitem', { name: 'Edit API key' }));
 	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('');
 	expect(screen.getByLabelText('OpenAI API key')).toHaveAttribute('placeholder', '************');
+	expect(screen.getByLabelText('OpenAI API key').closest('[data-slot="item-actions"]')).not.toBeNull();
+});
+
+it('keeps Connect and the API setup website available on model provider items', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="models" />
+		</MemoryRouter>
+	);
+
+	const openaiItem = screen.getByRole('heading', { name: 'OpenAI' }).closest('[data-slot="item"]');
+	expect(openaiItem).not.toBeNull();
+	await user.click(within(openaiItem!).getByRole('button', { name: 'Open OpenAI API setup' }));
+	expect(window.app.openExternalUrl).toHaveBeenCalledWith('https://platform.openai.com/api-keys');
+	await user.click(within(openaiItem!).getByRole('button', { name: 'Connect' }));
+	expect(within(openaiItem!).getByLabelText('OpenAI API key')).toBeInTheDocument();
 });
 
 it('saves a custom OpenAI-compatible model provider', async () => {
@@ -205,8 +227,7 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 
 	const ollamaItem = screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="item"]');
 	expect(ollamaItem).not.toBeNull();
-	await user.click(within(ollamaItem!).getByRole('button', { name: 'Options for Ollama' }));
-	await user.click(screen.getByRole('menuitem', { name: 'Connect' }));
+	await user.click(within(ollamaItem!).getByRole('button', { name: 'Connect' }));
 	const baseUrlInput = screen.getByLabelText('URL');
 	const customItem = baseUrlInput.closest('[data-slot="item"]');
 	expect(customItem).not.toBeNull();
