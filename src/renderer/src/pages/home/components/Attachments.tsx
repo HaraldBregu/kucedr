@@ -21,7 +21,7 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 				<AttachmentGroup
 					role="group"
 					aria-label="Attached images"
-					className="grid w-[min(12rem,100%)] grid-cols-4 gap-0 overflow-hidden! rounded-[16px] py-0"
+					className="grid w-[min(16rem,100%)] grid-cols-4 gap-0 overflow-hidden! rounded-[16px] py-0"
 				>
 					{images.map((attachment, index) => (
 						<Attachment
