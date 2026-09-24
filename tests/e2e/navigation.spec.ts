@@ -136,7 +136,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('border-radius', '16px');
 	await expect(composer).toHaveCSS('border-radius', '16px');
 	await expect(controls).toBeVisible();
-	await expect(controlButtons).toHaveCSS('display', 'inline-flex');
+	await expect(controlButtons).toHaveCSS('display', 'flex');
 	await expect(controlButtons).toHaveCSS('padding-left', '12px');
 	await expect(controlButtons).toHaveCSS('padding-right', '12px');
 	await expect(controls.getByRole('status', { name: 'Kucedr is responding' })).toHaveCount(0);
