@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Bot, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { A2aAgentInput, A2aAgentSummary } from '@shared/a2a_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +31,7 @@ const empty: A2aAgentInput = {
 };
 
 export default function RemoteAgentPage(): React.JSX.Element {
+	const { t } = useTranslation();
 	const [agents, setAgents] = useState<A2aAgentSummary[]>([]);
 	const [form, setForm] = useState<A2aAgentInput>(empty);
 	const [adding, setAdding] = useState(false);
@@ -57,7 +59,7 @@ export default function RemoteAgentPage(): React.JSX.Element {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title="Remote agent"
+				title={t('settings.tabs.remoteAgent')}
 				description="Connect remote Agent2Agent-compatible agents and delegate work to them."
 				action={
 					<Button
