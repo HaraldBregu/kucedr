@@ -1,5 +1,6 @@
 import type {
 	CatalogService,
+	CatalogStorage,
 	CatalogWebSearch,
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
@@ -491,6 +492,7 @@ export interface ModelsApi {
 export interface AppApi extends AppStorageApi {
 	models: () => Promise<CatalogModel[]>;
 	databases: () => Promise<CatalogService[]>;
+	storages: () => Promise<CatalogStorage[]>;
 	webSearches: () => Promise<CatalogWebSearch[]>;
 	mcps: () => Promise<CatalogService[]>;
 	channels: () => Promise<CatalogService[]>;
