@@ -4,6 +4,20 @@ import StorageProvidersPage from '../../../src/renderer/src/pages/settings/pages
 import type { StorageProvider, StorageProviderInput } from '../../../src/shared/storage_types';
 import mockTranslations from '../../../resources/i18n/en/main.json';
 
+jest.mock('../../../src/renderer/src/lib/providers', () => ({
+	storages: () => [
+		{
+			id: 'supabase-storage',
+			name: 'Supabase Storage',
+			metadata: {
+				protocol: 's3',
+				endpointTemplate: 'https://{projectRef}.storage.supabase.co/storage/v1/s3',
+				forcePathStyle: true,
+			},
+		},
+	],
+}));
+
 jest.mock('react-i18next', () => {
 	const t = (key: string, options?: Record<string, string>): string => {
 		let value: unknown = mockTranslations;
@@ -79,6 +93,34 @@ it('adds multiple independent S3 connections and retains existing entries', asyn
 			forcePathStyle: false,
 		})
 	);
+});
+
+it('uses a manifest storage preset without saving its endpoint template', async () => {
+	const user = userEvent.setup();
+	render(<StorageProvidersPage />);
+	await screen.findByText('No storage connections');
+	await user.click(screen.getByRole('button', { name: 'Add provider' }));
+	await user.click(screen.getByRole('combobox', { name: 'Provider' }));
+	await user.click(screen.getByRole('option', { name: 'Supabase Storage' }));
+	const form = within(screen.getByRole('form'));
+	expect(form.getByLabelText('Name')).toHaveValue('Supabase Storage');
+	expect(form.getByLabelText('Endpoint URL')).toHaveAttribute(
+		'placeholder',
+		'https://{projectRef}.storage.supabase.co/storage/v1/s3'
+	);
+	expect(form.getByLabelText('Endpoint URL')).toHaveValue('');
+	expect(form.getByRole('switch', { name: 'Use path-style addressing' })).toBeChecked();
+	await user.type(form.getByLabelText('Bucket'), 'files');
+	await user.type(form.getByLabelText('Access key ID'), 'access');
+	await user.type(form.getByLabelText('Secret access key'), 'secret');
+	expect(form.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
+	await user.type(form.getByLabelText('Endpoint URL'), 'https://abc.storage.supabase.co/storage/v1/s3');
+	await user.click(form.getByRole('button', { name: 'Save', exact: true }));
+	await waitFor(() => expect(api.saveProvider).toHaveBeenCalledWith(expect.objectContaining({
+		name: 'Supabase Storage',
+		endpoint: 'https://abc.storage.supabase.co/storage/v1/s3',
+		forcePathStyle: true,
+	})));
 });
 
 it('edits one connection without requiring or displaying its saved secret', async () => {
