@@ -66,7 +66,9 @@ describe('providers in app settings', () => {
 			baseUrl: 'https://plaintext-provider-url.example',
 		});
 
-		const persisted = JSON.stringify(mockStoreInstances.map((instance) => instance.store));
+		const persisted = JSON.stringify(
+			mockStoreInstances.find((instance) => 'trayEnabled' in instance.store)?.store
+		);
 		expect(persisted).not.toContain('plaintext-provider-secret');
 		expect(persisted).not.toContain('https://plaintext-provider-url.example');
 	});
@@ -124,7 +126,7 @@ describe('providers in app settings', () => {
 	});
 });
 
-describe('storage sync in app settings', () => {
+describe('storage sync in its dedicated settings store', () => {
 	it('round-trips folder sync and cron settings', () => {
 		const settings = {
 			providerId: 'a00c674a-c8c8-4d01-930f-ad690b3d0123',
@@ -134,6 +136,10 @@ describe('storage sync in app settings', () => {
 		};
 		saveStorageSettings(settings);
 		expect(getStorageSettings()).toEqual(settings);
+		expect(mockStoreInstances.find((instance) => 'trayEnabled' in instance.store)?.store)
+			.not.toHaveProperty('cloud');
+		expect(mockStoreInstances.find((instance) => 'syncCronExpression' in instance.store)?.store)
+			.toEqual(settings);
 		expect(storageProviders.resolve).toHaveBeenCalledWith(settings.providerId);
 	});
 
