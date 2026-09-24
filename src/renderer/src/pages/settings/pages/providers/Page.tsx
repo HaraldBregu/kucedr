@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, ExternalLink, LoaderCircle, MoreHorizontal, Pencil, Plus } from 'lucide-react';
+import {
+	AlertTriangle,
+	ExternalLink,
+	LoaderCircle,
+	MoreHorizontal,
+	Pencil,
+	Plus,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import ollamaDarkLogo from '@resources/providers/ollama/images/ollama-dark.svg';
@@ -303,9 +310,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							</Button>
 						</div>
 						<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-							{t(
-								connected ? 'settings.providers.configured' : 'settings.providers.notConfigured'
-							)}
+							{t(connected ? 'settings.providers.configured' : 'settings.providers.notConfigured')}
 						</p>
 					</ItemContent>
 					<ItemActions className="ml-auto flex-none justify-end">
@@ -322,12 +327,12 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								</Button>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent align="end">
-							<DropdownMenuItem
-								disabled={!provider.supported}
-								onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
-							>
-								{connected ? 'Edit API key' : 'Connect'}
-							</DropdownMenuItem>
+								<DropdownMenuItem
+									disabled={!provider.supported}
+									onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
+								>
+									{connected ? 'Edit API key' : 'Connect'}
+								</DropdownMenuItem>
 							</DropdownMenuContent>
 						</DropdownMenu>
 					</ItemActions>
@@ -344,7 +349,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										void saveProviderEntry(provider.id, 'models');
 									}
 								}}
-								placeholder={entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')}
+								placeholder={
+									entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
+								}
 								spellCheck={false}
 								type="text"
 								value={entry.apiKey}
@@ -354,7 +361,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								variant="outline"
 								size="sm"
 								disabled={savingThisProvider}
-								onClick={() => updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })}
+								onClick={() =>
+									updateProviderEntry(provider.id, { apiKey: entry.savedApiKey, editing: false })
+								}
 							>
 								{t('common.cancel')}
 							</Button>
@@ -574,12 +583,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				className="min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 			>
 				<div className="w-full">
-					<div
-						className={cn(
-							'flex min-h-9 items-center gap-3',
-							customProvider.editing && 'pb-3'
-						)}
-					>
+					<div className={cn('flex min-h-9 items-center gap-3', customProvider.editing && 'pb-3')}>
 						<ProviderAvatar
 							providerId="ollama"
 							name="Ollama"
@@ -616,7 +620,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											setCustomProvider((current) => ({ ...current, apiKey: '', editing: true }))
 										}
 									>
-										{connected ? t('settings.providers.localModels.edit') : t('settings.providers.localModels.connect')}
+										{connected
+											? t('settings.providers.localModels.edit')
+											: t('settings.providers.localModels.connect')}
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>
