@@ -574,12 +574,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		await window.mcp.delete(id);
 		await loadMcpServers();
 	};
-	const localModelsSection = section === 'models' && (
-		<SettingsSection title={t('settings.modelServices.localModels')}>
-			<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">{renderCustomProviderCard()}</div>
-		</SettingsSection>
-	);
-
 	return (
 		<SettingsPageShell className={embedded ? 'max-w-none p-0 sm:p-0' : undefined}>
 			{!embedded && (
@@ -597,18 +591,20 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					{error}
 				</SettingsNotice>
 			)}
-			{customProvider.savedBaseUrl && localModelsSection}
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
 						<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
-							{section === undefined && customProvider.savedBaseUrl && renderCustomProviderCard()}
 							{orderedModelProviders.map((provider) => renderProviderCard(provider, 'models'))}
-							{section === undefined && !customProvider.savedBaseUrl && renderCustomProviderCard()}
+							{section === undefined && renderCustomProviderCard()}
 						</div>
 					</SettingsSection>
 				)}
-			{!customProvider.savedBaseUrl && localModelsSection}
+			{section === 'models' && (
+				<SettingsSection title={t('settings.modelServices.localModels')}>
+					<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">{renderCustomProviderCard()}</div>
+				</SettingsSection>
+			)}
 
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>
