@@ -390,7 +390,9 @@ function SubmitButton({
 	readonly canSubmit: boolean;
 	readonly disabled?: boolean;
 	readonly onAction: () => void;
-}): ReactElement {
+}): ReactElement | null {
+	if (!isLoading && !canSubmit) return null;
+
 	const label = isLoading ? 'Stop generation' : 'Send message';
 	const iconKey = isLoading ? 'stop' : 'send';
 	const icon = isLoading ? (
