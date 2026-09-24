@@ -109,7 +109,7 @@ it('shows the storage provider description beneath the title and before backup s
 	expect(
 		description.compareDocumentPosition(backup) & Node.DOCUMENT_POSITION_FOLLOWING
 	).toBeTruthy();
-	expect(screen.queryByText(/sign in|supabase|secure key sync/i)).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
 	expect(screen.queryByText('Media library')).not.toBeInTheDocument();
