@@ -44,6 +44,7 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 
 it('shows account session data and switches to local use after sign-out', async () => {
 	const user = userEvent.setup();
+	const year = new Date().getFullYear();
 	const signedIn: AuthState = {
 		status: 'signedIn',
 		persistence: 'encrypted',
@@ -73,7 +74,10 @@ it('shows account session data and switches to local use after sign-out', async 
 	window.auth = auth;
 	Object.defineProperty(window, 'app', {
 		configurable: true,
-		value: { getActivity: jest.fn().mockResolvedValue([{ date: '2026-09-23', value: 12 }]) },
+		value: { getActivity: jest.fn().mockResolvedValue([
+			{ date: `${year - 1}-12-31`, value: 3 },
+			{ date: `${year}-01-01`, value: 12 },
+		]) },
 	});
 	const confirmSignOut = jest.fn(async () => true);
 	Object.defineProperty(window, 'win', {
@@ -90,7 +94,7 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(await screen.findByText('user@example.test')).toBeInTheDocument();
 	expect(await screen.findByText('Ada Byron')).toBeInTheDocument();
 	expect(screen.getByText('user-id')).toBeInTheDocument();
-	await waitFor(() => expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1'));
+	await waitFor(() => expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '2'));
 	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
 	expect(screen.getByText('settings.activity.description')).toBeInTheDocument();
 	expect(screen.getByTestId('activity-scroll')).toHaveClass('card-body');
@@ -98,10 +102,11 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-cell-size', '12');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'linear');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-heatmap-theme', 'light');
-	const year = new Date().getFullYear();
+	expect(screen.getByRole('option', { name: `settings.activity.currentYear (${year})` })).toBeInTheDocument();
+	expect(screen.getByRole('option', { name: `settings.activity.lastYear (${year - 1})` })).toBeInTheDocument();
 	await user.selectOptions(screen.getByRole('combobox', { name: 'settings.activity.range' }), 'lastYear');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-to', `${year - 1}-12-31`);
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '0');
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
 	await user.selectOptions(screen.getByRole('combobox', { name: 'settings.activity.range' }), 'currentYear');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
 	const cell = screen.getByRole('img', { name: 'settings.activity.day' });
