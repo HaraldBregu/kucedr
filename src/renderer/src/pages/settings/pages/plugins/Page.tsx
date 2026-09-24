@@ -96,7 +96,7 @@ const PluginsPage = (): React.JSX.Element => {
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
 			{catalog.length > 0 ? (
-				<div className="-mx-4 grid grid-cols-1 gap-x-6 gap-y-1 pb-4 md:grid-cols-2">
+				<div className="-mx-4 grid grid-cols-1 gap-x-4 gap-y-1 pb-4 md:grid-cols-2">
 					{catalog.map((service) => (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
