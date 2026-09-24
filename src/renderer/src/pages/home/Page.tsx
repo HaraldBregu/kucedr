@@ -262,7 +262,7 @@ function AttachmentTray({
 						key={attachment.id}
 						state={attachment.error ? 'error' : 'done'}
 						size="sm"
-						className={isAudio ? 'w-80' : 'w-64'}
+						className={cn('rounded-[16px]', isAudio ? 'w-80' : 'w-64')}
 					>
 						<AttachmentMedia variant={isImage ? 'image' : 'icon'}>
 							{isImage ? <Preview file={attachment.file} /> : <Icon />}
