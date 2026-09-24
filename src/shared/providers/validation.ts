@@ -12,8 +12,9 @@ const MODEL_SERVICE_TYPES = [
 	'embedding-model',
 ] as const;
 
-const SERVICE_TYPES = [...MODEL_SERVICE_TYPES, 'web-search', 'database', 'mcp', 'bot'] as const;
 const AUTHENTICATION_TYPES = ['api-key', 'oauth2', 'none'] as const;
+const DATABASE_TYPES = ['vector', 'sql', 'nosql'] as const;
+const MODEL_LOCATIONS = ['remote', 'local'] as const;
 
 const PROMPT_MODEL_SERVICE_TYPES = ['large-language-model', 'research-chat-model'] as const;
 const PROMPT_ATTACHMENT_KINDS = ['image', 'document', 'audio', 'video'] as const;
@@ -81,8 +82,9 @@ export function validateProviderManifest(value: unknown): string[] {
 	if (!isNonEmptyString(manifest.providerName)) {
 		errors.push('manifest.json: "providerName" must be a non-empty string.');
 	}
+	const isChannel = Array.isArray(manifest.bots);
 	if (
-		manifest.authentication !== undefined &&
+		(!isChannel || manifest.authentication !== undefined) &&
 		!AUTHENTICATION_TYPES.includes(manifest.authentication as (typeof AUTHENTICATION_TYPES)[number])
 	) {
 		errors.push(
@@ -103,81 +105,83 @@ export function validateProviderManifest(value: unknown): string[] {
 			errors.push(`manifest.json: "${field}" must be an /images/ path when present.`);
 		}
 	}
-	if (!Array.isArray(manifest.services))
-		return [...errors, 'manifest.json: "services" must be an array.'];
-	return [
-		...errors,
-		...manifest.services.flatMap((value, index) => {
+	if (manifest.services !== undefined)
+		errors.push('manifest.json: "services" has been replaced by capability fields.');
+	for (const key of ['models', 'mcp_servers', 'databases', 'web_search', 'bots'] as const) {
+		const entries = manifest[key];
+		if (entries === undefined && (isChannel || key === 'web_search' || key === 'bots')) continue;
+		if (!Array.isArray(entries)) {
+			errors.push(`manifest.json: "${key}" must be an array.`);
+			continue;
+		}
+		entries.forEach((value, index) => {
+			const itemPath = `manifest.json: ${key}[${index}]`;
 			if (typeof value !== 'object' || value === null || Array.isArray(value)) {
-				return [`manifest.json: services[${index}] must be an object.`];
+				errors.push(`${itemPath} must be an object.`);
+				return;
 			}
-			const service = value as Record<string, unknown>;
-			const serviceErrors: string[] = [];
-			if (!isNonEmptyString(service.id))
-				serviceErrors.push(`manifest.json: services[${index}].id must be a non-empty string.`);
-			if (!isNonEmptyString(service.name))
-				serviceErrors.push(`manifest.json: services[${index}].name must be a non-empty string.`);
-			if (
-				service.authentication !== undefined &&
-				!AUTHENTICATION_TYPES.includes(
-					service.authentication as (typeof AUTHENTICATION_TYPES)[number]
-				)
-			) {
-				serviceErrors.push(
-					`manifest.json: services[${index}].authentication must be one of ${AUTHENTICATION_TYPES.join(', ')}.`
-				);
+			const entry = value as Record<string, unknown>;
+			if (!isNonEmptyString(entry.id)) errors.push(`${itemPath}.id must be a non-empty string.`);
+			if (!isNonEmptyString(entry.name)) errors.push(`${itemPath}.name must be a non-empty string.`);
+			if (!isNonEmptyString(entry.url)) errors.push(`${itemPath}.url must be a non-empty string.`);
+			if (key !== 'bots' && !AUTHENTICATION_TYPES.includes(entry.authentication as (typeof AUTHENTICATION_TYPES)[number])) {
+				errors.push(`${itemPath}.authentication must be one of ${AUTHENTICATION_TYPES.join(', ')}.`);
 			}
-			if (service.description !== undefined && !isNonEmptyString(service.description)) {
-				serviceErrors.push(
-					`manifest.json: services[${index}].description must be a non-empty string when present.`
-				);
+			if (entry.description !== undefined && !isNonEmptyString(entry.description)) {
+				errors.push(`${itemPath}.description must be a non-empty string when present.`);
 			}
 			for (const field of ['icon_dark_url', 'icon_light_url'] as const) {
-				if (
-					service[field] !== undefined &&
-					(!isNonEmptyString(service[field]) || !service[field].startsWith('/images/'))
-				) {
-					serviceErrors.push(
-						`manifest.json: services[${index}].${field} must be an /images/ path when present.`
-					);
+				if (entry[field] !== undefined && (!isNonEmptyString(entry[field]) || !entry[field].startsWith('/images/'))) {
+					errors.push(`${itemPath}.${field} must be an /images/ path when present.`);
 				}
 			}
-			if (!SERVICE_TYPES.includes(service.type as (typeof SERVICE_TYPES)[number])) {
-				serviceErrors.push(
-					`manifest.json: services[${index}].type must be one of ${SERVICE_TYPES.join(', ')}.`
-				);
-			}
-			if (!isNonEmptyString(service.url))
-				serviceErrors.push(`manifest.json: services[${index}].url must be a non-empty string.`);
-			const metadata = service.metadata;
-			const isPromptModel = PROMPT_MODEL_SERVICE_TYPES.includes(
-				service.type as (typeof PROMPT_MODEL_SERVICE_TYPES)[number]
-			);
-			if (
-				isPromptModel &&
-				(typeof metadata !== 'object' || metadata === null || Array.isArray(metadata))
-			) {
-				serviceErrors.push(
-					`manifest.json: services[${index}].metadata must be an object for prompt models.`
-				);
-			} else if (typeof metadata === 'object' && metadata !== null && !Array.isArray(metadata)) {
-				const promptAttachments = (metadata as Record<string, unknown>).promptAttachments;
-				if (isPromptModel && promptAttachments === undefined) {
-					serviceErrors.push(
-						`manifest.json: services[${index}].metadata.promptAttachments must be declared for prompt models.`
-					);
-				} else if (promptAttachments !== undefined) {
-					serviceErrors.push(
-						...validatePromptAttachments(
-							promptAttachments,
-							`manifest.json: services[${index}].metadata.promptAttachments`
-						)
-					);
+			if (key === 'models') {
+				if (!MODEL_SERVICE_TYPES.includes(entry.type as (typeof MODEL_SERVICE_TYPES)[number]))
+					errors.push(`${itemPath}.type must be one of ${MODEL_SERVICE_TYPES.join(', ')}.`);
+				if (!MODEL_LOCATIONS.includes(entry.location as (typeof MODEL_LOCATIONS)[number]))
+					errors.push(`${itemPath}.location must be remote or local.`);
+				const metadata = entry.metadata;
+				const isPromptModel = PROMPT_MODEL_SERVICE_TYPES.includes(entry.type as (typeof PROMPT_MODEL_SERVICE_TYPES)[number]);
+				if (isPromptModel && (typeof metadata !== 'object' || metadata === null || Array.isArray(metadata))) {
+					errors.push(`${itemPath}.metadata must be an object for prompt models.`);
+				} else if (typeof metadata === 'object' && metadata !== null && !Array.isArray(metadata)) {
+					const attachments = (metadata as Record<string, unknown>).promptAttachments;
+					if (isPromptModel && attachments === undefined)
+						errors.push(`${itemPath}.metadata.promptAttachments must be declared for prompt models.`);
+					else if (attachments !== undefined)
+						errors.push(...validatePromptAttachments(attachments, `${itemPath}.metadata.promptAttachments`));
 				}
 			}
-			return serviceErrors;
-		}),
-	];
+			if (key === 'databases' && !DATABASE_TYPES.includes(entry.type as (typeof DATABASE_TYPES)[number])) {
+				errors.push(`${itemPath}.type must be one of ${DATABASE_TYPES.join(', ')}.`);
+			}
+		});
+	}
+	if (manifest.storage !== undefined) {
+		const storage = manifest.storage;
+		if (typeof storage !== 'object' || storage === null || Array.isArray(storage)) {
+			errors.push('manifest.json: "storage" must be an object.');
+		} else {
+			const entry = storage as Record<string, unknown>;
+			if (!isNonEmptyString(entry.id)) errors.push('manifest.json: storage.id must be a non-empty string.');
+			if (!isNonEmptyString(entry.name)) errors.push('manifest.json: storage.name must be a non-empty string.');
+			if (!AUTHENTICATION_TYPES.includes(entry.authentication as (typeof AUTHENTICATION_TYPES)[number]))
+				errors.push(`manifest.json: storage.authentication must be one of ${AUTHENTICATION_TYPES.join(', ')}.`);
+			const metadata = entry.metadata;
+			if (typeof metadata !== 'object' || metadata === null || Array.isArray(metadata) || (metadata as Record<string, unknown>).protocol !== 's3') {
+				errors.push('manifest.json: storage.metadata.protocol must be s3.');
+			} else {
+				const fields = metadata as Record<string, unknown>;
+				for (const field of ['region', 'endpointTemplate'] as const) {
+					if (fields[field] !== undefined && !isNonEmptyString(fields[field]))
+						errors.push(`manifest.json: storage.metadata.${field} must be a non-empty string when present.`);
+				}
+				if (fields.forcePathStyle !== undefined && typeof fields.forcePathStyle !== 'boolean')
+					errors.push('manifest.json: storage.metadata.forcePathStyle must be a boolean when present.');
+			}
+		}
+	}
+	return errors;
 }
 
 export function parseProviderManifest(value: unknown): ProviderManifest | undefined {
