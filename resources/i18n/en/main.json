@@ -267,6 +267,22 @@
 		"integrations": {
 			"title": "Plugins",
 			"description": "Connect the services Kucedr can use on your behalf.",
+			"databaseType": "{{type}} database",
+			"storageType": "S3-compatible storage",
+			"details": "Details",
+			"provider": "Provider",
+			"type": "Type",
+			"authentication": "Authentication",
+			"endpoint": "Endpoint",
+			"region": "Region",
+			"mcpType": "MCP server",
+			"notFound": "Plugin not found",
+			"authTypes": {
+				"api-key": "API key",
+				"oauth2": "OAuth 2.0",
+				"none": "None",
+				"s3-access-key": "S3 access key"
+			},
 			"add": "Add {{name}}",
 			"options": "Options for {{name}}",
 			"remove": "Remove {{name}}",
