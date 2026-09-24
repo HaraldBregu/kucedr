@@ -357,6 +357,19 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									{t('common.save')}
 								</Button>
 							</>
+						) : !provider.supported ? (
+							<Button type="button" variant="ghost" size="sm" disabled>
+								Soon
+							</Button>
+						) : !connected ? (
+							<Button
+								type="button"
+								variant="ghost"
+								size="sm"
+								onClick={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
+							>
+								Connect
+							</Button>
 						) : (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
@@ -372,10 +385,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								</DropdownMenuTrigger>
 								<DropdownMenuContent align="end">
 									<DropdownMenuItem
-										disabled={!provider.supported}
 										onSelect={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
 									>
-										{connected ? 'Edit API key' : 'Connect'}
+										Edit API key
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>
@@ -399,8 +411,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						className={cn(
 							'grid min-h-12 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2.5 px-4 py-3.5',
 							editing && kind === 'databases' && 'pb-3',
-							editing &&
-								(kind === 'models' || kind === 'search') &&
+								editing &&
+									kind === 'search' &&
 								'sm:grid-cols-[2rem_minmax(0,1fr)_minmax(21rem,26rem)]'
 						)}
 					>
@@ -434,7 +446,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						</div>
 						<div className="flex min-w-0 shrink-0 justify-end gap-2">
 							{provider.supported ? (
-								editing && (kind === 'models' || kind === 'search') && entry ? (
+									editing && kind === 'search' && entry ? (
 									<>
 										<Input
 											aria-label={`${provider.name} API key`}
