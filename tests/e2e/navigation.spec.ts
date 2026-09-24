@@ -135,6 +135,8 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('border-radius', '16px');
 	await expect(composer).toHaveCSS('border-radius', '16px');
 	await expect(controls).toBeVisible();
+	await expect(controls).toHaveCSS('padding-left', '8px');
+	await expect(controls).toHaveCSS('padding-right', '8px');
 	expect(
 		await controls.evaluate((element) =>
 			element.previousElementSibling?.hasAttribute('data-expanded')
