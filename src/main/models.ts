@@ -208,8 +208,10 @@ function iconUrl(providerDir: string, iconPath: string | undefined): string | un
 }
 
 function toPublicProvider(entry: ProviderManifest, providerDir: string): PublicProvider {
-	const baseUrl = [...(entry.models ?? []), ...(entry.mcp_servers ?? []), ...(entry.databases ?? [])]
-		.find((service) => service.url?.startsWith('http'))?.url ?? '';
+	const baseUrl =
+		[...(entry.models ?? []), ...(entry.mcp_servers ?? []), ...(entry.databases ?? [])].find(
+			(service) => service.url?.startsWith('http')
+		)?.url ?? '';
 	const iconDarkUrl = iconUrl(providerDir, entry.icon_dark_url);
 	const iconLightUrl = iconUrl(providerDir, entry.icon_light_url);
 	return {
@@ -263,24 +265,24 @@ function readCatalog(): Catalog {
 			return type ? [{ ...model, type }] : [];
 		});
 		models.push(...modelEntries.map((model) => ({ ...model, provider })));
-		databases.push(
-			...(entry.databases ?? []).map((database) => ({ ...database, provider }))
-		);
+		databases.push(...(entry.databases ?? []).map((database) => ({ ...database, provider })));
 		webSearches.push(
-			...(entry.web_search ?? []).map((search): CatalogEntryWebSearch & { provider: PublicProvider } => ({
-				...search,
-				type: 'web-search',
-				provider,
-			}))
+			...(entry.web_search ?? []).map(
+				(search): CatalogEntryWebSearch & { provider: PublicProvider } => ({
+					...search,
+					type: 'web-search',
+					provider,
+				})
+			)
 		);
 		mcps.push(
 			...(entry.mcp_servers ?? []).map((service) => ({
-					...service,
-					type: 'mcp',
-					provider,
-					iconDarkUrl: iconUrl(providerDir, service.icon_dark_url) ?? provider.iconDarkUrl,
-					iconLightUrl: iconUrl(providerDir, service.icon_light_url) ?? provider.iconLightUrl,
-				}))
+				...service,
+				type: 'mcp',
+				provider,
+				iconDarkUrl: iconUrl(providerDir, service.icon_dark_url) ?? provider.iconDarkUrl,
+				iconLightUrl: iconUrl(providerDir, service.icon_light_url) ?? provider.iconLightUrl,
+			}))
 		);
 		if (entry.storage) storages.push({ ...entry.storage, provider });
 	}

@@ -18,11 +18,13 @@ const PDF_RULE = {
 
 function expectedPromptAttachments(providerId: string, modelId: string): unknown[] {
 	if (providerId === 'deepseek' && modelId === 'deepseek-flash') {
-		return [{
-			kind: 'image',
-			mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
-			extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
-		}];
+		return [
+			{
+				kind: 'image',
+				mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+				extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
+			},
+		];
 	}
 	if (['anthropic', 'openai', 'reka'].includes(providerId)) {
 		return [IMAGE_RULE, PDF_RULE];
@@ -78,7 +80,12 @@ describe('provider manifest validation', () => {
 				providerId: 'notion',
 				providerName: 'Notion',
 				mcp_servers: [
-					{ id: 'notion-mcp', name: 'Notion MCP', authentication: 'oauth2', url: 'https://mcp.notion.com/mcp' },
+					{
+						id: 'notion-mcp',
+						name: 'Notion MCP',
+						authentication: 'oauth2',
+						url: 'https://mcp.notion.com/mcp',
+					},
 				],
 			})
 		).toBeDefined();
@@ -119,16 +126,38 @@ describe('provider manifest validation', () => {
 		const manifest = {
 			providerId: 'acme',
 			providerName: 'Acme',
-			databases: [{ id: 'db', name: 'Database', type: 'sql', authentication: 'api-key', url: 'https://db.acme.test' }],
-			storage: { id: 'files', name: 'Files', authentication: 'api-key', metadata: { protocol: 's3', region: 'auto' } },
+			databases: [
+				{
+					id: 'db',
+					name: 'Database',
+					type: 'sql',
+					authentication: 'api-key',
+					url: 'https://db.acme.test',
+				},
+			],
+			storage: {
+				id: 'files',
+				name: 'Files',
+				authentication: 'api-key',
+				metadata: { protocol: 's3', region: 'auto' },
+			},
 		};
 		expect(validateProviderManifest(manifest)).toEqual([]);
-		expect(validateProviderManifest({ ...manifest, databases: { ...manifest.databases[0] } }))
-			.toContainEqual(expect.stringContaining('"databases" must be an array'));
-		expect(validateProviderManifest({ ...manifest, databases: [{ ...manifest.databases[0], type: 'unknown' }] }))
-			.toContainEqual(expect.stringContaining('databases[0].type'));
-		expect(validateProviderManifest({ ...manifest, storage: { ...manifest.storage, metadata: { protocol: 'unknown' } } }))
-			.toContainEqual(expect.stringContaining('storage.metadata.protocol'));
+		expect(
+			validateProviderManifest({ ...manifest, databases: { ...manifest.databases[0] } })
+		).toContainEqual(expect.stringContaining('"databases" must be an array'));
+		expect(
+			validateProviderManifest({
+				...manifest,
+				databases: [{ ...manifest.databases[0], type: 'unknown' }],
+			})
+		).toContainEqual(expect.stringContaining('databases[0].type'));
+		expect(
+			validateProviderManifest({
+				...manifest,
+				storage: { ...manifest.storage, metadata: { protocol: 'unknown' } },
+			})
+		).toContainEqual(expect.stringContaining('storage.metadata.protocol'));
 	});
 
 	it('accepts supported authentication types and rejects unknown ones', () => {
@@ -327,7 +356,12 @@ describe('provider manifest validation', () => {
 			expect(validateProviderManifest(manifest)).toEqual([]);
 			expect(manifest.authentication).toMatch(/^(api-key|oauth2|none)$/);
 			expect(
-				[...manifest.models, ...manifest.mcp_servers, ...manifest.databases, ...(manifest.web_search ?? [])].every(
+				[
+					...manifest.models,
+					...manifest.mcp_servers,
+					...manifest.databases,
+					...(manifest.web_search ?? []),
+				].every(
 					(service: { authentication?: string }) =>
 						service.authentication === 'api-key' ||
 						service.authentication === 'oauth2' ||

@@ -114,13 +114,20 @@ it('uses a manifest storage preset without saving its endpoint template', async 
 	await user.type(form.getByLabelText('Access key ID'), 'access');
 	await user.type(form.getByLabelText('Secret access key'), 'secret');
 	expect(form.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
-	await user.type(form.getByLabelText('Endpoint URL'), 'https://abc.storage.supabase.co/storage/v1/s3');
+	await user.type(
+		form.getByLabelText('Endpoint URL'),
+		'https://abc.storage.supabase.co/storage/v1/s3'
+	);
 	await user.click(form.getByRole('button', { name: 'Save', exact: true }));
-	await waitFor(() => expect(api.saveProvider).toHaveBeenCalledWith(expect.objectContaining({
-		name: 'Supabase Storage',
-		endpoint: 'https://abc.storage.supabase.co/storage/v1/s3',
-		forcePathStyle: true,
-	})));
+	await waitFor(() =>
+		expect(api.saveProvider).toHaveBeenCalledWith(
+			expect.objectContaining({
+				name: 'Supabase Storage',
+				endpoint: 'https://abc.storage.supabase.co/storage/v1/s3',
+				forcePathStyle: true,
+			})
+		)
+	);
 });
 
 it('edits one connection without requiring or displaying its saved secret', async () => {

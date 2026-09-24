@@ -240,7 +240,10 @@ export interface AgentInvokeChannelMap {
 		result: import('./agent_types').AgentMediaModelSettings;
 	};
 	[AgentChannels.getToolModel]: {
-		args: [kind: import('./agent_types').AgentToolModelKind, profileId?: import('./agent_tools').AgentToolProfileId];
+		args: [
+			kind: import('./agent_types').AgentToolModelKind,
+			profileId?: import('./agent_tools').AgentToolProfileId,
+		];
 		result: import('./agent_types').AgentMediaModelSettings;
 	};
 	[AgentChannels.setToolModel]: {

@@ -3,7 +3,13 @@ import { AlertTriangle, LoaderCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { storages } from '@/lib/providers';
@@ -89,7 +95,11 @@ export default function StorageForm({
 					)}
 					<fieldset disabled={saving} className="grid min-w-0 gap-4 sm:grid-cols-2">
 						{!provider && presets.length > 0 && (
-							<SettingsField id="storage-preset" label={t('settings.storageProviders.fields.provider')} className="sm:col-span-2">
+							<SettingsField
+								id="storage-preset"
+								label={t('settings.storageProviders.fields.provider')}
+								className="sm:col-span-2"
+							>
 								<Select
 									value={presetId}
 									onValueChange={(value) => {
@@ -104,10 +114,16 @@ export default function StorageForm({
 										}));
 									}}
 								>
-									<SelectTrigger id="storage-preset" className="w-full"><SelectValue /></SelectTrigger>
+									<SelectTrigger id="storage-preset" className="w-full">
+										<SelectValue />
+									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value="custom">{t('settings.storageProviders.custom')}</SelectItem>
-										{presets.map((entry) => <SelectItem key={entry.id} value={entry.id}>{entry.name}</SelectItem>)}
+										{presets.map((entry) => (
+											<SelectItem key={entry.id} value={entry.id}>
+												{entry.name}
+											</SelectItem>
+										))}
 									</SelectContent>
 								</Select>
 							</SettingsField>
@@ -116,7 +132,9 @@ export default function StorageForm({
 							const description =
 								field.key === 'endpoint'
 									? preset
-										? t('settings.storageProviders.presetEndpointHint', { endpoint: preset.metadata.endpointTemplate ?? '' })
+										? t('settings.storageProviders.presetEndpointHint', {
+												endpoint: preset.metadata.endpointTemplate ?? '',
+											})
 										: t('settings.storageProviders.endpointHint')
 									: field.key === 'secretAccessKey' && provider?.hasSecretAccessKey
 										? t('settings.storageProviders.secretHint')
@@ -138,11 +156,15 @@ export default function StorageForm({
 										autoFocus={field.key === 'name'}
 										spellCheck={false}
 										aria-describedby={description ? `storage-${field.key}-description` : undefined}
-											required={
+										required={
 											(field.key !== 'endpoint' || !!preset) &&
 											!(field.key === 'secretAccessKey' && provider?.hasSecretAccessKey)
 										}
-											placeholder={field.key === 'endpoint' ? preset?.metadata.endpointTemplate ?? field.placeholder : field.placeholder}
+										placeholder={
+											field.key === 'endpoint'
+												? (preset?.metadata.endpointTemplate ?? field.placeholder)
+												: field.placeholder
+										}
 										value={draft[field.key] ?? ''}
 										onChange={(event) =>
 											setDraft((current) => ({ ...current, [field.key]: event.target.value }))
