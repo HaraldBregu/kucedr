@@ -167,8 +167,8 @@ const PluginsPage = (): React.JSX.Element => {
 										size="icon-sm"
 										className="hover:bg-transparent dark:hover:bg-transparent"
 										disabled={savingId === service.id}
-										onClick={() => {
-										event.stopPropagation();
+										onClick={(event) => {
+											event.stopPropagation();
 											if (!servers[service.id] && service.url?.includes('{tenantId}')) {
 												setError('');
 												setSelectedMicrosoft(service);
@@ -187,9 +187,18 @@ const PluginsPage = (): React.JSX.Element => {
 					{databaseCatalog.map((database) => (
 						<Item
 							key={`${database.provider.id}-${database.id}`}
+							role="link"
+							tabIndex={0}
+							onClick={() => navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)}
+							onKeyDown={(event) => {
+								if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+									event.preventDefault();
+									navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`);
+								}
+							}}
 							variant="ghost"
 							size="md"
-							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+							className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 						>
 							<ProviderAvatar
 								providerId={database.provider.id}
@@ -203,7 +212,7 @@ const PluginsPage = (): React.JSX.Element => {
 									{database.name}
 								</ItemTitle>
 								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-									{t('settings.integrations.databaseType', { type: database.type })}
+									{database.description ?? t('settings.integrations.databaseType', { type: database.type })}
 								</p>
 							</ItemContent>
 							<ItemActions className="ml-auto flex-none justify-end">
@@ -211,7 +220,10 @@ const PluginsPage = (): React.JSX.Element => {
 									variant="ghost"
 									size="icon-sm"
 									className="hover:bg-transparent dark:hover:bg-transparent"
-									onClick={() => navigate('/settings/providers/database')}
+									onClick={(event) => {
+										event.stopPropagation();
+										navigate('/settings/providers/database');
+									}}
 									aria-label={t('settings.integrations.add', { name: database.name })}
 								>
 									<Plus className="size-4" />
@@ -222,9 +234,18 @@ const PluginsPage = (): React.JSX.Element => {
 					{storageCatalog.map((storage) => (
 						<Item
 							key={`${storage.provider.id}-${storage.id}`}
+							role="link"
+							tabIndex={0}
+							onClick={() => navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)}
+							onKeyDown={(event) => {
+								if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+									event.preventDefault();
+									navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`);
+								}
+							}}
 							variant="ghost"
 							size="md"
-							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+							className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 						>
 							<ProviderAvatar
 								providerId={storage.provider.id}
@@ -238,7 +259,7 @@ const PluginsPage = (): React.JSX.Element => {
 									{storage.name}
 								</ItemTitle>
 								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-									{t('settings.integrations.storageType')}
+									{storage.description ?? t('settings.integrations.storageType')}
 								</p>
 							</ItemContent>
 							<ItemActions className="ml-auto flex-none justify-end">
@@ -246,7 +267,10 @@ const PluginsPage = (): React.JSX.Element => {
 									variant="ghost"
 									size="icon-sm"
 									className="hover:bg-transparent dark:hover:bg-transparent"
-									onClick={() => navigate('/settings/providers/storage')}
+									onClick={(event) => {
+										event.stopPropagation();
+										navigate('/settings/providers/storage');
+									}}
 									aria-label={t('settings.integrations.add', { name: storage.name })}
 								>
 									<Plus className="size-4" />
