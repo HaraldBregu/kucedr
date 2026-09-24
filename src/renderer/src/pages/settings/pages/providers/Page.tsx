@@ -263,8 +263,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		catalog: readonly ProviderCatalogItem[],
 		kind: ProviderKind
 	): ProviderCatalogItem[] =>
-		[...catalog].sort((first, second) =>
-			Number(isConnected(second, kind)) - Number(isConnected(first, kind))
+		[...catalog].sort(
+			(first, second) => Number(isConnected(second, kind)) - Number(isConnected(first, kind))
 		);
 
 	const renderProviderCard = (

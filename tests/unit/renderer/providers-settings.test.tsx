@@ -52,9 +52,9 @@ beforeEach(() => {
 			apiConfigurationUrl: 'https://platform.openai.com/api-keys',
 		},
 	]);
-	jest.mocked(actionableSearchCatalog).mockReturnValue([
-		{ id: 'brave', name: 'Brave', capabilities: 'Web search', supported: true },
-	]);
+	jest
+		.mocked(actionableSearchCatalog)
+		.mockReturnValue([{ id: 'brave', name: 'Brave', capabilities: 'Web search', supported: true }]);
 	jest.mocked(databaseCatalog).mockReturnValue([
 		{
 			id: 'pinecone',
@@ -324,9 +324,9 @@ it('places connected model providers before unconnected ones', async () => {
 		{ id: 'anthropic', name: 'Anthropic', capabilities: '', supported: true },
 		{ id: 'deepseek', name: 'DeepSeek', capabilities: '', supported: true },
 	]);
-	jest.mocked(window.provider.list).mockResolvedValue([
-		{ id: 'anthropic', name: 'Anthropic', apiKey: 'saved-key' },
-	]);
+	jest
+		.mocked(window.provider.list)
+		.mockResolvedValue([{ id: 'anthropic', name: 'Anthropic', apiKey: 'saved-key' }]);
 	render(
 		<MemoryRouter>
 			<ProvidersPage section="models" />
@@ -334,7 +334,9 @@ it('places connected model providers before unconnected ones', async () => {
 	);
 	await screen.findByText('Configured');
 	expect(
-		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map((heading) => heading.textContent)
+		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map(
+			(heading) => heading.textContent
+		)
 	).toEqual(['Anthropic', 'OpenAI', 'DeepSeek']);
 });
 
@@ -354,7 +356,9 @@ it('places connected search providers before unconnected ones', async () => {
 	);
 	await screen.findByText('Configured');
 	expect(
-		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map((heading) => heading.textContent)
+		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map(
+			(heading) => heading.textContent
+		)
 	).toEqual(['Tavily', 'Brave']);
 });
 
@@ -363,9 +367,9 @@ it('places connected database providers before unconnected ones', async () => {
 		{ id: 'pinecone', name: 'Pinecone', capabilities: '', supported: true },
 		{ id: 'weaviate', name: 'Weaviate', capabilities: '', supported: true },
 	]);
-	jest.mocked(window.provider.list).mockResolvedValue([
-		{ id: 'weaviate', name: 'Weaviate', apiKey: 'saved-key' },
-	]);
+	jest
+		.mocked(window.provider.list)
+		.mockResolvedValue([{ id: 'weaviate', name: 'Weaviate', apiKey: 'saved-key' }]);
 	render(
 		<MemoryRouter>
 			<ProvidersPage section="databases" />
@@ -373,6 +377,8 @@ it('places connected database providers before unconnected ones', async () => {
 	);
 	await screen.findByText('Configured');
 	expect(
-		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map((heading) => heading.textContent)
+		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map(
+			(heading) => heading.textContent
+		)
 	).toEqual(['Weaviate', 'Pinecone']);
 });
