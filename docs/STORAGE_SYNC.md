@@ -85,7 +85,7 @@ alone can leave published versions without content or content without discoverab
 
 ## Service setup
 
-Apply `supabase/migrations/20260923000000_storage_versions.sql` to the intended Supabase
+Apply both migrations under `supabase/migrations/` in filename order to the intended Supabase
 project before enabling version sync. Deploy the `storage-provider`, `storage-upload`,
 `storage-publish`, and `storage-download` Edge Functions from `supabase/functions/`. Configure
 `STORAGE_PROVIDER_ENCRYPTION_KEY` as a base64-encoded 32-byte server secret; generate it with

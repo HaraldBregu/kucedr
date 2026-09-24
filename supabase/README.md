@@ -1,6 +1,10 @@
 # File sync backend
 
-Apply `migrations/20260923000000_storage_versions.sql` to the Supabase project before deploying the storage Edge Functions. This migration adds only `storage_*` objects; it does not change existing chat or backup tables. Deploy `storage-provider`, `storage-upload`, `storage-publish`, and `storage-download` with Supabase JWT verification enabled.
+Apply both `migrations/20260923000000_storage_versions.sql` and
+`migrations/20260924140017_storage_provider_connections.sql`, in order, to the Supabase project
+before deploying the storage Edge Functions. These migrations add only `storage_*` objects; they
+do not change existing chat or backup tables. Deploy `storage-provider`, `storage-upload`,
+`storage-publish`, and `storage-download` with Supabase JWT verification enabled.
 
 Set these secrets in the Edge Function environment:
 
