@@ -1,10 +1,12 @@
 const getSearchSettings = jest.fn();
 const saveSearchEngine = jest.fn();
+const removeSearchEngine = jest.fn();
 const selectSearchEngine = jest.fn();
 
 jest.mock('../../../../src/main/search', () => ({
 	getSearchSettings,
 	saveSearchEngine,
+	removeSearchEngine,
 	selectSearchEngine,
 }));
 
@@ -34,6 +36,10 @@ describe('SearchIpc', () => {
 		);
 		expect(registerCommandWithEvent).toHaveBeenCalledWith(
 			SearchChannels.saveEngine,
+			expect.any(Function)
+		);
+		expect(registerCommandWithEvent).toHaveBeenCalledWith(
+			SearchChannels.removeEngine,
 			expect.any(Function)
 		);
 		expect(registerCommandWithEvent).toHaveBeenCalledWith(

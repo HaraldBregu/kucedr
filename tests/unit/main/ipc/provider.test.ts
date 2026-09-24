@@ -3,6 +3,7 @@ const registerCommandWithEvent = jest.fn();
 const getProvider = jest.fn();
 const listProviders = jest.fn();
 const setProvider = jest.fn();
+const deleteProvider = jest.fn();
 const getChannelProvider = jest.fn();
 const listChannelProviders = jest.fn();
 const setChannelProvider = jest.fn();
@@ -22,6 +23,7 @@ jest.mock('../../../../src/main/settings_store', () => ({
 	getProvider,
 	listProviders,
 	setProvider,
+	deleteProvider,
 }));
 
 jest.mock('../../../../src/main/channels', () => ({
@@ -68,6 +70,12 @@ beforeEach(() => {
 });
 
 describe('provider credential IPC boundary', () => {
+	it('removes a saved provider key from the requested collection', () => {
+		register();
+		handler(registerCommandWithEvent, ProviderChannels.remove)({}, 'Pinecone', 'databases');
+		expect(deleteProvider).toHaveBeenCalledWith('pinecone', 'databases');
+	});
+
 	it('returns API keys from get and list', async () => {
 		register();
 		const provider = {

@@ -24,6 +24,7 @@ import { searchTavily } from '../../../../src/main/search/adapters/tavily';
 import { getSearchKey } from '../../../../src/main/search/search_get_key';
 import { getSearchSettings } from '../../../../src/main/search/search_get_settings';
 import { saveSearchEngine } from '../../../../src/main/search/search_save_engine';
+import { removeSearchEngine } from '../../../../src/main/search/search_remove_engine';
 import { selectSearchEngine } from '../../../../src/main/search/search_select_engine';
 import { getSearchProviders, setSearchProviders } from '../../../../src/main/search/search_store';
 import { getSearchEngine, setSearchEngine } from '../../../../src/main/agent/agent_store';
@@ -92,6 +93,22 @@ describe('search settings', () => {
 	it('rejects empty credentials and unconfigured selections', () => {
 		expect(() => saveSearchEngine('brave', { apiKey: ' ' })).toThrow('API key is required');
 		expect(() => selectSearchEngine('tavily')).toThrow('Configure this search engine');
+	});
+
+	it('removes one key and clears its selection only when selected', () => {
+		saveSearchEngine('brave', { apiKey: 'brave-key' });
+		saveSearchEngine('tavily', { apiKey: 'tavily-key' });
+		selectSearchEngine('brave');
+		expect(removeSearchEngine('tavily')).toEqual({
+			engineId: 'brave',
+			configured: { brave: true, tavily: false },
+		});
+		expect(removeSearchEngine('brave')).toEqual({
+			engineId: null,
+			configured: { brave: false, tavily: false },
+		});
+		expect(getSearchProviders()).toEqual([]);
+		expect(getSearchEngine()).toEqual({ providerId: '', providerName: '', enabled: false });
 	});
 
 	it('falls back to Brave environment credentials without exposing them as stored', () => {
