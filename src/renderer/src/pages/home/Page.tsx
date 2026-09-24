@@ -977,17 +977,17 @@ function PageContent(): ReactElement {
 								}
 								trailingAction={
 									<SubmitButton
-											isLoading={agent.isLoading}
-											canSubmit={canSubmit}
-											forceSubmit={planCommandActive || goalCommandActive}
-											disabled={
-												voiceBusy ||
-												hasAttachmentErrors ||
-												(planCommandActive && !hasPromptText) ||
-												(goalCommandActive && !hasGoalObjective)
-											}
-											onAction={handlePrimaryAction}
-										/>
+										isLoading={agent.isLoading}
+										canSubmit={canSubmit}
+										forceSubmit={planCommandActive || goalCommandActive}
+										disabled={
+											voiceBusy ||
+											hasAttachmentErrors ||
+											(planCommandActive && !hasPromptText) ||
+											(goalCommandActive && !hasGoalObjective)
+										}
+										onAction={handlePrimaryAction}
+									/>
 								}
 							/>
 						</div>

@@ -433,7 +433,7 @@ function PromptInput({
 									transition.duration === 0 || contentHeight === undefined
 										? 'auto'
 										: contentHeight + 2,
-							borderRadius: detached || isConversationMode || !isPromptExpanded ? 28 : 12,
+								borderRadius: detached || isConversationMode || !isPromptExpanded ? 28 : 12,
 							}}
 							transition={transition}
 							onClick={isConversationMode ? onClick : handleClick}
@@ -459,9 +459,9 @@ function PromptInput({
 										'relative shrink-0',
 										isConversationMode
 											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
-										: detached
-											? 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 p-0'
-											: 'grid grid-cols-[auto_minmax(0,1fr)_auto] content-end items-center gap-x-2 p-1',
+											: detached
+												? 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 p-0'
+												: 'grid grid-cols-[auto_minmax(0,1fr)_auto] content-end items-center gap-x-2 p-1',
 										!isConversationMode &&
 											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12'),
 										detached && 'min-h-0'
@@ -509,21 +509,24 @@ function PromptInput({
 													{trailingAction}
 												</div>
 											) : (
-											<>
-											{header ? (
-												<motion.div
-													layout="position"
-													transition={transition}
-													className="col-span-3 col-start-1 row-start-1 mx-3 mb-2 mt-2"
-												>
-													{header}
-												</motion.div>
-											) : null}
-											</>
+												<>
+													{header ? (
+														<motion.div
+															layout="position"
+															transition={transition}
+															className="col-span-3 col-start-1 row-start-1 mx-3 mb-2 mt-2"
+														>
+															{header}
+														</motion.div>
+													) : null}
+												</>
 											)}
 											{leadingAction ? (
 												<div
-													className={cn('col-start-1 flex h-10 self-end items-center', detached ? 'row-start-2' : controlsRow)}
+													className={cn(
+														'col-start-1 flex h-10 self-end items-center',
+														detached ? 'row-start-2' : controlsRow
+													)}
 												>
 													{leadingAction}
 												</div>
@@ -533,21 +536,23 @@ function PromptInput({
 													{footerContent}
 												</div>
 											) : null}
-											{!detached ? <motion.div
-												layout="position"
-												transition={transition}
-												className={cn(
-													'min-w-0',
-													isPromptExpanded
-														? 'col-span-3 col-start-1 mx-3 mb-3 min-h-0'
-														: 'col-start-2',
-													isPromptExpanded && !header && 'mt-2',
-													header ? 'row-start-2' : 'row-start-1',
-													contentClassName
-												)}
-											>
-												{children}
-											</motion.div> : null}
+											{!detached ? (
+												<motion.div
+													layout="position"
+													transition={transition}
+													className={cn(
+														'min-w-0',
+														isPromptExpanded
+															? 'col-span-3 col-start-1 mx-3 mb-3 min-h-0'
+															: 'col-start-2',
+														isPromptExpanded && !header && 'mt-2',
+														header ? 'row-start-2' : 'row-start-1',
+														contentClassName
+													)}
+												>
+													{children}
+												</motion.div>
+											) : null}
 											<div
 												className={cn(
 													'relative flex h-10 min-w-0 self-end items-center justify-end',
@@ -757,18 +762,12 @@ function PromptInputAction({
 			children.props.onClick?.(event);
 		},
 	});
-	const trigger = showTooltipWhenDisabled && isDisabled ? (
-		<span className="inline-flex">{child}</span>
-	) : (
-		child
-	);
+	const trigger =
+		showTooltipWhenDisabled && isDisabled ? <span className="inline-flex">{child}</span> : child;
 
 	return (
 		<Tooltip {...props}>
-			<TooltipTrigger
-				render={trigger}
-				disabled={showTooltipWhenDisabled ? false : disabled}
-			/>
+			<TooltipTrigger render={trigger} disabled={showTooltipWhenDisabled ? false : disabled} />
 			<TooltipContent side={side} className={className}>
 				{tooltip}
 			</TooltipContent>
