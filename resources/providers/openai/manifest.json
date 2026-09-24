@@ -1,6 +1,7 @@
 {
 	"providerId": "openai",
 	"providerName": "OpenAI",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://platform.openai.com/api-keys",
 	"images_url": "/images",
 	"icon_dark_url": "/images/openai-dark.svg",
@@ -10,6 +11,7 @@
 			"id": "gpt-5.6-sol",
 			"name": "GPT-5.6 Sol",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -52,6 +54,7 @@
 			"id": "gpt-5.6-terra",
 			"name": "GPT-5.6 Terra",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -94,6 +97,7 @@
 			"id": "gpt-5.6-luna",
 			"name": "GPT-5.6 Luna",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -136,6 +140,7 @@
 			"id": "gpt-5.5",
 			"name": "GPT-5.5",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -174,6 +179,7 @@
 			"id": "gpt-5.5-pro",
 			"name": "GPT-5.5 Pro",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -212,6 +218,7 @@
 			"id": "gpt-5.4",
 			"name": "GPT-5.4",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -250,6 +257,7 @@
 			"id": "gpt-5.4-pro",
 			"name": "GPT-5.4 Pro",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -288,6 +296,7 @@
 			"id": "gpt-5.4-mini",
 			"name": "GPT-5.4 Mini",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -326,6 +335,7 @@
 			"id": "gpt-5.4-nano",
 			"name": "GPT-5.4 Nano",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -365,6 +375,7 @@
 			"name": "GPT-4o Transcribe",
 			"apiTypes": ["batch"],
 			"type": "speech-to-text-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"default": true,
 			"sampleRate": 24000,
@@ -399,6 +410,7 @@
 			"name": "GPT-4o Mini Transcribe",
 			"apiTypes": ["batch"],
 			"type": "speech-to-text-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"default": true,
 			"sampleRate": 24000,
@@ -434,6 +446,7 @@
 			"apiTypes": ["stream"],
 			"realtime": true,
 			"type": "speech-to-text-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"default": true,
 			"sampleRate": 24000,
@@ -460,6 +473,7 @@
 			"id": "gpt-realtime-2.1",
 			"name": "GPT Realtime 2.1",
 			"type": "realtime-voice-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"default": true,
 			"sampleRate": 24000,
@@ -493,6 +507,7 @@
 			"id": "gpt-realtime-2.1-mini",
 			"name": "GPT Realtime 2.1 Mini",
 			"type": "realtime-voice-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"sampleRate": 24000,
 			"metadata": {
@@ -525,6 +540,7 @@
 			"id": "gpt-live-1",
 			"name": "GPT Live 1",
 			"type": "realtime-voice-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"sampleRate": 24000,
 			"metadata": {
@@ -567,6 +583,7 @@
 			"id": "gpt-4o-mini-tts",
 			"name": "GPT-4o Mini TTS",
 			"type": "text-to-speech-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"documentationUrl": "https://platform.openai.com/docs/api-reference",
@@ -617,6 +634,7 @@
 			"id": "tts-1-hd",
 			"name": "TTS-1 HD",
 			"type": "text-to-speech-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"metadata": {
 				"documentationUrl": "https://developers.openai.com/api/reference/resources/audio/subresources/speech/methods/create",
@@ -664,6 +682,7 @@
 			"id": "text-embedding-3-large",
 			"name": "Text Embedding 3 Large",
 			"type": "embedding-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"default": true,
 			"metadata": {
@@ -689,6 +708,7 @@
 			"id": "text-embedding-3-small",
 			"name": "Text Embedding 3 Small",
 			"type": "embedding-model",
+			"authentication": "api-key",
 			"url": "https://api.openai.com/v1",
 			"default": true,
 			"metadata": {

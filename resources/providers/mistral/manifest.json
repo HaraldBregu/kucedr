@@ -1,6 +1,7 @@
 {
 	"providerId": "mistral",
 	"providerName": "Mistral AI",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://console.mistral.ai/api-keys",
 	"images_url": "/images",
 	"icon_dark_url": "/images/mistral.svg",
@@ -10,6 +11,7 @@
 			"id": "mistral-large-2512",
 			"name": "Mistral Large 2512",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -58,6 +60,7 @@
 			"id": "mistral-medium-3-5",
 			"name": "Mistral Medium 3.5",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -110,6 +113,7 @@
 			"id": "devstral-2512",
 			"name": "Devstral 2512",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
 			"metadata": {
 				"promptAttachments": [],
@@ -153,6 +157,7 @@
 			"name": "Voxtral Mini 2602",
 			"apiTypes": ["batch"],
 			"type": "speech-to-text-model",
+			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
 			"sampleRate": 16000,
 			"metadata": {
@@ -180,6 +185,7 @@
 			"apiTypes": ["stream"],
 			"realtime": true,
 			"type": "speech-to-text-model",
+			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
 			"sampleRate": 16000,
 			"metadata": {
@@ -196,6 +202,7 @@
 			"id": "voxtral-mini-tts-2603",
 			"name": "Voxtral Mini TTS 2603",
 			"type": "text-to-speech-model",
+			"authentication": "api-key",
 			"url": "https://api.mistral.ai/v1",
 			"metadata": {
 				"documentationUrl": "https://docs.mistral.ai/api/endpoint/audio/speech",

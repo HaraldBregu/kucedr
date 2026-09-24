@@ -1,6 +1,7 @@
 {
   "providerId": "deepgram",
   "providerName": "Deepgram",
+  "authentication": "api-key",
   "apiKeyUrl": "https://console.deepgram.com",
   "images_url": "/images",
   "icon_dark_url": "/images/deepgram.svg",
@@ -14,6 +15,7 @@
         "stream"
       ],
       "type": "speech-to-text-model",
+      "authentication": "api-key",
       "url": "https://api.deepgram.com/v1",
       "sampleRate": 24000,
       "metadata": {
@@ -63,6 +65,7 @@
       ],
       "realtime": true,
       "type": "speech-to-text-model",
+      "authentication": "api-key",
       "url": "https://api.deepgram.com/v1",
       "sampleRate": 24000,
       "metadata": {
@@ -94,6 +97,7 @@
       "id": "aura-2",
       "name": "Aura 2",
       "type": "text-to-speech-model",
+      "authentication": "api-key",
       "url": "https://api.deepgram.com/v1",
       "metadata": {
         "documentationUrl": "https://developers.deepgram.com/reference/text-to-speech/speak-request",

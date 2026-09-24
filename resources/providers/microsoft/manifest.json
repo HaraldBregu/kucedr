@@ -1,6 +1,7 @@
 {
 	"providerId": "microsoft",
 	"providerName": "Microsoft",
+	"authentication": "oauth2",
 	"images_url": "/images",
 	"icon_dark_url": "/images/microsoft.svg",
 	"icon_light_url": "/images/microsoft.svg",
@@ -10,6 +11,7 @@
 			"name": "Microsoft Learn",
 			"description": "Search Microsoft documentation and code samples.",
 			"type": "mcp",
+			"authentication": "none",
 			"url": "https://learn.microsoft.com/api/mcp"
 		},
 		{
@@ -17,6 +19,7 @@
 			"name": "Outlook Mail",
 			"description": "Read, send, and manage email.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_MailTools",
 			"icon_dark_url": "/images/microsoft-outlook.svg",
 			"icon_light_url": "/images/microsoft-outlook.svg"
@@ -26,6 +29,7 @@
 			"name": "Outlook Calendar",
 			"description": "Manage events and availability.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_CalendarTools",
 			"icon_dark_url": "/images/outlook-calendar.svg",
 			"icon_light_url": "/images/outlook-calendar.svg"
@@ -35,6 +39,7 @@
 			"name": "Microsoft Teams",
 			"description": "Work with chats, channels, and messages.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_TeamsServer",
 			"icon_dark_url": "/images/microsoft-teams.svg",
 			"icon_light_url": "/images/microsoft-teams.svg"
@@ -44,6 +49,7 @@
 			"name": "OneDrive",
 			"description": "Find and manage personal files.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_OneDriveRemoteServer",
 			"icon_dark_url": "/images/microsoft-onedrive.svg",
 			"icon_light_url": "/images/microsoft-onedrive.svg"
@@ -53,6 +59,7 @@
 			"name": "SharePoint",
 			"description": "Work with sites, lists, and files.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_SharePointRemoteServer",
 			"icon_dark_url": "/images/microsoft-sharepoint.svg",
 			"icon_light_url": "/images/microsoft-sharepoint.svg"
@@ -62,6 +69,7 @@
 			"name": "Microsoft Word",
 			"description": "Create and read documents.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_WordServer",
 			"icon_dark_url": "/images/microsoft-word.svg",
 			"icon_light_url": "/images/microsoft-word.svg"
@@ -71,6 +79,7 @@
 			"name": "Microsoft 365 Search",
 			"description": "Find content across Microsoft 365.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_M365Copilot",
 			"icon_dark_url": "/images/microsoft-365-copilot.svg",
 			"icon_light_url": "/images/microsoft-365-copilot.svg"

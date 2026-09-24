@@ -1,6 +1,7 @@
 {
 	"providerId": "minimax",
 	"providerName": "MiniMax",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://platform.minimax.io/user-center/basic-information/interface-key",
 	"images_url": "/images",
 	"icon_dark_url": "/images/minimax.svg",
@@ -10,6 +11,7 @@
 			"id": "MiniMax-M2.7",
 			"name": "MiniMax M2.7",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"promptAttachments": [],
@@ -47,6 +49,7 @@
 			"id": "MiniMax-M2.5",
 			"name": "MiniMax M2.5",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"promptAttachments": [],
@@ -84,6 +87,7 @@
 			"id": "speech-2.8-hd",
 			"name": "Speech 2.8 HD",
 			"type": "text-to-speech-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"documentationUrl": "https://platform.minimax.io/docs/api-reference/speech-t2a-http",
@@ -271,6 +275,7 @@
 			"id": "speech-2.8-turbo",
 			"name": "Speech 2.8 Turbo",
 			"type": "text-to-speech-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"documentationUrl": "https://platform.minimax.io/docs/api-reference/speech-t2a-http",
@@ -458,6 +463,7 @@
 			"id": "MiniMax-Hailuo-2.3",
 			"name": "Hailuo 2.3",
 			"type": "text-to-video-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"documentationUrl": "https://platform.minimax.io/docs/guides/models-intro",
@@ -497,6 +503,7 @@
 			"id": "MiniMax-Hailuo-02",
 			"name": "Hailuo 02",
 			"type": "text-to-video-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"documentationUrl": "https://platform.minimax.io/docs/guides/models-intro",
@@ -536,6 +543,7 @@
 			"id": "music-2.6",
 			"name": "Music 2.6",
 			"type": "text-to-audio-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"documentationUrl": "https://platform.minimax.io/docs/guides/models-intro",
@@ -570,6 +578,7 @@
 			"id": "music-cover",
 			"name": "Music Cover",
 			"type": "text-to-audio-model",
+			"authentication": "api-key",
 			"url": "https://api.minimax.io/v1",
 			"metadata": {
 				"documentationUrl": "https://platform.minimax.io/docs/guides/models-intro",

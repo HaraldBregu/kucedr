@@ -1,6 +1,7 @@
 {
   "providerId": "cartesia",
   "providerName": "Cartesia",
+  "authentication": "api-key",
   "apiKeyUrl": "https://play.cartesia.ai/keys",
   "images_url": "/images",
   "icon_dark_url": "/images/cartesia-dark.svg",
@@ -10,6 +11,7 @@
       "id": "sonic-3.5",
       "name": "Sonic 3.5",
       "type": "text-to-speech-model",
+      "authentication": "api-key",
       "url": "https://api.cartesia.ai",
       "metadata": {
         "documentationUrl": "https://docs.cartesia.ai/api-reference/tts/bytes",
@@ -96,6 +98,7 @@
       "id": "sonic-3",
       "name": "Sonic 3",
       "type": "text-to-speech-model",
+      "authentication": "api-key",
       "url": "https://api.cartesia.ai",
       "metadata": {
         "documentationUrl": "https://docs.cartesia.ai/api-reference/tts/bytes",

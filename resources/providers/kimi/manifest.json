@@ -1,6 +1,7 @@
 {
 	"providerId": "kimi",
 	"providerName": "Moonshot AI / Kimi",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://platform.moonshot.ai/console/api-keys",
 	"images_url": "/images",
 	"icon_dark_url": "/images/kimi.svg",
@@ -10,6 +11,7 @@
 			"id": "kimi-k3",
 			"name": "Kimi K3",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.moonshot.ai/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -75,6 +77,7 @@
 			"id": "kimi-k2.7-code",
 			"name": "Kimi K2.7 Code",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.moonshot.ai/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -136,6 +139,7 @@
 			"id": "kimi-k2.7-code-highspeed",
 			"name": "Kimi K2.7 Code Highspeed",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.moonshot.ai/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -197,6 +201,7 @@
 			"id": "kimi-k2.6",
 			"name": "Kimi K2.6",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.moonshot.ai/v1",
 			"metadata": {
 				"promptAttachments": [
@@ -267,6 +272,7 @@
 			"id": "kimi-k2.5",
 			"name": "Kimi K2.5",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.moonshot.ai/v1",
 			"metadata": {
 				"promptAttachments": [

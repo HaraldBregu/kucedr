@@ -1,6 +1,7 @@
 {
   "providerId": "ideogram",
   "providerName": "Ideogram",
+  "authentication": "api-key",
   "apiKeyUrl": "https://ideogram.ai/manage-api",
   "images_url": "/images",
   "icon_dark_url": "/images/ideogram-dark.svg",
@@ -10,6 +11,7 @@
       "id": "ideogram-3.0",
       "name": "Ideogram 3.0",
       "type": "text-to-image-model",
+      "authentication": "api-key",
       "url": "https://api.ideogram.ai",
       "metadata": {
         "documentationUrl": "https://developer.ideogram.ai/api-reference/api-reference/generate-v3",
@@ -78,6 +80,7 @@
       "id": "ideogram-2a",
       "name": "Ideogram 2a",
       "type": "text-to-image-model",
+      "authentication": "api-key",
       "url": "https://api.ideogram.ai",
       "metadata": {
         "documentationUrl": "https://developer.ideogram.ai/api-reference/api-reference/generate-v3",

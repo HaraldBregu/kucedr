@@ -1,6 +1,7 @@
 {
   "providerId": "cohere",
   "providerName": "Cohere",
+  "authentication": "api-key",
   "apiKeyUrl": "https://dashboard.cohere.com/api-keys",
   "images_url": "/images",
   "icon_dark_url": "/images/cohere.svg",
@@ -10,6 +11,7 @@
       "id": "embed-v4.0",
       "name": "Embed v4",
       "type": "embedding-model",
+      "authentication": "api-key",
       "url": "https://api.cohere.com/v2",
       "metadata": {
         "documentationUrl": "https://docs.cohere.com/v2/reference/embed",

@@ -1,6 +1,7 @@
 {
 	"providerId": "notion",
 	"providerName": "Notion",
+	"authentication": "oauth2",
 	"images_url": "/images",
 	"icon_dark_url": "/images/notion.svg",
 	"icon_light_url": "/images/notion.svg",
@@ -10,6 +11,7 @@
 			"name": "Notion",
 			"description": "Search and manage Notion pages.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://mcp.notion.com/mcp"
 		}
 	]

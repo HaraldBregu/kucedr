@@ -1,6 +1,7 @@
 {
   "providerId": "pika",
   "providerName": "Pika",
+  "authentication": "api-key",
   "apiKeyUrl": "https://pika.art",
   "images_url": "/images",
   "icon_dark_url": "/images/pika-dark.svg",
@@ -10,6 +11,7 @@
       "id": "pika-2.2",
       "name": "Pika 2.2",
       "type": "text-to-video-model",
+      "authentication": "api-key",
       "url": "https://pika.art",
       "metadata": {
         "documentationUrl": "https://pika.art",

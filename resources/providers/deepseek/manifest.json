@@ -1,6 +1,7 @@
 {
 	"providerId": "deepseek",
 	"providerName": "DeepSeek",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://platform.deepseek.com/api_keys",
 	"images_url": "/images",
 	"icon_dark_url": "/images/deepseek.svg",
@@ -10,6 +11,7 @@
 			"id": "deepseek-v4-pro",
 			"name": "DeepSeek V4 Pro",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.deepseek.com",
 			"metadata": {
 				"promptAttachments": [],
@@ -84,6 +86,7 @@
 			"id": "deepseek-flash",
 			"name": "DeepSeek V4.1 Flash",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://api.deepseek.com",
 			"metadata": {
 				"promptAttachments": [

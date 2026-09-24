@@ -1,6 +1,7 @@
 {
 	"providerId": "google",
 	"providerName": "Google DeepMind / Google",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://aistudio.google.com/apikey",
 	"images_url": "/images",
 	"icon_dark_url": "/images/google.svg",
@@ -10,6 +11,7 @@
 			"id": "gemini-3.1-pro-preview",
 			"name": "Gemini 3.1 Pro Preview",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"promptAttachments": [
@@ -46,6 +48,7 @@
 			"id": "gemini-3.1-flash-lite",
 			"name": "Gemini 3.1 Flash Lite",
 			"type": "large-language-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"promptAttachments": [
@@ -82,6 +85,7 @@
 			"id": "gemini-3.1-flash-tts-preview",
 			"name": "Gemini 3.1 Flash TTS Preview",
 			"type": "text-to-speech-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs/generate-content/speech-generation",
@@ -227,6 +231,7 @@
 			"id": "gemini-3.1-flash-image-preview",
 			"name": "Gemini 3.1 Flash Image Preview",
 			"type": "text-to-image-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs",
@@ -248,6 +253,7 @@
 			"id": "gemini-3-pro-image-preview",
 			"name": "Gemini 3 Pro Image Preview",
 			"type": "text-to-image-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs",
@@ -269,6 +275,7 @@
 			"id": "veo-3.1",
 			"name": "Veo 3.1",
 			"type": "text-to-video-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs",
@@ -323,6 +330,7 @@
 			"id": "veo-3.1-fast",
 			"name": "Veo 3.1 Fast",
 			"type": "text-to-video-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs",
@@ -374,6 +382,7 @@
 			"id": "lyria-3-pro-preview",
 			"name": "Lyria 3 Pro Preview",
 			"type": "text-to-audio-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs",
@@ -393,6 +402,7 @@
 			"id": "lyria-3-clip-preview",
 			"name": "Lyria 3 Clip Preview",
 			"type": "text-to-audio-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs",
@@ -412,6 +422,7 @@
 			"id": "lyria-realtime",
 			"name": "Lyria Realtime",
 			"type": "text-to-audio-model",
+			"authentication": "api-key",
 			"url": "https://generativelanguage.googleapis.com/v1beta/openai",
 			"metadata": {
 				"documentationUrl": "https://ai.google.dev/gemini-api/docs",
@@ -428,6 +439,7 @@
 			"name": "Gmail",
 			"description": "Search and manage email.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/gmail.svg",
 			"icon_light_url": "/images/gmail.svg"
@@ -437,6 +449,7 @@
 			"name": "Google Calendar",
 			"description": "Manage calendars and events.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-calendar.svg",
 			"icon_light_url": "/images/google-calendar.svg"
@@ -446,6 +459,7 @@
 			"name": "Google Drive",
 			"description": "Search and manage Drive files.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-drive.svg",
 			"icon_light_url": "/images/google-drive.svg"
@@ -455,6 +469,7 @@
 			"name": "Google Docs",
 			"description": "Read and update documents.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://docsmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-docs.svg",
 			"icon_light_url": "/images/google-docs.svg"
@@ -464,6 +479,7 @@
 			"name": "Google Sheets",
 			"description": "Read and update spreadsheets.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-sheets.svg",
 			"icon_light_url": "/images/google-sheets.svg"
@@ -473,6 +489,7 @@
 			"name": "Google Maps",
 			"description": "Find places, routes, and weather.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://mapstools.googleapis.com/mcp",
 			"icon_dark_url": "/images/google-maps.svg",
 			"icon_light_url": "/images/google-maps.svg"
@@ -482,6 +499,7 @@
 			"name": "Google Contacts",
 			"description": "Search contacts and directory profiles.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://people.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-contact.svg",
 			"icon_light_url": "/images/google-contact.svg"

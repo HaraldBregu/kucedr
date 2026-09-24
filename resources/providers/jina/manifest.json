@@ -1,6 +1,7 @@
 {
   "providerId": "jina",
   "providerName": "Jina AI",
+  "authentication": "api-key",
   "apiKeyUrl": "https://jina.ai/api-dashboard",
   "images_url": "/images",
   "icon_dark_url": "/images/jina-dark.svg",
@@ -10,6 +11,7 @@
       "id": "jina-embeddings-v3",
       "name": "Jina Embeddings v3",
       "type": "embedding-model",
+      "authentication": "api-key",
       "url": "https://api.jina.ai/v1",
       "metadata": {
         "documentationUrl": "https://jina.ai/en-US/embeddings/",

@@ -1,6 +1,7 @@
 {
 	"providerId": "github",
 	"providerName": "GitHub",
+	"authentication": "oauth2",
 	"images_url": "/images",
 	"icon_dark_url": "/images/github-dark.svg",
 	"icon_light_url": "/images/github-light.svg",
@@ -10,6 +11,7 @@
 			"name": "GitHub",
 			"description": "Work with repositories and issues.",
 			"type": "mcp",
+			"authentication": "oauth2",
 			"url": "https://api.githubcopilot.com/mcp/"
 		}
 	]

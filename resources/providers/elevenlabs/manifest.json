@@ -1,6 +1,7 @@
 {
   "providerId": "elevenlabs",
   "providerName": "ElevenLabs",
+  "authentication": "api-key",
   "apiKeyUrl": "https://elevenlabs.io/app/settings/api-keys",
   "images_url": "/images",
   "icon_dark_url": "/images/elevenlabs-dark.svg",
@@ -13,6 +14,7 @@
         "batch"
       ],
       "type": "speech-to-text-model",
+      "authentication": "api-key",
       "url": "https://api.elevenlabs.io/v1",
       "sampleRate": 16000,
       "metadata": {
@@ -45,6 +47,7 @@
       ],
       "realtime": true,
       "type": "speech-to-text-model",
+      "authentication": "api-key",
       "url": "https://api.elevenlabs.io/v1",
       "sampleRate": 16000,
       "metadata": {
@@ -67,6 +70,7 @@
       "id": "eleven_v3",
       "name": "Eleven v3",
       "type": "text-to-speech-model",
+      "authentication": "api-key",
       "url": "https://api.elevenlabs.io/v1",
       "default": true,
       "metadata": {
@@ -183,6 +187,7 @@
       "id": "eleven_multilingual_v2",
       "name": "Eleven Multilingual v2",
       "type": "text-to-speech-model",
+      "authentication": "api-key",
       "url": "https://api.elevenlabs.io/v1",
       "default": true,
       "metadata": {
@@ -299,6 +304,7 @@
       "id": "eleven_flash_v2_5",
       "name": "Eleven Flash v2.5",
       "type": "text-to-speech-model",
+      "authentication": "api-key",
       "url": "https://api.elevenlabs.io/v1",
       "default": true,
       "metadata": {
@@ -415,6 +421,7 @@
       "id": "eleven-music",
       "name": "Eleven Music",
       "type": "text-to-audio-model",
+      "authentication": "api-key",
       "url": "https://api.elevenlabs.io/v1",
       "metadata": {
         "documentationUrl": "https://elevenlabs.io/docs/api-reference",
@@ -443,6 +450,7 @@
       "id": "elevenlabs-sound-effects",
       "name": "ElevenLabs Sound Effects",
       "type": "text-to-audio-model",
+      "authentication": "api-key",
       "url": "https://api.elevenlabs.io/v1",
       "metadata": {
         "documentationUrl": "https://elevenlabs.io/docs/api-reference",
