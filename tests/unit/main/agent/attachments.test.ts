@@ -67,17 +67,30 @@ describe('prompt attachment preflight', () => {
 	});
 
 	it('accepts an empty text attachment', () => {
-		expect(preflightPromptAttachments([
-			{ name: 'empty.txt', mimeType: 'text/plain', data: '' },
-		], capabilities)).toEqual([
+		expect(
+			preflightPromptAttachments(
+				[{ name: 'empty.txt', mimeType: 'text/plain', data: '' }],
+				capabilities
+			)
+		).toEqual([
 			expect.objectContaining({ type: 'text_file', name: 'empty.txt', bytes: 0, text: '' }),
 		]);
 	});
 
 	it('keeps the selected path on the stored attachment block', () => {
-		expect(preflightPromptAttachments([{
-			name: 'note.txt', mimeType: 'text/plain', data: 'YQ==', path: '/tmp/note.txt',
-		}], capabilities)[0]).toEqual(expect.objectContaining({ path: '/tmp/note.txt' }));
+		expect(
+			preflightPromptAttachments(
+				[
+					{
+						name: 'note.txt',
+						mimeType: 'text/plain',
+						data: 'YQ==',
+						path: '/tmp/note.txt',
+					},
+				],
+				capabilities
+			)[0]
+		).toEqual(expect.objectContaining({ path: '/tmp/note.txt' }));
 	});
 
 	it('decodes UTF-8 text and detects native formats without trusting renderer MIME', () => {
@@ -100,11 +113,18 @@ describe('prompt attachment preflight', () => {
 	});
 
 	it('rejects an unsafe name before persistence', () => {
-		expect(() => preflightPromptAttachments([{
-			name: '../secret.txt',
-			mimeType: 'text/plain',
-			data: Buffer.from('safe').toString('base64'),
-		}], capabilities)).toThrow('safe basename');
+		expect(() =>
+			preflightPromptAttachments(
+				[
+					{
+						name: '../secret.txt',
+						mimeType: 'text/plain',
+						data: Buffer.from('safe').toString('base64'),
+					},
+				],
+				capabilities
+			)
+		).toThrow('safe basename');
 	});
 
 	it.each([
@@ -133,22 +153,24 @@ describe('prompt attachment preflight', () => {
 			},
 		],
 	] as const)('skips %s while keeping supported files', (_case, file) => {
-		expect(preflightPromptAttachments([
-			file,
-			{ name: 'note.txt', mimeType: 'text/plain', data: 'b2s=' },
-		], capabilities)).toEqual([
-			expect.objectContaining({ type: 'text_file', name: 'note.txt', text: 'ok' }),
-		]);
+		expect(
+			preflightPromptAttachments(
+				[file, { name: 'note.txt', mimeType: 'text/plain', data: 'b2s=' }],
+				capabilities
+			)
+		).toEqual([expect.objectContaining({ type: 'text_file', name: 'note.txt', text: 'ok' })]);
 	});
 
 	it('skips native files unsupported by the model while keeping supported text', () => {
-		expect(preflightPromptAttachments(
-			[
-				{ name: 'pixel.png', mimeType: 'image/png', data: png.toString('base64') },
-				{ name: 'note.txt', mimeType: 'text/plain', data: 'b2s=' },
-			],
-			{ ...capabilities, rules: [] }
-		)).toEqual([expect.objectContaining({ type: 'text_file', name: 'note.txt', text: 'ok' })]);
+		expect(
+			preflightPromptAttachments(
+				[
+					{ name: 'pixel.png', mimeType: 'image/png', data: png.toString('base64') },
+					{ name: 'note.txt', mimeType: 'text/plain', data: 'b2s=' },
+				],
+				{ ...capabilities, rules: [] }
+			)
+		).toEqual([expect.objectContaining({ type: 'text_file', name: 'note.txt', text: 'ok' })]);
 	});
 });
 
