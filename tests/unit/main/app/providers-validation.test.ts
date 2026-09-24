@@ -27,15 +27,18 @@ function expectedPromptAttachments(providerId: string, modelId: string): unknown
 }
 
 describe('provider manifest validation', () => {
-	it('rejects invalid service types and accepts supported manifest services', () => {
+	it('rejects invalid model types and accepts capability sections', () => {
 		const manifest = {
 			providerId: 'acme',
 			providerName: 'Acme',
-			services: [
+			authentication: 'api-key',
+			models: [
 				{
 					id: 'acme-chat',
 					name: 'Acme Chat',
 					type: 'large-language-model',
+					location: 'remote',
+					authentication: 'api-key',
 					url: 'https://api.acme.test/v1',
 					metadata: {
 						documentationUrl: 'https://docs.acme.test/chat',
@@ -51,11 +54,13 @@ describe('provider manifest validation', () => {
 			parseProviderManifest({
 				providerId: 'voice',
 				providerName: 'Voice',
-				services: [
+				models: [
 					{
 						id: 'voice-realtime',
 						name: 'Voice Realtime',
 						type: 'realtime-voice-model',
+						location: 'remote',
+						authentication: 'api-key',
 						url: 'https://api.voice.test/v1',
 					},
 				],
@@ -65,28 +70,28 @@ describe('provider manifest validation', () => {
 			parseProviderManifest({
 				providerId: 'notion',
 				providerName: 'Notion',
-				services: [
-					{ id: 'notion-mcp', name: 'Notion MCP', type: 'mcp', url: 'https://mcp.notion.com/mcp' },
+				mcp_servers: [
+					{ id: 'notion-mcp', name: 'Notion MCP', authentication: 'oauth2', url: 'https://mcp.notion.com/mcp' },
 				],
 			})
 		).toBeDefined();
 		expect(
 			validateProviderManifest({
 				...manifest,
-				services: [{ ...manifest.services[0], type: 'chat' }],
+				models: [{ ...manifest.models[0], type: 'chat' }],
 			})
-		).toEqual([expect.stringContaining('services[0].type must be one of')]);
+		).toEqual([expect.stringContaining('models[0].type must be one of')]);
 	});
 
 	it('accepts service icons from the provider image folder', () => {
 		const manifest = {
 			providerId: 'google',
 			providerName: 'Google',
-			services: [
+			mcp_servers: [
 				{
 					id: 'gmail',
 					name: 'Gmail',
-					type: 'mcp',
+					authentication: 'oauth2',
 					url: 'https://gmailmcp.googleapis.com/mcp/v1',
 					icon_dark_url: '/images/gmail.svg',
 					icon_light_url: '/images/gmail.svg',
@@ -98,9 +103,9 @@ describe('provider manifest validation', () => {
 		expect(
 			validateProviderManifest({
 				...manifest,
-				services: [{ ...manifest.services[0], icon_dark_url: '../gmail.svg' }],
+				mcp_servers: [{ ...manifest.mcp_servers[0], icon_dark_url: '../gmail.svg' }],
 			})
-		).toContainEqual(expect.stringContaining('services[0].icon_dark_url'));
+		).toContainEqual(expect.stringContaining('mcp_servers[0].icon_dark_url'));
 	});
 
 	it('accepts supported authentication types and rejects unknown ones', () => {
@@ -108,11 +113,10 @@ describe('provider manifest validation', () => {
 			providerId: 'example',
 			providerName: 'Example',
 			authentication: 'api-key',
-			services: [
+			mcp_servers: [
 				{
 					id: 'example-mcp',
 					name: 'Example MCP',
-					type: 'mcp',
 					url: 'https://example.com/mcp',
 					authentication: 'oauth2',
 				},
@@ -125,9 +129,9 @@ describe('provider manifest validation', () => {
 		expect(
 			validateProviderManifest({
 				...manifest,
-				services: [{ ...manifest.services[0], authentication: 'password' }],
+				mcp_servers: [{ ...manifest.mcp_servers[0], authentication: 'password' }],
 			})
-		).toContainEqual(expect.stringContaining('services[0].authentication must be one of'));
+		).toContainEqual(expect.stringContaining('mcp_servers[0].authentication must be one of'));
 	});
 
 	it.each(['large-language-model', 'research-chat-model'])(
