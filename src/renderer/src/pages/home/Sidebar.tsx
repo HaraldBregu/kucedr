@@ -136,7 +136,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							type="button"
-							className="px-2.5"
+							className="px-2.5 text-base"
 							aria-label={t('navigationBar.newChat', 'New chat')}
 							onClick={() => {
 								setSessionId(crypto.randomUUID());
@@ -329,7 +329,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
-									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
+									<span className="grid min-w-0 flex-1 text-left text-base leading-tight">
 										<span className="truncate font-medium">{accountItem.title}</span>
 										{accountItem.description ? (
 											<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
