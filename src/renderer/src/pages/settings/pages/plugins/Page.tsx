@@ -23,6 +23,7 @@ const PLUGIN_SERVICE_IDS = [
 	'gmail',
 	'google-calendar',
 	'google-drive',
+	'google-contacts',
 	'github',
 	'notion',
 ] as const;

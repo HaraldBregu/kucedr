@@ -222,7 +222,7 @@ it('reports whether OAuth credentials exist without returning them', async () =>
 	});
 });
 
-it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'])(
 	'connects %s with environment credentials',
 	async (host) => {
 		jest.clearAllMocks();
@@ -240,7 +240,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 		jest.mocked(getMcpServers).mockReturnValue({
 			google: {
 				type: 'http',
-				url: `https://${host}.googleapis.com/mcp/v1`,
+				url: `https://${host}/mcp/v1`,
 				client_id: 'configured-google-id',
 				client_secret: 'configured-google-secret',
 			},

@@ -438,8 +438,8 @@
 			"description": "Manage calendars and events.",
 			"type": "mcp",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
-			"icon_dark_url": "/images/official/google-calendar.png",
-			"icon_light_url": "/images/official/google-calendar.png"
+			"icon_dark_url": "/images/official/google-calendar.svg",
+			"icon_light_url": "/images/official/google-calendar.svg"
 		},
 		{
 			"id": "google-drive",
@@ -449,6 +449,15 @@
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/official/google-drive.png",
 			"icon_light_url": "/images/official/google-drive.png"
+		},
+		{
+			"id": "google-contacts",
+			"name": "Google Contacts",
+			"description": "Search contacts and directory profiles.",
+			"type": "mcp",
+			"url": "https://people.googleapis.com/mcp/v1",
+			"icon_dark_url": "/images/official/google-contacts.png",
+			"icon_light_url": "/images/official/google-contacts.png"
 		}
 	]
 }

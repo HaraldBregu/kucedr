@@ -91,7 +91,7 @@ it('creates local transports directly from the shared MCP configuration', () => 
 	).not.toThrow();
 });
 
-it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'])(
 	'ignores persisted credentials and uses the environment for %s',
 	(host) => {
 		jest
@@ -99,7 +99,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			.mockReturnValue({ client_id: 'saved-id', client_secret: 'saved-secret' });
 		buildTransport('saved-google', {
 			type: 'http',
-			url: `https://${host}.googleapis.com/mcp/v1`,
+			url: `https://${host}/mcp/v1`,
 			client_id: 'configured-id',
 			client_secret: 'configured-secret',
 		});

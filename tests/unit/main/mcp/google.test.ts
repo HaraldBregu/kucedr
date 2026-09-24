@@ -10,23 +10,23 @@ afterEach(() => {
 	else process.env.GOOGLE_CLIENT_SECRET = originalSecret;
 });
 
-it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'])(
 	'requires environment credentials for %s',
 	(host) => {
 		delete process.env.GOOGLE_CLIENT_ID;
 		delete process.env.GOOGLE_CLIENT_SECRET;
-		expect(() => googleOAuthOptions(`https://${host}.googleapis.com/mcp/v1`)).toThrow(
+		expect(() => googleOAuthOptions(`https://${host}/mcp/v1`)).toThrow(
 			'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET'
 		);
 	}
 );
 
-it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'])(
 	'uses the environment credential pair for %s',
 	(host) => {
 		process.env.GOOGLE_CLIENT_ID = 'environment-id';
 		process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
-		const url = `https://${host}.googleapis.com/mcp/v1`;
+		const url = `https://${host}/mcp/v1`;
 		expect(googleOAuthOptions(url)).toMatchObject({
 			clientId: 'environment-id',
 			clientSecret: 'environment-secret',
