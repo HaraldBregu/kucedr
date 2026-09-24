@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
-import { Activity } from './Activity';
+import { Activity, type ActivityRange } from './Activity';
+import { ActivityHeader } from './Header';
 import {
 	SettingsNotice,
 	SettingsPageHeader,
@@ -21,8 +21,7 @@ const AccountPage: React.FC = () => {
 	const [sessionBusy, setSessionBusy] = useState(false);
 	const [error, setError] = useState('');
 	const [profileName, setProfileName] = useState<string>();
-	const [activityRange, setActivityRange] = useState<'untilToday' | 'currentYear' | 'lastYear'>('untilToday');
-	const activityYear = new Date().getFullYear();
+	const [activityRange, setActivityRange] = useState<ActivityRange>('untilToday');
 	const signedIn = state.status === 'signedIn' && !localOnly;
 
 	useEffect(() => {
@@ -57,38 +56,10 @@ const AccountPage: React.FC = () => {
 					) : undefined
 				}
 			/>
-			<SettingsSection
-				title={t('settings.activity.title')}
-				description={t('settings.activity.description')}
-				className="my-2"
-				action={
-					<Select
-						value={activityRange}
-						onValueChange={(value) => {
-							if (value === 'untilToday' || value === 'currentYear' || value === 'lastYear') {
-								setActivityRange(value);
-							}
-						}}
-					>
-						<SelectTrigger size="sm" className="text-xs" aria-label={t('settings.activity.range')}>
-							<SelectValue>
-								{activityRange === 'untilToday'
-									? t('settings.activity.untilToday')
-									: activityRange === 'currentYear'
-										? t('settings.activity.currentYear', { year: activityYear })
-										: t('settings.activity.lastYear', { year: activityYear - 1 })}
-							</SelectValue>
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="untilToday">{t('settings.activity.untilToday')}</SelectItem>
-							<SelectItem value="currentYear">{t('settings.activity.currentYear', { year: activityYear })}</SelectItem>
-							<SelectItem value="lastYear">{t('settings.activity.lastYear', { year: activityYear - 1 })}</SelectItem>
-						</SelectContent>
-					</Select>
-				}
-			>
+			<section className="my-2 flex flex-col gap-2">
+				<ActivityHeader range={activityRange} onRangeChange={setActivityRange} />
 				<Activity range={activityRange} />
-			</SettingsSection>
+			</section>
 			{error ? (
 				<SettingsNotice icon={AlertCircle} variant="destructive">
 					{error}

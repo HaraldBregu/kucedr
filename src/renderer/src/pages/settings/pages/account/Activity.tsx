@@ -5,7 +5,9 @@ import './Activity.css';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '@/contexts';
 
-export function Activity({ range }: { readonly range: 'untilToday' | 'currentYear' | 'lastYear' }): React.JSX.Element {
+export type ActivityRange = 'untilToday' | 'currentYear' | 'lastYear';
+
+export function Activity({ range }: { readonly range: ActivityRange }): React.JSX.Element {
 	const { t } = useTranslation();
 	const { theme } = useApp();
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
