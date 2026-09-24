@@ -253,13 +253,13 @@ async function* loop(
 				input.interactionMode !== 'plan' &&
 				(input.toolsAllow === undefined ||
 					input.toolsAllow.some((toolId) => toolId.startsWith('mcp__')))
-				) {
-					const mcp = await loadMcpTools(signal);
-					await mcp.loadDeferred(
-						mcp.deferredServers.map((server) => server.id),
-						signal
-					);
-					tools.push(...mcp.tools);
+			) {
+				const mcp = await loadMcpTools(signal);
+				await mcp.loadDeferred(
+					mcp.deferredServers.map((server) => server.id),
+					signal
+				);
+				tools.push(...mcp.tools);
 				closeMcp = mcp.close;
 				mcpDiscovery = mcp.diagnostics;
 				const requiredIds = new Set([
@@ -274,12 +274,12 @@ async function* loop(
 				const eligible = filterEligibleTools(tools);
 				discovery = createToolDiscovery({
 					eligible,
-						required: eligible.filter(
-							(tool) => requiredIds.has(tool.id) || tool.id.startsWith('mcp__')
-						),
-						discoveryEnabled,
-						mcpTools: mcp.entries,
-						filterEligible: filterEligibleTools,
+					required: eligible.filter(
+						(tool) => requiredIds.has(tool.id) || tool.id.startsWith('mcp__')
+					),
+					discoveryEnabled,
+					mcpTools: mcp.entries,
+					filterEligible: filterEligibleTools,
 				});
 			}
 			const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
