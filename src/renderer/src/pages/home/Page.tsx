@@ -16,7 +16,6 @@ import {
 	Mic,
 	Paperclip,
 	Plus,
-	Sparkles,
 	Square,
 	X,
 } from 'lucide-react';
@@ -52,7 +51,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
-import { modelsFor } from '@/lib/providers';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { AssistantMessage } from './components/AssistantMessage';
 import { markdownComponents } from './components/markdown';
@@ -71,6 +69,7 @@ import { ensureAppMicrophoneAccess } from './hooks/audio';
 import type { PromptAttachment } from './attachments/types';
 import { validatePromptAttachments } from './attachments/validation';
 import { HomeSidebar } from './Sidebar';
+import { Model } from './Model';
 
 const promptSuggestions = [
 	{
@@ -301,12 +300,12 @@ function AttachmentButton({
 				type="button"
 				variant="ghost"
 				size="icon"
-				className="size-10 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+				className="size-8 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
 				aria-label="Add attachment"
 				disabled={disabled}
 				onClick={triggerFileUpload}
 			>
-				<Plus className="size-5" />
+				<Plus className="size-4" />
 			</Button>
 		</PromptInputAction>
 	);
@@ -496,7 +495,6 @@ function PageContent(): ReactElement {
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [promptCapabilities, setPromptCapabilities] =
 		useState<AgentPromptInputCapabilities | null>();
-	const [modelLabel, setModelLabel] = useState('Select model');
 	const [planCommandActive, setPlanCommandActive] = useState(false);
 	const [goalCommandActive, setGoalCommandActive] = useState(false);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
@@ -590,27 +588,6 @@ function PageContent(): ReactElement {
 					setPromptCapabilities(null);
 					setAttachments((current) => validatePromptAttachments(current, null));
 				});
-		};
-		refresh();
-		const unsubscribe = window.app.onModelsChanged(refresh);
-		return () => {
-			active = false;
-			unsubscribe();
-		};
-	}, []);
-
-	useEffect(() => {
-		let active = true;
-		const refresh = (): void => {
-			void Promise.all([window.agent.getProvider(), window.agent.getModelId()]).then(
-				([provider, modelId]) => {
-					if (!active) return;
-					const model = modelsFor('llm').find(
-						(item) => item.provider.id === provider?.id && item.id === modelId
-					);
-					setModelLabel(model?.name ?? modelId ?? 'Select model');
-				}
-			);
 		};
 		refresh();
 		const unsubscribe = window.app.onModelsChanged(refresh);
@@ -948,19 +925,8 @@ function PageContent(): ReactElement {
 								wrapperClassName="max-w-none"
 								detachedControls
 								footerContent={
-									<div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
-										<button
-											type="button"
-											className="flex min-w-0 items-center gap-1.5 rounded-md px-1 py-1 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-											onClick={(event) => {
-												event.stopPropagation();
-												navigate('/settings/agent');
-											}}
-											aria-label={`Change model, currently ${modelLabel}`}
-										>
-											<Sparkles className="size-4 shrink-0 text-primary" />
-											<span className="truncate font-medium">{modelLabel}</span>
-										</button>
+									<div className="flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
+										<Model />
 										<span className="shrink-0">Auto</span>
 									</div>
 								}
