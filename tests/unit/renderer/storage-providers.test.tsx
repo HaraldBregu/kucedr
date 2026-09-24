@@ -8,6 +8,7 @@ jest.mock('../../../src/renderer/src/lib/providers', () => ({
 	storages: () => [
 		{
 			id: 'supabase-storage',
+			provider: { id: 'supabase', name: 'Supabase', baseUrl: '' },
 			name: 'Supabase Storage',
 			metadata: {
 				protocol: 's3',
@@ -52,6 +53,9 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'storage', { configurable: true, value: api });
+	Object.defineProperty(window, 'provider', { configurable: true, value: {
+		listEnabledPlugins: jest.fn().mockResolvedValue({ database: [], storage: ['supabase/supabase-storage'] }),
+	} });
 	api.listProviders.mockResolvedValue([]);
 	api.saveProvider.mockImplementation(async (input: StorageProviderInput) => {
 		const { secretAccessKey: _secret, ...provider } = input;
