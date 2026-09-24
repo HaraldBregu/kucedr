@@ -297,11 +297,14 @@ describe('provider manifest validation', () => {
 		const promptModels = manifests.flatMap((manifest) => {
 			expect(validateProviderManifest(manifest)).toEqual([]);
 			expect(manifest.authentication).toMatch(/^(api-key|oauth2|none)$/);
-			expect(manifest.services.every((service: { authentication?: string }) =>
-				service.authentication === 'api-key' ||
-				service.authentication === 'oauth2' ||
-				service.authentication === 'none'
-			)).toBe(true);
+			expect(
+				manifest.services.every(
+					(service: { authentication?: string }) =>
+						service.authentication === 'api-key' ||
+						service.authentication === 'oauth2' ||
+						service.authentication === 'none'
+				)
+			).toBe(true);
 			return manifest.services
 				.filter((service: { type: string }) =>
 					['large-language-model', 'research-chat-model'].includes(service.type)
