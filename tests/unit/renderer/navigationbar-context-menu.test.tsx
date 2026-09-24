@@ -8,6 +8,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 const showContextMenu = jest.fn();
+const openVoiceConversation = jest.fn();
 const contextMenuItems = [
 	{ id: '/settings/general', label: 'settings.tabs.general' },
 	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
@@ -16,6 +17,7 @@ const contextMenuItems = [
 
 beforeEach(() => {
 	showContextMenu.mockReset().mockResolvedValue(null);
+	openVoiceConversation.mockReset().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'win', {
 		configurable: true,
 		value: {
@@ -24,6 +26,7 @@ beforeEach(() => {
 			onFullScreenChange: jest.fn(() => jest.fn()),
 			onMaximizeChange: jest.fn(() => jest.fn()),
 			showContextMenu,
+			openVoiceConversation,
 		},
 	});
 });
@@ -113,6 +116,32 @@ it('shows the settings icon on Home', async () => {
 	await user.click(screen.getByRole('button', { name: 'settings.title' }));
 
 	expect(screen.getByText('/settings/general')).toBeInTheDocument();
+});
+
+it('opens voice conversation for the current chat from the button before Settings', async () => {
+	const user = userEvent.setup();
+	const getMicrophonePermission = jest.fn().mockResolvedValue({
+		enabled: true,
+		systemStatus: 'granted',
+		canRequest: false,
+	});
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { getMicrophonePermission },
+	});
+
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<NavigationBar />
+		</MemoryRouter>
+	);
+	const voice = screen.getByRole('button', { name: 'Start voice conversation' });
+	const settings = screen.getByRole('button', { name: 'settings.title' });
+	expect(voice.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+
+	await user.click(voice);
+	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('home'));
+	expect(getMicrophonePermission).toHaveBeenCalledTimes(1);
 });
 
 it('does not render a chat title in the navigationbar', () => {
