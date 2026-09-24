@@ -242,10 +242,6 @@ function AttachmentTray({
 					? `Audio ${formatDuration(attachment.durationMs ?? 0)}`
 					: attachment.file.name;
 				const extension = attachment.file.name.split('.').pop()?.toUpperCase() ?? 'FILE';
-				const visibleError =
-					attachment.error === 'This file type is not supported by the selected model.'
-						? undefined
-						: attachment.error;
 				const isImage = attachment.file.type.startsWith('image/');
 				const Icon = isAudio || attachment.file.type.startsWith('audio/')
 					? FileAudioIcon
@@ -260,7 +256,6 @@ function AttachmentTray({
 				return (
 					<Attachment
 						key={attachment.id}
-						state={attachment.error ? 'error' : 'done'}
 						size="sm"
 						className={cn('rounded-[16px]', isAudio ? 'w-80' : 'w-64')}
 					>
@@ -269,11 +264,8 @@ function AttachmentTray({
 						</AttachmentMedia>
 						<AttachmentContent>
 							<AttachmentTitle title={title}>{title}</AttachmentTitle>
-							<AttachmentDescription
-								title={visibleError}
-								className={visibleError ? 'whitespace-normal' : undefined}
-							>
-								{visibleError ?? `${extension} · ${formatFileSize(attachment.file.size)}`}
+							<AttachmentDescription>
+								{extension} · {formatFileSize(attachment.file.size)}
 							</AttachmentDescription>
 						</AttachmentContent>
 						<AttachmentActions>
