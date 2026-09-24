@@ -7,6 +7,21 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 }
 
 describe('provider manifests', () => {
+	it('exposes provider and service authentication separately', () => {
+		const googleModel = loadModels().find((service) => service.provider.id === 'google');
+		const gmail = loadMcps().find((service) => service.id === 'gmail');
+		const maps = loadMcps().find((service) => service.id === 'google-maps');
+		const microsoftLearn = loadMcps().find((service) => service.id === 'microsoft-learn');
+		const microsoftMail = loadMcps().find((service) => service.id === 'microsoft-mail');
+		expect(googleModel?.provider.authentication).toBe('api-key');
+		expect(googleModel?.authentication).toBe('api-key');
+		expect(gmail?.authentication).toBe('oauth2');
+		expect(maps?.authentication).toBe('oauth2');
+		expect(microsoftLearn?.authentication).toBe('none');
+		expect(microsoftMail?.provider.authentication).toBe('oauth2');
+		expect(microsoftMail?.authentication).toBe('oauth2');
+	});
+
 	it('loads Microsoft 365 services and their own SVG icons from the manifest', () => {
 		const services = loadMcps().filter((service) => service.provider.id === 'microsoft');
 		const icons = new Map([

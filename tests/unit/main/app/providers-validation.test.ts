@@ -103,6 +103,33 @@ describe('provider manifest validation', () => {
 		).toContainEqual(expect.stringContaining('services[0].icon_dark_url'));
 	});
 
+	it('accepts supported authentication types and rejects unknown ones', () => {
+		const manifest = {
+			providerId: 'example',
+			providerName: 'Example',
+			authentication: 'api-key',
+			services: [
+				{
+					id: 'example-mcp',
+					name: 'Example MCP',
+					type: 'mcp',
+					url: 'https://example.com/mcp',
+					authentication: 'oauth2',
+				},
+			],
+		};
+		expect(validateProviderManifest(manifest)).toEqual([]);
+		expect(validateProviderManifest({ ...manifest, authentication: 'password' })).toContainEqual(
+			expect.stringContaining('"authentication" must be one of')
+		);
+		expect(
+			validateProviderManifest({
+				...manifest,
+				services: [{ ...manifest.services[0], authentication: 'password' }],
+			})
+		).toContainEqual(expect.stringContaining('services[0].authentication must be one of'));
+	});
+
 	it.each(['large-language-model', 'research-chat-model'])(
 		'requires prompt attachment metadata for %s services',
 		(type) => {
@@ -269,6 +296,12 @@ describe('provider manifest validation', () => {
 			);
 		const promptModels = manifests.flatMap((manifest) => {
 			expect(validateProviderManifest(manifest)).toEqual([]);
+			expect(manifest.authentication).toMatch(/^(api-key|oauth2|none)$/);
+			expect(manifest.services.every((service: { authentication?: string }) =>
+				service.authentication === 'api-key' ||
+				service.authentication === 'oauth2' ||
+				service.authentication === 'none'
+			)).toBe(true);
 			return manifest.services
 				.filter((service: { type: string }) =>
 					['large-language-model', 'research-chat-model'].includes(service.type)
