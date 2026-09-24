@@ -124,15 +124,16 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const attachmentButton = page.getByRole('button', { name: 'Add attachment' });
 	const sendButton = page.getByRole('button', { name: 'Start voice conversation' });
 	const transcriptionButton = field.getByRole('button', { name: /speech-to-text provider/ });
-	const modelButton = page.getByRole('button', { name: /Change model, currently/ });
+	const modelButton = page.getByRole('button', { name: 'Change model' });
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
 	await expect(field).toHaveCSS('min-height', '56px');
 	await expect(field).toHaveCSS('border-radius', '28px');
-	await expect(attachmentButton).toHaveCSS('width', '40px');
-	await expect(attachmentButton).toHaveCSS('height', '40px');
-	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '20px');
+	await expect(attachmentButton).toHaveCSS('width', '32px');
+	await expect(attachmentButton).toHaveCSS('height', '32px');
+	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '16px');
 	await expect(modelButton).toContainText('GPT-5.6 Luna');
+	await expect(modelButton).toHaveCSS('height', '28px');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	const fieldBounds = await field.boundingBox();
 	const sendBounds = await sendButton.boundingBox();
@@ -152,6 +153,13 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await editor.press('Backspace');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(field).toHaveCSS('min-height', '56px');
+	await modelButton.click();
+	await expect(page.getByRole('menu', { name: 'Change model' })).toBeVisible();
+	await page.getByRole('menuitemradio', { name: /GPT-5.6 Sol/ }).click();
+	await expect.poll(() => page.evaluate(() => window.agent.getModelId())).toBe('gpt-5.6-sol');
+	await modelButton.click();
+	await page.getByRole('menuitemradio', { name: /GPT-5.6 Luna/ }).click();
+	await expect.poll(() => page.evaluate(() => window.agent.getModelId())).toBe('gpt-5.6-luna');
 	await expect(page.locator('[data-slot="home-composer-shell"]')).toHaveCSS(
 		'padding-bottom',
 		'20px'
