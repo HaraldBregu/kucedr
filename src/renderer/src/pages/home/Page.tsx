@@ -79,7 +79,8 @@ import type { PromptAttachment } from './attachments/types';
 import { Preview } from './attachments/Preview';
 import { formatFileSize } from './attachments/size';
 import { attachmentPath } from './attachments/path';
-import { readDraftAttachments, saveDraftAttachments } from './attachments/draft';
+import { readDraftAttachments } from './attachments/read';
+import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
 
