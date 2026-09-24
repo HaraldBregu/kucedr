@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
 	parseProviderManifest,
@@ -236,17 +236,9 @@ describe('provider manifest validation', () => {
 		const providersDirectory = join(process.cwd(), 'resources', 'providers');
 		const manifests = readdirSync(providersDirectory, { withFileTypes: true })
 			.filter((entry) => entry.isDirectory())
-			.flatMap((entry) => {
-				const providerRoot = join(providersDirectory, entry.name);
-				return [
-					providerRoot,
-					...readdirSync(providerRoot, { withFileTypes: true })
-						.filter((child) => child.isDirectory())
-						.map((child) => join(providerRoot, child.name)),
-				];
-			})
-			.filter((directory) => existsSync(join(directory, 'manifest.json')))
-			.map((directory) => JSON.parse(readFileSync(join(directory, 'manifest.json'), 'utf8')));
+			.map((entry) =>
+				JSON.parse(readFileSync(join(providersDirectory, entry.name, 'manifest.json'), 'utf8'))
+			);
 		const promptModels = manifests.flatMap((manifest) => {
 			expect(validateProviderManifest(manifest)).toEqual([]);
 			return manifest.services

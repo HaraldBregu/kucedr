@@ -10,7 +10,7 @@ describe('provider manifests', () => {
 	it('routes manifest services to their matching catalog', () => {
 		const integrations = loadMcps().filter((service) =>
 			['gmail', 'google-calendar', 'google-drive', 'github', 'notion'].includes(
-				service.provider.id
+				service.id
 			)
 		);
 		const openAi = loadModels().find(
@@ -35,6 +35,13 @@ describe('provider manifests', () => {
 		expect(google?.provider.name).toBe('Google DeepMind / Google');
 		expect(integrations.map((service) => service.provider.id)).toEqual([
 			'github',
+			'google',
+			'google',
+			'google',
+			'notion',
+		]);
+		expect(integrations.map((service) => service.id)).toEqual([
+			'github',
 			'gmail',
 			'google-calendar',
 			'google-drive',
@@ -54,16 +61,16 @@ describe('provider manifests', () => {
 			'Search and manage Drive files.',
 			'Search and manage Notion pages.',
 		]);
-		expect(integrations.every((service) => service.provider.iconLightUrl?.endsWith('.png'))).toBe(
+		expect(integrations.every((service) => service.iconLightUrl?.endsWith('.png'))).toBe(
 			true
 		);
 		for (const id of ['gmail', 'google-calendar', 'google-drive']) {
-			const provider = integrations.find((service) => service.id === id)?.provider;
-			expect(provider?.iconDarkUrl).toContain(
-				`/resources/providers/google/${id}/images/official/${id}.png`
+			const service = integrations.find((entry) => entry.id === id);
+			expect(service?.iconDarkUrl).toContain(
+				`/resources/providers/google/images/official/${id}.png`
 			);
-			expect(provider?.iconLightUrl).toContain(
-				`/resources/providers/google/${id}/images/official/${id}.png`
+			expect(service?.iconLightUrl).toContain(
+				`/resources/providers/google/images/official/${id}.png`
 			);
 		}
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(

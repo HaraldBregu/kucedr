@@ -10,9 +10,11 @@ const catalog = ['gmail', 'google-calendar', 'google-drive', 'github', 'notion']
 		description: `Use ${id}.`,
 		type: 'mcp',
 		url: `https://${id}.example/mcp`,
+		iconDarkUrl: `https://icons.example/${id}.png`,
+		iconLightUrl: `https://icons.example/${id}.png`,
 		provider: {
-			id,
-			name: id,
+			id: ['gmail', 'google-calendar', 'google-drive'].includes(id) ? 'google' : id,
+			name: ['gmail', 'google-calendar', 'google-drive'].includes(id) ? 'Google' : id,
 			baseUrl: `https://${id}.example/mcp`,
 		},
 	})
@@ -54,6 +56,7 @@ it('renders the five plugin providers with descriptions', async () => {
 	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(5);
 	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
 	expect(screen.getByText('Use gmail.')).toBeInTheDocument();
+	expect(container.querySelector('img[src="https://icons.example/google-drive.png"]')).toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
 });
 
