@@ -49,37 +49,37 @@ export function SetupSearch(): React.JSX.Element {
 				</p>
 			</ItemContent>
 			<ItemActions className="ml-auto flex-none justify-end">
-			<Select
-				value={selectedEngineId}
-				disabled={!settings}
-				onValueChange={(value) => {
-					if (!value) return;
-					void window.search
-						.selectEngine(value as SearchEngineId)
-						.then(setSettings)
-						.catch(() => undefined);
-				}}
-			>
-				<SelectTrigger className="h-8 w-40 text-xs" aria-label="Search Engine">
-					<SelectValue placeholder="Connect a search provider first">
-						{(value) =>
-							SEARCH_ENGINES.find((engine) => engine.id === value)?.name ??
-							'Connect a search provider first'
-						}
-					</SelectValue>
-				</SelectTrigger>
-				<SelectContent>
-					{SEARCH_ENGINES.map((engine) => (
-						<SelectItem
-							key={engine.id}
-							value={engine.id}
-							disabled={!settings?.configured[engine.id]}
-						>
-							{engine.name}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
+				<Select
+					value={selectedEngineId}
+					disabled={!settings}
+					onValueChange={(value) => {
+						if (!value) return;
+						void window.search
+							.selectEngine(value as SearchEngineId)
+							.then(setSettings)
+							.catch(() => undefined);
+					}}
+				>
+					<SelectTrigger className="h-8 w-40 text-xs" aria-label="Search Engine">
+						<SelectValue placeholder="Connect a search provider first">
+							{(value) =>
+								SEARCH_ENGINES.find((engine) => engine.id === value)?.name ??
+								'Connect a search provider first'
+							}
+						</SelectValue>
+					</SelectTrigger>
+					<SelectContent>
+						{SEARCH_ENGINES.map((engine) => (
+							<SelectItem
+								key={engine.id}
+								value={engine.id}
+								disabled={!settings?.configured[engine.id]}
+							>
+								{engine.name}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
 			</ItemActions>
 		</Item>
 	);

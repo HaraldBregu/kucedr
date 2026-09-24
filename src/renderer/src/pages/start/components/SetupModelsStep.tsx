@@ -127,7 +127,9 @@ export function SetupModelsStep({
 												</ItemMedia>
 											)}
 											<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-												<ItemTitle className="min-w-0 max-w-full truncate text-sm leading-tight">{title}</ItemTitle>
+												<ItemTitle className="min-w-0 max-w-full truncate text-sm leading-tight">
+													{title}
+												</ItemTitle>
 												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 													{service.description}
 												</p>
@@ -203,7 +205,9 @@ export function SetupModelsStep({
 											</ItemMedia>
 										)}
 										<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-											<ItemTitle className="min-w-0 max-w-full truncate text-sm leading-tight">{service.title}</ItemTitle>
+											<ItemTitle className="min-w-0 max-w-full truncate text-sm leading-tight">
+												{service.title}
+											</ItemTitle>
 											<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 												{service.description}
 											</p>
