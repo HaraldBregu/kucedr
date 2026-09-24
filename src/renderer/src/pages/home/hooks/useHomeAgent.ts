@@ -370,7 +370,11 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 				.then((snapshot) => dispatchChat({ type: 'restore_history', history: snapshot.messages }));
 		};
 		window.addEventListener('kucedr:session-compacted', refresh);
-		return () => window.removeEventListener('kucedr:session-compacted', refresh);
+		window.addEventListener('kucedr:session-history-cleared', refresh);
+		return () => {
+			window.removeEventListener('kucedr:session-compacted', refresh);
+			window.removeEventListener('kucedr:session-history-cleared', refresh);
+		};
 	}, [dispatchChat, sessionId]);
 
 	useEffect(() => {

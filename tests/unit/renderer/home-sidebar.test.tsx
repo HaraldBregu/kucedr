@@ -24,6 +24,7 @@ const listSessions = jest.fn();
 const renameSession = jest.fn();
 const deleteSession = jest.fn();
 const compactSession = jest.fn();
+const clearMessages = jest.fn();
 const openSessionFolder = jest.fn();
 const showContextMenu = jest.fn();
 const signOut = jest.fn();
@@ -64,7 +65,7 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
-		value: { listSessions, renameSession, deleteSession, compactSession, openSessionFolder },
+		value: { listSessions, renameSession, deleteSession, compactSession, clearMessages, openSessionFolder },
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
@@ -209,6 +210,7 @@ it('renames a chat from its context menu without item action buttons', async () 
 	fireEvent.contextMenu(chat);
 	expect(showContextMenu).toHaveBeenCalledWith([
 		{ id: 'rename', label: 'common.rename' },
+		{ id: 'clear', label: 'settings.chatHistory.clear' },
 		{ id: 'compact', label: 'settings.chatHistory.compact' },
 		{ id: 'open-location', label: 'navigationBar.openLocation' },
 		{ id: 'delete', label: 'common.delete' },
@@ -220,10 +222,10 @@ it('renames a chat from its context menu without item action buttons', async () 
 });
 
 it('requires confirmation before compacting a chat and refreshes its snapshot', async () => {
+	const user = userEvent.setup();
 	listSessions.mockResolvedValue([{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2 }]);
 	showContextMenu.mockResolvedValue('compact');
 	compactSession.mockResolvedValue({ status: 'compacted', retainedMessages: 9, removedMessages: 12 });
-	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(true);
 	const refresh = jest.fn();
 	window.addEventListener('kucedr:session-compacted', refresh);
 
@@ -238,10 +240,41 @@ it('requires confirmation before compacting a chat and refreshes its snapshot', 
 	);
 
 	fireEvent.contextMenu(await screen.findByRole('button', { name: 'Latest chat' }));
-	await waitFor(() => expect(confirm).toHaveBeenCalled());
+	const dialog = await screen.findByRole('dialog');
+	expect(within(dialog).getByText('settings.chatHistory.confirmCompact')).toBeInTheDocument();
+	expect(compactSession).not.toHaveBeenCalled();
+	await user.click(within(dialog).getByRole('button', { name: 'settings.chatHistory.compact' }));
 	await waitFor(() => expect(compactSession).toHaveBeenCalledWith('session-latest'));
 	expect(refresh).toHaveBeenCalled();
 	window.removeEventListener('kucedr:session-compacted', refresh);
+});
+
+it('clears only the chosen chat after confirmation and refreshes its transcript', async () => {
+	const user = userEvent.setup();
+	listSessions.mockResolvedValue([{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2 }]);
+	showContextMenu.mockResolvedValue('clear');
+	clearMessages.mockResolvedValue(undefined);
+	const refresh = jest.fn();
+	window.addEventListener('kucedr:session-history-cleared', refresh);
+	render(
+		<MemoryRouter>
+			<ChatSessionContext.Provider value={{ sessionId: 'session-latest', setSessionId: jest.fn() }}>
+				<PageContainer><HomeSidebar refreshKey="initial" /></PageContainer>
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+	const chat = await screen.findByRole('button', { name: 'Latest chat' });
+	fireEvent.contextMenu(chat);
+	let dialog = await screen.findByRole('dialog');
+	await user.click(within(dialog).getByRole('button', { name: 'common.cancel' }));
+	expect(clearMessages).not.toHaveBeenCalled();
+	fireEvent.contextMenu(chat);
+	dialog = await screen.findByRole('dialog');
+	await user.click(within(dialog).getByRole('button', { name: 'settings.chatHistory.clear' }));
+	await waitFor(() => expect(clearMessages).toHaveBeenCalledWith('session-latest'));
+	expect(refresh).toHaveBeenCalled();
+	expect(screen.getByRole('button', { name: 'Latest chat' })).toBeInTheDocument();
+	window.removeEventListener('kucedr:session-history-cleared', refresh);
 });
 
 it('opens a chat location from its context menu', async () => {

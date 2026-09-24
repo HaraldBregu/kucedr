@@ -6,6 +6,7 @@ import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -38,6 +39,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const [editingSessionId, setEditingSessionId] = useState<string>();
 	const [editingTitle, setEditingTitle] = useState('');
 	const [compactingSessionId, setCompactingSessionId] = useState<string>();
+	const [pendingAction, setPendingAction] = useState<{ action: 'clear' | 'compact'; id: string; title: string }>();
 
 	useEffect(() => {
 		let active = true;
@@ -81,6 +83,26 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	};
 
 	const currentSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? sessions[0]?.id : sessionId;
+	const confirmAction = (): void => {
+		if (!pendingAction) return;
+		const { action, id } = pendingAction;
+		setPendingAction(undefined);
+		setActionError('');
+		if (action === 'clear') {
+			void window.agent.clearMessages(id)
+				.then(() => window.dispatchEvent(new CustomEvent('kucedr:session-history-cleared', { detail: id })))
+				.catch(() => setActionError(t('settings.chatHistory.errors.clear')));
+			return;
+		}
+		setCompactingSessionId(id);
+		void window.agent.compactSession(id)
+			.then((result) => {
+				if (result.status === 'compacted')
+					window.dispatchEvent(new CustomEvent('kucedr:session-compacted', { detail: id }));
+			})
+			.catch(() => setActionError(t('settings.chatHistory.errors.compact')))
+			.finally(() => setCompactingSessionId(undefined));
+	};
 
 	useEffect(() => {
 		const session = sessions.find((item) => item.id === currentSessionId);
@@ -215,6 +237,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													void window.win
 												.showContextMenu([
 													{ id: 'rename', label: t('common.rename', 'Rename') },
+													{ id: 'clear', label: t('settings.chatHistory.clear') },
 													{ id: 'compact', label: t('settings.chatHistory.compact') },
 													{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
 													{ id: 'delete', label: t('common.delete', 'Delete') },
@@ -227,21 +250,8 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													if (action === 'open-location') {
 														void window.agent.openSessionFolder(session.id);
 													}
-													if (action === 'compact') {
-														if (!window.confirm(t('settings.chatHistory.confirmCompact', { title }))) return;
-														setActionError('');
-														setCompactingSessionId(session.id);
-														void window.agent
-															.compactSession(session.id)
-															.then((result) => {
-																if (result.status === 'compacted')
-																	window.dispatchEvent(
-																		new CustomEvent('kucedr:session-compacted', { detail: session.id })
-																	);
-															})
-															.catch(() => setActionError(t('settings.chatHistory.errors.compact')))
-															.finally(() => setCompactingSessionId(undefined));
-													}
+													if (action === 'clear' || action === 'compact')
+														setPendingAction({ action, id: session.id, title });
 													if (action === 'delete') {
 																if (
 																	!window.confirm(
@@ -287,6 +297,22 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					</nav>
 				)}
 			</section>
+			<Dialog open={!!pendingAction} onOpenChange={(open) => { if (!open) setPendingAction(undefined); }}>
+				<DialogContent showCloseButton={false}>
+					<DialogHeader>
+						<DialogTitle>{t(`settings.chatHistory.${pendingAction?.action}`)}</DialogTitle>
+						<DialogDescription>
+							{pendingAction && t(`settings.chatHistory.confirm${pendingAction.action === 'clear' ? 'Clear' : 'Compact'}`, { title: pendingAction.title })}
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<DialogClose render={<Button variant="outline">{t('common.cancel')}</Button>} />
+						<Button variant={pendingAction?.action === 'clear' ? 'destructive' : 'default'} onClick={confirmAction}>
+							{t(`settings.chatHistory.${pendingAction?.action}`)}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 				<SidebarMenu>
 					<SidebarMenuItem>
