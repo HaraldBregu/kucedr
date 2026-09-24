@@ -113,7 +113,8 @@ describe('MCP settings', () => {
 		const user = userEvent.setup();
 		renderPage();
 
-		await user.click(await screen.findByRole('switch', { name: 'Enable Remote docs' }));
+		await user.click(await screen.findByRole('button', { name: 'Options for Remote docs' }));
+		await user.click(screen.getByRole('menuitem', { name: 'Disable server' }));
 
 		await waitFor(() =>
 			expect(mcpApi.upsert).toHaveBeenCalledWith('remote', {

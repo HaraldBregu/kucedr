@@ -1,9 +1,15 @@
 import React from 'react';
-import { PlugZap } from 'lucide-react';
+import { MoreHorizontal, PlugZap } from 'lucide-react';
 import type { McpServerInfo } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
+import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { Switch } from '@/components/ui/switch';
 import { mcps } from '@/lib/providers';
 
 export function McpServerRow({
@@ -18,6 +24,7 @@ export function McpServerRow({
 	readonly saving: boolean;
 }): React.JSX.Element {
 	const title = server.data.name ?? server.id;
+	const enabled = server.data.enabled !== false;
 	const description =
 		server.data.type === 'http'
 			? server.data.url
@@ -62,12 +69,24 @@ export function McpServerRow({
 				</ItemContent>
 			</button>
 			<ItemActions className="ml-auto flex-none justify-end">
-				<Switch
-					checked={server.data.enabled !== false}
-					disabled={saving}
-					onCheckedChange={(enabled) => void onEnabledChange(enabled)}
-					aria-label={`Enable ${title}`}
-				/>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button
+							variant="ghost"
+							size="icon-sm"
+							className="hover:bg-transparent dark:hover:bg-transparent"
+							disabled={saving}
+							aria-label={`Options for ${title}`}
+						>
+							<MoreHorizontal className="size-4" />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuItem onSelect={() => void onEnabledChange(!enabled)}>
+							{enabled ? 'Disable server' : 'Enable server'}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			</ItemActions>
 		</Item>
 	);
