@@ -40,6 +40,11 @@ revoke execute on function public.storage_provider_target_immutable() from publi
 
 alter table public.storage_uploads add column provider_id uuid;
 alter table public.storage_versions add column provider_id uuid;
+alter table public.storage_uploads drop constraint storage_uploads_bucket_object_key_key;
+create unique index storage_uploads_legacy_object_key on public.storage_uploads(bucket, object_key)
+  where provider_id is null;
+create unique index storage_uploads_provider_object_key on public.storage_uploads(owner_id, provider_id, bucket, object_key)
+  where provider_id is not null;
 alter table public.storage_uploads add constraint storage_uploads_provider_fk
   foreign key (owner_id, provider_id) references public.storage_provider_connections(owner_id, provider_id);
 alter table public.storage_versions add constraint storage_versions_provider_fk
