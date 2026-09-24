@@ -44,7 +44,7 @@ describe('provider manifests', () => {
 		}
 	});
 
-	it('routes manifest services to their matching catalog', () => {
+	it('routes manifest capabilities to their matching catalog', () => {
 		const integrations = loadMcps().filter((service) =>
 			[
 				'gmail',
@@ -295,7 +295,7 @@ describe('provider manifests', () => {
 			expect.objectContaining({
 				id: 'pinecone',
 				name: 'Pinecone Vector Database',
-				type: 'database',
+				type: 'vector',
 				url: 'https://api.pinecone.io',
 				provider: expect.objectContaining({ id: 'pinecone' }),
 			}),

@@ -211,6 +211,8 @@ describe('provider manifest validation', () => {
 						id: 'chat',
 						name: 'Chat',
 						type: 'large-language-model',
+						location: 'remote',
+						authentication: 'api-key',
 						url: 'https://api.acme.test',
 						metadata: {
 							promptAttachments: [
