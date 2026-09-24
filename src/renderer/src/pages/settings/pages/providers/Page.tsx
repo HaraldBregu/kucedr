@@ -4,7 +4,6 @@ import {
 	ExternalLink,
 	LoaderCircle,
 	MoreHorizontal,
-	Pencil,
 	Plus,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +11,7 @@ import { ProviderAvatar } from '@/components/provider-avatar';
 import ollamaDarkLogo from '@resources/providers/ollama/images/ollama-dark.svg';
 import ollamaLightLogo from '@resources/providers/ollama/images/ollama-light.svg';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -400,8 +399,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					</ItemActions>
 				</Item>
 			);
-		}
-
 	};
 
 	const renderCustomProviderCard = (): React.ReactElement => {
