@@ -171,9 +171,11 @@ it('loads and displays saved Database keys', async () => {
 	expect((await screen.findAllByText('Configured')).length).toBeGreaterThan(0);
 	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
 	const user = userEvent.setup();
-	await user.click(screen.getByRole('button', { name: 'Edit Pinecone API key' }));
+	await user.click(screen.getByRole('button', { name: 'Options for Pinecone' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Edit API key' }));
 	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('');
 	expect(screen.getByLabelText('Pinecone API key')).toHaveAttribute('placeholder', '************');
+	expect(screen.getByLabelText('Pinecone API key').closest('[data-slot="item-actions"]')).not.toBeNull();
 });
 
 it('masks saved model keys until editing', async () => {
@@ -270,12 +272,13 @@ it('masks saved Search keys until editing', async () => {
 	expect(screen.queryByText('search-secret')).not.toBeInTheDocument();
 
 	const user = userEvent.setup();
-	await user.click(screen.getByRole('button', { name: 'Edit Brave API key' }));
+	await user.click(screen.getByRole('button', { name: 'Options for Brave' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Edit API key' }));
 	expect(screen.getByLabelText('Brave API key')).toHaveValue('');
 	expect(screen.getByLabelText('Brave API key')).toHaveAttribute('placeholder', '************');
 });
 
-it('edits Search provider credentials in the card row', async () => {
+it('edits Search provider credentials in the item row', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
@@ -285,11 +288,11 @@ it('edits Search provider credentials in the card row', async () => {
 
 	await user.click(screen.getByRole('button', { name: 'Connect', exact: true }));
 	const input = screen.getByLabelText('Brave API key');
-	const card = input.closest('[data-slot="card"]');
-	expect(card).not.toBeNull();
-	expect(input.parentElement).toHaveClass('flex', 'min-w-0', 'shrink-0');
+	const item = input.closest('[data-slot="item"]');
+	expect(item).not.toBeNull();
+	expect(input.closest('[data-slot="item-actions"]')).not.toBeNull();
 	await user.type(input, 'brave-secret');
-	await user.click(within(card!).getByRole('button', { name: 'Save', exact: true }));
+	await user.click(within(item!).getByRole('button', { name: 'Save', exact: true }));
 	await waitFor(() =>
 		expect(window.search.saveEngine).toHaveBeenCalledWith('brave', { apiKey: 'brave-secret' })
 	);
