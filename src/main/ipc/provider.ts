@@ -20,7 +20,7 @@ import {
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import { loadDatabases, loadProviders } from '../models';
-import { getProvider, listProviders, setProvider } from '../settings_store';
+import { deleteProvider, getProvider, listProviders, setProvider } from '../settings_store';
 import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
 import type { IpcModule } from './core/module';
@@ -57,6 +57,10 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 			const input = this.credential(value);
 			const provider = this.catalogProvider(input.kind, input.id, input.apiKey, input.baseUrl);
 			return setProvider(provider, input.kind);
+		});
+		registerCommandWithEvent(ProviderStoreChannels.remove, (event, id, kind) => {
+			trusted.assert(event);
+			deleteProvider(this.id(id), this.kind(kind));
 		});
 		registerQueryWithEvent(ProviderStoreChannels.listCustomModels, async (event, value) => {
 			trusted.assert(event);

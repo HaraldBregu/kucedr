@@ -35,6 +35,9 @@ export const provider: ProviderApi = {
 	set: (input: ProviderCredentialSaveInput) => {
 		return typedInvokeUnwrap(ProviderStoreChannels.set, input);
 	},
+	remove: (id: string, kind: SavedCredentialKind) => {
+		return typedInvokeUnwrap(ProviderStoreChannels.remove, id, kind);
+	},
 	list: (kind?: SavedCredentialKind) => {
 		return kind
 			? typedInvokeUnwrap(ProviderStoreChannels.list, kind)

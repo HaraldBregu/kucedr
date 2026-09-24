@@ -667,6 +667,13 @@ export interface ProviderInvokeChannelMap {
 		args: [input: import('./provider_types').ProviderCredentialSaveInput];
 		result: import('./provider_types').StoredProvider;
 	};
+	[ProviderChannels.remove]: {
+		args: [
+			id: string,
+			kind: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>,
+		];
+		result: void;
+	};
 	[ProviderChannels.list]: {
 		args: [kind?: Exclude<import('./provider_types').ProviderCredentialKind, 'search_engines'>];
 		result: import('./provider_types').StoredProvider[];
@@ -705,6 +712,10 @@ export interface SearchInvokeChannelMap {
 			engineId: import('./search_types').SearchEngineId,
 			input: import('./search_types').SearchEngineInput,
 		];
+		result: import('./search_types').SearchSettings;
+	};
+	[SearchChannels.removeEngine]: {
+		args: [engineId: import('./search_types').SearchEngineId];
 		result: import('./search_types').SearchSettings;
 	};
 	[SearchChannels.selectEngine]: {

@@ -11,6 +11,9 @@ export const search: SearchApi = {
 	saveEngine: (engineId: SearchEngineId, input: SearchEngineInput): Promise<SearchSettings> => {
 		return typedInvokeUnwrap(SearchChannels.saveEngine, engineId, input);
 	},
+	removeEngine: (engineId: SearchEngineId): Promise<SearchSettings> => {
+		return typedInvokeUnwrap(SearchChannels.removeEngine, engineId);
+	},
 	selectEngine: (engineId: SearchEngineId): Promise<SearchSettings> => {
 		return typedInvokeUnwrap(SearchChannels.selectEngine, engineId);
 	},

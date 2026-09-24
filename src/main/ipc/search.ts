@@ -2,6 +2,7 @@ import type { EventBus } from '../event_bus';
 import {
 	getSearchSettings,
 	getStoredSearchProviders,
+	removeSearchEngine,
 	saveSearchEngine,
 	selectSearchEngine,
 } from '../search';
@@ -33,6 +34,10 @@ export class SearchIpc implements IpcModule<SearchIpcDeps> {
 		registerCommandWithEvent(SearchChannels.saveEngine, (event, engineId, input) => {
 			trusted.assert(event);
 			return saveSearchEngine(engineId, input);
+		});
+		registerCommandWithEvent(SearchChannels.removeEngine, (event, engineId) => {
+			trusted.assert(event);
+			return removeSearchEngine(engineId);
 		});
 		registerCommandWithEvent(SearchChannels.selectEngine, (event, engineId) => {
 			trusted.assert(event);

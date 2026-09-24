@@ -325,6 +325,10 @@ export interface ProviderApi {
 		kind: Exclude<ProviderCredentialKind, 'search_engines'>
 	) => Promise<StoredProvider | undefined>;
 	set: (input: ProviderCredentialSaveInput) => Promise<StoredProvider>;
+	remove: (
+		id: string,
+		kind: Exclude<ProviderCredentialKind, 'search_engines'>
+	) => Promise<void>;
 	list: (kind?: Exclude<ProviderCredentialKind, 'search_engines'>) => Promise<StoredProvider[]>;
 	listCustomModels: (input: { baseUrl: string; apiKey: string }) => Promise<string[]>;
 	getChannel: (id: string) => Promise<ChannelCredentialSummary | undefined>;
@@ -376,6 +380,7 @@ export interface SearchApi {
 	getSettings: () => Promise<SearchSettings>;
 	listProviders: () => Promise<StoredProvider[]>;
 	saveEngine: (engineId: SearchEngineId, input: SearchEngineInput) => Promise<SearchSettings>;
+	removeEngine: (engineId: SearchEngineId) => Promise<SearchSettings>;
 	selectEngine: (engineId: SearchEngineId) => Promise<SearchSettings>;
 }
 

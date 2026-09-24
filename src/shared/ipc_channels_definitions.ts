@@ -283,6 +283,7 @@ export const SoundChannels = {
 export const ProviderChannels = {
 	get: 'provider-store:get',
 	set: 'provider-store:set',
+	remove: 'provider-store:remove',
 	list: 'provider-store:list',
 	listCustomModels: 'provider-store:custom:models:list',
 	getChannel: 'provider-store:channel:get',
@@ -319,6 +320,7 @@ export const SearchChannels = {
 	getSettings: 'search:settings:get',
 	listProviders: 'search:providers:list',
 	saveEngine: 'search:engine:save',
+	removeEngine: 'search:engine:remove',
 	selectEngine: 'search:engine:select',
 } as const;
 
