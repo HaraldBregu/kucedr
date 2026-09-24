@@ -110,21 +110,25 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
-				<button
-					type="button"
-					className={cn(SPLIT_ITEM_CLASS, 'group')}
-					aria-label={t('navigationBar.newChat', 'New chat')}
-					onClick={() => {
-						setSessionId(crypto.randomUUID());
-						if (sessions.length === 0) setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
-					}}
-				>
-					<Plus className="size-4" />
-					<span>{t('navigationBar.newChat', 'New Chat')}</span>
-					<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100">
-						{navigator.platform.startsWith('Mac') ? '⌘ N' : 'Ctrl + N'}
-					</kbd>
-				</button>
+				<SidebarMenu>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							type="button"
+							className="px-2.5"
+							aria-label={t('navigationBar.newChat', 'New chat')}
+							onClick={() => {
+								setSessionId(crypto.randomUUID());
+								if (sessions.length === 0) setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
+							}}
+						>
+							<Plus className="size-4 shrink-0" />
+							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
+							<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100">
+								{navigator.platform.startsWith('Mac') ? '⌘ N' : 'Ctrl + N'}
+							</kbd>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+				</SidebarMenu>
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>
 				<div className="px-2 pb-2 text-xs font-medium text-sidebar-foreground/70">
