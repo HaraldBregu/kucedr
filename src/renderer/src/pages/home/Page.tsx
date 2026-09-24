@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
-import { ThemeSwitcher } from '@/components/kibo-ui/theme-switcher';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
 import {
@@ -37,12 +36,10 @@ import {
 	type PromptInputVoiceMode,
 } from '@/components/ui/prompt-input';
 import { PromptSuggestion } from '@/components/ui/prompt-suggestion';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollButton } from '@/components/ui/scroll-button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
-import { useApp } from '@/contexts';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { AssistantMessage } from './components/AssistantMessage';
@@ -183,12 +180,8 @@ function PromptSuggestions({
 }: {
 	readonly onUseSuggestion: (prompt: string) => void;
 }): ReactElement {
-	const { t } = useTranslation();
-	const { language, setLanguage, theme, setTheme } = useApp();
-
 	return (
-		<div className="mx-auto flex w-full max-w-sm flex-col items-center gap-6">
-			<div className="flex w-full flex-col items-center gap-2" aria-label="Prompt suggestions">
+		<div className="mx-auto flex w-full max-w-sm flex-col items-center gap-2" aria-label="Prompt suggestions">
 				{promptSuggestions.map((row) => (
 					<div key={row[0].label} className="flex w-full items-center justify-center gap-2">
 						{row.map((suggestion) => (
@@ -206,30 +199,6 @@ function PromptSuggestions({
 						))}
 					</div>
 				))}
-			</div>
-			<div className="flex flex-wrap items-end justify-center gap-x-8 gap-y-3" aria-label="Quick settings">
-				<div className="flex flex-col items-center gap-1.5">
-					<span className="text-xs font-medium text-muted-foreground">{t('settings.theme.title')}</span>
-					<ThemeSwitcher value={theme} onChange={setTheme} />
-				</div>
-				<div className="flex flex-col items-center gap-1.5">
-					<span className="text-xs font-medium text-muted-foreground">{t('settings.language.title')}</span>
-					<Select
-						value={language}
-						onValueChange={(next) => {
-							if (next === 'en' || next === 'it') setLanguage(next);
-						}}
-					>
-						<SelectTrigger size="sm" className="w-28 text-xs" aria-label={t('settings.language.title')}>
-							<SelectValue>{t(`settings.language.${language}`)}</SelectValue>
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="en">{t('settings.language.en')}</SelectItem>
-							<SelectItem value="it">{t('settings.language.it')}</SelectItem>
-						</SelectContent>
-					</Select>
-				</div>
-			</div>
 		</div>
 	);
 }
