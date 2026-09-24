@@ -76,22 +76,6 @@ const promptSuggestions = [
 		label: 'Create an image',
 		prompt: 'Create an image of a cozy workspace at sunset.',
 	},
-	{
-		label: 'Create a video',
-		prompt: 'Create a short video of waves rolling onto a beach at dawn.',
-	},
-	{
-		label: 'Brainstorm ideas',
-		prompt: 'Help me brainstorm ideas for a new project.',
-	},
-	{
-		label: 'Explain a topic',
-		prompt: 'Explain a topic I want to learn about in simple terms.',
-	},
-	{
-		label: 'Draft a message',
-		prompt: 'Help me draft a clear message.',
-	},
 ] as const;
 
 function attachmentId(): string {
