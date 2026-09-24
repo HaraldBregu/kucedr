@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
-import { AGENT_MAX_ATTACHMENT_BYTES } from '../../../shared/agent_files';
 import type { Message } from '../types';
 import { sessionPath } from './session_session_path';
 import type { SessionState } from './session_types';
@@ -18,11 +17,6 @@ export function externalizeAttachments(messages: Message[], state: SessionState)
 						)
 							return block;
 						const bytes = Buffer.from(block.base64, 'base64');
-						if (bytes.length > AGENT_MAX_ATTACHMENT_BYTES) {
-							throw new Error(
-								`Each attachment must be at most ${AGENT_MAX_ATTACHMENT_BYTES} bytes.`
-							);
-						}
 						const id = createHash('sha256').update(bytes).digest('hex');
 						const directory = sessionPath(state.sessionsPath, state.folderName, 'attachments');
 						const filePath = sessionPath(

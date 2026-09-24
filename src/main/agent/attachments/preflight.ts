@@ -1,14 +1,6 @@
 import path from 'node:path';
-import {
-	AGENT_MAX_ATTACHMENT_BYTES,
-	AGENT_MAX_ATTACHMENT_COUNT,
-	AGENT_MAX_ATTACHMENT_TOTAL_BYTES,
-	AGENT_MAX_TEXT_ATTACHMENT_BYTES,
-	AGENT_MAX_TEXT_ATTACHMENT_TOTAL_BYTES,
-	AGENT_TEXT_ATTACHMENT_EXTENSIONS,
-} from '../../../shared/agent_files';
+import { AGENT_TEXT_ATTACHMENT_EXTENSIONS } from '../../../shared/agent_files';
 import type { AgentInputFile, AgentPromptInputCapabilities } from '../../../shared/agent_types';
-import type { PromptAttachmentRule } from '../../../shared/model_types';
 import type { PromptAttachmentBlock } from './types';
 
 const IMAGE_FORMATS = [
@@ -38,11 +30,6 @@ export function preflightPromptAttachments(
 	files: readonly AgentInputFile[],
 	capabilities: AgentPromptInputCapabilities
 ): PromptAttachmentBlock[] {
-	if (files.length > AGENT_MAX_ATTACHMENT_COUNT)
-		throw new Error(`A maximum of ${AGENT_MAX_ATTACHMENT_COUNT} attachments is allowed.`);
-	let binaryTotal = 0;
-	let textTotal = 0;
-	const ruleCounts = new Map<PromptAttachmentRule, { files: number; bytes: number }>();
 	return files.map((file) => {
 		if (
 			!file.name ||
@@ -80,25 +67,6 @@ export function preflightPromptAttachments(
 			);
 			if (!rule)
 				throw new Error(`Attachment "${file.name}" is not supported by the selected model.`);
-			const maxBytes = Math.min(
-				rule.maxBytes ?? AGENT_MAX_ATTACHMENT_BYTES,
-				AGENT_MAX_ATTACHMENT_BYTES
-			);
-			if (bytes.length > maxBytes)
-				throw new Error(`Attachment "${file.name}" exceeds the ${maxBytes}-byte file limit.`);
-			binaryTotal += bytes.length;
-			if (binaryTotal > AGENT_MAX_ATTACHMENT_TOTAL_BYTES)
-				throw new Error(
-					`Attachment "${file.name}" exceeds the ${AGENT_MAX_ATTACHMENT_TOTAL_BYTES}-byte total limit.`
-				);
-			const count = ruleCounts.get(rule) ?? { files: 0, bytes: 0 };
-			count.files += 1;
-			count.bytes += bytes.length;
-			ruleCounts.set(rule, count);
-			if (count.files > (rule.maxFiles ?? AGENT_MAX_ATTACHMENT_COUNT))
-				throw new Error(`Attachment "${file.name}" exceeds the selected model's file-count limit.`);
-			if (count.bytes > (rule.maxTotalBytes ?? AGENT_MAX_ATTACHMENT_TOTAL_BYTES))
-				throw new Error(`Attachment "${file.name}" exceeds the selected model's total-size limit.`);
 			return image
 				? { type: 'image', name: file.name, mimeType, bytes: bytes.length, base64: data }
 				: {
@@ -112,10 +80,6 @@ export function preflightPromptAttachments(
 
 		if (!(AGENT_TEXT_ATTACHMENT_EXTENSIONS as readonly string[]).includes(extension))
 			throw new Error(`Attachment "${file.name}" has an unsupported file type.`);
-		if (bytes.length > AGENT_MAX_TEXT_ATTACHMENT_BYTES)
-			throw new Error(
-				`Attachment "${file.name}" exceeds the ${AGENT_MAX_TEXT_ATTACHMENT_BYTES}-byte text-file limit.`
-			);
 		if (
 			bytes.some(
 				(byte) => (byte < 0x20 && byte !== 0x09 && byte !== 0x0a && byte !== 0x0d) || byte === 0x7f
@@ -130,11 +94,6 @@ export function preflightPromptAttachments(
 		} catch {
 			throw new Error(`Attachment "${file.name}" is not valid UTF-8 text.`);
 		}
-		textTotal += bytes.length;
-		if (textTotal > AGENT_MAX_TEXT_ATTACHMENT_TOTAL_BYTES)
-			throw new Error(
-				`Attachment "${file.name}" exceeds the ${AGENT_MAX_TEXT_ATTACHMENT_TOTAL_BYTES}-byte text total limit.`
-			);
 		return {
 			type: 'text_file',
 			name: file.name,

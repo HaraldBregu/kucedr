@@ -1,6 +1,5 @@
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
-import { AGENT_MAX_ATTACHMENT_BYTES } from '../../../shared/agent_files';
 import type { Message } from '../types';
 import { sessionFolderName } from './session_session_folder_name';
 import { sessionPath } from './session_session_path';
@@ -25,8 +24,7 @@ export function hydrateAttachments(
 							!/^[a-f0-9]{64}$/.test(id) ||
 							typeof bytes !== 'number' ||
 							!Number.isInteger(bytes) ||
-							bytes < 0 ||
-							bytes > AGENT_MAX_ATTACHMENT_BYTES
+							bytes < 0
 						)
 							return { type: 'text', text: '[invalid attachment metadata omitted]' };
 						const filePath = sessionPath(
