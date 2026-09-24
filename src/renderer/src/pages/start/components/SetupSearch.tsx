@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
+import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import {
 	Select,
 	SelectContent,
@@ -31,16 +32,23 @@ export function SetupSearch(): React.JSX.Element {
 	const selectedEngine = SEARCH_ENGINES.find((engine) => engine.id === selectedEngineId);
 
 	return (
-		<div className="flex w-full items-center gap-4 border-b border-border/60 px-4 py-3 last:border-b-0">
-			<Search className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-			<div className="min-w-0 flex-1">
-				<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+		<Item
+			variant="ghost"
+			size="md"
+			className="flex-nowrap gap-3 rounded-2xl border-b border-border/60 px-3 py-2 last:border-b-0"
+		>
+			<ItemMedia variant="icon" className="size-10 rounded-2xl bg-muted/50">
+				<Search className="size-5" aria-hidden="true" />
+			</ItemMedia>
+			<ItemContent className="min-w-0 flex-col items-start gap-0.5">
+				<ItemTitle className="min-w-0 max-w-full truncate text-sm leading-tight">
 					Search Engine
-				</div>
-				<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+				</ItemTitle>
+				<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 					{selectedEngine?.name ?? 'Select a search engine'}
 				</p>
-			</div>
+			</ItemContent>
+			<ItemActions className="ml-auto flex-none justify-end">
 			<Select
 				value={selectedEngineId}
 				disabled={!settings}
@@ -72,6 +80,7 @@ export function SetupSearch(): React.JSX.Element {
 					))}
 				</SelectContent>
 			</Select>
-		</div>
+			</ItemActions>
+		</Item>
 	);
 }
