@@ -10,6 +10,7 @@ export type ActivityRange = 'untilToday' | 'currentYear' | 'lastYear';
 export function Activity({ range }: { readonly range: ActivityRange }): React.JSX.Element {
 	const { t } = useTranslation();
 	const { theme } = useApp();
+	const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
 	const [failed, setFailed] = useState(false);
 	const [tooltip, setTooltip] = useState<{
@@ -30,6 +31,13 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 	const visibleValues = range === 'untilToday'
 		? values
 		: values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
+
+	useEffect(() => {
+		const media = window.matchMedia('(prefers-color-scheme: dark)');
+		const onChange = (event: MediaQueryListEvent): void => setSystemDark(event.matches);
+		media.addEventListener('change', onChange);
+		return () => media.removeEventListener('change', onChange);
+	}, []);
 
 	useEffect(() => {
 		let active = true;
@@ -79,7 +87,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 						'#39d353',
 					]}
 					emptyColor="var(--activity-empty-color)"
-					data-heatmap-theme={theme === 'system' ? undefined : theme}
+					data-heatmap-theme={theme === 'system' ? (systemDark ? 'dark' : 'light') : theme}
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}
