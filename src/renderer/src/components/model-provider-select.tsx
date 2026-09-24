@@ -135,7 +135,7 @@ export function ModelProviderSelect({
 			<PopoverTrigger asChild>
 				<Button
 					type="button"
-					variant="outline"
+					variant={compactPopover ? 'ghost' : 'outline'}
 					size="sm"
 					disabled={disabled || providerGroups.length === 0}
 					aria-label={accessibleLabel}

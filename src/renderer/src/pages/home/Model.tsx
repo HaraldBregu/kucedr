@@ -85,7 +85,7 @@ export function Model(): ReactElement {
 				buttonDropdown
 				compactPopover
 				showFieldLabel={false}
-				buttonClassName="h-6 min-w-0 max-w-48 border-0 bg-transparent px-1 text-[11px] shadow-none"
+				buttonClassName="h-6 min-w-0 max-w-48 border-0 bg-transparent px-1 text-[11px] shadow-none hover:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent dark:aria-expanded:bg-transparent"
 				labels={{ label: 'Change model' }}
 			/>
 			{error ? (
