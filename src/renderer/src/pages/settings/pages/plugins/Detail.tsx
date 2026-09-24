@@ -16,6 +16,8 @@ export default function PluginDetailPage(): React.JSX.Element {
 	}>();
 	const catalog = kind === 'mcp' ? mcps() : kind === 'database' ? databases() : kind === 'storage' ? storages() : [];
 	const entry = catalog.find((item) => item.provider.id === providerId && item.id === entryId);
+	const storage = kind === 'storage' ? storages().find((item) => item.provider.id === providerId && item.id === entryId) : undefined;
+	const endpoint = storage?.metadata.endpointTemplate ?? (entry && 'url' in entry ? entry.url : undefined);
 
 	return (
 		<SettingsPageShell>
@@ -58,16 +60,16 @@ export default function PluginDetailPage(): React.JSX.Element {
 								<dt className="text-xs text-muted-foreground">{t('settings.integrations.authentication')}</dt>
 								<dd className="min-w-0 text-sm">{entry.authentication ? t(`settings.integrations.authTypes.${entry.authentication}`) : t('settings.integrations.authTypes.none')}</dd>
 							</div>
-							{((kind === 'storage' && 'metadata' in entry && entry.metadata.endpointTemplate) || ('url' in entry && entry.url)) && (
+							{endpoint && (
 								<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
 									<dt className="text-xs text-muted-foreground">{t('settings.integrations.endpoint')}</dt>
-									<dd className="min-w-0 break-all text-sm">{kind === 'storage' && 'metadata' in entry ? entry.metadata.endpointTemplate : 'url' in entry ? entry.url : ''}</dd>
+									<dd className="min-w-0 break-all text-sm">{endpoint}</dd>
 								</div>
 							)}
-							{kind === 'storage' && 'metadata' in entry && entry.metadata.region && (
+							{storage?.metadata.region && (
 								<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
 									<dt className="text-xs text-muted-foreground">{t('settings.integrations.region')}</dt>
-									<dd className="min-w-0 text-sm">{entry.metadata.region}</dd>
+									<dd className="min-w-0 text-sm">{storage.metadata.region}</dd>
 								</div>
 							)}
 						</dl>
