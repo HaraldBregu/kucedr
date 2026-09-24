@@ -1,18 +1,5 @@
 .card-body {
-	--activity-empty-color: rgb(235, 237, 240);
-	--activity-color-1: #9be9a8;
-	--activity-color-2: #40c463;
-	--activity-color-3: #30a14e;
-	--activity-color-4: #216e39;
 	overflow-x: auto;
 	margin: 0 -6px -6px;
 	padding: 0 6px 6px;
-}
-
-.dark .card-body {
-	--activity-empty-color: #2c2c2e;
-	--activity-color-1: #0e4429;
-	--activity-color-2: #006d32;
-	--activity-color-3: #26a641;
-	--activity-color-4: #39d353;
 }

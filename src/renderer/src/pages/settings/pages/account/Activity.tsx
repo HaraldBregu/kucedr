@@ -31,6 +31,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 	const visibleValues = range === 'untilToday'
 		? values
 		: values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
+	const isDark = theme === 'system' ? systemDark : theme === 'dark';
 
 	useEffect(() => {
 		const media = window.matchMedia('(prefers-color-scheme: dark)');
@@ -75,19 +76,9 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 					to={end}
 					shape="rounded"
 					scale="linear"
-					levels={8}
-					colors={[
-						'#0e4429',
-						'#08562d',
-						'#026731',
-						'#0b7d36',
-						'#1b963d',
-						'#29ac44',
-						'#31c04b',
-						'#39d353',
-					]}
-					emptyColor="var(--activity-empty-color)"
-					data-heatmap-theme={theme === 'system' ? (systemDark ? 'dark' : 'light') : theme}
+					colors={isDark ? ['#0e4429', '#006d32', '#26a641', '#39d353'] : undefined}
+					emptyColor={isDark ? '#2c2c2e' : undefined}
+					data-heatmap-theme={isDark ? 'dark' : 'light'}
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
 					ariaLabel={t('settings.activity.title')}
