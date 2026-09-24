@@ -155,14 +155,16 @@ export function ModelProviderSelect({
 						: 'max-h-[var(--radix-popover-content-available-height)] w-72'
 				)}
 			>
-				{!compactPopover ? <Input
-					autoFocus
-					aria-label={t('settings.modelServices.searchModels')}
-					className="mb-1 h-8 text-xs"
-					placeholder={t('settings.modelServices.searchModels')}
-					value={modelSearch}
-					onChange={(event) => setModelSearch(event.target.value)}
-				/> : null}
+				{!compactPopover ? (
+					<Input
+						autoFocus
+						aria-label={t('settings.modelServices.searchModels')}
+						className="mb-1 h-8 text-xs"
+						placeholder={t('settings.modelServices.searchModels')}
+						value={modelSearch}
+						onChange={(event) => setModelSearch(event.target.value)}
+					/>
+				) : null}
 				<div
 					role="menu"
 					aria-label={accessibleLabel}
