@@ -189,14 +189,8 @@ export function validateProviderManifest(value: unknown): string[] {
 				errors.push('manifest.json: storage.id must be a non-empty string.');
 			if (!isNonEmptyString(entry.name))
 				errors.push('manifest.json: storage.name must be a non-empty string.');
-			if (
-				!AUTHENTICATION_TYPES.includes(
-					entry.authentication as (typeof AUTHENTICATION_TYPES)[number]
-				)
-			)
-				errors.push(
-					`manifest.json: storage.authentication must be one of ${AUTHENTICATION_TYPES.join(', ')}.`
-				);
+			if (entry.authentication !== 's3-access-key')
+				errors.push('manifest.json: storage.authentication must be s3-access-key.');
 			const metadata = entry.metadata;
 			if (
 				typeof metadata !== 'object' ||

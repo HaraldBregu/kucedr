@@ -11,7 +11,7 @@
 	"storage": {
 		"id": "supabase-storage",
 		"name": "Supabase Storage",
-		"authentication": "api-key",
+		"authentication": "s3-access-key",
 		"metadata": {
 			"protocol": "s3",
 			"endpointTemplate": "https://{projectRef}.storage.supabase.co/storage/v1/s3",

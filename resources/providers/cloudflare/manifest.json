@@ -11,7 +11,7 @@
 	"storage": {
 		"id": "cloudflare-r2",
 		"name": "Cloudflare R2",
-		"authentication": "api-key",
+		"authentication": "s3-access-key",
 		"metadata": {
 			"protocol": "s3",
 			"region": "auto",

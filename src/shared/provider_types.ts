@@ -1,6 +1,7 @@
 import type { ModelCapability, ModelMetadata, ProviderModel } from './model_types';
 
 export type AuthenticationType = 'api-key' | 'oauth2' | 'none';
+export type StorageAuthenticationType = 's3-access-key';
 export type ModelLocation = 'remote' | 'local';
 export type DatabaseType = 'vector' | 'sql' | 'nosql';
 
@@ -84,7 +85,7 @@ export interface ProviderManifestDatabase {
 export interface ProviderManifestStorage {
 	readonly id: string;
 	readonly name: string;
-	readonly authentication: AuthenticationType;
+	readonly authentication: StorageAuthenticationType;
 	readonly metadata: {
 		readonly protocol: 's3';
 		readonly region?: string;
