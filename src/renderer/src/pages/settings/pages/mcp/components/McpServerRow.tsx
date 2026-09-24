@@ -44,7 +44,7 @@ export function McpServerRow({
 		<Item
 			variant="ghost"
 			size="md"
-			className="relative min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50 md:col-start-1"
+			className="relative min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 		>
 			<ProviderAvatar
 				providerId={iconService?.id ?? server.id}
