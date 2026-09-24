@@ -1,7 +1,9 @@
 import { BrowserWindow, dialog } from 'electron';
+import { userDataLocation } from '../shared/user_data_location';
 
 export async function pickFolders(): Promise<string[]> {
 	const options = {
+		defaultPath: userDataLocation(),
 		properties: ['openDirectory' as const, 'multiSelections' as const],
 	};
 	const window = BrowserWindow.getFocusedWindow();
