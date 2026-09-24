@@ -69,6 +69,26 @@ beforeEach(() => {
 	api.removeProvider.mockResolvedValue(true);
 });
 
+it('shows an enabled plugin storage in Providers before a connection is saved', async () => {
+	const user = userEvent.setup();
+	render(<StorageProvidersPage />);
+	await screen.findByText('Supabase Storage');
+	expect(screen.getByText('No storage connections')).toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'Add Supabase Storage' }));
+	const form = within(screen.getByRole('form'));
+	expect(form.getByLabelText('Name')).toHaveValue('Supabase Storage');
+	expect(form.getByRole('combobox', { name: 'Provider' })).toHaveTextContent('Supabase Storage');
+	expect(form.getByRole('switch', { name: 'Use path-style addressing' })).toBeChecked();
+});
+
+it('keeps the Storage page empty when no plugin storage is enabled', async () => {
+	jest.mocked(window.provider.listEnabledPlugins).mockResolvedValue({ database: [], storage: [] });
+	render(<StorageProvidersPage />);
+	await screen.findByText('No storage connections');
+	expect(screen.queryByText('Supabase Storage')).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Add provider' })).toBeDisabled();
+});
+
 it('adds multiple independent S3 connections and retains existing entries', async () => {
 	const user = userEvent.setup();
 	render(<StorageProvidersPage />);
