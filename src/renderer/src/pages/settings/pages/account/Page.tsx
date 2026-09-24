@@ -46,7 +46,13 @@ const AccountPage: React.FC = () => {
 			<SettingsPageHeader
 				title="Account"
 				description="Manage your sign-in status."
-				action={!signedIn ? <Button type="button" size="xs" onClick={requireSignIn}>Login</Button> : undefined}
+				action={
+					!signedIn ? (
+						<Button type="button" size="xs" onClick={requireSignIn}>
+							Login
+						</Button>
+					) : undefined
+				}
 			/>
 			<SettingsSection
 				title={t('settings.activity.title')}
@@ -61,12 +67,12 @@ const AccountPage: React.FC = () => {
 				</SettingsNotice>
 			) : null}
 			{signedIn ? (
-			<>
-			<SettingsSection title="Identity">
-				<SettingsPanel>
-					<SettingsRow title="Status">
-						<SettingsValue>Signed in</SettingsValue>
-					</SettingsRow>
+				<>
+					<SettingsSection title="Identity">
+						<SettingsPanel>
+							<SettingsRow title="Status">
+								<SettingsValue>Signed in</SettingsValue>
+							</SettingsRow>
 							{profileName || state.user?.displayName ? (
 								<SettingsRow title="Name">
 									<SettingsValue>{profileName ?? state.user?.displayName}</SettingsValue>
@@ -78,45 +84,47 @@ const AccountPage: React.FC = () => {
 							<SettingsRow title="Account ID">
 								<SettingsValue>{state.user?.id ?? 'Unavailable'}</SettingsValue>
 							</SettingsRow>
-				</SettingsPanel>
-			</SettingsSection>
-			<SettingsSection title="Session">
-				<SettingsPanel>
-					<SettingsRow
-						title="Sign out"
-						description="You can continue using Kucedr on this device after signing out."
-					>
-							<Button
-								type="button"
-								size="xs"
-								variant="outline"
-								disabled={sessionBusy}
-								onClick={() => {
-									setError('');
-									void window.win
-										.confirmSignOut()
-										.then((confirmed) => {
-											if (!confirmed) return;
-											setSessionBusy(true);
-											void window.auth
-												.signOut()
-												.catch((cause) =>
-													setError(cause instanceof Error ? cause.message : 'Could not sign out.')
-												)
-												.finally(() => setSessionBusy(false));
-										})
-										.catch((cause) =>
-											setError(cause instanceof Error ? cause.message : 'Could not sign out.')
-										);
-								}}
+						</SettingsPanel>
+					</SettingsSection>
+					<SettingsSection title="Session">
+						<SettingsPanel>
+							<SettingsRow
+								title="Sign out"
+								description="You can continue using Kucedr on this device after signing out."
 							>
-								{sessionBusy ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : null}
-								Sign out
-							</Button>
-					</SettingsRow>
-				</SettingsPanel>
-			</SettingsSection>
-			</>
+								<Button
+									type="button"
+									size="xs"
+									variant="outline"
+									disabled={sessionBusy}
+									onClick={() => {
+										setError('');
+										void window.win
+											.confirmSignOut()
+											.then((confirmed) => {
+												if (!confirmed) return;
+												setSessionBusy(true);
+												void window.auth
+													.signOut()
+													.catch((cause) =>
+														setError(cause instanceof Error ? cause.message : 'Could not sign out.')
+													)
+													.finally(() => setSessionBusy(false));
+											})
+											.catch((cause) =>
+												setError(cause instanceof Error ? cause.message : 'Could not sign out.')
+											);
+									}}
+								>
+									{sessionBusy ? (
+										<LoaderCircle className="animate-spin" aria-hidden="true" />
+									) : null}
+									Sign out
+								</Button>
+							</SettingsRow>
+						</SettingsPanel>
+					</SettingsSection>
+				</>
 			) : null}
 		</SettingsPageShell>
 	);
