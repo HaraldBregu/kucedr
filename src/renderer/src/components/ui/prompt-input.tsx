@@ -60,6 +60,8 @@ export type PromptInputProps = {
 	header?: React.ReactNode;
 	leadingAction?: React.ReactNode;
 	actions?: React.ReactNode;
+	trailingAction?: React.ReactNode;
+	detachedControls?: boolean;
 	disabled?: boolean;
 	textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
 	voiceMode?: PromptInputVoiceMode | null;
@@ -340,6 +342,8 @@ function PromptInput({
 	header,
 	leadingAction,
 	actions,
+	trailingAction,
+	detachedControls = false,
 	disabled = false,
 	textareaRef: externalTextareaRef,
 	voiceMode,
@@ -380,6 +384,7 @@ function PromptInput({
 	const isPromptExpanded =
 		expanded || isExpanded || isConversationMode || isDictationMode || Boolean(header);
 	const controlsRow = header ? 'row-start-3' : isPromptExpanded ? 'row-start-2' : 'row-start-1';
+	const detached = detachedControls && !voiceMode;
 
 	useLayoutEffect(() => {
 		const content = contentRef.current;
@@ -426,7 +431,7 @@ function PromptInput({
 									transition.duration === 0 || contentHeight === undefined
 										? 'auto'
 										: contentHeight + 2,
-								borderRadius: isConversationMode || !isPromptExpanded ? 28 : 12,
+							borderRadius: detached || isConversationMode || !isPromptExpanded ? 28 : 12,
 							}}
 							transition={transition}
 							onClick={isConversationMode ? onClick : handleClick}
@@ -434,6 +439,7 @@ function PromptInput({
 							data-voice-mode={voiceMode ?? undefined}
 							className={cn(
 								'relative cursor-text border border-border/60 bg-card/95 text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
+								detached && 'border-transparent bg-transparent shadow-none focus-within:ring-0',
 								isConversationMode
 									? 'cursor-default rounded-[1.75rem] focus-within:ring-0'
 									: isPromptExpanded
@@ -451,9 +457,12 @@ function PromptInput({
 										'relative shrink-0',
 										isConversationMode
 											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
+										: detached
+											? 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 p-0'
 											: 'grid grid-cols-[auto_minmax(0,1fr)_auto] content-end items-center gap-x-2 p-1',
 										!isConversationMode &&
-											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12')
+											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12'),
+										detached && 'min-h-0'
 									)}
 								>
 									{isConversationMode ? (
@@ -489,6 +498,16 @@ function PromptInput({
 										</motion.div>
 									) : (
 										<>
+											{detached ? (
+												<div className="col-span-3 col-start-1 row-start-1 grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-[1.75rem] border border-border/60 bg-card/95 px-4 py-2 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25">
+													<div className="min-w-0">
+														{header ? <div className="mb-2">{header}</div> : null}
+														{children}
+													</div>
+													{trailingAction}
+												</div>
+											) : (
+											<>
 											{header ? (
 												<motion.div
 													layout="position"
@@ -498,14 +517,16 @@ function PromptInput({
 													{header}
 												</motion.div>
 											) : null}
+											</>
+											)}
 											{leadingAction ? (
 												<div
-													className={cn('col-start-1 flex h-10 self-end items-center', controlsRow)}
+													className={cn('col-start-1 flex h-10 self-end items-center', detached ? 'row-start-2' : controlsRow)}
 												>
 													{leadingAction}
 												</div>
 											) : null}
-											<motion.div
+											{!detached ? <motion.div
 												layout="position"
 												transition={transition}
 												className={cn(
@@ -519,7 +540,7 @@ function PromptInput({
 												)}
 											>
 												{children}
-											</motion.div>
+											</motion.div> : null}
 											<div
 												className={cn(
 													'relative flex h-10 min-w-0 self-end items-center justify-end',
@@ -528,7 +549,7 @@ function PromptInput({
 															? 'col-start-2 col-end-4'
 															: 'col-span-3 col-start-1'
 														: 'col-start-3',
-													controlsRow,
+													detached ? 'row-start-2' : controlsRow,
 													isPromptExpanded && footerClassName
 												)}
 											>
