@@ -130,7 +130,7 @@ it('shows submitted file metadata immediately in an attachment-only turn', async
 	expect(mockDispatch).toHaveBeenCalledWith(expect.objectContaining({
 		type: 'submit_user_message',
 		content: '',
-		attachments: [{ type: 'attachment', kind: 'text', name: 'brief.txt', mimeType: 'text/plain', bytes: 5 }],
+		attachments: [expect.objectContaining({ type: 'attachment', kind: 'text', name: 'brief.txt', mimeType: 'text/plain', bytes: 5, file })],
 	}));
 });
 
