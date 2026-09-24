@@ -1122,12 +1122,12 @@
 		},
 		"storage": {
 			"configurationTitle": "Cloud Backup",
-			"description": "Choose local folders to back up securely.",
+			"description": "Back up selected folders to Amazon S3 or any S3-compatible storage provider.",
 			"versioned": {
 				"title": "Version history sync",
 				"description": "Save immutable local snapshots, then publish verified versions through Supabase and S3. Existing backups stay available.",
 				"enable": "Enable version history sync",
-				"enableDescription": "Requires a signed-in account and the matching Supabase storage backend. Pending edits remain on this device until published.",
+				"enableDescription": "Optional: Supabase stores version metadata. The selected S3-compatible provider must match the backend configured for this project. Pending edits remain on this device until published.",
 				"syncNow": "Sync versions now",
 				"catchUp": "Fetch cloud versions",
 				"catchUpDescription": "Download and verify cloud versions into the local cache. Existing working files are kept for conflict review.",

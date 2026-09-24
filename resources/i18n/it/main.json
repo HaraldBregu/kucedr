@@ -1122,12 +1122,12 @@
 		},
 		"storage": {
 			"configurationTitle": "Backup cloud",
-			"description": "Scegli le cartelle locali di cui eseguire il backup in modo sicuro.",
+			"description": "Esegui il backup delle cartelle selezionate su Amazon S3 o su qualsiasi provider compatibile con S3.",
 			"versioned": {
 				"title": "Sincronizzazione con cronologia versioni",
 				"description": "Salva snapshot locali immutabili e pubblica versioni verificate tramite Supabase e S3. I backup esistenti restano disponibili.",
 				"enable": "Attiva la sincronizzazione delle versioni",
-				"enableDescription": "Richiede un account connesso e il backend Supabase corrispondente. Le modifiche in attesa restano su questo dispositivo fino alla pubblicazione.",
+				"enableDescription": "Opzionale: Supabase conserva i metadati delle versioni. Il provider compatibile con S3 selezionato deve corrispondere al backend configurato per questo progetto. Le modifiche in attesa restano su questo dispositivo fino alla pubblicazione.",
 				"syncNow": "Sincronizza le versioni ora",
 				"catchUp": "Scarica le versioni cloud",
 				"catchUpDescription": "Scarica e verifica le versioni cloud nella cache locale. I file di lavoro esistenti restano disponibili per risolvere i conflitti.",
