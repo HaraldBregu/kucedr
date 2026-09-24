@@ -34,7 +34,7 @@ Each upload reservation records its provider ID, and published versions retain i
 provider changes do not redirect historical downloads. Existing versions whose provider ID is
 null continue to use their original global S3 environment settings.
 
-Each provider's IAM principal needs `s3:PutObject` and `s3:GetObject` only for its bucket/prefix. Deny public access and normal overwrites. Upload URLs sign `If-None-Match: *` and SHA-256 checksum headers; clients must send the returned headers exactly. Configure S3 CORS for the application's upload origin if a browser-based caller is used. Enable S3 Versioning as an additional recovery layer.
+Each provider's IAM principal needs `s3:PutObject` and `s3:GetObject` only for its bucket/prefix. Deny public access and normal overwrites. Upload URLs sign `If-None-Match: *`; clients must send the returned headers exactly. Publication verifies the full SHA-256 and size by reading the object back, without relying on optional S3 checksum-header support. Configure S3 CORS for the application's upload origin if a browser-based caller is used. Enable S3 Versioning as an additional recovery layer.
 
 The `storage-upload` function reserves `{providerId, operationId, versionId, sha256, sizeBytes}` for one account/workspace and returns a ten-minute conditional PUT URL. `storage-publish` reads the entire object back, verifies its size and SHA-256, and then calls the transactional `storage_publish_version` RPC. A rename reuses a parent's verified content reference; a tombstone has no object. `storage-download` grants a ten-minute GET URL only for a published version owned by the caller. All functions derive owner identity from the Supabase user JWT. Clients receive short-lived object URLs, never server-side keys.
 
