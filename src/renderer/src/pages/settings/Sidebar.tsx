@@ -42,10 +42,10 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		],
 	},
 	{
-		id: 'integrations',
+		id: 'plugins',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/integrations', '/settings/apps', '/settings/a2a'].includes(
+			['/settings/plugins', '/settings/apps', '/settings/a2a'].includes(
 				item.path
 			)
 		),

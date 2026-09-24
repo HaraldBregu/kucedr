@@ -239,7 +239,7 @@
 			"generalDescription": "Configure application information, appearance, language, and data.",
 			"modelServices": "Model services",
 			"channels": "Channels",
-			"integrations": "Integrations",
+			"integrations": "Plugins",
 			"connectors": "Connectors",
 			"mcp": "MCP Servers",
 			"a2a": "A2A",
@@ -266,12 +266,12 @@
 			"rag": "Knowledge Base"
 		},
 		"integrations": {
-			"title": "Integrations",
+			"title": "Plugins",
 			"description": "Connect the services Kucedr can use on your behalf.",
 			"available": "Available integrations",
 			"availableDescription": "Add a service to make its tools available to the assistant.",
-			"empty": "No integrations available",
-			"emptyDescription": "No integration providers were found in the provider catalog."
+			"empty": "No plugins available",
+			"emptyDescription": "No plugins were found in the provider catalog."
 		},
 		"breadcrumb": {
 			"label": "Settings navigation",

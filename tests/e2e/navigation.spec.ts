@@ -41,7 +41,7 @@ const routes = [
 	'/settings/cloud',
 	'/settings/general/media/microphone',
 	'/settings/channels',
-	'/settings/integrations',
+	'/settings/plugins',
 	'/settings/skills',
 	'/settings/providers',
 	'/settings/providers/database',

@@ -70,7 +70,7 @@ it.each([
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
-	['/settings/integrations', 'settings.tabs.integrations'],
+	['/settings/plugins', 'settings.tabs.plugins'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
 	if (
 		path === '/settings/general/persona' ||
@@ -209,7 +209,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).toHaveAttribute('href', '/settings/knowledge-base');
 	expect(
 		within(navigation)
-			.getByRole('link', { name: 'settings.tabs.integrations' })
+			.getByRole('link', { name: 'settings.tabs.plugins' })
 			.closest('[data-slot="split-pane-group"]')
 	).toBe(
 		within(navigation)

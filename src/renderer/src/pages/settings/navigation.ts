@@ -417,8 +417,8 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: RadioTower,
 	},
 	{
-		path: '/settings/integrations',
-		labelKey: 'settings.tabs.integrations',
+		path: '/settings/plugins',
+		labelKey: 'settings.tabs.plugins',
 		descriptionKey: 'settings.overview.descriptions.integrations',
 		icon: Plug,
 	},

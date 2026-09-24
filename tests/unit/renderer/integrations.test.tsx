@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { CatalogService } from '../../../src/shared/provider_types';
-import IntegrationsPage from '../../../src/renderer/src/pages/settings/pages/integrations/Page';
+import PluginsPage from '../../../src/renderer/src/pages/settings/pages/plugins/Page';
 
 const catalog = ['gmail', 'google-calendar', 'google-drive', 'github', 'notion'].map(
 	(id): CatalogService => ({
@@ -43,10 +43,11 @@ beforeEach(() => {
 	mcpApi.delete.mockResolvedValue(undefined);
 });
 
-it('renders the five integration providers as borderless items with descriptions', async () => {
-	const { container } = render(<IntegrationsPage />);
+it('renders the five plugins in a two-column catalog with descriptions', async () => {
+	const { container } = render(<PluginsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
+	expect(container.querySelector('.lg\\:grid-cols-2')).toBeInTheDocument();
 	expect(screen.getAllByRole('switch').map((control) => control.getAttribute('aria-label'))).toEqual([
 		'gmail',
 		'google-calendar',
@@ -63,7 +64,7 @@ it('renders the five integration providers as borderless items with descriptions
 
 it('enables an integration without opening configuration UI', async () => {
 	const user = userEvent.setup();
-	render(<IntegrationsPage />);
+	render(<PluginsPage />);
 
 	await user.click(screen.getByRole('switch', { name: 'notion' }));
 
@@ -79,7 +80,7 @@ it('enables an integration without opening configuration UI', async () => {
 
 it('removes the MCP server when an integration is disabled', async () => {
 	const user = userEvent.setup();
-	render(<IntegrationsPage />);
+	render(<PluginsPage />);
 
 	const gmailSwitch = screen.getByRole('switch', { name: 'gmail' });
 	await waitFor(() => expect(gmailSwitch).toBeChecked());

@@ -41,7 +41,7 @@ const GeneralPage = lazy(() => import('./pages/settings/pages/general/Page'));
 const PersonaPage = lazy(() => import('./pages/settings/pages/general/persona/Page'));
 const GeneralMediaDetailPage = lazy(() => import('./pages/settings/pages/general/media/Page'));
 const ChannelsPage = lazy(() => import('./pages/settings/pages/channels/Page'));
-const IntegrationsPage = lazy(() => import('./pages/settings/pages/integrations/Page'));
+const PluginsPage = lazy(() => import('./pages/settings/pages/plugins/Page'));
 const ChannelDetailPage = lazy(() => import('./pages/settings/pages/channels/detail/Page'));
 const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
@@ -312,10 +312,10 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
-						path: 'integrations',
+						path: 'plugins',
 						element: (
 							<SettingsRouteWrapper>
-								<IntegrationsPage />
+								<PluginsPage />
 							</SettingsRouteWrapper>
 						),
 					},

@@ -20,7 +20,7 @@ const INTEGRATION_PROVIDER_IDS = [
 	'notion',
 ] as const;
 
-const IntegrationsPage = (): React.JSX.Element => {
+const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
 	const [servers, setServers] = useState<McpSettings>({});
 	const [savingId, setSavingId] = useState<string | null>(null);
@@ -80,7 +80,7 @@ const IntegrationsPage = (): React.JSX.Element => {
 	};
 
 	return (
-		<SettingsPageShell>
+		<SettingsPageShell className="max-w-none">
 			<SettingsPageHeader
 				title={t('settings.integrations.title')}
 				description={t('settings.integrations.description')}
@@ -88,26 +88,26 @@ const IntegrationsPage = (): React.JSX.Element => {
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
 			{catalog.length > 0 ? (
-				<div className="space-y-1 pb-4">
+				<div className="grid grid-cols-1 gap-x-8 gap-y-2 pb-4 lg:grid-cols-2">
 					{catalog.map((service) => (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
 							variant="ghost"
 							size="md"
-							className="px-0 py-3.5"
+							className="min-w-0 flex-nowrap px-0 py-4"
 						>
 							<ProviderAvatar
 								providerId={service.provider.id}
 								name={service.provider.name}
 								iconDarkUrl={service.provider.iconDarkUrl}
 								iconLightUrl={service.provider.iconLightUrl}
-								className="size-8 rounded-none border-0 bg-transparent p-0"
+								className="size-16 rounded-xl border-0 bg-muted p-2"
 							/>
 							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-semibold leading-tight">
+								<ItemTitle className="min-w-0 max-w-full truncate text-base font-medium leading-tight">
 									{service.name}
 								</ItemTitle>
-								<p className="max-w-full truncate text-xs font-medium leading-tight text-muted-foreground">
+								<p className="max-w-full truncate text-sm leading-tight text-muted-foreground">
 									{service.description}
 								</p>
 							</ItemContent>
@@ -134,4 +134,4 @@ const IntegrationsPage = (): React.JSX.Element => {
 	);
 };
 
-export default IntegrationsPage;
+export default PluginsPage;
