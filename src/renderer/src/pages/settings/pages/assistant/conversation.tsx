@@ -20,6 +20,7 @@ interface RealtimeConversationConfigurationProps {
 	readonly buttonClassName?: string;
 	readonly showContentSeparator?: boolean;
 	readonly icon?: LucideIcon;
+	readonly pluginItemStyle?: boolean;
 }
 
 export default function RealtimeConversationConfiguration({
@@ -30,6 +31,7 @@ export default function RealtimeConversationConfiguration({
 	buttonClassName,
 	showContentSeparator = true,
 	icon,
+	pluginItemStyle = false,
 }: RealtimeConversationConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
@@ -184,6 +186,7 @@ export default function RealtimeConversationConfiguration({
 				showInlineError
 				showIcon={Boolean(icon)}
 				icon={icon}
+				pluginItemStyle={pluginItemStyle}
 				showFieldLabel={showFieldLabel}
 				showSelectedModel={showSelectedModel}
 				buttonDropdown={buttonDropdown}

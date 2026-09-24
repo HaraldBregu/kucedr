@@ -19,6 +19,7 @@ interface ModelProviderConfigurationProps {
 	readonly showInlineError?: boolean;
 	readonly showIcon?: boolean;
 	readonly icon?: LucideIcon;
+	readonly pluginItemStyle?: boolean;
 	readonly showFieldLabel?: boolean;
 	readonly grouped?: boolean;
 	readonly collapsible?: boolean;
@@ -42,6 +43,7 @@ export function ModelProviderConfiguration({
 	showInlineError = false,
 	showIcon = true,
 	icon: FunctionIcon,
+	pluginItemStyle = false,
 	showFieldLabel = true,
 	grouped = false,
 	collapsible = true,
@@ -205,29 +207,42 @@ export function ModelProviderConfiguration({
 					: 'min-w-0 max-w-full overflow-hidden rounded-xl bg-card ring-1 ring-foreground/10'
 			}
 		>
-			<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
-				<CollapsibleTrigger className="group flex min-w-0 flex-1 items-center gap-4 text-left">
+			<div
+				className={cn(
+					'flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40',
+					pluginItemStyle && 'rounded-2xl px-3 py-2'
+				)}
+			>
+				<CollapsibleTrigger
+					className={cn('group flex min-w-0 flex-1 items-center gap-4 text-left', pluginItemStyle && 'gap-3')}
+				>
 					{showIcon &&
 						(FunctionIcon ? (
-							<FunctionIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+							pluginItemStyle ? (
+								<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
+									<FunctionIcon className="size-5" aria-hidden="true" />
+								</div>
+							) : (
+								<FunctionIcon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+							)
 						) : provider ? (
 							<ProviderAvatar
 								providerId={provider.id}
 								name={providerName}
 								iconDarkUrl={provider.iconDarkUrl}
 								iconLightUrl={provider.iconLightUrl}
-								className="size-10"
+								className={pluginItemStyle ? 'size-10 rounded-2xl bg-muted/50 p-1' : 'size-10'}
 							/>
 						) : (
-							<div className="flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground">
+							<div className={cn('flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground', pluginItemStyle && 'rounded-2xl border-0 bg-muted/50')}>
 								<Bot className="size-4" aria-hidden="true" />
 							</div>
 						))}
 					<div className="min-w-0 flex-1">
-						<div className="truncate text-[13px] font-medium leading-4 text-foreground">
+						<div className={cn('truncate text-[13px] font-medium leading-4 text-foreground', pluginItemStyle && 'text-sm leading-tight')}>
 							{triggerTitle ?? providerName}
 						</div>
-						<p className="mt-0.5 truncate text-[11px] leading-4 text-muted-foreground">
+						<p className={cn('mt-0.5 truncate text-[11px] leading-4 text-muted-foreground', pluginItemStyle && 'text-xs leading-tight')}>
 							{triggerDescription ?? (showSelectedModel ? description : modelName)}
 						</p>
 					</div>

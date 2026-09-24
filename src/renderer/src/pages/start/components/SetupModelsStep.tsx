@@ -177,6 +177,7 @@ export function SetupModelsStep({
 								buttonDropdown
 								buttonClassName="w-40 min-w-0"
 								icon={Radio}
+								pluginItemStyle
 							/>
 						</CardContent>
 					</Card>
