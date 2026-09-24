@@ -13,17 +13,7 @@ jest.mock('@/contexts', () => ({
 }));
 
 jest.mock('@thilakbhat/heatmap-ui', () => ({
-	CalendarHeatmap: ({
-		values,
-		weeks,
-		cellSize,
-		to,
-		shape,
-		scale,
-		colors,
-		cellLabel,
-		'data-heatmap-theme': theme,
-	}: {
+	CalendarHeatmap: ({ values, weeks, cellSize, to, shape, scale, colors, cellLabel, 'data-heatmap-theme': theme }: {
 		values: { date: string; value: number }[];
 		weeks: number;
 		cellSize: number;
@@ -34,20 +24,10 @@ jest.mock('@thilakbhat/heatmap-ui', () => ({
 		cellLabel: (day: { date: string; value: number }) => string;
 		'data-heatmap-theme'?: string;
 	}) => (
-		<div
-			data-testid="activity-heatmap"
-			data-count={values.length}
-			data-weeks={weeks}
-			data-cell-size={cellSize}
-			data-to={to}
-			data-shape={shape}
-			data-scale={scale}
-			data-colors={colors.join(',')}
-			data-heatmap-theme={theme}
-		>
-			{values.map((day) => (
-				<div key={day.date} className="heatmap__cell-slot" role="img" aria-label={cellLabel(day)} />
-			))}
+		<div data-testid="activity-heatmap" data-count={values.length} data-weeks={weeks}
+			data-cell-size={cellSize} data-to={to} data-shape={shape} data-scale={scale}
+			data-colors={colors.join(',')} data-heatmap-theme={theme}>
+			{values.map((day) => <div key={day.date} className="heatmap__cell-slot" role="img" aria-label={cellLabel(day)} />)}
 		</div>
 	),
 }));
@@ -100,9 +80,7 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(await screen.findByText('user@example.test')).toBeInTheDocument();
 	expect(await screen.findByText('Ada Byron')).toBeInTheDocument();
 	expect(screen.getByText('user-id')).toBeInTheDocument();
-	await waitFor(() =>
-		expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1')
-	);
+	await waitFor(() => expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1'));
 	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
 	expect(screen.getByText('settings.activity.description')).toBeInTheDocument();
 	expect(screen.getByTestId('activity-scroll')).toHaveClass('card-body');
