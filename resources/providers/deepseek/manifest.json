@@ -3,8 +3,8 @@
 	"providerName": "DeepSeek",
 	"apiKeyUrl": "https://platform.deepseek.com/api_keys",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/deepseek.svg",
-	"icon_light_url": "/images/vectorized/deepseek.svg",
+	"icon_dark_url": "/images/deepseek.svg",
+	"icon_light_url": "/images/deepseek.svg",
 	"services": [
 		{
 			"id": "deepseek-v4-pro",

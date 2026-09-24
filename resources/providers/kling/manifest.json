@@ -3,8 +3,8 @@
   "providerName": "Kuaishou / Kling AI",
   "apiKeyUrl": "https://app.klingai.com/global/dev",
   "images_url": "/images",
-  "icon_dark_url": "/images/vectorized/kling.svg",
-  "icon_light_url": "/images/vectorized/kling.svg",
+  "icon_dark_url": "/images/kling.svg",
+  "icon_light_url": "/images/kling.svg",
   "services": [
     {
       "id": "kling-v2.5-turbo",

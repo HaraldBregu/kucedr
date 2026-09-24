@@ -3,8 +3,8 @@
   "providerName": "ElevenLabs",
   "apiKeyUrl": "https://elevenlabs.io/app/settings/api-keys",
   "images_url": "/images",
-  "icon_dark_url": "/images/vectorized/elevenlabs-dark.svg",
-  "icon_light_url": "/images/vectorized/elevenlabs-light.svg",
+  "icon_dark_url": "/images/elevenlabs-dark.svg",
+  "icon_light_url": "/images/elevenlabs-light.svg",
   "services": [
     {
       "id": "scribe_v2",

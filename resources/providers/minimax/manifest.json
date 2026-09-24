@@ -3,8 +3,8 @@
 	"providerName": "MiniMax",
 	"apiKeyUrl": "https://platform.minimax.io/user-center/basic-information/interface-key",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/minimax.svg",
-	"icon_light_url": "/images/vectorized/minimax.svg",
+	"icon_dark_url": "/images/minimax.svg",
+	"icon_light_url": "/images/minimax.svg",
 	"services": [
 		{
 			"id": "MiniMax-M2.7",

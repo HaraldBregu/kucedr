@@ -3,8 +3,8 @@
 	"providerName": "Moonshot AI / Kimi",
 	"apiKeyUrl": "https://platform.moonshot.ai/console/api-keys",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/kimi.svg",
-	"icon_light_url": "/images/vectorized/kimi.svg",
+	"icon_dark_url": "/images/kimi.svg",
+	"icon_light_url": "/images/kimi.svg",
 	"services": [
 		{
 			"id": "kimi-k3",

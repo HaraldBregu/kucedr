@@ -3,8 +3,8 @@
   "providerName": "Cartesia",
   "apiKeyUrl": "https://play.cartesia.ai/keys",
   "images_url": "/images",
-  "icon_dark_url": "/images/vectorized/cartesia-dark.svg",
-  "icon_light_url": "/images/vectorized/cartesia-light.svg",
+  "icon_dark_url": "/images/cartesia-dark.svg",
+  "icon_light_url": "/images/cartesia-light.svg",
   "services": [
     {
       "id": "sonic-3.5",

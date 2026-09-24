@@ -3,8 +3,8 @@
 	"providerName": "Z.ai / Zhipu AI",
 	"apiKeyUrl": "https://z.ai/manage-apikey/apikey-list",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/zai-dark.svg",
-	"icon_light_url": "/images/vectorized/zai-light.svg",
+	"icon_dark_url": "/images/zai-dark.svg",
+	"icon_light_url": "/images/zai-light.svg",
 	"services": [
 		{
 			"id": "glm-5.1",

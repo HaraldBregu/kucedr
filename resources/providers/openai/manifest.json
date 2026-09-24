@@ -3,8 +3,8 @@
 	"providerName": "OpenAI",
 	"apiKeyUrl": "https://platform.openai.com/api-keys",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/openai-dark.svg",
-	"icon_light_url": "/images/vectorized/openai-light.svg",
+	"icon_dark_url": "/images/openai-dark.svg",
+	"icon_light_url": "/images/openai-light.svg",
 	"services": [
 		{
 			"id": "gpt-5.6-sol",

@@ -3,8 +3,8 @@
 	"providerName": "Alibaba / Qwen / Wan",
 	"apiKeyUrl": "https://modelstudio.console.alibabacloud.com",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/qwen.svg",
-	"icon_light_url": "/images/vectorized/qwen.svg",
+	"icon_dark_url": "/images/qwen.svg",
+	"icon_light_url": "/images/qwen.svg",
 	"services": [
 		{
 			"id": "qwen3.7-max",

@@ -2,8 +2,8 @@
 	"providerId": "notion",
 	"providerName": "Notion",
 	"images_url": "/images",
-	"icon_dark_url": "/images/official/notion.svg",
-	"icon_light_url": "/images/official/notion.svg",
+	"icon_dark_url": "/images/notion.svg",
+	"icon_light_url": "/images/notion.svg",
 	"services": [
 		{
 			"id": "notion",

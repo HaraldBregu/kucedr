@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AlertTriangle, ExternalLink, LoaderCircle, Pencil, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
-import ollamaLogo from '@resources/providers/ollama/images/official/ollama.svg';
+import ollamaLogo from '@resources/providers/ollama/images/ollama.svg';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';

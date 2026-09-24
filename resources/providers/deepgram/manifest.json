@@ -3,8 +3,8 @@
   "providerName": "Deepgram",
   "apiKeyUrl": "https://console.deepgram.com",
   "images_url": "/images",
-  "icon_dark_url": "/images/official/deepgram-dark.svg",
-  "icon_light_url": "/images/official/deepgram-light.svg",
+  "icon_dark_url": "/images/deepgram-dark.svg",
+  "icon_light_url": "/images/deepgram-light.svg",
   "services": [
     {
       "id": "nova-3",

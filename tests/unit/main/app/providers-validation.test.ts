@@ -88,8 +88,8 @@ describe('provider manifest validation', () => {
 					name: 'Gmail',
 					type: 'mcp',
 					url: 'https://gmailmcp.googleapis.com/mcp/v1',
-					icon_dark_url: '/images/official/gmail.svg',
-					icon_light_url: '/images/official/gmail.svg',
+					icon_dark_url: '/images/gmail.svg',
+					icon_light_url: '/images/gmail.svg',
 				},
 			],
 		};

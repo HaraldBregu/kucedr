@@ -80,71 +80,63 @@ describe('provider manifests', () => {
 		for (const id of ['gmail', 'google-calendar', 'google-contacts', 'google-drive']) {
 			const service = integrations.find((entry) => entry.id === id);
 			const iconName = id === 'google-contacts' ? 'google-contact' : id;
-			expect(service?.iconDarkUrl).toContain(
-				`/resources/providers/google/images/official/${iconName}.svg`
-			);
-			expect(service?.iconLightUrl).toContain(
-				`/resources/providers/google/images/official/${iconName}.svg`
-			);
+			expect(service?.iconDarkUrl).toContain(`/resources/providers/google/images/${iconName}.svg`);
+			expect(service?.iconLightUrl).toContain(`/resources/providers/google/images/${iconName}.svg`);
 		}
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
 			expect.objectContaining({
-				iconDarkUrl: expect.stringContaining(
-					'/resources/providers/github/images/official/github-dark.svg'
-				),
+				iconDarkUrl: expect.stringContaining('/resources/providers/github/images/github-dark.svg'),
 				iconLightUrl: expect.stringContaining(
-					'/resources/providers/github/images/official/github-light.svg'
+					'/resources/providers/github/images/github-light.svg'
 				),
 			})
 		);
-		expect(google?.provider.iconDarkUrl).toContain(
-			'/resources/providers/google/images/official/google.svg'
-		);
+		expect(google?.provider.iconDarkUrl).toContain('/resources/providers/google/images/google.svg');
 		expect(
 			integrations.find((service) => service.id === 'notion')?.provider.iconLightUrl
-		).toContain('/resources/providers/notion/images/official/notion.svg');
+		).toContain('/resources/providers/notion/images/notion.svg');
 		expect(openAi?.provider.iconDarkUrl).toContain(
-			'/resources/providers/openai/images/vectorized/openai-dark.svg'
+			'/resources/providers/openai/images/openai-dark.svg'
 		);
 		expect(openAi?.provider.iconLightUrl).toMatch(/^local-resource:\/\/file/);
 		expect(openAi?.provider.iconLightUrl).toContain(
-			'/resources/providers/openai/images/vectorized/openai-light.svg'
+			'/resources/providers/openai/images/openai-light.svg'
 		);
 		expect(providersById.get('reka')?.iconDarkUrl).toContain(
-			'/resources/providers/reka/images/vectorized/reka-dark.svg'
+			'/resources/providers/reka/images/reka-dark.svg'
 		);
 		expect(providersById.get('reka')?.iconLightUrl).toContain(
-			'/resources/providers/reka/images/vectorized/reka-light.svg'
+			'/resources/providers/reka/images/reka-light.svg'
 		);
 		expect(providersById.get('pika')?.iconDarkUrl).toContain(
-			'/resources/providers/pika/images/vectorized/pika-dark.svg'
+			'/resources/providers/pika/images/pika-dark.svg'
 		);
 		expect(providersById.get('pika')?.iconLightUrl).toContain(
-			'/resources/providers/pika/images/vectorized/pika-light.svg'
+			'/resources/providers/pika/images/pika-light.svg'
 		);
 		expect(providersById.get('jina')?.iconDarkUrl).toContain(
-			'/resources/providers/jina/images/vectorized/jina-dark.svg'
+			'/resources/providers/jina/images/jina-dark.svg'
 		);
 		expect(providersById.get('jina')?.iconLightUrl).toContain(
-			'/resources/providers/jina/images/vectorized/jina-light.svg'
+			'/resources/providers/jina/images/jina-light.svg'
 		);
 		expect(providersById.get('deepgram')?.iconDarkUrl).toContain(
-			'/resources/providers/deepgram/images/official/deepgram-dark.svg'
+			'/resources/providers/deepgram/images/deepgram-dark.svg'
 		);
 		expect(providersById.get('deepgram')?.iconLightUrl).toContain(
-			'/resources/providers/deepgram/images/official/deepgram-light.svg'
+			'/resources/providers/deepgram/images/deepgram-light.svg'
 		);
 		expect(providersById.get('brave')?.iconDarkUrl).toContain(
-			'/resources/providers/brave/images/official/brave-search.svg'
+			'/resources/providers/brave/images/brave-search.svg'
 		);
 		expect(providersById.get('brave')?.iconLightUrl).toContain(
-			'/resources/providers/brave/images/official/brave-search.svg'
+			'/resources/providers/brave/images/brave-search.svg'
 		);
 		expect(providersById.get('tavily')?.iconDarkUrl).toContain(
-			'/resources/providers/tavily/images/official/tavily-offwhite.svg'
+			'/resources/providers/tavily/images/tavily-offwhite.svg'
 		);
 		expect(providersById.get('tavily')?.iconLightUrl).toContain(
-			'/resources/providers/tavily/images/official/tavily-black.svg'
+			'/resources/providers/tavily/images/tavily-black.svg'
 		);
 		expect(providersById.get('pinecone')).toEqual(
 			expect.objectContaining({

@@ -3,8 +3,8 @@
 	"providerName": "xAI",
 	"apiKeyUrl": "https://console.x.ai",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/xai-dark.svg",
-	"icon_light_url": "/images/vectorized/xai-light.svg",
+	"icon_dark_url": "/images/xai-dark.svg",
+	"icon_light_url": "/images/xai-light.svg",
 	"services": [
 		{
 			"id": "grok-4.3",

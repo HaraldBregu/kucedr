@@ -3,8 +3,8 @@
 	"providerName": "Google DeepMind / Google",
 	"apiKeyUrl": "https://aistudio.google.com/apikey",
 	"images_url": "/images",
-	"icon_dark_url": "/images/official/google.svg",
-	"icon_light_url": "/images/official/google.svg",
+	"icon_dark_url": "/images/google.svg",
+	"icon_light_url": "/images/google.svg",
 	"services": [
 		{
 			"id": "gemini-3.1-pro-preview",
@@ -429,8 +429,8 @@
 			"description": "Search and manage email.",
 			"type": "mcp",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1",
-			"icon_dark_url": "/images/official/gmail.svg",
-			"icon_light_url": "/images/official/gmail.svg"
+			"icon_dark_url": "/images/gmail.svg",
+			"icon_light_url": "/images/gmail.svg"
 		},
 		{
 			"id": "google-calendar",
@@ -438,8 +438,8 @@
 			"description": "Manage calendars and events.",
 			"type": "mcp",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
-			"icon_dark_url": "/images/official/google-calendar.svg",
-			"icon_light_url": "/images/official/google-calendar.svg"
+			"icon_dark_url": "/images/google-calendar.svg",
+			"icon_light_url": "/images/google-calendar.svg"
 		},
 		{
 			"id": "google-drive",
@@ -447,8 +447,8 @@
 			"description": "Search and manage Drive files.",
 			"type": "mcp",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
-			"icon_dark_url": "/images/official/google-drive.svg",
-			"icon_light_url": "/images/official/google-drive.svg"
+			"icon_dark_url": "/images/google-drive.svg",
+			"icon_light_url": "/images/google-drive.svg"
 		},
 		{
 			"id": "google-contacts",
@@ -456,8 +456,8 @@
 			"description": "Search contacts and directory profiles.",
 			"type": "mcp",
 			"url": "https://people.googleapis.com/mcp/v1",
-			"icon_dark_url": "/images/official/google-contact.svg",
-			"icon_light_url": "/images/official/google-contact.svg"
+			"icon_dark_url": "/images/google-contact.svg",
+			"icon_light_url": "/images/google-contact.svg"
 		}
 	]
 }

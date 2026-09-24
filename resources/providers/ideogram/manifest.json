@@ -3,8 +3,8 @@
   "providerName": "Ideogram",
   "apiKeyUrl": "https://ideogram.ai/manage-api",
   "images_url": "/images",
-  "icon_dark_url": "/images/vectorized/ideogram-dark.svg",
-  "icon_light_url": "/images/vectorized/ideogram-light.svg",
+  "icon_dark_url": "/images/ideogram-dark.svg",
+  "icon_light_url": "/images/ideogram-light.svg",
   "services": [
     {
       "id": "ideogram-3.0",

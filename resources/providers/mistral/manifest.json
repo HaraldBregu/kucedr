@@ -3,8 +3,8 @@
 	"providerName": "Mistral AI",
 	"apiKeyUrl": "https://console.mistral.ai/api-keys",
 	"images_url": "/images",
-	"icon_dark_url": "/images/vectorized/mistral.svg",
-	"icon_light_url": "/images/vectorized/mistral.svg",
+	"icon_dark_url": "/images/mistral.svg",
+	"icon_light_url": "/images/mistral.svg",
 	"services": [
 		{
 			"id": "mistral-large-2512",
