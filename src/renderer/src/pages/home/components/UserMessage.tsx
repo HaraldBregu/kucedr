@@ -80,7 +80,7 @@ export function UserMessage({
 		<Message className="w-full justify-end">
 			<div className="flex min-w-0 max-w-[75%] flex-col items-end gap-1">
 			{attachments.length > 0 ? (
-				<AttachmentGroup className="max-w-full justify-end">
+				<AttachmentGroup className="ml-auto w-fit max-w-full">
 					{attachments.map((attachment, index) => {
 						const extension = attachment.name.split('.').pop()?.toUpperCase() ?? 'FILE';
 						const Icon = attachment.kind === 'image'

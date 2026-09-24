@@ -1,5 +1,7 @@
 import type { AgentHistoryMessage } from '../../../src/shared/agent_types';
 import { historyToChatMessages } from '../../../src/renderer/src/pages/home/context';
+import { agentChatReducer } from '../../../src/renderer/src/pages/home/context/reducer';
+import { initialAgentChatState } from '../../../src/renderer/src/pages/home/context/state';
 
 it('restores a persisted conversation summary as its own visible message', () => {
 	const messages = historyToChatMessages([{ role: 'summary', content: 'Keep the API private.' }]);
@@ -99,5 +101,19 @@ it('restores attachment-only user messages from persisted history', () => {
 			mimeType: 'application/pdf',
 			bytes: 1234,
 		}],
+	});
+});
+
+it('adds attachment-only user messages when they are submitted', () => {
+	const attachment = { type: 'attachment' as const, kind: 'text' as const, name: 'notes.txt', mimeType: 'text/plain', bytes: 12 };
+	const state = agentChatReducer(initialAgentChatState, {
+		type: 'submit_user_message',
+		userMessageId: 'user-1',
+		agentMessageId: 'agent-1',
+		content: '',
+		attachments: [attachment],
+	});
+	expect(state.messages[1]).toEqual({
+		id: 'user-1', role: 'user', type: 'user', content: '', attachments: [attachment],
 	});
 });
