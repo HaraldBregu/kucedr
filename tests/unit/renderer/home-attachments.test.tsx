@@ -14,6 +14,17 @@ const setLanguage = jest.fn();
 let replyTo: { id: string; content: string } | null = null;
 let modelCatalogChanged: (() => void) | undefined;
 
+jest.mock('react-i18next', () => ({
+	useTranslation: () => ({
+		t: (key: string) => ({
+			'settings.theme.title': 'Theme',
+			'settings.language.title': 'Language',
+			'settings.language.en': 'English',
+			'settings.language.it': 'Italiano',
+		})[key] ?? key,
+	}),
+}));
+
 jest.mock('../../../src/renderer/src/pages/home/hooks', () => ({
 	useHomeAgent: () => ({
 		chatState: { messages: [{ id: 'agent-welcome', role: 'agent' }] },
