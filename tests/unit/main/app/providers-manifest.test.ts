@@ -1,4 +1,10 @@
-import { loadDatabases, loadMcps, loadModels, loadStorages, loadWebSearches } from '../../../../src/main/models';
+import {
+	loadDatabases,
+	loadMcps,
+	loadModels,
+	loadStorages,
+	loadWebSearches,
+} from '../../../../src/main/models';
 
 function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 	return entries.every(
@@ -8,11 +14,23 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 
 describe('provider manifests', () => {
 	it('loads storage presets and database types from manifests', () => {
-		expect(loadStorages()).toEqual(expect.arrayContaining([
-			expect.objectContaining({ id: 'supabase-storage', authentication: 's3-access-key', provider: expect.objectContaining({ id: 'supabase' }) }),
-			expect.objectContaining({ id: 'cloudflare-r2', authentication: 's3-access-key', provider: expect.objectContaining({ id: 'cloudflare' }) }),
-		]));
-		expect(loadDatabases()).toContainEqual(expect.objectContaining({ id: 'pinecone', type: 'vector' }));
+		expect(loadStorages()).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					id: 'supabase-storage',
+					authentication: 's3-access-key',
+					provider: expect.objectContaining({ id: 'supabase' }),
+				}),
+				expect.objectContaining({
+					id: 'cloudflare-r2',
+					authentication: 's3-access-key',
+					provider: expect.objectContaining({ id: 'cloudflare' }),
+				}),
+			])
+		);
+		expect(loadDatabases()).toContainEqual(
+			expect.objectContaining({ id: 'pinecone', type: 'vector' })
+		);
 	});
 	it('exposes provider and service authentication separately', () => {
 		const googleModel = loadModels().find((service) => service.provider.id === 'google');
