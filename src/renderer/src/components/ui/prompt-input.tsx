@@ -449,10 +449,10 @@ function PromptInput({
 								detached
 									? 'rounded-none'
 									: isConversationMode
-									? 'cursor-default rounded-[1.75rem] focus-within:ring-0'
-									: isPromptExpanded
-										? 'rounded-xl'
-										: 'rounded-full',
+										? 'cursor-default rounded-[1.75rem] focus-within:ring-0'
+										: isPromptExpanded
+											? 'rounded-xl'
+											: 'rounded-full',
 								disabled && 'cursor-not-allowed opacity-60',
 								className
 							)}
