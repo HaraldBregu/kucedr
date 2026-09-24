@@ -61,7 +61,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 				action={
 					<Button
 						size="sm"
-						disabled={loading || removing !== null || editing !== null}
+						disabled={loading || removing !== null || editing !== null || enabledPresetIds.length === 0}
 						onClick={() => setEditing('new')}
 					>
 						<Plus className="size-3.5" />
