@@ -5,7 +5,7 @@ import { safeStorage } from 'electron';
 import Store from 'electron-store';
 import { userDataLocation } from '../shared/user_data_location';
 import { isSafeStorageAvailable } from '../shared/safe_storage';
-import type { ProviderCredentialKind, StoredProvider } from '../../shared/provider_types';
+import type { EnabledPluginProviders, PluginProviderKind, ProviderCredentialKind, StoredProvider } from '../../shared/provider_types';
 import type { PersistedStorageProvider } from '../storage/providers/types';
 import type { ProvidersStoreState } from './providers_types';
 import { restrictProviderPermissions } from './restrict';
@@ -15,6 +15,7 @@ const defaults: ProvidersStoreState = {
 	databases: [],
 	search_engines: [],
 	storage: [],
+	enabledPlugins: { database: [], storage: [] },
 };
 
 export const providersStore = new Store<ProvidersStoreState>({
@@ -25,6 +26,24 @@ export const providersStore = new Store<ProvidersStoreState>({
 });
 
 export const providersStorePath = providersStore.path;
+
+export function getEnabledPluginProviders(): EnabledPluginProviders {
+	const saved = providersStore.get('enabledPlugins');
+	return {
+		database: Array.isArray(saved?.database) ? saved.database.filter((id): id is string => typeof id === 'string') : [],
+		storage: Array.isArray(saved?.storage) ? saved.storage.filter((id): id is string => typeof id === 'string') : [],
+	};
+}
+
+export function setPluginProviderEnabled(kind: PluginProviderKind, id: string, enabled: boolean): EnabledPluginProviders {
+	const current = getEnabledPluginProviders();
+	const values = new Set(current[kind]);
+	if (enabled) values.add(id);
+	else values.delete(id);
+	const next = { ...current, [kind]: [...values] };
+	providersStore.set('enabledPlugins', next);
+	return next;
+}
 
 migrateStorageProviders();
 migrateLegacyProviders();

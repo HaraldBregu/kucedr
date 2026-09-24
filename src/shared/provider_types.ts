@@ -5,6 +5,13 @@ export type StorageAuthenticationType = 's3-access-key';
 export type ModelLocation = 'remote' | 'local';
 export type DatabaseType = 'vector' | 'sql' | 'nosql';
 
+export type PluginProviderKind = 'database' | 'storage';
+
+export interface EnabledPluginProviders {
+	readonly database: readonly string[];
+	readonly storage: readonly string[];
+}
+
 export interface ProviderApiConfiguration {
 	readonly credentialType: string | null;
 	readonly apiKeyManagementUrl: string | null;

@@ -694,6 +694,14 @@ export interface ProviderInvokeChannelMap {
 		args: [];
 		result: import('./channels_types').ChannelCredentialSummary[];
 	};
+	[ProviderChannels.listEnabledPlugins]: {
+		args: [];
+		result: import('./provider_types').EnabledPluginProviders;
+	};
+	[ProviderChannels.setPluginEnabled]: {
+		args: [kind: import('./provider_types').PluginProviderKind, id: string, enabled: boolean];
+		result: import('./provider_types').EnabledPluginProviders;
+	};
 }
 
 export type ProviderStoreInvokeChannelMap = ProviderInvokeChannelMap;

@@ -289,6 +289,8 @@ export const ProviderChannels = {
 	getChannel: 'provider-store:channel:get',
 	setChannel: 'provider-store:channel:set',
 	listChannels: 'provider-store:channel:list',
+	listEnabledPlugins: 'provider-store:plugins:list',
+	setPluginEnabled: 'provider-store:plugins:set',
 } as const;
 
 export const ProviderStoreChannels = ProviderChannels;
