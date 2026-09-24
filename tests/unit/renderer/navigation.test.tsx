@@ -207,18 +207,14 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.rag.title' })
 	).toHaveAttribute('href', '/settings/knowledge-base');
-	expect(
-		within(navigation)
-			.getByRole('link', { name: 'settings.tabs.plugins' })
-			.closest('[data-slot="split-pane-group"]')
-	).toBe(
+	const bottomGroup = within(navigation)
+		.getByRole('link', { name: 'settings.tabs.plugins' })
+		.closest('[data-slot="split-pane-group"]');
+	expect(bottomGroup).toBe(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.apps' })
 			.closest('[data-slot="split-pane-group"]')
 	);
-	const bottomGroup = within(navigation)
-		.getByRole('link', { name: 'settings.tabs.plugins' })
-		.closest('[data-slot="split-pane-group"]');
 	expect(bottomGroup).toHaveClass('shrink-0');
 	expect(bottomGroup?.parentElement).toBe(navigation);
 	expect(currentSection).toHaveAttribute('data-active');
