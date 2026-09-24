@@ -345,22 +345,25 @@ it('places connected model providers before unconnected ones', async () => {
 it.each([false, true])(
 	'keeps connected local models below hosted models when embedded is %s',
 	async (embedded) => {
-	jest
-		.mocked(window.provider.list)
-		.mockResolvedValue([
-			{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
-		]);
-	render(
-		<MemoryRouter>
-			<ProvidersPage embedded={embedded} section="models" />
-		</MemoryRouter>
-	);
-	await screen.findByText('Configured');
-	expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
-		'Models',
-		'OpenAI',
-		'Local models',
-	]);
+		jest
+			.mocked(window.provider.list)
+			.mockResolvedValue([
+				{
+					id: 'custom',
+					name: 'Ollama',
+					apiKey: 'saved-key',
+					baseUrl: 'http://localhost:11434/api',
+				},
+			]);
+		render(
+			<MemoryRouter>
+				<ProvidersPage embedded={embedded} section="models" />
+			</MemoryRouter>
+		);
+		await screen.findByText('Configured');
+		expect(
+			screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
+		).toEqual(['Models', 'OpenAI', 'Local models']);
 	}
 );
 
