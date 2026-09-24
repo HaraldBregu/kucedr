@@ -182,7 +182,7 @@ function PromptSuggestions({
 
 	return (
 		<div
-			className="mx-auto mb-2 mt-3 grid w-full max-w-xl grid-cols-2 gap-8 px-1"
+			className="mx-auto mb-2 mt-3 grid w-full max-w-xl grid-cols-[3fr_2fr] gap-8 px-1"
 		>
 			<div className="grid min-w-0 grid-cols-2 gap-2" aria-label="Prompt suggestions">
 				{promptSuggestions.map((suggestion) => (
