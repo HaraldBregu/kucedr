@@ -132,8 +132,8 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('min-height', '56px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await expect(editorArea).toHaveCSS('min-height', '24px');
-	await expect(field).toHaveCSS('border-radius', '12px');
-	await expect(composer).toHaveCSS('border-radius', '12px');
+	await expect(field).toHaveCSS('border-radius', '16px');
+	await expect(composer).toHaveCSS('border-radius', '16px');
 	await expect(controls).toBeVisible();
 	expect(
 		await controls.evaluate((element) =>
@@ -171,7 +171,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('padding-top', '16px');
 	await expect(field).toHaveCSS('padding-bottom', '16px');
 	await expect(field).toHaveCSS('padding-right', '16px');
-	await expect(field).toHaveCSS('border-radius', '12px');
+	await expect(field).toHaveCSS('border-radius', '16px');
 	const expandedFieldBounds = await field.boundingBox();
 	const expandedEditorBounds = await editor.boundingBox();
 	expect(expandedFieldBounds && expandedEditorBounds).toBeTruthy();
