@@ -838,6 +838,11 @@ function PageContent(): ReactElement {
 								actionLabel={voiceErrorAction?.label}
 								onAction={voiceErrorAction?.action}
 							/>
+							{attachments.length > 0 ? (
+								<div className="mb-2">
+									<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
+								</div>
+							) : null}
 							<PromptEditor
 								placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
 								ariaLabel="Message Kucedr"
@@ -854,15 +859,8 @@ function PageContent(): ReactElement {
 								onSubmit={() => void submitPrompt()}
 								textareaRef={agent.inputRef}
 								header={
-									agent.replyTo || attachments.length > 0 ? (
-										<div className="flex min-w-0 flex-col gap-2">
-											{agent.replyTo ? (
-												<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
-											) : null}
-											{attachments.length > 0 ? (
-												<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
-											) : null}
-										</div>
+									agent.replyTo ? (
+										<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
 									) : undefined
 								}
 								leadingAction={
