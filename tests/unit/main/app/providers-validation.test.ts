@@ -115,6 +115,22 @@ describe('provider manifest validation', () => {
 		).toContainEqual(expect.stringContaining('mcp_servers[0].icon_dark_url'));
 	});
 
+	it('requires typed database arrays and validates storage presets', () => {
+		const manifest = {
+			providerId: 'acme',
+			providerName: 'Acme',
+			databases: [{ id: 'db', name: 'Database', type: 'sql', authentication: 'api-key', url: 'https://db.acme.test' }],
+			storage: { id: 'files', name: 'Files', authentication: 'api-key', metadata: { protocol: 's3', region: 'auto' } },
+		};
+		expect(validateProviderManifest(manifest)).toEqual([]);
+		expect(validateProviderManifest({ ...manifest, databases: { ...manifest.databases[0] } }))
+			.toContainEqual(expect.stringContaining('"databases" must be an array'));
+		expect(validateProviderManifest({ ...manifest, databases: [{ ...manifest.databases[0], type: 'unknown' }] }))
+			.toContainEqual(expect.stringContaining('databases[0].type'));
+		expect(validateProviderManifest({ ...manifest, storage: { ...manifest.storage, metadata: { protocol: 'unknown' } } }))
+			.toContainEqual(expect.stringContaining('storage.metadata.protocol'));
+	});
+
 	it('accepts supported authentication types and rejects unknown ones', () => {
 		const manifest = {
 			providerId: 'example',
