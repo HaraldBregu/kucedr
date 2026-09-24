@@ -43,8 +43,7 @@ export function Activity({ range }: { readonly range: 'untilToday' | 'currentYea
 	return (
 		<>
 			<div
-				data-testid="activity-scroll"
-				className="card-body"
+ 				className="card-body"
 				onPointerMove={(event) => {
 					const cell = (event.target as HTMLElement).closest('.heatmap__cell-slot');
 					const label = cell?.getAttribute('aria-label');
