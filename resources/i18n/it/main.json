@@ -1215,7 +1215,7 @@
 			"cancel": "Annulla",
 			"provider": {
 				"title": "Archiviazione",
-				"description": "Scegli quale provider di archiviazione configurato riceve i backup e fornisce i file durante il ripristino.",
+				"description": "Scegli un provider Amazon S3 o compatibile con S3 salvato per backup e ripristino.",
 				"placeholder": "Seleziona provider di archiviazione"
 			}
 		},

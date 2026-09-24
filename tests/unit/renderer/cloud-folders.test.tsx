@@ -100,7 +100,7 @@ it('shows the storage provider description beneath the title and before backup s
 	);
 	const title = screen.getByRole('heading', { name: 'Cloud', exact: true });
 	const description = await screen.findByText(
-		'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+		'Choose a saved Amazon S3 or S3-compatible provider for backups and restores.'
 	);
 	const backup = screen.getByRole('heading', { name: 'Cloud Backup' });
 	expect(
@@ -126,7 +126,7 @@ it('keeps backup controls disabled when no providers exist', async () => {
 	);
 	expect(
 		await screen.findByText(
-			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+			'Choose a saved Amazon S3 or S3-compatible provider for backups and restores.'
 		)
 	).toBeInTheDocument();
 	const user = userEvent.setup();
@@ -153,7 +153,7 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toHaveTextContent('Production files');
 	expect(
 		screen.getByText(
-			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+			'Choose a saved Amazon S3 or S3-compatible provider for backups and restores.'
 		)
 	).toBeInTheDocument();
 });

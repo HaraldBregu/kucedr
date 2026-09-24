@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => {
 		'settings.storage.description': 'Choose folders to back up securely.',
 		'settings.storage.provider.title': 'Storage',
 		'settings.storage.provider.description':
-			'Choose which configured storage provider receives your backups and supplies files when you restore them.',
+			'Choose a saved Amazon S3 or S3-compatible provider for backups and restores.',
 		'settings.storage.provider.placeholder': 'Select storage provider',
 		'settings.storage.cancel': 'Cancel',
 		'settings.storage.sync.title': 'Cloud Backup',
@@ -169,7 +169,7 @@ it('saves user-selected folders and a custom schedule with the selected storage 
 	);
 	expect(
 		screen.getByText(
-			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
+			'Choose a saved Amazon S3 or S3-compatible provider for backups and restores.'
 		)
 	).toBeInTheDocument();
 });
