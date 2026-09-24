@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
+import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
-import { Switch } from '@/components/ui/switch';
 import { mcps } from '@/lib/providers';
 import {
 	SettingsEmptyState,
@@ -88,38 +95,60 @@ const PluginsPage = (): React.JSX.Element => {
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
 			{catalog.length > 0 ? (
-				<div className="grid grid-cols-1 gap-x-8 gap-y-2 pb-4 lg:grid-cols-2">
+				<div className="grid grid-cols-1 gap-x-6 gap-y-1 pb-4 md:grid-cols-2">
 					{catalog.map((service) => (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
 							variant="ghost"
 							size="md"
-							className="min-w-0 flex-nowrap px-0 py-4"
+							className="min-w-0 flex-nowrap gap-3 px-0 py-2"
 						>
 							<ProviderAvatar
 								providerId={service.provider.id}
 								name={service.provider.name}
 								iconDarkUrl={service.provider.iconDarkUrl}
 								iconLightUrl={service.provider.iconLightUrl}
-								className="size-16 rounded-xl border-0 bg-muted p-2"
+								className="size-12 rounded-lg border-0 bg-muted p-1.5"
 							/>
 							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-								<ItemTitle className="min-w-0 max-w-full truncate text-base font-medium leading-tight">
+								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
 									{service.name}
 								</ItemTitle>
-								<p className="max-w-full truncate text-sm leading-tight text-muted-foreground">
+								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 									{service.description}
 								</p>
 							</ItemContent>
 							<ItemActions className="ml-auto flex-none justify-end">
-								<Switch
-									checked={servers[service.id]?.enabled === true}
-									disabled={savingId === service.id}
-									onCheckedChange={(enabled) =>
-										void setIntegrationEnabled(service, enabled)
-									}
-									aria-label={service.name}
-								/>
+								{servers[service.id]?.enabled === true ? (
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button
+												variant="ghost"
+												size="icon"
+												disabled={savingId === service.id}
+												aria-label={t('settings.integrations.options', { name: service.name })}
+											>
+												<MoreHorizontal className="size-5" />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end">
+											<DropdownMenuItem onSelect={() => void setIntegrationEnabled(service, false)}>
+												<Trash2 />
+												{t('settings.integrations.remove', { name: service.name })}
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								) : (
+									<Button
+										variant="ghost"
+										size="icon"
+										disabled={savingId === service.id}
+										onClick={() => void setIntegrationEnabled(service, true)}
+										aria-label={t('settings.integrations.add', { name: service.name })}
+									>
+										<Plus className="size-5" />
+									</Button>
+								)}
 							</ItemActions>
 						</Item>
 					))}

@@ -267,6 +267,9 @@
 		"integrations": {
 			"title": "Plugin",
 			"description": "Collega i servizi che Kucedr può usare per tuo conto.",
+			"add": "Aggiungi {{name}}",
+			"options": "Opzioni per {{name}}",
+			"remove": "Rimuovi {{name}}",
 			"available": "Integrazioni disponibili",
 			"availableDescription": "Aggiungi un servizio per rendere disponibili i suoi strumenti all'assistente.",
 			"empty": "Nessun plugin disponibile",

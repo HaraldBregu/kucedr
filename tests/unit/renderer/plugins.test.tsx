@@ -47,14 +47,10 @@ it('renders the five plugin providers with descriptions', async () => {
 	const { container } = render(<PluginsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
-	expect(screen.getAllByRole('switch').map((control) => control.getAttribute('aria-label'))).toEqual([
-		'gmail',
-		'google-calendar',
-		'google-drive',
-		'github',
-		'notion',
-	]);
-	await waitFor(() => expect(screen.getByRole('switch', { name: 'gmail' })).toBeChecked());
+	await waitFor(() =>
+		expect(screen.getByRole('button', { name: 'settings.integrations.options' })).toBeInTheDocument()
+	);
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(4);
 	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(5);
 	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
 	expect(screen.getByText('Use gmail.')).toBeInTheDocument();
@@ -65,7 +61,7 @@ it('enables an integration without opening configuration UI', async () => {
 	const user = userEvent.setup();
 	render(<PluginsPage />);
 
-	await user.click(screen.getByRole('switch', { name: 'notion' }));
+	await user.click(screen.getAllByRole('button', { name: 'settings.integrations.add' })[3]);
 
 	await waitFor(() =>
 		expect(mcpApi.upsert).toHaveBeenCalledWith('notion', {
@@ -77,15 +73,15 @@ it('enables an integration without opening configuration UI', async () => {
 	);
 });
 
-it('removes the MCP server when an integration is disabled', async () => {
+it('removes the MCP server from the added plugin menu', async () => {
 	const user = userEvent.setup();
 	render(<PluginsPage />);
 
-	const gmailSwitch = screen.getByRole('switch', { name: 'gmail' });
-	await waitFor(() => expect(gmailSwitch).toBeChecked());
-	await user.click(gmailSwitch);
+	const gmailOptions = await screen.findByRole('button', { name: 'settings.integrations.options' });
+	await user.click(gmailOptions);
+	await user.click(screen.getByRole('menuitem', { name: 'settings.integrations.remove' }));
 
 	await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('gmail'));
 	expect(mcpApi.upsert).not.toHaveBeenCalled();
-	expect(gmailSwitch).not.toBeChecked();
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(5);
 });

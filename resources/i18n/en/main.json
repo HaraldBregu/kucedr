@@ -267,6 +267,9 @@
 		"integrations": {
 			"title": "Plugins",
 			"description": "Connect the services Kucedr can use on your behalf.",
+			"add": "Add {{name}}",
+			"options": "Options for {{name}}",
+			"remove": "Remove {{name}}",
 			"available": "Available integrations",
 			"availableDescription": "Add a service to make its tools available to the assistant.",
 			"empty": "No plugins available",
