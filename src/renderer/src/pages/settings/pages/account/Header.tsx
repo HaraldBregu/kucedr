@@ -12,7 +12,7 @@ export function ActivityHeader({ range, onRangeChange }: ActivityHeaderProps): R
 	const year = new Date().getFullYear();
 
 	return (
-		<div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+		<div className="flex flex-col items-start gap-2">
 			<div className="min-w-0">
 				<h2 className="text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
 					{t('settings.activity.title')}
@@ -21,7 +21,7 @@ export function ActivityHeader({ range, onRangeChange }: ActivityHeaderProps): R
 					{t('settings.activity.description')}
 				</p>
 			</div>
-			<div className="flex w-full flex-wrap items-center gap-1.5 sm:w-auto sm:shrink-0 sm:justify-end">
+			<div className="flex flex-wrap items-center gap-1.5">
 				<Select
 					value={range}
 					onValueChange={(value) => {
