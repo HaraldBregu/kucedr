@@ -21,6 +21,7 @@ import {
 	SettingsPageShell,
 } from '../../components';
 import { MicrosoftConnect } from './Connect';
+import CapabilityRow from './CapabilityRow';
 
 const PluginsPage = (): React.JSX.Element => {
 	const { t } = useTranslation();
@@ -185,98 +186,22 @@ const PluginsPage = (): React.JSX.Element => {
 						</Item>
 					))}
 					{databaseCatalog.map((database) => (
-						<Item
+						<CapabilityRow
 							key={`${database.provider.id}-${database.id}`}
-							role="link"
-							tabIndex={0}
-							onClick={() => navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)}
-							onKeyDown={(event) => {
-								if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
-									event.preventDefault();
-									navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`);
-								}
-							}}
-							variant="ghost"
-							size="md"
-							className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
-						>
-							<ProviderAvatar
-								providerId={database.provider.id}
-								name={database.name}
-								iconDarkUrl={database.provider.iconDarkUrl}
-								iconLightUrl={database.provider.iconLightUrl}
-								className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-							/>
-							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-									{database.name}
-								</ItemTitle>
-								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-									{database.description ?? t('settings.integrations.databaseType', { type: database.type })}
-								</p>
-							</ItemContent>
-							<ItemActions className="ml-auto flex-none justify-end">
-								<Button
-									variant="ghost"
-									size="icon-sm"
-									className="hover:bg-transparent dark:hover:bg-transparent"
-									onClick={(event) => {
-										event.stopPropagation();
-										navigate('/settings/providers/database');
-									}}
-									aria-label={t('settings.integrations.add', { name: database.name })}
-								>
-									<Plus className="size-4" />
-								</Button>
-							</ItemActions>
-						</Item>
+							kind="database"
+							entry={database}
+							onOpen={() => navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)}
+							onAdd={() => navigate('/settings/providers/database')}
+						/>
 					))}
 					{storageCatalog.map((storage) => (
-						<Item
+						<CapabilityRow
 							key={`${storage.provider.id}-${storage.id}`}
-							role="link"
-							tabIndex={0}
-							onClick={() => navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)}
-							onKeyDown={(event) => {
-								if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
-									event.preventDefault();
-									navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`);
-								}
-							}}
-							variant="ghost"
-							size="md"
-							className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
-						>
-							<ProviderAvatar
-								providerId={storage.provider.id}
-								name={storage.name}
-								iconDarkUrl={storage.provider.iconDarkUrl}
-								iconLightUrl={storage.provider.iconLightUrl}
-								className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-							/>
-							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-									{storage.name}
-								</ItemTitle>
-								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-									{storage.description ?? t('settings.integrations.storageType')}
-								</p>
-							</ItemContent>
-							<ItemActions className="ml-auto flex-none justify-end">
-								<Button
-									variant="ghost"
-									size="icon-sm"
-									className="hover:bg-transparent dark:hover:bg-transparent"
-									onClick={(event) => {
-										event.stopPropagation();
-										navigate('/settings/providers/storage');
-									}}
-									aria-label={t('settings.integrations.add', { name: storage.name })}
-								>
-									<Plus className="size-4" />
-								</Button>
-							</ItemActions>
-						</Item>
+							kind="storage"
+							entry={storage}
+							onOpen={() => navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)}
+							onAdd={() => navigate('/settings/providers/storage')}
+						/>
 					))}
 				</div>
 			) : (
