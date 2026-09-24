@@ -6,6 +6,7 @@ import {
 	type CatalogEntryModel,
 	type CatalogEntryWebSearch,
 	type CatalogService,
+	type CatalogStorage,
 	type CatalogWebSearch,
 	type ProviderManifest,
 	type PublicProvider,
@@ -25,6 +26,7 @@ interface Catalog {
 	readonly databases: readonly CatalogService[];
 	readonly webSearches: readonly CatalogWebSearch[];
 	readonly mcps: readonly CatalogService[];
+	readonly storages: readonly CatalogStorage[];
 }
 
 let cache: Catalog | undefined;
@@ -55,6 +57,10 @@ export function loadWebSearches(): readonly CatalogWebSearch[] {
 /** Every MCP service across bundled and local provider manifests. */
 export function loadMcps(): readonly CatalogService[] {
 	return loadCatalog().mcps;
+}
+
+export function loadStorages(): readonly CatalogStorage[] {
+	return loadCatalog().storages;
 }
 
 export function refreshProviderCatalog(): void {
@@ -202,7 +208,8 @@ function iconUrl(providerDir: string, iconPath: string | undefined): string | un
 }
 
 function toPublicProvider(entry: ProviderManifest, providerDir: string): PublicProvider {
-	const baseUrl = entry.services.find((service) => service.url?.startsWith('http'))?.url ?? '';
+	const baseUrl = [...(entry.models ?? []), ...(entry.mcp_servers ?? []), ...(entry.databases ?? [])]
+		.find((service) => service.url?.startsWith('http'))?.url ?? '';
 	const iconDarkUrl = iconUrl(providerDir, entry.icon_dark_url);
 	const iconLightUrl = iconUrl(providerDir, entry.icon_light_url);
 	return {
@@ -229,6 +236,7 @@ function readCatalog(): Catalog {
 	const databases: CatalogService[] = [];
 	const webSearches: CatalogWebSearch[] = [];
 	const mcps: CatalogService[] = [];
+	const storages: CatalogStorage[] = [];
 	const manifests = new Map<string, { entry: ProviderManifest; providerDir: string }>();
 
 	for (const directory of [bundledProvidersDir(), providersDir()]) {
@@ -250,31 +258,31 @@ function readCatalog(): Catalog {
 
 	for (const { entry, providerDir } of manifests.values()) {
 		const provider = toPublicProvider(entry, providerDir);
-		const modelEntries = entry.services.flatMap((service): CatalogEntryModel[] => {
-			const type = toModelCapability(service.type);
-			return type ? [{ ...service, type }] : [];
+		const modelEntries = (entry.models ?? []).flatMap((model): CatalogEntryModel[] => {
+			const type = toModelCapability(model.type);
+			return type ? [{ ...model, type }] : [];
 		});
 		models.push(...modelEntries.map((model) => ({ ...model, provider })));
 		databases.push(
-			...entry.services
-				.filter((service) => service.type === 'database')
-				.map((service) => ({ ...service, provider }))
+			...(entry.databases ?? []).map((database) => ({ ...database, provider }))
 		);
 		webSearches.push(
-			...entry.services
-				.filter((service): service is CatalogEntryWebSearch => service.type === 'web-search')
-				.map((search) => ({ ...search, provider }))
+			...(entry.web_search ?? []).map((search): CatalogEntryWebSearch & { provider: PublicProvider } => ({
+				...search,
+				type: 'web-search',
+				provider,
+			}))
 		);
 		mcps.push(
-			...entry.services
-				.filter((service) => service.type === 'mcp')
-				.map((service) => ({
+			...(entry.mcp_servers ?? []).map((service) => ({
 					...service,
+					type: 'mcp',
 					provider,
 					iconDarkUrl: iconUrl(providerDir, service.icon_dark_url) ?? provider.iconDarkUrl,
 					iconLightUrl: iconUrl(providerDir, service.icon_light_url) ?? provider.iconLightUrl,
 				}))
 		);
+		if (entry.storage) storages.push({ ...entry.storage, provider });
 	}
 
 	return {
@@ -282,5 +290,6 @@ function readCatalog(): Catalog {
 		databases: databases.sort(compareByName),
 		webSearches: webSearches.sort(compareByName),
 		mcps: mcps.sort(compareByName),
+		storages: storages.sort(compareByName),
 	};
 }

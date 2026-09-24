@@ -41,16 +41,14 @@ export function loadChannels(): readonly CatalogService[] {
 			const provider: PublicProvider = {
 				id: normalizeProviderId(manifest.providerId),
 				name: manifest.providerName,
-				baseUrl: manifest.services.find((service) => service.url?.startsWith('http'))?.url ?? '',
+				baseUrl: manifest.bots?.find((service) => service.url?.startsWith('http'))?.url ?? '',
 				...(manifest.apiKeyUrl ? { apiKeyUrl: manifest.apiKeyUrl } : {}),
 				...(iconDarkUrl ? { iconDarkUrl } : {}),
 				...(iconLightUrl ? { iconLightUrl } : {}),
 			};
 
 			channels.push(
-				...manifest.services
-					.filter((service) => service.type === 'bot')
-					.map((service) => ({ ...service, provider }))
+				...(manifest.bots ?? []).map((service) => ({ ...service, type: 'bot', provider }))
 			);
 		} catch {
 			continue;
