@@ -54,7 +54,7 @@ const AccountPage: React.FC = () => {
 					) : undefined
 				}
 			/>
-			<section className="my-2 flex flex-col gap-2">
+			<section className="my-2 flex flex-col gap-4">
 				<ActivityHeader range={activityRange} onRangeChange={setActivityRange} />
 				<Activity range={activityRange} />
 			</section>
