@@ -43,7 +43,11 @@ const AccountPage: React.FC = () => {
 
 	return (
 		<SettingsPageShell>
-			<SettingsPageHeader title="Account" description="Manage your sign-in status." />
+			<SettingsPageHeader
+				title="Account"
+				description="Manage your sign-in status."
+				action={!signedIn ? <Button type="button" size="xs" onClick={requireSignIn}>Login</Button> : undefined}
+			/>
 			<SettingsSection
 				title={t('settings.activity.title')}
 				description={t('settings.activity.description')}
@@ -56,13 +60,13 @@ const AccountPage: React.FC = () => {
 					{error}
 				</SettingsNotice>
 			) : null}
+			{signedIn ? (
+			<>
 			<SettingsSection title="Identity">
 				<SettingsPanel>
 					<SettingsRow title="Status">
-						<SettingsValue>{signedIn ? 'Signed in' : 'Not signed in'}</SettingsValue>
+						<SettingsValue>Signed in</SettingsValue>
 					</SettingsRow>
-					{signedIn ? (
-						<>
 							{profileName || state.user?.displayName ? (
 								<SettingsRow title="Name">
 									<SettingsValue>{profileName ?? state.user?.displayName}</SettingsValue>
@@ -74,25 +78,14 @@ const AccountPage: React.FC = () => {
 							<SettingsRow title="Account ID">
 								<SettingsValue>{state.user?.id ?? 'Unavailable'}</SettingsValue>
 							</SettingsRow>
-						</>
-					) : null}
 				</SettingsPanel>
 			</SettingsSection>
 			<SettingsSection title="Session">
 				<SettingsPanel>
 					<SettingsRow
-						title={localOnly ? 'Sign in' : 'Sign out'}
-						description={
-							localOnly
-								? 'Sign in to sync your data across devices.'
-								: 'You can continue using Kucedr on this device after signing out.'
-						}
+						title="Sign out"
+						description="You can continue using Kucedr on this device after signing out."
 					>
-						{localOnly ? (
-							<Button type="button" size="xs" onClick={requireSignIn}>
-								Sign in
-							</Button>
-						) : (
 							<Button
 								type="button"
 								size="xs"
@@ -120,10 +113,11 @@ const AccountPage: React.FC = () => {
 								{sessionBusy ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : null}
 								Sign out
 							</Button>
-						)}
 					</SettingsRow>
 				</SettingsPanel>
 			</SettingsSection>
+			</>
+			) : null}
 		</SettingsPageShell>
 	);
 };

@@ -97,6 +97,9 @@ it('shows account session data and switches to local use after sign-out', async 
 
 	expect(confirmSignOut).toHaveBeenCalledTimes(1);
 	await waitFor(() => expect(auth.signOut).toHaveBeenCalledTimes(1));
-	expect(await screen.findByRole('button', { name: 'Sign in' })).toBeInTheDocument();
-	expect(screen.getByText('Not signed in')).toBeInTheDocument();
+	expect(await screen.findByRole('button', { name: 'Login' })).toBeInTheDocument();
+	expect(screen.queryByText('Identity')).not.toBeInTheDocument();
+	expect(screen.queryByText('Session')).not.toBeInTheDocument();
+	expect(screen.queryByText('user@example.test')).not.toBeInTheDocument();
+	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
 });
