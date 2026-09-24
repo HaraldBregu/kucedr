@@ -189,6 +189,8 @@ export function validateProviderManifest(value: unknown): string[] {
 				errors.push('manifest.json: storage.id must be a non-empty string.');
 			if (!isNonEmptyString(entry.name))
 				errors.push('manifest.json: storage.name must be a non-empty string.');
+			if (entry.description !== undefined && !isNonEmptyString(entry.description))
+				errors.push('manifest.json: storage.description must be a non-empty string when present.');
 			if (entry.authentication !== 's3-access-key')
 				errors.push('manifest.json: storage.authentication must be s3-access-key.');
 			const metadata = entry.metadata;

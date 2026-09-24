@@ -13,6 +13,7 @@
 		{
 			"id": "pinecone",
 			"name": "Pinecone Vector Database",
+			"description": "Store and search vector embeddings in Pinecone.",
 			"url": "https://api.pinecone.io",
 			"authentication": "api-key",
 			"type": "vector"

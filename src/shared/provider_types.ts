@@ -85,6 +85,7 @@ export interface ProviderManifestDatabase {
 export interface ProviderManifestStorage {
 	readonly id: string;
 	readonly name: string;
+	readonly description?: string;
 	readonly authentication: StorageAuthenticationType;
 	readonly metadata: {
 		readonly protocol: 's3';

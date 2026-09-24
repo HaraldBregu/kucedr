@@ -11,6 +11,7 @@
 	"storage": {
 		"id": "cloudflare-r2",
 		"name": "Cloudflare R2",
+		"description": "Store files in a Cloudflare R2 bucket through its S3 endpoint.",
 		"authentication": "s3-access-key",
 		"metadata": {
 			"protocol": "s3",

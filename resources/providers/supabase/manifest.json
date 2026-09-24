@@ -11,6 +11,7 @@
 	"storage": {
 		"id": "supabase-storage",
 		"name": "Supabase Storage",
+		"description": "Store files in a Supabase Storage bucket through its S3 endpoint.",
 		"authentication": "s3-access-key",
 		"metadata": {
 			"protocol": "s3",
