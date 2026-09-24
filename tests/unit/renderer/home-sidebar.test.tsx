@@ -436,14 +436,14 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 		'aria-expanded:text-muted-foreground'
 	);
 	expect(sidebar).toHaveClass('top-12', 'bottom-0', 'border-r', 'bg-background');
-	expect(resizer).toHaveAttribute('aria-valuenow', '240');
-	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '240px' });
+	expect(resizer).toHaveAttribute('aria-valuenow', '224');
+	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '224px' });
 
 	fireEvent.keyDown(resizer, { key: 'ArrowRight' });
-	expect(resizer).toHaveAttribute('aria-valuenow', '248');
-	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '248px' });
+	expect(resizer).toHaveAttribute('aria-valuenow', '232');
+	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '232px' });
 
-	fireEvent.pointerDown(resizer, { button: 0, clientX: 248 });
+	fireEvent.pointerDown(resizer, { button: 0, clientX: 232 });
 	fireEvent.pointerMove(window, { clientX: 320 });
 	fireEvent.pointerUp(window);
 

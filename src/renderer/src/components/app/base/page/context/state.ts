@@ -1,7 +1,7 @@
 export type SidebarSide = 'left' | 'right';
 
-export const DEFAULT_SIDEBAR_WIDTH = 240;
-export const MIN_SIDEBAR_WIDTH = 224;
+export const DEFAULT_SIDEBAR_WIDTH = 224;
+export const MIN_SIDEBAR_WIDTH = 208;
 export const MAX_SIDEBAR_WIDTH = 384;
 
 export interface PageState {
