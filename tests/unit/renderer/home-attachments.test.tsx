@@ -280,7 +280,27 @@ describe('Home prompt attachments', () => {
 		expect(
 			await screen.findByText('This file type is not supported by the selected model.')
 		).toBeInTheDocument();
+		expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute(
+			'data-state',
+			'error'
+		);
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
+	});
+
+	it('shows the selected file in an attachment card and removes it', async () => {
+		renderPage(jest.fn().mockResolvedValue(imageCapabilities));
+		const picker = await screen.findByLabelText('Attachment files');
+		await waitFor(() => expect(picker).toHaveAttribute('accept', imageCapabilities.accept));
+		fireEvent.change(picker, {
+			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
+		});
+
+		const card = screen.getByText('diagram.png').closest('[data-slot="attachment"]');
+		expect(card).toHaveAttribute('data-state', 'done');
+		expect(card?.querySelector('[data-slot="attachment-media"]')).toBeInTheDocument();
+		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
+		fireEvent.click(screen.getByRole('button', { name: 'Remove diagram.png' }));
+		expect(screen.queryByText('diagram.png')).not.toBeInTheDocument();
 	});
 
 	it('clears submitted files immediately while the captured request continues', async () => {
