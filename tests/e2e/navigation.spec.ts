@@ -165,11 +165,14 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(composer).toHaveAttribute('data-expanded', 'true');
 	await expect(field).toHaveCSS('min-height', '96px');
 	await expect(field).toHaveCSS('align-items', 'flex-start');
+	await expect(field).toHaveCSS('padding-top', '16px');
+	await expect(field).toHaveCSS('padding-bottom', '16px');
 	await expect(field).toHaveCSS('border-radius', '0px');
 	const expandedFieldBounds = await field.boundingBox();
 	const expandedEditorBounds = await editor.boundingBox();
 	expect(expandedFieldBounds && expandedEditorBounds).toBeTruthy();
-	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeLessThan(16);
+	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeGreaterThanOrEqual(16);
+	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeLessThan(20);
 	await editor.fill('');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(field).toHaveCSS('min-height', '56px');
