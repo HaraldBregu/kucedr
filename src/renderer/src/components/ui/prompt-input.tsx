@@ -437,7 +437,7 @@ function PromptInput({
 									detached || transition.duration === 0 || contentHeight === undefined
 										? 'auto'
 										: contentHeight + 2,
-								borderRadius: detached || isConversationMode || !isPromptExpanded ? 28 : 12,
+								borderRadius: detached ? 0 : isConversationMode || !isPromptExpanded ? 28 : 12,
 							}}
 							transition={transition}
 							onClick={isConversationMode ? onClick : handleClick}
@@ -446,7 +446,9 @@ function PromptInput({
 							className={cn(
 								'relative cursor-text border border-border/60 bg-card/95 text-foreground shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
 								detached && 'border-transparent bg-transparent shadow-none focus-within:ring-0',
-								isConversationMode
+								detached
+									? 'rounded-none'
+									: isConversationMode
 									? 'cursor-default rounded-[1.75rem] focus-within:ring-0'
 									: isPromptExpanded
 										? 'rounded-xl'

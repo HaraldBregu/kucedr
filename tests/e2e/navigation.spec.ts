@@ -129,7 +129,8 @@ test('the empty home state and composer use the intended spacing', async () => {
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
 	await expect(field).toHaveCSS('min-height', '56px');
-	await expect(field).toHaveClass(/rounded-lg/);
+	await expect(field).toHaveCSS('border-radius', '0px');
+	await expect(composer).toHaveCSS('border-radius', '0px');
 	await expect(controls).toBeVisible();
 	expect(
 		await controls.evaluate((element) =>
