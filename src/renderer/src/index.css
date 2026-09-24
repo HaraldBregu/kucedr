@@ -153,6 +153,7 @@
 }
 
 :root:not(.dark) {
+	--sidebar-accent: var(--muted);
 	--font-sans: "Inter", sans-serif;
 	--font-serif: "Playfair Display", serif;
 	--font-mono: "JetBrains Mono", monospace;
