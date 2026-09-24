@@ -140,7 +140,8 @@ it('opens voice conversation for the current chat from the button before Setting
 	);
 	const voice = screen.getByRole('button', { name: 'Start voice conversation' });
 	const settings = screen.getByRole('button', { name: 'settings.title' });
-	expect(voice).toHaveClass('size-8');
+	expect(voice).toHaveClass('size-8', 'rounded-full', 'hover:bg-muted');
+	expect(voice).not.toHaveClass('bg-foreground');
 	expect(settings).toHaveClass('size-8');
 	expect(voice.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 

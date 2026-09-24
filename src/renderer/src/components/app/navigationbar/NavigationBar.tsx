@@ -68,9 +68,9 @@ export const NavigationBar = React.memo(function NavigationBar({
 		!isOnboarding && !isSettings ? (
 			<Button
 				type="button"
-				variant="default"
+				variant="ghost"
 				size="icon"
-				className="size-8 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
+				className="size-8 rounded-full"
 				aria-label="Start voice conversation"
 				title={voiceError ?? 'Start voice conversation'}
 				onClick={() => {
@@ -86,7 +86,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						});
 				}}
 			>
-				<AudioLines className="size-4" />
+				<AudioLines className="size-4" strokeWidth={1.8} />
 			</Button>
 		) : null;
 	const routeButton = isSettings ? (
