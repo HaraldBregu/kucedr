@@ -12,8 +12,8 @@ import { publicAuthError } from '../error';
 import type { AuthStorage } from '../session';
 
 interface ProfileRow {
-	first_name: string;
-	last_name: string;
+	first_name: string | null;
+	last_name: string | null;
 }
 
 export class SupabaseAccountProvider implements AccountProvider {
@@ -57,10 +57,10 @@ export class SupabaseAccountProvider implements AccountProvider {
 			.from('profiles')
 			.select('first_name,last_name')
 			.eq('id', userId)
-			.single();
+			.maybeSingle();
 		if (error) throw publicCloudError(error);
-		const profile = data as ProfileRow;
-		return { firstName: profile.first_name, lastName: profile.last_name };
+		const profile = data as ProfileRow | null;
+		return { firstName: profile?.first_name ?? '', lastName: profile?.last_name ?? '' };
 	}
 
 	async updateProfile(userId: string, profile: AccountProfile): Promise<AccountProfile> {

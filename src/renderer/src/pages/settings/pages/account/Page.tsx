@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AlertCircle, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import type { AccountProfile } from '@shared/auth_types';
 import { Activity, type ActivityRange } from './Activity';
 import { ActivityHeader } from './Header';
 import {
@@ -18,28 +19,29 @@ const AccountPage: React.FC = () => {
 	const { state, localOnly, requireSignIn } = useAuth();
 	const [sessionBusy, setSessionBusy] = useState(false);
 	const [error, setError] = useState('');
-	const [profileName, setProfileName] = useState<string>();
+	const [profile, setProfile] = useState<AccountProfile>();
+	const [profileError, setProfileError] = useState('');
 	const [activityRange, setActivityRange] = useState<ActivityRange>('untilToday');
 	const signedIn = state.status === 'signedIn' && !localOnly;
+	const userId = signedIn ? state.user?.id : undefined;
 
 	useEffect(() => {
-		if (!signedIn) {
-			setProfileName(undefined);
-			return;
-		}
+		setProfile(undefined);
+		setProfileError('');
+		if (!userId) return;
 		let active = true;
 		void window.auth
 			.getProfile()
-			.then(({ firstName, lastName }) => {
-				if (active) setProfileName([firstName, lastName].filter(Boolean).join(' ') || undefined);
+			.then((result) => {
+				if (active) setProfile(result);
 			})
 			.catch(() => {
-				if (active) setProfileName(undefined);
+				if (active) setProfileError('Could not load profile information.');
 			});
 		return () => {
 			active = false;
 		};
-	}, [signedIn]);
+	}, [userId]);
 
 	return (
 		<SettingsPageShell>
@@ -63,6 +65,11 @@ const AccountPage: React.FC = () => {
 					{error}
 				</SettingsNotice>
 			) : null}
+			{profileError ? (
+				<SettingsNotice icon={AlertCircle} variant="destructive">
+					{profileError}
+				</SettingsNotice>
+			) : null}
 			{signedIn ? (
 				<>
 					<SettingsSection title="Identity">
@@ -70,11 +77,12 @@ const AccountPage: React.FC = () => {
 							<SettingsRow title="Status">
 								<SettingsValue>Signed in</SettingsValue>
 							</SettingsRow>
-							{profileName || state.user?.displayName ? (
-								<SettingsRow title="Name">
-									<SettingsValue>{profileName ?? state.user?.displayName}</SettingsValue>
-								</SettingsRow>
-							) : null}
+							<SettingsRow title="First name">
+								<SettingsValue>{profile?.firstName || 'Not set'}</SettingsValue>
+							</SettingsRow>
+							<SettingsRow title="Last name">
+								<SettingsValue>{profile?.lastName || 'Not set'}</SettingsValue>
+							</SettingsRow>
 							<SettingsRow title="Email">
 								<SettingsValue>{state.user?.email ?? 'Unavailable'}</SettingsValue>
 							</SettingsRow>
