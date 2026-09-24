@@ -125,7 +125,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const controls = page.locator('[data-slot="prompt-input-controls"]');
 	const controlButtons = page.locator('[data-slot="prompt-input-control-buttons"]');
 	const attachmentButton = page.getByRole('button', { name: 'Add attachment' });
-	const sendButton = page.getByRole('button', { name: 'Start voice conversation' });
+	const sendButton = field.getByRole('button', { name: 'Start voice conversation' });
 	const transcriptionButton = field.getByRole('button', { name: /speech-to-text provider/ });
 	const modelButton = page.getByRole('button', { name: 'Change model' });
 

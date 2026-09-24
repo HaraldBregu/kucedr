@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { Menu, Search, User } from 'lucide-react';
+import { AudioLines, Menu, Search, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -10,6 +10,8 @@ import { NavigationBarProvider } from './context/NavigationBarContext';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
 import { LogoView } from '@/components/app/base/logo-view';
+import { useChatSession } from '@/contexts/chat-session';
+import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 
 // Synchronous platform check — no hooks, no async, no state.
 // macOS uses native traffic-light buttons; every other OS needs custom controls.
@@ -35,6 +37,8 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
+	const { sessionId } = useChatSession();
+	const [voiceError, setVoiceError] = React.useState<string | null>(null);
 
 	const isHome = location.pathname === '/home';
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
@@ -58,6 +62,30 @@ export const NavigationBar = React.memo(function NavigationBar({
 			aria-label={searchLabel}
 		>
 			<Search className="size-4" strokeWidth={1.8} />
+		</Button>
+	) : null;
+	const voiceButton = !isOnboarding && !isSettings ? (
+		<Button
+			type="button"
+			variant="default"
+			size="icon"
+			className="size-9 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
+			aria-label="Start voice conversation"
+			title={voiceError ?? 'Start voice conversation'}
+			onClick={() => {
+				setVoiceError(null);
+				void ensureAppMicrophoneAccess()
+					.then(() => window.win.openVoiceConversation(sessionId))
+					.catch((error: unknown) => {
+						setVoiceError(
+							error instanceof Error && error.message.trim()
+								? error.message
+								: 'Voice conversation could not be opened.'
+						);
+					});
+			}}
+		>
+			<AudioLines className="size-4" />
 		</Button>
 	) : null;
 	const routeButton = isSettings ? (
@@ -117,6 +145,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</button>
 					)}
 					{!isMac && searchButton}
+					{!isMac && voiceButton}
 					{!isMac && routeButton}
 					{!isHome && !isOnboarding && !isSettings && (
 						<Button
@@ -145,12 +174,13 @@ export const NavigationBar = React.memo(function NavigationBar({
 				)}
 
 				{/* ── Right action: home/settings toggle ── */}
-				{isMac && (searchButton || routeButton) && (
+				{isMac && (searchButton || voiceButton || routeButton) && (
 					<div
 						className="z-10 mr-3 flex h-full items-center gap-1"
 						style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 					>
 						{searchButton}
+						{voiceButton}
 						{routeButton}
 					</div>
 				)}
