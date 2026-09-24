@@ -107,7 +107,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			variant="ghost"
 			size="icon"
 			className="size-8 rounded-full"
-			onClick={() => navigate('/settings/general')}
+			onClick={() => navigate('/settings/account')}
 			title={settingsLabel}
 			aria-label={settingsLabel}
 		>

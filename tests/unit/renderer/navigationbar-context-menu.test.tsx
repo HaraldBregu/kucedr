@@ -99,7 +99,7 @@ it('hides application navigation during onboarding', () => {
 	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
 });
 
-it('shows the settings icon on Home', async () => {
+it('opens Account from the settings icon on Home', async () => {
 	const user = userEvent.setup();
 
 	render(
@@ -107,7 +107,7 @@ it('shows the settings icon on Home', async () => {
 			<NavigationBar />
 			<Routes>
 				<Route path="/home" element={null} />
-				<Route path="/settings/general" element={<p>/settings/general</p>} />
+				<Route path="/settings/account" element={<p>/settings/account</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
@@ -116,7 +116,7 @@ it('shows the settings icon on Home', async () => {
 
 	await user.click(screen.getByRole('button', { name: 'settings.title' }));
 
-	expect(screen.getByText('/settings/general')).toBeInTheDocument();
+	expect(screen.getByText('/settings/account')).toBeInTheDocument();
 });
 
 it('opens voice conversation for the current chat from the button before Settings', async () => {
