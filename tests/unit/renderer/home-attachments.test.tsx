@@ -273,13 +273,14 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByText('diagram.png')).toBeInTheDocument();
 
 		modelCatalogChanged?.();
-		expect(
-			await screen.findByText('This file type is not supported by the selected model.')
-		).toBeInTheDocument();
-		expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute(
-			'data-state',
-			'error'
+		await waitFor(() =>
+			expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute(
+				'data-state',
+				'error'
+			)
 		);
+		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
+		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
 	});
 
@@ -303,7 +304,7 @@ describe('Home prompt attachments', () => {
 		expect(screen.queryByText('diagram.png')).not.toBeInTheDocument();
 	});
 
-	it('allows any file in the picker and explains unsupported types before Send', async () => {
+	it('allows any file in the picker without showing the unsupported type message', async () => {
 		renderPage(jest.fn().mockResolvedValue(textCapabilities));
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
@@ -315,7 +316,8 @@ describe('Home prompt attachments', () => {
 		});
 
 		expect(screen.getByText('archive.zip')).toBeInTheDocument();
-		expect(screen.getByText('This file type is not supported by the selected model.')).toBeInTheDocument();
+		expect(screen.getByText('ZIP · 6 B')).toBeInTheDocument();
+		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
 	});
 
