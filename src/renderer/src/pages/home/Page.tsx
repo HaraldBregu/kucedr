@@ -73,22 +73,22 @@ const promptSuggestions = [
 			label: 'Rain sound',
 			prompt: 'Create the sound of rain on a window.',
 		},
-	],
-	[
 		{
 			label: 'Create an image',
 			prompt: 'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.',
 		},
+	],
+	[
 		{
 			label: 'Video',
 			prompt: 'Create a five-second video of ocean waves.',
 		},
-	],
-	[
 		{
 			label: 'Brainstorm project ideas',
 			prompt: 'Give me ten practical ideas for a weekend project I could finish with basic tools and a small budget.',
 		},
+	],
+	[
 		{
 			label: 'Draft a thank-you',
 			prompt: 'Write a friendly reply thanking a colleague for their help.',
