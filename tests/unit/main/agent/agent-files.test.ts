@@ -1,11 +1,7 @@
-import {
-	AGENT_MAX_ATTACHMENT_BYTES,
-	AGENT_MAX_ATTACHMENT_COUNT,
-	normalizeAgentInputFiles,
-} from '../../../../src/shared/agent_files';
+import { normalizeAgentInputFiles } from '../../../../src/shared/agent_files';
 
 describe('normalizeAgentInputFiles', () => {
-	it('accepts bounded base64 attachments', () => {
+	it('accepts base64 attachments', () => {
 		expect(
 			normalizeAgentInputFiles([
 				{ name: 'note.txt', mimeType: ' text/plain ', data: Buffer.from('hello').toString('base64') },
@@ -15,21 +11,15 @@ describe('normalizeAgentInputFiles', () => {
 		]);
 	});
 
-	it('rejects too many attachments', () => {
+	it('accepts more than ten attachments', () => {
 		const file = { name: 'note.txt', mimeType: 'text/plain', data: 'YQ==' };
-		expect(() =>
-			normalizeAgentInputFiles(Array.from({ length: AGENT_MAX_ATTACHMENT_COUNT + 1 }, () => file))
-		).toThrow('maximum');
+		expect(normalizeAgentInputFiles(Array.from({ length: 11 }, () => file))).toHaveLength(11);
 	});
 
-	it('rejects invalid base64 and decoded content over the byte limit', () => {
+	it('rejects invalid base64', () => {
 		expect(() =>
 			normalizeAgentInputFiles([{ name: 'bad', mimeType: 'text/plain', data: '!!!!' }])
 		).toThrow('base64');
-		const oversized = Buffer.alloc(AGENT_MAX_ATTACHMENT_BYTES + 1).toString('base64');
-		expect(() =>
-			normalizeAgentInputFiles([{ name: 'large', mimeType: 'application/octet-stream', data: oversized }])
-		).toThrow('at most');
 	});
 
 	it('rejects malformed attachment entries instead of silently dropping them', () => {
@@ -40,10 +30,10 @@ describe('normalizeAgentInputFiles', () => {
 		).toThrow('name, MIME type, and base64 data');
 	});
 
-	it('uses decoded bytes rather than encoded character count', () => {
-		const data = Buffer.alloc(AGENT_MAX_ATTACHMENT_BYTES).toString('base64');
+	it('accepts files above the former byte limit', () => {
+		const data = Buffer.alloc(20 * 1024 * 1024 + 1).toString('base64');
 		expect(
-			normalizeAgentInputFiles([{ name: 'limit', mimeType: 'application/octet-stream', data }])
+			normalizeAgentInputFiles([{ name: 'large', mimeType: 'application/octet-stream', data }])
 		).toHaveLength(1);
 	});
 });

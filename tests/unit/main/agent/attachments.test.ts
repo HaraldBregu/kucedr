@@ -24,13 +24,6 @@ const png = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1]);
 const capabilities = {
 	rules: [imageRule, documentRule],
 	accept: '',
-	limits: {
-		maxFiles: 10,
-		maxBinaryBytes: 20 * 1024 * 1024,
-		maxBinaryTotalBytes: 50 * 1024 * 1024,
-		maxTextBytes: 120_000,
-		maxTextTotalBytes: 500_000,
-	},
 };
 
 describe('prompt attachment capabilities', () => {
@@ -63,6 +56,16 @@ describe('prompt attachment capabilities', () => {
 });
 
 describe('prompt attachment preflight', () => {
+	it('accepts more than ten files and text above the former size limit', () => {
+		const text = 'x'.repeat(120_001);
+		const files = Array.from({ length: 11 }, (_, index) => ({
+			name: `note-${index}.txt`,
+			mimeType: 'text/plain',
+			data: Buffer.from(text).toString('base64'),
+		}));
+		expect(preflightPromptAttachments(files, capabilities)).toHaveLength(11);
+	});
+
 	it('decodes UTF-8 text and detects native formats without trusting renderer MIME', () => {
 		expect(
 			preflightPromptAttachments(

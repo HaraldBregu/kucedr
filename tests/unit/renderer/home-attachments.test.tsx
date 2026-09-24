@@ -1,9 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import type { AgentPromptInputCapabilities } from '../../../src/shared/agent_types';
 import Page from '../../../src/renderer/src/pages/home/Page';
-import { validatePromptAttachments } from '../../../src/renderer/src/pages/home/attachments/validation';
-import type { PromptAttachment } from '../../../src/renderer/src/pages/home/attachments/types';
 
 const handleSubmit = jest.fn();
 const setInput = jest.fn();
@@ -151,24 +148,6 @@ jest.mock('@/components/prompt-editor', () => ({
 	),
 }));
 
-const textCapabilities: AgentPromptInputCapabilities = {
-	rules: [],
-	accept: '.txt,.md',
-	limits: {
-		maxFiles: 10,
-		maxBinaryBytes: 20 * 1024 * 1024,
-		maxBinaryTotalBytes: 50 * 1024 * 1024,
-		maxTextBytes: 120_000,
-		maxTextTotalBytes: 500_000,
-	},
-};
-
-const imageCapabilities: AgentPromptInputCapabilities = {
-	...textCapabilities,
-	accept: '.txt,.png,image/png',
-	rules: [{ kind: 'image', mimeTypes: ['image/png'], extensions: ['.png'] }],
-};
-
 function renderPage(): void {
 	render(
 		<MemoryRouter>
@@ -312,32 +291,6 @@ describe('Home prompt attachments', () => {
 		await waitFor(() => expect(screen.queryByText('diagram.png')).not.toBeInTheDocument());
 		expect(handleSubmit).toHaveBeenCalledWith([file], undefined);
 		resolveSubmit(false);
-	});
-
-	it('validates type, individual size, totals, and count from file metadata', () => {
-		const limits = {
-			...imageCapabilities,
-			limits: {
-				...imageCapabilities.limits,
-				maxFiles: 2,
-				maxBinaryBytes: 4,
-				maxBinaryTotalBytes: 6,
-			},
-		};
-		const files = [
-			new File(['12345'], 'large.png', { type: 'image/png' }),
-			new File(['12'], 'notes.pdf', { type: 'application/pdf' }),
-			new File(['1'], 'extra.png', { type: 'image/png' }),
-		];
-		const attachments: PromptAttachment[] = files.map((file, index) => ({
-			id: String(index),
-			kind: 'file',
-			file,
-		}));
-		const result = validatePromptAttachments(attachments, limits);
-		expect(result[0].error).toMatch(/4 bytes or smaller/);
-		expect(result[1].error).toMatch(/not supported/);
-		expect(result[2].error).toMatch(/maximum of 2/);
 	});
 
 	it('shows reply context alongside attachments and lets the user cancel it', async () => {
