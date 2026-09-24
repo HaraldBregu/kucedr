@@ -44,7 +44,7 @@ it('resizes the calling window and stores its new default size', async () => {
 
 	await expect(setSize(event, '1000x700')).resolves.toEqual({ success: true, data: undefined });
 	expect(win.unmaximize).toHaveBeenCalledTimes(1);
-	expect(win.setSize).toHaveBeenCalledWith(1000, 700);
+	expect(win.setSize).toHaveBeenCalledWith(1000, 700, true);
 	expect(getWindowSize()).toBe('1000x700');
 	await expect(getSize(event)).resolves.toEqual({ success: true, data: '1000x700' });
 });

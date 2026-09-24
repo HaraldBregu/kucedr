@@ -171,7 +171,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 				if (!win) throw new Error('Window unavailable.');
 				if (win.isMaximized()) win.unmaximize();
 				const { width, height } = WINDOW_SIZES[size];
-				win.setSize(width, height);
+				win.setSize(width, height, true);
 				setWindowSize(size);
 			}, 'window:set-size')
 		);
