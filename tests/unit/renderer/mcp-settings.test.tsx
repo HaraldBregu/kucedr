@@ -9,6 +9,8 @@ jest.mock('../../../src/renderer/src/lib/providers', () => ({
 			id: 'remote',
 			url: 'https://mcp.test',
 			description: 'Search repository documentation.',
+			iconDarkUrl: '/icon-dark.png',
+			iconLightUrl: '/icon-light.png',
 			provider: {
 				id: 'remote-provider',
 				name: 'Remote provider',
