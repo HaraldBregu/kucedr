@@ -894,6 +894,7 @@ function PageContent(): ReactElement {
 								placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
 								ariaLabel="Message Kucedr"
 								value={agent.input}
+								expanded={agent.input.length > 0}
 								onValueChange={agent.setInput}
 								onPlanCommandChange={(active) => {
 									setPlanCommandActive(active);
