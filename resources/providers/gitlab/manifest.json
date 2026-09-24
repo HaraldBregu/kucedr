@@ -1,0 +1,16 @@
+{
+	"providerId": "gitlab",
+	"providerName": "GitLab",
+	"images_url": "/images",
+	"icon_dark_url": "/images/gitlab.svg",
+	"icon_light_url": "/images/gitlab.svg",
+	"services": [
+		{
+			"id": "gitlab",
+			"name": "GitLab",
+			"description": "Work with projects, issues, and merge requests.",
+			"type": "mcp",
+			"url": "https://gitlab.com/api/v4/mcp"
+		}
+	]
+}

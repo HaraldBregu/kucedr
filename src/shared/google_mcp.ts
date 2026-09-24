@@ -6,13 +6,26 @@ const SCOPES: Readonly<Record<string, readonly string[]>> = {
 		'calendar.events.readonly',
 	],
 	'drivemcp.googleapis.com': ['drive.readonly', 'drive.file'],
+	'docsmcp.googleapis.com': ['drive.readonly', 'drive.file', 'documents.readonly', 'documents'],
+	'sheetsmcp.googleapis.com': [
+		'drive.readonly',
+		'drive.file',
+		'spreadsheets.readonly',
+		'spreadsheets',
+	],
 	'people.googleapis.com': ['directory.readonly', 'userinfo.profile', 'contacts.readonly'],
+	'mapstools.googleapis.com': ['maps-platform.mapstools'],
 };
 
 export function googleMcpScopes(value: string): string | undefined {
 	try {
 		const url = new URL(value);
-		if (url.protocol !== 'https:' || url.port || url.pathname.replace(/\/$/, '') !== '/mcp/v1') {
+		const path = url.pathname.replace(/\/$/, '');
+		if (
+			url.protocol !== 'https:' ||
+			url.port ||
+			path !== (url.hostname === 'mapstools.googleapis.com' ? '/mcp' : '/mcp/v1')
+		) {
 			return undefined;
 		}
 		return SCOPES[url.hostname]
