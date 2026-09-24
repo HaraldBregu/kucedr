@@ -9,13 +9,14 @@ export async function migrateLegacyStorageSettings(database: DatabaseSync): Prom
 	const migrated = database.prepare(`SELECT 1 FROM migration_state
 		WHERE name = 'legacy-storage-settings'`).get();
 	if (migrated) return;
+	const oldSource = path.join(userDataLocation(), 'settings', 'app.json');
 	let source = path.join(storageLocation(), 'settings.json');
 	let contents: string;
 	try {
 		contents = await fs.readFile(source, 'utf8');
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
-		source = path.join(userDataLocation(), 'settings', 'app.json');
+		source = oldSource;
 		try {
 			contents = await fs.readFile(source, 'utf8');
 		} catch (legacyError) {
@@ -23,7 +24,7 @@ export async function migrateLegacyStorageSettings(database: DatabaseSync): Prom
 			throw legacyError;
 		}
 	}
-	const legacy = source.endsWith('/app.json')
+	const legacy = source === oldSource
 		? (JSON.parse(contents) as { cloud?: unknown }).cloud
 		: JSON.parse(contents);
 	if (!legacy || typeof legacy !== 'object' || Array.isArray(legacy)) return;

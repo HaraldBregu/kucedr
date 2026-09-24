@@ -1,9 +1,8 @@
 import { existsSync } from 'node:fs';
-import path from 'node:path';
 import Store from 'electron-store';
 import type { StorageSyncSettings } from '../../shared/storage_types';
-import { userDataLocation } from '../shared/user_data_location';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
+import { storageLocation } from './local/paths';
 import { storageProviders } from './providers';
 import { normalizeStorageSettings } from './storage_config';
 import { DEFAULT_SYNC_CRON_EXPRESSION } from './storage_sync_types';
@@ -16,7 +15,7 @@ const defaults: StorageSyncSettings = {
 
 const store = new Store<StorageSyncSettings>({
 	name: 'settings',
-	cwd: path.join(userDataLocation(), 'storage'),
+	cwd: storageLocation(),
 	accessPropertiesByDotNotation: false,
 	defaults,
 	clearInvalidConfig: false,
@@ -30,6 +29,9 @@ export function migrateStorageSettings(legacy: unknown): void {
 		const migrated = normalizeStorageSettings({ ...defaults, ...(legacy as object) });
 		store.store = migrated;
 		restrictSettingsFile(store.path);
+		if (JSON.stringify(getStorageSettings()) !== JSON.stringify(migrated)) {
+			throw new Error('Storage settings migration could not be verified.');
+		}
 	}
 	getStorageSettings();
 }
