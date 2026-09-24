@@ -563,16 +563,15 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			(customProvider.apiKey.trim() || customProvider.savedApiKey) && customProvider.baseUrl.trim()
 		);
 		return (
-			<Card
-				className={cn(
-					'rounded-lg border-border bg-card py-0 shadow-none',
-					customProvider.editing && 'border-ring ring-2 ring-ring/20'
-				)}
+			<Item
+				variant="ghost"
+				size="md"
+				className="min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 			>
-				<CardContent className="p-0">
+				<div className="w-full">
 					<div
 						className={cn(
-							'flex min-h-12 items-center gap-2.5 px-4 py-3.5',
+							'flex min-h-9 items-center gap-3',
 							customProvider.editing && 'pb-3'
 						)}
 					>
@@ -581,43 +580,45 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							name="Ollama"
 							iconDarkUrl={ollamaDarkLogo}
 							iconLightUrl={ollamaLightLogo}
-							className="bg-white dark:bg-white"
+							className="size-9 rounded-2xl border-0 bg-white p-1.5 dark:bg-white"
 						/>
-						<div className="min-w-0 flex-1">
-							<h3 className="truncate text-sm font-semibold leading-tight text-foreground">
-								{t('settings.providers.localModels.model')}
-							</h3>
-							<p className="truncate text-xs font-medium leading-tight text-muted-foreground">
+						<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+							<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+								<h3>{t('settings.providers.localModels.model')}</h3>
+							</ItemTitle>
+							<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 								{t(
 									connected ? 'settings.providers.configured' : 'settings.providers.notConfigured'
 								)}
 							</p>
-						</div>
-						{connected && !customProvider.editing ? (
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-xs"
-								aria-label={t('settings.providers.localModels.edit')}
-								onClick={() =>
-									setCustomProvider((current) => ({ ...current, apiKey: '', editing: true }))
-								}
-							>
-								<Pencil className="size-3.5" />
-							</Button>
-						) : !customProvider.editing ? (
-							<Button
-								type="button"
-								variant="outline"
-								size="xs"
-								onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}
-							>
-								{t('settings.providers.localModels.connect')}
-							</Button>
-						) : null}
+						</ItemContent>
+						<ItemActions className="ml-auto flex-none justify-end">
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button
+										variant="ghost"
+										size="icon-sm"
+										className="hover:bg-transparent dark:hover:bg-transparent"
+										disabled={saving}
+										aria-label="Options for Ollama"
+									>
+										<MoreHorizontal className="size-4" />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuItem
+										onSelect={() =>
+											setCustomProvider((current) => ({ ...current, apiKey: '', editing: true }))
+										}
+									>
+										{connected ? t('settings.providers.localModels.edit') : t('settings.providers.localModels.connect')}
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</ItemActions>
 					</div>
 					{customProvider.editing && (
-						<div className="grid gap-3 px-4 pb-4">
+						<div className="grid gap-3 pb-2">
 							<div className="grid gap-1.5 sm:grid-cols-[10rem_minmax(0,1fr)] sm:items-center">
 								<Label htmlFor="local-model-url" className="sm:text-right">
 									{t('settings.providers.localModels.url')}
@@ -688,8 +689,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							</div>
 						</div>
 					)}
-				</CardContent>
-			</Card>
+				</div>
+			</Item>
 		);
 	};
 
