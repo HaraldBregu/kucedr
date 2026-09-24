@@ -19,24 +19,26 @@ const AccountPage: React.FC = () => {
 	const { state, localOnly, requireSignIn } = useAuth();
 	const [sessionBusy, setSessionBusy] = useState(false);
 	const [error, setError] = useState('');
-	const [profile, setProfile] = useState<AccountProfile>();
-	const [profileError, setProfileError] = useState('');
+	const [profile, setProfile] = useState<{ userId: string; details: AccountProfile }>();
+	const [profileError, setProfileError] = useState<{ userId: string; message: string }>();
 	const [activityRange, setActivityRange] = useState<ActivityRange>('untilToday');
 	const signedIn = state.status === 'signedIn' && !localOnly;
 	const userId = signedIn ? state.user?.id : undefined;
+	const currentProfile = profile?.userId === userId ? profile.details : undefined;
+	const currentProfileError = profileError?.userId === userId ? profileError.message : '';
 
 	useEffect(() => {
 		setProfile(undefined);
-		setProfileError('');
+		setProfileError(undefined);
 		if (!userId) return;
 		let active = true;
 		void window.auth
 			.getProfile()
 			.then((result) => {
-				if (active) setProfile(result);
+				if (active) setProfile({ userId, details: result });
 			})
 			.catch(() => {
-				if (active) setProfileError('Could not load profile information.');
+				if (active) setProfileError({ userId, message: 'Could not load profile information.' });
 			});
 		return () => {
 			active = false;
@@ -65,9 +67,9 @@ const AccountPage: React.FC = () => {
 					{error}
 				</SettingsNotice>
 			) : null}
-			{profileError ? (
+			{currentProfileError ? (
 				<SettingsNotice icon={AlertCircle} variant="destructive">
-					{profileError}
+					{currentProfileError}
 				</SettingsNotice>
 			) : null}
 			{signedIn ? (
@@ -78,10 +80,14 @@ const AccountPage: React.FC = () => {
 								<SettingsValue>Signed in</SettingsValue>
 							</SettingsRow>
 							<SettingsRow title="First name">
-								<SettingsValue>{profile?.firstName || 'Not set'}</SettingsValue>
+								<SettingsValue>
+									{currentProfile ? currentProfile.firstName || 'Not set' : currentProfileError ? 'Unavailable' : 'Loading…'}
+								</SettingsValue>
 							</SettingsRow>
 							<SettingsRow title="Last name">
-								<SettingsValue>{profile?.lastName || 'Not set'}</SettingsValue>
+								<SettingsValue>
+									{currentProfile ? currentProfile.lastName || 'Not set' : currentProfileError ? 'Unavailable' : 'Loading…'}
+								</SettingsValue>
 							</SettingsRow>
 							<SettingsRow title="Email">
 								<SettingsValue>{state.user?.email ?? 'Unavailable'}</SettingsValue>
