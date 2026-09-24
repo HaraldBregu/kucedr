@@ -135,7 +135,7 @@ jest.mock('@/components/prompt-editor', () => ({
 		onValueChange,
 		header,
 		leadingAction,
-		actions,
+		trailingAction,
 		onFilesChange,
 		filesAccept,
 	}: {
@@ -143,7 +143,7 @@ jest.mock('@/components/prompt-editor', () => ({
 		onValueChange: (value: string) => void;
 		header?: React.ReactNode;
 		leadingAction?: React.ReactNode;
-		actions?: React.ReactNode;
+		trailingAction?: React.ReactNode;
 		onFilesChange?: (files: File[]) => void;
 		filesAccept?: string;
 	}) => (
@@ -158,7 +158,7 @@ jest.mock('@/components/prompt-editor', () => ({
 			/>
 			<textarea value={value} onChange={(event) => onValueChange(event.target.value)} />
 			{leadingAction}
-			{actions}
+			{trailingAction}
 		</div>
 	),
 }));
