@@ -16,6 +16,9 @@ describe('provider manifests', () => {
 		const openAi = loadModels().find(
 			(model) => model.provider.id === 'openai' && model.id === 'gpt-5.6-sol'
 		);
+		const google = loadModels().find(
+			(model) => model.provider.id === 'google' && model.id === 'gemini-3.1-pro-preview'
+		);
 		const deepseek = loadModels().find(
 			(model) => model.provider.id === 'deepseek' && model.id === 'deepseek-flash'
 		);
@@ -29,6 +32,7 @@ describe('provider manifests', () => {
 		);
 		const realtimeVoiceModels = loadModels().filter((model) => model.type === 'realtime-voice');
 		expect(openAi?.provider.iconDarkUrl).toMatch(/^local-resource:\/\/file/);
+		expect(google?.provider.name).toBe('Google DeepMind / Google');
 		expect(integrations.map((service) => service.provider.id)).toEqual([
 			'github',
 			'gmail',
