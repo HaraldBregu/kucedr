@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { AlertCircle, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
+import { Activity } from './Activity';
 import {
 	SettingsNotice,
 	SettingsPageHeader,
@@ -13,6 +15,7 @@ import {
 } from '../../components';
 
 const AccountPage: React.FC = () => {
+	const { t } = useTranslation();
 	const { state, localOnly, requireSignIn } = useAuth();
 	const [sessionBusy, setSessionBusy] = useState(false);
 	const [error, setError] = useState('');
@@ -41,6 +44,13 @@ const AccountPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader title="Account" description="Manage your sign-in status." />
+			<SettingsSection
+				title={t('settings.activity.title')}
+				description={t('settings.activity.description')}
+				className="my-2"
+			>
+				<Activity />
+			</SettingsSection>
 			{error ? (
 				<SettingsNotice icon={AlertCircle} variant="destructive">
 					{error}

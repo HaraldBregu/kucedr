@@ -30,7 +30,6 @@ import {
 	SettingsSection,
 } from '../../components';
 import { MediaPermissionsSection } from '../../components/media';
-import { Activity } from './Activity';
 
 interface LanguageOption {
 	readonly value: AppLanguage;
@@ -106,14 +105,6 @@ const GeneralPage: React.FC = () => {
 				title={t('settings.tabs.general')}
 				description={t('settings.tabs.generalDescription')}
 			/>
-
-			<SettingsSection
-				title={t('settings.activity.title')}
-				description={t('settings.activity.description')}
-				className="my-2"
-			>
-				<Activity />
-			</SettingsSection>
 
 			<SettingsSection title={t('settings.application.information')}>
 				<SettingsPanel>

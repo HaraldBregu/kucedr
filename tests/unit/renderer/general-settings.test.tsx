@@ -1,61 +1,12 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
 
 
-jest.mock('@thilakbhat/heatmap-ui', () => ({
-	CalendarHeatmap: ({
-		values,
-		weeks,
-		cellSize,
-		to,
-		cellLabel,
-		shape,
-		scale,
-		emptyColor,
-		colors,
-		'data-heatmap-theme': heatmapTheme,
-	}: {
-		values: { date: string; value: number }[];
-		weeks: number;
-		cellSize: number;
-		to: string;
-		cellLabel: (day: { date: string; value: number }) => string;
-		shape: string;
-		scale: string;
-		emptyColor: string;
-		colors: string[];
-		'data-heatmap-theme'?: string;
-	}) => (
-		<div
-			data-testid="activity-heatmap"
-			data-count={values.length}
-			data-to={to}
-			data-weeks={weeks}
-			data-cell-size={cellSize}
-			data-shape={shape}
-			data-scale={scale}
-			data-empty-color={emptyColor}
-			data-colors={colors.join(',')}
-			data-heatmap-theme={heatmapTheme}
-		>
-			{values.map((day) => (
-				<div
-					key={day.date}
-					className="heatmap__cell-slot"
-					role="img"
-					aria-label={cellLabel(day)}
-				/>
-			))}
-		</div>
-	),
-}));
-
 const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
-let appTheme = 'system';
 let notifyTrayEnabled: (enabled: boolean) => void;
 let notifyKeepAwake: (enabled: boolean) => void;
 
@@ -67,7 +18,7 @@ jest.mock('@/contexts', () => ({
 	useApp: () => ({
 		language: 'en',
 		setLanguage: jest.fn(),
-		theme: appTheme,
+		theme: 'system',
 		setTheme: mockSetTheme,
 	}),
 }));
@@ -79,7 +30,6 @@ beforeAll(() => {
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	appTheme = 'system';
 	mockSetKeepAwake.mockResolvedValue(undefined);
 	mockSetTrayClickAction.mockResolvedValue(undefined);
 	Object.defineProperty(window, 'PointerEvent', {
@@ -89,7 +39,6 @@ beforeEach(() => {
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
-			getActivity: jest.fn().mockResolvedValue([{ date: '2026-09-23', value: 12 }]),
 			getTrayEnabled: jest.fn().mockResolvedValue(true),
 			setTrayEnabled: jest.fn().mockResolvedValue(undefined),
 			getTrayClickAction: jest.fn().mockResolvedValue('toggle-chat'),
@@ -201,55 +150,4 @@ it('opens Voice Agent settings from General settings', async () => {
 	await user.click(screen.getByRole('link', { name: /settings\.voiceAgent\.title/ }));
 
 	expect(screen.getByText('Voice Agent page')).toBeInTheDocument();
-});
-
-it('shows activity loaded from application logs in General settings', async () => {
-	render(
-		<MemoryRouter>
-			<GeneralPage />
-		</MemoryRouter>
-	);
-
-	await waitFor(() => {
-		expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
-	});
-	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
-	expect(screen.getByText('settings.activity.description')).toBeInTheDocument();
-	expect(screen.getByTestId('activity-scroll')).toHaveClass('card-body');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
-		'data-to',
-		new Date().toISOString().slice(0, 10)
-	);
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '37');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-cell-size', '12');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-shape', 'rounded');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'log');
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
-		'data-empty-color',
-		'var(--activity-empty-color)'
-	);
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute(
-		'data-colors',
-		'var(--activity-color-1),var(--activity-color-2),var(--activity-color-3),var(--activity-color-4)'
-	);
-	expect(screen.queryByText('settings.activity.empty')).not.toBeInTheDocument();
-
-	const cell = screen.getByRole('img', { name: 'settings.activity.day' });
-	fireEvent.pointerMove(cell, { clientX: 160, clientY: 120 });
-	const tooltip = screen.getByRole('tooltip');
-	expect(tooltip).toHaveClass('fixed');
-	expect(screen.getByTestId('activity-scroll')).not.toContainElement(tooltip);
-});
-
-it('pins the heatmap to the light theme when selected', async () => {
-	appTheme = 'light';
-	await act(async () => {
-		render(
-			<MemoryRouter>
-				<GeneralPage />
-			</MemoryRouter>
-		);
-	});
-
-	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-heatmap-theme', 'light');
 });
