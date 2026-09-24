@@ -5,7 +5,7 @@ import { AuthProvider } from '../../../src/renderer/src/contexts/AuthContext';
 import AccountPage from '../../../src/renderer/src/pages/settings/pages/account/Page';
 
 jest.mock('react-i18next', () => ({
-	useTranslation: () => ({ t: (key: string): string => key }),
+	useTranslation: () => ({ t: (key: string, options?: { year?: number }): string => options?.year ? `${key} (${options.year})` : key }),
 }));
 
 jest.mock('@/contexts', () => ({
@@ -88,6 +88,14 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-cell-size', '12');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'linear');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-heatmap-theme', 'light');
+	const year = new Date().getFullYear();
+	await user.click(screen.getByRole('combobox', { name: 'settings.activity.range' }));
+	await user.click(screen.getByRole('option', { name: `settings.activity.lastYear (${year - 1})` }));
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-to', `${year - 1}-12-31`);
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '0');
+	await user.click(screen.getByRole('combobox', { name: 'settings.activity.range' }));
+	await user.click(screen.getByRole('option', { name: `settings.activity.currentYear (${year})` }));
+	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
 	const cell = screen.getByRole('img', { name: 'settings.activity.day' });
 	fireEvent.pointerMove(cell, { clientX: 160, clientY: 120 });
 	expect(screen.getByRole('tooltip')).toHaveClass('fixed');
