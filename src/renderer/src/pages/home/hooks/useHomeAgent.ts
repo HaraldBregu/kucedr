@@ -172,6 +172,13 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 					userMessageId: messageId('user'),
 					agentMessageId,
 					content: displayContent,
+					attachments: files.map((file) => ({
+						type: 'attachment',
+						kind: file.type.startsWith('image/') ? 'image' : file.type === 'application/pdf' ? 'document' : 'text',
+						name: file.name,
+						mimeType: file.type || 'application/octet-stream',
+						bytes: file.size,
+					})),
 					submittedAtMs,
 				});
 			}

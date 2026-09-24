@@ -12,6 +12,7 @@ import {
 	type AgentChatState,
 	type AgentMessage,
 	type HomeChatMessage,
+	type UserAttachment,
 	type UserMessage,
 } from './state';
 
@@ -19,12 +20,13 @@ function isAgentMessage(message: HomeChatMessage): message is AgentMessage {
 	return message.role === 'agent' && message.type === 'agent';
 }
 
-function createUserMessage(id: string, content: string): UserMessage {
+function createUserMessage(id: string, content: string, attachments: readonly UserAttachment[] = []): UserMessage {
 	return {
 		id,
 		role: 'user',
 		type: 'user',
 		content,
+		...(attachments.length > 0 ? { attachments } : {}),
 	};
 }
 
@@ -375,7 +377,11 @@ export function historyToChatMessages(history: AgentHistoryMessage[]): HomeChatM
 
 		if (message.role === 'user') {
 			const content = typeof message.content === 'string' ? message.content : '';
-			if (content.length > 0) out.push(createUserMessage(`user-history-${index}`, content));
+			const attachments = (message.contentBlocks ?? []).filter(
+				(block): block is UserAttachment => block.type === 'attachment'
+			);
+			if (content.length > 0 || attachments.length > 0)
+				out.push(createUserMessage(`user-history-${index}`, content, attachments));
 			return;
 		}
 
@@ -445,7 +451,9 @@ export function agentChatReducer(state: AgentChatState, action: AgentChatAction)
 			return {
 				messages: [
 					...state.messages,
-					...(action.content ? [createUserMessage(action.userMessageId, action.content)] : []),
+					...(action.content || action.attachments?.length
+						? [createUserMessage(action.userMessageId, action.content, action.attachments)]
+						: []),
 					agentMessage,
 				],
 				activeAgentId: agentMessage.id,

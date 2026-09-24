@@ -1,13 +1,15 @@
-import type { AgentRunState, AgentUserInputQuestion, AgentUserInputScope } from '@/lib/compat';
+import type { AgentHistoryContentBlock, AgentRunState, AgentUserInputQuestion, AgentUserInputScope } from '@/lib/compat';
 import type { AgentToolPart } from './tool-parts';
 
 export type { AgentRunState, AgentToolPart };
+export type UserAttachment = Extract<AgentHistoryContentBlock, { type: 'attachment' }>;
 
 export interface UserMessage {
 	readonly id: string;
 	readonly role: 'user';
 	readonly type: 'user';
 	readonly content: string;
+	readonly attachments?: readonly UserAttachment[];
 }
 
 export interface SummaryMessage {

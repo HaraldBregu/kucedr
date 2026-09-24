@@ -2,6 +2,7 @@ import type {
 	AgentHistoryMessage,
 	AgentResponseEvent,
 } from '@/lib/compat';
+import type { UserAttachment } from './state';
 
 export type AgentChatAction =
 	| {
@@ -9,6 +10,7 @@ export type AgentChatAction =
 			userMessageId: string;
 			agentMessageId: string;
 			content: string;
+			attachments?: readonly UserAttachment[];
 			submittedAtMs?: number;
 	  }
 	| { type: 'append_user_message'; messageId: string; content: string }

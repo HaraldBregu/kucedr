@@ -762,6 +762,7 @@ function PageContent(): ReactElement {
 												<UserMessage
 													key={message.id}
 													content={message.content}
+													attachments={message.attachments}
 													canEdit={!agent.isLoading && voiceMode === null}
 													onEdit={(content) =>
 														agent.editUserMessage(message.id, userOffsetFromEnd, content)
