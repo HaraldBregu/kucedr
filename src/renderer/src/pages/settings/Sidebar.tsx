@@ -74,12 +74,15 @@ export function SettingsSidebar(): React.JSX.Element {
 			<div className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<Link
 					to="/home"
-					className={SPLIT_ITEM_CLASS}
+					className={cn(SPLIT_ITEM_CLASS, 'group')}
 					onClick={() => {
 						if (isMobile) dispatch({ type: 'SIDEBAR_OPEN_MOBILE_SET', open: false });
 					}}
 				>
-					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
+					<ArrowLeft
+						className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transition-none"
+						strokeWidth={1.8}
+					/>
 					<span className="text-xs">{t('settings.returnToChat', 'Return to Home')}</span>
 				</Link>
 			</div>
@@ -106,15 +109,11 @@ export function SettingsSidebar(): React.JSX.Element {
 												className={cn(
 													SPLIT_ITEM_CLASS,
 													isActive && SPLIT_ITEM_ACTIVE_CLASS,
-													item.path === '/settings/voice' && 'group/voice'
+													'group'
 												)}
 											>
 												<Icon
-													className={cn(
-														'size-4 shrink-0',
-														item.path === '/settings/voice' &&
-															'transition-transform duration-200 ease-out group-hover/voice:scale-110 motion-reduce:transition-none'
-													)}
+													className="size-4 shrink-0 transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transition-none"
 													strokeWidth={1.8}
 												/>
 												<span className="text-xs">{t(item.sidebarLabelKey ?? item.labelKey)}</span>
