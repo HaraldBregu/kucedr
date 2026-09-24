@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
+import { ThemeSwitcher } from '@/components/kibo-ui/theme-switcher';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,10 +37,12 @@ import {
 	type PromptInputVoiceMode,
 } from '@/components/ui/prompt-input';
 import { PromptSuggestion } from '@/components/ui/prompt-suggestion';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollButton } from '@/components/ui/scroll-button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
+import { useApp } from '@/contexts';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { AssistantMessage } from './components/AssistantMessage';
@@ -76,22 +79,6 @@ const promptSuggestions = [
 	{
 		label: 'Create a video',
 		prompt: 'Create a short video of waves rolling onto a beach at dawn.',
-	},
-	{
-		label: 'Create music',
-		prompt: 'Create a relaxing ambient music track for focused work.',
-	},
-	{
-		label: 'Contact an agent',
-		prompt: 'Contact an agent to help me research and plan my next project.',
-	},
-	{
-		label: 'Summarize a document',
-		prompt: 'Summarize the key points from a document I upload.',
-	},
-	{
-		label: 'Plan a trip',
-		prompt: 'Plan a five-day trip to Rome with food, art, and quiet neighborhoods.',
 	},
 ] as const;
 
@@ -182,24 +169,51 @@ function PromptSuggestions({
 }: {
 	readonly onUseSuggestion: (prompt: string) => void;
 }): ReactElement {
+	const { t } = useTranslation();
+	const { language, setLanguage, theme, setTheme } = useApp();
+
 	return (
 		<div
-			className="mx-auto mb-2 mt-3 flex w-full max-w-md flex-wrap justify-center gap-2.5 px-1"
-			aria-label="Prompt suggestions"
+			className="mx-auto mb-2 mt-3 grid w-full max-w-xl grid-cols-2 gap-8 px-1"
 		>
-			{promptSuggestions.map((suggestion) => (
-				<PromptSuggestion
-					key={suggestion.label}
-					type="button"
-					variant="outline"
-					size="sm"
-					className="h-9 max-w-full border-border/70 bg-card/95 px-4 text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
-					aria-label={suggestion.prompt}
-					onClick={() => onUseSuggestion(suggestion.prompt)}
-				>
-					{suggestion.label}
-				</PromptSuggestion>
-			))}
+			<div className="flex min-w-0 flex-col items-end gap-2" aria-label="Prompt suggestions">
+				{promptSuggestions.map((suggestion) => (
+					<PromptSuggestion
+						key={suggestion.label}
+						type="button"
+						variant="outline"
+						size="sm"
+						className="h-9 max-w-full border-border/70 bg-card/95 px-4 text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
+						aria-label={suggestion.prompt}
+						onClick={() => onUseSuggestion(suggestion.prompt)}
+					>
+						{suggestion.label}
+					</PromptSuggestion>
+				))}
+			</div>
+			<div className="flex min-w-0 flex-col items-start gap-3" aria-label="Quick settings">
+				<div className="flex flex-col items-start gap-1.5">
+					<span className="text-xs font-medium text-muted-foreground">{t('settings.theme.title')}</span>
+					<ThemeSwitcher value={theme} onChange={setTheme} />
+				</div>
+				<div className="flex flex-col items-start gap-1.5">
+					<span className="text-xs font-medium text-muted-foreground">{t('settings.language.title')}</span>
+					<Select
+						value={language}
+						onValueChange={(next) => {
+							if (next === 'en' || next === 'it') setLanguage(next);
+						}}
+					>
+						<SelectTrigger size="sm" className="w-28 text-xs" aria-label={t('settings.language.title')}>
+							<SelectValue>{t(`settings.language.${language}`)}</SelectValue>
+						</SelectTrigger>
+						<SelectContent>
+							<SelectItem value="en">{t('settings.language.en')}</SelectItem>
+							<SelectItem value="it">{t('settings.language.it')}</SelectItem>
+						</SelectContent>
+					</Select>
+				</div>
+			</div>
 		</div>
 	);
 }
