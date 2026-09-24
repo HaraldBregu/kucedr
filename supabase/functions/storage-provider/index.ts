@@ -16,7 +16,7 @@ Deno.serve(async (request) => {
 			typeof prefix !== 'string' || prefix.length > 512 ||
 			!/^[a-zA-Z0-9_./-]*$/.test(prefix) ||
 			prefix.startsWith('/') || prefix.endsWith('/') ||
-			prefix.split('/').some((part: string) => part === '.' || part === '..' || !part) ||
+			(prefix !== '' && prefix.split('/').some((part: string) => part === '.' || part === '..' || !part)) ||
 			typeof accessKeyId !== 'string' || !accessKeyId || accessKeyId.length > 4096 ||
 			typeof secretAccessKey !== 'string' || !secretAccessKey || secretAccessKey.length > 16384) {
 			return json({ error: 'Invalid storage provider' }, 400);
