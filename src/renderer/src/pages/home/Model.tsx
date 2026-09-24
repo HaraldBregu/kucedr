@@ -83,6 +83,7 @@ export function Model(): ReactElement {
 				disabled={saving || groups.length === 0}
 				inline
 				buttonDropdown
+				compactPopover
 				showFieldLabel={false}
 				buttonClassName="h-6 min-w-0 max-w-48 border-0 bg-transparent px-1 text-[11px] shadow-none"
 				labels={{ label: 'Change model' }}

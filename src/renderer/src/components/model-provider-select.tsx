@@ -81,6 +81,7 @@ interface ModelProviderSelectProps {
 	readonly disabled?: boolean;
 	readonly inline?: boolean;
 	readonly buttonDropdown?: boolean;
+	readonly compactPopover?: boolean;
 	readonly buttonClassName?: string;
 	readonly showFieldLabel?: boolean;
 	readonly labels?: ModelProviderSelectLabels;
@@ -95,6 +96,7 @@ export function ModelProviderSelect({
 	disabled = false,
 	inline = false,
 	buttonDropdown = false,
+	compactPopover = false,
 	buttonClassName,
 	showFieldLabel = true,
 	labels,
@@ -146,20 +148,30 @@ export function ModelProviderSelect({
 			<PopoverContent
 				align="end"
 				collisionPadding={12}
-				className="max-h-[var(--radix-popover-content-available-height)] w-72 max-w-[calc(100vw-2rem)] overflow-hidden p-1"
+				className={cn(
+					'max-w-[calc(100vw-2rem)] overflow-hidden p-1',
+					compactPopover
+						? 'max-h-60 w-56'
+						: 'max-h-[var(--radix-popover-content-available-height)] w-72'
+				)}
 			>
-				<Input
+				{!compactPopover ? <Input
 					autoFocus
 					aria-label={t('settings.modelServices.searchModels')}
 					className="mb-1 h-8 text-xs"
 					placeholder={t('settings.modelServices.searchModels')}
 					value={modelSearch}
 					onChange={(event) => setModelSearch(event.target.value)}
-				/>
+				/> : null}
 				<div
 					role="menu"
 					aria-label={accessibleLabel}
-					className="max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)] min-w-0 overflow-y-auto"
+					className={cn(
+						'min-w-0 overflow-y-auto',
+						compactPopover
+							? 'max-h-56'
+							: 'max-h-[calc(var(--radix-popover-content-available-height)-2.5rem)]'
+					)}
 				>
 					{matchingModels.map(({ group, model }) => {
 						const value = `${group.id}${VALUE_SEPARATOR}${model.id}`;
