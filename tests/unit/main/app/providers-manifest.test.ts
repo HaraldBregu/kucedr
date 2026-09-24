@@ -20,9 +20,7 @@ describe('provider manifests', () => {
 				'github',
 				'gitlab',
 				'notion',
-			].includes(
-				service.id
-			)
+			].includes(service.id)
 		);
 		const openAi = loadModels().find(
 			(model) => model.provider.id === 'openai' && model.id === 'gpt-5.6-sol'
