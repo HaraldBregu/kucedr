@@ -207,17 +207,35 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.rag.title' })
 	).toHaveAttribute('href', '/settings/knowledge-base');
-	const bottomGroup = within(navigation)
-		.getByRole('link', { name: 'settings.tabs.plugins' })
-		.closest('[data-slot="split-pane-group"]');
-	expect(bottomGroup).toBe(
+	expect(
+		within(navigation)
+			.getByRole('link', { name: 'settings.tabs.plugins' })
+			.closest('[data-slot="split-pane-group"]')
+	).toBe(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.apps' })
 			.closest('[data-slot="split-pane-group"]')
 	);
-	expect(bottomGroup?.parentElement).toHaveAttribute('data-slot', 'sidebar-footer');
-	expect(bottomGroup?.parentElement?.parentElement).toBe(navigation);
 	expect(currentSection).toHaveAttribute('data-active');
+});
+
+it('keeps Plugins and Apps in the sidebar footer', () => {
+	render(
+		<MemoryRouter initialEntries={['/settings/plugins']}>
+			<Routes>
+				<Route path="/settings" element={<Layout />}>
+					<Route path="*" element={<p>Settings page</p>} />
+				</Route>
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
+	const footer = navigation.querySelector('[data-slot="sidebar-footer"]');
+	expect(footer?.parentElement).toBe(navigation);
+	expect(within(footer as HTMLElement).getByRole('link', { name: 'settings.tabs.plugins' })).toHaveAttribute('aria-current', 'page');
+	expect(within(footer as HTMLElement).getByRole('link', { name: 'settings.tabs.apps' })).toHaveAttribute('href', '/settings/apps');
+	expect(within(footer as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })).not.toBeInTheDocument();
 });
 
 it('uses the Chat icon for the Agent Chat sidebar item', () => {
