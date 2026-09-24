@@ -43,7 +43,7 @@ export default function PluginDetailPage(): React.JSX.Element {
 			</Button>
 			{entry ? (
 				<>
-					<header className="flex items-start gap-4 py-2">
+					<header className="mb-6 flex items-start gap-4 py-2">
 						<ProviderAvatar
 							providerId={kind === 'mcp' ? entry.id : entry.provider.id}
 							name={entry.name}

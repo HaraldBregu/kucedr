@@ -53,7 +53,7 @@ export function SettingsPageHeader({
 	const renderedIcon = iconNode ?? (Icon ? <Icon className="size-3" strokeWidth={1.8} /> : null);
 
 	return (
-		<header className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+		<header className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
 			<div className="flex min-w-0 items-start gap-2">
 				{renderedIcon && (
 					<div className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted/70 text-muted-foreground">
@@ -343,7 +343,7 @@ export function SettingsLoadingRows({
 export function SettingsPageSkeleton(): React.JSX.Element {
 	return (
 		<SettingsPageShell>
-			<header>
+			<header className="mb-6">
 				<Skeleton className="h-5 w-40 max-w-full" />
 				<Skeleton className="mt-2 h-3 w-72 max-w-full" />
 			</header>
