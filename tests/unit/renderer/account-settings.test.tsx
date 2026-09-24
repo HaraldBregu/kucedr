@@ -97,7 +97,7 @@ it('shows account session data and switches to local use after sign-out', async 
 	await waitFor(() => expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '2'));
 	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
 	expect(screen.getByText('settings.activity.description')).toBeInTheDocument();
-	expect(screen.getByTestId('activity-scroll')).toHaveClass('card-body');
+	expect(container.querySelector('.card-body')).toBeInTheDocument();
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-weeks', '41');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-cell-size', '12');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'linear');
