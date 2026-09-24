@@ -1,6 +1,7 @@
 import { authenticate } from '../_shared/auth.ts';
 import { endpoint } from '../_shared/endpoint.ts';
 import { json } from '../_shared/json.ts';
+import { validPrefix } from '../_shared/prefix.ts';
 import { seal } from '../_shared/seal.ts';
 
 Deno.serve(async (request) => {
@@ -13,10 +14,7 @@ Deno.serve(async (request) => {
 			typeof bucket !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,254}$/.test(bucket) ||
 			typeof region !== 'string' || !/^[a-zA-Z0-9-]{1,128}$/.test(region) ||
 			typeof forcePathStyle !== 'boolean' ||
-			typeof prefix !== 'string' || prefix.length > 512 ||
-			!/^[a-zA-Z0-9_./-]*$/.test(prefix) ||
-			prefix.startsWith('/') || prefix.endsWith('/') ||
-			(prefix !== '' && prefix.split('/').some((part: string) => part === '.' || part === '..' || !part)) ||
+			!validPrefix(prefix) ||
 			typeof accessKeyId !== 'string' || !accessKeyId || accessKeyId.length > 4096 ||
 			typeof secretAccessKey !== 'string' || !secretAccessKey || secretAccessKey.length > 16384) {
 			return json({ error: 'Invalid storage provider' }, 400);
