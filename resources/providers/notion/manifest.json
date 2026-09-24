@@ -5,14 +5,15 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/notion.svg",
 	"icon_light_url": "/images/notion.svg",
-	"services": [
+	"models": [],
+	"mcp_servers": [
 		{
 			"id": "notion",
 			"name": "Notion",
 			"description": "Search and manage Notion pages.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://mcp.notion.com/mcp"
 		}
-	]
+	],
+	"databases": []
 }

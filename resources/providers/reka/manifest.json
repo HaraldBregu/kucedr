@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/reka-dark.svg",
 	"icon_light_url": "/images/reka-light.svg",
-	"services": [
+	"models": [
 		{
 			"id": "reka-flash",
 			"name": "Reka Flash",
@@ -20,7 +20,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://docs.reka.ai/chat/models",
 				"documentationStatus": "verified",
@@ -47,7 +51,8 @@
 						"type": "array"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "reka-edge-2603",
@@ -62,7 +67,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://docs.reka.ai/chat/models",
 				"documentationStatus": "verified",
@@ -89,7 +98,10 @@
 						"type": "array"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

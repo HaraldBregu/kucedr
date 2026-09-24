@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/deepseek.svg",
 	"icon_light_url": "/images/deepseek.svg",
-	"services": [
+	"models": [
 		{
 			"id": "deepseek-v4-pro",
 			"name": "DeepSeek V4 Pro",
@@ -80,7 +80,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "deepseek-flash",
@@ -161,7 +162,10 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

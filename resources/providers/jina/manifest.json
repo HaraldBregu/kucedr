@@ -1,37 +1,40 @@
 {
-  "providerId": "jina",
-  "providerName": "Jina AI",
-  "authentication": "api-key",
-  "apiKeyUrl": "https://jina.ai/api-dashboard",
-  "images_url": "/images",
-  "icon_dark_url": "/images/jina-dark.svg",
-  "icon_light_url": "/images/jina-light.svg",
-  "services": [
-    {
-      "id": "jina-embeddings-v3",
-      "name": "Jina Embeddings v3",
-      "type": "embedding-model",
-      "authentication": "api-key",
-      "url": "https://api.jina.ai/v1",
-      "metadata": {
-        "documentationUrl": "https://jina.ai/en-US/embeddings/",
-        "documentationStatus": "verified",
-        "inputs": {
-          "task": {
-            "type": "string"
-          },
-          "dimensions": {
-            "type": "integer",
-            "minimum": 32
-          },
-          "truncate": {
-            "type": "boolean"
-          },
-          "embedding_type": {
-            "type": "string"
-          }
-        }
-      }
-    }
-  ]
+	"providerId": "jina",
+	"providerName": "Jina AI",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://jina.ai/api-dashboard",
+	"images_url": "/images",
+	"icon_dark_url": "/images/jina-dark.svg",
+	"icon_light_url": "/images/jina-light.svg",
+	"models": [
+		{
+			"id": "jina-embeddings-v3",
+			"name": "Jina Embeddings v3",
+			"type": "embedding-model",
+			"authentication": "api-key",
+			"url": "https://api.jina.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://jina.ai/en-US/embeddings/",
+				"documentationStatus": "verified",
+				"inputs": {
+					"task": {
+						"type": "string"
+					},
+					"dimensions": {
+						"type": "integer",
+						"minimum": 32
+					},
+					"truncate": {
+						"type": "boolean"
+					},
+					"embedding_type": {
+						"type": "string"
+					}
+				}
+			},
+			"location": "remote"
+		}
+	],
+	"mcp_servers": [],
+	"databases": []
 }

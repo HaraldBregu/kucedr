@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/mistral.svg",
 	"icon_light_url": "/images/mistral.svg",
-	"services": [
+	"models": [
 		{
 			"id": "mistral-large-2512",
 			"name": "Mistral Large 2512",
@@ -54,7 +54,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "mistral-medium-3-5",
@@ -107,7 +108,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "devstral-2512",
@@ -150,7 +152,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "voxtral-mini-latest",
@@ -177,7 +180,8 @@
 						"type": "array"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "voxtral-mini-transcribe-realtime-2602",
@@ -196,7 +200,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "voxtral-mini-tts-2603",
@@ -227,7 +232,10 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

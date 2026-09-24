@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/anthropic-dark.svg",
 	"icon_light_url": "/images/anthropic-light.svg",
-	"services": [
+	"models": [
 		{
 			"id": "claude-fable-5",
 			"name": "Claude Fable 5",
@@ -20,7 +20,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
 				"documentationStatus": "verified",
@@ -75,7 +79,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "claude-opus-5",
@@ -90,7 +95,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
 				"documentationStatus": "verified",
@@ -145,7 +154,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "claude-sonnet-5",
@@ -160,7 +170,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
 				"documentationStatus": "verified",
@@ -215,7 +229,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "claude-opus-4-7",
@@ -230,7 +245,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
 				"documentationStatus": "verified",
@@ -285,7 +304,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "claude-sonnet-4-6",
@@ -300,7 +320,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
 				"documentationStatus": "verified",
@@ -359,7 +383,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "claude-haiku-4-5-20251001",
@@ -374,7 +399,11 @@
 						"mimeTypes": ["image/jpeg", "image/png", "image/webp"],
 						"extensions": [".jpg", ".jpeg", ".png", ".webp"]
 					},
-					{ "kind": "document", "mimeTypes": ["application/pdf"], "extensions": [".pdf"] }
+					{
+						"kind": "document",
+						"mimeTypes": ["application/pdf"],
+						"extensions": [".pdf"]
+					}
 				],
 				"documentationUrl": "https://platform.claude.com/docs/en/api/messages",
 				"documentationStatus": "verified",
@@ -427,7 +456,10 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/zai-dark.svg",
 	"icon_light_url": "/images/zai-light.svg",
-	"services": [
+	"models": [
 		{
 			"id": "glm-5.1",
 			"name": "GLM-5.1",
@@ -69,7 +69,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "glm-5",
@@ -133,7 +134,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "glm-5-turbo",
@@ -197,7 +199,10 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

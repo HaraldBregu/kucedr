@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/xai-dark.svg",
 	"icon_light_url": "/images/xai-light.svg",
-	"services": [
+	"models": [
 		{
 			"id": "grok-4.3",
 			"name": "Grok 4.3",
@@ -50,7 +50,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "grok-4.6",
@@ -95,7 +96,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "grok-build-0.1",
@@ -136,7 +138,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "xai-stt-batch",
@@ -150,7 +153,8 @@
 				"documentationUrl": "https://docs.x.ai/developers/models",
 				"documentationStatus": "unverified",
 				"inputs": {}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "xai-stt-streaming",
@@ -165,7 +169,8 @@
 				"documentationUrl": "https://docs.x.ai/developers/models",
 				"documentationStatus": "unverified",
 				"inputs": {}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "grok-voice-latest",
@@ -212,7 +217,8 @@
 						]
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "grok-imagine-image",
@@ -243,7 +249,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "grok-imagine-image-quality",
@@ -274,7 +281,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "grok-imagine-image-2.0",
@@ -305,7 +313,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "grok-imagine-video-1.5",
@@ -332,7 +341,10 @@
 						"enum": ["480p", "720p", "1080p"]
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

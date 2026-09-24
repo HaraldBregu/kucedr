@@ -5,5 +5,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/ollama-dark.svg",
 	"icon_light_url": "/images/ollama-light.svg",
-	"services": []
+	"models": [],
+	"mcp_servers": [],
+	"databases": []
 }

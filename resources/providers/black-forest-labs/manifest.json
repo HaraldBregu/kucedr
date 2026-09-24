@@ -1,134 +1,130 @@
 {
-  "providerId": "black-forest-labs",
-  "providerName": "Black Forest Labs",
-  "authentication": "api-key",
-  "apiKeyUrl": "https://dashboard.bfl.ai",
-  "images_url": "/images",
-  "icon_dark_url": "/images/black-forest-labs-dark.svg",
-  "icon_light_url": "/images/black-forest-labs-light.svg",
-  "services": [
-    {
-      "id": "FLUX.2",
-      "name": "FLUX.2",
-      "type": "text-to-image-model",
-      "authentication": "api-key",
-      "url": "https://api.bfl.ai/v1",
-      "metadata": {
-        "documentationUrl": "https://docs.bfl.ai/api-reference",
-        "documentationStatus": "verified",
-        "inputs": {
-          "prompt": {
-            "type": "string",
-            "required": true
-          },
-          "aspect_ratio": {
-            "type": "string"
-          },
-          "seed": {
-            "type": "integer"
-          },
-          "output_format": {
-            "type": "string",
-            "default": "jpeg",
-            "enum": [
-              "jpeg",
-              "png"
-            ]
-          },
-          "safety_tolerance": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 5,
-            "default": 2
-          },
-          "raw": {
-            "type": "boolean"
-          }
-        }
-      }
-    },
-    {
-      "id": "FLUX.1 Kontext [pro]",
-      "name": "FLUX.1 Kontext [pro]",
-      "type": "text-to-image-model",
-      "authentication": "api-key",
-      "url": "https://api.bfl.ai/v1",
-      "metadata": {
-        "documentationUrl": "https://docs.bfl.ai/api-reference",
-        "documentationStatus": "verified",
-        "inputs": {
-          "prompt": {
-            "type": "string",
-            "required": true
-          },
-          "input_image": {
-            "type": "string"
-          },
-          "aspect_ratio": {
-            "type": "string",
-            "default": "1:1"
-          },
-          "seed": {
-            "type": "integer"
-          },
-          "output_format": {
-            "type": "string",
-            "default": "jpeg",
-            "enum": [
-              "jpeg",
-              "png"
-            ]
-          },
-          "safety_tolerance": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 6,
-            "default": 2
-          }
-        }
-      }
-    },
-    {
-      "id": "FLUX1.1 [pro] Ultra",
-      "name": "FLUX1.1 [pro] Ultra",
-      "type": "text-to-image-model",
-      "authentication": "api-key",
-      "url": "https://api.bfl.ai/v1",
-      "metadata": {
-        "documentationUrl": "https://docs.bfl.ai/api-reference",
-        "documentationStatus": "verified",
-        "inputs": {
-          "prompt": {
-            "type": "string",
-            "required": true
-          },
-          "aspect_ratio": {
-            "type": "string",
-            "default": "16:9"
-          },
-          "seed": {
-            "type": "integer"
-          },
-          "output_format": {
-            "type": "string",
-            "default": "jpeg",
-            "enum": [
-              "jpeg",
-              "png"
-            ]
-          },
-          "raw": {
-            "type": "boolean",
-            "default": false
-          },
-          "safety_tolerance": {
-            "type": "integer",
-            "minimum": 0,
-            "maximum": 6,
-            "default": 2
-          }
-        }
-      }
-    }
-  ]
+	"providerId": "black-forest-labs",
+	"providerName": "Black Forest Labs",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://dashboard.bfl.ai",
+	"images_url": "/images",
+	"icon_dark_url": "/images/black-forest-labs-dark.svg",
+	"icon_light_url": "/images/black-forest-labs-light.svg",
+	"models": [
+		{
+			"id": "FLUX.2",
+			"name": "FLUX.2",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference",
+				"documentationStatus": "verified",
+				"inputs": {
+					"prompt": {
+						"type": "string",
+						"required": true
+					},
+					"aspect_ratio": {
+						"type": "string"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"output_format": {
+						"type": "string",
+						"default": "jpeg",
+						"enum": ["jpeg", "png"]
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 5,
+						"default": 2
+					},
+					"raw": {
+						"type": "boolean"
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "FLUX.1 Kontext [pro]",
+			"name": "FLUX.1 Kontext [pro]",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference",
+				"documentationStatus": "verified",
+				"inputs": {
+					"prompt": {
+						"type": "string",
+						"required": true
+					},
+					"input_image": {
+						"type": "string"
+					},
+					"aspect_ratio": {
+						"type": "string",
+						"default": "1:1"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"output_format": {
+						"type": "string",
+						"default": "jpeg",
+						"enum": ["jpeg", "png"]
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 6,
+						"default": 2
+					}
+				}
+			},
+			"location": "remote"
+		},
+		{
+			"id": "FLUX1.1 [pro] Ultra",
+			"name": "FLUX1.1 [pro] Ultra",
+			"type": "text-to-image-model",
+			"authentication": "api-key",
+			"url": "https://api.bfl.ai/v1",
+			"metadata": {
+				"documentationUrl": "https://docs.bfl.ai/api-reference",
+				"documentationStatus": "verified",
+				"inputs": {
+					"prompt": {
+						"type": "string",
+						"required": true
+					},
+					"aspect_ratio": {
+						"type": "string",
+						"default": "16:9"
+					},
+					"seed": {
+						"type": "integer"
+					},
+					"output_format": {
+						"type": "string",
+						"default": "jpeg",
+						"enum": ["jpeg", "png"]
+					},
+					"raw": {
+						"type": "boolean",
+						"default": false
+					},
+					"safety_tolerance": {
+						"type": "integer",
+						"minimum": 0,
+						"maximum": 6,
+						"default": 2
+					}
+				}
+			},
+			"location": "remote"
+		}
+	],
+	"mcp_servers": [],
+	"databases": []
 }

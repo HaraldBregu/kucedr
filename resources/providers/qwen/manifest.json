@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/qwen-dark.svg",
 	"icon_light_url": "/images/qwen-light.svg",
-	"services": [
+	"models": [
 		{
 			"id": "qwen3.7-max",
 			"name": "Qwen3.7 Max",
@@ -53,7 +53,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "qwen3.6-plus",
@@ -107,7 +108,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "qwen3.6-flash",
@@ -161,7 +163,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "qwen3-asr-flash-realtime",
@@ -176,7 +179,8 @@
 				"documentationUrl": "https://www.alibabacloud.com/help/en/model-studio/models",
 				"documentationStatus": "unverified",
 				"inputs": {}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "qwen-image",
@@ -208,7 +212,8 @@
 						"default": false
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "qwen-image-edit",
@@ -242,7 +247,8 @@
 						"default": false
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "wan2.5-t2v",
@@ -280,7 +286,8 @@
 						"maximum": 2147483647
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "wan2.2-t2v-plus",
@@ -313,7 +320,10 @@
 						"default": false
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

@@ -1,23 +1,26 @@
 {
-  "providerId": "pika",
-  "providerName": "Pika",
-  "authentication": "api-key",
-  "apiKeyUrl": "https://pika.art",
-  "images_url": "/images",
-  "icon_dark_url": "/images/pika-dark.svg",
-  "icon_light_url": "/images/pika-light.svg",
-  "services": [
-    {
-      "id": "pika-2.2",
-      "name": "Pika 2.2",
-      "type": "text-to-video-model",
-      "authentication": "api-key",
-      "url": "https://pika.art",
-      "metadata": {
-        "documentationUrl": "https://pika.art",
-        "documentationStatus": "unverified",
-        "inputs": {}
-      }
-    }
-  ]
+	"providerId": "pika",
+	"providerName": "Pika",
+	"authentication": "api-key",
+	"apiKeyUrl": "https://pika.art",
+	"images_url": "/images",
+	"icon_dark_url": "/images/pika-dark.svg",
+	"icon_light_url": "/images/pika-light.svg",
+	"models": [
+		{
+			"id": "pika-2.2",
+			"name": "Pika 2.2",
+			"type": "text-to-video-model",
+			"authentication": "api-key",
+			"url": "https://pika.art",
+			"metadata": {
+				"documentationUrl": "https://pika.art",
+				"documentationStatus": "unverified",
+				"inputs": {}
+			},
+			"location": "remote"
+		}
+	],
+	"mcp_servers": [],
+	"databases": []
 }

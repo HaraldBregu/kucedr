@@ -7,13 +7,15 @@
 	"icon_light_url": "/images/pinecone-light.svg",
 	"apiKeyUrl": "https://app.pinecone.io",
 	"instructions": "Create an API key in the Pinecone console: https://docs.pinecone.io/guides/projects/manage-api-keys",
-	"services": [
+	"models": [],
+	"mcp_servers": [],
+	"databases": [
 		{
 			"id": "pinecone",
 			"name": "Pinecone Vector Database",
 			"url": "https://api.pinecone.io",
 			"authentication": "api-key",
-			"type": "database"
+			"type": "vector"
 		}
 	]
 }

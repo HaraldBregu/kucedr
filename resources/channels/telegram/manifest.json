@@ -6,11 +6,10 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/svg/telegram-color.svg",
 	"icon_light_url": "/images/svg/telegram-color.svg",
-	"services": [
+	"bots": [
 		{
 			"id": "telegram-bot",
 			"name": "Telegram Bot API",
-			"type": "bot",
 			"url": "https://api.telegram.org"
 		}
 	]

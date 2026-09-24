@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/minimax.svg",
 	"icon_light_url": "/images/minimax.svg",
-	"services": [
+	"models": [
 		{
 			"id": "MiniMax-M2.7",
 			"name": "MiniMax M2.7",
@@ -43,7 +43,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "MiniMax-M2.5",
@@ -81,7 +82,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "speech-2.8-hd",
@@ -269,7 +271,8 @@
 						"enum": ["sentence", "word"]
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "speech-2.8-turbo",
@@ -457,7 +460,8 @@
 						"enum": ["sentence", "word"]
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "MiniMax-Hailuo-2.3",
@@ -497,7 +501,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "MiniMax-Hailuo-02",
@@ -537,7 +542,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "music-2.6",
@@ -572,7 +578,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "music-cover",
@@ -595,7 +602,10 @@
 						"default": "hex"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

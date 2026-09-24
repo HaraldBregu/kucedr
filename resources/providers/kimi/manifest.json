@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/kimi.svg",
 	"icon_light_url": "/images/kimi.svg",
-	"services": [
+	"models": [
 		{
 			"id": "kimi-k3",
 			"name": "Kimi K3",
@@ -71,7 +71,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "kimi-k2.7-code",
@@ -133,7 +134,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "kimi-k2.7-code-highspeed",
@@ -195,7 +197,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "kimi-k2.6",
@@ -266,7 +269,8 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "kimi-k2.5",
@@ -337,7 +341,10 @@
 						"type": "string"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		}
-	]
+	],
+	"mcp_servers": [],
+	"databases": []
 }

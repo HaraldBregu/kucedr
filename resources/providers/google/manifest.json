@@ -6,7 +6,7 @@
 	"images_url": "/images",
 	"icon_dark_url": "/images/google.svg",
 	"icon_light_url": "/images/google.svg",
-	"services": [
+	"models": [
 		{
 			"id": "gemini-3.1-pro-preview",
 			"name": "Gemini 3.1 Pro Preview",
@@ -42,7 +42,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "gemini-3.1-flash-lite",
@@ -79,7 +80,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "gemini-3.1-flash-tts-preview",
@@ -225,7 +227,8 @@
 						}
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "gemini-3.1-flash-image-preview",
@@ -247,7 +250,8 @@
 						"enum": ["512", "1K"]
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "gemini-3-pro-image-preview",
@@ -269,7 +273,8 @@
 						"enum": ["1K", "2K", "4K"]
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "veo-3.1",
@@ -324,7 +329,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "veo-3.1-fast",
@@ -376,7 +382,8 @@
 						"type": "array"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "lyria-3-pro-preview",
@@ -396,7 +403,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "lyria-3-clip-preview",
@@ -416,7 +424,8 @@
 						"type": "object"
 					}
 				}
-			}
+			},
+			"location": "remote"
 		},
 		{
 			"id": "lyria-realtime",
@@ -432,13 +441,15 @@
 						"type": "object"
 					}
 				}
-			}
-		},
+			},
+			"location": "remote"
+		}
+	],
+	"mcp_servers": [
 		{
 			"id": "gmail",
 			"name": "Gmail",
 			"description": "Search and manage email.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/gmail.svg",
@@ -448,7 +459,6 @@
 			"id": "google-calendar",
 			"name": "Google Calendar",
 			"description": "Manage calendars and events.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-calendar.svg",
@@ -458,7 +468,6 @@
 			"id": "google-drive",
 			"name": "Google Drive",
 			"description": "Search and manage Drive files.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-drive.svg",
@@ -468,7 +477,6 @@
 			"id": "google-docs",
 			"name": "Google Docs",
 			"description": "Read and update documents.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://docsmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-docs.svg",
@@ -478,7 +486,6 @@
 			"id": "google-sheets",
 			"name": "Google Sheets",
 			"description": "Read and update spreadsheets.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-sheets.svg",
@@ -488,7 +495,6 @@
 			"id": "google-maps",
 			"name": "Google Maps",
 			"description": "Find places, routes, and weather.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://mapstools.googleapis.com/mcp",
 			"icon_dark_url": "/images/google-maps.svg",
@@ -498,11 +504,11 @@
 			"id": "google-contacts",
 			"name": "Google Contacts",
 			"description": "Search contacts and directory profiles.",
-			"type": "mcp",
 			"authentication": "oauth2",
 			"url": "https://people.googleapis.com/mcp/v1",
 			"icon_dark_url": "/images/google-contact.svg",
 			"icon_light_url": "/images/google-contact.svg"
 		}
-	]
+	],
+	"databases": []
 }
