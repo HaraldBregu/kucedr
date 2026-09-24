@@ -43,11 +43,10 @@ beforeEach(() => {
 	mcpApi.delete.mockResolvedValue(undefined);
 });
 
-it('renders the five plugins in a two-column catalog with descriptions', async () => {
+it('renders the five plugin providers with descriptions', async () => {
 	const { container } = render(<PluginsPage />);
 
 	expect(screen.getByRole('heading', { name: 'settings.integrations.title' })).toBeInTheDocument();
-	expect(container.querySelector('.lg\\:grid-cols-2')).toBeInTheDocument();
 	expect(screen.getAllByRole('switch').map((control) => control.getAttribute('aria-label'))).toEqual([
 		'gmail',
 		'google-calendar',
