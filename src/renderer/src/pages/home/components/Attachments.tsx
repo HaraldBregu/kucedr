@@ -14,6 +14,7 @@ import type { UserAttachment } from '../context/state';
 export function Attachments({ attachments }: { readonly attachments: readonly UserAttachment[] }): React.JSX.Element {
 	const images = attachments.filter((attachment) => attachment.kind === 'image');
 	const files = attachments.filter((attachment) => attachment.kind !== 'image');
+	const imageColumns = Math.min(images.length, 4);
 
 	return (
 		<>
@@ -21,7 +22,11 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 				<AttachmentGroup
 					role="group"
 					aria-label="Attached images"
-					className="grid w-[min(16rem,100%)] grid-cols-4 gap-0 overflow-hidden! rounded-[16px] py-0"
+					className="grid max-w-full gap-0 overflow-hidden! rounded-[16px] py-0"
+					style={{
+						width: `${imageColumns * 4}rem`,
+						gridTemplateColumns: `repeat(${imageColumns}, minmax(0, 1fr))`,
+					}}
 				>
 					{images.map((attachment, index) => (
 						<Attachment

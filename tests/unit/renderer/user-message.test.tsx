@@ -38,9 +38,29 @@ it('shows files as a list and images as a collection without an empty text bubbl
 	expect(within(images).queryByText('PNG · 2 KB')).not.toBeInTheDocument();
 	expect(within(images).queryByText('WEBP · 4 KB')).not.toBeInTheDocument();
 	expect(images).toHaveClass('grid');
-	expect(images).toHaveClass('grid-cols-4');
+	expect(images).toHaveStyle({ width: '8rem', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' });
 	expect(files).toHaveClass('flex-col');
 	expect(container.querySelector('[data-slot="user-message-content"]')).toBeNull();
+});
+
+it.each([1, 3, 4, 5])('fits the image collection to %i images with at most four columns', (count) => {
+	render(
+		<UserMessage
+			content=""
+			attachments={Array.from({ length: count }, (_, index) => ({
+				type: 'attachment' as const,
+				kind: 'image' as const,
+				name: `image-${index}.png`,
+				mimeType: 'image/png',
+				bytes: 12,
+			}))}
+		/>
+	);
+	const columns = Math.min(count, 4);
+	expect(screen.getByRole('group', { name: 'Attached images' })).toHaveStyle({
+		width: `${columns * 4}rem`,
+		gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
+	});
 });
 
 it('previews a newly submitted image in the collection', async () => {
