@@ -183,6 +183,21 @@ it('records legacy settings without removing or rewriting the source', async () 
 	database.close();
 });
 
+it('records storage settings from the dedicated file', async () => {
+	const database = openStorageState();
+	mkdirSync(storageLocation(), { recursive: true });
+	const source = path.join(storageLocation(), 'settings.json');
+	const settings = {
+		providerId: 'selected-provider', paths: ['/tmp/selected-folder'],
+		syncEnabled: true, syncCronExpression: '0 4 * * *',
+	};
+	writeFileSync(source, JSON.stringify(settings));
+	await migrateLegacyStorageSettings(database);
+	expect(database.prepare('SELECT source_path, settings_json FROM legacy_storage_sources').get())
+		.toEqual({ source_path: source, settings_json: JSON.stringify(settings) });
+	database.close();
+});
+
 it('does not reset a corrupt or newer local state database', () => {
 	mkdirSync(storageLocation(), { recursive: true });
 	const file = path.join(storageLocation(), 'state.sqlite');
