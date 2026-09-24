@@ -235,14 +235,26 @@ function readCatalog(): Catalog {
 		for (const dirent of readdirSync(directory, { withFileTypes: true })) {
 			if (!dirent.isDirectory()) continue;
 			try {
-				const providerDir = path.join(directory, dirent.name);
-				const manifestPath = path.join(providerDir, 'manifest.json');
-				if (!existsSync(manifestPath)) continue;
-				const entry = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
-				if (!entry) continue;
-				manifests.set(normalizeProviderId(entry.providerId), { entry, providerDir });
+				const providerRoot = path.join(directory, dirent.name);
+				const providerDirs = [
+					providerRoot,
+					...readdirSync(providerRoot, { withFileTypes: true })
+						.filter((entry) => entry.isDirectory())
+						.map((entry) => path.join(providerRoot, entry.name)),
+				];
+				for (const providerDir of providerDirs) {
+					try {
+						const manifestPath = path.join(providerDir, 'manifest.json');
+						if (!existsSync(manifestPath)) continue;
+						const entry = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
+						if (!entry) continue;
+						manifests.set(normalizeProviderId(entry.providerId), { entry, providerDir });
+					} catch {
+						// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
+					}
+				}
 			} catch {
-				// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
+				// ponytail: a provider dir mid-edit drops out until fixed
 			}
 		}
 	}

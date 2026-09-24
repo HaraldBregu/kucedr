@@ -53,6 +53,15 @@ describe('provider manifests', () => {
 		expect(integrations.every((service) => service.provider.iconLightUrl?.endsWith('.png'))).toBe(
 			true
 		);
+		for (const id of ['gmail', 'google-calendar', 'google-drive']) {
+			const provider = integrations.find((service) => service.id === id)?.provider;
+			expect(provider?.iconDarkUrl).toContain(
+				`/resources/providers/google/${id}/images/official/${id}.png`
+			);
+			expect(provider?.iconLightUrl).toContain(
+				`/resources/providers/google/${id}/images/official/${id}.png`
+			);
+		}
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
 			expect.objectContaining({
 				iconDarkUrl: expect.stringContaining(
