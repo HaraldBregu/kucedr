@@ -127,7 +127,7 @@ const PluginsPage = (): React.JSX.Element => {
 				onConnect={(url, clientId) =>
 					selectedMicrosoft
 						? setIntegrationEnabled(selectedMicrosoft, true, { url, clientId })
-							: Promise.resolve(false)
+						: Promise.resolve(false)
 				}
 				saving={savingId === selectedMicrosoft?.id}
 				error={error}
@@ -184,14 +184,14 @@ const PluginsPage = (): React.JSX.Element => {
 										size="icon-sm"
 										className="hover:bg-transparent dark:hover:bg-transparent"
 										disabled={savingId === service.id}
-									onClick={() => {
-										if (MICROSOFT_365_SERVICES.some((entry) => entry.id === service.id)) {
-											setError('');
-											setSelectedMicrosoft(service);
-										} else {
-											void setIntegrationEnabled(service, true);
-										}
-									}}
+										onClick={() => {
+											if (MICROSOFT_365_SERVICES.some((entry) => entry.id === service.id)) {
+												setError('');
+												setSelectedMicrosoft(service);
+											} else {
+												void setIntegrationEnabled(service, true);
+											}
+										}}
 										aria-label={t('settings.integrations.add', { name: service.name })}
 									>
 										<Plus className="size-4" />

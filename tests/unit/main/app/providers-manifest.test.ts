@@ -124,9 +124,9 @@ describe('provider manifests', () => {
 		expect(integrations.find((service) => service.id === 'gitlab')?.iconLightUrl).toContain(
 			'/resources/providers/gitlab/images/gitlab.svg'
 		);
-		expect(integrations.find((service) => service.id === 'microsoft-learn')?.iconLightUrl).toContain(
-			'/resources/providers/microsoft/images/microsoft.svg'
-		);
+		expect(
+			integrations.find((service) => service.id === 'microsoft-learn')?.iconLightUrl
+		).toContain('/resources/providers/microsoft/images/microsoft.svg');
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
 			expect.objectContaining({
 				iconDarkUrl: expect.stringContaining('/resources/providers/github/images/github-dark.svg'),

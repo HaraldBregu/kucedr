@@ -50,23 +50,23 @@ export function MicrosoftConnect({
 						</Label>
 						<Input
 							id="microsoft-tenant-id"
-								value={tenantId}
-								onChange={(event) => setTenantId(event.target.value)}
-								placeholder="00000000-0000-0000-0000-000000000000"
-								spellCheck={false}
-							/>
+							value={tenantId}
+							onChange={(event) => setTenantId(event.target.value)}
+							placeholder="00000000-0000-0000-0000-000000000000"
+							spellCheck={false}
+						/>
 					</div>
 					<div className="grid gap-2">
 						<Label htmlFor="microsoft-client-id">
 							{t('settings.integrations.microsoft.clientId')}
 						</Label>
 						<Input
-								id="microsoft-client-id"
-								value={clientId}
-								onChange={(event) => setClientId(event.target.value)}
-								placeholder="00000000-0000-0000-0000-000000000000"
-								spellCheck={false}
-							/>
+							id="microsoft-client-id"
+							value={clientId}
+							onChange={(event) => setClientId(event.target.value)}
+							placeholder="00000000-0000-0000-0000-000000000000"
+							spellCheck={false}
+						/>
 					</div>
 					<p className="text-xs text-muted-foreground">
 						{t('settings.integrations.microsoft.requirements')}
