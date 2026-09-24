@@ -1,5 +1,14 @@
 import { useState, type FormEvent, type ReactElement } from 'react';
-import { ArrowUp, Copy, FileCodeIcon, FileImageIcon, FileTextIcon, Pencil, TableIcon, X } from 'lucide-react';
+import {
+	ArrowUp,
+	Copy,
+	FileCodeIcon,
+	FileImageIcon,
+	FileTextIcon,
+	Pencil,
+	TableIcon,
+	X,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Message, MessageActions } from '@/components/prompt-kit/message';
@@ -79,33 +88,38 @@ export function UserMessage({
 	return (
 		<Message className="w-full justify-end">
 			<div className="flex min-w-0 max-w-[75%] flex-col items-end gap-1">
-			{attachments.length > 0 ? (
-				<AttachmentGroup className="ml-auto w-fit max-w-full">
-					{attachments.map((attachment, index) => {
-						const extension = attachment.name.split('.').pop()?.toUpperCase() ?? 'FILE';
-						const Icon = attachment.kind === 'image'
-							? FileImageIcon
-							: /\.(csv|xlsx?|ods)$/i.test(attachment.name)
-								? TableIcon
-								: /\.(jsx?|tsx?|json|html|css|py|sh)$/i.test(attachment.name)
-									? FileCodeIcon
-									: FileTextIcon;
-						return (
-							<Attachment
-								key={`${attachment.name}-${index}`}
-								size="sm"
-								className="w-64 rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5"
-							>
-								<AttachmentMedia><Icon /></AttachmentMedia>
-								<AttachmentContent>
-									<AttachmentTitle title={attachment.name}>{attachment.name}</AttachmentTitle>
-									<AttachmentDescription>{extension} · {formatFileSize(attachment.bytes)}</AttachmentDescription>
-								</AttachmentContent>
-							</Attachment>
-						);
-					})}
-				</AttachmentGroup>
-			) : null}
+				{attachments.length > 0 ? (
+					<AttachmentGroup className="ml-auto w-fit max-w-full">
+						{attachments.map((attachment, index) => {
+							const extension = attachment.name.split('.').pop()?.toUpperCase() ?? 'FILE';
+							const Icon =
+								attachment.kind === 'image'
+									? FileImageIcon
+									: /\.(csv|xlsx?|ods)$/i.test(attachment.name)
+										? TableIcon
+										: /\.(jsx?|tsx?|json|html|css|py|sh)$/i.test(attachment.name)
+											? FileCodeIcon
+											: FileTextIcon;
+							return (
+								<Attachment
+									key={`${attachment.name}-${index}`}
+									size="sm"
+									className="w-64 rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5"
+								>
+									<AttachmentMedia>
+										<Icon />
+									</AttachmentMedia>
+									<AttachmentContent>
+										<AttachmentTitle title={attachment.name}>{attachment.name}</AttachmentTitle>
+										<AttachmentDescription>
+											{extension} · {formatFileSize(attachment.bytes)}
+										</AttachmentDescription>
+									</AttachmentContent>
+								</Attachment>
+							);
+						})}
+					</AttachmentGroup>
+				) : null}
 				{isEditing ? (
 					<form
 						className="w-[min(36rem,75vw)] max-w-full rounded-xl border border-input bg-background p-2 shadow-sm"
@@ -163,7 +177,7 @@ export function UserMessage({
 						className="relative min-w-0 w-fit max-w-full overflow-hidden rounded-xl bg-primary"
 					>
 						<Markdown
-						className="min-w-0 max-w-full break-words px-5 py-3 text-sm font-medium leading-relaxed text-primary-foreground [overflow-wrap:anywhere] selection:bg-primary-foreground selection:text-primary"
+							className="min-w-0 max-w-full break-words px-5 py-3 text-sm font-medium leading-relaxed text-primary-foreground [overflow-wrap:anywhere] selection:bg-primary-foreground selection:text-primary"
 							components={userMarkdownComponents}
 						>
 							{content}
