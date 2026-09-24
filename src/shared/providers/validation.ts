@@ -82,9 +82,8 @@ export function validateProviderManifest(value: unknown): string[] {
 	if (!isNonEmptyString(manifest.providerName)) {
 		errors.push('manifest.json: "providerName" must be a non-empty string.');
 	}
-	const isChannel = Array.isArray(manifest.bots);
 	if (
-		(!isChannel || manifest.authentication !== undefined) &&
+		manifest.authentication !== undefined &&
 		!AUTHENTICATION_TYPES.includes(manifest.authentication as (typeof AUTHENTICATION_TYPES)[number])
 	) {
 		errors.push(
@@ -109,7 +108,7 @@ export function validateProviderManifest(value: unknown): string[] {
 		errors.push('manifest.json: "services" has been replaced by capability fields.');
 	for (const key of ['models', 'mcp_servers', 'databases', 'web_search', 'bots'] as const) {
 		const entries = manifest[key];
-		if (entries === undefined && (isChannel || key === 'web_search' || key === 'bots')) continue;
+		if (entries === undefined) continue;
 		if (!Array.isArray(entries)) {
 			errors.push(`manifest.json: "${key}" must be an array.`);
 			continue;
