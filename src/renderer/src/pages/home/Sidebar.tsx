@@ -332,7 +332,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
 										<span className="truncate font-medium">{accountItem.title}</span>
 										{accountItem.description ? (
-											<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
+											<span className="truncate text-xs text-muted-foreground">{accountItem.description}</span>
 										) : null}
 									</span>
 									<MoreVertical className="ml-auto size-4" aria-hidden="true" />
@@ -354,7 +354,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 										<div className="grid min-w-0 flex-1 text-left text-xs leading-tight">
 											<span className="truncate font-medium">{accountItem.title}</span>
 											{accountItem.description ? (
-												<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
+												<span className="truncate text-xs text-muted-foreground">{accountItem.description}</span>
 											) : null}
 										</div>
 									</div>
