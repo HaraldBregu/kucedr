@@ -161,6 +161,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toBeDisabled();
+	await expect(field.getByRole('button', { name: 'Start voice conversation' })).toHaveCount(0);
 	const fieldBounds = await field.boundingBox();
 	const sendBounds = await sendButton.boundingBox();
 	const transcriptionBounds = await transcriptionButton.boundingBox();
