@@ -25,7 +25,8 @@ const AccountPage: React.FC = () => {
 	const signedIn = state.status === 'signedIn' && !localOnly;
 	const userId = signedIn ? state.user?.id : undefined;
 	const currentProfile = profile && profile.userId === userId ? profile.details : undefined;
-	const currentProfileError = profileError && profileError.userId === userId ? profileError.message : '';
+	const currentProfileError =
+		profileError && profileError.userId === userId ? profileError.message : '';
 
 	useEffect(() => {
 		setProfile(undefined);
@@ -81,12 +82,20 @@ const AccountPage: React.FC = () => {
 							</SettingsRow>
 							<SettingsRow title="First name">
 								<SettingsValue>
-									{currentProfile ? currentProfile.firstName || 'Not set' : currentProfileError ? 'Unavailable' : 'Loading…'}
+									{currentProfile
+										? currentProfile.firstName || 'Not set'
+										: currentProfileError
+											? 'Unavailable'
+											: 'Loading…'}
 								</SettingsValue>
 							</SettingsRow>
 							<SettingsRow title="Last name">
 								<SettingsValue>
-									{currentProfile ? currentProfile.lastName || 'Not set' : currentProfileError ? 'Unavailable' : 'Loading…'}
+									{currentProfile
+										? currentProfile.lastName || 'Not set'
+										: currentProfileError
+											? 'Unavailable'
+											: 'Loading…'}
 								</SettingsValue>
 							</SettingsRow>
 							<SettingsRow title="Email">
