@@ -171,6 +171,7 @@
 		"searchLabel": "Search settings",
 		"sidebar": {
 			"account": "Settings",
+			"summary": "Account, Cloud, Providers etc",
 			"assistant": "Assistant",
 			"getHelp": "Get help",
 			"provider": "Provider",

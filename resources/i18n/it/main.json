@@ -171,6 +171,7 @@
 		"searchLabel": "Cerca nelle impostazioni",
 		"sidebar": {
 			"account": "Impostazioni",
+			"summary": "Account, Cloud, Provider ecc.",
 			"assistant": "Assistente",
 			"getHelp": "Ottieni aiuto",
 			"provider": "Provider",
