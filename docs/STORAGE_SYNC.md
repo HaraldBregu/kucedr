@@ -117,3 +117,6 @@ corresponding metadata; the version-sync database migration does not convert the
   resolution controls in Settings yet.
 - `maxCacheBytes` is reserved for future cache eviction. No immutable blob is automatically
   deleted, so pending local work is never evicted, but the storage directory can grow.
+- Custom S3-compatible endpoints require backend network egress controls. URL validation rejects
+  local addresses and unsafe URL fields, but it cannot prevent a public hostname from later
+  resolving to a private address.
