@@ -108,7 +108,7 @@ const PluginsPage = (): React.JSX.Element => {
 			/>
 
 			{catalog.length + databaseCatalog.length + storageCatalog.length > 0 ? (
-				<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-1 pb-4 md:grid-cols-2">
+				<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-2 pb-4 md:grid-cols-2">
 					{catalog.map((service) => (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
