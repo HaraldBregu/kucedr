@@ -271,17 +271,15 @@ describe('Home prompt attachments', () => {
 			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
 		});
 		expect(screen.getByText('diagram.png')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 
 		modelCatalogChanged?.();
 		await waitFor(() =>
-			expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute(
-				'data-state',
-				'error'
-			)
+			expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled()
 		);
+		expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute('data-state', 'done');
 		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
 		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
-		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
 	});
 
 	it('shows the selected file in an attachment card and removes it', async () => {
@@ -316,6 +314,7 @@ describe('Home prompt attachments', () => {
 		});
 
 		expect(screen.getByText('archive.zip')).toBeInTheDocument();
+		expect(screen.getByText('archive.zip').closest('[data-slot="attachment"]')).toHaveAttribute('data-state', 'done');
 		expect(screen.getByText('ZIP · 6 B')).toBeInTheDocument();
 		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
