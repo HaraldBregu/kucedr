@@ -7,7 +7,6 @@ import {
 	Split,
 } from '../../../src/renderer/src/components/app/base/page';
 import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
-import { CommandMenuProvider } from '../../../src/renderer/src/contexts/command-menu';
 import { HomeSidebar } from '../../../src/renderer/src/pages/home/Sidebar';
 import type { AuthState } from '../../../src/shared/auth_types';
 
@@ -319,9 +318,8 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('keeps Settings, Help, and Search in the sticky sidebar footer', async () => {
+it('shows Settings and Help in the footer menu without a Search item', async () => {
 	const user = userEvent.setup();
-	const openCommandMenu = jest.fn();
 	listSessions.mockResolvedValue([]);
 
 	render(
@@ -330,13 +328,11 @@ it('keeps Settings, Help, and Search in the sticky sidebar footer', async () => 
 				<Route
 					path="/home"
 					element={
-						<CommandMenuProvider value={{ open: openCommandMenu }}>
-							<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId: jest.fn() }}>
-								<PageContainer>
-									<HomeSidebar refreshKey="initial" />
-								</PageContainer>
-							</ChatSessionContext.Provider>
-						</CommandMenuProvider>
+						<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId: jest.fn() }}>
+							<PageContainer>
+								<HomeSidebar refreshKey="initial" />
+							</PageContainer>
+						</ChatSessionContext.Provider>
 					}
 				/>
 				<Route path="/settings/apps" element={<p>Apps page</p>} />
@@ -346,16 +342,18 @@ it('keeps Settings, Help, and Search in the sticky sidebar footer', async () => 
 	);
 
 	await screen.findByText('settings.chatHistory.empty');
-	const settings = screen.getByRole('button', { name: 'settings.title' });
-	expect(settings.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
-	const help = screen.getByRole('button', { name: 'settings.sidebar.getHelp' });
-	expect(help.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
-	await user.click(help);
+	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
+	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
+	expect(accountMenu.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
+	await user.click(accountMenu);
+	expect(screen.queryByRole('menuitem', { name: 'navigationBar.search' })).not.toBeInTheDocument();
+	await user.click(screen.getByRole('menuitem', { name: 'settings.sidebar.getHelp' }));
 	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');
-	await user.click(screen.getByRole('button', { name: 'navigationBar.search' }));
-	expect(openCommandMenu).toHaveBeenCalledTimes(1);
+	await user.click(accountMenu);
 	expect(screen.getByRole('button', { name: 'navigationBar.newChat' })).toBeInTheDocument();
-	await user.click(settings);
+	await user.click(screen.getByRole('menuitem', { name: 'settings.title' }));
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
 });
 

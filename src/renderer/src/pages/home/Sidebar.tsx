@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { CircleHelp, Code2, Layers, LogOut, MessageCirclePlus, MoreVertical, RadioTower, Search, Server, Settings, UserRound } from 'lucide-react';
+import { CircleHelp, Code2, Layers, LogOut, MessageCirclePlus, MoreVertical, RadioTower, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -20,7 +20,6 @@ import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuth } from '@/contexts/AuthContext';
 import { DEFAULT_CHAT_SESSION_ID, useChatSession } from '@/contexts/chat-session';
-import { useCommandMenu } from '@/contexts/command-menu';
 import type { AgentSessionSummary } from '@/lib/compat';
 import { cn } from '@/lib/utils';
 
@@ -30,10 +29,8 @@ interface HomeSidebarProps {
 
 export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { state: authState } = useAuth();
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
-	const { open: openCommandMenu } = useCommandMenu();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
@@ -107,6 +104,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 		{ path: '/settings/providers', label: t('settings.sidebar.provider'), icon: Server },
 		{ path: '/settings/channels', label: t('settings.tabs.channels'), icon: RadioTower },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
+		{ path: '/settings/general', label: t('settings.title'), icon: Settings },
 	];
 
 	return (
@@ -283,26 +281,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<SidebarMenuButton type="button" onClick={() => navigate('/settings/general')}>
-							<Settings className="size-4" />
-							<span>{t('settings.title')}</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-					<SidebarMenuItem>
-						<SidebarMenuButton type="button" onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}>
-							<CircleHelp className="size-4" />
-							<span>{t('settings.sidebar.getHelp')}</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-					<SidebarMenuItem>
-						<SidebarMenuButton type="button" onClick={openCommandMenu}>
-							<Search className="size-4" />
-							<span>{t('navigationBar.search')}</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-				</SidebarMenu>
-				<SidebarMenu>
-					<SidebarMenuItem>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
 								<SidebarMenuButton
@@ -357,6 +335,10 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 										);
 									})}
 								</DropdownMenuGroup>
+								<DropdownMenuItem onSelect={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}>
+									<CircleHelp />
+									{t('settings.sidebar.getHelp')}
+								</DropdownMenuItem>
 								{authenticatedUser ? (
 									<>
 										<DropdownMenuSeparator />
