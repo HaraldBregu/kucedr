@@ -95,13 +95,13 @@ const PluginsPage = (): React.JSX.Element => {
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 
 			{catalog.length > 0 ? (
-				<div className="grid grid-cols-1 gap-x-6 gap-y-1 pb-4 md:grid-cols-2">
+				<div className="-mx-4 grid grid-cols-1 gap-x-6 gap-y-1 pb-4 md:grid-cols-2">
 					{catalog.map((service) => (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
 							variant="ghost"
 							size="md"
-							className="min-w-0 flex-nowrap gap-3 rounded-lg px-0 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+							className="min-w-0 flex-nowrap gap-3 rounded-lg px-4 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 						>
 							<ProviderAvatar
 								providerId={service.provider.id}
