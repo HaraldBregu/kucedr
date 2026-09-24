@@ -9,6 +9,8 @@ const handleSubmit = jest.fn();
 const setInput = jest.fn();
 const useSuggestion = jest.fn();
 const clearReply = jest.fn();
+const setTheme = jest.fn();
+const setLanguage = jest.fn();
 let replyTo: { id: string; content: string } | null = null;
 let modelCatalogChanged: (() => void) | undefined;
 
@@ -69,6 +71,14 @@ jest.mock('../../../src/renderer/src/pages/home/hooks', () => ({
 
 jest.mock('@/components/audio-player', () => ({
 	AudioPlayer: () => <div />,
+}));
+
+jest.mock('@/components/prompt-kit/markdown', () => ({
+	Markdown: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+}));
+
+jest.mock('@/contexts', () => ({
+	useApp: () => ({ language: 'en', setLanguage, theme: 'system', setTheme }),
 }));
 
 jest.mock('@/components/app/base/page', () => ({
@@ -185,11 +195,13 @@ describe('Home prompt attachments', () => {
 	beforeEach(() => {
 		handleSubmit.mockResolvedValue(true);
 		useSuggestion.mockClear();
+		setTheme.mockClear();
+		setLanguage.mockClear();
 		modelCatalogChanged = undefined;
 		replyTo = null;
 	});
 
-	it('shows the full empty-state prompt set and fills a selected suggestion', async () => {
+	it('shows four empty-state prompts and quick settings', async () => {
 		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
 		renderPage(getCapabilities);
 		await waitFor(() =>
@@ -205,17 +217,18 @@ describe('Home prompt attachments', () => {
 			'Create a sound',
 			'Create an image',
 			'Create a video',
-			'Create music',
-			'Contact an agent',
-			'Summarize a document',
-			'Plan a trip',
 		]) {
 			expect(screen.getByText(label)).toBeInTheDocument();
 		}
+		expect(screen.queryByText('Create music')).not.toBeInTheDocument();
+		expect(screen.getByLabelText('Quick settings')).toBeInTheDocument();
+		expect(screen.getByRole('combobox', { name: 'Language' })).toBeInTheDocument();
 
-		fireEvent.click(screen.getByText('Plan a trip'));
+		fireEvent.click(screen.getByRole('button', { name: 'Dark theme' }));
+		expect(setTheme).toHaveBeenCalledWith('dark');
+		fireEvent.click(screen.getByText('Create an image'));
 		expect(useSuggestion).toHaveBeenCalledWith(
-			'Plan a five-day trip to Rome with food, art, and quiet neighborhoods.'
+			'Create an image of a cozy workspace at sunset.'
 		);
 	});
 
