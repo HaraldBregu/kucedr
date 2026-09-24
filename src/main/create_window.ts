@@ -5,13 +5,11 @@ import type { WindowContextManager } from './window_context';
 import { attachWindowHandlers } from './window_events';
 import { getPlatformTranslucencyOptions } from './translucency';
 import { attachRouteNavigation } from './attach_route_navigation';
+import { getWindowSize } from './settings_store';
+import { WINDOW_SIZES } from '../shared/window_size';
 
-const DEFAULT_WINDOW_WIDTH = 900;
-const DEFAULT_WINDOW_HEIGHT = 700;
 const MINIMUM_WINDOW_WIDTH = 768;
 const MINIMUM_WINDOW_HEIGHT = 600;
-const STARTUP_WINDOW_WIDTH = 900;
-const STARTUP_WINDOW_HEIGHT = 700;
 const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
 export class Main {
@@ -32,8 +30,7 @@ export class Main {
 	private createWindowOptions(trafficLightPosition = { x: 16, y: 17 }) {
 		const isMac = process.platform === 'darwin';
 		return {
-			width: DEFAULT_WINDOW_WIDTH,
-			height: DEFAULT_WINDOW_HEIGHT,
+			...WINDOW_SIZES[getWindowSize()],
 			minWidth: MINIMUM_WINDOW_WIDTH,
 			minHeight: MINIMUM_WINDOW_HEIGHT,
 			resizable: true,
@@ -53,11 +50,7 @@ export class Main {
 	}
 
 	private createStartupWindowOptions() {
-		return {
-			...this.createWindowOptions(),
-			width: STARTUP_WINDOW_WIDTH,
-			height: STARTUP_WINDOW_HEIGHT,
-		};
+		return this.createWindowOptions();
 	}
 
 	private trackWindowVisibility(win: BrowserWindow): void {

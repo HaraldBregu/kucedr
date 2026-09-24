@@ -24,6 +24,7 @@ import {
 	setDatabaseProvidersState,
 } from './providers/providers_index';
 import { getRagConfiguration, saveRagConfiguration } from './agent/knowledge/rag/rag_store';
+import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
 
 export type AppSettingsState = {
 	trayEnabled: boolean;
@@ -31,6 +32,7 @@ export type AppSettingsState = {
 	keepAwake: boolean;
 	language: AppLanguage;
 	theme: AppTheme;
+	windowSize: WindowSize;
 	microphoneInputId: string;
 	launchCount: number;
 };
@@ -43,6 +45,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	language: 'en',
 	theme: 'system',
+	windowSize: '900x700',
 	microphoneInputId: 'default',
 	launchCount: 0,
 };
@@ -156,6 +159,15 @@ export function getTheme(): AppTheme {
 
 export function setTheme(theme: AppTheme): void {
 	store.set('theme', theme);
+}
+
+export function getWindowSize(): WindowSize {
+	const size = store.get('windowSize');
+	return Object.hasOwn(WINDOW_SIZES, size) ? size : '900x700';
+}
+
+export function setWindowSize(size: WindowSize): void {
+	store.set('windowSize', size);
 }
 
 export function getMicrophoneInputId(): string {
