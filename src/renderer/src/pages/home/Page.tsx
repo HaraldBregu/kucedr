@@ -181,17 +181,15 @@ function PromptSuggestions({
 	const { language, setLanguage, theme, setTheme } = useApp();
 
 	return (
-		<div
-			className="mx-auto mb-2 mt-3 grid w-full max-w-xl grid-cols-[3fr_2fr] gap-8 px-1"
-		>
-			<div className="grid min-w-0 grid-cols-2 gap-2" aria-label="Prompt suggestions">
+		<div className="mx-auto flex w-full max-w-sm flex-col items-center gap-6">
+			<div className="grid w-full grid-cols-2 gap-2" aria-label="Prompt suggestions">
 				{promptSuggestions.map((suggestion) => (
 					<PromptSuggestion
 						key={suggestion.label}
 						type="button"
 						variant="outline"
 						size="sm"
-						className="h-auto min-h-9 min-w-0 max-w-full justify-self-start whitespace-normal border-border/70 bg-card/95 px-2 py-1 text-center text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
+						className="h-auto min-h-9 min-w-0 max-w-full justify-self-center whitespace-normal border-border/70 bg-card/95 px-2 py-1 text-center text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
 						aria-label={suggestion.prompt}
 						onClick={() => onUseSuggestion(suggestion.prompt)}
 					>
@@ -199,12 +197,12 @@ function PromptSuggestions({
 					</PromptSuggestion>
 				))}
 			</div>
-			<div className="flex min-w-0 flex-col items-start gap-3" aria-label="Quick settings">
-				<div className="flex flex-col items-start gap-1.5">
+			<div className="flex flex-wrap items-end justify-center gap-x-8 gap-y-3" aria-label="Quick settings">
+				<div className="flex flex-col items-center gap-1.5">
 					<span className="text-xs font-medium text-muted-foreground">{t('settings.theme.title')}</span>
 					<ThemeSwitcher value={theme} onChange={setTheme} />
 				</div>
-				<div className="flex flex-col items-start gap-1.5">
+				<div className="flex flex-col items-center gap-1.5">
 					<span className="text-xs font-medium text-muted-foreground">{t('settings.language.title')}</span>
 					<Select
 						value={language}
