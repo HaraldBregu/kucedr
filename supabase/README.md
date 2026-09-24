@@ -33,6 +33,9 @@ endpoint, path style, and prefix remain fixed. A different target needs a new pr
 Each upload reservation records its provider ID, and published versions retain it so later
 provider changes do not redirect historical downloads. Existing versions whose provider ID is
 null continue to use their original global S3 environment settings.
+To switch to another saved provider, publish all pending local versions first. Existing
+published versions keep their original provider references and remain available while that
+provider's credentials and bucket remain accessible.
 
 Each provider's IAM principal needs `s3:PutObject` and `s3:GetObject` only for its bucket/prefix. Deny public access and normal overwrites. Upload URLs sign `If-None-Match: *`; clients must send the returned headers exactly. Publication verifies the full SHA-256 and size by reading the object back, without relying on optional S3 checksum-header support. Configure S3 CORS for the application's upload origin if a browser-based caller is used. Enable S3 Versioning as an additional recovery layer.
 
