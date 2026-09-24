@@ -16,6 +16,7 @@ import {
 	Mic,
 	Paperclip,
 	Plus,
+	Sparkles,
 	Square,
 	X,
 } from 'lucide-react';
@@ -51,6 +52,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
+import { modelsFor } from '@/lib/providers';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { AssistantMessage } from './components/AssistantMessage';
 import { markdownComponents } from './components/markdown';
@@ -494,6 +496,7 @@ function PageContent(): ReactElement {
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
 	const [promptCapabilities, setPromptCapabilities] =
 		useState<AgentPromptInputCapabilities | null>();
+	const [modelLabel, setModelLabel] = useState('Select model');
 	const [planCommandActive, setPlanCommandActive] = useState(false);
 	const [goalCommandActive, setGoalCommandActive] = useState(false);
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
@@ -587,6 +590,27 @@ function PageContent(): ReactElement {
 					setPromptCapabilities(null);
 					setAttachments((current) => validatePromptAttachments(current, null));
 				});
+		};
+		refresh();
+		const unsubscribe = window.app.onModelsChanged(refresh);
+		return () => {
+			active = false;
+			unsubscribe();
+		};
+	}, []);
+
+	useEffect(() => {
+		let active = true;
+		const refresh = (): void => {
+			void Promise.all([window.agent.getProvider(), window.agent.getModelId()]).then(
+				([provider, modelId]) => {
+					if (!active) return;
+					const model = modelsFor('llm').find(
+						(item) => item.provider.id === provider?.id && item.id === modelId
+					);
+					setModelLabel(model?.name ?? modelId ?? 'Select model');
+				}
+			);
 		};
 		refresh();
 		const unsubscribe = window.app.onModelsChanged(refresh);
@@ -867,7 +891,7 @@ function PageContent(): ReactElement {
 								onAction={voiceErrorAction?.action}
 							/>
 							<PromptEditor
-								placeholder="Ask anything"
+								placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
 								ariaLabel="Message Kucedr"
 								value={agent.input}
 								onValueChange={agent.setInput}
@@ -921,6 +945,21 @@ function PageContent(): ReactElement {
 									);
 								}}
 								wrapperClassName="max-w-none"
+								detachedControls
+								footerContent={
+									<div className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground">
+										<button
+											type="button"
+											className="flex min-w-0 items-center gap-1.5 rounded-md px-1 py-1 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+											onClick={() => navigate('/settings/agent')}
+											aria-label={`Change model, currently ${modelLabel}`}
+										>
+											<Sparkles className="size-4 shrink-0 text-primary" />
+											<span className="truncate font-medium">{modelLabel}</span>
+										</button>
+										<span className="shrink-0">Auto</span>
+									</div>
+								}
 								className={cn(
 									'w-full',
 									planCommandActive && 'plan-prompt-frame',
@@ -934,7 +973,10 @@ function PageContent(): ReactElement {
 											disabledReason={voiceButtonDisabledReason}
 											mode={voiceButtonMode}
 										/>
-										<SubmitButton
+									</PromptInputActions>
+								}
+								trailingAction={
+									<SubmitButton
 											isLoading={agent.isLoading}
 											canSubmit={canSubmit}
 											forceSubmit={planCommandActive || goalCommandActive}
@@ -946,7 +988,6 @@ function PageContent(): ReactElement {
 											}
 											onAction={handlePrimaryAction}
 										/>
-									</PromptInputActions>
 								}
 							/>
 						</div>
