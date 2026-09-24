@@ -26,7 +26,7 @@ export function SettingsPageShell({
 	return (
 		<div
 			className={cn(
-				'mx-auto flex w-full max-w-4xl flex-col gap-4 px-6 py-8 sm:px-10 sm:py-10',
+				'mx-auto flex w-full max-w-4xl flex-col gap-4 px-6 pb-8 pt-12 sm:px-10 sm:pb-10 sm:pt-14',
 				className
 			)}
 		>
