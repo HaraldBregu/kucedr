@@ -61,6 +61,7 @@ export type PromptInputProps = {
 	leadingAction?: React.ReactNode;
 	actions?: React.ReactNode;
 	trailingAction?: React.ReactNode;
+	footerContent?: React.ReactNode;
 	detachedControls?: boolean;
 	disabled?: boolean;
 	textareaRef?: React.RefObject<HTMLTextAreaElement | null>;
@@ -343,6 +344,7 @@ function PromptInput({
 	leadingAction,
 	actions,
 	trailingAction,
+	footerContent,
 	detachedControls = false,
 	disabled = false,
 	textareaRef: externalTextareaRef,
@@ -524,6 +526,11 @@ function PromptInput({
 													className={cn('col-start-1 flex h-10 self-end items-center', detached ? 'row-start-2' : controlsRow)}
 												>
 													{leadingAction}
+												</div>
+											) : null}
+											{detached && footerContent ? (
+												<div className="col-start-2 row-start-2 flex min-w-0 items-center self-end">
+													{footerContent}
 												</div>
 											) : null}
 											{!detached ? <motion.div
