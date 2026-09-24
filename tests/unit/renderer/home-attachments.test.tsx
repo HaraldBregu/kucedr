@@ -9,19 +9,12 @@ const handleSubmit = jest.fn();
 const setInput = jest.fn();
 const useSuggestion = jest.fn();
 const clearReply = jest.fn();
-const setTheme = jest.fn();
-const setLanguage = jest.fn();
 let replyTo: { id: string; content: string } | null = null;
 let modelCatalogChanged: (() => void) | undefined;
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({
-		t: (key: string) => ({
-			'settings.theme.title': 'Theme',
-			'settings.language.title': 'Language',
-			'settings.language.en': 'English',
-			'settings.language.it': 'Italiano',
-		})[key] ?? key,
+		t: (key: string) => key,
 	}),
 }));
 
@@ -86,10 +79,6 @@ jest.mock('@/components/audio-player', () => ({
 
 jest.mock('@/components/prompt-kit/markdown', () => ({
 	Markdown: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-}));
-
-jest.mock('@/contexts', () => ({
-	useApp: () => ({ language: 'en', setLanguage, theme: 'system', setTheme }),
 }));
 
 jest.mock('@/components/app/base/page', () => ({
@@ -206,13 +195,11 @@ describe('Home prompt attachments', () => {
 	beforeEach(() => {
 		handleSubmit.mockResolvedValue(true);
 		useSuggestion.mockClear();
-		setTheme.mockClear();
-		setLanguage.mockClear();
 		modelCatalogChanged = undefined;
 		replyTo = null;
 	});
 
-	it('shows empty-state prompt rows of three, two, and one with quick settings', async () => {
+	it('shows empty-state prompt rows of three, two, and one without settings', async () => {
 		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
 		renderPage(getCapabilities);
 		await waitFor(() =>
@@ -237,11 +224,7 @@ describe('Home prompt attachments', () => {
 		expect(promptRows).toHaveLength(3);
 		expect(Array.from(promptRows, (row) => row.children.length)).toEqual([3, 2, 1]);
 		expect(screen.queryByText('Create music')).not.toBeInTheDocument();
-		expect(screen.getByLabelText('Quick settings')).toBeInTheDocument();
-		expect(screen.getByRole('combobox', { name: 'Language' })).toBeInTheDocument();
-
-		fireEvent.click(screen.getByRole('button', { name: 'Dark theme' }));
-		expect(setTheme).toHaveBeenCalledWith('dark');
+		expect(screen.queryByLabelText('Quick settings')).not.toBeInTheDocument();
 		fireEvent.click(screen.getByText('Create an image'));
 		expect(useSuggestion).toHaveBeenCalledWith(
 			'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.'

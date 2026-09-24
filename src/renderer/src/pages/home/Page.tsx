@@ -182,23 +182,23 @@ function PromptSuggestions({
 }): ReactElement {
 	return (
 		<div className="mx-auto flex w-full max-w-sm flex-col items-center gap-2" aria-label="Prompt suggestions">
-				{promptSuggestions.map((row) => (
-					<div key={row[0].label} className="flex w-full items-center justify-center gap-2">
-						{row.map((suggestion) => (
-							<PromptSuggestion
-								key={suggestion.label}
-								type="button"
-								variant="outline"
-								size="sm"
-								className="h-auto min-h-9 min-w-0 max-w-full whitespace-normal border-border/70 bg-card/95 px-2 py-1 text-center text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
-								aria-label={suggestion.prompt}
-								onClick={() => onUseSuggestion(suggestion.prompt)}
-							>
-								{suggestion.label}
-							</PromptSuggestion>
-						))}
-					</div>
-				))}
+			{promptSuggestions.map((row) => (
+				<div key={row[0].label} className="flex w-full items-center justify-center gap-2">
+					{row.map((suggestion) => (
+						<PromptSuggestion
+							key={suggestion.label}
+							type="button"
+							variant="outline"
+							size="sm"
+							className="h-auto min-h-9 min-w-0 max-w-full whitespace-normal border-border/70 bg-card/95 px-2 py-1 text-center text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
+							aria-label={suggestion.prompt}
+							onClick={() => onUseSuggestion(suggestion.prompt)}
+						>
+							{suggestion.label}
+						</PromptSuggestion>
+					))}
+				</div>
+			))}
 		</div>
 	);
 }
