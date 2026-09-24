@@ -102,4 +102,7 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(screen.queryByText('Session')).not.toBeInTheDocument();
 	expect(screen.queryByText('user@example.test')).not.toBeInTheDocument();
 	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
+	expect(window.sessionStorage.getItem('kucedr-auth-local-only')).toBe('true');
+	await user.click(screen.getByRole('button', { name: 'Login' }));
+	expect(window.sessionStorage.getItem('kucedr-auth-local-only')).toBeNull();
 });
