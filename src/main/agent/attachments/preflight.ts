@@ -30,7 +30,7 @@ export function preflightPromptAttachments(
 	files: readonly AgentInputFile[],
 	capabilities: AgentPromptInputCapabilities
 ): PromptAttachmentBlock[] {
-	return files.map((file) => {
+	return files.map((file): PromptAttachmentBlock | undefined => {
 		if (
 			!file.name ||
 			file.name !== path.basename(file.name) ||
@@ -55,18 +55,14 @@ export function preflightPromptAttachments(
 			const kind = image ? 'image' : 'document';
 			const mimeType = image?.mimeType ?? 'application/pdf';
 			const compatibleExtensions = image?.extensions ?? ['.pdf'];
-			if (!(compatibleExtensions as readonly string[]).includes(extension))
-				throw new Error(
-					`Attachment "${file.name}" does not match its detected ${mimeType} format.`
-				);
+			if (!(compatibleExtensions as readonly string[]).includes(extension)) return undefined;
 			const rule = capabilities.rules.find(
 				(candidate) =>
 					candidate.kind === kind &&
 					candidate.mimeTypes.includes(mimeType) &&
 					candidate.extensions.includes(extension)
 			);
-			if (!rule)
-				throw new Error(`Attachment "${file.name}" is not supported by the selected model.`);
+			if (!rule) return undefined;
 			return image
 				? { type: 'image', name: file.name, mimeType, bytes: bytes.length, base64: data, ...(file.path ? { path: file.path } : {}) }
 				: {
@@ -80,20 +76,18 @@ export function preflightPromptAttachments(
 		}
 
 		if (!(AGENT_TEXT_ATTACHMENT_EXTENSIONS as readonly string[]).includes(extension))
-			throw new Error(`Attachment "${file.name}" has an unsupported file type.`);
+			return undefined;
 		if (
 			bytes.some(
 				(byte) => (byte < 0x20 && byte !== 0x09 && byte !== 0x0a && byte !== 0x0d) || byte === 0x7f
 			)
 		)
-			throw new Error(
-				`Attachment "${file.name}" contains binary control bytes and is not valid text.`
-			);
+			return undefined;
 		let text: string;
 		try {
 			text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
 		} catch {
-			throw new Error(`Attachment "${file.name}" is not valid UTF-8 text.`);
+			return undefined;
 		}
 		return {
 			type: 'text_file',
@@ -103,5 +97,5 @@ export function preflightPromptAttachments(
 			text,
 			...(file.path ? { path: file.path } : {}),
 		};
-	});
+	}).filter((file): file is PromptAttachmentBlock => file !== undefined);
 }
