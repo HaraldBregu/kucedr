@@ -119,20 +119,20 @@ export function SetupModelsStep({
 											data-testid={`setup-${service.id}`}
 											variant="outline"
 											size="md"
-											className="border-b border-border/60 px-4 py-3 last:border-b-0"
+											className="flex-nowrap gap-3 rounded-2xl border-b border-border/60 px-3 py-2 last:border-b-0"
 										>
 											{Icon && (
-												<ItemMedia variant="icon" className="bg-transparent">
+												<ItemMedia variant="icon" className="size-10 rounded-2xl bg-muted/50">
 													<Icon className="size-5" aria-hidden="true" />
 												</ItemMedia>
 											)}
 											<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-												<ItemTitle>{title}</ItemTitle>
-												<p className="text-[11px] leading-4 text-muted-foreground">
+												<ItemTitle className="min-w-0 max-w-full truncate text-sm leading-tight">{title}</ItemTitle>
+												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 													{service.description}
 												</p>
 											</ItemContent>
-											<ItemActions className="ml-auto w-full flex-none justify-end sm:w-80">
+											<ItemActions className="ml-auto flex-none justify-end">
 												<ModelProviderSelect
 													inline
 													buttonDropdown
@@ -195,20 +195,20 @@ export function SetupModelsStep({
 										data-testid={`setup-${service.id}`}
 										variant="outline"
 										size="md"
-										className="border-b border-border/60 px-4 py-3 last:border-b-0"
+										className="flex-nowrap gap-3 rounded-2xl border-b border-border/60 px-3 py-2 last:border-b-0"
 									>
 										{Icon && (
-											<ItemMedia variant="icon" className="bg-transparent">
+											<ItemMedia variant="icon" className="size-10 rounded-2xl bg-muted/50">
 												<Icon className="size-5" aria-hidden="true" />
 											</ItemMedia>
 										)}
 										<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-											<ItemTitle>{service.title}</ItemTitle>
-											<p className="text-[11px] leading-4 text-muted-foreground">
+											<ItemTitle className="min-w-0 max-w-full truncate text-sm leading-tight">{service.title}</ItemTitle>
+											<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 												{service.description}
 											</p>
 										</ItemContent>
-										<ItemActions className="ml-auto w-full flex-none justify-end sm:w-80">
+										<ItemActions className="ml-auto flex-none justify-end">
 											<ModelProviderSelect
 												inline
 												buttonDropdown
