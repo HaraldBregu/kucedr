@@ -169,7 +169,8 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect(expandedFieldBounds && expandedEditorBounds).toBeTruthy();
 	expect(
 		Math.abs(
-			expandedEditorBounds!.y + expandedEditorBounds!.height / 2 -
+			expandedEditorBounds!.y +
+				expandedEditorBounds!.height / 2 -
 				(expandedFieldBounds!.y + expandedFieldBounds!.height / 2)
 		)
 	).toBeLessThan(4);
