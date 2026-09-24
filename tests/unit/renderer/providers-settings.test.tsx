@@ -208,9 +208,11 @@ it.each([
 });
 
 it('resets a saved local model connection', async () => {
-	jest.mocked(window.provider.list).mockResolvedValue([
-		{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
-	]);
+	jest
+		.mocked(window.provider.list)
+		.mockResolvedValue([
+			{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
+		]);
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
@@ -221,9 +223,9 @@ it('resets a saved local model connection', async () => {
 	await user.click(screen.getByRole('button', { name: 'Options for Ollama' }));
 	await user.click(screen.getByRole('menuitem', { name: 'Reset' }));
 	await waitFor(() => expect(window.provider.remove).toHaveBeenCalledWith('custom', 'models'));
-	expect(screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="item"]')).toHaveTextContent(
-		'Not configured'
-	);
+	expect(
+		screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="item"]')
+	).toHaveTextContent('Not configured');
 });
 
 it('masks saved model keys until editing', async () => {
@@ -407,16 +409,14 @@ it('places connected model providers before unconnected ones', async () => {
 it.each([false, true])(
 	'keeps connected local models below hosted models when embedded is %s',
 	async (embedded) => {
-		jest
-			.mocked(window.provider.list)
-			.mockResolvedValue([
-				{
-					id: 'custom',
-					name: 'Ollama',
-					apiKey: 'saved-key',
-					baseUrl: 'http://localhost:11434/api',
-				},
-			]);
+		jest.mocked(window.provider.list).mockResolvedValue([
+			{
+				id: 'custom',
+				name: 'Ollama',
+				apiKey: 'saved-key',
+				baseUrl: 'http://localhost:11434/api',
+			},
+		]);
 		render(
 			<MemoryRouter>
 				<ProvidersPage embedded={embedded} section="models" />

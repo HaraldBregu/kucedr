@@ -1,4 +1,8 @@
-import { SEARCH_ENGINE_IDS, type SearchEngineId, type SearchSettings } from '../../shared/search_types';
+import {
+	SEARCH_ENGINE_IDS,
+	type SearchEngineId,
+	type SearchSettings,
+} from '../../shared/search_types';
 import { getSearchEngine, setSearchEngine } from '../agent/agent_store';
 import { getSearchSettings } from './search_get_settings';
 import { getStoredSearchProviders } from './search_get_providers';
