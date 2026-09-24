@@ -57,11 +57,11 @@ export interface StorageVersion {
 export class StorageCloudApi {
 	constructor(private readonly client: SupabaseClient) {}
 
-	async registerProvider(provider: StoredStorageProvider): Promise<void> {
+	async registerProvider(provider: StoredStorageProvider, prefix: string): Promise<void> {
 		const { id: providerId, bucket, region, endpoint, forcePathStyle,
 			accessKeyId, secretAccessKey } = provider;
 		await this.invoke('storage-provider', {
-			providerId, bucket, region, endpoint, forcePathStyle,
+			providerId, bucket, region, endpoint, forcePathStyle, prefix,
 			accessKeyId, secretAccessKey,
 		});
 	}

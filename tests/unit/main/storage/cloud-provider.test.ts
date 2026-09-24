@@ -15,7 +15,7 @@ it('registers the selected S3-compatible endpoint and credentials through the au
 		accessKeyId: 'access-key',
 		secretAccessKey: 'private-key',
 	};
-	await cloud.registerProvider(provider);
+	await cloud.registerProvider(provider, 'history');
 	expect(invoke).toHaveBeenCalledWith('storage-provider', {
 		body: JSON.stringify({
 			providerId: provider.id,
@@ -23,6 +23,7 @@ it('registers the selected S3-compatible endpoint and credentials through the au
 			region: provider.region,
 			endpoint: provider.endpoint,
 			forcePathStyle: true,
+			prefix: 'history',
 			accessKeyId: provider.accessKeyId,
 			secretAccessKey: provider.secretAccessKey,
 		}),
