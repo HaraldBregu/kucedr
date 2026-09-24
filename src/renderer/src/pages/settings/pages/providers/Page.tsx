@@ -632,7 +632,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
-						<div className="-mx-4 grid grid-cols-1 gap-y-2 pb-4">
+						<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
 							{orderedModelProviders.map((provider) => renderProviderCard(provider, 'models'))}
 							{section === undefined && renderCustomProviderCard()}
 						</div>
@@ -640,13 +640,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				)}
 			{section === 'models' && (
 				<SettingsSection title={t('settings.modelServices.localModels')}>
-					<div className="-mx-4 grid grid-cols-1 gap-y-2 pb-4">{renderCustomProviderCard()}</div>
+					<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">{renderCustomProviderCard()}</div>
 				</SettingsSection>
 			)}
 
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>
-					<div className="-mx-4 grid grid-cols-1 gap-y-2 pb-4">
+					<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
 						{databaseProviders.map((provider) => renderProviderCard(provider, 'databases'))}
 					</div>
 				</SettingsSection>
@@ -655,7 +655,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{(section === undefined || section === 'search') &&
 				(!embedded || searchCatalog.length > 0) && (
 					<SettingsSection title="Search">
-						<div className="-mx-4 grid grid-cols-1 gap-y-2 pb-4">
+						<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
 							{searchCatalog.map((provider) => renderProviderCard(provider, 'search'))}
 						</div>
 					</SettingsSection>

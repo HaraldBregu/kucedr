@@ -86,7 +86,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 				/>
 			)}
 			{(loading || providers.length > 0 || (editing === null && !error)) && (
-				<div className="-mx-4 grid grid-cols-1 gap-y-2 pb-4">
+				<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
 					{loading ? (
 						<SettingsLoadingRows />
 					) : providers.length === 0 ? (
