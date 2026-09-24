@@ -342,7 +342,9 @@ it('places connected model providers before unconnected ones', async () => {
 	).toEqual(['Anthropic', 'OpenAI', 'DeepSeek']);
 });
 
-it('places a connected local model above unconnected hosted models', async () => {
+it.each([false, true])(
+	'keeps connected local models below hosted models when embedded is %s',
+	async (embedded) => {
 	jest
 		.mocked(window.provider.list)
 		.mockResolvedValue([
@@ -350,12 +352,17 @@ it('places a connected local model above unconnected hosted models', async () =>
 		]);
 	render(
 		<MemoryRouter>
-			<ProvidersPage section="models" />
+			<ProvidersPage embedded={embedded} section="models" />
 		</MemoryRouter>
 	);
 	await screen.findByText('Configured');
-	expect(screen.getAllByRole('heading', { level: 2 })[0]).toHaveTextContent('Local models');
-});
+	expect(screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)).toEqual([
+		'Models',
+		'OpenAI',
+		'Local models',
+	]);
+	}
+);
 
 it('places connected search providers before unconnected ones', async () => {
 	jest.mocked(actionableSearchCatalog).mockReturnValue([
