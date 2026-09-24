@@ -4,6 +4,7 @@ import { storageProviders } from '../providers';
 import { readStorageConfig } from '../local/config';
 import { writeStorageConfig } from '../local/config_write';
 import type { StorageConfig } from '../local/types';
+import { openStorageState } from '../local/state';
 
 export async function configureVersionedStorage(
 	settings: StorageSyncSettings,
@@ -14,9 +15,20 @@ export async function configureVersionedStorage(
 	const provider = storageProviders.list().find((entry) => entry.id === settings.providerId);
 	if (!provider) throw new Error('The saved S3 storage provider was not found.');
 	const existing = await readStorageConfig();
-	if (existing && (existing.providerId !== provider.id || existing.s3.bucket !== provider.bucket ||
-		existing.s3.region !== provider.region || existing.supabase.url !== supabaseUrl)) {
+	if (existing && (existing.supabase.url !== supabaseUrl ||
+		(existing.providerId === provider.id && (existing.s3.bucket !== provider.bucket ||
+			existing.s3.region !== provider.region)))) {
 		throw new Error('Cloud sync configuration differs from the saved provider or account project.');
+	}
+	if (existing && existing.providerId !== provider.id) {
+		const database = openStorageState();
+		try {
+			if (database.prepare("SELECT 1 FROM pending_operations WHERE status <> 'synced' LIMIT 1").get()) {
+				throw new Error('Publish pending file versions before changing the storage provider.');
+			}
+		} finally {
+			database.close();
+		}
 	}
 	const config: StorageConfig = {
 		version: 1,
