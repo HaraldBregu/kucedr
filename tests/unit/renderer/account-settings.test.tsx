@@ -92,7 +92,10 @@ it('shows account session data and switches to local use after sign-out', async 
 	);
 
 	expect(await screen.findByText('user@example.test')).toBeInTheDocument();
-	expect(await screen.findByText('Ada Byron')).toBeInTheDocument();
+	expect(await screen.findByText('Ada')).toBeInTheDocument();
+	expect(screen.getByText('Byron')).toBeInTheDocument();
+	expect(screen.getByText('First name')).toBeInTheDocument();
+	expect(screen.getByText('Last name')).toBeInTheDocument();
 	expect(screen.getByText('user-id')).toBeInTheDocument();
 	await waitFor(() => expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '2'));
 	expect(screen.getByText('settings.activity.title')).toBeInTheDocument();
