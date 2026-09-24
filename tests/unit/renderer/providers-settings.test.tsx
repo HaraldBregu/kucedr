@@ -317,3 +317,62 @@ it('keeps the Database key editable when saving fails', async () => {
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not store database key');
 	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('database-secret');
 });
+
+it('places connected model providers before unconnected ones', async () => {
+	jest.mocked(actionableProviderCatalog).mockReturnValue([
+		{ id: 'openai', name: 'OpenAI', capabilities: '', supported: true },
+		{ id: 'anthropic', name: 'Anthropic', capabilities: '', supported: true },
+		{ id: 'deepseek', name: 'DeepSeek', capabilities: '', supported: true },
+	]);
+	jest.mocked(window.provider.list).mockResolvedValue([
+		{ id: 'anthropic', name: 'Anthropic', apiKey: 'saved-key' },
+	]);
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="models" />
+		</MemoryRouter>
+	);
+	await screen.findByText('Configured');
+	expect(
+		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map((heading) => heading.textContent)
+	).toEqual(['Anthropic', 'OpenAI', 'DeepSeek']);
+});
+
+it('places connected search providers before unconnected ones', async () => {
+	jest.mocked(actionableSearchCatalog).mockReturnValue([
+		{ id: 'brave', name: 'Brave', capabilities: '', supported: true },
+		{ id: 'tavily', name: 'Tavily', capabilities: '', supported: true },
+	]);
+	jest.mocked(window.search.getSettings).mockResolvedValue({
+		engineId: 'tavily',
+		configured: { brave: false, tavily: true },
+	});
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="search" />
+		</MemoryRouter>
+	);
+	await screen.findByText('Configured');
+	expect(
+		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map((heading) => heading.textContent)
+	).toEqual(['Tavily', 'Brave']);
+});
+
+it('places connected database providers before unconnected ones', async () => {
+	jest.mocked(databaseCatalog).mockReturnValue([
+		{ id: 'pinecone', name: 'Pinecone', capabilities: '', supported: true },
+		{ id: 'weaviate', name: 'Weaviate', capabilities: '', supported: true },
+	]);
+	jest.mocked(window.provider.list).mockResolvedValue([
+		{ id: 'weaviate', name: 'Weaviate', apiKey: 'saved-key' },
+	]);
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="databases" />
+		</MemoryRouter>
+	);
+	await screen.findByText('Configured');
+	expect(
+		Array.from(document.querySelectorAll('[data-slot="item"] h2')).map((heading) => heading.textContent)
+	).toEqual(['Weaviate', 'Pinecone']);
+});
