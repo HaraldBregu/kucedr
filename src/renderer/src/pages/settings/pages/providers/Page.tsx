@@ -324,7 +324,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 					name={provider.name}
 					iconDarkUrl={provider.iconDarkUrl}
 					iconLightUrl={provider.iconLightUrl}
-					className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+					className="size-10 rounded-2xl border-0 bg-muted/50 p-1 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 				/>
 				<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 					<div className="flex min-w-0 max-w-full items-center gap-1.5">
@@ -453,13 +453,13 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				className="min-w-0 gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 			>
 				<div className="w-full">
-					<div className={cn('flex min-h-9 items-center gap-3', customProvider.editing && 'pb-3')}>
+					<div className={cn('flex min-h-10 items-center gap-3', customProvider.editing && 'pb-3')}>
 						<ProviderAvatar
 							providerId="ollama"
 							name="Ollama"
 							iconDarkUrl={ollamaDarkLogo}
 							iconLightUrl={ollamaLightLogo}
-							className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+							className="size-10 rounded-2xl border-0 bg-muted/50 p-1 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 						/>
 						<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 							<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
