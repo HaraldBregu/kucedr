@@ -150,6 +150,33 @@ it('opens voice conversation for the current chat from the button before Setting
 	expect(getMicrophonePermission).toHaveBeenCalledTimes(1);
 });
 
+it('keeps the voice conversation button available in Settings for the current chat', async () => {
+	const user = userEvent.setup();
+	const getMicrophonePermission = jest.fn().mockResolvedValue({
+		enabled: true,
+		systemStatus: 'granted',
+		canRequest: false,
+	});
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { getMicrophonePermission },
+	});
+
+	render(
+		<MemoryRouter initialEntries={['/settings/general']}>
+			<ChatSessionContext.Provider value={{ sessionId: 'session-123', setSessionId: jest.fn() }}>
+				<NavigationBar />
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	const voice = screen.getByRole('button', { name: 'Start voice conversation' });
+	const chat = screen.getByRole('button', { name: 'navigationBar.chat' });
+	expect(voice.compareDocumentPosition(chat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	await user.click(voice);
+	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-123'));
+});
+
 it('does not render a chat title in the navigationbar', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/home']}>

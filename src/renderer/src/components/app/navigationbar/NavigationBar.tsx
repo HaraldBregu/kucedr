@@ -65,7 +65,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 		</Button>
 	) : null;
 	const voiceButton =
-		!isOnboarding && !isSettings ? (
+		!isOnboarding ? (
 			<Button
 				type="button"
 				variant="ghost"
