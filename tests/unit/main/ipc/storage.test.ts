@@ -11,6 +11,9 @@ const loadCloudConfig = jest.fn();
 const getEnabledPluginProviders = jest.fn();
 
 jest.mock('../../../../src/main/providers/providers_store', () => ({ getEnabledPluginProviders }));
+jest.mock('../../../../src/main/models', () => ({
+	loadStorages: () => [{ id: 'supabase-storage', provider: { id: 'supabase' } }],
+}));
 
 jest.mock('../../../../src/main/storage/providers', () => ({ storageProviders }));
 jest.mock('../../../../src/main/storage/local/config', () => ({ readStorageConfig }));
