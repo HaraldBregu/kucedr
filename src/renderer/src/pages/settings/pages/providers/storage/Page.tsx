@@ -86,7 +86,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 				/>
 			)}
 			{(loading || providers.length > 0 || (editing === null && !error)) && (
-				<SettingsPanel>
+				<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
 					{loading ? (
 						<SettingsLoadingRows />
 					) : providers.length === 0 ? (
@@ -100,65 +100,71 @@ export default function StorageProvidersPage(): React.JSX.Element {
 						)
 					) : (
 						providers.map((provider) => (
-							<SettingsRow
+							<Item
 								key={provider.id}
-								icon={HardDrive}
-								title={
-									<span className="block truncate" title={provider.name}>
+								variant="ghost"
+								size="md"
+								className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+							>
+								<HardDrive
+									className="size-9 shrink-0 rounded-2xl bg-muted/50 p-1.5 text-muted-foreground group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+									aria-hidden="true"
+								/>
+								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+									<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
 										{provider.name}
-									</span>
-								}
-								description={
-									<span
-										className="block truncate"
-										title={`${provider.bucket} · ${provider.region}`}
-									>
+									</ItemTitle>
+									<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
 										{provider.bucket} · {provider.region}
-									</span>
-								}
-								actions={
-									<>
-										<Button
-											variant="ghost"
-											size="icon-sm"
-											disabled={removing !== null || editing !== null}
-											aria-label={t('settings.storageProviders.edit', { name: provider.name })}
-											onClick={() => setEditing(provider)}
-										>
-											<Pencil className="size-3.5" />
-										</Button>
-										<Button
-											variant="ghost"
-											size="icon-sm"
-											disabled={removing !== null || editing !== null}
-											className="text-muted-foreground hover:text-destructive"
-											aria-label={t('settings.storageProviders.remove', { name: provider.name })}
-											onClick={() => {
-												setRemoving(provider.id);
-												setError('');
-												void window.storage
-													.removeProvider(provider.id)
-													.then(() => {
-														setProviders((current) =>
-															current.filter((entry) => entry.id !== provider.id)
-														);
-													})
-													.catch((err: unknown) => {
-														setError(
-															getErrorMessage(err, t('settings.storageProviders.removeError'))
-														);
-													})
-													.finally(() => setRemoving(null));
-											}}
-										>
-											<Trash2 className="size-3.5" />
-										</Button>
-									</>
-								}
-							/>
+									</p>
+								</ItemContent>
+								<ItemActions className="ml-auto flex-none justify-end">
+									<DropdownMenu>
+										<DropdownMenuTrigger asChild>
+											<Button
+												variant="ghost"
+												size="icon-sm"
+												className="hover:bg-transparent dark:hover:bg-transparent"
+												disabled={removing !== null || editing !== null}
+												aria-label={`Options for ${provider.name}`}
+											>
+												<MoreHorizontal className="size-4" />
+											</Button>
+										</DropdownMenuTrigger>
+										<DropdownMenuContent align="end">
+											<DropdownMenuItem onSelect={() => setEditing(provider)}>
+												<Pencil />
+												{t('settings.storageProviders.edit', { name: provider.name })}
+											</DropdownMenuItem>
+											<DropdownMenuItem
+												onSelect={() => {
+													setRemoving(provider.id);
+													setError('');
+													void window.storage
+														.removeProvider(provider.id)
+														.then(() => {
+															setProviders((current) =>
+																current.filter((entry) => entry.id !== provider.id)
+															);
+														})
+														.catch((err: unknown) => {
+															setError(
+																getErrorMessage(err, t('settings.storageProviders.removeError'))
+															);
+														})
+														.finally(() => setRemoving(null));
+												}}
+											>
+												<Trash2 />
+												{t('settings.storageProviders.remove', { name: provider.name })}
+											</DropdownMenuItem>
+										</DropdownMenuContent>
+									</DropdownMenu>
+								</ItemActions>
+							</Item>
 						))
 					)}
-				</SettingsPanel>
+				</div>
 			)}
 		</SettingsPageShell>
 	);
