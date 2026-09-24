@@ -275,7 +275,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		const savingThisProvider = savingProviderId === provider.id;
 		const canSaveProvider =
 			!!entry && !savingThisProvider && Boolean(entry.apiKey.trim() || entry.savedApiKey.trim());
-		if (kind === 'models') {
+		if (kind === 'models' || kind === 'search' || kind === 'databases') {
 			return (
 				<Item
 					key={provider.id}
@@ -326,7 +326,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									onChange={(event) => handleProviderApiKeyChange(provider.id, event.target.value)}
 									onKeyDown={(event) => {
 										if (event.key === 'Enter' && canSaveProvider) {
-											void saveProviderEntry(provider.id, 'models');
+										void (kind === 'search'
+											? saveSearchEntry(provider.id)
+											: saveProviderEntry(provider.id, kind));
 										}
 									}}
 									placeholder={
@@ -351,7 +353,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									type="button"
 									size="sm"
 									disabled={!canSaveProvider}
-									onClick={() => void saveProviderEntry(provider.id, 'models')}
+									onClick={() =>
+									void (kind === 'search'
+										? saveSearchEntry(provider.id)
+										: saveProviderEntry(provider.id, kind))
+								}
 								>
 									{savingThisProvider && <LoaderCircle className="size-3.5 animate-spin" />}
 									{t('common.save')}
@@ -787,7 +793,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>
-					<div className="space-y-3 pb-4">
+					<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
 						{databaseCatalog().map((provider) => renderProviderCard(provider, 'databases'))}
 					</div>
 				</SettingsSection>
@@ -796,7 +802,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{(section === undefined || section === 'search') &&
 				(!embedded || searchCatalog.length > 0) && (
 					<SettingsSection title="Search">
-						<div className="space-y-3 pb-4">
+						<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
 							{searchCatalog.map((provider) => renderProviderCard(provider, 'search'))}
 						</div>
 					</SettingsSection>
