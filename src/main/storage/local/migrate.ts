@@ -24,9 +24,10 @@ export async function migrateLegacyStorageSettings(database: DatabaseSync): Prom
 			throw legacyError;
 		}
 	}
-	const legacy = source === oldSource
-		? (JSON.parse(contents) as { cloud?: unknown }).cloud
-		: JSON.parse(contents);
+	const legacy =
+		source === oldSource
+			? (JSON.parse(contents) as { cloud?: unknown }).cloud
+			: JSON.parse(contents);
 	if (!legacy || typeof legacy !== 'object' || Array.isArray(legacy)) return;
 	const sourceSettings = legacy as Record<string, unknown>;
 	const safe = {

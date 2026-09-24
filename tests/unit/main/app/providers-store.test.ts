@@ -136,10 +136,12 @@ describe('storage sync in its dedicated settings store', () => {
 		};
 		saveStorageSettings(settings);
 		expect(getStorageSettings()).toEqual(settings);
-		expect(mockStoreInstances.find((instance) => 'trayEnabled' in instance.store)?.store)
-			.not.toHaveProperty('cloud');
-		expect(mockStoreInstances.find((instance) => 'syncCronExpression' in instance.store)?.store)
-			.toEqual(settings);
+		expect(
+			mockStoreInstances.find((instance) => 'trayEnabled' in instance.store)?.store
+		).not.toHaveProperty('cloud');
+		expect(
+			mockStoreInstances.find((instance) => 'syncCronExpression' in instance.store)?.store
+		).toEqual(settings);
 		expect(storageProviders.resolve).toHaveBeenCalledWith(settings.providerId);
 	});
 
