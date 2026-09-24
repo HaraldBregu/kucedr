@@ -285,7 +285,7 @@ it('uses the audio waveform icon for Voice conversation', () => {
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
 
-it('places Channels after Health and A2A after Channels in the Assistant sidebar group', () => {
+it('places Channels after Health and Remote agent after Channels in the Assistant sidebar group', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/health']}>
 			<Routes>
@@ -307,14 +307,14 @@ it('places Channels after Health and A2A after Channels in the Assistant sidebar
 	const channels = within(assistantGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.channels',
 	});
-	const a2a = within(assistantGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.a2a',
+	const remoteAgent = within(assistantGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.remoteAgent',
 	});
 
 	expect(channels).toHaveAttribute('href', '/settings/channels');
 	expect(links.indexOf(channels)).toBe(links.indexOf(health) + 1);
-	expect(a2a).toHaveAttribute('href', '/settings/a2a');
-	expect(links.indexOf(a2a)).toBe(links.indexOf(channels) + 1);
+	expect(remoteAgent).toHaveAttribute('href', '/settings/remote-agent');
+	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(channels) + 1);
 });
 
 it('places Providers directly after Cloud without provider subpages in the sidebar', () => {

@@ -223,7 +223,7 @@ all bundled apps, registration, removal, and data behavior.
 
 Apps do not currently expose enable/disable controls in Settings.
 
-## MCP servers and A2A agents
+## MCP servers and remote agents
 
 ### MCP servers
 
@@ -236,9 +236,9 @@ deferred-loading preference, and confirmed removal of configured servers. Local 
 should be written to that package's `mcp.json`; configured server changes should be written to
 Kucedr settings. Registry and connection diagnostics should remain visible.
 
-### A2A agents
+### Remote agents
 
-A2A settings should add and edit remote Agent2Agent-compatible agents. It should validate the base
+Remote agent settings should add and edit Agent2Agent-compatible agents. It should validate the base
 URL while saving and support no authentication, bearer token, API-key header, or OAuth
 `private_key_jwt`, plus enabled state. Stored secrets should never be loaded back into the edit
 form; a blank secret retains the existing credential.
@@ -312,7 +312,7 @@ required. Filesystem policy should:
 - [Permissions settings](../../src/renderer/src/pages/settings/pages/permissions/Page.tsx)
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
-- [A2A settings](../../src/renderer/src/pages/settings/pages/a2a/Page.tsx)
+- [Remote agent settings](../../src/renderer/src/pages/settings/pages/remote-agent/Page.tsx)
 - [General settings tests](../../tests/unit/renderer/general-settings.test.tsx)
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)
 - [Provider settings tests](../../tests/unit/renderer/providers-settings.test.tsx)

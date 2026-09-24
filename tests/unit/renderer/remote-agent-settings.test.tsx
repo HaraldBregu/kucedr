@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import A2aPage from '../../../src/renderer/src/pages/settings/pages/a2a/Page';
+import RemoteAgentPage from '../../../src/renderer/src/pages/settings/pages/remote-agent/Page';
 
 const list = jest.fn();
 const save = jest.fn();
@@ -31,7 +31,7 @@ it('submits API key authentication through save without exposing or separately t
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<A2aPage />
+			<RemoteAgentPage />
 		</MemoryRouter>
 	);
 
@@ -74,7 +74,7 @@ it('never loads a saved credential into the edit form and resets it on cancel', 
 	]);
 	render(
 		<MemoryRouter>
-			<A2aPage />
+			<RemoteAgentPage />
 		</MemoryRouter>
 	);
 
