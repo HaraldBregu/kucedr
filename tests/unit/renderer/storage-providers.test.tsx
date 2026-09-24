@@ -1,4 +1,4 @@
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import StorageProvidersPage from '../../../src/renderer/src/pages/settings/pages/providers/storage/Page';
 import type { StorageProvider, StorageProviderInput } from '../../../src/shared/storage_types';
@@ -101,7 +101,7 @@ it('uses a manifest storage preset without saving its endpoint template', async 
 	await screen.findByText('No storage connections');
 	await user.click(screen.getByRole('button', { name: 'Add provider' }));
 	await user.click(screen.getByRole('combobox', { name: 'Provider' }));
-	await user.click(screen.getByRole('option', { name: 'Supabase Storage', hidden: true }));
+	fireEvent.click(screen.getByRole('option', { name: 'Supabase Storage', hidden: true }));
 	const form = within(screen.getByRole('form'));
 	expect(form.getByLabelText('Name')).toHaveValue('Supabase Storage');
 	expect(form.getByLabelText('Endpoint URL')).toHaveAttribute(
