@@ -1215,7 +1215,7 @@
 			"cancel": "Annulla",
 			"provider": {
 				"title": "Archiviazione",
-				"description": "Scegli un provider Amazon S3 o compatibile con S3 salvato per backup e ripristino.",
+				"description": "Scegli un provider Amazon S3 o compatibile con S3 salvato per backup, ripristino e cronologia delle versioni.",
 				"placeholder": "Seleziona provider di archiviazione"
 			}
 		},

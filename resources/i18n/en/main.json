@@ -1215,7 +1215,7 @@
 			"cancel": "Cancel",
 			"provider": {
 				"title": "Storage",
-				"description": "Choose a saved Amazon S3 or S3-compatible provider for backups and restores.",
+				"description": "Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.",
 				"placeholder": "Select storage provider"
 			}
 		},
