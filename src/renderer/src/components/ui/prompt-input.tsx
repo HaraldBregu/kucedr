@@ -533,8 +533,8 @@ function PromptInput({
 											{leadingAction ? (
 												<div
 													className={cn(
-													'col-start-1 flex self-end items-center',
-													detached ? 'row-start-2 h-8' : `${controlsRow} h-10`
+														'col-start-1 flex self-end items-center',
+														detached ? 'row-start-2 h-8' : `${controlsRow} h-10`
 													)}
 												>
 													{leadingAction}

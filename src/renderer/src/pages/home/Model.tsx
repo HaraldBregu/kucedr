@@ -6,7 +6,8 @@ export function Model(): ReactElement {
 	const [groups, setGroups] = useState<ModelProviderGroup[]>([]);
 	const [providerId, setProviderId] = useState('');
 	const [modelId, setModelId] = useState('');
-	const [localProvider, setLocalProvider] = useState<Awaited<ReturnType<NonNullable<typeof window.provider>['list']>>[number]>();
+	const [localProvider, setLocalProvider] =
+		useState<Awaited<ReturnType<NonNullable<typeof window.provider>['list']>>[number]>();
 	const [saving, setSaving] = useState(false);
 	const [error, setError] = useState(false);
 
@@ -87,7 +88,11 @@ export function Model(): ReactElement {
 				buttonClassName="h-7 min-w-0 max-w-48 border-0 bg-transparent px-1.5 text-xs shadow-none"
 				labels={{ label: 'Change model' }}
 			/>
-			{error ? <span role="alert" className="text-[11px] text-destructive">Model unavailable</span> : null}
+			{error ? (
+				<span role="alert" className="text-[11px] text-destructive">
+					Model unavailable
+				</span>
+			) : null}
 		</div>
 	);
 }
