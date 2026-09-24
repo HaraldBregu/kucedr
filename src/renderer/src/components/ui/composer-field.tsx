@@ -27,7 +27,7 @@ export function PromptInputField({
 				{header ? <div className="mb-2">{header}</div> : null}
 				{children}
 			</div>
-			<div className="self-end">{trailingAction}</div>
+			<div className={expanded ? 'self-end' : 'self-center'}>{trailingAction}</div>
 		</div>
 	);
 }

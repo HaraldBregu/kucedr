@@ -167,6 +167,12 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const attachmentBounds = await attachmentButton.boundingBox();
 	expect(fieldBounds && transcriptionBounds && attachmentBounds).toBeTruthy();
 	expect(transcriptionBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
+	expect(
+		Math.abs(
+			transcriptionBounds!.y + transcriptionBounds!.height / 2 -
+				(fieldBounds!.y + fieldBounds!.height / 2)
+		)
+	).toBeLessThan(4);
 	expect(attachmentBounds!.y).toBeGreaterThan(fieldBounds!.y + fieldBounds!.height);
 	await editor.pressSequentially('Hello');
 	await expect(editor).toContainText('Hello');
@@ -174,10 +180,11 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(sendButton).toBeVisible();
 	await expect(sendButton).toBeEnabled();
 	const sendBounds = await sendButton.boundingBox();
-	expect(sendBounds).toBeTruthy();
+	const expandedTranscriptionBounds = await transcriptionButton.boundingBox();
+	expect(sendBounds && expandedTranscriptionBounds).toBeTruthy();
 	expect(sendBounds!.x).toBeGreaterThan(fieldBounds!.x);
 	expect(sendBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
-	expect(transcriptionBounds!.x).toBeLessThan(sendBounds!.x);
+	expect(expandedTranscriptionBounds!.x).toBeLessThan(sendBounds!.x);
 	await expect(field).toHaveCSS('min-height', '96px');
 	await expect(field).toHaveCSS('align-items', 'flex-start');
 	await expect(field).toHaveCSS('padding-top', '16px');
