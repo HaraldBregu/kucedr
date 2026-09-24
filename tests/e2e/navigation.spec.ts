@@ -143,6 +143,9 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '14px');
 	await expect(modelButton).toContainText('GPT-5.6 Luna');
 	await expect(modelButton).toHaveCSS('height', '24px');
+	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
+	await modelButton.hover();
+	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	const fieldBounds = await field.boundingBox();
 	const sendBounds = await sendButton.boundingBox();
@@ -163,6 +166,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(field).toHaveCSS('min-height', '56px');
 	await modelButton.click();
+	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	const modelMenu = page.getByRole('menu', { name: 'Change model' });
 	const modelPopover = modelMenu.locator('xpath=..');
 	await expect(modelMenu).toBeVisible();
