@@ -95,9 +95,13 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 				applyOperationStatus(statusResult.value);
 			}
 
-			const failed = [settingsResult, statusResult, providersResult, versionedResult, conflictsResult].some(
-				(result) => result.status === 'rejected'
-			);
+			const failed = [
+				settingsResult,
+				statusResult,
+				providersResult,
+				versionedResult,
+				conflictsResult,
+			].some((result) => result.status === 'rejected');
 			setLoadFailed(failed);
 			if (failed) setError(t('settings.storage.errors.load'));
 			setSettingsLoading(false);
@@ -336,9 +340,7 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 							<CardContent className="p-0!">
 								{storage.paths.length === 0 && (
-									<SettingsRow
-										title={t('settings.storage.sync.empty')}
-									/>
+									<SettingsRow title={t('settings.storage.sync.empty')} />
 								)}
 								{storage.paths.map((selectedPath) => (
 									<SettingsRow

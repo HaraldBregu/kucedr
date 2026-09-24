@@ -184,21 +184,27 @@ it('lets users add and remove folders before selecting a provider', async () => 
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByText('No folders selected. Add folders to back up and sync.')).toBeInTheDocument();
+	expect(
+		await screen.findByText('No folders selected. Add folders to back up and sync.')
+	).toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'Add folders' }));
 	expect(await screen.findByText('/data/projects')).toBeInTheDocument();
 	expect(screen.getByText('/data/photos')).toBeInTheDocument();
-	await waitFor(() => expect(storageApi.saveSettings).toHaveBeenCalledWith({
-		...settings,
-		providerId: undefined,
-		paths: ['/data/projects', '/data/photos'],
-	}));
+	await waitFor(() =>
+		expect(storageApi.saveSettings).toHaveBeenCalledWith({
+			...settings,
+			providerId: undefined,
+			paths: ['/data/projects', '/data/photos'],
+		})
+	);
 	await user.click(screen.getAllByRole('button', { name: 'Remove folder' })[0]);
-	await waitFor(() => expect(storageApi.saveSettings).toHaveBeenLastCalledWith({
-		...settings,
-		providerId: undefined,
-		paths: ['/data/photos'],
-	}));
+	await waitFor(() =>
+		expect(storageApi.saveSettings).toHaveBeenLastCalledWith({
+			...settings,
+			providerId: undefined,
+			paths: ['/data/photos'],
+		})
+	);
 	expect(screen.queryByText('/data/projects')).not.toBeInTheDocument();
 });
 
