@@ -130,6 +130,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
 	await expect(field).toHaveCSS('min-height', '56px');
+	await expect(field).toHaveCSS('padding-right', '8px');
 	await expect(editorArea).toHaveCSS('min-height', '24px');
 	await expect(field).toHaveCSS('border-radius', '0px');
 	await expect(composer).toHaveCSS('border-radius', '0px');
@@ -167,6 +168,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('align-items', 'flex-start');
 	await expect(field).toHaveCSS('padding-top', '16px');
 	await expect(field).toHaveCSS('padding-bottom', '16px');
+	await expect(field).toHaveCSS('padding-right', '16px');
 	await expect(field).toHaveCSS('border-radius', '0px');
 	const expandedFieldBounds = await field.boundingBox();
 	const expandedEditorBounds = await editor.boundingBox();
@@ -176,6 +178,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await editor.fill('');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(field).toHaveCSS('min-height', '56px');
+	await expect(field).toHaveCSS('padding-right', '8px');
 	await modelButton.click();
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	const modelMenu = page.getByRole('menu', { name: 'Change model' });
