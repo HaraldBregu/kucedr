@@ -53,7 +53,10 @@ it('reads and updates the signed-in account profile', async () => {
 		},
 		error: null,
 	});
-	const getMaybeSingle = jest.fn(async () => ({
+	const getMaybeSingle = jest.fn(async (): Promise<{
+		data: { first_name: string; last_name: string } | null;
+		error: null;
+	}> => ({
 		data: { first_name: 'Ada', last_name: 'Byron' },
 		error: null,
 	}));
@@ -79,7 +82,7 @@ it('reads and updates the signed-in account profile', async () => {
 	await service.initialize();
 
 	await expect(service.getProfile()).resolves.toEqual({ firstName: 'Ada', lastName: 'Byron' });
-	getMaybeSingle.mockResolvedValueOnce({ data: null, error: null } as never);
+	getMaybeSingle.mockResolvedValueOnce({ data: null, error: null });
 	await expect(service.getProfile()).resolves.toEqual({ firstName: '', lastName: '' });
 	await expect(service.updateProfile({ firstName: 'Grace', lastName: 'Hopper' })).resolves.toEqual({
 		firstName: 'Grace',
