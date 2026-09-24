@@ -87,7 +87,7 @@ const PluginsPage = (): React.JSX.Element => {
 	};
 
 	return (
-		<SettingsPageShell className="max-w-none">
+		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.integrations.title')}
 				description={t('settings.integrations.description')}
