@@ -88,8 +88,8 @@ describe('provider manifest validation', () => {
 					name: 'Gmail',
 					type: 'mcp',
 					url: 'https://gmailmcp.googleapis.com/mcp/v1',
-					icon_dark_url: '/images/official/gmail.png',
-					icon_light_url: '/images/official/gmail.png',
+					icon_dark_url: '/images/official/gmail.svg',
+					icon_light_url: '/images/official/gmail.svg',
 				},
 			],
 		};
@@ -98,7 +98,7 @@ describe('provider manifest validation', () => {
 		expect(
 			validateProviderManifest({
 				...manifest,
-				services: [{ ...manifest.services[0], icon_dark_url: '../gmail.png' }],
+				services: [{ ...manifest.services[0], icon_dark_url: '../gmail.svg' }],
 			})
 		).toContainEqual(expect.stringContaining('services[0].icon_dark_url'));
 	});
