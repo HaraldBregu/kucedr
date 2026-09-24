@@ -1,4 +1,4 @@
-import type { AuthenticationType, PublicProvider } from './provider_types';
+import type { AuthenticationType, ModelLocation, PublicProvider } from './provider_types';
 
 export type SpeechToTextApiType = 'batch' | 'stream';
 
@@ -72,6 +72,7 @@ export type ModelCatalog = Readonly<Record<string, readonly ProviderModel[]>>;
 /** A model flattened together with the provider that serves it. */
 export interface CatalogModel extends ProviderModel {
 	readonly type: ModelCapability;
+	readonly location: ModelLocation;
 	readonly authentication?: AuthenticationType;
 	/** Base URL of the API serving this model. */
 	readonly url?: string;

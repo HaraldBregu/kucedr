@@ -1,6 +1,8 @@
 import type { ModelCapability, ModelMetadata, ProviderModel } from './model_types';
 
 export type AuthenticationType = 'api-key' | 'oauth2' | 'none';
+export type ModelLocation = 'remote' | 'local';
+export type DatabaseType = 'vector' | 'sql' | 'nosql';
 
 export interface ProviderApiConfiguration {
 	readonly credentialType: string | null;
@@ -29,9 +31,10 @@ export interface Provider {
 export type PublicProvider = Omit<Provider, 'apiKey'>;
 export type ProviderInput = Provider;
 
-/** A model service in resources/providers/<id>/manifest.json. */
+/** A model in resources/providers/<id>/manifest.json. */
 export interface CatalogEntryModel extends ProviderModel {
 	readonly type: ModelCapability;
+	readonly location: ModelLocation;
 	readonly authentication?: AuthenticationType;
 	/** Base URL of the API serving this model. */
 	readonly url: string;
@@ -43,7 +46,7 @@ export interface CatalogEntryModel extends ProviderModel {
 	readonly metadata?: ModelMetadata;
 }
 
-export type ProviderServiceType =
+export type ProviderModelType =
 	| 'large-language-model'
 	| 'research-chat-model'
 	| 'speech-to-text-model'
@@ -52,18 +55,55 @@ export type ProviderServiceType =
 	| 'text-to-image-model'
 	| 'text-to-video-model'
 	| 'text-to-audio-model'
-	| 'embedding-model'
-	| 'web-search'
-	| 'database'
-	| 'mcp'
-	| 'bot';
+	| 'embedding-model';
 
-/** A service as represented in a provider manifest. */
-export interface ProviderManifestService extends Omit<CatalogEntryModel, 'type'> {
-	readonly type: ProviderServiceType;
-	readonly description?: string;
+export interface ProviderManifestModel extends Omit<CatalogEntryModel, 'type'> {
+	readonly type: ProviderModelType;
 	readonly icon_dark_url?: string;
 	readonly icon_light_url?: string;
+}
+
+export interface ProviderManifestMcpServer {
+	readonly id: string;
+	readonly name: string;
+	readonly description?: string;
+	readonly url: string;
+	readonly authentication: AuthenticationType;
+	readonly icon_dark_url?: string;
+	readonly icon_light_url?: string;
+}
+
+export interface ProviderManifestDatabase {
+	readonly id: string;
+	readonly name: string;
+	readonly type: DatabaseType;
+	readonly url: string;
+	readonly authentication: AuthenticationType;
+}
+
+export interface ProviderManifestStorage {
+	readonly id: string;
+	readonly name: string;
+	readonly authentication: AuthenticationType;
+	readonly metadata: {
+		readonly protocol: 's3';
+		readonly region?: string;
+		readonly endpointTemplate?: string;
+		readonly forcePathStyle?: boolean;
+	};
+}
+
+export interface ProviderManifestWebSearch {
+	readonly id: string;
+	readonly name: string;
+	readonly url: string;
+	readonly authentication: AuthenticationType;
+}
+
+export interface ProviderManifestBot {
+	readonly id: string;
+	readonly name: string;
+	readonly url: string;
 }
 
 /** A non-model service in resources/providers/<id>/manifest.json. */
@@ -84,6 +124,10 @@ export interface CatalogService extends CatalogEntryService {
 	readonly provider: PublicProvider;
 	readonly iconDarkUrl?: string;
 	readonly iconLightUrl?: string;
+}
+
+export interface CatalogStorage extends ProviderManifestStorage {
+	readonly provider: PublicProvider;
 }
 
 /** One web search service in resources/providers/<id>/manifest.json. */
@@ -109,7 +153,12 @@ export interface ProviderManifest {
 	readonly images_url?: string;
 	readonly icon_dark_url?: string;
 	readonly icon_light_url?: string;
-	readonly services: readonly ProviderManifestService[];
+	readonly models?: readonly ProviderManifestModel[];
+	readonly mcp_servers?: readonly ProviderManifestMcpServer[];
+	readonly databases?: readonly ProviderManifestDatabase[];
+	readonly storage?: ProviderManifestStorage;
+	readonly web_search?: readonly ProviderManifestWebSearch[];
+	readonly bots?: readonly ProviderManifestBot[];
 }
 
 export interface ModelSelection {
