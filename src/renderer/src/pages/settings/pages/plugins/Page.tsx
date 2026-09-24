@@ -133,7 +133,7 @@ const PluginsPage = (): React.JSX.Element => {
 								name={service.name}
 								iconDarkUrl={service.iconDarkUrl}
 								iconLightUrl={service.iconLightUrl}
-								className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+								className="size-10 rounded-2xl border-0 bg-muted/50 p-1 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 							/>
 							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
