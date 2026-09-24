@@ -86,12 +86,14 @@ alone can leave published versions without content or content without discoverab
 ## Service setup
 
 Apply `supabase/migrations/20260923000000_storage_versions.sql` to the intended Supabase
-project before enabling version sync. Deploy the `storage-upload`, `storage-publish`, and
-`storage-download` Edge Functions from `supabase/functions/`. Configure function secrets
-`S3_BUCKET`, `S3_REGION`, `AWS_ACCESS_KEY_ID`, and `AWS_SECRET_ACCESS_KEY` on the trusted
-backend; Supabase supplies its own URL and API keys to the functions. The AWS identity needs
-only object read/write access in the dedicated version prefix and must not be bundled into the
-desktop app. Configure the bucket to reject overwrites, retain objects, and enable S3 Versioning.
+project before enabling version sync. Deploy the `storage-provider`, `storage-upload`,
+`storage-publish`, and `storage-download` Edge Functions from `supabase/functions/`. Configure
+`STORAGE_PROVIDER_ENCRYPTION_KEY` as a base64-encoded 32-byte server secret; generate it with
+`openssl rand -base64 32`, keep a secure backup, and never put it in a desktop build or local
+storage config. The backend registers each saved S3-compatible provider and encrypts its S3
+credentials at rest. Scope each provider's IAM credentials to its own bucket and prefix, reject
+overwrites, and enable S3 Versioning. See [File sync backend](../supabase/README.md) for the
+legacy global S3 settings retained for older versions.
 
 The desktop build uses only the project's public Supabase URL and publishable key as described
 in [Supabase Adapter](SUPABASE.md). Validate with two separate accounts: each account must be
@@ -106,8 +108,9 @@ corresponding metadata; the version-sync database migration does not convert the
   integration tests.
 - Existing S3 backup objects remain intact but are not automatically converted to immutable
   versions. Their old backup and restore path remains available when version history sync is off.
-- A backend deployment currently binds one saved provider ID to one server-configured S3 bucket.
-  Desktop S3 secrets remain in their existing secure store and are not sent to the backend.
+- Enabling version sync registers the selected saved provider's credentials with the trusted
+  backend. The backend encrypts them with its server-only key. Existing legacy versions with no
+  provider ID continue to use their original global S3 environment configuration.
 - Catch-up installs only new working files. Existing paths stay in place even when a newer cloud
   version is available; the local cache and conflict list retain the alternative version. The
   merge and historical-restore primitives are present in main-process code but have no conflict
