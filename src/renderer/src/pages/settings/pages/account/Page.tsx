@@ -62,11 +62,22 @@ const AccountPage: React.FC = () => {
 				description={t('settings.activity.description')}
 				className="my-2"
 				action={
-					<Select value={activityRange} onValueChange={(value) => {
-						if (value === 'untilToday' || value === 'currentYear' || value === 'lastYear') setActivityRange(value);
-					}}>
+					<Select
+						value={activityRange}
+						onValueChange={(value) => {
+							if (value === 'untilToday' || value === 'currentYear' || value === 'lastYear') {
+								setActivityRange(value);
+							}
+						}}
+					>
 						<SelectTrigger size="sm" className="text-xs" aria-label={t('settings.activity.range')}>
-							<SelectValue>{activityRange === 'untilToday' ? t('settings.activity.untilToday') : activityRange === 'currentYear' ? t('settings.activity.currentYear', { year: activityYear }) : t('settings.activity.lastYear', { year: activityYear - 1 })}</SelectValue>
+							<SelectValue>
+								{activityRange === 'untilToday'
+									? t('settings.activity.untilToday')
+									: activityRange === 'currentYear'
+										? t('settings.activity.currentYear', { year: activityYear })
+										: t('settings.activity.lastYear', { year: activityYear - 1 })}
+							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="untilToday">{t('settings.activity.untilToday')}</SelectItem>

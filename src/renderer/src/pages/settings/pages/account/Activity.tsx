@@ -22,8 +22,12 @@ export function Activity({ range }: { readonly range: 'untilToday' | 'currentYea
 	const selectedYear = range === 'lastYear' ? year - 1 : year;
 	const endDate = range === 'lastYear' ? Date.UTC(year - 1, 11, 31) : Date.UTC(year, now.getMonth(), now.getDate());
 	const startOffset = (new Date(Date.UTC(selectedYear, 0, 1)).getUTCDay() + 6) % 7;
-	const weeks = range === 'untilToday' ? 41 : Math.ceil(((endDate - Date.UTC(selectedYear, 0, 1)) / 86400000 + 1 + startOffset) / 7);
-	const visibleValues = range === 'untilToday' ? values : values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
+	const weeks = range === 'untilToday'
+		? 41
+		: Math.ceil(((endDate - Date.UTC(selectedYear, 0, 1)) / 86400000 + 1 + startOffset) / 7);
+	const visibleValues = range === 'untilToday'
+		? values
+		: values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
 
 	useEffect(() => {
 		let active = true;
