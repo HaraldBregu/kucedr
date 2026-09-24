@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { STORAGE_MAX_OBJECT_BYTES } from '../limits';
+import type { StoredStorageProvider } from '../providers/types';
 
 export interface UploadRequest {
 	providerId: string;
@@ -55,6 +56,15 @@ export interface StorageVersion {
 
 export class StorageCloudApi {
 	constructor(private readonly client: SupabaseClient) {}
+
+	async registerProvider(provider: StoredStorageProvider): Promise<void> {
+		const { id: providerId, bucket, region, endpoint, forcePathStyle,
+			accessKeyId, secretAccessKey } = provider;
+		await this.invoke('storage-provider', {
+			providerId, bucket, region, endpoint, forcePathStyle,
+			accessKeyId, secretAccessKey,
+		});
+	}
 
 	async reserveUpload(request: UploadRequest): Promise<UploadGrant> {
 		return this.invoke('storage-upload', request);

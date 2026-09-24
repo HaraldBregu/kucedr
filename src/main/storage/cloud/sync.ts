@@ -13,6 +13,7 @@ import { catchUp } from './catchup';
 import { configureVersionedStorage } from './configure';
 import { drainPending } from './drain';
 import { scanWorkspace } from './scan';
+import { storageProviders } from '../providers';
 
 export function runVersionedStorageSync(
 	client: SupabaseClient, auth: AuthService, projectUrl: string, mode: 'backup'
@@ -33,6 +34,8 @@ export async function runVersionedStorageSync(
 	if (!config.sync.enabled) throw new Error('Cloud file synchronization is disabled.');
 	const database = openStorageState();
 	const cloud = new StorageCloudApi(client);
+	const provider = storageProviders.resolve(config.providerId);
+	let providerRegistered = false;
 	const uploaded: string[] = [];
 	const downloaded: string[] = [];
 	const failed: Array<{ path: string; error: string }> = [];
@@ -49,11 +52,19 @@ export async function runVersionedStorageSync(
 			try {
 				if (mode === 'backup') {
 					uploaded.push(...await scanWorkspace(database, scope, workspace.rootPath, deviceId));
+					if (!providerRegistered) {
+						await cloud.registerProvider(provider);
+						providerRegistered = true;
+					}
 					const result = await drainPending(database, scope, cloud,
 						{ ...config.s3, providerId: config.providerId });
 					void writeStorageLog(result.failed ? 'pending-retry' : 'published',
 						result.failed || result.synced).catch(() => undefined);
 					if (result.failed) throw new Error(`${result.failed} file version(s) remain pending.`);
+				}
+				if (!providerRegistered) {
+					await cloud.registerProvider(provider);
+					providerRegistered = true;
 				}
 				let rootIsDirectory: boolean;
 				try {
