@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, Database, ExternalLink, LoaderCircle, MoreHorizontal, Plus } from 'lucide-react';
+import {
+	AlertTriangle,
+	Database,
+	ExternalLink,
+	LoaderCircle,
+	MoreHorizontal,
+	Plus,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import ollamaDarkLogo from '@resources/providers/ollama/images/ollama-dark.svg';
