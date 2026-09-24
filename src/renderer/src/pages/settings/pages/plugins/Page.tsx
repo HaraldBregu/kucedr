@@ -102,7 +102,7 @@ const PluginsPage = (): React.JSX.Element => {
 							key={`${service.provider.id}-${service.id}`}
 							variant="ghost"
 							size="md"
-							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-2 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 						>
 							<ProviderAvatar
 								providerId={service.id}
