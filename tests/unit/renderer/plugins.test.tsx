@@ -61,6 +61,7 @@ it('enables an integration without opening configuration UI', async () => {
 	const user = userEvent.setup();
 	render(<PluginsPage />);
 
+	await screen.findByRole('button', { name: 'settings.integrations.options' });
 	await user.click(screen.getAllByRole('button', { name: 'settings.integrations.add' })[3]);
 
 	await waitFor(() =>
