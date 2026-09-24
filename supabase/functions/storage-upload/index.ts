@@ -2,7 +2,7 @@ import { PutObjectCommand } from 'npm:@aws-sdk/client-s3@3.1127.0';
 import { getSignedUrl } from 'npm:@aws-sdk/s3-request-presigner@3.1127.0';
 import { authenticate } from '../_shared/auth.ts';
 import { json } from '../_shared/json.ts';
-import { s3 } from '../_shared/s3.ts';
+import { provider } from '../_shared/provider.ts';
 
 Deno.serve(async (request) => {
 	if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
@@ -10,12 +10,8 @@ Deno.serve(async (request) => {
 		const { ownerId, database } = await authenticate(request);
 		const body = await request.json();
 		const { providerId, workspaceId, operationId, versionId, sha256, sizeBytes } = body;
-		const bucket = Deno.env.get('S3_BUCKET');
-		const configuredProviderId = Deno.env.get('S3_PROVIDER_ID');
-		const prefix = Deno.env.get('S3_PREFIX') ?? '';
 		if (
-			!bucket ||
-			!configuredProviderId || providerId !== configuredProviderId ||
+			typeof providerId !== 'string' ||
 			typeof workspaceId !== 'string' ||
 			typeof operationId !== 'string' ||
 			typeof versionId !== 'string' ||
@@ -27,6 +23,16 @@ Deno.serve(async (request) => {
 		) {
 			return json({ error: 'Invalid upload request' }, 400);
 		}
+		const prior = await database.from('storage_uploads')
+			.select('provider_id').eq('workspace_id', workspaceId)
+			.eq('owner_id', ownerId).eq('operation_id', operationId).maybeSingle();
+		if (prior.error) throw prior.error;
+		if (prior.data && prior.data.provider_id !== providerId &&
+			!(prior.data.provider_id === null && providerId === Deno.env.get('S3_PROVIDER_ID')))
+			throw new Error('Upload provider does not match reservation');
+		const resolvedId = prior.data?.provider_id === null ? null : providerId;
+		const storage = await provider(database, ownerId, resolvedId);
+		const { bucket, prefix } = storage;
 		const { data, error } = await database.rpc('storage_reserve_upload', {
 			p_owner_id: ownerId,
 			p_workspace_id: workspaceId,
@@ -36,6 +42,7 @@ Deno.serve(async (request) => {
 			p_prefix: prefix,
 			p_sha256: sha256,
 			p_size_bytes: sizeBytes,
+			p_provider_id: resolvedId,
 		});
 		if (error) throw error;
 		const reservation = data?.[0];
@@ -46,7 +53,7 @@ Deno.serve(async (request) => {
 		const checksum = btoa(String.fromCharCode(...digest));
 		const headers = { 'if-none-match': '*', 'x-amz-checksum-sha256': checksum };
 		const uploadUrl = await getSignedUrl(
-			s3(),
+			storage.client,
 			new PutObjectCommand({
 				Bucket: bucket,
 				Key: reservation.object_key,

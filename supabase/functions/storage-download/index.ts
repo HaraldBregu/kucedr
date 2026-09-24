@@ -2,7 +2,7 @@ import { GetObjectCommand } from 'npm:@aws-sdk/client-s3@3.1127.0';
 import { getSignedUrl } from 'npm:@aws-sdk/s3-request-presigner@3.1127.0';
 import { authenticate } from '../_shared/auth.ts';
 import { json } from '../_shared/json.ts';
-import { s3 } from '../_shared/s3.ts';
+import { provider } from '../_shared/provider.ts';
 
 Deno.serve(async (request) => {
 	if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
@@ -11,14 +11,16 @@ Deno.serve(async (request) => {
 		const { workspaceId, versionId } = await request.json();
 		const { data, error } = await database
 			.from('storage_versions')
-			.select('bucket,object_key,sha256,size_bytes')
+			.select('bucket,object_key,sha256,size_bytes,provider_id')
 			.eq('workspace_id', workspaceId)
 			.eq('id', versionId)
 			.eq('owner_id', ownerId)
 			.single();
 		if (error || !data?.bucket || !data.object_key) throw new Error('Version is unavailable');
+		const storage = await provider(database, ownerId, data.provider_id);
+		if (storage.bucket !== data.bucket) throw new Error('Provider bucket does not match version');
 		const url = await getSignedUrl(
-			s3(),
+			storage.client,
 			new GetObjectCommand({
 				Bucket: data.bucket,
 				Key: data.object_key,

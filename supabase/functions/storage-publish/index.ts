@@ -1,5 +1,6 @@
 import { authenticate } from '../_shared/auth.ts';
 import { json } from '../_shared/json.ts';
+import { provider } from '../_shared/provider.ts';
 import { verify } from '../_shared/verify.ts';
 
 Deno.serve(async (request) => {
@@ -39,7 +40,7 @@ Deno.serve(async (request) => {
 		if (!prior.data && (kind === 'content' || kind === 'restore')) {
 			const { data, error } = await database
 				.from('storage_uploads')
-				.select('bucket,object_key,sha256,size_bytes')
+				.select('bucket,object_key,sha256,size_bytes,provider_id')
 				.eq('workspace_id', workspaceId)
 				.eq('owner_id', ownerId)
 				.eq('operation_id', operationId)
@@ -55,7 +56,9 @@ Deno.serve(async (request) => {
 			) {
 				throw new Error('Upload reservation does not match publication');
 			}
-			await verify(bucket, key, sha256, sizeBytes);
+			const storage = await provider(database, ownerId, data.provider_id);
+			if (storage.bucket !== bucket) throw new Error('Provider bucket does not match reservation');
+			await verify(storage.client, bucket, key, sha256, sizeBytes);
 			const confirmed = await database.rpc('storage_confirm_upload', {
 				p_owner_id: ownerId,
 				p_workspace_id: workspaceId,
