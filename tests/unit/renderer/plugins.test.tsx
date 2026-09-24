@@ -3,6 +3,12 @@ import userEvent from '@testing-library/user-event';
 import type { CatalogService } from '../../../src/shared/provider_types';
 import PluginsPage from '../../../src/renderer/src/pages/settings/pages/plugins/Page';
 
+const navigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+	useNavigate: () => navigate,
+}));
+
 const catalog = [
 	'gmail',
 	'google-calendar',
@@ -77,6 +83,30 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../../../src/renderer/src/lib/providers', () => ({
 	mcps: () => catalog,
+	databases: () => [{
+		id: 'pinecone',
+		name: 'Pinecone Vector Database',
+		description: 'Store and search vector embeddings in Pinecone.',
+		type: 'vector',
+		authentication: 'api-key',
+		url: 'https://api.pinecone.io',
+		provider: { id: 'pinecone', name: 'Pinecone', baseUrl: 'https://api.pinecone.io' },
+	}],
+	storages: () => [{
+		id: 'supabase-storage',
+		name: 'Supabase Storage',
+		description: 'Store files in a Supabase Storage bucket through its S3 endpoint.',
+		authentication: 's3-access-key',
+		metadata: { protocol: 's3', endpointTemplate: 'https://{projectRef}.storage.supabase.co/storage/v1/s3' },
+		provider: { id: 'supabase', name: 'Supabase', baseUrl: '' },
+	}, {
+		id: 'cloudflare-r2',
+		name: 'Cloudflare R2',
+		description: 'Store files in a Cloudflare R2 bucket through its S3 endpoint.',
+		authentication: 's3-access-key',
+		metadata: { protocol: 's3', endpointTemplate: 'https://{accountId}.r2.cloudflarestorage.com' },
+		provider: { id: 'cloudflare', name: 'Cloudflare', baseUrl: '' },
+	}],
 }));
 
 const mcpApi = {
@@ -105,12 +135,15 @@ it('renders the plugin providers with descriptions', async () => {
 			screen.getByRole('button', { name: 'settings.integrations.options' })
 		).toBeInTheDocument()
 	);
-	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(17);
-	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(18);
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(20);
+	expect(container.querySelectorAll('[data-slot="item"]')).toHaveLength(21);
 	expect(container.querySelectorAll('[data-slot="card"]')).toHaveLength(0);
 	expect(screen.getByText('Use gmail.')).toBeInTheDocument();
 	expect(screen.getByText('Outlook Mail')).toBeInTheDocument();
 	expect(screen.getByText('Microsoft 365 Search')).toBeInTheDocument();
+	expect(screen.getByText('Pinecone Vector Database')).toBeInTheDocument();
+	expect(screen.getByText('Supabase Storage')).toBeInTheDocument();
+	expect(screen.getByText('Cloudflare R2')).toBeInTheDocument();
 	expect(
 		container.querySelector('img[src="https://icons.example/google-drive.png"]')
 	).toBeInTheDocument();
@@ -144,7 +177,7 @@ it('removes the MCP server from the added plugin menu', async () => {
 
 	await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('gmail'));
 	expect(mcpApi.upsert).not.toHaveBeenCalled();
-	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(18);
+	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(21);
 });
 
 it('requires tenant configuration before adding a Microsoft 365 service', async () => {
