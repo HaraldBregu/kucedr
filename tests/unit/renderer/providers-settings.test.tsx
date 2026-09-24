@@ -175,7 +175,9 @@ it('loads and displays saved Database keys', async () => {
 	await user.click(screen.getByRole('menuitem', { name: 'Edit API key' }));
 	expect(screen.getByLabelText('Pinecone API key')).toHaveValue('');
 	expect(screen.getByLabelText('Pinecone API key')).toHaveAttribute('placeholder', '************');
-	expect(screen.getByLabelText('Pinecone API key').closest('[data-slot="item-actions"]')).not.toBeNull();
+	expect(
+		screen.getByLabelText('Pinecone API key').closest('[data-slot="item-actions"]')
+	).not.toBeNull();
 });
 
 it('masks saved model keys until editing', async () => {
