@@ -270,6 +270,14 @@
 			"add": "Aggiungi {{name}}",
 			"options": "Opzioni per {{name}}",
 			"remove": "Rimuovi {{name}}",
+			"microsoft": {
+				"title": "Aggiungi {{name}}",
+				"description": "Microsoft 365 Work IQ richiede un tenant e un'app registrata in Entra.",
+				"tenantId": "ID tenant",
+				"clientId": "ID applicazione (client)",
+				"requirements": "Il tenant deve avere accesso a Work IQ e il consenso dell'amministratore per questo servizio. Registra il callback OAuth di Kucedr (http://127.0.0.1:3001/oauth/callback) nell'app Entra, poi connetti tramite OAuth in Server MCP dopo l'aggiunta.",
+				"add": "Aggiungi servizio"
+			},
 			"available": "Integrazioni disponibili",
 			"availableDescription": "Aggiungi un servizio per rendere disponibili i suoi strumenti all'assistente.",
 			"empty": "Nessun plugin disponibile",

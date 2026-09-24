@@ -270,6 +270,14 @@
 			"add": "Add {{name}}",
 			"options": "Options for {{name}}",
 			"remove": "Remove {{name}}",
+			"microsoft": {
+				"title": "Add {{name}}",
+				"description": "Microsoft 365 Work IQ requires a tenant and an Entra app registration.",
+				"tenantId": "Tenant ID",
+				"clientId": "Application (client) ID",
+				"requirements": "Your tenant needs Work IQ access and admin consent for this service. Register Kucedr's OAuth callback (http://127.0.0.1:3001/oauth/callback) in the Entra app, then connect with OAuth in MCP Servers after adding.",
+				"add": "Add service"
+			},
 			"available": "Available integrations",
 			"availableDescription": "Add a service to make its tools available to the assistant.",
 			"empty": "No plugins available",
