@@ -295,6 +295,8 @@ describe('Home prompt attachments', () => {
 
 		const card = screen.getByText('diagram.png').closest('[data-slot="attachment"]');
 		expect(card).toHaveAttribute('data-state', 'done');
+		expect(picker.parentElement).not.toContainElement(card);
+		expect(card?.compareDocumentPosition(picker) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 		expect(card?.querySelector('[data-slot="attachment-media"]')).toBeInTheDocument();
 		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
 		fireEvent.click(screen.getByRole('button', { name: 'Remove diagram.png' }));
