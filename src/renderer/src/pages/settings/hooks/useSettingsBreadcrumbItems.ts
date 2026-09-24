@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useMatch } from 'react-router-dom';
 import { getChannelCatalogEntry } from '../../../../../shared';
+import { databases, mcps, storages } from '@/lib/providers';
 import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from '../navigation';
 import { getSystemMedia } from '../pages/general/media/media';
 
@@ -36,6 +37,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	const { t } = useTranslation();
 	const location = useLocation();
 	const mcpDetailMatch = useMatch('/settings/mcp/:mcpServerId');
+	const pluginDetailMatch = useMatch('/settings/plugins/:kind/:providerId/:entryId');
 	const appDetailMatch = useMatch('/settings/apps/:appId');
 	const appId = decodeURIComponent(appDetailMatch?.params.appId ?? '');
 	const [appLabel, setAppLabel] = useState<{ id: string; label: string } | null>(null);
@@ -134,6 +136,16 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		return [
 			{ label: t('settings.tabs.mcp'), path: '/settings/mcp' },
 			{ label: mcpDetailMatch.params.mcpServerId ?? '' },
+		];
+	}
+
+	if (pluginDetailMatch) {
+		const { kind, providerId, entryId } = pluginDetailMatch.params;
+		const catalog = kind === 'mcp' ? mcps() : kind === 'database' ? databases() : kind === 'storage' ? storages() : [];
+		const plugin = catalog.find((entry) => entry.provider.id === providerId && entry.id === entryId);
+		return [
+			{ label: t('settings.tabs.plugins'), path: '/settings/plugins' },
+			{ label: plugin?.name ?? formatAppLabel(entryId ?? '') },
 		];
 	}
 
