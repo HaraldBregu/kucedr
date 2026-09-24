@@ -1113,6 +1113,8 @@
 			"remove": "Remove {{name}}",
 			"editTitle": "Edit storage",
 			"formDescription": "Connect an Amazon S3 or S3-compatible bucket.",
+			"custom": "Custom S3",
+			"presetEndpointHint": "Enter your endpoint using this format: {{endpoint}}",
 			"emptyTitle": "No storage connections",
 			"emptyDescription": "Add a bucket to configure your file storage.",
 			"endpointHint": "Optional for Amazon S3. Enter your endpoint for other S3 providers.",
@@ -1121,6 +1123,7 @@
 			"saveError": "Could not save this storage connection.",
 			"removeError": "Could not remove this storage connection.",
 			"fields": {
+				"provider": "Provider",
 				"name": "Name",
 				"bucket": "Bucket",
 				"region": "Region",

@@ -1113,6 +1113,8 @@
 			"remove": "Rimuovi {{name}}",
 			"editTitle": "Modifica storage",
 			"formDescription": "Collega un bucket Amazon S3 o compatibile con S3.",
+			"custom": "S3 personalizzato",
+			"presetEndpointHint": "Inserisci l'endpoint in questo formato: {{endpoint}}",
 			"emptyTitle": "Nessuna connessione di archiviazione",
 			"emptyDescription": "Aggiungi un bucket per configurare l'archiviazione dei file.",
 			"endpointHint": "Facoltativo per Amazon S3. Inserisci l'endpoint per gli altri provider S3.",
@@ -1121,6 +1123,7 @@
 			"saveError": "Impossibile salvare questa connessione di archiviazione.",
 			"removeError": "Impossibile rimuovere questa connessione di archiviazione.",
 			"fields": {
+				"provider": "Provider",
 				"name": "Nome",
 				"bucket": "Bucket",
 				"region": "Regione",
