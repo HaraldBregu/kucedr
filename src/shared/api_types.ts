@@ -143,6 +143,8 @@ export interface WindowApi {
 	isMaximized: () => Promise<boolean>;
 	onMaximizeChange: (callback: (isMaximized: boolean) => void) => () => void;
 	isFullScreen: () => Promise<boolean>;
+	getSize: () => Promise<import('./window_size').WindowSize>;
+	setSize: (size: import('./window_size').WindowSize) => Promise<void>;
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void) => () => void;
 	setNavigationBarOptions: (options: AppNavigationBarOptions | null) => void;
 	onNavigationBarOptionsChanged: (

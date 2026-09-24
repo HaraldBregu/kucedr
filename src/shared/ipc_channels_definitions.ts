@@ -411,6 +411,8 @@ export const WindowChannels = {
 	openVoiceConversation: 'window:open-voice-conversation',
 	isMaximized: 'window:is-maximized',
 	isFullScreen: 'window:is-fullscreen',
+	getSize: 'window:get-size',
+	setSize: 'window:set-size',
 	maximizeChange: 'window:maximize-change',
 	fullScreenChange: 'window:fullscreen-change',
 	navigationBarOptionsSet: 'window:navigationbar-options:set',

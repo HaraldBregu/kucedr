@@ -16,6 +16,8 @@ import { openAppWindows } from '../apps/app_render';
 import { isAppNavigationBarOptions } from '../../shared/navigationbar_validate';
 import { setAppNavigationBar } from '../apps/app_navigationbar_set';
 import { dispatchAppNavigationBarButton } from '../apps/app_navigationbar_click';
+import { getWindowSize, setWindowSize } from '../settings_store';
+import { WINDOW_SIZES, type WindowSize } from '../../shared/window_size';
 
 const contextMenuRoles = new Set<ContextMenuRole>([
 	'undo',
@@ -154,6 +156,24 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 				const win = BrowserWindow.fromWebContents(event.sender);
 				return win ? win.isFullScreen() : false;
 			}, 'window:is-fullscreen')
+		);
+
+		ipcMain.handle(
+			WindowChannels.getSize,
+			wrapIpcHandler(() => getWindowSize(), 'window:get-size')
+		);
+
+		ipcMain.handle(
+			WindowChannels.setSize,
+			wrapIpcHandler((event, size: WindowSize) => {
+				if (!Object.hasOwn(WINDOW_SIZES, size)) throw new Error('Invalid window size.');
+				const win = BrowserWindow.fromWebContents(event.sender);
+				if (!win) throw new Error('Window unavailable.');
+				if (win.isMaximized()) win.unmaximize();
+				const { width, height } = WINDOW_SIZES[size];
+				win.setSize(width, height);
+				setWindowSize(size);
+			}, 'window:set-size')
 		);
 
 		ipcMain.handle(

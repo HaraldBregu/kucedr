@@ -36,6 +36,8 @@ export const win: WindowApi = {
 	isFullScreen: (): Promise<boolean> => {
 		return typedInvokeUnwrap(WindowChannels.isFullScreen);
 	},
+	getSize: () => typedInvokeUnwrap(WindowChannels.getSize),
+	setSize: (size) => typedInvokeUnwrap(WindowChannels.setSize, size),
 	onFullScreenChange: (callback: (isFullScreen: boolean) => void): (() => void) => {
 		return typedOn(WindowChannels.fullScreenChange, callback);
 	},
