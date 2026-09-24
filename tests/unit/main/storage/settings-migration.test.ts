@@ -22,7 +22,7 @@ jest.mock('electron-store', () => {
 			fs.writeFileSync(this.path, JSON.stringify(value));
 			this.value = value;
 		}
-	});
+	};
 });
 jest.mock('../../../../src/main/mcp/mcp_store_state', () => ({ migrateMcpStoreFromProviders: jest.fn() }));
 jest.mock('../../../../src/main/tasks/tasks_store', () => ({ taskStorePath: '/tmp/tasks.json' }));
