@@ -6,6 +6,7 @@ export type PromptAttachmentBlock =
 			name: string;
 			mimeType: string;
 			bytes: number;
+			path?: string;
 			text: string;
 	  }
 	| {
@@ -13,6 +14,7 @@ export type PromptAttachmentBlock =
 			name: string;
 			mimeType: string;
 			bytes: number;
+			path?: string;
 			base64: string;
 	  }
 	| {
@@ -20,6 +22,7 @@ export type PromptAttachmentBlock =
 			name: string;
 			mimeType: 'application/pdf';
 			bytes: number;
+			path?: string;
 			base64: string;
 	  };
 

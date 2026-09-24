@@ -7,6 +7,7 @@ import { formatReplyMessage } from '@shared/reply';
 import { useHomeAgentContext, type AgentMessage } from '../context';
 import { expandTaskCommand, parseGoalCommand } from './commands';
 import { filesToAgentInput } from './files';
+import { attachmentPath } from '../attachments/path';
 import { useInteractionMode } from './mode';
 
 type WindowWithOptionalAgent = Window & {
@@ -178,6 +179,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 						name: file.name,
 						mimeType: file.type || 'application/octet-stream',
 						bytes: file.size,
+						...(attachmentPath(file) ? { path: attachmentPath(file) } : {}),
 						file,
 					})),
 					submittedAtMs,

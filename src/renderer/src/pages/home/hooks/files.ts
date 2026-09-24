@@ -1,4 +1,5 @@
 import type { AgentInputFile } from '@/lib/compat';
+import { attachmentPath } from '../attachments/path';
 
 export async function filesToAgentInput(files: File[]): Promise<AgentInputFile[]> {
 	return Promise.all(
@@ -15,6 +16,7 @@ export async function filesToAgentInput(files: File[]): Promise<AgentInputFile[]
 				name: file.name,
 				mimeType: file.type || 'application/octet-stream',
 				data: btoa(binary),
+				...(attachmentPath(file) ? { path: attachmentPath(file) } : {}),
 			};
 		})
 	);

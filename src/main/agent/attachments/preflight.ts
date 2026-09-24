@@ -68,13 +68,14 @@ export function preflightPromptAttachments(
 			if (!rule)
 				throw new Error(`Attachment "${file.name}" is not supported by the selected model.`);
 			return image
-				? { type: 'image', name: file.name, mimeType, bytes: bytes.length, base64: data }
+				? { type: 'image', name: file.name, mimeType, bytes: bytes.length, base64: data, ...(file.path ? { path: file.path } : {}) }
 				: {
 						type: 'document',
 						name: file.name,
 						mimeType: 'application/pdf',
 						bytes: bytes.length,
 						base64: data,
+						...(file.path ? { path: file.path } : {}),
 					};
 		}
 
@@ -100,6 +101,7 @@ export function preflightPromptAttachments(
 			mimeType: 'text/plain',
 			bytes: bytes.length,
 			text,
+			...(file.path ? { path: file.path } : {}),
 		};
 	});
 }

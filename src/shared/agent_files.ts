@@ -51,7 +51,7 @@ export function normalizeAgentInputFiles(value: unknown): AgentInputFile[] | und
 	for (const item of value) {
 		if (!item || typeof item !== 'object' || Array.isArray(item))
 			throw new Error('Each attachment must include a name, MIME type, and base64 data.');
-		const { name, mimeType, data } = item as Record<string, unknown>;
+		const { name, mimeType, data, path } = item as Record<string, unknown>;
 		if (typeof name !== 'string' || typeof mimeType !== 'string' || typeof data !== 'string')
 			throw new Error('Each attachment must include a name, MIME type, and base64 data.');
 		const normalizedData = data.trim();
@@ -59,7 +59,9 @@ export function normalizeAgentInputFiles(value: unknown): AgentInputFile[] | und
 			throw new Error('Each attachment must include a name, MIME type, and base64 data.');
 		if (normalizedData.length % 4 === 1 || !/^[a-zA-Z0-9+/]*={0,2}$/.test(normalizedData))
 			throw new Error('Attachment data must be valid base64.');
-		files.push({ name, mimeType: mimeType.trim(), data: normalizedData });
+		if (path !== undefined && (typeof path !== 'string' || !path.trim()))
+			throw new Error('Attachment path must be a nonempty string.');
+		files.push({ name, mimeType: mimeType.trim(), data: normalizedData, ...(path ? { path } : {}) });
 	}
 	return files.length > 0 ? files : undefined;
 }

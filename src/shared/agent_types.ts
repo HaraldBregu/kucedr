@@ -91,6 +91,7 @@ export interface AgentInputFile {
 	name: string;
 	mimeType: string;
 	data: string;
+	path?: string;
 }
 
 export interface AgentPromptInputCapabilities {
@@ -153,6 +154,7 @@ export type AgentHistoryContentBlock =
 			name: string;
 			mimeType: string;
 			bytes: number;
+			path?: string;
 	  };
 
 export interface AgentHistoryMessage {

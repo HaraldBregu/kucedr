@@ -663,6 +663,7 @@ function toHistoryContentBlocks(message: Message): AgentHistoryContentBlock[] {
 							name: block.name,
 							mimeType: block.mimeType,
 							bytes,
+							...(typeof block.path === 'string' ? { path: block.path } : {}),
 						};
 					}
 					return undefined;
