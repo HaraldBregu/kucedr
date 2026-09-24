@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { CircleHelp, Code2, Layers, LogOut, MessageCirclePlus, MoreVertical, RadioTower, Server, Settings, UserRound } from 'lucide-react';
+import { CircleHelp, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -113,13 +113,14 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				<button
 					type="button"
 					className={SPLIT_ITEM_CLASS}
+					aria-label={t('navigationBar.newChat', 'New chat')}
 					onClick={() => {
 						setSessionId(crypto.randomUUID());
 						if (sessions.length === 0) setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
 					}}
 				>
-					<MessageCirclePlus className="size-4" />
-					<span>{t('navigationBar.newChat', 'New chat')}</span>
+					<Plus className="size-4" />
+					<span>{t('navigationBar.new', 'New')}</span>
 				</button>
 			</header>
 			<section className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3" aria-busy={loading}>

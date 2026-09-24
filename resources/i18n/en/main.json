@@ -2100,6 +2100,7 @@
 	"navigationBar": {
 		"applicationMenu": "Application menu",
 		"chat": "Chat",
+		"new": "New",
 		"openLocation": "Open location",
 		"search": "Search",
 		"toggleSidebar": "Toggle sidebar",
