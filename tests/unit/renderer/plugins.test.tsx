@@ -154,3 +154,23 @@ it('requires tenant configuration before adding a Microsoft 365 service', async 
 		})
 	);
 });
+
+it('re-enables a configured Microsoft 365 service without replacing its tenant', async () => {
+	const user = userEvent.setup();
+	const saved = {
+		type: 'http',
+		name: 'Outlook Mail',
+		url: 'https://agent365.svc.cloud.microsoft/agents/tenants/11111111-1111-1111-1111-111111111111/servers/mcp_MailTools',
+		client_id: '22222222-2222-2222-2222-222222222222',
+		enabled: false,
+	};
+	mcpApi.list.mockResolvedValue({ 'microsoft-mail': saved });
+	render(<PluginsPage />);
+	const row = screen.getByText('Outlook Mail').closest('[data-slot="item"]');
+	expect(row).not.toBeNull();
+	await user.click(within(row as HTMLElement).getByRole('button'));
+	await waitFor(() =>
+		expect(mcpApi.upsert).toHaveBeenCalledWith('microsoft-mail', { ...saved, enabled: true })
+	);
+	expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+});
