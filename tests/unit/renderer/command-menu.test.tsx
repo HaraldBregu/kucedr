@@ -11,6 +11,8 @@ jest.mock('react-i18next', () => ({
 				'command.label': 'Route search',
 				'command.placeholder': 'Search routes and settings...',
 				'command.empty': 'No matching route or setting.',
+				'command.suggestions': 'Suggestions',
+				'command.settings': 'Settings',
 				'command.routes.home.title': 'Home',
 				'command.routes.home.description': 'Chat with Kucedr',
 				'command.routes.settings.title': 'Settings',
@@ -78,7 +80,7 @@ it('opens General settings with the settings shortcut', () => {
 	expect(screen.getByText('General settings')).toBeInTheDocument();
 });
 
-it('shows command items in one list without section headings', () => {
+it('groups real routes using the command menu layout', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<CommandMenu open />
@@ -86,9 +88,9 @@ it('shows command items in one list without section headings', () => {
 	);
 
 	expect(screen.getByText('Home')).toBeInTheDocument();
-	expect(screen.getByText('Settings')).toBeInTheDocument();
-	expect(screen.queryByText('Routes')).not.toBeInTheDocument();
-	expect(screen.queryByText('Settings routes')).not.toBeInTheDocument();
+	expect(screen.getByText('Suggestions')).toBeInTheDocument();
+	expect(screen.getAllByText('Settings')).toHaveLength(2);
+	expect(screen.getByText('/settings/account')).toBeInTheDocument();
 });
 
 it('includes every canonical static settings subpage', () => {
@@ -126,6 +128,8 @@ it('provides complete English and Italian command translations', () => {
 			label: expect.any(String),
 			placeholder: expect.any(String),
 			empty: expect.any(String),
+			suggestions: expect.any(String),
+			settings: expect.any(String),
 			routes: {
 				home: { title: expect.any(String), description: expect.any(String) },
 				settings: { title: expect.any(String), description: expect.any(String) },

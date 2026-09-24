@@ -6,9 +6,11 @@ import { Home, Settings, type LucideIcon } from 'lucide-react';
 import {
 	CommandDialog,
 	CommandEmpty,
+	CommandGroup,
 	CommandInput,
 	CommandItem,
 	CommandList,
+	CommandSeparator,
 	CommandShortcut,
 } from '@/components/ui/command';
 import {
@@ -173,22 +175,9 @@ function CommandMenuItem({
 			value={item.searchValue}
 			keywords={item.keywords}
 			onSelect={() => onSelect(item.path)}
-			className="items-center gap-3 px-2 py-2"
 		>
-			<span
-				data-slot="command-page-icon"
-				className="flex size-7 shrink-0 items-center justify-center rounded-md bg-muted/70 text-muted-foreground"
-			>
-				<Icon className="size-4" aria-hidden="true" strokeWidth={1.8} />
-			</span>
-			<span className="flex min-w-0 flex-1 flex-col">
-				<span className="truncate text-xs font-medium leading-4">{item.label}</span>
-				{item.description && (
-					<span className="truncate text-xs leading-4 text-muted-foreground">
-						{item.description}
-					</span>
-				)}
-			</span>
+			<Icon className="size-4" aria-hidden="true" />
+			<span className="min-w-0 flex-1 truncate">{item.label}</span>
 			<CommandShortcut className="hidden max-w-40 shrink-0 truncate font-mono text-[10px] sm:block">
 				{item.path}
 			</CommandShortcut>
@@ -291,9 +280,19 @@ export function CommandMenu({
 			/>
 			<CommandList ref={listRef}>
 				<CommandEmpty>{t('command.empty')}</CommandEmpty>
-				{(isSearching ? allItems : visibleItems).map((item) => (
-					<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
-				))}
+				<CommandGroup heading={t('command.suggestions')}>
+					{visibleItems.slice(0, TOP_LEVEL_ROUTES.length).map((item) => (
+						<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
+					))}
+				</CommandGroup>
+				<CommandSeparator />
+				<CommandGroup heading={t('command.settings')}>
+					{(isSearching ? allItems : visibleItems)
+						.slice(TOP_LEVEL_ROUTES.length)
+						.map((item) => (
+							<CommandMenuItem key={item.id} item={item} onSelect={navigateTo} />
+						))}
+				</CommandGroup>
 			</CommandList>
 		</CommandDialog>
 	);

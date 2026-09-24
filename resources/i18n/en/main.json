@@ -4,6 +4,8 @@
 		"label": "Route search",
 		"placeholder": "Search routes and settings...",
 		"empty": "No matching route or setting.",
+		"suggestions": "Suggestions",
+		"settings": "Settings",
 		"routes": {
 			"home": {
 				"title": "Home",

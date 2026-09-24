@@ -4,6 +4,8 @@
 		"label": "Ricerca pagine",
 		"placeholder": "Cerca pagine e impostazioni...",
 		"empty": "Nessuna pagina o impostazione corrispondente.",
+		"suggestions": "Suggerimenti",
+		"settings": "Impostazioni",
 		"routes": {
 			"home": {
 				"title": "Home",
