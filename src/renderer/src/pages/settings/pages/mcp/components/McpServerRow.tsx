@@ -1,5 +1,5 @@
 import React from 'react';
-import { MoreHorizontal, PlugZap } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import type { McpServerInfo } from '@shared/mcp_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
@@ -51,20 +51,13 @@ export function McpServerRow({
 				onClick={onOpen}
 				className="flex min-w-0 flex-1 items-center gap-3 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 			>
-				{iconService ? (
-					<ProviderAvatar
-						providerId={iconService.id}
-						name={iconService.name}
-						iconDarkUrl={iconService.iconDarkUrl}
-						iconLightUrl={iconService.iconLightUrl}
-						className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-					/>
-				) : (
-					<PlugZap
-						className="size-9 shrink-0 rounded-2xl bg-muted/50 p-1.5 text-muted-foreground group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-						aria-hidden="true"
-					/>
-				)}
+				<ProviderAvatar
+					providerId={iconService?.id ?? server.id}
+					name={iconService?.name ?? title}
+					iconDarkUrl={iconService?.iconDarkUrl}
+					iconLightUrl={iconService?.iconLightUrl}
+					className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+				/>
 				<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 					<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
 						{title}
