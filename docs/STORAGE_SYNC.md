@@ -108,8 +108,8 @@ corresponding metadata; the version-sync database migration does not convert the
   integration tests.
 - Existing S3 backup objects remain intact but are not automatically converted to immutable
   versions. Their old backup and restore path remains available when version history sync is off.
-- Enabling version sync registers the selected saved provider's credentials with the trusted
-  backend. The backend encrypts them with its server-only key. Existing legacy versions with no
+- The first sync registers the selected saved provider's credentials with the trusted backend,
+  after saving local edits. The backend encrypts them with its server-only key. Existing legacy versions with no
   provider ID continue to use their original global S3 environment configuration.
 - Catch-up installs only new working files. Existing paths stay in place even when a newer cloud
   version is available; the local cache and conflict list retain the alternative version. The
