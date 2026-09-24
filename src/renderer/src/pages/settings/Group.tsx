@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
+import { Badge } from '@/components/ui/badge';
 import { SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import type { SettingsNavigationItem } from './navigation';
@@ -45,6 +46,11 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 									strokeWidth={1.8}
 								/>
 								<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
+								{item.badge && (
+									<Badge variant="outline" className="ml-auto rounded-full text-[10px]">
+										{item.badge}
+									</Badge>
+								)}
 							</Link>
 						</SidebarMenuItem>
 					);

@@ -3,7 +3,6 @@ import {
 	Brain,
 	Bot,
 	Layers,
-	BotMessageSquare,
 	Cloud,
 	Code2,
 	Folder,
@@ -12,6 +11,7 @@ import {
 	Library,
 	ListChecks,
 	MessageCircle,
+	Network,
 	Plug,
 	PlugZap,
 	RadioTower,
@@ -29,6 +29,7 @@ export interface SettingsNavigationItem {
 	readonly sidebarLabelKey?: string;
 	readonly descriptionKey: string;
 	readonly icon: LucideIcon;
+	readonly badge?: string;
 	readonly comingSoon?: boolean;
 }
 
@@ -426,7 +427,8 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/remote-agent',
 		labelKey: 'settings.tabs.remoteAgent',
 		descriptionKey: 'settings.overview.descriptions.remoteAgent',
-		icon: BotMessageSquare,
+		icon: Network,
+		badge: 'new',
 	},
 	{
 		path: '/settings/apps',

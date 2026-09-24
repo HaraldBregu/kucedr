@@ -311,12 +311,14 @@ it('places Channels after Health and Remote agent after Channels in the Assistan
 		name: 'settings.tabs.channels',
 	});
 	const remoteAgent = within(assistantGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.remoteAgent',
+		name: 'settings.tabs.remoteAgent new',
 	});
 
 	expect(channels).toHaveAttribute('href', '/settings/channels');
 	expect(links.indexOf(channels)).toBe(links.indexOf(health) + 1);
 	expect(remoteAgent).toHaveAttribute('href', '/settings/remote-agent');
+	expect(remoteAgent.querySelector('.lucide-network')).toBeInTheDocument();
+	expect(within(remoteAgent).getByText('new')).toHaveAttribute('data-slot', 'badge');
 	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(channels) + 1);
 });
 
