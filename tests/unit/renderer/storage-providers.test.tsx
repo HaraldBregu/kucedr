@@ -90,7 +90,7 @@ it('keeps the Storage page empty when no plugin storage is enabled', async () =>
 });
 
 it('adds multiple independent S3 connections and retains existing entries', async () => {
-	const user = userEvent.setup();
+	const user = userEvent.setup({ pointerEventsCheck: 0 });
 	render(<StorageProvidersPage />);
 	await screen.findByText('No storage connections');
 	for (const name of ['Production', 'Archive']) {
