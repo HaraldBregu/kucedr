@@ -226,3 +226,18 @@ it('re-enables a configured Microsoft 365 service without replacing its tenant',
 	);
 	expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
+
+it('opens plugin details from rows while keeping add buttons separate', async () => {
+	const user = userEvent.setup();
+	render(<PluginsPage />);
+	await user.click(screen.getByText('Pinecone Vector Database'));
+	expect(navigate).toHaveBeenLastCalledWith('/settings/plugins/database/pinecone/pinecone');
+	await user.click(screen.getByText('Supabase Storage'));
+	expect(navigate).toHaveBeenLastCalledWith('/settings/plugins/storage/supabase/supabase-storage');
+	await user.click(screen.getByText('Use gitlab.'));
+	expect(navigate).toHaveBeenLastCalledWith('/settings/plugins/mcp/gitlab/gitlab');
+	const storageRow = screen.getByText('Cloudflare R2').closest('[data-slot="item"]');
+	expect(storageRow).not.toBeNull();
+	await user.click(within(storageRow as HTMLElement).getByRole('button'));
+	expect(navigate).toHaveBeenLastCalledWith('/settings/providers/storage');
+});
