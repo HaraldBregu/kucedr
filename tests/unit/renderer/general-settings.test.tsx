@@ -7,6 +7,7 @@ import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/
 const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
+const mockSetWindowSize = jest.fn();
 let notifyTrayEnabled: (enabled: boolean) => void;
 let notifyKeepAwake: (enabled: boolean) => void;
 
@@ -32,6 +33,14 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	mockSetKeepAwake.mockResolvedValue(undefined);
 	mockSetTrayClickAction.mockResolvedValue(undefined);
+	mockSetWindowSize.mockResolvedValue(undefined);
+	Object.defineProperty(window, 'win', {
+		configurable: true,
+		value: {
+			getSize: jest.fn().mockResolvedValue('900x700'),
+			setSize: mockSetWindowSize,
+		},
+	});
 	Object.defineProperty(window, 'PointerEvent', {
 		configurable: true,
 		value: MouseEvent,
@@ -98,6 +107,20 @@ it('saves the configured tray icon click action from General settings', async ()
 	);
 
 	expect(mockSetTrayClickAction).toHaveBeenCalledWith('toggle-persona');
+});
+
+it('resizes the window when a size preset is selected', async () => {
+	const user = userEvent.setup();
+	render(<MemoryRouter><GeneralPage /></MemoryRouter>);
+
+	const size = await screen.findByRole('combobox', {
+		name: 'settings.application.windowSize',
+	});
+	await user.click(size);
+	await user.click(await screen.findByRole('option', { name: '1000×700' }));
+
+	expect(mockSetWindowSize).toHaveBeenCalledWith('1000x700');
+	expect(size).toHaveTextContent('1000×700');
 });
 
 it('refreshes toggles changed from the native application menu', async () => {

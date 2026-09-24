@@ -6,6 +6,7 @@ jest.mock('../../../../src/main/translucency', () => ({
 }));
 
 import { Main } from '../../../../src/main/create_window';
+import { setWindowSize } from '../../../../src/main/settings_store';
 
 function createWindow() {
 	const listeners = new Map<string, (...args: never[]) => void>();
@@ -55,6 +56,27 @@ it('shows the native menu bar when the main window gains focus', () => {
 	expect(win.setMenuBarVisibility).toHaveBeenCalledWith(true);
 	expect(win.setMenuBarVisibility).not.toHaveBeenCalledWith(false);
 	expect(win.autoHideMenuBar).toBe(false);
+});
+
+it('uses the stored size for a newly created window', () => {
+	setWindowSize('1200x800');
+	try {
+		const { win } = createWindow();
+		const windowFactory = { create: jest.fn(() => win) };
+		const main = new Main(
+			{ isQuitting: false } as never,
+			windowFactory as never,
+			{ create: jest.fn() } as never
+		);
+
+		main.create();
+		expect(windowFactory.create).toHaveBeenCalledWith(
+			expect.objectContaining({ width: 1200, height: 800 }),
+			expect.objectContaining({ hash: 'start' })
+		);
+	} finally {
+		setWindowSize('900x700');
+	}
 });
 
 it('moves through route history for mouse back and forward commands', () => {

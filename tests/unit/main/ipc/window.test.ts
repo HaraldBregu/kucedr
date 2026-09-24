@@ -7,6 +7,7 @@ import type { LoggerService } from '../../../../src/main/shared';
 import { openAppWindows } from '../../../../src/main/apps/app_render';
 import type { AppRegistry } from '../../../../src/main/apps/app_registry';
 import { WindowChannels } from '../../../../src/shared/ipc_channels_definitions';
+import { getWindowSize, setWindowSize } from '../../../../src/main/settings_store';
 
 const appRegistry = {
 	resolve: jest.fn(() => 'workspace'),
@@ -19,6 +20,33 @@ beforeEach(() => {
 
 afterEach(() => {
 	(openAppWindows as Map<string, unknown>).clear();
+	setWindowSize('900x700');
+});
+
+it('resizes the calling window and stores its new default size', async () => {
+	const win = {
+		isMaximized: jest.fn(() => true),
+		unmaximize: jest.fn(),
+		setSize: jest.fn(),
+	};
+	Object.assign(BrowserWindow, { fromWebContents: jest.fn(() => win) });
+	new WindowIpc().register(
+		{ logger: { info: jest.fn() } as unknown as LoggerService, appRegistry },
+		{} as EventBus
+	);
+	const setSize = (ipcMain.handle as jest.Mock).mock.calls.find(
+		([channel]) => channel === WindowChannels.setSize
+	)?.[1];
+	const getSize = (ipcMain.handle as jest.Mock).mock.calls.find(
+		([channel]) => channel === WindowChannels.getSize
+	)?.[1];
+	const event = { sender: {} } as IpcMainInvokeEvent;
+
+	await expect(setSize(event, '1000x700')).resolves.toEqual({ success: true, data: undefined });
+	expect(win.unmaximize).toHaveBeenCalledTimes(1);
+	expect(win.setSize).toHaveBeenCalledWith(1000, 700);
+	expect(getWindowSize()).toBe('1000x700');
+	await expect(getSize(event)).resolves.toEqual({ success: true, data: '1000x700' });
 });
 
 it('shows a native context menu and returns the selected item id', async () => {
