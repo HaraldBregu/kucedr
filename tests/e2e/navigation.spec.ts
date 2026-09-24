@@ -121,6 +121,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 		.locator('xpath=ancestor::*[contains(@class, "pt-20")][1]');
 	const composer = editor.locator('xpath=ancestor::*[@data-expanded][1]');
 	const field = page.locator('[data-slot="prompt-input-field"]');
+	const controls = page.locator('[data-slot="prompt-input-controls"]');
 	const attachmentButton = page.getByRole('button', { name: 'Add attachment' });
 	const sendButton = page.getByRole('button', { name: 'Start voice conversation' });
 	const transcriptionButton = field.getByRole('button', { name: /speech-to-text provider/ });
@@ -129,6 +130,9 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
 	await expect(field).toHaveCSS('min-height', '56px');
 	await expect(field).toHaveClass(/rounded-2xl/);
+	await expect(controls).toBeVisible();
+	expect(await controls.evaluate((element) => element.previousElementSibling?.hasAttribute('data-expanded'))).toBe(true);
+	await expect(controls.getByRole('button', { name: 'Add attachment' })).toBeVisible();
 	await expect(attachmentButton).toHaveCSS('width', '32px');
 	await expect(attachmentButton).toHaveCSS('height', '32px');
 	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '16px');
