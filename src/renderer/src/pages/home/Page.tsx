@@ -951,7 +951,10 @@ function PageContent(): ReactElement {
 										<button
 											type="button"
 											className="flex min-w-0 items-center gap-1.5 rounded-md px-1 py-1 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-											onClick={() => navigate('/settings/agent')}
+											onClick={(event) => {
+												event.stopPropagation();
+												navigate('/settings/agent');
+											}}
 											aria-label={`Change model, currently ${modelLabel}`}
 										>
 											<Sparkles className="size-4 shrink-0 text-primary" />
@@ -960,8 +963,8 @@ function PageContent(): ReactElement {
 										<span className="shrink-0">Auto</span>
 									</div>
 								}
-								className={cn(
-									'w-full',
+								className="w-full"
+								inputClassName={cn(
 									planCommandActive && 'plan-prompt-frame',
 									goalCommandActive && 'goal-prompt-frame'
 								)}
