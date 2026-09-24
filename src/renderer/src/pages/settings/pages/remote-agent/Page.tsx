@@ -29,7 +29,7 @@ const empty: A2aAgentInput = {
 	enabled: true,
 };
 
-export default function A2aPage(): React.JSX.Element {
+export default function RemoteAgentPage(): React.JSX.Element {
 	const [agents, setAgents] = useState<A2aAgentSummary[]>([]);
 	const [form, setForm] = useState<A2aAgentInput>(empty);
 	const [adding, setAdding] = useState(false);
@@ -57,7 +57,7 @@ export default function A2aPage(): React.JSX.Element {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title="A2A"
+				 title="Remote agent"
 				description="Connect remote Agent2Agent-compatible agents and delegate work to them."
 				action={
 					<Button
