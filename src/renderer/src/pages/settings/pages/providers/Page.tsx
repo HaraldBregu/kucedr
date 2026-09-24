@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AlertTriangle, ExternalLink, LoaderCircle, MoreHorizontal, Plus } from 'lucide-react';
+import { AlertTriangle, Database, ExternalLink, LoaderCircle, MoreHorizontal, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import ollamaDarkLogo from '@resources/providers/ollama/images/ollama-dark.svg';
@@ -29,6 +29,7 @@ import {
 } from '../../../start/setupConstants';
 import type { ProviderCatalogItem, ProviderSetupEntry } from '../../../start/setupTypes';
 import {
+	SettingsEmptyState,
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
@@ -652,9 +653,17 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>
-					<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
-						{databaseProviders.map((provider) => renderProviderCard(provider, 'databases'))}
-					</div>
+					{databaseProviders.length === 0 ? (
+						<SettingsEmptyState
+							icon={Database}
+							title={t('settings.providers.emptyDatabaseTitle')}
+							description={t('settings.providers.emptyDatabaseDescription')}
+						/>
+					) : (
+						<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
+							{databaseProviders.map((provider) => renderProviderCard(provider, 'databases'))}
+						</div>
+					)}
 				</SettingsSection>
 			)}
 

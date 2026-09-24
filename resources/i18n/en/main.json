@@ -1071,6 +1071,8 @@
 			"registeredProviders": "Registered Providers",
 			"manageNote": "Manage provider API keys from the Models page in the main navigation.",
 			"noProviders": "No providers configured yet.",
+			"emptyDatabaseTitle": "No database providers",
+			"emptyDatabaseDescription": "Enable a database in Plugins to configure it here.",
 			"modelsCount": "{{count}} models",
 			"loading": "Loading providers...",
 			"addTitle": "Add provider",

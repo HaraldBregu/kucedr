@@ -1071,6 +1071,8 @@
 			"registeredProviders": "Provider Registrati",
 			"manageNote": "Gestisci le chiavi API dei provider dalla pagina Modelli nella navigazione principale.",
 			"noProviders": "Nessun provider configurato.",
+			"emptyDatabaseTitle": "Nessun provider di database",
+			"emptyDatabaseDescription": "Abilita un database in Plugin per configurarlo qui.",
 			"modelsCount": "{{count}} modelli",
 			"loading": "Caricamento provider...",
 			"addTitle": "Aggiungi provider",
