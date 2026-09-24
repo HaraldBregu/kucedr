@@ -78,6 +78,31 @@ describe('provider manifest validation', () => {
 		).toEqual([expect.stringContaining('services[0].type must be one of')]);
 	});
 
+	it('accepts service icons from the provider image folder', () => {
+		const manifest = {
+			providerId: 'google',
+			providerName: 'Google',
+			services: [
+				{
+					id: 'gmail',
+					name: 'Gmail',
+					type: 'mcp',
+					url: 'https://gmailmcp.googleapis.com/mcp/v1',
+					icon_dark_url: '/images/official/gmail.png',
+					icon_light_url: '/images/official/gmail.png',
+				},
+			],
+		};
+
+		expect(parseProviderManifest(manifest)).toEqual(manifest);
+		expect(
+			validateProviderManifest({
+				...manifest,
+				services: [{ ...manifest.services[0], icon_dark_url: '../gmail.png' }],
+			})
+		).toContainEqual(expect.stringContaining('services[0].icon_dark_url'));
+	});
+
 	it.each(['large-language-model', 'research-chat-model'])(
 		'requires prompt attachment metadata for %s services',
 		(type) => {

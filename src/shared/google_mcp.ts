@@ -6,6 +6,7 @@ const SCOPES: Readonly<Record<string, readonly string[]>> = {
 		'calendar.events.readonly',
 	],
 	'drivemcp.googleapis.com': ['drive.readonly', 'drive.file'],
+	'people.googleapis.com': ['directory.readonly', 'userinfo.profile', 'contacts.readonly'],
 };
 
 export function googleMcpScopes(value: string): string | undefined {

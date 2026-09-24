@@ -176,7 +176,7 @@ describe('MCP details', () => {
 	});
 });
 
-it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'])(
 	'shows only OAuth controls for %s and clears stored credentials',
 	async (host) => {
 		const user = userEvent.setup();
@@ -185,7 +185,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			source: 'configured',
 			data: {
 				type: 'http',
-				url: `https://${host}.googleapis.com/mcp/v1`,
+				url: `https://${host}/mcp/v1`,
 				token: 'old-token',
 				client_id: 'old-client',
 				client_secret: 'old-secret',
@@ -206,7 +206,7 @@ it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
 			'google',
 			expect.objectContaining({
 				type: 'http',
-				url: `https://${host}.googleapis.com/mcp/v1`,
+				url: `https://${host}/mcp/v1`,
 				token: undefined,
 				client_id: undefined,
 				client_secret: undefined,

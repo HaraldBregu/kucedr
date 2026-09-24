@@ -5,10 +5,10 @@ import { getMcpOAuthRedirectUrl } from '../../../../src/main/mcp/redirect';
 import { googleMcpScopes } from '../../../../src/shared/google_mcp';
 import type { McpOAuthState } from '../../../../src/main/mcp/mcp_types';
 
-it.each(['gmailmcp', 'calendarmcp', 'drivemcp'])(
+it.each(['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'])(
 	'authorizes %s with a registered client without DCR',
 	async (host) => {
-		const serverUrl = `https://${host}.googleapis.com/mcp/v1`;
+		const serverUrl = `https://${host}/mcp/v1`;
 		let state: McpOAuthState = { client_id: 'old-client', client_secret: 'old-secret' };
 		const redirect = jest.fn();
 		const provider = createOAuthProvider({

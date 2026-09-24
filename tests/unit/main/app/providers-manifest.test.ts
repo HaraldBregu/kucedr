@@ -9,7 +9,7 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 describe('provider manifests', () => {
 	it('routes manifest services to their matching catalog', () => {
 		const integrations = loadMcps().filter((service) =>
-			['gmail', 'google-calendar', 'google-drive', 'github', 'notion'].includes(
+			['gmail', 'google-calendar', 'google-contacts', 'google-drive', 'github', 'notion'].includes(
 				service.id
 			)
 		);
@@ -38,12 +38,14 @@ describe('provider manifests', () => {
 			'google',
 			'google',
 			'google',
+			'google',
 			'notion',
 		]);
 		expect(integrations.map((service) => service.id)).toEqual([
 			'github',
 			'gmail',
 			'google-calendar',
+			'google-contacts',
 			'google-drive',
 			'notion',
 		]);
@@ -51,6 +53,7 @@ describe('provider manifests', () => {
 			'https://api.githubcopilot.com/mcp/',
 			'https://gmailmcp.googleapis.com/mcp/v1',
 			'https://calendarmcp.googleapis.com/mcp/v1',
+			'https://people.googleapis.com/mcp/v1',
 			'https://drivemcp.googleapis.com/mcp/v1',
 			'https://mcp.notion.com/mcp',
 		]);
@@ -58,19 +61,22 @@ describe('provider manifests', () => {
 			'Work with repositories and issues.',
 			'Search and manage email.',
 			'Manage calendars and events.',
+			'Search contacts and directory profiles.',
 			'Search and manage Drive files.',
 			'Search and manage Notion pages.',
 		]);
-		expect(integrations.every((service) => service.iconLightUrl?.endsWith('.png'))).toBe(
+		expect(integrations.every((service) => /\.(png|svg)$/.test(service.iconLightUrl ?? ''))).toBe(
 			true
 		);
-		for (const id of ['gmail', 'google-calendar', 'google-drive']) {
+		for (const id of ['gmail', 'google-calendar', 'google-contacts', 'google-drive']) {
 			const service = integrations.find((entry) => entry.id === id);
+			const extension = id === 'google-calendar' ? 'svg' : 'png';
+			const iconName = id === 'google-contacts' ? 'google-contact' : id;
 			expect(service?.iconDarkUrl).toContain(
-				`/resources/providers/google/images/official/${id}.png`
+				`/resources/providers/google/images/official/${iconName}.${extension}`
 			);
 			expect(service?.iconLightUrl).toContain(
-				`/resources/providers/google/images/official/${id}.png`
+				`/resources/providers/google/images/official/${iconName}.${extension}`
 			);
 		}
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
