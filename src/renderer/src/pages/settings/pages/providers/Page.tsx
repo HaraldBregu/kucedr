@@ -255,15 +255,24 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		}
 	};
 
+	const isConnected = (provider: ProviderCatalogItem, kind: ProviderKind): boolean =>
+		kind === 'search'
+			? (searchSettings?.configured[provider.id as SearchEngineId] ?? false)
+			: (providerEntries.find((entry) => entry.providerId === provider.id)?.apiKeySaved ?? false);
+	const connectedFirst = (
+		catalog: readonly ProviderCatalogItem[],
+		kind: ProviderKind
+	): ProviderCatalogItem[] =>
+		[...catalog].sort((first, second) =>
+			Number(isConnected(second, kind)) - Number(isConnected(first, kind))
+		);
+
 	const renderProviderCard = (
 		provider: ProviderCatalogItem,
 		kind: ProviderKind
 	): React.ReactElement => {
 		const entry = providerEntries.find((item) => item.providerId === provider.id);
-		const connected =
-			kind === 'search'
-				? (searchSettings?.configured[provider.id as SearchEngineId] ?? false)
-				: (entry?.apiKeySaved ?? false);
+		const connected = isConnected(provider, kind);
 		const editing = entry?.editing ?? false;
 		const savingThisProvider = savingProviderId === provider.id;
 		const canSaveProvider =
@@ -364,6 +373,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							type="button"
 							variant="ghost"
 							size="sm"
+							className="hover:bg-transparent dark:hover:bg-transparent"
 							onClick={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
 						>
 							Connect
@@ -432,6 +442,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									type="button"
 									variant="ghost"
 									size="sm"
+									className="hover:bg-transparent dark:hover:bg-transparent"
 									onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}
 								>
 									{t('settings.providers.localModels.connect')}
@@ -545,8 +556,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		modelCatalog.filter((provider) => provider.id === id)
 	);
 	const otherProviders = modelCatalog.filter((provider) => !featuredIds.has(provider.id));
-	const orderedModelProviders = [...featuredProviders, ...otherProviders];
-	const searchCatalog = actionableSearchCatalog();
+	const orderedModelProviders = connectedFirst([...featuredProviders, ...otherProviders], 'models');
+	const searchCatalog = connectedFirst(actionableSearchCatalog(), 'search');
+	const databaseProviders = connectedFirst(databaseCatalog(), 'databases');
 	const mcpCatalog = mcps();
 	const catalogMcpIds = new Set(mcpCatalog.map((service) => service.id));
 	const customMcpServers = Object.entries(mcpServers).filter(([id]) => !catalogMcpIds.has(id)) as [
@@ -584,8 +596,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
 						<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
-							{section === undefined && renderCustomProviderCard()}
+							{section === undefined && customProvider.savedBaseUrl && renderCustomProviderCard()}
 							{orderedModelProviders.map((provider) => renderProviderCard(provider, 'models'))}
+							{section === undefined && !customProvider.savedBaseUrl && renderCustomProviderCard()}
 						</div>
 					</SettingsSection>
 				)}
@@ -598,7 +611,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{section === 'databases' && (
 				<SettingsSection title={t('settings.tabs.databases')}>
 					<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
-						{databaseCatalog().map((provider) => renderProviderCard(provider, 'databases'))}
+						{databaseProviders.map((provider) => renderProviderCard(provider, 'databases'))}
 					</div>
 				</SettingsSection>
 			)}
