@@ -216,6 +216,11 @@ it('renders settings navigation beside the workspace and marks the current secti
 			.getByRole('link', { name: 'settings.tabs.apps' })
 			.closest('[data-slot="split-pane-group"]')
 	);
+	const bottomGroup = within(navigation)
+		.getByRole('link', { name: 'settings.tabs.plugins' })
+		.closest('[data-slot="split-pane-group"]');
+	expect(bottomGroup).toHaveClass('shrink-0');
+	expect(bottomGroup?.parentElement).toBe(navigation);
 	expect(currentSection).toHaveAttribute('data-active');
 });
 
