@@ -47,7 +47,7 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 								/>
 								<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 								{item.badge && (
-									<Badge variant="outline" className="ml-auto rounded-full text-[10px]">
+									<Badge variant="outline" className="ml-auto">
 										{item.badge}
 									</Badge>
 								)}
