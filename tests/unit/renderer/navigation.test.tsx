@@ -233,6 +233,7 @@ it('keeps Plugins and Apps in the sidebar footer', () => {
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
 	const footer = navigation.querySelector('[data-slot="sidebar-footer"]');
 	expect(footer?.parentElement).toBe(navigation);
+	expect(within(footer as HTMLElement).queryByText('settings.overview.groups.extensions')).not.toBeInTheDocument();
 	expect(
 		within(footer as HTMLElement).getByRole('link', { name: 'settings.tabs.plugins' })
 	).toHaveAttribute('aria-current', 'page');

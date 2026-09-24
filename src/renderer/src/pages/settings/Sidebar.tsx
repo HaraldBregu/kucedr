@@ -97,7 +97,6 @@ export function SettingsSidebar(): React.JSX.Element {
 				<SidebarFooter className="shrink-0 gap-0 border-t border-sidebar-border/50 p-0">
 					<Group
 						items={SETTINGS_SIDEBAR_BOTTOM_ITEMS}
-						titleKey="settings.overview.groups.extensions"
 						activePath={activePath}
 						className="py-3"
 					/>
