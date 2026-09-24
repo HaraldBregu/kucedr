@@ -72,7 +72,7 @@ export class SupabaseAccountProvider implements AccountProvider {
 			.single();
 		if (error) throw publicCloudError(error);
 		const saved = data as ProfileRow;
-		return { firstName: saved.first_name, lastName: saved.last_name };
+		return { firstName: saved.first_name ?? '', lastName: saved.last_name ?? '' };
 	}
 
 	async signIn(credentials: AuthCredentials): Promise<AccountSession> {
