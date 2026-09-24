@@ -94,6 +94,24 @@ it('keeps a pending content blob when publication fails', async () => {
 	database.close();
 });
 
+it('binds an upload to the selected provider and rejects a different bucket', async () => {
+	const database = openStorageState();
+	const saved = await saveLocalSnapshot(database, input());
+	const remote = cloud();
+	remote.reserveUpload.mockResolvedValue({ bucket: 'another-bucket', key: 'versions/key' });
+	const expected = { providerId: 'provider-a', bucket: 'selected-bucket', prefix: 'versions' };
+	expect(await drainPending(database, scope, remote as unknown as StorageCloudApi, expected))
+		.toEqual({ synced: 0, failed: 1 });
+	expect(remote.reserveUpload).toHaveBeenCalledWith(expect.objectContaining({
+		providerId: 'provider-a', operationId: 'operation-a',
+	}));
+	expect(remote.upload).not.toHaveBeenCalled();
+	expect(remote.publish).not.toHaveBeenCalled();
+	expect(existsSync(saved.blobPath!)).toBe(true);
+	expect(listPendingOperations(database, scope)[0].status).toBe('pending');
+	database.close();
+});
+
 it('publishes tombstones without uploading content', async () => {
 	const database = openStorageState();
 	await saveLocalSnapshot(database, input({
