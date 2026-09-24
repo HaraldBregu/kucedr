@@ -73,6 +73,7 @@ export function Activity(): React.JSX.Element {
 					cellLabel={(day) =>
 						t('settings.activity.day', { date: day.date, count: day.value })
 					}
+					showLegend
 				/>
 				{failed ? (
 					<p className="mt-3 text-[11px] text-muted-foreground">
