@@ -30,9 +30,13 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/voice', '/settings/tasks', '/settings/health', '/settings/channels', '/settings/a2a'].includes(
-					item.path
-				)
+				[
+					'/settings/voice',
+					'/settings/tasks',
+					'/settings/health',
+					'/settings/channels',
+					'/settings/a2a',
+				].includes(item.path)
 			),
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.coding),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
@@ -45,9 +49,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'plugins',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/plugins', '/settings/apps'].includes(
-				item.path
-			)
+			['/settings/plugins', '/settings/apps'].includes(item.path)
 		),
 	},
 ] as const;
@@ -104,7 +106,7 @@ export function SettingsSidebar(): React.JSX.Element {
 												className={cn(SPLIT_ITEM_CLASS, isActive && SPLIT_ITEM_ACTIVE_CLASS)}
 											>
 												<Icon className="size-4 shrink-0" strokeWidth={1.8} />
-											<span className="text-xs">{t(item.sidebarLabelKey ?? item.labelKey)}</span>
+												<span className="text-xs">{t(item.sidebarLabelKey ?? item.labelKey)}</span>
 											</Link>
 										</li>
 									);
