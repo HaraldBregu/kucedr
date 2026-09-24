@@ -111,9 +111,18 @@ const PluginsPage = (): React.JSX.Element => {
 					{catalog.map((service) => (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
+							role="link"
+							tabIndex={0}
+							onClick={() => navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`)}
+							onKeyDown={(event) => {
+								if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+									event.preventDefault();
+									navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`);
+								}
+							}}
 							variant="ghost"
 							size="md"
-							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+							className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 						>
 							<ProviderAvatar
 								providerId={service.id}
@@ -135,6 +144,7 @@ const PluginsPage = (): React.JSX.Element => {
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
 											<Button
+												onClick={(event) => event.stopPropagation()}
 												variant="ghost"
 												size="icon-sm"
 												className="hover:bg-transparent dark:hover:bg-transparent"
@@ -158,6 +168,7 @@ const PluginsPage = (): React.JSX.Element => {
 										className="hover:bg-transparent dark:hover:bg-transparent"
 										disabled={savingId === service.id}
 										onClick={() => {
+										event.stopPropagation();
 											if (!servers[service.id] && service.url?.includes('{tenantId}')) {
 												setError('');
 												setSelectedMicrosoft(service);
