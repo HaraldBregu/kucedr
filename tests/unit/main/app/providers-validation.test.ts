@@ -138,7 +138,7 @@ describe('provider manifest validation', () => {
 			storage: {
 				id: 'files',
 				name: 'Files',
-				authentication: 'api-key',
+				authentication: 's3-access-key',
 				metadata: { protocol: 's3', region: 'auto' },
 			},
 		};
