@@ -20,7 +20,10 @@ const appendRunMock = jest.fn();
 const closeMcpMock = jest.fn();
 const mockLoadMcpTools = jest.fn(async () => ({
 	tools: [],
-		diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
+	entries: [],
+	deferredServers: [],
+	loadDeferred: jest.fn(async () => []),
+	diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 	close: closeMcpMock,
 }));
 const createSkillRegistrySnapshotMock = jest.fn((_options?: unknown) => ({
@@ -67,6 +70,9 @@ describe('run stream system prompt', () => {
 		closeMcpMock.mockReset();
 		mockLoadMcpTools.mockReset().mockResolvedValue({
 			tools: [],
+			entries: [],
+			deferredServers: [],
+			loadDeferred: jest.fn(async () => []),
 			diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
@@ -1234,7 +1240,7 @@ describe('run stream system prompt', () => {
 		expect(JSON.stringify(events)).not.toContain("unknown tool 'write'");
 	});
 
-	it('loads an eligible MCP tool before executing a premature direct call', async () => {
+	it('loads deferred MCP tools before the first model turn', async () => {
 		const execute = jest.fn();
 		const mcpTool = jsonTool({
 			id: 'mcp__files__read_file',
@@ -1244,8 +1250,18 @@ describe('run stream system prompt', () => {
 			schema: { type: 'object' },
 			execute,
 		});
+		const loadedTools: typeof mcpTool[] = [];
+		const entries: Array<{ tool: typeof mcpTool; serverId: string; serverName: string }> = [];
+		const loadDeferred = jest.fn(async () => {
+			loadedTools.push(mcpTool);
+			entries.push({ tool: mcpTool, serverId: 'files', serverName: 'Files' });
+			return entries;
+		});
 		mockLoadMcpTools.mockResolvedValue({
-			tools: [mcpTool],
+			tools: loadedTools,
+			entries,
+			deferredServers: [{ id: 'files', name: 'Files' }],
+			loadDeferred,
 			diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 1, listedTools: 1, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
@@ -1256,14 +1272,6 @@ describe('run stream system prompt', () => {
 					content: '',
 					model: 'test-model',
 					toolCalls: [{ id: 'early-mcp', name: mcpTool.id, args: { path: 'demo.txt' } }],
-				};
-			})
-			.mockImplementationOnce(async function* () {
-				yield* [];
-				return {
-					content: '',
-					model: 'test-model',
-					toolCalls: [{ id: 'retry-mcp', name: mcpTool.id, args: { path: 'demo.txt' } }],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
@@ -1286,13 +1294,14 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
+		expect(loadDeferred).toHaveBeenCalledWith(['files'], expect.any(AbortSignal));
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toContain(mcpTool.id);
 		expect(session.toolCalls.find((call) => call.id === 'early-mcp')).toMatchObject({
 			name: mcpTool.id,
 			args: { path: 'demo.txt' },
 		});
-		expect(
-			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toContain(mcpTool.id);
 		expect(execute).toHaveBeenCalledTimes(1);
 	});
 });
