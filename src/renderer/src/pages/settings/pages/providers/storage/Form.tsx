@@ -3,8 +3,10 @@ import { AlertTriangle, LoaderCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { storages } from '@/lib/providers';
 import type { StorageProvider, StorageProviderInput } from '@shared/storage_types';
 import { getErrorMessage } from '../../../../start/setupConstants';
 import { SettingsField, SettingsNotice } from '../../../components';
@@ -30,6 +32,9 @@ export default function StorageForm({
 	onCancel,
 }: StorageFormProps): React.JSX.Element {
 	const { t } = useTranslation();
+	const presets = storages();
+	const [presetId, setPresetId] = useState('custom');
+	const preset = presets.find((entry) => entry.id === presetId);
 	const [draft, setDraft] = useState<StorageProviderInput>({
 		id: provider?.id,
 		name: provider?.name ?? '',
@@ -44,6 +49,7 @@ export default function StorageForm({
 	const [error, setError] = useState('');
 	const canSave =
 		[draft.name, draft.bucket, draft.region, draft.accessKeyId].every((value) => value.trim()) &&
+		(!preset || !!draft.endpoint.trim()) &&
 		(provider?.hasSecretAccessKey || !!draft.secretAccessKey?.trim());
 
 	return (
@@ -82,10 +88,36 @@ export default function StorageForm({
 						</SettingsNotice>
 					)}
 					<fieldset disabled={saving} className="grid min-w-0 gap-4 sm:grid-cols-2">
+						{!provider && presets.length > 0 && (
+							<SettingsField id="storage-preset" label={t('settings.storageProviders.fields.provider')} className="sm:col-span-2">
+								<Select
+									value={presetId}
+									onValueChange={(value) => {
+										const selected = presets.find((entry) => entry.id === value);
+										setPresetId(value ?? 'custom');
+										setDraft((current) => ({
+											...current,
+											name: selected?.name ?? current.name,
+											region: selected?.metadata.region ?? 'us-east-1',
+											endpoint: '',
+											forcePathStyle: selected?.metadata.forcePathStyle ?? false,
+										}));
+									}}
+								>
+									<SelectTrigger id="storage-preset" className="w-full"><SelectValue /></SelectTrigger>
+									<SelectContent>
+										<SelectItem value="custom">{t('settings.storageProviders.custom')}</SelectItem>
+										{presets.map((entry) => <SelectItem key={entry.id} value={entry.id}>{entry.name}</SelectItem>)}
+									</SelectContent>
+								</Select>
+							</SettingsField>
+						)}
 						{FIELDS.map((field) => {
 							const description =
 								field.key === 'endpoint'
-									? t('settings.storageProviders.endpointHint')
+									? preset
+										? t('settings.storageProviders.presetEndpointHint', { endpoint: preset.metadata.endpointTemplate ?? '' })
+										: t('settings.storageProviders.endpointHint')
 									: field.key === 'secretAccessKey' && provider?.hasSecretAccessKey
 										? t('settings.storageProviders.secretHint')
 										: undefined;
@@ -106,11 +138,11 @@ export default function StorageForm({
 										autoFocus={field.key === 'name'}
 										spellCheck={false}
 										aria-describedby={description ? `storage-${field.key}-description` : undefined}
-										required={
-											field.key !== 'endpoint' &&
+											required={
+											(field.key !== 'endpoint' || !!preset) &&
 											!(field.key === 'secretAccessKey' && provider?.hasSecretAccessKey)
 										}
-										placeholder={field.placeholder}
+											placeholder={field.key === 'endpoint' ? preset?.metadata.endpointTemplate ?? field.placeholder : field.placeholder}
 										value={draft[field.key] ?? ''}
 										onChange={(event) =>
 											setDraft((current) => ({ ...current, [field.key]: event.target.value }))
