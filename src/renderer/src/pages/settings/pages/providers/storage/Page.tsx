@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, HardDrive, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, HardDrive, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -64,21 +64,6 @@ export default function StorageProvidersPage(): React.JSX.Element {
 			<SettingsPageHeader
 				title={t('settings.tabs.storage')}
 				description={t('settings.storageProviders.description')}
-				action={
-					<Button
-						size="sm"
-						disabled={
-							loading || removing !== null || editing !== null || enabledStorages.length === 0
-						}
-						onClick={() => {
-						setSelectedPresetId(undefined);
-						setEditing('new');
-						}}
-					>
-						<Plus className="size-3.5" />
-						{t('settings.storageProviders.add')}
-					</Button>
-				}
 			/>
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
@@ -132,13 +117,14 @@ export default function StorageProvidersPage(): React.JSX.Element {
 								<Button
 									variant="outline"
 									size="sm"
-									disabled={removing !== null || editing !== null}
+									disabled={loading || removing !== null || editing !== null}
+									aria-label={`${t('settings.providers.localModels.connect')} ${storage.name}`}
 									onClick={() => {
 										setSelectedPresetId(storage.id);
 										setEditing('new');
 									}}
 								>
-									{t('settings.integrations.add', { name: storage.name })}
+									{t('settings.providers.localModels.connect')}
 								</Button>
 							</ItemActions>
 						</Item>
