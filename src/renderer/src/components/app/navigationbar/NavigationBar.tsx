@@ -64,30 +64,31 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<Search className="size-4" strokeWidth={1.8} />
 		</Button>
 	) : null;
-	const voiceButton = !isOnboarding && !isSettings ? (
-		<Button
-			type="button"
-			variant="default"
-			size="icon"
-			className="size-9 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
-			aria-label="Start voice conversation"
-			title={voiceError ?? 'Start voice conversation'}
-			onClick={() => {
-				setVoiceError(null);
-				void ensureAppMicrophoneAccess()
-					.then(() => window.win.openVoiceConversation(sessionId))
-					.catch((error: unknown) => {
-						setVoiceError(
-							error instanceof Error && error.message.trim()
-								? error.message
-								: 'Voice conversation could not be opened.'
-						);
-					});
-			}}
-		>
-			<AudioLines className="size-4" />
-		</Button>
-	) : null;
+	const voiceButton =
+		!isOnboarding && !isSettings ? (
+			<Button
+				type="button"
+				variant="default"
+				size="icon"
+				className="size-9 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
+				aria-label="Start voice conversation"
+				title={voiceError ?? 'Start voice conversation'}
+				onClick={() => {
+					setVoiceError(null);
+					void ensureAppMicrophoneAccess()
+						.then(() => window.win.openVoiceConversation(sessionId))
+						.catch((error: unknown) => {
+							setVoiceError(
+								error instanceof Error && error.message.trim()
+									? error.message
+									: 'Voice conversation could not be opened.'
+							);
+						});
+				}}
+			>
+				<AudioLines className="size-4" />
+			</Button>
+		) : null;
 	const routeButton = isSettings ? (
 		<Button
 			type="button"
