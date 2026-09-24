@@ -617,6 +617,16 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							</p>
 						</ItemContent>
 						<ItemActions className="ml-auto flex-none justify-end">
+							{customProvider.editing ? null : !connected ? (
+								<Button
+									type="button"
+									variant="ghost"
+									size="sm"
+									onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}
+								>
+									{t('settings.providers.localModels.connect')}
+								</Button>
+							) : (
 							<DropdownMenu>
 								<DropdownMenuTrigger asChild>
 									<Button
@@ -635,12 +645,11 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 											setCustomProvider((current) => ({ ...current, apiKey: '', editing: true }))
 										}
 									>
-										{connected
-											? t('settings.providers.localModels.edit')
-											: t('settings.providers.localModels.connect')}
+										{t('settings.providers.localModels.edit')}
 									</DropdownMenuItem>
 								</DropdownMenuContent>
 							</DropdownMenu>
+							)}
 						</ItemActions>
 					</div>
 					{customProvider.editing && (
