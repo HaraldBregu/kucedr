@@ -19,6 +19,7 @@ jest.mock('react-i18next', () => {
 		'settings.storage.sync.title': 'Cloud Backup',
 		'settings.storage.sync.description': 'Back up selected folders on a schedule',
 		'settings.storage.sync.addFolders': 'Add folders',
+		'settings.storage.sync.empty': 'No folders selected. Add folders to back up and sync.',
 		'settings.storage.sync.folder': 'Selected folder',
 		'settings.storage.sync.removeFolder': 'Remove folder',
 		'settings.storage.syncSaved': 'Schedule saved',
@@ -141,9 +142,9 @@ beforeEach(() => {
 	});
 });
 
-it('saves folders and a custom schedule with the selected storage provider', async () => {
+it('saves user-selected folders and a custom schedule with the selected storage provider', async () => {
 	const user = userEvent.setup();
-	storageApi.syncFolders.mockResolvedValue([{ key: 'agent', path: '/data/agent' }]);
+	storageApi.pickFolders.mockResolvedValue(['/data/agent', '/data/projects']);
 	render(
 		<MemoryRouter>
 			<StoragePage />
@@ -152,7 +153,7 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 
 	await user.click(await screen.findByRole('combobox', { name: 'Storage' }));
 	await user.click(await screen.findByRole('option', { name: 'Archive' }));
-	await user.click(await screen.findByRole('switch', { name: 'Agent' }));
+	await user.click(await screen.findByRole('button', { name: 'Add folders' }));
 	await user.click(screen.getByRole('combobox', { name: 'Backup interval' }));
 	await user.click(await screen.findByRole('option', { name: 'Every day' }));
 	await user.clear(screen.getByLabelText('Cron expression'));
@@ -161,7 +162,7 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 	await waitFor(() =>
 		expect(storageApi.saveSettings).toHaveBeenLastCalledWith({
 			providerId: 'archive',
-			paths: ['/data/agent'],
+			paths: ['/data/agent', '/data/projects'],
 			syncEnabled: true,
 			syncCronExpression: '0 4 * * *',
 		})
@@ -171,6 +172,34 @@ it('saves folders and a custom schedule with the selected storage provider', asy
 			'Choose which configured storage provider receives your backups and supplies files when you restore them.'
 		)
 	).toBeInTheDocument();
+});
+
+it('lets users add and remove folders before selecting a provider', async () => {
+	const user = userEvent.setup();
+	storageApi.getSettings.mockResolvedValue({ ...settings, providerId: undefined });
+	storageApi.pickFolders.mockResolvedValue(['/data/projects', '/data/photos']);
+	render(
+		<MemoryRouter>
+			<StoragePage />
+		</MemoryRouter>
+	);
+
+	expect(await screen.findByText('No folders selected. Add folders to back up and sync.')).toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'Add folders' }));
+	expect(await screen.findByText('/data/projects')).toBeInTheDocument();
+	expect(screen.getByText('/data/photos')).toBeInTheDocument();
+	await waitFor(() => expect(storageApi.saveSettings).toHaveBeenCalledWith({
+		...settings,
+		providerId: undefined,
+		paths: ['/data/projects', '/data/photos'],
+	}));
+	await user.click(screen.getAllByRole('button', { name: 'Remove folder' })[0]);
+	await waitFor(() => expect(storageApi.saveSettings).toHaveBeenLastCalledWith({
+		...settings,
+		providerId: undefined,
+		paths: ['/data/photos'],
+	}));
+	expect(screen.queryByText('/data/projects')).not.toBeInTheDocument();
 });
 
 it('backs up directly and confirms before restoring matching local files', async () => {
@@ -280,9 +309,9 @@ it('keeps a newer completion event when the initial snapshot resolves late', asy
 	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
 });
 
-it('preserves loaded settings when an auxiliary load fails', async () => {
+it('preserves selected folders when an auxiliary load fails', async () => {
 	storageApi.getSettings.mockResolvedValue({ ...settings, paths: ['/data/agent'] });
-	storageApi.syncFolders.mockRejectedValue(new Error('folder discovery failed'));
+	storageApi.listProviders.mockRejectedValue(new Error('provider discovery failed'));
 	render(
 		<MemoryRouter>
 			<StoragePage />
@@ -325,7 +354,7 @@ it.each([undefined, 'deleted'])(
 		expect(screen.getByRole('menuitem', { name: 'Restore from cloud' })).toBeDisabled();
 		expect(screen.queryByRole('menuitem', { name: 'Save schedule' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('menuitem', { name: 'Cancel' })).not.toBeInTheDocument();
-		expect(screen.getByRole('button', { name: 'Add folders' })).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 		expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
 		expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
 		expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
