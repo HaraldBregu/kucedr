@@ -45,9 +45,12 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 		});
 		registerCommandWithEvent(StorageChannels.saveProvider, (event, input) => {
 			trusted.assert(event);
-			if (!input?.id && !loadStorages().some((entry) =>
-				getEnabledPluginProviders().storage.includes(`${entry.provider.id}/${entry.id}`)
-			)) {
+			if (
+				!input?.id &&
+				!loadStorages().some((entry) =>
+					getEnabledPluginProviders().storage.includes(`${entry.provider.id}/${entry.id}`)
+				)
+			) {
 				throw new Error('Enable a storage provider in Plugins before adding a connection.');
 			}
 			if (

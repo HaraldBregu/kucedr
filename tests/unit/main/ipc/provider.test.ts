@@ -270,9 +270,16 @@ describe('provider credential IPC boundary', () => {
 		register();
 		setPluginProviderEnabled.mockReturnValue({ database: ['pinecone/pinecone'], storage: [] });
 		const setEnabled = handler(registerCommandWithEvent, ProviderChannels.setPluginEnabled);
-		expect(setEnabled({}, 'database', 'pinecone/pinecone', true)).toEqual({ database: ['pinecone/pinecone'], storage: [] });
-		expect(() => setEnabled({}, 'database', 'unknown/provider', true)).toThrow('Unknown plugin provider');
-		expect(() => setEnabled({}, 'storage', 'unknown/provider', true)).toThrow('Unknown plugin provider');
+		expect(setEnabled({}, 'database', 'pinecone/pinecone', true)).toEqual({
+			database: ['pinecone/pinecone'],
+			storage: [],
+		});
+		expect(() => setEnabled({}, 'database', 'unknown/provider', true)).toThrow(
+			'Unknown plugin provider'
+		);
+		expect(() => setEnabled({}, 'storage', 'unknown/provider', true)).toThrow(
+			'Unknown plugin provider'
+		);
 	});
 
 	it('rejects saving a channel that is absent from the supported catalog', () => {

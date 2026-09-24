@@ -34,10 +34,7 @@ it('moves encrypted storage providers into settings.json', () => {
 			},
 		])
 	).toString('base64');
-	writeFileSync(
-		`${root}/settings/storage.json`,
-		JSON.stringify({ encryptedProviders })
-	);
+	writeFileSync(`${root}/settings/storage.json`, JSON.stringify({ encryptedProviders }));
 
 	let providersStore!: typeof import('../../../../src/main/providers/providers_store').providersStore;
 	jest.isolateModules(() => {
@@ -60,7 +57,10 @@ it('shares settings.json with storage connections', () => {
 	let setModelProvidersState!: typeof import('../../../../src/main/providers/providers_store').setModelProvidersState;
 	jest.isolateModules(() => {
 		({ storageProviders } = require('../../../../src/main/storage/providers'));
-		({ getModelProvidersState, setModelProvidersState } = require('../../../../src/main/providers/providers_store'));
+		({
+			getModelProvidersState,
+			setModelProvidersState,
+		} = require('../../../../src/main/providers/providers_store'));
 	});
 
 	const storage = storageProviders.save({
@@ -84,13 +84,19 @@ it('persists enabled plugin providers separately from credentials', () => {
 	let getEnabledPluginProviders!: typeof import('../../../../src/main/providers/providers_store').getEnabledPluginProviders;
 	let setPluginProviderEnabled!: typeof import('../../../../src/main/providers/providers_store').setPluginProviderEnabled;
 	jest.isolateModules(() => {
-		({ getEnabledPluginProviders, setPluginProviderEnabled } = require('../../../../src/main/providers/providers_store'));
+		({
+			getEnabledPluginProviders,
+			setPluginProviderEnabled,
+		} = require('../../../../src/main/providers/providers_store'));
 	});
 	expect(getEnabledPluginProviders()).toEqual({ database: [], storage: [] });
 	setPluginProviderEnabled('database', 'pinecone/pinecone', true);
 	setPluginProviderEnabled('storage', 'supabase/supabase-storage', true);
 	setPluginProviderEnabled('database', 'pinecone/pinecone', false);
-	expect(getEnabledPluginProviders()).toEqual({ database: [], storage: ['supabase/supabase-storage'] });
+	expect(getEnabledPluginProviders()).toEqual({
+		database: [],
+		storage: ['supabase/supabase-storage'],
+	});
 });
 
 it('migrates decryptable provider keys into the direct settings store', () => {

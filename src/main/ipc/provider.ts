@@ -135,7 +135,11 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		const services = loadDatabases().filter((entry) => entry.provider.id === id);
 		const service = services[0];
 		if (!service) throw new Error('Unknown database provider.');
-		if (!services.some((entry) => getEnabledPluginProviders().database.includes(`${entry.provider.id}/${entry.id}`))) {
+		if (
+			!services.some((entry) =>
+				getEnabledPluginProviders().database.includes(`${entry.provider.id}/${entry.id}`)
+			)
+		) {
 			throw new Error('Enable this database in Plugins before configuring it.');
 		}
 		return {
