@@ -1,6 +1,7 @@
 {
 	"providerId": "reka",
 	"providerName": "Reka AI",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://platform.reka.ai/apikeys",
 	"images_url": "/images",
 	"icon_dark_url": "/images/reka-dark.svg",
@@ -9,6 +10,7 @@
 		{
 			"id": "reka-flash",
 			"name": "Reka Flash",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.reka.ai/v1",
 			"metadata": {
@@ -50,6 +52,7 @@
 		{
 			"id": "reka-edge-2603",
 			"name": "Reka Edge 2603",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.reka.ai/v1",
 			"metadata": {

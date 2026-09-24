@@ -1,6 +1,7 @@
 {
 	"providerId": "pinecone",
 	"providerName": "Pinecone",
+	"authentication": "api-key",
 	"images_url": "/images",
 	"icon_dark_url": "/images/pinecone-dark.svg",
 	"icon_light_url": "/images/pinecone-light.svg",
@@ -11,6 +12,7 @@
 			"id": "pinecone",
 			"name": "Pinecone Vector Database",
 			"url": "https://api.pinecone.io",
+			"authentication": "api-key",
 			"type": "database"
 		}
 	]

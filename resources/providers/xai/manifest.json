@@ -1,6 +1,7 @@
 {
 	"providerId": "xai",
 	"providerName": "xAI",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://console.x.ai",
 	"images_url": "/images",
 	"icon_dark_url": "/images/xai-dark.svg",
@@ -9,6 +10,7 @@
 		{
 			"id": "grok-4.3",
 			"name": "Grok 4.3",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.x.ai/v1",
 			"metadata": {
@@ -53,6 +55,7 @@
 		{
 			"id": "grok-4.6",
 			"name": "Grok 4.6",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.x.ai/v1",
 			"metadata": {
@@ -97,6 +100,7 @@
 		{
 			"id": "grok-build-0.1",
 			"name": "Grok Build 0.1",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.x.ai/v1",
 			"metadata": {
@@ -138,6 +142,7 @@
 			"id": "xai-stt-batch",
 			"name": "xAI STT Batch",
 			"apiTypes": ["batch"],
+			"authentication": "api-key",
 			"type": "speech-to-text-model",
 			"url": "https://api.x.ai/v1",
 			"sampleRate": 24000,
@@ -152,6 +157,7 @@
 			"name": "xAI STT Streaming",
 			"apiTypes": ["stream"],
 			"realtime": true,
+			"authentication": "api-key",
 			"type": "speech-to-text-model",
 			"url": "https://api.x.ai/v1",
 			"sampleRate": 24000,
@@ -164,6 +170,7 @@
 		{
 			"id": "grok-voice-latest",
 			"name": "Grok Voice Latest",
+			"authentication": "api-key",
 			"type": "realtime-voice-model",
 			"url": "https://api.x.ai/v1",
 			"sampleRate": 24000,
@@ -210,6 +217,7 @@
 		{
 			"id": "grok-imagine-image",
 			"name": "Grok Imagine Image",
+			"authentication": "api-key",
 			"type": "text-to-image-model",
 			"url": "https://api.x.ai/v1",
 			"metadata": {
@@ -240,6 +248,7 @@
 		{
 			"id": "grok-imagine-image-quality",
 			"name": "Grok Imagine Image Quality",
+			"authentication": "api-key",
 			"type": "text-to-image-model",
 			"url": "https://api.x.ai/v1",
 			"metadata": {
@@ -270,6 +279,7 @@
 		{
 			"id": "grok-imagine-image-2.0",
 			"name": "Grok Imagine Image 2.0",
+			"authentication": "api-key",
 			"type": "text-to-image-model",
 			"url": "https://api.x.ai/v1",
 			"metadata": {
@@ -300,6 +310,7 @@
 		{
 			"id": "grok-imagine-video-1.5",
 			"name": "Grok Imagine Video 1.5",
+			"authentication": "api-key",
 			"type": "text-to-video-model",
 			"url": "https://api.x.ai/v1",
 			"metadata": {

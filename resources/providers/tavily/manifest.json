@@ -1,6 +1,7 @@
 {
   "providerId": "tavily",
   "providerName": "Tavily",
+  "authentication": "api-key",
   "apiKeyUrl": "https://app.tavily.com/home",
   "images_url": "/images",
   "icon_dark_url": "/images/tavily.svg",
@@ -10,6 +11,7 @@
       "id": "tavily-web-search",
       "name": "Tavily Web Search",
       "url": "https://api.tavily.com/search",
+      "authentication": "api-key",
       "type": "web-search",
       "metadata": {
         "documentationUrl": "https://docs.tavily.com/documentation/api-reference/endpoint/search",

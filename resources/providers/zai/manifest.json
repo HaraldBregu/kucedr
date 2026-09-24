@@ -1,6 +1,7 @@
 {
 	"providerId": "zai",
 	"providerName": "Z.ai / Zhipu AI",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://z.ai/manage-apikey/apikey-list",
 	"images_url": "/images",
 	"icon_dark_url": "/images/zai-dark.svg",
@@ -9,6 +10,7 @@
 		{
 			"id": "glm-5.1",
 			"name": "GLM-5.1",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.z.ai/api/paas/v4",
 			"metadata": {
@@ -72,6 +74,7 @@
 		{
 			"id": "glm-5",
 			"name": "GLM-5",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.z.ai/api/paas/v4",
 			"metadata": {
@@ -135,6 +138,7 @@
 		{
 			"id": "glm-5-turbo",
 			"name": "GLM-5 Turbo",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://api.z.ai/api/paas/v4",
 			"metadata": {

@@ -1,6 +1,7 @@
 {
 	"providerId": "qwen",
 	"providerName": "Alibaba / Qwen / Wan",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://modelstudio.console.alibabacloud.com",
 	"images_url": "/images",
 	"icon_dark_url": "/images/qwen-dark.svg",
@@ -9,6 +10,7 @@
 		{
 			"id": "qwen3.7-max",
 			"name": "Qwen3.7 Max",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 			"metadata": {
@@ -56,6 +58,7 @@
 		{
 			"id": "qwen3.6-plus",
 			"name": "Qwen3.6 Plus",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 			"metadata": {
@@ -109,6 +112,7 @@
 		{
 			"id": "qwen3.6-flash",
 			"name": "Qwen3.6 Flash",
+			"authentication": "api-key",
 			"type": "large-language-model",
 			"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 			"metadata": {
@@ -164,6 +168,7 @@
 			"name": "Qwen3 ASR Flash Realtime",
 			"apiTypes": ["stream"],
 			"realtime": true,
+			"authentication": "api-key",
 			"type": "speech-to-text-model",
 			"url": "wss://dashscope-intl.aliyuncs.com/api-ws/v1/realtime",
 			"sampleRate": 16000,
@@ -176,6 +181,7 @@
 		{
 			"id": "qwen-image",
 			"name": "Qwen Image",
+			"authentication": "api-key",
 			"type": "text-to-image-model",
 			"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 			"metadata": {
@@ -207,6 +213,7 @@
 		{
 			"id": "qwen-image-edit",
 			"name": "Qwen Image Edit",
+			"authentication": "api-key",
 			"type": "text-to-image-model",
 			"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 			"metadata": {
@@ -240,6 +247,7 @@
 		{
 			"id": "wan2.5-t2v",
 			"name": "Wan 2.5 T2V",
+			"authentication": "api-key",
 			"type": "text-to-video-model",
 			"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 			"metadata": {
@@ -277,6 +285,7 @@
 		{
 			"id": "wan2.2-t2v-plus",
 			"name": "Wan 2.2 T2V Plus",
+			"authentication": "api-key",
 			"type": "text-to-video-model",
 			"url": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
 			"metadata": {
