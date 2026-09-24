@@ -12,6 +12,16 @@ jest.mock('@/contexts', () => ({
 	useApp: () => ({ theme: 'light' }),
 }));
 
+jest.mock('@/components/ui/select', () => ({
+	Select: ({ value, onValueChange, children }: { value: string; onValueChange: (value: string) => void; children: React.ReactNode }) => (
+		<select aria-label="settings.activity.range" value={value} onChange={(event) => onValueChange(event.target.value)}>{children}</select>
+	),
+	SelectTrigger: () => null,
+	SelectValue: () => null,
+	SelectContent: ({ children }: { children: React.ReactNode }) => children,
+	SelectItem: ({ value, children }: { value: string; children: React.ReactNode }) => <option value={value}>{children}</option>,
+}));
+
 jest.mock('@thilakbhat/heatmap-ui', () => ({
 	CalendarHeatmap: ({ values, weeks, cellSize, to, shape, scale, colors, cellLabel, 'data-heatmap-theme': theme }: {
 		values: { date: string; value: number }[];
@@ -89,12 +99,10 @@ it('shows account session data and switches to local use after sign-out', async 
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-scale', 'linear');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-heatmap-theme', 'light');
 	const year = new Date().getFullYear();
-	await user.click(screen.getByRole('combobox', { name: 'settings.activity.range' }));
-	await user.click(screen.getByRole('option', { name: `settings.activity.lastYear (${year - 1})` }));
+	await user.selectOptions(screen.getByRole('combobox', { name: 'settings.activity.range' }), 'lastYear');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-to', `${year - 1}-12-31`);
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '0');
-	await user.click(screen.getByRole('combobox', { name: 'settings.activity.range' }));
-	await user.click(screen.getByRole('option', { name: `settings.activity.currentYear (${year})` }));
+	await user.selectOptions(screen.getByRole('combobox', { name: 'settings.activity.range' }), 'currentYear');
 	expect(screen.getByTestId('activity-heatmap')).toHaveAttribute('data-count', '1');
 	const cell = screen.getByRole('img', { name: 'settings.activity.day' });
 	fireEvent.pointerMove(cell, { clientX: 160, clientY: 120 });
