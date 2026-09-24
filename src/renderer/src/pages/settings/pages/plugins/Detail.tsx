@@ -31,8 +31,8 @@ export default function PluginDetailPage(): React.JSX.Element {
 						<ProviderAvatar
 							providerId={kind === 'mcp' ? entry.id : entry.provider.id}
 							name={entry.name}
-							iconDarkUrl={'iconDarkUrl' in entry ? entry.iconDarkUrl : entry.provider.iconDarkUrl}
-							iconLightUrl={'iconLightUrl' in entry ? entry.iconLightUrl : entry.provider.iconLightUrl}
+							iconDarkUrl={('iconDarkUrl' in entry ? entry.iconDarkUrl : undefined) ?? entry.provider.iconDarkUrl}
+							iconLightUrl={('iconLightUrl' in entry ? entry.iconLightUrl : undefined) ?? entry.provider.iconLightUrl}
 							className="size-16 rounded-2xl border-0 bg-muted/50 p-2"
 						/>
 						<div className="min-w-0">
