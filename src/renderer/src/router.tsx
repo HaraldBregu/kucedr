@@ -326,7 +326,7 @@ const routes: RouteObject[] = [
 							<SettingsRouteWrapper>
 								<PluginDetailPage />
 							</SettingsRouteWrapper>
-							),
+						),
 					},
 					{
 						path: 'a2a',

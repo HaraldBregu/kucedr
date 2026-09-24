@@ -83,30 +83,41 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../../../src/renderer/src/lib/providers', () => ({
 	mcps: () => catalog,
-	databases: () => [{
-		id: 'pinecone',
-		name: 'Pinecone Vector Database',
-		description: 'Store and search vector embeddings in Pinecone.',
-		type: 'vector',
-		authentication: 'api-key',
-		url: 'https://api.pinecone.io',
-		provider: { id: 'pinecone', name: 'Pinecone', baseUrl: 'https://api.pinecone.io' },
-	}],
-	storages: () => [{
-		id: 'supabase-storage',
-		name: 'Supabase Storage',
-		description: 'Store files in a Supabase Storage bucket through its S3 endpoint.',
-		authentication: 's3-access-key',
-		metadata: { protocol: 's3', endpointTemplate: 'https://{projectRef}.storage.supabase.co/storage/v1/s3' },
-		provider: { id: 'supabase', name: 'Supabase', baseUrl: '' },
-	}, {
-		id: 'cloudflare-r2',
-		name: 'Cloudflare R2',
-		description: 'Store files in a Cloudflare R2 bucket through its S3 endpoint.',
-		authentication: 's3-access-key',
-		metadata: { protocol: 's3', endpointTemplate: 'https://{accountId}.r2.cloudflarestorage.com' },
-		provider: { id: 'cloudflare', name: 'Cloudflare', baseUrl: '' },
-	}],
+	databases: () => [
+		{
+			id: 'pinecone',
+			name: 'Pinecone Vector Database',
+			description: 'Store and search vector embeddings in Pinecone.',
+			type: 'vector',
+			authentication: 'api-key',
+			url: 'https://api.pinecone.io',
+			provider: { id: 'pinecone', name: 'Pinecone', baseUrl: 'https://api.pinecone.io' },
+		},
+	],
+	storages: () => [
+		{
+			id: 'supabase-storage',
+			name: 'Supabase Storage',
+			description: 'Store files in a Supabase Storage bucket through its S3 endpoint.',
+			authentication: 's3-access-key',
+			metadata: {
+				protocol: 's3',
+				endpointTemplate: 'https://{projectRef}.storage.supabase.co/storage/v1/s3',
+			},
+			provider: { id: 'supabase', name: 'Supabase', baseUrl: '' },
+		},
+		{
+			id: 'cloudflare-r2',
+			name: 'Cloudflare R2',
+			description: 'Store files in a Cloudflare R2 bucket through its S3 endpoint.',
+			authentication: 's3-access-key',
+			metadata: {
+				protocol: 's3',
+				endpointTemplate: 'https://{accountId}.r2.cloudflarestorage.com',
+			},
+			provider: { id: 'cloudflare', name: 'Cloudflare', baseUrl: '' },
+		},
+	],
 }));
 
 const mcpApi = {

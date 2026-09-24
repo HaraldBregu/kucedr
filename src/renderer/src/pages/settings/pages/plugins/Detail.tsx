@@ -14,14 +14,30 @@ export default function PluginDetailPage(): React.JSX.Element {
 		providerId: string;
 		entryId: string;
 	}>();
-	const catalog = kind === 'mcp' ? mcps() : kind === 'database' ? databases() : kind === 'storage' ? storages() : [];
+	const catalog =
+		kind === 'mcp'
+			? mcps()
+			: kind === 'database'
+				? databases()
+				: kind === 'storage'
+					? storages()
+					: [];
 	const entry = catalog.find((item) => item.provider.id === providerId && item.id === entryId);
-	const storage = kind === 'storage' ? storages().find((item) => item.provider.id === providerId && item.id === entryId) : undefined;
-	const endpoint = storage?.metadata.endpointTemplate ?? (entry && 'url' in entry ? entry.url : undefined);
+	const storage =
+		kind === 'storage'
+			? storages().find((item) => item.provider.id === providerId && item.id === entryId)
+			: undefined;
+	const endpoint =
+		storage?.metadata.endpointTemplate ?? (entry && 'url' in entry ? entry.url : undefined);
 
 	return (
 		<SettingsPageShell>
-			<Button variant="ghost" size="sm" className="w-fit" onClick={() => navigate('/settings/plugins')}>
+			<Button
+				variant="ghost"
+				size="sm"
+				className="w-fit"
+				onClick={() => navigate('/settings/plugins')}
+			>
 				<ArrowLeft className="size-4" />
 				{t('settings.integrations.title')}
 			</Button>
@@ -31,19 +47,29 @@ export default function PluginDetailPage(): React.JSX.Element {
 						<ProviderAvatar
 							providerId={kind === 'mcp' ? entry.id : entry.provider.id}
 							name={entry.name}
-							iconDarkUrl={('iconDarkUrl' in entry ? entry.iconDarkUrl : undefined) ?? entry.provider.iconDarkUrl}
-							iconLightUrl={('iconLightUrl' in entry ? entry.iconLightUrl : undefined) ?? entry.provider.iconLightUrl}
+							iconDarkUrl={
+								('iconDarkUrl' in entry ? entry.iconDarkUrl : undefined) ??
+								entry.provider.iconDarkUrl
+							}
+							iconLightUrl={
+								('iconLightUrl' in entry ? entry.iconLightUrl : undefined) ??
+								entry.provider.iconLightUrl
+							}
 							className="size-16 rounded-2xl border-0 bg-muted/50 p-2"
 						/>
 						<div className="min-w-0">
 							<h1 className="text-2xl font-medium leading-tight">{entry.name}</h1>
-							{entry.description && <p className="mt-2 text-sm text-muted-foreground">{entry.description}</p>}
+							{entry.description && (
+								<p className="mt-2 text-sm text-muted-foreground">{entry.description}</p>
+							)}
 						</div>
 					</header>
 					<SettingsSection title={t('settings.integrations.details')}>
 						<dl className="divide-y divide-border/60 rounded-xl bg-muted/30 px-4">
 							<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
-								<dt className="text-xs text-muted-foreground">{t('settings.integrations.provider')}</dt>
+								<dt className="text-xs text-muted-foreground">
+									{t('settings.integrations.provider')}
+								</dt>
 								<dd className="min-w-0 text-sm">{entry.provider.name}</dd>
 							</div>
 							<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
@@ -57,18 +83,28 @@ export default function PluginDetailPage(): React.JSX.Element {
 								</dd>
 							</div>
 							<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
-								<dt className="text-xs text-muted-foreground">{t('settings.integrations.authentication')}</dt>
-								<dd className="min-w-0 text-sm">{entry.authentication ? t(`settings.integrations.authTypes.${entry.authentication}`) : t('settings.integrations.authTypes.none')}</dd>
+								<dt className="text-xs text-muted-foreground">
+									{t('settings.integrations.authentication')}
+								</dt>
+								<dd className="min-w-0 text-sm">
+									{entry.authentication
+										? t(`settings.integrations.authTypes.${entry.authentication}`)
+										: t('settings.integrations.authTypes.none')}
+								</dd>
 							</div>
 							{endpoint && (
 								<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
-									<dt className="text-xs text-muted-foreground">{t('settings.integrations.endpoint')}</dt>
+									<dt className="text-xs text-muted-foreground">
+										{t('settings.integrations.endpoint')}
+									</dt>
 									<dd className="min-w-0 break-all text-sm">{endpoint}</dd>
 								</div>
 							)}
 							{storage?.metadata.region && (
 								<div className="grid gap-1 py-3 sm:grid-cols-[10rem_1fr]">
-									<dt className="text-xs text-muted-foreground">{t('settings.integrations.region')}</dt>
+									<dt className="text-xs text-muted-foreground">
+										{t('settings.integrations.region')}
+									</dt>
 									<dd className="min-w-0 text-sm">{storage.metadata.region}</dd>
 								</div>
 							)}

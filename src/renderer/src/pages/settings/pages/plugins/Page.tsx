@@ -116,7 +116,10 @@ const PluginsPage = (): React.JSX.Element => {
 							tabIndex={0}
 							onClick={() => navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`)}
 							onKeyDown={(event) => {
-								if (event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+								if (
+									event.target === event.currentTarget &&
+									(event.key === 'Enter' || event.key === ' ')
+								) {
 									event.preventDefault();
 									navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`);
 								}
@@ -190,7 +193,9 @@ const PluginsPage = (): React.JSX.Element => {
 							key={`${database.provider.id}-${database.id}`}
 							kind="database"
 							entry={database}
-							onOpen={() => navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)}
+							onOpen={() =>
+								navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)
+							}
 							onAdd={() => navigate('/settings/providers/database')}
 						/>
 					))}
@@ -199,7 +204,9 @@ const PluginsPage = (): React.JSX.Element => {
 							key={`${storage.provider.id}-${storage.id}`}
 							kind="storage"
 							entry={storage}
-							onOpen={() => navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)}
+							onOpen={() =>
+								navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)
+							}
 							onAdd={() => navigate('/settings/providers/storage')}
 						/>
 					))}

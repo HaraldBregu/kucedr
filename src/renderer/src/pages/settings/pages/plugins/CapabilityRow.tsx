@@ -17,9 +17,11 @@ export default function CapabilityRow({
 	readonly onAdd: () => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
-	const description = entry.description ?? (kind === 'database' && 'type' in entry
-		? t('settings.integrations.databaseType', { type: entry.type })
-		: t('settings.integrations.storageType'));
+	const description =
+		entry.description ??
+		(kind === 'database' && 'type' in entry
+			? t('settings.integrations.databaseType', { type: entry.type })
+			: t('settings.integrations.storageType'));
 
 	return (
 		<Item
