@@ -257,7 +257,7 @@ function AttachmentTray({
 					<Attachment
 						key={attachment.id}
 						size="sm"
-						className={cn('rounded-[16px]', isAudio ? 'w-80' : 'w-64')}
+						className={cn('rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5', isAudio ? 'w-80' : 'w-64')}
 					>
 						<AttachmentMedia variant={isImage ? 'image' : 'icon'}>
 							{isImage ? <Preview file={attachment.file} /> : <Icon />}
