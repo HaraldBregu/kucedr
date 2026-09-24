@@ -8,7 +8,7 @@ export function databaseCatalog(): readonly ProviderCatalogItem[] {
 		name: provider.name,
 		capabilities: databases()
 			.filter((entry) => entry.provider.id === provider.id)
-			.map((entry) => entry.name)
+			.map((entry) => `${entry.name} (${entry.type})`)
 			.join(' - '),
 		supported: true,
 		apiConfigurationUrl: getProviderApiConfigurationUrl(provider),
