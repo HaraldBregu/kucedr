@@ -15,6 +15,7 @@ export async function provider(database: SupabaseClient, ownerId: string, provid
 			prefix: Deno.env.get('S3_PREFIX') ?? '',
 			client: new S3Client({
 				region,
+				requestChecksumCalculation: 'WHEN_REQUIRED',
 				endpoint: Deno.env.get('S3_ENDPOINT') || undefined,
 				forcePathStyle: Deno.env.get('S3_FORCE_PATH_STYLE') === 'true',
 				credentials: { accessKeyId, secretAccessKey },
@@ -33,6 +34,7 @@ export async function provider(database: SupabaseClient, ownerId: string, provid
 		prefix: data.prefix as string,
 		client: new S3Client({
 			region: data.region,
+			requestChecksumCalculation: 'WHEN_REQUIRED',
 			endpoint: data.endpoint || undefined,
 			forcePathStyle: data.force_path_style,
 			credentials: { accessKeyId, secretAccessKey },

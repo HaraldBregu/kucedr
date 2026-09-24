@@ -47,18 +47,13 @@ Deno.serve(async (request) => {
 		if (error) throw error;
 		const reservation = data?.[0];
 		if (!reservation) throw new Error('Upload reservation failed');
-		const digest = new Uint8Array(
-			sha256.match(/../g).map((part: string) => Number.parseInt(part, 16))
-		);
-		const checksum = btoa(String.fromCharCode(...digest));
-		const headers = { 'if-none-match': '*', 'x-amz-checksum-sha256': checksum };
+		const headers = { 'if-none-match': '*' };
 		const uploadUrl = await getSignedUrl(
 			storage.client,
 			new PutObjectCommand({
 				Bucket: bucket,
 				Key: reservation.object_key,
 				IfNoneMatch: '*',
-				ChecksumSHA256: checksum,
 			}),
 			{ expiresIn: 600 }
 		);
