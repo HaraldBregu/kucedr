@@ -2,6 +2,11 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import ProvidersPage from '../../../src/renderer/src/pages/settings/pages/providers/Page';
+import { databaseCatalog } from '../../../src/renderer/src/pages/settings/pages/providers/database';
+import {
+	actionableProviderCatalog,
+	actionableSearchCatalog,
+} from '../../../src/renderer/src/pages/start/setupConstants';
 
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
@@ -27,19 +32,18 @@ jest.mock('react-i18next', () => {
 });
 
 jest.mock('../../../src/renderer/src/pages/settings/pages/providers/database', () => ({
-	databaseCatalog: () => [
-		{
-			id: 'pinecone',
-			name: 'Pinecone',
-			capabilities: 'Vector database',
-			supported: true,
-			apiConfigurationUrl: 'https://app.pinecone.io',
-		},
-	],
+	databaseCatalog: jest.fn(),
 }));
 
 jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
-	actionableProviderCatalog: () => [
+	actionableProviderCatalog: jest.fn(),
+	actionableSearchCatalog: jest.fn(),
+	getErrorMessage: (error: unknown, fallback: string) =>
+		error instanceof Error ? error.message : fallback,
+}));
+
+beforeEach(() => {
+	jest.mocked(actionableProviderCatalog).mockReturnValue([
 		{
 			id: 'openai',
 			name: 'OpenAI',
@@ -47,20 +51,19 @@ jest.mock('../../../src/renderer/src/pages/start/setupConstants', () => ({
 			supported: true,
 			apiConfigurationUrl: 'https://platform.openai.com/api-keys',
 		},
-	],
-	actionableSearchCatalog: () => [
+	]);
+	jest.mocked(actionableSearchCatalog).mockReturnValue([
+		{ id: 'brave', name: 'Brave', capabilities: 'Web search', supported: true },
+	]);
+	jest.mocked(databaseCatalog).mockReturnValue([
 		{
-			id: 'brave',
-			name: 'Brave',
-			capabilities: 'Web search',
+			id: 'pinecone',
+			name: 'Pinecone',
+			capabilities: 'Vector database',
 			supported: true,
+			apiConfigurationUrl: 'https://app.pinecone.io',
 		},
-	],
-	getErrorMessage: (error: unknown, fallback: string) =>
-		error instanceof Error ? error.message : fallback,
-}));
-
-beforeEach(() => {
+	]);
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: { openExternalUrl: jest.fn().mockResolvedValue(undefined) },
@@ -118,7 +121,7 @@ describe('Providers settings', () => {
 			within(modelsSection!)
 				.getAllByRole('heading')
 				.map((heading) => heading.textContent)
-		).toEqual(['Models', 'Ollama', 'OpenAI']);
+		).toEqual(['Models', 'OpenAI', 'Ollama']);
 		expect(screen.queryByRole('heading', { name: 'Local models' })).not.toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Ollama' })).toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Databases' })).not.toBeInTheDocument();
