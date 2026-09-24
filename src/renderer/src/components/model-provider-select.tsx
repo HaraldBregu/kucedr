@@ -110,7 +110,9 @@ export function ModelProviderSelect({
 		selectedModel && selectedGroup ? modelLabel(selectedGroup, selectedModel) : undefined;
 	const accessibleLabel = labels?.label ?? t('settings.modelServices.model');
 	const buttonLabel = selectedModel
-		? modelName(selectedModel)
+		? compactPopover
+			? modelName(selectedModel).replace(/\s+high$/i, '')
+			: modelName(selectedModel)
 		: (labels?.placeholder ?? t('settings.modelServices.modelPlaceholder'));
 	const normalizedModelSearch = modelSearch.trim().toLocaleLowerCase();
 	const matchingModels = providerGroups.flatMap((group) =>

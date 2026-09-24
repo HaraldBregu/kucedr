@@ -48,3 +48,26 @@ it('filters models from the compact selection menu', async () => {
 	expect(screen.getByText('GPT-4o Mini')).toBeInTheDocument();
 	expect(screen.queryByText('GPT-5')).not.toBeInTheDocument();
 });
+
+it('shows the compact model name without a High suffix or chevron', async () => {
+	const user = userEvent.setup();
+	render(
+		<ModelProviderSelect
+			idPrefix="home-model"
+			providerGroups={[{ id: 'anthropic', models: [{ id: 'opus', name: 'Opus 5 High' }] }]}
+			providerId="anthropic"
+			modelId="opus"
+			onChange={jest.fn()}
+			buttonDropdown
+			compactPopover
+			labels={{ label: 'Change model' }}
+		/>
+	);
+
+	const trigger = screen.getByRole('button', { name: 'Change model' });
+	expect(trigger).toHaveTextContent('Opus 5');
+	expect(trigger).not.toHaveTextContent('High');
+	expect(trigger.querySelector('svg')).toBeNull();
+	await user.click(trigger);
+	expect(screen.getByRole('menuitemradio', { name: /Opus 5 High/ })).toBeInTheDocument();
+});
