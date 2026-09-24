@@ -37,9 +37,7 @@ export function McpServerRow({
 		(server.data.type === 'http' ? 'Remote MCP server.' : 'Local MCP server.');
 	const iconService =
 		service ??
-		(microsoftService
-			? mcps().find((entry) => entry.id === 'microsoft-learn')
-			: undefined);
+		(microsoftService ? mcps().find((entry) => entry.id === 'microsoft-learn') : undefined);
 
 	return (
 		<Item
