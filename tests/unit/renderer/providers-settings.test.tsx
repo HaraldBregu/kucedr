@@ -189,7 +189,8 @@ it('masks saved model keys until editing', async () => {
 	expect(screen.queryByText('model-secret')).not.toBeInTheDocument();
 
 	const user = userEvent.setup();
-	await user.click(screen.getByRole('button', { name: 'Edit OpenAI API key' }));
+	await user.click(screen.getByRole('button', { name: 'Options for OpenAI' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Edit API key' }));
 	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('');
 	expect(screen.getByLabelText('OpenAI API key')).toHaveAttribute('placeholder', '************');
 });
@@ -202,15 +203,16 @@ it('saves a custom OpenAI-compatible model provider', async () => {
 		</MemoryRouter>
 	);
 
-	const ollamaCard = screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="card"]');
-	expect(ollamaCard).not.toBeNull();
-	await user.click(within(ollamaCard!).getByRole('button', { name: 'Connect', exact: true }));
+	const ollamaItem = screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="item"]');
+	expect(ollamaItem).not.toBeNull();
+	await user.click(within(ollamaItem!).getByRole('button', { name: 'Options for Ollama' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Connect' }));
 	const baseUrlInput = screen.getByLabelText('URL');
-	const customCard = baseUrlInput.closest('[data-slot="card"]');
-	expect(customCard).not.toBeNull();
+	const customItem = baseUrlInput.closest('[data-slot="item"]');
+	expect(customItem).not.toBeNull();
 	await user.type(baseUrlInput, 'http://localhost:11434/api');
 	await user.type(screen.getByLabelText('API key'), 'ollama');
-	await user.click(within(customCard!).getByRole('button', { name: 'Save', exact: true }));
+	await user.click(within(customItem!).getByRole('button', { name: 'Save', exact: true }));
 
 	await waitFor(() =>
 		expect(window.provider.set).toHaveBeenCalledWith({

@@ -743,15 +743,15 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 			{(section === undefined || section === 'models') &&
 				(!embedded || modelCatalog.length > 0) && (
 					<SettingsSection title={t('settings.overview.groups.mlModels')}>
-						{section === undefined && <div className="space-y-3">{renderCustomProviderCard()}</div>}
-						<div className="space-y-3 pb-4">
+						<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">
+							{section === undefined && renderCustomProviderCard()}
 							{orderedModelProviders.map((provider) => renderProviderCard(provider, 'models'))}
 						</div>
 					</SettingsSection>
 				)}
 			{section === 'models' && (
 				<SettingsSection title={t('settings.modelServices.localModels')}>
-					<div className="space-y-3 pb-4">{renderCustomProviderCard()}</div>
+					<div className="-mx-4 grid grid-cols-1 gap-y-1 pb-4">{renderCustomProviderCard()}</div>
 				</SettingsSection>
 			)}
 
