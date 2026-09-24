@@ -343,9 +343,11 @@ it('places connected model providers before unconnected ones', async () => {
 });
 
 it('places a connected local model above unconnected hosted models', async () => {
-	jest.mocked(window.provider.list).mockResolvedValue([
-		{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
-	]);
+	jest
+		.mocked(window.provider.list)
+		.mockResolvedValue([
+			{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
+		]);
 	render(
 		<MemoryRouter>
 			<ProvidersPage section="models" />
