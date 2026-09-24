@@ -7,11 +7,11 @@ import { getPlatformTranslucencyOptions } from './translucency';
 import { attachRouteNavigation } from './attach_route_navigation';
 
 const DEFAULT_WINDOW_WIDTH = 900;
-const DEFAULT_WINDOW_HEIGHT = 625;
+const DEFAULT_WINDOW_HEIGHT = 700;
 const MINIMUM_WINDOW_WIDTH = 768;
 const MINIMUM_WINDOW_HEIGHT = 600;
 const STARTUP_WINDOW_WIDTH = 900;
-const STARTUP_WINDOW_HEIGHT = 625;
+const STARTUP_WINDOW_HEIGHT = 700;
 const TRANSPARENT_WINDOW_BACKGROUND = '#00000000';
 
 export class Main {
