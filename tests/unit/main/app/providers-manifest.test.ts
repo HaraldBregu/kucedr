@@ -19,6 +19,7 @@ describe('provider manifests', () => {
 				'google-sheets',
 				'github',
 				'gitlab',
+				'microsoft-learn',
 				'notion',
 			].includes(service.id)
 		);
@@ -63,6 +64,7 @@ describe('provider manifests', () => {
 			'google',
 			'google',
 			'google',
+			'microsoft',
 			'notion',
 		]);
 		expect(integrations.map((service) => service.id)).toEqual([
@@ -75,6 +77,7 @@ describe('provider manifests', () => {
 			'google-drive',
 			'google-maps',
 			'google-sheets',
+			'microsoft-learn',
 			'notion',
 		]);
 		expect(integrations.map((service) => service.url)).toEqual([
@@ -87,6 +90,7 @@ describe('provider manifests', () => {
 			'https://drivemcp.googleapis.com/mcp/v1',
 			'https://mapstools.googleapis.com/mcp',
 			'https://sheetsmcp.googleapis.com/mcp/v1',
+			'https://learn.microsoft.com/api/mcp',
 			'https://mcp.notion.com/mcp',
 		]);
 		expect(integrations.map((service) => service.description)).toEqual([
@@ -99,6 +103,7 @@ describe('provider manifests', () => {
 			'Search and manage Drive files.',
 			'Find places, routes, and weather.',
 			'Read and update spreadsheets.',
+			'Search Microsoft documentation and code samples.',
 			'Search and manage Notion pages.',
 		]);
 		expect(integrations.every((service) => service.iconLightUrl?.endsWith('.svg'))).toBe(true);
@@ -118,6 +123,9 @@ describe('provider manifests', () => {
 		}
 		expect(integrations.find((service) => service.id === 'gitlab')?.iconLightUrl).toContain(
 			'/resources/providers/gitlab/images/gitlab.svg'
+		);
+		expect(integrations.find((service) => service.id === 'microsoft-learn')?.iconLightUrl).toContain(
+			'/resources/providers/microsoft/images/microsoft.svg'
 		);
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(
 			expect.objectContaining({
