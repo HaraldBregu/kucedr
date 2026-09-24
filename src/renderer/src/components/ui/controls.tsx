@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { TypingLoader } from './loader';
+import { CircularLoader } from './loader';
 
 export function PromptInputControls({
 	leadingAction,
@@ -18,7 +18,7 @@ export function PromptInputControls({
 			</div>
 			{isLoading ? (
 			<div role="status" aria-label="Kucedr is responding" className="mr-3 text-muted-foreground">
-				<TypingLoader size="sm" />
+				<CircularLoader size="md" />
 			</div>
 			) : null}
 		</div>
