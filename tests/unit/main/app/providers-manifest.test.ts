@@ -7,6 +7,28 @@ function namesAreAlphabetical(entries: readonly { name: string }[]): boolean {
 }
 
 describe('provider manifests', () => {
+	it('loads Microsoft 365 services and their own SVG icons from the manifest', () => {
+		const services = loadMcps().filter((service) => service.provider.id === 'microsoft');
+		const icons = new Map([
+			['microsoft-mail', 'microsoft-outlook.svg'],
+			['microsoft-calendar', 'outlook-calendar.svg'],
+			['microsoft-teams', 'microsoft-teams.svg'],
+			['microsoft-onedrive', 'microsoft-onedrive.svg'],
+			['microsoft-sharepoint', 'microsoft-sharepoint.svg'],
+			['microsoft-word', 'microsoft-word.svg'],
+			['microsoft-search', 'microsoft-365-copilot.svg'],
+		]);
+		expect(services.map((service) => service.id)).toEqual(
+			expect.arrayContaining(['microsoft-learn', ...icons.keys()])
+		);
+		for (const [id, icon] of icons) {
+			const service = services.find((entry) => entry.id === id);
+			expect(service?.url).toContain('/tenants/{tenantId}/servers/');
+			expect(service?.iconDarkUrl).toContain(`/resources/providers/microsoft/images/${icon}`);
+			expect(service?.iconLightUrl).toContain(`/resources/providers/microsoft/images/${icon}`);
+		}
+	});
+
 	it('routes manifest services to their matching catalog', () => {
 		const integrations = loadMcps().filter((service) =>
 			[

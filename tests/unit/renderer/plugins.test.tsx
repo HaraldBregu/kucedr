@@ -14,14 +14,31 @@ const catalog = [
 	'github',
 	'gitlab',
 	'microsoft-learn',
+	'microsoft-mail',
+	'microsoft-calendar',
+	'microsoft-teams',
+	'microsoft-onedrive',
+	'microsoft-sharepoint',
+	'microsoft-word',
+	'microsoft-search',
 	'notion',
 ].map(
 	(id): CatalogService => ({
 		id,
-		name: id,
+		name:
+			id === 'microsoft-mail'
+				? 'Outlook Mail'
+				: id === 'microsoft-search'
+					? 'Microsoft 365 Search'
+					: id,
 		description: `Use ${id}.`,
 		type: 'mcp',
-		url: `https://${id}.example/mcp`,
+		url:
+			id === 'microsoft-mail'
+				? 'https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_MailTools'
+				: id.startsWith('microsoft-') && id !== 'microsoft-learn'
+					? `https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/${id}`
+					: `https://${id}.example/mcp`,
 		iconDarkUrl: `https://icons.example/${id}.png`,
 		iconLightUrl: `https://icons.example/${id}.png`,
 		provider: {
@@ -35,7 +52,9 @@ const catalog = [
 				'google-maps',
 			].includes(id)
 				? 'google'
-				: id,
+				: id.startsWith('microsoft-')
+					? 'microsoft'
+					: id,
 			name: [
 				'gmail',
 				'google-calendar',
