@@ -99,20 +99,18 @@ describe('prompt attachment preflight', () => {
 		]);
 	});
 
+	it('rejects an unsafe name before persistence', () => {
+		expect(() => preflightPromptAttachments([{
+			name: '../secret.txt',
+			mimeType: 'text/plain',
+			data: Buffer.from('safe').toString('base64'),
+		}], capabilities)).toThrow('safe basename');
+	});
+
 	it.each([
-		[
-			'unsafe name',
-			{
-				name: '../secret.txt',
-				mimeType: 'text/plain',
-				data: Buffer.from('safe').toString('base64'),
-			},
-			'safe basename',
-		],
 		[
 			'binary text',
 			{ name: 'bad.txt', mimeType: 'text/plain', data: Buffer.from([0, 1]).toString('base64') },
-			'binary control bytes',
 		],
 		[
 			'invalid UTF-8',
@@ -121,12 +119,10 @@ describe('prompt attachment preflight', () => {
 				mimeType: 'text/plain',
 				data: Buffer.from([0xc3, 0x28]).toString('base64'),
 			},
-			'valid UTF-8',
 		],
 		[
 			'spoofed extension',
 			{ name: 'pixel.jpg', mimeType: 'image/jpeg', data: png.toString('base64') },
-			'does not match',
 		],
 		[
 			'unknown binary',
@@ -135,19 +131,24 @@ describe('prompt attachment preflight', () => {
 				mimeType: 'application/pdf',
 				data: Buffer.from('PK\u0003\u0004').toString('base64'),
 			},
-			'unsupported file type',
 		],
-	] as const)('rejects %s before persistence', (_case, file, message) => {
-		expect(() => preflightPromptAttachments([file], capabilities)).toThrow(message);
+	] as const)('skips %s while keeping supported files', (_case, file) => {
+		expect(preflightPromptAttachments([
+			file,
+			{ name: 'note.txt', mimeType: 'text/plain', data: 'b2s=' },
+		], capabilities)).toEqual([
+			expect.objectContaining({ type: 'text_file', name: 'note.txt', text: 'ok' }),
+		]);
 	});
 
-	it('rejects a current native file not supported by the selected model', () => {
-		expect(() =>
-			preflightPromptAttachments(
-				[{ name: 'pixel.png', mimeType: 'image/png', data: png.toString('base64') }],
-				{ ...capabilities, rules: [] }
-			)
-		).toThrow('pixel.png');
+	it('skips native files unsupported by the model while keeping supported text', () => {
+		expect(preflightPromptAttachments(
+			[
+				{ name: 'pixel.png', mimeType: 'image/png', data: png.toString('base64') },
+				{ name: 'note.txt', mimeType: 'text/plain', data: 'b2s=' },
+			],
+			{ ...capabilities, rules: [] }
+		)).toEqual([expect.objectContaining({ type: 'text_file', name: 'note.txt', text: 'ok' })]);
 	});
 });
 
