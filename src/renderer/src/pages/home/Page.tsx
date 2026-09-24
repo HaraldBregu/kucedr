@@ -11,7 +11,6 @@ import { AnimatePresence, motion, resize } from 'motion/react';
 import {
 	AlertCircle,
 	ArrowUp,
-	AudioLines,
 	FileAudio,
 	Mic,
 	Paperclip,
@@ -65,7 +64,6 @@ import {
 	type VoiceButtonMode,
 } from './hooks';
 import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
-import { ensureAppMicrophoneAccess } from './hooks/audio';
 import type { PromptAttachment } from './attachments/types';
 import { validatePromptAttachments } from './attachments/validation';
 import { HomeSidebar } from './Sidebar';
@@ -394,29 +392,20 @@ function VoiceButton({
 function SubmitButton({
 	isLoading,
 	canSubmit,
-	forceSubmit,
 	disabled,
 	onAction,
 }: {
 	readonly isLoading: boolean;
 	readonly canSubmit: boolean;
-	readonly forceSubmit?: boolean;
 	readonly disabled?: boolean;
 	readonly onAction: () => void;
 }): ReactElement {
-	const submitVisible = canSubmit || forceSubmit;
-	const label = isLoading
-		? 'Stop generation'
-		: submitVisible
-			? 'Send message'
-			: 'Start voice conversation';
-	const iconKey = isLoading ? 'stop' : submitVisible ? 'send' : 'voice';
+	const label = isLoading ? 'Stop generation' : 'Send message';
+	const iconKey = isLoading ? 'stop' : 'send';
 	const icon = isLoading ? (
 		<Square className="size-4 fill-current" />
-	) : submitVisible ? (
-		<ArrowUp className="size-4" />
 	) : (
-		<AudioLines className="size-4" />
+		<ArrowUp className="size-4" />
 	);
 
 	return (
@@ -427,7 +416,7 @@ function SubmitButton({
 				size="icon"
 				className="size-9 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
 				aria-label={label}
-				disabled={disabled}
+				disabled={disabled || (!isLoading && !canSubmit)}
 				onClick={onAction}
 			>
 				<AnimatePresence mode="wait" initial={false}>
@@ -639,20 +628,6 @@ function PageContent(): ReactElement {
 		closeVoiceUi();
 	};
 
-	const startVoiceConversation = async (): Promise<void> => {
-		setTranscriptionErrorMessage(null);
-		try {
-			await ensureAppMicrophoneAccess();
-			await window.win.openVoiceConversation(chatSessionId);
-		} catch (error) {
-			setTranscriptionErrorMessage(
-				error instanceof Error && error.message.trim()
-					? error.message
-					: 'Voice conversation could not be opened.'
-			);
-		}
-	};
-
 	const startDictation = async (): Promise<void> => {
 		setTranscriptionErrorMessage(null);
 		if (voiceButtonMode === 'disabled') {
@@ -735,15 +710,6 @@ function PageContent(): ReactElement {
 		returnToChat();
 	};
 
-	const handlePrimaryAction = (): void => {
-		if (agent.isLoading || canSubmit) {
-			void submitPrompt();
-			return;
-		}
-		void startVoiceConversation();
-	};
-
-	// PromptInput retains its conversation-mode rendering for future reuse; launch now opens the dedicated voice window.
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
@@ -945,14 +911,13 @@ function PageContent(): ReactElement {
 										<SubmitButton
 											isLoading={agent.isLoading}
 											canSubmit={canSubmit}
-											forceSubmit={planCommandActive || goalCommandActive}
 											disabled={
 												voiceBusy ||
 												hasAttachmentErrors ||
 												(planCommandActive && !hasPromptText) ||
 												(goalCommandActive && !hasGoalObjective)
 											}
-											onAction={handlePrimaryAction}
+											onAction={() => void submitPrompt()}
 										/>
 									</PromptInputActions>
 								}

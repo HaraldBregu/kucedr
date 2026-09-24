@@ -125,7 +125,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const controls = page.locator('[data-slot="prompt-input-controls"]');
 	const controlButtons = page.locator('[data-slot="prompt-input-control-buttons"]');
 	const attachmentButton = page.getByRole('button', { name: 'Add attachment' });
-	const sendButton = field.getByRole('button', { name: 'Start voice conversation' });
+	const sendButton = field.getByRole('button', { name: 'Send message' });
 	const transcriptionButton = field.getByRole('button', { name: /speech-to-text provider/ });
 	const modelButton = page.getByRole('button', { name: 'Change model' });
 
@@ -160,6 +160,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await modelButton.hover();
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
+	await expect(sendButton).toBeDisabled();
 	const fieldBounds = await field.boundingBox();
 	const sendBounds = await sendButton.boundingBox();
 	const transcriptionBounds = await transcriptionButton.boundingBox();
@@ -173,6 +174,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await editor.pressSequentially('Hello');
 	await expect(editor).toContainText('Hello');
 	await expect(composer).toHaveAttribute('data-expanded', 'true');
+	await expect(sendButton).toBeEnabled();
 	await expect(field).toHaveCSS('min-height', '96px');
 	await expect(field).toHaveCSS('align-items', 'flex-start');
 	await expect(field).toHaveCSS('padding-top', '16px');
@@ -186,6 +188,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeLessThan(20);
 	await editor.fill('');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
+	await expect(sendButton).toBeDisabled();
 	await expect(field).toHaveCSS('min-height', '56px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await modelButton.click();
