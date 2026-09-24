@@ -243,7 +243,7 @@ describe('Home prompt attachments', () => {
 		);
 	});
 
-	it('keeps local text available on text-only models and disables the picker on resolution failure', async () => {
+	it('keeps the picker and Send available when capability resolution fails', async () => {
 		const getCapabilities = jest.fn().mockResolvedValueOnce(textCapabilities);
 		renderPage(getCapabilities);
 		await waitFor(() =>
@@ -252,12 +252,11 @@ describe('Home prompt attachments', () => {
 
 		getCapabilities.mockRejectedValueOnce(new Error('catalog unavailable'));
 		modelCatalogChanged?.();
-		await waitFor(() =>
-			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeDisabled()
-		);
+		expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled();
+		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 	});
 
-	it('keeps a queued file visible and blocks Send when a model change makes it incompatible', async () => {
+	it('keeps a queued file visible and Send enabled when the model changes', async () => {
 		const getCapabilities = jest
 			.fn()
 			.mockResolvedValueOnce(imageCapabilities)
@@ -274,9 +273,7 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 
 		modelCatalogChanged?.();
-		await waitFor(() =>
-			expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled()
-		);
+		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 		expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute('data-state', 'done');
 		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
 		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
@@ -317,7 +314,7 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByText('archive.zip').closest('[data-slot="attachment"]')).toHaveAttribute('data-state', 'done');
 		expect(screen.getByText('ZIP · 6 B')).toBeInTheDocument();
 		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
-		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 	});
 
 	it('clears submitted files immediately while the captured request continues', async () => {
