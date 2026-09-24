@@ -254,7 +254,7 @@ function readCatalog(): Catalog {
 					}
 				}
 			} catch {
-				// ponytail: a provider dir mid-edit drops out until fixed
+				continue;
 			}
 		}
 	}
