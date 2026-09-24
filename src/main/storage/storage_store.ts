@@ -1,4 +1,4 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import Store from 'electron-store';
 import type { StorageSyncSettings } from '../../shared/storage_types';
 import { restrictSettingsFile } from '../shared/restrict_settings_file';
@@ -26,10 +26,14 @@ export const storageSettingsStorePath = store.path;
 export function migrateStorageSettings(legacy: unknown): void {
 	if (legacy === undefined) return;
 	if (!existsSync(store.path)) {
+		if (!legacy || typeof legacy !== 'object' || Array.isArray(legacy)) {
+			throw new Error('Invalid legacy storage settings.');
+		}
 		const migrated = normalizeStorageSettings({ ...defaults, ...(legacy as object) });
 		store.store = migrated;
 		restrictSettingsFile(store.path);
-		if (JSON.stringify(getStorageSettings()) !== JSON.stringify(migrated)) {
+		const installed = normalizeStorageSettings(JSON.parse(readFileSync(store.path, 'utf8')));
+		if (JSON.stringify(installed) !== JSON.stringify(migrated)) {
 			throw new Error('Storage settings migration could not be verified.');
 		}
 	}
@@ -37,7 +41,7 @@ export function migrateStorageSettings(legacy: unknown): void {
 }
 
 export function getStorageSettings(): StorageSyncSettings {
-	return normalizeStorageSettings({ ...defaults, ...store.store });
+	return normalizeStorageSettings(store.store);
 }
 
 export function saveStorageSettings(settings: StorageSyncSettings): StorageSyncSettings {

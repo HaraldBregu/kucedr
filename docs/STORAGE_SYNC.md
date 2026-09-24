@@ -3,7 +3,8 @@
 ## Existing data and rollout
 
 The current Cloud Backup feature selects local paths, uploads to an S3-compatible bucket by
-path, and restores by replacing matching local files. Its settings live under `~/.kucedr/settings`;
+path, and restores by replacing matching local files. Its folder, provider selection, and schedule
+settings live in `~/.kucedr/storage/settings.json`;
 S3 credentials are encrypted with Electron `safeStorage`. These backups have no version ancestry
 or Supabase metadata. The new sync protocol must not interpret existing backup objects as
 published versions or remove old settings or objects. Keep the backup path available until an
@@ -23,6 +24,7 @@ content, even if its parent is selected.
 
 | Path | Responsibility |
 | --- | --- |
+| `storage/settings.json` | Selected backup folders, provider ID, and schedule. Migrated from the former `settings/app.json` `cloud` field. |
 | `storage/config.json` | Versioned, nonsecret provider, bucket, region, prefix, Supabase URL, and sync settings; atomic replacement. |
 | `storage/state.sqlite` | Transactional local versions, parents, heads, operations, upload progress, conflicts, retry state, and change cursor. |
 | `storage/blobs/` | Immutable snapshots; pending snapshots are irreplaceable until publication is confirmed. |
