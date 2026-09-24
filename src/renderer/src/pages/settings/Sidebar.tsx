@@ -109,7 +109,7 @@ export function SettingsSidebar(): React.JSX.Element {
 												className={cn(
 													SPLIT_ITEM_CLASS,
 													isActive && SPLIT_ITEM_ACTIVE_CLASS,
-													'group'
+													!isActive && 'group'
 												)}
 											>
 												<Icon
