@@ -178,6 +178,7 @@ export function useHomeAgent({ setMode }: { readonly setMode: (mode: ChatMode) =
 						name: file.name,
 						mimeType: file.type || 'application/octet-stream',
 						bytes: file.size,
+						file,
 					})),
 					submittedAtMs,
 				});

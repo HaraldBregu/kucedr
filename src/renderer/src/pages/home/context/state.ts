@@ -2,7 +2,9 @@ import type { AgentHistoryContentBlock, AgentRunState, AgentUserInputQuestion, A
 import type { AgentToolPart } from './tool-parts';
 
 export type { AgentRunState, AgentToolPart };
-export type UserAttachment = Extract<AgentHistoryContentBlock, { type: 'attachment' }>;
+export type UserAttachment = Extract<AgentHistoryContentBlock, { type: 'attachment' }> & {
+	readonly file?: File;
+};
 
 export interface UserMessage {
 	readonly id: string;
