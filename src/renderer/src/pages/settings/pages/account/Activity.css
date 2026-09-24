@@ -5,8 +5,8 @@
 	--activity-color-3: #30a14e;
 	--activity-color-4: #216e39;
 	overflow-x: auto;
-	margin: -44px -6px -6px;
-	padding: 44px 6px 6px;
+	margin: 0 -6px -6px;
+	padding: 0 6px 6px;
 }
 
 .dark .card-body {
