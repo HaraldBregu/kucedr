@@ -8,16 +8,7 @@ import {
 } from 'react';
 import type { AgentPromptInputCapabilities } from '@shared/agent_types';
 import { AnimatePresence, motion, resize } from 'motion/react';
-import {
-	AlertCircle,
-	ArrowUp,
-	FileAudio,
-	Mic,
-	Paperclip,
-	Plus,
-	Square,
-	X,
-} from 'lucide-react';
+import { AlertCircle, ArrowUp, FileAudio, Mic, Paperclip, Plus, Square, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
@@ -891,8 +882,8 @@ function PageContent(): ReactElement {
 								wrapperClassName="max-w-none"
 								detachedControls
 								footerContent={
-					<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-						<Model />
+									<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
+										<Model />
 									</div>
 								}
 								className="w-full"
