@@ -5,11 +5,8 @@ import type {
 	StoredProvider,
 	StoredProviderKind,
 } from '../shared/provider_types';
-import type { StorageSyncSettings } from '../shared/storage_types';
 import { userDataLocation } from './shared/user_data_location';
-import { DEFAULT_SYNC_CRON_EXPRESSION } from './storage/storage_sync_types';
-import { normalizeStorageSettings } from './storage/storage_config';
-import { storageProviders } from './storage/providers';
+import { migrateStorageSettings } from './storage/storage_store';
 import { migrateMcpStoreFromProviders } from './mcp/mcp_store_state';
 import { getTaskState, setTaskState, taskStorePath } from './tasks/tasks_store';
 import type { PersistedTaskState } from './tasks/tasks_types';
@@ -36,16 +33,9 @@ export type AppSettingsState = {
 	theme: AppTheme;
 	microphoneInputId: string;
 	launchCount: number;
-	cloud: StorageSyncSettings;
 };
 
 const APP_SETTINGS_STORE_NAME = 'app';
-
-const DEFAULT_STORAGE_SETTINGS: StorageSyncSettings = {
-	paths: [],
-	syncEnabled: false,
-	syncCronExpression: DEFAULT_SYNC_CRON_EXPRESSION,
-};
 
 const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	trayEnabled: true,
@@ -55,7 +45,6 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	theme: 'system',
 	microphoneInputId: 'default',
 	launchCount: 0,
-	cloud: DEFAULT_STORAGE_SETTINGS,
 };
 
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
@@ -68,6 +57,7 @@ const store = new Store<AppSettingsState>({
 });
 
 type LegacyAppSettingsState = AppSettingsState & {
+	cloud?: unknown;
 	databaseConfiguration?: { providerId?: string; databaseId?: string };
 	modelSelections?: {
 		embedding?: { providerId: string; modelId: string };
@@ -112,6 +102,8 @@ if (legacyDatabase || legacyEmbedding) {
 migrateMcpStoreFromProviders();
 delete persistedSettings.databaseConfiguration;
 delete persistedSettings.modelSelections;
+migrateStorageSettings(persistedSettings.cloud);
+delete persistedSettings.cloud;
 store.store = {
 	...DEFAULT_APP_SETTINGS,
 	...persistedSettings,
@@ -266,16 +258,4 @@ export function getResolvedProvider(providerId: string | undefined): ResolvedPro
 	};
 }
 
-export function getStorageSettings(): StorageSyncSettings {
-	return normalizeStorageSettings({
-		...DEFAULT_STORAGE_SETTINGS,
-		...store.get('cloud'),
-	});
-}
-
-export function saveStorageSettings(settings: StorageSyncSettings): StorageSyncSettings {
-	const saved = normalizeStorageSettings(settings);
-	if (saved.providerId || saved.syncEnabled) storageProviders.resolve(saved.providerId);
-	store.set('cloud', saved);
-	return saved;
-}
+export { getStorageSettings, saveStorageSettings } from './storage/storage_store';
