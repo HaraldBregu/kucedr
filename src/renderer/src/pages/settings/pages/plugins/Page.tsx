@@ -124,11 +124,12 @@ const PluginsPage = (): React.JSX.Element => {
 										<DropdownMenuTrigger asChild>
 											<Button
 												variant="ghost"
-												size="icon"
+												size="icon-sm"
+												className="hover:bg-transparent dark:hover:bg-transparent"
 												disabled={savingId === service.id}
 												aria-label={t('settings.integrations.options', { name: service.name })}
 											>
-												<MoreHorizontal className="size-5" />
+												<MoreHorizontal className="size-4" />
 											</Button>
 										</DropdownMenuTrigger>
 										<DropdownMenuContent align="end">
@@ -141,12 +142,13 @@ const PluginsPage = (): React.JSX.Element => {
 								) : (
 									<Button
 										variant="ghost"
-										size="icon"
+										size="icon-sm"
+										className="hover:bg-transparent dark:hover:bg-transparent"
 										disabled={savingId === service.id}
 										onClick={() => void setIntegrationEnabled(service, true)}
 										aria-label={t('settings.integrations.add', { name: service.name })}
 									>
-										<Plus className="size-5" />
+										<Plus className="size-4" />
 									</Button>
 								)}
 							</ItemActions>
