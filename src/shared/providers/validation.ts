@@ -111,6 +111,16 @@ export function validateProviderManifest(value: unknown): string[] {
 				`manifest.json: services[${index}].description must be a non-empty string when present.`
 			);
 		}
+		for (const field of ['icon_dark_url', 'icon_light_url'] as const) {
+			if (
+				service[field] !== undefined &&
+				(!isNonEmptyString(service[field]) || !service[field].startsWith('/images/'))
+			) {
+				serviceErrors.push(
+					`manifest.json: services[${index}].${field} must be an /images/ path when present.`
+				);
+			}
+		}
 		if (!SERVICE_TYPES.includes(service.type as (typeof SERVICE_TYPES)[number])) {
 			serviceErrors.push(
 				`manifest.json: services[${index}].type must be one of ${SERVICE_TYPES.join(', ')}.`

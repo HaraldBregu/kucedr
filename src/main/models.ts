@@ -235,26 +235,14 @@ function readCatalog(): Catalog {
 		for (const dirent of readdirSync(directory, { withFileTypes: true })) {
 			if (!dirent.isDirectory()) continue;
 			try {
-				const providerRoot = path.join(directory, dirent.name);
-				const providerDirs = [
-					providerRoot,
-					...readdirSync(providerRoot, { withFileTypes: true })
-						.filter((entry) => entry.isDirectory())
-						.map((entry) => path.join(providerRoot, entry.name)),
-				];
-				for (const providerDir of providerDirs) {
-					try {
-						const manifestPath = path.join(providerDir, 'manifest.json');
-						if (!existsSync(manifestPath)) continue;
-						const entry = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
-						if (!entry) continue;
-						manifests.set(normalizeProviderId(entry.providerId), { entry, providerDir });
-					} catch {
-						// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
-					}
-				}
+				const providerDir = path.join(directory, dirent.name);
+				const manifestPath = path.join(providerDir, 'manifest.json');
+				if (!existsSync(manifestPath)) continue;
+				const entry = parseProviderManifest(JSON.parse(readFileSync(manifestPath, 'utf-8')));
+				if (!entry) continue;
+				manifests.set(normalizeProviderId(entry.providerId), { entry, providerDir });
 			} catch {
-				continue;
+				// ponytail: a provider dir mid-edit (malformed JSON) drops out until fixed
 			}
 		}
 	}
@@ -279,7 +267,12 @@ function readCatalog(): Catalog {
 		mcps.push(
 			...entry.services
 				.filter((service) => service.type === 'mcp')
-				.map((service) => ({ ...service, provider }))
+				.map((service) => ({
+					...service,
+					provider,
+					iconDarkUrl: iconUrl(providerDir, service.icon_dark_url) ?? provider.iconDarkUrl,
+					iconLightUrl: iconUrl(providerDir, service.icon_light_url) ?? provider.iconLightUrl,
+				}))
 		);
 	}
 

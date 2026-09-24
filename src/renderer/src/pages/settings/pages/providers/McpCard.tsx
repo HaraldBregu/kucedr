@@ -38,10 +38,10 @@ export function McpCard({ service }: { readonly service: CatalogService }): Reac
 			onSave={save}
 			icon={
 				<ProviderAvatar
-					providerId={service.provider.id}
-					name={service.provider.name}
-					iconDarkUrl={service.provider.iconDarkUrl}
-					iconLightUrl={service.provider.iconLightUrl}
+					providerId={service.id}
+					name={service.name}
+					iconDarkUrl={service.iconDarkUrl}
+					iconLightUrl={service.iconLightUrl}
 				/>
 			}
 		/>

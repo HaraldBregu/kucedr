@@ -22,10 +22,10 @@ export function McpServerRow({
 		server.data.type === 'http'
 			? server.data.url
 			: [server.data.command, ...(server.data.args ?? [])].join(' ');
-	const provider = mcps().find(
+	const service = mcps().find(
 		(service) =>
 			service.id === server.id || (server.data.type === 'http' && service.url === server.data.url)
-	)?.provider;
+	);
 
 	return (
 		<Item variant="ghost" size="md" className="px-0 py-3.5">
@@ -34,12 +34,12 @@ export function McpServerRow({
 				onClick={onOpen}
 				className="flex min-w-0 flex-1 items-center gap-4 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
 			>
-				{provider ? (
+				{service ? (
 					<ProviderAvatar
-						providerId={provider.id}
-						name={provider.name}
-						iconDarkUrl={provider.iconDarkUrl}
-						iconLightUrl={provider.iconLightUrl}
+						providerId={service.id}
+						name={service.name}
+						iconDarkUrl={service.iconDarkUrl}
+						iconLightUrl={service.iconLightUrl}
 						className="size-8 rounded-none border-0 bg-transparent p-0"
 					/>
 				) : (

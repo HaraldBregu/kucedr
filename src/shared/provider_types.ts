@@ -58,6 +58,8 @@ export type ProviderServiceType =
 export interface ProviderManifestService extends Omit<CatalogEntryModel, 'type'> {
 	readonly type: ProviderServiceType;
 	readonly description?: string;
+	readonly icon_dark_url?: string;
+	readonly icon_light_url?: string;
 }
 
 /** A non-model service in resources/providers/<id>/manifest.json. */
@@ -75,6 +77,8 @@ export interface CatalogEntryService {
 /** A non-model provider service, carrying the provider that serves it. */
 export interface CatalogService extends CatalogEntryService {
 	readonly provider: PublicProvider;
+	readonly iconDarkUrl?: string;
+	readonly iconLightUrl?: string;
 }
 
 /** One web search service in resources/providers/<id>/manifest.json. */

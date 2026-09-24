@@ -19,7 +19,7 @@ import {
 	SettingsPageShell,
 } from '../../components';
 
-const INTEGRATION_PROVIDER_IDS = [
+const PLUGIN_SERVICE_IDS = [
 	'gmail',
 	'google-calendar',
 	'google-drive',
@@ -32,8 +32,8 @@ const PluginsPage = (): React.JSX.Element => {
 	const [servers, setServers] = useState<McpSettings>({});
 	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
-	const catalog = INTEGRATION_PROVIDER_IDS.flatMap((providerId) =>
-		mcps().filter((service) => service.provider.id === providerId)
+	const catalog = PLUGIN_SERVICE_IDS.flatMap((serviceId) =>
+		mcps().filter((service) => service.id === serviceId)
 	);
 
 	useEffect(() => {
@@ -104,10 +104,10 @@ const PluginsPage = (): React.JSX.Element => {
 							className="min-w-0 flex-nowrap gap-3 rounded-2xl px-4 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 						>
 							<ProviderAvatar
-								providerId={service.provider.id}
-								name={service.provider.name}
-								iconDarkUrl={service.provider.iconDarkUrl}
-								iconLightUrl={service.provider.iconLightUrl}
+								providerId={service.id}
+								name={service.name}
+								iconDarkUrl={service.iconDarkUrl}
+								iconLightUrl={service.iconLightUrl}
 								className="size-10 rounded-lg border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 							/>
 							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
