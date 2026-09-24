@@ -7,7 +7,8 @@ path, and restores by replacing matching local files. Its folder, provider selec
 settings live in `~/.kucedr/storage/settings.json`;
 S3 credentials are encrypted with Electron `safeStorage`. These backups have no version ancestry
 or Supabase metadata. The new sync protocol must not interpret existing backup objects as
-published versions or remove old settings or objects. Keep the backup path available until an
+published versions or remove old backup objects. Migrate backup settings into the dedicated
+store before removing their old `app.json` field. Keep the backup path available until an
 explicit, verified import can assign file identities and hashes to each existing object. Existing
 working files remain at their selected locations.
 
