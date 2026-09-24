@@ -30,7 +30,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: [
 			...SETTINGS_MODEL_SERVICE_ITEMS.filter((item) => item.id === AGENTS.assistant),
 			...SETTINGS_NAVIGATION.filter((item) =>
-				['/settings/voice', '/settings/tasks', '/settings/health', '/settings/channels'].includes(
+				['/settings/voice', '/settings/tasks', '/settings/health', '/settings/channels', '/settings/a2a'].includes(
 					item.path
 				)
 			),
@@ -45,7 +45,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		id: 'plugins',
 		titleKey: 'settings.overview.groups.extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/plugins', '/settings/apps', '/settings/a2a'].includes(
+			['/settings/plugins', '/settings/apps'].includes(
 				item.path
 			)
 		),
