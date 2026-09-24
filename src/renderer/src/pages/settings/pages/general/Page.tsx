@@ -11,7 +11,9 @@ import {
 	MousePointerClick,
 	PanelTop,
 	SunMoon,
+	AppWindow,
 } from 'lucide-react';
+import { WINDOW_SIZES, type WindowSize } from '../../../../../../shared/window_size';
 import { ThemeSwitcher } from '@/components/kibo-ui/theme-switcher';
 import { Button } from '@/components/ui/button';
 import {
@@ -55,11 +57,13 @@ const GeneralPage: React.FC = () => {
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
+	const [windowSize, setWindowSize] = useState<WindowSize>('900x700');
 
 	useEffect(() => {
 		void window.app.getTrayEnabled().then(setTrayEnabled);
 		void window.app.getTrayClickAction().then(setTrayClickAction);
 		void window.app.getKeepAwake().then(setKeepAwake);
+		void window.win.getSize().then(setWindowSize);
 		const offTrayEnabled = window.app.onTrayEnabledChanged(setTrayEnabled);
 		const offKeepAwake = window.app.onKeepAwakeChanged(setKeepAwake);
 		return () => {
@@ -98,6 +102,14 @@ const GeneralPage: React.FC = () => {
 		if (next === null) return;
 		const option = LANGUAGE_OPTIONS.find((o) => o.value === next);
 		if (option) setLanguage(option.value);
+	};
+
+	const handleWindowSizeChange = (next: string | null): void => {
+		if (!next || !Object.hasOwn(WINDOW_SIZES, next)) return;
+		const size = next as WindowSize;
+		const previous = windowSize;
+		setWindowSize(size);
+		void window.win.setSize(size).catch(() => setWindowSize(previous));
 	};
 
 	return (
@@ -210,6 +222,28 @@ const GeneralPage: React.FC = () => {
 
 			<SettingsSection title={t('settings.sections.layout')}>
 				<SettingsPanel>
+					<SettingsRow
+						title={t('settings.application.windowSize')}
+						description={t('settings.application.windowSizeDescription')}
+						media={<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select value={windowSize} onValueChange={handleWindowSizeChange}>
+								<SelectTrigger
+									size="sm"
+									className="w-28 text-xs [&_svg]:size-3"
+									aria-label={t('settings.application.windowSize')}
+								>
+									<SelectValue>{windowSize.replace('x', '×')}</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{Object.keys(WINDOW_SIZES).map((size) => (
+										<SelectItem key={size} value={size}>{size.replace('x', '×')}</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						}
+					/>
 					<Link to="/settings/general/persona" className="block hover:bg-muted/40">
 						<SettingsRow
 							title={t('settings.voiceAgent.title')}

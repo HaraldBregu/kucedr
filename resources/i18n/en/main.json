@@ -376,6 +376,8 @@
 				"chat": "Chat Agent",
 				"voiceAgent": "Voice Agent"
 			},
+			"windowSize": "Window size",
+			"windowSizeDescription": "Resize this window and use the selected size for new windows.",
 			"keepAwake": "Keep Computer Active",
 			"keepAwakeDescription": "Keep the computer and display awake while Kucedr is running",
 			"appData": "Application Data",
