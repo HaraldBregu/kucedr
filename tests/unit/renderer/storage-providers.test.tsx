@@ -74,7 +74,7 @@ it('shows an enabled plugin storage in Providers before a connection is saved', 
 	render(<StorageProvidersPage />);
 	await screen.findByText('Supabase Storage');
 	expect(screen.getByText('No storage connections')).toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: 'Add Supabase Storage' }));
+	await user.click(screen.getByRole('button', { name: 'Connect Supabase Storage' }));
 	const form = within(screen.getByRole('form'));
 	expect(form.getByLabelText('Name')).toHaveValue('Supabase Storage');
 	expect(form.getByRole('combobox', { name: 'Provider' })).toHaveTextContent('Supabase Storage');
@@ -86,7 +86,7 @@ it('keeps the Storage page empty when no plugin storage is enabled', async () =>
 	render(<StorageProvidersPage />);
 	await screen.findByText('No storage connections');
 	expect(screen.queryByText('Supabase Storage')).not.toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Add provider' })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: 'Add provider' })).not.toBeInTheDocument();
 });
 
 it('adds multiple independent S3 connections and retains existing entries', async () => {
@@ -94,11 +94,14 @@ it('adds multiple independent S3 connections and retains existing entries', asyn
 	render(<StorageProvidersPage />);
 	await screen.findByText('No storage connections');
 	for (const name of ['Production', 'Archive']) {
-		await user.click(screen.getByRole('button', { name: 'Add provider' }));
+		await user.click(screen.getByRole('button', { name: 'Connect Supabase Storage' }));
+		await user.click(screen.getByRole('combobox', { name: 'Provider' }));
+		await user.click(screen.getByRole('option', { name: 'Custom S3', hidden: true }));
 		expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 		expect(screen.getByRole('form').closest('[data-slot="card"]')).toBeInTheDocument();
 		const form = within(screen.getByRole('form'));
 		expect(form.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
+		await user.clear(form.getByLabelText('Name'));
 		await user.type(form.getByLabelText('Name'), name);
 		await user.type(form.getByLabelText('Bucket'), name.toLowerCase() + '-files');
 		await user.type(form.getByLabelText('Access key ID'), 'test-access');
@@ -128,9 +131,7 @@ it('uses a manifest storage preset without saving its endpoint template', async 
 	const user = userEvent.setup({ pointerEventsCheck: 0 });
 	render(<StorageProvidersPage />);
 	await screen.findByText('No storage connections');
-	await user.click(screen.getByRole('button', { name: 'Add provider' }));
-	await user.click(screen.getByRole('combobox', { name: 'Provider' }));
-	await user.click(screen.getByRole('option', { name: 'Supabase Storage', hidden: true }));
+	await user.click(screen.getByRole('button', { name: 'Connect Supabase Storage' }));
 	const form = within(screen.getByRole('form'));
 	expect(form.getByLabelText('Name')).toHaveValue('Supabase Storage');
 	expect(form.getByLabelText('Endpoint URL')).toHaveAttribute(
@@ -223,7 +224,7 @@ it('keeps the draft when saving fails and allows cancelling without saving', asy
 it('shows loading and load errors without a false empty state', async () => {
 	api.listProviders.mockRejectedValueOnce(new Error('Could not open saved connections.'));
 	render(<StorageProvidersPage />);
-	expect(screen.getByRole('button', { name: 'Add provider' })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: 'Add provider' })).not.toBeInTheDocument();
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not open saved connections.');
 	expect(screen.queryByText('No storage connections')).not.toBeInTheDocument();
 });

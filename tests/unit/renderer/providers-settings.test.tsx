@@ -25,6 +25,8 @@ jest.mock('react-i18next', () => {
 		'settings.providers.notConfigured': 'Not configured',
 		'settings.tabs.channels': 'Channels',
 		'settings.tabs.databases': 'Database',
+		'settings.providers.emptyDatabaseTitle': 'No database providers',
+		'settings.providers.emptyDatabaseDescription': 'Enable a database in Plugins to configure it here.',
 		'common.save': 'Save',
 	};
 	const t = (key: string): string => translations[key] ?? key;
@@ -163,6 +165,14 @@ it('saves Database credentials in the databases collection', async () => {
 	expect(window.provider.list).toHaveBeenCalledWith('databases');
 	expect(screen.getByText('Configured')).toBeInTheDocument();
 	expect(screen.queryByText('database-secret')).not.toBeInTheDocument();
+});
+
+it('shows an empty state when no database plugin is enabled', () => {
+	jest.mocked(databaseCatalog).mockReturnValue([]);
+	render(<MemoryRouter><ProvidersPage section="databases" /></MemoryRouter>);
+	expect(screen.getByText('No database providers')).toBeInTheDocument();
+	expect(screen.getByText('Enable a database in Plugins to configure it here.')).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Add provider' })).not.toBeInTheDocument();
 });
 
 it('loads and displays saved Database keys', async () => {
