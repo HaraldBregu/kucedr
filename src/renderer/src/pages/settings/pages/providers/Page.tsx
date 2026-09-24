@@ -313,7 +313,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							{t(connected ? 'settings.providers.configured' : 'settings.providers.notConfigured')}
 						</p>
 					</ItemContent>
-					<ItemActions className="ml-auto w-full flex-none justify-end gap-2 sm:w-auto">
+					<ItemActions
+						className={cn('ml-auto flex-none justify-end gap-2', editing && 'w-full sm:w-auto')}
+					>
 						{editing && entry ? (
 							<>
 							<Input
