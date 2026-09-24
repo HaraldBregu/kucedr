@@ -135,12 +135,12 @@ describe('provider manifest validation', () => {
 	});
 
 	it.each(['large-language-model', 'research-chat-model'])(
-		'requires prompt attachment metadata for %s services',
+		'requires prompt attachment metadata for %s models',
 		(type) => {
 			const errors = validateProviderManifest({
 				providerId: 'acme',
 				providerName: 'Acme',
-				services: [{ id: 'chat', name: 'Chat', type, url: 'https://api.acme.test' }],
+				models: [{ id: 'chat', name: 'Chat', type, url: 'https://api.acme.test' }],
 			});
 
 			expect(errors).toContainEqual(expect.stringContaining('metadata must be an object'));
@@ -151,7 +151,7 @@ describe('provider manifest validation', () => {
 		const errors = validateProviderManifest({
 			providerId: 'acme',
 			providerName: 'Acme',
-			services: [
+			models: [
 				{
 					id: 'chat',
 					name: 'Chat',
@@ -165,29 +165,29 @@ describe('provider manifest validation', () => {
 		expect(errors).toContainEqual(expect.stringContaining('promptAttachments must be declared'));
 	});
 
-	it('rejects empty service descriptions', () => {
+	it('rejects empty MCP server descriptions', () => {
 		const errors = validateProviderManifest({
 			providerId: 'acme',
 			providerName: 'Acme',
-			services: [
+			mcp_servers: [
 				{
 					id: 'acme-mcp',
 					name: 'Acme MCP',
 					description: '',
-					type: 'mcp',
+					authentication: 'oauth2',
 					url: 'https://mcp.acme.test',
 				},
 			],
 		});
 
-		expect(errors).toContainEqual(expect.stringContaining('services[0].description'));
+		expect(errors).toContainEqual(expect.stringContaining('mcp_servers[0].description'));
 	});
 
 	it('requires promptAttachments to be an array', () => {
 		const errors = validateProviderManifest({
 			providerId: 'acme',
 			providerName: 'Acme',
-			services: [
+			models: [
 				{
 					id: 'chat',
 					name: 'Chat',
@@ -206,7 +206,7 @@ describe('provider manifest validation', () => {
 			validateProviderManifest({
 				providerId: 'acme',
 				providerName: 'Acme',
-				services: [
+				models: [
 					{
 						id: 'chat',
 						name: 'Chat',
@@ -274,7 +274,7 @@ describe('provider manifest validation', () => {
 		const errors = validateProviderManifest({
 			providerId: 'acme',
 			providerName: 'Acme',
-			services: [
+			models: [
 				{
 					id: 'chat',
 					name: 'Chat',
@@ -302,14 +302,14 @@ describe('provider manifest validation', () => {
 			expect(validateProviderManifest(manifest)).toEqual([]);
 			expect(manifest.authentication).toMatch(/^(api-key|oauth2|none)$/);
 			expect(
-				manifest.services.every(
+				[...manifest.models, ...manifest.mcp_servers, ...manifest.databases, ...(manifest.web_search ?? [])].every(
 					(service: { authentication?: string }) =>
 						service.authentication === 'api-key' ||
 						service.authentication === 'oauth2' ||
 						service.authentication === 'none'
 				)
 			).toBe(true);
-			return manifest.services
+			return manifest.models
 				.filter((service: { type: string }) =>
 					['large-language-model', 'research-chat-model'].includes(service.type)
 				)
