@@ -883,7 +883,6 @@ function PageContent(): ReactElement {
 								onVoiceMutedChange={activeVoiceSetMuted}
 								onVoiceCancel={() => void cancelDictation()}
 								onVoiceConfirm={() => void confirmDictation()}
-								filesAccept={promptCapabilities?.accept}
 								onFilesChange={(files) => {
 									if (!promptCapabilities) return;
 									setAttachments((current) =>
