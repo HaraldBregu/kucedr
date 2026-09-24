@@ -203,8 +203,9 @@ it.each([
 	await user.click(screen.getByRole('button', { name: `Options for ${name}` }));
 	await user.click(screen.getByRole('menuitem', { name: 'Reset' }));
 	await waitFor(() => expect(window.provider.remove).toHaveBeenCalledWith(id, section));
-	expect(screen.getByText('Not configured')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
+	const item = screen.getByRole('heading', { name }).closest('[data-slot="item"]');
+	expect(item).toHaveTextContent('Not configured');
+	expect(within(item!).getByRole('button', { name: 'Connect' })).toBeInTheDocument();
 });
 
 it('resets a saved local model connection', async () => {
