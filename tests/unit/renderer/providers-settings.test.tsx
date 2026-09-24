@@ -222,7 +222,9 @@ it('keeps Connect and the API setup website available on model provider items', 
 	expect(openaiItem).not.toBeNull();
 	await user.click(within(openaiItem!).getByRole('button', { name: 'Open OpenAI API setup' }));
 	expect(window.app.openExternalUrl).toHaveBeenCalledWith('https://platform.openai.com/api-keys');
-	await user.click(within(openaiItem!).getByRole('button', { name: 'Connect' }));
+	const connect = within(openaiItem!).getByRole('button', { name: 'Connect' });
+	expect(connect).toHaveClass('hover:bg-transparent', 'dark:hover:bg-transparent');
+	await user.click(connect);
 	expect(within(openaiItem!).getByLabelText('OpenAI API key')).toBeInTheDocument();
 });
 
@@ -338,6 +340,19 @@ it('places connected model providers before unconnected ones', async () => {
 			(heading) => heading.textContent
 		)
 	).toEqual(['Anthropic', 'OpenAI', 'DeepSeek']);
+});
+
+it('places a connected local model above unconnected hosted models', async () => {
+	jest.mocked(window.provider.list).mockResolvedValue([
+		{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
+	]);
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="models" />
+		</MemoryRouter>
+	);
+	await screen.findByText('Configured');
+	expect(screen.getAllByRole('heading', { level: 2 })[0]).toHaveTextContent('Local models');
 });
 
 it('places connected search providers before unconnected ones', async () => {
