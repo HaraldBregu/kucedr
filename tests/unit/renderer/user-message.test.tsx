@@ -31,8 +31,10 @@ it('shows files as a list and images as a collection without an empty text bubbl
 	expect(within(files).getAllByRole('listitem')).toHaveLength(2);
 	expect(within(files).getByText('brief.pdf')).toBeInTheDocument();
 	expect(within(files).getByText('notes.txt')).toBeInTheDocument();
-	expect(within(images).getByText('workspace.png')).toBeInTheDocument();
-	expect(within(images).getByText('diagram.webp')).toBeInTheDocument();
+	expect(within(images).queryByText('workspace.png')).not.toBeInTheDocument();
+	expect(within(images).queryByText('diagram.webp')).not.toBeInTheDocument();
+	expect(within(images).getByRole('group', { name: 'workspace.png' })).toBeInTheDocument();
+	expect(within(images).getByRole('group', { name: 'diagram.webp' })).toBeInTheDocument();
 	expect(images).toHaveClass('grid');
 	expect(files).toHaveClass('flex-col');
 	expect(container.querySelector('[data-slot="user-message-content"]')).toBeNull();

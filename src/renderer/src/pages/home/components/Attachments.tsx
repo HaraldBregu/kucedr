@@ -26,6 +26,8 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 					{images.map((attachment, index) => (
 						<Attachment
 							key={`${attachment.name}-${index}`}
+							role="group"
+							aria-label={attachment.name}
 							size="sm"
 							className="w-full min-w-0 flex-col rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5"
 						>
@@ -33,7 +35,6 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 								{attachment.file ? <Preview file={attachment.file} /> : <FileImageIcon />}
 							</AttachmentMedia>
 							<AttachmentContent className="w-full">
-								<AttachmentTitle title={attachment.name}>{attachment.name}</AttachmentTitle>
 								<AttachmentDescription>
 									{attachment.name.split('.').pop()?.toUpperCase() ?? 'IMAGE'} · {formatFileSize(attachment.bytes)}
 								</AttachmentDescription>
