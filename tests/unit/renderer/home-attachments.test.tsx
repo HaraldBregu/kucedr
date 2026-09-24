@@ -212,7 +212,7 @@ describe('Home prompt attachments', () => {
 		replyTo = null;
 	});
 
-	it('shows four empty-state prompts and quick settings', async () => {
+	it('shows seven empty-state prompts and quick settings', async () => {
 		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
 		renderPage(getCapabilities);
 		await waitFor(() =>
@@ -228,6 +228,9 @@ describe('Home prompt attachments', () => {
 			'Create a sound',
 			'Create an image',
 			'Create a video',
+			'Brainstorm ideas',
+			'Explain a topic',
+			'Draft a message',
 		]) {
 			expect(screen.getByText(label)).toBeInTheDocument();
 		}
