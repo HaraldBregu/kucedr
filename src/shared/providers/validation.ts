@@ -103,7 +103,7 @@ export function validateProviderManifest(value: unknown): string[] {
 	}
 	if (!Array.isArray(manifest.services))
 		return [...errors, 'manifest.json: "services" must be an array.'];
-	return manifest.services.flatMap((value, index) => {
+	return [...errors, ...manifest.services.flatMap((value, index) => {
 		if (typeof value !== 'object' || value === null || Array.isArray(value)) {
 			return [`manifest.json: services[${index}] must be an object.`];
 		}
@@ -170,7 +170,7 @@ export function validateProviderManifest(value: unknown): string[] {
 			}
 		}
 		return serviceErrors;
-	});
+	})];
 }
 
 export function parseProviderManifest(value: unknown): ProviderManifest | undefined {
