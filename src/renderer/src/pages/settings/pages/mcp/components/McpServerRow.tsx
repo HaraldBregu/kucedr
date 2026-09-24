@@ -44,7 +44,7 @@ export function McpServerRow({
 		<Item
 			variant="ghost"
 			size="md"
-			className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+			className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50 md:col-start-1"
 		>
 			<button
 				type="button"
