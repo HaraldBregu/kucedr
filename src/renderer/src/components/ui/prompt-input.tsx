@@ -376,6 +376,7 @@ function PromptInput({
 	const triggerFileUpload = () => fileInputRef.current?.click();
 	const currentValue = value ?? internalValue;
 	const hasAdaptiveLayout = Boolean(leadingAction || actions || trailingAction || voiceMode);
+	const detached = detachedControls && !voiceMode;
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [contentHeight, setContentHeight] = useState<number>();
 	const transition = usePromptInputTransition();
@@ -383,14 +384,13 @@ function PromptInput({
 		value: currentValue,
 		textareaRef,
 		threshold: expandedThreshold,
-		enabled: hasAdaptiveLayout,
+		enabled: hasAdaptiveLayout && !detached,
 	});
 	const isConversationMode = voiceMode === 'conversation';
 	const isDictationMode = voiceMode === 'dictation';
 	const isPromptExpanded =
 		expanded || isExpanded || isConversationMode || isDictationMode || Boolean(header);
 	const controlsRow = header ? 'row-start-3' : isPromptExpanded ? 'row-start-2' : 'row-start-1';
-	const detached = detachedControls && !voiceMode;
 
 	useLayoutEffect(() => {
 		const content = contentRef.current;
