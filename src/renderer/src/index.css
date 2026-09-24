@@ -72,7 +72,7 @@
 }
 
 :root {
-	--radius: 0.625rem;
+	--radius: 0.5rem;
 	--app-window-radius: 16px;
 	--app-sidebar-width: 16rem;
 	--app-bg-opacity: 1;
