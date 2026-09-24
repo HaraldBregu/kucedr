@@ -459,7 +459,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							name="Ollama"
 							iconDarkUrl={ollamaDarkLogo}
 							iconLightUrl={ollamaLightLogo}
-							className="size-9 rounded-2xl border-0 bg-white p-1.5 dark:bg-white"
+							className="size-9 rounded-2xl border-0 bg-muted/50 p-1.5 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
 						/>
 						<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 							<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
