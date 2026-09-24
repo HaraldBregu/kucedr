@@ -278,7 +278,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 											{session.runStatus || isCompacting ? (
 													<TextShimmer
 														duration={2}
-														className="truncate text-xs"
+														className="truncate"
 														style={
 															{ '--foreground': 'var(--sidebar-foreground)' } as React.CSSProperties
 														}
@@ -286,7 +286,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												{isCompacting ? t('settings.chatHistory.compacting') : title}
 													</TextShimmer>
 												) : (
-													<span className="truncate text-xs">{title}</span>
+													<span className="truncate">{title}</span>
 												)}
 											</button>
 										)}
@@ -329,7 +329,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
-									<span className="grid min-w-0 flex-1 text-left text-xs leading-tight">
+									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
 										<span className="truncate font-medium">{accountItem.title}</span>
 										{accountItem.description ? (
 											<span className="truncate text-[10px] text-muted-foreground">{accountItem.description}</span>
