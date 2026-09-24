@@ -411,8 +411,8 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						className={cn(
 							'grid min-h-12 grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-2.5 px-4 py-3.5',
 							editing && kind === 'databases' && 'pb-3',
-								editing &&
-									kind === 'search' &&
+							editing &&
+								kind === 'search' &&
 								'sm:grid-cols-[2rem_minmax(0,1fr)_minmax(21rem,26rem)]'
 						)}
 					>
@@ -446,7 +446,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 						</div>
 						<div className="flex min-w-0 shrink-0 justify-end gap-2">
 							{provider.supported ? (
-									editing && kind === 'search' && entry ? (
+								editing && kind === 'search' && entry ? (
 									<>
 										<Input
 											aria-label={`${provider.name} API key`}
@@ -627,28 +627,28 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									{t('settings.providers.localModels.connect')}
 								</Button>
 							) : (
-							<DropdownMenu>
-								<DropdownMenuTrigger asChild>
-									<Button
-										variant="ghost"
-										size="icon-sm"
-										className="hover:bg-transparent dark:hover:bg-transparent"
-										disabled={saving}
-										aria-label="Options for Ollama"
-									>
-										<MoreHorizontal className="size-4" />
-									</Button>
-								</DropdownMenuTrigger>
-								<DropdownMenuContent align="end">
-									<DropdownMenuItem
-										onSelect={() =>
-											setCustomProvider((current) => ({ ...current, apiKey: '', editing: true }))
-										}
-									>
-										{t('settings.providers.localModels.edit')}
-									</DropdownMenuItem>
-								</DropdownMenuContent>
-							</DropdownMenu>
+								<DropdownMenu>
+									<DropdownMenuTrigger asChild>
+										<Button
+											variant="ghost"
+											size="icon-sm"
+											className="hover:bg-transparent dark:hover:bg-transparent"
+											disabled={saving}
+											aria-label="Options for Ollama"
+										>
+											<MoreHorizontal className="size-4" />
+										</Button>
+									</DropdownMenuTrigger>
+									<DropdownMenuContent align="end">
+										<DropdownMenuItem
+											onSelect={() =>
+												setCustomProvider((current) => ({ ...current, apiKey: '', editing: true }))
+											}
+										>
+											{t('settings.providers.localModels.edit')}
+										</DropdownMenuItem>
+									</DropdownMenuContent>
+								</DropdownMenu>
 							)}
 						</ItemActions>
 					</div>

@@ -198,7 +198,9 @@ it('masks saved model keys until editing', async () => {
 	await user.click(screen.getByRole('menuitem', { name: 'Edit API key' }));
 	expect(screen.getByLabelText('OpenAI API key')).toHaveValue('');
 	expect(screen.getByLabelText('OpenAI API key')).toHaveAttribute('placeholder', '************');
-	expect(screen.getByLabelText('OpenAI API key').closest('[data-slot="item-actions"]')).not.toBeNull();
+	expect(
+		screen.getByLabelText('OpenAI API key').closest('[data-slot="item-actions"]')
+	).not.toBeNull();
 });
 
 it('keeps Connect and the API setup website available on model provider items', async () => {
