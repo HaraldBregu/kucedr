@@ -17,6 +17,7 @@ create table public.storage_provider_connections (
 
 alter table public.storage_provider_connections enable row level security;
 revoke all on public.storage_provider_connections from public, anon, authenticated;
+revoke all on public.storage_provider_connections from service_role;
 grant select, insert, update on public.storage_provider_connections to service_role;
 
 create function public.storage_provider_target_immutable()
@@ -35,6 +36,7 @@ end $$;
 create trigger storage_provider_target_immutable_before_update
 before update on public.storage_provider_connections
 for each row execute function public.storage_provider_target_immutable();
+revoke execute on function public.storage_provider_target_immutable() from public, anon, authenticated;
 
 alter table public.storage_uploads add column provider_id uuid;
 alter table public.storage_versions add column provider_id uuid;
@@ -74,6 +76,7 @@ end $$;
 create trigger storage_version_provider_before_insert
 before insert on public.storage_versions
 for each row execute function public.storage_version_provider();
+revoke execute on function public.storage_version_provider() from public, anon, authenticated;
 
 drop function public.storage_reserve_upload(uuid, uuid, uuid, uuid, text, text, text, bigint);
 
