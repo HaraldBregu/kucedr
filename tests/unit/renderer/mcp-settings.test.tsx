@@ -85,7 +85,7 @@ describe('MCP settings', () => {
 		expect(await screen.findByText('Remote docs')).toBeInTheDocument();
 		expect(screen.getByText('Local files')).toBeInTheDocument();
 		expect(screen.getByText('https://mcp.test')).toBeInTheDocument();
-		expect(await screen.findByText('node server.mjs')).toBeInTheDocument();
+		expect(screen.getByText('node server.mjs')).toBeInTheDocument();
 		expect(screen.getAllByRole('heading', { name: 'MCP servers' })).toHaveLength(1);
 		expect(screen.queryByText(/Remote services, configured commands/)).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Remote servers' })).not.toBeInTheDocument();
