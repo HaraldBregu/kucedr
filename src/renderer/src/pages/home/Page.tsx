@@ -65,28 +65,28 @@ import { Model } from './Model';
 
 const promptSuggestions = [
 	{
-		label: 'Schedule a task',
+		label: 'Plan my day',
 		prompt: 'Every morning at 9, summarize my day and send me the highlights.',
 	},
 	{
-		label: 'Create a sound',
-		prompt: 'Create a 10 second sound of rain falling on a window.',
+		label: 'Rain sound',
+		prompt: 'Create the sound of rain on a window.',
 	},
 	{
 		label: 'Create an image',
-		prompt: 'Create an image of a cozy workspace at sunset.',
+		prompt: 'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.',
 	},
 	{
-		label: 'Create a video',
-		prompt: 'Create a short video of waves rolling onto a beach at dawn.',
+		label: 'Video',
+		prompt: 'Create a five-second video of ocean waves.',
 	},
 	{
-		label: 'Brainstorm ideas',
-		prompt: 'Help me brainstorm ideas for a new project.',
+		label: 'Brainstorm project ideas',
+		prompt: 'Give me ten practical ideas for a weekend project I could finish with basic tools and a small budget.',
 	},
 	{
-		label: 'Draft a message',
-		prompt: 'Help me draft a clear message.',
+		label: 'Draft a thank-you',
+		prompt: 'Write a friendly reply thanking a colleague for their help.',
 	},
 ] as const;
 
@@ -191,7 +191,7 @@ function PromptSuggestions({
 						type="button"
 						variant="outline"
 						size="sm"
-						className="h-9 min-w-0 border-border/70 bg-card/95 px-2 text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
+						className="h-auto min-h-9 min-w-0 max-w-full justify-self-start whitespace-normal border-border/70 bg-card/95 px-2 py-1 text-center text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
 						aria-label={suggestion.prompt}
 						onClick={() => onUseSuggestion(suggestion.prompt)}
 					>

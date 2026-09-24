@@ -224,12 +224,12 @@ describe('Home prompt attachments', () => {
 
 		expect(screen.getByText('What can I do for you?')).toBeInTheDocument();
 		for (const label of [
-			'Schedule a task',
-			'Create a sound',
+			'Plan my day',
+			'Rain sound',
 			'Create an image',
-			'Create a video',
-			'Brainstorm ideas',
-			'Draft a message',
+			'Video',
+			'Brainstorm project ideas',
+			'Draft a thank-you',
 		]) {
 			expect(screen.getByText(label)).toBeInTheDocument();
 		}
@@ -242,7 +242,7 @@ describe('Home prompt attachments', () => {
 		expect(setTheme).toHaveBeenCalledWith('dark');
 		fireEvent.click(screen.getByText('Create an image'));
 		expect(useSuggestion).toHaveBeenCalledWith(
-			'Create an image of a cozy workspace at sunset.'
+			'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.'
 		);
 	});
 
