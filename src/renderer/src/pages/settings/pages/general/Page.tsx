@@ -225,7 +225,9 @@ const GeneralPage: React.FC = () => {
 					<SettingsRow
 						title={t('settings.application.windowSize')}
 						description={t('settings.application.windowSizeDescription')}
-						media={<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						media={
+							<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
 						actionClassName="w-auto justify-end"
 						actions={
 							<Select value={windowSize} onValueChange={handleWindowSizeChange}>
@@ -238,7 +240,9 @@ const GeneralPage: React.FC = () => {
 								</SelectTrigger>
 								<SelectContent>
 									{Object.keys(WINDOW_SIZES).map((size) => (
-										<SelectItem key={size} value={size}>{size.replace('x', '×')}</SelectItem>
+										<SelectItem key={size} value={size}>
+											{size.replace('x', '×')}
+										</SelectItem>
 									))}
 								</SelectContent>
 							</Select>

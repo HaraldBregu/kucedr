@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
 
-
 const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
@@ -111,7 +110,11 @@ it('saves the configured tray icon click action from General settings', async ()
 
 it('resizes the window when a size preset is selected', async () => {
 	const user = userEvent.setup();
-	render(<MemoryRouter><GeneralPage /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<GeneralPage />
+		</MemoryRouter>
+	);
 
 	const size = await screen.findByRole('combobox', {
 		name: 'settings.application.windowSize',
@@ -165,7 +168,7 @@ it('opens Voice Agent settings from General settings', async () => {
 		<MemoryRouter initialEntries={['/settings/general']}>
 			<Routes>
 				<Route path="/settings/general" element={<GeneralPage />} />
-			<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
+				<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
