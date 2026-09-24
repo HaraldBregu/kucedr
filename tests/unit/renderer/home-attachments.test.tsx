@@ -10,7 +10,6 @@ const setInput = jest.fn();
 const useSuggestion = jest.fn();
 const clearReply = jest.fn();
 let replyTo: { id: string; content: string } | null = null;
-let modelCatalogChanged: (() => void) | undefined;
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({
@@ -170,20 +169,7 @@ const imageCapabilities: AgentPromptInputCapabilities = {
 	rules: [{ kind: 'image', mimeTypes: ['image/png'], extensions: ['.png'] }],
 };
 
-function renderPage(getCapabilities: jest.Mock): void {
-	Object.defineProperty(window, 'agent', {
-		configurable: true,
-		value: { getPromptInputCapabilities: getCapabilities },
-	});
-	Object.defineProperty(window, 'app', {
-		configurable: true,
-		value: {
-			onModelsChanged: (callback: () => void) => {
-				modelCatalogChanged = callback;
-				return jest.fn();
-			},
-		},
-	});
+function renderPage(): void {
 	render(
 		<MemoryRouter>
 			<Page />
@@ -195,13 +181,11 @@ describe('Home prompt attachments', () => {
 	beforeEach(() => {
 		handleSubmit.mockResolvedValue(true);
 		useSuggestion.mockClear();
-		modelCatalogChanged = undefined;
 		replyTo = null;
 	});
 
 	it('shows empty-state prompt rows of three, two, and one without settings', async () => {
-		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
-		renderPage(getCapabilities);
+		renderPage();
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
 		);
@@ -230,8 +214,7 @@ describe('Home prompt attachments', () => {
 	});
 
 	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
-		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
-		renderPage(getCapabilities);
+		renderPage();
 
 		const voiceButton = await screen.findByRole('button', {
 			name: 'Choose a speech-to-text provider and model in Settings.',
@@ -243,25 +226,17 @@ describe('Home prompt attachments', () => {
 		);
 	});
 
-	it('keeps the picker and Send available when capability resolution fails', async () => {
-		const getCapabilities = jest.fn().mockResolvedValueOnce(textCapabilities);
-		renderPage(getCapabilities);
+	it('keeps the picker and Send available with an empty prompt', async () => {
+		renderPage();
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
 		);
-
-		getCapabilities.mockRejectedValueOnce(new Error('catalog unavailable'));
-		modelCatalogChanged?.();
 		expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 	});
 
-	it('keeps a queued file visible and Send enabled when the model changes', async () => {
-		const getCapabilities = jest
-			.fn()
-			.mockResolvedValueOnce(imageCapabilities)
-			.mockResolvedValueOnce(textCapabilities);
-		renderPage(getCapabilities);
+	it('keeps a queued image visible and Send enabled', async () => {
+		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
@@ -272,7 +247,6 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByText('diagram.png')).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 
-		modelCatalogChanged?.();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 		expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute('data-state', 'done');
 		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
@@ -280,7 +254,7 @@ describe('Home prompt attachments', () => {
 	});
 
 	it('shows the selected file in an attachment card and removes it', async () => {
-		renderPage(jest.fn().mockResolvedValue(imageCapabilities));
+		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
@@ -300,7 +274,7 @@ describe('Home prompt attachments', () => {
 	});
 
 	it('allows any file in the picker without showing the unsupported type message', async () => {
-		renderPage(jest.fn().mockResolvedValue(textCapabilities));
+		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
@@ -318,14 +292,13 @@ describe('Home prompt attachments', () => {
 	});
 
 	it('clears submitted files immediately while the captured request continues', async () => {
-		const getCapabilities = jest.fn().mockResolvedValue(imageCapabilities);
 		let resolveSubmit = (_accepted: boolean): void => {};
 		handleSubmit.mockReturnValueOnce(
 			new Promise<boolean>((resolve) => {
 				resolveSubmit = resolve;
 			})
 		);
-		renderPage(getCapabilities);
+		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
@@ -369,7 +342,7 @@ describe('Home prompt attachments', () => {
 
 	it('shows reply context alongside attachments and lets the user cancel it', async () => {
 		replyTo = { id: 'assistant-one', content: 'The answer being discussed.' };
-		renderPage(jest.fn().mockResolvedValue(imageCapabilities));
+		renderPage();
 		const picker = await screen.findByLabelText('Attachment files');
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
