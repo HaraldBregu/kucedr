@@ -7,12 +7,16 @@ Deno.serve(async (request) => {
 	if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 	try {
 		const { ownerId, database } = await authenticate(request);
-		const { providerId, bucket, region, endpoint: rawEndpoint, forcePathStyle,
+		const { providerId, bucket, region, endpoint: rawEndpoint, forcePathStyle, prefix = '',
 			accessKeyId, secretAccessKey } = await request.json();
 		if (typeof providerId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(providerId) ||
 			typeof bucket !== 'string' || !/^[a-zA-Z0-9][a-zA-Z0-9._-]{0,254}$/.test(bucket) ||
 			typeof region !== 'string' || !/^[a-zA-Z0-9-]{1,128}$/.test(region) ||
 			typeof forcePathStyle !== 'boolean' ||
+			typeof prefix !== 'string' || prefix.length > 512 ||
+			!/^[a-zA-Z0-9_./-]*$/.test(prefix) ||
+			prefix.startsWith('/') || prefix.endsWith('/') ||
+			prefix.split('/').some((part: string) => part === '.' || part === '..' || !part) ||
 			typeof accessKeyId !== 'string' || !accessKeyId || accessKeyId.length > 4096 ||
 			typeof secretAccessKey !== 'string' || !secretAccessKey || secretAccessKey.length > 16384) {
 			return json({ error: 'Invalid storage provider' }, 400);
@@ -28,7 +32,7 @@ Deno.serve(async (request) => {
 			region,
 			endpoint: targetEndpoint,
 			force_path_style: forcePathStyle,
-			prefix: '',
+			prefix,
 			access_key_ciphertext: accessCiphertext,
 			secret_key_ciphertext: secretCiphertext,
 			updated_at: new Date().toISOString(),
