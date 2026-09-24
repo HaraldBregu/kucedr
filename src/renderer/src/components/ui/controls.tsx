@@ -8,7 +8,7 @@ export function PromptInputControls({
 	readonly content?: ReactNode;
 }): React.JSX.Element {
 	return (
-		<div data-slot="prompt-input-controls" className="flex min-h-8 items-center gap-2 pt-1">
+		<div data-slot="prompt-input-controls" className="flex min-h-7 items-center gap-1.5 pt-1">
 			{leadingAction}
 			{content}
 		</div>

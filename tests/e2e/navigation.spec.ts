@@ -137,11 +137,11 @@ test('the empty home state and composer use the intended spacing', async () => {
 		)
 	).toBe(true);
 	await expect(controls.getByRole('button', { name: 'Add attachment' })).toBeVisible();
-	await expect(attachmentButton).toHaveCSS('width', '32px');
-	await expect(attachmentButton).toHaveCSS('height', '32px');
-	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '16px');
+	await expect(attachmentButton).toHaveCSS('width', '24px');
+	await expect(attachmentButton).toHaveCSS('height', '24px');
+	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '14px');
 	await expect(modelButton).toContainText('GPT-5.6 Luna');
-	await expect(modelButton).toHaveCSS('height', '28px');
+	await expect(modelButton).toHaveCSS('height', '24px');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	const fieldBounds = await field.boundingBox();
 	const sendBounds = await sendButton.boundingBox();

@@ -299,13 +299,13 @@ function AttachmentButton({
 			<Button
 				type="button"
 				variant="ghost"
-				size="icon"
-				className="size-8 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+				size="icon-xs"
+				className="rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
 				aria-label="Add attachment"
 				disabled={disabled}
 				onClick={triggerFileUpload}
 			>
-				<Plus className="size-4" />
+				<Plus className="size-3.5" />
 			</Button>
 		</PromptInputAction>
 	);

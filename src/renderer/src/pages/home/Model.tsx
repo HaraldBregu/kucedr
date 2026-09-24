@@ -84,7 +84,7 @@ export function Model(): ReactElement {
 				inline
 				buttonDropdown
 				showFieldLabel={false}
-				buttonClassName="h-7 min-w-0 max-w-48 border-0 bg-transparent px-1.5 text-xs shadow-none"
+				buttonClassName="h-6 min-w-0 max-w-48 border-0 bg-transparent px-1 text-[11px] shadow-none"
 				labels={{ label: 'Change model' }}
 			/>
 			{error ? (
