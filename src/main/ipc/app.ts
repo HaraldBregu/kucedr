@@ -108,7 +108,7 @@ function warmUpDevScreenCapture(): Promise<void> {
 }
 
 const lightThemeColors: AppThemeColors = {
-	radius: '0.5rem',
+	radius: '0.75rem',
 	'app-window-radius': '16px',
 	'app-bg-opacity': '1',
 	'app-surface-opacity': '1',
@@ -172,7 +172,6 @@ const lightThemeColors: AppThemeColors = {
 
 const darkThemeColors: AppThemeColors = {
 	...lightThemeColors,
-	radius: '0.625rem',
 	'app-window-background-base': 'oklch(0.145 0 0)',
 	'app-surface-background-base': 'oklch(0.205 0 0)',
 	'app-popover-background-base': 'oklch(0.269 0 0)',
