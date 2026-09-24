@@ -120,7 +120,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					}}
 				>
 					<Plus className="size-4" />
-					<span>{t('navigationBar.new', 'New')}</span>
+					<span>{t('navigationBar.newChat', 'New Chat')}</span>
 					<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground">
 						{navigator.platform.startsWith('Mac') ? '⌘ N' : 'Ctrl + N'}
 					</kbd>
