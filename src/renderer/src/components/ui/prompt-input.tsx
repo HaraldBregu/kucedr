@@ -394,10 +394,10 @@ function PromptInput({
 
 	useLayoutEffect(() => {
 		const content = contentRef.current;
-		if (!content || !hasAdaptiveLayout) return;
+		if (!content || !hasAdaptiveLayout || detached) return;
 		setContentHeight(content.offsetHeight);
 		return resize(content, (_, { height }) => setContentHeight(height));
-	}, [hasAdaptiveLayout]);
+	}, [hasAdaptiveLayout, detached]);
 
 	const handleChange = (newValue: string) => {
 		setInternalValue(newValue);

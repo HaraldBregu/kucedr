@@ -22,7 +22,7 @@ function PromptEditorArea({
 }: {
 	readonly placeholder?: string;
 	readonly ariaLabel?: string;
-	readonly onVisualLineChange: (hasMultipleLines: boolean) => void;
+	readonly onVisualLineChange?: (hasMultipleLines: boolean) => void;
 	readonly onPlanCommandChange?: (active: boolean) => void;
 	readonly onGoalCommandChange?: (active: boolean) => void;
 }): ReactElement {
@@ -68,7 +68,7 @@ function PromptEditor({
 			<PromptEditorArea
 				placeholder={placeholder}
 				ariaLabel={ariaLabel}
-				onVisualLineChange={setHasMultipleVisualLines}
+				onVisualLineChange={expanded ? undefined : setHasMultipleVisualLines}
 				onPlanCommandChange={onPlanCommandChange}
 				onGoalCommandChange={onGoalCommandChange}
 			/>

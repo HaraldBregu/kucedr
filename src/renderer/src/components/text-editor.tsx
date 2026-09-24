@@ -67,6 +67,7 @@ function TextEditor({
 	};
 
 	const reportVisualLineChange = (updatedEditor: Editor): void => {
+		if (!onVisualLineChangeRef.current) return;
 		const range = updatedEditor.view.dom.ownerDocument.createRange();
 		range.selectNodeContents(updatedEditor.view.dom);
 		const lineTops = new Set(
