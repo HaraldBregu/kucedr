@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, HardDrive, Pencil, Plus, Trash2 } from 'lucide-react';
+import { AlertTriangle, HardDrive, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import type { StorageProvider } from '@shared/storage_types';
 import { getErrorMessage } from '../../../../start/setupConstants';
 import {
@@ -10,8 +17,6 @@ import {
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
-	SettingsPanel,
-	SettingsRow,
 } from '../../../components';
 import StorageForm from './Form';
 
