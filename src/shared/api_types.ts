@@ -2,6 +2,8 @@ import type {
 	CatalogService,
 	CatalogStorage,
 	CatalogWebSearch,
+	EnabledPluginProviders,
+	PluginProviderKind,
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
 	PublicProvider,

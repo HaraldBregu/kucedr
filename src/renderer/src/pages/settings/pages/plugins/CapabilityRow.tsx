@@ -1,8 +1,9 @@
-import { Plus } from 'lucide-react';
+import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { CatalogService, CatalogStorage } from '@shared/provider_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 
 export default function CapabilityRow({
@@ -10,11 +11,17 @@ export default function CapabilityRow({
 	entry,
 	onOpen,
 	onAdd,
+	onRemove,
+	enabled,
+	saving,
 }: {
 	readonly kind: 'database' | 'storage';
 	readonly entry: CatalogService | CatalogStorage;
 	readonly onOpen: () => void;
 	readonly onAdd: () => void;
+	readonly onRemove: () => void;
+	readonly enabled: boolean;
+	readonly saving: boolean;
 }): React.JSX.Element {
 	const { t } = useTranslation();
 	const description =
@@ -54,9 +61,13 @@ export default function CapabilityRow({
 				</p>
 			</ItemContent>
 			<ItemActions className="ml-auto flex-none justify-end">
-				<Button
+				{enabled ? <DropdownMenu>
+					<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-sm" disabled={saving} onClick={(event) => event.stopPropagation()} aria-label={t('settings.integrations.options', { name: entry.name })}><MoreHorizontal className="size-4" /></Button></DropdownMenuTrigger>
+					<DropdownMenuContent align="end"><DropdownMenuItem onSelect={onRemove}><Trash2 />{t('settings.integrations.remove', { name: entry.name })}</DropdownMenuItem></DropdownMenuContent>
+				</DropdownMenu> : <Button
 					variant="ghost"
 					size="icon-sm"
+					disabled={saving}
 					className="hover:bg-transparent dark:hover:bg-transparent"
 					onClick={(event) => {
 						event.stopPropagation();
@@ -65,7 +76,7 @@ export default function CapabilityRow({
 					aria-label={t('settings.integrations.add', { name: entry.name })}
 				>
 					<Plus className="size-4" />
-				</Button>
+				</Button>}
 			</ItemActions>
 		</Item>
 	);

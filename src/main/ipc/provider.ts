@@ -8,6 +8,7 @@ import { CHANNEL_DM_POLICIES } from '../../shared/channels_types';
 import type {
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
+	PluginProviderKind,
 	StoredProvider,
 } from '../../shared/provider_types';
 import { ProviderStoreChannels } from '../../shared/ipc_channels_definitions';
@@ -20,6 +21,8 @@ import {
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import { loadDatabases, loadProviders } from '../models';
+import { loadStorages } from '../models';
+import { getEnabledPluginProviders, setPluginProviderEnabled } from '../providers/providers_store';
 import { deleteProvider, getProvider, listProviders, setProvider } from '../settings_store';
 import type { WindowContextManager } from '../window_context';
 import { registerCommandWithEvent, registerQueryWithEvent } from './core/gateway';
@@ -51,6 +54,20 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 				return listProviders(normalizedKind);
 			}
 			return listProviders();
+		});
+		registerQueryWithEvent(ProviderStoreChannels.listEnabledPlugins, (event) => {
+			trusted.assert(event);
+			return getEnabledPluginProviders();
+		});
+		registerCommandWithEvent(ProviderStoreChannels.setPluginEnabled, (event, kind, id, enabled) => {
+			trusted.assert(event);
+			if (kind !== 'database' && kind !== 'storage') throw new Error('Invalid plugin provider kind.');
+			if (typeof id !== 'string' || typeof enabled !== 'boolean') throw new Error('Invalid plugin provider state.');
+			const catalog = kind === 'database' ? loadDatabases() : loadStorages();
+			if (!catalog.some((entry) => `${entry.provider.id}/${entry.id}` === id)) {
+				throw new Error('Unknown plugin provider.');
+			}
+			return setPluginProviderEnabled(kind as PluginProviderKind, id, enabled);
 		});
 		registerCommandWithEvent(ProviderStoreChannels.set, (event, value) => {
 			trusted.assert(event);

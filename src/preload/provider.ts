@@ -4,6 +4,7 @@ import type { ProviderApi } from './index.d';
 import type {
 	ProviderCredentialKind,
 	ProviderCredentialSaveInput,
+	PluginProviderKind,
 	PublicProvider,
 } from '../shared/provider_types';
 import type { ChannelCredentialSaveInput } from '../shared/channels_types';
@@ -49,6 +50,9 @@ export const provider: ProviderApi = {
 	setChannel: (input: ChannelCredentialSaveInput) =>
 		typedInvokeUnwrap(ProviderStoreChannels.setChannel, input),
 	listChannels: () => typedInvokeUnwrap(ProviderStoreChannels.listChannels),
+	listEnabledPlugins: () => typedInvokeUnwrap(ProviderStoreChannels.listEnabledPlugins),
+	setPluginEnabled: (kind: PluginProviderKind, id: string, enabled: boolean) =>
+		typedInvokeUnwrap(ProviderStoreChannels.setPluginEnabled, kind, id, enabled),
 	getModelProviders: async (): Promise<PublicProvider[]> => {
 		return uniqueProvidersWithStored(await window.app.models(), 'models');
 	},
