@@ -66,6 +66,7 @@ it('adds multiple independent S3 connections and retains existing entries', asyn
 	}
 	expect(screen.getByText('Production')).toBeInTheDocument();
 	expect(screen.getByText('Archive')).toBeInTheDocument();
+	expect(screen.getAllByRole('button', { name: /^Options for / })).toHaveLength(2);
 	expect(api.saveProvider).toHaveBeenNthCalledWith(
 		2,
 		expect.objectContaining({
@@ -86,7 +87,8 @@ it('edits one connection without requiring or displaying its saved secret', asyn
 	render(<StorageProvidersPage />);
 	await screen.findByText('Production');
 	expect(screen.queryByText('test-access-id')).not.toBeInTheDocument();
-	await user.click(await screen.findByRole('button', { name: 'Edit Production' }));
+	await user.click(await screen.findByRole('button', { name: 'Options for Production' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Edit Production' }));
 	const form = within(screen.getByRole('form'));
 	expect(form.getByLabelText('Access key ID')).toHaveValue('test-access-id');
 	expect(form.getByLabelText('Secret access key')).toHaveValue('');
@@ -114,10 +116,12 @@ it('removes only the selected connection and preserves it if removal fails', asy
 	api.listProviders.mockResolvedValue([first, second]);
 	api.removeProvider.mockRejectedValueOnce(new Error('Could not remove connection.'));
 	render(<StorageProvidersPage />);
-	await user.click(await screen.findByRole('button', { name: 'Remove Production' }));
+	await user.click(await screen.findByRole('button', { name: 'Options for Production' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Remove Production' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not remove connection.');
 	expect(screen.getByText('Production')).toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: 'Remove Production' }));
+	await user.click(screen.getByRole('button', { name: 'Options for Production' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Remove Production' }));
 	await waitFor(() => expect(screen.queryByText('Production')).not.toBeInTheDocument());
 	expect(screen.getByText('Archive')).toBeInTheDocument();
 	expect(api.removeProvider).toHaveBeenLastCalledWith('first');
@@ -128,7 +132,8 @@ it('keeps the draft when saving fails and allows cancelling without saving', asy
 	api.listProviders.mockResolvedValue([first]);
 	api.saveProvider.mockRejectedValueOnce(new Error('Secure storage unavailable.'));
 	render(<StorageProvidersPage />);
-	await user.click(await screen.findByRole('button', { name: 'Edit Production' }));
+	await user.click(await screen.findByRole('button', { name: 'Options for Production' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Edit Production' }));
 	await user.click(screen.getByRole('button', { name: 'Save', exact: true }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Secure storage unavailable.');
 	expect(screen.getByLabelText('Name')).toHaveValue('Production');
