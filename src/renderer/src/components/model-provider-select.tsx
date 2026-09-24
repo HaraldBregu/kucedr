@@ -142,7 +142,9 @@ export function ModelProviderSelect({
 					className={cn('min-w-40 max-w-full justify-between text-xs', buttonClassName)}
 				>
 					<span className="min-w-0 truncate capitalize">{buttonLabel}</span>
-					<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+					{!compactPopover ? (
+						<ChevronDown className="size-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+					) : null}
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
