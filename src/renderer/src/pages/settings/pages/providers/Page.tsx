@@ -96,11 +96,17 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const [savingProviderId, setSavingProviderId] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [searchSettings, setSearchSettings] = useState<SearchSettings | null>(null);
+	const [enabledDatabaseIds, setEnabledDatabaseIds] = useState<readonly string[]>([]);
 	const [addingCustomMcp, setAddingCustomMcp] = useState(false);
 	const { servers: mcpServers, load: loadMcpServers } = useMcpServers();
 
 	useEffect(() => {
 		let cancelled = false;
+		if (section === 'databases') {
+			void window.provider.listEnabledPlugins().then((enabled) => {
+				if (!cancelled) setEnabledDatabaseIds(enabled.database);
+			});
+		}
 
 		void Promise.all([
 			window.provider.list(section === 'databases' ? 'databases' : 'models'),
@@ -596,7 +602,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 	const otherProviders = modelCatalog.filter((provider) => !featuredIds.has(provider.id));
 	const orderedModelProviders = connectedFirst([...featuredProviders, ...otherProviders], 'models');
 	const searchCatalog = connectedFirst(actionableSearchCatalog(), 'search');
-	const databaseProviders = connectedFirst(databaseCatalog(), 'databases');
+	const databaseProviders = connectedFirst(databaseCatalog(enabledDatabaseIds), 'databases');
 	const mcpCatalog = mcps();
 	const catalogMcpIds = new Set(mcpCatalog.map((service) => service.id));
 	const customMcpServers = Object.entries(mcpServers).filter(([id]) => !catalogMcpIds.has(id)) as [

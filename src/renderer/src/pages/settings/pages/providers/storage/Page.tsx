@@ -27,9 +27,13 @@ export default function StorageProvidersPage(): React.JSX.Element {
 	const [error, setError] = useState('');
 	const [editing, setEditing] = useState<StorageProvider | 'new' | null>(null);
 	const [removing, setRemoving] = useState<string | null>(null);
+	const [enabledPresetIds, setEnabledPresetIds] = useState<readonly string[]>([]);
 
 	useEffect(() => {
 		let cancelled = false;
+		void window.provider.listEnabledPlugins().then((enabled) => {
+			if (!cancelled) setEnabledPresetIds(enabled.storage);
+		});
 		void window.storage.listProviders().then(
 			(saved) => {
 				if (!cancelled) {
@@ -72,6 +76,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 			)}
 			{editing !== null && (
 				<StorageForm
+					enabledPresetIds={enabledPresetIds}
 					provider={editing === 'new' ? undefined : editing}
 					onCancel={() => setEditing(null)}
 					onSaved={(saved) => {

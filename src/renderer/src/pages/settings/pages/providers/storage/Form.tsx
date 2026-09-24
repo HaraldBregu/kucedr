@@ -30,15 +30,17 @@ interface StorageFormProps {
 	readonly provider?: StorageProvider;
 	readonly onSaved: (provider: StorageProvider) => void;
 	readonly onCancel: () => void;
+	readonly enabledPresetIds: readonly string[];
 }
 
 export default function StorageForm({
 	provider,
 	onSaved,
 	onCancel,
+	enabledPresetIds,
 }: StorageFormProps): React.JSX.Element {
 	const { t } = useTranslation();
-	const presets = storages();
+	const presets = storages().filter((entry) => enabledPresetIds.includes(`${entry.provider.id}/${entry.id}`));
 	const [presetId, setPresetId] = useState('custom');
 	const preset = presets.find((entry) => entry.id === presetId);
 	const [draft, setDraft] = useState<StorageProviderInput>({

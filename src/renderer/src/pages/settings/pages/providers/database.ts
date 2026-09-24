@@ -2,8 +2,12 @@ import { databaseProviders, databases } from '@/lib/providers';
 import { getProviderApiConfigurationUrl } from '@shared/provider_types';
 import type { ProviderCatalogItem } from '../../../start/setupTypes';
 
-export function databaseCatalog(): readonly ProviderCatalogItem[] {
-	return databaseProviders().map((provider) => ({
+export function databaseCatalog(enabledIds?: readonly string[]): readonly ProviderCatalogItem[] {
+	return databaseProviders()
+		.filter((provider) => enabledIds === undefined || databases().some((entry) =>
+			entry.provider.id === provider.id && enabledIds.includes(`${entry.provider.id}/${entry.id}`)
+		))
+		.map((provider) => ({
 		id: provider.id,
 		name: provider.name,
 		capabilities: databases()
