@@ -3,6 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import RemoteAgentPage from '../../../src/renderer/src/pages/settings/pages/remote-agent/Page';
 
+jest.mock('react-i18next', () => ({
+	useTranslation: () => ({ t: (key: string): string => key }),
+}));
+
 const list = jest.fn();
 const save = jest.fn();
 const deleteAgent = jest.fn();
@@ -34,6 +38,7 @@ it('submits API key authentication through save without exposing or separately t
 			<RemoteAgentPage />
 		</MemoryRouter>
 	);
+	expect(screen.getByRole('heading', { name: 'settings.tabs.remoteAgent' })).toBeInTheDocument();
 
 	await user.click(await screen.findByRole('button', { name: 'Add agent' }));
 	await user.type(screen.getByLabelText('Name'), 'Remote');

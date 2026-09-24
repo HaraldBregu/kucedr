@@ -95,11 +95,7 @@ export function SettingsSidebar(): React.JSX.Element {
 					))}
 				</div>
 				<SidebarFooter className="shrink-0 gap-0 border-t border-sidebar-border/50 p-0">
-					<Group
-						items={SETTINGS_SIDEBAR_BOTTOM_ITEMS}
-						activePath={activePath}
-						className="py-3"
-					/>
+					<Group items={SETTINGS_SIDEBAR_BOTTOM_ITEMS} activePath={activePath} className="py-3" />
 				</SidebarFooter>
 			</nav>
 		</div>
