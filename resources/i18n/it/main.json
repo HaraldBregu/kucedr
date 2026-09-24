@@ -360,7 +360,11 @@
 		},
 		"activity": {
 			"title": "Attività",
-			"description": "La tua attività delle ultime 37 settimane, in base ai log dell'applicazione Kucedr.",
+			"description": "La tua attività in base ai log dell'applicazione Kucedr.",
+			"range": "Intervallo di date dell'attività",
+			"untilToday": "Fino a oggi",
+			"currentYear": "Anno corrente ({{year}})",
+			"lastYear": "Anno scorso ({{year}})",
 			"events": "eventi",
 			"day": "{{count}} eventi il {{date}}",
 			"empty": "Non e stata ancora registrata alcuna attivita.",

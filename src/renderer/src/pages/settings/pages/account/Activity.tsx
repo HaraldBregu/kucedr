@@ -5,7 +5,7 @@ import './Activity.css';
 import { useTranslation } from 'react-i18next';
 import { useApp } from '@/contexts';
 
-export function Activity(): React.JSX.Element {
+export function Activity({ range }: { readonly range: 'untilToday' | 'currentYear' | 'lastYear' }): React.JSX.Element {
 	const { t } = useTranslation();
 	const { theme } = useApp();
 	const [values, setValues] = useState<readonly { date: string; value: number }[]>([]);
@@ -15,7 +15,15 @@ export function Activity(): React.JSX.Element {
 		readonly x: number;
 		readonly y: number;
 	} | null>(null);
-	const today = new Date().toISOString().slice(0, 10);
+	const now = new Date();
+	const year = now.getFullYear();
+	const today = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+	const end = range === 'lastYear' ? `${year - 1}-12-31` : today;
+	const selectedYear = range === 'lastYear' ? year - 1 : year;
+	const endDate = range === 'lastYear' ? Date.UTC(year - 1, 11, 31) : Date.UTC(year, now.getMonth(), now.getDate());
+	const startOffset = (new Date(Date.UTC(selectedYear, 0, 1)).getUTCDay() + 6) % 7;
+	const weeks = range === 'untilToday' ? 41 : Math.ceil(((endDate - Date.UTC(selectedYear, 0, 1)) / 86400000 + 1 + startOffset) / 7);
+	const visibleValues = range === 'untilToday' ? values : values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
 
 	useEffect(() => {
 		let active = true;
@@ -46,12 +54,12 @@ export function Activity(): React.JSX.Element {
 				onPointerLeave={() => setTooltip(null)}
 			>
 				<CalendarHeatmap
-					values={[...values]}
-					weeks={41}
+					values={[...visibleValues]}
+					weeks={weeks}
 					gap={2}
 					cellSize={12}
 					weekStart={1}
-					to={today}
+					to={end}
 					shape="rounded"
 					scale="linear"
 					levels={8}
@@ -79,7 +87,7 @@ export function Activity(): React.JSX.Element {
 					<p className="mt-3 text-[11px] text-muted-foreground">
 						{t('settings.activity.error')}
 					</p>
-				) : values.length === 0 ? (
+				) : visibleValues.length === 0 ? (
 					<p className="mt-3 text-[11px] text-muted-foreground">
 						{t('settings.activity.empty')}
 					</p>
