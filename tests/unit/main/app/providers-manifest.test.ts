@@ -71,11 +71,12 @@ describe('provider manifests', () => {
 		for (const id of ['gmail', 'google-calendar', 'google-contacts', 'google-drive']) {
 			const service = integrations.find((entry) => entry.id === id);
 			const extension = id === 'google-calendar' ? 'svg' : 'png';
+			const iconName = id === 'google-contacts' ? 'google-contact' : id;
 			expect(service?.iconDarkUrl).toContain(
-				`/resources/providers/google/images/official/${id}.${extension}`
+				`/resources/providers/google/images/official/${iconName}.${extension}`
 			);
 			expect(service?.iconLightUrl).toContain(
-				`/resources/providers/google/images/official/${id}.${extension}`
+				`/resources/providers/google/images/official/${iconName}.${extension}`
 			);
 		}
 		expect(integrations.find((service) => service.provider.id === 'github')?.provider).toEqual(

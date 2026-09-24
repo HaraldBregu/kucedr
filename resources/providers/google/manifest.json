@@ -456,8 +456,8 @@
 			"description": "Search contacts and directory profiles.",
 			"type": "mcp",
 			"url": "https://people.googleapis.com/mcp/v1",
-			"icon_dark_url": "/images/official/google-contacts.png",
-			"icon_light_url": "/images/official/google-contacts.png"
+			"icon_dark_url": "/images/official/google-contact.png",
+			"icon_light_url": "/images/official/google-contact.png"
 		}
 	]
 }
