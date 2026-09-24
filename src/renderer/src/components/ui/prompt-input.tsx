@@ -432,7 +432,7 @@ function PromptInput({
 							initial={false}
 							animate={{
 								height:
-									transition.duration === 0 || contentHeight === undefined
+									detached || transition.duration === 0 || contentHeight === undefined
 										? 'auto'
 										: contentHeight + 2,
 								borderRadius: detached || isConversationMode || !isPromptExpanded ? 28 : 12,
@@ -503,10 +503,14 @@ function PromptInput({
 									) : (
 										<>
 											{detached ? (
-												<div
+												<motion.div
 													data-slot="prompt-input-field"
+													initial={false}
+													animate={{ minHeight: isPromptExpanded ? 96 : 56 }}
+													transition={transition}
 													className={cn(
-														'col-span-3 col-start-1 row-start-1 grid min-h-14 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 rounded-[1.75rem] border border-border/60 bg-card/95 px-4 py-2 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
+														'col-span-3 col-start-1 row-start-1 grid grid-cols-[minmax(0,1fr)_auto] gap-2 rounded-[1.75rem] border border-border/60 bg-card/95 px-4 py-2 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25',
+														isPromptExpanded ? 'items-start' : 'items-center',
 														inputClassName
 													)}
 												>
@@ -514,8 +518,8 @@ function PromptInput({
 														{header ? <div className="mb-2">{header}</div> : null}
 														{children}
 													</div>
-													{trailingAction}
-												</div>
+													<div className="self-end">{trailingAction}</div>
+												</motion.div>
 											) : (
 												<>
 													{header ? (
