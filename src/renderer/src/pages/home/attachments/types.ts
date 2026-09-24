@@ -4,5 +4,4 @@ export type PromptAttachment = {
 	readonly file: File;
 	readonly url?: string;
 	readonly durationMs?: number;
-	readonly error?: string;
 };

@@ -1,11 +1,4 @@
-import {
-	AGENT_MAX_ATTACHMENT_BYTES,
-	AGENT_MAX_ATTACHMENT_COUNT,
-	AGENT_MAX_ATTACHMENT_TOTAL_BYTES,
-	AGENT_MAX_TEXT_ATTACHMENT_BYTES,
-	AGENT_MAX_TEXT_ATTACHMENT_TOTAL_BYTES,
-	AGENT_TEXT_ATTACHMENT_EXTENSIONS,
-} from '../../../shared/agent_files';
+import { AGENT_TEXT_ATTACHMENT_EXTENSIONS } from '../../../shared/agent_files';
 import type { AgentPromptInputCapabilities } from '../../../shared/agent_types';
 import type { PromptAttachmentRule } from '../../../shared/model_types';
 import { findModel } from '../../models';
@@ -35,12 +28,6 @@ export function resolvePromptInputCapabilities(
 				...rule,
 				mimeTypes: [...rule.mimeTypes],
 				extensions: [...rule.extensions],
-				maxFiles: Math.min(rule.maxFiles ?? AGENT_MAX_ATTACHMENT_COUNT, AGENT_MAX_ATTACHMENT_COUNT),
-				maxBytes: Math.min(rule.maxBytes ?? AGENT_MAX_ATTACHMENT_BYTES, AGENT_MAX_ATTACHMENT_BYTES),
-				maxTotalBytes: Math.min(
-					rule.maxTotalBytes ?? AGENT_MAX_ATTACHMENT_TOTAL_BYTES,
-					AGENT_MAX_ATTACHMENT_TOTAL_BYTES
-				),
 			})
 		);
 	const accept = [
@@ -52,12 +39,5 @@ export function resolvePromptInputCapabilities(
 	return {
 		rules,
 		accept,
-		limits: {
-			maxFiles: AGENT_MAX_ATTACHMENT_COUNT,
-			maxBinaryBytes: AGENT_MAX_ATTACHMENT_BYTES,
-			maxBinaryTotalBytes: AGENT_MAX_ATTACHMENT_TOTAL_BYTES,
-			maxTextBytes: AGENT_MAX_TEXT_ATTACHMENT_BYTES,
-			maxTextTotalBytes: AGENT_MAX_TEXT_ATTACHMENT_TOTAL_BYTES,
-		},
 	};
 }
