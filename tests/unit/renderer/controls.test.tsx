@@ -12,7 +12,7 @@ it('shows the response loader only while the agent is responding', () => {
 	rerender(<PromptInputControls {...buttons} isLoading />);
 	expect(
 		screen.getByRole('status', { name: 'Kucedr is responding' }).firstElementChild
-	).toHaveClass('animate-spin');
+	).toHaveClass('animate-spin', 'size-3');
 	expect(screen.getByRole('button', { name: 'Add attachment' })).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Change model' })).toBeInTheDocument();
 	rerender(<PromptInputControls {...buttons} isLoading={false} />);

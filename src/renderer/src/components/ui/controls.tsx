@@ -21,7 +21,7 @@ export function PromptInputControls({
 			</div>
 			{isLoading ? (
 				<div role="status" aria-label="Kucedr is responding" className="mr-3 text-muted-foreground">
-					<CircularLoader size="md" />
+					<CircularLoader size="sm" />
 				</div>
 			) : null}
 		</div>
