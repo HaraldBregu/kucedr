@@ -42,6 +42,7 @@ const PersonaPage = lazy(() => import('./pages/settings/pages/general/persona/Pa
 const GeneralMediaDetailPage = lazy(() => import('./pages/settings/pages/general/media/Page'));
 const ChannelsPage = lazy(() => import('./pages/settings/pages/channels/Page'));
 const PluginsPage = lazy(() => import('./pages/settings/pages/plugins/Page'));
+const PluginDetailPage = lazy(() => import('./pages/settings/pages/plugins/Detail'));
 const ChannelDetailPage = lazy(() => import('./pages/settings/pages/channels/detail/Page'));
 const SkillsPage = lazy(() => import('./pages/settings/pages/skills/Page'));
 const SkillDetailsPage = lazy(() => import('./pages/settings/pages/skills/details/Page'));
@@ -318,6 +319,14 @@ const routes: RouteObject[] = [
 								<PluginsPage />
 							</SettingsRouteWrapper>
 						),
+					},
+					{
+						path: 'plugins/:kind/:providerId/:entryId',
+						element: (
+							<SettingsRouteWrapper>
+								<PluginDetailPage />
+							</SettingsRouteWrapper>
+							),
 					},
 					{
 						path: 'a2a',
