@@ -203,11 +203,9 @@ describe('Home prompt attachments', () => {
 		const getCapabilities = jest.fn().mockResolvedValue(textCapabilities);
 		renderPage(getCapabilities);
 		await waitFor(() =>
-			expect(screen.getByLabelText('Attachment files')).toHaveAttribute(
-				'accept',
-				textCapabilities.accept
-			)
+			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
 		);
+		expect(screen.getByLabelText('Attachment files')).not.toHaveAttribute('accept');
 
 		expect(screen.getByText('What can I do for you?')).toBeInTheDocument();
 		for (const label of [
@@ -249,12 +247,8 @@ describe('Home prompt attachments', () => {
 		const getCapabilities = jest.fn().mockResolvedValueOnce(textCapabilities);
 		renderPage(getCapabilities);
 		await waitFor(() =>
-			expect(screen.getByLabelText('Attachment files')).toHaveAttribute(
-				'accept',
-				textCapabilities.accept
-			)
+			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
 		);
-		expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled();
 
 		getCapabilities.mockRejectedValueOnce(new Error('catalog unavailable'));
 		modelCatalogChanged?.();
@@ -270,7 +264,9 @@ describe('Home prompt attachments', () => {
 			.mockResolvedValueOnce(textCapabilities);
 		renderPage(getCapabilities);
 		const picker = await screen.findByLabelText('Attachment files');
-		await waitFor(() => expect(picker).toHaveAttribute('accept', imageCapabilities.accept));
+		await waitFor(() =>
+			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
+		);
 		fireEvent.change(picker, {
 			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
 		});
@@ -290,7 +286,9 @@ describe('Home prompt attachments', () => {
 	it('shows the selected file in an attachment card and removes it', async () => {
 		renderPage(jest.fn().mockResolvedValue(imageCapabilities));
 		const picker = await screen.findByLabelText('Attachment files');
-		await waitFor(() => expect(picker).toHaveAttribute('accept', imageCapabilities.accept));
+		await waitFor(() =>
+			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
+		);
 		fireEvent.change(picker, {
 			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
 		});
@@ -303,6 +301,22 @@ describe('Home prompt attachments', () => {
 		expect(screen.queryByText('diagram.png')).not.toBeInTheDocument();
 	});
 
+	it('allows any file in the picker and explains unsupported types before Send', async () => {
+		renderPage(jest.fn().mockResolvedValue(textCapabilities));
+		const picker = await screen.findByLabelText('Attachment files');
+		await waitFor(() =>
+			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
+		);
+		expect(picker).not.toHaveAttribute('accept');
+		fireEvent.change(picker, {
+			target: { files: [new File(['binary'], 'archive.zip', { type: 'application/zip' })] },
+		});
+
+		expect(screen.getByText('archive.zip')).toBeInTheDocument();
+		expect(screen.getByText('This file type is not supported by the selected model.')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled();
+	});
+
 	it('clears submitted files immediately while the captured request continues', async () => {
 		const getCapabilities = jest.fn().mockResolvedValue(imageCapabilities);
 		let resolveSubmit = (_accepted: boolean): void => {};
@@ -313,7 +327,9 @@ describe('Home prompt attachments', () => {
 		);
 		renderPage(getCapabilities);
 		const picker = await screen.findByLabelText('Attachment files');
-		await waitFor(() => expect(picker).toHaveAttribute('accept', imageCapabilities.accept));
+		await waitFor(() =>
+			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
+		);
 		const file = new File(['png'], 'diagram.png', { type: 'image/png' });
 		fireEvent.change(picker, { target: { files: [file] } });
 		await screen.findByText('diagram.png');
@@ -355,7 +371,9 @@ describe('Home prompt attachments', () => {
 		replyTo = { id: 'assistant-one', content: 'The answer being discussed.' };
 		renderPage(jest.fn().mockResolvedValue(imageCapabilities));
 		const picker = await screen.findByLabelText('Attachment files');
-		await waitFor(() => expect(picker).toHaveAttribute('accept', imageCapabilities.accept));
+		await waitFor(() =>
+			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
+		);
 		fireEvent.change(picker, {
 			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
 		});
