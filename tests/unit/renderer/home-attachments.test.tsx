@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import Page from '../../../src/renderer/src/pages/home/Page';
 
@@ -158,6 +158,15 @@ function renderPage(): void {
 
 describe('Home prompt attachments', () => {
 	beforeEach(() => {
+		localStorage.clear();
+		Object.defineProperty(window, 'app', {
+			configurable: true,
+			value: { getPathForFile: (file: File) => `/tmp/${file.name}` },
+		});
+		Object.defineProperty(window, 'agent', {
+			configurable: true,
+			value: { readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])) },
+		});
 		handleSubmit.mockResolvedValue(true);
 		useSuggestion.mockClear();
 		replyTo = null;
@@ -250,6 +259,19 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
 		fireEvent.click(screen.getByRole('button', { name: 'Remove diagram.png' }));
 		expect(screen.queryByText('diagram.png')).not.toBeInTheDocument();
+	});
+
+	it('restores selected file paths in the composer after remount', async () => {
+		renderPage();
+		const picker = await screen.findByLabelText('Attachment files');
+		fireEvent.change(picker, {
+			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
+		});
+		await waitFor(() => expect(localStorage.getItem('kucedr-prompt-attachments')).toContain('/tmp/diagram.png'));
+		cleanup();
+		renderPage();
+		expect(await screen.findByText('diagram.png')).toBeInTheDocument();
+		expect(window.agent.readPromptFile).toHaveBeenCalledWith('/tmp/diagram.png');
 	});
 
 	it('allows any file in the picker without showing the unsupported type message', async () => {

@@ -15,7 +15,7 @@ export function saveDraftAttachments(sessionId: string, attachments: readonly Pr
 			}));
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
 	} catch {
-		// The selected files remain available until this window closes.
+		return;
 	}
 }
 

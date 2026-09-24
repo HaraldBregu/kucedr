@@ -74,6 +74,12 @@ describe('prompt attachment preflight', () => {
 		]);
 	});
 
+	it('keeps the selected path on the stored attachment block', () => {
+		expect(preflightPromptAttachments([{
+			name: 'note.txt', mimeType: 'text/plain', data: 'YQ==', path: '/tmp/note.txt',
+		}], capabilities)[0]).toEqual(expect.objectContaining({ path: '/tmp/note.txt' }));
+	});
+
 	it('decodes UTF-8 text and detects native formats without trusting renderer MIME', () => {
 		expect(
 			preflightPromptAttachments(

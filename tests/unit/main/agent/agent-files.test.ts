@@ -11,6 +11,14 @@ describe('normalizeAgentInputFiles', () => {
 		]);
 	});
 
+	it('keeps a selected file path with the attachment', () => {
+		expect(normalizeAgentInputFiles([{
+			name: 'note.txt', mimeType: 'text/plain', data: 'YQ==', path: '/tmp/note.txt',
+		}])).toEqual([{
+			name: 'note.txt', mimeType: 'text/plain', data: 'YQ==', path: '/tmp/note.txt',
+		}]);
+	});
+
 	it('accepts more than ten attachments', () => {
 		const file = { name: 'note.txt', mimeType: 'text/plain', data: 'YQ==' };
 		expect(normalizeAgentInputFiles(Array.from({ length: 11 }, () => file))).toHaveLength(11);

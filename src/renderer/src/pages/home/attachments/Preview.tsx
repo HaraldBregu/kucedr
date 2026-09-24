@@ -8,6 +8,7 @@ export function Preview({ file, path, name, mimeType }: { readonly file?: File; 
 		if (typeof URL.createObjectURL !== 'function') return;
 		let active = true;
 		let previewUrl: string | undefined;
+		setUrl(undefined);
 		if (file) {
 			previewUrl = URL.createObjectURL(file);
 			setUrl(previewUrl);

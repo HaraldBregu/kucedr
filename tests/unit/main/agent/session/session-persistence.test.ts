@@ -115,7 +115,7 @@ describe('session persistence', () => {
 				role: 'user',
 				content: [
 					{ type: 'text', text: 'Read this.' },
-					{ type: 'file', name: 'note.txt', mimeType: 'text/plain', base64 },
+					{ type: 'file', name: 'note.txt', mimeType: 'text/plain', path: '/tmp/note.txt', base64 },
 				],
 			},
 		];
@@ -125,6 +125,7 @@ describe('session persistence', () => {
 		const stored = fs.readFileSync(messagesFilePath(state), 'utf8');
 		expect(stored).not.toContain(base64);
 		expect(stored).toContain('"attachment"');
+		expect(stored).toContain('"path": "/tmp/note.txt"');
 		expect(
 			fs.readdirSync(path.join(path.dirname(messagesFilePath(state)), 'attachments'))
 		).toHaveLength(1);
