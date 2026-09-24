@@ -42,7 +42,7 @@ export function preflightPromptAttachments(
 			throw new Error(`Attachment "${file.name || 'unnamed'}" must use a safe basename.`);
 		const extension = path.extname(file.name).toLowerCase();
 		const data = file.data.trim();
-		if (!data || data.length % 4 === 1 || !/^[a-zA-Z0-9+/]*={0,2}$/.test(data))
+		if (data.length % 4 === 1 || !/^[a-zA-Z0-9+/]*={0,2}$/.test(data))
 			throw new Error(`Attachment "${file.name}" contains invalid base64 data.`);
 		const bytes = Buffer.from(data, 'base64');
 		const canonical = bytes.toString('base64').replace(/=+$/, '');

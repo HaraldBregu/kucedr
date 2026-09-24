@@ -66,6 +66,14 @@ describe('prompt attachment preflight', () => {
 		expect(preflightPromptAttachments(files, capabilities)).toHaveLength(11);
 	});
 
+	it('accepts an empty text attachment', () => {
+		expect(preflightPromptAttachments([
+			{ name: 'empty.txt', mimeType: 'text/plain', data: '' },
+		], capabilities)).toEqual([
+			expect.objectContaining({ type: 'text_file', name: 'empty.txt', bytes: 0, text: '' }),
+		]);
+	});
+
 	it('decodes UTF-8 text and detects native formats without trusting renderer MIME', () => {
 		expect(
 			preflightPromptAttachments(

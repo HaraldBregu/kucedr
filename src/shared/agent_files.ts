@@ -55,7 +55,7 @@ export function normalizeAgentInputFiles(value: unknown): AgentInputFile[] | und
 		if (typeof name !== 'string' || typeof mimeType !== 'string' || typeof data !== 'string')
 			throw new Error('Each attachment must include a name, MIME type, and base64 data.');
 		const normalizedData = data.trim();
-		if (!name || !mimeType.trim() || !normalizedData)
+		if (!name || !mimeType.trim())
 			throw new Error('Each attachment must include a name, MIME type, and base64 data.');
 		if (normalizedData.length % 4 === 1 || !/^[a-zA-Z0-9+/]*={0,2}$/.test(normalizedData))
 			throw new Error('Attachment data must be valid base64.');

@@ -133,6 +133,23 @@ describe('session persistence', () => {
 		);
 	});
 
+	it('persists and restores an attachment above the former file-size cap', () => {
+		const location = path.join(temporaryRoot, 'agent');
+		const state = createSessionState();
+		state.id = SESSION_ID;
+		state.folderName = SESSION_ID;
+		state.sessionsPath = sessionsRoot(location);
+		const base64 = Buffer.alloc(20 * 1024 * 1024 + 1).toString('base64');
+		state.messages = [{
+			role: 'user',
+			content: [{ type: 'image', name: 'large.png', mimeType: 'image/png', base64 }],
+		}];
+
+		persist(state);
+
+		expect(loadMessagesBySessionId(SESSION_ID, location)[0].content).toEqual(state.messages[0].content);
+	});
+
 	it('writes only semantic run events and skips raw deltas', () => {
 		const state = createSessionState();
 		state.id = SESSION_ID;

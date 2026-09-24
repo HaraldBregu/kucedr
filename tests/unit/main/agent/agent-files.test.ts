@@ -16,6 +16,12 @@ describe('normalizeAgentInputFiles', () => {
 		expect(normalizeAgentInputFiles(Array.from({ length: 11 }, () => file))).toHaveLength(11);
 	});
 
+	it('accepts an empty file', () => {
+		expect(normalizeAgentInputFiles([{ name: 'empty.txt', mimeType: 'text/plain', data: '' }])).toEqual([
+			{ name: 'empty.txt', mimeType: 'text/plain', data: '' },
+		]);
+	});
+
 	it('rejects invalid base64', () => {
 		expect(() =>
 			normalizeAgentInputFiles([{ name: 'bad', mimeType: 'text/plain', data: '!!!!' }])
