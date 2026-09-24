@@ -73,6 +73,7 @@ beforeEach(() => {
 		value: {
 			list: jest.fn().mockResolvedValue([]),
 			set: jest.fn().mockResolvedValue({ id: 'pinecone', apiKey: 'database-secret' }),
+			remove: jest.fn().mockResolvedValue(undefined),
 			listCustomModels: jest.fn().mockResolvedValue(['llama3.2:3b', 'qwen3:8b']),
 		},
 	});
@@ -87,6 +88,10 @@ beforeEach(() => {
 			saveEngine: jest.fn().mockResolvedValue({
 				engineId: 'brave',
 				configured: { brave: true, tavily: false },
+			}),
+			removeEngine: jest.fn().mockResolvedValue({
+				engineId: null,
+				configured: { brave: false, tavily: false },
 			}),
 		},
 	});
@@ -181,6 +186,44 @@ it('loads and displays saved Database keys', async () => {
 	expect(
 		screen.getByLabelText('Pinecone API key').closest('[data-slot="item-actions"]')
 	).not.toBeNull();
+});
+
+it.each([
+	['models', 'OpenAI', 'openai'],
+	['databases', 'Pinecone', 'pinecone'],
+] as const)('resets a saved %s API key', async (section, name, id) => {
+	jest.mocked(window.provider.list).mockResolvedValue([{ id, name, apiKey: 'saved-key' }]);
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ProvidersPage section={section} />
+		</MemoryRouter>
+	);
+	await screen.findByText('Configured');
+	await user.click(screen.getByRole('button', { name: `Options for ${name}` }));
+	await user.click(screen.getByRole('menuitem', { name: 'Reset' }));
+	await waitFor(() => expect(window.provider.remove).toHaveBeenCalledWith(id, section));
+	expect(screen.getByText('Not configured')).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
+});
+
+it('resets a saved local model connection', async () => {
+	jest.mocked(window.provider.list).mockResolvedValue([
+		{ id: 'custom', name: 'Ollama', apiKey: 'saved-key', baseUrl: 'http://localhost:11434/api' },
+	]);
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="models" />
+		</MemoryRouter>
+	);
+	await screen.findByText('Configured');
+	await user.click(screen.getByRole('button', { name: 'Options for Ollama' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Reset' }));
+	await waitFor(() => expect(window.provider.remove).toHaveBeenCalledWith('custom', 'models'));
+	expect(screen.getByRole('heading', { name: 'Ollama' }).closest('[data-slot="item"]')).toHaveTextContent(
+		'Not configured'
+	);
 });
 
 it('masks saved model keys until editing', async () => {
@@ -283,6 +326,25 @@ it('masks saved Search keys until editing', async () => {
 	await user.click(screen.getByRole('menuitem', { name: 'Edit API key' }));
 	expect(screen.getByLabelText('Brave API key')).toHaveValue('');
 	expect(screen.getByLabelText('Brave API key')).toHaveAttribute('placeholder', '************');
+});
+
+it('resets a saved Search API key', async () => {
+	jest.mocked(window.search.getSettings).mockResolvedValue({
+		engineId: 'brave',
+		configured: { brave: true, tavily: false },
+	});
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<ProvidersPage section="search" />
+		</MemoryRouter>
+	);
+	await screen.findByText('Configured');
+	await user.click(screen.getByRole('button', { name: 'Options for Brave' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Reset' }));
+	await waitFor(() => expect(window.search.removeEngine).toHaveBeenCalledWith('brave'));
+	expect(screen.getByText('Not configured')).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Connect' })).toBeInTheDocument();
 });
 
 it('edits Search provider credentials in the item row', async () => {
