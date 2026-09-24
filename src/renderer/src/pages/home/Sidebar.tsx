@@ -112,7 +112,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<button
 					type="button"
-					className={SPLIT_ITEM_CLASS}
+					className={cn(SPLIT_ITEM_CLASS, 'group')}
 					aria-label={t('navigationBar.newChat', 'New chat')}
 					onClick={() => {
 						setSessionId(crypto.randomUUID());
@@ -121,7 +121,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 				>
 					<Plus className="size-4" />
 					<span>{t('navigationBar.newChat', 'New Chat')}</span>
-					<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground">
+					<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100">
 						{navigator.platform.startsWith('Mac') ? '⌘ N' : 'Ctrl + N'}
 					</kbd>
 				</button>

@@ -311,7 +311,7 @@ it('starts a new chat from the sidebar', async () => {
 	);
 
 	const newChat = screen.getByRole('button', { name: 'navigationBar.newChat' });
-	expect(newChat).toHaveAttribute('class', SPLIT_ITEM_CLASS);
+	expect(newChat).toHaveClass(...SPLIT_ITEM_CLASS.split(' '), 'group');
 	expect(newChat.querySelector('.lucide-plus')).toBeInTheDocument();
 	expect(newChat).toHaveTextContent('navigationBar.newChat');
 	expect(newChat.querySelector('kbd')).toHaveTextContent(
