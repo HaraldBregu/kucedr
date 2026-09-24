@@ -125,7 +125,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							<Plus className="size-4 shrink-0" />
 							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
 							<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100">
-								{navigator.platform.startsWith('Mac') ? '⌘ N' : 'Ctrl + N'}
+								{navigator.platform.startsWith('Mac') ? '⌘ + N' : 'Ctrl + N'}
 							</kbd>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
