@@ -24,7 +24,7 @@ Keep the key outside Git, desktop builds, and `~/.kucedr/storage/config.json`. B
 securely: losing it makes registered provider credentials unreadable. Rotate it only with a
 coordinated re-encryption or provider re-registration procedure.
 
-When a user enables version sync for a saved S3-compatible provider, the authenticated
+When a user first syncs with a saved S3-compatible provider, the authenticated
 `storage-provider` function registers that provider's bucket, region, endpoint, path-style
 setting, prefix, and credentials. The backend encrypts the access-key fields with the key above
 and stores them in `storage_provider_connections`; authenticated clients cannot read or write
