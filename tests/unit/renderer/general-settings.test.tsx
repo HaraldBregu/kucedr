@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
 
+
 const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
@@ -168,7 +169,7 @@ it('opens Voice Agent settings from General settings', async () => {
 		<MemoryRouter initialEntries={['/settings/general']}>
 			<Routes>
 				<Route path="/settings/general" element={<GeneralPage />} />
-				<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
+			<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
