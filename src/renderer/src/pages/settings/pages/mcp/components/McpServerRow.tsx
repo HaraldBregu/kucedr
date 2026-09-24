@@ -26,17 +26,18 @@ export function McpServerRow({
 }): React.JSX.Element {
 	const title = server.data.name ?? server.id;
 	const enabled = server.data.enabled !== false;
-	const description =
-		server.data.type === 'http'
-			? server.data.url
-			: [server.data.command, ...(server.data.args ?? [])].join(' ');
 	const service = mcps().find(
 		(service) =>
 			service.id === server.id || (server.data.type === 'http' && service.url === server.data.url)
 	);
+	const microsoftService = MICROSOFT_365_SERVICES.find((entry) => entry.id === server.id);
+	const description =
+		service?.description ??
+		microsoftService?.description ??
+		(server.data.type === 'http' ? 'Remote MCP server.' : 'Local MCP server.');
 	const iconService =
 		service ??
-		(MICROSOFT_365_SERVICES.some((entry) => entry.id === server.id)
+		(microsoftService
 			? mcps().find((entry) => entry.id === 'microsoft-learn')
 			: undefined);
 

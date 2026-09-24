@@ -8,6 +8,7 @@ jest.mock('../../../src/renderer/src/lib/providers', () => ({
 		{
 			id: 'remote',
 			url: 'https://mcp.test',
+			description: 'Search repository documentation.',
 			provider: {
 				id: 'remote-provider',
 				name: 'Remote provider',
@@ -84,8 +85,8 @@ describe('MCP settings', () => {
 
 		expect(await screen.findByText('Remote docs')).toBeInTheDocument();
 		expect(screen.getByText('Local files')).toBeInTheDocument();
-		expect(screen.getByText('https://mcp.test')).toBeInTheDocument();
-		expect(screen.getByText('node server.mjs')).toBeInTheDocument();
+		expect(screen.getByText('Search repository documentation.')).toBeInTheDocument();
+		expect(screen.getByText('Local MCP server.')).toBeInTheDocument();
 		expect(screen.getAllByRole('heading', { name: 'MCP servers' })).toHaveLength(1);
 		expect(screen.queryByText(/Remote services, configured commands/)).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Remote servers' })).not.toBeInTheDocument();
