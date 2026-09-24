@@ -171,7 +171,8 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect(transcriptionBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
 	expect(
 		Math.abs(
-			transcriptionBounds!.y + transcriptionBounds!.height / 2 -
+			transcriptionBounds!.y +
+				transcriptionBounds!.height / 2 -
 				(fieldBounds!.y + fieldBounds!.height / 2)
 		)
 	).toBeLessThan(4);
