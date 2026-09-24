@@ -504,20 +504,14 @@ function PromptInput({
 									) : (
 										<>
 											{detached ? (
-												<div
-													data-slot="prompt-input-field"
-													className={cn(
-														'col-span-3 col-start-1 row-start-1 grid grid-cols-[minmax(0,1fr)_auto] gap-2 rounded-2xl border border-border/60 bg-card/95 px-4 py-2 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25 transition-[min-height] duration-300 ease-out motion-reduce:transition-none',
-														isPromptExpanded ? 'min-h-24 items-start' : 'min-h-14 items-center',
-														inputClassName
-													)}
+												<PromptInputField
+													header={header}
+													trailingAction={trailingAction}
+													expanded={isPromptExpanded}
+													className={inputClassName}
 												>
-													<div className="min-w-0">
-														{header ? <div className="mb-2">{header}</div> : null}
-														{children}
-													</div>
-													<div className="self-end">{trailingAction}</div>
-												</div>
+													{children}
+												</PromptInputField>
 											) : (
 												<>
 													{header ? (
@@ -531,19 +525,11 @@ function PromptInput({
 													) : null}
 												</>
 											)}
-											{leadingAction ? (
+											{!detached && leadingAction ? (
 												<div
-													className={cn(
-														'col-start-1 flex self-end items-center',
-														detached ? 'row-start-2 h-8' : `${controlsRow} h-10`
-													)}
+													className={cn('col-start-1 flex h-10 self-end items-center', controlsRow)}
 												>
 													{leadingAction}
-												</div>
-											) : null}
-											{detached && footerContent ? (
-												<div className="col-start-2 row-start-2 flex min-w-0 items-center self-end">
-													{footerContent}
 												</div>
 											) : null}
 											{!detached ? (
@@ -563,7 +549,7 @@ function PromptInput({
 													{children}
 												</motion.div>
 											) : null}
-											<div
+											{!detached ? <div
 												className={cn(
 													'relative flex min-w-0 self-end items-center justify-end',
 													isDictationMode
@@ -571,7 +557,7 @@ function PromptInput({
 															? 'col-start-2 col-end-4'
 															: 'col-span-3 col-start-1'
 														: 'col-start-3',
-													detached ? 'row-start-2 h-8' : `${controlsRow} h-10`,
+													controlsRow,
 													isPromptExpanded && footerClassName
 												)}
 											>
@@ -608,12 +594,15 @@ function PromptInput({
 														)}
 													</motion.div>
 												</AnimatePresence>
-											</div>
+											</div> : null}
 										</>
 									)}
 								</div>
 							</div>
 						</motion.div>
+						{detached ? (
+							<PromptInputControls leadingAction={leadingAction} content={footerContent} />
+						) : null}
 					</div>
 				) : (
 					<div
