@@ -29,7 +29,9 @@ When a user first syncs with a saved S3-compatible provider, the authenticated
 setting, prefix, and credentials. The backend encrypts the access-key fields with the key above
 and stores them in `storage_provider_connections`; authenticated clients cannot read or write
 that table directly. The same provider ID may rotate credentials, while its bucket, region,
-endpoint, path style, and prefix remain fixed. A different target needs a new provider ID.
+endpoint, path style, and prefix remain fixed. The prefix defaults to empty for providers that
+do not use one; a nonempty prefix may contain safe nested path segments. A different target
+needs a new provider ID.
 Each upload reservation records its provider ID, and published versions retain it so later
 provider changes do not redirect historical downloads. Existing versions whose provider ID is
 null continue to use their original global S3 environment settings.
