@@ -71,8 +71,8 @@ export default function StorageProvidersPage(): React.JSX.Element {
 							loading || removing !== null || editing !== null || enabledStorages.length === 0
 						}
 						onClick={() => {
-						setSelectedPresetId(undefined);
-						setEditing('new');
+							setSelectedPresetId(undefined);
+							setEditing('new');
 						}}
 					>
 						<Plus className="size-3.5" />
@@ -109,95 +109,120 @@ export default function StorageProvidersPage(): React.JSX.Element {
 					) : (
 						<>
 							{enabledStorages.map((storage) => (
-								<Item key={`${storage.provider.id}/${storage.id}`} variant="ghost" size="md" className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2">
-									<ProviderAvatar providerId={storage.provider.id} name={storage.name} iconDarkUrl={storage.provider.iconDarkUrl} iconLightUrl={storage.provider.iconLightUrl} className="size-10 rounded-2xl border-0 bg-muted/50 p-1" />
+								<Item
+									key={`${storage.provider.id}/${storage.id}`}
+									variant="ghost"
+									size="md"
+									className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2"
+								>
+									<ProviderAvatar
+										providerId={storage.provider.id}
+										name={storage.name}
+										iconDarkUrl={storage.provider.iconDarkUrl}
+										iconLightUrl={storage.provider.iconLightUrl}
+										className="size-10 rounded-2xl border-0 bg-muted/50 p-1"
+									/>
 									<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-										<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">{storage.name}</ItemTitle>
-										{storage.description && <p className="max-w-full truncate text-xs leading-tight text-muted-foreground">{storage.description}</p>}
+										<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+											{storage.name}
+										</ItemTitle>
+										{storage.description && (
+											<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+												{storage.description}
+											</p>
+										)}
 									</ItemContent>
 									<ItemActions className="ml-auto flex-none justify-end">
-										<Button variant="outline" size="sm" disabled={removing !== null || editing !== null} onClick={() => {
-											setSelectedPresetId(storage.id);
-											setEditing('new');
-										}}>{t('settings.integrations.add', { name: storage.name })}</Button>
+										<Button
+											variant="outline"
+											size="sm"
+											disabled={removing !== null || editing !== null}
+											onClick={() => {
+												setSelectedPresetId(storage.id);
+												setEditing('new');
+											}}
+										>
+											{t('settings.integrations.add', { name: storage.name })}
+										</Button>
 									</ItemActions>
 								</Item>
 							))}
-							{providers.length === 0 ? (
-						!error &&
-						editing === null && (
-							<SettingsEmptyState
-								icon={HardDrive}
-								title={t('settings.storageProviders.emptyTitle')}
-								description={t('settings.storageProviders.emptyDescription')}
-							/>
-						)
-							) : (
-						providers.map((provider) => (
-							<Item
-								key={provider.id}
-								variant="ghost"
-								size="md"
-								className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
-							>
-								<HardDrive
-									className="size-10 shrink-0 rounded-2xl bg-muted/50 p-1 text-muted-foreground group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-									aria-hidden="true"
-								/>
-								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-									<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-										{provider.name}
-									</ItemTitle>
-									<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-										{provider.bucket} · {provider.region}
-									</p>
-								</ItemContent>
-								<ItemActions className="ml-auto flex-none justify-end">
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												className="hover:bg-transparent dark:hover:bg-transparent"
-												disabled={removing !== null || editing !== null}
-												aria-label={`Options for ${provider.name}`}
-											>
-												<MoreHorizontal className="size-4" />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end">
-											<DropdownMenuItem onSelect={() => setEditing(provider)}>
-												<Pencil />
-												{t('settings.storageProviders.edit', { name: provider.name })}
-											</DropdownMenuItem>
-											<DropdownMenuItem
-												onSelect={() => {
-													setRemoving(provider.id);
-													setError('');
-													void window.storage
-														.removeProvider(provider.id)
-														.then(() => {
-															setProviders((current) =>
-																current.filter((entry) => entry.id !== provider.id)
-															);
-														})
-														.catch((err: unknown) => {
-															setError(
-																getErrorMessage(err, t('settings.storageProviders.removeError'))
-															);
-														})
-														.finally(() => setRemoving(null));
-												}}
-											>
-												<Trash2 />
-												{t('settings.storageProviders.remove', { name: provider.name })}
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-								</ItemActions>
-							</Item>
-						))
-							)}
+							{providers.length === 0
+								? !error &&
+									editing === null && (
+										<SettingsEmptyState
+											icon={HardDrive}
+											title={t('settings.storageProviders.emptyTitle')}
+											description={t('settings.storageProviders.emptyDescription')}
+										/>
+									)
+								: providers.map((provider) => (
+										<Item
+											key={provider.id}
+											variant="ghost"
+											size="md"
+											className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+										>
+											<HardDrive
+												className="size-10 shrink-0 rounded-2xl bg-muted/50 p-1 text-muted-foreground group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+												aria-hidden="true"
+											/>
+											<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+												<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+													{provider.name}
+												</ItemTitle>
+												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+													{provider.bucket} · {provider.region}
+												</p>
+											</ItemContent>
+											<ItemActions className="ml-auto flex-none justify-end">
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<Button
+															variant="ghost"
+															size="icon-sm"
+															className="hover:bg-transparent dark:hover:bg-transparent"
+															disabled={removing !== null || editing !== null}
+															aria-label={`Options for ${provider.name}`}
+														>
+															<MoreHorizontal className="size-4" />
+														</Button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent align="end">
+														<DropdownMenuItem onSelect={() => setEditing(provider)}>
+															<Pencil />
+															{t('settings.storageProviders.edit', { name: provider.name })}
+														</DropdownMenuItem>
+														<DropdownMenuItem
+															onSelect={() => {
+																setRemoving(provider.id);
+																setError('');
+																void window.storage
+																	.removeProvider(provider.id)
+																	.then(() => {
+																		setProviders((current) =>
+																			current.filter((entry) => entry.id !== provider.id)
+																		);
+																	})
+																	.catch((err: unknown) => {
+																		setError(
+																			getErrorMessage(
+																				err,
+																				t('settings.storageProviders.removeError')
+																			)
+																		);
+																	})
+																	.finally(() => setRemoving(null));
+															}}
+														>
+															<Trash2 />
+															{t('settings.storageProviders.remove', { name: provider.name })}
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</ItemActions>
+										</Item>
+									))}
 						</>
 					)}
 				</div>
