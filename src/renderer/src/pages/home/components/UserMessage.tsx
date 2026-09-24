@@ -1,17 +1,29 @@
 import { useState, type FormEvent, type ReactElement } from 'react';
-import { ArrowUp, Copy, Pencil, X } from 'lucide-react';
+import { ArrowUp, Copy, FileCodeIcon, FileImageIcon, FileTextIcon, Pencil, TableIcon, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Message, MessageActions } from '@/components/prompt-kit/message';
 import { Textarea } from '@/components/ui/textarea';
+import {
+	Attachment,
+	AttachmentContent,
+	AttachmentDescription,
+	AttachmentGroup,
+	AttachmentMedia,
+	AttachmentTitle,
+} from '@/components/ui/attachment';
+import type { UserAttachment } from '../context/state';
+import { formatFileSize } from '../attachments/size';
 import { userMarkdownComponents } from './markdown';
 
 export function UserMessage({
 	content,
+	attachments = [],
 	canEdit = true,
 	onEdit,
 }: {
 	readonly content: string;
+	readonly attachments?: readonly UserAttachment[];
 	readonly canEdit?: boolean;
 	readonly onEdit?: (content: string) => Promise<boolean>;
 }): ReactElement | null {
@@ -19,7 +31,7 @@ export function UserMessage({
 	const [isSaving, setIsSaving] = useState(false);
 	const [draft, setDraft] = useState(content);
 	const [editError, setEditError] = useState<string | null>(null);
-	if (!content.trim()) return null;
+	if (!content.trim() && attachments.length === 0) return null;
 
 	const copyMessage = (): void => {
 		void (async () => {
@@ -67,6 +79,33 @@ export function UserMessage({
 	return (
 		<Message className="w-full justify-end">
 			<div className="flex min-w-0 max-w-[75%] flex-col items-end gap-1">
+			{attachments.length > 0 ? (
+				<AttachmentGroup className="max-w-full justify-end">
+					{attachments.map((attachment, index) => {
+						const extension = attachment.name.split('.').pop()?.toUpperCase() ?? 'FILE';
+						const Icon = attachment.kind === 'image'
+							? FileImageIcon
+							: /\.(csv|xlsx?|ods)$/i.test(attachment.name)
+								? TableIcon
+								: /\.(jsx?|tsx?|json|html|css|py|sh)$/i.test(attachment.name)
+									? FileCodeIcon
+									: FileTextIcon;
+						return (
+							<Attachment
+								key={`${attachment.name}-${index}`}
+								size="sm"
+								className="w-64 rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5"
+							>
+								<AttachmentMedia><Icon /></AttachmentMedia>
+								<AttachmentContent>
+									<AttachmentTitle title={attachment.name}>{attachment.name}</AttachmentTitle>
+									<AttachmentDescription>{extension} · {formatFileSize(attachment.bytes)}</AttachmentDescription>
+								</AttachmentContent>
+							</Attachment>
+						);
+					})}
+				</AttachmentGroup>
+			) : null}
 				{isEditing ? (
 					<form
 						className="w-[min(36rem,75vw)] max-w-full rounded-xl border border-input bg-background p-2 shadow-sm"
@@ -86,9 +125,9 @@ export function UserMessage({
 								<span className="text-xs text-destructive" role="alert">
 									{editError}
 								</span>
-							) : (
+			) : content.trim() ? (
 								<span />
-							)}
+			) : null}
 							<div className="flex items-center gap-1">
 								<Button
 									type="button"
@@ -140,6 +179,7 @@ export function UserMessage({
 							className="text-muted-foreground hover:text-foreground"
 							aria-label="Copy message"
 							title="Copy message"
+							disabled={!content.trim()}
 							onClick={copyMessage}
 						>
 							<Copy className="size-3.5" />
@@ -151,7 +191,7 @@ export function UserMessage({
 							className="text-muted-foreground hover:text-foreground"
 							aria-label="Edit message"
 							title="Edit message"
-							disabled={!canEdit || !onEdit}
+							disabled={!canEdit || !onEdit || !content.trim()}
 							onClick={() => {
 								setDraft(content);
 								setEditError(null);

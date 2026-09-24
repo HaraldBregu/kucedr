@@ -79,6 +79,7 @@ import { appendTranscriptionText, fileToSttAudioInput } from './hooks/stt';
 import type { PromptAttachment } from './attachments/types';
 import { validatePromptAttachments } from './attachments/validation';
 import { Preview } from './attachments/Preview';
+import { formatFileSize } from './attachments/size';
 import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
 
@@ -128,12 +129,6 @@ function formatDuration(durationMs: number): string {
 	return hours > 0
 		? `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
 		: `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
-
-function formatFileSize(size: number): string {
-	if (size < 1024) return `${size} B`;
-	if (size < 1024 * 1024) return `${Math.round(size / 1024)} KB`;
-	return `${(size / 1024 / 1024).toFixed(1)} MB`;
 }
 
 function filesToAttachments(files: File[]): PromptAttachment[] {
