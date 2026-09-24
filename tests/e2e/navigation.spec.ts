@@ -116,6 +116,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	});
 
 	const editor = page.getByRole('textbox', { name: 'Message Kucedr' });
+	const editorArea = editor.locator('xpath=..');
 	const emptyContent = page
 		.getByText('What can I do for you?')
 		.locator('xpath=ancestor::*[contains(@class, "pt-20")][1]');
@@ -129,6 +130,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
 	await expect(field).toHaveCSS('min-height', '56px');
+	await expect(editorArea).toHaveCSS('min-height', '24px');
 	await expect(field).toHaveCSS('border-radius', '0px');
 	await expect(composer).toHaveCSS('border-radius', '0px');
 	await expect(controls).toBeVisible();
