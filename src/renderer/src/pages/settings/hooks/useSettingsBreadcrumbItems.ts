@@ -141,8 +141,17 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 
 	if (pluginDetailMatch) {
 		const { kind, providerId, entryId } = pluginDetailMatch.params;
-		const catalog = kind === 'mcp' ? mcps() : kind === 'database' ? databases() : kind === 'storage' ? storages() : [];
-		const plugin = catalog.find((entry) => entry.provider.id === providerId && entry.id === entryId);
+		const catalog =
+			kind === 'mcp'
+				? mcps()
+				: kind === 'database'
+					? databases()
+					: kind === 'storage'
+						? storages()
+						: [];
+		const plugin = catalog.find(
+			(entry) => entry.provider.id === providerId && entry.id === entryId
+		);
 		return [
 			{ label: t('settings.tabs.plugins'), path: '/settings/plugins' },
 			{ label: plugin?.name ?? formatAppLabel(entryId ?? '') },

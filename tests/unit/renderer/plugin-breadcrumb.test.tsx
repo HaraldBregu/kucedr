@@ -9,7 +9,9 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../../../src/renderer/src/lib/providers', () => ({
 	mcps: () => [{ id: 'gmail', name: 'Gmail', provider: { id: 'google' } }],
-	databases: () => [{ id: 'pinecone', name: 'Pinecone Vector Database', provider: { id: 'pinecone' } }],
+	databases: () => [
+		{ id: 'pinecone', name: 'Pinecone Vector Database', provider: { id: 'pinecone' } },
+	],
 	storages: () => [{ id: 'cloudflare-r2', name: 'Cloudflare R2', provider: { id: 'cloudflare' } }],
 }));
 
