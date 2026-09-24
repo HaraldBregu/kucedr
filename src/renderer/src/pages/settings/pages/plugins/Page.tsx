@@ -29,6 +29,7 @@ const PLUGIN_SERVICE_IDS = [
 	'google-maps',
 	'github',
 	'gitlab',
+	'microsoft-learn',
 	'notion',
 ] as const;
 
