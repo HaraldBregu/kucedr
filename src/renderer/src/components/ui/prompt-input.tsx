@@ -5,6 +5,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tool
 import { BarWaveAnimation } from './bar-wave-animation';
 import { TypingLoader } from './loader';
 import { Persona, type PersonaState } from '@/components/persona';
+import { PromptInputControls } from './controls';
+import { PromptInputField } from './field';
 import { cn } from '@/lib/utils';
 import { Check, Mic, MicOff, X } from 'lucide-react';
 import { resize } from 'motion';
@@ -461,12 +463,11 @@ function PromptInput({
 										'relative shrink-0',
 										isConversationMode
 											? 'flex h-[min(42vh,18rem)] min-h-56 flex-col gap-2 p-2'
-											: detached
-												? 'grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1 p-0'
+										: detached
+											? 'min-h-0'
 												: 'grid grid-cols-[auto_minmax(0,1fr)_auto] content-end items-center gap-x-2 p-1',
-										!isConversationMode &&
+										!isConversationMode && !detached &&
 											(isPromptExpanded ? 'max-h-[min(48vh,30rem)] min-h-24' : 'min-h-12'),
-										detached && 'min-h-0'
 									)}
 								>
 									{isConversationMode ? (
