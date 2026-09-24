@@ -17,6 +17,13 @@ const PDF_RULE = {
 };
 
 function expectedPromptAttachments(providerId: string, modelId: string): unknown[] {
+	if (providerId === 'deepseek' && modelId === 'deepseek-flash') {
+		return [{
+			kind: 'image',
+			mimeTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp'],
+			extensions: ['.jpg', '.jpeg', '.png', '.gif', '.webp'],
+		}];
+	}
 	if (['anthropic', 'openai', 'reka'].includes(providerId)) {
 		return [IMAGE_RULE, PDF_RULE];
 	}
