@@ -300,7 +300,7 @@ function AttachmentButton({
 				type="button"
 				variant="ghost"
 				size="icon-xs"
-				className="rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+				className="size-5 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
 				aria-label="Add attachment"
 				disabled={disabled}
 				onClick={triggerFileUpload}
@@ -925,9 +925,8 @@ function PageContent(): ReactElement {
 								wrapperClassName="max-w-none"
 								detachedControls
 								footerContent={
-									<div className="flex min-w-0 items-center gap-1 text-[11px] text-muted-foreground">
-										<Model />
-										<span className="shrink-0">Auto</span>
+					<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
+						<Model />
 									</div>
 								}
 								className="w-full"
