@@ -33,6 +33,7 @@ beforeAll(() => {
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	document.documentElement.style.removeProperty('--app-window-radius');
 	mockSetKeepAwake.mockResolvedValue(undefined);
 	mockSetTrayClickAction.mockResolvedValue(undefined);
 	mockSetWindowSize.mockResolvedValue(undefined);
@@ -147,6 +148,9 @@ it('selects and refreshes the window radius preset', async () => {
 		name: 'settings.application.windowRadius',
 	});
 	expect(radius).toHaveTextContent('20px');
+	await user.click(radius);
+	await user.click(await screen.findByRole('option', { name: '8px' }));
+	expect(document.documentElement.style.getPropertyValue('--app-window-radius')).toBe('8px');
 	await user.click(radius);
 	await user.click(await screen.findByRole('option', { name: '24px' }));
 	expect(mockSetWindowRadius).toHaveBeenCalledWith(24);

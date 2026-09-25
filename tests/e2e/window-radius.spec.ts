@@ -41,6 +41,14 @@ test('window radius applies to open and new windows and persists', async () => {
 		await second.waitForLoadState('domcontentloaded');
 
 		await radius.click();
+		await page.getByRole('option', { name: '8px' }).click();
+		for (const windowPage of [page, second]) {
+			await expect.poll(() => windowPage.locator('.app-translucent-window').evaluate((element) =>
+				getComputedStyle(element).borderRadius
+			)).toBe('8px');
+		}
+		await page.screenshot({ path: testInfo.outputPath('radius-8-light.png') });
+		await radius.click();
 		await page.getByRole('option', { name: '24px' }).click();
 		for (const windowPage of [page, second]) {
 			await expect.poll(() => windowPage.locator('.app-translucent-window').evaluate((element) =>
