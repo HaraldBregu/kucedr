@@ -2,7 +2,6 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { loadModels } from './lib/providers';
 import { VoiceConversationWindow } from './components/voice-conversation-window';
-import { useWindowRadius } from './hooks/useWindowRadius';
 import './i18n';
 import './index.css';
 
@@ -18,15 +17,10 @@ function chatSessionIdFromHash(): string {
 const chatSessionId = chatSessionIdFromHash();
 const root = createRoot(rootElement);
 
-function VoiceRoot(): React.JSX.Element {
-	useWindowRadius();
-	return <VoiceConversationWindow chatSessionId={chatSessionId} />;
-}
-
 const render = (): void => {
 	root.render(
 		<StrictMode>
-			<VoiceRoot />
+			<VoiceConversationWindow chatSessionId={chatSessionId} />
 		</StrictMode>
 	);
 };

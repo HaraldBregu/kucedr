@@ -3,7 +3,8 @@ import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
 
-test('window radius applies to open and new windows and persists', async ({}, testInfo) => {
+test('window radius applies to open and new windows and persists', async () => {
+	const testInfo = test.info();
 	test.setTimeout(90_000);
 	const launched = await launchApp();
 	let { app, page } = launched;
