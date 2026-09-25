@@ -23,11 +23,6 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 	const today = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 	const end = range === 'lastYear' ? `${year - 1}-12-31` : today;
 	const selectedYear = range === 'lastYear' ? year - 1 : year;
-	const endDate = range === 'lastYear' ? Date.UTC(year - 1, 11, 31) : Date.UTC(year, now.getMonth(), now.getDate());
-	const startOffset = (new Date(Date.UTC(selectedYear, 0, 1)).getUTCDay() + 6) % 7;
-	const weeks = range === 'untilToday'
-		? 38
-		: Math.ceil(((endDate - Date.UTC(selectedYear, 0, 1)) / 86400000 + 1 + startOffset) / 7);
 	const visibleValues = range === 'untilToday'
 		? values
 		: values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
@@ -69,7 +64,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 			>
 				<CalendarHeatmap
 					values={[...visibleValues]}
-					weeks={weeks}
+					weeks={{ max: 90 }}
 					gap={2}
 					cellSize={13}
 					weekStart={1}
