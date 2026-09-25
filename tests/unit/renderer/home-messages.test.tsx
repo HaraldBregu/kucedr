@@ -28,18 +28,30 @@ it('keeps existing messages mounted while the surrounding prompt changes', () =>
 	const onEdit = jest.fn();
 	const onReply = jest.fn();
 	const onImplement = jest.fn();
-	const transcript = (
-		<Messages
-			messages={messages}
-			isLoading={false}
-			voiceMode={false}
-			onEdit={onEdit}
-			onReply={onReply}
-			onImplement={onImplement}
-		/>
+	const { rerender } = render(
+		<div data-prompt="">
+			<Messages
+				messages={messages}
+				isLoading={false}
+				voiceMode={false}
+				onEdit={onEdit}
+				onReply={onReply}
+				onImplement={onImplement}
+			/>
+		</div>
 	);
-	const { rerender } = render(<div data-prompt="">{transcript}</div>);
 	renderAssistant.mockClear();
-	rerender(<div data-prompt="new draft">{transcript}</div>);
+	rerender(
+		<div data-prompt="new draft">
+			<Messages
+				messages={messages}
+				isLoading={false}
+				voiceMode={false}
+				onEdit={onEdit}
+				onReply={onReply}
+				onImplement={onImplement}
+			/>
+		</div>
+	);
 	expect(renderAssistant).not.toHaveBeenCalled();
 });
