@@ -2,6 +2,7 @@ import {
 	useCallback,
 	useEffect,
 	useLayoutEffect,
+	useMemo,
 	useRef,
 	useState,
 	type ReactElement,
@@ -25,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
-import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
 import {
 	Attachment,
@@ -62,10 +62,8 @@ import { useChatMode, type ChatMode } from '@/contexts/chat-mode';
 import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
-import { AssistantMessage } from './components/AssistantMessage';
-import { markdownComponents } from './components/markdown';
 import { ReplyPreview } from './components/Reply';
-import { UserMessage } from './components/UserMessage';
+import { Messages } from './Messages';
 import { Provider, welcomeMessage } from './context';
 import {
 	useAudioRecorder,
@@ -83,6 +81,8 @@ import { readDraftAttachments } from './attachments/read';
 import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
+
+const StableHomeSidebar = memo(HomeSidebar);
 
 const promptSuggestions = [
 	[
@@ -502,8 +502,9 @@ function PageContent(): ReactElement {
 	const [transcriptionErrorMessage, setTranscriptionErrorMessage] = useState<string | null>(null);
 	const [transcribingRecording, setTranscribingRecording] = useState(false);
 	const transcriptionRunRef = useRef(0);
-	const visibleMessages = agent.chatState.messages.filter(
-		(message) => message.id !== welcomeMessage.id
+	const visibleMessages = useMemo(
+		() => agent.chatState.messages.filter((message) => message.id !== welcomeMessage.id),
+		[agent.chatState.messages]
 	);
 	const showEmptyConversation =
 		visibleMessages.length === 0 && !agent.isLoading && !agent.historyLoading;
@@ -692,7 +693,7 @@ function PageContent(): ReactElement {
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
 				sidebar={
-					<HomeSidebar
+					<StableHomeSidebar
 						refreshKey={`${chatSessionId}:${visibleMessages.length}:${agent.isLoading}`}
 					/>
 				}
@@ -725,69 +726,15 @@ function PageContent(): ReactElement {
 									) : null}
 								</>
 							) : (
-								<>
-									{visibleMessages.map((message, index) => {
-										const previous = index > 0 ? visibleMessages[index - 1] : null;
-										const showAssistantHeader = !previous || previous.role !== 'agent';
-										const groupedAssistantClassName = showAssistantHeader ? undefined : '-mt-5';
-
-										if (message.role === 'user') {
-											const userOffsetFromEnd = visibleMessages
-												.slice(index + 1)
-												.filter((nextMessage) => nextMessage.role === 'user').length;
-											return (
-												<UserMessage
-													key={message.id}
-													content={message.content}
-													attachments={message.attachments}
-													canEdit={!agent.isLoading && voiceMode === null}
-													onEdit={(content) =>
-														agent.editUserMessage(message.id, userOffsetFromEnd, content)
-													}
-												/>
-											);
-										}
-
-										if (message.role === 'summary') {
-											return (
-												<section
-													key={message.id}
-													aria-label={t('settings.chatHistory.summary')}
-													className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground"
-												>
-													<p className="mb-1 text-xs font-medium uppercase tracking-wide text-foreground">
-														{t('settings.chatHistory.summary')}
-													</p>
-													<Markdown
-														className="min-w-0 max-w-full break-words [overflow-wrap:anywhere]"
-														components={markdownComponents}
-													>
-														{message.content}
-													</Markdown>
-												</section>
-											);
-										}
-
-										return (
-											<AssistantMessage
-												key={message.id}
-												message={message}
-												isStreaming={
-													agent.isLoading && message.id === agent.chatState.activeAgentId
-												}
-												showHeader={showAssistantHeader}
-												className={groupedAssistantClassName}
-												onReply={agent.replyToMessage}
-												canImplement={
-													index === visibleMessages.length - 1 &&
-													message.state === 'completed' &&
-													!agent.isLoading
-												}
-												onImplement={agent.implementPlan}
-											/>
-										);
-									})}
-								</>
+								<Messages
+									messages={visibleMessages}
+									isLoading={agent.isLoading}
+									voiceMode={voiceMode !== null}
+									activeAgentId={agent.chatState.activeAgentId}
+									onEdit={agent.editUserMessage}
+									onReply={agent.replyToMessage}
+									onImplement={agent.implementPlan}
+								/>
 							)}
 							<ChatContainerScrollAnchor
 								className={showEmptyConversation ? 'h-0' : 'h-[var(--composer-height,7rem)]'}
