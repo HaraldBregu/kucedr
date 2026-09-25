@@ -68,10 +68,10 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 					values={[...visibleValues]}
 					weeks={{ max: 90 }}
 					gap={2}
-					cellSize={13}
+					cellSize={15}
 					weekStart={1}
 					{...(range === 'untilToday' ? period.range : { to: end })}
-					shape="circle"
+					shape="rounded"
 					scale="linear"
 					colors={isDark ? ['#0e4429', '#006d32', '#26a641', '#39d353'] : undefined}
 					emptyColor={isDark ? '#2c2c2e' : 'var(--muted)'}
