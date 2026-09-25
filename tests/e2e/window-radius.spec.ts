@@ -34,7 +34,7 @@ test('window radius applies to open and new windows and persists', async ({}, te
 			const second = new BrowserWindow({
 				webPreferences: { preload: `${root}/out/preload/index.js` },
 			});
-			void second.loadFile(`${root}/out/renderer/index.html`);
+			void second.loadFile(`${root}/out/renderer/app.html`);
 		});
 		const second = await secondOpened;
 		await second.waitForLoadState('domcontentloaded');
@@ -54,6 +54,9 @@ test('window radius applies to open and new windows and persists', async ({}, te
 		await page.getByRole('button', { name: 'Dark theme' }).click();
 		await expect(page.locator('html')).toHaveClass(/dark/);
 		await expect.poll(() => page.locator('.app-translucent-window').evaluate((element) =>
+			getComputedStyle(element).borderRadius
+		)).toBe('24px');
+		await expect.poll(() => second.locator('.app-translucent-window').evaluate((element) =>
 			getComputedStyle(element).borderRadius
 		)).toBe('24px');
 		await page.screenshot({ path: testInfo.outputPath('radius-dark.png') });
