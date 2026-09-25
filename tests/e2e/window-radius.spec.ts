@@ -28,6 +28,7 @@ test('window radius applies to open and new windows and persists', async ({}, te
 		const radius = page.getByRole('combobox', { name: 'Window corner radius' });
 		await expect(radius).toContainText('20px');
 
+		const secondOpened = app.waitForEvent('window');
 		await app.evaluate(({ app, BrowserWindow }) => {
 			const root = app.getAppPath();
 			const second = new BrowserWindow({
@@ -35,7 +36,7 @@ test('window radius applies to open and new windows and persists', async ({}, te
 			});
 			void second.loadFile(`${root}/out/renderer/index.html`);
 		});
-		const second = (await app.windows())[1];
+		const second = await secondOpened;
 		await second.waitForLoadState('domcontentloaded');
 
 		await radius.click();
@@ -57,6 +58,7 @@ test('window radius applies to open and new windows and persists', async ({}, te
 		)).toBe('24px');
 		await page.screenshot({ path: testInfo.outputPath('radius-dark.png') });
 
+		const thirdOpened = app.waitForEvent('window');
 		await app.evaluate(({ app, BrowserWindow }) => {
 			const root = app.getAppPath();
 			const third = new BrowserWindow({
@@ -64,7 +66,7 @@ test('window radius applies to open and new windows and persists', async ({}, te
 			});
 			void third.loadFile(`${root}/out/renderer/index.html`);
 		});
-		const third = (await app.windows())[2];
+		const third = await thirdOpened;
 		await third.waitForLoadState('domcontentloaded');
 		await expect.poll(() => third.evaluate(() =>
 			getComputedStyle(document.querySelector('.app-translucent-window')!).borderRadius
