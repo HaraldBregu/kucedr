@@ -71,7 +71,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 					cellSize={13}
 					weekStart={1}
 					{...(range === 'untilToday' ? period.range : { to: end })}
-					shape="rounded"
+					shape="circle"
 					scale="linear"
 					colors={isDark ? ['#0e4429', '#006d32', '#26a641', '#39d353'] : undefined}
 					emptyColor={isDark ? '#2c2c2e' : undefined}
