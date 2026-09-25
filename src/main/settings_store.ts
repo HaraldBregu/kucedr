@@ -25,6 +25,7 @@ import {
 } from './providers/providers_index';
 import { getRagConfiguration, saveRagConfiguration } from './agent/knowledge/rag/rag_store';
 import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
+import { DEFAULT_WINDOW_RADIUS, isWindowRadius, type WindowRadius } from '../shared/window_radius';
 
 export type AppSettingsState = {
 	trayEnabled: boolean;
@@ -33,6 +34,7 @@ export type AppSettingsState = {
 	language: AppLanguage;
 	theme: AppTheme;
 	windowSize: WindowSize;
+	windowRadius: WindowRadius;
 	microphoneInputId: string;
 	launchCount: number;
 };
@@ -46,6 +48,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	language: 'en',
 	theme: 'system',
 	windowSize: '900x700',
+	windowRadius: DEFAULT_WINDOW_RADIUS,
 	microphoneInputId: 'default',
 	launchCount: 0,
 };
@@ -168,6 +171,16 @@ export function getWindowSize(): WindowSize {
 
 export function setWindowSize(size: WindowSize): void {
 	store.set('windowSize', size);
+}
+
+export function getWindowRadius(): WindowRadius {
+	const radius = store.get('windowRadius');
+	return isWindowRadius(radius) ? radius : DEFAULT_WINDOW_RADIUS;
+}
+
+export function setWindowRadius(radius: WindowRadius): void {
+	if (!isWindowRadius(radius)) throw new Error('Invalid window radius.');
+	store.set('windowRadius', radius);
 }
 
 export function getMicrophoneInputId(): string {

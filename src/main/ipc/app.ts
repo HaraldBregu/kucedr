@@ -49,7 +49,10 @@ import {
 	getMicrophoneInputId as getStoredMicrophoneInputId,
 	setMicrophoneInputId as setStoredMicrophoneInputId,
 	getLaunchState as getStoredLaunchState,
+	getWindowRadius as getStoredWindowRadius,
+	setWindowRadius as setStoredWindowRadius,
 } from '../settings_store';
+import type { WindowRadius } from '../../shared/window_radius';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
 import {
 	loadDatabases,
@@ -109,7 +112,7 @@ function warmUpDevScreenCapture(): Promise<void> {
 
 const lightThemeColors: AppThemeColors = {
 	radius: '0.5rem',
-	'app-window-radius': '16px',
+	'app-window-radius': '20px',
 	'app-bg-opacity': '1',
 	'app-surface-opacity': '1',
 	'app-popover-opacity': '1',
@@ -226,7 +229,10 @@ function getThemeData(): AppThemeData {
 	return {
 		themeMode: getStoredTheme(),
 		isDark,
-		colors: isDark ? darkThemeColors : lightThemeColors,
+		colors: {
+			...(isDark ? darkThemeColors : lightThemeColors),
+			'app-window-radius': `${getStoredWindowRadius()}px`,
+		},
 	};
 }
 
@@ -635,6 +641,19 @@ export class AppIpc implements IpcModule {
 			wrapSimpleHandler((): AppThemeData => {
 				return getThemeData();
 			}, AppChannels.getThemeData)
+		);
+
+		ipcMain.handle(
+			AppChannels.getWindowRadius,
+			wrapSimpleHandler(() => getStoredWindowRadius(), AppChannels.getWindowRadius)
+		);
+
+		ipcMain.handle(
+			AppChannels.setWindowRadius,
+			wrapSimpleHandler((radius: WindowRadius) => {
+				setStoredWindowRadius(radius);
+				eventBus.broadcast(AppChannels.windowRadiusChanged, radius);
+			}, AppChannels.setWindowRadius)
 		);
 
 		ipcMain.handle(

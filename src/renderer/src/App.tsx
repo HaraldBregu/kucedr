@@ -6,11 +6,13 @@ import { initRecorderCapture } from './lib/recorder';
 import { router } from './router';
 import { Provider as PageProvider } from './components/app/base/page';
 import { useMouseNavigation } from './hooks/mouse';
+import { useWindowRadius } from './hooks/useWindowRadius';
 import './index.css';
 
 const App: React.FC = () => {
 	useEffect(() => initRecorderCapture(), []);
 	useMouseNavigation();
+	useWindowRadius();
 
 	return (
 		<ErrorBoundary level="root">

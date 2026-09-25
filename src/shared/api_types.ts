@@ -538,6 +538,11 @@ export interface AppApi extends AppStorageApi {
 	setTheme: (theme: AppTheme) => Promise<void>;
 	getTheme: () => Promise<AppTheme>;
 	getThemeData: () => Promise<AppThemeData>;
+	getWindowRadius: () => Promise<import('./window_radius').WindowRadius>;
+	setWindowRadius: (radius: import('./window_radius').WindowRadius) => Promise<void>;
+	onWindowRadiusChanged: (
+		callback: (radius: import('./window_radius').WindowRadius) => void
+	) => () => void;
 	getSandboxStatus: () => Promise<SandboxStatus>;
 	setupSandbox: () => Promise<SandboxStatus>;
 	/**

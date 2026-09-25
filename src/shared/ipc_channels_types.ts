@@ -510,6 +510,14 @@ export interface AppInvokeChannelMap {
 		args: [];
 		result: import('./app_types').AppThemeData;
 	};
+	[AppChannels.getWindowRadius]: {
+		args: [];
+		result: import('./window_radius').WindowRadius;
+	};
+	[AppChannels.setWindowRadius]: {
+		args: [radius: import('./window_radius').WindowRadius];
+		result: void;
+	};
 	[AppChannels.getSandboxStatus]: {
 		args: [];
 		result: import('./sandbox').SandboxStatus;
@@ -1260,6 +1268,7 @@ export interface AppEventChannelMap {
 	[AppChannels.trayEnabledChanged]: { data: boolean };
 	[AppChannels.keepAwakeChanged]: { data: boolean };
 	[AppChannels.themeModeChanged]: { data: import('./app_types').AppThemeData };
+	[AppChannels.windowRadiusChanged]: { data: import('./window_radius').WindowRadius };
 	[AppChannels.channelsStatusChanged]: { data: import('./channels_types').ChannelStatusEvent };
 }
 

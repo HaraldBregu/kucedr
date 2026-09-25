@@ -125,6 +125,9 @@ export const app: AppApi = {
 	getThemeData: () => {
 		return typedInvokeUnwrap(AppChannels.getThemeData);
 	},
+	getWindowRadius: () => typedInvokeUnwrap(AppChannels.getWindowRadius),
+	setWindowRadius: (radius) => typedInvokeUnwrap(AppChannels.setWindowRadius, radius),
+	onWindowRadiusChanged: (callback) => typedOn(AppChannels.windowRadiusChanged, callback),
 	getSandboxStatus: () => {
 		return typedInvokeUnwrap(AppChannels.getSandboxStatus);
 	},
