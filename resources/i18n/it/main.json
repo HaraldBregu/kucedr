@@ -380,8 +380,6 @@
 			},
 			"windowSize": "Dimensioni finestra",
 			"windowSizeDescription": "Ridimensiona questa finestra e usa le dimensioni selezionate per le nuove finestre.",
-			"windowRadius": "Raggio degli angoli della finestra",
-			"windowRadiusDescription": "Imposta il raggio degli angoli per tutte le finestre di Kucedr.",
 			"keepAwake": "Mantieni il computer attivo",
 			"keepAwakeDescription": "Mantieni attivi il computer e lo schermo mentre Kucedr è in esecuzione",
 			"appData": "Dati Applicazione",

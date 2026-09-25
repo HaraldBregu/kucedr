@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react';
 import type { AppNavigationBarOptions } from '@shared/window_types';
 import { AppNavigationBar } from './AppNavigationBar';
 import { useAppTheme } from './hooks/useAppTheme';
-import { useWindowRadius } from '@/hooks/useWindowRadius';
 
 export function AppShell(): React.JSX.Element {
 	useAppTheme();
-	useWindowRadius();
 	const [options, setOptions] = useState<AppNavigationBarOptions | null>(null);
 
 	useEffect(() => window.win.onNavigationBarOptionsChanged(setOptions), []);

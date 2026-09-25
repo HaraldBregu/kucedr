@@ -4,7 +4,6 @@ import { Persona, type PersonaState } from '@/components/persona';
 import { TypingLoader } from '@/components/ui/loader';
 import { cn } from '@/lib/utils';
 import { useRealtimeVoice, type RealtimeVoiceUiStatus } from '@/pages/home/hooks/useRealtimeVoice';
-import { useWindowRadius } from '@/hooks/useWindowRadius';
 
 function formatDuration(elapsedMs: number): string {
 	const totalSeconds = Math.max(0, Math.floor(elapsedMs / 1000));
@@ -24,7 +23,6 @@ export function VoiceConversationWindow({
 }: {
 	readonly chatSessionId: string;
 }): React.JSX.Element {
-	useWindowRadius();
 	const closeWindow = useCallback((): void => {
 		window.win.close();
 	}, []);
