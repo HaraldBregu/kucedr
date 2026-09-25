@@ -20,9 +20,11 @@ test('window radius applies to open and new windows and persists', async ({}, te
 			window.sessionStorage.setItem('kucedr-onboarding-started', 'true');
 		});
 		await page.reload();
+		await expect(page).toHaveURL(/#\/home$/);
 		await page.evaluate(() => {
 			window.location.hash = '#/settings/general';
 		});
+		await expect(page).toHaveURL(/#\/settings\/general$/);
 		const radius = page.getByRole('combobox', { name: 'Window corner radius' });
 		await expect(radius).toContainText('20px');
 
