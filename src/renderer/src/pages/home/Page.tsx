@@ -1,9 +1,9 @@
 import {
+	memo,
 	useCallback,
 	useEffect,
 	useLayoutEffect,
 	useMemo,
-	memo,
 	useRef,
 	useState,
 	type ReactElement,
@@ -83,6 +83,7 @@ import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
 
 const StableHomeSidebar = memo(HomeSidebar);
+const StableModel = memo(Model);
 
 const promptSuggestions = [
 	[
@@ -805,7 +806,7 @@ function PageContent(): ReactElement {
 								detachedControls
 								footerContent={
 									<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-										<Model />
+											<StableModel />
 									</div>
 								}
 								className="w-full"
