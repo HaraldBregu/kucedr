@@ -14,6 +14,12 @@ import {
 	AppWindow,
 } from 'lucide-react';
 import { WINDOW_SIZES, type WindowSize } from '../../../../../../shared/window_size';
+import {
+	DEFAULT_WINDOW_RADIUS,
+	WINDOW_RADII,
+	isWindowRadius,
+	type WindowRadius,
+} from '../../../../../../shared/window_radius';
 import { ThemeSwitcher } from '@/components/kibo-ui/theme-switcher';
 import { Button } from '@/components/ui/button';
 import {
@@ -58,17 +64,21 @@ const GeneralPage: React.FC = () => {
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
 	const [windowSize, setWindowSize] = useState<WindowSize>('900x700');
+	const [windowRadius, setWindowRadius] = useState<WindowRadius>(DEFAULT_WINDOW_RADIUS);
 
 	useEffect(() => {
 		void window.app.getTrayEnabled().then(setTrayEnabled);
 		void window.app.getTrayClickAction().then(setTrayClickAction);
 		void window.app.getKeepAwake().then(setKeepAwake);
 		void window.win.getSize().then(setWindowSize);
+		void window.app.getWindowRadius().then(setWindowRadius);
 		const offTrayEnabled = window.app.onTrayEnabledChanged(setTrayEnabled);
 		const offKeepAwake = window.app.onKeepAwakeChanged(setKeepAwake);
+		const offWindowRadius = window.app.onWindowRadiusChanged(setWindowRadius);
 		return () => {
 			offTrayEnabled();
 			offKeepAwake();
+			offWindowRadius();
 		};
 	}, []);
 
@@ -110,6 +120,14 @@ const GeneralPage: React.FC = () => {
 		const previous = windowSize;
 		setWindowSize(size);
 		void window.win.setSize(size).catch(() => setWindowSize(previous));
+	};
+
+	const handleWindowRadiusChange = (next: string | null): void => {
+		const radius = Number(next);
+		if (!isWindowRadius(radius)) return;
+		const previous = windowRadius;
+		setWindowRadius(radius);
+		void window.app.setWindowRadius(radius).catch(() => setWindowRadius(previous));
 	};
 
 	return (
@@ -242,6 +260,32 @@ const GeneralPage: React.FC = () => {
 									{Object.keys(WINDOW_SIZES).map((size) => (
 										<SelectItem key={size} value={size}>
 											{size.replace('x', '×')}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						}
+					/>
+					<SettingsRow
+						title={t('settings.application.windowRadius')}
+						description={t('settings.application.windowRadiusDescription')}
+						media={
+							<AppWindow className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
+						actionClassName="w-auto justify-end"
+						actions={
+							<Select value={String(windowRadius)} onValueChange={handleWindowRadiusChange}>
+								<SelectTrigger
+									size="sm"
+									className="w-28 text-xs [&_svg]:size-3"
+									aria-label={t('settings.application.windowRadius')}
+								>
+									<SelectValue>{windowRadius}px</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{WINDOW_RADII.map((radius) => (
+										<SelectItem key={radius} value={String(radius)}>
+											{radius}px
 										</SelectItem>
 									))}
 								</SelectContent>

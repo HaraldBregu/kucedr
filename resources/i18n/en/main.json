@@ -380,6 +380,8 @@
 			},
 			"windowSize": "Window size",
 			"windowSizeDescription": "Resize this window and use the selected size for new windows.",
+			"windowRadius": "Window corner radius",
+			"windowRadiusDescription": "Set the corner radius for all Kucedr windows.",
 			"keepAwake": "Keep Computer Active",
 			"keepAwakeDescription": "Keep the computer and display awake while Kucedr is running",
 			"appData": "Application Data",
