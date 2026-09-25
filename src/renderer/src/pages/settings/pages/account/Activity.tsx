@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CalendarHeatmap } from '@thilakbhat/heatmap-ui';
+import { CalendarHeatmap, calendarPeriods } from '@thilakbhat/heatmap-ui';
 import '@thilakbhat/heatmap-ui/styles.css';
 import './Activity.css';
 import { useTranslation } from 'react-i18next';
@@ -23,6 +23,8 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 	const today = `${year}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 	const end = range === 'lastYear' ? `${year - 1}-12-31` : today;
 	const selectedYear = range === 'lastYear' ? year - 1 : year;
+	const periods = calendarPeriods(values, { today: now });
+	const period = periods[0];
 	const visibleValues = range === 'untilToday'
 		? values
 		: values.filter((day) => day.date.startsWith(`${selectedYear}-`) && day.date <= end);
@@ -68,7 +70,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 					gap={2}
 					cellSize={13}
 					weekStart={1}
-					to={end}
+					{...(range === 'untilToday' ? period.range : { to: end })}
 					shape="rounded"
 					scale="linear"
 					colors={isDark ? ['#0e4429', '#006d32', '#26a641', '#39d353'] : undefined}
