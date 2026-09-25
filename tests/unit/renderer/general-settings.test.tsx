@@ -8,8 +8,10 @@ const mockSetTheme = jest.fn();
 const mockSetKeepAwake = jest.fn();
 const mockSetTrayClickAction = jest.fn();
 const mockSetWindowSize = jest.fn();
+const mockSetWindowRadius = jest.fn();
 let notifyTrayEnabled: (enabled: boolean) => void;
 let notifyKeepAwake: (enabled: boolean) => void;
+let notifyWindowRadius: (radius: 8 | 12 | 16 | 20 | 24) => void;
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
@@ -34,6 +36,7 @@ beforeEach(() => {
 	mockSetKeepAwake.mockResolvedValue(undefined);
 	mockSetTrayClickAction.mockResolvedValue(undefined);
 	mockSetWindowSize.mockResolvedValue(undefined);
+	mockSetWindowRadius.mockResolvedValue(undefined);
 	Object.defineProperty(window, 'win', {
 		configurable: true,
 		value: {
@@ -58,6 +61,12 @@ beforeEach(() => {
 			}),
 			getKeepAwake: jest.fn().mockResolvedValue(false),
 			setKeepAwake: mockSetKeepAwake,
+			getWindowRadius: jest.fn().mockResolvedValue(20),
+			setWindowRadius: mockSetWindowRadius,
+			onWindowRadiusChanged: jest.fn((callback) => {
+				notifyWindowRadius = callback;
+				return jest.fn();
+			}),
 			onKeepAwakeChanged: jest.fn((callback) => {
 				notifyKeepAwake = callback;
 				return jest.fn();
@@ -125,6 +134,25 @@ it('resizes the window when a size preset is selected', async () => {
 
 	expect(mockSetWindowSize).toHaveBeenCalledWith('1000x700');
 	expect(size).toHaveTextContent('1000×700');
+});
+
+it('selects and refreshes the window radius preset', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<GeneralPage />
+		</MemoryRouter>
+	);
+	const radius = await screen.findByRole('combobox', {
+		name: 'settings.application.windowRadius',
+	});
+	expect(radius).toHaveTextContent('20px');
+	await user.click(radius);
+	await user.click(await screen.findByRole('option', { name: '24px' }));
+	expect(mockSetWindowRadius).toHaveBeenCalledWith(24);
+	expect(radius).toHaveTextContent('24px');
+	act(() => notifyWindowRadius(12));
+	expect(radius).toHaveTextContent('12px');
 });
 
 it('refreshes toggles changed from the native application menu', async () => {
