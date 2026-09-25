@@ -127,7 +127,11 @@ const GeneralPage: React.FC = () => {
 		if (!isWindowRadius(radius)) return;
 		const previous = windowRadius;
 		setWindowRadius(radius);
-		void window.app.setWindowRadius(radius).catch(() => setWindowRadius(previous));
+		document.documentElement.style.setProperty('--app-window-radius', `${radius}px`);
+		void window.app.setWindowRadius(radius).catch(() => {
+			setWindowRadius(previous);
+			document.documentElement.style.setProperty('--app-window-radius', `${previous}px`);
+		});
 	};
 
 	return (
