@@ -148,7 +148,12 @@ function TextEditor({
 	});
 
 	useEffect(() => {
-		if (!editor || (value ?? '') === lastEditorValueRef.current || editor.getMarkdown() === (value ?? '')) return;
+		if (
+			!editor ||
+			(value ?? '') === lastEditorValueRef.current ||
+			editor.getMarkdown() === (value ?? '')
+		)
+			return;
 		let planCommandActive = false;
 		editor.state.doc.descendants((node) => {
 			if (node.type.name === PlanCommand.name) planCommandActive = true;
@@ -159,10 +164,7 @@ function TextEditor({
 			contentType: 'markdown',
 		});
 		if (planCommandActive) {
-			chain.insertContentAt(1, [
-				{ type: PlanCommand.name },
-				{ type: 'text', text: ' ' },
-			]);
+			chain.insertContentAt(1, [{ type: PlanCommand.name }, { type: 'text', text: ' ' }]);
 		}
 		if (editor.isFocused) chain.focus('end');
 		chain.run();

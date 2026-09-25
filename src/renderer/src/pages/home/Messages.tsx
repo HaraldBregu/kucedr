@@ -19,7 +19,11 @@ export const Messages = memo(function Messages({
 	readonly isLoading: boolean;
 	readonly voiceMode: boolean;
 	readonly activeAgentId?: string;
-	readonly onEdit: (messageId: string, userOffsetFromEnd: number, content: string) => Promise<boolean>;
+	readonly onEdit: (
+		messageId: string,
+		userOffsetFromEnd: number,
+		content: string
+	) => Promise<boolean>;
 	readonly onReply: (message: { id: string; content: string }) => void;
 	readonly onImplement: () => void;
 }): ReactElement {
@@ -68,17 +72,17 @@ export const Messages = memo(function Messages({
 
 				return (
 					<AssistantMessage
-					key={message.id}
-					message={message}
-					isStreaming={isLoading && message.id === activeAgentId}
-					showHeader={showAssistantHeader}
-					className={groupedAssistantClassName}
-					onReply={onReply}
-					canImplement={
-						index === messages.length - 1 && message.state === 'completed' && !isLoading
-					}
-					onImplement={onImplement}
-				/>
+						key={message.id}
+						message={message}
+						isStreaming={isLoading && message.id === activeAgentId}
+						showHeader={showAssistantHeader}
+						className={groupedAssistantClassName}
+						onReply={onReply}
+						canImplement={
+							index === messages.length - 1 && message.state === 'completed' && !isLoading
+						}
+						onImplement={onImplement}
+					/>
 				);
 			})}
 		</>

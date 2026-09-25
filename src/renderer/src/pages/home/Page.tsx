@@ -96,7 +96,8 @@ const promptSuggestions = [
 		},
 		{
 			label: 'Create an image',
-			prompt: 'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.',
+			prompt:
+				'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.',
 		},
 	],
 	[
@@ -106,7 +107,8 @@ const promptSuggestions = [
 		},
 		{
 			label: 'Brainstorm project ideas',
-			prompt: 'Give me ten practical ideas for a weekend project I could finish with basic tools and a small budget.',
+			prompt:
+				'Give me ten practical ideas for a weekend project I could finish with basic tools and a small budget.',
 		},
 	],
 	[
@@ -200,7 +202,10 @@ function PromptSuggestions({
 	readonly onUseSuggestion: (prompt: string) => void;
 }): ReactElement {
 	return (
-		<div className="mx-auto flex w-full max-w-sm flex-col items-center gap-2" aria-label="Prompt suggestions">
+		<div
+			className="mx-auto flex w-full max-w-sm flex-col items-center gap-2"
+			aria-label="Prompt suggestions"
+		>
 			{promptSuggestions.map((row) => (
 				<div key={row[0].label} className="flex w-full items-center justify-center gap-2">
 					{row.map((suggestion) => (
@@ -240,21 +245,25 @@ function AttachmentTray({
 					: attachment.file.name;
 				const extension = attachment.file.name.split('.').pop()?.toUpperCase() ?? 'FILE';
 				const isImage = attachment.file.type.startsWith('image/');
-				const Icon = isAudio || attachment.file.type.startsWith('audio/')
-					? FileAudioIcon
-					: isImage
-						? FileImageIcon
-						: /\.(csv|xlsx?|ods)$/i.test(attachment.file.name)
-							? TableIcon
-							: /\.(jsx?|tsx?|json|html|css|py|sh)$/i.test(attachment.file.name)
-								? FileCodeIcon
-								: FileTextIcon;
+				const Icon =
+					isAudio || attachment.file.type.startsWith('audio/')
+						? FileAudioIcon
+						: isImage
+							? FileImageIcon
+							: /\.(csv|xlsx?|ods)$/i.test(attachment.file.name)
+								? TableIcon
+								: /\.(jsx?|tsx?|json|html|css|py|sh)$/i.test(attachment.file.name)
+									? FileCodeIcon
+									: FileTextIcon;
 
 				return (
 					<Attachment
 						key={attachment.id}
 						size="sm"
-						className={cn('rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5', isAudio ? 'w-80' : 'w-64')}
+						className={cn(
+							'rounded-[16px] has-data-[slot=attachment-content]:px-3 has-data-[slot=attachment-content]:py-2.5 has-data-[slot=attachment-media]:p-2.5',
+							isAudio ? 'w-80' : 'w-64'
+						)}
 					>
 						<AttachmentMedia variant={isImage ? 'image' : 'icon'}>
 							{isImage ? <Preview file={attachment.file} /> : <Icon />}
@@ -266,25 +275,28 @@ function AttachmentTray({
 							</AttachmentDescription>
 						</AttachmentContent>
 						<AttachmentActions>
-							<AttachmentAction type="button" aria-label={`Remove ${title}`} onClick={() => onRemove(attachment.id)}>
+							<AttachmentAction
+								type="button"
+								aria-label={`Remove ${title}`}
+								onClick={() => onRemove(attachment.id)}
+							>
 								<X className="size-3.5" />
 							</AttachmentAction>
 						</AttachmentActions>
 						{isAudio && attachment.url ? (
-							<AudioPlayer src={attachment.url} className="basis-full border-0 bg-transparent px-1 py-1" />
+							<AudioPlayer
+								src={attachment.url}
+								className="basis-full border-0 bg-transparent px-1 py-1"
+							/>
 						) : null}
 					</Attachment>
-			);
+				);
 			})}
 		</AttachmentGroup>
 	);
 }
 
-function AttachmentButton({
-	disabled,
-}: {
-	readonly disabled?: boolean;
-}): ReactElement {
+function AttachmentButton({ disabled }: { readonly disabled?: boolean }): ReactElement {
 	const { triggerFileUpload } = usePromptInput();
 	return (
 		<PromptInputAction tooltip="Add attachment">
@@ -488,10 +500,15 @@ function PageContent(): ReactElement {
 			})
 		).then((restored) => {
 			if (!active) return;
-			setAttachments((current) => [...restored.filter((item): item is PromptAttachment => item !== null), ...current]);
+			setAttachments((current) => [
+				...restored.filter((item): item is PromptAttachment => item !== null),
+				...current,
+			]);
 			setAttachmentsSessionId(chatSessionId);
 		});
-		return () => { active = false; };
+		return () => {
+			active = false;
+		};
 	}, [chatSessionId]);
 	useEffect(() => {
 		if (attachmentsSessionId === chatSessionId) saveDraftAttachments(chatSessionId, attachments);
@@ -593,8 +610,7 @@ function PageContent(): ReactElement {
 			await agent.handleSubmit();
 			return;
 		}
-		if ((planCommandActive && !hasPromptText) || (goalCommandActive && !hasGoalObjective))
-			return;
+		if ((planCommandActive && !hasPromptText) || (goalCommandActive && !hasGoalObjective)) return;
 		const submittedFiles = attachments.map((attachment) => attachment.file);
 		saveDraftAttachments(chatSessionId, []);
 		clearAttachments();
@@ -785,9 +801,7 @@ function PageContent(): ReactElement {
 								}
 								leadingAction={
 									voiceMode === 'dictation' ? undefined : (
-										<AttachmentButton
-											disabled={attachmentDisabled}
-										/>
+										<AttachmentButton disabled={attachmentDisabled} />
 									)
 								}
 								voiceMode={voiceMode === 'dictation' ? voiceMode : null}
