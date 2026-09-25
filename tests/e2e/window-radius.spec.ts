@@ -42,8 +42,8 @@ test('window radius applies to open and new windows and persists', async ({}, te
 		await radius.click();
 		await page.getByRole('option', { name: '24px' }).click();
 		for (const windowPage of [page, second]) {
-			await expect.poll(() => windowPage.evaluate(() =>
-				getComputedStyle(document.querySelector('.app-translucent-window')!).borderRadius
+			await expect.poll(() => windowPage.locator('.app-translucent-window').evaluate((element) =>
+				getComputedStyle(element).borderRadius
 			)).toBe('24px');
 		}
 		await expect(page.getByRole('combobox', { name: 'Window corner radius' })).toContainText('24px');
@@ -53,8 +53,8 @@ test('window radius applies to open and new windows and persists', async ({}, te
 		await page.screenshot({ path: testInfo.outputPath('radius-light.png') });
 		await page.getByRole('button', { name: 'Dark theme' }).click();
 		await expect(page.locator('html')).toHaveClass(/dark/);
-		await expect.poll(() => page.evaluate(() =>
-			getComputedStyle(document.querySelector('.app-translucent-window')!).borderRadius
+		await expect.poll(() => page.locator('.app-translucent-window').evaluate((element) =>
+			getComputedStyle(element).borderRadius
 		)).toBe('24px');
 		await page.screenshot({ path: testInfo.outputPath('radius-dark.png') });
 
@@ -68,8 +68,8 @@ test('window radius applies to open and new windows and persists', async ({}, te
 		});
 		const third = await thirdOpened;
 		await third.waitForLoadState('domcontentloaded');
-		await expect.poll(() => third.evaluate(() =>
-			getComputedStyle(document.querySelector('.app-translucent-window')!).borderRadius
+		await expect.poll(() => third.locator('.app-translucent-window').evaluate((element) =>
+			getComputedStyle(element).borderRadius
 		)).toBe('24px');
 
 		await app.close();
@@ -85,8 +85,8 @@ test('window radius applies to open and new windows and persists', async ({}, te
 		page = await app.firstWindow();
 		await page.waitForLoadState('domcontentloaded');
 		await expect.poll(() => page.evaluate(() => window.app.getWindowRadius())).toBe(24);
-		await expect.poll(() => page.evaluate(() =>
-			getComputedStyle(document.querySelector('.app-translucent-window')!).borderRadius
+		await expect.poll(() => page.locator('.app-translucent-window').evaluate((element) =>
+			getComputedStyle(element).borderRadius
 		)).toBe('24px');
 	} finally {
 		await closeApp(app, userDataDir);
