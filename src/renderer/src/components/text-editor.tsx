@@ -39,6 +39,7 @@ function TextEditor({
 	const onVisualLineChangeRef = useRef(onVisualLineChange);
 	const onPlanCommandChangeRef = useRef(onPlanCommandChange);
 	const onGoalCommandChangeRef = useRef(onGoalCommandChange);
+	const lastEditorValueRef = useRef<string>();
 
 	useEffect(() => {
 		onValueChangeRef.current = onValueChange;
@@ -96,7 +97,9 @@ function TextEditor({
 			reportVisualLineChange(createdEditor);
 		},
 		onUpdate: ({ editor: updatedEditor }) => {
-			onValueChangeRef.current?.(updatedEditor.getMarkdown());
+			const markdown = updatedEditor.getMarkdown();
+			lastEditorValueRef.current = markdown;
+			onValueChangeRef.current?.(markdown);
 			reportPlanCommand(updatedEditor);
 			reportGoalCommand(updatedEditor);
 			reportVisualLineChange(updatedEditor);
@@ -145,7 +148,7 @@ function TextEditor({
 	});
 
 	useEffect(() => {
-		if (!editor || editor.getMarkdown() === (value ?? '')) return;
+		if (!editor || value === lastEditorValueRef.current || editor.getMarkdown() === (value ?? '')) return;
 		let planCommandActive = false;
 		editor.state.doc.descendants((node) => {
 			if (node.type.name === PlanCommand.name) planCommandActive = true;
@@ -163,6 +166,7 @@ function TextEditor({
 		}
 		if (editor.isFocused) chain.focus('end');
 		chain.run();
+		lastEditorValueRef.current = value;
 		reportPlanCommand(editor);
 		reportGoalCommand(editor);
 		reportVisualLineChange(editor);

@@ -5,6 +5,7 @@ import {
 	useMemo,
 	useRef,
 	useState,
+	memo,
 	type ReactElement,
 } from 'react';
 import { AnimatePresence, motion, resize } from 'motion/react';
@@ -22,7 +23,6 @@ import {
 	X,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import clearLogo from '@resources/icons/icon-clear.svg';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
@@ -426,7 +426,6 @@ function SubmitButton({
 }
 
 function PageContent(): ReactElement {
-	const { t } = useTranslation();
 	const { mode, setMode } = useChatMode();
 	const { sessionId: chatSessionId } = useChatSession();
 	const navigate = useNavigate();
