@@ -74,7 +74,7 @@ export function Activity({ range }: { readonly range: ActivityRange }): React.JS
 					shape="circle"
 					scale="linear"
 					colors={isDark ? ['#0e4429', '#006d32', '#26a641', '#39d353'] : undefined}
-					emptyColor={isDark ? '#2c2c2e' : undefined}
+					emptyColor={isDark ? '#2c2c2e' : 'var(--muted)'}
 					data-heatmap-theme={isDark ? 'dark' : 'light'}
 					showMonthLabels
 					unitLabel={t('settings.activity.events')}
