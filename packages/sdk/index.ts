@@ -163,6 +163,7 @@ function bridge<T extends object>(name: string): T {
 export const app = bridge<AppApi>('app');
 export const agent = bridge<AgentApi>('agent');
 export const coding = bridge<CodingApi>('coding');
+export const coder = bridge<CodingApi>('coder');
 export const models = bridge<ModelsApi>('models');
 export const terminal = bridge<TerminalApi>('terminalAPI');
 export const win = bridge<WindowApi>('win');

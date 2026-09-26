@@ -61,6 +61,9 @@ export const AgentChannels = {
 } as const;
 
 export const CodingChannels = {
+	pickDirectory: 'coder:directory:pick',
+	respond: 'coder:interaction:respond',
+	saveSessionSettings: 'coder:sessions:settings',
 	getSettings: 'coding:settings:get',
 	saveSettings: 'coding:settings:save',
 	listModels: 'coding:models:list',

@@ -9,12 +9,15 @@ import {
 import { typedInvokeUnwrap, typedOn } from '../shared/ipc_types';
 
 export const coding: CodingApi = {
-	getSettings: () => typedInvokeUnwrap(CodingChannels.getSettings),
+	pickDirectory: () => typedInvokeUnwrap(CodingChannels.pickDirectory),
+	respond: (runId, requestId, response) => typedInvokeUnwrap(CodingChannels.respond, runId, requestId, response),
+	saveSessionSettings: (projectId, sessionId, settings) => typedInvokeUnwrap(CodingChannels.saveSessionSettings, projectId, sessionId, settings),
+	getSettings: (runtime) => typedInvokeUnwrap(CodingChannels.getSettings, runtime),
 	saveSettings: (settings) => {
 		if (!isCodingSettings(settings)) throw new Error('Invalid coding settings.');
 		return typedInvokeUnwrap(CodingChannels.saveSettings, settings);
 	},
-	listModels: () => typedInvokeUnwrap(CodingChannels.listModels),
+	listModels: (runtime) => typedInvokeUnwrap(CodingChannels.listModels, runtime),
 	listProjects: () => typedInvokeUnwrap(CodingChannels.listProjects),
 	addProject: () => typedInvokeUnwrap(CodingChannels.addProject),
 	openProject: (projectId) => {
@@ -46,18 +49,18 @@ export const coding: CodingApi = {
 		}
 		return typedInvokeUnwrap(CodingChannels.createProjectFile, normalizedProjectId, filePath.trim());
 	},
-	getProjectInstructions: (projectId) => {
+	getProjectInstructions: (projectId, runtime) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');
-		return typedInvokeUnwrap(CodingChannels.getProjectInstructions, normalizedProjectId);
+		return typedInvokeUnwrap(CodingChannels.getProjectInstructions, normalizedProjectId, runtime);
 	},
-	saveProjectInstructions: (projectId, update) => {
+	saveProjectInstructions: (projectId, update, runtime) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');
 		if (!isCodingProjectInstructionsUpdate(update)) {
 			throw new Error('Invalid coding project instructions.');
 		}
-		return typedInvokeUnwrap(CodingChannels.saveProjectInstructions, normalizedProjectId, update);
+		return typedInvokeUnwrap(CodingChannels.saveProjectInstructions, normalizedProjectId, update, runtime);
 	},
 	listSessions: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
@@ -95,7 +98,8 @@ export const coding: CodingApi = {
 		if (!normalizedProjectId || !normalizedSessionId) throw new Error('Invalid coding session.');
 		return typedInvokeUnwrap(CodingChannels.deleteSession, normalizedProjectId, normalizedSessionId);
 	},
-	send: (request, onEvent) => {
+	send: (request, onEvent) => coding.start(request, onEvent).result,
+	start: (request, onEvent) => {
 		if (!isCodingRunRequest(request)) throw new Error('Invalid coding run request.');
 		const normalizedRequest = {
 			...request,
@@ -107,17 +111,19 @@ export const coding: CodingApi = {
 		const unsubscribe = typedOn(CodingChannels.response, (event) => {
 			if (event.runId === runId) onEvent?.(event);
 		});
-		return typedInvokeUnwrap(CodingChannels.send, normalizedRequest, runId).finally(unsubscribe);
+		return { runId, result: typedInvokeUnwrap(CodingChannels.send, normalizedRequest, runId).finally(unsubscribe) };
 	},
 	cancel: (runId) => {
 		const normalizedRunId = typeof runId === 'string' ? runId.trim() : '';
 		if (!normalizedRunId) throw new Error('Invalid coding run id.');
 		return typedInvokeUnwrap(CodingChannels.cancel, normalizedRunId);
 	},
-	connectCodex: (onEvent) => {
+	connectCodex: (onEvent, runtime) => {
 		const unsubscribe = typedOn(CodingChannels.authEvent, (event) => onEvent?.(event));
-		return typedInvokeUnwrap(CodingChannels.connectCodex).finally(unsubscribe);
+		return typedInvokeUnwrap(CodingChannels.connectCodex, runtime).finally(unsubscribe);
 	},
 	cancelCodexLogin: () => typedInvokeUnwrap(CodingChannels.cancelCodexLogin),
-	disconnectCodex: () => typedInvokeUnwrap(CodingChannels.disconnectCodex),
+	disconnectCodex: (runtime) => typedInvokeUnwrap(CodingChannels.disconnectCodex, runtime),
 };
+
+export const coder = coding;

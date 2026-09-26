@@ -33,6 +33,8 @@
 	"publish": null,
 	"asar": true,
 	"asarUnpack": [
+		"node_modules/@openai/codex*/**/*",
+		"node_modules/@anthropic-ai/claude-agent-sdk*/**/*",
 		"node_modules/@anthropic-ai/sandbox-runtime/vendor/**/*",
 		"node_modules/@silvia-odwyer/photon-node/**/*",
 		"node_modules/node-pty/**/*"

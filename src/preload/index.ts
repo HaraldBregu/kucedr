@@ -22,7 +22,7 @@ import { auth } from './auth';
 import { cloud } from './cloud';
 
 export { agent } from './agent';
-export { coding } from './coding';
+export { coding, coder } from './coding';
 export { a2a } from './a2a';
 export { app } from './app';
 export { recorder } from './recorder';
@@ -47,6 +47,7 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('win', win);
 		contextBridge.exposeInMainWorld('agent', agent);
 		contextBridge.exposeInMainWorld('coding', coding);
+		contextBridge.exposeInMainWorld('coder', coding);
 		contextBridge.exposeInMainWorld('a2a', a2a);
 		contextBridge.exposeInMainWorld('recorder', recorder);
 		contextBridge.exposeInMainWorld('tasks', tasks);
@@ -75,6 +76,7 @@ if (process.contextIsolated) {
 	globalThis.agent = agent;
 	// @ts-ignore (define in dts)
 	globalThis.coding = coding;
+	globalThis.coder = coding;
 	// @ts-ignore (define in dts)
 	globalThis.a2a = a2a;
 	// @ts-ignore (define in dts)

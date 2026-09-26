@@ -30,6 +30,7 @@ declare global {
 		app: AppApi;
 		agent: AgentApi;
 		coding: CodingApi;
+		coder: CodingApi;
 		a2a: A2aApi;
 		recorder: RecorderApi;
 		tasks: TaskApi;

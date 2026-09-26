@@ -114,6 +114,8 @@ import type { WorkspaceAsset } from './workspace';
 import type { AppStorageApi } from './app_store_types';
 import type { SandboxStatus } from './sandbox';
 import type {
+	CoderHarness,
+	CoderInteractionResponse,
 	CodingAuthEvent,
 	CodingAuthStatus,
 	CodingCatalog,
@@ -247,10 +249,16 @@ export interface AgentApi {
 	ragPickFolder: () => Promise<string | undefined>;
 }
 
+export type CoderApi = CodingApi;
+
 export interface CodingApi {
-	getSettings: () => Promise<CodingSettings>;
+	pickDirectory: () => Promise<string | undefined>;
+	start: (request: CodingRunRequest, onEvent?: (event: CodingResponseEvent) => void) => { runId: string; result: Promise<CodingRunResult> };
+	respond: (runId: string, requestId: string, response: CoderInteractionResponse) => Promise<boolean>;
+	saveSessionSettings: (projectId: string, sessionId: string, settings: CodingSettings) => Promise<CodingSessionSummary>;
+	getSettings: (runtime?: CoderHarness) => Promise<CodingSettings>;
 	saveSettings: (settings: CodingSettings) => Promise<CodingSettings>;
-	listModels: () => Promise<CodingCatalog>;
+	listModels: (runtime?: CoderHarness) => Promise<CodingCatalog>;
 	listProjects: () => Promise<CodingProject[]>;
 	addProject: () => Promise<CodingProject | undefined>;
 	openProject: (projectId: string) => Promise<void>;
@@ -258,10 +266,11 @@ export interface CodingApi {
 	readProjectFile: (projectId: string, filePath: string) => Promise<string>;
 	listProjectFiles: (projectId: string) => Promise<CodingProjectFile[]>;
 	createProjectFile: (projectId: string, filePath: string) => Promise<CodingProjectFile>;
-	getProjectInstructions: (projectId: string) => Promise<CodingProjectInstructions>;
+	getProjectInstructions: (projectId: string, runtime?: CoderHarness) => Promise<CodingProjectInstructions>;
 	saveProjectInstructions: (
 		projectId: string,
-		update: CodingProjectInstructionsUpdate
+		update: CodingProjectInstructionsUpdate,
+		runtime?: CoderHarness
 	) => Promise<CodingProjectInstructions>;
 	listSessions: (projectId: string) => Promise<CodingSessionSummary[]>;
 	getSession: (projectId: string, sessionId: string) => Promise<CodingSessionSnapshot>;
@@ -276,9 +285,9 @@ export interface CodingApi {
 		onEvent?: (event: CodingResponseEvent) => void
 	) => Promise<CodingRunResult>;
 	cancel: (runId: string) => Promise<boolean>;
-	connectCodex: (onEvent?: (event: CodingAuthEvent) => void) => Promise<CodingAuthStatus>;
+	connectCodex: (onEvent?: (event: CodingAuthEvent) => void, runtime?: CoderHarness) => Promise<CodingAuthStatus>;
 	cancelCodexLogin: () => Promise<boolean>;
-	disconnectCodex: () => Promise<void>;
+	disconnectCodex: (runtime?: CoderHarness) => Promise<void>;
 }
 
 export interface TaskApi {
