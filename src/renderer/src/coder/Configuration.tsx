@@ -122,7 +122,7 @@ export function Configuration({
 										onChange={configuration.setModel}
 									/>
 								</Setting>
-								<Setting title="Thinking">
+								{settings.runtime !== 'cline' && <Setting title="Thinking">
 									<Choice
 										value={settings.thinkingLevel}
 										options={CODING_THINKING_LEVELS.filter((level) =>
@@ -138,7 +138,7 @@ export function Configuration({
 										disabled={configuration.saving}
 										onChange={(value) => configuration.setThinking(value as CodingThinkingLevel)}
 									/>
-								</Setting>
+								</Setting>}
 								<Setting title="Tools" description="Controls which tools can run">
 									<Choice
 										value={settings.toolMode}
