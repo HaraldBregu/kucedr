@@ -115,6 +115,7 @@ export function CoderPage() {
 				sidebar={sidebar}
 				viewer={viewer}
 				workspaceName={project?.name ?? 'Choose workspace'}
+				busy={coding.busy}
 				canRun={
 					location.pathname === '/' &&
 					!coding.loading &&
@@ -123,6 +124,7 @@ export function CoderPage() {
 					(coding.mode === 'shell' || Boolean(coding.settings?.modelId))
 				}
 				onRun={() => void coding.send()}
+				onStop={() => void coding.cancel()}
 				onToggleSidebar={() => {
 					setSidebar(!sidebar);
 					if (window.innerWidth < 1280) setViewer(false);

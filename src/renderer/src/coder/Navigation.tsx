@@ -13,9 +13,11 @@ interface NavigationProps {
 	readonly viewer: boolean;
 	readonly workspaceName: string;
 	readonly canRun: boolean;
+	readonly busy: boolean;
 	readonly onToggleSidebar: () => void;
 	readonly onToggleViewer: () => void;
 	readonly onRun: () => void;
+	readonly onStop: () => void;
 }
 
 export function Navigation({
@@ -23,13 +25,17 @@ export function Navigation({
 	viewer,
 	workspaceName,
 	canRun,
+	busy,
 	onToggleSidebar,
 	onToggleViewer,
 	onRun,
+	onStop,
 }: NavigationProps) {
 	const { isFullScreen, isMaximized } = useWindowState();
 	const [progress, setProgress] = useState(0);
+	const [playing, setPlaying] = useState(false);
 	const animation = useRef<number | null>(null);
+	const active = playing || busy;
 	useEffect(
 		() => () => {
 			if (animation.current !== null) cancelAnimationFrame(animation.current);
@@ -39,18 +45,28 @@ export function Navigation({
 	const run = () => {
 		if (animation.current !== null) cancelAnimationFrame(animation.current);
 		setProgress(0);
+		setPlaying(true);
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
 			setProgress(100);
+			setPlaying(false);
 		} else {
 			const started = performance.now();
 			const frame = (now: number) => {
 				const next = Math.min(100, Math.round(((now - started) / 5000) * 100));
 				setProgress(next);
 				animation.current = next < 100 ? requestAnimationFrame(frame) : null;
+				if (next === 100) setPlaying(false);
 			};
 			animation.current = requestAnimationFrame(frame);
 		}
 		onRun();
+	};
+	const stop = () => {
+		if (animation.current !== null) cancelAnimationFrame(animation.current);
+		animation.current = null;
+		setProgress(0);
+		setPlaying(false);
+		onStop();
 	};
 	return (
 		<NavigationBarContainer>
@@ -61,24 +77,25 @@ export function Navigation({
 			>
 				<Button
 					type="button"
-					variant="secondary"
+					variant="ghost"
 					size="icon"
-					className="size-8 shrink-0"
+					className="size-8 shrink-0 bg-transparent hover:bg-transparent dark:hover:bg-transparent"
 					aria-label="Run current prompt"
 					title="Run current prompt"
-					disabled={!canRun}
+					disabled={!canRun || active}
 					onClick={run}
 				>
 					<Play className="size-4" />
 				</Button>
 				<Button
 					type="button"
-					variant="secondary"
+					variant="ghost"
 					size="icon"
-					className="size-8 shrink-0"
+					className="size-8 shrink-0 bg-transparent hover:bg-transparent dark:hover:bg-transparent"
 					aria-label="Stop current run"
 					title="Stop current run"
-					disabled
+					disabled={!active}
+					onClick={stop}
 				>
 					<Square className="size-4" />
 				</Button>
