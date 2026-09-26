@@ -174,11 +174,10 @@ export class CodexHarness implements CodingHarness {
 					model: context.settings.modelId || undefined,
 					approvalPolicy: context.settings.toolMode === 'read-only' ? 'never' : 'on-request',
 					approvalsReviewer: 'user',
-					sandbox: context.settings.toolMode === 'read-only' ? 'readOnly' : 'workspaceWrite',
+					sandbox: context.settings.toolMode === 'read-only' ? 'read-only' : 'workspace-write',
 				}
 			);
 			threadId = thread.thread.id;
-			await context.saveSession(threadId);
 			context.signal.throwIfAborted();
 			const effort = context.settings.thinkingLevel;
 			await rpc.request('turn/start', {
@@ -186,6 +185,7 @@ export class CodexHarness implements CodingHarness {
 				input: [{ type: 'text', text: input, text_elements: [] }],
 				effort: effort === 'off' ? 'none' : effort === 'max' ? 'xhigh' : effort,
 			});
+			await context.saveSession(threadId);
 			await completion;
 			return output;
 		} finally {

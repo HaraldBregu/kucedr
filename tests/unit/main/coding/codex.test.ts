@@ -54,7 +54,7 @@ describe('CodexHarness', () => {
 		});
 	});
 
-	it('pins cwd and persists the native thread before running', async () => {
+	it('pins cwd and persists the native thread after starting its first turn', async () => {
 		await expect(
 			new CodexHarness('/coder/codex', () => undefined).run('Task', context)
 		).resolves.toBe('Hello');
@@ -62,7 +62,7 @@ describe('CodexHarness', () => {
 			'thread/start',
 			expect.objectContaining({
 				cwd: context.cwd,
-				sandbox: 'workspaceWrite',
+				sandbox: 'workspace-write',
 				approvalPolicy: 'on-request',
 			})
 		);
@@ -81,7 +81,7 @@ describe('CodexHarness', () => {
 			'thread/resume',
 			expect.objectContaining({
 				threadId: 'native-thread',
-				sandbox: 'readOnly',
+				sandbox: 'read-only',
 				approvalPolicy: 'never',
 			})
 		);
