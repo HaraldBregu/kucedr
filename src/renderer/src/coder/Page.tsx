@@ -196,7 +196,6 @@ export function CoderPage() {
 				{viewer && (
 					<div className="absolute inset-y-0 right-0 z-10 w-[min(85vw,400px)] border-l xl:static xl:w-[35%] xl:max-w-xl">
 						<Viewer
-							runtime={coding.settings?.runtime}
 							key={coding.projectId}
 							projectId={coding.projectId}
 							snapshot={coding.snapshot}

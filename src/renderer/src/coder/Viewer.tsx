@@ -3,21 +3,18 @@ import { FileCode2, FilePlus, FileText } from 'lucide-react';
 import type {
 	CodingProjectFile,
 	CodingSessionSnapshot,
-	CodingSettings,
 } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Transcript } from './Transcript';
 
 export function Viewer({
-	runtime,
 	projectId,
 	snapshot,
 	revision,
 	busy,
 	onInstructions,
 }: {
-	runtime?: CodingSettings['runtime'];
 	projectId: string;
 	snapshot: CodingSessionSnapshot | null;
 	revision: number;
