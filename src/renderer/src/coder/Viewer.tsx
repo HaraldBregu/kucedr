@@ -1,18 +1,27 @@
 import { useEffect, useState } from 'react';
-import { FileCode2 } from 'lucide-react';
+import { FileCode2, FilePlus, FileText } from 'lucide-react';
 import type { CodingProjectFile, CodingSessionSnapshot } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Transcript } from './Transcript';
 
 export function Viewer({
 	projectId,
 	snapshot,
 	revision,
+	busy,
+	onInstructions,
 }: {
 	projectId: string;
 	snapshot: CodingSessionSnapshot | null;
 	revision: number;
+	busy: boolean;
+	onInstructions: () => void;
 }) {
+	const [newPath, setNewPath] = useState('');
+	const [creating, setCreating] = useState(false);
+	const [showCreate, setShowCreate] = useState(false);
+	const [refresh, setRefresh] = useState(0);
 	const [tab, setTab] = useState<'files' | 'session'>('files');
 	const [files, setFiles] = useState<CodingProjectFile[]>([]);
 	const [path, setPath] = useState('');
@@ -23,6 +32,8 @@ export function Viewer({
 	useEffect(() => {
 		setPath('');
 		setContent('');
+		setNewPath('');
+		setShowCreate(false);
 	}, [projectId]);
 	useEffect(() => {
 		let active = true;
@@ -40,7 +51,7 @@ export function Viewer({
 		return () => {
 			active = false;
 		};
-	}, [projectId, revision]);
+	}, [projectId, revision, refresh]);
 	useEffect(() => {
 		let active = true;
 		setContent('');
@@ -56,6 +67,22 @@ export function Viewer({
 			active = false;
 		};
 	}, [projectId, path, revision]);
+	const create = async () => {
+		if (!newPath.trim() || creating) return;
+		setCreating(true);
+		setError('');
+		try {
+			const file = await window.coding.createProjectFile(projectId, newPath.trim());
+			setRefresh((value) => value + 1);
+			setPath(file.path);
+			setNewPath('');
+			setShowCreate(false);
+		} catch (cause) {
+			setError(String(cause));
+		} finally {
+			setCreating(false);
+		}
+	};
 	return (
 		<aside
 			aria-label="Content viewer"
@@ -93,6 +120,47 @@ export function Viewer({
 					</div>
 				) : (
 					<>
+						<div className="flex items-center justify-end gap-1 border-b px-2 py-1">
+							<Button
+								variant="ghost"
+								size="sm"
+								disabled={!projectId || busy}
+								onClick={onInstructions}
+							>
+								<FileText className="size-3.5" />
+								AGENTS.md
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon-sm"
+								aria-label="Create file"
+								disabled={!projectId || busy || creating}
+								onClick={() => setShowCreate(!showCreate)}
+							>
+								<FilePlus className="size-4" />
+							</Button>
+						</div>
+						{showCreate && (
+							<form
+								className="flex gap-2 border-b p-2"
+								onSubmit={(event) => {
+									event.preventDefault();
+									void create();
+								}}
+							>
+								<Input
+									autoFocus
+									aria-label="New file path"
+									placeholder="src/example.ts"
+									value={newPath}
+									disabled={creating}
+									onChange={(event) => setNewPath(event.target.value)}
+								/>
+								<Button type="submit" size="sm" disabled={!newPath.trim() || creating || busy}>
+									Create
+								</Button>
+							</form>
+						)}
 						<div className="max-h-48 shrink-0 overflow-auto border-b p-2" aria-busy={listing}>
 							{listing ? (
 								<p className="p-2 text-xs text-muted-foreground">Loading files…</p>

@@ -1,45 +1,71 @@
-import { useState } from 'react';
-import { ArrowUp, Code2, FolderPlus, Plus, Square } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Code2, FolderPlus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from '@/components/ui/select';
 import { ChatContainerContent, ChatContainerRoot } from '@/components/ui/chat-container';
 import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
-import { cn } from '@/lib/utils';
 import { Transcript } from './Transcript';
 import { Viewer } from './Viewer';
 import { Navigation } from './Navigation';
+import { Sidebar } from './Sidebar';
+import { Composer } from './Composer';
+import { Configuration } from './Configuration';
+import { Instructions } from './Instructions';
 import { useWorkspace } from './workspace';
 
 export function CoderPage() {
 	useAppTheme();
-	const workspace = useWorkspace();
+	const coding = useWorkspace();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
 	const [viewer, setViewer] = useState(() => window.innerWidth >= 1280);
-	const project = workspace.projects.find((item) => item.id === workspace.projectId);
-	const blocks = [...(workspace.snapshot?.blocks ?? [])];
-	if (workspace.pending)
-		blocks.push({
-			id: 'pending',
-			type: 'message',
-			role: 'user',
-			content: workspace.pending,
-			timestamp: '',
-		});
-	if (workspace.output)
-		blocks.push({
-			id: 'stream',
-			type: 'message',
-			role: 'assistant',
-			content: workspace.output,
-			timestamp: '',
-		});
+	const [page, setPage] = useState<'chat' | 'configuration' | 'instructions'>('chat');
+	const [instructionsDirty, setInstructionsDirty] = useState(false);
+	const project = coding.projects.find((item) => item.id === coding.projectId);
+	const leaveInstructions = () =>
+		!instructionsDirty || window.confirm('Discard unsaved changes to agent instructions?');
+	const openPage = (next: typeof page) => {
+		if (next === page || !leaveInstructions()) return;
+		setInstructionsDirty(false);
+		setPage(next);
+	};
+	const select = (projectId: string, sessionId?: string, fresh?: boolean) => {
+		if (!leaveInstructions()) return;
+		setInstructionsDirty(false);
+		setPage('chat');
+		void coding.select(projectId, sessionId, fresh);
+		if (window.innerWidth < 768) setSidebar(false);
+	};
+	useEffect(() => {
+		const onKey = (event: KeyboardEvent) => {
+			if (
+				event.ctrlKey &&
+				!event.metaKey &&
+				event.key.toLowerCase() === 'c' &&
+				coding.busy &&
+				!window.getSelection()?.toString()
+			) {
+				event.preventDefault();
+				void coding.cancel();
+			}
+			if (
+				(event.metaKey || event.ctrlKey) &&
+				event.key.toLowerCase() === 'n' &&
+				project &&
+				!coding.busy &&
+				!coding.loading &&
+				!instructionsDirty
+			) {
+				event.preventDefault();
+				setPage('chat');
+				void coding.select(project.id, undefined, true);
+			}
+			if ((event.metaKey || event.ctrlKey) && event.key === '/' && page === 'chat') {
+				event.preventDefault();
+				document.getElementById('coder-composer')?.focus();
+			}
+		};
+		window.addEventListener('keydown', onKey);
+		return () => window.removeEventListener('keydown', onKey);
+	}, [coding, project, instructionsDirty, page]);
 	return (
 		<div className="flex h-dvh min-h-0 flex-col bg-background pt-12 text-foreground">
 			<Navigation
@@ -54,184 +80,113 @@ export function CoderPage() {
 					setViewer(!viewer);
 					if (window.innerWidth < 768) setSidebar(false);
 				}}
+				onConfiguration={() => openPage('configuration')}
+				configurationDisabled={coding.busy}
 			/>
 			<div className="relative flex min-h-0 flex-1 overflow-hidden">
 				{sidebar && (
-					<aside
-						aria-label="Sessions"
-						className="absolute inset-y-0 left-0 z-20 flex w-60 shrink-0 flex-col border-r bg-sidebar p-2 md:static"
-					>
-						<div className="flex items-center gap-1 pb-3">
-							<Select
-								value={workspace.projectId}
-								disabled={workspace.busy || workspace.loading}
-								onValueChange={(value) => value && workspace.setProjectId(value)}
-							>
-								<SelectTrigger className="min-w-0 flex-1" aria-label="Project">
-									<SelectValue placeholder="Select project">
-										{project?.name ?? 'Select project'}
-									</SelectValue>
-								</SelectTrigger>
-								<SelectContent>
-									{workspace.projects.map((item) => (
-										<SelectItem key={item.id} value={item.id} disabled={!item.available}>
-											{item.name}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-							<Button
-								variant="ghost"
-								size="icon-sm"
-								aria-label="Open project folder"
-								disabled={workspace.busy}
-								onClick={() => void workspace.addProject()}
-							>
-								<FolderPlus className="size-4" />
-							</Button>
-						</div>
-						<Button
-							variant="ghost"
-							className="w-full justify-start"
-							disabled={!project || workspace.busy}
-							onClick={() => {
-								void workspace.selectSession();
-								if (window.innerWidth < 768) setSidebar(false);
-							}}
-						>
-							<Plus className="size-4" />
-							New session
-						</Button>
-						<h2 className="px-2 pb-2 pt-5 text-xs font-medium text-muted-foreground">Sessions</h2>
-						<nav className="min-h-0 flex-1 space-y-1 overflow-auto" aria-busy={workspace.loading}>
-							{workspace.sessions.map((session) => (
-								<Button
-									key={session.id}
-									variant={session.id === workspace.snapshot?.session.id ? 'secondary' : 'ghost'}
-									className="w-full justify-start font-normal"
-									disabled={workspace.busy}
-									aria-current={session.id === workspace.snapshot?.session.id ? 'page' : undefined}
-									title={session.title}
-									onClick={() => {
-										void workspace.selectSession(session.id);
-										if (window.innerWidth < 768) setSidebar(false);
-									}}
-								>
-									<span className="truncate">{session.title || 'Untitled session'}</span>
-								</Button>
-							))}
-							{!workspace.sessions.length && (
-								<p className="p-2 text-xs text-muted-foreground">
-									{workspace.loading ? 'Loading sessions…' : 'No sessions yet.'}
-								</p>
-							)}
-						</nav>
-						{project && (
-							<p
-								className="truncate px-2 pt-3 text-xs text-muted-foreground"
-								title={project.directory}
-							>
-								{project.directory}
-							</p>
-						)}
-					</aside>
+					<Sidebar
+						coding={coding}
+						onBeforeChange={leaveInstructions}
+						onSelect={select}
+						onInstructions={(id) => {
+							if (!leaveInstructions()) return;
+							setInstructionsDirty(false);
+							if (id !== coding.projectId) void coding.select(id);
+							setPage('instructions');
+							if (window.innerWidth < 768) setSidebar(false);
+						}}
+					/>
 				)}
 				<main className="flex min-w-0 flex-1 flex-col">
-					<div className="flex h-12 shrink-0 items-center border-b px-5">
-						<h2 className="truncate text-sm font-medium">
-							{workspace.snapshot?.session.title || 'New session'}
-						</h2>
-					</div>
-					<ChatContainerRoot className="min-h-0">
-						<ChatContainerContent className="mx-auto max-w-3xl p-5">
-							{blocks.length ? (
-								<Transcript blocks={blocks} />
-							) : (
-								<div className="flex min-h-64 flex-col items-center justify-center gap-3 text-center">
-									<Code2 className="size-8 text-muted-foreground" />
-									<h2 className="text-xl font-semibold">What are we building?</h2>
-									<p className="text-sm text-muted-foreground">
-										{project
-											? 'Ask Coder to explore, build, or fix something in your project.'
-											: 'Open a project folder to start coding.'}
-									</p>
-									{!project && (
-										<Button variant="outline" onClick={() => void workspace.addProject()}>
-											<FolderPlus className="size-4" />
-											Open project
-										</Button>
-									)}
-								</div>
-							)}
-							{workspace.busy && (
-								<p role="status" className="mt-4 text-xs text-muted-foreground">
-									{workspace.status}
-								</p>
-							)}
-						</ChatContainerContent>
-					</ChatContainerRoot>
-					<div className="mx-auto w-full max-w-3xl shrink-0 p-4">
-						{workspace.error && (
-							<p role="alert" className="mb-3 text-sm text-destructive">
-								{workspace.error}
-							</p>
-						)}
-						<form
-							className="rounded-xl border bg-card p-2 shadow-sm"
-							onSubmit={(event) => {
-								event.preventDefault();
-								void workspace.send();
+					{page === 'configuration' ? (
+						<Configuration
+							onDone={() => {
+								void coding.refreshSettings();
+								setPage('chat');
 							}}
-						>
-							<Textarea
-								aria-label="Message Coder"
-								placeholder="Ask Coder…"
-								value={workspace.input}
-								disabled={!project || workspace.busy || workspace.loading}
-								onChange={(event) => workspace.setInput(event.target.value)}
-								className="max-h-40 min-h-20 resize-none border-0 bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"
-								onKeyDown={(event) => {
-									if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
-										event.preventDefault();
-										void workspace.send();
-									}
-								}}
-							/>
-							<div className="flex justify-end">
-								{workspace.busy ? (
-									<Button
-										type="button"
-										size="icon-sm"
-										aria-label="Stop generation"
-										disabled={!workspace.runId}
-										onClick={() => void workspace.cancel()}
-									>
-										<Square className="size-4" />
-									</Button>
-								) : (
-									<Button
-										type="submit"
-										size="icon-sm"
-										aria-label="Send message"
-										disabled={!project || workspace.loading || !workspace.input.trim()}
-									>
-										<ArrowUp className="size-4" />
-									</Button>
-								)}
+						/>
+					) : page === 'instructions' && project ? (
+						<Instructions
+							key={project.id}
+							projectId={project.id}
+							projectName={project.name}
+							onDirtyChange={setInstructionsDirty}
+							onDone={() => openPage('chat')}
+						/>
+					) : (
+						<>
+							<div className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
+								<h2 className="min-w-0 flex-1 truncate text-sm font-medium">
+									{coding.snapshot?.session.title || 'New session'}
+								</h2>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									aria-label="New session"
+									title="New session · ⌘/Ctrl N"
+									disabled={!project?.available || coding.busy || coding.loading}
+									onClick={() => project && select(project.id, undefined, true)}
+								>
+									<Plus className="size-4" />
+								</Button>
 							</div>
-						</form>
-					</div>
+							<ChatContainerRoot className="min-h-0">
+								<ChatContainerContent className="mx-auto max-w-3xl p-4">
+									{coding.loading ? (
+										<p role="status" className="text-sm text-muted-foreground">
+											Loading…
+										</p>
+									) : coding.blocks.length ? (
+										<Transcript blocks={coding.blocks} />
+									) : (
+										<div className="flex min-h-64 flex-col items-center justify-center gap-3 text-center">
+											<Code2 className="size-7 text-muted-foreground" />
+											<h2 className="text-lg font-semibold">
+												{project ? 'What are we building?' : 'Open a project'}
+											</h2>
+											<p className="text-sm text-muted-foreground">
+												{project
+													? 'Start with a prompt or switch to Command.'
+													: 'Choose a folder to start coding.'}
+											</p>
+											{!project && (
+												<Button variant="outline" onClick={() => void coding.addProject()}>
+													<FolderPlus className="size-4" />
+													Choose folder
+												</Button>
+											)}
+											{project && !coding.settings?.modelId && (
+												<Button variant="outline" onClick={() => openPage('configuration')}>
+													Configure agent
+												</Button>
+											)}
+										</div>
+									)}
+									{coding.busy && (
+										<p role="status" className="mt-4 text-xs text-muted-foreground">
+											{coding.status}
+										</p>
+									)}
+									{coding.error && (
+										<p role="alert" className="mt-4 text-sm text-destructive">
+											{coding.error}
+										</p>
+									)}
+								</ChatContainerContent>
+							</ChatContainerRoot>
+							<Composer coding={coding} onConfiguration={() => openPage('configuration')} />
+						</>
+					)}
 				</main>
 				{viewer && (
-					<div
-						className={cn(
-							'absolute inset-y-0 right-0 z-10 w-[min(85vw,400px)] border-l xl:static xl:w-[35%] xl:max-w-xl'
-						)}
-					>
+					<div className="absolute inset-y-0 right-0 z-10 w-[min(85vw,400px)] border-l xl:static xl:w-[35%] xl:max-w-xl">
 						<Viewer
-							projectId={workspace.projectId}
-							snapshot={workspace.snapshot}
-							revision={workspace.revision}
+							projectId={coding.projectId}
+							snapshot={coding.snapshot}
+							revision={coding.revision}
+							busy={coding.busy}
+							onInstructions={() => openPage('instructions')}
 						/>
 					</div>
 				)}
