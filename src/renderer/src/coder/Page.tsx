@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { ChatContainerContent, ChatContainerRoot } from '@/components/ui/chat-container';
 import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
 import { Transcript } from './Transcript';
-import { Viewer } from './Viewer';
 import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
 import { Composer } from './Composer';
@@ -17,7 +16,6 @@ export function CoderPage() {
 	useAppTheme();
 	const coding = useWorkspace();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
-	const [viewer, setViewer] = useState(() => window.innerWidth >= 1280);
 	const [page, setPage] = useState<'chat' | 'configuration' | 'instructions'>('chat');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const project = coding.projects.find((item) => item.id === coding.projectId);
@@ -79,15 +77,7 @@ export function CoderPage() {
 					coding.settings?.workingDirectory
 				}
 				sidebar={sidebar}
-				viewer={viewer}
-				onToggleSidebar={() => {
-					setSidebar(!sidebar);
-					if (window.innerWidth < 1280) setViewer(false);
-				}}
-				onToggleViewer={() => {
-					setViewer(!viewer);
-					if (window.innerWidth < 768) setSidebar(false);
-				}}
+				onToggleSidebar={() => setSidebar(!sidebar)}
 				onConfiguration={() => openPage('configuration')}
 				configurationDisabled={coding.busy}
 			/>
@@ -193,18 +183,6 @@ export function CoderPage() {
 						</>
 					)}
 				</main>
-				{viewer && (
-					<div className="absolute inset-y-0 right-0 z-10 w-[min(85vw,400px)] border-l xl:static xl:w-[35%] xl:max-w-xl">
-						<Viewer
-							key={coding.projectId}
-							projectId={coding.projectId}
-							snapshot={coding.snapshot}
-							revision={coding.revision}
-							busy={coding.busy}
-							onInstructions={() => openPage('instructions')}
-						/>
-					</div>
-				)}
 			</div>
 		</div>
 	);

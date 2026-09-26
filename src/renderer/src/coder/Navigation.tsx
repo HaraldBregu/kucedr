@@ -1,5 +1,5 @@
 import type { CodingSettings } from '@shared/coding_types';
-import { Code2, PanelLeft, PanelRight, User } from 'lucide-react';
+import { Code2, PanelLeft, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavigationBarContainer } from '@/components/app/navigationbar/NavigationBarContainer';
 import { NavigationBarLeftContainer } from '@/components/app/navigationbar/NavigationBarLeftContainer';
@@ -15,9 +15,7 @@ interface NavigationProps {
 	readonly onConfiguration: () => void;
 	readonly configurationDisabled: boolean;
 	readonly sidebar: boolean;
-	readonly viewer: boolean;
 	readonly onToggleSidebar: () => void;
-	readonly onToggleViewer: () => void;
 }
 
 export function Navigation({
@@ -25,9 +23,7 @@ export function Navigation({
 	projectDirectory,
 	runtime,
 	sidebar,
-	viewer,
 	onToggleSidebar,
-	onToggleViewer,
 	onConfiguration,
 	configurationDisabled,
 }: NavigationProps) {
@@ -71,18 +67,6 @@ export function Navigation({
 					onClick={onConfiguration}
 				>
 					<User className="size-4" strokeWidth={1.8} />
-				</Button>
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon"
-					className="size-8 rounded-full"
-					aria-label="Toggle content viewer"
-					title="Toggle content viewer"
-					aria-expanded={viewer}
-					onClick={onToggleViewer}
-				>
-					<PanelRight className="size-4" strokeWidth={1.8} />
 				</Button>
 			</div>
 			{!isMac && <WindowControls isMaximized={isMaximized} />}
