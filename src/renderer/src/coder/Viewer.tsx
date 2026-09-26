@@ -3,6 +3,7 @@ import { FileCode2, FilePlus, FileText } from 'lucide-react';
 import type { CodingProjectFile, CodingSessionSnapshot } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Transcript } from './Transcript';
 
 export function Viewer({
@@ -86,25 +87,29 @@ export function Viewer({
 	return (
 		<aside
 			aria-label="Content viewer"
-			className="flex h-full min-h-0 min-w-0 flex-col bg-background"
+			className="flex h-full min-h-0 min-w-0 flex-col bg-sidebar text-sidebar-foreground"
 		>
 			<div
-				className="flex h-12 shrink-0 items-center gap-1 border-b px-3"
+				className="flex h-12 shrink-0 items-center border-b border-sidebar-border px-2"
 				role="tablist"
 				aria-label="Viewer"
 			>
-				{(['files', 'session'] as const).map((value) => (
-					<Button
-						key={value}
-						role="tab"
-						aria-selected={tab === value}
-						variant={tab === value ? 'secondary' : 'ghost'}
-						size="sm"
-						onClick={() => setTab(value)}
-					>
-						{value === 'files' ? 'Files' : 'Session'}
-					</Button>
-				))}
+				<SidebarMenu className="flex-row gap-1">
+					{(['files', 'session'] as const).map((value) => (
+						<SidebarMenuItem key={value}>
+							<SidebarMenuButton
+								type="button"
+								role="tab"
+								aria-selected={tab === value}
+								data-active={tab === value}
+								size="sm"
+								onClick={() => setTab(value)}
+							>
+								{value === 'files' ? 'Files' : 'Session'}
+							</SidebarMenuButton>
+						</SidebarMenuItem>
+					))}
+				</SidebarMenu>
 			</div>
 			<div role="tabpanel" className="flex min-h-0 flex-1 flex-col">
 				{tab === 'session' ? (
@@ -120,25 +125,32 @@ export function Viewer({
 					</div>
 				) : (
 					<>
-						<div className="flex items-center justify-end gap-1 border-b px-2 py-1">
-							<Button
-								variant="ghost"
-								size="sm"
-								disabled={!projectId || busy}
-								onClick={onInstructions}
-							>
-								<FileText className="size-3.5" />
-								AGENTS.md
-							</Button>
-							<Button
-								variant="ghost"
-								size="icon-sm"
-								aria-label="Create file"
-								disabled={!projectId || busy || creating}
-								onClick={() => setShowCreate(!showCreate)}
-							>
-								<FilePlus className="size-4" />
-							</Button>
+						<div className="border-b border-sidebar-border p-2">
+							<SidebarMenu className="flex-row justify-end gap-1">
+								<SidebarMenuItem>
+									<SidebarMenuButton
+										type="button"
+										size="sm"
+										disabled={!projectId || busy}
+										onClick={onInstructions}
+									>
+										<FileText className="size-3.5" />
+										AGENTS.md
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+								<SidebarMenuItem>
+									<SidebarMenuButton
+										type="button"
+										size="sm"
+										className="w-8 justify-center"
+										aria-label="Create file"
+										disabled={!projectId || busy || creating}
+										onClick={() => setShowCreate(!showCreate)}
+									>
+										<FilePlus className="size-4" />
+									</SidebarMenuButton>
+								</SidebarMenuItem>
+							</SidebarMenu>
 						</div>
 						{showCreate && (
 							<form
@@ -161,23 +173,26 @@ export function Viewer({
 								</Button>
 							</form>
 						)}
-						<div className="max-h-48 shrink-0 overflow-auto border-b p-2" aria-busy={listing}>
+						<div className="max-h-48 shrink-0 overflow-auto border-b border-sidebar-border p-2" aria-busy={listing}>
 							{listing ? (
 								<p className="p-2 text-xs text-muted-foreground">Loading files…</p>
 							) : files.length ? (
-								files.map((file) => (
-									<Button
-										key={file.path}
-										variant={path === file.path ? 'secondary' : 'ghost'}
-										size="sm"
-										className="w-full justify-start font-normal"
-										onClick={() => setPath(file.path)}
-										title={file.path}
-									>
-										<FileCode2 className="size-4 shrink-0" />
-										<span className="truncate">{file.path}</span>
-									</Button>
-								))
+								<SidebarMenu>
+									{files.map((file) => (
+										<SidebarMenuItem key={file.path}>
+											<SidebarMenuButton
+												type="button"
+												data-active={path === file.path}
+												aria-current={path === file.path ? 'page' : undefined}
+												onClick={() => setPath(file.path)}
+												title={file.path}
+											>
+												<FileCode2 className="size-4 shrink-0" />
+												<span className="truncate">{file.path}</span>
+											</SidebarMenuButton>
+										</SidebarMenuItem>
+									))}
+								</SidebarMenu>
 							) : (
 								<p className="p-2 text-xs text-muted-foreground">No project files.</p>
 							)}
