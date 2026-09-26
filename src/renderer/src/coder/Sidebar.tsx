@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
 	Check,
 	ChevronsUpDown,
@@ -45,6 +45,26 @@ export function Sidebar({
 }) {
 	const [query, setQuery] = useState('');
 	const [searchOpen, setSearchOpen] = useState(false);
+	const searchInput = useRef<HTMLInputElement>(null);
+	useEffect(() => {
+		const onKey = (event: KeyboardEvent) => {
+			const target = event.target;
+			if (
+				event.key !== '/' ||
+				event.metaKey ||
+				event.ctrlKey ||
+				event.altKey ||
+				(target instanceof HTMLElement &&
+					(target.isContentEditable || ['INPUT', 'TEXTAREA'].includes(target.tagName)))
+			)
+				return;
+			event.preventDefault();
+			setSearchOpen(true);
+			window.requestAnimationFrame(() => searchInput.current?.focus());
+		};
+		window.addEventListener('keydown', onKey);
+		return () => window.removeEventListener('keydown', onKey);
+	}, []);
 	const filter = query.trim().toLowerCase();
 	const project = coding.projects.find((item) => item.id === coding.projectId);
 	const projects = filter
@@ -169,6 +189,7 @@ export function Sidebar({
 				</SidebarMenu>
 				{searchOpen && (
 					<Input
+						ref={searchInput}
 						autoFocus
 						aria-label="Search projects and sessions"
 						placeholder="Search sessions…"
