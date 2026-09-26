@@ -178,7 +178,9 @@ export class ClineHarness implements CodingHarness {
 		const credentials = await new Promise<Credentials>((resolve, reject) => {
 			const abort = (): void => reject(new Error('Cline sign-in cancelled.'));
 			signal.addEventListener('abort', abort, { once: true });
-			void completion.then(resolve, reject).finally(() => signal.removeEventListener('abort', abort));
+			void completion
+				.then(resolve, reject)
+				.finally(() => signal.removeEventListener('abort', abort));
 		});
 		signal.throwIfAborted();
 		await this.saveCredential(JSON.stringify(credentials));
@@ -220,7 +222,8 @@ export class ClineHarness implements CodingHarness {
 		const raw = this.getCredential();
 		const credentials = this.storedCredentials();
 		if (!credentials) {
-			if (raw?.startsWith('{')) throw new Error('Cline account credentials are invalid. Sign in again.');
+			if (raw?.startsWith('{'))
+				throw new Error('Cline account credentials are invalid. Sign in again.');
 			return raw;
 		}
 		const valid = await getValidClineCredentials(credentials, { apiBaseUrl: CLINE_API_URL });

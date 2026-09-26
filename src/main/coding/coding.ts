@@ -131,7 +131,11 @@ export class Coder {
 		if (!['openai', 'anthropic', 'cline'].includes(provider) || typeof key !== 'string')
 			throw new Error('Invalid Coder API key.');
 		const selected = this.getSettings(runtime).runtime;
-		if ((selected === 'codex' && provider !== 'openai') || (selected === 'cline' && provider !== 'cline') || (selected === 'pi' && provider === 'cline'))
+		if (
+			(selected === 'codex' && provider !== 'openai') ||
+			(selected === 'cline' && provider !== 'cline') ||
+			(selected === 'pi' && provider === 'cline')
+		)
 			throw new Error('API key provider does not match the harness.');
 		this.credentials.set(provider, key, selected);
 	}

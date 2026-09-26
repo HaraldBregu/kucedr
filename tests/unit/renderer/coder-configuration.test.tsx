@@ -1,4 +1,12 @@
-import { act, fireEvent, render, renderHook, screen, waitFor, within } from '@testing-library/react';
+import {
+	act,
+	fireEvent,
+	render,
+	renderHook,
+	screen,
+	waitFor,
+	within,
+} from '@testing-library/react';
 import { Authentication } from '../../../src/renderer/src/coder/Authentication';
 import { useConfiguration } from '../../../src/renderer/src/coder/hooks/configuration';
 import { useProjectInstructions } from '../../../src/renderer/src/coder/hooks/instructions';
@@ -67,11 +75,13 @@ it('chooses the new provider model and accepts the persisted IPC settings', asyn
 
 it('configures Cline independently of Pi and Codex and opens account sign-in', async () => {
 	api.listModels.mockImplementation(async (runtime) => ({
-		providers: [{
-			id: runtime === 'cline' ? 'cline' : 'openai-codex',
-			configured: false,
-			models: [],
-		}],
+		providers: [
+			{
+				id: runtime === 'cline' ? 'cline' : 'openai-codex',
+				configured: false,
+				models: [],
+			},
+		],
 	}));
 	api.setApiKey = jest.fn().mockResolvedValue(undefined);
 	api.connectCodex.mockImplementation(async (onEvent) => {
@@ -84,7 +94,9 @@ it('configures Cline independently of Pi and Codex and opens account sign-in', a
 	render(<Authentication onChanged={jest.fn()} />);
 	await waitFor(() => expect(screen.getByText('Cline')).toBeInTheDocument());
 	const cline = screen.getByText('Cline').closest('.grid')!;
-	fireEvent.change(within(cline).getByLabelText('Cline API key'), { target: { value: 'cline-key' } });
+	fireEvent.change(within(cline).getByLabelText('Cline API key'), {
+		target: { value: 'cline-key' },
+	});
 	fireEvent.click(within(cline).getByRole('button', { name: 'Save key' }));
 	await waitFor(() => expect(api.setApiKey).toHaveBeenCalledWith('cline', 'cline-key', 'cline'));
 	fireEvent.click(within(cline).getByRole('button', { name: 'Connect account' }));

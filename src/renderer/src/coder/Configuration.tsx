@@ -122,23 +122,27 @@ export function Configuration({
 										onChange={configuration.setModel}
 									/>
 								</Setting>
-								{settings.runtime !== 'cline' && <Setting title="Thinking">
-									<Choice
-										value={settings.thinkingLevel}
-										options={CODING_THINKING_LEVELS.filter((level) =>
-											supportedThinking
-												? supportedThinking.includes(level)
-											: settings.runtime === 'pi' ||
-												['low', 'medium', 'high', 'xhigh'].includes(level)
-										).map((level) => ({
-											value: level,
-											label:
-												level === 'xhigh' ? 'Extra high' : level[0].toUpperCase() + level.slice(1),
-										}))}
-										disabled={configuration.saving}
-										onChange={(value) => configuration.setThinking(value as CodingThinkingLevel)}
-									/>
-								</Setting>}
+								{settings.runtime !== 'cline' && (
+									<Setting title="Thinking">
+										<Choice
+											value={settings.thinkingLevel}
+											options={CODING_THINKING_LEVELS.filter((level) =>
+												supportedThinking
+													? supportedThinking.includes(level)
+													: settings.runtime === 'pi' ||
+														['low', 'medium', 'high', 'xhigh'].includes(level)
+											).map((level) => ({
+												value: level,
+												label:
+													level === 'xhigh'
+														? 'Extra high'
+														: level[0].toUpperCase() + level.slice(1),
+											}))}
+											disabled={configuration.saving}
+											onChange={(value) => configuration.setThinking(value as CodingThinkingLevel)}
+										/>
+									</Setting>
+								)}
 								<Setting title="Tools" description="Controls which tools can run">
 									<Choice
 										value={settings.toolMode}
@@ -154,7 +158,11 @@ export function Configuration({
 						) : null}
 					</div>
 
-					<Authentication onChanged={(runtime) => { if (runtime === settings?.runtime) void configuration.refreshCatalog(runtime); }} />
+					<Authentication
+						onChanged={(runtime) => {
+							if (runtime === settings?.runtime) void configuration.refreshCatalog(runtime);
+						}}
+					/>
 
 					{settings?.toolMode === 'coding' ? (
 						<div

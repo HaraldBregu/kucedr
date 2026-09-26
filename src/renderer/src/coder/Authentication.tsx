@@ -42,7 +42,11 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 					const catalog = await window.coder.listModels(runtime);
 					if (active) setCatalogs((current) => ({ ...current, [runtime]: catalog }));
 				} catch (cause) {
-					if (active) setCatalogErrors((current) => ({ ...current, [runtime]: cause instanceof Error ? cause.message : String(cause) }));
+					if (active)
+						setCatalogErrors((current) => ({
+							...current,
+							[runtime]: cause instanceof Error ? cause.message : String(cause),
+						}));
 				}
 			})
 		);
@@ -73,7 +77,12 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 		try {
 			await window.coder.connectCodex((next) => {
 				setEvent(next);
-				const url = next.type === 'device-code' ? next.verificationUri : next.type === 'auth-url' ? next.url : null;
+				const url =
+					next.type === 'device-code'
+						? next.verificationUri
+						: next.type === 'auth-url'
+							? next.url
+							: null;
 				if (url) void window.app.openExternalUrl(url);
 			}, entry.runtime);
 			await refresh(entry.runtime);
@@ -102,44 +111,124 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 			<h2 className="text-sm font-medium">Harness authentication</h2>
 			{entries.map((entry) => {
 				const id = `${entry.runtime}:${entry.provider}`;
-				const provider = catalogs[entry.runtime]?.providers.find((item) => item.id === entry.provider);
+				const provider = catalogs[entry.runtime]?.providers.find(
+					(item) => item.id === entry.provider
+				);
 				const connected = Boolean(provider?.configured);
 				const accountConnected = connected && provider?.authType === 'oauth';
 				const keyConnected = connected && !accountConnected && Boolean(entry.key);
 				return (
-				<Setting key={id} title={entry.label} description={catalogErrors[entry.runtime] ?? (provider ? (accountConnected ? 'Account' : keyConnected ? 'API key' : 'Ready to connect') : 'Checking connection…')}>
-					<span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-						{connected ? <Check className="size-3" /> : null}
-						{connected ? 'Connected' : 'Not connected'}
-					</span>
-					{entry.account && (busy === id ? (
-						<Button size="sm" variant="outline" onClick={() => void window.coder.cancelCodexLogin()}>Cancel</Button>
-					) : accountConnected ? (
-						<Button size="sm" variant="outline" disabled={Boolean(busy)} onClick={() => void disconnect(entry)}>Disconnect</Button>
-					) : (
-						<Button size="sm" variant="outline" disabled={Boolean(busy)} onClick={() => void connect(entry)}>Connect account</Button>
-					))}
-					{entry.key && (
-						<>
-							{keyConnected && <Button size="sm" variant="ghost" disabled={Boolean(busy)} onClick={() => void changeKey(entry, '')}>Remove key</Button>}
-							<Input type="password" aria-label={`${entry.label} API key`} autoComplete="off" placeholder="API key" className="max-w-48" value={keys[id] ?? ''} disabled={Boolean(busy)} onChange={(change) => setKeys((current) => ({ ...current, [id]: change.target.value }))} />
-							<Button size="sm" disabled={Boolean(busy) || !keys[id]?.trim()} onClick={() => void changeKey(entry, keys[id].trim())}>Save key</Button>
-						</>
-					)}
-				</Setting>
+					<Setting
+						key={id}
+						title={entry.label}
+						description={
+							catalogErrors[entry.runtime] ??
+							(provider
+								? accountConnected
+									? 'Account'
+									: keyConnected
+										? 'API key'
+										: 'Ready to connect'
+								: 'Checking connection…')
+						}
+					>
+						<span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+							{connected ? <Check className="size-3" /> : null}
+							{connected ? 'Connected' : 'Not connected'}
+						</span>
+						{entry.account &&
+							(busy === id ? (
+								<Button
+									size="sm"
+									variant="outline"
+									onClick={() => void window.coder.cancelCodexLogin()}
+								>
+									Cancel
+								</Button>
+							) : accountConnected ? (
+								<Button
+									size="sm"
+									variant="outline"
+									disabled={Boolean(busy)}
+									onClick={() => void disconnect(entry)}
+								>
+									Disconnect
+								</Button>
+							) : (
+								<Button
+									size="sm"
+									variant="outline"
+									disabled={Boolean(busy)}
+									onClick={() => void connect(entry)}
+								>
+									Connect account
+								</Button>
+							))}
+						{entry.key && (
+							<>
+								{keyConnected && (
+									<Button
+										size="sm"
+										variant="ghost"
+										disabled={Boolean(busy)}
+										onClick={() => void changeKey(entry, '')}
+									>
+										Remove key
+									</Button>
+								)}
+								<Input
+									type="password"
+									aria-label={`${entry.label} API key`}
+									autoComplete="off"
+									placeholder="API key"
+									className="max-w-48"
+									value={keys[id] ?? ''}
+									disabled={Boolean(busy)}
+									onChange={(change) =>
+										setKeys((current) => ({ ...current, [id]: change.target.value }))
+									}
+								/>
+								<Button
+									size="sm"
+									disabled={Boolean(busy) || !keys[id]?.trim()}
+									onClick={() => void changeKey(entry, keys[id].trim())}
+								>
+									Save key
+								</Button>
+							</>
+						)}
+					</Setting>
 				);
 			})}
 			{event?.type === 'device-code' && (
 				<div role="status" className="rounded-lg border bg-card px-3 py-2 text-xs">
 					<p>Enter this code on the sign-in page:</p>
-					<code className="block select-all py-2 font-mono text-lg font-semibold tracking-widest">{event.userCode}</code>
+					<code className="block select-all py-2 font-mono text-lg font-semibold tracking-widest">
+						{event.userCode}
+					</code>
 					<div className="flex gap-2">
-						<Button size="sm" variant="outline" onClick={() => void navigator.clipboard.writeText(event.userCode)}><Copy /> Copy code</Button>
-						<Button size="sm" variant="outline" onClick={() => void window.app.openExternalUrl(event.verificationUri)}><ExternalLink /> Open sign-in</Button>
+						<Button
+							size="sm"
+							variant="outline"
+							onClick={() => void navigator.clipboard.writeText(event.userCode)}
+						>
+							<Copy /> Copy code
+						</Button>
+						<Button
+							size="sm"
+							variant="outline"
+							onClick={() => void window.app.openExternalUrl(event.verificationUri)}
+						>
+							<ExternalLink /> Open sign-in
+						</Button>
 					</div>
 				</div>
 			)}
-			{error && <p role="alert" className="text-xs text-destructive">{error}</p>}
+			{error && (
+				<p role="alert" className="text-xs text-destructive">
+					{error}
+				</p>
+			)}
 		</div>
 	);
 }
