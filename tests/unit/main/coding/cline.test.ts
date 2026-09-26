@@ -18,7 +18,7 @@ jest.mock('@cline/sdk', () => ({
 	getValidClineCredentials: jest.fn(),
 	peekClineRecommendedModels: jest.fn(() => ({ recommended: [], free: [] })),
 	startClineDeviceAuth: jest.fn(),
-}));
+}), { virtual: true });
 
 describe('ClineHarness', () => {
 	let directory: string;
