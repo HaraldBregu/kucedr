@@ -52,6 +52,10 @@ export class ClineHarness implements CodingHarness {
 		const coding = context.settings.toolMode === 'coding';
 		const tools = createBuiltinTools({
 			cwd: context.cwd,
+			executorOptions: {
+				editor: { restrictToCwd: true },
+				applyPatch: { restrictToCwd: true },
+			},
 			enableReadFiles: true,
 			enableSearch: true,
 			enableBash: coding,
@@ -68,6 +72,7 @@ export class ClineHarness implements CodingHarness {
 			apiKey,
 			sessionId,
 			initialMessages: messages,
+			maxIterations: 32,
 			systemPrompt: `You are a coding assistant. Work in ${context.cwd}.`,
 			tools,
 			toolPolicies: Object.fromEntries(
