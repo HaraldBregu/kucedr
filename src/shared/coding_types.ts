@@ -1,4 +1,4 @@
-export const CODER_HARNESSES = ['pi', 'codex', 'claude'] as const;
+export const CODER_HARNESSES = ['pi', 'codex'] as const;
 export type CoderHarness = (typeof CODER_HARNESSES)[number];
 
 export const CODING_PROVIDER_IDS = ['openai-codex', 'openai', 'anthropic'] as const;

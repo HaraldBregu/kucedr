@@ -134,7 +134,7 @@ export function Viewer({
 								onClick={onInstructions}
 							>
 								<FileText className="size-3.5" />
-								{runtime === 'claude' ? 'CLAUDE.md' : 'AGENTS.md'}
+								AGENTS.md
 							</Button>
 							<Button
 								variant="ghost"

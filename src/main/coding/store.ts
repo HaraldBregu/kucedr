@@ -46,8 +46,6 @@ export class CodingStore {
 			: {
 					...DEFAULT_CODING_SETTINGS,
 					runtime: selected,
-					providerId: selected === 'claude' ? 'anthropic' : 'openai-codex',
-					thinkingLevel: selected === 'claude' ? 'high' : 'medium',
 				};
 	}
 	set(settings: CodingSettings): CodingSettings {

@@ -102,7 +102,7 @@ export function useConfiguration(
 		setSaving(true);
 		try {
 			await window.coder.setApiKey(
-				settings.runtime === 'claude' || settings.providerId === 'anthropic'
+				settings.providerId === 'anthropic'
 					? 'anthropic'
 					: 'openai',
 				apiKey.trim(),

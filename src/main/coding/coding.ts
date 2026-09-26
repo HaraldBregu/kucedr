@@ -20,7 +20,6 @@ import { CodingProjectStore } from './projects';
 import { CoderSessions, type CoderSession } from './sessions';
 import { CoderCredentials } from './credentials';
 import { CodexHarness } from './harness/codex';
-import { ClaudeHarness } from './harness/claude';
 import type { CodingHarness, HarnessContext, HarnessEvent } from './harness/types';
 import { executeCommand } from './shell';
 import { CodingInstructions } from './instructions';
@@ -111,9 +110,6 @@ export class Coder {
 			codex: new CodexHarness(path.join(userDataLocation(), 'coder', 'codex'), () =>
 				this.credentials.get('openai', 'codex')
 			),
-			claude: new ClaudeHarness(path.join(userDataLocation(), 'coder', 'claude'), () =>
-				this.credentials.get('anthropic', 'claude')
-			),
 			...dependencies.harnesses,
 		};
 	}
@@ -129,10 +125,7 @@ export class Coder {
 		if ((provider !== 'openai' && provider !== 'anthropic') || typeof key !== 'string')
 			throw new Error('Invalid Coder API key.');
 		const selected = this.getSettings(runtime).runtime;
-		if (
-			(selected === 'claude' && provider !== 'anthropic') ||
-			(selected === 'codex' && provider !== 'openai')
-		)
+		if (selected === 'codex' && provider !== 'openai')
 			throw new Error('API key provider does not match the harness.');
 		this.credentials.set(provider, key, selected);
 	}
@@ -505,8 +498,6 @@ export class Coder {
 	}
 	private validateSettings(settings: CodingSettings): void {
 		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
-		if (settings.runtime === 'claude' && settings.providerId !== 'anthropic')
-			throw new Error('Claude requires the Anthropic provider.');
 		if (settings.runtime === 'codex' && settings.providerId !== 'openai-codex')
 			throw new Error('Codex requires the Codex provider.');
 	}

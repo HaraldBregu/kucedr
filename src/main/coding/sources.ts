@@ -10,8 +10,6 @@ export function loadInstructionSources(
 	piDirectory: string
 ): { path: string }[] {
 	if (runtime === 'pi') return loadProjectContextFiles({ cwd, agentDir: piDirectory });
-	if (runtime === 'claude')
-		return existsSync(path.join(cwd, 'CLAUDE.md')) ? [{ path: path.join(cwd, 'CLAUDE.md') }] : [];
 	const sources: { path: string }[] = [];
 	const global = path.join(userDataLocation(), 'coder', 'codex', 'AGENTS.md');
 	if (existsSync(global)) sources.push({ path: global });

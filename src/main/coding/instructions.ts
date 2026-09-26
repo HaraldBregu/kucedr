@@ -33,7 +33,7 @@ export class CodingInstructions {
 		);
 		const activeFilePath = workspaceSource
 			? path.resolve(workspaceSource.path)
-			: path.join(workspaceDirectory, runtime === 'claude' ? 'CLAUDE.md' : DEFAULT_FILE_NAME);
+			: path.join(workspaceDirectory, DEFAULT_FILE_NAME);
 		let content = '';
 		let exists = false;
 		let editable = true;

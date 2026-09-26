@@ -87,7 +87,6 @@ export function Configuration({
 										options={[
 											{ value: 'pi', label: 'Pi' },
 											{ value: 'codex', label: 'Codex' },
-											{ value: 'claude', label: 'Claude' },
 										]}
 										disabled={!defaults || configuration.saving || configuration.connecting}
 										onChange={(value) =>
@@ -139,7 +138,7 @@ export function Configuration({
 												: settings.runtime === 'pi' ||
 													(settings.runtime === 'codex'
 														? ['low', 'medium', 'high', 'xhigh']
-														: ['off', 'low', 'medium', 'high', 'max']
+														: []
 													).includes(level)
 										).map((level) => ({
 											value: level,
