@@ -14,7 +14,12 @@ import {
 	Trash2,
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+	SidebarFooter,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+} from '@/components/ui/sidebar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -70,7 +75,9 @@ export function Sidebar({
 							<span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background text-foreground">
 								<Code2 className="size-4" />
 							</span>
-							<span className="min-w-0 flex-1 truncate font-medium">{project?.name ?? 'Choose project'}</span>
+							<span className="min-w-0 flex-1 truncate font-medium">
+								{project?.name ?? 'Choose project'}
+							</span>
 							<ChevronsUpDown className="size-4 shrink-0 text-muted-foreground" />
 						</button>
 					</DropdownMenuTrigger>
@@ -144,7 +151,9 @@ export function Sidebar({
 						>
 							<Search className="size-4 shrink-0" />
 							<span className="flex-1">Search</span>
-							<kbd className="rounded-md border border-sidebar-border px-1.5 text-xs text-muted-foreground">/</kbd>
+							<kbd className="rounded-md border border-sidebar-border px-1.5 text-xs text-muted-foreground">
+								/
+							</kbd>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>
@@ -197,9 +206,7 @@ export function Sidebar({
 										<SidebarMenuButton
 											type="button"
 											data-active={session.id === coding.snapshot?.session.id}
-											aria-current={
-												session.id === coding.snapshot?.session.id ? 'page' : undefined
-											}
+											aria-current={session.id === coding.snapshot?.session.id ? 'page' : undefined}
 											title={session.title}
 											disabled={coding.busy || !item.available}
 											onClick={() => onSelect(item.id, session.id)}
