@@ -15,6 +15,7 @@ import type {
 	CodingSettings,
 	CodingSessionSnapshot,
 } from '../../shared/coding_types';
+import { isCodingSettings } from '../../shared/coding_types';
 import { codingSessionsLocation } from './location';
 import { transcript, type JournalEvent } from './transcript';
 
@@ -39,7 +40,10 @@ export class CoderSessions {
 	read(id: string): CoderSession | undefined {
 		const file = this.file(id, '.json');
 		if (!existsSync(file)) return undefined;
-		return JSON.parse(readFileSync(file, 'utf8')) as CoderSession;
+		const session = JSON.parse(readFileSync(file, 'utf8')) as CoderSession;
+		return isCodingSettings(session.settings) && session.runtime === session.settings.runtime
+			? session
+			: undefined;
 	}
 	create(
 		projectId: string,

@@ -144,26 +144,26 @@ it('reloads saved session settings after visiting harness defaults', async () =>
 });
 
 it('does not expose old harness instructions while loading another harness', async () => {
-	let resolveClaude!: (value: typeof instructions) => void;
+	let resolveCodex!: (value: typeof instructions) => void;
 	api.getProjectInstructions.mockImplementation((_project, runtime) =>
-		runtime === 'claude'
+		runtime === 'codex'
 			? new Promise((resolve) => {
-					resolveClaude = resolve;
+					resolveCodex = resolve;
 				})
 			: Promise.resolve(instructions)
 	);
 	const { result, rerender } = renderHook(
-		({ runtime }: { runtime: 'pi' | 'claude' }) => useProjectInstructions('project', runtime),
-		{ initialProps: { runtime: 'pi' as 'pi' | 'claude' } }
+		({ runtime }: { runtime: 'pi' | 'codex' }) => useProjectInstructions('project', runtime),
+		{ initialProps: { runtime: 'pi' as 'pi' | 'codex' } }
 	);
 	await waitFor(() => expect(result.current.loading).toBe(false));
-	rerender({ runtime: 'claude' });
+	rerender({ runtime: 'codex' });
 	expect(result.current.loading).toBe(true);
 	expect(result.current.canSave).toBe(false);
 	expect(result.current.content).toBe('');
 	await act(async () =>
-		resolveClaude({ ...instructions, activeFileName: 'CLAUDE.md', content: 'Claude instructions' })
+		resolveCodex({ ...instructions, activeFileName: 'AGENTS.md', content: 'Codex instructions' })
 	);
-	expect(result.current.content).toBe('Claude instructions');
-	expect(api.getProjectInstructions).toHaveBeenLastCalledWith('project', 'claude');
+	expect(result.current.content).toBe('Codex instructions');
+	expect(api.getProjectInstructions).toHaveBeenLastCalledWith('project', 'codex');
 });

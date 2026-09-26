@@ -11,15 +11,15 @@ const defaults: CodingSettings = {
 };
 const saved: CodingSettings = {
 	...defaults,
-	runtime: 'claude',
-	providerId: 'anthropic',
+	runtime: 'codex',
+	providerId: 'openai-codex',
 	modelId: 'saved-model',
 };
 const project = { id: 'p', name: 'Project', directory: '/workspace/project', available: true };
 const session = {
 	id: 's',
 	projectId: 'p',
-	runtime: 'claude',
+	runtime: 'codex',
 	settings: saved,
 	workingDirectory: '/workspace/project',
 };

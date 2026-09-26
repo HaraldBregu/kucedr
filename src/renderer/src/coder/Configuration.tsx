@@ -135,11 +135,8 @@ export function Configuration({
 										options={CODING_THINKING_LEVELS.filter((level) =>
 											supportedThinking
 												? supportedThinking.includes(level)
-												: settings.runtime === 'pi' ||
-													(settings.runtime === 'codex'
-														? ['low', 'medium', 'high', 'xhigh']
-														: []
-													).includes(level)
+											: settings.runtime === 'pi' ||
+												['low', 'medium', 'high', 'xhigh'].includes(level)
 										).map((level) => ({
 											value: level,
 											label:

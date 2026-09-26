@@ -10,7 +10,6 @@ jest.mock('../../../../src/main/coding/pi', () => ({
 	})),
 }));
 jest.mock('../../../../src/main/coding/harness/codex', () => ({ CodexHarness: jest.fn() }));
-jest.mock('../../../../src/main/coding/harness/claude', () => ({ ClaudeHarness: jest.fn() }));
 
 import { Coding } from '../../../../src/main/coding/coding';
 import { CoderSessions } from '../../../../src/main/coding/sessions';
@@ -77,7 +76,7 @@ it('pins harness, model and directory across restarts and persists tools with na
 	);
 	f.store.get.mockReturnValue({
 		...settings,
-		runtime: 'claude',
+		runtime: 'pi',
 		providerId: 'anthropic',
 		modelId: 'different',
 	});
