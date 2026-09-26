@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import { PanelLeft, PanelRight, Play, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavigationBarContainer } from '@/components/app/navigationbar/NavigationBarContainer';
@@ -27,6 +28,30 @@ export function Navigation({
 	onRun,
 }: NavigationProps) {
 	const { isFullScreen, isMaximized } = useWindowState();
+	const [progress, setProgress] = useState(0);
+	const animation = useRef<number | null>(null);
+	useEffect(
+		() => () => {
+			if (animation.current !== null) cancelAnimationFrame(animation.current);
+		},
+		[]
+	);
+	const run = () => {
+		if (animation.current !== null) cancelAnimationFrame(animation.current);
+		setProgress(0);
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			setProgress(100);
+		} else {
+			const started = performance.now();
+			const frame = (now: number) => {
+				const next = Math.min(100, Math.round(((now - started) / 5000) * 100));
+				setProgress(next);
+				animation.current = next < 100 ? requestAnimationFrame(frame) : null;
+			};
+			animation.current = requestAnimationFrame(frame);
+		}
+		onRun();
+	};
 	return (
 		<NavigationBarContainer>
 			<NavigationBarLeftContainer
@@ -42,7 +67,7 @@ export function Navigation({
 					aria-label="Run current prompt"
 					title="Run current prompt"
 					disabled={!canRun}
-					onClick={onRun}
+					onClick={run}
 				>
 					<Play className="size-4" />
 				</Button>
@@ -57,9 +82,19 @@ export function Navigation({
 				>
 					<Square className="size-4" />
 				</Button>
-				<span className="truncate px-2 text-sm font-medium" title={workspaceName}>
+				<span className="min-w-0 truncate px-2 text-sm font-medium" title={workspaceName}>
 					{workspaceName}
 				</span>
+				<div
+					role="progressbar"
+					aria-label="Play animation progress"
+					aria-valuemin={0}
+					aria-valuemax={100}
+					aria-valuenow={progress}
+					className="h-1.5 w-24 shrink-0 overflow-hidden rounded-full bg-secondary"
+				>
+					<div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
+				</div>
 			</NavigationBarLeftContainer>
 			<Button
 				type="button"
