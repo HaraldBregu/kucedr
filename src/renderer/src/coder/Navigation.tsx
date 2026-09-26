@@ -82,9 +82,6 @@ export function Navigation({
 				>
 					<Square className="size-4" />
 				</Button>
-				<span className="min-w-0 truncate px-2 text-sm font-medium" title={workspaceName}>
-					{workspaceName}
-				</span>
 				<div
 					role="progressbar"
 					aria-label="Play animation progress"
@@ -95,6 +92,9 @@ export function Navigation({
 				>
 					<div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
 				</div>
+				<span className="min-w-0 truncate px-2 text-sm font-medium" title={workspaceName}>
+					{workspaceName}
+				</span>
 			</NavigationBarLeftContainer>
 			<Button
 				type="button"
