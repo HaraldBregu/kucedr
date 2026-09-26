@@ -212,8 +212,12 @@ export class ClineHarness implements CodingHarness {
 	}
 
 	private async token(): Promise<string | undefined> {
+		const raw = this.getCredential();
 		const credentials = this.storedCredentials();
-		if (!credentials) return this.getCredential();
+		if (!credentials) {
+			if (raw?.startsWith('{')) throw new Error('Cline account credentials are invalid. Sign in again.');
+			return raw;
+		}
 		const valid = await getValidClineCredentials(credentials, { apiBaseUrl: CLINE_API_URL });
 		if (!valid) {
 			await this.saveCredential(undefined);
