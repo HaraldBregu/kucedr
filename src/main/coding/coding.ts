@@ -62,7 +62,7 @@ export class Coder {
 			...dependencies,
 			getProvider: (id) => {
 				if (id !== 'openai' && id !== 'anthropic') return undefined;
-				const key = this.credentials.get(id);
+				const key = this.credentials.get(id, 'pi');
 				return key
 					? {
 							id,
@@ -111,10 +111,10 @@ export class Coder {
 				listModels: () => this.pi.listModels(),
 			},
 			codex: new CodexHarness(path.join(userDataLocation(), 'coder', 'codex'), () =>
-				this.credentials.get('openai')
+				this.credentials.get('openai', 'codex')
 			),
 			claude: new ClaudeHarness(path.join(userDataLocation(), 'coder', 'claude'), () =>
-				this.credentials.get('anthropic')
+				this.credentials.get('anthropic', 'claude')
 			),
 			...dependencies.harnesses,
 		};
@@ -127,10 +127,16 @@ export class Coder {
 		this.validateSettings(settings);
 		return this.dependencies.store.set(settings);
 	}
-	setApiKey(provider: 'openai' | 'anthropic', key: string): void {
+	setApiKey(provider: 'openai' | 'anthropic', key: string, runtime?: CoderHarness): void {
 		if ((provider !== 'openai' && provider !== 'anthropic') || typeof key !== 'string')
 			throw new Error('Invalid Coder API key.');
-		this.credentials.set(provider, key);
+		const selected = this.getSettings(runtime).runtime;
+		if (
+			(selected === 'claude' && provider !== 'anthropic') ||
+			(selected === 'codex' && provider !== 'openai')
+		)
+			throw new Error('API key provider does not match the harness.');
+		this.credentials.set(provider, key, selected);
 	}
 	listModels(runtime?: CoderHarness) {
 		const selected = this.getSettings(runtime).runtime;
@@ -452,7 +458,10 @@ export class Coder {
 			if (selected === 'pi') return await this.pi.connectCodex(ownerId, emit);
 			const harness = this.harnesses[selected];
 			if (!harness.connect) throw new Error('Save an API key to connect this harness.');
-			return await harness.connect(controller.signal, emit);
+			const status = await harness.connect(controller.signal, emit);
+			if (selected === 'codex' && status.configured && this.credentials.get('openai', 'codex'))
+				this.credentials.set('openai', '', 'codex');
+			return status;
 		} finally {
 			clearTimeout(timer);
 			this.auth.delete(ownerId);

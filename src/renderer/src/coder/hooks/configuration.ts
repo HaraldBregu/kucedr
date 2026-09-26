@@ -105,9 +105,26 @@ export function useConfiguration(
 				settings.runtime === 'claude' || settings.providerId === 'anthropic'
 					? 'anthropic'
 					: 'openai',
-				apiKey.trim()
+				apiKey.trim(),
+				settings.runtime
 			);
 			setApiKey('');
+			setCatalog(await window.coder.listModels(settings.runtime));
+		} catch (reason) {
+			setError(String(reason));
+		} finally {
+			setSaving(false);
+		}
+	};
+	const removeKey = async () => {
+		if (!settings) return;
+		setSaving(true);
+		try {
+			await window.coder.setApiKey(
+				settings.providerId === 'anthropic' ? 'anthropic' : 'openai',
+				'',
+				settings.runtime
+			);
 			setCatalog(await window.coder.listModels(settings.runtime));
 		} catch (reason) {
 			setError(String(reason));
@@ -196,6 +213,7 @@ export function useConfiguration(
 		apiKey,
 		setApiKey,
 		saveKey,
+		removeKey,
 		setHarness,
 		chooseDirectory,
 		authEvent,

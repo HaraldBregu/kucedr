@@ -252,7 +252,11 @@ export interface AgentApi {
 export type CoderApi = CodingApi;
 
 export interface CodingApi {
-	setApiKey: (provider: 'openai' | 'anthropic', key: string) => Promise<void>;
+	setApiKey: (
+		provider: 'openai' | 'anthropic',
+		key: string,
+		runtime?: CoderHarness
+	) => Promise<void>;
 	pickDirectory: () => Promise<string | undefined>;
 	start: (
 		request: CodingRunRequest,

@@ -212,6 +212,17 @@ export function Configuration({
 
 					{settings && (settings.runtime !== 'pi' || settings.providerId !== 'openai-codex') && (
 						<Setting title="API key">
+							{provider?.configured &&
+								(provider.authType === 'api_key' || provider.authentication === 'api-key') && (
+									<Button
+										variant="ghost"
+										size="sm"
+										disabled={configuration.saving}
+										onClick={() => void configuration.removeKey()}
+									>
+										Remove key
+									</Button>
+								)}
 							<Input
 								type="password"
 								aria-label="API key"

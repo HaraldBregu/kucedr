@@ -18,7 +18,7 @@ export class CodexRpc {
 	onRequest?: (method: string, params: Params) => Promise<unknown>;
 	onClose?: (error: Error) => void;
 
-	constructor(executable: string, directory: string) {
+	constructor(executable: string, directory: string, ephemeralCredentials = false) {
 		const environment: NodeJS.ProcessEnv = { ...process.env, CODEX_HOME: directory };
 		delete environment.OPENAI_API_KEY;
 		delete environment.CODEX_API_KEY;
@@ -27,7 +27,7 @@ export class CodexRpc {
 			[
 				'app-server',
 				'-c',
-				'cli_auth_credentials_store="file"',
+				`cli_auth_credentials_store="${ephemeralCredentials ? 'ephemeral' : 'file'}"`,
 				'-c',
 				`sqlite_home=${JSON.stringify(directory)}`,
 				'-c',

@@ -9,7 +9,8 @@ import {
 import { typedInvokeUnwrap, typedOn } from '../shared/ipc_types';
 
 export const coding: CodingApi = {
-	setApiKey: (provider, key) => typedInvokeUnwrap(CodingChannels.setApiKey, provider, key),
+	setApiKey: (provider, key, runtime) =>
+		typedInvokeUnwrap(CodingChannels.setApiKey, provider, key, runtime),
 	pickDirectory: () => typedInvokeUnwrap(CodingChannels.pickDirectory),
 	respond: (runId, requestId, response) =>
 		typedInvokeUnwrap(CodingChannels.respond, runId, requestId, response),

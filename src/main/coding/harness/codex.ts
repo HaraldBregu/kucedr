@@ -36,7 +36,8 @@ export class CodexHarness implements CodingHarness {
 
 	async run(input: string, context: HarnessContext): Promise<string> {
 		context.signal.throwIfAborted();
-		const rpc = await this.open();
+		const apiKey = this.getApiKey();
+		const rpc = await this.open(Boolean(apiKey));
 		let threadId: string | undefined;
 		let turnId: string | undefined;
 		let output = '';
@@ -173,10 +174,7 @@ export class CodexHarness implements CodingHarness {
 			context.signal.throwIfAborted();
 			await rpc.initialize();
 			context.signal.throwIfAborted();
-			const account = await rpc.request<{ account: unknown }>('account/read', {});
-			const apiKey = this.getApiKey();
-			if (!account.account && apiKey)
-				await rpc.request('account/login/start', { type: 'apiKey', apiKey });
+			if (apiKey) await rpc.request('account/login/start', { type: 'apiKey', apiKey });
 			const thread = await rpc.request<{ thread: { id: string } }>(
 				context.nativeSessionId ? 'thread/resume' : 'thread/start',
 				{
@@ -241,7 +239,11 @@ export class CodexHarness implements CodingHarness {
 						name: 'OpenAI Codex',
 						authentication: 'oauth',
 						configured: Boolean(account.account || this.getApiKey()),
-						authType: account.account?.type === 'chatgpt' ? 'oauth' : 'api_key',
+						authType: this.getApiKey()
+							? 'api_key'
+							: account.account?.type === 'chatgpt'
+								? 'oauth'
+								: 'api_key',
 						authSource: this.directory,
 						models,
 					},
@@ -330,9 +332,9 @@ export class CodexHarness implements CodingHarness {
 		this.connections.clear();
 	}
 
-	private async open(): Promise<CodexRpc> {
+	private async open(ephemeralCredentials = false): Promise<CodexRpc> {
 		await mkdir(this.directory, { recursive: true });
-		const rpc = new CodexRpc(codexExecutable(), this.directory);
+		const rpc = new CodexRpc(codexExecutable(), this.directory, ephemeralCredentials);
 		this.connections.add(rpc);
 		return rpc;
 	}
