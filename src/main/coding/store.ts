@@ -1,14 +1,9 @@
 import path from 'node:path';
 import Store from 'electron-store';
 import {
-	CODING_PROVIDER_IDS,
-	CODING_THINKING_LEVELS,
-	CODING_TOOL_MODES,
 	isCodingSettings,
-	type CodingProviderId,
 	type CodingSettings,
-	type CodingThinkingLevel,
-	type CodingToolMode,
+	type CoderHarness,
 } from '../../shared/coding_types';
 import { userDataLocation } from '../shared/user_data_location';
 
@@ -20,59 +15,67 @@ export const DEFAULT_CODING_SETTINGS: CodingSettings = {
 	toolMode: 'read-only',
 };
 
-type StoredCodingSettings = CodingSettings & { workingDirectory?: string };
-
-function normalizeSettings(value: unknown): CodingSettings {
-	const stored = value && typeof value === 'object' ? (value as Partial<CodingSettings>) : {};
-	const providerId = CODING_PROVIDER_IDS.includes(stored.providerId as CodingProviderId)
-		? (stored.providerId as CodingProviderId)
-		: DEFAULT_CODING_SETTINGS.providerId;
-	const thinkingLevel = CODING_THINKING_LEVELS.includes(stored.thinkingLevel as CodingThinkingLevel)
-		? (stored.thinkingLevel as CodingThinkingLevel)
-		: DEFAULT_CODING_SETTINGS.thinkingLevel;
-	const toolMode = CODING_TOOL_MODES.includes(stored.toolMode as CodingToolMode)
-		? (stored.toolMode as CodingToolMode)
-		: DEFAULT_CODING_SETTINGS.toolMode;
-	return {
-		runtime: 'pi',
-		providerId,
-		modelId: typeof stored.modelId === 'string' ? stored.modelId.trim() : '',
-		thinkingLevel,
-		toolMode,
-	};
-}
+type StoredSettings = Partial<CodingSettings> & {
+	profiles?: Partial<Record<CoderHarness, CodingSettings>>;
+};
 
 export class CodingStore {
-	private readonly store: Store<StoredCodingSettings>;
-	private readonly legacyWorkingDirectory?: string;
-
-	constructor(directory = path.resolve(userDataLocation(), 'coder')) {
-		this.store = new Store<StoredCodingSettings>({
+	private readonly store: Store<StoredSettings>;
+	constructor(directory = path.join(userDataLocation(), 'coder')) {
+		this.store = new Store<StoredSettings>({
 			name: 'settings',
 			cwd: directory,
 			accessPropertiesByDotNotation: false,
 			defaults: DEFAULT_CODING_SETTINGS,
 		});
-		const legacyDirectory = this.store.store.workingDirectory;
-		this.legacyWorkingDirectory =
-			typeof legacyDirectory === 'string' && path.isAbsolute(legacyDirectory)
-				? path.resolve(legacyDirectory)
-				: undefined;
-		this.store.store = normalizeSettings(this.store.store);
 	}
-
-	get(): CodingSettings {
-		return normalizeSettings(this.store.store);
+	get(runtime?: CoderHarness): CodingSettings {
+		const stored = this.store.store;
+		const selected = runtime ?? (isCodingSettings(stored) ? stored.runtime : 'pi');
+		const candidate =
+			stored.profiles?.[selected] ?? (stored.runtime === selected ? stored : undefined);
+		return isCodingSettings(candidate)
+			? {
+					runtime: selected,
+					providerId: candidate.providerId,
+					modelId: candidate.modelId,
+					thinkingLevel: candidate.thinkingLevel,
+					toolMode: candidate.toolMode,
+					...(candidate.workingDirectory ? { workingDirectory: candidate.workingDirectory } : {}),
+				}
+			: {
+					...DEFAULT_CODING_SETTINGS,
+					runtime: selected,
+					providerId: selected === 'claude' ? 'anthropic' : 'openai-codex',
+					thinkingLevel: selected === 'claude' ? 'high' : 'medium',
+				};
 	}
-
 	set(settings: CodingSettings): CodingSettings {
-		if (!isCodingSettings(settings)) throw new Error('Invalid coding settings.');
-		const normalized = normalizeSettings(settings);
-		this.store.store = normalized;
+		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
+		const normalized: CodingSettings = {
+			runtime: settings.runtime,
+			providerId: settings.providerId,
+			modelId: settings.modelId.trim(),
+			thinkingLevel: settings.thinkingLevel,
+			toolMode: settings.toolMode,
+			...(settings.workingDirectory?.trim()
+				? { workingDirectory: path.resolve(settings.workingDirectory.trim()) }
+				: {}),
+		};
+		if (settings.workingDirectory?.trim() && !path.isAbsolute(settings.workingDirectory.trim()))
+			throw new Error('Working directory must be absolute.');
+		const stored = this.store.store;
+		this.store.store = {
+			...normalized,
+			profiles: {
+				...stored.profiles,
+				...(isCodingSettings(stored) ? { [stored.runtime]: this.get(stored.runtime) } : {}),
+				[normalized.runtime]: normalized,
+			},
+		};
 		return normalized;
 	}
-
 	getLegacyWorkingDirectory(): string | undefined {
-		return this.legacyWorkingDirectory;
+		return this.get().workingDirectory;
 	}
 }

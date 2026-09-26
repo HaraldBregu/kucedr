@@ -11,7 +11,7 @@ import {
 	sessionManagerList,
 	sessionManagerOpen,
 } from '@earendil-works/pi-coding-agent';
-import { Coding } from '../../../../src/main/coding/coding';
+import { Pi as Coding } from '../../../../src/main/coding/pi';
 import type { CodingProjectStore } from '../../../../src/main/coding/projects';
 import type { CodingStore } from '../../../../src/main/coding/store';
 

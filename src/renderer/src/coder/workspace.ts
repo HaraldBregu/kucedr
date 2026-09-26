@@ -29,7 +29,9 @@ export function useWorkspace() {
 	>([]);
 	const selection = useRef(0);
 	const selectedHarness = useRef<CodingSettings['runtime'] | undefined>(undefined);
-	selectedHarness.current = settings?.runtime;
+	useEffect(() => {
+		selectedHarness.current = settings?.runtime;
+	}, [settings?.runtime]);
 	const running = useRef(false);
 	const runId = useRef('');
 	const cancelRequested = useRef(false);

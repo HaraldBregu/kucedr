@@ -18,9 +18,10 @@ export class ClaudeHarness implements CodingHarness {
 
 	private executable(): string {
 		const require = createRequire(join(app.getAppPath(), 'package.json'));
-		const header = process.report?.getReport()?.header as
-			| { glibcVersionRuntime?: string }
+		const report = process.report?.getReport() as
+			| { header?: { glibcVersionRuntime?: string } }
 			| undefined;
+		const header = report?.header;
 		const suffix = process.platform === 'linux' && !header?.glibcVersionRuntime ? '-musl' : '';
 		const binary = process.platform === 'win32' ? 'claude.exe' : 'claude';
 		return require
@@ -61,6 +62,7 @@ export class ClaudeHarness implements CodingHarness {
 		});
 		const prompt = (async function* (): AsyncGenerator<SDKUserMessage> {
 			await stopped;
+			yield* [];
 		})();
 		const session = query({
 			prompt,
@@ -74,8 +76,15 @@ export class ClaudeHarness implements CodingHarness {
 			},
 		});
 		this.queries.add(session);
+		let timer: ReturnType<typeof setTimeout> | undefined;
 		try {
-			const models = await session.supportedModels();
+			void session.next().catch(() => undefined);
+			const models = await Promise.race([
+				session.supportedModels(),
+				new Promise<never>((_, reject) => {
+					timer = setTimeout(() => reject(new Error('Claude model catalog timed out.')), 20_000);
+				}),
+			]);
 			return {
 				providers: [
 					{
@@ -90,6 +99,7 @@ export class ClaudeHarness implements CodingHarness {
 				],
 			};
 		} finally {
+			clearTimeout(timer);
 			release();
 			session.close();
 			this.queries.delete(session);

@@ -6,7 +6,12 @@ export async function readProjectFile(project: CodingProject, filePath: string):
 	const root = await realpath(project.directory);
 	const target = await realpath(path.resolve(root, filePath));
 	const relative = path.relative(root, target);
-	if (!relative || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative)) {
+	if (
+		!relative ||
+		relative === '..' ||
+		relative.startsWith(`..${path.sep}`) ||
+		path.isAbsolute(relative)
+	) {
 		throw new Error('Coding files must stay inside the project directory.');
 	}
 	const file = await open(target, 'r');

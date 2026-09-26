@@ -9,9 +9,12 @@ import {
 import { typedInvokeUnwrap, typedOn } from '../shared/ipc_types';
 
 export const coding: CodingApi = {
+	setApiKey: (provider, key) => typedInvokeUnwrap(CodingChannels.setApiKey, provider, key),
 	pickDirectory: () => typedInvokeUnwrap(CodingChannels.pickDirectory),
-	respond: (runId, requestId, response) => typedInvokeUnwrap(CodingChannels.respond, runId, requestId, response),
-	saveSessionSettings: (projectId, sessionId, settings) => typedInvokeUnwrap(CodingChannels.saveSessionSettings, projectId, sessionId, settings),
+	respond: (runId, requestId, response) =>
+		typedInvokeUnwrap(CodingChannels.respond, runId, requestId, response),
+	saveSessionSettings: (projectId, sessionId, settings) =>
+		typedInvokeUnwrap(CodingChannels.saveSessionSettings, projectId, sessionId, settings),
 	getSettings: (runtime) => typedInvokeUnwrap(CodingChannels.getSettings, runtime),
 	saveSettings: (settings) => {
 		if (!isCodingSettings(settings)) throw new Error('Invalid coding settings.');
@@ -47,7 +50,11 @@ export const coding: CodingApi = {
 		if (!normalizedProjectId || !isCodingProjectFilePath(filePath)) {
 			throw new Error('Invalid coding project file path.');
 		}
-		return typedInvokeUnwrap(CodingChannels.createProjectFile, normalizedProjectId, filePath.trim());
+		return typedInvokeUnwrap(
+			CodingChannels.createProjectFile,
+			normalizedProjectId,
+			filePath.trim()
+		);
 	},
 	getProjectInstructions: (projectId, runtime) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
@@ -60,7 +67,12 @@ export const coding: CodingApi = {
 		if (!isCodingProjectInstructionsUpdate(update)) {
 			throw new Error('Invalid coding project instructions.');
 		}
-		return typedInvokeUnwrap(CodingChannels.saveProjectInstructions, normalizedProjectId, update, runtime);
+		return typedInvokeUnwrap(
+			CodingChannels.saveProjectInstructions,
+			normalizedProjectId,
+			update,
+			runtime
+		);
 	},
 	listSessions: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
@@ -96,7 +108,11 @@ export const coding: CodingApi = {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		const normalizedSessionId = typeof sessionId === 'string' ? sessionId.trim() : '';
 		if (!normalizedProjectId || !normalizedSessionId) throw new Error('Invalid coding session.');
-		return typedInvokeUnwrap(CodingChannels.deleteSession, normalizedProjectId, normalizedSessionId);
+		return typedInvokeUnwrap(
+			CodingChannels.deleteSession,
+			normalizedProjectId,
+			normalizedSessionId
+		);
 	},
 	send: (request, onEvent) => coding.start(request, onEvent).result,
 	start: (request, onEvent) => {
@@ -111,7 +127,10 @@ export const coding: CodingApi = {
 		const unsubscribe = typedOn(CodingChannels.response, (event) => {
 			if (event.runId === runId) onEvent?.(event);
 		});
-		return { runId, result: typedInvokeUnwrap(CodingChannels.send, normalizedRequest, runId).finally(unsubscribe) };
+		return {
+			runId,
+			result: typedInvokeUnwrap(CodingChannels.send, normalizedRequest, runId).finally(unsubscribe),
+		};
 	},
 	cancel: (runId) => {
 		const normalizedRunId = typeof runId === 'string' ? runId.trim() : '';

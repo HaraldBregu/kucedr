@@ -29,6 +29,7 @@ export function Choice({
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild disabled={disabled}>
 				<Button
+					type="button"
 					variant="outline"
 					size="sm"
 					className="min-w-40 justify-between font-normal"

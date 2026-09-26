@@ -15,7 +15,7 @@ import { AppsIpc } from '../apps';
 import { WindowIpc } from '../window';
 import { DataIpc } from '../data';
 import { RealtimeVoiceIpc } from '../realtime_voice';
-import { CodingIpc } from '../coding';
+import { CoderIpc } from '../coder';
 import { TerminalIpc } from '../terminal';
 import { AuthIpc } from '../auth';
 import { CloudIpc } from '../cloud';
@@ -96,7 +96,7 @@ export function registerIpcHandlers(
 		})
 	);
 	safeRegister('coding', () =>
-		new CodingIpc().register(
+		new CoderIpc().register(
 			{ coding: codingService, appRegistry, windows: windowContextManager },
 			eventBus
 		)
@@ -165,7 +165,12 @@ export function registerIpcHandlers(
 	);
 	safeRegister('window', () =>
 		new WindowIpc().register(
-			{ logger, appRegistry, openVoiceConversation: options.openVoiceConversation, openCoder: options.openCoder },
+			{
+				logger,
+				appRegistry,
+				openVoiceConversation: options.openVoiceConversation,
+				openCoder: options.openCoder,
+			},
 			eventBus
 		)
 	);

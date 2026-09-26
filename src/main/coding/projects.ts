@@ -46,9 +46,7 @@ export class CodingProjectStore {
 
 	add(directory: string): CodingProject {
 		const canonicalDirectory = this.canonicalDirectory(directory);
-		const existing = this.projects.find(
-			(project) => project.directory === canonicalDirectory
-		);
+		const existing = this.projects.find((project) => project.directory === canonicalDirectory);
 		if (existing) {
 			this.touch(existing.id);
 			return this.get(existing.id) as CodingProject;
@@ -76,8 +74,8 @@ export class CodingProjectStore {
 	touch(projectId: string): void {
 		const timestamp = new Date().toISOString();
 		this.projects = this.projects.map((project) =>
-				project.id === projectId ? { ...project, lastOpenedAt: timestamp } : project
-			);
+			project.id === projectId ? { ...project, lastOpenedAt: timestamp } : project
+		);
 	}
 
 	private seed(directory: string): void {

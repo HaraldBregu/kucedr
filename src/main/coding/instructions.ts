@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
 import { lstat, readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { loadProjectContextFiles } from '@earendil-works/pi-coding-agent';
+import { loadInstructionSources } from './sources';
+import type { CoderHarness } from '../../shared/coding_types';
 import type {
 	CodingProject,
 	CodingProjectInstructions,
@@ -16,19 +17,19 @@ const MAX_FILE_SIZE = 256 * 1024;
 export class CodingInstructions {
 	constructor(private readonly agentDirectory = codingLocation()) {}
 
-	async get(project: CodingProject): Promise<CodingProjectInstructions> {
+	async get(
+		project: CodingProject,
+		runtime: CoderHarness = 'pi'
+	): Promise<CodingProjectInstructions> {
 		const workspaceDirectory = path.resolve(project.directory);
 		const agentDirectory = path.resolve(this.agentDirectory);
-		const contextFiles = loadProjectContextFiles({
-			cwd: workspaceDirectory,
-			agentDir: agentDirectory,
-		});
+		const contextFiles = loadInstructionSources(workspaceDirectory, runtime, agentDirectory);
 		const workspaceSource = contextFiles.find(
 			(source) => path.dirname(path.resolve(source.path)) === workspaceDirectory
 		);
 		const activeFilePath = workspaceSource
 			? path.resolve(workspaceSource.path)
-			: path.join(workspaceDirectory, DEFAULT_FILE_NAME);
+			: path.join(workspaceDirectory, runtime === 'claude' ? 'CLAUDE.md' : DEFAULT_FILE_NAME);
 		let content = '';
 		let exists = false;
 		let editable = true;
@@ -87,12 +88,13 @@ export class CodingInstructions {
 
 	async save(
 		project: CodingProject,
-		update: CodingProjectInstructionsUpdate
+		update: CodingProjectInstructionsUpdate,
+		runtime: CoderHarness = 'pi'
 	): Promise<CodingProjectInstructions> {
 		if (Buffer.byteLength(update.content, 'utf8') > MAX_FILE_SIZE) {
 			throw new Error('Coding project instructions exceed the 256 KiB limit.');
 		}
-		const current = await this.get(project);
+		const current = await this.get(project, runtime);
 		if (current.revision !== update.expectedRevision) {
 			throw new Error('Coding project instructions changed outside Kucedr. Reload before saving.');
 		}
@@ -100,6 +102,6 @@ export class CodingInstructions {
 			throw new Error('Coding project instructions cannot be edited through a symbolic link.');
 		}
 		await atomicWrite(current.activeFilePath, update.content);
-		return this.get(project);
+		return this.get(project, runtime);
 	}
 }

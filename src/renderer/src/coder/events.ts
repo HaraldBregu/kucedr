@@ -39,15 +39,31 @@ export function applyEvent(
 				? { ...block, status: event.isError ? 'failed' : 'succeeded' }
 				: block
 		);
+	if (event.type === 'command-start') {
+		const id = event.commandId ?? commandId;
+		if (blocks.some((block) => block.type === 'command' && block.id === id)) return blocks;
+		return [
+			...blocks,
+			{
+				id,
+				type: 'command',
+				command: event.command,
+				output: '',
+				status: 'running',
+				truncated: false,
+				timestamp: new Date().toISOString(),
+			},
+		];
+	}
 	if (event.type === 'command-output')
 		return blocks.map((block) =>
-			block.type === 'command' && block.id === commandId
+			block.type === 'command' && block.id === (event.commandId ?? commandId)
 				? { ...block, output: block.output + event.delta }
 				: block
 		);
 	if (event.type === 'command-end')
 		return blocks.map((block) =>
-			block.type === 'command' && block.id === commandId
+			block.type === 'command' && block.id === (event.commandId ?? commandId)
 				? {
 						...block,
 						status: event.cancelled ? 'cancelled' : event.exitCode === 0 ? 'succeeded' : 'failed',

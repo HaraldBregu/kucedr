@@ -252,10 +252,22 @@ export interface AgentApi {
 export type CoderApi = CodingApi;
 
 export interface CodingApi {
+	setApiKey: (provider: 'openai' | 'anthropic', key: string) => Promise<void>;
 	pickDirectory: () => Promise<string | undefined>;
-	start: (request: CodingRunRequest, onEvent?: (event: CodingResponseEvent) => void) => { runId: string; result: Promise<CodingRunResult> };
-	respond: (runId: string, requestId: string, response: CoderInteractionResponse) => Promise<boolean>;
-	saveSessionSettings: (projectId: string, sessionId: string, settings: CodingSettings) => Promise<CodingSessionSummary>;
+	start: (
+		request: CodingRunRequest,
+		onEvent?: (event: CodingResponseEvent) => void
+	) => { runId: string; result: Promise<CodingRunResult> };
+	respond: (
+		runId: string,
+		requestId: string,
+		response: CoderInteractionResponse
+	) => Promise<boolean>;
+	saveSessionSettings: (
+		projectId: string,
+		sessionId: string,
+		settings: CodingSettings
+	) => Promise<CodingSessionSummary>;
 	getSettings: (runtime?: CoderHarness) => Promise<CodingSettings>;
 	saveSettings: (settings: CodingSettings) => Promise<CodingSettings>;
 	listModels: (runtime?: CoderHarness) => Promise<CodingCatalog>;
@@ -266,7 +278,10 @@ export interface CodingApi {
 	readProjectFile: (projectId: string, filePath: string) => Promise<string>;
 	listProjectFiles: (projectId: string) => Promise<CodingProjectFile[]>;
 	createProjectFile: (projectId: string, filePath: string) => Promise<CodingProjectFile>;
-	getProjectInstructions: (projectId: string, runtime?: CoderHarness) => Promise<CodingProjectInstructions>;
+	getProjectInstructions: (
+		projectId: string,
+		runtime?: CoderHarness
+	) => Promise<CodingProjectInstructions>;
 	saveProjectInstructions: (
 		projectId: string,
 		update: CodingProjectInstructionsUpdate,
@@ -285,7 +300,10 @@ export interface CodingApi {
 		onEvent?: (event: CodingResponseEvent) => void
 	) => Promise<CodingRunResult>;
 	cancel: (runId: string) => Promise<boolean>;
-	connectCodex: (onEvent?: (event: CodingAuthEvent) => void, runtime?: CoderHarness) => Promise<CodingAuthStatus>;
+	connectCodex: (
+		onEvent?: (event: CodingAuthEvent) => void,
+		runtime?: CoderHarness
+	) => Promise<CodingAuthStatus>;
 	cancelCodexLogin: () => Promise<boolean>;
 	disconnectCodex: (runtime?: CoderHarness) => Promise<void>;
 }

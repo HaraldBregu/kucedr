@@ -62,15 +62,35 @@ import {
 } from './ipc_channels_definitions';
 
 export interface CodingInvokeChannelMap {
+	[CodingChannels.setApiKey]: {
+		args: [provider: 'openai' | 'anthropic', key: string];
+		result: void;
+	};
 	[CodingChannels.pickDirectory]: { args: []; result: string | undefined };
-	[CodingChannels.respond]: { args: [runId: string, requestId: string, response: import('./coding_types').CoderInteractionResponse]; result: boolean };
-	[CodingChannels.saveSessionSettings]: { args: [projectId: string, sessionId: string, settings: import('./coding_types').CodingSettings]; result: import('./coding_types').CodingSessionSummary };
-	[CodingChannels.getSettings]: { args: [runtime?: import('./coding_types').CoderHarness]; result: import('./coding_types').CodingSettings };
+	[CodingChannels.respond]: {
+		args: [
+			runId: string,
+			requestId: string,
+			response: import('./coding_types').CoderInteractionResponse,
+		];
+		result: boolean;
+	};
+	[CodingChannels.saveSessionSettings]: {
+		args: [projectId: string, sessionId: string, settings: import('./coding_types').CodingSettings];
+		result: import('./coding_types').CodingSessionSummary;
+	};
+	[CodingChannels.getSettings]: {
+		args: [runtime?: import('./coding_types').CoderHarness];
+		result: import('./coding_types').CodingSettings;
+	};
 	[CodingChannels.saveSettings]: {
 		args: [settings: import('./coding_types').CodingSettings];
 		result: import('./coding_types').CodingSettings;
 	};
-	[CodingChannels.listModels]: { args: [runtime?: import('./coding_types').CoderHarness]; result: import('./coding_types').CodingCatalog };
+	[CodingChannels.listModels]: {
+		args: [runtime?: import('./coding_types').CoderHarness];
+		result: import('./coding_types').CodingCatalog;
+	};
 	[CodingChannels.listProjects]: { args: []; result: import('./coding_types').CodingProject[] };
 	[CodingChannels.addProject]: {
 		args: [];
@@ -92,7 +112,11 @@ export interface CodingInvokeChannelMap {
 		result: import('./coding_types').CodingProjectInstructions;
 	};
 	[CodingChannels.saveProjectInstructions]: {
-		args: [projectId: string, update: import('./coding_types').CodingProjectInstructionsUpdate, runtime?: import('./coding_types').CoderHarness];
+		args: [
+			projectId: string,
+			update: import('./coding_types').CodingProjectInstructionsUpdate,
+			runtime?: import('./coding_types').CoderHarness,
+		];
 		result: import('./coding_types').CodingProjectInstructions;
 	};
 	[CodingChannels.listSessions]: {
@@ -116,9 +140,15 @@ export interface CodingInvokeChannelMap {
 		result: import('./coding_types').CodingRunResult;
 	};
 	[CodingChannels.cancel]: { args: [runId: string]; result: boolean };
-	[CodingChannels.connectCodex]: { args: [runtime?: import('./coding_types').CoderHarness]; result: import('./coding_types').CodingAuthStatus };
+	[CodingChannels.connectCodex]: {
+		args: [runtime?: import('./coding_types').CoderHarness];
+		result: import('./coding_types').CodingAuthStatus;
+	};
 	[CodingChannels.cancelCodexLogin]: { args: []; result: boolean };
-	[CodingChannels.disconnectCodex]: { args: [runtime?: import('./coding_types').CoderHarness]; result: void };
+	[CodingChannels.disconnectCodex]: {
+		args: [runtime?: import('./coding_types').CoderHarness];
+		result: void;
+	};
 }
 
 export interface CodingEventChannelMap {

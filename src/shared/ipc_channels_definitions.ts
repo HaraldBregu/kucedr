@@ -61,6 +61,7 @@ export const AgentChannels = {
 } as const;
 
 export const CodingChannels = {
+	setApiKey: 'coder:credentials:set',
 	pickDirectory: 'coder:directory:pick',
 	respond: 'coder:interaction:respond',
 	saveSessionSettings: 'coder:sessions:settings',

@@ -1,547 +1,494 @@
-import { mkdirSync, unlinkSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import {
-	createAgentSession,
-	DefaultResourceLoader,
-	ModelRuntime,
-	SessionManager,
-	SettingsManager,
-	type AgentSessionEvent,
-	type SessionInfo,
-} from '@earendil-works/pi-coding-agent';
+import { realpathSync } from 'node:fs';
 import type { StoredProvider } from '../../shared/provider_types';
 import type {
+	CodingSettings,
+	CodingRunRequest,
+	CodingResponseEvent,
+	CodingRunResult,
 	CodingAuthEvent,
 	CodingAuthStatus,
-	CodingCatalog,
-	CodingProject,
-	CodingProjectFile,
-	CodingProjectInstructions,
+	CoderHarness,
+	CoderInteractionResponse,
 	CodingProjectInstructionsUpdate,
-	CodingProvider,
-	CodingProviderId,
-	CodingResponseEvent,
-	CodingRunRequest,
-	CodingRunResult,
-	CodingSessionBlock,
-	CodingSessionSnapshot,
-	CodingSessionSummary,
-	CodingSettings,
 } from '../../shared/coding_types';
-import { codingLocation, codingSessionsLocation } from './location';
-import { CodingInstructions } from './instructions';
-import { createProjectFile, listProjectFiles } from './files';
-import { readProjectFile } from './read';
-import { CodingProjectStore } from './projects';
+import { CODER_HARNESSES, isCodingSettings } from '../../shared/coding_types';
+import { userDataLocation } from '../shared/user_data_location';
+import { Pi } from './pi';
 import { CodingStore } from './store';
-
-const SUPPORTED_PROVIDERS: readonly CodingProviderId[] = ['openai-codex', 'openai', 'anthropic'];
-const READ_ONLY_TOOLS = ['read', 'grep', 'find', 'ls'];
-const CODING_TOOLS = ['read', 'bash', 'edit', 'write', 'grep', 'find', 'ls'];
-const RUN_TIMEOUT_MS = 30 * 60 * 1000;
-const AUTH_TIMEOUT_MS = 10 * 60 * 1000;
-
-interface ActiveRun {
-	readonly ownerId: number;
-	readonly projectId: string;
-	readonly sessionId: string;
-	readonly sessionKey: string;
-	readonly controller: AbortController;
-	abortSession?: () => Promise<void>;
-}
+import { CodingProjectStore } from './projects';
+import { CoderSessions, type CoderSession } from './sessions';
+import { CoderCredentials } from './credentials';
+import { CodexHarness } from './harness/codex';
+import { ClaudeHarness } from './harness/claude';
+import type { CodingHarness, HarnessContext, HarnessEvent } from './harness/types';
+import { executeCommand } from './shell';
+import { CodingInstructions } from './instructions';
 
 interface CodingDependencies {
 	readonly store: CodingStore;
 	readonly projects: CodingProjectStore;
 	readonly getProvider: (providerId: string) => StoredProvider | undefined;
+	readonly harnesses?: Partial<Record<CoderHarness, CodingHarness>>;
+	readonly sessions?: CoderSessions;
+	readonly credentials?: Pick<CoderCredentials, 'get' | 'set'>;
+}
+interface ActiveRun {
+	ownerId: number;
+	controller: AbortController;
+	sessionId: string;
+	projectId: string;
+}
+interface PendingInteraction {
+	runId: string;
+	ownerId: number;
+	resolve: (response: CoderInteractionResponse) => void;
 }
 
-export class Coding {
+export class Coder {
+	private readonly pi: Pi;
+	private readonly sessions: CoderSessions;
+	private readonly credentials: Pick<CoderCredentials, 'get' | 'set'>;
+	private readonly harnesses: Record<CoderHarness, CodingHarness>;
 	private readonly runs = new Map<string, ActiveRun>();
-	private readonly authControllers = new Map<number, AbortController>();
+	private readonly interactions = new Map<string, PendingInteraction>();
+	private readonly auth = new Map<number, AbortController>();
 	private readonly instructions = new CodingInstructions();
-	private runtimePromise?: Promise<ModelRuntime>;
-
 	constructor(private readonly dependencies: CodingDependencies) {
-		mkdirSync(codingLocation(), { recursive: true });
-		mkdirSync(codingSessionsLocation(), { recursive: true });
+		this.sessions = dependencies.sessions ?? new CoderSessions();
+		this.credentials = dependencies.credentials ?? new CoderCredentials();
+		this.pi = new Pi({
+			...dependencies,
+			getProvider: (id) => {
+				if (id !== 'openai' && id !== 'anthropic') return undefined;
+				const key = this.credentials.get(id);
+				return key
+					? {
+							id,
+							name: id,
+							apiKey: key,
+							baseUrl: id === 'openai' ? 'https://api.openai.com/v1' : 'https://api.anthropic.com',
+						}
+					: undefined;
+			},
+		});
+		this.harnesses = {
+			pi: {
+				run: async (input, context) => {
+					const project = this.dependencies.projects
+						.list()
+						.find((p) => p.directory === context.cwd);
+					if (!project) throw new Error('Coder project was not found.');
+					const runId = randomUUID();
+					const abort = (): void => {
+						this.pi.cancel(runId, 0);
+					};
+					context.signal.addEventListener('abort', abort, { once: true });
+					try {
+						context.signal.throwIfAborted();
+						const result = await this.pi.send(
+							0,
+							runId,
+							{
+								projectId: project.id,
+								sessionId: context.nativeSessionId,
+								mode: 'agent',
+								input,
+								settings: context.settings,
+							},
+							(event) => {
+								if (event.type !== 'status' && event.type !== 'error') context.emit(event);
+							},
+							context.saveSession,
+							context.signal
+						);
+						return result.output;
+					} finally {
+						context.signal.removeEventListener('abort', abort);
+					}
+				},
+				listModels: () => this.pi.listModels(),
+			},
+			codex: new CodexHarness(path.join(userDataLocation(), 'coder', 'codex'), () =>
+				this.credentials.get('openai')
+			),
+			claude: new ClaudeHarness(path.join(userDataLocation(), 'coder', 'claude'), () =>
+				this.credentials.get('anthropic')
+			),
+			...dependencies.harnesses,
+		};
 	}
-
-	getSettings(): CodingSettings {
-		return this.dependencies.store.get();
+	getSettings(runtime?: CoderHarness): CodingSettings {
+		this.validateHarness(runtime);
+		return this.dependencies.store.get(runtime);
 	}
-
 	saveSettings(settings: CodingSettings): CodingSettings {
+		this.validateSettings(settings);
 		return this.dependencies.store.set(settings);
 	}
-
-	listProjects(): CodingProject[] {
+	setApiKey(provider: 'openai' | 'anthropic', key: string): void {
+		if ((provider !== 'openai' && provider !== 'anthropic') || typeof key !== 'string')
+			throw new Error('Invalid Coder API key.');
+		this.credentials.set(provider, key);
+	}
+	listModels(runtime?: CoderHarness) {
+		const selected = this.getSettings(runtime).runtime;
+		return this.harnesses[selected].listModels();
+	}
+	listProjects() {
 		return this.dependencies.projects.list();
 	}
-
-	addProject(directory: string): CodingProject {
+	addProject(directory: string) {
 		return this.dependencies.projects.add(directory);
 	}
-
-	removeProject(projectId: string): boolean {
-		if ([...this.runs.values()].some((run) => run.projectId === projectId)) {
-			throw new Error('Stop the active project run before removing it from Coding.');
-		}
-		return this.dependencies.projects.remove(projectId);
+	removeProject(id: string) {
+		if ([...this.runs.values()].some((r) => r.projectId === id))
+			throw new Error('Stop the project run first.');
+		return this.dependencies.projects.remove(id);
 	}
-
-	async readProjectFile(projectId: string, filePath: string): Promise<string> {
-		return readProjectFile(this.requireProject(projectId), filePath);
+	openProject(id: string) {
+		return this.dependencies.projects.get(id);
 	}
-
-	async listProjectFiles(projectId: string): Promise<CodingProjectFile[]> {
-		return listProjectFiles(this.requireProject(projectId));
+	readProjectFile(id: string, file: string) {
+		return this.pi.readProjectFile(id, file);
 	}
-
-	async createProjectFile(projectId: string, filePath: string): Promise<CodingProjectFile> {
-		return createProjectFile(this.requireProject(projectId), filePath);
+	listProjectFiles(id: string) {
+		return this.pi.listProjectFiles(id);
 	}
-
-	async getProjectInstructions(projectId: string): Promise<CodingProjectInstructions> {
-		return this.instructions.get(this.requireProject(projectId));
+	createProjectFile(id: string, file: string) {
+		return this.pi.createProjectFile(id, file);
 	}
-
-	async saveProjectInstructions(
-		projectId: string,
-		update: CodingProjectInstructionsUpdate
-	): Promise<CodingProjectInstructions> {
-		return this.instructions.save(this.requireProject(projectId), update);
+	getProjectInstructions(id: string, runtime?: CoderHarness) {
+		this.validateHarness(runtime);
+		return this.instructions.get(this.requireProject(id), runtime ?? this.getSettings().runtime);
 	}
-
-	async listSessions(projectId: string): Promise<CodingSessionSummary[]> {
-		const project = this.requireProject(projectId);
-		const sessions = await SessionManager.list(project.directory, codingSessionsLocation());
-		return sessions.map((session) => this.sessionSummary(project.id, session));
-	}
-
-	async getSession(projectId: string, sessionId: string): Promise<CodingSessionSnapshot> {
-		const project = this.requireProject(projectId);
-		const sessionInfo = await this.requireSession(project, sessionId);
-		const manager = SessionManager.open(
-			sessionInfo.path,
-			codingSessionsLocation(),
-			project.directory
+	saveProjectInstructions(
+		id: string,
+		update: CodingProjectInstructionsUpdate,
+		runtime?: CoderHarness
+	) {
+		this.validateHarness(runtime);
+		return this.instructions.save(
+			this.requireProject(id),
+			update,
+			runtime ?? this.getSettings().runtime
 		);
-		const blocks = manager
-			.buildSessionContext()
-			.messages.map((message, index) => this.sessionBlock(message, index))
-			.filter((block): block is CodingSessionBlock => Boolean(block));
-		this.dependencies.projects.touch(project.id);
-		return { session: this.sessionSummary(project.id, sessionInfo), blocks };
 	}
-
-	async renameSession(
-		projectId: string,
-		sessionId: string,
-		title: string
-	): Promise<CodingSessionSummary> {
-		const project = this.requireProject(projectId);
-		const session = await this.requireSession(project, sessionId);
-		if ([...this.runs.values()].some((run) => run.sessionKey === `${project.id}:${session.id}`)) {
-			throw new Error('Stop the active run before renaming this session.');
-		}
-		const normalizedTitle = title.trim();
-		if (!normalizedTitle || normalizedTitle.length > 120) {
-			throw new Error('Coding session title must be between 1 and 120 characters.');
-		}
-		SessionManager.open(session.path, codingSessionsLocation(), project.directory).appendSessionInfo(
-			normalizedTitle
+	async listSessions(projectId: string) {
+		this.requireProject(projectId);
+		const managed = this.sessions.list(projectId);
+		const nativeIds = new Set(
+			managed.filter((s) => s.runtime === 'pi').map((s) => s.nativeSessionId)
 		);
-		const updated = await this.requireSession(project, sessionId);
-		return this.sessionSummary(project.id, updated);
+		const legacy = await this.pi.listSessions(projectId);
+		return [
+			...managed,
+			...legacy
+				.filter((s) => !nativeIds.has(s.id) && !managed.some((m) => m.id === s.id))
+				.map((s) => ({
+					...s,
+					runtime: 'pi' as const,
+					workingDirectory: this.requireProject(projectId).directory,
+				})),
+		].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
 	}
-
-	async deleteSession(projectId: string, sessionId: string): Promise<boolean> {
-		const project = this.requireProject(projectId);
-		const session = await this.requireSession(project, sessionId);
-		if ([...this.runs.values()].some((run) => run.sessionKey === `${project.id}:${session.id}`)) {
-			throw new Error('Stop the active run before deleting this session.');
+	async getSession(projectId: string, id: string) {
+		const managed = this.sessions.read(id);
+		if (managed) {
+			this.assertProject(managed, projectId);
+			return this.sessions.snapshot(managed);
 		}
-		const root = path.resolve(codingSessionsLocation());
-		const target = path.resolve(session.path);
-		const relative = path.relative(root, target);
+		const snapshot = await this.pi.getSession(projectId, id);
+		return {
+			...snapshot,
+			session: {
+				...snapshot.session,
+				runtime: 'pi' as const,
+				workingDirectory: this.requireProject(projectId).directory,
+				settings: this.getSettings('pi'),
+			},
+		};
+	}
+	async renameSession(projectId: string, id: string, title: string) {
+		this.assertIdle(id);
+		if (typeof title !== 'string' || !title.trim() || title.trim().length > 120)
+			throw new Error('Invalid Coder session title.');
+		const session = this.sessions.read(id);
+		if (!session) return this.pi.renameSession(projectId, id, title);
+		this.assertProject(session, projectId);
+		const next = { ...session, title: title.trim(), updatedAt: new Date().toISOString() };
+		this.sessions.save(next);
+		return next;
+	}
+	async deleteSession(projectId: string, id: string) {
+		this.assertIdle(id);
+		const session = this.sessions.read(id);
+		if (!session) return this.pi.deleteSession(projectId, id);
+		this.assertProject(session, projectId);
+		if (session.runtime === 'pi' && session.nativeSessionId)
+			await this.pi.deleteSession(projectId, session.nativeSessionId);
+		return this.sessions.delete(id);
+	}
+	async saveSessionSettings(projectId: string, id: string, settings: CodingSettings) {
+		this.assertIdle(id);
+		this.validateSettings(settings);
+		let session = this.sessions.read(id);
+		if (!session) {
+			const snapshot = await this.pi.getSession(projectId, id);
+			if (settings.runtime !== 'pi') throw new Error('Create a new session to change harness.');
+			const cwd = this.requireProject(projectId).directory;
+			session = this.sessions.create(projectId, cwd, settings, snapshot.session.title, id, id);
+			this.sessions.append(id, { type: 'seed', blocks: snapshot.blocks });
+		}
+		this.assertProject(session, projectId);
 		if (
-			!relative ||
-			relative === '..' ||
-			relative.startsWith(`..${path.sep}`) ||
-			path.isAbsolute(relative)
-		) {
-			throw new Error('Coding session path is invalid.');
-		}
-		unlinkSync(target);
-		return true;
+			session.runtime !== settings.runtime ||
+			(settings.workingDirectory &&
+				path.resolve(settings.workingDirectory) !== session.workingDirectory)
+		)
+			throw new Error('Create a new session to change harness or directory.');
+		const next = {
+			...session,
+			settings: { ...settings, workingDirectory: session.workingDirectory },
+			updatedAt: new Date().toISOString(),
+		};
+		this.sessions.save(next);
+		return next;
 	}
-
-	async listModels(): Promise<CodingCatalog> {
-		const runtime = await this.getRuntime();
-		await this.syncApiKeys(runtime);
-		const providers = await Promise.all(
-			runtime
-				.getProviders()
-				.filter((provider) => SUPPORTED_PROVIDERS.includes(provider.id as CodingProviderId))
-				.map(async (provider): Promise<CodingProvider> => {
-					const id = provider.id as CodingProviderId;
-					const auth = await runtime.checkAuth(id);
-					return {
-						id,
-						name: provider.name,
-						authentication: id === 'openai-codex' ? 'oauth' : 'api-key',
-						configured: Boolean(auth),
-						...(auth?.type ? { authType: auth.type } : {}),
-						...(auth?.source ? { authSource: auth.source } : {}),
-						models: runtime.getModels(id).map((model) => ({
-							id: model.id,
-							name: model.name,
-							reasoning: model.reasoning,
-							contextWindow: model.contextWindow,
-						})),
-					};
-				})
-		);
-		return { providers };
-	}
-
-	async connectCodex(
-		windowId: number,
-		emit: (event: CodingAuthEvent) => void
-	): Promise<CodingAuthStatus> {
-		if (this.authControllers.has(windowId))
-			throw new Error('A Codex login is already in progress.');
-		const controller = new AbortController();
-		const timeout = setTimeout(() => controller.abort(), AUTH_TIMEOUT_MS);
-		this.authControllers.set(windowId, controller);
-		try {
-			const runtime = await this.getRuntime();
-			await runtime.login('openai-codex', 'oauth', {
-				signal: controller.signal,
-				prompt: async (prompt) => {
-					if (prompt.type !== 'select') {
-						throw new Error('The Codex device login requested unsupported user input.');
-					}
-					const deviceOption = prompt.options.find((option) => option.id === 'device_code');
-					if (!deviceOption) throw new Error('Codex device login is unavailable.');
-					return deviceOption.id;
-				},
-				notify: (event) => {
-					if (event.type === 'device_code') {
-						emit({
-							type: 'device-code',
-							userCode: event.userCode,
-							verificationUri: event.verificationUri,
-							...(event.expiresInSeconds ? { expiresInSeconds: event.expiresInSeconds } : {}),
-						});
-					} else if (event.type === 'auth_url') {
-						emit({
-							type: 'auth-url',
-							url: event.url,
-							...(event.instructions ? { instructions: event.instructions } : {}),
-						});
-					} else if (event.type === 'info') {
-						emit({
-							type: 'info',
-							message: event.message,
-							...(event.links?.[0]?.url ? { url: event.links[0].url } : {}),
-						});
-					} else {
-						emit({ type: 'progress', message: event.message });
-					}
-				},
-			});
-			const auth = await runtime.checkAuth('openai-codex');
-			return {
-				configured: Boolean(auth),
-				...(auth?.type ? { type: auth.type } : {}),
-				...(auth?.source ? { source: auth.source } : {}),
-			};
-		} finally {
-			clearTimeout(timeout);
-			this.authControllers.delete(windowId);
-		}
-	}
-
-	cancelCodexLogin(windowId: number): boolean {
-		const controller = this.authControllers.get(windowId);
-		if (!controller) return false;
-		controller.abort();
-		return true;
-	}
-
-	async disconnectCodex(): Promise<void> {
-		const runtime = await this.getRuntime();
-		await runtime.logout('openai-codex');
-	}
-
 	async send(
 		ownerId: number,
 		runId: string,
 		request: CodingRunRequest,
 		emit: (event: CodingResponseEvent) => void
 	): Promise<CodingRunResult> {
-		if (this.runs.has(runId)) throw new Error('Coding run id is already active.');
-		const project = this.requireProject(request.projectId);
-		const sessionManager = request.sessionId
-			? SessionManager.open(
-					(await this.requireSession(project, request.sessionId)).path,
-					codingSessionsLocation(),
-					project.directory
-				)
-			: SessionManager.create(project.directory, codingSessionsLocation());
-		const sessionId = sessionManager.getSessionId();
-		const sessionKey = `${project.id}:${sessionId}`;
-		if ([...this.runs.values()].some((run) => run.sessionKey === sessionKey)) {
-			throw new Error('This Coding session already has an active run.');
-		}
-		const controller = new AbortController();
+		if (this.runs.has(runId)) throw new Error('Coder run id is already active.');
+		const id = request.sessionId ?? randomUUID();
+		this.assertIdle(id);
 		const run: ActiveRun = {
 			ownerId,
-			projectId: project.id,
-			sessionId,
-			sessionKey,
-			controller,
+			controller: new AbortController(),
+			sessionId: id,
+			projectId: request.projectId,
 		};
-		const eventContext = { runId, projectId: project.id, sessionId };
 		this.runs.set(runId, run);
-		const timeout = setTimeout(() => controller.abort(), RUN_TIMEOUT_MS);
+		const timeout = setTimeout(() => run.controller.abort(), 30 * 60 * 1000);
+		let session: CoderSession | undefined;
+		let eventContext = { runId, projectId: request.projectId, sessionId: id };
+		const publish = (event: HarnessEvent): void => {
+			const value = { ...event, ...eventContext } as CodingResponseEvent;
+			if (session) this.sessions.append(id, value);
+			if (
+				!run.controller.signal.aborted ||
+				event.type === 'status' ||
+				event.type === 'error' ||
+				event.type === 'interaction-resolved' ||
+				event.type === 'command-end'
+			)
+				emit(value);
+		};
 		try {
-			const settings = this.getSettings();
-			const runtime = await this.getRuntime();
-			await this.syncApiKeys(runtime);
-			const model = runtime.getModel(settings.providerId, settings.modelId);
-			if (!model) throw new Error('Select an available Pi model in Coding settings.');
-			if (!(await runtime.checkAuth(settings.providerId))) {
-				throw new Error(`Connect ${settings.providerId} before starting a coding run.`);
-			}
-			const settingsManager = SettingsManager.inMemory(
-				{
-					defaultProvider: settings.providerId,
-					defaultModel: settings.modelId,
-					defaultThinkingLevel: settings.thinkingLevel,
-					enableAnalytics: false,
-					enableInstallTelemetry: false,
-				},
-				{ projectTrusted: true }
-			);
-			const resourceLoader = new DefaultResourceLoader({
-				cwd: project.directory,
-				agentDir: codingLocation(),
-				settingsManager,
-				noExtensions: true,
-				noSkills: true,
-				noPromptTemplates: true,
-				noThemes: true,
-			});
-			await resourceLoader.reload();
-			const { session } = await createAgentSession({
-				cwd: project.directory,
-				agentDir: codingLocation(),
-				modelRuntime: runtime,
-				model,
-				thinkingLevel: settings.thinkingLevel,
-				tools: settings.toolMode === 'coding' ? CODING_TOOLS : READ_ONLY_TOOLS,
-				resourceLoader,
-				sessionManager,
-				settingsManager,
-			});
-			run.abortSession = async () => {
-				session.abortBash();
-				await session.abort();
-			};
-			emit({ ...eventContext, type: 'status', status: 'started' });
-			let output = '';
-			let finalError: string | undefined;
-			const unsubscribe = session.subscribe((event: AgentSessionEvent) => {
-				if (event.type === 'message_update') {
-					const update = event.assistantMessageEvent;
-					if (update.type === 'text_delta') {
-						output += update.delta;
-						emit({ ...eventContext, type: 'text-delta', delta: update.delta });
-					} else if (update.type === 'thinking_delta') {
-						emit({ ...eventContext, type: 'thinking-delta', delta: update.delta });
-					} else if (update.type === 'error') {
-						finalError = update.error.errorMessage || 'Pi stopped with an error.';
-					}
-				} else if (event.type === 'tool_execution_start') {
-					emit({
-						...eventContext,
-						type: 'tool-start',
-						toolCallId: event.toolCallId,
-						toolName: event.toolName,
-					});
-				} else if (event.type === 'tool_execution_end') {
-					emit({
-						...eventContext,
-						type: 'tool-end',
-						toolCallId: event.toolCallId,
-						toolName: event.toolName,
-						isError: event.isError,
-					});
-				}
-			});
-			const abortSession = (): void => {
-				session.abortBash();
-				void session.abort();
-			};
-			controller.signal.addEventListener('abort', abortSession, { once: true });
-			try {
-				if (controller.signal.aborted) throw new Error('Coding run cancelled.');
-				if (request.mode === 'shell') {
-					emit({ ...eventContext, type: 'command-start', command: request.input });
-					const result = await session.executeBash(request.input, (delta) => {
-						output += delta;
-						emit({ ...eventContext, type: 'command-output', delta });
-					});
-					emit({
-						...eventContext,
-						type: 'command-end',
-						...(result.exitCode === undefined ? {} : { exitCode: result.exitCode }),
-						cancelled: result.cancelled,
-						truncated: result.truncated,
-					});
-					if (controller.signal.aborted || result.cancelled)
-						throw new Error('Coding run cancelled.');
-				} else {
-					await session.prompt(request.input, { expandPromptTemplates: false, source: 'rpc' });
-					if (controller.signal.aborted) throw new Error('Coding run cancelled.');
-					if (finalError) throw new Error(finalError);
-				}
-				emit({ ...eventContext, type: 'status', status: 'completed' });
-				this.dependencies.projects.touch(project.id);
-				return { projectId: project.id, sessionId, output };
-			} finally {
-				controller.signal.removeEventListener('abort', abortSession);
-				unsubscribe();
-				session.dispose();
-			}
-		} catch (error) {
-			const message = error instanceof Error ? error.message : 'Coding run failed.';
-			if (controller.signal.aborted) {
-				emit({ ...eventContext, type: 'status', status: 'cancelled' });
+			session = this.sessions.read(id);
+			if (session) {
+				this.assertProject(session, request.projectId);
+				if (
+					request.settings &&
+					JSON.stringify(request.settings) !== JSON.stringify(session.settings)
+				)
+					throw new Error('Save session settings before starting a run.');
+			} else if (request.sessionId) {
+				const legacy = await this.pi.getSession(request.projectId, id);
+				session = this.sessions.create(
+					request.projectId,
+					this.requireProject(request.projectId).directory,
+					this.getSettings('pi'),
+					legacy.session.title,
+					id,
+					id
+				);
+				this.sessions.append(id, { type: 'seed', blocks: legacy.blocks });
 			} else {
-				emit({ ...eventContext, type: 'error', message });
+				const settings = request.settings ?? this.getSettings();
+				this.validateSettings(settings);
+				const selected = request.projectId ? this.requireProject(request.projectId) : undefined;
+				const cwd = request.workingDirectory ?? selected?.directory ?? settings.workingDirectory;
+				if (!cwd) throw new Error('Choose a working directory.');
+				const project = this.dependencies.projects.add(cwd);
+				session = this.sessions.create(project.id, project.directory, settings, request.input, id);
 			}
+			const project = this.requireProject(session.projectId);
+			if (realpathSync(project.directory) !== session.workingDirectory)
+				throw new Error('The session working directory has changed.');
+			if (
+				request.workingDirectory &&
+				realpathSync(request.workingDirectory) !== session.workingDirectory
+			)
+				throw new Error('Create a new session to change directory.');
+			run.projectId = session.projectId;
+			eventContext = { ...eventContext, projectId: session.projectId };
+			run.controller.signal.throwIfAborted();
+			this.sessions.append(id, { type: 'prompt', runId, input: request.input, mode: request.mode });
+			publish({ type: 'status', status: 'started' });
+			const context: HarnessContext = {
+				cwd: session.workingDirectory,
+				settings: session.settings,
+				nativeSessionId: session.nativeSessionId,
+				signal: run.controller.signal,
+				emit: publish,
+				saveSession: async (nativeSessionId) => {
+					session = { ...session!, nativeSessionId };
+					this.sessions.save(session);
+				},
+				approve: async (interaction) => {
+					run.controller.signal.throwIfAborted();
+					const requestId = randomUUID();
+					const response = await new Promise<CoderInteractionResponse>((resolve) => {
+						const abort = (): void => {
+							this.interactions.delete(requestId);
+							resolve({ approved: false });
+						};
+						run.controller.signal.addEventListener('abort', abort, { once: true });
+						this.interactions.set(requestId, {
+							runId,
+							ownerId,
+							resolve: (value) => {
+								run.controller.signal.removeEventListener('abort', abort);
+								this.interactions.delete(requestId);
+								resolve(value);
+							},
+						});
+						publish({ ...interaction, type: 'interaction', requestId });
+					});
+					publish({ type: 'interaction-resolved', requestId, approved: response.approved });
+					run.controller.signal.throwIfAborted();
+					return response;
+				},
+			};
+			const output =
+				request.mode === 'shell'
+					? await executeCommand(request.input, context)
+					: await this.harnesses[session.runtime].run(request.input, context);
+			run.controller.signal.throwIfAborted();
+			publish({ type: 'status', status: 'completed' });
+			this.dependencies.projects.touch(session.projectId);
+			return { projectId: session.projectId, sessionId: id, output };
+		} catch (error) {
+			if (run.controller.signal.aborted) publish({ type: 'status', status: 'cancelled' });
+			else
+				publish({
+					type: 'error',
+					message: error instanceof Error ? error.message : 'Coder run failed.',
+				});
 			throw error;
 		} finally {
+			run.controller.abort();
 			clearTimeout(timeout);
 			this.runs.delete(runId);
+			if (session) {
+				const snapshot = this.sessions.snapshot(session);
+				this.sessions.save({
+					...session,
+					updatedAt: new Date().toISOString(),
+					messageCount: snapshot.session.messageCount,
+				});
+			}
 		}
 	}
-
+	respond(
+		runId: string,
+		requestId: string,
+		response: CoderInteractionResponse,
+		ownerId: number
+	): boolean {
+		if (
+			!response ||
+			typeof response.approved !== 'boolean' ||
+			(response.answers !== undefined &&
+				(typeof response.answers !== 'object' ||
+					response.answers === null ||
+					Array.isArray(response.answers) ||
+					Object.values(response.answers).some((v) => typeof v !== 'string')))
+		)
+			throw new Error('Invalid Coder interaction response.');
+		const pending = this.interactions.get(requestId);
+		if (!pending || pending.runId !== runId || pending.ownerId !== ownerId) return false;
+		pending.resolve(response);
+		return true;
+	}
 	cancel(runId: string, ownerId: number): boolean {
 		const run = this.runs.get(runId);
 		if (!run || run.ownerId !== ownerId) return false;
 		run.controller.abort();
-		void run.abortSession?.();
 		return true;
 	}
-
 	cancelWindow(ownerId: number): void {
-		for (const [runId, run] of this.runs) {
-			if (run.ownerId === ownerId) this.cancel(runId, ownerId);
-		}
+		for (const [id, run] of this.runs) if (run.ownerId === ownerId) this.cancel(id, ownerId);
 		this.cancelCodexLogin(ownerId);
 	}
-
-	destroy(): void {
-		for (const run of this.runs.values()) {
-			run.controller.abort();
-			void run.abortSession?.();
+	async connectCodex(
+		ownerId: number,
+		emit: (event: CodingAuthEvent) => void,
+		runtime?: CoderHarness
+	): Promise<CodingAuthStatus> {
+		const selected = this.getSettings(runtime).runtime;
+		if (this.auth.has(ownerId)) throw new Error('A login is already in progress.');
+		const controller = new AbortController();
+		this.auth.set(ownerId, controller);
+		const timer = setTimeout(() => controller.abort(), 10 * 60 * 1000);
+		try {
+			if (selected === 'pi') return await this.pi.connectCodex(ownerId, emit);
+			const harness = this.harnesses[selected];
+			if (!harness.connect) throw new Error('Save an API key to connect this harness.');
+			return await harness.connect(controller.signal, emit);
+		} finally {
+			clearTimeout(timer);
+			this.auth.delete(ownerId);
 		}
-		for (const controller of this.authControllers.values()) controller.abort();
-		this.runs.clear();
-		this.authControllers.clear();
 	}
-
-	private requireProject(projectId: string): CodingProject {
-		const project = this.dependencies.projects.get(projectId);
-		if (!project) throw new Error('Coding project was not found.');
-		if (!project.available) throw new Error('Coding project directory is unavailable.');
+	cancelCodexLogin(ownerId: number): boolean {
+		this.pi.cancelCodexLogin(ownerId);
+		const controller = this.auth.get(ownerId);
+		if (!controller) return false;
+		controller.abort();
+		return true;
+	}
+	async disconnectCodex(runtime?: CoderHarness): Promise<void> {
+		const selected = this.getSettings(runtime).runtime;
+		if (selected === 'pi') await this.pi.disconnectCodex();
+		else await this.harnesses[selected].disconnect?.();
+	}
+	destroy(): void {
+		for (const run of this.runs.values()) run.controller.abort();
+		for (const controller of this.auth.values()) controller.abort();
+		this.pi.destroy();
+		for (const harness of Object.values(this.harnesses)) harness.destroy?.();
+		this.runs.clear();
+		this.auth.clear();
+	}
+	private assertIdle(id: string): void {
+		if ([...this.runs.values()].some((r) => r.sessionId === id))
+			throw new Error('This Coder session already has an active run.');
+	}
+	private assertProject(session: CoderSession, projectId: string): void {
+		if (session.projectId !== projectId)
+			throw new Error('Coder session was not found for this project.');
+	}
+	private requireProject(id: string) {
+		const project = this.dependencies.projects.get(id);
+		if (!project || !project.available) throw new Error('Coder project directory is unavailable.');
 		return project;
 	}
-
-	private async requireSession(project: CodingProject, sessionId: string): Promise<SessionInfo> {
-		const sessions = await SessionManager.list(project.directory, codingSessionsLocation());
-		const session = sessions.find((item) => item.id === sessionId);
-		if (!session) throw new Error('Coding session was not found for this project.');
-		return session;
+	private validateHarness(runtime?: CoderHarness): void {
+		if (runtime !== undefined && !CODER_HARNESSES.includes(runtime))
+			throw new Error('Invalid Coder harness.');
 	}
-
-	private sessionSummary(projectId: string, session: SessionInfo): CodingSessionSummary {
-		const firstMessage = session.firstMessage.trim();
-		return {
-			id: session.id,
-			projectId,
-			title: session.name?.trim() || firstMessage.slice(0, 80) || 'New session',
-			createdAt: session.created.toISOString(),
-			updatedAt: session.modified.toISOString(),
-			messageCount: session.messageCount,
-		};
-	}
-
-	private sessionBlock(message: unknown, index: number): CodingSessionBlock | undefined {
-		if (!message || typeof message !== 'object') return undefined;
-		const value = message as Record<string, unknown>;
-		const timestamp =
-			typeof value.timestamp === 'number'
-				? new Date(value.timestamp).toISOString()
-				: new Date(0).toISOString();
-		const id = `${value.timestamp ?? 0}-${index}`;
-		if (value.role === 'user' || value.role === 'assistant') {
-			const content = this.messageText(value.content);
-			if (!content) return undefined;
-			return { id, type: 'message', role: value.role, content, timestamp };
-		}
-		if (value.role === 'bashExecution') {
-			const exitCode = typeof value.exitCode === 'number' ? value.exitCode : undefined;
-			const cancelled = value.cancelled === true;
-			return {
-				id,
-				type: 'command',
-				command: typeof value.command === 'string' ? value.command : '',
-				output: typeof value.output === 'string' ? value.output : '',
-				status: cancelled ? 'cancelled' : exitCode === 0 ? 'succeeded' : 'failed',
-				...(exitCode === undefined ? {} : { exitCode }),
-				truncated: value.truncated === true,
-				timestamp,
-			};
-		}
-		return undefined;
-	}
-
-	private messageText(content: unknown): string {
-		if (typeof content === 'string') return content;
-		if (!Array.isArray(content)) return '';
-		return content
-			.filter((item): item is { type: 'text'; text: string } =>
-				Boolean(
-					item &&
-					typeof item === 'object' &&
-					(item as Record<string, unknown>).type === 'text' &&
-					typeof (item as Record<string, unknown>).text === 'string'
-				)
-			)
-			.map((item) => item.text)
-			.join('');
-	}
-
-	private getRuntime(): Promise<ModelRuntime> {
-		this.runtimePromise ??= ModelRuntime.create({
-			authPath: path.join(codingLocation(), 'auth.json'),
-			modelsPath: null,
-			allowModelNetwork: false,
-		});
-		return this.runtimePromise;
-	}
-
-	private async syncApiKeys(runtime: ModelRuntime): Promise<void> {
-		for (const providerId of ['openai', 'anthropic'] as const) {
-			const apiKey = this.dependencies.getProvider(providerId)?.apiKey.trim();
-			if (apiKey) await runtime.setRuntimeApiKey(providerId, apiKey);
-			else await runtime.removeRuntimeApiKey(providerId);
-		}
+	private validateSettings(settings: CodingSettings): void {
+		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
+		if (settings.runtime === 'claude' && settings.providerId !== 'anthropic')
+			throw new Error('Claude requires the Anthropic provider.');
+		if (settings.runtime === 'codex' && settings.providerId !== 'openai-codex')
+			throw new Error('Codex requires the Codex provider.');
 	}
 }
+
+export { Coder as Coding };

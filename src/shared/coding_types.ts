@@ -99,8 +99,21 @@ export interface CodingSessionSummary {
 }
 
 export type CodingSessionBlock =
-	| { readonly id: string; readonly type: 'tool'; readonly toolName: string; readonly status: 'running' | 'succeeded' | 'failed'; readonly timestamp: string }
-	| { readonly id: string; readonly type: 'interaction'; readonly toolName: string; readonly input: unknown; readonly status: 'approved' | 'denied' | 'cancelled'; readonly timestamp: string }
+	| {
+			readonly id: string;
+			readonly type: 'tool';
+			readonly toolName: string;
+			readonly status: 'running' | 'succeeded' | 'failed';
+			readonly timestamp: string;
+	  }
+	| {
+			readonly id: string;
+			readonly type: 'interaction';
+			readonly toolName: string;
+			readonly input: unknown;
+			readonly status: 'approved' | 'denied' | 'cancelled';
+			readonly timestamp: string;
+	  }
 	| {
 			readonly id: string;
 			readonly type: 'message';
@@ -149,7 +162,11 @@ export interface CoderInteraction {
 	readonly toolName: string;
 	readonly input: unknown;
 	readonly kind?: 'approval' | 'input';
-	readonly questions?: readonly { readonly id: string; readonly question: string; readonly options?: readonly string[] }[];
+	readonly questions?: readonly {
+		readonly id: string;
+		readonly question: string;
+		readonly options?: readonly string[];
+	}[];
 }
 
 export interface CoderInteractionResponse {
@@ -158,8 +175,13 @@ export interface CoderInteractionResponse {
 }
 
 export type CodingResponseEvent =
-	| (CodingResponseEventBase & CoderInteraction & { readonly type: 'interaction'; readonly requestId: string })
-	| (CodingResponseEventBase & { readonly type: 'interaction-resolved'; readonly requestId: string; readonly approved: boolean })
+	| (CodingResponseEventBase &
+			CoderInteraction & { readonly type: 'interaction'; readonly requestId: string })
+	| (CodingResponseEventBase & {
+			readonly type: 'interaction-resolved';
+			readonly requestId: string;
+			readonly approved: boolean;
+	  })
 	| (CodingResponseEventBase & {
 			readonly type: 'status';
 			readonly status: 'started' | 'completed' | 'cancelled';
@@ -179,11 +201,17 @@ export type CodingResponseEvent =
 	  })
 	| (CodingResponseEventBase & {
 			readonly type: 'command-start';
+			readonly commandId?: string;
 			readonly command: string;
 	  })
-	| (CodingResponseEventBase & { readonly type: 'command-output'; readonly delta: string })
+	| (CodingResponseEventBase & {
+			readonly type: 'command-output';
+			readonly commandId?: string;
+			readonly delta: string;
+	  })
 	| (CodingResponseEventBase & {
 			readonly type: 'command-end';
+			readonly commandId?: string;
 			readonly exitCode?: number;
 			readonly cancelled: boolean;
 			readonly truncated: boolean;
@@ -228,7 +256,11 @@ export function isCodingRunRequest(value: unknown): value is CodingRunRequest {
 	const request = value as Partial<CodingRunRequest>;
 	return (
 		typeof request.projectId === 'string' &&
-		(request.projectId.trim().length > 0 || Boolean(request.workingDirectory?.trim()) || Boolean(request.settings?.workingDirectory?.trim())) &&
+		(request.projectId.trim().length > 0 ||
+			(typeof request.workingDirectory === 'string' &&
+				request.workingDirectory.trim().length > 0) ||
+			(typeof request.settings?.workingDirectory === 'string' &&
+				request.settings.workingDirectory.trim().length > 0)) &&
 		(request.settings === undefined || isCodingSettings(request.settings)) &&
 		(request.workingDirectory === undefined || typeof request.workingDirectory === 'string') &&
 		(request.sessionId === undefined ||
