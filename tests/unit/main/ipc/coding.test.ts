@@ -139,12 +139,12 @@ it('lets the Coding app select main-owned projects and read their sessions', asy
 	await expect(
 		handler(CodingChannels.getProjectInstructions)({ sender }, ' project-1 ')
 	).resolves.toEqual({ success: true, data: { projectId: 'project-1' } });
-	expect(coding.getProjectInstructions).toHaveBeenCalledWith('project-1');
+	expect(coding.getProjectInstructions).toHaveBeenCalledWith('project-1', undefined);
 	const update = { content: '  keep whitespace\n', expectedRevision: 'revision-1' };
 	await expect(
 		handler(CodingChannels.saveProjectInstructions)({ sender }, ' project-1 ', update)
 	).resolves.toEqual({ success: true, data: { projectId: 'project-1' } });
-	expect(coding.saveProjectInstructions).toHaveBeenCalledWith('project-1', update);
+	expect(coding.saveProjectInstructions).toHaveBeenCalledWith('project-1', update, undefined);
 });
 
 it('restricts project instruction files to trusted callers and validates updates', async () => {
@@ -259,7 +259,7 @@ it('allows configuration and authentication from the host and Coding app only', 
 		success: true,
 		data: { configured: true, type: 'oauth' },
 	});
-	expect(connectCodex).toHaveBeenCalledWith(8, expect.any(Function));
+	expect(connectCodex).toHaveBeenCalledWith(8, expect.any(Function), undefined);
 	expect(sender.send).toHaveBeenCalledWith(CodingChannels.authEvent, {
 		type: 'progress',
 		message: 'Waiting',
@@ -314,7 +314,11 @@ it.each([
 			success: true,
 			data: { projectId: 'project-1' },
 		});
-		expect(operation).toHaveBeenCalledWith('project-1', ...args);
+		expect(operation).toHaveBeenCalledWith(
+			'project-1',
+			...args,
+			...(channel === CodingChannels.createProjectFile ? [] : [undefined])
+		);
 		operation.mockClear();
 
 		windows.has.mockReturnValue(false);
