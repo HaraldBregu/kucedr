@@ -23,6 +23,7 @@ const entries: readonly Entry[] = [
 
 export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarness) => void }) {
 	const [catalogs, setCatalogs] = useState<Partial<Record<CoderHarness, CodingCatalog>>>({});
+	const [catalogErrors, setCatalogErrors] = useState<Partial<Record<CoderHarness, string>>>({});
 	const [keys, setKeys] = useState<Record<string, string>>({});
 	const [busy, setBusy] = useState('');
 	const [event, setEvent] = useState<CodingAuthEvent | null>(null);
@@ -30,14 +31,19 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 	const refresh = async (runtime: CoderHarness) => {
 		const catalog = await window.coder.listModels(runtime);
 		setCatalogs((current) => ({ ...current, [runtime]: catalog }));
+		setCatalogErrors((current) => ({ ...current, [runtime]: undefined }));
 		onChanged(runtime);
 	};
 	useEffect(() => {
 		let active = true;
 		void Promise.allSettled(
 			(['pi', 'codex', 'cline'] as const).map(async (runtime) => {
-				const catalog = await window.coder.listModels(runtime);
-				if (active) setCatalogs((current) => ({ ...current, [runtime]: catalog }));
+				try {
+					const catalog = await window.coder.listModels(runtime);
+					if (active) setCatalogs((current) => ({ ...current, [runtime]: catalog }));
+				} catch (cause) {
+					if (active) setCatalogErrors((current) => ({ ...current, [runtime]: cause instanceof Error ? cause.message : String(cause) }));
+				}
 			})
 		);
 		return () => {
@@ -101,7 +107,7 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 				const accountConnected = connected && provider?.authType === 'oauth';
 				const keyConnected = connected && !accountConnected && Boolean(entry.key);
 				return (
-				<Setting key={id} title={entry.label} description={provider ? (accountConnected ? 'Account' : keyConnected ? 'API key' : 'Ready to connect') : 'Checking connection…'}>
+				<Setting key={id} title={entry.label} description={catalogErrors[entry.runtime] ?? (provider ? (accountConnected ? 'Account' : keyConnected ? 'API key' : 'Ready to connect') : 'Checking connection…')}>
 					<span className="flex items-center gap-1 text-[11px] text-muted-foreground">
 						{connected ? <Check className="size-3" /> : null}
 						{connected ? 'Connected' : 'Not connected'}
