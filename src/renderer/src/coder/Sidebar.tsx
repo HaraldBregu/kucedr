@@ -13,7 +13,12 @@ import {
 } from 'lucide-react';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { Input } from '@/components/ui/input';
-import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import {
+	SidebarFooter,
+	SidebarMenu,
+	SidebarMenuButton,
+	SidebarMenuItem,
+} from '@/components/ui/sidebar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -112,7 +117,9 @@ export function Sidebar({
 						>
 							<Search className="size-4 shrink-0" />
 							<span className="truncate">Search</span>
-							<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100">/</kbd>
+							<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100">
+								/
+							</kbd>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
@@ -149,7 +156,9 @@ export function Sidebar({
 						);
 						return (
 							<div key={item.id}>
-								{filter && <div className="px-2 py-1 text-xs text-muted-foreground">{item.name}</div>}
+								{filter && (
+									<div className="px-2 py-1 text-xs text-muted-foreground">{item.name}</div>
+								)}
 								<ul className="flex min-w-0 flex-col gap-1">
 									{sessions.map((session) => {
 										const active = session.id === coding.snapshot?.session.id;
@@ -198,7 +207,9 @@ export function Sidebar({
 										<Folder className="size-4" />
 									</span>
 									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-										<span className="truncate font-medium">{project?.name ?? 'Choose project'}</span>
+										<span className="truncate font-medium">
+											{project?.name ?? 'Choose project'}
+										</span>
 										<span className="truncate text-xs text-muted-foreground">
 											{project?.directory ?? 'Open a folder to start coding'}
 										</span>
@@ -217,7 +228,9 @@ export function Sidebar({
 											<Folder className="size-4" />
 										</span>
 										<div className="grid min-w-0 flex-1 text-left text-xs leading-tight">
-											<span className="truncate font-medium">{project?.name ?? 'Choose project'}</span>
+											<span className="truncate font-medium">
+												{project?.name ?? 'Choose project'}
+											</span>
 											<span className="truncate text-muted-foreground">{project?.directory}</span>
 										</div>
 									</div>
@@ -263,7 +276,10 @@ export function Sidebar({
 										</DropdownMenuItem>
 									</>
 								)}
-								<DropdownMenuItem onSelect={onConfiguration} aria-current={settingsActive ? 'page' : undefined}>
+								<DropdownMenuItem
+									onSelect={onConfiguration}
+									aria-current={settingsActive ? 'page' : undefined}
+								>
 									<Settings />
 									Settings
 								</DropdownMenuItem>
