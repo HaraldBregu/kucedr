@@ -1,4 +1,5 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, renderHook, screen, waitFor, within } from '@testing-library/react';
+import { Authentication } from '../../../src/renderer/src/coder/Authentication';
 import { useConfiguration } from '../../../src/renderer/src/coder/hooks/configuration';
 import { useProjectInstructions } from '../../../src/renderer/src/coder/hooks/instructions';
 
@@ -64,7 +65,15 @@ it('chooses the new provider model and accepts the persisted IPC settings', asyn
 	expect(result.current.settings?.modelId).toBe('claude');
 });
 
-it('opens device authentication through the native app IPC and refreshes the catalog', async () => {
+it('configures Cline independently of Pi and Codex and opens account sign-in', async () => {
+	api.listModels.mockImplementation(async (runtime) => ({
+		providers: [{
+			id: runtime === 'cline' ? 'cline' : 'openai-codex',
+			configured: false,
+			models: [],
+		}],
+	}));
+	api.setApiKey = jest.fn().mockResolvedValue(undefined);
 	api.connectCodex.mockImplementation(async (onEvent) => {
 		onEvent({
 			type: 'device-code',
@@ -72,12 +81,15 @@ it('opens device authentication through the native app IPC and refreshes the cat
 			verificationUri: 'https://example.com/device',
 		});
 	});
-	const { result } = renderHook(() => useConfiguration());
-	await waitFor(() => expect(result.current.loading).toBe(false));
-	await act(async () => result.current.connect());
+	render(<Authentication onChanged={jest.fn()} />);
+	await waitFor(() => expect(screen.getByText('Cline')).toBeInTheDocument());
+	const cline = screen.getByText('Cline').closest('.grid')!;
+	fireEvent.change(within(cline).getByLabelText('Cline API key'), { target: { value: 'cline-key' } });
+	fireEvent.click(within(cline).getByRole('button', { name: 'Save key' }));
+	await waitFor(() => expect(api.setApiKey).toHaveBeenCalledWith('cline', 'cline-key', 'cline'));
+	fireEvent.click(within(cline).getByRole('button', { name: 'Connect account' }));
+	await waitFor(() => expect(api.connectCodex).toHaveBeenCalledWith(expect.any(Function), 'cline'));
 	expect(window.app.openExternalUrl).toHaveBeenCalledWith('https://example.com/device');
-	expect(api.listModels).toHaveBeenCalledTimes(2);
-	expect(result.current.authEvent).toBeNull();
 });
 
 it('saves instruction content with its loaded revision and preserves drafts on conflicts', async () => {
