@@ -10,6 +10,7 @@ jest.mock('../../../../src/main/coding/pi', () => ({
 	})),
 }));
 jest.mock('../../../../src/main/coding/harness/codex', () => ({ CodexHarness: jest.fn() }));
+jest.mock('../../../../src/main/coding/harness/cline', () => ({ ClineHarness: jest.fn() }));
 
 import { Coding } from '../../../../src/main/coding/coding';
 import { CoderSessions } from '../../../../src/main/coding/sessions';
