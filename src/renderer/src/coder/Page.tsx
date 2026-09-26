@@ -87,6 +87,7 @@ export function CoderPage() {
 						coding={coding}
 						onBeforeChange={leaveInstructions}
 						onSelect={select}
+						onConfiguration={() => openPage('configuration')}
 						onInstructions={(id) => {
 							if (!leaveInstructions()) return;
 							setInstructionsDirty(false);
