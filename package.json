@@ -95,6 +95,7 @@
 		"@anthropic-ai/sdk": "0.93.0",
 		"@aws-sdk/client-s3": "^3.1127.0",
 		"@base-ui/react": "^1.6.0",
+		"@cline/sdk": "0.0.86",
 		"@earendil-works/pi-coding-agent": "0.85.1",
 		"@electron-toolkit/utils": "^4.0.0",
 		"@mistralai/mistralai": "^2.5.0",
