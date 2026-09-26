@@ -6,13 +6,13 @@ import {
 	type CodingToolMode,
 } from '@shared/coding_types';
 import { useState } from 'react';
-import { AlertTriangle, Check, Copy, ExternalLink } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Choice } from './Choice';
 import { Setting } from './Setting';
+import { Authentication } from './Authentication';
 import { useConfiguration } from './hooks/configuration';
 
 export function Configuration({
@@ -31,14 +31,6 @@ export function Configuration({
 	const supportedThinking = provider?.models.find(
 		(model) => model.id === settings?.modelId
 	)?.thinkingLevels;
-	const deviceCode =
-		configuration.authEvent?.type === 'device-code' ? configuration.authEvent : null;
-	const authUrl =
-		configuration.authEvent?.type === 'device-code'
-			? configuration.authEvent.verificationUri
-			: configuration.authEvent?.type === 'auth-url'
-				? configuration.authEvent.url
-				: null;
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col bg-background">
