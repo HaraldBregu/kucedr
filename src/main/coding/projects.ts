@@ -1,18 +1,37 @@
 import { existsSync, realpathSync, statSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
+import Store from 'electron-store';
+import { userDataLocation } from '../shared/user_data_location';
 import type { CodingProject } from '../../shared/coding_types';
 import { agentLocation } from '../shared/agent_location';
 
 interface StoredCodingProject extends Omit<CodingProject, 'available'> {}
 
 export class CodingProjectStore {
-	private projects: StoredCodingProject[] = [];
+	private readonly store: Store<{ projects: StoredCodingProject[] }>;
 	private readonly workspaceDirectory: string;
 
-	constructor(initialDirectories: readonly string[] = [agentLocation()]) {
+	constructor(
+		initialDirectories: readonly string[] = [agentLocation()],
+		directory = path.join(userDataLocation(), 'coder')
+	) {
+		this.store = new Store<{ projects: StoredCodingProject[] }>({
+			name: 'projects',
+			cwd: directory,
+			accessPropertiesByDotNotation: false,
+			defaults: { projects: [] },
+		});
 		this.workspaceDirectory = path.resolve(agentLocation());
 		for (const initialDirectory of initialDirectories) this.seed(initialDirectory);
+	}
+
+	private get projects(): StoredCodingProject[] {
+		return this.store.get('projects');
+	}
+
+	private set projects(projects: StoredCodingProject[]) {
+		this.store.set('projects', projects);
 	}
 
 	list(): CodingProject[] {

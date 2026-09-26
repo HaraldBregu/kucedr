@@ -6,5 +6,5 @@ export function codingLocation(): string {
 }
 
 export function codingSessionsLocation(): string {
-	return path.join(codingLocation(), 'sessions');
+	return path.join(userDataLocation(), 'coder', 'sessions');
 }
