@@ -96,10 +96,7 @@ export function CoderPage() {
 	}, [coding, project, location.pathname, navigate]);
 	return (
 		<div className="flex h-dvh min-h-0 flex-col bg-background pt-12 text-foreground">
-			<Navigation
-				sidebar={sidebar}
-				onToggleSidebar={() => setSidebar(!sidebar)}
-			/>
+			<Navigation sidebar={sidebar} onToggleSidebar={() => setSidebar(!sidebar)} />
 			<div className="relative flex min-h-0 flex-1 overflow-hidden">
 				{sidebar && (
 					<Sidebar
