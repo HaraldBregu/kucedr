@@ -71,6 +71,10 @@ export class ClineHarness implements CodingHarness {
 			modelId: context.settings.modelId,
 			apiKey,
 			sessionId,
+			thinking: context.settings.thinkingLevel !== 'off',
+			...(context.settings.thinkingLevel !== 'off'
+				? { reasoningEffort: context.settings.thinkingLevel }
+				: {}),
 			initialMessages: messages,
 			maxIterations: 32,
 			systemPrompt: `You are a coding assistant. Work in ${context.cwd}.`,
