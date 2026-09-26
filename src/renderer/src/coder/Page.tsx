@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Navigate, Route, Routes, useBlocker, useLocation, useNavigate } from 'react-router-dom';
 import { Code2, FolderPlus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatContainerContent, ChatContainerRoot } from '@/components/ui/chat-container';
@@ -15,25 +16,47 @@ import { useWorkspace } from './workspace';
 export function CoderPage() {
 	useAppTheme();
 	const coding = useWorkspace();
+	const location = useLocation();
+	const navigate = useNavigate();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
-	const [page, setPage] = useState<'chat' | 'configuration' | 'instructions'>('chat');
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
+	const instructionsDirtyRef = useRef(instructionsDirty);
+	instructionsDirtyRef.current = instructionsDirty;
+	const previousPath = useRef(location.pathname);
+	const blocker = useBlocker(
+		({ currentLocation, nextLocation }) =>
+			instructionsDirtyRef.current &&
+			currentLocation.pathname === '/instructions' &&
+			currentLocation.pathname !== nextLocation.pathname
+	);
 	const project = coding.projects.find((item) => item.id === coding.projectId);
-	const leaveInstructions = () =>
-		!instructionsDirty || window.confirm('Discard unsaved changes to agent instructions?');
-	const openPage = (next: typeof page) => {
-		if (next === page || !leaveInstructions()) return;
-		if (page === 'configuration') void coding.refreshSettings();
+	const leaveInstructions = () => {
+		if (!instructionsDirtyRef.current) return true;
+		if (!window.confirm('Discard unsaved changes to agent instructions?')) return false;
+		instructionsDirtyRef.current = false;
 		setInstructionsDirty(false);
-		setPage(next);
+		return true;
+	};
+	const openPage = (path: '/' | '/settings' | '/instructions') => {
+		if (path === location.pathname || !leaveInstructions()) return;
+		void navigate(path);
 	};
 	const select = (projectId: string, sessionId?: string, fresh?: boolean) => {
 		if (!leaveInstructions()) return;
-		setInstructionsDirty(false);
-		setPage('chat');
+		void navigate('/');
 		void coding.select(projectId, sessionId, fresh);
 		if (window.innerWidth < 768) setSidebar(false);
 	};
+	useEffect(() => {
+		if (blocker.state !== 'blocked') return;
+		if (leaveInstructions()) blocker.proceed();
+		else blocker.reset();
+	}, [blocker]);
+	useEffect(() => {
+		if (previousPath.current === '/settings' && location.pathname !== '/settings')
+			void coding.refreshSettings();
+		previousPath.current = location.pathname;
+	}, [location.pathname, coding]);
 	useEffect(() => {
 		const onKey = (event: KeyboardEvent) => {
 			if (
