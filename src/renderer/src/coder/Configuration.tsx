@@ -171,7 +171,7 @@ export function Configuration({
 							<Setting
 								title={provider.name}
 								description={
-									provider.id === 'openai-codex'
+									provider.id === 'openai-codex' && provider.authType !== 'api_key'
 										? settings.runtime === 'codex'
 											? 'ChatGPT sign-in'
 											: 'ChatGPT device sign-in'

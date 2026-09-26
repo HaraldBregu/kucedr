@@ -71,6 +71,15 @@ describe('CodexHarness', () => {
 		expect(rpc.close).toHaveBeenCalled();
 	});
 
+	it('uses current API keys with ephemeral native credential storage', async () => {
+		await new CodexHarness('/coder/codex', () => 'new-api-key').run('Task', context);
+		expect(CodexRpc).toHaveBeenCalledWith('/mock/codex', '/coder/codex', true);
+		expect(rpc.request).toHaveBeenCalledWith('account/login/start', {
+			type: 'apiKey',
+			apiKey: 'new-api-key',
+		});
+	});
+
 	it('resumes the native session with read-only permissions', async () => {
 		await new CodexHarness('/coder/codex', () => undefined).run('Task', {
 			...context,

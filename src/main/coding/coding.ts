@@ -477,7 +477,11 @@ export class Coder {
 	async disconnectCodex(runtime?: CoderHarness): Promise<void> {
 		const selected = this.getSettings(runtime).runtime;
 		if (selected === 'pi') await this.pi.disconnectCodex();
-		else await this.harnesses[selected].disconnect?.();
+		else {
+			await this.harnesses[selected].disconnect?.();
+			if (selected === 'codex' && this.credentials.get('openai', 'codex'))
+				this.credentials.set('openai', '', 'codex');
+		}
 	}
 	destroy(): void {
 		for (const run of this.runs.values()) run.controller.abort();
