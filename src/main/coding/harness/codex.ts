@@ -4,6 +4,7 @@ import type {
 	CodingAuthStatus,
 	CodingCatalog,
 	CodingModel,
+	CodingThinkingLevel,
 } from '../../../shared/coding_types';
 import type { CodingHarness, HarnessContext } from './types';
 import { codexExecutable } from './executable';
@@ -222,6 +223,12 @@ export class CodexHarness implements CodingHarness {
 						id: model.model,
 						name: model.displayName,
 						reasoning: model.supportedReasoningEfforts.length > 0,
+						thinkingLevels: model.supportedReasoningEfforts.map(
+							(item) =>
+								(item.reasoningEffort === 'none'
+									? 'off'
+									: item.reasoningEffort) as CodingThinkingLevel
+						),
 						contextWindow: 0,
 					}))
 				);

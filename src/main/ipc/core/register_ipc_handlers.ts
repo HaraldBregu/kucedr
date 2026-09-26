@@ -95,7 +95,7 @@ export function registerIpcHandlers(
 			memory: services.memoryService,
 		})
 	);
-	safeRegister('coding', () =>
+	safeRegister('coder', () =>
 		new CoderIpc().register(
 			{ coding: codingService, appRegistry, windows: windowContextManager },
 			eventBus
@@ -165,12 +165,7 @@ export function registerIpcHandlers(
 	);
 	safeRegister('window', () =>
 		new WindowIpc().register(
-			{
-				logger,
-				appRegistry,
-				openVoiceConversation: options.openVoiceConversation,
-				openCoder: options.openCoder,
-			},
+			{ logger, appRegistry, openVoiceConversation: options.openVoiceConversation, openCoder: options.openCoder },
 			eventBus
 		)
 	);

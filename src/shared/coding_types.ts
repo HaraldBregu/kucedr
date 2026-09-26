@@ -28,6 +28,7 @@ export interface CodingSettings {
 }
 
 export interface CodingModel {
+	readonly thinkingLevels?: readonly CodingThinkingLevel[];
 	readonly id: string;
 	readonly name: string;
 	readonly reasoning: boolean;

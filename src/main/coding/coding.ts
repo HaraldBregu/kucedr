@@ -246,6 +246,8 @@ export class Coder {
 			const snapshot = await this.pi.getSession(projectId, id);
 			if (settings.runtime !== 'pi') throw new Error('Create a new session to change harness.');
 			const cwd = this.requireProject(projectId).directory;
+			if (settings.workingDirectory && path.resolve(settings.workingDirectory) !== cwd)
+				throw new Error('Create a new session to change directory.');
 			session = this.sessions.create(projectId, cwd, settings, snapshot.session.title, id, id);
 			this.sessions.append(id, { type: 'seed', blocks: snapshot.blocks });
 		}

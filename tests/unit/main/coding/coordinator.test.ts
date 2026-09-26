@@ -203,3 +203,54 @@ it('runs commands in the saved project without requiring a model or credentials'
 		expect.objectContaining({ type: 'command', status: 'succeeded', output: result.output }),
 	]);
 });
+
+it('rejects a mismatched project without modifying the session', async () => {
+	const f = fixture(async () => 'unused');
+	const session = f.sessions.create('project', f.project.directory, settings, 'Original');
+	const before = readFileSync(
+		path.join(f.directory, 'coder', 'sessions', 'records', session.id + '.json'),
+		'utf8'
+	);
+	await expect(
+		f.coding.send(
+			1,
+			'invalid-owner',
+			{ projectId: 'wrong-project', sessionId: session.id, mode: 'agent', input: 'hello' },
+			jest.fn()
+		)
+	).rejects.toThrow('for this project');
+	expect(
+		readFileSync(
+			path.join(f.directory, 'coder', 'sessions', 'records', session.id + '.json'),
+			'utf8'
+		)
+	).toBe(before);
+	expect(f.sessions.snapshot(session).blocks).toEqual([]);
+});
+
+it('accepts equivalent settings independent of field order', async () => {
+	const f = fixture(async () => 'ok');
+	const session = f.sessions.create('project', f.project.directory, settings, 'Original');
+	const reordered = {
+		workingDirectory: f.project.directory,
+		toolMode: settings.toolMode,
+		thinkingLevel: settings.thinkingLevel,
+		modelId: settings.modelId,
+		providerId: settings.providerId,
+		runtime: settings.runtime,
+	};
+	await expect(
+		f.coding.send(
+			1,
+			'reordered',
+			{
+				projectId: 'project',
+				sessionId: session.id,
+				settings: reordered,
+				mode: 'agent',
+				input: 'hello',
+			},
+			jest.fn()
+		)
+	).resolves.toMatchObject({ output: 'ok' });
+});

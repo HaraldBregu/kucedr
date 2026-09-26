@@ -5,6 +5,7 @@ import {
 	app,
 	APP_WINDOW_DEFAULTS,
 	coding,
+	coder,
 	connect,
 	isAppStoreValue,
 	isAppWindowSettings,
@@ -291,6 +292,8 @@ assert.equal(await agent.moveWorkspaceEntry('draft.md', 'notes'), 'notes/draft.m
 assert.equal(await agent.renameWorkspaceEntry('notes/draft.md', 'idea.md'), 'notes/idea.md');
 await agent.deleteWorkspaceFile('old.md');
 await agent.deleteWorkspaceDirectory('archive');
+globalThis.coder = globalThis.coding;
+assert.deepEqual(await coder.getSettings(), codingSettings);
 assert.deepEqual(await coding.getSettings(), codingSettings);
 const codingEvents = [];
 assert.deepEqual(await coding.listProjects(), [codingProject]);

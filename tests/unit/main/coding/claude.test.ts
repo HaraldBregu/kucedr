@@ -1,4 +1,4 @@
-import { mkdtemp, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, rm, writeFile, mkdir, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { query } from '@anthropic-ai/claude-agent-sdk';
@@ -133,4 +133,22 @@ test('aborts the SDK controller when the run is cancelled', async () => {
 			}) as never
 	);
 	await expect(harness.run('Inspect', { ...context, signal: controller.signal })).rejects.toThrow();
+});
+
+test('deletes only the selected native transcript and subagent history', async () => {
+	const nativeId = '12345678-1234-1234-1234-123456789abc';
+	const project = join(directory, 'state', 'projects', '-workspace');
+	await mkdir(join(project, nativeId), { recursive: true });
+	await writeFile(join(project, nativeId + '.jsonl'), 'session');
+	await writeFile(join(project, nativeId, 'agent.jsonl'), 'subagent');
+	await writeFile(join(project, 'another.jsonl'), 'keep');
+	await harness.deleteSession(nativeId);
+	await expect(readFile(join(project, nativeId + '.jsonl'))).rejects.toMatchObject({
+		code: 'ENOENT',
+	});
+	await expect(readFile(join(project, nativeId, 'agent.jsonl'))).rejects.toMatchObject({
+		code: 'ENOENT',
+	});
+	expect(await readFile(join(project, 'another.jsonl'), 'utf8')).toBe('keep');
+	await expect(harness.deleteSession('../outside')).rejects.toThrow('Invalid Claude session id');
 });

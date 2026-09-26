@@ -29,6 +29,7 @@ it('streams Coding app runs back to the originating view and scopes cancellation
 	const sender = {
 		id: 23,
 		send: jest.fn(),
+		isDestroyed: jest.fn(() => false),
 		once: jest.fn(),
 		removeListener: jest.fn(),
 	};
@@ -241,6 +242,7 @@ it('allows configuration and authentication from the host and Coding app only', 
 		id: 8,
 		mainFrame,
 		send: jest.fn(),
+		isDestroyed: jest.fn(() => false),
 		once: jest.fn(),
 		removeListener: jest.fn(),
 	};

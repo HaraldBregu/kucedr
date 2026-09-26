@@ -93,6 +93,7 @@ export class ClaudeHarness implements CodingHarness {
 							id: model.value,
 							name: model.displayName,
 							reasoning: Boolean(model.supportsEffort || model.supportsAdaptiveThinking),
+							thinkingLevels: model.supportedEffortLevels,
 							contextWindow: 0,
 						})),
 					},
