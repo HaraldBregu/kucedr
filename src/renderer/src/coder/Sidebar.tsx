@@ -75,136 +75,137 @@ export function Sidebar({
 					<p className="p-2 text-xs text-muted-foreground">Loading projects…</p>
 				)}
 				<SidebarMenu>
-				{coding.projects
-					.filter(
-						(project) =>
-							!filter ||
-							`${project.name} ${project.directory}`.toLowerCase().includes(filter) ||
-							coding.sessionsByProject[project.id]?.some((session) =>
-								session.title.toLowerCase().includes(filter)
-							)
-					)
-					.map((project) => {
-						const expanded = Boolean(filter) || !collapsed.includes(project.id);
-						const projectMatches = `${project.name} ${project.directory}`
-							.toLowerCase()
-							.includes(filter);
-						const sessions = (coding.sessionsByProject[project.id] ?? []).filter(
-							(session) => !filter || projectMatches || session.title.toLowerCase().includes(filter)
-						);
-						return (
-							<SidebarMenuItem key={project.id} aria-label={project.name}>
-								<div className="flex items-center gap-0.5">
-									<Button
-										variant="ghost"
-										size="icon-sm"
-										className="size-6 shrink-0"
-										aria-label={`Toggle ${project.name} sessions`}
-										aria-expanded={expanded}
-										onClick={() =>
-											setCollapsed((current) =>
-												current.includes(project.id)
-													? current.filter((id) => id !== project.id)
-													: [...current, project.id]
-											)
-										}
-									>
-										<ChevronRight
-											className={`size-3 transition-transform ${expanded ? 'rotate-90' : ''}`}
-										/>
-									</Button>
-									<SidebarMenuButton
-										type="button"
-										data-active={coding.projectId === project.id}
-										className="min-w-0 flex-1 px-1.5 text-xs font-normal"
-										title={project.directory}
-										disabled={coding.busy || !project.available}
-										onClick={() => onSelect(project.id)}
-									>
-										<Folder
-											className={`size-3.5 shrink-0 ${project.available ? '' : 'text-destructive'}`}
-										/>
-										<span className="truncate">{project.name}</span>
-									</SidebarMenuButton>
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												className="size-7 shrink-0"
-												aria-label={`${project.name} options`}
-												disabled={coding.busy || coding.loading}
-											>
-												<MoreHorizontal className="size-4" />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end">
-											<DropdownMenuItem
-												disabled={!project.available}
-												onSelect={() => onSelect(project.id, undefined, true)}
-											>
-												<Plus />
-												New session
-											</DropdownMenuItem>
-											<DropdownMenuItem
-												disabled={!project.available}
-												onSelect={() => onInstructions(project.id)}
-											>
-												<FileText />
-												Agent instructions
-											</DropdownMenuItem>
-											<DropdownMenuItem
-												disabled={!project.available}
-												onSelect={() => void coding.openProject(project.id)}
-											>
-												<FolderOpen />
-												Open folder
-											</DropdownMenuItem>
-											<DropdownMenuSeparator />
-											<DropdownMenuItem
-												className="text-destructive"
-												onSelect={() => {
-													if (onBeforeChange()) void coding.removeProject(project.id);
-												}}
-											>
-												<Trash2 />
-												Remove workspace
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-								</div>
-								{expanded && (
-									<SidebarMenu className="ml-6 mt-1 w-auto gap-0.5">
-										{sessions.map((session) => (
-											<SidebarMenuItem key={session.id}>
-											<SidebarMenuButton
-												type="button"
-												size="sm"
-												data-active={session.id === coding.snapshot?.session.id}
-												className="px-2 font-normal"
-												aria-current={
-													session.id === coding.snapshot?.session.id ? 'page' : undefined
-												}
-												title={session.title}
-												disabled={coding.busy}
-												onClick={() => onSelect(project.id, session.id)}
-											>
-												<span className="truncate">{session.title || 'Untitled session'}</span>
-											</SidebarMenuButton>
-											</SidebarMenuItem>
-										))}
-										{!sessions.length && (
-											<SidebarMenuItem>
-											<p className="px-2 py-1 text-xs text-muted-foreground">
-												{project.available ? 'No sessions yet.' : 'Folder unavailable.'}
-											</p>
-											</SidebarMenuItem>
-										)}
-									</SidebarMenu>
-								)}
-							</SidebarMenuItem>
-						);
-					})}
+					{coding.projects
+						.filter(
+							(project) =>
+								!filter ||
+								`${project.name} ${project.directory}`.toLowerCase().includes(filter) ||
+								coding.sessionsByProject[project.id]?.some((session) =>
+									session.title.toLowerCase().includes(filter)
+								)
+						)
+						.map((project) => {
+							const expanded = Boolean(filter) || !collapsed.includes(project.id);
+							const projectMatches = `${project.name} ${project.directory}`
+								.toLowerCase()
+								.includes(filter);
+							const sessions = (coding.sessionsByProject[project.id] ?? []).filter(
+								(session) =>
+									!filter || projectMatches || session.title.toLowerCase().includes(filter)
+							);
+							return (
+								<SidebarMenuItem key={project.id} aria-label={project.name}>
+									<div className="flex items-center gap-0.5">
+										<Button
+											variant="ghost"
+											size="icon-sm"
+											className="size-6 shrink-0"
+											aria-label={`Toggle ${project.name} sessions`}
+											aria-expanded={expanded}
+											onClick={() =>
+												setCollapsed((current) =>
+													current.includes(project.id)
+														? current.filter((id) => id !== project.id)
+														: [...current, project.id]
+												)
+											}
+										>
+											<ChevronRight
+												className={`size-3 transition-transform ${expanded ? 'rotate-90' : ''}`}
+											/>
+										</Button>
+										<SidebarMenuButton
+											type="button"
+											data-active={coding.projectId === project.id}
+											className="min-w-0 flex-1 px-1.5 text-xs font-normal"
+											title={project.directory}
+											disabled={coding.busy || !project.available}
+											onClick={() => onSelect(project.id)}
+										>
+											<Folder
+												className={`size-3.5 shrink-0 ${project.available ? '' : 'text-destructive'}`}
+											/>
+											<span className="truncate">{project.name}</span>
+										</SidebarMenuButton>
+										<DropdownMenu>
+											<DropdownMenuTrigger asChild>
+												<Button
+													variant="ghost"
+													size="icon-sm"
+													className="size-7 shrink-0"
+													aria-label={`${project.name} options`}
+													disabled={coding.busy || coding.loading}
+												>
+													<MoreHorizontal className="size-4" />
+												</Button>
+											</DropdownMenuTrigger>
+											<DropdownMenuContent align="end">
+												<DropdownMenuItem
+													disabled={!project.available}
+													onSelect={() => onSelect(project.id, undefined, true)}
+												>
+													<Plus />
+													New session
+												</DropdownMenuItem>
+												<DropdownMenuItem
+													disabled={!project.available}
+													onSelect={() => onInstructions(project.id)}
+												>
+													<FileText />
+													Agent instructions
+												</DropdownMenuItem>
+												<DropdownMenuItem
+													disabled={!project.available}
+													onSelect={() => void coding.openProject(project.id)}
+												>
+													<FolderOpen />
+													Open folder
+												</DropdownMenuItem>
+												<DropdownMenuSeparator />
+												<DropdownMenuItem
+													className="text-destructive"
+													onSelect={() => {
+														if (onBeforeChange()) void coding.removeProject(project.id);
+													}}
+												>
+													<Trash2 />
+													Remove workspace
+												</DropdownMenuItem>
+											</DropdownMenuContent>
+										</DropdownMenu>
+									</div>
+									{expanded && (
+										<SidebarMenu className="ml-6 mt-1 w-auto gap-0.5">
+											{sessions.map((session) => (
+												<SidebarMenuItem key={session.id}>
+													<SidebarMenuButton
+														type="button"
+														size="sm"
+														data-active={session.id === coding.snapshot?.session.id}
+														className="px-2 font-normal"
+														aria-current={
+															session.id === coding.snapshot?.session.id ? 'page' : undefined
+														}
+														title={session.title}
+														disabled={coding.busy}
+														onClick={() => onSelect(project.id, session.id)}
+													>
+														<span className="truncate">{session.title || 'Untitled session'}</span>
+													</SidebarMenuButton>
+												</SidebarMenuItem>
+											))}
+											{!sessions.length && (
+												<SidebarMenuItem>
+													<p className="px-2 py-1 text-xs text-muted-foreground">
+														{project.available ? 'No sessions yet.' : 'Folder unavailable.'}
+													</p>
+												</SidebarMenuItem>
+											)}
+										</SidebarMenu>
+									)}
+								</SidebarMenuItem>
+							);
+						})}
 				</SidebarMenu>
 			</nav>
 		</aside>
