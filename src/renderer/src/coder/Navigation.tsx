@@ -29,7 +29,11 @@ export function Navigation({
 	const { isFullScreen, isMaximized } = useWindowState();
 	return (
 		<NavigationBarContainer>
-			<NavigationBarLeftContainer isMac={isMac} isFullScreen={isFullScreen} className="min-w-0">
+			<NavigationBarLeftContainer
+				isMac={isMac}
+				isFullScreen={isFullScreen}
+				className={isMac && !isFullScreen ? 'ml-24 min-w-0' : 'min-w-0'}
+			>
 				<Button
 					type="button"
 					variant="secondary"
