@@ -57,3 +57,20 @@ it('keeps harness defaults independent including their working directory', () =>
 	expect(store.get('pi')).not.toHaveProperty('profiles');
 	expect(() => store.set({ ...pi, workingDirectory: 'relative/path' })).toThrow('absolute');
 });
+
+it('keeps the Coder layout when harness settings change', () => {
+	const store = new CodingStore();
+	const layout = {
+		sidebarOpen: false,
+		viewerOpen: true,
+		sidebarWidth: 320,
+		viewerWidth: 480,
+	};
+	expect(store.getLayout()).toBeNull();
+	expect(store.setLayout(layout)).toEqual(layout);
+	store.set({ ...DEFAULT_CODING_SETTINGS, modelId: 'model' });
+	expect(store.getLayout()).toEqual(layout);
+	expect(() => store.setLayout({ ...layout, viewerWidth: Number.NaN })).toThrow(
+		'Invalid Coder layout.'
+	);
+});

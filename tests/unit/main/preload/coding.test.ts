@@ -124,3 +124,19 @@ it('validates settings before forwarding them to main', () => {
 		} as never)
 	).toThrow('Invalid coding settings.');
 });
+
+it('forwards valid Coder layout and rejects invalid widths', async () => {
+	const layout = {
+		sidebarOpen: true,
+		viewerOpen: false,
+		sidebarWidth: 280,
+		viewerWidth: 420,
+	};
+	await coding.getLayout();
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.getLayout);
+	await coding.saveLayout(layout);
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.saveLayout, layout);
+	expect(() => coding.saveLayout({ ...layout, sidebarWidth: Number.NaN })).toThrow(
+		'Invalid Coder layout.'
+	);
+});
