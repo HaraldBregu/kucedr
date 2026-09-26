@@ -23,6 +23,7 @@ export function CoderPage() {
 	const instructionsDirtyRef = useRef(instructionsDirty);
 	instructionsDirtyRef.current = instructionsDirty;
 	const previousPath = useRef(location.pathname);
+	const skipSettingsRefresh = useRef(false);
 	const blocker = useBlocker(
 		({ currentLocation, nextLocation }) =>
 			instructionsDirtyRef.current &&
@@ -53,8 +54,10 @@ export function CoderPage() {
 		else blocker.reset();
 	}, [blocker]);
 	useEffect(() => {
-		if (previousPath.current === '/settings' && location.pathname !== '/settings')
-			void coding.refreshSettings();
+		if (previousPath.current === '/settings' && location.pathname !== '/settings') {
+			if (!skipSettingsRefresh.current) void coding.refreshSettings();
+			skipSettingsRefresh.current = false;
+		}
 		previousPath.current = location.pathname;
 	}, [location.pathname, coding]);
 	useEffect(() => {
@@ -125,7 +128,11 @@ export function CoderPage() {
 								<Configuration
 									initial={coding.settings}
 									session={coding.snapshot?.session}
-									onDone={() => openPage('/')}
+									onDone={(settings) => {
+										skipSettingsRefresh.current = true;
+										void coding.refreshSettings(settings?.runtime);
+										openPage('/');
+									}}
 								/>
 							}
 						/>
