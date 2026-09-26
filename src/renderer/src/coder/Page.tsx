@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Navigate, Route, Routes, useBlocker, useLocation, useNavigate } from 'react-router-dom';
 import { Code2, FolderPlus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,11 +13,15 @@ import { Transcript } from './Transcript';
 import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
 import { Viewer } from './Viewer';
+import { Resize } from './Resize';
 import { Composer } from './Composer';
 import { Configuration } from './Configuration';
 import { Interaction } from './Interaction';
 import { Instructions } from './Instructions';
 import { useWorkspace } from './workspace';
+
+const RIGHT_MIN_WIDTH = 280;
+const RIGHT_MAX_WIDTH = 576;
 
 export function CoderPage() {
 	useAppTheme();
@@ -26,6 +30,9 @@ export function CoderPage() {
 	const navigate = useNavigate();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
 	const [viewer, setViewer] = useState(() => window.innerWidth >= 1280);
+	const [viewerWidth, setViewerWidth] = useState(() =>
+		Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, window.innerWidth * 0.35))
+	);
 	const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const instructionsDirtyRef = useRef(instructionsDirty);
@@ -251,7 +258,21 @@ export function CoderPage() {
 					</Routes>
 				</main>
 				{viewer && (
-					<div className="absolute inset-y-0 right-0 z-20 w-[min(85vw,400px)] border-l border-border bg-background xl:relative xl:z-10 xl:w-[35%] xl:max-w-xl">
+					<div
+						className="absolute inset-y-0 right-0 z-20 w-[min(85vw,400px)] border-l border-sidebar-border bg-sidebar text-sidebar-foreground xl:relative xl:z-10 xl:w-[var(--coder-viewer-width)] xl:shrink-0"
+						style={{ '--coder-viewer-width': `${viewerWidth}px` } as CSSProperties}
+					>
+						<Resize
+							side="left"
+							width={viewerWidth}
+							minWidth={RIGHT_MIN_WIDTH}
+							maxWidth={RIGHT_MAX_WIDTH}
+							label="Resize content viewer"
+							className="xl:block"
+							onWidthChange={(width) =>
+								setViewerWidth(Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, width)))
+							}
+						/>
 						<Viewer
 							key={coding.projectId}
 							projectId={coding.projectId}
