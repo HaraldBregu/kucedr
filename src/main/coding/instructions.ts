@@ -10,6 +10,7 @@ import type {
 } from '../../shared/coding_types';
 import { atomicWrite } from '../shared/atomic_write';
 import { codingLocation } from './location';
+import { userDataLocation } from '../shared/user_data_location';
 
 const DEFAULT_FILE_NAME = 'AGENTS.md';
 const MAX_FILE_SIZE = 256 * 1024;
@@ -22,7 +23,10 @@ export class CodingInstructions {
 		runtime: CoderHarness = 'pi'
 	): Promise<CodingProjectInstructions> {
 		const workspaceDirectory = path.resolve(project.directory);
-		const agentDirectory = path.resolve(this.agentDirectory);
+		const agentDirectory =
+			runtime === 'pi'
+				? path.resolve(this.agentDirectory)
+				: path.join(userDataLocation(), 'coder', runtime);
 		const contextFiles = loadInstructionSources(workspaceDirectory, runtime, agentDirectory);
 		const workspaceSource = contextFiles.find(
 			(source) => path.dirname(path.resolve(source.path)) === workspaceDirectory

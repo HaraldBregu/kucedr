@@ -1,7 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { realpathSync } from 'node:fs';
-import type { StoredProvider } from '../../shared/provider_types';
 import type {
 	CodingSettings,
 	CodingRunRequest,
@@ -29,7 +28,6 @@ import { CodingInstructions } from './instructions';
 interface CodingDependencies {
 	readonly store: CodingStore;
 	readonly projects: CodingProjectStore;
-	readonly getProvider: (providerId: string) => StoredProvider | undefined;
 	readonly harnesses?: Partial<Record<CoderHarness, CodingHarness>>;
 	readonly sessions?: CoderSessions;
 	readonly credentials?: Pick<CoderCredentials, 'get' | 'set'>;
@@ -152,9 +150,6 @@ export class Coder {
 		if ([...this.runs.values()].some((r) => r.projectId === id))
 			throw new Error('Stop the project run first.');
 		return this.dependencies.projects.remove(id);
-	}
-	openProject(id: string) {
-		return this.dependencies.projects.get(id);
 	}
 	readProjectFile(id: string, file: string) {
 		return this.pi.readProjectFile(id, file);

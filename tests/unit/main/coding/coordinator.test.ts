@@ -51,7 +51,6 @@ function fixture(run: (input: string, context: HarnessContext) => Promise<string
 	const coding = new Coding({
 		store: store as unknown as CodingStore,
 		projects: projects as unknown as CodingProjectStore,
-		getProvider: () => undefined,
 		credentials: { get: () => undefined, set: jest.fn() },
 		sessions,
 		harnesses: { codex: { run, listModels: async () => ({ providers: [] }) } },

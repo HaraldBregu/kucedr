@@ -20,7 +20,7 @@ import { readStorageConfig } from './storage/local/config';
 import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
 import { Coding, CodingProjectStore, CodingStore } from './coding';
-import { getProvider, getStorageSettings } from './settings_store';
+import { getStorageSettings } from './settings_store';
 import { agentLocation } from './shared/agent_location';
 import { EnvironmentManager } from './terminal/environment';
 import { PtyManager } from './terminal/manager';
@@ -72,7 +72,6 @@ export function bootstrapServices(): BootstrapResult {
 				(directory): directory is string => Boolean(directory)
 			)
 		),
-		getProvider: (providerId) => getProvider(providerId, 'models'),
 	});
 	const channelRegistry = createChannelRegistry({ logger, eventBus, agentService });
 	const windowContextManager = new WindowContextManager(logger, eventBus);
