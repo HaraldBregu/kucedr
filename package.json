@@ -178,7 +178,7 @@
 		"@types/ws": "^8",
 		"@vitejs/plugin-react": "^5.1.4",
 		"cross-env": "^7.0.3",
-		"electron": "^41.3.0",
+		"electron": "^44.4.5",
 		"electron-builder": "^26.15.3",
 		"electron-vite": "^5.0.0",
 		"eslint": "^9.17.0",
