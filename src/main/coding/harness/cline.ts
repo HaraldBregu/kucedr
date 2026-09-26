@@ -9,7 +9,6 @@ import {
 	peekClineRecommendedModels,
 	startClineDeviceAuth,
 } from '@cline/sdk';
-import type { AgentMessage } from '@cline/sdk';
 import type {
 	CodingAuthEvent,
 	CodingAuthStatus,
@@ -29,6 +28,7 @@ type Credentials = {
 	email?: string;
 	metadata?: Record<string, unknown>;
 };
+type AgentMessage = Parameters<Agent['restore']>[0][number];
 
 export class ClineHarness implements CodingHarness {
 	private readonly active = new Set<Agent>();
