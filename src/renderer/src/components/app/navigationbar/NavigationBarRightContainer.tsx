@@ -13,7 +13,6 @@ export const NavigationBarRightContainer = memo(function AppNavigationBarRightCo
 	return (
 		<div
 			className={cn('flex items-center h-full z-10 gap-1', className)}
-			style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 		>
 			{children}
 		</div>

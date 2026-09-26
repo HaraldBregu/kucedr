@@ -21,7 +21,6 @@ export const NavigationBarLeftContainer = memo(function AppNavigationBarLeftCont
 				isMac && (isFullScreen ? 'ml-2' : 'ml-20'),
 				className
 			)}
-			style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 		>
 			{children}
 		</div>

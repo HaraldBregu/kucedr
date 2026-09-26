@@ -178,7 +178,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				{isMac && (searchButton || voiceButton || routeButton) && (
 					<div
 						className="z-10 mr-3 flex h-full items-center gap-1"
-						style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 					>
 						{searchButton}
 						{voiceButton}

@@ -448,6 +448,10 @@ input[type='range']:hover::-moz-range-thumb {
 	backdrop-filter: blur(28px) saturate(140%);
 }
 
+[data-slot='navigationbar'] :is(button, a) {
+	-webkit-app-region: no-drag;
+}
+
 .app-translucent-window > .app-translucent-surface:first-child {
 	border-top-left-radius: 0;
 	border-top-right-radius: var(--app-window-radius);
