@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import type {
-	CodingAuthEvent,
 	CodingCatalog,
 	CodingProviderId,
 	CodingSettings,
@@ -18,10 +17,7 @@ export function useConfiguration(
 	const [loading, setLoading] = useState(true);
 	const [saving, setSaving] = useState(false);
 	const savingRef = useRef(false);
-	const [connecting, setConnecting] = useState(false);
-	const [authEvent, setAuthEvent] = useState<CodingAuthEvent | null>(null);
 	const [error, setError] = useState('');
-	const [apiKey, setApiKey] = useState('');
 
 	const save = async (next: CodingSettings): Promise<void> => {
 		if (savingRef.current) return;
@@ -74,7 +70,6 @@ export function useConfiguration(
 
 	const setHarness = async (runtime: CodingSettings['runtime']) => {
 		setLoading(true);
-		setApiKey('');
 		setError('');
 		try {
 			const [next, models] = await Promise.all([
@@ -95,41 +90,6 @@ export function useConfiguration(
 			if (workingDirectory && settings) await save({ ...settings, workingDirectory });
 		} catch (reason) {
 			setError(String(reason));
-		}
-	};
-	const saveKey = async () => {
-		if (!settings || !apiKey.trim()) return;
-		setSaving(true);
-		try {
-			await window.coder.setApiKey(
-				settings.providerId === 'anthropic'
-					? 'anthropic'
-					: 'openai',
-				apiKey.trim(),
-				settings.runtime
-			);
-			setApiKey('');
-			setCatalog(await window.coder.listModels(settings.runtime));
-		} catch (reason) {
-			setError(String(reason));
-		} finally {
-			setSaving(false);
-		}
-	};
-	const removeKey = async () => {
-		if (!settings) return;
-		setSaving(true);
-		try {
-			await window.coder.setApiKey(
-				settings.providerId === 'anthropic' ? 'anthropic' : 'openai',
-				'',
-				settings.runtime
-			);
-			setCatalog(await window.coder.listModels(settings.runtime));
-		} catch (reason) {
-			setError(String(reason));
-		} finally {
-			setSaving(false);
 		}
 	};
 	const setProvider = (providerId: CodingProviderId): void => {
@@ -162,71 +122,21 @@ export function useConfiguration(
 	const setTools = (toolMode: CodingToolMode): void => {
 		if (settings) void save({ ...settings, toolMode });
 	};
-	const connect = async (): Promise<void> => {
-		setConnecting(true);
-		setAuthEvent(null);
-		setError('');
-		try {
-			await window.coder.connectCodex((event) => {
-				setAuthEvent(event);
-				const url =
-					event.type === 'device-code'
-						? event.verificationUri
-						: event.type === 'auth-url'
-							? event.url
-							: null;
-				if (url)
-					void window.app.openExternalUrl(url).catch((reason) => {
-						setError(reason instanceof Error ? reason.message : 'Unable to open sign-in page.');
-					});
-			}, settings?.runtime);
-			setCatalog(await window.coder.listModels(settings?.runtime));
-		} catch (reason) {
-			setError(reason instanceof Error ? reason.message : 'Unable to connect Codex.');
-		} finally {
-			setConnecting(false);
-			setAuthEvent(null);
-		}
-	};
-	const disconnect = async (): Promise<void> => {
-		setConnecting(true);
-		setError('');
-		try {
-			await window.coder.disconnectCodex(settings?.runtime);
-			setCatalog(await window.coder.listModels(settings?.runtime));
-		} catch (reason) {
-			setError(reason instanceof Error ? reason.message : 'Unable to disconnect Codex.');
-		} finally {
-			setConnecting(false);
-		}
-	};
-	const cancelConnect = async (): Promise<void> => {
-		try {
-			await window.coder.cancelCodexLogin();
-		} catch (reason) {
-			setError(reason instanceof Error ? reason.message : 'Unable to cancel sign-in.');
-		}
+	const refreshCatalog = async (runtime: CodingSettings['runtime']) => {
+		setCatalog(await window.coder.listModels(runtime));
 	};
 
 	const selectedProvider = catalog.providers.find((item) => item.id === settings?.providerId);
 	return {
-		apiKey,
-		setApiKey,
-		saveKey,
-		removeKey,
 		setHarness,
 		chooseDirectory,
-		authEvent,
 		catalog,
-		connecting,
 		error,
 		loading,
 		saving,
 		settings,
 		selectedProvider,
-		connect,
-		cancelConnect,
-		disconnect,
+		refreshCatalog,
 		setModel,
 		setProvider,
 		setThinking,
