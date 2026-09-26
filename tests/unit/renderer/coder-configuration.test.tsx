@@ -93,7 +93,7 @@ it('configures Cline independently of Pi and Codex and opens account sign-in', a
 	});
 	render(<Authentication onChanged={jest.fn()} />);
 	await waitFor(() => expect(screen.getByText('Cline')).toBeInTheDocument());
-	const cline = screen.getByText('Cline').closest('.grid')!;
+	const cline = screen.getByText('Cline').closest('.rounded-md')!;
 	fireEvent.change(within(cline).getByLabelText('Cline API key'), {
 		target: { value: 'cline-key' },
 	});
