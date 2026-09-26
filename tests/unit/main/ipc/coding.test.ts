@@ -73,6 +73,39 @@ it('streams Coding app runs back to the originating view and scopes cancellation
 	expect(cancel).toHaveBeenCalledWith('run-1', 23);
 });
 
+it('loads and saves Coder layout through trusted IPC', async () => {
+	const layout = {
+		sidebarOpen: false,
+		viewerOpen: true,
+		sidebarWidth: 320,
+		viewerWidth: 480,
+	};
+	const coding = {
+		getLayout: jest.fn().mockReturnValue(layout),
+		saveLayout: jest.fn().mockReturnValue(layout),
+	} as unknown as Coding;
+	const appRegistry = {
+		has: jest.fn().mockReturnValue(true),
+		resolve: jest.fn().mockReturnValue('coder'),
+	};
+	new CodingIpc().register(
+		{ coding, appRegistry: appRegistry as never, windows: windows as never },
+		{} as EventBus
+	);
+	const handler = (channel: string) =>
+		(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
+	const event = { sender: { id: 23 } };
+	expect(await handler(CodingChannels.getLayout)(event)).toEqual({ success: true, data: layout });
+	expect(await handler(CodingChannels.saveLayout)(event, layout)).toEqual({
+		success: true,
+		data: layout,
+	});
+	expect(coding.saveLayout).toHaveBeenCalledWith(layout);
+	expect(await handler(CodingChannels.saveLayout)(event, { ...layout, viewerWidth: -1 })).toEqual(
+		expect.objectContaining({ success: false })
+	);
+});
+
 it('lets the Coding app select main-owned projects and read their sessions', async () => {
 	const selectedProject = {
 		id: 'project-1',
