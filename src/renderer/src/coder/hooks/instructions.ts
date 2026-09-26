@@ -14,7 +14,8 @@ export function useProjectInstructions(projectId: string | undefined) {
 	const [saving, setSaving] = useState(false);
 
 	useEffect(() => {
-		const sequence = ++loadSequenceRef.current;
+		const requests = loadSequenceRef;
+		const sequence = ++requests.current;
 		if (!projectId) return;
 		void window.coding
 			.getProjectInstructions(projectId)
@@ -31,7 +32,7 @@ export function useProjectInstructions(projectId: string | undefined) {
 				});
 			});
 		return () => {
-			loadSequenceRef.current++;
+			requests.current++;
 		};
 	}, [projectId]);
 

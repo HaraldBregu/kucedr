@@ -32,7 +32,12 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 				{configuration.saving ? (
 					<span className="text-[11px] text-muted-foreground">Saving…</span>
 				) : null}
-				<Button variant="ghost" size="sm" onClick={onDone}>
+				<Button
+					variant="ghost"
+					size="sm"
+					disabled={configuration.saving || configuration.connecting}
+					onClick={onDone}
+				>
 					Done
 				</Button>
 			</header>

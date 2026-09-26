@@ -57,6 +57,7 @@ export function useWorkspace() {
 
 	useEffect(() => {
 		let active = true;
+		const requests = selection;
 		void Promise.all([window.coding.listProjects(), window.coding.getSettings()])
 			.then(async ([items, nextSettings]) => {
 				const grouped = await Promise.all(
@@ -76,7 +77,7 @@ export function useWorkspace() {
 			.finally(() => active && setLoading(false));
 		return () => {
 			active = false;
-			selection.current++;
+			requests.current++;
 		};
 	}, [select]);
 

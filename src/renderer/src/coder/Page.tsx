@@ -24,11 +24,13 @@ export function CoderPage() {
 		!instructionsDirty || window.confirm('Discard unsaved changes to agent instructions?');
 	const openPage = (next: typeof page) => {
 		if (next === page || !leaveInstructions()) return;
+		if (page === 'configuration') void coding.refreshSettings();
 		setInstructionsDirty(false);
 		setPage(next);
 	};
 	const select = (projectId: string, sessionId?: string, fresh?: boolean) => {
 		if (!leaveInstructions()) return;
+		if (page === 'configuration') void coding.refreshSettings();
 		setInstructionsDirty(false);
 		setPage('chat');
 		void coding.select(projectId, sessionId, fresh);
@@ -182,6 +184,7 @@ export function CoderPage() {
 				{viewer && (
 					<div className="absolute inset-y-0 right-0 z-10 w-[min(85vw,400px)] border-l xl:static xl:w-[35%] xl:max-w-xl">
 						<Viewer
+							key={coding.projectId}
 							projectId={coding.projectId}
 							snapshot={coding.snapshot}
 							revision={coding.revision}
