@@ -12,6 +12,7 @@ import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
 import { Transcript } from './Transcript';
 import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
+import { Viewer } from './Viewer';
 import { Composer } from './Composer';
 import { Configuration } from './Configuration';
 import { Interaction } from './Interaction';
@@ -24,6 +25,7 @@ export function CoderPage() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
+	const [viewer, setViewer] = useState(() => window.innerWidth >= 1280);
 	const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const instructionsDirtyRef = useRef(instructionsDirty);
@@ -102,7 +104,18 @@ export function CoderPage() {
 	}, [coding, project, location.pathname, navigate]);
 	return (
 		<div className="flex h-dvh min-h-0 flex-col bg-background pt-12 text-foreground">
-			<Navigation sidebar={sidebar} onToggleSidebar={() => setSidebar(!sidebar)} />
+			<Navigation
+				sidebar={sidebar}
+				viewer={viewer}
+				onToggleSidebar={() => {
+					setSidebar(!sidebar);
+					if (window.innerWidth < 1280) setViewer(false);
+				}}
+				onToggleViewer={() => {
+					setViewer(!viewer);
+					if (window.innerWidth < 768) setSidebar(false);
+				}}
+			/>
 			<div className="relative flex min-h-0 flex-1 overflow-hidden">
 				{sidebar && (
 					<Sidebar
@@ -237,6 +250,18 @@ export function CoderPage() {
 						<Route path="*" element={<Navigate to="/" replace />} />
 					</Routes>
 				</main>
+				{viewer && (
+					<div className="absolute inset-y-0 right-0 z-20 w-[min(85vw,400px)] border-l border-border bg-background xl:relative xl:z-10 xl:w-[35%] xl:max-w-xl">
+						<Viewer
+							key={coding.projectId}
+							projectId={coding.projectId}
+							snapshot={coding.snapshot}
+							revision={coding.revision}
+							busy={coding.busy}
+							onInstructions={() => openPage('/instructions')}
+						/>
+					</div>
+				)}
 			</div>
 		</div>
 	);
