@@ -59,7 +59,7 @@ export function Navigation({
 			};
 			animation.current = requestAnimationFrame(frame);
 		}
-		onRun();
+		if (canRun) onRun();
 	};
 	const stop = () => {
 		if (animation.current !== null) cancelAnimationFrame(animation.current);
@@ -80,9 +80,9 @@ export function Navigation({
 					variant="ghost"
 					size="icon"
 					className="size-8 shrink-0 bg-transparent hover:bg-transparent dark:hover:bg-transparent"
-					aria-label="Run current prompt"
-					title="Run current prompt"
-					disabled={!canRun || active}
+					aria-label="Play"
+					title="Play"
+					disabled={active}
 					onClick={run}
 				>
 					<Play className="size-4" />
@@ -92,8 +92,8 @@ export function Navigation({
 					variant="ghost"
 					size="icon"
 					className="size-8 shrink-0 bg-transparent hover:bg-transparent dark:hover:bg-transparent"
-					aria-label="Stop current run"
-					title="Stop current run"
+					aria-label="Stop"
+					title="Stop"
 					disabled={!active}
 					onClick={stop}
 				>
