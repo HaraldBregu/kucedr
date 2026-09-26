@@ -32,7 +32,7 @@ export function Navigation({
 			<NavigationBarLeftContainer isMac={isMac} isFullScreen={isFullScreen} className="min-w-0">
 				<Button
 					type="button"
-					variant="outline"
+					variant="secondary"
 					size="icon"
 					className="size-8 shrink-0"
 					aria-label="Run current prompt"
@@ -44,7 +44,7 @@ export function Navigation({
 				</Button>
 				<Button
 					type="button"
-					variant="outline"
+					variant="secondary"
 					size="icon"
 					className="size-8 shrink-0"
 					aria-label="Stop current run"
