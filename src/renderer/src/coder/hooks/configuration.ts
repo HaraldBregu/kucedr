@@ -8,7 +8,11 @@ import type {
 	CodingToolMode,
 } from '@shared/coding_types';
 
-export function useConfiguration() {
+export function useConfiguration(
+	initial?: CodingSettings | null,
+	session?: { projectId: string; id: string },
+	defaults = false
+) {
 	const [settings, setSettings] = useState<CodingSettings | null>(null);
 	const [catalog, setCatalog] = useState<CodingCatalog>({ providers: [] });
 	const [loading, setLoading] = useState(true);
@@ -17,6 +21,7 @@ export function useConfiguration() {
 	const [connecting, setConnecting] = useState(false);
 	const [authEvent, setAuthEvent] = useState<CodingAuthEvent | null>(null);
 	const [error, setError] = useState('');
+	const [apiKey, setApiKey] = useState('');
 
 	const save = async (next: CodingSettings): Promise<void> => {
 		if (savingRef.current) return;
@@ -24,7 +29,10 @@ export function useConfiguration() {
 		setSaving(true);
 		setError('');
 		try {
-			setSettings(await window.coding.saveSettings(next));
+			if (session && !defaults) {
+				const saved = await window.coder.saveSessionSettings(session.projectId, session.id, next);
+				setSettings(saved.settings ?? next);
+			} else setSettings(await window.coder.saveSettings(next));
 		} catch (reason) {
 			setError(reason instanceof Error ? reason.message : 'Unable to save Coder settings.');
 		} finally {
@@ -35,7 +43,10 @@ export function useConfiguration() {
 
 	useEffect(() => {
 		let active = true;
-		void Promise.all([window.coding.getSettings(), window.coding.listModels()])
+		void Promise.all([
+			initial && !defaults ? Promise.resolve(initial) : window.coder.getSettings(initial?.runtime),
+			window.coder.listModels(initial?.runtime),
+		])
 			.then(([nextSettings, nextCatalog]) => {
 				if (!active) return;
 				setSettings(nextSettings);
@@ -50,8 +61,49 @@ export function useConfiguration() {
 		return () => {
 			active = false;
 		};
-	}, []);
+	}, [initial, defaults]);
 
+	const setHarness = async (runtime: CodingSettings['runtime']) => {
+		setLoading(true);
+		try {
+			const [next, models] = await Promise.all([
+				window.coder.getSettings(runtime),
+				window.coder.listModels(runtime),
+			]);
+			setSettings(next);
+			setCatalog(models);
+		} catch (reason) {
+			setError(String(reason));
+		} finally {
+			setLoading(false);
+		}
+	};
+	const chooseDirectory = async () => {
+		try {
+			const workingDirectory = await window.coder.pickDirectory();
+			if (workingDirectory && settings) await save({ ...settings, workingDirectory });
+		} catch (reason) {
+			setError(String(reason));
+		}
+	};
+	const saveKey = async () => {
+		if (!settings || !apiKey.trim()) return;
+		setSaving(true);
+		try {
+			await window.coder.setApiKey(
+				settings.runtime === 'claude' || settings.providerId === 'anthropic'
+					? 'anthropic'
+					: 'openai',
+				apiKey.trim()
+			);
+			setApiKey('');
+			setCatalog(await window.coder.listModels(settings.runtime));
+		} catch (reason) {
+			setError(String(reason));
+		} finally {
+			setSaving(false);
+		}
+	};
 	const setProvider = (providerId: CodingProviderId): void => {
 		if (!settings) return;
 		const provider = catalog.providers.find((item) => item.id === providerId);
@@ -74,7 +126,7 @@ export function useConfiguration() {
 		setAuthEvent(null);
 		setError('');
 		try {
-			await window.coding.connectCodex((event) => {
+			await window.coder.connectCodex((event) => {
 				setAuthEvent(event);
 				const url =
 					event.type === 'device-code'
@@ -86,8 +138,8 @@ export function useConfiguration() {
 					void window.app.openExternalUrl(url).catch((reason) => {
 						setError(reason instanceof Error ? reason.message : 'Unable to open sign-in page.');
 					});
-			});
-			setCatalog(await window.coding.listModels());
+			}, settings?.runtime);
+			setCatalog(await window.coder.listModels(settings?.runtime));
 		} catch (reason) {
 			setError(reason instanceof Error ? reason.message : 'Unable to connect Codex.');
 		} finally {
@@ -99,8 +151,8 @@ export function useConfiguration() {
 		setConnecting(true);
 		setError('');
 		try {
-			await window.coding.disconnectCodex();
-			setCatalog(await window.coding.listModels());
+			await window.coder.disconnectCodex(settings?.runtime);
+			setCatalog(await window.coder.listModels(settings?.runtime));
 		} catch (reason) {
 			setError(reason instanceof Error ? reason.message : 'Unable to disconnect Codex.');
 		} finally {
@@ -109,7 +161,7 @@ export function useConfiguration() {
 	};
 	const cancelConnect = async (): Promise<void> => {
 		try {
-			await window.coding.cancelCodexLogin();
+			await window.coder.cancelCodexLogin();
 		} catch (reason) {
 			setError(reason instanceof Error ? reason.message : 'Unable to cancel sign-in.');
 		}
@@ -117,6 +169,11 @@ export function useConfiguration() {
 
 	const selectedProvider = catalog.providers.find((item) => item.id === settings?.providerId);
 	return {
+		apiKey,
+		setApiKey,
+		saveKey,
+		setHarness,
+		chooseDirectory,
 		authEvent,
 		catalog,
 		connecting,

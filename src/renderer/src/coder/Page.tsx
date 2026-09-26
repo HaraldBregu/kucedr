@@ -9,6 +9,7 @@ import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
 import { Composer } from './Composer';
 import { Configuration } from './Configuration';
+import { Interaction } from './Interaction';
 import { Instructions } from './Instructions';
 import { useWorkspace } from './workspace';
 
@@ -103,14 +104,17 @@ export function CoderPage() {
 				<main className="flex min-w-0 flex-1 flex-col">
 					{page === 'configuration' ? (
 						<Configuration
-							onDone={() => {
-								void coding.refreshSettings();
+							initial={coding.settings}
+							session={coding.snapshot?.session}
+							onDone={(settings) => {
+								void coding.refreshSettings(settings?.runtime);
 								setPage('chat');
 							}}
 						/>
 					) : page === 'instructions' && project ? (
 						<Instructions
-							key={project.id}
+							key={`${project.id}:${coding.settings?.runtime}`}
+							runtime={coding.settings?.runtime}
 							projectId={project.id}
 							projectName={project.name}
 							onDirtyChange={setInstructionsDirty}
@@ -165,6 +169,9 @@ export function CoderPage() {
 											)}
 										</div>
 									)}
+									{coding.interactions.map((item) => (
+										<Interaction key={item.requestId} request={item} onRespond={coding.respond} />
+									))}
 									{coding.busy && (
 										<p role="status" className="mt-4 text-xs text-muted-foreground">
 											{coding.status}

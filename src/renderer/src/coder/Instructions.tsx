@@ -1,3 +1,4 @@
+import type { CodingSettings } from '@shared/coding_types';
 import { useEffect } from 'react';
 import { AlertTriangle, FileText, LoaderCircle, Save } from 'lucide-react';
 
@@ -8,17 +9,19 @@ import { Textarea } from '@/components/ui/textarea';
 import { useProjectInstructions } from './hooks/instructions';
 
 export function Instructions({
+	runtime,
 	projectId,
 	projectName,
 	onDone,
 	onDirtyChange,
 }: {
+	runtime?: CodingSettings['runtime'];
 	projectId: string;
 	projectName: string;
 	onDone: () => void;
 	onDirtyChange?: (dirty: boolean) => void;
 }) {
-	const editor = useProjectInstructions(projectId);
+	const editor = useProjectInstructions(projectId, runtime);
 
 	useEffect(() => onDirtyChange?.(editor.dirty), [editor.dirty, onDirtyChange]);
 	useEffect(() => {

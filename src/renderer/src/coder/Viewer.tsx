@@ -41,7 +41,7 @@ export function Viewer({
 		setError('');
 		if (!projectId) return;
 		setListing(true);
-		void window.coding
+		void window.coder
 			.listProjectFiles(projectId)
 			.then((items) => {
 				if (active) setFiles(items.filter((file) => file.type === 'file'));
@@ -58,7 +58,7 @@ export function Viewer({
 		if (!projectId || !path) return;
 		setLoading(true);
 		setError('');
-		void window.coding
+		void window.coder
 			.readProjectFile(projectId, path)
 			.then((text) => active && setContent(text))
 			.catch((cause: Error) => active && setError(cause.message))
@@ -72,7 +72,7 @@ export function Viewer({
 		setCreating(true);
 		setError('');
 		try {
-			const file = await window.coding.createProjectFile(projectId, newPath.trim());
+			const file = await window.coder.createProjectFile(projectId, newPath.trim());
 			setRefresh((value) => value + 1);
 			setPath(file.path);
 			setNewPath('');

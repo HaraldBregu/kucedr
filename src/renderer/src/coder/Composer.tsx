@@ -1,6 +1,8 @@
 import { Bot, CornerDownLeft, Square, TerminalSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Choice } from './Choice';
+import type { CodingSettings } from '@shared/coding_types';
 import type { Workspace } from './workspace';
 
 export function Composer({
@@ -12,7 +14,7 @@ export function Composer({
 }) {
 	const project = coding.projects.find((item) => item.id === coding.projectId);
 	const disabled =
-		!project?.available ||
+		(!project?.available && !coding.settings?.workingDirectory) ||
 		coding.loading ||
 		coding.busy ||
 		(coding.mode === 'agent' && !coding.settings?.modelId);
@@ -24,6 +26,33 @@ export function Composer({
 				void coding.send();
 			}}
 		>
+			<div className="mb-2 flex flex-wrap items-center gap-2">
+				<Choice
+					value={coding.settings?.runtime ?? 'pi'}
+					options={[
+						{ value: 'pi', label: 'Pi' },
+						{ value: 'codex', label: 'Codex' },
+						{ value: 'claude', label: 'Claude' },
+					]}
+					disabled={coding.busy || coding.loading || Boolean(coding.snapshot)}
+					onChange={(value) => void coding.changeHarness(value as CodingSettings['runtime'])}
+				/>
+				<Button
+					type="button"
+					variant="ghost"
+					size="sm"
+					className="min-w-0 max-w-64 truncate"
+					title={
+						coding.snapshot?.session.workingDirectory ??
+						project?.directory ??
+						coding.settings?.workingDirectory
+					}
+					disabled={coding.busy || coding.loading || Boolean(coding.snapshot)}
+					onClick={() => void coding.addProject()}
+				>
+					{project?.name ?? coding.settings?.workingDirectory ?? 'Choose folder'}
+				</Button>
+			</div>
 			<div className="rounded-lg border bg-card focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
 				<Textarea
 					id="coder-composer"

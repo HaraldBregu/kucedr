@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { CodingProjectInstructions } from '@shared/coding_types';
+import type { CodingProjectInstructions, CodingSettings } from '@shared/coding_types';
 
 interface InstructionsState {
 	readonly projectId?: string;
@@ -8,20 +8,31 @@ interface InstructionsState {
 	readonly error: string;
 }
 
-export function useProjectInstructions(projectId: string | undefined) {
+export function useProjectInstructions(
+	projectId: string | undefined,
+	runtime?: CodingSettings['runtime']
+) {
 	const loadSequenceRef = useRef(0);
-	const [state, setState] = useState<InstructionsState>({ content: '', error: '' });
+	const [state, setState] = useState<InstructionsState>({
+		content: '',
+		error: '',
+	});
 	const [saving, setSaving] = useState(false);
 
 	useEffect(() => {
 		const requests = loadSequenceRef;
 		const sequence = ++requests.current;
 		if (!projectId) return;
-		void window.coding
-			.getProjectInstructions(projectId)
+		void window.coder
+			.getProjectInstructions(projectId, runtime)
 			.then((next) => {
 				if (sequence !== loadSequenceRef.current) return;
-				setState({ projectId, instructions: next, content: next.content, error: '' });
+				setState({
+					projectId,
+					instructions: next,
+					content: next.content,
+					error: '',
+				});
 			})
 			.catch((reason) => {
 				if (sequence !== loadSequenceRef.current) return;
@@ -34,7 +45,7 @@ export function useProjectInstructions(projectId: string | undefined) {
 		return () => {
 			requests.current++;
 		};
-	}, [projectId]);
+	}, [projectId, runtime]);
 
 	const current = state.projectId === projectId ? state : { content: '', error: '' };
 	const instructions = current.instructions;
@@ -51,10 +62,14 @@ export function useProjectInstructions(projectId: string | undefined) {
 		setSaving(true);
 		setState((value) => (value.projectId === projectId ? { ...value, error: '' } : value));
 		try {
-			const next = await window.coding.saveProjectInstructions(projectId, {
-				content: submittedContent,
-				expectedRevision: instructions.revision,
-			});
+			const next = await window.coder.saveProjectInstructions(
+				projectId,
+				{
+					content: submittedContent,
+					expectedRevision: instructions.revision,
+				},
+				runtime
+			);
 			setState((value) =>
 				value.projectId === projectId
 					? {
@@ -77,7 +92,7 @@ export function useProjectInstructions(projectId: string | undefined) {
 		} finally {
 			setSaving(false);
 		}
-	}, [canSave, content, instructions, projectId]);
+	}, [canSave, content, instructions, projectId, runtime]);
 	const setContent = useCallback(
 		(value: string): void => {
 			setState((currentState) =>

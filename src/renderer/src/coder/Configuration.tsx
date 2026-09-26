@@ -1,19 +1,31 @@
 import {
 	CODING_THINKING_LEVELS,
 	type CodingProviderId,
+	type CodingSettings,
 	type CodingThinkingLevel,
 	type CodingToolMode,
 } from '@shared/coding_types';
+import { useState } from 'react';
 import { AlertTriangle, Check, Copy, ExternalLink } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Choice } from './Choice';
 import { Setting } from './Setting';
 import { useConfiguration } from './hooks/configuration';
 
-export function Configuration({ onDone }: { onDone: () => void }) {
-	const configuration = useConfiguration();
+export function Configuration({
+	onDone,
+	initial,
+	session,
+}: {
+	onDone: (settings?: CodingSettings) => void;
+	initial?: CodingSettings | null;
+	session?: { projectId: string; id: string };
+}) {
+	const [defaults, setDefaults] = useState(!session);
+	const configuration = useConfiguration(initial, session, defaults);
 	const settings = configuration.settings;
 	const provider = configuration.selectedProvider;
 	const deviceCode =
@@ -28,7 +40,19 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 	return (
 		<div className="flex min-h-0 flex-1 flex-col bg-background">
 			<header className="flex h-11 shrink-0 items-center gap-2 px-3">
-				<h1 className="flex-1 text-xs font-medium">Configuration</h1>
+				<h1 className="flex-1 text-xs font-medium">
+					{defaults ? 'Harness defaults' : 'Session configuration'}
+				</h1>
+				{session && (
+					<Button
+						variant="ghost"
+						size="sm"
+						disabled={configuration.saving || configuration.connecting}
+						onClick={() => setDefaults(!defaults)}
+					>
+						{defaults ? 'Session settings' : 'Harness defaults'}
+					</Button>
+				)}
 				{configuration.saving ? (
 					<span className="text-[11px] text-muted-foreground">Saving…</span>
 				) : null}
@@ -36,7 +60,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 					variant="ghost"
 					size="sm"
 					disabled={configuration.saving || configuration.connecting}
-					onClick={onDone}
+					onClick={() => onDone(settings ?? undefined)}
 				>
 					Done
 				</Button>
@@ -54,9 +78,33 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 							</div>
 						) : settings ? (
 							<div className="space-y-5">
-								<Setting title="Agent" description="Coder-agent runtime">
-									<span className="text-xs text-muted-foreground">Pi</span>
+								<Setting title="Harness">
+									<Choice
+										value={settings.runtime}
+										options={[
+											{ value: 'pi', label: 'Pi' },
+											{ value: 'codex', label: 'Codex' },
+											{ value: 'claude', label: 'Claude' },
+										]}
+										disabled={!defaults || configuration.saving || configuration.connecting}
+										onChange={(value) =>
+											void configuration.setHarness(value as CodingSettings['runtime'])
+										}
+									/>
 								</Setting>
+								{defaults && (
+									<Setting title="Default folder">
+										<Button
+											variant="outline"
+											size="sm"
+											className="max-w-64 truncate"
+											disabled={configuration.saving}
+											onClick={() => void configuration.chooseDirectory()}
+										>
+											{settings.workingDirectory || 'Choose folder'}
+										</Button>
+									</Setting>
+								)}
 								<Setting title="Provider">
 									<Choice
 										value={settings.providerId}
@@ -82,7 +130,14 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 								<Setting title="Thinking">
 									<Choice
 										value={settings.thinkingLevel}
-										options={CODING_THINKING_LEVELS.map((level) => ({
+										options={CODING_THINKING_LEVELS.filter(
+											(level) =>
+												settings.runtime === 'pi' ||
+												(settings.runtime === 'codex'
+													? ['low', 'medium', 'high', 'xhigh']
+													: ['off', 'low', 'medium', 'high', 'max']
+												).includes(level)
+										).map((level) => ({
 											value: level,
 											label:
 												level === 'xhigh' ? 'Extra high' : level[0].toUpperCase() + level.slice(1),
@@ -91,7 +146,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 										onChange={(value) => configuration.setThinking(value as CodingThinkingLevel)}
 									/>
 								</Setting>
-								<Setting title="Tools" description="Controls which Pi tools can run">
+								<Setting title="Tools" description="Controls which tools can run">
 									<Choice
 										value={settings.toolMode}
 										options={[
@@ -114,7 +169,7 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 								description={
 									provider.id === 'openai-codex'
 										? 'ChatGPT subscription device login'
-										: 'Uses the API key saved in Kucedr Providers'
+										: 'API key saved securely in Coder'
 								}
 							>
 								<span className="flex items-center gap-1 text-[11px] text-muted-foreground">
@@ -149,6 +204,27 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 						</div>
 					) : null}
 
+					{settings && (settings.runtime !== 'pi' || settings.providerId !== 'openai-codex') && (
+						<Setting title="API key">
+							<Input
+								type="password"
+								aria-label="API key"
+								autoComplete="off"
+								placeholder="Enter API key"
+								value={configuration.apiKey}
+								disabled={configuration.saving}
+								onChange={(event) => configuration.setApiKey(event.target.value)}
+								className="max-w-64"
+							/>
+							<Button
+								size="sm"
+								disabled={configuration.saving || !configuration.apiKey.trim()}
+								onClick={() => void configuration.saveKey()}
+							>
+								Save key
+							</Button>
+						</Setting>
+					)}
 					{deviceCode ? (
 						<div
 							role="status"

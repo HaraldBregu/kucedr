@@ -8,7 +8,16 @@ export function Transcript({ blocks }: { blocks: readonly CoderBlock[] }) {
 	return (
 		<div className="space-y-4">
 			{blocks.map((block) =>
-				block.type === 'tool' ? (
+				block.type === 'interaction' ? (
+					<details key={block.id} className="rounded-md border p-3 text-xs">
+						<summary>
+							{block.toolName} · {block.status}
+						</summary>
+						<pre className="mt-2 max-h-48 overflow-auto whitespace-pre-wrap">
+							{JSON.stringify(block.input, null, 2)}
+						</pre>
+					</details>
+				) : block.type === 'tool' ? (
 					<div
 						key={block.id}
 						className="flex items-center gap-2 text-xs text-muted-foreground"
