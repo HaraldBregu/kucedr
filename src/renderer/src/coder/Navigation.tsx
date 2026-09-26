@@ -11,24 +11,20 @@ interface NavigationProps {
 	readonly sidebar: boolean;
 	readonly viewer: boolean;
 	readonly workspaceName: string;
-	readonly busy: boolean;
 	readonly canRun: boolean;
 	readonly onToggleSidebar: () => void;
 	readonly onToggleViewer: () => void;
 	readonly onRun: () => void;
-	readonly onStop: () => void;
 }
 
 export function Navigation({
 	sidebar,
 	viewer,
 	workspaceName,
-	busy,
 	canRun,
 	onToggleSidebar,
 	onToggleViewer,
 	onRun,
-	onStop,
 }: NavigationProps) {
 	const { isFullScreen, isMaximized } = useWindowState();
 	return (
@@ -36,9 +32,9 @@ export function Navigation({
 			<NavigationBarLeftContainer isMac={isMac} isFullScreen={isFullScreen} className="min-w-0">
 				<Button
 					type="button"
-					variant="ghost"
+					variant="outline"
 					size="icon"
-					className="size-8 shrink-0 rounded-full"
+					className="size-8 shrink-0"
 					aria-label="Run current prompt"
 					title="Run current prompt"
 					disabled={!canRun}
@@ -48,13 +44,12 @@ export function Navigation({
 				</Button>
 				<Button
 					type="button"
-					variant="ghost"
+					variant="outline"
 					size="icon"
-					className="size-8 shrink-0 rounded-full"
+					className="size-8 shrink-0"
 					aria-label="Stop current run"
 					title="Stop current run"
-					disabled={!busy}
-					onClick={onStop}
+					disabled
 				>
 					<Square className="size-4" />
 				</Button>
