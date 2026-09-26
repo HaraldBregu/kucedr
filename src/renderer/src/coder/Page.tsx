@@ -21,7 +21,6 @@ export function CoderPage() {
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const instructionsDirtyRef = useRef(instructionsDirty);
-	instructionsDirtyRef.current = instructionsDirty;
 	const previousPath = useRef(location.pathname);
 	const skipSettingsRefresh = useRef(false);
 	const blocker = useBlocker(
@@ -31,6 +30,9 @@ export function CoderPage() {
 			currentLocation.pathname !== nextLocation.pathname
 	);
 	const project = coding.projects.find((item) => item.id === coding.projectId);
+	useEffect(() => {
+		instructionsDirtyRef.current = instructionsDirty;
+	}, [instructionsDirty]);
 	const leaveInstructions = () => {
 		if (!instructionsDirtyRef.current) return true;
 		if (!window.confirm('Discard unsaved changes to agent instructions?')) return false;
