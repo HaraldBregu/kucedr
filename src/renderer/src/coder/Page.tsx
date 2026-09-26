@@ -78,8 +78,6 @@ export function CoderPage() {
 				}
 				sidebar={sidebar}
 				onToggleSidebar={() => setSidebar(!sidebar)}
-				onConfiguration={() => openPage('configuration')}
-				configurationDisabled={coding.busy}
 			/>
 			<div className="relative flex min-h-0 flex-1 overflow-hidden">
 				{sidebar && (
