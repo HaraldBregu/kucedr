@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FileCode2, FilePlus, FileText } from 'lucide-react';
-import type {
-	CodingProjectFile,
-	CodingSessionSnapshot,
-} from '@shared/coding_types';
+import type { CodingProjectFile, CodingSessionSnapshot } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Transcript } from './Transcript';
