@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import type { CSSProperties } from 'react';
 import {
 	Check,
 	FileText,
@@ -7,13 +7,11 @@ import {
 	FolderPlus,
 	MoreVertical,
 	Plus,
-	Search,
 	Settings,
 	Trash2,
 } from 'lucide-react';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from '@/components/app/base/page/context/state';
-import { Input } from '@/components/ui/input';
 import {
 	SidebarFooter,
 	SidebarMenu,
@@ -50,42 +48,8 @@ export function Sidebar({
 	onConfiguration: () => void;
 	settingsActive: boolean;
 }) {
-	const [query, setQuery] = useState('');
-	const [searchOpen, setSearchOpen] = useState(false);
-	const searchInput = useRef<HTMLInputElement>(null);
-	const filter = query.trim().toLowerCase();
 	const project = coding.projects.find((item) => item.id === coding.projectId);
-	const projects = filter
-		? coding.projects.filter(
-				(item) =>
-					`${item.name} ${item.directory}`.toLowerCase().includes(filter) ||
-					coding.sessionsByProject[item.id]?.some((session) =>
-						session.title.toLowerCase().includes(filter)
-					)
-			)
-		: project
-			? [project]
-			: [];
-
-	useEffect(() => {
-		const onKey = (event: KeyboardEvent) => {
-			const target = event.target;
-			if (
-				event.key !== '/' ||
-				event.metaKey ||
-				event.ctrlKey ||
-				event.altKey ||
-				(target instanceof HTMLElement &&
-					(target.isContentEditable || ['INPUT', 'TEXTAREA'].includes(target.tagName)))
-			)
-				return;
-			event.preventDefault();
-			setSearchOpen(true);
-			window.requestAnimationFrame(() => searchInput.current?.focus());
-		};
-		window.addEventListener('keydown', onKey);
-		return () => window.removeEventListener('keydown', onKey);
-	}, []);
+	const sessions = project ? (coding.sessionsByProject[project.id] ?? []) : [];
 
 	return (
 		<aside
@@ -110,36 +74,7 @@ export function Sidebar({
 							</kbd>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							type="button"
-							className="px-2.5 text-sm"
-							aria-label="Search projects and sessions"
-							aria-expanded={searchOpen}
-							onClick={() => {
-								setSearchOpen((open) => !open);
-								setQuery('');
-							}}
-						>
-							<Search className="size-4 shrink-0" />
-							<span className="truncate">Search</span>
-							<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100">
-								/
-							</kbd>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
 				</SidebarMenu>
-				{searchOpen && (
-					<Input
-						ref={searchInput}
-						autoFocus
-						aria-label="Search projects and sessions"
-						placeholder="Search sessions…"
-						value={query}
-						onChange={(event) => setQuery(event.target.value)}
-						className="mt-2 h-8 text-xs"
-					/>
-				)}
 			</header>
 			<section
 				className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3"
@@ -149,53 +84,40 @@ export function Sidebar({
 				{coding.loading && !coding.projects.length && (
 					<p className="px-2 py-1 text-xs text-muted-foreground">Loading projects…</p>
 				)}
-				{!coding.loading && !projects.length && (
+				{!coding.loading && !project && (
 					<p className="px-2 py-1 text-xs text-muted-foreground">
-						{filter ? 'No matching sessions.' : 'Choose a project to see its sessions.'}
+						Choose a project to see its sessions.
 					</p>
 				)}
 				<nav aria-label="Projects and sessions">
-					{projects.map((item) => {
-						const projectMatches = `${item.name} ${item.directory}`.toLowerCase().includes(filter);
-						const sessions = (coding.sessionsByProject[item.id] ?? []).filter(
-							(session) => !filter || projectMatches || session.title.toLowerCase().includes(filter)
-						);
-						return (
-							<div key={item.id}>
-								{filter && (
-									<div className="px-2 py-1 text-xs text-muted-foreground">{item.name}</div>
-								)}
-								<ul className="flex min-w-0 flex-col gap-1">
-									{sessions.map((session) => {
-										const active = session.id === coding.snapshot?.session.id;
-										return (
-											<li key={session.id} className="flex min-w-0 items-center">
-												<button
-													type="button"
-													aria-current={active ? 'page' : undefined}
-													title={session.title}
-													disabled={coding.busy || !item.available}
-													className={cn(
-														SPLIT_ITEM_CLASS,
-														'min-w-0 flex-1 disabled:pointer-events-none disabled:opacity-50',
-														active && SPLIT_ITEM_ACTIVE_CLASS
-													)}
-													onClick={() => onSelect(item.id, session.id)}
-												>
-													<span>{session.title || 'Untitled session'}</span>
-												</button>
-											</li>
-										);
-									})}
-								</ul>
-								{!sessions.length && !filter && (
-									<p className="px-2 py-1 text-xs text-muted-foreground">
-										{item.available ? 'No sessions yet.' : 'Folder unavailable.'}
-									</p>
-								)}
-							</div>
-						);
-					})}
+					<ul className="flex min-w-0 flex-col gap-1">
+						{sessions.map((session) => {
+							const active = session.id === coding.snapshot?.session.id;
+							return (
+								<li key={session.id} className="flex min-w-0 items-center">
+									<button
+										type="button"
+										aria-current={active ? 'page' : undefined}
+										title={session.title}
+										disabled={coding.busy || !project?.available}
+										className={cn(
+											SPLIT_ITEM_CLASS,
+											'min-w-0 flex-1 disabled:pointer-events-none disabled:opacity-50',
+											active && SPLIT_ITEM_ACTIVE_CLASS
+										)}
+										onClick={() => project && onSelect(project.id, session.id)}
+									>
+										<span>{session.title || 'Untitled session'}</span>
+									</button>
+								</li>
+							);
+						})}
+					</ul>
+					{project && !sessions.length && (
+						<p className="px-2 py-1 text-xs text-muted-foreground">
+							{project.available ? 'No sessions yet.' : 'Folder unavailable.'}
+						</p>
+					)}
 				</nav>
 			</section>
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
