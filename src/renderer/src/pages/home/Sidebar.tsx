@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { CircleHelp, Code2, Layers, LogOut, MoreVertical, Plus, RadioTower, Server, Settings, UserRound } from 'lucide-react';
+import { CircleHelp, Layers, LogOut, MoreVertical, Plus, RadioTower, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -122,7 +122,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const accountInitial = accountItem.title.charAt(0).toUpperCase();
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
-		{ path: '/settings/coding', label: t('settings.coding.title'), icon: Code2 },
 		{ path: '/settings/providers', label: t('settings.sidebar.provider'), icon: Server },
 		{ path: '/settings/channels', label: t('settings.tabs.channels'), icon: RadioTower },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
