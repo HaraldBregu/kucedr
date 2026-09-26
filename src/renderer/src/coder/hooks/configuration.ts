@@ -121,10 +121,23 @@ export function useConfiguration(
 		const modelId = provider?.models.some((model) => model.id === settings.modelId)
 			? settings.modelId
 			: (provider?.models[0]?.id ?? '');
-		void save({ ...settings, providerId, modelId });
+		const levels = provider?.models.find((model) => model.id === modelId)?.thinkingLevels;
+		const thinkingLevel =
+			levels?.length && !levels.includes(settings.thinkingLevel)
+				? levels[0]
+				: settings.thinkingLevel;
+		void save({ ...settings, providerId, modelId, thinkingLevel });
 	};
 	const setModel = (modelId: string): void => {
-		if (settings) void save({ ...settings, modelId });
+		if (!settings) return;
+		const levels = catalog.providers
+			.find((provider) => provider.id === settings.providerId)
+			?.models.find((model) => model.id === modelId)?.thinkingLevels;
+		const thinkingLevel =
+			levels?.length && !levels.includes(settings.thinkingLevel)
+				? levels[0]
+				: settings.thinkingLevel;
+		void save({ ...settings, modelId, thinkingLevel });
 	};
 	const setThinking = (thinkingLevel: CodingThinkingLevel): void => {
 		if (settings) void save({ ...settings, thinkingLevel });

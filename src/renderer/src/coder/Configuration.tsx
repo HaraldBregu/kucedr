@@ -28,6 +28,9 @@ export function Configuration({
 	const configuration = useConfiguration(initial, session, defaults);
 	const settings = configuration.settings;
 	const provider = configuration.selectedProvider;
+	const supportedThinking = provider?.models.find(
+		(model) => model.id === settings?.modelId
+	)?.thinkingLevels;
 	const deviceCode =
 		configuration.authEvent?.type === 'device-code' ? configuration.authEvent : null;
 	const authUrl =
@@ -130,13 +133,14 @@ export function Configuration({
 								<Setting title="Thinking">
 									<Choice
 										value={settings.thinkingLevel}
-										options={CODING_THINKING_LEVELS.filter(
-											(level) =>
-												settings.runtime === 'pi' ||
-												(settings.runtime === 'codex'
-													? ['low', 'medium', 'high', 'xhigh']
-													: ['off', 'low', 'medium', 'high', 'max']
-												).includes(level)
+										options={CODING_THINKING_LEVELS.filter((level) =>
+											supportedThinking
+												? supportedThinking.includes(level)
+												: settings.runtime === 'pi' ||
+													(settings.runtime === 'codex'
+														? ['low', 'medium', 'high', 'xhigh']
+														: ['off', 'low', 'medium', 'high', 'max']
+													).includes(level)
 										).map((level) => ({
 											value: level,
 											label:
