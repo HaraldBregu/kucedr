@@ -75,20 +75,20 @@ export function CoderPage() {
 				project &&
 				!coding.busy &&
 				!coding.loading &&
-				!instructionsDirty
+				!instructionsDirtyRef.current
 			) {
 				event.preventDefault();
-				setPage('chat');
+				void navigate('/');
 				void coding.select(project.id, undefined, true);
 			}
-			if ((event.metaKey || event.ctrlKey) && event.key === '/' && page === 'chat') {
+			if ((event.metaKey || event.ctrlKey) && event.key === '/' && location.pathname === '/') {
 				event.preventDefault();
 				document.getElementById('coder-composer')?.focus();
 			}
 		};
 		window.addEventListener('keydown', onKey);
 		return () => window.removeEventListener('keydown', onKey);
-	}, [coding, project, instructionsDirty, page]);
+	}, [coding, project, location.pathname, navigate]);
 	return (
 		<div className="flex h-dvh min-h-0 flex-col bg-background pt-12 text-foreground">
 			<Navigation
@@ -108,12 +108,11 @@ export function CoderPage() {
 						coding={coding}
 						onBeforeChange={leaveInstructions}
 						onSelect={select}
-						onConfiguration={() => openPage('configuration')}
+						onConfiguration={() => openPage('/settings')}
 						onInstructions={(id) => {
 							if (!leaveInstructions()) return;
-							setInstructionsDirty(false);
 							if (id !== coding.projectId) void coding.select(id);
-							setPage('instructions');
+							void navigate('/instructions');
 							if (window.innerWidth < 768) setSidebar(false);
 						}}
 					/>
