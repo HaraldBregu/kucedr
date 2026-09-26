@@ -173,7 +173,10 @@ export function Viewer({
 								</Button>
 							</form>
 						)}
-						<div className="max-h-48 shrink-0 overflow-auto border-b border-sidebar-border p-2" aria-busy={listing}>
+						<div
+							className="max-h-48 shrink-0 overflow-auto border-b border-sidebar-border p-2"
+							aria-busy={listing}
+						>
 							{listing ? (
 								<p className="p-2 text-xs text-muted-foreground">Loading files…</p>
 							) : files.length ? (
