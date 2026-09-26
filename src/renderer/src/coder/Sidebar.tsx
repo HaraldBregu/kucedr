@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -38,7 +39,7 @@ export function Sidebar({
 	return (
 		<aside
 			aria-label="Sessions"
-			className="absolute inset-y-0 left-0 z-20 flex w-60 shrink-0 flex-col border-r bg-sidebar md:static"
+			className="absolute inset-y-0 left-0 z-20 flex w-60 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:static"
 		>
 			<div className="flex h-12 shrink-0 items-center justify-between px-3">
 				<h2 className="text-xs font-medium">Projects</h2>
@@ -73,6 +74,7 @@ export function Sidebar({
 				{coding.loading && !coding.projects.length && (
 					<p className="p-2 text-xs text-muted-foreground">Loading projects…</p>
 				)}
+				<SidebarMenu>
 				{coding.projects
 					.filter(
 						(project) =>
@@ -91,7 +93,7 @@ export function Sidebar({
 							(session) => !filter || projectMatches || session.title.toLowerCase().includes(filter)
 						);
 						return (
-							<section key={project.id} className="mb-2" aria-label={project.name}>
+							<SidebarMenuItem key={project.id} aria-label={project.name}>
 								<div className="flex items-center gap-0.5">
 									<Button
 										variant="ghost"
@@ -111,9 +113,10 @@ export function Sidebar({
 											className={`size-3 transition-transform ${expanded ? 'rotate-90' : ''}`}
 										/>
 									</Button>
-									<Button
-										variant={coding.projectId === project.id ? 'secondary' : 'ghost'}
-										className="h-8 min-w-0 flex-1 justify-start px-1.5 text-xs font-normal"
+									<SidebarMenuButton
+										type="button"
+										data-active={coding.projectId === project.id}
+										className="min-w-0 flex-1 px-1.5 text-xs font-normal"
 										title={project.directory}
 										disabled={coding.busy || !project.available}
 										onClick={() => onSelect(project.id)}
@@ -122,7 +125,7 @@ export function Sidebar({
 											className={`size-3.5 shrink-0 ${project.available ? '' : 'text-destructive'}`}
 										/>
 										<span className="truncate">{project.name}</span>
-									</Button>
+									</SidebarMenuButton>
 									<DropdownMenu>
 										<DropdownMenuTrigger asChild>
 											<Button
@@ -171,12 +174,14 @@ export function Sidebar({
 									</DropdownMenu>
 								</div>
 								{expanded && (
-									<div className="ml-6 mt-1 space-y-0.5">
+									<SidebarMenu className="ml-6 mt-1 w-auto gap-0.5">
 										{sessions.map((session) => (
-											<Button
-												key={session.id}
-												variant={session.id === coding.snapshot?.session.id ? 'secondary' : 'ghost'}
-												className="h-7 w-full justify-start px-2 text-xs font-normal"
+											<SidebarMenuItem key={session.id}>
+											<SidebarMenuButton
+												type="button"
+												size="sm"
+												data-active={session.id === coding.snapshot?.session.id}
+												className="px-2 font-normal"
 												aria-current={
 													session.id === coding.snapshot?.session.id ? 'page' : undefined
 												}
@@ -185,18 +190,22 @@ export function Sidebar({
 												onClick={() => onSelect(project.id, session.id)}
 											>
 												<span className="truncate">{session.title || 'Untitled session'}</span>
-											</Button>
+											</SidebarMenuButton>
+											</SidebarMenuItem>
 										))}
 										{!sessions.length && (
+											<SidebarMenuItem>
 											<p className="px-2 py-1 text-xs text-muted-foreground">
 												{project.available ? 'No sessions yet.' : 'Folder unavailable.'}
 											</p>
+											</SidebarMenuItem>
 										)}
-									</div>
+									</SidebarMenu>
 								)}
-							</section>
+							</SidebarMenuItem>
 						);
 					})}
+				</SidebarMenu>
 			</nav>
 		</aside>
 	);
