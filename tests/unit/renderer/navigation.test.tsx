@@ -56,6 +56,12 @@ it('provides English and Italian translations for every settings navigation item
 	}
 });
 
+it('does not expose Coding in settings navigation', () => {
+	expect(SETTINGS_MODEL_SERVICE_ITEMS).not.toContainEqual(
+		expect.objectContaining({ path: '/settings/coding' })
+	);
+});
+
 it.each([
 	['/settings/knowledge-base', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],

@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import {
 	PageContainer,
-	SPLIT_ITEM_CLASS,
 	Split,
 } from '../../../src/renderer/src/components/app/base/page';
 import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
