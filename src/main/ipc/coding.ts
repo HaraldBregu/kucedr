@@ -88,8 +88,15 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 			}
 			return coding.removeProject(projectId.trim());
 		});
+		registerQueryWithEvent(CodingChannels.readProjectFile, (event, projectId, filePath) => {
+			assertCodingCaller(event);
+			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingProjectFilePath(filePath)) {
+				throw new Error('Invalid coding project file path.');
+			}
+			return coding.readProjectFile(projectId.trim(), filePath);
+		});
 		registerQueryWithEvent(CodingChannels.listProjectFiles, (event, projectId) => {
-			assertCodingAppCaller(event);
+			assertCodingCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coding project id.');
 			}

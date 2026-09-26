@@ -25,7 +25,7 @@ import type { MainServices } from '../../bootstrap';
 export function registerIpcHandlers(
 	services: MainServices,
 	eventBus: EventBus,
-	options: { openVoiceConversation?: (chatSessionId: string) => void } = {}
+	options: { openVoiceConversation?: (chatSessionId: string) => void; openCoder?: () => void } = {}
 ): void {
 	const {
 		logger,
@@ -165,7 +165,7 @@ export function registerIpcHandlers(
 	);
 	safeRegister('window', () =>
 		new WindowIpc().register(
-			{ logger, appRegistry, openVoiceConversation: options.openVoiceConversation },
+			{ logger, appRegistry, openVoiceConversation: options.openVoiceConversation, openCoder: options.openCoder },
 			eventBus
 		)
 	);

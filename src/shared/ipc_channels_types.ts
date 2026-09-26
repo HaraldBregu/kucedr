@@ -75,6 +75,7 @@ export interface CodingInvokeChannelMap {
 	};
 	[CodingChannels.openProject]: { args: [projectId: string]; result: void };
 	[CodingChannels.removeProject]: { args: [projectId: string]; result: boolean };
+	[CodingChannels.readProjectFile]: { args: [projectId: string, filePath: string]; result: string };
 	[CodingChannels.listProjectFiles]: {
 		args: [projectId: string];
 		result: import('./coding_types').CodingProjectFile[];
@@ -1105,6 +1106,7 @@ export interface AppsInvokeChannelMap {
 }
 
 export interface WindowInvokeChannelMap {
+	[WindowChannels.openCoder]: { args: []; result: void };
 	[WindowChannels.openVoiceConversation]: {
 		args: [chatSessionId: string];
 		result: void;

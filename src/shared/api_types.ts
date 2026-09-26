@@ -138,6 +138,7 @@ export interface WindowApi {
 	minimize: () => void;
 	maximize: () => void;
 	close: () => void;
+	openCoder: () => Promise<void>;
 	openVoiceConversation: (chatSessionId: string) => Promise<void>;
 	popupMenu: () => void;
 	showContextMenu: (items: ContextMenuDescriptor[]) => Promise<string | null>;
@@ -254,6 +255,7 @@ export interface CodingApi {
 	addProject: () => Promise<CodingProject | undefined>;
 	openProject: (projectId: string) => Promise<void>;
 	removeProject: (projectId: string) => Promise<boolean>;
+	readProjectFile: (projectId: string, filePath: string) => Promise<string>;
 	listProjectFiles: (projectId: string) => Promise<CodingProjectFile[]>;
 	createProjectFile: (projectId: string, filePath: string) => Promise<CodingProjectFile>;
 	getProjectInstructions: (projectId: string) => Promise<CodingProjectInstructions>;

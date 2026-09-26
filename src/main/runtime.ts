@@ -41,6 +41,7 @@ import { AppChannels } from '../shared/ipc_channels_definitions';
 import { authLinks } from './cloud/links';
 import { loadLocalEnvironment } from './cloud/environment';
 import { VoiceWindow } from './voice_window';
+import { CoderWindow } from './coder';
 import { listSchedules, runScheduleNow } from './tasks';
 
 // // DIAG: bump V8 old-space heap to confirm whether crashes (Chromium OOM,
@@ -76,6 +77,7 @@ const services = bootstrapServices();
 const { eventBus, appState, windowFactory, logger, windowContextManager, agentService } = services;
 const mainWindow = new Main(appState, windowFactory, windowContextManager);
 const voiceWindow = new VoiceWindow(windowFactory, windowContextManager);
+const coderWindow = new CoderWindow(windowFactory, windowContextManager);
 agentService.start(logger);
 startRagSchedule(logger);
 // Re-bind safety net with the real logger now that it exists.
@@ -85,6 +87,7 @@ logger.info('CrashReporter', `Crash dumps path: ${app.getPath('crashDumps')}`);
 logger.info('Main', 'Starting app');
 logger.info('Main', 'Enabling IPC modules...');
 registerIpcHandlers(services, eventBus, {
+	openCoder: () => coderWindow.open(),
 	openVoiceConversation: (chatSessionId) => voiceWindow.open(chatSessionId),
 });
 setupAppLifecycle(appState, logger);

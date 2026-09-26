@@ -27,6 +27,13 @@ export const coding: CodingApi = {
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');
 		return typedInvokeUnwrap(CodingChannels.removeProject, normalizedProjectId);
 	},
+	readProjectFile: (projectId, filePath) => {
+		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!normalizedProjectId || !isCodingProjectFilePath(filePath)) {
+			throw new Error('Invalid coding project file path.');
+		}
+		return typedInvokeUnwrap(CodingChannels.readProjectFile, normalizedProjectId, filePath);
+	},
 	listProjectFiles: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');

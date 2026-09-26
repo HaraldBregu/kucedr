@@ -31,6 +31,7 @@ import type {
 import { codingLocation, codingSessionsLocation } from './location';
 import { CodingInstructions } from './instructions';
 import { createProjectFile, listProjectFiles } from './files';
+import { readProjectFile } from './read';
 import { CodingProjectStore } from './projects';
 import { CodingStore } from './store';
 
@@ -87,6 +88,10 @@ export class Coding {
 			throw new Error('Stop the active project run before removing it from Coding.');
 		}
 		return this.dependencies.projects.remove(projectId);
+	}
+
+	async readProjectFile(projectId: string, filePath: string): Promise<string> {
+		return readProjectFile(this.requireProject(projectId), filePath);
 	}
 
 	async listProjectFiles(projectId: string): Promise<CodingProjectFile[]> {
