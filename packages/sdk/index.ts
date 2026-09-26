@@ -8,7 +8,14 @@ export {
 	type RemoteAppApi,
 	type WorkspaceAgentApi,
 } from './connect';
-export type { AgentApi, AppApi, CodingApi, ModelsApi, WindowApi } from '../../src/shared/api_types';
+export type {
+	AgentApi,
+	AppApi,
+	CoderApi,
+	CodingApi,
+	ModelsApi,
+	WindowApi,
+} from '../../src/shared/api_types';
 export type {
 	TerminalApi,
 	TerminalCreateRequest,

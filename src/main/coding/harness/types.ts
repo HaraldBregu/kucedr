@@ -24,6 +24,7 @@ export interface HarnessContext {
 export interface CodingHarness {
 	run(input: string, context: HarnessContext): Promise<string>;
 	listModels(): Promise<CodingCatalog>;
+	deleteSession?(id: string): Promise<void>;
 	connect?(signal: AbortSignal, emit: (event: CodingAuthEvent) => void): Promise<CodingAuthStatus>;
 	disconnect?(): Promise<void>;
 	destroy?(): void;

@@ -59,7 +59,9 @@ export const coding: CodingApi = {
 	getProjectInstructions: (projectId, runtime) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');
-		return typedInvokeUnwrap(CodingChannels.getProjectInstructions, normalizedProjectId, runtime);
+		return runtime === undefined
+			? typedInvokeUnwrap(CodingChannels.getProjectInstructions, normalizedProjectId)
+			: typedInvokeUnwrap(CodingChannels.getProjectInstructions, normalizedProjectId, runtime);
 	},
 	saveProjectInstructions: (projectId, update, runtime) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';

@@ -226,8 +226,16 @@ export class Coder {
 		const session = this.sessions.read(id);
 		if (!session) return this.pi.deleteSession(projectId, id);
 		this.assertProject(session, projectId);
-		if (session.runtime === 'pi' && session.nativeSessionId)
-			await this.pi.deleteSession(projectId, session.nativeSessionId);
+		if (session.nativeSessionId) {
+			if (session.runtime === 'pi') {
+				if (
+					(await this.pi.listSessions(projectId)).some(
+						(item) => item.id === session.nativeSessionId
+					)
+				)
+					await this.pi.deleteSession(projectId, session.nativeSessionId);
+			} else await this.harnesses[session.runtime].deleteSession?.(session.nativeSessionId);
+		}
 		return this.sessions.delete(id);
 	}
 	async saveSessionSettings(projectId: string, id: string, settings: CodingSettings) {
@@ -288,12 +296,15 @@ export class Coder {
 				emit(value);
 		};
 		try {
-			session = this.sessions.read(id);
-			if (session) {
-				this.assertProject(session, request.projectId);
+			const candidate = this.sessions.read(id);
+			if (candidate) {
+				this.assertProject(candidate, request.projectId);
+				session = candidate;
 				if (
 					request.settings &&
-					JSON.stringify(request.settings) !== JSON.stringify(session.settings)
+					(['runtime', 'providerId', 'modelId', 'thinkingLevel', 'toolMode'] as const).some(
+						(key) => request.settings![key] !== session!.settings[key]
+					)
 				)
 					throw new Error('Save session settings before starting a run.');
 			} else if (request.sessionId) {

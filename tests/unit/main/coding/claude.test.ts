@@ -40,7 +40,12 @@ afterEach(async () => {
 
 test('isolates credentials and settings, reads only project instructions and denies writes', async () => {
 	await writeFile(join(directory, 'CLAUDE.md'), 'Project instructions');
-	const session = { async *[Symbol.asyncIterator]() {}, close: jest.fn() };
+	const session = {
+		async *[Symbol.asyncIterator]() {
+			yield* [];
+		},
+		close: jest.fn(),
+	};
 	mockQuery.mockReturnValue(session as never);
 	await harness.run('Inspect project', context);
 	const options = mockQuery.mock.calls[0][0].options!;

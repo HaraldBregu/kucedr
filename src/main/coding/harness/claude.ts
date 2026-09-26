@@ -1,4 +1,4 @@
-import { mkdir, readFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
 import { app } from 'electron';
@@ -255,6 +255,25 @@ export class ClaudeHarness implements CodingHarness {
 			context.signal.removeEventListener('abort', abort);
 			session?.close();
 			if (session) this.queries.delete(session);
+		}
+	}
+
+	async deleteSession(nativeSessionId: string): Promise<void> {
+		if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(nativeSessionId))
+			throw new Error('Invalid Claude session id.');
+		const projects = join(this.directory, 'projects');
+		let directories;
+		try {
+			directories = await readdir(projects, { withFileTypes: true });
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === 'ENOENT') return;
+			throw error;
+		}
+		for (const entry of directories) {
+			if (!entry.isDirectory()) continue;
+			const directory = join(projects, entry.name);
+			await rm(join(directory, nativeSessionId + '.jsonl'), { force: true });
+			await rm(join(directory, nativeSessionId), { recursive: true, force: true });
 		}
 	}
 
