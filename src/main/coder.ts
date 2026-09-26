@@ -19,7 +19,19 @@ export class CoderWindow {
 			return;
 		}
 		const win = this.windowFactory.create(
-			{ width: 1280, height: 800, minWidth: 900, minHeight: 600, title: 'Coder', show: false },
+			{
+				width: 1280,
+				height: 800,
+				minWidth: 900,
+				minHeight: 600,
+				title: 'Coder',
+				show: false,
+				frame: false,
+				...(process.platform === 'darwin' && {
+					titleBarStyle: 'hidden' as const,
+					trafficLightPosition: { x: 16, y: 17 },
+				}),
+			},
 			{ html: 'coder.html' }
 		);
 		this.window = win;

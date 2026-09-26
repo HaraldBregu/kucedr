@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CoderPage } from './coder/Page';
+import './i18n';
 import './index.css';
 
 const root = document.getElementById('root');

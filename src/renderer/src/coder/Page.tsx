@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowUp, Code2, FolderPlus, PanelLeft, PanelRight, Plus, Square } from 'lucide-react';
+import { ArrowUp, Code2, FolderPlus, Plus, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -14,6 +14,7 @@ import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
 import { cn } from '@/lib/utils';
 import { Transcript } from './Transcript';
 import { Viewer } from './Viewer';
+import { Navigation } from './Navigation';
 import { useWorkspace } from './workspace';
 
 export function CoderPage() {
@@ -40,38 +41,20 @@ export function CoderPage() {
 			timestamp: '',
 		});
 	return (
-		<div className="flex h-dvh min-h-0 flex-col bg-background text-foreground">
-			<header className="flex h-12 shrink-0 items-center gap-2 border-b px-3">
-				<Button
-					variant="ghost"
-					size="icon-sm"
-					aria-label="Toggle sessions"
-					aria-expanded={sidebar}
-					onClick={() => {
-						setSidebar(!sidebar);
-						if (window.innerWidth < 1280) setViewer(false);
-					}}
-				>
-					<PanelLeft className="size-4" />
-				</Button>
-				<Code2 className="size-4" />
-				<h1 className="text-sm font-semibold">Coder</h1>
-				<span className="min-w-0 flex-1 truncate px-2 text-xs text-muted-foreground">
-					{project?.name}
-				</span>
-				<Button
-					variant="ghost"
-					size="icon-sm"
-					aria-label="Toggle content viewer"
-					aria-expanded={viewer}
-					onClick={() => {
-						setViewer(!viewer);
-						if (window.innerWidth < 768) setSidebar(false);
-					}}
-				>
-					<PanelRight className="size-4" />
-				</Button>
-			</header>
+		<div className="flex h-dvh min-h-0 flex-col bg-background pt-12 text-foreground">
+			<Navigation
+				projectName={project?.name}
+				sidebar={sidebar}
+				viewer={viewer}
+				onToggleSidebar={() => {
+					setSidebar(!sidebar);
+					if (window.innerWidth < 1280) setViewer(false);
+				}}
+				onToggleViewer={() => {
+					setViewer(!viewer);
+					if (window.innerWidth < 768) setSidebar(false);
+				}}
+			/>
 			<div className="relative flex min-h-0 flex-1 overflow-hidden">
 				{sidebar && (
 					<aside
