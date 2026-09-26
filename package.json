@@ -138,7 +138,7 @@
 		"music-metadata": "^11.14.0",
 		"node-cron": "^4.6.0",
 		"node-pty": "^1.1.0",
-		"openai": "^7.15.0",
+		"openai": "^7.23.0",
 		"playwright-core": "^1.52.0",
 		"react": "^19.2.0",
 		"react-day-picker": "^10.0.1",
