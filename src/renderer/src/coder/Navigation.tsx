@@ -39,12 +39,24 @@ export function Navigation({
 					variant="ghost"
 					size="icon"
 					className="size-8 shrink-0 rounded-full"
-					aria-label={busy ? 'Stop current run' : 'Run current prompt'}
-					title={busy ? 'Stop current run' : 'Run current prompt'}
-					disabled={!busy && !canRun}
-					onClick={busy ? onStop : onRun}
+					aria-label="Run current prompt"
+					title="Run current prompt"
+					disabled={!canRun}
+					onClick={onRun}
 				>
-					{busy ? <Square className="size-4" /> : <Play className="size-4" />}
+					<Play className="size-4" />
+				</Button>
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
+					className="size-8 shrink-0 rounded-full"
+					aria-label="Stop current run"
+					title="Stop current run"
+					disabled={!busy}
+					onClick={onStop}
+				>
+					<Square className="size-4" />
 				</Button>
 				<span className="truncate px-2 text-sm font-medium" title={workspaceName}>
 					{workspaceName}
