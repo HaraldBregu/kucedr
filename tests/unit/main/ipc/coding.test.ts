@@ -146,7 +146,7 @@ it('lets the Coding app select main-owned projects and read their sessions', asy
 	expect(coding.saveProjectInstructions).toHaveBeenCalledWith('project-1', update);
 });
 
-it('restricts project instruction files to the Coding app and validates updates', async () => {
+it('restricts project instruction files to trusted callers and validates updates', async () => {
 	const coding = {
 		getProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
 		saveProjectInstructions: jest.fn().mockResolvedValue({ projectId: 'project-1' }),
@@ -178,7 +178,7 @@ it('restricts project instruction files to the Coding app and validates updates'
 		expect.objectContaining({
 			success: false,
 			error: expect.objectContaining({
-				message: 'Project instructions are only available to the Coding app.',
+				message: 'Privileged IPC is restricted to the main frame.',
 			}),
 		})
 	);
@@ -278,3 +278,55 @@ it('allows configuration and authentication from the host and Coding app only', 
 		expect.objectContaining({ success: false })
 	);
 });
+
+it.each([
+	[CodingChannels.createProjectFile, 'createProjectFile', ['notes.md']],
+	[CodingChannels.getProjectInstructions, 'getProjectInstructions', []],
+	[
+		CodingChannels.saveProjectInstructions,
+		'saveProjectInstructions',
+		[{ content: 'Instructions', expectedRevision: 'revision-1' }],
+	],
+])(
+	'allows native Coder project access through %s and rejects untrusted callers',
+	async (channel, method, args) => {
+		const operation = jest.fn().mockResolvedValue({ projectId: 'project-1' });
+		const coding = { [method as string]: operation } as unknown as Coding;
+		const appRegistry = {
+			has: jest.fn().mockReturnValue(false),
+			resolve: jest.fn().mockReturnValue('unrelated'),
+		};
+		const mainFrame = {};
+		const sender = { id: 23, mainFrame };
+		const event = { sender, senderFrame: mainFrame };
+		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 1, webContents: sender });
+		new CodingIpc().register(
+			{ coding, appRegistry: appRegistry as never, windows: windows as never },
+			{} as EventBus
+		);
+		const handler = (ipcMain.handle as jest.Mock).mock.calls.find(
+			([registered]) => registered === channel
+		)?.[1];
+
+		await expect(handler(event, ' project-1 ', ...args)).resolves.toEqual({
+			success: true,
+			data: { projectId: 'project-1' },
+		});
+		expect(operation).toHaveBeenCalledWith('project-1', ...args);
+		operation.mockClear();
+
+		windows.has.mockReturnValue(false);
+		await expect(handler(event, 'project-1', ...args)).resolves.toEqual(
+			expect.objectContaining({ success: false })
+		);
+		windows.has.mockReturnValue(true);
+		await expect(handler({ sender, senderFrame: {} }, 'project-1', ...args)).resolves.toEqual(
+			expect.objectContaining({ success: false })
+		);
+		appRegistry.has.mockReturnValue(true);
+		await expect(handler(event, 'project-1', ...args)).resolves.toEqual(
+			expect.objectContaining({ success: false })
+		);
+		expect(operation).not.toHaveBeenCalled();
+	}
+);

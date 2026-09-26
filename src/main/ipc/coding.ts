@@ -34,14 +34,6 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 			}
 			trusted.assert(event);
 		};
-		const assertCodingAppCaller = (event: Electron.IpcMainInvokeEvent): void => {
-			if (
-				!appRegistry.has(event.sender) ||
-				appRegistry.resolve(event.sender) !== CODING_APP_ID
-			) {
-				throw new Error('Project instructions are only available to the Coding app.');
-			}
-		};
 		registerQueryWithEvent(CodingChannels.getSettings, (event) => {
 			assertCodingCaller(event);
 			return coding.getSettings();
@@ -103,21 +95,21 @@ export class CodingIpc implements IpcModule<CodingIpcDependencies> {
 			return coding.listProjectFiles(projectId.trim());
 		});
 		registerCommandWithEvent(CodingChannels.createProjectFile, (event, projectId, filePath) => {
-			assertCodingAppCaller(event);
+			assertCodingCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingProjectFilePath(filePath)) {
 				throw new Error('Invalid coding project file path.');
 			}
 			return coding.createProjectFile(projectId.trim(), filePath);
 		});
 		registerQueryWithEvent(CodingChannels.getProjectInstructions, (event, projectId) => {
-			assertCodingAppCaller(event);
+			assertCodingCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coding project id.');
 			}
 			return coding.getProjectInstructions(projectId.trim());
 		});
 		registerCommandWithEvent(CodingChannels.saveProjectInstructions, (event, projectId, update) => {
-			assertCodingAppCaller(event);
+			assertCodingCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {
 				throw new Error('Invalid coding project id.');
 			}
