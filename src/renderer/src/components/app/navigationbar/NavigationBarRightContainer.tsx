@@ -1,4 +1,4 @@
-import React, { memo, type ReactNode, type ReactElement } from 'react';
+import { memo, type ReactNode, type ReactElement } from 'react';
 import { cn } from '@/lib/utils';
 
 interface NavigationBarRightContainerProps {

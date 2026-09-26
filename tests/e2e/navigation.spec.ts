@@ -80,6 +80,21 @@ test('the start route redirects configured users to home', async () => {
 	await expect(page.getByText('errorBoundary.notFoundTitle')).toHaveCount(0);
 });
 
+test('navigation bar gaps stay draggable while buttons remain clickable', async () => {
+	await page.evaluate(() => {
+		window.location.hash = '#/home';
+	});
+	const navigationBar = page.locator('[data-slot="navigationbar"]');
+	const leftGroup = navigationBar.locator(':scope > div').first();
+
+	await expect(navigationBar).toHaveCSS('-webkit-app-region', 'drag');
+	await expect(leftGroup).not.toHaveCSS('-webkit-app-region', 'no-drag');
+	await expect(navigationBar.getByRole('button').first()).toHaveCSS(
+		'-webkit-app-region',
+		'no-drag'
+	);
+});
+
 test('the settings home redirects to General settings', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/settings';
