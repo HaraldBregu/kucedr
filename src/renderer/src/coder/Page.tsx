@@ -12,7 +12,6 @@ import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
 import { Transcript } from './Transcript';
 import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
-import { Viewer } from './Viewer';
 import { Resize } from './Resize';
 import { Composer } from './Composer';
 import { Configuration } from './Configuration';
@@ -34,6 +33,7 @@ export function CoderPage() {
 		Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, window.innerWidth * 0.35))
 	);
 	const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
+	const [layoutReady, setLayoutReady] = useState(false);
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const instructionsDirtyRef = useRef(instructionsDirty);
 	const previousPath = useRef(location.pathname);
@@ -45,6 +45,36 @@ export function CoderPage() {
 			currentLocation.pathname !== nextLocation.pathname
 	);
 	const project = coding.projects.find((item) => item.id === coding.projectId);
+	useEffect(() => {
+		let active = true;
+		void window.coder
+			.getLayout()
+			.then((layout) => {
+				if (!active || !layout) return;
+				setSidebar(layout.sidebarOpen);
+				setViewer(layout.viewerOpen);
+				setSidebarWidth(
+					Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, layout.sidebarWidth))
+				);
+				setViewerWidth(Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, layout.viewerWidth)));
+			})
+			.catch((error) => console.error('Could not load Coder layout:', error))
+			.finally(() => {
+				if (active) setLayoutReady(true);
+			});
+		return () => {
+			active = false;
+		};
+	}, []);
+	useEffect(() => {
+		if (!layoutReady) return;
+		const timer = window.setTimeout(() => {
+			void window.coder
+				.saveLayout({ sidebarOpen: sidebar, viewerOpen: viewer, sidebarWidth, viewerWidth })
+				.catch((error) => console.error('Could not save Coder layout:', error));
+		}, 150);
+		return () => window.clearTimeout(timer);
+	}, [layoutReady, sidebar, viewer, sidebarWidth, viewerWidth]);
 	useEffect(() => {
 		instructionsDirtyRef.current = instructionsDirty;
 	}, [instructionsDirty]);
@@ -269,7 +299,8 @@ export function CoderPage() {
 					</Routes>
 				</main>
 				{viewer && (
-					<div
+					<aside
+						aria-label="Content viewer"
 						className="absolute inset-y-0 right-0 z-20 w-[min(85vw,400px)] border-l border-sidebar-border bg-sidebar text-sidebar-foreground xl:relative xl:z-10 xl:w-[var(--coder-viewer-width)] xl:shrink-0"
 						style={{ '--coder-viewer-width': `${viewerWidth}px` } as CSSProperties}
 					>
@@ -284,15 +315,7 @@ export function CoderPage() {
 								setViewerWidth(Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, width)))
 							}
 						/>
-						<Viewer
-							key={coding.projectId}
-							projectId={coding.projectId}
-							snapshot={coding.snapshot}
-							revision={coding.revision}
-							busy={coding.busy}
-							onInstructions={() => openPage('/instructions')}
-						/>
-					</div>
+					</aside>
 				)}
 			</div>
 		</div>
