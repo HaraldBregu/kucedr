@@ -6,6 +6,7 @@ import {
 	isCodingRunRequest,
 	isCodingSettings,
 } from '../shared/coding_types';
+import { isCoderLayout } from '../shared/coder_layout';
 import { typedInvokeUnwrap, typedOn } from '../shared/ipc_types';
 
 export const coding: CodingApi = {
@@ -20,6 +21,11 @@ export const coding: CodingApi = {
 	saveSettings: (settings) => {
 		if (!isCodingSettings(settings)) throw new Error('Invalid coding settings.');
 		return typedInvokeUnwrap(CodingChannels.saveSettings, settings);
+	},
+	getLayout: () => typedInvokeUnwrap(CodingChannels.getLayout),
+	saveLayout: (layout) => {
+		if (!isCoderLayout(layout)) throw new Error('Invalid Coder layout.');
+		return typedInvokeUnwrap(CodingChannels.saveLayout, layout);
 	},
 	listModels: (runtime) => typedInvokeUnwrap(CodingChannels.listModels, runtime),
 	listProjects: () => typedInvokeUnwrap(CodingChannels.listProjects),

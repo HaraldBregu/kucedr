@@ -67,6 +67,8 @@ export const CodingChannels = {
 	saveSessionSettings: 'coder:sessions:settings',
 	getSettings: 'coding:settings:get',
 	saveSettings: 'coding:settings:save',
+	getLayout: 'coding:layout:get',
+	saveLayout: 'coding:layout:save',
 	listModels: 'coding:models:list',
 	listProjects: 'coding:projects:list',
 	addProject: 'coding:projects:add',

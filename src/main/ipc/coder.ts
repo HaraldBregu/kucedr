@@ -6,6 +6,7 @@ import {
 	isCodingRunRequest,
 	isCodingSettings,
 } from '../../shared/coding_types';
+import { isCoderLayout } from '../../shared/coder_layout';
 import type { Coding } from '../coding';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
@@ -67,6 +68,15 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 			assertCodingCaller(event);
 			if (!isCodingSettings(settings)) throw new Error('Invalid coding settings.');
 			return coding.saveSettings(settings);
+		});
+		registerQueryWithEvent(CodingChannels.getLayout, (event) => {
+			assertCodingCaller(event);
+			return coding.getLayout();
+		});
+		registerCommandWithEvent(CodingChannels.saveLayout, (event, layout) => {
+			assertCodingCaller(event);
+			if (!isCoderLayout(layout)) throw new Error('Invalid Coder layout.');
+			return coding.saveLayout(layout);
 		});
 		registerQueryWithEvent(CodingChannels.listModels, (event, runtime) => {
 			assertCodingCaller(event);

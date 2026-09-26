@@ -113,6 +113,7 @@ import type { ContextMenuDescriptor, AppNavigationBarOptions } from './window_ty
 import type { WorkspaceAsset } from './workspace';
 import type { AppStorageApi } from './app_store_types';
 import type { SandboxStatus } from './sandbox';
+import type { CoderLayout } from './coder_layout';
 import type {
 	CoderHarness,
 	CoderInteractionResponse,
@@ -274,6 +275,8 @@ export interface CodingApi {
 	) => Promise<CodingSessionSummary>;
 	getSettings: (runtime?: CoderHarness) => Promise<CodingSettings>;
 	saveSettings: (settings: CodingSettings) => Promise<CodingSettings>;
+	getLayout: () => Promise<CoderLayout | null>;
+	saveLayout: (layout: CoderLayout) => Promise<CoderLayout>;
 	listModels: (runtime?: CoderHarness) => Promise<CodingCatalog>;
 	listProjects: () => Promise<CodingProject[]>;
 	addProject: () => Promise<CodingProject | undefined>;

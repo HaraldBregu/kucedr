@@ -5,6 +5,7 @@ import {
 	type CodingSettings,
 	type CoderHarness,
 } from '../../shared/coding_types';
+import { isCoderLayout, type CoderLayout } from '../../shared/coder_layout';
 import { userDataLocation } from '../shared/user_data_location';
 
 export const DEFAULT_CODING_SETTINGS: CodingSettings = {
@@ -17,6 +18,7 @@ export const DEFAULT_CODING_SETTINGS: CodingSettings = {
 
 type StoredSettings = Partial<CodingSettings> & {
 	profiles?: Partial<Record<CoderHarness, CodingSettings>>;
+	layout?: CoderLayout;
 };
 
 export class CodingStore {
@@ -66,6 +68,7 @@ export class CodingStore {
 		const stored = this.store.store;
 		this.store.store = {
 			...normalized,
+			...(stored.layout ? { layout: stored.layout } : {}),
 			profiles: {
 				...stored.profiles,
 				...(isCodingSettings(stored) ? { [stored.runtime]: this.get(stored.runtime) } : {}),
@@ -73,6 +76,15 @@ export class CodingStore {
 			},
 		};
 		return normalized;
+	}
+	getLayout(): CoderLayout | null {
+		const layout = this.store.get('layout');
+		return isCoderLayout(layout) ? layout : null;
+	}
+	setLayout(layout: CoderLayout): CoderLayout {
+		if (!isCoderLayout(layout)) throw new Error('Invalid Coder layout.');
+		this.store.set('layout', layout);
+		return layout;
 	}
 	getLegacyWorkingDirectory(): string | undefined {
 		return this.get().workingDirectory;

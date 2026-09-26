@@ -91,6 +91,11 @@ export interface CodingInvokeChannelMap {
 		args: [settings: import('./coding_types').CodingSettings];
 		result: import('./coding_types').CodingSettings;
 	};
+	[CodingChannels.getLayout]: { args: []; result: import('./coder_layout').CoderLayout | null };
+	[CodingChannels.saveLayout]: {
+		args: [layout: import('./coder_layout').CoderLayout];
+		result: import('./coder_layout').CoderLayout;
+	};
 	[CodingChannels.listModels]: {
 		args: [runtime?: import('./coding_types').CoderHarness];
 		result: import('./coding_types').CodingCatalog;

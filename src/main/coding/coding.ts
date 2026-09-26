@@ -13,6 +13,7 @@ import type {
 	CodingProjectInstructionsUpdate,
 } from '../../shared/coding_types';
 import { CODER_HARNESSES, isCodingSettings } from '../../shared/coding_types';
+import type { CoderLayout } from '../../shared/coder_layout';
 import { userDataLocation } from '../shared/user_data_location';
 import { Pi } from './pi';
 import { CodingStore } from './store';
@@ -126,6 +127,12 @@ export class Coder {
 	saveSettings(settings: CodingSettings): CodingSettings {
 		this.validateSettings(settings);
 		return this.dependencies.store.set(settings);
+	}
+	getLayout(): CoderLayout | null {
+		return this.dependencies.store.getLayout();
+	}
+	saveLayout(layout: CoderLayout): CoderLayout {
+		return this.dependencies.store.setLayout(layout);
 	}
 	setApiKey(provider: 'openai' | 'anthropic' | 'cline', key: string, runtime?: CoderHarness): void {
 		if (!['openai', 'anthropic', 'cline'].includes(provider) || typeof key !== 'string')
