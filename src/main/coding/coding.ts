@@ -121,11 +121,11 @@ export class Coder {
 		this.validateSettings(settings);
 		return this.dependencies.store.set(settings);
 	}
-	setApiKey(provider: 'openai' | 'anthropic', key: string, runtime?: CoderHarness): void {
-		if ((provider !== 'openai' && provider !== 'anthropic') || typeof key !== 'string')
+	setApiKey(provider: 'openai' | 'anthropic' | 'cline', key: string, runtime?: CoderHarness): void {
+		if (!['openai', 'anthropic', 'cline'].includes(provider) || typeof key !== 'string')
 			throw new Error('Invalid Coder API key.');
 		const selected = this.getSettings(runtime).runtime;
-		if (selected === 'codex' && provider !== 'openai')
+		if ((selected === 'codex' && provider !== 'openai') || (selected === 'cline' && provider !== 'cline') || (selected === 'pi' && provider === 'cline'))
 			throw new Error('API key provider does not match the harness.');
 		this.credentials.set(provider, key, selected);
 	}
@@ -500,6 +500,8 @@ export class Coder {
 		if (!isCodingSettings(settings)) throw new Error('Invalid Coder settings.');
 		if (settings.runtime === 'codex' && settings.providerId !== 'openai-codex')
 			throw new Error('Codex requires the Codex provider.');
+		if (settings.runtime === 'cline' && settings.providerId !== 'cline')
+			throw new Error('Cline requires the Cline provider.');
 	}
 }
 

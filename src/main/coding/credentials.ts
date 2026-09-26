@@ -10,7 +10,7 @@ export class CoderCredentials {
 		mkdirSync(directory, { recursive: true });
 		this.file = path.join(directory, 'credentials.json');
 	}
-	get(provider: 'openai' | 'anthropic', runtime: CoderHarness = 'pi'): string | undefined {
+	get(provider: 'openai' | 'anthropic' | 'cline', runtime: CoderHarness = 'pi'): string | undefined {
 		if (!existsSync(this.file)) return undefined;
 		const values = JSON.parse(readFileSync(this.file, 'utf8')) as Record<string, string>;
 		if (!values[`${runtime}:${provider}`]) return undefined;
@@ -18,7 +18,7 @@ export class CoderCredentials {
 			throw new Error('Secure credential storage is unavailable.');
 		return safeStorage.decryptString(Buffer.from(values[`${runtime}:${provider}`], 'base64'));
 	}
-	set(provider: 'openai' | 'anthropic', value: string, runtime: CoderHarness = 'pi'): void {
+	set(provider: 'openai' | 'anthropic' | 'cline', value: string, runtime: CoderHarness = 'pi'): void {
 		if (!safeStorage.isEncryptionAvailable())
 			throw new Error('Secure credential storage is unavailable.');
 		if (process.platform === 'linux' && safeStorage.getSelectedStorageBackend() === 'basic_text')

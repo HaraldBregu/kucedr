@@ -253,7 +253,7 @@ export type CoderApi = CodingApi;
 
 export interface CodingApi {
 	setApiKey: (
-		provider: 'openai' | 'anthropic',
+		provider: 'openai' | 'anthropic' | 'cline',
 		key: string,
 		runtime?: CoderHarness
 	) => Promise<void>;

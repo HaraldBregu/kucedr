@@ -1,7 +1,7 @@
-export const CODER_HARNESSES = ['pi', 'codex'] as const;
+export const CODER_HARNESSES = ['pi', 'codex', 'cline'] as const;
 export type CoderHarness = (typeof CODER_HARNESSES)[number];
 
-export const CODING_PROVIDER_IDS = ['openai-codex', 'openai', 'anthropic'] as const;
+export const CODING_PROVIDER_IDS = ['openai-codex', 'openai', 'anthropic', 'cline'] as const;
 export const CODING_THINKING_LEVELS = [
 	'off',
 	'minimal',

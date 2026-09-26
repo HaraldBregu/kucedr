@@ -64,7 +64,7 @@ import {
 export interface CodingInvokeChannelMap {
 	[CodingChannels.setApiKey]: {
 		args: [
-			provider: 'openai' | 'anthropic',
+			provider: 'openai' | 'anthropic' | 'cline',
 			key: string,
 			runtime?: import('./coding_types').CoderHarness,
 		];

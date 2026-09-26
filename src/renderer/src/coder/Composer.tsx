@@ -32,6 +32,7 @@ export function Composer({
 					options={[
 						{ value: 'pi', label: 'Pi' },
 						{ value: 'codex', label: 'Codex' },
+						{ value: 'cline', label: 'Cline' },
 					]}
 					disabled={coding.busy || coding.loading || Boolean(coding.snapshot)}
 					onChange={(value) => void coding.changeHarness(value as CodingSettings['runtime'])}

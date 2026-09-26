@@ -37,6 +37,7 @@ export class CodingStore {
 		return isCodingSettings(candidate)
 			? {
 					runtime: selected,
+					providerId: selected === 'cline' ? 'cline' : 'openai-codex',
 					providerId: candidate.providerId,
 					modelId: candidate.modelId,
 					thinkingLevel: candidate.thinkingLevel,

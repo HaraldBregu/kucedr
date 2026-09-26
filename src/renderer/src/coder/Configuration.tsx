@@ -87,6 +87,7 @@ export function Configuration({
 										options={[
 											{ value: 'pi', label: 'Pi' },
 											{ value: 'codex', label: 'Codex' },
+											{ value: 'cline', label: 'Cline' },
 										]}
 										disabled={!defaults || configuration.saving || configuration.connecting}
 										onChange={(value) =>
