@@ -13,6 +13,7 @@ let harness: ClaudeHarness;
 let context: HarnessContext;
 
 beforeEach(async () => {
+	mockQuery.mockReset();
 	directory = await mkdtemp(join(tmpdir(), 'coder-claude-'));
 	harness = new ClaudeHarness(join(directory, 'state'), () => 'test-key');
 	Object.defineProperty(harness, 'executable', { value: () => '/tmp/claude-test-binary' });
