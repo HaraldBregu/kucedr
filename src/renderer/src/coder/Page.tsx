@@ -19,8 +19,8 @@ import { useWorkspace } from './workspace';
 export function CoderPage() {
 	useAppTheme();
 	const workspace = useWorkspace();
-	const [sidebar, setSidebar] = useState(true);
-	const [viewer, setViewer] = useState(true);
+	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
+	const [viewer, setViewer] = useState(() => window.innerWidth >= 1280);
 	const project = workspace.projects.find((item) => item.id === workspace.projectId);
 	const blocks = [...(workspace.snapshot?.blocks ?? [])];
 	if (workspace.pending)
@@ -47,7 +47,10 @@ export function CoderPage() {
 					size="icon-sm"
 					aria-label="Toggle sessions"
 					aria-expanded={sidebar}
-					onClick={() => setSidebar(!sidebar)}
+					onClick={() => {
+						setSidebar(!sidebar);
+						if (window.innerWidth < 1280) setViewer(false);
+					}}
 				>
 					<PanelLeft className="size-4" />
 				</Button>
@@ -61,7 +64,10 @@ export function CoderPage() {
 					size="icon-sm"
 					aria-label="Toggle content viewer"
 					aria-expanded={viewer}
-					onClick={() => setViewer(!viewer)}
+					onClick={() => {
+						setViewer(!viewer);
+						if (window.innerWidth < 768) setSidebar(false);
+					}}
 				>
 					<PanelRight className="size-4" />
 				</Button>
