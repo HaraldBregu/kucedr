@@ -27,6 +27,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
+import { Resize } from './Resize';
 import type { Workspace } from './workspace';
 
 export function Sidebar({
@@ -231,61 +232,14 @@ export function Sidebar({
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarFooter>
-			<button
-				type="button"
-				data-slot="coder-sidebar-resizer"
-				role="separator"
-				aria-label="Resize sidebar"
-				aria-orientation="vertical"
-				aria-valuemin={MIN_SIDEBAR_WIDTH}
-				aria-valuemax={MAX_SIDEBAR_WIDTH}
-				aria-valuenow={width}
-				tabIndex={0}
-				title="Resize sidebar"
-				className="absolute inset-y-0 -right-1.5 z-20 hidden w-3 cursor-col-resize touch-none outline-none after:absolute after:inset-y-0 after:left-1/2 after:w-px after:-translate-x-1/2 hover:after:bg-sidebar-border focus-visible:after:bg-ring md:block"
-				onKeyDown={(event) => {
-					if (event.key === 'ArrowLeft') {
-						event.preventDefault();
-						onWidthChange(width - 8);
-					}
-					if (event.key === 'ArrowRight') {
-						event.preventDefault();
-						onWidthChange(width + 8);
-					}
-					if (event.key === 'Home') {
-						event.preventDefault();
-						onWidthChange(MIN_SIDEBAR_WIDTH);
-					}
-					if (event.key === 'End') {
-						event.preventDefault();
-						onWidthChange(MAX_SIDEBAR_WIDTH);
-					}
-				}}
-				onPointerDown={(event) => {
-					if (event.button !== 0) return;
-					event.preventDefault();
-					const startX = event.clientX;
-					const startWidth = width;
-					const previousCursor = document.body.style.cursor;
-					const previousUserSelect = document.body.style.userSelect;
-					document.body.style.cursor = 'col-resize';
-					document.body.style.userSelect = 'none';
-
-					const handlePointerMove = (moveEvent: PointerEvent): void => {
-						onWidthChange(startWidth + moveEvent.clientX - startX);
-					};
-					const stopResizing = (): void => {
-						window.removeEventListener('pointermove', handlePointerMove);
-						window.removeEventListener('pointerup', stopResizing);
-						window.removeEventListener('pointercancel', stopResizing);
-						document.body.style.cursor = previousCursor;
-						document.body.style.userSelect = previousUserSelect;
-					};
-
-					window.addEventListener('pointermove', handlePointerMove);
-					window.addEventListener('pointerup', stopResizing);
-					window.addEventListener('pointercancel', stopResizing);
-				}}
+			<Resize
+				side="right"
+				width={width}
+				minWidth={MIN_SIDEBAR_WIDTH}
+				maxWidth={MAX_SIDEBAR_WIDTH}
+				label="Resize sidebar"
+				className="md:block"
+				onWidthChange={onWidthChange}
 			/>
 		</aside>
 	);
