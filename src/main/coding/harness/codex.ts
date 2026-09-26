@@ -109,7 +109,11 @@ export class CodexHarness implements CodingHarness {
 			} else if (method === 'item/reasoning/summaryTextDelta') {
 				context.emit({ type: 'thinking-delta', delta: String(params.delta ?? '') });
 			} else if (method === 'item/commandExecution/outputDelta') {
-				context.emit({ type: 'command-output', delta: String(params.delta ?? '') });
+				context.emit({
+					type: 'command-output',
+					commandId: String(params.itemId),
+					delta: String(params.delta ?? ''),
+				});
 			} else if (method === 'item/started' || method === 'item/completed') {
 				const item = params.item as Item;
 				const started = method === 'item/started';
@@ -117,10 +121,16 @@ export class CodexHarness implements CodingHarness {
 					output += item.text;
 					context.emit({ type: 'text-delta', delta: item.text });
 				} else if (item.type === 'commandExecution') {
-					if (started) context.emit({ type: 'command-start', command: item.command ?? '' });
+					if (started)
+						context.emit({
+							type: 'command-start',
+							commandId: item.id,
+							command: item.command ?? '',
+						});
 					else
 						context.emit({
 							type: 'command-end',
+							commandId: item.id,
 							exitCode: item.exitCode,
 							cancelled: item.status === 'declined',
 							truncated: false,
@@ -293,6 +303,16 @@ export class CodexHarness implements CodingHarness {
 		try {
 			await rpc.initialize();
 			await rpc.request('account/logout', {});
+		} finally {
+			this.close(rpc);
+		}
+	}
+
+	async deleteSession(threadId: string): Promise<void> {
+		const rpc = await this.open();
+		try {
+			await rpc.initialize();
+			await rpc.request('thread/delete', { threadId });
 		} finally {
 			this.close(rpc);
 		}

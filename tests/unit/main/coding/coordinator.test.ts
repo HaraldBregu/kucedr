@@ -1,15 +1,13 @@
-import { mkdtempSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
+import { realpathSync, mkdtempSync, mkdirSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 
 jest.mock('../../../../src/main/coding/pi', () => ({
-	Pi: jest
-		.fn()
-		.mockImplementation(() => ({
-			listSessions: async () => [],
-			destroy: jest.fn(),
-			cancelCodexLogin: jest.fn(),
-		})),
+	Pi: jest.fn().mockImplementation(() => ({
+		listSessions: async () => [],
+		destroy: jest.fn(),
+		cancelCodexLogin: jest.fn(),
+	})),
 }));
 jest.mock('../../../../src/main/coding/harness/codex', () => ({ CodexHarness: jest.fn() }));
 jest.mock('../../../../src/main/coding/harness/claude', () => ({ ClaudeHarness: jest.fn() }));
@@ -30,7 +28,7 @@ const settings: CodingSettings = {
 };
 
 function fixture(run: (input: string, context: HarnessContext) => Promise<string>) {
-	const directory = mkdtempSync(path.join(os.tmpdir(), 'coder-coordinator-'));
+	const directory = realpathSync(mkdtempSync(path.join(os.tmpdir(), 'coder-coordinator-')));
 	const projectDirectory = path.join(directory, 'project');
 	mkdirSync(projectDirectory);
 	const project = {

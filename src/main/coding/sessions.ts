@@ -46,7 +46,7 @@ export class CoderSessions {
 		cwd: string,
 		settings: CodingSettings,
 		input: string,
-		id = randomUUID(),
+		id: string = randomUUID(),
 		nativeSessionId?: string
 	): CoderSession {
 		const timestamp = new Date().toISOString();

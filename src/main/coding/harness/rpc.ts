@@ -19,6 +19,9 @@ export class CodexRpc {
 	onClose?: (error: Error) => void;
 
 	constructor(executable: string, directory: string) {
+		const environment: NodeJS.ProcessEnv = { ...process.env, CODEX_HOME: directory };
+		delete environment.OPENAI_API_KEY;
+		delete environment.CODEX_API_KEY;
 		this.process = spawn(
 			executable,
 			[
@@ -32,7 +35,7 @@ export class CodexRpc {
 			],
 			{
 				cwd: directory,
-				env: { ...process.env, CODEX_HOME: directory },
+				env: environment,
 				stdio: 'pipe',
 				windowsHide: true,
 			}
@@ -124,7 +127,13 @@ export class CodexRpc {
 							},
 						})
 				);
-			} else this.onNotification?.(message.method, message.params ?? {});
+			} else {
+				try {
+					this.onNotification?.(message.method, message.params ?? {});
+				} catch (error) {
+					this.fail(error instanceof Error ? error : new Error('Codex event delivery failed.'));
+				}
+			}
 			return;
 		}
 		const pending = typeof message.id === 'number' ? this.pending.get(message.id) : undefined;

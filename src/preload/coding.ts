@@ -67,12 +67,14 @@ export const coding: CodingApi = {
 		if (!isCodingProjectInstructionsUpdate(update)) {
 			throw new Error('Invalid coding project instructions.');
 		}
-		return typedInvokeUnwrap(
-			CodingChannels.saveProjectInstructions,
-			normalizedProjectId,
-			update,
-			runtime
-		);
+		return runtime === undefined
+			? typedInvokeUnwrap(CodingChannels.saveProjectInstructions, normalizedProjectId, update)
+			: typedInvokeUnwrap(
+					CodingChannels.saveProjectInstructions,
+					normalizedProjectId,
+					update,
+					runtime
+				);
 	},
 	listSessions: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
