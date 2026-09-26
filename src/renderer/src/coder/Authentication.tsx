@@ -3,7 +3,6 @@ import { Check, Copy, ExternalLink } from 'lucide-react';
 import type { CoderHarness, CodingAuthEvent, CodingCatalog } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Setting } from './Setting';
 
 type Entry = {
 	runtime: CoderHarness;
@@ -107,7 +106,7 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 		}
 	};
 	return (
-		<div className="space-y-4">
+		<div className="space-y-2">
 			<h2 className="text-sm font-medium">Harness authentication</h2>
 			{entries.map((entry) => {
 				const id = `${entry.runtime}:${entry.provider}`;
@@ -118,24 +117,25 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 				const accountConnected = connected && provider?.authType === 'oauth';
 				const keyConnected = connected && !accountConnected && Boolean(entry.key);
 				return (
-					<Setting
-						key={id}
-						title={entry.label}
-						description={
-							catalogErrors[entry.runtime] ??
-							(provider
-								? accountConnected
-									? 'Account'
-									: keyConnected
-										? 'API key'
-										: 'Ready to connect'
-								: 'Checking connection…')
-						}
-					>
-						<span className="flex items-center gap-1 text-[11px] text-muted-foreground">
-							{connected ? <Check className="size-3" /> : null}
-							{connected ? 'Connected' : 'Not connected'}
-						</span>
+					<div key={id} className="rounded-md border px-3 py-2">
+						<div className="flex items-center justify-between gap-2">
+							<p className="text-xs font-medium">{entry.label}</p>
+							<span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+								{connected ? <Check className="size-3" /> : null}
+								{connected ? 'Connected' : 'Not connected'}
+							</span>
+						</div>
+						<p className="text-[11px] text-muted-foreground">
+							{catalogErrors[entry.runtime] ??
+								(provider
+									? accountConnected
+										? 'Account'
+										: keyConnected
+											? 'API key'
+											: 'Ready to connect'
+									: 'Checking connection…')}
+						</p>
+						<div className="mt-2 flex flex-wrap items-center gap-2">
 						{entry.account &&
 							(busy === id ? (
 								<Button
@@ -181,7 +181,7 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 									aria-label={`${entry.label} API key`}
 									autoComplete="off"
 									placeholder="API key"
-									className="max-w-48"
+									className="h-8 min-w-32 max-w-48 flex-1"
 									value={keys[id] ?? ''}
 									disabled={Boolean(busy)}
 									onChange={(change) =>
@@ -195,9 +195,10 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 								>
 									Save key
 								</Button>
-							</>
+						</>
 						)}
-					</Setting>
+						</div>
+					</div>
 				);
 			})}
 			{event?.type === 'device-code' && (
