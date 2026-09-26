@@ -106,7 +106,9 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 						{connected ? <Check className="size-3" /> : null}
 						{connected ? 'Connected' : 'Not connected'}
 					</span>
-					{entry.account && (accountConnected ? (
+					{entry.account && (busy === id ? (
+						<Button size="sm" variant="outline" onClick={() => void window.coder.cancelCodexLogin()}>Cancel</Button>
+					) : accountConnected ? (
 						<Button size="sm" variant="outline" disabled={Boolean(busy)} onClick={() => void disconnect(entry)}>Disconnect</Button>
 					) : (
 						<Button size="sm" variant="outline" disabled={Boolean(busy)} onClick={() => void connect(entry)}>Connect account</Button>
