@@ -31,7 +31,6 @@ export function CoderPage() {
 	};
 	const select = (projectId: string, sessionId?: string, fresh?: boolean) => {
 		if (!leaveInstructions()) return;
-		if (page === 'configuration') void coding.refreshSettings();
 		setInstructionsDirty(false);
 		setPage('chat');
 		void coding.select(projectId, sessionId, fresh);
@@ -73,6 +72,12 @@ export function CoderPage() {
 		<div className="flex h-dvh min-h-0 flex-col bg-background pt-12 text-foreground">
 			<Navigation
 				projectName={project?.name}
+				runtime={coding.settings?.runtime}
+				projectDirectory={
+					coding.snapshot?.session.workingDirectory ??
+					project?.directory ??
+					coding.settings?.workingDirectory
+				}
 				sidebar={sidebar}
 				viewer={viewer}
 				onToggleSidebar={() => {
@@ -191,6 +196,7 @@ export function CoderPage() {
 				{viewer && (
 					<div className="absolute inset-y-0 right-0 z-10 w-[min(85vw,400px)] border-l xl:static xl:w-[35%] xl:max-w-xl">
 						<Viewer
+							runtime={coding.settings?.runtime}
 							key={coding.projectId}
 							projectId={coding.projectId}
 							snapshot={coding.snapshot}

@@ -43,8 +43,17 @@ export function useConfiguration(
 
 	useEffect(() => {
 		let active = true;
+		setLoading(true);
+		setError('');
 		void Promise.all([
-			initial && !defaults ? Promise.resolve(initial) : window.coder.getSettings(initial?.runtime),
+			session && !defaults
+				? window.coder
+						.getSession(session.projectId, session.id)
+						.then(
+							(value) =>
+								value.session.settings ?? initial ?? window.coder.getSettings(value.session.runtime)
+						)
+				: window.coder.getSettings(initial?.runtime),
 			window.coder.listModels(initial?.runtime),
 		])
 			.then(([nextSettings, nextCatalog]) => {
@@ -61,10 +70,12 @@ export function useConfiguration(
 		return () => {
 			active = false;
 		};
-	}, [initial, defaults]);
+	}, [initial, defaults, session?.id, session?.projectId]);
 
 	const setHarness = async (runtime: CodingSettings['runtime']) => {
 		setLoading(true);
+		setApiKey('');
+		setError('');
 		try {
 			const [next, models] = await Promise.all([
 				window.coder.getSettings(runtime),

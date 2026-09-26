@@ -96,14 +96,19 @@ export function useWorkspace() {
 	}, [select]);
 
 	const refreshSettings = async (runtime?: CodingSettings['runtime']) => {
+		const request = selection.current;
 		try {
 			if (snapshot) {
 				const next = await window.coder.getSession(projectId, snapshot.session.id);
+				if (request !== selection.current) return;
 				setSnapshot(next);
 				setSettings(
 					next.session.settings ?? (await window.coder.getSettings(next.session.runtime ?? 'pi'))
 				);
-			} else setSettings(await window.coder.getSettings(runtime ?? settings?.runtime));
+			} else {
+				const next = await window.coder.getSettings(runtime ?? settings?.runtime);
+				if (request === selection.current) setSettings(next);
+			}
 		} catch (cause) {
 			setError(String(cause));
 		}

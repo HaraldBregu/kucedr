@@ -28,14 +28,14 @@ const api = {
 	getSettings: jest.fn(),
 	listSessions: jest.fn(),
 	getSession: jest.fn(),
-	send: jest.fn(),
+	start: jest.fn(),
 	cancel: jest.fn(),
 };
 const eventContext = { projectId: project.id, sessionId: session.id, runId: 'run-1' };
 
 beforeEach(() => {
 	jest.resetAllMocks();
-	Object.defineProperty(window, 'coding', { configurable: true, value: api });
+	Object.defineProperty(window, 'coder', { configurable: true, value: api });
 	api.listProjects.mockResolvedValue([project, { ...project, id: 'project-2' }]);
 	api.getSettings.mockResolvedValue({
 		runtime: 'pi',
@@ -81,11 +81,14 @@ it('keeps the latest selection when an earlier session read finishes later', asy
 it('cancels a pending start and refreshes persisted sessions after cancellation', async () => {
 	let emit!: (event: CodingResponseEvent) => void;
 	let rejectRun!: (reason: Error) => void;
-	api.send.mockImplementation((_request, onEvent) => {
+	api.start.mockImplementation((_request, onEvent) => {
 		emit = onEvent;
-		return new Promise((_resolve, reject) => {
-			rejectRun = reject;
-		});
+		return {
+			runId: 'run-1',
+			result: new Promise((_resolve, reject) => {
+				rejectRun = reject;
+			}),
+		};
 	});
 	const { result } = renderHook(() => useWorkspace());
 	await waitFor(() => expect(result.current.loading).toBe(false));
@@ -97,7 +100,7 @@ it('cancels a pending start and refreshes persisted sessions after cancellation'
 	await act(async () => {
 		await result.current.cancel();
 	});
-	expect(api.cancel).not.toHaveBeenCalled();
+	expect(api.cancel).toHaveBeenCalledWith('run-1');
 	await act(async () => {
 		emit({ ...eventContext, type: 'status', status: 'started' });
 	});
@@ -119,11 +122,14 @@ it('cancels a pending start and refreshes persisted sessions after cancellation'
 it('streams shell output and exit details while blocking duplicate sends', async () => {
 	let emit!: (event: CodingResponseEvent) => void;
 	let resolveRun!: (result: CodingRunResult) => void;
-	api.send.mockImplementation((_request, onEvent) => {
+	api.start.mockImplementation((_request, onEvent) => {
 		emit = onEvent;
-		return new Promise((resolve) => {
-			resolveRun = resolve;
-		});
+		return {
+			runId: 'run-1',
+			result: new Promise((resolve) => {
+				resolveRun = resolve;
+			}),
+		};
 	});
 	const { result } = renderHook(() => useWorkspace());
 	await waitFor(() => expect(result.current.loading).toBe(false));
@@ -136,9 +142,15 @@ it('streams shell output and exit details while blocking duplicate sends', async
 		sending = result.current.send();
 		await result.current.send();
 	});
-	expect(api.send).toHaveBeenCalledTimes(1);
-	expect(api.send).toHaveBeenCalledWith(
-		{ projectId: project.id, sessionId: undefined, mode: 'shell', input: 'npm test' },
+	expect(api.start).toHaveBeenCalledTimes(1);
+	expect(api.start).toHaveBeenCalledWith(
+		expect.objectContaining({
+			projectId: project.id,
+			sessionId: undefined,
+			mode: 'shell',
+			input: 'npm test',
+			workingDirectory: project.directory,
+		}),
 		expect.any(Function)
 	);
 	act(() => {

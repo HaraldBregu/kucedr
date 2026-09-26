@@ -3,6 +3,7 @@ import type { CodingProjectInstructions, CodingSettings } from '@shared/coding_t
 
 interface InstructionsState {
 	readonly projectId?: string;
+	readonly runtime?: CodingSettings['runtime'];
 	readonly instructions?: CodingProjectInstructions;
 	readonly content: string;
 	readonly error: string;
@@ -29,6 +30,7 @@ export function useProjectInstructions(
 				if (sequence !== loadSequenceRef.current) return;
 				setState({
 					projectId,
+					runtime,
 					instructions: next,
 					content: next.content,
 					error: '',
@@ -38,6 +40,7 @@ export function useProjectInstructions(
 				if (sequence !== loadSequenceRef.current) return;
 				setState({
 					projectId,
+					runtime,
 					content: '',
 					error: reason instanceof Error ? reason.message : 'Unable to load project instructions.',
 				});
@@ -47,10 +50,13 @@ export function useProjectInstructions(
 		};
 	}, [projectId, runtime]);
 
-	const current = state.projectId === projectId ? state : { content: '', error: '' };
+	const current =
+		state.projectId === projectId && state.runtime === runtime ? state : { content: '', error: '' };
 	const instructions = current.instructions;
 	const content = current.content;
-	const loading = Boolean(projectId && state.projectId !== projectId);
+	const loading = Boolean(
+		projectId && (state.projectId !== projectId || state.runtime !== runtime)
+	);
 	const dirty = Boolean(instructions && content !== instructions.content);
 	const canSave = Boolean(
 		projectId && instructions?.editable && !loading && !saving && (dirty || !instructions.exists)
@@ -59,8 +65,11 @@ export function useProjectInstructions(
 	const save = useCallback(async (): Promise<void> => {
 		if (!projectId || !instructions || !canSave) return;
 		const submittedContent = content;
+		const sequence = loadSequenceRef.current;
 		setSaving(true);
-		setState((value) => (value.projectId === projectId ? { ...value, error: '' } : value));
+		setState((value) =>
+			value.projectId === projectId && value.runtime === runtime ? { ...value, error: '' } : value
+		);
 		try {
 			const next = await window.coder.saveProjectInstructions(
 				projectId,
@@ -70,8 +79,9 @@ export function useProjectInstructions(
 				},
 				runtime
 			);
+			if (sequence !== loadSequenceRef.current) return;
 			setState((value) =>
-				value.projectId === projectId
+				value.projectId === projectId && value.runtime === runtime
 					? {
 							...value,
 							instructions: next,
@@ -80,8 +90,9 @@ export function useProjectInstructions(
 					: value
 			);
 		} catch (reason) {
+			if (sequence !== loadSequenceRef.current) return;
 			setState((value) =>
-				value.projectId === projectId
+				value.projectId === projectId && value.runtime === runtime
 					? {
 							...value,
 							error:
@@ -96,10 +107,12 @@ export function useProjectInstructions(
 	const setContent = useCallback(
 		(value: string): void => {
 			setState((currentState) =>
-				currentState.projectId === projectId ? { ...currentState, content: value } : currentState
+				currentState.projectId === projectId && currentState.runtime === runtime
+					? { ...currentState, content: value }
+					: currentState
 			);
 		},
-		[projectId]
+		[projectId, runtime]
 	);
 
 	return {

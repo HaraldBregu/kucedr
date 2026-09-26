@@ -168,7 +168,9 @@ export function Configuration({
 								title={provider.name}
 								description={
 									provider.id === 'openai-codex'
-										? 'ChatGPT subscription device login'
+										? settings.runtime === 'codex'
+											? 'ChatGPT sign-in'
+											: 'ChatGPT device sign-in'
 										: 'API key saved securely in Coder'
 								}
 							>

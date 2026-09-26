@@ -2,7 +2,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 import { useConfiguration } from '../../../src/renderer/src/coder/hooks/configuration';
 import { useProjectInstructions } from '../../../src/renderer/src/coder/hooks/instructions';
 
-const settings = {
+const settings: import('../../../src/shared/coding_types').CodingSettings = {
 	runtime: 'pi',
 	providerId: 'openai-codex',
 	modelId: 'first',
@@ -22,6 +22,8 @@ const instructions = {
 const api = {
 	getSettings: jest.fn(),
 	saveSettings: jest.fn(),
+	getSession: jest.fn(),
+	saveSessionSettings: jest.fn(),
 	listModels: jest.fn(),
 	connectCodex: jest.fn(),
 	getProjectInstructions: jest.fn(),
@@ -33,7 +35,7 @@ beforeEach(() => {
 	api.getSettings.mockResolvedValue(settings);
 	api.listModels.mockResolvedValue({ providers: [] });
 	api.getProjectInstructions.mockResolvedValue(instructions);
-	Object.defineProperty(window, 'coding', { configurable: true, value: api });
+	Object.defineProperty(window, 'coder', { configurable: true, value: api });
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: { openExternalUrl: jest.fn().mockResolvedValue(undefined) },
@@ -84,10 +86,14 @@ it('saves instruction content with its loaded revision and preserves drafts on c
 	await waitFor(() => expect(result.current.loading).toBe(false));
 	act(() => result.current.setContent('My draft'));
 	await act(async () => result.current.save());
-	expect(api.saveProjectInstructions).toHaveBeenCalledWith('project', {
-		content: 'My draft',
-		expectedRevision: 'revision-one',
-	});
+	expect(api.saveProjectInstructions).toHaveBeenCalledWith(
+		'project',
+		{
+			content: 'My draft',
+			expectedRevision: 'revision-one',
+		},
+		undefined
+	);
 	expect(result.current.error).toBe('File changed externally');
 	expect(result.current.content).toBe('My draft');
 	expect(result.current.dirty).toBe(true);
@@ -109,4 +115,55 @@ it('ignores an old project load after switching projects', async () => {
 	await waitFor(() => expect(result.current.content).toBe('New project'));
 	await act(async () => resolveOld({ ...instructions, projectId: 'old' }));
 	expect(result.current.content).toBe('New project');
+});
+
+it('reloads saved session settings after visiting harness defaults', async () => {
+	const session = { projectId: 'project', id: 'session' };
+	let confirmed = settings;
+	api.getSession.mockImplementation(async () => ({
+		session: { ...session, settings: confirmed },
+		blocks: [],
+	}));
+	api.saveSessionSettings.mockImplementation(async (_project, _id, next) => {
+		confirmed = next;
+		return { ...session, settings: confirmed };
+	});
+	const { result, rerender } = renderHook(
+		({ defaults }) => useConfiguration(settings, session, defaults),
+		{ initialProps: { defaults: false } }
+	);
+	await waitFor(() => expect(result.current.loading).toBe(false));
+	act(() => result.current.setModel('saved-model'));
+	await waitFor(() => expect(result.current.settings?.modelId).toBe('saved-model'));
+	rerender({ defaults: true });
+	await waitFor(() => expect(result.current.settings?.modelId).toBe('first'));
+	rerender({ defaults: false });
+	await waitFor(() => expect(result.current.settings?.modelId).toBe('saved-model'));
+	expect(api.saveSettings).not.toHaveBeenCalled();
+	expect(result.current.settings?.runtime).toBe('pi');
+});
+
+it('does not expose old harness instructions while loading another harness', async () => {
+	let resolveClaude!: (value: typeof instructions) => void;
+	api.getProjectInstructions.mockImplementation((_project, runtime) =>
+		runtime === 'claude'
+			? new Promise((resolve) => {
+					resolveClaude = resolve;
+				})
+			: Promise.resolve(instructions)
+	);
+	const { result, rerender } = renderHook(
+		({ runtime }: { runtime: 'pi' | 'claude' }) => useProjectInstructions('project', runtime),
+		{ initialProps: { runtime: 'pi' as 'pi' | 'claude' } }
+	);
+	await waitFor(() => expect(result.current.loading).toBe(false));
+	rerender({ runtime: 'claude' });
+	expect(result.current.loading).toBe(true);
+	expect(result.current.canSave).toBe(false);
+	expect(result.current.content).toBe('');
+	await act(async () =>
+		resolveClaude({ ...instructions, activeFileName: 'CLAUDE.md', content: 'Claude instructions' })
+	);
+	expect(result.current.content).toBe('Claude instructions');
+	expect(api.getProjectInstructions).toHaveBeenLastCalledWith('project', 'claude');
 });

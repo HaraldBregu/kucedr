@@ -1,3 +1,4 @@
+import type { CodingSettings } from '@shared/coding_types';
 import { Code2, PanelLeft, PanelRight, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavigationBarContainer } from '@/components/app/navigationbar/NavigationBarContainer';
@@ -9,6 +10,8 @@ const isMac = navigator.platform.startsWith('Mac');
 
 interface NavigationProps {
 	readonly projectName?: string;
+	readonly projectDirectory?: string;
+	readonly runtime?: CodingSettings['runtime'];
 	readonly onConfiguration: () => void;
 	readonly configurationDisabled: boolean;
 	readonly sidebar: boolean;
@@ -19,6 +22,8 @@ interface NavigationProps {
 
 export function Navigation({
 	projectName,
+	projectDirectory,
+	runtime,
 	sidebar,
 	viewer,
 	onToggleSidebar,
@@ -45,8 +50,14 @@ export function Navigation({
 				<Code2 className="ml-1 size-4 shrink-0" strokeWidth={1.8} />
 				<h1 className="px-1 text-sm font-semibold">Coder</h1>
 			</NavigationBarLeftContainer>
-			<span className="min-w-0 flex-1 truncate px-3 text-xs text-muted-foreground">
-				{projectName}
+			<span
+				title={projectDirectory}
+				className="min-w-0 flex-1 truncate px-3 text-xs text-muted-foreground"
+			>
+				{runtime
+					? `${runtime === 'pi' ? 'Pi' : runtime === 'codex' ? 'Codex' : 'Claude'}${projectName ? ' · ' : ''}`
+					: ''}
+				{projectName ?? projectDirectory}
 			</span>
 			<div className="z-10 mr-3 flex h-full shrink-0 items-center gap-1">
 				<Button
