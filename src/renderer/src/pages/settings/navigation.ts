@@ -4,7 +4,6 @@ import {
 	Bot,
 	Layers,
 	Cloud,
-	Code2,
 	Folder,
 	HeartPulse,
 	Info,
@@ -59,14 +58,6 @@ export const SETTINGS_MODEL_SERVICE_ITEMS: readonly SettingsModelServiceItem[] =
 		descriptionKey: 'settings.modelServices.kucedrDescription',
 		keywords: 'kucedr service default provider model',
 		icon: MessageCircle,
-	},
-	{
-		id: AGENTS.coding,
-		path: '/settings/coding',
-		labelKey: 'settings.coding.title',
-		descriptionKey: 'settings.coding.description',
-		keywords: 'coding coding pi codex anthropic claude openai agent harness runtime',
-		icon: Code2,
 	},
 ] as const;
 

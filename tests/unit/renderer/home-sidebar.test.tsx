@@ -174,7 +174,6 @@ it.each<[AuthState, string]>([
 	const menu = screen.getByRole('menu');
 	[
 		['settings.tabs.account', '/settings/account'],
-		['settings.coding.title', '/settings/coding'],
 		['settings.sidebar.provider', '/settings/providers'],
 		['settings.tabs.channels', '/settings/channels'],
 		['settings.tabs.apps', '/settings/apps'],

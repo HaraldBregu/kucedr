@@ -65,7 +65,6 @@ it.each([
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
-	['/settings/coding', 'settings.coding.title'],
 	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
@@ -78,10 +77,6 @@ it.each([
 		path === '/settings/agent/mcp-tools'
 	) {
 		expect(SETTINGS_DETAIL_ITEMS).toContainEqual(expect.objectContaining({ path, labelKey }));
-	} else if (path === '/settings/coding') {
-		expect(SETTINGS_MODEL_SERVICE_ITEMS).toContainEqual(
-			expect.objectContaining({ path, labelKey })
-		);
 	} else if (path.startsWith('/settings/providers/')) {
 		expect(SETTINGS_NAVIGATION).toContainEqual(
 			expect.objectContaining({ path: '/settings/providers', labelKey: 'settings.tabs.providers' })
@@ -168,8 +163,8 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.skills' })
 	).not.toBeInTheDocument();
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.coding.title' })
-	).toBeInTheDocument();
+		within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.coding.title' })
+	).not.toBeInTheDocument();
 	expect(providersLink).toHaveAttribute('href', '/settings/providers');
 	const generalLinks = within(generalGroup as HTMLElement).getAllByRole('link');
 	const cloud = within(generalGroup as HTMLElement).getByRole('link', {

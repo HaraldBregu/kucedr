@@ -52,7 +52,6 @@ const routes = [
 	'/settings/agent/rag',
 	'/settings/tasks',
 	'/settings/agent',
-	'/settings/coding',
 	'/settings/agent/chathistory',
 	'/settings/health',
 	'/settings/agent/permissions',

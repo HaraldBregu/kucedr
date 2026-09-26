@@ -59,7 +59,6 @@ const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page')
 const VoicePage = lazy(() => import('./pages/settings/pages/voice/Page'));
 const ToolsPage = lazy(() => import('./pages/settings/pages/assistant/tools/Page'));
 const McpToolsPage = lazy(() => import('./pages/settings/pages/assistant/mcptools/Page'));
-const CodingPage = lazy(() => import('./pages/settings/pages/coding/Page'));
 const ChatHistoryPage = lazy(() => import('./pages/settings/pages/assistant/chathistory/Page'));
 const AppsPage = lazy(() => import('./pages/settings/pages/apps/Page'));
 const AppDetailsPage = lazy(() => import('./pages/settings/pages/apps/details/Page'));
@@ -444,14 +443,6 @@ const routes: RouteObject[] = [
 						element: (
 							<SettingsRouteWrapper>
 								<MemoryPage />
-							</SettingsRouteWrapper>
-						),
-					},
-					{
-						path: 'coding',
-						element: (
-							<SettingsRouteWrapper>
-								<CodingPage />
 							</SettingsRouteWrapper>
 						),
 					},
