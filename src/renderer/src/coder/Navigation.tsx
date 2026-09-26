@@ -1,5 +1,4 @@
-import type { CodingSettings } from '@shared/coding_types';
-import { Code2, PanelLeft } from 'lucide-react';
+import { PanelLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavigationBarContainer } from '@/components/app/navigationbar/NavigationBarContainer';
 import { NavigationBarLeftContainer } from '@/components/app/navigationbar/NavigationBarLeftContainer';
@@ -9,20 +8,11 @@ import { useWindowState } from '@/components/app/navigationbar/hooks/useWindowSt
 const isMac = navigator.platform.startsWith('Mac');
 
 interface NavigationProps {
-	readonly projectName?: string;
-	readonly projectDirectory?: string;
-	readonly runtime?: CodingSettings['runtime'];
 	readonly sidebar: boolean;
 	readonly onToggleSidebar: () => void;
 }
 
-export function Navigation({
-	projectName,
-	projectDirectory,
-	runtime,
-	sidebar,
-	onToggleSidebar,
-}: NavigationProps) {
+export function Navigation({ sidebar, onToggleSidebar }: NavigationProps) {
 	const { isFullScreen, isMaximized } = useWindowState();
 	return (
 		<NavigationBarContainer>
@@ -39,19 +29,12 @@ export function Navigation({
 				>
 					<PanelLeft className="size-4" strokeWidth={1.8} />
 				</Button>
-				<Code2 className="ml-1 size-4 shrink-0" strokeWidth={1.8} />
-				<h1 className="px-1 text-sm font-semibold">Coder</h1>
 			</NavigationBarLeftContainer>
-			<span
-				title={projectDirectory}
-				className="min-w-0 flex-1 truncate px-3 text-xs text-muted-foreground"
-			>
-				{runtime
-					? `${runtime === 'pi' ? 'Pi' : runtime === 'codex' ? 'Codex' : 'Cline'}${projectName || projectDirectory ? ' · ' : ''}`
-					: ''}
-				{projectName ?? projectDirectory}
-			</span>
-			{!isMac && <WindowControls isMaximized={isMaximized} />}
+			{!isMac && (
+				<div className="ml-auto h-full">
+					<WindowControls isMaximized={isMaximized} />
+				</div>
+			)}
 		</NavigationBarContainer>
 	);
 }

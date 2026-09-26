@@ -97,13 +97,6 @@ export function CoderPage() {
 	return (
 		<div className="flex h-dvh min-h-0 flex-col bg-background pt-12 text-foreground">
 			<Navigation
-				projectName={project?.name}
-				runtime={coding.settings?.runtime}
-				projectDirectory={
-					coding.snapshot?.session.workingDirectory ??
-					project?.directory ??
-					coding.settings?.workingDirectory
-				}
 				sidebar={sidebar}
 				onToggleSidebar={() => setSidebar(!sidebar)}
 			/>
