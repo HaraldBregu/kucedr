@@ -30,7 +30,7 @@ it('persists valid runtime settings without project state', () => {
 	expect(store.get()).not.toHaveProperty('workingDirectory');
 });
 
-it('keeps Pi and Codex defaults independent including their working directory', () => {
+it('keeps harness defaults independent including their working directory', () => {
 	const store = new CodingStore();
 	const pi = store.set({
 		...DEFAULT_CODING_SETTINGS,
@@ -43,9 +43,17 @@ it('keeps Pi and Codex defaults independent including their working directory', 
 		modelId: 'codex-model',
 		workingDirectory: '/projects/codex',
 	});
-	expect(store.get()).toEqual(codex);
+	const cline = store.set({
+		...DEFAULT_CODING_SETTINGS,
+		runtime: 'cline',
+		providerId: 'cline',
+		modelId: 'cline-model',
+		workingDirectory: '/projects/cline',
+	});
+	expect(store.get()).toEqual(cline);
 	expect(store.get('pi')).toEqual(pi);
 	expect(store.get('codex')).toEqual(codex);
+	expect(store.get('cline')).toEqual(cline);
 	expect(store.get('pi')).not.toHaveProperty('profiles');
 	expect(() => store.set({ ...pi, workingDirectory: 'relative/path' })).toThrow('absolute');
 });
