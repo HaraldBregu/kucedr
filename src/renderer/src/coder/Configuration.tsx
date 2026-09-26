@@ -42,7 +42,7 @@ export function Configuration({
 					<Button
 						variant="ghost"
 						size="sm"
-						disabled={configuration.saving || configuration.connecting}
+						disabled={configuration.saving}
 						onClick={() => setDefaults(!defaults)}
 					>
 						{defaults ? 'Session settings' : 'Harness defaults'}
@@ -54,7 +54,7 @@ export function Configuration({
 				<Button
 					variant="ghost"
 					size="sm"
-					disabled={configuration.saving || configuration.connecting}
+					disabled={configuration.saving}
 					onClick={() => onDone(settings ?? undefined)}
 				>
 					Done
@@ -81,7 +81,7 @@ export function Configuration({
 											{ value: 'codex', label: 'Codex' },
 											{ value: 'cline', label: 'Cline' },
 										]}
-										disabled={!defaults || configuration.saving || configuration.connecting}
+										disabled={!defaults || configuration.saving}
 										onChange={(value) =>
 											void configuration.setHarness(value as CodingSettings['runtime'])
 										}
@@ -154,7 +154,7 @@ export function Configuration({
 						) : null}
 					</div>
 
-					<Authentication onChanged={(runtime) => { if (runtime === settings?.runtime) void configuration.setHarness(runtime); }} />
+					<Authentication onChanged={(runtime) => { if (runtime === settings?.runtime) void configuration.refreshCatalog(runtime); }} />
 
 					{settings?.toolMode === 'coding' ? (
 						<div

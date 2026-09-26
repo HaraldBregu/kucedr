@@ -20,6 +20,7 @@ import { CodingProjectStore } from './projects';
 import { CoderSessions, type CoderSession } from './sessions';
 import { CoderCredentials } from './credentials';
 import { CodexHarness } from './harness/codex';
+import { ClineHarness } from './harness/cline';
 import type { CodingHarness, HarnessContext, HarnessEvent } from './harness/types';
 import { executeCommand } from './shell';
 import { CodingInstructions } from './instructions';
@@ -109,6 +110,11 @@ export class Coder {
 			},
 			codex: new CodexHarness(path.join(userDataLocation(), 'coder', 'codex'), () =>
 				this.credentials.get('openai', 'codex')
+			),
+			cline: new ClineHarness(
+				path.join(userDataLocation(), 'coder', 'cline'),
+				() => this.credentials.get('cline', 'cline'),
+				async (value) => this.credentials.set('cline', value ?? '', 'cline')
 			),
 			...dependencies.harnesses,
 		};
