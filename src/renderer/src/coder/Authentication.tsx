@@ -136,67 +136,67 @@ export function Authentication({ onChanged }: { onChanged: (runtime: CoderHarnes
 									: 'Checking connection…')}
 						</p>
 						<div className="mt-2 flex flex-wrap items-center gap-2">
-						{entry.account &&
-							(busy === id ? (
-								<Button
-									size="sm"
-									variant="outline"
-									onClick={() => void window.coder.cancelCodexLogin()}
-								>
-									Cancel
-								</Button>
-							) : accountConnected ? (
-								<Button
-									size="sm"
-									variant="outline"
-									disabled={Boolean(busy)}
-									onClick={() => void disconnect(entry)}
-								>
-									Disconnect
-								</Button>
-							) : (
-								<Button
-									size="sm"
-									variant="outline"
-									disabled={Boolean(busy)}
-									onClick={() => void connect(entry)}
-								>
-									Connect account
-								</Button>
-							))}
-						{entry.key && (
-							<>
-								{keyConnected && (
+							{entry.account &&
+								(busy === id ? (
 									<Button
 										size="sm"
-										variant="ghost"
-										disabled={Boolean(busy)}
-										onClick={() => void changeKey(entry, '')}
+										variant="outline"
+										onClick={() => void window.coder.cancelCodexLogin()}
 									>
-										Remove key
+										Cancel
 									</Button>
-								)}
-								<Input
-									type="password"
-									aria-label={`${entry.label} API key`}
-									autoComplete="off"
-									placeholder="API key"
-									className="h-8 min-w-32 max-w-48 flex-1"
-									value={keys[id] ?? ''}
-									disabled={Boolean(busy)}
-									onChange={(change) =>
-										setKeys((current) => ({ ...current, [id]: change.target.value }))
-									}
-								/>
-								<Button
-									size="sm"
-									disabled={Boolean(busy) || !keys[id]?.trim()}
-									onClick={() => void changeKey(entry, keys[id].trim())}
-								>
-									Save key
-								</Button>
-						</>
-						)}
+								) : accountConnected ? (
+									<Button
+										size="sm"
+										variant="outline"
+										disabled={Boolean(busy)}
+										onClick={() => void disconnect(entry)}
+									>
+										Disconnect
+									</Button>
+								) : (
+									<Button
+										size="sm"
+										variant="outline"
+										disabled={Boolean(busy)}
+										onClick={() => void connect(entry)}
+									>
+										Connect account
+									</Button>
+								))}
+							{entry.key && (
+								<>
+									{keyConnected && (
+										<Button
+											size="sm"
+											variant="ghost"
+											disabled={Boolean(busy)}
+											onClick={() => void changeKey(entry, '')}
+										>
+											Remove key
+										</Button>
+									)}
+									<Input
+										type="password"
+										aria-label={`${entry.label} API key`}
+										autoComplete="off"
+										placeholder="API key"
+										className="h-8 min-w-32 max-w-48 flex-1"
+										value={keys[id] ?? ''}
+										disabled={Boolean(busy)}
+										onChange={(change) =>
+											setKeys((current) => ({ ...current, [id]: change.target.value }))
+										}
+									/>
+									<Button
+										size="sm"
+										disabled={Boolean(busy) || !keys[id]?.trim()}
+										onClick={() => void changeKey(entry, keys[id].trim())}
+									>
+										Save key
+									</Button>
+								</>
+							)}
 						</div>
 					</div>
 				);
