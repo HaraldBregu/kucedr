@@ -55,7 +55,7 @@ export function Navigation({
 				className="min-w-0 flex-1 truncate px-3 text-xs text-muted-foreground"
 			>
 				{runtime
-					? `${runtime === 'pi' ? 'Pi' : runtime === 'codex' ? 'Codex' : 'Claude'}${projectName ? ' · ' : ''}`
+					? `${runtime === 'pi' ? 'Pi' : runtime === 'codex' ? 'Codex' : 'Claude'}${projectName || projectDirectory ? ' · ' : ''}`
 					: ''}
 				{projectName ?? projectDirectory}
 			</span>

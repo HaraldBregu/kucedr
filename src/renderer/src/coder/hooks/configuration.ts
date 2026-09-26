@@ -70,7 +70,7 @@ export function useConfiguration(
 		return () => {
 			active = false;
 		};
-	}, [initial, defaults, session?.id, session?.projectId]);
+	}, [initial, defaults, session]);
 
 	const setHarness = async (runtime: CodingSettings['runtime']) => {
 		setLoading(true);
