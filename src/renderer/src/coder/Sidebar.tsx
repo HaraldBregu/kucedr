@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import {
 	Check,
 	FileText,
@@ -12,6 +12,7 @@ import {
 	Trash2,
 } from 'lucide-react';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
+import { MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from '@/components/app/base/page/context/state';
 import { Input } from '@/components/ui/input';
 import {
 	SidebarFooter,
@@ -32,6 +33,8 @@ import type { Workspace } from './workspace';
 
 export function Sidebar({
 	coding,
+	width,
+	onWidthChange,
 	onSelect,
 	onInstructions,
 	onBeforeChange,
@@ -39,6 +42,8 @@ export function Sidebar({
 	settingsActive,
 }: {
 	coding: Workspace;
+	width: number;
+	onWidthChange: (width: number) => void;
 	onBeforeChange: () => boolean;
 	onSelect: (projectId: string, sessionId?: string, fresh?: boolean) => void;
 	onInstructions: (projectId: string) => void;
@@ -86,7 +91,8 @@ export function Sidebar({
 		<aside
 			aria-label="Sessions"
 			data-slot="coder-sidebar"
-			className="absolute inset-y-0 left-0 z-20 flex w-56 shrink-0 flex-col border-r border-sidebar-border bg-background text-sidebar-foreground md:static"
+			className="absolute inset-y-0 left-0 z-20 flex w-56 shrink-0 flex-col border-r border-sidebar-border bg-background text-sidebar-foreground md:relative md:w-[var(--coder-sidebar-width)]"
+			style={{ '--coder-sidebar-width': `${width}px` } as CSSProperties}
 		>
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<SidebarMenu>
@@ -303,6 +309,62 @@ export function Sidebar({
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarFooter>
+			<button
+				type="button"
+				data-slot="coder-sidebar-resizer"
+				role="separator"
+				aria-label="Resize sidebar"
+				aria-orientation="vertical"
+				aria-valuemin={MIN_SIDEBAR_WIDTH}
+				aria-valuemax={MAX_SIDEBAR_WIDTH}
+				aria-valuenow={width}
+				tabIndex={0}
+				title="Resize sidebar"
+				className="absolute inset-y-0 -right-1.5 z-20 hidden w-3 cursor-col-resize touch-none outline-none after:absolute after:inset-y-0 after:left-1/2 after:w-px after:-translate-x-1/2 hover:after:bg-sidebar-border focus-visible:after:bg-ring md:block"
+				onKeyDown={(event) => {
+					if (event.key === 'ArrowLeft') {
+						event.preventDefault();
+						onWidthChange(width - 8);
+					}
+					if (event.key === 'ArrowRight') {
+						event.preventDefault();
+						onWidthChange(width + 8);
+					}
+					if (event.key === 'Home') {
+						event.preventDefault();
+						onWidthChange(MIN_SIDEBAR_WIDTH);
+					}
+					if (event.key === 'End') {
+						event.preventDefault();
+						onWidthChange(MAX_SIDEBAR_WIDTH);
+					}
+				}}
+				onPointerDown={(event) => {
+					if (event.button !== 0) return;
+					event.preventDefault();
+					const startX = event.clientX;
+					const startWidth = width;
+					const previousCursor = document.body.style.cursor;
+					const previousUserSelect = document.body.style.userSelect;
+					document.body.style.cursor = 'col-resize';
+					document.body.style.userSelect = 'none';
+
+					const handlePointerMove = (moveEvent: PointerEvent): void => {
+						onWidthChange(startWidth + moveEvent.clientX - startX);
+					};
+					const stopResizing = (): void => {
+						window.removeEventListener('pointermove', handlePointerMove);
+						window.removeEventListener('pointerup', stopResizing);
+						window.removeEventListener('pointercancel', stopResizing);
+						document.body.style.cursor = previousCursor;
+						document.body.style.userSelect = previousUserSelect;
+					};
+
+					window.addEventListener('pointermove', handlePointerMove);
+					window.addEventListener('pointerup', stopResizing);
+					window.addEventListener('pointercancel', stopResizing);
+				}}
+			/>
 		</aside>
 	);
 }

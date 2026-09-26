@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useBlocker, useLocation, useNavigate } from 'r
 import { Code2, FolderPlus, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatContainerContent, ChatContainerRoot } from '@/components/ui/chat-container';
+import { DEFAULT_SIDEBAR_WIDTH, MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from '@/components/app/base/page/context/state';
 import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
 import { Transcript } from './Transcript';
 import { Navigation } from './Navigation';
@@ -19,6 +20,7 @@ export function CoderPage() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
+	const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
 	const instructionsDirtyRef = useRef(instructionsDirty);
 	const previousPath = useRef(location.pathname);
@@ -101,6 +103,10 @@ export function CoderPage() {
 				{sidebar && (
 					<Sidebar
 						coding={coding}
+						width={sidebarWidth}
+						onWidthChange={(width) =>
+							setSidebarWidth(Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, width)))
+						}
 						settingsActive={location.pathname === '/settings'}
 						onBeforeChange={leaveInstructions}
 						onSelect={select}
