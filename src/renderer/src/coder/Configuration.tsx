@@ -6,7 +6,6 @@ import {
 } from '@shared/coding_types';
 import { AlertTriangle, Check, Copy, ExternalLink } from 'lucide-react';
 
-import { Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Choice } from './Choice';
@@ -146,7 +145,10 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 					) : null}
 
 					{deviceCode ? (
-						<Alert>
+						<div
+							role="status"
+							className="rounded-lg border bg-card px-3 py-2 text-sm text-card-foreground"
+						>
 							<div className="space-y-2 text-xs">
 								<p>Enter this device code on the OpenAI sign-in page:</p>
 								<code className="block select-all font-mono text-lg font-semibold tracking-widest">
@@ -172,18 +174,24 @@ export function Configuration({ onDone }: { onDone: () => void }) {
 								</div>
 								<p className="text-muted-foreground">Waiting for authorization…</p>
 							</div>
-						</Alert>
+						</div>
 					) : null}
 
 					{settings?.toolMode === 'coding' ? (
-						<Alert className="text-destructive">
+						<div
+							role="alert"
+							className="flex items-center gap-2 rounded-lg border px-3 py-2 text-xs text-destructive [&>svg]:size-4"
+						>
 							<AlertTriangle /> Coder tools run with your desktop account permissions.
-						</Alert>
+						</div>
 					) : null}
 					{configuration.error ? (
-						<Alert className="text-destructive">
+						<div
+							role="alert"
+							className="flex items-center gap-2 rounded-lg border px-3 py-2 text-xs text-destructive [&>svg]:size-4"
+						>
 							<AlertTriangle /> {configuration.error}
-						</Alert>
+						</div>
 					) : null}
 				</div>
 			</div>

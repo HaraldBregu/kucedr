@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { AlertTriangle, FileText, LoaderCircle, Save } from 'lucide-react';
 
-import { Alert } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -100,14 +99,20 @@ export function Instructions({
 					) : null}
 
 					{editor.instructions && !editor.instructions.editable ? (
-						<Alert className="border-destructive/30 bg-destructive/5 text-destructive">
+						<div
+							role="alert"
+							className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive [&>svg]:size-4"
+						>
 							<AlertTriangle /> This file is a symbolic link and cannot be edited in Kucedr.
-						</Alert>
+						</div>
 					) : null}
 					{editor.error ? (
-						<Alert className="border-destructive/30 bg-destructive/5 text-destructive">
+						<div
+							role="alert"
+							className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive [&>svg]:size-4"
+						>
 							<AlertTriangle /> {editor.error}
-						</Alert>
+						</div>
 					) : null}
 
 					{editor.instructions ? (
