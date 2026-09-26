@@ -149,8 +149,12 @@ export function CoderPage() {
 										projectId={project.id}
 										projectName={project.name}
 										onDirtyChange={setInstructionsDirty}
-										onDone={() => openPage('/')}
-									/>
+											onDone={() => openPage('/')}
+										/>
+								) : coding.loading ? (
+									<p role="status" className="p-4 text-sm text-muted-foreground">
+										Loading project…
+									</p>
 								) : (
 									<Navigate to="/" replace />
 								)
