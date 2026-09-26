@@ -111,6 +111,7 @@ export function CoderPage() {
 				{sidebar && (
 					<Sidebar
 						coding={coding}
+						settingsActive={location.pathname === '/settings'}
 						onBeforeChange={leaveInstructions}
 						onSelect={select}
 						onConfiguration={() => openPage('/settings')}

@@ -36,12 +36,14 @@ export function Sidebar({
 	onInstructions,
 	onBeforeChange,
 	onConfiguration,
+	settingsActive,
 }: {
 	coding: Workspace;
 	onBeforeChange: () => boolean;
 	onSelect: (projectId: string, sessionId?: string, fresh?: boolean) => void;
 	onInstructions: (projectId: string) => void;
 	onConfiguration: () => void;
+	settingsActive: boolean;
 }) {
 	const [query, setQuery] = useState('');
 	const [searchOpen, setSearchOpen] = useState(false);
@@ -250,7 +252,13 @@ export function Sidebar({
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border">
 				<SidebarMenu>
 					<SidebarMenuItem>
-						<SidebarMenuButton type="button" disabled={coding.busy} onClick={onConfiguration}>
+						<SidebarMenuButton
+							type="button"
+							data-active={settingsActive}
+							aria-current={settingsActive ? 'page' : undefined}
+							disabled={coding.busy}
+							onClick={onConfiguration}
+						>
 							<Settings className="size-4 shrink-0" />
 							<span>Settings</span>
 						</SidebarMenuButton>
