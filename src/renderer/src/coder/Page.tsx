@@ -118,25 +118,35 @@ export function CoderPage() {
 					/>
 				)}
 				<main className="flex min-w-0 flex-1 flex-col">
-					{page === 'configuration' ? (
-						<Configuration
-							initial={coding.settings}
-							session={coding.snapshot?.session}
-							onDone={(settings) => {
-								void coding.refreshSettings(settings?.runtime);
-								setPage('chat');
-							}}
+					<Routes>
+						<Route
+							path="/settings"
+							element={
+								<Configuration
+									initial={coding.settings}
+									session={coding.snapshot?.session}
+									onDone={() => openPage('/')}
+								/>
+							}
 						/>
-					) : page === 'instructions' && project ? (
-						<Instructions
-							key={`${project.id}:${coding.settings?.runtime}`}
-							runtime={coding.settings?.runtime}
-							projectId={project.id}
-							projectName={project.name}
-							onDirtyChange={setInstructionsDirty}
-							onDone={() => openPage('chat')}
+						<Route
+							path="/instructions"
+							element={
+								project ? (
+									<Instructions
+										key={`${project.id}:${coding.settings?.runtime}`}
+										runtime={coding.settings?.runtime}
+										projectId={project.id}
+										projectName={project.name}
+										onDirtyChange={setInstructionsDirty}
+										onDone={() => openPage('/')}
+									/>
+								) : (
+									<Navigate to="/" replace />
+								)
+							}
 						/>
-					) : (
+						<Route path="/" element={
 						<>
 							<div className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
 								<h2 className="min-w-0 flex-1 truncate text-sm font-medium">
@@ -179,7 +189,7 @@ export function CoderPage() {
 												</Button>
 											)}
 											{project && !coding.settings?.modelId && (
-												<Button variant="outline" onClick={() => openPage('configuration')}>
+												<Button variant="outline" onClick={() => openPage('/settings')}>
 													Configure agent
 												</Button>
 											)}
@@ -200,9 +210,11 @@ export function CoderPage() {
 									)}
 								</ChatContainerContent>
 							</ChatContainerRoot>
-							<Composer coding={coding} onConfiguration={() => openPage('configuration')} />
+							<Composer coding={coding} onConfiguration={() => openPage('/settings')} />
 						</>
-					)}
+						} />
+						<Route path="*" element={<Navigate to="/" replace />} />
+					</Routes>
 				</main>
 			</div>
 		</div>
