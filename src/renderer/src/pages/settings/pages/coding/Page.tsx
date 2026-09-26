@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { AlertTriangle, ExternalLink, ShieldAlert } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -34,7 +33,6 @@ import { firstErrorMessage } from '../../components/model-configuration-state';
 
 const CodingPage: React.FC = () => {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const [settings, setSettings] = useState<CodingSettings | null>(null);
 	const [catalog, setCatalog] = useState<CodingCatalog>({ providers: [] });
 	const [loading, setLoading] = useState(true);
@@ -46,7 +44,7 @@ const CodingPage: React.FC = () => {
 
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([window.coding.getSettings(), window.coding.listModels()])
+		void Promise.all([window.coding.getSettings('pi'), window.coding.listModels('pi')])
 			.then(([nextSettings, nextCatalog]) => {
 				if (!mounted) return;
 				setSettings(nextSettings);
@@ -81,7 +79,7 @@ const CodingPage: React.FC = () => {
 	};
 
 	const refreshCatalog = async (): Promise<void> => {
-		setCatalog(await window.coding.listModels());
+		setCatalog(await window.coding.listModels('pi'));
 	};
 
 	const handleProviderChange = (providerId: CodingProviderId): void => {
@@ -105,7 +103,7 @@ const CodingPage: React.FC = () => {
 				} else if (event.type === 'auth-url') {
 					void window.app.openExternalUrl(event.url);
 				}
-			})
+			}, 'pi')
 			.then(refreshCatalog)
 			.catch((connectError) => {
 				setError(firstErrorMessage(connectError, t('settings.coding.connectError')));
@@ -117,7 +115,7 @@ const CodingPage: React.FC = () => {
 		setConnecting(true);
 		setError(null);
 		void window.coding
-			.disconnectCodex()
+			.disconnectCodex('pi')
 			.then(refreshCatalog)
 			.catch((disconnectError) => {
 				setError(firstErrorMessage(disconnectError, t('settings.coding.disconnectError')));
@@ -277,11 +275,7 @@ const CodingPage: React.FC = () => {
 											</Button>
 										)
 									) : (
-										<Button
-											size="xs"
-											variant="outline"
-											onClick={() => navigate('/settings/providers/models')}
-										>
+										<Button size="xs" variant="outline" onClick={() => void window.win.openCoder()}>
 											{t('settings.coding.manageApiKeys')}
 										</Button>
 									)}
