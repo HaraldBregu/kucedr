@@ -21,7 +21,7 @@ export function Navigation({ sidebar, onToggleSidebar }: NavigationProps) {
 					type="button"
 					variant="ghost"
 					size="icon"
-					className="size-8 shrink-0 rounded-full"
+					className="size-8 shrink-0 rounded-full text-muted-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground"
 					aria-label="Toggle sessions"
 					title="Toggle sessions"
 					aria-expanded={sidebar}
