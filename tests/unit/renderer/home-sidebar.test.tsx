@@ -346,9 +346,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(newChat.parentElement).toHaveAttribute('data-sidebar', 'menu-item');
 	expect(newChat.querySelector('.lucide-plus')).toBeInTheDocument();
 	expect(newChat).toHaveTextContent('navigationBar.newChat');
-	expect(newChat.querySelector('kbd')).toHaveTextContent(
-		navigator.platform.startsWith('Mac') ? '⌘ + N' : 'Ctrl + N'
-	);
+	expect(newChat.querySelector('kbd')).not.toBeInTheDocument();
 	await user.click(newChat);
 	expect(setSessionId).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');

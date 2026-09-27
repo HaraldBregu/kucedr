@@ -104,6 +104,7 @@ test('the Workspace item below New Chat opens the blank view', async () => {
 	const actions = sidebar.locator('header [data-sidebar="menu-button"]');
 	await expect(actions).toHaveCount(2);
 	await expect(actions.nth(0)).toContainText('New Chat');
+	await expect(actions.nth(0).locator('kbd')).toHaveCount(0);
 	await expect(actions.nth(1)).toContainText('Workspace');
 	await expect(page.getByRole('button', { name: 'Open Coder' })).toHaveCount(0);
 	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
