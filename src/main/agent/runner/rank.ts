@@ -24,19 +24,6 @@ function terms(value: string): string[] {
 	return value.toLocaleLowerCase().match(/[\p{L}\p{N}_-]+/gu) ?? [];
 }
 
-function identity(value: string): string {
-	return terms(value).join(' ').replaceAll(/[_-]+/g, ' ').replaceAll(/\s+/g, ' ').trim();
-}
-
-export function isStrongMatch(query: string, id: string, name: string, text: string): boolean {
-	const queryTerms = [...new Set(terms(query).filter((term) => !STOP_WORDS.has(term)))];
-	if (queryTerms.length === 0) return false;
-	const normalizedQuery = identity(query);
-	if (normalizedQuery === identity(id) || normalizedQuery === identity(name)) return true;
-	const documentTerms = new Set(terms(text).filter((term) => !STOP_WORDS.has(term)));
-	return queryTerms.filter((term) => documentTerms.has(term)).length >= 2;
-}
-
 export function rankTools<T>(query: string, documents: RankedDocument<T>[]): T[] {
 	const queryTerms = [...new Set(terms(query).filter((term) => !STOP_WORDS.has(term)))];
 	if (queryTerms.length === 0) return [];
