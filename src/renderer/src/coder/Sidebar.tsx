@@ -47,7 +47,10 @@ export function Sidebar({
 					<Plus className="size-4" />
 				</button>
 			</header>
-			<nav aria-label="Workspace instruction files" className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3">
+			<nav
+				aria-label="Workspace instruction files"
+				className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2 pt-3"
+			>
 				<ul className="flex min-w-0 flex-col gap-1">
 					{markdownFiles.map((filePath) => (
 						<li key={filePath}>
@@ -55,7 +58,11 @@ export function Sidebar({
 								type="button"
 								title={filePath}
 								aria-current={activeMarkdown === filePath ? 'page' : undefined}
-								className={cn(SPLIT_ITEM_CLASS, 'w-full min-w-0 gap-2', activeMarkdown === filePath && SPLIT_ITEM_ACTIVE_CLASS)}
+								className={cn(
+									SPLIT_ITEM_CLASS,
+									'w-full min-w-0 gap-2',
+									activeMarkdown === filePath && SPLIT_ITEM_ACTIVE_CLASS
+								)}
 								onClick={() => onMarkdown(filePath)}
 							>
 								<FileText className="size-4 shrink-0" />
@@ -70,10 +77,21 @@ export function Sidebar({
 				{!coding.loading && !project && (
 					<p className="px-2 py-1 text-xs text-muted-foreground">Choose a project in Sessions.</p>
 				)}
-				{markdownError && <p role="alert" className="px-2 py-1 text-xs text-destructive">{markdownError}</p>}
+				{markdownError && (
+					<p role="alert" className="px-2 py-1 text-xs text-destructive">
+						{markdownError}
+					</p>
+				)}
 			</nav>
-			<Resize side="right" width={width} minWidth={MIN_SIDEBAR_WIDTH} maxWidth={MAX_SIDEBAR_WIDTH}
-				label="Resize instructions sidebar" className="md:block" onWidthChange={onWidthChange} />
+			<Resize
+				side="right"
+				width={width}
+				minWidth={MIN_SIDEBAR_WIDTH}
+				maxWidth={MAX_SIDEBAR_WIDTH}
+				label="Resize instructions sidebar"
+				className="md:block"
+				onWidthChange={onWidthChange}
+			/>
 		</aside>
 	);
 }

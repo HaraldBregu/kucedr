@@ -245,7 +245,10 @@ export function CoderPage() {
 									void navigate('/');
 								})
 								.catch((cause) => {
-									if (wasDirty) { markdownDirtyRef.current = true; setMarkdownDirty(true); }
+									if (wasDirty) {
+										markdownDirtyRef.current = true;
+										setMarkdownDirty(true);
+									}
 									setMarkdownError(String(cause));
 								});
 						}}
@@ -380,15 +383,19 @@ export function CoderPage() {
 						className="absolute inset-y-0 right-0 z-20 flex w-[min(85vw,400px)] flex-col border-l border-sidebar-border bg-background text-sidebar-foreground xl:relative xl:z-10 xl:w-[var(--coder-viewer-width)] xl:shrink-0"
 						style={{ '--coder-viewer-width': `${viewerWidth}px` } as CSSProperties}
 					>
-						<Sessions coding={coding} settingsActive={location.pathname === '/settings'}
-							onBeforeChange={leaveEditor} onSelect={select}
+						<Sessions
+							coding={coding}
+							settingsActive={location.pathname === '/settings'}
+							onBeforeChange={leaveEditor}
+							onSelect={select}
 							onConfiguration={() => openPage('/settings')}
 							onInstructions={(id) => {
 								if (!leaveEditor()) return;
 								if (id !== coding.projectId) void coding.select(id);
 								void navigate('/instructions');
 								if (window.innerWidth < 1280) setViewer(false);
-							}} />
+							}}
+						/>
 						<Resize
 							side="left"
 							width={viewerWidth}
