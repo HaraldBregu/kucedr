@@ -212,7 +212,6 @@ export function CoderPage() {
 						onWidthChange={(width) =>
 							setSidebarWidth(Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, width)))
 						}
-						settingsActive={location.pathname === '/settings'}
 						markdownFiles={markdownFiles}
 						activeMarkdown={location.pathname === '/' ? activeMarkdown : null}
 						markdownError={markdownError}
