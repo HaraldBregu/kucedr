@@ -299,7 +299,7 @@ At the start of each normal agent run, enabled servers connect in parallel, expo
 
 Current limits:
 
-- A stored `require_approval` field is enforced: it sets a loaded MCP tool's default permission to allow or ask. Enabled servers with `defer_loading: true` stay disconnected until progressive discovery selects their stored ID or name; false or omitted values remain eager for compatibility, and newly configured servers default to deferred loading.
+- A stored `require_approval` field is enforced: it sets a loaded MCP tool's default permission to allow or ask. Agent runs connect to enabled MCP servers and list their tools before the first model turn. The stored `defer_loading` field remains for compatibility and does not delay listing during agent runs.
 - Dynamically loaded MCP tools are not included in the built-in gated-tool list; only their own `require_approval`-derived default applies.
 
 ### Scheduled tasks
