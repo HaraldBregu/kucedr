@@ -1,4 +1,8 @@
 import { useEffect, useRef } from 'react';
+import { Image } from '@tiptap/extension-image';
+import { TableKit } from '@tiptap/extension-table';
+import { TaskItem } from '@tiptap/extension-task-item';
+import { TaskList } from '@tiptap/extension-task-list';
 import { Markdown } from '@tiptap/markdown';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -17,7 +21,7 @@ export function WorkspaceMarkdownEditor({ value, onChange, onSave }: WorkspaceMa
 		onSaveRef.current = onSave;
 	}, [onChange, onSave]);
 	const editor = useEditor({
-		extensions: [StarterKit, Markdown],
+		extensions: [StarterKit, TableKit, TaskList, TaskItem, Image, Markdown.configure({ markedOptions: { gfm: true } })],
 		content: value,
 		contentType: 'markdown',
 		onUpdate: ({ editor: updatedEditor }) => onChangeRef.current(updatedEditor.getMarkdown()),
