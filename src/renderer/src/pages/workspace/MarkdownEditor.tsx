@@ -13,7 +13,11 @@ interface WorkspaceMarkdownEditorProps {
 	readonly onSave: () => void;
 }
 
-export function WorkspaceMarkdownEditor({ value, onChange, onSave }: WorkspaceMarkdownEditorProps): React.JSX.Element {
+export function WorkspaceMarkdownEditor({
+	value,
+	onChange,
+	onSave,
+}: WorkspaceMarkdownEditorProps): React.JSX.Element {
 	const onChangeRef = useRef(onChange);
 	const onSaveRef = useRef(onSave);
 	useEffect(() => {
@@ -21,7 +25,14 @@ export function WorkspaceMarkdownEditor({ value, onChange, onSave }: WorkspaceMa
 		onSaveRef.current = onSave;
 	}, [onChange, onSave]);
 	const editor = useEditor({
-		extensions: [StarterKit.configure({ link: { openOnClick: false } }), TableKit, TaskList, TaskItem, Image, Markdown.configure({ markedOptions: { gfm: true } })],
+		extensions: [
+			StarterKit.configure({ link: { openOnClick: false } }),
+			TableKit,
+			TaskList,
+			TaskItem,
+			Image,
+			Markdown.configure({ markedOptions: { gfm: true } }),
+		],
 		content: value,
 		contentType: 'markdown',
 		onUpdate: ({ editor: updatedEditor }) => onChangeRef.current(updatedEditor.getMarkdown()),
@@ -47,5 +58,10 @@ export function WorkspaceMarkdownEditor({ value, onChange, onSave }: WorkspaceMa
 		}
 	}, [editor, value]);
 
-	return <EditorContent editor={editor} className="mx-auto min-h-full w-full max-w-3xl break-words text-sm leading-7" />;
+	return (
+		<EditorContent
+			editor={editor}
+			className="mx-auto min-h-full w-full max-w-3xl break-words text-sm leading-7"
+		/>
+	);
 }

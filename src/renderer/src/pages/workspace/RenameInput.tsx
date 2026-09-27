@@ -9,7 +9,12 @@ interface WorkspaceRenameInputProps {
 	readonly onConfirm: (name: string) => void;
 }
 
-export function WorkspaceRenameInput({ name, busy, onCancel, onConfirm }: WorkspaceRenameInputProps): React.JSX.Element {
+export function WorkspaceRenameInput({
+	name,
+	busy,
+	onCancel,
+	onConfirm,
+}: WorkspaceRenameInputProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [value, setValue] = useState(name);
 	return (
@@ -24,18 +29,18 @@ export function WorkspaceRenameInput({ name, busy, onCancel, onConfirm }: Worksp
 			onContextMenu={(event) => event.stopPropagation()}
 			onBlur={() => onConfirm(value.trim())}
 			onKeyDown={(event) => {
-			if (event.key === 'Escape') {
-				event.preventDefault();
-				event.stopPropagation();
-				onCancel();
-			} else if (event.key === 'Enter') {
-				event.preventDefault();
-				event.stopPropagation();
-				onConfirm(value.trim());
-			} else {
-				event.stopPropagation();
-			}
-		}}
+				if (event.key === 'Escape') {
+					event.preventDefault();
+					event.stopPropagation();
+					onCancel();
+				} else if (event.key === 'Enter') {
+					event.preventDefault();
+					event.stopPropagation();
+					onConfirm(value.trim());
+				} else {
+					event.stopPropagation();
+				}
+			}}
 		/>
 	);
 }
