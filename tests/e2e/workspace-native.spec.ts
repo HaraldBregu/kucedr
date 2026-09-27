@@ -22,6 +22,13 @@ test('opens the bundled Workspace in its own window', async () => {
 				return win?.isVisible() && view?.webContents.getURL() === 'kucedr-app://workspace/dist/index.html';
 			})
 		).toBe(true);
+		await expect.poll(() =>
+			app.evaluate(async ({ BrowserWindow }) => {
+				const win = BrowserWindow.getAllWindows().find((window) => window.getTitle() === 'Workspace');
+				const view = win?.contentView.children[0] as WebContentsView | undefined;
+				return view?.webContents.executeJavaScript('document.body.innerText.includes("Workspace")');
+			})
+		).toBe(true);
 	} finally {
 		await app.close();
 		await rm(userDataDir, { recursive: true, force: true });
