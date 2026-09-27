@@ -104,6 +104,8 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 		await window.agent.createWorkspaceDirectory('', 'Notes');
 		await window.agent.createWorkspaceFile('Notes', 'plan.md');
 		await window.agent.writeWorkspaceFile('Notes/plan.md', '# Plan');
+		await window.agent.createWorkspaceFile('Notes', 'config.json');
+		await window.agent.writeWorkspaceFile('Notes/config.json', '{"enabled": true}');
 	});
 	const sidebar = page.locator('[data-slot="home-sidebar"]');
 	const actions = sidebar.locator('header [data-sidebar="menu-button"]');
@@ -122,6 +124,8 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await workspace.getByRole('button', { name: 'plan.md' }).click();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan');
 	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute('aria-current', 'page');
+	await workspace.getByRole('button', { name: 'config.json' }).click();
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('Notes', 'updated.md');
 	});
