@@ -2158,6 +2158,12 @@
 		"navigateBack": "Navigate back",
 		"navigateForward": "Navigate forward"
 	},
+	"workspaceSidebar": {
+		"files": "Workspace files",
+		"loading": "Loading files…",
+		"error": "Unable to load Workspace files.",
+		"empty": "Workspace is empty."
+	},
 	"documents": {
 		"title": "Documents",
 		"noDocumentsTitle": "No documents yet",

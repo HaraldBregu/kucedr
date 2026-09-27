@@ -2158,6 +2158,12 @@
 		"navigateBack": "Naviga indietro",
 		"navigateForward": "Naviga avanti"
 	},
+	"workspaceSidebar": {
+		"files": "File dello spazio di lavoro",
+		"loading": "Caricamento dei file…",
+		"error": "Impossibile caricare i file dello spazio di lavoro.",
+		"empty": "Lo spazio di lavoro è vuoto."
+	},
 	"documents": {
 		"title": "Documenti",
 		"noDocumentsTitle": "Nessun documento ancora",

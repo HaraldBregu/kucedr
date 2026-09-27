@@ -100,6 +100,10 @@ test('the Workspace item below New Chat opens the blank view', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceDirectory('', 'Notes');
+		await window.agent.createWorkspaceFile('Notes', 'plan.md');
+	});
 	const sidebar = page.locator('[data-slot="home-sidebar"]');
 	const actions = sidebar.locator('header [data-sidebar="menu-button"]');
 	await expect(actions).toHaveCount(2);
@@ -111,7 +115,13 @@ test('the Workspace item below New Chat opens the blank view', async () => {
 	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
 	await actions.nth(1).click();
 	await expect(page).toHaveURL(/#\/workspace$/);
+	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
+	await expect(workspace.getByText('Notes')).toBeVisible();
+	await workspace.getByText('Notes').click();
+	await expect(workspace.getByText('plan.md')).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await expect(page).toHaveURL(/#\/home$/);
 });
 
 test('the settings home redirects to General settings', async () => {

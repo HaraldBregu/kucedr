@@ -27,6 +27,7 @@ import {
 } from './contexts/chat-session';
 import { cn } from './lib/utils';
 import HomePage from './pages/home/Page';
+import WorkspacePage from './pages/workspace/Page';
 import StartPage from './pages/start/StartPage';
 import { StartupGate } from './auth/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
@@ -227,7 +228,7 @@ const routes: RouteObject[] = [
 			},
 			{
 				path: 'workspace',
-				element: <div className="h-full" />,
+				element: <WorkspacePage />,
 			},
 			{
 				path: 'settings',
