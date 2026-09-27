@@ -48,6 +48,7 @@ it('stores only Coder-created Markdown under separate project workspaces', async
 			path.join(directory, 'outside.md'),
 			path.join(markdownLocation(project), 'linked.md')
 		);
+		await expect(readMarkdownFile(project, 'linked.md')).rejects.toThrow();
 		await expect(saveMarkdownFile(project, 'linked.md', 'bad', 'outside')).rejects.toThrow(
 			'regular'
 		);
