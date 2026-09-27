@@ -64,7 +64,7 @@ export function applyAgentResponseEventToTools(
 		case 'user_input_result':
 			return undefined;
 		case 'tool_call_start':
-			if (event.toolName === 'discover_tools') return undefined;
+			if (event.toolName === 'tool_search') return undefined;
 			return updateAgentToolPart(tools, event.toolCallId, {
 				type: event.toolName,
 				state: 'input-streaming',
@@ -73,7 +73,7 @@ export function applyAgentResponseEventToTools(
 				outputTokens,
 			});
 		case 'tool_call_args_delta':
-			if (event.toolName === 'discover_tools') return undefined;
+			if (event.toolName === 'tool_search') return undefined;
 			return updateAgentToolPart(tools, event.toolCallId, {
 				type: event.toolName,
 				displayName: event.displayName,
@@ -84,7 +84,7 @@ export function applyAgentResponseEventToTools(
 				inputText: event.argsText,
 			});
 		case 'tool_call_input':
-			if (event.toolName === 'discover_tools') return undefined;
+			if (event.toolName === 'tool_search') return undefined;
 			return updateAgentToolPart(tools, event.toolCallId, {
 				type: event.toolName,
 				displayName: event.displayName,
@@ -97,7 +97,7 @@ export function applyAgentResponseEventToTools(
 				startedAtMs: receivedAtMs,
 			});
 		case 'tool_call_result': {
-			if (event.toolName === 'discover_tools') return undefined;
+			if (event.toolName === 'tool_search') return undefined;
 			const isError = event.status !== 'ok';
 			const errorText =
 				event.errorText ?? (isError ? event.outputText || 'Tool call failed.' : undefined);

@@ -291,7 +291,7 @@ async function* loop(
 		tools = filterPlanTools(tools, input.interactionMode);
 		if (!options.tools || options.progressiveDiscovery === true) {
 			const requiredIds = new Set([
-				'read', 'write', 'edit', 'patch', 'undo', 'redo',
+				'read', 'write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap',
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
