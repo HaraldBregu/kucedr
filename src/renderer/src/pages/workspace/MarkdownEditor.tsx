@@ -12,8 +12,10 @@ interface WorkspaceMarkdownEditorProps {
 export function WorkspaceMarkdownEditor({ value, onChange, onSave }: WorkspaceMarkdownEditorProps): React.JSX.Element {
 	const onChangeRef = useRef(onChange);
 	const onSaveRef = useRef(onSave);
-	onChangeRef.current = onChange;
-	onSaveRef.current = onSave;
+	useEffect(() => {
+		onChangeRef.current = onChange;
+		onSaveRef.current = onSave;
+	}, [onChange, onSave]);
 	const editor = useEditor({
 		extensions: [StarterKit, Markdown],
 		content: value,
