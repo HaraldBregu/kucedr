@@ -1,4 +1,5 @@
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import type {
 	OAuthClientInformationFull,
 	OAuthTokens,
@@ -35,6 +36,8 @@ export type McpStoreSchema = {
 	readonly servers: McpStoredRecord[];
 	readonly localEnvironments: Record<string, string>;
 };
+
+export type McpToolCatalogSchema = Record<string, { identity: string; tools: Tool[] }>;
 
 export type McpOAuthStorage = {
 	load: () => McpOAuthState;
