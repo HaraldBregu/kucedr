@@ -132,8 +132,14 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-left', '24px');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-top', '12px');
+	await page.getByRole('textbox', { name: 'Note content' }).fill('# Revised plan');
+	await page.getByText('Preview', { exact: true }).click();
+	await expect(page.getByRole('heading', { name: 'Revised plan' })).toBeVisible();
+	await page.getByText('Source', { exact: true }).click();
+	await page.getByRole('textbox', { name: 'Note content' }).fill('# Saved plan');
 	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute('aria-current', 'page');
 	await workspace.getByRole('button', { name: 'config.json' }).click();
+	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('Notes/plan.md'))).toBe('# Saved plan');
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('Notes', 'updated.md');
