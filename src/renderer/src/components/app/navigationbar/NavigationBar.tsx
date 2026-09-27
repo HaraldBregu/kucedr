@@ -39,6 +39,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const { isFullScreen, isMaximized } = useWindowState();
 	const { sessionId } = useChatSession();
 	const [coderError, setCoderError] = React.useState<string | null>(null);
+	const [workspaceError, setWorkspaceError] = React.useState<string | null>(null);
 	const [voiceError, setVoiceError] = React.useState<string | null>(null);
 
 	const isHome = location.pathname === '/home';
@@ -115,8 +116,13 @@ export const NavigationBar = React.memo(function NavigationBar({
 			size="icon"
 			className="size-8 rounded-full"
 			aria-label="Open Workspace"
-			title="Open Workspace"
-			onClick={() => void window.apps.open('workspace')}
+			title={workspaceError ?? 'Open Workspace'}
+			onClick={() => {
+			setWorkspaceError(null);
+			void window.apps.open('workspace').catch((error: unknown) => {
+				setWorkspaceError(error instanceof Error ? error.message : 'Workspace could not be opened.');
+			});
+			}}
 		>
 			<Folder className="size-4" strokeWidth={1.8} />
 		</Button>
