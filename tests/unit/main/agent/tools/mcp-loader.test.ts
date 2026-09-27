@@ -2,15 +2,8 @@ const connectMock = jest.fn();
 const listToolsMock = jest.fn();
 const closeMock = jest.fn();
 const getMcpServersMock = jest.fn();
+const getMcpToolCatalogMock = jest.fn();
 const callToolMock = jest.fn();
-const notificationHandlers = new Map<string, () => Promise<void>>();
-const mockClient = (id = 'safe') => ({
-	id,
-	setNotificationHandler: (_schema: unknown, handler: () => Promise<void>) => {
-		notificationHandlers.set(id, handler);
-	},
-	removeNotificationHandler: jest.fn(),
-});
 
 jest.mock('../../../../../src/main/mcp', () => ({
 	connect: (...args: unknown[]) => connectMock(...args),
@@ -18,6 +11,7 @@ jest.mock('../../../../../src/main/mcp', () => ({
 	close: (...args: unknown[]) => closeMock(...args),
 	callTool: (...args: unknown[]) => callToolMock(...args),
 	getMcpServers: () => getMcpServersMock(),
+	getMcpToolCatalog: (id: string) => getMcpToolCatalogMock(id),
 }));
 
 import { loadMcpTools } from '../../../../../src/main/agent/tools/mcp/loader';
@@ -26,264 +20,160 @@ import {
 	MCP_MAX_TOOLS,
 } from '../../../../../src/main/agent/tools/mcp/limits';
 
-describe('loadMcpTools', () => {
+const schema = { type: 'object', properties: {} };
+const catalog = (...names: string[]) => names.map((name) => ({ name, inputSchema: schema }));
+
+describe('loadMcpTools from persisted catalog', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
-		notificationHandlers.clear();
-		connectMock.mockImplementation(async (id: string) => mockClient(id));
+		getMcpServersMock.mockReturnValue({
+			safe: { type: 'http', url: 'https://mcp.test', defer_loading: false },
+		});
+		getMcpToolCatalogMock.mockReturnValue(catalog('lookup'));
+		connectMock.mockImplementation(async (id: string) => ({ id }));
 		closeMock.mockResolvedValue(undefined);
 		callToolMock.mockResolvedValue({ content: [{ type: 'text', text: 'ok' }] });
-		getMcpServersMock.mockReturnValue({ safe: { type: 'http', url: 'https://mcp.test', defer_loading: false } });
 	});
 
-	it('rejects invalid and oversized schemas and caps the total tool count', async () => {
-		listToolsMock.mockResolvedValue({
-			tools: [
-				{ name: 'invalid', inputSchema: { type: 'invalid' } },
-				{
-					name: 'oversized',
-					inputSchema: { type: 'object', description: 'x'.repeat(MCP_MAX_SCHEMA_BYTES) },
-				},
-				...Array.from({ length: MCP_MAX_TOOLS + 10 }, (_, index) => ({
-					name: `tool-${index}`,
-					inputSchema: { type: 'object', properties: {} },
-				})),
-			],
-		});
-
+	it('exposes cached schemas without connecting or listing at run start', async () => {
 		const result = await loadMcpTools();
-		expect(result.tools).toHaveLength(MCP_MAX_TOOLS);
-		expect(result.tools.map((tool) => tool.id)).not.toEqual(
-			expect.arrayContaining(['mcp__safe__invalid', 'mcp__safe__oversized'])
-		);
+		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__safe__lookup']);
 		expect(result.diagnostics).toMatchObject({
 			configuredServers: 1,
 			enabledServers: 1,
-			connectedServers: 1,
-			listedTools: MCP_MAX_TOOLS + 12,
+			connectedServers: 0,
+			listedTools: 0,
+			loadedTools: 1,
+		});
+		expect(connectMock).not.toHaveBeenCalled();
+		expect(listToolsMock).not.toHaveBeenCalled();
+		await result.close();
+		expect(closeMock).not.toHaveBeenCalled();
+	});
+
+	it('skips servers without a saved catalog and disabled servers', async () => {
+		getMcpServersMock.mockReturnValue({
+			missing: { type: 'http', url: 'https://missing.test' },
+			disabled: { type: 'http', url: 'https://disabled.test', enabled: false },
+			safe: { type: 'http', url: 'https://safe.test' },
+		});
+		getMcpToolCatalogMock.mockImplementation((id: string) =>
+			id === 'safe' ? catalog('lookup') : undefined
+		);
+		const result = await loadMcpTools();
+		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__safe__lookup']);
+		expect(getMcpToolCatalogMock).not.toHaveBeenCalledWith('disabled');
+		expect(connectMock).not.toHaveBeenCalled();
+		expect(listToolsMock).not.toHaveBeenCalled();
+	});
+
+	it('rejects invalid and oversized schemas and caps the cached tool count', async () => {
+		getMcpToolCatalogMock.mockReturnValue([
+			{ name: 'invalid', inputSchema: { type: 'invalid' } },
+			{ name: 'oversized', inputSchema: { type: 'object', description: 'x'.repeat(MCP_MAX_SCHEMA_BYTES) } },
+			...catalog(...Array.from({ length: MCP_MAX_TOOLS + 10 }, (_, index) => `tool-${index}`)),
+		]);
+		const result = await loadMcpTools();
+		expect(result.tools).toHaveLength(MCP_MAX_TOOLS);
+		expect(result.diagnostics).toMatchObject({
+			listedTools: 0,
 			loadedTools: MCP_MAX_TOOLS,
 			rejectedTools: 12,
 			truncated: true,
-		});
-		expect(result.diagnostics.failures).toEqual([
-			{ serverId: 'safe', phase: 'schema', toolName: 'invalid' },
-			{ serverId: 'safe', phase: 'schema', toolName: 'oversized' },
-			{ serverId: 'safe', phase: 'limit' },
-		]);
-		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(1);
-	});
-
-	it('normalizes provider names and resolves collisions deterministically', async () => {
-		listToolsMock.mockResolvedValue({
-			tools: [
-				{ name: 'do thing', inputSchema: { type: 'object' } },
-				{ name: 'do@thing', inputSchema: { type: 'object' } },
-				{ name: 'x'.repeat(100), inputSchema: { type: 'object' } },
+			failures: [
+				{ serverId: 'safe', phase: 'schema', toolName: 'invalid' },
+				{ serverId: 'safe', phase: 'schema', toolName: 'oversized' },
+				{ serverId: 'safe', phase: 'limit' },
 			],
 		});
+	});
 
+	it('normalizes callable names while retaining original execution identities', async () => {
+		getMcpToolCatalogMock.mockReturnValue(catalog('do thing', 'do@thing', 'x'.repeat(100)));
 		const result = await loadMcpTools();
 		const names = result.tools.map((tool) => tool.id);
-		expect(new Set(names)).toHaveProperty('size', names.length);
+		expect(new Set(names).size).toBe(names.length);
 		expect(names[0]).toBe('mcp__safe__do_thing');
 		for (const name of names) {
 			expect(name).toMatch(/^[a-zA-Z0-9_-]+$/);
 			expect(name.length).toBeLessThanOrEqual(64);
 		}
-		expect(result.diagnostics).toMatchObject({ loadedTools: 3, failures: [] });
-	});
-
-	it('preserves read-only annotations and gates tools without them', async () => {
-		listToolsMock.mockResolvedValue({
-			tools: [
-				{ name: 'lookup', inputSchema: { type: 'object' }, annotations: { readOnlyHint: true } },
-				{ name: 'write', inputSchema: { type: 'object' }, annotations: { readOnlyHint: false } },
-				{ name: 'unknown', inputSchema: { type: 'object' } },
-			],
-		});
-
-		const result = await loadMcpTools();
-		expect(result.tools.map((configured) => configured.capability)).toEqual([
-			{ effects: ['read'], approval: false },
-			{ effects: ['external'], approval: true },
-			{ effects: ['external'], approval: true },
-		]);
-	});
-
-	it('reports connection and listing failures without exposing raw errors', async () => {
-		getMcpServersMock.mockReturnValue({
-			connects: { type: 'http', url: 'https://connects.test', defer_loading: false },
-			lists: { type: 'http', url: 'https://lists.test', defer_loading: false },
-		});
-		connectMock.mockImplementation(async (id: string) => {
-			if (id === 'connects') throw new Error('secret connection detail');
-			return mockClient(id);
-		});
-		listToolsMock.mockRejectedValue(new Error('secret listing detail'));
-
-		const result = await loadMcpTools();
-
-		expect(result.tools).toEqual([]);
-		expect(result.diagnostics).toMatchObject({
-			configuredServers: 2,
-			enabledServers: 2,
-			connectedServers: 1,
-			listedTools: 0,
-			loadedTools: 0,
-			rejectedTools: 0,
-			truncated: false,
-			failures: [
-				{ serverId: 'connects', phase: 'connect' },
-				{ serverId: 'lists', phase: 'list' },
-			],
-		});
-		expect(JSON.stringify(result.diagnostics)).not.toContain('secret');
-		expect(closeMock).toHaveBeenCalledTimes(1);
-		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(1);
-	});
-
-	it('starts discovery for enabled servers concurrently', async () => {
-		getMcpServersMock.mockReturnValue({
-			first: { type: 'http', url: 'https://first.test', defer_loading: false },
-			second: { type: 'http', url: 'https://second.test', defer_loading: false },
-		});
-		let releaseFirst: (() => void) | undefined;
-		const firstConnected = new Promise<void>((resolve) => {
-			releaseFirst = resolve;
-		});
-		connectMock.mockImplementation(async (id: string) => {
-			if (id === 'first') await firstConnected;
-			return mockClient(id);
-		});
-		listToolsMock.mockResolvedValue({ tools: [] });
-
-		const loading = loadMcpTools();
-		expect(connectMock).toHaveBeenCalledTimes(2);
-		releaseFirst?.();
-		await expect(loading).resolves.toMatchObject({ tools: [] });
-	});
-
-	it('loads all enabled servers once regardless of defer_loading', async () => {
-		getMcpServersMock.mockReturnValue({
-			eager: { type: 'http', url: 'https://eager.test', name: 'Eager', defer_loading: false },
-			deferred: {
-				type: 'http',
-				url: 'https://deferred.test',
-				name: 'Deferred',
-			},
-			unrelated: {
-				type: 'http',
-				url: 'https://unrelated.test',
-				defer_loading: true,
-			},
-		});
-		connectMock.mockImplementation(async (id: string) => mockClient(id));
-		listToolsMock.mockImplementation(async (client: { id: string }) => ({
-			tools: [{ name: `${client.id}_tool`, inputSchema: { type: 'object' } }],
-		}));
-
-		const result = await loadMcpTools();
-		expect(connectMock).toHaveBeenCalledTimes(3);
-		expect(listToolsMock).toHaveBeenCalledTimes(3);
-		expect(result.tools.map((tool) => tool.id)).toEqual([
-			'mcp__deferred__deferred_tool',
-			'mcp__eager__eager_tool',
-			'mcp__unrelated__unrelated_tool',
-		]);
-		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(3);
-		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(3);
-	});
-
-	it('follows every tools/list page and keeps the catalog cached', async () => {
-		listToolsMock
-			.mockResolvedValueOnce({
-				tools: [{ name: 'first', inputSchema: { type: 'object' } }],
-				nextCursor: 'page-two',
-			})
-			.mockResolvedValueOnce({ tools: [{ name: 'second', inputSchema: { type: 'object' } }] });
-
-		const result = await loadMcpTools();
-		expect(result.tools.map((tool) => tool.id)).toEqual([
-			'mcp__safe__first',
-			'mcp__safe__second',
-		]);
-		expect(listToolsMock).toHaveBeenNthCalledWith(2, expect.anything(), 30_000, undefined, 'page-two');
-		expect(listToolsMock).toHaveBeenCalledTimes(2);
-		await result.close();
-		expect(listToolsMock).toHaveBeenCalledTimes(2);
-	});
-
-	it('refreshes a changed server catalog and notifies with the full snapshot', async () => {
-		listToolsMock
-			.mockResolvedValueOnce({ tools: [{ name: 'before', inputSchema: { type: 'object' } }] })
-			.mockResolvedValueOnce({ tools: [{ name: 'after', inputSchema: { type: 'object' } }] });
-		const result = await loadMcpTools();
-		const changed = jest.fn();
-		result.onChanged(changed);
-
-		await notificationHandlers.get('safe')?.();
-		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__safe__after']);
-		expect(changed).toHaveBeenCalledWith([
-			expect.objectContaining({ tool: expect.objectContaining({ id: 'mcp__safe__after' }) }),
-		]);
-		expect(listToolsMock).toHaveBeenCalledTimes(2);
-		await result.close();
-	});
-
-	it('executes with the original MCP server and tool names', async () => {
-		listToolsMock.mockResolvedValue({
-			tools: [{ name: 'search issues', inputSchema: { type: 'object' } }],
-		});
-		const result = await loadMcpTools();
-		const selected = result.tools[0];
-		expect(selected.policy).toEqual({
+		expect(result.tools[0].policy).toEqual({
 			kind: 'mcp',
 			serverId: 'safe',
-			toolName: 'search issues',
+			toolName: 'do thing',
 		});
-		await selected.run({});
+		await result.tools[0].run({});
 		expect(callToolMock).toHaveBeenCalledWith(
 			expect.objectContaining({ id: 'safe' }),
-			'search issues',
+			'do thing',
 			{},
 			expect.any(Number),
 			undefined
 		);
+		expect(listToolsMock).not.toHaveBeenCalled();
 		await result.close();
+		expect(closeMock).toHaveBeenCalledTimes(1);
 	});
-});
 
-it('closes every acquired client if discovery postprocessing fails', async () => {
-	jest.clearAllMocks();
-	getMcpServersMock.mockReturnValue({
-		one: { type: 'http', url: 'https://one.test', defer_loading: false },
-		two: { type: 'http', url: 'https://two.test', defer_loading: false },
+	it('connects once when multiple selected tools on a server execute', async () => {
+		getMcpToolCatalogMock.mockReturnValue(catalog('first', 'second'));
+		const result = await loadMcpTools();
+		await Promise.all(result.tools.map((tool) => tool.run({})));
+		expect(connectMock).toHaveBeenCalledTimes(1);
+		expect(callToolMock).toHaveBeenCalledTimes(2);
+		expect(result.diagnostics.connectedServers).toBe(1);
+		expect(listToolsMock).not.toHaveBeenCalled();
+		await result.close();
+		await result.close();
+		expect(closeMock).toHaveBeenCalledTimes(1);
 	});
-	connectMock.mockImplementation(async (id: string) => mockClient(id));
-	closeMock.mockResolvedValue(undefined);
-	listToolsMock.mockResolvedValue({ tools: null });
-	const result = await loadMcpTools();
-	expect(result.diagnostics.failures).toEqual([
-		{ serverId: 'one', phase: 'list' },
-		{ serverId: 'two', phase: 'list' },
-	]);
-	expect(closeMock).toHaveBeenCalledTimes(2);
-});
 
-it('closes acquired clients exactly once on cancellation during listing', async () => {
-	jest.clearAllMocks();
-	const controller = new AbortController();
-	getMcpServersMock.mockReturnValue({ one: { type: 'http', url: 'https://one.test', defer_loading: false } });
-	connectMock.mockResolvedValue(mockClient('one'));
-	closeMock.mockResolvedValue(undefined);
-	listToolsMock.mockImplementation(async () => {
+	it('preserves read-only annotations and approval gates', async () => {
+		getMcpToolCatalogMock.mockReturnValue([
+			{ name: 'lookup', inputSchema: schema, annotations: { readOnlyHint: true } },
+			{ name: 'write', inputSchema: schema },
+		]);
+		const result = await loadMcpTools();
+		expect(result.tools.map((tool) => tool.capability)).toEqual([
+			{ effects: ['read'], approval: false },
+			{ effects: ['external'], approval: true },
+		]);
+		expect(connectMock).not.toHaveBeenCalled();
+	});
+
+	it('retries a failed lazy connection on the next selected call', async () => {
+		connectMock
+			.mockRejectedValueOnce(new Error('unavailable'))
+			.mockResolvedValueOnce({ id: 'safe' });
+		const result = await loadMcpTools();
+		await expect(result.tools[0].run({})).rejects.toThrow('unavailable');
+		await expect(result.tools[0].run({})).resolves.toBe('ok');
+		expect(connectMock).toHaveBeenCalledTimes(2);
+		expect(listToolsMock).not.toHaveBeenCalled();
+		await result.close();
+		expect(closeMock).toHaveBeenCalledTimes(1);
+	});
+
+	it('closes a connection that completes after the run ends', async () => {
+		let resolveConnection: ((client: { id: string }) => void) | undefined;
+		connectMock.mockImplementation(
+			() => new Promise((resolve) => { resolveConnection = resolve; })
+		);
+		const result = await loadMcpTools();
+		const execution = result.tools[0].run({});
+		const closing = result.close();
+		resolveConnection?.({ id: 'safe' });
+		await expect(execution).rejects.toThrow('MCP run has ended');
+		await closing;
+		expect(closeMock).toHaveBeenCalledTimes(1);
+		expect(callToolMock).not.toHaveBeenCalled();
+	});
+
+	it('respects an already aborted run without reading catalogs', async () => {
+		const controller = new AbortController();
 		controller.abort(new Error('cancel'));
-		throw controller.signal.reason;
+		await expect(loadMcpTools(controller.signal)).rejects.toThrow('cancel');
+		expect(getMcpToolCatalogMock).not.toHaveBeenCalled();
 	});
-	await expect(loadMcpTools(controller.signal)).rejects.toThrow('cancel');
-	expect(closeMock).toHaveBeenCalledTimes(1);
 });
