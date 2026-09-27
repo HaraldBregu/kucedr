@@ -1920,6 +1920,8 @@
 		"cancel": "Cancel",
 		"save": "Save",
 		"delete": "Delete",
+		"revealInFinder": "Reveal in Finder",
+		"revealInFileManager": "Show in file manager",
 		"edit": "Edit",
 		"ok": "OK",
 		"copy": "Copy",

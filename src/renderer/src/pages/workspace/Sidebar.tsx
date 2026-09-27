@@ -56,17 +56,22 @@ export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted,
 
 	const showEntryMenu = (entry?: WorkspaceTreeEntry): void => {
 		const parentPath = entry?.type === 'directory' ? entry.path : entry?.path.split(/[\\/]/).slice(0, -1).join('/') ?? '';
+		const revealLabel = navigator.platform.startsWith('Mac')
+			? t('workspaceSidebar.revealInFinder', 'Reveal in Finder')
+			: t('workspaceSidebar.revealInFileManager', 'Show in file manager');
 		const items: ContextMenuDescriptor[] = [
 			{ id: 'create-file', label: t('workspaceSidebar.newFile', 'New file') },
 			{ id: 'create-folder', label: t('workspaceSidebar.newFolder', 'New folder') },
 			...(entry ? [
 				{ type: 'separator' as const },
+				{ id: 'reveal', label: revealLabel },
 				{ id: 'rename', label: t('workspaceSidebar.rename', 'Rename') },
 				{ id: 'delete', label: t('workspaceSidebar.delete', 'Delete') },
 			] : []),
 		];
 		setActionError('');
 		void window.win.showContextMenu(items).then((kind) => {
+			if (kind === 'reveal' && entry) return window.agent.revealWorkspaceEntry(entry.path);
 			if (kind === 'create-file' || kind === 'create-folder' || ((kind === 'rename' || kind === 'delete') && entry)) {
 				setPendingAction({ kind, entry, parentPath });
 			}
