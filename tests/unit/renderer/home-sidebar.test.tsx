@@ -118,7 +118,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	await user.click(older);
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
-	expect(screen.getByText('settings.tabs.account')).toBeInTheDocument();
+	expect(screen.getByText('settings.title')).toBeInTheDocument();
 	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
@@ -167,7 +167,7 @@ it.each<[AuthState, string]>([
 	expect(footer).not.toBeNull();
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
 	if (state.status === 'signedIn') {
-		expect(within(accountMenu).getByText(state.user.email)).toHaveClass('text-[10px]');
+		expect(within(accountMenu).getByText(state.user.email)).toHaveClass('text-xs');
 	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('menu');
