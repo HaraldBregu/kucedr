@@ -276,7 +276,10 @@ export function CoderPage() {
 						<Route
 							path="/"
 							element={
-								<>
+								activeMarkdown && project ? (
+									<Markdown key={`${project.id}:${activeMarkdown}`} projectId={project.id}
+										filePath={activeMarkdown} onDirtyChange={setMarkdownDirty} />
+								) : <>
 									<div className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
 										<h2 className="min-w-0 flex-1 truncate text-sm font-medium">
 											{coding.snapshot?.session.title || 'New session'}
