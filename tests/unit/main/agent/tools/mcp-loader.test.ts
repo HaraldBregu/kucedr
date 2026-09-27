@@ -21,7 +21,7 @@ describe('loadMcpTools', () => {
 		jest.clearAllMocks();
 		connectMock.mockResolvedValue({});
 		closeMock.mockResolvedValue(undefined);
-		getMcpServersMock.mockReturnValue({ safe: { type: 'http', url: 'https://mcp.test' } });
+		getMcpServersMock.mockReturnValue({ safe: { type: 'http', url: 'https://mcp.test', defer_loading: false } });
 	});
 
 	it('rejects invalid and oversized schemas and caps the total tool count', async () => {
@@ -101,8 +101,8 @@ describe('loadMcpTools', () => {
 
 	it('reports connection and listing failures without exposing raw errors', async () => {
 		getMcpServersMock.mockReturnValue({
-			connects: { type: 'http', url: 'https://connects.test' },
-			lists: { type: 'http', url: 'https://lists.test' },
+			connects: { type: 'http', url: 'https://connects.test', defer_loading: false },
+			lists: { type: 'http', url: 'https://lists.test', defer_loading: false },
 		});
 		connectMock.mockImplementation(async (id: string) => {
 			if (id === 'connects') throw new Error('secret connection detail');
@@ -134,8 +134,8 @@ describe('loadMcpTools', () => {
 
 	it('starts discovery for enabled servers concurrently', async () => {
 		getMcpServersMock.mockReturnValue({
-			first: { type: 'http', url: 'https://first.test' },
-			second: { type: 'http', url: 'https://second.test' },
+			first: { type: 'http', url: 'https://first.test', defer_loading: false },
+			second: { type: 'http', url: 'https://second.test', defer_loading: false },
 		});
 		let releaseFirst: (() => void) | undefined;
 		const firstConnected = new Promise<void>((resolve) => {
@@ -153,14 +153,13 @@ describe('loadMcpTools', () => {
 		await expect(loading).resolves.toMatchObject({ tools: [] });
 	});
 
-	it('keeps legacy servers eager and connects deferred servers only when selected', async () => {
+	it('connects explicitly eager servers and defers the others', async () => {
 		getMcpServersMock.mockReturnValue({
-			eager: { type: 'http', url: 'https://eager.test', name: 'Eager' },
+			eager: { type: 'http', url: 'https://eager.test', name: 'Eager', defer_loading: false },
 			deferred: {
 				type: 'http',
 				url: 'https://deferred.test',
 				name: 'Deferred',
-				defer_loading: true,
 			},
 			unrelated: {
 				type: 'http',
@@ -196,8 +195,8 @@ describe('loadMcpTools', () => {
 it('closes every acquired client if discovery postprocessing fails', async () => {
 	jest.clearAllMocks();
 	getMcpServersMock.mockReturnValue({
-		one: { type: 'http', url: 'https://one.test' },
-		two: { type: 'http', url: 'https://two.test' },
+		one: { type: 'http', url: 'https://one.test', defer_loading: false },
+		two: { type: 'http', url: 'https://two.test', defer_loading: false },
 	});
 	connectMock.mockImplementation(async (id: string) => ({ id }));
 	closeMock.mockResolvedValue(undefined);
@@ -209,7 +208,7 @@ it('closes every acquired client if discovery postprocessing fails', async () =>
 it('closes acquired clients exactly once on cancellation during listing', async () => {
 	jest.clearAllMocks();
 	const controller = new AbortController();
-	getMcpServersMock.mockReturnValue({ one: { type: 'http', url: 'https://one.test' } });
+	getMcpServersMock.mockReturnValue({ one: { type: 'http', url: 'https://one.test', defer_loading: false } });
 	connectMock.mockResolvedValue({ id: 'one' });
 	closeMock.mockResolvedValue(undefined);
 	listToolsMock.mockImplementation(async () => {
