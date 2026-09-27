@@ -40,7 +40,7 @@ describe('subagentTool', () => {
 			type: 'default',
 			agentId: 'subagent',
 			contextMode: 'minimal',
-			toolsAllow: [],
+			toolsAllow: ['tool_search'],
 		});
 		expect(mockStream.mock.calls[0][4].memory).toBeUndefined();
 	});

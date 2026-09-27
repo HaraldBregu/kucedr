@@ -27,7 +27,12 @@ jest.mock('../../../../../src/main/agent/skills', () => ({
 	createSkillRegistrySnapshot: () => ({ skills: [], diagnostics: [] }),
 }));
 jest.mock('../../../../../src/main/agent/tools/mcp/loader', () => ({
-	loadMcpTools: async () => ({ tools: [], close: async () => undefined }),
+	loadMcpTools: async () => ({
+		tools: [],
+		entries: [],
+		onChanged: () => () => undefined,
+		close: async () => undefined,
+	}),
 }));
 
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
