@@ -32,7 +32,7 @@
 	},
 	"main": "./out/main/index.js",
 	"scripts": {
-		"dev": "cross-env NODE_ENV=development electron-vite dev --inspect --sourcemap",
+		"dev": "npm run build:workspace && cross-env NODE_ENV=development electron-vite dev --inspect --sourcemap",
 		"dev:website": "npm run dev --workspace website",
 		"dev:staging": "cross-env NODE_ENV=staging electron-vite dev --inspect --sourcemap --mode staging",
 		"dev:prod": "cross-env NODE_ENV=production electron-vite dev --inspect --sourcemap --mode production",
@@ -49,7 +49,7 @@
 		"typecheck:app": "npm run typecheck:node && npm run typecheck:web",
 		"typecheck:packages": "npm run typecheck --workspaces --if-present",
 		"typecheck": "npm run typecheck:app && npm run typecheck:packages",
-		"build": "cross-env NODE_ENV=production npm run typecheck && electron-vite build",
+		"build": "npm run build:workspace && cross-env NODE_ENV=production npm run typecheck && electron-vite build",
 		"build:website": "npm run build --workspace website",
 		"build:icons": "node scripts/icons.mjs",
 		"build:videomaker": "npm ci --prefix resources/apps/videomaker && npm run build --prefix resources/apps/videomaker",

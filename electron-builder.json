@@ -13,6 +13,13 @@
 		"!resources/svgs/**",
 		"!resources/providers/**/*.svg"
 	],
+	"extraResources": [
+		{
+			"from": "./resources/apps/workspace",
+			"to": "resources/apps/workspace",
+			"filter": ["manifest.json", "dist/**", "assets/images/logo.png"]
+		}
+	],
 	"icon": "./resources/icons/win/icon.ico",
 	"fileAssociations": [
 		{
