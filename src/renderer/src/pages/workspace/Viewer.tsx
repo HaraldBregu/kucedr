@@ -3,14 +3,16 @@ import { FileText, LoaderCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { workspaceFileType } from '@shared/workspace';
-import { Markdown } from '@/components/prompt-kit/markdown';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useIsDark } from '@/hooks/use-is-dark';
-import { markdownComponents } from '@/pages/home/components/markdown';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('./Editor');
 	return { default: module.CodeMirrorEditor };
+});
+const WorkspaceMarkdownEditor = lazy(async () => {
+	const module = await import('./MarkdownEditor');
+	return { default: module.WorkspaceMarkdownEditor };
 });
 
 interface WorkspaceViewerProps {
@@ -45,6 +47,14 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	}, [file, t]);
 
 	useEffect(() => () => { save(); }, [save]);
+
+	const handleMarkdownChange = (value: string): void => {
+		setContent(value);
+		setSaveError('');
+		pendingContent.current = value;
+		if (saveTimer.current) clearTimeout(saveTimer.current);
+		saveTimer.current = setTimeout(save, 500);
+	};
 
 	useEffect(() => {
 		let active = true;
@@ -110,7 +120,9 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
 			) : kind === 'markdown' && markdownMode === 'preview' ? (
 				<div className="min-h-0 flex-1 overflow-auto px-6 py-5">
-					<Markdown className="mx-auto w-full max-w-3xl break-words text-sm leading-7" components={markdownComponents}>{content}</Markdown>
+					<Suspense fallback={<div className="text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
+						<WorkspaceMarkdownEditor value={content} onChange={handleMarkdownChange} onSave={save} />
+					</Suspense>
 				</div>
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto">
@@ -120,11 +132,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 							value={content}
 							onChange={(value) => {
 								if (kind !== 'markdown') return;
-								setContent(value);
-								setSaveError('');
-								pendingContent.current = value;
-								if (saveTimer.current) clearTimeout(saveTimer.current);
-								saveTimer.current = setTimeout(save, 500);
+								handleMarkdownChange(value);
 							}}
 							onSave={kind === 'markdown' ? save : undefined}
 							readOnly={kind !== 'markdown'}
