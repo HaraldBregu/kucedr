@@ -4,10 +4,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { WorkspaceSidebar } from '../../../src/renderer/src/pages/workspace/Sidebar';
 
 jest.mock('react-i18next', () => ({
-	useTranslation: () => ({ t: (key: string, fallback?: string | { name?: string }): string => {
-		if (typeof fallback === 'string') return fallback;
-		return fallback?.name ? `${key} ${fallback.name}` : key;
-	} }),
+	useTranslation: () => ({
+		t: (key: string, fallback?: string | { name?: string }): string => {
+			if (typeof fallback === 'string') return fallback;
+			return fallback?.name ? `${key} ${fallback.name}` : key;
+		},
+	}),
 }));
 
 jest.mock('../../../src/renderer/src/components/app/SidebarFooter', () => ({
@@ -55,9 +57,21 @@ it('creates, renames, and deletes a file through the right click menu', async ()
 	createWorkspaceFile.mockResolvedValue('draft.md');
 	renameWorkspaceEntry.mockResolvedValue('final.md');
 	deleteWorkspaceFile.mockResolvedValue(undefined);
-	showContextMenu.mockResolvedValueOnce('create-file').mockResolvedValueOnce('rename').mockResolvedValueOnce('delete');
+	showContextMenu
+		.mockResolvedValueOnce('create-file')
+		.mockResolvedValueOnce('rename')
+		.mockResolvedValueOnce('delete');
 
-	render(<MemoryRouter><WorkspaceSidebar onFileSelect={onFileSelect} onEntryRenamed={onEntryRenamed} onEntryDeleted={onEntryDeleted} selectedPath={null} /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<WorkspaceSidebar
+				onFileSelect={onFileSelect}
+				onEntryRenamed={onEntryRenamed}
+				onEntryDeleted={onEntryDeleted}
+				selectedPath={null}
+			/>
+		</MemoryRouter>
+	);
 	const tree = screen.getByRole('navigation', { name: 'Workspace files' });
 	await screen.findByText('Workspace is empty.');
 	fireEvent.contextMenu(tree);
@@ -83,11 +97,22 @@ it('creates, renames, and deletes a file through the right click menu', async ()
 
 it('creates inside and deletes a folder from its right click menu', async () => {
 	const user = userEvent.setup();
-	listWorkspaceFiles.mockResolvedValue([{ type: 'directory', name: 'Notes', path: 'Notes', children: [] }]);
+	listWorkspaceFiles.mockResolvedValue([
+		{ type: 'directory', name: 'Notes', path: 'Notes', children: [] },
+	]);
 	createWorkspaceDirectory.mockResolvedValue('Notes/New');
 	deleteWorkspaceDirectory.mockResolvedValue(undefined);
 	showContextMenu.mockResolvedValueOnce('create-folder').mockResolvedValueOnce('delete');
-	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
+	render(
+		<MemoryRouter>
+			<WorkspaceSidebar
+				onFileSelect={jest.fn()}
+				onEntryRenamed={jest.fn()}
+				onEntryDeleted={jest.fn()}
+				selectedPath={null}
+			/>
+		</MemoryRouter>
+	);
 	const folder = await screen.findByText('Notes');
 	fireEvent.contextMenu(folder.closest('summary') as HTMLElement);
 	await user.type(await screen.findByRole('textbox', { name: 'Name' }), 'New');
