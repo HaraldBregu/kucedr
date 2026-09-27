@@ -2,6 +2,7 @@ import {
 	app,
 	BrowserWindow,
 	clipboard,
+	ClipboardItem,
 	dialog,
 	desktopCapturer,
 	ipcMain,
@@ -352,7 +353,14 @@ function showImageContextMenu(event: IpcMainInvokeEvent, requestedPath: string):
 		{ type: 'separator' },
 		{
 			label: 'Copy Image',
-			click: () => clipboard.writeImage(nativeImage.createFromPath(imagePath)),
+			click: () =>
+				void clipboard.write([
+					new ClipboardItem({
+						'image/png': new Blob([new Uint8Array(nativeImage.createFromPath(imagePath).toPNG())], {
+							type: 'image/png',
+						}),
+					}),
+				]),
 		},
 		{ label: 'Copy Path', click: () => clipboard.writeText(imagePath) },
 		{ type: 'separator' },
