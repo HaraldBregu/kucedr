@@ -321,6 +321,40 @@ it('requires confirmation before permanently deleting a chat', async () => {
 	await waitFor(() => expect(screen.queryByRole('button', { name: 'Latest chat' })).toBeNull());
 });
 
+it('keeps a deleted session out of an older sidebar refresh', async () => {
+	const latest = { id: 'session-latest', title: 'Latest chat', createdAtMs: 2 };
+	const older = { id: 'session-older', title: 'Older chat', createdAtMs: 1 };
+	let finishRefresh!: (sessions: typeof latest[]) => void;
+	listSessions.mockResolvedValueOnce([latest, older]);
+	listSessions.mockReturnValueOnce(
+		new Promise((resolve) => {
+			finishRefresh = resolve;
+		})
+	);
+	showContextMenu.mockResolvedValue('delete');
+	deleteSession.mockResolvedValue(undefined);
+	jest.spyOn(window, 'confirm').mockReturnValue(true);
+	const setSessionId = jest.fn();
+	const sidebar = (refreshKey: string) => (
+		<MemoryRouter>
+			<ChatSessionContext.Provider value={{ sessionId: latest.id, setSessionId }}>
+				<PageContainer>
+					<HomeSidebar refreshKey={refreshKey} />
+				</PageContainer>
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+	const { rerender } = render(sidebar('initial'));
+	const olderButton = await screen.findByRole('button', { name: older.title });
+	rerender(sidebar('refresh'));
+	fireEvent.contextMenu(olderButton);
+	await waitFor(() => expect(deleteSession).toHaveBeenCalledWith(older.id));
+	await waitFor(() => expect(screen.queryByRole('button', { name: older.title })).toBeNull());
+	finishRefresh([latest, older]);
+	await waitFor(() => expect(screen.queryByRole('button', { name: older.title })).toBeNull());
+	expect(setSessionId).not.toHaveBeenCalled();
+});
+
 it('starts a new chat from the sidebar', async () => {
 	const user = userEvent.setup();
 	const setSessionId = jest.fn();
