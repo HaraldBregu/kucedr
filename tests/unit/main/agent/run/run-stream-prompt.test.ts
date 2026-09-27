@@ -1240,7 +1240,7 @@ describe('run stream system prompt', () => {
 		expect(JSON.stringify(events)).not.toContain("unknown tool 'write'");
 	});
 
-	it('loads deferred MCP tools before the first model turn', async () => {
+	it('loads a deferred MCP server only for a matching request', async () => {
 		const execute = jest.fn();
 		const mcpTool = jsonTool({
 			id: 'mcp__files__read_file',
@@ -1250,36 +1250,20 @@ describe('run stream system prompt', () => {
 			schema: { type: 'object' },
 			execute,
 		});
-		const loadedTools: typeof mcpTool[] = [];
-		const entries: Array<{ tool: typeof mcpTool; serverId: string; serverName: string }> = [];
 		const loadDeferred = jest.fn(async () => {
-			loadedTools.push(mcpTool);
-			entries.push({ tool: mcpTool, serverId: 'files', serverName: 'Files' });
-			return entries;
+			return [{ tool: mcpTool, serverId: 'files', serverName: 'Files' }];
 		});
 		mockLoadMcpTools.mockResolvedValue({
-			tools: loadedTools,
-			entries,
+			tools: [],
+			entries: [],
 			deferredServers: [{ id: 'files', name: 'Files' }],
 			loadDeferred,
 			diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 1, listedTools: 1, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
-		runModelTurnMock
-			.mockImplementationOnce(async function* () {
-				yield* [];
-				return {
-					content: '',
-					model: 'test-model',
-					toolCalls: [{ id: 'early-mcp', name: mcpTool.id, args: { path: 'demo.txt' } }],
-				};
-			})
-			.mockImplementationOnce(successfulTurn);
-		const session = createSessionState();
-
 		for await (const _event of stream(
 			{ location: '/workspace' },
-			session,
+			createSessionState(),
 			{
 				runId: 'mcp-loader',
 				task: 'chat',
@@ -1294,14 +1278,32 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
+		expect(loadDeferred).not.toHaveBeenCalled();
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).not.toContain(mcpTool.id);
+		runModelTurnMock.mockClear();
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			{
+				runId: 'mcp-matched',
+				task: 'chat',
+				message: 'Use Files to read a document',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ sandbox }
+		))
+			void _event;
+
 		expect(loadDeferred).toHaveBeenCalledWith(['files'], expect.any(AbortSignal));
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain(mcpTool.id);
-		expect(session.toolCalls.find((call) => call.id === 'early-mcp')).toMatchObject({
-			name: mcpTool.id,
-			args: { path: 'demo.txt' },
-		});
-		expect(execute).toHaveBeenCalledTimes(1);
+		expect(execute).not.toHaveBeenCalled();
 	});
 });
