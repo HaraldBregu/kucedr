@@ -1,19 +1,29 @@
 import { ChevronRight, File, Folder } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
+import { WorkspaceRenameInput } from './RenameInput';
 
 interface WorkspaceTreeProps {
 	readonly entries: WorkspaceTreeEntry[];
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly onEntryContextMenu: (entry: WorkspaceTreeEntry) => void;
+	readonly renamingPath: string | null;
+	readonly renameBusy: boolean;
+	readonly onRename: (name: string) => void;
+	readonly onRenameCancel: () => void;
 	readonly selectedPath: string | null;
 }
 
-export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, selectedPath }: WorkspaceTreeProps): React.JSX.Element {
+export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, selectedPath }: WorkspaceTreeProps): React.JSX.Element {
 	return (
 		<ul className="flex min-w-0 flex-col gap-1">
 			{entries.map((entry) => (
 				<li key={entry.path} className="min-w-0">
-					{entry.type === 'directory' ? (
+					{renamingPath === entry.path ? (
+						<div className="flex min-h-8 items-center gap-2 rounded-xl px-2 text-sm">
+							{entry.type === 'directory' ? <Folder className="size-4 shrink-0" strokeWidth={1.8} /> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
+							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
+						</div>
+					) : entry.type === 'directory' ? (
 						<details className="group">
 						<summary className="flex min-h-8 cursor-pointer items-center gap-2 rounded-xl px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring" onContextMenu={(event) => {
 							event.preventDefault();
@@ -26,7 +36,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, selec
 							</summary>
 							{entry.children?.length ? (
 								<div className="ml-3 border-l border-sidebar-border pl-1">
-									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} selectedPath={selectedPath} />
+									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} onEntryContextMenu={onEntryContextMenu} renamingPath={renamingPath} renameBusy={renameBusy} onRename={onRename} onRenameCancel={onRenameCancel} selectedPath={selectedPath} />
 								</div>
 							) : null}
 						</details>
