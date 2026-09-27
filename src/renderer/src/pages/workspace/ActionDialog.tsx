@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 
 export interface WorkspaceAction {
-	readonly kind: 'create-file' | 'create-folder' | 'rename' | 'delete';
+	readonly kind: 'create-file' | 'create-folder' | 'delete';
 	readonly entry?: WorkspaceTreeEntry;
 	readonly parentPath: string;
 }
@@ -35,16 +35,14 @@ export function WorkspaceActionDialog({
 	onConfirm,
 }: WorkspaceActionDialogProps): React.JSX.Element {
 	const { t } = useTranslation();
-	const [name, setName] = useState(action.kind === 'rename' ? (action.entry?.name ?? '') : '');
+	const [name, setName] = useState('');
 	const deleting = action.kind === 'delete';
 	const title =
 		action.kind === 'create-file'
 			? t('workspaceSidebar.newFile', 'New file')
 			: action.kind === 'create-folder'
 				? t('workspaceSidebar.newFolder', 'New folder')
-				: action.kind === 'rename'
-					? t('workspaceSidebar.renameEntry', { name: action.entry?.name })
-					: t('workspaceSidebar.deleteEntry', { name: action.entry?.name });
+			: t('workspaceSidebar.deleteEntry', { name: action.entry?.name });
 
 	return (
 		<Dialog
@@ -100,9 +98,7 @@ export function WorkspaceActionDialog({
 						>
 							{deleting
 								? t('common.delete', 'Delete')
-								: action.kind === 'rename'
-									? t('common.rename', 'Rename')
-									: t('workspaceSidebar.create', 'Create')}
+								: t('workspaceSidebar.create', 'Create')}
 						</Button>
 					</DialogFooter>
 				</form>
