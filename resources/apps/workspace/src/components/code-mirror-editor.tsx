@@ -271,7 +271,7 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 					const document = view.state.doc;
 					const startLine = document.lineAt(from).number;
 					const endLine = document.lineAt(to).number;
-					const changes = [];
+			const changes: { from: number; insert: string }[] = [];
 
 					for (let lineNumber = startLine; lineNumber <= endLine; lineNumber += 1) {
 						changes.push({ from: document.line(lineNumber).from, insert: prefix });
