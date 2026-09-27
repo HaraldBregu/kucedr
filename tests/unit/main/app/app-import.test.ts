@@ -2,7 +2,6 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { importApps } from '../../../../src/main/apps/app_import';
-import { listApps } from '../../../../src/main/apps/app_list';
 
 describe('app import', () => {
 	let appLocation: string;
@@ -59,25 +58,6 @@ describe('app import', () => {
 		}
 	});
 
-	it('imports the bundled Coder manifest and its PNG icon', () => {
-		const source = path.resolve('resources/apps/coder');
-
-		expect(importApps([source], appLocation)).toMatchObject({
-			imported: [
-					expect.objectContaining({
-						id: 'coder',
-						window: { width: 1440, height: 960, minWidth: 1024, minHeight: 720, resizable: true, maximizable: true },
-						metadata: expect.objectContaining({ image: 'assets/images/logo.png' }),
-				}),
-			],
-			skipped: [],
-		});
-		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'assets', 'images', 'logo.png'))).toBe(
-			true
-		);
-		expect(fs.existsSync(path.join(appLocation, 'apps', 'coder', 'data'))).toBe(true);
-	});
-
 	it('does not copy node modules into an imported app', () => {
 		const sourceRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'kucedr-app-source-'));
 		const source = path.join(sourceRoot, 'project');
@@ -99,25 +79,6 @@ describe('app import', () => {
 		} finally {
 			fs.rmSync(sourceRoot, { recursive: true, force: true });
 		}
-	});
-
-	it('imports and discovers the workspace app with its built entry', () => {
-		const source = path.join(appLocation, 'resources', 'apps', 'workspace');
-		const manifest = JSON.parse(
-			fs.readFileSync(path.resolve('resources/apps/workspace/manifest.json'), 'utf8')
-		);
-		fs.mkdirSync(path.join(source, 'dist'), { recursive: true });
-		fs.writeFileSync(path.join(source, 'manifest.json'), JSON.stringify(manifest));
-		fs.writeFileSync(path.join(source, manifest.metadata.entry), '<h1>Workspace</h1>');
-
-		expect(importApps([source], appLocation)).toEqual({
-			imported: [{ id: 'workspace', ...manifest }],
-			skipped: [],
-		});
-		expect(listApps(appLocation)).toEqual([{ id: 'workspace', ...manifest }]);
-		expect(
-			fs.readFileSync(path.join(appLocation, 'apps', 'workspace', manifest.metadata.entry), 'utf8')
-		).toBe('<h1>Workspace</h1>');
 	});
 
 	it('replaces an installed app through a staged copy', () => {

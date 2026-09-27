@@ -321,11 +321,6 @@ xvfb-run -a npm run test:e2e
 npm run build:packages
 npm pack --dry-run --workspace @kucedr/sdk
 npm pack --dry-run --workspace @kucedr/cli
-npm run build:demo
-npm run build:coder
-npm run build:architect
-npm run build:videomaker
-npm run build:workspace
 ```
 
 Newer pushes cancel an older in-progress CI run for the same branch. A cancelled run
