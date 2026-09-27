@@ -231,7 +231,7 @@ describe('session persistence', () => {
 		const trace = fs.readFileSync(runFilePath(state), 'utf8');
 		expect(trace).toContain('"localToolCount":1,"mcpToolCount":1');
 		expect(trace).toContain(
-			'"mcpDiscovery":{"phase":"initial","configuredServers":1,"enabledServers":1,"connectedServers":0'
+			'"mcpDiscovery":{"phase":"initial","configuredServers":1,"enabledServers":1,"connectedServers":0,"listedMcpTools":0,"catalogedMcpTools":0'
 		);
 		expect(trace).toContain(
 			'"type":"mcp_discovery_result","mcpDiscovery":{"phase":"final","configuredServers":1,"enabledServers":1,"connectedServers":1,"listedMcpTools":3,"catalogedMcpTools":2'
