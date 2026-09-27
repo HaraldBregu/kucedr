@@ -167,6 +167,12 @@ export class Coder {
 	listProjectFiles(id: string) {
 		return this.pi.listProjectFiles(id);
 	}
+	listMarkdownFiles(id: string) {
+		return listMarkdownFiles(this.requireProject(id));
+	}
+	saveMarkdownFile(id: string, file: string, content: string, expectedContent: string) {
+		return saveMarkdownFile(this.requireProject(id), file, content, expectedContent);
+	}
 	createProjectFile(id: string, file: string) {
 		return this.pi.createProjectFile(id, file);
 	}
