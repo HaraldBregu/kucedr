@@ -255,10 +255,6 @@ async function* loop(
 					input.toolsAllow.some((toolId) => toolId.startsWith('mcp__')))
 			) {
 				const mcp = await loadMcpTools(signal);
-				await mcp.loadDeferred(
-					mcp.deferredServers.map((server) => server.id),
-					signal
-				);
 				tools.push(...mcp.tools);
 				closeMcp = mcp.close;
 				mcpDiscovery = mcp.diagnostics;
@@ -274,11 +270,15 @@ async function* loop(
 				const eligible = filterEligibleTools(tools);
 				discovery = createToolDiscovery({
 					eligible,
-					required: eligible.filter(
-						(tool) => requiredIds.has(tool.id) || tool.id.startsWith('mcp__')
-					),
+					required: eligible.filter((tool) => requiredIds.has(tool.id)),
 					discoveryEnabled,
 					mcpTools: mcp.entries,
+					deferredMcpServers: mcp.deferredServers,
+					loadMcpServers: async (serverIds, discoverySignal) => {
+						const loaded = await mcp.loadDeferred(serverIds, discoverySignal);
+						tools.push(...loaded.map((entry) => entry.tool));
+						return loaded;
+					},
 					filterEligible: filterEligibleTools,
 				});
 			}
