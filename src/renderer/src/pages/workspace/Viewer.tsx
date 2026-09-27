@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { FileText, LoaderCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -23,16 +23,34 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	const [content, setContent] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
+	const [saveError, setSaveError] = useState('');
 	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
+	const pendingContent = useRef<string | null>(null);
+	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const saveQueue = useRef(Promise.resolve());
 	const kind = file ? workspaceFileType(file.path).kind : null;
 	const media = kind === 'image' || kind === 'audio' || kind === 'video' || kind === 'pdf';
 	const mediaUrl = file && media ? new URL('local-resource://agent/') : null;
 	if (mediaUrl && file) mediaUrl.pathname = `/${file.path.replaceAll('\\', '/')}`;
 
+	const save = useCallback(() => {
+		if (saveTimer.current) clearTimeout(saveTimer.current);
+		saveTimer.current = null;
+		const nextContent = pendingContent.current;
+		pendingContent.current = null;
+		if (!file || nextContent === null) return;
+		saveQueue.current = saveQueue.current.then(() => window.agent.writeWorkspaceFile(file.path, nextContent))
+			.then(() => setSaveError(''))
+			.catch((cause: unknown) => setSaveError(cause instanceof Error ? cause.message : t('workspaceSidebar.saveError', 'Unable to save file.')));
+	}, [file, t]);
+
+	useEffect(() => () => { save(); }, [save]);
+
 	useEffect(() => {
 		let active = true;
 		setContent('');
 		setError('');
+		setSaveError('');
 		if (!file || media || kind === 'unsupported') {
 			setLoading(false);
 			return () => { active = false; };
