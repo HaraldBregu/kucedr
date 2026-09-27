@@ -2177,7 +2177,6 @@
 		"delete": "Delete",
 		"revealInFinder": "Reveal in Finder",
 		"revealInFileManager": "Show in file manager",
-		"renameEntry": "Rename {{name}}",
 		"deleteEntry": "Delete {{name}}?",
 		"deleteWarning": "This permanently deletes the item and its contents.",
 		"namePrompt": "Enter a name for the item.",

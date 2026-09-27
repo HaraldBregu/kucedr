@@ -2177,7 +2177,6 @@
 		"delete": "Elimina",
 		"revealInFinder": "Mostra nel Finder",
 		"revealInFileManager": "Mostra nel gestore file",
-		"renameEntry": "Rinomina {{name}}",
 		"deleteEntry": "Eliminare {{name}}?",
 		"deleteWarning": "L'elemento e il suo contenuto verranno eliminati definitivamente.",
 		"namePrompt": "Inserisci un nome per l'elemento.",
