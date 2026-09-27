@@ -97,7 +97,10 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 				query,
 				[...eligible.values()]
 					.filter((candidate) => !active.has(candidate.id))
-					.map((candidate) => ({ value: candidate, text: toolSearchText(candidate) }))
+					.map((candidate) => ({
+						value: candidate,
+						text: `${toolSearchText(candidate)} ${mcpMetadata.get(candidate.id) ?? ''}`,
+					}))
 			).slice(0, Math.min(limit, DISCOVERY_CALL_LIMIT, remaining));
 			for (const candidate of selected) active.set(candidate.id, candidate);
 			selectedCount += selected.length;
@@ -142,7 +145,10 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 							(isStrongMatch(query, candidate.id, candidate.name, toolSearchText(candidate)) ||
 								selectedServices.has(mcpMetadata.get(candidate.id) ?? ''))
 					)
-					.map((candidate) => ({ value: candidate, text: toolSearchText(candidate) }))
+					.map((candidate) => ({
+						value: candidate,
+						text: `${toolSearchText(candidate)} ${mcpMetadata.get(candidate.id) ?? ''}`,
+					}))
 			).slice(0, Math.min(DISCOVERY_DEFAULT_LIMIT, remaining));
 			for (const candidate of selected) active.set(candidate.id, candidate);
 			selectedCount += selected.length;
