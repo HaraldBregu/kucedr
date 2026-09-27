@@ -53,16 +53,16 @@ export function Chat({
 									: 'Choose a folder to start coding.'}
 							</p>
 							{!project && (
-							<Button variant="outline" onClick={() => void coding.addProject()}>
-								<FolderPlus className="size-4" />
-								Choose folder
-							</Button>
-						)}
-						{project && !coding.settings?.modelId && (
-							<Button variant="outline" onClick={onConfiguration}>
-								Configure agent
-							</Button>
-						)}
+								<Button variant="outline" onClick={() => void coding.addProject()}>
+									<FolderPlus className="size-4" />
+									Choose folder
+								</Button>
+							)}
+							{project && !coding.settings?.modelId && (
+								<Button variant="outline" onClick={onConfiguration}>
+									Configure agent
+								</Button>
+							)}
 						</div>
 					)}
 					{coding.interactions.map((item) => (

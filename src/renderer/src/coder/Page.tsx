@@ -314,19 +314,19 @@ export function CoderPage() {
 						style={{ '--coder-viewer-width': `${viewerWidth}px` } as CSSProperties}
 					>
 						<div className="flex h-52 min-h-0 shrink-0 flex-col border-b border-sidebar-border/50">
-						<Sessions
-							coding={coding}
-							settingsActive={location.pathname === '/settings'}
-							onBeforeChange={leaveEditor}
-							onSelect={select}
-							onConfiguration={() => openPage('/settings')}
-							onInstructions={(id) => {
-								if (!leaveEditor()) return;
-								if (id !== coding.projectId) void coding.select(id);
-								void navigate('/instructions');
-								if (window.innerWidth < 1280) setViewer(false);
-							}}
-						/>
+							<Sessions
+								coding={coding}
+								settingsActive={location.pathname === '/settings'}
+								onBeforeChange={leaveEditor}
+								onSelect={select}
+								onConfiguration={() => openPage('/settings')}
+								onInstructions={(id) => {
+									if (!leaveEditor()) return;
+									if (id !== coding.projectId) void coding.select(id);
+									void navigate('/instructions');
+									if (window.innerWidth < 1280) setViewer(false);
+								}}
+							/>
 						</div>
 						<Chat
 							coding={coding}
