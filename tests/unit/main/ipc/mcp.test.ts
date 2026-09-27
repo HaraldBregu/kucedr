@@ -25,6 +25,7 @@ import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
 import {
 	createOAuthProvider,
 	getMcpServers,
+	getMcpToolCatalog,
 	getMcpOauth,
 	startOauthCallbackServer,
 } from '../../../../src/main/mcp';
@@ -135,6 +136,8 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 		expect(result.success).toBe(scenario === 'exchange' || scenario === 'refresh');
 		expect(close).toHaveBeenCalledTimes(scenario === 'port busy' ? 0 : 1);
 		if (scenario === 'exchange') {
+			expect(testMcpServer).toHaveBeenCalledTimes(1);
+			expect(testMcpServer).toHaveBeenCalledWith('generic');
 			expect(auth).toHaveBeenLastCalledWith(provider, {
 				serverUrl: 'https://generic.example/mcp',
 				authorizationCode: 'verified-code',
@@ -146,6 +149,36 @@ it.each(['exchange', 'refresh', 'discovery failure', 'browser failure', 'port bu
 		if (scenario === 'port busy') expect(auth).not.toHaveBeenCalled();
 	}
 );
+
+it('reads cached tool names without reconnecting', async () => {
+	const mainFrame = {};
+	const sender = { id: 21, mainFrame };
+	jest
+		.mocked(BrowserWindow.fromWebContents)
+		.mockReturnValue({ id: 1, webContents: sender } as never);
+	jest.mocked(getMcpToolCatalog).mockReturnValue([
+		{ name: 'invoice_search', description: 'Find invoices', inputSchema: { type: 'object' } },
+	]);
+	new McpIpc().register(
+		{ windows: { has: () => true }, apps: { has: () => false } } as never,
+		{} as never
+	);
+	const handler = jest
+		.mocked(ipcMain.handle)
+		.mock.calls.find(([channel]) => channel === McpChannels.catalog)![1];
+	await expect(handler({ sender, senderFrame: mainFrame } as never, 'INVOICES')).resolves.toEqual({
+		success: true,
+		data: {
+			ok: true,
+			tools: ['invoice_search'],
+			toolDetails: [{ name: 'invoice_search', description: 'Find invoices' }],
+			toolCount: 1,
+			durationMs: 0,
+		},
+	});
+	expect(getMcpToolCatalog).toHaveBeenCalledWith('invoices');
+	expect(testMcpServer).not.toHaveBeenCalled();
+});
 
 it('cancels a pending OAuth callback before retrying', async () => {
 	jest.clearAllMocks();
