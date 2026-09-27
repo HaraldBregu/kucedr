@@ -75,7 +75,9 @@ export function Sidebar({
 					<p className="px-2 py-1 text-xs text-muted-foreground">No Markdown files yet.</p>
 				)}
 				{!coding.loading && !project && (
-					<p className="px-2 py-1 text-xs text-muted-foreground">Choose a project in Sessions.</p>
+					<p className="px-2 py-1 text-xs text-muted-foreground">
+						Choose a workspace in the navigation bar.
+					</p>
 				)}
 				{markdownError && (
 					<p role="alert" className="px-2 py-1 text-xs text-destructive">

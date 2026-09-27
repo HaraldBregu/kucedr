@@ -38,7 +38,7 @@ export function Chat({
 							<p className="text-sm text-muted-foreground">
 								{project
 									? 'Start with a prompt or switch to Command.'
-									: 'Choose a folder to start coding.'}
+									: 'Choose a workspace in the navigation bar.'}
 							</p>
 							{project && !coding.settings?.modelId && (
 								<Button variant="outline" onClick={onConfiguration}>
