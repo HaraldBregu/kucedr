@@ -48,6 +48,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 	const mcpMetadata = new Map(
 		(options.mcpTools ?? []).map((entry) => [entry.tool.id, entry.serverId])
 	);
+	const serviceNames = [...deferredServers.values()].map((server) => server.name).join(', ');
 	let selectedCount = 0;
 
 	const loadMatchingServers = async (query: string, signal?: AbortSignal) => {
@@ -75,7 +76,8 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 		id: DISCOVER_TOOLS_ID,
 		name: 'Discover tools',
 		description:
-			'Search for tools needed for the next step and activate the best matches. Use when the request requires a capability that is not currently available.',
+			'Search for tools needed for the next step and activate the best matches. Use when the request requires a capability that is not currently available.' +
+			(serviceNames ? ` Available services: ${serviceNames}. Search by service name to load its tools.` : ''),
 		planSafe: true,
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
