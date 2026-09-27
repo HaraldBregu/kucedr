@@ -101,6 +101,12 @@ test('the main navigation switches between Chat and a blank Workspace view', asy
 		window.location.hash = '#/home';
 	});
 	const view = page.getByRole('group', { name: 'View' });
+	const toggle = page.getByRole('button', { name: 'Toggle Sidebar' });
+	const toggleBounds = await toggle.boundingBox();
+	const viewBounds = await view.boundingBox();
+	expect(toggleBounds).not.toBeNull();
+	expect(viewBounds).not.toBeNull();
+	expect(viewBounds!.x).toBeGreaterThanOrEqual(toggleBounds!.x + toggleBounds!.width);
 	await view.getByRole('button', { name: 'Workspace' }).click();
 	await expect(page).toHaveURL(/#\/workspace$/);
 	await expect(view.getByRole('button', { name: 'Workspace' })).toHaveAttribute('aria-pressed', 'true');

@@ -155,7 +155,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 		</Button>
 	) : null;
 	const viewSwitch = (isHome || isWorkspace) && (
-		<div role="group" aria-label={t('navigationBar.view', 'View')} className="flex items-center gap-0.5 rounded-lg bg-muted p-0.5">
+		<div role="group" aria-label={t('navigationBar.view', 'View')} className="fixed left-[116px] top-2.5 z-50 flex items-center gap-0.5 rounded-lg bg-muted p-0.5">
 			<Button type="button" size="xs" variant={isHome ? 'secondary' : 'ghost'} aria-pressed={isHome} onClick={() => navigate('/home')}>
 				{chatButtonLabel}
 			</Button>
