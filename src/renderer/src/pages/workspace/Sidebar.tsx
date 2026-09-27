@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { SPLIT_ITEM_CLASS } from '@/components/app/base/page';
+import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { WorkspaceTree } from './Tree';
 
 interface WorkspaceSidebarProps {
@@ -68,6 +69,7 @@ export function WorkspaceSidebar({ onFileSelect, selectedPath }: WorkspaceSideba
 					<WorkspaceTree entries={entries} onFileSelect={onFileSelect} selectedPath={selectedPath} />
 				)}
 			</nav>
+			<AppSidebarFooter />
 		</div>
 	);
 }
