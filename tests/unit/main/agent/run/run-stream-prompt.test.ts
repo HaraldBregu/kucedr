@@ -1289,7 +1289,7 @@ describe('run stream system prompt', () => {
 			{
 				runId: 'mcp-matched',
 				task: 'chat',
-				message: 'Use Files to read a document',
+				message: 'Files',
 				model: 'test-model',
 				type: 'default',
 				agentId: 'main',
