@@ -2,6 +2,7 @@ const connectMock = jest.fn();
 const listToolsMock = jest.fn();
 const closeMock = jest.fn();
 const getMcpServersMock = jest.fn();
+const callToolMock = jest.fn();
 const notificationHandlers = new Map<string, () => Promise<void>>();
 const mockClient = (id = 'safe') => ({
 	id,
@@ -15,6 +16,7 @@ jest.mock('../../../../../src/main/mcp', () => ({
 	connect: (...args: unknown[]) => connectMock(...args),
 	listTools: (...args: unknown[]) => listToolsMock(...args),
 	close: (...args: unknown[]) => closeMock(...args),
+	callTool: (...args: unknown[]) => callToolMock(...args),
 	getMcpServers: () => getMcpServersMock(),
 }));
 
@@ -30,6 +32,7 @@ describe('loadMcpTools', () => {
 		notificationHandlers.clear();
 		connectMock.mockImplementation(async (id: string) => mockClient(id));
 		closeMock.mockResolvedValue(undefined);
+		callToolMock.mockResolvedValue({ content: [{ type: 'text', text: 'ok' }] });
 		getMcpServersMock.mockReturnValue({ safe: { type: 'http', url: 'https://mcp.test', defer_loading: false } });
 	});
 
@@ -228,6 +231,28 @@ describe('loadMcpTools', () => {
 			expect.objectContaining({ tool: expect.objectContaining({ id: 'mcp__safe__after' }) }),
 		]);
 		expect(listToolsMock).toHaveBeenCalledTimes(2);
+		await result.close();
+	});
+
+	it('executes with the original MCP server and tool names', async () => {
+		listToolsMock.mockResolvedValue({
+			tools: [{ name: 'search issues', inputSchema: { type: 'object' } }],
+		});
+		const result = await loadMcpTools();
+		const selected = result.tools[0];
+		expect(selected.policy).toEqual({
+			kind: 'mcp',
+			serverId: 'safe',
+			toolName: 'search issues',
+		});
+		await selected.run({});
+		expect(callToolMock).toHaveBeenCalledWith(
+			expect.objectContaining({ id: 'safe' }),
+			'search issues',
+			{},
+			expect.any(Number),
+			undefined
+		);
 		await result.close();
 	});
 });
