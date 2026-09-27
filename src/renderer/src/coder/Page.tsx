@@ -224,7 +224,7 @@ export function CoderPage() {
 							if (window.innerWidth < 768) setSidebar(false);
 						}}
 						onCreateMarkdown={() => {
-							if (!project?.available || !leaveEditor()) return;
+							if (!project?.available) return;
 							const entered = window.prompt('Markdown file name');
 							if (!entered) return;
 							const name = entered.trim().toLowerCase().endsWith('.md')
@@ -234,6 +234,8 @@ export function CoderPage() {
 								setMarkdownError('Enter a Markdown file name without folders.');
 								return;
 							}
+							const wasDirty = markdownDirtyRef.current;
+							if (!leaveEditor()) return;
 							void window.coder
 								.createMarkdownFile(project.id, name)
 								.then(() => window.coder.listMarkdownFiles(project.id))
@@ -243,7 +245,10 @@ export function CoderPage() {
 									setMarkdownError('');
 									void navigate('/');
 								})
-								.catch((cause) => setMarkdownError(String(cause)));
+								.catch((cause) => {
+									if (wasDirty) { markdownDirtyRef.current = true; setMarkdownDirty(true); }
+									setMarkdownError(String(cause));
+								});
 						}}
 						onSelect={select}
 						onConfiguration={() => openPage('/settings')}
