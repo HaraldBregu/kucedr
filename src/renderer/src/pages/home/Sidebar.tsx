@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { CircleHelp, Folder, Layers, LogOut, MoreVertical, Plus, RadioTower, Server, Settings, UserRound } from 'lucide-react';
+import { CircleHelp, Layers, LayoutGrid, LogOut, MoreVertical, Plus, RadioTower, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -154,7 +154,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							className="px-2.5 text-sm"
 							onClick={() => navigate('/workspace')}
 						>
-							<Folder className="size-4 shrink-0" />
+							<LayoutGrid className="size-4 shrink-0" />
 							<span className="truncate">{t('navigationBar.workspace', 'Workspace')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
