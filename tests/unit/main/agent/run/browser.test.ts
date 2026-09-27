@@ -220,9 +220,9 @@ it('does not let channel agents delegate browser access to a background child', 
 				model: 'test-model',
 				toolCalls: [
 					{
-						id: input.agentId === 'channels' ? 'delegate' : 'child-start',
-						name: input.agentId === 'channels' ? 'subagent' : 'use_web_browser',
-						args: input.agentId === 'channels' ? { task: 'Open a browser' } : { action: 'start' },
+						id: input.agentId === 'channels' ? 'search' : 'child-start',
+						name: input.agentId === 'channels' ? 'tool_search' : 'use_web_browser',
+						args: input.agentId === 'channels' ? { query: 'subagent' } : { action: 'start' },
 					},
 				],
 			};
