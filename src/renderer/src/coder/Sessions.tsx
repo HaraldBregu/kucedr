@@ -1,46 +1,15 @@
-import {
-	Check,
-	FileText,
-	Folder,
-	FolderOpen,
-	FolderPlus,
-	MoreVertical,
-	Plus,
-	Settings,
-	Trash2,
-} from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
-import {
-	SidebarFooter,
-	SidebarMenu,
-	SidebarMenuButton,
-	SidebarMenuItem,
-} from '@/components/ui/sidebar';
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuLabel,
-	DropdownMenuSeparator,
-	DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import type { Workspace } from './workspace';
 
 export function Sessions({
 	coding,
 	onSelect,
-	onInstructions,
-	onBeforeChange,
-	onConfiguration,
-	settingsActive,
 }: {
 	coding: Workspace;
-	onBeforeChange: () => boolean;
 	onSelect: (projectId: string, sessionId?: string, fresh?: boolean) => void;
-	onInstructions: (projectId: string) => void;
-	onConfiguration: () => void;
-	settingsActive: boolean;
 }) {
 	const project = coding.projects.find((item) => item.id === coding.projectId);
 	const sessions = project ? (coding.sessionsByProject[project.id] ?? []) : [];
@@ -75,10 +44,10 @@ export function Sessions({
 				)}
 				{!coding.loading && !project && (
 					<p className="px-2 py-1 text-xs text-muted-foreground">
-						Choose a project to see its sessions.
+						Choose a workspace to see its sessions.
 					</p>
 				)}
-				<nav aria-label="Projects and sessions">
+				<nav aria-label="Sessions">
 					<ul className="flex min-w-0 flex-col gap-1">
 						{sessions.map((session) => {
 							const active = session.id === coding.snapshot?.session.id;
@@ -109,117 +78,6 @@ export function Sessions({
 					)}
 				</nav>
 			</section>
-			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<SidebarMenuButton
-									size="lg"
-									aria-label="Project menu"
-									data-active={settingsActive}
-									className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-								>
-									<span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-										<Folder className="size-4" />
-									</span>
-									<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-										<span className="truncate font-medium">
-											{project?.name ?? 'Choose project'}
-										</span>
-										<span className="truncate text-xs text-muted-foreground">
-											{project?.directory ?? 'Open a folder to start coding'}
-										</span>
-									</span>
-									<MoreVertical className="ml-auto size-4" aria-hidden="true" />
-								</SidebarMenuButton>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent
-								className="w-[var(--radix-dropdown-menu-trigger-width)]"
-								side="top"
-								align="start"
-							>
-								<DropdownMenuLabel className="p-0 font-normal">
-									<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-										<span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
-											<Folder className="size-4" />
-										</span>
-										<div className="grid min-w-0 flex-1 text-left text-xs leading-tight">
-											<span className="truncate font-medium">
-												{project?.name ?? 'Choose project'}
-											</span>
-											<span className="truncate text-muted-foreground">{project?.directory}</span>
-										</div>
-									</div>
-								</DropdownMenuLabel>
-								<DropdownMenuSeparator />
-								{coding.projects.map((item) => (
-									<DropdownMenuItem
-										key={item.id}
-										disabled={coding.busy || !item.available}
-										title={item.directory}
-										onSelect={() => onSelect(item.id)}
-									>
-										<Folder />
-										<span className="min-w-0 flex-1 truncate">{item.name}</span>
-										{item.id === coding.projectId && <Check className="ml-auto" />}
-									</DropdownMenuItem>
-								))}
-								<DropdownMenuItem
-									disabled={coding.busy || coding.loading}
-									onSelect={() => {
-										if (onBeforeChange()) void coding.addProject();
-									}}
-								>
-									<FolderPlus />
-									Open project folder
-								</DropdownMenuItem>
-								<DropdownMenuSeparator />
-								{project && (
-									<>
-										<DropdownMenuItem
-											disabled={!project.available}
-											onSelect={() => onInstructions(project.id)}
-										>
-											<FileText />
-											Agent instructions
-										</DropdownMenuItem>
-										<DropdownMenuItem
-											disabled={!project.available}
-											onSelect={() => void coding.openProject(project.id)}
-										>
-											<FolderOpen />
-											Open folder
-										</DropdownMenuItem>
-									</>
-								)}
-								<DropdownMenuItem
-									onSelect={onConfiguration}
-									aria-current={settingsActive ? 'page' : undefined}
-								>
-									<Settings />
-									Settings
-								</DropdownMenuItem>
-								{project && (
-									<>
-										<DropdownMenuSeparator />
-										<DropdownMenuItem
-											className="text-destructive"
-											disabled={coding.busy || coding.loading}
-											onSelect={() => {
-												if (onBeforeChange()) void coding.removeProject(project.id);
-											}}
-										>
-											<Trash2 />
-											Remove workspace
-										</DropdownMenuItem>
-									</>
-								)}
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</SidebarMenuItem>
-				</SidebarMenu>
-			</SidebarFooter>
 		</>
 	);
 }
