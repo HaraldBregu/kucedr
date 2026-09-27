@@ -25,7 +25,7 @@ export function Markdown({
 	useEffect(() => {
 		let active = true;
 		void window.coder
-			.readProjectFile(projectId, filePath)
+			.readMarkdownFile(projectId, filePath)
 			.then((value) => {
 				if (active) {
 					setContent(value);

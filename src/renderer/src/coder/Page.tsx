@@ -235,7 +235,7 @@ export function CoderPage() {
 								return;
 							}
 							void window.coder
-								.createProjectFile(project.id, name)
+								.createMarkdownFile(project.id, name)
 								.then(() => window.coder.listMarkdownFiles(project.id))
 								.then((files) => {
 									setMarkdownFiles(files);

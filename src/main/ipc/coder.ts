@@ -3,6 +3,7 @@ import { CodingChannels } from '../../shared/ipc_channels_definitions';
 import {
 	isCodingProjectInstructionsUpdate,
 	isCodingProjectFilePath,
+	isCodingMarkdownFileName,
 	isCodingRunRequest,
 	isCodingSettings,
 } from '../../shared/coding_types';
@@ -139,6 +140,18 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 				throw new Error('Invalid coding project id.');
 			return coding.listMarkdownFiles(projectId.trim());
 		});
+		registerQueryWithEvent(CodingChannels.readMarkdownFile, (event, projectId, fileName) => {
+			assertCodingCaller(event);
+			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingMarkdownFileName(fileName))
+				throw new Error('Invalid coding Markdown file.');
+			return coding.readMarkdownFile(projectId.trim(), fileName);
+		});
+		registerCommandWithEvent(CodingChannels.createMarkdownFile, (event, projectId, fileName) => {
+			assertCodingCaller(event);
+			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingMarkdownFileName(fileName))
+				throw new Error('Invalid coding Markdown file.');
+			return coding.createMarkdownFile(projectId.trim(), fileName);
+		});
 		registerCommandWithEvent(
 			CodingChannels.saveMarkdownFile,
 			(event, projectId, filePath, content, expectedContent) => {
@@ -146,8 +159,7 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 				if (
 					typeof projectId !== 'string' ||
 					!projectId.trim() ||
-					!isCodingProjectFilePath(filePath) ||
-					!filePath.toLowerCase().endsWith('.md') ||
+					!isCodingMarkdownFileName(filePath) ||
 					typeof content !== 'string' ||
 					typeof expectedContent !== 'string'
 				)

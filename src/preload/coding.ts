@@ -3,6 +3,7 @@ import { CodingChannels } from '../shared/ipc_channels_definitions';
 import {
 	isCodingProjectInstructionsUpdate,
 	isCodingProjectFilePath,
+	isCodingMarkdownFileName,
 	isCodingRunRequest,
 	isCodingSettings,
 } from '../shared/coding_types';
@@ -57,12 +58,21 @@ export const coding: CodingApi = {
 		if (!id) throw new Error('Invalid coding project id.');
 		return typedInvokeUnwrap(CodingChannels.listMarkdownFiles, id);
 	},
+	readMarkdownFile: (projectId, fileName) => {
+		const id = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!id || !isCodingMarkdownFileName(fileName)) throw new Error('Invalid coding Markdown file.');
+		return typedInvokeUnwrap(CodingChannels.readMarkdownFile, id, fileName);
+	},
+	createMarkdownFile: (projectId, fileName) => {
+		const id = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!id || !isCodingMarkdownFileName(fileName)) throw new Error('Invalid coding Markdown file.');
+		return typedInvokeUnwrap(CodingChannels.createMarkdownFile, id, fileName);
+	},
 	saveMarkdownFile: (projectId, filePath, content, expectedContent) => {
 		const id = typeof projectId === 'string' ? projectId.trim() : '';
 		if (
 			!id ||
-			!isCodingProjectFilePath(filePath) ||
-			!filePath.toLowerCase().endsWith('.md') ||
+			!isCodingMarkdownFileName(filePath) ||
 			typeof content !== 'string' ||
 			typeof expectedContent !== 'string'
 		)
