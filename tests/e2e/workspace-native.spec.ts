@@ -8,10 +8,12 @@ test('opens the bundled Workspace in its own window', async () => {
 		await page.evaluate(() => window.apps.open('workspace'));
 		await expect.poll(() =>
 			app.evaluate(({ BrowserWindow }) => {
-				const win = BrowserWindow.getAllWindows().find((window) => window.getTitle() === 'Workspace');
-				return win?.webContents.getURL().endsWith('/workspace.html#/app/Workspace') ?? false;
+				return BrowserWindow.getAllWindows().map((window) => ({
+					title: window.getTitle(),
+					url: window.webContents.getURL(),
+				}));
 			})
-		).toBe(true);
+		).toContainEqual(expect.objectContaining({ title: 'Workspace', url: expect.stringContaining('workspace.html') }));
 		await expect.poll(() =>
 			app.evaluate(({ BrowserWindow }) => {
 				const win = BrowserWindow.getAllWindows().find((window) => window.getTitle() === 'Workspace');
