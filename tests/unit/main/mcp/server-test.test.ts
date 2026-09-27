@@ -2,11 +2,13 @@ const connect = jest.fn();
 const listTools = jest.fn();
 const close = jest.fn();
 const getMcpServers = jest.fn();
+const saveMcpToolCatalog = jest.fn();
 
 jest.mock('../../../../src/main/mcp/mcp_client_connect', () => ({ connect }));
 jest.mock('../../../../src/main/mcp/mcp_client_list_tools', () => ({ listTools }));
 jest.mock('../../../../src/main/mcp/mcp_client_close', () => ({ close }));
 jest.mock('../../../../src/main/mcp/mcp_store', () => ({ getMcpServers }));
+jest.mock('../../../../src/main/mcp/mcp_catalog_save', () => ({ saveMcpToolCatalog }));
 
 import { testMcpServer } from '../../../../src/main/mcp/mcp_server_test';
 
@@ -29,6 +31,23 @@ describe('MCP connection test', () => {
 		expect(connect).toHaveBeenCalledWith('remote', expect.any(Object), 15_000);
 		expect(listTools).toHaveBeenCalledWith(expect.any(Object), 15_000);
 		expect(close).toHaveBeenCalledTimes(1);
+		expect(saveMcpToolCatalog).toHaveBeenCalledWith('remote', [
+			{ name: 'read' },
+			{ name: 'write' },
+		]);
+	});
+
+	it('stores all pages and complete tool schemas', async () => {
+		const first = { name: 'find', description: 'Find invoices', inputSchema: { type: 'object' } };
+		const second = { name: 'send', inputSchema: { type: 'object' }, annotations: { readOnlyHint: false } };
+		listTools
+			.mockResolvedValueOnce({ tools: [first], nextCursor: 'page-2' })
+			.mockResolvedValueOnce({ tools: [second] });
+
+		await expect(testMcpServer('remote')).resolves.toMatchObject({ ok: true, toolCount: 2 });
+		expect(listTools).toHaveBeenNthCalledWith(1, expect.any(Object), 15_000, undefined, undefined);
+		expect(listTools).toHaveBeenNthCalledWith(2, expect.any(Object), 15_000, undefined, 'page-2');
+		expect(saveMcpToolCatalog).toHaveBeenCalledWith('remote', [first, second]);
 	});
 
 	it('returns an actionable failure and still closes the client', async () => {
@@ -39,5 +58,6 @@ describe('MCP connection test', () => {
 			error: 'server unavailable',
 		});
 		expect(close).toHaveBeenCalledTimes(1);
+		expect(saveMcpToolCatalog).not.toHaveBeenCalled();
 	});
 });

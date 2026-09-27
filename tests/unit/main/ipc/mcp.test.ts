@@ -6,6 +6,7 @@ jest.mock('../../../../src/main/mcp', () => ({
 	deleteMcpServer: jest.fn(),
 	getMcpOauth: jest.fn(() => ({})),
 	getMcpServers: jest.fn(() => ({})),
+	getMcpToolCatalog: jest.fn(),
 	importLocalMcpServers: jest.fn(),
 	listConfiguredMcpServers: jest.fn(() => ({})),
 	listMcpRegistry: jest.fn(() => []),
@@ -43,6 +44,7 @@ afterAll(() => {
 describe('MCP IPC', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
+		testMcpServer.mockResolvedValue({ ok: true, tools: [], toolCount: 0, durationMs: 0 });
 	});
 
 	it('rejects app views before testing a server', async () => {
