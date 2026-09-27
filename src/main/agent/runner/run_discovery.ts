@@ -131,6 +131,7 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 		},
 		async preselect(query, signal) {
 			const serviceIds = await loadMatchingServers(query, signal);
+			const selectedServices = new Set(serviceIds);
 			const remaining = Math.max(0, DISCOVERY_RUN_LIMIT - selectedCount);
 			const selected = rankTools(
 				query,
@@ -138,7 +139,8 @@ export function createToolDiscovery(options: ToolDiscoveryOptions): ToolDiscover
 					.filter(
 						(candidate) =>
 							!active.has(candidate.id) &&
-							isStrongMatch(query, candidate.id, candidate.name, toolSearchText(candidate))
+							(isStrongMatch(query, candidate.id, candidate.name, toolSearchText(candidate)) ||
+								selectedServices.has(mcpMetadata.get(candidate.id) ?? ''))
 					)
 					.map((candidate) => ({ value: candidate, text: toolSearchText(candidate) }))
 			).slice(0, Math.min(DISCOVERY_DEFAULT_LIMIT, remaining));
