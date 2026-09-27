@@ -12,6 +12,7 @@ import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
 import { Transcript } from './Transcript';
 import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
+import { Sessions } from './Sessions';
 import { Resize } from './Resize';
 import { Composer } from './Composer';
 import { Configuration } from './Configuration';
@@ -130,7 +131,7 @@ export function CoderPage() {
 		setActiveMarkdown(null);
 		void navigate('/');
 		void coding.select(projectId, sessionId, fresh);
-		if (window.innerWidth < 768) setSidebar(false);
+		if (window.innerWidth < 1280) setViewer(false);
 	};
 	useEffect(() => {
 		if (blocker.state !== 'blocked') return;
@@ -212,7 +213,6 @@ export function CoderPage() {
 							setSidebarWidth(Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, width)))
 						}
 						settingsActive={location.pathname === '/settings'}
-						onBeforeChange={leaveEditor}
 						markdownFiles={markdownFiles}
 						activeMarkdown={location.pathname === '/' ? activeMarkdown : null}
 						markdownError={markdownError}
@@ -249,14 +249,6 @@ export function CoderPage() {
 									if (wasDirty) { markdownDirtyRef.current = true; setMarkdownDirty(true); }
 									setMarkdownError(String(cause));
 								});
-						}}
-						onSelect={select}
-						onConfiguration={() => openPage('/settings')}
-						onInstructions={(id) => {
-							if (!leaveEditor()) return;
-							if (id !== coding.projectId) void coding.select(id);
-							void navigate('/instructions');
-							if (window.innerWidth < 768) setSidebar(false);
 						}}
 					/>
 				)}
@@ -385,16 +377,25 @@ export function CoderPage() {
 				</main>
 				{viewer && (
 					<aside
-						aria-label="Content viewer"
-						className="absolute inset-y-0 right-0 z-20 w-[min(85vw,400px)] border-l border-sidebar-border bg-sidebar text-sidebar-foreground xl:relative xl:z-10 xl:w-[var(--coder-viewer-width)] xl:shrink-0"
+						aria-label="Sessions"
+						className="absolute inset-y-0 right-0 z-20 flex w-[min(85vw,400px)] flex-col border-l border-sidebar-border bg-background text-sidebar-foreground xl:relative xl:z-10 xl:w-[var(--coder-viewer-width)] xl:shrink-0"
 						style={{ '--coder-viewer-width': `${viewerWidth}px` } as CSSProperties}
 					>
+						<Sessions coding={coding} settingsActive={location.pathname === '/settings'}
+							onBeforeChange={leaveEditor} onSelect={select}
+							onConfiguration={() => openPage('/settings')}
+							onInstructions={(id) => {
+								if (!leaveEditor()) return;
+								if (id !== coding.projectId) void coding.select(id);
+								void navigate('/instructions');
+								if (window.innerWidth < 1280) setViewer(false);
+							}} />
 						<Resize
 							side="left"
 							width={viewerWidth}
 							minWidth={RIGHT_MIN_WIDTH}
 							maxWidth={RIGHT_MAX_WIDTH}
-							label="Resize content viewer"
+							label="Resize sessions sidebar"
 							className="xl:block"
 							onWidthChange={(width) =>
 								setViewerWidth(Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, width)))

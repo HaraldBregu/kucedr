@@ -118,8 +118,8 @@ export function Navigation({
 				variant="ghost"
 				size="icon"
 				className="ml-auto size-8 shrink-0 rounded-full text-muted-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground"
-				aria-label="Toggle sessions"
-				title="Toggle sessions"
+				aria-label="Toggle workspace instructions"
+				title="Toggle workspace instructions"
 				aria-expanded={sidebar}
 				onClick={onToggleSidebar}
 			>
@@ -130,8 +130,8 @@ export function Navigation({
 				variant="ghost"
 				size="icon"
 				className="mr-3 size-8 shrink-0 rounded-full text-muted-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground"
-				aria-label="Toggle content viewer"
-				title="Toggle content viewer"
+				aria-label="Toggle sessions"
+				title="Toggle sessions"
 				aria-expanded={viewer}
 				onClick={onToggleViewer}
 			>
