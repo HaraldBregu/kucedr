@@ -4,7 +4,6 @@ import { isAppId } from './app_id';
 import { readAppManifestFromDirectory } from './app_read';
 import { appsRoot } from './app_root';
 import { debugAppPaths } from './app_debug_paths';
-import { appDirectory } from './app_directory';
 import type { App } from './app_types';
 
 export function listApps(appLocation?: string): App[] {
@@ -35,13 +34,6 @@ export function listApps(appLocation?: string): App[] {
 		apps.push({ id: directory.name, ...manifest, ...(imageUrl && { imageUrl }) });
 	}
 	if (appLocation === undefined) {
-		if (!apps.some((app) => app.id === 'workspace')) {
-			const directory = appDirectory('workspace');
-			const manifest = readAppManifestFromDirectory(directory);
-			if (manifest && existsSync(path.join(directory, ...manifest.metadata.entry.split('/')))) {
-				apps.push({ id: 'workspace', ...manifest });
-			}
-		}
 		for (const directory of debugAppPaths()) {
 			const id = path.basename(directory);
 			if (!isAppId(id) || apps.some((app) => app.id === id)) continue;
