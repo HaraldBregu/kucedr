@@ -194,6 +194,42 @@ describe('loadMcpTools', () => {
 		await result.close();
 		expect(closeMock).toHaveBeenCalledTimes(3);
 	});
+
+	it('follows every tools/list page and keeps the catalog cached', async () => {
+		listToolsMock
+			.mockResolvedValueOnce({
+				tools: [{ name: 'first', inputSchema: { type: 'object' } }],
+				nextCursor: 'page-two',
+			})
+			.mockResolvedValueOnce({ tools: [{ name: 'second', inputSchema: { type: 'object' } }] });
+
+		const result = await loadMcpTools();
+		expect(result.tools.map((tool) => tool.id)).toEqual([
+			'mcp__safe__first',
+			'mcp__safe__second',
+		]);
+		expect(listToolsMock).toHaveBeenNthCalledWith(2, expect.anything(), 30_000, undefined, 'page-two');
+		expect(listToolsMock).toHaveBeenCalledTimes(2);
+		await result.close();
+		expect(listToolsMock).toHaveBeenCalledTimes(2);
+	});
+
+	it('refreshes a changed server catalog and notifies with the full snapshot', async () => {
+		listToolsMock
+			.mockResolvedValueOnce({ tools: [{ name: 'before', inputSchema: { type: 'object' } }] })
+			.mockResolvedValueOnce({ tools: [{ name: 'after', inputSchema: { type: 'object' } }] });
+		const result = await loadMcpTools();
+		const changed = jest.fn();
+		result.onChanged(changed);
+
+		await notificationHandlers.get('safe')?.();
+		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__safe__after']);
+		expect(changed).toHaveBeenCalledWith([
+			expect.objectContaining({ tool: expect.objectContaining({ id: 'mcp__safe__after' }) }),
+		]);
+		expect(listToolsMock).toHaveBeenCalledTimes(2);
+		await result.close();
+	});
 });
 
 it('closes every acquired client if discovery postprocessing fails', async () => {
