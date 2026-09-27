@@ -551,6 +551,12 @@ input[type='range']:hover::-moz-range-thumb {
 .workspace-markdown-preview h6 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--muted-foreground); }
 .workspace-markdown-preview p { margin: 0.5rem 0; }
 .workspace-markdown-preview a { color: var(--link); text-decoration: underline; text-underline-offset: 4px; }
+.workspace-markdown-preview table { margin: 0.75rem 0; width: 100%; border-collapse: collapse; text-align: left; }
+.workspace-markdown-preview th, .workspace-markdown-preview td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; }
+.workspace-markdown-preview th { background-color: var(--muted); font-weight: 600; }
+.workspace-markdown-preview img { max-width: 100%; height: auto; }
+.workspace-markdown-preview ul[data-type='taskList'] { list-style: none; padding-left: 0; }
+.workspace-markdown-preview li[data-type='taskItem'] { display: flex; align-items: baseline; gap: 0.5rem; }
 
 .plan-prompt-frame {
 	position: relative;
