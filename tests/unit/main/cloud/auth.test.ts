@@ -124,6 +124,7 @@ it('configures Supabase to restore sessions from encrypted main-process storage'
 		expect.objectContaining({
 			auth: expect.objectContaining({
 				persistSession: true,
+				skipAutoInitialize: true,
 				storage,
 			}),
 		})
