@@ -2171,6 +2171,7 @@
 		"markdownView": "Markdown view",
 		"preview": "Preview",
 		"source": "Source",
+		"commentSourceOnly": "This file contains Markdown comments. Edit it in Source to preserve them.",
 		"newFile": "New file",
 		"newFolder": "New folder",
 		"rename": "Rename",

@@ -2171,6 +2171,7 @@
 		"markdownView": "Vista Markdown",
 		"preview": "Anteprima",
 		"source": "Sorgente",
+		"commentSourceOnly": "Questo file contiene commenti Markdown. Modificalo in Sorgente per conservarli.",
 		"newFile": "Nuovo file",
 		"newFolder": "Nuova cartella",
 		"rename": "Rinomina",
