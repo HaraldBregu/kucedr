@@ -171,7 +171,7 @@ export class ProviderStoreIpc implements IpcModule<ProviderStoreIpcDeps> {
 		try {
 			response = await fetch(url.toString(), { signal });
 		} catch {
-			throw new Error('Could not reach the custom model provider.');
+			return [];
 		}
 		if (!response.ok) throw new Error('Could not load models from the custom provider.');
 		const body = (await response.json()) as { models?: unknown };

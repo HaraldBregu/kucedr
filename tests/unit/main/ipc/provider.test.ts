@@ -218,6 +218,18 @@ describe('provider credential IPC boundary', () => {
 		});
 	});
 
+	it('returns no models when the local provider is offline', async () => {
+		register();
+		global.fetch = jest.fn().mockRejectedValue(new TypeError('fetch failed'));
+
+		const result = await handler(registerQueryWithEvent, ProviderChannels.listCustomModels)(
+			{},
+			{ baseUrl: 'http://localhost:11434/api', apiKey: 'ollama' }
+		);
+
+		expect(result).toEqual([]);
+	});
+
 	it('saves and lists database credentials separately from model credentials', () => {
 		setProvider.mockClear();
 		getEnabledPluginProviders.mockReturnValue({ database: ['pinecone/pinecone'], storage: [] });
