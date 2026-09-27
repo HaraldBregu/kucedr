@@ -1161,7 +1161,6 @@ export interface AppsInvokeChannelMap {
 }
 
 export interface WindowInvokeChannelMap {
-	[WindowChannels.openCoder]: { args: []; result: void };
 	[WindowChannels.openVoiceConversation]: {
 		args: [chatSessionId: string];
 		result: void;

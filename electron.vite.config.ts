@@ -81,7 +81,6 @@ export default defineConfig({
 					index: resolve(__dirname, 'src/renderer/index.html'),
 					app: resolve(__dirname, 'src/renderer/app.html'),
 					voice: resolve(__dirname, 'src/renderer/voice.html'),
-					coder: resolve(__dirname, 'src/renderer/coder.html'),
 					workspace: resolve(__dirname, 'src/renderer/workspace.html'),
 				},
 			},

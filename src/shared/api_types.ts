@@ -141,7 +141,6 @@ export interface WindowApi {
 	minimize: () => void;
 	maximize: () => void;
 	close: () => void;
-	openCoder: () => Promise<void>;
 	openVoiceConversation: (chatSessionId: string) => Promise<void>;
 	popupMenu: () => void;
 	showContextMenu: (items: ContextMenuDescriptor[]) => Promise<string | null>;

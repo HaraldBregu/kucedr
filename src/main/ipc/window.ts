@@ -35,7 +35,6 @@ const maxContextMenuTextLength = 120;
 export interface WindowIpcDeps {
 	logger: LoggerService;
 	appRegistry: AppRegistry;
-	openCoder?: () => void;
 	openVoiceConversation?: (chatSessionId: string) => void;
 }
 
@@ -60,7 +59,7 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 	readonly name = 'window';
 
 	register(
-		{ logger, appRegistry, openVoiceConversation, openCoder }: WindowIpcDeps,
+		{ logger, appRegistry, openVoiceConversation }: WindowIpcDeps,
 		_eventBus: EventBus
 	): void {
 		// --- Send handlers (fire-and-forget) ---
@@ -86,14 +85,6 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 			const win = BrowserWindow.fromWebContents(event.sender);
 			if (win) win.close();
 		});
-
-		ipcMain.handle(
-			WindowChannels.openCoder,
-			wrapIpcHandler(() => {
-				if (!openCoder) throw new Error('Coder is unavailable.');
-				openCoder();
-			}, 'window:open-coder')
-		);
 
 		ipcMain.handle(
 			WindowChannels.openVoiceConversation,
