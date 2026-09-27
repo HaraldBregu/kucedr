@@ -20,6 +20,7 @@ const listWorkspaceFiles = jest.fn();
 const createWorkspaceFile = jest.fn();
 const createWorkspaceDirectory = jest.fn();
 const renameWorkspaceEntry = jest.fn();
+const revealWorkspaceEntry = jest.fn();
 const deleteWorkspaceFile = jest.fn();
 const deleteWorkspaceDirectory = jest.fn();
 const showContextMenu = jest.fn();
@@ -33,6 +34,7 @@ beforeEach(() => {
 			createWorkspaceFile,
 			createWorkspaceDirectory,
 			renameWorkspaceEntry,
+			revealWorkspaceEntry,
 			deleteWorkspaceFile,
 			deleteWorkspaceDirectory,
 			onWorkspaceChanged: () => () => undefined,
@@ -121,4 +123,22 @@ it('creates inside and deletes a folder from its right click menu', async () => 
 	fireEvent.contextMenu(folder.closest('summary') as HTMLElement);
 	await user.click(await screen.findByRole('button', { name: 'Delete' }));
 	await waitFor(() => expect(deleteWorkspaceDirectory).toHaveBeenCalledWith('Notes'));
+});
+
+it('reveals the right-clicked file or folder', async () => {
+	listWorkspaceFiles.mockResolvedValue([
+		{ type: 'directory', name: 'Notes', path: 'Notes', children: [
+			{ type: 'file', name: 'plan.md', path: 'Notes/plan.md' },
+		] },
+	]);
+	revealWorkspaceEntry.mockResolvedValue(undefined);
+	showContextMenu.mockResolvedValue('reveal');
+	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
+	const folder = await screen.findByText('Notes');
+	fireEvent.contextMenu(folder.closest('summary') as HTMLElement);
+	await waitFor(() => expect(revealWorkspaceEntry).toHaveBeenCalledWith('Notes'));
+	await userEvent.setup().click(folder);
+	fireEvent.contextMenu(await screen.findByRole('button', { name: 'plan.md' }));
+	await waitFor(() => expect(revealWorkspaceEntry).toHaveBeenCalledWith('Notes/plan.md'));
+	expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });

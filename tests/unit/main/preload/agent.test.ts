@@ -43,6 +43,12 @@ it('opens a specific session folder through the dedicated agent channel', async 
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.openSessionFolder, 'session-1');
 });
 
+it('reveals a Workspace entry through its dedicated channel', async () => {
+	await agent.revealWorkspaceEntry(' Notes/plan.md ');
+	expect(invoke).toHaveBeenCalledWith(AgentChannels.revealWorkspaceEntry, 'Notes/plan.md');
+	expect(() => agent.revealWorkspaceEntry(' ')).toThrow('Invalid workspace entry path.');
+});
+
 it('validates and forwards a compact-session request', async () => {
 	await agent.compactSession(' session-1 ');
 	expect(invoke).toHaveBeenCalledWith(AgentChannels.compactSession, 'session-1');
