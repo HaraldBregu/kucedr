@@ -268,6 +268,11 @@ export const agent: AgentApi = {
 			normalizedName
 		);
 	},
+	revealWorkspaceEntry: (entryPath) => {
+		const normalizedEntryPath = optionalTrimmedString(entryPath);
+		if (!normalizedEntryPath) throw new Error('Invalid workspace entry path.');
+		return typedInvokeUnwrap(AgentChannels.revealWorkspaceEntry, normalizedEntryPath);
+	},
 	deleteWorkspaceFile: (filePath) => {
 		const normalizedFilePath = optionalTrimmedString(filePath);
 		if (!normalizedFilePath) throw new Error('Invalid workspace file path.');

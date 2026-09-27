@@ -259,6 +259,10 @@ export interface AgentInvokeChannelMap {
 		args: [sourcePath: string, name: string];
 		result: string;
 	};
+	[AgentChannels.revealWorkspaceEntry]: {
+		args: [entryPath: string];
+		result: void;
+	};
 	[AgentChannels.deleteWorkspaceFile]: {
 		args: [filePath: string];
 		result: void;

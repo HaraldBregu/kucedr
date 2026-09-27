@@ -29,6 +29,7 @@ export const AgentChannels = {
 	createWorkspaceDirectory: 'agent:workspace:directory:create',
 	moveWorkspaceEntry: 'agent:workspace:entry:move',
 	renameWorkspaceEntry: 'agent:workspace:entry:rename',
+	revealWorkspaceEntry: 'agent:workspace:entry:reveal',
 	deleteWorkspaceFile: 'agent:workspace:file:delete',
 	deleteWorkspaceDirectory: 'agent:workspace:directory:delete',
 	getProvider: 'agent:get-provider',

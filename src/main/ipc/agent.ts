@@ -86,6 +86,7 @@ import { archiveWorkspaceEntry } from './archive';
 import { readWorkspaceTextFile } from './text';
 import { moveWorkspaceEntry } from './move';
 import { renameWorkspaceEntry } from './rename';
+import { revealWorkspaceEntry } from './reveal';
 import { readWorkspaceTree } from './tree';
 import { respondUserInput } from '../agent/user_input/user_input_pending';
 import type { AppRegistry } from '../apps/app_registry';
@@ -773,6 +774,19 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					);
 				},
 				AgentChannels.renameWorkspaceEntry
+			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.revealWorkspaceEntry,
+			wrapAgentHandler(
+				workspaceAccess,
+				async (entryPath: unknown): Promise<void> => {
+					const normalizedEntryPath = optionalTrimmedString(entryPath);
+					if (!normalizedEntryPath) throw new Error('Invalid workspace entry path.');
+					await revealWorkspaceEntry(workspacePath(agent.config), normalizedEntryPath);
+				},
+				AgentChannels.revealWorkspaceEntry
 			)
 		);
 

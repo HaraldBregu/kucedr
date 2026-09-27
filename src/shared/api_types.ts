@@ -205,6 +205,7 @@ export interface AgentApi {
 	createWorkspaceDirectory: (parentPath: string, name: string) => Promise<string>;
 	moveWorkspaceEntry: (sourcePath: string, destinationDirectoryPath: string) => Promise<string>;
 	renameWorkspaceEntry: (sourcePath: string, name: string) => Promise<string>;
+	revealWorkspaceEntry: (entryPath: string) => Promise<void>;
 	deleteWorkspaceFile: (filePath: string) => Promise<void>;
 	deleteWorkspaceDirectory: (directoryPath: string) => Promise<void>;
 	getProvider: () => Promise<PublicProvider | undefined>;
