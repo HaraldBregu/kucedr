@@ -79,6 +79,7 @@ export function toolSearchText(tool: Tool): string {
 		...Array(4).fill(tool.id),
 		...Array(4).fill(tool.name),
 		...Array(2).fill(tool.description),
+		JSON.stringify(tool.schema),
 		...Object.entries(properties).flatMap(([name, schema]) => [
 			name,
 			typeof schema === 'object' && schema && 'description' in schema
