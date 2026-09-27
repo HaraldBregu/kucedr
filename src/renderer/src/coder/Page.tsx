@@ -328,10 +328,7 @@ export function CoderPage() {
 						style={{ '--coder-viewer-width': `${viewerWidth}px` } as CSSProperties}
 					>
 						<div className="flex h-52 min-h-0 shrink-0 flex-col border-b border-sidebar-border/50">
-							<Sessions
-								coding={coding}
-								onSelect={select}
-							/>
+							<Sessions coding={coding} onSelect={select} />
 						</div>
 						<Chat coding={coding} onConfiguration={() => openPage('/settings')} />
 						<Resize

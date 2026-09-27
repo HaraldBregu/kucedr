@@ -83,7 +83,10 @@ export function WorkspaceMenu({
 				<DropdownMenuSeparator />
 				{project && (
 					<>
-						<DropdownMenuItem disabled={!project.available} onSelect={() => onInstructions(project.id)}>
+						<DropdownMenuItem
+							disabled={!project.available}
+							onSelect={() => onInstructions(project.id)}
+						>
 							<FileText />
 							Agent instructions
 						</DropdownMenuItem>
@@ -96,25 +99,28 @@ export function WorkspaceMenu({
 						</DropdownMenuItem>
 					</>
 				)}
-				<DropdownMenuItem onSelect={onConfiguration} aria-current={settingsActive ? 'page' : undefined}>
-				<Settings />
-				Settings
-			</DropdownMenuItem>
-			{project && (
-				<>
-					<DropdownMenuSeparator />
-					<DropdownMenuItem
-						className="text-destructive"
-						disabled={coding.busy || coding.loading}
-						onSelect={() => {
-							if (onBeforeChange()) void coding.removeProject(project.id);
-						}}
-					>
-						<Trash2 />
-						Remove workspace
-					</DropdownMenuItem>
-				</>
-			)}
+				<DropdownMenuItem
+					onSelect={onConfiguration}
+					aria-current={settingsActive ? 'page' : undefined}
+				>
+					<Settings />
+					Settings
+				</DropdownMenuItem>
+				{project && (
+					<>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem
+							className="text-destructive"
+							disabled={coding.busy || coding.loading}
+							onSelect={() => {
+								if (onBeforeChange()) void coding.removeProject(project.id);
+							}}
+						>
+							<Trash2 />
+							Remove workspace
+						</DropdownMenuItem>
+					</>
+				)}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
