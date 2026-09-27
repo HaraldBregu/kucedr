@@ -326,10 +326,7 @@ export function CoderPage() {
 								}}
 							/>
 						</div>
-						<Chat
-							coding={coding}
-							onConfiguration={() => openPage('/settings')}
-						/>
+						<Chat coding={coding} onConfiguration={() => openPage('/settings')} />
 						<Resize
 							side="left"
 							width={viewerWidth}
