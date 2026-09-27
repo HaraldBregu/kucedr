@@ -3,7 +3,10 @@ import { FileText, LoaderCircle } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { workspaceFileType } from '@shared/workspace';
+import { Markdown } from '@/components/prompt-kit/markdown';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useIsDark } from '@/hooks/use-is-dark';
+import { markdownComponents } from '@/pages/home/components/markdown';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('./Editor');
@@ -20,6 +23,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	const [content, setContent] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
+	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
 	const kind = file ? workspaceFileType(file.path).kind : null;
 	const media = kind === 'image' || kind === 'audio' || kind === 'video' || kind === 'pdf';
 	const mediaUrl = file && media ? new URL('local-resource://agent/') : null;
@@ -54,6 +58,14 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 					<FileText className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
 					<span className="truncate font-medium">{file.name}</span>
 					<span className="ml-auto truncate text-xs text-muted-foreground" title={file.path}>{file.path}</span>
+					{kind === 'markdown' ? (
+						<ToggleGroup type="single" size="sm" variant="outline" value={markdownMode} onValueChange={(value) => {
+							if (value === 'preview' || value === 'source') setMarkdownMode(value);
+						}} aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
+							<ToggleGroupItem value="preview">{t('workspaceSidebar.preview', 'Preview')}</ToggleGroupItem>
+							<ToggleGroupItem value="source">{t('workspaceSidebar.source', 'Source')}</ToggleGroupItem>
+						</ToggleGroup>
+					) : null}
 				</header>
 			) : null}
 			{!file ? (
@@ -78,6 +90,10 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 				<div className="flex min-h-0 flex-1 items-center justify-center p-4"><video controls src={mediaUrl?.toString()} className="max-h-full max-w-full" /></div>
 			) : kind === 'pdf' ? (
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
+			) : kind === 'markdown' && markdownMode === 'preview' ? (
+				<div className="min-h-0 flex-1 overflow-auto px-6 py-5">
+					<Markdown className="mx-auto w-full max-w-3xl break-words text-sm leading-7" components={markdownComponents}>{content}</Markdown>
+				</div>
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto">
 					<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>

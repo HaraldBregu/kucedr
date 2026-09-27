@@ -2167,6 +2167,9 @@
 		"noSelection": "Choose a file to view it here.",
 		"fileLoading": "Loading file…",
 		"fileError": "Unable to open file.",
+		"markdownView": "Markdown view",
+		"preview": "Preview",
+		"source": "Source",
 		"unsupported": "This file cannot be previewed."
 	},
 	"documents": {

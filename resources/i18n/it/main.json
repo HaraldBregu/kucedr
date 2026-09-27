@@ -2167,6 +2167,9 @@
 		"noSelection": "Scegli un file da visualizzare qui.",
 		"fileLoading": "Caricamento del file…",
 		"fileError": "Impossibile aprire il file.",
+		"markdownView": "Vista Markdown",
+		"preview": "Anteprima",
+		"source": "Sorgente",
 		"unsupported": "Impossibile visualizzare l'anteprima di questo file."
 	},
 	"documents": {

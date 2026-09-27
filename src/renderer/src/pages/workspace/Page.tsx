@@ -9,7 +9,7 @@ export default function WorkspacePage(): React.JSX.Element {
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split sidebar={<WorkspaceSidebar onFileSelect={setSelectedFile} selectedPath={selectedFile?.path ?? null} />} sidebarLabel="Workspace files">
-				<WorkspaceViewer file={selectedFile} />
+				<WorkspaceViewer key={selectedFile?.path} file={selectedFile} />
 			</Split>
 		</PageContainer>
 	);
