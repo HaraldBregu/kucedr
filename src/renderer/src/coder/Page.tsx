@@ -46,9 +46,9 @@ export function CoderPage() {
 	const skipSettingsRefresh = useRef(false);
 	const blocker = useBlocker(
 		({ currentLocation, nextLocation }) =>
-			instructionsDirtyRef.current &&
-			currentLocation.pathname === '/instructions' &&
-			currentLocation.pathname !== nextLocation.pathname
+			currentLocation.pathname !== nextLocation.pathname &&
+			((instructionsDirtyRef.current && currentLocation.pathname === '/instructions') ||
+				(markdownDirtyRef.current && currentLocation.pathname === '/'))
 	);
 	const project = coding.projects.find((item) => item.id === coding.projectId);
 	useEffect(() => { markdownDirtyRef.current = markdownDirty; }, [markdownDirty]);
@@ -126,7 +126,7 @@ export function CoderPage() {
 		if (blocker.state !== 'blocked') return;
 		if (leaveEditor()) blocker.proceed();
 		else blocker.reset();
-	}, [blocker]);
+	});
 	useEffect(() => {
 		if (previousPath.current === '/settings' && location.pathname !== '/settings') {
 			if (!skipSettingsRefresh.current) void coding.refreshSettings();

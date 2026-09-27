@@ -3,6 +3,7 @@ import { LoaderCircle, Save } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
+import { markdownComponents } from '@/pages/home/components/markdown';
 import { Editor } from './Editor';
 
 export function Markdown({ projectId, filePath, onDirtyChange }: {
@@ -26,6 +27,12 @@ export function Markdown({ projectId, filePath, onDirtyChange }: {
 		return () => { active = false; };
 	}, [projectId, filePath]);
 	useEffect(() => onDirtyChange(dirty), [dirty, onDirtyChange]);
+	useEffect(() => {
+		if (!dirty) return;
+		const preventClose = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ''; };
+		window.addEventListener('beforeunload', preventClose);
+		return () => window.removeEventListener('beforeunload', preventClose);
+	}, [dirty]);
 	const save = async () => {
 		if (loading || saving || !dirty) return;
 		const submitted = content;
@@ -53,7 +60,7 @@ export function Markdown({ projectId, filePath, onDirtyChange }: {
 		{loading ? <p role="status" className="p-4 text-sm text-muted-foreground">Loading Markdown…</p> :
 			<div className="min-h-0 flex-1 overflow-y-auto px-4 py-6 sm:px-8">
 				<div className="mx-auto flex min-h-full max-w-[920px] flex-col">
-					{preview ? <article className="prose prose-sm dark:prose-invert max-w-none break-words"><ReactMarkdown remarkPlugins={[remarkGfm]} skipHtml>{content}</ReactMarkdown></article> :
+					{preview ? <article className="max-w-none break-words text-sm leading-7 [&_pre]:overflow-x-auto [&_pre]:rounded-lg [&_pre]:bg-muted [&_pre]:p-3"><ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents} skipHtml>{content}</ReactMarkdown></article> :
 						<Editor value={content} onChange={setContent} onSave={() => void save()} />}
 				</div>
 			</div>}
