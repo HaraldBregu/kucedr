@@ -119,6 +119,10 @@ test('the Workspace item below New Chat opens the blank view', async () => {
 	await expect(workspace.getByText('Notes')).toBeVisible();
 	await workspace.getByText('Notes').click();
 	await expect(workspace.getByText('plan.md')).toBeVisible();
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('Notes', 'updated.md');
+	});
+	await expect(workspace.getByText('updated.md')).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
 	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
 	await expect(page).toHaveURL(/#\/home$/);
