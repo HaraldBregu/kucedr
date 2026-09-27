@@ -11,6 +11,7 @@ import { persist } from '../../../../../src/main/agent/session/session_persist';
 import { runFilePath } from '../../../../../src/main/agent/session/session_run_file_path';
 import { sessionsRoot } from '../../../../../src/main/agent/session/session_sessions_root';
 import { insertUserMessage } from '../../../../../src/main/agent/session/session_insert_user_message';
+import { deleteSession } from '../../../../../src/main/agent/session/session_delete_session';
 import { updateUserMessageBySessionId } from '../../../../../src/main/agent/session/session_update_user_message_by_session_id';
 
 const SESSION_ID = '11111111-1111-4111-8111-111111111111';
@@ -24,6 +25,24 @@ describe('session persistence', () => {
 
 	afterEach(() => {
 		fs.rmSync(temporaryRoot, { recursive: true, force: true });
+	});
+
+	it('deletes only the session folder matching the selected id', () => {
+		const location = path.join(temporaryRoot, 'workspace');
+		const otherId = '22222222-2222-4222-8222-222222222222';
+		for (const id of [SESSION_ID, otherId]) {
+			const state = createSessionState();
+			state.id = id;
+			state.folderName = id;
+			state.sessionsPath = sessionsRoot(location);
+			state.messages = [{ role: 'user', content: id }];
+			persist(state);
+		}
+
+		deleteSession(createSessionState(), { location } as Parameters<typeof deleteSession>[1], SESSION_ID);
+
+		expect(fs.existsSync(path.join(sessionsRoot(location), SESSION_ID))).toBe(false);
+		expect(fs.existsSync(path.join(sessionsRoot(location), otherId))).toBe(true);
 	});
 
 	it('keeps the target intact and removes the temporary file when rename fails', () => {
