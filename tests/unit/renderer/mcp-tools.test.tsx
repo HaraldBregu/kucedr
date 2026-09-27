@@ -44,10 +44,10 @@ beforeEach(() => {
 		toolCount: 2,
 		durationMs: 1,
 	});
-	Object.defineProperty(window, 'mcp', { configurable: true, value: { registry, test: inspect } });
+	Object.defineProperty(window, 'mcp', { configurable: true, value: { registry, catalog: inspect } });
 });
 
-it('reads only server metadata on mount and inspects only the selected server', async () => {
+it('reads cached tools only for the selected server', async () => {
 	render(<Mcp {...mcpProps} />);
 	const show = await screen.findByRole('button', { name: `${prefix}.show: Mail` });
 	expect(registry).toHaveBeenCalledTimes(1);
@@ -88,6 +88,13 @@ it('shows inspection errors and allows retry', async () => {
 	await userEvent.click(show);
 	expect(await screen.findByText('read_mail')).toBeInTheDocument();
 	expect(screen.queryByText('Server offline')).not.toBeInTheDocument();
+});
+
+it('directs users to Test when the catalog has not been saved', async () => {
+	inspect.mockResolvedValueOnce(undefined);
+	render(<Mcp {...mcpProps} />);
+	await userEvent.click(await screen.findByRole('button', { name: `${prefix}.show: Mail` }));
+	expect(await screen.findByText(`${prefix}.noCatalog`)).toBeInTheDocument();
 });
 
 it('shows metadata loading errors without inspecting servers', async () => {
