@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { LayoutGrid, MoreVertical, Plus } from 'lucide-react';
+import { LayoutGrid, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
