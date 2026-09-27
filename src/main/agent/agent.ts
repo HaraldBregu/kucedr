@@ -616,7 +616,7 @@ function toHistoryMessages(message: Message): AgentHistoryMessage[] {
 			},
 		];
 		for (const toolCall of message.toolCalls ?? []) {
-			if (toolCall.name === 'discover_tools') continue;
+			if (toolCall.name === 'tool_search') continue;
 			if (!toolCall.result) continue;
 			const output = toTextContent(toolCall.result.content);
 			const isError = toolCall.result.isError ?? output.startsWith('Error:');
@@ -672,7 +672,7 @@ function toHistoryContentBlocks(message: Message): AgentHistoryContentBlock[] {
 		: [];
 
 	for (const toolCall of message.toolCalls ?? []) {
-		if (toolCall.name === 'discover_tools') continue;
+		if (toolCall.name === 'tool_search') continue;
 		blocks.push({
 			type: 'tool_use',
 			toolUseId: toolCall.id,

@@ -304,7 +304,7 @@ async function* loop(
 			search = createToolSearch({
 				eligible: filterEligibleTools(tools),
 				required: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
-				searchEnabled,
+				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
 				filterEligible: filterEligibleTools,
 			});
