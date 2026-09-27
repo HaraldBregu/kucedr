@@ -60,12 +60,14 @@ export const coding: CodingApi = {
 	},
 	readMarkdownFile: (projectId, fileName) => {
 		const id = typeof projectId === 'string' ? projectId.trim() : '';
-		if (!id || !isCodingMarkdownFileName(fileName)) throw new Error('Invalid coding Markdown file.');
+		if (!id || !isCodingMarkdownFileName(fileName))
+			throw new Error('Invalid coding Markdown file.');
 		return typedInvokeUnwrap(CodingChannels.readMarkdownFile, id, fileName);
 	},
 	createMarkdownFile: (projectId, fileName) => {
 		const id = typeof projectId === 'string' ? projectId.trim() : '';
-		if (!id || !isCodingMarkdownFileName(fileName)) throw new Error('Invalid coding Markdown file.');
+		if (!id || !isCodingMarkdownFileName(fileName))
+			throw new Error('Invalid coding Markdown file.');
 		return typedInvokeUnwrap(CodingChannels.createMarkdownFile, id, fileName);
 	},
 	saveMarkdownFile: (projectId, filePath, content, expectedContent) => {

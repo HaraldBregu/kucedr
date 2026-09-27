@@ -295,7 +295,13 @@ export function isCodingProjectFilePath(value: unknown): value is string {
 }
 
 export function isCodingMarkdownFileName(value: unknown): value is string {
-	return typeof value === 'string' && value.trim() === value && value.length > 3 &&
-		value.toLowerCase().endsWith('.md') && !value.includes('/') && !value.includes('\\') &&
-		!value.includes('\0');
+	return (
+		typeof value === 'string' &&
+		value.trim() === value &&
+		value.length > 3 &&
+		value.toLowerCase().endsWith('.md') &&
+		!value.includes('/') &&
+		!value.includes('\\') &&
+		!value.includes('\0')
+	);
 }

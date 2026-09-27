@@ -44,7 +44,10 @@ it('stores only Coder-created Markdown under separate project workspaces', async
 		await expect(saveMarkdownFile(project, '../outside.md', 'bad', 'outside')).rejects.toThrow(
 			'Invalid coding Markdown'
 		);
-		await symlink(path.join(directory, 'outside.md'), path.join(markdownLocation(project), 'linked.md'));
+		await symlink(
+			path.join(directory, 'outside.md'),
+			path.join(markdownLocation(project), 'linked.md')
+		);
 		await expect(saveMarkdownFile(project, 'linked.md', 'bad', 'outside')).rejects.toThrow(
 			'regular'
 		);
