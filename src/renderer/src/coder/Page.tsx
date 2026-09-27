@@ -158,8 +158,7 @@ export function CoderPage() {
 				project &&
 				!coding.busy &&
 				!coding.loading &&
-				!instructionsDirtyRef.current &&
-				!markdownDirtyRef.current
+				!instructionsDirtyRef.current
 			) {
 				event.preventDefault();
 				void navigate('/');
