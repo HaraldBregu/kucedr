@@ -178,6 +178,10 @@ describe('app renderer', () => {
 		const harness = createHarness();
 
 		render(harness.windowFactory, '/app/index.html', 'Workspace', 'workspace');
+		expect(harness.create).toHaveBeenCalledWith(
+			expect.any(Object),
+			{ html: 'workspace.html', hash: 'app/Workspace' }
+		);
 		harness.handlers.get('resize')?.();
 		expect(persistWorkspaceWindowSize).not.toHaveBeenCalled();
 
