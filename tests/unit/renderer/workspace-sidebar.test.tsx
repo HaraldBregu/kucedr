@@ -84,9 +84,10 @@ it('creates, renames, and deletes a file through the right click menu', async ()
 
 	fireEvent.contextMenu(await screen.findByRole('button', { name: 'draft.md' }));
 	const name = await screen.findByRole('textbox', { name: 'Name' });
+	expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	await user.clear(name);
 	await user.type(name, 'final.md');
-	await user.click(screen.getByRole('button', { name: 'Rename' }));
+	await user.keyboard('{Enter}');
 	await waitFor(() => expect(renameWorkspaceEntry).toHaveBeenCalledWith('draft.md', 'final.md'));
 	expect(onEntryRenamed).toHaveBeenCalledWith('draft.md', 'final.md');
 
@@ -95,6 +96,22 @@ it('creates, renames, and deletes a file through the right click menu', async ()
 	await waitFor(() => expect(deleteWorkspaceFile).toHaveBeenCalledWith('final.md'));
 	expect(onEntryDeleted).toHaveBeenCalledWith('final.md');
 	await screen.findByText('Workspace is empty.');
+});
+
+it('cancels an inline folder rename with Escape', async () => {
+	const user = userEvent.setup();
+	listWorkspaceFiles.mockResolvedValue([{ type: 'directory', name: 'Notes', path: 'Notes', children: [] }]);
+	showContextMenu.mockResolvedValue('rename');
+	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
+	const folder = await screen.findByText('Notes');
+	fireEvent.contextMenu(folder.closest('summary') as HTMLElement);
+	const name = await screen.findByRole('textbox', { name: 'Name' });
+	await user.clear(name);
+	await user.type(name, 'Journal');
+	await user.keyboard('{Escape}');
+	expect(screen.queryByRole('textbox', { name: 'Name' })).not.toBeInTheDocument();
+	expect(screen.getByText('Notes')).toBeInTheDocument();
+	expect(renameWorkspaceEntry).not.toHaveBeenCalled();
 });
 
 it('creates inside and deletes a folder from its right click menu', async () => {
