@@ -36,7 +36,6 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 	for (const [id, data] of enabledServers) {
 		const listed = getMcpToolCatalog(id);
 		if (!listed) continue;
-		diagnostics.listedTools += listed.length;
 		for (const [index, listedTool] of listed.entries()) {
 			if (tools.length >= MCP_MAX_TOOLS) {
 				diagnostics.truncated = true;
