@@ -6,7 +6,7 @@ import { workspaceFileType } from '@shared/workspace';
 import { useIsDark } from '@/hooks/use-is-dark';
 
 const CodeMirrorEditor = lazy(async () => {
-	const module = await import('../../../../../resources/apps/workspace/src/components/code-mirror-editor');
+	const module = await import('./Editor');
 	return { default: module.CodeMirrorEditor };
 });
 

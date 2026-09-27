@@ -37,9 +37,8 @@ import {
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
 import { tags } from '@lezer/highlight';
 
-import { showNativeContextMenu } from '../lib/menu';
-import { languageForPath } from '../lib/language';
-import { cn } from '../lib/utils';
+import { cn } from '@/lib/utils';
+import { languageForPath } from './Language';
 
 export interface CodeMirrorEditorHandle {
 	focus: () => void;
@@ -439,8 +438,9 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 				className={cn('min-h-[360px]', className)}
 				onContextMenu={(event) => {
 					viewRef.current?.focus();
-					showNativeContextMenu(
-						event,
+					event.preventDefault();
+					event.stopPropagation();
+					void window.win.showContextMenu(
 						readOnly
 							? [
 									{ type: 'role', role: 'copy' },
@@ -465,8 +465,9 @@ export const CodeMirrorEditor = forwardRef<CodeMirrorEditorHandle, CodeMirrorEdi
 										enabled: canSave,
 									},
 								],
-						{ save: () => void onSaveRef.current?.() }
-					);
+					).then((action) => {
+						if (action === 'save') void onSaveRef.current?.();
+					});
 				}}
 			/>
 		);
