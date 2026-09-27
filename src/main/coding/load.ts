@@ -7,7 +7,10 @@ import { markdownLocation } from './context_location';
 
 export async function readMarkdownFile(project: CodingProject, fileName: string): Promise<string> {
 	if (!isCodingMarkdownFileName(fileName)) throw new Error('Invalid coding Markdown file.');
-	const file = await open(path.join(markdownLocation(project), fileName), constants.O_RDONLY | constants.O_NOFOLLOW);
+	const file = await open(
+		path.join(markdownLocation(project), fileName),
+		constants.O_RDONLY | constants.O_NOFOLLOW
+	);
 	try {
 		const stats = await file.stat();
 		if (!stats.isFile()) throw new Error('Only regular Markdown files can be opened.');
