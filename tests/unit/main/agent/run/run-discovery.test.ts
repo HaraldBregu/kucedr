@@ -92,4 +92,30 @@ describe('tool search', () => {
 		search.replaceEligible([]);
 		expect(search.active().map((tool) => tool.id)).toEqual(['tool_search']);
 	});
+
+	it('refreshes active definitions and MCP metadata after a catalog change', async () => {
+		const first = fakeTool('mcp__billing__invoices', 'Find invoices', {}, {
+			kind: 'mcp', serverId: 'billing', toolName: 'invoices',
+		});
+		const changed = fakeTool('mcp__billing__invoices', 'Find current invoices', {}, {
+			kind: 'mcp', serverId: 'billing', toolName: 'invoices',
+		});
+		const search = createToolSearch({ eligible: [first], required: [first] });
+		search.replaceEligible([changed]);
+		search.replaceMcpEntries([{ tool: changed, serverId: 'billing', serverName: 'Billing' }]);
+		expect(search.active()[0]).toBe(changed);
+	});
+
+	it('keeps canonical IDs unique when an MCP namespace overlaps a native namespace', async () => {
+		const read = fakeTool('read', 'Read file contents');
+		const remote = fakeTool('mcp__files__read', 'Read remote file contents', {}, {
+			kind: 'mcp', serverId: 'files', toolName: 'read',
+		});
+		const search = createToolSearch({ eligible: [read, remote], required: [] });
+		const result = await search.tool.run({ query: 'read file', limit: 8 }) as {
+			selectedCanonicalIds: string[];
+		};
+		expect(result.selectedCanonicalIds).toHaveLength(2);
+		expect(new Set(result.selectedCanonicalIds).size).toBe(2);
+	});
 });
