@@ -1,9 +1,11 @@
 import { open } from 'node:fs/promises';
 import path from 'node:path';
 import type { CodingProject } from '../../shared/coding_types';
+import { isCodingMarkdownFileName } from '../../shared/coding_types';
 import { markdownLocation } from './context_location';
 
 export async function readMarkdownFile(project: CodingProject, fileName: string): Promise<string> {
+	if (!isCodingMarkdownFileName(fileName)) throw new Error('Invalid coding Markdown file.');
 	const file = await open(path.join(markdownLocation(project), fileName), 'r');
 	try {
 		const stats = await file.stat();
