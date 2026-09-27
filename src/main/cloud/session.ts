@@ -36,10 +36,7 @@ export class AuthSessionStorage implements AuthStorage {
 	getItem(key: string): string | null {
 		const memoryValue = this.memory.get(key);
 		if (memoryValue !== undefined) return memoryValue;
-		if (!this.secureStorageAvailable()) {
-			this.memoryOnly = true;
-			return null;
-		}
+		if (!this.secureStorageAvailable()) return null;
 		const encrypted = this.store.get('values')[key];
 		if (!encrypted) return null;
 		try {

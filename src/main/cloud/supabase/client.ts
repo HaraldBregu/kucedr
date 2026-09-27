@@ -7,7 +7,6 @@ export function createSupabaseClient(config: CloudConfig, storage: AuthStorage):
 		auth: {
 			autoRefreshToken: true,
 			persistSession: true,
-			skipAutoInitialize: true,
 			storage,
 			detectSessionInUrl: false,
 			flowType: 'pkce',

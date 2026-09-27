@@ -40,6 +40,20 @@ it('keeps the session memory-only when OS encryption is unavailable', () => {
 	expect(new AuthSessionStorage(store).getItem('auth-token')).toBeNull();
 });
 
+it('restores persisted sessions once Electron encryption becomes available', () => {
+	const store = new Store<{ values: Record<string, string> }>({ defaults: { values: {} } });
+	const session = 'saved-session';
+	new AuthSessionStorage(store).setItem('auth-token', session);
+	const storage = new AuthSessionStorage(store);
+	encryptionAvailable.mockReturnValue(false);
+
+	expect(storage.getItem('auth-token')).toBeNull();
+	expect(storage.persistence).toBe('memory');
+	encryptionAvailable.mockReturnValue(true);
+	expect(storage.getItem('auth-token')).toBe(session);
+	expect(storage.persistence).toBe('encrypted');
+});
+
 it('removes persisted sessions on sign-out', () => {
 	const store = new Store<{ values: Record<string, string> }>({ defaults: { values: {} } });
 	const storage = new AuthSessionStorage(store);
