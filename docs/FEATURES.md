@@ -295,11 +295,11 @@ The folder name is used as the ID when `id` is omitted. IDs use lowercase letter
 
 A dependency-free package with three sample tools is available at `resources/mcp/demo-server` and can be selected directly with **Upload local**.
 
-At the start of each normal agent run, enabled servers connect in parallel and list their tools for deterministic search. Selected tool schemas become available to the model after it calls `tool_search`. Servers close when the run ends. Unreachable or unauthenticated servers are skipped for that run.
+When an MCP server is authenticated or tested, Kucedr saves its complete tool catalog locally. Existing enabled servers without a saved catalog are listed once in the background after upgrade. Agent runs search these saved definitions without connecting to servers or calling `tools/list`; a selected tool connects to its server when executed. Use **Test** in MCP settings to refresh a catalog after the server changes its tools.
 
 Current limits:
 
-- A stored `require_approval` field is enforced: it sets a loaded MCP tool's default permission to allow or ask. Agent runs connect to enabled MCP servers and list their tools before the first model turn. The stored `defer_loading` field remains for compatibility and does not delay listing during agent runs.
+- A stored `require_approval` field is enforced: it sets an MCP tool's default permission to allow or ask. The stored `defer_loading` field remains for compatibility; agent runs use the saved catalog regardless of its value.
 - Dynamically loaded MCP tools are not included in the built-in gated-tool list; only their own `require_approval`-derived default applies.
 
 ### Scheduled tasks
