@@ -52,12 +52,6 @@ export function WorkspaceMarkdownEditor({
 		},
 	});
 
-	useEffect(() => {
-		if (editor && !editor.isDestroyed && editor.getMarkdown() !== value) {
-			editor.commands.setContent(value, { contentType: 'markdown', emitUpdate: false });
-		}
-	}, [editor, value]);
-
 	return (
 		<EditorContent
 			editor={editor}
