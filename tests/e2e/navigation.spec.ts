@@ -118,6 +118,9 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
 	await actions.nth(1).click();
 	await expect(page).toHaveURL(/#\/workspace$/);
+	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
+	await expect(workspaceSidebar.locator('[data-slot="sidebar-footer"]')).toBeVisible();
+	await expect(workspaceSidebar.getByRole('button', { name: /account menu/i })).toBeVisible();
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await expect(workspace.getByText('Notes')).toBeVisible();
 	await workspace.getByText('Notes').click();
