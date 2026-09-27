@@ -116,6 +116,22 @@ test('the main navigation switches between Chat and a blank Workspace view', asy
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toBeVisible();
 });
 
+test('the Workspace item below New Chat opens the blank view', async () => {
+	await page.evaluate(() => {
+		window.location.hash = '#/home';
+	});
+	const sidebar = page.locator('[data-slot="home-sidebar"]');
+	const actions = sidebar.locator('header [data-sidebar="menu-button"]');
+	await expect(actions).toHaveCount(2);
+	await expect(actions.nth(0)).toContainText('New Chat');
+	await expect(actions.nth(1)).toContainText('Workspace');
+	await expect(page.getByRole('button', { name: 'Open Coder' })).toHaveCount(0);
+	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
+	await actions.nth(1).click();
+	await expect(page).toHaveURL(/#\/workspace$/);
+	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
+});
+
 test('the settings home redirects to General settings', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/settings';

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { CircleHelp, Layers, LogOut, MoreVertical, Plus, RadioTower, Server, Settings, UserRound } from 'lucide-react';
+import { CircleHelp, Folder, Layers, LogOut, MoreVertical, Plus, RadioTower, Server, Settings, UserRound } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -30,6 +30,7 @@ interface HomeSidebarProps {
 
 export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { state: authState } = useAuth();
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
@@ -148,6 +149,16 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 							<kbd className="ml-auto shrink-0 font-mono text-[10px] text-muted-foreground opacity-0 group-hover/menu-item:opacity-100 group-focus-within/menu-item:opacity-100">
 								{navigator.platform.startsWith('Mac') ? '⌘ + N' : 'Ctrl + N'}
 							</kbd>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton
+							type="button"
+							className="px-2.5 text-sm"
+							onClick={() => navigate('/workspace')}
+						>
+							<Folder className="size-4 shrink-0" />
+							<span className="truncate">{t('navigationBar.workspace', 'Workspace')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
