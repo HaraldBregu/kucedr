@@ -42,9 +42,9 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 		failures: [],
 	};
 	const enabledServers = servers.filter(([, data]) => data.enabled !== false);
-	const eagerServers = enabledServers.filter(([, data]) => data.defer_loading !== true);
+	const eagerServers = enabledServers.filter(([, data]) => data.defer_loading === false);
 	const deferredServers = enabledServers
-		.filter(([, data]) => data.defer_loading === true)
+		.filter(([, data]) => data.defer_loading !== false)
 		.map(([id, data]) => ({ id, name: data.name?.trim() || id }));
 	const serverData = new Map(enabledServers);
 	const loadedServerIds = new Set<string>();
@@ -162,7 +162,7 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 				const selected = [...new Set(serverIds)].flatMap((id) => {
 					if (loadedServerIds.has(id) || failedServerIds.has(id)) return [];
 					const data = serverData.get(id);
-					return data?.defer_loading === true
+					return data?.defer_loading !== false
 						? [[id, data] as (typeof enabledServers)[number]]
 						: [];
 				});
