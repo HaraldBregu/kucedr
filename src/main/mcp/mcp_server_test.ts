@@ -3,7 +3,9 @@ import { close } from './mcp_client_close';
 import { connect } from './mcp_client_connect';
 import { listTools } from './mcp_client_list_tools';
 import { getMcpServers } from './mcp_store';
+import { saveMcpToolCatalog } from './mcp_catalog_save';
 import type { McpClient } from './mcp_types';
+import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 
 export async function testMcpServer(id: string): Promise<McpTestResult> {
 	const started = Date.now();
@@ -14,8 +16,18 @@ export async function testMcpServer(id: string): Promise<McpTestResult> {
 	let client: McpClient | undefined;
 	try {
 		client = await connect(id, data, 15_000);
-		const result = await listTools(client, 15_000);
-		const toolDetails = result.tools
+		const tools: Tool[] = [];
+		const cursors = new Set<string>();
+		let cursor: string | undefined;
+		do {
+			const result = await listTools(client, 15_000, undefined, cursor);
+			tools.push(...result.tools);
+			cursor = result.nextCursor;
+			if (cursor && cursors.has(cursor)) throw new Error('MCP tool catalog repeated a page cursor.');
+			if (cursor) cursors.add(cursor);
+		} while (cursor);
+		saveMcpToolCatalog(id, tools);
+		const toolDetails = tools
 			.map((tool) => ({ name: tool.name, description: tool.description }))
 			.sort((a, b) => a.name.localeCompare(b.name));
 		return {

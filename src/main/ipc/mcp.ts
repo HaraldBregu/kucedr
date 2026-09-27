@@ -11,6 +11,7 @@ import {
 	deleteMcpServer,
 	getMcpOauth,
 	getMcpServers,
+	getMcpToolCatalog,
 	importLocalMcpServers,
 	listConfiguredMcpServers,
 	listMcpRegistry,
@@ -227,6 +228,22 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 			return testMcpServer(connectorId);
 		});
 
+		registerQueryWithEvent(McpChannels.catalog, (event, id: string) => {
+			trusted.assert(event);
+			const tools = getMcpToolCatalog(resolveMcpId(id));
+			if (!tools) return undefined;
+			const toolDetails = tools
+				.map((tool) => ({ name: tool.name, description: tool.description }))
+				.sort((a, b) => a.name.localeCompare(b.name));
+			return {
+				ok: true,
+				tools: toolDetails.map((tool) => tool.name),
+				toolDetails,
+				toolCount: tools.length,
+				durationMs: 0,
+			};
+		});
+
 		registerQueryWithEvent(McpChannels.oauthStatus, (event, id: string) => {
 			trusted.assert(event);
 			return Boolean(getMcpOauth(resolveMcpId(id)).tokens?.access_token);
@@ -259,13 +276,19 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 					});
 					if (google) await provider.invalidateCredentials?.('tokens');
 					const result = await auth(provider, { serverUrl: server.url });
-					if (result === 'AUTHORIZED') return { status: 'authorized' };
+					if (result === 'AUTHORIZED') {
+						const listed = await testMcpServer(server.id);
+						if (!listed.ok) throw new Error(listed.error ?? 'Failed to list MCP tools.');
+						return { status: 'authorized' };
+					}
 					if (!authorizationUrl)
 						throw new Error(`MCP server "${id}" did not return an authorization URL.`);
 					await shell.openExternal(authorizationUrl);
 					const code = await callback.code;
 					const finish = await auth(provider, { serverUrl: server.url, authorizationCode: code });
 					if (finish !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);
+					const listed = await testMcpServer(server.id);
+					if (!listed.ok) throw new Error(listed.error ?? 'Failed to list MCP tools.');
 					const window = BrowserWindow.fromWebContents(event.sender);
 					if (window) {
 						if (window.isMinimized()) window.restore();
