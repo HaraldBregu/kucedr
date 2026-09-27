@@ -8,7 +8,7 @@ import { mcpOutputText } from './output';
 import { mcpInputParser } from './schema';
 
 export function mcpTool(
-	client: McpClient,
+	client: McpClient | (() => Promise<McpClient>),
 	toolName: string,
 	description: string,
 	schema: JSONSchema,
@@ -32,8 +32,9 @@ export function mcpTool(
 		parseInput,
 		schema,
 		execute: async (input, signal) => {
+			const connected = typeof client === 'function' ? await client() : client;
 			const result = (await callTool(
-				client,
+				connected,
 				toolName,
 				input,
 				MCP_TOOL_TIMEOUT_MS,
