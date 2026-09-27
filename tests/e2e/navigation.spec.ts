@@ -126,6 +126,9 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(workspace.getByText('Notes')).toBeVisible();
 	await workspace.getByText('Notes').click();
 	await workspace.getByRole('button', { name: 'plan.md' }).click();
+	await expect(page.getByRole('heading', { name: 'Plan' })).toBeVisible();
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCount(0);
+	await page.getByText('Source', { exact: true }).click();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan');
 	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute('aria-current', 'page');
 	await workspace.getByRole('button', { name: 'config.json' }).click();
