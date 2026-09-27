@@ -220,7 +220,7 @@ describe('session persistence', () => {
 			sessionId: SESSION_ID,
 			model: 'model',
 			providerId: 'provider',
-			tools: ['read'],
+			tools: ['read', 'mcp__resend__send_email'],
 			mcpDiscovery: diagnostics,
 		});
 		diagnostics.connectedServers = 1;
@@ -229,11 +229,12 @@ describe('session persistence', () => {
 		appendRun(state, { type: 'run_finished', result: { sessionId: SESSION_ID, text: '' } });
 
 		const trace = fs.readFileSync(runFilePath(state), 'utf8');
+		expect(trace).toContain('"localToolCount":1,"mcpToolCount":1');
 		expect(trace).toContain(
 			'"mcpDiscovery":{"phase":"initial","configuredServers":1,"enabledServers":1,"connectedServers":0'
 		);
 		expect(trace).toContain(
-			'"type":"mcp_discovery_result","mcpDiscovery":{"phase":"final","configuredServers":1,"enabledServers":1,"connectedServers":1,"listedTools":3,"loadedTools":2'
+			'"type":"mcp_discovery_result","mcpDiscovery":{"phase":"final","configuredServers":1,"enabledServers":1,"connectedServers":1,"listedMcpTools":3,"catalogedMcpTools":2'
 		);
 		expect(trace).toContain('"serverId":"resend","phase":"connect"');
 	});

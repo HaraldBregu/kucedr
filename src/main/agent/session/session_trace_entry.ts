@@ -10,6 +10,9 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 		return undefined;
 	}
 	if (event.type === 'run_started') {
+		const activeTools = Array.isArray(event.tools)
+			? event.tools.filter((id): id is string => typeof id === 'string')
+			: [];
 		const mcp =
 			event.mcpDiscovery &&
 			typeof event.mcpDiscovery === 'object' &&
@@ -24,7 +27,8 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 			...(typeof event.interactionMode === 'string'
 				? { interactionMode: event.interactionMode }
 				: {}),
-			toolCount: Array.isArray(event.tools) ? event.tools.length : 0,
+			localToolCount: activeTools.filter((id) => !id.startsWith('mcp__')).length,
+			mcpToolCount: activeTools.filter((id) => id.startsWith('mcp__')).length,
 			skillDiagnosticCount: Array.isArray(event.skillDiagnostics)
 				? event.skillDiagnostics.length
 				: 0,
@@ -46,8 +50,8 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 							configuredServers: Number(mcp.configuredServers) || 0,
 							enabledServers: Number(mcp.enabledServers) || 0,
 							connectedServers: Number(mcp.connectedServers) || 0,
-							listedTools: Number(mcp.listedTools) || 0,
-							loadedTools: Number(mcp.loadedTools) || 0,
+							listedMcpTools: Number(mcp.listedTools) || 0,
+							catalogedMcpTools: Number(mcp.loadedTools) || 0,
 							rejectedTools: Number(mcp.rejectedTools) || 0,
 							truncated: mcp.truncated === true,
 							failures: Array.isArray(mcp.failures)
@@ -79,8 +83,8 @@ export function semanticRunEntry(entry: unknown): Record<string, unknown> | unde
 				configuredServers: Number(mcp.configuredServers) || 0,
 				enabledServers: Number(mcp.enabledServers) || 0,
 				connectedServers: Number(mcp.connectedServers) || 0,
-				listedTools: Number(mcp.listedTools) || 0,
-				loadedTools: Number(mcp.loadedTools) || 0,
+				listedMcpTools: Number(mcp.listedTools) || 0,
+				catalogedMcpTools: Number(mcp.loadedTools) || 0,
 				rejectedTools: Number(mcp.rejectedTools) || 0,
 				truncated: mcp.truncated === true,
 				failures: Array.isArray(mcp.failures)
