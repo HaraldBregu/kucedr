@@ -2180,6 +2180,7 @@
 		"namePrompt": "Enter a name for the item.",
 		"name": "Name",
 		"create": "Create",
+		"actionError": "Unable to change Workspace files.",
 		"unsupported": "This file cannot be previewed."
 	},
 	"documents": {

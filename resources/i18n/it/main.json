@@ -2180,6 +2180,7 @@
 		"namePrompt": "Inserisci un nome per l'elemento.",
 		"name": "Nome",
 		"create": "Crea",
+		"actionError": "Impossibile modificare i file dello spazio di lavoro.",
 		"unsupported": "Impossibile visualizzare l'anteprima di questo file."
 	},
 	"documents": {
