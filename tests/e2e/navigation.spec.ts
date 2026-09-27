@@ -96,7 +96,7 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the Workspace item below New Chat opens the blank view', async () => {
+test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
