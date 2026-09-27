@@ -49,8 +49,7 @@ import { createBackgroundBrowser } from '../tools/web/browser/background';
 import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
-import { createToolDiscovery, type ToolDiscovery } from './run_discovery';
-import { recoverToolCalls } from './recover';
+import { createToolSearch, type ToolSearch } from './run_discovery';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -168,10 +167,10 @@ async function* loop(
 		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
 		!input.toolsDeny?.includes('list_skills') &&
 		profileToolEnabled('list_skills');
-	const discoveryEnabled =
-		(input.toolsAllow === undefined || input.toolsAllow.includes('discover_tools')) &&
-		!input.toolsDeny?.includes('discover_tools') &&
-		profileToolEnabled('discover_tools');
+	const searchEnabled =
+		(input.toolsAllow === undefined || input.toolsAllow.includes('tool_search')) &&
+		!input.toolsDeny?.includes('tool_search') &&
+		profileToolEnabled('tool_search');
 	const skillSnapshot =
 		skillLoadingEnabled || skillListingEnabled
 			? createSkillRegistrySnapshot({ projectRoot: config.location })
@@ -223,7 +222,7 @@ async function* loop(
 		for (const allowedTools of skillToolScopes) filtered = selectSkillTools(filtered, allowedTools);
 		return filtered;
 	};
-	let discovery: ToolDiscovery | undefined;
+	let search: ToolSearch | undefined;
 	const applyActivatedSkill = (skill: SkillLoadResult): void => {
 		skillToolScopes.push(skill.allowedTools);
 		rememberSkill(session.runContext, {
@@ -237,7 +236,7 @@ async function* loop(
 			warnings: skill.warnings,
 		});
 		tools = filterEligibleTools(tools);
-		discovery?.replaceEligible(tools);
+		search?.replaceEligible(filterEligibleTools(tools));
 	};
 	if (!options.tools && skillListingEnabled) tools.push(listSkillsTool(skillSnapshot));
 	if (!options.tools && skillLoadingEnabled) {
@@ -246,7 +245,9 @@ async function* loop(
 	}
 
 	let closeMcp: (() => Promise<void>) | undefined;
+	let unsubscribeMcp: (() => void) | undefined;
 	let mcpDiscovery: McpDiscoveryDiagnostics | undefined;
+	let mcpEntries: import('./run_discovery').DiscoveredMcpTool[] = [];
 	try {
 		if (!options.tools) {
 			if (
@@ -256,30 +257,13 @@ async function* loop(
 			) {
 				const mcp = await loadMcpTools(signal);
 				tools.push(...mcp.tools);
+				mcpEntries = mcp.entries;
 				closeMcp = mcp.close;
 				mcpDiscovery = mcp.diagnostics;
-				const requiredIds = new Set([
-					...(skillListingEnabled ? ['list_skills'] : []),
-					...(skillLoadingEnabled ? ['load_skill'] : []),
-					'get_goal',
-					'update_goal_plan',
-					'record_goal_evidence',
-					'request_goal_completion',
-					'report_goal_blocker',
-				]);
-				const eligible = filterEligibleTools(tools);
-				discovery = createToolDiscovery({
-					eligible,
-					required: eligible.filter((tool) => requiredIds.has(tool.id)),
-					discoveryEnabled,
-					mcpTools: mcp.entries,
-					deferredMcpServers: mcp.deferredServers,
-					loadMcpServers: async (serverIds, discoverySignal) => {
-						const loaded = await mcp.loadDeferred(serverIds, discoverySignal);
-						tools.push(...loaded.map((entry) => entry.tool));
-						return loaded;
-					},
-					filterEligible: filterEligibleTools,
+				unsubscribeMcp = mcp.onChanged((entries) => {
+					mcpEntries = entries;
+					tools = [...tools.filter((tool) => tool.policy?.kind !== 'mcp'), ...entries.map((entry) => entry.tool)];
+					search?.replaceEligible(filterEligibleTools(tools));
 				});
 			}
 			const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
@@ -305,9 +289,9 @@ async function* loop(
 		}
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
-		discovery?.replaceEligible(tools);
-		if (!discovery && (!options.tools || options.progressiveDiscovery === true)) {
+		if (!options.tools || options.progressiveDiscovery === true) {
 			const requiredIds = new Set([
+				'read', 'write', 'edit', 'patch', 'undo', 'redo',
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
@@ -317,10 +301,11 @@ async function* loop(
 				'request_goal_completion',
 				'report_goal_blocker',
 			]);
-			discovery = createToolDiscovery({
-				eligible: tools,
-				required: tools.filter((tool) => requiredIds.has(tool.id)),
-				discoveryEnabled,
+			search = createToolSearch({
+				eligible: filterEligibleTools(tools),
+				required: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
+				searchEnabled,
+				mcpTools: mcpEntries,
 				filterEligible: filterEligibleTools,
 			});
 		}
@@ -329,9 +314,8 @@ async function* loop(
 		if (input.explicitSkill) {
 			const skill = await activateSkill(skillSnapshot, input.explicitSkill);
 			applyActivatedSkill(skill);
-			discovery?.activateImmediate(skill.allowedTools ?? []);
+			search?.activateImmediate(skill.allowedTools ?? []);
 		}
-		await discovery?.preselect(input.message, signal);
 
 		yield {
 			type: 'run_started',
@@ -339,7 +323,7 @@ async function* loop(
 			interactionMode: input.interactionMode,
 			model: modelId,
 			providerId: provider.id,
-			tools: (discovery?.active() ?? tools).map((tool) => tool.id),
+			tools: (search?.active() ?? tools).map((tool) => tool.id),
 			skillDiagnostics: skillSnapshot.diagnostics,
 			skillActivations: session.runContext.loadedSkills.map((skill) => ({
 				id: skill.id,
@@ -354,7 +338,7 @@ async function* loop(
 		while (true) {
 			if (signal.aborted) return;
 			const synthesisOnly = finalization !== undefined || budget.isSynthesisOnly();
-			const turnTools = synthesisOnly ? [] : (discovery?.active() ?? tools);
+			const turnTools = synthesisOnly ? [] : (search?.active() ?? tools);
 			const systemPrompt = await buildSystemPrompt(
 				config,
 				turnTools,
@@ -471,20 +455,6 @@ async function* loop(
 				outputTokens: turn.usage?.outputTokens ?? 0,
 			});
 			const pendingToolCalls = turn.toolCalls;
-			const activation = discovery?.activateInactive(
-				pendingToolCalls.map((call) => call.name)
-			);
-			if (activation && activation.tools.length > 0) {
-				yield { type: 'capability_resolution_start' };
-				yield* recoverToolCalls(pendingToolCalls, activation.tools);
-				yield {
-					type: 'capability_resolution_result',
-					tools: activation.tools.map((tool) => ({ id: tool.id, name: tool.name })),
-					serviceIds: activation.serviceIds,
-				};
-				addToolResults(session, pendingToolCalls);
-				continue;
-			}
 			const budgetExceeded = budget.wouldExceed(
 				pendingToolCalls.map((call) => ({
 					tool: turnTools.find((tool) => tool.id === call.name),
@@ -511,7 +481,7 @@ async function* loop(
 				continue;
 			}
 
-			if (pendingToolCalls.some((call) => call.name === 'discover_tools')) {
+			if (pendingToolCalls.some((call) => call.name === 'tool_search')) {
 				yield { type: 'capability_resolution_start' };
 			}
 			for await (const event of runToolCalls(
@@ -532,12 +502,12 @@ async function* loop(
 			)) {
 				yield event;
 			}
-			if (pendingToolCalls.some((call) => call.name === 'discover_tools')) {
+			if (pendingToolCalls.some((call) => call.name === 'tool_search')) {
 				const serviceIds = new Set<string>();
 				let discoveryLatencyMs: number | undefined;
 				const selectedIds = new Set(
 					pendingToolCalls.flatMap((call) => {
-						if (call.name !== 'discover_tools' || typeof call.result?.content !== 'string')
+						if (call.name !== 'tool_search' || typeof call.result?.content !== 'string')
 							return [];
 						try {
 							const parsed = JSON.parse(call.result.content) as {
@@ -562,7 +532,7 @@ async function* loop(
 					type: 'capability_resolution_result',
 					serviceIds: [...serviceIds],
 					...(discoveryLatencyMs === undefined ? {} : { latencyMs: discoveryLatencyMs }),
-					tools: (discovery?.active() ?? tools)
+					tools: (search?.active() ?? tools)
 						.filter((tool) => selectedIds.has(tool.id))
 						.map((tool) => ({ id: tool.id, name: tool.name })),
 				};
@@ -587,6 +557,7 @@ async function* loop(
 			}
 		}
 	} finally {
+		unsubscribeMcp?.();
 		await closeMcp?.();
 	}
 }
