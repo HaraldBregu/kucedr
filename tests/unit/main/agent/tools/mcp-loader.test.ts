@@ -2,6 +2,14 @@ const connectMock = jest.fn();
 const listToolsMock = jest.fn();
 const closeMock = jest.fn();
 const getMcpServersMock = jest.fn();
+const notificationHandlers = new Map<string, () => Promise<void>>();
+const mockClient = (id = 'safe') => ({
+	id,
+	setNotificationHandler: (_schema: unknown, handler: () => Promise<void>) => {
+		notificationHandlers.set(id, handler);
+	},
+	removeNotificationHandler: jest.fn(),
+});
 
 jest.mock('../../../../../src/main/mcp', () => ({
 	connect: (...args: unknown[]) => connectMock(...args),
@@ -19,7 +27,8 @@ import {
 describe('loadMcpTools', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
-		connectMock.mockResolvedValue({});
+		notificationHandlers.clear();
+		connectMock.mockImplementation(async (id: string) => mockClient(id));
 		closeMock.mockResolvedValue(undefined);
 		getMcpServersMock.mockReturnValue({ safe: { type: 'http', url: 'https://mcp.test', defer_loading: false } });
 	});
@@ -106,7 +115,7 @@ describe('loadMcpTools', () => {
 		});
 		connectMock.mockImplementation(async (id: string) => {
 			if (id === 'connects') throw new Error('secret connection detail');
-			return { id };
+			return mockClient(id);
 		});
 		listToolsMock.mockRejectedValue(new Error('secret listing detail'));
 
@@ -143,7 +152,7 @@ describe('loadMcpTools', () => {
 		});
 		connectMock.mockImplementation(async (id: string) => {
 			if (id === 'first') await firstConnected;
-			return { id };
+			return mockClient(id);
 		});
 		listToolsMock.mockResolvedValue({ tools: [] });
 
@@ -153,7 +162,7 @@ describe('loadMcpTools', () => {
 		await expect(loading).resolves.toMatchObject({ tools: [] });
 	});
 
-	it('connects explicitly eager servers and defers the others', async () => {
+	it('loads all enabled servers once regardless of defer_loading', async () => {
 		getMcpServersMock.mockReturnValue({
 			eager: { type: 'http', url: 'https://eager.test', name: 'Eager', defer_loading: false },
 			deferred: {
@@ -167,28 +176,23 @@ describe('loadMcpTools', () => {
 				defer_loading: true,
 			},
 		});
-		connectMock.mockImplementation(async (id: string) => ({ id }));
+		connectMock.mockImplementation(async (id: string) => mockClient(id));
 		listToolsMock.mockImplementation(async (client: { id: string }) => ({
 			tools: [{ name: `${client.id}_tool`, inputSchema: { type: 'object' } }],
 		}));
 
 		const result = await loadMcpTools();
-		expect(connectMock).toHaveBeenCalledTimes(1);
-		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__eager__eager_tool']);
-		expect(result.deferredServers).toEqual([
-			{ id: 'deferred', name: 'Deferred' },
-			{ id: 'unrelated', name: 'unrelated' },
-		]);
-		await result.loadDeferred(['deferred']);
-		expect(connectMock).toHaveBeenCalledTimes(2);
+		expect(connectMock).toHaveBeenCalledTimes(3);
+		expect(listToolsMock).toHaveBeenCalledTimes(3);
 		expect(result.tools.map((tool) => tool.id)).toEqual([
-			'mcp__eager__eager_tool',
 			'mcp__deferred__deferred_tool',
+			'mcp__eager__eager_tool',
+			'mcp__unrelated__unrelated_tool',
 		]);
 		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(2);
+		expect(closeMock).toHaveBeenCalledTimes(3);
 		await result.close();
-		expect(closeMock).toHaveBeenCalledTimes(2);
+		expect(closeMock).toHaveBeenCalledTimes(3);
 	});
 });
 
@@ -198,10 +202,14 @@ it('closes every acquired client if discovery postprocessing fails', async () =>
 		one: { type: 'http', url: 'https://one.test', defer_loading: false },
 		two: { type: 'http', url: 'https://two.test', defer_loading: false },
 	});
-	connectMock.mockImplementation(async (id: string) => ({ id }));
+	connectMock.mockImplementation(async (id: string) => mockClient(id));
 	closeMock.mockResolvedValue(undefined);
 	listToolsMock.mockResolvedValue({ tools: null });
-	await expect(loadMcpTools()).rejects.toThrow();
+	const result = await loadMcpTools();
+	expect(result.diagnostics.failures).toEqual([
+		{ serverId: 'one', phase: 'list' },
+		{ serverId: 'two', phase: 'list' },
+	]);
 	expect(closeMock).toHaveBeenCalledTimes(2);
 });
 
@@ -209,7 +217,7 @@ it('closes acquired clients exactly once on cancellation during listing', async 
 	jest.clearAllMocks();
 	const controller = new AbortController();
 	getMcpServersMock.mockReturnValue({ one: { type: 'http', url: 'https://one.test', defer_loading: false } });
-	connectMock.mockResolvedValue({ id: 'one' });
+	connectMock.mockResolvedValue(mockClient('one'));
 	closeMock.mockResolvedValue(undefined);
 	listToolsMock.mockImplementation(async () => {
 		controller.abort(new Error('cancel'));

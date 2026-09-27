@@ -128,7 +128,7 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 		for (const result of discovered) {
 			if (result.status !== 'fulfilled') continue;
 			const server = result.value;
-			if ('failure' in server) {
+			if ('failure' in server && server.failure) {
 				if (server.failure === 'list') diagnostics.connectedServers += 1;
 				diagnostics.failures.push({ serverId: server.id, phase: server.failure });
 				continue;
