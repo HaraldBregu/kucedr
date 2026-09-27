@@ -57,7 +57,7 @@ export function WorkspaceMenu({
 					<DropdownMenuLabel className="min-w-0">
 						<div className="truncate text-sm">{project?.name ?? 'Choose workspace'}</div>
 						<div className="truncate text-xs font-normal text-muted-foreground">
-						{project?.directory ?? 'Open a workspace folder to start coding'}
+							{project?.directory ?? 'Open a workspace folder to start coding'}
 						</div>
 					</DropdownMenuLabel>
 					<DropdownMenuSeparator />
