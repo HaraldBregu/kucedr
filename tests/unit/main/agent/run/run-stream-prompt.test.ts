@@ -198,7 +198,7 @@ describe('run stream system prompt', () => {
 			'Draft polished documents'
 		);
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain(
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(
 			'read'
 		);
 		const receipt = session.messages.find(
@@ -839,13 +839,7 @@ describe('run stream system prompt', () => {
 				? {
 						content: '',
 						model: 'pinned-model',
-						toolCalls: [
-							{
-								id: 'delegate',
-								name: 'subagent',
-								args: { task: 'inspect' },
-							},
-						],
+						toolCalls: [{ id: 'find-subagent', name: 'tool_search', args: { query: 'delegate to subagent' } }],
 					}
 				: mainCalls === 2
 					? {
