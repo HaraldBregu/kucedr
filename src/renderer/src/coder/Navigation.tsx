@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { PanelLeft, PanelRight, Play, Square } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavigationBarContainer } from '@/components/app/navigationbar/NavigationBarContainer';
@@ -11,7 +11,7 @@ const isMac = navigator.platform.startsWith('Mac');
 interface NavigationProps {
 	readonly sidebar: boolean;
 	readonly viewer: boolean;
-	readonly workspaceName: string;
+	readonly workspaceMenu: ReactNode;
 	readonly canRun: boolean;
 	readonly busy: boolean;
 	readonly onToggleSidebar: () => void;
@@ -23,7 +23,7 @@ interface NavigationProps {
 export function Navigation({
 	sidebar,
 	viewer,
-	workspaceName,
+	workspaceMenu,
 	canRun,
 	busy,
 	onToggleSidebar,
@@ -75,6 +75,7 @@ export function Navigation({
 				isFullScreen={isFullScreen}
 				className={isMac && !isFullScreen ? 'ml-24 min-w-0' : 'min-w-0'}
 			>
+				{workspaceMenu}
 				<Button
 					type="button"
 					variant="ghost"
@@ -109,9 +110,6 @@ export function Navigation({
 				>
 					<div className="h-full rounded-full bg-primary" style={{ width: `${progress}%` }} />
 				</div>
-				<span className="min-w-0 truncate px-2 text-sm font-medium" title={workspaceName}>
-					{workspaceName}
-				</span>
 			</NavigationBarLeftContainer>
 			<Button
 				type="button"

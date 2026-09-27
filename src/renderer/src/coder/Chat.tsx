@@ -1,4 +1,4 @@
-import { Code2, FolderPlus } from 'lucide-react';
+import { Code2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatContainerContent, ChatContainerRoot } from '@/components/ui/chat-container';
 import { Composer } from './Composer';
@@ -40,12 +40,6 @@ export function Chat({
 									? 'Start with a prompt or switch to Command.'
 									: 'Choose a folder to start coding.'}
 							</p>
-							{!project && (
-								<Button variant="outline" onClick={() => void coding.addProject()}>
-									<FolderPlus className="size-4" />
-									Choose folder
-								</Button>
-							)}
 							{project && !coding.settings?.modelId && (
 								<Button variant="outline" onClick={onConfiguration}>
 									Configure agent

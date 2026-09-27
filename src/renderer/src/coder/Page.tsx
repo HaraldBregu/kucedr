@@ -11,6 +11,7 @@ import { Chat } from './Chat';
 import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
 import { Sessions } from './Sessions';
+import { WorkspaceMenu } from './WorkspaceMenu';
 import { Resize } from './Resize';
 import { Configuration } from './Configuration';
 import { Instructions } from './Instructions';
@@ -128,6 +129,12 @@ export function CoderPage() {
 		void navigate('/');
 		void coding.select(projectId, sessionId, fresh);
 	};
+	const openInstructions = (id: string) => {
+		if (!leaveEditor()) return;
+		if (id !== coding.projectId) void coding.select(id);
+		void navigate('/instructions');
+		if (window.innerWidth < 1280) setViewer(false);
+	};
 	useEffect(() => {
 		if (blocker.state !== 'blocked') return;
 		if (leaveEditor()) blocker.proceed();
@@ -177,7 +184,16 @@ export function CoderPage() {
 			<Navigation
 				sidebar={sidebar}
 				viewer={viewer}
-				workspaceName={project?.name ?? 'Choose workspace'}
+				workspaceMenu={
+					<WorkspaceMenu
+						coding={coding}
+						settingsActive={location.pathname === '/settings'}
+						onBeforeChange={leaveEditor}
+						onSelect={select}
+						onConfiguration={() => openPage('/settings')}
+						onInstructions={openInstructions}
+					/>
+				}
 				busy={coding.busy}
 				canRun={
 					location.pathname === '/' &&
@@ -314,16 +330,7 @@ export function CoderPage() {
 						<div className="flex h-52 min-h-0 shrink-0 flex-col border-b border-sidebar-border/50">
 							<Sessions
 								coding={coding}
-								settingsActive={location.pathname === '/settings'}
-								onBeforeChange={leaveEditor}
 								onSelect={select}
-								onConfiguration={() => openPage('/settings')}
-								onInstructions={(id) => {
-									if (!leaveEditor()) return;
-									if (id !== coding.projectId) void coding.select(id);
-									void navigate('/instructions');
-									if (window.innerWidth < 1280) setViewer(false);
-								}}
 							/>
 						</div>
 						<Chat coding={coding} onConfiguration={() => openPage('/settings')} />

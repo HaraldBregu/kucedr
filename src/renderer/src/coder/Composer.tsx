@@ -37,21 +37,6 @@ export function Composer({
 					disabled={coding.busy || coding.loading || Boolean(coding.snapshot)}
 					onChange={(value) => void coding.changeHarness(value as CodingSettings['runtime'])}
 				/>
-				<Button
-					type="button"
-					variant="ghost"
-					size="sm"
-					className="min-w-0 max-w-64 truncate"
-					title={
-						coding.snapshot?.session.workingDirectory ??
-						project?.directory ??
-						coding.settings?.workingDirectory
-					}
-					disabled={coding.busy || coding.loading || Boolean(coding.snapshot)}
-					onClick={() => void coding.addProject()}
-				>
-					{project?.name ?? coding.settings?.workingDirectory ?? 'Choose folder'}
-				</Button>
 			</div>
 			<div className="rounded-lg border bg-card focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/20">
 				<Textarea
