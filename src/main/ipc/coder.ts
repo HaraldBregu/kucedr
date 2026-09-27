@@ -139,14 +139,22 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 				throw new Error('Invalid coding project id.');
 			return coding.listMarkdownFiles(projectId.trim());
 		});
-		registerCommandWithEvent(CodingChannels.saveMarkdownFile, (event, projectId, filePath, content, expectedContent) => {
-			assertCodingCaller(event);
-			if (typeof projectId !== 'string' || !projectId.trim() ||
-				!isCodingProjectFilePath(filePath) || !filePath.toLowerCase().endsWith('.md') ||
-				typeof content !== 'string' || typeof expectedContent !== 'string')
-				throw new Error('Invalid coding Markdown file.');
-			return coding.saveMarkdownFile(projectId.trim(), filePath, content, expectedContent);
-		});
+		registerCommandWithEvent(
+			CodingChannels.saveMarkdownFile,
+			(event, projectId, filePath, content, expectedContent) => {
+				assertCodingCaller(event);
+				if (
+					typeof projectId !== 'string' ||
+					!projectId.trim() ||
+					!isCodingProjectFilePath(filePath) ||
+					!filePath.toLowerCase().endsWith('.md') ||
+					typeof content !== 'string' ||
+					typeof expectedContent !== 'string'
+				)
+					throw new Error('Invalid coding Markdown file.');
+				return coding.saveMarkdownFile(projectId.trim(), filePath, content, expectedContent);
+			}
+		);
 		registerCommandWithEvent(CodingChannels.createProjectFile, (event, projectId, filePath) => {
 			assertCodingCaller(event);
 			if (

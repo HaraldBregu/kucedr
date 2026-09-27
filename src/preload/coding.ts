@@ -59,10 +59,21 @@ export const coding: CodingApi = {
 	},
 	saveMarkdownFile: (projectId, filePath, content, expectedContent) => {
 		const id = typeof projectId === 'string' ? projectId.trim() : '';
-		if (!id || !isCodingProjectFilePath(filePath) || !filePath.toLowerCase().endsWith('.md') ||
-			typeof content !== 'string' || typeof expectedContent !== 'string')
+		if (
+			!id ||
+			!isCodingProjectFilePath(filePath) ||
+			!filePath.toLowerCase().endsWith('.md') ||
+			typeof content !== 'string' ||
+			typeof expectedContent !== 'string'
+		)
 			throw new Error('Invalid coding Markdown file.');
-		return typedInvokeUnwrap(CodingChannels.saveMarkdownFile, id, filePath, content, expectedContent);
+		return typedInvokeUnwrap(
+			CodingChannels.saveMarkdownFile,
+			id,
+			filePath,
+			content,
+			expectedContent
+		);
 	},
 	createProjectFile: (projectId, filePath) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';

@@ -16,7 +16,12 @@ export async function saveMarkdownFile(
 	const root = await realpath(project.directory);
 	const candidate = path.resolve(root, filePath);
 	const relative = path.relative(root, candidate);
-	if (!relative || relative === '..' || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative))
+	if (
+		!relative ||
+		relative === '..' ||
+		relative.startsWith(`..${path.sep}`) ||
+		path.isAbsolute(relative)
+	)
 		throw new Error('Markdown files must stay inside the project directory.');
 	const status = await lstat(candidate);
 	if (!status.isFile()) throw new Error('Only regular Markdown files can be saved.');

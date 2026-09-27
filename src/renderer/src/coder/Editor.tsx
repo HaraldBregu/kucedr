@@ -14,7 +14,11 @@ const theme = EditorView.theme({
 	'.cm-gutters': { display: 'none' },
 });
 
-export function Editor({ value, onChange, onSave }: {
+export function Editor({
+	value,
+	onChange,
+	onSave,
+}: {
 	value: string;
 	onChange: (value: string) => void;
 	onSave: () => void;
@@ -24,7 +28,10 @@ export function Editor({ value, onChange, onSave }: {
 	const onChangeRef = useRef(onChange);
 	const onSaveRef = useRef(onSave);
 	const initialValue = useRef(value);
-	useEffect(() => { onChangeRef.current = onChange; onSaveRef.current = onSave; }, [onChange, onSave]);
+	useEffect(() => {
+		onChangeRef.current = onChange;
+		onSaveRef.current = onSave;
+	}, [onChange, onSave]);
 	useEffect(() => {
 		if (!mount.current) return;
 		const editor = new EditorView({
@@ -38,7 +45,17 @@ export function Editor({ value, onChange, onSave }: {
 					EditorView.lineWrapping,
 					placeholder('Start writing…'),
 					EditorView.contentAttributes.of({ 'aria-label': 'Markdown content', spellcheck: 'true' }),
-					keymap.of([{ key: 'Mod-s', run: () => { onSaveRef.current(); return true; } }, ...defaultKeymap, ...historyKeymap]),
+					keymap.of([
+						{
+							key: 'Mod-s',
+							run: () => {
+								onSaveRef.current();
+								return true;
+							},
+						},
+						...defaultKeymap,
+						...historyKeymap,
+					]),
 					EditorView.updateListener.of((update) => {
 						if (update.docChanged) onChangeRef.current(update.state.doc.toString());
 					}),
@@ -47,7 +64,10 @@ export function Editor({ value, onChange, onSave }: {
 			}),
 		});
 		view.current = editor;
-		return () => { view.current = null; editor.destroy(); };
+		return () => {
+			view.current = null;
+			editor.destroy();
+		};
 	}, []);
 	useEffect(() => {
 		const editor = view.current;

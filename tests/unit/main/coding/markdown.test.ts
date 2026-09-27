@@ -9,8 +9,13 @@ it('lists project Markdown without coding files and saves edits safely', async (
 	const directory = await mkdtemp(path.join(os.tmpdir(), 'kucedr-markdown-'));
 	const root = path.join(directory, 'project');
 	const project: CodingProject = {
-		id: 'project', name: 'project', directory: root, kind: 'external',
-		createdAt: '', lastOpenedAt: '', available: true,
+		id: 'project',
+		name: 'project',
+		directory: root,
+		kind: 'external',
+		createdAt: '',
+		lastOpenedAt: '',
+		available: true,
 	};
 	try {
 		await mkdir(path.join(root, 'docs'), { recursive: true });
@@ -24,10 +29,18 @@ it('lists project Markdown without coding files and saves edits safely', async (
 		expect(await listMarkdownFiles(project)).toEqual(['AGENTS.md', 'docs/plan.md']);
 		await saveMarkdownFile(project, 'docs/plan.md', '# Updated', '# Plan');
 		expect(await readFile(path.join(root, 'docs', 'plan.md'), 'utf8')).toBe('# Updated');
-		await expect(saveMarkdownFile(project, 'docs/plan.md', 'stale', '# Plan')).rejects.toThrow('changed outside');
-		await expect(saveMarkdownFile(project, 'main.ts', 'bad', 'code')).rejects.toThrow('Only Markdown');
-		await expect(saveMarkdownFile(project, '../outside.md', 'bad', 'outside')).rejects.toThrow('inside');
-		await expect(saveMarkdownFile(project, 'linked.md', 'bad', 'outside')).rejects.toThrow('regular');
+		await expect(saveMarkdownFile(project, 'docs/plan.md', 'stale', '# Plan')).rejects.toThrow(
+			'changed outside'
+		);
+		await expect(saveMarkdownFile(project, 'main.ts', 'bad', 'code')).rejects.toThrow(
+			'Only Markdown'
+		);
+		await expect(saveMarkdownFile(project, '../outside.md', 'bad', 'outside')).rejects.toThrow(
+			'inside'
+		);
+		await expect(saveMarkdownFile(project, 'linked.md', 'bad', 'outside')).rejects.toThrow(
+			'regular'
+		);
 	} finally {
 		await rm(directory, { recursive: true, force: true });
 	}

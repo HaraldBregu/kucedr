@@ -132,23 +132,46 @@ export function Sidebar({
 				</nav>
 				<div className="mt-5 flex items-center justify-between px-2 pb-2 text-xs font-medium text-sidebar-foreground/70">
 					<span>Project Markdown</span>
-					<button type="button" aria-label="New Markdown file" title="New Markdown file" disabled={!project?.available}
-						className="rounded p-0.5 hover:bg-sidebar-accent disabled:opacity-50" onClick={onCreateMarkdown}>
+					<button
+						type="button"
+						aria-label="New Markdown file"
+						title="New Markdown file"
+						disabled={!project?.available}
+						className="rounded p-0.5 hover:bg-sidebar-accent disabled:opacity-50"
+						onClick={onCreateMarkdown}
+					>
 						<Plus className="size-3.5" />
 					</button>
 				</div>
 				<nav aria-label="Project Markdown files">
 					<ul className="flex min-w-0 flex-col gap-1">
-						{markdownFiles.map((filePath) => <li key={filePath}>
-							<button type="button" title={filePath} aria-current={activeMarkdown === filePath ? 'page' : undefined}
-								className={cn(SPLIT_ITEM_CLASS, 'w-full min-w-0 gap-2', activeMarkdown === filePath && SPLIT_ITEM_ACTIVE_CLASS)}
-								onClick={() => onMarkdown(filePath)}>
-								<FileText className="size-4 shrink-0" /><span className="truncate">{filePath}</span>
-							</button>
-						</li>)}
+						{markdownFiles.map((filePath) => (
+							<li key={filePath}>
+								<button
+									type="button"
+									title={filePath}
+									aria-current={activeMarkdown === filePath ? 'page' : undefined}
+									className={cn(
+										SPLIT_ITEM_CLASS,
+										'w-full min-w-0 gap-2',
+										activeMarkdown === filePath && SPLIT_ITEM_ACTIVE_CLASS
+									)}
+									onClick={() => onMarkdown(filePath)}
+								>
+									<FileText className="size-4 shrink-0" />
+									<span className="truncate">{filePath}</span>
+								</button>
+							</li>
+						))}
 					</ul>
-					{project?.available && !markdownFiles.length && <p className="px-2 py-1 text-xs text-muted-foreground">No Markdown files yet.</p>}
-					{markdownError && <p role="alert" className="px-2 py-1 text-xs text-destructive">{markdownError}</p>}
+					{project?.available && !markdownFiles.length && (
+						<p className="px-2 py-1 text-xs text-muted-foreground">No Markdown files yet.</p>
+					)}
+					{markdownError && (
+						<p role="alert" className="px-2 py-1 text-xs text-destructive">
+							{markdownError}
+						</p>
+					)}
 				</nav>
 			</section>
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
