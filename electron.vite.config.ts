@@ -40,6 +40,7 @@ export default defineConfig({
 		cacheDir: resolve(tmpdir(), 'kucedr-vite-cache'),
 		publicDir: resolve(__dirname, './src/renderer/public'),
 		resolve: {
+			dedupe: ['react', 'react-dom'],
 			alias: {
 				'@': resolve(__dirname, './src/renderer/src'),
 				'@utils': resolve(__dirname, './src/renderer/src/utils'),
