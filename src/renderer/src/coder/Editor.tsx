@@ -1,9 +1,19 @@
 import { useEffect, useRef } from 'react';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import { markdown } from '@codemirror/lang-markdown';
-import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap, placeholder } from '@codemirror/view';
+import { tags } from '@lezer/highlight';
+
+const markdownHighlight = HighlightStyle.define([
+	{ tag: tags.heading, fontWeight: '600' },
+	{ tag: tags.strong, fontWeight: '700' },
+	{ tag: tags.emphasis, fontStyle: 'italic' },
+	{ tag: tags.strikethrough, textDecoration: 'line-through' },
+	{ tag: [tags.link, tags.url], color: 'var(--primary)', textDecoration: 'underline' },
+	{ tag: tags.monospace, color: 'var(--primary)' },
+]);
 
 const theme = EditorView.theme({
 	'&': { height: '100%', backgroundColor: 'transparent', color: 'var(--foreground)' },
@@ -41,7 +51,7 @@ export function Editor({
 				extensions: [
 					history(),
 					markdown(),
-					syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+					syntaxHighlighting(markdownHighlight),
 					EditorView.lineWrapping,
 					placeholder('Start writing…'),
 					EditorView.contentAttributes.of({ 'aria-label': 'Markdown content', spellcheck: 'true' }),
