@@ -2162,7 +2162,12 @@
 		"files": "Workspace files",
 		"loading": "Loading files…",
 		"error": "Unable to load Workspace files.",
-		"empty": "Workspace is empty."
+		"empty": "Workspace is empty.",
+		"viewer": "Workspace file",
+		"noSelection": "Choose a file to view it here.",
+		"fileLoading": "Loading file…",
+		"fileError": "Unable to open file.",
+		"unsupported": "This file cannot be previewed."
 	},
 	"documents": {
 		"title": "Documents",

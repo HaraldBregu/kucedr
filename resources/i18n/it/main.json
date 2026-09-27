@@ -2162,7 +2162,12 @@
 		"files": "File dello spazio di lavoro",
 		"loading": "Caricamento dei file…",
 		"error": "Impossibile caricare i file dello spazio di lavoro.",
-		"empty": "Lo spazio di lavoro è vuoto."
+		"empty": "Lo spazio di lavoro è vuoto.",
+		"viewer": "File dello spazio di lavoro",
+		"noSelection": "Scegli un file da visualizzare qui.",
+		"fileLoading": "Caricamento del file…",
+		"fileError": "Impossibile aprire il file.",
+		"unsupported": "Impossibile visualizzare l'anteprima di questo file."
 	},
 	"documents": {
 		"title": "Documenti",

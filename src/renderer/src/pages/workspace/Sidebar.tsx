@@ -6,7 +6,12 @@ import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { WorkspaceTree } from './Tree';
 
-export function WorkspaceSidebar(): React.JSX.Element {
+interface WorkspaceSidebarProps {
+	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
+	readonly selectedPath: string | null;
+}
+
+export function WorkspaceSidebar({ onFileSelect, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [entries, setEntries] = useState<WorkspaceTreeEntry[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -60,7 +65,7 @@ export function WorkspaceSidebar(): React.JSX.Element {
 				) : entries.length === 0 ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.empty', 'Workspace is empty.')}</p>
 				) : (
-					<WorkspaceTree entries={entries} />
+					<WorkspaceTree entries={entries} onFileSelect={onFileSelect} selectedPath={selectedPath} />
 				)}
 			</nav>
 		</div>

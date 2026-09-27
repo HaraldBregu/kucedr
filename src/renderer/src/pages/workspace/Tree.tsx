@@ -3,9 +3,11 @@ import type { WorkspaceTreeEntry } from '@shared/agent_types';
 
 interface WorkspaceTreeProps {
 	readonly entries: WorkspaceTreeEntry[];
+	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
+	readonly selectedPath: string | null;
 }
 
-export function WorkspaceTree({ entries }: WorkspaceTreeProps): React.JSX.Element {
+export function WorkspaceTree({ entries, onFileSelect, selectedPath }: WorkspaceTreeProps): React.JSX.Element {
 	return (
 		<ul className="flex min-w-0 flex-col gap-1">
 			{entries.map((entry) => (
@@ -19,15 +21,21 @@ export function WorkspaceTree({ entries }: WorkspaceTreeProps): React.JSX.Elemen
 							</summary>
 							{entry.children?.length ? (
 								<div className="ml-3 border-l border-sidebar-border pl-1">
-									<WorkspaceTree entries={entry.children} />
+									<WorkspaceTree entries={entry.children} onFileSelect={onFileSelect} selectedPath={selectedPath} />
 								</div>
 							) : null}
 						</details>
 					) : (
-						<div className="flex min-h-8 items-center gap-2 rounded-xl px-2 text-sm" title={entry.path}>
+						<button
+							type="button"
+							aria-current={selectedPath === entry.path ? 'page' : undefined}
+							className="flex min-h-8 w-full items-center gap-2 rounded-xl px-2 text-left text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium"
+							title={entry.path}
+							onClick={() => onFileSelect(entry)}
+						>
 							<File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
 							<span className="truncate">{entry.name}</span>
-						</div>
+						</button>
 					)}
 				</li>
 			))}

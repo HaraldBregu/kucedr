@@ -37,9 +37,9 @@ import {
 import { oneDarkHighlightStyle, oneDarkTheme } from '@codemirror/theme-one-dark';
 import { tags } from '@lezer/highlight';
 
-import { showNativeContextMenu } from '@/lib/menu';
-import { languageForPath } from '@/lib/language';
-import { cn } from '@/lib/utils';
+import { showNativeContextMenu } from '../lib/menu';
+import { languageForPath } from '../lib/language';
+import { cn } from '../lib/utils';
 
 export interface CodeMirrorEditorHandle {
 	focus: () => void;
