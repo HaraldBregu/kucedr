@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import {
 	Check,
 	ChevronDown,
@@ -36,6 +37,7 @@ export function WorkspaceMenu({
 }) {
 	const project = coding.projects.find((item) => item.id === coding.projectId);
 	return (
+		<div className="min-w-0 shrink-0" style={{ WebkitAppRegion: 'no-drag' } as CSSProperties}>
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
 				<Button
@@ -123,5 +125,6 @@ export function WorkspaceMenu({
 				)}
 			</DropdownMenuContent>
 		</DropdownMenu>
+		</div>
 	);
 }
