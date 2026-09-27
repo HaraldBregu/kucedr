@@ -130,8 +130,8 @@ export function Navigation({
 				variant="ghost"
 				size="icon"
 				className="mr-3 size-8 shrink-0 rounded-full text-muted-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground"
-				aria-label="Toggle sessions"
-				title="Toggle sessions"
+				aria-label="Toggle sessions and chat"
+				title="Toggle sessions and chat"
 				aria-expanded={viewer}
 				onClick={onToggleViewer}
 			>

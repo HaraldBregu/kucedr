@@ -1,22 +1,18 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { Navigate, Route, Routes, useBlocker, useLocation, useNavigate } from 'react-router-dom';
-import { Code2, FolderPlus, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ChatContainerContent, ChatContainerRoot } from '@/components/ui/chat-container';
+import { FileText } from 'lucide-react';
 import {
 	DEFAULT_SIDEBAR_WIDTH,
 	MAX_SIDEBAR_WIDTH,
 	MIN_SIDEBAR_WIDTH,
 } from '@/components/app/base/page/context/state';
 import { useAppTheme } from '@/components/app/navigationbar/hooks/useAppTheme';
-import { Transcript } from './Transcript';
+import { Chat } from './Chat';
 import { Navigation } from './Navigation';
 import { Sidebar } from './Sidebar';
 import { Sessions } from './Sessions';
 import { Resize } from './Resize';
-import { Composer } from './Composer';
 import { Configuration } from './Configuration';
-import { Interaction } from './Interaction';
 import { Instructions } from './Instructions';
 import { Markdown } from './Markdown';
 import { useWorkspace } from './workspace';
@@ -30,7 +26,7 @@ export function CoderPage() {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
-	const [viewer, setViewer] = useState(() => window.innerWidth >= 1280);
+	const [viewer, setViewer] = useState(true);
 	const [viewerWidth, setViewerWidth] = useState(() =>
 		Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, window.innerWidth * 0.35))
 	);
@@ -131,7 +127,6 @@ export function CoderPage() {
 		setActiveMarkdown(null);
 		void navigate('/');
 		void coding.select(projectId, sessionId, fresh);
-		if (window.innerWidth < 1280) setViewer(false);
 	};
 	useEffect(() => {
 		if (blocker.state !== 'blocked') return;
@@ -302,75 +297,10 @@ export function CoderPage() {
 										onDirtyChange={setMarkdownDirty}
 									/>
 								) : (
-									<>
-										<div className="flex h-12 shrink-0 items-center gap-2 border-b px-4">
-											<h2 className="min-w-0 flex-1 truncate text-sm font-medium">
-												{coding.snapshot?.session.title || 'New session'}
-											</h2>
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												aria-label="New session"
-												title="New session · ⌘/Ctrl N"
-												disabled={!project?.available || coding.busy || coding.loading}
-												onClick={() => project && select(project.id, undefined, true)}
-											>
-												<Plus className="size-4" />
-											</Button>
-										</div>
-										<ChatContainerRoot className="min-h-0">
-											<ChatContainerContent className="mx-auto max-w-3xl p-4">
-												{coding.loading ? (
-													<p role="status" className="text-sm text-muted-foreground">
-														Loading…
-													</p>
-												) : coding.blocks.length ? (
-													<Transcript blocks={coding.blocks} />
-												) : (
-													<div className="flex min-h-64 flex-col items-center justify-center gap-3 text-center">
-														<Code2 className="size-7 text-muted-foreground" />
-														<h2 className="text-lg font-semibold">
-															{project ? 'What are we building?' : 'Open a project'}
-														</h2>
-														<p className="text-sm text-muted-foreground">
-															{project
-																? 'Start with a prompt or switch to Command.'
-																: 'Choose a folder to start coding.'}
-														</p>
-														{!project && (
-															<Button variant="outline" onClick={() => void coding.addProject()}>
-																<FolderPlus className="size-4" />
-																Choose folder
-															</Button>
-														)}
-														{project && !coding.settings?.modelId && (
-															<Button variant="outline" onClick={() => openPage('/settings')}>
-																Configure agent
-															</Button>
-														)}
-													</div>
-												)}
-												{coding.interactions.map((item) => (
-													<Interaction
-														key={item.requestId}
-														request={item}
-														onRespond={coding.respond}
-													/>
-												))}
-												{coding.busy && (
-													<p role="status" className="mt-4 text-xs text-muted-foreground">
-														{coding.status}
-													</p>
-												)}
-												{coding.error && (
-													<p role="alert" className="mt-4 text-sm text-destructive">
-														{coding.error}
-													</p>
-												)}
-											</ChatContainerContent>
-										</ChatContainerRoot>
-										<Composer coding={coding} onConfiguration={() => openPage('/settings')} />
-									</>
+									<div className="flex flex-1 flex-col items-center justify-center gap-3 text-center text-muted-foreground">
+										<FileText className="size-7" />
+										<p className="text-sm">Select or create a workspace instruction file.</p>
+									</div>
 								)
 							}
 						/>
@@ -379,10 +309,11 @@ export function CoderPage() {
 				</main>
 				{viewer && (
 					<aside
-						aria-label="Sessions"
+						aria-label="Sessions and chat"
 						className="absolute inset-y-0 right-0 z-20 flex w-[min(85vw,400px)] flex-col border-l border-sidebar-border bg-background text-sidebar-foreground xl:relative xl:z-10 xl:w-[var(--coder-viewer-width)] xl:shrink-0"
 						style={{ '--coder-viewer-width': `${viewerWidth}px` } as CSSProperties}
 					>
+						<div className="flex h-52 min-h-0 shrink-0 flex-col border-b border-sidebar-border/50">
 						<Sessions
 							coding={coding}
 							settingsActive={location.pathname === '/settings'}
@@ -396,12 +327,18 @@ export function CoderPage() {
 								if (window.innerWidth < 1280) setViewer(false);
 							}}
 						/>
+						</div>
+						<Chat
+							coding={coding}
+							onNewSession={() => project && select(project.id, undefined, true)}
+							onConfiguration={() => openPage('/settings')}
+						/>
 						<Resize
 							side="left"
 							width={viewerWidth}
 							minWidth={RIGHT_MIN_WIDTH}
 							maxWidth={RIGHT_MAX_WIDTH}
-							label="Resize sessions sidebar"
+							label="Resize chat sidebar"
 							className="xl:block"
 							onWidthChange={(width) =>
 								setViewerWidth(Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, width)))
