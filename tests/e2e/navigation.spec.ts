@@ -173,6 +173,21 @@ test('editing Markdown Preview keeps table and task content', async () => {
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('| A | B |');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('- [x] Done');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Notes updated');
+	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('formatted.md'))).toContain('# Notes updated');
+	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('formatted.md'))).toContain('- [x] Done');
+});
+
+test('Markdown comments stay in Source editing mode', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('', 'comments.md');
+		await window.agent.writeWorkspaceFile('comments.md', '# Comments\n\n<!-- keep this -->');
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'comments.md' }).click();
+	await expect(page.getByText('This file contains Markdown comments. Edit it in Source to preserve them.')).toBeVisible();
+	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toHaveCount(0);
+	await page.getByText('Source', { exact: true }).click();
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('<!-- keep this -->');
 });
 
 test('the settings home redirects to General settings', async () => {
