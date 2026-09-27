@@ -1198,7 +1198,7 @@ describe('run stream system prompt', () => {
 		expect(execute).toHaveBeenCalledTimes(1);
 	});
 
-	it('catalogs MCP tools at run start and exposes a match after tool_search', async () => {
+	it('uses cached MCP tools and exposes a match after tool_search', async () => {
 		const execute = jest.fn();
 		const mcpTool = jsonTool({
 			id: 'mcp__billing__invoices',
