@@ -295,7 +295,7 @@ The folder name is used as the ID when `id` is omitted. IDs use lowercase letter
 
 A dependency-free package with three sample tools is available at `resources/mcp/demo-server` and can be selected directly with **Upload local**.
 
-At the start of each normal agent run, enabled servers connect in parallel, expose their tools to the model, and close when the run ends. Unreachable or unauthenticated servers are skipped for that run.
+At the start of each normal agent run, enabled servers connect in parallel and list their tools for deterministic search. Selected tool schemas become available to the model after it calls `tool_search`. Servers close when the run ends. Unreachable or unauthenticated servers are skipped for that run.
 
 Current limits:
 

@@ -21,8 +21,7 @@ const closeMcpMock = jest.fn();
 const mockLoadMcpTools = jest.fn(async () => ({
 	tools: [],
 	entries: [],
-	deferredServers: [],
-	loadDeferred: jest.fn(async () => []),
+	onChanged: () => () => undefined,
 	diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 	close: closeMcpMock,
 }));
@@ -71,8 +70,7 @@ describe('run stream system prompt', () => {
 		mockLoadMcpTools.mockReset().mockResolvedValue({
 			tools: [],
 			entries: [],
-			deferredServers: [],
-			loadDeferred: jest.fn(async () => []),
+			onChanged: () => () => undefined,
 			diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
@@ -1148,7 +1146,7 @@ describe('run stream system prompt', () => {
 
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(['discover_tools', 'read', 'edit']);
+		).toEqual(['read', 'edit', 'tool_search']);
 		expect(order).toEqual(['read', 'edit']);
 	});
 
