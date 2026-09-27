@@ -127,9 +127,14 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await workspace.getByText('Notes').click();
 	await workspace.getByRole('button', { name: 'plan.md' }).click();
 	await expect(page.getByRole('heading', { name: 'Plan' })).toBeVisible();
+	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toHaveAttribute('contenteditable', 'true');
+	await page.getByRole('heading', { name: 'Plan' }).click();
+	await page.keyboard.press('End');
+	await page.keyboard.type(' draft');
+	await expect(page.getByRole('heading', { name: 'Plan draft' })).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCount(0);
 	await page.getByText('Source', { exact: true }).click();
-	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan');
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan draft');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-left', '24px');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-top', '12px');
 	await page.getByRole('textbox', { name: 'Note content' }).fill('# Revised plan');
