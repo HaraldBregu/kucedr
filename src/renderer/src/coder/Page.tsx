@@ -152,9 +152,10 @@ export function CoderPage() {
 				project &&
 				!coding.busy &&
 				!coding.loading &&
-				!instructionsDirtyRef.current
+				!instructionsDirtyRef.current && !markdownDirtyRef.current
 			) {
 				event.preventDefault();
+				setActiveMarkdown(null);
 				void navigate('/');
 				void coding.select(project.id, undefined, true);
 			}
@@ -200,11 +201,35 @@ export function CoderPage() {
 							setSidebarWidth(Math.min(MAX_SIDEBAR_WIDTH, Math.max(MIN_SIDEBAR_WIDTH, width)))
 						}
 						settingsActive={location.pathname === '/settings'}
-						onBeforeChange={leaveInstructions}
+						onBeforeChange={leaveEditor}
+						markdownFiles={markdownFiles}
+						activeMarkdown={location.pathname === '/' ? activeMarkdown : null}
+						markdownError={markdownError}
+						onMarkdown={(filePath) => {
+							if (activeMarkdown === filePath && location.pathname === '/') return;
+							if (!leaveEditor()) return;
+							setActiveMarkdown(filePath);
+							void navigate('/');
+							if (window.innerWidth < 768) setSidebar(false);
+						}}
+						onCreateMarkdown={() => {
+							if (!project?.available || !leaveEditor()) return;
+							const entered = window.prompt('Markdown file name');
+							if (!entered) return;
+							const name = entered.trim().toLowerCase().endsWith('.md') ? entered.trim() : `${entered.trim()}.md`;
+							if (!name.trim() || name.includes('/') || name.includes('\\') || name === '.md') {
+								setMarkdownError('Enter a Markdown file name without folders.');
+								return;
+							}
+							void window.coder.createProjectFile(project.id, name)
+								.then(() => window.coder.listMarkdownFiles(project.id))
+								.then((files) => { setMarkdownFiles(files); setActiveMarkdown(name); setMarkdownError(''); void navigate('/'); })
+								.catch((cause) => setMarkdownError(String(cause)));
+						}}
 						onSelect={select}
 						onConfiguration={() => openPage('/settings')}
 						onInstructions={(id) => {
-							if (!leaveInstructions()) return;
+							if (!leaveEditor()) return;
 							if (id !== coding.projectId) void coding.select(id);
 							void navigate('/instructions');
 							if (window.innerWidth < 768) setSidebar(false);
