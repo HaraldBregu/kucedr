@@ -8,7 +8,7 @@ let userDataDir: string;
 
 test.beforeAll(async () => {
 	({ app, page, userDataDir } = await launchApp());
-	await expect(page).toHaveURL(/#\/start$/);
+	await expect(page).toHaveURL(/#\/?start$/);
 	await page.evaluate(async () => {
 		await window.agent.setProvider({
 			id: 'openai',
