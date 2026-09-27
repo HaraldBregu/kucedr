@@ -17,6 +17,7 @@ import { Composer } from './Composer';
 import { Configuration } from './Configuration';
 import { Interaction } from './Interaction';
 import { Instructions } from './Instructions';
+import { Markdown } from './Markdown';
 import { useWorkspace } from './workspace';
 
 const RIGHT_MIN_WIDTH = 280;
@@ -35,6 +36,11 @@ export function CoderPage() {
 	const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
 	const [layoutReady, setLayoutReady] = useState(false);
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
+	const [markdownDirty, setMarkdownDirty] = useState(false);
+	const markdownDirtyRef = useRef(false);
+	const [markdownFiles, setMarkdownFiles] = useState<string[]>([]);
+	const [activeMarkdown, setActiveMarkdown] = useState<string | null>(null);
+	const [markdownError, setMarkdownError] = useState('');
 	const instructionsDirtyRef = useRef(instructionsDirty);
 	const previousPath = useRef(location.pathname);
 	const skipSettingsRefresh = useRef(false);
@@ -45,6 +51,17 @@ export function CoderPage() {
 			currentLocation.pathname !== nextLocation.pathname
 	);
 	const project = coding.projects.find((item) => item.id === coding.projectId);
+	useEffect(() => { markdownDirtyRef.current = markdownDirty; }, [markdownDirty]);
+	useEffect(() => {
+		let active = true;
+		setMarkdownFiles([]);
+		setActiveMarkdown(null);
+		setMarkdownError('');
+		if (project?.available) void window.coder.listMarkdownFiles(project.id)
+			.then((files) => { if (active) setMarkdownFiles(files); })
+			.catch((cause) => { if (active) setMarkdownError(String(cause)); });
+		return () => { active = false; };
+	}, [project?.id, project?.available]);
 	useEffect(() => {
 		let active = true;
 		void window.coder
@@ -85,19 +102,29 @@ export function CoderPage() {
 		setInstructionsDirty(false);
 		return true;
 	};
+	const leaveEditor = () => {
+		if (!leaveInstructions()) return false;
+		if (!markdownDirtyRef.current) return true;
+		if (!window.confirm('Discard unsaved Markdown changes?')) return false;
+		markdownDirtyRef.current = false;
+		setMarkdownDirty(false);
+		return true;
+	};
 	const openPage = (path: '/' | '/settings' | '/instructions') => {
-		if (path === location.pathname || !leaveInstructions()) return;
+		if (path === location.pathname || !leaveEditor()) return;
+		if (path === '/') setActiveMarkdown(null);
 		void navigate(path);
 	};
 	const select = (projectId: string, sessionId?: string, fresh?: boolean) => {
-		if (!leaveInstructions()) return;
+		if (!leaveEditor()) return;
+		setActiveMarkdown(null);
 		void navigate('/');
 		void coding.select(projectId, sessionId, fresh);
 		if (window.innerWidth < 768) setSidebar(false);
 	};
 	useEffect(() => {
 		if (blocker.state !== 'blocked') return;
-		if (leaveInstructions()) blocker.proceed();
+		if (leaveEditor()) blocker.proceed();
 		else blocker.reset();
 	}, [blocker]);
 	useEffect(() => {
