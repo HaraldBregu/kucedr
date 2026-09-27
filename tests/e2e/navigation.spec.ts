@@ -190,6 +190,16 @@ test('Markdown comments stay in Source editing mode', async () => {
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('<!-- keep this -->');
 });
 
+test('a new empty Markdown file opens in editable Preview', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceFile('', 'empty-note.md');
+		window.location.hash = '#/workspace';
+	});
+	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'empty-note.md' }).click();
+	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
+	await expect(page.getByText('This page crashed')).toHaveCount(0);
+});
+
 test('the settings home redirects to General settings', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/settings';
