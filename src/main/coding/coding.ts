@@ -27,6 +27,8 @@ import { executeCommand } from './shell';
 import { CodingInstructions } from './instructions';
 import { listMarkdownFiles } from './markdown';
 import { saveMarkdownFile } from './save';
+import { readMarkdownFile } from './load';
+import { createMarkdownFile } from './create';
 
 interface CodingDependencies {
 	readonly store: CodingStore;
@@ -171,6 +173,12 @@ export class Coder {
 	}
 	listMarkdownFiles(id: string) {
 		return listMarkdownFiles(this.requireProject(id));
+	}
+	readMarkdownFile(id: string, file: string) {
+		return readMarkdownFile(this.requireProject(id), file);
+	}
+	createMarkdownFile(id: string, file: string) {
+		return createMarkdownFile(this.requireProject(id), file);
 	}
 	saveMarkdownFile(id: string, file: string, content: string, expectedContent: string) {
 		return saveMarkdownFile(this.requireProject(id), file, content, expectedContent);
