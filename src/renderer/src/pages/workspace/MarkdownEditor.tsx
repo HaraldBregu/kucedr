@@ -21,7 +21,7 @@ export function WorkspaceMarkdownEditor({ value, onChange, onSave }: WorkspaceMa
 		onSaveRef.current = onSave;
 	}, [onChange, onSave]);
 	const editor = useEditor({
-		extensions: [StarterKit, TableKit, TaskList, TaskItem, Image, Markdown.configure({ markedOptions: { gfm: true } })],
+		extensions: [StarterKit.configure({ link: { openOnClick: false } }), TableKit, TaskList, TaskItem, Image, Markdown.configure({ markedOptions: { gfm: true } })],
 		content: value,
 		contentType: 'markdown',
 		onUpdate: ({ editor: updatedEditor }) => onChangeRef.current(updatedEditor.getMarkdown()),
