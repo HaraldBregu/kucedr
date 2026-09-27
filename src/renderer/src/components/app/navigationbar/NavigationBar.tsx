@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { AudioLines, Code2, Folder, Menu, Search, User } from 'lucide-react';
+import { AudioLines, Menu, Search, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -38,8 +38,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
 	const { sessionId } = useChatSession();
-	const [coderError, setCoderError] = React.useState<string | null>(null);
-	const [workspaceError, setWorkspaceError] = React.useState<string | null>(null);
 	const [voiceError, setVoiceError] = React.useState<string | null>(null);
 
 	const isHome = location.pathname === '/home';
@@ -93,42 +91,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<AudioLines className="size-4" strokeWidth={1.8} />
 			</Button>
 		) : null;
-	const coderButton = !isOnboarding ? (
-		<Button
-			type="button"
-			variant="ghost"
-			size="icon"
-			className="size-8 rounded-full"
-			aria-label="Open Coder"
-			title={coderError ?? 'Open Coder'}
-			onClick={() => {
-				setCoderError(null);
-				void window.win.openCoder().catch((error: unknown) => {
-					setCoderError(error instanceof Error ? error.message : 'Coder could not be opened.');
-				});
-			}}
-		>
-			<Code2 className="size-4" strokeWidth={1.8} />
-		</Button>
-	) : null;
-	const workspaceButton = !isOnboarding ? (
-		<Button
-			type="button"
-			variant="ghost"
-			size="icon"
-			className="size-8 rounded-full"
-			aria-label="Open Workspace"
-			title={workspaceError ?? 'Open Workspace'}
-			onClick={() => {
-			setWorkspaceError(null);
-			void window.apps.open('workspace').catch((error: unknown) => {
-				setWorkspaceError(error instanceof Error ? error.message : 'Workspace could not be opened.');
-			});
-			}}
-		>
-			<Folder className="size-4" strokeWidth={1.8} />
-		</Button>
-	) : null;
 	const routeButton = isSettings ? (
 		<Button
 			type="button"
@@ -198,8 +160,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 					{viewSwitch}
 					{!isMac && searchButton}
 					{!isMac && voiceButton}
-					{!isMac && coderButton}
-					{!isMac && workspaceButton}
 					{!isMac && routeButton}
 					{!isHome && !isWorkspace && !isOnboarding && !isSettings && (
 						<Button
@@ -228,14 +188,12 @@ export const NavigationBar = React.memo(function NavigationBar({
 				)}
 
 				{/* ── Right action: home/settings toggle ── */}
-			{isMac && (searchButton || voiceButton || coderButton || workspaceButton || routeButton) && (
+			{isMac && (searchButton || voiceButton || routeButton) && (
 					<div
 						className="z-10 mr-3 flex h-full items-center gap-1"
 					>
 						{searchButton}
 						{voiceButton}
-						{coderButton}
-						{workspaceButton}
 						{routeButton}
 					</div>
 				)}

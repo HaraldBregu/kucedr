@@ -252,6 +252,17 @@ it('does not render the sidebar toggle in the navigationbar', () => {
 	expect(screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })).not.toBeInTheDocument();
 });
 
+it.each(['/home', '/settings/general'])('omits the Coder and standalone Workspace launch buttons on %s', (path) => {
+	render(
+		<MemoryRouter initialEntries={[path]}>
+			<NavigationBar />
+		</MemoryRouter>
+	);
+
+	expect(screen.queryByRole('button', { name: 'Open Coder' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Open Workspace' })).not.toBeInTheDocument();
+});
+
 it('does not render route titles inside the navigationbar', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/general/persona']}>
