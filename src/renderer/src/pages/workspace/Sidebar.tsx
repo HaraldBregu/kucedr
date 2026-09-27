@@ -70,9 +70,9 @@ export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted,
 			] : []),
 		];
 		setActionError('');
-		void window.win.showContextMenu(items).then((kind) => {
-			if (kind === 'reveal' && entry) return window.agent.revealWorkspaceEntry(entry.path);
-			if (kind === 'create-file' || kind === 'create-folder' || ((kind === 'rename' || kind === 'delete') && entry)) {
+		void window.win.showContextMenu(items).then(async (kind): Promise<void> => {
+			if (kind === 'reveal' && entry) await window.agent.revealWorkspaceEntry(entry.path);
+			else if (kind === 'create-file' || kind === 'create-folder' || ((kind === 'rename' || kind === 'delete') && entry)) {
 				setPendingAction({ kind, entry, parentPath });
 			}
 		}).catch((cause: unknown) => {

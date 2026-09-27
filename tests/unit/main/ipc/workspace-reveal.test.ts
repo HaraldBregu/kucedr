@@ -23,8 +23,8 @@ it('reveals the selected file and folder', async () => {
 	fs.writeFileSync(path.join(root, 'Notes', 'plan.md'), '# Plan');
 	await revealWorkspaceEntry(root, 'Notes/plan.md');
 	await revealWorkspaceEntry(root, 'Notes');
-	expect(showItemInFolder).toHaveBeenNthCalledWith(1, path.join(root, 'Notes', 'plan.md'));
-	expect(showItemInFolder).toHaveBeenNthCalledWith(2, path.join(root, 'Notes'));
+	expect(showItemInFolder).toHaveBeenNthCalledWith(1, path.join(fs.realpathSync(root), 'Notes', 'plan.md'));
+	expect(showItemInFolder).toHaveBeenNthCalledWith(2, path.join(fs.realpathSync(root), 'Notes'));
 });
 
 it('rejects paths outside the Workspace before opening Finder', async () => {
