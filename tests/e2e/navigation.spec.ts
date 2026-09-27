@@ -96,26 +96,6 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the main navigation switches between Chat and a blank Workspace view', async () => {
-	await page.evaluate(() => {
-		window.location.hash = '#/home';
-	});
-	const view = page.getByRole('group', { name: 'View' });
-	const toggle = page.getByRole('button', { name: 'Toggle Sidebar' });
-	const toggleBounds = await toggle.boundingBox();
-	const viewBounds = await view.boundingBox();
-	expect(toggleBounds).not.toBeNull();
-	expect(viewBounds).not.toBeNull();
-	expect(viewBounds!.x).toBeGreaterThanOrEqual(toggleBounds!.x + toggleBounds!.width);
-	await view.getByRole('button', { name: 'Workspace' }).click();
-	await expect(page).toHaveURL(/#\/workspace$/);
-	await expect(view.getByRole('button', { name: 'Workspace' })).toHaveAttribute('aria-pressed', 'true');
-	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
-	await view.getByRole('button', { name: 'Chat' }).click();
-	await expect(page).toHaveURL(/#\/home$/);
-	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toBeVisible();
-});
-
 test('the Workspace item below New Chat opens the blank view', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
@@ -127,6 +107,7 @@ test('the Workspace item below New Chat opens the blank view', async () => {
 	await expect(actions.nth(1)).toContainText('Workspace');
 	await expect(page.getByRole('button', { name: 'Open Coder' })).toHaveCount(0);
 	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
+	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
 	await actions.nth(1).click();
 	await expect(page).toHaveURL(/#\/workspace$/);
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);

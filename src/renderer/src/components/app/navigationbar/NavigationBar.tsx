@@ -46,7 +46,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isSettings = location.pathname.startsWith('/settings');
 	const settingsLabel = t('settings.title', 'Settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
-	const workspaceButtonLabel = t('navigationBar.workspace', 'Workspace');
 	const searchLabel = t('navigationBar.search', 'Search');
 	const navigationBarMenuItems = [
 		{ path: '/settings/general', label: t('settings.tabs.general') },
@@ -116,16 +115,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<User className="size-4" strokeWidth={1.8} />
 		</Button>
 	) : null;
-	const viewSwitch = (isHome || isWorkspace) && (
-		<div role="group" aria-label={t('navigationBar.view', 'View')} className="fixed left-[116px] top-2.5 z-50 flex items-center gap-0.5 rounded-lg bg-muted p-0.5">
-			<Button type="button" size="xs" variant={isHome ? 'secondary' : 'ghost'} aria-pressed={isHome} onClick={() => navigate('/home')}>
-				{chatButtonLabel}
-			</Button>
-			<Button type="button" size="xs" variant={isWorkspace ? 'secondary' : 'ghost'} aria-pressed={isWorkspace} onClick={() => navigate('/workspace')}>
-				{workspaceButtonLabel}
-			</Button>
-		</div>
-	);
 	return (
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
 			<NavigationBarContainer
@@ -157,7 +146,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 							<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
 						</button>
 					)}
-					{viewSwitch}
 					{!isMac && searchButton}
 					{!isMac && voiceButton}
 					{!isMac && routeButton}
