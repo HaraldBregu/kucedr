@@ -40,6 +40,7 @@ export function Sidebar({
 	onConfiguration,
 	settingsActive,
 	markdownFiles,
+	markdownError,
 	activeMarkdown,
 	onMarkdown,
 	onCreateMarkdown,
@@ -53,6 +54,7 @@ export function Sidebar({
 	onConfiguration: () => void;
 	settingsActive: boolean;
 	markdownFiles: string[];
+	markdownError: string;
 	activeMarkdown: string | null;
 	onMarkdown: (filePath: string) => void;
 	onCreateMarkdown: () => void;
@@ -146,6 +148,7 @@ export function Sidebar({
 						</li>)}
 					</ul>
 					{project?.available && !markdownFiles.length && <p className="px-2 py-1 text-xs text-muted-foreground">No Markdown files yet.</p>}
+					{markdownError && <p role="alert" className="px-2 py-1 text-xs text-destructive">{markdownError}</p>}
 				</nav>
 			</section>
 			<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
