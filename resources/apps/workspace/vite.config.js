@@ -43,7 +43,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			'@': path.resolve(import.meta.dirname, './src'),
-			'@kucedr/sdk': path.resolve(import.meta.dirname, '../../kucedr/packages/sdk/index.ts'),
+			'@kucedr/sdk': path.resolve(import.meta.dirname, '../../../packages/sdk/index.ts'),
 		},
 	},
 });
