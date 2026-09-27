@@ -23,14 +23,14 @@ export function Editor({ value, onChange, onSave }: {
 	const view = useRef<EditorView | null>(null);
 	const onChangeRef = useRef(onChange);
 	const onSaveRef = useRef(onSave);
-	onChangeRef.current = onChange;
-	onSaveRef.current = onSave;
+	const initialValue = useRef(value);
+	useEffect(() => { onChangeRef.current = onChange; onSaveRef.current = onSave; }, [onChange, onSave]);
 	useEffect(() => {
 		if (!mount.current) return;
 		const editor = new EditorView({
 			parent: mount.current,
 			state: EditorState.create({
-				doc: value,
+				doc: initialValue.current,
 				extensions: [
 					history(),
 					markdown(),
