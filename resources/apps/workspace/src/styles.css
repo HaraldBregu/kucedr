@@ -1,0 +1,128 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-sidebar: var(--sidebar);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-muted: var(--sidebar-muted);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
+	--shadow-soft: 0 16px 40px rgb(15 23 42 / 0.12);
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+}
+
+:root {
+	font-family:
+		Inter,
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		BlinkMacSystemFont,
+		'Segoe UI',
+		sans-serif;
+	color-scheme: light;
+	--background: hsl(42 24% 97%);
+	--foreground: hsl(32 15% 12%);
+	--card: hsl(40 24% 99%);
+	--card-foreground: hsl(32 15% 12%);
+	--popover: hsl(40 24% 99%);
+	--popover-foreground: hsl(32 15% 12%);
+	--primary: hsl(155 23% 25%);
+	--primary-foreground: hsl(42 24% 98%);
+	--secondary: hsl(38 17% 92%);
+	--secondary-foreground: hsl(32 15% 18%);
+	--muted: hsl(38 16% 93%);
+	--muted-foreground: hsl(30 8% 43%);
+	--accent: hsl(38 21% 90%);
+	--accent-foreground: hsl(32 15% 15%);
+	--destructive: hsl(3 58% 48%);
+	--destructive-foreground: hsl(42 24% 98%);
+	--border: hsl(36 14% 86%);
+	--input: hsl(36 14% 82%);
+	--ring: hsl(155 23% 32%);
+	--radius: 0.625rem;
+	--sidebar: hsl(154 18% 17%);
+	--sidebar-foreground: hsl(45 25% 93%);
+	--sidebar-muted: color-mix(in oklch, var(--sidebar-foreground) 65%, transparent);
+	--sidebar-accent: hsl(153 15% 23%);
+	--sidebar-accent-foreground: var(--sidebar-foreground);
+	--sidebar-border: hsl(153 13% 27%);
+	--sidebar-ring: var(--ring);
+}
+
+.dark {
+	color-scheme: dark;
+	--background: hsl(150 8% 10%);
+	--foreground: hsl(42 20% 92%);
+	--card: hsl(150 8% 12%);
+	--card-foreground: hsl(42 20% 92%);
+	--popover: hsl(150 8% 13%);
+	--popover-foreground: hsl(42 20% 92%);
+	--primary: hsl(145 18% 67%);
+	--primary-foreground: hsl(150 12% 12%);
+	--secondary: hsl(150 7% 18%);
+	--secondary-foreground: hsl(42 20% 92%);
+	--muted: hsl(150 7% 18%);
+	--muted-foreground: hsl(42 8% 62%);
+	--accent: hsl(150 7% 21%);
+	--accent-foreground: hsl(42 20% 94%);
+	--destructive: hsl(3 72% 65%);
+	--destructive-foreground: hsl(42 20% 96%);
+	--border: hsl(150 6% 23%);
+	--input: hsl(150 6% 26%);
+	--ring: hsl(145 18% 62%);
+}
+
+html,
+body,
+#root {
+	@apply h-full;
+}
+
+body {
+	@apply m-0 min-w-[320px] bg-background text-foreground antialiased;
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+::selection {
+	background: color-mix(in oklch, var(--primary) 18%, transparent);
+}
+
+button,
+[role='button'] {
+	user-select: text;
+	-webkit-user-select: text;
+}
+
+.scrollbar-subtle {
+	scrollbar-color: var(--border) transparent;
+	scrollbar-width: thin;
+}

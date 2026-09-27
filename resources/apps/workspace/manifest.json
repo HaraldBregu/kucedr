@@ -1,0 +1,19 @@
+{
+	"title": "Workspace",
+	"handle": "@workspace",
+	"description": "Kucedr workspace app.",
+	"metadata": {
+		"version": "1.0.0",
+		"category": "utility",
+		"entry": "dist/index.html",
+		"image": "assets/images/logo.png"
+	},
+	"window": {
+		"width": 1364,
+		"height": 885,
+		"minWidth": 620,
+		"minHeight": 480,
+		"resizable": true,
+		"maximizable": true
+	}
+}
