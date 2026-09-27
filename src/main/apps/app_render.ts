@@ -55,7 +55,7 @@ export function render(
 			title,
 			backgroundColor: '#00000000',
 		},
-		{ html: 'app.html', hash: `app/${encodeURIComponent(title)}` }
+		{ html: appId === 'workspace' ? 'workspace.html' : 'app.html', hash: `app/${encodeURIComponent(title)}` }
 	);
 
 	const appWindow: AppWindow = {
