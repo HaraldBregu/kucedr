@@ -315,7 +315,6 @@ async function* loop(
 		if (input.explicitSkill) {
 			const skill = await activateSkill(skillSnapshot, input.explicitSkill);
 			applyActivatedSkill(skill);
-			search?.activateImmediate(skill.allowedTools ?? []);
 		}
 
 		yield {

@@ -28,7 +28,6 @@ export interface ToolSearch {
 	active(): Tool[];
 	replaceEligible(tools: Tool[]): void;
 	replaceMcpEntries(entries: DiscoveredMcpTool[]): void;
-	activateImmediate(toolIds: readonly string[]): void;
 }
 
 export function createToolSearch(options: ToolSearchOptions): ToolSearch {
@@ -104,12 +103,6 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 		},
 		replaceMcpEntries(entries) {
 			mcpMetadata = new Map(entries.map((entry) => [entry.tool.id, entry]));
-		},
-		activateImmediate(toolIds) {
-			for (const id of toolIds) {
-				const candidate = eligible.get(id);
-				if (candidate) active.set(id, candidate);
-			}
 		},
 	};
 }
