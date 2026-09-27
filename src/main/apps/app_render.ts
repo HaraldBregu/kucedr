@@ -9,7 +9,6 @@ import {
 	type ResolvedAppWindowSettings,
 } from '../../shared/app_window_settings';
 import { attachRouteNavigation } from '../attach_route_navigation';
-import { persistWorkspaceWindowSize } from './size';
 
 export interface AppWindow {
 	window: BrowserWindow;
@@ -55,7 +54,7 @@ export function render(
 			title,
 			backgroundColor: '#00000000',
 		},
-		{ html: appId === 'workspace' ? 'workspace.html' : 'app.html', hash: `app/${encodeURIComponent(title)}` }
+		{ html: 'app.html', hash: `app/${encodeURIComponent(title)}` }
 	);
 
 	const appWindow: AppWindow = {
@@ -71,8 +70,6 @@ export function render(
 	let appReady = false;
 	let childClosing = false;
 	let hostCloseAllowed = false;
-	let resizePersistenceTimer: ReturnType<typeof setTimeout> | undefined;
-	let workspaceSizeDirty = false;
 	attachRouteNavigation(win, () => appContents);
 	const showWhenReady = (): void => {
 		if (!shellReady || !appReady || win.isDestroyed()) return;
@@ -90,19 +87,8 @@ export function render(
 			height: Math.max(0, height - navigationBarHeight),
 		});
 	};
-	const persistWorkspaceSize = (): void => {
-		if (appId !== 'workspace' || !workspaceSizeDirty || win.isDestroyed()) return;
-		workspaceSizeDirty = false;
-		try {
-			persistWorkspaceWindowSize(win, settings);
-		} catch {}
-	};
 	const handleResize = (): void => {
 		resizeView();
-		if (appId !== 'workspace') return;
-		workspaceSizeDirty = true;
-		if (resizePersistenceTimer) clearTimeout(resizePersistenceTimer);
-		resizePersistenceTimer = setTimeout(persistWorkspaceSize, 300);
 	};
 	appWindow.layout = resizeView;
 	const discardFailedShell = (): void => {
@@ -174,8 +160,6 @@ export function render(
 		appContents.close({ waitForBeforeUnload: true });
 	});
 	win.on('closed', () => {
-		if (resizePersistenceTimer) clearTimeout(resizePersistenceTimer);
-		persistWorkspaceSize();
 		if (windows.get(appId) === appWindow) windows.delete(appId);
 		if (appContents && !appContents.isDestroyed()) appContents.close();
 	});
