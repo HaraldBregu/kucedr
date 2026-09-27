@@ -263,6 +263,7 @@ async function* loop(
 				unsubscribeMcp = mcp.onChanged((entries) => {
 					mcpEntries = entries;
 					tools = [...tools.filter((tool) => tool.policy?.kind !== 'mcp'), ...entries.map((entry) => entry.tool)];
+					search?.replaceMcpEntries(entries);
 					search?.replaceEligible(filterEligibleTools(tools));
 				});
 			}
