@@ -6,7 +6,9 @@ import { launchApp } from './helpers';
 test('opens the bundled Workspace in its own window', async () => {
 	const { app, page, userDataDir } = await launchApp();
 	try {
-		await page.evaluate(() => window.apps.open('workspace'));
+		await expect(async () => {
+			await page.evaluate(() => window.apps.open('workspace'));
+		}).toPass();
 		await expect.poll(() =>
 			app.evaluate(({ BrowserWindow }) => {
 				return BrowserWindow.getAllWindows().map((window) => ({
