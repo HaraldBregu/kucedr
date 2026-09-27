@@ -9,23 +9,22 @@ Build a runnable, installable Kucedr app that uses only the SDK capabilities nee
 
 ## Establish the current contract
 
-Before writing code, inspect the current SDK and the closest existing app:
+Before writing code, inspect the current SDK and app host contract:
 
 - Read `packages/sdk/README.md` and `packages/sdk/index.ts` for supported public APIs and their types.
 - Read the relevant interfaces in `src/shared/api_types.ts` when using a capability not covered by the README.
-- Start from the nearest app in `resources/apps/` rather than inventing project conventions. `resources/apps/demo` is the small SDK and storage example; `workspace`, `architect`, and `videomaker` demonstrate larger app patterns.
 - Confirm the current manifest validation and import behavior in `src/main/apps/` if packaging, images, or window configuration matter.
 
 Do not call undeclared preload globals or Electron/Node APIs from app renderer code. Import the public bridge from `@kucedr/sdk` instead.
 
 ## Create the app package
 
-Place a source app at `resources/apps/<app-id>/`, where `<app-id>` is the stable folder name used for installation and persisted app data. Preserve an existing app ID unless the user explicitly requests a migration.
+Create the source app in a separate project outside the Kucedr repository. Do not create a `resources/apps/` directory. The app folder name is the stable ID used for installation and persisted app data. Preserve an existing app ID unless the user explicitly requests a migration.
 
 Include a production build and manifest:
 
 ```text
-resources/apps/<app-id>/
+<app-id>/
 ├── manifest.json
 ├── package.json
 ├── src/
@@ -35,7 +34,7 @@ resources/apps/<app-id>/
 - `manifest.json` must provide `title`, `description`, and `metadata` with `version`, `category`, and `entry: "dist/index.html"`.
 - Set `metadata.image` only to an app-owned raster asset accepted by the current manifest validator. Do not use SVG for this field.
 - Use `window` only when the requested window dimensions or behavior differ from host defaults. Dimensions describe the outer window, including the host navigationbar.
-- For repository apps, depend on the local SDK as the nearest sibling-app configuration does (currently `file:../../../packages/sdk`). For an independently published app, use its released `@kucedr/sdk` dependency instead.
+- For local development, link `@kucedr/sdk` to this repository's `packages/sdk` using a path relative to the external app project. For a published app, use its released `@kucedr/sdk` dependency instead.
 - Keep `package.json` metadata and `main` consistent with the manifest, even though the manifest takes precedence when both exist.
 
 The imported bundle must contain the built entry. The importer copies the app without `node_modules`, retains the installed app's `data` directory when replacing the same ID, and rejects missing or invalid manifests/entries.
