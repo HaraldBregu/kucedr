@@ -155,6 +155,26 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page).toHaveURL(/#\/home$/);
 });
 
+test('editing Markdown Preview keeps table and task content', async () => {
+	const markdown = '# Notes\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n- [x] Done';
+	await page.evaluate(async (content) => {
+		await window.agent.createWorkspaceFile('', 'formatted.md');
+		await window.agent.writeWorkspaceFile('formatted.md', content);
+		window.location.hash = '#/workspace';
+	}, markdown);
+	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
+	await workspace.getByRole('button', { name: 'formatted.md' }).click();
+	await expect(page.getByRole('table')).toBeVisible();
+	await expect(page.getByRole('checkbox')).toBeChecked();
+	await page.getByRole('heading', { name: 'Notes' }).click();
+	await page.keyboard.press('End');
+	await page.keyboard.type(' updated');
+	await page.getByText('Source', { exact: true }).click();
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('| A | B |');
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('- [x] Done');
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Notes updated');
+});
+
 test('the settings home redirects to General settings', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/settings';
