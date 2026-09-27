@@ -2143,6 +2143,8 @@
 	"navigationBar": {
 		"applicationMenu": "Menu applicazione",
 		"chat": "Chat",
+		"workspace": "Workspace",
+		"view": "Vista",
 		"newChat": "Nuova Chat",
 		"openLocation": "Apri posizione",
 		"search": "Cerca",

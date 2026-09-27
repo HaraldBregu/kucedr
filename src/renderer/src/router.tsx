@@ -226,6 +226,10 @@ const routes: RouteObject[] = [
 				),
 			},
 			{
+				path: 'workspace',
+				element: <div className="h-full" />,
+			},
+			{
 				path: 'settings',
 				element: (
 					<RouteWrapper>

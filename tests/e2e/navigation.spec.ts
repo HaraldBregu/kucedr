@@ -35,6 +35,7 @@ test.afterAll(async () => {
 const routes = [
 	'/start',
 	'/home',
+	'/workspace',
 	'/settings',
 	'/settings/general',
 	'/settings/general/persona',
@@ -92,6 +93,20 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 		'-webkit-app-region',
 		'no-drag'
 	);
+});
+
+test('the main navigation switches between Chat and a blank Workspace view', async () => {
+	await page.evaluate(() => {
+		window.location.hash = '#/home';
+	});
+	const view = page.getByRole('group', { name: 'View' });
+	await view.getByRole('button', { name: 'Workspace' }).click();
+	await expect(page).toHaveURL(/#\/workspace$/);
+	await expect(view.getByRole('button', { name: 'Workspace' })).toHaveAttribute('aria-pressed', 'true');
+	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
+	await view.getByRole('button', { name: 'Chat' }).click();
+	await expect(page).toHaveURL(/#\/home$/);
+	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toBeVisible();
 });
 
 test('the settings home redirects to General settings', async () => {
