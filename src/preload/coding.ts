@@ -52,6 +52,18 @@ export const coding: CodingApi = {
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');
 		return typedInvokeUnwrap(CodingChannels.listProjectFiles, normalizedProjectId);
 	},
+	listMarkdownFiles: (projectId) => {
+		const id = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!id) throw new Error('Invalid coding project id.');
+		return typedInvokeUnwrap(CodingChannels.listMarkdownFiles, id);
+	},
+	saveMarkdownFile: (projectId, filePath, content, expectedContent) => {
+		const id = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!id || !isCodingProjectFilePath(filePath) || !filePath.toLowerCase().endsWith('.md') ||
+			typeof content !== 'string' || typeof expectedContent !== 'string')
+			throw new Error('Invalid coding Markdown file.');
+		return typedInvokeUnwrap(CodingChannels.saveMarkdownFile, id, filePath, content, expectedContent);
+	},
 	createProjectFile: (projectId, filePath) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId || !isCodingProjectFilePath(filePath)) {

@@ -25,6 +25,8 @@ import { ClineHarness } from './harness/cline';
 import type { CodingHarness, HarnessContext, HarnessEvent } from './harness/types';
 import { executeCommand } from './shell';
 import { CodingInstructions } from './instructions';
+import { listMarkdownFiles } from './markdown';
+import { saveMarkdownFile } from './save';
 
 interface CodingDependencies {
 	readonly store: CodingStore;

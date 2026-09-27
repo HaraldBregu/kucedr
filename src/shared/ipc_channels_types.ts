@@ -112,6 +112,11 @@ export interface CodingInvokeChannelMap {
 		args: [projectId: string];
 		result: import('./coding_types').CodingProjectFile[];
 	};
+	[CodingChannels.listMarkdownFiles]: { args: [projectId: string]; result: string[] };
+	[CodingChannels.saveMarkdownFile]: {
+		args: [projectId: string, filePath: string, content: string, expectedContent: string];
+		result: void;
+	};
 	[CodingChannels.createProjectFile]: {
 		args: [projectId: string, filePath: string];
 		result: import('./coding_types').CodingProjectFile;

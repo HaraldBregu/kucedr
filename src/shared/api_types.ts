@@ -284,6 +284,13 @@ export interface CodingApi {
 	removeProject: (projectId: string) => Promise<boolean>;
 	readProjectFile: (projectId: string, filePath: string) => Promise<string>;
 	listProjectFiles: (projectId: string) => Promise<CodingProjectFile[]>;
+	listMarkdownFiles: (projectId: string) => Promise<string[]>;
+	saveMarkdownFile: (
+		projectId: string,
+		filePath: string,
+		content: string,
+		expectedContent: string
+	) => Promise<void>;
 	createProjectFile: (projectId: string, filePath: string) => Promise<CodingProjectFile>;
 	getProjectInstructions: (
 		projectId: string,
