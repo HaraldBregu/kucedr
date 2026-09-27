@@ -34,6 +34,11 @@ import { McpIpc } from '../../../../src/main/ipc/mcp';
 const originalGoogleClientId = process.env.GOOGLE_CLIENT_ID;
 const originalGoogleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
+beforeEach(() => {
+	jest.clearAllMocks();
+	testMcpServer.mockResolvedValue({ ok: true, tools: [], toolCount: 0, durationMs: 0 });
+});
+
 afterAll(() => {
 	if (originalGoogleClientId === undefined) delete process.env.GOOGLE_CLIENT_ID;
 	else process.env.GOOGLE_CLIENT_ID = originalGoogleClientId;
@@ -42,11 +47,6 @@ afterAll(() => {
 });
 
 describe('MCP IPC', () => {
-	beforeEach(() => {
-		jest.clearAllMocks();
-		testMcpServer.mockResolvedValue({ ok: true, tools: [], toolCount: 0, durationMs: 0 });
-	});
-
 	it('rejects app views before testing a server', async () => {
 		const mainFrame = {};
 		const mainSender = { id: 21, mainFrame };
