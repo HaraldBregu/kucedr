@@ -17,8 +17,8 @@ import { Instructions } from './Instructions';
 import { Markdown } from './Markdown';
 import { useWorkspace } from './workspace';
 
-const RIGHT_MIN_WIDTH = 280;
-const RIGHT_MAX_WIDTH = 576;
+const RIGHT_MIN_WIDTH = 360;
+const RIGHT_MAX_WIDTH = 720;
 
 export function CoderPage() {
 	useAppTheme();
@@ -27,9 +27,7 @@ export function CoderPage() {
 	const navigate = useNavigate();
 	const [sidebar, setSidebar] = useState(() => window.innerWidth >= 768);
 	const [viewer, setViewer] = useState(true);
-	const [viewerWidth, setViewerWidth] = useState(() =>
-		Math.min(RIGHT_MAX_WIDTH, Math.max(RIGHT_MIN_WIDTH, window.innerWidth * 0.35))
-	);
+	const [viewerWidth, setViewerWidth] = useState(400);
 	const [sidebarWidth, setSidebarWidth] = useState(DEFAULT_SIDEBAR_WIDTH);
 	const [layoutReady, setLayoutReady] = useState(false);
 	const [instructionsDirty, setInstructionsDirty] = useState(false);
@@ -123,8 +121,10 @@ export function CoderPage() {
 		void navigate(path);
 	};
 	const select = (projectId: string, sessionId?: string, fresh?: boolean) => {
-		if (!leaveEditor()) return;
-		setActiveMarkdown(null);
+		if (projectId !== coding.projectId) {
+			if (!leaveEditor()) return;
+			setActiveMarkdown(null);
+		} else if (!leaveInstructions()) return;
 		void navigate('/');
 		void coding.select(projectId, sessionId, fresh);
 	};
@@ -162,7 +162,6 @@ export function CoderPage() {
 				!markdownDirtyRef.current
 			) {
 				event.preventDefault();
-				setActiveMarkdown(null);
 				void navigate('/');
 				void coding.select(project.id, undefined, true);
 			}
@@ -330,7 +329,6 @@ export function CoderPage() {
 						</div>
 						<Chat
 							coding={coding}
-							onNewSession={() => project && select(project.id, undefined, true)}
 							onConfiguration={() => openPage('/settings')}
 						/>
 						<Resize

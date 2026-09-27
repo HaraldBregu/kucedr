@@ -1,4 +1,4 @@
-import { Code2, FolderPlus, Plus } from 'lucide-react';
+import { Code2, FolderPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ChatContainerContent, ChatContainerRoot } from '@/components/ui/chat-container';
 import { Composer } from './Composer';
@@ -8,11 +8,9 @@ import type { Workspace } from './workspace';
 
 export function Chat({
 	coding,
-	onNewSession,
 	onConfiguration,
 }: {
 	coding: Workspace;
-	onNewSession: () => void;
 	onConfiguration: () => void;
 }) {
 	const project = coding.projects.find((item) => item.id === coding.projectId);
@@ -22,16 +20,6 @@ export function Chat({
 				<h2 className="min-w-0 flex-1 truncate text-sm font-medium">
 					{coding.snapshot?.session.title || 'New session'}
 				</h2>
-				<Button
-					variant="ghost"
-					size="icon-sm"
-					aria-label="New session"
-					title="New session · ⌘/Ctrl N"
-					disabled={!project?.available || coding.busy || coding.loading}
-					onClick={onNewSession}
-				>
-					<Plus className="size-4" />
-				</Button>
 			</header>
 			<ChatContainerRoot className="min-h-0">
 				<ChatContainerContent className="p-4">
