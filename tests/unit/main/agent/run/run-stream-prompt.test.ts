@@ -1151,25 +1151,15 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
 	});
 
-	it('consolidates premature calls into one loader turn and executes them once on the next turn', async () => {
-		const bashExecute = jest.fn();
-		const writeExecute = jest.fn();
-		const budget = new ExecutionBudget({ calls: 2 });
+	it('activates a searched native tool for the next turn', async () => {
+		const execute = jest.fn();
 		const bash = jsonTool({
 			id: 'bash',
 			name: 'Bash',
 			description: 'Run a command',
 			capability: { effects: ['execute'] },
 			schema: { type: 'object' },
-			execute: bashExecute,
-		});
-		const write = jsonTool({
-			id: 'write',
-			name: 'Write',
-			description: 'Write a file',
-			capability: { effects: ['write'] },
-			schema: { type: 'object' },
-			execute: writeExecute,
+			execute,
 		});
 		runModelTurnMock
 			.mockImplementationOnce(async function* () {
@@ -1177,11 +1167,7 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					providerItems: [{ type: 'provider_item', provider: 'openai', item: { type: 'reasoning' } }],
-					toolCalls: [
-						{ id: 'early-bash', name: 'bash', args: { command: 'pwd' } },
-						{ id: 'early-write', name: 'write', args: { path: 'demo.txt' } },
-					],
+					toolCalls: [{ id: 'find-bash', name: 'tool_search', args: { query: 'run a command' } }],
 				};
 			})
 			.mockImplementationOnce(async function* () {
@@ -1189,84 +1175,70 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [
-						{ id: 'retry-bash', name: 'bash', args: { command: 'pwd' } },
-						{ id: 'retry-write', name: 'write', args: { path: 'demo.txt' } },
-					],
+					toolCalls: [{ id: 'run-bash', name: 'bash', args: { command: 'pwd' } }],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
 		const session = createSessionState();
-		const events = [];
 
 		for await (const _event of stream(
 			{ location: '/workspace' },
 			session,
 			{
-				runId: 'same-turn-guard',
+				runId: 'search-native',
 				task: 'chat',
-				message: 'Read a file',
+				message: 'Run a command',
 				model: 'test-model',
 				type: 'default',
 				agentId: 'main',
 				contextMode: 'minimal',
 			},
 			new AbortController().signal,
-			{ tools: [bash, write], budget, progressiveDiscovery: true }
+			{ tools: [bash], progressiveDiscovery: true }
 		))
-			events.push(_event);
+			void _event;
 
-		expect(bashExecute).toHaveBeenCalledTimes(1);
-		expect(writeExecute).toHaveBeenCalledTimes(1);
-		expect(budget.calls).toBe(2);
-		expect(session.toolCalls.find((call) => call.id === 'early-bash')).toMatchObject({
-			name: 'bash',
-			args: { command: 'pwd' },
-			result: { content: expect.stringContaining('no arguments from this batch were executed') },
-		});
-		expect(session.toolCalls.some((call) => call.id === 'early-write')).toBe(true);
-		expect(
-			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(expect.arrayContaining(['bash', 'write']));
-		expect(
-			events.filter(
-				(event) =>
-					(event.type === 'tool_call_start' || event.type === 'tool_call_end') &&
-					(event.toolName === 'bash' || event.toolName === 'write')
-			)
-		).toHaveLength(8);
-		expect(JSON.stringify(events)).not.toContain("unknown tool 'bash'");
-		expect(JSON.stringify(events)).not.toContain("unknown tool 'write'");
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search']);
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search', 'bash']);
+		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain('"selectedToolIds":["bash"]');
+		expect(execute).toHaveBeenCalledTimes(1);
 	});
 
-	it('loads a deferred MCP server only for a matching request', async () => {
+	it('catalogs MCP tools at run start and exposes a match after tool_search', async () => {
 		const execute = jest.fn();
 		const mcpTool = jsonTool({
-			id: 'mcp__files__read_file',
-			name: 'Read MCP file',
-			description: 'Read a file through MCP',
+			id: 'mcp__billing__invoices',
+			name: 'Invoices',
+			description: 'Find customer invoices',
+			policy: { kind: 'mcp', serverId: 'billing', toolName: 'invoices' },
 			capability: { effects: ['read'] },
 			schema: { type: 'object' },
 			execute,
 		});
-		const loadDeferred = jest.fn(async () => {
-			return [{ tool: mcpTool, serverId: 'files', serverName: 'Files' }];
-		});
 		mockLoadMcpTools.mockResolvedValue({
-			tools: [],
-			entries: [],
-			deferredServers: [{ id: 'files', name: 'Files' }],
-			loadDeferred,
+			tools: [mcpTool],
+			entries: [{ tool: mcpTool, serverId: 'billing', serverName: 'Billing' }],
+			onChanged: () => () => undefined,
 			diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 1, listedTools: 1, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
 			close: closeMcpMock,
 		});
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [{ id: 'find-invoices', name: 'tool_search', args: { query: 'customer invoices' } }],
+				};
+			})
+			.mockImplementationOnce(successfulTurn);
 		for await (const _event of stream(
 			{ location: '/workspace' },
 			createSessionState(),
 			{
-				runId: 'mcp-loader',
+				runId: 'mcp-search',
 				task: 'chat',
-				message: 'Hello there',
+				message: 'Find customer invoices',
 				model: 'test-model',
 				type: 'default',
 				agentId: 'main',
@@ -1277,32 +1249,10 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
-		expect(loadDeferred).not.toHaveBeenCalled();
-		expect(
-			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).not.toContain(mcpTool.id);
-		runModelTurnMock.mockClear();
-		for await (const _event of stream(
-			{ location: '/workspace' },
-			createSessionState(),
-			{
-				runId: 'mcp-matched',
-				task: 'chat',
-				message: 'Files',
-				model: 'test-model',
-				type: 'default',
-				agentId: 'main',
-				contextMode: 'minimal',
-			},
-			new AbortController().signal,
-			{ sandbox }
-		))
-			void _event;
-
-		expect(loadDeferred).toHaveBeenCalledWith(['files'], expect.any(AbortSignal));
-		expect(
-			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toContain(mcpTool.id);
+		expect(mockLoadMcpTools).toHaveBeenCalledTimes(1);
+		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain(mcpTool.id);
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(mcpTool.id);
 		expect(execute).not.toHaveBeenCalled();
 	});
+
 });
