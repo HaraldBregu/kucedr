@@ -29,7 +29,7 @@ describe('MCP connection test', () => {
 			toolCount: 2,
 		});
 		expect(connect).toHaveBeenCalledWith('remote', expect.any(Object), 15_000);
-		expect(listTools).toHaveBeenCalledWith(expect.any(Object), 15_000);
+		expect(listTools).toHaveBeenCalledWith(expect.any(Object), 15_000, undefined, undefined);
 		expect(close).toHaveBeenCalledTimes(1);
 		expect(saveMcpToolCatalog).toHaveBeenCalledWith('remote', [
 			{ name: 'read' },
