@@ -5,6 +5,8 @@ import type { McpOAuthState, McpRecord } from './mcp_types';
 import { listLocalMcpServers } from './mcp_local_list';
 import { mcpLocalRoot } from './mcp_local_root';
 import { mergeMcpRecord } from './mcp_record_merge';
+import { mcpCatalogIdentity } from './mcp_catalog_identity';
+import { clearMcpToolCatalog } from './mcp_catalog_clear';
 
 export function getMcpServers(): McpSettings {
 	const servers: McpSettings = {};
@@ -24,6 +26,11 @@ export function setMcpServers(servers: McpSettings): void {
 		next.push(mergeMcpRecord(id, data, current.get(id)));
 	}
 	setMcpServersState(next);
+	for (const [id, previous] of current) {
+		const updated = next.find((record) => record.id === id);
+		if (!updated || mcpCatalogIdentity(previous) !== mcpCatalogIdentity(updated))
+			clearMcpToolCatalog(id);
+	}
 }
 
 export function getMcpOauth(id: string): McpOAuthState {

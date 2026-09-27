@@ -33,6 +33,7 @@ import { SupabaseAccountProvider } from './cloud/supabase/auth';
 import { createSupabaseClient } from './cloud/supabase/client';
 import { SupabaseCloudRepository } from './cloud/supabase/records';
 import { camera, microphone, screen } from './recorder';
+import { startMcpCatalogBackfill } from './mcp';
 
 export interface MainServices {
 	appState: AppState;
@@ -56,6 +57,7 @@ export interface MainServices {
 export interface BootstrapResult extends MainServices {}
 
 export function bootstrapServices(): BootstrapResult {
+	void startMcpCatalogBackfill();
 	const appState = new AppState();
 	const eventBus = new EventBus();
 	const logger = new LoggerService(eventBus);

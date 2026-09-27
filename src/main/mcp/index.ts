@@ -6,6 +6,7 @@ export { listTools } from './mcp_client_list_tools';
 export { getMcpToolCatalog } from './mcp_catalog_get';
 export { saveMcpToolCatalog } from './mcp_catalog_save';
 export { clearMcpToolCatalog } from './mcp_catalog_clear';
+export { startMcpCatalogBackfill } from './mcp_catalog_backfill';
 export { clientMetadata } from './mcp_oauth_client_metadata';
 export { startOauthCallbackServer } from './mcp_oauth_callback';
 export { createOAuthProvider } from './mcp_oauth_create_provider';
