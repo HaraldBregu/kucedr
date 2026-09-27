@@ -2170,6 +2170,16 @@
 		"markdownView": "Vista Markdown",
 		"preview": "Anteprima",
 		"source": "Sorgente",
+		"newFile": "Nuovo file",
+		"newFolder": "Nuova cartella",
+		"rename": "Rinomina",
+		"delete": "Elimina",
+		"renameEntry": "Rinomina {{name}}",
+		"deleteEntry": "Eliminare {{name}}?",
+		"deleteWarning": "L'elemento e il suo contenuto verranno eliminati definitivamente.",
+		"namePrompt": "Inserisci un nome per l'elemento.",
+		"name": "Nome",
+		"create": "Crea",
 		"unsupported": "Impossibile visualizzare l'anteprima di questo file."
 	},
 	"documents": {

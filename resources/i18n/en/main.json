@@ -2170,6 +2170,16 @@
 		"markdownView": "Markdown view",
 		"preview": "Preview",
 		"source": "Source",
+		"newFile": "New file",
+		"newFolder": "New folder",
+		"rename": "Rename",
+		"delete": "Delete",
+		"renameEntry": "Rename {{name}}",
+		"deleteEntry": "Delete {{name}}?",
+		"deleteWarning": "This permanently deletes the item and its contents.",
+		"namePrompt": "Enter a name for the item.",
+		"name": "Name",
+		"create": "Create",
 		"unsupported": "This file cannot be previewed."
 	},
 	"documents": {
