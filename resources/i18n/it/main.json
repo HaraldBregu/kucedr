@@ -1436,6 +1436,7 @@
 					"empty": "Nessun server MCP configurato.",
 					"noMatches": "Nessun server MCP o strumento rilevato corrispondente.",
 					"noTools": "Questo server non ha restituito strumenti.",
+					"noCatalog": "Apri questo server nelle impostazioni MCP e seleziona Test per caricare i suoi strumenti.",
 					"loadError": "Impossibile caricare i server MCP.",
 					"inspectError": "Impossibile elencare gli strumenti di questo server."
 				},

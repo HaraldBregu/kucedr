@@ -66,10 +66,19 @@ export default function Mcp({ settings, disabled, onChange }: McpProps): React.J
 											onClick={() => {
 												setLoading(server.id);
 												void window.mcp
-													.test(server.id)
-													.then(
-														(next) => {
-															setResults((current) => ({ ...current, [server.id]: next }));
+									.catalog(server.id)
+									.then(
+										(next) => {
+											setResults((current) => ({
+												...current,
+												[server.id]: next ?? {
+													ok: false,
+													tools: [],
+													toolCount: 0,
+													durationMs: 0,
+													error: t(`${prefix}.noCatalog`),
+												},
+											}));
 														},
 														(failure) => {
 															setResults((current) => ({

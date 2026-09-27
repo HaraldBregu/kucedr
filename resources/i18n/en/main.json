@@ -1436,6 +1436,7 @@
 					"empty": "No MCP servers configured.",
 					"noMatches": "No matching MCP servers or discovered tools.",
 					"noTools": "This server returned no tools.",
+					"noCatalog": "Open this server in MCP settings and select Test to load its tools.",
 					"loadError": "Unable to load MCP servers.",
 					"inspectError": "Unable to list this server's tools."
 				},
