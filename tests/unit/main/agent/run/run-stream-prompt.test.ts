@@ -1095,7 +1095,7 @@ describe('run stream system prompt', () => {
 		}
 	);
 
-	it('activates only requested file tools and executes an active batch sequentially', async () => {
+	it('makes file tools available on the first turn and executes an active batch sequentially', async () => {
 		const order: string[] = [];
 		const read = jsonTool({
 			id: 'read',
@@ -1148,6 +1148,7 @@ describe('run stream system prompt', () => {
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(['read', 'edit', 'tool_search']);
 		expect(order).toEqual(['read', 'edit']);
+		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
 	});
 
 	it('consolidates premature calls into one loader turn and executes them once on the next turn', async () => {
