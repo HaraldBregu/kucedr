@@ -543,6 +543,15 @@ input[type='range']:hover::-moz-range-thumb {
 	font-size: 0.75rem;
 }
 
+.workspace-markdown-preview h1 { margin: 0.25rem 0 0.5rem; font-size: 1.5rem; font-weight: 600; }
+.workspace-markdown-preview h2 { margin: 0.25rem 0 0.5rem; font-size: 1.25rem; font-weight: 600; }
+.workspace-markdown-preview h3 { margin: 0.25rem 0 0.5rem; font-size: 1.125rem; font-weight: 600; }
+.workspace-markdown-preview h4 { font-size: 1rem; font-weight: 600; }
+.workspace-markdown-preview h5 { font-size: 0.875rem; font-weight: 600; }
+.workspace-markdown-preview h6 { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--muted-foreground); }
+.workspace-markdown-preview p { margin: 0.5rem 0; }
+.workspace-markdown-preview a { color: var(--link); text-decoration: underline; text-underline-offset: 4px; }
+
 .plan-prompt-frame {
 	position: relative;
 	border-color: transparent;
