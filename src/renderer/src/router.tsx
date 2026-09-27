@@ -130,8 +130,9 @@ function RootRouteComponent(): React.JSX.Element {
 	const { phase } = useOnboarding();
 	const { state: authState, skipSignIn } = useAuth();
 	const isHome = location.pathname === '/home';
+	const isWorkspace = location.pathname === '/workspace';
 	const isSettings = location.pathname.startsWith('/settings');
-	const hasSidebar = isHome || isSettings;
+	const hasSidebar = isHome || isWorkspace || isSettings;
 
 	return (
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
