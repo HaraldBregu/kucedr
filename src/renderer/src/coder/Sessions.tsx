@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import {
 	Check,
 	FileText,
@@ -11,7 +10,6 @@ import {
 	Trash2,
 } from 'lucide-react';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
-import { MAX_SIDEBAR_WIDTH, MIN_SIDEBAR_WIDTH } from '@/components/app/base/page/context/state';
 import {
 	SidebarFooter,
 	SidebarMenu,
@@ -27,48 +25,28 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { cn } from '@/lib/utils';
-import { Resize } from './Resize';
 import type { Workspace } from './workspace';
 
-export function Sidebar({
+export function Sessions({
 	coding,
-	width,
-	onWidthChange,
 	onSelect,
 	onInstructions,
 	onBeforeChange,
 	onConfiguration,
 	settingsActive,
-	markdownFiles,
-	markdownError,
-	activeMarkdown,
-	onMarkdown,
-	onCreateMarkdown,
 }: {
 	coding: Workspace;
-	width: number;
-	onWidthChange: (width: number) => void;
 	onBeforeChange: () => boolean;
 	onSelect: (projectId: string, sessionId?: string, fresh?: boolean) => void;
 	onInstructions: (projectId: string) => void;
 	onConfiguration: () => void;
 	settingsActive: boolean;
-	markdownFiles: string[];
-	markdownError: string;
-	activeMarkdown: string | null;
-	onMarkdown: (filePath: string) => void;
-	onCreateMarkdown: () => void;
 }) {
 	const project = coding.projects.find((item) => item.id === coding.projectId);
 	const sessions = project ? (coding.sessionsByProject[project.id] ?? []) : [];
 
 	return (
-		<aside
-			aria-label="Sessions"
-			data-slot="coder-sidebar"
-			className="absolute inset-y-0 left-0 z-20 flex w-56 shrink-0 flex-col border-r border-sidebar-border bg-background text-sidebar-foreground md:relative md:w-[var(--coder-sidebar-width)]"
-			style={{ '--coder-sidebar-width': `${width}px` } as CSSProperties}
-		>
+		<>
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<SidebarMenu>
 					<SidebarMenuItem>
@@ -127,49 +105,6 @@ export function Sidebar({
 					{project && !sessions.length && (
 						<p className="px-2 py-1 text-xs text-muted-foreground">
 							{project.available ? 'No sessions yet.' : 'Folder unavailable.'}
-						</p>
-					)}
-				</nav>
-				<div className="mt-5 flex items-center justify-between px-2 pb-2 text-xs font-medium text-sidebar-foreground/70">
-					<span>Project Markdown</span>
-					<button
-						type="button"
-						aria-label="New Markdown file"
-						title="New Markdown file"
-						disabled={!project?.available}
-						className="rounded p-0.5 hover:bg-sidebar-accent disabled:opacity-50"
-						onClick={onCreateMarkdown}
-					>
-						<Plus className="size-3.5" />
-					</button>
-				</div>
-				<nav aria-label="Project Markdown files">
-					<ul className="flex min-w-0 flex-col gap-1">
-						{markdownFiles.map((filePath) => (
-							<li key={filePath}>
-								<button
-									type="button"
-									title={filePath}
-									aria-current={activeMarkdown === filePath ? 'page' : undefined}
-									className={cn(
-										SPLIT_ITEM_CLASS,
-										'w-full min-w-0 gap-2',
-										activeMarkdown === filePath && SPLIT_ITEM_ACTIVE_CLASS
-									)}
-									onClick={() => onMarkdown(filePath)}
-								>
-									<FileText className="size-4 shrink-0" />
-									<span className="truncate">{filePath}</span>
-								</button>
-							</li>
-						))}
-					</ul>
-					{project?.available && !markdownFiles.length && (
-						<p className="px-2 py-1 text-xs text-muted-foreground">No Markdown files yet.</p>
-					)}
-					{markdownError && (
-						<p role="alert" className="px-2 py-1 text-xs text-destructive">
-							{markdownError}
 						</p>
 					)}
 				</nav>
@@ -285,15 +220,6 @@ export function Sidebar({
 					</SidebarMenuItem>
 				</SidebarMenu>
 			</SidebarFooter>
-			<Resize
-				side="right"
-				width={width}
-				minWidth={MIN_SIDEBAR_WIDTH}
-				maxWidth={MAX_SIDEBAR_WIDTH}
-				label="Resize sidebar"
-				className="md:block"
-				onWidthChange={onWidthChange}
-			/>
-		</aside>
+		</>
 	);
 }
