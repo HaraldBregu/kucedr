@@ -94,8 +94,8 @@ export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted,
 				else await window.agent.deleteWorkspaceFile(entry.path);
 				onEntryDeleted(entry.path);
 			}
-			setEntries(await window.agent.listWorkspaceFiles());
 			setPendingAction(null);
+			setEntries(await window.agent.listWorkspaceFiles());
 		})().catch((cause: unknown) => {
 			setActionError(cause instanceof Error ? cause.message : t('workspaceSidebar.actionError', 'Unable to change Workspace files.'));
 		}).finally(() => setBusy(false));
