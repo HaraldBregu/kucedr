@@ -118,9 +118,17 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 						<CodeMirrorEditor
 							key={file.path}
 							value={content}
-							onChange={() => undefined}
-							readOnly
-							canSave={false}
+							onChange={(value) => {
+								if (kind !== 'markdown') return;
+								setContent(value);
+								setSaveError('');
+								pendingContent.current = value;
+								if (saveTimer.current) clearTimeout(saveTimer.current);
+								saveTimer.current = setTimeout(save, 500);
+							}}
+							onSave={kind === 'markdown' ? save : undefined}
+							readOnly={kind !== 'markdown'}
+							canSave={kind === 'markdown'}
 							code={kind !== 'markdown'}
 							foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
 							isDark={isDark}
@@ -130,6 +138,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 					</Suspense>
 				</div>
 			)}
+			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
 		</section>
 	);
 }
