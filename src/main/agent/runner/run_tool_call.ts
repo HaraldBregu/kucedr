@@ -205,7 +205,7 @@ export async function* runToolCall(
 			typeof tool.capability === 'function' ? tool.capability(canonicalInput) : tool.capability;
 		const channelAllowed =
 			scope.source !== 'channel' ||
-			['search_web', 'fetch_web_page', 'subagent', 'subagents'].includes(tool.id);
+			['search_web', 'fetch_web_page', 'subagent', 'subagents', 'tool_search'].includes(tool.id);
 		if (!capability || !channelAllowed)
 			resolution = { ...resolution, mode: 'deny', persistable: false };
 		const hardApproval =

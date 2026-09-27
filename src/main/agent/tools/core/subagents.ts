@@ -56,7 +56,7 @@ export async function runChild(
 		contextMode: 'minimal' as const,
 		interactionMode: runtime.interactionMode,
 		...(runtime.toolProfile ? { toolProfile: runtime.toolProfile } : {}),
-		toolsAllow: tools.map((candidate) => candidate.id),
+		toolsAllow: [...tools.map((candidate) => candidate.id), 'tool_search'],
 		...(runtime.providerId ? { providerId: runtime.providerId } : {}),
 		...(runtime.model ? { model: runtime.model } : {}),
 		...(runtime.effort ? { effort: runtime.effort } : {}),

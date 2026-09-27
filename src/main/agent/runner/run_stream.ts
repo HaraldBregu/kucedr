@@ -145,7 +145,7 @@ async function* loop(
 			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
-	const channelAllowedTools = new Set(['search_web', 'fetch_web_page', 'subagent', 'subagents']);
+	const channelAllowedTools = new Set(['search_web', 'fetch_web_page', 'subagent', 'subagents', 'tool_search']);
 	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
 		filterProfileTools(candidates, toolProfile).filter(
 			(tool) =>
