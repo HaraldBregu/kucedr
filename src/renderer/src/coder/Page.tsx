@@ -347,7 +347,7 @@ export function CoderPage() {
 										</ChatContainerContent>
 									</ChatContainerRoot>
 									<Composer coding={coding} onConfiguration={() => openPage('/settings')} />
-								</>
+								</>)
 							}
 						/>
 						<Route path="*" element={<Navigate to="/" replace />} />
