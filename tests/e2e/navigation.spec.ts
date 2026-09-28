@@ -158,6 +158,20 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(workspace.getByRole('button', { name: 'config.json' })).toHaveAttribute('aria-current', 'page');
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
 	await expect(workspace.getByText('Loading files…')).toHaveCount(0);
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await page.evaluate(async () => {
+		await new Promise<void>((resolve, reject) => {
+			const unsubscribe = window.agent.onWorkspaceChanged((event) => {
+				if (event.type === 'change' && event.path === 'Notes/config.json') {
+					unsubscribe();
+					resolve();
+				}
+			});
+			window.agent.writeWorkspaceFile('Notes/config.json', '{"enabled": false}').catch(reject);
+		});
+	});
+	await page.locator('[data-slot="home-sidebar"]').getByRole('button', { name: 'Workspace' }).click();
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": false');
 });
 
 test('editing Markdown Preview keeps table and task content', async () => {
