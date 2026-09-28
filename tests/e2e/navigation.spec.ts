@@ -401,7 +401,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await modelButton.hover();
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
-	await expect(sendButton).toHaveCount(0);
+	await expect(sendButton).toBeVisible();
 	await expect(field.getByRole('button', { name: 'Start voice conversation' })).toHaveCount(0);
 	await expect(transcriptionButton).toHaveCSS('width', '36px');
 	await expect(transcriptionButton).toHaveCSS('height', '36px');
@@ -410,13 +410,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const attachmentBounds = await attachmentButton.boundingBox();
 	expect(fieldBounds && transcriptionBounds && attachmentBounds).toBeTruthy();
 	expect(transcriptionBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
-	expect(
-		Math.abs(
-			transcriptionBounds!.y +
-				transcriptionBounds!.height / 2 -
-				(fieldBounds!.y + fieldBounds!.height / 2)
-		)
-	).toBeLessThan(4);
+	expect(transcriptionBounds!.y).toBeGreaterThan(fieldBounds!.y + fieldBounds!.height / 2);
 	expect(attachmentBounds!.y).toBeGreaterThan(fieldBounds!.y);
 	expect(attachmentBounds!.y + attachmentBounds!.height).toBeLessThanOrEqual(
 		fieldBounds!.y + fieldBounds!.height
@@ -445,7 +439,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeLessThan(20);
 	await editor.fill('');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
-	await expect(sendButton).toHaveCount(0);
+	await expect(sendButton).toBeVisible();
 	await expect(field).toHaveCSS('min-height', '104px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await modelButton.click();
