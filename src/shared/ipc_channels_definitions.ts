@@ -175,6 +175,18 @@ export const McpChannels = {
 	oauthStart: 'mcp:oauth:start',
 } as const;
 
+export const DriveChannels = {
+	status: 'drive:status',
+	list: 'drive:list',
+	read: 'drive:read',
+	create: 'drive:create',
+	update: 'drive:update',
+	trash: 'drive:trash',
+	download: 'drive:download',
+	chooseFolder: 'drive:choose-folder',
+	sync: 'drive:sync',
+} as const;
+
 export const AppChannels = {
 	openAppDataFolder: 'app:open-app-data-folder',
 	openDataFolder: 'app:open-data-folder',

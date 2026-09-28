@@ -30,6 +30,7 @@ import type {
 	McpStdioData,
 	McpTestResult,
 } from './mcp_types';
+import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from './drive_types';
 import type { App, AppImportResult } from './installed_app_types';
 import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks/tasks_types';
 import type { HealthSettings } from '../main/agent/health/health_types';
@@ -368,6 +369,19 @@ export interface McpApi {
 	catalog: (id: string) => Promise<McpTestResult | undefined>;
 	oauthStatus: (id: string) => Promise<boolean>;
 	oauthStart: (id: string) => Promise<McpOAuthStart>;
+}
+
+export interface DriveApi {
+	status: () => Promise<boolean>;
+	connect: () => Promise<void>;
+	list: (query?: string, meetOnly?: boolean) => Promise<DriveFile[]>;
+	read: (id: string) => Promise<{ file: DriveFile; content: string }>;
+	create: (input: DriveCreateInput) => Promise<DriveFile>;
+	update: (id: string, input: DriveUpdateInput) => Promise<DriveFile>;
+	trash: (id: string) => Promise<void>;
+	download: (id: string) => Promise<string>;
+	chooseFolder: () => Promise<string | undefined>;
+	sync: (folderPath: string) => Promise<DriveSyncResult>;
 }
 
 export interface ProviderApi {

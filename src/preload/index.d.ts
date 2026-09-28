@@ -36,6 +36,7 @@ declare global {
 		tasks: TaskApi;
 		skills: SkillsApi;
 		mcp: McpApi;
+		drive: DriveApi;
 		models: ModelsApi;
 		storage: StorageApi;
 		database: DatabaseApi;
