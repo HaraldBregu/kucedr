@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
@@ -12,7 +12,6 @@ export default function WorkspacePage(): React.JSX.Element {
 		const path = localStorage.getItem(SELECTED_FILE_KEY);
 		return path ? { type: 'file', path, name: path.split(/[\\/]/).pop() ?? path } : null;
 	});
-	const [fileRevision, setFileRevision] = useState(0);
 	useEffect(() => {
 		if (selectedFile) localStorage.setItem(SELECTED_FILE_KEY, selectedFile.path);
 		else localStorage.removeItem(SELECTED_FILE_KEY);
@@ -45,7 +44,7 @@ export default function WorkspacePage(): React.JSX.Element {
 			}} onEntryDeleted={(path) => {
 				setSelectedFile((current) => current && (current.path === path || current.path.startsWith(`${path}/`) || current.path.startsWith(`${path}\\`)) ? null : current);
 			}} selectedPath={selectedFile?.path ?? null} />} sidebarLabel="Workspace files">
-				<WorkspaceViewer key={`${selectedFile?.path}:${fileRevision}`} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />
+				<WorkspaceViewer key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />
 			</Split>
 		</PageContainer>
 	);
