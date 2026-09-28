@@ -46,7 +46,16 @@ export default function DrivePage(): React.JSX.Element {
 		void window.drive.status().then((value) => {
 			if (!active) return;
 			setConnected(value);
-			if (value) void refresh('', false);
+			if (value) {
+				setLoading(true);
+				void window.drive.list().then((next) => {
+					if (active) setFiles(next);
+				}).catch((caught: unknown) => {
+					if (active) setError(caught instanceof Error ? caught.message : String(caught));
+				}).finally(() => {
+					if (active) setLoading(false);
+				});
+			}
 		}).catch((caught: unknown) => {
 			if (active) { setConnected(false); setError(caught instanceof Error ? caught.message : String(caught)); }
 		});
@@ -115,7 +124,7 @@ export default function DrivePage(): React.JSX.Element {
 		setError('');
 		try {
 			const path = await window.drive.download(file.id);
-			setMessage(`Saved to ${path}`);
+			if (path) setMessage(`Saved to ${path}`);
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
 		} finally {

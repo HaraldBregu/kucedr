@@ -24,6 +24,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 	const [loadingContent, setLoadingContent] = useState(false);
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('');
+	const fileId = file?.id;
 	const editableContent = file?.mimeType.startsWith('text/') === true;
 
 	useEffect(() => {
@@ -31,14 +32,17 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 		setDescription(file?.description ?? '');
 		setProperties(JSON.stringify(file?.properties ?? {}, null, 2));
 		setParentId(file?.parents?.[0] ?? 'root');
-		setContent('');
-		setContentAvailable(false);
 		setError('');
 		setMessage('');
-		if (!file || !editableContent) return;
+	}, [file]);
+
+	useEffect(() => {
+		setContent('');
+		setContentAvailable(false);
+		if (!fileId || !editableContent) return;
 		let active = true;
 		setLoadingContent(true);
-		void window.drive.read(file.id).then((result) => {
+		void window.drive.read(fileId).then((result) => {
 			if (active) {
 				setContent(result.content);
 				setContentAvailable(true);
@@ -49,7 +53,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 			if (active) setLoadingContent(false);
 		});
 		return () => { active = false; };
-	}, [file?.id, editableContent]);
+	}, [fileId, editableContent]);
 
 	const saveMetadata = async (): Promise<void> => {
 		if (!file) return;
