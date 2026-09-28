@@ -167,10 +167,13 @@ it.each<[AuthState, string]>([
 	expect(footer).not.toBeNull();
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
 	if (state.status === 'signedIn') {
-		expect(within(accountMenu).getByText(state.user.email)).toHaveClass('text-xs');
+		expect(within(accountMenu).queryByText(state.user.email)).not.toBeInTheDocument();
 	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('menu');
+	if (state.status === 'signedIn') {
+		expect(within(menu).getByText(state.user.email)).toHaveClass('text-xs');
+	}
 	[
 		['settings.tabs.account', '/settings/account'],
 		['settings.sidebar.provider', '/settings/providers'],
