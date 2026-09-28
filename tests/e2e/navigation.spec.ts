@@ -153,25 +153,39 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
 	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
 	await expect(page).toHaveURL(/#\/home$/);
+});
+
+test('Workspace keeps its files and selection across chat navigation and refreshes changed content', async () => {
+	await page.evaluate(() => { window.location.hash = '#/home'; });
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceDirectory('', 'Return');
+		await window.agent.createWorkspaceFile('Return', 'state.json');
+		await window.agent.writeWorkspaceFile('Return/state.json', '{"current": 1}');
+	});
 	await page.locator('[data-slot="home-sidebar"]').getByRole('button', { name: 'Workspace' }).click();
-	await expect(page).toHaveURL(/#\/workspace$/);
-	await expect(workspace.getByRole('button', { name: 'config.json' })).toHaveAttribute('aria-current', 'page');
-	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
+	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
+	await workspace.getByText('Return').click();
+	await workspace.getByRole('button', { name: 'state.json' }).click();
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await page.locator('[data-slot="home-sidebar"]').getByRole('button', { name: 'Workspace' }).click();
+	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
 	await expect(workspace.getByText('Loading files…')).toHaveCount(0);
 	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
 	await page.evaluate(async () => {
 		await new Promise<void>((resolve, reject) => {
 			const unsubscribe = window.agent.onWorkspaceChanged((event) => {
-				if (event.type === 'change' && event.path === 'Notes/config.json') {
+				if (event.type === 'change' && event.path === 'Return/state.json') {
 					unsubscribe();
 					resolve();
 				}
 			});
-			window.agent.writeWorkspaceFile('Notes/config.json', '{"enabled": false}').catch(reject);
+			window.agent.writeWorkspaceFile('Return/state.json', '{"current": 2}').catch(reject);
 		});
 	});
 	await page.locator('[data-slot="home-sidebar"]').getByRole('button', { name: 'Workspace' }).click();
-	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": false');
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 2');
 });
 
 test('editing Markdown Preview keeps table and task content', async () => {
