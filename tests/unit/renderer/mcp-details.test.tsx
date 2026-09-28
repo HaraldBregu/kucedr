@@ -1,7 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import type { McpData, McpServerInfo } from '../../../src/shared/mcp_types';
+import type { McpData, McpServerInfo, McpTestResult } from '../../../src/shared/mcp_types';
 import McpDetailsPage from '../../../src/renderer/src/pages/settings/pages/mcp/details/Page';
 
 const mcpApi = {
@@ -148,6 +148,36 @@ describe('MCP details', () => {
 		await user.click(screen.getByRole('button', { name: 'Delete' }));
 		await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('remote'));
 		expect(await screen.findByText('MCP list')).toBeInTheDocument();
+	});
+
+	it('keeps the test result visible while retesting and after the dismissal interval', async () => {
+		server = {
+			id: 'remote',
+			source: 'configured',
+			data: { type: 'http', name: 'Remote docs', url: 'https://mcp.test' },
+		};
+		renderDetails('remote');
+		fireEvent.click(await screen.findByRole('button', { name: 'Test' }));
+		expect(await screen.findByText('2 tools · 25 ms')).toBeInTheDocument();
+
+		jest.useFakeTimers();
+		try {
+			act(() => jest.advanceTimersByTime(5_100));
+			expect(screen.getByText('2 tools · 25 ms')).toBeInTheDocument();
+		} finally {
+			jest.useRealTimers();
+		}
+
+		let resolveTest!: (result: McpTestResult) => void;
+		mcpApi.test.mockImplementationOnce(
+			() => new Promise<McpTestResult>((resolve) => (resolveTest = resolve))
+		);
+		fireEvent.click(screen.getByRole('button', { name: 'Test' }));
+		expect(screen.getByText('2 tools · 25 ms')).toBeInTheDocument();
+		await act(async () => {
+			resolveTest({ ok: false, tools: [], toolCount: 0, durationMs: 30, error: 'Offline' });
+		});
+		expect(screen.getByText('Offline')).toBeInTheDocument();
 	});
 
 	it('uses PAT authentication instead of unsupported OAuth registration for GitHub', async () => {
