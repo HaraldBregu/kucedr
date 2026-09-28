@@ -1,15 +1,15 @@
 import {
 	CircleHelp,
+	Folder,
 	Layers,
 	LogOut,
-	MoreVertical,
 	RadioTower,
 	Server,
 	Settings,
 	UserRound,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
 	DropdownMenu,
@@ -30,6 +30,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { state: authState } = useAuth();
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
 	const accountItem = {
@@ -49,13 +50,13 @@ export function AppSidebarFooter(): React.JSX.Element {
 	return (
 		<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 			<SidebarMenu>
-				<SidebarMenuItem>
+				<SidebarMenuItem className="flex items-center gap-1">
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<SidebarMenuButton
 								size="lg"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="min-w-0 flex-1 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
 								<Avatar className="size-7 rounded-full grayscale">
 									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
@@ -66,7 +67,6 @@ export function AppSidebarFooter(): React.JSX.Element {
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
 									{accountItem.title}
 								</span>
-								<MoreVertical className="ml-auto size-4" aria-hidden="true" />
 							</SidebarMenuButton>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent
@@ -129,6 +129,14 @@ export function AppSidebarFooter(): React.JSX.Element {
 							) : null}
 						</DropdownMenuContent>
 					</DropdownMenu>
+					<SidebarMenuButton
+						type="button"
+						aria-label={t('navigationBar.workspace', 'Workspace')}
+						className="size-9 shrink-0 justify-center p-0"
+						onClick={() => navigate('/workspace')}
+					>
+						<Folder className="size-4" />
+					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>
 		</SidebarFooter>

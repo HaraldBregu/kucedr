@@ -394,6 +394,38 @@ it('shows Settings and Help in the footer menu without a Search item', async () 
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
 });
 
+it('opens Workspace from the sidebar footer folder button', async () => {
+	const user = userEvent.setup();
+	listSessions.mockResolvedValue([]);
+
+	render(
+		<MemoryRouter initialEntries={['/home']}>
+			<Routes>
+				<Route
+					path="/home"
+					element={
+						<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId: jest.fn() }}>
+							<PageContainer>
+								<HomeSidebar refreshKey="initial" />
+							</PageContainer>
+						</ChatSessionContext.Provider>
+					}
+				/>
+				<Route path="/workspace" element={<p>Workspace page</p>} />
+			</Routes>
+		</MemoryRouter>
+	);
+
+	await screen.findByText('settings.chatHistory.empty');
+	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
+	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
+	expect(footer).not.toBeNull();
+	await user.click(
+		within(footer as HTMLElement).getByRole('button', { name: 'navigationBar.workspace' })
+	);
+	expect(screen.getByText('Workspace page')).toBeInTheDocument();
+});
+
 it('shows an empty state when there is no chat history', async () => {
 	listSessions.mockResolvedValue([]);
 
