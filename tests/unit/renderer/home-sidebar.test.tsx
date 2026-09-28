@@ -394,44 +394,6 @@ it('shows Settings and Help in the footer menu without a Search item', async () 
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
 });
 
-it('opens Workspace from the sidebar footer folder button', async () => {
-	const user = userEvent.setup();
-	listSessions.mockResolvedValue([]);
-
-	render(
-		<MemoryRouter initialEntries={['/home']}>
-			<Routes>
-				<Route
-					path="/home"
-					element={
-						<ChatSessionContext.Provider value={{ sessionId: 'home', setSessionId: jest.fn() }}>
-							<PageContainer>
-								<HomeSidebar refreshKey="initial" />
-							</PageContainer>
-						</ChatSessionContext.Provider>
-					}
-				/>
-				<Route path="/workspace" element={<p>Workspace page</p>} />
-			</Routes>
-		</MemoryRouter>
-	);
-
-	await screen.findByText('settings.chatHistory.empty');
-	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
-	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
-	expect(footer).not.toBeNull();
-	const workspaceLink = within(footer as HTMLElement).getByRole('link', {
-		name: 'navigationBar.workspace',
-	});
-	expect(workspaceLink).toHaveAttribute('href', '/workspace');
-	expect(workspaceLink.closest('[data-sidebar="menu-item"]')).not.toBe(
-		accountMenu.closest('[data-sidebar="menu-item"]')
-	);
-	expect(workspaceLink).toHaveClass('size-9');
-	await user.click(workspaceLink);
-	expect(screen.getByText('Workspace page')).toBeInTheDocument();
-});
-
 it('shows an empty state when there is no chat history', async () => {
 	listSessions.mockResolvedValue([]);
 

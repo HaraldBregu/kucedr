@@ -1,6 +1,5 @@
 import {
 	CircleHelp,
-	Folder,
 	Layers,
 	LogOut,
 	RadioTower,
@@ -128,15 +127,6 @@ export function AppSidebarFooter(): React.JSX.Element {
 							) : null}
 						</DropdownMenuContent>
 					</DropdownMenu>
-				</SidebarMenuItem>
-				<SidebarMenuItem className="flex justify-end">
-					<Link
-						to="/workspace"
-						aria-label={t('navigationBar.workspace', 'Workspace')}
-						className="flex size-9 items-center justify-center rounded-xl text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-					>
-						<Folder className="size-4" />
-					</Link>
 				</SidebarMenuItem>
 			</SidebarMenu>
 		</SidebarFooter>
