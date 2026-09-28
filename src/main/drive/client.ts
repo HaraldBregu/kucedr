@@ -138,7 +138,7 @@ export class DriveClient {
 		const file = await this.file(id);
 		if (file.mimeType === FOLDER) throw new Error('A folder cannot be downloaded as a file.');
 		const native = file.mimeType.startsWith('application/vnd.google-apps.');
-		return { file, name: native ? `${file.name}.pdf` : file.name };
+		return { file, name: basename(native ? `${file.name}.pdf` : file.name) };
 	}
 
 	async download(id: string, destination: string, file: DriveFile): Promise<void> {
