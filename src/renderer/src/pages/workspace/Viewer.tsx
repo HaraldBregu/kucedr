@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronDown, ChevronRight, ChevronUp, Folder, LoaderCircle, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, LoaderCircle, Search, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -7,13 +7,12 @@ import { workspaceFileType } from '@shared/workspace';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { useIsDark } from '@/hooks/use-is-dark';
 import { markdownComponents } from '@/pages/home/components/markdown';
 import { formatFileSize } from '@/pages/home/attachments/size';
 import type { CodeMirrorEditorHandle } from './Editor';
-import { WorkspaceBreadcrumbTree } from './BreadcrumbTree';
+import { WorkspaceBreadcrumb } from './Breadcrumb';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('./Editor');
@@ -40,7 +39,6 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 	const [saveError, setSaveError] = useState('');
 	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
 	const [findOpen, setFindOpen] = useState(false);
-	const [treeOpen, setTreeOpen] = useState(false);
 	const [findQuery, setFindQuery] = useState('');
 	const editorRef = useRef<CodeMirrorEditorHandle>(null);
 	const pendingContent = useRef<string | null>(null);
@@ -53,7 +51,6 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 	if (mediaUrl && file) mediaUrl.pathname = `/${file.path.replaceAll('\\', '/')}`;
 	const searchable = kind !== null && !media && kind !== 'unsupported';
 	const visibleMarkdownMode = kind === 'markdown' && findOpen ? 'source' : markdownMode;
-	const pathSegments = file?.path.split(/[\\/]/).filter(Boolean) ?? [];
 	const matchCount = findQuery ? content.toLocaleLowerCase().split(findQuery.toLocaleLowerCase()).length - 1 : 0;
 	const closeFind = (): void => {
 		setFindOpen(false);
@@ -127,24 +124,7 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
 			{file ? (
 				<header aria-label="File navigation" className="sticky top-0 z-20 flex h-9 shrink-0 items-center gap-1.5 border-b bg-background/95 px-2 backdrop-blur sm:px-3">
-					<nav aria-label="File path" className="flex min-w-0 flex-1 items-center overflow-hidden text-xs" title={file.path}>
-						<DropdownMenu open={treeOpen} onOpenChange={setTreeOpen}>
-							<DropdownMenuTrigger asChild>
-								<Button type="button" variant="ghost" size="icon-sm" className="mr-1 size-7 shrink-0" aria-label="Browse workspace root">
-									<Folder aria-hidden="true" className="size-4" />
-								</Button>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent align="start" className="max-h-80 min-w-64 overflow-y-auto p-0">
-								<WorkspaceBreadcrumbTree entries={entries} selectedPath={file.path} onFileSelect={(entry) => { setTreeOpen(false); onFileSelect(entry); }} />
-							</DropdownMenuContent>
-						</DropdownMenu>
-						{pathSegments.map((segment, index) => (
-							<span key={`${index}:${segment}`} className="flex min-w-0 items-center">
-								<ChevronRight aria-hidden="true" className="mx-1 size-3 shrink-0 text-muted-foreground" />
-								<span className={index === pathSegments.length - 1 ? 'min-w-0 truncate font-medium' : 'min-w-0 truncate text-muted-foreground'}>{segment}</span>
-							</span>
-						))}
-					</nav>
+					<WorkspaceBreadcrumb entries={entries} path={file.path} onFileSelect={onFileSelect} />
 					{searchable ? findOpen ? (
 						<div role="search" className="ml-auto flex min-w-0 items-center gap-1">
 							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs sm:w-40" onChange={(event) => {
