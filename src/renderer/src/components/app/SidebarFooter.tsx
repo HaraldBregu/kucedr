@@ -2,6 +2,7 @@ import {
 	CircleHelp,
 	Layers,
 	LogOut,
+	MoreVertical,
 	RadioTower,
 	Server,
 	Settings,
@@ -65,6 +66,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
 									{accountItem.title}
 								</span>
+								<MoreVertical className="ml-auto size-4" aria-hidden="true" />
 							</SidebarMenuButton>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent

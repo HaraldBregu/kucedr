@@ -167,6 +167,7 @@ it.each<[AuthState, string]>([
 	expect(footer).not.toBeNull();
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
 	expect(accountMenu.querySelector('.rounded-full.grayscale')).toHaveClass('size-7');
+	expect(accountMenu.querySelector('svg')).toBeInTheDocument();
 	if (state.status === 'signedIn') {
 		expect(within(accountMenu).queryByText(state.user.email)).not.toBeInTheDocument();
 	}
