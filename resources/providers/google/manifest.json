@@ -484,14 +484,7 @@
 			"description": "Search and manage Drive files.",
 			"authentication": "oauth2",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/drive",
-				"https://www.googleapis.com/auth/drive.meet.readonly",
-				"https://www.googleapis.com/auth/drive.metadata",
-				"https://www.googleapis.com/auth/drive.metadata.readonly",
-				"https://www.googleapis.com/auth/drive.readonly",
-				"https://www.googleapis.com/auth/drive.file"
-			],
+			"scopes": ["https://www.googleapis.com/auth/drive"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",

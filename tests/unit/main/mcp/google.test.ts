@@ -37,18 +37,12 @@ it.each([
 	expect(mcpOAuthOptions(url).authorizationParams?.scope).toBe(scopes?.join(' '));
 });
 
-it('requests the Drive scopes used by the Drive workflows', () => {
-	const scopes = findMcpService('https://drivemcp.googleapis.com/mcp/v1')?.scopes;
-	for (const scope of [
-		'drive',
-		'drive.meet.readonly',
-		'drive.metadata',
-		'drive.metadata.readonly',
-		'drive.readonly',
-		'drive.file',
-	]) {
-		expect(scopes).toContain(`https://www.googleapis.com/auth/${scope}`);
-	}
+it('requests full Drive access for all Drive MCP tools', () => {
+	const url = 'https://drivemcp.googleapis.com/mcp/v1';
+	expect(findMcpService(url)?.scopes).toEqual(['https://www.googleapis.com/auth/drive']);
+	process.env.GOOGLE_CLIENT_ID = 'environment-id';
+	process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
+	expect(mcpOAuthOptions(url).authorizationParams?.scope).toBe('https://www.googleapis.com/auth/drive');
 });
 
 it('requests the scope needed for all Gmail MCP tools', () => {
