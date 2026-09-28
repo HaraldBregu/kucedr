@@ -202,6 +202,8 @@ describe('provider manifest validation', () => {
 			.toContainEqual(expect.stringContaining('mcp_servers[0].scopes'));
 		expect(validateProviderManifest({ ...manifest, mcp_servers: [{ ...server, oauth: { google_fetch: 'yes' } }] }))
 			.toContainEqual(expect.stringContaining('mcp_servers[0].oauth.google_fetch'));
+		expect(validateProviderManifest({ ...manifest, mcp_servers: [{ ...server, oauth: { authorization_params: { state: 'fixed' } } }] }))
+			.toContainEqual(expect.stringContaining('mcp_servers[0].oauth.authorization_params'));
 	});
 
 	it.each(['large-language-model', 'research-chat-model'])(

@@ -156,7 +156,8 @@ export function validateProviderManifest(value: unknown): string[] {
 						if (oauth.authorization_params !== undefined &&
 							(typeof oauth.authorization_params !== 'object' || oauth.authorization_params === null ||
 							Array.isArray(oauth.authorization_params) ||
-							Object.values(oauth.authorization_params).some((value) => typeof value !== 'string')))
+							Object.entries(oauth.authorization_params).some(([key, value]) =>
+								!['access_type', 'prompt'].includes(key) || typeof value !== 'string')))
 							errors.push(`${itemPath}.oauth.authorization_params must be a string map.`);
 					}
 				}
