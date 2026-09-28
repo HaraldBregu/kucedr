@@ -26,7 +26,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center text-xs" title={path}>
 			<DropdownMenu open={openPath === ''} onOpenChange={(open) => setOpenPath(open ? '' : null)}>
 				<DropdownMenuTrigger asChild>
-					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0" aria-label="Browse workspace root">
+					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0 aria-expanded:bg-transparent!" aria-label="Browse workspace root">
 						<Folder aria-hidden="true" className="size-4" />
 					</Button>
 				</DropdownMenuTrigger>
@@ -39,7 +39,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 					<ChevronRight aria-hidden="true" className="mx-0.5 size-3 shrink-0 text-muted-foreground" />
 					<DropdownMenu open={openPath === crumb.key} onOpenChange={(open) => setOpenPath(open ? crumb.key : null)}>
 						<DropdownMenuTrigger asChild>
-							<Button type="button" variant="ghost" size="sm" className={crumb.file ? 'h-auto min-h-6 min-w-0 flex-1 justify-start whitespace-normal break-all px-1.5 py-1 text-left text-xs font-medium' : 'h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium'} aria-label={`Browse ${crumb.label}`}>
+							<Button type="button" variant="ghost" size="sm" className={crumb.file ? 'h-auto min-h-6 min-w-0 flex-1 justify-start whitespace-normal break-all px-1.5 py-1 text-left text-xs font-medium aria-expanded:bg-transparent!' : 'h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium aria-expanded:bg-transparent!'} aria-label={`Browse ${crumb.label}`}>
 								<span className={crumb.file ? 'whitespace-normal break-all text-left' : 'truncate'}>{crumb.label}</span>
 							</Button>
 						</DropdownMenuTrigger>
