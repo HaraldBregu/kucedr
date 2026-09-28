@@ -5,7 +5,14 @@ const SCOPES: Readonly<Record<string, readonly string[]>> = {
 		'calendar.events.freebusy',
 		'calendar.events.readonly',
 	],
-	'drivemcp.googleapis.com': ['drive.readonly', 'drive.file'],
+	'drivemcp.googleapis.com': [
+		'drive',
+		'drive.meet.readonly',
+		'drive.metadata',
+		'drive.metadata.readonly',
+		'drive.readonly',
+		'drive.file',
+	],
 	'docsmcp.googleapis.com': ['drive.readonly', 'drive.file', 'documents.readonly', 'documents'],
 	'sheetsmcp.googleapis.com': [
 		'drive.readonly',

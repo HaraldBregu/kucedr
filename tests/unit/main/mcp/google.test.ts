@@ -37,6 +37,20 @@ it.each([
 	expect(googleOAuthOptions(url).authorizationParams?.scope).toBe(googleMcpScopes(url));
 });
 
+it('requests the Drive scopes used by the Drive workflows', () => {
+	const scopes = googleMcpScopes('https://drivemcp.googleapis.com/mcp/v1')?.split(' ');
+	for (const scope of [
+		'drive',
+		'drive.meet.readonly',
+		'drive.metadata',
+		'drive.metadata.readonly',
+		'drive.readonly',
+		'drive.file',
+	]) {
+		expect(scopes).toContain(`https://www.googleapis.com/auth/${scope}`);
+	}
+});
+
 it('does not apply Maps credentials to a different path or host', () => {
 	expect(googleMcpScopes('https://mapstools.googleapis.com/mcp/v1')).toBeUndefined();
 	expect(googleMcpScopes('https://mapstools.googleapis.com.evil.test/mcp')).toBeUndefined();
