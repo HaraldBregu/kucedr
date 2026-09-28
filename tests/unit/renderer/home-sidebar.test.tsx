@@ -420,14 +420,15 @@ it('opens Workspace from the sidebar footer folder button', async () => {
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
 	expect(footer).not.toBeNull();
-	const workspaceButton = within(footer as HTMLElement).getByRole('button', {
+	const workspaceLink = within(footer as HTMLElement).getByRole('link', {
 		name: 'navigationBar.workspace',
 	});
-	expect(workspaceButton.closest('[data-sidebar="menu-item"]')).not.toBe(
+	expect(workspaceLink).toHaveAttribute('href', '/workspace');
+	expect(workspaceLink.closest('[data-sidebar="menu-item"]')).not.toBe(
 		accountMenu.closest('[data-sidebar="menu-item"]')
 	);
-	expect(workspaceButton).toHaveClass('w-full', 'h-9');
-	await user.click(workspaceButton);
+	expect(workspaceLink).toHaveClass('size-9');
+	await user.click(workspaceLink);
 	expect(screen.getByText('Workspace page')).toBeInTheDocument();
 });
 

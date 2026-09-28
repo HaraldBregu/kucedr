@@ -9,7 +9,7 @@ import {
 	UserRound,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
 	DropdownMenu,
@@ -30,7 +30,6 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { state: authState } = useAuth();
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
 	const accountItem = {
@@ -130,14 +129,14 @@ export function AppSidebarFooter(): React.JSX.Element {
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</SidebarMenuItem>
-				<SidebarMenuItem>
-					<SidebarMenuButton
-						type="button"
+				<SidebarMenuItem className="flex justify-end">
+					<Link
+						to="/workspace"
 						aria-label={t('navigationBar.workspace', 'Workspace')}
-						onClick={() => navigate('/workspace')}
+						className="flex size-9 items-center justify-center rounded-xl text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring"
 					>
 						<Folder className="size-4" />
-					</SidebarMenuButton>
+					</Link>
 				</SidebarMenuItem>
 			</SidebarMenu>
 		</SidebarFooter>
