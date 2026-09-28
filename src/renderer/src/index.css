@@ -622,6 +622,20 @@ input[type='range']:hover::-moz-range-thumb {
 	gap: 0.5rem;
 }
 
+.workspace-markdown-content h1 { margin: 0.5rem 0 1.25rem; }
+.workspace-markdown-content h2 { margin: 2rem 0 1rem; }
+.workspace-markdown-content h3 { margin: 1.5rem 0 0.75rem; }
+.workspace-markdown-content h4 { margin: 1.25rem 0 0.5rem; }
+.workspace-markdown-content p,
+.workspace-markdown-content ul,
+.workspace-markdown-content ol { margin-top: 1rem; margin-bottom: 1rem; }
+.workspace-markdown-content blockquote,
+.workspace-markdown-content pre { margin-top: 1.25rem; margin-bottom: 1.25rem; }
+.workspace-markdown-content hr { margin-top: 2rem; margin-bottom: 2rem; }
+.workspace-markdown-content img,
+.workspace-markdown-content table { margin-top: 1.5rem; margin-bottom: 1.5rem; }
+.workspace-markdown-content li { margin-top: 0.25rem; margin-bottom: 0.25rem; }
+
 .plan-prompt-frame {
 	position: relative;
 	border-color: transparent;
