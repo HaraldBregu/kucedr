@@ -119,7 +119,7 @@ test('the navbar Workspace folder button opens the folder sidebar', async () => 
 	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
 	await expect(workspaceButton.locator('.lucide-folder')).toBeVisible();
-	await expect(searchButton.locator('xpath=following-sibling::*[1]')).toBe(workspaceButton);
+	await expect(searchButton.locator('xpath=following-sibling::button[1][@aria-label="Workspace"]')).toHaveCount(1);
 	await workspaceButton.click();
 	await expect(page).toHaveURL(/#\/workspace$/);
 	await expect(searchButton).toBeVisible();
