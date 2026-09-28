@@ -134,10 +134,10 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page.getByRole('heading', { name: 'Plan draft' })).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCount(0);
 	const markdownModes = page.getByRole('group', { name: 'Markdown view' });
-	await expect(markdownModes.getByRole('button', { name: 'Text' }).evaluate((button) => {
+	await expect.poll(() => markdownModes.getByRole('button', { name: 'Text' }).evaluate((button) => {
 		const fill = button.firstElementChild;
 		return fill !== null && getComputedStyle(button).borderTopColor === getComputedStyle(fill).backgroundColor;
-	})).resolves.toBe(true);
+	})).toBe(true);
 	await expect(markdownModes.getByRole('button', { name: 'Raw' })).not.toHaveCSS('border-top-left-radius', '0px');
 	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS('border-top-right-radius', '0px');
 	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS('border-bottom-right-radius', '0px');
@@ -146,10 +146,10 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(markdownModes.getByRole('button', { name: 'Text' })).not.toHaveCSS('border-top-right-radius', '0px');
 	await markdownModes.getByRole('button', { name: 'Raw' }).click();
 	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveAttribute('aria-pressed', 'true');
-	await expect(markdownModes.getByRole('button', { name: 'Raw' }).evaluate((button) => {
+	await expect.poll(() => markdownModes.getByRole('button', { name: 'Raw' }).evaluate((button) => {
 		const fill = button.firstElementChild;
 		return fill !== null && getComputedStyle(button).borderTopColor === getComputedStyle(fill).backgroundColor;
-	})).resolves.toBe(true);
+	})).toBe(true);
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan draft');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-left', '0px');
 	await expect(page.getByRole('textbox', { name: 'Note content' }).locator('xpath=ancestor::article')).toHaveCSS('padding-top', '32px');
