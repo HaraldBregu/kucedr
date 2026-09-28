@@ -50,13 +50,13 @@ export function AppSidebarFooter(): React.JSX.Element {
 	return (
 		<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 			<SidebarMenu>
-				<SidebarMenuItem className="flex items-center gap-1">
+				<SidebarMenuItem>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<SidebarMenuButton
 								size="lg"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="min-w-0 flex-1 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
 								<Avatar className="size-7 rounded-full grayscale">
 									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
@@ -129,6 +129,8 @@ export function AppSidebarFooter(): React.JSX.Element {
 							) : null}
 						</DropdownMenuContent>
 					</DropdownMenu>
+				</SidebarMenuItem>
+				<SidebarMenuItem className="flex justify-end">
 					<SidebarMenuButton
 						type="button"
 						aria-label={t('navigationBar.workspace', 'Workspace')}
