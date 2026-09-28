@@ -12,13 +12,16 @@ export class DriveClient {
 	private async request(path: string, init: RequestInit = {}): Promise<Response> {
 		const state = getMcpOauth('google-drive');
 		if (!state.tokens?.access_token) throw new Error('Connect Google Drive first.');
+		const configuredClientId = process.env.GOOGLE_CLIENT_ID?.trim();
+		if (!configuredClientId || state.tokensClientId !== configuredClientId)
+			throw new Error('Google Drive credentials changed. Connect again.');
 		const send = (token: string): Promise<Response> => fetch(new URL(path, BASE), {
 			...init,
 			headers: { ...init.headers, Authorization: `Bearer ${token}` },
 		});
 		let response = await send(state.tokens.access_token);
 		if (response.status === 401 && state.tokens.refresh_token) {
-			const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+			const clientId = configuredClientId;
 			const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
 			if (!clientId || !clientSecret) throw new Error('Google OAuth client credentials are missing.');
 			const refresh = await fetch('https://oauth2.googleapis.com/token', {

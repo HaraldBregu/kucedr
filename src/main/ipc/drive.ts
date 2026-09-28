@@ -20,7 +20,8 @@ export class DriveIpc implements IpcModule<{ windows: WindowContextManager; apps
 		const drive = new DriveClient();
 		registerQueryWithEvent(DriveChannels.status, (event) => {
 			trusted.assert(event);
-			return Boolean(getMcpOauth('google-drive').tokens?.access_token);
+			const state = getMcpOauth('google-drive');
+			return Boolean(state.tokens?.access_token && state.tokensClientId === process.env.GOOGLE_CLIENT_ID?.trim());
 		});
 		registerQueryWithEvent(DriveChannels.list, (event, query, meetOnly) => {
 			trusted.assert(event);
