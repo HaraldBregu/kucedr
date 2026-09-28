@@ -134,10 +134,12 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page.getByRole('heading', { name: 'Plan draft' })).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCount(0);
 	const markdownModes = page.getByRole('group', { name: 'Markdown view' });
+	await expect(markdownModes.getByRole('button', { name: 'Raw' })).not.toHaveCSS('border-top-left-radius', '0px');
 	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS('border-top-right-radius', '0px');
 	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS('border-bottom-right-radius', '0px');
 	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveCSS('border-top-left-radius', '0px');
 	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveCSS('border-bottom-left-radius', '0px');
+	await expect(markdownModes.getByRole('button', { name: 'Text' })).not.toHaveCSS('border-top-right-radius', '0px');
 	await markdownModes.getByRole('button', { name: 'Raw' }).click();
 	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveAttribute('aria-pressed', 'true');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan draft');
