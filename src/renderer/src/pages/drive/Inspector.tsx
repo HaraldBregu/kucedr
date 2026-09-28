@@ -24,6 +24,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 	const [loadingContent, setLoadingContent] = useState(false);
 	const [error, setError] = useState('');
 	const [message, setMessage] = useState('');
+	const editableContent = file?.mimeType.startsWith('text/') === true;
 
 	useEffect(() => {
 		setName(file?.name ?? '');
@@ -34,7 +35,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 		setContentAvailable(false);
 		setError('');
 		setMessage('');
-		if (!file || file.mimeType === 'application/vnd.google-apps.folder') return;
+		if (!file || !editableContent) return;
 		let active = true;
 		setLoadingContent(true);
 		void window.drive.read(file.id).then((result) => {
@@ -48,7 +49,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 			if (active) setLoadingContent(false);
 		});
 		return () => { active = false; };
-	}, [file?.id]);
+	}, [file?.id, editableContent]);
 
 	const saveMetadata = async (): Promise<void> => {
 		if (!file) return;
@@ -97,7 +98,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 					<label className="grid gap-1 text-xs text-muted-foreground">Properties (JSON)<Textarea value={properties} onChange={(event) => setProperties(event.target.value)} rows={3} spellCheck={false} /></label>
 					<div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground"><span>{file.mimeType}{file.modifiedTime ? ` · Modified ${new Date(file.modifiedTime).toLocaleString()}` : ''}</span><Button type="button" size="sm" disabled={busy || !name.trim()} onClick={() => void saveMetadata()}><Save className="size-4" />Save metadata</Button></div>
 				</section>
-				{file.mimeType !== 'application/vnd.google-apps.folder' ? <section className="grid gap-3 border-t pt-5" aria-label="File content"><h3 className="text-sm font-medium">Content</h3>{loadingContent ? <p className="text-sm text-muted-foreground">Loading content…</p> : contentAvailable ? <><Textarea aria-label="File content" value={content} onChange={(event) => setContent(event.target.value)} className="min-h-52 font-mono text-xs" /><div className="flex justify-end"><Button type="button" size="sm" disabled={busy} onClick={() => void saveContent()}><Save className="size-4" />Save content</Button></div></> : <p className="text-sm text-muted-foreground">Content preview is unavailable for this file. You can still edit its metadata or download it.</p>}</section> : null}
+				{file.mimeType !== 'application/vnd.google-apps.folder' ? <section className="grid gap-3 border-t pt-5" aria-label="File content"><h3 className="text-sm font-medium">Content</h3>{!editableContent ? <p className="text-sm text-muted-foreground">Preview and editing are available for text files. You can download this file or edit its metadata.</p> : loadingContent ? <p className="text-sm text-muted-foreground">Loading content…</p> : contentAvailable ? <><Textarea aria-label="File content" value={content} onChange={(event) => setContent(event.target.value)} className="min-h-52 font-mono text-xs" /><div className="flex justify-end"><Button type="button" size="sm" disabled={busy} onClick={() => void saveContent()}><Save className="size-4" />Save content</Button></div></> : <p className="text-sm text-muted-foreground">Content preview is unavailable for this file. You can still edit its metadata or download it.</p>}</section> : null}
 			</div>
 		</section>
 	);
