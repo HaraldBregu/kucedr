@@ -5,6 +5,7 @@ import { AppIpc } from '../app';
 import { RecorderIpc } from '../recorder';
 import { TaskIpc } from '../tasks';
 import { McpIpc } from '../mcp';
+import { DriveIpc } from '../drive';
 import { ModelsIpc } from '../models';
 import { SkillsIpc } from '../skills';
 import { ProviderStoreIpc } from '../provider';
@@ -112,6 +113,9 @@ export function registerIpcHandlers(
 	);
 	safeRegister('mcp', () =>
 		new McpIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
+	);
+	safeRegister('drive', () =>
+		new DriveIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('models', () =>
 		new ModelsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
