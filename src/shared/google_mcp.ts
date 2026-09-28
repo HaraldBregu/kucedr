@@ -1,20 +1,5 @@
 const SCOPES: Readonly<Record<string, readonly string[]>> = {
-	'gmailmcp.googleapis.com': [
-		'gmail.addons.current.action.compose',
-		'gmail.addons.current.message.action',
-		'gmail.addons.current.message.metadata',
-		'gmail.addons.current.message.readonly',
-		'gmail.labels',
-		'gmail.send',
-		'https://mail.google.com/',
-		'gmail.readonly',
-		'gmail.compose',
-		'gmail.insert',
-		'gmail.modify',
-		'gmail.metadata',
-		'gmail.settings.basic',
-		'gmail.settings.sharing',
-	],
+	'gmailmcp.googleapis.com': ['gmail.modify'],
 	'calendarmcp.googleapis.com': [
 		'calendar.calendarlist.readonly',
 		'calendar.events.freebusy',
@@ -51,9 +36,7 @@ export function googleMcpScopes(value: string): string | undefined {
 			return undefined;
 		}
 		return SCOPES[url.hostname]
-			?.map((scope) =>
-				scope.startsWith('https://') ? scope : `https://www.googleapis.com/auth/${scope}`
-			)
+			?.map((scope) => `https://www.googleapis.com/auth/${scope}`)
 			.join(' ');
 	} catch {
 		return undefined;
