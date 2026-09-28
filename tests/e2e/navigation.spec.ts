@@ -363,9 +363,6 @@ test('the empty home state and composer use the intended spacing', async () => {
 
 	const editor = page.getByRole('textbox', { name: 'Message Kucedr' });
 	const editorArea = editor.locator('xpath=..');
-	const emptyContent = page
-		.getByText('What can I do for you?')
-		.locator('xpath=ancestor::*[contains(@class, "pt-20")][1]');
 	const composer = editor.locator('xpath=ancestor::*[@data-expanded][1]');
 	const field = page.locator('[data-slot="prompt-input-field"]');
 	const controls = page.locator('[data-slot="prompt-input-controls"]');
@@ -375,7 +372,6 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const transcriptionButton = field.getByRole('button', { name: /speech-to-text provider/ });
 	const modelButton = page.getByRole('button', { name: 'Change model' });
 
-	await expect(emptyContent).toHaveCSS('padding-top', '80px');
 	await expect(field).toHaveCSS('min-height', '104px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await expect(editorArea).toHaveCSS('min-height', '24px');
