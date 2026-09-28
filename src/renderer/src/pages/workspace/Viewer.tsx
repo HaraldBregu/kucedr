@@ -1,12 +1,16 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { FileText, LoaderCircle } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp, Folder, LoaderCircle, Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { workspaceFileType } from '@shared/workspace';
 import { Markdown } from '@/components/prompt-kit/markdown';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useIsDark } from '@/hooks/use-is-dark';
 import { markdownComponents } from '@/pages/home/components/markdown';
+import { formatFileSize } from '@/pages/home/attachments/size';
+import type { CodeMirrorEditorHandle } from './Editor';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('./Editor');
@@ -29,6 +33,9 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	const [error, setError] = useState('');
 	const [saveError, setSaveError] = useState('');
 	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
+	const [findOpen, setFindOpen] = useState(false);
+	const [findQuery, setFindQuery] = useState('');
+	const editorRef = useRef<CodeMirrorEditorHandle>(null);
 	const pendingContent = useRef<string | null>(null);
 	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const saveQueue = useRef(Promise.resolve());
@@ -36,6 +43,14 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	const media = kind === 'image' || kind === 'audio' || kind === 'video' || kind === 'pdf';
 	const mediaUrl = file && media ? new URL('local-resource://agent/') : null;
 	if (mediaUrl && file) mediaUrl.pathname = `/${file.path.replaceAll('\\', '/')}`;
+	const searchable = kind !== null && !media && kind !== 'unsupported';
+	const pathSegments = file?.path.split(/[\\/]/).filter(Boolean) ?? [];
+	const matchCount = findQuery ? content.toLocaleLowerCase().split(findQuery.toLocaleLowerCase()).length - 1 : 0;
+	const closeFind = (): void => {
+		setFindOpen(false);
+		setFindQuery('');
+		editorRef.current?.clearSearch();
+	};
 
 	const save = useCallback(() => {
 		if (saveTimer.current) clearTimeout(saveTimer.current);
@@ -84,18 +99,32 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	return (
 		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
 			{file ? (
-				<header className="flex min-h-12 shrink-0 items-center gap-2 border-b border-border px-4 text-sm">
-					<FileText className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
-					<span className="truncate font-medium">{file.name}</span>
-					<span className="ml-auto truncate text-xs text-muted-foreground" title={file.path}>{file.path}</span>
-					{kind === 'markdown' ? (
-						<ToggleGroup type="single" size="sm" variant="outline" value={markdownMode} onValueChange={(value) => {
-							if (value === 'preview' || value === 'source') setMarkdownMode(value);
-						}} aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
-							<ToggleGroupItem value="preview">{t('workspaceSidebar.preview', 'Preview')}</ToggleGroupItem>
-							<ToggleGroupItem value="source">{t('workspaceSidebar.source', 'Source')}</ToggleGroupItem>
-						</ToggleGroup>
-					) : null}
+				<header aria-label="File navigation" className="sticky top-0 z-20 flex h-9 shrink-0 items-center gap-1.5 border-b bg-background/95 px-2 backdrop-blur sm:px-3">
+					<nav aria-label="File path" className="flex min-w-0 flex-1 items-center overflow-hidden text-xs" title={file.path}>
+						<Folder aria-hidden="true" className="mr-1 size-4 shrink-0 text-muted-foreground" />
+						{pathSegments.map((segment, index) => (
+							<span key={`${index}:${segment}`} className="flex min-w-0 items-center">
+								<ChevronRight aria-hidden="true" className="mx-1 size-3 shrink-0 text-muted-foreground" />
+								<span className={index === pathSegments.length - 1 ? 'min-w-0 truncate font-medium' : 'min-w-0 truncate text-muted-foreground'}>{segment}</span>
+							</span>
+						))}
+					</nav>
+					{searchable ? findOpen ? (
+						<div role="search" className="ml-auto flex min-w-0 items-center gap-1">
+							<Input autoFocus aria-label="Find in file" placeholder="Find in file" value={findQuery} className="h-7 w-32 shrink-0 border-0 bg-muted/70 px-2 text-xs sm:w-40" onChange={(event) => {
+								setFindQuery(event.target.value);
+								if (event.target.value) editorRef.current?.find(event.target.value, 'next');
+								else editorRef.current?.clearSearch();
+							}} onKeyDown={(event) => {
+								if (event.key === 'Escape') closeFind();
+								if (event.key === 'Enter') editorRef.current?.find(findQuery, event.shiftKey ? 'previous' : 'next');
+							}} />
+							<span aria-live="polite" className="shrink-0 text-[11px] text-muted-foreground">{findQuery ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'}` : 'Find'}</span>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Previous match" disabled={!matchCount} onClick={() => editorRef.current?.find(findQuery, 'previous')}><ChevronUp /></Button>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => editorRef.current?.find(findQuery, 'next')}><ChevronDown /></Button>
+							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
+						</div>
+					) : <Button type="button" variant="ghost" size="icon-sm" className="ml-auto" aria-label="Find in file" onClick={() => { setFindOpen(true); if (kind === 'markdown') setMarkdownMode('source'); }}><Search /></Button> : null}
 				</header>
 			) : null}
 			{!file ? (
@@ -137,6 +166,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 				<div className="min-h-0 flex-1 overflow-auto">
 					<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
 						<CodeMirrorEditor
+							ref={editorRef}
 							key={file.path}
 							value={content}
 							onChange={(value) => {
@@ -156,6 +186,23 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 				</div>
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
+			{file ? (
+				<footer aria-label="File information" className="flex min-h-8 shrink-0 flex-wrap items-center gap-x-3 gap-y-1 border-t bg-muted/20 px-2 py-1 sm:px-3">
+					<div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted-foreground">
+						{typeof file.size === 'number' ? <span>{formatFileSize(file.size)}</span> : null}
+						{file.createdAt ? <time dateTime={file.createdAt} title={new Date(file.createdAt).toLocaleString()}>Created {new Date(file.createdAt).toLocaleString()}</time> : null}
+						{file.updatedAt ? <time dateTime={file.updatedAt} title={new Date(file.updatedAt).toLocaleString()}>Updated {new Date(file.updatedAt).toLocaleString()}</time> : null}
+					</div>
+					{kind === 'markdown' ? (
+						<ToggleGroup type="single" size="sm" variant="outline" value={markdownMode} onValueChange={(value) => {
+							if (value === 'preview' || value === 'source') { closeFind(); setMarkdownMode(value); }
+						}} aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
+							<ToggleGroupItem value="source">Raw</ToggleGroupItem>
+							<ToggleGroupItem value="preview">Text</ToggleGroupItem>
+						</ToggleGroup>
+					) : null}
+				</footer>
+			) : null}
 		</section>
 	);
 }
