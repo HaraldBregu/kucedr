@@ -211,15 +211,15 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 											key={mode}
 											type="button"
 											variant="outline"
-											size="sm"
+											size="xs"
 											aria-pressed={active}
-											className={`relative h-7 min-w-16 overflow-hidden rounded-none! px-2 text-xs first:rounded-l-lg! last:rounded-r-lg! not-first:-ml-px ${active ? 'border-transparent text-primary-foreground hover:text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+											className={`relative h-6 min-w-14 overflow-hidden rounded-none! px-1.5 text-[11px] first:rounded-l-lg! last:rounded-r-lg! not-first:-ml-px ${active ? 'border-transparent text-primary-foreground hover:text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
 											onClick={() => { closeFind(); setMarkdownMode(mode); }}
 										>
 											{active ? <motion.span layoutId="active-workspace-markdown-mode" className="absolute inset-0 bg-primary" transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 350, damping: 28 }} /> : null}
-											<span className="relative z-10 flex items-center gap-1.5">
+											<span className="relative z-10 flex items-center gap-1">
 												<motion.span className="inline-flex" animate={reducedMotion ? undefined : active ? { scale: 1.1, y: [0, -1, 0] } : { scale: 1, y: 0 }} transition={active && !reducedMotion ? { y: { repeat: Infinity, duration: 2, ease: 'easeInOut' }, scale: { duration: 0.2 } } : { duration: 0.2 }} whileHover={reducedMotion ? undefined : { scale: 1.15 }}>
-													<Icon aria-hidden="true" className="size-3.5" />
+													<Icon aria-hidden="true" className="size-3" />
 												</motion.span>
 												<span>{label}</span>
 											</span>
