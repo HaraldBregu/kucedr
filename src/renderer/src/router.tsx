@@ -181,7 +181,7 @@ function RootRouteComponent(): React.JSX.Element {
 							</div>
 							{(isWorkspace || workspaceVisited) && (
 								<div className={cn('h-full', !isWorkspace && 'hidden')}>
-									<WorkspacePage />
+									<WorkspacePage active={isWorkspace} />
 								</div>
 							)}
 						</div>
