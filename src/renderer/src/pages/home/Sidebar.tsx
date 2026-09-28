@@ -6,7 +6,15 @@ import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -29,7 +37,11 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const [editingSessionId, setEditingSessionId] = useState<string>();
 	const [editingTitle, setEditingTitle] = useState('');
 	const [compactingSessionId, setCompactingSessionId] = useState<string>();
-	const [pendingAction, setPendingAction] = useState<{ action: 'clear' | 'compact'; id: string; title: string }>();
+	const [pendingAction, setPendingAction] = useState<{
+		action: 'clear' | 'compact';
+		id: string;
+		title: string;
+	}>();
 
 	useEffect(() => {
 		let active = true;
@@ -79,13 +91,17 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 		setPendingAction(undefined);
 		setActionError('');
 		if (action === 'clear') {
-			void window.agent.clearMessages(id)
-				.then(() => window.dispatchEvent(new CustomEvent('kucedr:session-history-cleared', { detail: id })))
+			void window.agent
+				.clearMessages(id)
+				.then(() =>
+					window.dispatchEvent(new CustomEvent('kucedr:session-history-cleared', { detail: id }))
+				)
 				.catch(() => setActionError(t('settings.chatHistory.errors.clear')));
 			return;
 		}
 		setCompactingSessionId(id);
-		void window.agent.compactSession(id)
+		void window.agent
+			.compactSession(id)
 			.then((result) => {
 				if (result.status === 'compacted')
 					window.dispatchEvent(new CustomEvent('kucedr:session-compacted', { detail: id }));
@@ -102,7 +118,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 			setSessionTitle?.(undefined);
 		}
 	}, [currentSessionId, sessions, setSessionTitle, t]);
-
 
 	return (
 		<div data-slot="home-sidebar" className="flex h-full min-h-0 flex-col">
@@ -134,7 +149,11 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 					<SidebarMenuItem>
-						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/drive')}>
+						<SidebarMenuButton
+							type="button"
+							className="px-2.5 text-sm"
+							onClick={() => navigate('/drive')}
+						>
 							<HardDrive className="size-4 shrink-0" />
 							<span className="truncate">Google Drive</span>
 						</SidebarMenuButton>
@@ -193,14 +212,14 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 													const nextTitle = event.currentTarget.value.trim();
 													setEditingSessionId(undefined);
 													if (!nextTitle || nextTitle === title) return;
-															void window.agent.renameSession(session.id, nextTitle).then(() => {
-																setSessions((current) =>
-																	current.map((item) =>
-																		item.id === session.id ? { ...item, title: nextTitle } : item
-																	)
-																);
-																if (isActive) setSessionTitle?.(nextTitle, session.id);
-															});
+													void window.agent.renameSession(session.id, nextTitle).then(() => {
+														setSessions((current) =>
+															current.map((item) =>
+																item.id === session.id ? { ...item, title: nextTitle } : item
+															)
+														);
+														if (isActive) setSessionTitle?.(nextTitle, session.id);
+													});
 												}}
 												aria-label={`Rename ${title}`}
 												className="h-8 min-w-0 flex-1"
@@ -223,24 +242,27 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												onContextMenu={(event) => {
 													event.preventDefault();
 													void window.win
-												.showContextMenu([
-													{ id: 'rename', label: t('common.rename', 'Rename') },
-													{ id: 'clear', label: t('settings.chatHistory.clear') },
-													{ id: 'compact', label: t('settings.chatHistory.compact') },
-													{ id: 'open-location', label: t('navigationBar.openLocation', 'Open location') },
-													{ id: 'delete', label: t('common.delete', 'Delete') },
-												])
+														.showContextMenu([
+															{ id: 'rename', label: t('common.rename', 'Rename') },
+															{ id: 'clear', label: t('settings.chatHistory.clear') },
+															{ id: 'compact', label: t('settings.chatHistory.compact') },
+															{
+																id: 'open-location',
+																label: t('navigationBar.openLocation', 'Open location'),
+															},
+															{ id: 'delete', label: t('common.delete', 'Delete') },
+														])
 														.then((action) => {
 															if (action === 'rename') {
 																setEditingTitle(title);
-														setEditingSessionId(session.id);
-													}
-													if (action === 'open-location') {
-														void window.agent.openSessionFolder(session.id);
-													}
-													if (action === 'clear' || action === 'compact')
-														setPendingAction({ action, id: session.id, title });
-													if (action === 'delete') {
+																setEditingSessionId(session.id);
+															}
+															if (action === 'open-location') {
+																void window.agent.openSessionFolder(session.id);
+															}
+															if (action === 'clear' || action === 'compact')
+																setPendingAction({ action, id: session.id, title });
+															if (action === 'delete') {
 																if (
 																	!window.confirm(
 																		t('settings.chatHistory.confirmDeleteSession', { title })
@@ -263,7 +285,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 														});
 												}}
 											>
-											{session.runStatus || isCompacting ? (
+												{session.runStatus || isCompacting ? (
 													<TextShimmer
 														duration={2}
 														className="truncate"
@@ -271,7 +293,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 															{ '--foreground': 'var(--sidebar-foreground)' } as React.CSSProperties
 														}
 													>
-												{isCompacting ? t('settings.chatHistory.compacting') : title}
+														{isCompacting ? t('settings.chatHistory.compacting') : title}
 													</TextShimmer>
 												) : (
 													<span className="truncate">{title}</span>
@@ -285,17 +307,29 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					</nav>
 				)}
 			</section>
-			<Dialog open={!!pendingAction} onOpenChange={(open) => { if (!open) setPendingAction(undefined); }}>
+			<Dialog
+				open={!!pendingAction}
+				onOpenChange={(open) => {
+					if (!open) setPendingAction(undefined);
+				}}
+			>
 				<DialogContent showCloseButton={false}>
 					<DialogHeader>
 						<DialogTitle>{t(`settings.chatHistory.${pendingAction?.action}`)}</DialogTitle>
 						<DialogDescription>
-							{pendingAction && t(`settings.chatHistory.confirm${pendingAction.action === 'clear' ? 'Clear' : 'Compact'}`, { title: pendingAction.title })}
+							{pendingAction &&
+								t(
+									`settings.chatHistory.confirm${pendingAction.action === 'clear' ? 'Clear' : 'Compact'}`,
+									{ title: pendingAction.title }
+								)}
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
 						<DialogClose render={<Button variant="outline">{t('common.cancel')}</Button>} />
-						<Button variant={pendingAction?.action === 'clear' ? 'destructive' : 'default'} onClick={confirmAction}>
+						<Button
+							variant={pendingAction?.action === 'clear' ? 'destructive' : 'default'}
+							onClick={confirmAction}
+						>
 							{t(`settings.chatHistory.${pendingAction?.action}`)}
 						</Button>
 					</DialogFooter>

@@ -245,7 +245,11 @@ const routes: RouteObject[] = [
 			},
 			{
 				path: 'drive',
-				element: <RouteWrapper><DrivePage /></RouteWrapper>,
+				element: (
+					<RouteWrapper>
+						<DrivePage />
+					</RouteWrapper>
+				),
 			},
 			{
 				path: 'settings',
