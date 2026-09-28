@@ -271,6 +271,16 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 2');
 });
 
+test('Workspace releases its mounted UI before navigating from Home to Settings', async () => {
+	await page.evaluate(() => { window.location.hash = '#/workspace'; });
+	await expect(page.locator('[data-slot="workspace-sidebar"]')).toBeVisible();
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await expect(page.locator('[data-slot="workspace-sidebar"]')).toHaveCount(0);
+	await page.getByRole('button', { name: 'Settings' }).click();
+	await expect(page.locator('[data-slot="settings-workspace"]')).toBeVisible();
+	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
+});
+
 test('editing Markdown Preview keeps table and task content', async () => {
 	const markdown = '# Notes\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n- [x] Done';
 	await page.evaluate(async (content) => {
