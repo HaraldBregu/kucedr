@@ -187,6 +187,7 @@ test('Workspace breadcrumbs browse folders and sibling files', async () => {
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceDirectory('', 'CrumbPicker');
 		await window.agent.createWorkspaceDirectory('CrumbPicker', 'Nested');
+		await window.agent.createWorkspaceDirectory('CrumbPicker/Nested', 'Sub');
 		await window.agent.createWorkspaceFile('CrumbPicker', 'one.md');
 		await window.agent.createWorkspaceFile('CrumbPicker/Nested', 'deep.md');
 		await window.agent.createWorkspaceFile('CrumbPicker/Nested', 'next.md');
@@ -206,11 +207,12 @@ test('Workspace breadcrumbs browse folders and sibling files', async () => {
 	await page.getByRole('button', { name: 'Browse Nested' }).click();
 	const nestedTree = page.getByRole('tree', { name: 'Workspace files' });
 	await expect(nestedTree.getByRole('treeitem', { name: 'next.md' })).toBeVisible();
+	await expect(nestedTree.getByRole('treeitem', { name: 'Sub' })).toBeVisible();
 	await page.keyboard.press('Escape');
 	await page.getByRole('button', { name: 'Browse deep.md' }).click();
 	const fileTree = page.getByRole('tree', { name: 'Workspace files' });
 	await expect(fileTree.getByRole('treeitem')).toHaveCount(2);
-	await expect(fileTree.getByRole('treeitem', { name: 'Nested' })).toHaveCount(0);
+	await expect(fileTree.getByRole('treeitem', { name: 'Sub' })).toHaveCount(0);
 	await fileTree.getByRole('treeitem', { name: 'next.md' }).click();
 	await expect(page.getByRole('button', { name: 'Browse next.md' })).toBeVisible();
 	await expect.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file'))).toBe('CrumbPicker/Nested/next.md');
