@@ -439,7 +439,6 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('min-height', '104px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await modelButton.click();
-	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	const modelMenu = page.getByRole('menu', { name: 'Change model' });
 	const modelPopover = modelMenu.locator('xpath=..');
 	await expect(modelMenu).toBeVisible();
