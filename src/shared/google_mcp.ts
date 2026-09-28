@@ -51,7 +51,9 @@ export function googleMcpScopes(value: string): string | undefined {
 			return undefined;
 		}
 		return SCOPES[url.hostname]
-			?.map((scope) => (scope.startsWith('https://') ? scope : `https://www.googleapis.com/auth/${scope}`))
+			?.map((scope) =>
+				scope.startsWith('https://') ? scope : `https://www.googleapis.com/auth/${scope}`
+			)
 			.join(' ');
 	} catch {
 		return undefined;

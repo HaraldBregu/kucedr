@@ -51,9 +51,24 @@ it('requests the Drive scopes used by the Drive workflows', () => {
 	}
 });
 
-it('requests the scope needed to create Gmail labels', () => {
+it('requests every Gmail API scope', () => {
 	const scopes = googleMcpScopes('https://gmailmcp.googleapis.com/mcp/v1')?.split(' ');
-	expect(scopes).toContain('https://www.googleapis.com/auth/gmail.labels');
+	expect(scopes).toEqual([
+		'https://www.googleapis.com/auth/gmail.addons.current.action.compose',
+		'https://www.googleapis.com/auth/gmail.addons.current.message.action',
+		'https://www.googleapis.com/auth/gmail.addons.current.message.metadata',
+		'https://www.googleapis.com/auth/gmail.addons.current.message.readonly',
+		'https://www.googleapis.com/auth/gmail.labels',
+		'https://www.googleapis.com/auth/gmail.send',
+		'https://mail.google.com/',
+		'https://www.googleapis.com/auth/gmail.readonly',
+		'https://www.googleapis.com/auth/gmail.compose',
+		'https://www.googleapis.com/auth/gmail.insert',
+		'https://www.googleapis.com/auth/gmail.modify',
+		'https://www.googleapis.com/auth/gmail.metadata',
+		'https://www.googleapis.com/auth/gmail.settings.basic',
+		'https://www.googleapis.com/auth/gmail.settings.sharing',
+	]);
 });
 
 it('does not apply Maps credentials to a different path or host', () => {
