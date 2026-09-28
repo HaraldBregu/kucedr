@@ -77,6 +77,14 @@ export interface ProviderManifestMcpServer {
 	readonly description?: string;
 	readonly url: string;
 	readonly authentication: AuthenticationType;
+	readonly scopes: readonly string[];
+	readonly oauth?: {
+		readonly client_id_env?: string;
+		readonly client_secret_env?: string;
+		readonly authorization_params?: Readonly<Record<string, string>>;
+		readonly google_fetch?: boolean;
+		readonly credentials_required?: boolean;
+	};
 	readonly icon_dark_url?: string;
 	readonly icon_light_url?: string;
 }
@@ -122,6 +130,8 @@ export interface CatalogEntryService {
 	readonly description?: string;
 	readonly type: string;
 	readonly authentication?: AuthenticationType;
+	readonly scopes?: readonly string[];
+	readonly oauth?: ProviderManifestMcpServer['oauth'];
 	/** Base URL of the API serving this service. */
 	readonly url?: string;
 	/** Provider-documented, service-specific input controls. */

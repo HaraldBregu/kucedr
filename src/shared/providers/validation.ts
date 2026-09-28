@@ -137,6 +137,30 @@ export function validateProviderManifest(value: unknown): string[] {
 			if (entry.description !== undefined && !isNonEmptyString(entry.description)) {
 				errors.push(`${itemPath}.description must be a non-empty string when present.`);
 			}
+			if (key === 'mcp_servers') {
+				if (!Array.isArray(entry.scopes) || !entry.scopes.every((scope) => isNonEmptyString(scope) && !/\s/.test(scope)))
+					errors.push(`${itemPath}.scopes must be an array of OAuth scope strings.`);
+				if (entry.oauth !== undefined) {
+					if (typeof entry.oauth !== 'object' || entry.oauth === null || Array.isArray(entry.oauth)) {
+						errors.push(`${itemPath}.oauth must be an object.`);
+					} else {
+						const oauth = entry.oauth as Record<string, unknown>;
+						for (const field of ['client_id_env', 'client_secret_env'] as const) {
+							if (oauth[field] !== undefined && !isNonEmptyString(oauth[field]))
+								errors.push(`${itemPath}.oauth.${field} must be a non-empty string.`);
+						}
+						for (const field of ['google_fetch', 'credentials_required'] as const) {
+							if (oauth[field] !== undefined && typeof oauth[field] !== 'boolean')
+								errors.push(`${itemPath}.oauth.${field} must be a boolean.`);
+						}
+						if (oauth.authorization_params !== undefined &&
+							(typeof oauth.authorization_params !== 'object' || oauth.authorization_params === null ||
+							Array.isArray(oauth.authorization_params) ||
+							Object.values(oauth.authorization_params).some((value) => typeof value !== 'string')))
+							errors.push(`${itemPath}.oauth.authorization_params must be a string map.`);
+					}
+				}
+			}
 			for (const field of ['icon_dark_url', 'icon_light_url'] as const) {
 				if (
 					entry[field] !== undefined &&
