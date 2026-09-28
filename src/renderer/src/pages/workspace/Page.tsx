@@ -7,6 +7,7 @@ import { WorkspaceViewer } from './Viewer';
 const SELECTED_FILE_KEY = 'workspace-selected-file';
 
 export default function WorkspacePage({ active }: { readonly active: boolean }): React.JSX.Element {
+	const [files, setFiles] = useState<WorkspaceTreeEntry[]>([]);
 	const [selectedFile, setSelectedFile] = useState<WorkspaceTreeEntry | null>(() => {
 		const path = localStorage.getItem(SELECTED_FILE_KEY);
 		return path ? { type: 'file', path, name: path.split(/[\\/]/).pop() ?? path } : null;
@@ -27,6 +28,7 @@ export default function WorkspacePage({ active }: { readonly active: boolean }):
 		}
 	}, [active]);
 	const handleFilesLoaded = useCallback((files: WorkspaceTreeEntry[]) => {
+		setFiles(files);
 		setSelectedFile((current) => {
 			if (!current) return null;
 			const pending = [...files];
@@ -53,7 +55,7 @@ export default function WorkspacePage({ active }: { readonly active: boolean }):
 			}} onEntryDeleted={(path) => {
 				setSelectedFile((current) => current && (current.path === path || current.path.startsWith(`${path}/`) || current.path.startsWith(`${path}\\`)) ? null : current);
 			}} selectedPath={selectedFile?.path ?? null} />} sidebarLabel="Workspace files">
-				<WorkspaceViewer key={`${selectedFile?.path}:${fileRevision}`} file={selectedFile} />
+				<WorkspaceViewer key={`${selectedFile?.path}:${fileRevision}`} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />
 			</Split>
 		</PageContainer>
 	);

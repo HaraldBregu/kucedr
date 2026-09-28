@@ -7,11 +7,13 @@ import { workspaceFileType } from '@shared/workspace';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
 import { ButtonGroup } from '@/components/ui/button-group';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { useIsDark } from '@/hooks/use-is-dark';
 import { markdownComponents } from '@/pages/home/components/markdown';
 import { formatFileSize } from '@/pages/home/attachments/size';
 import type { CodeMirrorEditorHandle } from './Editor';
+import { WorkspaceBreadcrumbTree } from './BreadcrumbTree';
 
 const CodeMirrorEditor = lazy(async () => {
 	const module = await import('./Editor');
@@ -24,9 +26,11 @@ const WorkspaceMarkdownEditor = lazy(async () => {
 
 interface WorkspaceViewerProps {
 	readonly file: WorkspaceTreeEntry | null;
+	readonly entries: WorkspaceTreeEntry[];
+	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 }
 
-export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Element {
+export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const reducedMotion = useReducedMotion();
@@ -36,6 +40,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	const [saveError, setSaveError] = useState('');
 	const [markdownMode, setMarkdownMode] = useState<'preview' | 'source'>('preview');
 	const [findOpen, setFindOpen] = useState(false);
+	const [treeOpen, setTreeOpen] = useState(false);
 	const [findQuery, setFindQuery] = useState('');
 	const editorRef = useRef<CodeMirrorEditorHandle>(null);
 	const pendingContent = useRef<string | null>(null);
@@ -123,7 +128,16 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 			{file ? (
 				<header aria-label="File navigation" className="sticky top-0 z-20 flex h-9 shrink-0 items-center gap-1.5 border-b bg-background/95 px-2 backdrop-blur sm:px-3">
 					<nav aria-label="File path" className="flex min-w-0 flex-1 items-center overflow-hidden text-xs" title={file.path}>
-						<Folder aria-hidden="true" className="mr-1 size-4 shrink-0 text-muted-foreground" />
+						<DropdownMenu open={treeOpen} onOpenChange={setTreeOpen}>
+							<DropdownMenuTrigger asChild>
+								<Button type="button" variant="ghost" size="icon-sm" className="mr-1 size-7 shrink-0" aria-label="Browse workspace root">
+									<Folder aria-hidden="true" className="size-4" />
+								</Button>
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align="start" className="max-h-80 min-w-64 overflow-y-auto p-0">
+								<WorkspaceBreadcrumbTree entries={entries} selectedPath={file.path} onFileSelect={(entry) => { setTreeOpen(false); onFileSelect(entry); }} />
+							</DropdownMenuContent>
+						</DropdownMenu>
 						{pathSegments.map((segment, index) => (
 							<span key={`${index}:${segment}`} className="flex min-w-0 items-center">
 								<ChevronRight aria-hidden="true" className="mx-1 size-3 shrink-0 text-muted-foreground" />
