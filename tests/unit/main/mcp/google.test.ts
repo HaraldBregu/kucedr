@@ -1,5 +1,5 @@
-import { googleOAuthOptions } from '../../../../src/main/mcp/google';
-import { googleMcpScopes } from '../../../../src/shared/google_mcp';
+import { mcpOAuthOptions } from '../../../../src/main/mcp/oauth_options';
+import { findMcpService } from '../../../../src/main/mcp/manifest';
 
 const originalId = process.env.GOOGLE_CLIENT_ID;
 const originalSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -19,7 +19,7 @@ it.each([
 ])('requires environment credentials for %s', (host) => {
 	delete process.env.GOOGLE_CLIENT_ID;
 	delete process.env.GOOGLE_CLIENT_SECRET;
-	expect(() => googleOAuthOptions(`https://${host}/mcp/v1`)).toThrow(
+	expect(() => mcpOAuthOptions(`https://${host}/mcp/v1`)).toThrow(
 		'GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET'
 	);
 });
@@ -31,14 +31,14 @@ it.each([
 ])('uses the documented Google scopes for %s', (url, readonlyScope, writeScope) => {
 	process.env.GOOGLE_CLIENT_ID = 'environment-id';
 	process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
-	const scopes = googleMcpScopes(url)?.split(' ');
+	const scopes = findMcpService(url)?.scopes;
 	expect(scopes).toContain(`https://www.googleapis.com/auth/${readonlyScope}`);
 	if (writeScope) expect(scopes).toContain(`https://www.googleapis.com/auth/${writeScope}`);
-	expect(googleOAuthOptions(url).authorizationParams?.scope).toBe(googleMcpScopes(url));
+	expect(mcpOAuthOptions(url).authorizationParams?.scope).toBe(scopes?.join(' '));
 });
 
 it('requests the Drive scopes used by the Drive workflows', () => {
-	const scopes = googleMcpScopes('https://drivemcp.googleapis.com/mcp/v1')?.split(' ');
+	const scopes = findMcpService('https://drivemcp.googleapis.com/mcp/v1')?.scopes;
 	for (const scope of [
 		'drive',
 		'drive.meet.readonly',
@@ -52,13 +52,13 @@ it('requests the Drive scopes used by the Drive workflows', () => {
 });
 
 it('requests the scope needed for all Gmail MCP tools', () => {
-	const scopes = googleMcpScopes('https://gmailmcp.googleapis.com/mcp/v1')?.split(' ');
+	const scopes = findMcpService('https://gmailmcp.googleapis.com/mcp/v1')?.scopes;
 	expect(scopes).toEqual(['https://www.googleapis.com/auth/gmail.modify']);
 });
 
 it('does not apply Maps credentials to a different path or host', () => {
-	expect(googleMcpScopes('https://mapstools.googleapis.com/mcp/v1')).toBeUndefined();
-	expect(googleMcpScopes('https://mapstools.googleapis.com.evil.test/mcp')).toBeUndefined();
+	expect(findMcpService('https://mapstools.googleapis.com/mcp/v1')).toBeUndefined();
+	expect(findMcpService('https://mapstools.googleapis.com.evil.test/mcp')).toBeUndefined();
 });
 
 it.each([
@@ -70,7 +70,7 @@ it.each([
 	process.env.GOOGLE_CLIENT_ID = 'environment-id';
 	process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
 	const url = `https://${host}/mcp/v1`;
-	expect(googleOAuthOptions(url)).toMatchObject({
+	expect(mcpOAuthOptions(url)).toMatchObject({
 		clientId: 'environment-id',
 		clientSecret: 'environment-secret',
 		authorizationParams: { prompt: 'consent select_account' },
