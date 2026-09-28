@@ -33,12 +33,13 @@ export function WorkspaceBreadcrumbTree({ entries, onFileSelect, selectedPath, l
 	};
 	return (
 		<ul role={level === 0 ? 'tree' : 'group'} aria-label={level === 0 ? 'Workspace files' : undefined} className={level === 0 ? 'space-y-0.5 p-1' : 'space-y-0.5'} onKeyDown={level === 0 ? onKeyDown : undefined}>
-			{entries.map((entry) => {
+			{entries.map((entry, index) => {
 				const directory = entry.type === 'directory';
 				const open = expanded.has(entry.path);
 				return (
 					<li key={entry.path} role="none">
 						<button
+							autoFocus={level === 0 && index === 0}
 							type="button"
 							role="treeitem"
 							aria-level={level + 1}
