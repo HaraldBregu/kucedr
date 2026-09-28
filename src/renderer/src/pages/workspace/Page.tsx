@@ -4,10 +4,19 @@ import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
 import { WorkspaceViewer } from './Viewer';
 
+const SELECTED_FILE_KEY = 'workspace-selected-file';
+
 export default function WorkspacePage({ active }: { readonly active: boolean }): React.JSX.Element {
-	const [selectedFile, setSelectedFile] = useState<WorkspaceTreeEntry | null>(null);
+	const [selectedFile, setSelectedFile] = useState<WorkspaceTreeEntry | null>(() => {
+		const path = localStorage.getItem(SELECTED_FILE_KEY);
+		return path ? { type: 'file', path, name: path.split(/[\\/]/).pop() ?? path } : null;
+	});
 	const [fileRevision, setFileRevision] = useState(0);
 	const changedWhileHidden = useRef(false);
+	useEffect(() => {
+		if (selectedFile) localStorage.setItem(SELECTED_FILE_KEY, selectedFile.path);
+		else localStorage.removeItem(SELECTED_FILE_KEY);
+	}, [selectedFile]);
 	useEffect(() => window.agent.onWorkspaceChanged((event) => {
 		if (!active && event.type === 'change' && event.path === selectedFile?.path) changedWhileHidden.current = true;
 	}), [active, selectedFile?.path]);

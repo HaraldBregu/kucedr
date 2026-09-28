@@ -24,7 +24,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
 						</div>
 					) : entry.type === 'directory' ? (
-						<details className="group">
+						<details className="group" defaultOpen={Boolean(selectedPath && (selectedPath.startsWith(`${entry.path}/`) || selectedPath.startsWith(`${entry.path}\\`)))}>
 						<summary className="flex min-h-8 cursor-pointer items-center gap-2 rounded-xl px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring" onContextMenu={(event) => {
 							event.preventDefault();
 							event.stopPropagation();
