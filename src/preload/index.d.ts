@@ -9,6 +9,7 @@ import type {
 	RecorderApi,
 	TaskApi,
 	McpApi,
+	DriveApi,
 	ModelsApi,
 	ProviderApi,
 	SearchApi,
