@@ -56,6 +56,11 @@ it('requests the scope needed for all Gmail MCP tools', () => {
 	expect(scopes).toEqual(['https://www.googleapis.com/auth/gmail.modify']);
 });
 
+it('requests GitLab MCP scope from its manifest', () => {
+	expect(mcpOAuthOptions('https://gitlab.com/api/v4/mcp').authorizationParams?.scope).toBe('mcp');
+	expect(mcpOAuthOptions('https://mcp.notion.com/mcp')).toEqual({});
+});
+
 it('does not apply Maps credentials to a different path or host', () => {
 	expect(findMcpService('https://mapstools.googleapis.com/mcp/v1')).toBeUndefined();
 	expect(findMcpService('https://mapstools.googleapis.com.evil.test/mcp')).toBeUndefined();
