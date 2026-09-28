@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useState, type ReactNode } from 'react';
+import React, { Suspense, lazy, useRef, useState, type ReactNode } from 'react';
 import {
 	Navigate,
 	Outlet,
@@ -131,6 +131,8 @@ function RootRouteComponent(): React.JSX.Element {
 	const { state: authState, skipSignIn } = useAuth();
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
+	const workspaceVisited = useRef(false);
+	if (isWorkspace) workspaceVisited.current = true;
 	const isSettings = location.pathname.startsWith('/settings');
 	const hasSidebar = isHome || isWorkspace || isSettings;
 
@@ -170,9 +172,16 @@ function RootRouteComponent(): React.JSX.Element {
 							onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
 						/>
 						<div className="min-h-0 flex-1 overflow-hidden pt-12">
-							<PageTransition>
-								<Outlet />
-							</PageTransition>
+							<div className={cn('h-full', isWorkspace && 'hidden')}>
+								<PageTransition>
+									<Outlet />
+								</PageTransition>
+							</div>
+							{workspaceVisited.current && (
+								<div className={cn('h-full', !isWorkspace && 'hidden')}>
+									<WorkspacePage />
+								</div>
+							)}
 						</div>
 						<CommandMenu
 							key={location.pathname}
@@ -229,7 +238,7 @@ const routes: RouteObject[] = [
 			},
 			{
 				path: 'workspace',
-				element: <WorkspacePage />,
+				element: null,
 			},
 			{
 				path: 'settings',

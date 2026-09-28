@@ -44,7 +44,8 @@ export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted,
 					if (active) setLoading(false);
 				});
 		};
-		const unsubscribe = window.agent.onWorkspaceChanged(() => {
+		const unsubscribe = window.agent.onWorkspaceChanged((event) => {
+			if (event.type === 'change') return;
 			window.clearTimeout(refreshTimer);
 			refreshTimer = window.setTimeout(load, 100);
 		});
