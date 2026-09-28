@@ -56,6 +56,16 @@ it('requests the scope needed for all Gmail MCP tools', () => {
 	expect(scopes).toEqual(['https://www.googleapis.com/auth/gmail.modify']);
 });
 
+it('requests full Calendar access for Calendar MCP', () => {
+	const url = 'https://calendarmcp.googleapis.com/mcp/v1';
+	expect(findMcpService(url)?.scopes).toEqual(['https://www.googleapis.com/auth/calendar']);
+	process.env.GOOGLE_CLIENT_ID = 'environment-id';
+	process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
+	expect(mcpOAuthOptions(url).authorizationParams?.scope).toBe(
+		'https://www.googleapis.com/auth/calendar'
+	);
+});
+
 it('requests GitLab MCP scope from its manifest', () => {
 	expect(mcpOAuthOptions('https://gitlab.com/api/v4/mcp').authorizationParams?.scope).toBe('mcp');
 	expect(mcpOAuthOptions('https://mcp.notion.com/mcp')).toEqual({});

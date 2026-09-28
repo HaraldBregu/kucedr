@@ -468,11 +468,7 @@
 			"description": "Manage calendars and events.",
 			"authentication": "oauth2",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/calendar.calendarlist.readonly",
-				"https://www.googleapis.com/auth/calendar.events.freebusy",
-				"https://www.googleapis.com/auth/calendar.events.readonly"
-			],
+			"scopes": ["https://www.googleapis.com/auth/calendar"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
