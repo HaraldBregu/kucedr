@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { ChevronRight, File, Folder } from 'lucide-react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { WorkspaceRenameInput } from './RenameInput';
@@ -14,6 +15,7 @@ interface WorkspaceTreeProps {
 }
 
 export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renamingPath, renameBusy, onRename, onRenameCancel, selectedPath }: WorkspaceTreeProps): React.JSX.Element {
+	const [openDirectories, setOpenDirectories] = useState(() => new Set(entries.filter((entry) => selectedPath && (selectedPath.startsWith(`${entry.path}/`) || selectedPath.startsWith(`${entry.path}\\`))).map((entry) => entry.path)));
 	return (
 		<ul className="flex min-w-0 flex-col gap-1">
 			{entries.map((entry) => (
@@ -24,7 +26,17 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
 						</div>
 					) : entry.type === 'directory' ? (
-						<details className="group" defaultOpen={Boolean(selectedPath && (selectedPath.startsWith(`${entry.path}/`) || selectedPath.startsWith(`${entry.path}\\`)))}>
+						<details className="group" open={openDirectories.has(entry.path)} onToggle={(event) => {
+							if (event.target !== event.currentTarget) return;
+							const open = event.currentTarget.open;
+							setOpenDirectories((current) => {
+								if (current.has(entry.path) === open) return current;
+								const next = new Set(current);
+								if (open) next.add(entry.path);
+								else next.delete(entry.path);
+								return next;
+							});
+						}}>
 						<summary className="flex min-h-8 cursor-pointer items-center gap-2 rounded-xl px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring" onContextMenu={(event) => {
 							event.preventDefault();
 							event.stopPropagation();
