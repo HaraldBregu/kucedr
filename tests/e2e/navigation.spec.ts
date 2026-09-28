@@ -167,6 +167,10 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	await workspace.getByText('Return').click();
 	await workspace.getByRole('button', { name: 'state.json' }).click();
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
+	await expect.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file'))).toBe('Return/state.json');
+	await page.reload();
+	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
 	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
 	await page.locator('[data-slot="home-sidebar"]').getByRole('button', { name: 'Workspace' }).click();
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute('aria-current', 'page');
