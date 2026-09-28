@@ -213,7 +213,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 											variant="outline"
 											size="sm"
 											aria-pressed={active}
-											className={`relative h-7 min-w-16 overflow-hidden rounded-none px-2 text-xs first:rounded-l-lg last:rounded-r-lg not-first:-ml-px ${active ? 'border-transparent text-primary-foreground hover:text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+											className={`relative h-7 min-w-16 overflow-hidden rounded-none! px-2 text-xs first:rounded-l-lg! last:rounded-r-lg! not-first:-ml-px ${active ? 'border-transparent text-primary-foreground hover:text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
 											onClick={() => { closeFind(); setMarkdownMode(mode); }}
 										>
 											{active ? <motion.span layoutId="active-workspace-markdown-mode" className="absolute inset-0 bg-primary" transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 350, damping: 28 }} /> : null}
