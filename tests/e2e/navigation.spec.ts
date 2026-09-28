@@ -183,6 +183,37 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page).toHaveURL(/#\/home$/);
 });
 
+test('Workspace breadcrumbs browse folders and sibling files', async () => {
+	await page.evaluate(async () => {
+		await window.agent.createWorkspaceDirectory('', 'CrumbPicker');
+		await window.agent.createWorkspaceDirectory('CrumbPicker', 'Nested');
+		await window.agent.createWorkspaceFile('CrumbPicker', 'one.md');
+		await window.agent.createWorkspaceFile('CrumbPicker/Nested', 'deep.md');
+		await window.agent.createWorkspaceFile('CrumbPicker/Nested', 'next.md');
+		window.location.hash = '#/workspace';
+	});
+	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
+	await workspace.getByText('CrumbPicker').click();
+	await workspace.getByRole('button', { name: 'one.md' }).click();
+	await page.getByRole('button', { name: 'Browse CrumbPicker' }).click();
+	const folderTree = page.getByRole('tree', { name: 'Workspace files' });
+	await expect(folderTree.getByRole('treeitem', { name: 'one.md' })).toBeVisible();
+	await folderTree.getByRole('treeitem', { name: 'Nested' }).click();
+	await expect(folderTree.getByRole('treeitem', { name: 'deep.md' })).toBeVisible();
+	await folderTree.getByRole('treeitem', { name: 'deep.md' }).click();
+	await expect(workspace.getByRole('button', { name: 'deep.md' })).toHaveAttribute('aria-current', 'page');
+	await page.getByRole('button', { name: 'Browse Nested' }).click();
+	const nestedTree = page.getByRole('tree', { name: 'Workspace files' });
+	await expect(nestedTree.getByRole('treeitem', { name: 'next.md' })).toBeVisible();
+	await page.keyboard.press('Escape');
+	await page.getByRole('button', { name: 'Browse deep.md' }).click();
+	const fileTree = page.getByRole('tree', { name: 'Workspace files' });
+	await expect(fileTree.getByRole('treeitem')).toHaveCount(2);
+	await expect(fileTree.getByRole('treeitem', { name: 'Nested' })).toHaveCount(0);
+	await fileTree.getByRole('treeitem', { name: 'next.md' }).click();
+	await expect(workspace.getByRole('button', { name: 'next.md' })).toHaveAttribute('aria-current', 'page');
+});
+
 test('Workspace keeps its files and selection across chat navigation and refreshes changed content', async () => {
 	await page.evaluate(() => { window.location.hash = '#/home'; });
 	await page.evaluate(async () => {
