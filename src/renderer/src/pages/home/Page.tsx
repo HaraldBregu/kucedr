@@ -765,7 +765,7 @@ function PageContent(): ReactElement {
 								</div>
 							) : null}
 							<PromptEditor
-				placeholder={showEmptyConversation ? 'Work with Kucedr' : 'Send follow-up'}
+								placeholder={showEmptyConversation ? 'Work with Kucedr' : 'Send follow-up'}
 								ariaLabel="Message Kucedr"
 								value={agent.input}
 								expanded={agent.input.length > 0}
@@ -806,7 +806,7 @@ function PageContent(): ReactElement {
 								detachedControls
 								footerContent={
 									<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-											<StableModel />
+										<StableModel />
 									</div>
 								}
 								className="w-full"

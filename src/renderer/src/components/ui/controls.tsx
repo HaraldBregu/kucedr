@@ -20,7 +20,10 @@ export function PromptInputControls({
 			<div data-slot="prompt-input-control-buttons" className="flex shrink-0 items-center">
 				{leadingAction}
 			</div>
-			<div data-slot="prompt-input-control-actions" className="flex min-w-0 items-center justify-end gap-1.5">
+			<div
+				data-slot="prompt-input-control-actions"
+				className="flex min-w-0 items-center justify-end gap-1.5"
+			>
 				{content}
 				{isLoading ? (
 					<div role="status" aria-label="Kucedr is responding" className="text-muted-foreground">
