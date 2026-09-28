@@ -44,6 +44,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	const mediaUrl = file && media ? new URL('local-resource://agent/') : null;
 	if (mediaUrl && file) mediaUrl.pathname = `/${file.path.replaceAll('\\', '/')}`;
 	const searchable = kind !== null && !media && kind !== 'unsupported';
+	const visibleMarkdownMode = kind === 'markdown' && findOpen ? 'source' : markdownMode;
 	const pathSegments = file?.path.split(/[\\/]/).filter(Boolean) ?? [];
 	const matchCount = findQuery ? content.toLocaleLowerCase().split(findQuery.toLocaleLowerCase()).length - 1 : 0;
 	const closeFind = (): void => {
@@ -124,7 +125,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Next match" disabled={!matchCount} onClick={() => editorRef.current?.find(findQuery, 'next')}><ChevronDown /></Button>
 							<Button type="button" variant="ghost" size="icon-sm" aria-label="Close find" onClick={closeFind}><X /></Button>
 						</div>
-					) : <Button type="button" variant="ghost" size="icon-sm" className="ml-auto" aria-label="Find in file" onClick={() => { setFindOpen(true); if (kind === 'markdown') setMarkdownMode('source'); }}><Search /></Button> : null}
+					) : <Button type="button" variant="ghost" size="icon-sm" className="ml-auto" aria-label="Find in file" onClick={() => setFindOpen(true)}><Search /></Button> : null}
 				</header>
 			) : null}
 			{!file ? (
@@ -149,7 +150,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 				<div className="flex min-h-0 flex-1 items-center justify-center p-4"><video controls src={mediaUrl?.toString()} className="max-h-full max-w-full" /></div>
 			) : kind === 'pdf' ? (
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
-			) : kind === 'markdown' && markdownMode === 'preview' ? (
+			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
 				<div className="min-h-0 flex-1 overflow-auto px-6 py-5">
 					{content.includes('<!--') ? (
 						<>
@@ -194,7 +195,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 						{file.updatedAt ? <time dateTime={file.updatedAt} title={new Date(file.updatedAt).toLocaleString()}>Updated {new Date(file.updatedAt).toLocaleString()}</time> : null}
 					</div>
 					{kind === 'markdown' ? (
-						<ToggleGroup type="single" size="sm" variant="outline" value={markdownMode} onValueChange={(value) => {
+						<ToggleGroup type="single" size="sm" variant="outline" value={visibleMarkdownMode} onValueChange={(value) => {
 							if (value === 'preview' || value === 'source') { closeFind(); setMarkdownMode(value); }
 						}} aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
 							<ToggleGroupItem value="source">Raw</ToggleGroupItem>
