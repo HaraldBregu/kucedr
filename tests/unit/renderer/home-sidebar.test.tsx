@@ -426,6 +426,7 @@ it('opens Workspace from the sidebar footer folder button', async () => {
 	expect(workspaceButton.closest('[data-sidebar="menu-item"]')).not.toBe(
 		accountMenu.closest('[data-sidebar="menu-item"]')
 	);
+	expect(workspaceButton).toHaveClass('w-full', 'h-9');
 	await user.click(workspaceButton);
 	expect(screen.getByText('Workspace page')).toBeInTheDocument();
 });

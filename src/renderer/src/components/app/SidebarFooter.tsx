@@ -130,11 +130,10 @@ export function AppSidebarFooter(): React.JSX.Element {
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</SidebarMenuItem>
-				<SidebarMenuItem className="flex justify-end">
+				<SidebarMenuItem>
 					<SidebarMenuButton
 						type="button"
 						aria-label={t('navigationBar.workspace', 'Workspace')}
-						className="size-9 shrink-0 justify-center p-0"
 						onClick={() => navigate('/workspace')}
 					>
 						<Folder className="size-4" />
