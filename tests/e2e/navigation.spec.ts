@@ -133,14 +133,17 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await page.keyboard.type(' draft');
 	await expect(page.getByRole('heading', { name: 'Plan draft' })).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCount(0);
-	await page.getByText('Source', { exact: true }).click();
+	const markdownModes = page.getByRole('group', { name: 'Markdown view' });
+	await markdownModes.getByRole('button', { name: 'Raw' }).click();
+	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveAttribute('aria-pressed', 'true');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan draft');
-	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-left', '24px');
-	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-top', '12px');
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-left', '0px');
+	await expect(page.getByRole('textbox', { name: 'Note content' }).locator('xpath=ancestor::article')).toHaveCSS('padding-top', '32px');
 	await page.getByRole('textbox', { name: 'Note content' }).fill('# Revised plan');
-	await page.getByText('Preview', { exact: true }).click();
+	await markdownModes.getByRole('button', { name: 'Text' }).click();
+	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveAttribute('aria-pressed', 'true');
 	await expect(page.getByRole('heading', { name: 'Revised plan' })).toBeVisible();
-	await page.getByText('Source', { exact: true }).click();
+	await markdownModes.getByRole('button', { name: 'Raw' }).click();
 	await page.getByRole('textbox', { name: 'Note content' }).fill('# Saved plan');
 	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute('aria-current', 'page');
 	await workspace.getByRole('button', { name: 'config.json' }).click();
@@ -210,7 +213,7 @@ test('editing Markdown Preview keeps table and task content', async () => {
 	await page.getByRole('heading', { name: 'Notes' }).click();
 	await page.keyboard.press('End');
 	await page.keyboard.type(' updated');
-	await page.getByText('Source', { exact: true }).click();
+	await page.getByRole('group', { name: 'Markdown view' }).getByRole('button', { name: 'Raw' }).click();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('| A | B |');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('- [x] Done');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Notes updated');
@@ -227,7 +230,7 @@ test('Markdown comments stay in Source editing mode', async () => {
 	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'comments.md' }).click();
 	await expect(page.getByText('This file contains Markdown comments. Edit it in Source to preserve them.')).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toHaveCount(0);
-	await page.getByText('Source', { exact: true }).click();
+	await page.getByRole('group', { name: 'Markdown view' }).getByRole('button', { name: 'Raw' }).click();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('<!-- keep this -->');
 });
 
