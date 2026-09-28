@@ -25,15 +25,20 @@ it.each([
 });
 
 it.each([
-	['https://docsmcp.googleapis.com/mcp/v1', 'documents.readonly', 'documents'],
-	['https://sheetsmcp.googleapis.com/mcp/v1', 'spreadsheets.readonly', 'spreadsheets'],
-	['https://mapstools.googleapis.com/mcp', 'maps-platform.mapstools', undefined],
-])('uses the documented Google scopes for %s', (url, readonlyScope, writeScope) => {
+	['https://docsmcp.googleapis.com/mcp/v1', ['https://www.googleapis.com/auth/documents']],
+	['https://sheetsmcp.googleapis.com/mcp/v1', ['https://www.googleapis.com/auth/spreadsheets']],
+	['https://mapstools.googleapis.com/mcp', ['https://www.googleapis.com/auth/maps-platform.mapstools']],
+	['https://people.googleapis.com/mcp/v1', [
+		'https://www.googleapis.com/auth/directory.readonly',
+		'https://www.googleapis.com/auth/userinfo.profile',
+		'https://www.googleapis.com/auth/contacts.readonly',
+		'https://www.googleapis.com/auth/contacts',
+	]],
+])('requests full access and the MCP tool scopes for %s', (url, expectedScopes) => {
 	process.env.GOOGLE_CLIENT_ID = 'environment-id';
 	process.env.GOOGLE_CLIENT_SECRET = 'environment-secret';
 	const scopes = findMcpService(url)?.scopes;
-	expect(scopes).toContain(`https://www.googleapis.com/auth/${readonlyScope}`);
-	if (writeScope) expect(scopes).toContain(`https://www.googleapis.com/auth/${writeScope}`);
+	expect(scopes).toEqual(expectedScopes);
 	expect(mcpOAuthOptions(url).authorizationParams?.scope).toBe(scopes?.join(' '));
 });
 

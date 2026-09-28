@@ -500,12 +500,7 @@
 			"description": "Read and update documents.",
 			"authentication": "oauth2",
 			"url": "https://docsmcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/drive.readonly",
-				"https://www.googleapis.com/auth/drive.file",
-				"https://www.googleapis.com/auth/documents.readonly",
-				"https://www.googleapis.com/auth/documents"
-			],
+			"scopes": ["https://www.googleapis.com/auth/documents"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -521,12 +516,7 @@
 			"description": "Read and update spreadsheets.",
 			"authentication": "oauth2",
 			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
-			"scopes": [
-				"https://www.googleapis.com/auth/drive.readonly",
-				"https://www.googleapis.com/auth/drive.file",
-				"https://www.googleapis.com/auth/spreadsheets.readonly",
-				"https://www.googleapis.com/auth/spreadsheets"
-			],
+			"scopes": ["https://www.googleapis.com/auth/spreadsheets"],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
 				"client_secret_env": "GOOGLE_CLIENT_SECRET",
@@ -561,7 +551,8 @@
 			"scopes": [
 				"https://www.googleapis.com/auth/directory.readonly",
 				"https://www.googleapis.com/auth/userinfo.profile",
-				"https://www.googleapis.com/auth/contacts.readonly"
+				"https://www.googleapis.com/auth/contacts.readonly",
+				"https://www.googleapis.com/auth/contacts"
 			],
 			"oauth": {
 				"client_id_env": "GOOGLE_CLIENT_ID",
