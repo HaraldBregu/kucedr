@@ -188,6 +188,21 @@ describe('provider manifest validation', () => {
 			})
 		).toContainEqual(expect.stringContaining('mcp_servers[0].authentication must be one of'));
 	});
+	it('requires valid MCP scopes and OAuth metadata', () => {
+		const server = {
+			id: 'example',
+			name: 'Example',
+			url: 'https://example.com/mcp',
+			authentication: 'oauth2',
+			scopes: ['mcp'],
+		};
+		const manifest = { providerId: 'example', providerName: 'Example', mcp_servers: [server] };
+		expect(validateProviderManifest(manifest)).toEqual([]);
+		expect(validateProviderManifest({ ...manifest, mcp_servers: [{ ...server, scopes: ['mcp read'] }] }))
+			.toContainEqual(expect.stringContaining('mcp_servers[0].scopes'));
+		expect(validateProviderManifest({ ...manifest, mcp_servers: [{ ...server, oauth: { google_fetch: 'yes' } }] }))
+			.toContainEqual(expect.stringContaining('mcp_servers[0].oauth.google_fetch'));
+	});
 
 	it.each(['large-language-model', 'research-chat-model'])(
 		'requires prompt attachment metadata for %s models',

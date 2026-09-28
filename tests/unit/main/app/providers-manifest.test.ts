@@ -46,6 +46,19 @@ describe('provider manifests', () => {
 		expect(microsoftMail?.provider.authentication).toBe('oauth2');
 		expect(microsoftMail?.authentication).toBe('oauth2');
 	});
+	it('loads MCP scopes and OAuth details from each server manifest', () => {
+		const services = loadMcps();
+		expect(services.every((service) => Array.isArray(service.scopes))).toBe(true);
+		expect(services.find((service) => service.id === 'gmail')).toMatchObject({
+			scopes: ['https://www.googleapis.com/auth/gmail.modify'],
+			oauth: {
+				client_id_env: 'GOOGLE_CLIENT_ID',
+				client_secret_env: 'GOOGLE_CLIENT_SECRET',
+				google_fetch: true,
+			},
+		});
+		expect(services.find((service) => service.id === 'gitlab')?.scopes).toEqual(['mcp']);
+	});
 
 	it('loads Microsoft 365 services and their own SVG icons from the manifest', () => {
 		const services = loadMcps().filter((service) => service.provider.id === 'microsoft');

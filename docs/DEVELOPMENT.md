@@ -81,8 +81,8 @@ available port; it is never sent to the authorization server. Do not use this op
 pre-registered client requiring an exact fixed port. A dynamically registered client whose
 registered callback differs is registered again before starting a new interactive flow.
 
-Google Workspace uses the same callback and PKCE/state flow. Its provider-specific adapter
-adds Google scopes and consent parameters. Gmail, Google Calendar, and Google Drive always
+Google Workspace uses the same callback and PKCE/state flow. Each MCP server's scopes and
+OAuth parameters are declared in its provider manifest under `mcp_servers`. Gmail, Google Calendar, and Google Drive always
 read their OAuth client from `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; their settings
 pages do not accept or display credentials. For a Google Desktop app OAuth client, variable
 loopback ports are supported. A Google Web application OAuth client requires the exact
