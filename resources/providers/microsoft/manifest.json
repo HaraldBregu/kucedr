@@ -81,7 +81,7 @@
 			"description": "Find content across Microsoft 365.",
 			"authentication": "oauth2",
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_M365Copilot",
-			"scopes": []
+			"scopes": [],
 			"icon_dark_url": "/images/microsoft-365-copilot.svg",
 			"icon_light_url": "/images/microsoft-365-copilot.svg"
 		}
