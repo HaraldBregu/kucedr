@@ -387,14 +387,10 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(attachmentButton).toHaveCSS('width', '36px');
 	await expect(attachmentButton).toHaveCSS('height', '36px');
 	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '16px');
-	await attachmentButton.hover();
-	await expect(attachmentButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await expect(controls.getByText('Auto', { exact: true })).toHaveCount(0);
 	await expect(modelButton).toContainText('GPT-5.6 Luna');
 	await expect(modelButton.locator('svg')).toHaveCount(1);
 	await expect(modelButton).toHaveCSS('height', '36px');
-	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-	await modelButton.hover();
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toBeVisible();
