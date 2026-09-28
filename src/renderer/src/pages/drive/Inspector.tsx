@@ -30,7 +30,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 		setName(file?.name ?? '');
 		setDescription(file?.description ?? '');
 		setProperties(JSON.stringify(file?.properties ?? {}, null, 2));
-		setParentId(file?.parents?.[0] ?? '');
+		setParentId(file?.parents?.[0] ?? 'root');
 		setContent('');
 		setContentAvailable(false);
 		setError('');
@@ -58,7 +58,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 		try {
 			const parsed = JSON.parse(properties) as unknown;
 			if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || Object.values(parsed).some((value) => typeof value !== 'string')) throw new Error('Properties must be a JSON object with text values.');
-			await onUpdate(file.id, { name: name.trim(), description, properties: parsed as Record<string, string>, ...(parentId !== (file.parents?.[0] ?? '') ? { parentId } : {}) });
+			await onUpdate(file.id, { name: name.trim(), description, properties: parsed as Record<string, string>, ...(parentId !== (file.parents?.[0] ?? 'root') ? { parentId } : {}) });
 			setMessage('Metadata saved.');
 		} catch (caught) {
 			setError(caught instanceof Error ? caught.message : String(caught));
@@ -94,7 +94,7 @@ export function DriveInspector({ file, folders, busy, onUpdate, onTrash, onDownl
 					<h3 className="text-sm font-medium">Metadata</h3>
 					<label className="grid gap-1 text-xs text-muted-foreground">Name<Input value={name} onChange={(event) => setName(event.target.value)} /></label>
 					<label className="grid gap-1 text-xs text-muted-foreground">Description<Textarea value={description} onChange={(event) => setDescription(event.target.value)} rows={2} /></label>
-					<label className="grid gap-1 text-xs text-muted-foreground">Folder<select aria-label="Folder" className="h-9 rounded-md border bg-background px-3 text-sm text-foreground" value={parentId} onChange={(event) => setParentId(event.target.value)}><option value="">My Drive</option>{folders.filter((folder) => folder.id !== file.id).map((folder) => <option key={folder.id} value={folder.id}>{folder.name}</option>)}</select></label>
+					<label className="grid gap-1 text-xs text-muted-foreground">Folder<select aria-label="Folder" className="h-9 rounded-md border bg-background px-3 text-sm text-foreground" value={parentId} onChange={(event) => setParentId(event.target.value)}><option value="root">My Drive</option>{folders.filter((folder) => folder.id !== file.id).map((folder) => <option key={folder.id} value={folder.id}>{folder.name}</option>)}</select></label>
 					<label className="grid gap-1 text-xs text-muted-foreground">Properties (JSON)<Textarea value={properties} onChange={(event) => setProperties(event.target.value)} rows={3} spellCheck={false} /></label>
 					<div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground"><span>{file.mimeType}{file.modifiedTime ? ` · Modified ${new Date(file.modifiedTime).toLocaleString()}` : ''}</span><Button type="button" size="sm" disabled={busy || !name.trim()} onClick={() => void saveMetadata()}><Save className="size-4" />Save metadata</Button></div>
 				</section>
