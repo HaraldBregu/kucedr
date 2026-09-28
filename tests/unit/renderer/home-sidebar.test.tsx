@@ -352,6 +352,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(newChat.querySelector('.lucide-plus')).toBeInTheDocument();
 	expect(newChat).toHaveTextContent('navigationBar.newChat');
 	expect(newChat.querySelector('kbd')).not.toBeInTheDocument();
+	expect(screen.queryByText('navigationBar.workspace')).not.toBeInTheDocument();
 	await user.click(newChat);
 	expect(setSessionId).toHaveBeenCalledWith('00000000-0000-4000-8000-000000000001');
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');

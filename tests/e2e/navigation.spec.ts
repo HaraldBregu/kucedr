@@ -96,7 +96,7 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the Workspace item below New Chat opens the folder sidebar', async () => {
+test('the navbar Workspace folder button opens the folder sidebar', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
@@ -109,16 +109,20 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	});
 	const sidebar = page.locator('[data-slot="home-sidebar"]');
 	const actions = sidebar.locator('header [data-sidebar="menu-button"]');
-	await expect(actions).toHaveCount(2);
+	await expect(actions).toHaveCount(1);
 	await expect(actions.nth(0)).toContainText('New Chat');
 	await expect(actions.nth(0).locator('kbd')).toHaveCount(0);
-	await expect(actions.nth(1)).toContainText('Workspace');
 	await expect(page.getByRole('button', { name: 'Open Coder' })).toHaveCount(0);
 	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
 	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
-	await actions.nth(1).click();
+	const navigationBar = page.locator('[data-slot="navigationbar"]');
+	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
+	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
+	await expect(workspaceButton.locator('.lucide-folder')).toBeVisible();
+	await expect(searchButton.locator('xpath=following-sibling::*[1]')).toBe(workspaceButton);
+	await workspaceButton.click();
 	await expect(page).toHaveURL(/#\/workspace$/);
-	await expect(page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Search' })).toBeVisible();
+	await expect(searchButton).toBeVisible();
 	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
 	await expect(workspaceSidebar.locator('[data-slot="sidebar-footer"]')).toBeVisible();
 	await expect(workspaceSidebar.getByRole('button', { name: /account menu/i })).toBeVisible();

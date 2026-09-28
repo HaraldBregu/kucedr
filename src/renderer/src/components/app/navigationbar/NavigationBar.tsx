@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { AudioLines, Menu, Search, User } from 'lucide-react';
+import { AudioLines, Folder, Menu, Search, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -47,6 +47,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const settingsLabel = t('settings.title', 'Settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search', 'Search');
+	const workspaceLabel = t('navigationBar.workspace', 'Workspace');
 	const navigationBarMenuItems = [
 		{ path: '/settings/general', label: t('settings.tabs.general') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
@@ -63,6 +64,19 @@ export const NavigationBar = React.memo(function NavigationBar({
 			aria-label={searchLabel}
 		>
 			<Search className="size-4" strokeWidth={1.8} />
+		</Button>
+	) : null;
+	const workspaceButton = onSearch ? (
+		<Button
+			type="button"
+			variant="ghost"
+			size="icon"
+			className="size-8 rounded-full"
+			onClick={() => navigate('/workspace')}
+			title={workspaceLabel}
+			aria-label={workspaceLabel}
+		>
+			<Folder className="size-4" strokeWidth={1.8} />
 		</Button>
 	) : null;
 	const voiceButton =
@@ -147,6 +161,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</button>
 					)}
 					{!isMac && searchButton}
+					{!isMac && workspaceButton}
 					{!isMac && voiceButton}
 					{!isMac && routeButton}
 					{!isHome && !isWorkspace && !isOnboarding && !isSettings && (
@@ -176,11 +191,12 @@ export const NavigationBar = React.memo(function NavigationBar({
 				)}
 
 				{/* ── Right action: home/settings toggle ── */}
-			{isMac && (searchButton || voiceButton || routeButton) && (
+			{isMac && (searchButton || workspaceButton || voiceButton || routeButton) && (
 					<div
 						className="z-10 mr-3 flex h-full items-center gap-1"
 					>
 						{searchButton}
+						{workspaceButton}
 						{voiceButton}
 						{routeButton}
 					</div>

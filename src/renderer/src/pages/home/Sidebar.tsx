@@ -1,7 +1,6 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { LayoutGrid, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
@@ -20,7 +19,6 @@ interface HomeSidebarProps {
 
 export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -121,16 +119,6 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						>
 							<Plus className="size-4 shrink-0" />
 							<span className="truncate">{t('navigationBar.newChat', 'New Chat')}</span>
-						</SidebarMenuButton>
-					</SidebarMenuItem>
-					<SidebarMenuItem>
-						<SidebarMenuButton
-							type="button"
-							className="px-2.5 text-sm"
-							onClick={() => navigate('/workspace')}
-						>
-							<LayoutGrid className="size-4 shrink-0" />
-							<span className="truncate">{t('navigationBar.workspace', 'Workspace')}</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>

@@ -188,21 +188,28 @@ it('does not render a chat title in the navigationbar', () => {
 	expect(container.querySelector('[data-slot="navigationbar-chat-context"]')).not.toBeInTheDocument();
 });
 
-it('renders search immediately before the Chat or Settings button', async () => {
+it('renders Workspace immediately after Search and opens it', async () => {
 	const user = userEvent.setup();
 	const onSearch = jest.fn();
 
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<NavigationBar onSearch={onSearch} />
+			<Routes>
+				<Route path="/home" element={null} />
+				<Route path="/workspace" element={<p>Workspace page</p>} />
+			</Routes>
 		</MemoryRouter>
 	);
 	const search = screen.getByRole('button', { name: 'navigationBar.search' });
-	const settings = screen.getByRole('button', { name: 'settings.title' });
+	const workspace = screen.getByRole('button', { name: 'navigationBar.workspace' });
 
-	expect(search.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(search.nextElementSibling).toBe(workspace);
+	expect(workspace.querySelector('.lucide-folder')).toBeInTheDocument();
 	await user.click(search);
 	expect(onSearch).toHaveBeenCalledTimes(1);
+	await user.click(workspace);
+	expect(screen.getByText('Workspace page')).toBeInTheDocument();
 });
 
 it('renders one solid navigationbar color without visible title text', () => {
