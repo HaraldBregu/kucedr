@@ -72,8 +72,14 @@ export class DriveClient {
 	async read(id: string): Promise<{ file: DriveFile; content: string }> {
 		const file = await this.file(id);
 		if (file.mimeType === FOLDER) throw new Error('A folder has no file content.');
-		const path = file.mimeType.startsWith('application/vnd.google-apps.')
-			? `/drive/v3/files/${encodeURIComponent(id)}/export?mimeType=text%2Fplain`
+		const native = file.mimeType.startsWith('application/vnd.google-apps.');
+		const exportType = file.mimeType === 'application/vnd.google-apps.document' ? 'text/plain'
+			: file.mimeType === 'application/vnd.google-apps.spreadsheet' ? 'text/csv' : undefined;
+		if (native && !exportType) throw new Error('Open this Google file in its native editor or download it.');
+		if (!native && !file.mimeType.startsWith('text/') && !['application/json', 'application/xml', 'application/javascript'].includes(file.mimeType))
+			throw new Error('Download this file to view its binary content.');
+		const path = exportType
+			? `/drive/v3/files/${encodeURIComponent(id)}/export?mimeType=${encodeURIComponent(exportType)}`
 			: `/drive/v3/files/${encodeURIComponent(id)}?alt=media`;
 		const content = await (await this.request(path)).text();
 		return { file, content };
@@ -97,7 +103,7 @@ export class DriveClient {
 			const response = await this.request(`/drive/v3/files?fields=${encodeURIComponent(FIELDS)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: input.name, mimeType: FOLDER, parents: input.parentId ? [input.parentId] : undefined }) });
 			return response.json() as Promise<DriveFile>;
 		}
-		return this.upload(input, Buffer.from(input.content ?? '', 'utf8'));
+		return this.upload({ ...input, mimeType: input.mimeType ?? 'text/plain' }, Buffer.from(input.content ?? '', 'utf8'));
 	}
 
 	async update(id: string, input: DriveUpdateInput): Promise<DriveFile> {
@@ -135,7 +141,7 @@ export class DriveClient {
 
 	async sync(folderPath: string): Promise<DriveSyncResult> {
 		const result = { uploaded: 0, skipped: 0, failed: 0 };
-		const root = await this.findOrCreateFolder('Kucedr Backup');
+		const root = await this.findOrCreateFolder('Kucedr Backup', 'root');
 		const destination = await this.findOrCreateFolder(basename(folderPath), root.id);
 		const visit = async (local: string, parentId: string): Promise<void> => {
 			for (const entry of await readdir(local, { withFileTypes: true })) {
@@ -150,8 +156,10 @@ export class DriveClient {
 						const hash = createHash('md5').update(bytes).digest('hex');
 						const existing = (await this.listQuery(`trashed = false and '${parentId}' in parents and name = '${entry.name.replaceAll('\\', '\\\\').replaceAll("'", "\\'")}'`))[0];
 						if (existing?.md5Checksum === hash) { result.skipped++; continue; }
-						if (existing) await this.request(`/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media`, { method: 'PATCH', headers: { 'Content-Type': existing.mimeType }, body: bytes });
-						else await this.upload({ name: entry.name, parentId }, bytes);
+						const mimeType = /\.(txt|md|csv|tsv|html|css|js|ts|tsx|jsx)$/i.test(entry.name) ? 'text/plain'
+							: /\.json$/i.test(entry.name) ? 'application/json' : 'application/octet-stream';
+						if (existing) await this.request(`/upload/drive/v3/files/${encodeURIComponent(existing.id)}?uploadType=media`, { method: 'PATCH', headers: { 'Content-Type': mimeType }, body: bytes });
+						else await this.upload({ name: entry.name, parentId, mimeType }, bytes);
 						result.uploaded++;
 					}
 				} catch { result.failed++; }
