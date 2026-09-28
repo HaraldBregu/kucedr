@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronDown, ChevronRight, ChevronUp, Code2, FileText, Folder, LoaderCircle, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp, Folder, LoaderCircle, Search, X } from 'lucide-react';
 import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
@@ -204,7 +204,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 					{kind === 'markdown' ? (
 						<LayoutGroup id="workspace-markdown-mode">
 							<ButtonGroup role="group" aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
-								{([{ mode: 'source', label: 'Raw', icon: Code2 }, { mode: 'preview', label: 'Text', icon: FileText }] as const).map(({ mode, label, icon: Icon }) => {
+								{([{ mode: 'source', label: 'Raw' }, { mode: 'preview', label: 'Text' }] as const).map(({ mode, label }) => {
 									const active = visibleMarkdownMode === mode;
 									return (
 										<Button
@@ -217,12 +217,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 											onClick={() => { closeFind(); setMarkdownMode(mode); }}
 										>
 											{active ? <motion.span layoutId="active-workspace-markdown-mode" className="absolute inset-0 bg-primary" transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 350, damping: 28 }} /> : null}
-											<span className="relative z-10 flex items-center gap-1">
-												<motion.span className="inline-flex" animate={reducedMotion ? undefined : active ? { scale: 1.1, y: [0, -1, 0] } : { scale: 1, y: 0 }} transition={active && !reducedMotion ? { y: { repeat: Infinity, duration: 2, ease: 'easeInOut' }, scale: { duration: 0.2 } } : { duration: 0.2 }} whileHover={reducedMotion ? undefined : { scale: 1.15 }}>
-													<Icon aria-hidden="true" className="size-3" />
-												</motion.span>
-												<span>{label}</span>
-											</span>
+											<span className="relative z-10">{label}</span>
 										</Button>
 									);
 								})}
