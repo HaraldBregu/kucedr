@@ -305,6 +305,7 @@ export default function DrivePage(): React.JSX.Element {
 						<p className="text-sm text-muted-foreground">
 							Browse and manage Drive files, access Meet recordings, and back up a local folder.
 						</p>
+						{error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
 						<Button type="button" disabled={busy} onClick={() => void connect()}>
 							Connect Google Drive
 						</Button>
@@ -400,6 +401,7 @@ export default function DrivePage(): React.JSX.Element {
 							value={createName}
 							onChange={(event) => setCreateName(event.target.value)}
 						/>
+						{error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
 						<DialogFooter>
 							<Button
 								type="button"
