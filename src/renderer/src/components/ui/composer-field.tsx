@@ -4,13 +4,13 @@ import { cn } from '@/lib/utils';
 export function PromptInputField({
 	children,
 	header,
-	trailingAction,
+	controls,
 	expanded,
 	className,
 }: {
 	readonly children: ReactNode;
 	readonly header?: ReactNode;
-	readonly trailingAction?: ReactNode;
+	readonly controls?: ReactNode;
 	readonly expanded: boolean;
 	readonly className?: string;
 }): React.JSX.Element {
@@ -18,16 +18,16 @@ export function PromptInputField({
 		<div
 			data-slot="prompt-input-field"
 			className={cn(
-				'grid grid-cols-[minmax(0,1fr)_auto] gap-2 rounded-[16px] border border-border/60 bg-card/95 px-4 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25 transition-[min-height,padding] duration-150 ease-out motion-reduce:transition-none',
-				expanded ? 'min-h-28 items-start py-4 pr-4' : 'min-h-16 items-center py-2 pr-2',
+				'flex min-h-[104px] flex-col rounded-[24px] border border-border/60 bg-card/95 px-2 pb-2 pt-3 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25 transition-[min-height,padding] duration-150 ease-out motion-reduce:transition-none',
+				expanded && 'min-h-32',
 				className
 			)}
 		>
-			<div className="min-w-0">
+			<div className="min-w-0 flex-1 px-2">
 				{header ? <div className="mb-2">{header}</div> : null}
 				{children}
 			</div>
-			<div className={expanded ? 'self-end' : 'self-center'}>{trailingAction}</div>
+			{controls}
 		</div>
 	);
 }

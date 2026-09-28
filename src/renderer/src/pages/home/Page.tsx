@@ -292,13 +292,13 @@ function AttachmentButton({
 			<Button
 				type="button"
 				variant="ghost"
-				size="icon-xs"
-				className="text-muted-foreground hover:text-foreground"
+				size="icon"
+				className="size-9 rounded-full text-foreground hover:bg-muted"
 				aria-label="Add attachment"
 				disabled={disabled}
 				onClick={triggerFileUpload}
 			>
-				<Plus className="size-3.5" />
+				<Plus className="size-4" />
 			</Button>
 		</PromptInputAction>
 	);
@@ -328,7 +328,7 @@ function VoiceButton({
 				type="button"
 				variant="ghost"
 				size="icon"
-				className="size-10 rounded-full text-foreground hover:bg-muted"
+				className="size-9 rounded-full text-foreground hover:bg-muted"
 				aria-label={tooltip}
 				disabled={isDisabled}
 				onClick={onVoiceModeRequest}
@@ -405,7 +405,7 @@ function SubmitButton({
 				type="button"
 				variant="default"
 				size="icon"
-				className="size-10 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
+				className="size-9 overflow-hidden rounded-full bg-foreground text-background hover:bg-foreground/90"
 				aria-label={label}
 				onClick={onAction}
 			>
@@ -765,7 +765,7 @@ function PageContent(): ReactElement {
 								</div>
 							) : null}
 							<PromptEditor
-								placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
+				placeholder={showEmptyConversation ? 'Work with Kucedr' : 'Send follow-up'}
 								ariaLabel="Message Kucedr"
 								value={agent.input}
 								expanded={agent.input.length > 0}

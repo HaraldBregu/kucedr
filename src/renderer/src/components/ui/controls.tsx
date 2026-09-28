@@ -4,26 +4,31 @@ import { CircularLoader } from './loader';
 export function PromptInputControls({
 	leadingAction,
 	content,
+	trailingAction,
 	isLoading,
 }: {
 	readonly leadingAction?: ReactNode;
 	readonly content?: ReactNode;
+	readonly trailingAction?: ReactNode;
 	readonly isLoading: boolean;
 }): React.JSX.Element {
 	return (
 		<div
 			data-slot="prompt-input-controls"
-			className="flex min-h-6 w-full items-center justify-between pt-1"
+			className="mt-auto flex min-h-10 w-full items-center justify-between gap-2"
 		>
-			<div data-slot="prompt-input-control-buttons" className="flex items-center gap-0.5 px-2">
+			<div data-slot="prompt-input-control-buttons" className="flex shrink-0 items-center">
 				{leadingAction}
-				{content}
 			</div>
-			{isLoading ? (
-				<div role="status" aria-label="Kucedr is responding" className="mr-2 text-muted-foreground">
-					<CircularLoader size="sm" />
-				</div>
-			) : null}
+			<div data-slot="prompt-input-control-actions" className="flex min-w-0 items-center justify-end gap-1.5">
+				{content}
+				{isLoading ? (
+					<div role="status" aria-label="Kucedr is responding" className="text-muted-foreground">
+						<CircularLoader size="sm" />
+					</div>
+				) : null}
+				{trailingAction}
+			</div>
 		</div>
 	);
 }

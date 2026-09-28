@@ -376,32 +376,27 @@ test('the empty home state and composer use the intended spacing', async () => {
 	const modelButton = page.getByRole('button', { name: 'Change model' });
 
 	await expect(emptyContent).toHaveCSS('padding-top', '80px');
-	await expect(field).toHaveCSS('min-height', '56px');
+	await expect(field).toHaveCSS('min-height', '104px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await expect(editorArea).toHaveCSS('min-height', '24px');
-	await expect(field).toHaveCSS('border-radius', '16px');
-	await expect(composer).toHaveCSS('border-radius', '16px');
+	await expect(field).toHaveCSS('border-radius', '24px');
+	await expect(composer).toHaveCSS('border-radius', '24px');
 	await expect(controls).toBeVisible();
 	await expect(controlButtons).toHaveCSS('display', 'flex');
-	await expect(controlButtons).toHaveCSS('padding-left', '12px');
-	await expect(controlButtons).toHaveCSS('padding-right', '12px');
 	await expect(controls.getByRole('status', { name: 'Kucedr is responding' })).toHaveCount(0);
 	expect(
-		await controls.evaluate((element) =>
-			element.previousElementSibling?.hasAttribute('data-expanded')
-		)
-	).toBe(true);
+		await controls.evaluate((element) => element.parentElement?.dataset.slot)
+	).toBe('prompt-input-field');
 	await expect(controls.getByRole('button', { name: 'Add attachment' })).toBeVisible();
-	await expect(attachmentButton).toHaveCSS('width', '20px');
-	await expect(attachmentButton).toHaveCSS('height', '20px');
-	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '14px');
+	await expect(attachmentButton).toHaveCSS('width', '36px');
+	await expect(attachmentButton).toHaveCSS('height', '36px');
+	await expect(attachmentButton.locator('svg')).toHaveCSS('width', '16px');
 	await attachmentButton.hover();
 	await expect(attachmentButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
-	await expect(controlButtons).toHaveCSS('column-gap', '2px');
 	await expect(controls.getByText('Auto', { exact: true })).toHaveCount(0);
 	await expect(modelButton).toContainText('GPT-5.6 Luna');
-	await expect(modelButton.locator('svg')).toHaveCount(0);
-	await expect(modelButton).toHaveCSS('height', '20px');
+	await expect(modelButton.locator('svg')).toHaveCount(1);
+	await expect(modelButton).toHaveCSS('height', '36px');
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await modelButton.hover();
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
@@ -422,7 +417,11 @@ test('the empty home state and composer use the intended spacing', async () => {
 				(fieldBounds!.y + fieldBounds!.height / 2)
 		)
 	).toBeLessThan(4);
-	expect(attachmentBounds!.y).toBeGreaterThan(fieldBounds!.y + fieldBounds!.height);
+	expect(attachmentBounds!.y).toBeGreaterThan(fieldBounds!.y);
+	expect(attachmentBounds!.y + attachmentBounds!.height).toBeLessThanOrEqual(
+		fieldBounds!.y + fieldBounds!.height
+	);
+	expect((await modelButton.boundingBox())!.x).toBeGreaterThan(attachmentBounds!.x);
 	await editor.pressSequentially('Hello');
 	await expect(editor).toContainText('Hello');
 	await expect(composer).toHaveAttribute('data-expanded', 'true');
@@ -434,21 +433,20 @@ test('the empty home state and composer use the intended spacing', async () => {
 	expect(sendBounds!.x).toBeGreaterThan(fieldBounds!.x);
 	expect(sendBounds!.y).toBeGreaterThanOrEqual(fieldBounds!.y);
 	expect(expandedTranscriptionBounds!.x).toBeLessThan(sendBounds!.x);
-	await expect(field).toHaveCSS('min-height', '96px');
-	await expect(field).toHaveCSS('align-items', 'flex-start');
-	await expect(field).toHaveCSS('padding-top', '16px');
-	await expect(field).toHaveCSS('padding-bottom', '16px');
-	await expect(field).toHaveCSS('padding-right', '16px');
-	await expect(field).toHaveCSS('border-radius', '16px');
+	await expect(field).toHaveCSS('min-height', '128px');
+	await expect(field).toHaveCSS('padding-top', '12px');
+	await expect(field).toHaveCSS('padding-bottom', '8px');
+	await expect(field).toHaveCSS('padding-right', '8px');
+	await expect(field).toHaveCSS('border-radius', '24px');
 	const expandedFieldBounds = await field.boundingBox();
 	const expandedEditorBounds = await editor.boundingBox();
 	expect(expandedFieldBounds && expandedEditorBounds).toBeTruthy();
-	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeGreaterThanOrEqual(16);
+	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeGreaterThanOrEqual(12);
 	expect(expandedEditorBounds!.y - expandedFieldBounds!.y).toBeLessThan(20);
 	await editor.fill('');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toHaveCount(0);
-	await expect(field).toHaveCSS('min-height', '56px');
+	await expect(field).toHaveCSS('min-height', '104px');
 	await expect(field).toHaveCSS('padding-right', '8px');
 	await modelButton.click();
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
