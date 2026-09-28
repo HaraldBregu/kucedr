@@ -1,6 +1,9 @@
 import { createHash } from 'node:crypto';
 import { readFile, readdir } from 'node:fs/promises';
+import { createWriteStream } from 'node:fs';
 import { basename, join } from 'node:path';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { getMcpOauth, saveMcpOauth } from '../mcp';
 import type { DriveCreateInput, DriveFile, DriveSyncResult, DriveUpdateInput } from '../../shared/drive_types';
 
@@ -131,15 +134,21 @@ export class DriveClient {
 		await this.request(`/drive/v3/files/${encodeURIComponent(id)}?fields=id`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ trashed: true }) });
 	}
 
-	async download(id: string): Promise<{ file: DriveFile; bytes: Buffer; name: string }> {
+	async downloadInfo(id: string): Promise<{ file: DriveFile; name: string }> {
 		const file = await this.file(id);
 		if (file.mimeType === FOLDER) throw new Error('A folder cannot be downloaded as a file.');
+		const native = file.mimeType.startsWith('application/vnd.google-apps.');
+		return { file, name: native ? `${file.name}.pdf` : file.name };
+	}
+
+	async download(id: string, destination: string, file: DriveFile): Promise<void> {
 		const native = file.mimeType.startsWith('application/vnd.google-apps.');
 		const path = native
 			? `/drive/v3/files/${encodeURIComponent(id)}/export?mimeType=application%2Fpdf`
 			: `/drive/v3/files/${encodeURIComponent(id)}?alt=media`;
 		const response = await this.request(path);
-		return { file, bytes: Buffer.from(await response.arrayBuffer()), name: native ? `${file.name}.pdf` : file.name };
+		if (!response.body) throw new Error('Google Drive returned no file content.');
+		await pipeline(Readable.fromWeb(response.body as never), createWriteStream(destination));
 	}
 
 	async sync(folderPath: string): Promise<DriveSyncResult> {

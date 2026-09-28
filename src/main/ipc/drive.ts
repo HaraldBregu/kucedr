@@ -1,5 +1,4 @@
 import { dialog } from 'electron';
-import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
@@ -45,11 +44,11 @@ export class DriveIpc implements IpcModule<{ windows: WindowContextManager; apps
 		});
 		registerCommandWithEvent(DriveChannels.download, async (event, id) => {
 			const window = trusted.assert(event);
-			const { bytes, name } = await drive.download(id);
+			const { file, name } = await drive.downloadInfo(id);
 			const options = { defaultPath: name, title: 'Download from Google Drive' };
 			const selected = window ? await dialog.showSaveDialog(window, options) : await dialog.showSaveDialog(options);
 			if (!selected.filePath) return '';
-			await writeFile(selected.filePath, bytes);
+			await drive.download(id, selected.filePath, file);
 			return selected.filePath;
 		});
 		registerCommandWithEvent(DriveChannels.chooseFolder, async (event) => {
