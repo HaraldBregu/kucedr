@@ -63,13 +63,8 @@ export function AppSidebarFooter(): React.JSX.Element {
 										{accountInitial}
 									</AvatarFallback>
 								</Avatar>
-								<span className="grid min-w-0 flex-1 text-left text-sm leading-tight">
-									<span className="truncate font-medium">{accountItem.title}</span>
-									{accountItem.description ? (
-										<span className="truncate text-xs text-muted-foreground">
-											{accountItem.description}
-										</span>
-									) : null}
+								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+									{accountItem.title}
 								</span>
 								<MoreVertical className="ml-auto size-4" aria-hidden="true" />
 							</SidebarMenuButton>
