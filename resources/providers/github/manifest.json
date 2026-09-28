@@ -12,7 +12,9 @@
 			"name": "GitHub",
 			"description": "Work with repositories and issues.",
 			"authentication": "oauth2",
-			"url": "https://api.githubcopilot.com/mcp/"
+			"url": "https://api.githubcopilot.com/mcp/",
+			"scopes": [],
+			"oauth": { "credentials_required": true }
 		}
 	],
 	"databases": []

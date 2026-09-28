@@ -12,7 +12,8 @@
 			"name": "Notion",
 			"description": "Search and manage Notion pages.",
 			"authentication": "oauth2",
-			"url": "https://mcp.notion.com/mcp"
+			"url": "https://mcp.notion.com/mcp",
+			"scopes": []
 		}
 	],
 	"databases": []

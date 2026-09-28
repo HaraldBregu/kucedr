@@ -12,7 +12,8 @@
 			"name": "GitLab",
 			"description": "Work with projects, issues, and merge requests.",
 			"authentication": "oauth2",
-			"url": "https://gitlab.com/api/v4/mcp"
+			"url": "https://gitlab.com/api/v4/mcp",
+			"scopes": ["mcp"]
 		}
 	],
 	"databases": []
