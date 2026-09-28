@@ -201,7 +201,8 @@ test('Workspace breadcrumbs browse folders and sibling files', async () => {
 	await folderTree.getByRole('treeitem', { name: 'Nested' }).click();
 	await expect(folderTree.getByRole('treeitem', { name: 'deep.md' })).toBeVisible();
 	await folderTree.getByRole('treeitem', { name: 'deep.md' }).click();
-	await expect(workspace.getByRole('button', { name: 'deep.md' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('button', { name: 'Browse deep.md' })).toBeVisible();
+	await expect.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file'))).toBe('CrumbPicker/Nested/deep.md');
 	await page.getByRole('button', { name: 'Browse Nested' }).click();
 	const nestedTree = page.getByRole('tree', { name: 'Workspace files' });
 	await expect(nestedTree.getByRole('treeitem', { name: 'next.md' })).toBeVisible();
@@ -211,7 +212,8 @@ test('Workspace breadcrumbs browse folders and sibling files', async () => {
 	await expect(fileTree.getByRole('treeitem')).toHaveCount(2);
 	await expect(fileTree.getByRole('treeitem', { name: 'Nested' })).toHaveCount(0);
 	await fileTree.getByRole('treeitem', { name: 'next.md' }).click();
-	await expect(workspace.getByRole('button', { name: 'next.md' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('button', { name: 'Browse next.md' })).toBeVisible();
+	await expect.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file'))).toBe('CrumbPicker/Nested/next.md');
 });
 
 test('Workspace keeps its files and selection across chat navigation and refreshes changed content', async () => {
