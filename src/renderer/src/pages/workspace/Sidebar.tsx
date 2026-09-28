@@ -57,7 +57,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			window.clearTimeout(refreshTimer);
 			unsubscribe();
 		};
-	}, []);
+	}, [onFilesLoaded]);
 
 	const showEntryMenu = (entry?: WorkspaceTreeEntry): void => {
 		const parentPath = entry?.type === 'directory' ? entry.path : entry?.path.split(/[\\/]/).slice(0, -1).join('/') ?? '';

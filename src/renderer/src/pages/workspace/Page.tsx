@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
@@ -26,23 +26,24 @@ export default function WorkspacePage({ active }: { readonly active: boolean }):
 			setFileRevision((revision) => revision + 1);
 		}
 	}, [active]);
+	const handleFilesLoaded = useCallback((files: WorkspaceTreeEntry[]) => {
+		setSelectedFile((current) => {
+			if (!current) return null;
+			const pending = [...files];
+			while (pending.length > 0) {
+				const entry = pending.pop()!;
+				if (entry.path === current.path) {
+					if (entry.type !== 'file') return null;
+					return entry.name === current.name && entry.size === current.size && entry.createdAt === current.createdAt && entry.updatedAt === current.updatedAt ? current : entry;
+				}
+				if (entry.children) pending.push(...entry.children);
+			}
+			return null;
+		});
+	}, []);
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
-			<Split sidebar={<WorkspaceSidebar onFileSelect={setSelectedFile} onFilesLoaded={(files) => {
-				setSelectedFile((current) => {
-					if (!current) return null;
-					const pending = [...files];
-					while (pending.length > 0) {
-						const entry = pending.pop()!;
-						if (entry.path === current.path) {
-							if (entry.type !== 'file') return null;
-							return entry.name === current.name && entry.size === current.size && entry.createdAt === current.createdAt && entry.updatedAt === current.updatedAt ? current : entry;
-						}
-						if (entry.children) pending.push(...entry.children);
-					}
-					return null;
-				});
-			}} onEntryRenamed={(sourcePath, nextPath) => {
+			<Split sidebar={<WorkspaceSidebar onFileSelect={setSelectedFile} onFilesLoaded={handleFilesLoaded} onEntryRenamed={(sourcePath, nextPath) => {
 				setSelectedFile((current) => {
 					if (!current) return null;
 					if (current.path === sourcePath) return { ...current, path: nextPath, name: nextPath.split(/[\\/]/).pop() ?? current.name };
