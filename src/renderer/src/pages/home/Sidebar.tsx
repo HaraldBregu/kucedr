@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import { LayoutGrid, Plus } from 'lucide-react';
+import { HardDrive, LayoutGrid, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
@@ -131,6 +131,12 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 						>
 							<LayoutGrid className="size-4 shrink-0" />
 							<span className="truncate">{t('navigationBar.workspace', 'Workspace')}</span>
+						</SidebarMenuButton>
+					</SidebarMenuItem>
+					<SidebarMenuItem>
+						<SidebarMenuButton type="button" className="px-2.5 text-sm" onClick={() => navigate('/drive')}>
+							<HardDrive className="size-4 shrink-0" />
+							<span className="truncate">Google Drive</span>
 						</SidebarMenuButton>
 					</SidebarMenuItem>
 				</SidebarMenu>
