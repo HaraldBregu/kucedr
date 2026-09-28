@@ -160,6 +160,16 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await markdownModes.getByRole('button', { name: 'Raw' }).click();
 	await page.getByRole('textbox', { name: 'Note content' }).fill('# Saved plan');
 	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute('aria-current', 'page');
+	await page.getByRole('button', { name: 'Browse workspace root' }).click();
+	const breadcrumbTree = page.getByRole('tree', { name: 'Workspace files' });
+	const notesFolder = breadcrumbTree.getByRole('treeitem', { name: 'Notes' });
+	await expect(notesFolder).toBeFocused();
+	await notesFolder.press('ArrowRight');
+	await expect(notesFolder).toHaveAttribute('aria-expanded', 'true');
+	await notesFolder.press('ArrowDown');
+	await expect(breadcrumbTree.getByRole('treeitem', { name: 'config.json' })).toBeFocused();
+	await breadcrumbTree.getByRole('treeitem', { name: 'config.json' }).click();
+	await expect(breadcrumbTree).toHaveCount(0);
 	await workspace.getByRole('button', { name: 'config.json' }).click();
 	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('Notes/plan.md'))).toBe('# Saved plan');
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');

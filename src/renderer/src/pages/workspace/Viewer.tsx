@@ -134,7 +134,10 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 									<Folder aria-hidden="true" className="size-4" />
 								</Button>
 							</DropdownMenuTrigger>
-							<DropdownMenuContent align="start" className="max-h-80 min-w-64 overflow-y-auto p-0">
+							<DropdownMenuContent align="start" className="max-h-80 min-w-64 overflow-y-auto p-0" onOpenAutoFocus={(event) => {
+								const first = event.currentTarget.querySelector<HTMLButtonElement>('[role="treeitem"]');
+								if (first) { event.preventDefault(); first.focus(); }
+							}}>
 								<WorkspaceBreadcrumbTree entries={entries} selectedPath={file.path} onFileSelect={(entry) => { setTreeOpen(false); onFileSelect(entry); }} />
 							</DropdownMenuContent>
 						</DropdownMenu>
