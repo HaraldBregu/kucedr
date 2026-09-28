@@ -96,6 +96,24 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 			});
 		return () => { active = false; };
 	}, [file, kind, media, t]);
+	const codeEditor = file ? (
+		<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
+			<CodeMirrorEditor
+				ref={editorRef}
+				key={file.path}
+				value={content}
+				onChange={(value) => { if (kind === 'markdown') handleMarkdownChange(value); }}
+				onSave={kind === 'markdown' ? save : undefined}
+				readOnly={kind !== 'markdown'}
+				canSave={kind === 'markdown'}
+				code={kind !== 'markdown'}
+				foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
+				isDark={isDark}
+				path={file.path}
+				className={kind === 'markdown' ? 'min-h-[calc(100dvh-10rem)] flex-1' : 'h-full min-h-full'}
+			/>
+		</Suspense>
+	) : null;
 
 	return (
 		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
@@ -167,43 +185,9 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 				</div>
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto">
-					{kind === 'markdown' ? <article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12">
-					<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-						<CodeMirrorEditor
-							ref={editorRef}
-							key={file.path}
-							value={content}
-							onChange={(value) => {
-								if (kind !== 'markdown') return;
-								handleMarkdownChange(value);
-							}}
-							onSave={kind === 'markdown' ? save : undefined}
-							readOnly={kind !== 'markdown'}
-							canSave={kind === 'markdown'}
-							code={kind !== 'markdown'}
-							foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
-							isDark={isDark}
-							path={file.path}
-							className={kind === 'markdown' ? 'min-h-[calc(100dvh-10rem)] flex-1' : 'h-full min-h-full'}
-						/>
-					</Suspense>
-					</article> : (
-					<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
-						<CodeMirrorEditor
-							ref={editorRef}
-							key={file.path}
-							value={content}
-							onChange={() => undefined}
-							readOnly
-							canSave={false}
-							code
-							foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
-							isDark={isDark}
-							path={file.path}
-							className="h-full min-h-full"
-						/>
-					</Suspense>
-					)}
+					{kind === 'markdown' ? (
+						<article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12">{codeEditor}</article>
+					) : codeEditor}
 				</div>
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}
