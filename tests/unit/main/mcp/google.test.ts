@@ -51,6 +51,11 @@ it('requests the Drive scopes used by the Drive workflows', () => {
 	}
 });
 
+it('requests the scope needed to create Gmail labels', () => {
+	const scopes = googleMcpScopes('https://gmailmcp.googleapis.com/mcp/v1')?.split(' ');
+	expect(scopes).toContain('https://www.googleapis.com/auth/gmail.labels');
+});
+
 it('does not apply Maps credentials to a different path or host', () => {
 	expect(googleMcpScopes('https://mapstools.googleapis.com/mcp/v1')).toBeUndefined();
 	expect(googleMcpScopes('https://mapstools.googleapis.com.evil.test/mcp')).toBeUndefined();

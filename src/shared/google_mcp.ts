@@ -1,5 +1,5 @@
 const SCOPES: Readonly<Record<string, readonly string[]>> = {
-	'gmailmcp.googleapis.com': ['gmail.readonly', 'gmail.compose'],
+	'gmailmcp.googleapis.com': ['gmail.readonly', 'gmail.compose', 'gmail.labels'],
 	'calendarmcp.googleapis.com': [
 		'calendar.calendarlist.readonly',
 		'calendar.events.freebusy',
