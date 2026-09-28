@@ -166,7 +166,7 @@ it.each<[AuthState, string]>([
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
 	expect(footer).not.toBeNull();
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
-	expect(accountMenu.querySelector('[data-slot="avatar"]')).toHaveClass('size-7');
+	expect(accountMenu.querySelector('.rounded-full.grayscale')).toHaveClass('size-7');
 	if (state.status === 'signedIn') {
 		expect(within(accountMenu).queryByText(state.user.email)).not.toBeInTheDocument();
 	}
