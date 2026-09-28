@@ -83,7 +83,6 @@ const McpDetailsPage: React.FC = () => {
 		if (!server) return;
 		setTesting(true);
 		setError('');
-		setTestResult(undefined);
 		try {
 			setTestResult(await window.mcp.test(server.id));
 		} catch (caught) {
@@ -259,7 +258,6 @@ const McpDetailsPage: React.FC = () => {
 				</div>
 				{testResult && (
 					<SettingsNotice
-						autoDismiss={testResult.ok}
 						variant={testResult.ok ? 'default' : 'destructive'}
 						icon={testResult.ok ? undefined : AlertTriangle}
 					>
