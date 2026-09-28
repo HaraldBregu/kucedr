@@ -3,7 +3,7 @@ import { CalendarIcon } from '../../../src/renderer/src/components/prompt-kit/ca
 import { DriveIcon } from '../../../src/renderer/src/components/prompt-kit/drive';
 import { Tool, toolIcon } from '../../../src/renderer/src/components/prompt-kit/tool';
 
-it('uses the compact Gmail image only for Gmail tool calls', () => {
+it('uses compact provider images for Google tool calls', () => {
 	const { container, rerender } = render(
 		<Tool
 			toolPart={{
