@@ -26,7 +26,7 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center text-xs" title={path}>
 			<DropdownMenu open={openPath === ''} onOpenChange={(open) => setOpenPath(open ? '' : null)}>
 				<DropdownMenuTrigger asChild>
-					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0 hover:bg-transparent!" aria-label="Browse workspace root">
+					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0" aria-label="Browse workspace root">
 						<Folder aria-hidden="true" className="size-4" />
 					</Button>
 				</DropdownMenuTrigger>
