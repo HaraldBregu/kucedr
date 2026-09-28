@@ -452,6 +452,13 @@
 			"description": "Search and manage email.",
 			"authentication": "oauth2",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1",
+			"scopes": ["https://www.googleapis.com/auth/gmail.modify"],
+			"oauth": {
+				"client_id_env": "GOOGLE_CLIENT_ID",
+				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
+				"google_fetch": true
+			},
 			"icon_dark_url": "/images/gmail.svg",
 			"icon_light_url": "/images/gmail.svg"
 		},
@@ -461,6 +468,17 @@
 			"description": "Manage calendars and events.",
 			"authentication": "oauth2",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
+			"scopes": [
+				"https://www.googleapis.com/auth/calendar.calendarlist.readonly",
+				"https://www.googleapis.com/auth/calendar.events.freebusy",
+				"https://www.googleapis.com/auth/calendar.events.readonly"
+			],
+			"oauth": {
+				"client_id_env": "GOOGLE_CLIENT_ID",
+				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
+				"google_fetch": true
+			},
 			"icon_dark_url": "/images/google-calendar.svg",
 			"icon_light_url": "/images/google-calendar.svg"
 		},
@@ -470,6 +488,20 @@
 			"description": "Search and manage Drive files.",
 			"authentication": "oauth2",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
+			"scopes": [
+				"https://www.googleapis.com/auth/drive",
+				"https://www.googleapis.com/auth/drive.meet.readonly",
+				"https://www.googleapis.com/auth/drive.metadata",
+				"https://www.googleapis.com/auth/drive.metadata.readonly",
+				"https://www.googleapis.com/auth/drive.readonly",
+				"https://www.googleapis.com/auth/drive.file"
+			],
+			"oauth": {
+				"client_id_env": "GOOGLE_CLIENT_ID",
+				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
+				"google_fetch": true
+			},
 			"icon_dark_url": "/images/google-drive.svg",
 			"icon_light_url": "/images/google-drive.svg"
 		},
@@ -479,6 +511,18 @@
 			"description": "Read and update documents.",
 			"authentication": "oauth2",
 			"url": "https://docsmcp.googleapis.com/mcp/v1",
+			"scopes": [
+				"https://www.googleapis.com/auth/drive.readonly",
+				"https://www.googleapis.com/auth/drive.file",
+				"https://www.googleapis.com/auth/documents.readonly",
+				"https://www.googleapis.com/auth/documents"
+			],
+			"oauth": {
+				"client_id_env": "GOOGLE_CLIENT_ID",
+				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
+				"google_fetch": true
+			},
 			"icon_dark_url": "/images/google-docs.svg",
 			"icon_light_url": "/images/google-docs.svg"
 		},
@@ -488,6 +532,18 @@
 			"description": "Read and update spreadsheets.",
 			"authentication": "oauth2",
 			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
+			"scopes": [
+				"https://www.googleapis.com/auth/drive.readonly",
+				"https://www.googleapis.com/auth/drive.file",
+				"https://www.googleapis.com/auth/spreadsheets.readonly",
+				"https://www.googleapis.com/auth/spreadsheets"
+			],
+			"oauth": {
+				"client_id_env": "GOOGLE_CLIENT_ID",
+				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
+				"google_fetch": true
+			},
 			"icon_dark_url": "/images/google-sheets.svg",
 			"icon_light_url": "/images/google-sheets.svg"
 		},
@@ -497,6 +553,13 @@
 			"description": "Find places, routes, and weather.",
 			"authentication": "oauth2",
 			"url": "https://mapstools.googleapis.com/mcp",
+			"scopes": ["https://www.googleapis.com/auth/maps-platform.mapstools"],
+			"oauth": {
+				"client_id_env": "GOOGLE_CLIENT_ID",
+				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
+				"google_fetch": true
+			},
 			"icon_dark_url": "/images/google-maps.svg",
 			"icon_light_url": "/images/google-maps.svg"
 		},
@@ -506,6 +569,17 @@
 			"description": "Search contacts and directory profiles.",
 			"authentication": "oauth2",
 			"url": "https://people.googleapis.com/mcp/v1",
+			"scopes": [
+				"https://www.googleapis.com/auth/directory.readonly",
+				"https://www.googleapis.com/auth/userinfo.profile",
+				"https://www.googleapis.com/auth/contacts.readonly"
+			],
+			"oauth": {
+				"client_id_env": "GOOGLE_CLIENT_ID",
+				"client_secret_env": "GOOGLE_CLIENT_SECRET",
+				"authorization_params": { "access_type": "offline", "prompt": "consent select_account" },
+				"google_fetch": true
+			},
 			"icon_dark_url": "/images/google-contact.svg",
 			"icon_light_url": "/images/google-contact.svg"
 		}
