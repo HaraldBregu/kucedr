@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { McpData } from '@shared/mcp_types';
+import { findCatalogMcpService } from '@shared/mcp_catalog';
 import { mcps } from '@/lib/providers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -106,7 +107,7 @@ export function McpServerForm({
 	}, [onSubmit]);
 
 	const serverId = id.trim().toLowerCase();
-	const catalogService = type === 'http' ? mcps().find((service) => service.url === url) : undefined;
+	const catalogService = type === 'http' ? findCatalogMcpService(url, mcps()) : undefined;
 	const isGitHubRemote = Boolean(catalogService?.oauth?.credentials_required);
 	const isGoogleRemote = Boolean(catalogService?.oauth?.client_id_env);
 
