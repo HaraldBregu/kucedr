@@ -1,6 +1,6 @@
 'use client';
 
-import { createElement, useState, type CSSProperties } from 'react';
+import { createElement, useState, type CSSProperties, type ElementType } from 'react';
 import {
 	AudioLines,
 	Bot,
@@ -26,6 +26,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { useNow } from '@/components/hooks/use-now';
 import { cn } from '@/lib/utils';
 import { formatDuration } from './duration';
+import { GmailIcon } from './gmail';
 import { isTaskToolType } from './task';
 import { estimateTokens } from './tokens';
 
@@ -69,9 +70,17 @@ function formatValue(value: unknown): string {
 	return String(value);
 }
 
-export function toolIcon(toolPart: ToolPart): typeof Wrench {
+export function toolIcon(toolPart: ToolPart): ElementType<{ className?: string }> {
 	const type = toolPart.type.toLowerCase();
+	const serviceId = toolPart.serviceId?.toLowerCase();
 	if (isTaskToolType(type)) return CalendarClock;
+	if (
+		serviceId === 'gmail' ||
+		serviceId === 'gmail-smtp' ||
+		type.startsWith('mcp__gmail__') ||
+		type.startsWith('mcp__gmail-smtp__')
+	)
+		return GmailIcon;
 	if (toolPart.serviceKind === 'mcp' || type.startsWith('mcp__')) return Plug;
 	if (type === 'subagent' || type === 'subagents') return Bot;
 	if (type.includes('skill')) return Sparkles;
