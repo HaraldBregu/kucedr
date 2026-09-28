@@ -1,12 +1,13 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronDown, ChevronRight, ChevronUp, Folder, LoaderCircle, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronRight, ChevronUp, Code2, FileText, Folder, LoaderCircle, Search, X } from 'lucide-react';
+import { LayoutGroup, motion, useReducedMotion } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { workspaceFileType } from '@shared/workspace';
 import { Markdown } from '@/components/prompt-kit/markdown';
 import { Button } from '@/components/ui/button';
+import { ButtonGroup } from '@/components/ui/button-group';
 import { Input } from '@/components/ui/input';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { useIsDark } from '@/hooks/use-is-dark';
 import { markdownComponents } from '@/pages/home/components/markdown';
 import { formatFileSize } from '@/pages/home/attachments/size';
@@ -28,6 +29,7 @@ interface WorkspaceViewerProps {
 export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
+	const reducedMotion = useReducedMotion();
 	const [content, setContent] = useState('');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState('');
@@ -200,12 +202,32 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 						{file.updatedAt ? <time dateTime={file.updatedAt} title={new Date(file.updatedAt).toLocaleString()}>Updated {new Date(file.updatedAt).toLocaleString()}</time> : null}
 					</div>
 					{kind === 'markdown' ? (
-						<ToggleGroup type="single" size="sm" variant="outline" value={visibleMarkdownMode} onValueChange={(value) => {
-							if (value === 'preview' || value === 'source') { closeFind(); setMarkdownMode(value); }
-						}} aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
-							<ToggleGroupItem value="source">Raw</ToggleGroupItem>
-							<ToggleGroupItem value="preview">Text</ToggleGroupItem>
-						</ToggleGroup>
+						<LayoutGroup id="workspace-markdown-mode">
+							<ButtonGroup role="group" aria-label={t('workspaceSidebar.markdownView', 'Markdown view')}>
+								{([{ mode: 'source', label: 'Raw', icon: Code2 }, { mode: 'preview', label: 'Text', icon: FileText }] as const).map(({ mode, label, icon: Icon }) => {
+									const active = visibleMarkdownMode === mode;
+									return (
+										<Button
+											key={mode}
+											type="button"
+											variant="outline"
+											size="sm"
+											aria-pressed={active}
+											className={`relative h-7 min-w-16 overflow-hidden rounded-none px-2 text-xs first:rounded-l-lg last:rounded-r-lg not-first:-ml-px ${active ? 'border-transparent text-primary-foreground hover:text-primary-foreground' : 'text-muted-foreground hover:text-foreground'}`}
+											onClick={() => { closeFind(); setMarkdownMode(mode); }}
+										>
+											{active ? <motion.span layoutId="active-workspace-markdown-mode" className="absolute inset-0 bg-primary" transition={reducedMotion ? { duration: 0 } : { type: 'spring', stiffness: 350, damping: 28 }} /> : null}
+											<span className="relative z-10 flex items-center gap-1.5">
+												<motion.span className="inline-flex" animate={reducedMotion ? undefined : active ? { scale: 1.1, y: [0, -1, 0] } : { scale: 1, y: 0 }} transition={active && !reducedMotion ? { y: { repeat: Infinity, duration: 2, ease: 'easeInOut' }, scale: { duration: 0.2 } } : { duration: 0.2 }} whileHover={reducedMotion ? undefined : { scale: 1.15 }}>
+													<Icon aria-hidden="true" className="size-3.5" />
+												</motion.span>
+												<span>{label}</span>
+											</span>
+										</Button>
+									);
+								})}
+							</ButtonGroup>
+						</LayoutGroup>
 					) : null}
 				</footer>
 			) : null}
