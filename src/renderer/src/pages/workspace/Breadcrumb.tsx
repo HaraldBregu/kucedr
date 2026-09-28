@@ -14,16 +14,16 @@ interface WorkspaceBreadcrumbProps {
 export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBreadcrumbProps): React.JSX.Element {
 	const [openPath, setOpenPath] = useState<string | null>(null);
 	const segments = path.split(/[\\/]/).filter(Boolean);
-	const crumbs: { key: string; label: string; entries: WorkspaceTreeEntry[] }[] = [];
+	const crumbs: { key: string; label: string; entries: WorkspaceTreeEntry[]; file: boolean }[] = [];
 	let siblings = entries;
 	for (const [index, label] of segments.entries()) {
 		const current = siblings.find((entry) => entry.name === label);
 		const file = index === segments.length - 1;
-		crumbs.push({ key: segments.slice(0, index + 1).join('/'), label, entries: file ? siblings.filter((entry) => entry.type === 'file') : current?.children ?? [] });
+		crumbs.push({ key: segments.slice(0, index + 1).join('/'), label, entries: file ? siblings.filter((entry) => entry.type === 'file') : current?.children ?? [], file });
 		siblings = current?.children ?? [];
 	}
 	return (
-		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center overflow-hidden text-xs" title={path}>
+		<nav aria-label="File path" className="flex min-w-0 flex-1 items-center text-xs" title={path}>
 			<DropdownMenu open={openPath === ''} onOpenChange={(open) => setOpenPath(open ? '' : null)}>
 				<DropdownMenuTrigger asChild>
 					<Button type="button" variant="ghost" size="icon-sm" className="size-7 shrink-0 hover:bg-transparent!" aria-label="Browse workspace root">
@@ -35,12 +35,12 @@ export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBr
 				</DropdownMenuContent>
 			</DropdownMenu>
 			{crumbs.map((crumb) => (
-				<span key={crumb.key} className="flex min-w-0 items-center">
+				<span key={crumb.key} className={crumb.file ? 'flex min-w-0 flex-1 items-center' : 'flex min-w-0 shrink items-center'}>
 					<ChevronRight aria-hidden="true" className="mx-0.5 size-3 shrink-0 text-muted-foreground" />
 					<DropdownMenu open={openPath === crumb.key} onOpenChange={(open) => setOpenPath(open ? crumb.key : null)}>
 						<DropdownMenuTrigger asChild>
-							<Button type="button" variant="ghost" size="sm" className="h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium" aria-label={`Browse ${crumb.label}`}>
-								<span className="truncate">{crumb.label}</span>
+							<Button type="button" variant="ghost" size="sm" className={crumb.file ? 'h-auto min-h-6 min-w-0 flex-1 justify-start whitespace-normal break-all px-1.5 py-1 text-left text-xs font-medium' : 'h-6 max-w-32 min-w-0 shrink truncate px-1.5 text-xs font-medium'} aria-label={`Browse ${crumb.label}`}>
+								<span className={crumb.file ? 'whitespace-normal break-all text-left' : 'truncate'}>{crumb.label}</span>
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="start" className="max-h-80 min-w-56 overflow-y-auto p-0">

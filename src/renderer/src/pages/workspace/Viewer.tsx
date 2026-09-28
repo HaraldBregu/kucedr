@@ -123,7 +123,7 @@ export function WorkspaceViewer({ file, entries, onFileSelect }: WorkspaceViewer
 	return (
 		<section data-slot="workspace-content" aria-label={t('workspaceSidebar.viewer', 'Workspace file')} className="flex min-h-0 min-w-0 flex-1 flex-col bg-background">
 			{file ? (
-				<header aria-label="File navigation" className="sticky top-0 z-20 flex h-9 shrink-0 items-center gap-1.5 border-b bg-background/95 px-2 backdrop-blur sm:px-3">
+				<header aria-label="File navigation" className="sticky top-0 z-20 flex min-h-9 shrink-0 items-center gap-1.5 border-b bg-background/95 px-2 py-1 backdrop-blur sm:px-3">
 					<WorkspaceBreadcrumb entries={entries} path={file.path} onFileSelect={onFileSelect} />
 					{searchable ? findOpen ? (
 						<div role="search" className="ml-auto flex min-w-0 items-center gap-1">
