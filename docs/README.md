@@ -22,6 +22,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [Development](DEVELOPMENT.md): setup, checks, builds, CI, and deployment.
 - [Gmail MCP tool tests](GMAIL.md): prompts for exercising all 23 Gmail tools in a recorded chat.
 - [Google Calendar MCP tool tests](CALENDAR.md): prompts for exercising all nine Calendar tools in a recorded chat.
+- [Google Drive MCP tool tests](DRIVE.md): prompts for exercising all eight Drive tools in a recorded chat.
 - [Plugins](PLUGINS.md): package skills, MCP servers, apps, and providers.
 - [SDK](../packages/sdk/README.md): typed access to the local application API.
 - [CLI](../packages/cli/README.md): desktop launch, plugin installation, and terminal interface.
