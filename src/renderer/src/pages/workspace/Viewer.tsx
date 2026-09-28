@@ -39,6 +39,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 	const pendingContent = useRef<string | null>(null);
 	const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const saveQueue = useRef(Promise.resolve());
+	const filePath = file?.path;
 	const kind = file ? workspaceFileType(file.path).kind : null;
 	const media = kind === 'image' || kind === 'audio' || kind === 'video' || kind === 'pdf';
 	const mediaUrl = file && media ? new URL('local-resource://agent/') : null;
@@ -58,11 +59,11 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 		saveTimer.current = null;
 		const nextContent = pendingContent.current;
 		pendingContent.current = null;
-		if (!file || nextContent === null) return;
-		saveQueue.current = saveQueue.current.then(() => window.agent.writeWorkspaceFile(file.path, nextContent))
+		if (!filePath || nextContent === null) return;
+		saveQueue.current = saveQueue.current.then(() => window.agent.writeWorkspaceFile(filePath, nextContent))
 			.then(() => setSaveError(''))
 			.catch((cause: unknown) => setSaveError(cause instanceof Error ? cause.message : t('workspaceSidebar.saveError', 'Unable to save file.')));
-	}, [file, t]);
+	}, [filePath, t]);
 
 	useEffect(() => () => { save(); }, [save]);
 
@@ -79,12 +80,12 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 		setContent('');
 		setError('');
 		setSaveError('');
-		if (!file || media || kind === 'unsupported') {
+		if (!filePath || media || kind === 'unsupported') {
 			setLoading(false);
 			return () => { active = false; };
 		}
 		setLoading(true);
-		void window.agent.readWorkspaceFile(file.path)
+		void window.agent.readWorkspaceFile(filePath)
 			.then((value) => {
 				if (active) setContent(value);
 			})
@@ -95,7 +96,7 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 				if (active) setLoading(false);
 			});
 		return () => { active = false; };
-	}, [file, kind, media, t]);
+	}, [filePath, kind, media, t]);
 	const codeEditor = file ? (
 		<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
 			<CodeMirrorEditor

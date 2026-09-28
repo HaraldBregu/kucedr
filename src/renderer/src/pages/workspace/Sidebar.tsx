@@ -11,12 +11,13 @@ import { WorkspaceTree } from './Tree';
 
 interface WorkspaceSidebarProps {
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
+	readonly onFilesLoaded?: (files: WorkspaceTreeEntry[]) => void;
 	readonly onEntryRenamed: (sourcePath: string, nextPath: string) => void;
 	readonly onEntryDeleted: (path: string) => void;
 	readonly selectedPath: string | null;
 }
 
-export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
+export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, onEntryDeleted, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [entries, setEntries] = useState<WorkspaceTreeEntry[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -35,6 +36,7 @@ export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted,
 				.then((files) => {
 					if (!active) return;
 					setEntries(files);
+					onFilesLoaded?.(files);
 					setError(false);
 				})
 				.catch(() => {
@@ -102,7 +104,9 @@ export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted,
 			.then(async (nextPath) => {
 				onEntryRenamed(entry.path, nextPath);
 				setRenamingEntry(null);
-				setEntries(await window.agent.listWorkspaceFiles());
+				const files = await window.agent.listWorkspaceFiles();
+				setEntries(files);
+				onFilesLoaded?.(files);
 			})
 			.catch((cause: unknown) => {
 				setActionError(cause instanceof Error ? cause.message : t('workspaceSidebar.actionError', 'Unable to change Workspace files.'));
@@ -130,7 +134,9 @@ export function WorkspaceSidebar({ onFileSelect, onEntryRenamed, onEntryDeleted,
 				onEntryDeleted(entry.path);
 			}
 			setPendingAction(null);
-			setEntries(await window.agent.listWorkspaceFiles());
+			const files = await window.agent.listWorkspaceFiles();
+			setEntries(files);
+			onFilesLoaded?.(files);
 		})().catch((cause: unknown) => {
 			setActionError(cause instanceof Error ? cause.message : t('workspaceSidebar.actionError', 'Unable to change Workspace files.'));
 		}).finally(() => setBusy(false));
