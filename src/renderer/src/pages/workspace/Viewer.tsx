@@ -151,20 +151,23 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 			) : kind === 'pdf' ? (
 				<iframe title={file.name} src={mediaUrl?.toString()} className="min-h-0 flex-1" />
 			) : kind === 'markdown' && visibleMarkdownMode === 'preview' ? (
-				<div className="min-h-0 flex-1 overflow-auto px-6 py-5">
+				<div className="min-h-0 flex-1 overflow-auto">
+					<article className="workspace-markdown-content mx-auto min-h-full w-full max-w-[920px] px-5 pb-16 pt-8 text-[15px] leading-7 sm:px-8 lg:px-12">
 					{content.includes('<!--') ? (
 						<>
 							<p className="mb-3 text-xs text-muted-foreground">{t('workspaceSidebar.commentSourceOnly', 'This file contains Markdown comments. Edit it in Source to preserve them.')}</p>
-							<Markdown className="mx-auto w-full max-w-3xl break-words text-sm leading-7" components={markdownComponents}>{content}</Markdown>
+							<Markdown className="w-full break-words" components={markdownComponents}>{content}</Markdown>
 						</>
 					) : (
 						<Suspense fallback={<div className="text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
 							<WorkspaceMarkdownEditor value={content} onChange={handleMarkdownChange} onSave={save} />
 						</Suspense>
 					)}
+					</article>
 				</div>
 			) : (
 				<div className="min-h-0 flex-1 overflow-auto">
+					{kind === 'markdown' ? <article className="relative mx-auto flex min-h-full w-full max-w-[920px] flex-col px-5 pb-12 pt-8 sm:px-8 lg:px-12">
 					<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
 						<CodeMirrorEditor
 							ref={editorRef}
@@ -181,9 +184,26 @@ export function WorkspaceViewer({ file }: WorkspaceViewerProps): React.JSX.Eleme
 							foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
 							isDark={isDark}
 							path={file.path}
+							className={kind === 'markdown' ? 'min-h-[calc(100dvh-10rem)] flex-1' : 'h-full min-h-full'}
+						/>
+					</Suspense>
+					</article> : (
+					<Suspense fallback={<div className="p-4 text-sm text-muted-foreground">{t('workspaceSidebar.fileLoading', 'Loading file…')}</div>}>
+						<CodeMirrorEditor
+							ref={editorRef}
+							key={file.path}
+							value={content}
+							onChange={() => undefined}
+							readOnly
+							canSave={false}
+							code
+							foldable={/\.(json|jsonc|json5|toml|xml|ya?ml)$/i.test(file.path)}
+							isDark={isDark}
+							path={file.path}
 							className="h-full min-h-full"
 						/>
 					</Suspense>
+					)}
 				</div>
 			)}
 			{saveError ? <p className="shrink-0 border-t border-border p-2 text-sm text-destructive" role="alert">{saveError}</p> : null}

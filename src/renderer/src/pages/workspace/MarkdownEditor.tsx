@@ -55,7 +55,7 @@ export function WorkspaceMarkdownEditor({
 	return (
 		<EditorContent
 			editor={editor}
-			className="mx-auto min-h-full w-full max-w-3xl break-words text-sm leading-7"
+			className="min-h-full w-full break-words"
 		/>
 	);
 }

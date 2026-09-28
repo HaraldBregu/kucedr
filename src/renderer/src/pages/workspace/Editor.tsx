@@ -151,7 +151,7 @@ const noteEditorTheme = EditorView.theme({
 	},
 	'.cm-content': {
 		minHeight: '360px',
-		padding: '12px 24px',
+		padding: '0',
 		caretColor: 'var(--primary)',
 		userSelect: 'text',
 	},
