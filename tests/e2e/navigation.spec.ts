@@ -153,6 +153,11 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
 	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
 	await expect(page).toHaveURL(/#\/home$/);
+	await page.locator('[data-slot="home-sidebar"]').getByRole('button', { name: 'Workspace' }).click();
+	await expect(page).toHaveURL(/#\/workspace$/);
+	await expect(workspace.getByRole('button', { name: 'config.json' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
+	await expect(workspace.getByText('Loading files…')).toHaveCount(0);
 });
 
 test('editing Markdown Preview keeps table and task content', async () => {
