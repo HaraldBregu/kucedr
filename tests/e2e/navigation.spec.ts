@@ -170,6 +170,8 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await expect(breadcrumbTree.getByRole('treeitem', { name: 'config.json' })).toBeFocused();
 	await breadcrumbTree.getByRole('treeitem', { name: 'config.json' }).click();
 	await expect(breadcrumbTree).toHaveCount(0);
+	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
+	await expect(workspace.getByRole('button', { name: 'config.json' })).toHaveAttribute('aria-current', 'page');
 	await workspace.getByRole('button', { name: 'config.json' }).click();
 	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('Notes/plan.md'))).toBe('# Saved plan');
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
