@@ -1,6 +1,7 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
+import type { WorkspaceChangeEvent } from '../../../src/shared/agent_types';
 import { WorkspaceSidebar } from '../../../src/renderer/src/pages/workspace/Sidebar';
 
 jest.mock('react-i18next', () => ({
@@ -24,9 +25,11 @@ const revealWorkspaceEntry = jest.fn();
 const deleteWorkspaceFile = jest.fn();
 const deleteWorkspaceDirectory = jest.fn();
 const showContextMenu = jest.fn();
+let workspaceChanged: ((event: WorkspaceChangeEvent) => void) | undefined;
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	workspaceChanged = undefined;
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
 		value: {
@@ -37,13 +40,27 @@ beforeEach(() => {
 			revealWorkspaceEntry,
 			deleteWorkspaceFile,
 			deleteWorkspaceDirectory,
-			onWorkspaceChanged: () => () => undefined,
+			onWorkspaceChanged: (callback: (event: WorkspaceChangeEvent) => void) => {
+				workspaceChanged = callback;
+				return () => { workspaceChanged = undefined; };
+			},
 		},
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
 		value: { showContextMenu },
 	});
+});
+
+it('refreshes the tree for file additions but not content changes', async () => {
+	listWorkspaceFiles.mockResolvedValue([{ type: 'file', name: 'plan.md', path: 'plan.md' }]);
+	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
+	await screen.findByRole('button', { name: 'plan.md' });
+	act(() => workspaceChanged?.({ type: 'change', path: 'plan.md' }));
+	await new Promise((resolve) => setTimeout(resolve, 150));
+	expect(listWorkspaceFiles).toHaveBeenCalledTimes(1);
+	act(() => workspaceChanged?.({ type: 'add', path: 'new.md' }));
+	await waitFor(() => expect(listWorkspaceFiles).toHaveBeenCalledTimes(2));
 });
 
 it('creates, renames, and deletes a file through the right click menu', async () => {
