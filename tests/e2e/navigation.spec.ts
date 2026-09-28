@@ -276,7 +276,7 @@ test('Workspace releases its mounted UI before navigating from Home to Settings'
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toBeVisible();
 	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toHaveCount(0);
-	await page.getByRole('button', { name: 'Settings' }).click();
+	await page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Settings', exact: true }).click();
 	await expect(page.locator('[data-slot="settings-workspace"]')).toBeVisible();
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
 });
