@@ -25,6 +25,8 @@ import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { useNow } from '@/components/hooks/use-now';
 import { cn } from '@/lib/utils';
+import { CalendarIcon } from './calendar';
+import { DriveIcon } from './drive';
 import { formatDuration } from './duration';
 import { GmailIcon } from './gmail';
 import { isTaskToolType } from './task';
@@ -74,6 +76,9 @@ export function toolIcon(toolPart: ToolPart): ElementType<{ className?: string }
 	const type = toolPart.type.toLowerCase();
 	const serviceId = toolPart.serviceId?.toLowerCase();
 	if (isTaskToolType(type)) return CalendarClock;
+	if (serviceId === 'google-calendar' || type.startsWith('mcp__google-calendar__'))
+		return CalendarIcon;
+	if (serviceId === 'google-drive' || type.startsWith('mcp__google-drive__')) return DriveIcon;
 	if (
 		serviceId === 'gmail' ||
 		serviceId === 'gmail-smtp' ||
