@@ -160,7 +160,12 @@ test('the Workspace item below New Chat opens the folder sidebar', async () => {
 	await markdownModes.getByRole('button', { name: 'Raw' }).click();
 	await page.getByRole('textbox', { name: 'Note content' }).fill('# Saved plan');
 	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute('aria-current', 'page');
-	await page.getByRole('button', { name: 'Browse workspace root' }).click();
+	const rootFolderButton = page.getByRole('button', { name: 'Browse workspace root' });
+	await expect(rootFolderButton).toHaveCSS('margin-right', '0px');
+	const folderBackground = await rootFolderButton.evaluate((button) => getComputedStyle(button).backgroundColor);
+	await rootFolderButton.hover();
+	await expect(rootFolderButton).toHaveCSS('background-color', folderBackground);
+	await rootFolderButton.click();
 	const breadcrumbTree = page.getByRole('tree', { name: 'Workspace files' });
 	const notesFolder = breadcrumbTree.getByRole('treeitem', { name: 'Notes' });
 	await expect(notesFolder).toBeFocused();
