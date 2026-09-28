@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useRef, useState, type ReactNode } from 'react';
+import React, { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import {
 	Navigate,
 	Outlet,
@@ -131,8 +131,10 @@ function RootRouteComponent(): React.JSX.Element {
 	const { state: authState, skipSignIn } = useAuth();
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
-	const workspaceVisited = useRef(false);
-	if (isWorkspace) workspaceVisited.current = true;
+	const [workspaceVisited, setWorkspaceVisited] = useState(false);
+	useEffect(() => {
+		if (isWorkspace) setWorkspaceVisited(true);
+	}, [isWorkspace]);
 	const isSettings = location.pathname.startsWith('/settings');
 	const hasSidebar = isHome || isWorkspace || isSettings;
 
@@ -177,7 +179,7 @@ function RootRouteComponent(): React.JSX.Element {
 									<Outlet />
 								</PageTransition>
 							</div>
-							{workspaceVisited.current && (
+							{(isWorkspace || workspaceVisited) && (
 								<div className={cn('h-full', !isWorkspace && 'hidden')}>
 									<WorkspacePage />
 								</div>
