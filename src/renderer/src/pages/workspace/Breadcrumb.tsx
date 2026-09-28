@@ -14,12 +14,12 @@ interface WorkspaceBreadcrumbProps {
 export function WorkspaceBreadcrumb({ entries, onFileSelect, path }: WorkspaceBreadcrumbProps): React.JSX.Element {
 	const [openPath, setOpenPath] = useState<string | null>(null);
 	const segments = path.split(/[\\/]/).filter(Boolean);
-	const crumbs: { key: string; label: string; entries: WorkspaceTreeEntry[]; file: boolean }[] = [];
+	const crumbs: { key: string; label: string; entries: WorkspaceTreeEntry[] }[] = [];
 	let siblings = entries;
 	for (const [index, label] of segments.entries()) {
 		const current = siblings.find((entry) => entry.name === label);
 		const file = index === segments.length - 1;
-		crumbs.push({ key: segments.slice(0, index + 1).join('/'), label, entries: file ? siblings.filter((entry) => entry.type === 'file') : current?.children ?? [], file });
+		crumbs.push({ key: segments.slice(0, index + 1).join('/'), label, entries: file ? siblings.filter((entry) => entry.type === 'file') : current?.children ?? [] });
 		siblings = current?.children ?? [];
 	}
 	return (
