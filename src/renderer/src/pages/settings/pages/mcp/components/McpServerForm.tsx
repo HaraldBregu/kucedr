@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { McpData } from '@shared/mcp_types';
-import { googleMcpScopes } from '@shared/google_mcp';
-import { isGitHubRemoteMcpUrl } from '@shared/github_mcp';
+import { mcps } from '@/lib/providers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
@@ -107,8 +106,9 @@ export function McpServerForm({
 	}, [onSubmit]);
 
 	const serverId = id.trim().toLowerCase();
-	const isGitHubRemote = type === 'http' && isGitHubRemoteMcpUrl(url);
-	const isGoogleRemote = type === 'http' && Boolean(googleMcpScopes(url));
+	const catalogService = type === 'http' ? mcps().find((service) => service.url === url) : undefined;
+	const isGitHubRemote = Boolean(catalogService?.oauth?.credentials_required);
+	const isGoogleRemote = Boolean(catalogService?.oauth?.client_id_env);
 
 	const buildEntry = (): McpData => {
 		const now = new Date().toISOString();

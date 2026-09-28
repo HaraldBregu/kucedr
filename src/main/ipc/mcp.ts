@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
-import { googleOAuthOptions } from '../mcp/google';
+import { mcpOAuthOptions } from '../mcp/oauth_options';
+import { findMcpService } from '../mcp/manifest';
 import { BrowserWindow, dialog, shell } from 'electron';
 import { mkdirSync } from 'node:fs';
 import { auth } from '@modelcontextprotocol/sdk/client/auth.js';
@@ -30,7 +31,6 @@ import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
 import { TrustedRenderer } from './core/trusted';
 import { parseMcpUrl } from '../mcp/url';
-import { googleMcpScopes } from '../../shared/google_mcp';
 
 function isRecord(value: unknown): value is Record<string, unknown> {
 	return Boolean(value) && typeof value === 'object' && !Array.isArray(value);
@@ -255,8 +255,8 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
 				const state = randomBytes(32).toString('hex');
-				const options = googleOAuthOptions(server.url);
-				const google = Boolean(googleMcpScopes(server.url));
+				const options = mcpOAuthOptions(server.url);
+				const managedCredentials = Boolean(findMcpService(server.url)?.oauth?.client_id_env);
 				this.activeOAuthCallback?.close();
 				const callback = await startOauthCallbackServer(state);
 				this.activeOAuthCallback = callback;
@@ -265,7 +265,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 					const provider = createOAuthProvider({
 						...options,
 						storage: oauthStorage(server.id),
-						...(!google && server.clientId
+						...(!managedCredentials && server.clientId
 							? { clientId: server.clientId, clientSecret: server.clientSecret }
 							: {}),
 						redirectUrl: callback.redirectUrl,
@@ -274,7 +274,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 							authorizationUrl = url.toString();
 						},
 					});
-					if (google) await provider.invalidateCredentials?.('tokens');
+					if (managedCredentials) await provider.invalidateCredentials?.('tokens');
 					const result = await auth(provider, { serverUrl: server.url });
 					if (result === 'AUTHORIZED') {
 						const listed = await testMcpServer(server.id);
