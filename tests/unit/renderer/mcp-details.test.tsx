@@ -4,6 +4,16 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import type { McpData, McpServerInfo, McpTestResult } from '../../../src/shared/mcp_types';
 import McpDetailsPage from '../../../src/renderer/src/pages/settings/pages/mcp/details/Page';
 
+jest.mock('../../../src/renderer/src/lib/providers', () => ({
+	mcps: () => [
+		...['gmailmcp.googleapis.com', 'calendarmcp.googleapis.com', 'drivemcp.googleapis.com', 'people.googleapis.com'].map((host) => ({
+			url: `https://${host}/mcp/v1`,
+			oauth: { client_id_env: 'GOOGLE_CLIENT_ID' },
+		})),
+		{ url: 'https://api.githubcopilot.com/mcp/', oauth: { credentials_required: true } },
+	],
+}));
+
 const mcpApi = {
 	list: jest.fn(),
 	get: jest.fn(),

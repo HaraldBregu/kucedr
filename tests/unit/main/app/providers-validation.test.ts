@@ -85,6 +85,7 @@ describe('provider manifest validation', () => {
 						name: 'Notion MCP',
 						authentication: 'oauth2',
 						url: 'https://mcp.notion.com/mcp',
+						scopes: [],
 					},
 				],
 			})
@@ -107,6 +108,7 @@ describe('provider manifest validation', () => {
 					name: 'Gmail',
 					authentication: 'oauth2',
 					url: 'https://gmailmcp.googleapis.com/mcp/v1',
+					scopes: ['https://www.googleapis.com/auth/gmail.modify'],
 					icon_dark_url: '/images/gmail.svg',
 					icon_light_url: '/images/gmail.svg',
 				},
@@ -171,6 +173,7 @@ describe('provider manifest validation', () => {
 					name: 'Example MCP',
 					url: 'https://example.com/mcp',
 					authentication: 'oauth2',
+					scopes: [],
 				},
 			],
 		};
