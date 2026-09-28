@@ -28,7 +28,6 @@ import {
 import { cn } from './lib/utils';
 import HomePage from './pages/home/Page';
 import WorkspacePage from './pages/workspace/Page';
-import DrivePage from './pages/drive/Page';
 import StartPage from './pages/start/StartPage';
 import { StartupGate } from './auth/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
@@ -242,14 +241,6 @@ const routes: RouteObject[] = [
 			{
 				path: 'workspace',
 				element: null,
-			},
-			{
-				path: 'drive',
-				element: (
-					<RouteWrapper>
-						<DrivePage />
-					</RouteWrapper>
-				),
 			},
 			{
 				path: 'settings',
