@@ -76,6 +76,7 @@ export function useRealtimeVoice({
 	const startedAtMsRef = useRef(0);
 	const clockRef = useRef<number | null>(null);
 	const userTurnMessageIdsRef = useRef<Map<string, string>>(new Map());
+	const pendingSessionEventsRef = useRef<RealtimeVoiceEvent[]>([]);
 
 	const supportedModels = modelsFor('realtime-voice');
 	const isConfigured = supportedModels.length > 0;
@@ -148,10 +149,14 @@ export function useRealtimeVoice({
 		[closeOnError, dispatchChat, releaseAudio]
 	);
 
-	useEffect(() => {
-		return window.models.realtimeVoice.onSessionEvent((event: RealtimeVoiceEvent) => {
+	const handleSessionEvent = useCallback(
+		(event: RealtimeVoiceEvent): void => {
 			const sessionId = sessionIdRef.current;
-			if (!sessionId || event.sessionId !== sessionId) return;
+			if (!sessionId) {
+				if (startPromiseRef.current) pendingSessionEventsRef.current.push(event);
+				return;
+			}
+			if (event.sessionId !== sessionId) return;
 
 			if (isToolEvent(event)) {
 				dispatchChat({
@@ -244,8 +249,14 @@ export function useRealtimeVoice({
 					onClosedRef.current();
 					return;
 			}
-		});
-	}, [dispatchChat, enqueuePlayback, failSession, releaseAudio, stopPlayback]);
+		},
+		[dispatchChat, enqueuePlayback, failSession, releaseAudio, stopPlayback]
+	);
+
+	useEffect(
+		() => window.models.realtimeVoice.onSessionEvent(handleSessionEvent),
+		[handleSessionEvent]
+	);
 
 	const start = useCallback((): Promise<boolean> => {
 		if (sessionIdRef.current) return Promise.resolve(true);
@@ -254,6 +265,7 @@ export function useRealtimeVoice({
 		const startPromise = (async (): Promise<boolean> => {
 			setErrorMessage(null);
 			setRequiresConfiguration(false);
+			pendingSessionEventsRef.current = [];
 			if (!isConfigured) {
 				setErrorMessage('Configure a supported realtime voice provider and model in Settings.');
 				setRequiresConfiguration(true);
@@ -301,6 +313,10 @@ export function useRealtimeVoice({
 				sessionIdRef.current = session.id;
 				sessionChatIdRef.current = chatSessionId;
 				setStatus('listening');
+				const pendingEvents = pendingSessionEventsRef.current;
+				pendingSessionEventsRef.current = [];
+				for (const event of pendingEvents) handleSessionEvent(event);
+				if (sessionIdRef.current !== session.id) return false;
 				startedAtMsRef.current = Date.now();
 				clockRef.current = window.setInterval(() => {
 					setElapsedMs(Date.now() - startedAtMsRef.current);
@@ -322,6 +338,7 @@ export function useRealtimeVoice({
 	}, [
 		chatSessionId,
 		failSession,
+		handleSessionEvent,
 		isConfigured,
 		isSupported,
 		releaseAudio,
@@ -340,6 +357,7 @@ export function useRealtimeVoice({
 		return () => {
 			mountedRef.current = false;
 			startRunRef.current += 1;
+			pendingSessionEventsRef.current = [];
 			const sessionId = sessionIdRef.current;
 			sessionIdRef.current = null;
 			sessionChatIdRef.current = null;

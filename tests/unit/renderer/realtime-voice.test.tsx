@@ -304,6 +304,42 @@ describe('useRealtimeVoice', () => {
 		expect(onClosed).toHaveBeenCalled();
 	});
 
+	it('keeps an API error that arrives before the start response', async () => {
+		let resolveStart!: (value: RealtimeVoiceSession) => void;
+		api.startSession.mockReturnValue(
+			new Promise<RealtimeVoiceSession>((resolve) => {
+				resolveStart = resolve;
+			})
+		);
+		const onClosed = jest.fn();
+		const { result } = renderHook(
+			() =>
+				useRealtimeVoice({ chatSessionId: 'chat-1', onClosed, closeOnError: false }),
+			{ wrapper }
+		);
+
+		let startPromise!: Promise<boolean>;
+		act(() => {
+			startPromise = result.current.start();
+		});
+		await waitFor(() => expect(api.startSession).toHaveBeenCalledTimes(1));
+		act(() =>
+			emit({
+				type: 'error',
+				sessionId: session.id,
+				message: 'OpenAI rejected the realtime session.',
+			})
+		);
+		await act(async () => {
+			resolveStart(session);
+			await startPromise;
+		});
+
+		expect(result.current.status).toBe('error');
+		expect(result.current.errorMessage).toBe('OpenAI rejected the realtime session.');
+		expect(onClosed).not.toHaveBeenCalled();
+	});
+
 	it('keeps a pending voice turn empty until the final user transcript arrives', async () => {
 		api.startSession.mockResolvedValue(session);
 		const { result } = renderHook(

@@ -164,4 +164,28 @@ describe('OpenAILiveVoiceAdapter', () => {
 		await expect(connecting).rejects.toThrow('Invalid Live configuration.');
 		expect(socket.closed).toBe(true);
 	});
+
+	it('surfaces an abnormal provider close after setup', async () => {
+		const socket = new FakeLiveSocket();
+		const events: Array<{ type: string; message?: string }> = [];
+		const adapter = new OpenAILiveVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1_000
+		);
+		const connecting = adapter.connect(
+			{ modelId: 'gpt-live-1', voice: 'marin', instructions: '', history: [], tools: [] },
+			(event) => events.push(event)
+		);
+		socket.emit('open');
+		socket.emit('message', JSON.stringify({ type: 'session.started' }));
+		await connecting;
+
+		socket.emit('close', 1008, Buffer.from('API key is not authorized for Live voice'));
+
+		expect(events).toContainEqual({
+			type: 'error',
+			message: 'Live voice connection closed (API key is not authorized for Live voice).',
+		});
+	});
 });

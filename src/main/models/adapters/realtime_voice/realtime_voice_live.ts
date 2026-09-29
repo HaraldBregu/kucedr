@@ -1,5 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import { turnContext } from './context';
+import { realtimeVoiceCloseError } from './close';
 import WebSocket from 'ws';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realtime_voice';
 import type {
@@ -137,12 +138,20 @@ class OpenAILiveVoiceConnection implements RealtimeVoiceConnection {
 				if (!settled) settle(new Error(message));
 				else this.emit({ type: 'error', message });
 			});
-			this.socket.on('close', () => {
+			this.socket.on('close', (code, reason) => {
+				const stopped = this.closed;
 				this.closed = true;
-				if (!settled) settle(new Error('Live voice connection closed before setup.'));
+				const error = stopped
+					? null
+					: realtimeVoiceCloseError(code, reason, 'Live voice connection closed');
+				if (!settled) {
+					settle(error ?? new Error('Live voice connection closed before setup.'));
+					return;
+				}
 				this.finishInputTurn();
 				this.finishOutputTurn();
-				this.emit({ type: 'closed' });
+				if (error) this.emit({ type: 'error', message: error.message });
+				else this.emit({ type: 'closed' });
 			});
 			signal?.addEventListener('abort', abort, { once: true });
 			if (signal?.aborted) abort();

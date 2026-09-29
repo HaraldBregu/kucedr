@@ -44,6 +44,10 @@ class FakeSocket implements RealtimeVoiceSocket {
 		this.socketListeners.open.forEach((listener) => listener());
 	}
 
+	disconnect(code: number, reason: string): void {
+		this.socketListeners.close.forEach((listener) => listener(code, reason));
+	}
+
 	event(event: RealtimeVoiceServerEvent): void {
 		this.eventListeners.forEach((listener) => listener(event));
 	}
@@ -322,6 +326,37 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 
 		await expect(connecting).rejects.toThrow('Invalid session configuration.');
 		expect(socket.closed).toBe(true);
+	});
+
+	it('surfaces an abnormal provider close after setup', async () => {
+		const socket = new FakeSocket();
+		const events: Array<{ type: string; message?: string }> = [];
+		const adapter = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1_000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'gpt-realtime-2.1',
+				voice: 'marin',
+				instructions: '',
+				history: [],
+				tools: [],
+			},
+			(event) => events.push(event)
+		);
+		socket.open();
+		socket.event({ type: 'session.updated' });
+		await connecting;
+
+		socket.disconnect(1008, 'API key is not authorized for realtime voice');
+
+		expect(events).toContainEqual({
+			type: 'error',
+			message:
+				'Realtime voice connection closed (API key is not authorized for realtime voice).',
+		});
 	});
 
 	it('closes and rejects setup immediately when the owner aborts', async () => {

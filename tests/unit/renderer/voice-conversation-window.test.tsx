@@ -75,6 +75,11 @@ describe('VoiceConversationWindow', () => {
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
 		expect(screen.getByRole('alert')).toHaveTextContent('Microphone access was denied.');
+		expect(screen.getByRole('alert')).toHaveClass(
+			'border-destructive/40',
+			'bg-destructive/10',
+			'text-destructive'
+		);
 		expect(screen.getByRole('button', { name: 'End voice conversation' })).toHaveTextContent(
 			'Close'
 		);
