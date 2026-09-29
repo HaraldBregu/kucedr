@@ -81,6 +81,24 @@ test('the start route redirects configured users to home', async () => {
 	await expect(page.getByText('errorBoundary.notFoundTitle')).toHaveCount(0);
 });
 
+test('Settings keeps Plugins and Apps in the main list without a footer', async () => {
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/plugins';
+	});
+	const sidebar = page.locator('[data-slot="settings-sidebar"]');
+	const list = sidebar.locator('.overflow-y-auto');
+	const plugins = list.getByRole('link', { name: 'Plugins', exact: true });
+	const extensionsGroup = list
+		.locator('[data-slot="split-pane-group"]')
+		.filter({ has: plugins });
+
+	await expect(sidebar.locator('[data-slot="sidebar-footer"]')).toHaveCount(0);
+	await expect(plugins).toHaveAttribute('aria-current', 'page');
+	await expect(extensionsGroup.getByRole('link', { name: 'Apps', exact: true })).toHaveCount(1);
+	await extensionsGroup.getByRole('link', { name: 'Apps', exact: true }).click();
+	await expect(page).toHaveURL(/#\/settings\/apps$/);
+});
+
 test('navigation bar gaps stay draggable while buttons remain clickable', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
