@@ -1,10 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import {
-	PageContainer,
-	Split,
-} from '../../../src/renderer/src/components/app/base/page';
+import { PageContainer, Split } from '../../../src/renderer/src/components/app/base/page';
 import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
 import { HomeSidebar } from '../../../src/renderer/src/pages/home/Sidebar';
 import type { AuthState } from '../../../src/shared/auth_types';
@@ -68,7 +65,14 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'agent', {
 		configurable: true,
-		value: { listSessions, renameSession, deleteSession, compactSession, clearMessages, openSessionFolder },
+		value: {
+			listSessions,
+			renameSession,
+			deleteSession,
+			compactSession,
+			clearMessages,
+			openSessionFolder,
+		},
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
@@ -123,7 +127,11 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
 	expect(screen.getByText('settings.title')).toBeInTheDocument();
-	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByTestId('orb-07')).toHaveAttribute('data-size', '28');
+	expect(
+		within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByTestId(
+			'orb-07'
+		)
+	).toHaveAttribute('data-size', '28');
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
 	).not.toBeInTheDocument();
@@ -188,8 +196,12 @@ it.each<[AuthState, string]>([
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
-	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.cloud' })).not.toBeInTheDocument();
-	expect(within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })).not.toBeInTheDocument();
+	expect(
+		within(menu).queryByRole('menuitem', { name: 'settings.tabs.cloud' })
+	).not.toBeInTheDocument();
+	expect(
+		within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })
+	).not.toBeInTheDocument();
 	await user.click(within(menu).getByRole('menuitem', { name: 'settings.sidebar.signOut' }));
 	expect(confirmSignOut).toHaveBeenCalledTimes(1);
 	await waitFor(() => expect(signOut).toHaveBeenCalledTimes(1));
@@ -232,7 +244,11 @@ it('requires confirmation before compacting a chat and refreshes its snapshot', 
 	const user = userEvent.setup();
 	listSessions.mockResolvedValue([{ id: 'session-latest', title: 'Latest chat', createdAtMs: 2 }]);
 	showContextMenu.mockResolvedValue('compact');
-	compactSession.mockResolvedValue({ status: 'compacted', retainedMessages: 9, removedMessages: 12 });
+	compactSession.mockResolvedValue({
+		status: 'compacted',
+		retainedMessages: 9,
+		removedMessages: 12,
+	});
 	const refresh = jest.fn();
 	window.addEventListener('kucedr:session-compacted', refresh);
 
@@ -266,7 +282,9 @@ it('clears only the chosen chat after confirmation and refreshes its transcript'
 	render(
 		<MemoryRouter>
 			<ChatSessionContext.Provider value={{ sessionId: 'session-latest', setSessionId: jest.fn() }}>
-				<PageContainer><HomeSidebar refreshKey="initial" /></PageContainer>
+				<PageContainer>
+					<HomeSidebar refreshKey="initial" />
+				</PageContainer>
 			</ChatSessionContext.Provider>
 		</MemoryRouter>
 	);
@@ -387,7 +405,9 @@ it('shows Settings and Help in the footer menu without a Search item', async () 
 
 	await screen.findByText('settings.chatHistory.empty');
 	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })
+	).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	expect(accountMenu.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
@@ -437,10 +457,7 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
 	await screen.findByText('settings.chatHistory.empty');
 	expect(sidebar).not.toContainElement(toggle);
-	expect(toggle).toHaveClass(
-		'aria-expanded:bg-transparent',
-		'aria-expanded:text-muted-foreground'
-	);
+	expect(toggle).toHaveClass('aria-expanded:bg-transparent', 'aria-expanded:text-muted-foreground');
 	expect(sidebar).toHaveClass('top-12', 'bottom-0', 'border-r', 'bg-background');
 	expect(resizer).toHaveAttribute('aria-valuenow', '224');
 	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '224px' });
