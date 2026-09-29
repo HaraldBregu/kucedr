@@ -227,6 +227,8 @@ it('opens voice from its own footer button without opening the account menu', as
 
 	const voiceButton = screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' });
 	expect(voiceButton).toHaveClass(
+		'size-8',
+		'top-2',
 		'hover:bg-sidebar-primary',
 		'hover:text-sidebar-primary-foreground'
 	);

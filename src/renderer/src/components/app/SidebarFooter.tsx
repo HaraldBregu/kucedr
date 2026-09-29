@@ -77,8 +77,8 @@ export function AppSidebarFooter(): React.JSX.Element {
 						<Button
 							type="button"
 							variant="ghost"
-							size="icon-sm"
-							className="absolute right-2 top-2.5 z-10 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground focus-visible:bg-sidebar-primary focus-visible:text-sidebar-primary-foreground"
+							size="icon"
+							className="absolute right-2 top-2 z-10 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground focus-visible:bg-sidebar-primary focus-visible:text-sidebar-primary-foreground"
 							aria-label={t('settings.sidebar.voiceConversation')}
 							title={voiceError ?? t('settings.sidebar.voiceConversation')}
 							onClick={() => {
