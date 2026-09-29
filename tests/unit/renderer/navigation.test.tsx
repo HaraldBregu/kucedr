@@ -1,4 +1,5 @@
 import { render, screen, within } from '@testing-library/react';
+import { BookOpenText, Library } from 'lucide-react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { Layout } from '../../../src/renderer/src/pages/settings/Layout';
 import { SettingsPageHeader } from '../../../src/renderer/src/pages/settings/components';
@@ -60,6 +61,13 @@ it('does not expose Coding in settings navigation', () => {
 	expect(SETTINGS_MODEL_SERVICE_ITEMS).not.toContainEqual(
 		expect.objectContaining({ path: '/settings/coding' })
 	);
+});
+
+it('uses distinct icons for Library and Knowledge Base', () => {
+	expect(SETTINGS_NAVIGATION.find((item) => item.path === '/settings/library')?.icon).toBe(Library);
+	expect(
+		SETTINGS_NAVIGATION.find((item) => item.path === '/settings/knowledge-base')?.icon
+	).toBe(BookOpenText);
 });
 
 it.each([
