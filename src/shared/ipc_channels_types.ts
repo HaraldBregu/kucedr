@@ -603,6 +603,18 @@ export interface AppInvokeChannelMap {
 		args: [inputId: string];
 		result: void;
 	};
+	[AppChannels.getVoiceAgentAppearance]: {
+		args: [];
+		result: import('./app_types').VoiceAgentAppearance;
+	};
+	[AppChannels.setVoiceAgentAppearance]: {
+		args: [appearance: import('./app_types').VoiceAgentAppearance];
+		result: void;
+	};
+	[AppChannels.voiceAgentAppearanceChanged]: {
+		args: [appearance: import('./app_types').VoiceAgentAppearance];
+		result: void;
+	};
 	[AppChannels.getMicrophonePermission]: {
 		args: [];
 		result: import('./app_types').MicrophonePermissionSettings;

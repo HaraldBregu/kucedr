@@ -32,6 +32,7 @@ import type {
 	AppThemeData,
 	AppThemeColors,
 	TrayClickAction,
+	VoiceAgentAppearance,
 } from '../../shared/app_types';
 import { TRAY_CLICK_ACTIONS } from '../../shared/app_types';
 import { wrapIpcHandler, wrapSimpleHandler } from './core/error_handler';
@@ -49,6 +50,8 @@ import {
 	setTheme as setStoredTheme,
 	getMicrophoneInputId as getStoredMicrophoneInputId,
 	setMicrophoneInputId as setStoredMicrophoneInputId,
+	getVoiceAgentAppearance as getStoredVoiceAgentAppearance,
+	setVoiceAgentAppearance as setStoredVoiceAgentAppearance,
 	getLaunchState as getStoredLaunchState,
 } from '../settings_store';
 import { AppChannels } from '../../shared/ipc_channels_definitions';
@@ -665,6 +668,22 @@ export class AppIpc implements IpcModule {
 			wrapSimpleHandler((inputId: string) => {
 				setStoredMicrophoneInputId(inputId);
 			}, AppChannels.setMicrophoneInputId)
+		);
+
+		ipcMain.handle(
+			AppChannels.getVoiceAgentAppearance,
+			wrapSimpleHandler(
+				() => getStoredVoiceAgentAppearance(),
+				AppChannels.getVoiceAgentAppearance
+			)
+		);
+
+		ipcMain.handle(
+			AppChannels.setVoiceAgentAppearance,
+			wrapSimpleHandler((appearance: VoiceAgentAppearance) => {
+				setStoredVoiceAgentAppearance(appearance);
+				eventBus.broadcast(AppChannels.voiceAgentAppearanceChanged, appearance);
+			}, AppChannels.setVoiceAgentAppearance)
 		);
 
 		ipcMain.handle(

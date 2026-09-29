@@ -49,6 +49,8 @@ export type AppLanguage = 'en' | 'it';
 
 export type AppTheme = 'light' | 'dark' | 'system';
 
+export type VoiceAgentAppearance = 'persona' | 'orb-07';
+
 export const TRAY_CLICK_ACTIONS = ['toggle-chat', 'toggle-persona'] as const;
 
 export type TrayClickAction = (typeof TRAY_CLICK_ACTIONS)[number];

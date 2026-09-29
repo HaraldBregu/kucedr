@@ -607,6 +607,13 @@ export interface AppApi extends AppStorageApi {
 	onThemeModeChanged: (callback: (theme: AppThemeData) => void) => () => void;
 	getMicrophoneInputId: () => Promise<string>;
 	setMicrophoneInputId: (inputId: string) => Promise<void>;
+	getVoiceAgentAppearance: () => Promise<import('./app_types').VoiceAgentAppearance>;
+	setVoiceAgentAppearance: (
+		appearance: import('./app_types').VoiceAgentAppearance
+	) => Promise<void>;
+	onVoiceAgentAppearanceChanged: (
+		callback: (appearance: import('./app_types').VoiceAgentAppearance) => void
+	) => () => void;
 	getMicrophonePermission: () => Promise<MicrophonePermissionSettings>;
 	setMicrophoneEnabled: (enabled: boolean) => Promise<MicrophonePermissionSettings>;
 	requestMicrophonePermission: () => Promise<MicrophonePermissionSettings>;

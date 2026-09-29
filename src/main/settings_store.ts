@@ -16,6 +16,7 @@ import {
 	type AppLaunchState,
 	type AppTheme,
 	type TrayClickAction,
+	type VoiceAgentAppearance,
 } from '../shared/app_types';
 import {
 	getModelProvidersState,
@@ -34,6 +35,7 @@ export type AppSettingsState = {
 	theme: AppTheme;
 	windowSize: WindowSize;
 	microphoneInputId: string;
+	voiceAgentAppearance: VoiceAgentAppearance;
 	launchCount: number;
 };
 
@@ -47,6 +49,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	theme: 'system',
 	windowSize: '900x700',
 	microphoneInputId: 'default',
+	voiceAgentAppearance: 'persona',
 	launchCount: 0,
 };
 
@@ -179,6 +182,14 @@ export function setMicrophoneInputId(inputId: string): void {
 		throw new Error('Invalid microphone input ID.');
 	}
 	store.set('microphoneInputId', inputId);
+}
+
+export function getVoiceAgentAppearance(): VoiceAgentAppearance {
+	return store.get('voiceAgentAppearance') === 'orb-07' ? 'orb-07' : 'persona';
+}
+
+export function setVoiceAgentAppearance(appearance: VoiceAgentAppearance): void {
+	store.set('voiceAgentAppearance', appearance === 'orb-07' ? 'orb-07' : 'persona');
 }
 
 export function recordAppLaunch(): AppLaunchState {

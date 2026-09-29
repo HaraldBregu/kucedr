@@ -140,6 +140,15 @@ export const app: AppApi = {
 	setMicrophoneInputId: (inputId) => {
 		return typedInvokeUnwrap(AppChannels.setMicrophoneInputId, inputId);
 	},
+	getVoiceAgentAppearance: () => {
+		return typedInvokeUnwrap(AppChannels.getVoiceAgentAppearance);
+	},
+	setVoiceAgentAppearance: (appearance) => {
+		return typedInvokeUnwrap(AppChannels.setVoiceAgentAppearance, appearance);
+	},
+	onVoiceAgentAppearanceChanged: (callback) => {
+		return typedOn(AppChannels.voiceAgentAppearanceChanged, callback);
+	},
 	getMicrophonePermission: () => {
 		return typedInvokeUnwrap(AppChannels.getMicrophonePermission);
 	},
