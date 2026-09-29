@@ -48,7 +48,7 @@ it('previews each Voice Agent state', async () => {
 	expect(preview).toHaveAttribute('data-state', 'speaking');
 });
 
-it('selects Orb 07 as the Voice Agent appearance', async () => {
+it('selects Nebula as the Voice Agent appearance', async () => {
 	const user = userEvent.setup();
 	render(<PersonaPage />);
 
