@@ -17,18 +17,20 @@ export function VoiceAgentVisual({
 	size = 260,
 	state = 'idle',
 }: VoiceAgentVisualProps): React.JSX.Element {
+	const visualState = state === 'listening' ? 'idle' : state;
+
 	if (appearance === 'orb-07') {
 		return (
 			<Orb07
-				ariaLabel={`Voice Agent is ${state}`}
+				ariaLabel={`Voice Agent is ${visualState}`}
 				className={className}
 				maxDpr={2}
 				size={size}
-				state={state === 'listening' ? 'idle' : state}
+				state={visualState}
 				volumes={{ input: level, output: level }}
 			/>
 		);
 	}
 
-	return <Persona className={className} level={level} size={size} state={state} />;
+	return <Persona className={className} level={level} size={size} state={visualState} />;
 }

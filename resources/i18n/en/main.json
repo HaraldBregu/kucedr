@@ -319,7 +319,6 @@
 			"previewDescription": "Choose a state to preview its motion and response.",
 			"states": {
 				"idle": "Idle",
-				"listening": "Listening",
 				"thinking": "Thinking",
 				"speaking": "Speaking"
 			}

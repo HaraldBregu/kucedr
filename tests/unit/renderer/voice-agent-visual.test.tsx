@@ -23,9 +23,10 @@ it('renders the current Voice Agent visual', () => {
 	expect(screen.queryByTestId('orb-07')).not.toBeInTheDocument();
 });
 
-it('maps listening to Orb 07 idle motion with the input level', () => {
-	render(<VoiceAgentVisual appearance="orb-07" state="listening" level={0.28} />);
+it.each(['persona', 'orb-07'] as const)('maps listening to idle for %s', (appearance) => {
+	render(<VoiceAgentVisual appearance={appearance} state="listening" level={0.28} />);
 
-	expect(screen.getByTestId('orb-07')).toHaveAttribute('data-state', 'idle');
-	expect(screen.getByTestId('orb-07')).toHaveAttribute('data-input', '0.28');
+	const visual = screen.getByTestId(appearance);
+	expect(visual).toHaveAttribute('data-state', 'idle');
+	if (appearance === 'orb-07') expect(visual).toHaveAttribute('data-input', '0.28');
 });

@@ -29,8 +29,8 @@ describe('VoiceConversationWindow', () => {
 
 	it.each<readonly [RealtimeVoiceUiStatus, boolean, PersonaState]>([
 		['connecting', false, 'idle'],
-		['listening', false, 'listening'],
-		['listening', true, 'listening'],
+		['listening', false, 'idle'],
+		['listening', true, 'idle'],
 		['thinking', false, 'thinking'],
 		['speaking', false, 'speaking'],
 	])('shows the %s persona state', (status, isMuted, expectedState) => {

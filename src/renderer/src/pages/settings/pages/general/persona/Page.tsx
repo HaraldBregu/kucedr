@@ -12,7 +12,7 @@ import {
 	SettingsSection,
 } from '../../../components';
 
-const PERSONA_STATES: readonly PersonaState[] = ['idle', 'listening', 'thinking', 'speaking'];
+const PERSONA_STATES: readonly PersonaState[] = ['idle', 'thinking', 'speaking'];
 const APPEARANCES: readonly VoiceAgentAppearance[] = ['persona', 'orb-07'];
 
 const PersonaPage: React.FC = () => {
