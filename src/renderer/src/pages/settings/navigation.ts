@@ -337,12 +337,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Brain,
 	},
 	{
-		path: '/settings/library',
-		labelKey: 'library.title',
-		descriptionKey: 'settings.overview.descriptions.library',
-		icon: Library,
-	},
-	{
 		path: '/settings/account',
 		labelKey: 'settings.tabs.account',
 		descriptionKey: 'settings.overview.descriptions.account',
@@ -365,6 +359,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.providers',
 		descriptionKey: 'settings.overview.descriptions.providers',
 		icon: Server,
+	},
+	{
+		path: '/settings/library',
+		labelKey: 'library.title',
+		descriptionKey: 'settings.overview.descriptions.library',
+		icon: Library,
 	},
 	{
 		path: '/settings/voice',

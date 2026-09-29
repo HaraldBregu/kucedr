@@ -70,6 +70,27 @@ it('uses distinct icons for Library and Knowledge Base', () => {
 	).toBe(BookOpenText);
 });
 
+it('places Library directly below Providers in the general sidebar group', () => {
+	render(
+		<MemoryRouter initialEntries={['/settings/general']}>
+			<Routes>
+				<Route path="/settings" element={<Layout />}>
+					<Route path="*" element={null} />
+				</Route>
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
+	const providers = within(navigation).getByRole('link', { name: 'settings.tabs.providers' });
+	const library = within(navigation).getByRole('link', { name: 'library.title' });
+	const group = providers.closest('[data-slot="split-pane-group"]');
+	const links = within(group as HTMLElement).getAllByRole('link');
+
+	expect(library.closest('[data-slot="split-pane-group"]')).toBe(group);
+	expect(links.indexOf(library)).toBe(links.indexOf(providers) + 1);
+});
+
 it.each([
 	['/settings/knowledge-base', 'settings.rag.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],

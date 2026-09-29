@@ -16,9 +16,13 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'general',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/account', '/settings/general', '/settings/cloud', '/settings/providers'].includes(
-				item.path
-			)
+			[
+				'/settings/account',
+				'/settings/general',
+				'/settings/cloud',
+				'/settings/providers',
+				'/settings/library',
+			].includes(item.path)
 		),
 	},
 	{
@@ -36,7 +40,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				].includes(item.path)
 			),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
-			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/library'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/knowledge-base'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
