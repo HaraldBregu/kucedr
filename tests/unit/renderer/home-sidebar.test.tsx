@@ -179,11 +179,11 @@ it.each<[AuthState, string]>([
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
 	expect(footer).not.toBeNull();
-	expect(within(footer as HTMLElement).getByText(accountName)).toBeInTheDocument();
-	expect((footer as HTMLElement).querySelector('.rounded-full.grayscale')).toHaveClass('size-7');
-	expect(accountMenu.querySelector('svg')).toBeInTheDocument();
+	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
+	expect(accountMenu.querySelector('.rounded-full.grayscale')).toHaveClass('size-7');
+	expect(accountMenu.querySelector('.lucide-more-vertical')).not.toBeInTheDocument();
 	if (state.status === 'signedIn') {
-		expect(within(footer as HTMLElement).queryByText(state.user.email)).not.toBeInTheDocument();
+		expect(within(accountMenu).queryByText(state.user.email)).not.toBeInTheDocument();
 	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('menu');

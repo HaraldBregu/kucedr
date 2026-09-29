@@ -3,7 +3,6 @@ import {
 	CircleHelp,
 	Layers,
 	LogOut,
-	MoreVertical,
 	RadioTower,
 	Server,
 	Settings,
@@ -26,6 +25,7 @@ import {
 import {
 	SidebarFooter,
 	SidebarMenu,
+	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,50 +55,47 @@ export function AppSidebarFooter(): React.JSX.Element {
 	return (
 		<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 			<SidebarMenu>
-				<SidebarMenuItem className="flex h-12 items-center gap-2 rounded-xl p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-					<Avatar className="size-7 rounded-full grayscale">
-						<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-						<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
-							{accountInitial}
-						</AvatarFallback>
-					</Avatar>
-					<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
-						{accountItem.title}
-					</span>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						className="shrink-0 rounded-lg"
-						aria-label={t('settings.sidebar.voiceConversation')}
-						title={voiceError ?? t('settings.sidebar.voiceConversation')}
-						onClick={() => {
-							setVoiceError(null);
-							void ensureAppMicrophoneAccess()
-								.then(() => window.win.openVoiceConversation(sessionId))
-								.catch((error: unknown) => {
-									setVoiceError(
-										error instanceof Error && error.message.trim()
-											? error.message
-											: 'Voice conversation could not be opened.'
-									);
-								});
-						}}
-					>
-						<AudioLines className="size-4" strokeWidth={1.8} />
-					</Button>
+				<SidebarMenuItem>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<Button
-								type="button"
-								variant="ghost"
-								size="icon-sm"
+							<SidebarMenuButton
+								size="lg"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="shrink-0 rounded-lg data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
-								<MoreVertical className="size-4" aria-hidden="true" />
-							</Button>
+								<Avatar className="size-7 rounded-full grayscale">
+									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
+									<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
+										{accountInitial}
+									</AvatarFallback>
+								</Avatar>
+								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+									{accountItem.title}
+								</span>
+							</SidebarMenuButton>
 						</DropdownMenuTrigger>
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon-sm"
+							className="absolute right-2 top-2.5 z-10 shrink-0 rounded-lg"
+							aria-label={t('settings.sidebar.voiceConversation')}
+							title={voiceError ?? t('settings.sidebar.voiceConversation')}
+							onClick={() => {
+								setVoiceError(null);
+								void ensureAppMicrophoneAccess()
+									.then(() => window.win.openVoiceConversation(sessionId))
+									.catch((error: unknown) => {
+										setVoiceError(
+											error instanceof Error && error.message.trim()
+												? error.message
+												: 'Voice conversation could not be opened.'
+										);
+									});
+							}}
+						>
+							<AudioLines className="size-4" strokeWidth={1.8} />
+						</Button>
 						<DropdownMenuContent
 							className="w-[var(--radix-dropdown-menu-trigger-width)]"
 							side="top"

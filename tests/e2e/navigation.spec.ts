@@ -164,9 +164,8 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 	const accountMenuButton = sidebarFooter.getByRole('button', { name: /account menu/i });
 	await expect(sidebarFooter).toBeVisible();
 	await expect(sidebarFooter.getByRole('button', { name: 'Voice conversation' })).toBeVisible();
+	await expect(sidebarFooter.locator('.lucide-more-vertical')).toHaveCount(0);
 	await sidebarFooter.getByText('Settings', { exact: true }).click();
-	await expect(page.getByRole('menu')).toHaveCount(0);
-	await accountMenuButton.click();
 	await expect(page.getByRole('menu')).toBeVisible();
 	await page.keyboard.press('Escape');
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
