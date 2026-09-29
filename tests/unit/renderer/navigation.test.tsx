@@ -65,9 +65,9 @@ it('does not expose Coding in settings navigation', () => {
 
 it('uses distinct icons for Library and Knowledge Base', () => {
 	expect(SETTINGS_NAVIGATION.find((item) => item.path === '/settings/library')?.icon).toBe(Library);
-	expect(
-		SETTINGS_NAVIGATION.find((item) => item.path === '/settings/knowledge-base')?.icon
-	).toBe(BookOpenText);
+	expect(SETTINGS_NAVIGATION.find((item) => item.path === '/settings/knowledge-base')?.icon).toBe(
+		BookOpenText
+	);
 });
 
 it('places Library directly below Providers in the general sidebar group', () => {
@@ -350,9 +350,11 @@ it('places Channels directly below Apps outside the Assistant sidebar group', ()
 	expect(channels).toHaveAttribute('href', '/settings/channels');
 	expect(channels.closest('[data-slot="split-pane-group"]')).toBe(extensionsGroup);
 	expect(extensionLinks.indexOf(channels)).toBe(extensionLinks.indexOf(apps) + 1);
-	expect(within(assistantGroup as HTMLElement).queryByRole('link', {
-		name: 'settings.tabs.channels',
-	})).not.toBeInTheDocument();
+	expect(
+		within(assistantGroup as HTMLElement).queryByRole('link', {
+			name: 'settings.tabs.channels',
+		})
+	).not.toBeInTheDocument();
 	expect(remoteAgent).toHaveAttribute('href', '/settings/remote-agent');
 	expect(remoteAgent.querySelector('.lucide-network')).toBeInTheDocument();
 	expect(within(remoteAgent).getByText('new')).toHaveAttribute('data-slot', 'badge');
