@@ -1,11 +1,12 @@
 import {
 	AudioLines,
 	CircleHelp,
+	Info,
 	Layers,
+	Library,
 	LogOut,
-	RadioTower,
+	Plug,
 	Server,
-	Settings,
 	UserRound,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -46,10 +47,11 @@ export function AppSidebarFooter(): React.JSX.Element {
 	const accountInitial = accountItem.title.charAt(0).toUpperCase();
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
+		{ path: '/settings/general', label: t('settings.tabs.general'), icon: Info },
 		{ path: '/settings/providers', label: t('settings.sidebar.provider'), icon: Server },
-		{ path: '/settings/channels', label: t('settings.tabs.channels'), icon: RadioTower },
+		{ path: '/settings/library', label: t('library.title'), icon: Library },
+		{ path: '/settings/plugins', label: t('settings.tabs.plugins'), icon: Plug },
 		{ path: '/settings/apps', label: t('settings.tabs.apps'), icon: Layers },
-		{ path: '/settings/general', label: t('settings.title'), icon: Settings },
 	];
 
 	return (
