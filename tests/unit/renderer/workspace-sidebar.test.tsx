@@ -57,6 +57,7 @@ it('shows a Return to Home link in the sidebar header', async () => {
 	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
 
 	expect(screen.getByRole('link', { name: 'Return to Home' })).toHaveAttribute('href', '/home');
+	await screen.findByText('Workspace is empty.');
 });
 
 it('refreshes the tree for file additions but not content changes', async () => {
