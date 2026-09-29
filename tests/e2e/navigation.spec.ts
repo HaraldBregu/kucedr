@@ -122,7 +122,13 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 		() => navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac')
 	);
 	if (isMac) {
-		const toggleBox = await page.getByRole('button', { name: 'Toggle Sidebar' }).boundingBox();
+		const sidebarActions = navigationBar.locator(
+			'[data-slot="navigationbar-sidebar-actions"]'
+		);
+		const toggleButton = sidebarActions.getByRole('button', { name: 'Toggle Sidebar' });
+		await expect(toggleButton).toBeVisible();
+		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toBeVisible();
+		const toggleBox = await toggleButton.boundingBox();
 		const searchBox = await searchButton.boundingBox();
 		expect(toggleBox).not.toBeNull();
 		expect(searchBox).not.toBeNull();

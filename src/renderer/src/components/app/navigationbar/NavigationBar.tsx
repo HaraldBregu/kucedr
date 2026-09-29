@@ -139,7 +139,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<NavigationBarLeftContainer
 					isMac={isMac}
 					isFullScreen={isFullScreen}
-					className={isMac && searchButton ? 'ml-[120px]' : undefined}
+					className={isMac && searchButton ? 'ml-[84px]' : undefined}
 				>
 					{!isMac && (
 						<button
@@ -151,7 +151,17 @@ export const NavigationBar = React.memo(function NavigationBar({
 							<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
 						</button>
 					)}
-					{searchButton}
+					{isMac && searchButton ? (
+						<div
+							data-slot="navigationbar-sidebar-actions"
+							className="flex h-full items-center gap-1"
+						>
+							<span data-slot="split-pane-toggle-target" className="contents" />
+							{searchButton}
+						</div>
+					) : (
+						searchButton
+					)}
 					{!isMac && workspaceButton}
 					{!isMac && voiceButton}
 					{!isMac && routeButton}

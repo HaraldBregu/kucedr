@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useLayoutEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { PanelLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -30,6 +30,14 @@ export function Split({
 	const { state, dispatch, isMobile, sidebarWidth, setSidebarWidth, toggleSidebar } =
 		usePageContext();
 	const sidebarOpen = isMobile ? state.sidebarOpenMobile : state.sidebarOpen;
+	const [toggleTarget, setToggleTarget] = useState<HTMLElement>(() => document.body);
+
+	useLayoutEffect(() => {
+		const titlebarTarget = document.querySelector<HTMLElement>(
+			'[data-slot="split-pane-toggle-target"]'
+		);
+		if (titlebarTarget) setToggleTarget(titlebarTarget);
+	}, []);
 
 	return (
 		<div
@@ -54,12 +62,15 @@ export function Split({
 					aria-expanded={sidebarOpen}
 					title="Toggle Sidebar"
 					onClick={toggleSidebar}
-					className="fixed left-[84px] top-2 z-50 size-8 rounded-full aria-expanded:bg-transparent"
+					className={cn(
+						'size-8 rounded-full aria-expanded:bg-transparent',
+						toggleTarget === document.body && 'fixed left-[84px] top-2 z-50'
+					)}
 					style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 				>
 					<PanelLeft className="size-4" strokeWidth={1.8} />
 				</Button>,
-				document.body
+				toggleTarget
 			)}
 			{isMobile ? (
 				<Sheet
