@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { StrictMode } from 'react';
 import type { PersonaState } from '../../../src/renderer/src/components/persona';
 import { VoiceConversationWindow } from '../../../src/renderer/src/components/voice-conversation-window';
 import {
@@ -77,5 +78,27 @@ describe('VoiceConversationWindow', () => {
 		expect(screen.getByRole('button', { name: 'End voice conversation' })).toHaveTextContent(
 			'Close'
 		);
+	});
+
+	it('starts once when mounted in Strict Mode', async () => {
+		const start = jest.fn().mockResolvedValue(true);
+		mockedUseRealtimeVoice.mockReturnValue({
+			elapsedMs: 0,
+			end: jest.fn(),
+			errorMessage: null,
+			isMuted: false,
+			setMuted: jest.fn(),
+			start,
+			status: 'idle',
+			stream: null,
+		} as ReturnType<typeof useRealtimeVoice>);
+
+		render(
+			<StrictMode>
+				<VoiceConversationWindow chatSessionId="chat-1" />
+			</StrictMode>
+		);
+
+		await waitFor(() => expect(start).toHaveBeenCalledTimes(1));
 	});
 });

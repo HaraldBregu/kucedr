@@ -34,7 +34,13 @@ export function VoiceConversationWindow({
 	const { voiceAgentAppearance } = useApp();
 
 	useEffect(() => {
-		void voice.start();
+		let cancelled = false;
+		void Promise.resolve().then(() => {
+			if (!cancelled) void voice.start();
+		});
+		return () => {
+			cancelled = true;
+		};
 	}, [voice.start]);
 
 	return (
