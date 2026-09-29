@@ -220,7 +220,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(currentSection).toHaveAttribute('data-active');
 });
 
-it('keeps Plugins and Apps in the sidebar footer', () => {
+it('keeps Plugins and Apps in the main sidebar list without a footer', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/plugins']}>
 			<Routes>
@@ -232,19 +232,20 @@ it('keeps Plugins and Apps in the sidebar footer', () => {
 	);
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const footer = navigation.querySelector('[data-slot="sidebar-footer"]');
-	expect(footer?.parentElement).toBe(navigation);
+	const list = navigation.querySelector('.overflow-y-auto');
+	expect(list).not.toBeNull();
+	expect(navigation.querySelector('[data-slot="sidebar-footer"]')).not.toBeInTheDocument();
 	expect(
-		within(footer as HTMLElement).queryByText('settings.overview.groups.extensions')
+		within(list as HTMLElement).queryByText('settings.overview.groups.extensions')
 	).not.toBeInTheDocument();
 	expect(
-		within(footer as HTMLElement).getByRole('link', { name: 'settings.tabs.plugins' })
+		within(list as HTMLElement).getByRole('link', { name: 'settings.tabs.plugins' })
 	).toHaveAttribute('aria-current', 'page');
 	expect(
-		within(footer as HTMLElement).getByRole('link', { name: 'settings.tabs.apps' })
+		within(list as HTMLElement).getByRole('link', { name: 'settings.tabs.apps' })
 	).toHaveAttribute('href', '/settings/apps');
 	expect(
-		within(footer as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })
+		within(list as HTMLElement).queryByRole('link', { name: 'settings.tabs.mcp' })
 	).not.toBeInTheDocument();
 });
 

@@ -3,7 +3,6 @@ import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { SPLIT_ITEM_CLASS, usePageContext } from '@/components/app/base/page';
-import { SidebarFooter } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import {
 	SETTINGS_MODEL_SERVICE_ITEMS,
@@ -42,16 +41,17 @@ const SETTINGS_SIDEBAR_GROUPS = [
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
 		],
 	},
+	{
+		id: 'extensions',
+		items: SETTINGS_NAVIGATION.filter((item) =>
+			['/settings/plugins', '/settings/apps'].includes(item.path)
+		),
+	},
 ] as const;
 
-const SETTINGS_SIDEBAR_BOTTOM_ITEMS = SETTINGS_NAVIGATION.filter((item) =>
-	['/settings/plugins', '/settings/apps'].includes(item.path)
+const SETTINGS_SIDEBAR_ITEMS = SETTINGS_SIDEBAR_GROUPS.flatMap<SettingsNavigationItem>(
+	(group) => group.items
 );
-
-const SETTINGS_SIDEBAR_ITEMS = [
-	...SETTINGS_SIDEBAR_GROUPS.flatMap<SettingsNavigationItem>((group) => group.items),
-	...SETTINGS_SIDEBAR_BOTTOM_ITEMS,
-];
 
 export function SettingsSidebar(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -93,9 +93,6 @@ export function SettingsSidebar(): React.JSX.Element {
 						/>
 					))}
 				</div>
-				<SidebarFooter className="shrink-0 gap-0 border-t border-sidebar-border/50 p-0">
-					<Group items={SETTINGS_SIDEBAR_BOTTOM_ITEMS} activePath={activePath} className="py-3" />
-				</SidebarFooter>
 			</nav>
 		</div>
 	);
