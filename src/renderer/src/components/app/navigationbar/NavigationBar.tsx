@@ -136,7 +136,11 @@ export const NavigationBar = React.memo(function NavigationBar({
 				}}
 			>
 				{/* ── Left: platform menu + nav buttons ── */}
-				<NavigationBarLeftContainer isMac={isMac} isFullScreen={isFullScreen}>
+				<NavigationBarLeftContainer
+					isMac={isMac}
+					isFullScreen={isFullScreen}
+					className={isMac && searchButton ? 'ml-28' : undefined}
+				>
 					{!isMac && (
 						<button
 							type="button"
@@ -147,7 +151,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 							<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
 						</button>
 					)}
-					{!isMac && searchButton}
+					{searchButton}
 					{!isMac && workspaceButton}
 					{!isMac && voiceButton}
 					{!isMac && routeButton}
@@ -178,11 +182,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 				)}
 
 				{/* ── Right action: home/settings toggle ── */}
-			{isMac && (searchButton || workspaceButton || voiceButton || routeButton) && (
+			{isMac && (workspaceButton || voiceButton || routeButton) && (
 					<div
 						className="z-10 mr-3 flex h-full items-center gap-1"
 					>
-						{searchButton}
 						{workspaceButton}
 						{voiceButton}
 						{routeButton}

@@ -96,7 +96,7 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the navbar Workspace folder button opens the folder sidebar', async () => {
+test('the navbar Search stays by the sidebar toggle and Workspace opens the folder sidebar', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
@@ -118,8 +118,24 @@ test('the navbar Workspace folder button opens the folder sidebar', async () => 
 	const navigationBar = page.locator('[data-slot="navigationbar"]');
 	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
+	const isMac = await page.evaluate(
+		() => navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac')
+	);
+	if (isMac) {
+		const toggleBox = await page.getByRole('button', { name: 'Toggle Sidebar' }).boundingBox();
+		const searchBox = await searchButton.boundingBox();
+		expect(toggleBox).not.toBeNull();
+		expect(searchBox).not.toBeNull();
+		expect(searchBox?.x).toBe((toggleBox?.x ?? 0) + (toggleBox?.width ?? 0) + 4);
+		expect((searchBox?.y ?? 0) + (searchBox?.height ?? 0) / 2).toBe(
+			(toggleBox?.y ?? 0) + (toggleBox?.height ?? 0) / 2
+		);
+	} else {
+		await expect(
+			searchButton.locator('xpath=following-sibling::button[1][@aria-label="Workspace"]')
+		).toHaveCount(1);
+	}
 	await expect(workspaceButton.locator('.lucide-folder')).toBeVisible();
-	await expect(searchButton.locator('xpath=following-sibling::button[1][@aria-label="Workspace"]')).toHaveCount(1);
 	await workspaceButton.click();
 	await expect(page).toHaveURL(/#\/workspace$/);
 	await expect(searchButton).toBeVisible();
