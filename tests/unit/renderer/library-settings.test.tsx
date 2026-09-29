@@ -2,8 +2,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LibraryPage from '../../../src/renderer/src/pages/settings/pages/library/Page';
 
+const mockTranslate = (key: string): string => key;
+
 jest.mock('react-i18next', () => ({
-	useTranslation: () => ({ t: (key: string): string => key }),
+	useTranslation: () => ({ t: mockTranslate }),
 }));
 
 const list = jest.fn();
