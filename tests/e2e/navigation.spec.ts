@@ -255,7 +255,7 @@ test('the navbar Search stays in the right group and Workspace opens the folder 
 	});
 	await expect(workspace.getByText('updated.md')).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
 	await expect(page).toHaveURL(/#\/home$/);
 });
 
@@ -321,12 +321,12 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute('aria-current', 'page');
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
 	await expect(fileInformation).toHaveText(footerBeforeRefresh ?? '');
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
 	await page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Workspace' }).click();
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute('aria-current', 'page');
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
 	await expect(workspace.getByText('Loading files…')).toHaveCount(0);
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
 	await page.evaluate(async () => {
 		await new Promise<void>((resolve, reject) => {
 			const unsubscribe = window.agent.onWorkspaceChanged((event) => {
@@ -345,7 +345,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 test('Workspace releases its mounted UI before navigating from Home to Settings', async () => {
 	await page.evaluate(() => { window.location.hash = '#/workspace'; });
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toBeVisible();
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Chat' }).click();
+	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toHaveCount(0);
 	await page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Settings', exact: true }).click();
 	await expect(page.locator('[data-slot="settings-workspace"]')).toBeVisible();

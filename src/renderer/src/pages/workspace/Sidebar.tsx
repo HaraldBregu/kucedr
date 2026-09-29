@@ -147,7 +147,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<Link to="/home" className={SPLIT_ITEM_CLASS}>
 					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
-					<span>{t('navigationBar.chat', 'Chat')}</span>
+					<span>{t('settings.returnToChat', 'Return to Home')}</span>
 				</Link>
 			</header>
 			<nav aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {

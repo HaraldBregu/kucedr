@@ -52,6 +52,13 @@ beforeEach(() => {
 	});
 });
 
+it('shows a Return to Home link in the sidebar header', async () => {
+	listWorkspaceFiles.mockResolvedValue([]);
+	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
+
+	expect(screen.getByRole('link', { name: 'Return to Home' })).toHaveAttribute('href', '/home');
+});
+
 it('refreshes the tree for file additions but not content changes', async () => {
 	listWorkspaceFiles.mockResolvedValue([{ type: 'file', name: 'plan.md', path: 'plan.md' }]);
 	render(<MemoryRouter><WorkspaceSidebar onFileSelect={jest.fn()} onEntryRenamed={jest.fn()} onEntryDeleted={jest.fn()} selectedPath={null} /></MemoryRouter>);
