@@ -167,10 +167,12 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 	await expect(footerVoiceButton).toBeVisible();
 	await expect(sidebarFooter.locator('.lucide-more-vertical')).toHaveCount(0);
 	await accountMenuButton.hover();
+	await page.waitForTimeout(200);
 	const itemHoverColor = await accountMenuButton.evaluate(
 		(element) => getComputedStyle(element).backgroundColor
 	);
 	await footerVoiceButton.hover();
+	await page.waitForTimeout(200);
 	const voiceHoverColor = await footerVoiceButton.evaluate(
 		(element) => getComputedStyle(element).backgroundColor
 	);
