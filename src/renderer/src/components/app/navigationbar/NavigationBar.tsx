@@ -139,7 +139,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<NavigationBarLeftContainer
 					isMac={isMac}
 					isFullScreen={isFullScreen}
-					className={isMac && searchButton ? 'ml-28' : undefined}
+					className={isMac && searchButton ? 'ml-[116px]' : undefined}
 				>
 					{!isMac && (
 						<button

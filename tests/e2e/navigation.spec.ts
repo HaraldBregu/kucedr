@@ -126,6 +126,7 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 		const searchBox = await searchButton.boundingBox();
 		expect(toggleBox).not.toBeNull();
 		expect(searchBox).not.toBeNull();
+		expect(toggleBox?.x).toBe(84);
 		expect(searchBox?.x).toBe((toggleBox?.x ?? 0) + (toggleBox?.width ?? 0) + 4);
 		expect(
 			Math.abs(
