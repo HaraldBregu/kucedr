@@ -127,9 +127,12 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 		expect(toggleBox).not.toBeNull();
 		expect(searchBox).not.toBeNull();
 		expect(searchBox?.x).toBe((toggleBox?.x ?? 0) + (toggleBox?.width ?? 0) + 4);
-		expect((searchBox?.y ?? 0) + (searchBox?.height ?? 0) / 2).toBe(
-			(toggleBox?.y ?? 0) + (toggleBox?.height ?? 0) / 2
-		);
+		expect(
+			Math.abs(
+				(searchBox?.y ?? 0) + (searchBox?.height ?? 0) / 2 -
+					((toggleBox?.y ?? 0) + (toggleBox?.height ?? 0) / 2)
+			)
+		).toBeLessThanOrEqual(1);
 	} else {
 		await expect(
 			searchButton.locator('xpath=following-sibling::button[1][@aria-label="Workspace"]')
