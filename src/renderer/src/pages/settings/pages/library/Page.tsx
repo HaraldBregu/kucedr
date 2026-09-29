@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { AlertTriangle, File, Files, FolderOpen, RefreshCw } from 'lucide-react';
+import { AlertTriangle, File, FolderOpen, Library, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Button } from '@/components/ui/button';
@@ -83,7 +83,7 @@ const LibraryPage: React.FC = () => {
 						<SettingsLoadingRows rows={3} />
 					) : files.length === 0 ? (
 						<SettingsEmptyState
-							icon={Files}
+							icon={Library}
 							title={t('library.empty')}
 							description={t('settings.library.emptyDescription')}
 						/>

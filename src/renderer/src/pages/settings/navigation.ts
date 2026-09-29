@@ -5,7 +5,6 @@ import {
 	Layers,
 	Cloud,
 	Folder,
-	Files,
 	HeartPulse,
 	Info,
 	Library,
@@ -340,7 +339,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/library',
 		labelKey: 'library.title',
 		descriptionKey: 'settings.overview.descriptions.library',
-		icon: Files,
+		icon: Library,
 	},
 	{
 		path: '/settings/account',
