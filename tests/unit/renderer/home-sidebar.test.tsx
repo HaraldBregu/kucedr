@@ -26,6 +26,8 @@ const showContextMenu = jest.fn();
 const signOut = jest.fn();
 const confirmSignOut = jest.fn();
 const openExternalUrl = jest.fn();
+const openVoiceConversation = jest.fn();
+const getMicrophonePermission = jest.fn();
 
 beforeEach(() => {
 	signOut.mockReset();
@@ -34,6 +36,12 @@ beforeEach(() => {
 	confirmSignOut.mockResolvedValue(true);
 	openExternalUrl.mockReset();
 	openExternalUrl.mockResolvedValue(undefined);
+	openVoiceConversation.mockReset().mockResolvedValue(undefined);
+	getMicrophonePermission.mockReset().mockResolvedValue({
+		enabled: true,
+		systemStatus: 'granted',
+		canRequest: false,
+	});
 	mockUseAuth.mockReturnValue({
 		state: { status: 'signedOut', persistence: 'encrypted' },
 		localOnly: false,
@@ -72,12 +80,13 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'win', {
 		configurable: true,
-		value: { showContextMenu, confirmSignOut },
+		value: { showContextMenu, confirmSignOut, openVoiceConversation },
 	});
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: {
 			openExternalUrl,
+			getMicrophonePermission,
 		},
 	});
 	Object.defineProperty(window, 'auth', {
@@ -121,14 +130,13 @@ it('loads chat history, marks the latest default session, and switches sessions'
 
 	await user.click(older);
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
-	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
-	expect(screen.getByText('settings.title')).toBeInTheDocument();
+	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
+	const footer = accountMenu.closest('[data-slot="sidebar-footer"]') as HTMLElement;
+	expect(within(footer).getByText('settings.title')).toBeInTheDocument();
 	expect(
-		within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')
+		within(footer).getByText('S')
 	).toBeInTheDocument();
-	expect(
-		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
-	).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' })).toBeInTheDocument();
 });
 
 it.each<[AuthState, string]>([
@@ -171,11 +179,11 @@ it.each<[AuthState, string]>([
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
 	expect(footer).not.toBeNull();
-	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
-	expect(accountMenu.querySelector('.rounded-full.grayscale')).toHaveClass('size-7');
+	expect(within(footer as HTMLElement).getByText(accountName)).toBeInTheDocument();
+	expect((footer as HTMLElement).querySelector('.rounded-full.grayscale')).toHaveClass('size-7');
 	expect(accountMenu.querySelector('svg')).toBeInTheDocument();
 	if (state.status === 'signedIn') {
-		expect(within(accountMenu).queryByText(state.user.email)).not.toBeInTheDocument();
+		expect(within(footer as HTMLElement).queryByText(state.user.email)).not.toBeInTheDocument();
 	}
 	await user.click(accountMenu);
 	const menu = screen.getByRole('menu');
@@ -200,6 +208,29 @@ it.each<[AuthState, string]>([
 	expect(confirmSignOut).toHaveBeenCalledTimes(1);
 	await waitFor(() => expect(signOut).toHaveBeenCalledTimes(1));
 	await screen.findByText('settings.chatHistory.empty');
+});
+
+it('opens voice from its own footer button without opening the account menu', async () => {
+	const user = userEvent.setup();
+	listSessions.mockResolvedValue([]);
+
+	render(
+		<MemoryRouter>
+			<ChatSessionContext.Provider value={{ sessionId: 'session-voice', setSessionId: jest.fn() }}>
+				<PageContainer>
+					<HomeSidebar refreshKey="initial" />
+				</PageContainer>
+			</ChatSessionContext.Provider>
+		</MemoryRouter>
+	);
+
+	await user.click(screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' }));
+
+	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-voice'));
+	expect(getMicrophonePermission).toHaveBeenCalledTimes(1);
+	expect(screen.queryByRole('menu')).not.toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' }));
+	expect(screen.getByRole('menu')).toBeInTheDocument();
 });
 
 it('renames a chat from its context menu without item action buttons', async () => {

@@ -1,4 +1,5 @@
 import {
+	AudioLines,
 	CircleHelp,
 	Layers,
 	LogOut,
@@ -8,9 +9,11 @@ import {
 	Settings,
 	UserRound,
 } from 'lucide-react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -23,14 +26,17 @@ import {
 import {
 	SidebarFooter,
 	SidebarMenu,
-	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { useAuth } from '@/contexts/AuthContext';
+import { useChatSession } from '@/contexts/chat-session';
+import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 
 export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
 	const { state: authState } = useAuth();
+	const { sessionId } = useChatSession();
+	const [voiceError, setVoiceError] = useState<string | null>(null);
 	const authenticatedUser = authState.status === 'signedIn' ? authState.user : undefined;
 	const accountItem = {
 		title: authenticatedUser ? t('settings.tabs.account') : t('settings.title'),
@@ -49,25 +55,49 @@ export function AppSidebarFooter(): React.JSX.Element {
 	return (
 		<SidebarFooter className="shrink-0 border-t border-sidebar-border/50">
 			<SidebarMenu>
-				<SidebarMenuItem>
+				<SidebarMenuItem className="flex h-12 items-center gap-2 rounded-xl p-2 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+					<Avatar className="size-7 rounded-full grayscale">
+						<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
+						<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
+							{accountInitial}
+						</AvatarFallback>
+					</Avatar>
+					<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
+						{accountItem.title}
+					</span>
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon-sm"
+						className="shrink-0 rounded-lg"
+						aria-label={t('settings.sidebar.voiceConversation')}
+						title={voiceError ?? t('settings.sidebar.voiceConversation')}
+						onClick={() => {
+							setVoiceError(null);
+							void ensureAppMicrophoneAccess()
+								.then(() => window.win.openVoiceConversation(sessionId))
+								.catch((error: unknown) => {
+									setVoiceError(
+										error instanceof Error && error.message.trim()
+											? error.message
+											: 'Voice conversation could not be opened.'
+									);
+								});
+						}}
+					>
+						<AudioLines className="size-4" strokeWidth={1.8} />
+					</Button>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
-							<SidebarMenuButton
-								size="lg"
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-sm"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="shrink-0 rounded-lg data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
-								<Avatar className="size-7 rounded-full grayscale">
-									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-									<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
-										{accountInitial}
-									</AvatarFallback>
-								</Avatar>
-								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
-									{accountItem.title}
-								</span>
-								<MoreVertical className="ml-auto size-4" aria-hidden="true" />
-							</SidebarMenuButton>
+								<MoreVertical className="size-4" aria-hidden="true" />
+							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent
 							className="w-[var(--radix-dropdown-menu-trigger-width)]"
