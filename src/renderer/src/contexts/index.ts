@@ -2,6 +2,7 @@ export { AppProvider, useApp } from './AppContext';
 export type {
 	AppLanguage,
 	AppTheme,
+	VoiceAgentAppearance,
 	SidebarState,
 	AppContextValue,
 } from './AppContext';

@@ -1,7 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { Mic, MicOff } from 'lucide-react';
-import { Persona, type PersonaState } from '@/components/persona';
+import type { PersonaState } from '@/components/persona';
+import { VoiceAgentVisual } from '@/components/voice-agent-visual';
 import { TypingLoader } from '@/components/ui/loader';
+import { useApp } from '@/contexts';
 import { cn } from '@/lib/utils';
 import { useRealtimeVoice, type RealtimeVoiceUiStatus } from '@/pages/home/hooks/useRealtimeVoice';
 
@@ -29,6 +31,7 @@ export function VoiceConversationWindow({
 	const voice = useRealtimeVoice({ chatSessionId, onClosed: closeWindow, closeOnError: false });
 	const isEnding = voice.status === 'ending';
 	const state = personaState(voice.status);
+	const { voiceAgentAppearance } = useApp();
 
 	useEffect(() => {
 		void voice.start();
@@ -49,7 +52,8 @@ export function VoiceConversationWindow({
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
 				<div className="relative flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-[1.35rem] bg-neutral-950">
-					<Persona
+					<VoiceAgentVisual
+						appearance={voiceAgentAppearance}
 						state={state}
 						level={state === 'speaking' ? 0.72 : state === 'listening' ? 0.28 : 0.16}
 						size={208}

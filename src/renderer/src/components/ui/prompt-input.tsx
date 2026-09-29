@@ -4,7 +4,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 import { BarWaveAnimation } from './bar-wave-animation';
 import { TypingLoader } from './loader';
-import { Persona, type PersonaState } from '@/components/persona';
+import type { PersonaState } from '@/components/persona';
+import { VoiceAgentVisual } from '@/components/voice-agent-visual';
+import { useApp } from '@/contexts';
 import { PromptInputControls } from './controls';
 import { PromptInputField } from './composer-field';
 import { cn } from '@/lib/utils';
@@ -369,6 +371,7 @@ function PromptInput({
 	onClick,
 	...props
 }: PromptInputProps) {
+	const { voiceAgentAppearance } = useApp();
 	const [internalValue, setInternalValue] = useState(value || '');
 	const internalTextareaRef = useRef<HTMLTextAreaElement>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
@@ -492,7 +495,8 @@ function PromptInput({
 											>
 												<X className="size-4" strokeWidth={2.4} />
 											</button>
-											<Persona
+											<VoiceAgentVisual
+												appearance={voiceAgentAppearance}
 												state={voicePersonaState ?? 'idle'}
 												level={
 													voicePersonaState === 'speaking'

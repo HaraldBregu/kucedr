@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { loadModels } from './lib/providers';
 import { VoiceConversationWindow } from './components/voice-conversation-window';
+import { AppProvider } from './contexts';
 import './i18n';
 import './index.css';
 
@@ -20,7 +21,9 @@ const root = createRoot(rootElement);
 const render = (): void => {
 	root.render(
 		<StrictMode>
-			<VoiceConversationWindow chatSessionId={chatSessionId} />
+			<AppProvider>
+				<VoiceConversationWindow chatSessionId={chatSessionId} />
+			</AppProvider>
 		</StrictMode>
 	);
 };
