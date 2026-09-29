@@ -35,6 +35,10 @@ export class LibraryIpc implements IpcModule<LibraryIpcDependencies> {
 			if (result.canceled || result.filePaths.length === 0) return undefined;
 			return library.addLibraryFiles(result.filePaths);
 		});
+		registerCommandWithEvent(LibraryChannels.delete, (event, relativePath) => {
+			trusted.assert(event);
+			return library.deleteLibraryFile(relativePath);
+		});
 		registerCommandWithEvent(LibraryChannels.openRoot, (event) => {
 			trusted.assert(event);
 			return library.openLibraryRoot();

@@ -1643,10 +1643,13 @@
 			"uploading": "Caricamento...",
 			"drop": "Rilascia i file per caricarli",
 			"dropZone": "Area di rilascio per il caricamento nella libreria",
+			"delete": "Elimina {{name}}",
+			"confirmDelete": "Eliminare \"{{name}}\" dalla libreria? Questa azione non può essere annullata.",
 			"openFolder": "Apri cartella",
 			"emptyDescription": "Carica i file o rilasciali qui per aggiungerli alla libreria.",
 			"loadError": "Impossibile caricare i file della libreria.",
 			"uploadError": "Impossibile caricare i file nella libreria.",
+			"deleteError": "Impossibile eliminare il file dalla libreria.",
 			"openFolderError": "Impossibile aprire la cartella della libreria."
 		},
 		"channels": {

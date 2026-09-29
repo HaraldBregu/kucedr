@@ -640,6 +640,7 @@ export interface LibraryApi {
 	list: () => Promise<import('./library_types').LibraryFile[]>;
 	add: (paths: string[]) => Promise<import('./library_types').LibraryFile[]>;
 	select: () => Promise<import('./library_types').LibraryFile[] | undefined>;
+	delete: (relativePath: string) => Promise<void>;
 	openRoot: () => Promise<void>;
 	getRoot: () => Promise<string>;
 }

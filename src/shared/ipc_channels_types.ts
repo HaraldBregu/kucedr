@@ -465,6 +465,7 @@ export interface LibraryInvokeChannelMap {
 		args: [];
 		result: import('./library_types').LibraryFile[] | undefined;
 	};
+	[LibraryChannels.delete]: { args: [relativePath: string]; result: void };
 	[LibraryChannels.openRoot]: { args: []; result: void };
 	[LibraryChannels.getRoot]: { args: []; result: string };
 }

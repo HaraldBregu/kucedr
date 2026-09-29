@@ -13,6 +13,7 @@ const getRoot = jest.fn();
 const openRoot = jest.fn();
 const add = jest.fn();
 const select = jest.fn();
+const deleteFile = jest.fn();
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -29,14 +30,27 @@ beforeEach(() => {
 	openRoot.mockResolvedValue(undefined);
 	add.mockResolvedValue([]);
 	select.mockResolvedValue([]);
+	deleteFile.mockResolvedValue(undefined);
 	Object.defineProperty(window, 'library', {
 		configurable: true,
-		value: { list, getRoot, openRoot, add, select },
+		value: { list, getRoot, openRoot, add, select, delete: deleteFile },
 	});
 	Object.defineProperty(window, 'app', {
 		configurable: true,
 		value: { getPathForFile: (file: File) => `/tmp/${file.name}` },
 	});
+	window.confirm = jest.fn(() => true);
+});
+
+it('confirms and deletes a library file', async () => {
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+
+	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
+
+	expect(window.confirm).toHaveBeenCalledWith('settings.library.confirmDelete');
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
+	expect(screen.queryByText('notes.txt')).not.toBeInTheDocument();
 });
 
 it('uploads selected files and reloads the list', async () => {

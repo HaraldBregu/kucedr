@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState, type DragEvent } from 'react';
-import { AlertTriangle, File, FolderOpen, Library, Upload } from 'lucide-react';
+import { AlertTriangle, FolderOpen, Library, Trash2, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Button } from '@/components/ui/button';
-import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { cn } from '@/lib/utils';
 import {
 	SettingsEmptyState,
@@ -15,6 +15,7 @@ import {
 	SettingsSection,
 } from '../../components';
 import { formatLibraryFileSize } from './size';
+import { libraryFileIcon } from './icon';
 
 const LibraryPage: React.FC = () => {
 	const { t } = useTranslation();
@@ -23,6 +24,7 @@ const LibraryPage: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
 	const [dragging, setDragging] = useState(false);
+	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const loadFiles = useCallback(async (): Promise<void> => {
@@ -89,6 +91,25 @@ const LibraryPage: React.FC = () => {
 			}
 		},
 		[loadFiles, t]
+	);
+
+	const handleDelete = useCallback(
+		async (file: LibraryFile): Promise<void> => {
+			if (!window.confirm(t('settings.library.confirmDelete', { name: file.name }))) return;
+			setDeletingPath(file.relativePath);
+			setErrorMessage('');
+			try {
+				await window.library.delete(file.relativePath);
+				setFiles((current) =>
+					current.filter((entry) => entry.relativePath !== file.relativePath)
+				);
+			} catch {
+				setErrorMessage(t('settings.library.deleteError'));
+			} finally {
+				setDeletingPath(null);
+			}
+		},
+		[t]
 	);
 
 	return (
@@ -159,15 +180,18 @@ const LibraryPage: React.FC = () => {
 								description={t('settings.library.emptyDescription')}
 							/>
 						) : (
-							files.map((file) => (
-								<Item
+						files.map((file) => (
+							(() => {
+								const FileIcon = libraryFileIcon(file.name);
+								return (
+							<Item
 									key={file.relativePath}
 									variant="outline"
 									size="md"
 									className="border-b border-border/60 px-5 py-4 last:border-b-0"
 								>
-									<ItemMedia variant="icon">
-										<File className="size-3.5" />
+								<ItemMedia variant="icon">
+									<FileIcon className="size-3.5" />
 									</ItemMedia>
 									<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
 										<ItemTitle className="max-w-full truncate">{file.name}</ItemTitle>
@@ -175,14 +199,28 @@ const LibraryPage: React.FC = () => {
 											{file.relativePath}
 										</p>
 									</ItemContent>
-									<div className="ml-auto shrink-0 text-right text-[11px] leading-4 text-muted-foreground">
+								<div className="ml-auto shrink-0 text-right text-[11px] leading-4 text-muted-foreground">
 										<div>{formatLibraryFileSize(file.size)}</div>
 										<time dateTime={file.modifiedAt}>
 											{new Date(file.modifiedAt).toLocaleDateString()}
 										</time>
-									</div>
-								</Item>
-							))
+								</div>
+								<ItemActions>
+									<Button
+										variant="ghost"
+										size="icon-xs"
+										className="text-muted-foreground hover:text-destructive"
+										disabled={deletingPath === file.relativePath || uploading}
+										aria-label={t('settings.library.delete', { name: file.name })}
+										onClick={() => void handleDelete(file)}
+									>
+										<Trash2 className="size-3.5" />
+									</Button>
+								</ItemActions>
+							</Item>
+								);
+							})()
+						))
 						)}
 					</SettingsPanel>
 				</div>
