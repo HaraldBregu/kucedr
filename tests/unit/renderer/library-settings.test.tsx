@@ -46,7 +46,9 @@ it('uploads selected files and reloads the list', async () => {
 
 	await waitFor(() => expect(select).toHaveBeenCalledTimes(1));
 	expect(list).toHaveBeenCalledTimes(2);
-	expect(screen.queryByRole('button', { name: 'settings.library.refresh' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.library.refresh' })
+	).not.toBeInTheDocument();
 });
 
 it('uploads dropped files and reloads the list', async () => {
