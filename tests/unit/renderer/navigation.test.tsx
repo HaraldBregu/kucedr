@@ -242,9 +242,7 @@ it('keeps Plugins and Apps in the main sidebar list without a footer', () => {
 	expect(
 		within(list as HTMLElement).queryByText('settings.overview.groups.extensions')
 	).not.toBeInTheDocument();
-	expect(
-		plugins
-	).toHaveAttribute('aria-current', 'page');
+	expect(plugins).toHaveAttribute('aria-current', 'page');
 	expect(
 		within(list as HTMLElement).getByRole('link', { name: 'settings.tabs.apps' })
 	).toHaveAttribute('href', '/settings/apps');

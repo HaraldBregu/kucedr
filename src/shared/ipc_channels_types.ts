@@ -514,14 +514,29 @@ export interface McpInvokeChannelMap {
 
 export interface DriveInvokeChannelMap {
 	[DriveChannels.status]: { args: []; result: boolean };
-	[DriveChannels.list]: { args: [query?: string, meetOnly?: boolean]; result: import('./drive_types').DriveFile[] };
-	[DriveChannels.read]: { args: [id: string]; result: { file: import('./drive_types').DriveFile; content: string } };
-	[DriveChannels.create]: { args: [input: import('./drive_types').DriveCreateInput]; result: import('./drive_types').DriveFile };
-	[DriveChannels.update]: { args: [id: string, input: import('./drive_types').DriveUpdateInput]; result: import('./drive_types').DriveFile };
+	[DriveChannels.list]: {
+		args: [query?: string, meetOnly?: boolean];
+		result: import('./drive_types').DriveFile[];
+	};
+	[DriveChannels.read]: {
+		args: [id: string];
+		result: { file: import('./drive_types').DriveFile; content: string };
+	};
+	[DriveChannels.create]: {
+		args: [input: import('./drive_types').DriveCreateInput];
+		result: import('./drive_types').DriveFile;
+	};
+	[DriveChannels.update]: {
+		args: [id: string, input: import('./drive_types').DriveUpdateInput];
+		result: import('./drive_types').DriveFile;
+	};
 	[DriveChannels.trash]: { args: [id: string]; result: void };
 	[DriveChannels.download]: { args: [id: string]; result: string };
 	[DriveChannels.chooseFolder]: { args: []; result: string | undefined };
-	[DriveChannels.sync]: { args: [folderPath: string]; result: import('./drive_types').DriveSyncResult };
+	[DriveChannels.sync]: {
+		args: [folderPath: string];
+		result: import('./drive_types').DriveSyncResult;
+	};
 }
 
 export interface AgentEventChannelMap {

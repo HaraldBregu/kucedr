@@ -136,16 +136,14 @@ test('the navbar Search stays in the right group and Workspace opens the folder 
 	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
 	const settingsButton = navigationBar.getByRole('button', { name: 'Settings', exact: true });
-	await expect(
-		navigationBar.getByRole('button', { name: 'Start voice conversation' })
-	).toHaveCount(0);
+	await expect(navigationBar.getByRole('button', { name: 'Start voice conversation' })).toHaveCount(
+		0
+	);
 	const isMac = await page.evaluate(
 		() => navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac')
 	);
 	if (isMac) {
-		const sidebarActions = navigationBar.locator(
-			'[data-slot="navigationbar-sidebar-actions"]'
-		);
+		const sidebarActions = navigationBar.locator('[data-slot="navigationbar-sidebar-actions"]');
 		const toggleButton = sidebarActions.getByRole('button', { name: 'Toggle Sidebar' });
 		await expect(toggleButton).toBeVisible();
 		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toHaveCount(0);
@@ -158,9 +156,9 @@ test('the navbar Search stays in the right group and Workspace opens the folder 
 		expect(workspaceBox).not.toBeNull();
 		expect(settingsBox).not.toBeNull();
 		expect(toggleBox?.x).toBe(84);
-		expect(
-			(workspaceBox?.x ?? 0) - ((searchBox?.x ?? 0) + (searchBox?.width ?? 0))
-		).toBe((settingsBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0)));
+		expect((workspaceBox?.x ?? 0) - ((searchBox?.x ?? 0) + (searchBox?.width ?? 0))).toBe(
+			(settingsBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0))
+		);
 	} else {
 		await expect(
 			searchButton.locator('xpath=following-sibling::button[1][@aria-label="Workspace"]')
@@ -199,42 +197,93 @@ test('the navbar Search stays in the right group and Workspace opens the folder 
 	await workspace.getByText('Notes').click();
 	await workspace.getByRole('button', { name: 'plan.md' }).click();
 	await expect(page.getByRole('heading', { name: 'Plan' })).toBeVisible();
-	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toHaveAttribute('contenteditable', 'true');
+	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toHaveAttribute(
+		'contenteditable',
+		'true'
+	);
 	await page.getByRole('heading', { name: 'Plan' }).click();
 	await page.keyboard.press('End');
 	await page.keyboard.type(' draft');
 	await expect(page.getByRole('heading', { name: 'Plan draft' })).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCount(0);
 	const markdownModes = page.getByRole('group', { name: 'Markdown view' });
-	await expect.poll(() => markdownModes.getByRole('button', { name: 'Text' }).evaluate((button) => {
-		const fill = button.firstElementChild;
-		return fill !== null && getComputedStyle(button).borderTopColor === getComputedStyle(fill).backgroundColor;
-	})).toBe(true);
-	await expect(markdownModes.getByRole('button', { name: 'Raw' })).not.toHaveCSS('border-top-left-radius', '0px');
-	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS('border-top-right-radius', '0px');
-	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS('border-bottom-right-radius', '0px');
-	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveCSS('border-top-left-radius', '0px');
-	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveCSS('border-bottom-left-radius', '0px');
-	await expect(markdownModes.getByRole('button', { name: 'Text' })).not.toHaveCSS('border-top-right-radius', '0px');
+	await expect
+		.poll(() =>
+			markdownModes.getByRole('button', { name: 'Text' }).evaluate((button) => {
+				const fill = button.firstElementChild;
+				return (
+					fill !== null &&
+					getComputedStyle(button).borderTopColor === getComputedStyle(fill).backgroundColor
+				);
+			})
+		)
+		.toBe(true);
+	await expect(markdownModes.getByRole('button', { name: 'Raw' })).not.toHaveCSS(
+		'border-top-left-radius',
+		'0px'
+	);
+	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS(
+		'border-top-right-radius',
+		'0px'
+	);
+	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveCSS(
+		'border-bottom-right-radius',
+		'0px'
+	);
+	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveCSS(
+		'border-top-left-radius',
+		'0px'
+	);
+	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveCSS(
+		'border-bottom-left-radius',
+		'0px'
+	);
+	await expect(markdownModes.getByRole('button', { name: 'Text' })).not.toHaveCSS(
+		'border-top-right-radius',
+		'0px'
+	);
 	await markdownModes.getByRole('button', { name: 'Raw' }).click();
-	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveAttribute('aria-pressed', 'true');
-	await expect.poll(() => markdownModes.getByRole('button', { name: 'Raw' }).evaluate((button) => {
-		const fill = button.firstElementChild;
-		return fill !== null && getComputedStyle(button).borderTopColor === getComputedStyle(fill).backgroundColor;
-	})).toBe(true);
+	await expect(markdownModes.getByRole('button', { name: 'Raw' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
+	await expect
+		.poll(() =>
+			markdownModes.getByRole('button', { name: 'Raw' }).evaluate((button) => {
+				const fill = button.firstElementChild;
+				return (
+					fill !== null &&
+					getComputedStyle(button).borderTopColor === getComputedStyle(fill).backgroundColor
+				);
+			})
+		)
+		.toBe(true);
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Plan draft');
-	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS('padding-left', '0px');
-	await expect(page.getByRole('textbox', { name: 'Note content' }).locator('xpath=ancestor::article')).toHaveCSS('padding-top', '32px');
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toHaveCSS(
+		'padding-left',
+		'0px'
+	);
+	await expect(
+		page.getByRole('textbox', { name: 'Note content' }).locator('xpath=ancestor::article')
+	).toHaveCSS('padding-top', '32px');
 	await page.getByRole('textbox', { name: 'Note content' }).fill('# Revised plan');
 	await markdownModes.getByRole('button', { name: 'Text' }).click();
-	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveAttribute('aria-pressed', 'true');
+	await expect(markdownModes.getByRole('button', { name: 'Text' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
 	await expect(page.getByRole('heading', { name: 'Revised plan' })).toBeVisible();
 	await markdownModes.getByRole('button', { name: 'Raw' }).click();
 	await page.getByRole('textbox', { name: 'Note content' }).fill('# Saved plan');
-	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute('aria-current', 'page');
+	await expect(workspace.getByRole('button', { name: 'plan.md' })).toHaveAttribute(
+		'aria-current',
+		'page'
+	);
 	const rootFolderButton = page.getByRole('button', { name: 'Browse workspace root' });
 	await expect(rootFolderButton).toHaveCSS('margin-right', '0px');
-	const folderBackground = await rootFolderButton.evaluate((button) => getComputedStyle(button).backgroundColor);
+	const folderBackground = await rootFolderButton.evaluate(
+		(button) => getComputedStyle(button).backgroundColor
+	);
 	await rootFolderButton.hover();
 	await expect(rootFolderButton).toHaveCSS('background-color', folderBackground);
 	await rootFolderButton.click();
@@ -248,15 +297,23 @@ test('the navbar Search stays in the right group and Workspace opens the folder 
 	await breadcrumbTree.getByRole('treeitem', { name: 'config.json' }).click();
 	await expect(breadcrumbTree).toHaveCount(0);
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
-	await expect(workspace.getByRole('button', { name: 'config.json' })).toHaveAttribute('aria-current', 'page');
-	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('Notes/plan.md'))).toBe('# Saved plan');
+	await expect(workspace.getByRole('button', { name: 'config.json' })).toHaveAttribute(
+		'aria-current',
+		'page'
+	);
+	await expect
+		.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('Notes/plan.md')))
+		.toBe('# Saved plan');
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"enabled": true');
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceFile('Notes', 'updated.md');
 	});
 	await expect(workspace.getByText('updated.md')).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
+	await page
+		.locator('[data-slot="workspace-sidebar"]')
+		.getByRole('link', { name: 'Return to Home' })
+		.click();
 	await expect(page).toHaveURL(/#\/home$/);
 });
 
@@ -282,7 +339,9 @@ test('Workspace breadcrumbs browse folders and sibling files', async () => {
 	await expect(folderTree.getByRole('treeitem', { name: 'deep.md' })).toBeVisible();
 	await folderTree.getByRole('treeitem', { name: 'deep.md' }).click();
 	await expect(page.getByRole('button', { name: 'Browse deep.md' })).toBeVisible();
-	await expect.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file'))).toBe('CrumbPicker/Nested/deep.md');
+	await expect
+		.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file')))
+		.toBe('CrumbPicker/Nested/deep.md');
 	await page.getByRole('button', { name: 'Browse Nested' }).click();
 	const nestedTree = page.getByRole('tree', { name: 'Workspace files' });
 	await expect(nestedTree.getByRole('treeitem', { name: 'next.md' })).toBeVisible();
@@ -294,22 +353,34 @@ test('Workspace breadcrumbs browse folders and sibling files', async () => {
 	await expect(fileTree.getByRole('treeitem', { name: 'Sub' })).toHaveCount(0);
 	await fileTree.getByRole('treeitem', { name: 'next.md' }).click();
 	await expect(page.getByRole('button', { name: 'Browse next.md' })).toBeVisible();
-	await expect.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file'))).toBe('CrumbPicker/Nested/next.md');
+	await expect
+		.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file')))
+		.toBe('CrumbPicker/Nested/next.md');
 	await page.getByRole('button', { name: 'Browse next.md' }).click();
-	await page.getByRole('tree', { name: 'Workspace files' }).getByRole('treeitem', { name: longName }).click();
+	await page
+		.getByRole('tree', { name: 'Workspace files' })
+		.getByRole('treeitem', { name: longName })
+		.click();
 	const filenameButton = page.getByRole('button', { name: `Browse ${longName}` });
 	await expect(filenameButton).toHaveCSS('white-space', 'normal');
-	await expect.poll(() => filenameButton.evaluate((button) => button.scrollWidth <= button.clientWidth)).toBe(true);
+	await expect
+		.poll(() => filenameButton.evaluate((button) => button.scrollWidth <= button.clientWidth))
+		.toBe(true);
 });
 
 test('Workspace keeps its files and selection across chat navigation and refreshes changed content', async () => {
-	await page.evaluate(() => { window.location.hash = '#/home'; });
+	await page.evaluate(() => {
+		window.location.hash = '#/home';
+	});
 	await page.evaluate(async () => {
 		await window.agent.createWorkspaceDirectory('', 'Return');
 		await window.agent.createWorkspaceFile('Return', 'state.json');
 		await window.agent.writeWorkspaceFile('Return/state.json', '{"current": 1}');
 	});
-	await page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Workspace' }).click();
+	await page
+		.locator('[data-slot="navigationbar"]')
+		.getByRole('button', { name: 'Workspace' })
+		.click();
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await workspace.getByText('Return').click();
 	await workspace.getByRole('button', { name: 'state.json' }).click();
@@ -317,17 +388,34 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	const fileInformation = page.locator('footer[aria-label="File information"]');
 	await expect(fileInformation).toContainText('Created');
 	const footerBeforeRefresh = await fileInformation.textContent();
-	await expect.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file'))).toBe('Return/state.json');
+	await expect
+		.poll(() => page.evaluate(() => localStorage.getItem('workspace-selected-file')))
+		.toBe('Return/state.json');
 	await page.reload();
-	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute('aria-current', 'page');
+	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute(
+		'aria-current',
+		'page'
+	);
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
 	await expect(fileInformation).toHaveText(footerBeforeRefresh ?? '');
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
-	await page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Workspace' }).click();
-	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute('aria-current', 'page');
+	await page
+		.locator('[data-slot="workspace-sidebar"]')
+		.getByRole('link', { name: 'Return to Home' })
+		.click();
+	await page
+		.locator('[data-slot="navigationbar"]')
+		.getByRole('button', { name: 'Workspace' })
+		.click();
+	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute(
+		'aria-current',
+		'page'
+	);
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 1');
 	await expect(workspace.getByText('Loading files…')).toHaveCount(0);
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
+	await page
+		.locator('[data-slot="workspace-sidebar"]')
+		.getByRole('link', { name: 'Return to Home' })
+		.click();
 	await page.evaluate(async () => {
 		await new Promise<void>((resolve, reject) => {
 			const unsubscribe = window.agent.onWorkspaceChanged((event) => {
@@ -339,16 +427,27 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 			window.agent.writeWorkspaceFile('Return/state.json', '{"current": 2}').catch(reject);
 		});
 	});
-	await page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Workspace' }).click();
+	await page
+		.locator('[data-slot="navigationbar"]')
+		.getByRole('button', { name: 'Workspace' })
+		.click();
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 2');
 });
 
 test('Workspace releases its mounted UI before navigating from Home to Settings', async () => {
-	await page.evaluate(() => { window.location.hash = '#/workspace'; });
+	await page.evaluate(() => {
+		window.location.hash = '#/workspace';
+	});
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toBeVisible();
-	await page.locator('[data-slot="workspace-sidebar"]').getByRole('link', { name: 'Return to Home' }).click();
+	await page
+		.locator('[data-slot="workspace-sidebar"]')
+		.getByRole('link', { name: 'Return to Home' })
+		.click();
 	await expect(page.locator('[data-slot="workspace-sidebar"]')).toHaveCount(0);
-	await page.locator('[data-slot="navigationbar"]').getByRole('button', { name: 'Settings', exact: true }).click();
+	await page
+		.locator('[data-slot="navigationbar"]')
+		.getByRole('button', { name: 'Settings', exact: true })
+		.click();
 	await expect(page.locator('[data-slot="settings-workspace"]')).toBeVisible();
 	await expect(page.locator('[data-slot="workspace-content"]')).toHaveCount(0);
 });
@@ -367,12 +466,21 @@ test('editing Markdown Preview keeps table and task content', async () => {
 	await page.getByRole('heading', { name: 'Notes' }).click();
 	await page.keyboard.press('End');
 	await page.keyboard.type(' updated');
-	await page.getByRole('group', { name: 'Markdown view' }).getByRole('button', { name: 'Raw' }).click();
+	await page
+		.getByRole('group', { name: 'Markdown view' })
+		.getByRole('button', { name: 'Raw' })
+		.click();
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('| A | B |');
 	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('- [x] Done');
-	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('# Notes updated');
-	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('formatted.md'))).toContain('# Notes updated');
-	await expect.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('formatted.md'))).toContain('- [x] Done');
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText(
+		'# Notes updated'
+	);
+	await expect
+		.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('formatted.md')))
+		.toContain('# Notes updated');
+	await expect
+		.poll(() => page.evaluate(() => window.agent.readWorkspaceFile('formatted.md')))
+		.toContain('- [x] Done');
 });
 
 test('Markdown comments stay in Source editing mode', async () => {
@@ -381,11 +489,21 @@ test('Markdown comments stay in Source editing mode', async () => {
 		await window.agent.writeWorkspaceFile('comments.md', '# Comments\n\n<!-- keep this -->');
 		window.location.hash = '#/workspace';
 	});
-	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'comments.md' }).click();
-	await expect(page.getByText('This file contains Markdown comments. Edit it in Source to preserve them.')).toBeVisible();
+	await page
+		.getByRole('navigation', { name: 'Workspace files' })
+		.getByRole('button', { name: 'comments.md' })
+		.click();
+	await expect(
+		page.getByText('This file contains Markdown comments. Edit it in Source to preserve them.')
+	).toBeVisible();
 	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toHaveCount(0);
-	await page.getByRole('group', { name: 'Markdown view' }).getByRole('button', { name: 'Raw' }).click();
-	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText('<!-- keep this -->');
+	await page
+		.getByRole('group', { name: 'Markdown view' })
+		.getByRole('button', { name: 'Raw' })
+		.click();
+	await expect(page.getByRole('textbox', { name: 'Note content' })).toContainText(
+		'<!-- keep this -->'
+	);
 });
 
 test('a new empty Markdown file opens in editable Preview', async () => {
@@ -393,7 +511,10 @@ test('a new empty Markdown file opens in editable Preview', async () => {
 		await window.agent.createWorkspaceFile('', 'empty-note.md');
 		window.location.hash = '#/workspace';
 	});
-	await page.getByRole('navigation', { name: 'Workspace files' }).getByRole('button', { name: 'empty-note.md' }).click();
+	await page
+		.getByRole('navigation', { name: 'Workspace files' })
+		.getByRole('button', { name: 'empty-note.md' })
+		.click();
 	await expect(page.getByRole('textbox', { name: 'Markdown preview editor' })).toBeVisible();
 	await expect(page.getByText('This page crashed')).toHaveCount(0);
 });
@@ -452,9 +573,9 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(controls).toBeVisible();
 	await expect(controlButtons).toHaveCSS('display', 'flex');
 	await expect(controls.getByRole('status', { name: 'Kucedr is responding' })).toHaveCount(0);
-	expect(
-		await controls.evaluate((element) => element.parentElement?.dataset.slot)
-	).toBe('prompt-input-field');
+	expect(await controls.evaluate((element) => element.parentElement?.dataset.slot)).toBe(
+		'prompt-input-field'
+	);
 	await expect(controls.getByRole('button', { name: 'Add attachment' })).toBeVisible();
 	await expect(attachmentButton).toHaveCSS('width', '36px');
 	await expect(attachmentButton).toHaveCSS('height', '36px');
