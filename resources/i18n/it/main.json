@@ -1642,6 +1642,7 @@
 			"upload": "Carica file",
 			"uploading": "Caricamento...",
 			"drop": "Rilascia i file per caricarli",
+			"dropZone": "Area di rilascio per il caricamento nella libreria",
 			"openFolder": "Apri cartella",
 			"emptyDescription": "Carica i file o rilasciali qui per aggiungerli alla libreria.",
 			"loadError": "Impossibile caricare i file della libreria.",

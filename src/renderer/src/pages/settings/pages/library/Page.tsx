@@ -122,25 +122,28 @@ const LibraryPage: React.FC = () => {
 			)}
 
 			<SettingsSection title={t('settings.library.files')} description={root || undefined}>
-				<SettingsPanel
+				<div
+					role="region"
+					aria-label={t('settings.library.dropZone')}
 					className={cn(
-						'relative transition-shadow',
+						'relative rounded-xl transition-shadow',
 						dragging && 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background'
 					)}
+					onDragEnter={(event) => {
+						if (event.dataTransfer.types.includes('Files')) setDragging(true);
+					}}
+					onDragOver={(event) => {
+						event.preventDefault();
+						event.dataTransfer.dropEffect = 'copy';
+					}}
+					onDragLeave={(event) => {
+						if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+							setDragging(false);
+						}
+					}}
+					onDrop={(event) => void handleDrop(event)}
 				>
-					<div
-						className="contents"
-						onDragEnter={(event) => {
-							if (event.dataTransfer.types.includes('Files')) setDragging(true);
-						}}
-						onDragOver={(event) => event.preventDefault()}
-						onDragLeave={(event) => {
-							if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-								setDragging(false);
-							}
-						}}
-						onDrop={(event) => void handleDrop(event)}
-					>
+					<SettingsPanel>
 						{dragging && (
 							<div className="flex items-center justify-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3 text-xs font-medium text-foreground">
 								<Upload className="size-3.5" />
@@ -181,8 +184,8 @@ const LibraryPage: React.FC = () => {
 								</Item>
 							))
 						)}
-					</div>
-				</SettingsPanel>
+					</SettingsPanel>
+				</div>
 			</SettingsSection>
 		</SettingsPageShell>
 	);

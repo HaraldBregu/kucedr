@@ -54,12 +54,12 @@ it('uploads selected files and reloads the list', async () => {
 });
 
 it('uploads dropped files and reloads the list', async () => {
-	const { container } = render(<LibraryPage />);
+	render(<LibraryPage />);
 	await screen.findByText('notes.txt');
-	const dropTarget = container.querySelector('.contents');
+	const dropTarget = screen.getByRole('region', { name: 'settings.library.dropZone' });
 	const file = new File(['draft'], 'draft.md', { type: 'text/markdown' });
 
-	fireEvent.drop(dropTarget as HTMLElement, { dataTransfer: { files: [file] } });
+	fireEvent.drop(dropTarget, { dataTransfer: { files: [file] } });
 
 	await waitFor(() => expect(add).toHaveBeenCalledWith(['/tmp/draft.md']));
 	expect(list).toHaveBeenCalledTimes(2);

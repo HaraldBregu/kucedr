@@ -1642,6 +1642,7 @@
 			"upload": "Upload file",
 			"uploading": "Uploading...",
 			"drop": "Drop files to upload",
+			"dropZone": "Library upload drop zone",
 			"openFolder": "Open Folder",
 			"emptyDescription": "Upload files or drop them here to add them to the library.",
 			"loadError": "Unable to load library files.",
