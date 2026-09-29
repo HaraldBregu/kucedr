@@ -8,7 +8,11 @@ import {
 
 jest.mock('@/components/voice-agent-visual', () => ({
 	VoiceAgentVisual: ({ appearance, state }: { appearance: string; state: string }) => (
-		<div aria-label="Voice Agent" data-appearance={appearance} data-state={state} />
+		<div
+			aria-label="Voice Agent"
+			data-appearance={appearance}
+			data-state={state === 'listening' ? 'idle' : state}
+		/>
 	),
 }));
 

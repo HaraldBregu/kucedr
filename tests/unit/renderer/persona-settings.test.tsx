@@ -39,6 +39,9 @@ it('previews each Voice Agent state', async () => {
 
 	const preview = screen.getByRole('img', { name: 'Voice Agent preview' });
 	expect(preview).toHaveAttribute('data-state', 'idle');
+	expect(
+		screen.queryByRole('button', { name: 'settings.voiceAgent.states.listening' })
+	).not.toBeInTheDocument();
 
 	await user.click(screen.getByRole('button', { name: 'settings.voiceAgent.states.speaking' }));
 
