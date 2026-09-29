@@ -10,8 +10,14 @@ jest.mock('@/components/ui/bar-wave-animation', () => ({
 	BarWaveAnimation: () => <div data-testid="voice-waveform" />,
 }));
 
-jest.mock('@/components/persona', () => ({
-	Persona: ({ state }: { state: string }) => <div data-testid="persona" data-state={state} />,
+jest.mock('@/components/voice-agent-visual', () => ({
+	VoiceAgentVisual: ({ appearance, state }: { appearance: string; state: string }) => (
+		<div data-testid="persona" data-appearance={appearance} data-state={state} />
+	),
+}));
+
+jest.mock('@/contexts', () => ({
+	useApp: () => ({ voiceAgentAppearance: 'persona' }),
 }));
 
 jest.mock('@/components/text-editor', () => {

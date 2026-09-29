@@ -23,7 +23,12 @@ jest.mock('electron-store', () =>
 	})
 );
 
-import { getMicrophoneInputId, setMicrophoneInputId } from '../../../../src/main/settings_store';
+import {
+	getMicrophoneInputId,
+	getVoiceAgentAppearance,
+	setMicrophoneInputId,
+	setVoiceAgentAppearance,
+} from '../../../../src/main/settings_store';
 
 it('uses the system default before a microphone is selected', () => {
 	expect(getMicrophoneInputId()).toBe('default');
@@ -41,4 +46,11 @@ it.each([null, undefined, 42, {}, '', '   '])('rejects an invalid microphone ID:
 	setMicrophoneInputId('usb-microphone');
 	expect(() => setMicrophoneInputId(inputId as string)).toThrow('Invalid microphone input ID.');
 	expect(getMicrophoneInputId()).toBe('usb-microphone');
+});
+
+it('persists the selected Voice Agent appearance', () => {
+	expect(getVoiceAgentAppearance()).toBe('persona');
+	setVoiceAgentAppearance('orb-07');
+	expect(mockAppStore.voiceAgentAppearance).toBe('orb-07');
+	expect(getVoiceAgentAppearance()).toBe('orb-07');
 });

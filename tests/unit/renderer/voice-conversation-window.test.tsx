@@ -6,8 +6,14 @@ import {
 	type RealtimeVoiceUiStatus,
 } from '../../../src/renderer/src/pages/home/hooks/useRealtimeVoice';
 
-jest.mock('@/components/persona', () => ({
-	Persona: ({ state }: { state: string }) => <div aria-label="Voice Agent" data-state={state} />,
+jest.mock('@/components/voice-agent-visual', () => ({
+	VoiceAgentVisual: ({ appearance, state }: { appearance: string; state: string }) => (
+		<div aria-label="Voice Agent" data-appearance={appearance} data-state={state} />
+	),
+}));
+
+jest.mock('@/contexts', () => ({
+	useApp: () => ({ voiceAgentAppearance: 'orb-07' }),
 }));
 
 jest.mock('@/pages/home/hooks/useRealtimeVoice', () => ({
@@ -42,6 +48,7 @@ describe('VoiceConversationWindow', () => {
 		render(<VoiceConversationWindow chatSessionId="chat-1" />);
 
 		expect(screen.getByLabelText('Voice Agent')).toHaveAttribute('data-state', expectedState);
+		expect(screen.getByLabelText('Voice Agent')).toHaveAttribute('data-appearance', 'orb-07');
 		expect(screen.queryByRole('status')).not.toBeInTheDocument();
 		expect(
 			screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling
