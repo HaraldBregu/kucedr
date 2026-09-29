@@ -153,6 +153,8 @@ export const SkillsChannels = {
 
 export const LibraryChannels = {
 	list: 'library:list',
+	add: 'library:add',
+	select: 'library:select',
 	openRoot: 'library:open-root',
 	getRoot: 'library:get-root',
 } as const;

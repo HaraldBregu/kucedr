@@ -1639,10 +1639,13 @@
 		"library": {
 			"description": "Browse every file stored in Kucedr's local library.",
 			"files": "Files",
-			"refresh": "Refresh",
+			"upload": "Upload file",
+			"uploading": "Uploading...",
+			"drop": "Drop files to upload",
 			"openFolder": "Open Folder",
-			"emptyDescription": "Add files to the library folder to see them here.",
+			"emptyDescription": "Upload files or drop them here to add them to the library.",
 			"loadError": "Unable to load library files.",
+			"uploadError": "Unable to upload files to the library.",
 			"openFolderError": "Unable to open the library folder."
 		},
 		"channels": {

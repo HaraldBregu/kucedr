@@ -1,3 +1,4 @@
+import { dialog } from 'electron';
 import type { EventBus } from '../event_bus';
 import type { AppRegistry } from '../apps/app_registry';
 import type { WindowContextManager } from '../window_context';
@@ -20,6 +21,19 @@ export class LibraryIpc implements IpcModule<LibraryIpcDependencies> {
 		registerQueryWithEvent(LibraryChannels.list, (event) => {
 			trusted.assert(event);
 			return library.listLibraryFiles();
+		});
+		registerCommandWithEvent(LibraryChannels.add, (event, paths) => {
+			trusted.assert(event);
+			return library.addLibraryFiles(paths);
+		});
+		registerCommandWithEvent(LibraryChannels.select, async (event) => {
+			const window = trusted.assert(event);
+			const result = await dialog.showOpenDialog(window, {
+				title: 'Upload files to Library',
+				properties: ['openFile', 'multiSelections'],
+			});
+			if (result.canceled || result.filePaths.length === 0) return undefined;
+			return library.addLibraryFiles(result.filePaths);
 		});
 		registerCommandWithEvent(LibraryChannels.openRoot, (event) => {
 			trusted.assert(event);

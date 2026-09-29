@@ -457,6 +457,14 @@ export interface SkillsInvokeChannelMap {
 
 export interface LibraryInvokeChannelMap {
 	[LibraryChannels.list]: { args: []; result: import('./library_types').LibraryFile[] };
+	[LibraryChannels.add]: {
+		args: [paths: string[]];
+		result: import('./library_types').LibraryFile[];
+	};
+	[LibraryChannels.select]: {
+		args: [];
+		result: import('./library_types').LibraryFile[] | undefined;
+	};
 	[LibraryChannels.openRoot]: { args: []; result: void };
 	[LibraryChannels.getRoot]: { args: []; result: string };
 }

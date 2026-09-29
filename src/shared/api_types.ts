@@ -638,6 +638,8 @@ export interface AppApi extends AppStorageApi {
 
 export interface LibraryApi {
 	list: () => Promise<import('./library_types').LibraryFile[]>;
+	add: (paths: string[]) => Promise<import('./library_types').LibraryFile[]>;
+	select: () => Promise<import('./library_types').LibraryFile[] | undefined>;
 	openRoot: () => Promise<void>;
 	getRoot: () => Promise<string>;
 }

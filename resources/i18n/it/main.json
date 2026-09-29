@@ -1639,10 +1639,13 @@
 		"library": {
 			"description": "Sfoglia tutti i file archiviati nella libreria locale di Kucedr.",
 			"files": "File",
-			"refresh": "Aggiorna",
+			"upload": "Carica file",
+			"uploading": "Caricamento...",
+			"drop": "Rilascia i file per caricarli",
 			"openFolder": "Apri cartella",
-			"emptyDescription": "Aggiungi file alla cartella della libreria per visualizzarli qui.",
+			"emptyDescription": "Carica i file o rilasciali qui per aggiungerli alla libreria.",
 			"loadError": "Impossibile caricare i file della libreria.",
+			"uploadError": "Impossibile caricare i file nella libreria.",
 			"openFolderError": "Impossibile aprire la cartella della libreria."
 		},
 		"channels": {

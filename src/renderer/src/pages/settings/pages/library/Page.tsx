@@ -1,9 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { AlertTriangle, File, FolderOpen, Library, RefreshCw } from 'lucide-react';
+import React, { useCallback, useEffect, useState, type DragEvent } from 'react';
+import { AlertTriangle, File, FolderOpen, Library, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Button } from '@/components/ui/button';
 import { Item, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { cn } from '@/lib/utils';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -20,6 +21,8 @@ const LibraryPage: React.FC = () => {
 	const [files, setFiles] = useState<LibraryFile[]>([]);
 	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
+	const [uploading, setUploading] = useState(false);
+	const [dragging, setDragging] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('');
 
 	const loadFiles = useCallback(async (): Promise<void> => {
@@ -52,6 +55,42 @@ const LibraryPage: React.FC = () => {
 		}
 	}, [t]);
 
+	const handleUpload = useCallback(async (): Promise<void> => {
+		setUploading(true);
+		setErrorMessage('');
+		try {
+			const uploaded = await window.library.select();
+			if (uploaded) await loadFiles();
+		} catch {
+			setErrorMessage(t('settings.library.uploadError'));
+		} finally {
+			setUploading(false);
+		}
+	}, [loadFiles, t]);
+
+	const handleDrop = useCallback(
+		async (event: DragEvent<HTMLDivElement>): Promise<void> => {
+			event.preventDefault();
+			setDragging(false);
+			const paths = Array.from(event.dataTransfer.files)
+				.map((file) => window.app.getPathForFile(file))
+				.filter(Boolean);
+			if (paths.length === 0) return;
+
+			setUploading(true);
+			setErrorMessage('');
+			try {
+				await window.library.add(paths);
+				await loadFiles();
+			} catch {
+				setErrorMessage(t('settings.library.uploadError'));
+			} finally {
+				setUploading(false);
+			}
+		},
+		[loadFiles, t]
+	);
+
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
@@ -63,9 +102,14 @@ const LibraryPage: React.FC = () => {
 							<FolderOpen className="size-3" />
 							{t('settings.library.openFolder')}
 						</Button>
-						<Button variant="outline" size="xs" onClick={loadFiles} disabled={loading}>
-							<RefreshCw className="size-3" />
-							{t('settings.library.refresh')}
+						<Button
+							variant="outline"
+							size="xs"
+							onClick={() => void handleUpload()}
+							disabled={loading || uploading}
+						>
+							<Upload className="size-3" />
+							{uploading ? t('settings.library.uploading') : t('settings.library.upload')}
 						</Button>
 					</div>
 				}
@@ -78,7 +122,31 @@ const LibraryPage: React.FC = () => {
 			)}
 
 			<SettingsSection title={t('settings.library.files')} description={root || undefined}>
-				<SettingsPanel>
+				<SettingsPanel
+					className={cn(
+						'relative transition-shadow',
+						dragging && 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background'
+					)}
+				>
+					<div
+						className="contents"
+						onDragEnter={(event) => {
+							if (event.dataTransfer.types.includes('Files')) setDragging(true);
+						}}
+						onDragOver={(event) => event.preventDefault()}
+						onDragLeave={(event) => {
+							if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+								setDragging(false);
+							}
+						}}
+						onDrop={(event) => void handleDrop(event)}
+					>
+						{dragging && (
+							<div className="flex items-center justify-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3 text-xs font-medium text-foreground">
+								<Upload className="size-3.5" />
+								{t('settings.library.drop')}
+							</div>
+						)}
 					{loading ? (
 						<SettingsLoadingRows rows={3} />
 					) : files.length === 0 ? (
@@ -113,6 +181,7 @@ const LibraryPage: React.FC = () => {
 							</Item>
 						))
 					)}
+					</div>
 				</SettingsPanel>
 			</SettingsSection>
 		</SettingsPageShell>

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LibraryPage from '../../../src/renderer/src/pages/settings/pages/library/Page';
 
@@ -9,8 +9,11 @@ jest.mock('react-i18next', () => ({
 const list = jest.fn();
 const getRoot = jest.fn();
 const openRoot = jest.fn();
+const add = jest.fn();
+const select = jest.fn();
 
 beforeEach(() => {
+	jest.clearAllMocks();
 	list.mockResolvedValue([
 		{
 			name: 'notes.txt',
@@ -22,10 +25,40 @@ beforeEach(() => {
 	]);
 	getRoot.mockResolvedValue('/Users/example/.kucedr/library');
 	openRoot.mockResolvedValue(undefined);
+	add.mockResolvedValue([]);
+	select.mockResolvedValue([]);
 	Object.defineProperty(window, 'library', {
 		configurable: true,
-		value: { list, getRoot, openRoot },
+		value: { list, getRoot, openRoot, add, select },
 	});
+	Object.defineProperty(window, 'app', {
+		configurable: true,
+		value: { getPathForFile: (file: File) => `/tmp/${file.name}` },
+	});
+});
+
+it('uploads selected files and reloads the list', async () => {
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+
+	await screen.findByText('notes.txt');
+	await user.click(screen.getByRole('button', { name: 'settings.library.upload' }));
+
+	await waitFor(() => expect(select).toHaveBeenCalledTimes(1));
+	expect(list).toHaveBeenCalledTimes(2);
+	expect(screen.queryByRole('button', { name: 'settings.library.refresh' })).not.toBeInTheDocument();
+});
+
+it('uploads dropped files and reloads the list', async () => {
+	const { container } = render(<LibraryPage />);
+	await screen.findByText('notes.txt');
+	const dropTarget = container.querySelector('.contents');
+	const file = new File(['draft'], 'draft.md', { type: 'text/markdown' });
+
+	fireEvent.drop(dropTarget as HTMLElement, { dataTransfer: { files: [file] } });
+
+	await waitFor(() => expect(add).toHaveBeenCalledWith(['/tmp/draft.md']));
+	expect(list).toHaveBeenCalledTimes(2);
 });
 
 it('loads library files and opens the library folder', async () => {
