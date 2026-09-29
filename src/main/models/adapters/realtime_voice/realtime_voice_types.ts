@@ -92,7 +92,17 @@ export type RealtimeVoiceClientEvent =
 export type RealtimeVoiceServerEvent =
 	| { type: 'session.updated' }
 	| { type: 'response.created'; response: { id: string } }
-	| { type: 'response.done'; response?: { id: string } }
+	| {
+			type: 'response.done';
+			response?: {
+				id: string;
+				status?: string;
+				status_details?: {
+					error?: { message?: string };
+					reason?: string;
+				} | null;
+			};
+	  }
 	| {
 			type: 'response.output_item.added';
 			response_id: string;

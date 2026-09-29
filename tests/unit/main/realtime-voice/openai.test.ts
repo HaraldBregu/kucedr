@@ -359,6 +359,44 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		});
 	});
 
+	it('surfaces a failed response after speech stops', async () => {
+		const socket = new FakeSocket();
+		const events: Array<{ type: string; message?: string }> = [];
+		const adapter = new OpenAIRealtimeVoiceAdapter(
+			{ id: 'openai', name: 'OpenAI', apiKey: 'key' },
+			() => socket,
+			1_000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'gpt-realtime-2.1',
+				voice: 'marin',
+				instructions: '',
+				history: [],
+				tools: [],
+			},
+			(event) => events.push(event)
+		);
+		socket.open();
+		socket.event({ type: 'session.updated' });
+		await connecting;
+		socket.event({ type: 'response.created', response: { id: 'response-1' } });
+
+		socket.event({
+			type: 'response.done',
+			response: {
+				id: 'response-1',
+				status: 'failed',
+				status_details: { error: { message: 'The realtime response was rejected.' } },
+			},
+		});
+
+		expect(events).toContainEqual({
+			type: 'error',
+			message: 'The realtime response was rejected.',
+		});
+	});
+
 	it('closes and rejects setup immediately when the owner aborts', async () => {
 		const socket = new FakeSocket();
 		const adapter = new OpenAIRealtimeVoiceAdapter(

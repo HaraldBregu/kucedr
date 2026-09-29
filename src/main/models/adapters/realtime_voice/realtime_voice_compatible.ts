@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { turnContext } from './context';
 import { realtimeVoiceCloseError } from './close';
+import { realtimeVoiceResponseError } from './response';
 import { REALTIME_VOICE_MAX_AUDIO_BASE64_LENGTH } from '../../../../shared/realtime_voice';
 import type {
 	RealtimeVoiceAdapter,
@@ -255,6 +256,13 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			this.responseActive = false;
 			const responseId = event.response?.id ?? this.activeResponseId;
 			this.activeResponseId = undefined;
+			const responseError = event.response
+				? realtimeVoiceResponseError(event.response)
+				: null;
+			if (responseError) {
+				this.emit({ type: 'error', message: responseError });
+				return;
+			}
 			const tools = responseId ? this.responseTools.get(responseId) : undefined;
 			if (responseId && tools) {
 				tools.responseDone = true;

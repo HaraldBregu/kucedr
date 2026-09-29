@@ -338,6 +338,12 @@ describe('useRealtimeVoice', () => {
 		expect(result.current.status).toBe('error');
 		expect(result.current.errorMessage).toBe('OpenAI rejected the realtime session.');
 		expect(onClosed).not.toHaveBeenCalled();
+
+		act(() => emit({ type: 'state', sessionId: session.id, status: 'listening' }));
+		act(() => emit({ type: 'closed', sessionId: session.id }));
+		expect(result.current.status).toBe('error');
+		expect(result.current.errorMessage).toBe('OpenAI rejected the realtime session.');
+		expect(onClosed).not.toHaveBeenCalled();
 	});
 
 	it('keeps a pending voice turn empty until the final user transcript arrives', async () => {

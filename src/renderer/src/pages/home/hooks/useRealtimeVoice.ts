@@ -77,6 +77,7 @@ export function useRealtimeVoice({
 	const clockRef = useRef<number | null>(null);
 	const userTurnMessageIdsRef = useRef<Map<string, string>>(new Map());
 	const pendingSessionEventsRef = useRef<RealtimeVoiceEvent[]>([]);
+	const errorLatchedRef = useRef(false);
 
 	const supportedModels = modelsFor('realtime-voice');
 	const isConfigured = supportedModels.length > 0;
@@ -138,6 +139,7 @@ export function useRealtimeVoice({
 				typeof error === 'string' && error.trim() ? error : dictationErrorMessage(error);
 			sessionIdRef.current = null;
 			sessionChatIdRef.current = null;
+			errorLatchedRef.current = true;
 			setErrorMessage(message);
 			setRequiresConfiguration(needsVoiceConfiguration(message));
 			setStatus('error');
@@ -151,6 +153,7 @@ export function useRealtimeVoice({
 
 	const handleSessionEvent = useCallback(
 		(event: RealtimeVoiceEvent): void => {
+			if (errorLatchedRef.current) return;
 			const sessionId = sessionIdRef.current;
 			if (!sessionId) {
 				if (startPromiseRef.current) pendingSessionEventsRef.current.push(event);
@@ -263,16 +266,19 @@ export function useRealtimeVoice({
 		if (startPromiseRef.current) return startPromiseRef.current;
 
 		const startPromise = (async (): Promise<boolean> => {
+			errorLatchedRef.current = false;
 			setErrorMessage(null);
 			setRequiresConfiguration(false);
 			pendingSessionEventsRef.current = [];
 			if (!isConfigured) {
+				errorLatchedRef.current = true;
 				setErrorMessage('Configure a supported realtime voice provider and model in Settings.');
 				setRequiresConfiguration(true);
 				setStatus('error');
 				return false;
 			}
 			if (!isSupported) {
+				errorLatchedRef.current = true;
 				setErrorMessage('Realtime voice is not supported in this environment.');
 				setStatus('error');
 				return false;
@@ -325,6 +331,7 @@ export function useRealtimeVoice({
 			} catch (error) {
 				releaseAudio();
 				const message = dictationErrorMessage(error);
+				errorLatchedRef.current = true;
 				setErrorMessage(message);
 				setRequiresConfiguration(needsVoiceConfiguration(message));
 				setStatus('error');
