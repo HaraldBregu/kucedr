@@ -10,7 +10,6 @@ import {
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { Orb07 } from '@/components/orbs/orb-07';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
 	DropdownMenu,
@@ -58,13 +57,12 @@ export function AppSidebarFooter(): React.JSX.Element {
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
 								className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
-								<div
-									data-slot="sidebar-footer-orb"
-									aria-hidden="true"
-									className="pointer-events-none size-7 shrink-0 overflow-hidden rounded-full"
-								>
-									<Orb07 size={28} state="idle" maxDpr={1} />
-								</div>
+								<Avatar className="size-7 rounded-full grayscale">
+									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
+									<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
+										{accountInitial}
+									</AvatarFallback>
+								</Avatar>
 								<span className="min-w-0 flex-1 truncate text-left text-sm font-medium">
 									{accountItem.title}
 								</span>
