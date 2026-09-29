@@ -206,6 +206,7 @@
 		"tailwindcss": "^4.3.3",
 		"ts-jest": "^29.4.12",
 		"typescript": "^5.9.3",
+		"unplugin-typegpu": "^0.12.4",
 		"vite": "^7.3.6",
 		"vite-tsconfig-paths": "^5.1.4"
 	}
