@@ -161,7 +161,6 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 	await page.keyboard.press('Escape');
 	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
 	const sidebarFooter = workspaceSidebar.locator('[data-slot="sidebar-footer"]');
-	const accountMenuButton = sidebarFooter.getByRole('button', { name: /account menu/i });
 	await expect(sidebarFooter).toBeVisible();
 	await expect(sidebarFooter.getByRole('button', { name: 'Voice conversation' })).toBeVisible();
 	await expect(sidebarFooter.locator('.lucide-more-vertical')).toHaveCount(0);
