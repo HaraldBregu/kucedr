@@ -46,6 +46,40 @@ class FakeSocket implements RealtimeVoiceSocket {
 }
 
 describe('XAIRealtimeVoiceAdapter', () => {
+	it('keeps generated context item IDs within the realtime protocol limit', async () => {
+		const socket = new FakeSocket();
+		const adapter = new XAIRealtimeVoiceAdapter(
+			{ id: 'xai', name: 'xAI', apiKey: 'key' },
+			() => socket,
+			1_000
+		);
+		const connecting = adapter.connect(
+			{
+				modelId: 'grok-voice-latest',
+				voice: 'eve',
+				instructions: '',
+				history: [],
+				tools: [],
+				contextForTurn: async () => 'Remembered context',
+			},
+			() => undefined
+		);
+		socket.open();
+		socket.event({ type: 'session.updated' });
+		await connecting;
+		socket.event({
+			type: 'conversation.item.input_audio_transcription.completed',
+			item_id: 'user-item',
+			transcript: 'What do you remember?',
+		});
+		await new Promise((resolve) => setTimeout(resolve, 0));
+
+		expect(socket.sent.at(-1)).toMatchObject({
+			type: 'conversation.item.create',
+			item: { id: expect.stringMatching(/^memory_[0-9a-f]{25}$/) },
+		});
+	});
+
 	it('uses the xAI-compatible session shape and normalizes output events', async () => {
 		const socket = new FakeSocket();
 		const socketFactory = jest.fn(() => socket);

@@ -98,6 +98,7 @@ describe('OpenAIRealtimeVoiceAdapter', () => {
 		expect(socket.sent.at(-2)).toMatchObject({
 			type: 'conversation.item.create',
 			item: {
+				id: expect.stringMatching(/^memory_[0-9a-f]{25}$/),
 				role: 'user',
 				content: [{ type: 'input_text', text: expect.stringContaining('Prefers concise answers') }],
 			},

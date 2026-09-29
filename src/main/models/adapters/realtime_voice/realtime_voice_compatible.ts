@@ -16,6 +16,8 @@ import type {
 } from './realtime_voice_types';
 
 const CONNECT_TIMEOUT_MS = 15_000;
+const MAX_ITEM_ID_LENGTH = 32;
+const CONTEXT_ITEM_ID_PREFIX = 'memory_';
 
 export interface OpenAICompatibleRealtimeVoiceProfile {
 	readonly provider: RealtimeVoiceProviderSpec;
@@ -226,7 +228,9 @@ class OpenAICompatibleRealtimeVoiceConnection implements RealtimeVoiceConnection
 			this.realtime.send({ type: 'conversation.item.delete', item_id: this.contextItem });
 		this.contextItem = undefined;
 		if (context) {
-			this.contextItem = `memory_${randomUUID().replaceAll('-', '')}`;
+			this.contextItem = `${CONTEXT_ITEM_ID_PREFIX}${randomUUID()
+				.replaceAll('-', '')
+				.slice(0, MAX_ITEM_ID_LENGTH - CONTEXT_ITEM_ID_PREFIX.length)}`;
 			this.realtime.send({
 				type: 'conversation.item.create',
 				item: {
