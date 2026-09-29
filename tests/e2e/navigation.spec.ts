@@ -88,9 +88,7 @@ test('Settings keeps Plugins and Apps in the main list without a footer', async 
 	const sidebar = page.locator('[data-slot="settings-sidebar"]');
 	const list = sidebar.locator('.overflow-y-auto');
 	const plugins = list.getByRole('link', { name: 'Plugins', exact: true });
-	const extensionsGroup = list
-		.locator('[data-slot="split-pane-group"]')
-		.filter({ has: plugins });
+	const extensionsGroup = plugins.locator('xpath=ancestor::section[@data-slot="split-pane-group"]');
 
 	await expect(sidebar.locator('[data-slot="sidebar-footer"]')).toHaveCount(0);
 	await expect(plugins).toHaveAttribute('aria-current', 'page');
