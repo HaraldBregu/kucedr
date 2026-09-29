@@ -611,10 +611,6 @@ export interface AppInvokeChannelMap {
 		args: [appearance: import('./app_types').VoiceAgentAppearance];
 		result: void;
 	};
-	[AppChannels.voiceAgentAppearanceChanged]: {
-		args: [appearance: import('./app_types').VoiceAgentAppearance];
-		result: void;
-	};
 	[AppChannels.getMicrophonePermission]: {
 		args: [];
 		result: import('./app_types').MicrophonePermissionSettings;
@@ -1350,6 +1346,9 @@ export interface AppEventChannelMap {
 	[AppChannels.trayEnabledChanged]: { data: boolean };
 	[AppChannels.keepAwakeChanged]: { data: boolean };
 	[AppChannels.themeModeChanged]: { data: import('./app_types').AppThemeData };
+	[AppChannels.voiceAgentAppearanceChanged]: {
+		data: import('./app_types').VoiceAgentAppearance;
+	};
 	[AppChannels.channelsStatusChanged]: { data: import('./channels_types').ChannelStatusEvent };
 }
 
