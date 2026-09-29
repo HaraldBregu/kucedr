@@ -23,7 +23,7 @@ export function LibraryRow({
 		<Item
 			variant="outline"
 			size="md"
-			className="border-b border-border/60 px-5 py-4 last:border-b-0"
+			className="flex-nowrap border-b border-border/60 px-5 py-4 last:border-b-0"
 		>
 			<ItemMedia variant="icon">
 				<FileIcon className="size-3.5" />
@@ -38,7 +38,7 @@ export function LibraryRow({
 				<div>{formatLibraryFileSize(file.size)}</div>
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 			</div>
-			<ItemActions>
+			<ItemActions className="flex-none justify-end">
 				<Button
 					variant="ghost"
 					size="icon-xs"

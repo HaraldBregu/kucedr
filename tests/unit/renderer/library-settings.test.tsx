@@ -46,7 +46,12 @@ it('confirms and deletes a library file', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 
-	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
+	const deleteButton = await screen.findByRole('button', { name: 'settings.library.delete' });
+	const row = deleteButton.closest('[data-slot="item"]');
+	const actions = deleteButton.closest('[data-slot="item-actions"]');
+	expect(actions).toBe(row?.lastElementChild);
+	expect(actions).toHaveClass('flex-none', 'justify-end');
+	await user.click(deleteButton);
 
 	expect(window.confirm).toHaveBeenCalledWith('settings.library.confirmDelete');
 	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
