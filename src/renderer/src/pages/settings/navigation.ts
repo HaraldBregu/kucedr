@@ -1,5 +1,6 @@
 import {
 	AudioLines,
+	BookOpenText,
 	Brain,
 	Bot,
 	Layers,
@@ -388,7 +389,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/knowledge-base',
 		labelKey: 'settings.rag.title',
 		descriptionKey: 'settings.overview.descriptions.rag',
-		icon: Library,
+		icon: BookOpenText,
 	},
 	{
 		path: '/settings/skills',

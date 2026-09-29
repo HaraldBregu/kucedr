@@ -680,7 +680,7 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		{ name: 'MCP Servers', path: 'mcp', icon: 'plug-zap' },
 		{ name: 'Health', path: 'health', icon: 'heart-pulse' },
 		{ name: 'Permissions', path: 'permissions', icon: 'shield-check' },
-		{ name: 'Knowledge Base', path: 'rag', icon: 'library' },
+		{ name: 'Knowledge Base', path: 'rag', icon: 'book-open-text' },
 	];
 	for (const resource of resources) {
 		await page.evaluate(() => {
