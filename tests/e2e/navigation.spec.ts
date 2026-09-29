@@ -160,8 +160,15 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 	await expect(page.getByPlaceholder('Search routes and settings...')).toBeVisible();
 	await page.keyboard.press('Escape');
 	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
-	await expect(workspaceSidebar.locator('[data-slot="sidebar-footer"]')).toBeVisible();
-	await expect(workspaceSidebar.getByRole('button', { name: /account menu/i })).toBeVisible();
+	const sidebarFooter = workspaceSidebar.locator('[data-slot="sidebar-footer"]');
+	const accountMenuButton = sidebarFooter.getByRole('button', { name: /account menu/i });
+	await expect(sidebarFooter).toBeVisible();
+	await expect(sidebarFooter.getByRole('button', { name: 'Voice conversation' })).toBeVisible();
+	await sidebarFooter.getByText('Settings', { exact: true }).click();
+	await expect(page.getByRole('menu')).toHaveCount(0);
+	await accountMenuButton.click();
+	await expect(page.getByRole('menu')).toBeVisible();
+	await page.keyboard.press('Escape');
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await expect(workspace.getByText('Notes')).toBeVisible();
 	await workspace.getByText('Notes').click();
