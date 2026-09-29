@@ -47,17 +47,17 @@ export function Split({
 				<Button
 					type="button"
 					variant="ghost"
-					size="icon-sm"
+					size="icon"
 					data-slot="split-pane-toggle"
 					aria-label="Toggle Sidebar"
 					aria-controls="split-pane-sidebar"
 					aria-expanded={sidebarOpen}
 					title="Toggle Sidebar"
 					onClick={toggleSidebar}
-					className="fixed left-[84px] top-2.5 z-50 size-7 text-muted-foreground aria-expanded:bg-transparent aria-expanded:text-muted-foreground"
+					className="fixed left-[84px] top-2 z-50 size-8 rounded-full aria-expanded:bg-transparent"
 					style={{ WebkitAppRegion: 'no-drag' } as React.CSSProperties}
 				>
-					<PanelLeft className="size-4" strokeWidth={1.5} />
+					<PanelLeft className="size-4" strokeWidth={1.8} />
 				</Button>,
 				document.body
 			)}

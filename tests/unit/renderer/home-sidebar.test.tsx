@@ -451,7 +451,8 @@ it('resizes the sidebar with keyboard and pointer input and persists the width',
 	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
 	await screen.findByText('settings.chatHistory.empty');
 	expect(sidebar).not.toContainElement(toggle);
-	expect(toggle).toHaveClass('aria-expanded:bg-transparent', 'aria-expanded:text-muted-foreground');
+	expect(toggle).toHaveClass('size-8', 'rounded-full', 'aria-expanded:bg-transparent');
+	expect(toggle).not.toHaveClass('size-7', 'text-muted-foreground');
 	expect(sidebar).toHaveClass('top-12', 'bottom-0', 'border-r', 'bg-background');
 	expect(resizer).toHaveAttribute('aria-valuenow', '224');
 	expect(wrapper).toHaveStyle({ '--split-pane-sidebar-width': '224px' });
