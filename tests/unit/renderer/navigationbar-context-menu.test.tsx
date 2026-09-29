@@ -2,14 +2,12 @@ import { fireEvent, render, screen, waitFor, within } from '@testing-library/rea
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
-import { ChatSessionContext } from '../../../src/renderer/src/contexts/chat-session';
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
 }));
 
 const showContextMenu = jest.fn();
-const openVoiceConversation = jest.fn();
 const contextMenuItems = [
 	{ id: '/settings/general', label: 'settings.tabs.general' },
 	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
@@ -18,7 +16,6 @@ const contextMenuItems = [
 
 beforeEach(() => {
 	showContextMenu.mockReset().mockResolvedValue(null);
-	openVoiceConversation.mockReset().mockResolvedValue(undefined);
 	Object.defineProperty(window, 'win', {
 		configurable: true,
 		value: {
@@ -27,7 +24,6 @@ beforeEach(() => {
 			onFullScreenChange: jest.fn(() => jest.fn()),
 			onMaximizeChange: jest.fn(() => jest.fn()),
 			showContextMenu,
-			openVoiceConversation,
 		},
 	});
 });
@@ -119,64 +115,20 @@ it('opens Account from the settings icon on Home', async () => {
 	expect(screen.getByText('/settings/account')).toBeInTheDocument();
 });
 
-it('opens voice conversation for the current chat from the button before Settings', async () => {
-	const user = userEvent.setup();
-	const getMicrophonePermission = jest.fn().mockResolvedValue({
-		enabled: true,
-		systemStatus: 'granted',
-		canRequest: false,
-	});
-	Object.defineProperty(window, 'app', {
-		configurable: true,
-		value: { getMicrophonePermission },
-	});
-
-	render(
-		<MemoryRouter initialEntries={['/home']}>
-			<ChatSessionContext.Provider value={{ sessionId: 'session-123', setSessionId: jest.fn() }}>
+it.each(['/home', '/settings/general'])(
+	'does not render the voice conversation button in the navbar on %s',
+	(path) => {
+		render(
+			<MemoryRouter initialEntries={[path]}>
 				<NavigationBar />
-			</ChatSessionContext.Provider>
-		</MemoryRouter>
-	);
-	const voice = screen.getByRole('button', { name: 'Start voice conversation' });
-	const settings = screen.getByRole('button', { name: 'settings.title' });
-	expect(voice).toHaveClass('size-8', 'rounded-full', 'hover:bg-muted');
-	expect(voice).not.toHaveClass('bg-foreground');
-	expect(settings).toHaveClass('size-8');
-	expect(voice.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+			</MemoryRouter>
+		);
 
-	await user.click(voice);
-	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-123'));
-	expect(getMicrophonePermission).toHaveBeenCalledTimes(1);
-});
-
-it('keeps the voice conversation button available in Settings for the current chat', async () => {
-	const user = userEvent.setup();
-	const getMicrophonePermission = jest.fn().mockResolvedValue({
-		enabled: true,
-		systemStatus: 'granted',
-		canRequest: false,
-	});
-	Object.defineProperty(window, 'app', {
-		configurable: true,
-		value: { getMicrophonePermission },
-	});
-
-	render(
-		<MemoryRouter initialEntries={['/settings/general']}>
-			<ChatSessionContext.Provider value={{ sessionId: 'session-123', setSessionId: jest.fn() }}>
-				<NavigationBar />
-			</ChatSessionContext.Provider>
-		</MemoryRouter>
-	);
-
-	const voice = screen.getByRole('button', { name: 'Start voice conversation' });
-	const settings = screen.getByRole('button', { name: 'settings.title' });
-	expect(voice.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
-	await user.click(voice);
-	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-123'));
-});
+		expect(
+			screen.queryByRole('button', { name: 'Start voice conversation' })
+		).not.toBeInTheDocument();
+	}
+);
 
 it('does not render a chat title in the navigationbar', () => {
 	const { container } = render(
@@ -189,7 +141,7 @@ it('does not render a chat title in the navigationbar', () => {
 	expect(container.querySelector('[data-slot="navigationbar-chat-context"]')).not.toBeInTheDocument();
 });
 
-it('renders Workspace immediately after Search and opens it', async () => {
+it('renders Search and Workspace together on the right and opens Workspace', async () => {
 	const user = userEvent.setup();
 	const onSearch = jest.fn();
 

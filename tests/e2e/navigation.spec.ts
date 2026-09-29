@@ -114,7 +114,7 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the navbar Search stays by the sidebar toggle and Workspace opens the folder sidebar', async () => {
+test('the navbar Search stays in the right group and Workspace opens the folder sidebar', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
@@ -136,7 +136,10 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 	const navigationBar = page.locator('[data-slot="navigationbar"]');
 	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
-	const voiceButton = navigationBar.getByRole('button', { name: 'Start voice conversation' });
+	const settingsButton = navigationBar.getByRole('button', { name: 'Settings', exact: true });
+	await expect(
+		navigationBar.getByRole('button', { name: 'Start voice conversation' })
+	).toHaveCount(0);
 	const isMac = await page.evaluate(
 		() => navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac')
 	);
@@ -146,25 +149,19 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 		);
 		const toggleButton = sidebarActions.getByRole('button', { name: 'Toggle Sidebar' });
 		await expect(toggleButton).toBeVisible();
-		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toBeVisible();
+		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toHaveCount(0);
 		const toggleBox = await toggleButton.boundingBox();
 		const searchBox = await searchButton.boundingBox();
 		const workspaceBox = await workspaceButton.boundingBox();
-		const voiceBox = await voiceButton.boundingBox();
+		const settingsBox = await settingsButton.boundingBox();
 		expect(toggleBox).not.toBeNull();
 		expect(searchBox).not.toBeNull();
 		expect(workspaceBox).not.toBeNull();
-		expect(voiceBox).not.toBeNull();
+		expect(settingsBox).not.toBeNull();
 		expect(toggleBox?.x).toBe(84);
 		expect(
-			(searchBox?.x ?? 0) - ((toggleBox?.x ?? 0) + (toggleBox?.width ?? 0))
-		).toBe((voiceBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0)));
-		expect(
-			Math.abs(
-				(searchBox?.y ?? 0) + (searchBox?.height ?? 0) / 2 -
-					((toggleBox?.y ?? 0) + (toggleBox?.height ?? 0) / 2)
-			)
-		).toBeLessThanOrEqual(1);
+			(workspaceBox?.x ?? 0) - ((searchBox?.x ?? 0) + (searchBox?.width ?? 0))
+		).toBe((settingsBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0)));
 	} else {
 		await expect(
 			searchButton.locator('xpath=following-sibling::button[1][@aria-label="Workspace"]')

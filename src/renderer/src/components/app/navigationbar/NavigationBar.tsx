@@ -1,5 +1,5 @@
 import React, { type ReactNode } from 'react';
-import { AudioLines, Folder, Menu, Search, User } from 'lucide-react';
+import { Folder, Menu, Search, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -9,8 +9,6 @@ import { NavigationBarProvider } from './context/NavigationBarContext';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
-import { useChatSession } from '@/contexts/chat-session';
-import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 
 // Synchronous platform check — no hooks, no async, no state.
 // macOS uses native traffic-light buttons; every other OS needs custom controls.
@@ -37,8 +35,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
-	const { sessionId } = useChatSession();
-	const [voiceError, setVoiceError] = React.useState<string | null>(null);
 
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
@@ -79,31 +75,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<Folder className="size-4" strokeWidth={1.8} />
 		</Button>
 	) : null;
-	const voiceButton =
-		!isOnboarding ? (
-			<Button
-				type="button"
-				variant="ghost"
-				size="icon"
-				className="size-8 rounded-full"
-				aria-label="Start voice conversation"
-				title={voiceError ?? 'Start voice conversation'}
-				onClick={() => {
-					setVoiceError(null);
-					void ensureAppMicrophoneAccess()
-						.then(() => window.win.openVoiceConversation(sessionId))
-						.catch((error: unknown) => {
-							setVoiceError(
-								error instanceof Error && error.message.trim()
-									? error.message
-									: 'Voice conversation could not be opened.'
-							);
-						});
-				}}
-			>
-				<AudioLines className="size-4" strokeWidth={1.8} />
-			</Button>
-		) : null;
 	const routeButton = !isOnboarding ? (
 		<Button
 			type="button"
@@ -140,7 +111,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<NavigationBarLeftContainer
 					isMac={isMac}
 					isFullScreen={isFullScreen}
-					className={isMac && searchButton ? 'ml-[84px]' : undefined}
+					className={isMac ? 'ml-[84px]' : undefined}
 				>
 					{!isMac && (
 						<button
@@ -152,20 +123,14 @@ export const NavigationBar = React.memo(function NavigationBar({
 							<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
 						</button>
 					)}
-					{isMac && searchButton ? (
+					{isMac ? (
 						<div
 							data-slot="navigationbar-sidebar-actions"
 							className={actionGroupClassName}
 						>
 							<span data-slot="split-pane-toggle-target" className="contents" />
-							{searchButton}
 						</div>
-					) : (
-						searchButton
-					)}
-					{!isMac && workspaceButton}
-					{!isMac && voiceButton}
-					{!isMac && routeButton}
+					) : null}
 					{!isHome && !isWorkspace && !isOnboarding && !isSettings && (
 						<Button
 							type="button"
@@ -192,13 +157,13 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</div>
 				)}
 
-				{/* ── Right action: home/settings toggle ── */}
-			{isMac && (workspaceButton || voiceButton || routeButton) && (
+				{/* ── Right actions ── */}
+				{(searchButton || workspaceButton || routeButton) && (
 					<div
 						className={`z-10 mr-3 ${actionGroupClassName}`}
 					>
+						{searchButton}
 						{workspaceButton}
-						{voiceButton}
 						{routeButton}
 					</div>
 				)}
