@@ -25,8 +25,8 @@ export function LibraryRow({
 			size="md"
 			className="flex-nowrap border-b border-border/60 px-5 py-4 last:border-b-0"
 		>
-			<ItemMedia variant="icon">
-				<FileIcon className="size-3.5" />
+			<ItemMedia variant="icon" className="size-8">
+				<FileIcon className="size-4.5" />
 			</ItemMedia>
 			<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
 				<ItemTitle className="max-w-full truncate">{file.name}</ItemTitle>
