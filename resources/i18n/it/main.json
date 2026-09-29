@@ -309,6 +309,12 @@
 		"voiceAgent": {
 			"title": "Voice Agent",
 			"description": "Visualizza in anteprima l'agente vocale animato di Kucedr.",
+			"appearance": "Aspetto",
+			"appearanceDescription": "Scegli l'elemento visivo usato durante le conversazioni vocali.",
+			"appearances": {
+				"persona": "Attuale",
+				"orb-07": "Orb 07"
+			},
 			"preview": "Anteprima",
 			"previewDescription": "Scegli uno stato per visualizzarne il movimento e la risposta.",
 			"states": {
