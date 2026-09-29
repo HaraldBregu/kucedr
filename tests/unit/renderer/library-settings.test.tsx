@@ -53,6 +53,17 @@ it('confirms and deletes a library file', async () => {
 	expect(screen.queryByText('notes.txt')).not.toBeInTheDocument();
 });
 
+it('keeps the file when deletion is cancelled', async () => {
+	window.confirm = jest.fn(() => false);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+
+	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
+
+	expect(deleteFile).not.toHaveBeenCalled();
+	expect(screen.getByText('notes.txt')).toBeInTheDocument();
+});
+
 it('uploads selected files and reloads the list', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
