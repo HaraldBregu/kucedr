@@ -15,6 +15,10 @@ jest.mock('../../../src/renderer/src/contexts/AuthContext', () => ({
 	useAuth: () => mockUseAuth(),
 }));
 
+jest.mock('../../../src/renderer/src/components/orbs/orb-07', () => ({
+	Orb07: ({ size }: { size: number }) => <div data-testid="orb-07" data-size={size} />,
+}));
+
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: (key: string): string => key }),
 }));
@@ -119,7 +123,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).toBeInTheDocument();
 	expect(screen.getByText('settings.title')).toBeInTheDocument();
-	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByText('S')).toBeInTheDocument();
+	expect(within(screen.getByRole('button', { name: 'settings.sidebar.accountMenu' })).getByTestId('orb-07')).toHaveAttribute('data-size', '28');
 	expect(
 		screen.queryByRole('button', { name: 'settings.modelServices.voiceName' })
 	).not.toBeInTheDocument();
@@ -166,7 +170,7 @@ it.each<[AuthState, string]>([
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]');
 	expect(footer).not.toBeNull();
 	expect(within(accountMenu).getByText(accountName)).toBeInTheDocument();
-	expect(accountMenu.querySelector('.rounded-full.grayscale')).toHaveClass('size-7');
+	expect(accountMenu.querySelector('[data-slot="sidebar-footer-orb"]')).toHaveClass('size-7');
 	expect(accountMenu.querySelector('svg')).toBeInTheDocument();
 	if (state.status === 'signedIn') {
 		expect(within(accountMenu).queryByText(state.user.email)).not.toBeInTheDocument();
