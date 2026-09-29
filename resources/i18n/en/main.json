@@ -312,7 +312,7 @@
 			"appearance": "Appearance",
 			"appearanceDescription": "Choose the visual used during voice conversations.",
 			"appearances": {
-				"persona": "Current",
+				"persona": "Halo",
 				"orb-07": "Nebula"
 			},
 			"preview": "Preview",
