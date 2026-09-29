@@ -224,7 +224,12 @@ it('opens voice from its own footer button without opening the account menu', as
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' }));
+	const voiceButton = screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' });
+	expect(voiceButton).toHaveClass(
+		'hover:bg-sidebar-primary',
+		'hover:text-sidebar-primary-foreground'
+	);
+	await user.click(voiceButton);
 
 	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-voice'));
 	expect(getMicrophonePermission).toHaveBeenCalledTimes(1);
