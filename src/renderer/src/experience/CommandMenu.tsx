@@ -209,6 +209,7 @@ export function CommandMenu({
 	const searchEnabled =
 		location.pathname === '/home' ||
 		location.pathname.startsWith('/home/') ||
+		location.pathname === '/workspace' ||
 		location.pathname === '/settings' ||
 		location.pathname.startsWith('/settings/');
 	const open = controlledOpen ?? internalOpen;

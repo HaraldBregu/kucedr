@@ -37,7 +37,7 @@ Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
 	value: jest.fn(),
 });
 
-it.each(['/home', '/home/session/1', '/settings', '/settings/providers/models'])(
+it.each(['/home', '/home/session/1', '/workspace', '/settings', '/settings/providers/models'])(
 	'opens command search on %s',
 	(path) => {
 		render(
@@ -51,6 +51,16 @@ it.each(['/home', '/home/session/1', '/settings', '/settings/providers/models'])
 		expect(screen.getByPlaceholderText('Search routes and settings...')).toBeInTheDocument();
 	}
 );
+
+it('shows controlled command search on Workspace', () => {
+	render(
+		<MemoryRouter initialEntries={['/workspace']}>
+			<CommandMenu open />
+		</MemoryRouter>
+	);
+
+	expect(screen.getByPlaceholderText('Search routes and settings...')).toBeInTheDocument();
+});
 
 it.each(['/start', '/homepage', '/settings-old'])('does not open command search on %s', (path) => {
 	render(

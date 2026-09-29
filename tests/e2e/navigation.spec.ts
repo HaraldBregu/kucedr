@@ -123,6 +123,9 @@ test('the navbar Workspace folder button opens the folder sidebar', async () => 
 	await workspaceButton.click();
 	await expect(page).toHaveURL(/#\/workspace$/);
 	await expect(searchButton).toBeVisible();
+	await searchButton.click();
+	await expect(page.getByPlaceholder('Search routes and settings...')).toBeVisible();
+	await page.keyboard.press('Escape');
 	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
 	await expect(workspaceSidebar.locator('[data-slot="sidebar-footer"]')).toBeVisible();
 	await expect(workspaceSidebar.getByRole('button', { name: /account menu/i })).toBeVisible();
