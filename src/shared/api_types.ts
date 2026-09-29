@@ -636,4 +636,10 @@ export interface AppApi extends AppStorageApi {
 	onChannelsStatusChanged: (callback: (event: ChannelStatusEvent) => void) => () => void;
 }
 
+export interface LibraryApi {
+	list: () => Promise<import('./library_types').LibraryFile[]>;
+	openRoot: () => Promise<void>;
+	getRoot: () => Promise<string>;
+}
+
 export type { MemoryApi } from './memory_types';

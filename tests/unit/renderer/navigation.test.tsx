@@ -70,6 +70,7 @@ it.each([
 	['/settings/general/persona', 'settings.voiceAgent.title'],
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
+	['/settings/library', 'library.title'],
 	['/settings/mcp', 'settings.tabs.mcp'],
 	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/providers/database', 'settings.tabs.databases'],

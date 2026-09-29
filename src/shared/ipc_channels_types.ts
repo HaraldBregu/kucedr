@@ -42,6 +42,7 @@ import {
 	McpChannels,
 	DriveChannels,
 	SkillsChannels,
+	LibraryChannels,
 	StorageChannels,
 	DatabaseChannels,
 	EmbeddingChannels,
@@ -452,6 +453,12 @@ export interface SkillsInvokeChannelMap {
 	};
 	[SkillsChannels.openRoot]: { args: []; result: void };
 	[SkillsChannels.getRoot]: { args: []; result: string };
+}
+
+export interface LibraryInvokeChannelMap {
+	[LibraryChannels.list]: { args: []; result: import('./library_types').LibraryFile[] };
+	[LibraryChannels.openRoot]: { args: []; result: void };
+	[LibraryChannels.getRoot]: { args: []; result: string };
 }
 
 export interface A2aInvokeChannelMap {
@@ -1317,6 +1324,7 @@ export interface InvokeChannelMap
 		RecorderInvokeChannelMap,
 		TaskInvokeChannelMap,
 		SkillsInvokeChannelMap,
+		LibraryInvokeChannelMap,
 		A2aInvokeChannelMap,
 		McpInvokeChannelMap,
 		DriveInvokeChannelMap,

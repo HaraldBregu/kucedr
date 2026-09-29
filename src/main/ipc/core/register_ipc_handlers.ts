@@ -8,6 +8,7 @@ import { McpIpc } from '../mcp';
 import { DriveIpc } from '../drive';
 import { ModelsIpc } from '../models';
 import { SkillsIpc } from '../skills';
+import { LibraryIpc } from '../library';
 import { ProviderStoreIpc } from '../provider';
 import { SearchIpc } from '../search';
 import { StorageIpc } from '../storage';
@@ -132,6 +133,9 @@ export function registerIpcHandlers(
 	);
 	safeRegister('skills', () =>
 		new SkillsIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
+	);
+	safeRegister('library', () =>
+		new LibraryIpc().register({ windows: windowContextManager, apps: appRegistry }, eventBus)
 	);
 	safeRegister('provider-store', () =>
 		new ProviderStoreIpc().register(

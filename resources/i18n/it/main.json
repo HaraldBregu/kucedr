@@ -215,6 +215,7 @@
 				"channels": "Integrazioni messaggi",
 				"integrations": "Servizi collegati e app di lavoro",
 				"skills": "Abilita agente installate",
+				"library": "File archiviati nella libreria locale",
 				"connectors": "Account app collegati",
 				"mcp": "Server strumenti esterni",
 				"remoteAgent": "Agenti remoti disponibili per le attività delegate",
@@ -1634,6 +1635,15 @@
 			"deleteError": "Impossibile eliminare l'abilità.",
 			"openFolder": "Apri cartella",
 			"openFolderError": "Impossibile aprire la cartella dell'abilità."
+		},
+		"library": {
+			"description": "Sfoglia tutti i file archiviati nella libreria locale di Kucedr.",
+			"files": "File",
+			"refresh": "Aggiorna",
+			"openFolder": "Apri cartella",
+			"emptyDescription": "Aggiungi file alla cartella della libreria per visualizzarli qui.",
+			"loadError": "Impossibile caricare i file della libreria.",
+			"openFolderError": "Impossibile aprire la cartella della libreria."
 		},
 		"channels": {
 			"description": "Scegli quali canali di messaggistica Kucedr puo collegare.",

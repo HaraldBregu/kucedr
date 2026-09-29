@@ -14,6 +14,7 @@ import type {
 	ProviderApi,
 	SearchApi,
 	SkillsApi,
+	LibraryApi,
 	StorageApi,
 	DatabaseApi,
 	AppsApi,
@@ -36,6 +37,7 @@ declare global {
 		recorder: RecorderApi;
 		tasks: TaskApi;
 		skills: SkillsApi;
+		library: LibraryApi;
 		mcp: McpApi;
 		drive: DriveApi;
 		models: ModelsApi;

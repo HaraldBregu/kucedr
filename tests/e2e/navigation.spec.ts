@@ -39,6 +39,7 @@ const routes = [
 	'/workspace',
 	'/settings',
 	'/settings/general',
+	'/settings/library',
 	'/settings/general/persona',
 	'/settings/cloud',
 	'/settings/general/media/microphone',

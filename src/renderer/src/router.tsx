@@ -34,6 +34,7 @@ import { useOnboarding } from './contexts/useOnboarding';
 import { useAuth } from './contexts/AuthContext';
 
 const MemoryPage = lazy(() => import('./pages/settings/pages/memory/Page'));
+const LibraryPage = lazy(() => import('./pages/settings/pages/library/Page'));
 const AccountPage = lazy(() => import('./pages/settings/pages/account/Page'));
 const CloudPage = lazy(() => import('./pages/settings/pages/cloud/Page'));
 const TasksPage = lazy(() => import('./pages/settings/pages/tasks/Page'));
@@ -255,6 +256,14 @@ const routes: RouteObject[] = [
 						element: (
 							<SettingsRouteWrapper>
 								<AccountPage />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
+						path: 'library',
+						element: (
+							<SettingsRouteWrapper>
+								<LibraryPage />
 							</SettingsRouteWrapper>
 						),
 					},

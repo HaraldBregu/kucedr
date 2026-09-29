@@ -151,6 +151,12 @@ export const SkillsChannels = {
 	getRoot: 'skills:get-root',
 } as const;
 
+export const LibraryChannels = {
+	list: 'library:list',
+	openRoot: 'library:open-root',
+	getRoot: 'library:get-root',
+} as const;
+
 export const A2aChannels = {
 	list: 'a2a:list',
 	save: 'a2a:save',

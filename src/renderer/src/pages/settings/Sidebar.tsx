@@ -36,6 +36,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				].includes(item.path)
 			),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
+			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/library'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/knowledge-base'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),

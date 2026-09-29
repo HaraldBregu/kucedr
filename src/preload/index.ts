@@ -13,6 +13,7 @@ import { models } from './models';
 import { provider } from './provider';
 import { search } from './search';
 import { skills } from './skills';
+import { library } from './library';
 import { storage } from './storage';
 import { database } from './database';
 import { apps } from './apps';
@@ -34,6 +35,7 @@ export { models } from './models';
 export { provider } from './provider';
 export { search } from './search';
 export { skills } from './skills';
+export { library } from './library';
 export { storage } from './storage';
 export { database } from './database';
 export { apps } from './apps';
@@ -54,6 +56,7 @@ if (process.contextIsolated) {
 		contextBridge.exposeInMainWorld('recorder', recorder);
 		contextBridge.exposeInMainWorld('tasks', tasks);
 		contextBridge.exposeInMainWorld('skills', skills);
+		contextBridge.exposeInMainWorld('library', library);
 		contextBridge.exposeInMainWorld('mcp', mcp);
 		contextBridge.exposeInMainWorld('drive', drive);
 		contextBridge.exposeInMainWorld('models', models);
@@ -88,6 +91,8 @@ if (process.contextIsolated) {
 	globalThis.tasks = tasks;
 	// @ts-ignore (define in dts)
 	globalThis.skills = skills;
+	// @ts-ignore (define in dts)
+	globalThis.library = library;
 	// @ts-ignore (define in dts)
 	globalThis.mcp = mcp;
 	Object.assign(globalThis, { drive });

@@ -215,6 +215,7 @@
 				"channels": "Messaging integrations",
 				"integrations": "Connected services and work apps",
 				"skills": "Installed agent skills",
+				"library": "Files stored in your local library",
 				"connectors": "Connected app accounts",
 				"mcp": "External tool servers",
 				"remoteAgent": "Remote agents available for delegated work",
@@ -1634,6 +1635,15 @@
 			"deleteError": "Unable to delete skill.",
 			"openFolder": "Open Folder",
 			"openFolderError": "Unable to open skill folder."
+		},
+		"library": {
+			"description": "Browse every file stored in Kucedr's local library.",
+			"files": "Files",
+			"refresh": "Refresh",
+			"openFolder": "Open Folder",
+			"emptyDescription": "Add files to the library folder to see them here.",
+			"loadError": "Unable to load library files.",
+			"openFolderError": "Unable to open the library folder."
 		},
 		"channels": {
 			"description": "Choose which messaging channels Kucedr can connect to.",
