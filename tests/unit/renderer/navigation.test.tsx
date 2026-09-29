@@ -320,7 +320,7 @@ it('uses the audio waveform icon for Voice conversation', () => {
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
 
-it('places Channels after Health and Remote agent after Channels in the Assistant sidebar group', () => {
+it('places Channels directly below Apps outside the Assistant sidebar group', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/health']}>
 			<Routes>
@@ -339,19 +339,24 @@ it('places Channels after Health and Remote agent after Channels in the Assistan
 	const health = within(assistantGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.health',
 	});
-	const channels = within(assistantGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.channels',
-	});
 	const remoteAgent = within(assistantGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.remoteAgent new',
 	});
+	const apps = within(navigation).getByRole('link', { name: 'settings.tabs.apps' });
+	const channels = within(navigation).getByRole('link', { name: 'settings.tabs.channels' });
+	const extensionsGroup = apps.closest('[data-slot="split-pane-group"]');
+	const extensionLinks = within(extensionsGroup as HTMLElement).getAllByRole('link');
 
 	expect(channels).toHaveAttribute('href', '/settings/channels');
-	expect(links.indexOf(channels)).toBe(links.indexOf(health) + 1);
+	expect(channels.closest('[data-slot="split-pane-group"]')).toBe(extensionsGroup);
+	expect(extensionLinks.indexOf(channels)).toBe(extensionLinks.indexOf(apps) + 1);
+	expect(within(assistantGroup as HTMLElement).queryByRole('link', {
+		name: 'settings.tabs.channels',
+	})).not.toBeInTheDocument();
 	expect(remoteAgent).toHaveAttribute('href', '/settings/remote-agent');
 	expect(remoteAgent.querySelector('.lucide-network')).toBeInTheDocument();
 	expect(within(remoteAgent).getByText('new')).toHaveAttribute('data-slot', 'badge');
-	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(channels) + 1);
+	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(health) + 1);
 });
 
 it('places Providers directly after Cloud without provider subpages in the sidebar', () => {

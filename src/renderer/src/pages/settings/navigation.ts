@@ -410,12 +410,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: ShieldCheck,
 	},
 	{
-		path: '/settings/channels',
-		labelKey: 'settings.tabs.channels',
-		descriptionKey: 'settings.overview.descriptions.channels',
-		icon: RadioTower,
-	},
-	{
 		path: '/settings/plugins',
 		labelKey: 'settings.tabs.plugins',
 		descriptionKey: 'settings.overview.descriptions.integrations',
@@ -433,5 +427,11 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.apps',
 		descriptionKey: 'settings.overview.descriptions.apps',
 		icon: Layers,
+	},
+	{
+		path: '/settings/channels',
+		labelKey: 'settings.tabs.channels',
+		descriptionKey: 'settings.overview.descriptions.channels',
+		icon: RadioTower,
 	},
 ] satisfies readonly SettingsNavigationItem[];
