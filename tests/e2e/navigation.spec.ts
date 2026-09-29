@@ -118,6 +118,7 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 	const navigationBar = page.locator('[data-slot="navigationbar"]');
 	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
+	const voiceButton = navigationBar.getByRole('button', { name: 'Start voice conversation' });
 	const isMac = await page.evaluate(
 		() => navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac')
 	);
@@ -130,10 +131,16 @@ test('the navbar Search stays by the sidebar toggle and Workspace opens the fold
 		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toBeVisible();
 		const toggleBox = await toggleButton.boundingBox();
 		const searchBox = await searchButton.boundingBox();
+		const workspaceBox = await workspaceButton.boundingBox();
+		const voiceBox = await voiceButton.boundingBox();
 		expect(toggleBox).not.toBeNull();
 		expect(searchBox).not.toBeNull();
+		expect(workspaceBox).not.toBeNull();
+		expect(voiceBox).not.toBeNull();
 		expect(toggleBox?.x).toBe(84);
-		expect(searchBox?.x).toBe((toggleBox?.x ?? 0) + (toggleBox?.width ?? 0) + 4);
+		expect(
+			(searchBox?.x ?? 0) - ((toggleBox?.x ?? 0) + (toggleBox?.width ?? 0))
+		).toBe((voiceBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0)));
 		expect(
 			Math.abs(
 				(searchBox?.y ?? 0) + (searchBox?.height ?? 0) / 2 -

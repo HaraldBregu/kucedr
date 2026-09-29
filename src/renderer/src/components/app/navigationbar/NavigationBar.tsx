@@ -17,6 +17,7 @@ import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 const isMac =
 	typeof navigator !== 'undefined' &&
 	(navigator.platform === 'MacIntel' || navigator.platform.startsWith('Mac'));
+const actionGroupClassName = 'flex h-full items-center gap-1';
 
 export interface NavigationBarProps {
 	/** Optional class applied to the navigation bar container */
@@ -154,7 +155,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 					{isMac && searchButton ? (
 						<div
 							data-slot="navigationbar-sidebar-actions"
-							className="flex h-full items-center gap-1"
+							className={actionGroupClassName}
 						>
 							<span data-slot="split-pane-toggle-target" className="contents" />
 							{searchButton}
@@ -194,7 +195,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				{/* ── Right action: home/settings toggle ── */}
 			{isMac && (workspaceButton || voiceButton || routeButton) && (
 					<div
-						className="z-10 mr-3 flex h-full items-center gap-1"
+						className={`z-10 mr-3 ${actionGroupClassName}`}
 					>
 						{workspaceButton}
 						{voiceButton}
