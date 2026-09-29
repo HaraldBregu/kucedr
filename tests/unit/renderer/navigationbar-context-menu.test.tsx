@@ -171,8 +171,9 @@ it('keeps the voice conversation button available in Settings for the current ch
 	);
 
 	const voice = screen.getByRole('button', { name: 'Start voice conversation' });
-	const chat = screen.getByRole('button', { name: 'navigationBar.chat' });
-	expect(voice.compareDocumentPosition(chat) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	const settings = screen.getByRole('button', { name: 'settings.title' });
+	expect(voice.compareDocumentPosition(settings) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
 	await user.click(voice);
 	await waitFor(() => expect(openVoiceConversation).toHaveBeenCalledWith('session-123'));
 });
@@ -227,26 +228,26 @@ it('renders one solid navigationbar color without visible title text', () => {
 	expect(within(navigationBar as HTMLElement).queryByText('Kucedr')).not.toBeInTheDocument();
 });
 
-it('shows the Kucedr logo and Chat label inside the Settings button', async () => {
+it('keeps the user icon linked to Account while viewing Settings', async () => {
 	const user = userEvent.setup();
 
 	render(
-		<MemoryRouter initialEntries={['/settings']}>
+		<MemoryRouter initialEntries={['/settings/general']}>
 			<NavigationBar />
 			<Routes>
-				<Route path="/settings" element={null} />
-				<Route path="/home" element={<p>/home</p>} />
+				<Route path="/settings/general" element={null} />
+				<Route path="/settings/account" element={<p>/settings/account</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
-	const homeButton = screen.getByRole('button', { name: 'navigationBar.chat' });
+	const settingsButton = screen.getByRole('button', { name: 'settings.title' });
 
-	expect(within(homeButton).getByRole('img', { name: 'Kucedr logo' })).toBeInTheDocument();
-	expect(within(homeButton).getByText('navigationBar.chat')).toBeInTheDocument();
+	expect(settingsButton.querySelector('.lucide-user')).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
 
-	await user.click(homeButton);
+	await user.click(settingsButton);
 
-	expect(screen.getByText('/home')).toBeInTheDocument();
+	expect(screen.getByText('/settings/account')).toBeInTheDocument();
 });
 
 it('does not render the sidebar toggle in the navigationbar', () => {

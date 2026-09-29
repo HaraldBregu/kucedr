@@ -9,7 +9,6 @@ import { NavigationBarProvider } from './context/NavigationBarContext';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
-import { LogoView } from '@/components/app/base/logo-view';
 import { useChatSession } from '@/contexts/chat-session';
 import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 
@@ -104,19 +103,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<AudioLines className="size-4" strokeWidth={1.8} />
 			</Button>
 		) : null;
-	const routeButton = isSettings ? (
-		<Button
-			type="button"
-			variant="secondary"
-			className="rounded-full"
-			onClick={() => navigate('/home')}
-			title={chatButtonLabel}
-			aria-label={chatButtonLabel}
-		>
-			<LogoView className="pointer-events-none size-[18px]" />
-			{chatButtonLabel}
-		</Button>
-	) : !isOnboarding ? (
+	const routeButton = !isOnboarding ? (
 		<Button
 			type="button"
 			variant="ghost"
