@@ -1,5 +1,5 @@
 import { act, render, renderHook, screen, waitFor } from '@testing-library/react';
-import { StrictMode, type ReactNode } from 'react';
+import { StrictMode, useEffect, type ReactNode } from 'react';
 import { AssistantMessage } from '../../../src/renderer/src/pages/home/components/AssistantMessage';
 import { Provider, historyToChatMessages } from '../../../src/renderer/src/pages/home/context';
 import { useHomeAgentContext } from '../../../src/renderer/src/pages/home/context';
@@ -133,6 +133,10 @@ function wrapper({ children }: { readonly children: ReactNode }): React.JSX.Elem
 			<Provider>{children}</Provider>
 		</StrictMode>
 	);
+}
+
+function standaloneWrapper({ children }: { readonly children: ReactNode }): React.JSX.Element {
+	return <StrictMode>{children}</StrictMode>;
 }
 
 describe('useRealtimeVoice', () => {
@@ -343,6 +347,41 @@ describe('useRealtimeVoice', () => {
 		act(() => emit({ type: 'closed', sessionId: session.id }));
 		expect(result.current.status).toBe('error');
 		expect(result.current.errorMessage).toBe('OpenAI rejected the realtime session.');
+		expect(onClosed).not.toHaveBeenCalled();
+	});
+
+	it('does not restart after a standalone voice error', async () => {
+		api.startSession.mockResolvedValue(session);
+		const onClosed = jest.fn();
+		const { result } = renderHook(
+			() => {
+				const voice = useRealtimeVoice({
+					chatSessionId: 'chat-1',
+					onClosed,
+					closeOnError: false,
+				});
+				useEffect(() => {
+					void voice.start();
+				}, [voice.start]);
+				return voice;
+			},
+			{ wrapper: standaloneWrapper }
+		);
+		await waitFor(() => expect(result.current.status).toBe('listening'));
+
+		act(() => emit({ type: 'input_speech_stopped', sessionId: session.id }));
+		expect(result.current.status).toBe('thinking');
+		act(() =>
+			emit({
+				type: 'error',
+				sessionId: session.id,
+				message: 'The realtime response was rejected.',
+			})
+		);
+
+		await waitFor(() => expect(result.current.status).toBe('error'));
+		expect(result.current.errorMessage).toBe('The realtime response was rejected.');
+		expect(api.startSession).toHaveBeenCalledTimes(1);
 		expect(onClosed).not.toHaveBeenCalled();
 	});
 

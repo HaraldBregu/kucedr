@@ -14,6 +14,7 @@ export type RealtimeVoiceUiStatus = 'idle' | 'checking-permission' | RealtimeVoi
 
 const CLOCK_INTERVAL_MS = 250;
 const HOME_AGENT_ID = 'main';
+const NOOP_CHAT_DISPATCH = (): void => undefined;
 
 function isToolEvent(event: RealtimeVoiceEvent): event is RealtimeVoiceToolEvent {
 	return (
@@ -44,7 +45,7 @@ export function useRealtimeVoice({
 	readonly onClosed: () => void;
 	readonly closeOnError?: boolean;
 }) {
-	const dispatchChat = useContext(HomeAgentContext)?.dispatchChat ?? (() => undefined);
+	const dispatchChat = useContext(HomeAgentContext)?.dispatchChat ?? NOOP_CHAT_DISPATCH;
 	const [status, setStatus] = useState<RealtimeVoiceUiStatus>('idle');
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 	const [requiresConfiguration, setRequiresConfiguration] = useState(false);
