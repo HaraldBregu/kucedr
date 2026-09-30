@@ -826,7 +826,7 @@ function PageContent(): ReactElement {
 						</>
 					)}
 					{showEmptyConversation ? (
-						<div className="mx-auto w-full max-w-6xl px-4 pb-10">
+						<div className="mx-auto w-full max-w-6xl px-4 pb-10 pt-4">
 							<Discover />
 						</div>
 					) : null}
