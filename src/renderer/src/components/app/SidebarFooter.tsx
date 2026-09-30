@@ -7,6 +7,7 @@ import {
 	LogOut,
 	Plug,
 	Server,
+	Settings,
 	UserRound,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -158,6 +159,22 @@ export function AppSidebarFooter(): React.JSX.Element {
 							) : null}
 						</DropdownMenuContent>
 					</DropdownMenu>
+				</SidebarMenuItem>
+				<SidebarMenuItem>
+					<SidebarMenuButton asChild>
+						<Link to="/settings/general">
+							<Settings />
+							<span>{t('settings.title')}</span>
+						</Link>
+					</SidebarMenuButton>
+				</SidebarMenuItem>
+				<SidebarMenuItem>
+					<SidebarMenuButton
+						onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}
+					>
+						<CircleHelp />
+						<span>{t('settings.sidebar.help')}</span>
+					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>
 		</SidebarFooter>
