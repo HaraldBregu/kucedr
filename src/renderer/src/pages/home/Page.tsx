@@ -691,7 +691,7 @@ function PageContent(): ReactElement {
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
 					{showEmptyConversation ? (
-						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-5 pt-8">
+						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-5 pt-12">
 							<EmptyConversation />
 						</div>
 					) : (

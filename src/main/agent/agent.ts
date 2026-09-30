@@ -450,6 +450,7 @@ export class Agent {
 			byId.set(record.request.sessionId, {
 				id: record.request.sessionId,
 				createdAtMs: stored?.createdAtMs ?? record.request.queuedAt,
+				updatedAtMs: Math.max(stored?.updatedAtMs ?? 0, record.request.queuedAt),
 				title: stored?.title ?? record.request.message.slice(0, 80),
 				category,
 				runStatus: record.lifecycle.status,

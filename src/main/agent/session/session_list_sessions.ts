@@ -48,9 +48,16 @@ export function listSessions(
 			)
 			.map((entry) => {
 				const stats = statSync(sessionPath(root, entry.name));
+				const messagesPath = sessionPath(root, entry.name, 'messages.json');
+				const runPath = sessionPath(root, entry.name, 'run.jsonl');
 				return {
 					id: entry.name,
 					createdAtMs: stats.birthtimeMs || stats.ctimeMs || stats.mtimeMs,
+					updatedAtMs: Math.max(
+						stats.mtimeMs,
+						existsSync(messagesPath) ? statSync(messagesPath).mtimeMs : 0,
+						existsSync(runPath) ? statSync(runPath).mtimeMs : 0
+					),
 					title: sessionTitle(entry.name, location),
 					category,
 				};
