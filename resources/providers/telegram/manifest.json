@@ -14,6 +14,7 @@
 		{
 			"id": "telegram-bot",
 			"name": "Telegram Bot API",
+			"instructions": "Open Telegram, message @BotFather, send /newbot and follow the prompts, then paste the bot token here.",
 			"url": "https://api.telegram.org"
 		}
 	]

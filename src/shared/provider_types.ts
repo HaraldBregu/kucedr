@@ -120,6 +120,7 @@ export interface ProviderManifestWebSearch {
 export interface ProviderManifestBot {
 	readonly id: string;
 	readonly name: string;
+	readonly instructions?: string;
 	readonly url: string;
 }
 
@@ -128,6 +129,7 @@ export interface CatalogEntryService {
 	readonly id: string;
 	readonly name: string;
 	readonly description?: string;
+	readonly instructions?: string;
 	readonly type: string;
 	readonly authentication?: AuthenticationType;
 	readonly scopes?: readonly string[];

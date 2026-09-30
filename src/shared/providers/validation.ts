@@ -137,6 +137,9 @@ export function validateProviderManifest(value: unknown): string[] {
 			if (entry.description !== undefined && !isNonEmptyString(entry.description)) {
 				errors.push(`${itemPath}.description must be a non-empty string when present.`);
 			}
+			if (key === 'bots' && entry.instructions !== undefined && !isNonEmptyString(entry.instructions)) {
+				errors.push(`${itemPath}.instructions must be a non-empty string when present.`);
+			}
 			if (key === 'mcp_servers') {
 				if (!Array.isArray(entry.scopes) || !entry.scopes.every((scope) => isNonEmptyString(scope) && !/\s/.test(scope)))
 					errors.push(`${itemPath}.scopes must be an array of OAuth scope strings.`);

@@ -9,6 +9,8 @@ describe('channel manifests', () => {
 			expect.objectContaining({
 				id: 'telegram-bot',
 				name: 'Telegram Bot API',
+				instructions:
+					'Open Telegram, message @BotFather, send /newbot and follow the prompts, then paste the bot token here.',
 				provider: expect.objectContaining({
 					id: 'telegram',
 					name: 'Telegram',
