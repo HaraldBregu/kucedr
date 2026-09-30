@@ -648,6 +648,8 @@ test('empty Home hides absent chats and shows scrollable plugins and setup cards
 	expect(workspaceBounds && composerBounds).toBeTruthy();
 	expect(Math.abs((composerBounds!.y + composerBounds!.height / 2) - (workspaceBounds!.y + workspaceBounds!.height / 2))).toBeLessThan(16);
 	await expect(page.locator('[data-slot="home-composer-shell"] > div')).toHaveCSS('max-width', '672px');
+	const editor = page.getByRole('textbox', { name: 'Message your assistant' });
+	await expect(editor.locator('[data-placeholder]')).toHaveAttribute('data-placeholder', 'Ask anything');
 	await expect(page.getByLabel('Prompt suggestions')).toHaveCSS('max-width', '672px');
 	await expect(page.getByLabel('Prompt suggestions')).toHaveCSS('justify-content', 'center');
 	await expect(page.getByLabel('Prompt suggestions').getByRole('button').first()).toHaveCSS('border-radius', '8px');
