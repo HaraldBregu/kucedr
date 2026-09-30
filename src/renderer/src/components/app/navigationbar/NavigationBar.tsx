@@ -67,11 +67,12 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<Button
 					type="button"
 					variant="outline"
-					size="default"
+					size="sm"
+					className="rounded-full text-xs"
 					onClick={() => navigate('/workspace')}
 					aria-label={workspaceLabel}
 				>
-					<Folder className="size-4" strokeWidth={1.8} />
+					<Folder className="size-3.5" strokeWidth={1.8} />
 					<span>{workspaceLabel}</span>
 				</Button>
 			} />
