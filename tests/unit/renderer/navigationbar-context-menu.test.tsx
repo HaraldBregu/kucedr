@@ -19,6 +19,14 @@ const contextMenuItems = [
 ];
 
 beforeEach(() => {
+	Object.defineProperty(window, 'matchMedia', {
+		configurable: true,
+		value: jest.fn(() => ({
+			matches: false,
+			addEventListener: jest.fn(),
+			removeEventListener: jest.fn(),
+		})),
+	});
 	showContextMenu.mockReset().mockResolvedValue(null);
 	Object.defineProperty(window, 'win', {
 		configurable: true,
