@@ -641,7 +641,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	);
 });
 
-test('empty Home shows scrollable recent chats, plugins, and setup cards', async () => {
+test('empty Home hides absent chats and shows scrollable plugins and setup cards', async () => {
 	await page.evaluate(() => { window.location.hash = '#/home'; });
 	const discovery = page.locator('[data-slot="home-discover"]');
 	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toHaveCount(0);
@@ -651,7 +651,6 @@ test('empty Home shows scrollable recent chats, plugins, and setup cards', async
 	await expect(discovery.getByRole('link', { name: /Knowledge Base/ })).toHaveAttribute('href', '#/settings/knowledge-base');
 	const setupRow = discovery.locator('[aria-label="Configure Kucedr"]');
 	expect(await setupRow.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
-	await page.screenshot({ path: '/tmp/kucedr-home-discover.png' });
 });
 
 test('the leading /plan command activates Plan mode and requires prompt text', async () => {
