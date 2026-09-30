@@ -241,7 +241,7 @@ describe('Home prompt attachments', () => {
 		});
 		renderPage();
 		expect(await screen.findByText('Older chat')).toBeInTheDocument();
-		expect(screen.getByText(/Updated/)).toBeInTheDocument();
+		expect(screen.getByText(/Created/)).toBeInTheDocument();
 	});
 
 	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
