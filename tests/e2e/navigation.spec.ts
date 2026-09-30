@@ -743,6 +743,13 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 		sidebar.getByRole('link', { name: 'Channels', exact: true }).locator('svg.lucide-radio-tower')
 	).toBeVisible();
 	await expect(sidebar.locator('.overflow-y-auto')).toHaveCSS('padding-bottom', '16px');
+	await page.getByRole('link', { name: /Configuration/ }).click();
+	await expect(page).toHaveURL(/#\/settings\/channels\/configuration$/);
+	await expect(page.getByRole('heading', { name: 'Configuration', exact: true })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Model', exact: true })).toBeVisible();
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/channels';
+	});
 	const telegram = page
 		.getByText('Telegram Bot API', { exact: true })
 		.locator('xpath=ancestor::*[@data-slot="item"][1]');
