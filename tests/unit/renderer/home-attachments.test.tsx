@@ -207,7 +207,7 @@ describe('Home prompt attachments', () => {
 		expect(await screen.findByText('Planning chat')).toBeInTheDocument();
 		expect(screen.getByText(/Updated/)).toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Plugins' })).toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Configure Kucedr' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Configuration' })).toBeInTheDocument();
 		expect(screen.getByRole('link', { name: /settings.tabs.taskScheduler/ })).toHaveAttribute('href', '/settings/tasks');
 	});
 
@@ -216,7 +216,7 @@ describe('Home prompt attachments', () => {
 		renderPage();
 		expect(screen.queryByRole('heading', { name: 'Recent chats' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Plugins' })).not.toBeInTheDocument();
-		expect(screen.queryByRole('heading', { name: 'Configure Kucedr' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'Configuration' })).not.toBeInTheDocument();
 	});
 
 	it('hides Recent chats when there are no stored sessions', async () => {

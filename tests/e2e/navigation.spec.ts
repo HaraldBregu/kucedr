@@ -654,10 +654,10 @@ test('empty Home hides absent chats and shows scrollable plugins and setup cards
 	const discovery = page.locator('[data-slot="home-discover"]');
 	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toHaveCount(0);
 	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
-	await expect(discovery.getByRole('heading', { name: 'Configure Kucedr' })).toBeVisible();
+	await expect(discovery.getByRole('heading', { name: 'Configuration' })).toBeVisible();
 	await expect(discovery.getByRole('link', { name: /Tasks/ })).toHaveAttribute('href', '#/settings/tasks');
 	await expect(discovery.getByRole('link', { name: /Knowledge Base/ })).toHaveAttribute('href', '#/settings/knowledge-base');
-	const setupRow = discovery.locator('[aria-label="Configure Kucedr"]');
+	const setupRow = discovery.locator('[aria-label="Configuration"]');
 	expect(await setupRow.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
 });
 

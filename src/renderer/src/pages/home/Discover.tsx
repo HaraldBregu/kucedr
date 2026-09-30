@@ -140,9 +140,9 @@ export function Discover(): ReactElement {
 			</section>
 			<section aria-labelledby="home-configure">
 				<h2 id="home-configure" className="mb-3 text-sm font-medium">
-					Configure Kucedr
+					Configuration
 				</h2>
-				<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Configure Kucedr">
+				<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Configuration">
 					{setupItems.map((item) => (
 						<Card key={item.path} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
 							<Link
