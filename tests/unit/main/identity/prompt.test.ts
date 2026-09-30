@@ -1,0 +1,38 @@
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import os from 'node:os';
+import { buildWorkspaceContext } from '../../../../src/main/agent/system/system_build_workspace_context';
+import { workspacePath } from '../../../../src/main/agent/system/system_workspace_path';
+import { updateSoul } from '../../../../src/main/soul';
+
+it('regenerates AGENTS.md from modules without feeding its previous content back in', async () => {
+	const root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-generated-prompt-'));
+	const previous = process.env.KUCEDR_E2E_DATA_ROOT;
+	process.env.KUCEDR_E2E_DATA_ROOT = root;
+	try {
+		const config = { location: path.join(root, 'workspace') };
+		workspacePath(config);
+		const file = path.join(config.location, 'AGENTS.md');
+		await writeFile(file, 'Obsolete generated content');
+		const first = await buildWorkspaceContext(config, 'full', 'Remembered preference');
+		expect(await readFile(file, 'utf8')).toBe(first);
+		for (const name of ['SOUL', 'USER', 'IDENTITY', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
+			expect(first).toContain(`### ${name}.md`);
+		}
+		expect(first).not.toContain('Obsolete generated content');
+		await updateSoul('Updated soul instructions');
+		await rm(path.join(config.location, 'BOOTSTRAP.md'));
+		const next = await buildWorkspaceContext(config, 'full');
+		expect(next).toContain('Updated soul instructions');
+		expect(next).not.toContain('### BOOTSTRAP.md');
+		expect(next).not.toContain('Remembered preference');
+		const core = await buildWorkspaceContext(config, 'core', 'Private memory');
+		expect(core).not.toContain('### USER.md');
+		expect(core).not.toContain('Private memory');
+		expect(await readFile(file, 'utf8')).toBe(next);
+	} finally {
+		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
+		else process.env.KUCEDR_E2E_DATA_ROOT = previous;
+		await rm(root, { recursive: true, force: true });
+	}
+});
