@@ -702,44 +702,31 @@ function PageContent(): ReactElement {
 				<div
 					ref={workspaceRef}
 					data-slot="home-workspace"
-					className="relative flex min-h-0 flex-1 flex-col bg-background text-foreground"
+					className={cn('relative flex min-h-0 flex-1 flex-col bg-background text-foreground', showEmptyConversation && 'overflow-y-auto')}
 				>
 					<span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
+					{showEmptyConversation ? (
+						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-7 pt-12">
+							<EmptyConversation />
+						</div>
+					) : (
 					<ChatContainerRoot
 						className="min-h-0 p-0 [scrollbar-gutter:auto]"
 						contextRef={chatScrollRef}
 					>
-						<ChatContainerContent
-							className={cn(
-								'mx-auto w-full max-w-4xl gap-5 px-4',
-								showEmptyConversation
-									? 'min-h-full items-center justify-center pb-[var(--composer-height,7rem)]'
-									: 'min-h-full pt-6'
-							)}
-						>
-							{showEmptyConversation ? (
-								<>
-									<EmptyConversation />
-									{showPromptSuggestions ? (
-										<PromptSuggestions onUseSuggestion={agent.useSuggestion} />
-									) : null}
-								</>
-							) : (
-								<Messages
-									messages={visibleMessages}
-									isLoading={agent.isLoading}
-									voiceMode={voiceMode !== null}
-									activeAgentId={agent.chatState.activeAgentId}
-									onEdit={agent.editUserMessage}
-									onReply={agent.replyToMessage}
-									onImplement={agent.implementPlan}
-								/>
-							)}
-							<ChatContainerScrollAnchor
-								className={showEmptyConversation ? 'h-0' : 'h-[var(--composer-height,7rem)]'}
+						<ChatContainerContent className="mx-auto min-h-full w-full max-w-4xl gap-5 px-4 pt-6">
+							<Messages
+								messages={visibleMessages}
+								isLoading={agent.isLoading}
+								voiceMode={voiceMode !== null}
+								activeAgentId={agent.chatState.activeAgentId}
+								onEdit={agent.editUserMessage}
+								onReply={agent.replyToMessage}
+								onImplement={agent.implementPlan}
 							/>
+							<ChatContainerScrollAnchor className="h-[var(--composer-height,7rem)]" />
 						</ChatContainerContent>
 						<div className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center">
 							<ScrollButton
@@ -749,10 +736,11 @@ function PageContent(): ReactElement {
 							/>
 						</div>
 					</ChatContainerRoot>
+					)}
 					<div
 						ref={composerRef}
 						data-slot="home-composer-shell"
-						className="absolute inset-x-0 bottom-0 z-20 flex justify-center px-4 pb-5 pt-3"
+						className={cn('z-20 flex justify-center px-4', showEmptyConversation ? 'w-full shrink-0 pb-4' : 'absolute inset-x-0 bottom-0 pb-5 pt-3')}
 					>
 						<div className="mx-auto w-full max-w-4xl">
 							<RecorderErrorMessage
@@ -832,6 +820,18 @@ function PageContent(): ReactElement {
 							/>
 						</div>
 					</div>
+					{showEmptyConversation ? (
+						<>
+							{showPromptSuggestions ? (
+								<div className="mx-auto pb-10">
+									<PromptSuggestions onUseSuggestion={agent.useSuggestion} />
+								</div>
+							) : null}
+							<div className="mx-auto w-full max-w-6xl px-4 pb-10">
+								<Discover />
+							</div>
+						</>
+					) : null}
 				</div>
 			</Split>
 		</PageContainer>
