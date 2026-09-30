@@ -231,6 +231,19 @@ describe('Home prompt attachments', () => {
 		expect(screen.queryByRole('heading', { name: 'Recent chats' })).not.toBeInTheDocument();
 	});
 
+	it('renders older session summaries without an update timestamp', async () => {
+		Object.defineProperty(window, 'agent', {
+			configurable: true,
+			value: {
+				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
+				listSessions: jest.fn(async () => [{ id: 'older-session', title: 'Older chat', createdAtMs: 1700000000000, category: 'main' }]),
+			},
+		});
+		renderPage();
+		expect(await screen.findByText('Older chat')).toBeInTheDocument();
+		expect(screen.getByText(/Updated/)).toBeInTheDocument();
+	});
+
 	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
 		renderPage();
 
