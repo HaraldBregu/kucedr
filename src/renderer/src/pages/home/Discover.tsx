@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { ArrowUpRight, MessageCircle } from 'lucide-react';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useChatSession } from '@/contexts/chat-session';
 import type { AgentSessionSummary } from '@/lib/compat';
 import { mcps } from '@/lib/providers';
@@ -26,7 +25,6 @@ export function Discover(): ReactElement {
 	const { t } = useTranslation();
 	const { setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
-	const [refreshKey, setRefreshKey] = useState(0);
 	const plugins = mcps().slice(0, 8);
 
 	useEffect(() => {
@@ -47,19 +45,16 @@ export function Discover(): ReactElement {
 		return () => {
 			active = false;
 		};
-	}, [refreshKey]);
+	}, []);
 
 	return (
 		<div className="flex w-full flex-col gap-6" data-slot="home-discover">
 			{sessions.length > 0 && (
 				<section aria-labelledby="home-recent-chats">
-					<div className="mb-3 flex items-center justify-between gap-3">
+					<div className="mb-3">
 						<h2 id="home-recent-chats" className="text-sm font-medium">
 							Recent chats
 						</h2>
-						<Button variant="ghost" size="sm" onClick={() => setRefreshKey((value) => value + 1)}>
-							Refresh
-						</Button>
 					</div>
 					<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Recent chats">
 						{sessions.map((session) => (
