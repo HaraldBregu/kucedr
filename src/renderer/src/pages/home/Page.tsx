@@ -189,14 +189,14 @@ function PromptSuggestions({
 	readonly onUseSuggestion: (prompt: string) => void;
 }): ReactElement {
 	return (
-		<div className="mx-auto flex w-full max-w-2xl gap-2 overflow-x-auto px-4 pb-2" aria-label="Prompt suggestions">
+		<div className="mx-auto flex w-full max-w-2xl gap-1.5 overflow-x-auto px-4 pb-2" aria-label="Prompt suggestions">
 			{promptSuggestions.map((suggestion) => (
 				<PromptSuggestion
 					key={suggestion.label}
 					type="button"
 					variant="outline"
 					size="sm"
-					className="h-9 shrink-0 whitespace-nowrap border-border/70 bg-card/95 px-3 text-xs font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
+					className="h-8 shrink-0 whitespace-nowrap border-border/70 bg-card/95 px-2.5 text-[11px] font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
 					aria-label={suggestion.prompt}
 					onClick={() => onUseSuggestion(suggestion.prompt)}
 				>
