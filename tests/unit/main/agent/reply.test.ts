@@ -9,7 +9,7 @@ jest.mock('../../../../src/main/shared/agent_location', () => ({
 	agentLocation: () => location,
 }));
 jest.mock('../../../../src/main/tasks', () => ({ initTask: jest.fn() }));
-jest.mock('../../../../src/main/agent/health', () => ({}));
+jest.mock('../../../../src/main/health', () => ({}));
 jest.mock('../../../../src/main/agent/permissions', () => ({}));
 jest.mock('../../../../src/main/agent/skills', () =>
 	jest.requireActual('../../../../src/main/agent/skills/skills_parse_command')

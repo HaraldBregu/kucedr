@@ -1,11 +1,11 @@
-import { DEFAULT_HEALTH_SETTINGS, type HealthSettings } from './health_types';
+import { DEFAULT_HEALTH_SETTINGS, type HealthSettings } from './types';
 import {
 	agentProfileStorePath,
 	getAgentProfileDocument,
 	getAgentProfileModel,
 	setAgentProfileDocument,
 	setAgentProfileModel,
-} from '../agent_profiles';
+} from '../agent/agent_profiles';
 
 export const healthStorePath = agentProfileStorePath('health');
 

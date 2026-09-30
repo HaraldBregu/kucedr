@@ -13,7 +13,7 @@ jest.mock('../../../../src/main/tasks', () => ({
 	setTaskRunner: (...args: unknown[]) => mockSetTaskRunner(...args),
 	startTask: (...args: unknown[]) => mockStartTask(...args),
 }));
-jest.mock('../../../../src/main/agent/health', () => ({
+jest.mock('../../../../src/main/health', () => ({
 	startHealth: jest.fn(),
 	stopHealth: jest.fn(),
 }));

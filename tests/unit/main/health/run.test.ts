@@ -1,12 +1,12 @@
-jest.mock('../../../../../src/main/agent/health/health_data', () => ({
-	getHealthData: jest.fn(async () => '- Update the workspace report'),
+jest.mock('../../../../src/main/health/data', () => ({
+	getHealth: jest.fn(async () => '- Update the workspace report'),
 }));
-jest.mock('../../../../../src/main/agent/health/health_store', () => ({
+jest.mock('../../../../src/main/health/store', () => ({
 	getHealthSettings: () => ({ skipWhenBusy: true, isolatedSession: true }),
 }));
 
-import type { Agent } from '../../../../../src/main/agent/agent';
-import { runHealthCheck } from '../../../../../src/main/agent/health/health_run';
+import type { Agent } from '../../../../src/main/agent/agent';
+import { runHealthCheck } from '../../../../src/main/health/run';
 
 it('runs health checklists with the default background tools and no approval window', async () => {
 	const send = jest.fn().mockResolvedValue('HEALTH_OK');

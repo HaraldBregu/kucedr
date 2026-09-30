@@ -14,6 +14,8 @@ import { readTool } from '../tools/core/read';
 import { requestUserInputTool } from '../tools/core/ask';
 import { writeTool } from '../tools/core/write';
 import { getKnowledgeTools } from '../tools/knowledge';
+import { getHealthTool } from '../tools/health/get';
+import { updateHealthTool } from '../tools/health/update';
 import { createImageTool } from '../tools/media/create_image';
 import { createSoundTool } from '../tools/media/create_sound';
 import { createVideoTool } from '../tools/media/create_video';
@@ -37,7 +39,7 @@ import { getSearchWebTools } from '../tools/web/search_web';
 import { useWebBrowserTool } from '../tools/web/use_web_browser';
 
 export function builtinTools(
-	_config: Config,
+	config: Config,
 	sandbox: ExecSandbox,
 	interactionMode: AgentInteractionMode = 'default'
 ): Tool[] {
@@ -70,6 +72,8 @@ export function builtinTools(
 		screenRecorderStatusTool,
 		screenRecorderStopTool,
 		...getKnowledgeTools(),
+		getHealthTool(config),
+		updateHealthTool(config),
 		createTaskTool,
 		updateTaskTool,
 		deleteTaskTool,

@@ -15,7 +15,7 @@ import type {
 	ModelReasoningEffort,
 } from '../shared/agent_types';
 import { normalizeAgentInputFiles } from '../shared/agent_files';
-import type { HealthSettings } from '../main/agent/health/health_types';
+import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
 import type { RagConfiguration } from '../shared/rag_types';
 import type { PermissionsSchema } from '../main/agent/permissions/permissions_types';

@@ -44,12 +44,14 @@ import {
 	type PermissionsSchema,
 } from '../agent/permissions';
 import {
+	getHealth,
 	getHealthSettings,
+	rescheduleHealth,
 	resetHealthSettings,
+	updateHealth,
 	updateHealthSettings,
-} from '../agent/health/health_store';
-import { getHealthData, rescheduleHealth, saveHealthData } from '../agent/health';
-import type { HealthSettings } from '../agent/health/health_types';
+} from '../health';
+import type { HealthSettings } from '../health/types';
 import {
 	getModelId,
 	getModelOptions,
@@ -1033,7 +1035,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 
 		ipcMain.handle(
 			AgentChannels.healthData,
-			wrapAgentHandler(mainAccess, () => getHealthData(agent.config), AgentChannels.healthData)
+			wrapAgentHandler(mainAccess, () => getHealth(agent.config), AgentChannels.healthData)
 		);
 
 		ipcMain.handle(
@@ -1042,7 +1044,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				(content: unknown) => {
 					if (typeof content !== 'string') throw new Error('Invalid health data content.');
-					return saveHealthData(agent.config, content);
+					return updateHealth(agent.config, content);
 				},
 				AgentChannels.healthSaveData
 			)

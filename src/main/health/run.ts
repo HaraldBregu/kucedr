@@ -1,7 +1,7 @@
-import type { Agent } from '../agent';
-import { getHealthData } from './health_data';
-import { getHealthSettings } from './health_store';
-import type { HealthActiveHours, HealthLogger } from './health_types';
+import type { Agent } from '../agent/agent';
+import { getHealth } from './data';
+import { getHealthSettings } from './store';
+import type { HealthActiveHours, HealthLogger } from './types';
 
 const HEALTH_AGENT_ID = 'health';
 const HEALTH_SESSION_ID = 'health';
@@ -24,7 +24,7 @@ export async function runHealthCheck(agent: Agent, logger: HealthLogger): Promis
 		return;
 	}
 
-	const checklist = await getHealthData(agent.config);
+	const checklist = await getHealth(agent.config);
 	if (!hasChecklistItems(checklist)) {
 		logger.info('Health', 'Health check skipped: HEALTH.md has no checklist items');
 		return;

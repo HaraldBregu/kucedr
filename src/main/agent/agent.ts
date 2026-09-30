@@ -33,7 +33,7 @@ import {
 	setTaskRunner,
 	startTask,
 } from '../tasks';
-import { startHealth, stopHealth } from './health';
+import { startHealth, stopHealth } from '../health';
 import { rejectPendingToolPermissions } from './permissions';
 import { interruptPendingUserInput } from './user_input/user_input_pending';
 import { parseSkillCommand } from './skills';

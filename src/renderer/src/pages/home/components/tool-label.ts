@@ -64,6 +64,8 @@ export function toolPartLabel(tool: AgentToolPart): string {
 
 	const task = TASK_TOOL_LABELS[type];
 	if (task) return isToolRunning(tool) ? task.running : task.done;
+	if (type === 'get_health') return isToolRunning(tool) ? 'Loading health' : 'Health loaded';
+	if (type === 'update_health') return isToolRunning(tool) ? 'Updating health' : 'Health updated';
 
 	if (type === 'subagent' || type === 'subagents') {
 		if (isToolRunning(tool)) {

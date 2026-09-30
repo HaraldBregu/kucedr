@@ -22,7 +22,6 @@ export { workspacePath } from './system_workspace_path';
 export {
 	AGENT_FILE,
 	BOOTSTRAP_FILE,
-	HEALTH_FILE,
 	IDENTITY_FILE,
 	SOUL_FILE,
 	USER_FILE,

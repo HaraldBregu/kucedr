@@ -10,6 +10,7 @@ import {
 	ChevronDown,
 	CircleX,
 	Image,
+	HeartPulse,
 	LoaderCircle,
 	Mail,
 	Mic,
@@ -92,6 +93,7 @@ export function toolIcon(toolPart: ToolPart): ElementType<{ className?: string }
 	if (type === 'create_image') return Image;
 	if (type === 'create_video') return Video;
 	if (type === 'create_sound') return AudioLines;
+	if (type === 'get_health' || type === 'update_health') return HeartPulse;
 	if (type.includes('email')) return Mail;
 	if (type.startsWith('microphone_recorder') || type.startsWith('recorder_microphone')) return Mic;
 	if (type.startsWith('camera_recorder') || type.startsWith('recorder_camera')) return Camera;

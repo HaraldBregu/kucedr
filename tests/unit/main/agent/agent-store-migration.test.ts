@@ -88,7 +88,7 @@ it('creates clean independent agent profile stores without migration metadata', 
 	expect(agentProfileStorePath('chat')).toMatch(/chat\.json$/);
 	expect(agentProfileStorePath('voice')).toMatch(/voice\.json$/);
 	expect(agentProfileStorePath('tasks')).toMatch(/tasks\.json$/);
-	expect(agentProfileStorePath('health')).toMatch(/health\.json$/);
+	expect(agentProfileStorePath('health')).toMatch(/health\/settings\.json$/);
 	expect(agentProfileStorePath('channels')).toMatch(/channels\.json$/);
 	setAgentProfileModel('voice', 'realtimeVoice', {
 		providerId: 'openai',

@@ -345,15 +345,15 @@ export interface AgentInvokeChannelMap {
 	[AgentChannels.policyNormalizeDirectory]: { args: [value: string]; result: string };
 	[AgentChannels.healthSettings]: {
 		args: [];
-		result: import('../main/agent/health/health_types').HealthSettings;
+		result: import('../main/health/types').HealthSettings;
 	};
 	[AgentChannels.healthSaveSettings]: {
-		args: [request: Partial<import('../main/agent/health/health_types').HealthSettings>];
-		result: import('../main/agent/health/health_types').HealthSettings;
+		args: [request: Partial<import('../main/health/types').HealthSettings>];
+		result: import('../main/health/types').HealthSettings;
 	};
 	[AgentChannels.healthResetSettings]: {
 		args: [];
-		result: import('../main/agent/health/health_types').HealthSettings;
+		result: import('../main/health/types').HealthSettings;
 	};
 	[AgentChannels.healthData]: { args: []; result: string };
 	[AgentChannels.healthSaveData]: { args: [content: string]; result: string };

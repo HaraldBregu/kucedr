@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { existsSync, mkdirSync, renameSync } from 'node:fs';
 import Store from 'electron-store';
 import type { AgentMediaModelSettings } from '../../shared/agent_types';
 import {
@@ -11,6 +12,7 @@ import {
 	type AgentToolReference,
 } from '../../shared/agent_tools';
 import { userDataLocation } from '../shared/user_data_location';
+import { healthRoot } from '../health/root';
 
 type AgentProfileStore = {
 	llm?: AgentMediaModelSettings;
@@ -35,8 +37,16 @@ const EMPTY_MODEL: AgentMediaModelSettings = { providerId: '', modelId: '', opti
 const DEFAULT_TOOL: AgentToolConfiguration = { permission: 'allow' };
 const DEFAULT_TOOL_SETTINGS: Record<string, AgentToolConfiguration> = {
 	camera_recorder: { permission: 'ask' },
+	update_health: { permission: 'ask' },
 };
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
+const healthDirectory = healthRoot();
+const legacyHealthSettingsPath = path.join(settingsDirectory, 'health.json');
+const healthSettingsPath = path.join(healthDirectory, 'settings.json');
+if (!existsSync(healthSettingsPath) && existsSync(legacyHealthSettingsPath)) {
+	mkdirSync(healthDirectory, { recursive: true });
+	renameSync(legacyHealthSettingsPath, healthSettingsPath);
+}
 const SHARED_PROFILE_IDS = new Set<AgentToolProfileId>([
 	'chat',
 	'voice',
@@ -73,8 +83,8 @@ const stores = Object.fromEntries(
 	AGENT_TOOL_PROFILE_IDS.map((profileId) => [
 		profileId,
 		new Store<Partial<AgentProfileStore>>({
-			name: profileStoreName(profileId),
-			cwd: settingsDirectory,
+			name: profileId === 'health' ? 'settings' : profileStoreName(profileId),
+			cwd: profileId === 'health' ? healthDirectory : settingsDirectory,
 			accessPropertiesByDotNotation: false,
 		}),
 	])

@@ -6,7 +6,7 @@ import {
 	getHealthSettings,
 	resetHealthSettings,
 	updateHealthSettings,
-} from '../../../../../src/main/agent/health/health_store';
+} from '../../../../src/main/health/store';
 
 it('persists and resets health settings independently', () => {
 	updateHealthSettings({ every: '1h', modelOptions: { temperature: 0.2 } });

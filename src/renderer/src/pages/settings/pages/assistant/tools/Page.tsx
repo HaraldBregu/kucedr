@@ -5,6 +5,7 @@ import {
 	BookOpen,
 	FileText,
 	Globe,
+	HeartPulse,
 	Image as ImageIcon,
 	ListTodo,
 	Monitor,
@@ -173,6 +174,14 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		],
 	},
 	{
+		titleKey: 'health',
+		icon: HeartPulse,
+		tools: [
+			['Get health', 'get_health', 'Reads the current HEALTH.md information.'],
+			['Update health', 'update_health', 'Replaces the current HEALTH.md information.'],
+		],
+	},
+	{
 		titleKey: 'skills',
 		icon: Sparkles,
 		tools: [
@@ -222,6 +231,7 @@ const ORDERED_AGENT_TOOL_GROUPS = [
 	'knowledge',
 	'skills',
 	'tasks',
+	'health',
 	'coordination',
 	'goals',
 ].map((titleKey) => AGENT_TOOL_GROUPS.find((group) => group.titleKey === titleKey)!);

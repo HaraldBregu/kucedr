@@ -1,7 +1,7 @@
-import type { Agent } from '../agent';
-import { runHealthCheck } from './health_run';
-import { getHealthSettings } from './health_store';
-import type { HealthEvery, HealthLogger } from './health_types';
+import type { Agent } from '../agent/agent';
+import { runHealthCheck } from './run';
+import { getHealthSettings } from './store';
+import type { HealthEvery, HealthLogger } from './types';
 
 const INTERVAL_MS: Record<HealthEvery, number> = {
 	'0m': 0,
