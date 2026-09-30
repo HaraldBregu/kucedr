@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ChannelsPage from '../../../src/renderer/src/pages/settings/pages/channels/Page';
+import ChannelConfigurationPage from '../../../src/renderer/src/pages/settings/pages/channels/Configuration';
 import ChannelDetailPage from '../../../src/renderer/src/pages/settings/pages/channels/detail/Page';
 
 jest.mock('react-i18next', () => {
@@ -13,6 +14,8 @@ jest.mock('react-i18next', () => {
 		'settings.channels.connect': 'Connect',
 		'settings.channels.editToken': 'Edit token',
 		'settings.channels.configuration': 'Configuration',
+		'settings.channels.configurationDescription':
+			'Configure the models and tools used by messaging channels.',
 		'settings.channels.getToken': 'Get token',
 		'settings.channels.llmModel': 'Model',
 		'settings.channels.llmModelDescription': 'Model used for channel replies.',
@@ -94,6 +97,25 @@ it('shows a Plugins-style Telegram row and opens its detailed configuration', as
 	expect(screen.getByRole('button', { name: 'Add Telegram Bot API' })).toBeInTheDocument();
 	await user.click(screen.getByRole('link', { name: /Telegram Bot API Telegram/ }));
 	expect(screen.getByText('Telegram details')).toBeInTheDocument();
+});
+
+it('opens channel model configuration from the Channels catalog', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/channels']}>
+			<Routes>
+				<Route path="/settings/channels" element={<ChannelsPage />} />
+				<Route
+					path="/settings/channels/configuration"
+					element={<ChannelConfigurationPage />}
+				/>
+			</Routes>
+		</MemoryRouter>
+	);
+	expect(await screen.findByText('Telegram Bot API')).toBeInTheDocument();
+	await user.click(screen.getByRole('link', { name: /Configuration/ }));
+	expect(screen.getByRole('heading', { name: 'Configuration' })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Model' })).toBeInTheDocument();
 });
 
 it('uses the collapsible Chat settings model UI for channel models', async () => {

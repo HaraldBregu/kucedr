@@ -99,7 +99,17 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	if (location.pathname === '/settings/channels/tools') {
 		return [
 			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
+			{
+				label: t('settings.channels.configuration'),
+				path: '/settings/channels/configuration',
+			},
 			{ label: t('settings.modelServices.tools') },
+		];
+	}
+	if (location.pathname === '/settings/channels/configuration') {
+		return [
+			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
+			{ label: t('settings.channels.configuration') },
 		];
 	}
 	const assistantSubpageLabelKey = ASSISTANT_SUBPAGE_LABEL_KEYS[location.pathname];

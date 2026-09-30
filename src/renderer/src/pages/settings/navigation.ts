@@ -171,6 +171,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Channels
 	{
+		path: '/settings/channels/configuration',
+		labelKey: 'settings.channels.configuration',
+		descriptionKey: 'settings.channels.configurationDescription',
+		keywords: 'channel models voice transcription tools configuration',
+	},
+	{
 		path: '/settings/channels',
 		labelKey: 'settings.channels.enabled',
 		descriptionKey: 'settings.channels.enabledDescription',

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronRight, Wrench } from 'lucide-react';
+import { ChevronRight, SlidersHorizontal } from 'lucide-react';
 import type { CatalogService } from '@shared/provider_types';
 import {
 	SettingsLoadingRows,
@@ -13,9 +13,7 @@ import {
 	SettingsRow,
 	SettingsSection,
 } from '../../components';
-import { ChannelModelConfiguration } from './Model';
 import { ChannelRow } from './Row';
-import { ProfileMediaModels } from '../assistant/profilemodels';
 
 export default function ChannelsPage(): React.JSX.Element {
 	const { t } = useTranslation();
@@ -56,21 +54,16 @@ export default function ChannelsPage(): React.JSX.Element {
 				description={t('settings.channels.description')}
 			/>
 			<SettingsPanel>
-				<ChannelModelConfiguration kind="llm" />
-				<ChannelModelConfiguration kind="stt" />
-				<ChannelModelConfiguration kind="tts" />
-			</SettingsPanel>
-			<SettingsSection title={t('settings.overview.groups.mlModels')}>
-				<SettingsPanel>
-					<ProfileMediaModels profileId="channels" />
-				</SettingsPanel>
-			</SettingsSection>
-			<SettingsPanel>
-				<Link to="/settings/channels/tools" className="block hover:bg-muted/40">
+				<Link to="/settings/channels/configuration" className="block hover:bg-muted/40">
 					<SettingsRow
-						title={t('settings.modelServices.tools')}
-						description={t('settings.modelServices.toolsDescription')}
-						media={<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						title={t('settings.channels.configuration')}
+						description={t('settings.channels.configurationDescription')}
+						media={
+							<SlidersHorizontal
+								className="size-5 shrink-0 text-muted-foreground"
+								aria-hidden="true"
+							/>
+						}
 						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 						actionClassName="w-auto justify-end"
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}

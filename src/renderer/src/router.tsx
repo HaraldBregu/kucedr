@@ -43,6 +43,9 @@ const GeneralPage = lazy(() => import('./pages/settings/pages/general/Page'));
 const PersonaPage = lazy(() => import('./pages/settings/pages/general/persona/Page'));
 const GeneralMediaDetailPage = lazy(() => import('./pages/settings/pages/general/media/Page'));
 const ChannelsPage = lazy(() => import('./pages/settings/pages/channels/Page'));
+const ChannelConfigurationPage = lazy(
+	() => import('./pages/settings/pages/channels/Configuration')
+);
 const PluginsPage = lazy(() => import('./pages/settings/pages/plugins/Page'));
 const PluginDetailPage = lazy(() => import('./pages/settings/pages/plugins/Detail'));
 const ChannelDetailPage = lazy(() => import('./pages/settings/pages/channels/detail/Page'));
@@ -312,6 +315,14 @@ const routes: RouteObject[] = [
 								element: (
 									<SettingsRouteWrapper>
 										<ChannelsPage />
+									</SettingsRouteWrapper>
+								),
+							},
+							{
+								path: 'configuration',
+								element: (
+									<SettingsRouteWrapper>
+										<ChannelConfigurationPage />
 									</SettingsRouteWrapper>
 								),
 							},

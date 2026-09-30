@@ -1666,6 +1666,7 @@
 			"next": "Next up",
 			"catalog": "Catalog",
 			"configuration": "Configuration",
+			"configurationDescription": "Configure the models and tools used by messaging channels.",
 			"searchPlaceholder": "Search channels",
 			"configured": "Configured",
 			"notConfigured": "Not configured",

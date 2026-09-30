@@ -1666,6 +1666,7 @@
 			"next": "Prossimo",
 			"catalog": "Catalogo",
 			"configuration": "Configurazione",
+			"configurationDescription": "Configura i modelli e gli strumenti usati dai canali di messaggistica.",
 			"searchPlaceholder": "Cerca canali",
 			"configured": "Configurato",
 			"notConfigured": "Non configurato",
