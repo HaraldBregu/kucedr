@@ -12,15 +12,20 @@ jest.mock('react-i18next', () => {
 		'settings.channels.connect': 'Connect',
 		'settings.channels.editToken': 'Edit token',
 		'settings.channels.configuration': 'Configuration',
+		'settings.channels.getToken': 'Get token',
 		'common.save': 'Save',
 		'common.cancel': 'Cancel',
 	};
-	const t = (key: string): string => translations[key] ?? key;
+	const t = (key: string, values?: { name?: string }): string => {
+		if (key === 'settings.integrations.add') return `Add ${values?.name}`;
+		if (key === 'settings.integrations.options') return `Options for ${values?.name}`;
+		return translations[key] ?? key;
+	};
 	return { useTranslation: () => ({ t }) };
 });
 
 const channels = jest.fn();
-const getChannel = jest.fn();
+const listChannels = jest.fn();
 const setChannel = jest.fn();
 
 beforeEach(() => {
@@ -33,7 +38,7 @@ beforeEach(() => {
 	});
 	Object.defineProperty(window, 'provider', {
 		configurable: true,
-		value: { getChannel, setChannel },
+		value: { listChannels, setChannel },
 	});
 	Object.defineProperty(window, 'models', {
 		configurable: true,
@@ -49,6 +54,9 @@ beforeEach(() => {
 			name: 'Telegram Bot API',
 			type: 'bot',
 			url: 'https://api.telegram.org',
+			instructions:
+				'Open Telegram, message @BotFather, send /newbot and follow the prompts, then paste the bot token here.',
+			credentials: [{ key: 'apiKey', label: 'Bot token', type: 'password', required: true }],
 			provider: {
 				id: 'telegram',
 				name: 'Telegram',
@@ -58,11 +66,11 @@ beforeEach(() => {
 			},
 		},
 	]);
-	getChannel.mockResolvedValue({ id: 'telegram', configured: false });
+	listChannels.mockResolvedValue([]);
 	setChannel.mockResolvedValue({ id: 'telegram', configured: true });
 });
 
-it('shows a single Telegram connection and opens its detailed configuration', async () => {
+it('shows a Plugins-style Telegram row and opens its detailed configuration', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/channels']}>
@@ -72,11 +80,10 @@ it('shows a single Telegram connection and opens its detailed configuration', as
 			</Routes>
 		</MemoryRouter>
 	);
-	expect(await screen.findAllByRole('heading', { name: 'Telegram', exact: true })).toHaveLength(1);
-	expect(screen.getByText('Telegram Bot API')).toBeInTheDocument();
-	expect(screen.getByText('Not configured')).toBeInTheDocument();
-	expect(getChannel).toHaveBeenCalledWith('telegram');
-	await user.click(screen.getByRole('link', { name: 'Configuration' }));
+	expect(await screen.findByText('Telegram Bot API')).toBeInTheDocument();
+	expect(screen.getByText('Telegram')).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Add Telegram Bot API' })).toBeInTheDocument();
+	await user.click(screen.getByRole('link', { name: /Telegram Bot API Telegram/ }));
 	expect(screen.getByText('Telegram details')).toBeInTheDocument();
 });
 
@@ -87,15 +94,20 @@ it('saves a trimmed Telegram token and clears it after success', async () => {
 			<ChannelsPage />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('button', { name: 'Connect' }));
+	await user.click(await screen.findByRole('button', { name: 'Add Telegram Bot API' }));
+	expect(
+		screen.getByText(
+			'Open Telegram, message @BotFather, send /newbot and follow the prompts, then paste the bot token here.'
+		)
+	).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
 	await user.type(screen.getByLabelText('Bot token'), '  test-token  ');
 	await user.click(screen.getByRole('button', { name: 'Save' }));
 	await waitFor(() =>
 		expect(setChannel).toHaveBeenCalledWith({ id: 'telegram', apiKey: 'test-token' })
 	);
-	expect(await screen.findByText('Configured')).toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: 'Edit token' }));
+	await user.click(await screen.findByRole('button', { name: 'Options for Telegram Bot API' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Edit token' }));
 	expect(screen.getByLabelText('Bot token')).toHaveValue('');
 });
 
@@ -107,10 +119,10 @@ it('keeps the token editable when saving fails', async () => {
 			<ChannelsPage />
 		</MemoryRouter>
 	);
-	await user.click(await screen.findByRole('button', { name: 'Connect' }));
+	await user.click(await screen.findByRole('button', { name: 'Add Telegram Bot API' }));
 	await user.type(screen.getByLabelText('Bot token'), 'test-token');
 	await user.click(screen.getByRole('button', { name: 'Save' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Token could not be saved');
 	expect(screen.getByLabelText('Bot token')).toHaveValue('test-token');
-	expect(screen.getByText('Not configured')).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Save' })).toBeEnabled();
 });

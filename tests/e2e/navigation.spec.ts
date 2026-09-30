@@ -744,14 +744,17 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 	).toBeVisible();
 	await expect(sidebar.locator('.overflow-y-auto')).toHaveCSS('padding-bottom', '16px');
 	const telegram = page
-		.getByRole('heading', { name: 'Telegram', exact: true })
-		.locator('xpath=ancestor::*[@data-slot="card"][1]');
-	await telegram.getByRole('button', { name: 'Connect', exact: true }).click();
-	await telegram.getByLabel('Bot token', { exact: true }).fill('channel-test-token');
-	await telegram.getByRole('button', { name: 'Save', exact: true }).click();
-	await expect(telegram.getByRole('button', { name: 'Edit token' })).toBeVisible();
-	await expect(telegram).toContainText('Configured');
-	await expect(page.getByRole('heading', { name: 'Telegram', exact: true })).toHaveCount(1);
+		.getByText('Telegram Bot API', { exact: true })
+		.locator('xpath=ancestor::*[@data-slot="item"][1]');
+	await telegram.getByRole('button', { name: 'Add Telegram Bot API', exact: true }).click();
+	const connectDialog = page.getByRole('dialog');
+	await expect(connectDialog).toContainText('Open Telegram, message @BotFather');
+	await connectDialog.getByLabel('Bot token', { exact: true }).fill('channel-test-token');
+	await connectDialog.getByRole('button', { name: 'Save', exact: true }).click();
+	await expect(
+		telegram.getByRole('button', { name: 'Options for Telegram Bot API' })
+	).toBeVisible();
+	await expect(page.getByText('Telegram Bot API', { exact: true })).toHaveCount(1);
 	await expect(
 		sidebar
 			.locator('[data-slot="split-pane-group"]')
@@ -765,7 +768,7 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 		path: testInfo.outputPath('channels-configuration.png'),
 		fullPage: true,
 	});
-	await telegram.getByRole('link', { name: 'Configuration', exact: true }).click();
+	await telegram.click();
 	await expect(page).toHaveURL(/#\/settings\/channels\/channelDetail\/telegram$/);
 	await expect(page.getByRole('heading', { name: 'Telegram', exact: true })).toBeVisible();
 	await page.evaluate(() => {

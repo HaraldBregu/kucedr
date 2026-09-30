@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, Wrench } from 'lucide-react';
 import type { CatalogService } from '@shared/provider_types';
 import {
 	SettingsLoadingRows,
+	SettingsEmptyState,
 	SettingsNotice,
 	SettingsPageHeader,
 	SettingsPageShell,
@@ -13,23 +14,30 @@ import {
 	SettingsSection,
 } from '../../components';
 import { ChannelModelConfiguration } from './Model';
-import { TelegramConnection } from './Connection';
+import { ChannelConnect } from './Connect';
+import { ChannelRow } from './Row';
 import { ProfileMediaModels } from '../assistant/profilemodels';
 
 export default function ChannelsPage(): React.JSX.Element {
 	const { t } = useTranslation();
-	const [service, setService] = useState<CatalogService | null>(null);
-	const [configured, setConfigured] = useState(false);
+	const navigate = useNavigate();
+	const [services, setServices] = useState<readonly CatalogService[]>([]);
+	const [configuredIds, setConfiguredIds] = useState<ReadonlySet<string>>(new Set());
+	const [selectedService, setSelectedService] = useState<CatalogService | null>(null);
+	const [savingId, setSavingId] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+	const [connectionError, setConnectionError] = useState('');
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([window.app.channels(), window.provider.getChannel('telegram')])
+		void Promise.all([window.app.channels(), window.provider.listChannels()])
 			.then(
-				([services, credential]) => {
+				([entries, credentials]) => {
 					if (!mounted) return;
-					setService(services.find((entry) => entry.provider.id === 'telegram') ?? null);
-					setConfigured(credential?.configured ?? false);
+					setServices(entries);
+					setConfiguredIds(
+						new Set(credentials.filter(({ configured }) => configured).map(({ id }) => id))
+					);
 					setError(null);
 				},
 				(cause) => {
@@ -45,11 +53,44 @@ export default function ChannelsPage(): React.JSX.Element {
 		};
 	}, [t]);
 
+	const openConnection = (service: CatalogService): void => {
+		setConnectionError('');
+		setSelectedService(service);
+	};
+
+	const saveConnection = async (apiKey: string): Promise<boolean> => {
+		if (!selectedService) return false;
+		const providerId = selectedService.provider.id;
+		setSavingId(providerId);
+		setConnectionError('');
+		try {
+			await window.provider.setChannel({ id: providerId, apiKey });
+			setConfiguredIds((current) => new Set(current).add(providerId));
+			return true;
+		} catch (cause) {
+			setConnectionError(cause instanceof Error ? cause.message : String(cause));
+			return false;
+		} finally {
+			setSavingId(null);
+		}
+	};
+
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.channels')}
 				description={t('settings.channels.description')}
+			/>
+			<ChannelConnect
+				key={selectedService?.provider.id ?? 'closed'}
+				service={selectedService}
+				configured={Boolean(
+					selectedService && configuredIds.has(selectedService.provider.id)
+				)}
+				saving={savingId === selectedService?.provider.id}
+				error={connectionError}
+				onClose={() => setSelectedService(null)}
+				onSave={saveConnection}
 			/>
 			<SettingsPanel>
 				<ChannelModelConfiguration kind="llm" />
@@ -77,14 +118,23 @@ export default function ChannelsPage(): React.JSX.Element {
 				{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 				{loading ? (
 					<SettingsLoadingRows rows={1} />
+				) : services.length === 0 ? (
+					<SettingsEmptyState title={t('settings.channels.notConfigured')} />
 				) : (
-					service && (
-						<TelegramConnection
-							service={service}
-							configured={configured}
-							onSaved={() => setConfigured(true)}
-						/>
-					)
+					<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-3 pb-4 md:grid-cols-2">
+						{services.map((service) => (
+							<ChannelRow
+								key={`${service.provider.id}-${service.id}`}
+								service={service}
+								configured={configuredIds.has(service.provider.id)}
+								saving={savingId === service.provider.id}
+								onOpen={() =>
+									navigate(`/settings/channels/channelDetail/${service.provider.id}`)
+								}
+								onEdit={() => openConnection(service)}
+							/>
+						))}
+					</div>
 				)}
 			</SettingsSection>
 		</SettingsPageShell>
