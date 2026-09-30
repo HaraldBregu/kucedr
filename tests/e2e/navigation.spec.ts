@@ -162,6 +162,8 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 	await expect(workspaceButton.locator('.lucide-folder')).toBeVisible();
 	await workspaceButton.click();
 	await expect(page).toHaveURL(/#\/workspace$/);
+	const homeButton = navigationBar.getByRole('button', { name: 'Home' });
+	await expect(homeButton.locator('.lucide-house')).toBeVisible();
 	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
 	await workspaceSidebar.getByRole('button', { name: 'Search' }).click();
 	await expect(page.getByPlaceholder('Search routes and settings...')).toBeVisible();
