@@ -13,12 +13,6 @@ export function SidebarItems(): React.JSX.Element {
 		<nav className="shrink-0 px-2 pt-2">
 			<SidebarMenu>
 				<SidebarMenuItem>
-					<SidebarMenuButton onClick={open}>
-						<Search className="size-4 shrink-0" />
-						<span>{t('navigationBar.search')}</span>
-					</SidebarMenuButton>
-				</SidebarMenuItem>
-				<SidebarMenuItem>
 					<SidebarMenuButton onClick={() => navigate('/settings/general')}>
 						<Settings className="size-4 shrink-0" />
 						<span>{t('settings.title')}</span>
@@ -30,6 +24,12 @@ export function SidebarItems(): React.JSX.Element {
 					>
 						<CircleHelp className="size-4 shrink-0" />
 						<span>{t('settings.sidebar.help')}</span>
+					</SidebarMenuButton>
+				</SidebarMenuItem>
+				<SidebarMenuItem>
+					<SidebarMenuButton onClick={open}>
+						<Search className="size-4 shrink-0" />
+						<span>{t('navigationBar.search')}</span>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>
