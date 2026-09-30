@@ -873,9 +873,16 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 		);
 		ipcMain.handle(
 			AgentChannels.getCompactModel,
-			wrapAgentHandler(mainAccess, () => getCompactModel() ?? {
-				providerId: '', modelId: '', options: {},
-			}, AgentChannels.getCompactModel)
+			wrapAgentHandler(
+				mainAccess,
+				() =>
+					getCompactModel() ?? {
+						providerId: '',
+						modelId: '',
+						options: {},
+					},
+				AgentChannels.getCompactModel
+			)
 		);
 		ipcMain.handle(
 			AgentChannels.setCompactModel,

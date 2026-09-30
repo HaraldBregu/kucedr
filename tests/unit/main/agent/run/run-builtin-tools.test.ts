@@ -6,11 +6,6 @@ it('registers health tools without app-management tools', () => {
 	expect(ids).toEqual(expect.arrayContaining(['get_health', 'update_health']));
 
 	expect(ids).not.toEqual(
-		expect.arrayContaining([
-			'list_apps',
-			'open_apps',
-			'close_apps',
-			'update_health_settings',
-		])
+		expect.arrayContaining(['list_apps', 'open_apps', 'close_apps', 'update_health_settings'])
 	);
 });

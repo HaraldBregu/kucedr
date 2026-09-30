@@ -232,7 +232,8 @@ export const agent: AgentApi = {
 	archiveWorkspaceEntry: (entryPath, action) => {
 		const normalizedEntryPath = optionalTrimmedString(entryPath);
 		if (!normalizedEntryPath) throw new Error('Invalid workspace file path.');
-		if (action !== 'compress' && action !== 'extract') throw new Error('Invalid workspace archive action.');
+		if (action !== 'compress' && action !== 'extract')
+			throw new Error('Invalid workspace archive action.');
 		return typedInvokeUnwrap(AgentChannels.archiveWorkspaceEntry, normalizedEntryPath, action);
 	},
 	createWorkspaceDirectory: (parentPath, name) => {

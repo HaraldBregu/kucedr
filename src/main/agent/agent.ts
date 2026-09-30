@@ -467,8 +467,7 @@ export class Agent {
 	}
 
 	getLastMessages(sessionId: string): AgentHistoryMessage[] {
-		return loadMessages(this.config, sessionId)
-			.flatMap(toHistoryMessages);
+		return loadMessages(this.config, sessionId).flatMap(toHistoryMessages);
 	}
 
 	getPromptInputCapabilities(): AgentPromptInputCapabilities | null {

@@ -14,7 +14,8 @@ function healthPath(): string {
 
 function templatePath(): string {
 	const relativePath = path.join('resources', 'templates', HEALTH_FILE);
-	if (process.defaultApp || !process.resourcesPath) return path.resolve(process.cwd(), relativePath);
+	if (process.defaultApp || !process.resourcesPath)
+		return path.resolve(process.cwd(), relativePath);
 	return path.join(process.resourcesPath, relativePath);
 }
 
