@@ -144,6 +144,28 @@ export function validateProviderManifest(value: unknown): string[] {
 			) {
 				errors.push(`${itemPath}.instructions must be a non-empty string when present.`);
 			}
+			if (key === 'bots' && entry.credentials !== undefined) {
+				if (!Array.isArray(entry.credentials) || entry.credentials.length === 0) {
+					errors.push(`${itemPath}.credentials must be a non-empty array when present.`);
+				} else {
+					entry.credentials.forEach((value, credentialIndex) => {
+						const credentialPath = `${itemPath}.credentials[${credentialIndex}]`;
+						if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+							errors.push(`${credentialPath} must be an object.`);
+							return;
+						}
+						const credential = value as Record<string, unknown>;
+						if (!isNonEmptyString(credential.key))
+							errors.push(`${credentialPath}.key must be a non-empty string.`);
+						if (!isNonEmptyString(credential.label))
+							errors.push(`${credentialPath}.label must be a non-empty string.`);
+						if (credential.type !== 'password')
+							errors.push(`${credentialPath}.type must be password.`);
+						if (typeof credential.required !== 'boolean')
+							errors.push(`${credentialPath}.required must be a boolean.`);
+					});
+				}
+			}
 			if (key === 'mcp_servers') {
 				if (
 					!Array.isArray(entry.scopes) ||

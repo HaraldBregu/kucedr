@@ -121,7 +121,15 @@ export interface ProviderManifestBot {
 	readonly id: string;
 	readonly name: string;
 	readonly instructions?: string;
+	readonly credentials?: readonly ProviderManifestBotCredential[];
 	readonly url: string;
+}
+
+export interface ProviderManifestBotCredential {
+	readonly key: string;
+	readonly label: string;
+	readonly type: 'password';
+	readonly required: boolean;
 }
 
 /** A non-model service in resources/providers/<id>/manifest.json. */
@@ -130,6 +138,7 @@ export interface CatalogEntryService {
 	readonly name: string;
 	readonly description?: string;
 	readonly instructions?: string;
+	readonly credentials?: readonly ProviderManifestBotCredential[];
 	readonly type: string;
 	readonly authentication?: AuthenticationType;
 	readonly scopes?: readonly string[];

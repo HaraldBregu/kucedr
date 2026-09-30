@@ -11,6 +11,14 @@ describe('channel manifests', () => {
 				name: 'Telegram Bot API',
 				instructions:
 					'Open Telegram, message @BotFather, send /newbot and follow the prompts, then paste the bot token here.',
+				credentials: [
+					{
+						key: 'apiKey',
+						label: 'Bot token',
+						type: 'password',
+						required: true,
+					},
+				],
 				provider: expect.objectContaining({
 					id: 'telegram',
 					name: 'Telegram',
