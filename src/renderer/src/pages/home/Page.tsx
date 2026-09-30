@@ -439,8 +439,13 @@ function PageContent(): ReactElement {
 		return () => window.removeEventListener('kucedr:focus-chat-input', requestFocus);
 	}, []);
 	useEffect(() => {
-		if (focusRequest > 0 && !agent.historyLoading) agent.switchToTyping();
-	}, [focusRequest, chatSessionId, agent.historyLoading, agent.switchToTyping]);
+		if (focusRequest === 0 || agent.historyLoading) return;
+		updateMode('chat');
+		const frame = window.requestAnimationFrame(() => {
+			composerRef.current?.querySelector<HTMLElement>('[role="textbox"]')?.focus();
+		});
+		return () => window.cancelAnimationFrame(frame);
+	}, [focusRequest, chatSessionId, agent.historyLoading, updateMode]);
 	const dictation = useRealtimeDictation({
 		value: agent.input,
 		onValueChange: agent.setInput,
