@@ -414,7 +414,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('shows Settings and Help as sidebar items above the footer without a Search item', async () => {
+it('shows Search, Settings and Get Help as sidebar items above the footer', async () => {
 	const user = userEvent.setup();
 	listSessions.mockResolvedValue([]);
 
@@ -443,7 +443,7 @@ it('shows Settings and Help as sidebar items above the footer without a Search i
 	expect(
 		screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })
 	).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'navigationBar.search' }).closest('[data-slot="sidebar-footer"]')).toBeNull();
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	expect(accountMenu.closest('[data-slot="sidebar-footer"]')).not.toBeNull();
 	await user.click(accountMenu);

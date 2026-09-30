@@ -176,7 +176,7 @@
 			"summary": "Account, Cloud, Provider ecc.",
 			"assistant": "Assistente",
 			"getHelp": "Ottieni aiuto",
-			"help": "Aiuto",
+			"help": "Ottieni aiuto",
 			"provider": "Provider",
 			"accountMenu": "Menu account per {{name}}",
 			"manageAccount": "Gestisci account",
