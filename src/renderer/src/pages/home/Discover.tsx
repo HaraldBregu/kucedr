@@ -147,7 +147,7 @@ export function Discover(): ReactElement {
 						<Card key={item.path} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
 							<Link
 								to={item.path}
-								className="flex h-24 flex-col gap-1 p-2.5 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
+								className="flex h-20 flex-col gap-1 p-2.5 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
 							>
 								<div className="flex items-center gap-2">
 									<item.icon className="size-6 shrink-0 text-muted-foreground" aria-hidden="true" />
