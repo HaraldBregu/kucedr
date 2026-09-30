@@ -1,3 +1,4 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
 import { Folder, Menu, Moon, Search, Sun, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -63,43 +64,55 @@ export const NavigationBar = React.memo(function NavigationBar({
 		{ path: '/settings/apps', label: t('settings.tabs.apps') },
 	];
 	const searchButton = onSearch ? (
-		<Button
-			type="button"
-			variant="ghost"
-			size="icon"
-			className="size-8 rounded-full"
-			onClick={onSearch}
-			title={searchLabel}
-			aria-label={searchLabel}
-		>
-			<Search className="size-4" strokeWidth={1.8} />
-		</Button>
+		<Tooltip>
+			<TooltipTrigger render={
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
+					className="size-8 rounded-full"
+					onClick={onSearch}
+					aria-label={searchLabel}
+				>
+					<Search className="size-4" strokeWidth={1.8} />
+				</Button>
+			} />
+			<TooltipContent side="bottom">{searchLabel}</TooltipContent>
+		</Tooltip>
 	) : null;
 	const workspaceButton = onSearch ? (
-		<Button
-			type="button"
-			variant="ghost"
-			size="icon"
-			className="size-8 rounded-full"
-			onClick={() => navigate('/workspace')}
-			title={workspaceLabel}
-			aria-label={workspaceLabel}
-		>
-			<Folder className="size-4" strokeWidth={1.8} />
-		</Button>
+		<Tooltip>
+			<TooltipTrigger render={
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
+					className="size-8 rounded-full"
+					onClick={() => navigate('/workspace')}
+					aria-label={workspaceLabel}
+				>
+					<Folder className="size-4" strokeWidth={1.8} />
+				</Button>
+			} />
+			<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
+		</Tooltip>
 	) : null;
 	const routeButton = !isOnboarding ? (
-		<Button
-			type="button"
-			variant="ghost"
-			size="icon"
-			className="size-8 rounded-full"
-			onClick={() => navigate('/settings/account')}
-			title={settingsLabel}
-			aria-label={settingsLabel}
-		>
-			<User className="size-4" strokeWidth={1.8} />
-		</Button>
+		<Tooltip>
+			<TooltipTrigger render={
+				<Button
+					type="button"
+					variant="ghost"
+					size="icon"
+					className="size-8 rounded-full"
+					onClick={() => navigate('/settings/account')}
+					aria-label={settingsLabel}
+				>
+					<User className="size-4" strokeWidth={1.8} />
+				</Button>
+			} />
+			<TooltipContent side="bottom">{settingsLabel}</TooltipContent>
+		</Tooltip>
 	) : null;
 	return (
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
@@ -127,14 +140,19 @@ export const NavigationBar = React.memo(function NavigationBar({
 					className={isMac ? 'ml-[84px]' : undefined}
 				>
 					{!isMac && (
-						<button
-							type="button"
-							onClick={() => window.win?.popupMenu()}
-							className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground"
-							title={t('navigationBar.applicationMenu')}
-						>
-							<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
-						</button>
+						<Tooltip>
+							<TooltipTrigger render={
+								<button
+									type="button"
+									aria-label={t('navigationBar.applicationMenu')}
+									onClick={() => window.win?.popupMenu()}
+									className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground"
+								>
+									<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
+								</button>
+							} />
+							<TooltipContent side="bottom">{t('navigationBar.applicationMenu')}</TooltipContent>
+						</Tooltip>
 					)}
 					{isMac ? (
 						<div
@@ -145,15 +163,20 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</div>
 					) : null}
 					{!isHome && !isWorkspace && !isOnboarding && !isSettings && (
-						<Button
-							type="button"
-							variant="default"
-							size="xs"
-							onClick={() => navigate('/home')}
-							title={chatButtonLabel}
-						>
-							{chatButtonLabel}
-						</Button>
+						<Tooltip>
+							<TooltipTrigger render={
+								<Button
+									type="button"
+									aria-label={chatButtonLabel}
+									variant="default"
+									size="xs"
+									onClick={() => navigate('/home')}
+								>
+									{chatButtonLabel}
+								</Button>
+							} />
+							<TooltipContent side="bottom">{chatButtonLabel}</TooltipContent>
+						</Tooltip>
 					)}
 
 					{/* {isSettings && <NavigationButtons />} */}
@@ -177,17 +200,21 @@ export const NavigationBar = React.memo(function NavigationBar({
 					{searchButton}
 					{workspaceButton}
 					{routeButton}
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon"
-						className="size-8 rounded-full"
-						onClick={() => setTheme(nextTheme)}
-						title={themeLabel}
-						aria-label={themeLabel}
-					>
-						<ThemeIcon className="size-4" strokeWidth={1.8} />
-					</Button>
+					<Tooltip>
+						<TooltipTrigger render={
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon"
+								className="size-8 rounded-full"
+								onClick={() => setTheme(nextTheme)}
+								aria-label={themeLabel}
+							>
+								<ThemeIcon className="size-4" strokeWidth={1.8} />
+							</Button>
+						} />
+						<TooltipContent side="bottom">{themeLabel}</TooltipContent>
+					</Tooltip>
 				</div>
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}

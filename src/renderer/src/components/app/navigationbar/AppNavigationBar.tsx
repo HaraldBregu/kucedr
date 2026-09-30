@@ -1,3 +1,4 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Menu } from 'lucide-react';
 import type { AppNavigationBarButton as AppNavigationBarButtonDescriptor } from '@shared/window_types';
 import { Button } from '@/components/ui/button';
@@ -27,17 +28,21 @@ export function AppNavigationBar({
 		<NavigationBarContainer>
 			<NavigationBarLeftContainer isMac={isMac}>
 				{!isMac ? (
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon-sm"
-						className="ml-2 text-muted-foreground"
-						onClick={() => window.win.popupMenu()}
-						title="Application menu"
-						aria-label="Application menu"
-					>
-						<Menu strokeWidth={1.5} />
-					</Button>
+					<Tooltip>
+						<TooltipTrigger render={
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-sm"
+								className="ml-2 text-muted-foreground"
+								onClick={() => window.win.popupMenu()}
+								aria-label="Application menu"
+							>
+								<Menu strokeWidth={1.5} />
+							</Button>
+						} />
+						<TooltipContent side="bottom">{"Application menu"}</TooltipContent>
+					</Tooltip>
 				) : null}
 				{leftButtons.map((button) => (
 					<AppNavigationBarButton key={button.id} button={button} />
