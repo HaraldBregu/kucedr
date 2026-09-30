@@ -702,7 +702,10 @@ function PageContent(): ReactElement {
 				<div
 					ref={workspaceRef}
 					data-slot="home-workspace"
-					className={cn('relative flex min-h-0 flex-1 flex-col bg-background text-foreground', showEmptyConversation && 'overflow-y-auto')}
+					className={cn(
+						'relative flex min-h-0 flex-1 flex-col bg-background text-foreground',
+						showEmptyConversation && 'overflow-y-auto'
+					)}
 				>
 					<span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
@@ -712,35 +715,40 @@ function PageContent(): ReactElement {
 							<EmptyConversation />
 						</div>
 					) : (
-					<ChatContainerRoot
-						className="min-h-0 p-0 [scrollbar-gutter:auto]"
-						contextRef={chatScrollRef}
-					>
-						<ChatContainerContent className="mx-auto min-h-full w-full max-w-4xl gap-5 px-4 pt-6">
-							<Messages
-								messages={visibleMessages}
-								isLoading={agent.isLoading}
-								voiceMode={voiceMode !== null}
-								activeAgentId={agent.chatState.activeAgentId}
-								onEdit={agent.editUserMessage}
-								onReply={agent.replyToMessage}
-								onImplement={agent.implementPlan}
-							/>
-							<ChatContainerScrollAnchor className="h-[var(--composer-height,7rem)]" />
-						</ChatContainerContent>
-						<div className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center">
-							<ScrollButton
-								type="button"
-								aria-label="Scroll to latest"
-								className="pointer-events-auto"
-							/>
-						</div>
-					</ChatContainerRoot>
+						<ChatContainerRoot
+							className="min-h-0 p-0 [scrollbar-gutter:auto]"
+							contextRef={chatScrollRef}
+						>
+							<ChatContainerContent className="mx-auto min-h-full w-full max-w-4xl gap-5 px-4 pt-6">
+								<Messages
+									messages={visibleMessages}
+									isLoading={agent.isLoading}
+									voiceMode={voiceMode !== null}
+									activeAgentId={agent.chatState.activeAgentId}
+									onEdit={agent.editUserMessage}
+									onReply={agent.replyToMessage}
+									onImplement={agent.implementPlan}
+								/>
+								<ChatContainerScrollAnchor className="h-[var(--composer-height,7rem)]" />
+							</ChatContainerContent>
+							<div className="pointer-events-none absolute inset-x-0 bottom-[var(--composer-height,6rem)] z-30 flex justify-center">
+								<ScrollButton
+									type="button"
+									aria-label="Scroll to latest"
+									className="pointer-events-auto"
+								/>
+							</div>
+						</ChatContainerRoot>
 					)}
 					<div
 						ref={composerRef}
 						data-slot="home-composer-shell"
-						className={cn('z-20 flex justify-center px-4', showEmptyConversation ? 'w-full shrink-0 pb-4' : 'absolute inset-x-0 bottom-0 pb-5 pt-3')}
+						className={cn(
+							'z-20 flex justify-center px-4',
+							showEmptyConversation
+								? 'w-full shrink-0 pb-4'
+								: 'absolute inset-x-0 bottom-0 pb-5 pt-3'
+						)}
 					>
 						<div className="mx-auto w-full max-w-4xl">
 							<RecorderErrorMessage
