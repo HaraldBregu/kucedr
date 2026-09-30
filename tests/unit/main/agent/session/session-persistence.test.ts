@@ -4,6 +4,7 @@ import path from 'node:path';
 import { appendRun } from '../../../../../src/main/agent/session/session_append_run';
 import { atomicWriteFile } from '../../../../../src/main/agent/session/session_atomic_write';
 import { loadMessagesBySessionId } from '../../../../../src/main/agent/session/session_load_messages_by_session_id';
+import { listSessions } from '../../../../../src/main/agent/session/session_list_sessions';
 import { messagesBackupFilePath } from '../../../../../src/main/agent/session/session_messages_backup_file_path';
 import { messagesFilePath } from '../../../../../src/main/agent/session/session_messages_file_path';
 import { createSessionState } from '../../../../../src/main/agent/session/session_module_state';
@@ -25,6 +26,27 @@ describe('session persistence', () => {
 
 	afterEach(() => {
 		fs.rmSync(temporaryRoot, { recursive: true, force: true });
+	});
+
+	it('reports the latest transcript or run update for a session', () => {
+		const location = path.join(temporaryRoot, 'agent');
+		const state = createSessionState();
+		state.id = SESSION_ID;
+		state.folderName = SESSION_ID;
+		state.sessionsPath = sessionsRoot(location);
+		state.messages = [{ role: 'user', content: 'Plan today' }];
+		persist(state);
+		const directory = path.join(state.sessionsPath, SESSION_ID);
+		const transcriptTime = new Date('2020-01-02T00:00:00Z');
+		const runTime = new Date('2020-01-03T00:00:00Z');
+		const oldTime = new Date('2020-01-01T00:00:00Z');
+		fs.utimesSync(messagesFilePath(state), transcriptTime, transcriptTime);
+		fs.utimesSync(directory, oldTime, oldTime);
+		expect(listSessions(location)[0].updatedAtMs).toBe(transcriptTime.getTime());
+		fs.writeFileSync(runFilePath(state), '{}\n');
+		fs.utimesSync(runFilePath(state), runTime, runTime);
+		fs.utimesSync(directory, oldTime, oldTime);
+		expect(listSessions(location)[0].updatedAtMs).toBe(runTime.getTime());
 	});
 
 	it('deletes only the session folder matching the selected id', () => {
