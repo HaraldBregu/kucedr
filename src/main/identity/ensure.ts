@@ -8,7 +8,11 @@ export function ensureIdentity(workspace: string): string {
 	if (existsSync(target)) return target;
 	mkdirSync(directory, { recursive: true });
 	const legacy = path.join(workspace, 'IDENTITY.md');
-	const resources = process.defaultApp || !process.resourcesPath ? process.cwd() : process.resourcesPath;
-	copyFileSync(existsSync(legacy) ? legacy : path.join(resources, 'resources', 'templates', 'IDENTITY.md'), target);
+	const resources =
+		process.defaultApp || !process.resourcesPath ? process.cwd() : process.resourcesPath;
+	copyFileSync(
+		existsSync(legacy) ? legacy : path.join(resources, 'resources', 'templates', 'IDENTITY.md'),
+		target
+	);
 	return target;
 }
