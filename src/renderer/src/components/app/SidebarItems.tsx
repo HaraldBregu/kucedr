@@ -29,10 +29,10 @@ export function SidebarItems(): React.JSX.Element {
 					</SidebarMenuButton>
 				</SidebarMenuItem>
 				<SidebarMenuItem>
-					<SidebarMenuButton onClick={open} aria-keyshortcuts={isMac ? 'Meta+f' : 'Control+f'}>
+					<SidebarMenuButton className="group/search" onClick={open} aria-keyshortcuts={isMac ? 'Meta+f' : 'Control+f'}>
 						<Search className="size-4 shrink-0" />
 						<span>{t('navigationBar.search')}</span>
-						<CommandShortcut aria-hidden="true">{isMac ? '⌘F' : 'Ctrl+F'}</CommandShortcut>
+						<CommandShortcut className="opacity-0 group-hover/search:opacity-100" aria-hidden="true">{isMac ? '⌘F' : 'Ctrl+F'}</CommandShortcut>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
 			</SidebarMenu>
