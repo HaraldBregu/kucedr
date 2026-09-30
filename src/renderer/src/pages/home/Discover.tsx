@@ -62,7 +62,7 @@ export function Discover(): ReactElement {
 							<Card key={session.id} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
 								<button
 									type="button"
-									className="flex h-24 w-full flex-col justify-between gap-3 p-4 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
+									className="flex h-20 w-full flex-col justify-between gap-1 p-3 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
 									onClick={() => {
 										setSessionId(session.id);
 										setSessionTitle?.(session.title, session.id);
