@@ -38,6 +38,7 @@ const DEFAULT_TOOL: AgentToolConfiguration = { permission: 'allow' };
 const DEFAULT_TOOL_SETTINGS: Record<string, AgentToolConfiguration> = {
 	camera_recorder: { permission: 'ask' },
 	update_health: { permission: 'ask' },
+	update_identity: { permission: 'ask' },
 };
 const settingsDirectory = path.resolve(userDataLocation(), 'settings');
 const healthDirectory = healthRoot();

@@ -216,6 +216,8 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'system',
 		icon: Settings,
 		tools: [
+			['Get identity', 'get_identity', 'Reads the agent identity from IDENTITY.md.'],
+			['Update identity', 'update_identity', 'Creates or replaces the agent identity in IDENTITY.md.'],
 			['Request user input', 'ask', 'Asks the user for information needed to continue.'],
 			['Complete bootstrap', 'complete_bootstrap', 'Marks initial agent setup as complete.'],
 		],

@@ -80,6 +80,8 @@ const RUNTIME_TOOL_KEYS = {
 	screen_recorder_stop: 'screen_recorder_stop',
 	query_knowledge: 'query_knowledge',
 	get_health: 'get_health',
+	get_identity: 'get_identity',
+	update_identity: 'update_identity',
 	update_health: 'update_health',
 	create_task: 'create_task',
 	update_task: 'update_task',

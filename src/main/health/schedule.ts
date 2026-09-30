@@ -1,4 +1,5 @@
 import type { Agent } from '../agent/agent';
+import { getHealth } from './data';
 import { runHealthCheck } from './run';
 import { getHealthSettings } from './store';
 import type { HealthEvery, HealthLogger } from './types';
@@ -15,6 +16,7 @@ let healthAgent: Agent | undefined;
 let healthLogger: HealthLogger | undefined;
 
 export function startHealth(agent: Agent, logger: HealthLogger): void {
+	void getHealth(agent.config).catch((error) => logger.error('Health', 'Failed to initialize HEALTH.md', error));
 	healthAgent = agent;
 	healthLogger = logger;
 	schedule();

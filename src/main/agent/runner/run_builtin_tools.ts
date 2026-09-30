@@ -14,6 +14,8 @@ import { readTool } from '../tools/core/read';
 import { requestUserInputTool } from '../tools/core/ask';
 import { writeTool } from '../tools/core/write';
 import { getKnowledgeTools } from '../tools/knowledge';
+import { getIdentityTool } from '../tools/identity/get';
+import { updateIdentityTool } from '../tools/identity/update';
 import { getHealthTool } from '../tools/health/get';
 import { updateHealthTool } from '../tools/health/update';
 import { createImageTool } from '../tools/media/create_image';
@@ -72,6 +74,8 @@ export function builtinTools(
 		screenRecorderStatusTool,
 		screenRecorderStopTool,
 		...getKnowledgeTools(),
+		getIdentityTool,
+		updateIdentityTool,
 		getHealthTool(config),
 		updateHealthTool(config),
 		createTaskTool,

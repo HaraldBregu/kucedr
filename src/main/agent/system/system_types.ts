@@ -14,7 +14,6 @@ export type WorkspaceFile =
 export const WORKSPACE_FILES = [
 	AGENT_FILE,
 	BOOTSTRAP_FILE,
-	IDENTITY_FILE,
 	SOUL_FILE,
 	USER_FILE,
 ] as const satisfies readonly WorkspaceFile[];
