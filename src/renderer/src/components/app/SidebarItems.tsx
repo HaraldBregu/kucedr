@@ -12,7 +12,7 @@ export function SidebarItems(): React.JSX.Element {
 	const isMac = navigator.platform.startsWith('Mac');
 
 	return (
-		<nav className="shrink-0 px-2 pt-2">
+		<nav className="shrink-0 border-t border-sidebar-border/50 px-2 pt-2">
 			<SidebarMenu>
 				<SidebarMenuItem>
 					<SidebarMenuButton onClick={() => navigate('/settings/settings')}>
