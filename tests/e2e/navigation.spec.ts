@@ -113,7 +113,7 @@ test('navigation bar gaps stay draggable while buttons remain clickable', async 
 	);
 });
 
-test('the navbar Search stays in the right group and Workspace opens the folder sidebar', async () => {
+test('the navbar keeps Workspace and opens Search from the sidebar', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
@@ -133,9 +133,10 @@ test('the navbar Search stays in the right group and Workspace opens the folder 
 	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
 	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
 	const navigationBar = page.locator('[data-slot="navigationbar"]');
-	const searchButton = navigationBar.getByRole('button', { name: 'Search' });
 	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
-	const settingsButton = navigationBar.getByRole('button', { name: 'Settings', exact: true });
+	const themeButton = navigationBar.getByRole('button', { name: /^Theme:/ });
+	await expect(navigationBar.getByRole('button', { name: 'Search' })).toHaveCount(0);
+	await expect(navigationBar.getByRole('button', { name: 'Settings', exact: true })).toHaveCount(0);
 	await expect(navigationBar.getByRole('button', { name: 'Start voice conversation' })).toHaveCount(
 		0
 	);
@@ -148,30 +149,23 @@ test('the navbar Search stays in the right group and Workspace opens the folder 
 		await expect(toggleButton).toBeVisible();
 		await expect(sidebarActions.getByRole('button', { name: 'Search' })).toHaveCount(0);
 		const toggleBox = await toggleButton.boundingBox();
-		const searchBox = await searchButton.boundingBox();
 		const workspaceBox = await workspaceButton.boundingBox();
-		const settingsBox = await settingsButton.boundingBox();
+		const themeBox = await themeButton.boundingBox();
 		expect(toggleBox).not.toBeNull();
-		expect(searchBox).not.toBeNull();
 		expect(workspaceBox).not.toBeNull();
-		expect(settingsBox).not.toBeNull();
+		expect(themeBox).not.toBeNull();
 		expect(toggleBox?.x).toBe(84);
-		expect((workspaceBox?.x ?? 0) - ((searchBox?.x ?? 0) + (searchBox?.width ?? 0))).toBe(
-			(settingsBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0))
-		);
+		expect((themeBox?.x ?? 0) - ((workspaceBox?.x ?? 0) + (workspaceBox?.width ?? 0))).toBeGreaterThanOrEqual(0);
 	} else {
-		await expect(
-			searchButton.locator('xpath=following-sibling::button[1][@aria-label="Workspace"]')
-		).toHaveCount(1);
+		await expect(workspaceButton).toBeVisible();
 	}
 	await expect(workspaceButton.locator('.lucide-folder')).toBeVisible();
 	await workspaceButton.click();
 	await expect(page).toHaveURL(/#\/workspace$/);
-	await expect(searchButton).toBeVisible();
-	await searchButton.click();
+	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
+	await workspaceSidebar.getByRole('button', { name: 'Search' }).click();
 	await expect(page.getByPlaceholder('Search routes and settings...')).toBeVisible();
 	await page.keyboard.press('Escape');
-	const workspaceSidebar = page.locator('[data-slot="workspace-sidebar"]');
 	const sidebarFooter = workspaceSidebar.locator('[data-slot="sidebar-footer"]');
 	const accountMenuButton = sidebarFooter.getByRole('button', { name: /account menu/i });
 	const footerVoiceButton = sidebarFooter.getByRole('button', { name: 'Voice conversation' });
