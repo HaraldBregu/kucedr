@@ -65,9 +65,9 @@ export function AppSidebarFooter(): React.JSX.Element {
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
 								className="pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
-								<Avatar className="size-7 rounded-full grayscale">
+								<Avatar className="size-7 rounded-md grayscale">
 									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-									<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
+									<AvatarFallback className="rounded-md bg-accent text-accent-foreground">
 										{accountInitial}
 									</AvatarFallback>
 								</Avatar>
@@ -105,9 +105,9 @@ export function AppSidebarFooter(): React.JSX.Element {
 						>
 							<DropdownMenuLabel className="p-0 font-normal">
 								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-									<Avatar className="size-8 rounded-full">
+									<Avatar className="size-8 rounded-md">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-										<AvatarFallback className="rounded-full bg-accent text-accent-foreground">
+										<AvatarFallback className="rounded-md bg-accent text-accent-foreground">
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>
