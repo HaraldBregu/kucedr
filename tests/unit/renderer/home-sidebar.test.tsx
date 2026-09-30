@@ -133,7 +133,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]') as HTMLElement;
 	expect(footer).toHaveClass('px-2', 'py-1');
-	expect(accountMenu).toHaveClass('h-9', 'py-1');
+	expect(accountMenu).toHaveClass('h-12', 'p-2');
 	expect(within(accountMenu).getByText('settings.title')).toBeInTheDocument();
 	expect(
 		within(footer).getByText('S')
@@ -229,8 +229,7 @@ it('opens voice from its own footer button without opening the account menu', as
 	const voiceButton = screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' });
 	expect(voiceButton).toHaveClass(
 		'size-8',
-		'top-1/2',
-		'-translate-y-1/2',
+		'top-2',
 		'hover:bg-sidebar-primary',
 		'hover:text-sidebar-primary-foreground'
 	);
