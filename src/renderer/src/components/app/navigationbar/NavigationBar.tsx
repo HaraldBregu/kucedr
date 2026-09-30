@@ -163,24 +163,24 @@ export const NavigationBar = React.memo(function NavigationBar({
 				)}
 
 				{/* ── Right actions ── */}
-					<div
-						className={`z-10 mr-3 ${actionGroupClassName}`}
+				<div
+					className={`z-10 mr-3 ${actionGroupClassName}`}
+				>
+					{searchButton}
+					{workspaceButton}
+					{routeButton}
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon"
+						className="size-8 rounded-full"
+						onClick={() => setTheme(nextTheme)}
+						title={themeLabel}
+						aria-label={themeLabel}
 					>
-						{searchButton}
-						{workspaceButton}
-						{routeButton}
-						<Button
-							type="button"
-							variant="ghost"
-							size="icon"
-							className="size-8 rounded-full"
-							onClick={() => setTheme(nextTheme)}
-							title={themeLabel}
-							aria-label={themeLabel}
-						>
-							<ThemeIcon className="size-4" strokeWidth={1.8} />
-						</Button>
-					</div>
+						<ThemeIcon className="size-4" strokeWidth={1.8} />
+					</Button>
+				</div>
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}
 			</NavigationBarContainer>
