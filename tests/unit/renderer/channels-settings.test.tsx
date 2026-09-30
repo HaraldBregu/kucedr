@@ -96,15 +96,21 @@ it('shows a Plugins-style Telegram row and opens its detailed configuration', as
 	expect(screen.getByText('Telegram details')).toBeInTheDocument();
 });
 
-it('uses the chat model selector UI for channel models', async () => {
+it('uses the collapsible Chat settings model UI for channel models', async () => {
+	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/channels']}>
 			<ChannelsPage />
 		</MemoryRouter>
 	);
 	const modelButton = await screen.findByRole('button', { name: 'Model' });
-	expect(modelButton).toHaveClass('rounded-full');
+	expect(modelButton).toHaveClass('min-w-40');
+	expect(modelButton).not.toHaveClass('rounded-full');
 	expect(modelButton).toHaveAttribute('aria-haspopup', 'dialog');
+	const modelItem = screen.getByRole('button', { name: /Model used for channel replies/ });
+	expect(modelItem).toHaveAttribute('aria-expanded', 'false');
+	await user.click(modelItem);
+	expect(modelItem).toHaveAttribute('aria-expanded', 'true');
 });
 
 it('renders manifest credentials on the detail page and saves a trimmed token', async () => {

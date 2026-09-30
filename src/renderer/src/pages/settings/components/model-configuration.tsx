@@ -26,7 +26,6 @@ interface ModelProviderConfigurationProps {
 	readonly padded?: boolean;
 	readonly showSelectedModel?: boolean;
 	readonly buttonDropdown?: boolean;
-	readonly compactPopover?: boolean;
 	readonly buttonClassName?: string;
 	readonly showContentSeparator?: boolean;
 	readonly defaultOpen?: boolean;
@@ -51,7 +50,6 @@ export function ModelProviderConfiguration({
 	padded = true,
 	showSelectedModel = false,
 	buttonDropdown = false,
-	compactPopover = false,
 	buttonClassName,
 	showContentSeparator = true,
 	defaultOpen = false,
@@ -76,7 +74,6 @@ export function ModelProviderConfiguration({
 		<ModelProviderSelect
 			inline={showSelectedModel}
 			buttonDropdown={buttonDropdown}
-			compactPopover={compactPopover}
 			buttonClassName={buttonClassName}
 			idPrefix={idPrefix}
 			providerGroups={toModelProviderGroups(configState.modelGroups)}
@@ -160,7 +157,6 @@ export function ModelProviderConfiguration({
 						<ModelProviderSelect
 							inline
 							buttonDropdown={buttonDropdown}
-							compactPopover={compactPopover}
 							buttonClassName={buttonClassName}
 							idPrefix={idPrefix}
 							providerGroups={toModelProviderGroups(configState.modelGroups)}

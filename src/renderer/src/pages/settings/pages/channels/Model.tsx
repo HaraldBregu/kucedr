@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BrainCircuit, Mic, Volume2 } from 'lucide-react';
 import type { ChannelModelKind } from '@shared/channels_types';
 import { ModelProviderConfiguration } from '../../components/model-configuration';
 import {
@@ -7,6 +8,12 @@ import {
 	initialModelConfigurationState,
 } from '../../components/model-configuration-state';
 import { loadChannelModelState } from './load';
+
+const icons = {
+	llm: BrainCircuit,
+	stt: Mic,
+	tts: Volume2,
+} as const;
 
 export function ChannelModelConfiguration({
 	kind,
@@ -56,11 +63,13 @@ export function ChannelModelConfiguration({
 			triggerTitle={t(`settings.channels.${kind}Model`)}
 			description={t(`settings.channels.${kind}ModelDescription`)}
 			showInlineError
-			showIcon={false}
-			collapsible={false}
+			showIcon
+			icon={icons[kind]}
+			showFieldLabel={false}
+			grouped
+			showSelectedModel
 			buttonDropdown
-			compactPopover
-			buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground"
+			showContentSeparator={false}
 			onChange={(providerId, modelId) => void save(providerId, modelId)}
 		/>
 	);
