@@ -54,6 +54,7 @@ jest.mock('../../../../../src/main/agent/skills', () => ({
 }));
 
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
+import { updateUser } from '../../../../../src/main/user';
 import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
 import { createSessionState } from '../../../../../src/main/agent/session';
 import type { Message } from '../../../../../src/main/agent/types';
@@ -334,10 +335,10 @@ describe('run stream system prompt', () => {
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});
 
-	it('sends workspace files as user context instead of system instructions', async () => {
+	it('sends generated AGENTS.md in the system prompt without duplicate user context', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-prompt-'));
 		try {
-			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
+			await updateUser('- **Name:** Alice');
 			const session = createSessionState();
 			session.id = 'session';
 			session.messages = [{ role: 'user', content: 'Current request' }];
@@ -362,11 +363,9 @@ describe('run stream system prompt', () => {
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
-			expect(systemPrompt).not.toContain('Alice');
-			expect(contextMessages[0]).toMatchObject({
-				role: 'user',
-				content: expect.stringContaining('- **Name:** Alice'),
-			});
+			expect(systemPrompt).toContain('- **Name:** Alice');
+			expect(systemPrompt).toContain(await fs.readFile(path.join(root, 'AGENTS.md'), 'utf8'));
+			expect(contextMessages).toEqual([]);
 			expect(messages[0]).toEqual({ role: 'user', content: 'Current request' });
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
