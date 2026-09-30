@@ -155,7 +155,7 @@
 	"settings": {
 		"memory": {
 			"title": "Memoria",
-			"description": "Gestisci ciò che Kucedr ricorda dalle conversazioni desktop e vocali.",
+			"description": "Gestisci fatti e riepiloghi che Kucedr salva da chat e conversazioni vocali.",
 			"loading": "Caricamento della memoria…",
 			"enabled": "Memoria automatica",
 			"enabledDescription": "Salva fatti importanti e riepiloghi concisi dalle nuove conversazioni.",

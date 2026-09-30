@@ -155,7 +155,7 @@
 	"settings": {
 		"memory": {
 			"title": "Memory",
-			"description": "Manage what Kucedr remembers from desktop chat and voice conversations.",
+			"description": "Manage facts and summaries Kucedr saves from chat and voice conversations.",
 			"loading": "Loading memory…",
 			"enabled": "Automatic Memory",
 			"enabledDescription": "Capture important facts and concise summaries from new conversations.",
