@@ -18,7 +18,7 @@ export function PromptInputField({
 		<div
 			data-slot="prompt-input-field"
 			className={cn(
-				'flex min-h-[104px] flex-col rounded-2xl border border-border/60 bg-card/95 px-2 pb-2 pt-3 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25 transition-[min-height,padding] duration-150 ease-out motion-reduce:transition-none',
+				'flex min-h-[104px] flex-col rounded-[16px] border border-border/60 bg-card/95 px-2 pb-2 pt-3 shadow-sm shadow-foreground/5 focus-within:ring-1 focus-within:ring-ring/25 transition-[min-height,padding] duration-150 ease-out motion-reduce:transition-none',
 				expanded && 'min-h-32',
 				className
 			)}
