@@ -684,7 +684,7 @@ function PageContent(): ReactElement {
 					: 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
-			<div className="mx-auto w-full max-w-4xl">
+			<div className={cn('mx-auto w-full', showEmptyConversation ? 'max-w-2xl' : 'max-w-4xl')}>
 				<RecorderErrorMessage
 					message={voiceErrorMessage}
 					actionLabel={voiceErrorAction?.label}
