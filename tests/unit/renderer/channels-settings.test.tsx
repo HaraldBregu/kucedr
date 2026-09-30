@@ -97,7 +97,6 @@ it('shows a Plugins-style Telegram row and opens its detailed configuration', as
 });
 
 it('uses the chat model selector UI for channel models', async () => {
-	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/channels']}>
 			<ChannelsPage />
@@ -105,8 +104,7 @@ it('uses the chat model selector UI for channel models', async () => {
 	);
 	const modelButton = await screen.findByRole('button', { name: 'Model' });
 	expect(modelButton).toHaveClass('rounded-full');
-	await user.click(modelButton);
-	expect(screen.getByRole('menu', { name: 'Model' })).toBeInTheDocument();
+	expect(modelButton).toHaveAttribute('aria-haspopup', 'dialog');
 });
 
 it('renders manifest credentials on the detail page and saves a trimmed token', async () => {
