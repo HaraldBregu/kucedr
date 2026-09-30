@@ -1,5 +1,5 @@
-import React, { type ReactNode } from 'react';
-import { Folder, Menu, Monitor, Moon, Search, Sun, User } from 'lucide-react';
+import React, { useEffect, useState, type ReactNode } from 'react';
+import { Folder, Menu, Moon, Search, Sun, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -34,9 +34,17 @@ export const NavigationBar = React.memo(function NavigationBar({
 }: NavigationBarProps) {
 	const { t } = useTranslation();
 	const { theme, setTheme } = useApp();
-	const ThemeIcon = theme === 'light' ? Sun : theme === 'dark' ? Moon : Monitor;
-	const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
-	const themeLabel = `${t('settings.theme.title')}: ${t(`settings.theme.${theme}`)}`;
+	const [systemDark, setSystemDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches);
+	useEffect(() => {
+		const media = window.matchMedia('(prefers-color-scheme: dark)');
+		const onChange = (): void => setSystemDark(media.matches);
+		media.addEventListener('change', onChange);
+		return () => media.removeEventListener('change', onChange);
+	}, []);
+	const isDark = theme === 'dark' || (theme === 'system' && systemDark);
+	const ThemeIcon = isDark ? Moon : Sun;
+	const nextTheme = isDark ? 'light' : 'dark';
+	const themeLabel = `${t('settings.theme.title')}: ${t(`settings.theme.${isDark ? 'dark' : 'light'}`)}`;
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
