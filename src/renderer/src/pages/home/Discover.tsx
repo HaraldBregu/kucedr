@@ -34,7 +34,7 @@ export function Discover(): ReactElement {
 		void window.agent.listSessions().then(
 			(items) => {
 				if (!active) return;
-				setSessions([...items].sort((a, b) => b.updatedAtMs - a.updatedAtMs).slice(0, 8));
+				setSessions([...items].sort((a, b) => (b.updatedAtMs ?? b.createdAtMs) - (a.updatedAtMs ?? a.createdAtMs)).slice(0, 8));
 			},
 			() => {
 				if (active) setSessions([]);
@@ -71,11 +71,11 @@ export function Discover(): ReactElement {
 									<span className="flex w-full items-center justify-between gap-2 text-[11px] text-muted-foreground">
 										<MessageCircle className="size-4 shrink-0" aria-hidden="true" />
 										<time
-											dateTime={new Date(session.updatedAtMs).toISOString()}
+											dateTime={new Date(session.updatedAtMs ?? session.createdAtMs).toISOString()}
 											className="truncate"
 										>
 											Updated{' '}
-											{new Date(session.updatedAtMs).toLocaleString(undefined, {
+											{new Date(session.updatedAtMs ?? session.createdAtMs).toLocaleString(undefined, {
 												month: 'short',
 												day: 'numeric',
 												hour: 'numeric',

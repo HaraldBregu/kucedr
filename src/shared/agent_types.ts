@@ -174,7 +174,7 @@ export type AgentSessionCategory = 'main' | 'bot' | 'health' | 'task' | 'subagen
 export interface AgentSessionSummary {
 	id: string;
 	createdAtMs: number;
-	updatedAtMs: number;
+	updatedAtMs?: number;
 	title: string;
 	category: AgentSessionCategory;
 	runStatus?: 'queued' | 'running' | 'cancelling';
