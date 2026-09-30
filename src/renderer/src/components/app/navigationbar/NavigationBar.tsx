@@ -66,7 +66,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<TooltipTrigger render={
 				<Button
 					type="button"
-					variant="ghost"
+					variant="outline"
 					size="default"
 					onClick={() => navigate('/workspace')}
 					aria-label={workspaceLabel}
