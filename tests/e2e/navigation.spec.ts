@@ -305,7 +305,7 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 		await window.agent.createWorkspaceFile('Notes', 'updated.md');
 	});
 	await expect(workspace.getByText('updated.md')).toBeVisible();
-	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toHaveCount(0);
+	await expect(page.getByRole('textbox', { name: 'Message your assistant' })).toHaveCount(0);
 	await page
 		.locator('[data-slot="workspace-sidebar"]')
 		.getByRole('link', { name: 'Return to Home' })
@@ -542,7 +542,7 @@ test('the platform shortcut creates a new chat session', async () => {
 	await expect
 		.poll(() => page.evaluate(() => localStorage.getItem('chat-session-id')))
 		.not.toBe(previousSessionId);
-	await expect(page.getByRole('textbox', { name: 'Message Kucedr' })).toBeFocused();
+	await expect(page.getByRole('textbox', { name: 'Message your assistant' })).toBeFocused();
 });
 
 test('the empty home state and composer use the intended spacing', async () => {
@@ -550,7 +550,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 		window.location.hash = '#/home';
 	});
 
-	const editor = page.getByRole('textbox', { name: 'Message Kucedr' });
+	const editor = page.getByRole('textbox', { name: 'Message your assistant' });
 	const editorArea = editor.locator('xpath=..');
 	const composer = editor.locator('xpath=ancestor::*[@data-expanded][1]');
 	const field = page.locator('[data-slot="prompt-input-field"]');
@@ -665,7 +665,7 @@ test('the leading /plan command activates Plan mode and requires prompt text', a
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
-	const editor = page.getByRole('textbox', { name: 'Message Kucedr' });
+	const editor = page.getByRole('textbox', { name: 'Message your assistant' });
 	await editor.pressSequentially('/plan');
 	await expect(editor.locator('[data-plan-command]')).toHaveText('Plan');
 	await expect(page.getByRole('button', { name: 'Send message' })).toBeDisabled();

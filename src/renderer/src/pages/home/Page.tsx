@@ -695,8 +695,8 @@ function PageContent(): ReactElement {
 					</div>
 				) : null}
 				<PromptEditor
-					placeholder={showEmptyConversation ? 'Work with Kucedr' : 'Send follow-up'}
-					ariaLabel="Message Kucedr"
+					placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
+					ariaLabel="Message your assistant"
 					value={agent.input}
 					expanded={agent.input.length > 0}
 					onValueChange={agent.setInput}
