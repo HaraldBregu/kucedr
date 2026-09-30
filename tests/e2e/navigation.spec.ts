@@ -644,7 +644,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 test('empty Home shows scrollable recent chats, plugins, and setup cards', async () => {
 	await page.evaluate(() => { window.location.hash = '#/home'; });
 	const discovery = page.locator('[data-slot="home-discover"]');
-	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toBeVisible();
+	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toHaveCount(0);
 	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
 	await expect(discovery.getByRole('heading', { name: 'Configure Kucedr' })).toBeVisible();
 	await expect(discovery.getByRole('link', { name: /Tasks/ })).toHaveAttribute('href', '#/settings/tasks');

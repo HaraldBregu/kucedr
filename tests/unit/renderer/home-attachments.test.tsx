@@ -218,6 +218,19 @@ describe('Home prompt attachments', () => {
 		expect(screen.queryByRole('heading', { name: 'Configure Kucedr' })).not.toBeInTheDocument();
 	});
 
+	it('hides Recent chats when there are no stored sessions', async () => {
+		Object.defineProperty(window, 'agent', {
+			configurable: true,
+			value: {
+				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
+				listSessions: jest.fn(async () => []),
+			},
+		});
+		renderPage();
+		await screen.findByRole('heading', { name: 'Plugins' });
+		expect(screen.queryByRole('heading', { name: 'Recent chats' })).not.toBeInTheDocument();
+	});
+
 	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
 		renderPage();
 
