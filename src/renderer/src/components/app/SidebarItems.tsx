@@ -8,7 +8,7 @@ export function SidebarItems(): React.JSX.Element {
 	const navigate = useNavigate();
 
 	return (
-		<nav className="shrink-0 p-2">
+		<nav className="shrink-0 px-2 pt-2">
 			<SidebarMenu>
 				<SidebarMenuItem>
 					<SidebarMenuButton onClick={() => navigate('/settings/general')}>
