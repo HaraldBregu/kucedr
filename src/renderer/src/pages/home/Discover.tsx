@@ -74,7 +74,7 @@ export function Discover(): ReactElement {
 								>
 									<span className="flex w-full min-w-0 items-start gap-2">
 										<MessageCircle className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-										<span className="line-clamp-2 text-sm font-medium">
+										<span className="min-w-0 truncate text-sm font-medium">
 											{session.title.trim() || t('settings.chatHistory.untitled')}
 										</span>
 									</span>
