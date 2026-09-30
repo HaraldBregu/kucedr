@@ -155,9 +155,6 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				event.preventDefault();
 				showEntryMenu();
 			}}>
-				<h1 className="px-2 py-2 text-xs font-medium text-sidebar-foreground/70">
-					{t('navigationBar.workspace', 'Workspace')}
-				</h1>
 				{actionError && !pendingAction ? <p className="px-2 py-1 text-xs text-destructive" role="alert">{actionError}</p> : null}
 				{loading ? (
 					<p className="px-2 py-1 text-xs text-muted-foreground">{t('workspaceSidebar.loading', 'Loading files…')}</p>
