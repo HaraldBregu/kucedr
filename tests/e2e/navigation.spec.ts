@@ -133,7 +133,7 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 	await expect(page.getByRole('button', { name: 'Open Workspace' })).toHaveCount(0);
 	await expect(page.getByRole('group', { name: 'View' })).toHaveCount(0);
 	const navigationBar = page.locator('[data-slot="navigationbar"]');
-	const workspaceButton = navigationBar.getByRole('button', { name: 'Workspace' });
+	const workspaceButton = navigationBar.getByRole('button', { name: 'Space' });
 	const themeButton = navigationBar.getByRole('button', { name: /^Theme:/ });
 	await expect(navigationBar.getByRole('button', { name: 'Search' })).toHaveCount(0);
 	await expect(navigationBar.getByRole('button', { name: 'Settings', exact: true })).toHaveCount(0);

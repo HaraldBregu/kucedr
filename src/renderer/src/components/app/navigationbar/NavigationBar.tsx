@@ -55,7 +55,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
-	const workspaceLabel = t('navigationBar.workspace', 'Workspace');
+	const workspaceLabel = t('navigationBar.space', 'Space');
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
