@@ -25,10 +25,15 @@ it('creates and recreates soul and user profiles without restarting completed bo
 			await update.run({ content: `# Updated ${name}` });
 			expect(await get.run({})).toBe(`# Updated ${name}`);
 			await rm(target);
-			const template = await readFile(path.resolve('resources/templates', `${name.toUpperCase()}.md`), 'utf8');
+			const template = await readFile(
+				path.resolve('resources/templates', `${name.toUpperCase()}.md`),
+				'utf8'
+			);
 			expect(await get.run({})).toBe(template);
 			expect(await readFile(target, 'utf8')).toBe(template);
-			await expect(readFile(path.join(workspace, `${name.toUpperCase()}.md`))).rejects.toMatchObject({ code: 'ENOENT' });
+			await expect(
+				readFile(path.join(workspace, `${name.toUpperCase()}.md`))
+			).rejects.toMatchObject({ code: 'ENOENT' });
 		}
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;

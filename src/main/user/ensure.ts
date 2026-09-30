@@ -8,7 +8,11 @@ export function ensureUser(workspace: string): string {
 	if (existsSync(target)) return target;
 	mkdirSync(directory, { recursive: true });
 	const legacy = path.join(workspace, 'USER.md');
-	const resources = process.defaultApp || !process.resourcesPath ? process.cwd() : process.resourcesPath;
-	copyFileSync(existsSync(legacy) ? legacy : path.join(resources, 'resources', 'templates', 'USER.md'), target);
+	const resources =
+		process.defaultApp || !process.resourcesPath ? process.cwd() : process.resourcesPath;
+	copyFileSync(
+		existsSync(legacy) ? legacy : path.join(resources, 'resources', 'templates', 'USER.md'),
+		target
+	);
 	return target;
 }
