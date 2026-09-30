@@ -76,7 +76,7 @@ it('does not open the navigationbar menu from a button', () => {
 		</MemoryRouter>
 	);
 
-	fireEvent.contextMenu(screen.getByRole('button', { name: 'settings.theme.title: settings.theme.light' }));
+	fireEvent.contextMenu(screen.getByRole('button', { name: 'settings.theme.title: settings.theme.dark' }));
 
 	expect(showContextMenu).not.toHaveBeenCalled();
 });
