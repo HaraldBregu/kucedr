@@ -12,6 +12,5 @@ export type WorkspaceFile =
 	| typeof USER_FILE;
 
 export const WORKSPACE_FILES = [
-	AGENT_FILE,
 	BOOTSTRAP_FILE,
 ] as const satisfies readonly WorkspaceFile[];
