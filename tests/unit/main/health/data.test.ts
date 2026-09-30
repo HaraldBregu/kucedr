@@ -24,3 +24,11 @@ it('migrates HEALTH.md from the workspace and updates it in the health folder', 
 	await updateHealth({ location: workspace }, '# Current health');
 	expect(await readFile(healthFile, 'utf8')).toBe('# Current health');
 });
+
+it('recreates a missing HEALTH.md from its template', async () => {
+	await getHealth({ location: workspace });
+	await rm(healthFile);
+	const template = await readFile(path.resolve('resources/templates/HEALTH.md'), 'utf8');
+	expect(await getHealth({ location: workspace })).toBe(template);
+	expect(await readFile(healthFile, 'utf8')).toBe(template);
+});

@@ -7,7 +7,7 @@ light and do not interrogate.
 
 Learn enough to update:
 
-- `IDENTITY.md` - name, avatar, vibe, and useful metadata
+- `IDENTITY.md` - name, avatar, vibe, and useful metadata; use `get_identity` and `update_identity` for the file in `.kucedr/identity/`
 - `USER.md` - what to call the user, timezone, preferences, and notes
 - `SOUL.md` - tone, boundaries, and interaction style
 
