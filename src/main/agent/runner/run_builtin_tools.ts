@@ -15,6 +15,10 @@ import { requestUserInputTool } from '../tools/core/ask';
 import { writeTool } from '../tools/core/write';
 import { getKnowledgeTools } from '../tools/knowledge';
 import { getIdentityTool } from '../tools/identity/get';
+import { getSoulTool } from '../tools/soul/get';
+import { updateSoulTool } from '../tools/soul/update';
+import { getUserTool } from '../tools/user/get';
+import { updateUserTool } from '../tools/user/update';
 import { updateIdentityTool } from '../tools/identity/update';
 import { getHealthTool } from '../tools/health/get';
 import { updateHealthTool } from '../tools/health/update';
@@ -75,6 +79,10 @@ export function builtinTools(
 		screenRecorderStopTool,
 		...getKnowledgeTools(),
 		getIdentityTool,
+		getSoulTool,
+		updateSoulTool,
+		getUserTool,
+		updateUserTool,
 		updateIdentityTool,
 		getHealthTool(config),
 		updateHealthTool(config),

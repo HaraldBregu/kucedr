@@ -12,6 +12,8 @@ const READ = new Set([
 	'query_knowledge',
 	'get_health',
 	'get_identity',
+	'get_soul',
+	'get_user',
 	'list_a2a_agents',
 	'list_tasks',
 	'list_skills',
@@ -33,6 +35,8 @@ const PERSIST = new Set([
 	'run_task_now',
 	'update_health',
 	'update_identity',
+	'update_soul',
+	'update_user',
 ]);
 const GOAL = new Set([
 	'update_goal_plan',
