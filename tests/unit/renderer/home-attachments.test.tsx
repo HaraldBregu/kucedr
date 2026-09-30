@@ -7,6 +7,7 @@ const setInput = jest.fn();
 const useSuggestion = jest.fn();
 const clearReply = jest.fn();
 let replyTo: { id: string; content: string } | null = null;
+let messages: { id: string; role: string }[] = [{ id: 'agent-welcome', role: 'agent' }];
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({
@@ -16,7 +17,7 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('../../../src/renderer/src/pages/home/hooks', () => ({
 	useHomeAgent: () => ({
-		chatState: { messages: [{ id: 'agent-welcome', role: 'agent' }] },
+		chatState: { messages },
 		editUserMessage: jest.fn(),
 		clearReply,
 		replyTo,
@@ -165,11 +166,15 @@ describe('Home prompt attachments', () => {
 		});
 		Object.defineProperty(window, 'agent', {
 			configurable: true,
-			value: { readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])) },
+			value: {
+				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
+				listSessions: jest.fn(async () => [{ id: 'session-1', title: 'Planning chat', createdAtMs: 1, category: 'main' }]),
+			},
 		});
 		handleSubmit.mockResolvedValue(true);
 		useSuggestion.mockClear();
 		replyTo = null;
+		messages = [{ id: 'agent-welcome', role: 'agent' }];
 	});
 
 	it('shows empty-state prompt rows of three, two, and one without settings', async () => {
@@ -199,6 +204,18 @@ describe('Home prompt attachments', () => {
 		expect(useSuggestion).toHaveBeenCalledWith(
 			'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.'
 		);
+		expect(await screen.findByText('Planning chat')).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Plugins' })).toBeInTheDocument();
+		expect(screen.getByRole('heading', { name: 'Configure Kucedr' })).toBeInTheDocument();
+		expect(screen.getByRole('link', { name: /settings.tabs.taskScheduler/ })).toHaveAttribute('href', '/settings/tasks');
+	});
+
+	it('shows the discovery rows only for an empty chat', () => {
+		messages = [{ id: 'user-message', role: 'user' }];
+		renderPage();
+		expect(screen.queryByRole('heading', { name: 'Recent chats' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'Plugins' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'Configure Kucedr' })).not.toBeInTheDocument();
 	});
 
 	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
