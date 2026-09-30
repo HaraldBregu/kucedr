@@ -680,7 +680,7 @@ function PageContent(): ReactElement {
 			className={cn(
 				'z-20 flex justify-center px-4',
 				showEmptyConversation
-					? 'w-full shrink-0 pb-4'
+					? 'w-full shrink-0'
 					: 'absolute inset-x-0 bottom-0 pb-5 pt-3'
 			)}
 		>
@@ -785,7 +785,7 @@ function PageContent(): ReactElement {
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
 					{showEmptyConversation ? (
-						<div className="flex min-h-[68dvh] w-full shrink-0 flex-col justify-end gap-6 pb-6 pt-10">
+						<div className="flex min-h-[68dvh] w-full shrink-0 flex-col justify-end gap-4 pb-6 pt-10">
 							<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4">
 								<EmptyConversation />
 							</div>
