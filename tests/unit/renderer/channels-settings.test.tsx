@@ -105,10 +105,7 @@ it('opens channel model configuration from the Channels catalog', async () => {
 		<MemoryRouter initialEntries={['/settings/channels']}>
 			<Routes>
 				<Route path="/settings/channels" element={<ChannelsPage />} />
-				<Route
-					path="/settings/channels/configuration"
-					element={<ChannelConfigurationPage />}
-				/>
+				<Route path="/settings/channels/configuration" element={<ChannelConfigurationPage />} />
 			</Routes>
 		</MemoryRouter>
 	);
