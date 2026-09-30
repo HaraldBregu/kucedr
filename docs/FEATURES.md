@@ -487,7 +487,7 @@ The Channels screen configures Telegram with enable state, token, DM policy, dir
 
 See [Settings UI](ui/SETTINGS.md) for the canonical navigation, persistence, and page behavior.
 
-- `/settings` and the application Settings entry points open General settings directly.
+- `/settings` and the application Settings entry points open Settings directly.
 - The sidebar groups General, Assistant, Providers, and Integrations destinations. Agent links and
   route search expose the deeper resource pages.
 - **Cloud** selects a configured storage provider, folders, schedules, backup, and restore.

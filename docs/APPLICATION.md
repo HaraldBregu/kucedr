@@ -112,7 +112,7 @@ Open Channels, configure the reply and optional speech models, then open Telegra
 
 ## Data, backup, and privacy
 
-Kucedr stores its profile under `~/.kucedr` (the user's home directory on each platform). General settings can open application data. See [Architecture](ARCHITECTURE.md) for the storage map.
+Kucedr stores its profile under `~/.kucedr` (the user's home directory on each platform). Settings can open application data. See [Architecture](ARCHITECTURE.md) for the storage map.
 
 Configure a storage provider in **Providers → Storage**, select it in Cloud, choose folders and a schedule, and run a backup. Review operation status for transferred files or errors. Restore requires confirmation and can overwrite matching local files; preserve any local versions you need before restoring. Storage-provider backup is separate from account authentication; see [Cloud architecture](CLOUD.md).
 

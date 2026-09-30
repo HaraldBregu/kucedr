@@ -74,20 +74,20 @@ it.each(['/start', '/homepage', '/settings-old'])('does not open command search 
 	expect(screen.queryByPlaceholderText('Search routes and settings...')).not.toBeInTheDocument();
 });
 
-it('opens General settings with the settings shortcut', () => {
+it('opens Settings with the settings shortcut', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<CommandMenu />
 			<Routes>
 				<Route path="/home" element={null} />
-				<Route path="/settings/settings" element={<p>General settings</p>} />
+				<Route path="/settings/settings" element={<p>Settings</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
 
 	fireEvent.keyDown(window, { key: ',', metaKey: true });
 
-	expect(screen.getByText('General settings')).toBeInTheDocument();
+	expect(screen.getByText('Settings')).toBeInTheDocument();
 });
 
 it('groups real routes using the command menu layout', () => {

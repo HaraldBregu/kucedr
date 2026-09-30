@@ -4,7 +4,7 @@ import { useLocation, useMatch } from 'react-router-dom';
 import { getChannelCatalogEntry } from '../../../../../shared';
 import { databases, mcps, storages } from '@/lib/providers';
 import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from '../navigation';
-import { getSystemMedia } from '../pages/general/media/media';
+import { getSystemMedia } from '../pages/settings/media/media';
 
 interface SettingsBreadcrumbItem {
 	readonly label: string;

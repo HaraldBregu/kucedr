@@ -66,7 +66,7 @@ beforeEach(() => {
 	});
 });
 
-it('enables keep awake from General settings', async () => {
+it('enables keep awake from Settings', async () => {
 	const user = userEvent.setup();
 	await act(async () => {
 		render(
@@ -88,7 +88,7 @@ it('enables keep awake from General settings', async () => {
 	expect(keepAwake).toBeChecked();
 });
 
-it('saves the configured tray icon click action from General settings', async () => {
+it('saves the configured tray icon click action from Settings', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
@@ -146,7 +146,7 @@ it('refreshes toggles changed from the native application menu', async () => {
 	expect(screen.getByRole('switch', { name: 'settings.application.keepAwake' })).toBeChecked();
 });
 
-it('changes the application theme from General settings', async () => {
+it('changes the application theme from Settings', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
@@ -163,7 +163,7 @@ it('changes the application theme from General settings', async () => {
 	expect(mockSetTheme).toHaveBeenCalledWith('dark');
 });
 
-it('opens Voice Agent settings from General settings', async () => {
+it('opens Voice Agent settings from Settings', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter initialEntries={['/settings/settings']}>

@@ -519,19 +519,19 @@ test('a new empty Markdown file opens in editable Preview', async () => {
 	await expect(page.getByText('This page crashed')).toHaveCount(0);
 });
 
-test('the settings home redirects to General settings', async () => {
+test('the settings home redirects to Settings', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/settings';
 	});
-	await expect(page).toHaveURL(/#\/settings\/general$/);
+	await expect(page).toHaveURL(/#\/settings\/settings$/);
 });
 
-test('Command+, opens General settings', async () => {
+test('Command+, opens Settings', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/home';
 	});
 	await page.keyboard.press('Meta+,');
-	await expect(page).toHaveURL(/#\/settings\/general$/);
+	await expect(page).toHaveURL(/#\/settings\/settings$/);
 });
 
 test('the platform shortcut creates a new chat session', async () => {

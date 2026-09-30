@@ -38,13 +38,13 @@ The visible sidebar is grouped as follows:
 
 | Group        | Destinations                       |
 | ------------ | ---------------------------------- |
-| General      | Account, General, System, Cloud    |
+| General      | Account, Settings, System, Cloud    |
 | Assistant    | Agent, Coding, Music, Video, Image |
 | Providers    | Models, Search, Database, Storage  |
 | Integrations | Channels, Integrations, A2A, Apps  |
 
 The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
-Settings route-search item, and `Cmd+,` shortcut also open General directly.
+Settings route-search item, and `Cmd+,` shortcut also open Settings directly.
 
 ## Route search and deep pages
 
@@ -52,7 +52,7 @@ The title-bar search button and `Cmd/Ctrl+F` should open **Search routes and set
 or Settings is active. The initial list shows the main routes; after at least two characters, the
 search also matches individual settings by label, description, and keywords.
 
-- `Cmd+,` should navigate directly to General settings on macOS.
+- `Cmd+,` should navigate directly to Settings on macOS.
 - Search results should include deep pages such as Persona, provider API keys, individual model
   services, assistant data, and media permissions.
 - Breadcrumbs should link detail pages back to their Settings parent.
@@ -81,9 +81,9 @@ Account should show local or signed-in status and the current email when availab
 start sign-in; signed-in users can sign out and continue using Kucedr on the device. A sign-out
 failure should appear inline.
 
-### General
+### Settings
 
-General should provide:
+Settings should provide:
 
 - the application name and version;
 - tray or menu-bar visibility;
@@ -302,7 +302,7 @@ required. Filesystem policy should:
 - [Settings layout](../../src/renderer/src/pages/settings/Layout.tsx)
 - [Settings sidebar](../../src/renderer/src/pages/settings/Sidebar.tsx)
 - [Shared Settings components](../../src/renderer/src/pages/settings/components/index.tsx)
-- [General settings](../../src/renderer/src/pages/settings/pages/settings/Page.tsx)
+- [Settings](../../src/renderer/src/pages/settings/pages/settings/Page.tsx)
 - [Assistant settings](../../src/renderer/src/pages/settings/pages/assistant/Page.tsx)
 - [Provider settings](../../src/renderer/src/pages/settings/pages/providers/Page.tsx)
 - [Cloud storage settings](../../src/renderer/src/pages/settings/pages/cloud/Page.tsx)
@@ -313,7 +313,7 @@ required. Filesystem policy should:
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
 - [Remote agent settings](../../src/renderer/src/pages/settings/pages/remote-agent/Page.tsx)
-- [General settings tests](../../tests/unit/renderer/settings-settings.test.tsx)
+- [Settings tests](../../tests/unit/renderer/settings-settings.test.tsx)
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)
 - [Provider settings tests](../../tests/unit/renderer/providers-settings.test.tsx)
 - [Permissions settings tests](../../tests/unit/renderer/permissions-settings.test.tsx)
