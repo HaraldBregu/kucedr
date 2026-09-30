@@ -432,6 +432,10 @@ function PageContent(): ReactElement {
 		updateMode('chat');
 	}, [updateMode]);
 	const agent = useHomeAgent({ setMode: updateMode });
+	useEffect(() => {
+		window.addEventListener('kucedr:focus-chat-input', agent.switchToTyping);
+		return () => window.removeEventListener('kucedr:focus-chat-input', agent.switchToTyping);
+	}, [agent.switchToTyping]);
 	const dictation = useRealtimeDictation({
 		value: agent.input,
 		onValueChange: agent.setInput,

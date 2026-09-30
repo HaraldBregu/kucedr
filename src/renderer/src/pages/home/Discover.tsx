@@ -65,6 +65,7 @@ export function Discover(): ReactElement {
 									onClick={() => {
 										setSessionId(session.id);
 										setSessionTitle?.(session.title, session.id);
+										window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 									}}
 								>
 									<span className="flex w-full min-w-0 items-start gap-2">

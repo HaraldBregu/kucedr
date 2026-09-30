@@ -116,6 +116,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 								setSessionId(crypto.randomUUID());
 								if (sessions.length === 0)
 									setSessionTitle?.(t('navigationBar.newChat', 'New chat'));
+								window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 							}}
 						>
 							<Plus className="size-4 shrink-0" />
@@ -202,6 +203,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 												onClick={() => {
 													setSessionId(session.id);
 													setSessionTitle?.(title, session.id);
+													window.dispatchEvent(new Event('kucedr:focus-chat-input'));
 												}}
 												onContextMenu={(event) => {
 													event.preventDefault();
