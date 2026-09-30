@@ -132,7 +132,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(setSessionId).toHaveBeenCalledWith('session-older');
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]') as HTMLElement;
-	expect(footer).toHaveClass('px-2', 'py-1');
+	expect(footer).toHaveClass('px-2', 'pt-1', 'pb-3');
 	expect(accountMenu).toHaveClass('h-12', 'p-2');
 	expect(within(accountMenu).getByText('settings.title')).toBeInTheDocument();
 	expect(

@@ -55,7 +55,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 	];
 
 	return (
-		<SidebarFooter className="shrink-0 px-2 py-1">
+		<SidebarFooter className="shrink-0 px-2 pt-1 pb-3">
 			<SidebarMenu>
 				<SidebarMenuItem>
 					<DropdownMenu>
