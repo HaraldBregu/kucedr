@@ -168,7 +168,7 @@ describe('Home prompt attachments', () => {
 			configurable: true,
 			value: {
 				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
-				listSessions: jest.fn(async () => [{ id: 'session-1', title: 'Planning chat', createdAtMs: 1, category: 'main' }]),
+				listSessions: jest.fn(async () => [{ id: 'session-1', title: 'Planning chat', createdAtMs: 1, updatedAtMs: 1700000000000, category: 'main' }]),
 			},
 		});
 		handleSubmit.mockResolvedValue(true);
@@ -204,6 +204,7 @@ describe('Home prompt attachments', () => {
 			'Create a watercolor image of a cozy workspace at sunset, with warm light and a cat sleeping on the desk.'
 		);
 		expect(await screen.findByText('Planning chat')).toBeInTheDocument();
+		expect(screen.getByText(/Updated/)).toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Plugins' })).toBeInTheDocument();
 		expect(screen.getByRole('heading', { name: 'Configure Kucedr' })).toBeInTheDocument();
 		expect(screen.getByRole('link', { name: /settings.tabs.taskScheduler/ })).toHaveAttribute('href', '/settings/tasks');

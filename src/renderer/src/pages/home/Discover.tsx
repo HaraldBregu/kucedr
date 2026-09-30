@@ -34,7 +34,7 @@ export function Discover(): ReactElement {
 		void window.agent.listSessions().then(
 			(items) => {
 				if (!active) return;
-				setSessions([...items].sort((a, b) => b.createdAtMs - a.createdAtMs).slice(0, 8));
+				setSessions([...items].sort((a, b) => b.updatedAtMs - a.updatedAtMs).slice(0, 8));
 			},
 			() => {
 				if (active) setSessions([]);
@@ -62,13 +62,18 @@ export function Discover(): ReactElement {
 							<Card key={session.id} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
 								<button
 									type="button"
-									className="flex h-20 w-full flex-col justify-between gap-1 p-3 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
+									className="flex h-20 w-full flex-col justify-between gap-1 px-3 py-2 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
 									onClick={() => {
 										setSessionId(session.id);
 										setSessionTitle?.(session.title, session.id);
 									}}
 								>
-									<MessageCircle className="size-4 text-muted-foreground" aria-hidden="true" />
+									<span className="flex w-full items-center justify-between gap-2 text-[11px] text-muted-foreground">
+										<MessageCircle className="size-4 shrink-0" aria-hidden="true" />
+										<time dateTime={new Date(session.updatedAtMs).toISOString()} className="truncate">
+											Updated {new Date(session.updatedAtMs).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+										</time>
+									</span>
 									<span className="line-clamp-2 text-sm font-medium">
 										{session.title.trim() || t('settings.chatHistory.untitled')}
 									</span>
