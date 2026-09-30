@@ -155,7 +155,7 @@
 	"settings": {
 		"memory": {
 			"title": "Memoria",
-			"description": "Gestisci fatti e riepiloghi che Kucedr salva da chat e conversazioni vocali.",
+			"description": "Rivedi fatti e riepiloghi salvati dalle tue conversazioni.",
 			"loading": "Caricamento della memoria…",
 			"enabled": "Memoria automatica",
 			"enabledDescription": "Salva fatti importanti e riepiloghi concisi dalle nuove conversazioni.",
@@ -217,20 +217,20 @@
 				"modelServices": "Setup servizi modello",
 				"channels": "Integrazioni messaggi",
 				"integrations": "Servizi collegati e app di lavoro",
-			"skills": "Gestisci le abilità installate che ampliano le capacità di Kucedr",
+				"skills": "Gestisci le abilità installate per potenziare Kucedr.",
 				"library": "File archiviati nella libreria locale",
 				"connectors": "Account app collegati",
-			"mcp": "Collega server di strumenti esterni per usarli con Kucedr",
+				"mcp": "Collega server di strumenti esterni per più app e dati.",
 				"remoteAgent": "Agenti remoti disponibili per le attività delegate",
 				"databases": "Provider di database e chiavi API",
 				"providers": "Provider, chiavi e servizi",
 				"searchEngine": "Ricerca web e chiave API",
-			"cron": "Visualizza, avvia e gestisci le attività agente programmate",
+				"cron": "Programma, controlla e gestisci le attività ricorrenti.",
 				"heartbeat": "Controlli periodici agente",
 				"health": "Controlli salute periodici",
 				"permissions": "Permessi strumenti e regole di percorso",
 				"apps": "App installate",
-			"rag": "Indicizza documenti per cercare e usare le tue conoscenze",
+				"rag": "Indicizza i documenti per cercare risposte basate sui file.",
 				"plugins": "Plugin installabili",
 				"configurationDescription": "Configura modelli, archiviazione e integrazioni"
 			}

@@ -155,7 +155,7 @@
 	"settings": {
 		"memory": {
 			"title": "Memory",
-			"description": "Manage facts and summaries Kucedr saves from chat and voice conversations.",
+			"description": "Review saved facts and summaries from your conversations.",
 			"loading": "Loading memory…",
 			"enabled": "Automatic Memory",
 			"enabledDescription": "Capture important facts and concise summaries from new conversations.",
@@ -217,20 +217,20 @@
 				"modelServices": "Model service setup",
 				"channels": "Messaging integrations",
 				"integrations": "Connected services and work apps",
-			"skills": "Manage installed skills that extend what Kucedr can do",
+				"skills": "Manage installed skills that expand Kucedr's abilities.",
 				"library": "Files stored in your local library",
 				"connectors": "Connected app accounts",
-			"mcp": "Connect external tool servers so Kucedr can use their tools",
+				"mcp": "Connect external tool servers to use more apps and data.",
 				"remoteAgent": "Remote agents available for delegated work",
 				"databases": "Database providers and API keys",
 				"providers": "API keys and providers",
 				"searchEngine": "Web search provider and API key",
-			"cron": "View, run, and manage scheduled agent tasks",
+				"cron": "Schedule, review, and manage recurring tasks for Kucedr.",
 				"heartbeat": "Periodic agent checks",
 				"health": "Periodic health checks",
 				"permissions": "Tool permissions and path rules",
 				"apps": "Installed apps",
-			"rag": "Index documents so Kucedr can search and use your knowledge",
+				"rag": "Index your documents for search and grounded answers.",
 				"plugins": "Installable app plugins",
 				"configurationDescription": "Configure models, storage, and integrations"
 			}
