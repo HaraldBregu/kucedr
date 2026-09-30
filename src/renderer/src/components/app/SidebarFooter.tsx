@@ -68,7 +68,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							>
 								<Avatar className="size-7 rounded-md grayscale">
 									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-									<AvatarFallback className="rounded-md bg-accent text-accent-foreground">
+									<AvatarFallback className="rounded-md bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground">
 										{accountInitial}
 									</AvatarFallback>
 								</Avatar>
@@ -108,7 +108,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
 									<Avatar className="size-8 rounded-md">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-										<AvatarFallback className="rounded-md bg-accent text-accent-foreground">
+										<AvatarFallback className="rounded-md bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground">
 											{accountInitial}
 										</AvatarFallback>
 									</Avatar>

@@ -135,9 +135,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(footer).toHaveClass('px-2', 'pt-1', 'pb-3');
 	expect(accountMenu).toHaveClass('h-12', 'p-2');
 	expect(within(accountMenu).getByText('settings.title')).toBeInTheDocument();
-	expect(
-		within(footer).getByText('S')
-	).toBeInTheDocument();
+	expect(within(footer).getByText('S')).toHaveClass('bg-primary', 'text-primary-foreground');
 	expect(screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' })).toBeInTheDocument();
 });
 
