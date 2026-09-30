@@ -440,7 +440,7 @@ function PromptInput({
 									detached || transition.duration === 0 || contentHeight === undefined
 										? 'auto'
 										: contentHeight + 2,
-								borderRadius: detached ? 24 : isConversationMode ? 28 : isPromptExpanded ? 12 : 20,
+								borderRadius: detached ? 24 : isConversationMode ? 28 : isPromptExpanded ? 12 : 16,
 							}}
 							transition={transition}
 							onClick={isConversationMode ? onClick : handleClick}
@@ -455,7 +455,7 @@ function PromptInput({
 										? 'cursor-default rounded-[1.75rem] focus-within:ring-0'
 										: isPromptExpanded
 											? 'rounded-xl'
-											: 'rounded-[20px]',
+											: 'rounded-2xl',
 								disabled && 'cursor-not-allowed opacity-60',
 								className
 							)}
