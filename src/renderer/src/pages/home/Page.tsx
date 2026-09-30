@@ -189,7 +189,7 @@ function PromptSuggestions({
 	readonly onUseSuggestion: (prompt: string) => void;
 }): ReactElement {
 	return (
-		<div className="mx-auto flex w-full max-w-4xl gap-2 overflow-x-auto px-4 pb-2" aria-label="Prompt suggestions">
+		<div className="mx-auto flex w-full max-w-2xl gap-2 overflow-x-auto px-4 pb-2" aria-label="Prompt suggestions">
 			{promptSuggestions.map((suggestion) => (
 				<PromptSuggestion
 					key={suggestion.label}
