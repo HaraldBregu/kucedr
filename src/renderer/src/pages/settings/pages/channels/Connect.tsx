@@ -46,9 +46,7 @@ export function ChannelConnect({
 							? t('settings.channels.editToken')
 							: t('settings.integrations.add', { name: service?.provider.name })}
 					</DialogTitle>
-					{service?.instructions && (
-						<DialogDescription>{service.instructions}</DialogDescription>
-					)}
+					{service?.instructions && <DialogDescription>{service.instructions}</DialogDescription>}
 				</DialogHeader>
 				<form
 					className="grid gap-4"

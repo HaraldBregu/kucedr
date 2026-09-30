@@ -84,9 +84,7 @@ export default function ChannelsPage(): React.JSX.Element {
 			<ChannelConnect
 				key={selectedService?.provider.id ?? 'closed'}
 				service={selectedService}
-				configured={Boolean(
-					selectedService && configuredIds.has(selectedService.provider.id)
-				)}
+				configured={Boolean(selectedService && configuredIds.has(selectedService.provider.id))}
 				saving={savingId === selectedService?.provider.id}
 				error={connectionError}
 				onClose={() => setSelectedService(null)}
@@ -128,9 +126,7 @@ export default function ChannelsPage(): React.JSX.Element {
 								service={service}
 								configured={configuredIds.has(service.provider.id)}
 								saving={savingId === service.provider.id}
-								onOpen={() =>
-									navigate(`/settings/channels/channelDetail/${service.provider.id}`)
-								}
+								onOpen={() => navigate(`/settings/channels/channelDetail/${service.provider.id}`)}
 								onEdit={() => openConnection(service)}
 							/>
 						))}
