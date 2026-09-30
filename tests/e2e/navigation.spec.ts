@@ -96,7 +96,7 @@ test('New Chat and session selection focus the prompt', async () => {
 
 	const sidebar = page.locator('[data-slot="home-sidebar"]');
 	const prompt = page.getByRole('textbox', { name: 'Message your assistant' });
-	const savedChat = sidebar.getByRole('button', { name: 'Untitled', exact: true });
+	const savedChat = sidebar.getByRole('button', { name: 'Untitled chat', exact: true });
 	await expect(savedChat).toBeVisible();
 	await sidebar.getByRole('button', { name: 'New Chat' }).click();
 	await expect(prompt).toBeFocused();
