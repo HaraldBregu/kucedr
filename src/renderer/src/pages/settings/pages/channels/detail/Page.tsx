@@ -125,9 +125,7 @@ const ChannelDetailPage: React.FC = () => {
 								type="button"
 								size="sm"
 								disabled={!credential.apiKey.trim()}
-								onClick={() =>
-									void save({ ...credential, apiKey: credential.apiKey.trim() })
-								}
+								onClick={() => void save({ ...credential, apiKey: credential.apiKey.trim() })}
 							>
 								{t('common.save')}
 							</Button>
@@ -321,7 +319,10 @@ function ListEditor({
 	);
 }
 
-function blankCredential(providerId: string, service: CatalogService | null): StoredChannelProvider {
+function blankCredential(
+	providerId: string,
+	service: CatalogService | null
+): StoredChannelProvider {
 	return {
 		id: providerId,
 		name: service?.provider.name ?? providerId,

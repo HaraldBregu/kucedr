@@ -106,7 +106,9 @@ it('renders manifest credentials on the detail page and saves a trimmed token', 
 	await user.type(screen.getByLabelText('Bot token'), '  test-token  ');
 	await user.click(screen.getByRole('button', { name: 'Save' }));
 	await waitFor(() =>
-		expect(setChannel).toHaveBeenCalledWith(expect.objectContaining({ id: 'telegram', apiKey: 'test-token' }))
+		expect(setChannel).toHaveBeenCalledWith(
+			expect.objectContaining({ id: 'telegram', apiKey: 'test-token' })
+		)
 	);
 	expect(screen.getByLabelText('Bot token')).toHaveValue('');
 });
