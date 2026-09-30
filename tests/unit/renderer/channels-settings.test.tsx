@@ -121,8 +121,8 @@ it('opens channel model configuration from the Channels catalog', async () => {
 it('uses the collapsible Chat settings model UI for channel models', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/channels']}>
-			<ChannelsPage />
+		<MemoryRouter initialEntries={['/settings/channels/configuration']}>
+			<ChannelConfigurationPage />
 		</MemoryRouter>
 	);
 	const modelButton = await screen.findByRole('button', { name: 'Model' });
