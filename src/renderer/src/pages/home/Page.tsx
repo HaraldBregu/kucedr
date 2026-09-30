@@ -432,10 +432,15 @@ function PageContent(): ReactElement {
 		updateMode('chat');
 	}, [updateMode]);
 	const agent = useHomeAgent({ setMode: updateMode });
+	const [focusRequest, setFocusRequest] = useState(0);
 	useEffect(() => {
-		window.addEventListener('kucedr:focus-chat-input', agent.switchToTyping);
-		return () => window.removeEventListener('kucedr:focus-chat-input', agent.switchToTyping);
-	}, [agent.switchToTyping]);
+		const requestFocus = (): void => setFocusRequest((current) => current + 1);
+		window.addEventListener('kucedr:focus-chat-input', requestFocus);
+		return () => window.removeEventListener('kucedr:focus-chat-input', requestFocus);
+	}, []);
+	useEffect(() => {
+		if (focusRequest > 0 && !agent.historyLoading) agent.switchToTyping();
+	}, [focusRequest, chatSessionId, agent.historyLoading, agent.switchToTyping]);
 	const dictation = useRealtimeDictation({
 		value: agent.input,
 		onValueChange: agent.setInput,
