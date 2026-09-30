@@ -41,6 +41,7 @@ describe('session persistence', () => {
 		const runTime = new Date('2020-01-03T00:00:00Z');
 		const oldTime = new Date('2020-01-01T00:00:00Z');
 		fs.utimesSync(messagesFilePath(state), transcriptTime, transcriptTime);
+		fs.utimesSync(runFilePath(state), oldTime, oldTime);
 		fs.utimesSync(directory, oldTime, oldTime);
 		expect(listSessions(location)[0].updatedAtMs).toBe(transcriptTime.getTime());
 		fs.writeFileSync(runFilePath(state), '{}\n');
