@@ -648,6 +648,7 @@ test('empty Home hides absent chats and shows scrollable plugins and setup cards
 	expect(workspaceBounds && composerBounds).toBeTruthy();
 	expect(Math.abs((composerBounds!.y + composerBounds!.height / 2) - (workspaceBounds!.y + workspaceBounds!.height / 2))).toBeLessThan(60);
 	await expect(page.locator('[data-slot="home-composer-shell"] > div')).toHaveCSS('max-width', '672px');
+	await expect(page.getByLabel('Prompt suggestions')).toHaveCSS('max-width', '672px');
 	const discovery = page.locator('[data-slot="home-discover"]');
 	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toHaveCount(0);
 	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
