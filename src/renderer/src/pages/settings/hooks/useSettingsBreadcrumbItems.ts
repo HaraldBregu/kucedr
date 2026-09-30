@@ -60,9 +60,9 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	}, [appId]);
 
 	if (location.pathname === '/settings') return [];
-	if (location.pathname === '/settings/general/persona') {
+	if (location.pathname === '/settings/settings/persona') {
 		return [
-			{ label: t('settings.tabs.general'), path: '/settings/general' },
+			{ label: t('settings.tabs.settings'), path: '/settings/settings' },
 			{ label: t('settings.voiceAgent.title') },
 		];
 	}
@@ -200,10 +200,10 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 		items.push({ label: skillId });
 	}
 
-	if (location.pathname.startsWith('/settings/general/media/')) {
+	if (location.pathname.startsWith('/settings/settings/media/')) {
 		const media = getSystemMedia(decodeURIComponent(location.pathname.split('/').at(-1) ?? ''));
 		items[0] = { ...items[0], path: current.path };
-		items.push({ label: media ? t(media.titleKey) : t('settings.tabs.general') });
+		items.push({ label: media ? t(media.titleKey) : t('settings.tabs.settings') });
 	}
 
 	if (location.pathname.startsWith('/settings/agent/')) {

@@ -47,7 +47,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 	const accountInitial = accountItem.title.charAt(0).toUpperCase();
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
-		{ path: '/settings/general', label: t('settings.tabs.general'), icon: Info },
+		{ path: '/settings/settings', label: t('settings.tabs.settings'), icon: Info },
 		{ path: '/settings/providers', label: t('settings.tabs.providers'), icon: Server },
 		{ path: '/settings/library', label: t('library.title'), icon: Library },
 		{ path: '/settings/plugins', label: t('settings.tabs.plugins'), icon: Plug },

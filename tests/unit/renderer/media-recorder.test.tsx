@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
-import { useMediaRecorderTest } from '../../../src/renderer/src/pages/settings/pages/general/media/recorder';
-import type { SystemMedia } from '../../../src/renderer/src/pages/settings/pages/general/media/media';
+import { useMediaRecorderTest } from '../../../src/renderer/src/pages/settings/pages/settings/media/recorder';
+import type { SystemMedia } from '../../../src/renderer/src/pages/settings/pages/settings/media/media';
 
 const track = { stop: jest.fn() };
 const stream = {

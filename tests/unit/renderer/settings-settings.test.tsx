@@ -1,7 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import GeneralPage from '../../../src/renderer/src/pages/settings/pages/general/Page';
+import SettingsPage from '../../../src/renderer/src/pages/settings/pages/settings/Page';
 
 
 const mockSetTheme = jest.fn();
@@ -71,7 +71,7 @@ it('enables keep awake from General settings', async () => {
 	await act(async () => {
 		render(
 			<MemoryRouter>
-				<GeneralPage />
+				<SettingsPage />
 			</MemoryRouter>
 		);
 	});
@@ -92,7 +92,7 @@ it('saves the configured tray icon click action from General settings', async ()
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<GeneralPage />
+			<SettingsPage />
 		</MemoryRouter>
 	);
 
@@ -113,7 +113,7 @@ it('resizes the window when a size preset is selected', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<GeneralPage />
+			<SettingsPage />
 		</MemoryRouter>
 	);
 
@@ -130,7 +130,7 @@ it('resizes the window when a size preset is selected', async () => {
 it('refreshes toggles changed from the native application menu', async () => {
 	render(
 		<MemoryRouter>
-			<GeneralPage />
+			<SettingsPage />
 		</MemoryRouter>
 	);
 
@@ -150,7 +150,7 @@ it('changes the application theme from General settings', async () => {
 	const user = userEvent.setup();
 	render(
 		<MemoryRouter>
-			<GeneralPage />
+			<SettingsPage />
 		</MemoryRouter>
 	);
 
@@ -166,10 +166,10 @@ it('changes the application theme from General settings', async () => {
 it('opens Voice Agent settings from General settings', async () => {
 	const user = userEvent.setup();
 	render(
-		<MemoryRouter initialEntries={['/settings/general']}>
+		<MemoryRouter initialEntries={['/settings/settings']}>
 			<Routes>
-				<Route path="/settings/general" element={<GeneralPage />} />
-			<Route path="/settings/general/persona" element={<p>Voice Agent page</p>} />
+				<Route path="/settings/settings" element={<SettingsPage />} />
+			<Route path="/settings/settings/persona" element={<p>Voice Agent page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);

@@ -11,7 +11,7 @@ for the current provider and model catalog.
 
 ```text
 Open /settings
-  -> redirect to /settings/general
+  -> redirect to /settings/settings
   -> use the sidebar or route search to choose another page
   -> load that page's stored configuration and runtime status
   -> update a selection or form
@@ -43,7 +43,7 @@ The visible sidebar is grouped as follows:
 | Providers    | Models, Search, Database, Storage  |
 | Integrations | Channels, Integrations, A2A, Apps  |
 
-The `/settings` route redirects to `/settings/general`. The username link, title-bar user button,
+The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open General directly.
 
 ## Route search and deep pages
@@ -302,7 +302,7 @@ required. Filesystem policy should:
 - [Settings layout](../../src/renderer/src/pages/settings/Layout.tsx)
 - [Settings sidebar](../../src/renderer/src/pages/settings/Sidebar.tsx)
 - [Shared Settings components](../../src/renderer/src/pages/settings/components/index.tsx)
-- [General settings](../../src/renderer/src/pages/settings/pages/general/Page.tsx)
+- [General settings](../../src/renderer/src/pages/settings/pages/settings/Page.tsx)
 - [Assistant settings](../../src/renderer/src/pages/settings/pages/assistant/Page.tsx)
 - [Provider settings](../../src/renderer/src/pages/settings/pages/providers/Page.tsx)
 - [Cloud storage settings](../../src/renderer/src/pages/settings/pages/cloud/Page.tsx)
@@ -313,7 +313,7 @@ required. Filesystem policy should:
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
 - [Remote agent settings](../../src/renderer/src/pages/settings/pages/remote-agent/Page.tsx)
-- [General settings tests](../../tests/unit/renderer/general-settings.test.tsx)
+- [General settings tests](../../tests/unit/renderer/settings-settings.test.tsx)
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)
 - [Provider settings tests](../../tests/unit/renderer/providers-settings.test.tsx)
 - [Permissions settings tests](../../tests/unit/renderer/permissions-settings.test.tsx)

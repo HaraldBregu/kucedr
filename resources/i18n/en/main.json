@@ -211,7 +211,7 @@
 			},
 			"descriptions": {
 				"cloud": "Back up files to your storage provider",
-				"general": "App info and appearance",
+				"settings": "App info and appearance",
 				"account": "Cloud identity and session",
 				"modelServices": "Model service setup",
 				"channels": "Messaging integrations",
@@ -240,8 +240,8 @@
 			"image": "Image",
 			"account": "Account",
 			"cloud": "Cloud",
-			"general": "General",
-			"generalDescription": "Configure application information, appearance, language, and data.",
+			"settings": "Settings",
+			"settingsDescription": "Configure application information, appearance, language, and data.",
 			"modelServices": "Model services",
 			"channels": "Channels",
 			"connectors": "Connectors",
@@ -307,7 +307,7 @@
 		"breadcrumb": {
 			"label": "Settings navigation",
 			"overview": "Overview",
-			"general": "General"
+			"settings": "Settings"
 		},
 		"voiceAgent": {
 			"title": "Voice Agent",

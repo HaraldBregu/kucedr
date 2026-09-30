@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import PersonaPage from '../../../src/renderer/src/pages/settings/pages/general/persona/Page';
+import PersonaPage from '../../../src/renderer/src/pages/settings/pages/settings/persona/Page';
 
 const mockSetVoiceAgentAppearance = jest.fn();
 

@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
 
 const showContextMenu = jest.fn();
 const contextMenuItems = [
-	{ id: '/settings/general', label: 'settings.tabs.general' },
+	{ id: '/settings/settings', label: 'settings.tabs.settings' },
 	{ id: '/settings/agent', label: 'settings.overview.groups.agent' },
 	{ id: '/settings/apps', label: 'settings.tabs.apps' },
 ];
@@ -41,7 +41,7 @@ beforeEach(() => {
 });
 
 it.each([
-	['settings.tabs.general', '/settings/general'],
+	['settings.tabs.settings', '/settings/settings'],
 	['settings.overview.groups.agent', '/settings/agent'],
 	['settings.tabs.apps', '/settings/apps'],
 ])('opens a native context menu and navigates from %s to %s', async (_label, path) => {
@@ -127,7 +127,7 @@ it('opens Account from the settings icon on Home', async () => {
 	expect(screen.getByText('/settings/account')).toBeInTheDocument();
 });
 
-it.each(['/home', '/settings/general'])(
+it.each(['/home', '/settings/settings'])(
 	'does not render the voice conversation button in the navbar on %s',
 	(path) => {
 		render(
@@ -196,10 +196,10 @@ it('keeps the user icon linked to Account while viewing Settings', async () => {
 	const user = userEvent.setup();
 
 	render(
-		<MemoryRouter initialEntries={['/settings/general']}>
+		<MemoryRouter initialEntries={['/settings/settings']}>
 			<NavigationBar />
 			<Routes>
-				<Route path="/settings/general" element={null} />
+				<Route path="/settings/settings" element={null} />
 				<Route path="/settings/account" element={<p>/settings/account</p>} />
 			</Routes>
 		</MemoryRouter>
@@ -224,7 +224,7 @@ it('does not render the sidebar toggle in the navigationbar', () => {
 	expect(screen.queryByRole('button', { name: 'navigationBar.toggleSidebar' })).not.toBeInTheDocument();
 });
 
-it.each(['/home', '/settings/general'])('omits the Coder and standalone Workspace launch buttons on %s', (path) => {
+it.each(['/home', '/settings/settings'])('omits the Coder and standalone Workspace launch buttons on %s', (path) => {
 	render(
 		<MemoryRouter initialEntries={[path]}>
 			<NavigationBar />
@@ -237,7 +237,7 @@ it.each(['/home', '/settings/general'])('omits the Coder and standalone Workspac
 
 it('does not render route titles inside the navigationbar', () => {
 	const { container } = render(
-		<MemoryRouter initialEntries={['/settings/general/persona']}>
+		<MemoryRouter initialEntries={['/settings/settings/persona']}>
 			<NavigationBar />
 		</MemoryRouter>
 	);

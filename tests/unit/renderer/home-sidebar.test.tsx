@@ -432,7 +432,7 @@ it('shows Search, Settings and Get Help as sidebar items above the footer', asyn
 					}
 				/>
 				<Route path="/settings/apps" element={<p>Apps page</p>} />
-				<Route path="/settings/general" element={<p>Settings page</p>} />
+				<Route path="/settings/settings" element={<p>Settings page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);

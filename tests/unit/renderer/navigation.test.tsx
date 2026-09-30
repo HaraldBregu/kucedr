@@ -72,7 +72,7 @@ it('uses distinct icons for Library and Knowledge Base', () => {
 
 it('places Library directly below Providers in the general sidebar group', () => {
 	render(
-		<MemoryRouter initialEntries={['/settings/general']}>
+		<MemoryRouter initialEntries={['/settings/settings']}>
 			<Routes>
 				<Route path="/settings" element={<Layout />}>
 					<Route path="*" element={null} />
@@ -96,7 +96,7 @@ it.each([
 	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/agent/mcp-tools', 'settings.modelServices.agentTools.mcp.title'],
 	['/settings/voice', 'settings.tabs.voice'],
-	['/settings/general/persona', 'settings.voiceAgent.title'],
+	['/settings/settings/persona', 'settings.voiceAgent.title'],
 	['/settings/tasks', 'settings.tabs.taskScheduler'],
 	['/settings/skills', 'settings.tabs.skills'],
 	['/settings/mcp', 'settings.tabs.mcp'],
@@ -107,7 +107,7 @@ it.each([
 	['/settings/plugins', 'settings.tabs.plugins'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
 	if (
-		path === '/settings/general/persona' ||
+		path === '/settings/settings/persona' ||
 		path === '/settings/agent/tools' ||
 		path === '/settings/agent/mcp-tools'
 	) {

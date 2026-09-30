@@ -39,9 +39,9 @@ const AccountPage = lazy(() => import('./pages/settings/pages/account/Page'));
 const CloudPage = lazy(() => import('./pages/settings/pages/cloud/Page'));
 const TasksPage = lazy(() => import('./pages/settings/pages/tasks/Page'));
 const TaskDetailsPage = lazy(() => import('./pages/settings/pages/tasks/detail/Page'));
-const GeneralPage = lazy(() => import('./pages/settings/pages/general/Page'));
-const PersonaPage = lazy(() => import('./pages/settings/pages/general/persona/Page'));
-const GeneralMediaDetailPage = lazy(() => import('./pages/settings/pages/general/media/Page'));
+const SettingsPage = lazy(() => import('./pages/settings/pages/settings/Page'));
+const PersonaPage = lazy(() => import('./pages/settings/pages/settings/persona/Page'));
+const SettingsMediaDetailPage = lazy(() => import('./pages/settings/pages/settings/media/Page'));
 const ChannelsPage = lazy(() => import('./pages/settings/pages/channels/Page'));
 const ChannelConfigurationPage = lazy(
 	() => import('./pages/settings/pages/channels/Configuration')
@@ -74,7 +74,7 @@ function ModelServiceLegacyRedirect(): React.JSX.Element {
 	const decoded = decodeURIComponent(serviceId ?? '');
 	const normalized = decoded === 'kucedr' || decoded === 'main' ? 'assistant' : decoded;
 	const item = SETTINGS_MODEL_SERVICE_ITEMS.find((entry) => entry.id === normalized);
-	if (!item) return <Navigate to="/settings/general" replace />;
+	if (!item) return <Navigate to="/settings/settings" replace />;
 	const isChatHistory = location.pathname.endsWith('/chathistory');
 	return <Navigate to={isChatHistory ? `${item.path}/chathistory` : item.path} replace />;
 }
@@ -252,7 +252,7 @@ const routes: RouteObject[] = [
 				children: [
 					{
 						index: true,
-						element: <Navigate to="/settings/general" replace />,
+						element: <Navigate to="/settings/settings" replace />,
 					},
 					{
 						path: 'account',
@@ -279,13 +279,13 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
-						path: 'general',
+						path: 'settings',
 						children: [
 							{
 								index: true,
 								element: (
 									<SettingsRouteWrapper>
-										<GeneralPage />
+										<SettingsPage />
 									</SettingsRouteWrapper>
 								),
 							},
@@ -301,7 +301,7 @@ const routes: RouteObject[] = [
 								path: 'media/:mediaId',
 								element: (
 									<SettingsRouteWrapper>
-										<GeneralMediaDetailPage />
+										<SettingsMediaDetailPage />
 									</SettingsRouteWrapper>
 								),
 							},

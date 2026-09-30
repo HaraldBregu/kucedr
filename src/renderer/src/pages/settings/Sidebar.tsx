@@ -18,7 +18,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 		items: SETTINGS_NAVIGATION.filter((item) =>
 			[
 				'/settings/account',
-				'/settings/general',
+				'/settings/settings',
 				'/settings/cloud',
 				'/settings/providers',
 				'/settings/library',

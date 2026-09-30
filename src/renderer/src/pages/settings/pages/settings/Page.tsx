@@ -51,7 +51,7 @@ const TRAY_CLICK_ACTION_OPTIONS = [
 
 type TrayClickAction = (typeof TRAY_CLICK_ACTION_OPTIONS)[number]['value'];
 
-const GeneralPage: React.FC = () => {
+const SettingsPage: React.FC = () => {
 	const { t } = useTranslation();
 	const { language, setLanguage, theme, setTheme } = useApp();
 	const [trayEnabled, setTrayEnabled] = useState(true);
@@ -115,8 +115,8 @@ const GeneralPage: React.FC = () => {
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.tabs.general')}
-				description={t('settings.tabs.generalDescription')}
+				title={t('settings.tabs.settings')}
+				description={t('settings.tabs.settingsDescription')}
 			/>
 
 			<SettingsSection title={t('settings.application.information')}>
@@ -248,7 +248,7 @@ const GeneralPage: React.FC = () => {
 							</Select>
 						}
 					/>
-					<Link to="/settings/general/persona" className="block hover:bg-muted/40">
+					<Link to="/settings/settings/persona" className="block hover:bg-muted/40">
 						<SettingsRow
 							title={t('settings.voiceAgent.title')}
 							description={t('settings.voiceAgent.description')}
@@ -337,4 +337,4 @@ const GeneralPage: React.FC = () => {
 	);
 };
 
-export default GeneralPage;
+export default SettingsPage;

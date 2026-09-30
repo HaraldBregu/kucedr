@@ -59,7 +59,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const searchLabel = t('navigationBar.search', 'Search');
 	const workspaceLabel = t('navigationBar.workspace', 'Workspace');
 	const navigationBarMenuItems = [
-		{ path: '/settings/general', label: t('settings.tabs.general') },
+		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
 		{ path: '/settings/apps', label: t('settings.tabs.apps') },
 	];

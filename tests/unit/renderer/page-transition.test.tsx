@@ -20,7 +20,7 @@ jest.mock('motion/react', () => ({
 	useReducedMotion: (): boolean => false,
 }));
 
-it.each(['/home', '/settings/general'])(
+it.each(['/home', '/settings/settings'])(
 	'keeps the split-pane shell stationary on %s',
 	(pathname) => {
 		render(

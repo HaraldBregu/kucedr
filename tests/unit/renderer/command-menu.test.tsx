@@ -80,7 +80,7 @@ it('opens General settings with the settings shortcut', () => {
 			<CommandMenu />
 			<Routes>
 				<Route path="/home" element={null} />
-				<Route path="/settings/general" element={<p>General settings</p>} />
+				<Route path="/settings/settings" element={<p>General settings</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
@@ -111,7 +111,7 @@ it('includes every canonical static settings subpage', () => {
 	);
 
 	for (const path of [
-		'/settings/general/persona',
+		'/settings/settings/persona',
 		'/settings/channels/channelDetail/telegram',
 		'/settings/channels/tools',
 		'/settings/providers/models',

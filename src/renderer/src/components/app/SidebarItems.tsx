@@ -15,7 +15,7 @@ export function SidebarItems(): React.JSX.Element {
 		<nav className="shrink-0 px-2 pt-2">
 			<SidebarMenu>
 				<SidebarMenuItem>
-					<SidebarMenuButton onClick={() => navigate('/settings/general')}>
+					<SidebarMenuButton onClick={() => navigate('/settings/settings')}>
 						<Settings className="size-4 shrink-0" />
 						<span>{t('settings.title')}</span>
 					</SidebarMenuButton>
