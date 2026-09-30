@@ -1,10 +1,11 @@
 import React, { type ReactNode } from 'react';
-import { Folder, Menu, Search, User } from 'lucide-react';
+import { Folder, Menu, Monitor, Moon, Search, Sun, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
 import { NavigationBarLeftContainer } from './NavigationBarLeftContainer';
 import { Button } from '@/components/ui/button';
+import { useApp } from '@/contexts';
 import { NavigationBarProvider } from './context/NavigationBarContext';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
@@ -32,6 +33,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 	onSearch,
 }: NavigationBarProps) {
 	const { t } = useTranslation();
+	const { theme, setTheme } = useApp();
+	const ThemeIcon = theme === 'light' ? Sun : theme === 'dark' ? Moon : Monitor;
+	const nextTheme = theme === 'light' ? 'dark' : theme === 'dark' ? 'system' : 'light';
+	const themeLabel = `${t('settings.theme.title')}: ${t(`settings.theme.${theme}`)}`;
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
@@ -158,15 +163,24 @@ export const NavigationBar = React.memo(function NavigationBar({
 				)}
 
 				{/* ── Right actions ── */}
-				{(searchButton || workspaceButton || routeButton) && (
 					<div
 						className={`z-10 mr-3 ${actionGroupClassName}`}
 					>
 						{searchButton}
 						{workspaceButton}
 						{routeButton}
+						<Button
+							type="button"
+							variant="ghost"
+							size="icon"
+							className="size-8 rounded-full"
+							onClick={() => setTheme(nextTheme)}
+							title={themeLabel}
+							aria-label={themeLabel}
+						>
+							<ThemeIcon className="size-4" strokeWidth={1.8} />
+						</Button>
 					</div>
-				)}
 
 				{!isMac && <WindowControls isMaximized={isMaximized} />}
 			</NavigationBarContainer>
