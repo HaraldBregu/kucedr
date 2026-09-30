@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { Folder, Menu, Moon, Sun } from 'lucide-react';
+import { Folder, House, Menu, Moon, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -56,6 +56,8 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isSettings = location.pathname.startsWith('/settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const workspaceLabel = t('navigationBar.space', 'Space');
+	const homeLabel = t('navigationBar.home', 'Home');
+	const spaceButtonLabel = isWorkspace ? homeLabel : workspaceLabel;
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
@@ -69,14 +71,20 @@ export const NavigationBar = React.memo(function NavigationBar({
 					variant="outline"
 					size="sm"
 					className="rounded-full text-xs"
-					onClick={() => navigate('/workspace')}
-					aria-label={workspaceLabel}
+					onClick={() => navigate(isWorkspace ? '/home' : '/workspace')}
+					aria-label={spaceButtonLabel}
 				>
-					<Folder className="size-3.5" strokeWidth={1.8} />
-					<span>{workspaceLabel}</span>
+					{isWorkspace ? (
+						<span className="flex size-5 items-center justify-center rounded-full border border-current">
+							<House className="size-3" strokeWidth={1.8} />
+						</span>
+					) : (
+						<Folder className="size-3.5" strokeWidth={1.8} />
+					)}
+					<span>{spaceButtonLabel}</span>
 				</Button>
 			} />
-			<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
+			<TooltipContent side="bottom">{spaceButtonLabel}</TooltipContent>
 		</Tooltip>
 	) : null;
 	return (

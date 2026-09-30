@@ -2171,6 +2171,7 @@
 	"navigationBar": {
 		"applicationMenu": "Application menu",
 		"chat": "Chat",
+		"home": "Home",
 		"space": "Space",
 		"workspace": "Workspace",
 		"newChat": "New Chat",

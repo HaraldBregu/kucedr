@@ -163,6 +163,11 @@ it('renders Workspace on the right and opens it', async () => {
 	expect(within(workspace).getByText('navigationBar.space')).toBeInTheDocument();
 	await user.click(workspace);
 	expect(screen.getByText('Workspace page')).toBeInTheDocument();
+	const home = screen.getByRole('button', { name: 'navigationBar.home' });
+	expect(home.querySelector('.lucide-house')).toBeInTheDocument();
+	expect(home.querySelector('.rounded-full')).toBeInTheDocument();
+	await user.click(home);
+	expect(screen.getByRole('button', { name: 'navigationBar.space' })).toBeInTheDocument();
 });
 
 it('renders one solid navigationbar color without visible title text', () => {
