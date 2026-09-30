@@ -14,7 +14,6 @@ import {
 	SettingsSection,
 } from '../../components';
 import { ChannelModelConfiguration } from './Model';
-import { ChannelConnect } from './Connect';
 import { ChannelRow } from './Row';
 import { ProfileMediaModels } from '../assistant/profilemodels';
 
@@ -23,11 +22,8 @@ export default function ChannelsPage(): React.JSX.Element {
 	const navigate = useNavigate();
 	const [services, setServices] = useState<readonly CatalogService[]>([]);
 	const [configuredIds, setConfiguredIds] = useState<ReadonlySet<string>>(new Set());
-	const [selectedService, setSelectedService] = useState<CatalogService | null>(null);
-	const [savingId, setSavingId] = useState<string | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
-	const [connectionError, setConnectionError] = useState('');
 	useEffect(() => {
 		let mounted = true;
 		void Promise.all([window.app.channels(), window.provider.listChannels()])
@@ -53,42 +49,11 @@ export default function ChannelsPage(): React.JSX.Element {
 		};
 	}, [t]);
 
-	const openConnection = (service: CatalogService): void => {
-		setConnectionError('');
-		setSelectedService(service);
-	};
-
-	const saveConnection = async (apiKey: string): Promise<boolean> => {
-		if (!selectedService) return false;
-		const providerId = selectedService.provider.id;
-		setSavingId(providerId);
-		setConnectionError('');
-		try {
-			await window.provider.setChannel({ id: providerId, apiKey });
-			setConfiguredIds((current) => new Set(current).add(providerId));
-			return true;
-		} catch (cause) {
-			setConnectionError(cause instanceof Error ? cause.message : String(cause));
-			return false;
-		} finally {
-			setSavingId(null);
-		}
-	};
-
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={t('settings.tabs.channels')}
 				description={t('settings.channels.description')}
-			/>
-			<ChannelConnect
-				key={selectedService?.provider.id ?? 'closed'}
-				service={selectedService}
-				configured={Boolean(selectedService && configuredIds.has(selectedService.provider.id))}
-				saving={savingId === selectedService?.provider.id}
-				error={connectionError}
-				onClose={() => setSelectedService(null)}
-				onSave={saveConnection}
 			/>
 			<SettingsPanel>
 				<ChannelModelConfiguration kind="llm" />
@@ -125,9 +90,7 @@ export default function ChannelsPage(): React.JSX.Element {
 								key={`${service.provider.id}-${service.id}`}
 								service={service}
 								configured={configuredIds.has(service.provider.id)}
-								saving={savingId === service.provider.id}
 								onOpen={() => navigate(`/settings/channels/channelDetail/${service.provider.id}`)}
-								onEdit={() => openConnection(service)}
 							/>
 						))}
 					</div>

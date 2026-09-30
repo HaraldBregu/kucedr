@@ -747,10 +747,14 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 		.getByText('Telegram Bot API', { exact: true })
 		.locator('xpath=ancestor::*[@data-slot="item"][1]');
 	await telegram.getByRole('button', { name: 'Add Telegram Bot API', exact: true }).click();
-	const connectDialog = page.getByRole('dialog');
-	await expect(connectDialog).toContainText('Open Telegram, message @BotFather');
-	await connectDialog.getByLabel('Bot token', { exact: true }).fill('channel-test-token');
-	await connectDialog.getByRole('button', { name: 'Save', exact: true }).click();
+	await expect(page).toHaveURL(/#\/settings\/channels\/channelDetail\/telegram$/);
+	await expect(page.getByText('Open Telegram, message @BotFather')).toBeVisible();
+	await page.getByLabel('Bot token', { exact: true }).fill('channel-test-token');
+	await page.getByRole('button', { name: 'Save', exact: true }).click();
+	await expect(page.getByLabel('Bot token', { exact: true })).toHaveValue('');
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/channels';
+	});
 	await expect(
 		telegram.getByRole('button', { name: 'Options for Telegram Bot API' })
 	).toBeVisible();

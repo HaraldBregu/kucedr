@@ -14,15 +14,11 @@ import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item'
 export function ChannelRow({
 	service,
 	configured,
-	saving,
 	onOpen,
-	onEdit,
 }: {
 	readonly service: CatalogService;
 	readonly configured: boolean;
-	readonly saving: boolean;
 	readonly onOpen: () => void;
-	readonly onEdit: () => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
 
@@ -63,7 +59,6 @@ export function ChannelRow({
 							<Button
 								variant="ghost"
 								size="icon-sm"
-								disabled={saving}
 								onClick={(event) => event.stopPropagation()}
 								aria-label={t('settings.integrations.options', { name: service.name })}
 							>
@@ -71,7 +66,7 @@ export function ChannelRow({
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end">
-							<DropdownMenuItem onSelect={onEdit}>
+							<DropdownMenuItem onSelect={onOpen}>
 								<Pencil />
 								{t('settings.channels.editToken')}
 							</DropdownMenuItem>
@@ -81,11 +76,10 @@ export function ChannelRow({
 					<Button
 						variant="ghost"
 						size="icon-sm"
-						disabled={saving}
 						className="hover:bg-transparent dark:hover:bg-transparent"
 						onClick={(event) => {
 							event.stopPropagation();
-							onEdit();
+							onOpen();
 						}}
 						aria-label={t('settings.integrations.add', { name: service.name })}
 					>

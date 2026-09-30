@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Hash, KeyRound, Plus, ShieldCheck, UserRound, X } from 'lucide-react';
+import { ExternalLink, Hash, KeyRound, Plus, ShieldCheck, UserRound, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,7 @@ import { SettingsNotice, SettingsPageHeader, SettingsPageShell } from '../../../
 import type { CatalogService } from '@shared/provider_types';
 import { CHANNEL_DM_POLICIES } from '@shared/channels_types';
 import type { ChannelDmPolicy, StoredChannelProvider } from '@shared/channels_types';
+import { openExternalUrl } from '@/lib/external-links';
 
 type ListField = 'allowFrom' | 'groupAllowFrom';
 
@@ -73,12 +74,25 @@ const ChannelDetailPage: React.FC = () => {
 			[field]: (credential[field] ?? []).filter((item) => item !== value),
 		});
 	};
+	const apiKeyCredential = service?.credentials?.find(({ key }) => key === 'apiKey');
 
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
 				title={service?.provider.name ?? t('settings.channels.configuration')}
-				description={service?.name}
+				description={service?.instructions ?? service?.name}
+				action={
+					service?.provider.apiKeyUrl ? (
+						<Button
+							variant="outline"
+							size="sm"
+							onClick={() => void openExternalUrl(service.provider.apiKeyUrl!)}
+						>
+							<ExternalLink className="size-3.5" />
+							{t('settings.channels.getToken')}
+						</Button>
+					) : undefined
+				}
 			/>
 
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
@@ -90,23 +104,33 @@ const ChannelDetailPage: React.FC = () => {
 							<KeyRound className="size-3" strokeWidth={1.8} />
 						</ItemMedia>
 						<ItemContent className="min-w-0 flex-col items-start gap-0.5">
-							<ItemTitle>{t('settings.channels.token')}</ItemTitle>
+							<ItemTitle>{apiKeyCredential?.label ?? t('settings.channels.token')}</ItemTitle>
 							<p className="text-[11px] leading-4 text-muted-foreground">
 								{t('settings.channels.tokenDescription')}
 							</p>
 						</ItemContent>
-						<ItemActions className="ml-auto w-full flex-none justify-end sm:w-80">
+						<ItemActions className="ml-auto w-full flex-none gap-2 sm:w-auto">
 							<Input
-								id={`${providerId}-token`}
-								type="password"
+								id={`${providerId}-${apiKeyCredential?.key ?? 'apiKey'}`}
+								type={apiKeyCredential?.type ?? 'password'}
 								autoComplete="off"
 								value={credential.apiKey}
 								onChange={(event) => setCredential({ ...credential, apiKey: event.target.value })}
-								onBlur={() => void save(credential)}
 								placeholder={t('settings.channels.tokenPlaceholder')}
 								className={SETTINGS_INPUT_CLASS}
-								aria-label={t('settings.channels.token')}
+								aria-label={apiKeyCredential?.label ?? t('settings.channels.token')}
+								required={apiKeyCredential?.required}
 							/>
+							<Button
+								type="button"
+								size="sm"
+								disabled={!credential.apiKey.trim()}
+								onClick={() =>
+									void save({ ...credential, apiKey: credential.apiKey.trim() })
+								}
+							>
+								{t('common.save')}
+							</Button>
 						</ItemActions>
 					</Item>
 
