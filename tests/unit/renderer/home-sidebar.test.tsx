@@ -450,7 +450,7 @@ it('shows Search, Settings and Get Help as sidebar items above the footer', asyn
 	expect(screen.queryByRole('menuitem', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('menuitem', { name: 'settings.sidebar.getHelp' })).not.toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.tabs.settings' }).querySelector('.lucide-settings')).toBeInTheDocument();
-	await user.click(accountMenu);
+	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.sidebar.help' }));
 	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');
 	await user.click(screen.getByRole('button', { name: 'settings.title', exact: true }));
