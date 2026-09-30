@@ -21,7 +21,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 			{entries.map((entry) => (
 				<li key={entry.path} className="min-w-0">
 					{renamingPath === entry.path ? (
-						<div className="flex min-h-8 items-center gap-2 rounded-xl px-2 text-sm">
+						<div className="flex min-h-8 items-center gap-2 rounded-lg px-2 text-sm">
 							{entry.type === 'directory' ? <Folder className="size-4 shrink-0" strokeWidth={1.8} /> : <File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />}
 							<WorkspaceRenameInput name={entry.name} busy={renameBusy} onCancel={onRenameCancel} onConfirm={onRename} />
 						</div>
@@ -37,7 +37,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 								return next;
 							});
 						}}>
-						<summary className="flex min-h-8 cursor-pointer items-center gap-2 rounded-xl px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring" onContextMenu={(event) => {
+						<summary className="flex min-h-8 cursor-pointer items-center gap-2 rounded-lg px-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring" onContextMenu={(event) => {
 							event.preventDefault();
 							event.stopPropagation();
 							onEntryContextMenu(entry);
@@ -56,7 +56,7 @@ export function WorkspaceTree({ entries, onFileSelect, onEntryContextMenu, renam
 						<button
 							type="button"
 							aria-current={selectedPath === entry.path ? 'page' : undefined}
-							className="flex min-h-8 w-full items-center gap-2 rounded-xl px-2 text-left text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium"
+							className="flex min-h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring aria-[current=page]:bg-sidebar-accent aria-[current=page]:font-medium"
 							title={entry.path}
 							onClick={() => onFileSelect(entry)}
 							onContextMenu={(event) => {
