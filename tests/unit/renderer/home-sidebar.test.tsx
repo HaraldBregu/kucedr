@@ -194,15 +194,14 @@ it.each<[AuthState, string]>([
 	}
 	[
 		['settings.tabs.account', '/settings/account'],
-		['settings.sidebar.provider', '/settings/providers'],
-		['settings.tabs.channels', '/settings/channels'],
+		['settings.tabs.cloud', '/settings/cloud'],
+		['settings.sidebar.chatSettings', '/settings/agent'],
+		['settings.tabs.providers', '/settings/providers'],
 		['settings.tabs.apps', '/settings/apps'],
 	].forEach(([name, href]) => {
 		expect(within(menu).getByRole('menuitem', { name })).toHaveAttribute('href', href);
 	});
-	expect(
-		within(menu).queryByRole('menuitem', { name: 'settings.tabs.cloud' })
-	).not.toBeInTheDocument();
+	expect(within(menu).queryByRole('menuitem', { name: 'settings.tabs.settings' })).not.toBeInTheDocument();
 	expect(
 		within(menu).queryByRole('menuitem', { name: 'settings.sidebar.assistant' })
 	).not.toBeInTheDocument();
@@ -449,7 +448,9 @@ it('shows Search, Settings and Get Help as sidebar items above the footer', asyn
 	await user.click(accountMenu);
 	expect(screen.queryByRole('menuitem', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('menuitem', { name: 'settings.sidebar.getHelp' })).not.toBeInTheDocument();
-	expect(screen.getByRole('menuitem', { name: 'settings.tabs.settings' }).querySelector('.lucide-settings')).toBeInTheDocument();
+	expect(screen.queryByRole('menuitem', { name: 'settings.tabs.settings' })).not.toBeInTheDocument();
+	expect(screen.getByRole('menuitem', { name: 'settings.tabs.cloud' }).querySelector('.lucide-cloud')).toBeInTheDocument();
+	expect(screen.getByRole('menuitem', { name: 'settings.sidebar.chatSettings' }).querySelector('.lucide-message-circle')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.sidebar.help' }));
 	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');

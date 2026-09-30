@@ -175,6 +175,7 @@
 			"account": "Settings",
 			"summary": "Account, Cloud, Providers etc",
 			"assistant": "Assistant",
+			"chatSettings": "Chat settings",
 			"getHelp": "Get help",
 			"help": "Get Help",
 			"provider": "Provider",
