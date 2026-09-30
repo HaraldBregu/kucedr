@@ -164,8 +164,7 @@ it('renders Workspace on the right and opens it', async () => {
 	await user.click(workspace);
 	expect(screen.getByText('Workspace page')).toBeInTheDocument();
 	const home = screen.getByRole('button', { name: 'navigationBar.home' });
-	expect(home.querySelector('.lucide-house')).toBeInTheDocument();
-	expect(home.querySelector('.rounded-full')).toBeInTheDocument();
+	expect(home.querySelector('.lucide-message-circle')).toBeInTheDocument();
 	await user.click(home);
 	expect(screen.getByRole('button', { name: 'navigationBar.space' })).toBeInTheDocument();
 });
