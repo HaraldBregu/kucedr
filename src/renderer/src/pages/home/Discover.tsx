@@ -106,7 +106,7 @@ export function Discover(): ReactElement {
 										name={plugin.name}
 										iconDarkUrl={plugin.iconDarkUrl}
 										iconLightUrl={plugin.iconLightUrl}
-										className="size-7 shrink-0 rounded-md"
+										className="size-10 shrink-0 rounded-md"
 									/>
 									<span className="truncate text-sm font-medium">{plugin.name}</span>
 								</div>

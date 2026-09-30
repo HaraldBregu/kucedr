@@ -177,7 +177,7 @@ describe('Home prompt attachments', () => {
 		messages = [{ id: 'agent-welcome', role: 'agent' }];
 	});
 
-	it('shows empty-state prompt rows of three, two, and one without settings', async () => {
+	it('shows one row of empty-state prompt suggestions without settings', async () => {
 		renderPage();
 		await waitFor(() =>
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
@@ -195,9 +195,8 @@ describe('Home prompt attachments', () => {
 		]) {
 			expect(screen.getByText(label)).toBeInTheDocument();
 		}
-		const promptRows = screen.getByLabelText('Prompt suggestions').children;
-		expect(promptRows).toHaveLength(3);
-		expect(Array.from(promptRows, (row) => row.children.length)).toEqual([3, 2, 1]);
+		const promptRow = screen.getByLabelText('Prompt suggestions').children;
+		expect(promptRow).toHaveLength(6);
 		expect(screen.queryByText('Create music')).not.toBeInTheDocument();
 		expect(screen.queryByLabelText('Quick settings')).not.toBeInTheDocument();
 		fireEvent.click(screen.getByText('Create an image'));
