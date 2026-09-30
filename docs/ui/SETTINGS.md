@@ -313,7 +313,7 @@ required. Filesystem policy should:
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
 - [Remote agent settings](../../src/renderer/src/pages/settings/pages/remote-agent/Page.tsx)
-- [Settings tests](../../tests/unit/renderer/settings-settings.test.tsx)
+- [Settings tests](../../tests/unit/renderer/settings-page.test.tsx)
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)
 - [Provider settings tests](../../tests/unit/renderer/providers-settings.test.tsx)
 - [Permissions settings tests](../../tests/unit/renderer/permissions-settings.test.tsx)
