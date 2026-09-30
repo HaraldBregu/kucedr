@@ -785,10 +785,19 @@ function PageContent(): ReactElement {
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
 					{showEmptyConversation ? (
-						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-5 pt-24">
-							<EmptyConversation />
+						<div className="flex min-h-full w-full shrink-0 flex-col justify-center gap-6 py-10">
+							<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4">
+								<EmptyConversation />
+							</div>
+							{composer}
+							{showPromptSuggestions ? (
+								<div className="mx-auto w-full">
+									<PromptSuggestions onUseSuggestion={agent.useSuggestion} />
+								</div>
+							) : null}
 						</div>
 					) : (
+						<>
 						<ChatContainerRoot
 							className="min-h-0 p-0 [scrollbar-gutter:auto]"
 							contextRef={chatScrollRef}
@@ -813,19 +822,13 @@ function PageContent(): ReactElement {
 								/>
 							</div>
 						</ChatContainerRoot>
-					)}
-					{composer}
-					{showEmptyConversation ? (
-						<>
-							{showPromptSuggestions ? (
-								<div className="mx-auto w-full pb-6">
-									<PromptSuggestions onUseSuggestion={agent.useSuggestion} />
-								</div>
-							) : null}
-							<div className="mx-auto w-full max-w-6xl px-4 pb-10">
-								<Discover />
-							</div>
+						{composer}
 						</>
+					)}
+					{showEmptyConversation ? (
+						<div className="mx-auto w-full max-w-6xl px-4 pb-10">
+							<Discover />
+						</div>
 					) : null}
 				</div>
 			</Split>
