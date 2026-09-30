@@ -150,7 +150,7 @@ export function Discover(): ReactElement {
 								className="flex h-20 flex-col gap-1 p-2.5 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
 							>
 								<div className="flex items-center gap-2">
-									<item.icon className="size-6 shrink-0 text-muted-foreground" aria-hidden="true" />
+									<item.icon className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 									<span className="text-sm font-medium">{t(item.labelKey)}</span>
 								</div>
 								<p className="line-clamp-2 text-xs text-muted-foreground">
