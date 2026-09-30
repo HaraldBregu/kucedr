@@ -184,8 +184,8 @@ describe('Home prompt attachments', () => {
 		);
 		expect(screen.getByLabelText('Attachment files')).not.toHaveAttribute('accept');
 
+		expect(screen.getByText(/^Good (morning|afternoon|evening), how are you\?$/)).toBeInTheDocument();
 		expect(screen.getByText("I'm Kucedr. What can I do for you?")).toBeInTheDocument();
-		expect(screen.getByText(/^Good (morning|afternoon|evening)$/)).toBeInTheDocument();
 		for (const label of [
 			'Plan my day',
 			'Rain sound',
