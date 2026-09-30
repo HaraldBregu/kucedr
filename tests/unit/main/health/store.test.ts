@@ -1,4 +1,4 @@
-jest.mock('../../../../../src/main/shared/user_data_location', () => ({
+jest.mock('../../../../src/main/shared/user_data_location', () => ({
 	userDataLocation: () => '/tmp/kucedr-health-test',
 }));
 

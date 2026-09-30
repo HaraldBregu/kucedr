@@ -1,7 +1,7 @@
 const stores = new Map<string, Record<string, unknown>>();
 
 jest.mock('electron-store', () =>
-	jest.fn().mockImplementation((options: { name?: string }) => {
+	jest.fn().mockImplementation((options: { name?: string; cwd?: string }) => {
 		const name = options.name ?? 'config';
 		let backing = stores.get(name) ?? {
 			providerId: 'openai',
@@ -29,7 +29,7 @@ jest.mock('electron-store', () =>
 		};
 		stores.set(name, backing);
 		return {
-			path: `/tmp/kucedr-settings/${name}.json`,
+			path: `${options.cwd ?? '/tmp/kucedr-settings'}/${name}.json`,
 			get: (key: string) => backing[key],
 			set: (key: string, value: unknown) => {
 				backing[key] = value;
