@@ -1,4 +1,6 @@
 import { expect, test, type ElectronApplication, type Page } from '@playwright/test';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
 
@@ -80,6 +82,28 @@ test('the start route redirects configured users to home', async () => {
 	await expect(page).toHaveURL(/#\/home$/);
 	await expect(page.locator('#root')).not.toBeEmpty();
 	await expect(page.getByText('errorBoundary.notFoundTitle')).toHaveCount(0);
+});
+
+test('New Chat and session selection focus the prompt', async () => {
+	await page.evaluate(() => {
+		window.location.hash = '#/home';
+	});
+	const sessionId = '33333333-3333-4333-8333-333333333333';
+	const sessionFolder = path.join(userDataDir, 'sessions', sessionId);
+	mkdirSync(sessionFolder, { recursive: true });
+	writeFileSync(path.join(sessionFolder, 'info.json'), JSON.stringify({ type: 'main' }));
+	writeFileSync(path.join(sessionFolder, 'messages.json'), '[]\n');
+
+	const sidebar = page.locator('[data-slot="home-sidebar"]');
+	const prompt = page.getByRole('textbox', { name: 'Message your assistant' });
+	const savedChat = sidebar.getByRole('button', { name: 'Untitled', exact: true });
+	await expect(savedChat).toBeVisible();
+	await sidebar.getByRole('button', { name: 'New Chat' }).click();
+	await expect(prompt).toBeFocused();
+	await savedChat.click();
+	await expect(prompt).toBeFocused();
+	await savedChat.click();
+	await expect(prompt).toBeFocused();
 });
 
 test('Settings keeps Plugins and Apps in the main list without a footer', async () => {
