@@ -160,6 +160,7 @@ it('renders Workspace on the right and opens it', async () => {
 
 	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	expect(workspace.querySelector('.lucide-folder')).toBeInTheDocument();
+	expect(within(workspace).getByText('navigationBar.workspace')).toBeInTheDocument();
 	await user.click(workspace);
 	expect(screen.getByText('Workspace page')).toBeInTheDocument();
 });

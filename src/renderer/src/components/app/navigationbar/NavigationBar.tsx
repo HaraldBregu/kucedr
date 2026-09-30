@@ -67,12 +67,12 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<Button
 					type="button"
 					variant="ghost"
-					size="icon"
-					className="size-8 rounded-full"
+					size="default"
 					onClick={() => navigate('/workspace')}
 					aria-label={workspaceLabel}
 				>
 					<Folder className="size-4" strokeWidth={1.8} />
+					<span>{workspaceLabel}</span>
 				</Button>
 			} />
 			<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
