@@ -78,7 +78,7 @@ export function Discover(): ReactElement {
 											dateTime={new Date(session.updatedAtMs ?? session.createdAtMs).toISOString()}
 											className="truncate"
 										>
-											Updated{' '}
+											{session.updatedAtMs == null ? 'Created' : 'Updated'}{' '}
 											{new Date(session.updatedAtMs ?? session.createdAtMs).toLocaleString(
 												undefined,
 												{
