@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import type { ContextMenuDescriptor } from '@shared/window_types';
 import { SPLIT_ITEM_CLASS } from '@/components/app/base/page';
+import { SidebarItems } from '@/components/app/SidebarItems';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { WorkspaceActionDialog, type WorkspaceAction } from './ActionDialog';
 import { WorkspaceTree } from './Tree';
@@ -169,6 +170,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				)}
 			</nav>
 			{pendingAction ? <WorkspaceActionDialog key={`${pendingAction.kind}:${pendingAction.entry?.path ?? pendingAction.parentPath}`} action={pendingAction} busy={busy} error={actionError} onClose={() => { setPendingAction(null); setActionError(''); }} onConfirm={confirmAction} /> : null}
+			<SidebarItems />
 			<AppSidebarFooter />
 		</div>
 	);

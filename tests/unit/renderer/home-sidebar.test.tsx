@@ -413,7 +413,7 @@ it('starts a new chat from the sidebar', async () => {
 	expect(setSessionTitle).toHaveBeenCalledWith('navigationBar.newChat');
 });
 
-it('shows Settings and Help in the footer menu without a Search item', async () => {
+it('shows Settings and Help as sidebar items above the footer without a Search item', async () => {
 	const user = userEvent.setup();
 	listSessions.mockResolvedValue([]);
 
@@ -437,7 +437,8 @@ it('shows Settings and Help in the footer menu without a Search item', async () 
 	);
 
 	await screen.findByText('settings.chatHistory.empty');
-	expect(screen.getByRole('button', { name: 'settings.title', exact: true })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'settings.title', exact: true }).closest('[data-slot="sidebar-footer"]')).toBeNull();
+	expect(screen.getByRole('button', { name: 'settings.sidebar.help' }).closest('[data-slot="sidebar-footer"]')).toBeNull();
 	expect(
 		screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })
 	).not.toBeInTheDocument();

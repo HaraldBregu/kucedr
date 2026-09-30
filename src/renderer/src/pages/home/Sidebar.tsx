@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactElement } from 'react';
 import { Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SPLIT_ITEM_ACTIVE_CLASS, SPLIT_ITEM_CLASS } from '@/components/app/base/page';
+import { SidebarItems } from '@/components/app/SidebarItems';
 import { AppSidebarFooter } from '@/components/app/SidebarFooter';
 import { TextShimmer } from '@/components/prompt-kit/text-shimmer';
 import { Button } from '@/components/ui/button';
@@ -283,6 +284,7 @@ export function HomeSidebar({ refreshKey }: HomeSidebarProps): ReactElement {
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
+			<SidebarItems />
 			<AppSidebarFooter />
 		</div>
 	);
