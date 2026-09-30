@@ -11,7 +11,7 @@ import { isChannelId } from '../../shared/channels_definitions';
 import { resourceRoot } from '../shared/resource_root';
 
 export function loadChannels(): readonly CatalogService[] {
-	const directory = path.join(resourceRoot(), 'resources/channels');
+	const directory = path.join(resourceRoot(), 'resources/providers');
 	if (!existsSync(directory)) return [];
 
 	const channels: CatalogService[] = [];

@@ -1,7 +1,7 @@
 import { loadChannels } from '../../../../src/main/channels/catalog';
 
 describe('channel manifests', () => {
-	it('loads channel services and icons from resources/channels', () => {
+	it('loads channel services and icons from resources/providers', () => {
 		const channels = loadChannels();
 
 		expect(channels.map((channel) => channel.provider.id)).toEqual(['telegram']);
@@ -13,10 +13,10 @@ describe('channel manifests', () => {
 					id: 'telegram',
 					name: 'Telegram',
 					iconDarkUrl: expect.stringContaining(
-						'/resources/channels/telegram/images/svg/telegram-color.svg'
+						'/resources/providers/telegram/images/telegram.svg'
 					),
 					iconLightUrl: expect.stringContaining(
-						'/resources/channels/telegram/images/svg/telegram-color.svg'
+						'/resources/providers/telegram/images/telegram.svg'
 					),
 				}),
 			})
