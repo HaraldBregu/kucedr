@@ -612,7 +612,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(field).toHaveCSS('padding-top', '12px');
 	await expect(field).toHaveCSS('padding-bottom', '8px');
 	await expect(field).toHaveCSS('padding-right', '8px');
-	await expect(field).toHaveCSS('border-radius', '24px');
+	await expect(field).toHaveCSS('border-radius', '16px');
 	const expandedFieldBounds = await field.boundingBox();
 	const expandedEditorBounds = await editor.boundingBox();
 	expect(expandedFieldBounds && expandedEditorBounds).toBeTruthy();
@@ -649,6 +649,7 @@ test('empty Home hides absent chats and shows scrollable plugins and setup cards
 	expect(Math.abs((composerBounds!.y + composerBounds!.height / 2) - (workspaceBounds!.y + workspaceBounds!.height / 2))).toBeLessThan(16);
 	await expect(page.locator('[data-slot="home-composer-shell"] > div')).toHaveCSS('max-width', '672px');
 	await expect(page.getByLabel('Prompt suggestions')).toHaveCSS('max-width', '672px');
+	await expect(page.getByLabel('Prompt suggestions')).toHaveCSS('justify-content', 'center');
 	const discovery = page.locator('[data-slot="home-discover"]');
 	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toHaveCount(0);
 	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
