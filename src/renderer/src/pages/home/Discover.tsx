@@ -72,11 +72,15 @@ export function Discover(): ReactElement {
 										setSessionTitle?.(session.title, session.id);
 									}}
 								>
-									<span className="flex w-full items-center justify-between gap-2 text-[11px] text-muted-foreground">
-										<MessageCircle className="size-4 shrink-0" aria-hidden="true" />
+									<span className="flex w-full min-w-0 items-start gap-2">
+										<MessageCircle className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+										<span className="line-clamp-2 text-sm font-medium">
+											{session.title.trim() || t('settings.chatHistory.untitled')}
+										</span>
+									</span>
+									<span className="self-end text-[11px] text-muted-foreground">
 										<time
 											dateTime={new Date(session.updatedAtMs ?? session.createdAtMs).toISOString()}
-											className="truncate"
 										>
 											{session.updatedAtMs == null ? 'Created' : 'Updated'}{' '}
 											{new Date(session.updatedAtMs ?? session.createdAtMs).toLocaleString(
@@ -89,9 +93,6 @@ export function Discover(): ReactElement {
 												}
 											)}
 										</time>
-									</span>
-									<span className="line-clamp-2 text-sm font-medium">
-										{session.title.trim() || t('settings.chatHistory.untitled')}
 									</span>
 								</button>
 							</Card>
