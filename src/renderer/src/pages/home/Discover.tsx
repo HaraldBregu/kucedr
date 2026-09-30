@@ -115,7 +115,7 @@ export function Discover(): ReactElement {
 						>
 							<Link
 								to={`/settings/plugins/mcp/${plugin.provider.id}/${plugin.id}`}
-								className="flex h-24 flex-col gap-1 px-4 py-2 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
+								className="flex h-24 flex-col gap-1 p-2.5 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
 							>
 								<div className="flex min-w-0 items-center gap-2">
 									<ProviderAvatar
