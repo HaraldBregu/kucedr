@@ -76,7 +76,7 @@ it('does not open the navigationbar menu from a button', () => {
 		</MemoryRouter>
 	);
 
-	fireEvent.contextMenu(screen.getByRole('button', { name: 'settings.title' }));
+	fireEvent.contextMenu(screen.getByRole('button', { name: 'settings.theme.title: settings.theme.light' }));
 
 	expect(showContextMenu).not.toHaveBeenCalled();
 });
@@ -107,24 +107,15 @@ it('hides application navigation during onboarding', () => {
 	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
 });
 
-it('opens Account from the settings icon on Home', async () => {
-	const user = userEvent.setup();
-
+it('omits Account and Search icons on Home', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<NavigationBar />
-			<Routes>
-				<Route path="/home" element={null} />
-				<Route path="/settings/account" element={<p>/settings/account</p>} />
-			</Routes>
+			<NavigationBar showWorkspace />
 		</MemoryRouter>
 	);
 
-	expect(screen.getByRole('button', { name: 'settings.title' })).toBeInTheDocument();
-
-	await user.click(screen.getByRole('button', { name: 'settings.title' }));
-
-	expect(screen.getByText('/settings/account')).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 });
 
 it.each(['/home', '/settings/settings'])(
@@ -153,26 +144,22 @@ it('does not render a chat title in the navigationbar', () => {
 	expect(container.querySelector('[data-slot="navigationbar-chat-context"]')).not.toBeInTheDocument();
 });
 
-it('renders Search and Workspace together on the right and opens Workspace', async () => {
+it('renders Workspace on the right and opens it', async () => {
 	const user = userEvent.setup();
-	const onSearch = jest.fn();
 
 	render(
 		<MemoryRouter initialEntries={['/home']}>
-			<NavigationBar onSearch={onSearch} />
+			<NavigationBar showWorkspace />
 			<Routes>
 				<Route path="/home" element={null} />
 				<Route path="/workspace" element={<p>Workspace page</p>} />
 			</Routes>
 		</MemoryRouter>
 	);
-	const search = screen.getByRole('button', { name: 'navigationBar.search' });
 	const workspace = screen.getByRole('button', { name: 'navigationBar.workspace' });
 
-	expect(search.nextElementSibling).toBe(workspace);
+	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	expect(workspace.querySelector('.lucide-folder')).toBeInTheDocument();
-	await user.click(search);
-	expect(onSearch).toHaveBeenCalledTimes(1);
 	await user.click(workspace);
 	expect(screen.getByText('Workspace page')).toBeInTheDocument();
 });
@@ -192,26 +179,15 @@ it('renders one solid navigationbar color without visible title text', () => {
 	expect(within(navigationBar as HTMLElement).queryByText('Kucedr')).not.toBeInTheDocument();
 });
 
-it('keeps the user icon linked to Account while viewing Settings', async () => {
-	const user = userEvent.setup();
-
+it('omits the Account icon while viewing Settings', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/settings']}>
 			<NavigationBar />
-			<Routes>
-				<Route path="/settings/settings" element={null} />
-				<Route path="/settings/account" element={<p>/settings/account</p>} />
-			</Routes>
 		</MemoryRouter>
 	);
-	const settingsButton = screen.getByRole('button', { name: 'settings.title' });
 
-	expect(settingsButton.querySelector('.lucide-user')).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'navigationBar.chat' })).not.toBeInTheDocument();
-
-	await user.click(settingsButton);
-
-	expect(screen.getByText('/settings/account')).toBeInTheDocument();
 });
 
 it('does not render the sidebar toggle in the navigationbar', () => {
