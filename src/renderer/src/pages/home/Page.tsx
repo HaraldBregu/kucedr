@@ -172,8 +172,8 @@ function EmptyConversation(): ReactElement {
 		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
 			<EmptyHeader className="max-w-lg gap-2">
 				<p className="text-sm font-medium text-muted-foreground">{greeting}</p>
-				<EmptyTitle className="text-2xl font-bold leading-tight text-foreground">
-					What can I do for you?
+				<EmptyTitle className="text-3xl font-bold leading-tight text-foreground">
+					I'm Kucedr. What can I do for you?
 				</EmptyTitle>
 				<EmptyDescription className="max-w-lg text-sm/relaxed">
 					Ask Kucedr to plan, create, or find what you need.
