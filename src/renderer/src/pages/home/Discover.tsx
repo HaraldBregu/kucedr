@@ -26,8 +26,6 @@ export function Discover(): ReactElement {
 	const { t } = useTranslation();
 	const { setSessionId, setSessionTitle } = useChatSession();
 	const [sessions, setSessions] = useState<AgentSessionSummary[]>([]);
-	const [loading, setLoading] = useState(true);
-	const [loadError, setLoadError] = useState(false);
 	const [refreshKey, setRefreshKey] = useState(0);
 	const plugins = mcps().slice(0, 8);
 
@@ -37,14 +35,8 @@ export function Discover(): ReactElement {
 			(items) => {
 				if (!active) return;
 				setSessions([...items].sort((a, b) => b.createdAtMs - a.createdAtMs).slice(0, 8));
-				setLoading(false);
-				setLoadError(false);
 			},
-			() => {
-				if (!active) return;
-				setLoading(false);
-				setLoadError(true);
-			}
+			() => { if (active) setSessions([]); }
 		);
 		return () => {
 			active = false;
@@ -53,7 +45,7 @@ export function Discover(): ReactElement {
 
 	return (
 		<div className="flex w-full flex-col gap-8" data-slot="home-discover">
-			<section aria-labelledby="home-recent-chats">
+			{sessions.length > 0 && <section aria-labelledby="home-recent-chats">
 				<div className="mb-3 flex items-center justify-between gap-3">
 					<h2 id="home-recent-chats" className="text-sm font-medium">
 						Recent chats
@@ -61,10 +53,7 @@ export function Discover(): ReactElement {
 					<Button
 						variant="ghost"
 						size="sm"
-						onClick={() => {
-							setLoading(true);
-							setRefreshKey((value) => value + 1);
-						}}
+							onClick={() => setRefreshKey((value) => value + 1)}
 					>
 						Refresh
 					</Button>
@@ -87,17 +76,8 @@ export function Discover(): ReactElement {
 							</button>
 						</Card>
 					))}
-					{sessions.length === 0 && (
-						<Card className="w-64 shrink-0 rounded-lg px-4 py-4 text-sm text-muted-foreground">
-							{loading
-								? 'Loading chats…'
-								: loadError
-									? 'Could not load chats.'
-									: 'Your chats will appear here.'}
-						</Card>
-					)}
 				</div>
-			</section>
+			</section>}
 			<section aria-labelledby="home-plugins">
 				<div className="mb-3 flex items-center justify-between gap-3">
 					<h2 id="home-plugins" className="text-sm font-medium">
