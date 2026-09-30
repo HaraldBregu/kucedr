@@ -104,6 +104,10 @@ test('New Chat and session selection focus the prompt', async () => {
 	await expect(prompt).toBeFocused();
 	await savedChat.click();
 	await expect(prompt).toBeFocused();
+	await sidebar.getByRole('button', { name: 'New Chat' }).click();
+	await expect(prompt).toBeFocused();
+	await page.locator('[data-slot="home-discover"]').getByRole('button', { name: /Untitled chat/ }).click();
+	await expect(prompt).toBeFocused();
 });
 
 test('Settings keeps Plugins and Apps in the main list without a footer', async () => {
