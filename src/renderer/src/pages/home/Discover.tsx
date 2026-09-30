@@ -21,6 +21,9 @@ const setupItems = setupPaths.flatMap((path) =>
 	SETTINGS_NAVIGATION.filter((item) => item.path === path)
 );
 
+const interactiveCardClassName =
+	'w-64 shrink-0 snap-start gap-0 rounded-lg py-0 transition-[box-shadow] hover:ring-4 hover:ring-border/35 after:pointer-events-none after:absolute after:inset-1 after:rounded-md after:border after:border-border/70 after:opacity-0 after:content-[""] hover:after:opacity-100';
+
 export function Discover(): ReactElement {
 	const { t } = useTranslation();
 	const { setSessionId, setSessionTitle } = useChatSession();
@@ -58,7 +61,7 @@ export function Discover(): ReactElement {
 					</div>
 					<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Recent chats">
 						{sessions.map((session) => (
-							<Card key={session.id} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
+							<Card key={session.id} className={`relative ${interactiveCardClassName}`}>
 								<button
 									type="button"
 									className="flex h-16 w-full flex-col justify-between gap-1 px-3 py-2 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
@@ -111,7 +114,7 @@ export function Discover(): ReactElement {
 					{plugins.map((plugin) => (
 						<Card
 							key={`${plugin.provider.id}/${plugin.id}`}
-							className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0"
+							className={`relative ${interactiveCardClassName}`}
 						>
 							<Link
 								to={`/settings/plugins/mcp/${plugin.provider.id}/${plugin.id}`}
@@ -144,7 +147,7 @@ export function Discover(): ReactElement {
 				</h2>
 				<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Configuration">
 					{setupItems.map((item) => (
-						<Card key={item.path} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
+						<Card key={item.path} className={`relative ${interactiveCardClassName}`}>
 							<Link
 								to={item.path}
 								className="flex h-20 flex-col gap-1 p-2.5 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
