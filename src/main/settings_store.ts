@@ -47,7 +47,7 @@ const DEFAULT_APP_SETTINGS: AppSettingsState = {
 	keepAwake: false,
 	language: 'en',
 	theme: 'system',
-	windowSize: '900x700',
+	windowSize: '1200x800',
 	microphoneInputId: 'default',
 	voiceAgentAppearance: 'persona',
 	launchCount: 0,
@@ -166,7 +166,7 @@ export function setTheme(theme: AppTheme): void {
 
 export function getWindowSize(): WindowSize {
 	const size = store.get('windowSize');
-	return Object.hasOwn(WINDOW_SIZES, size) ? size : '900x700';
+	return Object.hasOwn(WINDOW_SIZES, size) ? size : '1200x800';
 }
 
 export function setWindowSize(size: WindowSize): void {

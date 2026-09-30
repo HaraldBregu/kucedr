@@ -57,7 +57,7 @@ const SettingsPage: React.FC = () => {
 	const [trayEnabled, setTrayEnabled] = useState(true);
 	const [trayClickAction, setTrayClickAction] = useState<TrayClickAction>('toggle-chat');
 	const [keepAwake, setKeepAwake] = useState(false);
-	const [windowSize, setWindowSize] = useState<WindowSize>('900x700');
+	const [windowSize, setWindowSize] = useState<WindowSize>('1200x800');
 
 	useEffect(() => {
 		void window.app.getTrayEnabled().then(setTrayEnabled);

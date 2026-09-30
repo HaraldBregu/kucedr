@@ -50,7 +50,7 @@ it('shows the native menu bar when the main window gains focus', () => {
 	listeners.get('blur')?.();
 
 	expect(windowFactory.create).toHaveBeenCalledWith(
-		expect.objectContaining({ width: 900, height: 700 }),
+		expect.objectContaining({ width: 1200, height: 800 }),
 		expect.objectContaining({ hash: 'start' })
 	);
 	expect(win.setMenuBarVisibility).toHaveBeenCalledWith(true);
@@ -59,7 +59,7 @@ it('shows the native menu bar when the main window gains focus', () => {
 });
 
 it('uses the stored size for a newly created window', () => {
-	setWindowSize('1200x800');
+	setWindowSize('900x700');
 	try {
 		const { win } = createWindow();
 		const windowFactory = { create: jest.fn(() => win) };
@@ -71,11 +71,11 @@ it('uses the stored size for a newly created window', () => {
 
 		main.create();
 		expect(windowFactory.create).toHaveBeenCalledWith(
-			expect.objectContaining({ width: 1200, height: 800 }),
+			expect.objectContaining({ width: 900, height: 700 }),
 			expect.objectContaining({ hash: 'start' })
 		);
 	} finally {
-		setWindowSize('900x700');
+		setWindowSize('1200x800');
 	}
 });
 
