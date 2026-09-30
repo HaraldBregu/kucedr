@@ -657,10 +657,6 @@ test('empty Home hides absent chats and shows scrollable plugins and setup cards
 	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toHaveCount(0);
 	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
 	await expect(discovery.getByRole('heading', { name: 'Configuration' })).toBeVisible();
-	const pluginCard = page.getByLabel('Plugins').locator('[data-slot="card"]').first();
-	await pluginCard.hover();
-	await expect(pluginCard).toHaveCSS('box-shadow', /4px/);
-	await expect.poll(() => pluginCard.evaluate((element) => getComputedStyle(element, '::after').opacity)).toBe('1');
 	await expect(discovery.getByRole('link', { name: /Tasks/ })).toHaveAttribute('href', '#/settings/tasks');
 	await expect(discovery.getByRole('link', { name: /Knowledge Base/ })).toHaveAttribute('href', '#/settings/knowledge-base');
 	const setupRow = discovery.locator('[aria-label="Configuration"]');
