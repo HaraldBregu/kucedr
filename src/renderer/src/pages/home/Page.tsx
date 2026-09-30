@@ -175,7 +175,7 @@ function EmptyConversation(): ReactElement {
 					{greeting}, how are you?
 				</EmptyTitle>
 				<EmptyDescription className="max-w-lg text-sm/relaxed">
-					I'm Kucedr. What can I do for you?
+					I'm your assistant. What can I do for you?
 				</EmptyDescription>
 			</EmptyHeader>
 		</Empty>

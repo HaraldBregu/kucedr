@@ -185,7 +185,7 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByLabelText('Attachment files')).not.toHaveAttribute('accept');
 
 		expect(screen.getByText(/^Good (morning|afternoon|evening), how are you\?$/)).toHaveClass('text-3xl');
-		expect(screen.getByText("I'm Kucedr. What can I do for you?")).toHaveClass('text-sm/relaxed');
+		expect(screen.getByText("I'm your assistant. What can I do for you?")).toHaveClass('text-sm/relaxed');
 		for (const label of [
 			'Plan my day',
 			'Rain sound',
