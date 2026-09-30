@@ -647,7 +647,7 @@ test('empty Home shows scrollable recent chats, plugins, and setup cards', async
 	await expect(discovery.getByRole('heading', { name: 'Recent chats' })).toBeVisible();
 	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
 	await expect(discovery.getByRole('heading', { name: 'Configure Kucedr' })).toBeVisible();
-	await expect(discovery.getByRole('link', { name: /Task Scheduler/ })).toHaveAttribute('href', '#/settings/tasks');
+	await expect(discovery.getByRole('link', { name: /Tasks/ })).toHaveAttribute('href', '#/settings/tasks');
 	await expect(discovery.getByRole('link', { name: /Knowledge Base/ })).toHaveAttribute('href', '#/settings/knowledge-base');
 	const setupRow = discovery.locator('[aria-label="Configure Kucedr"]');
 	expect(await setupRow.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
