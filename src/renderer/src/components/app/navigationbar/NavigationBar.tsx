@@ -70,7 +70,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 					type="button"
 					variant="outline"
 					size="sm"
-					className="rounded-full text-xs"
+					className="rounded-sm text-xs"
 					onClick={() => navigate(isWorkspace ? '/home' : '/workspace')}
 					aria-label={spaceButtonLabel}
 				>
