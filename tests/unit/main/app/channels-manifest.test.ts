@@ -12,9 +12,7 @@ describe('channel manifests', () => {
 				provider: expect.objectContaining({
 					id: 'telegram',
 					name: 'Telegram',
-					iconDarkUrl: expect.stringContaining(
-						'/resources/providers/telegram/images/telegram.svg'
-					),
+					iconDarkUrl: expect.stringContaining('/resources/providers/telegram/images/telegram.svg'),
 					iconLightUrl: expect.stringContaining(
 						'/resources/providers/telegram/images/telegram.svg'
 					),
