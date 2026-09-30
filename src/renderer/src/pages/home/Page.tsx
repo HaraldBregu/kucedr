@@ -196,7 +196,7 @@ function PromptSuggestions({
 					type="button"
 					variant="outline"
 					size="sm"
-					className="h-8 shrink-0 whitespace-nowrap rounded-md border-border/70 bg-card/95 px-2.5 text-[11px] font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
+					className="h-8 shrink-0 whitespace-nowrap rounded-lg border-border/70 bg-card/95 px-2.5 text-[11px] font-medium text-muted-foreground shadow-sm shadow-foreground/5 hover:bg-muted hover:text-foreground"
 					aria-label={suggestion.prompt}
 					onClick={() => onUseSuggestion(suggestion.prompt)}
 				>
