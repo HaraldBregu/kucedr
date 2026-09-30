@@ -46,7 +46,7 @@ export function Discover(): ReactElement {
 	}, [refreshKey]);
 
 	return (
-		<div className="flex w-full flex-col gap-8" data-slot="home-discover">
+		<div className="flex w-full flex-col gap-6" data-slot="home-discover">
 			{sessions.length > 0 && (
 				<section aria-labelledby="home-recent-chats">
 					<div className="mb-3 flex items-center justify-between gap-3">

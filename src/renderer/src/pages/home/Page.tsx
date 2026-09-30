@@ -23,7 +23,6 @@ import {
 	X,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import clearLogo from '@resources/icons/icon-clear.svg';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
@@ -46,7 +45,6 @@ import {
 	Empty,
 	EmptyDescription,
 	EmptyHeader,
-	EmptyMedia,
 	EmptyTitle,
 } from '@/components/ui/empty';
 import { PromptEditor } from '@/components/prompt-editor';
@@ -176,20 +174,12 @@ function RecorderErrorMessage({
 function EmptyConversation(): ReactElement {
 	return (
 		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
-			<EmptyHeader className="max-w-lg gap-4">
-				<EmptyMedia className="mb-2">
-					<img
-						src={clearLogo}
-						alt="Kucedr logo"
-						className="size-[72px] rounded-2xl object-contain dark:invert"
-					/>
-				</EmptyMedia>
+			<EmptyHeader className="max-w-lg gap-2">
 				<EmptyTitle className="text-2xl font-bold leading-tight text-foreground">
 					What can I do for you?
 				</EmptyTitle>
-				<EmptyDescription className="max-w-md text-base/relaxed font-medium">
-					I schedule tasks, watch your system, and create images, video and music. Pick an example
-					below or type your own.
+				<EmptyDescription className="max-w-lg text-sm/relaxed">
+					Ask Kucedr to plan, create, or find what you need.
 				</EmptyDescription>
 			</EmptyHeader>
 		</Empty>
@@ -711,7 +701,7 @@ function PageContent(): ReactElement {
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
 					{showEmptyConversation ? (
-						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-7 pt-12">
+						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-5 pt-8">
 							<EmptyConversation />
 						</div>
 					) : (
@@ -831,7 +821,7 @@ function PageContent(): ReactElement {
 					{showEmptyConversation ? (
 						<>
 							{showPromptSuggestions ? (
-								<div className="mx-auto pb-10">
+								<div className="mx-auto pb-6">
 									<PromptSuggestions onUseSuggestion={agent.useSuggestion} />
 								</div>
 							) : null}
