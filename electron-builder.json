@@ -9,8 +9,7 @@
 		"!resources/mcp/resend/**",
 		"!resources/skills/**",
 		"!resources/sounds/**",
-		"!resources/svgs/**",
-		"!resources/providers/**/*.svg"
+		"!resources/svgs/**"
 	],
 	"icon": "./resources/icons/win/icon.ico",
 	"fileAssociations": [
@@ -98,8 +97,7 @@
 					"!mcp/resend/**",
 					"!skills/**",
 					"!sounds/**",
-					"!svgs/**",
-					"!providers/**/*.svg"
+					"!svgs/**"
 				]
 			}
 		]
@@ -151,8 +149,7 @@
 					"!mcp/resend/**",
 					"!skills/**",
 					"!sounds/**",
-					"!svgs/**",
-					"!providers/**/*.svg"
+					"!svgs/**"
 				]
 			}
 		]
@@ -208,8 +205,7 @@
 					"!mcp/resend/**",
 					"!skills/**",
 					"!sounds/**",
-					"!svgs/**",
-					"!providers/**/*.svg"
+					"!svgs/**"
 				]
 			}
 		]
