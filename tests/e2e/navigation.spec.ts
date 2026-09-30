@@ -99,6 +99,7 @@ test('New Chat and session selection focus the prompt', async () => {
 	const savedChat = sidebar.getByRole('button', { name: 'Untitled chat', exact: true });
 	await expect(savedChat).toBeVisible();
 	await sidebar.getByRole('button', { name: 'New Chat' }).click();
+	console.log(await page.evaluate(() => ({ active: document.activeElement?.outerHTML, editor: document.querySelector('[aria-label="Message your assistant"]')?.outerHTML, sessionId: localStorage.getItem('chat-session-id') })));
 	await expect(prompt).toBeFocused();
 	await savedChat.click();
 	await expect(prompt).toBeFocused();
