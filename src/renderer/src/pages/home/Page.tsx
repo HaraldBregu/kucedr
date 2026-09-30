@@ -673,6 +673,97 @@ function PageContent(): ReactElement {
 		returnToChat();
 	};
 
+	const composer = (
+	<div
+		ref={composerRef}
+		data-slot="home-composer-shell"
+		className={cn(
+			'z-20 flex justify-center px-4',
+			showEmptyConversation
+				? 'w-full shrink-0 pb-4'
+				: 'absolute inset-x-0 bottom-0 pb-5 pt-3'
+		)}
+	>
+		<div className="mx-auto w-full max-w-4xl">
+			<RecorderErrorMessage
+				message={voiceErrorMessage}
+				actionLabel={voiceErrorAction?.label}
+				onAction={voiceErrorAction?.action}
+			/>
+			{attachments.length > 0 ? (
+				<div className="mb-2">
+					<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
+				</div>
+			) : null}
+			<PromptEditor
+				placeholder={showEmptyConversation ? 'Work with Kucedr' : 'Send follow-up'}
+				ariaLabel="Message Kucedr"
+				value={agent.input}
+				expanded={agent.input.length > 0}
+				onValueChange={agent.setInput}
+				onPlanCommandChange={(active) => {
+					setPlanCommandActive(active);
+					agent.setInteractionMode(active ? 'plan' : 'default');
+				}}
+				onGoalCommandChange={setGoalCommandActive}
+				isLoading={agent.isLoading}
+				maxHeight={360}
+				onSubmit={() => void submitPrompt()}
+				textareaRef={agent.inputRef}
+				header={
+					agent.replyTo ? (
+						<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
+					) : undefined
+				}
+				leadingAction={
+					voiceMode === 'dictation' ? undefined : (
+						<AttachmentButton
+							disabled={attachmentDisabled}
+						/>
+					)
+				}
+				voiceMode={voiceMode === 'dictation' ? voiceMode : null}
+				voiceElapsedMs={activeVoiceElapsedMs}
+				voiceMuted={activeVoiceMuted}
+				voiceMediaStream={activeVoiceStream}
+				voiceAnalyser={null}
+				onVoiceMutedChange={activeVoiceSetMuted}
+				onVoiceCancel={() => void cancelDictation()}
+				onVoiceConfirm={() => void confirmDictation()}
+				onFilesChange={(files) => {
+					setAttachments((current) => [...current, ...filesToAttachments(files)]);
+				}}
+				wrapperClassName="max-w-none"
+				detachedControls
+				footerContent={
+					<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
+						<StableModel />
+					</div>
+				}
+				className="w-full"
+				inputClassName={cn(
+					planCommandActive && 'plan-prompt-frame',
+					goalCommandActive && 'goal-prompt-frame'
+				)}
+				trailingAction={
+					<PromptInputActions className="justify-end gap-1.5">
+						<VoiceButton
+							onVoiceModeRequest={() => void startDictation()}
+							disabled={voiceBusy || agent.isLoading}
+							disabledReason={voiceButtonDisabledReason}
+							mode={voiceButtonMode}
+						/>
+						<SubmitButton
+							isLoading={agent.isLoading}
+							onAction={() => void submitPrompt()}
+						/>
+					</PromptInputActions>
+				}
+			/>
+		</div>
+	</div>
+	);
+
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
 			<Split
@@ -723,94 +814,7 @@ function PageContent(): ReactElement {
 							</div>
 						</ChatContainerRoot>
 					)}
-					<div
-						ref={composerRef}
-						data-slot="home-composer-shell"
-						className={cn(
-							'z-20 flex justify-center px-4',
-							showEmptyConversation
-								? 'w-full shrink-0 pb-4'
-								: 'absolute inset-x-0 bottom-0 pb-5 pt-3'
-						)}
-					>
-						<div className="mx-auto w-full max-w-4xl">
-							<RecorderErrorMessage
-								message={voiceErrorMessage}
-								actionLabel={voiceErrorAction?.label}
-								onAction={voiceErrorAction?.action}
-							/>
-							{attachments.length > 0 ? (
-								<div className="mb-2">
-									<AttachmentTray attachments={attachments} onRemove={removeAttachment} />
-								</div>
-							) : null}
-							<PromptEditor
-								placeholder={showEmptyConversation ? 'Work with Kucedr' : 'Send follow-up'}
-								ariaLabel="Message Kucedr"
-								value={agent.input}
-								expanded={agent.input.length > 0}
-								onValueChange={agent.setInput}
-								onPlanCommandChange={(active) => {
-									setPlanCommandActive(active);
-									agent.setInteractionMode(active ? 'plan' : 'default');
-								}}
-								onGoalCommandChange={setGoalCommandActive}
-								isLoading={agent.isLoading}
-								maxHeight={360}
-								onSubmit={() => void submitPrompt()}
-								textareaRef={agent.inputRef}
-								header={
-									agent.replyTo ? (
-										<ReplyPreview content={agent.replyTo.content} onCancel={agent.clearReply} />
-									) : undefined
-								}
-								leadingAction={
-									voiceMode === 'dictation' ? undefined : (
-										<AttachmentButton
-											disabled={attachmentDisabled}
-										/>
-									)
-								}
-								voiceMode={voiceMode === 'dictation' ? voiceMode : null}
-								voiceElapsedMs={activeVoiceElapsedMs}
-								voiceMuted={activeVoiceMuted}
-								voiceMediaStream={activeVoiceStream}
-								voiceAnalyser={null}
-								onVoiceMutedChange={activeVoiceSetMuted}
-								onVoiceCancel={() => void cancelDictation()}
-								onVoiceConfirm={() => void confirmDictation()}
-								onFilesChange={(files) => {
-									setAttachments((current) => [...current, ...filesToAttachments(files)]);
-								}}
-								wrapperClassName="max-w-none"
-								detachedControls
-								footerContent={
-									<div className="flex min-w-0 items-center text-[11px] text-muted-foreground">
-										<StableModel />
-									</div>
-								}
-								className="w-full"
-								inputClassName={cn(
-									planCommandActive && 'plan-prompt-frame',
-									goalCommandActive && 'goal-prompt-frame'
-								)}
-								trailingAction={
-									<PromptInputActions className="justify-end gap-1.5">
-										<VoiceButton
-											onVoiceModeRequest={() => void startDictation()}
-											disabled={voiceBusy || agent.isLoading}
-											disabledReason={voiceButtonDisabledReason}
-											mode={voiceButtonMode}
-										/>
-										<SubmitButton
-											isLoading={agent.isLoading}
-											onAction={() => void submitPrompt()}
-										/>
-									</PromptInputActions>
-								}
-							/>
-						</div>
-					</div>
+					{composer}
 					{showEmptyConversation ? (
 						<>
 							{showPromptSuggestions ? (
