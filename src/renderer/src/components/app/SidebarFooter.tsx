@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,6 +36,7 @@ import { ensureAppMicrophoneAccess } from '@/pages/home/hooks/audio';
 
 export function AppSidebarFooter(): React.JSX.Element {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
 	const { state: authState } = useAuth();
 	const { sessionId } = useChatSession();
 	const [voiceError, setVoiceError] = useState<string | null>(null);
@@ -161,18 +162,16 @@ export function AppSidebarFooter(): React.JSX.Element {
 					</DropdownMenu>
 				</SidebarMenuItem>
 				<SidebarMenuItem>
-					<SidebarMenuButton asChild>
-						<Link to="/settings/general">
-							<Settings />
-							<span>{t('settings.title')}</span>
-						</Link>
+					<SidebarMenuButton onClick={() => navigate('/settings/general')}>
+						<Settings className="size-4 shrink-0" />
+						<span>{t('settings.title')}</span>
 					</SidebarMenuButton>
 				</SidebarMenuItem>
 				<SidebarMenuItem>
 					<SidebarMenuButton
 						onClick={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}
 					>
-						<CircleHelp />
+						<CircleHelp className="size-4 shrink-0" />
 						<span>{t('settings.sidebar.help')}</span>
 					</SidebarMenuButton>
 				</SidebarMenuItem>

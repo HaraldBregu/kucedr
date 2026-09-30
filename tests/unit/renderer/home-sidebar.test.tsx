@@ -133,7 +133,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	const accountMenu = screen.getByRole('button', { name: 'settings.sidebar.accountMenu' });
 	const footer = accountMenu.closest('[data-slot="sidebar-footer"]') as HTMLElement;
 	expect(footer).toHaveClass('px-2', 'py-1');
-	expect(within(footer).getByText('settings.title')).toBeInTheDocument();
+	expect(within(accountMenu).getByText('settings.title')).toBeInTheDocument();
 	expect(
 		within(footer).getByText('S')
 	).toBeInTheDocument();
@@ -437,7 +437,7 @@ it('shows Settings and Help in the footer menu without a Search item', async () 
 	);
 
 	await screen.findByText('settings.chatHistory.empty');
-	expect(screen.queryByRole('button', { name: 'settings.title' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'settings.title', exact: true })).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.sidebar.getHelp' })
 	).not.toBeInTheDocument();
@@ -448,8 +448,9 @@ it('shows Settings and Help in the footer menu without a Search item', async () 
 	expect(screen.queryByRole('menuitem', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	await user.click(screen.getByRole('menuitem', { name: 'settings.sidebar.getHelp' }));
 	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');
-	await user.click(accountMenu);
-	await user.click(screen.getByRole('menuitem', { name: 'settings.title' }));
+	await user.click(screen.getByRole('button', { name: 'settings.sidebar.help' }));
+	expect(openExternalUrl).toHaveBeenCalledWith('https://www.kucedr.com/help');
+	await user.click(screen.getByRole('button', { name: 'settings.title', exact: true }));
 	expect(screen.getByText('Settings page')).toBeInTheDocument();
 });
 
