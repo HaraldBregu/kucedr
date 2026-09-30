@@ -34,7 +34,11 @@ export function Discover(): ReactElement {
 		void window.agent.listSessions().then(
 			(items) => {
 				if (!active) return;
-				setSessions([...items].sort((a, b) => (b.updatedAtMs ?? b.createdAtMs) - (a.updatedAtMs ?? a.createdAtMs)).slice(0, 8));
+				setSessions(
+					[...items]
+						.sort((a, b) => (b.updatedAtMs ?? b.createdAtMs) - (a.updatedAtMs ?? a.createdAtMs))
+						.slice(0, 8)
+				);
 			},
 			() => {
 				if (active) setSessions([]);
@@ -75,12 +79,15 @@ export function Discover(): ReactElement {
 											className="truncate"
 										>
 											Updated{' '}
-											{new Date(session.updatedAtMs ?? session.createdAtMs).toLocaleString(undefined, {
-												month: 'short',
-												day: 'numeric',
-												hour: 'numeric',
-												minute: '2-digit',
-											})}
+											{new Date(session.updatedAtMs ?? session.createdAtMs).toLocaleString(
+												undefined,
+												{
+													month: 'short',
+													day: 'numeric',
+													hour: 'numeric',
+													minute: '2-digit',
+												}
+											)}
 										</time>
 									</span>
 									<span className="line-clamp-2 text-sm font-medium">
