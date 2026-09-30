@@ -84,7 +84,7 @@ export default function ChannelsPage(): React.JSX.Element {
 				) : services.length === 0 ? (
 					<SettingsEmptyState title={t('settings.channels.notConfigured')} />
 				) : (
-					<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-3 pb-4 md:grid-cols-2">
+					<div className="-mx-4 grid grid-cols-1 gap-y-3 pb-4">
 						{services.map((service) => (
 							<ChannelRow
 								key={`${service.provider.id}-${service.id}`}

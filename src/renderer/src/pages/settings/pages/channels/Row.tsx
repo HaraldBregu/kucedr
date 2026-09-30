@@ -35,7 +35,7 @@ export function ChannelRow({
 			}}
 			variant="ghost"
 			size="md"
-			className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+			className="w-full min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 		>
 			<ProviderAvatar
 				providerId={service.provider.id}
