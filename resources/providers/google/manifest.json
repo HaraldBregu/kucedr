@@ -449,7 +449,7 @@
 		{
 			"id": "gmail",
 			"name": "Gmail",
-			"description": "Search and manage email.",
+			"description": "Search email, manage messages, and organize your inbox.",
 			"authentication": "oauth2",
 			"url": "https://gmailmcp.googleapis.com/mcp/v1",
 			"scopes": ["https://www.googleapis.com/auth/gmail.modify"],
@@ -465,7 +465,7 @@
 		{
 			"id": "google-calendar",
 			"name": "Google Calendar",
-			"description": "Manage calendars and events.",
+			"description": "Find events, manage calendars, and organize your schedule.",
 			"authentication": "oauth2",
 			"url": "https://calendarmcp.googleapis.com/mcp/v1",
 			"scopes": ["https://www.googleapis.com/auth/calendar"],
@@ -481,7 +481,7 @@
 		{
 			"id": "google-drive",
 			"name": "Google Drive",
-			"description": "Search and manage Drive files.",
+			"description": "Search, organize, and manage your files in Google Drive.",
 			"authentication": "oauth2",
 			"url": "https://drivemcp.googleapis.com/mcp/v1",
 			"scopes": ["https://www.googleapis.com/auth/drive"],
@@ -497,7 +497,7 @@
 		{
 			"id": "google-docs",
 			"name": "Google Docs",
-			"description": "Read and update documents.",
+			"description": "Read and edit documents while working in Google Docs.",
 			"authentication": "oauth2",
 			"url": "https://docsmcp.googleapis.com/mcp/v1",
 			"scopes": ["https://www.googleapis.com/auth/documents"],
@@ -513,7 +513,7 @@
 		{
 			"id": "google-sheets",
 			"name": "Google Sheets",
-			"description": "Read and update spreadsheets.",
+			"description": "Read and update your spreadsheet data in Google Sheets.",
 			"authentication": "oauth2",
 			"url": "https://sheetsmcp.googleapis.com/mcp/v1",
 			"scopes": ["https://www.googleapis.com/auth/spreadsheets"],
@@ -529,7 +529,7 @@
 		{
 			"id": "google-maps",
 			"name": "Google Maps",
-			"description": "Find places, routes, and weather.",
+			"description": "Find places, explore routes, and check local weather.",
 			"authentication": "oauth2",
 			"url": "https://mapstools.googleapis.com/mcp",
 			"scopes": ["https://www.googleapis.com/auth/maps-platform.mapstools"],
@@ -545,7 +545,7 @@
 		{
 			"id": "google-contacts",
 			"name": "Google Contacts",
-			"description": "Search contacts and directory profiles.",
+			"description": "Find people, manage contacts, and browse directories.",
 			"authentication": "oauth2",
 			"url": "https://people.googleapis.com/mcp/v1",
 			"scopes": [

@@ -10,7 +10,7 @@
 		{
 			"id": "gitlab",
 			"name": "GitLab",
-			"description": "Work with projects, issues, and merge requests.",
+			"description": "Browse projects, manage issues, and review merge requests.",
 			"authentication": "oauth2",
 			"url": "https://gitlab.com/api/v4/mcp",
 			"scopes": ["mcp"]

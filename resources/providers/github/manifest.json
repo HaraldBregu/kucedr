@@ -10,7 +10,7 @@
 		{
 			"id": "github",
 			"name": "GitHub",
-			"description": "Work with repositories and issues.",
+			"description": "Manage repositories, issues, and pull requests on GitHub.",
 			"authentication": "oauth2",
 			"url": "https://api.githubcopilot.com/mcp/",
 			"scopes": [],
