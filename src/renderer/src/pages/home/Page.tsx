@@ -81,6 +81,7 @@ import { readDraftAttachments } from './attachments/read';
 import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
+import { Discover } from './Discover';
 
 const StableHomeSidebar = memo(HomeSidebar);
 const StableModel = memo(Model);
@@ -433,21 +434,6 @@ function PageContent(): ReactElement {
 	const workspaceRef = useRef<HTMLDivElement>(null);
 	const composerRef = useRef<HTMLDivElement>(null);
 	const chatScrollRef = useRef<StickToBottomContext>(null);
-	useLayoutEffect(() => {
-		const workspace = workspaceRef.current;
-		const composer = composerRef.current;
-		if (!workspace || !composer) return;
-		const updateSpacing = (): void => {
-			workspace.style.setProperty(
-				'--composer-height',
-				`${composer.getBoundingClientRect().height}px`
-			);
-			const scrollState = chatScrollRef.current?.state;
-			if (scrollState?.isAtBottom) scrollState.scrollTop = scrollState.calculatedTargetScrollTop;
-		};
-		updateSpacing();
-		return resize(composer, updateSpacing);
-	}, []);
 	const [voiceMode, setVoiceMode] = useState<PromptInputVoiceMode | null>(null);
 	const [activeDictationMode, setActiveDictationMode] = useState<VoiceButtonMode | null>(null);
 	const updateMode = useCallback(
@@ -509,6 +495,21 @@ function PageContent(): ReactElement {
 	const showEmptyConversation =
 		visibleMessages.length === 0 && !agent.isLoading && !agent.historyLoading;
 	const showPromptSuggestions = showEmptyConversation && voiceMode === null;
+	useLayoutEffect(() => {
+		const workspace = workspaceRef.current;
+		const composer = composerRef.current;
+		if (!workspace || !composer) return;
+		const updateSpacing = (): void => {
+			workspace.style.setProperty(
+				'--composer-height',
+				`${composer.getBoundingClientRect().height}px`
+			);
+			const scrollState = chatScrollRef.current?.state;
+			if (scrollState?.isAtBottom) scrollState.scrollTop = scrollState.calculatedTargetScrollTop;
+		};
+		updateSpacing();
+		return resize(composer, updateSpacing);
+	}, [showEmptyConversation]);
 	const hasPromptText = agent.input.trim().length > 0;
 	const hasGoalObjective = agent.input.replace(/^\/goal\s*/i, '').trim().length > 0;
 	const dictationStatus = dictation.status;
