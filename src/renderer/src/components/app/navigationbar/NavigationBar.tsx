@@ -43,9 +43,9 @@ export const NavigationBar = React.memo(function NavigationBar({
 		return () => media.removeEventListener('change', onChange);
 	}, []);
 	const isDark = theme === 'dark' || (theme === 'system' && systemDark);
-	const ThemeIcon = isDark ? Moon : Sun;
+	const ThemeIcon = isDark ? Sun : Moon;
 	const nextTheme = isDark ? 'light' : 'dark';
-	const themeLabel = `${t('settings.theme.title')}: ${t(`settings.theme.${isDark ? 'dark' : 'light'}`)}`;
+	const themeLabel = `${t('settings.theme.title')}: ${t(`settings.theme.${nextTheme}`)}`;
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
