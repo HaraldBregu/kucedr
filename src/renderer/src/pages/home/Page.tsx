@@ -166,9 +166,12 @@ function RecorderErrorMessage({
 }
 
 function EmptyConversation(): ReactElement {
+	const hour = new Date().getHours();
+	const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 	return (
 		<Empty className="mx-auto max-w-xl flex-none border-0 p-0">
 			<EmptyHeader className="max-w-lg gap-2">
+				<p className="text-sm font-medium text-muted-foreground">{greeting}</p>
 				<EmptyTitle className="text-2xl font-bold leading-tight text-foreground">
 					What can I do for you?
 				</EmptyTitle>
@@ -691,7 +694,7 @@ function PageContent(): ReactElement {
 						{agent.isLoading ? 'Kucedr is responding' : 'Kucedr is ready'}
 					</span>
 					{showEmptyConversation ? (
-						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-5 pt-12">
+						<div className="mx-auto flex w-full max-w-4xl flex-col items-center px-4 pb-5 pt-16">
 							<EmptyConversation />
 						</div>
 					) : (
