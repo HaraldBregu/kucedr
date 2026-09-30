@@ -36,7 +36,9 @@ export function Discover(): ReactElement {
 				if (!active) return;
 				setSessions([...items].sort((a, b) => b.createdAtMs - a.createdAtMs).slice(0, 8));
 			},
-			() => { if (active) setSessions([]); }
+			() => {
+				if (active) setSessions([]);
+			}
 		);
 		return () => {
 			active = false;
@@ -45,39 +47,37 @@ export function Discover(): ReactElement {
 
 	return (
 		<div className="flex w-full flex-col gap-8" data-slot="home-discover">
-			{sessions.length > 0 && <section aria-labelledby="home-recent-chats">
-				<div className="mb-3 flex items-center justify-between gap-3">
-					<h2 id="home-recent-chats" className="text-sm font-medium">
-						Recent chats
-					</h2>
-					<Button
-						variant="ghost"
-						size="sm"
-							onClick={() => setRefreshKey((value) => value + 1)}
-					>
-						Refresh
-					</Button>
-				</div>
-				<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Recent chats">
-					{sessions.map((session) => (
-						<Card key={session.id} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
-							<button
-								type="button"
-								className="flex h-24 w-full flex-col justify-between gap-3 p-4 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
-								onClick={() => {
-									setSessionId(session.id);
-									setSessionTitle?.(session.title, session.id);
-								}}
-							>
-								<MessageCircle className="size-4 text-muted-foreground" aria-hidden="true" />
-								<span className="line-clamp-2 text-sm font-medium">
-									{session.title.trim() || t('settings.chatHistory.untitled')}
-								</span>
-							</button>
-						</Card>
-					))}
-				</div>
-			</section>}
+			{sessions.length > 0 && (
+				<section aria-labelledby="home-recent-chats">
+					<div className="mb-3 flex items-center justify-between gap-3">
+						<h2 id="home-recent-chats" className="text-sm font-medium">
+							Recent chats
+						</h2>
+						<Button variant="ghost" size="sm" onClick={() => setRefreshKey((value) => value + 1)}>
+							Refresh
+						</Button>
+					</div>
+					<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Recent chats">
+						{sessions.map((session) => (
+							<Card key={session.id} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
+								<button
+									type="button"
+									className="flex h-24 w-full flex-col justify-between gap-3 p-4 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
+									onClick={() => {
+										setSessionId(session.id);
+										setSessionTitle?.(session.title, session.id);
+									}}
+								>
+									<MessageCircle className="size-4 text-muted-foreground" aria-hidden="true" />
+									<span className="line-clamp-2 text-sm font-medium">
+										{session.title.trim() || t('settings.chatHistory.untitled')}
+									</span>
+								</button>
+							</Card>
+						))}
+					</div>
+				</section>
+			)}
 			<section aria-labelledby="home-plugins">
 				<div className="mb-3 flex items-center justify-between gap-3">
 					<h2 id="home-plugins" className="text-sm font-medium">
