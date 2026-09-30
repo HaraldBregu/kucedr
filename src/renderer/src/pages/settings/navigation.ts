@@ -382,6 +382,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 	{
 		path: '/settings/mcp',
 		labelKey: 'settings.tabs.mcp',
+		sidebarLabelKey: 'settings.sidebar.mcp',
 		descriptionKey: 'settings.overview.descriptions.mcp',
 		icon: PlugZap,
 	},
