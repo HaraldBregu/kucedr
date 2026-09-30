@@ -55,15 +55,14 @@ export function AppSidebarFooter(): React.JSX.Element {
 	];
 
 	return (
-		<SidebarFooter className="shrink-0 px-2 py-0">
+		<SidebarFooter className="shrink-0 px-2 py-1">
 			<SidebarMenu>
 				<SidebarMenuItem>
 					<DropdownMenu>
 						<DropdownMenuTrigger asChild>
 							<SidebarMenuButton
-								size="lg"
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
-								className="pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+								className="py-1 pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
 								<Avatar className="size-7 rounded-full grayscale">
 									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
@@ -80,7 +79,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							type="button"
 							variant="ghost"
 							size="icon"
-							className="absolute right-2 top-2 z-10 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground focus-visible:bg-sidebar-primary focus-visible:text-sidebar-primary-foreground"
+							className="absolute right-2 top-1/2 z-10 -translate-y-1/2 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground focus-visible:bg-sidebar-primary focus-visible:text-sidebar-primary-foreground"
 							aria-label={t('settings.sidebar.voiceConversation')}
 							title={voiceError ?? t('settings.sidebar.voiceConversation')}
 							onClick={() => {
