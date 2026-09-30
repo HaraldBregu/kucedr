@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { Folder, Menu, Moon, Search, Sun, User } from 'lucide-react';
+import { Folder, Menu, Moon, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -24,14 +24,14 @@ export interface NavigationBarProps {
 	className?: string;
 	/** Custom content rendered on the right before window controls */
 	rightContent?: ReactNode;
-	/** Opens the global route and settings search */
-	onSearch?: () => void;
+	/** Shows the Workspace entry on app routes with a sidebar */
+	showWorkspace?: boolean;
 }
 
 export const NavigationBar = React.memo(function NavigationBar({
 	className,
 	rightContent,
-	onSearch,
+	showWorkspace,
 }: NavigationBarProps) {
 	const { t } = useTranslation();
 	const { theme, setTheme } = useApp();
@@ -54,33 +54,14 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isWorkspace = location.pathname === '/workspace';
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
-	const settingsLabel = t('settings.title', 'Settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
-	const searchLabel = t('navigationBar.search', 'Search');
 	const workspaceLabel = t('navigationBar.workspace', 'Workspace');
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
 		{ path: '/settings/apps', label: t('settings.tabs.apps') },
 	];
-	const searchButton = onSearch ? (
-		<Tooltip>
-			<TooltipTrigger render={
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon"
-					className="size-8 rounded-full"
-					onClick={onSearch}
-					aria-label={searchLabel}
-				>
-					<Search className="size-4" strokeWidth={1.8} />
-				</Button>
-			} />
-			<TooltipContent side="bottom">{searchLabel}</TooltipContent>
-		</Tooltip>
-	) : null;
-	const workspaceButton = onSearch ? (
+	const workspaceButton = showWorkspace ? (
 		<Tooltip>
 			<TooltipTrigger render={
 				<Button
@@ -95,23 +76,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				</Button>
 			} />
 			<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
-		</Tooltip>
-	) : null;
-	const routeButton = !isOnboarding ? (
-		<Tooltip>
-			<TooltipTrigger render={
-				<Button
-					type="button"
-					variant="ghost"
-					size="icon"
-					className="size-8 rounded-full"
-					onClick={() => navigate('/settings/account')}
-					aria-label={settingsLabel}
-				>
-					<User className="size-4" strokeWidth={1.8} />
-				</Button>
-			} />
-			<TooltipContent side="bottom">{settingsLabel}</TooltipContent>
 		</Tooltip>
 	) : null;
 	return (
@@ -197,9 +161,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<div
 					className={`z-10 mr-3 ${actionGroupClassName}`}
 				>
-					{searchButton}
 					{workspaceButton}
-					{routeButton}
 					<Tooltip>
 						<TooltipTrigger render={
 							<Button

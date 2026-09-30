@@ -171,7 +171,7 @@ function RootRouteComponent(): React.JSX.Element {
 									</Button>
 								) : undefined
 							}
-							onSearch={hasSidebar ? () => setCommandMenuOpen(true) : undefined}
+							showWorkspace={hasSidebar}
 						/>
 						<div className="min-h-0 flex-1 overflow-hidden pt-12">
 							<div className={cn('h-full', isWorkspace && 'hidden')}>
