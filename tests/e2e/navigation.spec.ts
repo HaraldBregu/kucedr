@@ -373,7 +373,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	});
 	await page
 		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Workspace' })
+		.getByRole('button', { name: 'Space' })
 		.click();
 	const workspace = page.getByRole('navigation', { name: 'Workspace files' });
 	await workspace.getByText('Return').click();
@@ -398,7 +398,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 		.click();
 	await page
 		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Workspace' })
+		.getByRole('button', { name: 'Space' })
 		.click();
 	await expect(workspace.getByRole('button', { name: 'state.json' })).toHaveAttribute(
 		'aria-current',
@@ -423,7 +423,7 @@ test('Workspace keeps its files and selection across chat navigation and refresh
 	});
 	await page
 		.locator('[data-slot="navigationbar"]')
-		.getByRole('button', { name: 'Workspace' })
+		.getByRole('button', { name: 'Space' })
 		.click();
 	await expect(page.getByRole('textbox', { name: 'Code editor' })).toContainText('"current": 2');
 });
