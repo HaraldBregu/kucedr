@@ -1,12 +1,11 @@
 import {
 	AudioLines,
-	CircleHelp,
-	Info,
 	Layers,
 	Library,
 	LogOut,
 	Plug,
 	Server,
+	Settings,
 	UserRound,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -47,7 +46,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 	const accountInitial = accountItem.title.charAt(0).toUpperCase();
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
-		{ path: '/settings/settings', label: t('settings.tabs.settings'), icon: Info },
+		{ path: '/settings/settings', label: t('settings.tabs.settings'), icon: Settings },
 		{ path: '/settings/providers', label: t('settings.tabs.providers'), icon: Server },
 		{ path: '/settings/library', label: t('library.title'), icon: Library },
 		{ path: '/settings/plugins', label: t('settings.tabs.plugins'), icon: Plug },
@@ -135,12 +134,6 @@ export function AppSidebarFooter(): React.JSX.Element {
 									);
 								})}
 							</DropdownMenuGroup>
-							<DropdownMenuItem
-								onSelect={() => void window.app.openExternalUrl('https://www.kucedr.com/help')}
-							>
-								<CircleHelp />
-								{t('settings.sidebar.getHelp')}
-							</DropdownMenuItem>
 							{authenticatedUser ? (
 								<>
 									<DropdownMenuSeparator />

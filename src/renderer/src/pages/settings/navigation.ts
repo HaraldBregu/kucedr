@@ -7,7 +7,7 @@ import {
 	Cloud,
 	Folder,
 	HeartPulse,
-	Info,
+	Settings,
 	Library,
 	ListChecks,
 	MessageCircle,
@@ -352,7 +352,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		path: '/settings/settings',
 		labelKey: 'settings.tabs.settings',
 		descriptionKey: 'settings.overview.descriptions.settings',
-		icon: Info,
+		icon: Settings,
 	},
 	{
 		path: '/settings/cloud',
