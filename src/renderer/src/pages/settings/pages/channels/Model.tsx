@@ -57,7 +57,10 @@ export function ChannelModelConfiguration({
 			description={t(`settings.channels.${kind}ModelDescription`)}
 			showInlineError
 			showIcon={false}
-			grouped
+			collapsible={false}
+			buttonDropdown
+			compactPopover
+			buttonClassName="h-9 min-w-0 max-w-48 rounded-full px-2 text-sm text-foreground shadow-none hover:text-foreground"
 			onChange={(providerId, modelId) => void save(providerId, modelId)}
 		/>
 	);

@@ -14,6 +14,12 @@ jest.mock('react-i18next', () => {
 		'settings.channels.editToken': 'Edit token',
 		'settings.channels.configuration': 'Configuration',
 		'settings.channels.getToken': 'Get token',
+		'settings.channels.llmModel': 'Model',
+		'settings.channels.llmModelDescription': 'Model used for channel replies.',
+		'settings.channels.sttModel': 'Transcribe model',
+		'settings.channels.sttModelDescription': 'Model used to transcribe channel audio.',
+		'settings.channels.ttsModel': 'Voice model',
+		'settings.channels.ttsModelDescription': 'Model used for channel speech.',
 		'common.save': 'Save',
 		'common.cancel': 'Cancel',
 	};
@@ -88,6 +94,19 @@ it('shows a Plugins-style Telegram row and opens its detailed configuration', as
 	expect(screen.getByRole('button', { name: 'Add Telegram Bot API' })).toBeInTheDocument();
 	await user.click(screen.getByRole('link', { name: /Telegram Bot API Telegram/ }));
 	expect(screen.getByText('Telegram details')).toBeInTheDocument();
+});
+
+it('uses the chat model selector UI for channel models', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter initialEntries={['/settings/channels']}>
+			<ChannelsPage />
+		</MemoryRouter>
+	);
+	const modelButton = await screen.findByRole('button', { name: 'Model' });
+	expect(modelButton).toHaveClass('rounded-full');
+	await user.click(modelButton);
+	expect(screen.getByRole('menu', { name: 'Model' })).toBeInTheDocument();
 });
 
 it('renders manifest credentials on the detail page and saves a trimmed token', async () => {
