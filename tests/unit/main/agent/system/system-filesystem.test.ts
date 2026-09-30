@@ -10,12 +10,17 @@ import { workspacePath } from '../../../../../src/main/agent/system/system_works
 
 describe('agent filesystem prompt', () => {
 	let root: string;
+	let previousRoot: string | undefined;
 
 	beforeEach(async () => {
 		root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-agent-filesystem-'));
+		previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
+		process.env.KUCEDR_E2E_DATA_ROOT = path.join(root, 'profile');
 	});
 
 	afterEach(async () => {
+		if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
+		else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
 		await fs.rm(root, { recursive: true, force: true });
 	});
 
