@@ -100,8 +100,8 @@ export function AppSidebarFooter(): React.JSX.Element {
 						</Button>
 						<DropdownMenuContent
 							className="w-[var(--radix-dropdown-menu-trigger-width)]"
-							side="top"
-							align="start"
+							side="right"
+							align="end"
 						>
 							<DropdownMenuLabel className="p-0 font-normal">
 								<div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
