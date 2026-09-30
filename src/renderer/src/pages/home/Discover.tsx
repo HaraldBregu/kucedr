@@ -70,8 +70,17 @@ export function Discover(): ReactElement {
 								>
 									<span className="flex w-full items-center justify-between gap-2 text-[11px] text-muted-foreground">
 										<MessageCircle className="size-4 shrink-0" aria-hidden="true" />
-										<time dateTime={new Date(session.updatedAtMs).toISOString()} className="truncate">
-											Updated {new Date(session.updatedAtMs).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}
+										<time
+											dateTime={new Date(session.updatedAtMs).toISOString()}
+											className="truncate"
+										>
+											Updated{' '}
+											{new Date(session.updatedAtMs).toLocaleString(undefined, {
+												month: 'short',
+												day: 'numeric',
+												hour: 'numeric',
+												minute: '2-digit',
+											})}
 										</time>
 									</span>
 									<span className="line-clamp-2 text-sm font-medium">
