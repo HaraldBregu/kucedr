@@ -46,15 +46,26 @@ export function Discover(): ReactElement {
 				setLoadError(true);
 			}
 		);
-		return () => { active = false; };
+		return () => {
+			active = false;
+		};
 	}, [refreshKey]);
 
 	return (
 		<div className="flex w-full flex-col gap-8" data-slot="home-discover">
 			<section aria-labelledby="home-recent-chats">
 				<div className="mb-3 flex items-center justify-between gap-3">
-					<h2 id="home-recent-chats" className="text-sm font-medium">Recent chats</h2>
-					<Button variant="ghost" size="sm" onClick={() => { setLoading(true); setRefreshKey((value) => value + 1); }}>
+					<h2 id="home-recent-chats" className="text-sm font-medium">
+						Recent chats
+					</h2>
+					<Button
+						variant="ghost"
+						size="sm"
+						onClick={() => {
+							setLoading(true);
+							setRefreshKey((value) => value + 1);
+						}}
+					>
 						Refresh
 					</Button>
 				</div>
@@ -64,53 +75,90 @@ export function Discover(): ReactElement {
 							<button
 								type="button"
 								className="flex h-24 w-full flex-col justify-between gap-3 p-4 text-left outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
-								onClick={() => { setSessionId(session.id); setSessionTitle?.(session.title, session.id); }}
+								onClick={() => {
+									setSessionId(session.id);
+									setSessionTitle?.(session.title, session.id);
+								}}
 							>
 								<MessageCircle className="size-4 text-muted-foreground" aria-hidden="true" />
-								<span className="line-clamp-2 text-sm font-medium">{session.title.trim() || t('settings.chatHistory.untitled')}</span>
+								<span className="line-clamp-2 text-sm font-medium">
+									{session.title.trim() || t('settings.chatHistory.untitled')}
+								</span>
 							</button>
 						</Card>
 					))}
 					{sessions.length === 0 && (
 						<Card className="w-64 shrink-0 rounded-lg px-4 py-4 text-sm text-muted-foreground">
-							{loading ? 'Loading chats…' : loadError ? 'Could not load chats.' : 'Your chats will appear here.'}
+							{loading
+								? 'Loading chats…'
+								: loadError
+									? 'Could not load chats.'
+									: 'Your chats will appear here.'}
 						</Card>
 					)}
 				</div>
 			</section>
 			<section aria-labelledby="home-plugins">
 				<div className="mb-3 flex items-center justify-between gap-3">
-					<h2 id="home-plugins" className="text-sm font-medium">Plugins</h2>
-					<Link to="/settings/plugins" className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+					<h2 id="home-plugins" className="text-sm font-medium">
+						Plugins
+					</h2>
+					<Link
+						to="/settings/plugins"
+						className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					>
 						View all <ArrowUpRight className="size-3.5" aria-hidden="true" />
 					</Link>
 				</div>
 				<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Plugins">
 					{plugins.map((plugin) => (
-						<Card key={`${plugin.provider.id}/${plugin.id}`} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
-							<Link to={`/settings/plugins/mcp/${plugin.provider.id}/${plugin.id}`} className="flex h-28 flex-col gap-3 p-4 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring">
+						<Card
+							key={`${plugin.provider.id}/${plugin.id}`}
+							className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0"
+						>
+							<Link
+								to={`/settings/plugins/mcp/${plugin.provider.id}/${plugin.id}`}
+								className="flex h-28 flex-col gap-3 p-4 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
+							>
 								<div className="flex min-w-0 items-center gap-2">
-									<ProviderAvatar providerId={plugin.id} name={plugin.name} iconDarkUrl={plugin.iconDarkUrl} iconLightUrl={plugin.iconLightUrl} className="size-7 shrink-0 rounded-md" />
+									<ProviderAvatar
+										providerId={plugin.id}
+										name={plugin.name}
+										iconDarkUrl={plugin.iconDarkUrl}
+										iconLightUrl={plugin.iconLightUrl}
+										className="size-7 shrink-0 rounded-md"
+									/>
 									<span className="truncate text-sm font-medium">{plugin.name}</span>
 								</div>
 								<p className="line-clamp-2 text-xs text-muted-foreground">{plugin.description}</p>
 							</Link>
 						</Card>
 					))}
-					{plugins.length === 0 && <Card className="w-64 shrink-0 rounded-lg px-4 py-4 text-sm text-muted-foreground">No plugins available.</Card>}
+					{plugins.length === 0 && (
+						<Card className="w-64 shrink-0 rounded-lg px-4 py-4 text-sm text-muted-foreground">
+							No plugins available.
+						</Card>
+					)}
 				</div>
 			</section>
 			<section aria-labelledby="home-configure">
-				<h2 id="home-configure" className="mb-3 text-sm font-medium">Configure Kucedr</h2>
+				<h2 id="home-configure" className="mb-3 text-sm font-medium">
+					Configure Kucedr
+				</h2>
 				<div className="flex snap-x gap-3 overflow-x-auto pb-2" aria-label="Configure Kucedr">
 					{setupItems.map((item) => (
 						<Card key={item.path} className="w-64 shrink-0 snap-start gap-0 rounded-lg py-0">
-							<Link to={item.path} className="flex h-28 flex-col gap-3 p-4 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring">
+							<Link
+								to={item.path}
+								className="flex h-28 flex-col gap-3 p-4 outline-none hover:bg-muted/40 focus-visible:ring-2 focus-visible:ring-ring"
+							>
 								<div className="flex items-center gap-2">
 									<item.icon className="size-4 text-muted-foreground" aria-hidden="true" />
 									<span className="text-sm font-medium">{t(item.labelKey)}</span>
 								</div>
-								<p className="line-clamp-2 text-xs text-muted-foreground">{t(item.descriptionKey)}</p>
+								<p className="line-clamp-2 text-xs text-muted-foreground">
+									{t(item.descriptionKey)}
+								</p>
 							</Link>
 						</Card>
 					))}
