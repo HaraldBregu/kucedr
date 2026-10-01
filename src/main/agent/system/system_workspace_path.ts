@@ -2,9 +2,6 @@ import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import type { Config } from '../types';
 import { ensureWorkspaceFiles } from './system_ensure_workspace_files';
-import { ensureIdentity } from '../../identity/ensure';
-import { ensureSoul } from '../../soul/ensure';
-import { ensureUser } from '../../user/ensure';
 
 export function workspacePath(config: Config): string {
 	const resolvedPath = path.resolve(config.location);
@@ -12,8 +9,5 @@ export function workspacePath(config: Config): string {
 		mkdirSync(resolvedPath, { recursive: true });
 	}
 	ensureWorkspaceFiles(resolvedPath);
-	ensureIdentity(resolvedPath);
-	ensureSoul(resolvedPath);
-	ensureUser(resolvedPath);
 	return resolvedPath;
 }
