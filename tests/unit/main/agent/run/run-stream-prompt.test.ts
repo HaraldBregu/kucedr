@@ -477,6 +477,46 @@ describe('run stream system prompt', () => {
 		}
 	});
 
+	it('starts onboarding with only profile update tools', async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-onboarding-'));
+		const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
+		process.env.KUCEDR_E2E_DATA_ROOT = root;
+		try {
+			const workspace = path.join(root, 'workspace');
+			const events = [];
+			for await (const event of stream(
+				{ location: workspace },
+				createSessionState(),
+				{
+					runId: 'onboarding',
+					task: 'chat',
+					message: 'Hello',
+					model: 'test-model',
+					type: 'default',
+					agentId: 'main',
+					contextMode: 'workspace',
+				},
+				new AbortController().signal,
+				{ sandbox }
+			)) events.push(event);
+			const tools = runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>;
+			expect(tools.map((tool) => tool.id)).toEqual([
+				'update_identity',
+				'update_soul',
+				'update_user',
+				'complete_bootstrap',
+			]);
+			expect(mockLoadMcpTools).not.toHaveBeenCalled();
+			expect(createSkillRegistrySnapshotMock).not.toHaveBeenCalled();
+			expect(events[0]).toMatchObject({ type: 'run_started' });
+			await expect(fs.readFile(path.join(workspace, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+		} finally {
+			if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
+			else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
+			await fs.rm(root, { recursive: true, force: true });
+		}
+	});
+
 	it.each(['minimal', 'workspace'] as const)('injects untrusted automatic memory into %s main chat', async (contextMode) => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
 		const session = createSessionState();
