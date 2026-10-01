@@ -6,6 +6,7 @@ import { workspacePath } from '../../../../src/main/agent/system/system_workspac
 import { updateSoul } from '../../../../src/main/soul';
 import { updateIdentity } from '../../../../src/main/identity';
 import { updateUser } from '../../../../src/main/user';
+import { completeBootstrapTool } from '../../../../src/main/agent/tools/assistant/complete_bootstrap';
 
 it('regenerates AGENTS.md from modules without feeding its previous content back in', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-generated-prompt-'));
@@ -26,6 +27,8 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		const partial = await buildWorkspaceContext(config);
 		expect(partial).toContain('IDENTITY.md, USER.md');
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(completeBootstrapTool.run({})).rejects.toThrow('IDENTITY.md, USER.md');
+		expect(await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8')).toContain('First Run');
 		await updateIdentity('# Identity');
 		await updateUser('- **Name:** Alice');
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
@@ -34,7 +37,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 			expect(complete).toContain(`### ${name}.md`);
 		}
 		expect(complete).not.toContain('Obsolete generated content');
-		await rm(path.join(config.location, 'BOOTSTRAP.md'));
+		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Updated soul instructions');
 		expect(next).not.toContain('### BOOTSTRAP.md');
