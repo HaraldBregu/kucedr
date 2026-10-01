@@ -314,7 +314,7 @@ async function* loop(
 		}
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
-		if (!options.tools || options.progressiveDiscovery === true) {
+		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
 			const requiredIds = new Set([
 				'read', 'write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap',
 				...(input.interactionMode === 'plan' ? ['ask'] : []),
