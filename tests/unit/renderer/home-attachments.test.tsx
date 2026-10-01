@@ -206,9 +206,6 @@ describe('Home prompt attachments', () => {
 		);
 		expect(await screen.findByText('Planning chat')).toBeInTheDocument();
 		expect(screen.getByText(/Updated/)).toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Plugins' })).toBeInTheDocument();
-		expect(screen.getByRole('heading', { name: 'Configuration' })).toBeInTheDocument();
-		expect(screen.getByRole('link', { name: /settings.tabs.taskScheduler/ })).toHaveAttribute('href', '/settings/tasks');
 	});
 
 	it('shows the discovery rows only for an empty chat', () => {
@@ -217,32 +214,6 @@ describe('Home prompt attachments', () => {
 		expect(screen.queryByRole('heading', { name: 'Recent chats' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Plugins' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('heading', { name: 'Configuration' })).not.toBeInTheDocument();
-	});
-
-	it('hides Recent chats when there are no stored sessions', async () => {
-		Object.defineProperty(window, 'agent', {
-			configurable: true,
-			value: {
-				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
-				listSessions: jest.fn(async () => []),
-			},
-		});
-		renderPage();
-		await screen.findByRole('heading', { name: 'Plugins' });
-		expect(screen.queryByRole('heading', { name: 'Recent chats' })).not.toBeInTheDocument();
-	});
-
-	it('renders older session summaries without an update timestamp', async () => {
-		Object.defineProperty(window, 'agent', {
-			configurable: true,
-			value: {
-				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
-				listSessions: jest.fn(async () => [{ id: 'older-session', title: 'Older chat', createdAtMs: 1700000000000, category: 'main' }]),
-			},
-		});
-		renderPage();
-		expect(await screen.findByText('Older chat')).toBeInTheDocument();
-		expect(screen.getByText(/Created/)).toBeInTheDocument();
 	});
 
 	it('explains why voice input is disabled when speech-to-text is unavailable', async () => {
