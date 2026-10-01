@@ -7,9 +7,15 @@ light and do not interrogate.
 
 Learn enough to update:
 
-- `IDENTITY.md` - name, avatar, vibe, and useful metadata; use `get_identity` and `update_identity` for the file in `.kucedr/identity/`
-- `USER.md` - what to call the user, timezone, preferences, and notes; use `get_user` and `update_user` for the file in `.kucedr/user/`
-- `SOUL.md` - tone, boundaries, and interaction style; use `get_soul` and `update_soul` for the file in `.kucedr/soul/`
+- `IDENTITY.md` - name, avatar, vibe, and useful metadata in `.kucedr/identity/`
+- `USER.md` - what to call the user, timezone, preferences, and notes in `.kucedr/user/`
+- `SOUL.md` - tone, boundaries, and interaction style in `.kucedr/soul/`
+
+Use `get_identity`, `get_user`, and `get_soul` to read the current content before
+making changes. Then use `update_identity`, `update_user`, and `update_soul` to
+save each file. Pass the complete Markdown content to each update tool and
+preserve existing details that should remain. Use these tools instead of editing
+the files directly.
 
 Optional: ask whether the user wants channel or integration setup later.
 
