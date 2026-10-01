@@ -110,29 +110,27 @@ export const NavigationBar = React.memo(function NavigationBar({
 					isFullScreen={isFullScreen}
 					className={isMac ? 'ml-[84px]' : undefined}
 				>
-					{!isMac && (
-						<Tooltip>
-							<TooltipTrigger render={
-								<button
-									type="button"
-									aria-label={t('navigationBar.applicationMenu')}
-									onClick={() => window.win?.popupMenu()}
-									className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground"
-								>
-									<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
-								</button>
-							} />
-							<TooltipContent side="bottom">{t('navigationBar.applicationMenu')}</TooltipContent>
-						</Tooltip>
-					)}
-					{isMac ? (
-						<div
-							data-slot="navigationbar-sidebar-actions"
-							className={actionGroupClassName}
-						>
-							<span data-slot="split-pane-toggle-target" className="contents" />
-						</div>
-					) : null}
+					<div
+						data-slot="navigationbar-sidebar-actions"
+						className={actionGroupClassName}
+					>
+						{!isMac && (
+							<Tooltip>
+								<TooltipTrigger render={
+									<button
+										type="button"
+										aria-label={t('navigationBar.applicationMenu')}
+										onClick={() => window.win?.popupMenu()}
+										className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground"
+									>
+										<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
+									</button>
+								} />
+								<TooltipContent side="bottom">{t('navigationBar.applicationMenu')}</TooltipContent>
+							</Tooltip>
+						)}
+						<span data-slot="split-pane-toggle-target" className="contents" />
+					</div>
 					{!isHome && !isWorkspace && !isOnboarding && !isSettings && (
 						<Tooltip>
 							<TooltipTrigger render={
