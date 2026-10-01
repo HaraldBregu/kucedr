@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { NavigationBarRightContainer } from '../NavigationBarRightContainer';
 
 const btnBase =
-	'flex items-center justify-center h-full w-[46px] text-foreground hover:bg-accent/80 hover:text-foreground active:bg-accent transition-colors duration-100';
+	'flex items-center justify-center h-full w-[46px] text-foreground hover:bg-muted hover:text-foreground dark:hover:bg-muted/50 active:bg-muted transition-colors duration-100';
 
 interface WindowControlsProps {
 	readonly isMaximized: boolean;
