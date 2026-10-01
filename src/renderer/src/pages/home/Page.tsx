@@ -79,7 +79,6 @@ import { readDraftAttachments } from './attachments/read';
 import { saveDraftAttachments } from './attachments/save';
 import { HomeSidebar } from './Sidebar';
 import { Model } from './Model';
-import { Discover } from './Discover';
 
 const StableHomeSidebar = memo(HomeSidebar);
 const StableModel = memo(Model);
@@ -838,11 +837,6 @@ function PageContent(): ReactElement {
 						{composer}
 						</>
 					)}
-					{showEmptyConversation ? (
-						<div className="mx-auto w-full max-w-6xl px-4 pb-10 pt-14">
-							<Discover />
-						</div>
-					) : null}
 				</div>
 			</Split>
 		</PageContainer>
