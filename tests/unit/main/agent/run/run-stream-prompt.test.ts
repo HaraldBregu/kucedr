@@ -54,7 +54,6 @@ jest.mock('../../../../../src/main/agent/skills', () => ({
 }));
 
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
-import { updateUser } from '../../../../../src/main/user';
 import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
 import { createSessionState } from '../../../../../src/main/agent/session';
 import type { Message } from '../../../../../src/main/agent/types';
@@ -338,7 +337,9 @@ describe('run stream system prompt', () => {
 	it('sends generated AGENTS.md in the system prompt without duplicate user context', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-prompt-'));
 		try {
-			await updateUser('- **Name:** Alice');
+			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
+			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
+			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 			const session = createSessionState();
 			session.id = 'session';
 			session.messages = [{ role: 'user', content: 'Current request' }];

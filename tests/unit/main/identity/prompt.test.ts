@@ -4,6 +4,8 @@ import os from 'node:os';
 import { buildWorkspaceContext } from '../../../../src/main/agent/system/system_build_workspace_context';
 import { workspacePath } from '../../../../src/main/agent/system/system_workspace_path';
 import { updateSoul } from '../../../../src/main/soul';
+import { updateIdentity } from '../../../../src/main/identity';
+import { updateUser } from '../../../../src/main/user';
 
 it('regenerates AGENTS.md from modules without feeding its previous content back in', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-generated-prompt-'));
@@ -15,15 +17,23 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		const file = path.join(config.location, 'AGENTS.md');
 		await writeFile(file, 'Obsolete generated content');
 		const first = await buildWorkspaceContext(config, 'full', 'Remembered preference');
-		expect(await readFile(file, 'utf8')).toBe(first);
-		for (const name of ['HEALTH', 'BOOTSTRAP', 'MEMORY']) {
-			expect(first).toContain(`### ${name}.md`);
-		}
+		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
 		for (const name of ['SOUL', 'USER', 'IDENTITY']) {
-			expect(first).not.toContain(`### ${name}.md`);
+			expect(first).toContain(name + '.md');
 		}
-		expect(first).not.toContain('Obsolete generated content');
+		expect(first).not.toContain('Remembered preference');
 		await updateSoul('Updated soul instructions');
+		const partial = await buildWorkspaceContext(config);
+		expect(partial).toContain('IDENTITY.md, USER.md');
+		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
+		await updateIdentity('# Identity');
+		await updateUser('- **Name:** Alice');
+		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
+		expect(await readFile(file, 'utf8')).toBe(complete);
+		for (const name of ['SOUL', 'USER', 'IDENTITY', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
+			expect(complete).toContain(`### ${name}.md`);
+		}
+		expect(complete).not.toContain('Obsolete generated content');
 		await rm(path.join(config.location, 'BOOTSTRAP.md'));
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Updated soul instructions');
