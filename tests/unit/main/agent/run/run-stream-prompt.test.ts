@@ -439,13 +439,13 @@ describe('run stream system prompt', () => {
 				void event;
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
-			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).toContain('\n\n## Workspace\n');
-			expect(contextMessages[0]).toMatchObject({
-				role: 'user',
-				content: expect.stringContaining('### BOOTSTRAP.md'),
-			});
+			expect(systemPrompt).toContain('Missing profile content: IDENTITY.md, SOUL.md, USER.md');
+			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
 
+			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
+			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
+			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 			await fs.rm(path.join(root, 'BOOTSTRAP.md'));
 			runModelTurnMock.mockClear();
 			for await (const event of stream(
@@ -467,11 +467,11 @@ describe('run stream system prompt', () => {
 				void event;
 
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
-			const requiredContext = runModelTurnMock.mock.calls[0][15] as Message[];
-			expect(requiredContext[0]?.content).toContain('### AGENTS.md');
-			expect(requiredContext[0]?.content).toContain('### IDENTITY.md');
-			expect(requiredContext[0]?.content).toContain('### SOUL.md');
-			expect(requiredContext[0]?.content).not.toContain('### BOOTSTRAP.md');
+			const completePrompt = runModelTurnMock.mock.calls[0][3] as string;
+			expect(completePrompt).toContain('### IDENTITY.md');
+			expect(completePrompt).toContain('### SOUL.md');
+			expect(completePrompt).toContain('### USER.md');
+			expect(completePrompt).not.toContain('### BOOTSTRAP.md');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
