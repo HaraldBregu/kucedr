@@ -13,5 +13,8 @@ export async function profileStatus(workspacePath: string) {
 		['SOUL.md', soul],
 		['USER.md', user],
 	] as const;
-	return { profiles, missing: profiles.filter(([, content]) => !content.trim()).map(([name]) => name) };
+	return {
+		profiles,
+		missing: profiles.filter(([, content]) => !content.trim()).map(([name]) => name),
+	};
 }
