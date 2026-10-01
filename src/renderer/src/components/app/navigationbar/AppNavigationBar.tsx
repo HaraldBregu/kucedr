@@ -34,7 +34,7 @@ export function AppNavigationBar({
 								type="button"
 								variant="ghost"
 								size="icon-sm"
-								className="ml-2 text-muted-foreground"
+								className="ml-2 text-foreground"
 								onClick={() => window.win.popupMenu()}
 								aria-label="Application menu"
 							>

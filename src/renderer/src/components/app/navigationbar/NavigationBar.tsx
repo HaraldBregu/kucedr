@@ -121,7 +121,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 										type="button"
 										aria-label={t('navigationBar.applicationMenu')}
 										onClick={() => window.win?.popupMenu()}
-										className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-muted-foreground"
+									className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-foreground"
 									>
 										<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
 									</button>
