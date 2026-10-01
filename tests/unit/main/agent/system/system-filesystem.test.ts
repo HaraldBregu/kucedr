@@ -83,7 +83,7 @@ describe('agent filesystem prompt', () => {
 		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 
 		const bootstrapContext = await buildWorkspaceContext({ location: root });
-		expect(bootstrapContext).toContain('# Agent rules');
+		expect(bootstrapContext).toContain('# AGENTS.md');
 		expect(bootstrapContext).toContain('# Identity');
 		expect(bootstrapContext).toContain('# Soul');
 		expect(bootstrapContext).toContain('- **Name:** Alice');
@@ -119,7 +119,7 @@ describe('agent filesystem prompt', () => {
 		workspacePath({ location: root });
 		const context = await buildWorkspaceContext({ location: root });
 
-		expect(context).toContain('call `complete_bootstrap`');
+		expect(context).toContain('use `complete_bootstrap`');
 		expect(context).not.toContain('startup_files');
 	});
 

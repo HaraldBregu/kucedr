@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { getIdentity, updateIdentity } from '../../../../src/main/identity';
@@ -19,6 +19,9 @@ it('creates identity only through update tools and leaves a missing identity abs
 		expect(await getIdentity()).toBe('# Updated identity');
 		await rm(target);
 		expect(await getIdentity()).toBe('');
+		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
+		await writeFile(path.join(root, 'IDENTITY.md'), '# Legacy identity');
+		expect(await getIdentity(root)).toBe('# Legacy identity');
 		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
 	} finally {
 		process.env.KUCEDR_E2E_DATA_ROOT = previous;

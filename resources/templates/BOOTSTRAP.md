@@ -12,8 +12,9 @@ Learn enough to update:
 - `SOUL.md` - tone, boundaries, and interaction style in `.kucedr/soul/`
 
 Use `get_identity`, `get_user`, and `get_soul` to read the current content before
-making changes. Then use `update_identity`, `update_user`, and `update_soul` to
-save each file. Pass the complete Markdown content to each update tool and
+making changes. A missing file returns empty content and stays absent until you
+save it. Then use `update_identity`, `update_user`, and `update_soul` to save
+each file. Pass the complete Markdown content to each update tool and
 preserve existing details that should remain. Use these tools instead of editing
 the files directly.
 
