@@ -50,6 +50,11 @@ import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
 import { createToolSearch, type ToolSearch } from './run_discovery';
+import { profileStatus } from '../system/system_profile_status';
+import { completeBootstrapTool } from '../tools/assistant/complete_bootstrap';
+import { updateIdentityTool } from '../tools/identity/update';
+import { updateSoulTool } from '../tools/soul/update';
+import { updateUserTool } from '../tools/user/update';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -145,6 +150,16 @@ async function* loop(
 			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
+	const bootstrap =
+		session.category === 'main' &&
+		input.interactionMode !== 'plan' &&
+		(await profileStatus(config.location)).missing.length > 0;
+	const bootstrapTools = new Set([
+		'update_identity',
+		'update_soul',
+		'update_user',
+		'complete_bootstrap',
+	]);
 	const channelAllowedTools = new Set(['search_web', 'fetch_web_page', 'subagent', 'subagents', 'tool_search']);
 	const filterRuntimeTools = (candidates: Tool[]): Tool[] =>
 		filterProfileTools(candidates, toolProfile).filter(
@@ -153,6 +168,7 @@ async function* loop(
 					toolProfile,
 					tool.policy ?? { kind: 'builtin', id: tool.id }
 				) &&
+				(!bootstrap || bootstrapTools.has(tool.id)) &&
 				(input.agentId !== 'channels' || channelAllowedTools.has(tool.id))
 		);
 	const profileToolEnabled = (toolId: string): boolean => {
@@ -160,14 +176,17 @@ async function* loop(
 		return settings.permission !== 'deny';
 	};
 	const skillLoadingEnabled =
+		!bootstrap &&
 		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
 		!input.toolsDeny?.includes('load_skill') &&
 		profileToolEnabled('load_skill');
 	const skillListingEnabled =
+		!bootstrap &&
 		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
 		!input.toolsDeny?.includes('list_skills') &&
 		profileToolEnabled('list_skills');
 	const searchEnabled =
+		!bootstrap &&
 		(input.toolsAllow === undefined || input.toolsAllow.includes('tool_search')) &&
 		!input.toolsDeny?.includes('tool_search') &&
 		profileToolEnabled('tool_search');
@@ -191,10 +210,12 @@ async function* loop(
 
 	let tools: Tool[] = options.tools
 		? [...options.tools]
-		: builtinTools(config, options.sandbox!, input.interactionMode);
+		: bootstrap
+			? [updateIdentityTool, updateSoulTool, updateUserTool, completeBootstrapTool]
+			: builtinTools(config, options.sandbox!, input.interactionMode);
 	if (backgroundBrowser)
 		tools = tools.map((tool) => (tool.id === backgroundBrowser.id ? backgroundBrowser : tool));
-	if (!options.tools && input.interactionMode !== 'plan') {
+	if (!options.tools && !bootstrap && input.interactionMode !== 'plan') {
 		tools.push(
 			undoFileTool(session.runContext.fileHistory),
 			redoFileTool(session.runContext.fileHistory)
@@ -202,6 +223,7 @@ async function* loop(
 	}
 	if (
 		!options.tools &&
+		!bootstrap &&
 		session.category === 'main' &&
 		input.interactionMode !== 'plan' &&
 		session.folderName !== '' &&
@@ -251,6 +273,7 @@ async function* loop(
 	try {
 		if (!options.tools) {
 			if (
+				!bootstrap &&
 				input.interactionMode !== 'plan' &&
 				(input.toolsAllow === undefined ||
 					input.toolsAllow.some((toolId) => toolId.startsWith('mcp__')))
@@ -283,10 +306,11 @@ async function* loop(
 				...(input.scope ? { scope: input.scope } : {}),
 				toolProfile,
 			};
-			tools.push(
-				subagentTool(config, childTools, childRuntime),
-				subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
-			);
+			if (!bootstrap)
+				tools.push(
+					subagentTool(config, childTools, childRuntime),
+					subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
+				);
 		}
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
