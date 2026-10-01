@@ -50,6 +50,8 @@ import { ExecutionBudget } from '../execution/budget';
 import { skipToolCalls } from './skip';
 import { startsBackgroundRecorder } from './recorder';
 import { createToolSearch, type ToolSearch } from './run_discovery';
+import path from 'node:path';
+import { agentLocation } from '../../shared/agent_location';
 import { profileStatus } from '../system/system_profile_status';
 import { completeBootstrapTool } from '../tools/assistant/complete_bootstrap';
 import { updateIdentityTool } from '../tools/identity/update';
@@ -154,6 +156,7 @@ async function* loop(
 		!options.tools &&
 		session.category === 'main' &&
 		input.interactionMode !== 'plan' &&
+		path.resolve(config.location) === path.resolve(agentLocation()) &&
 		(await profileStatus(config.location)).missing.length > 0;
 	const bootstrapTools = new Set([
 		'update_identity',
