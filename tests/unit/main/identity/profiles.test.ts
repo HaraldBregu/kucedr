@@ -7,34 +7,33 @@ import { getUserTool } from '../../../../src/main/agent/tools/user/get';
 import { updateUserTool } from '../../../../src/main/agent/tools/user/update';
 import { workspacePath } from '../../../../src/main/agent/system/system_workspace_path';
 
-it('creates and recreates soul and user profiles without restarting completed bootstrap', async () => {
+it('creates soul and user profiles only through update tools', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-profiles-'));
 	const previous = process.env.KUCEDR_E2E_DATA_ROOT;
 	process.env.KUCEDR_E2E_DATA_ROOT = root;
 	try {
 		const workspace = workspacePath({ location: path.join(root, 'workspace') });
 		const bootstrap = path.join(workspace, 'BOOTSTRAP.md');
-		await rm(bootstrap);
-		workspacePath({ location: workspace });
-		await expect(readFile(bootstrap)).rejects.toMatchObject({ code: 'ENOENT' });
 		for (const [name, get, update] of [
 			['soul', getSoulTool, updateSoulTool],
 			['user', getUserTool, updateUserTool],
 		] as const) {
 			const target = path.join(root, name, `${name.toUpperCase()}.md`);
+			expect(await get.run({})).toBe('');
+			await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
 			await update.run({ content: `# Updated ${name}` });
 			expect(await get.run({})).toBe(`# Updated ${name}`);
 			await rm(target);
-			const template = await readFile(
-				path.resolve('resources/templates', `${name.toUpperCase()}.md`),
-				'utf8'
-			);
-			expect(await get.run({})).toBe(template);
-			expect(await readFile(target, 'utf8')).toBe(template);
+			expect(await get.run({})).toBe('');
+			await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
 			await expect(
 				readFile(path.join(workspace, `${name.toUpperCase()}.md`))
 			).rejects.toMatchObject({ code: 'ENOENT' });
 		}
+		await rm(bootstrap);
+		await update.run({ content: '# User' });
+		workspacePath({ location: workspace });
+		await expect(readFile(bootstrap)).rejects.toMatchObject({ code: 'ENOENT' });
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 		else process.env.KUCEDR_E2E_DATA_ROOT = previous;
