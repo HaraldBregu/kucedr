@@ -117,14 +117,16 @@ export const NavigationBar = React.memo(function NavigationBar({
 						{!isMac && (
 							<Tooltip>
 								<TooltipTrigger render={
-									<button
+									<Button
 										type="button"
+										variant="ghost"
+										size="icon"
 										aria-label={t('navigationBar.applicationMenu')}
 										onClick={() => window.win?.popupMenu()}
-									className="ml-2 flex h-7 w-7 items-center justify-center rounded-md text-foreground"
+										className="ml-2 rounded-full"
 									>
-										<Menu className="h-[15px] w-[15px]" strokeWidth={1.5} />
-									</button>
+										<Menu className="size-4" strokeWidth={1.5} />
+									</Button>
 								} />
 								<TooltipContent side="bottom">{t('navigationBar.applicationMenu')}</TooltipContent>
 							</Tooltip>
