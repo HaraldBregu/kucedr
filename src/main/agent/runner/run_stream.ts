@@ -151,6 +151,7 @@ async function* loop(
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
 	const bootstrap =
+		!options.tools &&
 		session.category === 'main' &&
 		input.interactionMode !== 'plan' &&
 		(await profileStatus(config.location)).missing.length > 0;
