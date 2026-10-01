@@ -16,8 +16,11 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		await writeFile(file, 'Obsolete generated content');
 		const first = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(first);
-		for (const name of ['SOUL', 'USER', 'IDENTITY', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
+		for (const name of ['HEALTH', 'BOOTSTRAP', 'MEMORY']) {
 			expect(first).toContain(`### ${name}.md`);
+		}
+		for (const name of ['SOUL', 'USER', 'IDENTITY']) {
+			expect(first).not.toContain(`### ${name}.md`);
 		}
 		expect(first).not.toContain('Obsolete generated content');
 		await updateSoul('Updated soul instructions');

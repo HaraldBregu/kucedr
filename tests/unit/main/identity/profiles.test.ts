@@ -14,6 +14,11 @@ it('creates soul and user profiles only through update tools', async () => {
 	try {
 		const workspace = workspacePath({ location: path.join(root, 'workspace') });
 		const bootstrap = path.join(workspace, 'BOOTSTRAP.md');
+		for (const name of ['identity', 'soul', 'user']) {
+			await expect(
+				readFile(path.join(root, name, `${name.toUpperCase()}.md`))
+			).rejects.toMatchObject({ code: 'ENOENT' });
+		}
 		for (const [name, get, update] of [
 			['soul', getSoulTool, updateSoulTool],
 			['user', getUserTool, updateUserTool],
@@ -31,7 +36,7 @@ it('creates soul and user profiles only through update tools', async () => {
 			).rejects.toMatchObject({ code: 'ENOENT' });
 		}
 		await rm(bootstrap);
-		await update.run({ content: '# User' });
+		await updateUserTool.run({ content: '# User' });
 		workspacePath({ location: workspace });
 		await expect(readFile(bootstrap)).rejects.toMatchObject({ code: 'ENOENT' });
 	} finally {
