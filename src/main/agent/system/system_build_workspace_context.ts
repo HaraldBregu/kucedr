@@ -1,12 +1,10 @@
 import path from 'node:path';
 import type { Config } from '../types';
-import { mkdir } from 'node:fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
 import { atomicWrite } from '../../shared/atomic_write';
 import { getHealth } from '../../health/data';
 import { readBootstrap } from './system_read_bootstrap';
-import { readIdentity } from './system_read_identity';
-import { readSoul } from './system_read_soul';
-import { readUser } from './system_read_user';
+import { profileStatus } from './system_profile_status';
 
 export async function buildWorkspaceContext(
 	config: Config,
@@ -14,11 +12,16 @@ export async function buildWorkspaceContext(
 	memory = ''
 ): Promise<string> {
 	const resolvedWorkspacePath = path.resolve(config.location);
+	const { profiles, missing } = await profileStatus(resolvedWorkspacePath);
+	if (missing.length > 0) {
+		if (scope === 'core') return '';
+		await rm(path.join(resolvedWorkspacePath, 'AGENTS.md'), { force: true });
+		const bootstrap = await readBootstrap(resolvedWorkspacePath);
+		return `# Bootstrap\nComplete the assistant setup before ordinary chat. Missing profile content: ${missing.join(', ')}. The application checked these modules; do not call get_identity, get_soul, or get_user to discover what is missing. Use the update tools to save complete content for each missing module. Do not call complete_bootstrap until all three modules have content.\n\n${bootstrap}\n\n${profiles.filter(([, content]) => content.trim()).map(([name, content]) => `### ${name}\n${content.trim()}`).join('\n\n')}`;
+	}
 	const files = [
 		['BOOTSTRAP.md', await readBootstrap(resolvedWorkspacePath)],
-		['IDENTITY.md', await readIdentity(resolvedWorkspacePath)],
-		['SOUL.md', await readSoul(resolvedWorkspacePath)],
-		['USER.md', await readUser(resolvedWorkspacePath)],
+		...profiles,
 		['HEALTH.md', scope === 'full' ? await getHealth(config) : ''],
 		['MEMORY.md', scope === 'full' ? memory : ''],
 	] as const;
