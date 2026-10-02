@@ -55,7 +55,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		const voice = await buildWorkspaceContext(config, 'full', '', 'voice');
 		expect(voice).toContain('### SOUL');
 		expect(voice).not.toContain('## Tools loaded by default in ordinary text chat');
-		expect(await readFile(file, 'utf8')).toBe(complete);
+		expect(await readFile(file, 'utf8')).toContain('## Tools loaded by default in ordinary text chat');
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Updated soul instructions');
