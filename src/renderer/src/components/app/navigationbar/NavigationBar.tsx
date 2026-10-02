@@ -127,21 +127,24 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" side="bottom" className="w-72 overflow-hidden">
-						<DropdownMenuLabel>{chatHistoryLabel}</DropdownMenuLabel>
-						<DropdownMenuItem
-							onSelect={() => {
-								const newSessionId = crypto.randomUUID();
-								setSessionId(newSessionId);
-								setSessionTitle?.(newChatLabel, newSessionId);
-								navigate('/home');
-								window.requestAnimationFrame(() =>
-									window.dispatchEvent(new Event('kucedr:focus-chat-input'))
-								);
-							}}
-						>
-							<Plus />
-							{newChatLabel}
-						</DropdownMenuItem>
+						<div className="flex items-center justify-between gap-2 px-2 py-1.5">
+							<DropdownMenuLabel className="p-0">{chatHistoryLabel}</DropdownMenuLabel>
+							<DropdownMenuItem
+								className="gap-1 px-2 py-1 text-xs"
+								onSelect={() => {
+									const newSessionId = crypto.randomUUID();
+									setSessionId(newSessionId);
+									setSessionTitle?.(newChatLabel, newSessionId);
+									navigate('/home');
+									window.requestAnimationFrame(() =>
+										window.dispatchEvent(new Event('kucedr:focus-chat-input'))
+									);
+								}}
+							>
+								<Plus className="size-3" />
+								New
+							</DropdownMenuItem>
+						</div>
 						<DropdownMenuSeparator />
 						<div className="max-h-56 overflow-y-auto">
 							{chatSessionsLoading ? (
