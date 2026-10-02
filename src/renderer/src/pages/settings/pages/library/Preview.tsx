@@ -6,12 +6,14 @@ import { libraryFileUrl } from './url';
 export function LibraryPreview({
 	file,
 	compact = false,
+	modal = false,
 }: {
 	readonly file: LibraryFile;
 	readonly compact?: boolean;
+	readonly modal?: boolean;
 }): React.JSX.Element {
 	const url = libraryFileUrl(file.path);
-	const frame = compact ? 'h-14 w-16 shrink-0' : 'aspect-[4/3] w-full';
+	const frame = modal ? 'h-[min(70vh,700px)] w-full' : compact ? 'h-14 w-16 shrink-0' : 'aspect-[4/3] w-full';
 
 	if (/\.(png|jpe?g|gif|webp|bmp|svg|ico|avif)$/i.test(file.name)) {
 		return (
@@ -27,7 +29,7 @@ export function LibraryPreview({
 		return (
 			<video
 				src={url}
-				controls
+				controls={!compact}
 				preload="metadata"
 				aria-label={file.name}
 				className={`${frame} rounded-md bg-muted/40 object-contain`}
@@ -35,12 +37,16 @@ export function LibraryPreview({
 		);
 	}
 	if (/\.(mp3|wav|ogg|flac|m4a|aac|opus)$/i.test(file.name)) {
+		if (compact) {
+			return <div className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}>
+				{React.createElement(libraryFileIcon(file.name), { className: 'size-6' })}
+			</div>;
+		}
 		return (
 			<div
-				className={`flex items-center justify-center rounded-md bg-muted/40 ${compact ? 'min-w-0 max-w-48 flex-1' : 'aspect-[4/3] w-full flex-col gap-4 px-4'}`}
+				className={`flex items-center justify-center rounded-md bg-muted/40 ${modal ? 'h-48 w-full' : 'aspect-[4/3] w-full'} flex-col gap-4 px-4`}
 			>
-				{!compact &&
-					React.createElement(libraryFileIcon(file.name), {
+				{React.createElement(libraryFileIcon(file.name), {
 						className: 'size-10 text-muted-foreground',
 					})}
 				<audio

@@ -10,15 +10,21 @@ export function LibraryCard({
 	file,
 	disabled,
 	onDelete,
+	onPreview,
+	onContextMenu,
 }: {
 	readonly file: LibraryFile;
 	readonly disabled: boolean;
 	readonly onDelete: (file: LibraryFile) => void;
+	readonly onPreview: (file: LibraryFile) => void;
+	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
-		<article className="min-w-0 overflow-hidden rounded-xl border border-border/70 bg-card p-2">
-			<LibraryPreview file={file} />
+		<article className="min-w-0 overflow-hidden rounded-xl border border-border/70 bg-card p-2" onContextMenu={(event) => { event.preventDefault(); onContextMenu(file); }}>
+			<button type="button" className="w-full rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('settings.library.previewFile', { name: file.name })} onClick={() => onPreview(file)}>
+				<LibraryPreview file={file} />
+			</button>
 			<div className="flex min-w-0 items-start gap-2 px-1 pb-1 pt-3">
 				<div className="min-w-0 flex-1">
 					<p className="truncate text-sm font-medium" title={file.name}>
