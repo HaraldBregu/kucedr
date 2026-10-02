@@ -89,7 +89,7 @@
 		"@anthropic-ai/sdk": "0.93.0",
 		"@aws-sdk/client-s3": "^3.1127.0",
 		"@base-ui/react": "^1.6.0",
-		"@cline/sdk": "0.0.86",
+		"@cline/sdk": "0.0.87",
 		"@codemirror/commands": "^6.11.1",
 		"@codemirror/lang-markdown": "^6.5.2",
 		"@codemirror/language": "^6.12.4",
