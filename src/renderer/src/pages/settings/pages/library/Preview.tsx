@@ -29,7 +29,7 @@ export function LibraryPreview({
 		return (
 			<video
 				src={url}
-				controls={!compact}
+				controls={modal}
 				preload="metadata"
 				aria-label={file.name}
 				className={`${frame} rounded-md bg-muted/40 object-contain`}
@@ -37,9 +37,9 @@ export function LibraryPreview({
 		);
 	}
 	if (/\.(mp3|wav|ogg|flac|m4a|aac|opus)$/i.test(file.name)) {
-		if (compact) {
+		if (!modal) {
 			return <div className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}>
-				{React.createElement(libraryFileIcon(file.name), { className: 'size-6' })}
+				{React.createElement(libraryFileIcon(file.name), { className: compact ? 'size-6' : 'size-12' })}
 			</div>;
 		}
 		return (
@@ -59,7 +59,7 @@ export function LibraryPreview({
 			</div>
 		);
 	}
-	if (/\.pdf$/i.test(file.name) && !compact) {
+	if (/\.pdf$/i.test(file.name) && modal) {
 		return (
 			<iframe
 				src={url}

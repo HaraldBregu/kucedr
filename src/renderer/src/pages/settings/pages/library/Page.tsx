@@ -16,11 +16,13 @@ import {
 } from '../../components';
 import { LibraryRow } from './Row';
 import { LibraryCard } from './Card';
+import { LibraryModal } from './Modal';
 
 const LibraryPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [files, setFiles] = useState<LibraryFile[]>([]);
 	const [view, setView] = useState<'collections' | 'list'>('collections');
+	const [previewFile, setPreviewFile] = useState<LibraryFile | null>(null);
 	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
@@ -102,6 +104,7 @@ const LibraryPage: React.FC = () => {
 			try {
 				await window.library.delete(file.relativePath);
 				setFiles((current) => current.filter((entry) => entry.relativePath !== file.relativePath));
+				setPreviewFile((current) => current?.relativePath === file.relativePath ? null : current);
 			} catch {
 				setErrorMessage(t('settings.library.deleteError'));
 			} finally {
@@ -110,6 +113,19 @@ const LibraryPage: React.FC = () => {
 		},
 		[t]
 	);
+
+	const handleContextMenu = useCallback((file: LibraryFile): void => {
+		void window.win.showContextMenu([
+			{ id: 'preview', label: t('settings.library.preview') },
+			{ id: 'open-folder', label: t('settings.library.openFolder') },
+			{ type: 'separator' },
+			{ id: 'delete', label: t('settings.library.delete', { name: file.name }), enabled: deletingPath !== file.relativePath && !uploading },
+		]).then((action) => {
+			if (action === 'preview') setPreviewFile(file);
+			else if (action === 'open-folder') void handleOpenFolder();
+			else if (action === 'delete') void handleDelete(file);
+		}).catch(() => setErrorMessage(t('settings.library.contextMenuError')));
+	}, [deletingPath, handleDelete, handleOpenFolder, t, uploading]);
 
 	return (
 		<SettingsPageShell className="max-w-none">
@@ -216,6 +232,8 @@ const LibraryPage: React.FC = () => {
 										file={file}
 										disabled={deletingPath === file.relativePath || uploading}
 										onDelete={(entry) => void handleDelete(entry)}
+										onPreview={setPreviewFile}
+										onContextMenu={handleContextMenu}
 									/>
 								))}
 							</div>
@@ -226,12 +244,15 @@ const LibraryPage: React.FC = () => {
 									file={file}
 									disabled={deletingPath === file.relativePath || uploading}
 									onDelete={(entry) => void handleDelete(entry)}
+									onPreview={setPreviewFile}
+									onContextMenu={handleContextMenu}
 								/>
 							))
 						)}
 					</SettingsPanel>
 				</div>
 			</SettingsSection>
+			<LibraryModal file={previewFile} onClose={() => setPreviewFile(null)} />
 		</SettingsPageShell>
 	);
 };
