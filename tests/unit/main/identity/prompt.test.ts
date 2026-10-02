@@ -72,6 +72,14 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(renamed).toContain('- **Name:** Nova\n- **Role:** Planner');
 		expect(renamed).not.toContain('- **Name:** Kucedr');
 		expect(await readFile(file, 'utf8')).toBe(renamed);
+		await updateSoul({ tone: 'Warm', interactionStyle: 'Answer briefly' });
+		await updateUser({ name: 'Alice', preferredName: 'Allie' });
+		const revised = await buildWorkspaceContext(config, 'full');
+		expect(revised).toContain('- **Tone:** Warm\n- **Interaction style:** Answer briefly');
+		expect(revised).toContain('- **Name:** Alice\n- **What to call them:** Allie');
+		expect(revised).not.toContain('Calm and direct');
+		expect(revised).not.toContain('Europe/Rome');
+		expect(await readFile(file, 'utf8')).toBe(revised);
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 		else process.env.KUCEDR_E2E_DATA_ROOT = previous;
