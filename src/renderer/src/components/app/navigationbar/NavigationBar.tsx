@@ -68,7 +68,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<TooltipTrigger render={
 				<Button
 					type="button"
-					variant="outline"
+					variant="secondary"
 					size="sm"
 					className="rounded-md text-xs"
 					onClick={() => navigate(isWorkspace ? '/home' : '/workspace')}
