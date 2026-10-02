@@ -19,7 +19,7 @@ export async function buildSystemPrompt(
 		prompt = addToolsPrompt(prompt, tools);
 		if (contextMode === 'workspace') prompt = await addWorkspacePrompt(config, prompt);
 	}
-	if (contextMode === 'workspace') prompt = await addFilesystemPrompt(config, prompt);
+	prompt = await addFilesystemPrompt(config, prompt);
 	prompt = addSkillPrompt(prompt, [], hasAvailableSkills);
 	return prompt;
 }

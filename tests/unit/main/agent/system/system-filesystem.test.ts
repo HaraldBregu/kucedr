@@ -75,6 +75,20 @@ describe('agent filesystem prompt', () => {
 		expect(prompt).not.toContain('library/clip.mp4');
 	});
 
+	it('refreshes the inventory in minimal system prompts without storing it in AGENTS.md', async () => {
+		const before = await buildSystemPrompt({ location: root }, [], [], undefined, 'minimal');
+		await fs.mkdir(path.join(root, 'project'));
+		await fs.writeFile(path.join(root, 'notes.txt'), 'notes');
+		const after = await buildSystemPrompt({ location: root }, [], [], undefined, 'minimal');
+		const context = await buildWorkspaceContext({ location: root });
+
+		expect(before).toContain('## Agent filesystem');
+		expect(before).not.toContain('- "project/"');
+		expect(after).toContain('- "project/"');
+		expect(after).toContain('- "notes.txt"');
+		expect(context).not.toContain('## Agent filesystem');
+	});
+
 	it('includes bootstrap until its completion file is removed', async () => {
 		await fs.writeFile(path.join(root, 'AGENTS.md'), '# Agent rules');
 		await fs.writeFile(path.join(root, 'BOOTSTRAP.md'), '# Bootstrap questions');
