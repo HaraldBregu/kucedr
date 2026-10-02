@@ -6,11 +6,13 @@ export function PromptInputControls({
 	content,
 	trailingAction,
 	isLoading,
+	fillActions = false,
 }: {
 	readonly leadingAction?: ReactNode;
 	readonly content?: ReactNode;
 	readonly trailingAction?: ReactNode;
 	readonly isLoading: boolean;
+	readonly fillActions?: boolean;
 }): React.JSX.Element {
 	return (
 		<div
@@ -22,7 +24,10 @@ export function PromptInputControls({
 			</div>
 			<div
 				data-slot="prompt-input-control-actions"
-				className="flex min-w-0 items-center justify-end gap-1.5"
+				className={cn(
+					'flex min-w-0 items-center justify-end gap-1.5',
+					fillActions && 'flex-1'
+				)}
 			>
 				{content}
 				{isLoading ? (
