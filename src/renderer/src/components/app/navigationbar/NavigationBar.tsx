@@ -6,6 +6,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
 import { NavigationBarLeftContainer } from './NavigationBarLeftContainer';
 import { Button } from '@/components/ui/button';
+import { ButtonGroup } from '@/components/ui/button-group';
 import { useApp } from '@/contexts';
 import { NavigationBarProvider } from './context/NavigationBarContext';
 import { useCommandMenu } from '@/contexts/command-menu';
@@ -75,6 +76,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const homeLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search');
 	const chatHistoryLabel = t('settings.chatHistory.title');
+	const chatButtonVariant = isHome ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
@@ -83,46 +85,47 @@ export const NavigationBar = React.memo(function NavigationBar({
 	];
 	const workspaceButton = showWorkspace ? (
 		<>
-			<Tooltip>
-				<TooltipTrigger render={
-					<Button
-						type="button"
-						variant={isHome ? 'secondary' : 'ghost'}
-						size="sm"
-						className="rounded-md text-xs"
-						onClick={() => navigate('/home')}
-						aria-label={homeLabel}
-						aria-current={isHome ? 'page' : undefined}
-					>
-						<MessageCircle className="size-3.5" strokeWidth={1.8} />
-						<span>{homeLabel}</span>
-					</Button>
-				} />
-				<TooltipContent side="bottom">{homeLabel}</TooltipContent>
-			</Tooltip>
-			<DropdownMenu
-				onOpenChange={(open) => {
-					if (!open) return;
-					setChatSessionsLoading(true);
-					setChatSessionsLoadError(false);
-					void window.agent.listSessions().then(
-						(sessions) => setChatSessions(sessions),
-						() => setChatSessionsLoadError(true)
-					).finally(() => setChatSessionsLoading(false));
-				}}
-			>
-				<DropdownMenuTrigger asChild>
-					<Button
-						type="button"
-						variant="ghost"
-						size="icon"
-						className="size-8 rounded-full"
-						aria-label={chatHistoryLabel}
-					>
-						<ChevronDown className="size-4" strokeWidth={1.8} />
-					</Button>
-				</DropdownMenuTrigger>
-				<DropdownMenuContent align="start" className="max-h-80 w-72 overflow-y-auto">
+			<ButtonGroup role="group" aria-label={homeLabel}>
+				<Tooltip>
+					<TooltipTrigger render={
+						<Button
+							type="button"
+							variant={chatButtonVariant}
+							size="sm"
+							className="rounded-r-none text-xs"
+							onClick={() => navigate('/home')}
+							aria-label={homeLabel}
+							aria-current={isHome ? 'page' : undefined}
+						>
+							<MessageCircle className="size-3.5" strokeWidth={1.8} />
+							<span>{homeLabel}</span>
+						</Button>
+					} />
+					<TooltipContent side="bottom">{homeLabel}</TooltipContent>
+				</Tooltip>
+				<DropdownMenu
+					onOpenChange={(open) => {
+						if (!open) return;
+						setChatSessionsLoading(true);
+						setChatSessionsLoadError(false);
+						void window.agent.listSessions().then(
+							(sessions) => setChatSessions(sessions),
+							() => setChatSessionsLoadError(true)
+						).finally(() => setChatSessionsLoading(false));
+					}}
+				>
+					<DropdownMenuTrigger asChild>
+						<Button
+							type="button"
+							variant={chatButtonVariant}
+							size="icon"
+							className="size-8 rounded-l-none border-l-0"
+							aria-label={chatHistoryLabel}
+						>
+							<ChevronDown className="size-4" strokeWidth={1.8} />
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="end" side="bottom" className="max-h-80 w-72 overflow-y-auto">
 					<DropdownMenuLabel>{chatHistoryLabel}</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					{chatSessionsLoading ? (
@@ -157,8 +160,9 @@ export const NavigationBar = React.memo(function NavigationBar({
 							</DropdownMenuItem>
 						);
 					})}
-				</DropdownMenuContent>
-			</DropdownMenu>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</ButtonGroup>
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
