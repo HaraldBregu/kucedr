@@ -21,11 +21,25 @@ export function LibraryCard({
 			<LibraryPreview file={file} />
 			<div className="flex min-w-0 items-start gap-2 px-1 pb-1 pt-3">
 				<div className="min-w-0 flex-1">
-					<p className="truncate text-sm font-medium" title={file.name}>{file.name}</p>
-					<p className="truncate text-xs text-muted-foreground" title={file.relativePath}>{file.relativePath}</p>
-					<p className="mt-1 text-xs text-muted-foreground">{formatLibraryFileSize(file.size)} · <time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time></p>
+					<p className="truncate text-sm font-medium" title={file.name}>
+						{file.name}
+					</p>
+					<p className="truncate text-xs text-muted-foreground" title={file.relativePath}>
+						{file.relativePath}
+					</p>
+					<p className="mt-1 text-xs text-muted-foreground">
+						{formatLibraryFileSize(file.size)} ·{' '}
+						<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
+					</p>
 				</div>
-				<Button variant="ghost" size="icon-xs" className="shrink-0 text-muted-foreground hover:text-destructive" disabled={disabled} aria-label={t('settings.library.delete', { name: file.name })} onClick={() => onDelete(file)}>
+				<Button
+					variant="ghost"
+					size="icon-xs"
+					className="shrink-0 text-muted-foreground hover:text-destructive"
+					disabled={disabled}
+					aria-label={t('settings.library.delete', { name: file.name })}
+					onClick={() => onDelete(file)}
+				>
 					<Trash2 className="size-3.5" />
 				</Button>
 			</div>
