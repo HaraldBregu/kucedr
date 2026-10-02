@@ -17,14 +17,14 @@ export async function getIdentity(workspace = agentLocation()): Promise<Identity
 		try {
 			const content = await readFile(file, 'utf8');
 			const fields = Object.fromEntries(
-				[...content.matchAll(/^\s*-\s*\*\*(Name|Role|Avatar|Vibe|Metadata):\*\*\s*(.*)$/gim)]
+				[...content.matchAll(/^\s*(?:-\s*)?\*\*(Name|Role|Avatar|Vibe|Metadata):\*\*\s*(.*)$/gim)]
 					.map(([, key, value]) => [key.toLowerCase(), value.trim()])
 			);
 			const name = fields.name || content.match(/^#\s+(?!IDENTITY\.md\b)(.+)$/im)?.[1]?.trim();
 			if (!name) return null;
 			const remaining = content
 				.replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/im, '')
-				.replace(/^\s*-\s*\*\*(?:Name|Role|Avatar|Vibe|Metadata):\*\*.*$/gim, '')
+				.replace(/^\s*(?:-\s*)?\*\*(?:Name|Role|Avatar|Vibe|Metadata):\*\*.*$/gim, '')
 				.trim();
 			const metadata = [fields.metadata, remaining].filter(Boolean).join('\n\n');
 			return identitySchema.parse({
