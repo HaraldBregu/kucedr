@@ -84,8 +84,8 @@ describe('agent filesystem prompt', () => {
 
 		const bootstrapContext = await buildWorkspaceContext({ location: root });
 		expect(bootstrapContext).toContain('# AGENTS.md');
-		expect(bootstrapContext).toContain('# Identity');
-		expect(bootstrapContext).toContain('# Soul');
+		expect(bootstrapContext).toContain('- **Name:** Identity');
+		expect(bootstrapContext).toContain('- **Tone:** # Soul');
 		expect(bootstrapContext).toContain('- **Name:** Alice');
 		expect(bootstrapContext).toContain('# Bootstrap questions');
 
