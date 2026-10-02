@@ -4,11 +4,12 @@ export function formatIdentity(identity: IdentitySettings): string {
 	const metadata = identity.metadata
 		?.split(/\r?\n/)
 		.flatMap((line) => {
-			const trimmed = line.trim();
+			const detail = line.replace(/^\s*(?:-\s*)?\*\*Metadata:\*\*\s*/i, '');
+			const trimmed = detail.trim();
 			if (/^#\s+IDENTITY\.md\b/i.test(trimmed)) return [];
 			if (/^#\s+/.test(trimmed) && trimmed.replace(/^#\s+/, '').toLowerCase() === identity.name.toLowerCase()) return [];
 			if (/^(?:-\s*)?\*\*(?:Name|Role|Avatar|Vibe):\*\*/i.test(trimmed)) return [];
-			return [line.replace(/^\s*(?:-\s*)?\*\*Metadata:\*\*\s*/i, '')];
+			return [detail];
 		})
 		.join('\n')
 		.replace(/\n{3,}/g, '\n\n')
