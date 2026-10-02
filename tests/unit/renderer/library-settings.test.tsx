@@ -161,7 +161,9 @@ it('shows media previews in both library views', async () => {
 	await user.click(song);
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3').tagName).toBe('AUDIO');
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toHaveAttribute('controls');
-	fireEvent.keyDown(within(screen.getByRole('dialog')).getByLabelText('song.mp3'), { key: 'ArrowRight' });
+	fireEvent.keyDown(within(screen.getByRole('dialog')).getByLabelText('song.mp3'), {
+		key: 'ArrowRight',
+	});
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[2]);
