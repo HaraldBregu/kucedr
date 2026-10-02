@@ -14,7 +14,7 @@ follow-up read.
 - `AGENTS.md` - operating rules and workspace behavior
 - Assistant soul - persona, tone, and interaction style; update with `update_soul`
 - Assistant identity - name, role, avatar, vibe, and metadata; update with `update_identity`
-- User profile and preferences - update with `update_user`
+- User profile and preferences - update with `update_user`; include projects only when the user chooses to describe them, never from workspace files or folders
 - `BOOTSTRAP.md` - one-time onboarding workflow
 
 ## Bootstrap
