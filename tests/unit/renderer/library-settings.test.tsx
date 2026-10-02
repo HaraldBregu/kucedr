@@ -158,9 +158,11 @@ it('shows media previews in both library views', async () => {
 	const song = screen.getAllByRole('button', { name: 'settings.library.previewFile' })[1];
 	await user.click(song);
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3').tagName).toBe('AUDIO');
+	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toHaveAttribute('controls');
 	await user.keyboard('{Escape}');
 	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[2]);
 	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4').tagName).toBe('VIDEO');
+	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4')).toHaveAttribute('controls');
 });
 
 it('opens the native file context menu and handles preview and delete', async () => {
@@ -177,4 +179,12 @@ it('opens the native file context menu and handles preview and delete', async ()
 	await user.keyboard('{Escape}');
 	fireEvent.contextMenu(card);
 	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
+});
+
+it('opens the native context menu from a list row', async () => {
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await user.click(await screen.findByRole('button', { name: 'settings.library.list' }));
+	fireEvent.contextMenu(screen.getByText('notes.txt').closest('[data-slot="item"]')!);
+	await waitFor(() => expect(showContextMenu).toHaveBeenCalledTimes(1));
 });

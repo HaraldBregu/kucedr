@@ -53,9 +53,7 @@ export function LibraryPreview({
 			);
 		}
 		return (
-			<div
-				className={`flex items-center justify-center rounded-md bg-muted/40 ${modal ? 'h-48 w-full' : 'aspect-[4/3] w-full'} flex-col gap-4 px-4`}
-			>
+			<div className="flex h-48 w-full flex-col items-center justify-center gap-4 rounded-md bg-muted/40 px-4">
 				{React.createElement(libraryFileIcon(file.name), {
 					className: 'size-10 text-muted-foreground',
 				})}

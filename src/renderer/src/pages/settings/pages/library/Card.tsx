@@ -37,7 +37,7 @@ export function LibraryCard({
 				<LibraryPreview file={file} />
 			</button>
 			<div className="flex min-w-0 items-start gap-2 px-1 pb-1 pt-3">
-				<div className="min-w-0 flex-1">
+				<button type="button" className="min-w-0 flex-1 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('settings.library.previewFile', { name: file.name })} onClick={() => onPreview(file)}>
 					<p className="truncate text-sm font-medium" title={file.name}>
 						{file.name}
 					</p>
@@ -48,7 +48,7 @@ export function LibraryCard({
 						<span>{formatLibraryFileSize(file.size)}</span> ·{' '}
 						<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 					</p>
-				</div>
+				</button>
 				<Button
 					variant="ghost"
 					size="icon-xs"
