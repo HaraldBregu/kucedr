@@ -21,9 +21,9 @@ Learn enough to update:
 The application tells you which modules are missing and includes any existing
 content in your prompt. Do not call `get_identity`, `get_user`, or `get_soul`
 during bootstrap. Use `update_identity`, `update_user`, and `update_soul` to save
-the missing content after learning it from the user. Give `update_identity`
-structured identity fields, including a name and role. Pass complete Markdown
-content to `update_user` and `update_soul`. Preserve existing details that should remain.
+the missing content after learning it from the user. Give each update tool
+structured fields: identity needs a name and role, user needs a name, and soul
+needs a tone. Preserve existing details that should remain.
 Use these tools instead of editing the files directly.
 
 Optional: ask whether the user wants channel or integration setup later.

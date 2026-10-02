@@ -6,9 +6,10 @@ import { ensureWorkspaceFile } from './system_ensure_workspace_file';
 import { resolveWorkspacePath } from './system_resolve_workspace_path';
 
 export function ensureWorkspaceFiles(workspacePath: string): void {
-	// A missing USER.md marks a fresh workspace; BOOTSTRAP.md is only seeded then,
+	// Missing user settings and legacy content mark a fresh workspace; BOOTSTRAP.md is only seeded then,
 	// so deleting it after bootstrap completes is permanent.
 	const isFirstRun =
+		!existsSync(path.join(userDataLocation(), 'user', 'settings.json')) &&
 		!existsSync(resolveWorkspacePath(workspacePath, USER_FILE)) &&
 		!existsSync(path.join(userDataLocation(), 'user', 'USER.md'));
 	for (const filePath of WORKSPACE_FILES) {

@@ -216,10 +216,10 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 		titleKey: 'system',
 		icon: Settings,
 		tools: [
-			['Get soul', 'get_soul', 'Reads SOUL.md.'],
-			['Update soul', 'update_soul', 'Creates or replaces SOUL.md.'],
-			['Get user', 'get_user', 'Reads USER.md.'],
-			['Update user', 'update_user', 'Creates or replaces USER.md.'],
+			['Get soul', 'get_soul', 'Reads the assistant personality and interaction style.'],
+			['Update soul', 'update_soul', 'Updates the assistant soul with structured fields.'],
+			['Get user', 'get_user', 'Reads the user profile.'],
+			['Update user', 'update_user', 'Updates the user profile with structured fields.'],
 			['Get identity', 'get_identity', 'Reads the assistant identity.'],
 			[
 				'Update identity',
