@@ -151,7 +151,9 @@ it('shows media previews in both library views', async () => {
 		'local-resource://file/library/photo.png'
 	);
 	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[0]);
-	expect(within(screen.getByRole('dialog')).getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
+	expect(
+		within(screen.getByRole('dialog')).getByRole('img', { name: 'photo.png' })
+	).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
 	expect(screen.getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
@@ -162,7 +164,9 @@ it('shows media previews in both library views', async () => {
 	await user.keyboard('{Escape}');
 	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[2]);
 	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4').tagName).toBe('VIDEO');
-	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4')).toHaveAttribute('controls');
+	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4')).toHaveAttribute(
+		'controls'
+	);
 });
 
 it('opens the native file context menu and handles preview and delete', async () => {
@@ -172,10 +176,12 @@ it('opens the native file context menu and handles preview and delete', async ()
 	showContextMenu.mockResolvedValueOnce('preview').mockResolvedValueOnce('delete');
 	fireEvent.contextMenu(card);
 	await screen.findByRole('dialog');
-	expect(showContextMenu).toHaveBeenCalledWith(expect.arrayContaining([
-		expect.objectContaining({ id: 'preview' }),
-		expect.objectContaining({ id: 'delete' }),
-	]));
+	expect(showContextMenu).toHaveBeenCalledWith(
+		expect.arrayContaining([
+			expect.objectContaining({ id: 'preview' }),
+			expect.objectContaining({ id: 'delete' }),
+		])
+	);
 	await user.keyboard('{Escape}');
 	fireEvent.contextMenu(card);
 	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));

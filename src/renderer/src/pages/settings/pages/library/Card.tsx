@@ -37,7 +37,12 @@ export function LibraryCard({
 				<LibraryPreview file={file} />
 			</button>
 			<div className="flex min-w-0 items-start gap-2 px-1 pb-1 pt-3">
-				<button type="button" className="min-w-0 flex-1 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={t('settings.library.previewFile', { name: file.name })} onClick={() => onPreview(file)}>
+				<button
+					type="button"
+					className="min-w-0 flex-1 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					aria-label={t('settings.library.previewFile', { name: file.name })}
+					onClick={() => onPreview(file)}
+				>
 					<p className="truncate text-sm font-medium" title={file.name}>
 						{file.name}
 					</p>
