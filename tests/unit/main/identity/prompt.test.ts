@@ -80,6 +80,21 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(revised).not.toContain('Calm and direct');
 		expect(revised).not.toContain('Europe/Rome');
 		expect(await readFile(file, 'utf8')).toBe(revised);
+		await updateIdentity({
+			name: 'Alfred',
+			role: "Harald's personal butler and assistant",
+			vibe: 'Composed and precise',
+			metadata: '# Alfred\n\n**Name:** Alfred\n**Also addressed as:** "Sir Alfred"\n\n**Role:** Harald\'s butler and personal assistant\n\n**Vibe:** Composed and precise',
+		});
+		const deduplicated = await buildWorkspaceContext(config, 'full');
+		const identitySection = deduplicated.split('### IDENTITY\n')[1].split('\n\n### SOUL')[0];
+		expect(identitySection.match(/\*\*Name:\*\*/g)).toHaveLength(1);
+		expect(identitySection.match(/\*\*Role:\*\*/g)).toHaveLength(1);
+		expect(identitySection.match(/\*\*Vibe:\*\*/g)).toHaveLength(1);
+		expect(identitySection).toContain('**Also addressed as:** "Sir Alfred"');
+		expect(identitySection).not.toContain('# Alfred');
+		expect(identitySection).not.toContain('**Metadata:**');
+		expect(await readFile(file, 'utf8')).toBe(deduplicated);
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 		else process.env.KUCEDR_E2E_DATA_ROOT = previous;

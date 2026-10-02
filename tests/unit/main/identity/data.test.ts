@@ -30,6 +30,8 @@ it('stores structured identity only through updates and reads legacy identity wi
 		await rm(previousIdentity);
 		await writeFile(path.join(root, 'IDENTITY.md'), '# IDENTITY.md - Assistant Identity\n\n- **Name:** Legacy\n- **Vibe:** Thoughtful\n\nAdditional context.');
 		expect(await getIdentity(root)).toEqual({ name: 'Legacy', role: 'Assistant', vibe: 'Thoughtful', metadata: 'Additional context.' });
+		await writeFile(path.join(root, 'IDENTITY.md'), '# Alfred\n\n**Name:** Alfred\n**Role:** Butler\n**Vibe:** Composed\n**Also addressed as:** Sir Alfred');
+		expect(await getIdentity(root)).toMatchObject({ name: 'Alfred', role: 'Butler', vibe: 'Composed', metadata: expect.stringContaining('**Also addressed as:** Sir Alfred') });
 		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
 	} finally {
 		process.env.KUCEDR_E2E_DATA_ROOT = previous;
