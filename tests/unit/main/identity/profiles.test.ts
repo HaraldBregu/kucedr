@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { getSoulTool } from '../../../../src/main/agent/tools/soul/get';
@@ -32,6 +32,18 @@ it('creates soul and user profiles only through update tools', async () => {
 				readFile(path.join(workspace, `${name.toUpperCase()}.md`))
 			).rejects.toMatchObject({ code: 'ENOENT' });
 		}
+		await expect(updateSoulTool.run({ tone: '' })).rejects.toThrow();
+		await expect(updateUserTool.run({ name: '' })).rejects.toThrow();
+		const legacySoul = path.join(root, 'soul', 'SOUL.md');
+		const legacyUser = path.join(root, 'user', 'USER.md');
+		await writeFile(legacySoul, '# SOUL.md - Persona\n\nBe concise.');
+		await writeFile(legacyUser, '# USER.md - User Profile\n\n- **Name:** Alice\n- **What to call them:** Al\n\nRemember this.');
+		expect(await getSoulTool.run({})).toEqual({ tone: 'Be concise.' });
+		expect(await getUserTool.run({})).toEqual({ name: 'Alice', preferredName: 'Al', notes: 'Remember this.' });
+		await expect(readFile(path.join(root, 'soul', 'settings.json'))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(readFile(path.join(root, 'user', 'settings.json'))).rejects.toMatchObject({ code: 'ENOENT' });
+		await rm(legacySoul);
+		await rm(legacyUser);
 		await rm(bootstrap);
 		await updateUserTool.run({ name: 'Alice' });
 		workspacePath({ location: workspace });
