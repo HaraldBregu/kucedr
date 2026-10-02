@@ -67,6 +67,12 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		const other = await buildWorkspaceContext(config, 'core', '', 'other');
 		expect(other).not.toContain('## Tools loaded by default in ordinary text chat');
 		expect(await readFile(file, 'utf8')).toBe(next);
+		await updateIdentity({ name: 'Nova', role: 'Planner' });
+		const renamed = await buildWorkspaceContext(config, 'full');
+		expect(renamed).toContain('"name": "Nova"');
+		expect(renamed).toContain('"role": "Planner"');
+		expect(renamed).not.toContain('"name": "Kucedr"');
+		expect(await readFile(file, 'utf8')).toBe(renamed);
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 		else process.env.KUCEDR_E2E_DATA_ROOT = previous;
