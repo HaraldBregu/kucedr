@@ -101,6 +101,53 @@ export const NavigationBar = React.memo(function NavigationBar({
 				} />
 				<TooltipContent side="bottom">{homeLabel}</TooltipContent>
 			</Tooltip>
+			<DropdownMenu
+				onOpenChange={(open) => {
+					if (!open) return;
+					setChatSessionsLoading(true);
+					setChatSessionsLoadError(false);
+					void window.agent.listSessions().then(
+						(sessions) => setChatSessions(sessions),
+						() => setChatSessionsLoadError(true)
+					).finally(() => setChatSessionsLoading(false));
+				}}
+			>
+				<DropdownMenuTrigger asChild>
+					<Button type="button" variant="ghost" size="icon" className="size-8 rounded-full" aria-label={chatHistoryLabel}>
+						<ChevronDown className="size-4" strokeWidth={1.8} />
+					</Button>
+				</DropdownMenuTrigger>
+				<DropdownMenuContent align="start" className="max-h-80 w-72 overflow-y-auto">
+					<DropdownMenuLabel>{chatHistoryLabel}</DropdownMenuLabel>
+					<DropdownMenuSeparator />
+					{chatSessionsLoading ? (
+						<div className="px-2 py-3 text-sm text-muted-foreground">{t('settings.chatHistory.loading')}</div>
+					) : chatSessionsLoadError ? (
+						<div className="px-2 py-3 text-sm text-muted-foreground">{t('settings.chatHistory.errors.load')}</div>
+					) : chatSessions.length === 0 ? (
+						<div className="px-2 py-3 text-sm text-muted-foreground">{t('settings.chatHistory.empty')}</div>
+					) : chatSessions.map((session) => {
+						const title = session.title.trim() || t('settings.chatHistory.untitled');
+						const isActiveSession = session.id === activeChatSessionId;
+						return (
+							<DropdownMenuItem
+								key={session.id}
+								className={isActiveSession ? 'bg-accent text-accent-foreground' : undefined}
+								onSelect={() => {
+									setSessionId(session.id);
+								setSessionTitle?.(title, session.id);
+								navigate('/home');
+								window.requestAnimationFrame(() =>
+									window.dispatchEvent(new Event('kucedr:focus-chat-input'))
+								);
+								}}
+							>
+								<span className="truncate">{title}</span>
+							</DropdownMenuItem>
+						);
+					})}
+				</DropdownMenuContent>
+			</DropdownMenu>
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
