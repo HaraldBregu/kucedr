@@ -150,7 +150,7 @@ it('shows media previews in both library views', async () => {
 		'src',
 		'local-resource://file/library/photo.png'
 	);
-	await user.click(screen.getByRole('button', { name: 'settings.library.previewFile' }).closest('article')!.querySelector('button')!);
+	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[0]);
 	expect(within(screen.getByRole('dialog')).getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
