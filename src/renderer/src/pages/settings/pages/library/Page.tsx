@@ -262,7 +262,12 @@ const LibraryPage: React.FC = () => {
 					</SettingsPanel>
 				</div>
 			</SettingsSection>
-			<LibraryModal file={previewFile} files={files} onClose={() => setPreviewFile(null)} onNavigate={setPreviewFile} />
+			<LibraryModal
+				file={previewFile}
+				files={files}
+				onClose={() => setPreviewFile(null)}
+				onNavigate={setPreviewFile}
+			/>
 		</SettingsPageShell>
 	);
 };

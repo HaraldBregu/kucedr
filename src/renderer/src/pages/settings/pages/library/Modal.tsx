@@ -40,7 +40,12 @@ export function LibraryModal({
 					className="sm:max-w-5xl"
 					onKeyDown={(event) => {
 						if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
-						if ((event.target as Element).closest('audio, video, iframe, input, textarea, [contenteditable="true"]')) return;
+						if (
+							(event.target as Element).closest(
+								'audio, video, iframe, input, textarea, [contenteditable="true"]'
+							)
+						)
+							return;
 						event.preventDefault();
 						const target = event.key === 'ArrowLeft' ? previous : next;
 						if (target) onNavigate(target);
@@ -60,11 +65,29 @@ export function LibraryModal({
 					</div>
 					{files.length > 1 && (
 						<div className="flex items-center justify-center gap-3">
-							<Button variant="outline" size="icon-sm" aria-label={t('settings.library.previous')} disabled={!previous} onClick={() => { if (previous) onNavigate(previous); }}>
+							<Button
+								variant="outline"
+								size="icon-sm"
+								aria-label={t('settings.library.previous')}
+								disabled={!previous}
+								onClick={() => {
+									if (previous) onNavigate(previous);
+								}}
+							>
 								<ChevronLeft className="size-4" />
 							</Button>
-							<span className="min-w-12 text-center text-xs text-muted-foreground">{index + 1} / {files.length}</span>
-							<Button variant="outline" size="icon-sm" aria-label={t('settings.library.next')} disabled={!next} onClick={() => { if (next) onNavigate(next); }}>
+							<span className="min-w-12 text-center text-xs text-muted-foreground">
+								{index + 1} / {files.length}
+							</span>
+							<Button
+								variant="outline"
+								size="icon-sm"
+								aria-label={t('settings.library.next')}
+								disabled={!next}
+								onClick={() => {
+									if (next) onNavigate(next);
+								}}
+							>
 								<ChevronRight className="size-4" />
 							</Button>
 						</div>
