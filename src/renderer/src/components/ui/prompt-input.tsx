@@ -537,7 +537,7 @@ function PromptInput({
 														isLoading={isDictationMode ? false : isLoading}
 														fillActions={isDictationMode}
 													/>
-												}
+											}
 												expanded={!detached && isPromptExpanded}
 													className={inputClassName}
 												>
