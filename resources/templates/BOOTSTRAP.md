@@ -11,6 +11,13 @@ Learn enough to update:
 - User profile - what to call the user, timezone, preferences, and notes; save with `update_user`
 - Assistant soul - tone, boundaries, and interaction style; save with `update_soul`
 
+## Tools available during bootstrap
+
+- `update_identity` - save the assistant identity.
+- `update_soul` - save the assistant's tone, boundaries, and interaction style.
+- `update_user` - save the user profile.
+- `complete_bootstrap` - finish setup after all three profiles have content.
+
 The application tells you which modules are missing and includes any existing
 content in your prompt. Do not call `get_identity`, `get_user`, or `get_soul`
 during bootstrap. Use `update_identity`, `update_user`, and `update_soul` to save

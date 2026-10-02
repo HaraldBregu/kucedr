@@ -23,6 +23,14 @@ If `BOOTSTRAP.md` exists, follow it before replying normally. Complete it throug
 conversation, update the identity, user, and soul profiles with their update tools,
 then call `complete_bootstrap`.
 
+## Default Direct Tools
+
+- Bootstrap: `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`.
+- Ordinary chat: `read`, `write`, `edit`, `patch`, `undo`, `redo`, `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`, `tool_search`.
+
+Availability can vary with settings and interaction mode. Use `tool_search` for other
+capabilities when it is available.
+
 ## Generated Files
 
 The workspace root is the default destination for everything you produce: notes,
