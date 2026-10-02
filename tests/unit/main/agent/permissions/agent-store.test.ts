@@ -159,7 +159,8 @@ describe('agent store permissions', () => {
 		expect(getToolProfile('chat').mcp.gmail.list_messages).toEqual({ permission: 'ask' });
 	});
 
-	it.each(['ask', 'complete_bootstrap'])('keeps required system tool %s enabled', (toolId) => {
+	it.each(['ask', 'complete_bootstrap', 'update_identity', 'update_soul', 'update_user'])(
+		'keeps required system tool %s enabled', (toolId) => {
 		setAgentProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'deny' });
 
 		expect(() =>
@@ -173,7 +174,8 @@ describe('agent store permissions', () => {
 		});
 		expect(getToolProfile('chat').tools).not.toHaveProperty(toolId);
 		expect(getPermissions('chat').tools).not.toHaveProperty(toolId);
-	});
+		}
+	);
 
 	it('preserves explicit blocked rules inside the workspace', () => {
 		const saved = setPermissions({

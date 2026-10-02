@@ -23,7 +23,13 @@ export interface AgentToolConfiguration {
 export type AgentToolReference =
 	{ kind: 'builtin'; id: string } | { kind: 'mcp'; serverId: string; toolName: string };
 
-export const REQUIRED_SYSTEM_TOOL_IDS = new Set(['ask', 'complete_bootstrap']);
+export const REQUIRED_SYSTEM_TOOL_IDS = new Set([
+	'ask',
+	'complete_bootstrap',
+	'update_identity',
+	'update_soul',
+	'update_user',
+]);
 
 export function isAgentToolConfigurable(tool: AgentToolReference): boolean {
 	return tool.kind !== 'builtin' || !REQUIRED_SYSTEM_TOOL_IDS.has(tool.id);
