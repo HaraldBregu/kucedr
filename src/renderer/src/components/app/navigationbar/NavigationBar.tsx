@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { House, Menu, Moon, PanelsTopLeft, Sun } from 'lucide-react';
+import { House, Menu, Moon, PanelsTopLeft, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -8,6 +8,7 @@ import { NavigationBarLeftContainer } from './NavigationBarLeftContainer';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts';
 import { NavigationBarProvider } from './context/NavigationBarContext';
+import { useCommandMenu } from '@/contexts/command-menu';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -49,6 +50,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
+	const { open: openCommandMenu } = useCommandMenu();
 
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
@@ -57,6 +59,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const workspaceLabel = t('navigationBar.space', 'Space');
 	const homeLabel = t('navigationBar.home', 'Home');
+	const searchLabel = t('navigationBar.search');
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
@@ -97,6 +100,21 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</Button>
 				} />
 				<TooltipContent side="bottom">{homeLabel}</TooltipContent>
+			</Tooltip>
+			<Tooltip>
+				<TooltipTrigger render={
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon"
+						className="size-8 rounded-full"
+						onClick={openCommandMenu}
+						aria-label={searchLabel}
+					>
+						<Search className="size-4" strokeWidth={1.8} />
+					</Button>
+				} />
+				<TooltipContent side="bottom">{searchLabel}</TooltipContent>
 			</Tooltip>
 		</>
 	) : null;
