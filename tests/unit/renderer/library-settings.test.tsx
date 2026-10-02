@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import LibraryPage from '../../../src/renderer/src/pages/settings/pages/library/Page';
 
@@ -14,6 +14,7 @@ const openRoot = jest.fn();
 const add = jest.fn();
 const select = jest.fn();
 const deleteFile = jest.fn();
+const showContextMenu = jest.fn();
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -31,6 +32,7 @@ beforeEach(() => {
 	add.mockResolvedValue([]);
 	select.mockResolvedValue([]);
 	deleteFile.mockResolvedValue(undefined);
+	showContextMenu.mockResolvedValue(null);
 	Object.defineProperty(window, 'library', {
 		configurable: true,
 		value: { list, getRoot, openRoot, add, select, delete: deleteFile },
@@ -39,6 +41,7 @@ beforeEach(() => {
 		configurable: true,
 		value: { getPathForFile: (file: File) => `/tmp/${file.name}` },
 	});
+	Object.defineProperty(window, 'win', { configurable: true, value: { showContextMenu } });
 	window.confirm = jest.fn(() => true);
 });
 
@@ -147,9 +150,31 @@ it('shows media previews in both library views', async () => {
 		'src',
 		'local-resource://file/library/photo.png'
 	);
-	expect(screen.getByLabelText('song.mp3').tagName).toBe('AUDIO');
-	expect(screen.getByLabelText('movie.mp4').tagName).toBe('VIDEO');
+	await user.click(screen.getByRole('button', { name: 'settings.library.previewFile' }).closest('article')!.querySelector('button')!);
+	expect(within(screen.getByRole('dialog')).getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
+	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
 	expect(screen.getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
-	expect(screen.getByLabelText('song.mp3')).toBeInTheDocument();
+	const song = screen.getAllByRole('button', { name: 'settings.library.previewFile' })[1];
+	await user.click(song);
+	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3').tagName).toBe('AUDIO');
+	await user.keyboard('{Escape}');
+	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[2]);
+	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4').tagName).toBe('VIDEO');
+});
+
+it('opens the native file context menu and handles preview and delete', async () => {
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	const card = (await screen.findByText('notes.txt')).closest('article')!;
+	showContextMenu.mockResolvedValueOnce('preview').mockResolvedValueOnce('delete');
+	fireEvent.contextMenu(card);
+	await screen.findByRole('dialog');
+	expect(showContextMenu).toHaveBeenCalledWith(expect.arrayContaining([
+		expect.objectContaining({ id: 'preview' }),
+		expect.objectContaining({ id: 'delete' }),
+	]));
+	await user.keyboard('{Escape}');
+	fireEvent.contextMenu(card);
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
 });
