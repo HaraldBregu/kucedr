@@ -404,7 +404,7 @@ describe('run stream system prompt', () => {
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(contextMessages[0]).toMatchObject({
 				role: 'user',
-				content: expect.stringContaining('### USER\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice'),
+				content: expect.stringContaining('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice'),
 			});
 			for (const name of ['AGENTS.md']) {
 				expect(contextMessages[0]?.content).toContain(`### ${name}`);

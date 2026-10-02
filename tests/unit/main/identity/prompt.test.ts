@@ -49,7 +49,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(complete).not.toContain('SOUL.md');
 		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, role, avatar, or identity.\n- **Name:** Kucedr\n- **Role:** Assistant\n- **Vibe:** Calm');
 		expect(complete).not.toContain('IDENTITY.md');
-		expect(complete).toContain('### USER\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome');
+		expect(complete).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
 		const voice = await buildWorkspaceContext(config, 'full', '', 'voice');
