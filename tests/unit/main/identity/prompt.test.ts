@@ -21,7 +21,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
 		expect(first).toContain('Missing profile content: identity, soul, user');
 		expect(first).not.toContain('Remembered preference');
-		await updateSoul('# SOUL.md - Persona\n\nUpdated soul instructions');
+		await updateSoul({ tone: 'Calm and direct', boundaries: 'Respect privacy' });
 		const partial = await buildWorkspaceContext(config);
 		expect(partial).toContain('Missing profile content: identity, user');
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
@@ -33,7 +33,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(bootstrap).toContain('`complete_bootstrap` - finish setup after all three profiles have content.');
 		expect(bootstrap).not.toContain('SOUL.md');
 		await updateIdentity({ name: 'Kucedr', role: 'Assistant', vibe: 'Calm' });
-		await updateUser('# USER.md - User Profile\n\n- **Name:** Alice');
+		await updateUser({ name: 'Alice', preferredName: 'Al', timezone: 'Europe/Rome' });
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(complete);
 		expect(complete).toContain('### Files\n- `read`\n- `write`\n- `edit`\n- `patch`\n- `undo`\n- `redo`');
@@ -45,11 +45,11 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		}
 		expect(complete).not.toContain('HEALTH.md');
 		expect(complete).not.toContain('Health checklists');
-		expect(complete).toContain('### SOUL\nUse `update_soul` to change the assistant\'s tone, boundaries, or interaction style.\nUpdated soul instructions');
+		expect(complete).toContain('### SOUL\nUse `update_soul` to change the assistant\'s tone, boundaries, or interaction style.\n- **Tone:** Calm and direct\n- **Boundaries:** Respect privacy');
 		expect(complete).not.toContain('SOUL.md');
-		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, role, avatar, or identity.\n{\n  "name": "Kucedr",\n  "role": "Assistant",\n  "vibe": "Calm"\n}');
+		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, role, avatar, or identity.\n- **Name:** Kucedr\n- **Role:** Assistant\n- **Vibe:** Calm');
 		expect(complete).not.toContain('IDENTITY.md');
-		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice');
+		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
 		const voice = await buildWorkspaceContext(config, 'full', '', 'voice');
@@ -58,7 +58,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(await readFile(file, 'utf8')).toContain('## Tools loaded by default in ordinary text chat');
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
-		expect(next).toContain('Updated soul instructions');
+		expect(next).toContain('Calm and direct');
 		expect(next).not.toContain('### BOOTSTRAP.md');
 		expect(next).not.toContain('Remembered preference');
 		const core = await buildWorkspaceContext(config, 'core', 'Private memory');
@@ -69,9 +69,8 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(await readFile(file, 'utf8')).toBe(next);
 		await updateIdentity({ name: 'Nova', role: 'Planner' });
 		const renamed = await buildWorkspaceContext(config, 'full');
-		expect(renamed).toContain('"name": "Nova"');
-		expect(renamed).toContain('"role": "Planner"');
-		expect(renamed).not.toContain('"name": "Kucedr"');
+		expect(renamed).toContain('- **Name:** Nova\n- **Role:** Planner');
+		expect(renamed).not.toContain('- **Name:** Kucedr');
 		expect(await readFile(file, 'utf8')).toBe(renamed);
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;

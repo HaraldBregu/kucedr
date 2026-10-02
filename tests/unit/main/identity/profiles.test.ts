@@ -14,29 +14,26 @@ it('creates soul and user profiles only through update tools', async () => {
 	try {
 		const workspace = workspacePath({ location: path.join(root, 'workspace') });
 		const bootstrap = path.join(workspace, 'BOOTSTRAP.md');
-		for (const name of ['identity', 'soul', 'user']) {
-			await expect(
-				readFile(path.join(root, name, `${name.toUpperCase()}.md`))
-			).rejects.toMatchObject({ code: 'ENOENT' });
-		}
-		for (const [name, get, update] of [
-			['soul', getSoulTool, updateSoulTool],
-			['user', getUserTool, updateUserTool],
+		for (const [name, get, update, settings] of [
+			['soul', getSoulTool, updateSoulTool, { tone: 'Calm', boundaries: 'Respect privacy' }],
+			['user', getUserTool, updateUserTool, { name: 'Alice', timezone: 'Europe/Rome' }],
 		] as const) {
-			const target = path.join(root, name, `${name.toUpperCase()}.md`);
-			expect(await get.run({})).toBe('');
+			const target = path.join(root, name, 'settings.json');
+			expect(await get.run({})).toBeNull();
 			await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
-			await update.run({ content: `# Updated ${name}` });
-			expect(await get.run({})).toBe(`# Updated ${name}`);
+			await update.run(settings);
+			expect(await get.run({})).toEqual(settings);
+			expect(JSON.parse(await readFile(target, 'utf8'))).toEqual(settings);
+			await expect(readFile(path.join(root, name, `${name.toUpperCase()}.md`))).rejects.toMatchObject({ code: 'ENOENT' });
 			await rm(target);
-			expect(await get.run({})).toBe('');
+			expect(await get.run({})).toBeNull();
 			await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
 			await expect(
 				readFile(path.join(workspace, `${name.toUpperCase()}.md`))
 			).rejects.toMatchObject({ code: 'ENOENT' });
 		}
 		await rm(bootstrap);
-		await updateUserTool.run({ content: '# User' });
+		await updateUserTool.run({ name: 'Alice' });
 		workspacePath({ location: workspace });
 		await expect(readFile(bootstrap)).rejects.toMatchObject({ code: 'ENOENT' });
 	} finally {
