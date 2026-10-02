@@ -17,6 +17,7 @@ const mockWrite = {
 	capability: { effects: ['write'] },
 	run: () => 'write',
 };
+const mockBuildWorkspaceContext = jest.fn(async () => '');
 
 jest.mock('../../../../src/main/agent/runner/run_builtin_tools', () => ({
 	builtinTools: () => [mockRead, mockWrite],
@@ -24,7 +25,7 @@ jest.mock('../../../../src/main/agent/runner/run_builtin_tools', () => ({
 jest.mock('../../../../src/main/agent/system', () => ({
 	buildSystemPrompt: async (_config: unknown, tools: Array<{ id: string }>) =>
 		`System tools: ${tools.map((tool) => tool.id).join(', ')}`,
-	buildWorkspaceContext: async () => '',
+	buildWorkspaceContext: (...args: unknown[]) => mockBuildWorkspaceContext(...args),
 }));
 jest.mock('../../../../src/main/agent/agent_store', () => ({
 	getPermissions: () => ({ tools: {} }),
@@ -81,4 +82,5 @@ it('starts voice with every eligible built-in tool', async () => {
 
 	expect(configuration.tools.map((tool) => tool.id)).toEqual(['read', 'write']);
 	expect(configuration.instructions).toContain('read, write');
+	expect(mockBuildWorkspaceContext).toHaveBeenCalledWith({ location: '/workspace' }, 'full', '', 'voice');
 });

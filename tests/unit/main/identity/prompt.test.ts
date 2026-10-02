@@ -52,6 +52,10 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
+		const voice = await buildWorkspaceContext(config, 'full', '', 'voice');
+		expect(voice).toContain('### SOUL');
+		expect(voice).not.toContain('## Tools loaded by default in ordinary text chat');
+		expect(await readFile(file, 'utf8')).toBe(complete);
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Updated soul instructions');
