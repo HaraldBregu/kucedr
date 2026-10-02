@@ -17,7 +17,7 @@ const mockWrite = {
 	capability: { effects: ['write'] },
 	run: () => 'write',
 };
-const mockBuildWorkspaceContext = jest.fn(async () => '');
+const mockBuildWorkspaceContext = jest.fn(async (..._args: unknown[]) => '');
 
 jest.mock('../../../../src/main/agent/runner/run_builtin_tools', () => ({
 	builtinTools: () => [mockRead, mockWrite],
