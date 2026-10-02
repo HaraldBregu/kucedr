@@ -28,7 +28,7 @@ export function LibraryCard({
 						{file.relativePath}
 					</p>
 					<p className="mt-1 text-xs text-muted-foreground">
-						{formatLibraryFileSize(file.size)} ·{' '}
+						<span>{formatLibraryFileSize(file.size)}</span> ·{' '}
 						<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 					</p>
 				</div>
