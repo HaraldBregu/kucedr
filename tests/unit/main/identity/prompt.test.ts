@@ -30,12 +30,14 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		await expect(completeBootstrapTool.run({})).rejects.toThrow('IDENTITY.md, USER.md');
 		expect(await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8')).toContain('First Run');
 		await updateIdentity('# Identity');
-		await updateUser('- **Name:** Alice');
+		await updateUser('# USER.md - User Profile\n\n- **Name:** Alice');
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(complete);
-		for (const name of ['SOUL', 'USER', 'IDENTITY', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
+		for (const name of ['SOUL', 'IDENTITY', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
 			expect(complete).toContain(`### ${name}.md`);
 		}
+		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice');
+		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
@@ -43,7 +45,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(next).not.toContain('### BOOTSTRAP.md');
 		expect(next).not.toContain('Remembered preference');
 		const core = await buildWorkspaceContext(config, 'core', 'Private memory');
-		expect(core).not.toContain('### USER.md');
+		expect(core).not.toContain('### User profile');
 		expect(core).not.toContain('Private memory');
 		expect(await readFile(file, 'utf8')).toBe(next);
 	} finally {
