@@ -101,6 +101,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				} />
 				<TooltipContent side="bottom">{homeLabel}</TooltipContent>
 			</Tooltip>
+			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
