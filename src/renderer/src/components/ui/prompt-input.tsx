@@ -535,9 +535,10 @@ function PromptInput({
 															) : trailingAction
 														}
 														isLoading={isDictationMode ? false : isLoading}
+														fillActions={isDictationMode}
 													/>
 												}
-													expanded={!detached && isPromptExpanded}
+												expanded={!detached && isPromptExpanded}
 													className={inputClassName}
 												>
 													{children}
