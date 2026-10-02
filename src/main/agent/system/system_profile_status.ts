@@ -9,7 +9,7 @@ export async function profileStatus(workspacePath: string) {
 		getUser(workspacePath),
 	]);
 	const profiles = [
-		['IDENTITY.md', identity],
+		['IDENTITY.md', identity ? JSON.stringify(identity, null, 2) : ''],
 		['SOUL.md', soul],
 		['USER.md', user],
 	] as const;
