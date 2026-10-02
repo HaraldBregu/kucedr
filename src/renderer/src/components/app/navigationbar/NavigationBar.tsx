@@ -57,33 +57,48 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const workspaceLabel = t('navigationBar.space', 'Space');
 	const homeLabel = t('navigationBar.home', 'Home');
-	const spaceButtonLabel = isWorkspace ? homeLabel : workspaceLabel;
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
 		{ path: '/settings/apps', label: t('settings.tabs.apps') },
 	];
 	const workspaceButton = showWorkspace ? (
-		<Tooltip>
-			<TooltipTrigger render={
-				<Button
-					type="button"
-					variant="secondary"
-					size="sm"
-					className="rounded-md text-xs"
-					onClick={() => navigate(isWorkspace ? '/home' : '/workspace')}
-					aria-label={spaceButtonLabel}
-				>
-					{isWorkspace ? (
-						<MessageCircle className="size-3.5" strokeWidth={1.8} />
-					) : (
+		<>
+			<Tooltip>
+				<TooltipTrigger render={
+					<Button
+						type="button"
+						variant={isWorkspace ? 'secondary' : 'ghost'}
+						size="sm"
+						className="rounded-md text-xs"
+						onClick={() => navigate('/workspace')}
+						aria-label={workspaceLabel}
+						aria-current={isWorkspace ? 'page' : undefined}
+					>
 						<Folder className="size-3.5" strokeWidth={1.8} />
-					)}
-					<span>{spaceButtonLabel}</span>
-				</Button>
-			} />
-			<TooltipContent side="bottom">{spaceButtonLabel}</TooltipContent>
-		</Tooltip>
+						<span>{workspaceLabel}</span>
+					</Button>
+				} />
+				<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
+			</Tooltip>
+			<Tooltip>
+				<TooltipTrigger render={
+					<Button
+						type="button"
+						variant={isHome ? 'secondary' : 'ghost'}
+						size="sm"
+						className="rounded-md text-xs"
+						onClick={() => navigate('/home')}
+						aria-label={homeLabel}
+						aria-current={isHome ? 'page' : undefined}
+					>
+						<MessageCircle className="size-3.5" strokeWidth={1.8} />
+						<span>{homeLabel}</span>
+					</Button>
+				} />
+				<TooltipContent side="bottom">{homeLabel}</TooltipContent>
+			</Tooltip>
+		</>
 	) : null;
 	return (
 		<NavigationBarProvider value={{ isMac, isFullScreen }}>
