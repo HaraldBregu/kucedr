@@ -242,13 +242,13 @@ it('limits both views to 48 files and loads the next batch on demand', async () 
 	list.mockResolvedValue(manyFiles);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
-	await screen.findByText('file-000.png');
+	await screen.findAllByText('file-000.png');
 	expect(document.querySelectorAll('article')).toHaveLength(48);
 	expect(screen.queryByText('file-048.png')).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
 	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(48);
 	await user.click(screen.getByRole('button', { name: 'settings.library.loadMore' }));
-	expect(await screen.findByText('file-049.png')).toBeInTheDocument();
+	expect(await screen.findAllByText('file-049.png')).toHaveLength(2);
 	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(50);
 	expect(
 		screen.queryByRole('button', { name: 'settings.library.loadMore' })
@@ -270,7 +270,7 @@ it('loads the next batch when the end of the visible files enters the viewport',
 	} as unknown as typeof IntersectionObserver;
 	try {
 		const { unmount } = render(<LibraryPage />);
-		await screen.findByText('file-000.png');
+		await screen.findAllByText('file-000.png');
 		expect(document.querySelectorAll('article')).toHaveLength(48);
 		expect(observe).toHaveBeenCalledTimes(1);
 		act(() =>
