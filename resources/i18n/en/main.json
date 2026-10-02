@@ -1648,6 +1648,8 @@
 			"list": "List",
 			"preview": "Preview",
 			"previewFile": "Preview {{name}}",
+			"previous": "Previous file",
+			"next": "Next file",
 			"contextMenuError": "Unable to open the file menu.",
 			"upload": "Upload file",
 			"uploading": "Uploading...",

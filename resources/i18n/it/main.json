@@ -1648,6 +1648,8 @@
 			"list": "Elenco",
 			"preview": "Anteprima",
 			"previewFile": "Anteprima di {{name}}",
+			"previous": "File precedente",
+			"next": "File successivo",
 			"contextMenuError": "Impossibile aprire il menu del file.",
 			"upload": "Carica file",
 			"uploading": "Caricamento...",
