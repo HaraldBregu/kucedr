@@ -23,7 +23,7 @@ If `BOOTSTRAP.md` exists, follow it before replying normally. Complete it throug
 conversation, update the identity, user, and soul profiles with their update tools,
 then call `complete_bootstrap`.
 
-## Tools Loaded by Default in Ordinary Chat
+## Tools Loaded by Default in Ordinary Text Chat
 
 ### Files
 - `read`
