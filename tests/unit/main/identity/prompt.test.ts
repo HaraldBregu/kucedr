@@ -21,12 +21,15 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
 		expect(first).toContain('Missing profile content: identity, soul, user');
 		expect(first).not.toContain('Remembered preference');
-		await updateSoul('Updated soul instructions');
+		await updateSoul('# SOUL.md - Persona\n\nUpdated soul instructions');
 		const partial = await buildWorkspaceContext(config);
 		expect(partial).toContain('Missing profile content: identity, user');
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
 		await expect(completeBootstrapTool.run({})).rejects.toThrow('Complete identity, user');
-		expect(await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8')).toContain('First Run');
+		const bootstrap = await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8');
+		expect(bootstrap).toContain('First Run');
+		expect(bootstrap).toContain('Assistant soul - tone, boundaries, and interaction style; save with `update_soul`');
+		expect(bootstrap).not.toContain('SOUL.md');
 		await updateIdentity('# IDENTITY.md - Assistant Identity\n\n- **Name:** Kucedr');
 		await updateUser('# USER.md - User Profile\n\n- **Name:** Alice');
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
@@ -35,6 +38,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 			expect(complete).toContain(`### ${name}.md`);
 		}
 		expect(complete).toContain('### SOUL\nUse `update_soul` to change the assistant\'s tone, boundaries, or interaction style.\nUpdated soul instructions');
+		expect(complete).not.toContain('SOUL.md');
 		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, avatar, or identity.\n- **Name:** Kucedr');
 		expect(complete).not.toContain('IDENTITY.md');
 		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice');
