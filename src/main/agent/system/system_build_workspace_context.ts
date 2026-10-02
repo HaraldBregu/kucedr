@@ -33,7 +33,7 @@ export async function buildWorkspaceContext(
 		.filter(([, content]) => content.trim())
 		.map(([name, content]) =>
 			name === 'USER.md'
-				? `### USER\nUse \`update_user\` to change the user's name or preferences.\n${content.trim().replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '').trim()}`
+				? `### USER\nUse \`update_user\` to change the user's name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n${content.trim().replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: name === 'IDENTITY.md'
 					? `### IDENTITY\nUse \`update_identity\` to change the assistant's name, role, avatar, or identity.\n${content.trim().replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: name === 'SOUL.md'

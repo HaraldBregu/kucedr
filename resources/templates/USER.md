@@ -4,7 +4,7 @@
 - **What to call them:**
 - **Pronouns:**
 - **Timezone:**
-- **Projects:**
+- **Projects the user chose to share:**
 - **Preferences:**
 
 Update this as the user shares durable preferences. Keep it useful, not invasive.
