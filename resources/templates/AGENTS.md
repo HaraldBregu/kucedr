@@ -15,7 +15,6 @@ follow-up read.
 - Assistant soul - persona, tone, and interaction style; update with `update_soul`
 - Assistant identity - name, avatar, vibe, and metadata; update with `update_identity`
 - User profile and preferences - update with `update_user`
-- `HEALTH.md` - proactive or periodic task guidance
 - `BOOTSTRAP.md` - one-time onboarding workflow
 
 ## Bootstrap
