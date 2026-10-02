@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { House, Menu, Moon, PanelsTopLeft, Search, Sun } from 'lucide-react';
+import { Menu, MessageCircle, Moon, PanelsTopLeft, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -58,7 +58,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isSettings = location.pathname.startsWith('/settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
 	const workspaceLabel = t('navigationBar.space', 'Space');
-	const homeLabel = t('navigationBar.home', 'Home');
+	const homeLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search');
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
@@ -95,7 +95,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						aria-label={homeLabel}
 						aria-current={isHome ? 'page' : undefined}
 					>
-						<House className="size-3.5" strokeWidth={1.8} />
+						<MessageCircle className="size-3.5" strokeWidth={1.8} />
 						<span>{homeLabel}</span>
 					</Button>
 				} />
