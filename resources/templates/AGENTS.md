@@ -23,13 +23,28 @@ If `BOOTSTRAP.md` exists, follow it before replying normally. Complete it throug
 conversation, update the identity, user, and soul profiles with their update tools,
 then call `complete_bootstrap`.
 
-## Default Direct Tools
+## Tools Loaded by Default in Ordinary Chat
 
-- Bootstrap: `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`.
-- Ordinary chat: `read`, `write`, `edit`, `patch`, `undo`, `redo`, `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`, `tool_search`.
+### Files
+- `read`
+- `write`
+- `edit`
+- `patch`
+- `undo`
+- `redo`
 
-Availability can vary with settings and interaction mode. Use `tool_search` for other
-capabilities when it is available.
+### Profiles
+- `update_identity`
+- `update_soul`
+- `update_user`
+
+### Bootstrap
+- `complete_bootstrap`
+
+### Discovery
+- `tool_search`
+
+Settings and interaction mode can restrict the available tools.
 
 ## Generated Files
 

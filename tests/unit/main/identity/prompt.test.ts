@@ -36,8 +36,10 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		await updateUser('# USER.md - User Profile\n\n- **Name:** Alice');
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(complete);
-		expect(complete).toContain('- Bootstrap: `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`.');
-		expect(complete).toContain('- Ordinary chat: `read`, `write`, `edit`, `patch`, `undo`, `redo`, `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`, `tool_search`.');
+		expect(complete).toContain('### Files\n- `read`\n- `write`\n- `edit`\n- `patch`\n- `undo`\n- `redo`');
+		expect(complete).toContain('### Profiles\n- `update_identity`\n- `update_soul`\n- `update_user`');
+		expect(complete).toContain('### Bootstrap\n- `complete_bootstrap`');
+		expect(complete).toContain('### Discovery\n- `tool_search`');
 		for (const name of ['BOOTSTRAP', 'MEMORY']) {
 			expect(complete).toContain(`### ${name}.md`);
 		}
