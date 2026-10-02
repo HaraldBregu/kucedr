@@ -71,23 +71,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<TooltipTrigger render={
 					<Button
 						type="button"
-						variant={isWorkspace ? 'secondary' : 'ghost'}
-						size="sm"
-						className="rounded-md text-xs"
-						onClick={() => navigate('/workspace')}
-						aria-label={workspaceLabel}
-						aria-current={isWorkspace ? 'page' : undefined}
-					>
-						<PanelsTopLeft className="size-3.5" strokeWidth={1.8} />
-						<span>{workspaceLabel}</span>
-					</Button>
-				} />
-				<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
-			</Tooltip>
-			<Tooltip>
-				<TooltipTrigger render={
-					<Button
-						type="button"
 						variant={isHome ? 'secondary' : 'ghost'}
 						size="sm"
 						className="rounded-md text-xs"
@@ -100,6 +83,23 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</Button>
 				} />
 				<TooltipContent side="bottom">{homeLabel}</TooltipContent>
+			</Tooltip>
+			<Tooltip>
+				<TooltipTrigger render={
+					<Button
+						type="button"
+						variant={isWorkspace ? 'secondary' : 'ghost'}
+						size="sm"
+						className="rounded-md text-xs"
+						onClick={() => navigate('/workspace')}
+						aria-label={workspaceLabel}
+						aria-current={isWorkspace ? 'page' : undefined}
+					>
+						<PanelsTopLeft className="size-3.5" strokeWidth={1.8} />
+						<span>{workspaceLabel}</span>
+					</Button>
+				} />
+				<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
 			</Tooltip>
 			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
 			<Tooltip>
