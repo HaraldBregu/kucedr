@@ -45,6 +45,7 @@ beforeEach(() => {
 it('confirms and deletes a library file', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
+	await user.click(await screen.findByRole('button', { name: 'settings.library.list' }));
 
 	const deleteButton = await screen.findByRole('button', { name: 'settings.library.delete' });
 	const row = deleteButton.closest('[data-slot="item"]');
@@ -113,4 +114,21 @@ it('shows an empty state when the library has no files', async () => {
 	render(<LibraryPage />);
 
 	expect(await screen.findByText('library.empty')).toBeInTheDocument();
+});
+
+it('shows media previews in both library views', async () => {
+	list.mockResolvedValue([
+		{ name: 'photo.png', path: '/library/photo.png', relativePath: 'photo.png', size: 10, modifiedAt: '2026-09-29T10:00:00.000Z' },
+		{ name: 'song.mp3', path: '/library/song.mp3', relativePath: 'song.mp3', size: 10, modifiedAt: '2026-09-29T10:00:00.000Z' },
+		{ name: 'movie.mp4', path: '/library/movie.mp4', relativePath: 'movie.mp4', size: 10, modifiedAt: '2026-09-29T10:00:00.000Z' },
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+
+	expect(await screen.findByRole('img', { name: 'photo.png' })).toHaveAttribute('src', 'local-resource://file/library/photo.png');
+	expect(screen.getByLabelText('song.mp3').tagName).toBe('AUDIO');
+	expect(screen.getByLabelText('movie.mp4').tagName).toBe('VIDEO');
+	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
+	expect(screen.getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
+	expect(screen.getByLabelText('song.mp3')).toBeInTheDocument();
 });
