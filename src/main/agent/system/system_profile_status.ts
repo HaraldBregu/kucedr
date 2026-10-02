@@ -1,6 +1,6 @@
-import { getIdentity } from '../../identity';
-import { getSoul } from '../../soul';
-import { getUser } from '../../user';
+import { formatIdentity, getIdentity } from '../../identity';
+import { formatSoul, getSoul } from '../../soul';
+import { formatUser, getUser } from '../../user';
 
 export async function profileStatus(workspacePath: string) {
 	const [identity, soul, user] = await Promise.all([
@@ -9,9 +9,9 @@ export async function profileStatus(workspacePath: string) {
 		getUser(workspacePath),
 	]);
 	const profiles = [
-		['IDENTITY.md', identity ? JSON.stringify(identity, null, 2) : ''],
-		['SOUL.md', soul],
-		['USER.md', user],
+		['IDENTITY.md', identity ? formatIdentity(identity) : ''],
+		['SOUL.md', soul ? formatSoul(soul) : ''],
+		['USER.md', user ? formatUser(user) : ''],
 	] as const;
 	return {
 		profiles,
