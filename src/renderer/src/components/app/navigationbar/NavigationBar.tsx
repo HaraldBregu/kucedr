@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { Menu, MessageCircle, Moon, PanelsTopLeft, Search, Sun } from 'lucide-react';
+import { ChevronDown, Menu, MessageCircle, Moon, PanelsTopLeft, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -9,6 +9,17 @@ import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts';
 import { NavigationBarProvider } from './context/NavigationBarContext';
 import { useCommandMenu } from '@/contexts/command-menu';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useChatSession } from '@/contexts/chat-session';
+import { DEFAULT_CHAT_SESSION_ID } from '@/contexts/chat-session';
+import type { AgentSessionSummary } from '@/lib/compat';
 // import { NavigationButtons } from './components/NavigationButtons';
 import { WindowControls } from './components/WindowControls';
 import { useWindowState } from './hooks/useWindowState';
@@ -51,6 +62,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const location = useLocation();
 	const { isFullScreen, isMaximized } = useWindowState();
 	const { open: openCommandMenu } = useCommandMenu();
+	const { sessionId, setSessionId, setSessionTitle } = useChatSession();
+	const [chatSessions, setChatSessions] = useState<AgentSessionSummary[]>([]);
+	const [chatSessionsLoading, setChatSessionsLoading] = useState(false);
+	const [chatSessionsLoadError, setChatSessionsLoadError] = useState(false);
 
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
@@ -60,6 +75,8 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const workspaceLabel = t('navigationBar.space', 'Space');
 	const homeLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search');
+	const chatHistoryLabel = t('settings.chatHistory.title');
+	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	const navigationBarMenuItems = [
 		{ path: '/settings/settings', label: t('settings.tabs.settings') },
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
