@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Button } from '@/components/ui/button';
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
-import { libraryFileIcon } from './icon';
+import { LibraryPreview } from './Preview';
 import { formatLibraryFileSize } from './size';
 
 export function LibraryRow({
@@ -17,7 +17,6 @@ export function LibraryRow({
 	readonly onDelete: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
-	const FileIcon = libraryFileIcon(file.name);
 
 	return (
 		<Item
@@ -25,8 +24,8 @@ export function LibraryRow({
 			size="md"
 			className="flex-nowrap border-b border-border/60 px-5 py-4 last:border-b-0"
 		>
-			<ItemMedia variant="icon" className="size-8">
-				<FileIcon className="size-4.5" />
+			<ItemMedia variant="icon" className="h-auto w-auto bg-transparent">
+				<LibraryPreview file={file} compact />
 			</ItemMedia>
 			<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
 				<ItemTitle className="max-w-full truncate">{file.name}</ItemTitle>
