@@ -5,23 +5,26 @@ import { getIdentity, updateIdentity } from '../../../../src/main/identity';
 import { getIdentityTool } from '../../../../src/main/agent/tools/identity/get';
 import { updateIdentityTool } from '../../../../src/main/agent/tools/identity/update';
 
-it('creates identity only through update tools and leaves a missing identity absent', async () => {
+it('stores structured identity only through updates and reads legacy identity without creating settings', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-identity-'));
 	const previous = process.env.KUCEDR_E2E_DATA_ROOT;
 	process.env.KUCEDR_E2E_DATA_ROOT = root;
 	try {
-		const target = path.join(root, 'identity', 'IDENTITY.md');
-		expect(await getIdentityTool.run({})).toBe('');
+		const target = path.join(root, 'identity', 'settings.json');
+		expect(await getIdentityTool.run({})).toBeNull();
 		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
-		await updateIdentity('# My identity');
-		expect(await getIdentityTool.run({})).toBe('# My identity');
-		await updateIdentityTool.run({ content: '# Updated identity' });
-		expect(await getIdentity()).toBe('# Updated identity');
+		await updateIdentity({ name: 'Kucedr', role: 'Assistant', vibe: 'Calm' });
+		expect(await getIdentityTool.run({})).toEqual({ name: 'Kucedr', role: 'Assistant', vibe: 'Calm' });
+		await updateIdentityTool.run({ name: 'Kucedr', role: 'Research assistant', avatar: 'avatar.png' });
+		expect(await getIdentity()).toEqual({ name: 'Kucedr', role: 'Research assistant', avatar: 'avatar.png' });
+		expect(JSON.parse(await readFile(target, 'utf8'))).toEqual({ name: 'Kucedr', role: 'Research assistant', avatar: 'avatar.png' });
+		await expect(readFile(path.join(root, 'identity', 'IDENTITY.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(updateIdentityTool.run({ name: '', role: 'Assistant' })).rejects.toThrow();
 		await rm(target);
-		expect(await getIdentity()).toBe('');
+		expect(await getIdentity()).toBeNull();
 		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
-		await writeFile(path.join(root, 'IDENTITY.md'), '# Legacy identity');
-		expect(await getIdentity(root)).toBe('# Legacy identity');
+		await writeFile(path.join(root, 'IDENTITY.md'), '# IDENTITY.md - Assistant Identity\n\n- **Name:** Legacy\n- **Vibe:** Thoughtful\n\nAdditional context.');
+		expect(await getIdentity(root)).toEqual({ name: 'Legacy', role: 'Assistant', vibe: 'Thoughtful', metadata: 'Additional context.' });
 		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
 	} finally {
 		process.env.KUCEDR_E2E_DATA_ROOT = previous;
