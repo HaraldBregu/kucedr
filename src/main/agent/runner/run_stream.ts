@@ -396,7 +396,10 @@ async function* loop(
 			const workspaceContext = await buildWorkspaceContext(
 				config,
 				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core',
-				memoryContext
+				memoryContext,
+				session.category === 'main' && input.agentId === 'main' && input.interactionMode !== 'plan'
+					? 'text'
+					: 'other'
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			const runtimeContext = activeGoalContext;

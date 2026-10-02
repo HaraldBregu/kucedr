@@ -9,7 +9,7 @@ export async function buildWorkspaceContext(
 	config: Config,
 	scope: 'full' | 'core' = 'full',
 	memory = '',
-	audience: 'text' | 'voice' = 'text'
+	audience: 'text' | 'voice' | 'other' = 'text'
 ): Promise<string> {
 	const resolvedWorkspacePath = path.resolve(config.location);
 	const { profiles, missing } = await profileStatus(resolvedWorkspacePath);
@@ -74,5 +74,5 @@ Settings and interaction mode can restrict the available tools.`;
 		await mkdir(resolvedWorkspacePath, { recursive: true });
 		await atomicWrite(path.join(resolvedWorkspacePath, 'AGENTS.md'), generated);
 	}
-	return audience === 'voice' ? `${introduction}${sections.join('\n\n')}\n` : generated;
+	return audience === 'text' ? generated : `${introduction}${sections.join('\n\n')}\n`;
 }

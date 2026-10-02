@@ -64,6 +64,8 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		const core = await buildWorkspaceContext(config, 'core', 'Private memory');
 		expect(core).not.toContain('### User profile');
 		expect(core).not.toContain('Private memory');
+		const other = await buildWorkspaceContext(config, 'core', '', 'other');
+		expect(other).not.toContain('## Tools loaded by default in ordinary text chat');
 		expect(await readFile(file, 'utf8')).toBe(next);
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
