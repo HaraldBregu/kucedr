@@ -130,7 +130,7 @@ describe('agent filesystem prompt', () => {
 		const context = await buildWorkspaceContext({ location: root });
 
 		expect(prompt).not.toContain('Alice');
-		expect(context).toContain('Missing profile content: IDENTITY.md, SOUL.md');
+		expect(context).toContain('Missing profile content: identity, soul');
 		expect(context).toContain('- **Name:** Alice');
 	});
 });

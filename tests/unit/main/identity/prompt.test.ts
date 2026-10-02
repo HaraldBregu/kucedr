@@ -19,23 +19,22 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		await writeFile(file, 'Obsolete generated content');
 		const first = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
-		for (const name of ['SOUL', 'USER', 'IDENTITY']) {
-			expect(first).toContain(name + '.md');
-		}
+		expect(first).toContain('Missing profile content: identity, soul, user');
 		expect(first).not.toContain('Remembered preference');
 		await updateSoul('Updated soul instructions');
 		const partial = await buildWorkspaceContext(config);
-		expect(partial).toContain('IDENTITY.md, USER.md');
+		expect(partial).toContain('Missing profile content: identity, user');
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
-		await expect(completeBootstrapTool.run({})).rejects.toThrow('IDENTITY.md, USER.md');
+		await expect(completeBootstrapTool.run({})).rejects.toThrow('Complete identity, user');
 		expect(await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8')).toContain('First Run');
 		await updateIdentity('# IDENTITY.md - Assistant Identity\n\n- **Name:** Kucedr');
 		await updateUser('# USER.md - User Profile\n\n- **Name:** Alice');
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(complete);
-		for (const name of ['SOUL', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
+		for (const name of ['HEALTH', 'BOOTSTRAP', 'MEMORY']) {
 			expect(complete).toContain(`### ${name}.md`);
 		}
+		expect(complete).toContain('### SOUL\nUse `update_soul` to change the assistant\'s tone, boundaries, or interaction style.\nUpdated soul instructions');
 		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, avatar, or identity.\n- **Name:** Kucedr');
 		expect(complete).not.toContain('IDENTITY.md');
 		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice');
