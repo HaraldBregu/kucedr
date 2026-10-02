@@ -365,6 +365,7 @@ describe('run stream system prompt', () => {
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).toContain('- **Name:** Alice');
+			expect(systemPrompt).toContain('## Tools loaded by default in ordinary text chat');
 			expect(systemPrompt).toContain(await fs.readFile(path.join(root, 'AGENTS.md'), 'utf8'));
 			expect(contextMessages).toEqual([]);
 			expect(messages[0]).toEqual({ role: 'user', content: 'Current request' });
