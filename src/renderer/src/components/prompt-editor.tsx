@@ -58,17 +58,18 @@ function PromptEditor({
 	...props
 }: PromptEditorProps): ReactElement {
 	const [hasMultipleVisualLines, setHasMultipleVisualLines] = useState(false);
+	const autoExpand = expanded === undefined;
 
 	return (
 		<PromptInput
-			expanded={expanded || (value !== '' && hasMultipleVisualLines)}
+			expanded={expanded ?? (value !== '' && hasMultipleVisualLines)}
 			value={value}
 			{...props}
 		>
 			<PromptEditorArea
 				placeholder={placeholder}
 				ariaLabel={ariaLabel}
-				onVisualLineChange={expanded ? undefined : setHasMultipleVisualLines}
+				onVisualLineChange={autoExpand ? setHasMultipleVisualLines : undefined}
 				onPlanCommandChange={onPlanCommandChange}
 				onGoalCommandChange={onGoalCommandChange}
 			/>

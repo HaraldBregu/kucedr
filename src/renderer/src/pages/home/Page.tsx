@@ -711,6 +711,7 @@ function PageContent(): ReactElement {
 					placeholder={showEmptyConversation ? 'Ask anything' : 'Send follow-up'}
 					ariaLabel="Message your assistant"
 					value={agent.input}
+					expanded={false}
 					onValueChange={agent.setInput}
 					onPlanCommandChange={(active) => {
 						setPlanCommandActive(active);

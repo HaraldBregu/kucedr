@@ -513,6 +513,7 @@ function PromptInput({
 											{detached ? (
 												<PromptInputField
 													header={header}
+													className="h-[104px]"
 													controls={
 														<PromptInputControls
 															leadingAction={leadingAction}
