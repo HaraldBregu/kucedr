@@ -5,8 +5,7 @@ import { tool } from '../tool';
 export const updateUserTool = tool({
 	id: 'update_user',
 	name: 'Update user',
-	description:
-		'Create or replace USER.md in .kucedr/user/. Read the current content first to preserve information that should remain.',
-	inputSchema: z.object({ content: z.string().describe('Complete Markdown content for USER.md.') }),
+	description: 'Update the user profile. Include any existing details that should remain.',
+	inputSchema: z.object({ content: z.string().describe('Complete user profile, including details to preserve.') }),
 	execute: ({ content }) => updateUser(content),
 });

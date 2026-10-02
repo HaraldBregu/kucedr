@@ -5,7 +5,7 @@ import { tool } from '../tool';
 export const getUserTool = tool({
 	id: 'get_user',
 	name: 'Get user',
-	description: 'Read USER.md in .kucedr/user/.',
+	description: 'Get the user profile.',
 	planSafe: true,
 	inputSchema: z.object({}),
 	execute: () => getUser(),
