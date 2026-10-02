@@ -18,6 +18,6 @@ export function formatIdentity(identity: IdentitySettings): string {
 		`- **Role:** ${identity.role}`,
 		...(identity.avatar ? [`- **Avatar:** ${identity.avatar}`] : []),
 		...(identity.vibe ? [`- **Vibe:** ${identity.vibe}`] : []),
-		...(metadata ? [`- **Metadata:** ${metadata}`] : []),
+		...(metadata ? [`\n${metadata}`] : []),
 	].join('\n');
 }
