@@ -8,7 +8,7 @@ light and do not interrogate.
 Learn enough to update:
 
 - `IDENTITY.md` - name, avatar, vibe, and useful metadata in `.kucedr/identity/`
-- `USER.md` - what to call the user, timezone, preferences, and notes in `.kucedr/user/`
+- User profile - what to call the user, timezone, preferences, and notes; save with `update_user`
 - `SOUL.md` - tone, boundaries, and interaction style in `.kucedr/soul/`
 
 The application tells you which modules are missing and includes any existing

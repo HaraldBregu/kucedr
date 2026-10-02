@@ -32,7 +32,11 @@ export async function buildWorkspaceContext(
 	const sections = files
 		.filter(([name]) => scope === 'full' || (name !== 'BOOTSTRAP.md' && name !== 'USER.md'))
 		.filter(([, content]) => content.trim())
-		.map(([name, content]) => `### ${name}\n${content.trim()}`);
+		.map(([name, content]) =>
+			name === 'USER.md'
+				? `### User profile\nUse \`update_user\` to change the user's name or preferences.\n${content.trim().replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '').trim()}`
+				: `### ${name}\n${content.trim()}`
+		);
 	if (sections.length === 0) return '';
 	const generated = `# AGENTS.md
 Automatically generated from the application modules. Update the source modules using their update tools; do not edit this generated file. Memory is maintained by the memory module. Health checklists describe scheduled work and do not authorize executing it during unrelated requests.

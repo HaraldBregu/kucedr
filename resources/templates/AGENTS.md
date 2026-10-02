@@ -14,14 +14,14 @@ follow-up read.
 - `AGENTS.md` - operating rules and workspace behavior
 - `SOUL.md` - persona, tone, and interaction style
 - `IDENTITY.md` - assistant name, avatar, vibe, and metadata
-- `USER.md` - user profile and preferences
+- User profile and preferences - update with `update_user`
 - `HEALTH.md` - proactive or periodic task guidance
 - `BOOTSTRAP.md` - one-time onboarding workflow
 
 ## Bootstrap
 
 If `BOOTSTRAP.md` exists, follow it before replying normally. Complete it through
-conversation, update `IDENTITY.md`, `USER.md`, and `SOUL.md` with the file tools,
+conversation, update the identity, user, and soul profiles with their update tools,
 then call `complete_bootstrap`.
 
 ## Generated Files
