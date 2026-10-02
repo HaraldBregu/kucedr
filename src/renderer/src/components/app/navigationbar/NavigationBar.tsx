@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { Menu, MessageCircle, Moon, PanelsTopLeft, Sun } from 'lucide-react';
+import { House, Menu, Moon, PanelsTopLeft, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -92,7 +92,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						aria-label={homeLabel}
 						aria-current={isHome ? 'page' : undefined}
 					>
-						<MessageCircle className="size-3.5" strokeWidth={1.8} />
+						<House className="size-3.5" strokeWidth={1.8} />
 						<span>{homeLabel}</span>
 					</Button>
 				} />
