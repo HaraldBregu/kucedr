@@ -9,7 +9,7 @@ Learn enough to update:
 
 - Assistant identity - name, avatar, vibe, and useful metadata; save with `update_identity`
 - User profile - what to call the user, timezone, preferences, and notes; save with `update_user`
-- `SOUL.md` - tone, boundaries, and interaction style in `.kucedr/soul/`
+- Assistant soul - tone, boundaries, and interaction style; save with `update_soul`
 
 The application tells you which modules are missing and includes any existing
 content in your prompt. Do not call `get_identity`, `get_user`, or `get_soul`

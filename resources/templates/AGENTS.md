@@ -12,7 +12,7 @@ follow-up read.
 ## Canonical Startup Files
 
 - `AGENTS.md` - operating rules and workspace behavior
-- `SOUL.md` - persona, tone, and interaction style
+- Assistant soul - persona, tone, and interaction style; update with `update_soul`
 - Assistant identity - name, avatar, vibe, and metadata; update with `update_identity`
 - User profile and preferences - update with `update_user`
 - `HEALTH.md` - proactive or periodic task guidance
