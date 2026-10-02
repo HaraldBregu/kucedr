@@ -4,7 +4,7 @@ import { agentLocation } from '../shared/agent_location';
 import { userDataLocation } from '../shared/user_data_location';
 import { identitySchema, type IdentitySettings } from './schema';
 
-	export async function getIdentity(workspace = agentLocation()): Promise<IdentitySettings | null> {
+export async function getIdentity(workspace = agentLocation()): Promise<IdentitySettings | null> {
 	try {
 		return identitySchema.parse(JSON.parse(await readFile(path.join(userDataLocation(), 'identity', 'settings.json'), 'utf8')));
 	} catch (error) {

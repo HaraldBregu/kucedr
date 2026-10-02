@@ -220,11 +220,11 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 			['Update soul', 'update_soul', 'Creates or replaces SOUL.md.'],
 			['Get user', 'get_user', 'Reads USER.md.'],
 			['Update user', 'update_user', 'Creates or replaces USER.md.'],
-			['Get identity', 'get_identity', 'Reads the agent identity from IDENTITY.md.'],
+			['Get identity', 'get_identity', 'Reads the assistant identity.'],
 			[
 				'Update identity',
 				'update_identity',
-				'Creates or replaces the agent identity in IDENTITY.md.',
+				'Updates the assistant identity with structured fields.',
 			],
 			['Request user input', 'ask', 'Asks the user for information needed to continue.'],
 			['Complete bootstrap', 'complete_bootstrap', 'Marks initial agent setup as complete.'],
