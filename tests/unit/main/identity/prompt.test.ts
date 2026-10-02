@@ -33,7 +33,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(bootstrap).toContain('`complete_bootstrap` - finish setup after all three profiles have content.');
 		expect(bootstrap).not.toContain('SOUL.md');
 		await updateIdentity({ name: 'Kucedr', role: 'Assistant', vibe: 'Calm' });
-		await updateUser({ name: 'Alice', preferredName: 'Al', timezone: 'Europe/Rome' });
+		await updateUser({ name: 'Alice', preferredName: 'Al', timezone: 'Europe/Rome', projects: 'A personal history book Alice chose to share.' });
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(complete);
 		expect(complete).toContain('### Files\n- `read`\n- `write`\n- `edit`\n- `patch`\n- `undo`\n- `redo`');
@@ -49,7 +49,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(complete).not.toContain('SOUL.md');
 		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, role, avatar, or identity.\n- **Name:** Kucedr\n- **Role:** Assistant\n- **Vibe:** Calm');
 		expect(complete).not.toContain('IDENTITY.md');
-		expect(complete).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome');
+		expect(complete).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share.');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
 		const voice = await buildWorkspaceContext(config, 'full', '', 'voice');
@@ -79,6 +79,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(revised).toContain('- **Name:** Alice\n- **What to call them:** Allie');
 		expect(revised).not.toContain('Calm and direct');
 		expect(revised).not.toContain('Europe/Rome');
+		expect(revised).not.toContain('A personal history book');
 		expect(await readFile(file, 'utf8')).toBe(revised);
 		await updateIdentity({
 			name: 'Alfred',
