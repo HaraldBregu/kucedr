@@ -17,7 +17,13 @@ const deleteFile = jest.fn();
 const showContextMenu = jest.fn();
 const manyFiles = Array.from({ length: 50 }, (_, index) => {
 	const name = `file-${String(index).padStart(3, '0')}.png`;
-	return { name, path: `/library/${name}`, relativePath: name, size: 10, modifiedAt: '2026-09-29T10:00:00.000Z' };
+	return {
+		name,
+		path: `/library/${name}`,
+		relativePath: name,
+		size: 10,
+		modifiedAt: '2026-09-29T10:00:00.000Z',
+	};
 });
 
 beforeEach(() => {
@@ -244,7 +250,9 @@ it('limits both views to 48 files and loads the next batch on demand', async () 
 	await user.click(screen.getByRole('button', { name: 'settings.library.loadMore' }));
 	expect(await screen.findByText('file-049.png')).toBeInTheDocument();
 	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(50);
-	expect(screen.queryByRole('button', { name: 'settings.library.loadMore' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.library.loadMore' })
+	).not.toBeInTheDocument();
 });
 
 it('loads the next batch when the end of the visible files enters the viewport', async () => {
@@ -254,7 +262,9 @@ it('loads the next batch when the end of the visible files enters the viewport',
 	const observe = jest.fn();
 	const disconnect = jest.fn();
 	globalThis.IntersectionObserver = class {
-		constructor(callback: IntersectionObserverCallback) { notifyIntersection = callback; }
+		constructor(callback: IntersectionObserverCallback) {
+			notifyIntersection = callback;
+		}
 		observe = observe;
 		disconnect = disconnect;
 	} as unknown as typeof IntersectionObserver;
@@ -263,7 +273,12 @@ it('loads the next batch when the end of the visible files enters the viewport',
 		await screen.findByText('file-000.png');
 		expect(document.querySelectorAll('article')).toHaveLength(48);
 		expect(observe).toHaveBeenCalledTimes(1);
-		act(() => notifyIntersection?.([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver));
+		act(() =>
+			notifyIntersection?.(
+				[{ isIntersecting: true } as IntersectionObserverEntry],
+				{} as IntersectionObserver
+			)
+		);
 		await waitFor(() => expect(document.querySelectorAll('article')).toHaveLength(50));
 		expect(disconnect).toHaveBeenCalled();
 		unmount();

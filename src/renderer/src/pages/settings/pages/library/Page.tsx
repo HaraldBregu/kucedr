@@ -58,12 +58,16 @@ const LibraryPage: React.FC = () => {
 
 	useEffect(() => {
 		const target = loadMoreRef.current;
-		if (!target || visibleCount >= files.length || typeof IntersectionObserver === 'undefined') return;
-		const observer = new IntersectionObserver(([entry]) => {
-			if (entry.isIntersecting) {
-				setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length));
-			}
-		}, { rootMargin: '300px' });
+		if (!target || visibleCount >= files.length || typeof IntersectionObserver === 'undefined')
+			return;
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (entry.isIntersecting) {
+					setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length));
+				}
+			},
+			{ rootMargin: '300px' }
+		);
 		observer.observe(target);
 		return () => observer.disconnect();
 	}, [files.length, visibleCount, loading]);
@@ -265,21 +269,29 @@ const LibraryPage: React.FC = () => {
 								))}
 							</div>
 						) : (
-							files.slice(0, visibleCount).map((file) => (
-								<LibraryRow
-									key={file.relativePath}
-									file={file}
-									disabled={deletingPath === file.relativePath || uploading}
-									onDelete={(entry) => void handleDelete(entry)}
-									onPreview={setPreviewFile}
-									onContextMenu={handleContextMenu}
-								/>
-							))
+							files
+								.slice(0, visibleCount)
+								.map((file) => (
+									<LibraryRow
+										key={file.relativePath}
+										file={file}
+										disabled={deletingPath === file.relativePath || uploading}
+										onDelete={(entry) => void handleDelete(entry)}
+										onPreview={setPreviewFile}
+										onContextMenu={handleContextMenu}
+									/>
+								))
 						)}
 					</SettingsPanel>
 					{visibleCount < files.length && (
 						<div ref={loadMoreRef} className="flex justify-center py-4">
-							<Button variant="outline" size="sm" onClick={() => setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length))}>
+							<Button
+								variant="outline"
+								size="sm"
+								onClick={() =>
+									setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length))
+								}
+							>
 								{t('settings.library.loadMore')}
 							</Button>
 						</div>
