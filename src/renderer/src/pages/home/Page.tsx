@@ -739,6 +739,8 @@ function PageContent(): ReactElement {
 					voiceMuted={activeVoiceMuted}
 					voiceMediaStream={activeVoiceStream}
 					voiceAnalyser={null}
+					voiceStatus={activeDictationMode === 'record' ? 'Recording' : 'Listening'}
+					voiceWaveformActive={true}
 					onVoiceMutedChange={activeVoiceSetMuted}
 					onVoiceCancel={() => void cancelDictation()}
 					onVoiceConfirm={() => void confirmDictation()}

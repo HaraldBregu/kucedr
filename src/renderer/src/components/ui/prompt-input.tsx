@@ -379,7 +379,7 @@ function PromptInput({
 	const triggerFileUpload = () => fileInputRef.current?.click();
 	const currentValue = value ?? internalValue;
 	const hasAdaptiveLayout = Boolean(leadingAction || actions || trailingAction || voiceMode);
-	const detached = detachedControls && !voiceMode;
+	const detached = detachedControls;
 	const contentRef = useRef<HTMLDivElement>(null);
 	const [contentHeight, setContentHeight] = useState<number>();
 	const transition = usePromptInputTransition();
@@ -516,13 +516,28 @@ function PromptInput({
 													className="h-[104px]"
 													controls={
 														<PromptInputControls
-															leadingAction={leadingAction}
-															content={footerContent}
-															trailingAction={trailingAction}
-															isLoading={isLoading}
-														/>
-													}
-													expanded={isPromptExpanded}
+														leadingAction={isDictationMode ? undefined : leadingAction}
+														content={isDictationMode ? undefined : footerContent}
+														trailingAction={
+															isDictationMode ? (
+																<PromptInputVoicePanel
+																	mode="dictation"
+																	disabled={disabled || isLoading}
+																	elapsedMs={voiceElapsedMs}
+																	muted={voiceMuted}
+																	mediaStream={voiceMediaStream}
+																	analyser={voiceAnalyser}
+																	status={voiceStatus}
+																	waveformActive={voiceWaveformActive}
+																	onCancel={onVoiceCancel}
+																	onConfirm={onVoiceConfirm ?? onSubmit}
+																/>
+															) : trailingAction
+														}
+														isLoading={isDictationMode ? false : isLoading}
+													/>
+												}
+													expanded={!detached && isPromptExpanded}
 													className={inputClassName}
 												>
 													{children}
