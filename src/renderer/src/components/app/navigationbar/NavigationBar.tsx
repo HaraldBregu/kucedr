@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { ChevronDown, Menu, MessageCircle, Moon, PanelsTopLeft, Search, Sun } from 'lucide-react';
+import { ChevronDown, Menu, MessageCircle, Moon, PanelsTopLeft, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -76,6 +76,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const homeLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search');
 	const chatHistoryLabel = t('settings.chatHistory.title');
+	const newChatLabel = t('navigationBar.newChat', 'New chat');
 	const chatButtonVariant = isHome ? 'secondary' : 'ghost';
 	const activeChatSessionId = sessionId === DEFAULT_CHAT_SESSION_ID ? chatSessions[0]?.id : sessionId;
 	const navigationBarMenuItems = [
@@ -125,9 +126,24 @@ export const NavigationBar = React.memo(function NavigationBar({
 							<ChevronDown className="size-4" strokeWidth={1.8} />
 						</Button>
 					</DropdownMenuTrigger>
-					<DropdownMenuContent align="end" side="bottom" className="max-h-80 w-72 overflow-y-auto">
+					<DropdownMenuContent align="end" side="bottom" className="w-72 overflow-hidden">
 						<DropdownMenuLabel>{chatHistoryLabel}</DropdownMenuLabel>
+						<DropdownMenuItem
+							onSelect={() => {
+							const newSessionId = crypto.randomUUID();
+							setSessionId(newSessionId);
+							setSessionTitle?.(newChatLabel, newSessionId);
+							navigate('/home');
+							window.requestAnimationFrame(() =>
+								window.dispatchEvent(new Event('kucedr:focus-chat-input'))
+							);
+						}}
+						>
+							<Plus />
+							{newChatLabel}
+						</DropdownMenuItem>
 						<DropdownMenuSeparator />
+						<div className="max-h-56 overflow-y-auto">
 						{chatSessionsLoading ? (
 							<div className="px-2 py-3 text-sm text-muted-foreground">
 								{t('settings.chatHistory.loading')}
@@ -157,9 +173,10 @@ export const NavigationBar = React.memo(function NavigationBar({
 									}}
 								>
 									<span className="truncate">{title}</span>
-								</DropdownMenuItem>
+							</DropdownMenuItem>
 							);
 						})}
+						</div>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</ButtonGroup>
