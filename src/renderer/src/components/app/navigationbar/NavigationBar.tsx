@@ -92,7 +92,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 							type="button"
 							variant={chatButtonVariant}
 							size="sm"
-							className="rounded-r-none text-xs"
+							className="!rounded-r-none text-xs"
 							onClick={() => navigate('/home')}
 							aria-label={homeLabel}
 							aria-current={isHome ? 'page' : undefined}
@@ -118,8 +118,8 @@ export const NavigationBar = React.memo(function NavigationBar({
 						<Button
 							type="button"
 							variant={chatButtonVariant}
-							size="icon"
-							className="size-8 rounded-l-none border-l-0"
+							size="icon-sm"
+							className="!rounded-l-none border-l-0"
 							aria-label={chatHistoryLabel}
 						>
 							<ChevronDown className="size-4" strokeWidth={1.8} />
