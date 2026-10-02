@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState, type DragEvent } from 'react';
-import { AlertTriangle, FolderOpen, Library, Upload } from 'lucide-react';
+import { AlertTriangle, FolderOpen, LayoutGrid, Library, List, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -14,10 +15,12 @@ import {
 	SettingsSection,
 } from '../../components';
 import { LibraryRow } from './Row';
+import { LibraryCard } from './Card';
 
 const LibraryPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [files, setFiles] = useState<LibraryFile[]>([]);
+	const [view, setView] = useState<'collections' | 'list'>('collections');
 	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
@@ -109,7 +112,7 @@ const LibraryPage: React.FC = () => {
 	);
 
 	return (
-		<SettingsPageShell>
+		<SettingsPageShell className="max-w-none">
 			<SettingsPageHeader
 				title={t('library.title')}
 				description={t('settings.library.description')}
@@ -138,7 +141,22 @@ const LibraryPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			<SettingsSection title={t('settings.library.files')} description={root || undefined}>
+			<SettingsSection
+				title={t('settings.library.files')}
+				description={root || undefined}
+				action={
+					<ToggleGroup type="single" value={view} onValueChange={(value) => {
+						if (value === 'collections' || value === 'list') setView(value);
+					}} variant="outline" size="sm" aria-label={t('settings.library.view')}>
+						<ToggleGroupItem value="collections" aria-label={t('settings.library.collections')}>
+							<LayoutGrid className="size-4" />{t('settings.library.collections')}
+						</ToggleGroupItem>
+						<ToggleGroupItem value="list" aria-label={t('settings.library.list')}>
+							<List className="size-4" />{t('settings.library.list')}
+						</ToggleGroupItem>
+					</ToggleGroup>
+				}
+			>
 				<div
 					role="region"
 					aria-label={t('settings.library.dropZone')}
@@ -160,7 +178,7 @@ const LibraryPage: React.FC = () => {
 					}}
 					onDrop={(event) => void handleDrop(event)}
 				>
-					<SettingsPanel>
+					<SettingsPanel className={view === 'collections' && !loading && files.length > 0 ? 'border-0 bg-transparent shadow-none' : undefined}>
 						{dragging && (
 							<div className="flex items-center justify-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3 text-xs font-medium text-foreground">
 								<Upload className="size-3.5" />
@@ -175,6 +193,12 @@ const LibraryPage: React.FC = () => {
 								title={t('library.empty')}
 								description={t('settings.library.emptyDescription')}
 							/>
+						) : view === 'collections' ? (
+							<div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-4">
+								{files.map((file) => (
+									<LibraryCard key={file.relativePath} file={file} disabled={deletingPath === file.relativePath || uploading} onDelete={(entry) => void handleDelete(entry)} />
+								))}
+							</div>
 						) : (
 							files.map((file) => (
 								<LibraryRow

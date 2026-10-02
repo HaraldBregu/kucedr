@@ -1643,6 +1643,9 @@
 		"library": {
 			"description": "Sfoglia tutti i file archiviati nella libreria locale di Kucedr.",
 			"files": "File",
+			"view": "Vista libreria",
+			"collections": "Raccolte",
+			"list": "Elenco",
 			"upload": "Carica file",
 			"uploading": "Caricamento...",
 			"drop": "Rilascia i file per caricarli",

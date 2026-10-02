@@ -1643,6 +1643,9 @@
 		"library": {
 			"description": "Browse every file stored in Kucedr's local library.",
 			"files": "Files",
+			"view": "Library view",
+			"collections": "Collections",
+			"list": "List",
 			"upload": "Upload file",
 			"uploading": "Uploading...",
 			"drop": "Drop files to upload",
