@@ -545,7 +545,10 @@ describe('run stream system prompt', () => {
 				{ sandbox }
 			)) void event;
 			const tools = runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>;
-			expect(tools.map((tool) => tool.id)).toEqual(expect.arrayContaining(['update_identity', 'update_soul', 'update_user']));
+			expect(tools.map((tool) => tool.id)).toEqual(expect.arrayContaining([
+				'read', 'write', 'edit', 'patch', 'undo', 'redo',
+				'update_identity', 'update_soul', 'update_user', 'complete_bootstrap', 'tool_search',
+			]));
 		} finally {
 			if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 			else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;

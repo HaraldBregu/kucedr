@@ -29,11 +29,15 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		const bootstrap = await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8');
 		expect(bootstrap).toContain('First Run');
 		expect(bootstrap).toContain('Assistant soul - tone, boundaries, and interaction style; save with `update_soul`');
+		expect(bootstrap).toContain('## Tools available during bootstrap');
+		expect(bootstrap).toContain('`complete_bootstrap` - finish setup after all three profiles have content.');
 		expect(bootstrap).not.toContain('SOUL.md');
 		await updateIdentity('# IDENTITY.md - Assistant Identity\n\n- **Name:** Kucedr');
 		await updateUser('# USER.md - User Profile\n\n- **Name:** Alice');
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(complete);
+		expect(complete).toContain('- Bootstrap: `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`.');
+		expect(complete).toContain('- Ordinary chat: `read`, `write`, `edit`, `patch`, `undo`, `redo`, `update_identity`, `update_soul`, `update_user`, `complete_bootstrap`, `tool_search`.');
 		for (const name of ['BOOTSTRAP', 'MEMORY']) {
 			expect(complete).toContain(`### ${name}.md`);
 		}
