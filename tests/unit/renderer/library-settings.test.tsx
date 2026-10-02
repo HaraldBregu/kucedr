@@ -194,3 +194,28 @@ it('opens the native context menu from a list row', async () => {
 	fireEvent.contextMenu(screen.getByText('notes.txt').closest('[data-slot="item"]')!);
 	await waitFor(() => expect(showContextMenu).toHaveBeenCalledTimes(1));
 });
+
+it('navigates the preview with buttons and arrow keys without wrapping', async () => {
+	list.mockResolvedValue(['first.png', 'second.png', 'third.png'].map((name) => ({
+		name,
+		path: `/library/${name}`,
+		relativePath: name,
+		size: 10,
+		modifiedAt: '2026-09-29T10:00:00.000Z',
+	})));
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await user.click((await screen.findAllByRole('button', { name: 'settings.library.previewFile' }))[0]);
+	const dialog = screen.getByRole('dialog');
+	expect(within(dialog).getByText('1 / 3')).toBeInTheDocument();
+	expect(within(dialog).getByRole('button', { name: 'settings.library.previous' })).toBeDisabled();
+	await user.click(within(dialog).getByRole('button', { name: 'settings.library.next' }));
+	expect(within(dialog).getByRole('img', { name: 'second.png' })).toBeInTheDocument();
+	fireEvent.keyDown(dialog, { key: 'ArrowRight' });
+	expect(within(dialog).getByRole('img', { name: 'third.png' })).toBeInTheDocument();
+	expect(within(dialog).getByRole('button', { name: 'settings.library.next' })).toBeDisabled();
+	fireEvent.keyDown(dialog, { key: 'ArrowRight' });
+	expect(within(dialog).getByText('3 / 3')).toBeInTheDocument();
+	fireEvent.keyDown(dialog, { key: 'ArrowLeft' });
+	expect(within(dialog).getByRole('img', { name: 'second.png' })).toBeInTheDocument();
+});
