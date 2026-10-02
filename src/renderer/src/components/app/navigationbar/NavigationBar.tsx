@@ -112,7 +112,13 @@ export const NavigationBar = React.memo(function NavigationBar({
 				}}
 			>
 				<DropdownMenuTrigger asChild>
-					<Button type="button" variant="ghost" size="icon" className="size-8 rounded-full" aria-label={chatHistoryLabel}>
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon"
+						className="size-8 rounded-full"
+						aria-label={chatHistoryLabel}
+					>
 						<ChevronDown className="size-4" strokeWidth={1.8} />
 					</Button>
 				</DropdownMenuTrigger>
@@ -120,11 +126,17 @@ export const NavigationBar = React.memo(function NavigationBar({
 					<DropdownMenuLabel>{chatHistoryLabel}</DropdownMenuLabel>
 					<DropdownMenuSeparator />
 					{chatSessionsLoading ? (
-						<div className="px-2 py-3 text-sm text-muted-foreground">{t('settings.chatHistory.loading')}</div>
+						<div className="px-2 py-3 text-sm text-muted-foreground">
+							{t('settings.chatHistory.loading')}
+						</div>
 					) : chatSessionsLoadError ? (
-						<div className="px-2 py-3 text-sm text-muted-foreground">{t('settings.chatHistory.errors.load')}</div>
+						<div className="px-2 py-3 text-sm text-muted-foreground">
+							{t('settings.chatHistory.errors.load')}
+						</div>
 					) : chatSessions.length === 0 ? (
-						<div className="px-2 py-3 text-sm text-muted-foreground">{t('settings.chatHistory.empty')}</div>
+						<div className="px-2 py-3 text-sm text-muted-foreground">
+							{t('settings.chatHistory.empty')}
+						</div>
 					) : chatSessions.map((session) => {
 						const title = session.title.trim() || t('settings.chatHistory.untitled');
 						const isActiveSession = session.id === activeChatSessionId;
@@ -134,11 +146,11 @@ export const NavigationBar = React.memo(function NavigationBar({
 								className={isActiveSession ? 'bg-accent text-accent-foreground' : undefined}
 								onSelect={() => {
 									setSessionId(session.id);
-								setSessionTitle?.(title, session.id);
-								navigate('/home');
-								window.requestAnimationFrame(() =>
-									window.dispatchEvent(new Event('kucedr:focus-chat-input'))
-								);
+									setSessionTitle?.(title, session.id);
+									navigate('/home');
+									window.requestAnimationFrame(() =>
+										window.dispatchEvent(new Event('kucedr:focus-chat-input'))
+									);
 								}}
 							>
 								<span className="truncate">{title}</span>
