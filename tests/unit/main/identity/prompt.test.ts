@@ -47,7 +47,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(complete).not.toContain('Health checklists');
 		expect(complete).toContain('### SOUL\nUse `update_soul` to change the assistant\'s tone, boundaries, or interaction style.\nUpdated soul instructions');
 		expect(complete).not.toContain('SOUL.md');
-		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, avatar, or identity.\n{\n  "name": "Kucedr",\n  "role": "Assistant",\n  "vibe": "Calm"\n}');
+		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, role, avatar, or identity.\n{\n  "name": "Kucedr",\n  "role": "Assistant",\n  "vibe": "Calm"\n}');
 		expect(complete).not.toContain('IDENTITY.md');
 		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice');
 		expect(complete).not.toContain('USER.md');

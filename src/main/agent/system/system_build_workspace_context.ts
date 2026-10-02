@@ -35,7 +35,7 @@ export async function buildWorkspaceContext(
 			name === 'USER.md'
 				? `### User profile\nUse \`update_user\` to change the user's name or preferences.\n${content.trim().replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: name === 'IDENTITY.md'
-					? `### IDENTITY\nUse \`update_identity\` to change the assistant's name, avatar, or identity.\n${content.trim().replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/i, '').trim()}`
+					? `### IDENTITY\nUse \`update_identity\` to change the assistant's name, role, avatar, or identity.\n${content.trim().replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: name === 'SOUL.md'
 					? `### SOUL\nUse \`update_soul\` to change the assistant's tone, boundaries, or interaction style.\n${content.trim().replace(/^#\s+SOUL\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: `### ${name}\n${content.trim()}`
