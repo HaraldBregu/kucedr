@@ -13,7 +13,7 @@ follow-up read.
 
 - `AGENTS.md` - operating rules and workspace behavior
 - `SOUL.md` - persona, tone, and interaction style
-- `IDENTITY.md` - assistant name, avatar, vibe, and metadata
+- Assistant identity - name, avatar, vibe, and metadata; update with `update_identity`
 - User profile and preferences - update with `update_user`
 - `HEALTH.md` - proactive or periodic task guidance
 - `BOOTSTRAP.md` - one-time onboarding workflow
