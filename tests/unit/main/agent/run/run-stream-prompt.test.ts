@@ -517,6 +517,40 @@ describe('run stream system prompt', () => {
 		}
 	});
 
+	it('exposes update_user directly after onboarding', async () => {
+		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-profile-tools-'));
+		const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
+		process.env.KUCEDR_E2E_DATA_ROOT = root;
+		try {
+			const workspace = path.join(root, 'workspace');
+			await fs.mkdir(workspace, { recursive: true });
+			await fs.writeFile(path.join(workspace, 'IDENTITY.md'), '# Identity');
+			await fs.writeFile(path.join(workspace, 'SOUL.md'), '# Soul');
+			await fs.writeFile(path.join(workspace, 'USER.md'), '- **Name:** Alice');
+			for await (const event of stream(
+				{ location: workspace },
+				createSessionState(),
+				{
+					runId: 'profile-tools',
+					task: 'chat',
+					message: 'Change my name',
+					model: 'test-model',
+					type: 'default',
+					agentId: 'main',
+					contextMode: 'workspace',
+				},
+				new AbortController().signal,
+				{ sandbox }
+			)) void event;
+			const tools = runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>;
+			expect(tools.map((tool) => tool.id)).toContain('update_user');
+		} finally {
+			if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
+			else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
+			await fs.rm(root, { recursive: true, force: true });
+		}
+	});
+
 	it.each(['minimal', 'workspace'] as const)('injects untrusted automatic memory into %s main chat', async (contextMode) => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
 		const session = createSessionState();
