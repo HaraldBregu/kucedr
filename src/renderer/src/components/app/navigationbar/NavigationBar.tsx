@@ -84,26 +84,31 @@ export const NavigationBar = React.memo(function NavigationBar({
 		{ path: '/settings/agent', label: t('settings.overview.groups.agent') },
 		{ path: '/settings/apps', label: t('settings.tabs.apps') },
 	];
+	const chatNavigationButton = (
+		<Button
+			type="button"
+			variant={chatButtonVariant}
+			size="sm"
+			className={isHome ? '!rounded-r-none text-xs' : 'rounded-md text-xs'}
+			onClick={() => navigate('/home')}
+			aria-label={homeLabel}
+			aria-current={isHome ? 'page' : undefined}
+		>
+			<MessageCircle className="size-3.5" strokeWidth={1.8} />
+			<span>{homeLabel}</span>
+		</Button>
+	);
+	const chatButtonTooltip = (
+		<Tooltip>
+			<TooltipTrigger render={chatNavigationButton} />
+			<TooltipContent side="bottom">{homeLabel}</TooltipContent>
+		</Tooltip>
+	);
 	const workspaceButton = showWorkspace ? (
 		<>
+			{isHome ? (
 			<ButtonGroup role="group" aria-label={homeLabel}>
-				<Tooltip>
-					<TooltipTrigger render={
-						<Button
-							type="button"
-							variant={chatButtonVariant}
-							size="sm"
-							className="!rounded-r-none text-xs"
-							onClick={() => navigate('/home')}
-							aria-label={homeLabel}
-							aria-current={isHome ? 'page' : undefined}
-						>
-							<MessageCircle className="size-3.5" strokeWidth={1.8} />
-							<span>{homeLabel}</span>
-						</Button>
-					} />
-					<TooltipContent side="bottom">{homeLabel}</TooltipContent>
-				</Tooltip>
+				{chatButtonTooltip}
 				<DropdownMenu
 					onOpenChange={(open) => {
 						if (!open) return;
@@ -183,6 +188,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</ButtonGroup>
+			) : chatButtonTooltip}
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
