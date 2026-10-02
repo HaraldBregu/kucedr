@@ -11,7 +11,6 @@ export function LibraryPreview({
 	readonly compact?: boolean;
 }): React.JSX.Element {
 	const url = libraryFileUrl(file.path);
-	const Icon = libraryFileIcon(file.name);
 	const frame = compact ? 'h-14 w-16 shrink-0' : 'aspect-[4/3] w-full';
 
 	if (/\.(png|jpe?g|gif|webp|bmp|svg|ico|avif)$/i.test(file.name)) {
@@ -40,7 +39,7 @@ export function LibraryPreview({
 			<div
 				className={`flex items-center justify-center rounded-md bg-muted/40 ${compact ? 'min-w-0 max-w-48 flex-1' : 'aspect-[4/3] w-full flex-col gap-4 px-4'}`}
 			>
-				{!compact && <Icon className="size-10 text-muted-foreground" />}
+				{!compact && React.createElement(libraryFileIcon(file.name), { className: 'size-10 text-muted-foreground' })}
 				<audio
 					src={url}
 					controls
@@ -65,7 +64,7 @@ export function LibraryPreview({
 		<div
 			className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}
 		>
-			<Icon className={compact ? 'size-6' : 'size-12'} />
+			{React.createElement(libraryFileIcon(file.name), { className: compact ? 'size-6' : 'size-12' })}
 		</div>
 	);
 }
