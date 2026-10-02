@@ -126,40 +126,40 @@ export const NavigationBar = React.memo(function NavigationBar({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="end" side="bottom" className="max-h-80 w-72 overflow-y-auto">
-					<DropdownMenuLabel>{chatHistoryLabel}</DropdownMenuLabel>
-					<DropdownMenuSeparator />
-					{chatSessionsLoading ? (
-						<div className="px-2 py-3 text-sm text-muted-foreground">
-							{t('settings.chatHistory.loading')}
-						</div>
-					) : chatSessionsLoadError ? (
-						<div className="px-2 py-3 text-sm text-muted-foreground">
-							{t('settings.chatHistory.errors.load')}
-						</div>
-					) : chatSessions.length === 0 ? (
-						<div className="px-2 py-3 text-sm text-muted-foreground">
-							{t('settings.chatHistory.empty')}
-						</div>
-					) : chatSessions.map((session) => {
-						const title = session.title.trim() || t('settings.chatHistory.untitled');
-						const isActiveSession = session.id === activeChatSessionId;
-						return (
-							<DropdownMenuItem
-								key={session.id}
-								className={isActiveSession ? 'bg-accent text-accent-foreground' : undefined}
-								onSelect={() => {
-									setSessionId(session.id);
-									setSessionTitle?.(title, session.id);
-									navigate('/home');
-									window.requestAnimationFrame(() =>
-										window.dispatchEvent(new Event('kucedr:focus-chat-input'))
-									);
-								}}
-							>
-								<span className="truncate">{title}</span>
-							</DropdownMenuItem>
-						);
-					})}
+						<DropdownMenuLabel>{chatHistoryLabel}</DropdownMenuLabel>
+						<DropdownMenuSeparator />
+						{chatSessionsLoading ? (
+							<div className="px-2 py-3 text-sm text-muted-foreground">
+								{t('settings.chatHistory.loading')}
+							</div>
+						) : chatSessionsLoadError ? (
+							<div className="px-2 py-3 text-sm text-muted-foreground">
+								{t('settings.chatHistory.errors.load')}
+							</div>
+						) : chatSessions.length === 0 ? (
+							<div className="px-2 py-3 text-sm text-muted-foreground">
+								{t('settings.chatHistory.empty')}
+							</div>
+						) : chatSessions.map((session) => {
+							const title = session.title.trim() || t('settings.chatHistory.untitled');
+							const isActiveSession = session.id === activeChatSessionId;
+							return (
+								<DropdownMenuItem
+									key={session.id}
+									className={isActiveSession ? 'bg-accent text-accent-foreground' : undefined}
+									onSelect={() => {
+										setSessionId(session.id);
+										setSessionTitle?.(title, session.id);
+										navigate('/home');
+										window.requestAnimationFrame(() =>
+											window.dispatchEvent(new Event('kucedr:focus-chat-input'))
+										);
+									}}
+								>
+									<span className="truncate">{title}</span>
+								</DropdownMenuItem>
+							);
+						})}
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</ButtonGroup>
