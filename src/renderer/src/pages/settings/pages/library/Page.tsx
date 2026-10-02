@@ -104,7 +104,7 @@ const LibraryPage: React.FC = () => {
 			try {
 				await window.library.delete(file.relativePath);
 				setFiles((current) => current.filter((entry) => entry.relativePath !== file.relativePath));
-				setPreviewFile((current) => current?.relativePath === file.relativePath ? null : current);
+				setPreviewFile((current) => (current?.relativePath === file.relativePath ? null : current));
 			} catch {
 				setErrorMessage(t('settings.library.deleteError'));
 			} finally {
@@ -114,18 +114,28 @@ const LibraryPage: React.FC = () => {
 		[t]
 	);
 
-	const handleContextMenu = useCallback((file: LibraryFile): void => {
-		void window.win.showContextMenu([
-			{ id: 'preview', label: t('settings.library.preview') },
-			{ id: 'open-folder', label: t('settings.library.openFolder') },
-			{ type: 'separator' },
-			{ id: 'delete', label: t('settings.library.delete', { name: file.name }), enabled: deletingPath !== file.relativePath && !uploading },
-		]).then((action) => {
-			if (action === 'preview') setPreviewFile(file);
-			else if (action === 'open-folder') void handleOpenFolder();
-			else if (action === 'delete') void handleDelete(file);
-		}).catch(() => setErrorMessage(t('settings.library.contextMenuError')));
-	}, [deletingPath, handleDelete, handleOpenFolder, t, uploading]);
+	const handleContextMenu = useCallback(
+		(file: LibraryFile): void => {
+			void window.win
+				.showContextMenu([
+					{ id: 'preview', label: t('settings.library.preview') },
+					{ id: 'open-folder', label: t('settings.library.openFolder') },
+					{ type: 'separator' },
+					{
+						id: 'delete',
+						label: t('settings.library.delete', { name: file.name }),
+						enabled: deletingPath !== file.relativePath && !uploading,
+					},
+				])
+				.then((action) => {
+					if (action === 'preview') setPreviewFile(file);
+					else if (action === 'open-folder') void handleOpenFolder();
+					else if (action === 'delete') void handleDelete(file);
+				})
+				.catch(() => setErrorMessage(t('settings.library.contextMenuError')));
+		},
+		[deletingPath, handleDelete, handleOpenFolder, t, uploading]
+	);
 
 	return (
 		<SettingsPageShell className="max-w-none">
