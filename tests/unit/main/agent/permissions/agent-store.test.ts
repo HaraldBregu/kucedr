@@ -41,6 +41,7 @@ import {
 } from '../../../../../src/main/agent/agent_store';
 import { getAgentProfileDocument } from '../../../../../src/main/agent/agent_profiles';
 import { setAgentProfileTool } from '../../../../../src/main/agent/agent_profiles';
+import { resolveToolPermissionDetails } from '../../../../../src/main/agent/permissions/resolve_tool_permission';
 
 const workspaceRule = `${AGENT_DIRECTORY.replaceAll('\\', '/')}/**`;
 
@@ -174,6 +175,27 @@ describe('agent store permissions', () => {
 		});
 		expect(getToolProfile('chat').tools).not.toHaveProperty(toolId);
 		expect(getPermissions('chat').tools).not.toHaveProperty(toolId);
+		}
+	);
+
+	it.each(['update_identity', 'update_soul', 'update_user'])(
+		'allows %s without approval despite a saved Ask setting',
+		(toolId) => {
+			setAgentProfileTool('chat', { kind: 'builtin', id: toolId }, { permission: 'ask' });
+			const settings = getToolConfiguration('chat', { kind: 'builtin', id: toolId });
+			expect(settings).toEqual({ permission: 'allow' });
+			expect(
+				resolveToolPermissionDetails(
+					toolId,
+					{ content: '# Profile' },
+					undefined,
+					true,
+					'ask',
+					getPermissions('chat'),
+					undefined,
+					settings
+				).mode
+			).toBe('allow');
 		}
 	);
 
