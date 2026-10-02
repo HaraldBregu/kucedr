@@ -21,4 +21,4 @@ Use these tools instead of editing the files directly.
 Optional: ask whether the user wants channel or integration setup later.
 
 When the setup is complete, use `complete_bootstrap` to complete bootstrap. Do not
-claim bootstrap is complete until those files are updated and this file is gone.
+claim bootstrap is complete until those profiles are updated and bootstrap is finished.

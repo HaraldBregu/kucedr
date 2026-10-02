@@ -19,9 +19,9 @@ export async function buildWorkspaceContext(
 		const bootstrap = await readBootstrap(resolvedWorkspacePath);
 		const existing = profiles
 			.filter(([, content]) => content.trim())
-			.map(([name, content]) => `### ${name}\n${content.trim()}`)
+			.map(([name, content]) => `### ${name === 'USER.md' ? 'User profile' : name.slice(0, -3)}\n${content.trim().replace(/^#\s+(?:IDENTITY|SOUL|USER)\.md[^\n]*(?:\n|$)/i, '').trim()}`)
 			.join('\n\n');
-		return `# Bootstrap\nComplete the assistant setup before ordinary chat. Missing profile content: ${missing.join(', ')}. The application checked these modules; do not call get_identity, get_soul, or get_user to discover what is missing. Use the update tools to save complete content for each missing module. Do not call complete_bootstrap until all three modules have content.\n\n${bootstrap}\n\n${existing}`;
+		return `# Bootstrap\nComplete the assistant setup before ordinary chat. Missing profile content: ${missing.map((name) => name.slice(0, -3).toLowerCase()).join(', ')}. The application checked these modules; do not call get_identity, get_soul, or get_user to discover what is missing. Use the update tools to save complete content for each missing module. Do not call complete_bootstrap until all three modules have content.\n\n${bootstrap}\n\n${existing}`;
 	}
 	const files = [
 		['BOOTSTRAP.md', await readBootstrap(resolvedWorkspacePath)],

@@ -14,7 +14,7 @@ export const completeBootstrapTool = tool({
 	execute: async () => {
 		const workspacePath = path.resolve(agentLocation());
 		const { missing } = await profileStatus(workspacePath);
-		if (missing.length > 0) throw new Error(`Complete ${missing.join(', ')} before finishing bootstrap.`);
+		if (missing.length > 0) throw new Error(`Complete ${missing.map((name) => name.slice(0, -3).toLowerCase()).join(', ')} before finishing bootstrap.`);
 		const bootstrapPath = path.join(workspacePath, BOOTSTRAP_FILE);
 		await fs.rm(bootstrapPath, { force: true });
 		return { completed: true };
