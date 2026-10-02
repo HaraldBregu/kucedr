@@ -404,7 +404,7 @@ describe('run stream system prompt', () => {
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(contextMessages[0]).toMatchObject({
 				role: 'user',
-				content: expect.stringContaining('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice'),
+				content: expect.stringContaining('### USER\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice'),
 			});
 			for (const name of ['AGENTS.md']) {
 				expect(contextMessages[0]?.content).toContain(`### ${name}`);
@@ -473,7 +473,7 @@ describe('run stream system prompt', () => {
 			const completePrompt = runModelTurnMock.mock.calls[0][3] as string;
 			expect(completePrompt).toContain('### IDENTITY');
 			expect(completePrompt).toContain('### SOUL');
-			expect(completePrompt).toContain('### User profile');
+			expect(completePrompt).toContain('### USER');
 			expect(completePrompt).not.toContain('### BOOTSTRAP.md');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });

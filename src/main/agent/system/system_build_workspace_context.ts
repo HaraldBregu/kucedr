@@ -19,7 +19,7 @@ export async function buildWorkspaceContext(
 		const bootstrap = await readBootstrap(resolvedWorkspacePath);
 		const existing = profiles
 			.filter(([, content]) => content.trim())
-			.map(([name, content]) => `### ${name === 'USER.md' ? 'User profile' : name.slice(0, -3)}\n${content.trim().replace(/^#\s+(?:IDENTITY|SOUL|USER)\.md[^\n]*(?:\n|$)/i, '').trim()}`)
+			.map(([name, content]) => `### ${name.slice(0, -3)}\n${content.trim().replace(/^#\s+(?:IDENTITY|SOUL|USER)\.md[^\n]*(?:\n|$)/i, '').trim()}`)
 			.join('\n\n');
 		return `# Bootstrap\nComplete the assistant setup before ordinary chat. Missing profile content: ${missing.map((name) => name.slice(0, -3).toLowerCase()).join(', ')}. The application checked these modules; do not call get_identity, get_soul, or get_user to discover what is missing. Use the update tools to save complete content for each missing module. Do not call complete_bootstrap until all three modules have content.\n\n${bootstrap}\n\n${existing}`;
 	}
@@ -33,7 +33,7 @@ export async function buildWorkspaceContext(
 		.filter(([, content]) => content.trim())
 		.map(([name, content]) =>
 			name === 'USER.md'
-				? `### User profile\nUse \`update_user\` to change the user's name or preferences.\n${content.trim().replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '').trim()}`
+				? `### USER\nUse \`update_user\` to change the user's name or preferences.\n${content.trim().replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: name === 'IDENTITY.md'
 					? `### IDENTITY\nUse \`update_identity\` to change the assistant's name, role, avatar, or identity.\n${content.trim().replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: name === 'SOUL.md'
