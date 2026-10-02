@@ -1650,6 +1650,7 @@
 			"previewFile": "Preview {{name}}",
 			"previous": "Previous file",
 			"next": "Next file",
+			"loadMore": "Load more files",
 			"contextMenuError": "Unable to open the file menu.",
 			"upload": "Upload file",
 			"uploading": "Uploading...",

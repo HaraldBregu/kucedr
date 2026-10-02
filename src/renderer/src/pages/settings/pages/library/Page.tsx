@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, type DragEvent } from 'react';
+import React, { useCallback, useEffect, useRef, useState, type DragEvent } from 'react';
 import { AlertTriangle, FolderOpen, LayoutGrid, Library, List, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
@@ -18,9 +18,13 @@ import { LibraryRow } from './Row';
 import { LibraryCard } from './Card';
 import { LibraryModal } from './Modal';
 
+const FILE_BATCH_SIZE = 48;
+
 const LibraryPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [files, setFiles] = useState<LibraryFile[]>([]);
+	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
+	const loadMoreRef = useRef<HTMLDivElement>(null);
 	const [view, setView] = useState<'collections' | 'list'>('collections');
 	const [previewFile, setPreviewFile] = useState<LibraryFile | null>(null);
 	const [root, setRoot] = useState('');
@@ -39,6 +43,7 @@ const LibraryPage: React.FC = () => {
 				window.library.getRoot(),
 			]);
 			setFiles(nextFiles);
+			setVisibleCount(FILE_BATCH_SIZE);
 			setRoot(nextRoot);
 		} catch {
 			setErrorMessage(t('settings.library.loadError'));
@@ -50,6 +55,18 @@ const LibraryPage: React.FC = () => {
 	useEffect(() => {
 		void loadFiles();
 	}, [loadFiles]);
+
+	useEffect(() => {
+		const target = loadMoreRef.current;
+		if (!target || visibleCount >= files.length || typeof IntersectionObserver === 'undefined') return;
+		const observer = new IntersectionObserver(([entry]) => {
+			if (entry.isIntersecting) {
+				setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length));
+			}
+		}, { rootMargin: '300px' });
+		observer.observe(target);
+		return () => observer.disconnect();
+	}, [files.length, visibleCount, loading]);
 
 	const handleOpenFolder = useCallback(async (): Promise<void> => {
 		setErrorMessage('');
@@ -236,7 +253,7 @@ const LibraryPage: React.FC = () => {
 							/>
 						) : view === 'collections' ? (
 							<div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-4">
-								{files.map((file) => (
+								{files.slice(0, visibleCount).map((file) => (
 									<LibraryCard
 										key={file.relativePath}
 										file={file}
@@ -248,7 +265,7 @@ const LibraryPage: React.FC = () => {
 								))}
 							</div>
 						) : (
-							files.map((file) => (
+							files.slice(0, visibleCount).map((file) => (
 								<LibraryRow
 									key={file.relativePath}
 									file={file}
@@ -260,6 +277,13 @@ const LibraryPage: React.FC = () => {
 							))
 						)}
 					</SettingsPanel>
+					{visibleCount < files.length && (
+						<div ref={loadMoreRef} className="flex justify-center py-4">
+							<Button variant="outline" size="sm" onClick={() => setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length))}>
+								{t('settings.library.loadMore')}
+							</Button>
+						</div>
+					)}
 				</div>
 			</SettingsSection>
 			<LibraryModal
