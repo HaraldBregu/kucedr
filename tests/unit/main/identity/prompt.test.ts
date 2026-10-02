@@ -29,13 +29,15 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
 		await expect(completeBootstrapTool.run({})).rejects.toThrow('IDENTITY.md, USER.md');
 		expect(await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8')).toContain('First Run');
-		await updateIdentity('# Identity');
+		await updateIdentity('# IDENTITY.md - Assistant Identity\n\n- **Name:** Kucedr');
 		await updateUser('# USER.md - User Profile\n\n- **Name:** Alice');
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(await readFile(file, 'utf8')).toBe(complete);
-		for (const name of ['SOUL', 'IDENTITY', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
+		for (const name of ['SOUL', 'HEALTH', 'BOOTSTRAP', 'MEMORY']) {
 			expect(complete).toContain(`### ${name}.md`);
 		}
+		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, avatar, or identity.\n- **Name:** Kucedr');
+		expect(complete).not.toContain('IDENTITY.md');
 		expect(complete).toContain('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');

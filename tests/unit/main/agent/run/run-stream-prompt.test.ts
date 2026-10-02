@@ -405,9 +405,10 @@ describe('run stream system prompt', () => {
 				role: 'user',
 				content: expect.stringContaining('### User profile\nUse `update_user` to change the user\'s name or preferences.\n- **Name:** Alice'),
 			});
-			for (const name of ['AGENTS.md', 'IDENTITY.md', 'SOUL.md']) {
+			for (const name of ['AGENTS.md', 'SOUL.md']) {
 				expect(contextMessages[0]?.content).toContain(`### ${name}`);
 			}
+			expect(contextMessages[0]?.content).toContain('### IDENTITY');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
@@ -468,7 +469,7 @@ describe('run stream system prompt', () => {
 
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
 			const completePrompt = runModelTurnMock.mock.calls[0][3] as string;
-			expect(completePrompt).toContain('### IDENTITY.md');
+			expect(completePrompt).toContain('### IDENTITY');
 			expect(completePrompt).toContain('### SOUL.md');
 			expect(completePrompt).toContain('### User profile');
 			expect(completePrompt).not.toContain('### BOOTSTRAP.md');
@@ -517,7 +518,7 @@ describe('run stream system prompt', () => {
 		}
 	});
 
-	it('exposes update_user directly after onboarding', async () => {
+	it('exposes identity and user update tools directly after onboarding', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-profile-tools-'));
 		const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
 		process.env.KUCEDR_E2E_DATA_ROOT = root;
@@ -543,7 +544,7 @@ describe('run stream system prompt', () => {
 				{ sandbox }
 			)) void event;
 			const tools = runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>;
-			expect(tools.map((tool) => tool.id)).toContain('update_user');
+			expect(tools.map((tool) => tool.id)).toEqual(expect.arrayContaining(['update_identity', 'update_user']));
 		} finally {
 			if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 			else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
@@ -643,7 +644,7 @@ describe('run stream system prompt', () => {
 			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
 			const workspaceContext = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### AGENTS.md'));
-			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### IDENTITY.md'));
+			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### IDENTITY'));
 			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### SOUL.md'));
 			expect(workspaceContext[0]?.content).not.toContain('### BOOTSTRAP.md');
 		} finally {
