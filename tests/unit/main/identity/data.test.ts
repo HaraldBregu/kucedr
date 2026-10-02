@@ -23,6 +23,11 @@ it('stores structured identity only through updates and reads legacy identity wi
 		await rm(target);
 		expect(await getIdentity()).toBeNull();
 		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
+		const previousIdentity = path.join(root, 'identity', 'IDENTITY.md');
+		await writeFile(previousIdentity, '# IDENTITY.md - Assistant Identity\n\n- **Name:** Previous\n- **Role:** Guide');
+		expect(await getIdentity()).toEqual({ name: 'Previous', role: 'Guide' });
+		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
+		await rm(previousIdentity);
 		await writeFile(path.join(root, 'IDENTITY.md'), '# IDENTITY.md - Assistant Identity\n\n- **Name:** Legacy\n- **Vibe:** Thoughtful\n\nAdditional context.');
 		expect(await getIdentity(root)).toEqual({ name: 'Legacy', role: 'Assistant', vibe: 'Thoughtful', metadata: 'Additional context.' });
 		await expect(readFile(target)).rejects.toMatchObject({ code: 'ENOENT' });
