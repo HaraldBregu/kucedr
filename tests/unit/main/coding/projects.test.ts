@@ -67,7 +67,7 @@ it('stores workspace configuration and restores its identity after removal', () 
 	const store = new CodingProjectStore([], directory);
 	const project = store.add(projectDirectory);
 	const config = path.join(directory, 'workspaces', project.id, 'config.json');
-	expect(JSON.parse(readFileSync(config, 'utf8'))).toMatchObject({ id: project.id, directory: projectDirectory });
+	expect(JSON.parse(readFileSync(config, 'utf8'))).toMatchObject({ id: project.id, directory: realpathSync.native(projectDirectory) });
 	expect(existsSync(path.join(directory, 'workspaces', project.id, 'sessions'))).toBe(true);
 	expect(store.remove(project.id)).toBe(true);
 	expect(new CodingProjectStore([], directory).list()).toEqual([]);

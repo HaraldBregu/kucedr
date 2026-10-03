@@ -14,11 +14,12 @@ it('keeps session metadata and journals in their workspace across restarts and d
 	const sessions = new CoderSessions(records);
 	const session = sessions.create('workspace-1', root, settings, 'Task');
 	const directory = path.join(root, 'workspaces', 'workspace-1', 'sessions');
-	sessions.append(session.id, { type: 'text', text: 'Hello' } as never);
+	sessions.append(session.id, { type: 'prompt', runId: 'run-1', input: 'Hello', mode: 'agent' });
 	expect(existsSync(path.join(directory, session.id + '.json'))).toBe(true);
 	expect(existsSync(path.join(directory, session.id + '.jsonl'))).toBe(true);
 	const reloaded = new CoderSessions(records);
 	expect(reloaded.list('workspace-1')).toEqual([session]);
+	expect(reloaded.snapshot(session).blocks[0]).toMatchObject({ type: 'message', content: 'Hello' });
 	expect(reloaded.list('workspace-2')).toEqual([]);
 	expect(reloaded.delete(session.id)).toBe(true);
 	expect(existsSync(path.join(directory, session.id + '.json'))).toBe(false);

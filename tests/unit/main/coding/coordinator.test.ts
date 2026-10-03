@@ -107,7 +107,7 @@ it('pins harness, model and directory across restarts and persists tools with na
 	expect(readdirSync(f.project.directory)).toEqual([]);
 	expect(
 		readFileSync(
-			path.join(f.directory, 'coder', 'sessions', 'records', first.sessionId + '.json'),
+			path.join(f.directory, 'coder', 'workspaces', f.project.id, 'sessions', first.sessionId + '.json'),
 			'utf8'
 		)
 	).toContain('native-thread');
@@ -207,7 +207,7 @@ it('rejects a mismatched project without modifying the session', async () => {
 	const f = fixture(async () => 'unused');
 	const session = f.sessions.create('project', f.project.directory, settings, 'Original');
 	const before = readFileSync(
-		path.join(f.directory, 'coder', 'sessions', 'records', session.id + '.json'),
+		path.join(f.directory, 'coder', 'workspaces', f.project.id, 'sessions', session.id + '.json'),
 		'utf8'
 	);
 	await expect(
@@ -220,7 +220,7 @@ it('rejects a mismatched project without modifying the session', async () => {
 	).rejects.toThrow('for this project');
 	expect(
 		readFileSync(
-			path.join(f.directory, 'coder', 'sessions', 'records', session.id + '.json'),
+			path.join(f.directory, 'coder', 'workspaces', f.project.id, 'sessions', session.id + '.json'),
 			'utf8'
 		)
 	).toBe(before);
