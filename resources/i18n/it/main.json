@@ -1,5 +1,19 @@
 {
 	"appTitle": "Kucedr",
+	"code": {
+		"workspaces": "Spazi di lavoro",
+		"addWorkspace": "Aggiungi spazio di lavoro",
+		"loading": "Caricamento degli spazi di lavoro…",
+		"empty": "Aggiungi una cartella per iniziare uno spazio di lavoro.",
+		"loadError": "Impossibile caricare gli spazi di lavoro.",
+		"addError": "Impossibile aggiungere lo spazio di lavoro.",
+		"actionError": "Impossibile aggiornare lo spazio di lavoro.",
+		"retry": "Riprova",
+		"workspaceOptions": "Opzioni per {{name}}",
+		"openFolder": "Apri cartella",
+		"removeWorkspace": "Rimuovi dall’elenco",
+		"unavailable": "Cartella non disponibile"
+	},
 	"command": {
 		"label": "Ricerca pagine",
 		"placeholder": "Cerca pagine e impostazioni...",

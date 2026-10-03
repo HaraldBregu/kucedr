@@ -1,5 +1,19 @@
 {
 	"appTitle": "Kucedr",
+	"code": {
+		"workspaces": "Workspaces",
+		"addWorkspace": "Add workspace",
+		"loading": "Loading workspaces…",
+		"empty": "Add a folder to start a workspace.",
+		"loadError": "Unable to load workspaces.",
+		"addError": "Unable to add workspace.",
+		"actionError": "Unable to update workspace.",
+		"retry": "Retry",
+		"workspaceOptions": "Options for {{name}}",
+		"openFolder": "Open folder",
+		"removeWorkspace": "Remove from list",
+		"unavailable": "Folder unavailable"
+	},
 	"command": {
 		"label": "Route search",
 		"placeholder": "Search routes and settings...",
