@@ -112,8 +112,8 @@ export class CoderSessions {
 	}
 	delete(id: string): boolean {
 		if (!this.read(id)) return false;
-		for (const extension of ['.json', '.jsonl']) {
-			const file = this.file(id, extension);
+		const files = ['.json', '.jsonl'].map((extension) => this.file(id, extension));
+		for (const file of files) {
 			if (existsSync(file)) unlinkSync(file);
 		}
 		return true;

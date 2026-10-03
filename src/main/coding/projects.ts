@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import Store from 'electron-store';
@@ -6,7 +6,9 @@ import { userDataLocation } from '../shared/user_data_location';
 import type { CodingProject } from '../../shared/coding_types';
 import { agentLocation } from '../shared/agent_location';
 
-interface StoredCodingProject extends Omit<CodingProject, 'available'> {}
+interface StoredCodingProject extends Omit<CodingProject, 'available'> {
+	readonly archived?: boolean;
+}
 
 export class CodingProjectStore {
 	private readonly store: Store<{ projects: StoredCodingProject[] }>;
@@ -50,9 +52,10 @@ export class CodingProjectStore {
 	}
 
 	list(): CodingProject[] {
-		return [...this.projects]
+		return this.projects
+			.filter((project) => !project.archived)
 			.sort((left, right) => right.lastOpenedAt.localeCompare(left.lastOpenedAt))
-			.map((project) => ({ ...project, available: this.isAvailable(project.directory) }));
+			.map(({ archived: _archived, ...project }) => ({ ...project, available: this.isAvailable(project.directory) }));
 	}
 
 	get(projectId: string): CodingProject | undefined {
@@ -65,7 +68,7 @@ export class CodingProjectStore {
 			(project) => project.directory === canonicalDirectory
 		);
 		if (existing) {
-			this.touch(existing.id);
+			this.save({ ...existing, archived: false, lastOpenedAt: new Date().toISOString() });
 			return this.get(existing.id) as CodingProject;
 		}
 		const timestamp = new Date().toISOString();
@@ -82,11 +85,9 @@ export class CodingProjectStore {
 	}
 
 	remove(projectId: string): boolean {
-		const projects = this.projects.filter((project) => project.id !== projectId);
-		if (projects.length === this.projects.length) return false;
-		this.store.set('projects', this.store.get('projects').filter((project) => project.id !== projectId));
-		const file = path.join(this.projectsDirectory, projectId, 'config.json');
-		if (existsSync(file)) unlinkSync(file);
+		const project = this.projects.find((project) => project.id === projectId && !project.archived);
+		if (!project) return false;
+		this.save({ ...project, archived: true });
 		return true;
 	}
 
