@@ -50,13 +50,13 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	return (
 		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="flex min-h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2 py-2">
-			{!loading && workspace ? <WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
-				setSelected(null);
-				onCreationChange(null);
-				localStorage.removeItem('coder-workspace');
-				onSelectWorkspace();
-				setRevision((value) => value + 1);
-			}} /> : <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
+				{!loading && workspace ? <WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
+					setSelected(null);
+					onCreationChange(null);
+					localStorage.removeItem('coder-workspace');
+					onSelectWorkspace();
+					setRevision((value) => value + 1);
+				}} /> : <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-xs" disabled={loading || !workspace?.available} aria-label={t('codeFiles.newFile', 'New file')}><Plus /></Button></DropdownMenuTrigger>
 					<DropdownMenuContent align="end">

@@ -44,6 +44,7 @@ it('opens a named workspace configuration page from the empty sidebar and select
 	fireEvent.click(page.getByRole('button', { name: 'Create workspace' }));
 	await waitFor(() => expect(addProject).toHaveBeenCalledWith({ name: 'My workspace' }));
 	expect(await sidebar.findByRole('combobox', { name: 'Workspaces' })).toHaveTextContent('My workspace');
+	expect(sidebar.getByRole('combobox', { name: 'Workspaces' }).closest('header')).toContainElement(sidebar.getByRole('button', { name: 'Coder settings' }));
 	expect(sidebar.queryByText('No workspaces yet')).not.toBeInTheDocument();
 	expect(sidebar.getByRole('button', { name: 'New file' })).toBeEnabled();
 	expect(await sidebar.findByText('No files yet.')).toBeInTheDocument();
