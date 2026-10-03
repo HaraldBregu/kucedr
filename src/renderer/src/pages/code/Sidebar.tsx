@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Code2, Plus, RefreshCw, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 import type { CodingProject } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { WorkspaceRow } from './Workspace';
-import { CodeSettings } from './Settings';
 
 interface CodeSidebarProps {
 	readonly title: string;
@@ -12,13 +12,14 @@ interface CodeSidebarProps {
 
 export function CodeSidebar({ title }: CodeSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const location = useLocation();
 	const [workspaces, setWorkspaces] = useState<CodingProject[]>([]);
 	const [selected, setSelected] = useState<string | null>(() => localStorage.getItem('coder-workspace'));
 	const [loading, setLoading] = useState(true);
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
 	const [revision, setRevision] = useState(0);
-	const [settingsOpen, setSettingsOpen] = useState(false);
 	useEffect(() => {
 		let active = true;
 		setLoading(true);
@@ -32,6 +33,7 @@ export function CodeSidebar({ title }: CodeSidebarProps): React.JSX.Element {
 	const select = (id: string): void => {
 		setSelected(id);
 		localStorage.setItem('coder-workspace', id);
+		navigate('/code');
 	};
 	const add = async (): Promise<void> => {
 		setBusy(true);
@@ -48,7 +50,7 @@ export function CodeSidebar({ title }: CodeSidebarProps): React.JSX.Element {
 			<header className="flex h-12 shrink-0 items-center gap-2 border-b border-sidebar-border px-4">
 				<Code2 className="size-4 shrink-0" strokeWidth={1.8} />
 				<h1 className="flex-1 truncate text-sm font-medium">{title}</h1>
-				<Button variant="ghost" size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} onClick={() => setSettingsOpen(true)}><Settings2 /></Button>
+				<Button variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}><Settings2 /></Button>
 			</header>
 			<div className="flex items-center justify-between px-3 py-2">
 				<h2 className="text-xs font-medium text-muted-foreground">{t('code.workspaces', 'Workspaces')}</h2>
@@ -61,7 +63,6 @@ export function CodeSidebar({ title }: CodeSidebarProps): React.JSX.Element {
 					setRevision((value) => value + 1);
 				}} />)}
 			</nav>
-			{settingsOpen && <CodeSettings onClose={() => setSettingsOpen(false)} />}
 		</div>
 	);
 }

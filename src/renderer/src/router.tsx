@@ -136,7 +136,7 @@ function RootRouteComponent(): React.JSX.Element {
 	const { state: authState, skipSignIn } = useAuth();
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
-	const isCode = location.pathname === '/code';
+	const isCode = location.pathname === '/code' || location.pathname === '/code/settings';
 	const isSettings = location.pathname.startsWith('/settings');
 	const hasSidebar = isHome || isWorkspace || isCode || isSettings;
 
@@ -251,6 +251,10 @@ const routes: RouteObject[] = [
 			},
 			{
 				path: 'code',
+				element: null,
+			},
+			{
+				path: 'code/settings',
 				element: null,
 			},
 			{

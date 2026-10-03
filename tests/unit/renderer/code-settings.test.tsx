@@ -28,6 +28,8 @@ it('loads shared defaults and saves edited settings only on submit', async () =>
 	const onClose = jest.fn();
 	render(<CodeSettings onClose={onClose} />);
 	const model = await screen.findByLabelText('Model');
+	expect(screen.getByRole('heading', { name: 'Coder settings' })).toBeInTheDocument();
+	expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 	expect(model).toHaveValue('saved-model');
 	fireEvent.change(model, { target: { value: 'updated-model' } });
 	expect(saveSettings).not.toHaveBeenCalled();

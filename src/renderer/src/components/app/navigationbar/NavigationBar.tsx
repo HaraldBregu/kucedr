@@ -69,7 +69,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
-	const isCode = location.pathname === '/code';
+	const isCode = location.pathname === '/code' || location.pathname === '/code/settings';
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
