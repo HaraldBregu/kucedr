@@ -210,6 +210,7 @@ export function CommandMenu({
 		location.pathname === '/home' ||
 		location.pathname.startsWith('/home/') ||
 		location.pathname === '/workspace' ||
+		location.pathname === '/code' ||
 		location.pathname === '/settings' ||
 		location.pathname.startsWith('/settings/');
 	const open = controlledOpen ?? internalOpen;
