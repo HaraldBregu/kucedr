@@ -2,7 +2,6 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { loadProjectContextFiles } from '@earendil-works/pi-coding-agent';
 import type { CoderHarness } from '../../shared/coding_types';
-import { userDataLocation } from '../shared/user_data_location';
 
 export function loadInstructionSources(
 	cwd: string,
@@ -11,7 +10,7 @@ export function loadInstructionSources(
 ): { path: string }[] {
 	if (runtime === 'pi') return loadProjectContextFiles({ cwd, agentDir: piDirectory });
 	const sources: { path: string }[] = [];
-	const global = path.join(userDataLocation(), 'coder', 'codex', 'AGENTS.md');
+	const global = path.join(piDirectory, 'AGENTS.md');
 	if (existsSync(global)) sources.push({ path: global });
 	const parents: string[] = [];
 	for (let current = cwd; ; current = path.dirname(current)) {

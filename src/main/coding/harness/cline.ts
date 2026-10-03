@@ -16,6 +16,7 @@ import type {
 	CodingModel,
 } from '../../../shared/coding_types';
 import type { CodingHarness, HarnessContext } from './types';
+import { loadInstructionSources } from '../sources';
 
 const CLINE_API_URL = 'https://api.cline.bot';
 const SESSION_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -66,6 +67,11 @@ export class ClineHarness implements CodingHarness {
 			enableAskQuestion: false,
 			enableSubmitAndExit: false,
 		});
+		const instructions = await Promise.all(
+			loadInstructionSources(context.cwd, 'cline', this.directory).map(async (source) =>
+				`Instructions from ${source.path}:\n${await readFile(source.path, 'utf8')}`
+			)
+		);
 		const agent = new Agent({
 			providerId: 'cline',
 			modelId: context.settings.modelId,
@@ -73,7 +79,7 @@ export class ClineHarness implements CodingHarness {
 			sessionId,
 			initialMessages: messages,
 			maxIterations: 32,
-			systemPrompt: `You are a coding assistant. Work in ${context.cwd}.`,
+			systemPrompt: [`You are a coding assistant. Work in ${context.cwd}.`, ...instructions].join('\n\n'),
 			tools,
 			toolPolicies: Object.fromEntries(
 				tools.map((tool) => [
