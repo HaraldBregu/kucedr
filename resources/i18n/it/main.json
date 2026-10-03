@@ -1,5 +1,23 @@
 {
 	"appTitle": "Kucedr",
+	"codeSettings": {
+		"title": "Impostazioni Coder",
+		"description": "Impostazioni predefinite per le nuove sessioni in tutti gli spazi di lavoro. Le sessioni esistenti mantengono le proprie impostazioni salvate.",
+		"harness": "Harness predefinito",
+		"provider": "Provider",
+		"thinking": "Livello di ragionamento",
+		"tools": "Accesso agli strumenti",
+		"readOnly": "Sola lettura",
+		"coding": "Lettura e modifica dei file",
+		"model": "Modello",
+		"modelPlaceholder": "Inserisci l’ID del modello",
+		"loading": "Caricamento impostazioni…",
+		"saving": "Salvataggio…",
+		"save": "Salva impostazioni predefinite",
+		"loadError": "Impossibile caricare le impostazioni Coder.",
+		"saveError": "Impossibile salvare le impostazioni Coder.",
+		"thinkingLevels": { "off": "Disattivato", "minimal": "Minimo", "low": "Basso", "medium": "Medio", "high": "Alto", "xhigh": "Molto alto", "max": "Massimo" }
+	},
 	"code": {
 		"workspaces": "Spazi di lavoro",
 		"addWorkspace": "Nuovo spazio di lavoro",

@@ -1,5 +1,23 @@
 {
 	"appTitle": "Kucedr",
+	"codeSettings": {
+		"title": "Coder settings",
+		"description": "Defaults for new sessions in every workspace. Existing sessions keep their saved settings.",
+		"harness": "Default harness",
+		"provider": "Provider",
+		"thinking": "Thinking level",
+		"tools": "Tool access",
+		"readOnly": "Read only",
+		"coding": "Read and edit files",
+		"model": "Model",
+		"modelPlaceholder": "Enter a model ID",
+		"loading": "Loading settings…",
+		"saving": "Saving…",
+		"save": "Save defaults",
+		"loadError": "Could not load Coder settings.",
+		"saveError": "Could not save Coder settings.",
+		"thinkingLevels": { "off": "Off", "minimal": "Minimal", "low": "Low", "medium": "Medium", "high": "High", "xhigh": "Extra high", "max": "Maximum" }
+	},
 	"code": {
 		"workspaces": "Workspaces",
 		"addWorkspace": "New workspace",
