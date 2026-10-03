@@ -27,6 +27,7 @@ export function CodeFileViewer({ projectId, fileName }: { readonly projectId: st
 		let cancelled = false;
 		active.current = true;
 		setLoading(true);
+		setDraft(null);
 		setError('');
 		void (async () => {
 			const cached = drafts.get(key);
