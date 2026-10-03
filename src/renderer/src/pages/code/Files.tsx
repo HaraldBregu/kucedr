@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { FileText, ListChecks, Plus } from 'lucide-react';
+import { FileText } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,15 +11,17 @@ interface WorkspaceFilesProps {
 	readonly projectId: string;
 	readonly selectedFile: string | null;
 	readonly onOpen: (fileName: string) => void;
+	readonly creation?: 'markdown' | 'instructions' | null;
+	readonly onCancelCreation: () => void;
 }
 
-export function WorkspaceFiles({ projectId, selectedFile, onOpen }: WorkspaceFilesProps): React.JSX.Element {
+export function WorkspaceFiles({ projectId, selectedFile, onOpen, creation, onCancelCreation }: WorkspaceFilesProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [files, setFiles] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 	const [name, setName] = useState('');
-	const [creating, setCreating] = useState(false);
+	useEffect(() => { setName(creation === 'instructions' ? 'AGENTS.md' : ''); }, [creation]);
 	const [busy, setBusy] = useState(false);
 	const [revision, setRevision] = useState(0);
 	useEffect(() => {
@@ -34,29 +36,23 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen }: WorkspaceFil
 	}, [projectId, revision, t]);
 	return (
 		<div className="min-w-0">
-			<div className="flex flex-wrap gap-1 py-1">
-				<Button variant="ghost" size="xs" disabled={busy} onClick={() => { setName(''); setCreating(true); }}><Plus />{t('codeFiles.newMarkdown', 'Markdown')}</Button>
-				<Button variant="ghost" size="xs" disabled={busy} onClick={() => {
-					if (files.includes('AGENTS.md')) onOpen('AGENTS.md');
-					else { setName('AGENTS.md'); setCreating(true); }
-				}}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</Button>
-			</div>
-			{creating && <form className="grid gap-1 p-1" onSubmit={(event) => {
+			{creation && <form className="grid gap-1 p-1" onSubmit={(event) => {
 				event.preventDefault();
 				if (busy) return;
 				const trimmed = name.trim();
 				const fileName = trimmed.toLowerCase().endsWith('.md') ? trimmed : `${trimmed}.md`;
 				if (!isCodingMarkdownFileName(fileName)) { setError(t('codeFiles.invalidName', 'Enter a Markdown filename without folders.')); return; }
+				if (creation === 'instructions' && files.includes(fileName)) { onCancelCreation(); onOpen(fileName); return; }
 				setBusy(true);
 				setError('');
 				void window.coder.createMarkdownFile(projectId, fileName).then(() => {
-					setCreating(false);
+					onCancelCreation();
 					setRevision((value) => value + 1);
 					onOpen(fileName);
 				}).catch((cause: unknown) => setError(cause instanceof Error ? cause.message : t('codeFiles.createError', 'Unable to create file.'))).finally(() => setBusy(false));
 			}}>
 				<Input autoFocus aria-label={t('codeFiles.fileName', 'File name')} placeholder="notes.md" value={name} disabled={busy} onChange={(event) => setName(event.target.value)} />
-				<div className="flex gap-1"><Button type="submit" size="xs" disabled={busy || !name.trim()}>{t('codeFiles.create', 'Create')}</Button><Button type="button" variant="ghost" size="xs" disabled={busy} onClick={() => setCreating(false)}>{t('common.cancel', 'Cancel')}</Button></div>
+				<div className="flex gap-1"><Button type="submit" size="xs" disabled={busy || !name.trim()}>{t('codeFiles.create', 'Create')}</Button><Button type="button" variant="ghost" size="xs" disabled={busy} onClick={onCancelCreation}>{t('common.cancel', 'Cancel')}</Button></div>
 			</form>}
 			{error && <div className="p-1"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}>{t('code.retry', 'Retry')}</Button></div>}
 			{loading ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.loading', 'Loading files…')}</p> : files.length === 0 && !error ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.empty', 'No files yet.')}</p> : files.map((fileName) => <button key={fileName} type="button" className={cn(SPLIT_ITEM_CLASS, selectedFile === fileName && SPLIT_ITEM_ACTIVE_CLASS)} aria-current={selectedFile === fileName ? 'page' : undefined} title={fileName} onClick={() => onOpen(fileName)}><FileText /><span>{fileName}</span></button>)}

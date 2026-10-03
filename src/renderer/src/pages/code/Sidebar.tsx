@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Code2, Plus, RefreshCw, Settings2 } from 'lucide-react';
+import { Code2, FileText, ListChecks, Plus, RefreshCw, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { CodingProject } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { WorkspaceSelector } from './Workspace';
 import { WorkspaceFiles } from './Files';
 
@@ -24,6 +25,7 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
 	const [revision, setRevision] = useState(0);
+	const [creation, setCreation] = useState<'markdown' | 'instructions' | null>(null);
 	useEffect(() => {
 		let active = true;
 		setLoading(true);
@@ -36,6 +38,7 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 	}, [revision, t]);
 	const select = (id: string): void => {
 		setSelected(id);
+		setCreation(null);
 		onSelectWorkspace();
 		localStorage.setItem('coder-workspace', id);
 		navigate('/code');
@@ -56,6 +59,13 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 			<header className="flex h-12 shrink-0 items-center gap-2 border-b border-sidebar-border px-4">
 				<Code2 className="size-4 shrink-0" strokeWidth={1.8} />
 				<h1 className="flex-1 truncate text-sm font-medium">{title}</h1>
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-xs" disabled={loading || !workspace?.available} aria-label={t('codeFiles.newFile', 'New file')}><Plus /></Button></DropdownMenuTrigger>
+					<DropdownMenuContent align="end">
+						<DropdownMenuItem onSelect={() => setCreation('markdown')}><FileText />{t('codeFiles.newMarkdown', 'Markdown')}</DropdownMenuItem>
+						<DropdownMenuItem onSelect={() => setCreation('instructions')}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 				<Button variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}><Settings2 /></Button>
 			</header>
 			<div className="flex items-center justify-between px-3 py-2">
@@ -65,12 +75,13 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 			{!loading && workspace && <div className="px-2 pb-2"><WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
 				setSelected(null);
+				setCreation(null);
 				localStorage.removeItem('coder-workspace');
 				onSelectWorkspace();
 				setRevision((value) => value + 1);
 			}} /></div>}
 			<nav aria-label={t('codeFiles.files', 'Files')} className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
-				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <p className="px-2 text-xs text-muted-foreground">{t('code.empty', 'Create a workspace to get started.')}</p> : workspace?.available ? <WorkspaceFiles key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
+				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <p className="px-2 text-xs text-muted-foreground">{t('code.empty', 'Create a workspace to get started.')}</p> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => setCreation(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
 		</div>
 	);
