@@ -78,7 +78,7 @@ it('starts file creation for the selected workspace from the empty pane', async 
 	fireEvent.click(action);
 	const sidebar = within(screen.getByRole('complementary'));
 	expect(await sidebar.findByLabelText('File name')).toHaveFocus();
-	expect(sidebar.getByRole('button', { name: 'Create' })).toBeInTheDocument();
+	expect(sidebar.queryByRole('button', { name: 'Create' })).not.toBeInTheDocument();
 });
 
 it('opens Coder settings from the sidebar footer and marks it selected', async () => {
