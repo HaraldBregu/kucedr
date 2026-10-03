@@ -140,3 +140,13 @@ it('forwards valid Coder layout and rejects invalid widths', async () => {
 		'Invalid Coder layout.'
 	);
 });
+
+
+it('forwards named workspace creation and rejects invalid configuration before IPC', async () => {
+	const input = { name: 'Workspace name' };
+	await coding.addProject(input);
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.addProject, input);
+	invoke.mockClear();
+	expect(() => coding.addProject({ name: ' ' })).toThrow('Invalid Coder workspace configuration');
+	expect(invoke).not.toHaveBeenCalled();
+});

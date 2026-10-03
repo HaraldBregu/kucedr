@@ -253,3 +253,20 @@ it('accepts equivalent settings independent of field order', async () => {
 		)
 	).resolves.toMatchObject({ output: 'ok' });
 });
+
+
+it('uses workspace defaults for new sessions, explicit request overrides, and pins existing sessions', async () => {
+	const contexts: HarnessContext[] = [];
+	const f = fixture(async (_, context) => { contexts.push(context); return 'Done'; });
+	Object.assign(f.project, { settings: { ...settings, modelId: 'workspace-model' } });
+	const first = await f.coding.send(1, 'workspace-run', { projectId: 'project', mode: 'agent', input: 'Start' }, () => {});
+	expect(contexts[0].settings.modelId).toBe('workspace-model');
+	Object.assign(f.project, { settings: { ...settings, modelId: 'changed-workspace-model' } });
+	await f.coding.send(1, 'resume-run', { projectId: 'project', sessionId: first.sessionId, mode: 'agent', input: 'Continue' }, () => {});
+	expect(contexts[1].settings.modelId).toBe('workspace-model');
+	await f.coding.send(1, 'explicit-run', { projectId: 'project', mode: 'agent', input: 'Override', settings: { ...settings, modelId: 'request-model' } }, () => {});
+	expect(contexts[2].settings.modelId).toBe('request-model');
+	Object.assign(f.project, { settings: undefined });
+	await f.coding.send(1, 'global-run', { projectId: 'project', mode: 'agent', input: 'Inherit' }, () => {});
+	expect(contexts[3].settings.modelId).toBe('model-a');
+});

@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, realpathSync, symlinkSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 jest.mock('electron-store', () => {
@@ -105,4 +105,40 @@ it('reads legacy project registrations without migrating them', () => {
 	const store = new CodingProjectStore([], directory);
 	expect(store.list()[0].id).toBe('legacy');
 	expect(existsSync(path.join(directory, 'workspaces', 'legacy', 'config.json'))).toBe(false);
+});
+
+
+it('persists a named workspace configuration without accepting a working directory override', () => {
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
+	const store = new CodingProjectStore([], root);
+	const project = store.create({ name: '  Product site  ', settings: {
+		runtime: 'codex', providerId: 'openai-codex', modelId: ' model-a ',
+		thinkingLevel: 'high', toolMode: 'coding', workingDirectory: '/outside',
+	} });
+	expect(project.name).toBe('Product site');
+	expect(project.directory).toBe(realpathSync.native(path.join(root, 'workspaces', project.id, 'files')));
+	expect(project.settings).toEqual({
+		runtime: 'codex', providerId: 'openai-codex', modelId: 'model-a',
+		thinkingLevel: 'high', toolMode: 'coding',
+	});
+	expect(new CodingProjectStore([], root).get(project.id)).toEqual(project);
+	const inherited = store.create({ name: 'Shared defaults' });
+	expect(inherited.settings).toBeUndefined();
+});
+
+it.each([
+	{ name: '' },
+	{ name: '   ' },
+	{ name: 'x'.repeat(121) },
+	{ name: 12 },
+	{ name: 'Invalid harness', settings: { runtime: 'other' } },
+	{ name: 'Wrong provider', settings: { runtime: 'codex', providerId: 'anthropic', modelId: '', thinkingLevel: 'medium', toolMode: 'coding' } },
+	{ name: 'Wrong provider', settings: { runtime: 'pi', providerId: 'cline', modelId: '', thinkingLevel: 'medium', toolMode: 'coding' } },
+	{ name: 'Wrong provider', settings: { runtime: 'cline', providerId: 'openai', modelId: '', thinkingLevel: 'medium', toolMode: 'coding' } },
+])('rejects invalid creation before creating a workspace: %j', (input) => {
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
+	const store = new CodingProjectStore([], root);
+	expect(() => store.create(input as never)).toThrow('Invalid Coder workspace configuration');
+	expect(readdirSync(path.join(root, 'workspaces'))).toEqual([]);
+	expect(store.list()).toEqual([]);
 });
