@@ -16,6 +16,7 @@ const readMarkdownFile = jest.fn();
 const saveMarkdownFile = jest.fn();
 
 beforeEach(() => {
+	jest.clearAllMocks();
 	readMarkdownFile.mockResolvedValue('# Original');
 	saveMarkdownFile.mockResolvedValue(undefined);
 	Object.defineProperty(window, 'coder', { configurable: true, value: { readMarkdownFile, saveMarkdownFile } });
