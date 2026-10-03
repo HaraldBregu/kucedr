@@ -1,5 +1,22 @@
 {
 	"appTitle": "Kucedr",
+	"codeWorkspace": {
+		"emptyTitle": "Nessuno spazio di lavoro",
+		"emptyDescription": "Crea uno spazio di lavoro per organizzare file, istruzioni e sessioni.",
+		"title": "Nuovo spazio di lavoro",
+		"description": "Crea uno spazio di lavoro con file, sessioni e configurazione dedicati.",
+		"name": "Nome dello spazio di lavoro",
+		"shared": "Usa le impostazioni Coder condivise",
+		"sharedDescription": "Usa le impostazioni predefinite condivise per le nuove sessioni in questo spazio di lavoro.",
+		"configuration": "Configurazione dello spazio di lavoro",
+		"harness": "Harness",
+		"loadError": "Impossibile caricare le impostazioni dello spazio di lavoro.",
+		"retry": "Riprova",
+		"nameError": "Inserisci un nome tra 1 e 120 caratteri.",
+		"createError": "Impossibile creare lo spazio di lavoro.",
+		"creating": "Creazione…",
+		"create": "Crea spazio di lavoro"
+	},
 	"codeFiles": {
 		"newFile": "Nuovo file",
 		"files": "File",

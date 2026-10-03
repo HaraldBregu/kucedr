@@ -1,5 +1,22 @@
 {
 	"appTitle": "Kucedr",
+	"codeWorkspace": {
+		"emptyTitle": "No workspaces yet",
+		"emptyDescription": "Create a workspace to organize your files, instructions, and sessions.",
+		"title": "New workspace",
+		"description": "Create a workspace with its own files, sessions, and configuration.",
+		"name": "Workspace name",
+		"shared": "Use shared Coder settings",
+		"sharedDescription": "Follow the shared defaults for new sessions in this workspace.",
+		"configuration": "Workspace configuration",
+		"harness": "Harness",
+		"loadError": "Unable to load workspace settings.",
+		"retry": "Retry",
+		"nameError": "Enter a workspace name between 1 and 120 characters.",
+		"createError": "Unable to create workspace.",
+		"creating": "Creating…",
+		"create": "Create workspace"
+	},
 	"codeFiles": {
 		"newFile": "New file",
 		"files": "Files",
