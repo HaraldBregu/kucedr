@@ -65,6 +65,7 @@ export class CodingProjectStore {
 	create(): CodingProject {
 		const id = randomUUID();
 		const directory = path.join(this.projectsDirectory, id, 'files');
+		mkdirSync(directory, { recursive: true });
 		const names = new Set(this.projects.map((project) => project.name));
 		let number = 1;
 		while (names.has(`Workspace ${number}`)) number++;
@@ -72,12 +73,11 @@ export class CodingProjectStore {
 		const project: StoredCodingProject = {
 			id,
 			name: `Workspace ${number}`,
-			directory,
+			directory: realpathSync.native(directory),
 			kind: 'agent-workspace',
 			createdAt: timestamp,
 			lastOpenedAt: timestamp,
 		};
-		mkdirSync(directory, { recursive: true });
 		this.save(project);
 		return { ...project, available: true };
 	}

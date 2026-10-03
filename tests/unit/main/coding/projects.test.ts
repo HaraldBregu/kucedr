@@ -34,7 +34,8 @@ it('creates isolated workspace folders with durable configuration stores', () =>
 	expect(first.id).not.toBe(second.id);
 	for (const workspace of [first, second]) {
 		const directory = path.join(root, 'workspaces', workspace.id);
-		expect(workspace.directory).toBe(path.join(directory, 'files'));
+		expect(workspace.directory).toBe(realpathSync.native(path.join(directory, 'files')));
+		expect(store.add(workspace.directory).id).toBe(workspace.id);
 		expect(existsSync(workspace.directory)).toBe(true);
 		expect(existsSync(path.join(directory, 'sessions'))).toBe(true);
 		expect(JSON.parse(readFileSync(path.join(directory, 'config.json'), 'utf8'))).toMatchObject({ id: workspace.id, name: workspace.name, directory: workspace.directory });
