@@ -18,9 +18,8 @@ beforeEach(() => {
 
 it('creates Markdown within the selected workspace and opens it', async () => {
 	const onOpen = jest.fn();
-	render(<WorkspaceFiles projectId="workspace-a" selectedFile={null} onOpen={onOpen} />);
+	render(<WorkspaceFiles projectId="workspace-a" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	await screen.findByText('No files yet.');
-	fireEvent.click(screen.getByRole('button', { name: 'Markdown' }));
 	fireEvent.change(screen.getByLabelText('File name'), { target: { value: 'notes' } });
 	fireEvent.click(screen.getByRole('button', { name: 'Create' }));
 	await waitFor(() => expect(onOpen).toHaveBeenCalledWith('notes.md'));
@@ -29,26 +28,24 @@ it('creates Markdown within the selected workspace and opens it', async () => {
 
 it('creates the recognized instructions filename and opens existing instructions without overwriting them', async () => {
 	const onOpen = jest.fn();
-	const view = render(<WorkspaceFiles projectId="workspace-b" selectedFile={null} onOpen={onOpen} />);
+	const view = render(<WorkspaceFiles projectId="workspace-b" selectedFile={null} creation="instructions" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	await screen.findByText('No files yet.');
-	fireEvent.click(screen.getByRole('button', { name: 'Instructions' }));
 	expect(screen.getByLabelText('File name')).toHaveValue('AGENTS.md');
 	listMarkdownFiles.mockResolvedValue(['AGENTS.md']);
 	fireEvent.click(screen.getByRole('button', { name: 'Create' }));
 	await waitFor(() => expect(onOpen).toHaveBeenCalledWith('AGENTS.md'));
 	await screen.findByRole('button', { name: 'AGENTS.md' });
-	view.rerender(<WorkspaceFiles projectId="workspace-b" selectedFile="AGENTS.md" onOpen={onOpen} />);
+	view.rerender(<WorkspaceFiles projectId="workspace-b" selectedFile="AGENTS.md" creation="instructions" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	expect(screen.getByRole('button', { name: 'AGENTS.md' })).toHaveAttribute('aria-current', 'page');
-	fireEvent.click(screen.getByRole('button', { name: 'Instructions' }));
+	fireEvent.click(screen.getByRole('button', { name: 'Create' }));
 	expect(createMarkdownFile).toHaveBeenCalledTimes(1);
 });
 
 it('keeps the filename and shows a creation failure without opening a file', async () => {
 	createMarkdownFile.mockRejectedValue(new Error('File already exists'));
 	const onOpen = jest.fn();
-	render(<WorkspaceFiles projectId="workspace-c" selectedFile={null} onOpen={onOpen} />);
+	render(<WorkspaceFiles projectId="workspace-c" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	await screen.findByText('No files yet.');
-	fireEvent.click(screen.getByRole('button', { name: 'Markdown' }));
 	fireEvent.change(screen.getByLabelText('File name'), { target: { value: 'notes.md' } });
 	fireEvent.click(screen.getByRole('button', { name: 'Create' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('File already exists');
