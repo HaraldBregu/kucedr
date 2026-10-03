@@ -92,7 +92,7 @@ export function CodeSettings({ onClose }: { readonly onClose: () => void }): Rea
 					))}
 					{settings ? <div className="grid gap-2">
 						<Label htmlFor="coder-model">{t('codeSettings.model', 'Model')}</Label>
-						<Input id="coder-model" value={settings.modelId} disabled={saving} placeholder={t('codeSettings.modelPlaceholder', 'Use the harness default')} onChange={(event) => setProfiles((previous) => ({ ...previous, [runtime]: { ...settings, modelId: event.target.value } }))} />
+						<Input id="coder-model" value={settings.modelId} disabled={saving} placeholder={t('codeSettings.modelPlaceholder', 'Enter a model ID')} onChange={(event) => setProfiles((previous) => ({ ...previous, [runtime]: { ...settings, modelId: event.target.value } }))} />
 					</div> : null}
 					{error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
 					<DialogFooter>
