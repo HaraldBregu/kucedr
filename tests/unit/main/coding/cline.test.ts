@@ -1,4 +1,4 @@
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -66,6 +66,22 @@ describe('ClineHarness', () => {
 	afterEach(async () => {
 		jest.clearAllMocks();
 		await rm(directory, { recursive: true, force: true });
+	});
+
+	it('loads workspace instructions with override precedence and Cline global instructions', async () => {
+		const cwd = join(directory, 'workspace');
+		const state = join(directory, 'cline');
+		await mkdir(cwd);
+		await mkdir(state);
+		await writeFile(join(state, 'AGENTS.md'), 'Global Cline instructions');
+		await writeFile(join(cwd, 'AGENTS.md'), 'Superseded workspace instructions');
+		await writeFile(join(cwd, 'AGENTS.override.md'), 'Active workspace instructions');
+		const harness = new ClineHarness(state, () => 'api-token', saveCredential);
+		await harness.run('Work', { ...context, cwd });
+		const options = jest.mocked(Agent).mock.calls[0][0];
+		expect(options.systemPrompt).toContain('Global Cline instructions');
+		expect(options.systemPrompt).toContain('Active workspace instructions');
+		expect(options.systemPrompt).not.toContain('Superseded workspace instructions');
 	});
 
 	it('uses the selected directory, requests write approval, streams, and persists session history', async () => {
