@@ -27,11 +27,19 @@ export interface CoderSession extends CodingSessionSummary {
 }
 
 export class CoderSessions {
-	constructor(private readonly directory = path.join(codingSessionsLocation(), 'records')) {
+	constructor(
+		private readonly directory = path.join(codingSessionsLocation(), 'records'),
+		private readonly workspacesDirectory = path.resolve(directory, '..', '..', 'workspaces')
+	) {
 		mkdirSync(directory, { recursive: true });
 	}
 	list(projectId: string): CoderSession[] {
-		return readdirSync(this.directory)
+		const workspace = this.workspaceSessions(projectId);
+		const names = new Set([
+			...readdirSync(this.directory),
+			...(existsSync(workspace) ? readdirSync(workspace) : []),
+		]);
+		return [...names]
 			.filter((name) => name.endsWith('.json'))
 			.map((name) => this.read(name.slice(0, -5)))
 			.filter((s): s is CoderSession => Boolean(s && s.projectId === projectId))
@@ -70,7 +78,10 @@ export class CoderSessions {
 		return session;
 	}
 	save(session: CoderSession): void {
-		const file = this.file(session.id, '.json');
+		const existing = this.file(session.id, '.json');
+		const directory = this.workspaceSessions(session.projectId);
+		mkdirSync(directory, { recursive: true });
+		const file = existsSync(existing) ? existing : path.join(directory, session.id + '.json');
 		writeFileSync(file + '.tmp', JSON.stringify(session), { mode: 0o600 });
 		renameSync(file + '.tmp', file);
 	}
@@ -107,8 +118,19 @@ export class CoderSessions {
 		}
 		return true;
 	}
+	private workspaceSessions(projectId: string): string {
+		if (!/^[a-zA-Z0-9_-]{1,160}$/.test(projectId)) throw new Error('Invalid Coder project id.');
+		return path.join(this.workspacesDirectory, projectId, 'sessions');
+	}
 	private file(id: string, extension: string): string {
 		if (!/^[a-zA-Z0-9_-]{1,160}$/.test(id)) throw new Error('Invalid Coder session id.');
+		if (existsSync(this.workspacesDirectory)) {
+			for (const entry of readdirSync(this.workspacesDirectory, { withFileTypes: true })) {
+				if (!entry.isDirectory()) continue;
+				const directory = this.workspaceSessions(entry.name);
+				if (existsSync(path.join(directory, id + '.json'))) return path.join(directory, id + extension);
+			}
+		}
 		return path.join(this.directory, id + extension);
 	}
 }

@@ -1,4 +1,4 @@
-import { existsSync, realpathSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import Store from 'electron-store';
@@ -11,6 +11,7 @@ interface StoredCodingProject extends Omit<CodingProject, 'available'> {}
 export class CodingProjectStore {
 	private readonly store: Store<{ projects: StoredCodingProject[] }>;
 	private readonly workspaceDirectory: string;
+	private readonly projectsDirectory: string;
 
 	constructor(
 		initialDirectories: readonly string[] = [agentLocation()],
@@ -22,16 +23,30 @@ export class CodingProjectStore {
 			accessPropertiesByDotNotation: false,
 			defaults: { projects: [] },
 		});
+		this.projectsDirectory = path.join(directory, 'workspaces');
+		mkdirSync(this.projectsDirectory, { recursive: true });
 		this.workspaceDirectory = path.resolve(agentLocation());
 		for (const initialDirectory of initialDirectories) this.seed(initialDirectory);
 	}
 
 	private get projects(): StoredCodingProject[] {
-		return this.store.get('projects');
+		const projects = new Map(this.store.get('projects').map((project) => [project.id, project]));
+		for (const entry of readdirSync(this.projectsDirectory, { withFileTypes: true })) {
+			if (!entry.isDirectory()) continue;
+			const file = path.join(this.projectsDirectory, entry.name, 'config.json');
+			if (!existsSync(file)) continue;
+			const project = JSON.parse(readFileSync(file, 'utf8')) as StoredCodingProject;
+			if (project.id === entry.name) projects.set(project.id, project);
+		}
+		return [...projects.values()];
 	}
 
-	private set projects(projects: StoredCodingProject[]) {
-		this.store.set('projects', projects);
+	private save(project: StoredCodingProject): void {
+		const directory = path.join(this.projectsDirectory, project.id);
+		mkdirSync(path.join(directory, 'sessions'), { recursive: true });
+		const file = path.join(directory, 'config.json');
+		writeFileSync(file + '.tmp', JSON.stringify(project, null, 2), { mode: 0o600 });
+		renameSync(file + '.tmp', file);
 	}
 
 	list(): CodingProject[] {
@@ -62,22 +77,23 @@ export class CodingProjectStore {
 			createdAt: timestamp,
 			lastOpenedAt: timestamp,
 		};
-		this.projects = [project, ...this.projects];
+		this.save(project);
 		return { ...project, available: true };
 	}
 
 	remove(projectId: string): boolean {
 		const projects = this.projects.filter((project) => project.id !== projectId);
 		if (projects.length === this.projects.length) return false;
-		this.projects = projects;
+		this.store.set('projects', this.store.get('projects').filter((project) => project.id !== projectId));
+		const file = path.join(this.projectsDirectory, projectId, 'config.json');
+		if (existsSync(file)) unlinkSync(file);
 		return true;
 	}
 
 	touch(projectId: string): void {
 		const timestamp = new Date().toISOString();
-		this.projects = this.projects.map((project) =>
-				project.id === projectId ? { ...project, lastOpenedAt: timestamp } : project
-			);
+		const project = this.projects.find((project) => project.id === projectId);
+		if (project) this.save({ ...project, lastOpenedAt: timestamp });
 	}
 
 	private seed(directory: string): void {
@@ -86,18 +102,7 @@ export class CodingProjectStore {
 			if (this.projects.some((project) => project.directory === canonicalDirectory)) {
 				return;
 			}
-			const timestamp = new Date().toISOString();
-			this.projects = [
-				...this.projects,
-				{
-					id: randomUUID(),
-					name: path.basename(canonicalDirectory) || canonicalDirectory,
-					directory: canonicalDirectory,
-					kind: this.projectKind(canonicalDirectory),
-					createdAt: timestamp,
-					lastOpenedAt: timestamp,
-				},
-			];
+			this.add(canonicalDirectory);
 		} catch {
 			return;
 		}
