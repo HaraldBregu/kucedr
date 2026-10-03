@@ -14,6 +14,7 @@ const project = { id: 'new-project', name: 'My workspace', directory: '/managed/
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	getSettings.mockImplementation(async (runtime?: CoderHarness) => ({ ...settings, runtime: runtime ?? 'pi', providerId: runtime === 'codex' ? 'openai-codex' : runtime === 'cline' ? 'cline' : 'openai' }));
 	addProject.mockResolvedValue(project);
 	Object.defineProperty(window, 'coder', { configurable: true, value: { getSettings, addProject } });
