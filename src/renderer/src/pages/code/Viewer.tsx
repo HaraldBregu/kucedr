@@ -46,7 +46,7 @@ export function CodeFileViewer({ projectId, fileName }: { readonly projectId: st
 
 	const save = (): void => {
 		if (!draft || loading || saving || draft.content === draft.saved) return;
-		const current = drafts.get(key) ?? draft;
+		const current = { ...draft };
 		const content = draft.content;
 		setSaving(true);
 		setError('');
