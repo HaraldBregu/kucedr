@@ -75,6 +75,11 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 					<Button className="h-auto min-h-7 w-full whitespace-normal py-1.5" size="sm" onClick={() => navigate('/code/new')}><Plus /><span>{t('codeWorkspace.create', 'Create workspace')}</span></Button>
 				</div> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => onCreationChange(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
+			<footer className="shrink-0 border-t border-sidebar-border p-2">
+				<Button className="w-full justify-start" variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}>
+					<Settings2 /><span className="truncate">{t('codeSettings.title', 'Coder settings')}</span>
+				</Button>
+			</footer>
 		</div>
 	);
 }

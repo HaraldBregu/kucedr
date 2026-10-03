@@ -44,7 +44,7 @@ it('opens a named workspace configuration page from the empty sidebar and select
 	fireEvent.click(page.getByRole('button', { name: 'Create workspace' }));
 	await waitFor(() => expect(addProject).toHaveBeenCalledWith({ name: 'My workspace' }));
 	expect(await sidebar.findByRole('combobox', { name: 'Workspaces' })).toHaveTextContent('My workspace');
-	expect(sidebar.getByRole('combobox', { name: 'Workspaces' }).closest('header')).toContainElement(sidebar.getByRole('button', { name: 'Coder settings' }));
+	expect(within(sidebar.getByRole('combobox', { name: 'Workspaces' }).closest('header')!).getByRole('button', { name: 'Coder settings' })).toBeInTheDocument();
 	expect(sidebar.queryByText('No workspaces yet')).not.toBeInTheDocument();
 	expect(sidebar.getByRole('button', { name: 'New file' })).toBeEnabled();
 	expect(await sidebar.findByText('No files yet.')).toBeInTheDocument();
@@ -79,4 +79,13 @@ it('starts file creation for the selected workspace from the empty pane', async 
 	const sidebar = within(screen.getByRole('complementary'));
 	expect(await sidebar.findByLabelText('File name')).toHaveFocus();
 	expect(sidebar.getByRole('button', { name: 'Create' })).toBeInTheDocument();
+});
+
+it('opens Coder settings from the sidebar footer and marks it selected', async () => {
+	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
+	await screen.findByText('No workspaces yet');
+	const button = within(screen.getByRole('complementary')).getAllByRole('button', { name: 'Coder settings' }).find((item) => item.closest('footer'))!;
+	fireEvent.click(button);
+	expect(await within(screen.getByRole('main')).findByRole('heading', { name: 'Coder settings' })).toBeInTheDocument();
+	expect(button).toHaveAttribute('aria-current', 'page');
 });
