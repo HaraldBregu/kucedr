@@ -87,16 +87,9 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 			assertCodingCaller(event);
 			return coding.listProjects();
 		});
-		registerQueryWithEvent(CodingChannels.addProject, async (event) => {
+		registerQueryWithEvent(CodingChannels.addProject, (event) => {
 			assertCodingCaller(event);
-			const window = BrowserWindow.fromWebContents(event.sender);
-			const options: Electron.OpenDialogOptions = { properties: ['openDirectory'] };
-			const result = window
-				? await dialog.showOpenDialog(window, options)
-				: await dialog.showOpenDialog(options);
-			return result.canceled || !result.filePaths[0]
-				? undefined
-				: coding.addProject(result.filePaths[0]);
+			return coding.addProject();
 		});
 		registerCommandWithEvent(CodingChannels.openProject, async (event, projectId) => {
 			assertCodingCaller(event);

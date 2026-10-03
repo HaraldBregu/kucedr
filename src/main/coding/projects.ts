@@ -16,7 +16,7 @@ export class CodingProjectStore {
 	private readonly projectsDirectory: string;
 
 	constructor(
-		initialDirectories: readonly string[] = [agentLocation()],
+		initialDirectories: readonly string[] = [],
 		directory = path.join(userDataLocation(), 'coder')
 	) {
 		this.store = new Store<{ projects: StoredCodingProject[] }>({
@@ -60,6 +60,26 @@ export class CodingProjectStore {
 
 	get(projectId: string): CodingProject | undefined {
 		return this.list().find((project) => project.id === projectId);
+	}
+
+	create(): CodingProject {
+		const id = randomUUID();
+		const directory = path.join(this.projectsDirectory, id, 'files');
+		const names = new Set(this.projects.map((project) => project.name));
+		let number = 1;
+		while (names.has(`Workspace ${number}`)) number++;
+		const timestamp = new Date().toISOString();
+		const project: StoredCodingProject = {
+			id,
+			name: `Workspace ${number}`,
+			directory,
+			kind: 'agent-workspace',
+			createdAt: timestamp,
+			lastOpenedAt: timestamp,
+		};
+		mkdirSync(directory, { recursive: true });
+		this.save(project);
+		return { ...project, available: true };
 	}
 
 	add(directory: string): CodingProject {

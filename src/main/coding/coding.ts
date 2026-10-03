@@ -157,8 +157,8 @@ export class Coder {
 	listProjects() {
 		return this.dependencies.projects.list();
 	}
-	addProject(directory: string) {
-		return this.dependencies.projects.add(directory);
+	addProject() {
+		return this.dependencies.projects.create();
 	}
 	removeProject(id: string) {
 		if ([...this.runs.values()].some((r) => r.projectId === id))

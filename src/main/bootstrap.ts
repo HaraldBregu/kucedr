@@ -21,7 +21,6 @@ import { preventStorageSuspension } from './storage/storage_suspension';
 import { StorageChannels } from '../shared/ipc_channels_definitions';
 import { Coding, CodingProjectStore, CodingStore } from './coding';
 import { getStorageSettings } from './settings_store';
-import { agentLocation } from './shared/agent_location';
 import { EnvironmentManager } from './terminal/environment';
 import { PtyManager } from './terminal/manager';
 import { ShellDetector } from './terminal/shell';
@@ -69,11 +68,7 @@ export function bootstrapServices(): BootstrapResult {
 	const codingStore = new CodingStore();
 	const codingService = new Coding({
 		store: codingStore,
-		projects: new CodingProjectStore(
-			[agentLocation(), codingStore.getLegacyWorkingDirectory()].filter(
-				(directory): directory is string => Boolean(directory)
-			)
-		),
+		projects: new CodingProjectStore(),
 	});
 	const channelRegistry = createChannelRegistry({ logger, eventBus, agentService });
 	const windowContextManager = new WindowContextManager(logger, eventBus);
