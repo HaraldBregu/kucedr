@@ -291,7 +291,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 						)}
 						<span data-slot="split-pane-toggle-target" className="contents" />
 					</div>
-					{!isHome && !isWorkspace && !isOnboarding && !isSettings && (
+					{!isHome && !isWorkspace && !isOnboarding && !isSettings && !isCode && (
 						<Tooltip>
 							<TooltipTrigger render={
 								<Button
