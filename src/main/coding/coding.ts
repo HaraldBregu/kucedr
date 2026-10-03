@@ -3,6 +3,7 @@ import path from 'node:path';
 import { realpathSync } from 'node:fs';
 import type {
 	CodingSettings,
+	CodingProjectCreate,
 	CodingRunRequest,
 	CodingResponseEvent,
 	CodingRunResult,
@@ -157,8 +158,8 @@ export class Coder {
 	listProjects() {
 		return this.dependencies.projects.list();
 	}
-	addProject() {
-		return this.dependencies.projects.create();
+	addProject(input?: CodingProjectCreate) {
+		return this.dependencies.projects.create(input);
 	}
 	removeProject(id: string) {
 		if ([...this.runs.values()].some((r) => r.projectId === id))
@@ -348,9 +349,9 @@ export class Coder {
 				);
 				this.sessions.append(id, { type: 'seed', blocks: legacy.blocks });
 			} else {
-				const settings = request.settings ?? this.getSettings();
-				this.validateSettings(settings);
 				const selected = request.projectId ? this.requireProject(request.projectId) : undefined;
+				const settings = request.settings ?? selected?.settings ?? this.getSettings();
+				this.validateSettings(settings);
 				const cwd = request.workingDirectory ?? selected?.directory ?? settings.workingDirectory;
 				if (!cwd) throw new Error('Choose a working directory.');
 				const project = this.dependencies.projects.add(cwd);

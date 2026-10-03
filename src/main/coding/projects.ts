@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import Store from 'electron-store';
 import { userDataLocation } from '../shared/user_data_location';
-import type { CodingProject } from '../../shared/coding_types';
+import { isCodingProjectCreate, type CodingProject, type CodingProjectCreate } from '../../shared/coding_types';
 import { agentLocation } from '../shared/agent_location';
 
 interface StoredCodingProject extends Omit<CodingProject, 'available'> {
@@ -62,7 +62,9 @@ export class CodingProjectStore {
 		return this.list().find((project) => project.id === projectId);
 	}
 
-	create(): CodingProject {
+	create(input?: CodingProjectCreate): CodingProject {
+		if (input !== undefined && !isCodingProjectCreate(input))
+			throw new Error('Invalid Coder workspace configuration.');
 		const id = randomUUID();
 		const directory = path.join(this.projectsDirectory, id, 'files');
 		mkdirSync(directory, { recursive: true });
@@ -72,9 +74,16 @@ export class CodingProjectStore {
 		const timestamp = new Date().toISOString();
 		const project: StoredCodingProject = {
 			id,
-			name: `Workspace ${number}`,
+			name: input?.name.trim() ?? `Workspace ${number}`,
 			directory: realpathSync.native(directory),
 			kind: 'agent-workspace',
+			...(input?.settings ? { settings: {
+				runtime: input.settings.runtime,
+				providerId: input.settings.providerId,
+				modelId: input.settings.modelId.trim(),
+				thinkingLevel: input.settings.thinkingLevel,
+				toolMode: input.settings.toolMode,
+			} } : {}),
 			createdAt: timestamp,
 			lastOpenedAt: timestamp,
 		};

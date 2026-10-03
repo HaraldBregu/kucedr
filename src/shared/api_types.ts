@@ -122,6 +122,7 @@ import type {
 	CodingAuthStatus,
 	CodingCatalog,
 	CodingProject,
+	CodingProjectCreate,
 	CodingProjectFile,
 	CodingProjectInstructions,
 	CodingProjectInstructionsUpdate,
@@ -280,7 +281,7 @@ export interface CodingApi {
 	saveLayout: (layout: CoderLayout) => Promise<CoderLayout>;
 	listModels: (runtime?: CoderHarness) => Promise<CodingCatalog>;
 	listProjects: () => Promise<CodingProject[]>;
-	addProject: () => Promise<CodingProject | undefined>;
+	addProject: (input?: CodingProjectCreate) => Promise<CodingProject | undefined>;
 	openProject: (projectId: string) => Promise<void>;
 	removeProject: (projectId: string) => Promise<boolean>;
 	readProjectFile: (projectId: string, filePath: string) => Promise<string>;

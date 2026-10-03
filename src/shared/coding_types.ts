@@ -49,6 +49,11 @@ export interface CodingCatalog {
 	readonly providers: readonly CodingProvider[];
 }
 
+export interface CodingProjectCreate {
+	readonly name: string;
+	readonly settings?: CodingSettings;
+}
+
 export interface CodingProject {
 	readonly id: string;
 	readonly name: string;
@@ -57,6 +62,7 @@ export interface CodingProject {
 	readonly createdAt: string;
 	readonly lastOpenedAt: string;
 	readonly available: boolean;
+	readonly settings?: CodingSettings;
 }
 
 export interface CodingProjectFile {
@@ -250,6 +256,21 @@ export function isCodingSettings(value: unknown): value is CodingSettings {
 		typeof settings.toolMode === 'string' &&
 		CODING_TOOL_MODES.includes(settings.toolMode as CodingToolMode)
 	);
+}
+
+export function isCodingProjectCreate(value: unknown): value is CodingProjectCreate {
+	if (!value || typeof value !== 'object' || Array.isArray(value)) return false;
+	const input = value as Partial<CodingProjectCreate>;
+	if (typeof input.name !== 'string' || !input.name.trim() || input.name.trim().length > 120)
+		return false;
+	if (input.settings === undefined) return true;
+	if (!isCodingSettings(input.settings)) return false;
+	const { runtime, providerId } = input.settings;
+	return runtime === 'codex'
+		? providerId === 'openai-codex'
+		: runtime === 'cline'
+			? providerId === 'cline'
+			: providerId !== 'cline';
 }
 
 export function isCodingRunRequest(value: unknown): value is CodingRunRequest {

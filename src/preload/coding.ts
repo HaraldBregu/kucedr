@@ -2,6 +2,7 @@ import type { CodingApi } from '../shared/api_types';
 import { CodingChannels } from '../shared/ipc_channels_definitions';
 import {
 	isCodingProjectInstructionsUpdate,
+	isCodingProjectCreate,
 	isCodingProjectFilePath,
 	isCodingMarkdownFileName,
 	isCodingRunRequest,
@@ -30,7 +31,11 @@ export const coding: CodingApi = {
 	},
 	listModels: (runtime) => typedInvokeUnwrap(CodingChannels.listModels, runtime),
 	listProjects: () => typedInvokeUnwrap(CodingChannels.listProjects),
-	addProject: () => typedInvokeUnwrap(CodingChannels.addProject),
+	addProject: (input) => {
+		if (input === undefined) return typedInvokeUnwrap(CodingChannels.addProject);
+		if (!isCodingProjectCreate(input)) throw new Error('Invalid Coder workspace configuration.');
+		return typedInvokeUnwrap(CodingChannels.addProject, input);
+	},
 	openProject: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');

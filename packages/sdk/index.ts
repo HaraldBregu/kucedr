@@ -126,6 +126,7 @@ export {
 	type CodingProvider,
 	type CodingProviderId,
 	type CodingProject,
+	type CodingProjectCreate,
 	type CodingProjectFile,
 	type CodingProjectInstructionScope,
 	type CodingProjectInstructionSource,

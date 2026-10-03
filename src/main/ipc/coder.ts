@@ -2,6 +2,7 @@ import { BrowserWindow, dialog, shell } from 'electron';
 import { CodingChannels } from '../../shared/ipc_channels_definitions';
 import {
 	isCodingProjectInstructionsUpdate,
+	isCodingProjectCreate,
 	isCodingProjectFilePath,
 	isCodingMarkdownFileName,
 	isCodingRunRequest,
@@ -87,9 +88,11 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 			assertCodingCaller(event);
 			return coding.listProjects();
 		});
-		registerQueryWithEvent(CodingChannels.addProject, (event) => {
+		registerQueryWithEvent(CodingChannels.addProject, (event, input) => {
 			assertCodingCaller(event);
-			return coding.addProject();
+			if (input === undefined) return coding.addProject();
+			if (!isCodingProjectCreate(input)) throw new Error('Invalid Coder workspace configuration.');
+			return coding.addProject(input);
 		});
 		registerCommandWithEvent(CodingChannels.openProject, async (event, projectId) => {
 			assertCodingCaller(event);
