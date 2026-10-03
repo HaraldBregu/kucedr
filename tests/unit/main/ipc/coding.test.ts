@@ -147,6 +147,16 @@ it('creates main-owned workspaces without a folder picker and reads their sessio
 		data: selectedProject,
 	});
 	expect(coding.addProject).toHaveBeenCalledWith();
+	const configuration = { name: 'Named workspace' };
+	await expect(handler(CodingChannels.addProject)({ sender }, configuration)).resolves.toEqual({
+		success: true, data: selectedProject,
+	});
+	expect(coding.addProject).toHaveBeenLastCalledWith(configuration);
+	(coding.addProject as jest.Mock).mockClear();
+	await expect(handler(CodingChannels.addProject)({ sender }, { name: ' ' })).resolves.toEqual(
+		expect.objectContaining({ success: false })
+	);
+	expect(coding.addProject).not.toHaveBeenCalled();
 	expect(dialog.showOpenDialog).not.toHaveBeenCalled();
 	await expect(handler(CodingChannels.listProjects)({ sender })).resolves.toEqual({
 		success: true,
