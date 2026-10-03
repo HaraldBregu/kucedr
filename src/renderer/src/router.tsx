@@ -28,6 +28,7 @@ import {
 import { cn } from './lib/utils';
 import HomePage from './pages/home/Page';
 import WorkspacePage from './pages/workspace/Page';
+import CodePage from './pages/code/Page';
 import StartPage from './pages/start/StartPage';
 import { StartupGate } from './auth/Gate';
 import { useOnboarding } from './contexts/useOnboarding';
@@ -135,8 +136,9 @@ function RootRouteComponent(): React.JSX.Element {
 	const { state: authState, skipSignIn } = useAuth();
 	const isHome = location.pathname === '/home';
 	const isWorkspace = location.pathname === '/workspace';
+	const isCode = location.pathname === '/code';
 	const isSettings = location.pathname.startsWith('/settings');
-	const hasSidebar = isHome || isWorkspace || isSettings;
+	const hasSidebar = isHome || isWorkspace || isCode || isSettings;
 
 	return (
 		<CommandMenuProvider value={{ open: () => setCommandMenuOpen(true) }}>
@@ -241,6 +243,14 @@ const routes: RouteObject[] = [
 			{
 				path: 'workspace',
 				element: null,
+			},
+			{
+				path: 'code',
+				element: (
+					<RouteWrapper>
+						<CodePage />
+					</RouteWrapper>
+				),
 			},
 			{
 				path: 'settings',
