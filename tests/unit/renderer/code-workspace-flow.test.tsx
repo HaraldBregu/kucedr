@@ -54,7 +54,28 @@ it('shows load failures with retry instead of pretending the workspace list is e
 	listProjects.mockRejectedValueOnce(new Error('Unable to read workspace storage'));
 	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
 	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to read workspace storage');
-	expect(screen.queryByRole('button', { name: 'Create workspace' })).not.toBeInTheDocument();
+	const sidebar = within(screen.getByRole('complementary'));
+	expect(sidebar.queryByRole('button', { name: 'Create workspace' })).not.toBeInTheDocument();
 	fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-	expect(await screen.findByRole('button', { name: 'Create workspace' })).toBeInTheDocument();
+	expect(await sidebar.findByRole('button', { name: 'Create workspace' })).toBeInTheDocument();
+});
+
+it('offers workspace creation in the empty pane and disables file creation without a workspace', async () => {
+	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
+	await screen.findByText('No workspaces yet');
+	const page = within(screen.getByRole('main'));
+	expect(page.getByRole('button', { name: 'New file' })).toBeDisabled();
+	fireEvent.click(page.getByRole('button', { name: 'Create workspace' }));
+	expect(await page.findByLabelText('Workspace name')).toBeInTheDocument();
+});
+
+it('starts file creation for the selected workspace from the empty pane', async () => {
+	listProjects.mockResolvedValue([project]);
+	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
+	const action = within(screen.getByRole('main')).getByRole('button', { name: 'New file' });
+	await waitFor(() => expect(action).toBeEnabled());
+	fireEvent.click(action);
+	const sidebar = within(screen.getByRole('complementary'));
+	expect(await sidebar.findByLabelText('File name')).toHaveFocus();
+	expect(sidebar.getByRole('button', { name: 'Create' })).toBeInTheDocument();
 });
