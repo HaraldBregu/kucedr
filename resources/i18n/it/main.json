@@ -1,5 +1,9 @@
 {
 	"appTitle": "Kucedr",
+	"codeEmpty": {
+		"image": "Illustrazione di una cartella di lavoro e file di codice",
+		"description": "Crea uno spazio di lavoro o seleziona un file dalla barra laterale."
+	},
 	"codeWorkspace": {
 		"emptyTitle": "Nessuno spazio di lavoro",
 		"emptyDescription": "Crea uno spazio di lavoro per organizzare file, istruzioni e sessioni.",
