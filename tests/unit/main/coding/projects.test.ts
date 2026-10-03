@@ -1,4 +1,4 @@
-import { existsSync, mkdtempSync, mkdirSync, realpathSync, symlinkSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 jest.mock('electron-store', () => {
@@ -56,4 +56,33 @@ it('rejects renderer-style relative or unavailable project paths', () => {
 
 	expect(() => store.add('relative/project')).toThrow('must be absolute');
 	expect(() => store.add(path.join(root, 'missing'))).toThrow('unavailable');
+});
+
+
+it('stores workspace configuration and restores its identity after removal', () => {
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
+	const projectDirectory = path.join(root, 'project');
+	mkdirSync(projectDirectory);
+	const directory = path.join(root, 'coder');
+	const store = new CodingProjectStore([], directory);
+	const project = store.add(projectDirectory);
+	const config = path.join(directory, 'workspaces', project.id, 'config.json');
+	expect(JSON.parse(readFileSync(config, 'utf8'))).toMatchObject({ id: project.id, directory: projectDirectory });
+	expect(existsSync(path.join(directory, 'workspaces', project.id, 'sessions'))).toBe(true);
+	expect(store.remove(project.id)).toBe(true);
+	expect(new CodingProjectStore([], directory).list()).toEqual([]);
+	expect(new CodingProjectStore([], directory).add(projectDirectory).id).toBe(project.id);
+});
+
+it('reads legacy project registrations without migrating them', () => {
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
+	const directory = path.join(root, 'coder');
+	mkdirSync(directory);
+	writeFileSync(path.join(directory, 'projects.json'), JSON.stringify({ projects: [{
+		id: 'legacy', name: 'Legacy', directory: root, kind: 'external',
+		createdAt: '2026-01-01', lastOpenedAt: '2026-01-01',
+	}] }));
+	const store = new CodingProjectStore([], directory);
+	expect(store.list()[0].id).toBe('legacy');
+	expect(existsSync(path.join(directory, 'workspaces', 'legacy', 'config.json'))).toBe(false);
 });
