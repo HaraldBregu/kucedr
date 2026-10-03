@@ -61,9 +61,6 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 				</DropdownMenu>
 				<Button variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}><Settings2 /></Button>
 			</header>
-			{workspaces.length > 0 && <div className="flex items-center justify-end px-3 py-2">
-				<Button variant="ghost" size="icon-xs" onClick={() => navigate('/code/new')} aria-label={t('code.addWorkspace', 'New workspace')}><Plus /></Button>
-			</div>}
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 			{!loading && workspace && <div className="px-2 pb-2"><WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
 				setSelected(null);
