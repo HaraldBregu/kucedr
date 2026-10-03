@@ -33,7 +33,7 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen }: WorkspaceFil
 		return () => { active = false; };
 	}, [projectId, revision, t]);
 	return (
-		<div className="ml-4 border-l border-sidebar-border pl-1">
+		<div className="min-w-0">
 			<div className="flex flex-wrap gap-1 py-1">
 				<Button variant="ghost" size="xs" disabled={busy} onClick={() => { setName(''); setCreating(true); }}><Plus />{t('codeFiles.newMarkdown', 'Markdown')}</Button>
 				<Button variant="ghost" size="xs" disabled={busy} onClick={() => {

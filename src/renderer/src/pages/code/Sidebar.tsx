@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { CodingProject } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
-import { WorkspaceRow } from './Workspace';
+import { WorkspaceSelector } from './Workspace';
+import { WorkspaceFiles } from './Files';
 
 interface CodeSidebarProps {
 	readonly title: string;
@@ -49,6 +50,7 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 			setError(cause instanceof Error ? cause.message : t('code.addError', 'Unable to create workspace.'));
 		} finally { setBusy(false); }
 	};
+	const workspace = workspaces.find((item) => item.id === selected) ?? workspaces[0];
 	return (
 		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="flex h-12 shrink-0 items-center gap-2 border-b border-sidebar-border px-4">
@@ -61,12 +63,14 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 				<Button variant="ghost" size="icon-xs" disabled={busy} onClick={() => void add()} aria-label={t('code.addWorkspace', 'New workspace')}><Plus /></Button>
 			</div>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
-			<nav aria-label={t('code.workspaces', 'Workspaces')} className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
-				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : workspaces.length === 0 && !error ? <p className="px-2 text-xs text-muted-foreground">{t('code.empty', 'Create a workspace to get started.')}</p> : workspaces.map((workspace) => <WorkspaceRow key={workspace.id} workspace={workspace} selected={selected === workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpenFile={(fileName) => { setSelected(workspace.id); localStorage.setItem('coder-workspace', workspace.id); onOpenFile(workspace.id, fileName); }} onSelect={() => select(workspace.id)} onRemove={() => {
-					if (selected === workspace.id) { setSelected(null); localStorage.removeItem('coder-workspace'); }
-					if (selectedFile?.projectId === workspace.id) onSelectWorkspace();
-					setRevision((value) => value + 1);
-				}} />)}
+			{!loading && workspace && <div className="px-2 pb-2"><WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
+				setSelected(null);
+				localStorage.removeItem('coder-workspace');
+				onSelectWorkspace();
+				setRevision((value) => value + 1);
+			}} /></div>}
+			<nav aria-label={t('codeFiles.files', 'Files')} className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
+				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <p className="px-2 text-xs text-muted-foreground">{t('code.empty', 'Create a workspace to get started.')}</p> : workspace?.available ? <WorkspaceFiles key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
 		</div>
 	);
