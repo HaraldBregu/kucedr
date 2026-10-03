@@ -43,12 +43,6 @@ export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace
 		localStorage.setItem('coder-workspace', id);
 		navigate('/code');
 	};
-	const workspace = await window.coder.addProject();
-			if (workspace) { select(workspace.id); setRevision((value) => value + 1); }
-		} catch (cause) {
-			setError(cause instanceof Error ? cause.message : t('code.addError', 'Unable to create workspace.'));
-		} finally { setBusy(false); }
-	};
 	const workspace = workspaces.find((item) => item.id === selected) ?? workspaces[0];
 	return (
 		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col">
