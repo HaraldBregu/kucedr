@@ -28,10 +28,10 @@ export function WorkspaceSelector({ workspace, workspaces, onSelect, onRemove }:
 		} finally { setBusy(false); }
 	};
 	return (
-		<div>
+		<div className="min-w-0 flex-1">
 			<div className="flex min-w-0 items-center gap-1">
 				<Select value={workspace.id} onValueChange={(id) => { if (id) onSelect(id); }}>
-					<SelectTrigger className="min-w-0 flex-1" aria-label={t('code.workspaces', 'Workspaces')}><SelectValue>{workspace.name}</SelectValue></SelectTrigger>
+					<SelectTrigger size="sm" className="min-w-0 flex-1" aria-label={t('code.workspaces', 'Workspaces')}><SelectValue>{workspace.name}</SelectValue></SelectTrigger>
 					<SelectContent>{workspaces.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectContent>
 				</Select>
 				<DropdownMenu>
