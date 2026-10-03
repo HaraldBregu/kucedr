@@ -1,8 +1,15 @@
-import { Code2 } from 'lucide-react';
+import { Code2, FilePlus, FolderPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { Button } from '@/components/ui/button';
 
-export function CodeEmpty(): React.JSX.Element {
+interface CodeEmptyProps {
+	readonly canCreateFile: boolean;
+	readonly onCreateWorkspace: () => void;
+	readonly onCreateFile: () => void;
+}
+
+export function CodeEmpty({ canCreateFile, onCreateWorkspace, onCreateFile }: CodeEmptyProps): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
 		<Empty className="h-full min-h-0 overflow-y-auto rounded-none">
@@ -28,6 +35,12 @@ export function CodeEmpty(): React.JSX.Element {
 				<EmptyTitle>{t('navigationBar.code', 'Code')}</EmptyTitle>
 				<EmptyDescription>{t('codeEmpty.description', 'Create a workspace or select a file from the sidebar.')}</EmptyDescription>
 			</EmptyHeader>
+			<EmptyContent>
+				<div className="flex flex-wrap justify-center gap-2">
+					<Button onClick={onCreateWorkspace}><FolderPlus />{t('codeWorkspace.create', 'Create workspace')}</Button>
+					<Button variant="outline" disabled={!canCreateFile} onClick={onCreateFile}><FilePlus />{t('codeFiles.newFile', 'New file')}</Button>
+				</div>
+			</EmptyContent>
 		</Empty>
 	);
 }
