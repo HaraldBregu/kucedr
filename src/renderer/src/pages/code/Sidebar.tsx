@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Code2, FileText, ListChecks, Plus, RefreshCw, Settings2 } from 'lucide-react';
+import { Code2, FileText, FolderPlus, ListChecks, Plus, RefreshCw, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { CodingProject } from '@shared/coding_types';
@@ -10,19 +10,19 @@ import { WorkspaceFiles } from './Files';
 
 interface CodeSidebarProps {
 	readonly title: string;
+	readonly refreshKey: number;
 	readonly selectedFile: { projectId: string; fileName: string } | null;
 	readonly onSelectWorkspace: () => void;
 	readonly onOpenFile: (projectId: string, fileName: string) => void;
 }
 
-export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile }: CodeSidebarProps): React.JSX.Element {
+export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace, onOpenFile }: CodeSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
 	const [workspaces, setWorkspaces] = useState<CodingProject[]>([]);
 	const [selected, setSelected] = useState<string | null>(() => localStorage.getItem('coder-workspace'));
 	const [loading, setLoading] = useState(true);
-	const [busy, setBusy] = useState(false);
 	const [error, setError] = useState('');
 	const [revision, setRevision] = useState(0);
 	const [creation, setCreation] = useState<'markdown' | 'instructions' | null>(null);
@@ -30,12 +30,12 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 		let active = true;
 		setLoading(true);
 		window.coder.listProjects().then((items) => {
-			if (active) { setWorkspaces(items); setError(''); }
+			if (active) { setWorkspaces(items); setSelected(localStorage.getItem('coder-workspace')); setError(''); }
 		}).catch((cause: unknown) => {
 			if (active) setError(cause instanceof Error ? cause.message : t('code.loadError', 'Unable to load workspaces.'));
 		}).finally(() => { if (active) setLoading(false); });
 		return () => { active = false; };
-	}, [revision, t]);
+	}, [revision, refreshKey, t]);
 	const select = (id: string): void => {
 		setSelected(id);
 		setCreation(null);
@@ -43,11 +43,7 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 		localStorage.setItem('coder-workspace', id);
 		navigate('/code');
 	};
-	const add = async (): Promise<void> => {
-		setBusy(true);
-		setError('');
-		try {
-			const workspace = await window.coder.addProject();
+	const workspace = await window.coder.addProject();
 			if (workspace) { select(workspace.id); setRevision((value) => value + 1); }
 		} catch (cause) {
 			setError(cause instanceof Error ? cause.message : t('code.addError', 'Unable to create workspace.'));
@@ -68,10 +64,10 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 				</DropdownMenu>
 				<Button variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}><Settings2 /></Button>
 			</header>
-			<div className="flex items-center justify-between px-3 py-2">
+			{workspaces.length > 0 && <div className="flex items-center justify-between px-3 py-2">
 				<h2 className="text-xs font-medium text-muted-foreground">{t('code.workspaces', 'Workspaces')}</h2>
-				<Button variant="ghost" size="icon-xs" disabled={busy} onClick={() => void add()} aria-label={t('code.addWorkspace', 'New workspace')}><Plus /></Button>
-			</div>
+				<Button variant="ghost" size="icon-xs" onClick={() => navigate('/code/new')} aria-label={t('code.addWorkspace', 'New workspace')}><Plus /></Button>
+			</div>}
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 			{!loading && workspace && <div className="px-2 pb-2"><WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
 				setSelected(null);
@@ -81,7 +77,11 @@ export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile
 				setRevision((value) => value + 1);
 			}} /></div>}
 			<nav aria-label={t('codeFiles.files', 'Files')} className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
-				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <p className="px-2 text-xs text-muted-foreground">{t('code.empty', 'Create a workspace to get started.')}</p> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => setCreation(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
+				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <div className="grid justify-items-start gap-3 px-2 py-6">
+					<FolderPlus className="size-6 text-muted-foreground" aria-hidden="true" />
+					<div className="grid gap-1"><h2 className="text-sm font-medium">{t('codeWorkspace.emptyTitle', 'No workspaces yet')}</h2><p className="text-xs leading-relaxed text-muted-foreground">{t('codeWorkspace.emptyDescription', 'Create a workspace to organize your files, instructions, and sessions.')}</p></div>
+					<Button className="w-full" size="sm" onClick={() => navigate('/code/new')}><Plus />{t('codeWorkspace.create', 'Create workspace')}</Button>
+				</div> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => setCreation(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
 		</div>
 	);
