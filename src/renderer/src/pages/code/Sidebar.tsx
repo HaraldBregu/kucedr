@@ -8,9 +8,12 @@ import { WorkspaceRow } from './Workspace';
 
 interface CodeSidebarProps {
 	readonly title: string;
+	readonly selectedFile: { projectId: string; fileName: string } | null;
+	readonly onSelectWorkspace: () => void;
+	readonly onOpenFile: (projectId: string, fileName: string) => void;
 }
 
-export function CodeSidebar({ title }: CodeSidebarProps): React.JSX.Element {
+export function CodeSidebar({ title, selectedFile, onSelectWorkspace, onOpenFile }: CodeSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -32,6 +35,7 @@ export function CodeSidebar({ title }: CodeSidebarProps): React.JSX.Element {
 	}, [revision, t]);
 	const select = (id: string): void => {
 		setSelected(id);
+		onSelectWorkspace();
 		localStorage.setItem('coder-workspace', id);
 		navigate('/code');
 	};
@@ -58,8 +62,9 @@ export function CodeSidebar({ title }: CodeSidebarProps): React.JSX.Element {
 			</div>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 			<nav aria-label={t('code.workspaces', 'Workspaces')} className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
-				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : workspaces.length === 0 && !error ? <p className="px-2 text-xs text-muted-foreground">{t('code.empty', 'Create a workspace to get started.')}</p> : workspaces.map((workspace) => <WorkspaceRow key={workspace.id} workspace={workspace} selected={selected === workspace.id} onSelect={() => select(workspace.id)} onRemove={() => {
+				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : workspaces.length === 0 && !error ? <p className="px-2 text-xs text-muted-foreground">{t('code.empty', 'Create a workspace to get started.')}</p> : workspaces.map((workspace) => <WorkspaceRow key={workspace.id} workspace={workspace} selected={selected === workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpenFile={(fileName) => { setSelected(workspace.id); localStorage.setItem('coder-workspace', workspace.id); onOpenFile(workspace.id, fileName); }} onSelect={() => select(workspace.id)} onRemove={() => {
 					if (selected === workspace.id) { setSelected(null); localStorage.removeItem('coder-workspace'); }
+					if (selectedFile?.projectId === workspace.id) onSelectWorkspace();
 					setRevision((value) => value + 1);
 				}} />)}
 			</nav>
