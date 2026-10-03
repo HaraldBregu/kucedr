@@ -14,12 +14,14 @@ export default function CodePage(): React.JSX.Element {
 	const navigate = useNavigate();
 	const [file, setFile] = useState<{ projectId: string; fileName: string } | null>(null);
 	const [workspaceRevision, setWorkspaceRevision] = useState(0);
+	const [creation, setCreation] = useState<'markdown' | 'instructions' | null>(null);
+	const [canCreateFile, setCanCreateFile] = useState(false);
 	const codeLabel = t('navigationBar.code', 'Code');
 
 	return (
 		<PageContainer className="overflow-hidden text-foreground">
-			<Split sidebar={<CodeSidebar refreshKey={workspaceRevision} title={codeLabel} selectedFile={file} onSelectWorkspace={() => setFile(null)} onOpenFile={(projectId, fileName) => { setFile({ projectId, fileName }); navigate('/code'); }} />} sidebarLabel={codeLabel}>
-				{location.pathname === '/code/new' ? <NewWorkspace onCancel={() => navigate('/code')} onCreated={(workspace) => { localStorage.setItem('coder-workspace', workspace.id); setFile(null); setWorkspaceRevision((value) => value + 1); navigate('/code'); }} /> : location.pathname === '/code/settings' ? <CodeSettings onClose={() => navigate('/code')} /> : file ? <CodeFileViewer key={`${file.projectId}:${file.fileName}`} projectId={file.projectId} fileName={file.fileName} /> : <CodeEmpty />}
+			<Split sidebar={<CodeSidebar creation={creation} onCreationChange={setCreation} onFileCreationAvailable={setCanCreateFile} refreshKey={workspaceRevision} title={codeLabel} selectedFile={file} onSelectWorkspace={() => setFile(null)} onOpenFile={(projectId, fileName) => { setFile({ projectId, fileName }); navigate('/code'); }} />} sidebarLabel={codeLabel}>
+				{location.pathname === '/code/new' ? <NewWorkspace onCancel={() => navigate('/code')} onCreated={(workspace) => { localStorage.setItem('coder-workspace', workspace.id); setFile(null); setWorkspaceRevision((value) => value + 1); navigate('/code'); }} /> : location.pathname === '/code/settings' ? <CodeSettings onClose={() => navigate('/code')} /> : file ? <CodeFileViewer key={`${file.projectId}:${file.fileName}`} projectId={file.projectId} fileName={file.fileName} /> : <CodeEmpty canCreateFile={canCreateFile} onCreateWorkspace={() => navigate('/code/new')} onCreateFile={() => setCreation('markdown')} />}
 			</Split>
 		</PageContainer>
 	);

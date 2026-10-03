@@ -10,13 +10,16 @@ import { WorkspaceFiles } from './Files';
 
 interface CodeSidebarProps {
 	readonly title: string;
+	readonly creation: 'markdown' | 'instructions' | null;
+	readonly onCreationChange: (creation: 'markdown' | 'instructions' | null) => void;
+	readonly onFileCreationAvailable: (available: boolean) => void;
 	readonly refreshKey: number;
 	readonly selectedFile: { projectId: string; fileName: string } | null;
 	readonly onSelectWorkspace: () => void;
 	readonly onOpenFile: (projectId: string, fileName: string) => void;
 }
 
-export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace, onOpenFile }: CodeSidebarProps): React.JSX.Element {
+export function CodeSidebar({ title, creation, onCreationChange, onFileCreationAvailable, refreshKey, selectedFile, onSelectWorkspace, onOpenFile }: CodeSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -25,7 +28,6 @@ export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 	const [revision, setRevision] = useState(0);
-	const [creation, setCreation] = useState<'markdown' | 'instructions' | null>(null);
 	useEffect(() => {
 		let active = true;
 		setLoading(true);
@@ -38,12 +40,13 @@ export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace
 	}, [revision, refreshKey, t]);
 	const select = (id: string): void => {
 		setSelected(id);
-		setCreation(null);
+		onCreationChange(null);
 		onSelectWorkspace();
 		localStorage.setItem('coder-workspace', id);
 		navigate('/code');
 	};
 	const workspace = workspaces.find((item) => item.id === selected) ?? workspaces[0];
+	useEffect(() => { onFileCreationAvailable(!loading && Boolean(workspace?.available)); }, [loading, workspace?.available, onFileCreationAvailable]);
 	return (
 		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="flex h-12 shrink-0 items-center gap-2 border-b border-sidebar-border px-4">
@@ -52,8 +55,8 @@ export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-xs" disabled={loading || !workspace?.available} aria-label={t('codeFiles.newFile', 'New file')}><Plus /></Button></DropdownMenuTrigger>
 					<DropdownMenuContent align="end">
-						<DropdownMenuItem onSelect={() => setCreation('markdown')}><FileText />{t('codeFiles.newMarkdown', 'Markdown')}</DropdownMenuItem>
-						<DropdownMenuItem onSelect={() => setCreation('instructions')}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</DropdownMenuItem>
+						<DropdownMenuItem onSelect={() => onCreationChange('markdown')}><FileText />{t('codeFiles.newMarkdown', 'Markdown')}</DropdownMenuItem>
+						<DropdownMenuItem onSelect={() => onCreationChange('instructions')}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				<Button variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}><Settings2 /></Button>
@@ -65,7 +68,7 @@ export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 			{!loading && workspace && <div className="px-2 pb-2"><WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
 				setSelected(null);
-				setCreation(null);
+				onCreationChange(null);
 				localStorage.removeItem('coder-workspace');
 				onSelectWorkspace();
 				setRevision((value) => value + 1);
@@ -75,7 +78,7 @@ export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace
 					<FolderPlus className="size-6 text-muted-foreground" aria-hidden="true" />
 					<div className="grid gap-1"><h2 className="text-sm font-medium">{t('codeWorkspace.emptyTitle', 'No workspaces yet')}</h2><p className="text-xs leading-relaxed text-muted-foreground">{t('codeWorkspace.emptyDescription', 'Create a workspace to organize your files, instructions, and sessions.')}</p></div>
 					<Button className="h-auto min-h-7 w-full whitespace-normal py-1.5" size="sm" onClick={() => navigate('/code/new')}><Plus /><span>{t('codeWorkspace.create', 'Create workspace')}</span></Button>
-				</div> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => setCreation(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
+				</div> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => onCreationChange(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
 		</div>
 	);
