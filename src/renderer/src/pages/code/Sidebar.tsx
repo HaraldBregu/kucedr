@@ -74,7 +74,7 @@ export function CodeSidebar({ title, refreshKey, selectedFile, onSelectWorkspace
 				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <div className="grid justify-items-start gap-3 px-2 py-6">
 					<FolderPlus className="size-6 text-muted-foreground" aria-hidden="true" />
 					<div className="grid gap-1"><h2 className="text-sm font-medium">{t('codeWorkspace.emptyTitle', 'No workspaces yet')}</h2><p className="text-xs leading-relaxed text-muted-foreground">{t('codeWorkspace.emptyDescription', 'Create a workspace to organize your files, instructions, and sessions.')}</p></div>
-					<Button className="w-full" size="sm" onClick={() => navigate('/code/new')}><Plus />{t('codeWorkspace.create', 'Create workspace')}</Button>
+					<Button className="h-auto min-h-7 w-full whitespace-normal py-1.5" size="sm" onClick={() => navigate('/code/new')}><Plus /><span>{t('codeWorkspace.create', 'Create workspace')}</span></Button>
 				</div> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => setCreation(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
 		</div>
