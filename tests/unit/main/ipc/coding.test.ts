@@ -106,7 +106,7 @@ it('loads and saves Coder layout through trusted IPC', async () => {
 	);
 });
 
-it('lets the Coding app select main-owned projects and read their sessions', async () => {
+it('creates main-owned workspaces without a folder picker and reads their sessions', async () => {
 	const selectedProject = {
 		id: 'project-1',
 		name: 'project',
@@ -146,7 +146,8 @@ it('lets the Coding app select main-owned projects and read their sessions', asy
 		success: true,
 		data: selectedProject,
 	});
-	expect(coding.addProject).toHaveBeenCalledWith('/project');
+	expect(coding.addProject).toHaveBeenCalledWith();
+	expect(dialog.showOpenDialog).not.toHaveBeenCalled();
 	await expect(handler(CodingChannels.listProjects)({ sender })).resolves.toEqual({
 		success: true,
 		data: [selectedProject],

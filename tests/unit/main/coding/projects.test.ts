@@ -23,6 +23,25 @@ jest.mock('electron-store', () => {
 
 import { CodingProjectStore } from '../../../../src/main/coding/projects';
 
+it('creates isolated workspace folders with durable configuration stores', () => {
+	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-managed-workspaces-'));
+	const store = new CodingProjectStore(undefined, root);
+	expect(store.list()).toEqual([]);
+	const first = store.create();
+	const second = store.create();
+	expect(first.name).toBe('Workspace 1');
+	expect(second.name).toBe('Workspace 2');
+	expect(first.id).not.toBe(second.id);
+	for (const workspace of [first, second]) {
+		const directory = path.join(root, 'workspaces', workspace.id);
+		expect(workspace.directory).toBe(path.join(directory, 'files'));
+		expect(existsSync(workspace.directory)).toBe(true);
+		expect(existsSync(path.join(directory, 'sessions'))).toBe(true);
+		expect(JSON.parse(readFileSync(path.join(directory, 'config.json'), 'utf8'))).toMatchObject({ id: workspace.id, name: workspace.name, directory: workspace.directory });
+	}
+	expect(new CodingProjectStore(undefined, root).list().map((workspace) => workspace.id).sort()).toEqual([first.id, second.id].sort());
+});
+
 it('persists canonical external projects and removes only their metadata', () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
 	const projectDirectory = path.join(root, 'project');
