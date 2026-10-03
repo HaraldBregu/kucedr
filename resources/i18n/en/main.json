@@ -1,5 +1,23 @@
 {
 	"appTitle": "Kucedr",
+	"codeFiles": {
+		"newMarkdown": "Markdown",
+		"instructions": "Instructions",
+		"fileName": "File name",
+		"create": "Create",
+		"invalidName": "Enter a Markdown filename without folders.",
+		"createError": "Unable to create file.",
+		"loadError": "Unable to load files.",
+		"empty": "No files yet.",
+		"loading": "Loading…",
+		"saving": "Saving…",
+		"unsaved": "Unsaved changes",
+		"saved": "Saved",
+		"save": "Save",
+		"saveError": "Unable to save file.",
+		"discardReload": "Discard edits and reload",
+		"reload": "Reload"
+	},
 	"codeSettings": {
 		"title": "Coder settings",
 		"description": "Defaults for new sessions in every workspace. Existing sessions keep their saved settings.",

@@ -1,91 +1,57 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { CodeFileViewer } from '../../../src/renderer/src/pages/code/Viewer';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { WorkspaceFiles } from '../../../src/renderer/src/pages/code/Files';
 
 jest.mock('react-i18next', () => {
-	const t = (key: string, fallback?: string): string => fallback ?? key;
+	const t = (key: string, fallback: string): string => fallback ?? key;
 	return { useTranslation: () => ({ t }) };
 });
-jest.mock('@/hooks/use-is-dark', () => ({ useIsDark: () => false }));
-jest.mock('@/pages/workspace/Editor', () => ({
-	CodeMirrorEditor: ({ value, onChange, readOnly }: { value: string; onChange: (value: string) => void; readOnly: boolean }) => (
-		<textarea aria-label="Markdown" value={value} readOnly={readOnly} onChange={(event) => onChange(event.target.value)} />
-	),
-}));
 
-const readMarkdownFile = jest.fn();
-const saveMarkdownFile = jest.fn();
+const listMarkdownFiles = jest.fn();
+const createMarkdownFile = jest.fn();
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	readMarkdownFile.mockResolvedValue('# Original');
-	saveMarkdownFile.mockResolvedValue(undefined);
-	Object.defineProperty(window, 'coder', { configurable: true, value: { readMarkdownFile, saveMarkdownFile } });
+	listMarkdownFiles.mockResolvedValue([]);
+	createMarkdownFile.mockResolvedValue(undefined);
+	Object.defineProperty(window, 'coder', { configurable: true, value: { listMarkdownFiles, createMarkdownFile } });
 });
 
-it('loads Markdown and saves edits against the original disk content', async () => {
-	render(<CodeFileViewer projectId="save" fileName="notes.md" />);
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
-	expect(readMarkdownFile).toHaveBeenCalledWith('save', 'notes.md');
-	fireEvent.change(screen.getByLabelText('Markdown'), { target: { value: '# Edited' } });
-	fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
-	await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Saved'));
-	expect(saveMarkdownFile).toHaveBeenCalledWith('save', 'notes.md', '# Edited', '# Original');
+it('creates Markdown within the selected workspace and opens it', async () => {
+	const onOpen = jest.fn();
+	render(<WorkspaceFiles projectId="workspace-a" selectedFile={null} onOpen={onOpen} />);
+	await screen.findByText('No files yet.');
+	fireEvent.click(screen.getByRole('button', { name: 'Markdown' }));
+	fireEvent.change(screen.getByLabelText('File name'), { target: { value: 'notes' } });
+	fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+	await waitFor(() => expect(onOpen).toHaveBeenCalledWith('notes.md'));
+	expect(createMarkdownFile).toHaveBeenCalledWith('workspace-a', 'notes.md');
 });
 
-it('preserves unsaved drafts when switching files and back', async () => {
-	const view = render(<CodeFileViewer key="first" projectId="draft" fileName="notes.md" />);
-	fireEvent.change(await screen.findByLabelText('Markdown'), { target: { value: '# Keep me' } });
-	view.rerender(<CodeFileViewer key="second" projectId="draft" fileName="AGENTS.md" />);
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
-	view.rerender(<CodeFileViewer key="first" projectId="draft" fileName="notes.md" />);
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Keep me');
-	expect(screen.getByRole('status')).toHaveTextContent('Unsaved changes');
-	expect(saveMarkdownFile).not.toHaveBeenCalled();
+it('creates the recognized instructions filename and opens existing instructions without overwriting them', async () => {
+	const onOpen = jest.fn();
+	const view = render(<WorkspaceFiles projectId="workspace-b" selectedFile={null} onOpen={onOpen} />);
+	await screen.findByText('No files yet.');
+	fireEvent.click(screen.getByRole('button', { name: 'Instructions' }));
+	expect(screen.getByLabelText('File name')).toHaveValue('AGENTS.md');
+	listMarkdownFiles.mockResolvedValue(['AGENTS.md']);
+	fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+	await waitFor(() => expect(onOpen).toHaveBeenCalledWith('AGENTS.md'));
+	await screen.findByRole('button', { name: 'AGENTS.md' });
+	view.rerender(<WorkspaceFiles projectId="workspace-b" selectedFile="AGENTS.md" onOpen={onOpen} />);
+	expect(screen.getByRole('button', { name: 'AGENTS.md' })).toHaveAttribute('aria-current', 'page');
+	fireEvent.click(screen.getByRole('button', { name: 'Instructions' }));
+	expect(createMarkdownFile).toHaveBeenCalledTimes(1);
 });
 
-it('keeps edits on a save conflict and reloads only when explicitly requested', async () => {
-	saveMarkdownFile.mockRejectedValueOnce(new Error('File changed on disk'));
-	render(<CodeFileViewer projectId="conflict" fileName="AGENTS.md" />);
-	fireEvent.change(await screen.findByLabelText('Markdown'), { target: { value: '# My instructions' } });
-	fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
-	expect(await screen.findByRole('alert')).toHaveTextContent('File changed on disk');
-	expect(screen.getByLabelText('Markdown')).toHaveValue('# My instructions');
-	readMarkdownFile.mockResolvedValue('# External instructions');
-	fireEvent.click(screen.getByRole('button', { name: 'Discard edits and reload' }));
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# External instructions');
-	expect(screen.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
-});
-
-it('shows read errors and allows a reload', async () => {
-	readMarkdownFile.mockRejectedValueOnce(new Error('Unable to read'));
-	render(<CodeFileViewer projectId="read-error" fileName="notes.md" />);
-	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to read');
-	expect(screen.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
-	fireEvent.click(screen.getByRole('button', { name: 'Reload' }));
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
-});
-
-it('ignores stale reads after selecting another file', async () => {
-	let finishRead!: (content: string) => void;
-	readMarkdownFile.mockImplementationOnce(() => new Promise<string>((resolve) => { finishRead = resolve; }));
-	const view = render(<CodeFileViewer key="old" projectId="stale" fileName="old.md" />);
-	await waitFor(() => expect(readMarkdownFile).toHaveBeenCalledWith('stale', 'old.md'));
-	view.rerender(<CodeFileViewer key="new" projectId="stale" fileName="new.md" />);
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
-	await act(async () => { finishRead('# Stale'); });
-	expect(screen.getByLabelText('Markdown')).toHaveValue('# Original');
-});
-
-it('finishes a pending save while another file is open and restores the saved draft', async () => {
-	let finishSave!: () => void;
-	saveMarkdownFile.mockImplementationOnce(() => new Promise<void>((resolve) => { finishSave = resolve; }));
-	const view = render(<CodeFileViewer key="pending" projectId="pending" fileName="notes.md" />);
-	fireEvent.change(await screen.findByLabelText('Markdown'), { target: { value: '# Pending' } });
-	fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
-	view.rerender(<CodeFileViewer key="other" projectId="pending" fileName="other.md" />);
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
-	view.rerender(<CodeFileViewer key="pending" projectId="pending" fileName="notes.md" />);
-	await act(async () => { finishSave(); });
-	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Pending');
-	expect(screen.getByRole('status')).toHaveTextContent('Saved');
+it('keeps the filename and shows a creation failure without opening a file', async () => {
+	createMarkdownFile.mockRejectedValue(new Error('File already exists'));
+	const onOpen = jest.fn();
+	render(<WorkspaceFiles projectId="workspace-c" selectedFile={null} onOpen={onOpen} />);
+	await screen.findByText('No files yet.');
+	fireEvent.click(screen.getByRole('button', { name: 'Markdown' }));
+	fireEvent.change(screen.getByLabelText('File name'), { target: { value: 'notes.md' } });
+	fireEvent.click(screen.getByRole('button', { name: 'Create' }));
+	expect(await screen.findByRole('alert')).toHaveTextContent('File already exists');
+	expect(screen.getByLabelText('File name')).toHaveValue('notes.md');
+	expect(onOpen).not.toHaveBeenCalled();
 });
