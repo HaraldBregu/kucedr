@@ -1,6 +1,7 @@
 {
 	"appTitle": "Kucedr",
 	"codeFiles": {
+		"files": "Files",
 		"newMarkdown": "Markdown",
 		"instructions": "Instructions",
 		"fileName": "File name",
