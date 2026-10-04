@@ -136,7 +136,7 @@
 		"electron-store": "11.0.2",
 		"grammy": "^1.46.0",
 		"gray-matter": "^4.0.3",
-		"i18next": "^26.3.6",
+		"i18next": "^26.4.2",
 		"jose": "^6.2.10",
 		"lucide-react": "^1.31.0",
 		"marked": "^18.0.9",
