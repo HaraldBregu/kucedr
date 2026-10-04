@@ -55,7 +55,7 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, creation, onCa
 				}).catch((cause: unknown) => setError(cause instanceof Error ? cause.message : t('codeFiles.createError', 'Unable to create file.'))).finally(() => { submitting.current = false; setBusy(false); });
 			}}>
 				<File className="size-4 shrink-0 text-muted-foreground" strokeWidth={1.8} />
-				<Input autoFocus aria-label={t('codeFiles.fileName', 'File name')} placeholder="notes.md" className="h-7 min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 text-sm shadow-none focus-visible:ring-0 dark:bg-transparent" value={name} disabled={busy} onChange={(event) => setName(event.target.value)} onBlur={(event) => {
+				<Input autoFocus aria-label={t('codeFiles.fileName', 'File name')} placeholder="notes.md" className="h-7 min-w-0 flex-1 rounded-none border-0 bg-transparent px-0 text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 dark:bg-transparent" value={name} disabled={busy} onChange={(event) => setName(event.target.value)} onBlur={(event) => {
 					if (!submitting.current) event.currentTarget.form?.requestSubmit();
 				}} onKeyDown={(event) => {
 					if (event.key === 'Escape') {
