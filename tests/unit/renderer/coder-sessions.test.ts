@@ -7,11 +7,26 @@ const snapshot: CodingSessionSnapshot = { session, blocks: [] };
 const api = { listSessions: jest.fn(), getSession: jest.fn(), start: jest.fn(), cancel: jest.fn(), respond: jest.fn() };
 
 beforeEach(() => {
+	jest.resetAllMocks();
 	Object.defineProperty(window, 'coder', { configurable: true, value: api });
 	api.listSessions.mockResolvedValue([session]);
 	api.getSession.mockResolvedValue(snapshot);
 	api.cancel.mockResolvedValue(true);
 	api.respond.mockResolvedValue(true);
+});
+
+it('selects the returned session without events and preserves failure results from error events', async () => {
+	api.start.mockReturnValueOnce({ runId: 'run-1', result: Promise.resolve({ projectId: session.projectId, sessionId: session.id, output: '' }) });
+	const { result } = renderHook(() => useSessions(session.projectId));
+	await waitFor(() => expect(result.current.loading).toBe(false));
+	await act(async () => { expect(await result.current.run('Update', 'README.md', 'Original')).toBe(true); });
+	expect(result.current.selectedSessionId).toBe(session.id);
+	api.start.mockImplementationOnce((_request, emit: (event: CodingResponseEvent) => void) => {
+		emit({ type: 'error', runId: 'run-2', projectId: session.projectId, sessionId: session.id, message: 'Harness unavailable' });
+		return { runId: 'run-2', result: Promise.resolve({ projectId: session.projectId, sessionId: session.id, output: '' }) };
+	});
+	await act(async () => { expect(await result.current.run('Retry', 'README.md', 'Original')).toBe(false); });
+	expect(result.current.error).toBe('Harness unavailable');
 });
 
 it('runs with editor context, reuses the selected harness session, and refreshes its transcript', async () => {
