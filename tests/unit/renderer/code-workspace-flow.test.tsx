@@ -34,7 +34,7 @@ it('opens a named workspace configuration page from the empty sidebar and select
 	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
 	const sidebar = within(screen.getByRole('complementary'));
 	expect(await sidebar.findByText('No workspaces yet')).toBeInTheDocument();
-	expect(sidebar.getByRole('button', { name: 'New file' })).toBeDisabled();
+	expect(sidebar.queryByRole('button', { name: 'New file' })).not.toBeInTheDocument();
 	fireEvent.click(sidebar.getByRole('button', { name: 'Create workspace' }));
 	const page = within(screen.getByRole('main'));
 	expect(await page.findByLabelText('Workspace name')).toBeInTheDocument();
@@ -43,10 +43,11 @@ it('opens a named workspace configuration page from the empty sidebar and select
 	fireEvent.change(page.getByLabelText('Workspace name'), { target: { value: 'My workspace' } });
 	fireEvent.click(page.getByRole('button', { name: 'Create workspace' }));
 	await waitFor(() => expect(addProject).toHaveBeenCalledWith({ name: 'My workspace' }));
-	expect(await sidebar.findByRole('combobox', { name: 'Workspaces' })).toHaveTextContent('My workspace');
-	expect(within(sidebar.getByRole('combobox', { name: 'Workspaces' }).closest('header')!).queryByRole('button', { name: 'Coder settings' })).not.toBeInTheDocument();
+	expect(await sidebar.findByRole('button', { name: 'Workspaces' })).toHaveTextContent('My workspace');
+	expect(within(sidebar.getByRole('button', { name: 'Workspaces' }).closest('header')!).queryByRole('button', { name: 'Coder settings' })).not.toBeInTheDocument();
 	expect(sidebar.queryByText('No workspaces yet')).not.toBeInTheDocument();
-	expect(sidebar.getByRole('button', { name: 'New file' })).toBeEnabled();
+	expect(sidebar.queryByRole('button', { name: 'New file' })).not.toBeInTheDocument();
+	expect(within(sidebar.getByRole('button', { name: 'Workspaces' }).closest('header')!).getAllByRole('button')).toHaveLength(1);
 	expect(await sidebar.findByText('No files yet.')).toBeInTheDocument();
 	expect(localStorage.getItem('coder-workspace')).toBe(project.id);
 });

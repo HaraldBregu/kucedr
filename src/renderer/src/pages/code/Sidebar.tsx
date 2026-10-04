@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Code2, FileText, FolderPlus, ListChecks, Plus, RefreshCw, Settings2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Code2, FolderPlus, Plus, RefreshCw, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { CodingProject } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { WorkspaceSelector } from './Workspace';
 import { WorkspaceFiles } from './Files';
 
@@ -28,7 +27,6 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 	const [revision, setRevision] = useState(0);
-	const pendingCreation = useRef<'markdown' | 'instructions' | null>(null);
 	useEffect(() => {
 		let active = true;
 		setLoading(true);
@@ -51,26 +49,13 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	return (
 		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="flex min-h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2 py-2">
-				{!loading && workspace ? <WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
+				{!loading && workspace ? <WorkspaceSelector onCreate={onCreationChange} workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
 					setSelected(null);
 					onCreationChange(null);
 					localStorage.removeItem('coder-workspace');
 					onSelectWorkspace();
 					setRevision((value) => value + 1);
 				}} /> : <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-xs" disabled={loading || !workspace?.available} aria-label={t('codeFiles.newFile', 'New file')}><Plus /></Button></DropdownMenuTrigger>
-					<DropdownMenuContent align="end" onCloseAutoFocus={(event) => {
-						if (pendingCreation.current) {
-							event.preventDefault();
-							onCreationChange(pendingCreation.current);
-							pendingCreation.current = null;
-						}
-					}}>
-						<DropdownMenuItem onSelect={() => { pendingCreation.current = 'markdown'; }}><FileText />{t('codeFiles.newMarkdown', 'Markdown')}</DropdownMenuItem>
-						<DropdownMenuItem onSelect={() => { pendingCreation.current = 'instructions'; }}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</DropdownMenuItem>
-					</DropdownMenuContent>
-				</DropdownMenu>
 			</header>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 
