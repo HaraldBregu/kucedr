@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Code2, FolderCog, FolderPlus, Plus, RefreshCw, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useMatch, useNavigate } from 'react-router-dom';
 import type { CodingProject } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { WorkspaceSelector } from './Workspace';
@@ -23,6 +23,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
+	const settingsRoute = useMatch('/code/workspaces/:projectId/settings');
 	const [workspaces, setWorkspaces] = useState<CodingProject[]>([]);
 	const [selected, setSelected] = useState<string | null>(() => localStorage.getItem('coder-workspace'));
 	const [loading, setLoading] = useState(true);
@@ -46,7 +47,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 		localStorage.setItem('coder-workspace', id);
 		navigate('/code');
 	};
-	const workspace = workspaces.find((item) => item.id === selected) ?? workspaces[0];
+	const workspace = workspaces.find((item) => item.id === (settingsRoute?.params.projectId ?? selected)) ?? workspaces[0];
 	useEffect(() => { onFileCreationAvailable(!loading && Boolean(workspace?.available)); }, [loading, workspace?.available, onFileCreationAvailable]);
 	return (
 		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col" onContextMenu={(event) => {

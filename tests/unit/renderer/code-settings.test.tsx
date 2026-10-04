@@ -1,3 +1,4 @@
+import userEvent from '@testing-library/user-event';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { CodeSettings } from '../../../src/renderer/src/pages/code/Settings';
 import type { CodingSettings, CoderHarness } from '../../../src/shared/coding_types';
@@ -95,8 +96,8 @@ it('keeps the workspace directory when switching harness and retains edits after
 	render(<CodeSettings project={project} onClose={jest.fn()} />);
 	await screen.findByLabelText('Model');
 	fireEvent.change(screen.getByLabelText('Working directory'), { target: { value: '/projects/backend' } });
-	fireEvent.click(screen.getByLabelText('Harness'));
-	fireEvent.click(await screen.findByRole('option', { name: 'Codex', exact: true }));
+	await userEvent.click(screen.getByLabelText('Harness'));
+	await userEvent.click(await screen.findByRole('option', { name: 'Codex', exact: true }));
 	expect(screen.getByLabelText('Working directory')).toHaveValue('/projects/backend');
 	fireEvent.click(screen.getByRole('button', { name: 'Save workspace' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Working directory is unavailable.');
