@@ -103,7 +103,7 @@
 		"@lezer/highlight": "^1.2.4",
 		"@mistralai/mistralai": "^2.5.0",
 		"@modelcontextprotocol/sdk": "^1.30.0",
-		"@openai/codex": "0.157.1",
+		"@openai/codex": "0.159.3",
 		"@pinecone-database/pinecone": "^8.1.0",
 		"@radix-ui/react-avatar": "^1.1.11",
 		"@radix-ui/react-dialog": "^1.1.23",
