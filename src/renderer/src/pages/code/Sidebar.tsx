@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Code2, FolderPlus, Plus, RefreshCw, Settings2 } from 'lucide-react';
+import { Code2, FolderCog, FolderPlus, Plus, RefreshCw, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import type { CodingProject } from '@shared/coding_types';
@@ -87,7 +87,8 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 					<Button className="h-auto min-h-7 w-full whitespace-normal py-1.5" size="sm" onClick={() => navigate('/code/new')}><Plus /><span>{t('codeWorkspace.create', 'Create workspace')}</span></Button>
 				</div> : workspace?.available ? <WorkspaceFiles onDeleted={(fileName) => onDeleteFile(workspace.id, fileName)} creation={creation} onCancelCreation={() => onCreationChange(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
-			<footer className="shrink-0 border-t border-sidebar-border p-2">
+			<footer className="shrink-0 space-y-1 border-t border-sidebar-border p-2">
+				{workspace && <Button className="w-full justify-start" variant={location.pathname === `/code/workspaces/${workspace.id}/settings` ? 'secondary' : 'ghost'} aria-current={location.pathname === `/code/workspaces/${workspace.id}/settings` ? 'page' : undefined} onClick={() => navigate(`/code/workspaces/${workspace.id}/settings`)}><FolderCog /><span className="truncate">{t('codeWorkspace.settings', 'Workspace settings')}</span></Button>}
 				<Button className="w-full justify-start" variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}>
 					<Settings2 /><span className="truncate">{t('codeSettings.title', 'Coder settings')}</span>
 				</Button>

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertCircle, Bot, Brain, Cpu, Loader2, Plug, Shield } from 'lucide-react';
+import { AlertCircle, Bot, Brain, Cpu, FolderOpen, Loader2, Plug, Shield } from 'lucide-react';
 import {
 	CODER_HARNESSES,
 	CODING_THINKING_LEVELS,
 	type CoderHarness,
 	type CodingSettings,
+	type CodingProject,
 } from '@shared/coding_types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,8 +37,11 @@ const providerLabels = {
 	cline: 'Cline',
 };
 
-export function CodeSettings({ onClose }: { readonly onClose: () => void }): React.JSX.Element {
+export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: () => void; readonly project?: CodingProject; readonly onSaved?: () => void }): React.JSX.Element {
 	const { t } = useTranslation();
+	const [name, setName] = useState(project?.name ?? '');
+	const [directory, setDirectory] = useState(project?.settings?.workingDirectory ?? project?.directory ?? '');
+	const [picking, setPicking] = useState(false);
 	const [runtime, setRuntime] = useState<CoderHarness>('pi');
 	const [profiles, setProfiles] = useState<Partial<Record<CoderHarness, CodingSettings>>>({});
 	const [loading, setLoading] = useState(true);
@@ -54,8 +58,8 @@ export function CodeSettings({ onClose }: { readonly onClose: () => void }): Rea
 		])
 			.then(([selected, ...values]) => {
 				if (cancelled) return;
-				setRuntime(selected.runtime);
-				setProfiles(Object.fromEntries(values.map((value) => [value.runtime, value])));
+				setRuntime(project?.settings?.runtime ?? selected.runtime);
+				setProfiles({ ...Object.fromEntries(values.map((value) => [value.runtime, value])), ...(project?.settings ? { [project.settings.runtime]: project.settings } : {}) });
 			})
 			.catch((reason: unknown) => {
 				if (!cancelled)
@@ -72,7 +76,7 @@ export function CodeSettings({ onClose }: { readonly onClose: () => void }): Rea
 			cancelled = true;
 			mounted.current = false;
 		};
-	}, [t]);
+	}, [project, t]);
 
 	const settings = profiles[runtime];
 	const providers =
@@ -91,7 +95,7 @@ export function CodeSettings({ onClose }: { readonly onClose: () => void }): Rea
 						'codeSettings.harnessDescription',
 						'The coding agent used for new sessions.'
 					),
-					label: t('codeSettings.harness', 'Default harness'),
+					label: project ? t('codeWorkspace.harness', 'Harness') : t('codeSettings.harness', 'Default harness'),
 					value: runtime,
 					options: CODER_HARNESSES.map((value) => ({ value, label: harnessLabels[value] })),
 				},
@@ -159,13 +163,13 @@ export function CodeSettings({ onClose }: { readonly onClose: () => void }): Rea
 					className="grid gap-4"
 					onSubmit={(event) => {
 						event.preventDefault();
-						if (!settings || saving) return;
+						if (!settings || saving || picking) return;
+						if (project && !name.trim()) { setError(t('codeWorkspace.nameError', 'Enter a workspace name between 1 and 120 characters.')); return; }
 						setSaving(true);
 						setError('');
-						void window.coder
-							.saveSettings(settings)
+						void (project ? window.coder.updateProject(project.id, { name: name.trim(), settings: { ...settings, workingDirectory: directory.trim() || undefined } }) : window.coder.saveSettings(settings))
 							.then(() => {
-								if (mounted.current) onClose();
+								if (mounted.current) { onSaved?.(); onClose(); }
 							})
 							.catch((reason: unknown) => {
 								if (mounted.current)
@@ -182,13 +186,29 @@ export function CodeSettings({ onClose }: { readonly onClose: () => void }): Rea
 				>
 					<SettingsPageHeader
 						title={
-							<span id="coder-settings-title">{t('codeSettings.title', 'Coder settings')}</span>
+							<span id="coder-settings-title">{project ? t('codeWorkspace.settings', 'Workspace settings') : t('codeSettings.title', 'Coder settings')}</span>
 						}
-						description={t(
+						description={project ? t('codeWorkspace.settingsDescription', 'Configure this workspace. New sessions use these settings; existing sessions keep their saved configuration.') : t(
 							'codeSettings.description',
 							'Defaults for new sessions in every workspace. Existing sessions keep their saved settings.'
 						)}
 					/>
+					{project && <SettingsSection title={t('codeWorkspace.workspace', 'Workspace')}>
+						<SettingsPanel>
+							<SettingsRow title={<Label htmlFor="coder-workspace-name">{t('codeWorkspace.name', 'Workspace name')}</Label>} actionClassName="sm:w-72">
+								<Input id="coder-workspace-name" required maxLength={120} value={name} disabled={saving} onChange={(event) => setName(event.target.value)} />
+							</SettingsRow>
+							<SettingsRow icon={FolderOpen} title={<Label htmlFor="coder-working-directory">{t('codeWorkspace.directory', 'Working directory')}</Label>} description={t('codeWorkspace.directoryDescription', 'The folder where the harness reads files and runs commands. Leave empty to use the workspace files folder.')} actionClassName="sm:w-72">
+								<div className="flex min-w-0 gap-2">
+									<Input id="coder-working-directory" value={directory} disabled={saving || picking} placeholder={project.directory} onChange={(event) => setDirectory(event.target.value)} />
+									<Button type="button" variant="outline" size="icon" disabled={saving || picking} aria-label={t('codeWorkspace.browse', 'Choose working directory')} onClick={() => {
+										setPicking(true);
+										void window.coder.pickDirectory().then((value) => { if (mounted.current && value) setDirectory(value); }).catch((cause: unknown) => { if (mounted.current) setError(cause instanceof Error ? cause.message : t('codeWorkspace.directoryError', 'Unable to choose directory.')); }).finally(() => { if (mounted.current) setPicking(false); });
+									}}><FolderOpen /></Button>
+								</div>
+							</SettingsRow>
+						</SettingsPanel>
+					</SettingsSection>}
 					{loading ? (
 						<div role="status" aria-label={t('codeSettings.loading', 'Loading settings…')}>
 							<SettingsPanel>
@@ -289,11 +309,11 @@ export function CodeSettings({ onClose }: { readonly onClose: () => void }): Rea
 						<Button type="button" variant="outline" disabled={saving} onClick={onClose}>
 							{t('common.cancel', 'Cancel')}
 						</Button>
-						<Button type="submit" disabled={loading || saving || !settings}>
+						<Button type="submit" disabled={loading || saving || picking || !settings}>
 							{saving && <Loader2 aria-hidden="true" className="size-4 animate-spin" />}
 							{saving
 								? t('codeSettings.saving', 'Saving…')
-								: t('codeSettings.save', 'Save defaults')}
+								: project ? t('codeWorkspace.save', 'Save workspace') : t('codeSettings.save', 'Save defaults')}
 						</Button>
 					</footer>
 				</form>
