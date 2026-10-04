@@ -49,13 +49,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	return (
 		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col">
 			<header className="flex min-h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2 py-2">
-				{!loading && workspace ? <WorkspaceSelector onCreate={onCreationChange} workspace={workspace} workspaces={workspaces} onSelect={select} onRemove={() => {
-					setSelected(null);
-					onCreationChange(null);
-					localStorage.removeItem('coder-workspace');
-					onSelectWorkspace();
-					setRevision((value) => value + 1);
-				}} /> : <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
+				{!loading && workspace ? <WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} />: <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
 			</header>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 
