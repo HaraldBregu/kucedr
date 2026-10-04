@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useIsDark } from '@/hooks/use-is-dark';
@@ -7,7 +7,7 @@ import { drafts, type Draft } from './drafts';
 const CodeMirrorEditor = lazy(async () => ({ default: (await import('../workspace/Editor')).CodeMirrorEditor }));
 
 
-export function CodeFileViewer({ projectId, fileName }: { readonly projectId: string; readonly fileName: string }): React.JSX.Element {
+export function CodeFileViewer({ projectId, fileName, actions, footer, onContentChange }: { readonly projectId: string; readonly fileName: string; readonly actions?: ReactNode; readonly footer?: ReactNode; readonly onContentChange?: (content: string | null) => void }): React.JSX.Element {
 	const { t } = useTranslation();
 	const isDark = useIsDark();
 	const key = JSON.stringify([projectId, fileName]);
@@ -40,6 +40,8 @@ export function CodeFileViewer({ projectId, fileName }: { readonly projectId: st
 		return () => { cancelled = true; active.current = false; };
 	}, [key, projectId, fileName, reload, t]);
 
+	useEffect(() => { onContentChange?.(draft?.content ?? null); }, [draft?.content, onContentChange]);
+
 	const save = (): void => {
 		if (!draft || loading || saving || draft.content === draft.saved) return;
 		const current = { ...draft };
@@ -63,10 +65,11 @@ export function CodeFileViewer({ projectId, fileName }: { readonly projectId: st
 	const dirty = draft !== null && draft.content !== draft.saved;
 	return (
 		<section aria-label={fileName} className="flex h-full min-h-0 min-w-0 flex-1 flex-col bg-background">
-			<header className="flex min-h-12 shrink-0 items-center gap-3 border-b px-4">
+			<header className="flex h-10 shrink-0 items-center gap-2 border-b px-3">
 				<h1 className="min-w-0 flex-1 truncate text-sm font-medium" title={fileName}>{fileName}</h1>
 				<span role="status" className="text-xs text-muted-foreground">{loading ? t('codeFiles.loading', 'Loading file…') : saving ? t('codeFiles.saving', 'Saving…') : draft ? dirty ? t('codeFiles.unsaved', 'Unsaved changes') : t('codeFiles.saved', 'Saved') : null}</span>
-				<Button size="sm" disabled={loading || saving || !dirty} onClick={save}>{t('codeFiles.save', 'Save')}</Button>
+				<Button size="xs" disabled={loading || saving || !dirty} onClick={save}>{t('codeFiles.save', 'Save')}</Button>
+				{actions}
 			</header>
 			{error ? <div className="flex shrink-0 items-center gap-3 border-b p-3">
 				<p role="alert" className="min-w-0 flex-1 text-sm text-destructive">{error}</p>
@@ -86,6 +89,7 @@ export function CodeFileViewer({ projectId, fileName }: { readonly projectId: st
 					}} />
 				</Suspense>
 			</div> : null}
+			{footer}
 		</section>
 	);
 }
