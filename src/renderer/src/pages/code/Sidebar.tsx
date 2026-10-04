@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Code2, FileText, FolderPlus, ListChecks, Plus, RefreshCw, Settings2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -28,6 +28,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
 	const [revision, setRevision] = useState(0);
+	const pendingCreation = useRef<'markdown' | 'instructions' | null>(null);
 	useEffect(() => {
 		let active = true;
 		setLoading(true);
@@ -59,9 +60,15 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 				}} /> : <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
 				<DropdownMenu>
 					<DropdownMenuTrigger asChild><Button variant="ghost" size="icon-xs" disabled={loading || !workspace?.available} aria-label={t('codeFiles.newFile', 'New file')}><Plus /></Button></DropdownMenuTrigger>
-					<DropdownMenuContent align="end">
-						<DropdownMenuItem onSelect={() => onCreationChange('markdown')}><FileText />{t('codeFiles.newMarkdown', 'Markdown')}</DropdownMenuItem>
-						<DropdownMenuItem onSelect={() => onCreationChange('instructions')}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</DropdownMenuItem>
+					<DropdownMenuContent align="end" onCloseAutoFocus={(event) => {
+						if (pendingCreation.current) {
+							event.preventDefault();
+							onCreationChange(pendingCreation.current);
+							pendingCreation.current = null;
+						}
+					}}>
+						<DropdownMenuItem onSelect={() => { pendingCreation.current = 'markdown'; }}><FileText />{t('codeFiles.newMarkdown', 'Markdown')}</DropdownMenuItem>
+						<DropdownMenuItem onSelect={() => { pendingCreation.current = 'instructions'; }}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
 				<Button variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}><Settings2 /></Button>
