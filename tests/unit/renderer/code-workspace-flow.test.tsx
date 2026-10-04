@@ -13,6 +13,8 @@ jest.mock('../../../src/renderer/src/components/app/base/page', () => ({
 	Split: ({ sidebar, children }: { sidebar: ReactNode; children: ReactNode }) => <div><aside>{sidebar}</aside><main>{children}</main></div>,
 }));
 
+jest.mock('@/components/prompt-editor', () => ({ PromptEditor: () => <div /> }));
+
 const showContextMenu = jest.fn();
 const openProject = jest.fn();
 const listProjects = jest.fn();

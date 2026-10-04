@@ -17,7 +17,7 @@ export function CodeWorkbench({ projectId, fileName }: { readonly projectId: str
 	const [prompts, setPrompts] = useState<Record<string, string>>({});
 	const sessions = useSessions(projectId);
 	const prompt = prompts[fileName] ?? '';
-	const canRun = Boolean(prompt.trim()) && content !== null && !sessions.running;
+	const canRun = Boolean(prompt.trim()) && content !== null && !sessions.running && !sessions.loading;
 	const run = (): void => {
 		if (!canRun || content === null) return;
 		setOpen(true);
