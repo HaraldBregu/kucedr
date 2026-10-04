@@ -170,7 +170,7 @@
 		"zod": "^4.6.5"
 	},
 	"devDependencies": {
-		"@electron-toolkit/eslint-config-ts": "^3.0.0",
+		"@electron-toolkit/eslint-config-ts": "^4.0.0",
 		"@electron-toolkit/tsconfig": "^1.0.1",
 		"@playwright/test": "^1.58.2",
 		"@tailwindcss/postcss": "^4.2.2",
