@@ -71,7 +71,6 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 						<DropdownMenuItem onSelect={() => { pendingCreation.current = 'instructions'; }}><ListChecks />{t('codeFiles.instructions', 'Instructions')}</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
-				<Button variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} size="icon-xs" aria-label={t('codeSettings.title', 'Coder settings')} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}><Settings2 /></Button>
 			</header>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 
