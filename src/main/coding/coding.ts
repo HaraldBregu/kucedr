@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { realpathSync } from 'node:fs';
+import { realpathSync, statSync } from 'node:fs';
 import type {
 	CodingSettings,
 	CodingProjectCreate,
@@ -162,6 +162,9 @@ export class Coder {
 	addProject(input?: CodingProjectCreate) {
 		return this.dependencies.projects.create(input);
 	}
+	updateProject(id: string, input: CodingProjectCreate) {
+		return this.dependencies.projects.update(id, input);
+	}
 	removeProject(id: string) {
 		if ([...this.runs.values()].some((r) => r.projectId === id))
 			throw new Error('Stop the project run first.');
@@ -298,6 +301,13 @@ export class Coder {
 		this.sessions.save(next);
 		return next;
 	}
+	private canonicalDirectory(directory: string): string {
+		if (!path.isAbsolute(directory)) throw new Error('Working directory must be absolute.');
+		const canonical = realpathSync(directory);
+		if (!statSync(canonical).isDirectory()) throw new Error('Working directory is unavailable.');
+		return canonical;
+	}
+
 	async send(
 		ownerId: number,
 		runId: string,
@@ -356,17 +366,18 @@ export class Coder {
 				const selected = request.projectId ? this.requireProject(request.projectId) : undefined;
 				const settings = request.settings ?? selected?.settings ?? this.getSettings();
 				this.validateSettings(settings);
-				const cwd = request.workingDirectory ?? selected?.directory ?? settings.workingDirectory;
+				const cwd = request.workingDirectory ?? selected?.settings?.workingDirectory ?? selected?.directory ?? settings.workingDirectory;
 				if (!cwd) throw new Error('Choose a working directory.');
-				const project = this.dependencies.projects.add(cwd);
-				session = this.sessions.create(project.id, project.directory, settings, request.input, id);
+				const directory = this.canonicalDirectory(cwd);
+				const project = selected ?? this.dependencies.projects.add(directory);
+				session = this.sessions.create(project.id, directory, settings, request.input, id);
 			}
-			const project = this.requireProject(session.projectId);
-			if (realpathSync(project.directory) !== session.workingDirectory)
+			this.requireProject(session.projectId);
+			if (this.canonicalDirectory(session.workingDirectory) !== session.workingDirectory)
 				throw new Error('The session working directory has changed.');
 			if (
 				request.workingDirectory &&
-				realpathSync(request.workingDirectory) !== session.workingDirectory
+				this.canonicalDirectory(request.workingDirectory) !== session.workingDirectory
 			)
 				throw new Error('Create a new session to change directory.');
 			run.projectId = session.projectId;

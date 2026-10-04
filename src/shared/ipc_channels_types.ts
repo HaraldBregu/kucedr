@@ -107,6 +107,10 @@ export interface CodingInvokeChannelMap {
 		args: [input?: import('./coding_types').CodingProjectCreate];
 		result: import('./coding_types').CodingProject | undefined;
 	};
+	[CodingChannels.updateProject]: {
+		args: [projectId: string, input: import('./coding_types').CodingProjectCreate];
+		result: import('./coding_types').CodingProject;
+	};
 	[CodingChannels.openProject]: { args: [projectId: string]; result: void };
 	[CodingChannels.removeProject]: { args: [projectId: string]; result: boolean };
 	[CodingChannels.readProjectFile]: { args: [projectId: string, filePath: string]; result: string };

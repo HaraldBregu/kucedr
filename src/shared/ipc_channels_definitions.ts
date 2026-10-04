@@ -73,6 +73,7 @@ export const CodingChannels = {
 	listModels: 'coding:models:list',
 	listProjects: 'coding:projects:list',
 	addProject: 'coding:projects:add',
+	updateProject: 'coding:projects:update',
 	openProject: 'coding:projects:open',
 	removeProject: 'coding:projects:remove',
 	readProjectFile: 'coding:projects:files:read',

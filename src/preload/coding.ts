@@ -36,6 +36,12 @@ export const coding: CodingApi = {
 		if (!isCodingProjectCreate(input)) throw new Error('Invalid Coder workspace configuration.');
 		return typedInvokeUnwrap(CodingChannels.addProject, input);
 	},
+	updateProject: (projectId, input) => {
+		const id = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!id || !isCodingProjectCreate(input))
+			throw new Error('Invalid Coder workspace configuration.');
+		return typedInvokeUnwrap(CodingChannels.updateProject, id, input);
+	},
 	openProject: (projectId) => {
 		const normalizedProjectId = typeof projectId === 'string' ? projectId.trim() : '';
 		if (!normalizedProjectId) throw new Error('Invalid coding project id.');

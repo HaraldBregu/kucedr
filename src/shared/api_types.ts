@@ -282,6 +282,7 @@ export interface CodingApi {
 	listModels: (runtime?: CoderHarness) => Promise<CodingCatalog>;
 	listProjects: () => Promise<CodingProject[]>;
 	addProject: (input?: CodingProjectCreate) => Promise<CodingProject | undefined>;
+	updateProject: (projectId: string, input: CodingProjectCreate) => Promise<CodingProject>;
 	openProject: (projectId: string) => Promise<void>;
 	removeProject: (projectId: string) => Promise<boolean>;
 	readProjectFile: (projectId: string, filePath: string) => Promise<string>;

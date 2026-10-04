@@ -94,6 +94,12 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 			if (!isCodingProjectCreate(input)) throw new Error('Invalid Coder workspace configuration.');
 			return coding.addProject(input);
 		});
+		registerCommandWithEvent(CodingChannels.updateProject, (event, projectId, input) => {
+			assertCodingCaller(event);
+			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingProjectCreate(input))
+				throw new Error('Invalid Coder workspace configuration.');
+			return coding.updateProject(projectId.trim(), input);
+		});
 		registerCommandWithEvent(CodingChannels.openProject, async (event, projectId) => {
 			assertCodingCaller(event);
 			if (typeof projectId !== 'string' || !projectId.trim()) {

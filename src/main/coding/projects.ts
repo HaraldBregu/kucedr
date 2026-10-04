@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import path from 'node:path';
 import Store from 'electron-store';
 import { userDataLocation } from '../shared/user_data_location';
-import { isCodingProjectCreate, type CodingProject, type CodingProjectCreate } from '../../shared/coding_types';
+import { isCodingProjectCreate, type CodingProject, type CodingProjectCreate, type CodingSettings } from '../../shared/coding_types';
 import { agentLocation } from '../shared/agent_location';
 
 interface StoredCodingProject extends Omit<CodingProject, 'available'> {
@@ -65,6 +65,7 @@ export class CodingProjectStore {
 	create(input?: CodingProjectCreate): CodingProject {
 		if (input !== undefined && !isCodingProjectCreate(input))
 			throw new Error('Invalid Coder workspace configuration.');
+		const settings = input?.settings ? this.normalizeSettings(input.settings) : undefined;
 		const id = randomUUID();
 		const directory = path.join(this.projectsDirectory, id, 'files');
 		mkdirSync(directory, { recursive: true });
@@ -77,18 +78,35 @@ export class CodingProjectStore {
 			name: input?.name.trim() ?? `Workspace ${number}`,
 			directory: realpathSync.native(directory),
 			kind: 'agent-workspace',
-			...(input?.settings ? { settings: {
-				runtime: input.settings.runtime,
-				providerId: input.settings.providerId,
-				modelId: input.settings.modelId.trim(),
-				thinkingLevel: input.settings.thinkingLevel,
-				toolMode: input.settings.toolMode,
-			} } : {}),
+			...(settings ? { settings } : {}),
 			createdAt: timestamp,
 			lastOpenedAt: timestamp,
 		};
 		this.save(project);
 		return { ...project, available: true };
+	}
+
+	update(projectId: string, input: CodingProjectCreate): CodingProject {
+		if (!isCodingProjectCreate(input))
+			throw new Error('Invalid Coder workspace configuration.');
+		const project = this.projects.find((item) => item.id === projectId && !item.archived);
+		if (!project) throw new Error('Coder workspace is unavailable.');
+		const settings = input.settings ? this.normalizeSettings(input.settings) : undefined;
+		const next = { ...project, name: input.name.trim(), settings };
+		this.save(next);
+		return { ...next, available: this.isAvailable(next.directory) };
+	}
+
+	private normalizeSettings(settings: CodingSettings): CodingSettings {
+		const directory = settings.workingDirectory?.trim();
+		return {
+			runtime: settings.runtime,
+			providerId: settings.providerId,
+			modelId: settings.modelId.trim(),
+			thinkingLevel: settings.thinkingLevel,
+			toolMode: settings.toolMode,
+			...(directory ? { workingDirectory: this.canonicalDirectory(directory) } : {}),
+		};
 	}
 
 	add(directory: string): CodingProject {
