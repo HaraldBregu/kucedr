@@ -26,6 +26,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	const [selected, setSelected] = useState<string | null>(() => localStorage.getItem('coder-workspace'));
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
+	const [actionError, setActionError] = useState('');
 	const [revision, setRevision] = useState(0);
 	useEffect(() => {
 		let active = true;
@@ -47,12 +48,37 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	const workspace = workspaces.find((item) => item.id === selected) ?? workspaces[0];
 	useEffect(() => { onFileCreationAvailable(!loading && Boolean(workspace?.available)); }, [loading, workspace?.available, onFileCreationAvailable]);
 	return (
-		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col">
+		<div data-slot="code-sidebar" className="flex h-full min-h-0 flex-col" onContextMenu={(event) => {
+			if ((event.target as HTMLElement).closest('input, textarea, [contenteditable="true"]')) return;
+			event.preventDefault();
+			const available = !loading && Boolean(workspace?.available);
+			setActionError('');
+			void window.win.showContextMenu([
+				{ id: 'create-file', label: t('workspaceSidebar.newFile', 'New file'), enabled: available },
+				{ id: 'instructions', label: t('codeFiles.instructions', 'Instructions'), enabled: available },
+				{ type: 'separator' },
+				{ id: 'open-folder', label: t('code.openFolder', 'Open folder'), enabled: available },
+				{ id: 'refresh', label: t('common.refresh', 'Refresh'), enabled: !loading },
+				{ type: 'separator' },
+				{ id: 'create-workspace', label: t('codeWorkspace.create', 'Create workspace') },
+			]).then(async (action) => {
+				if (action === 'create-workspace') navigate('/code/new');
+				else if (action === 'refresh' && !loading) { onCreationChange(null); setRevision((value) => value + 1); }
+				else if (available && workspace) {
+					if (action === 'open-folder') await window.coder.openProject(workspace.id);
+					else if (action === 'create-file' || action === 'instructions') {
+						onCreationChange(action === 'instructions' ? 'instructions' : 'markdown');
+						navigate('/code');
+					}
+				}
+			}).catch((cause: unknown) => setActionError(cause instanceof Error ? cause.message : t('code.actionError', 'Unable to update workspace.')));
+		}}>
 			<header className="flex min-h-12 shrink-0 items-center gap-1 border-b border-sidebar-border px-2 py-2">
 				{!loading && workspace ? <WorkspaceSelector workspace={workspace} workspaces={workspaces} onSelect={select} />: <><Code2 className="size-4 shrink-0" strokeWidth={1.8} /><h1 className="flex-1 truncate text-sm font-medium">{title}</h1></>}
 			</header>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 
+			{actionError && <p role="alert" className="px-3 py-2 text-xs text-destructive">{actionError}</p>}
 			<nav aria-label={t('codeFiles.files', 'Files')} className="min-h-0 flex-1 overflow-y-auto p-2">
 				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <div className="grid justify-items-start gap-3 px-2 py-6">
 					<FolderPlus className="size-6 text-muted-foreground" aria-hidden="true" />

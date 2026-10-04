@@ -13,6 +13,8 @@ jest.mock('../../../src/renderer/src/components/app/base/page', () => ({
 	Split: ({ sidebar, children }: { sidebar: ReactNode; children: ReactNode }) => <div><aside>{sidebar}</aside><main>{children}</main></div>,
 }));
 
+const showContextMenu = jest.fn();
+const openProject = jest.fn();
 const listProjects = jest.fn();
 const addProject = jest.fn();
 const listMarkdownFiles = jest.fn();
@@ -21,11 +23,14 @@ const project: CodingProject = { id: 'new-workspace', name: 'My workspace', dire
 beforeEach(() => {
 	jest.clearAllMocks();
 	localStorage.clear();
+	showContextMenu.mockResolvedValue(null);
+	openProject.mockResolvedValue(undefined);
+	Object.defineProperty(window, 'win', { configurable: true, value: { showContextMenu } });
 	listProjects.mockResolvedValue([]);
 	listMarkdownFiles.mockResolvedValue([]);
 	addProject.mockImplementation(async () => { listProjects.mockResolvedValue([project]); return project; });
 	Object.defineProperty(window, 'coder', { configurable: true, value: {
-		listProjects, addProject, listMarkdownFiles,
+		listProjects, addProject, listMarkdownFiles, openProject,
 		getSettings: jest.fn(async (runtime: CoderHarness = 'pi') => ({ runtime, providerId: runtime === 'cline' ? 'cline' : 'openai-codex', modelId: '', thinkingLevel: 'medium', toolMode: 'read-only' })),
 	} });
 });
@@ -90,4 +95,37 @@ it('opens Coder settings from the sidebar footer and marks it selected', async (
 	fireEvent.click(button);
 	expect(await within(screen.getByRole('main')).findByRole('heading', { name: 'Coder settings' })).toBeInTheDocument();
 	expect(button).toHaveAttribute('aria-current', 'page');
+});
+
+it.each(['create-file', 'instructions', 'open-folder', 'refresh', 'create-workspace'])('runs sidebar context action %s', async (action) => {
+	listProjects.mockResolvedValue([project]);
+	showContextMenu.mockResolvedValue(action);
+	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
+	await screen.findByText('No files yet.');
+	fireEvent.contextMenu(screen.getByRole('navigation', { name: 'Files' }));
+	expect(showContextMenu).toHaveBeenCalledWith(expect.arrayContaining([
+		expect.objectContaining({ id: 'create-file', enabled: true }),
+		expect.objectContaining({ id: 'open-folder', enabled: true }),
+	]));
+	if (action === 'create-file' || action === 'instructions') {
+		expect(await screen.findByLabelText('File name')).toHaveFocus();
+		expect(screen.getByLabelText('File name')).toHaveValue(action === 'instructions' ? 'AGENTS.md' : '');
+		fireEvent.contextMenu(screen.getByLabelText('File name'));
+		expect(showContextMenu).toHaveBeenCalledTimes(1);
+	} else if (action === 'open-folder') await waitFor(() => expect(openProject).toHaveBeenCalledWith(project.id));
+	else if (action === 'refresh') await waitFor(() => expect(listMarkdownFiles).toHaveBeenCalledTimes(2));
+	else expect(await screen.findByLabelText('Workspace name')).toBeInTheDocument();
+});
+
+it('disables file actions without a workspace and reports menu action failures', async () => {
+	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
+	await screen.findByText('No workspaces yet');
+	fireEvent.contextMenu(screen.getByRole('navigation', { name: 'Files' }));
+	expect(showContextMenu).toHaveBeenCalledWith(expect.arrayContaining([
+		expect.objectContaining({ id: 'create-file', enabled: false }),
+		expect.objectContaining({ id: 'open-folder', enabled: false }),
+	]));
+	showContextMenu.mockRejectedValueOnce(new Error('Menu unavailable'));
+	fireEvent.contextMenu(screen.getByRole('navigation', { name: 'Files' }));
+	expect(await screen.findByRole('alert')).toHaveTextContent('Menu unavailable');
 });
