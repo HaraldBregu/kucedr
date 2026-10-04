@@ -380,3 +380,18 @@ it.each([
 		expect(operation).not.toHaveBeenCalled();
 	}
 );
+
+
+it('validates workspace updates at the trusted IPC boundary', async () => {
+	const updateProject = jest.fn().mockReturnValue({ id: 'project-1', name: 'Updated' });
+	const coding = { updateProject } as unknown as Coding;
+	const appRegistry = { has: jest.fn().mockReturnValue(true), resolve: jest.fn().mockReturnValue('coder') };
+	new CodingIpc().register({ coding, appRegistry: appRegistry as never, windows: windows as never }, {} as EventBus);
+	const handler = (ipcMain.handle as jest.Mock).mock.calls.find(([channel]) => channel === CodingChannels.updateProject)![1];
+	const event = { sender: { id: 23 } };
+	expect(await handler(event, ' project-1 ', { name: 'Updated' })).toEqual({ success: true, data: { id: 'project-1', name: 'Updated' } });
+	expect(updateProject).toHaveBeenCalledWith('project-1', { name: 'Updated' });
+	expect(await handler(event, '', { name: 'Updated' })).toMatchObject({ success: false });
+	expect(await handler(event, 'project-1', { name: '' })).toMatchObject({ success: false });
+	expect(updateProject).toHaveBeenCalledTimes(1);
+});

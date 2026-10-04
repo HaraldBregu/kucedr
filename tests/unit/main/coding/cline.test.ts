@@ -30,6 +30,7 @@ describe('ClineHarness', () => {
 	beforeEach(async () => {
 		directory = await mkdtemp(join(tmpdir(), 'kucedr-cline-test-'));
 		context = {
+			projectId: 'project',
 			cwd: '/projects/example',
 			settings: {
 				runtime: 'cline',

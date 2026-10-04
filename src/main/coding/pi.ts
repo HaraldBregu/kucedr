@@ -335,7 +335,7 @@ export class Pi {
 				{ projectTrusted: true }
 			);
 			const resourceLoader = new DefaultResourceLoader({
-				cwd: project.directory,
+				cwd: request.workingDirectory ?? project.directory,
 				agentDir: codingLocation(),
 				settingsManager,
 				noExtensions: true,
@@ -345,7 +345,7 @@ export class Pi {
 			});
 			await resourceLoader.reload();
 			const { session } = await createAgentSession({
-				cwd: project.directory,
+				cwd: request.workingDirectory ?? project.directory,
 				agentDir: codingLocation(),
 				modelRuntime: runtime,
 				model,

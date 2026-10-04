@@ -21,6 +21,7 @@ describe('CodexHarness', () => {
 		jest.mocked(CodexRpc).mockImplementation(() => rpc);
 		controller = new AbortController();
 		context = {
+			projectId: 'project',
 			cwd: '/projects/example',
 			settings: {
 				runtime: 'codex',

@@ -12,6 +12,7 @@ type StripContext<T> = T extends unknown ? Omit<T, 'runId' | 'projectId' | 'sess
 export type HarnessEvent = StripContext<CodingResponseEvent>;
 
 export interface HarnessContext {
+	readonly projectId: string;
 	readonly cwd: string;
 	readonly settings: CodingSettings;
 	readonly nativeSessionId?: string;

@@ -81,10 +81,7 @@ export class Coder {
 		this.harnesses = {
 			pi: {
 				run: async (input, context) => {
-					const project = this.dependencies.projects
-						.list()
-						.find((p) => p.directory === context.cwd);
-					if (!project) throw new Error('Coder project was not found.');
+					const project = this.requireProject(context.projectId);
 					const runId = randomUUID();
 					const abort = (): void => {
 						this.pi.cancel(runId, 0);
@@ -97,6 +94,7 @@ export class Coder {
 							runId,
 							{
 								projectId: project.id,
+								workingDirectory: context.cwd,
 								sessionId: context.nativeSessionId,
 								mode: 'agent',
 								input,
@@ -386,6 +384,7 @@ export class Coder {
 			this.sessions.append(id, { type: 'prompt', runId, input: request.input, mode: request.mode });
 			publish({ type: 'status', status: 'started' });
 			const context: HarnessContext = {
+				projectId: session.projectId,
 				cwd: session.workingDirectory,
 				settings: session.settings,
 				nativeSessionId: session.nativeSessionId,
