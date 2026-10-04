@@ -53,7 +53,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 			</header>
 			{error && <div className="px-3 pb-2"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}><RefreshCw />{t('code.retry', 'Retry')}</Button></div>}
 
-			<nav aria-label={t('codeFiles.files', 'Files')} className="min-h-0 flex-1 overflow-y-auto px-2 pb-2">
+			<nav aria-label={t('codeFiles.files', 'Files')} className="min-h-0 flex-1 overflow-y-auto p-2">
 				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <div className="grid justify-items-start gap-3 px-2 py-6">
 					<FolderPlus className="size-6 text-muted-foreground" aria-hidden="true" />
 					<div className="grid gap-1"><h2 className="text-sm font-medium">{t('codeWorkspace.emptyTitle', 'No workspaces yet')}</h2><p className="text-xs leading-relaxed text-muted-foreground">{t('codeWorkspace.emptyDescription', 'Create a workspace to organize your files, instructions, and sessions.')}</p></div>

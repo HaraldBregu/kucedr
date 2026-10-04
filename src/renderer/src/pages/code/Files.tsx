@@ -37,7 +37,7 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, creation, onCa
 	}, [projectId, revision, t]);
 	return (
 		<div className="min-w-0">
-			{creation && <form className="flex min-h-8 items-center gap-2 px-2" onSubmit={(event) => {
+			{creation && <form className="flex min-h-11 items-center gap-2 px-2.5 py-2" onSubmit={(event) => {
 				event.preventDefault();
 				if (submitting.current) return;
 				const trimmed = name.trim();
@@ -65,7 +65,7 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, creation, onCa
 				}} />
 			</form>}
 			{error && <div className="p-1"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}>{t('code.retry', 'Retry')}</Button></div>}
-			{loading ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.loading', 'Loading files…')}</p> : files.length === 0 && !error ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.empty', 'No files yet.')}</p> : files.map((fileName) => <button key={fileName} type="button" className={cn(SPLIT_ITEM_CLASS, selectedFile === fileName && SPLIT_ITEM_ACTIVE_CLASS)} aria-current={selectedFile === fileName ? 'page' : undefined} title={fileName} onClick={() => onOpen(fileName)}><File className="text-muted-foreground" strokeWidth={1.8} /><span>{fileName}</span></button>)}
+			{loading ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.loading', 'Loading files…')}</p> : files.length === 0 && !error ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.empty', 'No files yet.')}</p> : files.map((fileName) => <button key={fileName} type="button" className={cn(SPLIT_ITEM_CLASS, 'h-auto min-h-11 py-3', selectedFile === fileName && SPLIT_ITEM_ACTIVE_CLASS)} aria-current={selectedFile === fileName ? 'page' : undefined} title={fileName} onClick={() => onOpen(fileName)}><File className="text-muted-foreground" strokeWidth={1.8} /><span>{fileName}</span></button>)}
 		</div>
 	);
 }
