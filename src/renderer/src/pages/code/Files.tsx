@@ -6,16 +6,18 @@ import { Input } from '@/components/ui/input';
 import { SPLIT_ITEM_CLASS, SPLIT_ITEM_ACTIVE_CLASS } from '@/components/app/base/page/styles';
 import { cn } from '@/lib/utils';
 import { isCodingMarkdownFileName } from '@shared/coding_types';
+import { drafts } from './drafts';
 
 interface WorkspaceFilesProps {
 	readonly projectId: string;
 	readonly selectedFile: string | null;
 	readonly onOpen: (fileName: string) => void;
+	readonly onDeleted: (fileName: string) => void;
 	readonly creation?: 'markdown' | 'instructions' | null;
 	readonly onCancelCreation: () => void;
 }
 
-export function WorkspaceFiles({ projectId, selectedFile, onOpen, creation, onCancelCreation }: WorkspaceFilesProps): React.JSX.Element {
+export function WorkspaceFiles({ projectId, selectedFile, onOpen, onDeleted, creation, onCancelCreation }: WorkspaceFilesProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [files, setFiles] = useState<string[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -65,7 +67,30 @@ export function WorkspaceFiles({ projectId, selectedFile, onOpen, creation, onCa
 				}} />
 			</form>}
 			{error && <div className="p-1"><p role="alert" className="text-xs text-destructive">{error}</p><Button variant="ghost" size="xs" onClick={() => setRevision((value) => value + 1)}>{t('code.retry', 'Retry')}</Button></div>}
-			{loading ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.loading', 'Loading files…')}</p> : files.length === 0 && !error ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.empty', 'No files yet.')}</p> : files.map((fileName) => <button key={fileName} type="button" className={cn(SPLIT_ITEM_CLASS, 'h-auto min-h-11 py-3', selectedFile === fileName && SPLIT_ITEM_ACTIVE_CLASS)} aria-current={selectedFile === fileName ? 'page' : undefined} title={fileName} onClick={() => onOpen(fileName)}><File className="text-muted-foreground" strokeWidth={1.8} /><span>{fileName}</span></button>)}
+			{loading ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.loading', 'Loading files…')}</p> : files.length === 0 && !error ? <p className="p-1 text-xs text-muted-foreground">{t('codeFiles.empty', 'No files yet.')}</p> : files.map((fileName) => <button key={fileName} type="button" className={cn(SPLIT_ITEM_CLASS, 'h-auto min-h-11 py-3', selectedFile === fileName && SPLIT_ITEM_ACTIVE_CLASS)} aria-current={selectedFile === fileName ? 'page' : undefined} title={fileName} onClick={() => onOpen(fileName)} onContextMenu={(event) => {
+				event.preventDefault();
+				event.stopPropagation();
+				void window.win.showContextMenu([
+					{ id: 'open', label: t('common.open', 'Open') },
+					{ type: 'separator' },
+					{ id: 'delete', label: t('common.delete', 'Delete'), enabled: !busy },
+				]).then(async (action) => {
+					if (action === 'open') onOpen(fileName);
+					else if (action === 'delete' && !submitting.current && window.confirm(t('codeFiles.confirmDelete', 'Delete "{{name}}"? This permanently deletes the file and any unsaved changes.', { name: fileName }))) {
+						submitting.current = true;
+						setBusy(true);
+						setError('');
+						try {
+							const key = JSON.stringify([projectId, fileName]);
+							await drafts.get(key)?.pending;
+							await window.coder.deleteMarkdownFile(projectId, fileName);
+							drafts.delete(key);
+							setFiles((current) => current.filter((item) => item !== fileName));
+							onDeleted(fileName);
+						} finally { submitting.current = false; setBusy(false); }
+					}
+				}).catch((cause: unknown) => setError(cause instanceof Error ? cause.message : t('codeFiles.deleteError', 'Unable to delete file.')));
+			}}><File className="text-muted-foreground" strokeWidth={1.8} /><span>{fileName}</span></button>)}
 		</div>
 	);
 }

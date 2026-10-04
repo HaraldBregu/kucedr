@@ -15,10 +15,11 @@ interface CodeSidebarProps {
 	readonly refreshKey: number;
 	readonly selectedFile: { projectId: string; fileName: string } | null;
 	readonly onSelectWorkspace: () => void;
+	readonly onDeleteFile: (projectId: string, fileName: string) => void;
 	readonly onOpenFile: (projectId: string, fileName: string) => void;
 }
 
-export function CodeSidebar({ title, creation, onCreationChange, onFileCreationAvailable, refreshKey, selectedFile, onSelectWorkspace, onOpenFile }: CodeSidebarProps): React.JSX.Element {
+export function CodeSidebar({ title, creation, onCreationChange, onFileCreationAvailable, refreshKey, selectedFile, onSelectWorkspace, onOpenFile, onDeleteFile }: CodeSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
@@ -84,7 +85,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 					<FolderPlus className="size-6 text-muted-foreground" aria-hidden="true" />
 					<div className="grid gap-1"><h2 className="text-sm font-medium">{t('codeWorkspace.emptyTitle', 'No workspaces yet')}</h2><p className="text-xs leading-relaxed text-muted-foreground">{t('codeWorkspace.emptyDescription', 'Create a workspace to organize your files, instructions, and sessions.')}</p></div>
 					<Button className="h-auto min-h-7 w-full whitespace-normal py-1.5" size="sm" onClick={() => navigate('/code/new')}><Plus /><span>{t('codeWorkspace.create', 'Create workspace')}</span></Button>
-				</div> : workspace?.available ? <WorkspaceFiles creation={creation} onCancelCreation={() => onCreationChange(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
+				</div> : workspace?.available ? <WorkspaceFiles onDeleted={(fileName) => onDeleteFile(workspace.id, fileName)} creation={creation} onCancelCreation={() => onCreationChange(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
 			<footer className="shrink-0 border-t border-sidebar-border p-2">
 				<Button className="w-full justify-start" variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}>

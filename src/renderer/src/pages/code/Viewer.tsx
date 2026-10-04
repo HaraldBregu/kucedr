@@ -2,15 +2,10 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { useIsDark } from '@/hooks/use-is-dark';
+import { drafts, type Draft } from './drafts';
 
 const CodeMirrorEditor = lazy(async () => ({ default: (await import('../workspace/Editor')).CodeMirrorEditor }));
-interface Draft {
-	content: string;
-	saved: string;
-	error: string;
-	pending?: Promise<void>;
-}
-const drafts = new Map<string, Draft>();
+
 
 export function CodeFileViewer({ projectId, fileName }: { readonly projectId: string; readonly fileName: string }): React.JSX.Element {
 	const { t } = useTranslation();

@@ -8,17 +8,22 @@ jest.mock('react-i18next', () => {
 
 const listMarkdownFiles = jest.fn();
 const createMarkdownFile = jest.fn();
+const deleteMarkdownFile = jest.fn();
+const showContextMenu = jest.fn();
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	deleteMarkdownFile.mockReset().mockResolvedValue(undefined);
+	showContextMenu.mockReset().mockResolvedValue('delete');
+	Object.defineProperty(window, 'win', { configurable: true, value: { showContextMenu } });
 	listMarkdownFiles.mockResolvedValue([]);
 	createMarkdownFile.mockResolvedValue(undefined);
-	Object.defineProperty(window, 'coder', { configurable: true, value: { listMarkdownFiles, createMarkdownFile } });
+	Object.defineProperty(window, 'coder', { configurable: true, value: { listMarkdownFiles, createMarkdownFile, deleteMarkdownFile } });
 });
 
 it('creates Markdown within the selected workspace and opens it', async () => {
 	const onOpen = jest.fn();
-	render(<WorkspaceFiles projectId="workspace-a" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={onOpen} />);
+	render(<WorkspaceFiles onDeleted={jest.fn()} projectId="workspace-a" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	await screen.findByText('No files yet.');
 	fireEvent.change(screen.getByLabelText('File name'), { target: { value: 'notes' } });
 	fireEvent.submit(screen.getByLabelText('File name').closest('form')!);
@@ -28,14 +33,14 @@ it('creates Markdown within the selected workspace and opens it', async () => {
 
 it('creates the recognized instructions filename and opens existing instructions without overwriting them', async () => {
 	const onOpen = jest.fn();
-	const view = render(<WorkspaceFiles projectId="workspace-b" selectedFile={null} creation="instructions" onCancelCreation={jest.fn()} onOpen={onOpen} />);
+	const view = render(<WorkspaceFiles onDeleted={jest.fn()} projectId="workspace-b" selectedFile={null} creation="instructions" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	await screen.findByText('No files yet.');
 	expect(screen.getByLabelText('File name')).toHaveValue('AGENTS.md');
 	listMarkdownFiles.mockResolvedValue(['AGENTS.md']);
 	fireEvent.submit(screen.getByLabelText('File name').closest('form')!);
 	await waitFor(() => expect(onOpen).toHaveBeenCalledWith('AGENTS.md'));
 	await screen.findByRole('button', { name: 'AGENTS.md' });
-	view.rerender(<WorkspaceFiles projectId="workspace-b" selectedFile="AGENTS.md" creation="instructions" onCancelCreation={jest.fn()} onOpen={onOpen} />);
+	view.rerender(<WorkspaceFiles onDeleted={jest.fn()} projectId="workspace-b" selectedFile="AGENTS.md" creation="instructions" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	expect(screen.getByRole('button', { name: 'AGENTS.md' })).toHaveAttribute('aria-current', 'page');
 	fireEvent.submit(screen.getByLabelText('File name').closest('form')!);
 	expect(createMarkdownFile).toHaveBeenCalledTimes(1);
@@ -44,7 +49,7 @@ it('creates the recognized instructions filename and opens existing instructions
 it('keeps the filename and shows a creation failure without opening a file', async () => {
 	createMarkdownFile.mockRejectedValue(new Error('File already exists'));
 	const onOpen = jest.fn();
-	render(<WorkspaceFiles projectId="workspace-c" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={onOpen} />);
+	render(<WorkspaceFiles onDeleted={jest.fn()} projectId="workspace-c" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={onOpen} />);
 	await screen.findByText('No files yet.');
 	fireEvent.change(screen.getByLabelText('File name'), { target: { value: 'notes.md' } });
 	fireEvent.submit(screen.getByLabelText('File name').closest('form')!);
@@ -55,7 +60,7 @@ it('keeps the filename and shows a creation failure without opening a file', asy
 
 it('creates on blur, cancels with Escape, and has no per-input buttons', async () => {
 	const onCancel = jest.fn();
-	render(<WorkspaceFiles projectId="workspace-a" selectedFile={null} creation="markdown" onCancelCreation={onCancel} onOpen={jest.fn()} />);
+	render(<WorkspaceFiles onDeleted={jest.fn()} projectId="workspace-a" selectedFile={null} creation="markdown" onCancelCreation={onCancel} onOpen={jest.fn()} />);
 	await screen.findByText('No files yet.');
 	const input = screen.getByLabelText('File name');
 	expect(screen.queryByRole('button', { name: 'Create' })).not.toBeInTheDocument();
@@ -69,7 +74,7 @@ it('creates on blur, cancels with Escape, and has no per-input buttons', async (
 });
 
 it('does not create blank filenames or paths outside the workspace', async () => {
-	render(<WorkspaceFiles projectId="workspace-a" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={jest.fn()} />);
+	render(<WorkspaceFiles onDeleted={jest.fn()} projectId="workspace-a" selectedFile={null} creation="markdown" onCancelCreation={jest.fn()} onOpen={jest.fn()} />);
 	await screen.findByText('No files yet.');
 	const input = screen.getByLabelText('File name');
 	fireEvent.submit(input.closest('form')!);
@@ -78,4 +83,35 @@ it('does not create blank filenames or paths outside the workspace', async () =>
 	fireEvent.submit(input.closest('form')!);
 	expect(await screen.findByRole('alert')).toHaveTextContent('Enter a Markdown filename without folders.');
 	expect(createMarkdownFile).not.toHaveBeenCalled();
+});
+
+it.each([true, false])('requires confirmation before deleting a file: confirm=%s', async (confirmed) => {
+	listMarkdownFiles.mockResolvedValue(['notes.md']);
+	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(confirmed);
+	const onDeleted = jest.fn();
+	render(<WorkspaceFiles onDeleted={onDeleted} projectId="workspace-a" selectedFile="notes.md" onCancelCreation={jest.fn()} onOpen={jest.fn()} />);
+	fireEvent.contextMenu(await screen.findByRole('button', { name: 'notes.md' }));
+	await waitFor(() => expect(confirm).toHaveBeenCalledTimes(1));
+	if (confirmed) {
+		await waitFor(() => expect(onDeleted).toHaveBeenCalledWith('notes.md'));
+		expect(deleteMarkdownFile).toHaveBeenCalledWith('workspace-a', 'notes.md');
+		expect(screen.queryByRole('button', { name: 'notes.md' })).not.toBeInTheDocument();
+	} else {
+		expect(deleteMarkdownFile).not.toHaveBeenCalled();
+		expect(screen.getByRole('button', { name: 'notes.md' })).toBeInTheDocument();
+	}
+	confirm.mockRestore();
+});
+
+it('keeps the file when deletion fails', async () => {
+	listMarkdownFiles.mockResolvedValue(['notes.md']);
+	deleteMarkdownFile.mockRejectedValueOnce(new Error('Permission denied'));
+	const confirm = jest.spyOn(window, 'confirm').mockReturnValue(true);
+	const onDeleted = jest.fn();
+	render(<WorkspaceFiles onDeleted={onDeleted} projectId="workspace-a" selectedFile="notes.md" onCancelCreation={jest.fn()} onOpen={jest.fn()} />);
+	fireEvent.contextMenu(await screen.findByRole('button', { name: 'notes.md' }));
+	expect(await screen.findByRole('alert')).toHaveTextContent('Permission denied');
+	expect(screen.getByRole('button', { name: 'notes.md' })).toBeInTheDocument();
+	expect(onDeleted).not.toHaveBeenCalled();
+	confirm.mockRestore();
 });
