@@ -131,3 +131,14 @@ it('disables file actions without a workspace and reports menu action failures',
 	fireEvent.contextMenu(screen.getByRole('navigation', { name: 'Files' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Menu unavailable');
 });
+
+it('opens the selected workspace settings page with its own working directory', async () => {
+	listProjects.mockResolvedValue([project]);
+	render(<MemoryRouter initialEntries={['/code']}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
+	const sidebar = within(screen.getByRole('complementary'));
+	fireEvent.click(await sidebar.findByRole('button', { name: 'Workspace settings', exact: true }));
+	expect(await within(screen.getByRole('main')).findByRole('heading', { name: 'Workspace settings' })).toBeInTheDocument();
+	expect(screen.getByLabelText('Workspace name')).toHaveValue('My workspace');
+	expect(screen.getByLabelText('Working directory')).toHaveValue(project.directory);
+	expect(sidebar.getByRole('button', { name: 'Workspace settings', exact: true })).toHaveAttribute('aria-current', 'page');
+});

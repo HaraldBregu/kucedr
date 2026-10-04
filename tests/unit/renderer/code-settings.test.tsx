@@ -67,3 +67,40 @@ it('reports loading errors and prevents saving unavailable defaults', async () =
 	expect(await screen.findByRole('alert')).toHaveTextContent('Unavailable');
 	expect(screen.getByRole('button', { name: 'Save defaults' })).toBeDisabled();
 });
+
+it('loads workspace overrides and saves its chosen directory without changing shared defaults', async () => {
+	const project = { id: 'workspace-one', name: 'Frontend', directory: '/managed/files', kind: 'agent-workspace' as const, available: true, createdAt: '', lastOpenedAt: '', settings: { ...settings, modelId: 'workspace-model', workingDirectory: '/projects/frontend' } };
+	const updateProject = jest.fn().mockResolvedValue(project);
+	const pickDirectory = jest.fn().mockResolvedValue('/projects/new-frontend');
+	Object.assign(window.coder, { updateProject, pickDirectory });
+	const onSaved = jest.fn();
+	const onClose = jest.fn();
+	render(<CodeSettings project={project} onSaved={onSaved} onClose={onClose} />);
+	expect(await screen.findByLabelText('Model')).toHaveValue('workspace-model');
+	expect(screen.getByLabelText('Working directory')).toHaveValue('/projects/frontend');
+	fireEvent.click(screen.getByRole('button', { name: 'Choose working directory' }));
+	await waitFor(() => expect(screen.getByLabelText('Working directory')).toHaveValue('/projects/new-frontend'));
+	fireEvent.change(screen.getByLabelText('Workspace name'), { target: { value: 'Frontend app' } });
+	fireEvent.click(screen.getByRole('button', { name: 'Save workspace' }));
+	await waitFor(() => expect(onSaved).toHaveBeenCalledTimes(1));
+	expect(updateProject).toHaveBeenCalledWith('workspace-one', { name: 'Frontend app', settings: { ...project.settings, workingDirectory: '/projects/new-frontend' } });
+	expect(saveSettings).not.toHaveBeenCalled();
+	expect(onClose).toHaveBeenCalledTimes(1);
+});
+
+it('keeps the workspace directory when switching harness and retains edits after an invalid directory save', async () => {
+	const project = { id: 'workspace-two', name: 'Backend', directory: '/managed/files', kind: 'agent-workspace' as const, available: true, createdAt: '', lastOpenedAt: '' };
+	const updateProject = jest.fn().mockRejectedValue(new Error('Working directory is unavailable.'));
+	Object.assign(window.coder, { updateProject });
+	render(<CodeSettings project={project} onClose={jest.fn()} />);
+	await screen.findByLabelText('Model');
+	fireEvent.change(screen.getByLabelText('Working directory'), { target: { value: '/projects/backend' } });
+	fireEvent.click(screen.getByLabelText('Harness'));
+	fireEvent.click(await screen.findByRole('option', { name: 'Codex', exact: true }));
+	expect(screen.getByLabelText('Working directory')).toHaveValue('/projects/backend');
+	fireEvent.click(screen.getByRole('button', { name: 'Save workspace' }));
+	expect(await screen.findByRole('alert')).toHaveTextContent('Working directory is unavailable.');
+	expect(screen.getByLabelText('Working directory')).toHaveValue('/projects/backend');
+	expect(updateProject).toHaveBeenCalledWith('workspace-two', expect.objectContaining({ settings: expect.objectContaining({ runtime: 'codex', workingDirectory: '/projects/backend' }) }));
+	expect(saveSettings).not.toHaveBeenCalled();
+});
