@@ -74,8 +74,9 @@ export function useSessions(projectId: string) {
 		setInteractions([]);
 		let sessionId = selectedSessionId;
 		let succeeded = false;
+		let failed = false;
 		try {
-			const result = await window.coder.send({
+			const started = window.coder.start({
 				projectId,
 				...(sessionId ? { sessionId } : {}),
 				mode: 'agent',
@@ -92,10 +93,16 @@ export function useSessions(projectId: string) {
 				if (event.type === 'text-delta' || event.type === 'command-output') setOutput((value) => value + event.delta);
 				if (event.type === 'interaction') setInteractions((items) => [...items.filter((item) => item.requestId !== event.requestId), event]);
 				if (event.type === 'interaction-resolved') setInteractions((items) => items.filter((item) => item.requestId !== event.requestId));
-				if (event.type === 'error') setError(event.message);
+				if (event.type === 'error') {
+					failed = true;
+					setError(event.message);
+				}
 			});
+			pending.runId = started.runId;
+			const result = await started.result;
 			sessionId = result.sessionId;
-			succeeded = !pending.cancelled;
+			if (generation.current === current) setSelectedSessionId(result.sessionId);
+			succeeded = !pending.cancelled && !failed;
 		} catch (cause) {
 			if (generation.current === current) setError(cause instanceof Error ? cause.message : 'Unable to run session.');
 		} finally {
