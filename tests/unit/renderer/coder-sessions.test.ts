@@ -4,7 +4,7 @@ import { useSessions } from '../../../src/renderer/src/pages/code/useSessions';
 
 const session = { id: 'session-1', projectId: 'workspace-1', title: 'Fix layout', createdAt: '', updatedAt: '', messageCount: 1, runtime: 'codex' as const };
 const snapshot: CodingSessionSnapshot = { session, blocks: [] };
-const api = { listSessions: jest.fn(), getSession: jest.fn(), send: jest.fn(), cancel: jest.fn(), respond: jest.fn() };
+const api = { listSessions: jest.fn(), getSession: jest.fn(), start: jest.fn(), cancel: jest.fn(), respond: jest.fn() };
 
 beforeEach(() => {
 	Object.defineProperty(window, 'coder', { configurable: true, value: api });
@@ -15,10 +15,10 @@ beforeEach(() => {
 });
 
 it('runs with editor context, reuses the selected harness session, and refreshes its transcript', async () => {
-	api.send.mockImplementation(async (_request, emit: (event: CodingResponseEvent) => void) => {
+	api.start.mockImplementation((_request, emit: (event: CodingResponseEvent) => void) => {
 		emit({ type: 'status', status: 'started', runId: 'run-1', projectId: session.projectId, sessionId: session.id });
 		emit({ type: 'text-delta', delta: 'Done', runId: 'run-1', projectId: session.projectId, sessionId: session.id });
-		return { projectId: session.projectId, sessionId: session.id, output: 'Done' };
+		return { runId: 'run-1', result: Promise.resolve({ projectId: session.projectId, sessionId: session.id, output: 'Done' }) };
 	});
 	const { result } = renderHook(() => useSessions(session.projectId));
 	await waitFor(() => expect(result.current.loading).toBe(false));
@@ -26,7 +26,7 @@ it('runs with editor context, reuses the selected harness session, and refreshes
 	let success = false;
 	await act(async () => { success = await result.current.run('Fix the heading', 'README.md', '# Unsaved heading'); });
 	expect(success).toBe(true);
-	expect(api.send).toHaveBeenCalledWith({ projectId: session.projectId, sessionId: session.id, mode: 'agent', input: 'Fix the heading\n\nSelected workspace file: README.md\nCurrent editor content:\n# Unsaved heading' }, expect.any(Function));
+	expect(api.start).toHaveBeenCalledWith({ projectId: session.projectId, sessionId: session.id, mode: 'agent', input: 'Fix the heading\n\nSelected workspace file: README.md\nCurrent editor content:\n# Unsaved heading' }, expect.any(Function));
 	expect(result.current.snapshot).toEqual(snapshot);
 	expect(result.current.running).toBe(false);
 	expect(result.current.output).toBe('');
@@ -53,9 +53,9 @@ it('ignores a stale session load after selecting another session', async () => {
 it('responds to harness questions and cancels an active run without switching sessions', async () => {
 	let emit!: (event: CodingResponseEvent) => void;
 	let finish!: (value: CodingRunResult) => void;
-	api.send.mockImplementation((_request, onEvent) => {
+	api.start.mockImplementation((_request, onEvent) => {
 		emit = onEvent;
-		return new Promise<CodingRunResult>((resolve) => { finish = resolve; });
+		return { runId: 'run-1', result: new Promise<CodingRunResult>((resolve) => { finish = resolve; }) };
 	});
 	const { result } = renderHook(() => useSessions(session.projectId));
 	await waitFor(() => expect(result.current.loading).toBe(false));
@@ -79,15 +79,16 @@ it('responds to harness questions and cancels an active run without switching se
 it('cancels a run requested before its first event when the workspace unmounts', async () => {
 	let emit!: (event: CodingResponseEvent) => void;
 	let finish!: (value: CodingRunResult) => void;
-	api.send.mockImplementation((_request, onEvent) => {
+	api.start.mockImplementation((_request, onEvent) => {
 		emit = onEvent;
-		return new Promise<CodingRunResult>((resolve) => { finish = resolve; });
+		return { runId: 'run-1', result: new Promise<CodingRunResult>((resolve) => { finish = resolve; }) };
 	});
 	const { result, unmount } = renderHook(() => useSessions(session.projectId));
 	await waitFor(() => expect(result.current.loading).toBe(false));
 	let run!: Promise<boolean>;
 	act(() => { run = result.current.run('Update file', 'README.md', 'Original'); });
 	unmount();
+	expect(api.cancel).toHaveBeenCalledWith('run-1');
 	emit({ type: 'status', status: 'started', runId: 'run-1', projectId: session.projectId, sessionId: session.id });
 	expect(api.cancel).toHaveBeenCalledWith('run-1');
 	finish({ projectId: session.projectId, sessionId: session.id, output: '' });
