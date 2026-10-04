@@ -68,7 +68,6 @@ export function CodeFileViewer({ projectId, fileName, actions, footer, onContent
 			<header className="flex h-10 shrink-0 items-center gap-2 border-b px-3">
 				<h1 className="min-w-0 flex-1 truncate text-sm font-medium" title={fileName}>{fileName}</h1>
 				<span role="status" className="text-xs text-muted-foreground">{loading ? t('codeFiles.loading', 'Loading file…') : saving ? t('codeFiles.saving', 'Saving…') : draft ? dirty ? t('codeFiles.unsaved', 'Unsaved changes') : t('codeFiles.saved', 'Saved') : null}</span>
-				<Button size="xs" disabled={loading || saving || !dirty} onClick={save}>{t('codeFiles.save', 'Save')}</Button>
 				{actions}
 			</header>
 			{error ? <div className="flex shrink-0 items-center gap-3 border-b p-3">

@@ -7,8 +7,8 @@ jest.mock('react-i18next', () => {
 });
 jest.mock('@/hooks/use-is-dark', () => ({ useIsDark: () => false }));
 jest.mock('@/pages/workspace/Editor', () => ({
-	CodeMirrorEditor: ({ value, onChange, readOnly }: { value: string; onChange: (value: string) => void; readOnly: boolean }) => (
-		<textarea aria-label="Markdown" value={value} readOnly={readOnly} onChange={(event) => onChange(event.target.value)} />
+	CodeMirrorEditor: ({ value, onChange, readOnly, onSave }: { value: string; onChange: (value: string) => void; readOnly: boolean; onSave: () => void }) => (
+		<textarea aria-label="Markdown" value={value} readOnly={readOnly} onKeyDown={(event) => { if (event.key === 's' && event.metaKey) onSave(); }} onChange={(event) => onChange(event.target.value)} />
 	),
 }));
 
@@ -27,7 +27,7 @@ it('loads Markdown and saves edits against the original disk content', async () 
 	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
 	expect(readMarkdownFile).toHaveBeenCalledWith('save', 'notes.md');
 	fireEvent.change(screen.getByLabelText('Markdown'), { target: { value: '# Edited' } });
-	fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
+	fireEvent.keyDown(screen.getByLabelText('Markdown'), { key: 's', metaKey: true });
 	await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Saved'));
 	expect(saveMarkdownFile).toHaveBeenCalledWith('save', 'notes.md', '# Edited', '# Original');
 });
@@ -47,20 +47,20 @@ it('keeps edits on a save conflict and reloads only when explicitly requested', 
 	saveMarkdownFile.mockRejectedValueOnce(new Error('File changed on disk'));
 	render(<CodeFileViewer projectId="conflict" fileName="AGENTS.md" />);
 	fireEvent.change(await screen.findByLabelText('Markdown'), { target: { value: '# My instructions' } });
-	fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
+	fireEvent.keyDown(screen.getByLabelText('Markdown'), { key: 's', metaKey: true });
 	expect(await screen.findByRole('alert')).toHaveTextContent('File changed on disk');
 	expect(screen.getByLabelText('Markdown')).toHaveValue('# My instructions');
 	readMarkdownFile.mockResolvedValue('# External instructions');
 	fireEvent.click(screen.getByRole('button', { name: 'Discard edits and reload' }));
 	expect(await screen.findByLabelText('Markdown')).toHaveValue('# External instructions');
-	expect(screen.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: 'Save', exact: true })).not.toBeInTheDocument();
 });
 
 it('shows read errors and allows a reload', async () => {
 	readMarkdownFile.mockRejectedValueOnce(new Error('Unable to read'));
 	render(<CodeFileViewer projectId="read-error" fileName="notes.md" />);
 	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to read');
-	expect(screen.getByRole('button', { name: 'Save', exact: true })).toBeDisabled();
+	expect(screen.queryByRole('button', { name: 'Save', exact: true })).not.toBeInTheDocument();
 	fireEvent.click(screen.getByRole('button', { name: 'Reload' }));
 	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
 });
@@ -81,7 +81,7 @@ it('finishes a pending save while another file is open and restores the saved dr
 	saveMarkdownFile.mockImplementationOnce(() => new Promise<void>((resolve) => { finishSave = resolve; }));
 	const view = render(<CodeFileViewer key="pending" projectId="pending" fileName="notes.md" />);
 	fireEvent.change(await screen.findByLabelText('Markdown'), { target: { value: '# Pending' } });
-	fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
+	fireEvent.keyDown(screen.getByLabelText('Markdown'), { key: 's', metaKey: true });
 	view.rerender(<CodeFileViewer key="other" projectId="pending" fileName="other.md" />);
 	expect(await screen.findByLabelText('Markdown')).toHaveValue('# Original');
 	view.rerender(<CodeFileViewer key="pending" projectId="pending" fileName="notes.md" />);
