@@ -108,18 +108,18 @@ it('reads legacy project registrations without migrating them', () => {
 });
 
 
-it('persists a named workspace configuration without accepting a working directory override', () => {
+it('persists a named workspace with a separate harness directory', () => {
 	const root = mkdtempSync(path.join(os.tmpdir(), 'kucedr-coding-projects-'));
 	const store = new CodingProjectStore([], root);
 	const project = store.create({ name: '  Product site  ', settings: {
 		runtime: 'codex', providerId: 'openai-codex', modelId: ' model-a ',
-		thinkingLevel: 'high', toolMode: 'coding', workingDirectory: '/outside',
+		thinkingLevel: 'high', toolMode: 'coding', workingDirectory: root,
 	} });
 	expect(project.name).toBe('Product site');
 	expect(project.directory).toBe(realpathSync.native(path.join(root, 'workspaces', project.id, 'files')));
 	expect(project.settings).toEqual({
 		runtime: 'codex', providerId: 'openai-codex', modelId: 'model-a',
-		thinkingLevel: 'high', toolMode: 'coding',
+		thinkingLevel: 'high', toolMode: 'coding', workingDirectory: realpathSync.native(root),
 	});
 	expect(new CodingProjectStore([], root).get(project.id)).toEqual(project);
 	const inherited = store.create({ name: 'Shared defaults' });
@@ -141,4 +141,38 @@ it.each([
 	expect(() => store.create(input as never)).toThrow('Invalid Coder workspace configuration');
 	expect(readdirSync(path.join(root, 'workspaces'))).toEqual([]);
 	expect(store.list()).toEqual([]);
+});
+
+
+it('updates only the selected workspace and persists canonical settings independently of its files', () => {
+	const root = mkdtempSync(path.join(os.tmpdir(), 'coder-workspace-update-'));
+	const target = path.join(root, 'target');
+	const alias = path.join(root, 'alias');
+	mkdirSync(target);
+	symlinkSync(target, alias);
+	const store = new CodingProjectStore([], path.join(root, 'coder'));
+	const first = store.create({ name: 'First' });
+	const second = store.create({ name: 'Second' });
+	const settings = {
+		runtime: 'codex' as const, providerId: 'openai-codex' as const, modelId: ' model ',
+		thinkingLevel: 'high' as const, toolMode: 'coding' as const, workingDirectory: alias,
+	};
+	const updated = store.update(first.id, { name: ' Renamed ', settings });
+	expect(updated).toMatchObject({
+		id: first.id, name: 'Renamed', directory: first.directory,
+		settings: { ...settings, modelId: 'model', workingDirectory: realpathSync.native(target) },
+	});
+	const reopened = new CodingProjectStore([], path.join(root, 'coder'));
+	expect(reopened.get(first.id)).toEqual(updated);
+	expect(reopened.get(second.id)).toEqual(second);
+	for (const workingDirectory of ['relative', path.join(root, 'missing')]) {
+		expect(() => store.update(first.id, { name: 'Invalid', settings: { ...settings, workingDirectory } })).toThrow();
+		expect(() => store.create({ name: 'Invalid', settings: { ...settings, workingDirectory } })).toThrow();
+	}
+	expect(store.get(first.id)).toEqual(updated);
+	expect(store.list()).toHaveLength(2);
+	expect(() => store.update(first.id, { name: '' })).toThrow('Invalid Coder workspace');
+	expect(() => store.update('missing', { name: 'Missing' })).toThrow('unavailable');
+	expect(store.update(first.id, { name: 'Renamed', settings: { ...settings, workingDirectory: ' ' } }).settings?.workingDirectory).toBeUndefined();
+	expect(store.update(first.id, { name: 'Global defaults' }).settings).toBeUndefined();
 });

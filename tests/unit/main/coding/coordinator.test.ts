@@ -55,7 +55,7 @@ function fixture(run: (input: string, context: HarnessContext) => Promise<string
 		sessions,
 		harnesses: { codex: { run, listModels: async () => ({ providers: [] }) } },
 	});
-	return { coding, sessions, store, project, directory };
+	return { coding, sessions, store, project, projects, directory };
 }
 
 it('pins harness, model and directory across restarts and persists tools with native session identity', async () => {
@@ -269,4 +269,29 @@ it('uses workspace defaults for new sessions, explicit request overrides, and pi
 	Object.assign(f.project, { settings: undefined });
 	await f.coding.send(1, 'global-run', { projectId: 'project', mode: 'agent', input: 'Inherit' }, () => {});
 	expect(contexts[3].settings.modelId).toBe('model-a');
+});
+
+
+it('keeps sessions owned by their workspace and pins the harness directory after settings change', async () => {
+	const contexts: HarnessContext[] = [];
+	const f = fixture(async (_, context) => { contexts.push(context); return 'Done'; });
+	const firstDirectory = path.join(f.directory, 'first');
+	const secondDirectory = path.join(f.directory, 'second');
+	mkdirSync(firstDirectory);
+	mkdirSync(secondDirectory);
+	Object.assign(f.project, { settings: { ...settings, workingDirectory: firstDirectory } });
+	const first = await f.coding.send(1, 'first', { projectId: f.project.id, mode: 'agent', input: 'Start' }, () => {});
+	expect(first.projectId).toBe(f.project.id);
+	expect(contexts[0].cwd).toBe(firstDirectory);
+	expect(f.projects.add).not.toHaveBeenCalled();
+	Object.assign(f.project, { settings: { ...settings, workingDirectory: secondDirectory } });
+	await f.coding.send(1, 'resume', { projectId: f.project.id, sessionId: first.sessionId, mode: 'agent', input: 'Continue' }, () => {});
+	expect(contexts[1].cwd).toBe(firstDirectory);
+	await f.coding.send(1, 'second', { projectId: f.project.id, mode: 'agent', input: 'Start' }, () => {});
+	expect(contexts[2].cwd).toBe(secondDirectory);
+	await f.coding.send(1, 'override', { projectId: f.project.id, workingDirectory: firstDirectory, mode: 'agent', input: 'Start' }, () => {});
+	expect(contexts[3].cwd).toBe(firstDirectory);
+	expect(f.sessions.list(f.project.id)).toHaveLength(3);
+	expect(f.projects.add).not.toHaveBeenCalled();
+	await expect(f.coding.send(1, 'invalid', { projectId: f.project.id, workingDirectory: 'relative', mode: 'agent', input: 'Start' }, () => {})).rejects.toThrow('absolute');
 });

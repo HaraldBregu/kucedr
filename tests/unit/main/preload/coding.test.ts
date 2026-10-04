@@ -150,3 +150,12 @@ it('forwards named workspace creation and rejects invalid configuration before I
 	expect(() => coding.addProject({ name: ' ' })).toThrow('Invalid Coder workspace configuration');
 	expect(invoke).not.toHaveBeenCalled();
 });
+
+
+it('validates and forwards workspace settings updates', async () => {
+	const input = { name: 'Workspace' };
+	await coding.updateProject(' project-1 ', input);
+	expect(invoke).toHaveBeenCalledWith(CodingChannels.updateProject, 'project-1', input);
+	expect(() => coding.updateProject('', input)).toThrow('Invalid Coder workspace');
+	expect(() => coding.updateProject('project-1', { name: ' ' })).toThrow('Invalid Coder workspace');
+});
