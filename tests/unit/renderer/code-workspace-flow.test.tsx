@@ -142,3 +142,15 @@ it('opens the selected workspace settings page with its own working directory', 
 	expect(screen.getByLabelText('Working directory')).toHaveValue(project.directory);
 	expect(sidebar.getByRole('button', { name: 'Workspace settings', exact: true })).toHaveAttribute('aria-current', 'page');
 });
+
+it('selects the workspace named by a settings URL instead of the previously selected workspace', async () => {
+	const other = { ...project, id: 'other-workspace', name: 'Other workspace' };
+	localStorage.setItem('coder-workspace', other.id);
+	listProjects.mockResolvedValue([other, project]);
+	render(<MemoryRouter initialEntries={[`/code/workspaces/${project.id}/settings`]}><Routes><Route path="/code/*" element={<CodePage />} /></Routes></MemoryRouter>);
+	expect(await screen.findByLabelText('Workspace name')).toHaveValue(project.name);
+	expect(screen.getByRole('button', { name: 'Workspaces', exact: true })).toHaveTextContent(project.name);
+	expect(localStorage.getItem('coder-workspace')).toBe(project.id);
+	fireEvent.click(screen.getByRole('button', { name: 'Cancel', exact: true }));
+	expect(screen.getByRole('button', { name: 'Workspaces', exact: true })).toHaveTextContent(project.name);
+});
