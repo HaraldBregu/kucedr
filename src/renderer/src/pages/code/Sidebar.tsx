@@ -31,6 +31,10 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 	const [actionError, setActionError] = useState('');
 	const [revision, setRevision] = useState(0);
 	useEffect(() => {
+		const id = settingsRoute?.params.projectId;
+		if (id) { setSelected(id); localStorage.setItem('coder-workspace', id); }
+	}, [settingsRoute?.params.projectId]);
+	useEffect(() => {
 		let active = true;
 		setLoading(true);
 		window.coder.listProjects().then((items) => {

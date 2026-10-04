@@ -199,9 +199,9 @@ export function CodeSettings({ onClose, project, onSaved }: { readonly onClose: 
 								<Input id="coder-workspace-name" required maxLength={120} value={name} disabled={saving} onChange={(event) => setName(event.target.value)} />
 							</SettingsRow>
 							<SettingsRow icon={FolderOpen} title={<Label htmlFor="coder-working-directory">{t('codeWorkspace.directory', 'Working directory')}</Label>} description={t('codeWorkspace.directoryDescription', 'The folder where the harness reads files and runs commands. Leave empty to use the workspace files folder.')} actionClassName="sm:w-72">
-								<div className="flex min-w-0 gap-2">
-									<Input id="coder-working-directory" value={directory} disabled={saving || picking} placeholder={project.directory} onChange={(event) => setDirectory(event.target.value)} />
-									<Button type="button" variant="outline" size="icon" disabled={saving || picking} aria-label={t('codeWorkspace.browse', 'Choose working directory')} onClick={() => {
+								<div className="flex w-full min-w-0 gap-2">
+									<Input className="min-w-0 flex-1" id="coder-working-directory" value={directory} disabled={saving || picking} placeholder={project.directory} onChange={(event) => setDirectory(event.target.value)} />
+									<Button type="button" variant="outline" size="icon" className="shrink-0" disabled={saving || picking} aria-label={t('codeWorkspace.browse', 'Choose working directory')} onClick={() => {
 										setPicking(true);
 										void window.coder.pickDirectory().then((value) => { if (mounted.current && value) setDirectory(value); }).catch((cause: unknown) => { if (mounted.current) setError(cause instanceof Error ? cause.message : t('codeWorkspace.directoryError', 'Unable to choose directory.')); }).finally(() => { if (mounted.current) setPicking(false); });
 									}}><FolderOpen /></Button>
