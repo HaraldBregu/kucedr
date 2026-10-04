@@ -13,14 +13,14 @@ interface WorkspaceSelectorProps {
 export function WorkspaceSelector({ workspace, workspaces, onSelect }: WorkspaceSelectorProps): React.JSX.Element {
 	const { t } = useTranslation();
 	return (
-		<div className="-mx-2 min-w-0 flex-1">
+		<div className="min-w-0 flex-1">
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<Button variant="ghost" className="w-full min-w-0 justify-start px-4" aria-label={t('code.workspaces', 'Workspaces')}>
+					<Button variant="ghost" className="w-full min-w-0 justify-start px-2" aria-label={t('code.workspaces', 'Workspaces')}>
 						<span className="min-w-0 flex-1 truncate text-left">{workspace.name}</span><ChevronDown />
 					</Button>
 				</DropdownMenuTrigger>
-				<DropdownMenuContent align="start" className="max-h-80 w-[var(--radix-dropdown-menu-trigger-width)] min-w-0 overflow-y-auto">
+				<DropdownMenuContent align="start" className="max-h-80 w-[var(--radix-dropdown-menu-trigger-width)] overflow-y-auto">
 					{workspaces.map((item) => <DropdownMenuItem key={item.id} onSelect={() => onSelect(item.id)}><span className="min-w-0 flex-1 truncate">{item.name}</span>{item.id === workspace.id && <Check />}</DropdownMenuItem>)}
 				</DropdownMenuContent>
 			</DropdownMenu>
