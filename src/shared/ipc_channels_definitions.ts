@@ -80,6 +80,7 @@ export const CodingChannels = {
 	listMarkdownFiles: 'coding:projects:markdown:list',
 	readMarkdownFile: 'coding:projects:markdown:read',
 	createMarkdownFile: 'coding:projects:markdown:create',
+	deleteMarkdownFile: 'coding:projects:markdown:delete',
 	saveMarkdownFile: 'coding:projects:markdown:save',
 	createProjectFile: 'coding:projects:files:create',
 	getProjectInstructions: 'coding:projects:instructions:get',

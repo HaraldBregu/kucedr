@@ -289,6 +289,7 @@ export interface CodingApi {
 	listMarkdownFiles: (projectId: string) => Promise<string[]>;
 	readMarkdownFile: (projectId: string, fileName: string) => Promise<string>;
 	createMarkdownFile: (projectId: string, fileName: string) => Promise<void>;
+	deleteMarkdownFile: (projectId: string, fileName: string) => Promise<void>;
 	saveMarkdownFile: (
 		projectId: string,
 		filePath: string,

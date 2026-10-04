@@ -123,6 +123,10 @@ export interface CodingInvokeChannelMap {
 		args: [projectId: string, fileName: string];
 		result: void;
 	};
+	[CodingChannels.deleteMarkdownFile]: {
+		args: [projectId: string, fileName: string];
+		result: void;
+	};
 	[CodingChannels.saveMarkdownFile]: {
 		args: [projectId: string, filePath: string, content: string, expectedContent: string];
 		result: void;

@@ -75,6 +75,12 @@ export const coding: CodingApi = {
 			throw new Error('Invalid coding Markdown file.');
 		return typedInvokeUnwrap(CodingChannels.createMarkdownFile, id, fileName);
 	},
+	deleteMarkdownFile: (projectId, fileName) => {
+		const id = typeof projectId === 'string' ? projectId.trim() : '';
+		if (!id || !isCodingMarkdownFileName(fileName))
+			throw new Error('Invalid coding Markdown file.');
+		return typedInvokeUnwrap(CodingChannels.deleteMarkdownFile, id, fileName);
+	},
 	saveMarkdownFile: (projectId, filePath, content, expectedContent) => {
 		const id = typeof projectId === 'string' ? projectId.trim() : '';
 		if (

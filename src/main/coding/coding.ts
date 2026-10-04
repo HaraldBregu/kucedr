@@ -30,6 +30,7 @@ import { listMarkdownFiles } from './markdown';
 import { saveMarkdownFile } from './save';
 import { readMarkdownFile } from './load';
 import { createMarkdownFile } from './create';
+import { deleteMarkdownFile } from './delete';
 
 interface CodingDependencies {
 	readonly store: CodingStore;
@@ -180,6 +181,9 @@ export class Coder {
 	}
 	createMarkdownFile(id: string, file: string) {
 		return createMarkdownFile(this.requireProject(id), file);
+	}
+	deleteMarkdownFile(id: string, file: string) {
+		return deleteMarkdownFile(this.requireProject(id), file);
 	}
 	saveMarkdownFile(id: string, file: string, content: string, expectedContent: string) {
 		return saveMarkdownFile(this.requireProject(id), file, content, expectedContent);

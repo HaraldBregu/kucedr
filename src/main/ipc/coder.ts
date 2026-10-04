@@ -148,6 +148,12 @@ export class CoderIpc implements IpcModule<CodingIpcDependencies> {
 				throw new Error('Invalid coding Markdown file.');
 			return coding.createMarkdownFile(projectId.trim(), fileName);
 		});
+		registerCommandWithEvent(CodingChannels.deleteMarkdownFile, (event, projectId, fileName) => {
+			assertCodingCaller(event);
+			if (typeof projectId !== 'string' || !projectId.trim() || !isCodingMarkdownFileName(fileName))
+				throw new Error('Invalid coding Markdown file.');
+			return coding.deleteMarkdownFile(projectId.trim(), fileName);
+		});
 		registerCommandWithEvent(
 			CodingChannels.saveMarkdownFile,
 			(event, projectId, filePath, content, expectedContent) => {
