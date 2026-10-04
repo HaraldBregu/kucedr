@@ -99,6 +99,8 @@ it('stores managed workspace Markdown beside its files and exposes shared instru
 
 it('deletes only the selected workspace regular Markdown file', async () => {
 	const directory = await mkdtemp(path.join(os.tmpdir(), 'kucedr-delete-markdown-'));
+	const previousRoot = process.env.KUCEDR_E2E_DATA_ROOT;
+	process.env.KUCEDR_E2E_DATA_ROOT = path.join(directory, 'data');
 	const project: CodingProject = {
 		id: 'managed', name: 'Workspace', directory: path.join(directory, 'workspace'),
 		kind: 'agent-workspace', createdAt: '', lastOpenedAt: '', available: true,
@@ -110,12 +112,12 @@ it('deletes only the selected workspace regular Markdown file', async () => {
 		await deleteMarkdownFile(project, 'notes.md');
 		expect(await listMarkdownFiles(project)).toEqual([]);
 		expect(await listMarkdownFiles(other)).toEqual(['notes.md']);
-		await expect(readFile(path.join(project.directory, 'notes.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+		await expect(readFile(path.join(markdownLocation(project), 'notes.md'))).rejects.toMatchObject({ code: 'ENOENT' });
 		await expect(deleteMarkdownFile(project, 'notes.md')).rejects.toMatchObject({ code: 'ENOENT' });
 		await writeFile(path.join(directory, 'outside.md'), 'outside');
-		await writeFile(path.join(project.directory, 'notes.txt'), 'text');
-		await mkdir(path.join(project.directory, 'folder.md'));
-		await symlink(path.join(directory, 'outside.md'), path.join(project.directory, 'linked.md'));
+		await writeFile(path.join(markdownLocation(project), 'notes.txt'), 'text');
+		await mkdir(path.join(markdownLocation(project), 'folder.md'));
+		await symlink(path.join(directory, 'outside.md'), path.join(markdownLocation(project), 'linked.md'));
 		for (const fileName of ['../outside.md', 'notes.txt', path.join(directory, 'outside.md')]) {
 			await expect(deleteMarkdownFile(project, fileName)).rejects.toThrow('Invalid coding Markdown');
 		}
@@ -123,9 +125,11 @@ it('deletes only the selected workspace regular Markdown file', async () => {
 			await expect(deleteMarkdownFile(project, fileName)).rejects.toThrow('regular Markdown');
 		}
 		expect(await readFile(path.join(directory, 'outside.md'), 'utf8')).toBe('outside');
-		expect(await readFile(path.join(project.directory, 'notes.txt'), 'utf8')).toBe('text');
-		expect(await readFile(path.join(project.directory, 'linked.md'), 'utf8')).toBe('outside');
+		expect(await readFile(path.join(markdownLocation(project), 'notes.txt'), 'utf8')).toBe('text');
+		expect(await readFile(path.join(markdownLocation(project), 'linked.md'), 'utf8')).toBe('outside');
 	} finally {
+		if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
+		else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
 		await rm(directory, { recursive: true, force: true });
 	}
 });
