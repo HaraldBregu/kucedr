@@ -47,7 +47,7 @@ beforeEach(() => {
 	sessionManagerCreate.mockReturnValue({ getSessionId: () => 'session-1' });
 });
 
-it('runs Pi with the saved model, isolated resources, and redacted stream events', async () => {
+it.each([undefined, '/tmp/harness-project'])('runs Pi with the saved model, isolated resources, and directory %s', async (workingDirectory) => {
 	const model = {
 		id: 'gpt-coding',
 		name: 'GPT Coding',
@@ -106,7 +106,7 @@ it('runs Pi with the saved model, isolated resources, and redacted stream events
 		coding.send(
 			4,
 			'run-1',
-			{ projectId: project.id, mode: 'agent', input: 'Inspect this project' },
+			{ projectId: project.id, mode: 'agent', input: 'Inspect this project', workingDirectory },
 			(event) => events.push(event)
 		)
 	).resolves.toEqual({ projectId: project.id, sessionId: 'session-1', output: 'done' });
@@ -117,11 +117,13 @@ it('runs Pi with the saved model, isolated resources, and redacted stream events
 	expect(createAgentSession).toHaveBeenCalledWith(
 		expect.objectContaining({
 			model,
+			cwd: workingDirectory ?? project.directory,
 			tools: ['read', 'grep', 'find', 'ls'],
 		})
 	);
 	expect(DefaultResourceLoader.instances[0]?.options).toEqual(
 		expect.objectContaining({
+			cwd: workingDirectory ?? project.directory,
 			noExtensions: true,
 			noSkills: true,
 			noPromptTemplates: true,
