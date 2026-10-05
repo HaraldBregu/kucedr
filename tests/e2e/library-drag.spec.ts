@@ -33,7 +33,9 @@ test('moves library items and uploads files dropped from the desktop', async () 
 			.filter({ hasText: 'notes.txt' })
 			.dragTo(page.getByRole('row').filter({ hasText: 'Projects' }));
 		await expect
-			.poll(async () => readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8'))
+			.poll(async () =>
+				readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8').catch(() => '')
+			)
 			.toBe('notes');
 		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toHaveCount(0);
 		await page
@@ -72,7 +74,9 @@ test('moves library items and uploads files dropped from the desktop', async () 
 					.getByRole('button', { name: 'Archive' })
 			);
 		await expect
-			.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'notes.txt'), 'utf8'))
+			.poll(async () =>
+				readFile(path.join(libraryRoot, 'Archive', 'notes.txt'), 'utf8').catch(() => '')
+			)
 			.toBe('notes');
 		await expect(page.getByRole('article', { name: 'notes.txt' })).toHaveCount(0);
 		await page
@@ -84,7 +88,7 @@ test('moves library items and uploads files dropped from the desktop', async () 
 		await page.getByRole('button', { name: 'More actions' }).click();
 		await page.getByRole('menuitem', { name: 'Move to parent folder' }).click();
 		await expect
-			.poll(async () => readFile(path.join(libraryRoot, 'notes.txt'), 'utf8'))
+			.poll(async () => readFile(path.join(libraryRoot, 'notes.txt'), 'utf8').catch(() => ''))
 			.toBe('notes');
 		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toHaveCount(0);
 		await page
@@ -106,7 +110,9 @@ test('moves library items and uploads files dropped from the desktop', async () 
 		await cdp.send('Input.dispatchDragEvent', { type: 'dragOver', x, y, data });
 		await cdp.send('Input.dispatchDragEvent', { type: 'drop', x, y, data });
 		await expect
-			.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'draft.md'), 'utf8'))
+			.poll(async () =>
+				readFile(path.join(libraryRoot, 'Archive', 'draft.md'), 'utf8').catch(() => '')
+			)
 			.toBe('draft');
 		await expect(page.getByRole('row').filter({ hasText: 'draft.md' })).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
