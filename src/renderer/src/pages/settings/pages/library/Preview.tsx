@@ -34,6 +34,7 @@ export function LibraryPreview({
 			<img
 				src={url}
 				alt={file.name}
+				draggable={false}
 				loading="lazy"
 				className={`${frame} rounded-md bg-muted/40 ${compact ? 'object-cover' : 'object-contain'}`}
 			/>

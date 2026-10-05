@@ -3,24 +3,34 @@ import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { LibraryPreview } from './Preview';
+import { useLibraryDrag } from './drag';
 import { formatLibraryFileSize } from './size';
 
 export function LibraryCard({
 	file,
+	selectedPaths,
 	disabled,
 	onDelete,
+	onMove,
 	onContextMenu,
 }: {
 	readonly file: LibraryFile;
+	readonly selectedPaths: ReadonlySet<string>;
 	readonly disabled: boolean;
 	readonly onDelete: (file: LibraryFile) => void;
+	readonly onMove: (paths: string[], folder: string) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
+	const { isDropTarget, ...dragProps } = useLibraryDrag(file, selectedPaths, onMove);
 	return (
 		<article
-			className="min-w-0 overflow-hidden rounded-xl border border-border/70 bg-card p-2"
+			{...dragProps}
+			draggable
+			className={cn('min-w-0 cursor-grab overflow-hidden rounded-xl border border-border/70 bg-card p-2 active:cursor-grabbing', isDropTarget && 'bg-primary/10 ring-2 ring-primary/60')}
+			data-drop-target={isDropTarget || undefined}
 			onContextMenu={(event) => {
 				event.preventDefault();
 				onContextMenu(file);

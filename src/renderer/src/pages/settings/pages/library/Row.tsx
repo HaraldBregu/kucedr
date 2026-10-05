@@ -3,25 +3,35 @@ import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { TableCell, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
 import { LibraryPreview } from './Preview';
+import { useLibraryDrag } from './drag';
 import { formatLibraryFileSize } from './size';
 
 export function LibraryRow({
 	file,
 	selected,
+	selectedPaths,
 	onSelect,
+	onMove,
 	onContextMenu,
 }: {
 	readonly file: LibraryFile;
 	readonly selected: boolean;
+	readonly selectedPaths: ReadonlySet<string>;
 	readonly onSelect: (selected: boolean) => void;
+	readonly onMove: (paths: string[], folder: string) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
+	const { isDropTarget, ...dragProps } = useLibraryDrag(file, selectedPaths, onMove);
 
 	return (
 		<TableRow
-			className="group data-[state=selected]:bg-transparent hover:bg-transparent"
+			{...dragProps}
+			draggable
+			className={cn('group cursor-grab data-[state=selected]:bg-transparent hover:bg-transparent active:cursor-grabbing', isDropTarget && 'bg-primary/10 ring-2 ring-inset ring-primary/60')}
+			data-drop-target={isDropTarget || undefined}
 			data-state={selected ? 'selected' : undefined}
 			onContextMenu={(event) => {
 				event.preventDefault();
