@@ -384,6 +384,7 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'navigationBar.code',
 		descriptionKey: 'settings.code.description',
 		icon: Code2,
+		comingSoon: true,
 	},
 	{
 		path: '/settings/voice',

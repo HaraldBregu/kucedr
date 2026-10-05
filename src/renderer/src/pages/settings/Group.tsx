@@ -28,6 +28,17 @@ export function Group({ items, titleKey, activePath, className }: GroupProps): R
 				{items.map((item) => {
 					const Icon = item.icon;
 					const isActive = item.path === activePath;
+					if (item.comingSoon) {
+						return (
+							<SidebarMenuItem key={item.path}>
+								<button type="button" disabled className={cn(SPLIT_ITEM_CLASS, 'w-full opacity-50')}>
+									<Icon className="size-4 shrink-0" strokeWidth={1.8} />
+									<span>{t(item.sidebarLabelKey ?? item.labelKey)}</span>
+									<Badge variant="outline" className="ml-auto">{t('appLayout.comingSoon', 'Soon')}</Badge>
+								</button>
+							</SidebarMenuItem>
+						);
+					}
 
 					return (
 						<SidebarMenuItem key={item.path}>

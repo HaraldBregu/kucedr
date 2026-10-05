@@ -92,9 +92,10 @@ it('places Library, Workspace, and Code below Providers in the general sidebar g
 	const workspace = within(group as HTMLElement).getByRole('link', { name: 'settings.workspace.title' });
 	expect(workspace).toHaveAttribute('href', '/settings/workspace');
 	expect(links.indexOf(workspace)).toBe(links.indexOf(library) + 1);
-	const code = within(group as HTMLElement).getByRole('link', { name: 'navigationBar.code' });
-	expect(code).toHaveAttribute('href', '/settings/code');
-	expect(links.indexOf(code)).toBe(links.indexOf(workspace) + 1);
+	const code = within(group as HTMLElement).getByRole('button', { name: /navigationBar.code/ });
+	expect(code).toBeDisabled();
+	expect(code).toHaveTextContent('Soon');
+	expect(workspace.closest('li')?.nextElementSibling).toContainElement(code);
 });
 
 it.each([
