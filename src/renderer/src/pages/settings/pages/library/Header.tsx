@@ -30,7 +30,7 @@ export function LibraryHeaderActions({
 					onValueChange={(value) => {
 						if (value === 'collections' || value === 'list') onViewChange(value);
 					}}
-					variant="outline"
+					variant="default"
 					size="sm"
 					aria-label={t('settings.library.view')}
 				>
@@ -43,7 +43,7 @@ export function LibraryHeaderActions({
 								render={
 									<ToggleGroupItem
 										value={value}
-										className="size-8 min-w-0 p-0"
+										className="size-7 min-w-0 bg-secondary p-0 text-secondary-foreground hover:bg-secondary/80 hover:text-secondary-foreground data-[pressed]:bg-accent data-[pressed]:text-accent-foreground"
 										aria-label={t(`settings.library.${value}`)}
 									>
 										<Icon className="size-4" />

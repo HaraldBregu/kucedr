@@ -95,9 +95,10 @@ it('shows the view controls and file actions in the header with list selected by
 		screen.queryByRole('columnheader', { name: 'settings.library.actions' })
 	).not.toBeInTheDocument();
 	expect(document.querySelectorAll('article')).toHaveLength(0);
-	expect(within(header).getByRole('button', { name: 'settings.library.openFolder' })).toHaveClass(
-		'bg-secondary'
-	);
+	for (const button of within(header).getAllByRole('button')) {
+		expect(button).toHaveClass('bg-secondary');
+		expect(button).not.toHaveClass('border-input');
+	}
 	const selectAll = screen.getByRole('checkbox', { name: 'settings.library.select' });
 	const checkbox = screen.getByRole('checkbox', { name: 'settings.library.selectFile' });
 	expect(checkbox).not.toHaveClass('opacity-0');
