@@ -7,10 +7,12 @@ import { libraryFileUrl } from './url';
 export function LibraryPreview({
 	file,
 	compact = false,
+	tile = false,
 	modal = false,
 }: {
 	readonly file: LibraryFile;
 	readonly compact?: boolean;
+	readonly tile?: boolean;
 	readonly modal?: boolean;
 }): React.JSX.Element {
 	const url = libraryFileUrl(file.path);
@@ -18,13 +20,18 @@ export function LibraryPreview({
 		? 'h-[min(70vh,700px)] w-full'
 		: compact
 			? 'size-8 shrink-0'
-			: 'aspect-[4/3] w-full';
+			: tile
+				? 'size-24'
+				: 'aspect-[4/3] w-full';
+	const background = tile ? '' : 'bg-muted/40';
+	const iconSize = compact ? 'size-4' : tile ? 'size-9' : 'size-12';
+	const fit = compact || tile ? 'object-cover' : 'object-contain';
 	if (file.kind === 'folder') {
 		return (
 			<div
-				className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}
+				className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${frame}`}
 			>
-				<Folder className={compact ? 'size-4' : 'size-12'} />
+				<Folder className={iconSize} />
 			</div>
 		);
 	}
@@ -36,7 +43,7 @@ export function LibraryPreview({
 				alt={file.name}
 				draggable={false}
 				loading="lazy"
-				className={`${frame} rounded-md bg-muted/40 ${compact ? 'object-cover' : 'object-contain'}`}
+				className={`${frame} rounded-md ${background} ${fit}`}
 			/>
 		);
 	}
@@ -47,7 +54,7 @@ export function LibraryPreview({
 				controls={modal}
 				preload="metadata"
 				aria-label={file.name}
-				className={`${frame} rounded-md bg-muted/40 ${compact ? 'object-cover' : 'object-contain'}`}
+				className={`${frame} rounded-md ${background} ${fit}`}
 			/>
 		);
 	}
@@ -55,10 +62,10 @@ export function LibraryPreview({
 		if (!modal) {
 			return (
 				<div
-					className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}
+					className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${frame}`}
 				>
 					{React.createElement(libraryFileIcon(file.name), {
-						className: compact ? 'size-4' : 'size-12',
+						className: iconSize,
 					})}
 				</div>
 			);
@@ -90,10 +97,10 @@ export function LibraryPreview({
 	}
 	return (
 		<div
-			className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}
+			className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${frame}`}
 		>
 			{React.createElement(libraryFileIcon(file.name), {
-				className: compact ? 'size-4' : 'size-12',
+				className: iconSize,
 			})}
 		</div>
 	);

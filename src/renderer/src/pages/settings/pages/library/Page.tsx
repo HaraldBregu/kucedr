@@ -419,14 +419,12 @@ const LibraryPage: React.FC = () => {
 							/>
 						</SettingsPanel>
 					) : view === 'collections' ? (
-						<div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-4">
+						<div className="grid grid-cols-[repeat(auto-fill,96px)] gap-3">
 							{orderedFiles.slice(0, visibleCount).map((file) => (
 								<LibraryCard
 									key={file.relativePath}
 									file={file}
 									selectedPaths={selectedPaths}
-									disabled={deletingPath === file.relativePath || uploading || moving}
-									onDelete={(entry) => void handleDelete(entry)}
 									onOpenFolder={(entry) => navigateFolder(entry.relativePath)}
 									onMove={(paths, folder) => void handleMove(paths, folder)}
 									onContextMenu={handleContextMenu}
