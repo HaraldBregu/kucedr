@@ -31,8 +31,8 @@ test('moves library files and folders by dropping them onto folders', async ({},
 		);
 		await expect.poll(async () => readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8')).toBe('notes');
 		await page.getByRole('button', { name: 'Collections' }).click();
-		await page.locator('article').filter({ hasText: 'Projects' }).dragTo(
-			page.locator('article').filter({ hasText: 'Archive' })
+		await page.getByText('Projects', { exact: true }).first().locator('xpath=ancestor::article').dragTo(
+			page.getByText('Archive', { exact: true }).first().locator('xpath=ancestor::article')
 		);
 		await expect.poll(async () => {
 			try {
