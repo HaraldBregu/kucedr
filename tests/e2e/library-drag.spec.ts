@@ -9,7 +9,7 @@ test('moves library files and folders by dropping them onto folders', async ({},
 	const { app, page, userDataDir } = await launchApp();
 	try {
 		const libraryRoot = path.join(userDataDir, 'library');
-		await mkdir(path.join(libraryRoot, 'Projects'));
+		await mkdir(path.join(libraryRoot, 'Projects'), { recursive: true });
 		await mkdir(path.join(libraryRoot, 'Archive'));
 		await writeFile(path.join(libraryRoot, 'notes.txt'), 'notes');
 		await page.evaluate(() => {
