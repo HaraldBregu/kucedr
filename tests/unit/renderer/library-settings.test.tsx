@@ -423,6 +423,54 @@ it('confirms and deletes a library file', async () => {
 	expect(screen.queryByText('notes.txt')).not.toBeInTheDocument();
 });
 
+it('deletes a folder through the list context menu after warning about its contents', async () => {
+	list.mockResolvedValue([
+		{
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
+			modifiedAt: '2026-09-29',
+		},
+		{
+			name: 'notes.txt',
+			path: '/library/Projects/notes.txt',
+			relativePath: 'Projects/notes.txt',
+			size: 5,
+			modifiedAt: '2026-09-29',
+		},
+	]);
+	render(<LibraryPage />);
+	const row = await screen.findByRole('row', { name: /Projects/ });
+	showContextMenu.mockResolvedValueOnce('delete');
+	fireEvent.contextMenu(row);
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('Projects'));
+	expect(window.confirm).toHaveBeenCalledWith('settings.library.confirmDeleteFolder');
+	expect(showContextMenu).toHaveBeenCalledWith(
+		expect.arrayContaining([expect.objectContaining({ id: 'delete' })])
+	);
+	expect(screen.queryByRole('row', { name: /Projects/ })).not.toBeInTheDocument();
+});
+
+it('shows a delete button for folders in collections', async () => {
+	list.mockResolvedValue([
+		{
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
+			modifiedAt: '2026-09-29',
+		},
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
+	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('Projects'));
+});
+
 it('keeps the file when deletion is cancelled', async () => {
 	window.confirm = jest.fn(() => false);
 	const user = userEvent.setup();
