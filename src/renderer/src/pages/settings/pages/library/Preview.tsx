@@ -99,7 +99,7 @@ export function LibraryPreview({
 		}
 		return (
 			<div className="flex h-48 w-full flex-col items-center justify-center gap-4 rounded-md bg-muted/40 px-4">
-			<Volume2 className="size-10 text-muted-foreground" />
+				<Volume2 className="size-10 text-muted-foreground" />
 				<audio
 					src={url}
 					controls
