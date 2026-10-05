@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
+import { access, copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
@@ -11,6 +11,10 @@ test('moves library items and uploads files dropped from the desktop', async () 
 		const libraryRoot = path.join(userDataDir, 'library');
 		await mkdir(path.join(libraryRoot, 'Projects'), { recursive: true });
 		await mkdir(path.join(libraryRoot, 'Archive'));
+		await copyFile(
+			path.resolve('resources/icons/png/64x64.png'),
+			path.join(libraryRoot, 'Archive', 'preview.png')
+		);
 		await writeFile(path.join(libraryRoot, 'notes.txt'), 'notes');
 		await page.evaluate(async () => {
 			await window.agent.setProvider({
@@ -122,6 +126,7 @@ test('moves library items and uploads files dropped from the desktop', async () 
 		await expect(page.getByRole('row').filter({ hasText: 'draft.md' })).toBeVisible();
 		await page.getByRole('button', { name: 'Collections' }).click();
 		await expect(page.getByRole('article', { name: 'draft.md' })).toBeVisible();
+		await expect(page.getByRole('img', { name: 'preview.png' })).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);
