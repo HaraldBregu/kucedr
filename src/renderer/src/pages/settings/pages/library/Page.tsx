@@ -51,7 +51,10 @@ const LibraryPage: React.FC = () => {
 	const [dragging, setDragging] = useState(false);
 	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
-	const currentFiles = useMemo(() => files.filter((file) => libraryParent(file.relativePath) === currentFolder), [files, currentFolder]);
+	const currentFiles = useMemo(
+		() => files.filter((file) => libraryParent(file.relativePath) === currentFolder),
+		[files, currentFolder]
+	);
 	const orderedFiles = useMemo(() => sortLibraryFiles(currentFiles, sort), [currentFiles, sort]);
 	const navigateFolder = useCallback((folder: string): void => {
 		setCurrentFolder(folder.replaceAll('\\', '/'));
@@ -98,7 +101,14 @@ const LibraryPage: React.FC = () => {
 				window.library.getRoot(),
 			]);
 			setFiles(nextFiles);
-			setCurrentFolder((current) => current && !nextFiles.some((file) => file.kind === 'folder' && file.relativePath.replaceAll('\\', '/') === current) ? '' : current);
+			setCurrentFolder((current) =>
+				current &&
+				!nextFiles.some(
+					(file) => file.kind === 'folder' && file.relativePath.replaceAll('\\', '/') === current
+				)
+					? ''
+					: current
+			);
 			setSelectedPaths(new Set());
 			setVisibleCount(FILE_BATCH_SIZE);
 			setRoot(nextRoot);
@@ -115,7 +125,11 @@ const LibraryPage: React.FC = () => {
 
 	useEffect(() => {
 		const target = loadMoreRef.current;
-		if (!target || visibleCount >= currentFiles.length || typeof IntersectionObserver === 'undefined')
+		if (
+			!target ||
+			visibleCount >= currentFiles.length ||
+			typeof IntersectionObserver === 'undefined'
+		)
 			return;
 		const observer = new IntersectionObserver(
 			([entry]) => {
@@ -299,8 +313,7 @@ const LibraryPage: React.FC = () => {
 					else if (action === 'open-folder') {
 						if (file.kind === 'folder') navigateFolder(file.relativePath);
 						else void handleOpenFolder();
-					}
-					else if (action === 'delete') void handleDelete(file);
+					} else if (action === 'delete') void handleDelete(file);
 				})
 				.catch(() => setErrorMessage(t('settings.library.contextMenuError')));
 		},
@@ -377,7 +390,11 @@ const LibraryPage: React.FC = () => {
 							<SettingsEmptyState
 								icon={currentFolder ? Folder : Library}
 								title={currentFolder ? t('settings.library.emptyFolder') : t('library.empty')}
-								description={currentFolder ? t('settings.library.emptyFolderDescription') : t('settings.library.emptyDescription')}
+								description={
+									currentFolder
+										? t('settings.library.emptyFolderDescription')
+										: t('settings.library.emptyDescription')
+								}
 							/>
 						</SettingsPanel>
 					) : view === 'collections' ? (
@@ -414,7 +431,9 @@ const LibraryPage: React.FC = () => {
 								variant="outline"
 								size="sm"
 								onClick={() =>
-									setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, currentFiles.length))
+									setVisibleCount((current) =>
+										Math.min(current + FILE_BATCH_SIZE, currentFiles.length)
+									)
 								}
 							>
 								{t('settings.library.loadMore')}

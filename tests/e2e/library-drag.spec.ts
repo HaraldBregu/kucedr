@@ -36,9 +36,16 @@ test('moves library files and folders by dropping them onto folders', async () =
 			.poll(async () => readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8'))
 			.toBe('notes');
 		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toHaveCount(0);
-		await page.getByRole('row').filter({ hasText: 'Projects' }).getByRole('button', { name: 'Open Projects' }).click();
+		await page
+			.getByRole('row')
+			.filter({ hasText: 'Projects' })
+			.getByRole('button', { name: 'Open Projects' })
+			.click();
 		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toBeVisible();
-		await page.getByRole('navigation', { name: 'Library folders' }).getByRole('button', { name: 'Library' }).click();
+		await page
+			.getByRole('navigation', { name: 'Library folders' })
+			.getByRole('button', { name: 'Library' })
+			.click();
 		await page.getByRole('button', { name: 'Collections' }).click();
 		await page
 			.getByText('Projects', { exact: true })
