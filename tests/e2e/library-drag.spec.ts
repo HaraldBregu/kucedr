@@ -24,24 +24,35 @@ test('moves library files and folders by dropping them onto folders', async ({},
 		});
 		await page.reload();
 		await expect(page).toHaveURL(/#\/home$/);
-		await page.evaluate(() => { window.location.hash = '#/settings/library'; });
+		await page.evaluate(() => {
+			window.location.hash = '#/settings/library';
+		});
 		await expect(page.getByRole('table')).toBeVisible();
-		await page.getByRole('row').filter({ hasText: 'notes.txt' }).dragTo(
-			page.getByRole('row').filter({ hasText: 'Projects' })
-		);
-		await expect.poll(async () => readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8')).toBe('notes');
+		await page
+			.getByRole('row')
+			.filter({ hasText: 'notes.txt' })
+			.dragTo(page.getByRole('row').filter({ hasText: 'Projects' }));
+		await expect
+			.poll(async () => readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8'))
+			.toBe('notes');
 		await page.getByRole('button', { name: 'Collections' }).click();
-		await page.getByText('Projects', { exact: true }).first().locator('xpath=ancestor::article').dragTo(
-			page.getByText('Archive', { exact: true }).first().locator('xpath=ancestor::article')
-		);
-		await expect.poll(async () => {
-			try {
-				await access(path.join(libraryRoot, 'Archive', 'Projects', 'notes.txt'));
-				return true;
-			} catch {
-				return false;
-			}
-		}).toBe(true);
+		await page
+			.getByText('Projects', { exact: true })
+			.first()
+			.locator('xpath=ancestor::article')
+			.dragTo(
+				page.getByText('Archive', { exact: true }).first().locator('xpath=ancestor::article')
+			);
+		await expect
+			.poll(async () => {
+				try {
+					await access(path.join(libraryRoot, 'Archive', 'Projects', 'notes.txt'));
+					return true;
+				} catch {
+					return false;
+				}
+			})
+			.toBe(true);
 		await page.screenshot({ path: testInfo.outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);
