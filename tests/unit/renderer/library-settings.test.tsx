@@ -72,7 +72,9 @@ it('shows the view controls and file actions in the header with list selected by
 	]);
 	expect(screen.getByRole('table')).toBeInTheDocument();
 	expect(screen.getAllByRole('row')).toHaveLength(2);
-	expect(screen.queryByRole('columnheader', { name: 'settings.library.path' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('columnheader', { name: 'settings.library.path' })
+	).not.toBeInTheDocument();
 	expect(
 		screen.queryByRole('columnheader', { name: 'settings.library.actions' })
 	).not.toBeInTheDocument();
