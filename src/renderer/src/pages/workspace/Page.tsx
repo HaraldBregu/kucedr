@@ -51,7 +51,7 @@ export default function WorkspacePage({ settings = false }: { readonly settings?
 	if (settings) {
 		return (
 			<Group orientation="horizontal" className="h-full min-h-0 bg-background" aria-label={t('settings.workspace.title', 'Workspace')}>
-				<Panel id="workspace-files" defaultSize="22%" minSize="15%" maxSize="60%" className="flex min-w-0 flex-col">
+				<Panel id="workspace-files" defaultSize="16%" minSize="10%" maxSize="60%" className="flex min-w-0 flex-col">
 					<div className="min-h-0 flex-1">{sidebar}</div>
 				</Panel>
 				<Separator aria-label={t('settings.workspace.resize', 'Resize workspace files')} className="relative w-px shrink-0 bg-border outline-none after:absolute after:inset-y-0 after:-left-1 after:w-2 hover:bg-ring focus-visible:bg-ring" />
