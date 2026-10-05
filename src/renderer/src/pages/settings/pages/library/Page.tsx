@@ -1,10 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
-import { AlertTriangle, FolderOpen, LayoutGrid, Library, List, Upload } from 'lucide-react';
+import { AlertTriangle, Library, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../../../shared/library_types';
+import { workspaceFileType } from '../../../../../../shared/workspace';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { useChatSession } from '@/contexts/chat-session';
+import { saveDraftAttachments } from '../../../home/attachments/save';
 import {
 	SettingsEmptyState,
 	SettingsLoadingRows,
@@ -17,13 +20,19 @@ import {
 import { LibraryTable } from './Table';
 import { LibraryCard } from './Card';
 import { LibraryModal } from './Modal';
+import { LibraryHeaderActions } from './Header';
+import { LibraryFolderDialog } from './FolderDialog';
+import { LibrarySelection } from './Selection';
 import { sortLibraryFiles, type LibrarySort, type LibrarySortKey } from './sort';
 
 const FILE_BATCH_SIZE = 48;
 
 const LibraryPage: React.FC = () => {
 	const { t } = useTranslation();
+	const navigate = useNavigate();
+	const { setSessionId } = useChatSession();
 	const [files, setFiles] = useState<LibraryFile[]>([]);
+	const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
 	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
 	const [view, setView] = useState<'collections' | 'list'>('list');
@@ -32,10 +41,31 @@ const LibraryPage: React.FC = () => {
 	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
+	const [folderDialogOpen, setFolderDialogOpen] = useState(false);
+	const [selectionBusy, setSelectionBusy] = useState(false);
 	const [dragging, setDragging] = useState(false);
 	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
 	const orderedFiles = useMemo(() => sortLibraryFiles(files, sort), [files, sort]);
+	const selectedFiles = useMemo(() => files.filter((file) => file.kind !== 'folder' && selectedPaths.has(file.relativePath)), [files, selectedPaths]);
+	const handleSelect = useCallback((path: string, selected: boolean): void => {
+		setSelectedPaths((current) => {
+			const next = new Set(current);
+			if (selected) next.add(path);
+			else next.delete(path);
+			return next;
+		});
+	}, []);
+	const handleSelectAll = useCallback((entries: LibraryFile[], selected: boolean): void => {
+		setSelectedPaths((current) => {
+			const next = new Set(current);
+			for (const file of entries) {
+				if (selected) next.add(file.relativePath);
+				else next.delete(file.relativePath);
+			}
+			return next;
+		});
+	}, []);
 	const handleSort = useCallback((key: LibrarySortKey): void => {
 		setSort((current) => ({
 			key,
@@ -52,6 +82,7 @@ const LibraryPage: React.FC = () => {
 				window.library.getRoot(),
 			]);
 			setFiles(nextFiles);
+			setSelectedPaths(new Set());
 			setVisibleCount(FILE_BATCH_SIZE);
 			setRoot(nextRoot);
 		} catch {
@@ -103,6 +134,58 @@ const LibraryPage: React.FC = () => {
 		}
 	}, [loadFiles, t]);
 
+	const handleCreateFolder = useCallback(async (name: string): Promise<void> => {
+		setErrorMessage('');
+		try {
+			await window.library.createFolder(name);
+			await loadFiles();
+		} catch {
+			setErrorMessage(t('settings.library.createFolderError'));
+			throw new Error('Folder creation failed');
+		}
+	}, [loadFiles, t]);
+
+	const handleStartChat = useCallback((): void => {
+		const sessionId = crypto.randomUUID();
+		saveDraftAttachments(sessionId, selectedFiles.map((file) => ({
+			id: crypto.randomUUID(),
+			kind: 'file' as const,
+			file: new File([], file.name, { type: workspaceFileType(file.name).mimeType ?? '' }),
+			path: file.path,
+		})));
+		setSessionId(sessionId);
+		navigate('/home');
+		window.requestAnimationFrame(() => window.dispatchEvent(new Event('kucedr:focus-chat-input')));
+	}, [navigate, selectedFiles, setSessionId]);
+
+	const handleDownload = useCallback(async (): Promise<void> => {
+		setSelectionBusy(true);
+		setErrorMessage('');
+		try {
+			await window.library.download(selectedFiles.map((file) => file.relativePath));
+		} catch {
+			setErrorMessage(t('settings.library.downloadError'));
+		} finally {
+			setSelectionBusy(false);
+		}
+	}, [selectedFiles, t]);
+
+	const handleDeleteSelected = useCallback(async (): Promise<void> => {
+		if (!window.confirm(t('settings.library.confirmDeleteSelected', { count: selectedFiles.length }))) return;
+		setSelectionBusy(true);
+		setErrorMessage('');
+		try {
+			for (const file of selectedFiles) await window.library.delete(file.relativePath);
+			setFiles((current) => current.filter((file) => !selectedPaths.has(file.relativePath)));
+			setSelectedPaths(new Set());
+		} catch {
+			setErrorMessage(t('settings.library.deleteError'));
+			await loadFiles();
+		} finally {
+			setSelectionBusy(false);
+		}
+	}, [loadFiles, selectedFiles, selectedPaths, t]);
+
 	const handleDrop = useCallback(
 		async (event: DragEvent<HTMLDivElement>): Promise<void> => {
 			event.preventDefault();
@@ -134,6 +217,11 @@ const LibraryPage: React.FC = () => {
 			try {
 				await window.library.delete(file.relativePath);
 				setFiles((current) => current.filter((entry) => entry.relativePath !== file.relativePath));
+				setSelectedPaths((current) => {
+					const next = new Set(current);
+					next.delete(file.relativePath);
+					return next;
+				});
 				setPreviewFile((current) => (current?.relativePath === file.relativePath ? null : current));
 			} catch {
 				setErrorMessage(t('settings.library.deleteError'));
@@ -147,7 +235,9 @@ const LibraryPage: React.FC = () => {
 	const handleContextMenu = useCallback(
 		(file: LibraryFile): void => {
 			void window.win
-				.showContextMenu([
+				.showContextMenu(file.kind === 'folder' ? [
+					{ id: 'open-folder', label: t('settings.library.openFolder') },
+				] : [
 					{ id: 'preview', label: t('settings.library.preview') },
 					{ id: 'open-folder', label: t('settings.library.openFolder') },
 					{ type: 'separator' },
@@ -172,51 +262,7 @@ const LibraryPage: React.FC = () => {
 			<SettingsPageHeader
 				title={t('library.title')}
 				description={t('settings.library.description')}
-				action={
-					<div className="flex flex-wrap items-center gap-2">
-						<ToggleGroup
-							type="single"
-							value={view}
-							onValueChange={(value) => {
-								if (value === 'collections' || value === 'list') setView(value);
-							}}
-							variant="outline"
-							size="sm"
-							aria-label={t('settings.library.view')}
-						>
-							<ToggleGroupItem
-								value="collections"
-								className="h-8"
-								aria-label={t('settings.library.collections')}
-							>
-								<LayoutGrid className="size-4" />
-								{t('settings.library.collections')}
-							</ToggleGroupItem>
-							<ToggleGroupItem value="list" className="h-8" aria-label={t('settings.library.list')}>
-								<List className="size-4" />
-								{t('settings.library.list')}
-							</ToggleGroupItem>
-						</ToggleGroup>
-						<Button
-							variant="secondary"
-							size="icon"
-							aria-label={t('settings.library.openFolder')}
-							title={t('settings.library.openFolder')}
-							onClick={() => void handleOpenFolder()}
-						>
-							<FolderOpen className="size-4" />
-						</Button>
-						<Button
-							variant="outline"
-							size="default"
-							onClick={() => void handleUpload()}
-							disabled={loading || uploading}
-						>
-							<Upload className="size-4" />
-							{uploading ? t('settings.library.uploading') : t('settings.library.upload')}
-						</Button>
-					</div>
-				}
+				action={<LibraryHeaderActions view={view} onViewChange={(next) => { setView(next); setSelectedPaths(new Set()); }} onCreateFolder={() => setFolderDialogOpen(true)} onOpenFolder={() => void handleOpenFolder()} onUpload={() => void handleUpload()} disabled={loading || uploading} />}
 			/>
 
 			{errorMessage && (
@@ -273,7 +319,6 @@ const LibraryPage: React.FC = () => {
 									file={file}
 									disabled={deletingPath === file.relativePath || uploading}
 									onDelete={(entry) => void handleDelete(entry)}
-									onPreview={setPreviewFile}
 									onContextMenu={handleContextMenu}
 								/>
 							))}
@@ -283,7 +328,9 @@ const LibraryPage: React.FC = () => {
 							files={orderedFiles.slice(0, visibleCount)}
 							sort={sort}
 							onSort={handleSort}
-							onPreview={setPreviewFile}
+							selectedPaths={selectedPaths}
+							onSelect={handleSelect}
+							onSelectAll={handleSelectAll}
 							onContextMenu={handleContextMenu}
 						/>
 					)}
@@ -304,10 +351,12 @@ const LibraryPage: React.FC = () => {
 			</SettingsSection>
 			<LibraryModal
 				file={previewFile}
-				files={view === 'list' ? orderedFiles : files}
+				files={(view === 'list' ? orderedFiles : files).filter((file) => file.kind !== 'folder')}
 				onClose={() => setPreviewFile(null)}
 				onNavigate={setPreviewFile}
 			/>
+			<LibraryFolderDialog open={folderDialogOpen} onOpenChange={setFolderDialogOpen} onCreate={handleCreateFolder} />
+			{selectedFiles.length > 0 && <LibrarySelection count={selectedFiles.length} onStartChat={handleStartChat} onDownload={() => void handleDownload()} onDelete={() => void handleDeleteSelected()} onOpenFolder={() => void handleOpenFolder()} onClear={() => setSelectedPaths(new Set())} busy={selectionBusy} />}
 		</SettingsPageShell>
 	);
 };
