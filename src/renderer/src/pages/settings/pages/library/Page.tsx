@@ -25,7 +25,7 @@ const LibraryPage: React.FC = () => {
 	const [files, setFiles] = useState<LibraryFile[]>([]);
 	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
-	const [view, setView] = useState<'collections' | 'list'>('collections');
+	const [view, setView] = useState<'collections' | 'list'>('list');
 	const [previewFile, setPreviewFile] = useState<LibraryFile | null>(null);
 	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
@@ -162,20 +162,44 @@ const LibraryPage: React.FC = () => {
 		<SettingsPageShell className="max-w-none">
 			<SettingsPageHeader
 				title={t('library.title')}
-				description={t('settings.library.description')}
-				action={
+				 description={t('settings.library.description')}
+				 action={
 					<div className="flex flex-wrap items-center gap-2">
-						<Button variant="outline" size="xs" onClick={() => void handleOpenFolder()}>
-							<FolderOpen className="size-3" />
-							{t('settings.library.openFolder')}
+						<ToggleGroup
+							type="single"
+							value={view}
+							onValueChange={(value) => {
+								if (value === 'collections' || value === 'list') setView(value);
+							}}
+							variant="outline"
+							size="sm"
+							aria-label={t('settings.library.view')}
+						>
+							<ToggleGroupItem value="collections" className="h-8" aria-label={t('settings.library.collections')}>
+								<LayoutGrid className="size-4" />
+								{t('settings.library.collections')}
+							</ToggleGroupItem>
+							<ToggleGroupItem value="list" className="h-8" aria-label={t('settings.library.list')}>
+								<List className="size-4" />
+								{t('settings.library.list')}
+							</ToggleGroupItem>
+						</ToggleGroup>
+						<Button
+							variant="outline"
+							size="icon"
+							aria-label={t('settings.library.openFolder')}
+							title={t('settings.library.openFolder')}
+							onClick={() => void handleOpenFolder()}
+						>
+							<FolderOpen className="size-4" />
 						</Button>
 						<Button
 							variant="outline"
-							size="xs"
+							size="default"
 							onClick={() => void handleUpload()}
 							disabled={loading || uploading}
 						>
-							<Upload className="size-3" />
+							<Upload className="size-4" />
 							{uploading ? t('settings.library.uploading') : t('settings.library.upload')}
 						</Button>
 					</div>
@@ -191,27 +215,6 @@ const LibraryPage: React.FC = () => {
 			<SettingsSection
 				title={t('settings.library.files')}
 				description={root || undefined}
-				action={
-					<ToggleGroup
-						type="single"
-						value={view}
-						onValueChange={(value) => {
-							if (value === 'collections' || value === 'list') setView(value);
-						}}
-						variant="outline"
-						size="sm"
-						aria-label={t('settings.library.view')}
-					>
-						<ToggleGroupItem value="collections" aria-label={t('settings.library.collections')}>
-							<LayoutGrid className="size-4" />
-							{t('settings.library.collections')}
-						</ToggleGroupItem>
-						<ToggleGroupItem value="list" aria-label={t('settings.library.list')}>
-							<List className="size-4" />
-							{t('settings.library.list')}
-						</ToggleGroupItem>
-					</ToggleGroup>
-				}
 			>
 				<div
 					role="region"
