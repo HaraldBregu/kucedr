@@ -20,7 +20,13 @@ export function LibraryPreview({
 			? 'size-8 shrink-0'
 			: 'aspect-[4/3] w-full';
 	if (file.kind === 'folder') {
-		return <div className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}><Folder className={compact ? 'size-4' : 'size-12'} /></div>;
+		return (
+			<div
+				className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}
+			>
+				<Folder className={compact ? 'size-4' : 'size-12'} />
+			</div>
+		);
 	}
 
 	if (/\.(png|jpe?g|gif|webp|bmp|svg|ico|avif)$/i.test(file.name)) {

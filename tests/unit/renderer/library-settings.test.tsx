@@ -103,7 +103,9 @@ it('shows the view controls and file actions in the header with list selected by
 	expect(checkbox).not.toHaveClass('opacity-0');
 	await userEvent.setup().click(checkbox);
 	expect(checkbox).toHaveAttribute('data-state', 'checked');
-	expect(screen.getByRole('toolbar', { name: 'settings.library.selectionActions' })).toBeInTheDocument();
+	expect(
+		screen.getByRole('toolbar', { name: 'settings.library.selectionActions' })
+	).toBeInTheDocument();
 	expect(selectAll).toHaveAttribute('data-state', 'checked');
 	await userEvent.setup().click(selectAll);
 	expect(checkbox).toHaveAttribute('data-state', 'unchecked');
@@ -132,7 +134,11 @@ it('creates a folder from the icon-only header', async () => {
 	await screen.findByText('notes.txt');
 	await user.click(screen.getByRole('button', { name: 'settings.library.createFolder' }));
 	await user.type(screen.getByRole('textbox', { name: 'settings.library.folderName' }), 'Projects');
-	await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'settings.library.createFolder' }));
+	await user.click(
+		within(screen.getByRole('dialog')).getByRole('button', {
+			name: 'settings.library.createFolder',
+		})
+	);
 	await waitFor(() => expect(createFolder).toHaveBeenCalledWith('Projects'));
 });
 
@@ -144,9 +150,13 @@ it('shows selection actions and downloads or deletes selected files', async () =
 	const toolbar = screen.getByRole('toolbar', { name: 'settings.library.selectionActions' });
 	await user.click(within(toolbar).getByRole('button', { name: 'settings.library.download' }));
 	await waitFor(() => expect(download).toHaveBeenCalledWith(['documents/notes.txt']));
-	await user.click(within(toolbar).getByRole('button', { name: 'settings.library.deleteSelected' }));
+	await user.click(
+		within(toolbar).getByRole('button', { name: 'settings.library.deleteSelected' })
+	);
 	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
-	expect(screen.queryByRole('toolbar', { name: 'settings.library.selectionActions' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('toolbar', { name: 'settings.library.selectionActions' })
+	).not.toBeInTheDocument();
 });
 
 it('starts a new chat with the selected file attached', async () => {
@@ -159,7 +169,10 @@ it('starts a new chat with the selected file attached', async () => {
 	expect(mockNavigate).toHaveBeenCalledWith('/home');
 	const drafts = JSON.parse(localStorage.getItem('kucedr-prompt-attachments')!);
 	expect(drafts[mockSetSessionId.mock.calls[0][0]]).toEqual([
-		expect.objectContaining({ name: 'notes.txt', path: '/Users/example/.kucedr/library/documents/notes.txt' }),
+		expect.objectContaining({
+			name: 'notes.txt',
+			path: '/Users/example/.kucedr/library/documents/notes.txt',
+		}),
 	]);
 });
 
@@ -266,7 +279,9 @@ it('shows media previews in both library views', async () => {
 		'src',
 		'local-resource://file/library/photo.png'
 	);
-	expect(screen.queryByRole('button', { name: 'settings.library.previewFile' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.library.previewFile' })
+	).not.toBeInTheDocument();
 	showContextMenu.mockResolvedValueOnce('preview');
 	fireEvent.contextMenu(screen.getAllByText('photo.png')[0].closest('article')!);
 	expect(

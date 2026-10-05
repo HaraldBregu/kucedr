@@ -27,7 +27,9 @@ export function LibraryTable({
 }): React.JSX.Element {
 	const { t } = useTranslation();
 	const selectableFiles = files.filter((file) => file.kind !== 'folder');
-	const selectedCount = selectableFiles.filter((file) => selectedPaths.has(file.relativePath)).length;
+	const selectedCount = selectableFiles.filter((file) =>
+		selectedPaths.has(file.relativePath)
+	).length;
 	const columns: { key: LibrarySortKey; label: string; className?: string }[] = [
 		{ key: 'name', label: t('settings.library.name') },
 		{ key: 'size', label: t('settings.library.size'), className: 'w-28' },
@@ -43,7 +45,9 @@ export function LibraryTable({
 							checked={
 								selectableFiles.length > 0 && selectedCount === selectableFiles.length
 									? true
-									: selectedCount > 0 ? 'indeterminate' : false
+									: selectedCount > 0
+										? 'indeterminate'
+										: false
 							}
 							onCheckedChange={(checked) => onSelectAll(selectableFiles, checked === true)}
 							aria-label={t('settings.library.select')}

@@ -23,7 +23,9 @@ it('creates a visible folder in the library', async () => {
 });
 
 it('rejects traversal and duplicate names', async () => {
-	await expect(createLibraryFolder('../outside', root)).rejects.toThrow('Invalid library folder name.');
+	await expect(createLibraryFolder('../outside', root)).rejects.toThrow(
+		'Invalid library folder name.'
+	);
 	await createLibraryFolder('Projects', root);
 	await expect(createLibraryFolder('Projects', root)).rejects.toMatchObject({ code: 'EEXIST' });
 });

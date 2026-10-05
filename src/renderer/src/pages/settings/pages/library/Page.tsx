@@ -47,7 +47,10 @@ const LibraryPage: React.FC = () => {
 	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
 	const orderedFiles = useMemo(() => sortLibraryFiles(files, sort), [files, sort]);
-	const selectedFiles = useMemo(() => files.filter((file) => file.kind !== 'folder' && selectedPaths.has(file.relativePath)), [files, selectedPaths]);
+	const selectedFiles = useMemo(
+		() => files.filter((file) => file.kind !== 'folder' && selectedPaths.has(file.relativePath)),
+		[files, selectedPaths]
+	);
 	const handleSelect = useCallback((path: string, selected: boolean): void => {
 		setSelectedPaths((current) => {
 			const next = new Set(current);
@@ -134,25 +137,31 @@ const LibraryPage: React.FC = () => {
 		}
 	}, [loadFiles, t]);
 
-	const handleCreateFolder = useCallback(async (name: string): Promise<void> => {
-		setErrorMessage('');
-		try {
-			await window.library.createFolder(name);
-			await loadFiles();
-		} catch {
-			setErrorMessage(t('settings.library.createFolderError'));
-			throw new Error('Folder creation failed');
-		}
-	}, [loadFiles, t]);
+	const handleCreateFolder = useCallback(
+		async (name: string): Promise<void> => {
+			setErrorMessage('');
+			try {
+				await window.library.createFolder(name);
+				await loadFiles();
+			} catch {
+				setErrorMessage(t('settings.library.createFolderError'));
+				throw new Error('Folder creation failed');
+			}
+		},
+		[loadFiles, t]
+	);
 
 	const handleStartChat = useCallback((): void => {
 		const sessionId = crypto.randomUUID();
-		saveDraftAttachments(sessionId, selectedFiles.map((file) => ({
-			id: crypto.randomUUID(),
-			kind: 'file' as const,
-			file: new File([], file.name, { type: workspaceFileType(file.name).mimeType ?? '' }),
-			path: file.path,
-		})));
+		saveDraftAttachments(
+			sessionId,
+			selectedFiles.map((file) => ({
+				id: crypto.randomUUID(),
+				kind: 'file' as const,
+				file: new File([], file.name, { type: workspaceFileType(file.name).mimeType ?? '' }),
+				path: file.path,
+			}))
+		);
 		setSessionId(sessionId);
 		navigate('/home');
 		window.requestAnimationFrame(() => window.dispatchEvent(new Event('kucedr:focus-chat-input')));
@@ -171,7 +180,10 @@ const LibraryPage: React.FC = () => {
 	}, [selectedFiles, t]);
 
 	const handleDeleteSelected = useCallback(async (): Promise<void> => {
-		if (!window.confirm(t('settings.library.confirmDeleteSelected', { count: selectedFiles.length }))) return;
+		if (
+			!window.confirm(t('settings.library.confirmDeleteSelected', { count: selectedFiles.length }))
+		)
+			return;
 		setSelectionBusy(true);
 		setErrorMessage('');
 		try {
@@ -235,18 +247,20 @@ const LibraryPage: React.FC = () => {
 	const handleContextMenu = useCallback(
 		(file: LibraryFile): void => {
 			void window.win
-				.showContextMenu(file.kind === 'folder' ? [
-					{ id: 'open-folder', label: t('settings.library.openFolder') },
-				] : [
-					{ id: 'preview', label: t('settings.library.preview') },
-					{ id: 'open-folder', label: t('settings.library.openFolder') },
-					{ type: 'separator' },
-					{
-						id: 'delete',
-						label: t('settings.library.delete', { name: file.name }),
-						enabled: deletingPath !== file.relativePath && !uploading,
-					},
-				])
+				.showContextMenu(
+					file.kind === 'folder'
+						? [{ id: 'open-folder', label: t('settings.library.openFolder') }]
+						: [
+								{ id: 'preview', label: t('settings.library.preview') },
+								{ id: 'open-folder', label: t('settings.library.openFolder') },
+								{ type: 'separator' },
+								{
+									id: 'delete',
+									label: t('settings.library.delete', { name: file.name }),
+									enabled: deletingPath !== file.relativePath && !uploading,
+								},
+							]
+				)
 				.then((action) => {
 					if (action === 'preview') setPreviewFile(file);
 					else if (action === 'open-folder') void handleOpenFolder();
@@ -262,7 +276,19 @@ const LibraryPage: React.FC = () => {
 			<SettingsPageHeader
 				title={t('library.title')}
 				description={t('settings.library.description')}
-				action={<LibraryHeaderActions view={view} onViewChange={(next) => { setView(next); setSelectedPaths(new Set()); }} onCreateFolder={() => setFolderDialogOpen(true)} onOpenFolder={() => void handleOpenFolder()} onUpload={() => void handleUpload()} disabled={loading || uploading} />}
+				action={
+					<LibraryHeaderActions
+						view={view}
+						onViewChange={(next) => {
+							setView(next);
+							setSelectedPaths(new Set());
+						}}
+						onCreateFolder={() => setFolderDialogOpen(true)}
+						onOpenFolder={() => void handleOpenFolder()}
+						onUpload={() => void handleUpload()}
+						disabled={loading || uploading}
+					/>
+				}
 			/>
 
 			{errorMessage && (
@@ -355,8 +381,22 @@ const LibraryPage: React.FC = () => {
 				onClose={() => setPreviewFile(null)}
 				onNavigate={setPreviewFile}
 			/>
-			<LibraryFolderDialog open={folderDialogOpen} onOpenChange={setFolderDialogOpen} onCreate={handleCreateFolder} />
-			{selectedFiles.length > 0 && <LibrarySelection count={selectedFiles.length} onStartChat={handleStartChat} onDownload={() => void handleDownload()} onDelete={() => void handleDeleteSelected()} onOpenFolder={() => void handleOpenFolder()} onClear={() => setSelectedPaths(new Set())} busy={selectionBusy} />}
+			<LibraryFolderDialog
+				open={folderDialogOpen}
+				onOpenChange={setFolderDialogOpen}
+				onCreate={handleCreateFolder}
+			/>
+			{selectedFiles.length > 0 && (
+				<LibrarySelection
+					count={selectedFiles.length}
+					onStartChat={handleStartChat}
+					onDownload={() => void handleDownload()}
+					onDelete={() => void handleDeleteSelected()}
+					onOpenFolder={() => void handleOpenFolder()}
+					onClear={() => setSelectedPaths(new Set())}
+					busy={selectionBusy}
+				/>
+			)}
 		</SettingsPageShell>
 	);
 };

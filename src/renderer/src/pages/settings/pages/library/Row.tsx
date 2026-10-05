@@ -29,12 +29,14 @@ export function LibraryRow({
 			}}
 		>
 			<TableCell className="px-3 py-2">
-				{file.kind !== 'folder' && <Checkbox
-					checked={selected}
-					onCheckedChange={(checked) => onSelect(checked === true)}
-					aria-label={t('settings.library.selectFile', { name: file.name })}
-					className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
-				/>}
+				{file.kind !== 'folder' && (
+					<Checkbox
+						checked={selected}
+						onCheckedChange={(checked) => onSelect(checked === true)}
+						aria-label={t('settings.library.selectFile', { name: file.name })}
+						className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
+					/>
+				)}
 			</TableCell>
 			<TableCell className={selected ? 'rounded-l-xl bg-muted/70 py-2' : 'py-2'}>
 				<div className="flex w-full min-w-0 items-center gap-3 text-left">

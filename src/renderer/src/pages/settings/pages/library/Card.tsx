@@ -42,16 +42,18 @@ export function LibraryCard({
 						<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 					</p>
 				</div>
-				{file.kind !== 'folder' && <Button
-					variant="ghost"
-					size="icon-xs"
-					className="shrink-0 text-muted-foreground hover:text-destructive"
-					disabled={disabled}
-					aria-label={t('settings.library.delete', { name: file.name })}
-					onClick={() => onDelete(file)}
-				>
-					<Trash2 className="size-3.5" />
-				</Button>}
+				{file.kind !== 'folder' && (
+					<Button
+						variant="ghost"
+						size="icon-xs"
+						className="shrink-0 text-muted-foreground hover:text-destructive"
+						disabled={disabled}
+						aria-label={t('settings.library.delete', { name: file.name })}
+						onClick={() => onDelete(file)}
+					>
+						<Trash2 className="size-3.5" />
+					</Button>
+				)}
 			</div>
 		</article>
 	);

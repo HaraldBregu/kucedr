@@ -15,7 +15,12 @@ export async function downloadLibraryFiles(
 		relativePaths.map(async (relativePath) => {
 			const candidate = path.resolve(resolvedRoot, relativePath);
 			const inside = path.relative(resolvedRoot, candidate);
-			if (!inside || inside === '..' || inside.startsWith(`..${path.sep}`) || path.isAbsolute(inside)) {
+			if (
+				!inside ||
+				inside === '..' ||
+				inside.startsWith(`..${path.sep}`) ||
+				path.isAbsolute(inside)
+			) {
 				throw new Error('Library file path must stay inside the library.');
 			}
 			const source = await realpath(candidate);
@@ -26,7 +31,9 @@ export async function downloadLibraryFiles(
 		})
 	);
 	if (files.length === 1) {
-		const result = await dialog.showSaveDialog(window, { defaultPath: path.basename(files[0].source) });
+		const result = await dialog.showSaveDialog(window, {
+			defaultPath: path.basename(files[0].source),
+		});
 		if (result.canceled || !result.filePath) return false;
 		await copyFile(files[0].source, result.filePath, constants.COPYFILE_EXCL);
 		return true;
