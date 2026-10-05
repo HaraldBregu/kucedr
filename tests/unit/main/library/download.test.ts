@@ -1,11 +1,12 @@
 import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
+import { dialog } from 'electron';
 import { downloadLibraryFiles } from '../../../../src/main/library/download';
 
-const showSaveDialog = jest.fn();
-const showOpenDialog = jest.fn();
-jest.mock('electron', () => ({ dialog: { showSaveDialog, showOpenDialog } }));
+jest.mock('electron', () => ({ dialog: { showSaveDialog: jest.fn(), showOpenDialog: jest.fn() } }));
+const showSaveDialog = dialog.showSaveDialog as jest.Mock;
+const showOpenDialog = dialog.showOpenDialog as jest.Mock;
 
 let root = '';
 let destination = '';
