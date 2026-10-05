@@ -37,7 +37,7 @@ export class LibraryIpc implements IpcModule<LibraryIpcDependencies> {
 		});
 		registerCommandWithEvent(LibraryChannels.delete, (event, relativePath) => {
 			trusted.assert(event);
-			return library.deleteLibraryFile(relativePath);
+			return library.deleteLibraryEntry(relativePath);
 		});
 		registerCommandWithEvent(LibraryChannels.createFolder, (event, name, parent) => {
 			trusted.assert(event);

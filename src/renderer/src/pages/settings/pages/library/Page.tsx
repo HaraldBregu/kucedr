@@ -267,18 +267,28 @@ const LibraryPage: React.FC = () => {
 
 	const handleDelete = useCallback(
 		async (file: LibraryFile): Promise<void> => {
-			if (!window.confirm(t('settings.library.confirmDelete', { name: file.name }))) return;
+			const confirmation =
+				file.kind === 'folder' ? 'settings.library.confirmDeleteFolder' : 'settings.library.confirmDelete';
+			if (!window.confirm(t(confirmation, { name: file.name }))) return;
 			setDeletingPath(file.relativePath);
 			setErrorMessage('');
 			try {
 				await window.library.delete(file.relativePath);
-				setFiles((current) => current.filter((entry) => entry.relativePath !== file.relativePath));
+				const deletedPath = file.relativePath.replaceAll('\\', '/');
+				const includesDeleted = (entryPath: string): boolean => {
+					const normalized = entryPath.replaceAll('\\', '/');
+					return (
+						normalized === deletedPath ||
+						(file.kind === 'folder' && normalized.startsWith(`${deletedPath}/`))
+					);
+				};
+				setFiles((current) => current.filter((entry) => !includesDeleted(entry.relativePath)));
 				setSelectedPaths((current) => {
-					const next = new Set(current);
-					next.delete(file.relativePath);
-					return next;
+					return new Set([...current].filter((path) => !includesDeleted(path)));
 				});
-				setPreviewFile((current) => (current?.relativePath === file.relativePath ? null : current));
+				setPreviewFile((current) =>
+					current && includesDeleted(current.relativePath) ? null : current
+				);
 			} catch {
 				setErrorMessage(t('settings.library.deleteError'));
 			} finally {
@@ -293,7 +303,15 @@ const LibraryPage: React.FC = () => {
 			void window.win
 				.showContextMenu(
 					file.kind === 'folder'
-						? [{ id: 'open-folder', label: t('settings.library.openFolder') }]
+						? [
+								{ id: 'open-folder', label: t('settings.library.openFolder') },
+								{ type: 'separator' },
+								{
+									id: 'delete',
+									label: t('settings.library.delete', { name: file.name }),
+									enabled: deletingPath !== file.relativePath && !uploading,
+								},
+							]
 						: [
 								{ id: 'preview', label: t('settings.library.preview') },
 								{ id: 'open-folder', label: t('settings.library.openFolder') },

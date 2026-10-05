@@ -1764,11 +1764,12 @@
 			"dropZone": "Library upload drop zone",
 			"delete": "Delete {{name}}",
 			"confirmDelete": "Delete \"{{name}}\" from the library? This cannot be undone.",
+			"confirmDeleteFolder": "Delete \"{{name}}\" and everything inside it from the library? This cannot be undone.",
 			"openFolder": "Open Folder",
 			"emptyDescription": "Upload files or drop them here to add them to the library.",
 			"loadError": "Unable to load library files.",
 			"uploadError": "Unable to upload files to the library.",
-			"deleteError": "Unable to delete the library file.",
+			"deleteError": "Unable to delete the library item.",
 			"openFolderError": "Unable to open the library folder."
 		},
 		"channels": {
