@@ -82,15 +82,31 @@ it('shows the view controls and file actions in the header with list selected by
 	expect(within(header).getByRole('button', { name: 'settings.library.openFolder' })).toHaveClass(
 		'bg-secondary'
 	);
+	const selectAll = screen.getByRole('checkbox', { name: 'settings.library.select' });
 	const checkbox = screen.getByRole('checkbox', { name: 'settings.library.selectFile' });
-	expect(checkbox).toHaveClass('opacity-0', 'group-hover:opacity-100');
+	expect(checkbox).not.toHaveClass('opacity-0');
 	await userEvent.setup().click(checkbox);
 	expect(checkbox).toHaveAttribute('data-state', 'checked');
+	expect(selectAll).toHaveAttribute('data-state', 'checked');
+	await userEvent.setup().click(selectAll);
+	expect(checkbox).toHaveAttribute('data-state', 'unchecked');
 
 	await userEvent
 		.setup()
 		.click(within(header).getByRole('button', { name: 'settings.library.collections' }));
 	expect(document.querySelectorAll('article')).toHaveLength(1);
+});
+
+it('shows an indeterminate select-all checkbox for a partial table selection', async () => {
+	list.mockResolvedValue([manyFiles[0], manyFiles[1]]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	const checkboxes = await screen.findAllByRole('checkbox');
+	await user.click(checkboxes[1]);
+	expect(checkboxes[0]).toHaveAttribute('data-state', 'indeterminate');
+	await user.click(checkboxes[0]);
+	expect(checkboxes[1]).toHaveAttribute('data-state', 'checked');
+	expect(checkboxes[2]).toHaveAttribute('data-state', 'checked');
 });
 
 it('confirms and deletes a library file', async () => {
@@ -202,7 +218,7 @@ it('shows media previews in both library views', async () => {
 	).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
-	expect(screen.getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
+	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-10', 'object-cover');
 	const song = within(screen.getByRole('row', { name: /song.mp3/ })).getByRole('button', {
 		name: 'settings.library.previewFile',
 	});
