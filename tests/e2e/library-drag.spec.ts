@@ -4,7 +4,7 @@ import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
 
-test('moves library files and folders by dropping them onto folders', async ({}, testInfo) => {
+test('moves library files and folders by dropping them onto folders', async () => {
 	test.setTimeout(90_000);
 	const { app, page, userDataDir } = await launchApp();
 	try {
@@ -53,7 +53,7 @@ test('moves library files and folders by dropping them onto folders', async ({},
 				}
 			})
 			.toBe(true);
-		await page.screenshot({ path: testInfo.outputPath('library-folders.png'), fullPage: true });
+		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);
 	}
