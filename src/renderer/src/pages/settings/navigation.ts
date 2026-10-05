@@ -5,6 +5,7 @@ import {
 	Bot,
 	Layers,
 	Cloud,
+	Code2,
 	Folder,
 	HeartPulse,
 	Settings,
@@ -377,6 +378,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.workspace.title',
 		descriptionKey: 'settings.workspace.description',
 		icon: Folder,
+	},
+	{
+		path: '/settings/code',
+		labelKey: 'navigationBar.code',
+		descriptionKey: 'settings.code.description',
+		icon: Code2,
 	},
 	{
 		path: '/settings/voice',

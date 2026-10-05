@@ -60,6 +60,7 @@
 		"thinkingLevels": { "off": "Off", "minimal": "Minimal", "low": "Low", "medium": "Medium", "high": "High", "xhigh": "Extra high", "max": "Maximum" }
 	},
 	"code": {
+		"resize": "Resize code files",
 		"workspaces": "Workspaces",
 		"addWorkspace": "New workspace",
 		"loading": "Loading workspaces…",
@@ -1103,6 +1104,9 @@
 			},
 			"reset": "Reset",
 			"saveFailed": "Could not save the permissions."
+		},
+		"code": {
+			"description": "Browse your code projects and files"
 		},
 		"workspace": {
 			"title": "Workspace",

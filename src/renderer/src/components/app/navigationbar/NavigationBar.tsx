@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { ChevronDown, Code2, Menu, MessageCircle, Moon, Plus, Search, Sun } from 'lucide-react';
+import { ChevronDown, Menu, MessageCircle, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -73,7 +73,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
-	const codeLabel = t('navigationBar.code', 'Code');
 	const homeLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search');
 	const chatHistoryLabel = t('settings.chatHistory.title');
@@ -190,23 +189,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				</DropdownMenu>
 			</ButtonGroup>
 			) : chatButtonTooltip}
-			<Tooltip>
-				<TooltipTrigger render={
-					<Button
-						type="button"
-						variant={isCode ? 'secondary' : 'ghost'}
-						size="sm"
-						className="rounded-md text-xs"
-						onClick={() => navigate('/code')}
-						aria-label={codeLabel}
-						aria-current={isCode ? 'page' : undefined}
-					>
-						<Code2 className="size-3.5" strokeWidth={1.8} />
-						<span>{codeLabel}</span>
-					</Button>
-				} />
-				<TooltipContent side="bottom">{codeLabel}</TooltipContent>
-			</Tooltip>
 			<span aria-hidden="true" className="mx-1 h-5 w-px bg-border" />
 			<Tooltip>
 				<TooltipTrigger render={

@@ -143,7 +143,7 @@ it('does not render a chat title in the navigationbar', () => {
 	expect(container.querySelector('[data-slot="navigationbar-chat-context"]')).not.toBeInTheDocument();
 });
 
-it('omits Space while keeping application navigation on the right', () => {
+it('omits Space and Code while keeping Chat navigation on the right', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<NavigationBar showWorkspace />
@@ -152,7 +152,7 @@ it('omits Space while keeping application navigation on the right', () => {
 
 	expect(screen.queryByRole('button', { name: 'navigationBar.space' })).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'navigationBar.chat' })).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'navigationBar.code' })).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.code' })).not.toBeInTheDocument();
 });
 
 it('renders one solid navigationbar color without visible title text', () => {

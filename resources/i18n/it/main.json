@@ -60,6 +60,7 @@
 		"thinkingLevels": { "off": "Disattivato", "minimal": "Minimo", "low": "Basso", "medium": "Medio", "high": "Alto", "xhigh": "Molto alto", "max": "Massimo" }
 	},
 	"code": {
+		"resize": "Ridimensiona elenco file di codice",
 		"workspaces": "Spazi di lavoro",
 		"addWorkspace": "Nuovo spazio di lavoro",
 		"loading": "Caricamento degli spazi di lavoro…",
@@ -1103,6 +1104,9 @@
 			},
 			"reset": "Ripristina",
 			"saveFailed": "Impossibile salvare i permessi."
+		},
+		"code": {
+			"description": "Sfoglia i progetti di codice e i loro file"
 		},
 		"workspace": {
 			"title": "Workspace",

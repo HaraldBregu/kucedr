@@ -70,7 +70,7 @@ it('uses distinct icons for Library and Knowledge Base', () => {
 	);
 });
 
-it('places Library below Providers and Workspace below Library in the general sidebar group', () => {
+it('places Library, Workspace, and Code below Providers in the general sidebar group', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/settings']}>
 			<Routes>
@@ -92,6 +92,9 @@ it('places Library below Providers and Workspace below Library in the general si
 	const workspace = within(group as HTMLElement).getByRole('link', { name: 'settings.workspace.title' });
 	expect(workspace).toHaveAttribute('href', '/settings/workspace');
 	expect(links.indexOf(workspace)).toBe(links.indexOf(library) + 1);
+	const code = within(group as HTMLElement).getByRole('link', { name: 'navigationBar.code' });
+	expect(code).toHaveAttribute('href', '/settings/code');
+	expect(links.indexOf(code)).toBe(links.indexOf(workspace) + 1);
 });
 
 it.each([
