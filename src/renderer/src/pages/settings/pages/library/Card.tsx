@@ -29,7 +29,10 @@ export function LibraryCard({
 		<article
 			{...dragProps}
 			draggable
-			className={cn('min-w-0 cursor-grab overflow-hidden rounded-xl border border-border/70 bg-card p-2 active:cursor-grabbing', isDropTarget && 'bg-primary/10 ring-2 ring-primary/60')}
+			className={cn(
+				'min-w-0 cursor-grab overflow-hidden rounded-xl border border-border/70 bg-card p-2 active:cursor-grabbing',
+				isDropTarget && 'bg-primary/10 ring-2 ring-primary/60'
+			)}
 			data-drop-target={isDropTarget || undefined}
 			onContextMenu={(event) => {
 				event.preventDefault();

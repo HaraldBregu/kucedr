@@ -34,7 +34,10 @@ export async function moveLibraryEntries(
 		if (!metadata.isFile() && !metadata.isDirectory()) {
 			throw new Error('Library source is not a file or folder.');
 		}
-		if (metadata.isDirectory() && (destination === source || destination.startsWith(`${source}${path.sep}`))) {
+		if (
+			metadata.isDirectory() &&
+			(destination === source || destination.startsWith(`${source}${path.sep}`))
+		) {
 			throw new Error('A folder cannot be moved into itself.');
 		}
 		const target = path.join(destination, path.basename(source));
@@ -51,7 +54,14 @@ export async function moveLibraryEntries(
 		moves.push({ source, target, isDirectory: metadata.isDirectory() });
 	}
 	for (const move of moves) {
-		if (moves.some((other) => other !== move && move.source.startsWith(`${other.source}${path.sep}`) && other.isDirectory)) {
+		if (
+			moves.some(
+				(other) =>
+					other !== move &&
+					move.source.startsWith(`${other.source}${path.sep}`) &&
+					other.isDirectory
+			)
+		) {
 			throw new Error('A folder and its contents cannot be moved together.');
 		}
 	}

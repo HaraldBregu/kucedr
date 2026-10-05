@@ -30,7 +30,10 @@ export function LibraryRow({
 		<TableRow
 			{...dragProps}
 			draggable
-			className={cn('group cursor-grab data-[state=selected]:bg-transparent hover:bg-transparent active:cursor-grabbing', isDropTarget && 'bg-primary/10 ring-2 ring-inset ring-primary/60')}
+			className={cn(
+				'group cursor-grab data-[state=selected]:bg-transparent hover:bg-transparent active:cursor-grabbing',
+				isDropTarget && 'bg-primary/10 ring-2 ring-inset ring-primary/60'
+			)}
 			data-drop-target={isDropTarget || undefined}
 			data-state={selected ? 'selected' : undefined}
 			onContextMenu={(event) => {

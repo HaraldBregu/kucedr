@@ -62,7 +62,17 @@ beforeEach(() => {
 	showContextMenu.mockResolvedValue(null);
 	Object.defineProperty(window, 'library', {
 		configurable: true,
-		value: { list, getRoot, openRoot, add, select, delete: deleteFile, createFolder, download, move },
+		value: {
+			list,
+			getRoot,
+			openRoot,
+			add,
+			select,
+			delete: deleteFile,
+			createFolder,
+			download,
+			move,
+		},
 	});
 	Object.defineProperty(window, 'app', {
 		configurable: true,
@@ -133,7 +143,14 @@ it('shows an indeterminate select-all checkbox for a partial table selection', a
 
 it('drags selected files onto a folder in the list without uploading them again', async () => {
 	list.mockResolvedValue([
-		{ kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0, modifiedAt: '2026-09-29' },
+		{
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
+			modifiedAt: '2026-09-29',
+		},
 		manyFiles[0],
 		manyFiles[1],
 	]);
@@ -155,14 +172,30 @@ it('drags selected files onto a folder in the list without uploading them again'
 	fireEvent.dragOver(folderRow, { dataTransfer });
 	expect(folderRow).toHaveAttribute('data-drop-target', 'true');
 	fireEvent.drop(folderRow, { dataTransfer });
-	await waitFor(() => expect(move).toHaveBeenCalledWith(['file-000.png', 'file-001.png'], 'Projects'));
+	await waitFor(() =>
+		expect(move).toHaveBeenCalledWith(['file-000.png', 'file-001.png'], 'Projects')
+	);
 	expect(add).not.toHaveBeenCalled();
 });
 
 it('drags one folder into another in the collections view', async () => {
 	list.mockResolvedValue([
-		{ kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0, modifiedAt: '2026-09-29' },
-		{ kind: 'folder', name: 'Archive', path: '/library/Archive', relativePath: 'Archive', size: 0, modifiedAt: '2026-09-29' },
+		{
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
+			modifiedAt: '2026-09-29',
+		},
+		{
+			kind: 'folder',
+			name: 'Archive',
+			path: '/library/Archive',
+			relativePath: 'Archive',
+			size: 0,
+			modifiedAt: '2026-09-29',
+		},
 	]);
 	const user = userEvent.setup();
 	render(<LibraryPage />);

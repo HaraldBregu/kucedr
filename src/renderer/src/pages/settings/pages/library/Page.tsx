@@ -200,20 +200,23 @@ const LibraryPage: React.FC = () => {
 		}
 	}, [loadFiles, selectedFiles, selectedPaths, t]);
 
-	const handleMove = useCallback(async (paths: string[], folder: string): Promise<void> => {
-		if (moving) return;
-		setMoving(true);
-		setErrorMessage('');
-		try {
-			await window.library.move(paths, folder);
-			await loadFiles();
-		} catch {
-			await loadFiles();
-			setErrorMessage(t('settings.library.moveError'));
-		} finally {
-			setMoving(false);
-		}
-	}, [loadFiles, moving, t]);
+	const handleMove = useCallback(
+		async (paths: string[], folder: string): Promise<void> => {
+			if (moving) return;
+			setMoving(true);
+			setErrorMessage('');
+			try {
+				await window.library.move(paths, folder);
+				await loadFiles();
+			} catch {
+				await loadFiles();
+				setErrorMessage(t('settings.library.moveError'));
+			} finally {
+				setMoving(false);
+			}
+		},
+		[loadFiles, moving, t]
+	);
 
 	const handleDrop = useCallback(
 		async (event: DragEvent<HTMLDivElement>): Promise<void> => {
@@ -324,7 +327,11 @@ const LibraryPage: React.FC = () => {
 						dragging && 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background'
 					)}
 					onDragEnter={(event) => {
-						if (event.dataTransfer.types.includes('Files') && !event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) setDragging(true);
+						if (
+							event.dataTransfer.types.includes('Files') &&
+							!event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)
+						)
+							setDragging(true);
 					}}
 					onDragOver={(event) => {
 						if (event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;

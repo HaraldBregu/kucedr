@@ -18,9 +18,10 @@ export function useLibraryDrag(
 	return {
 		isDropTarget,
 		onDragStart(event) {
-			const paths = file.kind !== 'folder' && selectedPaths.has(file.relativePath)
-				? [...selectedPaths]
-				: [file.relativePath];
+			const paths =
+				file.kind !== 'folder' && selectedPaths.has(file.relativePath)
+					? [...selectedPaths]
+					: [file.relativePath];
 			event.dataTransfer.setData(LIBRARY_DRAG_TYPE, JSON.stringify(paths));
 			event.dataTransfer.effectAllowed = 'move';
 		},
@@ -43,7 +44,11 @@ export function useLibraryDrag(
 			setIsDropTarget(false);
 			try {
 				const paths: unknown = JSON.parse(event.dataTransfer.getData(LIBRARY_DRAG_TYPE));
-				if (Array.isArray(paths) && paths.length > 0 && paths.every((path) => typeof path === 'string')) {
+				if (
+					Array.isArray(paths) &&
+					paths.length > 0 &&
+					paths.every((path) => typeof path === 'string')
+				) {
 					onMove(paths, file.relativePath);
 				}
 			} catch {
