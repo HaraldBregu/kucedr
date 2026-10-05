@@ -23,7 +23,7 @@ export function LibraryRow({
 
 	return (
 		<TableRow
-			className="group"
+			className="group data-[state=selected]:bg-transparent hover:bg-transparent"
 			data-state={selected ? 'selected' : undefined}
 			onContextMenu={(event) => {
 				event.preventDefault();
@@ -35,10 +35,10 @@ export function LibraryRow({
 					checked={selected}
 					onCheckedChange={(checked) => onSelect(checked === true)}
 					aria-label={t('settings.library.selectFile', { name: file.name })}
-					className="opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 data-[state=checked]:opacity-100"
+					className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
 				/>
 			</TableCell>
-			<TableCell>
+			<TableCell className={selected ? 'rounded-l-xl bg-muted/70' : undefined}>
 				<button
 					type="button"
 					className="flex w-full min-w-0 items-center gap-3 text-left focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -51,10 +51,10 @@ export function LibraryRow({
 					</span>
 				</button>
 			</TableCell>
-			<TableCell className="whitespace-nowrap text-muted-foreground">
+			<TableCell className={selected ? 'whitespace-nowrap bg-muted/70 text-muted-foreground' : 'whitespace-nowrap text-muted-foreground'}>
 				{formatLibraryFileSize(file.size)}
 			</TableCell>
-			<TableCell className="whitespace-nowrap text-muted-foreground">
+			<TableCell className={selected ? 'rounded-r-xl whitespace-nowrap bg-muted/70 text-muted-foreground' : 'whitespace-nowrap text-muted-foreground'}>
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 			</TableCell>
 		</TableRow>
