@@ -60,7 +60,11 @@ it('shows the view controls and file actions in the header with list selected by
 	await screen.findByText('notes.txt');
 
 	const header = container.querySelector('header')!;
-	expect(within(header).getAllByRole('button').map((button) => button.getAttribute('aria-label') ?? button.textContent)).toEqual([
+	expect(
+		within(header)
+			.getAllByRole('button')
+			.map((button) => button.getAttribute('aria-label') ?? button.textContent)
+	).toEqual([
 		'settings.library.collections',
 		'settings.library.list',
 		'settings.library.openFolder',
@@ -69,7 +73,9 @@ it('shows the view controls and file actions in the header with list selected by
 	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(1);
 	expect(document.querySelectorAll('article')).toHaveLength(0);
 
-	await userEvent.setup().click(within(header).getByRole('button', { name: 'settings.library.collections' }));
+	await userEvent
+		.setup()
+		.click(within(header).getByRole('button', { name: 'settings.library.collections' }));
 	expect(document.querySelectorAll('article')).toHaveLength(1);
 });
 

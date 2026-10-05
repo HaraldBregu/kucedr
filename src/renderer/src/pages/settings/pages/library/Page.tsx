@@ -162,8 +162,8 @@ const LibraryPage: React.FC = () => {
 		<SettingsPageShell className="max-w-none">
 			<SettingsPageHeader
 				title={t('library.title')}
-				 description={t('settings.library.description')}
-				 action={
+				description={t('settings.library.description')}
+				action={
 					<div className="flex flex-wrap items-center gap-2">
 						<ToggleGroup
 							type="single"
@@ -175,7 +175,11 @@ const LibraryPage: React.FC = () => {
 							size="sm"
 							aria-label={t('settings.library.view')}
 						>
-							<ToggleGroupItem value="collections" className="h-8" aria-label={t('settings.library.collections')}>
+							<ToggleGroupItem
+								value="collections"
+								className="h-8"
+								aria-label={t('settings.library.collections')}
+							>
 								<LayoutGrid className="size-4" />
 								{t('settings.library.collections')}
 							</ToggleGroupItem>
@@ -212,10 +216,7 @@ const LibraryPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			<SettingsSection
-				title={t('settings.library.files')}
-				description={root || undefined}
-			>
+			<SettingsSection title={t('settings.library.files')} description={root || undefined}>
 				<div
 					role="region"
 					aria-label={t('settings.library.dropZone')}
