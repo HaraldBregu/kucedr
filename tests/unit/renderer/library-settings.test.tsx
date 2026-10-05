@@ -287,6 +287,30 @@ it('creates a folder from the icon-only header', async () => {
 	await waitFor(() => expect(createFolder).toHaveBeenCalledWith('Projects', ''));
 });
 
+it('creates folders in the open folder', async () => {
+	list.mockResolvedValue([
+		{
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
+			modifiedAt: '2026-09-29',
+		},
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await user.click(await screen.findByRole('button', { name: 'settings.library.openFolderNamed' }));
+	await user.click(screen.getByRole('button', { name: 'settings.library.createFolder' }));
+	await user.type(screen.getByRole('textbox', { name: 'settings.library.folderName' }), 'Notes');
+	await user.click(
+		within(screen.getByRole('dialog')).getByRole('button', {
+			name: 'settings.library.createFolder',
+		})
+	);
+	await waitFor(() => expect(createFolder).toHaveBeenCalledWith('Notes', 'Projects'));
+});
+
 it('shows selection actions and downloads or deletes selected files', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
