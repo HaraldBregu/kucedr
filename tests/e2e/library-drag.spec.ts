@@ -35,6 +35,10 @@ test('moves library files and folders by dropping them onto folders', async () =
 		await expect
 			.poll(async () => readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8'))
 			.toBe('notes');
+		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toHaveCount(0);
+		await page.getByRole('row').filter({ hasText: 'Projects' }).getByRole('button', { name: 'Open Projects' }).click();
+		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toBeVisible();
+		await page.getByRole('navigation', { name: 'Library folders' }).getByRole('button', { name: 'Library' }).click();
 		await page.getByRole('button', { name: 'Collections' }).click();
 		await page
 			.getByText('Projects', { exact: true })
@@ -53,6 +57,10 @@ test('moves library files and folders by dropping them onto folders', async () =
 				}
 			})
 			.toBe(true);
+		await expect(page.getByText('Projects', { exact: true })).toHaveCount(0);
+		await page.getByRole('button', { name: 'Open Archive' }).first().click();
+		await page.getByRole('button', { name: 'Open Projects' }).first().click();
+		await expect(page.getByText('notes.txt', { exact: true }).first()).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);
