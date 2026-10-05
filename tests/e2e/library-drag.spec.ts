@@ -23,6 +23,7 @@ test('moves library files and folders by dropping them onto folders', async ({},
 			window.sessionStorage.setItem('kucedr-onboarding-started', 'true');
 		});
 		await page.reload();
+		await expect(page).toHaveURL(/#\/home$/);
 		await page.evaluate(() => { window.location.hash = '#/settings/library'; });
 		await expect(page.getByRole('table')).toBeVisible();
 		await page.getByRole('row').filter({ hasText: 'notes.txt' }).dragTo(
