@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { Button } from '@/components/ui/button';
-import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
+import { TableCell, TableRow } from '@/components/ui/table';
 import { LibraryPreview } from './Preview';
 import { formatLibraryFileSize } from './size';
 
@@ -23,36 +23,33 @@ export function LibraryRow({
 	const { t } = useTranslation();
 
 	return (
-		<Item
-			variant="outline"
-			size="md"
-			className="flex-nowrap border-b border-border/60 px-5 py-4 last:border-b-0"
+		<TableRow
 			onContextMenu={(event) => {
 				event.preventDefault();
 				onContextMenu(file);
 			}}
 		>
-			<button
-				type="button"
-				className="flex min-w-0 flex-1 items-center gap-4 text-left focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				aria-label={t('settings.library.previewFile', { name: file.name })}
-				onClick={() => onPreview(file)}
-			>
-				<ItemMedia variant="icon" className="h-auto w-auto bg-transparent">
+			<TableCell>
+				<button
+					type="button"
+					className="flex w-full min-w-0 items-center gap-3 text-left focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					aria-label={t('settings.library.previewFile', { name: file.name })}
+					onClick={() => onPreview(file)}
+				>
 					<LibraryPreview file={file} compact />
-				</ItemMedia>
-				<ItemContent className="min-w-0 flex-1 flex-col items-start gap-1">
-					<ItemTitle className="max-w-full truncate">{file.name}</ItemTitle>
-					<p className="max-w-full truncate text-[11px] leading-4 text-muted-foreground">
-						{file.relativePath}
-					</p>
-				</ItemContent>
-			</button>
-			<div className="ml-auto shrink-0 text-right text-[11px] leading-4 text-muted-foreground">
-				<div>{formatLibraryFileSize(file.size)}</div>
+					<span className="min-w-0 truncate font-medium" title={file.name}>{file.name}</span>
+				</button>
+			</TableCell>
+			<TableCell className="max-w-0 truncate text-muted-foreground" title={file.relativePath}>
+				{file.relativePath}
+			</TableCell>
+			<TableCell className="whitespace-nowrap text-muted-foreground">
+				{formatLibraryFileSize(file.size)}
+			</TableCell>
+			<TableCell className="whitespace-nowrap text-muted-foreground">
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
-			</div>
-			<ItemActions className="flex-none justify-end">
+			</TableCell>
+			<TableCell className="text-right">
 				<Button
 					variant="ghost"
 					size="icon-xs"
@@ -63,7 +60,7 @@ export function LibraryRow({
 				>
 					<Trash2 className="size-3.5" />
 				</Button>
-			</ItemActions>
-		</Item>
+			</TableCell>
+		</TableRow>
 	);
 }

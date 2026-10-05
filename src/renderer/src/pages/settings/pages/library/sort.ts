@@ -1,0 +1,27 @@
+import type { LibraryFile } from '../../../../../../shared/library_types';
+
+export type LibrarySortKey = 'name' | 'path' | 'size' | 'modified';
+export type LibrarySort = { key: LibrarySortKey; direction: 'asc' | 'desc' };
+
+export function sortLibraryFiles(files: LibraryFile[], sort: LibrarySort): LibraryFile[] {
+	const direction = sort.direction === 'asc' ? 1 : -1;
+	return [...files].sort((left, right) => {
+		let comparison: number;
+		switch (sort.key) {
+			case 'name':
+				comparison = left.name.localeCompare(right.name);
+				break;
+			case 'size':
+				comparison = left.size - right.size;
+				break;
+			case 'modified':
+				comparison = left.modifiedAt.localeCompare(right.modifiedAt);
+				break;
+			default:
+				comparison = left.relativePath.localeCompare(right.relativePath);
+		}
+		return comparison === 0
+			? left.relativePath.localeCompare(right.relativePath)
+			: comparison * direction;
+	});
+}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, type DragEvent } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
 import { AlertTriangle, FolderOpen, LayoutGrid, Library, List, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
@@ -14,9 +14,10 @@ import {
 	SettingsPanel,
 	SettingsSection,
 } from '../../components';
-import { LibraryRow } from './Row';
+import { LibraryTable } from './Table';
 import { LibraryCard } from './Card';
 import { LibraryModal } from './Modal';
+import { sortLibraryFiles, type LibrarySort, type LibrarySortKey } from './sort';
 
 const FILE_BATCH_SIZE = 48;
 
@@ -26,6 +27,7 @@ const LibraryPage: React.FC = () => {
 	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
 	const [view, setView] = useState<'collections' | 'list'>('list');
+	const [sort, setSort] = useState<LibrarySort>({ key: 'path', direction: 'asc' });
 	const [previewFile, setPreviewFile] = useState<LibraryFile | null>(null);
 	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
@@ -33,6 +35,13 @@ const LibraryPage: React.FC = () => {
 	const [dragging, setDragging] = useState(false);
 	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
+	const orderedFiles = useMemo(() => sortLibraryFiles(files, sort), [files, sort]);
+	const handleSort = useCallback((key: LibrarySortKey): void => {
+		setSort((current) => ({
+			key,
+			direction: current.key === key && current.direction === 'asc' ? 'desc' : 'asc',
+		}));
+	}, []);
 
 	const loadFiles = useCallback(async (): Promise<void> => {
 		setLoading(true);
@@ -273,18 +282,16 @@ const LibraryPage: React.FC = () => {
 								))}
 							</div>
 						) : (
-							files
-								.slice(0, visibleCount)
-								.map((file) => (
-									<LibraryRow
-										key={file.relativePath}
-										file={file}
-										disabled={deletingPath === file.relativePath || uploading}
-										onDelete={(entry) => void handleDelete(entry)}
-										onPreview={setPreviewFile}
-										onContextMenu={handleContextMenu}
-									/>
-								))
+							<LibraryTable
+								files={orderedFiles.slice(0, visibleCount)}
+								sort={sort}
+								onSort={handleSort}
+								deletingPath={deletingPath}
+								uploading={uploading}
+								onDelete={(entry) => void handleDelete(entry)}
+								onPreview={setPreviewFile}
+								onContextMenu={handleContextMenu}
+							/>
 						)}
 					</SettingsPanel>
 					{visibleCount < files.length && (
@@ -304,7 +311,7 @@ const LibraryPage: React.FC = () => {
 			</SettingsSection>
 			<LibraryModal
 				file={previewFile}
-				files={files}
+				files={view === 'list' ? orderedFiles : files}
 				onClose={() => setPreviewFile(null)}
 				onNavigate={setPreviewFile}
 			/>
