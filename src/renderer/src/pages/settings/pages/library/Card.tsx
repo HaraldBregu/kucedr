@@ -10,13 +10,11 @@ export function LibraryCard({
 	file,
 	disabled,
 	onDelete,
-	onPreview,
 	onContextMenu,
 }: {
 	readonly file: LibraryFile;
 	readonly disabled: boolean;
 	readonly onDelete: (file: LibraryFile) => void;
-	readonly onPreview: (file: LibraryFile) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
@@ -28,21 +26,11 @@ export function LibraryCard({
 				onContextMenu(file);
 			}}
 		>
-			<button
-				type="button"
-				className="w-full rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				aria-label={t('settings.library.previewFile', { name: file.name })}
-				onClick={() => onPreview(file)}
-			>
+			<div className="w-full rounded-md text-left">
 				<LibraryPreview file={file} />
-			</button>
+			</div>
 			<div className="flex min-w-0 items-start gap-2 px-1 pb-1 pt-3">
-				<button
-					type="button"
-					className="min-w-0 flex-1 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-					aria-label={t('settings.library.previewFile', { name: file.name })}
-					onClick={() => onPreview(file)}
-				>
+				<div className="min-w-0 flex-1 rounded-md text-left">
 					<p className="truncate text-sm font-medium" title={file.name}>
 						{file.name}
 					</p>
@@ -50,11 +38,11 @@ export function LibraryCard({
 						{file.relativePath}
 					</p>
 					<p className="mt-1 text-xs text-muted-foreground">
-						<span>{formatLibraryFileSize(file.size)}</span> ·{' '}
+						<span>{file.kind === 'folder' ? '—' : formatLibraryFileSize(file.size)}</span> ·{' '}
 						<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 					</p>
-				</button>
-				<Button
+				</div>
+				{file.kind !== 'folder' && <Button
 					variant="ghost"
 					size="icon-xs"
 					className="shrink-0 text-muted-foreground hover:text-destructive"
@@ -63,7 +51,7 @@ export function LibraryCard({
 					onClick={() => onDelete(file)}
 				>
 					<Trash2 className="size-3.5" />
-				</Button>
+				</Button>}
 			</div>
 		</article>
 	);
