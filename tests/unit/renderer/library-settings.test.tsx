@@ -447,6 +447,31 @@ it('uploads dropped files and reloads the list', async () => {
 	expect(list).toHaveBeenCalledTimes(2);
 });
 
+it('uploads files dropped on the breadcrumb into the open folder', async () => {
+	list.mockResolvedValue([
+		{
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
+			modifiedAt: '2026-09-29',
+		},
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await user.click(await screen.findByRole('button', { name: 'settings.library.openFolderNamed' }));
+	const breadcrumb = within(
+		screen.getByRole('navigation', { name: 'settings.library.folderNavigation' })
+	).getByRole('button', { name: 'library.title' });
+	const file = new File(['draft'], 'draft.md', { type: 'text/markdown' });
+	fireEvent.dragEnter(breadcrumb, { dataTransfer: { types: ['Files'], files: [file] } });
+	expect(screen.getByText('settings.library.drop')).toBeInTheDocument();
+	fireEvent.drop(breadcrumb, { dataTransfer: { types: ['Files'], files: [file] } });
+	await waitFor(() => expect(add).toHaveBeenCalledWith(['/tmp/draft.md'], 'Projects'));
+	expect(screen.queryByText('settings.library.drop')).not.toBeInTheDocument();
+});
+
 it('loads library files and opens the library folder', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
