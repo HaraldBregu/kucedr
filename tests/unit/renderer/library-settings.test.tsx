@@ -55,10 +55,27 @@ beforeEach(() => {
 	window.confirm = jest.fn(() => true);
 });
 
+it('shows the view controls and file actions in the header with list selected by default', async () => {
+	const { container } = render(<LibraryPage />);
+	await screen.findByText('notes.txt');
+
+	const header = container.querySelector('header')!;
+	expect(within(header).getAllByRole('button').map((button) => button.getAttribute('aria-label') ?? button.textContent)).toEqual([
+		'settings.library.collections',
+		'settings.library.list',
+		'settings.library.openFolder',
+		'settings.library.upload',
+	]);
+	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(1);
+	expect(document.querySelectorAll('article')).toHaveLength(0);
+
+	await userEvent.setup().click(within(header).getByRole('button', { name: 'settings.library.collections' }));
+	expect(document.querySelectorAll('article')).toHaveLength(1);
+});
+
 it('confirms and deletes a library file', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
-	await user.click(await screen.findByRole('button', { name: 'settings.library.list' }));
 
 	const deleteButton = await screen.findByRole('button', { name: 'settings.library.delete' });
 	const row = deleteButton.closest('[data-slot="item"]');
@@ -155,6 +172,7 @@ it('shows media previews in both library views', async () => {
 	]);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
+	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 
 	expect(await screen.findByRole('img', { name: 'photo.png' })).toHaveAttribute(
 		'src',
@@ -186,6 +204,7 @@ it('shows media previews in both library views', async () => {
 it('opens the native file context menu and handles preview and delete', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
+	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 	const card = (await screen.findByText('notes.txt')).closest('article')!;
 	showContextMenu.mockResolvedValueOnce('preview').mockResolvedValueOnce('delete');
 	fireEvent.contextMenu(card);
@@ -243,6 +262,8 @@ it('limits both views to 48 files and loads the next batch on demand', async () 
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await screen.findAllByText('file-000.png');
+	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(48);
+	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 	expect(document.querySelectorAll('article')).toHaveLength(48);
 	expect(screen.queryByText('file-048.png')).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
@@ -271,7 +292,7 @@ it('loads the next batch when the end of the visible files enters the viewport',
 	try {
 		const { unmount } = render(<LibraryPage />);
 		await screen.findAllByText('file-000.png');
-		expect(document.querySelectorAll('article')).toHaveLength(48);
+		expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(48);
 		expect(observe).toHaveBeenCalledTimes(1);
 		act(() =>
 			notifyIntersection?.(
@@ -279,7 +300,7 @@ it('loads the next batch when the end of the visible files enters the viewport',
 				{} as IntersectionObserver
 			)
 		);
-		await waitFor(() => expect(document.querySelectorAll('article')).toHaveLength(50));
+		await waitFor(() => expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(50));
 		expect(disconnect).toHaveBeenCalled();
 		unmount();
 	} finally {
