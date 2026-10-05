@@ -6,13 +6,14 @@ import { SettingsSidebar } from './Sidebar';
 
 export function Layout(): React.JSX.Element {
 	const { pathname } = useLocation();
+	const isWorkspace = pathname === '/settings/workspace';
 	const isSubroute = pathname.slice('/settings/'.length).includes('/');
 
 	return (
 		<PageContainer className="bg-muted/20">
 			<Split sidebar={<SettingsSidebar />}>
-				<div data-slot="settings-workspace" className="min-h-0 flex-1 overflow-y-auto">
-					<div className="pb-6">
+				<div data-slot="settings-workspace" className={isWorkspace ? "min-h-0 flex-1 overflow-hidden" : "min-h-0 flex-1 overflow-y-auto"}>
+					<div className={isWorkspace ? "h-full" : "pb-6"}>
 						{isSubroute ? (
 							<div
 								data-slot="settings-breadcrumb-shell"

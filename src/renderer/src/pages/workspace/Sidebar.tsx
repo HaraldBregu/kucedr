@@ -11,6 +11,7 @@ import { WorkspaceActionDialog, type WorkspaceAction } from './ActionDialog';
 import { WorkspaceTree } from './Tree';
 
 interface WorkspaceSidebarProps {
+	readonly embedded?: boolean;
 	readonly onFileSelect: (file: WorkspaceTreeEntry) => void;
 	readonly onFilesLoaded?: (files: WorkspaceTreeEntry[]) => void;
 	readonly onEntryRenamed: (sourcePath: string, nextPath: string) => void;
@@ -18,7 +19,7 @@ interface WorkspaceSidebarProps {
 	readonly selectedPath: string | null;
 }
 
-export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, onEntryDeleted, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
+export function WorkspaceSidebar({ embedded = false, onFileSelect, onFilesLoaded, onEntryRenamed, onEntryDeleted, selectedPath }: WorkspaceSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [entries, setEntries] = useState<WorkspaceTreeEntry[]>([]);
 	const [loading, setLoading] = useState(true);
@@ -145,12 +146,12 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 
 	return (
 		<div data-slot="workspace-sidebar" className="flex h-full min-h-0 flex-col">
-			<header className="shrink-0 border-b border-sidebar-border/50 p-2">
+			{!embedded && <header className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<Link to="/home" className={SPLIT_ITEM_CLASS}>
 					<ArrowLeft className="size-4 shrink-0" strokeWidth={1.8} />
 					<span>{t('settings.returnToChat', 'Return to Home')}</span>
 				</Link>
-			</header>
+			</header>}
 			<nav aria-label={t('workspaceSidebar.files', 'Workspace files')} className="no-scrollbar min-h-0 flex-1 overflow-y-auto p-2" onContextMenu={(event) => {
 				event.preventDefault();
 				showEntryMenu();
@@ -167,8 +168,7 @@ export function WorkspaceSidebar({ onFileSelect, onFilesLoaded, onEntryRenamed, 
 				)}
 			</nav>
 			{pendingAction ? <WorkspaceActionDialog key={`${pendingAction.kind}:${pendingAction.entry?.path ?? pendingAction.parentPath}`} action={pendingAction} busy={busy} error={actionError} onClose={() => { setPendingAction(null); setActionError(''); }} onConfirm={confirmAction} /> : null}
-			<SidebarItems />
-			<AppSidebarFooter />
+			{!embedded && <><SidebarItems /><AppSidebarFooter /></>}
 		</div>
 	);
 }

@@ -286,6 +286,10 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'workspace',
+						element: <SettingsRouteWrapper><WorkspacePage settings /></SettingsRouteWrapper>,
+					},
+					{
 						path: 'library',
 						element: (
 							<SettingsRouteWrapper>
