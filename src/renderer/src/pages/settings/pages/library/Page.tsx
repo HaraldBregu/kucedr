@@ -248,11 +248,7 @@ const LibraryPage: React.FC = () => {
 					onDrop={(event) => void handleDrop(event)}
 				>
 					<SettingsPanel
-						className={
-							view === 'collections' && !loading && files.length > 0
-								? 'border-0 bg-transparent shadow-none'
-								: undefined
-						}
+						className={!loading && files.length > 0 ? 'border-0 bg-transparent shadow-none' : undefined}
 					>
 						{dragging && (
 							<div className="flex items-center justify-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3 text-xs font-medium text-foreground">
