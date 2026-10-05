@@ -62,7 +62,7 @@ beforeEach(() => {
 		configurable: true,
 		value: {
 			list,
-		openRoot,
+			openRoot,
 			add,
 			select,
 			delete: deleteFile,
