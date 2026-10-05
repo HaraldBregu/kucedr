@@ -8,6 +8,7 @@ import { WorkspaceSelector } from './Workspace';
 import { WorkspaceFiles } from './Files';
 
 interface CodeSidebarProps {
+	readonly basePath?: string;
 	readonly title: string;
 	readonly creation: 'markdown' | 'instructions' | null;
 	readonly onCreationChange: (creation: 'markdown' | 'instructions' | null) => void;
@@ -19,11 +20,11 @@ interface CodeSidebarProps {
 	readonly onOpenFile: (projectId: string, fileName: string) => void;
 }
 
-export function CodeSidebar({ title, creation, onCreationChange, onFileCreationAvailable, refreshKey, selectedFile, onSelectWorkspace, onOpenFile, onDeleteFile }: CodeSidebarProps): React.JSX.Element {
+export function CodeSidebar({ basePath = '/code', title, creation, onCreationChange, onFileCreationAvailable, refreshKey, selectedFile, onSelectWorkspace, onOpenFile, onDeleteFile }: CodeSidebarProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 	const location = useLocation();
-	const settingsRoute = useMatch('/code/workspaces/:projectId/settings');
+	const settingsRoute = useMatch(`${basePath}/workspaces/:projectId/settings`);
 	const [workspaces, setWorkspaces] = useState<CodingProject[]>([]);
 	const [selected, setSelected] = useState<string | null>(() => localStorage.getItem('coder-workspace'));
 	const [loading, setLoading] = useState(true);
@@ -49,7 +50,7 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 		onCreationChange(null);
 		onSelectWorkspace();
 		localStorage.setItem('coder-workspace', id);
-		navigate('/code');
+		navigate(basePath);
 	};
 	const workspace = workspaces.find((item) => item.id === (settingsRoute?.params.projectId ?? selected)) ?? workspaces[0];
 	useEffect(() => { onFileCreationAvailable(!loading && Boolean(workspace?.available)); }, [loading, workspace?.available, onFileCreationAvailable]);
@@ -68,13 +69,13 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 				{ type: 'separator' },
 				{ id: 'create-workspace', label: t('codeWorkspace.create', 'Create workspace') },
 			]).then(async (action) => {
-				if (action === 'create-workspace') navigate('/code/new');
+				if (action === 'create-workspace') navigate(`${basePath}/new`);
 				else if (action === 'refresh' && !loading) { onCreationChange(null); setRevision((value) => value + 1); }
 				else if (available && workspace) {
 					if (action === 'open-folder') await window.coder.openProject(workspace.id);
 					else if (action === 'create-file' || action === 'instructions') {
 						onCreationChange(action === 'instructions' ? 'instructions' : 'markdown');
-						navigate('/code');
+						navigate(basePath);
 					}
 				}
 			}).catch((cause: unknown) => setActionError(cause instanceof Error ? cause.message : t('code.actionError', 'Unable to update workspace.')));
@@ -89,12 +90,12 @@ export function CodeSidebar({ title, creation, onCreationChange, onFileCreationA
 				{loading ? <p className="px-2 text-xs text-muted-foreground">{t('code.loading', 'Loading workspaces…')}</p> : !workspace && !error ? <div className="grid justify-items-start gap-3 px-2 py-6">
 					<FolderPlus className="size-6 text-muted-foreground" aria-hidden="true" />
 					<div className="grid gap-1"><h2 className="text-sm font-medium">{t('codeWorkspace.emptyTitle', 'No workspaces yet')}</h2><p className="text-xs leading-relaxed text-muted-foreground">{t('codeWorkspace.emptyDescription', 'Create a workspace to organize your files, instructions, and sessions.')}</p></div>
-					<Button className="h-auto min-h-7 w-full whitespace-normal py-1.5" size="sm" onClick={() => navigate('/code/new')}><Plus /><span>{t('codeWorkspace.create', 'Create workspace')}</span></Button>
-				</div> : workspace?.available ? <WorkspaceFiles onDeleted={(fileName) => onDeleteFile(workspace.id, fileName)} creation={creation} onCancelCreation={() => onCreationChange(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === '/code' ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
+					<Button className="h-auto min-h-7 w-full whitespace-normal py-1.5" size="sm" onClick={() => navigate(`${basePath}/new`)}><Plus /><span>{t('codeWorkspace.create', 'Create workspace')}</span></Button>
+				</div> : workspace?.available ? <WorkspaceFiles onDeleted={(fileName) => onDeleteFile(workspace.id, fileName)} creation={creation} onCancelCreation={() => onCreationChange(null)} key={workspace.id} projectId={workspace.id} selectedFile={selectedFile?.projectId === workspace.id && location.pathname === basePath ? selectedFile.fileName : null} onOpen={(fileName) => onOpenFile(workspace.id, fileName)} /> : null}
 			</nav>
 			<footer className="shrink-0 space-y-1 border-t border-sidebar-border p-2">
-				{workspace && <Button className="w-full justify-start" variant={location.pathname === `/code/workspaces/${workspace.id}/settings` ? 'secondary' : 'ghost'} aria-current={location.pathname === `/code/workspaces/${workspace.id}/settings` ? 'page' : undefined} onClick={() => navigate(`/code/workspaces/${workspace.id}/settings`)}><FolderCog /><span className="truncate">{t('codeWorkspace.settings', 'Workspace settings')}</span></Button>}
-				<Button className="w-full justify-start" variant={location.pathname === '/code/settings' ? 'secondary' : 'ghost'} aria-current={location.pathname === '/code/settings' ? 'page' : undefined} onClick={() => navigate('/code/settings')}>
+				{workspace && <Button className="w-full justify-start" variant={location.pathname === `${basePath}/workspaces/${workspace.id}/settings` ? 'secondary' : 'ghost'} aria-current={location.pathname === `${basePath}/workspaces/${workspace.id}/settings` ? 'page' : undefined} onClick={() => navigate(`${basePath}/workspaces/${workspace.id}/settings`)}><FolderCog /><span className="truncate">{t('codeWorkspace.settings', 'Workspace settings')}</span></Button>}
+				<Button className="w-full justify-start" variant={location.pathname === `${basePath}/settings` ? 'secondary' : 'ghost'} aria-current={location.pathname === `${basePath}/settings` ? 'page' : undefined} onClick={() => navigate(`${basePath}/settings`)}>
 					<Settings2 /><span className="truncate">{t('codeSettings.title', 'Coder settings')}</span>
 				</Button>
 			</footer>

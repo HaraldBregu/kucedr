@@ -6,15 +6,15 @@ import { SettingsSidebar } from './Sidebar';
 
 export function Layout(): React.JSX.Element {
 	const { pathname } = useLocation();
-	const isWorkspace = pathname === '/settings/workspace';
+	const isWorkbench = pathname === '/settings/workspace' || pathname === '/settings/code' || pathname.startsWith('/settings/code/');
 	const isSubroute = pathname.slice('/settings/'.length).includes('/');
 
 	return (
 		<PageContainer className="bg-muted/20">
 			<Split sidebar={<SettingsSidebar />}>
-				<div data-slot="settings-workspace" className={isWorkspace ? "min-h-0 flex-1 overflow-hidden" : "min-h-0 flex-1 overflow-y-auto"}>
-					<div className={isWorkspace ? "h-full" : "pb-6"}>
-						{isSubroute ? (
+				<div data-slot="settings-workspace" className={isWorkbench ? "min-h-0 flex-1 overflow-hidden" : "min-h-0 flex-1 overflow-y-auto"}>
+					<div className={isWorkbench ? "h-full" : "pb-6"}>
+						{isSubroute && !isWorkbench ? (
 							<div
 								data-slot="settings-breadcrumb-shell"
 								className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm"
