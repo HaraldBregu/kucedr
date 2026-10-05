@@ -392,7 +392,7 @@ it('uploads dropped files and reloads the list', async () => {
 
 	fireEvent.drop(dropTarget, { dataTransfer: { types: ['Files'], files: [file] } });
 
-	await waitFor(() => expect(add).toHaveBeenCalledWith(['/tmp/draft.md']));
+	await waitFor(() => expect(add).toHaveBeenCalledWith(['/tmp/draft.md'], ''));
 	expect(list).toHaveBeenCalledTimes(2);
 });
 
