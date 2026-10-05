@@ -31,6 +31,8 @@ export function LibraryFolderDialog({
 						await onCreate(name.trim());
 						setName('');
 						onOpenChange(false);
+					} catch {
+						return;
 					} finally {
 						setCreating(false);
 					}

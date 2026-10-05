@@ -3,6 +3,12 @@ import userEvent from '@testing-library/user-event';
 import LibraryPage from '../../../src/renderer/src/pages/settings/pages/library/Page';
 
 const mockTranslate = (key: string): string => key;
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+	...jest.requireActual('react-router-dom'),
+	useNavigate: () => mockNavigate,
+}));
 
 jest.mock('react-i18next', () => ({
 	useTranslation: () => ({ t: mockTranslate }),
@@ -14,6 +20,8 @@ const openRoot = jest.fn();
 const add = jest.fn();
 const select = jest.fn();
 const deleteFile = jest.fn();
+const createFolder = jest.fn();
+const download = jest.fn();
 const showContextMenu = jest.fn();
 const manyFiles = Array.from({ length: 50 }, (_, index) => {
 	const name = `file-${String(index).padStart(3, '0')}.png`;
@@ -42,10 +50,12 @@ beforeEach(() => {
 	add.mockResolvedValue([]);
 	select.mockResolvedValue([]);
 	deleteFile.mockResolvedValue(undefined);
+	createFolder.mockResolvedValue(undefined);
+	download.mockResolvedValue(true);
 	showContextMenu.mockResolvedValue(null);
 	Object.defineProperty(window, 'library', {
 		configurable: true,
-		value: { list, getRoot, openRoot, add, select, delete: deleteFile },
+		value: { list, getRoot, openRoot, add, select, delete: deleteFile, createFolder, download },
 	});
 	Object.defineProperty(window, 'app', {
 		configurable: true,
@@ -67,6 +77,7 @@ it('shows the view controls and file actions in the header with list selected by
 	).toEqual([
 		'settings.library.collections',
 		'settings.library.list',
+		'settings.library.createFolder',
 		'settings.library.openFolder',
 		'settings.library.upload',
 	]);
@@ -87,6 +98,7 @@ it('shows the view controls and file actions in the header with list selected by
 	expect(checkbox).not.toHaveClass('opacity-0');
 	await userEvent.setup().click(checkbox);
 	expect(checkbox).toHaveAttribute('data-state', 'checked');
+	expect(screen.getByRole('toolbar', { name: 'settings.library.selectionActions' })).toBeInTheDocument();
 	expect(selectAll).toHaveAttribute('data-state', 'checked');
 	await userEvent.setup().click(selectAll);
 	expect(checkbox).toHaveAttribute('data-state', 'unchecked');
@@ -212,17 +224,18 @@ it('shows media previews in both library views', async () => {
 		'src',
 		'local-resource://file/library/photo.png'
 	);
-	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[0]);
+	expect(screen.queryByRole('button', { name: 'settings.library.previewFile' })).not.toBeInTheDocument();
+	showContextMenu.mockResolvedValueOnce('preview');
+	fireEvent.contextMenu(screen.getByText('photo.png').closest('article')!);
 	expect(
-		within(screen.getByRole('dialog')).getByRole('img', { name: 'photo.png' })
+		await within(await screen.findByRole('dialog')).findByRole('img', { name: 'photo.png' })
 	).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
 	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-8', 'object-cover');
-	const song = within(screen.getByRole('row', { name: /song.mp3/ })).getByRole('button', {
-		name: 'settings.library.previewFile',
-	});
-	await user.click(song);
+	showContextMenu.mockResolvedValueOnce('preview');
+	fireEvent.contextMenu(screen.getByText('song.mp3').closest('tr')!);
+	await screen.findByRole('dialog');
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3').tagName).toBe('AUDIO');
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toHaveAttribute('controls');
 	fireEvent.keyDown(within(screen.getByRole('dialog')).getByLabelText('song.mp3'), {
@@ -230,11 +243,9 @@ it('shows media previews in both library views', async () => {
 	});
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
-	await user.click(
-		within(screen.getByRole('row', { name: /movie.mp4/ })).getByRole('button', {
-			name: 'settings.library.previewFile',
-		})
-	);
+	showContextMenu.mockResolvedValueOnce('preview');
+	fireEvent.contextMenu(screen.getByText('movie.mp4').closest('tr')!);
+	await screen.findByRole('dialog');
 	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4').tagName).toBe('VIDEO');
 	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4')).toHaveAttribute(
 		'controls'
@@ -294,7 +305,7 @@ it('sorts table columns in both directions', async () => {
 	]);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
-	await screen.findAllByRole('button', { name: 'settings.library.previewFile' });
+	await screen.findByText('alpha.png');
 
 	const names = () =>
 		screen
@@ -325,9 +336,10 @@ it('navigates the preview with buttons and arrow keys without wrapping', async (
 	);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
-	await user.click(
-		(await screen.findAllByRole('button', { name: 'settings.library.previewFile' }))[0]
-	);
+	await screen.findByText('first.png');
+	showContextMenu.mockResolvedValueOnce('preview');
+	fireEvent.contextMenu(screen.getByText('first.png').closest('tr')!);
+	await screen.findByRole('dialog');
 	const dialog = screen.getByRole('dialog');
 	expect(within(dialog).getByText('1 / 3')).toBeInTheDocument();
 	expect(within(dialog).getByRole('button', { name: 'settings.library.previous' })).toBeDisabled();
