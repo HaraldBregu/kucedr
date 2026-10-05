@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { SettingsPageHeader, SettingsPageShell } from '@/pages/settings/components';
+import { Group, Panel, Separator } from 'react-resizable-panels';
 import type { WorkspaceTreeEntry } from '@shared/agent_types';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { WorkspaceSidebar } from './Sidebar';
@@ -52,25 +50,16 @@ export default function WorkspacePage({ settings = false }: { readonly settings?
 	const viewer = <WorkspaceViewer key={selectedFile?.path} file={selectedFile} entries={files} onFileSelect={setSelectedFile} />;
 	if (settings) {
 		return (
-			<div className="flex h-full min-h-0 flex-col">
-				<div className={selectedFile ? 'hidden' : 'min-h-0 flex-1 overflow-y-auto'}>
-					<SettingsPageShell>
-						<SettingsPageHeader title={t('settings.workspace.title', 'Workspace')} />
-						{sidebar}
-					</SettingsPageShell>
-				</div>
-				{selectedFile ? (
-					<>
-						<div className="shrink-0 border-b px-3 py-2">
-							<Button variant="ghost" size="sm" onClick={() => setSelectedFile(null)}>
-								<ArrowLeft className="size-4" />
-								{t('settings.workspace.back', 'Back to Workspace')}
-							</Button>
-						</div>
-						{viewer}
-					</>
-				) : null}
-			</div>
+			<Group orientation="horizontal" className="h-full min-h-0 bg-background" aria-label={t('settings.workspace.title', 'Workspace')}>
+				<Panel id="workspace-files" defaultSize="30%" minSize="20%" maxSize="60%" className="flex min-w-0 flex-col">
+					<h1 className="shrink-0 border-b px-4 py-3 text-sm font-medium">{t('settings.workspace.title', 'Workspace')}</h1>
+					<div className="min-h-0 flex-1">{sidebar}</div>
+				</Panel>
+				<Separator aria-label={t('settings.workspace.resize', 'Resize workspace files')} className="relative w-px shrink-0 bg-border outline-none after:absolute after:inset-y-0 after:-left-1 after:w-2 hover:bg-ring focus-visible:bg-ring" />
+				<Panel id="workspace-viewer" minSize="40%" className="flex min-w-0 flex-col">
+					{viewer}
+				</Panel>
+			</Group>
 		);
 	}
 	return (

@@ -1107,7 +1107,7 @@
 		"workspace": {
 			"title": "Workspace",
 			"description": "Sfoglia gli elementi del workspace e i loro contenuti",
-			"back": "Torna al Workspace",
+			"resize": "Ridimensiona elenco file del workspace",
 			"currentWorkspace": "Area di Lavoro Corrente",
 			"notSet": "Non impostata",
 			"loading": "Caricamento…",

@@ -1107,7 +1107,7 @@
 		"workspace": {
 			"title": "Workspace",
 			"description": "Browse your workspace items and their contents",
-			"back": "Back to Workspace",
+			"resize": "Resize workspace files",
 			"currentWorkspace": "Current Workspace",
 			"notSet": "Not set",
 			"loading": "Loading…",
