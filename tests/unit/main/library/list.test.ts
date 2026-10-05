@@ -24,11 +24,13 @@ it('creates the library root and lists every regular file recursively', async ()
 	const files = await listLibraryFiles(root);
 
 	expect(files.map((file) => file.relativePath)).toEqual([
+		'documents',
 		path.join('documents', 'notes.txt'),
 		'photo.png',
 	]);
 	expect(files).toEqual(
 		expect.arrayContaining([
+			expect.objectContaining({ name: 'documents', kind: 'folder' }),
 			expect.objectContaining({ name: 'notes.txt', size: 5 }),
 			expect.objectContaining({ name: 'photo.png', size: 5 }),
 		])
