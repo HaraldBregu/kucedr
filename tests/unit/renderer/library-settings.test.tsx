@@ -590,7 +590,9 @@ it('shows media previews in both library views', async () => {
 	);
 	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-24', 'object-cover');
 	expect(screen.getByRole('img', { name: 'photo.png' })).not.toHaveClass('border');
-	expect(screen.getByLabelText('movie.mp4')).toHaveClass('border');
+	expect(screen.getByRole('article', { name: 'movie.mp4' }).querySelector('video')).toHaveClass(
+		'border'
+	);
 	expect(
 		screen.queryByRole('button', { name: 'settings.library.previewFile' })
 	).not.toBeInTheDocument();
