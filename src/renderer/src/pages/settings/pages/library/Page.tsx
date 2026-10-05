@@ -268,7 +268,9 @@ const LibraryPage: React.FC = () => {
 	const handleDelete = useCallback(
 		async (file: LibraryFile): Promise<void> => {
 			const confirmation =
-				file.kind === 'folder' ? 'settings.library.confirmDeleteFolder' : 'settings.library.confirmDelete';
+				file.kind === 'folder'
+					? 'settings.library.confirmDeleteFolder'
+					: 'settings.library.confirmDelete';
 			if (!window.confirm(t(confirmation, { name: file.name }))) return;
 			setDeletingPath(file.relativePath);
 			setErrorMessage('');
