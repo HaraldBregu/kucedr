@@ -239,7 +239,7 @@ const LibraryPage: React.FC = () => {
 	);
 
 	const handleDrop = useCallback(
-		async (event: DragEvent<HTMLDivElement>): Promise<void> => {
+		async (event: DragEvent<HTMLElement>): Promise<void> => {
 			event.preventDefault();
 			if (event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
 			setDragging(false);
