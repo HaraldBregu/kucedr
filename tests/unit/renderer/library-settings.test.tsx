@@ -226,7 +226,7 @@ it('shows media previews in both library views', async () => {
 	);
 	expect(screen.queryByRole('button', { name: 'settings.library.previewFile' })).not.toBeInTheDocument();
 	showContextMenu.mockResolvedValueOnce('preview');
-	fireEvent.contextMenu(screen.getByText('photo.png').closest('article')!);
+	fireEvent.contextMenu(screen.getAllByText('photo.png')[0].closest('article')!);
 	expect(
 		await within(await screen.findByRole('dialog')).findByRole('img', { name: 'photo.png' })
 	).toBeInTheDocument();
@@ -267,6 +267,7 @@ it('opens the native file context menu and handles preview and delete', async ()
 		])
 	);
 	await user.keyboard('{Escape}');
+	await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 	fireEvent.contextMenu(card);
 	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
 });
