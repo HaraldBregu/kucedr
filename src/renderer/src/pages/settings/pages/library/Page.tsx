@@ -185,7 +185,7 @@ const LibraryPage: React.FC = () => {
 							</ToggleGroupItem>
 						</ToggleGroup>
 						<Button
-							variant="outline"
+							variant="secondary"
 							size="icon"
 							aria-label={t('settings.library.openFolder')}
 							title={t('settings.library.openFolder')}
