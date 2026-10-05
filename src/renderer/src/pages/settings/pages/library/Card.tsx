@@ -25,7 +25,7 @@ export function LibraryCard({
 			{...dragProps}
 			draggable
 			className={cn(
-				'cursor-grab rounded-md active:cursor-grabbing',
+				'cursor-grab rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:cursor-grabbing',
 				isDropTarget && 'ring-2 ring-primary/60'
 			)}
 			aria-label={file.name}
@@ -55,7 +55,7 @@ export function LibraryCard({
 					<LibraryPreview file={file} tile />
 				</button>
 			) : (
-				<div className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+				<div className="rounded-md">
 					<LibraryPreview file={file} tile />
 				</div>
 			)}

@@ -333,8 +333,8 @@ it('drags one folder into another in the collections view', async () => {
 		effectAllowed: 'none',
 		dropEffect: 'none',
 	};
-	fireEvent.dragStart(screen.getAllByText('Projects')[0].closest('article')!, { dataTransfer });
-	fireEvent.drop(screen.getAllByText('Archive')[0].closest('article')!, { dataTransfer });
+	fireEvent.dragStart(screen.getByRole('article', { name: 'Projects' }), { dataTransfer });
+	fireEvent.drop(screen.getByRole('article', { name: 'Archive' }), { dataTransfer });
 	await waitFor(() => expect(move).toHaveBeenCalledWith(['Projects'], 'Archive'));
 });
 
@@ -410,17 +410,16 @@ it('starts a new chat with the selected file attached', async () => {
 	]);
 });
 
-it('confirms and deletes a library file', async () => {
+it('shows compact visual tiles without card text or actions', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
-
-	const deleteButton = await screen.findByRole('button', { name: 'settings.library.delete' });
-	await user.click(deleteButton);
-
-	expect(window.confirm).toHaveBeenCalledWith('settings.library.confirmDelete');
-	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('notes.txt'));
+	const tile = await screen.findByRole('article', { name: 'notes.txt' });
+	expect(tile).not.toHaveClass('border');
+	expect(tile.querySelector('.size-24')).toBeInTheDocument();
 	expect(screen.queryByText('notes.txt')).not.toBeInTheDocument();
+	expect(screen.queryByText('1.5 KB')).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'settings.library.delete' })).not.toBeInTheDocument();
 });
 
 it('deletes a folder through the list context menu after warning about its contents', async () => {
@@ -453,7 +452,7 @@ it('deletes a folder through the list context menu after warning about its conte
 	expect(screen.queryByRole('row', { name: /Projects/ })).not.toBeInTheDocument();
 });
 
-it('shows a delete button for folders in collections', async () => {
+it('deletes a folder through its collection tile context menu', async () => {
 	list.mockResolvedValue([
 		{
 			kind: 'folder',
@@ -464,10 +463,11 @@ it('shows a delete button for folders in collections', async () => {
 			modifiedAt: '2026-09-29',
 		},
 	]);
+	showContextMenu.mockResolvedValueOnce('delete');
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
-	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
+	fireEvent.contextMenu(await screen.findByRole('article', { name: 'Projects' }));
 	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('Projects'));
 });
 
@@ -477,10 +477,11 @@ it('keeps the file when deletion is cancelled', async () => {
 	render(<LibraryPage />);
 	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 
-	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
+	showContextMenu.mockResolvedValueOnce('delete');
+	fireEvent.contextMenu(await screen.findByRole('article', { name: 'notes.txt' }));
 
 	expect(deleteFile).not.toHaveBeenCalled();
-	expect(screen.getAllByText('notes.txt')[0]).toBeInTheDocument();
+	expect(screen.getByRole('article', { name: 'notes.txt' })).toBeInTheDocument();
 });
 
 it('uploads selected files and reloads the list', async () => {
@@ -591,7 +592,7 @@ it('shows media previews in both library views', async () => {
 		screen.queryByRole('button', { name: 'settings.library.previewFile' })
 	).not.toBeInTheDocument();
 	showContextMenu.mockResolvedValueOnce('preview');
-	fireEvent.contextMenu(screen.getAllByText('photo.png')[0].closest('article')!);
+	fireEvent.contextMenu(screen.getByRole('article', { name: 'photo.png' }));
 	expect(
 		await within(await screen.findByRole('dialog')).findByRole('img', { name: 'photo.png' })
 	).toBeInTheDocument();
@@ -621,7 +622,7 @@ it('opens the native file context menu and handles preview and delete', async ()
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
-	const card = (await screen.findAllByText('notes.txt'))[0].closest('article')!;
+	const card = await screen.findByRole('article', { name: 'notes.txt' });
 	showContextMenu.mockResolvedValueOnce('preview').mockResolvedValueOnce('delete');
 	fireEvent.contextMenu(card);
 	await screen.findByRole('dialog');

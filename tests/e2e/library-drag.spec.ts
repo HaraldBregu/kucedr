@@ -4,7 +4,7 @@ import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
 
-test('moves, uploads, and deletes library items', async () => {
+test('moves library items and uploads files dropped from the desktop', async () => {
 	test.setTimeout(90_000);
 	const { app, page, userDataDir } = await launchApp();
 	try {
@@ -48,12 +48,8 @@ test('moves, uploads, and deletes library items', async () => {
 			.click();
 		await page.getByRole('button', { name: 'Collections' }).click();
 		await page
-			.getByText('Projects', { exact: true })
-			.first()
-			.locator('xpath=ancestor::article')
-			.dragTo(
-				page.getByText('Archive', { exact: true }).first().locator('xpath=ancestor::article')
-			);
+			.getByRole('article', { name: 'Projects' })
+			.dragTo(page.getByRole('article', { name: 'Archive' }));
 		await expect
 			.poll(async () => {
 				try {
@@ -64,14 +60,12 @@ test('moves, uploads, and deletes library items', async () => {
 				}
 			})
 			.toBe(true);
-		await expect(page.getByText('Projects', { exact: true })).toHaveCount(0);
+		await expect(page.getByRole('article', { name: 'Projects' })).toHaveCount(0);
 		await page.getByRole('button', { name: 'Open Archive' }).first().click();
 		await page.getByRole('button', { name: 'Open Projects' }).first().click();
 		await expect(page.getByText('notes.txt', { exact: true }).first()).toBeVisible();
 		await page
-			.getByText('notes.txt', { exact: true })
-			.first()
-			.locator('xpath=ancestor::article')
+			.getByRole('article', { name: 'notes.txt' })
 			.dragTo(
 				page
 					.getByRole('navigation', { name: 'Library folders' })
@@ -80,7 +74,7 @@ test('moves, uploads, and deletes library items', async () => {
 		await expect
 			.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'notes.txt'), 'utf8'))
 			.toBe('notes');
-		await expect(page.getByText('notes.txt', { exact: true })).toHaveCount(0);
+		await expect(page.getByRole('article', { name: 'notes.txt' })).toHaveCount(0);
 		await page
 			.getByRole('navigation', { name: 'Library folders' })
 			.getByRole('button', { name: 'Archive' })
@@ -115,27 +109,6 @@ test('moves, uploads, and deletes library items', async () => {
 			.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'draft.md'), 'utf8'))
 			.toBe('draft');
 		await expect(page.getByRole('row').filter({ hasText: 'draft.md' })).toBeVisible();
-		await writeFile(path.join(libraryRoot, 'Archive', 'Projects', 'nested.txt'), 'nested');
-		await page.getByRole('button', { name: 'Collections' }).click();
-		page.once('dialog', (dialog) => void dialog.accept());
-		await page
-			.getByText('Projects', { exact: true })
-			.first()
-			.locator('xpath=ancestor::article')
-			.getByRole('button', { name: 'Delete Projects' })
-			.click();
-		await expect
-			.poll(async () => {
-				try {
-					await access(path.join(libraryRoot, 'Archive', 'Projects'));
-					return true;
-				} catch {
-					return false;
-				}
-			})
-			.toBe(false);
-		await expect(page.getByText('Projects', { exact: true })).toHaveCount(0);
-		await expect(page.getByText('draft.md', { exact: true })).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);
