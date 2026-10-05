@@ -416,7 +416,7 @@ it('shows compact visual tiles without card text or actions', async () => {
 	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 	const tile = await screen.findByRole('article', { name: 'notes.txt' });
 	expect(tile).not.toHaveClass('border');
-	expect(tile.querySelector('.size-24')).toBeInTheDocument();
+	expect(tile.querySelector('.size-24')).toHaveClass('border');
 	expect(screen.queryByText('notes.txt')).not.toBeInTheDocument();
 	expect(screen.queryByText('1.5 KB')).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'settings.library.delete' })).not.toBeInTheDocument();
@@ -589,6 +589,8 @@ it('shows media previews in both library views', async () => {
 		'local-resource://file/library/photo.png'
 	);
 	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-24', 'object-cover');
+	expect(screen.getByRole('img', { name: 'photo.png' })).not.toHaveClass('border');
+	expect(screen.getByLabelText('movie.mp4')).toHaveClass('border');
 	expect(
 		screen.queryByRole('button', { name: 'settings.library.previewFile' })
 	).not.toBeInTheDocument();

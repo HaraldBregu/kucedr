@@ -24,12 +24,13 @@ export function LibraryPreview({
 				? 'size-24'
 				: 'aspect-[4/3] w-full';
 	const background = tile ? '' : 'bg-muted/40';
+	const assetBorder = tile ? 'border border-border/70' : '';
 	const iconSize = compact ? 'size-4' : tile ? 'size-9' : 'size-12';
 	const fit = compact || tile ? 'object-cover' : 'object-contain';
 	if (file.kind === 'folder') {
 		return (
 			<div
-				className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${frame}`}
+				className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${assetBorder} ${frame}`}
 			>
 				<Folder className={iconSize} />
 			</div>
@@ -54,7 +55,7 @@ export function LibraryPreview({
 				controls={modal}
 				preload="metadata"
 				aria-label={file.name}
-				className={`${frame} rounded-md ${background} ${fit}`}
+				className={`${frame} rounded-md ${background} ${assetBorder} ${fit}`}
 			/>
 		);
 	}
@@ -62,7 +63,7 @@ export function LibraryPreview({
 		if (!modal) {
 			return (
 				<div
-					className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${frame}`}
+					className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${assetBorder} ${frame}`}
 				>
 					{React.createElement(libraryFileIcon(file.name), {
 						className: iconSize,
@@ -97,7 +98,7 @@ export function LibraryPreview({
 	}
 	return (
 		<div
-			className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${frame}`}
+			className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${assetBorder} ${frame}`}
 		>
 			{React.createElement(libraryFileIcon(file.name), {
 				className: iconSize,
