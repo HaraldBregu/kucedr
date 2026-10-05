@@ -247,26 +247,25 @@ const LibraryPage: React.FC = () => {
 					}}
 					onDrop={(event) => void handleDrop(event)}
 				>
-					<SettingsPanel
-						className={
-							!loading && files.length > 0 ? 'border-0 bg-transparent shadow-none' : undefined
-						}
-					>
-						{dragging && (
-							<div className="flex items-center justify-center gap-2 border-b border-border/60 bg-muted/60 px-4 py-3 text-xs font-medium text-foreground">
-								<Upload className="size-3.5" />
-								{t('settings.library.drop')}
-							</div>
-						)}
-						{loading ? (
+					{dragging && (
+						<div className="flex items-center justify-center gap-2 bg-muted/60 px-4 py-3 text-xs font-medium text-foreground">
+							<Upload className="size-3.5" />
+							{t('settings.library.drop')}
+						</div>
+					)}
+					{loading ? (
+						<SettingsPanel>
 							<SettingsLoadingRows rows={3} />
-						) : files.length === 0 ? (
+						</SettingsPanel>
+					) : files.length === 0 ? (
+						<SettingsPanel>
 							<SettingsEmptyState
 								icon={Library}
 								title={t('library.empty')}
 								description={t('settings.library.emptyDescription')}
 							/>
-						) : view === 'collections' ? (
+						</SettingsPanel>
+					) : view === 'collections' ? (
 							<div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-4">
 								{files.slice(0, visibleCount).map((file) => (
 									<LibraryCard
@@ -287,8 +286,7 @@ const LibraryPage: React.FC = () => {
 								onPreview={setPreviewFile}
 								onContextMenu={handleContextMenu}
 							/>
-						)}
-					</SettingsPanel>
+					)}
 					{visibleCount < files.length && (
 						<div ref={loadMoreRef} className="flex justify-center py-4">
 							<Button
