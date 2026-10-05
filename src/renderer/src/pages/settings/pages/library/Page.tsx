@@ -344,32 +344,32 @@ const LibraryPage: React.FC = () => {
 			)}
 
 			<section
-					role="region"
-					aria-label={t('settings.library.dropZone')}
-					className={cn(
-						'flex flex-col gap-2 rounded-xl transition-shadow',
-						dragging && 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background'
-					)}
-					onDragEnter={(event) => {
-						if (
-							event.dataTransfer.types.includes('Files') &&
-							!event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)
-						)
-							setDragging(true);
-					}}
-					onDragOver={(event) => {
-						if (event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
-						if (!event.dataTransfer.types.includes('Files')) return;
-						event.preventDefault();
-						event.dataTransfer.dropEffect = 'copy';
-					}}
-					onDragLeave={(event) => {
-						if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-							setDragging(false);
-						}
-					}}
-					onDrop={(event) => void handleDrop(event)}
-				>
+				role="region"
+				aria-label={t('settings.library.dropZone')}
+				className={cn(
+					'flex flex-col gap-2 rounded-xl transition-shadow',
+					dragging && 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background'
+				)}
+				onDragEnter={(event) => {
+					if (
+						event.dataTransfer.types.includes('Files') &&
+						!event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)
+					)
+						setDragging(true);
+				}}
+				onDragOver={(event) => {
+					if (event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
+					if (!event.dataTransfer.types.includes('Files')) return;
+					event.preventDefault();
+					event.dataTransfer.dropEffect = 'copy';
+				}}
+				onDragLeave={(event) => {
+					if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+						setDragging(false);
+					}
+				}}
+				onDrop={(event) => void handleDrop(event)}
+			>
 				<LibraryPath
 					folder={currentFolder}
 					onNavigate={navigateFolder}
