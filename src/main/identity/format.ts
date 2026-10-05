@@ -8,7 +8,7 @@ export function formatIdentity(identity: IdentitySettings): string {
 			const trimmed = detail.trim();
 			if (/^#\s+IDENTITY\.md\b/i.test(trimmed)) return [];
 			if (/^#\s+/.test(trimmed) && trimmed.replace(/^#\s+/, '').toLowerCase() === identity.name.toLowerCase()) return [];
-			if (/^(?:-\s*)?\*\*(?:Name|Role|Avatar|Vibe):\*\*/i.test(trimmed)) return [];
+			if (/^(?:-\s*)?\*\*(?:Name|Title|Role|Avatar|Vibe):\*\*/i.test(trimmed)) return [];
 			return [detail];
 		})
 		.join('\n')
