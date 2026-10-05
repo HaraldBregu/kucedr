@@ -6,10 +6,11 @@ import { resolveLibraryFolder } from './folder';
 
 export async function addLibraryFiles(paths: readonly string[], destinationFolder = '', root = libraryLocation()): Promise<LibraryFile[]> {
 	const destination = await resolveLibraryFolder(destinationFolder, root);
+	const resolvedRoot = await resolveLibraryFolder('', root);
 	const files: LibraryFile[] = [];
 	for (const source of paths) {
 		const file = await addLibraryFile(source, destination);
-		files.push({ ...file, relativePath: path.relative(root, file.path) });
+		files.push({ ...file, relativePath: path.relative(resolvedRoot, file.path) });
 	}
 	return files;
 }

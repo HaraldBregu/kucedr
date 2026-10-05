@@ -25,7 +25,7 @@ it('adds dropped files through the typed library channel', async () => {
 	invoke.mockResolvedValue({ success: true, data: [] });
 
 	await expect(library.add(['/tmp/notes.txt'])).resolves.toEqual([]);
-	expect(invoke).toHaveBeenCalledWith(LibraryChannels.add, ['/tmp/notes.txt']);
+	expect(invoke).toHaveBeenCalledWith(LibraryChannels.add, ['/tmp/notes.txt'], undefined);
 });
 
 it('deletes files through the typed library channel', async () => {

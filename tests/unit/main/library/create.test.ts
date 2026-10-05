@@ -22,6 +22,17 @@ it('creates a visible folder in the library', async () => {
 	]);
 });
 
+it('creates a folder inside the current library folder', async () => {
+	await createLibraryFolder('Projects', root);
+	await createLibraryFolder('Notes', root, 'Projects');
+	await expect(access(path.join(root, 'Projects', 'Notes'))).resolves.toBeUndefined();
+	await expect(listLibraryFiles(root)).resolves.toEqual(
+		expect.arrayContaining([
+			expect.objectContaining({ relativePath: path.join('Projects', 'Notes'), kind: 'folder' }),
+		])
+	);
+});
+
 it('rejects traversal and duplicate names', async () => {
 	await expect(createLibraryFolder('../outside', root)).rejects.toThrow(
 		'Invalid library folder name.'

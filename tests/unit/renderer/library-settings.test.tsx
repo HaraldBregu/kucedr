@@ -284,7 +284,7 @@ it('creates a folder from the icon-only header', async () => {
 			name: 'settings.library.createFolder',
 		})
 	);
-	await waitFor(() => expect(createFolder).toHaveBeenCalledWith('Projects'));
+	await waitFor(() => expect(createFolder).toHaveBeenCalledWith('Projects', ''));
 });
 
 it('shows selection actions and downloads or deletes selected files', async () => {
