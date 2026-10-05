@@ -158,6 +158,7 @@ export const LibraryChannels = {
 	add: 'library:add',
 	select: 'library:select',
 	createFolder: 'library:create-folder',
+	move: 'library:move',
 	download: 'library:download',
 	delete: 'library:delete',
 	openRoot: 'library:open-root',

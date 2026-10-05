@@ -644,6 +644,7 @@ export interface LibraryApi {
 	add: (paths: string[]) => Promise<import('./library_types').LibraryFile[]>;
 	select: () => Promise<import('./library_types').LibraryFile[] | undefined>;
 	createFolder: (name: string) => Promise<void>;
+	move: (relativePaths: string[], destinationFolder: string) => Promise<void>;
 	download: (relativePaths: string[]) => Promise<boolean>;
 	delete: (relativePath: string) => Promise<void>;
 	openRoot: () => Promise<void>;

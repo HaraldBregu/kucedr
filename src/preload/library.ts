@@ -7,6 +7,8 @@ export const library: LibraryApi = {
 	add: (paths) => typedInvokeUnwrap(LibraryChannels.add, paths),
 	select: () => typedInvokeUnwrap(LibraryChannels.select),
 	createFolder: (name) => typedInvokeUnwrap(LibraryChannels.createFolder, name),
+	move: (relativePaths, destinationFolder) =>
+		typedInvokeUnwrap(LibraryChannels.move, relativePaths, destinationFolder),
 	download: (relativePaths) => typedInvokeUnwrap(LibraryChannels.download, relativePaths),
 	delete: (relativePath) => typedInvokeUnwrap(LibraryChannels.delete, relativePath),
 	openRoot: () => typedInvokeUnwrap(LibraryChannels.openRoot),
