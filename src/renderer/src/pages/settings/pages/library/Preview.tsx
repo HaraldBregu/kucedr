@@ -1,5 +1,5 @@
 import React from 'react';
-import { Folder } from 'lucide-react';
+import { Folder, Play, Video, Volume2 } from 'lucide-react';
 import type { LibraryFile } from '../../../../../../shared/library_types';
 import { libraryFileIcon } from './icon';
 import { libraryFileUrl } from './url';
@@ -49,13 +49,41 @@ export function LibraryPreview({
 		);
 	}
 	if (/\.(mp4|mov|webm|m4v)$/i.test(file.name)) {
+		if (compact) {
+			return (
+				<div
+					className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${frame}`}
+				>
+					<Video className={iconSize} />
+				</div>
+			);
+		}
+		if (!modal) {
+			return (
+				<div className={`relative overflow-hidden rounded-md ${assetBorder} ${frame}`}>
+					<video
+						src={url}
+						preload="metadata"
+						aria-label={file.name}
+						className="size-full object-cover"
+					/>
+					<span className="pointer-events-none absolute inset-0 flex items-center justify-center text-white">
+						<Play className="size-7 fill-current drop-shadow-md" aria-hidden="true" />
+					</span>
+					<Video
+						className="pointer-events-none absolute bottom-1 right-1 size-4 text-white drop-shadow-md"
+						aria-hidden="true"
+					/>
+				</div>
+			);
+		}
 		return (
 			<video
 				src={url}
-				controls={modal}
+				controls
 				preload="metadata"
 				aria-label={file.name}
-				className={`${frame} rounded-md ${background} ${assetBorder} ${fit}`}
+				className={`${frame} rounded-md ${background} ${fit}`}
 			/>
 		);
 	}
@@ -65,17 +93,13 @@ export function LibraryPreview({
 				<div
 					className={`flex items-center justify-center rounded-md text-muted-foreground ${background} ${assetBorder} ${frame}`}
 				>
-					{React.createElement(libraryFileIcon(file.name), {
-						className: iconSize,
-					})}
+					<Volume2 className={iconSize} />
 				</div>
 			);
 		}
 		return (
 			<div className="flex h-48 w-full flex-col items-center justify-center gap-4 rounded-md bg-muted/40 px-4">
-				{React.createElement(libraryFileIcon(file.name), {
-					className: 'size-10 text-muted-foreground',
-				})}
+			<Volume2 className="size-10 text-muted-foreground" />
 				<audio
 					src={url}
 					controls

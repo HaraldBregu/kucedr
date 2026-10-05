@@ -590,9 +590,12 @@ it('shows media previews in both library views', async () => {
 	);
 	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-24', 'object-cover');
 	expect(screen.getByRole('img', { name: 'photo.png' })).not.toHaveClass('border');
-	expect(screen.getByRole('article', { name: 'movie.mp4' }).querySelector('video')).toHaveClass(
+	expect(screen.getByRole('article', { name: 'movie.mp4' }).querySelector('.size-24')).toHaveClass(
 		'border'
 	);
+	expect(screen.getByRole('article', { name: 'movie.mp4' }).querySelector('.lucide-play')).toBeInTheDocument();
+	expect(screen.getByRole('article', { name: 'movie.mp4' }).querySelector('.lucide-video')).toBeInTheDocument();
+	expect(screen.getByRole('article', { name: 'song.mp3' }).querySelector('.lucide-volume-2')).toBeInTheDocument();
 	expect(
 		screen.queryByRole('button', { name: 'settings.library.previewFile' })
 	).not.toBeInTheDocument();
@@ -604,6 +607,7 @@ it('shows media previews in both library views', async () => {
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
 	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-8', 'object-cover');
+	expect(screen.getByText('movie.mp4').closest('tr')!.querySelector('.lucide-video')).toBeInTheDocument();
 	showContextMenu.mockResolvedValueOnce('preview');
 	fireEvent.contextMenu(screen.getByText('song.mp3').closest('tr')!);
 	await screen.findByRole('dialog');
