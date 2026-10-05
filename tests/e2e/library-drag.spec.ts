@@ -68,6 +68,36 @@ test('moves library files and folders by dropping them onto folders', async () =
 		await page.getByRole('button', { name: 'Open Archive' }).first().click();
 		await page.getByRole('button', { name: 'Open Projects' }).first().click();
 		await expect(page.getByText('notes.txt', { exact: true }).first()).toBeVisible();
+		await page
+			.getByText('notes.txt', { exact: true })
+			.first()
+			.locator('xpath=ancestor::article')
+			.dragTo(
+				page
+					.getByRole('navigation', { name: 'Library folders' })
+					.getByRole('button', { name: 'Archive' })
+			);
+		await expect
+			.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'notes.txt'), 'utf8'))
+			.toBe('notes');
+		await expect(page.getByText('notes.txt', { exact: true })).toHaveCount(0);
+		await page
+			.getByRole('navigation', { name: 'Library folders' })
+			.getByRole('button', { name: 'Archive' })
+			.click();
+		await page.getByRole('button', { name: 'List' }).click();
+		await page.getByRole('row').filter({ hasText: 'notes.txt' }).getByRole('checkbox').click();
+		await page.getByRole('button', { name: 'More actions' }).click();
+		await page.getByRole('menuitem', { name: 'Move to parent folder' }).click();
+		await expect.poll(async () => readFile(path.join(libraryRoot, 'notes.txt'), 'utf8')).toBe(
+			'notes'
+		);
+		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toHaveCount(0);
+		await page
+			.getByRole('navigation', { name: 'Library folders' })
+			.getByRole('button', { name: 'Library' })
+			.click();
+		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);

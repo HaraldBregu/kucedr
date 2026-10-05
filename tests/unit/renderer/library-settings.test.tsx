@@ -196,6 +196,60 @@ it('shows only the opened folder contents and navigates back to the library root
 	expect(screen.getByRole('row', { name: /Projects/ })).toBeInTheDocument();
 });
 
+it('moves a file one level up by dropping it on the parent breadcrumb', async () => {
+	list.mockResolvedValue([
+		{
+			kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0,
+			modifiedAt: '2026-09-29',
+		},
+		{
+			name: 'notes.txt', path: '/library/Projects/notes.txt', relativePath: 'Projects/notes.txt',
+			size: 5, modifiedAt: '2026-09-29',
+		},
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await user.click(await screen.findByRole('button', { name: 'settings.library.openFolderNamed' }));
+	const row = screen.getByRole('row', { name: /notes.txt/ });
+	const parent = within(
+		screen.getByRole('navigation', { name: 'settings.library.folderNavigation' })
+	).getByRole('button', { name: 'library.title' });
+	const transferData = new Map<string, string>();
+	const dataTransfer = {
+		types: ['application/x-kucedr-library-items'],
+		files: [],
+		setData: (type: string, value: string) => transferData.set(type, value),
+		getData: (type: string) => transferData.get(type) ?? '',
+		effectAllowed: 'none',
+		dropEffect: 'none',
+	};
+	fireEvent.dragStart(row, { dataTransfer });
+	fireEvent.dragOver(parent, { dataTransfer });
+	expect(parent).toHaveClass('bg-primary/10');
+	fireEvent.drop(parent, { dataTransfer });
+	await waitFor(() => expect(move).toHaveBeenCalledWith(['Projects/notes.txt'], ''));
+});
+
+it('moves selected files to the parent folder from the selection menu', async () => {
+	list.mockResolvedValue([
+		{
+			kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0,
+			modifiedAt: '2026-09-29',
+		},
+		{
+			name: 'notes.txt', path: '/library/Projects/notes.txt', relativePath: 'Projects/notes.txt',
+			size: 5, modifiedAt: '2026-09-29',
+		},
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await user.click(await screen.findByRole('button', { name: 'settings.library.openFolderNamed' }));
+	await user.click(screen.getByRole('checkbox', { name: 'settings.library.selectFile' }));
+	await user.click(screen.getByRole('button', { name: 'settings.library.more' }));
+	await user.click(screen.getByRole('menuitem', { name: 'settings.library.moveToParent' }));
+	await waitFor(() => expect(move).toHaveBeenCalledWith(['Projects/notes.txt'], ''));
+});
+
 it('drags selected files onto a folder in the list without uploading them again', async () => {
 	list.mockResolvedValue([
 		{
