@@ -19,7 +19,6 @@ jest.mock('react-i18next', () => ({
 }));
 
 const list = jest.fn();
-const getRoot = jest.fn();
 const openRoot = jest.fn();
 const add = jest.fn();
 const select = jest.fn();
@@ -51,7 +50,6 @@ beforeEach(() => {
 			modifiedAt: '2026-09-29T10:00:00.000Z',
 		},
 	]);
-	getRoot.mockResolvedValue('/Users/example/.kucedr/library');
 	openRoot.mockResolvedValue(undefined);
 	add.mockResolvedValue([]);
 	select.mockResolvedValue([]);
@@ -64,8 +62,7 @@ beforeEach(() => {
 		configurable: true,
 		value: {
 			list,
-			getRoot,
-			openRoot,
+		openRoot,
 			add,
 			select,
 			delete: deleteFile,
@@ -403,7 +400,8 @@ it('loads library files and opens the library folder', async () => {
 	expect(await screen.findByText('notes.txt')).toBeInTheDocument();
 	expect(screen.getByRole('columnheader', { name: 'settings.library.name' })).toBeInTheDocument();
 	expect(screen.getByText('1.5 KB')).toBeInTheDocument();
-	expect(screen.getByText('/Users/example/.kucedr/library')).toBeInTheDocument();
+	expect(screen.queryByText('settings.library.files')).not.toBeInTheDocument();
+	expect(screen.queryByText('/Users/example/.kucedr/library')).not.toBeInTheDocument();
 
 	await user.click(screen.getByRole('button', { name: 'settings.library.openFolder' }));
 	await waitFor(() => expect(openRoot).toHaveBeenCalledTimes(1));
