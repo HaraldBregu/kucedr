@@ -45,8 +45,8 @@ beforeEach(() => {
 	list.mockResolvedValue([
 		{
 			name: 'notes.txt',
-			path: '/Users/example/.kucedr/library/documents/notes.txt',
-			relativePath: 'documents/notes.txt',
+			path: '/Users/example/.kucedr/library/notes.txt',
+			relativePath: 'notes.txt',
 			size: 1536,
 			modifiedAt: '2026-09-29T10:00:00.000Z',
 		},
@@ -236,11 +236,11 @@ it('shows selection actions and downloads or deletes selected files', async () =
 	await user.click(screen.getByRole('checkbox', { name: 'settings.library.selectFile' }));
 	const toolbar = screen.getByRole('toolbar', { name: 'settings.library.selectionActions' });
 	await user.click(within(toolbar).getByRole('button', { name: 'settings.library.download' }));
-	await waitFor(() => expect(download).toHaveBeenCalledWith(['documents/notes.txt']));
+	await waitFor(() => expect(download).toHaveBeenCalledWith(['notes.txt']));
 	await user.click(
 		within(toolbar).getByRole('button', { name: 'settings.library.deleteSelected' })
 	);
-	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('notes.txt'));
 	expect(
 		screen.queryByRole('toolbar', { name: 'settings.library.selectionActions' })
 	).not.toBeInTheDocument();
@@ -258,7 +258,7 @@ it('starts a new chat with the selected file attached', async () => {
 	expect(drafts[mockSetSessionId.mock.calls[0][0]]).toEqual([
 		expect.objectContaining({
 			name: 'notes.txt',
-			path: '/Users/example/.kucedr/library/documents/notes.txt',
+			path: '/Users/example/.kucedr/library/notes.txt',
 		}),
 	]);
 });
@@ -272,7 +272,7 @@ it('confirms and deletes a library file', async () => {
 	await user.click(deleteButton);
 
 	expect(window.confirm).toHaveBeenCalledWith('settings.library.confirmDelete');
-	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('notes.txt'));
 	expect(screen.queryByText('notes.txt')).not.toBeInTheDocument();
 });
 
@@ -413,7 +413,7 @@ it('opens the native file context menu and handles preview and delete', async ()
 	await user.keyboard('{Escape}');
 	await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 	fireEvent.contextMenu(card);
-	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('notes.txt'));
 });
 
 it('opens the native context menu from a list row', async () => {
@@ -429,21 +429,21 @@ it('sorts table columns in both directions', async () => {
 		{
 			...manyFiles[0],
 			name: 'charlie.png',
-			relativePath: 'z/charlie.png',
+			relativePath: 'charlie.png',
 			size: 20,
 			modifiedAt: '2026-09-29T10:00:00.000Z',
 		},
 		{
 			...manyFiles[1],
 			name: 'alpha.png',
-			relativePath: 'a/alpha.png',
+			relativePath: 'alpha.png',
 			size: 30,
 			modifiedAt: '2026-09-27T10:00:00.000Z',
 		},
 		{
 			...manyFiles[2],
 			name: 'bravo.png',
-			relativePath: 'm/bravo.png',
+			relativePath: 'bravo.png',
 			size: 10,
 			modifiedAt: '2026-09-28T10:00:00.000Z',
 		},
