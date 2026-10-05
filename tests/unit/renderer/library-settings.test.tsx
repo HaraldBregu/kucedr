@@ -72,8 +72,13 @@ it('shows the view controls and file actions in the header with list selected by
 	]);
 	expect(screen.getByRole('table')).toBeInTheDocument();
 	expect(screen.getAllByRole('row')).toHaveLength(2);
+	expect(screen.queryByRole('columnheader', { name: 'settings.library.actions' })).not.toBeInTheDocument();
 	expect(document.querySelectorAll('article')).toHaveLength(0);
 	expect(within(header).getByRole('button', { name: 'settings.library.openFolder' })).toHaveClass('bg-secondary');
+	const checkbox = screen.getByRole('checkbox', { name: 'settings.library.selectFile' });
+	expect(checkbox).toHaveClass('opacity-0', 'group-hover:opacity-100');
+	await userEvent.setup().click(checkbox);
+	expect(checkbox).toHaveAttribute('data-state', 'checked');
 
 	await userEvent
 		.setup()
@@ -84,12 +89,9 @@ it('shows the view controls and file actions in the header with list selected by
 it('confirms and deletes a library file', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
+	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 
 	const deleteButton = await screen.findByRole('button', { name: 'settings.library.delete' });
-	const row = deleteButton.closest('tr');
-	const actions = deleteButton.closest('td');
-	expect(actions).toBe(row?.lastElementChild);
-	expect(actions).toHaveClass('text-right');
 	await user.click(deleteButton);
 
 	expect(window.confirm).toHaveBeenCalledWith('settings.library.confirmDelete');
@@ -101,6 +103,7 @@ it('keeps the file when deletion is cancelled', async () => {
 	window.confirm = jest.fn(() => false);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
+	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 
 	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
 
@@ -250,9 +253,9 @@ it('sorts table columns in both directions', async () => {
 	]);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
-	await screen.findByRole('button', { name: 'settings.library.previewFile' });
+	await screen.findAllByRole('button', { name: 'settings.library.previewFile' });
 
-	const names = () => screen.getAllByRole('row').slice(1).map((row) => row.querySelector('td')?.textContent);
+	const names = () => screen.getAllByRole('row').slice(1).map((row) => row.querySelectorAll('td')[1]?.textContent);
 	expect(names()).toEqual(['alpha.png', 'bravo.png', 'charlie.png']);
 	const sizeHeader = screen.getByRole('columnheader', { name: 'settings.library.size' });
 	await user.click(within(sizeHeader).getByRole('button'));
