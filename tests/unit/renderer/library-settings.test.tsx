@@ -177,8 +177,8 @@ it('drags one folder into another in the collections view', async () => {
 		effectAllowed: 'none',
 		dropEffect: 'none',
 	};
-	fireEvent.dragStart(screen.getByText('Projects').closest('article')!, { dataTransfer });
-	fireEvent.drop(screen.getByText('Archive').closest('article')!, { dataTransfer });
+	fireEvent.dragStart(screen.getAllByText('Projects')[0].closest('article')!, { dataTransfer });
+	fireEvent.drop(screen.getAllByText('Archive')[0].closest('article')!, { dataTransfer });
 	await waitFor(() => expect(move).toHaveBeenCalledWith(['Projects'], 'Archive'));
 });
 
@@ -275,7 +275,7 @@ it('uploads dropped files and reloads the list', async () => {
 	const dropTarget = screen.getByRole('region', { name: 'settings.library.dropZone' });
 	const file = new File(['draft'], 'draft.md', { type: 'text/markdown' });
 
-	fireEvent.drop(dropTarget, { dataTransfer: { files: [file] } });
+	fireEvent.drop(dropTarget, { dataTransfer: { types: ['Files'], files: [file] } });
 
 	await waitFor(() => expect(add).toHaveBeenCalledWith(['/tmp/draft.md']));
 	expect(list).toHaveBeenCalledTimes(2);
