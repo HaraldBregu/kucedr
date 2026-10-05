@@ -15,6 +15,7 @@ export function LibraryTable({
 	selectedPaths,
 	onSelect,
 	onSelectAll,
+	onOpenFolder,
 	onMove,
 	onContextMenu,
 }: {
@@ -24,6 +25,7 @@ export function LibraryTable({
 	readonly selectedPaths: ReadonlySet<string>;
 	readonly onSelect: (path: string, selected: boolean) => void;
 	readonly onSelectAll: (files: LibraryFile[], selected: boolean) => void;
+	readonly onOpenFolder: (file: LibraryFile) => void;
 	readonly onMove: (paths: string[], folder: string) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
@@ -88,6 +90,7 @@ export function LibraryTable({
 						selected={selectedPaths.has(file.relativePath)}
 						selectedPaths={selectedPaths}
 						onSelect={(selected) => onSelect(file.relativePath, selected)}
+						onOpenFolder={onOpenFolder}
 						onMove={onMove}
 						onContextMenu={onContextMenu}
 					/>

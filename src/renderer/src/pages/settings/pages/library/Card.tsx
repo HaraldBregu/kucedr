@@ -13,6 +13,7 @@ export function LibraryCard({
 	selectedPaths,
 	disabled,
 	onDelete,
+	onOpenFolder,
 	onMove,
 	onContextMenu,
 }: {
@@ -20,6 +21,7 @@ export function LibraryCard({
 	readonly selectedPaths: ReadonlySet<string>;
 	readonly disabled: boolean;
 	readonly onDelete: (file: LibraryFile) => void;
+	readonly onOpenFolder: (file: LibraryFile) => void;
 	readonly onMove: (paths: string[], folder: string) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
@@ -39,13 +41,17 @@ export function LibraryCard({
 				onContextMenu(file);
 			}}
 		>
-			<div className="w-full rounded-md text-left">
-				<LibraryPreview file={file} />
-			</div>
+			{file.kind === 'folder' ? (
+				<button type="button" className="w-full rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => onOpenFolder(file)} aria-label={t('settings.library.openFolderNamed', { name: file.name })}>
+					<LibraryPreview file={file} />
+				</button>
+			) : (
+				<div className="w-full rounded-md text-left"><LibraryPreview file={file} /></div>
+			)}
 			<div className="flex min-w-0 items-start gap-2 px-1 pb-1 pt-3">
 				<div className="min-w-0 flex-1 rounded-md text-left">
 					<p className="truncate text-sm font-medium" title={file.name}>
-						{file.name}
+						{file.kind === 'folder' ? <button type="button" className="rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => onOpenFolder(file)} aria-label={t('settings.library.openFolderNamed', { name: file.name })}>{file.name}</button> : file.name}
 					</p>
 					<p className="truncate text-xs text-muted-foreground" title={file.relativePath}>
 						{file.relativePath}

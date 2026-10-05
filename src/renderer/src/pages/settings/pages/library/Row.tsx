@@ -13,6 +13,7 @@ export function LibraryRow({
 	selected,
 	selectedPaths,
 	onSelect,
+	onOpenFolder,
 	onMove,
 	onContextMenu,
 }: {
@@ -20,6 +21,7 @@ export function LibraryRow({
 	readonly selected: boolean;
 	readonly selectedPaths: ReadonlySet<string>;
 	readonly onSelect: (selected: boolean) => void;
+	readonly onOpenFolder: (file: LibraryFile) => void;
 	readonly onMove: (paths: string[], folder: string) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
@@ -52,12 +54,17 @@ export function LibraryRow({
 				)}
 			</TableCell>
 			<TableCell className={selected ? 'rounded-l-xl bg-muted/70 py-2' : 'py-2'}>
-				<div className="flex w-full min-w-0 items-center gap-3 text-left">
-					<LibraryPreview file={file} compact />
-					<span className="min-w-0 truncate font-medium" title={file.name}>
-						{file.name}
-					</span>
-				</div>
+				{file.kind === 'folder' ? (
+					<button type="button" className="flex w-full min-w-0 items-center gap-3 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" onClick={() => onOpenFolder(file)} aria-label={t('settings.library.openFolderNamed', { name: file.name })}>
+						<LibraryPreview file={file} compact />
+						<span className="min-w-0 truncate font-medium" title={file.name}>{file.name}</span>
+					</button>
+				) : (
+					<div className="flex w-full min-w-0 items-center gap-3 text-left">
+						<LibraryPreview file={file} compact />
+						<span className="min-w-0 truncate font-medium" title={file.name}>{file.name}</span>
+					</div>
+				)}
 			</TableCell>
 			<TableCell
 				className={
