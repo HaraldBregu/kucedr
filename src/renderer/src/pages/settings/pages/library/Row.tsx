@@ -51,10 +51,22 @@ export function LibraryRow({
 					</span>
 				</button>
 			</TableCell>
-			<TableCell className={selected ? 'whitespace-nowrap bg-muted/70 text-muted-foreground' : 'whitespace-nowrap text-muted-foreground'}>
+			<TableCell
+				className={
+					selected
+						? 'whitespace-nowrap bg-muted/70 text-muted-foreground'
+						: 'whitespace-nowrap text-muted-foreground'
+				}
+			>
 				{formatLibraryFileSize(file.size)}
 			</TableCell>
-			<TableCell className={selected ? 'rounded-r-xl whitespace-nowrap bg-muted/70 text-muted-foreground' : 'whitespace-nowrap text-muted-foreground'}>
+			<TableCell
+				className={
+					selected
+						? 'rounded-r-xl whitespace-nowrap bg-muted/70 text-muted-foreground'
+						: 'whitespace-nowrap text-muted-foreground'
+				}
+			>
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
 			</TableCell>
 		</TableRow>

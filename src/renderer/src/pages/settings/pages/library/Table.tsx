@@ -36,7 +36,9 @@ export function LibraryTable({
 				<TableRow>
 					<TableHead className="w-12 px-3">
 						<Checkbox
-							checked={selectedCount === files.length ? true : selectedCount > 0 ? 'indeterminate' : false}
+							checked={
+								selectedCount === files.length ? true : selectedCount > 0 ? 'indeterminate' : false
+							}
 							onCheckedChange={(checked) =>
 								setSelectedPaths((current) => {
 									const next = new Set(current);

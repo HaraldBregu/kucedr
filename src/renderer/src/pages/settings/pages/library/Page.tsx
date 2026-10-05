@@ -266,26 +266,26 @@ const LibraryPage: React.FC = () => {
 							/>
 						</SettingsPanel>
 					) : view === 'collections' ? (
-							<div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-4">
-								{files.slice(0, visibleCount).map((file) => (
-									<LibraryCard
-										key={file.relativePath}
-										file={file}
-										disabled={deletingPath === file.relativePath || uploading}
-										onDelete={(entry) => void handleDelete(entry)}
-										onPreview={setPreviewFile}
-										onContextMenu={handleContextMenu}
-									/>
-								))}
-							</div>
-						) : (
-							<LibraryTable
-								files={orderedFiles.slice(0, visibleCount)}
-								sort={sort}
-								onSort={handleSort}
-								onPreview={setPreviewFile}
-								onContextMenu={handleContextMenu}
-							/>
+						<div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-4">
+							{files.slice(0, visibleCount).map((file) => (
+								<LibraryCard
+									key={file.relativePath}
+									file={file}
+									disabled={deletingPath === file.relativePath || uploading}
+									onDelete={(entry) => void handleDelete(entry)}
+									onPreview={setPreviewFile}
+									onContextMenu={handleContextMenu}
+								/>
+							))}
+						</div>
+					) : (
+						<LibraryTable
+							files={orderedFiles.slice(0, visibleCount)}
+							sort={sort}
+							onSort={handleSort}
+							onPreview={setPreviewFile}
+							onContextMenu={handleContextMenu}
+						/>
 					)}
 					{visibleCount < files.length && (
 						<div ref={loadMoreRef} className="flex justify-center py-4">
