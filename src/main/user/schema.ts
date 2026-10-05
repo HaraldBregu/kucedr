@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const userSchema = z.object({
 	name: z.string().trim().min(1),
+	title: z.string().trim().optional(),
 	preferredName: z.string().trim().optional(),
 	pronouns: z.string().trim().optional(),
 	timezone: z.string().trim().optional(),

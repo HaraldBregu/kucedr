@@ -17,17 +17,18 @@ export async function getUser(workspace = agentLocation()): Promise<UserSettings
 		try {
 			const content = await readFile(file, 'utf8');
 			const fields = Object.fromEntries(
-				[...content.matchAll(/^\s*-\s*\*\*(Name|What to call them|Pronouns|Timezone|Projects|Preferences):\*\*\s*(.*)$/gim)]
+				[...content.matchAll(/^\s*-\s*\*\*(Name|Title|What to call them|Pronouns|Timezone|Projects|Preferences):\*\*\s*(.*)$/gim)]
 					.map(([, key, value]) => [key.toLowerCase(), value.trim()])
 			);
 			const name = fields.name || content.match(/^#\s+(?!USER\.md\b)(.+)$/im)?.[1]?.trim();
 			if (!name) return null;
 			const remaining = content
 				.replace(/^#\s+USER\.md[^\n]*(?:\n|$)/im, '')
-				.replace(/^\s*-\s*\*\*(?:Name|What to call them|Pronouns|Timezone|Projects|Preferences):\*\*.*$/gim, '')
+				.replace(/^\s*-\s*\*\*(?:Name|Title|What to call them|Pronouns|Timezone|Projects|Preferences):\*\*.*$/gim, '')
 				.trim();
 			return userSchema.parse({
 				name,
+				...(fields.title ? { title: fields.title } : {}),
 				...(fields['what to call them'] ? { preferredName: fields['what to call them'] } : {}),
 				...(fields.pronouns ? { pronouns: fields.pronouns } : {}),
 				...(fields.timezone ? { timezone: fields.timezone } : {}),
