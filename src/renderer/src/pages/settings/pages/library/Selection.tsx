@@ -15,6 +15,8 @@ export function LibrarySelection({
 	onDownload,
 	onDelete,
 	onOpenFolder,
+	onMoveUp,
+	canMoveUp,
 	onClear,
 	busy,
 }: {
@@ -23,6 +25,8 @@ export function LibrarySelection({
 	readonly onDownload: () => void;
 	readonly onDelete: () => void;
 	readonly onOpenFolder: () => void;
+	readonly onMoveUp: () => void;
+	readonly canMoveUp: boolean;
 	readonly onClear: () => void;
 	readonly busy: boolean;
 }): React.JSX.Element {
@@ -77,6 +81,11 @@ export function LibrarySelection({
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent align="end">
+					{canMoveUp && (
+						<DropdownMenuItem onSelect={onMoveUp} disabled={busy}>
+							{t('settings.library.moveToParent')}
+						</DropdownMenuItem>
+					)}
 					<DropdownMenuItem onSelect={onOpenFolder}>
 						{t('settings.library.openFolder')}
 					</DropdownMenuItem>

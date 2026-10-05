@@ -341,7 +341,11 @@ const LibraryPage: React.FC = () => {
 			)}
 
 			<section className="flex flex-col gap-2">
-				<LibraryPath folder={currentFolder} onNavigate={navigateFolder} />
+				<LibraryPath
+					folder={currentFolder}
+					onNavigate={navigateFolder}
+					onMove={(paths, folder) => void handleMove(paths, folder)}
+				/>
 				<div
 					role="region"
 					aria-label={t('settings.library.dropZone')}
@@ -454,6 +458,13 @@ const LibraryPage: React.FC = () => {
 					onDownload={() => void handleDownload()}
 					onDelete={() => void handleDeleteSelected()}
 					onOpenFolder={() => void handleOpenFolder()}
+					onMoveUp={() =>
+						void handleMove(
+							selectedFiles.map((file) => file.relativePath),
+							libraryParent(currentFolder)
+						)
+					}
+					canMoveUp={Boolean(currentFolder)}
 					onClear={() => setSelectedPaths(new Set())}
 					busy={selectionBusy}
 				/>
