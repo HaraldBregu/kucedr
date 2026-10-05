@@ -26,6 +26,7 @@ export function LibraryHeaderActions({
 			<div className="flex items-center gap-2">
 				<ToggleGroup
 					type="single"
+					className="gap-2"
 					value={view}
 					onValueChange={(value) => {
 						if (value === 'collections' || value === 'list') onViewChange(value);
