@@ -141,6 +141,27 @@ it('shows an indeterminate select-all checkbox for a partial table selection', a
 	expect(checkboxes[2]).toHaveAttribute('data-state', 'checked');
 });
 
+it('shows only the opened folder contents and navigates back to the library root', async () => {
+	list.mockResolvedValue([
+		{ kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0, modifiedAt: '2026-09-29' },
+		{ name: 'notes.txt', path: '/library/Projects/notes.txt', relativePath: 'Projects/notes.txt', size: 5, modifiedAt: '2026-09-29' },
+		{ kind: 'folder', name: 'Nested', path: '/library/Projects/Nested', relativePath: 'Projects/Nested', size: 0, modifiedAt: '2026-09-29' },
+		{ name: 'deep.txt', path: '/library/Projects/Nested/deep.txt', relativePath: 'Projects/Nested/deep.txt', size: 5, modifiedAt: '2026-09-29' },
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	const projects = await screen.findByRole('row', { name: /Projects/ });
+	expect(screen.queryByText('notes.txt')).not.toBeInTheDocument();
+	await user.click(within(projects).getByRole('button', { name: 'settings.library.openFolderNamed' }));
+	expect(await screen.findByText('notes.txt')).toBeInTheDocument();
+	expect(screen.queryByText('deep.txt')).not.toBeInTheDocument();
+	await user.click(within(screen.getByRole('row', { name: /Nested/ })).getByRole('button', { name: 'settings.library.openFolderNamed' }));
+	expect(await screen.findByText('deep.txt')).toBeInTheDocument();
+	await user.click(within(screen.getByRole('navigation', { name: 'settings.library.folderNavigation' })).getByRole('button', { name: 'library.title' }));
+	expect(screen.queryByText('deep.txt')).not.toBeInTheDocument();
+	expect(screen.getByRole('row', { name: /Projects/ })).toBeInTheDocument();
+});
+
 it('drags selected files onto a folder in the list without uploading them again', async () => {
 	list.mockResolvedValue([
 		{
