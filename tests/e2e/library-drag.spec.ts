@@ -115,6 +115,27 @@ test('moves library items and uploads files dropped from the desktop', async () 
 			.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'draft.md'), 'utf8'))
 			.toBe('draft');
 		await expect(page.getByRole('row').filter({ hasText: 'draft.md' })).toBeVisible();
+		await writeFile(path.join(libraryRoot, 'Archive', 'Projects', 'nested.txt'), 'nested');
+		await page.getByRole('button', { name: 'Collections' }).click();
+		page.once('dialog', (dialog) => void dialog.accept());
+		await page
+			.getByText('Projects', { exact: true })
+			.first()
+			.locator('xpath=ancestor::article')
+			.getByRole('button', { name: 'Delete Projects' })
+			.click();
+		await expect
+			.poll(async () => {
+				try {
+					await access(path.join(libraryRoot, 'Archive', 'Projects'));
+					return true;
+				} catch {
+					return false;
+				}
+			})
+			.toBe(false);
+		await expect(page.getByText('Projects', { exact: true })).toHaveCount(0);
+		await expect(page.getByText('draft.md', { exact: true })).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);
