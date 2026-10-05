@@ -282,9 +282,6 @@ const LibraryPage: React.FC = () => {
 								files={orderedFiles.slice(0, visibleCount)}
 								sort={sort}
 								onSort={handleSort}
-								deletingPath={deletingPath}
-								uploading={uploading}
-								onDelete={(entry) => void handleDelete(entry)}
 								onPreview={setPreviewFile}
 								onContextMenu={handleContextMenu}
 							/>

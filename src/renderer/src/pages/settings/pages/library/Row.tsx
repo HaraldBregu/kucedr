@@ -1,22 +1,21 @@
 import React from 'react';
-import { Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
-import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { LibraryPreview } from './Preview';
 import { formatLibraryFileSize } from './size';
 
 export function LibraryRow({
 	file,
-	disabled,
-	onDelete,
+	selected,
+	onSelect,
 	onPreview,
 	onContextMenu,
 }: {
 	readonly file: LibraryFile;
-	readonly disabled: boolean;
-	readonly onDelete: (file: LibraryFile) => void;
+	readonly selected: boolean;
+	readonly onSelect: (selected: boolean) => void;
 	readonly onPreview: (file: LibraryFile) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
@@ -24,11 +23,21 @@ export function LibraryRow({
 
 	return (
 		<TableRow
+			className="group"
+			data-state={selected ? 'selected' : undefined}
 			onContextMenu={(event) => {
 				event.preventDefault();
 				onContextMenu(file);
 			}}
 		>
+			<TableCell className="px-3">
+				<Checkbox
+					checked={selected}
+					onCheckedChange={(checked) => onSelect(checked === true)}
+					aria-label={t('settings.library.selectFile', { name: file.name })}
+					className="opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100 data-[state=checked]:opacity-100"
+				/>
+			</TableCell>
 			<TableCell>
 				<button
 					type="button"
@@ -48,18 +57,6 @@ export function LibraryRow({
 			</TableCell>
 			<TableCell className="whitespace-nowrap text-muted-foreground">
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
-			</TableCell>
-			<TableCell className="text-right">
-				<Button
-					variant="ghost"
-					size="icon-xs"
-					className="text-muted-foreground hover:text-destructive"
-					disabled={disabled}
-					aria-label={t('settings.library.delete', { name: file.name })}
-					onClick={() => onDelete(file)}
-				>
-					<Trash2 className="size-3.5" />
-				</Button>
 			</TableCell>
 		</TableRow>
 	);
