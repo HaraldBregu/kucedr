@@ -39,6 +39,14 @@ export class LibraryIpc implements IpcModule<LibraryIpcDependencies> {
 			trusted.assert(event);
 			return library.deleteLibraryFile(relativePath);
 		});
+		registerCommandWithEvent(LibraryChannels.createFolder, (event, name) => {
+			trusted.assert(event);
+			return library.createLibraryFolder(name);
+		});
+		registerCommandWithEvent(LibraryChannels.download, (event, relativePaths) => {
+			const window = trusted.assert(event);
+			return library.downloadLibraryFiles(window, relativePaths);
+		});
 		registerCommandWithEvent(LibraryChannels.openRoot, (event) => {
 			trusted.assert(event);
 			return library.openLibraryRoot();

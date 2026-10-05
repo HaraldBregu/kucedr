@@ -473,6 +473,8 @@ export interface LibraryInvokeChannelMap {
 		args: [];
 		result: import('./library_types').LibraryFile[] | undefined;
 	};
+	[LibraryChannels.createFolder]: { args: [name: string]; result: void };
+	[LibraryChannels.download]: { args: [relativePaths: string[]]; result: boolean };
 	[LibraryChannels.delete]: { args: [relativePath: string]; result: void };
 	[LibraryChannels.openRoot]: { args: []; result: void };
 	[LibraryChannels.getRoot]: { args: []; result: string };

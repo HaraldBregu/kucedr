@@ -15,6 +15,15 @@ export async function listLibraryFiles(root = libraryLocation()): Promise<Librar
 		for (const entry of await readdir(directory, { withFileTypes: true })) {
 			const absolutePath = path.join(directory, entry.name);
 			if (entry.isDirectory()) {
+				const metadata = await stat(absolutePath);
+				files.push({
+					kind: 'folder',
+					name: entry.name,
+					path: absolutePath,
+					relativePath: path.relative(root, absolutePath),
+					size: 0,
+					modifiedAt: metadata.mtime.toISOString(),
+				});
 				directories.push(absolutePath);
 				continue;
 			}

@@ -1,4 +1,6 @@
 export { addLibraryFiles } from './upload';
+export { createLibraryFolder } from './create';
+export { downloadLibraryFiles } from './download';
 export { deleteLibraryFile } from './delete';
 export { listLibraryFiles } from './list';
 export { openLibraryRoot } from './open';
