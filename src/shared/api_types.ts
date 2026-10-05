@@ -641,9 +641,9 @@ export interface AppApi extends AppStorageApi {
 
 export interface LibraryApi {
 	list: () => Promise<import('./library_types').LibraryFile[]>;
-	add: (paths: string[]) => Promise<import('./library_types').LibraryFile[]>;
-	select: () => Promise<import('./library_types').LibraryFile[] | undefined>;
-	createFolder: (name: string) => Promise<void>;
+	add: (paths: string[], destinationFolder?: string) => Promise<import('./library_types').LibraryFile[]>;
+	select: (destinationFolder?: string) => Promise<import('./library_types').LibraryFile[] | undefined>;
+	createFolder: (name: string, parent?: string) => Promise<void>;
 	move: (relativePaths: string[], destinationFolder: string) => Promise<void>;
 	download: (relativePaths: string[]) => Promise<boolean>;
 	delete: (relativePath: string) => Promise<void>;

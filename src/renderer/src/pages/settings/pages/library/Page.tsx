@@ -156,27 +156,27 @@ const LibraryPage: React.FC = () => {
 		setUploading(true);
 		setErrorMessage('');
 		try {
-			const uploaded = await window.library.select();
+			const uploaded = await window.library.select(currentFolder);
 			if (uploaded) await loadFiles();
 		} catch {
 			setErrorMessage(t('settings.library.uploadError'));
 		} finally {
 			setUploading(false);
 		}
-	}, [loadFiles, t]);
+	}, [currentFolder, loadFiles, t]);
 
 	const handleCreateFolder = useCallback(
 		async (name: string): Promise<void> => {
 			setErrorMessage('');
 			try {
-				await window.library.createFolder(name);
+				await window.library.createFolder(name, currentFolder);
 				await loadFiles();
 			} catch {
 				setErrorMessage(t('settings.library.createFolderError'));
 				throw new Error('Folder creation failed');
 			}
 		},
-		[loadFiles, t]
+		[currentFolder, loadFiles, t]
 	);
 
 	const handleStartChat = useCallback((): void => {
@@ -257,7 +257,7 @@ const LibraryPage: React.FC = () => {
 			setUploading(true);
 			setErrorMessage('');
 			try {
-				await window.library.add(paths);
+				await window.library.add(paths, currentFolder);
 				await loadFiles();
 			} catch {
 				setErrorMessage(t('settings.library.uploadError'));
@@ -265,7 +265,7 @@ const LibraryPage: React.FC = () => {
 				setUploading(false);
 			}
 		},
-		[loadFiles, t]
+		[currentFolder, loadFiles, t]
 	);
 
 	const handleDelete = useCallback(

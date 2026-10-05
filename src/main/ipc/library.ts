@@ -22,26 +22,26 @@ export class LibraryIpc implements IpcModule<LibraryIpcDependencies> {
 			trusted.assert(event);
 			return library.listLibraryFiles();
 		});
-		registerCommandWithEvent(LibraryChannels.add, (event, paths) => {
+		registerCommandWithEvent(LibraryChannels.add, (event, paths, destinationFolder) => {
 			trusted.assert(event);
-			return library.addLibraryFiles(paths);
+			return library.addLibraryFiles(paths, destinationFolder);
 		});
-		registerCommandWithEvent(LibraryChannels.select, async (event) => {
+		registerCommandWithEvent(LibraryChannels.select, async (event, destinationFolder) => {
 			const window = trusted.assert(event);
 			const result = await dialog.showOpenDialog(window, {
 				title: 'Upload files to Library',
 				properties: ['openFile', 'multiSelections'],
 			});
 			if (result.canceled || result.filePaths.length === 0) return undefined;
-			return library.addLibraryFiles(result.filePaths);
+			return library.addLibraryFiles(result.filePaths, destinationFolder);
 		});
 		registerCommandWithEvent(LibraryChannels.delete, (event, relativePath) => {
 			trusted.assert(event);
 			return library.deleteLibraryFile(relativePath);
 		});
-		registerCommandWithEvent(LibraryChannels.createFolder, (event, name) => {
+		registerCommandWithEvent(LibraryChannels.createFolder, (event, name, parent) => {
 			trusted.assert(event);
-			return library.createLibraryFolder(name);
+			return library.createLibraryFolder(name, undefined, parent);
 		});
 		registerCommandWithEvent(LibraryChannels.move, (event, relativePaths, destinationFolder) => {
 			trusted.assert(event);

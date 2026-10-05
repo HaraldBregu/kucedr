@@ -4,9 +4,9 @@ import type { LibraryApi } from './index.d';
 
 export const library: LibraryApi = {
 	list: () => typedInvokeUnwrap(LibraryChannels.list),
-	add: (paths) => typedInvokeUnwrap(LibraryChannels.add, paths),
-	select: () => typedInvokeUnwrap(LibraryChannels.select),
-	createFolder: (name) => typedInvokeUnwrap(LibraryChannels.createFolder, name),
+	add: (paths, destinationFolder) => typedInvokeUnwrap(LibraryChannels.add, paths, destinationFolder),
+	select: (destinationFolder) => typedInvokeUnwrap(LibraryChannels.select, destinationFolder),
+	createFolder: (name, parent) => typedInvokeUnwrap(LibraryChannels.createFolder, name, parent),
 	move: (relativePaths, destinationFolder) =>
 		typedInvokeUnwrap(LibraryChannels.move, relativePaths, destinationFolder),
 	download: (relativePaths) => typedInvokeUnwrap(LibraryChannels.download, relativePaths),
