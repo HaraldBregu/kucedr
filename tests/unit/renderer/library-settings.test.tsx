@@ -70,8 +70,10 @@ it('shows the view controls and file actions in the header with list selected by
 		'settings.library.openFolder',
 		'settings.library.upload',
 	]);
-	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(1);
+	expect(screen.getByRole('table')).toBeInTheDocument();
+	expect(screen.getAllByRole('row')).toHaveLength(2);
 	expect(document.querySelectorAll('article')).toHaveLength(0);
+	expect(within(header).getByRole('button', { name: 'settings.library.openFolder' })).toHaveClass('bg-secondary');
 
 	await userEvent
 		.setup()
@@ -84,10 +86,10 @@ it('confirms and deletes a library file', async () => {
 	render(<LibraryPage />);
 
 	const deleteButton = await screen.findByRole('button', { name: 'settings.library.delete' });
-	const row = deleteButton.closest('[data-slot="item"]');
-	const actions = deleteButton.closest('[data-slot="item-actions"]');
+	const row = deleteButton.closest('tr');
+	const actions = deleteButton.closest('td');
 	expect(actions).toBe(row?.lastElementChild);
-	expect(actions).toHaveClass('flex-none', 'justify-end');
+	expect(actions).toHaveClass('text-right');
 	await user.click(deleteButton);
 
 	expect(window.confirm).toHaveBeenCalledWith('settings.library.confirmDelete');
@@ -191,7 +193,9 @@ it('shows media previews in both library views', async () => {
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
 	expect(screen.getByRole('img', { name: 'photo.png' })).toBeInTheDocument();
-	const song = screen.getAllByRole('button', { name: 'settings.library.previewFile' })[1];
+	const song = within(screen.getByRole('row', { name: /song.mp3/ })).getByRole('button', {
+		name: 'settings.library.previewFile',
+	});
 	await user.click(song);
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3').tagName).toBe('AUDIO');
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toHaveAttribute('controls');
@@ -200,7 +204,11 @@ it('shows media previews in both library views', async () => {
 	});
 	expect(within(screen.getByRole('dialog')).getByLabelText('song.mp3')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
-	await user.click(screen.getAllByRole('button', { name: 'settings.library.previewFile' })[2]);
+	await user.click(
+		within(screen.getByRole('row', { name: /movie.mp4/ })).getByRole('button', {
+			name: 'settings.library.previewFile',
+		})
+	);
 	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4').tagName).toBe('VIDEO');
 	expect(within(screen.getByRole('dialog')).getByLabelText('movie.mp4')).toHaveAttribute(
 		'controls'
@@ -230,8 +238,31 @@ it('opens the native context menu from a list row', async () => {
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await user.click(await screen.findByRole('button', { name: 'settings.library.list' }));
-	fireEvent.contextMenu(screen.getByText('notes.txt').closest('[data-slot="item"]')!);
+	fireEvent.contextMenu(screen.getByText('notes.txt').closest('tr')!);
 	await waitFor(() => expect(showContextMenu).toHaveBeenCalledTimes(1));
+});
+
+it('sorts table columns in both directions', async () => {
+	list.mockResolvedValue([
+		{ ...manyFiles[0], name: 'charlie.png', relativePath: 'z/charlie.png', size: 20, modifiedAt: '2026-09-29T10:00:00.000Z' },
+		{ ...manyFiles[1], name: 'alpha.png', relativePath: 'a/alpha.png', size: 30, modifiedAt: '2026-09-27T10:00:00.000Z' },
+		{ ...manyFiles[2], name: 'bravo.png', relativePath: 'm/bravo.png', size: 10, modifiedAt: '2026-09-28T10:00:00.000Z' },
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await screen.findByRole('button', { name: 'settings.library.previewFile' });
+
+	const names = () => screen.getAllByRole('row').slice(1).map((row) => row.querySelector('td')?.textContent);
+	expect(names()).toEqual(['alpha.png', 'bravo.png', 'charlie.png']);
+	const sizeHeader = screen.getByRole('columnheader', { name: 'settings.library.size' });
+	await user.click(within(sizeHeader).getByRole('button'));
+	expect(sizeHeader).toHaveAttribute('aria-sort', 'ascending');
+	expect(names()).toEqual(['bravo.png', 'charlie.png', 'alpha.png']);
+	await user.click(within(sizeHeader).getByRole('button'));
+	expect(sizeHeader).toHaveAttribute('aria-sort', 'descending');
+	expect(names()).toEqual(['alpha.png', 'charlie.png', 'bravo.png']);
+	await user.click(screen.getByRole('button', { name: 'settings.library.modified' }));
+	expect(names()).toEqual(['alpha.png', 'bravo.png', 'charlie.png']);
 });
 
 it('navigates the preview with buttons and arrow keys without wrapping', async () => {
@@ -268,15 +299,15 @@ it('limits both views to 48 files and loads the next batch on demand', async () 
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await screen.findAllByText('file-000.png');
-	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(48);
+	expect(screen.getAllByRole('row')).toHaveLength(49);
 	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
 	expect(document.querySelectorAll('article')).toHaveLength(48);
 	expect(screen.queryByText('file-048.png')).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
-	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(48);
+	expect(screen.getAllByRole('row')).toHaveLength(49);
 	await user.click(screen.getByRole('button', { name: 'settings.library.loadMore' }));
 	expect(await screen.findAllByText('file-049.png')).toHaveLength(2);
-	expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(50);
+	expect(screen.getAllByRole('row')).toHaveLength(51);
 	expect(
 		screen.queryByRole('button', { name: 'settings.library.loadMore' })
 	).not.toBeInTheDocument();
@@ -298,7 +329,7 @@ it('loads the next batch when the end of the visible files enters the viewport',
 	try {
 		const { unmount } = render(<LibraryPage />);
 		await screen.findAllByText('file-000.png');
-		expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(48);
+		expect(screen.getAllByRole('row')).toHaveLength(49);
 		expect(observe).toHaveBeenCalledTimes(1);
 		act(() =>
 			notifyIntersection?.(
@@ -306,7 +337,7 @@ it('loads the next batch when the end of the visible files enters the viewport',
 				{} as IntersectionObserver
 			)
 		);
-		await waitFor(() => expect(document.querySelectorAll('[data-slot="item"]')).toHaveLength(50));
+		await waitFor(() => expect(screen.getAllByRole('row')).toHaveLength(51));
 		expect(disconnect).toHaveBeenCalled();
 		unmount();
 	} finally {
