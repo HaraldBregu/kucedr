@@ -4,7 +4,7 @@ import path from 'node:path';
 import { closeApp } from './close';
 import { launchApp } from './helpers';
 
-test('moves library items and uploads files dropped from the desktop', async () => {
+test('moves, uploads, and deletes library items', async () => {
 	test.setTimeout(90_000);
 	const { app, page, userDataDir } = await launchApp();
 	try {
