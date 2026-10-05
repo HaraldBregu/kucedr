@@ -285,7 +285,7 @@ it('keeps the file when deletion is cancelled', async () => {
 	await user.click(await screen.findByRole('button', { name: 'settings.library.delete' }));
 
 	expect(deleteFile).not.toHaveBeenCalled();
-	expect(screen.getByText('notes.txt')).toBeInTheDocument();
+	expect(screen.getAllByText('notes.txt')[0]).toBeInTheDocument();
 });
 
 it('uploads selected files and reloads the list', async () => {
@@ -400,7 +400,7 @@ it('opens the native file context menu and handles preview and delete', async ()
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
-	const card = (await screen.findByText('notes.txt')).closest('article')!;
+	const card = (await screen.findAllByText('notes.txt'))[0].closest('article')!;
 	showContextMenu.mockResolvedValueOnce('preview').mockResolvedValueOnce('delete');
 	fireEvent.contextMenu(card);
 	await screen.findByRole('dialog');
