@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { NavigationBar } from '../../../src/renderer/src/components/app/navigationbar/NavigationBar';
 
@@ -144,29 +143,16 @@ it('does not render a chat title in the navigationbar', () => {
 	expect(container.querySelector('[data-slot="navigationbar-chat-context"]')).not.toBeInTheDocument();
 });
 
-it('renders Workspace on the right and opens it', async () => {
-	const user = userEvent.setup();
-
+it('omits Space while keeping application navigation on the right', () => {
 	render(
 		<MemoryRouter initialEntries={['/home']}>
 			<NavigationBar showWorkspace />
-			<Routes>
-				<Route path="/home" element={null} />
-				<Route path="/workspace" element={<p>Workspace page</p>} />
-			</Routes>
 		</MemoryRouter>
 	);
-	const workspace = screen.getByRole('button', { name: 'navigationBar.space' });
 
-	expect(screen.queryByRole('button', { name: 'navigationBar.search' })).not.toBeInTheDocument();
-	expect(workspace.querySelector('.lucide-folder')).toBeInTheDocument();
-	expect(within(workspace).getByText('navigationBar.space')).toBeInTheDocument();
-	await user.click(workspace);
-	expect(screen.getByText('Workspace page')).toBeInTheDocument();
-	const home = screen.getByRole('button', { name: 'navigationBar.home' });
-	expect(home.querySelector('.lucide-message-circle')).toBeInTheDocument();
-	await user.click(home);
-	expect(screen.getByRole('button', { name: 'navigationBar.space' })).toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'navigationBar.space' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'navigationBar.chat' })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'navigationBar.code' })).toBeInTheDocument();
 });
 
 it('renders one solid navigationbar color without visible title text', () => {

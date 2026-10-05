@@ -1105,6 +1105,9 @@
 			"saveFailed": "Impossibile salvare i permessi."
 		},
 		"workspace": {
+			"title": "Workspace",
+			"description": "Sfoglia gli elementi del workspace e i loro contenuti",
+			"back": "Torna al Workspace",
 			"currentWorkspace": "Area di Lavoro Corrente",
 			"notSet": "Non impostata",
 			"loading": "Caricamento…",
@@ -2254,7 +2257,6 @@
 		"applicationMenu": "Menu applicazione",
 		"chat": "Chat",
 		"home": "Home",
-		"space": "Space",
 		"code": "Codice",
 		"workspace": "Workspace",
 		"newChat": "Nuova Chat",

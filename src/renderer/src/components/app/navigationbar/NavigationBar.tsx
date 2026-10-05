@@ -1,6 +1,6 @@
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import React, { useEffect, useState, type ReactNode } from 'react';
-import { ChevronDown, Code2, Menu, MessageCircle, Moon, PanelsTopLeft, Plus, Search, Sun } from 'lucide-react';
+import { ChevronDown, Code2, Menu, MessageCircle, Moon, Plus, Search, Sun } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { NavigationBarContainer } from './NavigationBarContainer';
@@ -73,7 +73,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 	const isOnboarding = ['/start', '/auth', '/setup', '/config'].includes(location.pathname);
 	const isSettings = location.pathname.startsWith('/settings');
 	const chatButtonLabel = t('navigationBar.chat', 'Chat');
-	const workspaceLabel = t('navigationBar.space', 'Space');
 	const codeLabel = t('navigationBar.code', 'Code');
 	const homeLabel = t('navigationBar.chat', 'Chat');
 	const searchLabel = t('navigationBar.search');
@@ -106,7 +105,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 			<TooltipContent side="bottom">{homeLabel}</TooltipContent>
 		</Tooltip>
 	);
-	const workspaceButton = showWorkspace ? (
+	const navigationButtons = showWorkspace ? (
 		<>
 			{isHome ? (
 			<ButtonGroup role="group" aria-label={homeLabel}>
@@ -191,23 +190,6 @@ export const NavigationBar = React.memo(function NavigationBar({
 				</DropdownMenu>
 			</ButtonGroup>
 			) : chatButtonTooltip}
-			<Tooltip>
-				<TooltipTrigger render={
-					<Button
-						type="button"
-						variant={isWorkspace ? 'secondary' : 'ghost'}
-						size="sm"
-						className="rounded-md text-xs"
-						onClick={() => navigate('/workspace')}
-						aria-label={workspaceLabel}
-						aria-current={isWorkspace ? 'page' : undefined}
-					>
-						<PanelsTopLeft className="size-3.5" strokeWidth={1.8} />
-						<span>{workspaceLabel}</span>
-					</Button>
-				} />
-				<TooltipContent side="bottom">{workspaceLabel}</TooltipContent>
-			</Tooltip>
 			<Tooltip>
 				<TooltipTrigger render={
 					<Button
@@ -326,7 +308,7 @@ export const NavigationBar = React.memo(function NavigationBar({
 				<div
 					className={`z-10 mr-3 ${actionGroupClassName}`}
 				>
-					{workspaceButton}
+					{navigationButtons}
 					<Tooltip>
 						<TooltipTrigger render={
 							<Button

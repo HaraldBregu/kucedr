@@ -373,6 +373,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Library,
 	},
 	{
+		path: '/settings/workspace',
+		labelKey: 'settings.workspace.title',
+		descriptionKey: 'settings.workspace.description',
+		icon: Folder,
+	},
+	{
 		path: '/settings/voice',
 		labelKey: 'settings.tabs.voice',
 		sidebarLabelKey: 'settings.sidebar.voiceConversation',

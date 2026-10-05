@@ -1105,6 +1105,9 @@
 			"saveFailed": "Could not save the permissions."
 		},
 		"workspace": {
+			"title": "Workspace",
+			"description": "Browse your workspace items and their contents",
+			"back": "Back to Workspace",
 			"currentWorkspace": "Current Workspace",
 			"notSet": "Not set",
 			"loading": "Loading…",
@@ -2254,7 +2257,6 @@
 		"applicationMenu": "Application menu",
 		"chat": "Chat",
 		"home": "Home",
-		"space": "Space",
 		"code": "Code",
 		"workspace": "Workspace",
 		"newChat": "New Chat",

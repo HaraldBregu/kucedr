@@ -70,7 +70,7 @@ it('uses distinct icons for Library and Knowledge Base', () => {
 	);
 });
 
-it('places Library directly below Providers in the general sidebar group', () => {
+it('places Library below Providers and Workspace below Library in the general sidebar group', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/settings']}>
 			<Routes>
@@ -89,6 +89,9 @@ it('places Library directly below Providers in the general sidebar group', () =>
 
 	expect(library.closest('[data-slot="split-pane-group"]')).toBe(group);
 	expect(links.indexOf(library)).toBe(links.indexOf(providers) + 1);
+	const workspace = within(group as HTMLElement).getByRole('link', { name: 'settings.workspace.title' });
+	expect(workspace).toHaveAttribute('href', '/settings/workspace');
+	expect(links.indexOf(workspace)).toBe(links.indexOf(library) + 1);
 });
 
 it.each([
