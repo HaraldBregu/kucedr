@@ -4,10 +4,14 @@ import LibraryPage from '../../../src/renderer/src/pages/settings/pages/library/
 
 const mockTranslate = (key: string): string => key;
 const mockNavigate = jest.fn();
+const mockSetSessionId = jest.fn();
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useNavigate: () => mockNavigate,
+}));
+jest.mock('../../../src/renderer/src/contexts/chat-session', () => ({
+	useChatSession: () => ({ setSessionId: mockSetSessionId }),
 }));
 
 jest.mock('react-i18next', () => ({
@@ -36,6 +40,7 @@ const manyFiles = Array.from({ length: 50 }, (_, index) => {
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	localStorage.clear();
 	list.mockResolvedValue([
 		{
 			name: 'notes.txt',
@@ -119,6 +124,43 @@ it('shows an indeterminate select-all checkbox for a partial table selection', a
 	await user.click(checkboxes[0]);
 	expect(checkboxes[1]).toHaveAttribute('data-state', 'checked');
 	expect(checkboxes[2]).toHaveAttribute('data-state', 'checked');
+});
+
+it('creates a folder from the icon-only header', async () => {
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await screen.findByText('notes.txt');
+	await user.click(screen.getByRole('button', { name: 'settings.library.createFolder' }));
+	await user.type(screen.getByRole('textbox', { name: 'settings.library.folderName' }), 'Projects');
+	await user.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'settings.library.createFolder' }));
+	await waitFor(() => expect(createFolder).toHaveBeenCalledWith('Projects'));
+});
+
+it('shows selection actions and downloads or deletes selected files', async () => {
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await screen.findByText('notes.txt');
+	await user.click(screen.getByRole('checkbox', { name: 'settings.library.selectFile' }));
+	const toolbar = screen.getByRole('toolbar', { name: 'settings.library.selectionActions' });
+	await user.click(within(toolbar).getByRole('button', { name: 'settings.library.download' }));
+	await waitFor(() => expect(download).toHaveBeenCalledWith(['documents/notes.txt']));
+	await user.click(within(toolbar).getByRole('button', { name: 'settings.library.deleteSelected' }));
+	await waitFor(() => expect(deleteFile).toHaveBeenCalledWith('documents/notes.txt'));
+	expect(screen.queryByRole('toolbar', { name: 'settings.library.selectionActions' })).not.toBeInTheDocument();
+});
+
+it('starts a new chat with the selected file attached', async () => {
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await screen.findByText('notes.txt');
+	await user.click(screen.getByRole('checkbox', { name: 'settings.library.selectFile' }));
+	await user.click(screen.getByRole('button', { name: 'settings.library.startChat' }));
+	expect(mockSetSessionId).toHaveBeenCalledWith(expect.any(String));
+	expect(mockNavigate).toHaveBeenCalledWith('/home');
+	const drafts = JSON.parse(localStorage.getItem('kucedr-prompt-attachments')!);
+	expect(drafts[mockSetSessionId.mock.calls[0][0]]).toEqual([
+		expect.objectContaining({ name: 'notes.txt', path: '/Users/example/.kucedr/library/documents/notes.txt' }),
+	]);
 });
 
 it('confirms and deletes a library file', async () => {
