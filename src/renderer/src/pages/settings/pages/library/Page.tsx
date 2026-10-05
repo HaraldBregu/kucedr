@@ -15,7 +15,6 @@ import {
 	SettingsPageHeader,
 	SettingsPageShell,
 	SettingsPanel,
-	SettingsSection,
 } from '../../components';
 import { LibraryTable } from './Table';
 import { LibraryCard } from './Card';
@@ -42,7 +41,6 @@ const LibraryPage: React.FC = () => {
 	const [view, setView] = useState<'collections' | 'list'>('list');
 	const [sort, setSort] = useState<LibrarySort>({ key: 'name', direction: 'asc' });
 	const [previewFile, setPreviewFile] = useState<LibraryFile | null>(null);
-	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [uploading, setUploading] = useState(false);
 	const [folderDialogOpen, setFolderDialogOpen] = useState(false);
@@ -96,10 +94,7 @@ const LibraryPage: React.FC = () => {
 		setLoading(true);
 		setErrorMessage('');
 		try {
-			const [nextFiles, nextRoot] = await Promise.all([
-				window.library.list(),
-				window.library.getRoot(),
-			]);
+			const nextFiles = await window.library.list();
 			setFiles(nextFiles);
 			setCurrentFolder((current) =>
 				current &&
@@ -111,7 +106,6 @@ const LibraryPage: React.FC = () => {
 			);
 			setSelectedPaths(new Set());
 			setVisibleCount(FILE_BATCH_SIZE);
-			setRoot(nextRoot);
 		} catch {
 			setErrorMessage(t('settings.library.loadError'));
 		} finally {
@@ -346,7 +340,7 @@ const LibraryPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			<SettingsSection title={t('settings.library.files')} description={root || undefined}>
+			<section className="flex flex-col gap-2">
 				<LibraryPath folder={currentFolder} onNavigate={navigateFolder} />
 				<div
 					role="region"
@@ -441,7 +435,7 @@ const LibraryPage: React.FC = () => {
 						</div>
 					)}
 				</div>
-			</SettingsSection>
+			</section>
 			<LibraryModal
 				file={previewFile}
 				files={orderedFiles.filter((file) => file.kind !== 'folder')}
