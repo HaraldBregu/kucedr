@@ -111,9 +111,9 @@ test('moves library items and uploads files dropped from the desktop', async () 
 		await cdp.send('Input.dispatchDragEvent', { type: 'dragEnter', x, y, data });
 		await cdp.send('Input.dispatchDragEvent', { type: 'dragOver', x, y, data });
 		await cdp.send('Input.dispatchDragEvent', { type: 'drop', x, y, data });
-		await expect.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'draft.md'), 'utf8')).toBe(
-			'draft'
-		);
+		await expect
+			.poll(async () => readFile(path.join(libraryRoot, 'Archive', 'draft.md'), 'utf8'))
+			.toBe('draft');
 		await expect(page.getByRole('row').filter({ hasText: 'draft.md' })).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
