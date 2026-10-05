@@ -72,9 +72,13 @@ it('shows the view controls and file actions in the header with list selected by
 	]);
 	expect(screen.getByRole('table')).toBeInTheDocument();
 	expect(screen.getAllByRole('row')).toHaveLength(2);
-	expect(screen.queryByRole('columnheader', { name: 'settings.library.actions' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('columnheader', { name: 'settings.library.actions' })
+	).not.toBeInTheDocument();
 	expect(document.querySelectorAll('article')).toHaveLength(0);
-	expect(within(header).getByRole('button', { name: 'settings.library.openFolder' })).toHaveClass('bg-secondary');
+	expect(within(header).getByRole('button', { name: 'settings.library.openFolder' })).toHaveClass(
+		'bg-secondary'
+	);
 	const checkbox = screen.getByRole('checkbox', { name: 'settings.library.selectFile' });
 	expect(checkbox).toHaveClass('opacity-0', 'group-hover:opacity-100');
 	await userEvent.setup().click(checkbox);
@@ -247,15 +251,37 @@ it('opens the native context menu from a list row', async () => {
 
 it('sorts table columns in both directions', async () => {
 	list.mockResolvedValue([
-		{ ...manyFiles[0], name: 'charlie.png', relativePath: 'z/charlie.png', size: 20, modifiedAt: '2026-09-29T10:00:00.000Z' },
-		{ ...manyFiles[1], name: 'alpha.png', relativePath: 'a/alpha.png', size: 30, modifiedAt: '2026-09-27T10:00:00.000Z' },
-		{ ...manyFiles[2], name: 'bravo.png', relativePath: 'm/bravo.png', size: 10, modifiedAt: '2026-09-28T10:00:00.000Z' },
+		{
+			...manyFiles[0],
+			name: 'charlie.png',
+			relativePath: 'z/charlie.png',
+			size: 20,
+			modifiedAt: '2026-09-29T10:00:00.000Z',
+		},
+		{
+			...manyFiles[1],
+			name: 'alpha.png',
+			relativePath: 'a/alpha.png',
+			size: 30,
+			modifiedAt: '2026-09-27T10:00:00.000Z',
+		},
+		{
+			...manyFiles[2],
+			name: 'bravo.png',
+			relativePath: 'm/bravo.png',
+			size: 10,
+			modifiedAt: '2026-09-28T10:00:00.000Z',
+		},
 	]);
 	const user = userEvent.setup();
 	render(<LibraryPage />);
 	await screen.findAllByRole('button', { name: 'settings.library.previewFile' });
 
-	const names = () => screen.getAllByRole('row').slice(1).map((row) => row.querySelectorAll('td')[1]?.textContent);
+	const names = () =>
+		screen
+			.getAllByRole('row')
+			.slice(1)
+			.map((row) => row.querySelectorAll('td')[1]?.textContent);
 	expect(names()).toEqual(['alpha.png', 'bravo.png', 'charlie.png']);
 	const sizeHeader = screen.getByRole('columnheader', { name: 'settings.library.size' });
 	await user.click(within(sizeHeader).getByRole('button'));

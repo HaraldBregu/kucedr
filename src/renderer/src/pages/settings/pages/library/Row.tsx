@@ -46,7 +46,9 @@ export function LibraryRow({
 					onClick={() => onPreview(file)}
 				>
 					<LibraryPreview file={file} compact />
-					<span className="min-w-0 truncate font-medium" title={file.name}>{file.name}</span>
+					<span className="min-w-0 truncate font-medium" title={file.name}>
+						{file.name}
+					</span>
 				</button>
 			</TableCell>
 			<TableCell className="max-w-0 truncate text-muted-foreground" title={file.relativePath}>

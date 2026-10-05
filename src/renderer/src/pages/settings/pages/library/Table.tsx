@@ -45,7 +45,9 @@ export function LibraryTable({
 							<TableHead
 								key={key}
 								className={className}
-								aria-sort={active ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
+								aria-sort={
+									active ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'
+								}
 							>
 								<Button variant="ghost" size="sm" className="-ml-2" onClick={() => onSort(key)}>
 									{label}
