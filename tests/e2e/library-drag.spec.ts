@@ -63,7 +63,7 @@ test('moves library items and uploads files dropped from the desktop', async () 
 		await expect(page.getByRole('article', { name: 'Projects' })).toHaveCount(0);
 		await page.getByRole('button', { name: 'Open Archive' }).first().click();
 		await page.getByRole('button', { name: 'Open Projects' }).first().click();
-		await expect(page.getByText('notes.txt', { exact: true }).first()).toBeVisible();
+		await expect(page.getByRole('article', { name: 'notes.txt' })).toBeVisible();
 		await page
 			.getByRole('article', { name: 'notes.txt' })
 			.dragTo(

@@ -588,6 +588,7 @@ it('shows media previews in both library views', async () => {
 		'src',
 		'local-resource://file/library/photo.png'
 	);
+	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-24', 'object-cover');
 	expect(
 		screen.queryByRole('button', { name: 'settings.library.previewFile' })
 	).not.toBeInTheDocument();
