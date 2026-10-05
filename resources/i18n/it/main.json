@@ -1742,6 +1742,7 @@
 			"folderName": "Nome cartella",
 			"folderDescription": "Crea una cartella nella libreria.",
 			"createFolderError": "Impossibile creare la cartella.",
+			"moveError": "Impossibile spostare l'elemento nella cartella. Controlla che il nome non esista già e che la destinazione sia valida.",
 			"selectedCount_one": "{{count}} selezionato",
 			"selectedCount_other": "{{count}} selezionati",
 			"selectionActions": "Azioni sui file selezionati",

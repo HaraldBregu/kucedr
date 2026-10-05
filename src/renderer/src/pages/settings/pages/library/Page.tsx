@@ -23,6 +23,7 @@ import { LibraryModal } from './Modal';
 import { LibraryHeaderActions } from './Header';
 import { LibraryFolderDialog } from './FolderDialog';
 import { LibrarySelection } from './Selection';
+import { LIBRARY_DRAG_TYPE } from './drag';
 import { sortLibraryFiles, type LibrarySort, type LibrarySortKey } from './sort';
 
 const FILE_BATCH_SIZE = 48;
@@ -43,6 +44,7 @@ const LibraryPage: React.FC = () => {
 	const [uploading, setUploading] = useState(false);
 	const [folderDialogOpen, setFolderDialogOpen] = useState(false);
 	const [selectionBusy, setSelectionBusy] = useState(false);
+	const [moving, setMoving] = useState(false);
 	const [dragging, setDragging] = useState(false);
 	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
@@ -198,9 +200,25 @@ const LibraryPage: React.FC = () => {
 		}
 	}, [loadFiles, selectedFiles, selectedPaths, t]);
 
+	const handleMove = useCallback(async (paths: string[], folder: string): Promise<void> => {
+		if (moving) return;
+		setMoving(true);
+		setErrorMessage('');
+		try {
+			await window.library.move(paths, folder);
+			await loadFiles();
+		} catch {
+			await loadFiles();
+			setErrorMessage(t('settings.library.moveError'));
+		} finally {
+			setMoving(false);
+		}
+	}, [loadFiles, moving, t]);
+
 	const handleDrop = useCallback(
 		async (event: DragEvent<HTMLDivElement>): Promise<void> => {
 			event.preventDefault();
+			if (event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
 			setDragging(false);
 			const paths = Array.from(event.dataTransfer.files)
 				.map((file) => window.app.getPathForFile(file))
@@ -306,9 +324,11 @@ const LibraryPage: React.FC = () => {
 						dragging && 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background'
 					)}
 					onDragEnter={(event) => {
-						if (event.dataTransfer.types.includes('Files')) setDragging(true);
+						if (event.dataTransfer.types.includes('Files') && !event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) setDragging(true);
 					}}
 					onDragOver={(event) => {
+						if (event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
+						if (!event.dataTransfer.types.includes('Files')) return;
 						event.preventDefault();
 						event.dataTransfer.dropEffect = 'copy';
 					}}
@@ -343,8 +363,10 @@ const LibraryPage: React.FC = () => {
 								<LibraryCard
 									key={file.relativePath}
 									file={file}
-									disabled={deletingPath === file.relativePath || uploading}
+									selectedPaths={selectedPaths}
+									disabled={deletingPath === file.relativePath || uploading || moving}
 									onDelete={(entry) => void handleDelete(entry)}
+									onMove={(paths, folder) => void handleMove(paths, folder)}
 									onContextMenu={handleContextMenu}
 								/>
 							))}
@@ -357,6 +379,7 @@ const LibraryPage: React.FC = () => {
 							selectedPaths={selectedPaths}
 							onSelect={handleSelect}
 							onSelectAll={handleSelectAll}
+							onMove={(paths, folder) => void handleMove(paths, folder)}
 							onContextMenu={handleContextMenu}
 						/>
 					)}

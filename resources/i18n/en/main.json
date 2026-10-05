@@ -1742,6 +1742,7 @@
 			"folderName": "Folder name",
 			"folderDescription": "Create a folder in the library.",
 			"createFolderError": "Unable to create the folder.",
+			"moveError": "Unable to move the item into the folder. Check for an existing name or an invalid destination.",
 			"selectedCount_one": "{{count}} selected",
 			"selectedCount_other": "{{count}} selected",
 			"selectionActions": "Selected files actions",
