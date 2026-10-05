@@ -199,12 +199,19 @@ it('shows only the opened folder contents and navigates back to the library root
 it('moves a file one level up by dropping it on the parent breadcrumb', async () => {
 	list.mockResolvedValue([
 		{
-			kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0,
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
 			modifiedAt: '2026-09-29',
 		},
 		{
-			name: 'notes.txt', path: '/library/Projects/notes.txt', relativePath: 'Projects/notes.txt',
-			size: 5, modifiedAt: '2026-09-29',
+			name: 'notes.txt',
+			path: '/library/Projects/notes.txt',
+			relativePath: 'Projects/notes.txt',
+			size: 5,
+			modifiedAt: '2026-09-29',
 		},
 	]);
 	const user = userEvent.setup();
@@ -233,12 +240,19 @@ it('moves a file one level up by dropping it on the parent breadcrumb', async ()
 it('moves selected files to the parent folder from the selection menu', async () => {
 	list.mockResolvedValue([
 		{
-			kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0,
+			kind: 'folder',
+			name: 'Projects',
+			path: '/library/Projects',
+			relativePath: 'Projects',
+			size: 0,
 			modifiedAt: '2026-09-29',
 		},
 		{
-			name: 'notes.txt', path: '/library/Projects/notes.txt', relativePath: 'Projects/notes.txt',
-			size: 5, modifiedAt: '2026-09-29',
+			name: 'notes.txt',
+			path: '/library/Projects/notes.txt',
+			relativePath: 'Projects/notes.txt',
+			size: 5,
+			modifiedAt: '2026-09-29',
 		},
 	]);
 	const user = userEvent.setup();

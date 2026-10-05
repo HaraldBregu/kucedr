@@ -89,9 +89,9 @@ test('moves library files and folders by dropping them onto folders', async () =
 		await page.getByRole('row').filter({ hasText: 'notes.txt' }).getByRole('checkbox').click();
 		await page.getByRole('button', { name: 'More actions' }).click();
 		await page.getByRole('menuitem', { name: 'Move to parent folder' }).click();
-		await expect.poll(async () => readFile(path.join(libraryRoot, 'notes.txt'), 'utf8')).toBe(
-			'notes'
-		);
+		await expect
+			.poll(async () => readFile(path.join(libraryRoot, 'notes.txt'), 'utf8'))
+			.toBe('notes');
 		await expect(page.getByRole('row').filter({ hasText: 'notes.txt' })).toHaveCount(0);
 		await page
 			.getByRole('navigation', { name: 'Library folders' })

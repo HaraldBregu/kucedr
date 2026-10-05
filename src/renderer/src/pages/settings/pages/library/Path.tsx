@@ -59,7 +59,10 @@ export function LibraryPath({
 			<Button
 				variant="ghost"
 				size="sm"
-				className={cn('shrink-0', folder && !parent && isDropTarget && 'bg-primary/10 ring-2 ring-primary/60')}
+				className={cn(
+					'shrink-0',
+					folder && !parent && isDropTarget && 'bg-primary/10 ring-2 ring-primary/60'
+				)}
 				aria-current={!folder ? 'page' : undefined}
 				onClick={() => onNavigate('')}
 				{...(folder && !parent ? parentDrop : {})}
@@ -74,7 +77,10 @@ export function LibraryPath({
 						<Button
 							variant="ghost"
 							size="sm"
-							className={cn('shrink-0', path === parent && isDropTarget && 'bg-primary/10 ring-2 ring-primary/60')}
+							className={cn(
+								'shrink-0',
+								path === parent && isDropTarget && 'bg-primary/10 ring-2 ring-primary/60'
+							)}
 							aria-current={index === parts.length - 1 ? 'page' : undefined}
 							onClick={() => onNavigate(path)}
 							{...(path === parent ? parentDrop : {})}

@@ -37,9 +37,7 @@ it('moves a nested file one level up, including into the library root', async ()
 	await mkdir(path.join(root, 'Projects', 'Nested'), { recursive: true });
 	await writeFile(path.join(root, 'Projects', 'Nested', 'notes.txt'), 'notes');
 	await moveLibraryEntries(['Projects/Nested/notes.txt'], 'Projects', root);
-	await expect(readFile(path.join(root, 'Projects', 'notes.txt'), 'utf8')).resolves.toBe(
-		'notes'
-	);
+	await expect(readFile(path.join(root, 'Projects', 'notes.txt'), 'utf8')).resolves.toBe('notes');
 	await expect(access(path.join(root, 'Projects', 'Nested', 'notes.txt'))).rejects.toMatchObject({
 		code: 'ENOENT',
 	});
