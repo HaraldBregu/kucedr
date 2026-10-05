@@ -26,9 +26,14 @@ it('uploads into the open folder and returns a path relative to the library root
 	const files = await addLibraryFiles([source], 'Projects', libraryRoot);
 
 	expect(files).toEqual([
-		expect.objectContaining({ name: 'notes.txt', relativePath: path.join('Projects', 'notes.txt') }),
+		expect.objectContaining({
+			name: 'notes.txt',
+			relativePath: path.join('Projects', 'notes.txt'),
+		}),
 	]);
-	await expect(readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8')).resolves.toBe('notes');
+	await expect(readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8')).resolves.toBe(
+		'notes'
+	);
 });
 
 it('rejects upload destinations outside the library', async () => {

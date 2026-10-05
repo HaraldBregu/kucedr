@@ -4,7 +4,11 @@ import { libraryLocation } from '../shared/library_location';
 import { addLibraryFile } from './add';
 import { resolveLibraryFolder } from './folder';
 
-export async function addLibraryFiles(paths: readonly string[], destinationFolder = '', root = libraryLocation()): Promise<LibraryFile[]> {
+export async function addLibraryFiles(
+	paths: readonly string[],
+	destinationFolder = '',
+	root = libraryLocation()
+): Promise<LibraryFile[]> {
 	const destination = await resolveLibraryFolder(destinationFolder, root);
 	const resolvedRoot = await resolveLibraryFolder('', root);
 	const files: LibraryFile[] = [];
