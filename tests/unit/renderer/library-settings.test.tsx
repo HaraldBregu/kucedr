@@ -218,7 +218,7 @@ it('shows media previews in both library views', async () => {
 	).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
-	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-10', 'object-cover');
+	expect(screen.getByRole('img', { name: 'photo.png' })).toHaveClass('size-8', 'object-cover');
 	const song = within(screen.getByRole('row', { name: /song.mp3/ })).getByRole('button', {
 		name: 'settings.library.previewFile',
 	});

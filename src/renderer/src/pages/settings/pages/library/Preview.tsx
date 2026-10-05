@@ -16,7 +16,7 @@ export function LibraryPreview({
 	const frame = modal
 		? 'h-[min(70vh,700px)] w-full'
 		: compact
-			? 'size-10 shrink-0'
+			? 'size-8 shrink-0'
 			: 'aspect-[4/3] w-full';
 
 	if (/\.(png|jpe?g|gif|webp|bmp|svg|ico|avif)$/i.test(file.name)) {
@@ -47,7 +47,7 @@ export function LibraryPreview({
 					className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}
 				>
 					{React.createElement(libraryFileIcon(file.name), {
-						className: compact ? 'size-5' : 'size-12',
+						className: compact ? 'size-4' : 'size-12',
 					})}
 				</div>
 			);
@@ -82,7 +82,7 @@ export function LibraryPreview({
 			className={`flex items-center justify-center rounded-md bg-muted/40 text-muted-foreground ${frame}`}
 		>
 			{React.createElement(libraryFileIcon(file.name), {
-				className: compact ? 'size-5' : 'size-12',
+				className: compact ? 'size-4' : 'size-12',
 			})}
 		</div>
 	);

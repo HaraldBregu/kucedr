@@ -30,7 +30,7 @@ export function LibraryRow({
 				onContextMenu(file);
 			}}
 		>
-			<TableCell className="px-3">
+			<TableCell className="px-3 py-2">
 				<Checkbox
 					checked={selected}
 					onCheckedChange={(checked) => onSelect(checked === true)}
@@ -38,7 +38,7 @@ export function LibraryRow({
 					className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
 				/>
 			</TableCell>
-			<TableCell className={selected ? 'rounded-l-xl bg-muted/70' : undefined}>
+			<TableCell className={selected ? 'rounded-l-xl bg-muted/70 py-2' : 'py-2'}>
 				<button
 					type="button"
 					className="flex w-full min-w-0 items-center gap-3 text-left focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -54,8 +54,8 @@ export function LibraryRow({
 			<TableCell
 				className={
 					selected
-						? 'whitespace-nowrap bg-muted/70 text-muted-foreground'
-						: 'whitespace-nowrap text-muted-foreground'
+						? 'whitespace-nowrap bg-muted/70 py-2 text-muted-foreground'
+						: 'whitespace-nowrap py-2 text-muted-foreground'
 				}
 			>
 				{formatLibraryFileSize(file.size)}
@@ -63,8 +63,8 @@ export function LibraryRow({
 			<TableCell
 				className={
 					selected
-						? 'rounded-r-xl whitespace-nowrap bg-muted/70 text-muted-foreground'
-						: 'whitespace-nowrap text-muted-foreground'
+						? 'rounded-r-xl whitespace-nowrap bg-muted/70 py-2 text-muted-foreground'
+						: 'whitespace-nowrap py-2 text-muted-foreground'
 				}
 			>
 				<time dateTime={file.modifiedAt}>{new Date(file.modifiedAt).toLocaleDateString()}</time>
