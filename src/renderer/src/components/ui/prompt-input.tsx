@@ -513,7 +513,7 @@ function PromptInput({
 											{detached ? (
 												<PromptInputField
 													header={header}
-													className="h-[104px]"
+													className={cn('h-[104px]', inputClassName)}
 													controls={
 														<PromptInputControls
 														leadingAction={isDictationMode ? undefined : leadingAction}
@@ -539,7 +539,6 @@ function PromptInput({
 													/>
 											}
 												expanded={!detached && isPromptExpanded}
-													className={inputClassName}
 												>
 													{children}
 												</PromptInputField>
