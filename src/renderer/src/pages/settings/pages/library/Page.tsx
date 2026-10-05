@@ -243,10 +243,13 @@ const LibraryPage: React.FC = () => {
 			event.preventDefault();
 			if (event.dataTransfer.types.includes(LIBRARY_DRAG_TYPE)) return;
 			setDragging(false);
-			const paths = Array.from(event.dataTransfer.files)
-				.map((file) => window.app.getPathForFile(file))
-				.filter(Boolean);
-			if (paths.length === 0) return;
+			const paths = Array.from(event.dataTransfer.files).map((file) =>
+				window.app.getPathForFile(file)
+			);
+			if (paths.length === 0 || paths.some((path) => !path)) {
+				setErrorMessage(t('settings.library.uploadError'));
+				return;
+			}
 
 			setUploading(true);
 			setErrorMessage('');
@@ -340,17 +343,11 @@ const LibraryPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			<section className="flex flex-col gap-2">
-				<LibraryPath
-					folder={currentFolder}
-					onNavigate={navigateFolder}
-					onMove={(paths, folder) => void handleMove(paths, folder)}
-				/>
-				<div
+			<section
 					role="region"
 					aria-label={t('settings.library.dropZone')}
 					className={cn(
-						'relative rounded-xl transition-shadow',
+						'flex flex-col gap-2 rounded-xl transition-shadow',
 						dragging && 'ring-2 ring-primary/60 ring-offset-2 ring-offset-background'
 					)}
 					onDragEnter={(event) => {
@@ -373,6 +370,12 @@ const LibraryPage: React.FC = () => {
 					}}
 					onDrop={(event) => void handleDrop(event)}
 				>
+				<LibraryPath
+					folder={currentFolder}
+					onNavigate={navigateFolder}
+					onMove={(paths, folder) => void handleMove(paths, folder)}
+				/>
+				<div className="relative rounded-xl">
 					{dragging && (
 						<div className="flex items-center justify-center gap-2 bg-muted/60 px-4 py-3 text-xs font-medium text-foreground">
 							<Upload className="size-3.5" />
