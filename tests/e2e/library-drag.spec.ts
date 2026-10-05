@@ -31,7 +31,12 @@ test('moves library items and uploads files dropped from the desktop', async () 
 		await page
 			.getByRole('row')
 			.filter({ hasText: 'notes.txt' })
-			.dragTo(page.getByRole('row').filter({ hasText: 'Projects' }));
+			.dragTo(
+				page
+					.getByRole('row')
+					.filter({ hasText: 'Projects' })
+					.getByRole('button', { name: 'Open Projects' })
+			);
 		await expect
 			.poll(async () =>
 				readFile(path.join(libraryRoot, 'Projects', 'notes.txt'), 'utf8').catch(() => '')
