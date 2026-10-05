@@ -26,6 +26,7 @@ const select = jest.fn();
 const deleteFile = jest.fn();
 const createFolder = jest.fn();
 const download = jest.fn();
+const move = jest.fn();
 const showContextMenu = jest.fn();
 const manyFiles = Array.from({ length: 50 }, (_, index) => {
 	const name = `file-${String(index).padStart(3, '0')}.png`;
@@ -57,10 +58,11 @@ beforeEach(() => {
 	deleteFile.mockResolvedValue(undefined);
 	createFolder.mockResolvedValue(undefined);
 	download.mockResolvedValue(true);
+	move.mockResolvedValue(undefined);
 	showContextMenu.mockResolvedValue(null);
 	Object.defineProperty(window, 'library', {
 		configurable: true,
-		value: { list, getRoot, openRoot, add, select, delete: deleteFile, createFolder, download },
+		value: { list, getRoot, openRoot, add, select, delete: deleteFile, createFolder, download, move },
 	});
 	Object.defineProperty(window, 'app', {
 		configurable: true,
@@ -127,6 +129,57 @@ it('shows an indeterminate select-all checkbox for a partial table selection', a
 	await user.click(checkboxes[0]);
 	expect(checkboxes[1]).toHaveAttribute('data-state', 'checked');
 	expect(checkboxes[2]).toHaveAttribute('data-state', 'checked');
+});
+
+it('drags selected files onto a folder in the list without uploading them again', async () => {
+	list.mockResolvedValue([
+		{ kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0, modifiedAt: '2026-09-29' },
+		manyFiles[0],
+		manyFiles[1],
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await screen.findByText('Projects');
+	await user.click(screen.getByRole('checkbox', { name: 'settings.library.select' }));
+	const transferData = new Map<string, string>();
+	const dataTransfer = {
+		types: ['application/x-kucedr-library-items'],
+		files: [],
+		setData: (type: string, value: string) => transferData.set(type, value),
+		getData: (type: string) => transferData.get(type) ?? '',
+		effectAllowed: 'none',
+		dropEffect: 'none',
+	};
+	fireEvent.dragStart(screen.getByText('file-000.png').closest('tr')!, { dataTransfer });
+	const folderRow = screen.getByText('Projects').closest('tr')!;
+	fireEvent.dragOver(folderRow, { dataTransfer });
+	expect(folderRow).toHaveAttribute('data-drop-target', 'true');
+	fireEvent.drop(folderRow, { dataTransfer });
+	await waitFor(() => expect(move).toHaveBeenCalledWith(['file-000.png', 'file-001.png'], 'Projects'));
+	expect(add).not.toHaveBeenCalled();
+});
+
+it('drags one folder into another in the collections view', async () => {
+	list.mockResolvedValue([
+		{ kind: 'folder', name: 'Projects', path: '/library/Projects', relativePath: 'Projects', size: 0, modifiedAt: '2026-09-29' },
+		{ kind: 'folder', name: 'Archive', path: '/library/Archive', relativePath: 'Archive', size: 0, modifiedAt: '2026-09-29' },
+	]);
+	const user = userEvent.setup();
+	render(<LibraryPage />);
+	await screen.findByText('Projects');
+	await user.click(screen.getByRole('button', { name: 'settings.library.collections' }));
+	const transferData = new Map<string, string>();
+	const dataTransfer = {
+		types: ['application/x-kucedr-library-items'],
+		files: [],
+		setData: (type: string, value: string) => transferData.set(type, value),
+		getData: (type: string) => transferData.get(type) ?? '',
+		effectAllowed: 'none',
+		dropEffect: 'none',
+	};
+	fireEvent.dragStart(screen.getByText('Projects').closest('article')!, { dataTransfer });
+	fireEvent.drop(screen.getByText('Archive').closest('article')!, { dataTransfer });
+	await waitFor(() => expect(move).toHaveBeenCalledWith(['Projects'], 'Archive'));
 });
 
 it('creates a folder from the icon-only header', async () => {
