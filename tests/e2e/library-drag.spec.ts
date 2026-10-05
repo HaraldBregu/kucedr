@@ -115,6 +115,8 @@ test('moves library items and uploads files dropped from the desktop', async () 
 			)
 			.toBe('draft');
 		await expect(page.getByRole('row').filter({ hasText: 'draft.md' })).toBeVisible();
+		await page.getByRole('button', { name: 'Collections' }).click();
+		await expect(page.getByRole('article', { name: 'draft.md' })).toBeVisible();
 		await page.screenshot({ path: test.info().outputPath('library-folders.png'), fullPage: true });
 	} finally {
 		await closeApp(app, userDataDir);
