@@ -16,6 +16,7 @@ export function formatIdentity(identity: IdentitySettings): string {
 		.trim();
 	return [
 		`- **Name:** ${identity.name}`,
+		...(identity.title ? [`- **Title:** ${identity.title}`] : []),
 		`- **Role:** ${identity.role}`,
 		...(identity.avatar ? [`- **Avatar:** ${identity.avatar}`] : []),
 		...(identity.vibe ? [`- **Vibe:** ${identity.vibe}`] : []),

@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const identitySchema = z.object({
 	name: z.string().trim().min(1),
+	title: z.string().trim().optional(),
 	role: z.string().trim().min(1),
 	avatar: z.string().trim().optional(),
 	vibe: z.string().trim().optional(),
