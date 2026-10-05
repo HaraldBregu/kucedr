@@ -1723,6 +1723,10 @@
 		"library": {
 			"description": "Browse every file stored in Kucedr's local library.",
 			"files": "Files",
+			"folderNavigation": "Library folders",
+			"openFolderNamed": "Open {{name}}",
+			"emptyFolder": "This folder is empty",
+			"emptyFolderDescription": "Move files or folders here to organize your library.",
 			"view": "Library view",
 			"collections": "Collections",
 			"list": "List",

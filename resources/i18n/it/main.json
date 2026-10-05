@@ -1723,6 +1723,10 @@
 		"library": {
 			"description": "Sfoglia tutti i file archiviati nella libreria locale di Kucedr.",
 			"files": "File",
+			"folderNavigation": "Cartelle della libreria",
+			"openFolderNamed": "Apri {{name}}",
+			"emptyFolder": "Questa cartella è vuota",
+			"emptyFolderDescription": "Sposta qui file o cartelle per organizzare la libreria.",
 			"view": "Vista libreria",
 			"collections": "Raccolte",
 			"list": "Elenco",

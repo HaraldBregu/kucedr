@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from 'react';
-import { AlertTriangle, Library, Upload } from 'lucide-react';
+import { AlertTriangle, Folder, Library, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import type { LibraryFile } from '../../../../../../shared/library_types';
@@ -23,6 +23,8 @@ import { LibraryModal } from './Modal';
 import { LibraryHeaderActions } from './Header';
 import { LibraryFolderDialog } from './FolderDialog';
 import { LibrarySelection } from './Selection';
+import { LibraryPath } from './Path';
+import { libraryParent } from './parent';
 import { LIBRARY_DRAG_TYPE } from './drag';
 import { sortLibraryFiles, type LibrarySort, type LibrarySortKey } from './sort';
 
@@ -33,6 +35,7 @@ const LibraryPage: React.FC = () => {
 	const navigate = useNavigate();
 	const { setSessionId } = useChatSession();
 	const [files, setFiles] = useState<LibraryFile[]>([]);
+	const [currentFolder, setCurrentFolder] = useState('');
 	const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
 	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -48,7 +51,15 @@ const LibraryPage: React.FC = () => {
 	const [dragging, setDragging] = useState(false);
 	const [deletingPath, setDeletingPath] = useState<string | null>(null);
 	const [errorMessage, setErrorMessage] = useState('');
-	const orderedFiles = useMemo(() => sortLibraryFiles(files, sort), [files, sort]);
+	const currentFiles = useMemo(() => files.filter((file) => libraryParent(file.relativePath) === currentFolder), [files, currentFolder]);
+	const orderedFiles = useMemo(() => sortLibraryFiles(currentFiles, sort), [currentFiles, sort]);
+	const navigateFolder = useCallback((folder: string): void => {
+		setCurrentFolder(folder.replaceAll('\\', '/'));
+		setSelectedPaths(new Set());
+		setVisibleCount(FILE_BATCH_SIZE);
+		setPreviewFile(null);
+		setErrorMessage('');
+	}, []);
 	const selectedFiles = useMemo(
 		() => files.filter((file) => file.kind !== 'folder' && selectedPaths.has(file.relativePath)),
 		[files, selectedPaths]
@@ -87,6 +98,7 @@ const LibraryPage: React.FC = () => {
 				window.library.getRoot(),
 			]);
 			setFiles(nextFiles);
+			setCurrentFolder((current) => current && !nextFiles.some((file) => file.kind === 'folder' && file.relativePath.replaceAll('\\', '/') === current) ? '' : current);
 			setSelectedPaths(new Set());
 			setVisibleCount(FILE_BATCH_SIZE);
 			setRoot(nextRoot);
@@ -103,19 +115,19 @@ const LibraryPage: React.FC = () => {
 
 	useEffect(() => {
 		const target = loadMoreRef.current;
-		if (!target || visibleCount >= files.length || typeof IntersectionObserver === 'undefined')
+		if (!target || visibleCount >= currentFiles.length || typeof IntersectionObserver === 'undefined')
 			return;
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				if (entry.isIntersecting) {
-					setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length));
+					setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, currentFiles.length));
 				}
 			},
 			{ rootMargin: '300px' }
 		);
 		observer.observe(target);
 		return () => observer.disconnect();
-	}, [files.length, visibleCount, loading]);
+	}, [currentFiles.length, visibleCount, loading]);
 
 	const handleOpenFolder = useCallback(async (): Promise<void> => {
 		setErrorMessage('');
@@ -284,12 +296,15 @@ const LibraryPage: React.FC = () => {
 				)
 				.then((action) => {
 					if (action === 'preview') setPreviewFile(file);
-					else if (action === 'open-folder') void handleOpenFolder();
+					else if (action === 'open-folder') {
+						if (file.kind === 'folder') navigateFolder(file.relativePath);
+						else void handleOpenFolder();
+					}
 					else if (action === 'delete') void handleDelete(file);
 				})
 				.catch(() => setErrorMessage(t('settings.library.contextMenuError')));
 		},
-		[deletingPath, handleDelete, handleOpenFolder, t, uploading]
+		[deletingPath, handleDelete, handleOpenFolder, navigateFolder, t, uploading]
 	);
 
 	return (
@@ -319,6 +334,7 @@ const LibraryPage: React.FC = () => {
 			)}
 
 			<SettingsSection title={t('settings.library.files')} description={root || undefined}>
+				<LibraryPath folder={currentFolder} onNavigate={navigateFolder} />
 				<div
 					role="region"
 					aria-label={t('settings.library.dropZone')}
@@ -356,23 +372,24 @@ const LibraryPage: React.FC = () => {
 						<SettingsPanel>
 							<SettingsLoadingRows rows={3} />
 						</SettingsPanel>
-					) : files.length === 0 ? (
+					) : currentFiles.length === 0 ? (
 						<SettingsPanel>
 							<SettingsEmptyState
-								icon={Library}
-								title={t('library.empty')}
-								description={t('settings.library.emptyDescription')}
+								icon={currentFolder ? Folder : Library}
+								title={currentFolder ? t('settings.library.emptyFolder') : t('library.empty')}
+								description={currentFolder ? t('settings.library.emptyFolderDescription') : t('settings.library.emptyDescription')}
 							/>
 						</SettingsPanel>
 					) : view === 'collections' ? (
 						<div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,220px),1fr))] gap-4">
-							{files.slice(0, visibleCount).map((file) => (
+							{orderedFiles.slice(0, visibleCount).map((file) => (
 								<LibraryCard
 									key={file.relativePath}
 									file={file}
 									selectedPaths={selectedPaths}
 									disabled={deletingPath === file.relativePath || uploading || moving}
 									onDelete={(entry) => void handleDelete(entry)}
+									onOpenFolder={(entry) => navigateFolder(entry.relativePath)}
 									onMove={(paths, folder) => void handleMove(paths, folder)}
 									onContextMenu={handleContextMenu}
 								/>
@@ -386,17 +403,18 @@ const LibraryPage: React.FC = () => {
 							selectedPaths={selectedPaths}
 							onSelect={handleSelect}
 							onSelectAll={handleSelectAll}
+							onOpenFolder={(entry) => navigateFolder(entry.relativePath)}
 							onMove={(paths, folder) => void handleMove(paths, folder)}
 							onContextMenu={handleContextMenu}
 						/>
 					)}
-					{visibleCount < files.length && (
+					{visibleCount < currentFiles.length && (
 						<div ref={loadMoreRef} className="flex justify-center py-4">
 							<Button
 								variant="outline"
 								size="sm"
 								onClick={() =>
-									setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, files.length))
+									setVisibleCount((current) => Math.min(current + FILE_BATCH_SIZE, currentFiles.length))
 								}
 							>
 								{t('settings.library.loadMore')}
@@ -407,7 +425,7 @@ const LibraryPage: React.FC = () => {
 			</SettingsSection>
 			<LibraryModal
 				file={previewFile}
-				files={(view === 'list' ? orderedFiles : files).filter((file) => file.kind !== 'folder')}
+				files={orderedFiles.filter((file) => file.kind !== 'folder')}
 				onClose={() => setPreviewFile(null)}
 				onNavigate={setPreviewFile}
 			/>
