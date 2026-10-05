@@ -10,13 +10,11 @@ export function LibraryRow({
 	file,
 	selected,
 	onSelect,
-	onPreview,
 	onContextMenu,
 }: {
 	readonly file: LibraryFile;
 	readonly selected: boolean;
 	readonly onSelect: (selected: boolean) => void;
-	readonly onPreview: (file: LibraryFile) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
@@ -31,25 +29,20 @@ export function LibraryRow({
 			}}
 		>
 			<TableCell className="px-3 py-2">
-				<Checkbox
+				{file.kind !== 'folder' && <Checkbox
 					checked={selected}
 					onCheckedChange={(checked) => onSelect(checked === true)}
 					aria-label={t('settings.library.selectFile', { name: file.name })}
 					className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white"
-				/>
+				/>}
 			</TableCell>
 			<TableCell className={selected ? 'rounded-l-xl bg-muted/70 py-2' : 'py-2'}>
-				<button
-					type="button"
-					className="flex w-full min-w-0 items-center gap-3 text-left focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-					aria-label={t('settings.library.previewFile', { name: file.name })}
-					onClick={() => onPreview(file)}
-				>
+				<div className="flex w-full min-w-0 items-center gap-3 text-left">
 					<LibraryPreview file={file} compact />
 					<span className="min-w-0 truncate font-medium" title={file.name}>
 						{file.name}
 					</span>
-				</button>
+				</div>
 			</TableCell>
 			<TableCell
 				className={
@@ -58,7 +51,7 @@ export function LibraryRow({
 						: 'whitespace-nowrap py-2 text-muted-foreground'
 				}
 			>
-				{formatLibraryFileSize(file.size)}
+				{file.kind === 'folder' ? '—' : formatLibraryFileSize(file.size)}
 			</TableCell>
 			<TableCell
 				className={

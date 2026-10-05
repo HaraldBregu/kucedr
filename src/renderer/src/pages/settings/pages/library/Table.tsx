@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { LibraryFile } from '../../../../../../shared/library_types';
@@ -12,18 +12,22 @@ export function LibraryTable({
 	files,
 	sort,
 	onSort,
-	onPreview,
+	selectedPaths,
+	onSelect,
+	onSelectAll,
 	onContextMenu,
 }: {
 	readonly files: LibraryFile[];
 	readonly sort: LibrarySort;
 	readonly onSort: (key: LibrarySortKey) => void;
-	readonly onPreview: (file: LibraryFile) => void;
+	readonly selectedPaths: ReadonlySet<string>;
+	readonly onSelect: (path: string, selected: boolean) => void;
+	readonly onSelectAll: (files: LibraryFile[], selected: boolean) => void;
 	readonly onContextMenu: (file: LibraryFile) => void;
 }): React.JSX.Element {
 	const { t } = useTranslation();
-	const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
-	const selectedCount = files.filter((file) => selectedPaths.has(file.relativePath)).length;
+	const selectableFiles = files.filter((file) => file.kind !== 'folder');
+	const selectedCount = selectableFiles.filter((file) => selectedPaths.has(file.relativePath)).length;
 	const columns: { key: LibrarySortKey; label: string; className?: string }[] = [
 		{ key: 'name', label: t('settings.library.name') },
 		{ key: 'size', label: t('settings.library.size'), className: 'w-28' },
@@ -37,18 +41,11 @@ export function LibraryTable({
 					<TableHead className="w-12 px-3">
 						<Checkbox
 							checked={
-								selectedCount === files.length ? true : selectedCount > 0 ? 'indeterminate' : false
+								selectableFiles.length > 0 && selectedCount === selectableFiles.length
+									? true
+									: selectedCount > 0 ? 'indeterminate' : false
 							}
-							onCheckedChange={(checked) =>
-								setSelectedPaths((current) => {
-									const next = new Set(current);
-									for (const file of files) {
-										if (checked === true) next.add(file.relativePath);
-										else next.delete(file.relativePath);
-									}
-									return next;
-								})
-							}
+							onCheckedChange={(checked) => onSelectAll(selectableFiles, checked === true)}
 							aria-label={t('settings.library.select')}
 							className="border-muted-foreground/60 data-[state=checked]:border-blue-500 data-[state=checked]:bg-blue-500 data-[state=checked]:text-white data-[state=indeterminate]:border-muted-foreground/60 data-[state=indeterminate]:bg-muted"
 						/>
@@ -83,15 +80,7 @@ export function LibraryTable({
 						key={file.relativePath}
 						file={file}
 						selected={selectedPaths.has(file.relativePath)}
-						onSelect={(selected) =>
-							setSelectedPaths((current) => {
-								const next = new Set(current);
-								if (selected) next.add(file.relativePath);
-								else next.delete(file.relativePath);
-								return next;
-							})
-						}
-						onPreview={onPreview}
+						onSelect={(selected) => onSelect(file.relativePath, selected)}
 						onContextMenu={onContextMenu}
 					/>
 				))}
