@@ -27,7 +27,7 @@ const LibraryPage: React.FC = () => {
 	const [visibleCount, setVisibleCount] = useState(FILE_BATCH_SIZE);
 	const loadMoreRef = useRef<HTMLDivElement>(null);
 	const [view, setView] = useState<'collections' | 'list'>('list');
-	const [sort, setSort] = useState<LibrarySort>({ key: 'path', direction: 'asc' });
+	const [sort, setSort] = useState<LibrarySort>({ key: 'name', direction: 'asc' });
 	const [previewFile, setPreviewFile] = useState<LibraryFile | null>(null);
 	const [root, setRoot] = useState('');
 	const [loading, setLoading] = useState(true);

@@ -72,6 +72,7 @@ it('shows the view controls and file actions in the header with list selected by
 	]);
 	expect(screen.getByRole('table')).toBeInTheDocument();
 	expect(screen.getAllByRole('row')).toHaveLength(2);
+	expect(screen.queryByRole('columnheader', { name: 'settings.library.path' })).not.toBeInTheDocument();
 	expect(
 		screen.queryByRole('columnheader', { name: 'settings.library.actions' })
 	).not.toBeInTheDocument();
@@ -146,7 +147,7 @@ it('loads library files and opens the library folder', async () => {
 	render(<LibraryPage />);
 
 	expect(await screen.findByText('notes.txt')).toBeInTheDocument();
-	expect(screen.getByText('documents/notes.txt')).toBeInTheDocument();
+	expect(screen.getByRole('columnheader', { name: 'settings.library.name' })).toBeInTheDocument();
 	expect(screen.getByText('1.5 KB')).toBeInTheDocument();
 	expect(screen.getByText('/Users/example/.kucedr/library')).toBeInTheDocument();
 
@@ -335,7 +336,7 @@ it('limits both views to 48 files and loads the next batch on demand', async () 
 	await user.click(screen.getByRole('button', { name: 'settings.library.list' }));
 	expect(screen.getAllByRole('row')).toHaveLength(49);
 	await user.click(screen.getByRole('button', { name: 'settings.library.loadMore' }));
-	expect(await screen.findAllByText('file-049.png')).toHaveLength(2);
+	expect(await screen.findAllByText('file-049.png')).toHaveLength(1);
 	expect(screen.getAllByRole('row')).toHaveLength(51);
 	expect(
 		screen.queryByRole('button', { name: 'settings.library.loadMore' })

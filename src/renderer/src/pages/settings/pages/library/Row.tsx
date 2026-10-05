@@ -51,9 +51,6 @@ export function LibraryRow({
 					</span>
 				</button>
 			</TableCell>
-			<TableCell className="max-w-0 truncate text-muted-foreground" title={file.relativePath}>
-				{file.relativePath}
-			</TableCell>
 			<TableCell className="whitespace-nowrap text-muted-foreground">
 				{formatLibraryFileSize(file.size)}
 			</TableCell>

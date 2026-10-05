@@ -1,6 +1,6 @@
 import type { LibraryFile } from '../../../../../../shared/library_types';
 
-export type LibrarySortKey = 'name' | 'path' | 'size' | 'modified';
+export type LibrarySortKey = 'name' | 'size' | 'modified';
 export type LibrarySort = { key: LibrarySortKey; direction: 'asc' | 'desc' };
 
 export function sortLibraryFiles(files: LibraryFile[], sort: LibrarySort): LibraryFile[] {
@@ -17,8 +17,6 @@ export function sortLibraryFiles(files: LibraryFile[], sort: LibrarySort): Libra
 			case 'modified':
 				comparison = left.modifiedAt.localeCompare(right.modifiedAt);
 				break;
-			default:
-				comparison = left.relativePath.localeCompare(right.relativePath);
 		}
 		return comparison === 0
 			? left.relativePath.localeCompare(right.relativePath)

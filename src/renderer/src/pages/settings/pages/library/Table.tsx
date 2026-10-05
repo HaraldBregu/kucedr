@@ -23,14 +23,13 @@ export function LibraryTable({
 	const { t } = useTranslation();
 	const [selectedPaths, setSelectedPaths] = useState<Set<string>>(new Set());
 	const columns: { key: LibrarySortKey; label: string; className?: string }[] = [
-		{ key: 'name', label: t('settings.library.name'), className: 'w-[32%]' },
-		{ key: 'path', label: t('settings.library.path') },
+		{ key: 'name', label: t('settings.library.name') },
 		{ key: 'size', label: t('settings.library.size'), className: 'w-28' },
 		{ key: 'modified', label: t('settings.library.modified'), className: 'w-36' },
 	];
 
 	return (
-		<Table className="min-w-[720px] table-fixed">
+		<Table className="min-w-[520px] table-fixed">
 			<TableHeader>
 				<TableRow>
 					<TableHead className="w-12 px-3" aria-label={t('settings.library.select')} />
