@@ -12,11 +12,18 @@ test('moves library files and folders by dropping them onto folders', async ({},
 		await mkdir(path.join(libraryRoot, 'Projects'), { recursive: true });
 		await mkdir(path.join(libraryRoot, 'Archive'));
 		await writeFile(path.join(libraryRoot, 'notes.txt'), 'notes');
-		await page.evaluate(() => {
+		await page.evaluate(async () => {
+			await window.agent.setProvider({
+				id: 'openai',
+				name: 'OpenAI',
+				baseUrl: 'https://api.openai.com/v1',
+			});
+			await window.agent.setModelId('gpt-5.6-luna');
 			window.sessionStorage.setItem('kucedr-auth-local-only', 'true');
 			window.sessionStorage.setItem('kucedr-onboarding-started', 'true');
-			window.location.hash = '#/settings/library';
 		});
+		await page.reload();
+		await page.evaluate(() => { window.location.hash = '#/settings/library'; });
 		await expect(page.getByRole('table')).toBeVisible();
 		await page.getByRole('row').filter({ hasText: 'notes.txt' }).dragTo(
 			page.getByRole('row').filter({ hasText: 'Projects' })
