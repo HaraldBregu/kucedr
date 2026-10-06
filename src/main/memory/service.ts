@@ -62,7 +62,10 @@ export class Memory implements MemoryService {
 	async list() {
 		return [
 			...new Map(
-				parseMemories(await this.read()).map(({ id, fact, createdAt }) => [id, { id, fact, createdAt }])
+				parseMemories(await this.read()).map(({ id, fact, createdAt }) => [
+					id,
+					{ id, fact, ...(createdAt ? { createdAt } : {}) },
+				])
 			).values(),
 		];
 	}

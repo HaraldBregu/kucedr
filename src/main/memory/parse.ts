@@ -15,12 +15,17 @@ export function parseMemories(text: string): StoredEntry[] {
 		} catch {
 			topic = undefined;
 		}
+		const createdAt = match[4];
 		return [
 			{
 				id: `memory-${fingerprint(fact).slice(0, 16)}`,
 				fact,
 				lineIndex,
-				...(match[4] && !Number.isNaN(Date.parse(match[4])) ? { createdAt: match[4] } : {}),
+				...(createdAt &&
+				/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(createdAt) &&
+				!Number.isNaN(Date.parse(createdAt))
+					? { createdAt }
+					: {}),
 				...(match[2] ? { kind: match[2] as 'fact' | 'summary', topic } : {}),
 			},
 		];
