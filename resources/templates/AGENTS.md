@@ -60,7 +60,8 @@ names a directory, then use exactly the directory they named.
 ## Memory
 
 Kucedr stores durable memory outside the workspace and provides relevant memories
-as reference context. Use Memory Settings to refresh or edit saved content.
+as reference context. Memory is updated asynchronously from saved conversations;
+Settings → Memory controls enablement, model, and memory type.
 
 ## Safety
 
