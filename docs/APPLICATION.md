@@ -40,7 +40,7 @@ From Agent or route search, open Tools, Skills, Tasks, Chat History, Knowledge, 
 
 Start a new chat or select an existing session in the sidebar. Enter a request and send it; while a run is active, use Stop to cancel. Tool activity shows what the assistant requested, its inputs, output, and errors. Expand a tool row when you need to inspect an action.
 
-Attach files through the composer. Text files and model-supported media are checked for type and size; resolve attachment errors before sending. Changing models can change which attachments are accepted.
+Attach files through the composer. Queued files remain with the session as drafts and submitted files appear in the conversation. The current composer does not check model capability, file type, or size before sending; an unsupported file can fail during processing.
 
 For work that needs planning, use `/plan`. For a persistent objective, use `/goal <objective>`; pause, resume, or clear it with the corresponding `/goal` command. A goal belongs to its conversation. Review inline questions and permission requests when they appear.
 
