@@ -27,6 +27,7 @@ then call `complete_bootstrap`.
 ## Tools Loaded by Default in Ordinary Text Chat
 
 ### Files
+
 - `read`
 - `write`
 - `edit`
@@ -35,14 +36,17 @@ then call `complete_bootstrap`.
 - `redo`
 
 ### Profiles
+
 - `update_identity`
 - `update_soul`
 - `update_user`
 
 ### Bootstrap
+
 - `complete_bootstrap`
 
 ### Discovery
+
 - `tool_search`
 
 Settings and interaction mode can restrict the available tools.
