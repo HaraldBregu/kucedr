@@ -37,7 +37,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 					'/settings/voice',
 					'/settings/tasks',
 					'/settings/health',
-					'/settings/remote-agent',
 				].includes(item.path)
 			),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
@@ -55,7 +54,7 @@ const SETTINGS_SIDEBAR_GROUPS = [
 	{
 		id: 'extensions',
 		items: SETTINGS_NAVIGATION.filter((item) =>
-			['/settings/plugins', '/settings/apps', '/settings/channels'].includes(item.path)
+			['/settings/plugins', '/settings/apps', '/settings/channels', '/settings/remote-agent'].includes(item.path)
 		),
 	},
 ] as const;

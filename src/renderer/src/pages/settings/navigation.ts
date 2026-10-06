@@ -436,13 +436,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Plug,
 	},
 	{
-		path: '/settings/remote-agent',
-		labelKey: 'settings.tabs.remoteAgent',
-		descriptionKey: 'settings.overview.descriptions.remoteAgent',
-		icon: Network,
-		badge: 'new',
-	},
-	{
 		path: '/settings/apps',
 		labelKey: 'settings.tabs.apps',
 		descriptionKey: 'settings.overview.descriptions.apps',
@@ -453,5 +446,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.channels',
 		descriptionKey: 'settings.overview.descriptions.channels',
 		icon: RadioTower,
+	},
+	{
+		path: '/settings/remote-agent',
+		labelKey: 'settings.tabs.remoteAgent',
+		descriptionKey: 'settings.overview.descriptions.remoteAgent',
+		icon: Network,
+		badge: 'new',
 	},
 ] satisfies readonly SettingsNavigationItem[];

@@ -353,7 +353,7 @@ it('uses the audio waveform icon for Voice', () => {
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
 
-it('places Channels directly below Apps outside the Assistant sidebar group', () => {
+it('places Channels below Apps and Remote Agents below Channels outside the Agents group', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/health']}>
 			<Routes>
@@ -375,10 +375,7 @@ it('places Channels directly below Apps outside the Assistant sidebar group', ()
 	const health = within(assistantGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.health',
 	});
-	const tasks = within(assistantGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.taskScheduler',
-	});
-	const remoteAgent = within(assistantGroup as HTMLElement).getByRole('link', {
+	const remoteAgent = within(navigation).getByRole('link', {
 		name: 'settings.tabs.remoteAgent new',
 	});
 	const apps = within(navigation).getByRole('link', { name: 'settings.tabs.apps' });
@@ -389,6 +386,8 @@ it('places Channels directly below Apps outside the Assistant sidebar group', ()
 	expect(channels).toHaveAttribute('href', '/settings/channels');
 	expect(channels.closest('[data-slot="split-pane-group"]')).toBe(extensionsGroup);
 	expect(extensionLinks.indexOf(channels)).toBe(extensionLinks.indexOf(apps) + 1);
+	expect(remoteAgent.closest('[data-slot="split-pane-group"]')).toBe(extensionsGroup);
+	expect(extensionLinks.indexOf(remoteAgent)).toBe(extensionLinks.indexOf(channels) + 1);
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', {
 			name: 'settings.tabs.channels',
@@ -398,7 +397,7 @@ it('places Channels directly below Apps outside the Assistant sidebar group', ()
 	expect(remoteAgent.querySelector('.lucide-network')).toBeInTheDocument();
 	expect(within(remoteAgent).getByText('new')).toHaveAttribute('data-slot', 'badge');
 	expect(links.indexOf(health)).toBe(links.indexOf(voice) + 1);
-	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(tasks) + 1);
+	expect(within(assistantGroup as HTMLElement).queryByRole('link', { name: 'settings.tabs.remoteAgent new' })).not.toBeInTheDocument();
 });
 
 it('places Providers directly after Storage without provider subpages in the sidebar', () => {
