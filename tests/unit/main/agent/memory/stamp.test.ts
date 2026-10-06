@@ -3,8 +3,10 @@ import { recall } from '../../../../../src/main/memory/recall';
 import { stampMemories } from '../../../../../src/main/memory/stamp';
 
 it('dates new records, preserves known dates, and leaves legacy dates unknown', () => {
-	const original = '# Memory\n- Legacy fact.\n- Existing fact. <!-- kucedr:created:2026-10-01T10:00:00.000Z -->\n';
-	const next = '# Memory\n- Legacy fact.\n- Existing fact.\n- New summary. <!-- kucedr:summary:work -->\n';
+	const original =
+		'# Memory\n- Legacy fact.\n- Existing fact. <!-- kucedr:created:2026-10-01T10:00:00.000Z -->\n';
+	const next =
+		'# Memory\n- Legacy fact.\n- Existing fact.\n- New summary. <!-- kucedr:summary:work -->\n';
 	const saved = stampMemories(next, original, new Date('2026-10-06T09:00:00.000Z'));
 
 	expect(saved).toContain('- Legacy fact.\n');
@@ -20,6 +22,12 @@ it('dates new records, preserves known dates, and leaves legacy dates unknown', 
 	expect(recall(saved, 'summary')).toContain('- New summary.');
 	expect(recall(saved, 'summary')).not.toContain('kucedr:created');
 	expect(
-		stampMemories(saved.replace('New summary.', 'Updated summary.'), saved, new Date('2026-10-07T09:00:00.000Z'))
-	).toContain('Updated summary. <!-- kucedr:summary:work --> <!-- kucedr:created:2026-10-07T09:00:00.000Z -->');
+		stampMemories(
+			saved.replace('New summary.', 'Updated summary.'),
+			saved,
+			new Date('2026-10-07T09:00:00.000Z')
+		)
+	).toContain(
+		'Updated summary. <!-- kucedr:summary:work --> <!-- kucedr:created:2026-10-07T09:00:00.000Z -->'
+	);
 });
