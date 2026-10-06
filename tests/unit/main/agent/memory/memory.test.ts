@@ -58,6 +58,8 @@ it('processes changes once and preserves manual Markdown', async () => {
  await h.memory.refresh();
  expect(h.markdown()).toContain('Manual notes remain here.');
  expect(h.markdown()).toContain('Prefers concise answers.');
+ expect(h.markdown()).toMatch(/Prefers concise answers\. <!-- kucedr:created:\d{4}-\d\d-\d\dT[^ ]+ -->/);
+ expect((await h.memory.list())[0].createdAt).toEqual(expect.any(String));
  expect(h.state().checkpoints.chat).toEqual(['first']);
  const calls = h.infer.mock.calls.length;
  await h.memory.refresh();
