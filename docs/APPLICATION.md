@@ -67,7 +67,7 @@ Configure transcription for dictation, text-to-speech for reading responses alou
 3. Dictate into the composer and confirm the transcript, or start a Voice session from the empty composer.
 4. End the Voice session to release capture and playback resources.
 
-For images, music/audio, or video, connect a supported provider and select its media model in Agent settings, then ask the assistant in chat. Agent-generated media appears inline and is saved to Library; supported context-menu actions open, reveal, or save local output. A catalog entry alone does not establish an implemented generation adapter: consult [Providers](PROVIDERS.md).
+For images, music/audio, or video, connect a supported provider and select its media model in Agent settings, then ask the assistant in chat. Agent-generated media appears inline and is saved to the agent workspace by default; supported context-menu actions open, reveal, or save local output. Library holds files you import into it. A catalog entry alone does not establish an implemented generation adapter: consult [Providers](PROVIDERS.md).
 
 Camera and screen tests live under System. On macOS, changing Screen Recording permission may require quitting and reopening the same installed app. Development and packaged apps can have different permission identities.
 

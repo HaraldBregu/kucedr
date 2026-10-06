@@ -17,14 +17,14 @@ Changes since [v1.0.2] (2026-07-26).
 - Realtime voice conversations and dictation with OpenAI and xAI support, PCM capture/playback, and configurable realtime voice settings.
 - Background microphone, camera, and screen recording tools with status and stop controls.
 - App packages, isolated app windows, manifests, stores, import/delete flows, file watching, and app management settings.
-- Built-in workspace editors for Mermaid, tldraw, and Excalidraw files, plus document, spreadsheet, presentation, PDF, and coding app/skill resources.
+- A Workspace Markdown editor and file viewer, plus bundled document, spreadsheet, presentation, and PDF skills.
 - Provider manifests and catalogs for models, bots, channels, storage, search, vector databases, and transactional email.
-- Bot/channel integrations for Telegram and Discord, including credential-backed configuration, default channel selection, voice handling, and channel security.
+- A Telegram bot channel with credential-backed configuration, voice handling, and sender policies.
 - Task scheduling APIs and agent tools for creating, updating, pausing, resuming, deleting, listing, and immediately running tasks.
 - MCP local-server import and registry support, server testing, secret handling, OAuth record isolation, and expanded MCP settings UI.
 - New model adapters and catalog entries across text, speech, transcription, image, sound, video, and embedding services.
 - Data archive and remote-purge controls, database APIs, workspace APIs, and cloud/storage management screens.
-- A Library with folders, file import, previews, downloads, moves, and deletion; a Workspace file view and Coder project and session workflows.
+- A Library with folders, file import, previews, downloads, moves, and deletion; a Workspace file view and coding-service project and session APIs.
 - Structured identity and user profiles with separate name and title fields, separate user pronouns, and generated `AGENTS.md` context from saved profiles.
 - Opt-in version-history file sync with local snapshots, immutable remote versions, and conflict-aware change tracking.
 - New settings pages for general preferences, persona, permissions, data, storage, apps, Library, Workspace, Knowledge, realtime voice, provider keys, and tasks.
@@ -36,10 +36,10 @@ Changes since [v1.0.2] (2026-07-26).
 - Consolidated model selection and provider credentials into shared stores and a manifest-driven provider catalog loaded at runtime.
 - Renamed scheduled jobs from cron/schedules to tasks and recorder tools to explicit microphone, camera, and screen actions.
 - Reworked onboarding and provider settings to configure models, bots, vector databases, and storage inline.
-- Redesigned settings navigation around general, assistant, services, cloud, channels, and app groups.
-- Moved agent workspaces to the assistant directory, stored sessions alongside the workspace, and standardized the persisted system prompt as `SYSTEM.md`.
+- Redesigned Settings navigation around General, Assistant, Brain, and Extensions groups.
+- Kept the default agent workspace under `~/.kucedr/workspace`, stored sessions in a sibling `sessions` directory, and standardized the persisted system prompt as `SYSTEM.md`.
 - Routed model operations through the unified `window.models` preload API and channel/provider operations through the app API.
-- Changed generated media to save into the active workspace by default and made storage push/pull operate as full replacement mirrors.
+- Changed generated media to save into the agent workspace by default and kept backup/restore separate from opt-in version history sync.
 - Simplified channel configuration around provider credentials and a single default channel.
 - Improved prompt editing, attachment handling, tool activity, permission prompts, message rendering, navigationbar behavior, audio/video players, and startup layout.
 - Updated English and Italian translations for the new and reorganized settings, providers, channels, storage, knowledge, and agent features.
@@ -54,7 +54,7 @@ Changes since [v1.0.2] (2026-07-26).
 - Fixed model context/input/output limits, retry timing, tool signal lifetime, and background tool execution.
 - Corrected provider capability lookups, fallback model selection, realtime transcription errors, and embedding result labels.
 - Fixed MCP OAuth persistence, secret filtering, import paths, form validation, and server record handling.
-- Corrected channel credential lookup, default channel selection, security scoping, and Telegram/Discord behavior.
+- Corrected channel credential lookup, security scoping, and Telegram behavior.
 - Fixed recorder data URL parsing, device capture wiring, voice recording controls, and media playback edge cases.
 - Corrected Pinecone upserts, RAG indexing behavior, storage endpoints, and synchronization paths.
 

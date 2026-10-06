@@ -27,7 +27,7 @@ Read the [documentation](docs/README.md) for the application guide, bundled apps
 - **Automate routines** — create recurring schedules and periodic checklist-based health runs.
 - **Remember useful context** — maintain durable memory, personalization files, conversation history, and a local working directory.
 - **Search personal knowledge** — index selected folders with explicit embedding and remote-storage consent, then retrieve source excerpts from the local RAG index.
-- **Manage local work** — browse and edit Markdown in the Workspace, and organize files and generated media in Library.
+- **Manage local work** — browse and edit Markdown in the Workspace, and organize imported files in Library.
 - **Chat from other apps** — connect Telegram to reach Kucedr away from the desktop app.
 
 Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces and light, dark, and system themes.
