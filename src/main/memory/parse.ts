@@ -23,7 +23,8 @@ export function parseMemories(text: string): StoredEntry[] {
 				lineIndex,
 				...(createdAt &&
 				/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(createdAt) &&
-				!Number.isNaN(Date.parse(createdAt))
+				!Number.isNaN(Date.parse(createdAt)) &&
+				new Date(createdAt).toISOString() === createdAt
 					? { createdAt }
 					: {}),
 				...(match[2] ? { kind: match[2] as 'fact' | 'summary', topic } : {}),
