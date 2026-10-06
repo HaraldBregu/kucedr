@@ -25,7 +25,7 @@ Changes since [v1.0.2] (2026-07-26).
 - New model adapters and catalog entries across text, speech, transcription, image, sound, video, and embedding services.
 - Data archive and remote-purge controls, database APIs, workspace APIs, and cloud/storage management screens.
 - A Library with folders, file import, previews, downloads, moves, and deletion; a Workspace file view and Coder project and session workflows.
-- Structured identity and user profiles with separate name, title, and pronoun fields, and generated `AGENTS.md` context from saved profiles.
+- Structured identity and user profiles with separate name and title fields, separate user pronouns, and generated `AGENTS.md` context from saved profiles.
 - Opt-in version-history file sync with local snapshots, immutable remote versions, and conflict-aware change tracking.
 - New settings pages for general preferences, persona, permissions, data, storage, apps, Library, Workspace, Knowledge, realtime voice, provider keys, and tasks.
 - Broader unit, integration, and end-to-end coverage for the agent runtime, permissions, sessions, providers, apps, channels, MCP, RAG, realtime voice, storage, settings, and media.
