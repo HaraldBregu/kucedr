@@ -63,10 +63,14 @@ it('shows the selected model and reveals its options when expanded', async () =>
 	const heading = screen.getByRole('heading', { name: 'settings.memory.title' });
 	expect(modelSelect).toHaveTextContent('GPT');
 	expect(screen.queryByRole('spinbutton', { name: 'Creativity' })).not.toBeInTheDocument();
-	await user.click(screen.getByRole('button', { name: /settings.memory.model settings.memory.modelDescription/ }));
+	await user.click(
+		screen.getByRole('button', { name: /settings.memory.model settings.memory.modelDescription/ })
+	);
 	expect(screen.getByRole('button', { name: 'Advanced' })).toBeInTheDocument();
 	expect(heading.closest('header')?.querySelector('svg')).toBeNull();
-	expect(screen.queryByRole('button', { name: 'settings.memory.saveSettings' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.memory.saveSettings' })
+	).not.toBeInTheDocument();
 });
 
 it('saves independent memory configuration automatically', async () => {

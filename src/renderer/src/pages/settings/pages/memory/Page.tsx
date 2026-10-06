@@ -129,7 +129,7 @@ export default function MemoryPage(): React.JSX.Element {
 							}
 						>
 							<ModelOptions
-							key={`${config.providerId}:${config.modelId}`}
+								key={`${config.providerId}:${config.modelId}`}
 								inputs={inputs}
 								values={config.modelOptions}
 								inlineAdvanced
