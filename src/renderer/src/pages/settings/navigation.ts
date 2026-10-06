@@ -4,7 +4,7 @@ import {
 	Brain,
 	Bot,
 	Layers,
-	Cloud,
+	HardDrive,
 	Code2,
 	Folder,
 	HeartPulse,
@@ -73,7 +73,7 @@ export interface SettingsProviderConfigItem {
 
 export const SETTINGS_PROVIDER_CONFIG_ITEMS: readonly SettingsProviderConfigItem[] = [
 	{
-		path: '/settings/cloud',
+		path: '/settings/storage',
 		labelKey: 'settings.storage.configurationTitle',
 		descriptionKey: 'settings.storage.description',
 		icon: Folder,
@@ -152,13 +152,13 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Search engines
 	{
-		path: '/settings/cloud',
+		path: '/settings/storage',
 		labelKey: 'settings.searchEngine.braveName',
 		descriptionKey: 'settings.searchEngine.braveDescription',
 		keywords: 'brave web search api key',
 	},
 	{
-		path: '/settings/cloud',
+		path: '/settings/storage',
 		labelKey: 'settings.searchEngine.tavilyName',
 		descriptionKey: 'settings.searchEngine.tavilyDescription',
 		keywords: 'tavily web search api key',
@@ -282,7 +282,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Tasks
 	{
-		path: '/settings/cloud',
+		path: '/settings/storage',
 		labelKey: 'settings.cron.runtime.title',
 		descriptionKey: 'settings.cron.runtime.description',
 		keywords: 'scheduled agent provider model runtime',
@@ -294,7 +294,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'scheduled task history runs sessions',
 	},
 	{
-		path: '/settings/cloud',
+		path: '/settings/storage',
 		labelKey: 'settings.cron.schedulesTitle',
 		descriptionKey: 'settings.cron.schedulesDescription',
 		keywords: 'cron schedule recurring task',
@@ -356,10 +356,10 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: Settings,
 	},
 	{
-		path: '/settings/cloud',
-		labelKey: 'settings.tabs.cloud',
-		descriptionKey: 'settings.overview.descriptions.cloud',
-		icon: Cloud,
+		path: '/settings/storage',
+		labelKey: 'settings.tabs.storage',
+		descriptionKey: 'settings.overview.descriptions.storage',
+		icon: HardDrive,
 	},
 	{
 		path: '/settings/providers',

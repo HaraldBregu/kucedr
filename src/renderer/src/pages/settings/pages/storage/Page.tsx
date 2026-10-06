@@ -46,11 +46,7 @@ import {
 import { SYNC_INTERVALS } from './constants';
 import Provider from './Provider';
 
-interface StoragePageProps {
-	readonly inline?: boolean;
-}
-
-const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
+const StoragePage: React.FC = () => {
 	const { t } = useTranslation();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
 	const [versionedEnabled, setVersionedEnabled] = useState(false);
@@ -250,13 +246,11 @@ const StoragePage: React.FC<StoragePageProps> = ({ inline = false }) => {
 	};
 
 	return (
-		<SettingsPageShell className={inline ? 'max-w-none p-0 sm:p-0' : undefined}>
-			{!inline && (
-				<SettingsPageHeader
-					title={t('settings.storage.configurationTitle')}
-					description={t('settings.storage.description')}
-				/>
-			)}
+		<SettingsPageShell>
+			<SettingsPageHeader
+				title={t('settings.tabs.storage')}
+				description={t('settings.overview.descriptions.storage')}
+			/>
 
 			{error && (
 				<div className="flex flex-wrap items-center gap-2">

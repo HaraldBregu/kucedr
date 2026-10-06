@@ -1,6 +1,6 @@
 import {
 	AudioLines,
-	Cloud,
+	HardDrive,
 	Layers,
 	Library,
 	LogOut,
@@ -47,7 +47,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 	const accountInitial = accountItem.title.charAt(0).toUpperCase();
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
-		{ path: '/settings/cloud', label: t('settings.tabs.cloud'), icon: Cloud },
+		{ path: '/settings/storage', label: t('settings.tabs.storage'), icon: HardDrive },
 		{ path: '/settings/agent', label: t('settings.sidebar.chatSettings'), icon: MessageCircle },
 		{ path: '/settings/providers', label: t('settings.tabs.providers'), icon: Server },
 		{ path: '/settings/library', label: t('library.title'), icon: Library },
