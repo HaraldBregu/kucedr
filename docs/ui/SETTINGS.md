@@ -278,7 +278,7 @@ required. Filesystem policy should:
   empty states, and inline notices for their own asynchronous work.
 - Detail routes should show a useful missing-item state or return to their parent when an ID is not
   valid.
-- The current router has no dedicated Image, Video, or Audio studio pages; media model selection lives in Agent settings and local output is browsed in Library.
+- The current router has no dedicated Image, Video, or Audio studio pages; media model selection lives in Agent settings, and agent-generated output is saved to the Workspace by default. Files imported into Library are browsed there.
 - Data-control **Purge** does not show a renderer confirmation dialog; it immediately performs the
   backend preview-token and purge sequence.
 - Permissions **Reset** is immediate. Managed app deletion requests native confirmation.

@@ -30,11 +30,11 @@ See [Settings UI](ui/SETTINGS.md) for the complete Settings navigation and persi
 
 1. Open **Settings → Providers → Models** and connect each model provider you plan to use. The
    searchable **API Keys** deep page can edit the same model-provider credentials.
-2. Choose the provider and model on the relevant Assistant, RAG, Voice, Transcription, Image,
-   Video, or Audio settings page.
+2. Choose assistant, speech, and media models in **Settings → Agent**; realtime voice in
+   **Settings → Voice**; and the embedding model in **Settings → Knowledge**.
 3. Configure Brave or Tavily under **Settings → Providers → Search**.
 4. Save vector database API keys under **Settings → Providers → Database**
-   (`/settings/providers/database`), then explicitly select the database in **Settings → RAG**.
+   (`/settings/providers/database`), then explicitly select the database in **Settings → Knowledge**.
    Pinecone is the currently supported vector database provider.
 5. Run the test offered by the settings page, when present, before relying on the provider in an
    agent run.
@@ -197,10 +197,10 @@ Save and edit Pinecone API keys under **Settings → Providers → Database**. C
 as entered in the local `providers/settings.json` file, separately from model and search
 credentials. Create a key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
 
-Select the database explicitly in **Settings → RAG**; no database is selected automatically.
+Select the database explicitly in **Settings → Knowledge**; no database is selected automatically.
 RAG indexing uses the selected provider's saved API key for Pinecone storage, while local retrieval
 uses SQLite. The environment's `PINECONE_API_KEY` is not used. Configure the embedding provider's
-key separately under **Settings → Providers → Models**, then approve both disclosures in RAG
+key separately under **Settings → Providers → Models**, then approve both disclosures in Knowledge
 settings. Changing the database selection or account requires new storage consent. Failed-upload
 cleanup stays pinned to the account used for that upload.
 
