@@ -292,6 +292,7 @@ it('serializes manual edits and forgets IDs or matching content while retaining 
  await Promise.all([h.memory.edit('# Notes\n- first schedule\n'), h.memory.edit('# Notes\n- first schedule\n- second schedule\n- retained\n')]);
  const records = await h.memory.list();
  expect(records).toHaveLength(3);
+ expect(records.every((record) => typeof record.createdAt === 'string')).toBe(true);
  await expect(h.memory.forget(records[0].id)).resolves.toEqual({ removed: 1 });
  expect(h.markdown()).toContain('# Notes');
  expect(h.markdown()).toContain('- second schedule');

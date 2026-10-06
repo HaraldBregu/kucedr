@@ -19,4 +19,7 @@ it('dates new records, preserves known dates, and leaves legacy dates unknown', 
 	]);
 	expect(recall(saved, 'summary')).toContain('- New summary.');
 	expect(recall(saved, 'summary')).not.toContain('kucedr:created');
+	expect(
+		stampMemories(saved.replace('New summary.', 'Updated summary.'), saved, new Date('2026-10-07T09:00:00.000Z'))
+	).toContain('Updated summary. <!-- kucedr:summary:work --> <!-- kucedr:created:2026-10-07T09:00:00.000Z -->');
 });
