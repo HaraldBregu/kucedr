@@ -123,7 +123,7 @@ Assistant is the central model and behavior page. It should provide collapsible 
 - the active configured web-search engine.
 
 Only search engines with stored credentials should be selectable. The same page should link to
-Chat history, Health, Permissions, Knowledge Base, and Data management.
+Chat history, Health, Permissions, Knowledge, and Data management.
 
 ### Coding
 
@@ -171,7 +171,7 @@ See [Provider Reference](../PROVIDERS.md) for exact runtime coverage and model I
 - The searchable **API Keys** deep page should provide the model-provider credential list. The
   visible Models page can connect the same model credentials inline.
 
-**Database** stores the user's database account credentials in local provider settings. The Knowledge Base
+**Database** stores the user's database account credentials in local provider settings. The Knowledge
 page requires an explicit database selection and uses that account for remote storage. Pinecone
 is currently supported; there is no default database selection or environment API key fallback.
 Embedding credentials are configured separately under **Providers → Models**. Both remote
@@ -181,7 +181,7 @@ disclosures must be approved before indexing.
 
 Agent settings configures the assistant, realtime conversation, transcription, read-aloud,
 and web search. Music, Video, and Image have dedicated sidebar pages. The embedding model is
-selected in Knowledge Base. Coding has its own provider authentication, model, thinking-level,
+selected in Knowledge. Coding has its own provider authentication, model, thinking-level,
 and tool-mode settings.
 
 Verified provider input schemas can expose additional model options. Changing a model should clear
@@ -196,9 +196,9 @@ account sign-in is separate from this backup configuration. See [Cloud architect
 
 ## Knowledge and data
 
-### Knowledge Base
+### Knowledge
 
-Knowledge Base should configure enablement, consent for the selected remote embedding model, embedding model,
+Knowledge should configure enablement, consent for the selected remote embedding model, embedding model,
 index name, and one or more source folders. It should support indexing now,
 scheduled indexing presets, an inline retrieval test with scored matches, and export or purge
 controls for local and remote knowledge scopes.
@@ -206,7 +206,7 @@ controls for local and remote knowledge scopes.
 ### Conversation and data management
 
 Chat history should list stored sessions with dates and confirm before deleting one. Data
-management should expose memory and session export or purge actions. Knowledge Base owns the
+management should expose memory and session export or purge actions. Knowledge owns the
 equivalent controls for its data scopes.
 
 ## Skills and apps
@@ -308,7 +308,7 @@ required. Filesystem policy should:
 - [Storage settings](../../src/renderer/src/pages/settings/pages/storage/Page.tsx)
 - [Task settings](../../src/renderer/src/pages/settings/pages/tasks/Page.tsx)
 - [System media settings](../../src/renderer/src/pages/settings/pages/system/)
-- [Knowledge settings](../../src/renderer/src/pages/settings/pages/rag/Page.tsx)
+- [Knowledge settings](../../src/renderer/src/pages/settings/pages/knowledge/Page.tsx)
 - [Permissions settings](../../src/renderer/src/pages/settings/pages/permissions/Page.tsx)
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
 - [MCP settings](../../src/renderer/src/pages/settings/pages/mcp/Page.tsx)
@@ -317,4 +317,4 @@ required. Filesystem policy should:
 - [Assistant settings tests](../../tests/unit/renderer/assistant-settings.test.tsx)
 - [Provider settings tests](../../tests/unit/renderer/providers-settings.test.tsx)
 - [Permissions settings tests](../../tests/unit/renderer/permissions-settings.test.tsx)
-- [Knowledge Base settings tests](../../tests/unit/renderer/rag-settings.test.tsx)
+- [Knowledge settings tests](../../tests/unit/renderer/knowledge-settings.test.tsx)

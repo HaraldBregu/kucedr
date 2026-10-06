@@ -12,7 +12,7 @@ import { SETTINGS_NAVIGATION } from '@/pages/settings/navigation';
 const setupPaths = [
 	'/settings/tasks',
 	'/settings/memory',
-	'/settings/knowledge-base',
+	'/settings/knowledge',
 	'/settings/skills',
 	'/settings/mcp',
 ] as const;

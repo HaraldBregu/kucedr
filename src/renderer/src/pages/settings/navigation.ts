@@ -407,9 +407,9 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: PlugZap,
 	},
 	{
-		path: '/settings/knowledge-base',
-		labelKey: 'settings.rag.title',
-		descriptionKey: 'settings.overview.descriptions.rag',
+		path: '/settings/knowledge',
+		labelKey: 'settings.knowledge.title',
+		descriptionKey: 'settings.overview.descriptions.knowledge',
 		icon: BookOpenText,
 	},
 	{

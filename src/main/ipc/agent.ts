@@ -1063,7 +1063,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 				mainAccess,
 				(): Promise<RagIndexResult> => {
 					const configuration = getRagConfiguration();
-					if (configuration.enabled !== true) throw new Error('Knowledge Base is disabled.');
+					if (configuration.enabled !== true) throw new Error('Knowledge is disabled.');
 					return indexRag(configuration.folders, configuration.indexName);
 				},
 				AgentChannels.ragIndex
@@ -1109,7 +1109,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 					const text = optionalTrimmedString(query);
 					if (!text) throw new Error('Invalid search query.');
 					const configuration = getRagConfiguration();
-					if (configuration.enabled !== true) throw new Error('Knowledge Base is disabled.');
+					if (configuration.enabled !== true) throw new Error('Knowledge is disabled.');
 					return searchRag(
 						text,
 						configuration.indexName,

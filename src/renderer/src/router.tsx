@@ -57,7 +57,7 @@ const StorageProvidersPage = lazy(() => import('./pages/settings/pages/providers
 const McpPage = lazy(() => import('./pages/settings/pages/mcp/Page'));
 const RemoteAgentPage = lazy(() => import('./pages/settings/pages/remote-agent/Page'));
 const McpDetailsPage = lazy(() => import('./pages/settings/pages/mcp/details/Page'));
-const RagPage = lazy(() => import('./pages/settings/pages/rag/Page'));
+const KnowledgePage = lazy(() => import('./pages/settings/pages/knowledge/Page'));
 const PermissionsPage = lazy(() => import('./pages/settings/pages/permissions/Page'));
 const HealthPage = lazy(() => import('./pages/settings/pages/tasks/health/Page'));
 const AssistantPage = lazy(() => import('./pages/settings/pages/assistant/Page'));
@@ -439,12 +439,16 @@ const routes: RouteObject[] = [
 						],
 					},
 					{
-						path: 'knowledge-base',
+						path: 'knowledge',
 						element: (
 							<SettingsRouteWrapper>
-								<RagPage />
+								<KnowledgePage />
 							</SettingsRouteWrapper>
 						),
+					},
+					{
+						path: 'knowledge-base',
+						element: <Navigate to="/settings/knowledge" replace />,
 					},
 					{
 						path: 'skills',
@@ -627,11 +631,11 @@ const routes: RouteObject[] = [
 							},
 							{
 								path: 'rag',
-								element: <Navigate to="/settings/knowledge-base" replace />,
+								element: <Navigate to="/settings/knowledge" replace />,
 							},
 							{
 								path: 'knowledge-base',
-								element: <Navigate to="/settings/knowledge-base" replace />,
+								element: <Navigate to="/settings/knowledge" replace />,
 							},
 							{
 								path: 'health',

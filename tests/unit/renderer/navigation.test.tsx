@@ -63,9 +63,9 @@ it('does not expose Coding in settings navigation', () => {
 	);
 });
 
-it('uses distinct icons for Library and Knowledge Base', () => {
+it('uses distinct icons for Library and Knowledge', () => {
 	expect(SETTINGS_NAVIGATION.find((item) => item.path === '/settings/library')?.icon).toBe(Library);
-	expect(SETTINGS_NAVIGATION.find((item) => item.path === '/settings/knowledge-base')?.icon).toBe(
+	expect(SETTINGS_NAVIGATION.find((item) => item.path === '/settings/knowledge')?.icon).toBe(
 		BookOpenText
 	);
 });
@@ -99,7 +99,7 @@ it('places Library, Workspace, and Code below Providers in the general sidebar g
 });
 
 it.each([
-	['/settings/knowledge-base', 'settings.rag.title'],
+	['/settings/knowledge', 'settings.knowledge.title'],
 	['/settings/agent/tools', 'settings.modelServices.tools'],
 	['/settings/agent/mcp-tools', 'settings.modelServices.agentTools.mcp.title'],
 	['/settings/voice', 'settings.tabs.voice'],
@@ -242,8 +242,8 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.rag.title' })
-	).toHaveAttribute('href', '/settings/knowledge-base');
+		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.knowledge.title' })
+	).toHaveAttribute('href', '/settings/knowledge');
 	expect(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.plugins' })

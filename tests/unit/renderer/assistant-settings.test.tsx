@@ -155,8 +155,8 @@ jest.mock('react-i18next', () => {
 		'settings.overview.descriptions.permissions': 'Manage permissions',
 		'settings.dataControls.title': 'Data management',
 		'settings.dataControls.description': 'Export or purge assistant data',
-		'settings.rag.title': 'Knowledge Base',
-		'settings.overview.descriptions.rag': 'Document search and index',
+		'settings.knowledge.title': 'Knowledge',
+		'settings.overview.descriptions.knowledge': 'Document search and index',
 	};
 	const t = (key: string, options?: Record<string, unknown>): string => {
 		const value = translations[key] ?? key;

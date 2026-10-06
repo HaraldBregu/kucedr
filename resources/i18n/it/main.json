@@ -341,7 +341,7 @@
 			"skills": "Abilità",
 			"apps": "App",
 			"plugins": "Plugin",
-			"rag": "Knowledge Base"
+			"knowledge": "Knowledge"
 		},
 		"integrations": {
 			"title": "Plugin",
@@ -1881,13 +1881,13 @@
 			"dismissError": "Chiudi errore",
 			"dismissSuccess": "Chiudi"
 		},
-		"rag": {
-			"title": "Knowledge Base",
+		"knowledge": {
+			"title": "Knowledge",
 			"description": "Indicizza ricorsivamente i file di testo nelle cartelle selezionate e cercali come vettori.",
-			"behaviorTitle": "Comportamento Knowledge Base",
-			"enabled": "Abilita Knowledge Base",
+			"behaviorTitle": "Comportamento Conoscenza",
+			"enabled": "Abilita Conoscenza",
 			"enabledDescription": "Indicizzazione dei documenti e ricerca dell'assistente.",
-			"indexRequirements": "Prima di indicizzare, seleziona il tuo database vettoriale, configura le chiavi API del database e del provider di embedding, abilita Knowledge Base e approva entrambi i consensi in Comportamento Knowledge Base.",
+			"indexRequirements": "Prima di indicizzare, seleziona il tuo database vettoriale, configura le chiavi API del database e del provider di embedding, abilita Conoscenza e approva entrambi i consensi in Comportamento Conoscenza.",
 			"embeddingConsent": "Invia il testo dei documenti per gli embedding",
 			"embeddingConsentDescription": "Consenti l’invio di parti dei documenti e query di ricerca al provider e account di embedding selezionati. Le modifiche a provider, modello, endpoint o account richiedono nuovo consenso.",
 			"mirrorConsent": "Salva la conoscenza in chiaro nel database vettoriale",
@@ -1907,8 +1907,8 @@
 			"pickFolder": "Scegli cartella",
 			"pickFolderError": "Impossibile scegliere una cartella sorgente.",
 			"removeFolder": "Rimuovi cartella",
-			"loadError": "Impossibile caricare le impostazioni Knowledge Base.",
-			"saveError": "Impossibile salvare le impostazioni Knowledge Base.",
+			"loadError": "Impossibile caricare le impostazioni Conoscenza.",
+			"saveError": "Impossibile salvare le impostazioni Conoscenza.",
 			"scheduleTitle": "Automazione",
 			"scheduleFrequency": "Frequenza di indicizzazione",
 			"scheduleDescription": "Scegli ogni quanto Kucedr controlla le cartelle selezionate per file nuovi o modificati.",
@@ -2644,7 +2644,7 @@
 	"agentPrompt": {
 		"placeholder": "Chiedi all'Agente AI e premi Invio…",
 		"search": "Cerca",
-		"rag": "Knowledge Base"
+		"knowledge": "Knowledge"
 	},
 	"agentNode": {
 		"referenceImages": "Immagini di riferimento",
@@ -2748,7 +2748,7 @@
 		"video": "Video",
 		"audio": "Audio",
 		"files": "File",
-		"knowledgeBase": "Base di conoscenza",
+		"knowledge": "Conoscenza",
 		"data": "Database",
 		"integrations": "Integrazioni",
 		"socialMedia": "Social media",

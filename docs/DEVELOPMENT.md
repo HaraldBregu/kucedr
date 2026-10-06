@@ -201,7 +201,7 @@ Run one Jest test file by passing its path:
 
 ```sh
 npm run test:main -- tests/unit/main/agent/session/session-model-messages.test.ts
-npm run test:renderer -- tests/unit/renderer/rag-settings.test.tsx
+npm run test:renderer -- tests/unit/renderer/knowledge-settings.test.tsx
 ```
 
 ### Full local quality gate

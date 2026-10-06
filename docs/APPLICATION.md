@@ -34,7 +34,7 @@ Home contains the conversation, composer, session sidebar, and tool activity. Se
 | A2A                  | Remote Agent2Agent-compatible agents                                                             |
 | Apps                 | Import, inspect, open, remove, or register external apps                                         |
 
-From Agent or route search, open Tools, Skills, Tasks, Chat History, Knowledge Base, Health, and Permissions. The [Settings reference](ui/SETTINGS.md) explains save behavior and routes.
+From Agent or route search, open Tools, Skills, Tasks, Chat History, Knowledge, Health, and Permissions. The [Settings reference](ui/SETTINGS.md) explains save behavior and routes.
 
 ## Conversations and tools
 
@@ -86,7 +86,7 @@ Folder retrieval, also called retrieval-augmented generation (RAG), indexes sele
 To configure folder retrieval:
 
 1. Connect the supported database account in Providers and an embedding provider in Models.
-2. Open Knowledge Base and explicitly select the database and embedding model.
+2. Open Knowledge and explicitly select the database and embedding model.
 3. Set the index name and choose source folders with the folder picker.
 4. Enable indexing and approve the displayed embedding and remote-mirror disclosures for those selections.
 5. Index the folders, inspect the result, and use the search field to verify expected passages and paths.
@@ -137,7 +137,7 @@ For development failures, follow [Development](DEVELOPMENT.md). For a security i
 
 - [Routes](../src/renderer/src/router.tsx) and [Settings navigation](../src/renderer/src/pages/settings/navigation.ts)
 - [Assistant settings](../src/renderer/src/pages/settings/pages/assistant/Page.tsx)
-- [Folder retrieval settings](../src/renderer/src/pages/settings/pages/rag/Page.tsx)
+- [Folder retrieval settings](../src/renderer/src/pages/settings/pages/knowledge/Page.tsx)
 - [Storage controls](../src/renderer/src/pages/settings/pages/storage/Page.tsx)
 - [Health execution](../src/main/agent/health/health_run.ts)
 - [Agent knowledge implementation](../src/main/agent/knowledge/)

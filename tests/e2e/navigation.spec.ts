@@ -696,7 +696,7 @@ test('empty Home hides absent chats and shows scrollable plugins and setup cards
 	await expect(discovery.getByRole('heading', { name: 'Plugins' })).toBeVisible();
 	await expect(discovery.getByRole('heading', { name: 'Configuration' })).toBeVisible();
 	await expect(discovery.getByRole('link', { name: /Tasks/ })).toHaveAttribute('href', '#/settings/tasks');
-	await expect(discovery.getByRole('link', { name: /Knowledge Base/ })).toHaveAttribute('href', '#/settings/knowledge-base');
+	await expect(discovery.getByRole('link', { name: /Knowledge/ })).toHaveAttribute('href', '#/settings/knowledge');
 	const setupRow = discovery.locator('[aria-label="Configuration"]');
 	expect(await setupRow.evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
 });
@@ -736,7 +736,7 @@ test('Agent resources have icons and open their nested settings pages', async ({
 		{ name: 'MCP Servers', path: 'mcp', icon: 'plug-zap' },
 		{ name: 'Health', path: 'health', icon: 'heart-pulse' },
 		{ name: 'Permissions', path: 'permissions', icon: 'shield-check' },
-		{ name: 'Knowledge Base', path: 'rag', icon: 'book-open-text' },
+		{ name: 'Knowledge', path: 'rag', icon: 'book-open-text' },
 	];
 	for (const resource of resources) {
 		await page.evaluate(() => {

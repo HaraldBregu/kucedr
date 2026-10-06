@@ -158,7 +158,7 @@ const AGENT_TOOL_GROUPS: readonly AgentToolGroup[] = [
 			[
 				'Query knowledge',
 				'query_knowledge',
-				'Searches the selected knowledge base for relevant content.',
+				'Searches the selected knowledge for relevant content.',
 			],
 		],
 	},

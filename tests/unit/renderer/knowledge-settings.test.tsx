@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import RagPage from '../../../src/renderer/src/pages/settings/pages/rag/Page';
+import KnowledgePage from '../../../src/renderer/src/pages/settings/pages/knowledge/Page';
 
 jest.mock('@/components/ui/select', () => {
 	const React = jest.requireActual<typeof import('react')>('react');
@@ -63,41 +63,41 @@ jest.mock('@/components/ui/select', () => {
 
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
-		'settings.rag.title': 'Knowledge Base',
-		'settings.rag.description': 'Configure retrieval-augmented generation.',
-		'settings.rag.behaviorTitle': 'RAG behavior',
-		'settings.rag.enabled': 'Enable RAG',
-		'settings.rag.enabledDescription': 'Allow document indexing and assistant search.',
-		'settings.rag.embeddingConsent': 'Send document text for embeddings',
-		'settings.rag.embeddingConsentDescription':
+		'settings.knowledge.title': 'Knowledge',
+		'settings.knowledge.description': 'Configure retrieval-augmented generation.',
+		'settings.knowledge.behaviorTitle': 'Knowledge behavior',
+		'settings.knowledge.enabled': 'Enable Knowledge',
+		'settings.knowledge.enabledDescription': 'Allow document indexing and assistant search.',
+		'settings.knowledge.embeddingConsent': 'Send document text for embeddings',
+		'settings.knowledge.embeddingConsentDescription':
 			'Allow Kucedr to send document chunks to the selected embedding provider.',
-		'settings.rag.mirrorConsent': 'Store plaintext knowledge in the vector database',
-		'settings.rag.databaseTitle': 'Vector database',
-		'settings.rag.databasePlaceholder': 'Select vector database',
-		'settings.rag.embeddingModelTitle': 'Embedding model',
-		'settings.rag.embeddingModelDescription':
+		'settings.knowledge.mirrorConsent': 'Store plaintext knowledge in the vector database',
+		'settings.knowledge.databaseTitle': 'Vector database',
+		'settings.knowledge.databasePlaceholder': 'Select vector database',
+		'settings.knowledge.embeddingModelTitle': 'Embedding model',
+		'settings.knowledge.embeddingModelDescription':
 			'Model used to embed RAG documents for vector search.',
-		'settings.rag.configurationTitle': 'Configuration',
-		'settings.rag.indexName': 'Index name',
-		'settings.rag.indexNameDescription': 'Remote vector index.',
-		'settings.rag.indexNamePlaceholder': 'kucedr',
-		'settings.rag.documentsDescription': 'Documents to index.',
-		'settings.rag.sourceFolder': 'Source folders',
-		'settings.rag.sourcePlaceholder': 'Choose source folders',
-		'settings.rag.pickFolder': 'Choose folder',
-		'settings.rag.index': 'Generate index',
-		'settings.rag.scheduleTitle': 'Automation',
-		'settings.rag.scheduleFrequency': 'Indexing frequency',
-		'settings.rag.scheduleDescription': 'Choose how often indexing runs.',
-		'settings.rag.scheduleOptions.off': 'Off',
-		'settings.rag.scheduleOptions.every4h': 'Every 4 hours',
-		'settings.rag.scheduleOptions.every12h': 'Every 12 hours',
-		'settings.rag.scheduleOptions.every1d': 'Every day',
-		'settings.rag.scheduleOptions.every7d': 'Every week',
-		'settings.rag.scheduleOptions.custom': 'Custom schedule',
-		'settings.rag.searchTitle': 'Search',
-		'settings.rag.searchPlaceholder': 'Search documents',
-		'settings.rag.search': 'Search',
+		'settings.knowledge.configurationTitle': 'Configuration',
+		'settings.knowledge.indexName': 'Index name',
+		'settings.knowledge.indexNameDescription': 'Remote vector index.',
+		'settings.knowledge.indexNamePlaceholder': 'kucedr',
+		'settings.knowledge.documentsDescription': 'Documents to index.',
+		'settings.knowledge.sourceFolder': 'Source folders',
+		'settings.knowledge.sourcePlaceholder': 'Choose source folders',
+		'settings.knowledge.pickFolder': 'Choose folder',
+		'settings.knowledge.index': 'Generate index',
+		'settings.knowledge.scheduleTitle': 'Automation',
+		'settings.knowledge.scheduleFrequency': 'Indexing frequency',
+		'settings.knowledge.scheduleDescription': 'Choose how often indexing runs.',
+		'settings.knowledge.scheduleOptions.off': 'Off',
+		'settings.knowledge.scheduleOptions.every4h': 'Every 4 hours',
+		'settings.knowledge.scheduleOptions.every12h': 'Every 12 hours',
+		'settings.knowledge.scheduleOptions.every1d': 'Every day',
+		'settings.knowledge.scheduleOptions.every7d': 'Every week',
+		'settings.knowledge.scheduleOptions.custom': 'Custom schedule',
+		'settings.knowledge.searchTitle': 'Search',
+		'settings.knowledge.searchPlaceholder': 'Search documents',
+		'settings.knowledge.search': 'Search',
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.modelServices.noModels': 'No models are available.',
 		'settings.dataControls.title': 'Data management',
@@ -222,7 +222,7 @@ beforeEach(() => {
 
 it('manages RAG data from the RAG page', async () => {
 	const user = userEvent.setup();
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
 	const localIndex = await screen.findByText('Full local knowledge index');
 	const localIndexRow = localIndex.closest('[class*="grid"]') as HTMLElement;
@@ -247,9 +247,9 @@ it('manages RAG data from the RAG page', async () => {
 });
 
 it('loads and saves the embedding model used by RAG', async () => {
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
-	expect(await screen.findByRole('heading', { name: 'Knowledge Base' })).toBeInTheDocument();
+	expect(await screen.findByRole('heading', { name: 'Knowledge' })).toBeInTheDocument();
 	const selector = await screen.findByRole('combobox', { name: 'Embedding model' });
 	expect(selector).toHaveTextContent('OpenAI / Text Embedding 3 Small');
 
@@ -263,9 +263,9 @@ it('loads and saves the embedding model used by RAG', async () => {
 
 it('enables RAG from its settings page', async () => {
 	const user = userEvent.setup();
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
-	const toggle = await screen.findByRole('switch', { name: 'Enable RAG' });
+	const toggle = await screen.findByRole('switch', { name: 'Enable Knowledge' });
 	expect(toggle).not.toBeChecked();
 	await user.click(toggle);
 	await waitFor(() =>
@@ -277,7 +277,7 @@ it('enables RAG from its settings page', async () => {
 
 it('records remote embedding consent for the selected provider and model', async () => {
 	const user = userEvent.setup();
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
 	const consent = await screen.findByRole('switch', {
 		name: 'Send document text for embeddings',
@@ -318,12 +318,12 @@ it('requires RAG and both disclosures before indexing', async () => {
 			: null,
 	}));
 	agentApi.ragIndex.mockResolvedValue({ files: 1, vectors: 2 });
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
 	await screen.findByText('/Users/example/docs');
 	const index = screen.getByRole('button', { name: 'Generate index' });
 	expect(index).toBeDisabled();
-	await user.click(screen.getByRole('switch', { name: 'Enable RAG' }));
+	await user.click(screen.getByRole('switch', { name: 'Enable Knowledge' }));
 	expect(index).toBeDisabled();
 	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
 	expect(index).toBeDisabled();
@@ -351,7 +351,7 @@ it('does not display embedding disclosure without a recipient as accepted', asyn
 			modelId: 'text-embedding-3-small',
 		},
 	});
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
 	await screen.findByRole('combobox', { name: 'Embedding model' });
 	expect(
@@ -369,7 +369,7 @@ it('groups the model, index, and folder paths in one configuration card', async 
 		cronExpression: '0 3 * * *',
 	});
 
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
 	await screen.findByText('/Users/example/docs');
 	const configurationTitle = await screen.findByText('Configuration');
@@ -389,7 +389,7 @@ it('groups the model, index, and folder paths in one configuration card', async 
 
 it('saves the selected RAG index name from the configuration card', async () => {
 	const user = userEvent.setup();
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
 	expect(await screen.findByText('Configuration')).toBeInTheDocument();
 	const indexName = screen.getByLabelText('Index name');
@@ -418,7 +418,7 @@ it('saves a friendly automation schedule preset', async () => {
 		cronExpression: '0 */12 * * *',
 	});
 
-	render(<RagPage />);
+	render(<KnowledgePage />);
 
 	expect(await screen.findByRole('heading', { name: 'Automation' })).toBeInTheDocument();
 	const frequency = screen.getByRole('combobox', { name: 'Indexing frequency' });
@@ -437,7 +437,7 @@ it('saves a friendly automation schedule preset', async () => {
 });
 
 it('leaves the vector database unselected until the user chooses one', async () => {
-	render(<RagPage />);
+	render(<KnowledgePage />);
 	const selector = screen.getByRole('combobox', { name: 'Vector database' });
 	await waitFor(() => expect(selector).toBeEnabled());
 	expect(selector).toHaveTextContent('Select vector database');
@@ -453,7 +453,7 @@ it('saves an explicit vector database choice and reloads cleared disclosure', as
 		...configuration,
 		mirrorConsent: { version: 1, indexName: 'kucedr', recipient: 'old-recipient' },
 	});
-	render(<RagPage />);
+	render(<KnowledgePage />);
 	const selector = screen.getByRole('combobox', { name: 'Vector database' });
 	await waitFor(() => expect(selector).toBeEnabled());
 	agentApi.ragGetConfiguration.mockClear();
@@ -488,7 +488,7 @@ it('blocks indexing without a selected database even when disclosures are saved'
 		},
 		mirrorConsent: { version: 1, indexName: 'kucedr', recipient: 'mirror-recipient' },
 	});
-	render(<RagPage />);
+	render(<KnowledgePage />);
 	await screen.findByText('/Users/example/docs');
 	await waitFor(() =>
 		expect(screen.getByRole('combobox', { name: 'Vector database' })).toBeEnabled()

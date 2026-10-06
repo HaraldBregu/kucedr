@@ -34,7 +34,7 @@ import { DataControls } from '../../components/data';
 
 const VALUE_SEPARATOR = '\u001F';
 
-const RagPage: React.FC = () => {
+const KnowledgePage: React.FC = () => {
 	const { t } = useTranslation();
 	const [vectorDatabases, setVectorDatabases] = useState<readonly VectorDatabaseService[]>([]);
 	const [databaseConfiguration, setDatabaseConfiguration] = useState<DatabaseConfiguration | null>(
@@ -80,7 +80,7 @@ const RagPage: React.FC = () => {
 				}
 			})
 			.catch((err) => {
-				if (!cancelled) setError(getErrorMessage(err, t('settings.rag.loadError')));
+				if (!cancelled) setError(getErrorMessage(err, t('settings.knowledge.loadError')));
 			})
 			.finally(() => {
 				if (!cancelled) setLoadingEmbeddingModel(false);
@@ -106,7 +106,7 @@ const RagPage: React.FC = () => {
 				}
 			},
 			(err) => {
-				if (!cancelled) setError(getErrorMessage(err, t('settings.rag.loadError')));
+				if (!cancelled) setError(getErrorMessage(err, t('settings.knowledge.loadError')));
 			}
 		);
 		return () => {
@@ -125,7 +125,7 @@ const RagPage: React.FC = () => {
 			setIndexed(await window.agent.ragIndex());
 		} catch (err) {
 			setError(
-				err instanceof Error && err.message.trim() ? err.message : t('settings.rag.indexError')
+				err instanceof Error && err.message.trim() ? err.message : t('settings.knowledge.indexError')
 			);
 		} finally {
 			setIndexing(false);
@@ -142,7 +142,7 @@ const RagPage: React.FC = () => {
 			setRagConfiguration(saved);
 			return saved;
 		} catch (err) {
-			setError(getErrorMessage(err, t('settings.rag.saveError')));
+			setError(getErrorMessage(err, t('settings.knowledge.saveError')));
 			return undefined;
 		} finally {
 			setSavingRagConfiguration(false);
@@ -178,7 +178,7 @@ const RagPage: React.FC = () => {
 			}
 		} catch (err) {
 			setError(
-				err instanceof Error && err.message.trim() ? err.message : t('settings.rag.pickFolderError')
+				err instanceof Error && err.message.trim() ? err.message : t('settings.knowledge.pickFolderError')
 			);
 		}
 	};
@@ -194,7 +194,7 @@ const RagPage: React.FC = () => {
 			setMatches(await window.agent.ragSearch(query));
 		} catch (err) {
 			setError(
-				err instanceof Error && err.message.trim() ? err.message : t('settings.rag.searchError')
+				err instanceof Error && err.message.trim() ? err.message : t('settings.knowledge.searchError')
 			);
 		} finally {
 			setSearching(false);
@@ -215,7 +215,7 @@ const RagPage: React.FC = () => {
 			setDatabaseConfiguration(saved);
 			setRagConfiguration(await window.agent.ragGetConfiguration());
 		} catch (err) {
-			setError(getErrorMessage(err, t('settings.rag.saveError')));
+			setError(getErrorMessage(err, t('settings.knowledge.saveError')));
 		} finally {
 			setSavingDatabase(false);
 		}
@@ -236,7 +236,7 @@ const RagPage: React.FC = () => {
 			await window.models.embedding.setProviderId(providerId);
 			await window.models.embedding.setModelId(modelId);
 		} catch (err) {
-			setError(getErrorMessage(err, t('settings.rag.saveError')));
+			setError(getErrorMessage(err, t('settings.knowledge.saveError')));
 		} finally {
 			setSavingEmbeddingModel(false);
 		}
@@ -278,35 +278,35 @@ const RagPage: React.FC = () => {
 		? 'off'
 		: (selectedSchedule?.key ?? 'custom');
 	const scheduleLabel = selectedSchedule
-		? t(`settings.rag.scheduleOptions.${selectedSchedule.key}`)
-		: t(`settings.rag.scheduleOptions.${scheduleValue}`);
+		? t(`settings.knowledge.scheduleOptions.${selectedSchedule.key}`)
+		: t(`settings.knowledge.scheduleOptions.${scheduleValue}`);
 
 	return (
 		<SettingsPageShell>
 			<SettingsPageHeader
-				title={t('settings.rag.title')}
-				description={t('settings.rag.description')}
+				title={t('settings.knowledge.title')}
+				description={t('settings.knowledge.description')}
 			/>
 
-			<SettingsSection title={t('settings.rag.behaviorTitle')}>
+			<SettingsSection title={t('settings.knowledge.behaviorTitle')}>
 				<SettingsPanel>
 					<SettingsRow
-						title={t('settings.rag.enabled')}
-						description={t('settings.rag.enabledDescription')}
+						title={t('settings.knowledge.enabled')}
+						description={t('settings.knowledge.enabledDescription')}
 						className="grid-cols-[minmax(0,1fr)_auto]"
 						actionClassName="ml-auto w-auto justify-end"
 						actions={
 							<Switch
 								checked={ragConfiguration?.enabled === true}
 								disabled={!ragConfiguration || savingRagConfiguration || indexing}
-								aria-label={t('settings.rag.enabled')}
+								aria-label={t('settings.knowledge.enabled')}
 								onCheckedChange={handleEnabledChange}
 							/>
 						}
 					/>
 					<SettingsRow
-						title={t('settings.rag.embeddingConsent')}
-						description={t('settings.rag.embeddingConsentDescription')}
+						title={t('settings.knowledge.embeddingConsent')}
+						description={t('settings.knowledge.embeddingConsentDescription')}
 						className="grid-cols-[minmax(0,1fr)_auto]"
 						actionClassName="ml-auto w-auto justify-end"
 						actions={
@@ -321,14 +321,14 @@ const RagPage: React.FC = () => {
 									savingRagConfiguration ||
 									indexing
 								}
-								aria-label={t('settings.rag.embeddingConsent')}
+								aria-label={t('settings.knowledge.embeddingConsent')}
 								onCheckedChange={handleEmbeddingConsentChange}
 							/>
 						}
 					/>
 					<SettingsRow
-						title={t('settings.rag.mirrorConsent')}
-						description={t('settings.rag.mirrorConsentDescription', {
+						title={t('settings.knowledge.mirrorConsent')}
+						description={t('settings.knowledge.mirrorConsentDescription', {
 							index: ragConfiguration?.indexName ?? '',
 						})}
 						className="grid-cols-[minmax(0,1fr)_auto]"
@@ -337,7 +337,7 @@ const RagPage: React.FC = () => {
 							<Switch
 								checked={mirrorConsentMatches}
 								disabled={!ragConfiguration || !databaseReady || savingRagConfiguration || indexing}
-								aria-label={t('settings.rag.mirrorConsent')}
+								aria-label={t('settings.knowledge.mirrorConsent')}
 								onCheckedChange={(enabled) => {
 									if (ragConfiguration)
 										void saveRagConfiguration({
@@ -359,13 +359,13 @@ const RagPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
-			<SettingsSection title={t('settings.rag.configurationTitle')}>
+			<SettingsSection title={t('settings.knowledge.configurationTitle')}>
 				<SettingsPanel>
 					<div className="grid gap-4 px-4 py-4">
 						<SettingsField
 							id="rag-vector-database"
-							label={t('settings.rag.databaseTitle')}
-							description={t('settings.rag.databaseDescription')}
+							label={t('settings.knowledge.databaseTitle')}
+							description={t('settings.knowledge.databaseDescription')}
 						>
 							<Select
 								value={
@@ -381,7 +381,7 @@ const RagPage: React.FC = () => {
 									size="sm"
 									className="w-56 max-w-full text-xs"
 								>
-									<SelectValue placeholder={t('settings.rag.databasePlaceholder')}>
+									<SelectValue placeholder={t('settings.knowledge.databasePlaceholder')}>
 									{selectedDatabase &&
 											`${selectedDatabase.providerName} / ${selectedDatabase.databaseName}`}
 									</SelectValue>
@@ -401,8 +401,8 @@ const RagPage: React.FC = () => {
 
 						<SettingsField
 							id="rag-embedding-model"
-							label={t('settings.rag.embeddingModelTitle')}
-							description={t('settings.rag.embeddingModelDescription')}
+							label={t('settings.knowledge.embeddingModelTitle')}
+							description={t('settings.knowledge.embeddingModelDescription')}
 						>
 							{loadingEmbeddingModel ? (
 								<SettingsLoadingRows rows={1} className="p-0" />
@@ -444,13 +444,13 @@ const RagPage: React.FC = () => {
 
 						<SettingsField
 							id="rag-index-name"
-							label={t('settings.rag.indexName')}
-							description={t('settings.rag.indexNameDescription')}
+							label={t('settings.knowledge.indexName')}
+							description={t('settings.knowledge.indexNameDescription')}
 						>
 							<Input
 								id="rag-index-name"
 								value={ragConfiguration?.indexName ?? ''}
-								placeholder={t('settings.rag.indexNamePlaceholder')}
+								placeholder={t('settings.knowledge.indexNamePlaceholder')}
 								maxLength={45}
 								disabled={!ragConfiguration || indexing || savingRagConfiguration}
 								onChange={(event) =>
@@ -471,8 +471,8 @@ const RagPage: React.FC = () => {
 						</SettingsField>
 						<SettingsField
 							id="rag-source-folders"
-							label={t('settings.rag.sourceFolder')}
-							description={t('settings.rag.documentsDescription')}
+							label={t('settings.knowledge.sourceFolder')}
+							description={t('settings.knowledge.documentsDescription')}
 						>
 							<div className="grid gap-2">
 								{ragConfiguration?.folders.length ? (
@@ -489,7 +489,7 @@ const RagPage: React.FC = () => {
 												variant="ghost"
 												size="icon-sm"
 												disabled={indexing || savingRagConfiguration}
-												aria-label={t('settings.rag.removeFolder')}
+												aria-label={t('settings.knowledge.removeFolder')}
 												onClick={() =>
 													void saveRagConfiguration({
 														...ragConfiguration,
@@ -503,7 +503,7 @@ const RagPage: React.FC = () => {
 									))
 								) : (
 									<p className="text-[11px] leading-4 text-muted-foreground">
-										{t('settings.rag.sourcePlaceholder')}
+										{t('settings.knowledge.sourcePlaceholder')}
 									</p>
 								)}
 
@@ -513,19 +513,19 @@ const RagPage: React.FC = () => {
 										type="button"
 										size="sm"
 										variant="outline"
-										aria-label={t('settings.rag.pickFolder')}
+										aria-label={t('settings.knowledge.pickFolder')}
 										disabled={indexing || savingRagConfiguration || !ragConfiguration}
 										onClick={() => void pickSourceFolder()}
 									>
 										<FolderOpen className="size-3" />
-										{t('settings.rag.pickFolder')}
+										{t('settings.knowledge.pickFolder')}
 									</Button>
 								</div>
 							</div>
 						</SettingsField>
 
 						{ragConfiguration && !indexingAuthorized && (
-							<SettingsNotice>{t('settings.rag.indexRequirements')}</SettingsNotice>
+							<SettingsNotice>{t('settings.knowledge.indexRequirements')}</SettingsNotice>
 						)}
 
 						<div className="flex justify-end">
@@ -540,24 +540,24 @@ const RagPage: React.FC = () => {
 								) : (
 									<Sparkles className="size-3" />
 								)}
-								{indexing ? t('settings.rag.indexing') : t('settings.rag.index')}
+								{indexing ? t('settings.knowledge.indexing') : t('settings.knowledge.index')}
 							</Button>
 						</div>
 
 						{indexed && (
 							<p className="text-[11px] leading-4 text-muted-foreground">
-								{t('settings.rag.indexResult', indexed)}
+								{t('settings.knowledge.indexResult', indexed)}
 							</p>
 						)}
 					</div>
 				</SettingsPanel>
 			</SettingsSection>
 
-			<SettingsSection title={t('settings.rag.scheduleTitle')}>
+			<SettingsSection title={t('settings.knowledge.scheduleTitle')}>
 				<SettingsPanel>
 					<SettingsRow
-						title={t('settings.rag.scheduleFrequency')}
-						description={t('settings.rag.scheduleDescription')}
+						title={t('settings.knowledge.scheduleFrequency')}
+						description={t('settings.knowledge.scheduleDescription')}
 						actions={
 							<Select
 								value={ragConfiguration ? scheduleValue : null}
@@ -583,20 +583,20 @@ const RagPage: React.FC = () => {
 								<SelectTrigger
 									size="sm"
 									className="w-44 max-w-full text-xs"
-									aria-label={t('settings.rag.scheduleFrequency')}
+									aria-label={t('settings.knowledge.scheduleFrequency')}
 								>
 									<SelectValue>{ragConfiguration && scheduleLabel}</SelectValue>
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="off">{t('settings.rag.scheduleOptions.off')}</SelectItem>
+									<SelectItem value="off">{t('settings.knowledge.scheduleOptions.off')}</SelectItem>
 									{SETTINGS_SCHEDULES.map((schedule) => (
 										<SelectItem key={schedule.key} value={schedule.key}>
-											{t(`settings.rag.scheduleOptions.${schedule.key}`)}
+											{t(`settings.knowledge.scheduleOptions.${schedule.key}`)}
 										</SelectItem>
 									))}
 									{scheduleValue === 'custom' && (
 										<SelectItem value="custom">
-											{t('settings.rag.scheduleOptions.custom')}
+											{t('settings.knowledge.scheduleOptions.custom')}
 										</SelectItem>
 									)}
 								</SelectContent>
@@ -606,12 +606,12 @@ const RagPage: React.FC = () => {
 				</SettingsPanel>
 			</SettingsSection>
 
-			<SettingsSection title={t('settings.rag.searchTitle')}>
+			<SettingsSection title={t('settings.knowledge.searchTitle')}>
 				<SettingsPanel>
 					<div className="grid gap-3 px-4 py-4">
 						<Input
 							value={query}
-							placeholder={t('settings.rag.searchPlaceholder')}
+							placeholder={t('settings.knowledge.searchPlaceholder')}
 							disabled={searching}
 							onChange={(event) => setQuery(event.target.value)}
 						/>
@@ -633,13 +633,13 @@ const RagPage: React.FC = () => {
 								) : (
 									<Search className="size-3" />
 								)}
-								{searching ? t('settings.rag.searching') : t('settings.rag.search')}
+								{searching ? t('settings.knowledge.searching') : t('settings.knowledge.search')}
 							</Button>
 						</div>
 
 						{matches?.length === 0 && (
 							<p className="text-[11px] leading-4 text-muted-foreground">
-								{t('settings.rag.noResults')}
+								{t('settings.knowledge.noResults')}
 							</p>
 						)}
 
@@ -666,4 +666,4 @@ const RagPage: React.FC = () => {
 	);
 };
 
-export default RagPage;
+export default KnowledgePage;

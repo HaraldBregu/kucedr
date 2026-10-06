@@ -4,7 +4,7 @@
 
 Build a polished, responsive product landing page for **Kucedr**, a cross-platform desktop AI copilot that turns conversations into actions and turns useful work into reusable knowledge.
 
-This document is the source prompt for the page. Use the approved positioning and copy below. Keep every product claim consistent with the current implementation, especially the distinctions between Skills, the Knowledge Base, and Apps.
+This document is the source prompt for the page. Use the approved positioning and copy below. Keep every product claim consistent with the current implementation, especially the distinctions between Skills, the Knowledge, and Apps.
 
 ## Page objective
 
@@ -37,11 +37,11 @@ Do not add pricing, testimonials, customer logos, usage counters, or a newslette
 ```text
 Ask Kucedr to do the work
   -> activate the right reusable Skill
-  -> retrieve evidence from the Knowledge Base
+  -> retrieve evidence from the Knowledge
   -> use focused Apps when the workflow needs a dedicated interface
 ```
 
-Use the user-facing name **Knowledge Base** in application navigation and marketing copy. Technical documentation may describe its retrieval architecture as RAG.
+Use the user-facing name **Knowledge** in application navigation and marketing copy. Technical documentation may describe its retrieval architecture as RAG.
 
 ## Approved page structure and copy
 
@@ -90,7 +90,7 @@ Bring your own providers. Keep control of the setup. Follow every tool action in
 Show three concise capability labels near the hero visual:
 
 - Reusable Skills
-- Semantic Knowledge Base
+- Semantic Knowledge
 - Custom Apps
 
 The hero visual should look like the real Kucedr desktop application, not a generic browser chat mockup. Show one request moving through visible activity states such as loading a skill, searching knowledge, and updating a local file. Do not invent a marketplace, team workspace, or autonomous background task result.
@@ -113,7 +113,7 @@ Present a short four-step flow:
 
 1. **Ask** — Start with a natural-language request and the context that matters.
 2. **Act** — Kucedr selects tools, works through the task, and shows its activity.
-3. **Ground** — The assistant retrieves relevant source excerpts from the Knowledge Base.
+3. **Ground** — The assistant retrieves relevant source excerpts from the Knowledge.
 4. **Reuse** — Save the workflow as a Skill or give it a focused interface through an App.
 
 Use this section as context, not as a complete inventory of every Kucedr feature.
@@ -175,10 +175,10 @@ Find the source. Keep the insight.
 **Intro copy**
 
 ```text
-The Knowledge Base retrieves relevant excerpts from indexed text so Kucedr can answer with material from the folders you choose.
+The Knowledge retrieves relevant excerpts from indexed text so Kucedr can answer with material from the folders you choose.
 ```
 
-#### Knowledge Base
+#### Knowledge
 
 **Card heading**
 
@@ -200,7 +200,7 @@ Choose one or more folders of text, create a semantic index with your selected e
 - Supports manual generation and scheduled full index rebuilds.
 - Rejects common credential files and high-confidence secret content before indexing.
 
-Use **Knowledge Base** in the interface. Technical copy may say **RAG-powered semantic retrieval**. Do not describe this feature as local-only, incremental, compatible with PDFs or office documents, or independent of Pinecone.
+Use **Knowledge** in the interface. Technical copy may say **RAG-powered semantic retrieval**. Do not describe this feature as local-only, incremental, compatible with PDFs or office documents, or independent of Pinecone.
 
 ### 6. Apps
 
@@ -326,7 +326,7 @@ The page should feel capable, precise, and personal. Avoid a noisy cyberpunk aes
 - Preserve the content order and messaging hierarchy on mobile.
 - Meet WCAG AA contrast for text, controls, focus indicators, and links.
 - Make navigation, menus, and calls to action fully keyboard accessible.
-- Do not rely on color alone to distinguish Skills, Knowledge Base, and Apps.
+- Do not rely on color alone to distinguish Skills, Knowledge, and Apps.
 - Give product images meaningful alternative text; mark decorative glow and connector elements as decorative.
 - Keep paragraph width readable and avoid horizontal scrolling at 320 CSS pixels.
 
@@ -352,7 +352,7 @@ The finished page must not imply capabilities that are only planned, partial, or
 
 - Do not claim a hosted service, team collaboration, multi-tenant knowledge, or cloud account sync.
 - Do not claim that all AI or knowledge processing happens locally.
-- Do not call the Knowledge Base incremental; current indexing rebuilds its Pinecone index.
+- Do not call the Knowledge incremental; current indexing rebuilds its Pinecone index.
 - Do not claim arbitrary vector-database support; the current runtime uses Pinecone.
 - Do not claim a Skills or Apps marketplace.
 - Do not claim that every Skill metadata declaration is enforced at runtime.
@@ -366,7 +366,7 @@ The finished page must not imply capabilities that are only planned, partial, or
 The landing page is complete when:
 
 - The hero explains Kucedr's category, action capability, and knowledge advantage without scrolling.
-- Skills, Knowledge Base, and Apps each receive a distinct, implementation-accurate explanation.
+- Skills, Knowledge, and Apps each receive a distinct, implementation-accurate explanation.
 - The privacy section distinguishes local storage from processing by configured external services.
 - Primary and secondary calls to action are visible in the hero and final section.
 - The result works across desktop, tablet, and mobile and meets the accessibility requirements above.
@@ -380,7 +380,7 @@ Use these repository sources to validate final copy and product visuals:
 - [Feature reference](FEATURES.md)
 - [Skills settings](../src/renderer/src/pages/settings/pages/skills/Page.tsx)
 - [Skill loading](../src/main/agent/tools/skills/load_skill.ts)
-- [RAG settings](../src/renderer/src/pages/settings/pages/rag/Page.tsx)
+- [RAG settings](../src/renderer/src/pages/settings/pages/knowledge/Page.tsx)
 - [Knowledge search tool](../src/main/agent/tools/knowledge/query_knowledge.ts)
 - [Apps settings](../src/renderer/src/pages/settings/pages/apps/Page.tsx)
 - [App window](../src/main/apps/app_render.ts)
