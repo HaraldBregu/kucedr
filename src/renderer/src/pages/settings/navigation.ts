@@ -393,6 +393,12 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		icon: AudioLines,
 	},
 	{
+		path: '/settings/health',
+		labelKey: 'settings.tabs.health',
+		descriptionKey: 'settings.overview.descriptions.health',
+		icon: HeartPulse,
+	},
+	{
 		path: '/settings/tasks',
 		labelKey: 'settings.tabs.taskScheduler',
 		descriptionKey: 'settings.overview.descriptions.cron',
@@ -416,12 +422,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 		labelKey: 'settings.tabs.skills',
 		descriptionKey: 'settings.overview.descriptions.skills',
 		icon: Sparkles,
-	},
-	{
-		path: '/settings/health',
-		labelKey: 'settings.tabs.health',
-		descriptionKey: 'settings.overview.descriptions.health',
-		icon: HeartPulse,
 	},
 	{
 		path: '/settings/agent/permissions',

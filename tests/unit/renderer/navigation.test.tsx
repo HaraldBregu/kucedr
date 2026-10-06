@@ -343,8 +343,14 @@ it('places Channels directly below Apps outside the Assistant sidebar group', ()
 		.getByText('settings.overview.groups.assistant')
 		.closest('[data-slot="split-pane-group"]');
 	const links = within(assistantGroup as HTMLElement).getAllByRole('link');
+	const voice = within(assistantGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.voice',
+	});
 	const health = within(assistantGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.health',
+	});
+	const tasks = within(assistantGroup as HTMLElement).getByRole('link', {
+		name: 'settings.tabs.taskScheduler',
 	});
 	const remoteAgent = within(assistantGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.remoteAgent new',
@@ -365,7 +371,8 @@ it('places Channels directly below Apps outside the Assistant sidebar group', ()
 	expect(remoteAgent).toHaveAttribute('href', '/settings/remote-agent');
 	expect(remoteAgent.querySelector('.lucide-network')).toBeInTheDocument();
 	expect(within(remoteAgent).getByText('new')).toHaveAttribute('data-slot', 'badge');
-	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(health) + 1);
+	expect(links.indexOf(health)).toBe(links.indexOf(voice) + 1);
+	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(tasks) + 1);
 });
 
 it('places Providers directly after Storage without provider subpages in the sidebar', () => {
