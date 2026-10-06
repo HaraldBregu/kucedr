@@ -118,7 +118,7 @@ it('omits Account and Search icons on Home', () => {
 });
 
 it.each(['/home', '/settings/settings'])(
-	'does not render the voice conversation button in the navbar on %s',
+	'does not render the Voice button in the navbar on %s',
 	(path) => {
 		render(
 			<MemoryRouter initialEntries={[path]}>
@@ -127,7 +127,7 @@ it.each(['/home', '/settings/settings'])(
 		);
 
 		expect(
-			screen.queryByRole('button', { name: 'Start voice conversation' })
+			screen.queryByRole('button', { name: 'Start Voice' })
 		).not.toBeInTheDocument();
 	}
 );
