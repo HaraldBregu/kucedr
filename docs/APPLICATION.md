@@ -17,24 +17,24 @@ Setup checks whether an assistant provider and model are stored; it does not pro
 
 ## Find your way around
 
-Home contains the conversation, composer, session sidebar, and tool activity. Settings contains preferences and service configuration. Use route search to find deeper pages and **Return to Home** to resume the conversation.
+Home contains the conversation, composer, session sidebar, and tool activity. Settings contains preferences, service configuration, Library, Memory, and Workspace. Use the title-bar search to find deeper pages and **Return to Home** to resume the conversation.
 
 | Area                 | What to configure or inspect                                                                     |
 | -------------------- | ------------------------------------------------------------------------------------------------ |
 | Account              | Sign-in state and sign out                                                                       |
-| General and Persona  | Language, theme, tray behavior, keep-awake preferences, app data, and voice appearance           |
-| System               | Device capabilities, microphone, camera, screen capture, and OS permissions                      |
-| Agent                | Assistant model, realtime voice, transcription, read-aloud, search, and links to agent resources |
-| Coding               | Coding provider, authentication, model, thinking level, and tool mode                            |
-| Music, Video, Image  | Media model configuration and generation surfaces                                                |
-| Providers            | Model and search credentials, database accounts, and storage providers                           |
-| Cloud                | Selected storage provider, folders, backup schedule, backup, and restore                         |
+| Settings and Persona | Language, theme, tray behavior, keep-awake preferences, app data, device tests, and voice appearance |
+| Agent and Voice      | Assistant, speech, search, and media model selections; voice configuration and history              |
+| Providers            | Model and search credentials, database accounts, and storage providers                              |
+| Storage              | Selected storage provider, folders, backup schedule, backup, and restore                            |
+| Library              | Collections or list view, upload, preview, move, download, and delete local files                   |
+| Workspace            | Browse agent files; create, rename, and delete entries; edit Markdown                               |
+| Memory               | Enable memory, select its model and type                                                            |
 | Channels             | Telegram bot credentials, sender policies, and channel model choices                             |
 | Integrations and MCP | External service connections and tool servers                                                    |
 | A2A                  | Remote Agent2Agent-compatible agents                                                             |
 | Apps                 | Import, inspect, open, remove, or register external apps                                         |
 
-From Agent or route search, open Tools, Skills, Tasks, Chat History, Knowledge, Health, and Permissions. The [Settings reference](ui/SETTINGS.md) explains save behavior and routes.
+From Agent or route search, open Tools, Skills, Tasks, Chat History, Knowledge, Health, and Permissions. The Coding entry is marked **Soon**; `/code` redirects to Workspace. The [Settings reference](ui/SETTINGS.md) explains save behavior and routes.
 
 ## Conversations and tools
 
@@ -44,7 +44,7 @@ Attach files through the composer. Text files and model-supported media are chec
 
 For work that needs planning, use `/plan`. For a persistent objective, use `/goal <objective>`; pause, resume, or clear it with the corresponding `/goal` command. A goal belongs to its conversation. Review inline questions and permission requests when they appear.
 
-Chat history persists locally. Rename or delete sessions from the sidebar, or use Chat History in Settings for confirmation-backed deletion. See [Home](ui/HOME.md) for exact composer, transcript, and session behavior.
+Chat history persists locally. Rename, clear, compact, open the folder for, or delete a session from its sidebar context menu. Clear, compact, and delete require confirmation. Chat History in Settings also offers confirmation-backed deletion. See [Home](ui/HOME.md) for exact composer, transcript, and session behavior.
 
 ### Permissions
 
@@ -54,9 +54,9 @@ Background tasks cannot stop to ask for approval: an operation requiring an inte
 
 ### Personalization and memory
 
-The agent workspace holds `AGENTS.md`, `IDENTITY.md`, `SOUL.md`, `USER.md`, and `HEALTH.md`. These provide behavior, identity, user context, and the health checklist. Durable memory is managed separately under `~/.kucedr/memory`. A fresh workspace can include `BOOTSTRAP.md` for initial conversational setup.
+The agent workspace can hold `IDENTITY.md`, `SOUL.md`, `USER.md`, `HEALTH.md`, and `BOOTSTRAP.md`. Profile files are created when their corresponding profile is saved. Kucedr generates `AGENTS.md` from the completed identity, soul, and user profiles; edit those source profiles through their update tools rather than editing `AGENTS.md`. `HEALTH.md` supplies the health checklist. Durable memory is managed separately under `~/.kucedr/memory`.
 
-Ask the assistant to remember a useful fact or forget a saved fact when appropriate. Review the stored files and data controls when managing retained information. Memory, conversation history, and folder indexing are separate stores; deleting one does not imply deleting all of them.
+Memory is captured and updated asynchronously from saved conversations. You can ask the assistant to correct or forget a fact; a forget request takes effect after the memory module processes the saved conversation. Use **Settings → Memory** to enable memory and select its model and type. Memory, conversation history, and folder indexing are separate stores; deleting one does not imply deleting all of them.
 
 ## Voice and generated media
 
@@ -67,7 +67,7 @@ Configure transcription for dictation, text-to-speech for reading responses alou
 3. Dictate into the composer and confirm the transcript, or start a Voice session from the empty composer.
 4. End the Voice session to release capture and playback resources.
 
-For images, music/audio, or video, connect a supported provider and select its media model. Generate from the relevant Settings surface or ask the assistant in chat. Agent-generated media appears inline; supported context-menu actions open, reveal, or save local output. A catalog entry alone does not establish an implemented generation adapter: consult [Providers](PROVIDERS.md).
+For images, music/audio, or video, connect a supported provider and select its media model in Agent settings, then ask the assistant in chat. Agent-generated media appears inline and is saved to Library; supported context-menu actions open, reveal, or save local output. A catalog entry alone does not establish an implemented generation adapter: consult [Providers](PROVIDERS.md).
 
 Camera and screen tests live under System. On macOS, changing Screen Recording permission may require quitting and reopening the same installed app. Development and packaged apps can have different permission identities.
 
@@ -114,7 +114,7 @@ Open Channels, configure the reply and optional speech models, then open Telegra
 
 Kucedr stores its profile under `~/.kucedr` (the user's home directory on each platform). Settings can open application data. See [Architecture](ARCHITECTURE.md) for the storage map.
 
-Configure a storage provider in **Providers → Storage**, select it in Cloud, choose folders and a schedule, and run a backup. Review operation status for transferred files or errors. Restore requires confirmation and can overwrite matching local files; preserve any local versions you need before restoring. Storage-provider backup is separate from account authentication; see [Cloud architecture](CLOUD.md).
+Configure a storage provider in **Providers → Storage**, select it in **Storage**, choose folders and a schedule, and run a backup. Review operation status for transferred files or errors. Restore requires confirmation and can overwrite matching local files; preserve any local versions you need before restoring. Storage-provider backup is separate from account authentication; see [Cloud architecture](CLOUD.md).
 
 Prompts, selected files, tool inputs, and generated data can leave the device through configured model providers, search engines, MCP servers, remote agents, channels, and storage. Local-only account mode does not make these services offline. Secrets are handled by their respective main-process stores; do not treat the entire profile directory as encrypted.
 
@@ -139,5 +139,5 @@ For development failures, follow [Development](DEVELOPMENT.md). For a security i
 - [Assistant settings](../src/renderer/src/pages/settings/pages/assistant/Page.tsx)
 - [Folder retrieval settings](../src/renderer/src/pages/settings/pages/knowledge/Page.tsx)
 - [Storage controls](../src/renderer/src/pages/settings/pages/storage/Page.tsx)
-- [Health execution](../src/main/agent/health/health_run.ts)
+- [Health execution](../src/main/health/run.ts)
 - [Agent knowledge implementation](../src/main/agent/knowledge/)
