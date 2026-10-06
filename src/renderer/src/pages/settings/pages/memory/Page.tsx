@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { BrainCircuit } from 'lucide-react';
 import type { MemoryConfig } from '@shared/memory_types';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -117,15 +118,21 @@ export default function MemoryPage(): React.JSX.Element {
 								loading: false,
 								saving: false,
 							}}
-							collapsible={false}
+							icon={BrainCircuit}
+							showFieldLabel={false}
+							grouped
+							showSelectedModel
+							buttonDropdown
+							showContentSeparator={false}
 							onChange={(providerId, modelId) =>
 								setConfig({ ...config, providerId, modelId, modelOptions: {} })
 							}
-						/>
-						<div className="px-4 pb-4">
+						>
 							<ModelOptions
+							key={`${config.providerId}:${config.modelId}`}
 								inputs={inputs}
 								values={config.modelOptions}
+								inlineAdvanced
 								onChange={(path, value) =>
 									setConfig({
 										...config,
@@ -133,7 +140,7 @@ export default function MemoryPage(): React.JSX.Element {
 									})
 								}
 							/>
-						</div>
+						</ModelProviderConfiguration>
 						<SettingsRow
 							title={t('settings.memory.type')}
 							actions={
