@@ -136,19 +136,19 @@ Every model in this table has a runtime adapter.
 
 Every model in this table has a runtime adapter and can power Home's realtime Voice feature.
 
-| Provider | Cataloged models                                                                       |
-| -------- | -------------------------------------------------------------------------------------- |
+| Provider | Cataloged models                                                                                                  |
+| -------- | ----------------------------------------------------------------------------------------------------------------- |
 | OpenAI   | GPT Realtime 2.1 (`gpt-realtime-2.1`); GPT Realtime 2.1 Mini (`gpt-realtime-2.1-mini`); GPT Live 1 (`gpt-live-1`) |
-| xAI      | Grok Voice Latest (`grok-voice-latest`)                                                |
+| xAI      | Grok Voice Latest (`grok-voice-latest`)                                                                           |
 
 ### Image
 
-| Status    | Provider          | Cataloged models                                                                                                             |
-| --------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| Available | Black Forest Labs | FLUX.2 (`FLUX.2`); FLUX.1 Kontext Pro (`FLUX.1 Kontext [pro]`); FLUX1.1 Pro Ultra (`FLUX1.1 [pro] Ultra`)                    |
-| Available | Google            | Gemini 3.1 Flash Image Preview (`gemini-3.1-flash-image-preview`); Gemini 3 Pro Image Preview (`gemini-3-pro-image-preview`) |
-| Available | Ideogram          | Ideogram 3.0 (`ideogram-3.0`); Ideogram 2a (`ideogram-2a`)                                                                   |
-| Available | Qwen              | Qwen Image (`qwen-image`); Qwen Image Edit (`qwen-image-edit`)                                                               |
+| Status    | Provider          | Cataloged models                                                                                                                                        |
+| --------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Available | Black Forest Labs | FLUX.2 (`FLUX.2`); FLUX.1 Kontext Pro (`FLUX.1 Kontext [pro]`); FLUX1.1 Pro Ultra (`FLUX1.1 [pro] Ultra`)                                               |
+| Available | Google            | Gemini 3.1 Flash Image Preview (`gemini-3.1-flash-image-preview`); Gemini 3 Pro Image Preview (`gemini-3-pro-image-preview`)                            |
+| Available | Ideogram          | Ideogram 3.0 (`ideogram-3.0`); Ideogram 2a (`ideogram-2a`)                                                                                              |
+| Available | Qwen              | Qwen Image (`qwen-image`); Qwen Image Edit (`qwen-image-edit`)                                                                                          |
 | Available | xAI               | Grok Imagine Image (`grok-imagine-image`); Grok Imagine Image Quality (`grok-imagine-image-quality`); Grok Imagine Image 2.0 (`grok-imagine-image-2.0`) |
 
 ### Video

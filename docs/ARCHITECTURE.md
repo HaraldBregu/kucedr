@@ -64,17 +64,17 @@ The application profile defaults to `~/.kucedr` on all platforms, resolved from 
 directory. `KUCEDR_E2E_DATA_ROOT` overrides it for isolated tests. Electron runtime data such as
 Chromium state and crash dumps uses Electron's own platform-specific paths.
 
-| Profile path         | Purpose                                                                 |
-| -------------------- | ----------------------------------------------------------------------- |
-| `settings/`          | App, agent, RAG, task, account, and integration configuration           |
+| Profile path         | Purpose                                                                    |
+| -------------------- | -------------------------------------------------------------------------- |
+| `settings/`          | App, agent, RAG, task, account, and integration configuration              |
 | `providers/`         | Provider manifests and saved model, database, search, and storage settings |
-| `memory/`            | Memory configuration, run snapshots, processing state, and `MEMORY.md`  |
-| `workspace/`         | Default agent working directory and personalization Markdown files      |
-| `sessions/`          | Conversation/session persistence                                        |
-| `skills/`            | Installed skill instructions                                            |
-| `apps/`              | Managed application files and per-app data                              |
-| `library/`           | Library/media files                                                     |
-| `rag/vectors.sqlite` | Local RAG vectors and source records                                    |
+| `memory/`            | Memory configuration, run snapshots, processing state, and `MEMORY.md`     |
+| `workspace/`         | Default agent working directory and personalization Markdown files         |
+| `sessions/`          | Conversation/session persistence                                           |
+| `skills/`            | Installed skill instructions                                               |
+| `apps/`              | Managed application files and per-app data                                 |
+| `library/`           | Library/media files                                                        |
+| `rag/vectors.sqlite` | Local RAG vectors and source records                                       |
 
 Model, database, and search API keys are stored as entered in `providers/settings.json`.
 Storage secret keys use secure device storage. Account sessions are encrypted when secure

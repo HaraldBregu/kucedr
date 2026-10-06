@@ -22,15 +22,15 @@ the existing E2E data-root override. Partition state and blobs by account and wo
 an account mismatch before opening a partition. Never traverse `storage/` as selected user
 content, even if its parent is selected.
 
-| Path | Responsibility |
-| --- | --- |
-| `storage/settings.json` | Selected backup folders, provider ID, and schedule. Migrated from the former `settings/app.json` `cloud` field. |
-| `storage/config.json` | Versioned, nonsecret provider, bucket, region, prefix, Supabase URL, and sync settings; atomic replacement. |
-| `storage/state.sqlite` | Transactional local versions, parents, heads, operations, upload progress, conflicts, retry state, and change cursor. |
-| `storage/blobs/` | Immutable snapshots; pending snapshots are irreplaceable until publication is confirmed. |
-| `storage/staging/` | Partial transfers and temporary files; safe to remove only after examining pending operations. |
-| `storage/locks/` | Reserved for process coordination; the app currently holds a single-instance lock. |
-| `storage/logs/` | Bounded event-count diagnostics without credentials, paths, or file content. |
+| Path                    | Responsibility                                                                                                        |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `storage/settings.json` | Selected backup folders, provider ID, and schedule. Migrated from the former `settings/app.json` `cloud` field.       |
+| `storage/config.json`   | Versioned, nonsecret provider, bucket, region, prefix, Supabase URL, and sync settings; atomic replacement.           |
+| `storage/state.sqlite`  | Transactional local versions, parents, heads, operations, upload progress, conflicts, retry state, and change cursor. |
+| `storage/blobs/`        | Immutable snapshots; pending snapshots are irreplaceable until publication is confirmed.                              |
+| `storage/staging/`      | Partial transfers and temporary files; safe to remove only after examining pending operations.                        |
+| `storage/locks/`        | Reserved for process coordination; the app currently holds a single-instance lock.                                    |
+| `storage/logs/`         | Bounded event-count diagnostics without credentials, paths, or file content.                                          |
 
 An edit is saved to a staged file, flushed, atomically installed in `blobs/`, then recorded with
 its pending operation in one SQLite transaction. The UI can then report “Saved locally / Pending
