@@ -104,7 +104,7 @@ provider uses an OpenAI-compatible Chat Completions path.
 | OpenAI     | GPT-5.6 Sol (`gpt-5.6-sol`); GPT-5.6 Terra (`gpt-5.6-terra`); GPT-5.6 Luna (`gpt-5.6-luna`); GPT-5.5 (`gpt-5.5`); GPT-5.5 Pro (`gpt-5.5-pro`); GPT-5.4 (`gpt-5.4`); GPT-5.4 Pro (`gpt-5.4-pro`); GPT-5.4 Mini (`gpt-5.4-mini`); GPT-5.4 Nano (`gpt-5.4-nano`) |
 | Qwen       | Qwen3.7 Max (`qwen3.7-max`); Qwen3.6 Plus (`qwen3.6-plus`); Qwen3.6 Flash (`qwen3.6-flash`)                                                                                                                                                                   |
 | Reka AI    | Reka Flash (`reka-flash`); Reka Edge 2603 (`reka-edge-2603`)                                                                                                                                                                                                  |
-| xAI        | Grok 4.3 (`grok-4.3`); Grok Build 0.1 (`grok-build-0.1`)                                                                                                                                                                                                      |
+| xAI        | Grok 4.6 (`grok-4.6`); Grok 4.3 (`grok-4.3`); Grok Build 0.1 (`grok-build-0.1`)                                                                                                                                                                               |
 | Z.ai       | GLM-5.1 (`glm-5.1`); GLM-5 (`glm-5`); GLM-5 Turbo (`glm-5-turbo`)                                                                                                                                                                                             |
 
 ### Speech to text
