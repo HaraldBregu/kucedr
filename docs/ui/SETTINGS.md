@@ -232,8 +232,9 @@ page lets users add HTTP or local-command servers. Local packages placed under
 `~/.kucedr/mcp/servers` appear when the registry is read; the current page has no folder-opening,
 manual refresh, or upload control.
 
-Server details should support test, enable/disable, edit, OAuth where configured, approval policy,
-deferred-loading preference, and confirmed removal of configured servers. Local package changes
+Server details support test, enable/disable, edit, OAuth where configured, approval policy,
+and confirmed removal of configured servers. The stored deferred-loading value is retained but
+has no editable control. Local package changes
 should be written to that package's `mcp.json`; configured server changes should be written to
 Kucedr settings. Registry and connection diagnostics should remain visible.
 

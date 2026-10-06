@@ -262,7 +262,7 @@ Kucedr supports two MCP transport types:
 MCP settings provide:
 
 - One unified list for remote services, configured commands, and discovered local packages.
-- Configured, disabled, testing, connected, and error states, with an enable/disable toggle for configured servers.
+- An enable/disable action in the server list, registry diagnostics, and test results on each server's detail page.
 - An inline add form and detail-page edit form. Server ID and transport type are fixed after creation.
 - Detail-page configuration, testing, and removal for configured servers; filesystem packages remain file-authoritative and are edited through the same detail workflow.
 - OAuth authorization for HTTP servers without a bearer token, including reauthorization.
