@@ -36,13 +36,12 @@ workspace below the application title bar.
 
 The visible sidebar is grouped as follows:
 
-| Group      | Destinations                           |
-| ---------- | -------------------------------------- |
-| General    | Account, Settings, System, Storage     |
-| Assistant  | Agent, Coding, Music, Video, Image     |
-| Brain      | Memory, Knowledge                      |
-| Providers  | Models, Search, Database, Storage      |
-| Extensions | Plugins, Apps, Channels, Remote Agents |
+| Group      | Destinations                                               |
+| ---------- | ---------------------------------------------------------- |
+| General    | Account, Settings, Storage, Providers, Library, Workspace |
+| Assistant  | Agent, Voice, Tasks, Health, Skills, MCP                   |
+| Brain      | Memory, Knowledge                                          |
+| Extensions | Plugins, Apps, Channels, Remote Agents                     |
 
 The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open Settings directly.
@@ -112,7 +111,7 @@ On platforms where explicit operating-system status is unavailable, permission s
 unknown. Screen testing uses the display source supplied by Electron and does not provide an
 additional Kucedr source picker.
 
-## Assistant and Coding
+## Assistant and Voice
 
 ### Assistant
 
@@ -126,15 +125,9 @@ Assistant is the central model and behavior page. It should provide collapsible 
 Only search engines with stored credentials should be selectable. The same page should link to
 Chat history, Health, Permissions, Knowledge, and Data management.
 
-### Coding
+### Voice
 
-Coding should show the Pi SDK runtime and allow selection of its provider, model, thinking level,
-and read-only or coding tool mode. OpenAI Codex authentication should support connect, cancel, and
-disconnect flows, including browser login or device-code feedback. Other providers should link to
-model-provider credentials.
-
-Coding tool mode should show a destructive warning. Missing provider credentials and load, save,
-connect, or disconnect failures should remain visible.
+Voice settings configure realtime conversation and provide access to voice history and tool settings. Coding is currently marked **Soon** in the navigation catalog, and `/code` and `/settings/code` redirect to Workspace.
 
 ## Background tasks and Health
 
@@ -181,9 +174,7 @@ disclosures must be approved before indexing.
 ### Model service configuration
 
 Agent settings configures the assistant, realtime conversation, transcription, read-aloud,
-and web search. Music, Video, and Image have dedicated sidebar pages. The embedding model is
-selected in Knowledge. Coding has its own provider authentication, model, thinking-level,
-and tool-mode settings.
+image, audio, video, and web search. The embedding model is selected in Knowledge. The current router has no dedicated Music, Video, or Image studio routes.
 
 Verified provider input schemas can expose additional model options. Changing a model should clear
 options that belonged to the previous model rather than carrying incompatible values forward.
@@ -197,6 +188,10 @@ account sign-in is separate from this backup configuration. See [Cloud architect
 
 ## Knowledge and data
 
+### Memory
+
+Memory settings enable or disable automatic memory processing and select its provider, model, model options, and memory type (**Facts**, **Summaries**, or **Both**). Changes save shortly after selection. Memory content is maintained by the memory module; this page is configuration, not a memory-file editor.
+
 ### Knowledge
 
 Knowledge should configure enablement, consent for the selected remote embedding model, embedding model,
@@ -209,6 +204,10 @@ controls for local and remote knowledge scopes.
 Chat history should list stored sessions with dates and confirm before deleting one. Data
 management should expose memory and session export or purge actions. Knowledge owns the
 equivalent controls for its data scopes.
+
+## Library and Workspace
+
+Library offers Collections and List views of local files. Users can create folders, upload, sort, select, move, download, preview, and delete files. Its preview supports images, audio, video, PDFs, and other supported content. Workspace shows agent workspace files, supports file and folder actions, and edits Markdown in Text or Raw view. See [Apps](../APPS.md#workspace) for Workspace behavior.
 
 ## Skills and apps
 
@@ -263,11 +262,11 @@ those terms remain searchable.
 Permissions should show sandbox readiness, allow a status recheck, and offer Windows setup when
 required. Filesystem policy should:
 
-- keep the agent workspace visibly trusted for read, write, and execution;
+- show the agent workspace as trusted by default for read, write, and execution, while explicit deny rules can still override that default;
 - add trusted or blocked directories from manual input or a folder picker;
 - apply each directory to selected read, write, and execution kinds;
 - normalize and deduplicate saved paths;
-- prevent blocking the workspace or a directory inside it;
+- apply deny rules before allow rules when a path matches both;
 - remove custom locations;
 - save the edited policy or reset it to defaults.
 
@@ -277,8 +276,7 @@ required. Filesystem policy should:
   empty states, and inline notices for their own asynchronous work.
 - Detail routes should show a useful missing-item state or return to their parent when an ID is not
   valid.
-- There is no unified image/video/audio Library route in Settings. Only the Audio service page has
-  a saved-output library.
+- The current router has no dedicated Image, Video, or Audio studio pages; media model selection lives in Agent settings and local output is browsed in Library.
 - Data-control **Purge** does not show a renderer confirmation dialog; it immediately performs the
   backend preview-token and purge sequence.
 - Permissions **Reset** is immediate. Managed app deletion requests native confirmation.
@@ -308,7 +306,7 @@ required. Filesystem policy should:
 - [Provider settings](../../src/renderer/src/pages/settings/pages/providers/Page.tsx)
 - [Storage settings](../../src/renderer/src/pages/settings/pages/storage/Page.tsx)
 - [Task settings](../../src/renderer/src/pages/settings/pages/tasks/Page.tsx)
-- [System media settings](../../src/renderer/src/pages/settings/pages/system/)
+- [System media settings](../../src/renderer/src/pages/settings/pages/settings/media/)
 - [Knowledge settings](../../src/renderer/src/pages/settings/pages/knowledge/Page.tsx)
 - [Permissions settings](../../src/renderer/src/pages/settings/pages/permissions/Page.tsx)
 - [Channel settings](../../src/renderer/src/pages/settings/pages/channels/Page.tsx)
