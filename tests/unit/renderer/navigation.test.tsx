@@ -57,6 +57,35 @@ it('provides English and Italian translations for every settings navigation item
 	}
 });
 
+it('places Memory and Knowledge in the Brain sidebar section below Agents', () => {
+	render(
+		<MemoryRouter initialEntries={['/settings/memory']}>
+			<Routes>
+				<Route path="/settings" element={<Layout />}>
+					<Route path="*" element={null} />
+				</Route>
+			</Routes>
+		</MemoryRouter>
+	);
+
+	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
+	const agents = within(navigation)
+		.getByText('settings.overview.groups.assistant')
+		.closest('[data-slot="split-pane-group"]');
+	const brain = within(navigation)
+		.getByText('settings.overview.groups.brain')
+		.closest('[data-slot="split-pane-group"]');
+	const links = within(brain as HTMLElement).getAllByRole('link');
+
+	expect(brain?.previousElementSibling).toBe(agents);
+	expect(links.map((link) => link.getAttribute('href'))).toEqual([
+		'/settings/memory',
+		'/settings/knowledge',
+	]);
+	expect(within(agents as HTMLElement).queryByRole('link', { name: 'settings.memory.title' })).not.toBeInTheDocument();
+	expect(within(agents as HTMLElement).queryByRole('link', { name: 'settings.knowledge.title' })).not.toBeInTheDocument();
+});
+
 it('does not expose Coding in settings navigation', () => {
 	expect(SETTINGS_MODEL_SERVICE_ITEMS).not.toContainEqual(
 		expect.objectContaining({ path: '/settings/coding' })
