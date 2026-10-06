@@ -110,6 +110,7 @@ it.each([
 	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
+	['/settings/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/plugins', 'settings.tabs.plugins'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
@@ -209,10 +210,10 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).not.toBeInTheDocument();
 	expect(providersLink).toHaveAttribute('href', '/settings/providers');
 	const generalLinks = within(generalGroup as HTMLElement).getAllByRole('link');
-	const cloud = within(generalGroup as HTMLElement).getByRole('link', {
+	const storage = within(generalGroup as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.storage',
 	});
-	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(cloud) + 1);
+	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(storage) + 1);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',

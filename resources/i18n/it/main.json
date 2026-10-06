@@ -1252,8 +1252,8 @@
 				"enable": "Attiva la sincronizzazione delle versioni",
 				"enableDescription": "Opzionale: Supabase conserva i metadati delle versioni e il provider compatibile con S3 selezionato conserva i contenuti dei file. Le modifiche in attesa restano su questo dispositivo fino alla pubblicazione.",
 				"syncNow": "Sincronizza le versioni ora",
-				"catchUp": "Scarica le versioni cloud",
-				"catchUpDescription": "Scarica e verifica le versioni cloud nella cache locale. I file di lavoro esistenti restano disponibili per risolvere i conflitti.",
+				"catchUp": "Scarica le versioni remote",
+				"catchUpDescription": "Scarica e verifica le versioni remote nella cache locale. I file di lavoro esistenti restano disponibili per risolvere i conflitti.",
 				"conflicts": "Conflitti non risolti",
 				"conflictsDescription": "Le versioni simultanee o i file con lo stesso percorso richiedono una verifica.",
 				"deleted": "File eliminato",
@@ -1264,10 +1264,10 @@
 					"failed": "Sincronizzazione delle versioni non riuscita. {{error}}"
 				},
 				"restore": {
-					"running": "Download delle versioni cloud in corso…",
-					"succeeded": "Le versioni cloud sono nella cache locale.",
-					"partial": "Versioni cloud nella cache; {{failed}} aree di lavoro richiedono attenzione.",
-					"failed": "Impossibile scaricare le versioni cloud. {{error}}"
+					"running": "Download delle versioni remote in corso…",
+					"succeeded": "Le versioni remote sono nella cache locale.",
+					"partial": "Versioni remote nella cache; {{failed}} aree di lavoro richiedono attenzione.",
+					"failed": "Impossibile scaricare le versioni remote. {{error}}"
 				}
 			},
 			"sync": {
@@ -1299,7 +1299,7 @@
 				"custom": "Pianificazione personalizzata"
 			},
 			"errors": {
-				"versioned": "Impossibile cambiare la sincronizzazione delle versioni. Controlla l'accesso e la configurazione del backend cloud.",
+				"versioned": "Impossibile cambiare la sincronizzazione delle versioni. Controlla l'accesso e la configurazione del servizio di sincronizzazione.",
 				"load": "Impossibile caricare le impostazioni di archiviazione.",
 				"pickFolders": "Impossibile selezionare le cartelle.",
 				"saveSync": "Impossibile salvare le impostazioni di backup.",
@@ -1312,10 +1312,10 @@
 				"skills": "Skill installate"
 			},
 			"backup": "Esegui backup ora",
-			"restore": "Ripristina dal cloud",
+			"restore": "Ripristina dallo storage",
 			"restoreDialog": {
-				"title": "Ripristinare dal cloud?",
-				"description": "I file cloud sostituiscono i file locali corrispondenti nelle cartelle selezionate. Gli altri file locali vengono conservati.",
+				"title": "Ripristinare dallo storage?",
+				"description": "I file archiviati sostituiscono i file locali corrispondenti nelle cartelle selezionate. Gli altri file locali vengono conservati.",
 				"confirm": "Ripristina file"
 			},
 			"operation": {

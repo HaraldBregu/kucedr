@@ -2,7 +2,7 @@
 
 ## Existing data and rollout
 
-The current Cloud Backup feature selects local paths, uploads to an S3-compatible bucket by
+The current Storage backup feature selects local paths, uploads to an S3-compatible bucket by
 path, and restores by replacing matching local files. Its folder, provider selection, and schedule
 settings live in `~/.kucedr/storage/settings.json`;
 S3 credentials are encrypted with Electron `safeStorage`. These backups have no version ancestry

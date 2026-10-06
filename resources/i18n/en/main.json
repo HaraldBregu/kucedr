@@ -1252,8 +1252,8 @@
 				"enable": "Enable version history sync",
 				"enableDescription": "Optional: Supabase stores version metadata and the selected S3-compatible provider stores file content. Pending edits remain on this device until published.",
 				"syncNow": "Sync versions now",
-				"catchUp": "Fetch cloud versions",
-				"catchUpDescription": "Download and verify cloud versions into the local cache. Existing working files are kept for conflict review.",
+				"catchUp": "Fetch remote versions",
+				"catchUpDescription": "Download and verify remote versions into the local cache. Existing working files are kept for conflict review.",
 				"conflicts": "Unresolved conflicts",
 				"conflictsDescription": "Concurrent versions or files claiming the same path need review.",
 				"deleted": "Deleted file",
@@ -1264,10 +1264,10 @@
 					"failed": "Version sync failed. {{error}}"
 				},
 				"restore": {
-					"running": "Fetching cloud versions…",
-					"succeeded": "Cloud versions are cached locally.",
-					"partial": "Cloud versions were cached; {{failed}} workspace(s) need attention.",
-					"failed": "Could not fetch cloud versions. {{error}}"
+					"running": "Fetching remote versions…",
+					"succeeded": "Remote versions are cached locally.",
+					"partial": "Remote versions were cached; {{failed}} workspace(s) need attention.",
+					"failed": "Could not fetch remote versions. {{error}}"
 				}
 			},
 			"sync": {
@@ -1299,7 +1299,7 @@
 				"custom": "Custom schedule"
 			},
 			"errors": {
-				"versioned": "Could not change version history sync. Check account sign-in and cloud backend setup.",
+				"versioned": "Could not change version history sync. Check account sign-in and sync service setup.",
 				"load": "Could not load storage settings.",
 				"pickFolders": "Could not select folders.",
 				"saveSync": "Could not save backup settings.",
@@ -1312,10 +1312,10 @@
 				"skills": "Installed skills"
 			},
 			"backup": "Back up now",
-			"restore": "Restore from cloud",
+			"restore": "Restore from storage",
 			"restoreDialog": {
-				"title": "Restore from cloud?",
-				"description": "Cloud files replace matching local files in the selected folders. Other local files are kept.",
+				"title": "Restore from storage?",
+				"description": "Stored files replace matching local files in the selected folders. Other local files are kept.",
 				"confirm": "Restore files"
 			},
 			"operation": {

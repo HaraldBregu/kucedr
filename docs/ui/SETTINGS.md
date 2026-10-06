@@ -65,7 +65,7 @@ Settings uses both immediate and explicit persistence:
 
 - Provider/model selectors, simple application preferences, channel policy changes, and many
   service choices save when changed.
-- Permissions, Health, Cloud sync, MCP, A2A, and task capability forms provide explicit
+- Permissions, Health, Storage sync, MCP, A2A, and task capability forms provide explicit
   save or submit actions where multiple values belong together.
 - Provider secrets should use password inputs and display a masked connected state after saving.
 - Pages should disable conflicting controls while loading, saving, testing, importing, running, or

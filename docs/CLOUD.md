@@ -1,7 +1,7 @@
 # Account and Cloud Architecture
 
 Kucedr separates account services from folder backup. Accounts use a build-configured backend;
-folder backup uses an S3-compatible storage provider selected in Settings → Cloud. Backup users
+folder backup uses an S3-compatible storage provider selected in Settings → Storage. Backup users
 configure the bucket, region, optional endpoint, access key, and secret key themselves.
 
 AI model, search, database, storage, and messaging providers are user-configured services.
@@ -42,7 +42,7 @@ SDK client for metadata, and trusted Edge Functions for narrow S3 upload/downloa
 
 ## Folder backup semantics
 
-Cloud Backup is an incremental upload plus an explicit restore, not bidirectional file-system
+Storage backup is an incremental upload plus an explicit restore, not bidirectional file-system
 synchronization. Backup overwrites matching remote objects and retains other remote objects.
 Restore atomically replaces matching local files and retains other local files.
 
