@@ -391,7 +391,7 @@ async function* loop(
 					: '';
 			const memoryContext =
 				session.category === 'main'
-					? ((await options.memory?.context(input.message).catch(() => '')) ?? '')
+					? ((await options.memory?.read().catch(() => '')) ?? '')
 					: '';
 			const workspaceContext = await buildWorkspaceContext(
 				config,

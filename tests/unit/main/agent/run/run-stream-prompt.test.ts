@@ -337,6 +337,8 @@ describe('run stream system prompt', () => {
 	it('sends generated AGENTS.md in the system prompt without duplicate user context', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-prompt-'));
 		try {
+			const memory = `# Memory\n${Array.from({ length: 120 }, (_, index) => `- Memory ${index}`).join('\n')}\n`;
+			const read = jest.fn(async () => memory);
 			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
 			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
@@ -357,7 +359,7 @@ describe('run stream system prompt', () => {
 					contextMode: 'workspace',
 				},
 				new AbortController().signal,
-				{ tools: [] }
+				{ tools: [], memory: { read } as never }
 			))
 				void event;
 
@@ -367,6 +369,8 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).toContain('- **Name:** Alice');
 			expect(systemPrompt).toContain('## Tools loaded by default in ordinary text chat');
 			expect(systemPrompt).toContain(await fs.readFile(path.join(root, 'AGENTS.md'), 'utf8'));
+			expect(systemPrompt).toContain('- Memory 119');
+			expect(read).toHaveBeenCalledTimes(1);
 			expect(contextMessages).toEqual([]);
 			expect(messages[0]).toEqual({ role: 'user', content: 'Current request' });
 		} finally {
