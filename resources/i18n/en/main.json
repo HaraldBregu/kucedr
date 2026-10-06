@@ -304,7 +304,7 @@
 				"health": "Periodic health checks",
 				"permissions": "Tool permissions and path rules",
 				"apps": "Installed apps",
-				"rag": "Index your documents for search and grounded answers.",
+				"knowledge": "Index your documents for search and grounded answers.",
 				"plugins": "Installable app plugins",
 				"configurationDescription": "Configure models, storage, and integrations"
 			}
@@ -2748,7 +2748,7 @@
 		"video": "Video",
 		"audio": "Audio",
 		"files": "Files",
-		"knowledgeBase": "Knowledge base",
+		"knowledge": "Knowledge",
 		"data": "Database",
 		"integrations": "Integrations",
 		"socialMedia": "Social media",

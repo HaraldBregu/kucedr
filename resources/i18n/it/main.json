@@ -304,7 +304,7 @@
 				"health": "Controlli salute periodici",
 				"permissions": "Permessi strumenti e regole di percorso",
 				"apps": "App installate",
-				"rag": "Indicizza i documenti per cercare risposte basate sui file.",
+				"knowledge": "Indicizza i documenti per cercare risposte basate sui file.",
 				"plugins": "Plugin installabili",
 				"configurationDescription": "Configura modelli, archiviazione e integrazioni"
 			}
@@ -1884,10 +1884,10 @@
 		"knowledge": {
 			"title": "Knowledge",
 			"description": "Indicizza ricorsivamente i file di testo nelle cartelle selezionate e cercali come vettori.",
-			"behaviorTitle": "Comportamento Conoscenza",
-			"enabled": "Abilita Conoscenza",
+			"behaviorTitle": "Comportamento Knowledge",
+			"enabled": "Abilita Knowledge",
 			"enabledDescription": "Indicizzazione dei documenti e ricerca dell'assistente.",
-			"indexRequirements": "Prima di indicizzare, seleziona il tuo database vettoriale, configura le chiavi API del database e del provider di embedding, abilita Conoscenza e approva entrambi i consensi in Comportamento Conoscenza.",
+			"indexRequirements": "Prima di indicizzare, seleziona il tuo database vettoriale, configura le chiavi API del database e del provider di embedding, abilita Knowledge e approva entrambi i consensi in Comportamento Knowledge.",
 			"embeddingConsent": "Invia il testo dei documenti per gli embedding",
 			"embeddingConsentDescription": "Consenti l’invio di parti dei documenti e query di ricerca al provider e account di embedding selezionati. Le modifiche a provider, modello, endpoint o account richiedono nuovo consenso.",
 			"mirrorConsent": "Salva la conoscenza in chiaro nel database vettoriale",
@@ -1907,8 +1907,8 @@
 			"pickFolder": "Scegli cartella",
 			"pickFolderError": "Impossibile scegliere una cartella sorgente.",
 			"removeFolder": "Rimuovi cartella",
-			"loadError": "Impossibile caricare le impostazioni Conoscenza.",
-			"saveError": "Impossibile salvare le impostazioni Conoscenza.",
+			"loadError": "Impossibile caricare le impostazioni Knowledge.",
+			"saveError": "Impossibile salvare le impostazioni Knowledge.",
 			"scheduleTitle": "Automazione",
 			"scheduleFrequency": "Frequenza di indicizzazione",
 			"scheduleDescription": "Scegli ogni quanto Kucedr controlla le cartelle selezionate per file nuovi o modificati.",

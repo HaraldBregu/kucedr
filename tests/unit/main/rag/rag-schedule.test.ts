@@ -68,7 +68,7 @@ describe('RAG indexing schedule', () => {
 		expect(logger.error).toHaveBeenCalledWith('RAG', 'Invalid indexing schedule: 0 3 * * *');
 	});
 
-	it('does not schedule while the Knowledge Base is disabled', () => {
+	it('does not schedule while Knowledge is disabled', () => {
 		getRagConfiguration.mockReturnValue({ ...configuration, enabled: false });
 		startRagSchedule(logger);
 
