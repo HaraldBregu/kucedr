@@ -132,7 +132,7 @@ it('keeps backup controls disabled when no providers exist', async () => {
 	const user = userEvent.setup();
 	await openActions(user);
 	expect(screen.getByRole('menuitem', { name: 'Back up now' })).toBeDisabled();
-	expect(screen.getByRole('menuitem', { name: 'Restore from cloud' })).toBeDisabled();
+	expect(screen.getByRole('menuitem', { name: 'Restore from storage' })).toBeDisabled();
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toBeDisabled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 });

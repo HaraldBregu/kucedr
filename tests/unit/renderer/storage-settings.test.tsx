@@ -35,16 +35,16 @@ jest.mock('react-i18next', () => {
 		'settings.storage.autoSync.cronDescription': 'Five-field cron expression',
 		'settings.storage.folders.agent': 'Agent',
 		'settings.storage.backup': 'Back up now',
-		'settings.storage.restore': 'Restore from cloud',
+		'settings.storage.restore': 'Restore from storage',
 		'settings.storage.restoreDialog.title': 'Restore selected data?',
 		'settings.storage.restoreDialog.description': 'Matching local files will be overwritten.',
 		'settings.storage.restoreDialog.confirm': 'Restore selected data',
 		'settings.storage.operation.backup.running': 'Backup is running in the background…',
 		'settings.storage.operation.backup.succeeded': 'Backup completed',
 		'settings.storage.operation.backup.partial': 'Backed up files; some failed',
-		'settings.storage.errors.load': 'Could not load cloud backup settings.',
+		'settings.storage.errors.load': 'Could not load storage settings.',
 		'settings.storage.errors.pickFolders': 'Could not select folders.',
-		'settings.storage.errors.saveSync': 'Could not save the cloud backup schedule.',
+		'settings.storage.errors.saveSync': 'Could not save the storage backup schedule.',
 		'settings.storage.errors.push': 'Could not back up files.',
 		'settings.storage.errors.pull': 'Could not restore files.',
 	};
@@ -237,7 +237,7 @@ it('backs up directly and confirms before restoring matching local files', async
 	});
 
 	await openActions(user);
-	await user.click(screen.getByRole('menuitem', { name: 'Restore from cloud' }));
+	await user.click(screen.getByRole('menuitem', { name: 'Restore from storage' }));
 	expect(screen.getByRole('dialog')).toHaveTextContent('Matching local files will be overwritten.');
 	await user.click(screen.getByRole('button', { name: 'Restore selected data' }));
 	await waitFor(() => expect(storageApi.restore).toHaveBeenCalledWith());
@@ -326,7 +326,7 @@ it('preserves selected folders when an auxiliary load fails', async () => {
 	);
 
 	expect(await screen.findByText('/data/agent')).toBeInTheDocument();
-	expect(screen.getByRole('alert')).toHaveTextContent('Could not load cloud backup settings.');
+	expect(screen.getByRole('alert')).toHaveTextContent('Could not load storage settings.');
 	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
 });
 
@@ -339,7 +339,7 @@ it('shows a retry without editable defaults when settings cannot be loaded', asy
 	);
 
 	expect(await screen.findByRole('alert')).toHaveTextContent(
-		'Could not load cloud backup settings.'
+		'Could not load storage settings.'
 	);
 	expect(screen.getByRole('button', { name: 'Try Again' })).toBeEnabled();
 	expect(screen.queryByRole('button', { name: 'Back up now' })).not.toBeInTheDocument();
@@ -358,7 +358,7 @@ it.each([undefined, 'deleted'])(
 		const user = userEvent.setup();
 		await openActions(user);
 		expect(await screen.findByRole('menuitem', { name: 'Back up now' })).toBeDisabled();
-		expect(screen.getByRole('menuitem', { name: 'Restore from cloud' })).toBeDisabled();
+		expect(screen.getByRole('menuitem', { name: 'Restore from storage' })).toBeDisabled();
 		expect(screen.queryByRole('menuitem', { name: 'Save schedule' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('menuitem', { name: 'Cancel' })).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
