@@ -363,7 +363,7 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 	).toBe(true);
 	expect(
 		screen
-			.queryAllByRole('button', { name: 'Voice' })
+			.queryAllByRole('button', { name: /Voice/ })
 			.some((element) => element.getAttribute('data-slot') === 'collapsible-trigger')
 	).toBe(false);
 	expect(document.querySelector('.lucide-music-2')).toBeInTheDocument();
@@ -549,7 +549,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 		screen.getByRole('link', { name: /settings\.modelServices\.voiceHistoryTitle/ })
 	).toHaveAttribute('href', '/settings/voice/history');
 
-	const trigger = (await screen.findAllByRole('button', { name: 'Voice' })).find(
+	const trigger = (await screen.findAllByRole('button', { name: /Voice/ })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 	);
 	expect(trigger).toBeDefined();
@@ -573,7 +573,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	});
 });
 
-it('leaves realtime conversation unselected when catalog defaults are disabled', async () => {
+it('leaves Voice unselected when catalog defaults are disabled', async () => {
 	const user = userEvent.setup();
 	(window.models.realtimeVoice.getSetup as jest.Mock).mockResolvedValueOnce({
 		providerId: '',
@@ -583,7 +583,7 @@ it('leaves realtime conversation unselected when catalog defaults are disabled',
 	});
 	render(<VoiceConfiguration selectDefaultModel={false} />);
 
-	const trigger = await screen.findByRole('button', { name: 'Voice' });
+	const trigger = await screen.findByRole('button', { name: /Voice/ });
 	expect(trigger).toHaveTextContent('Select model');
 	await user.click(trigger);
 	const selector = await screen.findByRole('combobox', { name: 'Voice' });
@@ -647,7 +647,7 @@ it('uses the Agent model picker UI and task switches', async () => {
 	expect(await screen.findByText('Task detail')).toBeInTheDocument();
 });
 
-it('announces a realtime conversation setup save error', async () => {
+it('announces a Voice setup save error', async () => {
 	const user = userEvent.setup();
 	realtimeSetSetup.mockRejectedValueOnce(new Error('Realtime setup could not be saved.'));
 	render(
@@ -656,7 +656,7 @@ it('announces a realtime conversation setup save error', async () => {
 		</MemoryRouter>
 	);
 
-	const trigger = (await screen.findAllByRole('button', { name: 'Voice' })).find(
+	const trigger = (await screen.findAllByRole('button', { name: /Voice/ })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 	);
 	expect(trigger).toBeDefined();
