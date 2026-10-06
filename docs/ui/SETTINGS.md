@@ -40,6 +40,7 @@ The visible sidebar is grouped as follows:
 | ------------ | ---------------------------------- |
 | General      | Account, Settings, System, Storage  |
 | Assistant    | Agent, Coding, Music, Video, Image |
+| Brain        | Memory, Knowledge                  |
 | Providers    | Models, Search, Database, Storage  |
 | Integrations | Channels, Integrations, A2A, Apps  |
 

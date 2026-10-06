@@ -40,10 +40,16 @@ const SETTINGS_SIDEBAR_GROUPS = [
 					'/settings/remote-agent',
 				].includes(item.path)
 			),
-			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
-			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/knowledge'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/skills'),
 			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/mcp'),
+		],
+	},
+	{
+		id: 'brain',
+		titleKey: 'settings.overview.groups.brain',
+		items: [
+			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/memory'),
+			...SETTINGS_NAVIGATION.filter((item) => item.path === '/settings/knowledge'),
 		],
 	},
 	{

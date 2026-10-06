@@ -242,9 +242,6 @@ it('renders settings navigation beside the workspace and marks the current secti
 		within(navigation).queryByRole('link', { name: 'settings.tabs.permissions' })
 	).not.toBeInTheDocument();
 	expect(
-		within(assistantGroup as HTMLElement).getByRole('link', { name: 'settings.knowledge.title' })
-	).toHaveAttribute('href', '/settings/knowledge');
-	expect(
 		within(navigation)
 			.getByRole('link', { name: 'settings.tabs.plugins' })
 			.closest('[data-slot="split-pane-group"]')

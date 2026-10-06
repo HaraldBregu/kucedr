@@ -280,6 +280,7 @@
 				"automations": "Automations",
 				"services": "Application",
 				"assistant": "Agents",
+				"brain": "Brain",
 				"extensions": "Extensions",
 				"configuration": "Configuration"
 			},
