@@ -10,6 +10,7 @@ import { recall } from './recall';
 import { fingerprint } from './fingerprint';
 import { snapshotMarkdown } from './snapshot';
 import { generateMemory } from './generate';
+import { stampMemories } from './stamp';
 
 export class Memory implements MemoryService {
 	private state: MemoryState;
@@ -61,7 +62,7 @@ export class Memory implements MemoryService {
 	async list() {
 		return [
 			...new Map(
-				parseMemories(await this.read()).map(({ id, fact }) => [id, { id, fact }])
+				parseMemories(await this.read()).map(({ id, fact, createdAt }) => [id, { id, fact, createdAt }])
 			).values(),
 		];
 	}
@@ -150,7 +151,7 @@ export class Memory implements MemoryService {
 			const previous = parseMemories(current);
 			const kept = new Set(parseMemories(markdown).map((entry) => entry.id));
 			await this.replace(
-				markdown,
+				stampMemories(markdown, current),
 				previous.filter((entry) => !kept.has(entry.id)).map((entry) => entry.id)
 			);
 		});
@@ -374,7 +375,7 @@ export class Memory implements MemoryService {
 								return !entry || !this.state.suppressed.includes(entry.id);
 							})
 							.join('\n');
-						await this.dependencies.write(filtered);
+						await this.dependencies.write(stampMemories(filtered, markdown));
 					}
 					const processed = new Set([
 						...(this.state.checkpoints[source.id] ?? []),

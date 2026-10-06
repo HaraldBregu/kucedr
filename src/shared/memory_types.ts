@@ -8,6 +8,7 @@ export interface MemoryConfig {
 export interface MemoryEntry {
 	id: string;
 	fact: string;
+	createdAt?: string;
 }
 export interface MemoryStatus {
 	running: boolean;

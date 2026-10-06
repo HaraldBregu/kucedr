@@ -4,7 +4,7 @@ import type { StoredEntry } from './types';
 export function parseMemories(text: string): StoredEntry[] {
 	return text.split('\n').flatMap((line, lineIndex) => {
 		const match = line.match(
-			/^- (?:\[memory-[a-f0-9]{16}\] )?(.+?)(?: <!-- kucedr:(fact|summary):([^ ]*) -->)?$/i
+			/^- (?:\[memory-[a-f0-9]{16}\] )?(.+?)(?: <!-- kucedr:(fact|summary):([^ ]*) -->)?(?: <!-- kucedr:created:([^ ]+) -->)?$/i
 		);
 		if (!match) return [];
 		const fact = match[1].trim().replace(/\s+/gu, ' ');
@@ -20,6 +20,7 @@ export function parseMemories(text: string): StoredEntry[] {
 				id: `memory-${fingerprint(fact).slice(0, 16)}`,
 				fact,
 				lineIndex,
+				...(match[4] && !Number.isNaN(Date.parse(match[4])) ? { createdAt: match[4] } : {}),
 				...(match[2] ? { kind: match[2] as 'fact' | 'summary', topic } : {}),
 			},
 		];

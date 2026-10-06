@@ -10,7 +10,7 @@ export function recall(markdown: string, query: string): string {
 			return [];
 		}
 		if (!/^\s*[-*]\s+\S/.test(source)) return [];
-		const line = source.replace(/ <!-- kucedr:(?:fact|summary):[^ ]* -->/g, '').trim();
+		const line = source.replace(/ <!-- kucedr:(?:fact|summary|created):[^ ]* -->/g, '').trim();
 		if (!line || privateContent(line)) return [];
 		const normalized = line
 			.replace(/^\s*[-*]\s+/, '')
