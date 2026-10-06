@@ -19,20 +19,20 @@ Setup checks whether an assistant provider and model are stored; it does not pro
 
 Home contains the conversation, composer, session sidebar, and tool activity. Settings contains preferences, service configuration, Library, Memory, and Workspace. Use the title-bar search to find deeper pages and **Return to Home** to resume the conversation.
 
-| Area                 | What to configure or inspect                                                                     |
-| -------------------- | ------------------------------------------------------------------------------------------------ |
-| Account              | Sign-in state and sign out                                                                       |
+| Area                 | What to configure or inspect                                                                         |
+| -------------------- | ---------------------------------------------------------------------------------------------------- |
+| Account              | Sign-in state and sign out                                                                           |
 | Settings and Persona | Language, theme, tray behavior, keep-awake preferences, app data, device tests, and voice appearance |
-| Agent and Voice      | Assistant, speech, search, and media model selections; voice configuration and history              |
-| Providers            | Model and search credentials, database accounts, and storage providers                              |
-| Storage              | Selected storage provider, folders, backup schedule, backup, and restore                            |
-| Library              | Collections or list view, upload, preview, move, download, and delete local files                   |
-| Workspace            | Browse agent files; create, rename, and delete entries; edit Markdown                               |
-| Memory               | Enable memory, select its model and type                                                            |
-| Channels             | Telegram bot credentials, sender policies, and channel model choices                             |
-| Integrations and MCP | External service connections and tool servers                                                    |
-| A2A                  | Remote Agent2Agent-compatible agents                                                             |
-| Apps                 | Import, inspect, open, remove, or register external apps                                         |
+| Agent and Voice      | Assistant, speech, search, and media model selections; voice configuration and history               |
+| Providers            | Model and search credentials, database accounts, and storage providers                               |
+| Storage              | Selected storage provider, folders, backup schedule, backup, and restore                             |
+| Library              | Collections or list view, upload, preview, move, download, and delete local files                    |
+| Workspace            | Browse agent files; create, rename, and delete entries; edit Markdown                                |
+| Memory               | Enable memory, select its model and type                                                             |
+| Channels             | Telegram bot credentials, sender policies, and channel model choices                                 |
+| Integrations and MCP | External service connections and tool servers                                                        |
+| A2A                  | Remote Agent2Agent-compatible agents                                                                 |
+| Apps                 | Import, inspect, open, remove, or register external apps                                             |
 
 From Agent or route search, open Tools, Skills, Tasks, Chat History, Knowledge, Health, and Permissions. The Coding entry is marked **Soon**; `/code` redirects to Workspace. The [Settings reference](ui/SETTINGS.md) explains save behavior and routes.
 

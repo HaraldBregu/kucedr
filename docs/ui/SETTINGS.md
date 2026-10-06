@@ -36,12 +36,12 @@ workspace below the application title bar.
 
 The visible sidebar is grouped as follows:
 
-| Group      | Destinations                                               |
-| ---------- | ---------------------------------------------------------- |
+| Group      | Destinations                                              |
+| ---------- | --------------------------------------------------------- |
 | General    | Account, Settings, Storage, Providers, Library, Workspace |
-| Assistant  | Agent, Voice, Tasks, Health, Skills, MCP                   |
-| Brain      | Memory, Knowledge                                          |
-| Extensions | Plugins, Apps, Channels, Remote Agents                     |
+| Assistant  | Agent, Voice, Tasks, Health, Skills, MCP                  |
+| Brain      | Memory, Knowledge                                         |
+| Extensions | Plugins, Apps, Channels, Remote Agents                    |
 
 The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open Settings directly.
