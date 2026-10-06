@@ -36,13 +36,13 @@ workspace below the application title bar.
 
 The visible sidebar is grouped as follows:
 
-| Group        | Destinations                           |
-| ------------ | -------------------------------------- |
-| General      | Account, Settings, System, Storage     |
-| Assistant    | Agent, Coding, Music, Video, Image     |
-| Brain        | Memory, Knowledge                      |
-| Providers    | Models, Search, Database, Storage      |
-| Extensions   | Plugins, Apps, Channels, Remote Agents |
+| Group      | Destinations                           |
+| ---------- | -------------------------------------- |
+| General    | Account, Settings, System, Storage     |
+| Assistant  | Agent, Coding, Music, Video, Image     |
+| Brain      | Memory, Knowledge                      |
+| Providers  | Models, Search, Database, Storage      |
+| Extensions | Plugins, Apps, Channels, Remote Agents |
 
 The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
 Settings route-search item, and `Cmd+,` shortcut also open Settings directly.
