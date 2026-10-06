@@ -80,24 +80,18 @@ Home does not currently mount a general slash-command browser or searchable skil
 
 ## Attachments
 
-Attachment availability should be derived from the selected assistant model before the picker is
-enabled. Known text files are supported independently of binary media rules; image, PDF, and other
-binary support depends on verified model capabilities.
+The attachment picker accepts multiple files. The tray above the composer shows each queued file's
+name, type, size, and removal action, with previews for images and recorded audio. Queued files
+are saved as session drafts and restored when returning to that session. Sending captures the
+files for the agent request and clears the tray.
 
-- Allow multiple files using the model-provided accepted types.
-- Show every queued file's name, size, removal action, and validation error.
-- Validate the total file count, supported MIME type and extension, per-file size, total text and
-  binary size, and any per-media-kind limits.
-- Keep invalid attachments visible and disable Send until they are removed or become valid.
-- Revalidate queued attachments when the selected model changes.
-- Clear the tray when submission begins and encode the captured files for the agent request.
-
-Submitted attachment metadata is not currently rendered in the user bubble or restored transcript.
+Submitted attachments appear with the user message and are restored from stored conversation
+content. The current composer does not gate the picker by model capability or show per-file
+validation errors before sending; provider or runtime errors can still reject an unsupported file.
 
 ## Sending, streaming, and stopping
 
-Text, valid attachments, or both should enable **Send message**. Plan and Goal validation and any
-attachment error should block submission.
+Text, attachments, or both can be submitted. Plan and Goal command validation can block submission.
 
 When submission begins, Home should clear the normal input and attachment tray, add the user turn
 and a thinking assistant turn, and apply streamed response events to that assistant turn. The
@@ -120,7 +114,7 @@ conversation**.
 - Provide Copy and inline Edit actions.
 - Disable editing while a response is running or voice UI is active.
 - Save an edit to the stored user turn without automatically rerunning later turns.
-- Collapse earlier user messages longer than 600 characters behind working **More/Less** controls.
+- Show submitted attachments alongside the user message, including after transcript restoration.
 
 ### Assistant messages
 
@@ -132,9 +126,6 @@ conversation**.
   supported open, reveal, copy, or save actions.
 - Visually group adjacent assistant turns and show status text for running, cancelled, completed,
   and error states.
-
-Earlier assistant messages longer than 600 characters currently show **More/Less**, but that
-control does not yet change the assistant content layout.
 
 ## Tool activity and inline decisions
 
@@ -216,7 +207,7 @@ action should be disabled; synthesis errors should be reflected on the action.
 - Hide the empty-conversation state while the selected session snapshot is loading.
 - Show four sidebar skeleton rows while history is loading and a retry action when the session list
   fails.
-- Keep attachment validation errors in the tray and block Send.
+- Show submitted attachments with user turns and restore queued session drafts when revisiting them.
 - Show tool, permission, and planning-input errors in their related inline components.
 - Show voice errors above the composer. Configuration failures should link to Voice settings, and
   microphone failures should link to Microphone settings.
