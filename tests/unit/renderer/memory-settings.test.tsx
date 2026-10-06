@@ -66,7 +66,8 @@ it('shows the selected model and reveals its options when expanded', async () =>
 	await user.click(
 		screen.getByRole('button', { name: /settings.memory.model settings.memory.modelDescription/ })
 	);
-	expect(screen.getByRole('button', { name: 'Advanced' })).toBeInTheDocument();
+	expect(screen.getByText('Advanced properties')).toBeInTheDocument();
+	expect(screen.getByRole('spinbutton', { name: 'Creativity' })).toHaveValue(0.7);
 	expect(heading.closest('header')?.querySelector('svg')).toBeNull();
 	expect(
 		screen.queryByRole('button', { name: 'settings.memory.saveSettings' })
