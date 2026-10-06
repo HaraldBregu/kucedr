@@ -75,6 +75,13 @@ for (const route of routes) {
 	});
 }
 
+test('the former Cloud route redirects to Storage', async () => {
+	await page.evaluate(() => {
+		window.location.hash = '#/settings/cloud';
+	});
+	await expect(page).toHaveURL(/#\/settings\/storage$/);
+});
+
 test('the start route redirects configured users to home', async () => {
 	await page.evaluate(() => {
 		window.location.hash = '#/start';
