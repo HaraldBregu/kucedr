@@ -561,12 +561,16 @@ describe('run stream system prompt', () => {
 		}
 	});
 
-	it.each(['minimal', 'workspace'] as const)('injects untrusted automatic memory into %s main chat', async (contextMode) => {
+	it.each(['minimal', 'workspace'] as const)('includes complete memory in %s main chat context', async (contextMode) => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
+		await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
+		await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
+		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 		const session = createSessionState();
 		session.category = 'main';
 		session.messages = [{ role: 'user', content: 'Current correction' }];
-		const context = jest.fn(async () => '- Prefers concise answers.');
+		const memory = `# Memory\n${Array.from({ length: 150 }, (_, index) => `- Memory ${index}`).join('\n')}\n`;
+		const read = jest.fn(async () => memory);
 		for await (const event of stream(
 			{ location: root },
 			session,
@@ -581,15 +585,12 @@ describe('run stream system prompt', () => {
 				interactionMode: 'default',
 			},
 			new AbortController().signal,
-			{ tools: [], memory: { context } as never }
+			{ tools: [], memory: { read } as never }
 		)) void event;
-		expect(context).toHaveBeenCalledWith('Current correction');
-		expect(runModelTurnMock.mock.calls[0][10]).toEqual([
-			expect.objectContaining({
-				role: 'user',
-				content: expect.stringContaining('explicit corrections override this recalled context'),
-			}),
-		]);
+		expect(read).toHaveBeenCalledTimes(1);
+		expect(await fs.readFile(path.join(root, 'AGENTS.md'), 'utf8')).toContain('- Memory 149');
+		expect(runModelTurnMock.mock.calls[0][3]).toContain('- Memory 149');
+		expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
 		await fs.rm(root, { recursive: true, force: true });
 	});
 
@@ -598,7 +599,7 @@ describe('run stream system prompt', () => {
 		const session = createSessionState();
 		session.category = category;
 		session.messages = [{ role: 'user', content: 'Background request' }];
-		const context = jest.fn(async () => '- Private preference.');
+		const read = jest.fn(async () => '- Private preference.');
 		for await (const event of stream(
 			{ location: root },
 			session,
@@ -613,9 +614,9 @@ describe('run stream system prompt', () => {
 				interactionMode: 'default',
 			},
 			new AbortController().signal,
-			{ tools: [], memory: { context } as never }
+			{ tools: [], memory: { read } as never }
 		)) void event;
-		expect(context).not.toHaveBeenCalled();
+		expect(read).not.toHaveBeenCalled();
 		expect(JSON.stringify(runModelTurnMock.mock.calls[0][10])).not.toContain('Private preference');
 		await fs.rm(root, { recursive: true, force: true });
 	});
