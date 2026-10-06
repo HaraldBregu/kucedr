@@ -36,6 +36,7 @@ Kucedr provides:
 - Independent provider and model selection for chat, transcription, speech, image, video, audio, scheduled work, and health checks.
 - Local skills, remote HTTP MCP servers, local stdio MCP servers, and standalone app windows.
 - Persistent schedules, periodic `HEALTH.md` checks, and provider-backed cloud backup for local folders.
+- A built-in Workspace for browsing agent files and editing Markdown, plus a Library for local files and generated media.
 - Telegram bot connections with sender policies.
 - Local configuration, conversation history, memory, generated-media storage, and operational logs.
 - Windows, macOS, and Linux packaging; partial English and Italian localization; light, dark, and system themes.
@@ -50,7 +51,7 @@ contract.
 ### First-run setup
 
 The first launch uses a single `/start` flow with five visible stages: **Welcome**, **Account**,
-**Model**, **Search**, and **Models**. Account sign-in is optional; users
+**Model**, **Search providers**, and **Models**. Account sign-in is optional; users
 can continue in local-only mode. After sign-in or local-only continuation, Kucedr checks for a
 stored Assistant provider and model. A complete configuration opens Home, while an incomplete one
 continues through setup. A restored signed-in user runs this check automatically and skips Welcome
@@ -75,8 +76,8 @@ Provider API keys are stored in Kucedr's local application data and are masked a
 - `Cmd/Ctrl+/` focuses the prompt editor.
 - The send button becomes a stop button while a response is running. Stopping aborts the active run and rejects pending tool-approval requests.
 - Starting a new request for the same agent also cancels that agent's previous active request.
-- Empty conversations offer four guided prompts: schedule a task, create a sound, create an image,
-  and create a video. Selecting one fills the composer without sending it.
+- Empty conversations show a time-of-day greeting and six guided prompts: Plan my day, Rain sound, Create an image, Video, Brainstorm project ideas, and Draft a thank-you. Selecting one fills the composer without sending it.
+- The composer says **Ask anything** in an empty chat and **Send follow-up** in an existing one. Dictation keeps the input geometry fixed and changes its footer controls.
 
 ### Attachments
 
@@ -128,8 +129,7 @@ picker.
 
 ### Sessions and conversation history
 
-- The Home sidebar starts a new UUID-backed conversation or switches to an existing one. It also
-  supports context-menu rename and deletion.
+- The Home sidebar starts a new UUID-backed conversation or switches to an existing one. Its context menu supports rename, confirmed clear, confirmed compact, open location, and confirmed deletion.
 - Sessions are listed newest first and titled from the first user message, shortened to 60 characters.
 - Switching sessions restores its stored transcript; the Home view loads at most the last 50 stored messages before expanding tool results.
 - Stored transcripts remain complete. Model calls always retain the current run and add older complete turns within a 50-message, 120,000-serialized-character history budget.
@@ -167,7 +167,6 @@ The Home prompt classifier computes `none`, `medium`, or `high` reasoning effort
 | Web fetch  | Fetch public HTTP(S) pages or JSON, follow up to three redirects, convert HTML to plain text, and truncate long output. Private, loopback, and link-local targets are blocked.                                      |
 | Browser    | Start or stop a persistent visible Chrome profile; manage tabs; navigate; take DOM/text snapshots, screenshots, or PDFs; read console output; and click, type, press, hover, drag, select, fill, wait, or evaluate. |
 | Media      | Generate an image, video, music track, or sound effect with the configured service and save agent-created output in the media library.                                                                              |
-| Memory     | Save a durable fact or forget all saved facts containing a case-insensitive match.                                                                                                                                  |
 | Skills     | Load an enabled skill's `SKILL.md` instructions and return its directory path to the current run.                                                                                                                   |
 | MCP        | Load enabled server tools dynamically as `mcp__<server>__<tool>`.                                                                                                                                                   |
 | Schedules  | Create, update, pause, resume, delete, inspect, list, or trigger persistent schedule records. See [Scheduled tasks](#scheduled-tasks) for the execution limit.                                                      |
@@ -348,14 +347,14 @@ Kucedr maintains an agent workspace in local application data with these Markdow
 
 | File           | Purpose                                                         |
 | -------------- | --------------------------------------------------------------- |
-| `AGENTS.md`    | Standing behavior and workspace instructions.                   |
+| `AGENTS.md`    | Generated agent context from the saved profiles and memory.     |
 | `BOOTSTRAP.md` | One-time conversational setup instructions for a fresh profile. |
 | `IDENTITY.md`  | Assistant identity and presentation.                            |
 | `SOUL.md`      | Personality and behavioral guidance.                            |
 | `USER.md`      | User profile and preferences.                                   |
 | `HEALTH.md`    | Checklist used by periodic health runs.                         |
 
-While `BOOTSTRAP.md` exists, it is included in the user-controlled workspace context. Completing bootstrap removes that file after the identity, user, and soul files have been updated.
+Missing identity, soul, or user profiles are not created by a read or startup check. While `BOOTSTRAP.md` exists, it is included in the user-controlled workspace context. Completing bootstrap removes that file after the identity, user, and soul files have been updated. Once all three profiles have content, Kucedr generates `AGENTS.md` from them; update the source profiles through their tools rather than editing the generated file. The live workspace inventory is added to the prompt separately.
 
 The standalone memory module stores `settings.json`, consolidated `MEMORY.md`, and cumulative Markdown transcripts for main chat and realtime voice sessions under `~/.kucedr/memory`. Each `<session-id>.md` file includes its update date and readable `User:` and `Assistant:` sections. The module watches changed snapshots and asynchronously extracts durable memories, applies explicit user corrections and forget requests, and conservatively removes obsolete or redundant records. Generation uses the selected LLM adapter with dedicated prompts and no tools, validates the complete replacement document, and writes it atomically; failed or truncated output leaves the prior document and pending checkpoints intact. Main chat in minimal or workspace mode and realtime voice receive bounded relevant memory automatically as untrusted reference context. Channels, tasks, health runs, and subagents receive no personal memory. Memory Settings retains manual inspection, editing, forgetting, clearing, refresh, and recovery controls; there are no model-callable memory tools, and conversational forget requests take effect asynchronously after the saved snapshot is processed.
 
@@ -399,14 +398,10 @@ See [Text to speech](PROVIDERS.md#text-to-speech) for their exact model catalogs
 
 ## 4. Media generation
 
-Media can be generated from the dedicated Settings studios or by agent tools during a conversation.
+Media can be generated by agent tools during a conversation. Agent settings persists independent image, video, and audio provider/model selections.
 
-- Each studio persists an independent provider/model selection and accepts a text prompt.
-- Image results are previewed in the studio.
-- Video results are playable and can expose their local-file menu.
-- The audio studio ("Audio"/Music Creator in Settings navigation) refreshes a dated local list and plays saved tracks.
 - Agent-created image, video, and audio files are saved under the app's local `library` data folder and displayed automatically in chat.
-- Standalone video and audio outputs are stored in their feature-specific application-data folders. Standalone image generation returns image data to the studio without adding it to the unified library.
+- Library also accepts user-uploaded files and supports folders, previews, and file management.
 
 ### Image adapters
 
@@ -442,10 +437,7 @@ The audio catalog presents four providers, but only ElevenLabs currently has an 
 
 ### Media output in Settings
 
-There is no unified image, video, and audio Library route in Settings. Image and Video service
-pages show the result of the current generation request. The Audio service page additionally lists
-saved generated audio with its filename and creation date, provides playback, and opens the native
-audio file menu on right-click. It has no search, filter, refresh, or delete toolbar.
+**Settings → Library** provides Collections and List views, upload, folders, sorting, selection, preview, move, download, and deletion for local files. The current router has no dedicated Image, Video, or Audio studio routes; media model selection is part of Agent settings.
 
 ## 5. Messaging channels
 
@@ -488,8 +480,7 @@ The Channels screen configures Telegram with enable state, token, DM policy, dir
 See [Settings UI](ui/SETTINGS.md) for the canonical navigation, persistence, and page behavior.
 
 - `/settings` and the application Settings entry points open Settings directly.
-- The sidebar groups General, Assistant, Providers, and Integrations destinations. Agent links and
-  route search expose the deeper resource pages.
+- The sidebar groups General (including Providers, Library, and Workspace), Assistant, Brain, and Extensions destinations. Agent links and route search expose deeper resource pages.
 - **Storage** selects a configured storage provider, folders, schedules, backup, and restore.
   Provider credentials are configured under **Providers → Storage**.
 - Deep pages use breadcrumbs.
@@ -504,7 +495,7 @@ See [Settings UI](ui/SETTINGS.md) for the canonical navigation, persistence, and
 Apps are standalone mini-app windows discovered from installed app folders or registered external
 development folders. Settings supports import, Debug registration, refresh, Details, Open, and
 Delete. Cards themselves are not navigation links. Window details configure launch behavior.
-See [Apps](APPS.md) for the current bundled catalog and data/removal behavior.
+There are no bundled app source folders in this checkout. The built-in Workspace is a main-window route, not an installed app. See [Apps](APPS.md) for import, Workspace, and data/removal behavior.
 
 ### Storage sync
 
