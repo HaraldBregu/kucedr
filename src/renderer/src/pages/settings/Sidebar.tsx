@@ -23,7 +23,6 @@ const SETTINGS_SIDEBAR_GROUPS = [
 				'/settings/providers',
 				'/settings/library',
 				'/settings/workspace',
-				'/settings/code',
 			].includes(item.path)
 		),
 	},
