@@ -2,7 +2,7 @@
 
 Kucedr opens installable local HTML applications in dedicated desktop windows. Manage them in **Settings → Apps**. This repository does not contain bundled app source folders. Build an app in a separate project, then import its built folder or register it as a debug app.
 
-The Workspace file browser is part of the main Kucedr window. Open it from the **Workspace** item in the main sidebar; it is not installed through Settings → Apps.
+The Workspace file browser is part of the main Kucedr window. Open it at `/workspace` or from **Settings → Workspace**; it is not installed through Settings → Apps. The Coding entry is marked **Soon**, and its old route redirects to Workspace.
 
 ## Install, open, and remove an app
 
@@ -30,9 +30,9 @@ Sources: [debug registration](../src/main/apps/app_debug_add.ts), [debug removal
 
 ## Workspace
 
-Workspace shows the agent workspace files in a tree on the left side of the main window. Select a file to view it on the right. Text, code, and Markdown open in a read-only CodeMirror viewer; images, audio, video, and PDFs open in their respective viewers. Unsupported files show a preview-unavailable message. Workspace changes from the host refresh the file list.
+Workspace shows agent workspace files in a tree beside a resizable viewer. Its context menu creates files and folders, renames entries, and confirms deletion. Markdown opens in editable Text and Raw views and saves changes automatically; other text and code open read-only. Images, audio, video, and PDFs open in their respective viewers. The viewer can find text in supported files; unsupported files show a preview-unavailable message. Workspace changes from the host refresh the file list.
 
-Sources: [Workspace page](../src/renderer/src/pages/workspace/Page.tsx), [file tree](../src/renderer/src/pages/workspace/Tree.tsx), [viewer](../src/renderer/src/pages/workspace/Viewer.tsx).
+Sources: [Workspace page](../src/renderer/src/pages/workspace/Page.tsx), [file actions](../src/renderer/src/pages/workspace/Sidebar.tsx), [file tree](../src/renderer/src/pages/workspace/Tree.tsx), [viewer](../src/renderer/src/pages/workspace/Viewer.tsx).
 
 ## Storage and window reference
 

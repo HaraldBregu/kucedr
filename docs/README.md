@@ -6,7 +6,7 @@ These guides describe the checked-in implementation; provider availability and o
 ## Use Kucedr
 
 - [Application guide](APPLICATION.md): first launch, conversations, voice, media, automation, knowledge, integrations, backup, and troubleshooting.
-- [Apps guide](APPS.md): Coder, Workspace, Discover, Demo, installation, external development folders, and app data.
+- [Apps guide](APPS.md): installable app windows, external development folders, app data, and the built-in Workspace.
 - [Feature reference](FEATURES.md): detailed capabilities and implementation limits.
 - [Provider reference](PROVIDERS.md): model and service catalogs and supported runtime adapters.
 
@@ -14,7 +14,7 @@ These guides describe the checked-in implementation; provider availability and o
 
 - [Start page](ui/START.md): optional account sign-in, provider credentials, and required assistant selection.
 - [Home](ui/HOME.md): chat, attachments, tool activity, sessions, and voice interactions.
-- [Settings](ui/SETTINGS.md): configuration pages, persistence, navigation, and detail screens.
+- [Settings](ui/SETTINGS.md): configuration pages, Library, Memory, Workspace, persistence, and navigation.
 
 ## Build and extend
 

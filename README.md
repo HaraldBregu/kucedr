@@ -27,6 +27,7 @@ Read the [documentation](docs/README.md) for the application guide, bundled apps
 - **Automate routines** — create recurring schedules and periodic checklist-based health runs.
 - **Remember useful context** — maintain durable memory, personalization files, conversation history, and a local working directory.
 - **Search personal knowledge** — index selected folders with explicit embedding and remote-storage consent, then retrieve source excerpts from the local RAG index.
+- **Manage local work** — browse and edit Markdown in the Workspace, and organize files and generated media in Library.
 - **Chat from other apps** — connect Telegram to reach Kucedr away from the desktop app.
 
 Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces and light, dark, and system themes.
@@ -42,7 +43,7 @@ Kucedr runs on Windows, macOS, and Linux, with English and Italian interfaces an
 
 ## Technology
 
-- Electron 41 and Node.js
+- Electron 44 and Node.js
 - React 19, TypeScript, Tailwind CSS 4, and shadcn components
 - Jest, Testing Library, and Playwright
 - electron-vite and electron-builder
@@ -62,7 +63,7 @@ workspaces and one lockfile.
 On first launch, follow the [Start Page Flow](docs/ui/START.md) to sign in or continue local-only,
 save a model-provider API key, and select the provider and model for the assistant. Search,
 database, speech, and media configuration are optional and can be completed later in Settings.
-Configure an S3-compatible provider and select folders for backup in **Settings → Cloud**.
+Configure an S3-compatible provider and select folders for backup in **Settings → Storage**.
 Folder backup does not require account sign-in.
 See [Home UI](docs/ui/HOME.md) for the chat workspace's states and interactions.
 See [Settings UI](docs/ui/SETTINGS.md) for configuration navigation and behavior.
