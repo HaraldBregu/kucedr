@@ -247,7 +247,7 @@
 		"searchLabel": "Search settings",
 		"sidebar": {
 			"account": "Settings",
-			"summary": "Account, Cloud, Providers etc",
+			"summary": "Account, Storage, Providers etc",
 			"assistant": "Assistant",
 			"chatSettings": "Chat settings",
 			"getHelp": "Get help",
@@ -285,7 +285,7 @@
 				"configuration": "Configuration"
 			},
 			"descriptions": {
-				"cloud": "Back up files to your storage provider",
+				"storage": "Back up files to your storage provider",
 				"settings": "App info and appearance",
 				"account": "Cloud identity and session",
 				"modelServices": "Model service setup",
@@ -314,7 +314,6 @@
 			"video": "Video",
 			"image": "Image",
 			"account": "Account",
-			"cloud": "Cloud",
 			"settings": "Settings",
 			"settingsDescription": "Configure application information, appearance, language, and data.",
 			"modelServices": "Model services",
@@ -1245,7 +1244,7 @@
 			}
 		},
 		"storage": {
-			"configurationTitle": "Cloud Backup",
+			"configurationTitle": "Storage setup",
 			"description": "Back up selected folders to Amazon S3 or any S3-compatible storage provider.",
 			"versioned": {
 				"title": "Version history sync",
@@ -1272,7 +1271,7 @@
 				}
 			},
 			"sync": {
-				"title": "Cloud Backup",
+				"title": "Backups",
 				"description": "Choose local folders and back them up securely on a schedule.",
 				"addFolders": "Add folders",
 				"empty": "No folders selected. Add folders to back up and sync.",

@@ -43,7 +43,7 @@ const routes = [
 	'/settings/settings',
 	'/settings/library',
 	'/settings/settings/persona',
-	'/settings/cloud',
+	'/settings/storage',
 	'/settings/settings/media/microphone',
 	'/settings/channels',
 	'/settings/plugins',

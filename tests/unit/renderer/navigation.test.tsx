@@ -210,7 +210,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	expect(providersLink).toHaveAttribute('href', '/settings/providers');
 	const generalLinks = within(generalGroup as HTMLElement).getAllByRole('link');
 	const cloud = within(generalGroup as HTMLElement).getByRole('link', {
-		name: 'settings.tabs.cloud',
+		name: 'settings.tabs.storage',
 	});
 	expect(generalLinks.indexOf(providersLink)).toBe(generalLinks.indexOf(cloud) + 1);
 	for (const path of [
@@ -368,7 +368,7 @@ it('places Channels directly below Apps outside the Assistant sidebar group', ()
 	expect(links.indexOf(remoteAgent)).toBe(links.indexOf(health) + 1);
 });
 
-it('places Providers directly after Cloud without provider subpages in the sidebar', () => {
+it('places Providers directly after Storage without provider subpages in the sidebar', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/providers']}>
 			<Routes>
@@ -380,15 +380,15 @@ it('places Providers directly after Cloud without provider subpages in the sideb
 	);
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
-	const cloud = within(navigation).getByRole('link', { name: 'settings.tabs.cloud' });
-	const group = cloud.closest('[data-slot="split-pane-group"]');
+	const storage = within(navigation).getByRole('link', { name: 'settings.tabs.storage' });
+	const group = storage.closest('[data-slot="split-pane-group"]');
 	const links = within(group as HTMLElement).getAllByRole('link');
 	const providers = within(group as HTMLElement).getByRole('link', {
 		name: 'settings.tabs.providers',
 	});
 
 	expect(providers).toHaveAttribute('href', '/settings/providers');
-	expect(links.indexOf(providers)).toBe(links.indexOf(cloud) + 1);
+	expect(links.indexOf(providers)).toBe(links.indexOf(storage) + 1);
 	for (const path of [
 		'/settings/providers/models',
 		'/settings/providers/search',

@@ -1,13 +1,13 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import CloudPage from '../../../src/renderer/src/pages/settings/pages/cloud/Page';
+import StoragePage from '../../../src/renderer/src/pages/settings/pages/storage/Page';
 import type { StorageProvider } from '../../../src/shared/storage_types';
 import mockTranslations from '../../../resources/i18n/en/main.json';
 
 jest.mock('../../../src/renderer/src/contexts/AuthContext', () => ({
 	useAuth: () => {
-		throw new Error('Cloud backup must not require account access.');
+		throw new Error('Storage backup must not require account access.');
 	},
 }));
 
@@ -95,14 +95,14 @@ beforeEach(() => {
 it('shows the storage provider description beneath the title and before backup setup', async () => {
 	render(
 		<MemoryRouter>
-			<CloudPage />
+			<StoragePage />
 		</MemoryRouter>
 	);
-	const title = screen.getByRole('heading', { name: 'Cloud', exact: true });
+	const title = screen.getByRole('heading', { name: 'Storage', exact: true });
 	const description = await screen.findByText(
 		'Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.'
 	);
-	const backup = screen.getByRole('heading', { name: 'Cloud Backup' });
+	const backup = screen.getByRole('heading', { name: 'Backups' });
 	expect(
 		title.compareDocumentPosition(description) & Node.DOCUMENT_POSITION_FOLLOWING
 	).toBeTruthy();
@@ -121,7 +121,7 @@ it('keeps backup controls disabled when no providers exist', async () => {
 	storageApi.listProviders.mockResolvedValue([]);
 	render(
 		<MemoryRouter>
-			<CloudPage />
+			<StoragePage />
 		</MemoryRouter>
 	);
 	expect(
@@ -143,7 +143,7 @@ it('retries a failed provider load and restores the saved selection', async () =
 	storageApi.listProviders.mockRejectedValueOnce(new Error('Could not open storage credentials'));
 	render(
 		<MemoryRouter>
-			<CloudPage />
+			<StoragePage />
 		</MemoryRouter>
 	);
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not load storage settings.');
@@ -164,7 +164,7 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 	storageApi.saveSettings.mockRejectedValueOnce(new Error('Unable to save'));
 	render(
 		<MemoryRouter>
-			<CloudPage />
+			<StoragePage />
 		</MemoryRouter>
 	);
 	await openActions(user);

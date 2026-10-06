@@ -247,7 +247,7 @@
 		"searchLabel": "Cerca nelle impostazioni",
 		"sidebar": {
 			"account": "Impostazioni",
-			"summary": "Account, Cloud, Provider ecc.",
+			"summary": "Account, Storage, Provider ecc.",
 			"assistant": "Assistente",
 			"chatSettings": "Impostazioni chat",
 			"getHelp": "Ottieni aiuto",
@@ -285,7 +285,7 @@
 				"configuration": "Configurazione"
 			},
 			"descriptions": {
-				"cloud": "Backup dei file sul tuo provider di archiviazione",
+				"storage": "Backup dei file sul tuo provider di archiviazione",
 				"settings": "Info e aspetto dell'app",
 				"account": "Identità cloud e sessione",
 				"modelServices": "Setup servizi modello",
@@ -314,7 +314,6 @@
 			"video": "Video",
 			"image": "Immagine",
 			"account": "Account",
-			"cloud": "Cloud",
 			"settings": "Impostazioni",
 			"settingsDescription": "Configura informazioni, aspetto, lingua e dati dell'applicazione.",
 			"modelServices": "Servizi modello",
@@ -1245,7 +1244,7 @@
 			}
 		},
 		"storage": {
-			"configurationTitle": "Backup cloud",
+			"configurationTitle": "Configurazione storage",
 			"description": "Esegui il backup delle cartelle selezionate su Amazon S3 o su qualsiasi provider compatibile con S3.",
 			"versioned": {
 				"title": "Sincronizzazione con cronologia versioni",
@@ -1272,7 +1271,7 @@
 				}
 			},
 			"sync": {
-				"title": "Backup cloud",
+				"title": "Backup",
 				"description": "Scegli le cartelle locali ed eseguine il backup in modo sicuro secondo una pianificazione.",
 				"addFolders": "Aggiungi cartelle",
 				"empty": "Nessuna cartella selezionata. Aggiungi le cartelle da salvare e sincronizzare.",

@@ -192,7 +192,7 @@ it.each<[AuthState, string]>([
 	}
 	[
 		['settings.tabs.account', '/settings/account'],
-		['settings.tabs.cloud', '/settings/cloud'],
+		['settings.tabs.storage', '/settings/storage'],
 		['settings.sidebar.chatSettings', '/settings/agent'],
 		['settings.tabs.providers', '/settings/providers'],
 		['settings.tabs.apps', '/settings/apps'],
@@ -449,7 +449,7 @@ it('shows Search, Settings and Get Help as sidebar items above the footer', asyn
 	expect(screen.queryByRole('menuitem', { name: 'navigationBar.search' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('menuitem', { name: 'settings.sidebar.getHelp' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('menuitem', { name: 'settings.tabs.settings' })).not.toBeInTheDocument();
-	expect(screen.getByRole('menuitem', { name: 'settings.tabs.cloud' }).querySelector('.lucide-cloud')).toBeInTheDocument();
+	expect(screen.getByRole('menuitem', { name: 'settings.tabs.storage' }).querySelector('.lucide-hard-drive')).toBeInTheDocument();
 	expect(screen.getByRole('menuitem', { name: 'settings.sidebar.chatSettings' }).querySelector('.lucide-message-circle')).toBeInTheDocument();
 	await user.keyboard('{Escape}');
 	await user.click(screen.getByRole('button', { name: 'settings.sidebar.help' }));
