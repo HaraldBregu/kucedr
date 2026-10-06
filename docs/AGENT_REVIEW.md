@@ -42,7 +42,7 @@ Sources: [Agent](../src/main/agent/agent.ts#L104), [runtime](../src/main/agent/r
 | Channels           | DM/group admission is checked, then admitted messages use background execution with global resources and no tool allowlist. Minimal context changes prompting, not authority.                                                  |
 | Schedules/health   | Schedules intentionally default to all tools except task mutation tools; an empty saved allowlist is treated as default. Health explicitly passes `toolsAllow: []` to disable tools.                                           |
 
-Sources: [IPC trust](../src/main/ipc/core/trusted.ts#L13), [approval caller](../src/main/ipc/agent.ts#L328), [resolver](../src/main/agent/permissions/resolve_tool_permission.ts#L12), [workspace policy](../src/main/agent/permissions/with_workspace_permissions.ts#L5), [sandbox](../src/main/agent/sandbox.ts#L219), [read reuse](../src/main/agent/context/context_remember_tool.ts#L3), [channels](../src/main/channels/channels_registry.ts#L146), [schedule defaults](../src/main/agent/agent.ts#L129), [health](../src/main/agent/health/health_run.ts#L42).
+Sources: [IPC trust](../src/main/ipc/core/trusted.ts#L13), [approval caller](../src/main/ipc/agent.ts#L328), [resolver](../src/main/agent/permissions/resolve_tool_permission.ts#L12), [workspace policy](../src/main/agent/permissions/with_workspace_permissions.ts#L5), [sandbox](../src/main/agent/sandbox.ts#L219), [read reuse](../src/main/agent/context/context_remember_tool.ts#L3), [channels](../src/main/channels/channels_registry.ts#L146), [schedule defaults](../src/main/agent/agent.ts#L129), [health](../src/main/health/run.ts).
 
 ### Controls worth preserving
 
