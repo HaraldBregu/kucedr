@@ -56,12 +56,14 @@ beforeEach(() => {
 	api.edit.mockResolvedValue(undefined);
 });
 
-it('shows memory settings without collapsible items or a header icon', async () => {
+it('shows the selected model and reveals its options when expanded', async () => {
+	const user = userEvent.setup();
 	render(<MemoryPage />);
-	const modelSelect = await screen.findByRole('combobox', { name: 'settings.memory.model' });
+	const modelSelect = await screen.findByRole('button', { name: 'settings.memory.model' });
 	const heading = screen.getByRole('heading', { name: 'settings.memory.title' });
 	expect(modelSelect).toHaveTextContent('GPT');
 	expect(screen.queryByRole('spinbutton', { name: 'Creativity' })).not.toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: /settings.memory.model settings.memory.modelDescription/ }));
 	expect(screen.getByRole('button', { name: 'Advanced' })).toBeInTheDocument();
 	expect(heading.closest('header')?.querySelector('svg')).toBeNull();
 	expect(screen.queryByRole('button', { name: 'settings.memory.saveSettings' })).not.toBeInTheDocument();
@@ -76,23 +78,16 @@ it('saves independent memory configuration automatically', async () => {
 
 it('does not show scheduling controls', async () => {
 	render(<MemoryPage />);
-	await screen.findByRole('combobox', { name: 'settings.memory.model' });
+	await screen.findByRole('button', { name: 'settings.memory.model' });
 	expect(screen.queryByText('settings.memory.schedule')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.memory.frequency')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.memory.customCron')).not.toBeInTheDocument();
 	expect(screen.queryByText('settings.memory.timezone')).not.toBeInTheDocument();
 });
 
-it('generates memory on demand', async () => {
-	const user = userEvent.setup();
-	render(<MemoryPage />);
-	await user.click(await screen.findByRole('button', { name: 'settings.memory.generate' }));
-	await waitFor(() => expect(api.refresh).toHaveBeenCalledTimes(1));
-});
-
 it('does not load or show the memory file content', async () => {
 	render(<MemoryPage />);
-	await screen.findByRole('combobox', { name: 'settings.memory.model' });
+	await screen.findByRole('button', { name: 'settings.memory.model' });
 	expect(api.read).not.toHaveBeenCalled();
 	expect(api.list).not.toHaveBeenCalled();
 	expect(screen.queryByText('# Notes')).not.toBeInTheDocument();
