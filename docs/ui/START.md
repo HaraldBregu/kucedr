@@ -21,7 +21,7 @@ Open Kucedr
        -> Home
 ```
 
-The footer presents five visible stages: **Welcome**, **Account**, **Model**, **Search**, and
+The footer presents five visible stages: **Welcome**, **Account**, **Model**, **Search providers**, and
 **Models**. Configuration checks happen between stages and do not
 add another progress item.
 
@@ -40,7 +40,7 @@ add another progress item.
 | Welcome | Start the onboarding flow                          | For incomplete setup |
 | Account | Sign in, create an account, or continue local-only | No account required  |
 | Model   | Save an API key for a catalog model provider       | Yes                  |
-| Search  | Connect a web-search provider                      | No                   |
+| Search providers | Connect a web-search provider              | No                   |
 | Models  | Select the primary assistant provider and model    | Assistant only       |
 
 ### 1. Welcome
@@ -82,24 +82,14 @@ be masked.
 key. A value typed into a card but not saved does not satisfy the requirement. If validation or
 provider loading fails, the user should remain on this stage and see an inline error.
 
-### 4. Search Engine
+### 4. Search providers
 
 The Search stage should let the user save a supported search-provider API key. Search is optional,
 so **Continue** should remain available without a configured provider.
 
 ### 5. Assistant setup
 
-The final stage should load existing selections and available models, then show these configuration
-rows in order:
-
-1. Model
-2. Realtime conversation
-3. Voice
-4. Transcription
-5. Image
-6. Audio
-7. Video
-8. Search Engine
+The final stage should load existing selections and available models. **Chat Assistant** contains LLM Model, Voice, and Transcription. **Voice Assistant** contains realtime voice configuration. **Tools** contains Search Engine, Image, Video, and Audio.
 
 Only the primary **Model** selection is required. **Finish** should stay disabled while model data
 is loading, while configuration is saving, or until the primary assistant selection is valid.

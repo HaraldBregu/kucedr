@@ -42,11 +42,9 @@ title bar.
 
 After history finishes loading, a session with no visible messages and no active run should show:
 
-- the Kucedr icon;
-- **What can I do for you?**;
-- a short capability description;
-- **Schedule a task**, **Create a sound**, **Create an image**, **Create a video**, **Create music**,
-  **Contact an agent**, **Summarize a document**, and **Plan a trip** suggestions.
+- a time-of-day **Good morning/afternoon/evening, how are you?** greeting;
+- **I'm your assistant. What can I do for you?**;
+- **Plan my day**, **Rain sound**, **Create an image**, **Video**, **Brainstorm project ideas**, and **Draft a thank-you** suggestions.
 
 Selecting a suggestion should fill and focus the composer without submitting it. The empty state
 should disappear when a real user or assistant message exists, while a response is running, or
@@ -54,9 +52,7 @@ while a voice panel is open. The internal welcome message must not appear in the
 
 ## Prompt composer
 
-The composer should use **Ask anything** as its placeholder. It should remain compact for a short
-single-line prompt and expand for wrapped or multiline text, attachments, command modes, and
-dictation.
+The composer uses **Ask anything** in an empty chat and **Send follow-up** when messages exist. Its input keeps the same fixed geometry during dictation; only the footer controls change. Attachments appear in a tray above it, and the selected model appears in its footer.
 
 ### Text and keyboard behavior
 
@@ -170,12 +166,11 @@ The sidebar should contain **New chat**, chat history, and a [Settings](SETTINGS
 - Distinguish queued, running, or cancelling sessions with a shimmering title.
 - Create and select a UUID immediately when the user starts a new chat.
 - Restore the selected session's stored transcript and active-run snapshot.
-- Offer Rename and Delete from a session's context menu.
+- Offer Rename, Clear, Compact, Open location, and Delete from a session's context menu.
 - Rename inline, save on blur or Enter, and cancel on Escape.
 - After deleting the selected session, create a fresh UUID-backed chat.
 
-Rename and Delete failures do not currently show inline feedback, and sidebar deletion does not
-request confirmation.
+Delete and clear require confirmation. Delete failures appear inline in the sidebar; rename failures do not currently show inline feedback.
 
 ## Voice input and playback
 
@@ -236,7 +231,7 @@ or retry surface.
 - [Session sidebar](../../src/renderer/src/pages/home/Sidebar.tsx)
 - [Prompt editor](../../src/renderer/src/components/text-editor.tsx)
 - [Agent interaction hook](../../src/renderer/src/pages/home/hooks/useHomeAgent.ts)
-- [Attachment validation](../../src/renderer/src/pages/home/attachments/validation.ts)
+- [Attachment handling](../../src/renderer/src/pages/home/attachments/)
 - [Assistant messages](../../src/renderer/src/pages/home/components/AssistantMessage.tsx)
 - [User messages](../../src/renderer/src/pages/home/components/UserMessage.tsx)
 - [Tool permission cards](../../src/renderer/src/pages/home/components/ToolPermissionCard.tsx)
