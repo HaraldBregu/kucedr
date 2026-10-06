@@ -110,7 +110,6 @@ it.each([
 	['/settings/providers', 'settings.tabs.providers'],
 	['/settings/providers/database', 'settings.tabs.databases'],
 	['/settings/providers/storage', 'settings.tabs.storage'],
-	['/settings/storage', 'settings.tabs.storage'],
 	['/settings/agent/permissions', 'settings.tabs.permissions'],
 	['/settings/plugins', 'settings.tabs.plugins'],
 ])('uses the canonical %s route and breadcrumb', (path, labelKey) => {
@@ -382,6 +381,7 @@ it('places Providers directly after Storage without provider subpages in the sid
 
 	const navigation = screen.getByRole('navigation', { name: 'settings.title' });
 	const storage = within(navigation).getByRole('link', { name: 'settings.tabs.storage' });
+	expect(storage).toHaveAttribute('href', '/settings/storage');
 	const group = storage.closest('[data-slot="split-pane-group"]');
 	const links = within(group as HTMLElement).getAllByRole('link');
 	const providers = within(group as HTMLElement).getByRole('link', {
