@@ -38,7 +38,7 @@ The visible sidebar is grouped as follows:
 
 | Group        | Destinations                       |
 | ------------ | ---------------------------------- |
-| General      | Account, Settings, System, Cloud    |
+| General      | Account, Settings, System, Storage  |
 | Assistant    | Agent, Coding, Music, Video, Image |
 | Providers    | Models, Search, Database, Storage  |
 | Integrations | Channels, Integrations, A2A, Apps  |
@@ -187,10 +187,10 @@ and tool-mode settings.
 Verified provider input schemas can expose additional model options. Changing a model should clear
 options that belonged to the previous model rather than carrying incompatible values forward.
 
-## Cloud storage
+## Storage
 
-Configure storage accounts under **Providers → Storage**, then select a provider in Cloud.
-Cloud configures local folders, automatic backup intervals, manual backup, and confirmed restore.
+Configure storage accounts under **Providers → Storage**, then select a provider in **Storage**.
+Storage configures local folders, automatic backup intervals, manual backup, and confirmed restore.
 It displays operation progress and errors. The current storage runtime uses the selected provider;
 account sign-in is separate from this backup configuration. See [Cloud architecture](../CLOUD.md).
 
@@ -305,7 +305,7 @@ required. Filesystem policy should:
 - [Settings](../../src/renderer/src/pages/settings/pages/settings/Page.tsx)
 - [Assistant settings](../../src/renderer/src/pages/settings/pages/assistant/Page.tsx)
 - [Provider settings](../../src/renderer/src/pages/settings/pages/providers/Page.tsx)
-- [Cloud storage settings](../../src/renderer/src/pages/settings/pages/cloud/Page.tsx)
+- [Storage settings](../../src/renderer/src/pages/settings/pages/storage/Page.tsx)
 - [Task settings](../../src/renderer/src/pages/settings/pages/tasks/Page.tsx)
 - [System media settings](../../src/renderer/src/pages/settings/pages/system/)
 - [Knowledge settings](../../src/renderer/src/pages/settings/pages/rag/Page.tsx)

@@ -490,7 +490,7 @@ See [Settings UI](ui/SETTINGS.md) for the canonical navigation, persistence, and
 - `/settings` and the application Settings entry points open Settings directly.
 - The sidebar groups General, Assistant, Providers, and Integrations destinations. Agent links and
   route search expose the deeper resource pages.
-- **Cloud** selects a configured storage provider, folders, schedules, backup, and restore.
+- **Storage** selects a configured storage provider, folders, schedules, backup, and restore.
   Provider credentials are configured under **Providers → Storage**.
 - Deep pages use breadcrumbs.
 - `Cmd/Ctrl+F` opens a route and setting search palette.
@@ -506,9 +506,9 @@ development folders. Settings supports import, Debug registration, refresh, Deta
 Delete. Cards themselves are not navigation links. Window details configure launch behavior.
 See [Apps](APPS.md) for the current bundled catalog and data/removal behavior.
 
-### Cloud storage sync
+### Storage sync
 
-- **Cloud** backs up selected local folders using the selected storage provider. Restore requires
+- **Storage** backs up selected local folders using the selected storage provider. Restore requires
   confirmation and replaces matching files while retaining unrelated local files.
 - Account authentication is separate from provider-backed folder backup. The current checkout
   does not implement encrypted provider-key synchronization. See [Cloud architecture](CLOUD.md) for their current boundaries.
@@ -574,7 +574,7 @@ stores and should still be protected as sensitive app data.
 
 Prompts, attachments, tool inputs, and generated content may be sent to configured model providers,
 MCP servers, websites, browser targets, messaging channels, or Kucedr account cloud services as
-required by the requested operation. Only folders selected in Cloud are included in folder
+required by the requested operation. Only folders selected in Storage are included in folder
 backups.
 
 ### Electron hardening
@@ -609,7 +609,7 @@ The main implementation areas behind this reference are:
 - [Settings pages](../src/renderer/src/pages/settings/)
 - [Agent runtime and tools](../src/main/agent/)
 - [Apps](../src/main/apps/)
-- [Cloud storage sync](../src/renderer/src/pages/settings/pages/storage/)
+- [Storage sync](../src/renderer/src/pages/settings/pages/storage/)
 - [Account and cloud architecture](CLOUD.md)
 - [Provider catalog declarations](../resources/providers/)
 - [Provider catalog loader](../src/main/models.ts)
