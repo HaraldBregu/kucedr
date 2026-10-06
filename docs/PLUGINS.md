@@ -3,8 +3,13 @@
 The Kucedr CLI installs user plugins to:
 
 ```text
-<Electron userData>/plugins/<plugin-id>/manifest.json
+<CLI data directory>/plugins/<plugin-id>/manifest.json
 ```
+
+By default, the CLI data directory is `~/Library/Application Support/Kucedr` on macOS,
+`%APPDATA%/Kucedr` on Windows, and `${XDG_CONFIG_HOME:-~/.config}/Kucedr` on Linux.
+`kucedr install --data-dir <path>` overrides it. The desktop profile used for providers and apps
+normally lives at `~/.kucedr`, so the CLI plugin directory is separate from those runtime catalogs.
 
 Install a published or local plugin with the Kucedr CLI:
 
