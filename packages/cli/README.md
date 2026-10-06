@@ -40,12 +40,14 @@ The archive must contain a Kucedr plugin `manifest.json`. Its manifest ID determ
 folder:
 
 ```text
-<Kucedr userData>/plugins/<plugin-id>/
+<CLI data directory>/plugins/<plugin-id>/
 ```
 
 The manifest and every contributed file are validated before the staged directory is renamed into
-place. Existing plugins are left untouched unless `--force` is passed. Restart Kucedr after an
-install so all contribution registries reload.
+place. Existing plugins are left untouched unless `--force` is passed. The current desktop runtime
+does not scan this directory or activate its contributions, even after a restart. The CLI still
+prints a restart prompt after installation. See [Plugins](../../docs/PLUGINS.md) for the runtime
+paths that work today.
 
 Use `--data-dir <path>` to target a non-default Kucedr data directory. Use `KUCEDR_APP_PATH` when the
 desktop executable is in a custom location, including a downloaded Linux AppImage.

@@ -24,7 +24,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [Google Calendar MCP tool tests](CALENDAR.md): prompts for exercising all nine Calendar tools in a recorded chat.
 - [Google Drive MCP tool tests](DRIVE.md): prompts for exercising all eight Drive tools in a recorded chat.
 - [Plugins](PLUGINS.md): package skills, MCP servers, apps, and providers.
-- [SDK](../packages/sdk/README.md): typed access to the local application API.
+- [SDK](../packages/sdk/README.md): embedded app bridge and optional HTTP client contract.
 - [CLI](../packages/cli/README.md): desktop launch, plugin installation, and terminal interface.
 - [Terminal](TERMINAL.md): native terminal lifecycle and IPC.
 - [Contributing](../CONTRIBUTING.md): repository workflow and contribution rules.

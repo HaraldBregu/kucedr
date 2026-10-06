@@ -63,7 +63,7 @@ Memory is captured and updated asynchronously from saved conversations. You can 
 Configure transcription for dictation, text-to-speech for reading responses aloud, and a compatible realtime model for spoken conversations. These are independent selections.
 
 1. Open Agent settings and select the required speech models.
-2. Use System settings to check microphone access and grant OS permission if prompted.
+2. Use Settings to check microphone access and grant OS permission if prompted.
 3. Dictate into the composer and confirm the transcript, or start a Voice session from the empty composer.
 4. End the Voice session to release capture and playback resources.
 
@@ -98,9 +98,9 @@ Retrieval queries search a local SQLite index after sending the query to the sel
 
 ### Skills, plugins, and MCP
 
-Skills provide instructions and resources the agent can load. Import them from the Skills page and inspect their details and diagnostics. A plugin can package skills, apps, MCP servers, and provider definitions; installation and manifest rules are documented in [Plugins](PLUGINS.md).
+Skills provide instructions and resources the agent can load. Import them from the Skills page and inspect their details and diagnostics. A plugin can package skills, apps, MCP servers, and provider definitions, but CLI-installed plugin contributions are not yet activated by the desktop runtime. Installation and manifest rules are documented in [Plugins](PLUGINS.md).
 
-Model Context Protocol (MCP) servers expose tools through remote HTTP or local commands. Add or import a server, configure its credentials, test the connection, and inspect its tools before relying on it. Authentication depends on the server. The Integrations page offers shortcuts for catalog services; enabling a shortcut is not proof that authentication or tool execution succeeded. Turning an integration off removes its configured MCP entry.
+Model Context Protocol (MCP) servers expose tools through remote HTTP or local commands. Add a remote or command server in Settings, or place a local package under `~/.kucedr/mcp/servers`; then configure its credentials, test the connection, and inspect its tools before relying on it. Authentication depends on the server. The Integrations page offers shortcuts for catalog services; enabling a shortcut is not proof that authentication or tool execution succeeded. Turning an integration off removes its configured MCP entry.
 
 ### Remote agents
 

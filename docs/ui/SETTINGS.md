@@ -219,7 +219,7 @@ download and confirmed deletion.
 Apps opens the apps folder, refreshes discovery, imports apps, and registers external development
 folders through Debug. Cards expose separate **Details**, **Open**, and **Delete** actions; the
 card itself does not navigate. Details configures the app window. See [Apps](../APPS.md) for
-all bundled apps, registration, removal, and data behavior.
+registration, removal, and data behavior.
 
 Apps do not currently expose enable/disable controls in Settings.
 
@@ -227,9 +227,10 @@ Apps do not currently expose enable/disable controls in Settings.
 
 ### MCP servers
 
-MCP settings should combine cataloged remote services, configured remote servers, and imported
-local packages. The page should open the MCP folder, refresh discovery, upload local packages, and
-add HTTP or local-command servers.
+MCP settings combine configured remote and command servers with discovered local packages. The
+page lets users add HTTP or local-command servers. Local packages placed under
+`~/.kucedr/mcp/servers` appear when the registry is read; the current page has no folder-opening,
+manual refresh, or upload control.
 
 Server details should support test, enable/disable, edit, OAuth where configured, approval policy,
 deferred-loading preference, and confirmed removal of configured servers. Local package changes

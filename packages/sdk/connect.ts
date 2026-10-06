@@ -44,7 +44,7 @@ const RemoteAppChannels = Object.fromEntries(
 export interface ConnectOptions {
 	/** Base URL of the Kucedr API. Defaults to `http://127.0.0.1:8765`. */
 	url?: string;
-	/** Contents of `<userData>/sdk-token` in the Kucedr app data folder. */
+	/** Bearer token issued by a compatible HTTP server. */
 	token: string;
 	/** Override the fetch implementation (defaults to the global one). */
 	fetch?: typeof globalThis.fetch;

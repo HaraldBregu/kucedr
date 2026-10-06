@@ -263,11 +263,11 @@ MCP settings provide:
 
 - One unified list for remote services, configured commands, and discovered local packages.
 - Configured, disabled, testing, connected, and error states, with an enable/disable toggle for configured servers.
-- Add and edit dialogs. Server ID and transport type are fixed after creation.
+- An inline add form and detail-page edit form. Server ID and transport type are fixed after creation.
 - Detail-page configuration, testing, and removal for configured servers; filesystem packages remain file-authoritative and are edited through the same detail workflow.
 - OAuth authorization for HTTP servers without a bearer token, including reauthorization.
 - Dynamic discovery of local server packages from `~/.kucedr/mcp/servers`.
-- Folder upload, local-folder access, manual refresh, and a live connection test that reports tool count and latency for every local or remote server.
+- A live connection test on each server's detail page that reports tool count and latency. The current Settings page has no local-package upload, folder-opening, or manual refresh control.
 
 Each discovered local server lives in its own folder and contains an `mcp.json` manifest:
 
@@ -287,7 +287,7 @@ Each discovered local server lives in its own folder and contains an `mcp.json` 
 
 The folder name is used as the ID when `id` is omitted. IDs use lowercase letters, numbers, and single hyphens. Relative `cwd` values are resolved from the package folder; omitting `cwd` also runs the command from that folder. Kucedr rescans the directory whenever settings or an agent run reads the MCP registry, so adding or removing a valid folder does not require an app restart. Explicitly configured servers take precedence over a discovered package with the same ID, and malformed or duplicate local packages are reported in Settings instead of preventing other servers from loading.
 
-A dependency-free package with three sample tools is available at `resources/mcp/demo-server` and can be selected directly with **Upload local**.
+A dependency-free package with three sample tools is available at `resources/mcp/demo-server`. In a source checkout, Kucedr discovers it from `resources/mcp`; otherwise copy the folder to `~/.kucedr/mcp/servers/kucedr-demo` and test it in Settings.
 
 When an MCP server is authenticated or tested, Kucedr saves its complete tool catalog locally. Existing enabled servers without a saved catalog are listed once in the background after upgrade. Agent runs search these saved definitions without connecting to servers or calling `tools/list`; a selected tool connects to its server when executed. Use **Test** in MCP settings to refresh a catalog after the server changes its tools.
 

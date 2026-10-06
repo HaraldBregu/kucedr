@@ -4,13 +4,13 @@ A dependency-free local MCP server for testing Kucedr's dynamic server workflow.
 
 ## Install and test
 
-1. Open **Settings → MCP**.
-2. Choose **Upload local**.
-3. Select this `demo-server` folder.
-4. Click **Test Kucedr Demo Tools**. Kucedr should report three tools.
+1. Copy this `demo-server` folder to `~/.kucedr/mcp/servers/kucedr-demo`.
+2. Open **Settings → MCP** and select **Kucedr Demo Tools**. The registry rescans local packages when the page loads.
+3. Click **Test**. Kucedr should report three tools.
 
-The folder can also be copied manually to `~/.kucedr/mcp/servers/kucedr-demo` and loaded with
-the **Refresh** action. The server uses only Node.js built-ins, so no package installation is needed.
+The Settings page currently has no local-package upload or manual refresh action. In a source
+checkout, the server is also discovered directly from `resources/mcp`. It uses only Node.js
+built-ins, so no package installation is needed.
 
 ## Tools
 

@@ -2,8 +2,8 @@
 
 Typed client for app-data access in Kucedr.
 
-This package exposes typed Kucedr APIs for in-app code and the accompanying remote client
-used to call supported APIs over Kucedr's local HTTP bridge.
+This package exposes typed Kucedr APIs for embedded app windows and an optional HTTP client
+for a separately supplied compatible server.
 
 ## Install
 
@@ -11,43 +11,13 @@ used to call supported APIs over Kucedr's local HTTP bridge.
 npm install @kucedr/sdk
 ```
 
-## Usage from another app
+## Optional HTTP client
 
-Kucedr writes a bearer token to `<userData>/sdk-token` (for example:
-`~/Library/Application Support/Kucedr/sdk-token` on macOS).
-Read that token and call `connect()` to reach Kucedr over HTTP.
-
-```ts
-import { readFileSync } from 'node:fs';
-import { connect } from '@kucedr/sdk';
-
-const kucedr = connect({
-	token: readFileSync('/Users/me/Library/Application Support/Kucedr/sdk-token', 'utf8').trim(),
-});
-
-await kucedr.ping(); // { name: 'kucedr', version: '1.0.0' }
-
-const theme = await kucedr.app.getThemeData();
-await kucedr.app.setTheme('dark');
-
-const workspace = await kucedr.agent.getWorkspaceLocation();
-const files = await kucedr.agent.listWorkspaceFiles();
-const content = await kucedr.agent.readWorkspaceFile('USER.md');
-await kucedr.agent.writeWorkspaceMarkdown('USER.md', '# Updated');
-await kucedr.agent.writeWorkspaceFile('diagrams/flow.mmd', 'flowchart LR');
-await kucedr.agent.createWorkspaceFile('', 'draft.md');
-await kucedr.agent.createWorkspaceDirectory('notes', 'ideas');
-await kucedr.agent.moveWorkspaceEntry('draft.md', 'notes');
-await kucedr.agent.renameWorkspaceEntry('notes/draft.md', 'idea.md');
-await kucedr.agent.deleteWorkspaceFile('old.md');
-await kucedr.agent.deleteWorkspaceDirectory('archive');
-```
-
-File entries returned by `listWorkspaceFiles()` include their byte size and ISO creation and
-update timestamps. Directory entries contain their recursive `children` instead.
-
-Streaming callbacks (for `app` events) use the SSE stream opened on first use; call
-`kucedr.close()` when finished.
+`connect()` speaks a bearer-token HTTP protocol to a compatible server, defaulting to
+`http://127.0.0.1:8765`. The current Kucedr desktop runtime does not start that server or
+write an SDK token, so `connect()` cannot reach this checkout by itself. Use the embedded
+bridge below for an app window. If you supply a compatible server separately, pass its URL
+and bearer token to `connect()`; close the client when finished with event subscriptions.
 
 ## Usage inside Kucedr
 
@@ -213,7 +183,7 @@ is opened; close and reopen an existing app window to use the updated settings.
 - `models`: embedded model APIs for LLM text, embeddings, STT, TTS, realtime voice, image, audio, and video without exposing provider credentials.
 - `terminal`: embedded-only, owner-scoped PTY lifecycle, input, resize, output, and exit events.
 - `win`: embedded-only window APIs, including native context menus and window controls.
-- `connect()`: remote client for the app API and workspace agent APIs.
+- `connect()`: optional HTTP client for the app API and workspace agent APIs; it requires a separately supplied compatible server.
 - `isKucedr()`: host check for in-app mode.
 - `ping()`: validate API reachability in remote mode.
 

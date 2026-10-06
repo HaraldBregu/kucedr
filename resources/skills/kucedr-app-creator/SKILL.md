@@ -55,7 +55,7 @@ Guard behavior that cannot work in a normal browser with `isKucedr()`. Use the t
 - `win` provides the app window's approved native controls and context menu.
 - `coding` and `terminal` are embedded-only, restricted capabilities. Use them only when the user specifically needs their workflows and the current host authorization supports the app.
 
-For a separate process or external local client, use `connect()` with the SDK bearer token flow. It deliberately excludes app-private storage, `coding`, `terminal`, and embedded window controls; do not work around those exclusions.
+For a separate process or external local client, `connect()` requires a separately supplied compatible HTTP server and bearer token; the current desktop app does not start that server. It excludes app-private storage, `coding`, `terminal`, and embedded window controls; do not work around those exclusions.
 
 ## Treat data and UI as app-owned
 
