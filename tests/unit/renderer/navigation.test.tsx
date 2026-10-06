@@ -383,6 +383,7 @@ it('places Channels below Apps and Remote Agents below Channels outside the Agen
 	const extensionsGroup = apps.closest('[data-slot="split-pane-group"]');
 	const extensionLinks = within(extensionsGroup as HTMLElement).getAllByRole('link');
 
+	expect(within(extensionsGroup as HTMLElement).getByText('settings.overview.groups.extensions')).toBeInTheDocument();
 	expect(channels).toHaveAttribute('href', '/settings/channels');
 	expect(channels.closest('[data-slot="split-pane-group"]')).toBe(extensionsGroup);
 	expect(extensionLinks.indexOf(channels)).toBe(extensionLinks.indexOf(apps) + 1);
