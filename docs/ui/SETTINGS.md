@@ -36,12 +36,12 @@ workspace below the application title bar.
 
 The visible sidebar is grouped as follows:
 
-| Group        | Destinations                          |
-| ------------ | ------------------------------------- |
+| Group        | Destinations                           |
+| ------------ | -------------------------------------- |
 | General      | Account, Settings, System, Storage     |
-| Assistant    | Agent, Coding, Music, Video, Image    |
-| Brain        | Memory, Knowledge                     |
-| Providers    | Models, Search, Database, Storage     |
+| Assistant    | Agent, Coding, Music, Video, Image     |
+| Brain        | Memory, Knowledge                      |
+| Providers    | Models, Search, Database, Storage      |
 | Integrations | Plugins, Apps, Channels, Remote Agents |
 
 The `/settings` route redirects to `/settings/settings`. The username link, title-bar user button,
