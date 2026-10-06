@@ -361,7 +361,11 @@ it('keeps chat, speech, and transcription configuration on the Chat page and lin
 			.getAllByRole('button', { name: /Transcription/ })
 			.some((element) => element.getAttribute('data-slot') === 'collapsible-trigger')
 	).toBe(true);
-	expect(screen.queryByRole('button', { name: /Realtime conversation/ })).not.toBeInTheDocument();
+	expect(
+		screen
+			.queryAllByRole('button', { name: 'Voice' })
+			.some((element) => element.getAttribute('data-slot') === 'collapsible-trigger')
+	).toBe(false);
 	expect(document.querySelector('.lucide-music-2')).toBeInTheDocument();
 	expect(document.querySelector('.lucide-image')).toBeInTheDocument();
 	expect(document.querySelector('.lucide-video')).toBeInTheDocument();
@@ -545,7 +549,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 		screen.getByRole('link', { name: /settings\.modelServices\.voiceHistoryTitle/ })
 	).toHaveAttribute('href', '/settings/voice/history');
 
-	const trigger = (await screen.findAllByRole('button', { name: /Realtime conversation/ })).find(
+	const trigger = (await screen.findAllByRole('button', { name: 'Voice' })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 	);
 	expect(trigger).toBeDefined();
@@ -579,7 +583,7 @@ it('leaves realtime conversation unselected when catalog defaults are disabled',
 	});
 	render(<VoiceConfiguration selectDefaultModel={false} />);
 
-	const trigger = await screen.findByRole('button', { name: /Realtime conversation/ });
+	const trigger = await screen.findByRole('button', { name: 'Voice' });
 	expect(trigger).toHaveTextContent('Select model');
 	await user.click(trigger);
 	const selector = await screen.findByRole('combobox', { name: 'Voice' });
@@ -652,7 +656,7 @@ it('announces a realtime conversation setup save error', async () => {
 		</MemoryRouter>
 	);
 
-	const trigger = (await screen.findAllByRole('button', { name: /Realtime conversation/ })).find(
+	const trigger = (await screen.findAllByRole('button', { name: 'Voice' })).find(
 		(element) => element.getAttribute('data-slot') === 'collapsible-trigger'
 	);
 	expect(trigger).toBeDefined();
