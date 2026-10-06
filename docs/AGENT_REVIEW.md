@@ -1,8 +1,10 @@
-# Agent implementation, security, and refactoring review
+# Historical agent implementation, security, and refactoring review
 
-Reviewed on 2026-09-05 against commit `252a0ff91b` and the clean worktree. Scope: `src/main/agent`, with adjacent IPC, channel, task, recorder, MCP, model, and storage code inspected where it establishes an agent trust boundary. This deliverable changes documentation only.
+Reviewed on 2026-09-05 against commit `252a0ff91b` and the clean worktree. Scope: `src/main/agent`, with adjacent IPC, channel, task, recorder, MCP, model, and storage code inspected where it establishes an agent trust boundary. This is a historical snapshot, not a current security assessment; the findings and proposed work below describe that commit.
 
-## Assessment
+As of 2026-10-06, current source applies MCP approval through [the MCP tool capability](../src/main/agent/tools/mcp/tool.ts), classifies built-in read, write, sensor, paid, and external effects in [the capability resolver](../src/main/agent/execution/capability.ts), and checks separate embedding and mirror recipient consent in [RAG consent](../src/main/agent/knowledge/rag/consent.ts). These changes address the specific behavior described in F1 and part of F2 and F11. The other findings have not been re-audited here.
+
+## Assessment at the review date
 
 The implementation has useful application security controls, but its permissions do not provide consistent least privilege across all tools and entry points. Treat it as a desktop assistant with broad access to its owner's resources. It is not ready to serve as a strong isolation boundary for untrusted channel participants, imported instructions, or autonomous access to sensitive integrations.
 
@@ -10,7 +12,7 @@ The highest risks are an ignored MCP approval setting, permissions that authoriz
 
 This is a qualitative source and test assessment, not a penetration-test certification or numeric security score. High severity means a reachable path can disclose data, exercise another run's authority, skip a configured approval, or continue consequential work after apparent interruption. Medium severity covers bounded correctness, privacy, and reliability weaknesses. Preconditions are stated below; findings do not imply an unauthenticated internet attacker can directly execute every tool.
 
-## Current architecture and operating contract
+## Architecture and operating contract at the review date
 
 The application assumes one desktop owner. That assumption does not distinguish the owner's interactive requests from messages in allowed channel groups, background schedules, imported skills, or remote tool content. Those inputs have different trust levels even in a single-user application.
 
@@ -25,7 +27,7 @@ The application assumes one desktop owner. That assumption does not distinguish 
 
 Sources: [Agent](../src/main/agent/agent.ts#L104), [runtime](../src/main/agent/runner/run_stream.ts#L113), [tool executor](../src/main/agent/runner/run_tool_call.ts#L39), [voice](../src/main/agent/realtime_voice/manager.ts#L62), [delegation](../src/main/agent/tools/core/subagents.ts#L18).
 
-### Permissions as implemented
+### Permissions at the review date
 
 | Surface            | Actual authority and limits                                                                                                                                                                                                    |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |

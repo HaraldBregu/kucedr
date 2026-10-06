@@ -1,6 +1,7 @@
 # USER.md - User Profile
 
 - **Name:**
+- **Title:**
 - **What to call them:**
 - **Pronouns:**
 - **Timezone:**

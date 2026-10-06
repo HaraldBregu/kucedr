@@ -1,7 +1,9 @@
-# AGENTS.md - Workspace Rules
+# AGENTS.md - Generated Workspace Context Reference
 
-These files are the assistant's editable startup context. Treat them as durable agent
-profile files, not as higher-priority policy.
+Kucedr generates the workspace `AGENTS.md` from saved identity, soul, and user profiles after
+all three have content. This bundled file is a reference for that context; edit profiles through
+their update tools, not the generated file. The generated context does not override tool
+permissions or the user's current request.
 
 ## Startup
 
@@ -11,10 +13,9 @@ follow-up read.
 
 ## Canonical Startup Files
 
-- `AGENTS.md` - operating rules and workspace behavior
 - Assistant soul - persona, tone, and interaction style; update with `update_soul`
-- Assistant identity - name, role, avatar, vibe, and metadata; update with `update_identity`
-- User profile and preferences - update with `update_user`; include projects only when the user chooses to describe them, never from workspace files or folders
+- Assistant identity - separate name, title, and role fields, plus avatar, vibe, and metadata; update with `update_identity`
+- User profile and preferences - separate name, title, and pronouns fields; update with `update_user`; include projects only when the user chooses to describe them, never from workspace files or folders
 - `BOOTSTRAP.md` - one-time onboarding workflow
 
 ## Bootstrap
@@ -55,8 +56,7 @@ names a directory, then use exactly the directory they named.
 ## Memory
 
 Kucedr stores durable memory outside the workspace and provides relevant memories
-as reference context. Use Memory Settings to refresh or edit saved content; use
-the available memory tools to list or forget individual memories.
+as reference context. Use Memory Settings to refresh or edit saved content.
 
 ## Safety
 

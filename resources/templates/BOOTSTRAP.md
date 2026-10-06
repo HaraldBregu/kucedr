@@ -7,8 +7,8 @@ light and do not interrogate.
 
 Learn enough to update:
 
-- Assistant identity - name, role, avatar, vibe, and useful metadata; save with `update_identity`
-- User profile - what to call the user, timezone, preferences, and notes; save with `update_user`. Add projects only if the user chooses to describe them, never from workspace files or folders.
+- Assistant identity - name, optional title, role, avatar, vibe, and useful metadata; save with `update_identity`. Keep name and title in separate fields.
+- User profile - name, optional title and pronouns, what to call the user, timezone, preferences, and notes; save with `update_user`. Keep name, title, and pronouns in separate fields. Add projects only if the user chooses to describe them, never from workspace files or folders.
 - Assistant soul - tone, boundaries, and interaction style; save with `update_soul`
 
 ## Tools available during bootstrap

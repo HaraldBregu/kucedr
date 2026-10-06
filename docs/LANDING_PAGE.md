@@ -1,6 +1,6 @@
 # Kucedr Landing Page Build Prompt
 
-> Design brief, not a current capability reference. Some proposed knowledge-generation and wiki claims below are not implemented in this checkout. Verify product copy against the [application guide](APPLICATION.md) and [architecture](ARCHITECTURE.md) before publishing.
+> Design brief, not a complete capability reference. Verify product copy against the [application guide](APPLICATION.md) and [architecture](ARCHITECTURE.md) before publishing.
 
 Build a polished, responsive product landing page for **Kucedr**, a cross-platform desktop AI copilot that turns conversations into actions and turns useful work into reusable knowledge.
 
@@ -189,18 +189,18 @@ Search your documents by meaning.
 **Card copy**
 
 ```text
-Choose one or more folders of text, create a semantic index with your selected embedding provider and Pinecone, and let Kucedr retrieve matching excerpts with their source paths. Generate the index on demand, keep it refreshed on a schedule, and test searches directly in Settings.
+Choose one or more folders of text and an embedding provider. With your consent, Kucedr sends document chunks to that provider and mirrors the index to Pinecone before publishing a local SQLite index. It searches the local index for matching excerpts and source paths. Generate the index on demand, keep it refreshed on a schedule, and test searches directly in Settings.
 ```
 
 **Feature points**
 
 - Recursively indexes readable UTF-8 text while skipping binary files.
 - Uses the same embedding model for indexing and later queries.
-- Gives the main assistant relevant excerpts, paths, and relevance scores.
+- Gives the main assistant relevant excerpts, paths, line ranges, and relevance scores.
 - Supports manual generation and scheduled full index rebuilds.
 - Rejects common credential files and high-confidence secret content before indexing.
 
-Use **Knowledge** in the interface. Technical copy may say **RAG-powered semantic retrieval**. Do not describe this feature as local-only, incremental, compatible with PDFs or office documents, or independent of Pinecone.
+Use **Knowledge** in the interface. Technical copy may say **RAG-powered semantic retrieval**. Indexing requires the configured embedding service and Pinecone mirror; queries send text to the embedding service, then search local SQLite vectors. Do not describe this feature as fully on-device or compatible with PDFs or office documents.
 
 ### 6. Apps
 
@@ -254,7 +254,7 @@ Your setup. Your providers. Your control.
 **Body copy**
 
 ```text
-Kucedr stores provider keys, settings, conversations, workspace data, Skills, Apps, and generated wiki files on the user's machine. The user selects the providers and connected services behind chat, speech, media, search, embeddings, and knowledge generation.
+Kucedr stores provider keys, settings, conversations, workspace data, Skills, Apps, and the local knowledge index on the user's machine. The user selects the providers and connected services behind chat, speech, media, search, embeddings, and knowledge indexing.
 ```
 
 **Control points**
@@ -350,15 +350,15 @@ Use the same core message for Open Graph and social metadata. Use the Kucedr ico
 
 The finished page must not imply capabilities that are only planned, partial, or absent.
 
-- Do not claim a hosted service, team collaboration, multi-tenant knowledge, or cloud account sync.
+- Do not claim a hosted assistant, team collaboration, multi-tenant knowledge, or automatic synchronization of all local settings and provider keys.
 - Do not claim that all AI or knowledge processing happens locally.
-- Do not call the Knowledge incremental; current indexing rebuilds its Pinecone index.
-- Do not claim arbitrary vector-database support; the current runtime uses Pinecone.
+- Do not call the Knowledge a live incremental index; an indexing run publishes a new Pinecone generation and local SQLite index, while reusing unchanged local vectors when possible.
+- Do not claim arbitrary vector-database support; the current RAG mirror adapter uses Pinecone.
 - Do not claim a Skills or Apps marketplace.
 - Do not claim that every Skill metadata declaration is enforced at runtime.
 - Do not claim that Apps are signed, verified, permission-isolated, or safe to install from untrusted sources.
 - Do not advertise app hot reload, enable/disable controls, or preinstalled example apps.
-- Do not market incomplete scheduled-agent execution or database features on this page.
+- Describe scheduled tasks and remote database storage only to the extent supported by the current application.
 - Do not invent download counts, supported-company logos, benchmarks, customer quotes, or awards.
 
 ## Acceptance criteria

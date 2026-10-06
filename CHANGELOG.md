@@ -12,8 +12,8 @@ Changes since [v1.0.2] (2026-07-26).
 - A redesigned agent runtime with run state management, cancellation, background tools, retries, context budgeting, subagents, and user-input requests.
 - File editing history with undo and redo support, atomic writes, attachment externalization, and safer session persistence and recovery.
 - Fine-grained sandbox and permission controls, including path-scoped grants and mandatory one-time approval for destructive actions.
-- A knowledge system with local RAG indexing and search, wiki ingestion, provenance, linting, review workflows, scheduled maintenance, and evaluation fixtures.
-- Embedding support for OpenAI-compatible, Cohere, Jina, Nomic, and Voyage providers, plus Pinecone-backed document indexing and similarity search.
+- A knowledge system with local RAG indexing and similarity search, source provenance, scheduled indexing, and evaluation fixtures.
+- Embedding support for OpenAI-compatible, Cohere, Jina, Nomic, and Voyage providers, plus consented Pinecone mirroring of indexed documents before publication to the local SQLite index.
 - Realtime voice conversations and dictation with OpenAI and xAI support, PCM capture/playback, and configurable realtime voice settings.
 - Background microphone, camera, and screen recording tools with status and stop controls.
 - App packages, isolated app windows, manifests, stores, import/delete flows, file watching, and app management settings.
@@ -24,7 +24,10 @@ Changes since [v1.0.2] (2026-07-26).
 - MCP local-server import and registry support, server testing, secret handling, OAuth record isolation, and expanded MCP settings UI.
 - New model adapters and catalog entries across text, speech, transcription, image, sound, video, and embedding services.
 - Data archive and remote-purge controls, database APIs, workspace APIs, and cloud/storage management screens.
-- New settings pages for general preferences, persona, permissions, data, cloud, apps, embeddings, RAG, realtime voice, provider keys, tasks, and wiki.
+- A Library with folders, file import, previews, downloads, moves, and deletion; a Workspace file view and Coder project and session workflows.
+- Structured identity and user profiles with separate name, title, and pronoun fields, and generated `AGENTS.md` context from saved profiles.
+- Opt-in version-history file sync with local snapshots, immutable remote versions, and conflict-aware change tracking.
+- New settings pages for general preferences, persona, permissions, data, storage, apps, Library, Workspace, Knowledge, realtime voice, provider keys, and tasks.
 - Broader unit, integration, and end-to-end coverage for the agent runtime, permissions, sessions, providers, apps, channels, MCP, RAG, realtime voice, storage, settings, and media.
 
 ### Changed
@@ -39,7 +42,7 @@ Changes since [v1.0.2] (2026-07-26).
 - Changed generated media to save into the active workspace by default and made storage push/pull operate as full replacement mirrors.
 - Simplified channel configuration around provider credentials and a single default channel.
 - Improved prompt editing, attachment handling, tool activity, permission prompts, message rendering, navigationbar behavior, audio/video players, and startup layout.
-- Updated English and Italian translations for the new and reorganized settings, providers, channels, storage, wiki, and agent features.
+- Updated English and Italian translations for the new and reorganized settings, providers, channels, storage, knowledge, and agent features.
 - Updated dependencies, including the Model Context Protocol SDK, `marked`, `node-cron`, PostCSS, and ts-jest.
 
 ### Fixed
@@ -53,11 +56,11 @@ Changes since [v1.0.2] (2026-07-26).
 - Fixed MCP OAuth persistence, secret filtering, import paths, form validation, and server record handling.
 - Corrected channel credential lookup, default channel selection, security scoping, and Telegram/Discord behavior.
 - Fixed recorder data URL parsing, device capture wiring, voice recording controls, and media playback edge cases.
-- Corrected Pinecone upserts, RAG migration/indexing behavior, wiki transactions, storage endpoints, and synchronization paths.
+- Corrected Pinecone upserts, RAG indexing behavior, storage endpoints, and synchronization paths.
 
 ### Removed
 
-- Legacy projects and library features, routes, IPC APIs, tools, prompt context, navigation entries, and storage synchronization options.
+- Legacy project routes and APIs, obsolete tools and prompt context, and superseded navigation and storage synchronization options.
 - Legacy widgets in favor of apps.
 - Per-model IPC/preload modules and per-kind model stores superseded by the unified models API and shared store.
 - Legacy channels IPC/preload surfaces superseded by app-level channel and bot APIs.
