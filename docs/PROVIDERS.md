@@ -1,12 +1,15 @@
 # Provider Reference
 
-Kucedr ships 23 provider manifests under `resources/providers`. This page is the canonical
-human-readable inventory of those built-in providers, the services they expose in the catalog,
-and whether the current runtime can execute each service.
+Kucedr ships 31 provider manifests under `resources/providers`. This page inventories the 23
+model, search, and database providers, their cataloged services, and whether the current runtime
+can execute each service.
 
 The inventory covers model, search, and database providers. Telegram is a
 messaging channel and is documented in [Kucedr Feature Reference](FEATURES.md#5-messaging-channels).
-MCP servers and apps are integrations rather than providers.
+The other manifests describe MCP, storage, messaging, and local-model integrations: Cloudflare,
+GitHub, GitLab, Microsoft, Notion, Ollama, Supabase, and Telegram. See
+[Kucedr Feature Reference](FEATURES.md) and [Account and Cloud Architecture](CLOUD.md) for their
+respective runtime paths.
 
 ## Support status
 
@@ -135,7 +138,7 @@ Every model in this table has a runtime adapter and can power Home's realtime Vo
 
 | Provider | Cataloged models                                                                       |
 | -------- | -------------------------------------------------------------------------------------- |
-| OpenAI   | GPT Realtime 2.1 (`gpt-realtime-2.1`); GPT Realtime 2.1 Mini (`gpt-realtime-2.1-mini`) |
+| OpenAI   | GPT Realtime 2.1 (`gpt-realtime-2.1`); GPT Realtime 2.1 Mini (`gpt-realtime-2.1-mini`); GPT Live 1 (`gpt-live-1`) |
 | xAI      | Grok Voice Latest (`grok-voice-latest`)                                                |
 
 ### Image
@@ -146,7 +149,7 @@ Every model in this table has a runtime adapter and can power Home's realtime Vo
 | Available | Google            | Gemini 3.1 Flash Image Preview (`gemini-3.1-flash-image-preview`); Gemini 3 Pro Image Preview (`gemini-3-pro-image-preview`) |
 | Available | Ideogram          | Ideogram 3.0 (`ideogram-3.0`); Ideogram 2a (`ideogram-2a`)                                                                   |
 | Available | Qwen              | Qwen Image (`qwen-image`); Qwen Image Edit (`qwen-image-edit`)                                                               |
-| Available | xAI               | Grok Imagine Image (`grok-imagine-image`); Grok Imagine Image Quality (`grok-imagine-image-quality`)                         |
+| Available | xAI               | Grok Imagine Image (`grok-imagine-image`); Grok Imagine Image Quality (`grok-imagine-image-quality`); Grok Imagine Image 2.0 (`grok-imagine-image-2.0`) |
 
 ### Video
 
@@ -191,7 +194,7 @@ manifest supplies the provider and model entry.
 | Vector database | Pinecone | Pinecone Vector Database (`pinecone`)   |
 
 Save and edit Pinecone API keys under **Settings → Providers → Database**. Credentials are stored
-as entered in the local `settings/providers.json` file, separately from model and search
+as entered in the local `providers/settings.json` file, separately from model and search
 credentials. Create a key using [Pinecone's API key instructions](https://docs.pinecone.io/guides/projects/manage-api-keys).
 
 Select the database explicitly in **Settings → RAG**; no database is selected automatically.
@@ -211,14 +214,19 @@ import provider folders.
 Provider plugins use the same folder shape. See [Kucedr plugins](PLUGINS.md) for the complete plugin
 layout.
 
-A provider manifest requires `providerId`, `providerName`, and a `services` array. Each service
-requires `id`, `name`, `type`, and `url`. Optional provider fields include `apiKeyUrl`, image paths,
-and provider instructions. Optional model fields include default selection, realtime transcription
-metadata, sample rate, and provider-documented input metadata.
+A provider manifest requires `providerId` and `providerName`. It declares capabilities in
+`models`, `mcp_servers`, `databases`, `web_search`, `bots`, or `storage`; the former `services` field
+is rejected. Entries in the array capabilities require `id`, `name`, and `url`, with additional
+fields depending on the capability. Optional provider fields include `apiKeyUrl`, authentication,
+and icon paths. Model entries declare their type, authentication, location, and prompt attachment
+metadata where applicable. Use the [manifest validator](../src/shared/providers/validation.ts) and
+bundled manifests as the schema reference.
 
 Custom chat providers whose ID is not `anthropic` or `openai` are routed through the
-OpenAI-compatible Chat Completions client. Other capabilities require an adapter in the
-corresponding runtime factory; adding only a manifest makes the service catalog only.
+OpenAI-compatible Chat Completions client. The reserved custom local provider can discover
+models from an Ollama service in **Settings → Providers → Models**; its bundled `ollama` manifest
+does not declare fixed model IDs. Other capabilities require an adapter in the corresponding
+runtime factory; adding only a manifest makes the service catalog only.
 
 ## Source of truth
 

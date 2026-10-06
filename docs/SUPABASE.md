@@ -102,7 +102,7 @@ hosted-project settings before releasing a build:
 
 Existing local chats and provider configuration stay on the device. The first signed-in account
 becomes the owner of that local Kucedr profile; signing into another account
-is rejected to prevent accidental cross-account data exposure. Folder backups use the separately configured S3-compatible storage provider in Settings → Cloud;
+is rejected to prevent accidental cross-account data exposure. Folder backups use the separately configured S3-compatible storage provider in Settings → Storage;
 they do not use this account adapter or require sign-in. Model, database, and search credentials
 remain in local provider settings. Vector databases serve RAG and are separate from file backup.
 

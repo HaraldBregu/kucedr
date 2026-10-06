@@ -28,7 +28,8 @@ On Linux environments that require Electron sandbox changes, use `npm run dev-li
 
 ## Quality Gates
 
-Match the current automated CI gate before opening a pull request:
+Run the local release checks before opening a pull request. Checked-in CI workflows are currently
+disabled (`.github/workflows/*.yml.disabled`):
 
 ```bash
 npm ci
@@ -62,7 +63,7 @@ The complete workflow, including targeted workspace tests and end-to-end setup, 
 - Prefer the simplest solution that satisfies the request; no speculative abstractions or configurability.
 - Keep changes surgical: touch only what the change requires and match the existing style of surrounding code.
 - Module-based file structure: split files when responsibilities diverge; move shared functions into their own files. Prefer short, one-word filenames.
-- Provider-specific AI logic stays behind provider adapters in `src/main/providers` — it must not leak into agent or UI code.
+- Provider-specific AI logic stays behind provider adapters in `src/main/models/adapters` — it must not leak into agent or UI code.
 - Create browser windows through `WindowFactory` so Electron security defaults stay consistent.
 - Frontend work follows the existing design system (Tailwind CSS + shadcn-style components); don't invent custom visual patterns.
 
@@ -81,7 +82,7 @@ See [SECURITY.md](SECURITY.md) for the security policy.
 
 - Keep commits small and focused — one logical change per commit.
 - Write descriptive, lower-case subjects that state what changed and where, matching the existing history (e.g. `early return added when sessionsPath is missing in persist`).
-- Before opening a PR: run the automated CI gate above, describe what changed and why,
+- Before opening a PR: run the local checks above, describe what changed and why,
   and note any full-suite baseline failures or follow-up work.
 - Don't bundle unrelated refactors or formatting changes with a functional change.
 

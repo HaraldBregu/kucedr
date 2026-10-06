@@ -2,19 +2,18 @@
 
 ## Existing data and rollout
 
-The current Storage backup feature selects local paths, uploads to an S3-compatible bucket by
-path, and restores by replacing matching local files. Its folder, provider selection, and schedule
-settings live in `~/.kucedr/storage/settings.json`;
-S3 credentials are encrypted with Electron `safeStorage`. These backups have no version ancestry
-or Supabase metadata. The new sync protocol must not interpret existing backup objects as
-published versions or remove old backup objects. Migrate backup settings into the dedicated
-store before removing their old `app.json` field. Keep the backup path available until an
-explicit, verified import can assign file identities and hashes to each existing object. Existing
+The Storage backup feature selects local paths, uploads to an S3-compatible bucket by path, and
+restores by replacing matching local files. Its folder, provider selection, and schedule settings
+live in `~/.kucedr/storage/settings.json`; S3 credentials are encrypted with Electron
+`safeStorage`. Version history sync is a separate, opt-in path. It does not interpret existing
+backup objects as published versions or remove them. Backup settings are migrated from the former
+`settings/app.json` `cloud` field into the dedicated store. The legacy backup path remains available
+until an explicit, verified import assigns file identities and hashes to existing objects. Existing
 working files remain at their selected locations.
 
-Assumptions: legacy backup remains available during rollout; version synchronization requires a
-deployed Supabase schema and Edge Functions plus server-side AWS configuration. The desktop app
-must not treat a configured project URL or an S3 bucket alone as proof that those services exist.
+Version synchronization requires a deployed Supabase schema and Edge Functions plus server-side
+storage configuration. The desktop app must not treat a configured project URL or an S3 bucket
+alone as proof that those services exist.
 
 ## Local ownership and durability
 
@@ -103,9 +102,8 @@ corresponding metadata; the version-sync database migration does not convert the
 
 ## Current limitations
 
-- The backend migration and Edge Functions require deployment to the target Supabase project;
-  this checkout has no live storage provider configured and no local Docker daemon for database
-  integration tests.
+- The backend migrations and Edge Functions require deployment to the target Supabase project and
+  a configured S3-compatible provider before version history sync can operate.
 - Existing S3 backup objects remain intact but are not automatically converted to immutable
   versions. Their old backup and restore path remains available when version history sync is off.
 - The first sync registers the selected saved provider's credentials with the trusted backend,

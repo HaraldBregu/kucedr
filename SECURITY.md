@@ -26,7 +26,7 @@ You should receive an acknowledgment within a few days. Please allow a reasonabl
 Kucedr handles the following sensitive data locally on the user's machine:
 
 - AI provider API keys
-- Connector credentials (Google, Microsoft, Dropbox)
+- Connector credentials (for example, Google and Microsoft)
 - Channel configuration and secrets (e.g. bot tokens)
 - Agent conversation history and session data
 - Local workspace files

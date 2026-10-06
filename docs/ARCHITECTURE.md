@@ -66,7 +66,8 @@ Chromium state and crash dumps uses Electron's own platform-specific paths.
 
 | Profile path         | Purpose                                                                 |
 | -------------------- | ----------------------------------------------------------------------- |
-| `settings/`          | App, agent, provider, RAG, task, account, and integration configuration |
+| `settings/`          | App, agent, RAG, task, account, and integration configuration           |
+| `providers/`         | Provider manifests and saved model, database, search, and storage settings |
 | `memory/`            | Memory configuration, run snapshots, processing state, and `MEMORY.md`  |
 | `workspace/`         | Default agent working directory and personalization Markdown files      |
 | `sessions/`          | Conversation/session persistence                                        |
@@ -75,7 +76,7 @@ Chromium state and crash dumps uses Electron's own platform-specific paths.
 | `library/`           | Library/media files                                                     |
 | `rag/vectors.sqlite` | Local RAG vectors and source records                                    |
 
-Model, database, and search API keys are stored as entered in `settings/providers.json`.
+Model, database, and search API keys are stored as entered in `providers/settings.json`.
 Storage secret keys use secure device storage. Account sessions are encrypted when secure
 storage is available, otherwise retained only in memory. Do not assume the entire profile is
 encrypted. See [Account and Cloud Architecture](CLOUD.md) for account binding and backup scope.

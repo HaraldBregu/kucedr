@@ -1,6 +1,6 @@
 # Kucedr plugins
 
-Kucedr discovers user-installed plugins from:
+The Kucedr CLI installs user plugins to:
 
 ```text
 <Electron userData>/plugins/<plugin-id>/manifest.json
@@ -15,7 +15,9 @@ kucedr install ./path/to/plugin
 
 Use `kucedr tui` for the interactive terminal interface, then enter `/install package-one`.
 The CLI fetches npm packages without running lifecycle scripts, validates their manifest and
-contributed files, and installs them atomically. Restart Kucedr after installation.
+contributed files, and installs them atomically. Installation stores the files for future runtime
+integration; the current Electron main process does not scan this plugin directory or activate its
+contributions.
 
 The installed application directory is not used because packaged application files may be read-only
 or replaced by an update. Plugin IDs and contribution IDs use lowercase kebab-case. The plugin folder
@@ -39,7 +41,7 @@ built-in `resources/providers/<id>/` catalog:
   channels/<channel-id>.mjs
 ```
 
-## Manifest version 3
+## Manifest version 4
 
 ```json
 {
@@ -84,31 +86,40 @@ built-in `resources/providers/<id>/` catalog:
 
 A provider contribution only declares its `id`; the definition lives in `providers/<provider-id>/`:
 
+The following is the content of `providers/acme/manifest.json`:
+
 ```json
-// providers/acme/manifest.json
 {
 	"providerId": "acme",
 	"providerName": "Acme AI",
+	"authentication": "api-key",
 	"apiKeyUrl": "https://acme.test/keys",
-	"services": [{ "id": "acme-chat", "name": "Acme Chat", "type": "large-language-model", "url": "https://api.acme.test/v1" }]
+	"models": [
+		{
+			"id": "acme-chat",
+			"name": "Acme Chat",
+			"type": "large-language-model",
+			"authentication": "api-key",
+			"url": "https://api.acme.test/v1",
+			"location": "remote",
+			"metadata": { "promptAttachments": [] }
+		}
+	]
 }
 ```
 
 Provider credentials do not belong in the manifest. They remain in Kucedr's provider settings store.
-Only declarative OpenAI-compatible chat providers are supported; custom executable provider adapters
-are not loaded into the Electron main process.
+The desktop catalog currently reads bundled manifests and standalone folders under
+`~/.kucedr/providers/<provider-id>/`, not provider files inside installed plugins. To use this
+declarative OpenAI-compatible chat provider today, place its provider folder directly in that
+directory. Custom executable provider adapters are not loaded into the Electron main process.
 
-App entries must be relative HTML paths inside the plugin folder. Kucedr verifies that each entry is
-a regular file and remains inside its plugin before exposing it. Plugin apps run without Kucedr's
-preload API.
+App entries must be relative HTML paths inside the plugin folder. The CLI verifies that each entry
+is a regular file and remains inside its plugin. The desktop app registry currently reads
+`~/.kucedr/apps/`, not plugin app entries.
 
 Skills must contain `SKILL.md`. Language and theme contributions are JSON assets. MCP server
-contributions contain connection metadata but no credentials. Channel entries are cataloged as
-contained JavaScript modules but are not executed by this foundation; channel activation will require
-an explicit trust decision and lifecycle integration with Kucedr's channel registry.
-
-The main-process `PluginRepository` is the filesystem source of truth. It validates manifests, returns
-structured scan issues, rejects provider ID collisions, and catalogs providers, skills, apps, MCP
-servers, languages, themes, and chatbot communication channels. Provider and app contributions are
-already supplied to their existing IPC and menu flows; the other catalogs are ready for their
-respective runtime registries.
+contributions contain connection metadata but no credentials. Channel entries are contained
+JavaScript modules. The CLI validates these files, but none of these plugin contributions is
+currently registered with the desktop runtime. The **Settings → Plugins** page instead manages
+built-in MCP, database, and storage integrations from provider manifests.

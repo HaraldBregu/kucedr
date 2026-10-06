@@ -244,7 +244,7 @@ Build both publishable packages:
 npm run build:packages
 ```
 
-Build the Electron app, available workspaces, and bundled Workspace app:
+Build the Electron app and available workspaces:
 
 ```sh
 npm run build:all
@@ -357,7 +357,8 @@ git commit -m "describe the change"
 git push --set-upstream kucedr your-change
 ```
 
-Open a pull request, wait for the latest CI run to pass, and merge it into `main`.
+Open a pull request and record the local checks run. Once the disabled CI workflow is enabled,
+wait for its latest run to pass before merging into `main`.
 
 ## Deployment
 

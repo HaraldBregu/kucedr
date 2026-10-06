@@ -33,7 +33,8 @@ SDK client for metadata, and trusted Edge Functions for narrow S3 upload/downloa
   separate storage credentials and do not require account sign-in.
 - Public auth state never contains access or refresh tokens. Provider error identifiers are mapped
   to stable `AuthError` or `CloudError` messages before crossing IPC.
-- Sessions are encrypted with operating-system secure storage. Provider API keys are stored as
+- Sessions are encrypted when operating-system secure storage is available and otherwise remain
+  in memory. Provider API keys are stored as
   entered in local provider settings and are not synchronized through the account service.
 - The first fully signed-in account is bound to the local Kucedr profile. A different account is
   rejected to prevent accidental cross-account access.
@@ -58,7 +59,7 @@ usage bounded. Operation revisions prevent delayed snapshots from overwriting ne
 
 ## Credential storage
 
-Model, database, and search keys are stored as entered in `~/.kucedr/settings/providers.json`.
+Model, database, and search keys are stored as entered in `~/.kucedr/providers/settings.json`.
 They are not automatically synchronized by the account service. Storage secret keys use Electron
 `safeStorage`, and saving them requires secure device storage. Account sessions also use
 `safeStorage`; without secure encryption, sessions remain in memory. The current implementation
