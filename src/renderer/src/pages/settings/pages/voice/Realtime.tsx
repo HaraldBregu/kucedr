@@ -144,7 +144,7 @@ export default function RealtimeVoiceConfiguration(): React.JSX.Element {
 		<ModelProviderConfiguration
 			configState={state}
 			idPrefix="realtime-voice"
-			triggerTitle={t('settings.modelServices.realtimeVoiceConfiguration')}
+			triggerTitle={t('settings.modelServices.voiceConfiguration')}
 			triggerDescription={
 				model
 					? `${group?.provider.name ?? group?.provider.id} - ${model.name || model.id}`

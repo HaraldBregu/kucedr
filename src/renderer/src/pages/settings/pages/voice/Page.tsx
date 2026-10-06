@@ -8,7 +8,7 @@ import {
 	SettingsRow,
 	SettingsSection,
 } from '../../components';
-import RealtimeConversationConfiguration from '../assistant/conversation';
+import VoiceConfiguration from '../assistant/voice';
 import { ProfileMediaModels } from '../assistant/profilemodels';
 
 export default function VoicePage(): React.JSX.Element {
@@ -22,7 +22,7 @@ export default function VoicePage(): React.JSX.Element {
 			/>
 
 			<SettingsPanel>
-				<RealtimeConversationConfiguration
+				<VoiceConfiguration
 					icon={Radio}
 					showFieldLabel={false}
 					showSelectedModel

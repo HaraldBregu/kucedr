@@ -12,7 +12,7 @@ import {
 } from '../../components/model-configuration-state';
 import type { ProviderModelGroup } from '../../../start/setupTypes';
 
-interface RealtimeConversationConfigurationProps {
+interface VoiceConfigurationProps {
 	readonly selectDefaultModel?: boolean;
 	readonly showFieldLabel?: boolean;
 	readonly showSelectedModel?: boolean;
@@ -23,7 +23,7 @@ interface RealtimeConversationConfigurationProps {
 	readonly pluginItemStyle?: boolean;
 }
 
-export default function RealtimeConversationConfiguration({
+export default function VoiceConfiguration({
 	selectDefaultModel = true,
 	showFieldLabel = true,
 	showSelectedModel = false,
@@ -32,7 +32,7 @@ export default function RealtimeConversationConfiguration({
 	showContentSeparator = true,
 	icon,
 	pluginItemStyle = false,
-}: RealtimeConversationConfigurationProps): React.JSX.Element {
+}: VoiceConfigurationProps): React.JSX.Element {
 	const { t } = useTranslation();
 	const [state, setState] = useState<ModelConfigurationState>(initialModelConfigurationState);
 	const [options, setOptions] = useState<Record<string, unknown>>({});
@@ -180,7 +180,7 @@ export default function RealtimeConversationConfiguration({
 			<ModelProviderConfiguration
 				configState={state}
 				idPrefix="agent-realtime-conversation"
-				triggerTitle={t('settings.modelServices.realtimeConversationConfiguration')}
+				triggerTitle={t('settings.modelServices.voiceConfiguration')}
 				triggerDescription={model ? undefined : t('settings.modelServices.modelPlaceholder')}
 				description={t('settings.modelServices.realtimeConversationDescription')}
 				showInlineError

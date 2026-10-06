@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import AssistantPage from '../../../src/renderer/src/pages/settings/pages/assistant/Page';
-import RealtimeConversationConfiguration from '../../../src/renderer/src/pages/settings/pages/assistant/conversation';
+import VoiceConfiguration from '../../../src/renderer/src/pages/settings/pages/assistant/voice';
 import VoicePage from '../../../src/renderer/src/pages/settings/pages/voice/Page';
 import ToolsPage from '../../../src/renderer/src/pages/settings/pages/assistant/tools/Page';
 import McpToolsPage from '../../../src/renderer/src/pages/settings/pages/assistant/mcptools/Page';
@@ -144,7 +144,7 @@ jest.mock('react-i18next', () => {
 		'settings.cron.actions.enable': 'Enable',
 		'settings.cron.actions.disable': 'Disable',
 		'settings.cron.schedule.everyMinutes': 'Every {{count}} minutes',
-		'settings.modelServices.realtimeConversationConfiguration': 'Realtime conversation',
+		'settings.modelServices.voiceConfiguration': 'Voice',
 		'settings.modelServices.realtimeConversationDescription': 'Live model and voice',
 		'settings.modelServices.loadError': 'Unable to load models',
 		'settings.modelServices.saveError': 'Unable to save model',
@@ -551,7 +551,7 @@ it('shows only runtime-supported realtime models and saves model and voice toget
 	expect(trigger).toBeDefined();
 	if (!trigger) return;
 	await user.click(trigger);
-	const selector = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
+	const selector = (await screen.findAllByRole('button', { name: 'Voice' })).find(
 		(element) => element.getAttribute('aria-haspopup') === 'dialog'
 	);
 	expect(selector).toBeDefined();
@@ -577,12 +577,12 @@ it('leaves realtime conversation unselected when catalog defaults are disabled',
 		options: {},
 		supportedModels: [{ providerId: 'openai', modelId: 'gpt-realtime' }],
 	});
-	render(<RealtimeConversationConfiguration selectDefaultModel={false} />);
+	render(<VoiceConfiguration selectDefaultModel={false} />);
 
 	const trigger = await screen.findByRole('button', { name: /Realtime conversation/ });
 	expect(trigger).toHaveTextContent('Select model');
 	await user.click(trigger);
-	const selector = await screen.findByRole('combobox', { name: 'Realtime conversation' });
+	const selector = await screen.findByRole('combobox', { name: 'Voice' });
 	expect(selector).not.toHaveTextContent('GPT Realtime');
 	expect(realtimeSetSetup).not.toHaveBeenCalled();
 });
@@ -658,7 +658,7 @@ it('announces a realtime conversation setup save error', async () => {
 	expect(trigger).toBeDefined();
 	if (!trigger) return;
 	await user.click(trigger);
-	const selector = (await screen.findAllByRole('button', { name: 'Realtime conversation' })).find(
+	const selector = (await screen.findAllByRole('button', { name: 'Voice' })).find(
 		(element) => element.getAttribute('aria-haspopup') === 'dialog'
 	);
 	expect(selector).toBeDefined();

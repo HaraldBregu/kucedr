@@ -12,7 +12,7 @@ import {
 import { Card, CardContent } from '@/components/ui/card';
 import { Item, ItemActions, ItemContent, ItemMedia, ItemTitle } from '@/components/ui/item';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
-import RealtimeConversationConfiguration from '@pages/settings/pages/assistant/conversation';
+import VoiceConfiguration from '@pages/settings/pages/assistant/voice';
 import { SetupSearch } from './SetupSearch';
 import { SetupStepHeader } from './SetupStepHeader';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
@@ -170,7 +170,7 @@ export function SetupModelsStep({
 					</h2>
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
-							<RealtimeConversationConfiguration
+							<VoiceConfiguration
 								selectDefaultModel={false}
 								showFieldLabel={false}
 								showSelectedModel
