@@ -81,15 +81,10 @@ Provider API keys are stored in Kucedr's local application data and are masked a
 
 ### Attachments
 
-- Multiple files can be attached to one request. Known text files are accepted independently;
-  supported binary types such as images and PDFs depend on the selected model's verified
-  capabilities.
-- Attachment chips show the filename, size, removal action, and any validation error.
-- The renderer enforces file count, type, individual size, aggregate text/binary size, and
-  model-specific media limits before Send is enabled.
-- Queued files are revalidated when the model changes, encoded locally, and included in the agent
-  request.
-- Submitted attachment metadata is not rendered in the user bubble or restored transcript.
+- Multiple files can be attached to one request. The tray shows filenames, types, sizes, removal actions, image previews, and recorded-audio playback.
+- Queued files persist as session drafts. Sending captures them for the agent request and clears the tray.
+- Submitted attachments render with the user message and are restored from conversation history.
+- The current renderer does not validate model capability, file count, type, or size before enabling Send. An unsupported file can fail when the agent or provider processes it.
 
 ### Slash commands
 
@@ -154,7 +149,7 @@ Kucedr uses an iterative tool-calling loop:
 
 Each model turn currently allows up to 8,192 output tokens and is retried once after a provider failure.
 
-The Home prompt classifier computes `none`, `medium`, or `high` reasoning effort from prompt language, length, and code context, and also derives `lightContext`. `toolsAllow`, `toolsDeny`, and `lightContext` are forwarded from the renderer but dropped by the main-process IPC normalizer before reaching the agent; `effort` survives that step but is never read when the run's input is assembled. These Home options therefore have no execution effect at present.
+The Home prompt classifier computes `none`, `medium`, or `high` reasoning effort from prompt language, length, and code context, and also derives `lightContext`. The main-process IPC normalizer carries effort, context mode, and tool allow/deny lists into the run. The model adapter receives effort, context mode changes the supplied context, and tool lists filter available tools.
 
 ### Built-in tools
 
