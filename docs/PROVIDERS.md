@@ -131,7 +131,7 @@ Every model in this table has a runtime adapter.
 
 ### Realtime voice
 
-Every model in this table has a runtime adapter and can power Home's realtime voice conversation.
+Every model in this table has a runtime adapter and can power Home's realtime Voice feature.
 
 | Provider | Cataloged models                                                                       |
 | -------- | -------------------------------------------------------------------------------------- |

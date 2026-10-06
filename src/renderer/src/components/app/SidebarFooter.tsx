@@ -82,8 +82,8 @@ export function AppSidebarFooter(): React.JSX.Element {
 							variant="ghost"
 							size="icon"
 							className="absolute right-2 top-2 z-10 shrink-0 rounded-lg hover:bg-sidebar-primary hover:text-sidebar-primary-foreground focus-visible:bg-sidebar-primary focus-visible:text-sidebar-primary-foreground"
-							aria-label={t('settings.sidebar.voiceConversation')}
-							title={voiceError ?? t('settings.sidebar.voiceConversation')}
+							aria-label={t('settings.tabs.voice')}
+							title={voiceError ?? t('settings.tabs.voice')}
 							onClick={() => {
 								setVoiceError(null);
 								void ensureAppMicrophoneAccess()
@@ -92,7 +92,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 										setVoiceError(
 											error instanceof Error && error.message.trim()
 												? error.message
-												: 'Voice conversation could not be opened.'
+												: 'Voice could not be opened.'
 										);
 									});
 							}}

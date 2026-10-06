@@ -175,7 +175,7 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 	const themeButton = navigationBar.getByRole('button', { name: /^Theme:/ });
 	await expect(navigationBar.getByRole('button', { name: 'Search' })).toHaveCount(0);
 	await expect(navigationBar.getByRole('button', { name: 'Settings', exact: true })).toHaveCount(0);
-	await expect(navigationBar.getByRole('button', { name: 'Start voice conversation' })).toHaveCount(
+	await expect(navigationBar.getByRole('button', { name: 'Start Voice' })).toHaveCount(
 		0
 	);
 	const isMac = await page.evaluate(
@@ -208,7 +208,7 @@ test('the navbar keeps Workspace and opens Search from the sidebar', async () =>
 	await page.keyboard.press('Escape');
 	const sidebarFooter = workspaceSidebar.locator('[data-slot="sidebar-footer"]');
 	const accountMenuButton = sidebarFooter.getByRole('button', { name: /account menu/i });
-	const footerVoiceButton = sidebarFooter.getByRole('button', { name: 'Voice conversation' });
+	const footerVoiceButton = sidebarFooter.getByRole('button', { name: 'Voice' });
 	await expect(sidebarFooter).toBeVisible();
 	await expect(footerVoiceButton).toBeVisible();
 	await expect(sidebarFooter.locator('.lucide-more-vertical')).toHaveCount(0);
@@ -621,7 +621,7 @@ test('the empty home state and composer use the intended spacing', async () => {
 	await expect(modelButton).toHaveCSS('background-color', 'rgba(0, 0, 0, 0)');
 	await expect(composer).toHaveAttribute('data-expanded', 'false');
 	await expect(sendButton).toBeVisible();
-	await expect(field.getByRole('button', { name: 'Start voice conversation' })).toHaveCount(0);
+	await expect(field.getByRole('button', { name: 'Start Voice' })).toHaveCount(0);
 	await expect(transcriptionButton).toHaveCSS('width', '36px');
 	await expect(transcriptionButton).toHaveCSS('height', '36px');
 	const fieldBounds = await field.boundingBox();

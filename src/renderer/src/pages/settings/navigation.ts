@@ -389,7 +389,6 @@ export const SETTINGS_NAVIGATION: readonly SettingsNavigationItem[] = [
 	{
 		path: '/settings/voice',
 		labelKey: 'settings.tabs.voice',
-		sidebarLabelKey: 'settings.sidebar.voiceConversation',
 		descriptionKey: 'settings.modelServices.realtimeConversationDescription',
 		icon: AudioLines,
 	},

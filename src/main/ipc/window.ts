@@ -90,9 +90,9 @@ export class WindowIpc implements IpcModule<WindowIpcDeps> {
 			WindowChannels.openVoiceConversation,
 			wrapIpcHandler((_event, chatSessionId: string) => {
 				if (typeof chatSessionId !== 'string' || !chatSessionId.trim()) {
-					throw new Error('Invalid voice conversation session id.');
+					throw new Error('Invalid Voice session id.');
 				}
-				if (!openVoiceConversation) throw new Error('Voice conversations are unavailable.');
+				if (!openVoiceConversation) throw new Error('Voice is unavailable.');
 				openVoiceConversation(chatSessionId.trim());
 			}, 'window:open-voice-conversation')
 		);

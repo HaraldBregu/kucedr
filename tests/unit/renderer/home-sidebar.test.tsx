@@ -136,7 +136,7 @@ it('loads chat history, marks the latest default session, and switches sessions'
 	expect(accountMenu).toHaveClass('h-12', 'p-2');
 	expect(within(accountMenu).getByText('settings.title')).toBeInTheDocument();
 	expect(within(footer).getByText('S')).toHaveClass('bg-primary', 'text-primary-foreground');
-	expect(screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' })).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'settings.tabs.voice' })).toBeInTheDocument();
 });
 
 it.each<[AuthState, string]>([
@@ -223,7 +223,7 @@ it('opens voice from its own footer button without opening the account menu', as
 		</MemoryRouter>
 	);
 
-	const voiceButton = screen.getByRole('button', { name: 'settings.sidebar.voiceConversation' });
+	const voiceButton = screen.getByRole('button', { name: 'settings.tabs.voice' });
 	expect(voiceButton).toHaveClass(
 		'size-8',
 		'top-2',

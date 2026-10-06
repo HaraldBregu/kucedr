@@ -17,7 +17,7 @@ Open /home
   -> compose
        -> text or files: Send
        -> microphone button: Dictate or Record
-       -> empty composer primary action: Start voice conversation
+       -> empty composer primary action: Start Voice
   -> stream the response and tool activity
        -> permission or input required: respond inline
        -> Stop: cancel the active run
@@ -195,9 +195,9 @@ permission.
 The underlying dictation hooks support muting, but the current panel does not expose a mute
 control.
 
-### Realtime voice conversation
+### Realtime Voice
 
-Starting a voice conversation should verify that a supported realtime model is configured, audio
+Starting Voice should verify that a supported realtime model is configured, audio
 capture is available, and microphone permission is granted. It should then open the large persona
 panel and start capture, playback, and a realtime session for the selected chat.
 

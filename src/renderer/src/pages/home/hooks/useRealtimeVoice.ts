@@ -242,7 +242,7 @@ export function useRealtimeVoice({
 					setStatus('listening');
 					return;
 				case 'error': {
-					failSession(event.message || 'Realtime voice conversation failed.', sessionId);
+					failSession(event.message || 'Realtime Voice failed.', sessionId);
 					return;
 				}
 				case 'closed':

@@ -256,8 +256,7 @@
 			"accountMenu": "Account menu for {{name}}",
 			"manageAccount": "Manage account",
 			"signOut": "Sign out",
-			"mcp": "MCP",
-			"voiceConversation": "Voice conversation"
+			"mcp": "MCP"
 		},
 		"overview": {
 			"backToSettings": "All settings",

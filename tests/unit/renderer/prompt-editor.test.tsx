@@ -130,7 +130,7 @@ describe('PromptEditor', () => {
 		expect(attachmentButton).toHaveFocus();
 	});
 
-	it('shows only the persona and a top-right stop control during voice conversation', () => {
+	it('shows only the persona and a top-right stop control during Voice', () => {
 		const onVoiceEnd = jest.fn();
 		const { container } = render(
 			<PromptEditor
@@ -154,7 +154,7 @@ describe('PromptEditor', () => {
 		expect(screen.queryByRole('status')).not.toBeInTheDocument();
 		expect(screen.queryByText('0:10')).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Mute' })).not.toBeInTheDocument();
-		fireEvent.click(screen.getByRole('button', { name: 'End voice conversation' }));
+		fireEvent.click(screen.getByRole('button', { name: 'End Voice' }));
 		expect(onVoiceEnd).toHaveBeenCalled();
 	});
 });

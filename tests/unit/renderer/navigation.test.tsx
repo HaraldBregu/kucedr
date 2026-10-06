@@ -229,7 +229,7 @@ it('renders settings navigation beside the workspace and marks the current secti
 	).toHaveAttribute('href', '/settings/mcp');
 	expect(
 		within(assistantGroup as HTMLElement).getByRole('link', {
-			name: 'settings.sidebar.voiceConversation',
+			name: 'settings.tabs.voice',
 		})
 	).toHaveAttribute('href', '/settings/voice');
 	expect(
@@ -308,7 +308,7 @@ it('uses the Chat icon for the Agent Chat sidebar item', () => {
 	expect(chat.querySelector('.lucide-message-circle')).toBeInTheDocument();
 });
 
-it('uses the audio waveform icon for Voice conversation', () => {
+it('uses the audio waveform icon for Voice', () => {
 	const { container } = render(
 		<MemoryRouter initialEntries={['/settings/voice']}>
 			<Routes>
@@ -321,7 +321,7 @@ it('uses the audio waveform icon for Voice conversation', () => {
 
 	const sidebar = container.querySelector('[data-slot="split-pane-sidebar"]');
 	const voice = within(sidebar as HTMLElement).getByRole('link', {
-		name: 'settings.sidebar.voiceConversation',
+		name: 'settings.tabs.voice',
 	});
 
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();

@@ -48,7 +48,7 @@ export class VoiceWindow {
 			transparent: true,
 			backgroundColor: TRANSPARENT_WINDOW_BACKGROUND,
 			...getPlatformTranslucencyOptions(),
-			title: 'Voice conversation',
+			title: 'Voice',
 			center: true,
 			alwaysOnTop: true,
 			skipTaskbar: true,

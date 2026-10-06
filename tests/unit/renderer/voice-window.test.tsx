@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { StrictMode } from 'react';
 import type { PersonaState } from '../../../src/renderer/src/components/persona';
-import { VoiceConversationWindow } from '../../../src/renderer/src/components/voice-conversation-window';
+import { VoiceWindow } from '../../../src/renderer/src/components/voice-window';
 import {
 	useRealtimeVoice,
 	type RealtimeVoiceUiStatus,
@@ -27,7 +27,7 @@ jest.mock('@/pages/home/hooks/useRealtimeVoice', () => ({
 
 const mockedUseRealtimeVoice = jest.mocked(useRealtimeVoice);
 
-describe('VoiceConversationWindow', () => {
+describe('VoiceWindow', () => {
 	beforeEach(() => {
 		Object.defineProperty(window, 'win', { configurable: true, value: { close: jest.fn() } });
 	});
@@ -50,13 +50,13 @@ describe('VoiceConversationWindow', () => {
 			stream: {} as MediaStream,
 		} as ReturnType<typeof useRealtimeVoice>);
 
-		render(<VoiceConversationWindow chatSessionId="chat-1" />);
+		render(<VoiceWindow chatSessionId="chat-1" />);
 
 		expect(screen.getByLabelText('Voice Agent')).toHaveAttribute('data-state', expectedState);
 		expect(screen.getByLabelText('Voice Agent')).toHaveAttribute('data-appearance', 'orb-07');
 		expect(screen.queryByRole('status')).not.toBeInTheDocument();
 		expect(
-			screen.getByRole('button', { name: 'End voice conversation' }).nextElementSibling
+			screen.getByRole('button', { name: 'End Voice' }).nextElementSibling
 		).toHaveTextContent('1:01');
 	});
 
@@ -72,7 +72,7 @@ describe('VoiceConversationWindow', () => {
 			stream: null,
 		} as ReturnType<typeof useRealtimeVoice>);
 
-		render(<VoiceConversationWindow chatSessionId="chat-1" />);
+		render(<VoiceWindow chatSessionId="chat-1" />);
 
 		expect(screen.getByRole('alert')).toHaveTextContent('Microphone access was denied.');
 		expect(screen.getByRole('alert')).toHaveClass(
@@ -80,7 +80,7 @@ describe('VoiceConversationWindow', () => {
 			'bg-destructive/10',
 			'text-destructive'
 		);
-		expect(screen.getByRole('button', { name: 'End voice conversation' })).toHaveTextContent(
+		expect(screen.getByRole('button', { name: 'End Voice' })).toHaveTextContent(
 			'Close'
 		);
 	});
@@ -100,7 +100,7 @@ describe('VoiceConversationWindow', () => {
 
 		render(
 			<StrictMode>
-				<VoiceConversationWindow chatSessionId="chat-1" />
+				<VoiceWindow chatSessionId="chat-1" />
 			</StrictMode>
 		);
 

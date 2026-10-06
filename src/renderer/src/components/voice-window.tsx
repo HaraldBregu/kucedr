@@ -20,7 +20,7 @@ function personaState(status: RealtimeVoiceUiStatus): PersonaState {
 	return 'idle';
 }
 
-export function VoiceConversationWindow({
+export function VoiceWindow({
 	chatSessionId,
 }: {
 	readonly chatSessionId: string;
@@ -53,7 +53,7 @@ export function VoiceConversationWindow({
 				style={{ WebkitAppRegion: 'drag' } as React.CSSProperties}
 			>
 				<span className="text-sm font-normal tracking-wide text-muted-foreground">
-					Voice conversation
+					Voice
 				</span>
 			</div>
 			<div className="relative flex min-h-0 flex-1 items-center justify-center px-4 pb-2">
@@ -92,7 +92,7 @@ export function VoiceConversationWindow({
 					</button>
 					<button
 						type="button"
-						aria-label="End voice conversation"
+						aria-label="End Voice"
 						disabled={isEnding}
 						onClick={() => void voice.end()}
 						className="flex h-10 min-w-28 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"

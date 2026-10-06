@@ -64,8 +64,8 @@ Configure transcription for dictation, text-to-speech for reading responses alou
 
 1. Open Agent settings and select the required speech models.
 2. Use System settings to check microphone access and grant OS permission if prompted.
-3. Dictate into the composer and confirm the transcript, or start a voice conversation from the empty composer.
-4. End the voice conversation to release capture and playback resources.
+3. Dictate into the composer and confirm the transcript, or start a Voice session from the empty composer.
+4. End the Voice session to release capture and playback resources.
 
 For images, music/audio, or video, connect a supported provider and select its media model. Generate from the relevant Settings surface or ask the assistant in chat. Agent-generated media appears inline; supported context-menu actions open, reveal, or save local output. A catalog entry alone does not establish an implemented generation adapter: consult [Providers](PROVIDERS.md).
 

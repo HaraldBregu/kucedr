@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { loadModels } from './lib/providers';
-import { VoiceConversationWindow } from './components/voice-conversation-window';
+import { VoiceWindow } from './components/voice-window';
 import { AppProvider } from './contexts';
 import './i18n';
 import './index.css';
@@ -11,7 +11,7 @@ if (!rootElement) throw new Error('Impossible to find the voice window root elem
 
 function chatSessionIdFromHash(): string {
 	const encoded = window.location.hash.replace(/^#\/?voice\//, '');
-	if (!encoded) throw new Error('Voice conversation session id is missing.');
+	if (!encoded) throw new Error('Voice session id is missing.');
 	return decodeURIComponent(encoded);
 }
 
@@ -22,7 +22,7 @@ const render = (): void => {
 	root.render(
 		<StrictMode>
 			<AppProvider>
-				<VoiceConversationWindow chatSessionId={chatSessionId} />
+				<VoiceWindow chatSessionId={chatSessionId} />
 			</AppProvider>
 		</StrictMode>
 	);

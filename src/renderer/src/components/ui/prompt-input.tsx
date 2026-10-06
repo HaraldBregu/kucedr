@@ -316,7 +316,7 @@ function PromptInputVoicePanel({
 						</button>
 						<button
 							type="button"
-							aria-label="End voice conversation"
+							aria-label="End Voice"
 							disabled={disabled}
 							onClick={(event) => handleButtonClick(event, onEnd)}
 							className="flex h-9 w-16 items-center justify-center gap-1 rounded-full bg-primary text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/55 disabled:pointer-events-none disabled:opacity-50"
@@ -485,7 +485,7 @@ function PromptInput({
 										>
 											<button
 												type="button"
-												aria-label="End voice conversation"
+												aria-label="End Voice"
 												disabled={disabled}
 												onClick={(event) => {
 													event.stopPropagation();
