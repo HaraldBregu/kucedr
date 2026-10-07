@@ -119,6 +119,13 @@ npm run dist:linux:portable  # Linux AppImage and tar.gz archive
 
 ### Portable releases
 
+With Node.js 22 or newer, run `node scripts/install.mjs` on Windows, macOS, or Linux.
+It selects the latest published Kucedr release for the current OS and architecture, then places
+the portable app in `%LOCALAPPDATA%\\Programs\\Kucedr`, `~/Applications`, or `~/.local/bin`,
+respectively. Windows and Linux builds support x64; macOS builds support x64 and arm64.
+If no matching Kucedr artifact has been published, the script reports that instead of installing
+an older Friday release or an installer package.
+
 On Windows, download `Kucedr-Portable-<version>-x64.exe` and run it directly. It temporarily
 extracts its signed application files while Kucedr is running, but does not install shortcuts,
 file associations, or uninstall records and does not require administrator access.
