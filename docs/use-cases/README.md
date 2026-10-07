@@ -4,15 +4,15 @@ Use these scenarios to test the desktop app from the user's point of view. Each 
 
 Replace values in angle brackets with your own disposable test data. Record the selected model/provider, tool name, result or error, and saved output path when applicable. A model answer without the requested tool call does not pass a tool scenario. Provider credentials, network access, permissions, and usage charges can affect the result. See the [provider reference](../PROVIDERS.md) for executable models; catalog-only models are not pass candidates.
 
-| Area | Scenarios |
-| --- | --- |
-| Conversation | [Chat, sessions, attachments, planning, goals, and permissions](chat.md) |
-| Web | [Search engine, page extraction, and interactive browser](web.md) |
-| Generated media | [Images, video, music, and sound effects](media.md) |
-| Speech | [Dictation, realtime conversation, and read aloud](voice.md) |
-| Agent work | [Files, commands, schedules, and health checks](agent.md) |
-| Personal data | [Knowledge, memory, Workspace, Library, and backup](data.md) |
-| Extensions | [Skills, generic MCP, apps, remote agents, and Telegram](integrations.md) |
+| Area            | Scenarios                                                                         |
+| --------------- | --------------------------------------------------------------------------------- |
+| Conversation    | [Chat, sessions, attachments, planning, goals, and permissions](chat.md)          |
+| Web             | [Search engine, page extraction, and interactive browser](web.md)                 |
+| Generated media | [Images, video, music, and sound effects](media.md)                               |
+| Speech          | [Dictation, realtime conversation, and read aloud](voice.md)                      |
+| Agent work      | [Files, commands, schedules, and health checks](agent.md)                         |
+| Personal data   | [Knowledge, memory, Workspace, Library, and backup](data.md)                      |
+| Extensions      | [Skills, generic MCP, apps, remote agents, and Telegram](integrations.md)         |
 | Google services | [Gmail, Calendar, Drive, Docs, Sheets, Maps, Contacts, and Gmail SMTP](google.md) |
 
 For a full tool-by-tool Google regression, use the existing [Gmail](../GMAIL.md), [Calendar](../CALENDAR.md), and [Drive](../DRIVE.md) scripts. Those scripts are more exhaustive than the everyday scenarios here.

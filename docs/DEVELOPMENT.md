@@ -84,7 +84,7 @@ registered callback differs is registered again before starting a new interactiv
 Google Workspace uses the same callback and PKCE/state flow. Each MCP server's static scopes
 and OAuth parameters are declared in its provider manifest under `mcp_servers`. An empty
 `scopes` array leaves scope selection to the server's OAuth discovery or tool challenges.
-Gmail, Google Calendar, and Google Drive always
+The seven Google MCP services always
 read their OAuth client from `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`; their settings
 pages do not accept or display credentials. For a Google Desktop app OAuth client, variable
 loopback ports are supported. A Google Web application OAuth client requires the exact

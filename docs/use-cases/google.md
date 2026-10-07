@@ -4,7 +4,7 @@ The Google provider manifest lists seven remote MCP services: Gmail, Calendar, D
 
 ## Connect a remote Google service
 
-1. Configure the Google OAuth environment and callback described in [Development](../DEVELOPMENT.md#google-workspace-mcp-oauth).
+1. Configure the Google OAuth environment and callback described in [Development](../DEVELOPMENT.md#mcp-oauth-callback-setup).
 2. In **Settings → Integrations**, add the desired Google service. Open **Settings → MCP servers**, select that service, and choose **Connect with OAuth**.
 3. Grant only the account access you intend to test. Run **Test** on the MCP detail page and record its tool names and descriptions.
 4. Start a fresh chat, name the service in the prompt, and expand the resulting `mcp__...` activity to verify execution.
