@@ -550,7 +550,7 @@ Kucedr stores configuration and working data below Electron's application-data d
 | Channels    | Bot tokens, sender policies, and channel reply model.                                                                                       |
 | Services    | Independent text, transcription, voice, image, video, and audio selections.                                                                 |
 | Media       | Standalone generated video and audio files.                                                                                                 |
-| Browser     | Interactive browsing uses your open personal Chrome profile; background runs use temporary profiles.                                                                                                           |
+| Browser     | Persistent agent-browser profile.                                                                                                           |
 | Storage     | Local folder selections and cloud-backup schedule.                                                                                          |
 | Diagnostics | Local rotating logs and crash dumps. Crash dumps are not uploaded by the current configuration.                                             |
 
