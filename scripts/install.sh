@@ -31,8 +31,10 @@ curl -fsSL --retry 3 \
 	-H 'User-Agent: kucedr-portable-installer' \
 	-o "$temporary/releases.json" \
 	'https://api.github.com/repos/HaraldBregu/kucedr/releases?per_page=100'
+releases_file="$temporary/releases.json"
+if [ "$platform" = win32 ]; then releases_file="$(cygpath -w "$releases_file")"; fi
 asset_info="$(
-	KUCEDR_PLATFORM="$platform" KUCEDR_ARCH="$arch" KUCEDR_RELEASES="$temporary/releases.json" node -e '
+	KUCEDR_PLATFORM="$platform" KUCEDR_ARCH="$arch" KUCEDR_RELEASES="$releases_file" node -e '
 			const releases = JSON.parse(require("node:fs").readFileSync(process.env.KUCEDR_RELEASES, "utf8"));
 			const release = releases
 				.filter(item => item.assets.some(asset => asset.name.startsWith("Kucedr-")))
