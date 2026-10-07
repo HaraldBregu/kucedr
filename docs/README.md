@@ -9,6 +9,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [Apps guide](APPS.md): installable app windows, external development folders, app data, and the built-in Workspace.
 - [Feature reference](FEATURES.md): detailed capabilities and implementation limits.
 - [Provider reference](PROVIDERS.md): model and service catalogs and supported runtime adapters.
+- [Use-case tests](use-cases/README.md): copyable scenarios and pass checks for chat, media, web, local work, automation, and Google MCP services.
 
 ## Understand the interface
 
