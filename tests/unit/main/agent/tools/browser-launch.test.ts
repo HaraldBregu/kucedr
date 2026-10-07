@@ -29,6 +29,11 @@ function personalBrowser() {
 	return { browser, context, page };
 }
 
+beforeEach(() => {
+	connectOverCDP.mockReset();
+	launchPersistentContext.mockReset();
+});
+
 afterEach(async () => {
 	await useWebBrowserTool.run({ action: 'stop' });
 });
@@ -100,4 +105,19 @@ it('disconnects to cancel navigation without closing the personal tab', async ()
 	expect(browser.close).toHaveBeenCalledTimes(1);
 	expect(page.close).not.toHaveBeenCalled();
 	expect(context.close).not.toHaveBeenCalled();
+});
+
+
+it('disconnects a pending attachment before reporting that the browser stopped', async () => {
+	const { browser, context, page } = personalBrowser();
+	let resolveConnection!: (value: typeof browser) => void;
+	connectOverCDP.mockReturnValue(new Promise((resolve) => { resolveConnection = resolve; }));
+	const start = useWebBrowserTool.run({ action: 'start' });
+	const stop = useWebBrowserTool.run({ action: 'stop' });
+	resolveConnection(browser);
+	await Promise.all([start, stop]);
+	expect(browser.close).toHaveBeenCalledTimes(1);
+	expect(context.close).not.toHaveBeenCalled();
+	expect(page.close).not.toHaveBeenCalled();
+	expect(JSON.parse(String(await useWebBrowserTool.run({ action: 'status' })))).toEqual({ running: false, tabs: [] });
 });
