@@ -2,9 +2,9 @@ import os from 'node:os';
 import path from 'node:path';
 import { chromium, type BrowserContext, type Page } from 'playwright-core';
 import { z } from 'zod';
-import { userDataLocation } from '../../../shared/user_data_location';
 import { tool } from '../tool';
-import { runBrowserPageOperation } from './browser_abort';
+import { runBrowserPageOperation } from './browser/operation';
+import { connectChrome } from './browser/connect';
 import { browserSession, type BrowserSession } from './browser/session';
 
 const ACTIONS = [
@@ -62,15 +62,15 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 	if (session.closed) throw new Error('Browser run has ended.');
 	if (session.context) return session.context;
 	if (!session.starting) {
-		const userDataDir = session.headless ? '' : path.join(userDataLocation(), 'agent-browser');
-		session.starting = chromium.launchPersistentContext(userDataDir, {
+		const starting = session.headless ? chromium.launchPersistentContext('', {
 			channel: 'chrome',
 			headless: session.headless,
 			viewport: null,
 			timeout: DEFAULT_TIMEOUT_MS,
-		}).then(async (launched) => {
+		}) : connectChrome(session);
+		session.starting = starting.then(async (launched) => {
 			if (session.closed || signal?.aborted) {
-				await launched.close();
+				await (session.disconnect ? session.disconnect() : launched.close());
 				signal?.throwIfAborted();
 				throw new Error('Browser run has ended.');
 			}
@@ -81,6 +81,7 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			});
 			launched.on('close', () => {
 				session.context = null;
+				session.disconnect = undefined;
 				session.pages.clear();
 				session.consoleLogs.clear();
 			});
@@ -90,7 +91,9 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 			signal?.throwIfAborted();
 			const detail = cause instanceof Error ? cause.message : String(cause);
 			throw new Error(
-				`Browser automation could not start Google Chrome. Make sure Chrome is installed, permitted by system policy, and able to write to the Kucedr profile.\n${detail}`,
+				session.headless
+					? `Browser automation could not start Google Chrome. Make sure Chrome is installed, permitted by system policy, and able to write to the Kucedr profile.\n${detail}`
+					: `Could not connect to your open Google Chrome. In Chrome 144 or later, open chrome://inspect/#remote-debugging, enable remote debugging, then retry and allow Kucedr to connect.\n${detail}`,
 				{ cause }
 			);
 		}).finally(() => { session.starting = undefined; });
@@ -252,7 +255,7 @@ export const useWebBrowserTool = tool({
 	id: 'use_web_browser',
 	name: 'Use web browser',
 	description:
-		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts.',
+		'Connect to your already-open personal Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). Uses your existing tabs and logins. Requires Chrome 144+ with remote debugging enabled at chrome://inspect/#remote-debugging and approval of the Chrome connection prompt. Start or open connects; stop disconnects without closing Chrome.',
 	inputSchema: z.object({
 		action: z.enum(ACTIONS).describe('Browser command to run.'),
 		targetId: z.string().optional().describe('Tab id from "tabs" output. Defaults to the most recent tab.'),
@@ -297,7 +300,8 @@ export const useWebBrowserTool = tool({
 				return JSON.stringify({ running: true, tabs: await tabList(signal) });
 			}
 			case 'stop': {
-				if (session.context) await session.context.close();
+				if (session.disconnect) await session.disconnect();
+				else if (session.context) await session.context.close();
 				return JSON.stringify({ running: false });
 			}
 			case 'tabs':

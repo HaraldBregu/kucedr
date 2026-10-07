@@ -1,8 +1,9 @@
 import { EventEmitter } from 'node:events';
 
 const launchPersistentContext = jest.fn();
+const connectOverCDP = jest.fn();
 
-jest.mock('playwright-core', () => ({ chromium: { launchPersistentContext } }));
+jest.mock('playwright-core', () => ({ chromium: { launchPersistentContext, connectOverCDP } }));
 
 import { createBackgroundBrowser } from '../../../../../src/main/agent/tools/web/browser/background';
 import { useWebBrowserTool } from '../../../../../src/main/agent/tools/web/use_web_browser';
@@ -45,8 +46,11 @@ it('isolates background browsers from one another and the interactive profile', 
 	const foregroundContext = browserContext();
 	const firstContext = browserContext();
 	const secondContext = browserContext();
+	connectOverCDP.mockResolvedValue({
+		contexts: () => [foregroundContext],
+		close: jest.fn(async () => { foregroundContext.emit('close'); }),
+	});
 	launchPersistentContext
-		.mockResolvedValueOnce(foregroundContext)
 		.mockResolvedValueOnce(firstContext)
 		.mockResolvedValueOnce(secondContext);
 	try {
@@ -54,11 +58,8 @@ it('isolates background browsers from one another and the interactive profile', 
 		await first.tool.run({ action: 'open', url: 'https://first.example/' });
 		await second.tool.run({ action: 'open', url: 'https://second.example/' });
 
-		expect(launchPersistentContext.mock.calls[0]).toEqual([
-			expect.stringContaining('agent-browser'),
-			expect.objectContaining({ channel: 'chrome', headless: false }),
-		]);
-		for (const call of launchPersistentContext.mock.calls.slice(1)) {
+		expect(connectOverCDP).toHaveBeenCalledWith('chrome', expect.objectContaining({ noDefaults: true }));
+		for (const call of launchPersistentContext.mock.calls) {
 			expect(call).toEqual([
 				'',
 				expect.objectContaining({ channel: 'chrome', headless: true, viewport: null, timeout: 15_000 }),

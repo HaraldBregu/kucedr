@@ -4,6 +4,7 @@ import type { BrowserContext, Page } from 'playwright-core';
 export interface BrowserSession {
 	context: BrowserContext | null;
 	starting?: Promise<BrowserContext>;
+	disconnect?: () => Promise<void>;
 	readonly headless: boolean;
 	closed: boolean;
 	readonly pages: Map<string, Page>;
