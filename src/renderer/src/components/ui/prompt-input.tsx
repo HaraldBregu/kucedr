@@ -461,7 +461,7 @@ function PromptInput({
 							)}
 							{...(props as React.ComponentProps<typeof motion.div>)}
 						>
-							<div className="flex h-full flex-col justify-end overflow-hidden rounded-[inherit]">
+							<div className={cn('flex h-full flex-col justify-end rounded-[inherit]', detached ? 'overflow-visible' : 'overflow-hidden')}>
 								<div
 									ref={contentRef}
 									className={cn(
