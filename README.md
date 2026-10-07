@@ -119,7 +119,7 @@ npm run dist:linux:portable  # Linux AppImage and tar.gz archive
 
 ### Portable releases
 
-With Node.js 22 or newer, run `node scripts/install.mjs` on Windows, macOS, or Linux.
+With Node.js 22 or newer, run `bash scripts/install.sh` on macOS or Linux, or from Git Bash on Windows.
 It selects the latest published Kucedr release for the current OS and architecture, then places
 the portable app in `%LOCALAPPDATA%\\Programs\\Kucedr`, `~/Applications`, or `~/.local/bin`,
 respectively. Windows and Linux builds support x64; macOS builds support x64 and arm64.
