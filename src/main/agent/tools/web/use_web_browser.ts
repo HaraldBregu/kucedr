@@ -70,9 +70,7 @@ async function ensureStarted(signal?: AbortSignal): Promise<BrowserContext> {
 		}) : connectChrome(session);
 		session.starting = starting.then(async (launched) => {
 			if (session.closed || signal?.aborted) {
-				const disconnect = session.disconnect;
-				session.disconnect = undefined;
-				await (disconnect ? disconnect() : launched.close());
+				await (session.disconnect ? session.disconnect() : launched.close());
 				signal?.throwIfAborted();
 				throw new Error('Browser run has ended.');
 			}
@@ -302,7 +300,6 @@ export const useWebBrowserTool = tool({
 				return JSON.stringify({ running: true, tabs: await tabList(signal) });
 			}
 			case 'stop': {
-				await session.starting?.catch(() => undefined);
 				if (session.disconnect) await session.disconnect();
 				else if (session.context) await session.context.close();
 				return JSON.stringify({ running: false });
