@@ -23,13 +23,17 @@ if [ "$arch" = arm64 ] && [ "$platform" != darwin ]; then
 	exit 1
 fi
 
+temporary="$(mktemp -d)"
+mounted=0
+trap 'if [ "$mounted" -eq 1 ]; then hdiutil detach "$temporary/mount" >/dev/null; fi; rm -rf "$temporary"' EXIT
+curl -fsSL --retry 3 \
+	-H 'Accept: application/vnd.github+json' \
+	-H 'User-Agent: kucedr-portable-installer' \
+	-o "$temporary/releases.json" \
+	'https://api.github.com/repos/HaraldBregu/kucedr/releases?per_page=100'
 asset_info="$(
-	curl -fsSL --retry 3 \
-		-H 'Accept: application/vnd.github+json' \
-		-H 'User-Agent: kucedr-portable-installer' \
-		'https://api.github.com/repos/HaraldBregu/kucedr/releases?per_page=100' |
-		KUCEDR_PLATFORM="$platform" KUCEDR_ARCH="$arch" node -e '
-			const releases = JSON.parse(require("node:fs").readFileSync(0, "utf8"));
+	KUCEDR_PLATFORM="$platform" KUCEDR_ARCH="$arch" KUCEDR_RELEASES="$temporary/releases.json" node -e '
+			const releases = JSON.parse(require("node:fs").readFileSync(process.env.KUCEDR_RELEASES, "utf8"));
 			const release = releases
 				.filter(item => item.assets.some(asset => asset.name.startsWith("Kucedr-")))
 				.sort((a, b) => Date.parse(b.published_at) - Date.parse(a.published_at))[0];
@@ -53,9 +57,6 @@ asset_info="$(
 )"
 IFS=$'\t' read -r asset_name asset_url asset_size <<< "$asset_info"
 
-temporary="$(mktemp -d)"
-mounted=0
-trap 'if [ "$mounted" -eq 1 ]; then hdiutil detach "$temporary/mount" >/dev/null; fi; rm -rf "$temporary"' EXIT
 download="$temporary/$asset_name"
 echo "Downloading $asset_name..."
 curl -fL --retry 3 -o "$download" "$asset_url"
