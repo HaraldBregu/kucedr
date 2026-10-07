@@ -7,9 +7,11 @@ Replace values in angle brackets with your own disposable test data. Record the 
 | Area            | Scenarios                                                                         |
 | --------------- | --------------------------------------------------------------------------------- |
 | Conversation    | [Chat, sessions, attachments, planning, goals, and permissions](chat.md)          |
+| Setup           | [First run, model selection, and appearance](setup.md)                            |
 | Web             | [Search engine, page extraction, and interactive browser](web.md)                 |
 | Generated media | [Images, video, music, and sound effects](media.md)                               |
 | Speech          | [Dictation, realtime conversation, and read aloud](voice.md)                      |
+| Devices         | [Microphone, camera, and screen capture](devices.md)                              |
 | Agent work      | [Files, commands, schedules, and health checks](agent.md)                         |
 | Personal data   | [Knowledge, memory, Workspace, Library, and backup](data.md)                      |
 | Extensions      | [Skills, generic MCP, apps, remote agents, and Telegram](integrations.md)         |
