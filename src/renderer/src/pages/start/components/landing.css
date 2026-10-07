@@ -26,15 +26,15 @@
 
 .landing {
 	--font-heading: 'Archivo', 'Inter', ui-sans-serif, system-ui, sans-serif;
-	--primary: #46632d;
-	--primary-foreground: #f3efe7;
+	--primary: #087f5b;
+	--primary-foreground: #ffffff;
 	--ring: var(--primary);
 	font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
 .dark .landing {
-	--primary: #c3dba3;
-	--primary-foreground: #17171a;
+	--primary: #b7f34d;
+	--primary-foreground: #0b1411;
 }
 
 .landing-logo {

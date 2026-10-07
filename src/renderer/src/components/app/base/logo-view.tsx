@@ -6,5 +6,15 @@ export function LogoView({
 }: {
 	readonly className?: string;
 }): React.JSX.Element {
-	return <img src={mark} alt="Kucedr logo" className={`object-contain dark:invert ${className}`} />;
+	return (
+		<span
+			role="img"
+			aria-label="Kucedr logo"
+			className={`inline-block bg-[#087f5b] dark:bg-[#b7f34d] ${className}`}
+			style={{
+				WebkitMask: `url(${mark}) center / contain no-repeat`,
+				mask: `url(${mark}) center / contain no-repeat`,
+			}}
+		/>
+	);
 }
