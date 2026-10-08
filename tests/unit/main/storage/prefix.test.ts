@@ -1,12 +1,11 @@
 import { storagePrefix } from '../../../../src/main/storage/storage_prefix';
 
 describe('storagePrefix', () => {
-	it('isolates custom folders that have the same basename', () => {
+	it('uses only the folder name, without application, version or hash prefixes', () => {
 		const first = storagePrefix('/data/first/project');
 		const second = storagePrefix('/data/second/project');
 
-		expect(first).toMatch(/^kucedr\/v1\/custom\/[a-f0-9]{12}-project\/$/);
-		expect(second).toMatch(/^kucedr\/v1\/custom\/[a-f0-9]{12}-project\/$/);
-		expect(first).not.toBe(second);
+		expect(first).toBe('project/');
+		expect(second).toBe('project/');
 	});
 });
