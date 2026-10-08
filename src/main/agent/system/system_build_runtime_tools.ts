@@ -24,15 +24,18 @@ export function buildRuntimeTools(
 		const groups = Object.entries(toolCategoryRegistry).flatMap(([category, metadata]) => {
 			const categoryTools = categories.get(category as ToolCategory);
 			return categoryTools
-				? [`#### ${metadata.label}\n${categoryTools
-					.map((tool) => {
-						const description = tool.description?.trim() || 'No description provided by this tool.';
-						const restriction = requiresExplicitRequest(tool)
-							? ' _(Explicit user request only.)_'
-							: '';
-						return `- \`${tool.id}\` — ${description}${restriction}`;
-					})
-					.join('\n')}`]
+				? [
+						`#### ${metadata.label}\n${categoryTools
+							.map((tool) => {
+								const description =
+									tool.description?.trim() || 'No description provided by this tool.';
+								const restriction = requiresExplicitRequest(tool)
+									? ' _(Explicit user request only.)_'
+									: '';
+								return `- \`${tool.id}\` — ${description}${restriction}`;
+							})
+							.join('\n')}`,
+					]
 				: [];
 		});
 		sections.push(`### ${title}\n\n${groups.join('\n\n')}`);

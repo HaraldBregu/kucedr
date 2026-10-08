@@ -28,12 +28,21 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		await expect(completeBootstrapTool.run({})).rejects.toThrow('Complete identity, user');
 		const bootstrap = await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8');
 		expect(bootstrap).toContain('First Run');
-		expect(bootstrap).toContain('Assistant soul - tone, boundaries, and interaction style; save with `update_soul`');
+		expect(bootstrap).toContain(
+			'Assistant soul - tone, boundaries, and interaction style; save with `update_soul`'
+		);
 		expect(bootstrap).toContain('## Tools available during bootstrap');
-		expect(bootstrap).toContain('`complete_bootstrap` - finish setup after all three profiles have content.');
+		expect(bootstrap).toContain(
+			'`complete_bootstrap` - finish setup after all three profiles have content.'
+		);
 		expect(bootstrap).not.toContain('SOUL.md');
 		await updateIdentity({ name: 'Kucedr', role: 'Assistant', vibe: 'Calm' });
-		await updateUser({ name: 'Alice', preferredName: 'Al', timezone: 'Europe/Rome', projects: 'A personal history book Alice chose to share.' });
+		await updateUser({
+			name: 'Alice',
+			preferredName: 'Al',
+			timezone: 'Europe/Rome',
+			projects: 'A personal history book Alice chose to share.',
+		});
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference', [
 			{ id: 'read', category: 'workspace' },
 			{ id: 'bash', category: 'workspace' },
@@ -41,24 +50,40 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			{ id: 'tool_search', category: 'discovery' },
 		] as never);
 		expect(complete).toContain('### Loaded tools');
-		expect(complete).toContain('#### Workspace\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.');
-		expect(complete).toContain('#### Bootstrap\n- `update_identity` — No description provided by this tool.');
-		expect(complete).toContain('#### Discovery\n- `tool_search` — No description provided by this tool.');
+		expect(complete).toContain(
+			'#### Workspace\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.'
+		);
+		expect(complete).toContain(
+			'#### Bootstrap\n- `update_identity` — No description provided by this tool.'
+		);
+		expect(complete).toContain(
+			'#### Discovery\n- `tool_search` — No description provided by this tool.'
+		);
 		expect(complete).toContain('### BOOTSTRAP.md');
 		expect(complete).toContain('### MEMORY\nUse memory as durable background context');
 		expect(complete).not.toContain('### MEMORY.md');
 		expect(complete).not.toContain('HEALTH.md');
 		expect(complete).not.toContain('Health checklists');
-		expect(complete).toContain('### SOUL\nUse `update_soul` to change the assistant\'s tone, boundaries, or interaction style.\n- **Tone:** Calm and direct\n- **Boundaries:** Respect privacy');
+		expect(complete).toContain(
+			"### SOUL\nUse `update_soul` to change the assistant's tone, boundaries, or interaction style.\n- **Tone:** Calm and direct\n- **Boundaries:** Respect privacy"
+		);
 		expect(complete).not.toContain('SOUL.md');
-		expect(complete).toContain('### IDENTITY\nUse `update_identity` to change the assistant\'s name, role, avatar, or identity.\n- **Name:** Kucedr\n- **Role:** Assistant\n- **Vibe:** Calm');
+		expect(complete).toContain(
+			"### IDENTITY\nUse `update_identity` to change the assistant's name, role, avatar, or identity.\n- **Name:** Kucedr\n- **Role:** Assistant\n- **Vibe:** Calm"
+		);
 		expect(complete).not.toContain('IDENTITY.md');
-		expect(complete).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share.');
+		expect(complete).toContain(
+			"### USER\nUse `update_user` to change the user's name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share."
+		);
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
-		const voice = await buildWorkspaceContext(config, 'full', '', [{ id: 'complete_bootstrap', category: 'bootstrap' }] as never);
+		const voice = await buildWorkspaceContext(config, 'full', '', [
+			{ id: 'complete_bootstrap', category: 'bootstrap' },
+		] as never);
 		expect(voice).toContain('### SOUL');
-		expect(voice).toContain('#### Bootstrap\n- `complete_bootstrap` — No description provided by this tool.');
+		expect(voice).toContain(
+			'#### Bootstrap\n- `complete_bootstrap` — No description provided by this tool.'
+		);
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Calm and direct');
@@ -88,7 +113,8 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			name: 'Alfred',
 			role: "Harald's personal butler and assistant",
 			vibe: 'Composed and precise',
-			metadata: '# Alfred\n\n**Name:** Alfred\n**Also addressed as:** "Sir Alfred"\n\n**Role:** Harald\'s butler and personal assistant\n\n**Vibe:** Composed and precise',
+			metadata:
+				'# Alfred\n\n**Name:** Alfred\n**Also addressed as:** "Sir Alfred"\n\n**Role:** Harald\'s butler and personal assistant\n\n**Vibe:** Composed and precise',
 		});
 		const deduplicated = await buildWorkspaceContext(config, 'full');
 		const identitySection = deduplicated.split('### IDENTITY\n')[1].split('\n\n### SOUL')[0];

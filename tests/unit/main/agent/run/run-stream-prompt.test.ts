@@ -22,7 +22,16 @@ const mockLoadMcpTools = jest.fn(async () => ({
 	tools: [],
 	entries: [],
 	onChanged: () => () => undefined,
-	diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
+	diagnostics: {
+		configuredServers: 0,
+		enabledServers: 0,
+		connectedServers: 0,
+		listedTools: 0,
+		loadedTools: 0,
+		rejectedTools: 0,
+		truncated: false,
+		failures: [],
+	},
 	close: closeMcpMock,
 }));
 const createSkillRegistrySnapshotMock = jest.fn((_options?: unknown) => ({
@@ -73,7 +82,16 @@ describe('run stream system prompt', () => {
 			tools: [],
 			entries: [],
 			onChanged: () => () => undefined,
-			diagnostics: { configuredServers: 0, enabledServers: 0, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
+			diagnostics: {
+				configuredServers: 0,
+				enabledServers: 0,
+				connectedServers: 0,
+				listedTools: 0,
+				loadedTools: 0,
+				rejectedTools: 0,
+				truncated: false,
+				failures: [],
+			},
 			close: closeMcpMock,
 		});
 		createSkillRegistrySnapshotMock.mockReset().mockReturnValue({ skills: [], diagnostics: [] });
@@ -149,7 +167,7 @@ describe('run stream system prompt', () => {
 					tools: expect.arrayContaining(['load_skill']),
 				});
 				if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
-		expect(events[0].tools).toEqual(expect.arrayContaining(['read', 'load_skill']));
+				expect(events[0].tools).toEqual(expect.arrayContaining(['read', 'load_skill']));
 			} finally {
 				await fs.rm(root, { recursive: true, force: true });
 			}
@@ -189,9 +207,9 @@ describe('run stream system prompt', () => {
 			void event;
 
 		expect(createSkillRegistrySnapshotMock).toHaveBeenCalledWith({ projectRoot: '/workspace' });
-		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(
-			expect.arrayContaining(['load_skill'])
-		);
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toEqual(expect.arrayContaining(['load_skill']));
 		const firstTurnTools = runModelTurnMock.mock.calls[0][5] as Array<{
 			id: string;
 			description: string;
@@ -206,9 +224,9 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock.mock.calls[0][3]).not.toContain('Available skill routing metadata');
 		expect(runModelTurnMock.mock.calls[0][3]).not.toContain('Draft polished documents');
 		expect(runModelTurnMock.mock.calls[1][9]).toContain('EXACT WRITER INSTRUCTIONS');
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(
-			'read'
-		);
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toContain('read');
 		const receipt = session.messages.find(
 			(message) => message.toolCalls?.[0]?.name === 'load_skill'
 		)?.toolCalls?.[0]?.result?.content;
@@ -397,8 +415,23 @@ describe('run stream system prompt', () => {
 				new AbortController().signal,
 				{
 					tools: [
-						jsonTool({ id: 'alpha', category: 'system', name: 'Alpha', description: 'Alpha tool', schema: { type: 'object' }, execute: () => undefined }),
-						jsonTool({ id: 'mcp__demo__beta', category: 'integration', name: 'Beta', description: 'Beta tool', policy: { kind: 'mcp', serverId: 'demo', toolName: 'beta' }, schema: { type: 'object' }, execute: () => undefined }),
+						jsonTool({
+							id: 'alpha',
+							category: 'system',
+							name: 'Alpha',
+							description: 'Alpha tool',
+							schema: { type: 'object' },
+							execute: () => undefined,
+						}),
+						jsonTool({
+							id: 'mcp__demo__beta',
+							category: 'integration',
+							name: 'Beta',
+							description: 'Beta tool',
+							policy: { kind: 'mcp', serverId: 'demo', toolName: 'beta' },
+							schema: { type: 'object' },
+							execute: () => undefined,
+						}),
 					],
 					memory: { read } as never,
 				}
@@ -418,7 +451,9 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).not.toContain('# Memory\n');
 			expect(systemPrompt).toContain('#### System\n- `alpha` — Alpha tool');
 			expect(systemPrompt).toContain('#### Integrations\n- `mcp__demo__beta` — Beta tool');
-			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({
+				code: 'ENOENT',
+			});
 			expect(
 				await fs.readFile(path.join(session.sessionsPath, session.folderName, 'SYSTEM.md'), 'utf8')
 			).toBe(`${systemPrompt}\n`);
@@ -462,7 +497,9 @@ describe('run stream system prompt', () => {
 				void event;
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
-			expect(systemPrompt).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice');
+			expect(systemPrompt).toContain(
+				"### USER\nUse `update_user` to change the user's name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice"
+			);
 			expect(systemPrompt).toContain('# Agent runtime context');
 			expect(systemPrompt).toContain('### IDENTITY');
 			expect(systemPrompt).toContain('### SOUL');
@@ -499,7 +536,9 @@ describe('run stream system prompt', () => {
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
 			expect(systemPrompt).toContain('\n\n## Workspace\n');
 			expect(systemPrompt).toContain('Missing profile content: identity, soul, user');
-			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({
+				code: 'ENOENT',
+			});
 
 			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
 			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
@@ -556,7 +595,8 @@ describe('run stream system prompt', () => {
 				},
 				new AbortController().signal,
 				{ sandbox }
-			)) events.push(event);
+			))
+				events.push(event);
 			const tools = runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>;
 			expect(tools.map((tool) => tool.id)).toEqual([
 				'update_identity',
@@ -567,7 +607,9 @@ describe('run stream system prompt', () => {
 			expect(mockLoadMcpTools).not.toHaveBeenCalled();
 			expect(createSkillRegistrySnapshotMock).not.toHaveBeenCalled();
 			expect(events[0]).toMatchObject({ type: 'run_started' });
-			await expect(fs.readFile(path.join(workspace, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+			await expect(fs.readFile(path.join(workspace, 'AGENTS.md'))).rejects.toMatchObject({
+				code: 'ENOENT',
+			});
 		} finally {
 			if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 			else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
@@ -599,12 +641,24 @@ describe('run stream system prompt', () => {
 				},
 				new AbortController().signal,
 				{ sandbox }
-			)) void event;
+			))
+				void event;
 			const tools = runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>;
-			expect(tools.map((tool) => tool.id)).toEqual(expect.arrayContaining([
-				'read', 'write', 'edit', 'patch', 'undo', 'redo',
-				'update_identity', 'update_soul', 'update_user', 'complete_bootstrap', 'tool_search',
-			]));
+			expect(tools.map((tool) => tool.id)).toEqual(
+				expect.arrayContaining([
+					'read',
+					'write',
+					'edit',
+					'patch',
+					'undo',
+					'redo',
+					'update_identity',
+					'update_soul',
+					'update_user',
+					'complete_bootstrap',
+					'tool_search',
+				])
+			);
 		} finally {
 			if (previousRoot === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 			else process.env.KUCEDR_E2E_DATA_ROOT = previousRoot;
@@ -612,64 +666,74 @@ describe('run stream system prompt', () => {
 		}
 	});
 
-	it.each(['minimal', 'workspace'] as const)('includes complete memory in %s main chat context', async (contextMode) => {
-		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
-		await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
-		await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
-		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
-		const session = createSessionState();
-		session.category = 'main';
-		session.messages = [{ role: 'user', content: 'Current correction' }];
-		const memory = `# Memory\n${Array.from({ length: 500 }, (_, index) => `- Memory ${index}`).join('\n')}\n`;
-		const read = jest.fn(async () => memory);
-		for await (const event of stream(
-			{ location: root },
-			session,
-			{
-				runId: `memory-${contextMode}`,
-				task: 'chat',
-				message: 'Current correction',
-				model: 'test-model',
-				type: 'default',
-				agentId: 'main',
-				contextMode,
-				interactionMode: 'default',
-			},
-			new AbortController().signal,
-			{ tools: [], memory: { read } as never }
-		)) void event;
-		expect(read).toHaveBeenCalledTimes(1);
-		expect(runModelTurnMock.mock.calls[0][3]).toContain('- Memory 499');
-		expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
-		await fs.rm(root, { recursive: true, force: true });
-	});
+	it.each(['minimal', 'workspace'] as const)(
+		'includes complete memory in %s main chat context',
+		async (contextMode) => {
+			const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-main-memory-'));
+			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
+			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
+			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
+			const session = createSessionState();
+			session.category = 'main';
+			session.messages = [{ role: 'user', content: 'Current correction' }];
+			const memory = `# Memory\n${Array.from({ length: 500 }, (_, index) => `- Memory ${index}`).join('\n')}\n`;
+			const read = jest.fn(async () => memory);
+			for await (const event of stream(
+				{ location: root },
+				session,
+				{
+					runId: `memory-${contextMode}`,
+					task: 'chat',
+					message: 'Current correction',
+					model: 'test-model',
+					type: 'default',
+					agentId: 'main',
+					contextMode,
+					interactionMode: 'default',
+				},
+				new AbortController().signal,
+				{ tools: [], memory: { read } as never }
+			))
+				void event;
+			expect(read).toHaveBeenCalledTimes(1);
+			expect(runModelTurnMock.mock.calls[0][3]).toContain('- Memory 499');
+			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
+			await fs.rm(root, { recursive: true, force: true });
+		}
+	);
 
-	it.each(['bot', 'task', 'health', 'subagent'] as const)('keeps personal memory out of %s runs even in workspace mode', async (category) => {
-		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-isolated-memory-'));
-		const session = createSessionState();
-		session.category = category;
-		session.messages = [{ role: 'user', content: 'Background request' }];
-		const read = jest.fn(async () => '- Private preference.');
-		for await (const event of stream(
-			{ location: root },
-			session,
-			{
-				runId: `isolated-${category}`,
-				task: 'chat',
-				message: 'Background request',
-				model: 'test-model',
-				type: 'background',
-				agentId: category,
-				contextMode: 'workspace',
-				interactionMode: 'default',
-			},
-			new AbortController().signal,
-			{ tools: [], memory: { read } as never }
-		)) void event;
-		expect(read).not.toHaveBeenCalled();
-		expect(JSON.stringify(runModelTurnMock.mock.calls[0][10])).not.toContain('Private preference');
-		await fs.rm(root, { recursive: true, force: true });
-	});
+	it.each(['bot', 'task', 'health', 'subagent'] as const)(
+		'keeps personal memory out of %s runs even in workspace mode',
+		async (category) => {
+			const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-isolated-memory-'));
+			const session = createSessionState();
+			session.category = category;
+			session.messages = [{ role: 'user', content: 'Background request' }];
+			const read = jest.fn(async () => '- Private preference.');
+			for await (const event of stream(
+				{ location: root },
+				session,
+				{
+					runId: `isolated-${category}`,
+					task: 'chat',
+					message: 'Background request',
+					model: 'test-model',
+					type: 'background',
+					agentId: category,
+					contextMode: 'workspace',
+					interactionMode: 'default',
+				},
+				new AbortController().signal,
+				{ tools: [], memory: { read } as never }
+			))
+				void event;
+			expect(read).not.toHaveBeenCalled();
+			expect(JSON.stringify(runModelTurnMock.mock.calls[0][10])).not.toContain(
+				'Private preference'
+			);
+			await fs.rm(root, { recursive: true, force: true });
+		}
+	);
 
 	it('keeps pending bootstrap context out of non-main minimal turns', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-bot-bootstrap-'));
@@ -726,11 +790,10 @@ describe('run stream system prompt', () => {
 			schema: { type: 'object' },
 			execute: search,
 		});
-		runModelTurnMock
-			.mockImplementationOnce(async function* () {
-				yield* [];
-				return { content: '', model: 'test-model', toolCalls: calls };
-			});
+		runModelTurnMock.mockImplementationOnce(async function* () {
+			yield* [];
+			return { content: '', model: 'test-model', toolCalls: calls };
+		});
 		const botEvents = [];
 		const botSession = createSessionState();
 		botSession.messages = [{ role: 'user', content: 'public current-events question' }];
@@ -1114,10 +1177,7 @@ describe('run stream system prompt', () => {
 				result: {
 					text: 'done',
 					subtype: 'success',
-					stopReason:
-					['calls', 'output'].includes(boundary)
-								? 'budget_exhausted'
-								: 'end_turn',
+					stopReason: ['calls', 'output'].includes(boundary) ? 'budget_exhausted' : 'end_turn',
 				},
 			});
 			if (boundary === 'calls') {
@@ -1222,7 +1282,8 @@ describe('run stream system prompt', () => {
 					...(outcome === 'empty' ? { text: 'done' } : {}),
 				},
 			});
-			if (outcome === 'tools') expect(session.toolCalls.at(-1)?.result).toMatchObject({ isError: true });
+			if (outcome === 'tools')
+				expect(session.toolCalls.at(-1)?.result).toMatchObject({ isError: true });
 		}
 	);
 
@@ -1288,7 +1349,11 @@ describe('run stream system prompt', () => {
 		const tools = ['read', 'complete_bootstrap', 'list_tasks', 'update_task'].map((id) =>
 			jsonTool({
 				id,
-				category: id.includes('task') ? 'task' : id === 'complete_bootstrap' ? 'bootstrap' : 'workspace',
+				category: id.includes('task')
+					? 'task'
+					: id === 'complete_bootstrap'
+						? 'bootstrap'
+						: 'workspace',
 				name: id,
 				description: `${id} description`,
 				schema: { type: 'object' },
@@ -1371,12 +1436,20 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
-		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search']);
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search', 'bash']);
-		expect(runModelTurnMock.mock.calls[0][3]).toContain('### Available through `tool_search`\n\n#### Workspace\n- `bash` —');
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toEqual(['tool_search']);
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toEqual(['tool_search', 'bash']);
+		expect(runModelTurnMock.mock.calls[0][3]).toContain(
+			'### Available through `tool_search`\n\n#### Workspace\n- `bash` —'
+		);
 		expect(runModelTurnMock.mock.calls[1][3]).toContain('#### Discovery\n- `tool_search` —');
 		expect(runModelTurnMock.mock.calls[1][3]).toContain('#### Workspace\n- `bash` —');
-		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain('"selectedToolIds":["bash"]');
+		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain(
+			'"selectedToolIds":["bash"]'
+		);
 		expect(execute).toHaveBeenCalledTimes(1);
 	});
 
@@ -1396,7 +1469,16 @@ describe('run stream system prompt', () => {
 			tools: [mcpTool],
 			entries: [{ tool: mcpTool, serverId: 'billing', serverName: 'Billing' }],
 			onChanged: () => () => undefined,
-			diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 1, listedTools: 1, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
+			diagnostics: {
+				configuredServers: 1,
+				enabledServers: 1,
+				connectedServers: 1,
+				listedTools: 1,
+				loadedTools: 1,
+				rejectedTools: 0,
+				truncated: false,
+				failures: [],
+			},
 			close: closeMcpMock,
 		});
 		runModelTurnMock
@@ -1405,7 +1487,9 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: 'find-invoices', name: 'tool_search', args: { query: 'customer invoices' } }],
+					toolCalls: [
+						{ id: 'find-invoices', name: 'tool_search', args: { query: 'customer invoices' } },
+					],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
@@ -1427,8 +1511,12 @@ describe('run stream system prompt', () => {
 			void _event;
 
 		expect(mockLoadMcpTools).toHaveBeenCalledTimes(1);
-		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain(mcpTool.id);
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(mcpTool.id);
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).not.toContain(mcpTool.id);
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toContain(mcpTool.id);
 		expect(execute).not.toHaveBeenCalled();
 	});
 
@@ -1447,7 +1535,13 @@ describe('run stream system prompt', () => {
 				return {
 					content: '',
 					model: 'test-model',
-					toolCalls: [{ id: 'find-gmail', name: 'tool_search', args: { query: 'read latest received Gmail message inbox' } }],
+					toolCalls: [
+						{
+							id: 'find-gmail',
+							name: 'tool_search',
+							args: { query: 'read latest received Gmail message inbox' },
+						},
+					],
 				};
 			})
 			.mockImplementationOnce(successfulTurn);
@@ -1469,8 +1563,12 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
-		expect(session.toolCalls.find((call) => call.id === 'find-gmail')?.result?.content).toContain('"selectedToolIds":[]');
-		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain('get_health');
+		expect(session.toolCalls.find((call) => call.id === 'find-gmail')?.result?.content).toContain(
+			'"selectedToolIds":[]'
+		);
+		expect(
+			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).not.toContain('get_health');
 	});
 
 	it('reloads a named MCP catalog after authorization before searching tools', async () => {
@@ -1483,34 +1581,67 @@ describe('run stream system prompt', () => {
 			schema: { type: 'object' },
 			execute: jest.fn(),
 		});
-		const authorize = jest.spyOn(authorizeModule, 'requestMcpAuthorizationTool').mockReturnValue(jsonTool({
-			id: 'request_mcp_authorization',
-			category: 'integration',
-			name: 'Request MCP authorization',
-			description: 'Authorize Gmail',
-			schema: { type: 'object' },
-			execute: () => ({ status: 'already_authorized', serverId: 'gmail' }),
-		}));
+		const authorize = jest.spyOn(authorizeModule, 'requestMcpAuthorizationTool').mockReturnValue(
+			jsonTool({
+				id: 'request_mcp_authorization',
+				category: 'integration',
+				name: 'Request MCP authorization',
+				description: 'Authorize Gmail',
+				schema: { type: 'object' },
+				execute: () => ({ status: 'already_authorized', serverId: 'gmail' }),
+			})
+		);
 		const testServer = jest.spyOn(mcpModule, 'testMcpServer').mockResolvedValue({
-			ok: true, tools: ['search_threads'], toolCount: 1, durationMs: 0,
+			ok: true,
+			tools: ['search_threads'],
+			toolCount: 1,
+			durationMs: 0,
 		});
 		mockLoadMcpTools
 			.mockResolvedValueOnce({
-				tools: [], entries: [], uncataloged: [{ serverId: 'gmail', serverName: 'Gmail' }],
+				tools: [],
+				entries: [],
+				uncataloged: [{ serverId: 'gmail', serverName: 'Gmail' }],
 				onChanged: () => () => undefined,
-				diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
+				diagnostics: {
+					configuredServers: 1,
+					enabledServers: 1,
+					connectedServers: 0,
+					listedTools: 0,
+					loadedTools: 0,
+					rejectedTools: 0,
+					truncated: false,
+					failures: [],
+				},
 				close: closeMcpMock,
 			})
 			.mockResolvedValueOnce({
-				tools: [gmail], entries: [{ tool: gmail, serverId: 'gmail', serverName: 'Gmail' }], uncataloged: [],
+				tools: [gmail],
+				entries: [{ tool: gmail, serverId: 'gmail', serverName: 'Gmail' }],
+				uncataloged: [],
 				onChanged: () => () => undefined,
-				diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 0, listedTools: 0, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
+				diagnostics: {
+					configuredServers: 1,
+					enabledServers: 1,
+					connectedServers: 0,
+					listedTools: 0,
+					loadedTools: 1,
+					rejectedTools: 0,
+					truncated: false,
+					failures: [],
+				},
 				close: closeMcpMock,
 			});
 		runModelTurnMock
 			.mockImplementationOnce(async function* () {
 				yield* [];
-				return { content: '', model: 'test-model', toolCalls: [{ id: 'find-gmail', name: 'tool_search', args: { query: 'Gmail inbox threads' } }] };
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [
+						{ id: 'find-gmail', name: 'tool_search', args: { query: 'Gmail inbox threads' } },
+					],
+				};
 			})
 			.mockImplementationOnce(successfulTurn);
 		const events: unknown[] = [];
@@ -1519,22 +1650,28 @@ describe('run stream system prompt', () => {
 				{ location: '/workspace' },
 				createSessionState(),
 				{
-					runId: 'gmail-auth-search', task: 'chat',
+					runId: 'gmail-auth-search',
+					task: 'chat',
 					message: 'Show my last email received please, from gmail mcp',
-					model: 'test-model', type: 'default', agentId: 'main', contextMode: 'minimal',
+					model: 'test-model',
+					type: 'default',
+					agentId: 'main',
+					contextMode: 'minimal',
 					interactionMode: 'default',
 					approvalWindowId: 1,
 				},
 				new AbortController().signal,
 				{ sandbox }
-			)) events.push(_event);
+			))
+				events.push(_event);
 			expect(testServer).toHaveBeenCalledWith('gmail');
 			expect(mockLoadMcpTools).toHaveBeenCalledTimes(2);
-			expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(gmail.id);
+			expect(
+				(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
+			).toContain(gmail.id);
 		} finally {
 			authorize.mockRestore();
 			testServer.mockRestore();
 		}
 	});
-
 });
