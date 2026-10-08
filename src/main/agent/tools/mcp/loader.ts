@@ -8,6 +8,7 @@ import { mcpTool } from './tool';
 export async function loadMcpTools(signal?: AbortSignal): Promise<{
 	tools: Tool[];
 	entries: DiscoveredMcpTool[];
+	uncataloged: Array<{ serverId: string; serverName: string }>;
 	diagnostics: McpDiscoveryDiagnostics;
 	onChanged: (listener: (entries: DiscoveredMcpTool[]) => void) => () => void;
 	close: () => Promise<void>;
@@ -15,6 +16,7 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 	signal?.throwIfAborted();
 	const tools: Tool[] = [];
 	const entries: DiscoveredMcpTool[] = [];
+	const uncataloged: Array<{ serverId: string; serverName: string }> = [];
 	const connections = new Map<string, Promise<McpClient>>();
 	const servers = Object.entries(getMcpServers()).sort(([left], [right]) =>
 		left.localeCompare(right)
@@ -35,7 +37,11 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 
 	for (const [id, data] of enabledServers) {
 		const listed = getMcpToolCatalog(id);
-		if (!listed) continue;
+		if (!listed) {
+			if (data.type === 'http')
+				uncataloged.push({ serverId: id, serverName: data.name?.trim() || id });
+			continue;
+		}
 		for (const [index, listedTool] of listed.entries()) {
 			if (tools.length >= MCP_MAX_TOOLS) {
 				diagnostics.truncated = true;
@@ -94,6 +100,7 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 	return {
 		tools,
 		entries,
+		uncataloged,
 		diagnostics,
 		onChanged: () => () => undefined,
 		close: async () => {

@@ -24,6 +24,8 @@ import {
 	resolveContextMode,
 } from '../system';
 import { loadMcpTools } from '../tools/mcp/loader';
+import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
+import { testMcpServer } from '../../mcp';
 import { listSkillsTool } from '../tools/skills/list_skills';
 import { loadSkillTool } from '../tools/skills/load_skill';
 import { subagentTool, subagentsTool } from '../tools/core/subagents';
@@ -160,6 +162,7 @@ async function* loop(
 			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
+	const mcpServerHint = input.message.match(/\b([\w-]+)\s+mcp\b/i)?.[1]?.toLocaleLowerCase();
 	const bootstrap =
 		!options.tools &&
 		session.category === 'main' &&
@@ -282,6 +285,7 @@ async function* loop(
 	let unsubscribeMcp: (() => void) | undefined;
 	let mcpDiscovery: McpDiscoveryDiagnostics | undefined;
 	let mcpEntries: import('./run_discovery').DiscoveredMcpTool[] = [];
+	let uncatalogedMcp: Array<{ serverId: string; serverName: string }> = [];
 	try {
 		if (!options.tools) {
 			if (
@@ -293,6 +297,7 @@ async function* loop(
 				const mcp = await loadMcpTools(signal);
 				tools.push(...mcp.tools);
 				mcpEntries = mcp.entries;
+				uncatalogedMcp = mcp.uncataloged ?? [];
 				closeMcp = mcp.close;
 				mcpDiscovery = mcp.diagnostics;
 				unsubscribeMcp = mcp.onChanged((entries) => {
@@ -343,7 +348,7 @@ async function* loop(
 				required: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
 				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
-				mcpServerHint: input.message.match(/\b([\w-]+)\s+mcp\b/i)?.[1]?.toLocaleLowerCase(),
+				mcpServerHint,
 				filterEligible: filterEligibleTools,
 			});
 		}
@@ -370,6 +375,49 @@ async function* loop(
 			})),
 			...(mcpDiscovery ? { mcpDiscovery } : {}),
 		};
+		const requestedUncatalogedMcp = uncatalogedMcp.find(
+			(server) =>
+				server.serverId.toLocaleLowerCase() === mcpServerHint ||
+				server.serverName.toLocaleLowerCase() === mcpServerHint
+		);
+		if (requestedUncatalogedMcp && input.approvalWindowId !== undefined && input.interactionMode === 'default') {
+			const authorizationCall = {
+				id: crypto.randomUUID(),
+				name: 'request_mcp_authorization',
+				args: { serverId: requestedUncatalogedMcp.serverId },
+			};
+			for await (const event of runToolCalls(
+				[requestMcpAuthorizationTool()],
+				[authorizationCall],
+				signal,
+				session.runContext.fileAccess,
+				{ runId, budget, interactionMode: input.interactionMode, toolProfile, windowId: input.approvalWindowId },
+				options.resources,
+				session.runContext.fileHistory
+			)) yield event;
+			const result = authorizationCall.result?.content;
+			let authorizationStatus: string | undefined;
+			try {
+				authorizationStatus = typeof result === 'string' ? (JSON.parse(result) as { status?: string }).status : undefined;
+			} catch { /* handled below */ }
+			if (authorizationStatus === 'cancelled' || authorizationStatus === 'authorization_failed') {
+				session.stopReason = 'cancelled';
+				yield { type: 'run_finished', result: toResult(session, 'success') };
+				return;
+			}
+			if (authorizationStatus === 'already_authorized')
+				await testMcpServer(requestedUncatalogedMcp.serverId);
+			if (authorizationStatus === 'authorized' || authorizationStatus === 'already_authorized') {
+				await closeMcp?.();
+				const refreshed = await loadMcpTools(signal);
+				tools = [...tools.filter((tool) => tool.policy?.kind !== 'mcp'), ...refreshed.tools];
+				mcpEntries = refreshed.entries;
+				closeMcp = refreshed.close;
+				mcpDiscovery = refreshed.diagnostics;
+				search?.replaceMcpEntries(mcpEntries);
+				search?.replaceEligible(filterEligibleTools(tools));
+			}
+		}
 
 		let finalization: { instruction: string; stopReason?: string } | undefined;
 		while (true) {
