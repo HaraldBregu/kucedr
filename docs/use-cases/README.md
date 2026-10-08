@@ -16,7 +16,7 @@ Replace values in angle brackets with your own disposable test data. Record the 
 | Personal data   | [Knowledge, memory, Workspace, Library, and backup](data.md)                      |
 | Extensions      | [Skills, generic MCP, apps, remote agents, and Telegram](integrations.md)         |
 | Google services | [Gmail, Calendar, Drive, Docs, Sheets, Maps, Contacts, and Gmail SMTP](google.md) |
-| Google scopes   | [Gmail, Calendar, and Drive OAuth scope use cases](google-scopes.md)             |
+| Google scopes   | [Gmail, Calendar, and Drive OAuth scope use cases](google-scopes.md)              |
 
 For a full tool-by-tool Google regression, use the existing [Gmail](../GMAIL.md), [Calendar](../CALENDAR.md), and [Drive](../DRIVE.md) scripts. Those scripts are more exhaustive than the everyday scenarios here.
 
