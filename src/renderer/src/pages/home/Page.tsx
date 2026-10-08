@@ -612,6 +612,24 @@ function PageContent(): ReactElement {
 		});
 	}, []);
 
+	const addLibraryFiles = useCallback((files: LibraryFile[]): void => {
+		setAttachments((current) => [
+			...current,
+			...files.map((entry) => {
+				const file = new File([], entry.name, {
+					type: workspaceFileType(entry.name).mimeType ?? '',
+				});
+				attachmentPath(file, entry.path);
+				return {
+					id: attachmentId(),
+					kind: 'file' as const,
+					file,
+					path: entry.path,
+				};
+			}),
+		]);
+	}, []);
+
 	const submitPrompt = async (): Promise<void> => {
 		if (agent.isLoading) {
 			await agent.handleSubmit();
