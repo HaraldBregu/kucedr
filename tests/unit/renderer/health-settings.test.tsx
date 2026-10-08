@@ -26,6 +26,7 @@ const api = {
 };
 
 beforeEach(() => {
+	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'agent', { configurable: true, value: api });
 	api.healthGetSettings.mockResolvedValue(settings);
