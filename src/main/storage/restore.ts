@@ -33,7 +33,10 @@ export async function restoreBackupFile(
 			throw new Error('Backup integrity verification failed.');
 		}
 		try {
-			if ((await fileDigest(target)) === file.sha256) return false;
+			const stat = await fs.stat(target);
+			if ((await fileDigest(target)) === file.sha256 &&
+				(file.mode === undefined || process.platform === 'win32' || (stat.mode & 0o777) === file.mode) &&
+				(file.modifiedAt === undefined || Math.abs(stat.mtimeMs - file.modifiedAt) < 1)) return false;
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 		}

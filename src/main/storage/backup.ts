@@ -13,6 +13,7 @@ import type { BackupSnapshot } from './snapshot';
 
 export async function backupFiles(store: StorageObjectStore): Promise<StoragePushResult> {
 	const paths = normalizeStoragePaths(getStorageSettings().paths);
+	if (!paths.length) throw new Error('Select at least one folder to back up.');
 	const uploaded: string[] = [];
 	const failed: StoragePushResult['failed'] = [];
 	for (const root of paths) {
