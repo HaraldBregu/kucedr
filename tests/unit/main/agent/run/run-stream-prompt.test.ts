@@ -1307,7 +1307,7 @@ describe('run stream system prompt', () => {
 
 		expect(
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
-		).toEqual(['list_tasks', 'update_task', 'tool_search']);
+		).toEqual(['list_tasks', 'update_task']);
 	});
 
 	it('activates a searched native tool for the next turn', async () => {

@@ -374,7 +374,7 @@ async function* loop(
 					: filterEligibleTools(tools).filter((tool) =>
 							taskRequest ? taskToolIds.includes(tool.id) : requiredIds.has(tool.id)
 						),
-				discoveryEnabled: searchEnabled,
+				discoveryEnabled: taskRequest ? false : searchEnabled,
 				mcpTools: mcpEntries,
 				mcpServerHint,
 				filterEligible: filterEligibleTools,
