@@ -1,10 +1,8 @@
 export function addBasePrompt(prompt: string, now = new Date()): string {
 	prompt += 'You are a personal AI assistant.';
 
-	prompt += '\n\n## Current date and time';
-	prompt += `\n- Local: ${now.toLocaleString('en-CA', { dateStyle: 'full', timeStyle: 'long' })}`;
-	prompt += `\n- Time zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone || 'system local time'}`;
-	prompt += `\n- UTC: ${now.toISOString()}`;
+	prompt += '\n\n## Current UTC date and time';
+	prompt += `\n- ${now.toISOString()}`;
 
 	prompt += '\n\n## Voice';
 	prompt += '\n- Sound natural, direct, and human, not like a generic support script.';

@@ -13,7 +13,7 @@ describe('addBasePrompt', () => {
 	it('appends the assistant identity and standard sections', () => {
 		const prompt = addBasePrompt('');
 		expect(prompt).toContain('You are a personal AI assistant.');
-		expect(prompt).toContain('## Current date and time');
+		expect(prompt).toContain('## Current UTC date and time');
 		expect(prompt).toContain('## Voice');
 		expect(prompt).toContain('## Workspace contract');
 		expect(prompt).toContain('## Agent acceptance contract');
@@ -43,15 +43,13 @@ describe('addBasePrompt', () => {
 		expect(prompt).toContain('Do not delegate a simple follow-up');
 		expect(prompt).toContain('Never claim that an action succeeded unless');
 	});
-	it('adds the current local and UTC time when the prompt is built', () => {
+	it('adds the current UTC time when the prompt is built', () => {
 		const now = new Date('2026-10-08T13:45:12.345Z');
 		const prompt = addBasePrompt('', now);
-		expect(prompt).toContain('## Current date and time');
-		expect(prompt).toContain(
-			`- Local: ${now.toLocaleString('en-CA', { dateStyle: 'full', timeStyle: 'long' })}`
-		);
-		expect(prompt).toContain(`- Time zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
-		expect(prompt).toContain('- UTC: 2026-10-08T13:45:12.345Z');
+		expect(prompt).toContain('## Current UTC date and time');
+		expect(prompt).toContain('- 2026-10-08T13:45:12.345Z');
+		expect(prompt).not.toContain('Local:');
+		expect(prompt).not.toContain('Time zone:');
 	});
 	it('appends to any existing prompt', () => {
 		expect(addBasePrompt('PRE')).toMatch(/^PRE/);
