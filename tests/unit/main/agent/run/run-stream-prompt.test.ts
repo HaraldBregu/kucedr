@@ -374,6 +374,10 @@ describe('run stream system prompt', () => {
 				void event;
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
+			const onContextAccepted = runModelTurnMock.mock.calls[0][13] as (
+				systemPrompt: string | undefined
+			) => void;
+			onContextAccepted(systemPrompt);
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).toContain('- **Name:** Alice');

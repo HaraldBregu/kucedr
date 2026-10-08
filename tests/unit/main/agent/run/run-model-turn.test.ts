@@ -107,6 +107,41 @@ describe('runModelTurn', () => {
 		expect(stream).toHaveBeenCalledWith(expect.objectContaining({ streaming: false }));
 	});
 
+	it('reports the exact fitted system prompt accepted by the model turn', async () => {
+		const stream = jest.fn(() =>
+			(async function* () {
+				yield { type: 'model_call_end' as const, model: 'model', stopReason: 'end_turn' };
+			})()
+		);
+		const onContextAccepted = jest.fn();
+		const events = runModelTurn(
+			{ task: 'chat', message: 'hello' },
+			{ id: 'test', apiKey: 'key' } as ResolvedProvider,
+			'model',
+			'Base system prompt',
+			[{ role: 'user', content: 'hello' }],
+			[],
+			new AbortController().signal,
+			{},
+			{ stream } as ModelTurnStream,
+			'Protected runtime prompt',
+			[],
+			true,
+			undefined,
+			onContextAccepted
+		);
+		for await (const _event of events) void _event;
+
+		expect(onContextAccepted).toHaveBeenCalledWith(
+			'Base system prompt\n\nProtected runtime prompt'
+		);
+		expect(stream).toHaveBeenCalledWith(
+			expect.objectContaining({
+				systemPrompt: 'Base system prompt\n\nProtected runtime prompt',
+			})
+		);
+	});
+
 	it('does not retry an unchanged request after context overflow', async () => {
 		const error = new LlmContextOverflowError('context too long');
 		const stream = jest.fn(() => ({
