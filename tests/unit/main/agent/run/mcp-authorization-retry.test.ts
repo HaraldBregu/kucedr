@@ -19,6 +19,10 @@ import { createSessionState } from '../../../../../src/main/agent/session';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { respondUserInput } from '../../../../../src/main/agent/user_input/user_input_pending';
 import type { RuntimeEvent } from '../../../../../src/main/agent/types';
+import {
+	llmBuildChatMessages,
+	llmToTranscriptEntry,
+} from '../../../../../src/main/models/adapters/llm/llm_shared';
 
 const runMcp = jest.fn();
 const mcp = jsonTool({
@@ -54,6 +58,7 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 			return {
 				content: '',
 				model: 'test-model',
+				providerItems: [{ type: 'provider_item', provider: 'deepseek', item: 'Need to look up the email.' }],
 				toolCalls: [{ id: 'original', name: mcp.id, args: { query: 'subject' } }],
 			};
 		})
@@ -123,6 +128,12 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 			.map((message) => message.toolCalls?.map((call) => call.name))
 	).toEqual([[mcp.id]]);
 	expect(session.toolCalls[0].result?.content).toBe('message found');
+	const replay = llmBuildChatMessages('', session.messages.flatMap(llmToTranscriptEntry), {
+		includeReasoningContent: true,
+	});
+	expect(replay.find((message) => message.role === 'assistant' && 'tool_calls' in message)).toMatchObject({
+		reasoning_content: 'Need to look up the email.',
+	});
 	const attempts = events.filter((event) => event.type === 'tool_call_end' && event.toolName === mcp.id);
 	expect(attempts).toHaveLength(2);
 	expect(attempts[0]).toMatchObject({ isError: true, output: 'Authentication required for Gmail.' });
