@@ -397,8 +397,8 @@ describe('run stream system prompt', () => {
 				new AbortController().signal,
 				{
 					tools: [
-						jsonTool({ id: 'alpha', name: 'Alpha', description: 'Alpha tool', schema: { type: 'object' }, execute: () => undefined }),
-						jsonTool({ id: 'mcp__demo__beta', name: 'Beta', description: 'Beta tool', policy: { kind: 'mcp', serverId: 'demo', toolName: 'beta' }, schema: { type: 'object' }, execute: () => undefined }),
+						jsonTool({ id: 'alpha', category: 'system', name: 'Alpha', description: 'Alpha tool', schema: { type: 'object' }, execute: () => undefined }),
+						jsonTool({ id: 'mcp__demo__beta', category: 'integration', name: 'Beta', description: 'Beta tool', policy: { kind: 'mcp', serverId: 'demo', toolName: 'beta' }, schema: { type: 'object' }, execute: () => undefined }),
 					],
 					memory: { read } as never,
 				}
@@ -720,6 +720,7 @@ describe('run stream system prompt', () => {
 		const search = jest.fn().mockResolvedValue('public result');
 		const webTool = jsonTool({
 			id: 'search_web',
+			category: 'web',
 			name: 'Search web',
 			description: 'public web search',
 			schema: { type: 'object' },
@@ -787,6 +788,7 @@ describe('run stream system prompt', () => {
 		async (id) => {
 			const recorder = jsonTool({
 				id,
+				category: 'system',
 				name: id,
 				description: id,
 				schema: { type: 'object' },
@@ -1019,6 +1021,7 @@ describe('run stream system prompt', () => {
 		const budget = new ExecutionBudget({ output: 1 });
 		const subagents = jsonTool({
 			id: 'subagents',
+			category: 'delegation',
 			name: 'Subagents',
 			description: 'delegate work',
 			schema: { type: 'object' },
@@ -1068,6 +1071,7 @@ describe('run stream system prompt', () => {
 			const execute = jest.fn(() => 'observed result');
 			const tool = jsonTool({
 				id: 'search_web',
+				category: 'web',
 				name: 'Search',
 				description: 'Search',
 				schema: { type: 'object' },
@@ -1160,6 +1164,7 @@ describe('run stream system prompt', () => {
 			const execute = jest.fn(() => 'observed result');
 			const tool = jsonTool({
 				id: 'search_web',
+				category: 'web',
 				name: 'Search',
 				description: 'Search',
 				schema: { type: 'object' },
@@ -1225,6 +1230,7 @@ describe('run stream system prompt', () => {
 		const order: string[] = [];
 		const read = jsonTool({
 			id: 'read',
+			category: 'workspace',
 			name: 'Read',
 			description: 'Read a file',
 			capability: { effects: ['read'] },
@@ -1233,6 +1239,7 @@ describe('run stream system prompt', () => {
 		});
 		const edit = jsonTool({
 			id: 'edit',
+			category: 'workspace',
 			name: 'Edit',
 			description: 'Edit a file',
 			capability: { effects: ['read'] },
@@ -1281,6 +1288,7 @@ describe('run stream system prompt', () => {
 		const tools = ['read', 'complete_bootstrap', 'list_tasks', 'update_task'].map((id) =>
 			jsonTool({
 				id,
+				category: id.includes('task') ? 'task' : id === 'complete_bootstrap' ? 'bootstrap' : 'workspace',
 				name: id,
 				description: `${id} description`,
 				schema: { type: 'object' },
@@ -1319,6 +1327,7 @@ describe('run stream system prompt', () => {
 		const execute = jest.fn();
 		const bash = jsonTool({
 			id: 'bash',
+			category: 'workspace',
 			name: 'Bash',
 			description: 'Run a command',
 			capability: { effects: ['execute'] },
@@ -1364,9 +1373,9 @@ describe('run stream system prompt', () => {
 
 		expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search']);
 		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toEqual(['tool_search', 'bash']);
-		expect(runModelTurnMock.mock.calls[0][3]).toContain('### Available through `tool_search`\n\n#### Core\n- `bash` —');
+		expect(runModelTurnMock.mock.calls[0][3]).toContain('### Available through `tool_search`\n\n#### Workspace\n- `bash` —');
 		expect(runModelTurnMock.mock.calls[1][3]).toContain('#### Discovery\n- `tool_search` —');
-		expect(runModelTurnMock.mock.calls[1][3]).toContain('#### Core\n- `bash` —');
+		expect(runModelTurnMock.mock.calls[1][3]).toContain('#### Workspace\n- `bash` —');
 		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain('"selectedToolIds":["bash"]');
 		expect(execute).toHaveBeenCalledTimes(1);
 	});
@@ -1375,6 +1384,7 @@ describe('run stream system prompt', () => {
 		const execute = jest.fn();
 		const mcpTool = jsonTool({
 			id: 'mcp__billing__invoices',
+			category: 'integration',
 			name: 'Invoices',
 			description: 'Find customer invoices',
 			policy: { kind: 'mcp', serverId: 'billing', toolName: 'invoices' },
@@ -1425,6 +1435,7 @@ describe('run stream system prompt', () => {
 	it('does not discover health for a request explicitly naming Gmail MCP', async () => {
 		const health = jsonTool({
 			id: 'get_health',
+			category: 'bootstrap',
 			name: 'Get health',
 			description: 'Read the current HEALTH.md information.',
 			schema: { type: 'object' },
@@ -1465,6 +1476,7 @@ describe('run stream system prompt', () => {
 	it('reloads a named MCP catalog after authorization before searching tools', async () => {
 		const gmail = jsonTool({
 			id: 'mcp__gmail__search_threads',
+			category: 'integration',
 			name: 'Search threads',
 			description: 'Search Gmail inbox threads',
 			policy: { kind: 'mcp', serverId: 'gmail', toolName: 'search_threads' },
@@ -1473,6 +1485,7 @@ describe('run stream system prompt', () => {
 		});
 		const authorize = jest.spyOn(authorizeModule, 'requestMcpAuthorizationTool').mockReturnValue(jsonTool({
 			id: 'request_mcp_authorization',
+			category: 'integration',
 			name: 'Request MCP authorization',
 			description: 'Authorize Gmail',
 			schema: { type: 'object' },

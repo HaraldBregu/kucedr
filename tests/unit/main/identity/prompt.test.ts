@@ -35,14 +35,14 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		await updateIdentity({ name: 'Kucedr', role: 'Assistant', vibe: 'Calm' });
 		await updateUser({ name: 'Alice', preferredName: 'Al', timezone: 'Europe/Rome', projects: 'A personal history book Alice chose to share.' });
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference', [
-			{ id: 'read' },
-			{ id: 'bash' },
-			{ id: 'update_identity' },
-			{ id: 'tool_search' },
+			{ id: 'read', category: 'workspace' },
+			{ id: 'bash', category: 'workspace' },
+			{ id: 'update_identity', category: 'bootstrap' },
+			{ id: 'tool_search', category: 'discovery' },
 		] as never);
 		expect(complete).toContain('### Loaded tools');
-		expect(complete).toContain('#### Core\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.');
-		expect(complete).toContain('#### Profiles and bootstrap\n- `update_identity` — No description provided by this tool.');
+		expect(complete).toContain('#### Workspace\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.');
+		expect(complete).toContain('#### Bootstrap\n- `update_identity` — No description provided by this tool.');
 		expect(complete).toContain('#### Discovery\n- `tool_search` — No description provided by this tool.');
 		expect(complete).toContain('### BOOTSTRAP.md');
 		expect(complete).toContain('### MEMORY\nUse memory as durable background context');
@@ -56,9 +56,9 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		expect(complete).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share.');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
-		const voice = await buildWorkspaceContext(config, 'full', '', [{ id: 'complete_bootstrap' }] as never);
+		const voice = await buildWorkspaceContext(config, 'full', '', [{ id: 'complete_bootstrap', category: 'bootstrap' }] as never);
 		expect(voice).toContain('### SOUL');
-		expect(voice).toContain('#### Profiles and bootstrap\n- `complete_bootstrap` — No description provided by this tool.');
+		expect(voice).toContain('#### Bootstrap\n- `complete_bootstrap` — No description provided by this tool.');
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Calm and direct');
