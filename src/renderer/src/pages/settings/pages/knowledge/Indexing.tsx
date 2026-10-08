@@ -49,7 +49,13 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 		setCron(configuration?.cronExpression ?? '');
 		setTimezone(configuration?.timezone ?? status?.timezone ?? '');
 	}, [configuration, status?.timezone]);
-	const outcome = running ? 'running' : (status?.outcome ?? 'idle');
+	const outcome = running
+		? 'running'
+		: currentIndex && (!indexModelMatches || status?.requiresIndexing)
+			? 'stale'
+			: status?.outcome === 'completed' && !currentIndex
+				? 'idle'
+				: (status?.outcome ?? 'idle');
 	const format = { dateStyle: 'medium', timeStyle: 'short' } as const;
 	return (
 		<SettingsSection title={t('settings.knowledge.indexingTitle')}>
@@ -207,6 +213,9 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 				)}
 				{currentIndex && !indexModelMatches && (
 					<SettingsNotice>{t('settings.knowledge.modelChanged')}</SettingsNotice>
+				)}
+				{currentIndex && indexModelMatches && status?.requiresIndexing && (
+					<SettingsNotice>{t('settings.knowledge.configurationChanged')}</SettingsNotice>
 				)}
 			</div>
 		</SettingsSection>

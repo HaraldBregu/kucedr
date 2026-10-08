@@ -118,6 +118,7 @@ export default function useKnowledge() {
 		currentIndex?.modelId === configuration?.embeddingModelId;
 	const canSearch =
 		!disabled &&
+		!status?.requiresIndexing &&
 		configuration?.enabled === true &&
 		embeddingConsentMatches &&
 		Boolean(selectedEmbeddingModel && currentIndex && indexModelMatches && query.trim());

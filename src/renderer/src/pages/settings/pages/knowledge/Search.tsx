@@ -11,6 +11,7 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 	const { t } = useTranslation();
 	const {
 		configuration,
+		status,
 		query,
 		matches,
 		disabled,
@@ -79,7 +80,7 @@ export default function Search({ knowledge }: { knowledge: KnowledgeState }): JS
 							{t(searching ? 'settings.knowledge.searching' : 'settings.knowledge.search')}
 						</Button>
 					</div>
-					{(!currentIndex || !indexModelMatches) && (
+					{(!currentIndex || !indexModelMatches || status?.requiresIndexing) && (
 						<p className="text-[11px] leading-4 text-muted-foreground">
 							{t('settings.knowledge.searchRequiresIndex')}
 						</p>
