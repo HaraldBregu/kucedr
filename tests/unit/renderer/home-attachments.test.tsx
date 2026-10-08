@@ -104,6 +104,34 @@ jest.mock('@/components/ui/prompt-input', () => ({
 	usePromptInput: () => ({ triggerFileUpload }),
 }));
 
+jest.mock('@/components/ui/dropdown-menu', () => ({
+	DropdownMenu: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+	DropdownMenuTrigger: ({ children }: { children?: React.ReactNode }) => <>{children}</>,
+	DropdownMenuContent: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+	DropdownMenuItem: ({
+		children,
+		onSelect,
+	}: {
+		children?: React.ReactNode;
+		onSelect?: () => void;
+	}) => <button onClick={onSelect}>{children}</button>,
+}));
+
+jest.mock('@/components/ui/dialog', () => ({
+	Dialog: ({
+		children,
+		open,
+	}: {
+		children?: React.ReactNode;
+		open?: boolean;
+	}) => (open ? <div>{children}</div> : null),
+	DialogContent: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+	DialogDescription: ({ children }: { children?: React.ReactNode }) => <p>{children}</p>,
+	DialogFooter: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+	DialogHeader: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
+	DialogTitle: ({ children }: { children?: React.ReactNode }) => <h2>{children}</h2>,
+}));
+
 jest.mock('@/components/ui/scroll-button', () => ({
 	ScrollButton: () => <button type="button">Scroll</button>,
 }));
