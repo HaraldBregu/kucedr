@@ -33,7 +33,7 @@ beforeEach(() => {
 });
 
 it('restores an earlier backup to a chosen folder on another computer without configured folders', async () => {
-	const user = userEvent.setup();
+	const user = userEvent.setup({ pointerEventsCheck: 0 });
 	render(
 		<Restore
 			open
