@@ -14,6 +14,7 @@ import type { UserAttachment } from '../context/state';
 export function Attachments({ attachments }: { readonly attachments: readonly UserAttachment[] }): React.JSX.Element {
 	const images = attachments.filter((attachment) => attachment.kind === 'image');
 	const files = attachments.filter((attachment) => attachment.kind !== 'image');
+	const hasMultipleImages = images.length > 1;
 	const imageColumns = Math.min(images.length, 4);
 
 	return (
@@ -22,11 +23,15 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 				<AttachmentGroup
 					role="group"
 					aria-label="Attached images"
-					className="grid max-w-full gap-0 overflow-hidden! rounded-[16px] py-0"
-					style={{
-						width: `${imageColumns * 4}rem`,
-						gridTemplateColumns: `repeat(${imageColumns}, minmax(0, 1fr))`,
-					}}
+					className={hasMultipleImages
+						? 'grid max-w-full self-start gap-0 overflow-hidden! rounded-[16px] py-0'
+						: 'max-w-full self-start overflow-visible! py-0'}
+					style={hasMultipleImages
+						? {
+							width: `${imageColumns * 4}rem`,
+							gridTemplateColumns: `repeat(${imageColumns}, minmax(0, 1fr))`,
+						}
+						: undefined}
 				>
 					{images.map((attachment, index) => (
 						<Attachment
@@ -34,9 +39,16 @@ export function Attachments({ attachments }: { readonly attachments: readonly Us
 							role="group"
 							aria-label={attachment.name}
 							size="sm"
-							className="w-full min-w-0 overflow-hidden rounded-none border-0 has-data-[slot=attachment-media]:p-0"
+							className={hasMultipleImages
+								? 'w-full min-w-0 overflow-hidden rounded-none border-0 has-data-[slot=attachment-media]:p-0'
+								: 'max-w-full overflow-hidden rounded-[16px] border-0 has-data-[slot=attachment-media]:p-0'}
 						>
-							<AttachmentMedia variant="image" className="w-full! rounded-[inherit]">
+							<AttachmentMedia
+								variant="image"
+								className={hasMultipleImages
+									? 'w-full! rounded-[inherit]'
+									: 'aspect-auto! w-auto! max-w-full rounded-[inherit] [&_img]:aspect-auto! [&_img]:h-auto! [&_img]:max-h-[28rem] [&_img]:max-w-full [&_img]:object-contain!'}
+							>
 								{attachment.file || attachment.path ? <Preview file={attachment.file} path={attachment.path} name={attachment.name} mimeType={attachment.mimeType} /> : <FileImageIcon />}
 							</AttachmentMedia>
 						</Attachment>
