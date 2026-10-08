@@ -421,6 +421,8 @@ async function* loop(
 				mcpDiscovery = refreshed.diagnostics;
 				search?.replaceMcpEntries(mcpEntries);
 				search?.replaceEligible(filterEligibleTools(tools));
+				if (!mcpEntries.some((entry) => entry.serverId === requestedUncatalogedMcp.serverId))
+					throw new Error(`${requestedUncatalogedMcp.serverName} did not provide any MCP tools after authorization.`);
 			}
 		}
 
