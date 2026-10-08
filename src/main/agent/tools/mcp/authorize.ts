@@ -21,6 +21,7 @@ export function requestMcpAuthorizationTool() {
 			serverId: z.string().min(1).describe('Configured MCP server ID to authorize.'),
 			force: z.boolean().optional(),
 			toolName: z.string().optional(),
+			serverName: z.string().optional(),
 		}),
 		execute: ({ serverId, force }) => {
 			const server = getMcpServers()[serverId];

@@ -554,7 +554,7 @@ async function* loop(
 				const authorizationCall: ToolCall = {
 					id: crypto.randomUUID(),
 					name: 'request_mcp_authorization',
-					args: { serverId: required.serverId, force: true, toolName: failedTool?.name },
+					args: { serverId: required.serverId, serverName: required.serverName, force: true, toolName: failedTool?.name },
 				};
 				addAssistantMessage(session, '', [authorizationCall]);
 				yield* runToolCalls(
