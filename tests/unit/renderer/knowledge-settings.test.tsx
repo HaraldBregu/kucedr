@@ -64,437 +64,353 @@ jest.mock('@/components/ui/select', () => {
 jest.mock('react-i18next', () => {
 	const translations: Record<string, string> = {
 		'settings.knowledge.title': 'Knowledge',
-		'settings.knowledge.description': 'Configure retrieval-augmented generation.',
-		'settings.knowledge.behaviorTitle': 'Knowledge behavior',
 		'settings.knowledge.enabled': 'Enable Knowledge',
-		'settings.knowledge.enabledDescription': 'Allow document indexing and assistant search.',
-		'settings.knowledge.embeddingConsent': 'Send document text for embeddings',
-		'settings.knowledge.embeddingConsentDescription':
-			'Allow Kucedr to send document chunks to the selected embedding provider.',
-		'settings.knowledge.mirrorConsent': 'Store plaintext knowledge in the vector database',
-		'settings.knowledge.databaseTitle': 'Vector database',
-		'settings.knowledge.databasePlaceholder': 'Select vector database',
+		'settings.knowledge.embeddingTitle': 'Embedding',
 		'settings.knowledge.embeddingModelTitle': 'Embedding model',
-		'settings.knowledge.embeddingModelDescription':
-			'Model used to embed RAG documents for vector search.',
-		'settings.knowledge.configurationTitle': 'Configuration',
+		'settings.knowledge.embeddingConsent': 'Send document text for embeddings',
+		'settings.knowledge.storageTitle': 'Storage',
+		'settings.knowledge.databaseTitle': 'Vector database',
+		'settings.knowledge.databasePlaceholder': 'Select database',
+		'settings.knowledge.localDatabase': 'Local SQLite',
+		'settings.knowledge.mirrorConsent': 'Store plaintext knowledge in the vector database',
 		'settings.knowledge.indexName': 'Index name',
-		'settings.knowledge.indexNameDescription': 'Remote vector index.',
-		'settings.knowledge.indexNamePlaceholder': 'kucedr',
-		'settings.knowledge.documentsDescription': 'Documents to index.',
 		'settings.knowledge.sourceFolder': 'Source folders',
-		'settings.knowledge.sourcePlaceholder': 'Choose source folders',
 		'settings.knowledge.pickFolder': 'Choose folder',
+		'settings.knowledge.removeFolderPath': 'Remove {{folder}}',
 		'settings.knowledge.index': 'Generate index',
-		'settings.knowledge.scheduleTitle': 'Automation',
+		'settings.knowledge.indexingTitle': 'Indexing',
 		'settings.knowledge.scheduleFrequency': 'Indexing frequency',
-		'settings.knowledge.scheduleDescription': 'Choose how often indexing runs.',
 		'settings.knowledge.scheduleOptions.off': 'Off',
 		'settings.knowledge.scheduleOptions.every4h': 'Every 4 hours',
 		'settings.knowledge.scheduleOptions.every12h': 'Every 12 hours',
 		'settings.knowledge.scheduleOptions.every1d': 'Every day',
 		'settings.knowledge.scheduleOptions.every7d': 'Every week',
 		'settings.knowledge.scheduleOptions.custom': 'Custom schedule',
-		'settings.knowledge.searchTitle': 'Search',
-		'settings.knowledge.searchPlaceholder': 'Search documents',
+		'settings.knowledge.cronExpression': 'Cron expression',
+		'settings.knowledge.timezone': 'Time zone',
+		'settings.knowledge.status.idle': 'Not indexed',
+		'settings.knowledge.status.running': 'Indexing in progress',
+		'settings.knowledge.status.completed': 'Index up to date',
+		'settings.knowledge.status.failed': 'Indexing failed',
+		'settings.knowledge.cancel': 'Cancel',
+		'settings.knowledge.cancelling': 'Cancelling',
+		'settings.knowledge.retry': 'Retry',
+		'settings.knowledge.searchQuery': 'Test query',
 		'settings.knowledge.search': 'Search',
+		'settings.knowledge.searching': 'Searching',
+		'settings.knowledge.minimumScore': 'Minimum similarity',
+		'settings.knowledge.modelChanged': 'Rebuild required',
 		'settings.modelServices.modelPlaceholder': 'Select model',
-		'settings.modelServices.noModels': 'No models are available.',
 		'settings.dataControls.title': 'Data management',
 		'settings.dataControls.export': 'Export',
 		'settings.dataControls.purge': 'Purge',
 		'settings.dataControls.ragIndex': 'Full local knowledge index',
-		'settings.dataControls.ragIndexDescription': 'All local chunks',
 		'settings.dataControls.ragNamespace': 'Active local namespace',
-		'settings.dataControls.ragNamespaceDescription': 'Active local chunks',
 		'settings.dataControls.remoteNamespace': 'Remote vector database namespace',
-		'settings.dataControls.remoteNamespaceDescription': 'Exact remote namespace',
 		'settings.dataControls.remoteAllNamespaces': 'All remote vector namespaces',
-		'settings.dataControls.remoteAllNamespacesDescription': 'All remote namespaces',
 	};
-	const t = (key: string): string => translations[key] ?? key;
-	return { useTranslation: () => ({ t }) };
+	const t = (key: string, options?: Record<string, unknown>): string =>
+		(translations[key] ?? key).replace(/{{(\w+)}}/g, (_, token: string) => String(options?.[token] ?? ''));
+	return { useTranslation: () => ({ t, i18n: { language: 'en' } }) };
 });
 
 jest.mock('@/lib/providers', () => ({
-	defaultProviderId: () => 'openai',
 	modelsFor: () => [
-		{
-			id: 'text-embedding-3-small',
-			name: 'Text Embedding 3 Small',
-			type: 'embedding',
-			provider: { id: 'openai', name: 'OpenAI' },
-		},
-		{
-			id: 'voyage-3',
-			name: 'Voyage 3',
-			type: 'embedding',
-			provider: { id: 'voyage', name: 'Voyage' },
-		},
+		{ id: 'text-embedding-3-small', name: 'Text Embedding 3 Small', type: 'embedding', provider: { id: 'openai', name: 'OpenAI' } },
+		{ id: 'voyage-3', name: 'Voyage 3', type: 'embedding', provider: { id: 'voyage', name: 'Voyage' } },
 	],
 }));
 
 const agentApi = {
 	ragGetConfiguration: jest.fn(),
 	ragSaveConfiguration: jest.fn(),
+	ragGetStatus: jest.fn(),
+	ragCancelIndex: jest.fn(),
 	ragIndex: jest.fn(),
+	ragSearch: jest.fn(),
+	ragPickFolder: jest.fn(),
 };
-
-const databaseApi = {
-	list: jest.fn(),
-	getConfiguration: jest.fn(),
-	saveConfiguration: jest.fn(),
-};
-
-const embeddingApi = {
-	getProviderId: jest.fn(),
-	getModelId: jest.fn(),
-	setProviderId: jest.fn(),
-	setModelId: jest.fn(),
-};
-
+const databaseApi = { list: jest.fn(), getConfiguration: jest.fn(), saveConfiguration: jest.fn() };
+const embeddingApi = { getProviderId: jest.fn(), getModelId: jest.fn(), setProviderId: jest.fn(), setModelId: jest.fn() };
 const dataControls = {
-	listScopes: jest.fn().mockResolvedValue([
-		{ kind: 'rag', mode: 'local_index', indexName: 'knowledge-base' },
-		{
-			kind: 'rag',
-			mode: 'local_namespace',
-			indexName: 'knowledge-base',
-			generation: 'kucedr-generation',
-		},
-		{
-			kind: 'rag',
-			mode: 'remote_namespace',
-			indexName: 'knowledge-base',
-			generation: 'kucedr-generation',
-		},
-		{ kind: 'rag', mode: 'remote_all_namespaces', indexName: 'knowledge-base' },
-	]),
-	export: jest.fn().mockResolvedValue(undefined),
-	previewPurge: jest.fn().mockResolvedValue({ confirmationId: 'confirmation-id' }),
-	purge: jest.fn().mockResolvedValue(undefined),
+	listScopes: jest.fn(),
+	export: jest.fn(),
+	previewPurge: jest.fn(),
+	purge: jest.fn(),
 };
+let configuration: import('../../../src/shared/rag_types').RagConfiguration;
+let status: import('../../../src/shared/rag_status').RagStatus;
 
 beforeEach(() => {
 	jest.clearAllMocks();
-	Object.defineProperty(window, 'PointerEvent', {
-		configurable: true,
-		value: MouseEvent,
-	});
+	configuration = {
+		enabled: false, indexName: 'kucedr', databaseProviderId: '', databaseId: '',
+		embeddingProviderId: 'openai', embeddingModelId: 'text-embedding-3-small',
+		embeddingConsent: null, mirrorConsent: null, folders: [], scheduleEnabled: false,
+		cronExpression: '0 3 * * *', timezone: 'Europe/Rome', minimumScore: 0,
+	};
+	status = {
+		running: false, trigger: null, startedAt: null, finishedAt: null, outcome: 'idle',
+		error: null, result: null, nextRunAt: null, timezone: 'Europe/Rome', index: null,
+	};
+	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });
 	Object.defineProperty(window, 'database', { configurable: true, value: databaseApi });
-	databaseApi.getConfiguration.mockResolvedValue({ providerId: undefined, databaseId: undefined });
-	databaseApi.list.mockResolvedValue([
-		{
-			providerId: 'pinecone',
-			databaseId: 'pinecone',
-			providerName: 'Pinecone',
-			databaseName: 'Pinecone Vector Database',
-		},
-	]);
-	databaseApi.saveConfiguration.mockImplementation(async (configuration) => configuration);
 	Object.defineProperty(window, 'agent', { configurable: true, value: agentApi });
-	Object.defineProperty(window, 'models', {
-		configurable: true,
-		value: { embedding: embeddingApi },
+	Object.defineProperty(window, 'models', { configurable: true, value: { embedding: embeddingApi } });
+	Object.defineProperty(window, 'dataControls', { configurable: true, value: dataControls });
+	databaseApi.list.mockResolvedValue([
+		{ providerId: 'pinecone', databaseId: 'pinecone', providerName: 'Pinecone', databaseName: 'Pinecone Vector Database' },
+	]);
+	agentApi.ragGetConfiguration.mockImplementation(async () => configuration);
+	agentApi.ragGetStatus.mockImplementation(async () => status);
+	agentApi.ragSaveConfiguration.mockImplementation(async (next) => {
+		configuration = {
+			...next,
+			embeddingConsent: next.embeddingConsent ? { ...next.embeddingConsent, recipient: 'embedding-recipient' } : null,
+			mirrorConsent: next.mirrorConsent ? { ...next.mirrorConsent, recipient: 'mirror-recipient' } : null,
+		};
+		return configuration;
 	});
-	Object.defineProperty(window, 'dataControls', {
-		configurable: true,
-		value: dataControls,
-	});
-	agentApi.ragGetConfiguration.mockResolvedValue({
-		enabled: false,
-		indexName: 'kucedr',
-		databaseProviderId: '',
-		databaseId: '',
-		embeddingProviderId: 'openai',
-		embeddingModelId: 'text-embedding-3-small',
-		embeddingConsent: null,
-		folders: [],
-		scheduleEnabled: false,
-		cronExpression: '0 3 * * *',
-	});
-	agentApi.ragSaveConfiguration.mockImplementation(async (configuration) => configuration);
-	embeddingApi.getProviderId.mockResolvedValue('openai');
-	embeddingApi.getModelId.mockResolvedValue('text-embedding-3-small');
-	embeddingApi.setProviderId.mockResolvedValue(undefined);
-	embeddingApi.setModelId.mockResolvedValue(undefined);
-});
-
-it('manages RAG data from the RAG page', async () => {
-	const user = userEvent.setup();
-	render(<KnowledgePage />);
-
-	const localIndex = await screen.findByText('Full local knowledge index');
-	const localIndexRow = localIndex.closest('[class*="grid"]') as HTMLElement;
-	await user.click(within(localIndexRow).getByRole('button', { name: 'Export' }));
-	await waitFor(() =>
-		expect(dataControls.export).toHaveBeenCalledWith({
-			kind: 'rag',
-			mode: 'local_index',
-			indexName: 'knowledge-base',
-		})
-	);
-
-	const allRemote = screen.getByText('All remote vector namespaces');
-	const allRemoteRow = allRemote.closest('[class*="grid"]') as HTMLElement;
-	await user.click(within(allRemoteRow).getByRole('button', { name: 'Purge' }));
-	await waitFor(() =>
-		expect(dataControls.purge).toHaveBeenCalledWith(
-			{ kind: 'rag', mode: 'remote_all_namespaces', indexName: 'knowledge-base' },
-			'confirmation-id'
-		)
-	);
-});
-
-it('loads and saves the embedding model used by RAG', async () => {
-	render(<KnowledgePage />);
-
-	expect(await screen.findByRole('heading', { name: 'Knowledge' })).toBeInTheDocument();
-	const selector = await screen.findByRole('combobox', { name: 'Embedding model' });
-	expect(selector).toHaveTextContent('OpenAI / Text Embedding 3 Small');
-
-	fireEvent.click(screen.getByRole('option', { name: 'Voyage / Voyage 3' }));
-
-	await waitFor(() => {
-		expect(embeddingApi.setProviderId).toHaveBeenCalledWith('voyage');
-		expect(embeddingApi.setModelId).toHaveBeenCalledWith('voyage-3');
-	});
-});
-
-it('enables RAG from its settings page', async () => {
-	const user = userEvent.setup();
-	render(<KnowledgePage />);
-
-	const toggle = await screen.findByRole('switch', { name: 'Enable Knowledge' });
-	expect(toggle).not.toBeChecked();
-	await user.click(toggle);
-	await waitFor(() =>
-		expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(
-			expect.objectContaining({ enabled: true })
-		)
-	);
-});
-
-it('records remote embedding consent for the selected provider and model', async () => {
-	const user = userEvent.setup();
-	render(<KnowledgePage />);
-
-	const consent = await screen.findByRole('switch', {
-		name: 'Send document text for embeddings',
-	});
-	await user.click(consent);
-
-	await waitFor(() =>
-		expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(
-			expect.objectContaining({
-				embeddingConsent: {
-					providerId: 'openai',
-					modelId: 'text-embedding-3-small',
-					version: 1,
-				},
-			})
-		)
-	);
-});
-
-it('requires RAG and both disclosures before indexing', async () => {
-	databaseApi.getConfiguration.mockResolvedValue({
-		providerId: 'pinecone',
-		databaseId: 'pinecone',
-	});
-	const user = userEvent.setup();
-	const configuration = await agentApi.ragGetConfiguration();
-	agentApi.ragGetConfiguration.mockResolvedValue({
-		...configuration,
-		folders: ['/Users/example/docs'],
-	});
-	agentApi.ragSaveConfiguration.mockImplementation(async (next) => ({
-		...next,
-		embeddingConsent: next.embeddingConsent
-			? { ...next.embeddingConsent, recipient: 'embedding-recipient' }
-			: null,
-		mirrorConsent: next.mirrorConsent
-			? { ...next.mirrorConsent, recipient: 'mirror-recipient' }
-			: null,
-	}));
 	agentApi.ragIndex.mockResolvedValue({ files: 1, vectors: 2 });
-	render(<KnowledgePage />);
-
-	await screen.findByText('/Users/example/docs');
-	const index = screen.getByRole('button', { name: 'Generate index' });
-	expect(index).toBeDisabled();
-	await user.click(screen.getByRole('switch', { name: 'Enable Knowledge' }));
-	expect(index).toBeDisabled();
-	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
-	expect(index).toBeDisabled();
-	await user.click(
-		screen.getByRole('switch', { name: 'Store plaintext knowledge in the vector database' })
-	);
-	await waitFor(() => expect(index).toBeEnabled());
-	await user.click(index);
-	await waitFor(() => expect(agentApi.ragIndex).toHaveBeenCalledTimes(1));
-	await waitFor(() => expect(index).toBeEnabled());
-
-	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
-	expect(index).toBeDisabled();
-	await user.click(index);
-	expect(agentApi.ragIndex).toHaveBeenCalledTimes(1);
+	agentApi.ragCancelIndex.mockResolvedValue(undefined);
+	agentApi.ragSearch.mockResolvedValue([]);
+	agentApi.ragPickFolder.mockResolvedValue('/Users/example/docs');
+	dataControls.listScopes.mockResolvedValue([
+		{ kind: 'rag', mode: 'local_index', indexName: 'kucedr' },
+		{ kind: 'rag', mode: 'local_namespace', indexName: 'kucedr', generation: 'generation' },
+		{ kind: 'rag', mode: 'remote_namespace', indexName: 'kucedr', generation: 'generation' },
+		{ kind: 'rag', mode: 'remote_all_namespaces', indexName: 'kucedr' },
+	]);
+	dataControls.export.mockResolvedValue(undefined);
+	dataControls.previewPurge.mockResolvedValue({ confirmationId: 'confirmation-id' });
+	dataControls.purge.mockResolvedValue(undefined);
 });
 
-it('does not display embedding disclosure without a recipient as accepted', async () => {
-	const configuration = await agentApi.ragGetConfiguration();
-	agentApi.ragGetConfiguration.mockResolvedValue({
-		...configuration,
-		embeddingConsent: {
-			version: 1,
-			providerId: 'openai',
-			modelId: 'text-embedding-3-small',
-		},
-	});
+it('organizes Knowledge into source, embedding, storage, indexing and search controls', async () => {
+	configuration.folders = ['/Users/example/docs'];
 	render(<KnowledgePage />);
+	await screen.findByText('/Users/example/docs');
+	for (const name of ['Source folders', 'Embedding', 'Storage', 'Indexing']) {
+		expect(screen.getByRole('heading', { name })).toBeInTheDocument();
+	}
+	expect(screen.getByRole('combobox', { name: 'Embedding model' })).toHaveTextContent('OpenAI / Text Embedding 3 Small');
+	expect(screen.getByLabelText('Index name')).toHaveValue('kucedr');
+	expect(screen.getByLabelText('Test query')).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Remove /Users/example/docs' })).toBeInTheDocument();
+});
 
+it('preserves an unavailable embedding selection without changing it on load', async () => {
+	configuration.embeddingProviderId = 'removed';
+	configuration.embeddingModelId = 'previous-model';
+	render(<KnowledgePage />);
+	const model = await screen.findByRole('combobox', { name: 'Embedding model' });
+	expect(model).toHaveTextContent('Select model');
+	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
+	expect(embeddingApi.setProviderId).not.toHaveBeenCalled();
+	expect(embeddingApi.setModelId).not.toHaveBeenCalled();
+});
+
+it('saves the embedding provider and model together and clears its old disclosure', async () => {
+	configuration.embeddingConsent = { providerId: 'openai', modelId: 'text-embedding-3-small', version: 1, recipient: 'old' };
+	render(<KnowledgePage />);
 	await screen.findByRole('combobox', { name: 'Embedding model' });
-	expect(
-		screen.getByRole('switch', { name: 'Send document text for embeddings' })
-	).not.toBeChecked();
+	fireEvent.click(screen.getByRole('option', { name: 'Voyage / Voyage 3' }));
+	await waitFor(() => expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(expect.objectContaining({
+		embeddingProviderId: 'voyage', embeddingModelId: 'voyage-3', embeddingConsent: null,
+	})));
+	await waitFor(() => expect(screen.getByRole('combobox', { name: 'Embedding model' })).toHaveTextContent('Voyage / Voyage 3'));
+	expect(embeddingApi.setProviderId).not.toHaveBeenCalled();
+	expect(embeddingApi.setModelId).not.toHaveBeenCalled();
+	expect(screen.getByRole('switch', { name: 'Send document text for embeddings' })).not.toBeChecked();
 });
 
-it('groups the model, index, and folder paths in one configuration card', async () => {
-	agentApi.ragGetConfiguration.mockResolvedValue({
-		indexName: 'kucedr',
-		embeddingProviderId: 'openai',
-		embeddingModelId: 'text-embedding-3-small',
-		folders: ['/Users/example/docs'],
-		scheduleEnabled: false,
-		cronExpression: '0 3 * * *',
-	});
-
+it('keeps the persisted model selected when a model save fails', async () => {
+	agentApi.ragSaveConfiguration.mockRejectedValueOnce(new Error('Unable to save model'));
 	render(<KnowledgePage />);
-
-	await screen.findByText('/Users/example/docs');
-	const configurationTitle = await screen.findByText('Configuration');
-	const configurationCard = configurationTitle
-		.closest('section')
-		?.querySelector<HTMLElement>('[data-slot="card"]');
-	expect(configurationCard).toBeInTheDocument();
-
-	const configuration = within(configurationCard as HTMLElement);
-	expect(configuration.getByRole('combobox', { name: 'Vector database' })).toBeInTheDocument();
-	expect(configuration.getByRole('combobox', { name: 'Embedding model' })).toBeInTheDocument();
-	expect(configuration.getByLabelText('Index name')).toHaveValue('kucedr');
-	expect(configuration.getByText('/Users/example/docs')).toBeInTheDocument();
-	expect(configuration.getByRole('button', { name: 'Choose folder' })).toBeInTheDocument();
-	expect(screen.getAllByText('Configuration')).toHaveLength(1);
+	const model = await screen.findByRole('combobox', { name: 'Embedding model' });
+	fireEvent.click(screen.getByRole('option', { name: 'Voyage / Voyage 3' }));
+	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to save model');
+	expect(model).toHaveTextContent('OpenAI / Text Embedding 3 Small');
+	expect(model).toBeEnabled();
 });
 
-it('saves the selected RAG index name from the configuration card', async () => {
+it('leaves the database unselected until the user explicitly chooses local or remote', async () => {
+	render(<KnowledgePage />);
+	const database = await screen.findByRole('combobox', { name: 'Vector database' });
+	expect(database).toHaveTextContent('Select database');
+	expect(databaseApi.saveConfiguration).not.toHaveBeenCalled();
+	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
+	expect(screen.queryByRole('switch', { name: 'Store plaintext knowledge in the vector database' })).not.toBeInTheDocument();
+	fireEvent.click(screen.getByRole('option', { name: 'Local SQLite' }));
+	await waitFor(() => expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(expect.objectContaining({
+		databaseProviderId: 'local', databaseId: 'sqlite', mirrorConsent: null,
+	})));
+});
+
+it('saves the remote selection atomically and shows its disclosure beside storage', async () => {
+	configuration.databaseProviderId = 'local';
+	configuration.databaseId = 'sqlite';
+	render(<KnowledgePage />);
+	await screen.findByRole('combobox', { name: 'Vector database' });
+	fireEvent.click(screen.getByRole('option', { name: 'Pinecone / Pinecone Vector Database' }));
+	await waitFor(() => expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(expect.objectContaining({
+		databaseProviderId: 'pinecone', databaseId: 'pinecone', mirrorConsent: null,
+	})));
+	expect(await screen.findByRole('switch', { name: 'Store plaintext knowledge in the vector database' })).not.toBeChecked();
+	expect(databaseApi.saveConfiguration).not.toHaveBeenCalled();
+});
+
+it('enables Knowledge and records consent for the selected embedding model', async () => {
 	const user = userEvent.setup();
 	render(<KnowledgePage />);
-
-	expect(await screen.findByText('Configuration')).toBeInTheDocument();
-	const indexName = screen.getByLabelText('Index name');
-	await waitFor(() => expect(indexName).toHaveValue('kucedr'));
-	await user.clear(indexName);
-	await user.type(indexName, 'knowledge-base');
-	expect(indexName).toHaveValue('knowledge-base');
-	await user.tab();
-
-	await waitFor(() =>
-		expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(
-			expect.objectContaining({ indexName: 'knowledge-base' })
-		)
-	);
+	await user.click(await screen.findByRole('switch', { name: 'Enable Knowledge' }));
+	await waitFor(() => expect(configuration.enabled).toBe(true));
+	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
+	await waitFor(() => expect(agentApi.ragSaveConfiguration).toHaveBeenLastCalledWith(expect.objectContaining({
+		embeddingConsent: { providerId: 'openai', modelId: 'text-embedding-3-small', version: 1 },
+	})));
 });
 
-it('saves a friendly automation schedule preset', async () => {
-	agentApi.ragGetConfiguration.mockResolvedValue({
-		indexName: 'kucedr',
-		databaseProviderId: '',
-		databaseId: '',
-		embeddingProviderId: 'openai',
-		embeddingModelId: 'text-embedding-3-small',
-		folders: [],
-		scheduleEnabled: true,
-		cronExpression: '0 */12 * * *',
-	});
-
+it('does not display disclosure without a recipient as accepted', async () => {
+	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small' };
 	render(<KnowledgePage />);
-
-	expect(await screen.findByRole('heading', { name: 'Automation' })).toBeInTheDocument();
-	const frequency = screen.getByRole('combobox', { name: 'Indexing frequency' });
-	await waitFor(() => expect(frequency).toHaveTextContent('Every 12 hours'));
-
-	fireEvent.click(screen.getByRole('option', { name: 'Every 4 hours' }));
-
-	await waitFor(() =>
-		expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(
-			expect.objectContaining({
-				scheduleEnabled: true,
-				cronExpression: '0 */4 * * *',
-			})
-		)
-	);
+	expect(await screen.findByRole('switch', { name: 'Send document text for embeddings' })).not.toBeChecked();
 });
 
-it('leaves the vector database unselected until the user chooses one', async () => {
-	render(<KnowledgePage />);
-	const selector = screen.getByRole('combobox', { name: 'Vector database' });
-	await waitFor(() => expect(selector).toBeEnabled());
-	expect(selector).toHaveTextContent('Select vector database');
-	expect(databaseApi.saveConfiguration).not.toHaveBeenCalled();
-	expect(
-		screen.getByRole('switch', { name: 'Store plaintext knowledge in the vector database' })
-	).toHaveAttribute('aria-disabled', 'true');
-});
-
-it('saves an explicit vector database choice and reloads cleared disclosure', async () => {
-	const configuration = await agentApi.ragGetConfiguration();
-	agentApi.ragGetConfiguration.mockResolvedValue({
-		...configuration,
-		mirrorConsent: { version: 1, indexName: 'kucedr', recipient: 'old-recipient' },
-	});
-	render(<KnowledgePage />);
-	const selector = screen.getByRole('combobox', { name: 'Vector database' });
-	await waitFor(() => expect(selector).toBeEnabled());
-	agentApi.ragGetConfiguration.mockClear();
-	agentApi.ragGetConfiguration.mockResolvedValue({ ...configuration, mirrorConsent: null });
-	fireEvent.click(screen.getByRole('option', { name: 'Pinecone / Pinecone Vector Database' }));
-	await waitFor(() =>
-		expect(databaseApi.saveConfiguration).toHaveBeenCalledWith({
-			providerId: 'pinecone',
-			databaseId: 'pinecone',
-		})
-	);
-	await waitFor(() => expect(agentApi.ragGetConfiguration).toHaveBeenCalledTimes(1));
-	await waitFor(() => expect(selector).toBeEnabled());
-	expect(selector).toHaveTextContent('Pinecone / Pinecone Vector Database');
-	expect(
-		screen.getByRole('switch', { name: 'Store plaintext knowledge in the vector database' })
-	).not.toBeChecked();
-	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
-});
-
-it('blocks indexing without a selected database even when disclosures are saved', async () => {
-	const configuration = await agentApi.ragGetConfiguration();
-	agentApi.ragGetConfiguration.mockResolvedValue({
-		...configuration,
-		enabled: true,
+it('allows indexing in explicitly selected local SQLite without remote storage consent', async () => {
+	configuration = {
+		...configuration, enabled: true, databaseProviderId: 'local', databaseId: 'sqlite',
 		folders: ['/Users/example/docs'],
-		embeddingConsent: {
-			version: 1,
-			providerId: 'openai',
-			modelId: 'text-embedding-3-small',
-			recipient: 'embedding-recipient',
-		},
-		mirrorConsent: { version: 1, indexName: 'kucedr', recipient: 'mirror-recipient' },
-	});
+		embeddingConsent: { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' },
+	};
 	render(<KnowledgePage />);
-	await screen.findByText('/Users/example/docs');
-	await waitFor(() =>
-		expect(screen.getByRole('combobox', { name: 'Vector database' })).toBeEnabled()
-	);
-	const index = screen.getByRole('button', { name: 'Generate index' });
-	expect(index).toBeDisabled();
+	const index = await screen.findByRole('button', { name: 'Generate index' });
+	expect(index).toBeEnabled();
 	fireEvent.click(index);
-	expect(agentApi.ragIndex).not.toHaveBeenCalled();
+	await waitFor(() => expect(agentApi.ragIndex).toHaveBeenCalledTimes(1));
+	expect(screen.queryByRole('switch', { name: 'Store plaintext knowledge in the vector database' })).not.toBeInTheDocument();
+});
+
+it('requires remote mirror consent before indexing in a selected remote database', async () => {
+	configuration = {
+		...configuration, enabled: true, databaseProviderId: 'pinecone', databaseId: 'pinecone',
+		folders: ['/Users/example/docs'],
+		embeddingConsent: { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' },
+	};
+	render(<KnowledgePage />);
+	const index = await screen.findByRole('button', { name: 'Generate index' });
+	expect(index).toBeDisabled();
+	fireEvent.click(screen.getByRole('switch', { name: 'Store plaintext knowledge in the vector database' }));
+	await waitFor(() => expect(index).toBeEnabled());
+});
+
+it('saves index-name and source-folder changes immediately', async () => {
+	const user = userEvent.setup();
+	render(<KnowledgePage />);
+	const index = await screen.findByLabelText('Index name');
+	await user.clear(index);
+	await user.type(index, 'knowledge-base');
+	await user.tab();
+	await waitFor(() => expect(configuration.indexName).toBe('knowledge-base'));
+	await user.click(screen.getByRole('button', { name: 'Choose folder' }));
+	await waitFor(() => expect(configuration.folders).toEqual(['/Users/example/docs']));
+	await user.click(screen.getByRole('button', { name: 'Remove /Users/example/docs' }));
+	await waitFor(() => expect(configuration.folders).toEqual([]));
+});
+
+it('saves schedule presets and supports a custom expression and timezone', async () => {
+	const user = userEvent.setup();
+	render(<KnowledgePage />);
+	await screen.findByRole('combobox', { name: 'Indexing frequency' });
+	fireEvent.click(screen.getByRole('option', { name: 'Every 4 hours' }));
+	await waitFor(() => expect(configuration).toEqual(expect.objectContaining({
+		scheduleEnabled: true, cronExpression: '0 */4 * * *',
+	})));
+	fireEvent.click(screen.getByRole('option', { name: 'Custom schedule' }));
+	const cron = screen.getByLabelText('Cron expression');
+	await user.clear(cron);
+	await user.type(cron, '0 8 * * 1');
+	await user.tab();
+	await waitFor(() => expect(configuration.cronExpression).toBe('0 8 * * 1'));
+	const timezone = screen.getByLabelText('Time zone');
+	await user.clear(timezone);
+	await user.type(timezone, 'America/New_York');
+	await user.tab();
+	await waitFor(() => expect(configuration.timezone).toBe('America/New_York'));
+});
+
+it('displays a background run, locks edits and data changes, and allows cancellation', async () => {
+	status.running = true;
+	status.outcome = 'running';
+	status.trigger = 'scheduled';
+	render(<KnowledgePage />);
+	expect(await screen.findByText('Indexing in progress')).toBeInTheDocument();
+	expect(screen.getByRole('combobox', { name: 'Embedding model' })).toBeDisabled();
+	expect(screen.getByLabelText('Index name')).toBeDisabled();
+	expect(screen.getByRole('button', { name: 'Choose folder' })).toBeDisabled();
+	const scope = await screen.findByText('Full local knowledge index');
+	const row = scope.closest('[class*="grid"]') as HTMLElement;
+	expect(within(row).getByRole('button', { name: 'Purge' })).toBeDisabled();
+	fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+	await waitFor(() => expect(agentApi.ragCancelIndex).toHaveBeenCalledTimes(1));
+});
+
+it('blocks test search when the published index uses a different embedding model', async () => {
+	configuration.enabled = true;
+	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' };
+	status.index = { indexName: 'kucedr', providerId: 'voyage', modelId: 'voyage-3', dimensions: 1024, completedAt: '2026-10-08T12:00:00Z' };
+	render(<KnowledgePage />);
+	const query = await screen.findByLabelText('Test query');
+	fireEvent.change(query, { target: { value: 'a question' } });
+	expect(screen.getByText('Rebuild required')).toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Search' })).toBeDisabled();
+	expect(agentApi.ragSearch).not.toHaveBeenCalled();
+});
+
+it('submits labeled test search with Enter and displays returned source snippets', async () => {
+	const user = userEvent.setup();
+	configuration.enabled = true;
+	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' };
+	status.index = { indexName: 'kucedr', providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 1536, completedAt: '2026-10-08T12:00:00Z' };
+	agentApi.ragSearch.mockResolvedValue([{ path: '/Users/example/docs/guide.md', text: 'Relevant source passage', score: 0.82 }]);
+	render(<KnowledgePage />);
+	await user.type(await screen.findByLabelText('Test query'), 'what is this?{Enter}');
+	await waitFor(() => expect(agentApi.ragSearch).toHaveBeenCalledWith('what is this?'));
+	expect(await screen.findByText('Relevant source passage')).toBeInTheDocument();
+	expect(screen.getByText('/Users/example/docs/guide.md')).toBeInTheDocument();
+});
+
+it('saves the minimum similarity threshold', async () => {
+	const user = userEvent.setup();
+	render(<KnowledgePage />);
+	const threshold = await screen.findByLabelText('Minimum similarity');
+	await user.clear(threshold);
+	await user.type(threshold, '0.35');
+	await user.tab();
+	await waitFor(() => expect(agentApi.ragSaveConfiguration).toHaveBeenCalledWith(expect.objectContaining({ minimumScore: 0.35 })));
+});
+
+it('exports local data and only shows remote data controls for the remote selection', async () => {
+	const user = userEvent.setup();
+	configuration.databaseProviderId = 'pinecone';
+	configuration.databaseId = 'pinecone';
+	render(<KnowledgePage />);
+	const local = await screen.findByText('Full local knowledge index');
+	const localRow = local.closest('[class*="grid"]') as HTMLElement;
+	await user.click(within(localRow).getByRole('button', { name: 'Export' }));
+	await waitFor(() => expect(dataControls.export).toHaveBeenCalledWith({ kind: 'rag', mode: 'local_index', indexName: 'kucedr' }));
+	const remote = screen.getByText('All remote vector namespaces');
+	const remoteRow = remote.closest('[class*="grid"]') as HTMLElement;
+	await user.click(within(remoteRow).getByRole('button', { name: 'Purge' }));
+	await waitFor(() => expect(dataControls.purge).toHaveBeenCalledWith(
+		{ kind: 'rag', mode: 'remote_all_namespaces', indexName: 'kucedr' }, 'confirmation-id'
+	));
+});
+
+it('provides a retry when loading Knowledge settings fails', async () => {
+	agentApi.ragGetConfiguration.mockRejectedValueOnce(new Error('Unable to load'));
+	render(<KnowledgePage />);
+	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to load');
+	fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
+	expect(await screen.findByRole('combobox', { name: 'Embedding model' })).toBeInTheDocument();
 });
