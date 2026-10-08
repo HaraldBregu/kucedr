@@ -35,6 +35,7 @@ import type {
 	RuntimeEvent,
 	RuntimeInput,
 	Tool,
+	ToolCall,
 } from '../types';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
@@ -381,7 +382,7 @@ async function* loop(
 				server.serverName.toLocaleLowerCase() === mcpServerHint
 		);
 		if (requestedUncatalogedMcp && input.approvalWindowId !== undefined && input.interactionMode === 'default') {
-			const authorizationCall = {
+			const authorizationCall: ToolCall = {
 				id: crypto.randomUUID(),
 				name: 'request_mcp_authorization',
 				args: { serverId: requestedUncatalogedMcp.serverId },
@@ -399,7 +400,9 @@ async function* loop(
 			let authorizationStatus: string | undefined;
 			try {
 				authorizationStatus = typeof result === 'string' ? (JSON.parse(result) as { status?: string }).status : undefined;
-			} catch { /* handled below */ }
+			} catch {
+				authorizationStatus = undefined;
+			}
 			if (authorizationStatus === 'cancelled' || authorizationStatus === 'authorization_failed') {
 				session.stopReason = 'cancelled';
 				yield { type: 'run_finished', result: toResult(session, 'success') };
