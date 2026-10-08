@@ -5,7 +5,6 @@ import type { AgentToolPart } from '../../../src/renderer/src/pages/home/context
 
 const oauthStatus = jest.fn();
 const oauthStart = jest.fn();
-const test = jest.fn();
 const tool: AgentToolPart = {
 	toolCallId: 'authorize',
 	type: 'request_mcp_authorization',
@@ -20,7 +19,7 @@ const tool: AgentToolPart = {
 beforeEach(() => {
 	Object.defineProperty(window, 'mcp', {
 		configurable: true,
-		value: { oauthStatus, oauthStart, test },
+		value: { oauthStatus, oauthStart },
 	});
 	oauthStatus.mockResolvedValue(false);
 });
@@ -47,9 +46,15 @@ it('shows an OAuth error and keeps the authorization action available', async ()
 
 it('restores the authorized message when history is reopened', async () => {
 	oauthStatus.mockResolvedValue(true);
-	test.mockResolvedValue({ ok: true });
 	render(<McpAuthorizationCard tool={tool} />);
 
 	await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Authorized'));
-	expect(test).toHaveBeenCalledWith('gmail');
+	expect(oauthStatus).toHaveBeenCalledWith('gmail');
+});
+
+it('never renders a connected status card', () => {
+	render(<McpAuthorizationCard tool={{ ...tool, output: JSON.stringify({ status: 'connected', serverId: 'gmail' }) }} />);
+
+	expect(screen.queryByText(/connected/i)).not.toBeInTheDocument();
+	expect(screen.queryByRole('button', { name: 'Authorize' })).not.toBeInTheDocument();
 });

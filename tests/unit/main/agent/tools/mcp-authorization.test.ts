@@ -1,10 +1,10 @@
 const getMcpServers = jest.fn();
-const testMcpServer = jest.fn();
+const getMcpOauth = jest.fn();
 const findMcpService = jest.fn();
 
 jest.mock('../../../../../src/main/mcp', () => ({
 	getMcpServers: () => getMcpServers(),
-	testMcpServer: (id: string) => testMcpServer(id),
+	getMcpOauth: (id: string) => getMcpOauth(id),
 }));
 jest.mock('../../../../../src/main/mcp/manifest', () => ({
 	findMcpService: (url: string) => findMcpService(url),
@@ -16,11 +16,11 @@ beforeEach(() => {
 	getMcpServers.mockReturnValue({
 		docs: { type: 'http', url: 'https://mcp.example', name: 'Docs' },
 	});
+	getMcpOauth.mockReturnValue({});
 	findMcpService.mockReturnValue(undefined);
 });
 
-it('requests authorization when the configured MCP server rejects an unauthenticated connection', async () => {
-	testMcpServer.mockResolvedValue({ ok: false, error: 'HTTP 401 Unauthorized' });
+it('requests authorization when tools are available but OAuth is missing', async () => {
 	const result = await requestMcpAuthorizationTool().run({ serverId: 'docs' });
 
 	expect(result).toEqual({
@@ -29,21 +29,23 @@ it('requests authorization when the configured MCP server rejects an unauthentic
 		serverName: 'Docs',
 		message: expect.any(String),
 	});
-	expect(testMcpServer).toHaveBeenCalledWith('docs');
+	expect(getMcpOauth).toHaveBeenCalledWith('docs');
 });
 
-it('reports an already connected server without requesting authorization', async () => {
-	testMcpServer.mockResolvedValue({ ok: true });
+it('does not request authorization when an OAuth token is stored', async () => {
+	getMcpOauth.mockReturnValue({ tokens: { access_token: 'token' } });
 	await expect(requestMcpAuthorizationTool().run({ serverId: 'docs' })).resolves.toEqual({
-		status: 'connected',
+		status: 'already_authorized',
 		serverId: 'docs',
-		serverName: 'Docs',
 	});
 });
 
-it('does not offer OAuth for a general connection failure', async () => {
-	testMcpServer.mockResolvedValue({ ok: false, error: 'Connection timed out' });
-	await expect(requestMcpAuthorizationTool().run({ serverId: 'docs' })).rejects.toThrow(
-		'Connection timed out'
-	);
+it('does not offer OAuth for a server using a configured bearer token', async () => {
+	getMcpServers.mockReturnValue({
+		docs: { type: 'http', url: 'https://mcp.example', name: 'Docs', token: 'configured-token' },
+	});
+	await expect(requestMcpAuthorizationTool().run({ serverId: 'docs' })).resolves.toEqual({
+		status: 'already_authorized',
+		serverId: 'docs',
+	});
 });
