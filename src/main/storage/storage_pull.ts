@@ -1,81 +1,51 @@
+import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import type { StoragePullResult, StorageRestoreInput } from '../../shared/storage_types';
+import type { StoragePullResult } from '../../shared/storage_types';
 import { describeStorageError } from './storage_error';
-import { getObject } from './storage_get';
-import { listObjects } from './storage_list';
 import { normalizeStoragePaths } from './storage_paths';
 import { storagePrefix } from './storage_prefix';
 import type { StorageObjectStore } from './remote';
 import { STORAGE_MAX_OBJECT_BYTES } from './limits';
 import { getStorageSettings } from './storage_store';
 import { storageTarget } from './storage_target';
-import { storageWrite } from './storage_write';
-import { preserveRestoreTarget } from './recovery';
-import { downloadSnapshot } from './download';
 import { isProtectedStoragePath } from './storage_protected';
 
-export async function pullFiles(
-	store: StorageObjectStore,
-	input?: StorageRestoreInput
-): Promise<StoragePullResult> {
-	if (input)
-		return downloadSnapshot(store, input.snapshotKey, normalizeStoragePaths([input.path])[0]);
-	const storage = getStorageSettings();
-	const paths = normalizeStoragePaths(storage.paths);
-	const downloaded: string[] = [];
-	const skipped: string[] = [];
-	const failed: StoragePullResult['failed'] = [];
-
-	for (const entryPath of paths) {
-		const prefix = storagePrefix(entryPath);
+export async function pullFiles(store: StorageObjectStore): Promise<StoragePullResult> {
+	const paths = normalizeStoragePaths(getStorageSettings().paths);
+	if (!paths.length) throw new Error('Select at least one folder to download into.');
+	const result: StoragePullResult = { downloaded: [], skipped: [], failed: [] };
+	for (const root of paths) {
 		try {
-			await fs.mkdir(entryPath, { recursive: true });
-			if ((await fs.lstat(entryPath)).isSymbolicLink()) {
-				throw new Error(`Selected folder is a symbolic link: ${entryPath}`);
-			}
-			const snapshotPrefix = prefix.replace('kucedr/v1/', 'kucedr/v2/');
-			const manifests = (await listObjects(store, `${snapshotPrefix}snapshots/`))
-				.filter(
-					(item) => item.key.startsWith(`${snapshotPrefix}snapshots/`) && item.key.endsWith('.json')
-				)
-				.sort((a, b) => b.key.localeCompare(a.key));
-			if (manifests.length) {
-				const result = await downloadSnapshot(store, manifests[0].key, entryPath);
-				downloaded.push(...result.downloaded);
-				skipped.push(...result.skipped);
-				failed.push(...result.failed);
-				continue;
-			}
-			const remote = (await listObjects(store, prefix)).filter((item) => !item.key.endsWith('/'));
-			if (!remote.length)
-				throw new Error(
-					'No backup was found for this folder. Choose a backup point to restore into another folder.'
-				);
-			for (const item of remote) {
+			await fs.mkdir(root, { recursive: true });
+			if ((await fs.lstat(root)).isSymbolicLink()) throw new Error('Selected folder is a symbolic link.');
+			const prefix = storagePrefix(root);
+			const objects = (await store.list(prefix)).filter((item) => !item.key.endsWith('/'));
+			if (!objects.length) throw new Error(`No stored files were found in ${prefix}`);
+			for (const item of objects) {
+				let temporary: string | undefined;
 				try {
-					if (item.size > STORAGE_MAX_OBJECT_BYTES) {
-						throw new Error('Cloud restore files must be no larger than 50 MiB.');
-					}
-					const target = await storageTarget(entryPath, item.key, prefix);
-					if (isProtectedStoragePath(target))
-						throw new Error('Backup targets a protected application folder.');
+					const target = await storageTarget(root, item.key, prefix);
+					if (isProtectedStoragePath(target)) throw new Error('Download targets a protected application folder.');
 					await fs.mkdir(path.dirname(target), { recursive: true });
-					const data = await getObject(store, item.key);
-					if (data.byteLength > STORAGE_MAX_OBJECT_BYTES) {
-						throw new Error('Cloud restore files must be no larger than 50 MiB.');
+					temporary = `${target}.kucedr-${randomUUID()}.tmp`;
+					if (store.getFile) await store.getFile(item.key, temporary);
+					else {
+						if (item.size > STORAGE_MAX_OBJECT_BYTES) throw new Error('This storage does not support streamed file downloads.');
+						await fs.writeFile(temporary, await store.get(item.key), { flag: 'wx' });
 					}
-					await preserveRestoreTarget(target, entryPath);
-					await storageWrite(target, data);
-					downloaded.push(item.key);
+					if ((await fs.stat(temporary)).size !== item.size) throw new Error('Downloaded file size does not match storage.');
+					await fs.rename(temporary, target);
+					result.downloaded.push(item.key);
 				} catch (error) {
-					failed.push({ path: item.key, error: describeStorageError(error) });
+					result.failed.push({ path: item.key, error: describeStorageError(error) });
+				} finally {
+					if (temporary) await fs.rm(temporary, { force: true });
 				}
 			}
 		} catch (error) {
-			failed.push({ path: entryPath, error: describeStorageError(error) });
+			result.failed.push({ path: root, error: describeStorageError(error) });
 		}
 	}
-
-	return { downloaded, skipped, failed };
+	return result;
 }
