@@ -100,7 +100,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 							<AudioLines className="size-4" strokeWidth={1.8} />
 						</Button>
 						<DropdownMenuContent
-							className="w-[var(--radix-dropdown-menu-trigger-width)]"
+							className="w-72"
 							side="right"
 							align="end"
 						>
