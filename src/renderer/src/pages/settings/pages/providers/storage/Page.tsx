@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, HardDrive, MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { AlertTriangle, HardDrive, MoreHorizontal, Pencil, Plus, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import {
@@ -39,7 +39,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 		let cancelled = false;
 		void window.provider.listEnabledPlugins().then((enabled) => {
 			if (!cancelled) setEnabledPresetIds(enabled.storage);
-		});
+		}).catch(() => undefined);
 		void window.storage.listProviders().then(
 			(saved) => {
 				if (!cancelled) {
@@ -64,6 +64,15 @@ export default function StorageProvidersPage(): React.JSX.Element {
 			<SettingsPageHeader
 				title={t('settings.tabs.storage')}
 				description={t('settings.storageProviders.description')}
+				action={
+					<Button size="sm" disabled={loading || removing !== null || editing !== null} onClick={() => {
+						setSelectedPresetId(undefined);
+						setEditing('new');
+					}}>
+						<Plus className="size-3.5" />
+						{t('settings.storageProviders.add')}
+					</Button>
+				}
 			/>
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
