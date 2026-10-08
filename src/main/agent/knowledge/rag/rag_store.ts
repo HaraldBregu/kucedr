@@ -106,9 +106,11 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 		embeddingProviderId: configuration.embeddingProviderId?.trim() ?? '',
 		embeddingModelId: configuration.embeddingModelId?.trim() ?? '',
 		embeddingConsent:
-			configuration.embeddingConsent?.providerId.trim() === configuration.embeddingProviderId?.trim() &&
+			configuration.embeddingConsent?.providerId.trim() ===
+				configuration.embeddingProviderId?.trim() &&
 			configuration.embeddingConsent.modelId.trim() === configuration.embeddingModelId?.trim() &&
-			configuration.embeddingConsent.providerId.trim() && configuration.embeddingConsent.modelId.trim()
+			configuration.embeddingConsent.providerId.trim() &&
+			configuration.embeddingConsent.modelId.trim()
 				? {
 						providerId: configuration.embeddingConsent.providerId.trim(),
 						modelId: configuration.embeddingConsent.modelId.trim(),
@@ -118,7 +120,9 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 					}
 				: null,
 		mirrorConsent:
-			!localDatabase && databaseId && configuration.mirrorConsent?.version === 1 &&
+			!localDatabase &&
+			databaseId &&
+			configuration.mirrorConsent?.version === 1 &&
 			configuration.mirrorConsent.indexName === indexName
 				? {
 						...configuration.mirrorConsent,

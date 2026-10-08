@@ -100,7 +100,12 @@ describe('RAG indexing schedule', () => {
 
 	it('skips a scheduled run while manual indexing owns the job', async () => {
 		let complete!: (result: { files: number; vectors: number }) => void;
-		indexRag.mockImplementation(() => new Promise((resolve) => { complete = resolve; }));
+		indexRag.mockImplementation(
+			() =>
+				new Promise((resolve) => {
+					complete = resolve;
+				})
+		);
 		startRagSchedule(logger);
 		const manual = runRagIndexing();
 		await schedule.mock.calls[0][1]();
@@ -118,7 +123,12 @@ describe('RAG indexing schedule', () => {
 
 	it('keeps the job locked until cancellation finishes', async () => {
 		let reject!: (error: Error) => void;
-		indexRag.mockImplementation(() => new Promise((_resolve, rejectRun) => { reject = rejectRun; }));
+		indexRag.mockImplementation(
+			() =>
+				new Promise((_resolve, rejectRun) => {
+					reject = rejectRun;
+				})
+		);
 		const manual = runRagIndexing();
 		cancelRagIndexing();
 		const signal = indexRag.mock.calls[0][2].signal;
@@ -130,9 +140,12 @@ describe('RAG indexing schedule', () => {
 	});
 
 	it('cancels indexing when the embedding model or source settings change', async () => {
-		indexRag.mockImplementation((_folders, _indexName, { signal }) => new Promise((_resolve, reject) => {
-			signal.addEventListener('abort', () => reject(signal.reason), { once: true });
-		}));
+		indexRag.mockImplementation(
+			(_folders, _indexName, { signal }) =>
+				new Promise((_resolve, reject) => {
+					signal.addEventListener('abort', () => reject(signal.reason), { once: true });
+				})
+		);
 		startRagSchedule(logger);
 		const manual = runRagIndexing();
 		getRagConfiguration.mockReturnValue({ ...configuration, embeddingModelId: 'changed-model' });
@@ -143,10 +156,19 @@ describe('RAG indexing schedule', () => {
 
 	it('preserves manual indexing when only its schedule or retrieval threshold changes', async () => {
 		let complete!: (result: { files: number; vectors: number }) => void;
-		indexRag.mockImplementation(() => new Promise((resolve) => { complete = resolve; }));
+		indexRag.mockImplementation(
+			() =>
+				new Promise((resolve) => {
+					complete = resolve;
+				})
+		);
 		startRagSchedule(logger);
 		const manual = runRagIndexing();
-		getRagConfiguration.mockReturnValue({ ...configuration, cronExpression: '0 4 * * *', minimumScore: 0.2 });
+		getRagConfiguration.mockReturnValue({
+			...configuration,
+			cronExpression: '0 4 * * *',
+			minimumScore: 0.2,
+		});
 		subscribeRagConfiguration.mock.calls[0][0]();
 		expect(indexRag.mock.calls[0][2].signal.aborted).toBe(false);
 		complete({ files: 1, vectors: 2 });
@@ -189,7 +211,11 @@ describe('RAG indexing schedule', () => {
 	it('records a failed run and lets the next indexing job retry', async () => {
 		indexRag.mockRejectedValueOnce(new Error('Embedding endpoint unavailable'));
 		await expect(runRagIndexing()).rejects.toThrow('Embedding endpoint unavailable');
-		expect(getRagStatus()).toMatchObject({ running: false, outcome: 'failed', error: 'Embedding endpoint unavailable' });
+		expect(getRagStatus()).toMatchObject({
+			running: false,
+			outcome: 'failed',
+			error: 'Embedding endpoint unavailable',
+		});
 		await expect(runRagIndexing()).resolves.toEqual({ files: 1, vectors: 2 });
 	});
 });

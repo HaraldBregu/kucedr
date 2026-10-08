@@ -1093,9 +1093,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				(configuration: RagConfiguration): RagConfiguration => {
-					const saved = saveRagConfiguration(
-						authorizeRagDisclosure(configuration)
-					);
+					const saved = saveRagConfiguration(authorizeRagDisclosure(configuration));
 					return saved;
 				},
 				AgentChannels.ragSaveConfiguration

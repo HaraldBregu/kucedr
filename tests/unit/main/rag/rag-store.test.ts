@@ -88,18 +88,30 @@ it('validates explicit local storage, atomic database selection, timezone, cron,
 		minimumScore: 0.2,
 	};
 	expect(saveRagConfiguration(configuration)).toMatchObject({
-		databaseProviderId: 'local', databaseId: 'sqlite', mirrorConsent: null,
-		timezone: 'Europe/Rome', minimumScore: 0.2,
+		databaseProviderId: 'local',
+		databaseId: 'sqlite',
+		mirrorConsent: null,
+		timezone: 'Europe/Rome',
+		minimumScore: 0.2,
 	});
 	for (const database of [
 		{ databaseProviderId: 'local', databaseId: '' },
 		{ databaseProviderId: 'unsupported', databaseId: 'postgres' },
-	]) expect(() => saveRagConfiguration({ ...configuration, ...database })).toThrow('supported Knowledge database');
-	expect(() => saveRagConfiguration({ ...configuration, timezone: 'Not/AZone' })).toThrow('IANA timezone');
+	])
+		expect(() => saveRagConfiguration({ ...configuration, ...database })).toThrow(
+			'supported Knowledge database'
+		);
+	expect(() => saveRagConfiguration({ ...configuration, timezone: 'Not/AZone' })).toThrow(
+		'IANA timezone'
+	);
 	for (const minimumScore of [-0.1, 1.1, NaN])
-		expect(() => saveRagConfiguration({ ...configuration, minimumScore })).toThrow('between 0 and 1');
+		expect(() => saveRagConfiguration({ ...configuration, minimumScore })).toThrow(
+			'between 0 and 1'
+		);
 	validate.mockReturnValue(false);
-	expect(() => saveRagConfiguration({ ...configuration, scheduleEnabled: true })).toThrow('valid cron expression');
+	expect(() => saveRagConfiguration({ ...configuration, scheduleEnabled: true })).toThrow(
+		'valid cron expression'
+	);
 });
 
 it('clears embedding consent copied from a different model and notifies subscribers on saves', () => {
@@ -110,7 +122,12 @@ it('clears embedding consent copied from a different model and notifies subscrib
 		...getRagConfiguration(),
 		embeddingProviderId: 'openai',
 		embeddingModelId: 'text-embedding-3-large',
-		embeddingConsent: { version: 1 as const, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'old-model' },
+		embeddingConsent: {
+			version: 1 as const,
+			providerId: 'openai',
+			modelId: 'text-embedding-3-small',
+			recipient: 'old-model',
+		},
 	};
 	expect(saveRagConfiguration(configuration).embeddingConsent).toBeNull();
 	expect(changed).toHaveBeenCalledTimes(1);
