@@ -70,6 +70,8 @@ import { completeBootstrapTool } from '../tools/assistant/complete_bootstrap';
 import { updateIdentityTool } from '../tools/identity/update';
 import { updateSoulTool } from '../tools/soul/update';
 import { updateUserTool } from '../tools/user/update';
+import { requestsSkillTools } from './run_skill_request';
+import { resolveMcpServerHint } from './run_mcp_hint';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -165,7 +167,7 @@ async function* loop(
 			...(input.agentId === 'channels' ? { web: MAX_BOT_WEB_TOOL_CALLS } : {}),
 		});
 	const toolProfile = input.toolProfile ?? 'chat';
-	const mcpServerHint = input.message.match(/\b([\w-]+)\s+mcp\b/i)?.[1]?.toLocaleLowerCase();
+	let mcpServerHint: string | undefined;
 	const bootstrap =
 		!options.tools &&
 		session.category === 'main' &&
@@ -193,13 +195,16 @@ async function* loop(
 		const settings = getToolConfiguration(toolProfile, { kind: 'builtin', id: toolId });
 		return settings.permission !== 'deny';
 	};
+	const skillToolsRequested = requestsSkillTools(input.message, input.explicitSkill);
 	const skillLoadingEnabled =
 		!bootstrap &&
+		skillToolsRequested &&
 		(input.toolsAllow === undefined || input.toolsAllow.includes('load_skill')) &&
 		!input.toolsDeny?.includes('load_skill') &&
 		profileToolEnabled('load_skill');
 	const skillListingEnabled =
 		!bootstrap &&
+		skillToolsRequested &&
 		(input.toolsAllow === undefined || input.toolsAllow.includes('list_skills')) &&
 		!input.toolsDeny?.includes('list_skills') &&
 		profileToolEnabled('list_skills');
@@ -310,6 +315,10 @@ async function* loop(
 					search?.replaceEligible(filterEligibleTools(tools));
 				});
 			}
+			mcpServerHint = resolveMcpServerHint(input.message, [
+				...mcpEntries.map(({ serverId, serverName }) => ({ serverId, serverName })),
+				...uncatalogedMcp,
+			]);
 			const childTools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 			const childRuntime = {
 				type: input.type,
@@ -332,6 +341,15 @@ async function* loop(
 					subagentsTool(config, childTools, childRuntime, options.subagentLimiter)
 				);
 		}
+		if (options.tools)
+			mcpServerHint = resolveMcpServerHint(
+				input.message,
+				tools.flatMap((tool) =>
+					tool.policy?.kind === 'mcp'
+						? [{ serverId: tool.policy.serverId, serverName: tool.policy.serverId }]
+						: []
+				)
+			);
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
 		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
@@ -349,7 +367,9 @@ async function* loop(
 			]);
 			search = createToolSearch({
 				eligible: filterEligibleTools(tools),
-				required: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
+				required: mcpServerHint
+					? []
+					: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
 				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
 				mcpServerHint,

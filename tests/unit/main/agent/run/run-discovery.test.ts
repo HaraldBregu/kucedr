@@ -1,4 +1,5 @@
 import { createToolSearch } from '../../../../../src/main/agent/runner/run_discovery';
+import { resolveMcpServerHint } from '../../../../../src/main/agent/runner/run_mcp_hint';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 
 function fakeTool(
@@ -18,6 +19,14 @@ function fakeTool(
 }
 
 describe('tool search', () => {
+	it('recognizes a configured Gmail service without requiring the word MCP', () => {
+		expect(
+			resolveMcpServerHint('show my last gmail emails received', [
+				{ serverId: 'gmail', serverName: 'Gmail' },
+			])
+		).toBe('gmail');
+		expect(resolveMcpServerHint('use mcp tools', [])).toBeUndefined();
+	});
 	it('starts with required tools and searches schema metadata', async () => {
 		const read = fakeTool('read', 'Read a file');
 		const invoices = fakeTool('mcp__billing__invoices', 'Find customer records', {

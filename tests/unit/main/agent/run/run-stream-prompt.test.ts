@@ -156,7 +156,7 @@ describe('run stream system prompt', () => {
 		}
 	);
 
-	it('loads an implicit skill in minimal mode without transporting its body through tool output', async () => {
+	it('loads an explicitly requested skill in minimal mode without transporting its body through tool output', async () => {
 		createSkillRegistrySnapshotMock.mockReturnValue({ skills: [registrySkill], diagnostics: [] });
 		activateSkillMock.mockResolvedValue(activatedSkill);
 		runModelTurnMock
@@ -170,14 +170,14 @@ describe('run stream system prompt', () => {
 			})
 			.mockImplementationOnce(successfulTurn);
 		const session = createSessionState();
-		session.messages = [{ role: 'user', content: 'Draft this' }];
+		session.messages = [{ role: 'user', content: 'Use the writer skill to draft this' }];
 		for await (const event of stream(
 			{ location: '/workspace' },
 			session,
 			{
 				runId: 'implicit-minimal',
 				task: 'chat',
-				message: 'Draft this',
+				message: 'Use the writer skill to draft this',
 				model: 'test-model',
 				type: 'default',
 				agentId: 'main',
@@ -251,7 +251,7 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock).not.toHaveBeenCalled();
 	});
 
-	it('lists skills even when the registry is empty and omits the unavailable activation tool', async () => {
+	it('lists skills when explicitly requested even when the registry is empty', async () => {
 		const events = [];
 		for await (const event of stream(
 			{ location: '/workspace' },
@@ -259,7 +259,7 @@ describe('run stream system prompt', () => {
 			{
 				runId: 'empty-skills',
 				task: 'chat',
-				message: 'request',
+				message: 'list skills',
 				model: 'test-model',
 				type: 'default',
 				agentId: 'main',
@@ -273,6 +273,32 @@ describe('run stream system prompt', () => {
 		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
 		expect(events[0].tools).toContain('list_skills');
 		expect(events[0].tools).not.toContain('load_skill');
+	});
+
+	it('does not expose skill tools for an unrelated Gmail request', async () => {
+		createSkillRegistrySnapshotMock.mockReturnValue({ skills: [registrySkill], diagnostics: [] });
+		const events = [];
+		for await (const event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			{
+				runId: 'gmail-without-skills',
+				task: 'chat',
+				message: 'show my last gmail emails received',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ sandbox }
+		))
+			events.push(event);
+		expect(events[0]).toMatchObject({ type: 'run_started' });
+		if (events[0]?.type !== 'run_started') throw new Error('Expected run_started');
+		expect(events[0].tools).not.toContain('list_skills');
+		expect(events[0].tools).not.toContain('load_skill');
+		expect(createSkillRegistrySnapshotMock).not.toHaveBeenCalled();
 	});
 
 	it('can expose skill listing without exposing skill loading', async () => {
