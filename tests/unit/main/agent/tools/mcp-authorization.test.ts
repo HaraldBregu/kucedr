@@ -21,14 +21,14 @@ it('requests authorization when the configured MCP server rejects an unauthentic
 	testMcpServer.mockResolvedValue({ ok: false, error: 'HTTP 401 Unauthorized' });
 	const result = await requestMcpAuthorizationTool().run({ serverId: 'docs' });
 
-	expect(result).toEqual({ status: 'authorization_required', serverId: 'docs', serverName: 'Docs' });
+	expect(result).toEqual({ status: 'authorization_required', serverId: 'docs', serverName: 'Docs', message: expect.any(String) });
 	expect(testMcpServer).toHaveBeenCalledWith('docs');
 });
 
 it('reports an already connected server without requesting authorization', async () => {
 	testMcpServer.mockResolvedValue({ ok: true });
 	await expect(requestMcpAuthorizationTool().run({ serverId: 'docs' })).resolves.toEqual({
-		status: 'authorized', serverId: 'docs', serverName: 'Docs',
+		status: 'connected', serverId: 'docs', serverName: 'Docs',
 	});
 });
 

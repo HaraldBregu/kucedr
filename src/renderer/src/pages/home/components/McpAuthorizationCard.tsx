@@ -29,9 +29,10 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 		}).catch(() => undefined);
 		return () => { cancelled = true; };
 	}, [serverId]);
-	if ((result?.status !== 'authorization_required' && result?.status !== 'authorized') || !serverId) return null;
+	if ((result?.status !== 'authorization_required' && result?.status !== 'connected') || !serverId) return null;
 	const serverName = typeof result.serverName === 'string' ? result.serverName : result.serverId;
-	const authorized = phase === 'authorized' || result.status === 'authorized';
+	const authorized = phase === 'authorized';
+	const connected = authorized || result.status === 'connected';
 
 	const authorize = async (): Promise<void> => {
 		setError(null);
@@ -49,18 +50,18 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 		<Card className="max-w-2xl gap-3 border-border/70 py-4">
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">
-					{authorized ? `${serverName} authorized` : `Authorize ${serverName}`}
+					{authorized ? `${serverName} authorized` : connected ? `${serverName} connected` : `Authorize ${serverName}`}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-3 px-4 text-sm">
 				<p className="text-muted-foreground">
-					{authorized
+					{connected
 						? 'The MCP server is connected. You can continue in chat.'
 						: `Connect ${serverName} to use its tools in chat.`}
 				</p>
-				{authorized ? (
+				{connected ? (
 					<div role="status" className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-						<Check className="size-4" /> Authorized
+						<Check className="size-4" /> {authorized ? 'Authorized' : 'Connected'}
 					</div>
 				) : (
 					<Button type="button" variant="outline" size="sm" disabled={phase === 'connecting'} onClick={() => void authorize()}>
