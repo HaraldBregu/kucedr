@@ -71,7 +71,9 @@ const catalog = [
 				'google-maps',
 			].includes(id)
 				? 'Google'
-				: id,
+				: id.startsWith('microsoft-')
+					? 'Microsoft'
+					: id,
 			baseUrl: `https://${id}.example/mcp`,
 		},
 	})
@@ -167,6 +169,12 @@ it('renders the plugin providers with descriptions', async () => {
 	expect(screen.getByText('Pinecone Vector Database')).toBeInTheDocument();
 	expect(screen.getByText('Supabase Storage')).toBeInTheDocument();
 	expect(screen.getByText('Cloudflare R2')).toBeInTheDocument();
+	const googleSection = screen.getByRole('region', { name: 'Google' });
+	expect(within(googleSection).getByText('Use gmail.')).toBeInTheDocument();
+	expect(within(googleSection).getByText('Use google-maps.')).toBeInTheDocument();
+	const microsoftSection = screen.getByRole('region', { name: 'Microsoft' });
+	expect(within(microsoftSection).getByText('Outlook Mail')).toBeInTheDocument();
+	expect(within(microsoftSection).getByText('Microsoft 365 Search')).toBeInTheDocument();
 	expect(
 		container.querySelector('img[src="https://icons.example/google-drive.png"]')
 	).toBeInTheDocument();

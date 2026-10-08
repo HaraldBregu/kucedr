@@ -41,6 +41,25 @@ const PluginsPage = (): React.JSX.Element => {
 	const catalog = mcps();
 	const databaseCatalog = databases();
 	const storageCatalog = storages();
+	const plugins = [
+		...catalog.map((entry) => ({ kind: 'mcp' as const, entry })),
+		...databaseCatalog.map((entry) => ({ kind: 'database' as const, entry })),
+		...storageCatalog.map((entry) => ({ kind: 'storage' as const, entry })),
+	];
+	const providerSections = new Map<
+		string,
+		{ name: string; plugins: (typeof plugins)[number][] }
+	>();
+	for (const plugin of plugins) {
+		const section = providerSections.get(plugin.entry.provider.id);
+		if (section) section.plugins.push(plugin);
+		else {
+			providerSections.set(plugin.entry.provider.id, {
+				name: plugin.entry.provider.name,
+				plugins: [plugin],
+			});
+		}
+	}
 
 	useEffect(() => {
 		let cancelled = false;
@@ -135,9 +154,51 @@ const PluginsPage = (): React.JSX.Element => {
 				error={error}
 			/>
 
-			{catalog.length + databaseCatalog.length + storageCatalog.length > 0 ? (
-				<div className="-mx-4 grid grid-cols-1 gap-x-2 gap-y-3 pb-4 md:grid-cols-2">
-					{catalog.map((service) => (
+			{plugins.length > 0 ? (
+				<div className="-mx-4 space-y-6 pb-4">
+					{[...providerSections].map(([providerId, section]) => (
+						<section key={providerId} aria-labelledby={`plugin-provider-${providerId}`}>
+							<h2
+								id={`plugin-provider-${providerId}`}
+								className="mb-2 px-3 text-sm font-medium"
+							>
+								{section.name}
+							</h2>
+							<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
+								{section.plugins.map((plugin) => {
+									if (plugin.kind === 'database') {
+										const database = plugin.entry;
+										return (
+											<CapabilityRow
+												key={`${database.provider.id}-${database.id}`}
+												kind="database"
+												entry={database}
+												enabled={enabledProviders.database.includes(`${database.provider.id}/${database.id}`)}
+												saving={savingId === `${database.provider.id}/${database.id}`}
+												onOpen={() => navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)}
+												onAdd={() => void setProviderEnabled('database', `${database.provider.id}/${database.id}`, true)}
+												onRemove={() => void setProviderEnabled('database', `${database.provider.id}/${database.id}`, false)}
+											/>
+										);
+									}
+									if (plugin.kind === 'storage') {
+										const storage = plugin.entry;
+										return (
+											<CapabilityRow
+												key={`${storage.provider.id}-${storage.id}`}
+												kind="storage"
+												entry={storage}
+												enabled={enabledProviders.storage.includes(`${storage.provider.id}/${storage.id}`)}
+												saving={savingId === `${storage.provider.id}/${storage.id}`}
+												onOpen={() => navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)}
+												onAdd={() => void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, true)}
+												onRemove={() => void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, false)}
+											/>
+										);
+									}
+
+									const service = plugin.entry;
+									return (
 						<Item
 							key={`${service.provider.id}-${service.id}`}
 							role="link"
@@ -215,42 +276,10 @@ const PluginsPage = (): React.JSX.Element => {
 								)}
 							</ItemActions>
 						</Item>
-					))}
-					{databaseCatalog.map((database) => (
-						<CapabilityRow
-							key={`${database.provider.id}-${database.id}`}
-							kind="database"
-							entry={database}
-							enabled={enabledProviders.database.includes(`${database.provider.id}/${database.id}`)}
-							saving={savingId === `${database.provider.id}/${database.id}`}
-							onOpen={() =>
-								navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)
-							}
-							onAdd={() =>
-								void setProviderEnabled('database', `${database.provider.id}/${database.id}`, true)
-							}
-							onRemove={() =>
-								void setProviderEnabled('database', `${database.provider.id}/${database.id}`, false)
-							}
-						/>
-					))}
-					{storageCatalog.map((storage) => (
-						<CapabilityRow
-							key={`${storage.provider.id}-${storage.id}`}
-							kind="storage"
-							entry={storage}
-							enabled={enabledProviders.storage.includes(`${storage.provider.id}/${storage.id}`)}
-							saving={savingId === `${storage.provider.id}/${storage.id}`}
-							onOpen={() =>
-								navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)
-							}
-							onAdd={() =>
-								void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, true)
-							}
-							onRemove={() =>
-								void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, false)
-							}
-						/>
+									);
+								})}
+							</div>
+						</section>
 					))}
 				</div>
 			) : (
