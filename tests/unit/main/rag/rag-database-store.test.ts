@@ -74,3 +74,9 @@ it('preserves consent when saving the same database selection', () => {
 	saveDatabaseConfiguration({ providerId: 'pinecone', databaseId: 'pinecone' });
 	expect(saveRagConfiguration).toHaveBeenCalledWith(expect.objectContaining({ mirrorConsent }));
 });
+
+it('reads and saves explicit local SQLite selection without a remote adapter', () => {
+	getRagConfiguration.mockReturnValue({ ...ragConfiguration, databaseProviderId: 'local', databaseId: 'sqlite' });
+	expect(getDatabaseConfiguration()).toEqual({ providerId: 'local', databaseId: 'sqlite' });
+	expect(saveDatabaseConfiguration({ providerId: 'local', databaseId: 'sqlite' })).toEqual({ providerId: 'local', databaseId: 'sqlite' });
+});

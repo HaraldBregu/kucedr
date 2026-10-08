@@ -149,7 +149,7 @@ it.each(['', '   ', 'sk-abcdefghijklmnopqrstuvwxyz123456'])('rejects unsafe or e
 	expect(embed).not.toHaveBeenCalled();
 });
 
-it.each([[[0, 0]], [[NaN, 1]], [], [[1, 2, 3]]])('rejects malformed query vectors %j', async (vectorsResponse) => {
+it.each([{ vectorsResponse: [[0, 0]] }, { vectorsResponse: [[NaN, 1]] }, { vectorsResponse: [] }, { vectorsResponse: [[1, 2, 3]] }])('rejects malformed query vectors $vectorsResponse', async ({ vectorsResponse }) => {
 	embed.mockResolvedValue({ providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 2, embeddings: vectorsResponse });
 	await expect(searchRag('query', 'knowledge-base', 5, { embeddings, vectors })).rejects.toThrow(/embedding/i);
 	expect(search).not.toHaveBeenCalled();

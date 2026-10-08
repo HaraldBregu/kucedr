@@ -18,6 +18,7 @@ import { getRagConfiguration } from '../agent/knowledge/rag/rag_store';
 import { ragVectorStore } from '../agent/knowledge/rag/vector';
 import { DataArchive } from './data_archive';
 import { purgeRemoteRagNamespaces } from './data_purge_remote';
+import { isLocalRagDatabase } from '../../shared/rag_database';
 
 interface AgentDataPort {
 	memory?: Pick<MemoryService, 'clear'>;
@@ -52,14 +53,14 @@ export class DataController {
 					indexName: index.indexName,
 					generation: index.generation,
 				});
-				scopes.push({
+				if (!isLocalRagDatabase(rag)) scopes.push({
 					kind: 'rag',
 					mode: 'remote_namespace',
 					indexName: index.indexName,
 					generation: index.generation,
 				});
 			}
-			scopes.push({
+			if (!isLocalRagDatabase(rag)) scopes.push({
 				kind: 'rag',
 				mode: 'remote_all_namespaces',
 				indexName: rag.indexName,
