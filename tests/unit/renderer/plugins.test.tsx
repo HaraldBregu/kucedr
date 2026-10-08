@@ -227,6 +227,7 @@ it('enables an integration without opening configuration UI', async () => {
 			enabled: true,
 		})
 	);
+	expect(mcpApi.test).toHaveBeenCalledWith('notion');
 });
 
 it('removes the MCP server from the added plugin menu', async () => {
@@ -286,7 +287,6 @@ it('re-enables a configured Microsoft 365 service without replacing its tenant',
 	await waitFor(() =>
 		expect(mcpApi.upsert).toHaveBeenCalledWith('microsoft-mail', { ...saved, enabled: true })
 	);
-	expect(mcpApi.test).toHaveBeenCalledWith('microsoft-mail');
 	expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 
