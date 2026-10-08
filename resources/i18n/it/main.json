@@ -1603,7 +1603,7 @@
 			"noResults": "Nessuna app trovata",
 			"noResultsDescription": "Prova un nome o una descrizione diversa.",
 			"information": "Informazioni sull'app",
-			"description": "App esterne che si aprono in una finestra dedicata e possono usare le API dell'app.",
+			"description": "Gestisci e apri le app installate.",
 			"openFolder": "Apri Cartella",
 			"openFolderError": "Impossibile aprire la cartella delle app.",
 			"deleteAction": "Elimina {{name}}",

@@ -1603,7 +1603,7 @@
 			"noResults": "No apps found",
 			"noResultsDescription": "Try a different name or description.",
 			"information": "App information",
-			"description": "External apps that open in their own window and can call the app API.",
+			"description": "Manage and open your installed apps.",
 			"openFolder": "Open Folder",
 			"openFolderError": "Unable to open the apps folder.",
 			"deleteAction": "Delete {{name}}",

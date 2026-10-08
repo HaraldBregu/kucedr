@@ -135,18 +135,22 @@ test('production Apps search and Bot navigation work in Electron', async ({
 			.poll(() =>
 				app.evaluate(({ BrowserWindow }) =>
 					BrowserWindow.getAllWindows().map((window) => ({
-						title: window.getTitle(),
 						visible: window.isVisible(),
 						url: window.webContents.getURL(),
 					}))
 				)
 			)
 			.toEqual(
-				expect.arrayContaining([expect.objectContaining({ title: 'Orbit Notes', visible: true })])
+				expect.arrayContaining([
+					expect.objectContaining({
+						url: expect.stringContaining('app.html#app/Orbit%20Notes'),
+						visible: true,
+					}),
+				])
 			);
 		await app.evaluate(({ BrowserWindow }) => {
 			BrowserWindow.getAllWindows()
-				.find((window) => window.getTitle() === 'Orbit Notes')
+				.find((window) => window.webContents.getURL().endsWith('#app/Orbit%20Notes'))
 				?.close();
 		});
 		await timer.click();
@@ -159,7 +163,8 @@ test('production Apps search and Bot navigation work in Electron', async ({
 			.poll(() =>
 				app.evaluate(({ BrowserWindow }) =>
 					BrowserWindow.getAllWindows().some(
-						(window) => window.getTitle() === 'Focus Timer' && window.isVisible()
+						(window) =>
+							window.webContents.getURL().endsWith('#app/Focus%20Timer') && window.isVisible()
 					)
 				)
 			)
