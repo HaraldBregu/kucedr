@@ -23,7 +23,7 @@ export function LandingStep({ loading, onStart }: LandingStepProps): React.JSX.E
 			</div>
 			<div className="landing-content grid w-full grid-rows-[1fr]">
 				<div className="flex min-h-0 flex-col items-center">
-					<h1 className="mt-5 max-w-xs text-balance text-xl font-medium leading-snug tracking-tight text-foreground">
+					<h1 className="mt-5 max-w-xs text-balance text-2xl font-medium leading-snug tracking-tight text-foreground">
 						One personal assistant.
 						<br />
 						Unlimited tools.
