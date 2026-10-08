@@ -100,7 +100,7 @@ jest.mock('react-i18next', () => {
 		'settings.knowledge.search': 'Search',
 		'settings.knowledge.searching': 'Searching',
 		'settings.knowledge.minimumScore': 'Minimum similarity',
-		'settings.knowledge.modelChanged': 'Rebuild required',
+		'settings.knowledge.modelChanged': 'The embedding model changed.',
 		'settings.knowledge.configurationChanged': 'The embedding service or source folders changed.',
 		'settings.modelServices.modelPlaceholder': 'Select model',
 		'settings.dataControls.title': 'Data management',
@@ -569,4 +569,46 @@ it('provides a retry when loading Knowledge settings fails', async () => {
 	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to load');
 	fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
 	expect(await screen.findByRole('combobox', { name: 'Embedding model' })).toBeInTheDocument();
+});
+
+it('blocks test search and marks the index stale when source folders or the embedding endpoint changed', async () => {
+	configuration.enabled = true;
+	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' };
+	status.outcome = 'completed';
+	status.requiresIndexing = true;
+	status.index = { indexName: 'kucedr', providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 1536, completedAt: '2026-10-08T12:00:00Z' };
+	render(<KnowledgePage />);
+	const query = await screen.findByLabelText('Test query');
+	fireEvent.change(query, { target: { value: 'a question' } });
+	expect(screen.getByText('Rebuild required')).toBeInTheDocument();
+	expect(screen.getByText('The embedding service or source folders changed.')).toBeInTheDocument();
+	expect(screen.queryByText('Index up to date')).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Search' })).toBeDisabled();
+});
+
+it('refreshes status for an indexing run started while the page is open', async () => {
+	jest.useFakeTimers();
+	try {
+		render(<KnowledgePage />);
+		await screen.findByText('Not indexed');
+		status = { ...status, running: true, outcome: 'running', trigger: 'scheduled' };
+		await act(async () => { jest.advanceTimersByTime(2_000); });
+		expect(screen.getByText('Indexing in progress')).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Cancel' })).toBeEnabled();
+		expect(screen.getByRole('combobox', { name: 'Vector database' })).toBeDisabled();
+	} finally {
+		jest.useRealTimers();
+	}
+});
+
+it('does not fall back to local SQLite when the saved remote database is unavailable', async () => {
+	configuration.databaseProviderId = 'removed-remote';
+	configuration.databaseId = 'old-database';
+	configuration.enabled = true;
+	configuration.folders = ['/Users/example/docs'];
+	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' };
+	render(<KnowledgePage />);
+	expect(await screen.findByRole('combobox', { name: 'Vector database' })).toHaveTextContent('Select database');
+	expect(screen.getByRole('button', { name: 'Generate index' })).toBeDisabled();
+	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
 });
