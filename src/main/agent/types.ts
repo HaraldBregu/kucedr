@@ -2,6 +2,7 @@ import type { z } from 'zod';
 import type { LlmEvent } from '../models/adapters/llm';
 import type { SkillDiagnostic, SkillTrust } from '../../shared/skills_types';
 import type { AgentToolReference, AgentToolProfileId } from '../../shared/agent_tools';
+import type { ToolCategory } from './tools/category';
 
 export interface Config {
 	location: string;
@@ -35,6 +36,7 @@ export interface JSONSchema {
 
 export interface Tool {
 	readonly id: string;
+	readonly category: ToolCategory;
 	readonly name: string;
 	readonly description: string;
 	readonly schema: JSONSchema;
@@ -55,6 +57,7 @@ export interface Tool {
 
 export type ToolConfig<T extends z.ZodType> = {
 	id: string;
+	category: ToolCategory;
 	name: string;
 	description: string;
 	inputExamples?: readonly unknown[];
@@ -70,6 +73,7 @@ export type ToolConfig<T extends z.ZodType> = {
 
 export type JsonToolConfig = {
 	id: string;
+	category: ToolCategory;
 	name: string;
 	description: string;
 	inputExamples?: readonly unknown[];

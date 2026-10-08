@@ -1,5 +1,5 @@
 import type { Tool } from '../types';
-import { runtimeToolCategory } from './category';
+import { toolCategoryRegistry, type ToolCategory } from '../tools/category';
 import { requiresExplicitRequest } from './explicit';
 
 export function buildRuntimeTools(
@@ -17,14 +17,14 @@ export function buildRuntimeTools(
 		['Available through `tool_search`', discoverable],
 	] as const) {
 		if (tools.length === 0) continue;
-		const categories = new Map<string, Tool[]>();
+		const categories = new Map<ToolCategory, Tool[]>();
 		for (const tool of tools) {
-			const category = runtimeToolCategory(tool);
-			categories.set(category, [...(categories.get(category) ?? []), tool]);
+			categories.set(tool.category, [...(categories.get(tool.category) ?? []), tool]);
 		}
-		const groups = [...categories.entries()].map(
-			([category, categoryTools]) =>
-				`#### ${category}\n${categoryTools
+		const groups = Object.entries(toolCategoryRegistry).flatMap(([category, metadata]) => {
+			const categoryTools = categories.get(category as ToolCategory);
+			return categoryTools
+				? [`#### ${metadata.label}\n${categoryTools
 					.map((tool) => {
 						const description = tool.description?.trim() || 'No description provided by this tool.';
 						const restriction = requiresExplicitRequest(tool)
@@ -32,8 +32,9 @@ export function buildRuntimeTools(
 							: '';
 						return `- \`${tool.id}\` — ${description}${restriction}`;
 					})
-					.join('\n')}`
-		);
+					.join('\n')}`]
+				: [];
+		});
 		sections.push(`### ${title}\n\n${groups.join('\n\n')}`);
 	}
 

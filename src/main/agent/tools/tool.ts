@@ -10,6 +10,7 @@ function toJsonSchema(schema: z.ZodType): JSONSchema {
 
 export function tool<T extends z.ZodType>({
 	id,
+	category,
 	name,
 	description,
 	inputExamples,
@@ -27,6 +28,7 @@ export function tool<T extends z.ZodType>({
 	);
 	return {
 		id,
+		category,
 		name,
 		description,
 		inputExamples: validatedExamples,
@@ -51,6 +53,7 @@ export function tool<T extends z.ZodType>({
 
 export function jsonTool({
 	id,
+	category,
 	name,
 	description,
 	inputExamples,
@@ -73,6 +76,7 @@ export function jsonTool({
 	};
 	return {
 		id,
+		category,
 		name,
 		description,
 		inputExamples: inputExamples?.map(validate),

@@ -1,19 +1,23 @@
 import { buildRuntimeTools } from '../../../../../src/main/agent/system/system_build_runtime_tools';
 import type { Tool } from '../../../../../src/main/agent/types';
 
-const candidate = (id: string, description: string, policy?: Tool['policy']): Tool =>
-	({ id, name: id, description, policy }) as Tool;
+const candidate = (
+	id: string,
+	category: Tool['category'],
+	description: string,
+	policy?: Tool['policy']
+): Tool => ({ id, category, name: id, description, policy }) as Tool;
 
 it('groups runtime tools by availability and category with descriptions and usage boundaries', () => {
-	const read = candidate('read', 'Read a file.');
-	const subagent = candidate('subagent', 'Delegate one independent task.');
-	const camera = candidate('camera_recorder', 'Record camera video.');
-	const image = candidate('create_image', 'Generate images.');
-	const web = candidate('search_web', 'Search the web.');
-	const listSkills = candidate('list_skills', 'List skills.');
-	const loadSkill = candidate('load_skill', 'Load a skill.');
-	const search = candidate('tool_search', 'Find relevant tools.');
-	const gmail = candidate('mcp__gmail__search_threads', 'Search Gmail threads.', {
+	const read = candidate('read', 'workspace', 'Read a file.');
+	const subagent = candidate('subagent', 'delegation', 'Delegate one independent task.');
+	const camera = candidate('camera_recorder', 'system', 'Record camera video.');
+	const image = candidate('create_image', 'media', 'Generate images.');
+	const web = candidate('search_web', 'web', 'Search the web.');
+	const listSkills = candidate('list_skills', 'skill', 'List skills.');
+	const loadSkill = candidate('load_skill', 'skill', 'Load a skill.');
+	const search = candidate('tool_search', 'discovery', 'Find relevant tools.');
+	const gmail = candidate('mcp__gmail__search_threads', 'integration', 'Search Gmail threads.', {
 		kind: 'mcp',
 		serverId: 'gmail',
 		toolName: 'search_threads',
@@ -25,7 +29,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 	);
 
 	expect(context).toContain('### Loaded tools');
-	expect(context).toContain('#### Core\n- `read` — Read a file.');
+	expect(context).toContain('#### Workspace\n- `read` — Read a file.');
 	expect(context).toContain('#### Delegation\n- `subagent` — Delegate one independent task.');
 	expect(context).toContain('#### Discovery\n- `tool_search` — Find relevant tools.');
 	expect(context).toContain('### Available through `tool_search`');
