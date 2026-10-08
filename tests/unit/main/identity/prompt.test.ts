@@ -49,13 +49,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			{ id: 'update_identity', category: 'bootstrap' },
 			{ id: 'tool_search', category: 'core' },
 		] as never);
-		expect(complete).toContain('### Loaded tools');
-		expect(complete).toContain(
-			'#### Core\nFind available tools, read and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.\n- `tool_search` — No description provided by this tool.'
-		);
-		expect(complete).toContain(
-			'#### Bootstrap\nRead and update the assistant identity, personality, user profile, and health context during initial setup.\n- `update_identity` — No description provided by this tool.'
-		);
+		expect(complete).not.toContain('## Tools available in this runtime');
 		expect(complete).toContain('### BOOTSTRAP.md');
 		expect(complete).toContain('### MEMORY\nUse memory as durable background context');
 		expect(complete).not.toContain('### MEMORY.md');
@@ -78,9 +72,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			{ id: 'complete_bootstrap', category: 'bootstrap' },
 		] as never);
 		expect(voice).toContain('### SOUL');
-		expect(voice).toContain(
-			'#### Bootstrap\nRead and update the assistant identity, personality, user profile, and health context during initial setup.\n- `complete_bootstrap` — No description provided by this tool.'
-		);
+		expect(voice).not.toContain('## Tools available in this runtime');
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Calm and direct');
@@ -90,7 +82,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		expect(core).not.toContain('### USER');
 		expect(core).not.toContain('Private memory');
 		const other = await buildWorkspaceContext(config, 'core');
-		expect(other).toContain('No tools are available for this model turn.');
+		expect(other).not.toContain('## Tools available in this runtime');
 		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		await updateIdentity({ name: 'Nova', role: 'Planner' });
 		const renamed = await buildWorkspaceContext(config, 'full');

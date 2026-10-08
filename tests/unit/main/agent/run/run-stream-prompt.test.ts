@@ -386,7 +386,7 @@ describe('run stream system prompt', () => {
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});
 
-	it('composes runtime context with the tools available to the model turn', async () => {
+	it('composes runtime context without duplicating the model tool schemas', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-prompt-'));
 		try {
 			const memory = `# Memory\n${Array.from({ length: 500 }, (_, index) => `- Memory ${index}`).join('\n')}\n`;
@@ -449,12 +449,10 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).toContain('### MEMORY\nUse memory as durable background context');
 			expect(systemPrompt).not.toContain('### MEMORY.md');
 			expect(systemPrompt).not.toContain('# Memory\n');
-			expect(systemPrompt).toContain(
-				'#### System\nAsk the user for required input and work with local device capabilities such as the microphone, camera, and screen.\n- `alpha` — Alpha tool'
-			);
-			expect(systemPrompt).toContain(
-				'#### Integrations\nUse tools supplied by connected apps and external services, including authorized MCP servers.\n- `mcp__demo__beta` — Beta tool'
-			);
+			expect(systemPrompt).not.toContain('## Tools available in this runtime');
+			expect(
+				(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+			).toEqual(['alpha', 'mcp__demo__beta']);
 			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({
 				code: 'ENOENT',
 			});
@@ -1386,10 +1384,7 @@ describe('run stream system prompt', () => {
 			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(['list_tasks', 'update_task']);
 		const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
-		expect(systemPrompt).toContain('#### Tasks');
-		expect(systemPrompt).not.toContain('Available through `tool_search`');
-		expect(systemPrompt).not.toContain('- `read`');
-		expect(systemPrompt).not.toContain('- `complete_bootstrap`');
+		expect(systemPrompt).not.toContain('## Tools available in this runtime');
 	});
 
 	it('activates a searched native tool for the next turn', async () => {
@@ -1446,13 +1441,12 @@ describe('run stream system prompt', () => {
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(['tool_search', 'bash']);
-		expect(runModelTurnMock.mock.calls[0][3]).toContain(
-			'### Available through `tool_search`\n\n#### Core\nFind available tools, read and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `bash` —'
+		expect(runModelTurnMock.mock.calls[0][3]).not.toContain(
+			'## Tools available in this runtime'
 		);
-		expect(runModelTurnMock.mock.calls[1][3]).toContain(
-			'#### Core\nFind available tools, read and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `tool_search` —'
+		expect(runModelTurnMock.mock.calls[1][3]).not.toContain(
+			'## Tools available in this runtime'
 		);
-		expect(runModelTurnMock.mock.calls[1][3]).toContain('- `bash` —');
 		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain(
 			'"selectedToolIds":["bash"]'
 		);
