@@ -23,13 +23,17 @@ export default function useKnowledge() {
 	const [cancelling, setCancelling] = useState(false);
 	const [searching, setSearching] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+	const [statusError, setStatusError] = useState<string | null>(null);
 	const [query, setQuery] = useState('');
 	const [matches, setMatches] = useState<RagMatch[] | null>(null);
 	const mounted = useRef(true);
+	const savingRef = useRef(false);
+	const revision = useRef(0);
 	const embeddingModels = useMemo(() => modelsFor('embedding'), []);
 	const load = useCallback(async (): Promise<void> => {
 		setLoading(true);
 		setError(null);
+		setStatusError(null);
 		try {
 			const [nextConfiguration, nextDatabases, nextStatus] = await Promise.all([
 				window.agent.ragGetConfiguration(),
@@ -57,18 +61,32 @@ export default function useKnowledge() {
 		if (!configuration) return;
 		let cancelled = false;
 		const timer = window.setInterval(() => {
-			void window.agent.ragGetStatus().then(
-				(next) => {
-					if (!cancelled) setStatus(next);
+			if (savingRef.current) return;
+			const currentRevision = revision.current;
+			void Promise.all([
+				window.agent.ragGetConfiguration(),
+				window.agent.ragGetStatus(),
+			]).then(
+				([nextConfiguration, nextStatus]) => {
+					if (cancelled || currentRevision !== revision.current) return;
+					setStatus(nextStatus);
+					setStatusError(null);
+					if (JSON.stringify(nextConfiguration) !== JSON.stringify(configuration)) {
+						setConfiguration(nextConfiguration);
+						setMatches(null);
+					}
 				},
-				() => {}
+				(failure) => {
+					if (!cancelled && currentRevision === revision.current)
+						setStatusError(getErrorMessage(failure, t('settings.knowledge.loadError')));
+				}
 			);
 		}, 2_000);
 		return () => {
 			cancelled = true;
 			window.clearInterval(timer);
 		};
-	}, [configuration]);
+	}, [configuration, t]);
 	const running = indexing || status?.running === true;
 	const disabled = loading || saving || running || searching;
 	const selectedEmbeddingModel = embeddingModels.find(
@@ -123,7 +141,9 @@ export default function useKnowledge() {
 		embeddingConsentMatches &&
 		Boolean(selectedEmbeddingModel && currentIndex && indexModelMatches && query.trim());
 	const save = async (patch: Partial<RagConfiguration>): Promise<void> => {
-		if (!configuration || disabled) return;
+		if (!configuration || disabled || savingRef.current) return;
+		savingRef.current = true;
+		revision.current += 1;
 		setSaving(true);
 		setError(null);
 		try {
@@ -131,11 +151,22 @@ export default function useKnowledge() {
 			if (!mounted.current) return;
 			setConfiguration(next);
 			setMatches(null);
-			const nextStatus = await window.agent.ragGetStatus();
-			if (mounted.current) setStatus(nextStatus);
+			await window.agent.ragGetStatus().then(
+				(nextStatus) => {
+					if (mounted.current) {
+						setStatus(nextStatus);
+						setStatusError(null);
+					}
+				},
+				(failure) => {
+					if (mounted.current)
+						setStatusError(getErrorMessage(failure, t('settings.knowledge.loadError')));
+				}
+			);
 		} catch (failure) {
 			if (mounted.current) setError(getErrorMessage(failure, t('settings.knowledge.saveError')));
 		} finally {
+			savingRef.current = false;
 			if (mounted.current) setSaving(false);
 		}
 	};
@@ -168,7 +199,7 @@ export default function useKnowledge() {
 					},
 					(failure) => {
 						if (mounted.current)
-							setError(getErrorMessage(failure, t('settings.knowledge.loadError')));
+							setStatusError(getErrorMessage(failure, t('settings.knowledge.loadError')));
 					}
 				);
 			}
@@ -204,7 +235,7 @@ export default function useKnowledge() {
 		databases,
 		status,
 		loading,
-		error,
+		error: error ?? statusError,
 		disabled,
 		running,
 		cancelling,
