@@ -146,8 +146,8 @@ export function WorkspaceSidebar({ embedded = false, onFileSelect, onFilesLoaded
 
 	return (
 		<div data-slot="workspace-sidebar" className="flex h-full min-h-0 flex-col">
-			{embedded && <header className="flex min-h-9 shrink-0 items-center border-b border-sidebar-border/50 px-4 py-1">
-				<h2 className="text-sm font-semibold">{t('settings.workspace.title', 'Workspace')}</h2>
+			{embedded && <header className="flex min-h-9 shrink-0 items-center border-b bg-background/95 px-4 py-1 backdrop-blur">
+				<h2 className="flex min-h-7 items-center text-sm font-semibold">{t('settings.workspace.title', 'Workspace')}</h2>
 			</header>}
 			{!embedded && <header className="shrink-0 border-b border-sidebar-border/50 p-2">
 				<Link to="/home" className={SPLIT_ITEM_CLASS}>
