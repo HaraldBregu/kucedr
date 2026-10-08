@@ -14,6 +14,8 @@ describe('addBasePrompt', () => {
 		const prompt = addBasePrompt('');
 		expect(prompt).toContain('You are a personal AI assistant.');
 		expect(prompt).toContain('## Core instructions');
+		expect(prompt).toContain('explicitly names a tool, service, access method, or action');
+		expect(prompt).toContain('Do not ask for permission again in chat');
 		expect(prompt).toContain('## Current UTC date and time');
 		expect(prompt).toContain('## Voice');
 		expect(prompt).toContain('## Workspace contract');

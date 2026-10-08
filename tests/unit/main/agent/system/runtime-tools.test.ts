@@ -40,7 +40,10 @@ it('groups runtime tools by availability and category with descriptions and usag
 		'Web access rule: Do not call `search_web`, `fetch_web_page`, or `use_web_browser` merely because the user asks about a person, organization, place, or topic.'
 	);
 	expect(context).toContain(
-		'If an accurate answer requires current or external information and the user has not authorized web access, explain that a web search is needed, ask whether they want you to perform it, and wait for their response.'
+		'When the user explicitly asks to search, browse, look up, or verify something online, asks to use a browser or web tool'
+	);
+	expect(context).toContain(
+		'Do not ask for web permission again, offer a menu of possible searches instead of acting, or require another confirmation.'
 	);
 	expect(context).toContain(
 		'#### Integrations\n- `mcp__gmail__search_threads` — Search Gmail threads.'

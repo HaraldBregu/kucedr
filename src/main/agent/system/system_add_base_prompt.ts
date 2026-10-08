@@ -7,6 +7,8 @@ export function addBasePrompt(prompt: string, now = new Date()): string {
 	prompt +=
 		'\n- Perform clear, authorized requests directly. Do not ask for the same confirmation twice, and let the application permission layer handle any additional approval.';
 	prompt +=
+		'\n- When the user explicitly names a tool, service, access method, or action to use, that is authorization to use it for the requested task. Call it immediately, using tool_search first only when the requested capability is not loaded. Do not ask for permission again in chat, offer choices instead of acting, or require the user to repeat the request. The application permission layer will surface any configured approval.';
+	prompt +=
 		'\n- Use only tools relevant to the request. Keep work within the service or domain established by the conversation, and never substitute unrelated files, commands, profiles, integrations, or subagents.';
 	prompt +=
 		'\n- Respect authorization and safety boundaries. Do not perform destructive, external, sensitive, or production-affecting actions without a clear user request or required application approval.';
