@@ -9,13 +9,12 @@ const walkFiles = jest.fn();
 const putObject = jest.fn();
 const listObjects = jest.fn();
 const getObject = jest.fn();
-const uploadBackupFile = jest.fn();
-const preserveRestoreTarget = jest.fn();
+const uploadFile = jest.fn();
 
 jest.mock('node:fs', () => ({
 	existsSync: () => false,
 	realpathSync: (value: string) => value,
-	promises: { readFile, mkdir, lstat, writeFile, rename, rm },
+	promises: { readFile, mkdir, lstat, writeFile, rename, rm, stat: jest.fn().mockResolvedValue({ size: 5 }) },
 }));
 jest.mock('node:crypto', () => ({ randomUUID: () => 'restore' }));
 jest.mock('../../../../src/main/storage/storage_store', () => ({ getStorageSettings }));
@@ -23,10 +22,9 @@ jest.mock('../../../../src/main/storage/storage_walk', () => ({ walkFiles }));
 jest.mock('../../../../src/main/storage/storage_put', () => ({ putObject }));
 jest.mock('../../../../src/main/storage/storage_list', () => ({ listObjects }));
 jest.mock('../../../../src/main/storage/storage_get', () => ({ getObject }));
-jest.mock('../../../../src/main/storage/upload', () => ({ uploadBackupFile }));
-jest.mock('../../../../src/main/storage/recovery', () => ({ preserveRestoreTarget }));
+jest.mock('../../../../src/main/storage/upload', () => ({ uploadFile }));
 jest.mock('../../../../src/main/storage/storage_prefix', () => ({
-	storagePrefix: () => 'kucedr/v1/agent/',
+	storagePrefix: () => 'agent/',
 }));
 
 import { pullFiles } from '../../../../src/main/storage/storage_pull';
@@ -50,7 +48,7 @@ beforeEach(() => {
 	rm.mockResolvedValue(undefined);
 	putObject.mockResolvedValue(undefined);
 	getObject.mockResolvedValue(Buffer.from('cloud'));
-	uploadBackupFile.mockResolvedValue({ path: '', key: 'file', size: 5, sha256: 'a'.repeat(64) });
+	uploadFile.mockResolvedValue({ path: '', key: 'file', size: 5, sha256: 'a'.repeat(64) });
 });
 
 it('rejects a symbolic link selected as a backup root', async () => {
@@ -72,16 +70,16 @@ it('backs up selected files within the Kucedr-owned prefix', async () => {
 		uploaded: ['/data/agent/notes/today.md'],
 		failed: [],
 	});
-	expect(uploadBackupFile).toHaveBeenCalledWith(
+	expect(uploadFile).toHaveBeenCalledWith(
 		auth,
 		'/data/agent/notes/today.md',
-		expect.stringMatching(/^kucedr\/v2\/agent\/files\/.+\/notes\/today.md$/)
+		'agent/notes/today.md'
 	);
 });
 
-it('does not publish a snapshot when a selected file cannot be uploaded', async () => {
+it('reports a failed upload without claiming a transfer succeeded', async () => {
 	walkFiles.mockResolvedValue(['/data/agent/archive.bin']);
-	uploadBackupFile.mockRejectedValueOnce(new Error('Upload failed'));
+	uploadFile.mockRejectedValueOnce(new Error('Upload failed'));
 	const auth = { put: jest.fn() };
 
 	await expect(pushFiles(auth as never)).resolves.toMatchObject({
@@ -93,12 +91,12 @@ it('does not publish a snapshot when a selected file cannot be uploaded', async 
 
 it('restores cloud files without deleting unmatched local files', async () => {
 	listObjects.mockResolvedValue([
-		{ key: 'kucedr/v1/agent/notes/today.md', size: 5, lastModified: undefined },
+		{ key: 'agent/notes/today.md', size: 5, lastModified: undefined },
 	]);
 
-	const auth = {} as never;
+	const auth = { list: listObjects, get: getObject } as never;
 	await expect(pullFiles(auth)).resolves.toEqual({
-		downloaded: ['kucedr/v1/agent/notes/today.md'],
+		downloaded: ['agent/notes/today.md'],
 		skipped: [],
 		failed: [],
 	});
@@ -111,22 +109,22 @@ it('restores cloud files without deleting unmatched local files', async () => {
 		'/data/agent/notes/today.md.kucedr-restore.tmp',
 		'/data/agent/notes/today.md'
 	);
-	expect(getObject).toHaveBeenCalledWith(auth, 'kucedr/v1/agent/notes/today.md');
-	expect(rm).not.toHaveBeenCalled();
+	expect(getObject).toHaveBeenCalledWith('agent/notes/today.md');
+	expect(rm).toHaveBeenCalledWith('/data/agent/notes/today.md.kucedr-restore.tmp', { force: true });
 });
 
 it('rejects a restore target that is a symbolic link', async () => {
 	listObjects.mockResolvedValue([
-		{ key: 'kucedr/v1/agent/notes/today.md', size: 5, lastModified: undefined },
+		{ key: 'agent/notes/today.md', size: 5, lastModified: undefined },
 	]);
 	lstat.mockImplementation(async (value: string) => ({
 		isDirectory: () => true,
 		isSymbolicLink: () => value.endsWith('today.md'),
 	}));
 
-	await expect(pullFiles({} as never)).resolves.toMatchObject({
+	await expect(pullFiles({ list: listObjects, get: getObject } as never)).resolves.toMatchObject({
 		downloaded: [],
-		failed: [{ path: 'kucedr/v1/agent/notes/today.md' }],
+		failed: [{ path: 'agent/notes/today.md' }],
 	});
 	expect(getObject).not.toHaveBeenCalled();
 	expect(writeFile).not.toHaveBeenCalled();
@@ -135,15 +133,15 @@ it('rejects a restore target that is a symbolic link', async () => {
 it('rejects oversized remote files before downloading them', async () => {
 	listObjects.mockResolvedValue([
 		{
-			key: 'kucedr/v1/agent/archive.bin',
+			key: 'agent/archive.bin',
 			size: STORAGE_MAX_OBJECT_BYTES + 1,
 			lastModified: undefined,
 		},
 	]);
 
-	await expect(pullFiles({} as never)).resolves.toMatchObject({
+	await expect(pullFiles({ list: listObjects, get: getObject } as never)).resolves.toMatchObject({
 		downloaded: [],
-		failed: [{ path: 'kucedr/v1/agent/archive.bin', error: expect.stringContaining('50 MiB') }],
+		failed: [{ path: 'agent/archive.bin', error: expect.stringContaining('streamed') }],
 	});
 	expect(getObject).not.toHaveBeenCalled();
 	expect(writeFile).not.toHaveBeenCalled();
