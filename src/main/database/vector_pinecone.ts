@@ -1,4 +1,5 @@
 import { Pinecone } from '@pinecone-database/pinecone';
+import { vectorFetch } from './fetch';
 import type { VectorDatabaseAdapter, VectorDatabaseUpload } from './vector_types';
 
 const PINECONE_CLOUD = 'aws';
@@ -31,13 +32,14 @@ async function uploadPinecone(input: VectorDatabaseUpload): Promise<void> {
 	const { apiKey, indexName, generation, dimensions, records, signal, assertCurrent } = input;
 	signal?.throwIfAborted();
 	assertCurrent();
-	const client = new Pinecone({ apiKey });
+	const client = new Pinecone({ apiKey, fetchApi: vectorFetch(signal) });
 	await client.createIndex({
 		name: indexName,
 		dimension: dimensions,
 		metric: 'cosine',
 		spec: { serverless: { cloud: PINECONE_CLOUD, region: PINECONE_REGION } },
 		waitUntilReady: true,
+		timeout: 10 * 60_000,
 		suppressConflicts: true,
 	});
 	signal?.throwIfAborted();
@@ -80,7 +82,9 @@ async function discardPinecone(
 	if (!KUCEDR_GENERATION.test(generation)) throw new Error('Invalid staging namespace.');
 	signal?.throwIfAborted();
 	try {
-		await new Pinecone({ apiKey }).index(indexName).deleteNamespace(generation);
+		await new Pinecone({ apiKey, fetchApi: vectorFetch(signal) })
+			.index(indexName)
+			.deleteNamespace(generation);
 	} catch (error) {
 		if ((error as { name?: string }).name !== 'PineconeNotFoundError') throw error;
 	}

@@ -14,6 +14,7 @@ const record = { id: 'chunk', path: 'notes/guide.md', text: 'Document plaintext'
 
 beforeEach(() => {
 	jest.resetAllMocks();
+	global.fetch = jest.fn();
 	namespace.mockReturnValue({ upsert });
 	describeIndex.mockResolvedValue({
 		dimension: 2,
@@ -125,4 +126,62 @@ it('deletes only Kucedr-owned namespaces and never the remote index', async () =
 	expect(mockPinecone.mock.results.at(-1)?.value.index('knowledge-base')).not.toHaveProperty(
 		'deleteIndex'
 	);
+});
+
+it.each(['createIndex', 'describeIndex', 'upsert'] as const)(
+	'cancels an in-flight %s HTTP request',
+	async (operation) => {
+		const controller = new AbortController();
+		const reason = new Error('Cancelled indexing');
+		let requestStarted!: () => void;
+		const started = new Promise<void>((resolve) => {
+			requestStarted = resolve;
+		});
+		jest.mocked(global.fetch).mockImplementation(
+			async (_url, init) =>
+				new Promise<Response>((_resolve, reject) => {
+					requestStarted();
+					init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), { once: true });
+				})
+		);
+		({ createIndex, describeIndex, upsert })[operation].mockImplementation(() =>
+			mockPinecone.mock.calls.at(-1)?.[0].fetchApi('https://api.example.test/pinecone')
+		);
+		const result = pineconeVectorDatabase.upload({
+			apiKey: 'synthetic',
+			indexName: 'knowledge-base',
+			generation,
+			dimensions: 2,
+			records: [record],
+			signal: controller.signal,
+			assertCurrent: jest.fn(),
+		});
+		await started;
+		controller.abort(reason);
+		await expect(result).rejects.toBe(reason);
+		expect(jest.mocked(global.fetch).mock.calls[0][1]?.signal).toBe(controller.signal);
+	}
+);
+
+it('uses the separate cleanup deadline to abort an in-flight namespace deletion', async () => {
+	const controller = new AbortController();
+	const reason = new Error('Cleanup timed out');
+	let requestStarted!: () => void;
+	const started = new Promise<void>((resolve) => {
+		requestStarted = resolve;
+	});
+	jest.mocked(global.fetch).mockImplementation(
+		async (_url, init) =>
+			new Promise<Response>((_resolve, reject) => {
+				requestStarted();
+				init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), { once: true });
+			})
+	);
+	deleteNamespace.mockImplementation(() =>
+		mockPinecone.mock.calls.at(-1)?.[0].fetchApi('https://api.example.test/pinecone')
+	);
+	const result = pineconeVectorDatabase.discard('synthetic', 'knowledge-base', generation, controller.signal);
+	await started;
+	controller.abort(reason);
+	await expect(result).rejects.toBe(reason);
 });
