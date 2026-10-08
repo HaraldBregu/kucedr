@@ -21,7 +21,11 @@ export function getDatabaseConfiguration(): DatabaseConfiguration {
 		providerId: ragConfiguration.databaseProviderId || undefined,
 		databaseId: ragConfiguration.databaseId || undefined,
 	};
-	if (configuration.databaseId && !isLocalRagDatabase(ragConfiguration) && !supportsVectorDatabase(configuration.providerId, configuration.databaseId)) {
+	if (
+		configuration.databaseId &&
+		!isLocalRagDatabase(ragConfiguration) &&
+		!supportsVectorDatabase(configuration.providerId, configuration.databaseId)
+	) {
 		configuration.providerId = undefined;
 		configuration.databaseId = undefined;
 	}
@@ -31,7 +35,14 @@ export function getDatabaseConfiguration(): DatabaseConfiguration {
 export function saveDatabaseConfiguration(
 	configuration: DatabaseConfiguration
 ): DatabaseConfiguration {
-	if (configuration.databaseId && !isLocalRagDatabase({ databaseProviderId: configuration.providerId ?? '', databaseId: configuration.databaseId }) && !supportsVectorDatabase(configuration.providerId, configuration.databaseId)) {
+	if (
+		configuration.databaseId &&
+		!isLocalRagDatabase({
+			databaseProviderId: configuration.providerId ?? '',
+			databaseId: configuration.databaseId,
+		}) &&
+		!supportsVectorDatabase(configuration.providerId, configuration.databaseId)
+	) {
 		throw new Error(`Database not found: ${configuration.databaseId}`);
 	}
 	const saved: DatabaseConfiguration = {

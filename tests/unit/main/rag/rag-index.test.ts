@@ -192,16 +192,27 @@ it('stops when consent is revoked between embedding batches and publication', as
 });
 
 it('indexes into explicit local SQLite without uploading to a remote database', async () => {
-	configuration = { ...configuration, databaseProviderId: 'local', databaseId: 'sqlite', mirrorConsent: null };
-	await expect(indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror }))
-		.resolves.toEqual({ files: 1, vectors: 1 });
+	configuration = {
+		...configuration,
+		databaseProviderId: 'local',
+		databaseId: 'sqlite',
+		mirrorConsent: null,
+	};
+	await expect(
+		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
+	).resolves.toEqual({ files: 1, vectors: 1 });
 	expect(upload).not.toHaveBeenCalled();
 	expect(discard).not.toHaveBeenCalled();
 	expect(publish).toHaveBeenCalled();
 });
 
 it('reuses unchanged source vectors and removes deleted files from the next local generation', async () => {
-	configuration = { ...configuration, databaseProviderId: 'local', databaseId: 'sqlite', mirrorConsent: null };
+	configuration = {
+		...configuration,
+		databaseProviderId: 'local',
+		databaseId: 'sqlite',
+		mirrorConsent: null,
+	};
 	const store = new SqliteVectorStore(':memory:');
 	try {
 		await writeFile(path.join(root, 'notes.md'), 'Some notes');
@@ -213,7 +224,9 @@ it('reuses unchanged source vectors and removes deleted files from the next loca
 		await rm(path.join(root, 'notes.md'));
 		await indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store });
 		expect(embed).toHaveBeenCalledTimes(3);
-		expect(store.exportIndex('knowledge-base')?.records.map((record) => record.text)).toEqual(['Updated guide']);
+		expect(store.exportIndex('knowledge-base')?.records.map((record) => record.text)).toEqual([
+			'Updated guide',
+		]);
 	} finally {
 		store.close();
 	}
@@ -224,16 +237,28 @@ it('does not publish after sources change during embedding', async () => {
 		configuration = { ...configuration, folders: ['/different-source'] };
 		return { providerId: 'openai', modelId: 'test-model', dimensions: 2, embeddings: [[1, 2]] };
 	});
-	await expect(indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror }))
-		.rejects.toThrow('Knowledge settings changed');
+	await expect(
+		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
+	).rejects.toThrow('Knowledge settings changed');
 	expect(upload).not.toHaveBeenCalled();
 	expect(publish).not.toHaveBeenCalled();
 });
 
-it.each([[0, 0], [NaN, 1], [Infinity, 1], [1e100, 1]])('rejects unusable vector %j before publication', async (...vector) => {
-	embed.mockResolvedValue({ providerId: 'openai', modelId: 'test-model', dimensions: 2, embeddings: [vector] });
-	await expect(indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror }))
-		.rejects.toThrow(/Invalid/);
+it.each([
+	[0, 0],
+	[NaN, 1],
+	[Infinity, 1],
+	[1e100, 1],
+])('rejects unusable vector %j before publication', async (...vector) => {
+	embed.mockResolvedValue({
+		providerId: 'openai',
+		modelId: 'test-model',
+		dimensions: 2,
+		embeddings: [vector],
+	});
+	await expect(
+		indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors, mirror })
+	).rejects.toThrow(/Invalid/);
 	expect(upload).not.toHaveBeenCalled();
 	expect(publish).not.toHaveBeenCalled();
 });

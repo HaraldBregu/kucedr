@@ -53,18 +53,20 @@ export class DataController {
 					indexName: index.indexName,
 					generation: index.generation,
 				});
-				if (!isLocalRagDatabase(rag)) scopes.push({
-					kind: 'rag',
-					mode: 'remote_namespace',
-					indexName: index.indexName,
-					generation: index.generation,
-				});
+				if (!isLocalRagDatabase(rag))
+					scopes.push({
+						kind: 'rag',
+						mode: 'remote_namespace',
+						indexName: index.indexName,
+						generation: index.generation,
+					});
 			}
-			if (!isLocalRagDatabase(rag)) scopes.push({
-				kind: 'rag',
-				mode: 'remote_all_namespaces',
-				indexName: rag.indexName,
-			});
+			if (!isLocalRagDatabase(rag))
+				scopes.push({
+					kind: 'rag',
+					mode: 'remote_all_namespaces',
+					indexName: rag.indexName,
+				});
 		} finally {
 			store.close();
 		}

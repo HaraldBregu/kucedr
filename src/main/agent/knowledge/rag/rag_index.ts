@@ -46,7 +46,7 @@ export async function indexRag(
 	const generation = `kucedr-${randomUUID()}`;
 	const mirror = isLocalRagDatabase(configuration)
 		? undefined
-		: dependencies.mirror ?? createRagMirror();
+		: (dependencies.mirror ?? createRagMirror());
 	const timeout = AbortSignal.timeout(KNOWLEDGE_TIMEOUT_MS);
 	const signal = dependencies.signal ? AbortSignal.any([dependencies.signal, timeout]) : timeout;
 	let uploadStarted = false;

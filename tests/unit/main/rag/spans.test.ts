@@ -11,7 +11,8 @@ it('keeps source-relative line ranges for citation metadata', () => {
 });
 
 it('keeps leading blank lines and repeated passages tied to their exact source locations', () => {
-	const text = '\n\n' + Array.from({ length: 150 }, (_, index) => `Line ${index}: repeated text`).join('\n');
+	const text =
+		'\n\n' + Array.from({ length: 150 }, (_, index) => `Line ${index}: repeated text`).join('\n');
 	const lines = text.split('\n');
 	const chunks = chunkSpans(text);
 	expect(chunks.length).toBeGreaterThan(1);

@@ -39,7 +39,9 @@ export async function searchRag(
 			configuration.embeddingProviderId !== index.providerId ||
 			configuration.embeddingModelId !== index.modelId
 		)
-			throw new Error('The embedding model changed. Rebuild the selected Knowledge index before searching.');
+			throw new Error(
+				'The embedding model changed. Rebuild the selected Knowledge index before searching.'
+			);
 		assertRagConsent(configuration, index.providerId, index.modelId, selectedIndexName);
 		const embedded = await embeddingProvider.embed(
 			{
@@ -58,24 +60,29 @@ export async function searchRag(
 			throw new Error('Query embedding dimensions do not match the selected Knowledge index.');
 		validateVector(embedded.embeddings[0], index.dimensions);
 		const current = getRagConfiguration();
-		if (!current.enabled || current.indexName !== selectedIndexName ||
-			current.embeddingProviderId !== index.providerId || current.embeddingModelId !== index.modelId)
+		if (
+			!current.enabled ||
+			current.indexName !== selectedIndexName ||
+			current.embeddingProviderId !== index.providerId ||
+			current.embeddingModelId !== index.modelId
+		)
 			throw new Error('Knowledge settings changed while searching. Try again.');
 		assertRagConsent(current, index.providerId, index.modelId, selectedIndexName);
 
-		return vectorStore.search(selectedIndexName, embedded.embeddings[0], topK)
+		return vectorStore
+			.search(selectedIndexName, embedded.embeddings[0], topK)
 			.filter((match) => Number.isFinite(match.score) && match.score > (current.minimumScore ?? 0))
 			.map((match) => ({
-			sourceId: match.sourceId,
-			chunkId: match.id,
-			path: match.path,
-			lineStart: match.lineStart,
-			lineEnd: match.lineEnd,
-			checksum: match.checksum,
-			indexedAt: match.indexedAt,
-			text: match.text,
-			score: match.score,
-		}));
+				sourceId: match.sourceId,
+				chunkId: match.id,
+				path: match.path,
+				lineStart: match.lineStart,
+				lineEnd: match.lineEnd,
+				checksum: match.checksum,
+				indexedAt: match.indexedAt,
+				text: match.text,
+				score: match.score,
+			}));
 	} finally {
 		if (!dependencies.vectors) vectorStore.close();
 	}

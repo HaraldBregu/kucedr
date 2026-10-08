@@ -22,11 +22,12 @@ export function ragRecipient(
 	}
 	const provider = EMBEDDING_PROVIDERS[providerId];
 	const key = getProvider(providerId)?.apiKey.trim();
-	if (!provider)
-		throw new Error('Select a supported embedding provider in Knowledge settings.');
+	if (!provider) throw new Error('Select a supported embedding provider in Knowledge settings.');
 	if (provider.local) {
 		return createHash('sha256')
-			.update(JSON.stringify([providerId, modelId, process.env.BGE_BASE_URL?.trim() || provider.url]))
+			.update(
+				JSON.stringify([providerId, modelId, process.env.BGE_BASE_URL?.trim() || provider.url])
+			)
 			.digest('hex');
 	}
 	if (!key)

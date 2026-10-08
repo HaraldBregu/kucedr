@@ -3,7 +3,8 @@ import type { VectorDatabaseAdapter, VectorDatabaseUpload } from './vector_types
 
 const PINECONE_CLOUD = 'aws';
 const PINECONE_REGION = 'us-east-1';
-const KUCEDR_GENERATION = /^kucedr-[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const KUCEDR_GENERATION =
+	/^kucedr-[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export const pineconeVectorDatabase: VectorDatabaseAdapter = {
 	service: {
@@ -43,7 +44,9 @@ async function uploadPinecone(input: VectorDatabaseUpload): Promise<void> {
 	assertCurrent();
 	const description = await client.describeIndex(indexName);
 	if (description.dimension !== dimensions || description.metric !== 'cosine') {
-		throw new Error('Pinecone index dimensions or metric differ. Choose a new index for this embedding model.');
+		throw new Error(
+			'Pinecone index dimensions or metric differ. Choose a new index for this embedding model.'
+		);
 	}
 	if (
 		!('serverless' in description.spec) ||
