@@ -49,7 +49,7 @@ export function mcpTool(
 				return text;
 			} catch (error) {
 				const message = error instanceof Error ? error.message : String(error);
-				if (error instanceof UnauthorizedError || message.includes('Connect this MCP server with OAuth in Settings.')) {
+				if (error instanceof UnauthorizedError || /unauthori[sz]ed|\b401\b|authentication required|insufficient_scope|Connect this MCP server with OAuth in Settings\./i.test(message)) {
 					const server = getMcpServers()[serverId];
 					if (server?.type === 'http' && (!findMcpService(server.url)?.oauth?.credentials_required || server.client_id))
 						return JSON.stringify({

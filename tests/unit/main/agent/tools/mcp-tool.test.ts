@@ -85,4 +85,12 @@ describe('mcpTool', () => {
 			JSON.stringify({ status: 'authorization_required', serverId: 'safe', serverName: 'Documents', message: 'Call request_mcp_authorization for this server to display the chat button, then wait for the user before using its tools.' })
 		);
 	});
+
+	it('recognizes an unauthorized MCP tool result after the tools were listed', async () => {
+		getMcpServersMock.mockReturnValue({ safe: { type: 'http', name: 'Documents', url: 'https://mcp.example' } });
+		callToolMock.mockResolvedValue({ isError: true, content: [{ type: 'text', text: '401 Unauthorized' }] });
+		const configured = mcpTool(client, 'lookup', '', schema, 'safe', 'never');
+
+		await expect(configured.run({ query: 'Kucedr' })).resolves.toContain('authorization_required');
+	});
 });

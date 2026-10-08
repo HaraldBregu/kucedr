@@ -15,7 +15,7 @@ export function requestMcpAuthorizationTool() {
 	return tool({
 		id: 'request_mcp_authorization',
 		name: 'Request MCP authorization',
-		description: `Show an in-chat OAuth authorization button when a configured remote MCP server needs authorization. Do not open the authorization URL yourself. Available servers: ${servers.join(', ') || 'none'}.`,
+		description: `Check saved OAuth authorization and show an in-chat authorization button if it is missing, even when the server's tools are available. Do not open the authorization URL yourself. Available servers: ${servers.join(', ') || 'none'}.`,
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
 			serverId: z.string().min(1).describe('Configured MCP server ID to authorize.'),
