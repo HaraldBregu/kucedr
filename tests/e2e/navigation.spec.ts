@@ -813,7 +813,7 @@ test('Channels configures credentials and models directly on the channel page', 
 		(await window.provider.getChannel('telegram'))?.dmPolicy
 	)).toBe('allowlist');
 	await page.getByLabel('sender id or handle', { exact: true }).fill('123456');
-	await page.getByRole('button', { name: 'Add allowed user', exact: true }).click();
+	await page.getByRole('button', { name: 'Add allowed sender', exact: true }).click();
 	await expect.poll(() => page.evaluate(async () =>
 		(await window.provider.getChannel('telegram'))?.allowFrom
 	)).toEqual(['123456']);
