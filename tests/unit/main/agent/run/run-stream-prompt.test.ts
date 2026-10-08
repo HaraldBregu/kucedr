@@ -450,6 +450,7 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).not.toContain('### MEMORY.md');
 			expect(systemPrompt).not.toContain('# Memory\n');
 			expect(systemPrompt).not.toContain('## Tools available in this runtime');
+			expect(systemPrompt.match(/^## Tools$/gm)).toHaveLength(1);
 			expect(
 				(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 			).toEqual(['alpha', 'mcp__demo__beta']);
