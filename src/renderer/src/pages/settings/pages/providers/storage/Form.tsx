@@ -18,7 +18,7 @@ import { getErrorMessage } from '../../../../start/setupConstants';
 import { SettingsField, SettingsNotice } from '../../../components';
 
 const FIELDS = [
-	{ key: 'name', type: 'text', placeholder: 'Production files' },
+	{ key: 'name', type: 'text', placeholder: 'My backups' },
 	{ key: 'bucket', type: 'text', placeholder: 'my-bucket' },
 	{ key: 'region', type: 'text', placeholder: 'us-east-1' },
 	{ key: 'endpoint', type: 'url', placeholder: 'https://s3.example.com' },

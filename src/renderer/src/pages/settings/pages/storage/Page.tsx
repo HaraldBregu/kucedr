@@ -51,6 +51,7 @@ const StoragePage: React.FC = () => {
 	const [operationStatus, setOperationStatus] = useState<StorageOperationStatus>();
 	const [operationStatusLoading, setOperationStatusLoading] = useState(true);
 	const [restoreOpen, setRestoreOpen] = useState(false);
+	const [operationStarting, setOperationStarting] = useState(false);
 	const [customSchedule, setCustomSchedule] = useState(false);
 	const [cronDraft, setCronDraft] = useState<string>();
 	const [loadFailed, setLoadFailed] = useState(false);
@@ -116,7 +117,7 @@ const StoragePage: React.FC = () => {
 		? 'off'
 		: (SYNC_INTERVALS.find((interval) => interval.cron === storage.syncCronExpression)?.key ??
 			'custom');
-	const busy = settingsLoading || operationStatusLoading || Boolean(runningOperation);
+	const busy = settingsLoading || operationStatusLoading || operationStarting || Boolean(runningOperation);
 	const controlsDisabled = busy || !selectedProvider;
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
@@ -185,6 +186,7 @@ const StoragePage: React.FC = () => {
 	};
 
 	const runBackup = async (): Promise<void> => {
+		setOperationStarting(true);
 		setError(null);
 		setSyncStatus(null);
 		try {
@@ -192,10 +194,13 @@ const StoragePage: React.FC = () => {
 			applyOperationStatus(await window.storage.backup());
 		} catch {
 			setError(t('settings.storage.errors.push'));
+		} finally {
+			setOperationStarting(false);
 		}
 	};
 
 	const runRestore = async (): Promise<void> => {
+		setOperationStarting(true);
 		setRestoreOpen(false);
 		setError(null);
 		setSyncStatus(null);
@@ -204,6 +209,8 @@ const StoragePage: React.FC = () => {
 			applyOperationStatus(await window.storage.restore());
 		} catch {
 			setError(t('settings.storage.errors.pull'));
+		} finally {
+			setOperationStarting(false);
 		}
 	};
 
