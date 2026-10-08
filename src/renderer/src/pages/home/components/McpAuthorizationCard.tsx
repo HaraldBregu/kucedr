@@ -23,7 +23,8 @@ export function McpAuthorizationCard({
 		output && typeof output === 'object' && !Array.isArray(output)
 			? (output as { status?: unknown; serverId?: unknown; serverName?: unknown })
 			: undefined;
-	const serverId = typeof result?.serverId === 'string' ? result.serverId : undefined;
+	const validStatus = result?.status === 'authorization_required' || result?.status === 'connected';
+	const serverId = validStatus && typeof result.serverId === 'string' ? result.serverId : undefined;
 	useEffect(() => {
 		if (!serverId) return;
 		let cancelled = false;
@@ -39,8 +40,7 @@ export function McpAuthorizationCard({
 			cancelled = true;
 		};
 	}, [serverId]);
-	if ((result?.status !== 'authorization_required' && result?.status !== 'connected') || !serverId)
-		return null;
+	if (!validStatus || !serverId) return null;
 	const serverName = typeof result.serverName === 'string' ? result.serverName : result.serverId;
 	const authorized = phase === 'authorized';
 	const connected = authorized || result.status === 'connected';

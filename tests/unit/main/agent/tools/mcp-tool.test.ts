@@ -82,7 +82,7 @@ describe('mcpTool', () => {
 		const configured = mcpTool(client, 'lookup', '', schema, 'safe', 'never');
 
 		await expect(configured.run({ query: 'Kucedr' })).resolves.toBe(
-			JSON.stringify({ status: 'authorization_required', serverId: 'safe', serverName: 'Documents', message: 'Wait for the user to authorize this server from the chat card before using its tools.' })
+			JSON.stringify({ status: 'authorization_required', serverId: 'safe', serverName: 'Documents', message: 'Call request_mcp_authorization for this server to display the chat button, then wait for the user before using its tools.' })
 		);
 	});
 });

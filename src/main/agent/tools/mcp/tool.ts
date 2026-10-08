@@ -56,7 +56,7 @@ export function mcpTool(
 							status: 'authorization_required',
 							serverId,
 							serverName: server.name?.trim() || serverId,
-							message: 'Wait for the user to authorize this server from the chat card before using its tools.',
+							message: 'Call request_mcp_authorization for this server to display the chat button, then wait for the user before using its tools.',
 						});
 				}
 				throw error;
