@@ -333,7 +333,11 @@ export function AssistantMessage({
 				/>
 			))}
 			{mcpAuthorizationTools.map((tool) => (
-				<McpAuthorizationCard key={tool.toolCallId} tool={tool} />
+				<McpAuthorizationCard
+					key={tool.toolCallId}
+					tool={tool}
+					pending={message.pendingUserInput?.toolCallId === tool.toolCallId ? message.pendingUserInput : undefined}
+				/>
 			))}
 			{message.pendingPermission && (
 				<ToolPermissionCard
