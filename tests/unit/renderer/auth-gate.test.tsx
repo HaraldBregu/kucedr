@@ -120,6 +120,7 @@ function renderFlow(path: string): ReturnType<typeof render> {
 }
 
 beforeEach(() => {
+	Object.defineProperty(globalThis, '__APP_VERSION__', { configurable: true, value: '1.1.0' });
 	localStorage.clear();
 	sessionStorage.clear();
 	window.agent = {
@@ -134,7 +135,7 @@ it.each(['/auth', '/setup', '/config', '/home'])(
 		window.auth = authApi({ status: 'signedOut', persistence: 'encrypted' });
 		renderFlow(path);
 
-		expect(await screen.findByRole('heading', { name: 'Kucedr' })).toBeInTheDocument();
+		expect(await screen.findByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).toBeInTheDocument();
 		expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
 	}
 );
@@ -156,7 +157,7 @@ it.each(['/home', '/settings/account'])(
 
 		await waitFor(() => expect(window.agent.getProvider).toHaveBeenCalled());
 		expect(screen.getByLabelText('Current route')).toHaveTextContent(path);
-		expect(screen.queryByRole('heading', { name: 'Kucedr' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).not.toBeInTheDocument();
 	}
 );
 
@@ -177,7 +178,7 @@ it.each(['/home', '/settings/account'])(
 
 		await waitFor(() => expect(window.agent.getProvider).toHaveBeenCalled());
 		expect(screen.getByLabelText('Current route')).toHaveTextContent(path);
-		expect(screen.queryByRole('heading', { name: 'Kucedr' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).not.toBeInTheDocument();
 	}
 );
 
@@ -198,7 +199,7 @@ it('preserves home when a skipped local-only session is refreshed', async () => 
 	renderFlow('/home');
 	expect(await screen.findByLabelText('Current route')).toHaveTextContent('/home');
 	expect(window.agent.getProvider.mock.calls.length).toBeGreaterThan(1);
-	expect(screen.queryByRole('heading', { name: 'Kucedr' })).not.toBeInTheDocument();
+	expect(screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).not.toBeInTheDocument();
 });
 
 it('moves from landing to auth without a back action or bottom navigation', async () => {
@@ -206,9 +207,11 @@ it('moves from landing to auth without a back action or bottom navigation', asyn
 	window.auth = authApi({ status: 'signedOut', persistence: 'encrypted' });
 	renderFlow('/start');
 
+	expect(screen.getByText('Version 1.1.0')).toBeInTheDocument();
 	expect(document.querySelector('footer')).not.toBeInTheDocument();
 	await user.click(await screen.findByRole('button', { name: 'Get started' }));
 	expect(await screen.findByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
+	expect(screen.getByText('Version 1.1.0')).toBeInTheDocument();
 	expect(document.querySelector('footer')).not.toBeInTheDocument();
 	expect(screen.queryByRole('button', { name: 'Back' })).not.toBeInTheDocument();
 	expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
@@ -261,6 +264,7 @@ it('shows Welcome before setup for a restored unconfigured signed-in user', asyn
 	expect(screen.queryByRole('heading', { name: 'Model providers' })).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'Get started' }));
 	expect(await screen.findByRole('heading', { name: 'Model providers' })).toBeInTheDocument();
+	expect(screen.getByText('Version 1.1.0')).toBeInTheDocument();
 	expect(screen.getByText('Model').parentElement).toHaveTextContent('Model · 1 of 3');
 	expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
 });
