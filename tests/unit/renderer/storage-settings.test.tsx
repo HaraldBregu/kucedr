@@ -30,6 +30,7 @@ jest.mock('react-i18next', () => {
 			'Configure when backups run automatically and customize the schedule with cron.',
 		'settings.storage.autoSync.description': 'Run on schedule',
 		'settings.storage.autoSync.off': 'Off',
+		'settings.storage.autoSync.custom': 'Custom schedule',
 		'settings.storage.autoSync.every1d': 'Every day',
 		'settings.storage.autoSync.cronExpression': 'Cron expression',
 		'settings.storage.autoSync.cronDescription': 'Five-field cron expression',
@@ -76,9 +77,6 @@ const settings = {
 	syncCronExpression: '0 3 * * *',
 };
 
-const openActions = async (user: ReturnType<typeof userEvent.setup>): Promise<void> => {
-	await user.click(await screen.findByRole('button', { name: 'More options' }));
-};
 
 beforeEach(() => {
 	jest.clearAllMocks();
@@ -157,8 +155,12 @@ it('saves user-selected folders and a custom schedule with the selected storage 
 	await user.click(await screen.findByRole('button', { name: 'Add folders' }));
 	await user.click(screen.getByRole('combobox', { name: 'Backup interval' }));
 	await user.click(await screen.findByRole('option', { name: 'Every day' }));
+	expect(screen.queryByLabelText('Cron expression')).not.toBeInTheDocument();
+	await user.click(screen.getByRole('combobox', { name: 'Backup interval' }));
+	await user.click(await screen.findByRole('option', { name: 'Custom schedule' }));
 	await user.clear(screen.getByLabelText('Cron expression'));
 	await user.type(screen.getByLabelText('Cron expression'), '0 4 * * *');
+	await user.tab();
 
 	await waitFor(() =>
 		expect(storageApi.saveSettings).toHaveBeenLastCalledWith({
@@ -218,8 +220,7 @@ it('backs up directly and confirms before restoring matching local files', async
 		</MemoryRouter>
 	);
 
-	await openActions(user);
-	await user.click(screen.getByRole('menuitem', { name: 'Back up now' }));
+	await user.click(screen.getByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
 	act(() => {
 		operationListener?.({
@@ -236,8 +237,7 @@ it('backs up directly and confirms before restoring matching local files', async
 		});
 	});
 
-	await openActions(user);
-	await user.click(screen.getByRole('menuitem', { name: 'Restore from storage' }));
+	await user.click(screen.getByRole('button', { name: 'Restore from storage' }));
 	expect(screen.getByRole('dialog')).toHaveTextContent('Matching local files will be overwritten.');
 	await user.click(screen.getByRole('button', { name: 'Restore selected data' }));
 	await waitFor(() => expect(storageApi.restore).toHaveBeenCalledWith());
@@ -313,7 +313,7 @@ it('keeps a newer completion event when the initial snapshot resolves late', asy
 	});
 
 	expect(await screen.findByText('Backup completed')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
+	expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 });
 
 it('preserves selected folders when an auxiliary load fails', async () => {
@@ -327,7 +327,7 @@ it('preserves selected folders when an auxiliary load fails', async () => {
 
 	expect(await screen.findByText('/data/agent')).toBeInTheDocument();
 	expect(screen.getByRole('alert')).toHaveTextContent('Could not load storage settings.');
-	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
+	expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 });
 
 it('shows a retry without editable defaults when settings cannot be loaded', async () => {
@@ -355,14 +355,12 @@ it.each([undefined, 'deleted'])(
 				<StoragePage />
 			</MemoryRouter>
 		);
-		const user = userEvent.setup();
-		await openActions(user);
-		expect(await screen.findByRole('menuitem', { name: 'Back up now' })).toBeDisabled();
-		expect(screen.getByRole('menuitem', { name: 'Restore from storage' })).toBeDisabled();
+		expect(await screen.findByRole('button', { name: 'Back up now' })).toBeDisabled();
+		expect(screen.getByRole('button', { name: 'Restore from storage' })).toBeDisabled();
 		expect(screen.queryByRole('menuitem', { name: 'Save schedule' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('menuitem', { name: 'Cancel' })).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
-		expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
+		expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 		expect(screen.getByRole('combobox', { name: 'Storage' })).toBeEnabled();
 		expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('button', { name: 'Sign in' })).not.toBeInTheDocument();
@@ -384,8 +382,7 @@ it('keeps a newer completion event when the backup command resolves late', async
 		</MemoryRouter>
 	);
 
-	await openActions(user);
-	await user.click(screen.getByRole('menuitem', { name: 'Back up now' }));
+	await user.click(screen.getByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
 	act(() => {
 		operationListener?.({
@@ -416,7 +413,7 @@ it('keeps a newer completion event when the backup command resolves late', async
 	});
 
 	expect(await screen.findByText('Backup completed')).toBeInTheDocument();
-	expect(screen.getByRole('button', { name: 'More options' })).toBeEnabled();
+	expect(screen.getByRole('button', { name: 'Add folders' })).toBeEnabled();
 });
 
 it('announces partial backups as warnings', async () => {

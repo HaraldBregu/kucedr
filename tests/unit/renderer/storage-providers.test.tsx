@@ -81,12 +81,12 @@ it('shows an enabled plugin storage in Providers before a connection is saved', 
 	expect(form.getByRole('switch', { name: 'Use path-style addressing' })).toBeChecked();
 });
 
-it('keeps the Storage page empty when no plugin storage is enabled', async () => {
+it('allows connecting a generic S3 provider when no plugin is enabled', async () => {
 	jest.mocked(window.provider.listEnabledPlugins).mockResolvedValue({ database: [], storage: [] });
 	render(<StorageProvidersPage />);
 	await screen.findByText('No storage connections');
 	expect(screen.queryByText('Supabase Storage')).not.toBeInTheDocument();
-	expect(screen.queryByRole('button', { name: 'Add provider' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Add provider' })).toBeInTheDocument();
 });
 
 it('adds multiple independent S3 connections and retains existing entries', async () => {
@@ -224,7 +224,7 @@ it('keeps the draft when saving fails and allows cancelling without saving', asy
 it('shows loading and load errors without a false empty state', async () => {
 	api.listProviders.mockRejectedValueOnce(new Error('Could not open saved connections.'));
 	render(<StorageProvidersPage />);
-	expect(screen.queryByRole('button', { name: 'Add provider' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'Add provider' })).toBeInTheDocument();
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not open saved connections.');
 	expect(screen.queryByText('No storage connections')).not.toBeInTheDocument();
 });
