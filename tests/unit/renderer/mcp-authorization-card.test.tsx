@@ -17,7 +17,9 @@ const pending: PendingUserInput = {
 	toolCallId: 'authorize',
 	inputFingerprint: 'fingerprint',
 	expiresAt: new Date(Date.now() + 60_000).toISOString(),
-	questions: [{ id: 'mcp-authorization', header: 'MCP', question: 'Authorize Gmail?', options: [] }],
+	questions: [
+		{ id: 'mcp-authorization', header: 'MCP', question: 'Authorize Gmail?', options: [] },
+	],
 };
 
 beforeEach(() => {
@@ -31,16 +33,22 @@ beforeEach(() => {
 it('holds the run until OAuth succeeds, then submits authorization', async () => {
 	const user = userEvent.setup();
 	let finishOauth!: () => void;
-	oauthStart.mockReturnValue(new Promise<void>((resolve) => { finishOauth = resolve; }));
+	oauthStart.mockReturnValue(
+		new Promise<void>((resolve) => {
+			finishOauth = resolve;
+		})
+	);
 	render(<McpAuthorizationCard tool={tool} pending={pending} />);
 
 	await user.click(screen.getByRole('button', { name: 'Authorize' }));
 	expect(oauthStart).toHaveBeenCalledWith('gmail');
 	expect(respondUserInput).not.toHaveBeenCalled();
 	finishOauth();
-	await waitFor(() => expect(respondUserInput).toHaveBeenCalledWith(pending, [
-		{ questionId: 'mcp-authorization', answer: 'authorized' },
-	]));
+	await waitFor(() =>
+		expect(respondUserInput).toHaveBeenCalledWith(pending, [
+			{ questionId: 'mcp-authorization', answer: 'authorized' },
+		])
+	);
 });
 
 it('cancels the run without waiting for OAuth', async () => {
@@ -56,7 +64,11 @@ it('cancels the run without waiting for OAuth', async () => {
 it('keeps Cancel available while OAuth is pending', async () => {
 	const user = userEvent.setup();
 	let finishOauth!: () => void;
-	oauthStart.mockReturnValue(new Promise<void>((resolve) => { finishOauth = resolve; }));
+	oauthStart.mockReturnValue(
+		new Promise<void>((resolve) => {
+			finishOauth = resolve;
+		})
+	);
 	render(<McpAuthorizationCard tool={tool} pending={pending} />);
 	await user.click(screen.getByRole('button', { name: 'Authorize' }));
 	await user.click(screen.getByRole('button', { name: 'Cancel' }));
@@ -77,8 +89,12 @@ it('shows OAuth errors and keeps the authorization action available', async () =
 });
 
 it('renders completed authorization and hides unrelated server statuses', () => {
-	const { rerender } = render(<McpAuthorizationCard tool={{ ...tool, output: { status: 'authorized', serverId: 'gmail' } }} />);
+	const { rerender } = render(
+		<McpAuthorizationCard tool={{ ...tool, output: { status: 'authorized', serverId: 'gmail' } }} />
+	);
 	expect(screen.getByRole('status')).toHaveTextContent('Authorized');
-	rerender(<McpAuthorizationCard tool={{ ...tool, output: { status: 'connected', serverId: 'gmail' } }} />);
+	rerender(
+		<McpAuthorizationCard tool={{ ...tool, output: { status: 'connected', serverId: 'gmail' } }} />
+	);
 	expect(screen.queryByText(/connected/i)).not.toBeInTheDocument();
 });

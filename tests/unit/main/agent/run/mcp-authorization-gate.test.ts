@@ -40,22 +40,34 @@ it.each([
 		{ id: 'next', name: 'next_tool', args: {} },
 	];
 	const events = runToolCalls(
-		[authorization, nextTool], calls, new AbortController().signal, undefined,
+		[authorization, nextTool],
+		calls,
+		new AbortController().signal,
+		undefined,
 		{ runId: 'run', windowId: 7, interactionMode: 'default' }
 	);
 	expect((await events.next()).value).toMatchObject({ type: 'tool_call_start' });
-	const request = (await events.next()).value as Extract<RuntimeEvent, { type: 'user_input_request' }>;
+	const request = (await events.next()).value as Extract<
+		RuntimeEvent,
+		{ type: 'user_input_request' }
+	>;
 	expect(request).toMatchObject({ type: 'user_input_request', toolCallId: 'authorization' });
 	expect(nextRun).not.toHaveBeenCalled();
 	const resumed = events.next();
 	await Promise.resolve();
 	if (proceed) getMcpOauth.mockReturnValue({ tokens: { access_token: 'token' } });
-	expect(respondUserInput({
-		requestId: request.requestId,
-		runId: 'run',
-		toolCallId: 'authorization',
-		inputFingerprint: request.inputFingerprint,
-	}, [{ questionId: 'mcp-authorization', answer }], 7)).toBe(true);
+	expect(
+		respondUserInput(
+			{
+				requestId: request.requestId,
+				runId: 'run',
+				toolCallId: 'authorization',
+				inputFingerprint: request.inputFingerprint,
+			},
+			[{ questionId: 'mcp-authorization', answer }],
+			7
+		)
+	).toBe(true);
 	await resumed;
 	for await (const _event of events) void _event;
 	expect(JSON.parse(calls[0].result?.content as string)).toMatchObject({

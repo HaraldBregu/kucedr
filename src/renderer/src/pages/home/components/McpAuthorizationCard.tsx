@@ -23,13 +23,25 @@ export function McpAuthorizationCard({
 			output = undefined;
 		}
 	}
-	const result = output && typeof output === 'object' && !Array.isArray(output)
-		? (output as { status?: unknown; serverId?: unknown; serverName?: unknown })
-		: undefined;
+	const result =
+		output && typeof output === 'object' && !Array.isArray(output)
+			? (output as { status?: unknown; serverId?: unknown; serverName?: unknown })
+			: undefined;
 	const input = tool.input as { serverId?: unknown } | undefined;
-	const serverId = typeof input?.serverId === 'string' ? input.serverId
-		: typeof result?.serverId === 'string' ? result.serverId : undefined;
-	if (!serverId || (!pending && result?.status !== 'authorized' && result?.status !== 'cancelled' && result?.status !== 'authorization_failed')) return null;
+	const serverId =
+		typeof input?.serverId === 'string'
+			? input.serverId
+			: typeof result?.serverId === 'string'
+				? result.serverId
+				: undefined;
+	if (
+		!serverId ||
+		(!pending &&
+			result?.status !== 'authorized' &&
+			result?.status !== 'cancelled' &&
+			result?.status !== 'authorization_failed')
+	)
+		return null;
 	const serverName = typeof result?.serverName === 'string' ? result.serverName : serverId;
 	const authorized = result?.status === 'authorized';
 	const stopped = result?.status === 'cancelled';
@@ -37,7 +49,9 @@ export function McpAuthorizationCard({
 
 	const respond = async (answer: string): Promise<boolean> => {
 		if (!pending) return false;
-		const accepted = await window.agent.respondUserInput(pending, [{ questionId: 'mcp-authorization', answer }]);
+		const accepted = await window.agent.respondUserInput(pending, [
+			{ questionId: 'mcp-authorization', answer },
+		]);
 		if (!accepted) setError('This authorization request is no longer active.');
 		return accepted;
 	};
@@ -60,7 +74,7 @@ export function McpAuthorizationCard({
 		setCancelling(true);
 		setError(null);
 		try {
-			if (!await respond('cancel')) {
+			if (!(await respond('cancel'))) {
 				cancelled.current = false;
 				setCancelling(false);
 			}
@@ -75,12 +89,21 @@ export function McpAuthorizationCard({
 		<Card className="max-w-2xl gap-3 border-border/70 py-4">
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">
-					{authorized ? `${serverName} authorized` : stopped ? 'Authorization cancelled' : failed ? 'Authorization failed' : `Authorize ${serverName}`}
+					{authorized
+						? `${serverName} authorized`
+						: stopped
+							? 'Authorization cancelled'
+							: failed
+								? 'Authorization failed'
+								: `Authorize ${serverName}`}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-3 px-4 text-sm">
 				{authorized ? (
-					<div role="status" className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+					<div
+						role="status"
+						className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"
+					>
 						<Check className="size-4" /> Authorized
 					</div>
 				) : stopped ? (
@@ -89,16 +112,36 @@ export function McpAuthorizationCard({
 					<p className="text-muted-foreground">No authorization was saved. Please try again.</p>
 				) : (
 					<>
-						<p className="text-muted-foreground">Authorize {serverName} to continue this request.</p>
+						<p className="text-muted-foreground">
+							Authorize {serverName} to continue this request.
+						</p>
 						<div className="flex gap-2">
-							<Button type="button" variant="outline" size="sm" disabled={connecting || cancelling} onClick={() => void authorize()}>
+							<Button
+								type="button"
+								variant="outline"
+								size="sm"
+								disabled={connecting || cancelling}
+								onClick={() => void authorize()}
+							>
 								<KeyRound className="size-3.5" /> {connecting ? 'Connecting' : 'Authorize'}
 							</Button>
-							<Button type="button" variant="ghost" size="sm" disabled={cancelling} onClick={() => void cancel()}>Cancel</Button>
+							<Button
+								type="button"
+								variant="ghost"
+								size="sm"
+								disabled={cancelling}
+								onClick={() => void cancel()}
+							>
+								Cancel
+							</Button>
 						</div>
 					</>
 				)}
-				{error && <p role="alert" className="text-destructive">{error}</p>}
+				{error && (
+					<p role="alert" className="text-destructive">
+						{error}
+					</p>
+				)}
 			</CardContent>
 		</Card>
 	);
