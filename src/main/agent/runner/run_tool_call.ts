@@ -189,6 +189,71 @@ export async function* runToolCall(
 				: { status, answers: answers ?? [] };
 			isError = !answers;
 		}
+	} else if (toolCall.name === 'request_mcp_authorization') {
+		if (security.windowId === undefined || security.interactionMode !== 'default') {
+			output = 'Error: MCP authorization is only available in an interactive chat run.';
+			isError = true;
+		} else {
+			try {
+				const checked = (await tool.run(canonicalInput, signal)) as {
+					status: 'already_authorized' | 'authorization_required';
+					serverId: string;
+					serverName?: string;
+				};
+				if (checked.status !== 'authorization_required') {
+					output = checked;
+				} else {
+					const requestId = crypto.randomUUID();
+					const fingerprint = inputFingerprint(canonicalInput);
+					const expiresAtMs = Date.now() + 7 * 24 * 60 * 60_000;
+					const questions: AgentUserInputQuestion[] = [{
+						id: 'mcp-authorization',
+						header: 'MCP',
+						question: `Authorize ${checked.serverName ?? checked.serverId}?`,
+						options: [
+							{ label: 'Authorize', description: 'Continue the run after OAuth succeeds.' },
+							{ label: 'Cancel', description: 'End the run without authorization.' },
+						],
+					}];
+					await Promise.resolve();
+					yield {
+						type: 'user_input_request',
+						requestId,
+						toolCallId: toolCall.id,
+						questions,
+						expiresAt: new Date(expiresAtMs).toISOString(),
+						inputFingerprint: fingerprint,
+					};
+					const answers = await waitForUserInput({
+						requestId,
+						runId: security.runId,
+						toolCallId: toolCall.id,
+						inputFingerprint: fingerprint,
+						questionIds: ['mcp-authorization'],
+						expiresAtMs,
+						windowId: security.windowId,
+					}, signal);
+					yield {
+						type: 'user_input_result',
+						requestId,
+						toolCallId: toolCall.id,
+						status: answers ? 'resolved' : 'interrupted',
+						answers: answers ?? [],
+					};
+					const accepted = answers?.[0]?.answer === 'authorized';
+					const authorized = accepted && Boolean(getMcpOauth(checked.serverId).tokens?.access_token);
+					output = {
+						status: authorized ? 'authorized' : accepted ? 'authorization_failed' : 'cancelled',
+						serverId: checked.serverId,
+						serverName: checked.serverName,
+					};
+					isError = !authorized;
+				}
+			} catch (error) {
+				output = `Error: ${error instanceof Error ? error.message : String(error)}`;
+				isError = true;
+			}
+		}
 	} else {
 		let resolution = executionScope.run(scope, () =>
 			resolveToolPermissionDetails(
