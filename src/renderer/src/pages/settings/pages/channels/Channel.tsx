@@ -9,6 +9,7 @@ import type {
 	StoredChannelProvider,
 } from '@shared/channels_types';
 import { ProviderAvatar } from '@/components/provider-avatar';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -48,6 +49,7 @@ export function ChannelConfiguration({
 		groupAllowFrom: '',
 	});
 	const [saving, setSaving] = useState(false);
+	const [configured, setConfigured] = useState(stored?.configured ?? false);
 	const [error, setError] = useState<string | null>(null);
 	const apiKeyCredential = service.credentials?.find(({ key }) => key === 'apiKey');
 
@@ -58,6 +60,7 @@ export function ChannelConfiguration({
 		try {
 			const saved = await window.provider.setChannel(next);
 			setCredential({ ...saved, apiKey: '' });
+			setConfigured(saved.configured);
 			return true;
 		} catch (cause) {
 			setError(cause instanceof Error ? cause.message : String(cause));
@@ -79,6 +82,9 @@ export function ChannelConfiguration({
 						className="size-5 rounded-md"
 					/>
 					{service.provider.name}
+					<Badge variant="outline">
+						{t(`settings.channels.${configured ? 'configured' : 'notConfigured'}`)}
+					</Badge>
 				</span>
 			}
 			description={service.instructions ?? service.description ?? service.name}

@@ -809,14 +809,16 @@ test('Channels configures credentials and models directly on the channel page', 
 	});
 	await page.getByRole('combobox', { name: 'DM policy', exact: true }).click();
 	await page.getByRole('option', { name: 'Allowlist', exact: true }).click();
-	await expect.poll(() => page.evaluate(async () =>
-		(await window.provider.getChannel('telegram'))?.dmPolicy
-	)).toBe('allowlist');
+	await expect
+		.poll(() => page.evaluate(async () => (await window.provider.getChannel('telegram'))?.dmPolicy))
+		.toBe('allowlist');
 	await page.getByLabel('sender id or handle', { exact: true }).fill('123456');
 	await page.getByRole('button', { name: 'Add allowed sender', exact: true }).click();
-	await expect.poll(() => page.evaluate(async () =>
-		(await window.provider.getChannel('telegram'))?.allowFrom
-	)).toEqual(['123456']);
+	await expect
+		.poll(() =>
+			page.evaluate(async () => (await window.provider.getChannel('telegram'))?.allowFrom)
+		)
+		.toEqual(['123456']);
 	await page.screenshot({
 		path: testInfo.outputPath('channels-credentials-desktop.png'),
 		fullPage: true,

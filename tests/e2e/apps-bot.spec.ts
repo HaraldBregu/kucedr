@@ -93,6 +93,7 @@ test('production Apps search and Bot navigation work in Electron', async ({
 			await sidebar.locator('[data-slot="split-pane-group"] h2').allTextContents()
 		).map((value) => value.trim());
 		expect(headings.indexOf('Bot')).toBeLessThan(headings.indexOf('Extensions'));
+		await extensions.getByRole('link', { name: 'Apps', exact: true }).scrollIntoViewIfNeeded();
 		await page.screenshot({ path: testInfo.outputPath('apps-desktop.png'), fullPage: true });
 
 		for (const query of ['  ORBIT NOTES  ', 'CHECKLISTS', 'ORBIT-NOTES']) {
@@ -128,6 +129,7 @@ test('production Apps search and Bot navigation work in Electron', async ({
 		await app.evaluate(({ BrowserWindow }) => {
 			BrowserWindow.getAllWindows()[0].setSize(1100, 850);
 		});
+		await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(1100);
 		await notes.getByRole('button', { name: 'Open', exact: true }).click();
 		await expect
 			.poll(() =>
