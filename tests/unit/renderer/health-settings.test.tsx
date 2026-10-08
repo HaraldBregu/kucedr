@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import HealthPage from '../../../src/renderer/src/pages/settings/pages/tasks/health/Page';
@@ -61,38 +61,38 @@ it('hides HEALTH.md, checklist, chat permissions, and save buttons', async () =>
 	expect(api.healthGetData).not.toHaveBeenCalled();
 });
 
-it('automatically saves enabled changes without writing HEALTH.md', async () => {
+it('automatically saves off without writing HEALTH.md', async () => {
 	const user = await openConfiguration();
-	await user.click(screen.getByRole('switch', { name: 'settings.health.fields.enabled' }));
+	await user.click(screen.getByRole('combobox', { name: 'settings.health.fields.every' }));
+	await user.click(screen.getByRole('option', { name: 'settings.storage.autoSync.off' }));
 	await waitFor(() => expect(api.healthSaveSettings).toHaveBeenCalledWith({ enabled: false }));
 	expect(api.healthSaveData).not.toHaveBeenCalled();
 });
 
-it('saves a cron draft on blur without a Save button', async () => {
-	await openConfiguration();
-	const field = screen.getByRole('textbox', { name: 'settings.health.fields.cronExpression' });
-	fireEvent.change(field, { target: { value: ' 0 9 * * 1-5 ' } });
-	expect(api.healthSaveSettings).not.toHaveBeenCalled();
-	fireEvent.blur(field);
+it('automatically saves selected schedules with the matching cron expression', async () => {
+	const user = await openConfiguration();
+	await user.click(screen.getByRole('combobox', { name: 'settings.health.fields.every' }));
+	await user.click(screen.getByRole('option', { name: 'settings.storage.autoSync.every1d' }));
 	await waitFor(() =>
-		expect(api.healthSaveSettings).toHaveBeenCalledWith({ cronExpression: '0 9 * * 1-5' })
+		expect(api.healthSaveSettings).toHaveBeenCalledWith({
+			enabled: true,
+			cronExpression: '0 3 * * *',
+		})
 	);
-	await waitFor(() => expect(field).toHaveValue('0 9 * * 1-5'));
 });
 
-it('shows invalid cron errors while preserving the draft for correction', async () => {
-	api.healthSaveSettings.mockRejectedValue(
-		new Error('Health schedule must be a valid cron expression.')
+it('shows save errors and restores the previously saved schedule', async () => {
+	api.healthSaveSettings.mockRejectedValue(new Error('Could not save schedule.'));
+	const user = await openConfiguration();
+	await user.click(screen.getByRole('combobox', { name: 'settings.health.fields.every' }));
+	await user.click(screen.getByRole('option', { name: 'settings.storage.autoSync.every1d' }));
+	await screen.findByText('Could not save schedule.');
+	expect(screen.getByRole('combobox', { name: 'settings.health.fields.every' })).toHaveTextContent(
+		'settings.storage.autoSync.every30m'
 	);
-	await openConfiguration();
-	const field = screen.getByRole('textbox', { name: 'settings.health.fields.cronExpression' });
-	fireEvent.change(field, { target: { value: 'invalid' } });
-	fireEvent.blur(field);
-	await screen.findByText('Health schedule must be a valid cron expression.');
-	expect(field).toHaveValue('invalid');
 });
 
-it('shows cron scheduling separately while model settings are collapsed', async () => {
+it('shows a separate scheduling select while model settings are collapsed', async () => {
 	render(
 		<MemoryRouter>
 			<HealthPage />
@@ -100,9 +100,7 @@ it('shows cron scheduling separately while model settings are collapsed', async 
 	);
 	await screen.findByRole('heading', { name: 'settings.health.fields.cronScheduling' });
 	expect(
-		screen.getByRole('switch', { name: 'settings.health.fields.enabled' })
+		screen.getByRole('combobox', { name: 'settings.health.fields.every' })
 	).toBeInTheDocument();
-	expect(
-		screen.getByRole('textbox', { name: 'settings.health.fields.cronExpression' })
-	).toBeInTheDocument();
+	expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
 });

@@ -9,8 +9,6 @@ import {
 	ChevronRight,
 	Wrench,
 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -35,6 +33,7 @@ import {
 	SettingsRow,
 	SettingsSection,
 } from '../../../components';
+import { SYNC_INTERVALS } from '../../storage/constants';
 import { ModelProviderConfiguration } from '../../../components/model-configuration';
 
 function llmModelGroups(): ProviderModelGroup[] {
@@ -49,7 +48,6 @@ type HealthSettings = Awaited<ReturnType<typeof window.agent.healthGetSettings>>
 
 const HealthPage: React.FC = () => {
 	const { t } = useTranslation();
-	const [cronDraft, setCronDraft] = useState<string>();
 	const [settings, setSettings] = useState<HealthSettings | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -86,7 +84,6 @@ const HealthPage: React.FC = () => {
 		void window.agent
 			.healthSaveSettings(patch)
 			.then(() => {
-				if (patch.cronExpression !== undefined) setCronDraft(undefined);
 				setSaved(true);
 			})
 			.catch((err: unknown) => {
@@ -113,6 +110,12 @@ const HealthPage: React.FC = () => {
 		selectedModel?.metadata?.documentationStatus === 'verified'
 			? selectedModel.metadata.inputs
 			: {};
+	const intervalValue = !settings?.enabled
+		? 'off'
+		: settings.cronExpression === '* * * * *'
+			? 'every1m'
+			: (SYNC_INTERVALS.find((interval) => interval.cron === settings.cronExpression)?.key ??
+				'custom');
 	const targetOptions =
 		settings && settings.target !== 'none' && settings.target !== 'last'
 			? (['none', 'last', settings.target] as const)
@@ -340,33 +343,53 @@ const HealthPage: React.FC = () => {
 					<SettingsSection title={t('settings.health.fields.cronScheduling')}>
 						<SettingsPanel>
 							<SettingsRow
-								title={t('settings.health.fields.enabled')}
+								title={t('settings.health.fields.every')}
+								className="border-b-0"
 								actions={
-									<Switch
-										checked={settings.enabled}
-										onCheckedChange={(enabled) => updateAndSave({ enabled })}
-										disabled={saving}
-										aria-label={t('settings.health.fields.enabled')}
-									/>
-								}
-							/>
-							<SettingsRow
-								title={t('settings.health.fields.cronExpression')}
-								actions={
-									<Input
-										value={cronDraft ?? settings.cronExpression}
-										className="h-7 w-44 font-mono text-xs"
-										aria-label={t('settings.health.fields.cronExpression')}
-										disabled={saving}
-										onChange={(event) => setCronDraft(event.target.value)}
-										onBlur={() => {
-											if (cronDraft !== undefined && cronDraft !== settings.cronExpression)
-												updateAndSave({ cronExpression: cronDraft.trim().replace(/\s+/g, ' ') });
+									<Select
+										value={intervalValue}
+										onValueChange={(value) => {
+											if (value === 'off') updateAndSave({ enabled: false });
+											else {
+												const cronExpression =
+													value === 'every1m'
+														? '* * * * *'
+														: SYNC_INTERVALS.find((interval) => interval.key === value)?.cron;
+												if (cronExpression) updateAndSave({ enabled: true, cronExpression });
+											}
 										}}
-										onKeyDown={(event) => {
-											if (event.key === 'Enter') event.currentTarget.blur();
-										}}
-									/>
+										disabled={saving}
+									>
+										<SelectTrigger
+											size="sm"
+											className="w-56 max-w-full text-xs"
+											aria-label={t('settings.health.fields.every')}
+										>
+											<SelectValue>
+												{t(
+													intervalValue === 'every1m'
+														? 'settings.health.fields.everyMinute'
+														: `settings.storage.autoSync.${intervalValue}`
+												)}
+											</SelectValue>
+										</SelectTrigger>
+										<SelectContent>
+											<SelectItem value="off">{t('settings.storage.autoSync.off')}</SelectItem>
+											<SelectItem value="every1m">
+												{t('settings.health.fields.everyMinute')}
+											</SelectItem>
+											{SYNC_INTERVALS.map((interval) => (
+												<SelectItem key={interval.key} value={interval.key}>
+													{t(`settings.storage.autoSync.${interval.key}`)}
+												</SelectItem>
+											))}
+											{intervalValue === 'custom' && (
+												<SelectItem value="custom" disabled>
+													{t('settings.storage.autoSync.custom')}
+												</SelectItem>
+											)}
+										</SelectContent>
+									</Select>
 								}
 							/>
 						</SettingsPanel>
