@@ -18,7 +18,13 @@ export async function buildWorkspaceContext(
 		const bootstrap = await readBootstrap(resolvedWorkspacePath);
 		const existing = profiles
 			.filter(([, content]) => content.trim())
-			.map(([name, content]) => `### ${name.slice(0, -3)}\n${content.trim().replace(/^#\s+(?:IDENTITY|SOUL|USER)\.md[^\n]*(?:\n|$)/i, '').trim()}`)
+			.map(
+				([name, content]) =>
+					`### ${name.slice(0, -3)}\n${content
+						.trim()
+						.replace(/^#\s+(?:IDENTITY|SOUL|USER)\.md[^\n]*(?:\n|$)/i, '')
+						.trim()}`
+			)
 			.join('\n\n');
 		return `# Agent runtime context\n\n${buildRuntimeTools(tools, eligibleTools)}\n\n# Bootstrap\nComplete the assistant setup before ordinary chat. Missing profile content: ${missing.map((name) => name.slice(0, -3).toLowerCase()).join(', ')}. The application checked these modules; do not call get_identity, get_soul, or get_user to discover what is missing. Use the update tools to save complete content for each missing module. Do not call complete_bootstrap until all three modules have content.\n\n${bootstrap}\n\n${existing}`;
 	}
@@ -32,14 +38,26 @@ export async function buildWorkspaceContext(
 		.filter(([, content]) => content.trim())
 		.map(([name, content]) =>
 			name === 'USER.md'
-				? `### USER\nUse \`update_user\` to change the user's name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n${content.trim().replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '').trim()}`
+				? `### USER\nUse \`update_user\` to change the user's name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n${content
+						.trim()
+						.replace(/^#\s+USER\.md[^\n]*(?:\n|$)/i, '')
+						.trim()}`
 				: name === 'IDENTITY.md'
-					? `### IDENTITY\nUse \`update_identity\` to change the assistant's name, role, avatar, or identity.\n${content.trim().replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/i, '').trim()}`
-				: name === 'SOUL.md'
-					? `### SOUL\nUse \`update_soul\` to change the assistant's tone, boundaries, or interaction style.\n${content.trim().replace(/^#\s+SOUL\.md[^\n]*(?:\n|$)/i, '').trim()}`
-					: name === 'MEMORY.md'
-						? `### MEMORY\nUse memory as durable background context about the user, preferences, projects, and prior decisions. Apply it only when relevant. Prefer the current user request and live tool results when they conflict with memory. Do not edit memory directly; the memory module maintains it.\n${content.trim().replace(/^#\s+MEMORY(?:\.md)?[^\n]*(?:\n|$)/i, '').trim()}`
-				: `### ${name}\n${content.trim()}`
+					? `### IDENTITY\nUse \`update_identity\` to change the assistant's name, role, avatar, or identity.\n${content
+							.trim()
+							.replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/i, '')
+							.trim()}`
+					: name === 'SOUL.md'
+						? `### SOUL\nUse \`update_soul\` to change the assistant's tone, boundaries, or interaction style.\n${content
+								.trim()
+								.replace(/^#\s+SOUL\.md[^\n]*(?:\n|$)/i, '')
+								.trim()}`
+						: name === 'MEMORY.md'
+							? `### MEMORY\nUse memory as durable background context about the user, preferences, projects, and prior decisions. Apply it only when relevant. Prefer the current user request and live tool results when they conflict with memory. Do not edit memory directly; the memory module maintains it.\n${content
+									.trim()
+									.replace(/^#\s+MEMORY(?:\.md)?[^\n]*(?:\n|$)/i, '')
+									.trim()}`
+							: `### ${name}\n${content.trim()}`
 		);
 	if (sections.length === 0) return '';
 	const introduction = `# Agent runtime context
