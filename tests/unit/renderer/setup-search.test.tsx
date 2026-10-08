@@ -39,3 +39,20 @@ it('shows a configured search engine selection', async () => {
 		expect(screen.getByRole('combobox', { name: 'Search Engine' })).toHaveTextContent('Brave')
 	);
 });
+
+it('refreshes available search engines after provider credentials are saved', async () => {
+	searchApi.getSettings.mockResolvedValue({
+		engineId: null,
+		configured: { brave: false, tavily: false },
+	});
+	const { rerender } = render(<SetupSearch />);
+	await waitFor(() => expect(searchApi.getSettings).toHaveBeenCalled());
+	rerender(
+		<SetupSearch
+			providerSettings={{ engineId: 'brave', configured: { brave: true, tavily: false } } as never}
+		/>
+	);
+	await waitFor(() =>
+		expect(screen.getByRole('combobox', { name: 'Search Engine' })).toHaveTextContent('Brave')
+	);
+});

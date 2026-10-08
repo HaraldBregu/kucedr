@@ -1,9 +1,12 @@
-import { act, renderHook } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import {
 	loadModelServiceState,
 	useSetupModelServices,
 } from '../../../src/renderer/src/pages/start/hooks/useSetupModelServices';
-import { createInitialModelServiceState } from '../../../src/renderer/src/pages/start/setupConstants';
+import {
+	createInitialModelServiceState,
+	MODEL_SERVICE_DEFINITIONS,
+} from '../../../src/renderer/src/pages/start/setupConstants';
 import type { ModelServiceDefinition } from '../../../src/renderer/src/pages/start/setupTypes';
 import type { SetupState } from '../../../src/renderer/src/pages/start/state/setupState';
 
@@ -121,4 +124,38 @@ describe('onboarding model service state', () => {
 			transcriptionModel.id
 		);
 	});
+});
+
+it('loads models on chat entry and retains them when moving between chat and voice', async () => {
+	const spies = MODEL_SERVICE_DEFINITIONS.flatMap((service) => [
+		jest.spyOn(service, 'getSelection').mockResolvedValue(undefined),
+		jest.spyOn(service, 'loadModelGroups').mockResolvedValue(modelGroups),
+	]);
+	const state: SetupState = {
+		step: 'chat',
+		serviceStates: createInitialModelServiceState(),
+		loadingModels: false,
+		savingConfig: false,
+		errorMessage: '',
+	};
+	const dispatch = jest.fn();
+	try {
+		const { rerender } = renderHook(
+			({ step }: { step: SetupState['step'] }) =>
+				useSetupModelServices({ ...state, step }, dispatch),
+			{ initialProps: { step: 'chat' } }
+		);
+		await waitFor(() =>
+			expect(dispatch).toHaveBeenCalledWith(
+				expect.objectContaining({ type: 'LOAD_SERVICE_STATES' })
+			)
+		);
+		rerender({ step: 'voice' });
+		rerender({ step: 'chat' });
+		expect(
+			dispatch.mock.calls.filter(([action]) => action.type === 'LOAD_SERVICE_STATES')
+		).toHaveLength(1);
+	} finally {
+		spies.forEach((spy) => spy.mockRestore());
+	}
 });
