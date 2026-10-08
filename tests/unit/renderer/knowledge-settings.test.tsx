@@ -726,11 +726,11 @@ it('links directly to embedding and database provider configuration', async () =
 			<KnowledgePage />
 		</MemoryRouter>
 	);
-	expect(await screen.findByRole('link', { name: 'Configure models' })).toHaveAttribute(
+	expect(await screen.findByRole('button', { name: 'Configure models' })).toHaveAttribute(
 		'href',
 		'/settings/providers/models'
 	);
-	expect(screen.getByRole('link', { name: 'Configure databases' })).toHaveAttribute(
+	expect(screen.getByRole('button', { name: 'Configure databases' })).toHaveAttribute(
 		'href',
 		'/settings/providers/database'
 	);
