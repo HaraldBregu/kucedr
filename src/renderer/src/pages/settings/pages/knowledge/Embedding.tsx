@@ -44,6 +44,8 @@ export default function Embedding({ knowledge }: { knowledge: KnowledgeState }):
 					title={t('settings.knowledge.embeddingModelTitle')}
 					description={t('settings.knowledge.embeddingModelDescription')}
 					icon={BrainCircuit}
+					className="sm:grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto]"
+					actionClassName="sm:ml-0 sm:w-full sm:justify-start lg:ml-auto lg:w-auto lg:justify-end"
 					actions={
 						<Select
 							value={

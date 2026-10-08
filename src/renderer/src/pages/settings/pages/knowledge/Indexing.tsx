@@ -121,6 +121,8 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 				<SettingsRow
 					title={t('settings.knowledge.scheduleFrequency')}
 					description={t('settings.knowledge.scheduleDescription')}
+					className="sm:grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto]"
+					actionClassName="sm:ml-0 sm:w-full sm:justify-start lg:ml-auto lg:w-auto lg:justify-end"
 					actions={
 						<Select
 							value={customSchedule ? 'custom' : scheduleValue}
@@ -169,6 +171,8 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 					<SettingsRow
 						title={t('settings.knowledge.cronExpression')}
 						description={t('settings.knowledge.cronDescription')}
+						className="sm:grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto]"
+						actionClassName="sm:ml-0 sm:w-full sm:justify-start lg:ml-auto lg:w-auto lg:justify-end"
 						actions={
 							<Input
 								value={cron}
@@ -187,6 +191,8 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 				{(configuration?.scheduleEnabled || customSchedule) && (
 					<SettingsRow
 						title={t('settings.knowledge.timezone')}
+						className="sm:grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto]"
+						actionClassName="sm:ml-0 sm:w-full sm:justify-start lg:ml-auto lg:w-auto lg:justify-end"
 						actions={
 							<Input
 								value={timezone}

@@ -50,6 +50,8 @@ export default function Storage({ knowledge }: { knowledge: KnowledgeState }): J
 					title={t('settings.knowledge.databaseTitle')}
 					description={t('settings.knowledge.databaseDescription')}
 					icon={Database}
+					className="sm:grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto]"
+					actionClassName="sm:ml-0 sm:w-full sm:justify-start lg:ml-auto lg:w-auto lg:justify-end"
 					actions={
 						<Select
 							value={
@@ -98,6 +100,8 @@ export default function Storage({ knowledge }: { knowledge: KnowledgeState }): J
 				<SettingsRow
 					title={t('settings.knowledge.indexName')}
 					description={t('settings.knowledge.indexNameDescription')}
+					className="sm:grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto]"
+					actionClassName="sm:ml-0 sm:w-full sm:justify-start lg:ml-auto lg:w-auto lg:justify-end"
 					actions={
 						<Input
 							value={indexName}
