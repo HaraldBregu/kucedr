@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { SetupStepHeader } from './SetupStepHeader';
+import { SetupCompaction } from './SetupCompaction';
 import { SetupService, type SetupAssistantProps } from './SetupService';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
 
@@ -62,6 +63,7 @@ export function SetupChatStep({
 								disabled={loadingModels || savingConfig}
 								onChange={onServiceChange}
 							/>
+							<SetupCompaction modelGroups={assistantModelGroups.map((group) => ({ ...group, models: group.models.filter((model) => model.id !== 'local') }))} disabled={loadingModels || savingConfig} />
 						</CardContent>
 					</Card>
 				</section>
