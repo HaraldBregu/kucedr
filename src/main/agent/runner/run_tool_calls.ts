@@ -4,6 +4,7 @@ import { runToolCall, type ToolCallSecurityContext } from './run_tool_call';
 import type { KeyedMutex } from '../mutex';
 import type { FileHistory } from '../history/types';
 import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
+import { mcpAuthorizationRequired } from './mcp_authorization_required';
 
 export async function* runToolCalls(
 	tools: Tool[],
@@ -15,8 +16,9 @@ export async function* runToolCalls(
 	history?: FileHistory
 ): AsyncGenerator<RuntimeEvent, void> {
 	for (const toolCall of toolCalls) {
+		const tool = tools.find((candidate) => candidate.id === toolCall.name);
 		for await (const event of runToolCall(
-			tools.find((tool) => tool.id === toolCall.name),
+			tool,
 			toolCall,
 			signal,
 			context,
@@ -26,6 +28,6 @@ export async function* runToolCalls(
 		)) {
 			yield event;
 		}
-		if (signal?.aborted || mcpAuthorizationStopped(toolCall)) break;
+		if (signal?.aborted || mcpAuthorizationStopped(toolCall) || mcpAuthorizationRequired(tool, toolCall.result?.content)) break;
 	}
 }
