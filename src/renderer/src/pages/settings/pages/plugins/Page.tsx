@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MoreHorizontal, Plus, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
 import type {
@@ -16,6 +16,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { databases, mcps, storages } from '@/lib/providers';
 import {
@@ -37,6 +38,7 @@ const PluginsPage = (): React.JSX.Element => {
 	});
 	const [savingId, setSavingId] = useState<string | null>(null);
 	const [error, setError] = useState('');
+	const [query, setQuery] = useState('');
 	const [selectedMicrosoft, setSelectedMicrosoft] = useState<CatalogService | null>(null);
 	const catalog = mcps();
 	const databaseCatalog = databases();
@@ -46,8 +48,20 @@ const PluginsPage = (): React.JSX.Element => {
 		...databaseCatalog.map((entry) => ({ kind: 'database' as const, entry })),
 		...storageCatalog.map((entry) => ({ kind: 'storage' as const, entry })),
 	];
+	const normalizedQuery = query.trim().toLocaleLowerCase();
 	const providerSections = new Map<string, { name: string; plugins: (typeof plugins)[number][] }>();
 	for (const plugin of plugins) {
+		if (
+			normalizedQuery &&
+			![
+				plugin.entry.name,
+				plugin.entry.description ?? '',
+				plugin.entry.id,
+				plugin.entry.provider.name,
+			].some((value) => value.toLocaleLowerCase().includes(normalizedQuery))
+		) {
+			continue;
+		}
 		const section = providerSections.get(plugin.entry.provider.id);
 		if (section) section.plugins.push(plugin);
 		else {
@@ -137,6 +151,22 @@ const PluginsPage = (): React.JSX.Element => {
 			<SettingsPageHeader
 				title={t('settings.integrations.title')}
 				description={t('settings.integrations.description')}
+				action={
+					<div className="relative w-full sm:w-64">
+						<Search
+							className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+							aria-hidden="true"
+						/>
+						<Input
+							type="search"
+							value={query}
+							onChange={(event) => setQuery(event.target.value)}
+							placeholder={t('settings.integrations.searchPlaceholder')}
+							aria-label={t('settings.integrations.search')}
+							className="pl-9"
+						/>
+					</div>
+				}
 			/>
 			{error && <SettingsNotice variant="destructive">{error}</SettingsNotice>}
 			<MicrosoftConnect
@@ -151,7 +181,7 @@ const PluginsPage = (): React.JSX.Element => {
 				error={error}
 			/>
 
-			{plugins.length > 0 ? (
+			{providerSections.size > 0 ? (
 				<div className="-mx-4 space-y-8 pb-4">
 					{[...providerSections].map(([providerId, section]) => (
 						<section key={providerId} aria-labelledby={`plugin-provider-${providerId}`}>
@@ -318,8 +348,16 @@ const PluginsPage = (): React.JSX.Element => {
 				</div>
 			) : (
 				<SettingsEmptyState
-					title={t('settings.integrations.empty')}
-					description={t('settings.integrations.emptyDescription')}
+					title={
+						normalizedQuery
+							? t('settings.integrations.noResults')
+							: t('settings.integrations.empty')
+					}
+					description={
+						normalizedQuery
+							? t('settings.integrations.noResultsDescription')
+							: t('settings.integrations.emptyDescription')
+					}
 				/>
 			)}
 		</SettingsPageShell>

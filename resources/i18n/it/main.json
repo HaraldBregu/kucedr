@@ -346,6 +346,8 @@
 		"integrations": {
 			"title": "Plugin",
 			"description": "Collega i servizi che Kucedr può usare per tuo conto.",
+			"search": "Cerca plugin",
+			"searchPlaceholder": "Cerca plugin...",
 			"databaseType": "Database {{type}}",
 			"storageType": "Archiviazione compatibile con S3",
 			"details": "Dettagli",
@@ -376,7 +378,9 @@
 			"available": "Integrazioni disponibili",
 			"availableDescription": "Aggiungi un servizio per rendere disponibili i suoi strumenti all'assistente.",
 			"empty": "Nessun plugin disponibile",
-			"emptyDescription": "Nessun plugin trovato nel catalogo provider."
+			"emptyDescription": "Nessun plugin trovato nel catalogo provider.",
+			"noResults": "Nessun plugin trovato",
+			"noResultsDescription": "Prova un nome di plugin o provider diverso."
 		},
 		"breadcrumb": {
 			"label": "Navigazione impostazioni",

@@ -346,6 +346,8 @@
 		"integrations": {
 			"title": "Plugins",
 			"description": "Connect the services Kucedr can use on your behalf.",
+			"search": "Search plugins",
+			"searchPlaceholder": "Search plugins...",
 			"databaseType": "{{type}} database",
 			"storageType": "S3-compatible storage",
 			"details": "Details",
@@ -376,7 +378,9 @@
 			"available": "Available integrations",
 			"availableDescription": "Add a service to make its tools available to the assistant.",
 			"empty": "No plugins available",
-			"emptyDescription": "No plugins were found in the provider catalog."
+			"emptyDescription": "No plugins were found in the provider catalog.",
+			"noResults": "No plugins found",
+			"noResultsDescription": "Try a different plugin or provider name."
 		},
 		"breadcrumb": {
 			"label": "Settings navigation",

@@ -181,6 +181,25 @@ it('renders the plugin providers with descriptions', async () => {
 	expect(screen.queryByRole('button', { name: /edit/i })).not.toBeInTheDocument();
 });
 
+it('filters plugins and hides provider sections without matches', async () => {
+	const user = userEvent.setup();
+	render(<PluginsPage />);
+
+	await user.type(
+		screen.getByRole('searchbox', { name: 'settings.integrations.search' }),
+		'Outlook Mail'
+	);
+
+	const microsoftSection = screen.getByRole('region', { name: 'Microsoft' });
+	expect(within(microsoftSection).getByText('Outlook Mail')).toBeInTheDocument();
+	expect(within(microsoftSection).queryByText('Microsoft 365 Search')).not.toBeInTheDocument();
+	expect(screen.queryByRole('region', { name: 'Google' })).not.toBeInTheDocument();
+
+	await user.clear(screen.getByRole('searchbox', { name: 'settings.integrations.search' }));
+	await user.type(screen.getByRole('searchbox', { name: 'settings.integrations.search' }), 'missing');
+	expect(screen.getByText('settings.integrations.noResults')).toBeInTheDocument();
+});
+
 it('enables an integration without opening configuration UI', async () => {
 	const user = userEvent.setup();
 	render(<PluginsPage />);
