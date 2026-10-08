@@ -49,6 +49,46 @@ it('shows a lightbulb beside the active Thinking label', () => {
 	expect(container.querySelector('.lucide-lightbulb')).toBeInTheDocument();
 });
 
+it('shows a failed MCP tool before its authorization request', () => {
+	const { container } = render(
+		<AssistantMessage
+			message={{
+				...message('', [
+					{
+						toolCallId: 'gmail-call',
+						type: 'mcp__gmail__search',
+						state: 'output-error',
+						displayName: 'Search Gmail',
+						output: { status: 'authorization_required' },
+					},
+					{
+						toolCallId: 'gmail-auth',
+						type: 'request_mcp_authorization',
+						state: 'input-available',
+						input: { serverId: 'gmail', toolName: 'Search Gmail' },
+					},
+				]),
+				pendingUserInput: {
+					requestId: 'request',
+					runId: 'run',
+					toolCallId: 'gmail-auth',
+					inputFingerprint: 'fingerprint',
+					expiresAt: new Date(Date.now() + 60_000).toISOString(),
+					questions: [
+						{ id: 'mcp-authorization', header: 'MCP', question: 'Authorize Gmail?', options: [] },
+					],
+				},
+			}}
+		/>
+	);
+
+	const failedCall = screen.getByText('Search Gmail');
+	const authorization = screen.getByText('Authorize gmail');
+	expect(failedCall.compareDocumentPosition(authorization) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+	expect(container.querySelector('[aria-label="Failed"]')).toBeInTheDocument();
+	expect(screen.getByText('After authorization, Search Gmail will be retried automatically.')).toBeInTheDocument();
+});
+
 it('does not load an arbitrary absolute image path from assistant Markdown', () => {
 	render(<AssistantMessage message={message('![private](/Users/alice/private.png)')} />);
 
