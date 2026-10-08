@@ -57,6 +57,7 @@ export function mcpTool(
 					const server = getMcpServers()[serverId];
 					if (
 						server?.type === 'http' &&
+						!server.token &&
 						(!findMcpService(server.url)?.oauth?.credentials_required || server.client_id)
 					) {
 						await resetConnection?.();

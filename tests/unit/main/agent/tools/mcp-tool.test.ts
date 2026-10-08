@@ -79,13 +79,15 @@ describe('mcpTool', () => {
 	it('turns an MCP authorization failure into an in-chat authorization request', async () => {
 		getMcpServersMock.mockReturnValue({ safe: { type: 'http', name: 'Documents', url: 'https://mcp.example' } });
 		callToolMock.mockRejectedValue(new UnauthorizedError());
-		const configured = mcpTool(client, 'lookup', '', schema, 'safe', 'never');
+		const resetConnection = jest.fn().mockResolvedValue(undefined);
+		const configured = mcpTool(client, 'lookup', '', schema, 'safe', 'never', undefined, false, resetConnection);
 
 		await expect(configured.run({ query: 'Kucedr' })).resolves.toEqual({
 			status: 'authorization_required',
 			serverId: 'safe',
 			serverName: 'Documents',
 		});
+		expect(resetConnection).toHaveBeenCalledTimes(1);
 	});
 
 	it('recognizes an unauthorized MCP tool result after the tools were listed', async () => {
