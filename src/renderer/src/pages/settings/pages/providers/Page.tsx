@@ -382,7 +382,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									entry.savedApiKey ? '************' : t('settings.providers.apiKeyPlaceholder')
 								}
 								spellCheck={false}
-								type="text"
+								type="password"
 								value={entry.apiKey}
 							/>
 							<Button
@@ -554,7 +554,7 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									disabled={saving}
 									placeholder={customProvider.savedApiKey ? '************' : 'ollama'}
 									spellCheck={false}
-									type="text"
+									type="password"
 									value={customProvider.apiKey}
 									onChange={(event) =>
 										setCustomProvider((current) => ({
