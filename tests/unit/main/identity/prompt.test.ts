@@ -43,12 +43,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			timezone: 'Europe/Rome',
 			projects: 'A personal history book Alice chose to share.',
 		});
-		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference', [
-			{ id: 'read', category: 'core' },
-			{ id: 'bash', category: 'core' },
-			{ id: 'update_identity', category: 'bootstrap' },
-			{ id: 'tool_search', category: 'core' },
-		] as never);
+		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
 		expect(complete).not.toContain('## Tools available in this runtime');
 		expect(complete).toContain('### BOOTSTRAP.md');
 		expect(complete).toContain('### MEMORY\nUse memory as durable background context');
@@ -68,9 +63,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		);
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
-		const voice = await buildWorkspaceContext(config, 'full', '', [
-			{ id: 'complete_bootstrap', category: 'bootstrap' },
-		] as never);
+		const voice = await buildWorkspaceContext(config, 'full');
 		expect(voice).toContain('### SOUL');
 		expect(voice).not.toContain('## Tools available in this runtime');
 		await completeBootstrapTool.run({});

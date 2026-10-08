@@ -17,6 +17,11 @@ describe('subagentTool', () => {
 		mockStream.mockReset();
 	});
 
+	it('categorizes single and parallel subagent tools as core', () => {
+		expect(subagentTool({ location: '/agent' }, [], { type: 'default' }).category).toBe('core');
+		expect(subagentsTool({ location: '/agent' }, [], { type: 'default' }).category).toBe('core');
+	});
+
 	it('ignores model-supplied system instructions', async () => {
 		mockStream.mockReturnValue(
 			(async function* () {

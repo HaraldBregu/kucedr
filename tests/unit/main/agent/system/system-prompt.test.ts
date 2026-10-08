@@ -76,25 +76,46 @@ describe('addToolsPrompt', () => {
 		expect(prompt).toContain(
 			'### System\nAsk the user for required input and work with local device capabilities such as the microphone, camera, and screen.'
 		);
-		expect(prompt).toContain('- `read` (read) — Read a file');
-		expect(prompt).toContain('- `write` (write)');
+		expect(prompt).toContain('- `read` (read) — Read a file _(Loaded.)_');
+		expect(prompt).toContain('- `write` (write) _(Loaded.)_');
 	});
 	it('flattens newlines in descriptions', () => {
 		const prompt = addToolsPrompt('base', [tool('x', 'line1\nline2')]);
 		expect(prompt).toContain('- `x` (x) — line1 line2');
 	});
-	it('omits MCP tools while retaining built-in tools', () => {
+	it('includes loaded native and MCP tools', () => {
 		const prompt = addToolsPrompt('base', [
 			tool('read', 'Read a file'),
 			tool('mcp__notion__notion-search', 'Search Notion'),
 		]);
-		expect(prompt).toContain('- `read` (read) — Read a file');
-		expect(prompt).not.toContain('mcp__notion__notion-search');
-		expect(prompt).not.toContain('Search Notion');
+		expect(prompt).toContain('- `read` (read) — Read a file _(Loaded.)_');
+		expect(prompt).toContain(
+			'- `mcp__notion__notion-search` (mcp__notion__notion-search) — Search Notion _(Loaded.)_'
+		);
 	});
-	it('does not add a tools section when only MCP tools are provided', () => {
+	it('adds the tools section when only MCP tools are loaded', () => {
 		const prompt = addToolsPrompt('base', [tool('mcp__notion__notion-search')]);
-		expect(prompt).toBe('base');
+		expect(prompt).toContain('## Tools');
+		expect(prompt).toContain('mcp__notion__notion-search');
+	});
+	it('shows loaded and discoverable tools in one section without duplicates', () => {
+		const read = tool('read', 'Read a file');
+		const prompt = addToolsPrompt('base', [read], [
+			read,
+			tool('write', 'Write a file'),
+			tool('mcp__notion__notion-search', 'Search Notion'),
+		]);
+
+		expect(prompt.match(/^## Tools$/gm)).toHaveLength(1);
+		expect(prompt).not.toContain('### Loaded tools');
+		expect(prompt).toContain('- `read` (read) — Read a file _(Loaded.)_');
+		expect(prompt).toContain(
+			'- `write` (write) — Write a file _(Available through `tool_search`.)_'
+		);
+		expect(prompt).toContain(
+			'- `mcp__notion__notion-search` (mcp__notion__notion-search) — Search Notion _(Available through `tool_search`.)_'
+		);
+		expect(prompt.match(/`read`/g)).toHaveLength(1);
 	});
 });
 

@@ -451,6 +451,11 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).not.toContain('# Memory\n');
 			expect(systemPrompt).not.toContain('## Tools available in this runtime');
 			expect(systemPrompt.match(/^## Tools$/gm)).toHaveLength(1);
+			expect(systemPrompt).not.toContain('### Loaded tools');
+			expect(systemPrompt).toContain('- `alpha` (Alpha) — Alpha tool _(Loaded.)_');
+			expect(systemPrompt).toContain(
+				'- `mcp__demo__beta` (Beta) — Beta tool _(Loaded.)_'
+			);
 			expect(
 				(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
 			).toEqual(['alpha', 'mcp__demo__beta']);
@@ -1442,12 +1447,14 @@ describe('run stream system prompt', () => {
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toEqual(['tool_search', 'bash']);
-		expect(runModelTurnMock.mock.calls[0][3]).not.toContain(
-			'## Tools available in this runtime'
+		expect(runModelTurnMock.mock.calls[0][3]).toContain(
+			'- `bash` (Bash) — Run a command _(Available through `tool_search`.)_'
 		);
-		expect(runModelTurnMock.mock.calls[1][3]).not.toContain(
-			'## Tools available in this runtime'
+		expect(runModelTurnMock.mock.calls[1][3]).toContain(
+			'- `bash` (Bash) — Run a command _(Loaded.)_'
 		);
+		expect(runModelTurnMock.mock.calls[0][3].match(/^## Tools$/gm)).toHaveLength(1);
+		expect(runModelTurnMock.mock.calls[1][3].match(/^## Tools$/gm)).toHaveLength(1);
 		expect(session.toolCalls.find((call) => call.id === 'find-bash')?.result?.content).toContain(
 			'"selectedToolIds":["bash"]'
 		);
@@ -1518,6 +1525,12 @@ describe('run stream system prompt', () => {
 		expect(
 			(runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)
 		).toContain(mcpTool.id);
+		expect(runModelTurnMock.mock.calls[0][3]).toContain(
+			'- `mcp__billing__invoices` (Invoices) — Find customer invoices _(Available through `tool_search`.)_'
+		);
+		expect(runModelTurnMock.mock.calls[1][3]).toContain(
+			'- `mcp__billing__invoices` (Invoices) — Find customer invoices _(Loaded.)_'
+		);
 		expect(execute).not.toHaveBeenCalled();
 	});
 
