@@ -11,6 +11,7 @@ import {
 	toResult,
 	type SessionState,
 	persist,
+	persistSystemPrompt,
 	sessionDir,
 } from '../session';
 import { goalContext } from '../goal/context';
@@ -465,6 +466,7 @@ async function* loop(
 				synthesisOnly ? [] : tools
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
+			persistSystemPrompt(session, systemPrompt);
 			const runtimeContext = activeGoalContext;
 			const messages = promptCapabilities
 				? projectPromptAttachments(session.messages, promptCapabilities)

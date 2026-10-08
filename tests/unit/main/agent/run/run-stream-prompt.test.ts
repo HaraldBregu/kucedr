@@ -345,7 +345,9 @@ describe('run stream system prompt', () => {
 			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 			const session = createSessionState();
-			session.id = 'session';
+			session.id = '11111111-1111-4111-8111-111111111111';
+			session.folderName = session.id;
+			session.sessionsPath = path.join(root, 'sessions');
 			session.messages = [{ role: 'user', content: 'Current request' }];
 
 			for await (const event of stream(
@@ -378,6 +380,12 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).toContain('### Loaded built-in\n- `alpha`');
 			expect(systemPrompt).toContain('### Loaded MCP\n- `mcp__demo__beta`');
 			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
+			expect(
+				await fs.readFile(path.join(session.sessionsPath, session.folderName, 'SYSTEM.md'), 'utf8')
+			).toBe(`${systemPrompt}\n`);
+			expect(
+				await fs.stat(path.join(session.sessionsPath, session.folderName, 'run.jsonl'))
+			).toBeDefined();
 			expect(memory.length).toBeGreaterThan(4_000);
 			expect(systemPrompt).toContain('- Memory 499');
 			expect(read).toHaveBeenCalledTimes(1);

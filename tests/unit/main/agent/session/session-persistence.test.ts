@@ -9,6 +9,7 @@ import { messagesBackupFilePath } from '../../../../../src/main/agent/session/se
 import { messagesFilePath } from '../../../../../src/main/agent/session/session_messages_file_path';
 import { createSessionState } from '../../../../../src/main/agent/session/session_module_state';
 import { persist } from '../../../../../src/main/agent/session/session_persist';
+import { persistSystemPrompt } from '../../../../../src/main/agent/session/session_persist_system';
 import { runFilePath } from '../../../../../src/main/agent/session/session_run_file_path';
 import { sessionsRoot } from '../../../../../src/main/agent/session/session_sessions_root';
 import { insertUserMessage } from '../../../../../src/main/agent/session/session_insert_user_message';
@@ -48,6 +49,20 @@ describe('session persistence', () => {
 		fs.utimesSync(runFilePath(state), runTime, runTime);
 		fs.utimesSync(directory, oldTime, oldTime);
 		expect(listSessions(location)[0].updatedAtMs).toBe(runTime.getTime());
+	});
+
+	it('stores the latest system prompt beside run.jsonl', () => {
+		const state = createSessionState();
+		state.id = SESSION_ID;
+		state.folderName = SESSION_ID;
+		state.sessionsPath = path.join(temporaryRoot, 'sessions');
+
+		persistSystemPrompt(state, 'First prompt');
+		persistSystemPrompt(state, 'Latest prompt');
+
+		const directory = path.join(state.sessionsPath, SESSION_ID);
+		expect(fs.readFileSync(path.join(directory, 'SYSTEM.md'), 'utf8')).toBe('Latest prompt\n');
+		expect(fs.existsSync(path.join(directory, 'run.jsonl'))).toBe(true);
 	});
 
 	it('deletes only the session folder matching the selected id', () => {
