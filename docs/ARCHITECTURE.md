@@ -47,16 +47,16 @@ searchable RAG index.
 
 RAG configuration selects source folders, an embedding provider/model, a vector database, and
 an index name. Indexing validates source paths, rejects symlinks and unsafe content, reads
-bounded UTF-8 text, and chunks it with source ranges. It requires explicit consent both for
-sending document text/search queries to the embedding provider and for storing plaintext chunks
-and vectors in the selected remote database. Consent is bound to the configured recipient.
+bounded UTF-8 text, and chunks it with exact source ranges and bounded overlap. Local SQLite is
+available independently of remote databases. Embedding access requires recipient-bound consent;
+remote mirroring separately requires consent for plaintext chunks, paths, and vectors.
 
-`rag_index.ts` embeds content, uploads a remote generation, and maintains the local SQLite
+`rag_index.ts` reuses unchanged source embeddings, optionally uploads a remote generation, and atomically maintains the local SQLite
 index. `rag_search.ts` embeds the query and searches local vectors, returning source paths,
 line ranges, checksums, timestamps, text, and scores. The `query_knowledge` tool returns these
 results as evidence, or an explicit limitation/abstention when disabled or empty. Local vector
 search therefore still involves the selected embedding service for each query. The current
-tool is not an automatic cited-wiki compiler.
+tool is not an automatic cited-wiki compiler. Provider adapters preserve input order, use document/query task modes, reject malformed vectors and silent truncation, and bound request batches. Published manifests track embedding recipients and source folders separately for each index; searches reject stale selections. Manual and cron runs use one cancellable coordinator with status and timezone-aware scheduling while the app is running.
 
 ## Local data
 

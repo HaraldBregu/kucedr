@@ -1941,7 +1941,7 @@
 			"status": {
 				"idle": "Not indexed",
 				"running": "Indexing…",
-				"completed": "Index up to date",
+				"completed": "Index ready",
 				"failed": "Indexing failed",
 				"cancelled": "Indexing cancelled",
 				"stale": "Rebuild required"
@@ -1974,7 +1974,7 @@
 			"searchQuery": "Test query",
 			"searchRequiresIndex": "Run indexing with the selected settings before testing search.",
 			"minimumScore": "Minimum similarity",
-			"minimumScoreDescription": "Only return matches above this score. Scores vary by model; use 0 to include all positive matches.",
+			"minimumScoreDescription": "Return positive matches at or above this score. Scores vary by model; use 0 to include all positive matches.",
 			"removeFolderPath": "Remove {{folder}}"
 		},
 		"dataControls": {

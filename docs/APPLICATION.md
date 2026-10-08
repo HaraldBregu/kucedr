@@ -85,14 +85,14 @@ Folder retrieval, also called retrieval-augmented generation (RAG), indexes sele
 
 To configure folder retrieval:
 
-1. Connect the supported database account in Providers and an embedding provider in Models.
-2. Open Knowledge and explicitly select the database and embedding model.
+1. Configure an embedding provider in Providers → Models.
+2. Open Knowledge and select the embedding model and Local SQLite, or a supported remote database mirror. Remote mirroring also requires an account key in Providers → Database.
 3. Set the index name and choose source folders with the folder picker.
-4. Enable indexing and approve the displayed embedding and remote-mirror disclosures for those selections.
-5. Index the folders, inspect the result, and use the search field to verify expected passages and paths.
-6. Enable an indexing schedule only after the manual run succeeds.
+4. Enable Knowledge and approve embedding access. Approve remote storage too if using a remote mirror.
+5. Run indexing, inspect the published model and dimensions, and test a query to verify expected passages and paths. Minimum similarity filters results; scores vary by model.
+6. Choose an indexing frequency or custom cron expression and timezone. The next run is displayed; scheduled jobs run while Kucedr is running. Manual and scheduled runs share a single job and can be cancelled.
 
-Retrieval queries search a local SQLite index after sending the query to the selected embedding service. Indexing can send source text to the embedding provider and mirror data remotely; changing the selected recipient can require renewed consent. Export and purge controls are scoped to the displayed local or remote data. Read the selected scope before using Purge.
+Retrieval queries search a local SQLite index using the same model that created its vectors. Unchanged files reuse embeddings; changed files are embedded again and deleted files leave the next generation. A failed scan preserves the previous index; a successful empty scan clears local results. Model, endpoint, and source selection changes require a rebuild. Consent is bound to the configured service and account. Export and purge controls are scoped to the displayed local or remote data. Read the selected scope before using Purge.
 
 ## Connect external capabilities
 

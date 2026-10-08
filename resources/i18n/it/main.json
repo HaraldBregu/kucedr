@@ -1941,7 +1941,7 @@
 			"status": {
 				"idle": "Non indicizzato",
 				"running": "Indicizzazione…",
-				"completed": "Indice aggiornato",
+				"completed": "Indice pronto",
 				"failed": "Indicizzazione non riuscita",
 				"cancelled": "Indicizzazione annullata",
 				"stale": "Aggiornamento richiesto"
@@ -1974,7 +1974,7 @@
 			"searchQuery": "Query di prova",
 			"searchRequiresIndex": "Indicizza con le impostazioni selezionate prima di provare la ricerca.",
 			"minimumScore": "Similarità minima",
-			"minimumScoreDescription": "Restituisci solo risultati con un punteggio superiore. I punteggi variano per modello; usa 0 per includere tutti i risultati positivi.",
+			"minimumScoreDescription": "Restituisci risultati positivi con un punteggio pari o superiore. I punteggi variano per modello; usa 0 per includere tutti i risultati positivi.",
 			"removeFolderPath": "Rimuovi {{folder}}"
 		},
 		"dataControls": {

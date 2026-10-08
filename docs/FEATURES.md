@@ -498,8 +498,7 @@ There are no bundled app source folders in this checkout. The built-in Workspace
   confirmation and replaces matching files while retaining unrelated local files.
 - Account authentication is separate from provider-backed folder backup. The current checkout
   does not implement encrypted provider-key synchronization. See [Cloud architecture](CLOUD.md) for their current boundaries.
-- Assistant RAG requires an explicit database selection from configured provider accounts and
-  consent for embeddings and remote mirroring. Queries use the local SQLite index.
+- Knowledge supports local SQLite and an optional configured remote mirror, with separate embedding and remote-storage consent. Queries use the local index and its embedding model. Scheduled refreshes run in the background while Kucedr is open, with cancellation and run status.
 
 ### Application preferences
 
