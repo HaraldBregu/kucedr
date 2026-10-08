@@ -13,6 +13,7 @@ import { storageTarget } from './storage_target';
 import { storageWrite } from './storage_write';
 import { preserveRestoreTarget } from './recovery';
 import { downloadSnapshot } from './download';
+import { isProtectedStoragePath } from './storage_protected';
 
 export async function pullFiles(
 	store: StorageObjectStore,
@@ -57,6 +58,7 @@ export async function pullFiles(
 						throw new Error('Cloud restore files must be no larger than 50 MiB.');
 					}
 					const target = await storageTarget(entryPath, item.key, prefix);
+					if (isProtectedStoragePath(target)) throw new Error('Backup targets a protected application folder.');
 					await fs.mkdir(path.dirname(target), { recursive: true });
 					const data = await getObject(store, item.key);
 					if (data.byteLength > STORAGE_MAX_OBJECT_BYTES) {
