@@ -1265,47 +1265,23 @@
 		},
 		"storage": {
 			"configurationTitle": "Storage setup",
-			"description": "Back up selected folders to Amazon S3 or any S3-compatible storage provider.",
-			"versioned": {
-				"title": "Version history sync",
-				"description": "Save immutable local snapshots, then publish verified versions through Supabase and S3. Existing backups stay available.",
-				"enable": "Enable version history sync",
-				"enableDescription": "Optional: Supabase stores version metadata and the selected S3-compatible provider stores file content. Pending edits remain on this device until published.",
-				"syncNow": "Sync versions now",
-				"catchUp": "Fetch remote versions",
-				"catchUpDescription": "Download and verify remote versions into the local cache. Existing working files are kept for conflict review.",
-				"conflicts": "Unresolved conflicts",
-				"conflictsDescription": "Concurrent versions or files claiming the same path need review.",
-				"deleted": "Deleted file",
-				"backup": {
-					"running": "Version sync is running…",
-					"succeeded": "Saved local snapshots and published available versions.",
-					"partial": "Saved locally / Pending upload: {{failed}} workspace(s) need retry.",
-					"failed": "Version sync failed. {{error}}"
-				},
-				"restore": {
-					"running": "Fetching remote versions…",
-					"succeeded": "Remote versions are cached locally.",
-					"partial": "Remote versions were cached; {{failed}} workspace(s) need attention.",
-					"failed": "Could not fetch remote versions. {{error}}"
-				}
-			},
+			"description": "Upload and download folders with Amazon S3 or any S3-compatible storage provider.",
 			"sync": {
-				"title": "Folders to back up",
-				"description": "Keep a backup of these folders in your storage bucket.",
+				"title": "Folders",
+				"description": "Upload these folders directly to your storage bucket.",
 				"addFolders": "Add folders",
-				"empty": "Add folders to start backing up.",
+				"empty": "Add folders to start uploading.",
 				"folder": "Selected folder",
 				"removeFolder": "Remove folder"
 			},
-			"syncSaved": "Backup settings saved.",
+			"syncSaved": "Storage settings saved.",
 			"autoSync": {
-				"sectionTitle": "Backup schedule",
-				"sectionDescription": "Automatic backups run while Kucedr is open.",
-				"description": "Back up the selected folders automatically on a schedule.",
+				"sectionTitle": "Automatic uploads",
+				"sectionDescription": "Scheduled uploads run while Kucedr is open.",
+				"description": "Upload the selected folders on a schedule.",
 				"cronExpression": "Cron expression",
 				"cronDescription": "Five-field cron schedule in local time. For example, 0 3 * * * runs daily at 03:00.",
-				"interval": "Backup interval",
+				"interval": "Upload interval",
 				"off": "Off",
 				"every15m": "Every 15 minutes",
 				"every30m": "Every 30 minutes",
@@ -1319,53 +1295,45 @@
 				"custom": "Custom schedule"
 			},
 			"errors": {
-				"versioned": "Could not change version history sync. Check account sign-in and sync service setup.",
 				"load": "Could not load storage settings.",
 				"pickFolders": "Could not select folders.",
-				"saveSync": "Could not save backup settings.",
-				"push": "Could not back up files.",
-				"pull": "Could not restore files."
+				"saveSync": "Could not save storage settings.",
+				"push": "Could not upload files.",
+				"pull": "Could not download files."
 			},
 			"folders": {
 				"agent": "Assistant workspace",
 				"sessions": "Assistant conversations",
 				"skills": "Installed skills"
 			},
-			"backup": "Back up now",
-			"restore": "Restore from storage",
+			"backup": "Upload",
+			"restore": "Download",
 			"restoreDialog": {
-				"source": "Backup to restore",
-				"latest": "Latest backup of selected folders",
-				"loading": "Loading available backups…",
-				"loadError": "Could not load available backups.",
-				"destination": "Restore into",
-				"destinationHint": "Choose one local folder, including on a different computer.",
-				"chooseDestination": "Choose destination folder",
-				"title": "Restore from storage?",
-				"description": "Restore a saved backup. Matching local files are saved in a recovery folder before they are replaced. Other local files are kept.",
-				"confirm": "Restore files"
+				"title": "Download from storage?",
+				"description": "Download files into the selected local folders. Matching local files will be replaced. Other local files are kept.",
+				"confirm": "Download files"
 			},
 			"operation": {
 				"backup": {
-					"running": "Backup is running in the background…",
-					"scheduledRunning": "Scheduled backup is running in the background…",
-					"succeeded": "Backed up {{count}} file(s).",
-					"partial": "Backed up {{count}} file(s); {{failed}} failed.",
-					"failed": "Backup failed. {{error}}"
+					"running": "Upload is running in the background…",
+					"scheduledRunning": "Scheduled upload is running in the background…",
+					"succeeded": "Uploaded {{count}} file(s).",
+					"partial": "Uploaded {{count}} file(s); {{failed}} failed.",
+					"failed": "Upload failed. {{error}}"
 				},
 				"restore": {
-					"running": "Restore is running in the background…",
-					"succeeded": "Restored {{count}} file(s).",
-					"partial": "Restored {{count}} file(s); {{failed}} failed.",
-					"failed": "Restore failed. {{error}}"
+					"running": "Download is running in the background…",
+					"succeeded": "Downloadd {{count}} file(s).",
+					"partial": "Downloadd {{count}} file(s); {{failed}} failed.",
+					"failed": "Download failed. {{error}}"
 				}
 			},
-			"pushing": "Backing up…",
-			"pulling": "Restoring…",
+			"pushing": "Uploading…",
+			"pulling": "Downloading…",
 			"cancel": "Cancel",
 			"provider": {
 				"title": "Storage",
-				"description": "Choose a saved Amazon S3 or S3-compatible provider for backups, restores, and version history.",
+				"description": "Choose a saved Amazon S3 or S3-compatible provider.",
 				"placeholder": "Select storage provider"
 			}
 		},
