@@ -313,12 +313,6 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		descriptionKey: 'settings.health.settingsDescription',
 		keywords: 'periodic health check interval provider model',
 	},
-	{
-		path: '/settings/health',
-		labelKey: 'settings.health.checklistTitle',
-		descriptionKey: 'settings.health.checklistDescription',
-		keywords: 'health checklist instructions agent HEALTH.md',
-	},
 	// Model services
 	...SETTINGS_MODEL_SERVICE_ITEMS,
 	{
