@@ -6,6 +6,7 @@ const handleSubmit = jest.fn();
 const setInput = jest.fn();
 const useSuggestion = jest.fn();
 const clearReply = jest.fn();
+const triggerFileUpload = jest.fn();
 let replyTo: { id: string; content: string } | null = null;
 let messages: { id: string; role: string }[] = [{ id: 'agent-welcome', role: 'agent' }];
 
@@ -100,7 +101,7 @@ jest.mock('@/components/ui/prompt-input', () => ({
 		tooltip?: React.ReactNode;
 	}) => <div data-tooltip={tooltip}>{children}</div>,
 	PromptInputActions: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
-	usePromptInput: () => ({ triggerFileUpload: jest.fn() }),
+	usePromptInput: () => ({ triggerFileUpload }),
 }));
 
 jest.mock('@/components/ui/scroll-button', () => ({
@@ -171,7 +172,22 @@ describe('Home prompt attachments', () => {
 				listSessions: jest.fn(async () => [{ id: 'session-1', title: 'Planning chat', createdAtMs: 1, updatedAtMs: 1700000000000, category: 'main' }]),
 			},
 		});
+		Object.defineProperty(window, 'library', {
+			configurable: true,
+			value: {
+				list: jest.fn(async () => [
+					{
+						name: 'library-notes.md',
+						path: '/tmp/library/library-notes.md',
+						relativePath: 'notes/library-notes.md',
+						size: 12,
+						modifiedAt: '2026-10-08T00:00:00.000Z',
+					},
+				]),
+			},
+		});
 		handleSubmit.mockResolvedValue(true);
+		triggerFileUpload.mockClear();
 		useSuggestion.mockClear();
 		replyTo = null;
 		messages = [{ id: 'agent-welcome', role: 'agent' }];
@@ -235,6 +251,29 @@ describe('Home prompt attachments', () => {
 			expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled()
 		);
 		expect(screen.getByRole('button', { name: 'Add attachment' })).toBeEnabled();
+		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
+	});
+
+	it('offers Library and computer sources from the attachment button', async () => {
+		renderPage();
+		fireEvent.click(await screen.findByRole('button', { name: 'Add attachment' }));
+
+		expect(await screen.findByText('From Library')).toBeInTheDocument();
+		expect(screen.getByText('From computer')).toBeInTheDocument();
+		fireEvent.click(screen.getByText('From computer'));
+		expect(triggerFileUpload).toHaveBeenCalledTimes(1);
+	});
+
+	it('adds selected app Library files to the prompt', async () => {
+		renderPage();
+		fireEvent.click(await screen.findByRole('button', { name: 'Add attachment' }));
+		fireEvent.click(await screen.findByText('From Library'));
+
+		expect(await screen.findByRole('heading', { name: 'Add from Library' })).toBeInTheDocument();
+		fireEvent.click(await screen.findByRole('checkbox', { name: /library-notes\.md/ }));
+		fireEvent.click(screen.getByRole('button', { name: 'Add 1' }));
+
+		expect(await screen.findByText('library-notes.md')).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 	});
 
