@@ -59,6 +59,7 @@ const storageApi = {
 	getVersionedStatus: jest.fn(),
 	setVersionedEnabled: jest.fn(),
 	listConflicts: jest.fn(),
+	listSnapshots: jest.fn(),
 	saveSettings: jest.fn(),
 	syncFolders: jest.fn(),
 	pickFolders: jest.fn(),
@@ -108,6 +109,7 @@ beforeEach(() => {
 	storageApi.getVersionedStatus.mockResolvedValue(false);
 	storageApi.setVersionedEnabled.mockImplementation(async (enabled) => enabled);
 	storageApi.listConflicts.mockResolvedValue([]);
+	storageApi.listSnapshots.mockResolvedValue([]);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
 	storageApi.syncFolders.mockResolvedValue([]);
 	storageApi.pickFolders.mockResolvedValue([]);

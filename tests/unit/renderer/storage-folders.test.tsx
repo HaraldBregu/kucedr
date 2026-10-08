@@ -51,6 +51,7 @@ const storageApi = {
 	getSettings: jest.fn(),
 	getVersionedStatus: jest.fn(),
 	listConflicts: jest.fn(),
+	listSnapshots: jest.fn(),
 	saveSettings: jest.fn(),
 	syncFolders: jest.fn(),
 	pickFolders: jest.fn(),
@@ -68,6 +69,7 @@ beforeEach(() => {
 	storageApi.getSettings.mockResolvedValue(settings);
 	storageApi.getVersionedStatus.mockResolvedValue(false);
 	storageApi.listConflicts.mockResolvedValue([]);
+	storageApi.listSnapshots.mockResolvedValue([]);
 	storageApi.saveSettings.mockImplementation(async (value) => value);
 	storageApi.syncFolders.mockResolvedValue([
 		{ key: 'agent', path: '/data/agent' },
