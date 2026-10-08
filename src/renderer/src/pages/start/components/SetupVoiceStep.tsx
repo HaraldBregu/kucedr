@@ -4,8 +4,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import VoiceConfiguration from '@pages/settings/pages/assistant/voice';
 import { SetupMediaTools } from './SetupMediaTools';
 import { SetupStepHeader } from './SetupStepHeader';
-import { SetupService, type SetupAssistantProps } from './SetupService';
-import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
+import type { SetupAssistantProps } from './SetupService';
+import { STEP_COPY } from '../setupConstants';
 
 export function SetupVoiceStep({
 	serviceStates,
@@ -29,17 +29,7 @@ export function SetupVoiceStep({
 								icon={Radio}
 								pluginItemStyle
 							/>
-							{MODEL_SERVICE_DEFINITIONS.filter(
-								(service) => service.id === 'voice' || service.id === 'transcription'
-							).map((service) => (
-								<SetupService
-									key={service.id}
-									service={service}
-									state={serviceStates[service.id]}
-									disabled={loadingModels || savingConfig}
-									onChange={onServiceChange}
-								/>
-							))}
+
 						</CardContent>
 					</Card>
 				</section>

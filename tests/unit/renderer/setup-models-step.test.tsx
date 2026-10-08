@@ -107,7 +107,7 @@ it('shows only chat and tool configuration on Chat assistant', () => {
 	}
 });
 
-it('shows speech, transcription, and live conversation on Voice assistant', () => {
+it('shows live conversation and media tools on Voice assistant', () => {
 	render(
 		<SetupVoiceStep
 			serviceStates={SERVICE_STATES}
@@ -123,7 +123,7 @@ it('shows speech, transcription, and live conversation on Voice assistant', () =
 		expect(within(media).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
 	for (const id of ['voice', 'transcription']) {
-		expect(within(voice).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+		expect(within(voice).queryByTestId(`setup-${id}-select`)).not.toBeInTheDocument();
 	}
 	const realtime = within(voice).getByTestId('setup-realtime');
 	expect(realtime).toHaveAttribute('data-default-model', 'false');
