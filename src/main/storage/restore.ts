@@ -34,15 +34,21 @@ export async function restoreBackupFile(
 		}
 		try {
 			const stat = await fs.stat(target);
-			if ((await fileDigest(target)) === file.sha256 &&
-				(file.mode === undefined || process.platform === 'win32' || (stat.mode & 0o777) === file.mode) &&
-				(file.modifiedAt === undefined || Math.abs(stat.mtimeMs - file.modifiedAt) < 1)) return false;
+			if (
+				(await fileDigest(target)) === file.sha256 &&
+				(file.mode === undefined ||
+					process.platform === 'win32' ||
+					(stat.mode & 0o777) === file.mode) &&
+				(file.modifiedAt === undefined || Math.abs(stat.mtimeMs - file.modifiedAt) < 1)
+			)
+				return false;
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 		}
 		await preserveRestoreTarget(target, root);
 		if (file.mode !== undefined) await fs.chmod(temporary, file.mode);
-		if (file.modifiedAt !== undefined) await fs.utimes(temporary, new Date(), new Date(file.modifiedAt));
+		if (file.modifiedAt !== undefined)
+			await fs.utimes(temporary, new Date(), new Date(file.modifiedAt));
 		await fs.rename(temporary, target);
 		return true;
 	} finally {

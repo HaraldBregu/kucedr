@@ -26,7 +26,14 @@ export async function uploadBackupFile(
 				throw new Error('This storage does not support streamed file uploads.');
 			await store.put(key, await fs.readFile(file));
 		}
-		return { path: '', key, size, sha256, mode: original.mode & 0o777, modifiedAt: original.mtimeMs };
+		return {
+			path: '',
+			key,
+			size,
+			sha256,
+			mode: original.mode & 0o777,
+			modifiedAt: original.mtimeMs,
+		};
 	} finally {
 		await fs.rm(staging, { recursive: true, force: true });
 	}

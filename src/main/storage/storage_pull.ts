@@ -58,7 +58,8 @@ export async function pullFiles(
 						throw new Error('Cloud restore files must be no larger than 50 MiB.');
 					}
 					const target = await storageTarget(entryPath, item.key, prefix);
-					if (isProtectedStoragePath(target)) throw new Error('Backup targets a protected application folder.');
+					if (isProtectedStoragePath(target))
+						throw new Error('Backup targets a protected application folder.');
 					await fs.mkdir(path.dirname(target), { recursive: true });
 					const data = await getObject(store, item.key);
 					if (data.byteLength > STORAGE_MAX_OBJECT_BYTES) {
