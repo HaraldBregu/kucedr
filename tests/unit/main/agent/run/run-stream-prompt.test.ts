@@ -1295,7 +1295,7 @@ describe('run stream system prompt', () => {
 		const order: string[] = [];
 		const read = jsonTool({
 			id: 'read',
-			category: 'workspace',
+			category: 'core',
 			name: 'Read',
 			description: 'Read a file',
 			capability: { effects: ['read'] },
@@ -1304,7 +1304,7 @@ describe('run stream system prompt', () => {
 		});
 		const edit = jsonTool({
 			id: 'edit',
-			category: 'workspace',
+			category: 'core',
 			name: 'Edit',
 			description: 'Edit a file',
 			capability: { effects: ['read'] },
@@ -1357,7 +1357,7 @@ describe('run stream system prompt', () => {
 					? 'task'
 					: id === 'complete_bootstrap'
 						? 'bootstrap'
-						: 'workspace',
+						: 'core',
 				name: id,
 				description: `${id} description`,
 				schema: { type: 'object' },
@@ -1396,7 +1396,7 @@ describe('run stream system prompt', () => {
 		const execute = jest.fn();
 		const bash = jsonTool({
 			id: 'bash',
-			category: 'workspace',
+			category: 'core',
 			name: 'Bash',
 			description: 'Run a command',
 			capability: { effects: ['execute'] },

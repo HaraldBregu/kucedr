@@ -9,14 +9,14 @@ const candidate = (
 ): Tool => ({ id, category, name: id, description, policy }) as Tool;
 
 it('groups runtime tools by availability and category with descriptions and usage boundaries', () => {
-	const read = candidate('read', 'workspace', 'Read a file.');
+	const read = candidate('read', 'core', 'Read a file.');
 	const subagent = candidate('subagent', 'delegation', 'Delegate one independent task.');
 	const camera = candidate('camera_recorder', 'system', 'Record camera video.');
 	const image = candidate('create_image', 'media', 'Generate images.');
 	const web = candidate('search_web', 'web', 'Search the web.');
 	const listSkills = candidate('list_skills', 'skill', 'List skills.');
 	const loadSkill = candidate('load_skill', 'skill', 'Load a skill.');
-	const search = candidate('tool_search', 'workspace', 'Find relevant tools.');
+	const search = candidate('tool_search', 'core', 'Find relevant tools.');
 	const gmail = candidate('mcp__gmail__search_threads', 'integration', 'Search Gmail threads.', {
 		kind: 'mcp',
 		serverId: 'gmail',

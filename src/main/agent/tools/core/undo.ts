@@ -9,7 +9,7 @@ import { tool } from '../tool';
 export function undoFileTool(history: FileHistory) {
 	return tool({
 		id: 'undo',
-		category: 'workspace',
+		category: 'core',
 		name: 'Undo file operation',
 		description:
 			'Undo the most recent write, edit, or patch operation in this session. Refuses if a file changed afterward.',

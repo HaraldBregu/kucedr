@@ -44,10 +44,10 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			projects: 'A personal history book Alice chose to share.',
 		});
 		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference', [
-			{ id: 'read', category: 'workspace' },
-			{ id: 'bash', category: 'workspace' },
+			{ id: 'read', category: 'core' },
+			{ id: 'bash', category: 'core' },
 			{ id: 'update_identity', category: 'bootstrap' },
-			{ id: 'tool_search', category: 'workspace' },
+			{ id: 'tool_search', category: 'core' },
 		] as never);
 		expect(complete).toContain('### Loaded tools');
 		expect(complete).toContain(

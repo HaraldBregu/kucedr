@@ -10,7 +10,7 @@ import { applyUpdateChunks } from './patch/update';
 
 export const applyPatchTool = tool({
 	id: 'patch',
-	category: 'workspace',
+		category: 'core',
 	name: 'Apply patch',
 	description:
 		'Apply a multi-file patch using the *** Begin Patch/*** End Patch format. Supports Add File, Delete File, and Update File (with optional Move to) hunks.',

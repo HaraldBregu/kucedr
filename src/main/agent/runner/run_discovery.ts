@@ -41,7 +41,7 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 
 	const searchTool = tool({
 		id: TOOL_SEARCH_ID,
-		category: 'workspace',
+		category: 'core',
 		name: 'Search tools',
 		description:
 			'Search for a capability only when the tools already available cannot handle the task. Matching is deterministic; selected tools become available on the next turn.',

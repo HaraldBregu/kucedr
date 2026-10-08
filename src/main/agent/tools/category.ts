@@ -1,5 +1,5 @@
 export const toolCategoryRegistry = {
-	workspace: {
+	core: {
 		label: 'Core',
 		description:
 			'Read and modify workspace files, run commands, manage processes, and undo or redo file operations.',
