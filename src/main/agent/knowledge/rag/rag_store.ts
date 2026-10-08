@@ -59,8 +59,14 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 		!configuration ||
 		typeof configuration !== 'object' ||
 		Array.isArray(configuration) ||
-		!['indexName', 'databaseProviderId', 'databaseId', 'embeddingProviderId', 'embeddingModelId', 'cronExpression']
-			.every((key) => typeof configuration[key as keyof RagConfiguration] === 'string') ||
+		![
+			'indexName',
+			'databaseProviderId',
+			'databaseId',
+			'embeddingProviderId',
+			'embeddingModelId',
+			'cronExpression',
+		].every((key) => typeof configuration[key as keyof RagConfiguration] === 'string') ||
 		typeof configuration.enabled !== 'boolean' ||
 		typeof configuration.scheduleEnabled !== 'boolean' ||
 		!Array.isArray(configuration.folders) ||
@@ -78,7 +84,8 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 				typeof configuration.mirrorConsent.indexName !== 'string' ||
 				(configuration.mirrorConsent.recipient !== undefined &&
 					typeof configuration.mirrorConsent.recipient !== 'string')))
-	) throw new Error('Invalid Knowledge configuration.');
+	)
+		throw new Error('Invalid Knowledge configuration.');
 	const indexName = normalizeRagIndexName(configuration.indexName);
 	const folders = [
 		...new Set(configuration.folders.map((folder) => folder.trim()).filter(Boolean)),

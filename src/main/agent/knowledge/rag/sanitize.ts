@@ -17,13 +17,7 @@ export function sanitizeRagConsent(configuration: RagConfiguration): RagConfigur
 					(next.databaseProviderId === LOCAL_RAG_DATABASE_PROVIDER_ID ||
 						next.mirrorConsent?.indexName !== next.indexName)) ||
 				consent.recipient !==
-					ragRecipient(
-						kind,
-						next.embeddingProviderId,
-						next.embeddingModelId,
-						next.indexName,
-						next
-					)
+					ragRecipient(kind, next.embeddingProviderId, next.embeddingModelId, next.indexName, next)
 			)
 				next[key] = null;
 		} catch {

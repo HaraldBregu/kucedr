@@ -24,7 +24,11 @@ import {
 	getDatabaseProvidersState,
 	setDatabaseProvidersState,
 } from './providers/providers_index';
-import { getRagConfiguration, ragConfigurationExisted, saveRagConfiguration } from './agent/knowledge/rag/rag_store';
+import {
+	getRagConfiguration,
+	ragConfigurationExisted,
+	saveRagConfiguration,
+} from './agent/knowledge/rag/rag_store';
 import { WINDOW_SIZES, type WindowSize } from '../shared/window_size';
 
 export type AppSettingsState = {
@@ -75,7 +79,9 @@ const legacyDatabase = persistedSettings.databaseConfiguration;
 const legacyEmbedding = persistedSettings.modelSelections?.embedding;
 if (legacyDatabase || legacyEmbedding) {
 	const configuration = getRagConfiguration();
-	const hasRagDatabase = ragConfigurationExisted && Boolean(configuration.databaseProviderId && configuration.databaseId);
+	const hasRagDatabase =
+		ragConfigurationExisted &&
+		Boolean(configuration.databaseProviderId && configuration.databaseId);
 	const hasLegacyDatabase = Boolean(legacyDatabase?.providerId && legacyDatabase.databaseId);
 	const hasRagEmbedding = Boolean(
 		configuration.embeddingProviderId && configuration.embeddingModelId
