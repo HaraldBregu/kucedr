@@ -783,7 +783,7 @@ test('Agent resources have icons and open their nested settings pages', async ({
 	);
 });
 
-test('Channels includes provider credentials and the sidebar has bottom spacing', async ({
+test('Channels configures credentials and models directly on the channel page', async ({
 	browserName: _browserName,
 }, testInfo) => {
 	await app.evaluate(({ BrowserWindow }) => {
@@ -793,51 +793,49 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 		window.location.hash = '#/settings/channels';
 	});
 	const sidebar = page.locator('[data-slot="settings-sidebar"]');
-	await expect(sidebar.getByRole('link', { name: 'Bots', exact: true })).toHaveCount(0);
 	await expect(sidebar.getByRole('link', { name: 'Channels', exact: true })).toHaveCount(1);
-	await expect(
-		sidebar.getByRole('link', { name: 'Channels', exact: true }).locator('svg.lucide-radio-tower')
-	).toBeVisible();
 	await expect(sidebar.locator('.overflow-y-auto')).toHaveCSS('padding-bottom', '16px');
-	await page.getByRole('link', { name: /Configuration/ }).click();
-	await expect(page).toHaveURL(/#\/settings\/channels\/configuration$/);
-	await expect(page.getByRole('heading', { name: 'Configuration', exact: true })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Model', exact: true })).toBeVisible();
-	await page.evaluate(() => {
-		window.location.hash = '#/settings/channels';
-	});
-	const telegram = page
-		.getByText('Telegram Bot API', { exact: true })
-		.locator('xpath=ancestor::*[@data-slot="item"][1]');
-	await telegram.getByRole('button', { name: 'Add Telegram Bot API', exact: true }).click();
-	await expect(page).toHaveURL(/#\/settings\/channels\/channelDetail\/telegram$/);
+	await expect(page.getByRole('heading', { name: 'Channels', exact: true })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Configuration', exact: true })).toHaveCount(1);
+	await expect(page.getByRole('link', { name: /Configuration/ })).toHaveCount(0);
 	await expect(page.getByText('Open Telegram, message @BotFather')).toBeVisible();
 	await page.getByLabel('Bot token', { exact: true }).fill('channel-test-token');
 	await page.getByRole('button', { name: 'Save', exact: true }).click();
 	await expect(page.getByLabel('Bot token', { exact: true })).toHaveValue('');
-	await page.evaluate(() => {
-		window.location.hash = '#/settings/channels';
-	});
-	await expect(
-		telegram.getByRole('button', { name: 'Options for Telegram Bot API' })
-	).toBeVisible();
-	await expect(page.getByText('Telegram Bot API', { exact: true })).toHaveCount(1);
-	await expect(
-		sidebar
-			.locator('[data-slot="split-pane-group"]')
-			.filter({ has: page.getByRole('link', { name: 'Channels', exact: true }) })
-	).toHaveCSS('border-top-width', '1px');
+	await expect(page).toHaveURL(/#\/settings\/channels$/);
 	expect(await page.evaluate(() => window.provider.getChannel('telegram'))).toMatchObject({
 		id: 'telegram',
 		configured: true,
 	});
+	await page.getByRole('combobox', { name: 'DM policy', exact: true }).click();
+	await page.getByRole('option', { name: 'Allowlist', exact: true }).click();
+	await expect.poll(() => page.evaluate(async () =>
+		(await window.provider.getChannel('telegram'))?.dmPolicy
+	)).toBe('allowlist');
+	await page.getByLabel('sender id or handle', { exact: true }).fill('123456');
+	await page.getByRole('button', { name: 'Add allowed user', exact: true }).click();
+	await expect.poll(() => page.evaluate(async () =>
+		(await window.provider.getChannel('telegram'))?.allowFrom
+	)).toEqual(['123456']);
 	await page.screenshot({
-		path: testInfo.outputPath('channels-configuration.png'),
+		path: testInfo.outputPath('channels-credentials-desktop.png'),
 		fullPage: true,
 	});
-	await telegram.click();
-	await expect(page).toHaveURL(/#\/settings\/channels\/channelDetail\/telegram$/);
-	await expect(page.getByRole('heading', { name: 'Telegram', exact: true })).toBeVisible();
+	await page.reload();
+	await expect(page.getByLabel('Bot token', { exact: true })).toHaveValue('');
+	await expect(page.getByText('123456', { exact: true })).toBeVisible();
+	const model = page.getByRole('button', { name: 'Model', exact: true });
+	await model.scrollIntoViewIfNeeded();
+	await expect(model).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Transcribe model', exact: true })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Voice model', exact: true })).toBeVisible();
+	await page.screenshot({
+		path: testInfo.outputPath('channels-models-desktop.png'),
+		fullPage: true,
+	});
+	await page.getByRole('link', { name: /Tools/ }).click();
+	await expect(page).toHaveURL(/#\/settings\/channels\/tools$/);
+	await expect(page.getByRole('heading', { name: 'Tools', exact: true })).toBeVisible();
 	await page.evaluate(() => {
 		window.location.hash = '#/settings/channels';
 	});
@@ -847,7 +845,7 @@ test('Channels includes provider credentials and the sidebar has bottom spacing'
 		win.setSize(390, 800);
 	});
 	await expect.poll(() => page.evaluate(() => window.innerWidth)).toBe(390);
-	await telegram.scrollIntoViewIfNeeded();
+	await page.getByLabel('Bot token', { exact: true }).scrollIntoViewIfNeeded();
 	await page.screenshot({ path: testInfo.outputPath('channels-narrow.png'), fullPage: true });
 	expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
 		true
