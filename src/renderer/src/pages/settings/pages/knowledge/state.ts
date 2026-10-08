@@ -63,10 +63,7 @@ export default function useKnowledge() {
 		const timer = window.setInterval(() => {
 			if (savingRef.current) return;
 			const currentRevision = revision.current;
-			void Promise.all([
-				window.agent.ragGetConfiguration(),
-				window.agent.ragGetStatus(),
-			]).then(
+			void Promise.all([window.agent.ragGetConfiguration(), window.agent.ragGetStatus()]).then(
 				([nextConfiguration, nextStatus]) => {
 					if (cancelled || currentRevision !== revision.current) return;
 					setStatus(nextStatus);

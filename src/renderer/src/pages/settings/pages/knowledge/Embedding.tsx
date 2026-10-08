@@ -28,7 +28,13 @@ export default function Embedding({ knowledge }: { knowledge: KnowledgeState }):
 		<SettingsSection
 			title={t('settings.knowledge.embeddingTitle')}
 			action={
-				<Button variant="outline" size="sm" disabled={disabled} nativeButton={false} render={<Link to="/settings/providers/models" />}>
+				<Button
+					variant="outline"
+					size="sm"
+					disabled={disabled}
+					nativeButton={false}
+					render={<Link to="/settings/providers/models" />}
+				>
 					{t('settings.knowledge.configureModels')}
 				</Button>
 			}

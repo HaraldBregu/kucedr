@@ -34,7 +34,13 @@ export default function Storage({ knowledge }: { knowledge: KnowledgeState }): J
 		<SettingsSection
 			title={t('settings.knowledge.storageTitle')}
 			action={
-				<Button variant="outline" size="sm" disabled={disabled} nativeButton={false} render={<Link to="/settings/providers/database" />}>
+				<Button
+					variant="outline"
+					size="sm"
+					disabled={disabled}
+					nativeButton={false}
+					render={<Link to="/settings/providers/database" />}
+				>
 					{t('settings.knowledge.configureDatabases')}
 				</Button>
 			}
