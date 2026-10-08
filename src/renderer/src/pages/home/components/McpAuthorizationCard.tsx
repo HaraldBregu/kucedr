@@ -28,7 +28,12 @@ export function McpAuthorizationCard({
 		output && typeof output === 'object' && !Array.isArray(output)
 			? (output as { status?: unknown; serverId?: unknown; serverName?: unknown })
 			: undefined;
-	const input = tool.input as { serverId?: unknown; force?: unknown; toolName?: unknown } | undefined;
+	const input = tool.input as {
+		serverId?: unknown;
+		serverName?: unknown;
+		force?: unknown;
+		toolName?: unknown;
+	} | undefined;
 	const serverId =
 		typeof input?.serverId === 'string'
 			? input.serverId
@@ -43,7 +48,12 @@ export function McpAuthorizationCard({
 		(!pending && result?.status !== 'cancelled' && result?.status !== 'authorization_failed')
 	)
 		return null;
-	const serverName = typeof result?.serverName === 'string' ? result.serverName : serverId;
+	const serverName =
+		typeof input?.serverName === 'string'
+			? input.serverName
+			: typeof result?.serverName === 'string'
+				? result.serverName
+				: serverId.replace(/[-_]/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
 	const toolName = typeof input?.toolName === 'string' ? input.toolName : undefined;
 	const stopped = result?.status === 'cancelled';
 	const failed = result?.status === 'authorization_failed';
@@ -109,12 +119,8 @@ export function McpAuthorizationCard({
 					</p>
 				</div>
 			</CardHeader>
-			<CardContent className="space-y-3 px-4 pb-4 pl-16 text-sm">
-				{stopped ? (
-					null
-				) : failed ? (
-					null
-				) : (
+			{!stopped && !failed && (
+				<CardContent className="space-y-3 px-4 pb-4 pl-16 text-sm">
 					<>
 						<p className="text-xs text-muted-foreground">
 							{toolName
@@ -142,13 +148,13 @@ export function McpAuthorizationCard({
 							</Button>
 						</div>
 					</>
+					{error && (
+						<p role="alert" className="text-destructive">
+							{error}
+						</p>
+					)}
+				</CardContent>
 				)}
-				{error && (
-					<p role="alert" className="text-destructive">
-						{error}
-					</p>
-				)}
-			</CardContent>
 		</Card>
 	);
 }
