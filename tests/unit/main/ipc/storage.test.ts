@@ -176,13 +176,13 @@ it('lists, saves and removes storage providers through the trusted renderer', ()
 	expect(storageProviders.remove).toHaveBeenCalledWith('connection');
 });
 
-it('requires an enabled storage plugin before adding a connection', () => {
+it('allows adding an S3 connection without enabling a plugin', () => {
 	getEnabledPluginProviders.mockReturnValue({ database: [], storage: [] });
 	const save = registerCommandWithEvent.mock.calls.find(
 		([channel]) => channel === StorageChannels.saveProvider
 	)?.[1];
-	expect(() => save(event, { name: 'Archive' })).toThrow('Enable a storage provider');
-	expect(storageProviders.save).not.toHaveBeenCalled();
+	save(event, { name: 'Archive' });
+	expect(storageProviders.save).toHaveBeenCalledWith({ name: 'Archive' });
 });
 
 it.each(['app view', 'untracked renderer', 'subframe'])(
