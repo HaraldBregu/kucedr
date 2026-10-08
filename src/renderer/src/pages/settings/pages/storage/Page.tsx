@@ -11,9 +11,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import type {
-	StorageConflict,
 	StorageOperationStatus,
 	StorageProvider,
 	StorageSyncSettings,
@@ -33,8 +31,6 @@ import Restore from './Restore';
 const StoragePage: React.FC = () => {
 	const { t } = useTranslation();
 	const [settings, setSettings] = useState<StorageSyncSettings | null>(null);
-	const [versionedEnabled, setVersionedEnabled] = useState(false);
-	const [conflicts, setConflicts] = useState<StorageConflict[]>([]);
 	const [providers, setProviders] = useState<StorageProvider[]>([]);
 	const [settingsLoading, setSettingsLoading] = useState(true);
 	const [draft, setDraft] = useState<StorageSyncSettings | null>(null);
@@ -64,15 +60,11 @@ const StoragePage: React.FC = () => {
 			window.storage.getSettings(),
 			window.storage.getOperationStatus(),
 			window.storage.listProviders(),
-			window.storage.getVersionedStatus(),
-			window.storage.listConflicts(),
-		]).then(([settingsResult, statusResult, providersResult, versionedResult, conflictsResult]) => {
+		]).then(([settingsResult, statusResult, providersResult]) => {
 			if (cancelled) return;
 
 			if (settingsResult.status === 'fulfilled') setSettings(settingsResult.value);
 			if (providersResult.status === 'fulfilled') setProviders(providersResult.value);
-			if (versionedResult.status === 'fulfilled') setVersionedEnabled(versionedResult.value);
-			if (conflictsResult.status === 'fulfilled') setConflicts(conflictsResult.value);
 			if (statusResult.status === 'fulfilled' && statusResult.value) {
 				applyOperationStatus(statusResult.value);
 			}
@@ -81,8 +73,6 @@ const StoragePage: React.FC = () => {
 				settingsResult,
 				statusResult,
 				providersResult,
-				versionedResult,
-				conflictsResult,
 			].some((result) => result.status === 'rejected');
 			setLoadFailed(failed);
 			if (failed) setError(t('settings.storage.errors.load'));
@@ -95,13 +85,6 @@ const StoragePage: React.FC = () => {
 		};
 	}, [applyOperationStatus, loadVersion, t]);
 
-	useEffect(() => {
-		if (!versionedEnabled || !operationStatus || operationStatus.state === 'running') return;
-		void window.storage
-			.listConflicts()
-			.then(setConflicts)
-			.catch(() => undefined);
-	}, [versionedEnabled, operationStatus?.revision, operationStatus?.state]);
 
 	const storage = draft ?? settings;
 	const selectedProvider = providers.find((provider) => provider.id === storage?.providerId);
@@ -116,9 +99,7 @@ const StoragePage: React.FC = () => {
 	const operationStatusKey = operationStatus
 		? operationStatus.state === 'running' && operationStatus.trigger === 'scheduled'
 			? `settings.storage.operation.${operationStatus.operation}.scheduledRunning`
-			: versionedEnabled
-				? `settings.storage.versioned.${operationStatus.operation}.${operationStatus.state}`
-				: `settings.storage.operation.${operationStatus.operation}.${operationStatus.state}`
+			: `settings.storage.operation.${operationStatus.operation}.${operationStatus.state}`
 		: undefined;
 	const operationStatusText = operationStatusKey
 		? t(operationStatusKey, {
@@ -194,16 +175,14 @@ const StoragePage: React.FC = () => {
 		}
 	};
 
-	const runRestore = async (input?: { snapshotKey: string; path: string }): Promise<void> => {
+	const runRestore = async (): Promise<void> => {
 		setOperationStarting(true);
 		setRestoreOpen(false);
 		setError(null);
 		setSyncStatus(null);
 		try {
 			if (!storage || !(await persistSettings(storage))) return;
-			applyOperationStatus(
-				await (input ? window.storage.restore(input) : window.storage.restore())
-			);
+			applyOperationStatus(await window.storage.restore());
 		} catch {
 			setError(t('settings.storage.errors.pull'));
 		} finally {
@@ -236,16 +215,6 @@ const StoragePage: React.FC = () => {
 		});
 	};
 
-	const setVersionHistory = async (enabled: boolean): Promise<void> => {
-		setError(null);
-		try {
-			await saveQueueRef.current;
-			setVersionedEnabled(await window.storage.setVersionedEnabled(enabled));
-			setConflicts(enabled ? await window.storage.listConflicts() : []);
-		} catch {
-			setError(t('settings.storage.errors.versioned'));
-		}
-	};
 
 	return (
 		<SettingsPageShell>
@@ -336,25 +305,17 @@ const StoragePage: React.FC = () => {
 							<Upload className="size-3.5" />
 							{runningOperation?.operation === 'backup'
 								? t('settings.storage.pushing')
-								: t(
-										versionedEnabled
-											? 'settings.storage.versioned.syncNow'
-											: 'settings.storage.backup'
-									)}
+								: t('settings.storage.backup')}
 						</Button>
 						<Button
 							variant="outline"
-							disabled={controlsDisabled}
+							disabled={controlsDisabled || storage.paths.length === 0}
 							onClick={() => setRestoreOpen(true)}
 						>
 							<Download className="size-3.5" />
 							{runningOperation?.operation === 'restore'
 								? t('settings.storage.pulling')
-								: t(
-										versionedEnabled
-											? 'settings.storage.versioned.catchUp'
-											: 'settings.storage.restore'
-									)}
+								: t('settings.storage.restore')}
 						</Button>
 					</div>
 					<SettingsSection
@@ -459,60 +420,13 @@ const StoragePage: React.FC = () => {
 						</div>
 					)}
 
-					<details className="group">
-						<summary className="cursor-pointer text-sm font-medium text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">
-							{t('settings.storage.versioned.title')}
-						</summary>
-						<div className="mt-4 grid gap-4">
-							<SettingsSection
-								title={t('settings.storage.versioned.title')}
-								description={t('settings.storage.versioned.description')}
-							>
-								<Card size="sm" className="gap-0! py-0!">
-									<CardContent className="p-0!">
-										<SettingsRow
-											title={t('settings.storage.versioned.enable')}
-											description={t('settings.storage.versioned.enableDescription')}
-											actions={
-												<Switch
-													checked={versionedEnabled}
-													aria-label={t('settings.storage.versioned.enable')}
-													disabled={busy || !selectedProvider || storage.paths.length === 0}
-													onCheckedChange={(enabled) => void setVersionHistory(enabled)}
-												/>
-											}
-										/>
-									</CardContent>
-								</Card>
-							</SettingsSection>
-							{versionedEnabled && conflicts.length > 0 && (
-								<SettingsSection
-									title={t('settings.storage.versioned.conflicts')}
-									description={t('settings.storage.versioned.conflictsDescription')}
-								>
-									<Card size="sm" className="gap-0! py-0!">
-										<CardContent className="p-0!">
-											{conflicts.map((conflict) => (
-												<SettingsRow
-													key={`${conflict.workspaceId}:${conflict.versionId}`}
-													title={conflict.path ?? t('settings.storage.versioned.deleted')}
-													description={`${conflict.kind} · ${conflict.versionId}`}
-												/>
-											))}
-										</CardContent>
-									</Card>
-								</SettingsSection>
-							)}
-						</div>
-					</details>
 
 					<Restore
 						open={restoreOpen}
 						onOpenChange={setRestoreOpen}
 						disabled={controlsDisabled}
-						versioned={versionedEnabled}
 						hasFolders={storage.paths.length > 0}
-						onRestore={(input) => void runRestore(input)}
+						onRestore={() => void runRestore()}
 					/>
 				</>
 			) : null}
