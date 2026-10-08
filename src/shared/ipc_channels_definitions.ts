@@ -352,6 +352,7 @@ export const StorageChannels = {
 	getOperationStatus: 'storage:operation-status:get',
 	operationStatusChanged: 'storage:operation-status:changed',
 	backup: 'storage:backup',
+	listSnapshots: 'storage:snapshots:list',
 	restore: 'storage:restore',
 } as const;
 

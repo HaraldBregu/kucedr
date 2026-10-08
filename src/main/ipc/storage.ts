@@ -21,6 +21,8 @@ import { readStorageConfig } from '../storage/local/config';
 import { writeStorageConfig } from '../storage/local/config_write';
 import { openStorageState } from '../storage/local/state';
 import { listStorageConflicts } from '../storage/local/conflicts';
+import { listBackupSnapshots } from '../storage/snapshots';
+import { transferStorage } from '../storage/s3/transfer';
 
 export interface StorageIpcDeps {
 	appRegistry: AppRegistry;
@@ -131,9 +133,14 @@ export class StorageIpc implements IpcModule<StorageIpcDeps> {
 			trusted.assert(event);
 			return storageOperations.backup('manual');
 		});
-		registerCommandWithEvent(StorageChannels.restore, (event) => {
+		registerQueryWithEvent(StorageChannels.listSnapshots, (event) => {
 			trusted.assert(event);
-			return storageOperations.restore();
+			return transferStorage(storageProviders.resolve(getStorageSettings().providerId), listBackupSnapshots);
+		});
+		registerCommandWithEvent(StorageChannels.restore, (event, input) => {
+			trusted.assert(event);
+			if (input && (typeof input.snapshotKey !== 'string' || typeof input.path !== 'string')) throw new Error('Invalid restore selection.');
+			return storageOperations.restore(input);
 		});
 	}
 }

@@ -1,6 +1,6 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import type { StoragePullResult } from '../../shared/storage_types';
+import type { StoragePullResult, StorageRestoreInput } from '../../shared/storage_types';
 import { describeStorageError } from './storage_error';
 import { getObject } from './storage_get';
 import { listObjects } from './storage_list';
@@ -11,11 +11,11 @@ import { STORAGE_MAX_OBJECT_BYTES } from './limits';
 import { getStorageSettings } from './storage_store';
 import { storageTarget } from './storage_target';
 import { storageWrite } from './storage_write';
-import { backupSnapshotSchema } from './snapshot';
-import { restoreBackupFile } from './restore';
 import { preserveRestoreTarget } from './recovery';
+import { downloadSnapshot } from './download';
 
-export async function pullFiles(store: StorageObjectStore): Promise<StoragePullResult> {
+export async function pullFiles(store: StorageObjectStore, input?: StorageRestoreInput): Promise<StoragePullResult> {
+	if (input) return downloadSnapshot(store, input.snapshotKey, normalizeStoragePaths([input.path])[0]);
 	const storage = getStorageSettings();
 	const paths = normalizeStoragePaths(storage.paths);
 	const downloaded: string[] = [];
@@ -34,18 +34,14 @@ export async function pullFiles(store: StorageObjectStore): Promise<StoragePullR
 				.filter((item) => item.key.startsWith(`${snapshotPrefix}snapshots/`) && item.key.endsWith('.json'))
 				.sort((a, b) => b.key.localeCompare(a.key));
 			if (manifests.length) {
-				const snapshot = backupSnapshotSchema.parse(JSON.parse(Buffer.from(await getObject(store, manifests[0].key)).toString('utf8')));
-				for (const file of snapshot.files) {
-					try {
-						if (await restoreBackupFile(store, entryPath, snapshotPrefix, file)) downloaded.push(file.key);
-						else skipped.push(file.key);
-					} catch (error) {
-						failed.push({ path: file.path, error: describeStorageError(error) });
-					}
-				}
+				const result = await downloadSnapshot(store, manifests[0].key, entryPath);
+				downloaded.push(...result.downloaded);
+				skipped.push(...result.skipped);
+				failed.push(...result.failed);
 				continue;
 			}
 			const remote = (await listObjects(store, prefix)).filter((item) => !item.key.endsWith('/'));
+			if (!remote.length) throw new Error('No backup was found for this folder. Choose a backup point to restore into another folder.');
 			for (const item of remote) {
 				try {
 					if (item.size > STORAGE_MAX_OBJECT_BYTES) {

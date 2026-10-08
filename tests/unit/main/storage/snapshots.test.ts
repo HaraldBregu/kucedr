@@ -17,7 +17,7 @@ let objects: Map<string, Buffer>;
 let store: StorageObjectStore;
 
 beforeEach(async () => {
-	directory = await fs.mkdtemp(path.join(tmpdir(), 'kucedr-snapshot-test-'));
+	directory = await fs.realpath(await fs.mkdtemp(path.join(tmpdir(), 'kucedr-snapshot-test-')));
 	root = path.join(directory, 'workspace');
 	await fs.mkdir(root);
 	getStorageSettings.mockReturnValue({ paths: [root] });

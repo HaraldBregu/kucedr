@@ -93,11 +93,11 @@ export function bootstrapServices(): BootstrapResult {
 					? runVersionedStorageSync(cloudClient, authService, cloudConfig.url, 'backup')
 					: Promise.reject(new Error('Cloud account services are unavailable.'))
 				: transferStorage(storageProviders.resolve(getStorageSettings().providerId), pushFiles),
-			restore: async () => (await readStorageConfig())?.sync.enabled
+			restore: async (input) => !input && (await readStorageConfig())?.sync.enabled
 				? cloudClient && cloudConfig
 					? runVersionedStorageSync(cloudClient, authService, cloudConfig.url, 'restore')
 					: Promise.reject(new Error('Cloud account services are unavailable.'))
-				: transferStorage(storageProviders.resolve(getStorageSettings().providerId), pullFiles),
+				: transferStorage(storageProviders.resolve(getStorageSettings().providerId), (store) => pullFiles(store, input)),
 			lock: withStorageLock,
 			preventSuspension: preventStorageSuspension,
 		}

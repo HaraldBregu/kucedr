@@ -16,5 +16,6 @@ export const storage: StorageApi = {
 	getOperationStatus: () => typedInvokeUnwrap(StorageChannels.getOperationStatus),
 	onOperationStatusChanged: (callback) => typedOn(StorageChannels.operationStatusChanged, callback),
 	backup: () => typedInvokeUnwrap(StorageChannels.backup),
-	restore: () => typedInvokeUnwrap(StorageChannels.restore),
+	restore: (input) => input ? typedInvokeUnwrap(StorageChannels.restore, input) : typedInvokeUnwrap(StorageChannels.restore),
+	listSnapshots: () => typedInvokeUnwrap(StorageChannels.listSnapshots),
 };

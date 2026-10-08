@@ -423,7 +423,8 @@ export interface StorageApi {
 	getOperationStatus: () => Promise<StorageOperationStatus | undefined>;
 	onOperationStatusChanged: (callback: (status: StorageOperationStatus) => void) => () => void;
 	backup: () => Promise<StorageOperationStatus>;
-	restore: () => Promise<StorageOperationStatus>;
+	restore: (input?: import('./storage_types').StorageRestoreInput) => Promise<StorageOperationStatus>;
+	listSnapshots: () => Promise<import('./storage_types').StorageBackupSnapshot[]>;
 }
 
 export interface DatabaseApi {

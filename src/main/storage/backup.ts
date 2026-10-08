@@ -20,8 +20,8 @@ export async function backupFiles(store: StorageObjectStore): Promise<StoragePus
 			const stat = await fs.lstat(root);
 			if (stat.isSymbolicLink()) throw new Error(`Selected path is a symbolic link: ${root}`);
 			const prefix = storagePrefix(root).replace('kucedr/v1/', 'kucedr/v2/');
-			const id = `${new Date().toISOString()}-${randomUUID()}`;
-			const snapshot: BackupSnapshot = { version: 2, createdAt: new Date().toISOString(), files: [] };
+			const id = `${Math.floor((performance.timeOrigin + performance.now()) * 1000)}-${randomUUID()}`;
+			const snapshot: BackupSnapshot = { version: 2, createdAt: new Date().toISOString(), folder: path.basename(root), files: [] };
 			const sources = stat.isDirectory() ? await walkFiles(root) : [root];
 			const completed: string[] = [];
 			for (const source of sources) {

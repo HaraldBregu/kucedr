@@ -929,8 +929,12 @@ export interface StorageInvokeChannelMap {
 		result: import('./storage_types').StorageOperationStatus;
 	};
 	[StorageChannels.restore]: {
-		args: [];
+		args: [input?: import('./storage_types').StorageRestoreInput];
 		result: import('./storage_types').StorageOperationStatus;
+	};
+	[StorageChannels.listSnapshots]: {
+		args: [];
+		result: import('./storage_types').StorageBackupSnapshot[];
 	};
 }
 
