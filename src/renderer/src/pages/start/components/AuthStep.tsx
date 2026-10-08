@@ -92,7 +92,7 @@ export function AuthStep(): React.JSX.Element {
 			<div className="flex min-h-full items-center justify-center px-6 py-8">
 				<Card className="w-full max-w-sm">
 					<CardHeader>
-						<h1 className="text-lg font-medium leading-snug">
+						<h1 className="text-3xl font-medium leading-snug">
 							Kucedr account services are unavailable
 						</h1>
 						<CardDescription>
@@ -113,7 +113,7 @@ export function AuthStep(): React.JSX.Element {
 						<div className="mb-2 flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
 							<Mail className="size-5" aria-hidden="true" />
 						</div>
-						<h1 className="text-lg font-medium leading-snug">Check your email</h1>
+						<h1 className="text-3xl font-medium leading-snug">Check your email</h1>
 						<CardDescription>
 							We sent a confirmation link to {state.email ?? 'your email address'}.
 						</CardDescription>
@@ -162,8 +162,8 @@ export function AuthStep(): React.JSX.Element {
 			<div className="flex w-full max-w-sm flex-col gap-6">
 				<Card>
 					<CardHeader className="text-center">
-						<CardTitle className="text-2xl">
-							<h1 className="text-2xl font-medium leading-snug">{title}</h1>
+						<CardTitle className="text-3xl">
+							<h1 className="text-3xl font-medium leading-snug">{title}</h1>
 						</CardTitle>
 						<CardDescription>{description}</CardDescription>
 					</CardHeader>
