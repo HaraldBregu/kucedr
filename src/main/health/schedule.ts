@@ -1,17 +1,11 @@
+import cron, { type ScheduledTask } from 'node-cron';
 import type { Agent } from '../agent/agent';
 import { getHealth } from './data';
 import { runHealthCheck } from './run';
 import { getHealthSettings } from './store';
-import type { HealthEvery, HealthLogger } from './types';
+import type { HealthLogger } from './types';
 
-const INTERVAL_MS: Record<HealthEvery, number> = {
-	'0m': 0,
-	'1m': 60_000,
-	'30m': 1_800_000,
-	'1h': 3_600_000,
-};
-
-let timer: ReturnType<typeof setInterval> | undefined;
+let task: ScheduledTask | undefined;
 let healthAgent: Agent | undefined;
 let healthLogger: HealthLogger | undefined;
 
@@ -25,8 +19,8 @@ export function startHealth(agent: Agent, logger: HealthLogger): void {
 }
 
 export function stopHealth(): void {
-	if (timer) clearInterval(timer);
-	timer = undefined;
+	task?.destroy();
+	task = undefined;
 	healthAgent = undefined;
 	healthLogger = undefined;
 }
@@ -36,21 +30,29 @@ export function rescheduleHealth(): void {
 }
 
 function schedule(): void {
-	if (timer) clearInterval(timer);
-	timer = undefined;
+	task?.destroy();
+	task = undefined;
 	const agent = healthAgent;
 	const logger = healthLogger;
-	const every = getHealthSettings().every;
-	const ms = INTERVAL_MS[every] ?? 0;
-	if (!ms || !agent || !logger) {
+	const settings = getHealthSettings();
+	if (!settings.enabled || !agent || !logger) {
 		logger?.info('Health', 'Health check disabled');
 		return;
 	}
-	logger.info('Health', `Health check scheduled every ${every}`);
-	timer = setInterval(() => {
-		runHealthCheck(agent, logger).catch((error) => {
-			logger.error('Health', 'Health check failed', error);
-		});
-	}, ms);
-	timer.unref();
+	if (!cron.validate(settings.cronExpression)) {
+		logger.error('Health', 'Invalid health schedule');
+		return;
+	}
+	logger.info('Health', `Health check scheduled with ${settings.cronExpression}`);
+	task = cron.schedule(
+		settings.cronExpression,
+		async () => {
+			try {
+				await runHealthCheck(agent, logger);
+			} catch (error) {
+				logger.error('Health', 'Health check failed', error);
+			}
+		},
+		{ noOverlap: true, unref: true }
+	);
 }

@@ -7,11 +7,10 @@ import {
 	BrainCircuit,
 	Calendar as CalendarIcon,
 	ChevronRight,
-	LoaderCircle,
-	Save,
-	ShieldCheck,
 	Wrench,
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -47,10 +46,9 @@ function llmModelGroups(): ProviderModelGroup[] {
 
 type HealthSettings = Awaited<ReturnType<typeof window.agent.healthGetSettings>>;
 
-const EVERY_OPTIONS: readonly HealthSettings['every'][] = ['0m', '1m', '30m', '1h'];
-
 const HealthPage: React.FC = () => {
 	const { t } = useTranslation();
+	const [cronDraft, setCronDraft] = useState<string>();
 	const [settings, setSettings] = useState<HealthSettings | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
@@ -60,7 +58,8 @@ const HealthPage: React.FC = () => {
 
 	useEffect(() => {
 		let mounted = true;
-		void window.agent.healthGetSettings()
+		void window.agent
+			.healthGetSettings()
 			.then((result) => {
 				if (!mounted) return;
 				setSettings(result);
@@ -76,37 +75,36 @@ const HealthPage: React.FC = () => {
 		};
 	}, []);
 
-	const update = (patch: Partial<HealthSettings>): void => {
-		setSettings((current) => (current ? { ...current, ...patch } : current));
-		setSaved(false);
-	};
-
 	const updateAndSave = (patch: Partial<HealthSettings>): void => {
 		if (!settings) return;
-		const next = { ...settings, ...patch };
-		setSettings(next);
-		const activeHours =
-			next.activeHours?.start && next.activeHours?.end ? next.activeHours : undefined;
-		window.agent.healthSaveSettings({ ...next, activeHours }).catch((err: unknown) => {
-			setError(err instanceof Error ? err.message : t('settings.health.errors.saveFailed'));
-		});
-	};
-
-	const handleSave = async (): Promise<void> => {
-		if (!settings) return;
+		const previous = settings;
+		setSettings((current) => (current ? { ...current, ...patch } : current));
 		setSaving(true);
 		setSaved(false);
 		setError(null);
-		try {
-			const activeHours =
-				settings.activeHours?.start && settings.activeHours?.end ? settings.activeHours : undefined;
-			await window.agent.healthSaveSettings({ ...settings, activeHours });
-			setSaved(true);
-		} catch (err) {
-			setError(err instanceof Error ? err.message : t('settings.health.errors.saveFailed'));
-		} finally {
-			setSaving(false);
-		}
+		const activeHours = patch.activeHours;
+		const request = activeHours
+			? { ...patch, activeHours: activeHours.start && activeHours.end ? activeHours : undefined }
+			: patch;
+		void window.agent
+			.healthSaveSettings(request)
+			.then(() => {
+				setSaved(true);
+			})
+			.catch((err: unknown) => {
+				setSettings((current) => {
+					if (!current) return current;
+					const restored = { ...current };
+					for (const key of Object.keys(patch) as (keyof HealthSettings)[]) {
+						if (current[key] === patch[key]) Object.assign(restored, { [key]: previous[key] });
+					}
+					return restored;
+				});
+				setError(err instanceof Error ? err.message : t('settings.health.errors.saveFailed'));
+			})
+			.finally(() => {
+				setSaving(false);
+			});
 	};
 
 	const modelGroups = llmModelGroups();
@@ -171,26 +169,33 @@ const HealthPage: React.FC = () => {
 						>
 							<div className="-mx-4">
 								<SettingsRow
-									title={t('settings.health.fields.every')}
+									title={t('settings.health.fields.enabled')}
 									actions={
-										<Select
-											value={settings.every}
-											onValueChange={(value) =>
-												update({ every: (value ?? '0m') as HealthSettings['every'] })
-											}
+										<Switch
+											checked={settings.enabled}
+											onCheckedChange={(enabled) => updateAndSave({ enabled })}
 											disabled={saving}
-										>
-											<SelectTrigger id="health-every" className="h-7 w-44 text-xs">
-												<SelectValue />
-											</SelectTrigger>
-											<SelectContent>
-												{EVERY_OPTIONS.map((option) => (
-													<SelectItem key={option} value={option}>
-														{option === '0m' ? t('settings.health.fields.everyOff') : option}
-													</SelectItem>
-												))}
-											</SelectContent>
-										</Select>
+											aria-label={t('settings.health.fields.enabled')}
+										/>
+									}
+								/>
+								<SettingsRow
+									title={t('settings.health.fields.cronExpression')}
+									actions={
+										<Input
+											value={cronDraft ?? settings.cronExpression}
+											className="h-7 w-44 font-mono text-xs"
+											aria-label={t('settings.health.fields.cronExpression')}
+											disabled={saving}
+											onChange={(event) => setCronDraft(event.target.value)}
+											onBlur={() => {
+												if (cronDraft !== undefined && cronDraft !== settings.cronExpression)
+													updateAndSave({ cronExpression: cronDraft.trim().replace(/\s+/g, ' ') });
+											}}
+											onKeyDown={(event) => {
+												if (event.key === 'Enter') event.currentTarget.blur();
+											}}
+										/>
 									}
 								/>
 
@@ -199,7 +204,7 @@ const HealthPage: React.FC = () => {
 									actions={
 										<Select
 											value={settings.target}
-											onValueChange={(value) => update({ target: value ?? 'none' })}
+											onValueChange={(value) => updateAndSave({ target: value ?? 'none' })}
 											disabled={saving}
 										>
 											<SelectTrigger id="health-target" className="h-7 w-44 text-xs">
@@ -226,7 +231,7 @@ const HealthPage: React.FC = () => {
 										<Select
 											value={settings.directPolicy}
 											onValueChange={(value) =>
-												update({
+												updateAndSave({
 													directPolicy: (value ?? 'allow') as HealthSettings['directPolicy'],
 												})
 											}
@@ -287,7 +292,7 @@ const HealthPage: React.FC = () => {
 															: undefined
 													}
 													onSelect={(date) => {
-														update({
+														updateAndSave({
 															activeHours: {
 																start: date ? format(date, 'yyyy-MM-dd') : '',
 																end: settings.activeHours?.end ?? '',
@@ -341,7 +346,7 @@ const HealthPage: React.FC = () => {
 															: undefined
 													}
 													onSelect={(date) => {
-														update({
+														updateAndSave({
 															activeHours: {
 																start: settings.activeHours?.start ?? '',
 																end: date ? format(date, 'yyyy-MM-dd') : '',
@@ -373,21 +378,6 @@ const HealthPage: React.FC = () => {
 								media={
 									<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
 								}
-								className="grid-cols-[minmax(0,1fr)_auto]"
-								actionClassName="w-auto justify-end"
-								actions={<ChevronRight className="size-4 text-muted-foreground" />}
-							/>
-						</Link>
-						<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
-							<SettingsRow
-								title={t('settings.tabs.permissions')}
-								description={t('settings.overview.descriptions.permissions')}
-								media={
-									<ShieldCheck
-										className="size-5 shrink-0 text-muted-foreground"
-										aria-hidden="true"
-									/>
-								}
 								className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
 								actionClassName="w-auto justify-end"
 								actions={<ChevronRight className="size-4 text-muted-foreground" />}
@@ -402,17 +392,6 @@ const HealthPage: React.FC = () => {
 							</p>
 						</SettingsAutoDismiss>
 					)}
-
-					<div className="flex justify-end">
-						<Button type="button" size="sm" disabled={saving} onClick={() => void handleSave()}>
-							{saving ? (
-								<LoaderCircle className="size-3 animate-spin" />
-							) : (
-								<Save className="size-3" />
-							)}
-							{saving ? t('settings.health.saving') : t('common.save')}
-						</Button>
-					</div>
 				</>
 			)}
 		</SettingsPageShell>

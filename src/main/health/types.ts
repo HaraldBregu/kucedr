@@ -15,6 +15,8 @@ export interface HealthLogger {
 }
 
 export interface HealthSettings {
+	enabled: boolean;
+	cronExpression: string;
 	every: HealthEvery;
 	target: HealthTarget;
 	directPolicy: HealthDirectPolicy;
@@ -29,6 +31,8 @@ export interface HealthSettings {
 }
 
 export const DEFAULT_HEALTH_SETTINGS: HealthSettings = {
+	enabled: true,
+	cronExpression: '*/30 * * * *',
 	every: '30m',
 	target: 'last',
 	directPolicy: 'allow',
