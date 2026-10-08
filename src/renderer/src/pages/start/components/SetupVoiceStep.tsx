@@ -6,7 +6,12 @@ import { SetupStepHeader } from './SetupStepHeader';
 import { SetupService, type SetupAssistantProps } from './SetupService';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
 
-export function SetupVoiceStep({ serviceStates, loadingModels, savingConfig, onServiceChange }: SetupAssistantProps): React.JSX.Element {
+export function SetupVoiceStep({
+	serviceStates,
+	loadingModels,
+	savingConfig,
+	onServiceChange,
+}: SetupAssistantProps): React.JSX.Element {
 	return (
 		<div className="mx-auto flex min-h-full w-full min-w-0 max-w-2xl flex-col justify-center py-8">
 			<SetupStepHeader title={STEP_COPY.voice.title} description={STEP_COPY.voice.description} />
@@ -14,9 +19,25 @@ export function SetupVoiceStep({ serviceStates, loadingModels, savingConfig, onS
 				<section aria-label="Voice Assistant" className="min-w-0">
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
-							<VoiceConfiguration selectDefaultModel={false} showFieldLabel={false} showSelectedModel buttonDropdown buttonClassName="w-40 min-w-0" icon={Radio} pluginItemStyle />
-							{MODEL_SERVICE_DEFINITIONS.filter((service) => service.id === 'voice' || service.id === 'transcription').map((service) => (
-								<SetupService key={service.id} service={service} state={serviceStates[service.id]} disabled={loadingModels || savingConfig} onChange={onServiceChange} />
+							<VoiceConfiguration
+								selectDefaultModel={false}
+								showFieldLabel={false}
+								showSelectedModel
+								buttonDropdown
+								buttonClassName="w-40 min-w-0"
+								icon={Radio}
+								pluginItemStyle
+							/>
+							{MODEL_SERVICE_DEFINITIONS.filter(
+								(service) => service.id === 'voice' || service.id === 'transcription'
+							).map((service) => (
+								<SetupService
+									key={service.id}
+									service={service}
+									state={serviceStates[service.id]}
+									disabled={loadingModels || savingConfig}
+									onChange={onServiceChange}
+								/>
 							))}
 						</CardContent>
 					</Card>

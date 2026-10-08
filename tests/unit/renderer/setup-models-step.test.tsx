@@ -1,7 +1,8 @@
 import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { SetupModelsStep } from '../../../src/renderer/src/pages/start/components/SetupModelsStep';
+import { SetupChatStep } from '../../../src/renderer/src/pages/start/components/SetupChatStep';
+import { SetupVoiceStep } from '../../../src/renderer/src/pages/start/components/SetupVoiceStep';
 import type { ModelServiceStateMap } from '../../../src/renderer/src/pages/start/setupTypes';
 
 jest.mock('@/components/model-provider-select', () => ({
@@ -23,7 +24,7 @@ jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => 
 	SetupSearch: () => <div data-testid="setup-search">Search</div>,
 }));
 
-jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/conversation', () => ({
+jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/voice', () => ({
 	__esModule: true,
 	default: ({
 		buttonClassName,
@@ -66,65 +67,55 @@ const SERVICE_STATES: ModelServiceStateMap = {
 	audio: EMPTY_SERVICE,
 };
 
-it('groups the chat and voice Assistant configurations', () => {
-	const { container } = render(
-		<SetupModelsStep
+jest.mock('../../../src/renderer/src/pages/settings/pages/providers/Page', () => ({
+	__esModule: true,
+	default: () => <div data-testid="search-providers">Search provider connections</div>,
+}));
+
+it('shows only chat and tool configuration on Chat assistant', () => {
+	render(
+		<SetupChatStep
 			serviceStates={SERVICE_STATES}
 			loadingModels={false}
 			savingConfig={false}
 			onServiceChange={jest.fn()}
-			onLocalModelChange={jest.fn()}
 		/>
 	);
-
-	const chatAssistantGroup = screen.getByRole('region', { name: 'Chat Assistant' });
-	const voiceAssistantGroup = screen.getByRole('region', { name: 'Voice Assistant' });
-	const toolsGroup = screen.getByRole('region', { name: 'Tools' });
-	expect(container.firstElementChild).not.toHaveClass('px-4', 'sm:px-6');
-	expect(chatAssistantGroup.parentElement).toHaveClass('mt-6');
-	const serviceIds = ['assistant', 'voice', 'transcription'];
-	for (const id of serviceIds) {
-		expect(within(chatAssistantGroup).getByTestId(`setup-${id}`)).toHaveAttribute(
-			'data-slot',
-			'item'
-		);
-		expect(within(chatAssistantGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
-		expect(within(chatAssistantGroup).getByTestId(`setup-${id}-select`)).toHaveClass('w-40');
-	}
-	expect(within(chatAssistantGroup).getByTestId('setup-assistant')).toHaveTextContent('LLM Model');
-	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
-		'data-default-model',
-		'false'
-	);
-	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
-		'data-show-field-label',
-		'false'
-	);
-	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
-		'data-has-icon',
-		'true'
-	);
-	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
-		'data-show-selected-model',
-		'true'
-	);
-	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
-		'data-button-dropdown',
-		'true'
-	);
-	expect(within(voiceAssistantGroup).getByTestId('setup-realtime')).toHaveAttribute(
-		'data-button-class-name',
-		expect.stringContaining('w-40')
-	);
-	expect(within(toolsGroup).getByTestId('setup-search')).toBeInTheDocument();
+	expect(screen.getByRole('heading', { name: 'Chat assistant' })).toBeInTheDocument();
+	const chat = screen.getByRole('region', { name: 'Chat Assistant' });
+	expect(within(chat).getByTestId('setup-assistant')).toHaveTextContent('LLM Model');
+	const tools = screen.getByRole('region', { name: 'Tools' });
 	for (const id of ['image', 'video', 'audio']) {
-		expect(within(toolsGroup).getByTestId(`setup-${id}`)).toHaveAttribute('data-slot', 'item');
-		expect(within(toolsGroup).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
-		expect(within(toolsGroup).getByTestId(`setup-${id}-select`)).toHaveClass('w-40');
-		expect(within(toolsGroup).getByTestId(`setup-${id}`).querySelector('svg')).toBeInTheDocument();
+		expect(within(tools).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
-	expect(screen.queryByTestId('setup-health')).not.toBeInTheDocument();
-	expect(screen.queryByTestId('setup-tasks')).not.toBeInTheDocument();
+	expect(within(tools).getByTestId('setup-search')).toBeInTheDocument();
+	expect(screen.getByTestId('search-providers')).toBeInTheDocument();
+	for (const id of ['voice', 'transcription', 'realtime', 'health', 'tasks']) {
+		expect(screen.queryByTestId(`setup-${id}`)).not.toBeInTheDocument();
+	}
+});
+
+it('shows speech, transcription, and live conversation on Voice assistant', () => {
+	render(
+		<SetupVoiceStep
+			serviceStates={SERVICE_STATES}
+			loadingModels={false}
+			savingConfig={false}
+			onServiceChange={jest.fn()}
+		/>
+	);
+	expect(screen.getByRole('heading', { name: 'Voice assistant' })).toBeInTheDocument();
+	const voice = screen.getByRole('region', { name: 'Voice Assistant' });
+	for (const id of ['voice', 'transcription']) {
+		expect(within(voice).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+	}
+	const realtime = within(voice).getByTestId('setup-realtime');
+	expect(realtime).toHaveAttribute('data-default-model', 'false');
+	expect(realtime).toHaveAttribute('data-show-selected-model', 'true');
+	expect(realtime).toHaveAttribute('data-button-dropdown', 'true');
+	for (const id of ['assistant', 'image', 'video', 'audio', 'search']) {
+		expect(screen.queryByTestId(`setup-${id}`)).not.toBeInTheDocument();
+	}
 });
 
 it('uses the Assistant local-model controls for Ollama', async () => {
@@ -156,14 +147,12 @@ it('uses the Assistant local-model controls for Ollama', async () => {
 		},
 	};
 
-	const onLocalModelChange = jest.fn();
 	render(
-		<SetupModelsStep
+		<SetupChatStep
 			serviceStates={serviceStates}
 			loadingModels={false}
 			savingConfig={false}
 			onServiceChange={jest.fn()}
-			onLocalModelChange={onLocalModelChange}
 		/>
 	);
 

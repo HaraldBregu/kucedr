@@ -141,7 +141,9 @@ it.each(['/auth', '/setup', '/config', '/home'])(
 		window.auth = authApi({ status: 'signedOut', persistence: 'encrypted' });
 		renderFlow(path);
 
-		expect(await screen.findByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).toBeInTheDocument();
+		expect(
+			await screen.findByRole('heading', { name: 'One personal assistant. Unlimited tools.' })
+		).toBeInTheDocument();
 		expect(screen.getByLabelText('Current route')).toHaveTextContent('/start');
 	}
 );
@@ -163,7 +165,9 @@ it.each(['/home', '/settings/account'])(
 
 		await waitFor(() => expect(window.agent.getProvider).toHaveBeenCalled());
 		expect(screen.getByLabelText('Current route')).toHaveTextContent(path);
-		expect(screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })
+		).not.toBeInTheDocument();
 	}
 );
 
@@ -184,7 +188,9 @@ it.each(['/home', '/settings/account'])(
 
 		await waitFor(() => expect(window.agent.getProvider).toHaveBeenCalled());
 		expect(screen.getByLabelText('Current route')).toHaveTextContent(path);
-		expect(screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).not.toBeInTheDocument();
+		expect(
+			screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })
+		).not.toBeInTheDocument();
 	}
 );
 
@@ -205,7 +211,9 @@ it('preserves home when a skipped local-only session is refreshed', async () => 
 	renderFlow('/home');
 	expect(await screen.findByLabelText('Current route')).toHaveTextContent('/home');
 	expect(window.agent.getProvider.mock.calls.length).toBeGreaterThan(1);
-	expect(screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })).not.toBeInTheDocument();
+	expect(
+		screen.queryByRole('heading', { name: 'One personal assistant. Unlimited tools.' })
+	).not.toBeInTheDocument();
 });
 
 it('moves from landing to auth without a back action or bottom navigation', async () => {
@@ -368,21 +376,30 @@ it('leaves setup for home after configuration is refreshed', async () => {
 	await waitFor(() => expect(screen.getByLabelText('Current route')).toHaveTextContent('/home'));
 });
 
-
 it('continues through chat and voice, goes back, and saves only on Finish', async () => {
 	const user = userEvent.setup();
 	const provider = { id: 'openai', name: 'OpenAI', baseUrl: '' };
 	const model = { id: 'test-model', name: 'Test model' };
 	const initial = setupState.createInitialSetupState();
-	initial.serviceStates.assistant = { providerId: provider.id, modelId: model.id, modelGroups: [{ provider, models: [model] }] };
+	initial.serviceStates.assistant = {
+		providerId: provider.id,
+		modelId: model.id,
+		modelGroups: [{ provider, models: [model] }],
+	};
 	const initialSpy = jest.spyOn(setupState, 'createInitialSetupState').mockReturnValue(initial);
 	const save = jest.fn(async () => {
 		window.agent.getProvider = jest.fn(async () => provider);
 		window.agent.getModelId = jest.fn(async () => model.id);
 		return true;
 	});
-	const servicesSpy = jest.spyOn(setupServices, 'useSetupModelServices').mockReturnValue({ handleServiceChange: jest.fn(), handleSaveModels: save });
-	window.auth = authApi({ status: 'signedIn', persistence: 'memory', user: { id: 'user-id', email: 'user@example.test' } });
+	const servicesSpy = jest
+		.spyOn(setupServices, 'useSetupModelServices')
+		.mockReturnValue({ handleServiceChange: jest.fn(), handleSaveModels: save });
+	window.auth = authApi({
+		status: 'signedIn',
+		persistence: 'memory',
+		user: { id: 'user-id', email: 'user@example.test' },
+	});
 	window.provider = { list: jest.fn(async () => [{ ...provider, apiKey: 'test-key' }]) } as never;
 	try {
 		renderFlow('/start');

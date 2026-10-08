@@ -200,11 +200,13 @@ export const STEP_COPY: Record<SetupStep, { title: string; description: string }
 	},
 	chat: {
 		title: 'Chat assistant',
-		description: 'Choose your chat model and tools. You can update these choices anytime in Settings.',
+		description:
+			'Choose your chat model and tools. You can update these choices anytime in Settings.',
 	},
 	voice: {
 		title: 'Voice assistant',
-		description: 'Choose how your assistant speaks, listens, and handles live conversations. You can update these choices anytime in Settings.',
+		description:
+			'Choose how your assistant speaks, listens, and handles live conversations. You can update these choices anytime in Settings.',
 	},
 };
 

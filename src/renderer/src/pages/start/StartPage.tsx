@@ -113,7 +113,6 @@ const StartPage: React.FC = () => {
 			);
 		}
 
-
 		const AssistantStep = step === 'chat' ? SetupChatStep : SetupVoiceStep;
 		return (
 			<AssistantStep

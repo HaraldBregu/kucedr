@@ -7,7 +7,12 @@ import { SetupStepHeader } from './SetupStepHeader';
 import { SetupService, type SetupAssistantProps } from './SetupService';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
 
-export function SetupChatStep({ serviceStates, loadingModels, savingConfig, onServiceChange }: SetupAssistantProps): React.JSX.Element {
+export function SetupChatStep({
+	serviceStates,
+	loadingModels,
+	savingConfig,
+	onServiceChange,
+}: SetupAssistantProps): React.JSX.Element {
 	const [searchSettings, setSearchSettings] = useState<SearchSettings>();
 	const [availableLocalModels, setAvailableLocalModels] = useState<string[]>([]);
 	const [localProviderName, setLocalProviderName] = useState<string>();
@@ -55,23 +60,40 @@ export function SetupChatStep({ serviceStates, loadingModels, savingConfig, onSe
 				<section aria-label="Chat Assistant" className="min-w-0">
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
-							<SetupService service={MODEL_SERVICE_DEFINITIONS.find((service) => service.id === 'assistant')!} state={{ ...serviceStates.assistant, modelGroups: assistantModelGroups }} disabled={loadingModels || savingConfig} onChange={onServiceChange} />
+							<SetupService
+								service={MODEL_SERVICE_DEFINITIONS.find((service) => service.id === 'assistant')!}
+								state={{ ...serviceStates.assistant, modelGroups: assistantModelGroups }}
+								disabled={loadingModels || savingConfig}
+								onChange={onServiceChange}
+							/>
 						</CardContent>
 					</Card>
 				</section>
 				<section aria-label="Tools" className="min-w-0">
-					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Tools</h2>
+					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+						Tools
+					</h2>
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
 							<SetupSearch providerSettings={searchSettings} />
-							{MODEL_SERVICE_DEFINITIONS.filter((service) => ['image', 'video', 'audio'].includes(service.id)).map((service) => (
-								<SetupService key={service.id} service={service} state={serviceStates[service.id]} disabled={loadingModels || savingConfig} onChange={onServiceChange} />
+							{MODEL_SERVICE_DEFINITIONS.filter((service) =>
+								['image', 'video', 'audio'].includes(service.id)
+							).map((service) => (
+								<SetupService
+									key={service.id}
+									service={service}
+									state={serviceStates[service.id]}
+									disabled={loadingModels || savingConfig}
+									onChange={onServiceChange}
+								/>
 							))}
 						</CardContent>
 					</Card>
 				</section>
 				<section aria-label="Search providers" className="min-w-0">
-					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">Search providers</h2>
+					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+						Search providers
+					</h2>
 					<ProvidersPage embedded section="search" onSearchSettingsChange={setSearchSettings} />
 				</section>
 			</div>

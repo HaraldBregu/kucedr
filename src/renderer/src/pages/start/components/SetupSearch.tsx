@@ -11,7 +11,11 @@ import {
 import { SEARCH_ENGINES } from '@pages/settings/pages/search/catalog';
 import type { SearchEngineId, SearchSettings } from '@shared/search_types';
 
-export function SetupSearch({ providerSettings }: { readonly providerSettings?: SearchSettings }): React.JSX.Element {
+export function SetupSearch({
+	providerSettings,
+}: {
+	readonly providerSettings?: SearchSettings;
+}): React.JSX.Element {
 	const [settings, setSettings] = useState<SearchSettings | null>(null);
 
 	useEffect(() => {
