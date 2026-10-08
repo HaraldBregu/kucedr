@@ -40,6 +40,14 @@ it('does not request authorization when an OAuth token is stored', async () => {
 	});
 });
 
+it('requests fresh authorization after a tool rejects a stored token', async () => {
+	getMcpOauth.mockReturnValue({ tokens: { access_token: 'stale-token' } });
+	await expect(requestMcpAuthorizationTool().run({ serverId: 'docs', force: true })).resolves.toMatchObject({
+		status: 'authorization_required',
+		serverId: 'docs',
+	});
+});
+
 it('does not offer OAuth for a server using a configured bearer token', async () => {
 	getMcpServers.mockReturnValue({
 		docs: { type: 'http', url: 'https://mcp.example', name: 'Docs', token: 'configured-token' },
