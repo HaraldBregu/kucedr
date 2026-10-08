@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { useOnboarding } from '@/contexts/useOnboarding';
-import { SetupModelsStep } from './components/SetupModelsStep';
+import { SetupChatStep } from './components/SetupChatStep';
+import { SetupVoiceStep } from './components/SetupVoiceStep';
 import { SetupProviderStep } from './components/SetupProviderStep';
 import { SetupStepProgress } from './components/SetupStepProgress';
 import {
@@ -60,7 +61,7 @@ const StartPage: React.FC = () => {
 						: modelProviderIds.has(provider.id) && Boolean(provider.apiKey.trim())
 				);
 				if (hasSavedKey) {
-					dispatch({ type: 'GO_TO_STEP', step: 'search' });
+					dispatch({ type: 'GO_TO_STEP', step: 'chat' });
 				} else {
 					dispatch({
 						type: 'SET_ERROR',
@@ -82,7 +83,7 @@ const StartPage: React.FC = () => {
 			return;
 		}
 
-		if (step !== 'models') {
+		if (step !== 'voice') {
 			const nextStep = SETUP_STEPS[stepIndex + 1];
 			if (nextStep) dispatch({ type: 'GO_TO_STEP', step: nextStep });
 			return;
@@ -112,18 +113,10 @@ const StartPage: React.FC = () => {
 			);
 		}
 
-		if (step === 'search') {
-			return (
-				<SetupProviderStep
-					section="search"
-					title={STEP_COPY.search.title}
-					description={STEP_COPY.search.description}
-				/>
-			);
-		}
 
+		const AssistantStep = step === 'chat' ? SetupChatStep : SetupVoiceStep;
 		return (
-			<SetupModelsStep
+			<AssistantStep
 				serviceStates={serviceStates}
 				loadingModels={loadingModels}
 				savingConfig={savingConfig}
@@ -180,7 +173,7 @@ const StartPage: React.FC = () => {
 						<Button
 							type="button"
 							size="sm"
-							disabled={step === 'models' ? !canContinueModels : isBusy}
+							disabled={step === 'modelProvider' ? isBusy : !canContinueModels}
 							onClick={handlePrimaryAction}
 						>
 							{isBusy ? 'Saving...' : stepIndex === SETUP_STEPS.length - 1 ? 'Finish' : 'Continue'}

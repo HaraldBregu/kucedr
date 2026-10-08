@@ -48,7 +48,7 @@ export function useSetupModelServices(state: SetupState, dispatch: Dispatch<Setu
 	}, [step]);
 
 	useEffect(() => {
-		if (step !== 'models') return;
+		if (step !== 'chat' && step !== 'voice') return;
 		if (modelsLoadedRef.current) return;
 		let cancelled = false;
 
