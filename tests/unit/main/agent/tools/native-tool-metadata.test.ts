@@ -57,6 +57,15 @@ it('uses taskId in task tool inputs', () => {
 	expect(() => deleteTaskTool.parseInput({ scheduleId: 'task-1' })).toThrow();
 });
 
+it('explains task capabilities and example user requests to the model', () => {
+	expect(createTaskTool.description).toContain('Create and persist a reusable background agent task');
+	expect(createTaskTool.description).toContain('New tasks are deliberately saved disabled');
+	expect(listTasksTool.description).toContain('Show my scheduled tasks');
+	expect(updateTaskTool.description).toContain('enable and disable scheduled execution');
+	expect(deleteTaskTool.description).toContain('explicit deletion request');
+	expect(runTaskNowTool.description).toContain('without changing its saved prompt');
+});
+
 it('uses ordinary policy approval for focused text edits', () => {
 	expect(editTool.id).toBe('edit');
 	expect(editTool.hardApproval).not.toBe(true);
