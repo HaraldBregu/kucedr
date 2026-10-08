@@ -2,6 +2,7 @@ import React from 'react';
 import { Radio } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import VoiceConfiguration from '@pages/settings/pages/assistant/voice';
+import { SetupMediaTools } from './SetupMediaTools';
 import { SetupStepHeader } from './SetupStepHeader';
 import { SetupService, type SetupAssistantProps } from './SetupService';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
@@ -42,6 +43,12 @@ export function SetupVoiceStep({
 						</CardContent>
 					</Card>
 				</section>
+				<SetupMediaTools
+					serviceStates={serviceStates}
+					loadingModels={loadingModels}
+					savingConfig={savingConfig}
+					onServiceChange={onServiceChange}
+				/>
 			</div>
 		</div>
 	);

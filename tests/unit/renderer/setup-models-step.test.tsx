@@ -96,7 +96,7 @@ it('shows only chat and tool configuration on Chat assistant', () => {
 	expect(within(chat).getByTestId('setup-compaction')).toHaveTextContent(
 		'Used to summarize older messages when you compact a conversation. When disabled, the Chat LLM is used.'
 	);
-	const tools = screen.getByRole('region', { name: 'Tools' });
+	const tools = screen.getByRole('region', { name: 'Media tools' });
 	for (const id of ['image', 'video', 'audio']) {
 		expect(within(tools).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
@@ -118,6 +118,10 @@ it('shows speech, transcription, and live conversation on Voice assistant', () =
 	);
 	expect(screen.getByRole('heading', { name: 'Voice assistant' })).toBeInTheDocument();
 	const voice = screen.getByRole('region', { name: 'Voice Assistant' });
+	const media = screen.getByRole('region', { name: 'Media tools' });
+	for (const id of ['image', 'video', 'audio']) {
+		expect(within(media).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
+	}
 	for (const id of ['voice', 'transcription']) {
 		expect(within(voice).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
@@ -125,7 +129,7 @@ it('shows speech, transcription, and live conversation on Voice assistant', () =
 	expect(realtime).toHaveAttribute('data-default-model', 'false');
 	expect(realtime).toHaveAttribute('data-show-selected-model', 'true');
 	expect(realtime).toHaveAttribute('data-button-dropdown', 'true');
-	for (const id of ['assistant', 'image', 'video', 'audio', 'search']) {
+	for (const id of ['assistant', 'search', 'compaction']) {
 		expect(screen.queryByTestId(`setup-${id}`)).not.toBeInTheDocument();
 	}
 });
