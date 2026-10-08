@@ -152,7 +152,9 @@ it('shows channel credentials, models and media configuration directly on Channe
 			<ChannelsPage />
 		</MemoryRouter>
 	);
-	expect(await screen.findByRole('heading', { name: 'Telegram Not configured' })).toBeInTheDocument();
+	expect(
+		await screen.findByRole('heading', { name: 'Telegram Not configured' })
+	).toBeInTheDocument();
 	expect(
 		screen.getByText('Message @BotFather, then paste the bot token here.')
 	).toBeInTheDocument();
