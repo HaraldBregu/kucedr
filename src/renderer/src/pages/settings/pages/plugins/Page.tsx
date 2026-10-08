@@ -136,6 +136,7 @@ const PluginsPage = (): React.JSX.Element => {
 						enabled: true,
 					};
 			await window.mcp.upsert(service.id, entry);
+			await window.mcp.test(service.id).catch(() => undefined);
 			setServers((current) => ({ ...current, [service.id]: entry }));
 			return true;
 		} catch (caught) {

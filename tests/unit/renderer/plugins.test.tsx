@@ -125,6 +125,7 @@ jest.mock('../../../src/renderer/src/lib/providers', () => ({
 const mcpApi = {
 	list: jest.fn(),
 	upsert: jest.fn(),
+	test: jest.fn(),
 	delete: jest.fn(),
 };
 const providerApi = {
@@ -148,6 +149,7 @@ beforeEach(() => {
 		gmail: { type: 'http', name: 'gmail', url: 'https://gmail.example/mcp', enabled: true },
 	});
 	mcpApi.upsert.mockResolvedValue({});
+	mcpApi.test.mockResolvedValue({ ok: true, tools: [], toolCount: 0, durationMs: 0 });
 	mcpApi.delete.mockResolvedValue(undefined);
 });
 
@@ -284,6 +286,7 @@ it('re-enables a configured Microsoft 365 service without replacing its tenant',
 	await waitFor(() =>
 		expect(mcpApi.upsert).toHaveBeenCalledWith('microsoft-mail', { ...saved, enabled: true })
 	);
+	expect(mcpApi.test).toHaveBeenCalledWith('microsoft-mail');
 	expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });
 
