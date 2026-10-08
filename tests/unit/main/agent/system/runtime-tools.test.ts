@@ -26,8 +26,8 @@ it('groups runtime tools by availability and category with descriptions and usag
 	expect(context).toContain('#### Delegation\n- `subagent` — Delegate one independent task.');
 	expect(context).toContain('#### Discovery\n- `tool_search` — Find relevant tools.');
 	expect(context).toContain('### Available through `tool_search`');
-	expect(context).toContain('#### System\n- `camera_recorder` — Record camera video. _(Use only for an explicit user request; profile updates are also allowed during bootstrap.)_');
-	expect(context).toContain('#### Media\n- `create_image` — Generate images. _(Use only for an explicit user request; profile updates are also allowed during bootstrap.)_');
+	expect(context).toContain('#### System\n- `camera_recorder` — Record camera video. _(Explicit user request only.)_');
+	expect(context).toContain('#### Media\n- `create_image` — Generate images. _(Explicit user request only.)_');
 	expect(context).toContain('#### Integrations\n- `mcp__gmail__search_threads` — Search Gmail threads.');
 	expect(context.match(/`read`/g)).toHaveLength(1);
 });

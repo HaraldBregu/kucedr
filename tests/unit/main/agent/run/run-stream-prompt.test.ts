@@ -938,15 +938,9 @@ describe('run stream system prompt', () => {
 				? {
 						content: '',
 						model: 'pinned-model',
-						toolCalls: [{ id: 'find-subagent', name: 'tool_search', args: { query: 'delegate to subagent' } }],
+						toolCalls: [{ id: 'delegate', name: 'subagent', args: { task: 'inspect' } }],
 					}
-				: mainCalls === 2
-					? {
-							content: '',
-							model: 'pinned-model',
-							toolCalls: [{ id: 'delegate', name: 'subagent', args: { task: 'inspect' } }],
-						}
-					: { content: 'parent result', model: 'pinned-model', toolCalls: [] };
+				: { content: 'parent result', model: 'pinned-model', toolCalls: [] };
 		});
 
 		for await (const _event of stream(
@@ -970,6 +964,10 @@ describe('run stream system prompt', () => {
 		))
 			void _event;
 
+		const parentCall = runModelTurnMock.mock.calls.find((call) => call[0].agentId === 'main');
+		expect((parentCall?.[5] as Tool[]).map((tool) => tool.id)).toEqual(
+			expect.arrayContaining(['subagent', 'subagents'])
+		);
 		const childCall = runModelTurnMock.mock.calls.find((call) => call[0].agentId === 'subagent');
 		const childInput = childCall?.[0];
 		expect(childInput).toMatchObject({

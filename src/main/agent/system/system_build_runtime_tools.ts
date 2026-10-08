@@ -28,7 +28,7 @@ export function buildRuntimeTools(
 					.map((tool) => {
 						const description = tool.description?.trim() || 'No description provided by this tool.';
 						const restriction = requiresExplicitRequest(tool)
-							? ' _(Use only for an explicit user request; profile updates are also allowed during bootstrap.)_'
+							? ' _(Explicit user request only.)_'
 							: '';
 						return `- \`${tool.id}\` — ${description}${restriction}`;
 					})
@@ -38,6 +38,6 @@ export function buildRuntimeTools(
 	}
 
 	return sections.length > 0
-		? `## Tools available in this runtime\n\nThis inventory is generated for the current model turn and is authoritative for tool availability. Loaded tools can be called now. Tools in the discovery section must first be selected with \`tool_search\`. Use only tools relevant to the user's request. Items marked as requiring an explicit request must not be started proactively; status and stop tools may be used to complete an already requested workflow.\n\n${sections.join('\n\n')}`
+		? `## Tools available in this runtime\n\nThis inventory is generated for the current model turn and is authoritative for tool availability. Loaded tools can be called now. Tools in the discovery section must first be selected with \`tool_search\`. Use only tools relevant to the user's request. Items marked as requiring an explicit request must not be started proactively. Profile updates are also allowed during bootstrap; status and stop tools may be used to complete an already requested workflow.\n\n${sections.join('\n\n')}`
 		: '## Tools available in this runtime\n\nNo tools are available for this model turn.';
 }
