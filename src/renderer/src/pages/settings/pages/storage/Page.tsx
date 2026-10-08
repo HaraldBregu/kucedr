@@ -125,7 +125,8 @@ const StoragePage: React.FC = () => {
 				count: operationStatus?.transferred,
 				failed: operationStatus?.failed,
 				error:
-					operationStatus?.error || (operationStatus?.operation === 'backup'
+					operationStatus?.error ||
+					(operationStatus?.operation === 'backup'
 						? t('settings.storage.errors.push')
 						: t('settings.storage.errors.pull')),
 			})
