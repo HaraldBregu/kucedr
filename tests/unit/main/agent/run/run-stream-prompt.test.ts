@@ -1432,7 +1432,7 @@ describe('run stream system prompt', () => {
 			)) events.push(_event);
 			expect(testServer).toHaveBeenCalledWith('gmail');
 			expect(mockLoadMcpTools).toHaveBeenCalledTimes(2);
-			expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(gmail.id);
+			expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(gmail.id);
 		} finally {
 			authorize.mockRestore();
 			testServer.mockRestore();
