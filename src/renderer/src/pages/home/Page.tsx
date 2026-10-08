@@ -25,6 +25,8 @@ import {
 	X,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import type { LibraryFile } from '../../../../shared/library_types';
+import { workspaceFileType } from '../../../../shared/workspace';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
@@ -476,6 +478,7 @@ function PageContent(): ReactElement {
 	const recorder = useAudioRecorder();
 	const voiceButtonMode = useVoiceButtonMode();
 	const [attachments, setAttachments] = useState<PromptAttachment[]>([]);
+	const [libraryPickerOpen, setLibraryPickerOpen] = useState(false);
 	const [attachmentsSessionId, setAttachmentsSessionId] = useState<string | null>(null);
 	useEffect(() => {
 		let active = true;
