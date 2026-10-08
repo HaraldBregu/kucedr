@@ -1,5 +1,6 @@
 import { spawn, type ChildProcessWithoutNullStreams } from 'node:child_process';
 import { createInterface } from 'node:readline';
+import { app } from 'electron';
 
 type Params = Record<string, unknown>;
 type Pending = {
@@ -53,7 +54,7 @@ export class CodexRpc {
 
 	async initialize(): Promise<void> {
 		await this.request('initialize', {
-			clientInfo: { name: 'kucedr_coder', title: 'Kucedr Coder', version: '1.0.0' },
+			clientInfo: { name: 'kucedr_coder', title: 'Kucedr Coder', version: app.getVersion() },
 		});
 		this.write({ method: 'initialized', params: {} });
 	}

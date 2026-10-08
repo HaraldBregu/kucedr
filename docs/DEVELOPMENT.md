@@ -455,7 +455,7 @@ The root manifest version and tag must match exactly.
 2. Set the next version without creating npm's automatic tag:
 
    ```sh
-   npm version 1.0.3 --no-git-tag-version
+   npm version 1.1.0 --no-git-tag-version
    ```
 
 3. Review the version changes and run the release checks:
@@ -473,7 +473,7 @@ The root manifest version and tag must match exactly.
 
    ```sh
    git add package.json package-lock.json
-   git commit -m "release app v1.0.3"
+   git commit -m "release app v1.1.0"
    git push kucedr main
    ```
 
@@ -482,8 +482,8 @@ The root manifest version and tag must match exactly.
 6. Create an annotated tag on the verified commit and push only that tag:
 
    ```sh
-   git tag -a v1.0.3 -m "Kucedr v1.0.3"
-   git push kucedr v1.0.3
+   git tag -a v1.1.0 -m "Kucedr v1.1.0"
+   git push kucedr v1.1.0
    ```
 
 The release workflow rejects a tag that does not equal `v` plus the root manifest
