@@ -100,7 +100,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			role: "Harald's personal butler and assistant",
 			vibe: 'Composed and precise',
 			metadata:
-				'# Alfred\n\n**Name:** Alfred\n**Also addressed as:** "Sir Alfred"\n\n**Role:** Harald\'s butler and personal assistant\n\n**Vibe:** Composed and precise',
+				'Use update_identity to change the assistant\'s name, role, avatar, or identity.\n\n# Alfred\n\n**Name:** Alfred\n**Also addressed as:** "Sir Alfred"\n\n**Role:** Harald\'s butler and personal assistant\n\n**Vibe:** Composed and precise',
 		});
 		const deduplicated = await buildWorkspaceContext(config, 'full');
 		const identitySection = deduplicated.split('### IDENTITY\n')[1].split('\n\n### SOUL')[0];
@@ -108,6 +108,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		expect(identitySection.match(/\*\*Role:\*\*/g)).toHaveLength(1);
 		expect(identitySection.match(/\*\*Vibe:\*\*/g)).toHaveLength(1);
 		expect(identitySection).toContain('**Also addressed as:** "Sir Alfred"');
+		expect(identitySection).not.toContain('Use update_identity to change the assistant');
 		expect(identitySection).not.toContain('# Alfred');
 		expect(identitySection).not.toContain('**Metadata:**');
 		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');

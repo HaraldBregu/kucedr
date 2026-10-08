@@ -6,6 +6,12 @@ export function formatIdentity(identity: IdentitySettings): string {
 		.flatMap((line) => {
 			const detail = line.replace(/^\s*(?:-\s*)?\*\*Metadata:\*\*\s*/i, '');
 			const trimmed = detail.trim();
+			if (
+				/^Use\s+`?update_identity`?\s+to change the assistant's name, role, avatar, or identity\.?$/i.test(
+					trimmed
+				)
+			)
+				return [];
 			if (/^#\s+IDENTITY\.md\b/i.test(trimmed)) return [];
 			if (/^#\s+/.test(trimmed) && trimmed.replace(/^#\s+/, '').toLowerCase() === identity.name.toLowerCase()) return [];
 			if (/^(?:-\s*)?\*\*(?:Name|Title|Role|Avatar|Vibe):\*\*/i.test(trimmed)) return [];
