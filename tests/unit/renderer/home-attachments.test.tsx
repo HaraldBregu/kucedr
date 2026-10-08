@@ -118,13 +118,8 @@ jest.mock('@/components/ui/dropdown-menu', () => ({
 }));
 
 jest.mock('@/components/ui/dialog', () => ({
-	Dialog: ({
-		children,
-		open,
-	}: {
-		children?: React.ReactNode;
-		open?: boolean;
-	}) => (open ? <div>{children}</div> : null),
+	Dialog: ({ children, open }: { children?: React.ReactNode; open?: boolean }) =>
+		open ? <div>{children}</div> : null,
 	DialogContent: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
 	DialogDescription: ({ children }: { children?: React.ReactNode }) => <p>{children}</p>,
 	DialogFooter: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
