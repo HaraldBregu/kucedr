@@ -67,7 +67,10 @@ const PermissionsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile =
 	};
 
 	useEffect(() => {
-		Promise.all([profile === 'chat' ? window.agent.policyGet() : window.agent.policyGet(profile), window.agent.getWorkspaceLocation()])
+		Promise.all([
+			profile === 'chat' ? window.agent.policyGet() : window.agent.policyGet(profile),
+			window.agent.getWorkspaceLocation(),
+		])
 			.then(([rules, location]) => {
 				setPermissions(rules);
 				setWorkspace(location);
@@ -157,7 +160,13 @@ const PermissionsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile =
 							type="button"
 							variant="outline"
 							size="sm"
-							onClick={() => apply(() => profile === 'chat' ? window.agent.policyReset() : window.agent.policyReset(profile))}
+							onClick={() =>
+								apply(() =>
+									profile === 'chat'
+										? window.agent.policyReset()
+										: window.agent.policyReset(profile)
+								)
+							}
 							disabled={saving}
 						>
 							<RotateCcw className="size-3" />
@@ -166,7 +175,14 @@ const PermissionsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile =
 						<Button
 							type="button"
 							size="sm"
-							onClick={() => permissions && apply(() => profile === 'chat' ? window.agent.policySet(permissions) : window.agent.policySet(permissions, profile))}
+							onClick={() =>
+								permissions &&
+								apply(() =>
+									profile === 'chat'
+										? window.agent.policySet(permissions)
+										: window.agent.policySet(permissions, profile)
+								)
+							}
 							disabled={!permissions || saving}
 						>
 							<Save className="size-3" />

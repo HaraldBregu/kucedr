@@ -944,7 +944,8 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.policyGet,
 			wrapAgentHandler(
 				mainAccess,
-				(profileId: unknown = 'chat'): PermissionsSchema => getPermissions(toToolProfileId(profileId)),
+				(profileId: unknown = 'chat'): PermissionsSchema =>
+					getPermissions(toToolProfileId(profileId)),
 				AgentChannels.policyGet
 			)
 		);

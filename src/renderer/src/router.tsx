@@ -184,7 +184,6 @@ function RootRouteComponent(): React.JSX.Element {
 									<WorkspacePage />
 								</div>
 							)}
-
 						</div>
 						<CommandMenu
 							key={location.pathname}
@@ -273,7 +272,11 @@ const routes: RouteObject[] = [
 					},
 					{
 						path: 'workspace',
-						element: <SettingsRouteWrapper><WorkspacePage settings /></SettingsRouteWrapper>,
+						element: (
+							<SettingsRouteWrapper>
+								<WorkspacePage settings />
+							</SettingsRouteWrapper>
+						),
 					},
 					{
 						path: 'library',

@@ -342,7 +342,10 @@ export interface AgentInvokeChannelMap {
 		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
 	};
 	[AgentChannels.policySet]: {
-		args: [permissions: import('../main/agent/permissions/permissions_types').PermissionsSchema, profileId?: import('./agent_tools').AgentToolProfileId];
+		args: [
+			permissions: import('../main/agent/permissions/permissions_types').PermissionsSchema,
+			profileId?: import('./agent_tools').AgentToolProfileId,
+		];
 		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
 	};
 	[AgentChannels.policyReset]: {
@@ -474,7 +477,10 @@ export interface LibraryInvokeChannelMap {
 		result: import('./library_types').LibraryFile[] | undefined;
 	};
 	[LibraryChannels.createFolder]: { args: [name: string, parent?: string]; result: void };
-	[LibraryChannels.move]: { args: [relativePaths: string[], destinationFolder: string]; result: void };
+	[LibraryChannels.move]: {
+		args: [relativePaths: string[], destinationFolder: string];
+		result: void;
+	};
 	[LibraryChannels.download]: { args: [relativePaths: string[]]; result: boolean };
 	[LibraryChannels.delete]: { args: [relativePath: string]; result: void };
 	[LibraryChannels.openRoot]: { args: []; result: void };

@@ -235,7 +235,10 @@ export interface AgentApi {
 		settings: AgentToolConfiguration
 	) => Promise<AgentToolProfile>;
 	policyGet: (profileId?: AgentToolProfileId) => Promise<PermissionsSchema>;
-	policySet: (permissions: PermissionsSchema, profileId?: AgentToolProfileId) => Promise<PermissionsSchema>;
+	policySet: (
+		permissions: PermissionsSchema,
+		profileId?: AgentToolProfileId
+	) => Promise<PermissionsSchema>;
 	policyReset: (profileId?: AgentToolProfileId) => Promise<PermissionsSchema>;
 	policyPickDirectory: () => Promise<string | undefined>;
 	policyNormalizeDirectory: (value: string) => Promise<string>;
@@ -637,8 +640,13 @@ export interface AppApi extends AppStorageApi {
 
 export interface LibraryApi {
 	list: () => Promise<import('./library_types').LibraryFile[]>;
-	add: (paths: string[], destinationFolder?: string) => Promise<import('./library_types').LibraryFile[]>;
-	select: (destinationFolder?: string) => Promise<import('./library_types').LibraryFile[] | undefined>;
+	add: (
+		paths: string[],
+		destinationFolder?: string
+	) => Promise<import('./library_types').LibraryFile[]>;
+	select: (
+		destinationFolder?: string
+	) => Promise<import('./library_types').LibraryFile[] | undefined>;
 	createFolder: (name: string, parent?: string) => Promise<void>;
 	move: (relativePaths: string[], destinationFolder: string) => Promise<void>;
 	download: (relativePaths: string[]) => Promise<boolean>;
