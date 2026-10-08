@@ -31,6 +31,7 @@ import { subagentTool, subagentsTool } from '../tools/core/subagents';
 import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool } from '../types';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
+import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
 import { filterProfileTools, filterTools } from './run_tools';
 import { isAgentToolAllowedForProfile } from '../../../shared/agent_tools';
 import { selectSkillTools } from './run_skill_tools';
@@ -535,6 +536,16 @@ async function* loop(
 				session.runContext.fileHistory
 			)) {
 				yield event;
+			}
+			if (pendingToolCalls.some(mcpAuthorizationStopped)) {
+				yield* skipToolCalls(
+					pendingToolCalls.filter((call) => !call.result),
+					'Authorization was not completed; remaining tools were not run.'
+				);
+				addToolResults(session, pendingToolCalls);
+				session.stopReason = 'cancelled';
+				yield { type: 'run_finished', result: toResult(session, 'success') };
+				return;
 			}
 			if (pendingToolCalls.some((call) => call.name === 'tool_search')) {
 				const serviceIds = new Set<string>();

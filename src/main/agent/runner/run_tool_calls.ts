@@ -3,6 +3,7 @@ import type { FileAccessContext } from '../context';
 import { runToolCall, type ToolCallSecurityContext } from './run_tool_call';
 import type { KeyedMutex } from '../mutex';
 import type { FileHistory } from '../history/types';
+import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
 
 export async function* runToolCalls(
 	tools: Tool[],
@@ -25,6 +26,6 @@ export async function* runToolCalls(
 		)) {
 			yield event;
 		}
-		if (signal?.aborted) break;
+		if (signal?.aborted || mcpAuthorizationStopped(toolCall)) break;
 	}
 }
