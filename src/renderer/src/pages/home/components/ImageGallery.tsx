@@ -27,14 +27,14 @@ export function ImageGallery({
 	}
 
 	return (
-		<div className="grid w-full min-w-0 grid-cols-2 items-start gap-2" aria-label="Generated images">
+		<div className="flex w-full min-w-0 items-start gap-2" aria-label="Generated images">
 			<img
 				src={toSource(selectedPath)}
 				alt={`Generated image ${index + 1} of ${paths.length}`}
-				className="h-auto w-full rounded-lg border border-border/50"
+				className="h-auto min-w-0 basis-1/2 rounded-lg border border-border/50"
 				onContextMenu={() => onContextMenu(selectedPath)}
 			/>
-			<div className="flex min-w-0 flex-col items-start gap-2" aria-label="Choose generated image">
+			<div className="flex min-w-0 basis-1/2 flex-col items-start gap-2" aria-label="Choose generated image">
 				{paths.map((path, pathIndex) => (
 					<button
 						key={path}
