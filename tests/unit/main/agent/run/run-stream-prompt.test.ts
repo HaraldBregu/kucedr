@@ -56,7 +56,7 @@ jest.mock('../../../../../src/main/agent/skills', () => ({
 import { stream } from '../../../../../src/main/agent/runner/run_stream';
 import type { ExecSandbox } from '../../../../../src/main/agent/sandbox';
 import { createSessionState } from '../../../../../src/main/agent/session';
-import type { Message } from '../../../../../src/main/agent/types';
+import type { Message, Tool } from '../../../../../src/main/agent/types';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { ExecutionBudget } from '../../../../../src/main/agent/execution/budget';
 import * as authorizeModule from '../../../../../src/main/agent/tools/mcp/authorize';
