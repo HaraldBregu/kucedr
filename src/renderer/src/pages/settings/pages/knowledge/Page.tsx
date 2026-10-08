@@ -26,7 +26,10 @@ export default function KnowledgePage(): JSX.Element {
 	const { configuration, loading, error, disabled, save } = knowledge;
 	return (
 		<SettingsPageShell>
-			<SettingsPageHeader title={t('settings.knowledge.title')} description={t('settings.knowledge.description')} />
+			<SettingsPageHeader
+				title={t('settings.knowledge.title')}
+				description={t('settings.knowledge.description')}
+			/>
 			{error && (
 				<SettingsNotice variant="destructive" icon={AlertTriangle}>
 					<div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2">
@@ -41,7 +44,9 @@ export default function KnowledgePage(): JSX.Element {
 				</SettingsNotice>
 			)}
 			{loading ? (
-				<SettingsPanel><SettingsLoadingRows rows={5} /></SettingsPanel>
+				<SettingsPanel>
+					<SettingsLoadingRows rows={5} />
+				</SettingsPanel>
 			) : configuration ? (
 				<>
 					<SettingsPanel>
@@ -50,7 +55,14 @@ export default function KnowledgePage(): JSX.Element {
 							description={t('settings.knowledge.enabledDescription')}
 							className="grid-cols-[minmax(0,1fr)_auto]"
 							actionClassName="ml-auto w-auto justify-end"
-							actions={<Switch checked={configuration.enabled} disabled={disabled} aria-label={t('settings.knowledge.enabled')} onCheckedChange={(enabled) => void save({ enabled })} />}
+							actions={
+								<Switch
+									checked={configuration.enabled}
+									disabled={disabled}
+									aria-label={t('settings.knowledge.enabled')}
+									onCheckedChange={(enabled) => void save({ enabled })}
+								/>
+							}
 						/>
 					</SettingsPanel>
 					<Sources knowledge={knowledge} />
@@ -62,7 +74,16 @@ export default function KnowledgePage(): JSX.Element {
 						<fieldset disabled={disabled} className="min-w-0">
 							<DataControls
 								key={`${configuration.indexName}:${configuration.databaseProviderId}:${configuration.databaseId}`}
-								kinds={knowledge.remoteDatabase ? ['local_index', 'local_namespace', 'remote_namespace', 'remote_all_namespaces'] : ['local_index', 'local_namespace']}
+								kinds={
+									knowledge.remoteDatabase
+										? [
+												'local_index',
+												'local_namespace',
+												'remote_namespace',
+												'remote_all_namespaces',
+											]
+										: ['local_index', 'local_namespace']
+								}
 							/>
 						</fieldset>
 					</SettingsSection>

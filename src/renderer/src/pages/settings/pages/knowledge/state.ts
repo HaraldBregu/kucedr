@@ -49,14 +49,18 @@ export default function useKnowledge() {
 	useEffect(() => {
 		mounted.current = true;
 		void load();
-		return () => { mounted.current = false; };
+		return () => {
+			mounted.current = false;
+		};
 	}, [load]);
 	useEffect(() => {
 		if (!configuration) return;
 		let cancelled = false;
 		const timer = window.setInterval(() => {
 			void window.agent.ragGetStatus().then(
-				(next) => { if (!cancelled) setStatus(next); },
+				(next) => {
+					if (!cancelled) setStatus(next);
+				},
 				() => {}
 			);
 		}, 2_000);
@@ -67,24 +71,55 @@ export default function useKnowledge() {
 	}, [configuration]);
 	const running = indexing || status?.running === true;
 	const disabled = loading || saving || running || searching;
-	const selectedEmbeddingModel = embeddingModels.find((model) => model.provider.id === configuration?.embeddingProviderId && model.id === configuration?.embeddingModelId);
-	const localDatabase = configuration?.databaseProviderId === LOCAL_RAG_DATABASE_PROVIDER_ID && configuration.databaseId === LOCAL_RAG_DATABASE_ID;
-	const selectedDatabase = databases.find((database) => database.providerId === configuration?.databaseProviderId && database.databaseId === configuration?.databaseId);
+	const selectedEmbeddingModel = embeddingModels.find(
+		(model) =>
+			model.provider.id === configuration?.embeddingProviderId &&
+			model.id === configuration?.embeddingModelId
+	);
+	const localDatabase =
+		configuration?.databaseProviderId === LOCAL_RAG_DATABASE_PROVIDER_ID &&
+		configuration.databaseId === LOCAL_RAG_DATABASE_ID;
+	const selectedDatabase = databases.find(
+		(database) =>
+			database.providerId === configuration?.databaseProviderId &&
+			database.databaseId === configuration?.databaseId
+	);
 	const remoteDatabase = Boolean(selectedDatabase) && !localDatabase;
-	const embeddingConsentMatches = configuration?.embeddingConsent?.version === 1 && Boolean(configuration.embeddingConsent.recipient) && configuration.embeddingConsent.providerId === configuration.embeddingProviderId && configuration.embeddingConsent.modelId === configuration.embeddingModelId;
-	const mirrorConsentMatches = remoteDatabase && configuration?.mirrorConsent?.version === 1 && Boolean(configuration.mirrorConsent.recipient) && configuration.mirrorConsent.indexName === configuration.indexName;
-	const requirement = !configuration?.enabled ? 'enable'
-		: !selectedEmbeddingModel ? 'model'
-		: !embeddingConsentMatches ? 'embeddingConsent'
-		: !localDatabase && !remoteDatabase ? 'database'
-		: remoteDatabase && !mirrorConsentMatches ? 'mirrorConsent'
-		: !configuration.folders.length ? 'folders'
-		: !configuration.indexName.trim() ? 'indexName'
-		: null;
+	const embeddingConsentMatches =
+		configuration?.embeddingConsent?.version === 1 &&
+		Boolean(configuration.embeddingConsent.recipient) &&
+		configuration.embeddingConsent.providerId === configuration.embeddingProviderId &&
+		configuration.embeddingConsent.modelId === configuration.embeddingModelId;
+	const mirrorConsentMatches =
+		remoteDatabase &&
+		configuration?.mirrorConsent?.version === 1 &&
+		Boolean(configuration.mirrorConsent.recipient) &&
+		configuration.mirrorConsent.indexName === configuration.indexName;
+	const requirement = !configuration?.enabled
+		? 'enable'
+		: !selectedEmbeddingModel
+			? 'model'
+			: !embeddingConsentMatches
+				? 'embeddingConsent'
+				: !localDatabase && !remoteDatabase
+					? 'database'
+					: remoteDatabase && !mirrorConsentMatches
+						? 'mirrorConsent'
+						: !configuration.folders.length
+							? 'folders'
+							: !configuration.indexName.trim()
+								? 'indexName'
+								: null;
 	const canIndex = !disabled && requirement === null;
 	const currentIndex = status?.index?.indexName === configuration?.indexName ? status.index : null;
-	const indexModelMatches = currentIndex?.providerId === configuration?.embeddingProviderId && currentIndex?.modelId === configuration?.embeddingModelId;
-	const canSearch = !disabled && configuration?.enabled === true && embeddingConsentMatches && Boolean(selectedEmbeddingModel && currentIndex && indexModelMatches && query.trim());
+	const indexModelMatches =
+		currentIndex?.providerId === configuration?.embeddingProviderId &&
+		currentIndex?.modelId === configuration?.embeddingModelId;
+	const canSearch =
+		!disabled &&
+		configuration?.enabled === true &&
+		embeddingConsentMatches &&
+		Boolean(selectedEmbeddingModel && currentIndex && indexModelMatches && query.trim());
 	const save = async (patch: Partial<RagConfiguration>): Promise<void> => {
 		if (!configuration || disabled) return;
 		setSaving(true);
@@ -107,9 +142,11 @@ export default function useKnowledge() {
 		setError(null);
 		try {
 			const folder = await window.agent.ragPickFolder();
-			if (folder && mounted.current) await save({ folders: [...new Set([...configuration.folders, folder])] });
+			if (folder && mounted.current)
+				await save({ folders: [...new Set([...configuration.folders, folder])] });
 		} catch (failure) {
-			if (mounted.current) setError(getErrorMessage(failure, t('settings.knowledge.pickFolderError')));
+			if (mounted.current)
+				setError(getErrorMessage(failure, t('settings.knowledge.pickFolderError')));
 		}
 	};
 	const runIndex = async (): Promise<void> => {
@@ -124,8 +161,13 @@ export default function useKnowledge() {
 			if (mounted.current) {
 				setIndexing(false);
 				void window.agent.ragGetStatus().then(
-					(next) => { if (mounted.current) setStatus(next); },
-					(failure) => { if (mounted.current) setError(getErrorMessage(failure, t('settings.knowledge.loadError'))); }
+					(next) => {
+						if (mounted.current) setStatus(next);
+					},
+					(failure) => {
+						if (mounted.current)
+							setError(getErrorMessage(failure, t('settings.knowledge.loadError')));
+					}
 				);
 			}
 		}
@@ -156,10 +198,35 @@ export default function useKnowledge() {
 		}
 	};
 	return {
-		configuration, databases, status, loading, error, disabled, running, cancelling, searching,
-		embeddingModels, selectedEmbeddingModel, localDatabase, remoteDatabase, selectedDatabase,
-		embeddingConsentMatches, mirrorConsentMatches, requirement, canIndex, currentIndex,
-		indexModelMatches, canSearch, query, matches, load, save, pickFolder, runIndex, cancelIndex,
-		setQuery, search,
+		configuration,
+		databases,
+		status,
+		loading,
+		error,
+		disabled,
+		running,
+		cancelling,
+		searching,
+		embeddingModels,
+		selectedEmbeddingModel,
+		localDatabase,
+		remoteDatabase,
+		selectedDatabase,
+		embeddingConsentMatches,
+		mirrorConsentMatches,
+		requirement,
+		canIndex,
+		currentIndex,
+		indexModelMatches,
+		canSearch,
+		query,
+		matches,
+		load,
+		save,
+		pickFolder,
+		runIndex,
+		cancelIndex,
+		setQuery,
+		search,
 	};
 }
