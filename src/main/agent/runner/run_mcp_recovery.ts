@@ -60,7 +60,8 @@ export async function* runMcpRecovery({
 		history
 	);
 	addToolResults(session, [authorizationCall]);
-	if (mcpAuthorizationStopped(authorizationCall) || authorizationCall.result?.isError) return 'cancelled';
+	if (mcpAuthorizationStopped(authorizationCall) || authorizationCall.result?.isError)
+		return 'cancelled';
 
 	const retryCall: ToolCall = {
 		id: crypto.randomUUID(),
