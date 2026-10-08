@@ -24,9 +24,10 @@ See [Microsoft's Work IQ setup and prerequisites](https://learn.microsoft.com/en
    that contains the Microsoft 365 account you will use.
 2. Open **Entra ID → App registrations → New registration**.
 3. Name the app, for example **Kucedr Microsoft MCP**.
-4. Choose the supported organizational account types required by Microsoft's public-client
-   setup. The current servers discover the `organizations` authorization endpoint; use
-   **Accounts in any organizational directory** for this flow, rather than personal accounts.
+4. Choose **Accounts in any organizational directory**. This recommendation follows
+   [Microsoft's authority/account-type mapping](https://learn.microsoft.com/en-us/entra/identity-platform/msal-client-application-configuration#authority):
+   the current servers discover the `organizations` authorization endpoint for organizational
+   multitenant clients.
 5. Select **Register**. On **Overview**, copy **Application (client) ID** and
    **Directory (tenant) ID**. Use these IDs in the environment configuration below;
    the app's Object ID is a different value.
@@ -69,15 +70,31 @@ registrations too if they require an exact callback. Use a fixed port for this s
 ## 3. Add server permissions and consent
 
 1. Open **API permissions → Add a permission → APIs my organization uses**.
-2. Find the Work IQ API resource for each server you want to connect. Microsoft's example uses
-   **WorkIQ-MailServer** for Mail. Select **Delegated permissions**, then the permission exposed
-   by that server resource. Current per-server resources use `Tools.ListInvoke.All`.
+2. Find the Work IQ API resource for each server you want to connect. Search by the resource
+   application ID below if its display name differs. Select **Delegated permissions →
+   Tools.ListInvoke.All** for each current per-server resource.
 3. Add only the server resources you intend to use. Ask your administrator to grant consent
    when tenant policy or the selected permission requires it.
 4. Confirm that the requested permissions have been consented to before testing Kucedr.
 
-During Microsoft's resource migration, a tenant may expose the older shared **Agent 365 Tools**
-API (`ea9ffc3e-8a23-4a7d-836d-234d7c7565c1`) instead. Its delegated permissions are:
+The current resource application IDs are listed in Microsoft's
+[provisioning script](https://github.com/microsoft/Agent365-devTools/blob/main/scripts/cli/Auth/New-Agent365ToolsServicePrincipalProdPublic.ps1).
+These identify Microsoft's APIs; do not put them in `MICROSOFT_CLIENT_ID`, which identifies your own app.
+
+| Kucedr connection    | Microsoft server resource application ID |
+| -------------------- | ---------------------------------------- |
+| Outlook Mail         | `16b1878d-62c7-4009-aa25-68989d63bbad`   |
+| Outlook Calendar     | `910333d2-47e9-43ca-981f-6df2f4531ef4`   |
+| Microsoft Teams      | `ce5029ee-c1d3-45c0-bdcc-efb5a4245687`   |
+| OneDrive             | `b0b2a2bb-6361-4549-a00c-a018417eb8e2`   |
+| SharePoint           | `292cff14-c0e8-4116-9e3b-99934ae05766`   |
+| Microsoft Word       | `c2d0c2b6-8013-4346-9f8b-b81d3b754a29`   |
+| Microsoft 365 Search | `ab7c82de-7946-4454-ac28-70249d17c95e`   |
+
+During Microsoft's resource migration, a tenant may also expose the older shared **Agent 365 Tools**
+API (`ea9ffc3e-8a23-4a7d-836d-234d7c7565c1`). Its delegated permissions are listed below for
+legacy server resources. Grant permissions for the resource used by the server; shared-resource
+consent does not replace per-server consent.
 
 | Kucedr connection    | Legacy shared-resource permission   |
 | -------------------- | ----------------------------------- |
@@ -124,7 +141,7 @@ through its MCP credential store. No `MICROSOFT_CLIENT_SECRET` variable is neede
 
 ## 5. Connect and verify
 
-1. Open **Settings → Integrations** (`/settings/plugins`) and enable the Microsoft service you
+1. Open **Settings → Plugins** (`/settings/plugins`) and enable the Microsoft service you
    configured. Then open its connection in **Settings → MCP** (`/settings/mcp`).
 2. Save the connection if necessary and select **Connect with OAuth**.
 3. Sign in with the licensed work or school account in the configured tenant and complete consent.
