@@ -245,7 +245,7 @@ export function AssistantMessage({
 				return (
 					<AudioPlayer
 						src={localResourceUrl(localPath)}
-						className="mb-4 mt-2"
+						className="mb-4 mt-2 w-1/2"
 						onContextMenu={() => void window.app.showAudioContextMenu(localPath)}
 					/>
 				);
@@ -255,7 +255,7 @@ export function AssistantMessage({
 					<VideoPlayer
 						src={localResourceUrl(localPath)}
 						controls
-						className="mb-4 mt-2 w-full overflow-hidden rounded-xl border border-border/50"
+						className="mb-4 mt-2 w-1/2 overflow-hidden rounded-xl border border-border/50"
 						onOpenFile={() => void window.app.openVideo(localPath)}
 						onContextMenu={() => void window.app.showVideoContextMenu(localPath)}
 					/>
@@ -357,7 +357,7 @@ export function AssistantMessage({
 								<AudioPlayer
 									key={path}
 									src={localResourceUrl(path)}
-									className="mb-4"
+									className="mb-4 w-1/2"
 									onContextMenu={() => void window.app.showAudioContextMenu(path)}
 								/>
 							);
@@ -367,7 +367,7 @@ export function AssistantMessage({
 								key={path}
 								src={localResourceUrl(path)}
 								controls
-								className="mb-4 w-full overflow-hidden rounded-xl border border-border/50"
+								className="mb-4 w-1/2 overflow-hidden rounded-xl border border-border/50"
 								onOpenFile={() => void window.app.openVideo(path)}
 								onContextMenu={() => void window.app.showVideoContextMenu(path)}
 							/>
