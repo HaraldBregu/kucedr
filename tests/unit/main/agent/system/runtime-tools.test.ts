@@ -2,7 +2,7 @@ import { buildRuntimeTools } from '../../../../../src/main/agent/system/system_b
 import type { Tool } from '../../../../../src/main/agent/types';
 
 const candidate = (id: string, description: string, policy?: Tool['policy']): Tool =>
-	({ id, name: id, description, policy } as Tool);
+	({ id, name: id, description, policy }) as Tool;
 
 it('groups runtime tools by availability and category with descriptions and usage boundaries', () => {
 	const read = candidate('read', 'Read a file.');
@@ -26,9 +26,15 @@ it('groups runtime tools by availability and category with descriptions and usag
 	expect(context).toContain('#### Delegation\n- `subagent` — Delegate one independent task.');
 	expect(context).toContain('#### Discovery\n- `tool_search` — Find relevant tools.');
 	expect(context).toContain('### Available through `tool_search`');
-	expect(context).toContain('#### System\n- `camera_recorder` — Record camera video. _(Explicit user request only.)_');
-	expect(context).toContain('#### Media\n- `create_image` — Generate images. _(Explicit user request only.)_');
-	expect(context).toContain('#### Integrations\n- `mcp__gmail__search_threads` — Search Gmail threads.');
+	expect(context).toContain(
+		'#### System\n- `camera_recorder` — Record camera video. _(Explicit user request only.)_'
+	);
+	expect(context).toContain(
+		'#### Media\n- `create_image` — Generate images. _(Explicit user request only.)_'
+	);
+	expect(context).toContain(
+		'#### Integrations\n- `mcp__gmail__search_threads` — Search Gmail threads.'
+	);
 	expect(context.match(/`read`/g)).toHaveLength(1);
 });
 

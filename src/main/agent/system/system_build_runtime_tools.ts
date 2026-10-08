@@ -8,9 +8,9 @@ export function buildRuntimeTools(
 ): string {
 	const loaded = [...new Map(loadedTools.map((tool) => [tool.id, tool])).values()];
 	const loadedIds = new Set(loaded.map((tool) => tool.id));
-	const discoverable = [
-		...new Map(eligibleTools.map((tool) => [tool.id, tool])).values(),
-	].filter((tool) => !loadedIds.has(tool.id));
+	const discoverable = [...new Map(eligibleTools.map((tool) => [tool.id, tool])).values()].filter(
+		(tool) => !loadedIds.has(tool.id)
+	);
 	const sections: string[] = [];
 	for (const [title, tools] of [
 		['Loaded tools', loaded],
