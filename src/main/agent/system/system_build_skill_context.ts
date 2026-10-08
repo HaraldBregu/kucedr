@@ -11,7 +11,7 @@ export function buildSkillContext(skills: readonly SkillInfo[]): string {
 	const sorted = [...skills].sort((a, b) => a.name.localeCompare(b.name));
 	const render = (descriptionLimit: number): string =>
 		prefix +
-			sorted
+		sorted
 			.map((skill) => {
 				const name = skill.name.replace(/\s+/g, ' ').trim();
 				const description =
@@ -19,7 +19,10 @@ export function buildSkillContext(skills: readonly SkillInfo[]): string {
 						? skill.description.replace(/\s+/g, ' ').trim()
 						: descriptionLimit <= 1
 							? '…'.slice(0, descriptionLimit)
-							: `${skill.description.replace(/\s+/g, ' ').trim().slice(0, descriptionLimit - 1)}…`;
+							: `${skill.description
+									.replace(/\s+/g, ' ')
+									.trim()
+									.slice(0, descriptionLimit - 1)}…`;
 				return `- **Name:** ${name}\n  **Description:** ${description || 'Not provided.'}\n`;
 			})
 			.join('');
