@@ -59,6 +59,8 @@ import { createSessionState } from '../../../../../src/main/agent/session';
 import type { Message } from '../../../../../src/main/agent/types';
 import { jsonTool } from '../../../../../src/main/agent/tools/tool';
 import { ExecutionBudget } from '../../../../../src/main/agent/execution/budget';
+import * as authorizeModule from '../../../../../src/main/agent/tools/mcp/authorize';
+import * as mcpModule from '../../../../../src/main/mcp';
 
 const sandbox = {} as ExecSandbox;
 
@@ -1373,6 +1375,66 @@ describe('run stream system prompt', () => {
 
 		expect(session.toolCalls.find((call) => call.id === 'find-gmail')?.result?.content).toContain('"selectedToolIds":[]');
 		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain('get_health');
+	});
+
+	it('reloads a named MCP catalog after authorization before searching tools', async () => {
+		const gmail = jsonTool({
+			id: 'mcp__gmail__search_threads',
+			name: 'Search threads',
+			description: 'Search Gmail inbox threads',
+			policy: { kind: 'mcp', serverId: 'gmail', toolName: 'search_threads' },
+			schema: { type: 'object' },
+			execute: jest.fn(),
+		});
+		const authorize = jest.spyOn(authorizeModule, 'requestMcpAuthorizationTool').mockReturnValue(jsonTool({
+			id: 'request_mcp_authorization',
+			name: 'Request MCP authorization',
+			description: 'Authorize Gmail',
+			schema: { type: 'object' },
+			execute: () => ({ status: 'already_authorized', serverId: 'gmail' }),
+		}));
+		const testServer = jest.spyOn(mcpModule, 'testMcpServer').mockResolvedValue({
+			ok: true, tools: ['search_threads'], toolCount: 1, durationMs: 0,
+		});
+		mockLoadMcpTools
+			.mockResolvedValueOnce({
+				tools: [], entries: [], uncataloged: [{ serverId: 'gmail', serverName: 'Gmail' }],
+				onChanged: () => () => undefined,
+				diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 0, listedTools: 0, loadedTools: 0, rejectedTools: 0, truncated: false, failures: [] },
+				close: closeMcpMock,
+			})
+			.mockResolvedValueOnce({
+				tools: [gmail], entries: [{ tool: gmail, serverId: 'gmail', serverName: 'Gmail' }], uncataloged: [],
+				onChanged: () => () => undefined,
+				diagnostics: { configuredServers: 1, enabledServers: 1, connectedServers: 0, listedTools: 0, loadedTools: 1, rejectedTools: 0, truncated: false, failures: [] },
+				close: closeMcpMock,
+			});
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return { content: '', model: 'test-model', toolCalls: [{ id: 'find-gmail', name: 'tool_search', args: { query: 'Gmail inbox threads' } }] };
+			})
+			.mockImplementationOnce(successfulTurn);
+		try {
+			for await (const _event of stream(
+				{ location: '/workspace' },
+				createSessionState(),
+				{
+					runId: 'gmail-auth-search', task: 'chat',
+					message: 'Show my last email received please, from gmail mcp',
+					model: 'test-model', type: 'default', agentId: 'main', contextMode: 'minimal',
+					approvalWindowId: 1,
+				},
+				new AbortController().signal,
+				{ sandbox }
+			)) void _event;
+			expect(testServer).toHaveBeenCalledWith('gmail');
+			expect(mockLoadMcpTools).toHaveBeenCalledTimes(2);
+			expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(gmail.id);
+		} finally {
+			authorize.mockRestore();
+			testServer.mockRestore();
+		}
 	});
 
 });
