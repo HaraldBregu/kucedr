@@ -30,7 +30,7 @@ const manifest = {
 	completedAt: '2026-08-08T00:00:00.000Z',
 };
 
-it('writes the RAG manifest to rag/index.json', () => {
+it('writes a manifest per index and preserves the latest-index manifest', () => {
 	writeRagManifest(manifest);
 
 	expect(mkdirSync).toHaveBeenCalledWith(path.join('/user/data', 'rag'), {
@@ -38,13 +38,14 @@ it('writes the RAG manifest to rag/index.json', () => {
 		mode: 0o700,
 	});
 	const temporaryFile = writeFileSync.mock.calls[0][0] as string;
-	expect(temporaryFile).toMatch(/index\.json\..+\.tmp$/);
+	expect(temporaryFile).toMatch(/index-kucedr\.json\..+\.tmp$/);
 	expect(writeFileSync).toHaveBeenCalledWith(temporaryFile, JSON.stringify(manifest), {
 		encoding: 'utf8',
 		mode: 0o600,
 		flag: 'wx',
 	});
-	expect(renameSync).toHaveBeenCalledWith(temporaryFile, path.join('/user/data/rag', 'index.json'));
+	expect(renameSync).toHaveBeenCalledWith(temporaryFile, path.join('/user/data/rag', 'index-kucedr.json'));
+	expect(renameSync).toHaveBeenCalledWith(expect.any(String), path.join('/user/data/rag', 'index.json'));
 	expect(rmSync).toHaveBeenCalledWith(temporaryFile, { force: true });
 });
 

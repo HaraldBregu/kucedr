@@ -8,6 +8,7 @@ import { ragVectorStore } from './vector';
 import { validateVector } from './validate';
 import { readRagManifest } from './rag_manifest';
 import { ragRecipient } from './recipient';
+import { assertRagCurrent } from './current';
 import type { RagMatch, RagSearchDependencies } from './types';
 
 export async function searchRag(
@@ -69,6 +70,7 @@ export async function searchRag(
 			throw new Error('Query embedding dimensions do not match the selected Knowledge index.');
 		validateVector(embedded.embeddings[0], index.dimensions);
 		const current = getRagConfiguration();
+		assertRagCurrent(configuration);
 		if (
 			!current.enabled ||
 			current.indexName !== selectedIndexName ||
@@ -80,7 +82,7 @@ export async function searchRag(
 
 		return vectorStore
 			.search(selectedIndexName, embedded.embeddings[0], topK)
-			.filter((match) => Number.isFinite(match.score) && match.score > (current.minimumScore ?? 0))
+			.filter((match) => Number.isFinite(match.score) && match.score > 0 && match.score >= (current.minimumScore ?? 0))
 			.map((match) => ({
 				sourceId: match.sourceId,
 				chunkId: match.id,

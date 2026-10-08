@@ -8,7 +8,7 @@ const getRagConfiguration = jest.fn();
 const writeRagManifest = jest.fn();
 const getProvider = jest.fn();
 jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({ getRagConfiguration }));
-jest.mock('../../../../src/main/agent/knowledge/rag/rag_manifest', () => ({ writeRagManifest }));
+jest.mock('../../../../src/main/agent/knowledge/rag/rag_manifest', () => ({ writeRagManifest, readRagManifest: jest.fn() }));
 jest.mock('../../../../src/main/settings_store', () => ({ getProvider }));
 
 import { indexRag } from '../../../../src/main/agent/knowledge/rag/rag_index';

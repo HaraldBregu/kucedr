@@ -1,5 +1,7 @@
 const configuration = jest.fn();
 const recipient = jest.fn();
+const readRagManifest = jest.fn();
+jest.mock('../../../../src/main/agent/knowledge/rag/rag_manifest', () => ({ readRagManifest }));
 jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({
 	getRagConfiguration: configuration,
 }));
@@ -28,6 +30,7 @@ const vectors: VectorStore = {
 
 beforeEach(() => {
 	jest.clearAllMocks();
+	readRagManifest.mockReturnValue(undefined);
 	recipient.mockReturnValue('approved-recipient');
 	configuration.mockReturnValue({
 		enabled: true,
@@ -121,13 +124,11 @@ it('passes cancellation to the query embedding provider', async () => {
 	expect(search).not.toHaveBeenCalled();
 });
 
-it('requires the selected local index to exist', async () => {
+it('abstains without embedding when the selected local index is empty', async () => {
 	getIndex.mockReturnValue(undefined);
 	configuration.mockReturnValue({ ...configuration(), indexName: 'another-index' });
 
-	await expect(searchRag('query', 'another-index', 5, { embeddings, vectors })).rejects.toThrow(
-		'Index the rag folder before searching.'
-	);
+	await expect(searchRag('query', 'another-index', 5, { embeddings, vectors })).resolves.toEqual([]);
 	expect(embed).not.toHaveBeenCalled();
 });
 
