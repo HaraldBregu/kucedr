@@ -141,7 +141,9 @@ test('production Apps search and Bot navigation work in Electron', async ({
 					}))
 				)
 			)
-			.toEqual(expect.arrayContaining([expect.objectContaining({ title: 'Orbit Notes', visible: true })]));
+			.toEqual(
+				expect.arrayContaining([expect.objectContaining({ title: 'Orbit Notes', visible: true })])
+			);
 		await app.evaluate(({ BrowserWindow }) => {
 			BrowserWindow.getAllWindows()
 				.find((window) => window.getTitle() === 'Orbit Notes')
