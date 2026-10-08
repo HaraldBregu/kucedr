@@ -831,11 +831,13 @@ test('Channels configures credentials and models directly on the channel page', 
 	await expect(model).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Transcribe model', exact: true })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Voice model', exact: true })).toBeVisible();
+	const tools = page.getByRole('link', { name: /Tools/ });
+	await tools.scrollIntoViewIfNeeded();
 	await page.screenshot({
 		path: testInfo.outputPath('channels-models-desktop.png'),
 		fullPage: true,
 	});
-	await page.getByRole('link', { name: /Tools/ }).click();
+	await tools.click();
 	await expect(page).toHaveURL(/#\/settings\/channels\/tools$/);
 	await expect(page.getByRole('heading', { name: 'Tools', exact: true })).toBeVisible();
 	await page.evaluate(() => {
