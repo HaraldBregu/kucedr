@@ -10,6 +10,7 @@ export function createNomicEmbeddingAdapter(spec: EmbeddingProviderSpec): Embedd
 					model: spec.model,
 					texts: request.texts,
 					task_type: request.inputType === 'query' ? 'search_query' : 'search_document',
+					long_text_mode: 'mean',
 				},
 				request.signal
 			)) as { embeddings?: number[][] };

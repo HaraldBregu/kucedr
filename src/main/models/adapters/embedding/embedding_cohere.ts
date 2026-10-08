@@ -11,6 +11,7 @@ export function createCohereEmbeddingAdapter(spec: EmbeddingProviderSpec): Embed
 					texts: request.texts,
 					input_type: request.inputType === 'query' ? 'search_query' : 'search_document',
 					embedding_types: ['float'],
+					truncate: 'NONE',
 				},
 				request.signal
 			)) as { embeddings?: { float?: number[][] } };

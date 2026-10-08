@@ -7,6 +7,6 @@ export class SelectedEmbeddingProvider implements EmbeddingProvider {
 		if (!input.providerId.trim() || !input.modelId.trim()) {
 			throw new Error('Select an embedding provider and model before indexing.');
 		}
-		return createEmbedding({ ...input, requireRemote: true }, signal);
+		return createEmbedding(input, signal);
 	}
 }
