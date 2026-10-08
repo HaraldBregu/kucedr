@@ -336,7 +336,6 @@ const PluginsPage = (): React.JSX.Element => {
 																onClick={(event) => event.stopPropagation()}
 																variant="ghost"
 																size="icon-sm"
-																className="hover:bg-transparent dark:hover:bg-transparent"
 																disabled={savingId === service.id}
 																aria-label={t('settings.integrations.options', {
 																	name: service.name,
@@ -366,7 +365,6 @@ const PluginsPage = (): React.JSX.Element => {
 													<Button
 														variant="ghost"
 														size="icon-sm"
-														className="hover:bg-transparent dark:hover:bg-transparent"
 														disabled={savingId === service.id}
 														onClick={(event) => {
 															event.stopPropagation();

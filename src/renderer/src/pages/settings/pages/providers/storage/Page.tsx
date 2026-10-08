@@ -186,7 +186,6 @@ export default function StorageProvidersPage(): React.JSX.Element {
 											<Button
 												variant="ghost"
 												size="icon-sm"
-												className="hover:bg-transparent dark:hover:bg-transparent"
 												disabled={removing !== null || editing !== null}
 												aria-label={`Options for ${provider.name}`}
 											>

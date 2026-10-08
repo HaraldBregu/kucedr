@@ -91,7 +91,6 @@ export default function CapabilityRow({
 						variant="ghost"
 						size="icon-sm"
 						disabled={saving}
-						className="hover:bg-transparent dark:hover:bg-transparent"
 						onClick={(event) => {
 							event.stopPropagation();
 							onAdd();

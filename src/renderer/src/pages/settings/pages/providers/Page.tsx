@@ -419,7 +419,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 							type="button"
 							variant="ghost"
 							size="sm"
-							className="hover:bg-transparent dark:hover:bg-transparent"
 							onClick={() => updateProviderEntry(provider.id, { editing: true, apiKey: '' })}
 						>
 							Connect
@@ -430,7 +429,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 								<Button
 									variant="ghost"
 									size="icon-sm"
-									className="hover:bg-transparent dark:hover:bg-transparent"
 									disabled={savingThisProvider}
 									aria-label={`Options for ${provider.name}`}
 								>
@@ -491,7 +489,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 									type="button"
 									variant="ghost"
 									size="sm"
-									className="hover:bg-transparent dark:hover:bg-transparent"
 									onClick={() => setCustomProvider((current) => ({ ...current, editing: true }))}
 								>
 									{t('settings.providers.localModels.connect')}
@@ -502,7 +499,6 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 										<Button
 											variant="ghost"
 											size="icon-sm"
-											className="hover:bg-transparent dark:hover:bg-transparent"
 											disabled={saving}
 											aria-label="Options for Ollama"
 										>

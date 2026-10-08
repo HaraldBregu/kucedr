@@ -60,7 +60,6 @@ export function McpServerRow({
 						<Button
 							variant="ghost"
 							size="icon-sm"
-							className="hover:bg-transparent dark:hover:bg-transparent"
 							disabled={saving}
 							aria-label={`Options for ${title}`}
 						>
