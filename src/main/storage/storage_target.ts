@@ -7,7 +7,13 @@ export async function storageTarget(root: string, key: string, prefix: string): 
 	}
 	const relativeKey = key.slice(prefix.length);
 	const segments = relativeKey.split('/');
-	if (!relativeKey || relativeKey.includes('\\') || segments.some((segment) => !segment || segment === '.' || segment === '..' || segment === '.kucedr-recovery')) {
+	if (
+		!relativeKey ||
+		relativeKey.includes('\\') ||
+		segments.some(
+			(segment) => !segment || segment === '.' || segment === '..' || segment === '.kucedr-recovery'
+		)
+	) {
 		throw new Error(`Unsafe storage object key: ${key}`);
 	}
 	const resolvedRoot = path.resolve(root);

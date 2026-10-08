@@ -14,8 +14,12 @@ import { storageWrite } from './storage_write';
 import { preserveRestoreTarget } from './recovery';
 import { downloadSnapshot } from './download';
 
-export async function pullFiles(store: StorageObjectStore, input?: StorageRestoreInput): Promise<StoragePullResult> {
-	if (input) return downloadSnapshot(store, input.snapshotKey, normalizeStoragePaths([input.path])[0]);
+export async function pullFiles(
+	store: StorageObjectStore,
+	input?: StorageRestoreInput
+): Promise<StoragePullResult> {
+	if (input)
+		return downloadSnapshot(store, input.snapshotKey, normalizeStoragePaths([input.path])[0]);
 	const storage = getStorageSettings();
 	const paths = normalizeStoragePaths(storage.paths);
 	const downloaded: string[] = [];
@@ -31,7 +35,9 @@ export async function pullFiles(store: StorageObjectStore, input?: StorageRestor
 			}
 			const snapshotPrefix = prefix.replace('kucedr/v1/', 'kucedr/v2/');
 			const manifests = (await listObjects(store, `${snapshotPrefix}snapshots/`))
-				.filter((item) => item.key.startsWith(`${snapshotPrefix}snapshots/`) && item.key.endsWith('.json'))
+				.filter(
+					(item) => item.key.startsWith(`${snapshotPrefix}snapshots/`) && item.key.endsWith('.json')
+				)
 				.sort((a, b) => b.key.localeCompare(a.key));
 			if (manifests.length) {
 				const result = await downloadSnapshot(store, manifests[0].key, entryPath);
@@ -41,7 +47,10 @@ export async function pullFiles(store: StorageObjectStore, input?: StorageRestor
 				continue;
 			}
 			const remote = (await listObjects(store, prefix)).filter((item) => !item.key.endsWith('/'));
-			if (!remote.length) throw new Error('No backup was found for this folder. Choose a backup point to restore into another folder.');
+			if (!remote.length)
+				throw new Error(
+					'No backup was found for this folder. Choose a backup point to restore into another folder.'
+				);
 			for (const item of remote) {
 				try {
 					if (item.size > STORAGE_MAX_OBJECT_BYTES) {

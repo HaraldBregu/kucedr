@@ -10,7 +10,12 @@ export async function walkFiles(dir: string): Promise<string[]> {
 		if (!current) continue;
 		for (const entry of await fs.readdir(current, { withFileTypes: true })) {
 			const full = path.join(current, entry.name);
-			if (entry.name === '.kucedr-recovery' || isProtectedStoragePath(full) || entry.isSymbolicLink()) continue;
+			if (
+				entry.name === '.kucedr-recovery' ||
+				isProtectedStoragePath(full) ||
+				entry.isSymbolicLink()
+			)
+				continue;
 			if (entry.isDirectory()) pending.push(full);
 			else if (entry.isFile()) files.push(full);
 		}

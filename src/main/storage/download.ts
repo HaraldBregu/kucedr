@@ -5,14 +5,25 @@ import { backupSnapshotSchema } from './snapshot';
 import { restoreBackupFile } from './restore';
 import { describeStorageError } from './storage_error';
 
-export async function downloadSnapshot(store: StorageObjectStore, snapshotKey: string, root: string): Promise<StoragePullResult> {
-	if (!/^kucedr\/v2\/.+\/snapshots\/[^/]+\.json$/.test(snapshotKey) || snapshotKey.includes('\\') || snapshotKey.split('/').some((part) => !part || part === '..' || part === '.')) {
+export async function downloadSnapshot(
+	store: StorageObjectStore,
+	snapshotKey: string,
+	root: string
+): Promise<StoragePullResult> {
+	if (
+		!/^kucedr\/v2\/.+\/snapshots\/[^/]+\.json$/.test(snapshotKey) ||
+		snapshotKey.includes('\\') ||
+		snapshotKey.split('/').some((part) => !part || part === '..' || part === '.')
+	) {
 		throw new Error('Invalid backup snapshot key.');
 	}
 	const prefix = snapshotKey.slice(0, snapshotKey.lastIndexOf('snapshots/'));
-	const snapshot = backupSnapshotSchema.parse(JSON.parse(Buffer.from(await store.get(snapshotKey)).toString('utf8')));
+	const snapshot = backupSnapshotSchema.parse(
+		JSON.parse(Buffer.from(await store.get(snapshotKey)).toString('utf8'))
+	);
 	await fs.mkdir(root, { recursive: true });
-	if ((await fs.lstat(root)).isSymbolicLink()) throw new Error('Restore folder is a symbolic link.');
+	if ((await fs.lstat(root)).isSymbolicLink())
+		throw new Error('Restore folder is a symbolic link.');
 	const result: StoragePullResult = { downloaded: [], skipped: [], failed: [] };
 	for (const file of snapshot.files) {
 		try {

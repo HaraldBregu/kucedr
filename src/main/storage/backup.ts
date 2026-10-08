@@ -21,12 +21,19 @@ export async function backupFiles(store: StorageObjectStore): Promise<StoragePus
 			if (stat.isSymbolicLink()) throw new Error(`Selected path is a symbolic link: ${root}`);
 			const prefix = storagePrefix(root).replace('kucedr/v1/', 'kucedr/v2/');
 			const id = `${Math.floor((performance.timeOrigin + performance.now()) * 1000)}-${randomUUID()}`;
-			const snapshot: BackupSnapshot = { version: 2, createdAt: new Date().toISOString(), folder: path.basename(root), files: [] };
+			const snapshot: BackupSnapshot = {
+				version: 2,
+				createdAt: new Date().toISOString(),
+				folder: path.basename(root),
+				files: [],
+			};
 			const sources = stat.isDirectory() ? await walkFiles(root) : [root];
 			const completed: string[] = [];
 			for (const source of sources) {
 				try {
-					const relative = stat.isDirectory() ? path.relative(root, source).split(path.sep).join('/') : path.basename(root);
+					const relative = stat.isDirectory()
+						? path.relative(root, source).split(path.sep).join('/')
+						: path.basename(root);
 					const file = await uploadBackupFile(store, source, `${prefix}files/${id}/${relative}`);
 					snapshot.files.push({ ...file, path: relative });
 					completed.push(source);
@@ -35,7 +42,11 @@ export async function backupFiles(store: StorageObjectStore): Promise<StoragePus
 				}
 			}
 			if (completed.length !== sources.length) continue;
-			await store.put(`${prefix}snapshots/${id}.json`, Buffer.from(JSON.stringify(snapshot)), 'application/json');
+			await store.put(
+				`${prefix}snapshots/${id}.json`,
+				Buffer.from(JSON.stringify(snapshot)),
+				'application/json'
+			);
 			uploaded.push(...completed);
 		} catch (error) {
 			failed.push({ path: root, error: describeStorageError(error) });

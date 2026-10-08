@@ -4,8 +4,12 @@ import path from 'node:path';
 
 const getStorageSettings = jest.fn();
 jest.mock('../../../../src/main/storage/storage_store', () => ({ getStorageSettings }));
-jest.mock('../../../../src/main/storage/storage_prefix', () => ({ storagePrefix: () => 'kucedr/v1/agent/' }));
-jest.mock('../../../../src/main/storage/storage_protected', () => ({ isProtectedStoragePath: () => false }));
+jest.mock('../../../../src/main/storage/storage_prefix', () => ({
+	storagePrefix: () => 'kucedr/v1/agent/',
+}));
+jest.mock('../../../../src/main/storage/storage_protected', () => ({
+	isProtectedStoragePath: () => false,
+}));
 
 import { pushFiles } from '../../../../src/main/storage/storage_push';
 import { pullFiles } from '../../../../src/main/storage/storage_pull';
@@ -29,14 +33,25 @@ beforeEach(async () => {
 			if (!value) throw new Error('Missing object');
 			return value;
 		},
-		put: async (key, value) => { objects.set(key, Buffer.from(value)); },
-		list: async (prefix = '') => [...objects].filter(([key]) => key.startsWith(prefix)).map(([key, data]) => ({ key, size: data.length, lastModified: undefined })),
-		putFile: async (key, file) => { objects.set(key, await fs.readFile(file)); },
-		getFile: async (key, file) => { await fs.writeFile(file, await store.get(key), { flag: 'wx' }); },
+		put: async (key, value) => {
+			objects.set(key, Buffer.from(value));
+		},
+		list: async (prefix = '') =>
+			[...objects]
+				.filter(([key]) => key.startsWith(prefix))
+				.map(([key, data]) => ({ key, size: data.length, lastModified: undefined })),
+		putFile: async (key, file) => {
+			objects.set(key, await fs.readFile(file));
+		},
+		getFile: async (key, file) => {
+			await fs.writeFile(file, await store.get(key), { flag: 'wx' });
+		},
 	};
 });
 
-afterEach(async () => { await fs.rm(directory, { recursive: true, force: true }); });
+afterEach(async () => {
+	await fs.rm(directory, { recursive: true, force: true });
+});
 
 it('retains snapshots and restores the latest complete backup while preserving local edits', async () => {
 	const file = path.join(root, 'notes.md');
@@ -51,7 +66,9 @@ it('retains snapshots and restores the latest complete backup while preserving l
 	expect(await fs.readFile(file, 'utf8')).toBe('second');
 	expect(await fs.readFile(path.join(root, 'unmatched.md'), 'utf8')).toBe('keep');
 	const recovery = await fs.readdir(path.join(root, '.kucedr-recovery'));
-	expect(await fs.readFile(path.join(root, '.kucedr-recovery', recovery[0], 'notes.md'), 'utf8')).toBe('local edit');
+	expect(
+		await fs.readFile(path.join(root, '.kucedr-recovery', recovery[0], 'notes.md'), 'utf8')
+	).toBe('local edit');
 	const again = await pullFiles(store);
 	expect(again.downloaded).toEqual([]);
 	expect(again.skipped).toHaveLength(1);
@@ -61,7 +78,9 @@ it('does not publish failed backups and restores the prior successful snapshot',
 	await fs.writeFile(path.join(root, 'notes.md'), 'good');
 	await pushFiles(store);
 	await fs.writeFile(path.join(root, 'notes.md'), 'changed');
-	store.putFile = async () => { throw new Error('Disconnected'); };
+	store.putFile = async () => {
+		throw new Error('Disconnected');
+	};
 	expect((await pushFiles(store)).failed).toHaveLength(1);
 	expect([...objects.keys()].filter((key) => key.includes('/snapshots/'))).toHaveLength(1);
 	await pullFiles(store);
@@ -115,12 +134,16 @@ it('lists backup points and restores an older snapshot into a different destinat
 	expect(snapshots).toHaveLength(2);
 	expect(snapshots[0]).toMatchObject({ folder: 'workspace', files: 1, bytes: 5 });
 	const destination = path.join(directory, 'another-computer');
-	expect((await pullFiles(store, { snapshotKey: snapshots[1].key, path: destination })).failed).toEqual([]);
+	expect(
+		(await pullFiles(store, { snapshotKey: snapshots[1].key, path: destination })).failed
+	).toEqual([]);
 	expect(await fs.readFile(path.join(destination, 'notes.md'), 'utf8')).toBe('original');
 	expect(await fs.readFile(file, 'utf8')).toBe('newer');
 });
 
 it('reports missing backups and rejects an invalid explicit snapshot key', async () => {
 	expect((await pullFiles(store)).failed[0].error).toContain('No backup was found');
-	await expect(pullFiles(store, { snapshotKey: '../private', path: root })).rejects.toThrow('Invalid backup snapshot key');
+	await expect(pullFiles(store, { snapshotKey: '../private', path: root })).rejects.toThrow(
+		'Invalid backup snapshot key'
+	);
 });
