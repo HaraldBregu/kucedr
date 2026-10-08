@@ -1,7 +1,8 @@
 import path from 'node:path';
+import { existsSync } from 'node:fs';
 import Store from 'electron-store';
 import cron from 'node-cron';
-import { ragRecipient } from './recipient';
+import { sanitizeRagConsent } from './sanitize';
 import { supportsVectorDatabase } from '../../../database/vector_adapters';
 import { restrictSettingsFile } from '../../../shared/restrict_settings_file';
 import {
@@ -30,10 +31,12 @@ const DEFAULT_RAG_CONFIGURATION: RagConfiguration = {
 };
 
 const configurationListeners = new Set<() => void>();
+const settingsDirectory = path.resolve(userDataLocation(), 'rag');
+export const ragConfigurationExisted = existsSync(path.join(settingsDirectory, 'settings.json'));
 
 const store = new Store<RagConfiguration>({
 	name: 'settings',
-	cwd: path.resolve(userDataLocation(), 'rag'),
+	cwd: settingsDirectory,
 	accessPropertiesByDotNotation: false,
 	configFileMode: 0o600,
 	defaults: DEFAULT_RAG_CONFIGURATION,
@@ -48,30 +51,34 @@ export function getRagConfiguration(): RagConfiguration {
 		...store.store,
 		folders: [...store.get('folders')],
 	};
-	for (const kind of ['embedding', 'mirror'] as const) {
-		const key = kind === 'embedding' ? 'embeddingConsent' : 'mirrorConsent';
-		const consent = configuration[key];
-		try {
-			if (
-				consent?.version !== 1 ||
-				consent.recipient !==
-					ragRecipient(
-						kind,
-						configuration.embeddingProviderId,
-						configuration.embeddingModelId,
-						configuration.indexName,
-						configuration
-					)
-			)
-				configuration[key] = null;
-		} catch {
-			configuration[key] = null;
-		}
-	}
-	return configuration;
+	return sanitizeRagConsent(configuration);
 }
 
 export function saveRagConfiguration(configuration: RagConfiguration): RagConfiguration {
+	if (
+		!configuration ||
+		typeof configuration !== 'object' ||
+		Array.isArray(configuration) ||
+		!['indexName', 'databaseProviderId', 'databaseId', 'embeddingProviderId', 'embeddingModelId', 'cronExpression']
+			.every((key) => typeof configuration[key as keyof RagConfiguration] === 'string') ||
+		typeof configuration.enabled !== 'boolean' ||
+		typeof configuration.scheduleEnabled !== 'boolean' ||
+		!Array.isArray(configuration.folders) ||
+		configuration.folders.some((folder) => typeof folder !== 'string') ||
+		(configuration.timezone !== undefined && typeof configuration.timezone !== 'string') ||
+		(configuration.embeddingConsent != null &&
+			(typeof configuration.embeddingConsent !== 'object' ||
+				typeof configuration.embeddingConsent.providerId !== 'string' ||
+				typeof configuration.embeddingConsent.modelId !== 'string' ||
+				(configuration.embeddingConsent.recipient !== undefined &&
+					typeof configuration.embeddingConsent.recipient !== 'string'))) ||
+		(configuration.mirrorConsent != null &&
+			(typeof configuration.mirrorConsent !== 'object' ||
+				configuration.mirrorConsent.version !== 1 ||
+				typeof configuration.mirrorConsent.indexName !== 'string' ||
+				(configuration.mirrorConsent.recipient !== undefined &&
+					typeof configuration.mirrorConsent.recipient !== 'string')))
+	) throw new Error('Invalid Knowledge configuration.');
 	const indexName = normalizeRagIndexName(configuration.indexName);
 	const folders = [
 		...new Set(configuration.folders.map((folder) => folder.trim()).filter(Boolean)),
@@ -98,7 +105,7 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 	const minimumScore = configuration.minimumScore ?? 0;
 	if (!Number.isFinite(minimumScore) || minimumScore < 0 || minimumScore > 1)
 		throw new Error('Knowledge minimum similarity must be between 0 and 1.');
-	const saved = {
+	const saved = sanitizeRagConsent({
 		enabled: configuration.enabled === true,
 		indexName,
 		databaseProviderId,
@@ -134,7 +141,7 @@ export function saveRagConfiguration(configuration: RagConfiguration): RagConfig
 		cronExpression: cronExpression || DEFAULT_RAG_CONFIGURATION.cronExpression,
 		timezone,
 		minimumScore,
-	};
+	});
 	store.store = saved;
 	restrictSettingsFile(store.path);
 	for (const listener of configurationListeners) listener();

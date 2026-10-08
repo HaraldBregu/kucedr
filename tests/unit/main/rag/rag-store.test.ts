@@ -1,6 +1,7 @@
 import path from 'node:path';
 
 const validate = jest.fn();
+const ragRecipient = jest.fn();
 const root = '/tmp/kucedr-rag-store-test';
 
 jest.mock('node-cron', () => ({
@@ -13,6 +14,7 @@ jest.mock('../../../../src/main/shared/user_data_location', () => ({
 jest.mock('../../../../src/main/shared/restrict_settings_file', () => ({
 	restrictSettingsFile: jest.fn(),
 }));
+jest.mock('../../../../src/main/agent/knowledge/rag/recipient', () => ({ ragRecipient }));
 
 import {
 	getRagConfiguration,
@@ -57,7 +59,7 @@ it('defaults, normalizes, and validates the configured RAG index name', () => {
 			databaseId: 'pinecone',
 			embeddingProviderId: 'openai',
 			embeddingModelId: 'text-embedding-3-small',
-			embeddingConsent: { providerId: 'openai', modelId: 'text-embedding-3-small' },
+			embeddingConsent: null,
 		})
 	);
 
@@ -135,3 +137,33 @@ it('clears embedding consent copied from a different model and notifies subscrib
 	saveRagConfiguration(configuration);
 	expect(changed).toHaveBeenCalledTimes(1);
 });
+
+it('revokes copied remote consent during the save after its database, index, or account changes', () => {
+	validate.mockReturnValue(true);
+	ragRecipient.mockImplementation((kind) => kind === 'embedding' ? 'embedding-account' : 'mirror-account');
+	const configuration = {
+		...getRagConfiguration(),
+		indexName: 'knowledge-base',
+		databaseProviderId: 'pinecone',
+		databaseId: 'pinecone',
+		embeddingProviderId: 'openai',
+		embeddingModelId: 'text-embedding-3-small',
+		embeddingConsent: { version: 1 as const, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-account' },
+		mirrorConsent: { version: 1 as const, indexName: 'knowledge-base', recipient: 'mirror-account' },
+	};
+	expect(saveRagConfiguration(configuration)).toMatchObject({
+		embeddingConsent: configuration.embeddingConsent,
+		mirrorConsent: configuration.mirrorConsent,
+	});
+	expect(saveRagConfiguration({ ...configuration, databaseProviderId: 'local', databaseId: 'sqlite' }).mirrorConsent).toBeNull();
+	expect(saveRagConfiguration({ ...configuration, indexName: 'different-index' }).mirrorConsent).toBeNull();
+	ragRecipient.mockReturnValue('changed-account');
+	expect(saveRagConfiguration(configuration)).toMatchObject({ embeddingConsent: null, mirrorConsent: null });
+});
+
+it.each([null, {}, { folders: 'invalid' }, { embeddingConsent: {} }])(
+	'rejects malformed runtime configurations before persistence',
+	(configuration) => {
+		expect(() => saveRagConfiguration(configuration as never)).toThrow('Invalid Knowledge configuration');
+	}
+);

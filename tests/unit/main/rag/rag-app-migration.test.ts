@@ -50,10 +50,11 @@ jest.mock('electron-store', () =>
 	})
 );
 jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({
+	ragConfigurationExisted: false,
 	getRagConfiguration: () => ({
 		indexName: 'kucedr',
-		databaseProviderId: '',
-		databaseId: '',
+		databaseProviderId: 'local',
+		databaseId: 'sqlite',
 		embeddingProviderId: '',
 		embeddingModelId: '',
 		folders: [],
@@ -69,7 +70,7 @@ jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({
 
 import '../../../../src/main/settings_store';
 
-it('moves legacy database and embedding selections before cleaning app settings', () => {
+it('moves legacy selections before cleaning app settings even when fresh RAG defaults select local storage', () => {
 	expect(mockSavedRag).toEqual(
 		expect.objectContaining({
 			databaseProviderId: 'pinecone',
