@@ -12,6 +12,7 @@ export type MessageRole = 'system' | 'user' | 'assistant' | 'summary';
 export interface ToolResult {
 	content: MessageContent;
 	isError?: boolean;
+	authorizationRequired?: { serverId: string; serverName: string };
 }
 
 export interface ToolCall {

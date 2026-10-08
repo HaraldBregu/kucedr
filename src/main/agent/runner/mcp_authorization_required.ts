@@ -5,16 +5,8 @@ export function mcpAuthorizationRequired(
 	output: unknown
 ): { status: 'authorization_required'; serverId: string; serverName: string } | undefined {
 	if (tool?.policy?.kind !== 'mcp') return undefined;
-	let value = output;
-	if (typeof value === 'string') {
-		try {
-			value = JSON.parse(value);
-		} catch {
-			return undefined;
-		}
-	}
-	if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;
-	const result = value as { status?: unknown; serverId?: unknown; serverName?: unknown };
+	if (!output || typeof output !== 'object' || Array.isArray(output)) return undefined;
+	const result = output as { status?: unknown; serverId?: unknown; serverName?: unknown };
 	if (result.status !== 'authorization_required' || result.serverId !== tool.policy.serverId)
 		return undefined;
 	return {

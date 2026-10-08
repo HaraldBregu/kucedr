@@ -90,6 +90,7 @@ export async function* runToolCall(
 
 	let output: unknown;
 	let isError: boolean | undefined;
+	let authorizationRequired: ReturnType<typeof mcpAuthorizationRequired>;
 	let permissionOutcome: 'allow' | 'deny' | 'approve' | 'approve_always' | 'reject' | undefined;
 
 	const budgetError = security.budget?.admit(tool, canonicalInput);
@@ -431,7 +432,8 @@ export async function* runToolCall(
 						);
 					}
 					output = limitToolOutput(output, tool.maxOutputBytes);
-					if (mcpAuthorizationRequired(tool, output)) isError = true;
+					authorizationRequired = mcpAuthorizationRequired(tool, output);
+					if (authorizationRequired) isError = true;
 					if (toolCall.name === 'read' && state) rememberTool(context, state);
 					if (createsFile && state) rememberTool(context, state);
 				} finally {
@@ -457,6 +459,7 @@ export async function* runToolCall(
 	toolCall.result = {
 		content: formatToolOutput(output),
 		isError,
+		...(authorizationRequired ? { authorizationRequired } : {}),
 	};
 
 	security.budget?.observeOutput(Buffer.byteLength(formatToolOutput(output), 'utf8'));

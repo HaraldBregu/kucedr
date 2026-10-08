@@ -32,7 +32,6 @@ import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool,
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
 import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
-import { mcpAuthorizationRequired } from './mcp_authorization_required';
 import { filterProfileTools, filterTools } from './run_tools';
 import { isAgentToolAllowedForProfile } from '../../../shared/agent_tools';
 import { selectSkillTools } from './run_skill_tools';
@@ -536,15 +535,10 @@ async function* loop(
 			)) {
 				yield event;
 			}
-			const failedMcpCall = pendingToolCalls.find((call) =>
-				mcpAuthorizationRequired(
-					turnTools.find((tool) => tool.id === call.name),
-					call.result?.content
-				)
-			);
+			const failedMcpCall = pendingToolCalls.find((call) => call.result?.authorizationRequired);
 			if (failedMcpCall && input.approvalWindowId !== undefined && input.interactionMode === 'default') {
 				const failedTool = turnTools.find((tool) => tool.id === failedMcpCall.name);
-				const required = mcpAuthorizationRequired(failedTool, failedMcpCall.result?.content);
+				const required = failedMcpCall.result?.authorizationRequired;
 				if (!required) throw new Error('MCP authorization request was lost.');
 				yield* skipToolCalls(
 					pendingToolCalls.filter((call) => !call.result),
