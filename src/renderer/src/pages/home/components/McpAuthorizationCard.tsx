@@ -121,40 +121,38 @@ export function McpAuthorizationCard({
 			</CardHeader>
 			{!stopped && !failed && (
 				<CardContent className="space-y-3 px-4 pb-4 pl-16 text-sm">
-					<>
-						<p className="text-xs text-muted-foreground">
-							{toolName
-								? `After authorization, ${toolName} will be retried automatically.`
-								: 'After authorization, the tool call will be retried automatically.'}
-						</p>
-						<div className="flex flex-wrap items-center gap-2">
-							<Button
-								type="button"
-								size="sm"
-								disabled={connecting || cancelling}
-								onClick={() => void authorize()}
-							>
-								{connecting && <LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />}
-								{connecting ? 'Waiting for authorization…' : 'Authorize'}
-							</Button>
-							<Button
-								type="button"
-								variant="ghost"
-								size="sm"
-								disabled={cancelling}
-								onClick={() => void cancel()}
-							>
-								Cancel
-							</Button>
-						</div>
-					</>
+					<p className="text-xs text-muted-foreground">
+						{toolName
+							? `After authorization, ${toolName} will be retried automatically.`
+							: 'After authorization, the tool call will be retried automatically.'}
+					</p>
+					<div className="flex flex-wrap items-center gap-2">
+						<Button
+							type="button"
+							size="sm"
+							disabled={connecting || cancelling}
+							onClick={() => void authorize()}
+						>
+							{connecting && <LoaderCircle className="size-3.5 animate-spin" aria-hidden="true" />}
+							{connecting ? 'Waiting for authorization…' : 'Authorize'}
+						</Button>
+						<Button
+							type="button"
+							variant="ghost"
+							size="sm"
+							disabled={cancelling}
+							onClick={() => void cancel()}
+						>
+							Cancel
+						</Button>
+					</div>
 					{error && (
 						<p role="alert" className="text-destructive">
 							{error}
 						</p>
 					)}
 				</CardContent>
-				)}
+			)}
 		</Card>
 	);
 }
