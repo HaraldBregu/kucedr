@@ -1,3 +1,4 @@
+import { SettingsItemMedia } from '../../../components/item-media';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {

@@ -34,7 +34,7 @@ export function CustomMcpCard({
 			<Collapsible open={expanded} onOpenChange={setExpanded}>
 				<CardHeader className={cn('items-center px-4!', expanded && 'border-b pb-4!')}>
 					<div className="flex min-w-0 flex-1 items-center gap-2.5">
-						<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50">
+						<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
 							{icon ?? <PlugZap className="size-5" aria-hidden="true" />}
 						</div>
 						<div className="min-w-0">

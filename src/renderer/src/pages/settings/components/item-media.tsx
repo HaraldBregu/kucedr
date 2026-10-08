@@ -9,7 +9,7 @@ export function SettingsItemMedia({
 	return (
 		<ItemMedia
 			variant="icon"
-			className="size-10 shrink-0 rounded-2xl bg-muted/50 [&>svg]:size-5 [&>svg]:text-foreground"
+			className="size-10 shrink-0 rounded-2xl bg-muted/50 [&>svg]:size-5"
 		>
 			{children}
 		</ItemMedia>

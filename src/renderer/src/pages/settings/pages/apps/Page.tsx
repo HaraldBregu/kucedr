@@ -264,7 +264,7 @@ const AppsPage: React.FC = () => {
 										) : (
 											<div
 												aria-hidden="true"
-												className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50"
+												className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground"
 											>
 												<Blocks className="size-5" />
 											</div>
@@ -322,7 +322,7 @@ const AppsPage: React.FC = () => {
 							void handleAddDebug();
 						}}
 					>
-						<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50">
+						<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
 							<Bug className="size-5" aria-hidden="true" />
 						</div>
 						<Input
