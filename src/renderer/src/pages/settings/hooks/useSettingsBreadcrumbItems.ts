@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useMatch } from 'react-router-dom';
-import { getChannelCatalogEntry } from '../../../../../shared';
 import { databases, mcps, storages } from '@/lib/providers';
 import { SETTINGS_MODEL_SERVICE_ITEMS, SETTINGS_NAVIGATION } from '../navigation';
 import { getSystemMedia } from '../pages/settings/media/media';
@@ -111,17 +110,7 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	if (location.pathname === '/settings/channels/tools') {
 		return [
 			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
-			{
-				label: t('settings.channels.configuration'),
-				path: '/settings/channels/configuration',
-			},
 			{ label: t('settings.modelServices.tools') },
-		];
-	}
-	if (location.pathname === '/settings/channels/configuration') {
-		return [
-			{ label: t('settings.tabs.channels'), path: '/settings/channels' },
-			{ label: t('settings.channels.configuration') },
 		];
 	}
 	const assistantSubpageLabelKey = ASSISTANT_SUBPAGE_LABEL_KEYS[location.pathname];
@@ -197,13 +186,6 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 	if (location.pathname.startsWith('/settings/tasks/') && location.pathname.endsWith('/detail')) {
 		items[0] = { ...items[0], path: current.path };
 		items.push({ label: t('settings.cron.detail.title') });
-	}
-
-	if (location.pathname.startsWith('/settings/channels/channelDetail/')) {
-		const channelId = decodeURIComponent(location.pathname.split('/').at(-1) ?? '');
-		const channelLabel = getChannelCatalogEntry(channelId)?.label ?? channelId;
-		items[0] = { ...items[0], path: current.path };
-		items.push({ label: channelLabel });
 	}
 
 	if (location.pathname.startsWith('/settings/skills/skilldetails/')) {

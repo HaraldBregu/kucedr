@@ -289,6 +289,7 @@
 				"services": "Applicazione",
 				"assistant": "Agenti",
 				"brain": "Brain",
+				"bot": "Bot",
 				"extensions": "Estensioni",
 				"configuration": "Configurazione"
 			},

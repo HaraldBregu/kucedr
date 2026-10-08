@@ -172,7 +172,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 	},
 	// Channels
 	{
-		path: '/settings/channels/configuration',
+		path: '/settings/channels',
 		labelKey: 'settings.channels.configuration',
 		descriptionKey: 'settings.channels.configurationDescription',
 		keywords: 'channel models voice transcription tools configuration',
@@ -207,7 +207,7 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'connected disconnected runtime start stop',
 	},
 	{
-		path: '/settings/channels/channelDetail/telegram',
+		path: '/settings/channels',
 		labelKey: 'channels.telegram',
 		descriptionKey: 'channels.telegramDescription',
 		keywords: 'telegram bot channel configuration token',

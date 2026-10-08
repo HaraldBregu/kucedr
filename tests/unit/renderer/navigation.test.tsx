@@ -299,7 +299,7 @@ it('keeps Plugins and Apps in the main sidebar list without a footer', () => {
 	expect(navigation.querySelector('[data-slot="sidebar-footer"]')).not.toBeInTheDocument();
 	expect(
 		within(list as HTMLElement).queryByText('settings.overview.groups.extensions')
-	).not.toBeInTheDocument();
+	).toBeInTheDocument();
 	expect(plugins).toHaveAttribute('aria-current', 'page');
 	expect(
 		within(list as HTMLElement).getByRole('link', { name: 'settings.tabs.apps' })
@@ -350,7 +350,7 @@ it('uses the audio waveform icon for Voice', () => {
 	expect(voice.querySelector('.lucide-audio-lines')).toBeInTheDocument();
 });
 
-it('places Channels below Apps and Remote Agents below Channels outside the Agents group', () => {
+it('places Channels and Remote Agents in Bot immediately above Extensions', () => {
 	render(
 		<MemoryRouter initialEntries={['/settings/health']}>
 			<Routes>
@@ -379,13 +379,20 @@ it('places Channels below Apps and Remote Agents below Channels outside the Agen
 	const channels = within(navigation).getByRole('link', { name: 'settings.tabs.channels' });
 	const extensionsGroup = apps.closest('[data-slot="split-pane-group"]');
 	const extensionLinks = within(extensionsGroup as HTMLElement).getAllByRole('link');
+	const botGroup = channels.closest('[data-slot="split-pane-group"]');
+	const botLinks = within(botGroup as HTMLElement).getAllByRole('link');
 
 	expect(within(extensionsGroup as HTMLElement).getByText('settings.overview.groups.extensions')).toBeInTheDocument();
+	expect(within(botGroup as HTMLElement).getByText('settings.overview.groups.bot')).toBeInTheDocument();
+	expect(en.settings.overview.groups.bot).toBe('Bot');
+	expect(italian.settings.overview.groups.bot).toBe('Bot');
+	expect(botGroup?.nextElementSibling).toBe(extensionsGroup);
 	expect(channels).toHaveAttribute('href', '/settings/channels');
-	expect(channels.closest('[data-slot="split-pane-group"]')).toBe(extensionsGroup);
-	expect(extensionLinks.indexOf(channels)).toBe(extensionLinks.indexOf(apps) + 1);
-	expect(remoteAgent.closest('[data-slot="split-pane-group"]')).toBe(extensionsGroup);
-	expect(extensionLinks.indexOf(remoteAgent)).toBe(extensionLinks.indexOf(channels) + 1);
+	expect(botLinks).toEqual([channels, remoteAgent]);
+	expect(extensionLinks.map((link) => link.getAttribute('href'))).toEqual([
+		'/settings/plugins',
+		'/settings/apps',
+	]);
 	expect(
 		within(assistantGroup as HTMLElement).queryByRole('link', {
 			name: 'settings.tabs.channels',
