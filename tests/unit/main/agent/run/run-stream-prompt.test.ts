@@ -1424,12 +1424,13 @@ describe('run stream system prompt', () => {
 					runId: 'gmail-auth-search', task: 'chat',
 					message: 'Show my last email received please, from gmail mcp',
 					model: 'test-model', type: 'default', agentId: 'main', contextMode: 'minimal',
+					interactionMode: 'default',
 					approvalWindowId: 1,
 				},
 				new AbortController().signal,
 				{ sandbox }
 			)) events.push(_event);
-			if (testServer.mock.calls.length === 0) throw new Error(JSON.stringify(events));
+			expect(testServer).toHaveBeenCalledWith('gmail');
 			expect(mockLoadMcpTools).toHaveBeenCalledTimes(2);
 			expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(gmail.id);
 		} finally {
