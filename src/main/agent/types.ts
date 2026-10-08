@@ -4,6 +4,8 @@ import type { SkillDiagnostic, SkillTrust } from '../../shared/skills_types';
 import type { AgentToolReference, AgentToolProfileId } from '../../shared/agent_tools';
 import type { ToolCategory } from './tools/category';
 
+export type { ToolCategory } from './tools/category';
+
 export interface Config {
 	location: string;
 }

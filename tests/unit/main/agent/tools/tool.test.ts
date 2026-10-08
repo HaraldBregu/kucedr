@@ -4,6 +4,7 @@ import { jsonTool, tool } from '../../../../../src/main/agent/tools/tool';
 it('does not cut native tools off at thirty seconds by default', () => {
 	const nativeTool = jsonTool({
 		id: 'long_operation',
+		category: 'system',
 		name: 'Long operation',
 		description: 'Long operation',
 		schema: { type: 'object' },
@@ -16,6 +17,7 @@ it('does not cut native tools off at thirty seconds by default', () => {
 it('validates optional input examples against the runtime schema', () => {
 	const configured = tool({
 		id: 'lookup',
+		category: 'knowledge',
 		name: 'Lookup',
 		description: 'Look up an item when an exact identifier is known.',
 		inputSchema: z.object({ id: z.string().min(1) }),
@@ -27,6 +29,7 @@ it('validates optional input examples against the runtime schema', () => {
 	expect(() =>
 		tool({
 			id: 'invalid',
+			category: 'knowledge',
 			name: 'Invalid',
 			description: 'Invalid example',
 			inputSchema: z.object({ id: z.string() }),
@@ -39,6 +42,7 @@ it('validates optional input examples against the runtime schema', () => {
 it('keeps the runtime ID separate from the human-readable name', () => {
 	const configured = jsonTool({
 		id: 'coordinated',
+		category: 'delegation',
 		name: 'Coordinated operation',
 		description: 'read safely',
 		schema: { type: 'object' },
@@ -46,6 +50,7 @@ it('keeps the runtime ID separate from the human-readable name', () => {
 	});
 
 	expect(configured.id).toBe('coordinated');
+	expect(configured.category).toBe('delegation');
 	expect(configured.name).toBe('Coordinated operation');
 	expect(configured.schema).toEqual({ type: 'object' });
 });

@@ -5,7 +5,7 @@ import { buildSystemPrompt } from '../../../../../src/main/agent/system/system_b
 import type { Tool } from '../../../../../src/main/agent/types';
 
 function tool(name: string, description?: string): Tool {
-	return { id: name, name, description } as Tool;
+	return { id: name, category: 'system', name, description } as Tool;
 }
 
 describe('addBasePrompt', () => {
