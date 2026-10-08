@@ -344,18 +344,18 @@ const PluginsPage = (): React.JSX.Element => {
 																<MoreHorizontal className="size-4" />
 															</Button>
 														</DropdownMenuTrigger>
-														<DropdownMenuContent
-															align="end"
-															onClick={(event) => event.stopPropagation()}
-														>
-															<DropdownMenuItem
-																onSelect={() =>
-																	setPendingRemoval({
-																		name: service.name,
-																		remove: () => void setIntegrationEnabled(service, false),
-																	})
-																}
-															>
+												<DropdownMenuContent
+													align="end"
+													onClick={(event) => event.stopPropagation()}
+												>
+													<DropdownMenuItem
+														onSelect={() =>
+															setPendingRemoval({
+																name: service.name,
+																remove: () => void setIntegrationEnabled(service, false),
+															})
+														}
+													>
 																<Trash2 />
 																{t('settings.integrations.remove', { name: service.name })}
 															</DropdownMenuItem>
