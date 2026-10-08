@@ -6,6 +6,11 @@ import type { Conversation } from '../../../../src/main/agent/conversation';
 import type { EventBus } from '../../../../src/main/event_bus';
 import type { LoggerService } from '../../../../src/main/shared';
 import * as permissionsApi from '../../../../src/main/agent/permissions';
+import * as ragStore from '../../../../src/main/agent/knowledge/rag/rag_store';
+import * as ragRun from '../../../../src/main/agent/knowledge/rag/run';
+import * as ragStatus from '../../../../src/main/agent/knowledge/rag/status';
+import * as ragCancel from '../../../../src/main/agent/knowledge/rag/cancel';
+import * as ragDisclosure from '../../../../src/main/agent/knowledge/rag/disclosure';
 
 describe('AgentIpc run ownership', () => {
 	beforeEach(() => {
@@ -243,6 +248,52 @@ describe('AgentIpc run ownership', () => {
 			})
 		).resolves.toMatchObject({ success: false });
 		expect(execute).not.toHaveBeenCalled();
+	});
+
+	it('saves Knowledge selections atomically and routes indexing, status, and cancellation through its coordinator', async () => {
+		const configuration = {
+			...ragStore.getRagConfiguration(),
+			databaseProviderId: 'local',
+			databaseId: 'sqlite',
+			embeddingProviderId: 'voyage',
+			embeddingModelId: 'voyage-4-large',
+		};
+		const saved = jest.spyOn(ragStore, 'saveRagConfiguration').mockReturnValue(configuration);
+		const authorize = jest.spyOn(ragDisclosure, 'authorizeRagDisclosure').mockImplementation((input) => input);
+		const run = jest.spyOn(ragRun, 'runRagIndexing').mockResolvedValue({ files: 1, vectors: 2 });
+		const status = jest.spyOn(ragStatus, 'getRagStatus').mockReturnValue({ running: true, outcome: 'running' } as never);
+		const cancel = jest.spyOn(ragCancel, 'cancelRagIndexing').mockImplementation(() => undefined);
+		const sender = { mainFrame: {} };
+		const event = { sender, senderFrame: sender.mainFrame };
+		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 7, webContents: sender });
+		new AgentIpc().register(
+			{
+				logger: { info: jest.fn() } as unknown as LoggerService,
+				agent: { config: { location: '/agent' } } as unknown as Agent,
+				conversation: { execute: jest.fn() } as unknown as Conversation,
+				windows: { has: (id: number) => id === 7 } as never,
+				apps: { has: () => false } as never,
+			},
+			{ sendTo: jest.fn() } as unknown as EventBus
+		);
+		const handler = (channel: string) =>
+			(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
+		try {
+			await expect(handler(AgentChannels.ragSaveConfiguration)(event, configuration)).resolves.toEqual({ success: true, data: configuration });
+			expect(saved).toHaveBeenCalledWith(configuration);
+			expect(authorize).toHaveBeenCalledWith(configuration);
+			await expect(handler(AgentChannels.ragIndex)(event)).resolves.toEqual({ success: true, data: { files: 1, vectors: 2 } });
+			expect(run).toHaveBeenCalledWith();
+			await expect(handler(AgentChannels.ragGetStatus)(event)).resolves.toMatchObject({ success: true, data: { running: true } });
+			await expect(handler(AgentChannels.ragCancelIndex)(event)).resolves.toEqual({ success: true, data: undefined });
+			expect(cancel).toHaveBeenCalledTimes(1);
+		} finally {
+			saved.mockRestore();
+			authorize.mockRestore();
+			run.mockRestore();
+			status.mockRestore();
+			cancel.mockRestore();
+		}
 	});
 });
 
