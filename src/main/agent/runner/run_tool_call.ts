@@ -433,7 +433,10 @@ export async function* runToolCall(
 					}
 					output = limitToolOutput(output, tool.maxOutputBytes);
 					authorizationRequired = mcpAuthorizationRequired(tool, output);
-					if (authorizationRequired) isError = true;
+					if (authorizationRequired) {
+						output = `Authentication required for ${authorizationRequired.serverName}.`;
+						isError = true;
+					}
 					if (toolCall.name === 'read' && state) rememberTool(context, state);
 					if (createsFile && state) rememberTool(context, state);
 				} finally {
