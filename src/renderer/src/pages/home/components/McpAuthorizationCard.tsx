@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
 import { Check, KeyRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +17,18 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 	}
 	if (!output || typeof output !== 'object' || Array.isArray(output)) return null;
 	const result = output as { status?: unknown; serverId?: unknown; serverName?: unknown };
-	if ((result.status !== 'authorization_required' && result.status !== 'authorized') || typeof result.serverId !== 'string') return null;
+	const serverId = typeof result.serverId === 'string' ? result.serverId : undefined;
+	useEffect(() => {
+		if (!serverId) return;
+		let cancelled = false;
+		void window.mcp.oauthStatus(serverId).then(async (hasToken) => {
+			if (!hasToken) return;
+			const connection = await window.mcp.test(serverId);
+			if (!cancelled && connection.ok) setPhase('authorized');
+		}).catch(() => undefined);
+		return () => { cancelled = true; };
+	}, [serverId]);
+	if ((result.status !== 'authorization_required' && result.status !== 'authorized') || !serverId) return null;
 	const serverName = typeof result.serverName === 'string' ? result.serverName : result.serverId;
 	const authorized = phase === 'authorized' || result.status === 'authorized';
 
@@ -25,7 +36,7 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 		setError(null);
 		setPhase('connecting');
 		try {
-			await window.mcp.oauthStart(result.serverId as string);
+			await window.mcp.oauthStart(serverId);
 			setPhase('authorized');
 		} catch (cause) {
 			setError(cause instanceof Error ? cause.message : String(cause));
