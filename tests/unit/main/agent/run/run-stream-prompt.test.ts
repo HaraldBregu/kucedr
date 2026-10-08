@@ -200,7 +200,7 @@ describe('run stream system prompt', () => {
 			(tool) => tool.id === 'load_skill'
 		)?.description;
 		expect(loadSkillDescription).toBe(
-			'Load one Agent Skill by exact name for this run. Its protected instructions and canonical resource root are injected on the next model turn.'
+			'Load one Agent Skill by exact name for this run only when the user explicitly asks to load or use it. Its protected instructions and canonical resource root are injected on the next model turn.'
 		);
 		expect(loadSkillDescription).not.toContain('Available skill routing metadata');
 		expect(runModelTurnMock.mock.calls[0][3]).toContain(

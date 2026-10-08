@@ -2,6 +2,8 @@ import type { Tool } from '../types';
 
 export function requiresExplicitRequest(tool: Tool): boolean {
 	return [
+		'list_skills',
+		'load_skill',
 		'search_web',
 		'fetch_web_page',
 		'use_web_browser',

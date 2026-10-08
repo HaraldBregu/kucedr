@@ -10,6 +10,8 @@ it('groups runtime tools by availability and category with descriptions and usag
 	const camera = candidate('camera_recorder', 'Record camera video.');
 	const image = candidate('create_image', 'Generate images.');
 	const web = candidate('search_web', 'Search the web.');
+	const listSkills = candidate('list_skills', 'List skills.');
+	const loadSkill = candidate('load_skill', 'Load a skill.');
 	const search = candidate('tool_search', 'Find relevant tools.');
 	const gmail = candidate('mcp__gmail__search_threads', 'Search Gmail threads.', {
 		kind: 'mcp',
@@ -19,7 +21,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 
 	const context = buildRuntimeTools(
 		[read, subagent, search],
-		[read, subagent, camera, image, web, search, gmail, read]
+		[read, subagent, camera, image, web, listSkills, loadSkill, search, gmail, read]
 	);
 
 	expect(context).toContain('### Loaded tools');
@@ -35,6 +37,9 @@ it('groups runtime tools by availability and category with descriptions and usag
 	);
 	expect(context).toContain(
 		'#### Web\n- `search_web` — Search the web. _(Explicit user request only.)_'
+	);
+	expect(context).toContain(
+		'#### Skills\n- `list_skills` — List skills. _(Explicit user request only.)_\n- `load_skill` — Load a skill. _(Explicit user request only.)_'
 	);
 	expect(context).toContain(
 		'Web access rule: Do not call `search_web`, `fetch_web_page`, or `use_web_browser` merely because the user asks about a person, organization, place, or topic.'

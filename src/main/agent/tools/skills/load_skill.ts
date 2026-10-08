@@ -14,7 +14,7 @@ export function loadSkillTool(
 		id: 'load_skill',
 		name: 'Load skill',
 		description:
-			'Load one Agent Skill by exact name for this run. Its protected instructions and canonical resource root are injected on the next model turn.',
+			'Load one Agent Skill by exact name for this run only when the user explicitly asks to load or use it. Its protected instructions and canonical resource root are injected on the next model turn.',
 		planSafe: true,
 		inputSchema: z.object({
 			name: z.enum(names as [string, ...string[]]).describe('The exact skill name to activate.'),
