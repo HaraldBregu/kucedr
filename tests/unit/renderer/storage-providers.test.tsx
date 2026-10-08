@@ -82,11 +82,23 @@ it('shows an enabled plugin storage in Providers before a connection is saved', 
 });
 
 it('allows connecting a generic S3 provider when no plugin is enabled', async () => {
+	const user = userEvent.setup();
 	jest.mocked(window.provider.listEnabledPlugins).mockResolvedValue({ database: [], storage: [] });
 	render(<StorageProvidersPage />);
 	await screen.findByText('No storage connections');
 	expect(screen.queryByText('Supabase Storage')).not.toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Add provider' })).toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'Add provider' }));
+	await user.type(screen.getByLabelText('Name'), 'My backup');
+	await user.type(screen.getByLabelText('Bucket'), 'backups');
+	await user.type(screen.getByLabelText('Endpoint URL'), 'https://s3.example.com');
+	await user.type(screen.getByLabelText('Access key ID'), 'access');
+	await user.type(screen.getByLabelText('Secret access key'), 'secret');
+	await user.click(screen.getByRole('button', { name: 'Save', exact: true }));
+	expect(await screen.findByText('My backup')).toBeInTheDocument();
+	expect(api.saveProvider).toHaveBeenCalledWith(expect.objectContaining({
+		bucket: 'backups', endpoint: 'https://s3.example.com',
+	}));
 });
 
 it('adds multiple independent S3 connections and retains existing entries', async () => {
