@@ -16,6 +16,14 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item';
 import { databases, mcps, storages } from '@/lib/providers';
@@ -40,6 +48,10 @@ const PluginsPage = (): React.JSX.Element => {
 	const [error, setError] = useState('');
 	const [query, setQuery] = useState('');
 	const [selectedMicrosoft, setSelectedMicrosoft] = useState<CatalogService | null>(null);
+	const [pendingRemoval, setPendingRemoval] = useState<{
+		readonly name: string;
+		readonly remove: () => void;
+	} | null>(null);
 	const catalog = mcps();
 	const databaseCatalog = databases();
 	const storageCatalog = storages();
@@ -194,6 +206,33 @@ const PluginsPage = (): React.JSX.Element => {
 				saving={savingId === selectedMicrosoft?.id}
 				error={error}
 			/>
+			<Dialog open={pendingRemoval !== null} onOpenChange={(open) => !open && setPendingRemoval(null)}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{t('settings.integrations.confirmRemoveTitle')}</DialogTitle>
+						<DialogDescription>
+							{t('settings.integrations.confirmRemoveDescription', {
+								name: pendingRemoval?.name,
+							})}
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter>
+						<Button type="button" variant="outline" onClick={() => setPendingRemoval(null)}>
+							{t('settings.integrations.cancel')}
+						</Button>
+						<Button
+							type="button"
+							variant="destructive"
+							onClick={() => {
+								pendingRemoval?.remove();
+								setPendingRemoval(null);
+							}}
+						>
+							{t('settings.integrations.confirmRemove')}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 
 			{providerSections.size > 0 ? (
 				<div className="-mx-4 space-y-8 pb-4">
@@ -228,11 +267,15 @@ const PluginsPage = (): React.JSX.Element => {
 													)
 												}
 												onRemove={() =>
-													void setProviderEnabled(
-														'database',
-														`${database.provider.id}/${database.id}`,
-														false
-													)
+													setPendingRemoval({
+														name: database.name,
+														remove: () =>
+															void setProviderEnabled(
+																'database',
+																`${database.provider.id}/${database.id}`,
+																false
+															),
+													})
 												}
 											/>
 										);
@@ -259,11 +302,15 @@ const PluginsPage = (): React.JSX.Element => {
 													)
 												}
 												onRemove={() =>
-													void setProviderEnabled(
-														'storage',
-														`${storage.provider.id}/${storage.id}`,
-														false
-													)
+													setPendingRemoval({
+														name: storage.name,
+														remove: () =>
+															void setProviderEnabled(
+																'storage',
+																`${storage.provider.id}/${storage.id}`,
+																false
+															),
+													})
 												}
 											/>
 										);
@@ -327,9 +374,14 @@ const PluginsPage = (): React.JSX.Element => {
 													align="end"
 													onClick={(event) => event.stopPropagation()}
 												>
-															<DropdownMenuItem
-																onSelect={() => void setIntegrationEnabled(service, false)}
-															>
+													<DropdownMenuItem
+														onSelect={() =>
+															setPendingRemoval({
+																name: service.name,
+																remove: () => void setIntegrationEnabled(service, false),
+															})
+														}
+													>
 																<Trash2 />
 																{t('settings.integrations.remove', { name: service.name })}
 															</DropdownMenuItem>

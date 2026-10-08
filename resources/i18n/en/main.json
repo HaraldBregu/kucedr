@@ -376,6 +376,10 @@
 			"add": "Add {{name}}",
 			"options": "Options for {{name}}",
 			"remove": "Remove {{name}}",
+			"confirmRemoveTitle": "Remove plugin?",
+			"confirmRemoveDescription": "Remove {{name}} from Kucedr? You can add it again later.",
+			"cancel": "Cancel",
+			"confirmRemove": "Remove",
 			"microsoft": {
 				"title": "Add {{name}}",
 				"description": "Microsoft 365 Work IQ is in preview and requires a Frontier tenant, a Microsoft 365 Copilot license, and an Entra app registration.",

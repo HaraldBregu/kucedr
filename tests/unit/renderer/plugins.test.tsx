@@ -237,6 +237,13 @@ it('removes the MCP server from the added plugin menu', async () => {
 	const gmailOptions = await screen.findByRole('button', { name: 'settings.integrations.options' });
 	await user.click(gmailOptions);
 	await user.click(screen.getByRole('menuitem', { name: 'settings.integrations.remove' }));
+	expect(mcpApi.delete).not.toHaveBeenCalled();
+	expect(screen.getByRole('dialog')).toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'settings.integrations.cancel' }));
+	expect(mcpApi.delete).not.toHaveBeenCalled();
+	await user.click(gmailOptions);
+	await user.click(screen.getByRole('menuitem', { name: 'settings.integrations.remove' }));
+	await user.click(screen.getByRole('button', { name: 'settings.integrations.confirmRemove' }));
 
 	await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('gmail'));
 	expect(mcpApi.upsert).not.toHaveBeenCalled();
@@ -326,6 +333,8 @@ it('removes an enabled storage provider from Plugins', async () => {
 		await within(row as HTMLElement).findByRole('button', { name: 'settings.integrations.options' })
 	);
 	await user.click(screen.getByRole('menuitem', { name: 'settings.integrations.remove' }));
+	expect(providerApi.setPluginEnabled).not.toHaveBeenCalled();
+	await user.click(screen.getByRole('button', { name: 'settings.integrations.confirmRemove' }));
 	await waitFor(() =>
 		expect(providerApi.setPluginEnabled).toHaveBeenCalledWith(
 			'storage',

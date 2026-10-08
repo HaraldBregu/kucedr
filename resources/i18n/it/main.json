@@ -376,6 +376,10 @@
 			"add": "Aggiungi {{name}}",
 			"options": "Opzioni per {{name}}",
 			"remove": "Rimuovi {{name}}",
+			"confirmRemoveTitle": "Rimuovere il plugin?",
+			"confirmRemoveDescription": "Rimuovere {{name}} da Kucedr? Puoi aggiungerlo di nuovo in seguito.",
+			"cancel": "Annulla",
+			"confirmRemove": "Rimuovi",
 			"microsoft": {
 				"title": "Aggiungi {{name}}",
 				"description": "Microsoft 365 Work IQ è in anteprima e richiede un tenant Frontier, una licenza Microsoft 365 Copilot e un'app registrata in Entra.",
