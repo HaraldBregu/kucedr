@@ -259,9 +259,13 @@ describe('AgentIpc run ownership', () => {
 			embeddingModelId: 'voyage-4-large',
 		};
 		const saved = jest.spyOn(ragStore, 'saveRagConfiguration').mockReturnValue(configuration);
-		const authorize = jest.spyOn(ragDisclosure, 'authorizeRagDisclosure').mockImplementation((input) => input);
+		const authorize = jest
+			.spyOn(ragDisclosure, 'authorizeRagDisclosure')
+			.mockImplementation((input) => input);
 		const run = jest.spyOn(ragRun, 'runRagIndexing').mockResolvedValue({ files: 1, vectors: 2 });
-		const status = jest.spyOn(ragStatus, 'getRagStatus').mockReturnValue({ running: true, outcome: 'running' } as never);
+		const status = jest
+			.spyOn(ragStatus, 'getRagStatus')
+			.mockReturnValue({ running: true, outcome: 'running' } as never);
 		const cancel = jest.spyOn(ragCancel, 'cancelRagIndexing').mockImplementation(() => undefined);
 		const sender = { mainFrame: {} };
 		const event = { sender, senderFrame: sender.mainFrame };
@@ -279,13 +283,24 @@ describe('AgentIpc run ownership', () => {
 		const handler = (channel: string) =>
 			(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
 		try {
-			await expect(handler(AgentChannels.ragSaveConfiguration)(event, configuration)).resolves.toEqual({ success: true, data: configuration });
+			await expect(
+				handler(AgentChannels.ragSaveConfiguration)(event, configuration)
+			).resolves.toEqual({ success: true, data: configuration });
 			expect(saved).toHaveBeenCalledWith(configuration);
 			expect(authorize).toHaveBeenCalledWith(configuration);
-			await expect(handler(AgentChannels.ragIndex)(event)).resolves.toEqual({ success: true, data: { files: 1, vectors: 2 } });
+			await expect(handler(AgentChannels.ragIndex)(event)).resolves.toEqual({
+				success: true,
+				data: { files: 1, vectors: 2 },
+			});
 			expect(run).toHaveBeenCalledWith();
-			await expect(handler(AgentChannels.ragGetStatus)(event)).resolves.toMatchObject({ success: true, data: { running: true } });
-			await expect(handler(AgentChannels.ragCancelIndex)(event)).resolves.toEqual({ success: true, data: undefined });
+			await expect(handler(AgentChannels.ragGetStatus)(event)).resolves.toMatchObject({
+				success: true,
+				data: { running: true },
+			});
+			await expect(handler(AgentChannels.ragCancelIndex)(event)).resolves.toEqual({
+				success: true,
+				data: undefined,
+			});
 			expect(cancel).toHaveBeenCalledTimes(1);
 		} finally {
 			saved.mockRestore();
