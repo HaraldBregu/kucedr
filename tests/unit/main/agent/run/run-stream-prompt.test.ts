@@ -381,6 +381,9 @@ describe('run stream system prompt', () => {
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).toContain('- **Name:** Alice');
+			expect(systemPrompt).toContain('### MEMORY\nUse memory as durable background context');
+			expect(systemPrompt).not.toContain('### MEMORY.md');
+			expect(systemPrompt).not.toContain('# Memory\n');
 			expect(systemPrompt).toContain('#### System\n- `alpha` — Alpha tool');
 			expect(systemPrompt).toContain('#### Integrations\n- `mcp__demo__beta` — Beta tool');
 			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });

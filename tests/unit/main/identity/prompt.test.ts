@@ -44,9 +44,9 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		expect(complete).toContain('#### Core\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.');
 		expect(complete).toContain('#### Profiles and bootstrap\n- `update_identity` — No description provided by this tool.');
 		expect(complete).toContain('#### Discovery\n- `tool_search` — No description provided by this tool.');
-		for (const name of ['BOOTSTRAP', 'MEMORY']) {
-			expect(complete).toContain(`### ${name}.md`);
-		}
+		expect(complete).toContain('### BOOTSTRAP.md');
+		expect(complete).toContain('### MEMORY\nUse memory as durable background context');
+		expect(complete).not.toContain('### MEMORY.md');
 		expect(complete).not.toContain('HEALTH.md');
 		expect(complete).not.toContain('Health checklists');
 		expect(complete).toContain('### SOUL\nUse `update_soul` to change the assistant\'s tone, boundaries, or interaction style.\n- **Tone:** Calm and direct\n- **Boundaries:** Respect privacy');

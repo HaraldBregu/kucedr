@@ -37,6 +37,8 @@ export async function buildWorkspaceContext(
 					? `### IDENTITY\nUse \`update_identity\` to change the assistant's name, role, avatar, or identity.\n${content.trim().replace(/^#\s+IDENTITY\.md[^\n]*(?:\n|$)/i, '').trim()}`
 				: name === 'SOUL.md'
 					? `### SOUL\nUse \`update_soul\` to change the assistant's tone, boundaries, or interaction style.\n${content.trim().replace(/^#\s+SOUL\.md[^\n]*(?:\n|$)/i, '').trim()}`
+					: name === 'MEMORY.md'
+						? `### MEMORY\nUse memory as durable background context about the user, preferences, projects, and prior decisions. Apply it only when relevant. Prefer the current user request and live tool results when they conflict with memory. Do not edit memory directly; the memory module maintains it.\n${content.trim().replace(/^#\s+MEMORY(?:\.md)?[^\n]*(?:\n|$)/i, '').trim()}`
 				: `### ${name}\n${content.trim()}`
 		);
 	if (sections.length === 0) return '';
