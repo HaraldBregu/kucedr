@@ -37,7 +37,7 @@ export function McpAuthorizationCard({
 				: undefined;
 	if (
 		!serverId ||
-		submittedAuthorization ||
+		(submittedAuthorization && result?.status !== 'authorization_failed') ||
 		result?.status === 'authorized' ||
 		result?.status === 'already_authorized' ||
 		(!pending &&
