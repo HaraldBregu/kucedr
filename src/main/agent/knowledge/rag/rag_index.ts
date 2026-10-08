@@ -42,7 +42,13 @@ export async function indexRag(
 		throw new Error('Select an embedding provider and model before indexing.');
 	}
 	assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
-	const embeddingRecipient = ragRecipient('embedding', providerId, modelId, selectedIndexName, configuration);
+	const embeddingRecipient = ragRecipient(
+		'embedding',
+		providerId,
+		modelId,
+		selectedIndexName,
+		configuration
+	);
 
 	const mirror = isLocalRagDatabase(configuration)
 		? undefined

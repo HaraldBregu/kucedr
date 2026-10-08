@@ -12,12 +12,17 @@ function manifestPath(): string {
 }
 
 export function readRagManifest(indexName?: string): RagManifest | undefined {
-	const files = indexName ? [`index-${normalizeRagIndexName(indexName)}.json`, 'index.json'] : ['index.json'];
+	const files = indexName
+		? [`index-${normalizeRagIndexName(indexName)}.json`, 'index.json']
+		: ['index.json'];
 	for (const file of files) {
 		try {
-			const manifest = JSON.parse(readFileBoundedSync(
-				path.join(knowledgeRoot(path.dirname(manifestPath())), file), 64 * 1024
-			).content.toString('utf8')) as RagManifest;
+			const manifest = JSON.parse(
+				readFileBoundedSync(
+					path.join(knowledgeRoot(path.dirname(manifestPath())), file),
+					64 * 1024
+				).content.toString('utf8')
+			) as RagManifest;
 			if (!indexName || manifest.indexName === indexName) return manifest;
 		} catch {}
 	}
@@ -27,10 +32,17 @@ export function readRagManifest(indexName?: string): RagManifest | undefined {
 export function writeRagManifest(manifest: RagManifest): void {
 	const directory = path.dirname(manifestPath());
 	mkdirSync(directory, { recursive: true, mode: 0o700 });
-	for (const file of [path.join(directory, `index-${normalizeRagIndexName(manifest.indexName)}.json`), manifestPath()]) {
+	for (const file of [
+		path.join(directory, `index-${normalizeRagIndexName(manifest.indexName)}.json`),
+		manifestPath(),
+	]) {
 		const temporaryFile = `${file}.${randomUUID()}.tmp`;
 		try {
-			writeFileSync(temporaryFile, JSON.stringify(manifest), { encoding: 'utf8', mode: 0o600, flag: 'wx' });
+			writeFileSync(temporaryFile, JSON.stringify(manifest), {
+				encoding: 'utf8',
+				mode: 0o600,
+				flag: 'wx',
+			});
 			renameSync(temporaryFile, file);
 		} finally {
 			rmSync(temporaryFile, { force: true });

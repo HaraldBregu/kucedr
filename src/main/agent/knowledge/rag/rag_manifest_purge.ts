@@ -16,7 +16,9 @@ export function purgeRagManifest(indexName: string, generation?: string): boolea
 	if (manifest.artifactFile && path.basename(manifest.artifactFile) === manifest.artifactFile) {
 		rmSync(path.join(userDataLocation(), 'rag', manifest.artifactFile), { force: true });
 	}
-	rmSync(path.join(userDataLocation(), 'rag', `index-${normalizeRagIndexName(indexName)}.json`), { force: true });
+	rmSync(path.join(userDataLocation(), 'rag', `index-${normalizeRagIndexName(indexName)}.json`), {
+		force: true,
+	});
 	if (readRagManifest()?.indexName === indexName)
 		rmSync(path.join(userDataLocation(), 'rag', 'index.json'), { force: true });
 	return true;

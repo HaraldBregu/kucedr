@@ -22,3 +22,11 @@ it('keeps leading blank lines and repeated passages tied to their exact source l
 		expect(lines.slice(chunk.lineStart - 1, chunk.lineEnd).join('\n')).toContain(chunk.text);
 	}
 });
+
+it('keeps Unicode code points intact at chunk and overlap boundaries', () => {
+	const chunks = chunkSpans('A' + '😀'.repeat(1_400));
+	expect(chunks.length).toBeGreaterThan(1);
+	expect(chunks.every((chunk) => chunk.text.length <= 2_000 && chunk.text.isWellFormed())).toBe(
+		true
+	);
+});

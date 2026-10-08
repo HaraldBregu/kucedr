@@ -128,7 +128,9 @@ it('abstains without embedding when the selected local index is empty', async ()
 	getIndex.mockReturnValue(undefined);
 	configuration.mockReturnValue({ ...configuration(), indexName: 'another-index' });
 
-	await expect(searchRag('query', 'another-index', 5, { embeddings, vectors })).resolves.toEqual([]);
+	await expect(searchRag('query', 'another-index', 5, { embeddings, vectors })).resolves.toEqual(
+		[]
+	);
 	expect(embed).not.toHaveBeenCalled();
 });
 
@@ -199,4 +201,30 @@ it('stops returning evidence if access is revoked while embedding the query', as
 		'settings changed'
 	);
 	expect(search).not.toHaveBeenCalled();
+});
+
+it.each(['embeddingRecipient', 'folders'])(
+	'requires a rebuild after changing published %s',
+	async (field) => {
+		readRagManifest.mockReturnValue({
+			activeNamespace: 'kucedr-a1b2c3d4',
+			[field]: field === 'folders' ? ['/old-source'] : 'old-endpoint',
+		});
+		await expect(searchRag('query', 'knowledge-base', 5, { embeddings, vectors })).rejects.toThrow(
+			'Rebuild'
+		);
+		expect(embed).not.toHaveBeenCalled();
+	}
+);
+
+it('includes a match exactly at the configured minimum similarity', async () => {
+	const match = search()[0];
+	configuration.mockReturnValue({ ...configuration(), minimumScore: 1 });
+	search.mockReturnValue([
+		{ ...match, score: 1 },
+		{ ...match, score: 0 },
+	]);
+	await expect(
+		searchRag('query', 'knowledge-base', 5, { embeddings, vectors })
+	).resolves.toHaveLength(1);
 });

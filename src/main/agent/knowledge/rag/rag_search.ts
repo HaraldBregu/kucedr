@@ -49,10 +49,23 @@ export async function searchRag(
 			);
 		assertRagConsent(configuration, index.providerId, index.modelId, selectedIndexName);
 		const manifest = readRagManifest(selectedIndexName);
-		if (manifest?.activeNamespace === index.generation && (
-			(manifest.embeddingRecipient && manifest.embeddingRecipient !== ragRecipient('embedding', index.providerId, index.modelId, selectedIndexName, configuration)) ||
-			(manifest.folders && JSON.stringify(manifest.folders) !== JSON.stringify(configuration.folders))
-		)) throw new Error('The embedding service or source folders changed. Rebuild the Knowledge index before searching.');
+		if (
+			manifest?.activeNamespace === index.generation &&
+			((manifest.embeddingRecipient &&
+				manifest.embeddingRecipient !==
+					ragRecipient(
+						'embedding',
+						index.providerId,
+						index.modelId,
+						selectedIndexName,
+						configuration
+					)) ||
+				(manifest.folders &&
+					JSON.stringify(manifest.folders) !== JSON.stringify(configuration.folders)))
+		)
+			throw new Error(
+				'The embedding service or source folders changed. Rebuild the Knowledge index before searching.'
+			);
 		const embedded = await embeddingProvider.embed(
 			{
 				texts: [text],
@@ -82,7 +95,12 @@ export async function searchRag(
 
 		return vectorStore
 			.search(selectedIndexName, embedded.embeddings[0], topK)
-			.filter((match) => Number.isFinite(match.score) && match.score > 0 && match.score >= (current.minimumScore ?? 0))
+			.filter(
+				(match) =>
+					Number.isFinite(match.score) &&
+					match.score > 0 &&
+					match.score >= (current.minimumScore ?? 0)
+			)
 			.map((match) => ({
 				sourceId: match.sourceId,
 				chunkId: match.id,

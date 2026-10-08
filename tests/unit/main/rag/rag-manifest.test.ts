@@ -44,8 +44,14 @@ it('writes a manifest per index and preserves the latest-index manifest', () => 
 		mode: 0o600,
 		flag: 'wx',
 	});
-	expect(renameSync).toHaveBeenCalledWith(temporaryFile, path.join('/user/data/rag', 'index-kucedr.json'));
-	expect(renameSync).toHaveBeenCalledWith(expect.any(String), path.join('/user/data/rag', 'index.json'));
+	expect(renameSync).toHaveBeenCalledWith(
+		temporaryFile,
+		path.join('/user/data/rag', 'index-kucedr.json')
+	);
+	expect(renameSync).toHaveBeenCalledWith(
+		expect.any(String),
+		path.join('/user/data/rag', 'index.json')
+	);
 	expect(rmSync).toHaveBeenCalledWith(temporaryFile, { force: true });
 });
 
@@ -57,4 +63,13 @@ it('reads the RAG manifest from rag/index.json', () => {
 		path.join('/user/data/rag', 'index.json'),
 		64 * 1024
 	);
+});
+
+it('reads metadata for the selected index and falls back to its legacy manifest', () => {
+	readFileBoundedSync.mockImplementation((file: string) => {
+		if (file.endsWith('index-kucedr.json')) throw new Error('missing');
+		return { content: Buffer.from(JSON.stringify(manifest)) };
+	});
+	expect(readRagManifest('kucedr')).toEqual(manifest);
+	expect(readRagManifest('other-index')).toBeUndefined();
 });

@@ -12,12 +12,29 @@ export function getRagStatus(): RagStatus {
 	try {
 		const index = store.getIndex(configuration.indexName);
 		const manifest = readRagManifest(configuration.indexName);
-		let requiresIndexing = Boolean(index && (index.providerId !== configuration.embeddingProviderId || index.modelId !== configuration.embeddingModelId));
+		let requiresIndexing = Boolean(
+			index &&
+			(index.providerId !== configuration.embeddingProviderId ||
+				index.modelId !== configuration.embeddingModelId)
+		);
 		if (index && manifest?.activeNamespace === index.generation) {
 			try {
-				requiresIndexing ||= Boolean((manifest.embeddingRecipient && manifest.embeddingRecipient !== ragRecipient('embedding', index.providerId, index.modelId, configuration.indexName, configuration)) ||
-					(manifest.folders && JSON.stringify(manifest.folders) !== JSON.stringify(configuration.folders)));
-			} catch { requiresIndexing = true; }
+				requiresIndexing ||= Boolean(
+					(manifest.embeddingRecipient &&
+						manifest.embeddingRecipient !==
+							ragRecipient(
+								'embedding',
+								index.providerId,
+								index.modelId,
+								configuration.indexName,
+								configuration
+							)) ||
+					(manifest.folders &&
+						JSON.stringify(manifest.folders) !== JSON.stringify(configuration.folders))
+				);
+			} catch {
+				requiresIndexing = true;
+			}
 		}
 		return {
 			running: ragJob.running,

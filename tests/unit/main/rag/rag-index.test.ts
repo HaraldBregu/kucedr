@@ -8,7 +8,10 @@ const getRagConfiguration = jest.fn();
 const writeRagManifest = jest.fn();
 const getProvider = jest.fn();
 jest.mock('../../../../src/main/agent/knowledge/rag/rag_store', () => ({ getRagConfiguration }));
-jest.mock('../../../../src/main/agent/knowledge/rag/rag_manifest', () => ({ writeRagManifest, readRagManifest: jest.fn() }));
+jest.mock('../../../../src/main/agent/knowledge/rag/rag_manifest', () => ({
+	writeRagManifest,
+	readRagManifest: jest.fn(),
+}));
 jest.mock('../../../../src/main/settings_store', () => ({ getProvider }));
 
 import { indexRag } from '../../../../src/main/agent/knowledge/rag/rag_index';
@@ -261,4 +264,25 @@ it.each([
 	).rejects.toThrow(/Invalid/);
 	expect(upload).not.toHaveBeenCalled();
 	expect(publish).not.toHaveBeenCalled();
+});
+
+it('clears local evidence when the last source file is deleted after a successful scan', async () => {
+	configuration = {
+		...configuration,
+		databaseProviderId: 'local',
+		databaseId: 'sqlite',
+		mirrorConsent: null,
+	};
+	const store = new SqliteVectorStore(':memory:');
+	try {
+		await indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store });
+		await rm(path.join(root, 'guide.md'));
+		await expect(
+			indexRag([root], 'knowledge-base', { embeddings: { embed }, vectors: store })
+		).resolves.toEqual({ files: 0, vectors: 0 });
+		expect(store.getIndex('knowledge-base')).toBeUndefined();
+		expect(store.search('knowledge-base', [1, 2], 5)).toEqual([]);
+	} finally {
+		store.close();
+	}
 });
