@@ -10,11 +10,18 @@ const tool: AgentToolPart = {
 	toolCallId: 'authorize',
 	type: 'request_mcp_authorization',
 	state: 'output-available',
-	output: JSON.stringify({ status: 'authorization_required', serverId: 'gmail', serverName: 'Gmail' }),
+	output: JSON.stringify({
+		status: 'authorization_required',
+		serverId: 'gmail',
+		serverName: 'Gmail',
+	}),
 };
 
 beforeEach(() => {
-	Object.defineProperty(window, 'mcp', { configurable: true, value: { oauthStatus, oauthStart, test } });
+	Object.defineProperty(window, 'mcp', {
+		configurable: true,
+		value: { oauthStatus, oauthStart, test },
+	});
 	oauthStatus.mockResolvedValue(false);
 });
 

@@ -4,7 +4,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { AgentToolPart } from '../context';
 
-export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart }): ReactElement | null {
+export function McpAuthorizationCard({
+	tool,
+}: {
+	readonly tool: AgentToolPart;
+}): ReactElement | null {
 	const [phase, setPhase] = useState<'idle' | 'connecting' | 'authorized'>('idle');
 	const [error, setError] = useState<string | null>(null);
 	let output = tool.output;
@@ -15,21 +19,28 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 			output = undefined;
 		}
 	}
-	const result = output && typeof output === 'object' && !Array.isArray(output)
-		? output as { status?: unknown; serverId?: unknown; serverName?: unknown }
-		: undefined;
+	const result =
+		output && typeof output === 'object' && !Array.isArray(output)
+			? (output as { status?: unknown; serverId?: unknown; serverName?: unknown })
+			: undefined;
 	const serverId = typeof result?.serverId === 'string' ? result.serverId : undefined;
 	useEffect(() => {
 		if (!serverId) return;
 		let cancelled = false;
-		void window.mcp.oauthStatus(serverId).then(async (hasToken) => {
-			if (!hasToken) return;
-			const connection = await window.mcp.test(serverId);
-			if (!cancelled && connection.ok) setPhase('authorized');
-		}).catch(() => undefined);
-		return () => { cancelled = true; };
+		void window.mcp
+			.oauthStatus(serverId)
+			.then(async (hasToken) => {
+				if (!hasToken) return;
+				const connection = await window.mcp.test(serverId);
+				if (!cancelled && connection.ok) setPhase('authorized');
+			})
+			.catch(() => undefined);
+		return () => {
+			cancelled = true;
+		};
 	}, [serverId]);
-	if ((result?.status !== 'authorization_required' && result?.status !== 'connected') || !serverId) return null;
+	if ((result?.status !== 'authorization_required' && result?.status !== 'connected') || !serverId)
+		return null;
 	const serverName = typeof result.serverName === 'string' ? result.serverName : result.serverId;
 	const authorized = phase === 'authorized';
 	const connected = authorized || result.status === 'connected';
@@ -50,7 +61,11 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 		<Card className="max-w-2xl gap-3 border-border/70 py-4">
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">
-					{authorized ? `${serverName} authorized` : connected ? `${serverName} connected` : `Authorize ${serverName}`}
+					{authorized
+						? `${serverName} authorized`
+						: connected
+							? `${serverName} connected`
+							: `Authorize ${serverName}`}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-3 px-4 text-sm">
@@ -60,16 +75,29 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 						: `Connect ${serverName} to use its tools in chat.`}
 				</p>
 				{connected ? (
-					<div role="status" className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+					<div
+						role="status"
+						className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"
+					>
 						<Check className="size-4" /> {authorized ? 'Authorized' : 'Connected'}
 					</div>
 				) : (
-					<Button type="button" variant="outline" size="sm" disabled={phase === 'connecting'} onClick={() => void authorize()}>
+					<Button
+						type="button"
+						variant="outline"
+						size="sm"
+						disabled={phase === 'connecting'}
+						onClick={() => void authorize()}
+					>
 						<KeyRound className="size-3.5" />
 						{phase === 'connecting' ? 'Connecting' : 'Authorize'}
 					</Button>
 				)}
-				{error && <p role="alert" className="text-destructive">{error}</p>}
+				{error && (
+					<p role="alert" className="text-destructive">
+						{error}
+					</p>
+				)}
 			</CardContent>
 		</Card>
 	);
