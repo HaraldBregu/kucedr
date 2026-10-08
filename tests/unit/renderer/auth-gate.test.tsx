@@ -7,6 +7,8 @@ import { StartupGate } from '../../../src/renderer/src/auth/Gate';
 import { AuthProvider, useAuth } from '../../../src/renderer/src/contexts/AuthContext';
 import { OnboardingProvider } from '../../../src/renderer/src/contexts/OnboardingProvider';
 import { useOnboarding } from '../../../src/renderer/src/contexts/useOnboarding';
+import * as setupState from '../../../src/renderer/src/pages/start/state/setupReducer';
+import * as setupServices from '../../../src/renderer/src/pages/start/hooks/useSetupModelServices';
 import StartPage from '../../../src/renderer/src/pages/start/StartPage';
 
 jest.mock('../../../src/renderer/src/components/app/base/logo-view', () => ({
@@ -17,8 +19,12 @@ jest.mock('../../../src/renderer/src/pages/start/components/SetupProviderStep', 
 	SetupProviderStep: ({ title }: { title: string }) => <h1>{title}</h1>,
 }));
 
-jest.mock('../../../src/renderer/src/pages/start/components/SetupModelsStep', () => ({
-	SetupModelsStep: () => <h1>Agent configuration</h1>,
+jest.mock('../../../src/renderer/src/pages/start/components/SetupChatStep', () => ({
+	SetupChatStep: () => <h1>Chat assistant</h1>,
+}));
+
+jest.mock('../../../src/renderer/src/pages/start/components/SetupVoiceStep', () => ({
+	SetupVoiceStep: () => <h1>Voice assistant</h1>,
 }));
 
 function Location(): React.JSX.Element {
@@ -360,4 +366,43 @@ it('leaves setup for home after configuration is refreshed', async () => {
 	configured = true;
 	await user.click(screen.getByRole('button', { name: 'Refresh configuration' }));
 	await waitFor(() => expect(screen.getByLabelText('Current route')).toHaveTextContent('/home'));
+});
+
+
+it('continues through chat and voice, goes back, and saves only on Finish', async () => {
+	const user = userEvent.setup();
+	const provider = { id: 'openai', name: 'OpenAI', baseUrl: '' };
+	const model = { id: 'test-model', name: 'Test model' };
+	const initial = setupState.createInitialSetupState();
+	initial.serviceStates.assistant = { providerId: provider.id, modelId: model.id, modelGroups: [{ provider, models: [model] }] };
+	const initialSpy = jest.spyOn(setupState, 'createInitialSetupState').mockReturnValue(initial);
+	const save = jest.fn(async () => {
+		window.agent.getProvider = jest.fn(async () => provider);
+		window.agent.getModelId = jest.fn(async () => model.id);
+		return true;
+	});
+	const servicesSpy = jest.spyOn(setupServices, 'useSetupModelServices').mockReturnValue({ handleServiceChange: jest.fn(), handleSaveModels: save });
+	window.auth = authApi({ status: 'signedIn', persistence: 'memory', user: { id: 'user-id', email: 'user@example.test' } });
+	window.provider = { list: jest.fn(async () => [{ ...provider, apiKey: 'test-key' }]) } as never;
+	try {
+		renderFlow('/start');
+		await user.click(await screen.findByRole('button', { name: 'Get started' }));
+		await user.click(screen.getByRole('button', { name: 'Continue' }));
+		expect(await screen.findByRole('heading', { name: 'Chat assistant' })).toBeInTheDocument();
+		expect(screen.getByRole('status')).toHaveTextContent('Chat assistant · 2 of 3');
+		await user.click(screen.getByRole('button', { name: 'Continue' }));
+		expect(await screen.findByRole('heading', { name: 'Voice assistant' })).toBeInTheDocument();
+		expect(screen.getByRole('status')).toHaveTextContent('Voice assistant · 3 of 3');
+		expect(save).not.toHaveBeenCalled();
+		await user.click(screen.getByRole('button', { name: 'Back' }));
+		expect(screen.getByRole('heading', { name: 'Chat assistant' })).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'Continue' })).toBeEnabled();
+		await user.click(screen.getByRole('button', { name: 'Continue' }));
+		await user.click(screen.getByRole('button', { name: 'Finish' }));
+		await waitFor(() => expect(screen.getByLabelText('Current route')).toHaveTextContent('/home'));
+		expect(save).toHaveBeenCalledTimes(1);
+	} finally {
+		initialSpy.mockRestore();
+		servicesSpy.mockRestore();
+	}
 });
