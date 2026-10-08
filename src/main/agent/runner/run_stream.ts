@@ -24,7 +24,6 @@ import {
 	resolveContextMode,
 } from '../system';
 import { loadMcpTools } from '../tools/mcp/loader';
-import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
 import { listSkillsTool } from '../tools/skills/list_skills';
 import { loadSkillTool } from '../tools/skills/load_skill';
 import { subagentTool, subagentsTool } from '../tools/core/subagents';
@@ -34,10 +33,10 @@ import type {
 	RuntimeEvent,
 	RuntimeInput,
 	Tool,
-	ToolCall,
 } from '../types';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
+import { runMcpRecovery } from './run_mcp_recovery';
 import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
 import { filterProfileTools, filterTools } from './run_tools';
 import { isAgentToolAllowedForProfile } from '../../../shared/agent_tools';
@@ -548,56 +547,22 @@ async function* loop(
 				input.approvalWindowId !== undefined &&
 				input.interactionMode === 'default'
 			) {
-				const failedTool = turnTools.find((tool) => tool.id === failedMcpCall.name);
-				const required = failedMcpCall.result?.authorizationRequired;
-				if (!required) throw new Error('MCP authorization request was lost.');
-				yield* skipToolCalls(
-					pendingToolCalls.filter((call) => !call.result),
-					'Waiting for MCP authorization; remaining tools were not run.'
-				);
-				addToolResults(session, pendingToolCalls);
-				const authorizationCall: ToolCall = {
-					id: crypto.randomUUID(),
-					name: 'request_mcp_authorization',
-					args: {
-						serverId: required.serverId,
-						serverName: required.serverName,
-						force: true,
-						toolName: failedTool?.name,
-					},
-				};
-				addAssistantMessage(session, '', [authorizationCall]);
-				yield* runToolCalls(
-					[requestMcpAuthorizationTool()],
-					[authorizationCall],
+				const recovery = yield* runMcpRecovery({
+					session,
+					failedCall: failedMcpCall,
+					failedTool: turnTools.find((tool) => tool.id === failedMcpCall.name),
+					pendingCalls: pendingToolCalls,
 					signal,
-					session.runContext.fileAccess,
+					context: session.runContext.fileAccess,
 					security,
-					options.resources,
-					session.runContext.fileHistory
-				);
-				addToolResults(session, [authorizationCall]);
-				if (mcpAuthorizationStopped(authorizationCall) || authorizationCall.result?.isError) {
+					resources: options.resources,
+					history: session.runContext.fileHistory,
+				});
+				if (recovery === 'cancelled') {
 					session.stopReason = 'cancelled';
 					yield { type: 'run_finished', result: toResult(session, 'success') };
 					return;
 				}
-				const retryCall: ToolCall = {
-					id: crypto.randomUUID(),
-					name: failedMcpCall.name,
-					args: { ...failedMcpCall.args },
-				};
-				addAssistantMessage(session, '', [retryCall]);
-				yield* runToolCalls(
-					failedTool ? [failedTool] : [],
-					[retryCall],
-					signal,
-					session.runContext.fileAccess,
-					security,
-					options.resources,
-					session.runContext.fileHistory
-				);
-				addToolResults(session, [retryCall]);
 				continue;
 			}
 			if (pendingToolCalls.some(mcpAuthorizationStopped)) {
