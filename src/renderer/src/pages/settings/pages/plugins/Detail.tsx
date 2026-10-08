@@ -107,7 +107,7 @@ export default function PluginDetailPage(): React.JSX.Element {
 								('iconLightUrl' in entry ? entry.iconLightUrl : undefined) ??
 								entry.provider.iconLightUrl
 							}
-							className="size-16 rounded-2xl border-0 bg-muted/50 p-2"
+							className="size-16 rounded-2xl border border-border bg-muted/50 p-2"
 						/>
 						<div className="min-w-0 flex-1">
 							<h1 className="text-2xl font-medium leading-tight">{entry.name}</h1>
