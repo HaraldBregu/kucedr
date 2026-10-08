@@ -831,6 +831,15 @@ test('Channels configures credentials and models directly on the channel page', 
 	await expect(model).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Transcribe model', exact: true })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Voice model', exact: true })).toBeVisible();
+	const music = page.getByRole('button', { name: 'Music', exact: true });
+	await music.scrollIntoViewIfNeeded();
+	await expect(music).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Image', exact: true })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Video', exact: true })).toBeVisible();
+	await music.locator('xpath=ancestor::*[@data-slot="card"][1]').screenshot({
+		path: testInfo.outputPath('channels-media-models-desktop.png'),
+		animations: 'disabled',
+	});
 	const tools = page.getByRole('link', { name: /Tools/ });
 	await tools.scrollIntoViewIfNeeded();
 	await page.screenshot({
