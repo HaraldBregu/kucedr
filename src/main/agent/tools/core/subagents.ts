@@ -170,7 +170,7 @@ export function subagentTool(config: Config, tools: Tool[], runtime: ChildRuntim
 		id: 'subagent',
 		name: 'Subagent',
 		description:
-			'Spawn a subagent to complete a task in its own isolated context and return a summary. It has the same tools as you, except spawning subagents. Use it for work that takes many steps, produces large intermediate output, or is independent of the conversation. Give it a clear objective and the expected output.',
+			'Spawn a subagent to complete a task in its own isolated context and return a summary. It has the same tools as you, except spawning subagents, but it does not receive the parent conversation or prior tool results. Use it only for independent work that takes many steps or produces large intermediate output. Never use it to resolve a follow-up reference or recover information already present in the parent conversation. Give it a clear objective, all required context, and the expected output.',
 		planSafe: true,
 		inputSchema: z.object({
 			task: z.string().describe('The task for the subagent to complete'),
@@ -214,7 +214,7 @@ export function subagentsTool(
 		id: 'subagents',
 		name: 'Subagents',
 		description:
-			'Spawn two or three independent read-only subagents concurrently. Each task must have a stable id. Results preserve input order, and one failed child does not cancel its siblings.',
+			'Spawn two or three independent read-only subagents concurrently. They do not receive the parent conversation or prior tool results, so include all required context in each task and never use them for follow-up references. Each task must have a stable id. Results preserve input order, and one failed child does not cancel its siblings.',
 		planSafe: true,
 		inputSchema: z.object({
 			tasks: z

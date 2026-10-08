@@ -31,6 +31,17 @@ describe('addBasePrompt', () => {
 		expect(prompt).toContain('call camera_recorder');
 		expect(prompt).toContain('call screen_recorder');
 	});
+	it('grounds follow-ups in conversation history and keeps connected-service routing focused', () => {
+		const prompt = addBasePrompt('');
+		expect(prompt).toContain('Use the entire available history');
+		expect(prompt).toContain('Do not ask for the same confirmation twice');
+		expect(prompt).toContain('"can you" followed by a concrete action as a request to perform');
+		expect(prompt).toContain('authorizes use of the relevant service tools');
+		expect(prompt).toContain('use tool_search for that service and action');
+		expect(prompt).toContain('Never substitute workspace files');
+		expect(prompt).toContain('Do not delegate a simple follow-up');
+		expect(prompt).toContain('Never claim that an action succeeded unless');
+	});
 	it('appends to any existing prompt', () => {
 		expect(addBasePrompt('PRE')).toMatch(/^PRE/);
 	});
