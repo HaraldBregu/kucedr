@@ -28,7 +28,14 @@ import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
 import { listSkillsTool } from '../tools/skills/list_skills';
 import { loadSkillTool } from '../tools/skills/load_skill';
 import { subagentTool, subagentsTool } from '../tools/core/subagents';
-import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool, ToolCall } from '../types';
+import type {
+	Config,
+	McpDiscoveryDiagnostics,
+	RuntimeEvent,
+	RuntimeInput,
+	Tool,
+	ToolCall,
+} from '../types';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
 import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
@@ -536,7 +543,11 @@ async function* loop(
 				yield event;
 			}
 			const failedMcpCall = pendingToolCalls.find((call) => call.result?.authorizationRequired);
-			if (failedMcpCall && input.approvalWindowId !== undefined && input.interactionMode === 'default') {
+			if (
+				failedMcpCall &&
+				input.approvalWindowId !== undefined &&
+				input.interactionMode === 'default'
+			) {
 				const failedTool = turnTools.find((tool) => tool.id === failedMcpCall.name);
 				const required = failedMcpCall.result?.authorizationRequired;
 				if (!required) throw new Error('MCP authorization request was lost.');
@@ -548,7 +559,12 @@ async function* loop(
 				const authorizationCall: ToolCall = {
 					id: crypto.randomUUID(),
 					name: 'request_mcp_authorization',
-					args: { serverId: required.serverId, serverName: required.serverName, force: true, toolName: failedTool?.name },
+					args: {
+						serverId: required.serverId,
+						serverName: required.serverName,
+						force: true,
+						toolName: failedTool?.name,
+					},
 				};
 				addAssistantMessage(session, '', [authorizationCall]);
 				yield* runToolCalls(
