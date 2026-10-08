@@ -112,7 +112,6 @@ it('includes every canonical static settings subpage', () => {
 
 	for (const path of [
 		'/settings/settings/persona',
-		'/settings/channels/channelDetail/telegram',
 		'/settings/channels/tools',
 		'/settings/providers/models',
 		'/settings/providers/search',
@@ -130,6 +129,8 @@ it('includes every canonical static settings subpage', () => {
 	]) {
 		expect(screen.getByText(path)).toBeInTheDocument();
 	}
+	expect(screen.queryByText('/settings/channels/configuration')).not.toBeInTheDocument();
+	expect(screen.queryByText('/settings/channels/channelDetail/telegram')).not.toBeInTheDocument();
 });
 
 it('provides complete English and Italian command translations', () => {

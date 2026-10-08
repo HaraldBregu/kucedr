@@ -1597,6 +1597,11 @@
 		},
 		"apps": {
 			"title": "Installed apps",
+			"search": "Search apps",
+			"searchPlaceholder": "Search apps...",
+			"clearSearch": "Clear search",
+			"noResults": "No apps found",
+			"noResultsDescription": "Try a different name or description.",
 			"information": "App information",
 			"description": "External apps that open in their own window and can call the app API.",
 			"openFolder": "Open Folder",
