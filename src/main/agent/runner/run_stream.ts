@@ -343,6 +343,7 @@ async function* loop(
 				required: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
 				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
+				mcpServerHint: input.message.match(/\b([\w-]+)\s+mcp\b/i)?.[1]?.toLocaleLowerCase(),
 				filterEligible: filterEligibleTools,
 			});
 		}

@@ -69,6 +69,28 @@ describe('tool search', () => {
 		expect(search.active().map((tool) => tool.id)).toEqual(['tool_search']);
 	});
 
+	it('does not offer unrelated tools when a named MCP server is requested', async () => {
+		const health = fakeTool('get_health', 'Read the current HEALTH.md information.');
+		const gmail = fakeTool('mcp__gmail__search_threads', 'Search Gmail inbox threads', {}, {
+			kind: 'mcp', serverId: 'gmail', toolName: 'search_threads',
+		});
+		const search = createToolSearch({
+			eligible: [health, gmail],
+			required: [],
+			mcpTools: [{ tool: gmail, serverId: 'gmail', serverName: 'Gmail' }],
+			mcpServerHint: 'gmail',
+		});
+		expect(await search.tool.run({ query: 'read latest received Gmail message inbox' })).toMatchObject({
+			selectedToolIds: ['mcp__gmail__search_threads'],
+		});
+		const missing = createToolSearch({
+			eligible: [health], required: [], mcpServerHint: 'gmail',
+		});
+		expect(await missing.tool.run({ query: 'read latest received Gmail message inbox' })).toMatchObject({
+			selectedToolIds: [],
+		});
+	});
+
 	it('enforces per-call and per-run selection limits', async () => {
 		const tools = Array.from({ length: 20 }, (_, index) =>
 			fakeTool(`invoice_${index}`, 'Find invoices')

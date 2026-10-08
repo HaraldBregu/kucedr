@@ -20,6 +20,7 @@ interface ToolSearchOptions {
 	required: Tool[];
 	discoveryEnabled?: boolean;
 	mcpTools?: DiscoveredMcpTool[];
+	mcpServerHint?: string;
 	filterEligible?: (tools: Tool[]) => Tool[];
 }
 
@@ -61,7 +62,17 @@ export function createToolSearch(options: ToolSearchOptions): ToolSearch {
 			const selected = rankTools(
 				query,
 				[...eligible.values()]
-					.filter((candidate) => !active.has(candidate.id))
+					.filter((candidate) => {
+						if (active.has(candidate.id)) return false;
+						if (!options.mcpServerHint) return true;
+						const mcp = mcpMetadata.get(candidate.id);
+						return Boolean(
+							mcp &&
+							[mcp.serverId, mcp.serverName].some(
+								(name) => name.toLocaleLowerCase() === options.mcpServerHint
+							)
+						);
+					})
 					.map((candidate) => {
 						const mcp = mcpMetadata.get(candidate.id);
 						return {
