@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { SetupSearch } from './SetupSearch';
 import { SetupStepHeader } from './SetupStepHeader';
 import { SetupService, type SetupAssistantProps } from './SetupService';
 import { MODEL_SERVICE_DEFINITIONS, STEP_COPY } from '../setupConstants';
@@ -72,7 +71,6 @@ export function SetupChatStep({
 					</h2>
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
-							<SetupSearch />
 							{MODEL_SERVICE_DEFINITIONS.filter((service) =>
 								['image', 'video', 'audio'].includes(service.id)
 							).map((service) => (

@@ -20,10 +20,6 @@ jest.mock('@/components/model-provider-select', () => ({
 	toModelProviderGroups: () => [],
 }));
 
-jest.mock('../../../src/renderer/src/pages/start/components/SetupSearch', () => ({
-	SetupSearch: () => <div data-testid="setup-search">Search</div>,
-}));
-
 jest.mock('../../../src/renderer/src/pages/settings/pages/assistant/voice', () => ({
 	__esModule: true,
 	default: ({
@@ -83,7 +79,7 @@ it('shows only chat and tool configuration on Chat assistant', () => {
 	for (const id of ['image', 'video', 'audio']) {
 		expect(within(tools).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
-	expect(within(tools).getByTestId('setup-search')).toBeInTheDocument();
+	expect(within(tools).queryByRole('combobox', { name: 'Search Engine' })).not.toBeInTheDocument();
 	expect(screen.queryByRole('region', { name: 'Search providers' })).not.toBeInTheDocument();
 	for (const id of ['voice', 'transcription', 'realtime', 'health', 'tasks']) {
 		expect(screen.queryByTestId(`setup-${id}`)).not.toBeInTheDocument();
