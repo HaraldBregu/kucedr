@@ -38,6 +38,8 @@ export async function restoreBackupFile(
 			if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error;
 		}
 		await preserveRestoreTarget(target, root);
+		if (file.mode !== undefined) await fs.chmod(temporary, file.mode);
+		if (file.modifiedAt !== undefined) await fs.utimes(temporary, new Date(), new Date(file.modifiedAt));
 		await fs.rename(temporary, target);
 		return true;
 	} finally {

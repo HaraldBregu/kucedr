@@ -147,3 +147,29 @@ it('reports missing backups and rejects an invalid explicit snapshot key', async
 		'Invalid backup snapshot key'
 	);
 });
+
+it('preserves executable permissions and modification time when restoring a file', async () => {
+	const file = path.join(root, 'script.sh');
+	await fs.writeFile(file, 'echo hello', { mode: 0o755 });
+	const modifiedAt = new Date('2025-01-01T00:00:00Z');
+	await fs.utimes(file, modifiedAt, modifiedAt);
+	await pushFiles(store);
+	await fs.unlink(file);
+	expect((await pullFiles(store)).failed).toEqual([]);
+	const stat = await fs.stat(file);
+	expect(stat.mode & 0o777).toBe(0o755);
+	expect(stat.mtimeMs).toBe(modifiedAt.getTime());
+});
+
+it('refuses to replace local content when the recovery folder is a symlink', async () => {
+	const file = path.join(root, 'notes.md');
+	await fs.writeFile(file, 'backup');
+	await pushFiles(store);
+	await fs.writeFile(file, 'local');
+	const outside = path.join(directory, 'outside');
+	await fs.mkdir(outside);
+	await fs.symlink(outside, path.join(root, '.kucedr-recovery'));
+	expect((await pullFiles(store)).failed[0].error).toContain('Recovery folder');
+	expect(await fs.readFile(file, 'utf8')).toBe('local');
+	expect(await fs.readdir(outside)).toEqual([]);
+});

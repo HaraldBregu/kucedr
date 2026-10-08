@@ -10,6 +10,8 @@ export const backupSnapshotSchema = z.object({
 			key: z.string().min(1),
 			size: z.number().int().nonnegative(),
 			sha256: z.string().regex(/^[a-f0-9]{64}$/),
+			mode: z.number().int().min(0).max(0o777).optional(),
+			modifiedAt: z.number().nonnegative().max(8.64e15).optional(),
 		})
 	),
 });
