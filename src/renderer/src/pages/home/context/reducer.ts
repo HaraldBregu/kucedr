@@ -192,13 +192,14 @@ function applyResponseEvent(
 			(message) => {
 				const tool = message.tools.find((candidate) => candidate.toolCallId === event.toolCallId);
 				const screenSource = tool?.type === 'select_screen_source';
+				const mcpAuthorization = tool?.type === 'request_mcp_authorization';
 				return {
 					...message,
 					state: 'awaiting_input',
 					tools: updateAgentToolPart(message.tools, event.toolCallId, {
-						type: screenSource ? 'select_screen_source' : 'ask',
+						type: mcpAuthorization ? 'request_mcp_authorization' : screenSource ? 'select_screen_source' : 'ask',
 						state: 'input-available',
-						input: screenSource ? tool?.input : { questions: event.questions },
+						input: screenSource || mcpAuthorization ? tool?.input : { questions: event.questions },
 					}),
 					pendingUserInput: {
 						requestId: event.requestId,
@@ -215,6 +216,10 @@ function applyResponseEvent(
 
 	if (event.type === 'user_input_result') {
 		return updateAgentMessage(ensured.state, ensured.message.id, (message) => {
+			const mcpAuthorization =
+				message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
+				'request_mcp_authorization';
+			if (mcpAuthorization) return { ...message, pendingUserInput: undefined };
 			const screenSource =
 				message.tools.find((tool) => tool.toolCallId === event.toolCallId)?.type ===
 				'select_screen_source';
@@ -554,7 +559,7 @@ export function agentChatReducer(state: AgentChatState, action: AgentChatAction)
 				tools: settleRunningTools(
 					message.pendingUserInput
 						? updateAgentToolPart(message.tools, message.pendingUserInput.toolCallId, {
-								type: 'ask',
+								type: message.tools.find((tool) => tool.toolCallId === message.pendingUserInput?.toolCallId)?.type ?? 'ask',
 								state: 'output-error',
 								output: { status: 'interrupted', answers: [] },
 								outputText: JSON.stringify({ status: 'interrupted', answers: [] }),
