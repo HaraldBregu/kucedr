@@ -449,8 +449,12 @@ describe('run stream system prompt', () => {
 			expect(systemPrompt).toContain('### MEMORY\nUse memory as durable background context');
 			expect(systemPrompt).not.toContain('### MEMORY.md');
 			expect(systemPrompt).not.toContain('# Memory\n');
-			expect(systemPrompt).toContain('#### System\n- `alpha` — Alpha tool');
-			expect(systemPrompt).toContain('#### Integrations\n- `mcp__demo__beta` — Beta tool');
+			expect(systemPrompt).toContain(
+				'#### System\nAsk the user for required input and work with local device capabilities such as the microphone, camera, and screen.\n- `alpha` — Alpha tool'
+			);
+			expect(systemPrompt).toContain(
+				'#### Integrations\nUse tools supplied by connected apps and external services, including authorized MCP servers.\n- `mcp__demo__beta` — Beta tool'
+			);
 			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({
 				code: 'ENOENT',
 			});
