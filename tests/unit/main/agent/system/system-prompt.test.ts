@@ -13,10 +13,15 @@ describe('addBasePrompt', () => {
 	it('appends the assistant identity and standard sections', () => {
 		const prompt = addBasePrompt('');
 		expect(prompt).toContain('You are a personal AI assistant.');
+		expect(prompt).toContain('## Core instructions');
 		expect(prompt).toContain('## Current UTC date and time');
 		expect(prompt).toContain('## Voice');
 		expect(prompt).toContain('## Workspace contract');
 		expect(prompt).toContain('## Agent acceptance contract');
+		expect(prompt.indexOf('## Core instructions')).toBeLessThan(
+			prompt.indexOf('## Current UTC date and time')
+		);
+		expect(prompt.indexOf('## Core instructions')).toBeLessThan(prompt.indexOf('## Voice'));
 	});
 	it('directs the assistant to retain durable user context automatically', () => {
 		const prompt = addBasePrompt('');
