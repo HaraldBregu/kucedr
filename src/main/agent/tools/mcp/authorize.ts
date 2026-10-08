@@ -19,14 +19,16 @@ export function requestMcpAuthorizationTool() {
 		capability: { effects: ['read'] },
 		inputSchema: z.object({
 			serverId: z.string().min(1).describe('Configured MCP server ID to authorize.'),
+			force: z.boolean().optional(),
+			toolName: z.string().optional(),
 		}),
-		execute: ({ serverId }) => {
+		execute: ({ serverId, force }) => {
 			const server = getMcpServers()[serverId];
 			if (!server || server.type !== 'http' || server.enabled === false)
 				throw new Error(`No enabled remote MCP server "${serverId}".`);
 			if (findMcpService(server.url)?.oauth?.credentials_required && !server.client_id)
 				throw new Error(`${serverId} requires a personal access token in MCP Settings.`);
-			if (server.token || getMcpOauth(serverId).tokens?.access_token)
+			if (server.token || (!force && getMcpOauth(serverId).tokens?.access_token))
 				return {
 					status: 'already_authorized' as const,
 					serverId,

@@ -28,10 +28,11 @@ import { requestMcpAuthorizationTool } from '../tools/mcp/authorize';
 import { listSkillsTool } from '../tools/skills/list_skills';
 import { loadSkillTool } from '../tools/skills/load_skill';
 import { subagentTool, subagentsTool } from '../tools/core/subagents';
-import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool } from '../types';
+import type { Config, McpDiscoveryDiagnostics, RuntimeEvent, RuntimeInput, Tool, ToolCall } from '../types';
 import { runModelTurn } from './run_model_turn';
 import { runToolCalls } from './run_tool_calls';
 import { mcpAuthorizationStopped } from './mcp_authorization_stopped';
+import { mcpAuthorizationRequired } from './mcp_authorization_required';
 import { filterProfileTools, filterTools } from './run_tools';
 import { isAgentToolAllowedForProfile } from '../../../shared/agent_tools';
 import { selectSkillTools } from './run_skill_tools';
@@ -226,8 +227,6 @@ async function* loop(
 			undoFileTool(session.runContext.fileHistory),
 			redoFileTool(session.runContext.fileHistory)
 		);
-		if (input.agentId === 'main' && input.type === 'default')
-			tools.push(requestMcpAuthorizationTool());
 	}
 	if (
 		!options.tools &&
@@ -329,7 +328,6 @@ async function* loop(
 				...(skillListingEnabled ? ['list_skills'] : []),
 				...(skillLoadingEnabled ? ['load_skill'] : []),
 				'get_goal',
-				'request_mcp_authorization',
 				'update_goal_plan',
 				'record_goal_evidence',
 				'request_goal_completion',
