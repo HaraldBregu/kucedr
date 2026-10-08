@@ -16,6 +16,7 @@ import { createEmbedding } from '../../../../src/main/models/embedding/embedding
 import { SelectedEmbeddingProvider } from '../../../../src/main/agent/knowledge/rag/embedding';
 
 beforeEach(() => {
+	jest.clearAllMocks();
 	getProvider.mockReturnValue({ apiKey: ' saved-key ' });
 	getProviderId.mockReturnValue('openai');
 	getModelId.mockReturnValue('text-embedding-3-small');
@@ -49,9 +50,13 @@ it('rejects an empty item instead of removing it and changing input positions', 
 	expect(generateEmbeddings).not.toHaveBeenCalled();
 });
 
-it.each([[], [[]], [[0, 0]], [[Number.NaN, 1]], [[Number.POSITIVE_INFINITY, 1]], [[1], [1, 2]]])(
-	'rejects malformed embeddings: %j',
-	async (embeddings) => {
+it.each(
+	[[], [[]], [[0, 0]], [[Number.NaN, 1]], [[Number.POSITIVE_INFINITY, 1]], [[1], [1, 2]]].map(
+		(embeddings) => ({ embeddings })
+	)
+)(
+	'rejects malformed embeddings: $embeddings',
+	async ({ embeddings }) => {
 		generateEmbeddings.mockResolvedValue(embeddings);
 		await expect(createEmbedding({ texts: ['first'] })).rejects.toThrow('malformed embeddings');
 	}

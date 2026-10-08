@@ -32,9 +32,9 @@ it.each(['openai', 'voyage', 'jina', 'bge'])(
 	}
 );
 
-it.each([[0, 0], [0, 2], [0, -1], [0, 0.5], [0, undefined]])(
-	'rejects duplicated, out of bounds, and missing response indexes: %j',
-	async (indexes) => {
+it.each([[0, 0], [0, 2], [0, -1], [0, 0.5], [0, undefined]].map((indexes) => ({ indexes })))(
+	'rejects duplicated, out of bounds, and missing response indexes: $indexes',
+	async ({ indexes }) => {
 		jest.mocked(global.fetch).mockResolvedValue(
 			new Response(JSON.stringify({ data: indexes.map((index) => ({ index, embedding: [1] })) }))
 		);
