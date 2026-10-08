@@ -10,6 +10,7 @@ jest.mock('../../../../src/main/storage/storage_protected', () => ({ isProtected
 import { pushFiles } from '../../../../src/main/storage/storage_push';
 import { pullFiles } from '../../../../src/main/storage/storage_pull';
 import type { StorageObjectStore } from '../../../../src/main/storage/remote';
+import { listBackupSnapshots } from '../../../../src/main/storage/snapshots';
 
 let directory: string;
 let root: string;
@@ -102,4 +103,24 @@ it('refuses traversal and symbolic links from a remote snapshot', async () => {
 	objects.set(manifestKey, Buffer.from(JSON.stringify(manifest)));
 	await fs.symlink(directory, path.join(root, 'link'));
 	expect((await pullFiles(store)).failed).toHaveLength(1);
+});
+
+it('lists backup points and restores an older snapshot into a different destination', async () => {
+	const file = path.join(root, 'notes.md');
+	await fs.writeFile(file, 'original');
+	await pushFiles(store);
+	await fs.writeFile(file, 'newer');
+	await pushFiles(store);
+	const snapshots = await listBackupSnapshots(store);
+	expect(snapshots).toHaveLength(2);
+	expect(snapshots[0]).toMatchObject({ folder: 'workspace', files: 1, bytes: 5 });
+	const destination = path.join(directory, 'another-computer');
+	expect((await pullFiles(store, { snapshotKey: snapshots[1].key, path: destination })).failed).toEqual([]);
+	expect(await fs.readFile(path.join(destination, 'notes.md'), 'utf8')).toBe('original');
+	expect(await fs.readFile(file, 'utf8')).toBe('newer');
+});
+
+it('reports missing backups and rejects an invalid explicit snapshot key', async () => {
+	expect((await pullFiles(store)).failed[0].error).toContain('No backup was found');
+	await expect(pullFiles(store, { snapshotKey: '../private', path: root })).rejects.toThrow('Invalid backup snapshot key');
 });

@@ -122,11 +122,12 @@ export class StorageOperations {
 	): StorageOperationStatus {
 		return this.publish({
 			...running,
-			state: result.failed.length > 0 ? 'partial' : 'succeeded',
+			state: result.failed.length > 0 ? (transferred || ('skipped' in result && result.skipped.length) ? 'partial' : 'failed') : 'succeeded',
 			finishedAt: new Date().toISOString(),
 			transferred,
 			skipped: 'skipped' in result ? result.skipped.length : 0,
 			failed: result.failed.length,
+			...(result.failed.length ? { error: result.failed[0].error } : {}),
 			revision: ++this.revision,
 		});
 	}
