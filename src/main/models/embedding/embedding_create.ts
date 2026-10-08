@@ -14,7 +14,7 @@ export async function createEmbedding(
 	if (!Array.isArray(request.texts) || request.texts.length === 0) {
 		throw new Error('Text to embed is required.');
 	}
-	const texts = request.texts.map((text) => (typeof text === 'string' ? text.trim() : ''));
+	const texts = Array.from(request.texts, (text) => (typeof text === 'string' ? text.trim() : ''));
 	if (texts.some((text) => !text)) throw new Error('Every embedding input must contain text.');
 
 	const providerId = (

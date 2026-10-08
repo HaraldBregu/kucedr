@@ -20,5 +20,14 @@ export async function requestEmbeddings(
 	if (!response.ok) {
 		throw new Error(`${spec.name} embeddings failed (${response.status}): ${response.statusText}`);
 	}
-	return response.json();
+	const payload: unknown = await response.json();
+	if (
+		typeof payload === 'object' &&
+		payload !== null &&
+		'model' in payload &&
+		payload.model !== spec.model
+	) {
+		throw new Error(`${spec.name} did not use the selected embedding model.`);
+	}
+	return payload;
 }
