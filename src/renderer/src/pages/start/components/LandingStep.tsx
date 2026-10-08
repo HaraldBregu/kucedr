@@ -17,15 +17,17 @@ export function LandingStep({ loading, onStart }: LandingStepProps): React.JSX.E
 					role="img"
 					aria-label="Kucedr logo"
 				/>
-				<h1 className="mt-6 font-heading text-5xl font-black leading-none tracking-[-0.055em] text-primary">
+				<p className="mt-6 font-heading text-5xl font-black leading-none tracking-[-0.055em] text-primary">
 					Kucedr
-				</h1>
+				</p>
 			</div>
 			<div className="landing-content grid w-full grid-rows-[1fr]">
 				<div className="flex min-h-0 flex-col items-center">
-					<p className="mt-5 max-w-xs text-balance text-xl font-medium leading-snug tracking-tight text-foreground">
-						Personal multi-task desktop AI assistant
-					</p>
+					<h1 className="mt-5 max-w-xs text-balance text-xl font-medium leading-snug tracking-tight text-foreground">
+						One personal assistant.
+						<br />
+						Unlimited tools.
+					</h1>
 					<Button
 						className="mt-8 h-10 min-w-60 gap-2 px-5 hover:bg-primary/90"
 						size="lg"
