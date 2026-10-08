@@ -28,10 +28,11 @@ export function McpAuthorizationCard({
 	const input = tool.input as { serverId?: unknown } | undefined;
 	const serverId = typeof input?.serverId === 'string' ? input.serverId
 		: typeof result?.serverId === 'string' ? result.serverId : undefined;
-	if (!serverId || (!pending && result?.status !== 'authorized' && result?.status !== 'cancelled')) return null;
+	if (!serverId || (!pending && result?.status !== 'authorized' && result?.status !== 'cancelled' && result?.status !== 'authorization_failed')) return null;
 	const serverName = typeof result?.serverName === 'string' ? result.serverName : serverId;
 	const authorized = result?.status === 'authorized';
 	const stopped = result?.status === 'cancelled';
+	const failed = result?.status === 'authorization_failed';
 
 	const respond = async (answer: string): Promise<boolean> => {
 		if (!pending) return false;
@@ -67,7 +68,7 @@ export function McpAuthorizationCard({
 		<Card className="max-w-2xl gap-3 border-border/70 py-4">
 			<CardHeader className="px-4">
 				<CardTitle className="text-sm">
-					{authorized ? `${serverName} authorized` : stopped ? 'Authorization cancelled' : `Authorize ${serverName}`}
+					{authorized ? `${serverName} authorized` : stopped ? 'Authorization cancelled' : failed ? 'Authorization failed' : `Authorize ${serverName}`}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-3 px-4 text-sm">
@@ -77,6 +78,8 @@ export function McpAuthorizationCard({
 					</div>
 				) : stopped ? (
 					<p className="text-muted-foreground">The request was cancelled.</p>
+				) : failed ? (
+					<p className="text-muted-foreground">No authorization was saved. Please try again.</p>
 				) : (
 					<>
 						<p className="text-muted-foreground">Authorize {serverName} to continue this request.</p>
