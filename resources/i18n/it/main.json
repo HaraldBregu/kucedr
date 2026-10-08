@@ -1108,7 +1108,10 @@
 			"denyRules": "Nega",
 			"rulesHint": "Un glob di percorso o comando per riga. Le regole di negazione hanno la precedenza.",
 			"kinds": {
-				"read": { "title": "Lettura", "description": "Percorsi che l'agente può leggere." },
+				"read": {
+					"title": "Lettura",
+					"description": "Percorsi che l'agente può leggere."
+				},
 				"write": {
 					"title": "Scrittura",
 					"description": "Percorsi che l'agente può creare, modificare o eliminare."
@@ -1288,17 +1291,17 @@
 				}
 			},
 			"sync": {
-				"title": "Backup",
-				"description": "Scegli le cartelle locali ed eseguine il backup in modo sicuro secondo una pianificazione.",
+				"title": "Cartelle da salvare",
+				"description": "Conserva un backup di queste cartelle nel tuo bucket.",
 				"addFolders": "Aggiungi cartelle",
-				"empty": "Nessuna cartella selezionata. Aggiungi le cartelle da salvare e sincronizzare.",
+				"empty": "Aggiungi cartelle per iniziare il backup.",
 				"folder": "Cartella selezionata",
 				"removeFolder": "Rimuovi cartella"
 			},
 			"syncSaved": "Impostazioni backup salvate.",
 			"autoSync": {
-				"sectionTitle": "Automazione",
-				"sectionDescription": "Configura quando eseguire automaticamente i backup e personalizza la pianificazione con cron.",
+				"sectionTitle": "Pianificazione backup",
+				"sectionDescription": "I backup automatici vengono eseguiti mentre Kucedr è aperto.",
 				"description": "Esegui automaticamente il backup delle cartelle selezionate secondo una pianificazione.",
 				"cronExpression": "Espressione cron",
 				"cronDescription": "Pianificazione cron a cinque campi nell'ora locale. Ad esempio, 0 3 * * * viene eseguita ogni giorno alle 03:00.",
@@ -1332,7 +1335,7 @@
 			"restore": "Ripristina dallo storage",
 			"restoreDialog": {
 				"title": "Ripristinare dallo storage?",
-				"description": "I file archiviati sostituiscono i file locali corrispondenti nelle cartelle selezionate. Gli altri file locali vengono conservati.",
+				"description": "Ripristina l'ultimo backup riuscito nelle cartelle selezionate. I file locali corrispondenti vengono salvati in una cartella di recupero prima di essere sostituiti. Gli altri file locali vengono conservati.",
 				"confirm": "Ripristina file"
 			},
 			"operation": {

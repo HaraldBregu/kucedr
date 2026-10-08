@@ -1108,7 +1108,10 @@
 			"denyRules": "Deny",
 			"rulesHint": "One path glob or command per line. Deny rules take precedence.",
 			"kinds": {
-				"read": { "title": "Read", "description": "Paths the agent may read." },
+				"read": {
+					"title": "Read",
+					"description": "Paths the agent may read."
+				},
 				"write": {
 					"title": "Write",
 					"description": "Paths the agent may create, edit, or delete."
@@ -1288,17 +1291,17 @@
 				}
 			},
 			"sync": {
-				"title": "Backups",
-				"description": "Choose local folders and back them up securely on a schedule.",
+				"title": "Folders to back up",
+				"description": "Keep a backup of these folders in your storage bucket.",
 				"addFolders": "Add folders",
-				"empty": "No folders selected. Add folders to back up and sync.",
+				"empty": "Add folders to start backing up.",
 				"folder": "Selected folder",
 				"removeFolder": "Remove folder"
 			},
 			"syncSaved": "Backup settings saved.",
 			"autoSync": {
-				"sectionTitle": "Automation",
-				"sectionDescription": "Configure when backups run automatically and customize the schedule with cron.",
+				"sectionTitle": "Backup schedule",
+				"sectionDescription": "Automatic backups run while Kucedr is open.",
 				"description": "Back up the selected folders automatically on a schedule.",
 				"cronExpression": "Cron expression",
 				"cronDescription": "Five-field cron schedule in local time. For example, 0 3 * * * runs daily at 03:00.",
@@ -1332,7 +1335,7 @@
 			"restore": "Restore from storage",
 			"restoreDialog": {
 				"title": "Restore from storage?",
-				"description": "Stored files replace matching local files in the selected folders. Other local files are kept.",
+				"description": "Restore the latest successful backup into the selected folders. Matching local files are saved in a recovery folder before they are replaced. Other local files are kept.",
 				"confirm": "Restore files"
 			},
 			"operation": {
