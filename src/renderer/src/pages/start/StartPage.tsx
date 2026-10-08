@@ -158,9 +158,11 @@ const StartPage: React.FC = () => {
 					</div>
 				) : null}
 			</section>
-			<p className="shrink-0 px-4 py-2 text-center text-xs text-muted-foreground">
-				Version {__APP_VERSION__}
-			</p>
+			{currentStep === 'landing' ? (
+				<p className="shrink-0 px-4 py-2 text-center text-xs text-muted-foreground">
+					Version {__APP_VERSION__}
+				</p>
+			) : null}
 
 			{phase === 'setup' ? (
 				<footer className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-2 border-t border-border bg-card/60 px-3 py-2 sm:px-5">
