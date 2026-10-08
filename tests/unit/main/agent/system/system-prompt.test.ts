@@ -47,7 +47,9 @@ describe('addBasePrompt', () => {
 		const now = new Date('2026-10-08T13:45:12.345Z');
 		const prompt = addBasePrompt('', now);
 		expect(prompt).toContain('## Current date and time');
-		expect(prompt).toContain(`- Local: ${now.toLocaleString('en-CA', { dateStyle: 'full', timeStyle: 'long' })}`);
+		expect(prompt).toContain(
+			`- Local: ${now.toLocaleString('en-CA', { dateStyle: 'full', timeStyle: 'long' })}`
+		);
 		expect(prompt).toContain(`- Time zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}`);
 		expect(prompt).toContain('- UTC: 2026-10-08T13:45:12.345Z');
 	});
