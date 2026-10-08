@@ -153,21 +153,23 @@ it('rejects invalid vector data before returning results', async () => {
 });
 
 it('rejects a response produced by a different embedding model', async () => {
-	jest.mocked(global.fetch).mockResolvedValue(
-		new Response(
-			JSON.stringify({ model: 'different-model', data: [{ index: 0, embedding: [1, 2] }] })
-		)
-	);
+	jest
+		.mocked(global.fetch)
+		.mockResolvedValue(
+			new Response(
+				JSON.stringify({ model: 'different-model', data: [{ index: 0, embedding: [1, 2] }] })
+			)
+		);
 	await expect(generateEmbeddings({ ...options, texts: ['document'] })).rejects.toThrow(
 		'did not use the selected embedding model'
 	);
 });
 
 it('accepts the provider response when its returned model matches the selection', async () => {
-	jest.mocked(global.fetch).mockResolvedValue(
-		new Response(
-			JSON.stringify({ model: 'test-model', data: [{ index: 0, embedding: [1, 2] }] })
-		)
-	);
+	jest
+		.mocked(global.fetch)
+		.mockResolvedValue(
+			new Response(JSON.stringify({ model: 'test-model', data: [{ index: 0, embedding: [1, 2] }] }))
+		);
 	await expect(generateEmbeddings({ ...options, texts: ['document'] })).resolves.toEqual([[1, 2]]);
 });
