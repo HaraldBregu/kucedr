@@ -1335,4 +1335,44 @@ describe('run stream system prompt', () => {
 		expect(execute).not.toHaveBeenCalled();
 	});
 
+	it('does not discover health for a request explicitly naming Gmail MCP', async () => {
+		const health = jsonTool({
+			id: 'get_health',
+			name: 'Get health',
+			description: 'Read the current HEALTH.md information.',
+			schema: { type: 'object' },
+			execute: jest.fn(),
+		});
+		runModelTurnMock
+			.mockImplementationOnce(async function* () {
+				yield* [];
+				return {
+					content: '',
+					model: 'test-model',
+					toolCalls: [{ id: 'find-gmail', name: 'tool_search', args: { query: 'read latest received Gmail message inbox' } }],
+				};
+			})
+			.mockImplementationOnce(successfulTurn);
+		const session = createSessionState();
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			session,
+			{
+				runId: 'gmail-search',
+				task: 'chat',
+				message: 'Show my last email received please, from gmail mcp',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ tools: [health], progressiveDiscovery: true }
+		))
+			void _event;
+
+		expect(session.toolCalls.find((call) => call.id === 'find-gmail')?.result?.content).toContain('"selectedToolIds":[]');
+		expect((runModelTurnMock.mock.calls[1][5] as Array<{ id: string }>).map((tool) => tool.id)).not.toContain('get_health');
+	});
+
 });
