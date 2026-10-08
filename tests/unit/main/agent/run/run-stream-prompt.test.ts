@@ -414,14 +414,11 @@ describe('run stream system prompt', () => {
 			))
 				void event;
 
-			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
-			expect(contextMessages[0]).toMatchObject({
-				role: 'user',
-				content: expect.stringContaining('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice'),
-			});
-			expect(contextMessages[0]?.content).toContain('# Agent runtime context');
-			expect(contextMessages[0]?.content).toContain('### IDENTITY');
-			expect(contextMessages[0]?.content).toContain('### SOUL');
+			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
+			expect(systemPrompt).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice');
+			expect(systemPrompt).toContain('# Agent runtime context');
+			expect(systemPrompt).toContain('### IDENTITY');
+			expect(systemPrompt).toContain('### SOUL');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}
@@ -657,11 +654,11 @@ describe('run stream system prompt', () => {
 
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
 			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
-			const workspaceContext = runModelTurnMock.mock.calls[0][15] as Message[];
-			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('# Agent runtime context'));
-			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### IDENTITY'));
-			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### SOUL'));
-			expect(workspaceContext[0]?.content).not.toContain('### BOOTSTRAP.md');
+			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
+			expect(systemPrompt).toContain('# Agent runtime context');
+			expect(systemPrompt).toContain('### IDENTITY');
+			expect(systemPrompt).toContain('### SOUL');
+			expect(systemPrompt).not.toContain('### BOOTSTRAP.md');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
 		}

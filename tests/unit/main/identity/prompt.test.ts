@@ -64,14 +64,14 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		const core = await buildWorkspaceContext(config, 'core', 'Private memory');
 		expect(core).not.toContain('### USER');
 		expect(core).not.toContain('Private memory');
-		const other = await buildWorkspaceContext(config, 'core', '', 'other');
-		expect(other).not.toContain('## Tools loaded by default in ordinary text chat');
+		const other = await buildWorkspaceContext(config, 'core');
+		expect(other).toContain('No tools are available for this model turn.');
 		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		await updateIdentity({ name: 'Nova', role: 'Planner' });
 		const renamed = await buildWorkspaceContext(config, 'full');
 		expect(renamed).toContain('- **Name:** Nova\n- **Role:** Planner');
 		expect(renamed).not.toContain('- **Name:** Kucedr');
-		expect(await readFile(file, 'utf8')).toBe(renamed);
+		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		await updateSoul({ tone: 'Warm', interactionStyle: 'Answer briefly' });
 		await updateUser({ name: 'Alice', preferredName: 'Allie' });
 		const revised = await buildWorkspaceContext(config, 'full');
