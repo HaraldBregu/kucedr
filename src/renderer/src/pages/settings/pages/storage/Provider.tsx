@@ -57,8 +57,8 @@ export default function Provider({
 								))}
 							</SelectContent>
 						</Select>
-						<Button variant="outline" size="sm" asChild>
-							<Link to="/settings/providers/storage">{t('settings.storageProviders.add')}</Link>
+						<Button variant="outline" size="sm" nativeButton={false} render={<Link to="/settings/providers/storage" />}>
+							{t('settings.storageProviders.add')}
 						</Button>
 					</div>
 				}
