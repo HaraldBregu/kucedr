@@ -48,6 +48,8 @@ describe('addBasePrompt', () => {
 		const prompt = addBasePrompt('', now);
 		expect(prompt).toContain('## Current UTC date and time');
 		expect(prompt).toContain('- 2026-10-08T13:45:12.345Z');
+		expect(prompt).toContain('in the timezone from the USER profile');
+		expect(prompt).toContain('If the USER profile has no timezone, use UTC');
 		expect(prompt).not.toContain('Local:');
 		expect(prompt).not.toContain('Time zone:');
 	});
