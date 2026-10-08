@@ -227,6 +227,44 @@ const TasksPage: React.FC = () => {
 				</SettingsNotice>
 			)}
 
+			<SettingsPanel>
+				<Link to="/settings/tasks/tools" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.modelServices.tools')}
+						description={t('settings.modelServices.toolsDescription')}
+						media={<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto]"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+				<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.tabs.permissions')}
+						description={t('settings.overview.descriptions.permissions')}
+						media={
+							<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
+						}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+			</SettingsPanel>
+
+			<SettingsPanel>
+				<Link to="/settings/tasks/history" className="block hover:bg-muted/40">
+					<SettingsRow
+						title={t('settings.cron.history.pageTitle')}
+						description={t('settings.cron.history.pageDescription')}
+						media={<History className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
+						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
+						actionClassName="w-auto justify-end"
+						actions={<ChevronRight className="size-4 text-muted-foreground" />}
+					/>
+				</Link>
+			</SettingsPanel>
+
 			<SettingsSection
 				title={t('settings.cron.schedulesTitle')}
 				description={t('settings.cron.schedulesDescription')}
@@ -299,44 +337,6 @@ const TasksPage: React.FC = () => {
 					)}
 				</SettingsPanel>
 			</SettingsSection>
-
-			<SettingsPanel>
-				<Link to="/settings/tasks/tools" className="block hover:bg-muted/40">
-					<SettingsRow
-						title={t('settings.modelServices.tools')}
-						description={t('settings.modelServices.toolsDescription')}
-						media={<Wrench className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
-						className="grid-cols-[minmax(0,1fr)_auto]"
-						actionClassName="w-auto justify-end"
-						actions={<ChevronRight className="size-4 text-muted-foreground" />}
-					/>
-				</Link>
-				<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
-					<SettingsRow
-						title={t('settings.tabs.permissions')}
-						description={t('settings.overview.descriptions.permissions')}
-						media={
-							<ShieldCheck className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />
-						}
-						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
-						actionClassName="w-auto justify-end"
-						actions={<ChevronRight className="size-4 text-muted-foreground" />}
-					/>
-				</Link>
-			</SettingsPanel>
-
-			<SettingsPanel>
-				<Link to="/settings/tasks/history" className="block hover:bg-muted/40">
-					<SettingsRow
-						title={t('settings.cron.history.pageTitle')}
-						description={t('settings.cron.history.pageDescription')}
-						media={<History className="size-5 shrink-0 text-muted-foreground" aria-hidden="true" />}
-						className="grid-cols-[minmax(0,1fr)_auto] border-b-0"
-						actionClassName="w-auto justify-end"
-						actions={<ChevronRight className="size-4 text-muted-foreground" />}
-					/>
-				</Link>
-			</SettingsPanel>
 		</SettingsPageShell>
 	);
 };
