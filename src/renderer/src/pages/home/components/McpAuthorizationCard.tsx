@@ -12,6 +12,7 @@ export function McpAuthorizationCard({
 	readonly pending?: PendingUserInput;
 }): ReactElement | null {
 	const [connecting, setConnecting] = useState(false);
+	const [cancelling, setCancelling] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const cancelled = useRef(false);
 	let output = tool.output;
@@ -56,10 +57,16 @@ export function McpAuthorizationCard({
 
 	const cancel = async (): Promise<void> => {
 		cancelled.current = true;
+		setCancelling(true);
 		setError(null);
 		try {
-			await respond('cancel');
+			if (!await respond('cancel')) {
+				cancelled.current = false;
+				setCancelling(false);
+			}
 		} catch (cause) {
+			cancelled.current = false;
+			setCancelling(false);
 			setError(cause instanceof Error ? cause.message : String(cause));
 		}
 	};
@@ -84,10 +91,10 @@ export function McpAuthorizationCard({
 					<>
 						<p className="text-muted-foreground">Authorize {serverName} to continue this request.</p>
 						<div className="flex gap-2">
-							<Button type="button" variant="outline" size="sm" disabled={connecting || cancelled.current} onClick={() => void authorize()}>
+							<Button type="button" variant="outline" size="sm" disabled={connecting || cancelling} onClick={() => void authorize()}>
 								<KeyRound className="size-3.5" /> {connecting ? 'Connecting' : 'Authorize'}
 							</Button>
-							<Button type="button" variant="ghost" size="sm" disabled={cancelled.current} onClick={() => void cancel()}>Cancel</Button>
+							<Button type="button" variant="ghost" size="sm" disabled={cancelling} onClick={() => void cancel()}>Cancel</Button>
 						</div>
 					</>
 				)}
