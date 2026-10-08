@@ -79,7 +79,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		] as never);
 		expect(voice).toContain('### SOUL');
 		expect(voice).toContain(
-			'#### Bootstrap\n- `complete_bootstrap` — No description provided by this tool.'
+			'#### Bootstrap\nRead and update the assistant identity, personality, user profile, and health context during initial setup.\n- `complete_bootstrap` — No description provided by this tool.'
 		);
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
