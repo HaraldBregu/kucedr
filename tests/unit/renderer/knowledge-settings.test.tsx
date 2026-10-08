@@ -573,10 +573,21 @@ it('provides a retry when loading Knowledge settings fails', async () => {
 
 it('blocks test search and marks the index stale when source folders or the embedding endpoint changed', async () => {
 	configuration.enabled = true;
-	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' };
+	configuration.embeddingConsent = {
+		version: 1,
+		providerId: 'openai',
+		modelId: 'text-embedding-3-small',
+		recipient: 'embedding-recipient',
+	};
 	status.outcome = 'completed';
 	status.requiresIndexing = true;
-	status.index = { indexName: 'kucedr', providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 1536, completedAt: '2026-10-08T12:00:00Z' };
+	status.index = {
+		indexName: 'kucedr',
+		providerId: 'openai',
+		modelId: 'text-embedding-3-small',
+		dimensions: 1536,
+		completedAt: '2026-10-08T12:00:00Z',
+	};
 	render(<KnowledgePage />);
 	const query = await screen.findByLabelText('Test query');
 	fireEvent.change(query, { target: { value: 'a question' } });
@@ -592,7 +603,9 @@ it('refreshes status for an indexing run started while the page is open', async 
 		render(<KnowledgePage />);
 		await screen.findByText('Not indexed');
 		status = { ...status, running: true, outcome: 'running', trigger: 'scheduled' };
-		await act(async () => { jest.advanceTimersByTime(2_000); });
+		await act(async () => {
+			jest.advanceTimersByTime(2_000);
+		});
 		expect(screen.getByText('Indexing in progress')).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Cancel' })).toBeEnabled();
 		expect(screen.getByRole('combobox', { name: 'Vector database' })).toBeDisabled();
@@ -606,9 +619,16 @@ it('does not fall back to local SQLite when the saved remote database is unavail
 	configuration.databaseId = 'old-database';
 	configuration.enabled = true;
 	configuration.folders = ['/Users/example/docs'];
-	configuration.embeddingConsent = { version: 1, providerId: 'openai', modelId: 'text-embedding-3-small', recipient: 'embedding-recipient' };
+	configuration.embeddingConsent = {
+		version: 1,
+		providerId: 'openai',
+		modelId: 'text-embedding-3-small',
+		recipient: 'embedding-recipient',
+	};
 	render(<KnowledgePage />);
-	expect(await screen.findByRole('combobox', { name: 'Vector database' })).toHaveTextContent('Select database');
+	expect(await screen.findByRole('combobox', { name: 'Vector database' })).toHaveTextContent(
+		'Select database'
+	);
 	expect(screen.getByRole('button', { name: 'Generate index' })).toBeDisabled();
 	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
 });
