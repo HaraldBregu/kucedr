@@ -12,6 +12,7 @@ export function chunkSpans(text: string): RagChunkSpan[] {
 		}
 		if (start === normalized.length) break;
 		let end = Math.min(start + 2_000, normalized.length);
+		if (end < normalized.length && /[\uD800-\uDBFF]/.test(normalized[end - 1])) end -= 1;
 		if (end < normalized.length) {
 			const paragraph = normalized.lastIndexOf('\n\n', end);
 			const line = normalized.lastIndexOf('\n', end);
@@ -26,7 +27,8 @@ export function chunkSpans(text: string): RagChunkSpan[] {
 			lineEnd: lineStart + chunk.split('\n').length - 1,
 		});
 		if (end === normalized.length) break;
-		const next = Math.max(start + 1, end - 200);
+		let next = Math.max(start + 1, end - 200);
+		if (/[\uDC00-\uDFFF]/.test(normalized[next])) next += 1;
 		lineStart += normalized.slice(start, next).split('\n').length - 1;
 		start = next;
 	}

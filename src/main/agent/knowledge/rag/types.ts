@@ -52,6 +52,8 @@ export interface RagManifest {
 	modelId: string;
 	dimensions: number;
 	completedAt: string;
+	embeddingRecipient?: string;
+	folders?: string[];
 }
 
 export interface RagMatch {

@@ -6,6 +6,8 @@ import { SelectedEmbeddingProvider } from './embedding';
 import { normalizeRagIndexName } from './rag_index_name';
 import { ragVectorStore } from './vector';
 import { validateVector } from './validate';
+import { readRagManifest } from './rag_manifest';
+import { ragRecipient } from './recipient';
 import type { RagMatch, RagSearchDependencies } from './types';
 
 export async function searchRag(
@@ -32,7 +34,7 @@ export async function searchRag(
 	try {
 		signal.throwIfAborted();
 		const index = vectorStore.getIndex(selectedIndexName);
-		if (!index) throw new Error('Index the rag folder before searching.');
+		if (!index) return [];
 		if ((index.indexName ?? DEFAULT_RAG_INDEX_NAME) !== selectedIndexName) {
 			throw new Error('Generate the selected RAG index before searching.');
 		}
@@ -45,6 +47,11 @@ export async function searchRag(
 				'The embedding model changed. Rebuild the selected Knowledge index before searching.'
 			);
 		assertRagConsent(configuration, index.providerId, index.modelId, selectedIndexName);
+		const manifest = readRagManifest(selectedIndexName);
+		if (manifest?.activeNamespace === index.generation && (
+			(manifest.embeddingRecipient && manifest.embeddingRecipient !== ragRecipient('embedding', index.providerId, index.modelId, selectedIndexName, configuration)) ||
+			(manifest.folders && JSON.stringify(manifest.folders) !== JSON.stringify(configuration.folders))
+		)) throw new Error('The embedding service or source folders changed. Rebuild the Knowledge index before searching.');
 		const embedded = await embeddingProvider.embed(
 			{
 				texts: [text],

@@ -4,6 +4,8 @@ import { createRagMirror } from './mirror';
 import { assertRagConsent } from './consent';
 import { assertRagCurrent } from './current';
 import { validateVector } from './validate';
+import { ragRecipient } from './recipient';
+import { purgeRagManifest } from './rag_manifest_purge';
 import { isLocalRagDatabase } from '../../../../shared/rag_database';
 import {
 	KNOWLEDGE_MAX_RECORDS,
@@ -40,6 +42,7 @@ export async function indexRag(
 		throw new Error('Select an embedding provider and model before indexing.');
 	}
 	assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
+	const embeddingRecipient = ragRecipient('embedding', providerId, modelId, selectedIndexName, configuration);
 
 	const mirror = isLocalRagDatabase(configuration)
 		? undefined
@@ -69,6 +72,8 @@ export async function indexRag(
 				.digest('hex');
 			const sourceFingerprint = createHash('sha256')
 				.update('knowledge-chunks-v2\0')
+				.update(embeddingRecipient)
+				.update('\0')
 				.update(content)
 				.digest('hex');
 			const reused = vectorStore.getReusableSource(
@@ -152,7 +157,12 @@ export async function indexRag(
 		}
 
 		if (!dimensions || records.length === 0) {
-			throw new Error('No indexable text content found in the selected source folders.');
+			signal.throwIfAborted();
+			assertRagCurrent(configuration);
+			assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
+			vectorStore.purge(selectedIndexName);
+			purgeRagManifest(selectedIndexName);
+			return { files: indexedFiles, vectors: 0 };
 		}
 		signal.throwIfAborted();
 
@@ -186,6 +196,8 @@ export async function indexRag(
 			modelId,
 			dimensions,
 			completedAt,
+			embeddingRecipient,
+			folders: [...sources],
 		});
 		return { files: indexedFiles, vectors: records.length };
 	} catch (error) {

@@ -10,6 +10,7 @@ export interface RagStatus {
 	result: { files: number; vectors: number } | null;
 	nextRunAt: string | null;
 	timezone: string;
+	requiresIndexing?: boolean;
 	index: {
 		indexName: string;
 		providerId: string;
