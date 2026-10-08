@@ -5,6 +5,7 @@ jest.mock('../../../../../src/main/mcp', () => ({
 	callTool: (...args: unknown[]) => callToolMock(...args),
 	getMcpServers: () => getMcpServersMock(),
 }));
+jest.mock('../../../../../src/main/mcp/manifest', () => ({ findMcpService: () => undefined }));
 
 import { UnauthorizedError } from '@modelcontextprotocol/sdk/client/auth.js';
 import { mcpTool } from '../../../../../src/main/agent/tools/mcp/tool';
@@ -75,7 +76,7 @@ describe('mcpTool', () => {
 	});
 
 	it('turns an MCP authorization failure into an in-chat authorization request', async () => {
-		getMcpServersMock.mockReturnValue({ safe: { type: 'http', name: 'Documents' } });
+		getMcpServersMock.mockReturnValue({ safe: { type: 'http', name: 'Documents', url: 'https://mcp.example' } });
 		callToolMock.mockRejectedValue(new UnauthorizedError());
 		const configured = mcpTool(client, 'lookup', '', schema, 'safe', 'never');
 
