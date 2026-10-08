@@ -232,6 +232,8 @@ it('backs up directly and confirms before restoring matching local files', async
 
 	await user.click(screen.getByRole('button', { name: 'Download' }));
 	expect(screen.getByRole('dialog')).toHaveTextContent('Matching local files will be overwritten.');
+	expect(screen.getByRole('dialog').querySelector('[role="combobox"]')).toBeNull();
+	expect(screen.queryByRole('switch')).not.toBeInTheDocument();
 	await user.click(screen.getByRole('button', { name: 'Download files' }));
 	await waitFor(() => expect(storageApi.restore).toHaveBeenCalledWith());
 });

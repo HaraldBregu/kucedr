@@ -1323,8 +1323,8 @@
 				},
 				"restore": {
 					"running": "Download is running in the background…",
-					"succeeded": "Downloadd {{count}} file(s).",
-					"partial": "Downloadd {{count}} file(s); {{failed}} failed.",
+					"succeeded": "Downloaded {{count}} file(s).",
+					"partial": "Downloaded {{count}} file(s); {{failed}} failed.",
 					"failed": "Download failed. {{error}}"
 				}
 			},
