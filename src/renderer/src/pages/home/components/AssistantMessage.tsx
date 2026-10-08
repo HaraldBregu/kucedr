@@ -122,6 +122,10 @@ function resolveLocalImagePath(
 	return undefined;
 }
 
+function isSkillTool(tool: AgentToolPart): boolean {
+	return tool.type.toLowerCase().includes('skill');
+}
+
 function fileName(path: string): string {
 	return path.slice(Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\')) + 1);
 }
@@ -194,8 +198,9 @@ export function AssistantMessage({
 	const displayContent = parsedPlan.kind === 'markdown' ? message.content : parsedPlan.content;
 	const messageText = displayContent.trim();
 	const hasTools = message.tools.length > 0;
+	const skillTools = message.tools.filter(isSkillTool);
 	const toolSections: AgentToolPart[][] = [];
-	for (const tool of message.tools) {
+	for (const tool of message.tools.filter((part) => !isSkillTool(part))) {
 		const isCard =
 			tool.type === 'ask' ||
 			tool.type === 'select_screen_source' ||
@@ -316,6 +321,7 @@ export function AssistantMessage({
 
 	return (
 		<Message className={cn('flex w-full flex-col', className)}>
+			{skillTools.length > 0 && <ToolActivityGroup tools={skillTools} />}
 			{toolSections.map((section) => {
 				const tool = section[0];
 				const pending =
