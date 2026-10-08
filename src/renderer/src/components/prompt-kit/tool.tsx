@@ -267,6 +267,8 @@ function Tool({
 			: undefined);
 	const streamingTokens =
 		state === 'input-streaming' ? estimateTokens(toolPart.inputText?.length ?? 0) : 0;
+	const displayTokens = streamingTokens > 0 ? streamingTokens : toolPart.outputTokens;
+	const tokensAreEstimated = streamingTokens > 0;
 
 	return (
 		<div
@@ -303,18 +305,6 @@ function Tool({
 										{formatDuration(displayDurationMs)}
 									</span>
 								)}
-								{streamingTokens > 0 ? (
-									<span className="ml-auto shrink-0 pl-2 text-[10px] tabular-nums text-muted-foreground/50">
-										~{streamingTokens.toLocaleString()} tok
-									</span>
-								) : (
-									toolPart.outputTokens !== undefined &&
-									toolPart.outputTokens > 0 && (
-										<span className="ml-auto shrink-0 pl-2 text-[10px] tabular-nums text-muted-foreground/50">
-											{toolPart.outputTokens.toLocaleString()} tok
-										</span>
-									)
-								)}
 								<ChevronDown
 									className={cn(
 										'size-3 shrink-0 transition-transform duration-200',
@@ -327,6 +317,19 @@ function Tool({
 				/>
 				<CollapsibleContent>
 					<div className="mb-1 mt-0.5 space-y-2 rounded-md border border-border/50 bg-muted/20 p-2">
+						{displayTokens !== undefined && displayTokens > 0 && (
+							<div>
+								<h4 className="mb-1 text-[10px] font-medium uppercase tracking-wider text-muted-foreground/70">
+									Details
+								</h4>
+								<div className="flex items-center justify-between rounded-sm bg-muted/40 px-2 py-1.5 text-xs text-muted-foreground">
+									<span>Tokens</span>
+									<span className="tabular-nums">
+										{tokensAreEstimated ? '~' : ''}{displayTokens.toLocaleString()}
+									</span>
+								</div>
+							</div>
+						)}
 						<ToolInput input={input} />
 						<ToolOutput output={output} type={toolPart.type} />
 
