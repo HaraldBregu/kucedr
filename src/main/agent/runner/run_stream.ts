@@ -20,6 +20,7 @@ import { readGoal } from '../goal/read';
 import { rememberSkill } from '../context';
 import {
 	buildLoadedSkillPrompt,
+	buildSkillContext,
 	buildSystemPrompt,
 	buildWorkspaceContext,
 	resolveContextMode,
@@ -467,6 +468,8 @@ async function* loop(
 				synthesisOnly ? [] : tools
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
+			if (!synthesisOnly && turnTools.some((tool) => tool.id === 'load_skill'))
+				systemPrompt += `\n\n${buildSkillContext(skillSnapshot.skills)}`;
 			const runtimeContext = activeGoalContext;
 			const messages = promptCapabilities
 				? projectPromptAttachments(session.messages, promptCapabilities)
