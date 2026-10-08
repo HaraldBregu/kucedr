@@ -461,9 +461,7 @@ async function* loop(
 				config,
 				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core',
 				memoryContext,
-				session.category === 'main' && input.agentId === 'main' && input.interactionMode !== 'plan'
-					? 'text'
-					: 'other'
+				turnTools
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			const runtimeContext = activeGoalContext;

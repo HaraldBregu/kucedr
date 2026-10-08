@@ -336,7 +336,7 @@ describe('run stream system prompt', () => {
 		expect(closeMcpMock).toHaveBeenCalledTimes(1);
 	});
 
-	it('sends generated AGENTS.md in the system prompt without duplicate user context', async () => {
+	it('composes runtime context with the tools available to the model turn', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-prompt-'));
 		try {
 			const memory = `# Memory\n${Array.from({ length: 500 }, (_, index) => `- Memory ${index}`).join('\n')}\n`;
@@ -361,7 +361,13 @@ describe('run stream system prompt', () => {
 					contextMode: 'workspace',
 				},
 				new AbortController().signal,
-				{ tools: [], memory: { read } as never }
+				{
+					tools: [
+						jsonTool({ id: 'alpha', name: 'Alpha', description: 'Alpha tool', schema: { type: 'object' }, execute: () => undefined }),
+						jsonTool({ id: 'mcp__demo__beta', name: 'Beta', description: 'Beta tool', policy: { kind: 'mcp', serverId: 'demo', toolName: 'beta' }, schema: { type: 'object' }, execute: () => undefined }),
+					],
+					memory: { read } as never,
+				}
 			))
 				void event;
 
@@ -369,8 +375,9 @@ describe('run stream system prompt', () => {
 			const messages = runModelTurnMock.mock.calls[0][4] as Message[];
 			const contextMessages = runModelTurnMock.mock.calls[0][15] as Message[];
 			expect(systemPrompt).toContain('- **Name:** Alice');
-			expect(systemPrompt).toContain('## Tools loaded by default in ordinary text chat');
-			expect(systemPrompt).toContain(await fs.readFile(path.join(root, 'AGENTS.md'), 'utf8'));
+			expect(systemPrompt).toContain('### Built-in\n- `alpha`');
+			expect(systemPrompt).toContain('### MCP\n- `mcp__demo__beta`');
+			await expect(fs.readFile(path.join(root, 'AGENTS.md'))).rejects.toMatchObject({ code: 'ENOENT' });
 			expect(memory.length).toBeGreaterThan(4_000);
 			expect(systemPrompt).toContain('- Memory 499');
 			expect(read).toHaveBeenCalledTimes(1);
@@ -384,7 +391,6 @@ describe('run stream system prompt', () => {
 	it('includes the user profile in a minimal main-agent turn', async () => {
 		const root = await fs.mkdtemp(path.join(os.tmpdir(), 'kucedr-run-profile-'));
 		try {
-			await fs.writeFile(path.join(root, 'AGENTS.md'), '# Agent rules');
 			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
 			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 			await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
@@ -413,9 +419,7 @@ describe('run stream system prompt', () => {
 				role: 'user',
 				content: expect.stringContaining('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice'),
 			});
-			for (const name of ['AGENTS.md']) {
-				expect(contextMessages[0]?.content).toContain(`### ${name}`);
-			}
+			expect(contextMessages[0]?.content).toContain('# Agent runtime context');
 			expect(contextMessages[0]?.content).toContain('### IDENTITY');
 			expect(contextMessages[0]?.content).toContain('### SOUL');
 		} finally {
@@ -591,7 +595,6 @@ describe('run stream system prompt', () => {
 			{ tools: [], memory: { read } as never }
 		)) void event;
 		expect(read).toHaveBeenCalledTimes(1);
-		expect(await fs.readFile(path.join(root, 'AGENTS.md'), 'utf8')).toContain('- Memory 499');
 		expect(runModelTurnMock.mock.calls[0][3]).toContain('- Memory 499');
 		expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
 		await fs.rm(root, { recursive: true, force: true });
@@ -630,7 +633,6 @@ describe('run stream system prompt', () => {
 			const session = createSessionState();
 			session.category = 'bot';
 			session.messages = [{ role: 'user', content: 'Hello' }];
-			await fs.writeFile(path.join(root, 'AGENTS.md'), '# Agent rules');
 			await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
 			await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 			await fs.writeFile(path.join(root, 'BOOTSTRAP.md'), '# Bootstrap');
@@ -656,7 +658,7 @@ describe('run stream system prompt', () => {
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
 			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
 			const workspaceContext = runModelTurnMock.mock.calls[0][15] as Message[];
-			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### AGENTS.md'));
+			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('# Agent runtime context'));
 			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### IDENTITY'));
 			expect(workspaceContext[0]?.content).toEqual(expect.stringContaining('### SOUL'));
 			expect(workspaceContext[0]?.content).not.toContain('### BOOTSTRAP.md');

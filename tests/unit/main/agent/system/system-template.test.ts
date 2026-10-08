@@ -19,8 +19,8 @@ describe('resolveTemplatePath', () => {
 		});
 		Object.defineProperty(process, 'defaultApp', { value: false, configurable: true });
 
-		expect(resolveTemplatePath('AGENTS.md')).toBe(
-			path.join('/packaged', 'resources', 'templates', 'AGENTS.md')
+		expect(resolveTemplatePath('BOOTSTRAP.md')).toBe(
+			path.join('/packaged', 'resources', 'templates', 'BOOTSTRAP.md')
 		);
 	});
 
@@ -31,8 +31,8 @@ describe('resolveTemplatePath', () => {
 		});
 		Object.defineProperty(process, 'defaultApp', { value: true, configurable: true });
 
-		expect(resolveTemplatePath('AGENTS.md')).toBe(
-			path.resolve(process.cwd(), 'resources', 'templates', 'AGENTS.md')
+		expect(resolveTemplatePath('BOOTSTRAP.md')).toBe(
+			path.resolve(process.cwd(), 'resources', 'templates', 'BOOTSTRAP.md')
 		);
 	});
 });

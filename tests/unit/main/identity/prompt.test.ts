@@ -8,7 +8,7 @@ import { updateIdentity } from '../../../../src/main/identity';
 import { updateUser } from '../../../../src/main/user';
 import { completeBootstrapTool } from '../../../../src/main/agent/tools/assistant/complete_bootstrap';
 
-it('regenerates AGENTS.md from modules without feeding its previous content back in', async () => {
+it('composes agent context from runtime modules and tools without using AGENTS.md', async () => {
 	const root = await mkdtemp(path.join(os.tmpdir(), 'kucedr-generated-prompt-'));
 	const previous = process.env.KUCEDR_E2E_DATA_ROOT;
 	process.env.KUCEDR_E2E_DATA_ROOT = root;
@@ -16,15 +16,15 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		const config = { location: path.join(root, 'workspace') };
 		workspacePath(config);
 		const file = path.join(config.location, 'AGENTS.md');
-		await writeFile(file, 'Obsolete generated content');
+		await writeFile(file, 'Static instructions must not be used');
 		const first = await buildWorkspaceContext(config, 'full', 'Remembered preference');
-		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
+		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		expect(first).toContain('Missing profile content: identity, soul, user');
 		expect(first).not.toContain('Remembered preference');
 		await updateSoul({ tone: 'Calm and direct', boundaries: 'Respect privacy' });
 		const partial = await buildWorkspaceContext(config);
 		expect(partial).toContain('Missing profile content: identity, user');
-		await expect(readFile(file)).rejects.toMatchObject({ code: 'ENOENT' });
+		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		await expect(completeBootstrapTool.run({})).rejects.toThrow('Complete identity, user');
 		const bootstrap = await readFile(path.join(config.location, 'BOOTSTRAP.md'), 'utf8');
 		expect(bootstrap).toContain('First Run');
@@ -34,12 +34,13 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(bootstrap).not.toContain('SOUL.md');
 		await updateIdentity({ name: 'Kucedr', role: 'Assistant', vibe: 'Calm' });
 		await updateUser({ name: 'Alice', preferredName: 'Al', timezone: 'Europe/Rome', projects: 'A personal history book Alice chose to share.' });
-		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference');
-		expect(await readFile(file, 'utf8')).toBe(complete);
-		expect(complete).toContain('### Files\n- `read`\n- `write`\n- `edit`\n- `patch`\n- `undo`\n- `redo`');
-		expect(complete).toContain('### Profiles\n- `update_identity`\n- `update_soul`\n- `update_user`');
-		expect(complete).toContain('### Bootstrap\n- `complete_bootstrap`');
-		expect(complete).toContain('### Discovery\n- `tool_search`');
+		const complete = await buildWorkspaceContext(config, 'full', 'Remembered preference', [
+			{ id: 'read' },
+			{ id: 'bash' },
+			{ id: 'update_identity' },
+			{ id: 'tool_search' },
+		] as never);
+		expect(complete).toContain('### Built-in\n- `read`\n- `bash`\n- `update_identity`\n- `tool_search`');
 		for (const name of ['BOOTSTRAP', 'MEMORY']) {
 			expect(complete).toContain(`### ${name}.md`);
 		}
@@ -52,10 +53,9 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(complete).toContain('### USER\nUse `update_user` to change the user\'s name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share.');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
-		const voice = await buildWorkspaceContext(config, 'full', '', 'voice');
+		const voice = await buildWorkspaceContext(config, 'full', '', [{ id: 'complete_bootstrap' }] as never);
 		expect(voice).toContain('### SOUL');
-		expect(voice).not.toContain('## Tools loaded by default in ordinary text chat');
-		expect(await readFile(file, 'utf8')).toContain('## Tools loaded by default in ordinary text chat');
+		expect(voice).toContain('### Built-in\n- `complete_bootstrap`');
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Calm and direct');
@@ -66,7 +66,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(core).not.toContain('Private memory');
 		const other = await buildWorkspaceContext(config, 'core', '', 'other');
 		expect(other).not.toContain('## Tools loaded by default in ordinary text chat');
-		expect(await readFile(file, 'utf8')).toBe(next);
+		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		await updateIdentity({ name: 'Nova', role: 'Planner' });
 		const renamed = await buildWorkspaceContext(config, 'full');
 		expect(renamed).toContain('- **Name:** Nova\n- **Role:** Planner');
@@ -80,7 +80,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(revised).not.toContain('Calm and direct');
 		expect(revised).not.toContain('Europe/Rome');
 		expect(revised).not.toContain('A personal history book');
-		expect(await readFile(file, 'utf8')).toBe(revised);
+		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 		await updateIdentity({
 			name: 'Alfred',
 			role: "Harald's personal butler and assistant",
@@ -95,7 +95,7 @@ it('regenerates AGENTS.md from modules without feeding its previous content back
 		expect(identitySection).toContain('**Also addressed as:** "Sir Alfred"');
 		expect(identitySection).not.toContain('# Alfred');
 		expect(identitySection).not.toContain('**Metadata:**');
-		expect(await readFile(file, 'utf8')).toBe(deduplicated);
+		expect(await readFile(file, 'utf8')).toBe('Static instructions must not be used');
 	} finally {
 		if (previous === undefined) delete process.env.KUCEDR_E2E_DATA_ROOT;
 		else process.env.KUCEDR_E2E_DATA_ROOT = previous;

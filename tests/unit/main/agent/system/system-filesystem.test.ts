@@ -75,7 +75,7 @@ describe('agent filesystem prompt', () => {
 		expect(prompt).not.toContain('library/clip.mp4');
 	});
 
-	it('refreshes the inventory in minimal system prompts without storing it in AGENTS.md', async () => {
+	it('refreshes the inventory in minimal system prompts without adding it to runtime context', async () => {
 		const before = await buildSystemPrompt({ location: root }, [], [], undefined, 'minimal');
 		await fs.mkdir(path.join(root, 'project'));
 		await fs.writeFile(path.join(root, 'notes.txt'), 'notes');
@@ -90,14 +90,13 @@ describe('agent filesystem prompt', () => {
 	});
 
 	it('includes bootstrap until its completion file is removed', async () => {
-		await fs.writeFile(path.join(root, 'AGENTS.md'), '# Agent rules');
 		await fs.writeFile(path.join(root, 'BOOTSTRAP.md'), '# Bootstrap questions');
 		await fs.writeFile(path.join(root, 'IDENTITY.md'), '# Identity');
 		await fs.writeFile(path.join(root, 'SOUL.md'), '# Soul');
 		await fs.writeFile(path.join(root, 'USER.md'), '- **Name:** Alice');
 
 		const bootstrapContext = await buildWorkspaceContext({ location: root });
-		expect(bootstrapContext).toContain('# AGENTS.md');
+		expect(bootstrapContext).toContain('# Agent runtime context');
 		expect(bootstrapContext).toContain('- **Name:** Identity');
 		expect(bootstrapContext).toContain('- **Tone:** # Soul');
 		expect(bootstrapContext).toContain('- **Name:** Alice');

@@ -1,11 +1,9 @@
-export const AGENT_FILE = 'AGENTS.md' as const;
 export const BOOTSTRAP_FILE = 'BOOTSTRAP.md' as const;
 export const IDENTITY_FILE = 'IDENTITY.md' as const;
 export const SOUL_FILE = 'SOUL.md' as const;
 export const USER_FILE = 'USER.md' as const;
 
 export type WorkspaceFile =
-	| typeof AGENT_FILE
 	| typeof BOOTSTRAP_FILE
 	| typeof IDENTITY_FILE
 	| typeof SOUL_FILE
