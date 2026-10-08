@@ -53,9 +53,12 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 		? 'running'
 		: currentIndex && (!indexModelMatches || status?.requiresIndexing)
 			? 'stale'
+			: currentIndex && status?.outcome === 'idle'
+				? 'completed'
 			: status?.outcome === 'completed' && !currentIndex
 				? 'idle'
 				: (status?.outcome ?? 'idle');
+	const finishedAt = status?.finishedAt ?? currentIndex?.completedAt;
 	const format = { dateStyle: 'medium', timeStyle: 'short' } as const;
 	return (
 		<SettingsSection title={t('settings.knowledge.indexingTitle')}>
@@ -69,7 +72,8 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 								? t('settings.knowledge.indexResult', status.result)
 								: t('settings.knowledge.indexDescription')
 					}
-					icon={running ? LoaderCircle : Clock3}
+					icon={Clock3}
+					media={running ? <LoaderCircle className="size-5 animate-spin" aria-hidden="true" /> : undefined}
 					actions={
 						running ? (
 							<Button
@@ -100,12 +104,12 @@ export default function Indexing({ knowledge }: { knowledge: KnowledgeState }): 
 						}
 					/>
 				)}
-				{status?.finishedAt && (
+				{finishedAt && (
 					<SettingsRow
 						title={t('settings.knowledge.lastRun')}
 						actions={
 							<SettingsValue>
-								{new Date(status.finishedAt).toLocaleString(i18n?.language, format)}
+								{new Date(finishedAt).toLocaleString(i18n?.language, format)}
 							</SettingsValue>
 						}
 					/>
