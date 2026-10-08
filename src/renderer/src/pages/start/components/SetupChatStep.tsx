@@ -1,7 +1,5 @@
-import type { SearchSettings } from '@shared/search_types';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import ProvidersPage from '../../settings/pages/providers/Page';
 import { SetupSearch } from './SetupSearch';
 import { SetupStepHeader } from './SetupStepHeader';
 import { SetupService, type SetupAssistantProps } from './SetupService';
@@ -13,7 +11,6 @@ export function SetupChatStep({
 	savingConfig,
 	onServiceChange,
 }: SetupAssistantProps): React.JSX.Element {
-	const [searchSettings, setSearchSettings] = useState<SearchSettings>();
 	const [availableLocalModels, setAvailableLocalModels] = useState<string[]>([]);
 	const [localProviderName, setLocalProviderName] = useState<string>();
 	const assistantModelGroups = useMemo(
@@ -75,7 +72,7 @@ export function SetupChatStep({
 					</h2>
 					<Card size="sm" className="gap-0! p-0!">
 						<CardContent className="p-0!">
-							<SetupSearch providerSettings={searchSettings} />
+							<SetupSearch />
 							{MODEL_SERVICE_DEFINITIONS.filter((service) =>
 								['image', 'video', 'audio'].includes(service.id)
 							).map((service) => (
@@ -89,12 +86,6 @@ export function SetupChatStep({
 							))}
 						</CardContent>
 					</Card>
-				</section>
-				<section aria-label="Search providers" className="min-w-0">
-					<h2 className="mb-2 px-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-						Search providers
-					</h2>
-					<ProvidersPage embedded section="search" onSearchSettingsChange={setSearchSettings} />
 				</section>
 			</div>
 		</div>

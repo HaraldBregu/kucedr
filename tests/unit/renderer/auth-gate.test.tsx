@@ -400,7 +400,11 @@ it('continues through chat and voice, goes back, and saves only on Finish', asyn
 		persistence: 'memory',
 		user: { id: 'user-id', email: 'user@example.test' },
 	});
-	window.provider = { list: jest.fn(async () => [{ ...provider, apiKey: 'test-key' }]) } as never;
+	window.provider = {
+		list: jest.fn(async () => [
+			{ id: 'custom', baseUrl: 'http://localhost:11434/api', apiKey: 'test-key' },
+		]),
+	} as never;
 	try {
 		renderFlow('/start');
 		await user.click(await screen.findByRole('button', { name: 'Get started' }));

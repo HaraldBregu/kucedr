@@ -67,11 +67,6 @@ const SERVICE_STATES: ModelServiceStateMap = {
 	audio: EMPTY_SERVICE,
 };
 
-jest.mock('../../../src/renderer/src/pages/settings/pages/providers/Page', () => ({
-	__esModule: true,
-	default: () => <div data-testid="search-providers">Search provider connections</div>,
-}));
-
 it('shows only chat and tool configuration on Chat assistant', () => {
 	render(
 		<SetupChatStep
@@ -89,7 +84,7 @@ it('shows only chat and tool configuration on Chat assistant', () => {
 		expect(within(tools).getByTestId(`setup-${id}-select`)).toBeInTheDocument();
 	}
 	expect(within(tools).getByTestId('setup-search')).toBeInTheDocument();
-	expect(screen.getByTestId('search-providers')).toBeInTheDocument();
+	expect(screen.queryByRole('region', { name: 'Search providers' })).not.toBeInTheDocument();
 	for (const id of ['voice', 'transcription', 'realtime', 'health', 'tasks']) {
 		expect(screen.queryByTestId(`setup-${id}`)).not.toBeInTheDocument();
 	}

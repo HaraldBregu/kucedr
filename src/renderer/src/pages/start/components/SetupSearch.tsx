@@ -11,18 +11,10 @@ import {
 import { SEARCH_ENGINES } from '@pages/settings/pages/search/catalog';
 import type { SearchEngineId, SearchSettings } from '@shared/search_types';
 
-export function SetupSearch({
-	providerSettings,
-}: {
-	readonly providerSettings?: SearchSettings;
-}): React.JSX.Element {
+export function SetupSearch(): React.JSX.Element {
 	const [settings, setSettings] = useState<SearchSettings | null>(null);
 
 	useEffect(() => {
-		if (providerSettings) {
-			setSettings(providerSettings);
-			return;
-		}
 		let cancelled = false;
 		void window.search
 			.getSettings()
@@ -33,7 +25,7 @@ export function SetupSearch({
 		return () => {
 			cancelled = true;
 		};
-	}, [providerSettings]);
+	}, []);
 
 	const selectedEngineId =
 		settings?.engineId && settings.configured[settings.engineId] ? settings.engineId : null;
