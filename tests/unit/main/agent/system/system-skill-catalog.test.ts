@@ -24,5 +24,8 @@ describe('buildSkillContext', () => {
 		expect(context).not.toContain('Additional skill names omitted');
 		expect(context).toContain('…');
 		expect(context.indexOf('skill-00')).toBeLessThan(context.indexOf('skill-01'));
+		expect(context).toContain('- **Name:** skill-00');
+		expect(context).toContain('  **Description:**');
+		expect(context).not.toContain('{"name"');
 	});
 });
