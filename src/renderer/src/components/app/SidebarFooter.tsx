@@ -66,9 +66,9 @@ export function AppSidebarFooter(): React.JSX.Element {
 								aria-label={t('settings.sidebar.accountMenu', { name: accountItem.title })}
 								className="pr-11 data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 							>
-								<Avatar className="size-7 rounded-md grayscale">
+								<Avatar className="size-7 rounded-lg grayscale">
 									<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
-									<AvatarFallback className="rounded-md bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground">
+									<AvatarFallback className="rounded-lg bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground">
 										{accountInitial}
 									</AvatarFallback>
 								</Avatar>
