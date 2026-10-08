@@ -49,7 +49,9 @@ it('holds the run until OAuth succeeds, then submits authorization', async () =>
 			{ questionId: 'mcp-authorization', answer: 'authorized' },
 		])
 	);
-	await waitFor(() => expect(screen.queryByRole('button', { name: 'Authorize' })).not.toBeInTheDocument());
+	await waitFor(() =>
+		expect(screen.queryByRole('button', { name: 'Authorize' })).not.toBeInTheDocument()
+	);
 });
 
 it('cancels the run without waiting for OAuth', async () => {
@@ -102,6 +104,8 @@ it('hides the card after authorization and for unrelated server statuses', () =>
 });
 
 it('keeps the cancelled result visible', () => {
-	render(<McpAuthorizationCard tool={{ ...tool, output: { status: 'cancelled', serverId: 'gmail' } }} />);
+	render(
+		<McpAuthorizationCard tool={{ ...tool, output: { status: 'cancelled', serverId: 'gmail' } }} />
+	);
 	expect(screen.getByText('Authorization cancelled')).toBeInTheDocument();
 });

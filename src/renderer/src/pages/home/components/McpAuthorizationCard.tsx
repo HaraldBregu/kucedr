@@ -40,9 +40,7 @@ export function McpAuthorizationCard({
 		(submittedAuthorization && result?.status !== 'authorization_failed') ||
 		result?.status === 'authorized' ||
 		result?.status === 'already_authorized' ||
-		(!pending &&
-			result?.status !== 'cancelled' &&
-			result?.status !== 'authorization_failed')
+		(!pending && result?.status !== 'cancelled' && result?.status !== 'authorization_failed')
 	)
 		return null;
 	const serverName = typeof result?.serverName === 'string' ? result.serverName : serverId;
@@ -93,9 +91,9 @@ export function McpAuthorizationCard({
 				<CardTitle className="text-sm">
 					{stopped
 						? 'Authorization cancelled'
-							: failed
-								? 'Authorization failed'
-								: `Authorize ${serverName}`}
+						: failed
+							? 'Authorization failed'
+							: `Authorize ${serverName}`}
 				</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-3 px-4 text-sm">
