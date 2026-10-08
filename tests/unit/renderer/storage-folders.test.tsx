@@ -92,7 +92,7 @@ it('shows the storage provider description beneath the title and before backup s
 	);
 	const title = screen.getByRole('heading', { name: 'Storage', exact: true });
 	const description = await screen.findByText(
-		'Choose a saved Amazon S3 or S3-compatible provider to upload and download files.'
+		'Choose a saved Amazon S3 or S3-compatible provider.'
 	);
 	const backup = screen.getByRole('heading', { name: 'Folders' });
 	expect(
@@ -118,7 +118,7 @@ it('keeps backup controls disabled when no providers exist', async () => {
 	);
 	expect(
 		await screen.findByText(
-			'Choose a saved Amazon S3 or S3-compatible provider to upload and download files.'
+			'Choose a saved Amazon S3 or S3-compatible provider.'
 		)
 	).toBeInTheDocument();
 	expect(screen.getByRole('button', { name: 'Upload' })).toBeDisabled();
@@ -143,7 +143,7 @@ it('retries a failed provider load and restores the saved selection', async () =
 	expect(screen.getByRole('combobox', { name: 'Storage' })).toHaveTextContent('Production files');
 	expect(
 		screen.getByText(
-			'Choose a saved Amazon S3 or S3-compatible provider to upload and download files.'
+			'Choose a saved Amazon S3 or S3-compatible provider.'
 		)
 	).toBeInTheDocument();
 });

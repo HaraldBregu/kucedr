@@ -37,7 +37,7 @@ export default function Restore({
 					<Button variant="outline" onClick={() => onOpenChange(false)}>
 						{t('settings.storage.cancel')}
 					</Button>
-					<Button disabled={disabled || !hasFolders} onClick={onRestore}>
+					<Button disabled={disabled || !hasFolders} onClick={() => onRestore()}>
 						<Download className="size-3" />
 						{t('settings.storage.restoreDialog.confirm')}
 					</Button>
