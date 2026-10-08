@@ -60,3 +60,34 @@ it('replays DeepSeek reasoning_content with the tool call after authorization', 
 		{ role: 'tool', tool_call_id: 'call-1', content: 'authorized result' },
 	]);
 });
+
+it('captures reasoning_content in a non-streaming DeepSeek tool response', async () => {
+	const create = jest.fn().mockResolvedValue({
+		choices: [{
+			message: {
+				content: null,
+				reasoning_content: 'batch reasoning',
+				tool_calls: [{
+					id: 'call-2', type: 'function',
+					function: { name: 'lookup', arguments: '{}' },
+				}],
+			},
+			finish_reason: 'tool_calls',
+		}],
+	});
+	const model = new LlmModel({
+		openAIClientFactory: () => ({ chat: { completions: { create } } }) as never,
+	});
+	const events: LlmEvent[] = [];
+	for await (const event of model.stream({
+		provider: { id: 'deepseek', apiKey: 'key' },
+		model: 'deepseek-reasoner',
+		messages: [{ role: 'user', content: 'look this up' }],
+		maxTokens: 100,
+		streaming: false,
+	})) events.push(event);
+
+	expect(events).toContainEqual({
+		type: 'model_provider_item', provider: 'deepseek', item: 'batch reasoning',
+	});
+});
