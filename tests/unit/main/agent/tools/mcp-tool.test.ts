@@ -1,9 +1,12 @@
 const callToolMock = jest.fn();
+const getMcpServersMock = jest.fn();
 
 jest.mock('../../../../../src/main/mcp', () => ({
 	callTool: (...args: unknown[]) => callToolMock(...args),
+	getMcpServers: () => getMcpServersMock(),
 }));
 
+import { UnauthorizedError } from '@modelcontextprotocol/sdk/client/auth.js';
 import { mcpTool } from '../../../../../src/main/agent/tools/mcp/tool';
 import { MCP_MAX_OUTPUT_BYTES } from '../../../../../src/main/agent/tools/mcp/limits';
 import type { McpClient } from '../../../../../src/main/mcp';
@@ -69,5 +72,15 @@ describe('mcpTool', () => {
 
 		callToolMock.mockResolvedValueOnce({ isError: true, content: [{ type: 'text', text }] });
 		await expect(tool.run({ query: 'Kucedr' })).rejects.toThrow('[truncated:');
+	});
+
+	it('turns an MCP authorization failure into an in-chat authorization request', async () => {
+		getMcpServersMock.mockReturnValue({ safe: { type: 'http', name: 'Documents' } });
+		callToolMock.mockRejectedValue(new UnauthorizedError());
+		const configured = mcpTool(client, 'lookup', '', schema, 'safe', 'never');
+
+		await expect(configured.run({ query: 'Kucedr' })).resolves.toBe(
+			JSON.stringify({ status: 'authorization_required', serverId: 'safe', serverName: 'Documents' })
+		);
 	});
 });
