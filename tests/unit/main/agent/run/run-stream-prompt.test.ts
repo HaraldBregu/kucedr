@@ -1415,6 +1415,7 @@ describe('run stream system prompt', () => {
 				return { content: '', model: 'test-model', toolCalls: [{ id: 'find-gmail', name: 'tool_search', args: { query: 'Gmail inbox threads' } }] };
 			})
 			.mockImplementationOnce(successfulTurn);
+		const events: unknown[] = [];
 		try {
 			for await (const _event of stream(
 				{ location: '/workspace' },
@@ -1427,8 +1428,8 @@ describe('run stream system prompt', () => {
 				},
 				new AbortController().signal,
 				{ sandbox }
-			)) void _event;
-			expect(testServer).toHaveBeenCalledWith('gmail');
+			)) events.push(_event);
+			expect({ calls: testServer.mock.calls, events }).toMatchObject({ calls: [['gmail']] });
 			expect(mockLoadMcpTools).toHaveBeenCalledTimes(2);
 			expect((runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)).toContain(gmail.id);
 		} finally {
