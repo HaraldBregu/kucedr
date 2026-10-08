@@ -57,7 +57,15 @@
 		"save": "Save defaults",
 		"loadError": "Could not load Coder settings.",
 		"saveError": "Could not save Coder settings.",
-		"thinkingLevels": { "off": "Off", "minimal": "Minimal", "low": "Low", "medium": "Medium", "high": "High", "xhigh": "Extra high", "max": "Maximum" }
+		"thinkingLevels": {
+			"off": "Off",
+			"minimal": "Minimal",
+			"low": "Low",
+			"medium": "Medium",
+			"high": "High",
+			"xhigh": "Extra high",
+			"max": "Maximum"
+		}
 	},
 	"code": {
 		"resize": "Resize code files",
@@ -1488,7 +1496,7 @@
 			"voiceDescription": "Realtime conversations and spoken output",
 			"transcriptionName": "Transcription",
 			"transcriptionDescription": "Speech-to-text transcription",
-						"realtimeVoiceDescription": "Live voice-to-voice conversations.",
+			"realtimeVoiceDescription": "Live voice-to-voice conversations.",
 			"realtimeVoiceModelDescription": "OpenAI realtime model used for live conversations.",
 			"voiceConfiguration": "Voice",
 			"realtimeConversationDescription": "Choose the model and voice used for live sessions.",

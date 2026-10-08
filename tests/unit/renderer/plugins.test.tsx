@@ -196,7 +196,10 @@ it('filters plugins and hides provider sections without matches', async () => {
 	expect(screen.queryByRole('region', { name: 'Google' })).not.toBeInTheDocument();
 
 	await user.clear(screen.getByRole('searchbox', { name: 'settings.integrations.search' }));
-	await user.type(screen.getByRole('searchbox', { name: 'settings.integrations.search' }), 'missing');
+	await user.type(
+		screen.getByRole('searchbox', { name: 'settings.integrations.search' }),
+		'missing'
+	);
 	expect(screen.getByText('settings.integrations.noResults')).toBeInTheDocument();
 });
 

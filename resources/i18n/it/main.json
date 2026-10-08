@@ -57,7 +57,15 @@
 		"save": "Salva impostazioni predefinite",
 		"loadError": "Impossibile caricare le impostazioni Coder.",
 		"saveError": "Impossibile salvare le impostazioni Coder.",
-		"thinkingLevels": { "off": "Disattivato", "minimal": "Minimo", "low": "Basso", "medium": "Medio", "high": "Alto", "xhigh": "Molto alto", "max": "Massimo" }
+		"thinkingLevels": {
+			"off": "Disattivato",
+			"minimal": "Minimo",
+			"low": "Basso",
+			"medium": "Medio",
+			"high": "Alto",
+			"xhigh": "Molto alto",
+			"max": "Massimo"
+		}
 	},
 	"code": {
 		"resize": "Ridimensiona elenco file di codice",
@@ -1488,7 +1496,7 @@
 			"voiceDescription": "Conversazioni realtime e output vocale",
 			"transcriptionName": "Trascrizione",
 			"transcriptionDescription": "Trascrizione da voce a testo",
-						"realtimeVoiceDescription": "Conversazioni vocali bidirezionali in tempo reale.",
+			"realtimeVoiceDescription": "Conversazioni vocali bidirezionali in tempo reale.",
 			"realtimeVoiceModelDescription": "Modello realtime OpenAI usato per le conversazioni dal vivo.",
 			"voiceConfiguration": "Voce",
 			"realtimeConversationDescription": "Scegli il modello e la voce per le sessioni dal vivo.",
