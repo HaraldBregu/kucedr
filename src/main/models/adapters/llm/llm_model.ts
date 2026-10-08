@@ -76,8 +76,7 @@ export class LlmModel implements LlmAdapter {
 		this.openAIClientFactory = options.openAIClientFactory;
 		this.anthropicClientFactory = options.anthropicClientFactory;
 		this.reasoningEffortEnabled = options.reasoningEffortEnabled ?? false;
-		this.reasoningContentEnabled =
-			options.reasoningContentEnabled ?? (options.provider?.id.toLowerCase() === 'deepseek');
+		this.reasoningContentEnabled = options.reasoningContentEnabled ?? false;
 		this.thinkingModeEnabled = options.thinkingModeEnabled ?? false;
 	}
 
@@ -196,8 +195,7 @@ export class LlmModel implements LlmAdapter {
 			openAIClientFactory: this.openAIClientFactory,
 			anthropicClientFactory: this.anthropicClientFactory,
 			reasoningEffortEnabled: this.reasoningEffortEnabled,
-			reasoningContentEnabled:
-				this.reasoningContentEnabled || provider.id.toLowerCase() === 'deepseek',
+			reasoningContentEnabled: this.reasoningContentEnabled,
 			thinkingModeEnabled: this.thinkingModeEnabled,
 		});
 	}
@@ -558,10 +556,12 @@ export class LlmModel implements LlmAdapter {
 		req: LlmStreamRequest
 	): AsyncIterable<LlmProviderEvent> {
 		const client = this.createOpenAIClient(provider, 'API key not configured');
+		const reasoningContentEnabled =
+			this.reasoningContentEnabled || provider.id.toLowerCase() === 'deepseek';
 		if (req.streaming === false) {
 			try {
 				yield* completeChat(client, req, {
-					reasoningContentEnabled: this.reasoningContentEnabled,
+					reasoningContentEnabled,
 					reasoningEffortEnabled: this.reasoningEffortEnabled,
 					thinkingModeEnabled: this.thinkingModeEnabled,
 					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : 'image-only',
@@ -591,7 +591,7 @@ export class LlmModel implements LlmAdapter {
 				...req.options,
 				model: req.model,
 				messages: llmBuildChatMessages(req.system, req.messages, {
-					includeReasoningContent: this.reasoningContentEnabled,
+					includeReasoningContent: reasoningContentEnabled,
 					contentProfile: provider.id.toLowerCase() === 'reka' ? 'reka' : 'image-only',
 				}),
 				tools: tools.length > 0 ? tools : undefined,
@@ -625,7 +625,7 @@ export class LlmModel implements LlmAdapter {
 
 				const reasoningContent = (delta as { reasoning_content?: unknown }).reasoning_content;
 				if (
-					this.reasoningContentEnabled &&
+					reasoningContentEnabled &&
 					typeof reasoningContent === 'string' &&
 					reasoningContent.length > 0
 				) {
