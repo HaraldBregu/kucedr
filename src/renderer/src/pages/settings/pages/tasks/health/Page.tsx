@@ -22,7 +22,6 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import { ModelOptions } from '@/components/model-options';
 import { updateModelOptions } from '@/lib/options';
 import { providerIdsFor, providerModels, providers } from '@/lib/providers';
@@ -35,7 +34,6 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
-	SettingsSection,
 } from '../../../components';
 import { ModelProviderConfiguration } from '../../../components/model-configuration';
 
@@ -54,7 +52,6 @@ const EVERY_OPTIONS: readonly HealthSettings['every'][] = ['0m', '1m', '30m', '1
 const HealthPage: React.FC = () => {
 	const { t } = useTranslation();
 	const [settings, setSettings] = useState<HealthSettings | null>(null);
-	const [checklist, setChecklist] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [saving, setSaving] = useState(false);
@@ -63,11 +60,10 @@ const HealthPage: React.FC = () => {
 
 	useEffect(() => {
 		let mounted = true;
-		void Promise.all([window.agent.healthGetSettings(), window.agent.healthGetData()])
-			.then(([result, data]) => {
+		void window.agent.healthGetSettings()
+			.then((result) => {
 				if (!mounted) return;
 				setSettings(result);
-				setChecklist(data);
 			})
 			.catch((err: unknown) => {
 				if (mounted) setError(err instanceof Error ? err.message : String(err));
@@ -105,7 +101,6 @@ const HealthPage: React.FC = () => {
 			const activeHours =
 				settings.activeHours?.start && settings.activeHours?.end ? settings.activeHours : undefined;
 			await window.agent.healthSaveSettings({ ...settings, activeHours });
-			await window.agent.healthSaveData(checklist);
 			setSaved(true);
 		} catch (err) {
 			setError(err instanceof Error ? err.message : t('settings.health.errors.saveFailed'));
@@ -399,28 +394,6 @@ const HealthPage: React.FC = () => {
 							/>
 						</Link>
 					</SettingsPanel>
-
-					<SettingsSection
-						title={t('settings.health.checklistTitle')}
-						description={t('settings.health.checklistDescription')}
-					>
-						<SettingsPanel>
-							<div className="p-3">
-								<Textarea
-									value={checklist}
-									onChange={(event) => {
-										setChecklist(event.target.value);
-										setSaved(false);
-									}}
-									rows={10}
-									spellCheck={false}
-									className="font-mono text-xs"
-									disabled={saving}
-									aria-label={t('settings.health.checklistTitle')}
-								/>
-							</div>
-						</SettingsPanel>
-					</SettingsSection>
 
 					{saved && (
 						<SettingsAutoDismiss>
