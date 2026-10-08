@@ -9,7 +9,7 @@ const tool: AgentToolPart = {
 	toolCallId: 'authorize',
 	type: 'request_mcp_authorization',
 	state: 'input-available',
-	input: { serverId: 'gmail' },
+	input: { serverId: 'gmail', serverName: 'Gmail', toolName: 'Search Gmail', force: true },
 };
 const pending: PendingUserInput = {
 	requestId: 'request',
@@ -41,7 +41,7 @@ it('holds the run until OAuth succeeds, then submits authorization', async () =>
 	render(<McpAuthorizationCard tool={tool} pending={pending} />);
 
 	await user.click(screen.getByRole('button', { name: 'Authorize' }));
-	expect(oauthStart).toHaveBeenCalledWith('gmail');
+	expect(oauthStart).toHaveBeenCalledWith('gmail', true);
 	expect(respondUserInput).not.toHaveBeenCalled();
 	finishOauth();
 	await waitFor(() =>
@@ -89,6 +89,7 @@ it('shows OAuth errors and keeps the authorization action available', async () =
 	await user.click(screen.getByRole('button', { name: 'Authorize' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Access denied');
 	expect(screen.getByRole('button', { name: 'Authorize' })).toBeEnabled();
+	expect(screen.getByText('After authorization, Search Gmail will be retried automatically.')).toBeInTheDocument();
 });
 
 it('hides the card after authorization and for unrelated server statuses', () => {
