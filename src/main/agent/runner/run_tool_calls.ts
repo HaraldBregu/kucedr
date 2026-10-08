@@ -28,6 +28,12 @@ export async function* runToolCalls(
 		)) {
 			yield event;
 		}
-		if (signal?.aborted || mcpAuthorizationStopped(toolCall) || mcpAuthorizationRequired(tool, toolCall.result?.content)) break;
+		if (
+			signal?.aborted ||
+			mcpAuthorizationStopped(toolCall) ||
+			(security?.windowId !== undefined &&
+				security.interactionMode === 'default' &&
+				mcpAuthorizationRequired(tool, toolCall.result?.content))
+		) break;
 	}
 }
