@@ -62,16 +62,19 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		expect(complete).not.toContain('HEALTH.md');
 		expect(complete).not.toContain('Health checklists');
 		expect(complete).toContain(
-			"### SOUL\nUse `update_soul` to change the assistant's tone, boundaries, or interaction style.\n- **Tone:** Calm and direct\n- **Boundaries:** Respect privacy"
+			'### SOUL\n- **Tone:** Calm and direct\n- **Boundaries:** Respect privacy'
 		);
 		expect(complete).not.toContain('SOUL.md');
 		expect(complete).toContain(
-			"### IDENTITY\nUse `update_identity` to change the assistant's name, role, avatar, or identity.\n- **Name:** Kucedr\n- **Role:** Assistant\n- **Vibe:** Calm"
+			'### IDENTITY\n- **Name:** Kucedr\n- **Role:** Assistant\n- **Vibe:** Calm'
 		);
 		expect(complete).not.toContain('IDENTITY.md');
 		expect(complete).toContain(
-			"### USER\nUse `update_user` to change the user's name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share."
+			"### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share."
 		);
+		expect(complete).not.toContain('Use `update_identity`');
+		expect(complete).not.toContain('Use `update_soul`');
+		expect(complete).not.toContain('Use `update_user`');
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
 		const voice = await buildWorkspaceContext(config, 'full', '', [

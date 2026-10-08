@@ -502,7 +502,7 @@ describe('run stream system prompt', () => {
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
 			expect(systemPrompt).toContain(
-				"### USER\nUse `update_user` to change the user's name or preferences. Add projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice"
+				"### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice"
 			);
 			expect(systemPrompt).toContain('# Agent runtime context');
 			expect(systemPrompt).toContain('### IDENTITY');
