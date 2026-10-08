@@ -58,8 +58,8 @@ it.each([
 	}, [{ questionId: 'mcp-authorization', answer }], 7)).toBe(true);
 	await resumed;
 	for await (const _event of events) void _event;
-	expect(nextRun).toHaveBeenCalledTimes(proceed ? 1 : 0);
 	expect(JSON.parse(calls[0].result?.content as string)).toMatchObject({
 		status: proceed ? 'authorized' : 'cancelled',
 	});
+	expect(nextRun).toHaveBeenCalledTimes(proceed ? 1 : 0);
 });
