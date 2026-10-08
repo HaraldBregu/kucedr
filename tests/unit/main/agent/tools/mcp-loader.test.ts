@@ -62,6 +62,7 @@ describe('loadMcpTools from persisted catalog', () => {
 		);
 		const result = await loadMcpTools();
 		expect(result.tools.map((tool) => tool.id)).toEqual(['mcp__safe__lookup']);
+		expect(result.uncataloged).toEqual([{ serverId: 'missing', serverName: 'missing' }]);
 		expect(getMcpToolCatalogMock).not.toHaveBeenCalledWith('disabled');
 		expect(connectMock).not.toHaveBeenCalled();
 		expect(listToolsMock).not.toHaveBeenCalled();
