@@ -79,7 +79,7 @@ export default function CapabilityRow({
 								<MoreHorizontal className="size-4" />
 							</Button>
 						</DropdownMenuTrigger>
-						<DropdownMenuContent align="end">
+						<DropdownMenuContent align="end" onClick={(event) => event.stopPropagation()}>
 							<DropdownMenuItem onSelect={onRemove}>
 								<Trash2 />
 								{t('settings.integrations.remove', { name: entry.name })}

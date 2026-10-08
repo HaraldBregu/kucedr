@@ -323,7 +323,10 @@ const PluginsPage = (): React.JSX.Element => {
 																<MoreHorizontal className="size-4" />
 															</Button>
 														</DropdownMenuTrigger>
-														<DropdownMenuContent align="end">
+												<DropdownMenuContent
+													align="end"
+													onClick={(event) => event.stopPropagation()}
+												>
 															<DropdownMenuItem
 																onSelect={() => void setIntegrationEnabled(service, false)}
 															>

@@ -240,6 +240,7 @@ it('removes the MCP server from the added plugin menu', async () => {
 
 	await waitFor(() => expect(mcpApi.delete).toHaveBeenCalledWith('gmail'));
 	expect(mcpApi.upsert).not.toHaveBeenCalled();
+	expect(navigate).not.toHaveBeenCalled();
 	expect(screen.getAllByRole('button', { name: 'settings.integrations.add' })).toHaveLength(21);
 });
 
@@ -332,4 +333,5 @@ it('removes an enabled storage provider from Plugins', async () => {
 			false
 		)
 	);
+	expect(navigate).not.toHaveBeenCalled();
 });
