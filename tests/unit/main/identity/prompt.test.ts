@@ -59,7 +59,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		);
 		expect(complete).not.toContain('IDENTITY.md');
 		expect(complete).toContain(
-			'### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share.'
+			"### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice\n- **What to call them:** Al\n- **Timezone:** Europe/Rome\n- **Projects:** A personal history book Alice chose to share."
 		);
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');

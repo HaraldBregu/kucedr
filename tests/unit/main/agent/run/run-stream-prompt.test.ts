@@ -504,7 +504,7 @@ describe('run stream system prompt', () => {
 
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
 			expect(systemPrompt).toContain(
-				'### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice'
+				"### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n- **Name:** Alice"
 			);
 			expect(systemPrompt).toContain('# Agent runtime context');
 			expect(systemPrompt).toContain('### IDENTITY');
@@ -1355,7 +1355,11 @@ describe('run stream system prompt', () => {
 		const tools = ['read', 'complete_bootstrap', 'list_tasks', 'update_task'].map((id) =>
 			jsonTool({
 				id,
-				category: id.includes('task') ? 'task' : id === 'complete_bootstrap' ? 'bootstrap' : 'core',
+				category: id.includes('task')
+					? 'task'
+					: id === 'complete_bootstrap'
+						? 'bootstrap'
+						: 'core',
 				name: id,
 				description: `${id} description`,
 				schema: { type: 'object' },
