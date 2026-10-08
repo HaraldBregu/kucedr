@@ -655,9 +655,9 @@ describe('run stream system prompt', () => {
 			expect(runModelTurnMock.mock.calls[0][3]).not.toContain('\n\n## Workspace\n');
 			expect(runModelTurnMock.mock.calls[0][10]).toEqual([]);
 			const systemPrompt = runModelTurnMock.mock.calls[0][3] as string;
-			expect(systemPrompt).toContain('# Agent runtime context');
-			expect(systemPrompt).toContain('### IDENTITY');
-			expect(systemPrompt).toContain('### SOUL');
+			expect(systemPrompt).not.toContain('# Agent runtime context');
+			expect(systemPrompt).not.toContain('### IDENTITY');
+			expect(systemPrompt).not.toContain('### SOUL');
 			expect(systemPrompt).not.toContain('### BOOTSTRAP.md');
 		} finally {
 			await fs.rm(root, { recursive: true, force: true });
