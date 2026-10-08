@@ -9,12 +9,22 @@ import type { StorageObjectInfo } from '../../../shared/storage_types';
 import type { StorageObjectStore } from '../remote';
 import { STORAGE_MAX_OBJECT_BYTES } from '../limits';
 import { throwStorageRequestError } from './error';
+import { uploadStorageFile } from './upload';
+import { downloadStorageFile } from './download';
 
 export class S3ObjectStore implements StorageObjectStore {
 	constructor(
 		private readonly client: Pick<S3Client, 'send'>,
 		private readonly bucket: string
 	) {}
+
+	async putFile(key: string, filePath: string): Promise<void> {
+		await uploadStorageFile(this.client, this.bucket, this.key(key), filePath);
+	}
+
+	async getFile(key: string, filePath: string): Promise<void> {
+		await downloadStorageFile(this.client, this.bucket, this.key(key), filePath);
+	}
 
 	async get(key: string): Promise<Uint8Array> {
 		const response = await this.client
