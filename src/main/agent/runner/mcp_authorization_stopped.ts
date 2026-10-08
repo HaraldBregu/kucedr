@@ -6,8 +6,8 @@ export function mcpAuthorizationStopped(call: ToolCall): boolean {
 		const result = typeof call.result.content === 'string'
 			? JSON.parse(call.result.content) as { status?: unknown }
 			: undefined;
-		return result?.status !== 'authorized' && result?.status !== 'already_authorized';
+		return result?.status === 'cancelled' || result?.status === 'authorization_failed';
 	} catch {
-		return true;
+		return false;
 	}
 }
