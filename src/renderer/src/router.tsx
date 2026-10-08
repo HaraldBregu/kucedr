@@ -591,6 +591,14 @@ const routes: RouteObject[] = [
 									</SettingsRouteWrapper>
 								),
 							},
+							{
+								path: 'permissions',
+								element: (
+									<SettingsRouteWrapper>
+										<PermissionsPage profile="tasks" />
+									</SettingsRouteWrapper>
+								),
+							},
 						],
 					},
 					{

@@ -90,6 +90,12 @@ export function useSettingsBreadcrumbItems(): readonly SettingsBreadcrumbItem[] 
 			{ label: t('settings.cron.history.pageTitle') },
 		];
 	}
+	if (location.pathname === '/settings/tasks/permissions') {
+		return [
+			{ label: t('settings.tabs.taskScheduler'), path: '/settings/tasks' },
+			{ label: t('settings.tabs.permissions') },
+		];
+	}
 	if (location.pathname === '/settings/tasks/tools') {
 		return [
 			{ label: t('settings.tabs.taskScheduler'), path: '/settings/tasks' },

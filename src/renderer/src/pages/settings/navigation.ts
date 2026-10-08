@@ -244,6 +244,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'voice permissions locations directories access allow deny',
 	},
 	{
+		path: '/settings/tasks/permissions',
+		labelKey: 'settings.tabs.permissions',
+		descriptionKey: 'settings.overview.descriptions.permissions',
+		keywords: 'task scheduled permissions locations directories access allow deny',
+	},
+	{
 		path: '/settings/tasks/tools',
 		labelKey: 'settings.modelServices.tools',
 		descriptionKey: 'settings.modelServices.toolsDescription',
