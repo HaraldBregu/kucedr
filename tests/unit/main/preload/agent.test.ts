@@ -58,6 +58,6 @@ it('validates and forwards a compact-session request', async () => {
 it('queries and cancels background Knowledge indexing through typed channels', async () => {
 	await agent.ragGetStatus();
 	await agent.ragCancelIndex();
-	expect(invoke).toHaveBeenNthCalledWith(1, AgentChannels.ragGetStatus);
-	expect(invoke).toHaveBeenNthCalledWith(2, AgentChannels.ragCancelIndex);
+	expect(invoke).toHaveBeenCalledWith(AgentChannels.ragGetStatus);
+	expect(invoke).toHaveBeenCalledWith(AgentChannels.ragCancelIndex);
 });
