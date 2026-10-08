@@ -215,7 +215,6 @@ export async function* runToolCall(
 							{ label: 'Cancel', description: 'End the run without authorization.' },
 						],
 					}];
-					await Promise.resolve();
 					yield {
 						type: 'user_input_request',
 						requestId,
