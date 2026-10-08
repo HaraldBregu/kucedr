@@ -18,7 +18,10 @@ export async function createEmbedding(
 	if (texts.some((text) => !text)) throw new Error('Every embedding input must contain text.');
 
 	const providerId = (
-		request.providerId ?? getProviderId('embedding') ?? defaultProviderId('embedding') ?? ''
+		request.providerId ??
+		getProviderId('embedding') ??
+		defaultProviderId('embedding') ??
+		''
 	).trim();
 	const provider = EMBEDDING_PROVIDERS[providerId];
 	if (!provider) throw new Error(`Embedding provider is not supported: ${providerId}`);

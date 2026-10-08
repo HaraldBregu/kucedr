@@ -21,7 +21,10 @@ beforeEach(() => {
 	getProviderId.mockReturnValue('openai');
 	getModelId.mockReturnValue('text-embedding-3-small');
 	providerModels.mockReturnValue([{ id: 'text-embedding-3-small' }]);
-	generateEmbeddings.mockResolvedValue([[0.1, 0.2], [0.2, 0.3]]);
+	generateEmbeddings.mockResolvedValue([
+		[0.1, 0.2],
+		[0.2, 0.3],
+	]);
 });
 
 it('keeps each input aligned with its selected provider and model', async () => {
@@ -54,13 +57,10 @@ it.each(
 	[[], [[]], [[0, 0]], [[Number.NaN, 1]], [[Number.POSITIVE_INFINITY, 1]], [[1], [1, 2]]].map(
 		(embeddings) => ({ embeddings })
 	)
-)(
-	'rejects malformed embeddings: $embeddings',
-	async ({ embeddings }) => {
-		generateEmbeddings.mockResolvedValue(embeddings);
-		await expect(createEmbedding({ texts: ['first'] })).rejects.toThrow('malformed embeddings');
-	}
-);
+)('rejects malformed embeddings: $embeddings', async ({ embeddings }) => {
+	generateEmbeddings.mockResolvedValue(embeddings);
+	await expect(createEmbedding({ texts: ['first'] })).rejects.toThrow('malformed embeddings');
+});
 
 it('permits the explicitly selected local BGE endpoint for Knowledge without an API key', async () => {
 	getProvider.mockReturnValue(undefined);

@@ -32,18 +32,32 @@ it.each(['openai', 'voyage', 'jina', 'bge'])(
 	}
 );
 
-it.each([[0, 0], [0, 2], [0, -1], [0, 0.5], [0, undefined]].map((indexes) => ({ indexes })))(
+it.each(
+	[
+		[0, 0],
+		[0, 2],
+		[0, -1],
+		[0, 0.5],
+		[0, undefined],
+	].map((indexes) => ({ indexes }))
+)(
 	'rejects duplicated, out of bounds, and missing response indexes: $indexes',
 	async ({ indexes }) => {
-		jest.mocked(global.fetch).mockResolvedValue(
-			new Response(JSON.stringify({ data: indexes.map((index) => ({ index, embedding: [1] })) }))
-		);
+		jest
+			.mocked(global.fetch)
+			.mockResolvedValue(
+				new Response(JSON.stringify({ data: indexes.map((index) => ({ index, embedding: [1] })) }))
+			);
 		await expect(generateEmbeddings(options)).rejects.toThrow('malformed embedding indexes');
 	}
 );
 
 it.each([
-	['cohere', 'document', { input_type: 'search_document', truncate: 'NONE', embedding_types: ['float'] }],
+	[
+		'cohere',
+		'document',
+		{ input_type: 'search_document', truncate: 'NONE', embedding_types: ['float'] },
+	],
 	['cohere', 'query', { input_type: 'search_query', truncate: 'NONE' }],
 	['voyage', 'document', { input_type: 'document', truncation: false, output_dtype: 'float' }],
 	['voyage', 'query', { input_type: 'query', truncation: false }],
@@ -52,19 +66,22 @@ it.each([
 	['nomic', 'document', { task_type: 'search_document', long_text_mode: 'mean' }],
 	['nomic', 'query', { task_type: 'search_query', long_text_mode: 'mean' }],
 	['openai', 'document', { encoding_format: 'float' }],
-] as const)('maps %s %s retrieval inputs without discarding long content', async (providerId, inputType, expected) => {
-	jest.mocked(global.fetch).mockResolvedValue(
-		new Response(
-			JSON.stringify({
-				data: [{ index: 0, embedding: [0.1, 0.2] }],
-				embeddings: providerId === 'cohere' ? { float: [[0.1, 0.2]] } : [[0.1, 0.2]],
-			})
-		)
-	);
-	await generateEmbeddings({ ...options, providerId, inputType, texts: ['document'] });
-	const init = jest.mocked(global.fetch).mock.calls[0]?.[1];
-	expect(JSON.parse(String(init?.body))).toMatchObject({ model: 'test-model', ...expected });
-});
+] as const)(
+	'maps %s %s retrieval inputs without discarding long content',
+	async (providerId, inputType, expected) => {
+		jest.mocked(global.fetch).mockResolvedValue(
+			new Response(
+				JSON.stringify({
+					data: [{ index: 0, embedding: [0.1, 0.2] }],
+					embeddings: providerId === 'cohere' ? { float: [[0.1, 0.2]] } : [[0.1, 0.2]],
+				})
+			)
+		);
+		await generateEmbeddings({ ...options, providerId, inputType, texts: ['document'] });
+		const init = jest.mocked(global.fetch).mock.calls[0]?.[1];
+		expect(JSON.parse(String(init?.body))).toMatchObject({ model: 'test-model', ...expected });
+	}
+);
 
 it('bounds API batches and preserves order across batches', async () => {
 	jest.mocked(global.fetch).mockImplementation(async (_url, init) => {
@@ -82,8 +99,14 @@ it('bounds API batches and preserves order across batches', async () => {
 		...options,
 		texts: Array.from({ length: 130 }, (_, index) => String(index)),
 	});
-	expect(jest.mocked(global.fetch).mock.calls.map(([, init]) => JSON.parse(String(init?.body)).input.length)).toEqual([64, 64, 2]);
-	expect(result.map(([value]) => value)).toEqual(Array.from({ length: 130 }, (_, index) => index + 1));
+	expect(
+		jest
+			.mocked(global.fetch)
+			.mock.calls.map(([, init]) => JSON.parse(String(init?.body)).input.length)
+	).toEqual([64, 64, 2]);
+	expect(result.map(([value]) => value)).toEqual(
+		Array.from({ length: 130 }, (_, index) => index + 1)
+	);
 });
 
 it('stops after cancellation between batches', async () => {
@@ -91,21 +114,40 @@ it('stops after cancellation between batches', async () => {
 	jest.mocked(global.fetch).mockImplementation(async (_url, init) => {
 		const body = JSON.parse(String(init?.body));
 		controller.abort(new Error('Canceled'));
-		return new Response(JSON.stringify({ data: body.input.map((_: string, index: number) => ({ index, embedding: [1] })) }));
+		return new Response(
+			JSON.stringify({
+				data: body.input.map((_: string, index: number) => ({ index, embedding: [1] })),
+			})
+		);
 	});
-	await expect(generateEmbeddings({ ...options, texts: new Array(65).fill('text'), signal: controller.signal })).rejects.toThrow('Canceled');
+	await expect(
+		generateEmbeddings({ ...options, texts: new Array(65).fill('text'), signal: controller.signal })
+	).rejects.toThrow('Canceled');
 	expect(global.fetch).toHaveBeenCalledTimes(1);
 });
 
 it('rejects dimensions that change between API batches', async () => {
 	jest.mocked(global.fetch).mockImplementation(async (_url, init) => {
 		const body = JSON.parse(String(init?.body));
-		return new Response(JSON.stringify({ data: body.input.map((_: string, index: number) => ({ index, embedding: body.input.length === 64 ? [1, 2] : [1] })) }));
+		return new Response(
+			JSON.stringify({
+				data: body.input.map((_: string, index: number) => ({
+					index,
+					embedding: body.input.length === 64 ? [1, 2] : [1],
+				})),
+			})
+		);
 	});
-	await expect(generateEmbeddings({ ...options, texts: new Array(65).fill('text') })).rejects.toThrow('dimensions changed between batches');
+	await expect(
+		generateEmbeddings({ ...options, texts: new Array(65).fill('text') })
+	).rejects.toThrow('dimensions changed between batches');
 });
 
 it('rejects invalid vector data before returning results', async () => {
-	jest.mocked(global.fetch).mockResolvedValue(new Response(JSON.stringify({ data: [{ index: 0, embedding: [0, 0] }] })));
-	await expect(generateEmbeddings({ ...options, texts: ['document'] })).rejects.toThrow('malformed embeddings');
+	jest
+		.mocked(global.fetch)
+		.mockResolvedValue(new Response(JSON.stringify({ data: [{ index: 0, embedding: [0, 0] }] })));
+	await expect(generateEmbeddings({ ...options, texts: ['document'] })).rejects.toThrow(
+		'malformed embeddings'
+	);
 });
