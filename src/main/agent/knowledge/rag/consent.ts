@@ -1,5 +1,6 @@
 import type { RagConfiguration } from '../../../../shared/rag_types';
 import { ragRecipient } from './recipient';
+import { isLocalRagDatabase } from '../../../../shared/rag_database';
 
 export function assertRagConsent(
 	configuration: RagConfiguration,
@@ -18,7 +19,7 @@ export function assertRagConsent(
 		throw new Error(
 			'Confirm remote embedding disclosure for document text and search queries in RAG settings.'
 		);
-	if (mirror) {
+	if (mirror && !isLocalRagDatabase(configuration)) {
 		const accepted = configuration.mirrorConsent;
 		if (
 			accepted?.version !== 1 ||

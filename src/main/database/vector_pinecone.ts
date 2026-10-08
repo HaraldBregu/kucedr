@@ -42,6 +42,9 @@ async function uploadPinecone(input: VectorDatabaseUpload): Promise<void> {
 	signal?.throwIfAborted();
 	assertCurrent();
 	const description = await client.describeIndex(indexName);
+	if (description.dimension !== dimensions || description.metric !== 'cosine') {
+		throw new Error('Pinecone index dimensions or metric differ. Choose a new index for this embedding model.');
+	}
 	if (
 		!('serverless' in description.spec) ||
 		description.spec.serverless?.cloud !== PINECONE_CLOUD ||

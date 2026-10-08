@@ -2,6 +2,9 @@ import { createHash, randomUUID } from 'node:crypto';
 import path from 'node:path';
 import { createRagMirror } from './mirror';
 import { assertRagConsent } from './consent';
+import { assertRagCurrent } from './current';
+import { validateVector } from './validate';
+import { isLocalRagDatabase } from '../../../../shared/rag_database';
 import {
 	KNOWLEDGE_MAX_RECORDS,
 	KNOWLEDGE_MAX_VECTOR_VALUES,
@@ -28,6 +31,9 @@ export async function indexRag(
 	if (sources.length === 0) throw new Error('Choose at least one source folder before indexing.');
 
 	const configuration = getRagConfiguration();
+	if (!configuration.enabled) throw new Error('Enable Knowledge before indexing.');
+	if (configuration.indexName !== selectedIndexName)
+		throw new Error('Select the Knowledge index before indexing.');
 	const providerId = configuration.embeddingProviderId.trim();
 	const modelId = configuration.embeddingModelId.trim();
 	if (!providerId || !modelId) {
@@ -38,7 +44,9 @@ export async function indexRag(
 	const vectorStore = dependencies.vectors ?? ragVectorStore();
 	const embeddingProvider = dependencies.embeddings ?? new SelectedEmbeddingProvider();
 	const generation = `kucedr-${randomUUID()}`;
-	const mirror = dependencies.mirror ?? createRagMirror();
+	const mirror = isLocalRagDatabase(configuration)
+		? undefined
+		: dependencies.mirror ?? createRagMirror();
 	const timeout = AbortSignal.timeout(KNOWLEDGE_TIMEOUT_MS);
 	const signal = dependencies.signal ? AbortSignal.any([dependencies.signal, timeout]) : timeout;
 	let uploadStarted = false;
@@ -59,7 +67,10 @@ export async function indexRag(
 				.update('\0')
 				.update(file)
 				.digest('hex');
-			const sourceFingerprint = createHash('sha256').update(content).digest('hex');
+			const sourceFingerprint = createHash('sha256')
+				.update('knowledge-chunks-v2\0')
+				.update(content)
+				.digest('hex');
 			const reused = vectorStore.getReusableSource(
 				selectedIndexName,
 				sourceId,
@@ -68,6 +79,9 @@ export async function indexRag(
 				modelId
 			);
 			if (reused) {
+				for (const record of reused) {
+					validateVector(record.vector, dimensions ?? reused[0].vector.length);
+				}
 				vectorValues += reused.reduce((count, record) => count + record.vector.length, 0);
 				if (
 					records.length + reused.length > KNOWLEDGE_MAX_RECORDS ||
@@ -85,6 +99,7 @@ export async function indexRag(
 				if (records.length + batch.length > KNOWLEDGE_MAX_RECORDS)
 					throw new Error('Knowledge record limit exceeded.');
 				assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
+				assertRagCurrent(configuration);
 				assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
 				const embedded = await embeddingProvider.embed(
 					{
@@ -116,6 +131,7 @@ export async function indexRag(
 				if (embedded.dimensions !== dimensions) {
 					throw new Error('Embedding dimensions changed while indexing.');
 				}
+				for (const vector of embedded.embeddings) validateVector(vector, dimensions);
 				for (const [offset, chunk] of batch.entries()) {
 					const chunkIndex = start + offset;
 					records.push({
@@ -141,11 +157,15 @@ export async function indexRag(
 		signal.throwIfAborted();
 
 		assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
+		assertRagCurrent(configuration);
 		assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
-		uploadStarted = true;
-		await mirror.upload(selectedIndexName, generation, dimensions, records, signal);
+		if (mirror) {
+			uploadStarted = true;
+			await mirror.upload(selectedIndexName, generation, dimensions, records, signal);
+		}
 		signal.throwIfAborted();
 		assertRagConsent(configuration, providerId, modelId, selectedIndexName, true);
+		assertRagCurrent(configuration);
 		assertRagConsent(getRagConfiguration(), providerId, modelId, selectedIndexName, true);
 
 		const completedAt = new Date().toISOString();
@@ -169,7 +189,7 @@ export async function indexRag(
 		});
 		return { files: indexedFiles, vectors: records.length };
 	} catch (error) {
-		if (uploadStarted && !published) {
+		if (mirror && uploadStarted && !published) {
 			try {
 				await mirror.discard(selectedIndexName, generation, AbortSignal.timeout(15_000));
 			} catch (cleanupError) {

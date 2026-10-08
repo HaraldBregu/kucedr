@@ -6,9 +6,11 @@ import {
 import { assertRagConsent } from './consent';
 import { getRagConfiguration } from './rag_store';
 import type { RagMirror } from './types';
+import { isLocalRagDatabase } from '../../../../shared/rag_database';
 
-export function createRagMirror(): RagMirror {
+export function createRagMirror(): RagMirror | undefined {
 	const configuration = getRagConfiguration();
+	if (isLocalRagDatabase(configuration)) return undefined;
 	const connection = selectedVectorDatabaseConnection({
 		providerId: configuration.databaseProviderId || undefined,
 		databaseId: configuration.databaseId || undefined,

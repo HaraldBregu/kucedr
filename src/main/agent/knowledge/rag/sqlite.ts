@@ -2,6 +2,7 @@ import { restrictSettingsFile } from '../../../shared/restrict_settings_file';
 import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { DatabaseSync, type StatementSync } from 'node:sqlite';
+import { validateVector } from './validate';
 import type {
 	IndexRow,
 	RecordRow,
@@ -139,9 +140,7 @@ export class SqliteVectorStore implements VectorStore {
 	publish(publication: VectorPublication): void {
 		if (publication.records.length === 0) throw new Error('Cannot publish an empty vector index.');
 		for (const record of publication.records) {
-			if (record.vector.length !== publication.dimensions) {
-				throw new Error(`Vector dimensions do not match for chunk: ${record.id}`);
-			}
+			validateVector(record.vector, publication.dimensions);
 		}
 
 		this.database.exec('BEGIN IMMEDIATE');
@@ -184,6 +183,8 @@ export class SqliteVectorStore implements VectorStore {
 		if (!index) return [];
 		if (vector.length !== index.dimensions)
 			throw new Error('Query vector dimensions do not match.');
+		validateVector(vector, index.dimensions);
+		if (!Number.isFinite(topK)) throw new Error('Knowledge result count must be finite.');
 		const count = Math.max(1, Math.min(Math.trunc(topK), 100));
 		const rows = this.activeRecordsStatement.all(indexName) as unknown as RecordRow[];
 		return rows
