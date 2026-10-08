@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Link, MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
@@ -410,10 +410,10 @@ it('continues through chat and voice, goes back, and saves only on Finish', asyn
 		await user.click(await screen.findByRole('button', { name: 'Get started' }));
 		await user.click(screen.getByRole('button', { name: 'Continue' }));
 		expect(await screen.findByRole('heading', { name: 'Chat assistant' })).toBeInTheDocument();
-		expect(screen.getByRole('status')).toHaveTextContent('Chat assistant · 2 of 3');
+		expect(within(document.querySelector('footer')!).getByRole('status')).toHaveTextContent('Chat assistant · 2 of 3');
 		await user.click(screen.getByRole('button', { name: 'Continue' }));
 		expect(await screen.findByRole('heading', { name: 'Voice assistant' })).toBeInTheDocument();
-		expect(screen.getByRole('status')).toHaveTextContent('Voice assistant · 3 of 3');
+		expect(within(document.querySelector('footer')!).getByRole('status')).toHaveTextContent('Voice assistant · 3 of 3');
 		expect(save).not.toHaveBeenCalled();
 		await user.click(screen.getByRole('button', { name: 'Back' }));
 		expect(screen.getByRole('heading', { name: 'Chat assistant' })).toBeInTheDocument();
