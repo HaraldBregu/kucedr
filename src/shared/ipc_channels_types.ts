@@ -527,7 +527,7 @@ export interface McpInvokeChannelMap {
 	};
 	[McpChannels.oauthStatus]: { args: [id: string]; result: boolean };
 	[McpChannels.oauthStart]: {
-		args: [id: string];
+		args: [id: string, force?: boolean];
 		result: import('./mcp_types').McpOAuthStart;
 	};
 }

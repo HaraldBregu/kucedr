@@ -251,7 +251,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 
 		registerCommandWithEvent(
 			McpChannels.oauthStart,
-			async (event, id: string): Promise<McpOAuthStart> => {
+			async (event, id: string, force = false): Promise<McpOAuthStart> => {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
 				const state = randomBytes(32).toString('hex');
@@ -274,7 +274,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 							authorizationUrl = url.toString();
 						},
 					});
-					if (managedCredentials) await provider.invalidateCredentials?.('tokens');
+					if (managedCredentials || force) await provider.invalidateCredentials?.('tokens');
 					const result = await auth(provider, { serverUrl: server.url });
 					if (result === 'AUTHORIZED') {
 						const listed = await testMcpServer(server.id);

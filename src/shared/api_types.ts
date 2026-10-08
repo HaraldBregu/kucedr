@@ -371,7 +371,7 @@ export interface McpApi {
 	test: (id: string) => Promise<McpTestResult>;
 	catalog: (id: string) => Promise<McpTestResult | undefined>;
 	oauthStatus: (id: string) => Promise<boolean>;
-	oauthStart: (id: string) => Promise<McpOAuthStart>;
+	oauthStart: (id: string, force?: boolean) => Promise<McpOAuthStart>;
 }
 
 export interface DriveApi {
