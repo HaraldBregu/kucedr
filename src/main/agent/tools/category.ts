@@ -2,7 +2,7 @@ export const toolCategoryRegistry = {
 	core: {
 		label: 'Core',
 		description:
-			'Read and modify workspace files, run commands, manage processes, and undo or redo file operations.',
+			'Find available tools, read and modify workspace files, run commands, manage processes, and undo or redo file operations.',
 	},
 	system: {
 		label: 'System',
@@ -38,11 +38,6 @@ export const toolCategoryRegistry = {
 		label: 'Skills',
 		description:
 			'List and load reusable instruction packages that provide specialized workflows and capabilities.',
-	},
-	discovery: {
-		label: 'Discovery',
-		description:
-			'Find relevant tools that are available to load on demand for the current model turn.',
 	},
 	integration: {
 		label: 'Integrations',

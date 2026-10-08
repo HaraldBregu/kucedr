@@ -30,7 +30,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 
 	expect(context).toContain('### Loaded tools');
 	expect(context).toContain(
-		'#### Core\nRead and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — Read a file.\n- `tool_search` — Find relevant tools.'
+		'#### Core\nFind available tools, read and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — Read a file.\n- `tool_search` — Find relevant tools.'
 	);
 	expect(context).toContain(
 		'#### Delegation\nDelegate independent work to subagents or connected remote agents and follow their progress.\n- `subagent` — Delegate one independent task.'

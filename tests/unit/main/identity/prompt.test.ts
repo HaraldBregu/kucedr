@@ -51,7 +51,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		] as never);
 		expect(complete).toContain('### Loaded tools');
 		expect(complete).toContain(
-			'#### Core\nRead and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.\n- `tool_search` — No description provided by this tool.'
+			'#### Core\nFind available tools, read and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.\n- `tool_search` — No description provided by this tool.'
 		);
 		expect(complete).toContain(
 			'#### Bootstrap\nRead and update the assistant identity, personality, user profile, and health context during initial setup.\n- `update_identity` — No description provided by this tool.'
