@@ -17,12 +17,14 @@ export function ImageGallery({
 
 	if (paths.length === 1) {
 		return (
-			<img
-				src={toSource(selectedPath)}
-				alt="Generated image"
-				className="h-auto max-w-full rounded-lg border border-border/50"
-				onContextMenu={() => onContextMenu(selectedPath)}
-			/>
+			<div className="aspect-square w-1/2 overflow-hidden rounded-lg border border-border/50 bg-muted">
+				<img
+					src={toSource(selectedPath)}
+					alt="Generated image"
+					className="size-full object-contain"
+					onContextMenu={() => onContextMenu(selectedPath)}
+				/>
+			</div>
 		);
 	}
 
