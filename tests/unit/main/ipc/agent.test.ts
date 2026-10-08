@@ -5,6 +5,7 @@ import type { Agent } from '../../../../src/main/agent/agent';
 import type { Conversation } from '../../../../src/main/agent/conversation';
 import type { EventBus } from '../../../../src/main/event_bus';
 import type { LoggerService } from '../../../../src/main/shared';
+import * as permissionsApi from '../../../../src/main/agent/permissions';
 
 describe('AgentIpc run ownership', () => {
 	beforeEach(() => {
@@ -72,6 +73,53 @@ describe('AgentIpc run ownership', () => {
 			data: true,
 		});
 		expect(cancel).toHaveBeenCalledWith('run-1', 7);
+	});
+
+	it('routes policy reads, writes, and resets to Voice while preserving the Chat default', async () => {
+		const policy = {
+			read: { allow: ['/voice/**'], deny: [] },
+			write: { allow: [], deny: [] },
+			exec: { allow: [], deny: [] },
+		};
+		const get = jest.spyOn(permissionsApi, 'getPermissions').mockReturnValue(policy);
+		const set = jest.spyOn(permissionsApi, 'setPermissions').mockReturnValue(policy);
+		const reset = jest.spyOn(permissionsApi, 'resetPermissions').mockReturnValue(policy);
+		const invalidate = jest.fn().mockResolvedValue(undefined);
+		const sender = { mainFrame: {} };
+		const event = { sender, senderFrame: sender.mainFrame };
+		(BrowserWindow.fromWebContents as jest.Mock).mockReturnValue({ id: 7, webContents: sender });
+		new AgentIpc().register(
+			{
+				logger: { info: jest.fn() } as unknown as LoggerService,
+				agent: { config: { location: '/agent' }, sandbox: { invalidate } } as unknown as Agent,
+				conversation: { execute: jest.fn() } as unknown as Conversation,
+				windows: { has: (id: number) => id === 7 } as never,
+				apps: { has: () => false } as never,
+			},
+			{ sendTo: jest.fn() } as unknown as EventBus
+		);
+		const handler = (channel: string) =>
+			(ipcMain.handle as jest.Mock).mock.calls.find(([registered]) => registered === channel)?.[1];
+		try {
+			await expect(handler(AgentChannels.policyGet)(event, 'voice')).resolves.toEqual({ success: true, data: policy });
+			expect(get).toHaveBeenLastCalledWith('voice');
+			await expect(handler(AgentChannels.policySet)(event, policy, 'voice')).resolves.toEqual({ success: true, data: policy });
+			expect(set).toHaveBeenLastCalledWith(policy, 'voice');
+			await expect(handler(AgentChannels.policyReset)(event, 'voice')).resolves.toEqual({ success: true, data: policy });
+			expect(reset).toHaveBeenLastCalledWith('voice');
+			await handler(AgentChannels.policyGet)(event);
+			expect(get).toHaveBeenLastCalledWith('chat');
+			await handler(AgentChannels.policySet)(event, policy);
+			expect(set).toHaveBeenLastCalledWith(policy, 'chat');
+			await handler(AgentChannels.policyReset)(event);
+			expect(reset).toHaveBeenLastCalledWith('chat');
+			await expect(handler(AgentChannels.policySet)(event, policy, 'unknown')).resolves.toMatchObject({ success: false });
+			expect(set).toHaveBeenCalledTimes(2);
+		} finally {
+			get.mockRestore();
+			set.mockRestore();
+			reset.mockRestore();
+		}
 	});
 
 	it('lists every session type when requested', async () => {

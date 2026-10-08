@@ -139,6 +139,29 @@ describe('agent store permissions', () => {
 		}
 	);
 
+	it('preserves Chat tools and directories when Voice permissions are saved or reset', () => {
+		setPermissions({
+			read: { allow: ['/chat/**'], deny: [] },
+			write: { allow: [], deny: [] },
+			exec: { allow: [], deny: [] },
+			tools: { read: { permission: 'deny' } },
+		});
+		const chat = getPermissions();
+		setPermissions({
+			read: { allow: ['/voice/**'], deny: [] },
+			write: { allow: [], deny: [] },
+			exec: { allow: [], deny: [] },
+			tools: { read: { permission: 'ask' } },
+		}, 'voice');
+		expect(getPermissions('voice').read.allow).toEqual([workspaceRule, '/voice/**']);
+		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('ask');
+		expect(getPermissions()).toEqual(chat);
+		resetPermissions('voice');
+		expect(getPermissions('voice').read.allow).toEqual([workspaceRule]);
+		expect(getToolConfiguration('voice', { kind: 'builtin', id: 'read' }).permission).toBe('allow');
+		expect(getPermissions()).toEqual(chat);
+	});
+
 	it('does not create a separate persistent permissions store', () => {
 		expect(mockStoreNames).not.toContain('permissions');
 	});

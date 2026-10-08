@@ -101,3 +101,23 @@ describe('Permissions settings', () => {
 		await waitFor(() => expect(agentApi.policyReset).toHaveBeenCalledTimes(1));
 	});
 });
+
+
+it('loads, saves, and resets only Voice permissions when opened for Voice', async () => {
+	const user = userEvent.setup();
+	const chat = JSON.parse(JSON.stringify(permissions));
+	const voice = {
+		read: { allow: [workspaceRule, '/voice/**'], deny: [] },
+		write: { allow: [workspaceRule], deny: [] },
+		exec: { allow: [workspaceRule], deny: [] },
+	};
+	agentApi.policyGet.mockImplementation(async (profile) => profile === 'voice' ? voice : chat);
+	render(<PermissionsPage profile="voice" />);
+	await screen.findByText('/voice');
+	expect(screen.queryByText('/shared')).not.toBeInTheDocument();
+	expect(agentApi.policyGet).toHaveBeenCalledWith('voice');
+	await user.click(screen.getByRole('button', { name: 'save' }));
+	await waitFor(() => expect(agentApi.policySet).toHaveBeenCalledWith(voice, 'voice'));
+	await user.click(screen.getByRole('button', { name: 'reset' }));
+	await waitFor(() => expect(agentApi.policyReset).toHaveBeenCalledWith('voice'));
+});
