@@ -34,14 +34,18 @@ it('uploads files above the in-memory limit through bounded multipart streaming'
 		expect(Buffer.concat(chunks)).toEqual(data);
 	});
 	await store.putFile('kucedr/backup/file', file);
-	expect(Upload).toHaveBeenCalledWith(expect.objectContaining({
-		queueSize: 2,
-		partSize: 8 * 1024 * 1024,
-		leavePartsOnError: false,
-		params: expect.objectContaining({
-			Bucket: 'archive', Key: 'kucedr/backup/file', ContentLength: 32,
-		}),
-	}));
+	expect(Upload).toHaveBeenCalledWith(
+		expect.objectContaining({
+			queueSize: 2,
+			partSize: 8 * 1024 * 1024,
+			leavePartsOnError: false,
+			params: expect.objectContaining({
+				Bucket: 'archive',
+				Key: 'kucedr/backup/file',
+				ContentLength: 32,
+			}),
+		})
+	);
 });
 
 it('closes upload streams and sanitizes failed multipart errors', async () => {
@@ -71,11 +75,15 @@ it('does not overwrite an existing local file', async () => {
 });
 
 it('fails interrupted downloads instead of reporting a partial file as complete', async () => {
-	const body = Readable.from((async function* () {
-		yield Buffer.from('partial');
-		throw new Error('provider stream failed');
-	})());
+	const body = Readable.from(
+		(async function* () {
+			yield Buffer.from('partial');
+			throw new Error('provider stream failed');
+		})()
+	);
 	send.mockResolvedValue({ Body: body });
-	await expect(store.getFile('file', join(directory, 'download'))).rejects.toThrow('S3 request failed');
+	await expect(store.getFile('file', join(directory, 'download'))).rejects.toThrow(
+		'S3 request failed'
+	);
 	expect(body.destroyed).toBe(true);
 });
