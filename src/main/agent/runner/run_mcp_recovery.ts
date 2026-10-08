@@ -1,4 +1,4 @@
-import { addAssistantMessage, addToolResults, type SessionState } from '../session';
+import { addToolResults, type SessionState } from '../session';
 import type { FileAccessContext } from '../context';
 import type { FileHistory } from '../history/types';
 import type { KeyedMutex } from '../mutex';
@@ -38,7 +38,6 @@ export async function* runMcpRecovery({
 		pendingCalls.filter((call) => !call.result),
 		'Waiting for MCP authorization; remaining tools were not run.'
 	);
-	addToolResults(session, pendingCalls);
 	const authorizationCall: ToolCall = {
 		id: crypto.randomUUID(),
 		name: 'request_mcp_authorization',
@@ -49,7 +48,6 @@ export async function* runMcpRecovery({
 			toolName: failedTool?.name,
 		},
 	};
-	addAssistantMessage(session, '', [authorizationCall]);
 	yield* runToolCalls(
 		[requestMcpAuthorizationTool()],
 		[authorizationCall],
@@ -59,16 +57,16 @@ export async function* runMcpRecovery({
 		resources,
 		history
 	);
-	addToolResults(session, [authorizationCall]);
-	if (mcpAuthorizationStopped(authorizationCall) || authorizationCall.result?.isError)
+	if (mcpAuthorizationStopped(authorizationCall) || authorizationCall.result?.isError) {
+		addToolResults(session, pendingCalls);
 		return 'cancelled';
+	}
 
 	const retryCall: ToolCall = {
 		id: crypto.randomUUID(),
 		name: failedCall.name,
 		args: { ...failedCall.args },
 	};
-	addAssistantMessage(session, '', [retryCall]);
 	yield* runToolCalls(
 		failedTool ? [failedTool] : [],
 		[retryCall],
@@ -78,6 +76,10 @@ export async function* runMcpRecovery({
 		resources,
 		history
 	);
-	addToolResults(session, [retryCall]);
+	if (retryCall.result) {
+		failedCall.result = retryCall.result;
+		security.budget?.outcomes.set(failedCall.id, structuredClone(failedCall));
+	}
+	addToolResults(session, pendingCalls);
 	return 'retried';
 }
