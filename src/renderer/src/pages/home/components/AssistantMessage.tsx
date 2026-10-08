@@ -122,10 +122,6 @@ function resolveLocalImagePath(
 	return undefined;
 }
 
-function isSkillTool(tool: AgentToolPart): boolean {
-	return tool.type.toLowerCase().includes('skill');
-}
-
 function fileName(path: string): string {
 	return path.slice(Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\')) + 1);
 }
@@ -198,13 +194,25 @@ export function AssistantMessage({
 	const displayContent = parsedPlan.kind === 'markdown' ? message.content : parsedPlan.content;
 	const messageText = displayContent.trim();
 	const hasTools = message.tools.length > 0;
-	const skillTools = message.tools.filter(isSkillTool);
-	const questionTools = message.tools.filter((tool) => tool.type === 'ask');
-	const screenSourceTools = message.tools.filter((tool) => tool.type === 'select_screen_source');
-	const mcpAuthorizationTools = message.tools.filter((tool) => tool.type === 'request_mcp_authorization');
-	const otherTools = message.tools.filter(
-		(tool) => !isSkillTool(tool) && tool.type !== 'ask' && tool.type !== 'select_screen_source' && tool.type !== 'request_mcp_authorization'
-	);
+	const toolSections: AgentToolPart[][] = [];
+	for (const tool of message.tools) {
+		const isCard =
+			tool.type === 'ask' ||
+			tool.type === 'select_screen_source' ||
+			tool.type === 'request_mcp_authorization';
+		const last = toolSections[toolSections.length - 1];
+		if (
+			!isCard &&
+			last &&
+			last[0].type !== 'ask' &&
+			last[0].type !== 'select_screen_source' &&
+			last[0].type !== 'request_mcp_authorization'
+		) {
+			last.push(tool);
+		} else {
+			toolSections.push([tool]);
+		}
+	}
 	const generated = generatedMedia(message.tools);
 	const mediaPaths = generated.flatMap(({ paths }) => paths);
 	const generatedImagePaths = generated
@@ -308,37 +316,20 @@ export function AssistantMessage({
 
 	return (
 		<Message className={cn('flex w-full flex-col', className)}>
-			{skillTools.length > 0 && <ToolActivityGroup tools={skillTools} />}
-			{otherTools.length > 0 && <ToolActivityGroup tools={otherTools} />}
-			{questionTools.map((tool) => (
-				<UserInputCard
-					key={tool.toolCallId}
-					tool={tool}
-					pending={
-						message.pendingUserInput?.toolCallId === tool.toolCallId
-							? message.pendingUserInput
-							: undefined
-					}
-				/>
-			))}
-			{screenSourceTools.map((tool) => (
-				<ScreenSourceCard
-					key={tool.toolCallId}
-					tool={tool}
-					pending={
-						message.pendingUserInput?.toolCallId === tool.toolCallId
-							? message.pendingUserInput
-							: undefined
-					}
-				/>
-			))}
-			{mcpAuthorizationTools.map((tool) => (
-				<McpAuthorizationCard
-					key={tool.toolCallId}
-					tool={tool}
-					pending={message.pendingUserInput?.toolCallId === tool.toolCallId ? message.pendingUserInput : undefined}
-				/>
-			))}
+			{toolSections.map((section) => {
+				const tool = section[0];
+				const pending =
+					message.pendingUserInput?.toolCallId === tool.toolCallId
+						? message.pendingUserInput
+						: undefined;
+				if (tool.type === 'ask')
+					return <UserInputCard key={tool.toolCallId} tool={tool} pending={pending} />;
+				if (tool.type === 'select_screen_source')
+					return <ScreenSourceCard key={tool.toolCallId} tool={tool} pending={pending} />;
+				if (tool.type === 'request_mcp_authorization')
+					return <McpAuthorizationCard key={tool.toolCallId} tool={tool} pending={pending} />;
+				return <ToolActivityGroup key={tool.toolCallId} tools={section} />;
+			})}
 			{message.pendingPermission && (
 				<ToolPermissionCard
 					key={message.pendingPermission.toolCallId}
