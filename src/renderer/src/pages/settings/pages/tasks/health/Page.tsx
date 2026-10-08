@@ -33,6 +33,7 @@ import {
 	SettingsPageShell,
 	SettingsPanel,
 	SettingsRow,
+	SettingsSection,
 } from '../../../components';
 import { ModelProviderConfiguration } from '../../../components/model-configuration';
 
@@ -165,37 +166,6 @@ const HealthPage: React.FC = () => {
 							}
 						>
 							<div className="-mx-4">
-								<SettingsRow
-									title={t('settings.health.fields.enabled')}
-									actions={
-										<Switch
-											checked={settings.enabled}
-											onCheckedChange={(enabled) => updateAndSave({ enabled })}
-											disabled={saving}
-											aria-label={t('settings.health.fields.enabled')}
-										/>
-									}
-								/>
-								<SettingsRow
-									title={t('settings.health.fields.cronExpression')}
-									actions={
-										<Input
-											value={cronDraft ?? settings.cronExpression}
-											className="h-7 w-44 font-mono text-xs"
-											aria-label={t('settings.health.fields.cronExpression')}
-											disabled={saving}
-											onChange={(event) => setCronDraft(event.target.value)}
-											onBlur={() => {
-												if (cronDraft !== undefined && cronDraft !== settings.cronExpression)
-													updateAndSave({ cronExpression: cronDraft.trim().replace(/\s+/g, ' ') });
-											}}
-											onKeyDown={(event) => {
-												if (event.key === 'Enter') event.currentTarget.blur();
-											}}
-										/>
-									}
-								/>
-
 								<SettingsRow
 									title={t('settings.health.fields.target')}
 									actions={
@@ -366,6 +336,41 @@ const HealthPage: React.FC = () => {
 							/>
 						</ModelProviderConfiguration>
 					</SettingsPanel>
+
+					<SettingsSection title={t('settings.health.fields.cronScheduling')}>
+						<SettingsPanel>
+							<SettingsRow
+								title={t('settings.health.fields.enabled')}
+								actions={
+									<Switch
+										checked={settings.enabled}
+										onCheckedChange={(enabled) => updateAndSave({ enabled })}
+										disabled={saving}
+										aria-label={t('settings.health.fields.enabled')}
+									/>
+								}
+							/>
+							<SettingsRow
+								title={t('settings.health.fields.cronExpression')}
+								actions={
+									<Input
+										value={cronDraft ?? settings.cronExpression}
+										className="h-7 w-44 font-mono text-xs"
+										aria-label={t('settings.health.fields.cronExpression')}
+										disabled={saving}
+										onChange={(event) => setCronDraft(event.target.value)}
+										onBlur={() => {
+											if (cronDraft !== undefined && cronDraft !== settings.cronExpression)
+												updateAndSave({ cronExpression: cronDraft.trim().replace(/\s+/g, ' ') });
+										}}
+										onKeyDown={(event) => {
+											if (event.key === 'Enter') event.currentTarget.blur();
+										}}
+									/>
+								}
+							/>
+						</SettingsPanel>
+					</SettingsSection>
 
 					<SettingsPanel>
 						<Link to="/settings/health/tools" className="block hover:bg-muted/40">

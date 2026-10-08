@@ -809,6 +809,7 @@
 			"checklistDescription": "Istruzioni che l'agente segue a ogni controllo di salute (HEALTH.md). Lascialo vuoto o con soli commenti per saltare le esecuzioni.",
 			"fields": {
 				"enabled": "Attivo",
+				"cronScheduling": "Pianificazione cron",
 				"cronExpression": "Espressione cron",
 				"provider": "Provider",
 				"providerPlaceholder": "Seleziona provider",

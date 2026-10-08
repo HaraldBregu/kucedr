@@ -809,6 +809,7 @@
 			"checklistDescription": "Instructions the agent follows on each health check (HEALTH.md). Keep it empty or comment-only to skip runs.",
 			"fields": {
 				"enabled": "Enabled",
+				"cronScheduling": "Cron scheduling",
 				"cronExpression": "Cron expression",
 				"provider": "Provider",
 				"providerPlaceholder": "Select provider",
