@@ -259,14 +259,14 @@ const AppsPage: React.FC = () => {
 											<img
 												src={app.imageUrl}
 												alt=""
-												className="size-12 shrink-0 rounded-lg border border-border/70 object-cover"
+												className="size-10 shrink-0 rounded-2xl bg-muted/50 object-contain p-2.5"
 											/>
 										) : (
 											<div
 												aria-hidden="true"
-												className="flex size-12 shrink-0 items-center justify-center rounded-lg border border-border/70 text-muted-foreground"
+												className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50"
 											>
-												<Blocks className="size-4" strokeWidth={1.5} />
+												<Blocks className="size-5" />
 											</div>
 										)}
 										<div className="min-w-0 flex-1">
@@ -322,7 +322,9 @@ const AppsPage: React.FC = () => {
 							void handleAddDebug();
 						}}
 					>
-						<Bug className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+						<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50">
+							<Bug className="size-5" aria-hidden="true" />
+						</div>
 						<Input
 							type="text"
 							value={debugPath}

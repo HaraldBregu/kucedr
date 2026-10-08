@@ -100,8 +100,8 @@ const ChannelDetailPage: React.FC = () => {
 			{credential ? (
 				<Card size="sm" className="gap-0! p-0!">
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<KeyRound className="size-3" strokeWidth={1.8} />
+						<ItemMedia variant="icon" className="size-10 rounded-2xl bg-muted/50">
+							<KeyRound className="size-5" strokeWidth={1.8} />
 						</ItemMedia>
 						<ItemContent className="min-w-0 flex-col items-start gap-0.5">
 							<ItemTitle>{apiKeyCredential?.label ?? t('settings.channels.token')}</ItemTitle>
@@ -133,8 +133,8 @@ const ChannelDetailPage: React.FC = () => {
 					</Item>
 
 					<Item variant="outline" size="md" className="border-b border-border/60 px-5 py-4">
-						<ItemMedia variant="icon">
-							<ShieldCheck className="size-3" strokeWidth={1.8} />
+						<ItemMedia variant="icon" className="size-10 rounded-2xl bg-muted/50">
+							<ShieldCheck className="size-5" strokeWidth={1.8} />
 						</ItemMedia>
 						<ItemContent className="min-w-0 flex-col items-start gap-0.5">
 							<ItemTitle>{t('settings.channels.dmPolicy')}</ItemTitle>
@@ -165,8 +165,8 @@ const ChannelDetailPage: React.FC = () => {
 						className="flex-col items-stretch gap-3 border-b border-border/60 px-5 py-4"
 					>
 						<div className="flex w-full min-w-0 items-start gap-3">
-							<ItemMedia variant="icon">
-								<UserRound className="size-3" strokeWidth={1.8} />
+							<ItemMedia variant="icon" className="size-10 rounded-2xl bg-muted/50">
+								<UserRound className="size-5" strokeWidth={1.8} />
 							</ItemMedia>
 							<div className="min-w-0 flex-1">
 								<ItemTitle className="w-full">{t('settings.channels.allowFrom')}</ItemTitle>
@@ -192,8 +192,8 @@ const ChannelDetailPage: React.FC = () => {
 					</Item>
 					<Item variant="outline" size="md" className="flex-col items-stretch gap-3 px-5 py-4">
 						<div className="flex w-full min-w-0 items-start gap-3">
-							<ItemMedia variant="icon">
-								<Hash className="size-3" strokeWidth={1.8} />
+							<ItemMedia variant="icon" className="size-10 rounded-2xl bg-muted/50">
+								<Hash className="size-5" strokeWidth={1.8} />
 							</ItemMedia>
 							<div className="min-w-0 flex-1">
 								<ItemTitle className="w-full">{t('settings.channels.groupAllowFrom')}</ItemTitle>

@@ -117,7 +117,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 								name={storage.name}
 								iconDarkUrl={storage.provider.iconDarkUrl}
 								iconLightUrl={storage.provider.iconLightUrl}
-								className="size-10 rounded-2xl border border-border bg-muted/50 p-1"
+								className="size-10 rounded-2xl border-0 bg-muted/50 p-2.5"
 							/>
 							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
 								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
@@ -169,7 +169,7 @@ export default function StorageProvidersPage(): React.JSX.Element {
 								className="min-w-0 flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
 							>
 								<HardDrive
-									className="size-10 shrink-0 rounded-2xl bg-muted/50 p-1 text-muted-foreground group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+									className="size-10 shrink-0 rounded-2xl border-0 bg-muted/50 p-2.5 text-muted-foreground"
 									aria-hidden="true"
 								/>
 								<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">

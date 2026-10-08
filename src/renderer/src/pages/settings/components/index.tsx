@@ -1,3 +1,4 @@
+import { SettingsItemMedia } from './item-media';
 import React, { type ReactNode, useEffect, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -169,12 +170,11 @@ export function SettingsRow({
 			)}
 		>
 			<div className={cn('flex min-w-0 items-center gap-4', contentClassName)}>
-				{media ??
-					(Icon && (
-						<span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted/60 text-muted-foreground">
-							<Icon className="size-3" strokeWidth={1.8} />
-						</span>
-					))}
+				{media || Icon ? (
+					<SettingsItemMedia>
+						{media ?? (Icon ? <Icon className="size-5" aria-hidden="true" /> : null)}
+					</SettingsItemMedia>
+				) : null}
 				<div className="min-w-0 flex-1">
 					<div className="text-[13px] font-medium leading-4 tracking-normal text-foreground">
 						{title}

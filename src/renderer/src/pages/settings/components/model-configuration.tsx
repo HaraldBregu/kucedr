@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { AlertTriangle, Bot } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ModelProviderSelect, toModelProviderGroups } from '@/components/model-provider-select';
+import { SettingsItemMedia } from './item-media';
 import { cn } from '@/lib/utils';
 import { ProviderAvatar } from '@/components/provider-avatar';
 import { getProviderCatalogItem } from '../../start/setupConstants';
@@ -149,7 +150,7 @@ export function ModelProviderConfiguration({
 								name={providerName}
 								iconDarkUrl={provider.iconDarkUrl}
 								iconLightUrl={provider.iconLightUrl}
-								className="size-5"
+								className="size-5 rounded-none border-0 bg-transparent p-0"
 							/>
 						) : undefined)
 					}
@@ -219,36 +220,23 @@ export function ModelProviderConfiguration({
 						pluginItemStyle && 'gap-3'
 					)}
 				>
-					{showIcon &&
-						(FunctionIcon ? (
-							pluginItemStyle ? (
-								<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-muted/50 text-muted-foreground">
-									<FunctionIcon className="size-5" aria-hidden="true" />
-								</div>
-							) : (
-								<FunctionIcon
-									className="size-5 shrink-0 text-muted-foreground"
-									aria-hidden="true"
+					{showIcon && (
+						<SettingsItemMedia>
+							{FunctionIcon ? (
+								<FunctionIcon className="size-5" aria-hidden="true" />
+							) : provider ? (
+								<ProviderAvatar
+									providerId={provider.id}
+									name={providerName}
+									iconDarkUrl={provider.iconDarkUrl}
+									iconLightUrl={provider.iconLightUrl}
+									className="size-5 rounded-none border-0 bg-transparent p-0"
 								/>
-							)
-						) : provider ? (
-							<ProviderAvatar
-								providerId={provider.id}
-								name={providerName}
-								iconDarkUrl={provider.iconDarkUrl}
-								iconLightUrl={provider.iconLightUrl}
-								className={pluginItemStyle ? 'size-10 rounded-2xl bg-muted/50 p-1' : 'size-10'}
-							/>
-						) : (
-							<div
-								className={cn(
-									'flex size-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-muted-foreground',
-									pluginItemStyle && 'rounded-2xl border-0 bg-muted/50'
-								)}
-							>
-								<Bot className="size-4" aria-hidden="true" />
-							</div>
-						))}
+							) : (
+								<Bot className="size-5" aria-hidden="true" />
+							)}
+						</SettingsItemMedia>
+					)}
 					<div className="min-w-0 flex-1">
 						<div
 							className={cn(

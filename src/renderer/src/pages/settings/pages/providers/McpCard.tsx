@@ -40,6 +40,7 @@ export function McpCard({ service }: { readonly service: CatalogService }): Reac
 				<ProviderAvatar
 					providerId={service.id}
 					name={service.name}
+					className="size-5 rounded-none border-0 bg-transparent p-0"
 					iconDarkUrl={service.iconDarkUrl}
 					iconLightUrl={service.iconLightUrl}
 				/>
