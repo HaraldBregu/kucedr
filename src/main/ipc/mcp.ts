@@ -171,12 +171,15 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 			return listMcp();
 		});
 
-		registerCommandWithEvent(McpChannels.upsert, (event, id: string, input: McpData) => {
+		registerCommandWithEvent(McpChannels.upsert, async (event, id: string, input: McpData) => {
 			trusted.assert(event);
 			const connectorId = resolveMcpId(id);
 			const entry = normalizeMcpSettings({ [connectorId]: input })[connectorId];
 			if (!entry) throw new Error('Invalid MCP server configuration.');
 			upsertMcpServer(connectorId, entry);
+			if (entry.enabled !== false && !getMcpToolCatalog(connectorId)) {
+				await testMcpServer(connectorId);
+			}
 			return listMcp();
 		});
 

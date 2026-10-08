@@ -28,6 +28,7 @@ import {
 	getMcpToolCatalog,
 	getMcpOauth,
 	startOauthCallbackServer,
+	upsertMcpServer,
 } from '../../../../src/main/mcp';
 import { McpChannels } from '../../../../src/shared/ipc_channels_definitions';
 import { McpIpc } from '../../../../src/main/ipc/mcp';
@@ -48,6 +49,41 @@ afterAll(() => {
 });
 
 describe('MCP IPC', () => {
+	it('discovers tools when adding an enabled server without a cached catalog', async () => {
+		const mainFrame = {};
+		const sender = { id: 21, mainFrame };
+		jest
+			.mocked(BrowserWindow.fromWebContents)
+			.mockReturnValue({ id: 1, webContents: sender } as never);
+		jest.mocked(getMcpToolCatalog).mockReturnValue(undefined);
+		new McpIpc().register(
+			{ windows: { has: () => true }, apps: { has: () => false } } as never,
+			{} as never
+		);
+
+		const handler = jest
+			.mocked(ipcMain.handle)
+			.mock.calls.find(([channel]) => channel === McpChannels.upsert)?.[1] as (
+			event: unknown,
+			id: string,
+			input: unknown
+		) => Promise<{ success: boolean }>;
+		await expect(
+			handler({ sender, senderFrame: mainFrame } as never, 'Invoices', {
+				type: 'http',
+				url: 'https://mcp.example',
+				enabled: true,
+			})
+		).resolves.toMatchObject({ success: true });
+
+		expect(upsertMcpServer).toHaveBeenCalledWith('invoices', {
+			type: 'http',
+			url: 'https://mcp.example',
+			enabled: true,
+		});
+		expect(testMcpServer).toHaveBeenCalledWith('invoices');
+	});
+
 	it('rejects app views before testing a server', async () => {
 		const mainFrame = {};
 		const mainSender = { id: 21, mainFrame };
