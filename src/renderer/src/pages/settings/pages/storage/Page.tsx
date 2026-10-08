@@ -3,7 +3,6 @@ import {
 	AlertTriangle,
 	Download,
 	FolderSync,
-	MoreHorizontal,
 	Plus,
 	Trash2,
 	Upload,
@@ -20,7 +19,6 @@ import {
 	DialogTitle,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
 	Select,
 	SelectContent,
@@ -60,7 +58,8 @@ const StoragePage: React.FC = () => {
 	const [operationStatus, setOperationStatus] = useState<StorageOperationStatus>();
 	const [operationStatusLoading, setOperationStatusLoading] = useState(true);
 	const [restoreOpen, setRestoreOpen] = useState(false);
-	const [actionsOpen, setActionsOpen] = useState(false);
+	const [customSchedule, setCustomSchedule] = useState(false);
+	const [cronDraft, setCronDraft] = useState<string>();
 	const [loadFailed, setLoadFailed] = useState(false);
 	const [loadVersion, setLoadVersion] = useState(0);
 	const applyOperationStatus = useCallback((status: StorageOperationStatus): void => {
@@ -222,6 +221,9 @@ const StoragePage: React.FC = () => {
 
 	const selectInterval = (value: string | null): void => {
 		if (!storage || !value) return;
+		setCustomSchedule(value === 'custom');
+		setCronDraft(undefined);
+		if (value === 'custom') return;
 		if (value === 'off') {
 			updateDraft({ ...storage, syncEnabled: false });
 			return;
@@ -271,45 +273,6 @@ const StoragePage: React.FC = () => {
 				</div>
 			) : storage ? (
 				<>
-					<SettingsSection
-						title={t('settings.storage.versioned.title')}
-						description={t('settings.storage.versioned.description')}
-					>
-						<Card size="sm" className="gap-0! py-0!">
-							<CardContent className="p-0!">
-								<SettingsRow
-									title={t('settings.storage.versioned.enable')}
-									description={t('settings.storage.versioned.enableDescription')}
-									actions={
-										<Switch
-											checked={versionedEnabled}
-											aria-label={t('settings.storage.versioned.enable')}
-											disabled={busy || !selectedProvider || storage.paths.length === 0}
-											onCheckedChange={(enabled) => void setVersionHistory(enabled)}
-										/>
-									}
-								/>
-							</CardContent>
-						</Card>
-					</SettingsSection>
-					{versionedEnabled && conflicts.length > 0 && (
-						<SettingsSection
-							title={t('settings.storage.versioned.conflicts')}
-							description={t('settings.storage.versioned.conflictsDescription')}
-						>
-							<Card size="sm" className="gap-0! py-0!">
-								<CardContent className="p-0!">
-									{conflicts.map((conflict) => (
-										<SettingsRow
-											key={`${conflict.workspaceId}:${conflict.versionId}`}
-											title={conflict.path ?? t('settings.storage.versioned.deleted')}
-											description={`${conflict.kind} · ${conflict.versionId}`}
-										/>
-									))}
-								</CardContent>
-							</Card>
-						</SettingsSection>
-					)}
 					<Provider
 						providers={providers}
 						providerId={storage.providerId}
@@ -365,52 +328,20 @@ const StoragePage: React.FC = () => {
 						</Card>
 					</SettingsSection>
 
+					<div className="flex flex-wrap items-center gap-2">
+						<Button disabled={controlsDisabled || storage.paths.length === 0} onClick={() => void runBackup()}>
+							<Upload className="size-3.5" />
+							{runningOperation?.operation === 'backup' ? t('settings.storage.pushing') : t(versionedEnabled ? 'settings.storage.versioned.syncNow' : 'settings.storage.backup')}
+						</Button>
+						<Button variant="outline" disabled={controlsDisabled || storage.paths.length === 0} onClick={() => setRestoreOpen(true)}>
+							<Download className="size-3.5" />
+							{runningOperation?.operation === 'restore' ? t('settings.storage.pulling') : t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restore')}
+						</Button>
+					</div>
 					<SettingsSection
 						title={t('settings.storage.autoSync.sectionTitle')}
 						description={t('settings.storage.autoSync.sectionDescription')}
-						action={
-							<Popover open={actionsOpen} onOpenChange={setActionsOpen}>
-								<PopoverTrigger asChild>
-									<Button variant="outline" size="icon-sm" aria-label={t('common.moreOptions')}>
-										<MoreHorizontal className="size-3.5" />
-									</Button>
-								</PopoverTrigger>
-								<PopoverContent align="end" collisionPadding={12} className="w-52 p-1">
-									<div role="menu" aria-label={t('common.moreOptions')}>
-										<button
-											type="button"
-											role="menuitem"
-											disabled={controlsDisabled || storage.paths.length === 0}
-											onClick={() => {
-												setActionsOpen(false);
-												setRestoreOpen(true);
-											}}
-											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
-										>
-											<Download className="size-3.5" />
-											{runningOperation?.operation === 'restore'
-												? t('settings.storage.pulling')
-												: t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restore')}
-										</button>
-										<button
-											type="button"
-											role="menuitem"
-											disabled={controlsDisabled || storage.paths.length === 0}
-											onClick={() => {
-												setActionsOpen(false);
-												void runBackup();
-											}}
-											className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm outline-none hover:bg-accent focus-visible:bg-accent disabled:pointer-events-none disabled:opacity-50"
-										>
-											<Upload className="size-3.5" />
-											{runningOperation?.operation === 'backup'
-												? t('settings.storage.pushing')
-												: t(versionedEnabled ? 'settings.storage.versioned.syncNow' : 'settings.storage.backup')}
-										</button>
-									</div>
-								</PopoverContent>
-							</Popover>
-						}
+
 					>
 						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 							<CardContent className="p-0!">
@@ -419,7 +350,7 @@ const StoragePage: React.FC = () => {
 									description={t('settings.storage.autoSync.description')}
 									actions={
 										<Select
-											value={intervalValue}
+											value={customSchedule ? 'custom' : intervalValue}
 											onValueChange={selectInterval}
 											disabled={controlsDisabled}
 										>
@@ -428,7 +359,7 @@ const StoragePage: React.FC = () => {
 												className="w-56 max-w-full text-xs"
 												aria-label={t('settings.storage.autoSync.interval')}
 											>
-												<SelectValue>{t(`settings.storage.autoSync.${intervalValue}`)}</SelectValue>
+												<SelectValue>{t(`settings.storage.autoSync.${customSchedule ? 'custom' : intervalValue}`)}</SelectValue>
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value="off">{t('settings.storage.autoSync.off')}</SelectItem>
@@ -437,7 +368,7 @@ const StoragePage: React.FC = () => {
 														{t(`settings.storage.autoSync.${interval.key}`)}
 													</SelectItem>
 												))}
-												{intervalValue === 'custom' && (
+												{(
 													<SelectItem value="custom">
 														{t('settings.storage.autoSync.custom')}
 													</SelectItem>
@@ -447,21 +378,22 @@ const StoragePage: React.FC = () => {
 									}
 								/>
 
-								<SettingsRow
+								{(customSchedule || intervalValue === 'custom') && <SettingsRow
 									title={t('settings.storage.autoSync.cronExpression')}
 									description={t('settings.storage.autoSync.cronDescription')}
 									actions={
 										<Input
-											value={storage.syncCronExpression}
+											value={cronDraft ?? storage.syncCronExpression}
 											aria-label={t('settings.storage.autoSync.cronExpression')}
 											className="w-56 max-w-full font-mono text-xs"
-											disabled={!storage.syncEnabled || controlsDisabled}
-											onChange={(event) =>
-												updateDraft({ ...storage, syncCronExpression: event.target.value })
-											}
+											disabled={controlsDisabled}
+											onChange={(event) => setCronDraft(event.target.value)}
+											onBlur={() => {
+												if (cronDraft !== undefined) updateDraft({ ...storage, syncEnabled: true, syncCronExpression: cronDraft });
+											}}
 										/>
 									}
-								/>
+								/>}
 							</CardContent>
 						</Card>
 					</SettingsSection>
@@ -497,6 +429,52 @@ const StoragePage: React.FC = () => {
 							</SettingsNotice>
 						</div>
 					)}
+
+					<details className="group">
+						<summary className="cursor-pointer text-sm font-medium text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">{t('settings.storage.versioned.title')}</summary>
+						<div className="mt-4 grid gap-4">
+					<SettingsSection
+						title={t('settings.storage.versioned.title')}
+						description={t('settings.storage.versioned.description')}
+					>
+						<Card size="sm" className="gap-0! py-0!">
+							<CardContent className="p-0!">
+								<SettingsRow
+									title={t('settings.storage.versioned.enable')}
+									description={t('settings.storage.versioned.enableDescription')}
+									actions={
+										<Switch
+											checked={versionedEnabled}
+											aria-label={t('settings.storage.versioned.enable')}
+											disabled={busy || !selectedProvider || storage.paths.length === 0}
+											onCheckedChange={(enabled) => void setVersionHistory(enabled)}
+										/>
+									}
+								/>
+							</CardContent>
+						</Card>
+					</SettingsSection>
+					{versionedEnabled && conflicts.length > 0 && (
+						<SettingsSection
+							title={t('settings.storage.versioned.conflicts')}
+							description={t('settings.storage.versioned.conflictsDescription')}
+						>
+							<Card size="sm" className="gap-0! py-0!">
+								<CardContent className="p-0!">
+									{conflicts.map((conflict) => (
+										<SettingsRow
+											key={`${conflict.workspaceId}:${conflict.versionId}`}
+											title={conflict.path ?? t('settings.storage.versioned.deleted')}
+											description={`${conflict.kind} · ${conflict.versionId}`}
+										/>
+									))}
+								</CardContent>
+							</Card>
+						</SettingsSection>
+					)}
+
+						</div>
+					</details>
 
 					<Dialog open={restoreOpen} onOpenChange={setRestoreOpen}>
 						<DialogContent>
