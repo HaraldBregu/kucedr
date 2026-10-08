@@ -7,13 +7,25 @@ import { ragJob } from '../../../../src/main/agent/knowledge/rag/job';
 const sessionId = '11111111-1111-4111-8111-111111111111';
 
 it('prevents an active background index from republishing data during a purge', async () => {
-	const controller = new DataController({ config: { location: '/tmp' }, listSessions: () => [], deleteSession: jest.fn() });
-	const scope = { kind: 'rag' as const, mode: 'remote_all_namespaces' as const, indexName: 'knowledge-base' };
+	const controller = new DataController({
+		config: { location: '/tmp' },
+		listSessions: () => [],
+		deleteSession: jest.fn(),
+	});
+	const scope = {
+		kind: 'rag' as const,
+		mode: 'remote_all_namespaces' as const,
+		indexName: 'knowledge-base',
+	};
 	const preview = await controller.previewPurge(scope);
 	ragJob.running = true;
 	try {
-		await expect(controller.purge(scope, preview.confirmationId)).rejects.toThrow('Cancel Knowledge indexing');
-	} finally { ragJob.running = false; }
+		await expect(controller.purge(scope, preview.confirmationId)).rejects.toThrow(
+			'Cancel Knowledge indexing'
+		);
+	} finally {
+		ragJob.running = false;
+	}
 });
 
 it('exports and purges memory only after a matching one-use preview', async () => {

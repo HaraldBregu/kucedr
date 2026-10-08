@@ -123,7 +123,9 @@ export class DataController {
 
 	async purge(scope: DataScope, confirmationId: string): Promise<DataPurgeResult> {
 		if (scope.kind === 'rag' && ragJob.running)
-			throw new Error('Cancel Knowledge indexing or wait for it to finish before purging its data.');
+			throw new Error(
+				'Cancel Knowledge indexing or wait for it to finish before purging its data.'
+			);
 		const pending = this.pendingPurges.get(confirmationId);
 		this.pendingPurges.delete(confirmationId);
 		if (
