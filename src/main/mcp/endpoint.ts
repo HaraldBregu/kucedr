@@ -1,4 +1,5 @@
 export function resolveMcpEndpoint(value: string, required = false): string {
+	if (!URL.canParse(value)) return value;
 	const url = new URL(value);
 	if (
 		url.origin !== 'https://agent365.svc.cloud.microsoft' ||
