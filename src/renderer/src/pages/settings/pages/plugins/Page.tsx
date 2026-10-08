@@ -46,10 +46,7 @@ const PluginsPage = (): React.JSX.Element => {
 		...databaseCatalog.map((entry) => ({ kind: 'database' as const, entry })),
 		...storageCatalog.map((entry) => ({ kind: 'storage' as const, entry })),
 	];
-	const providerSections = new Map<
-		string,
-		{ name: string; plugins: (typeof plugins)[number][] }
-	>();
+	const providerSections = new Map<string, { name: string; plugins: (typeof plugins)[number][] }>();
 	for (const plugin of plugins) {
 		const section = providerSections.get(plugin.entry.provider.id);
 		if (section) section.plugins.push(plugin);
@@ -158,10 +155,7 @@ const PluginsPage = (): React.JSX.Element => {
 				<div className="-mx-4 space-y-6 pb-4">
 					{[...providerSections].map(([providerId, section]) => (
 						<section key={providerId} aria-labelledby={`plugin-provider-${providerId}`}>
-							<h2
-								id={`plugin-provider-${providerId}`}
-								className="mb-2 px-3 text-sm font-medium"
-							>
+							<h2 id={`plugin-provider-${providerId}`} className="mb-2 px-3 text-sm font-medium">
 								{section.name}
 							</h2>
 							<div className="grid grid-cols-1 gap-x-2 gap-y-3 md:grid-cols-2">
@@ -173,11 +167,29 @@ const PluginsPage = (): React.JSX.Element => {
 												key={`${database.provider.id}-${database.id}`}
 												kind="database"
 												entry={database}
-												enabled={enabledProviders.database.includes(`${database.provider.id}/${database.id}`)}
+												enabled={enabledProviders.database.includes(
+													`${database.provider.id}/${database.id}`
+												)}
 												saving={savingId === `${database.provider.id}/${database.id}`}
-												onOpen={() => navigate(`/settings/plugins/database/${database.provider.id}/${database.id}`)}
-												onAdd={() => void setProviderEnabled('database', `${database.provider.id}/${database.id}`, true)}
-												onRemove={() => void setProviderEnabled('database', `${database.provider.id}/${database.id}`, false)}
+												onOpen={() =>
+													navigate(
+														`/settings/plugins/database/${database.provider.id}/${database.id}`
+													)
+												}
+												onAdd={() =>
+													void setProviderEnabled(
+														'database',
+														`${database.provider.id}/${database.id}`,
+														true
+													)
+												}
+												onRemove={() =>
+													void setProviderEnabled(
+														'database',
+														`${database.provider.id}/${database.id}`,
+														false
+													)
+												}
 											/>
 										);
 									}
@@ -188,94 +200,116 @@ const PluginsPage = (): React.JSX.Element => {
 												key={`${storage.provider.id}-${storage.id}`}
 												kind="storage"
 												entry={storage}
-												enabled={enabledProviders.storage.includes(`${storage.provider.id}/${storage.id}`)}
+												enabled={enabledProviders.storage.includes(
+													`${storage.provider.id}/${storage.id}`
+												)}
 												saving={savingId === `${storage.provider.id}/${storage.id}`}
-												onOpen={() => navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)}
-												onAdd={() => void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, true)}
-												onRemove={() => void setProviderEnabled('storage', `${storage.provider.id}/${storage.id}`, false)}
+												onOpen={() =>
+													navigate(`/settings/plugins/storage/${storage.provider.id}/${storage.id}`)
+												}
+												onAdd={() =>
+													void setProviderEnabled(
+														'storage',
+														`${storage.provider.id}/${storage.id}`,
+														true
+													)
+												}
+												onRemove={() =>
+													void setProviderEnabled(
+														'storage',
+														`${storage.provider.id}/${storage.id}`,
+														false
+													)
+												}
 											/>
 										);
 									}
 
 									const service = plugin.entry;
 									return (
-						<Item
-							key={`${service.provider.id}-${service.id}`}
-							role="link"
-							tabIndex={0}
-							onClick={() => navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`)}
-							onKeyDown={(event) => {
-								if (
-									event.target === event.currentTarget &&
-									(event.key === 'Enter' || event.key === ' ')
-								) {
-									event.preventDefault();
-									navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`);
-								}
-							}}
-							variant="ghost"
-							size="md"
-							className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
-						>
-							<ProviderAvatar
-								providerId={service.id}
-								name={service.name}
-								iconDarkUrl={service.iconDarkUrl}
-								iconLightUrl={service.iconLightUrl}
-								className="size-10 rounded-2xl border-0 bg-muted/50 p-1 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
-							/>
-							<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
-								<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
-									{service.name}
-								</ItemTitle>
-								<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
-									{service.description}
-								</p>
-							</ItemContent>
-							<ItemActions className="ml-auto flex-none justify-end">
-								{servers[service.id]?.enabled === true ? (
-									<DropdownMenu>
-										<DropdownMenuTrigger asChild>
-											<Button
-												onClick={(event) => event.stopPropagation()}
-												variant="ghost"
-												size="icon-sm"
-												className="hover:bg-transparent dark:hover:bg-transparent"
-												disabled={savingId === service.id}
-												aria-label={t('settings.integrations.options', { name: service.name })}
-											>
-												<MoreHorizontal className="size-4" />
-											</Button>
-										</DropdownMenuTrigger>
-										<DropdownMenuContent align="end">
-											<DropdownMenuItem onSelect={() => void setIntegrationEnabled(service, false)}>
-												<Trash2 />
-												{t('settings.integrations.remove', { name: service.name })}
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
-								) : (
-									<Button
-										variant="ghost"
-										size="icon-sm"
-										className="hover:bg-transparent dark:hover:bg-transparent"
-										disabled={savingId === service.id}
-										onClick={(event) => {
-											event.stopPropagation();
-											if (!servers[service.id] && service.url?.includes('{tenantId}')) {
-												setError('');
-												setSelectedMicrosoft(service);
-											} else {
-												void setIntegrationEnabled(service, true);
+										<Item
+											key={`${service.provider.id}-${service.id}`}
+											role="link"
+											tabIndex={0}
+											onClick={() =>
+												navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`)
 											}
-										}}
-										aria-label={t('settings.integrations.add', { name: service.name })}
-									>
-										<Plus className="size-4" />
-									</Button>
-								)}
-							</ItemActions>
-						</Item>
+											onKeyDown={(event) => {
+												if (
+													event.target === event.currentTarget &&
+													(event.key === 'Enter' || event.key === ' ')
+												) {
+													event.preventDefault();
+													navigate(`/settings/plugins/mcp/${service.provider.id}/${service.id}`);
+												}
+											}}
+											variant="ghost"
+											size="md"
+											className="min-w-0 cursor-pointer flex-nowrap gap-3 rounded-2xl px-3 py-2 hover:bg-muted/50 focus-within:bg-muted/50"
+										>
+											<ProviderAvatar
+												providerId={service.id}
+												name={service.name}
+												iconDarkUrl={service.iconDarkUrl}
+												iconLightUrl={service.iconLightUrl}
+												className="size-10 rounded-2xl border-0 bg-muted/50 p-1 group-hover/item:bg-transparent group-focus-within/item:bg-transparent"
+											/>
+											<ItemContent className="min-w-0 flex-1 flex-col items-start gap-0.5">
+												<ItemTitle className="min-w-0 max-w-full truncate text-sm font-medium leading-tight">
+													{service.name}
+												</ItemTitle>
+												<p className="max-w-full truncate text-xs leading-tight text-muted-foreground">
+													{service.description}
+												</p>
+											</ItemContent>
+											<ItemActions className="ml-auto flex-none justify-end">
+												{servers[service.id]?.enabled === true ? (
+													<DropdownMenu>
+														<DropdownMenuTrigger asChild>
+															<Button
+																onClick={(event) => event.stopPropagation()}
+																variant="ghost"
+																size="icon-sm"
+																className="hover:bg-transparent dark:hover:bg-transparent"
+																disabled={savingId === service.id}
+																aria-label={t('settings.integrations.options', {
+																	name: service.name,
+																})}
+															>
+																<MoreHorizontal className="size-4" />
+															</Button>
+														</DropdownMenuTrigger>
+														<DropdownMenuContent align="end">
+															<DropdownMenuItem
+																onSelect={() => void setIntegrationEnabled(service, false)}
+															>
+																<Trash2 />
+																{t('settings.integrations.remove', { name: service.name })}
+															</DropdownMenuItem>
+														</DropdownMenuContent>
+													</DropdownMenu>
+												) : (
+													<Button
+														variant="ghost"
+														size="icon-sm"
+														className="hover:bg-transparent dark:hover:bg-transparent"
+														disabled={savingId === service.id}
+														onClick={(event) => {
+															event.stopPropagation();
+															if (!servers[service.id] && service.url?.includes('{tenantId}')) {
+																setError('');
+																setSelectedMicrosoft(service);
+															} else {
+																void setIntegrationEnabled(service, true);
+															}
+														}}
+														aria-label={t('settings.integrations.add', { name: service.name })}
+													>
+														<Plus className="size-4" />
+													</Button>
+												)}
+											</ItemActions>
+										</Item>
 									);
 								})}
 							</div>
