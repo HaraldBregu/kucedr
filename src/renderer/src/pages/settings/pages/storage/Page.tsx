@@ -3,14 +3,6 @@ import { AlertTriangle, Download, FolderSync, Plus, Trash2, Upload } from 'lucid
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import {
 	Select,
@@ -36,6 +28,7 @@ import {
 } from '../../components';
 import { SYNC_INTERVALS } from './constants';
 import Provider from './Provider';
+import Restore from './Restore';
 
 const StoragePage: React.FC = () => {
 	const { t } = useTranslation();
@@ -200,14 +193,14 @@ const StoragePage: React.FC = () => {
 		}
 	};
 
-	const runRestore = async (): Promise<void> => {
+	const runRestore = async (input?: { snapshotKey: string; path: string }): Promise<void> => {
 		setOperationStarting(true);
 		setRestoreOpen(false);
 		setError(null);
 		setSyncStatus(null);
 		try {
 			if (!storage || !(await persistSettings(storage))) return;
-			applyOperationStatus(await window.storage.restore());
+			applyOperationStatus(await (input ? window.storage.restore(input) : window.storage.restore()));
 		} catch {
 			setError(t('settings.storage.errors.pull'));
 		} finally {
@@ -348,7 +341,7 @@ const StoragePage: React.FC = () => {
 						</Button>
 						<Button
 							variant="outline"
-							disabled={controlsDisabled || storage.paths.length === 0}
+							disabled={controlsDisabled}
 							onClick={() => setRestoreOpen(true)}
 						>
 							<Download className="size-3.5" />
@@ -510,42 +503,7 @@ const StoragePage: React.FC = () => {
 						</div>
 					</details>
 
-					<Dialog open={restoreOpen} onOpenChange={setRestoreOpen}>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>
-									{t(
-										versionedEnabled
-											? 'settings.storage.versioned.catchUp'
-											: 'settings.storage.restoreDialog.title'
-									)}
-								</DialogTitle>
-								<DialogDescription>
-									{t(
-										versionedEnabled
-											? 'settings.storage.versioned.catchUpDescription'
-											: 'settings.storage.restoreDialog.description'
-									)}
-								</DialogDescription>
-							</DialogHeader>
-							<DialogFooter>
-								<Button variant="outline" onClick={() => setRestoreOpen(false)}>
-									{t('settings.storage.cancel')}
-								</Button>
-								<Button
-									disabled={controlsDisabled || storage.paths.length === 0}
-									onClick={() => void runRestore()}
-								>
-									<Download className="size-3" />
-									{t(
-										versionedEnabled
-											? 'settings.storage.versioned.catchUp'
-											: 'settings.storage.restoreDialog.confirm'
-									)}
-								</Button>
-							</DialogFooter>
-						</DialogContent>
-					</Dialog>
+					<Restore open={restoreOpen} onOpenChange={setRestoreOpen} disabled={controlsDisabled} versioned={versionedEnabled} hasFolders={storage.paths.length > 0} onRestore={(input) => void runRestore(input)} />
 				</>
 			) : null}
 		</SettingsPageShell>
