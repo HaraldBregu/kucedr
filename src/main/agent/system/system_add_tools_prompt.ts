@@ -14,30 +14,26 @@ export function addToolsPrompt(
 	].filter((tool) => !loadedIds.has(tool.id));
 	if (loaded.length === 0 && discoverable.length === 0) return prompt;
 
-	const sections = [
-		['Loaded tools', loaded],
-		['Available through `tool_search`', discoverable],
-	] as const;
+	const tools = [...loaded, ...discoverable];
 	prompt += '\n\n## Tools';
 	prompt +=
-		'\nLoaded tools can be called now. Tools available through `tool_search` must be selected before use.';
-	for (const [title, tools] of sections) {
-		if (tools.length === 0) continue;
-		prompt += `\n\n### ${title}`;
-		const categories = new Map<ToolCategory, Tool[]>();
-		for (const tool of tools)
-			categories.set(tool.category, [...(categories.get(tool.category) ?? []), tool]);
-		for (const [category, metadata] of Object.entries(toolCategoryRegistry)) {
-			const categoryTools = categories.get(category as ToolCategory);
-			if (!categoryTools) continue;
-			prompt += `\n\n#### ${metadata.label}\n${metadata.description}`;
-			for (const tool of categoryTools) {
-				const description = (tool.description ?? '').replace(/\n/g, ' ');
-				const restriction = requiresExplicitRequest(tool)
-					? ' _(Explicit user request only.)_'
-					: '';
-				prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${restriction}`;
-			}
+		'\nLoaded tools can be called now. Tools marked as available through `tool_search` must be selected before use.';
+	const categories = new Map<ToolCategory, Tool[]>();
+	for (const tool of tools)
+		categories.set(tool.category, [...(categories.get(tool.category) ?? []), tool]);
+	for (const [category, metadata] of Object.entries(toolCategoryRegistry)) {
+		const categoryTools = categories.get(category as ToolCategory);
+		if (!categoryTools) continue;
+		prompt += `\n\n### ${metadata.label}\n${metadata.description}`;
+		for (const tool of categoryTools) {
+			const description = (tool.description ?? '').replace(/\n/g, ' ');
+			const availability = loadedIds.has(tool.id)
+				? ' _(Loaded.)_'
+				: ' _(Available through `tool_search`.)_';
+			const restriction = requiresExplicitRequest(tool)
+				? ' _(Explicit user request only.)_'
+				: '';
+			prompt += `\n- \`${tool.id}\` (${tool.name})${description ? ` — ${description}` : ''}${availability}${restriction}`;
 		}
 	}
 
