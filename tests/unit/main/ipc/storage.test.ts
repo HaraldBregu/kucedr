@@ -79,35 +79,9 @@ beforeEach(() => {
 			appRegistry: appRegistry as never,
 			storageOperations: storageOperations as never,
 			windows: windows as never,
-			authService: authService as never,
 		},
 		{} as never
 	);
-});
-
-it('requires account sign-in before enabling versioned storage', async () => {
-	const command = registerCommandWithEvent.mock.calls.find(
-		([channel]) => channel === StorageChannels.setVersionedEnabled
-	)?.[1];
-	await expect(command(event, true)).rejects.toThrow('Sign in');
-	expect(configureVersionedStorage).not.toHaveBeenCalled();
-});
-
-it('enables versioned storage using the current saved provider selection', async () => {
-	authService.getSignedInUserId.mockReturnValue('account-a');
-	getStorageSettings.mockReturnValue({
-		providerId: 'provider-a', paths: ['/workspace'], syncEnabled: false,
-		syncCronExpression: '0 3 * * *',
-	});
-	const command = registerCommandWithEvent.mock.calls.find(
-		([channel]) => channel === StorageChannels.setVersionedEnabled
-	)?.[1];
-	await expect(command(event, true)).resolves.toBe(true);
-	expect(configureVersionedStorage).toHaveBeenCalledWith(
-		expect.objectContaining({ providerId: 'provider-a', paths: ['/workspace'] }),
-		'https://project.supabase.co', true
-	);
-	expect(saveStorageSettings).not.toHaveBeenCalled();
 });
 
 it('reads authoritative operation status and starts manual backups in main', () => {

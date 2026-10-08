@@ -165,23 +165,7 @@ describe('storage operations', () => {
 		expect(await operations.wait(running.operationId)).toEqual(expect.objectContaining({ state: 'failed', transferred: 0, failed: 1, error: 'Disconnected' }));
 	});
 
-	it('forwards an explicit restore point and destination through the operation lock', async () => {
-		const restore = jest.fn().mockResolvedValue({ downloaded: ['one'], skipped: [], failed: [] });
-		const dependencies: StorageOperationDependencies = {
-			backup: jest.fn(),
-			restore,
-			lock: (operation) => operation(),
-			preventSuspension: () => jest.fn(),
-		};
-		const Operations = await loadOperations();
-		const operations = new Operations(jest.fn(), dependencies);
-		const input = { snapshotKey: 'kucedr/v2/agent/snapshots/one.json', path: '/destination' };
-		const running = operations.restore(input);
-		expect(await operations.wait(running.operationId)).toEqual(expect.objectContaining({ state: 'succeeded', transferred: 1 }));
-		expect(restore).toHaveBeenCalledWith(input);
-	});
-
-	it('contains observer failures and still completes the operation', async () => {
+		it('contains observer failures and still completes the operation', async () => {
 		const dependencies: StorageOperationDependencies = {
 			backup: jest.fn().mockResolvedValue({ uploaded: ['one'], failed: [] }),
 			restore: jest.fn(),

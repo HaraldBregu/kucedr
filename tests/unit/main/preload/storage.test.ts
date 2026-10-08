@@ -58,12 +58,7 @@ it('surfaces storage provider save failures to the renderer', async () => {
 	);
 });
 
-it('lists backup points and forwards a portable restore selection', async () => {
-	const input = { snapshotKey: 'kucedr/v2/agent/snapshots/one.json', path: '/destination' };
-	await storage.listSnapshots();
-	await storage.restore(input);
+it('starts an ordinary download without a snapshot selection', async () => {
 	await storage.restore();
-	expect(invoke).toHaveBeenNthCalledWith(1, StorageChannels.listSnapshots);
-	expect(invoke).toHaveBeenNthCalledWith(2, StorageChannels.restore, input);
-	expect(invoke).toHaveBeenNthCalledWith(3, StorageChannels.restore);
+	expect(invoke).toHaveBeenCalledWith(StorageChannels.restore);
 });
