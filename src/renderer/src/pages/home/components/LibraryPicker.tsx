@@ -59,7 +59,9 @@ export function LibraryPicker({
 					{loading ? (
 						<p className="px-4 py-8 text-center text-sm text-muted-foreground">Loading Library…</p>
 					) : error ? (
-						<p className="px-4 py-8 text-center text-sm text-destructive">Library could not be loaded.</p>
+						<p className="px-4 py-8 text-center text-sm text-destructive">
+							Library could not be loaded.
+						</p>
 					) : files.length === 0 ? (
 						<div className="flex flex-col items-center gap-2 px-4 py-10 text-center text-muted-foreground">
 							<Library className="size-6" />
@@ -90,7 +92,9 @@ export function LibraryPicker({
 									<Icon className="size-4 shrink-0 text-muted-foreground" />
 									<span className="min-w-0 flex-1">
 										<span className="block truncate text-sm font-medium">{file.name}</span>
-										<span className="block truncate text-xs text-muted-foreground">{file.relativePath}</span>
+										<span className="block truncate text-xs text-muted-foreground">
+											{file.relativePath}
+										</span>
 									</span>
 								</label>
 							);
