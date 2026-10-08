@@ -22,6 +22,7 @@ const schema = {
 describe('mcpTool', () => {
 	beforeEach(() => {
 		callToolMock.mockReset();
+		getMcpServersMock.mockReturnValue({});
 	});
 
 	it('uses stable runtime IDs without forcing approval in the tool definition', () => {
