@@ -29,7 +29,7 @@ export interface LlmResponse {
 export type LlmEvent =
 	| { type: 'model_call_start'; model: string; effort?: ModelReasoningEffort }
 	| { type: 'model_call_delta'; delta: string }
-	| { type: 'model_provider_item'; provider: 'openai'; item: unknown }
+	| { type: 'model_provider_item'; provider: 'openai' | 'deepseek'; item: unknown }
 	| { type: 'model_tool_call_start'; id: string; name: string }
 	| { type: 'model_tool_call_args_delta'; id: string; jsonDelta: string }
 	| { type: 'model_tool_call_end'; id: string }

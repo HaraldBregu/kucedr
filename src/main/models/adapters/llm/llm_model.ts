@@ -161,8 +161,8 @@ export class LlmModel implements LlmAdapter {
 			if (event.type === 'text_delta') {
 				yield { type: 'model_call_delta', delta: event.text };
 			}
-			if (event.type === 'reasoning_item' && event.provider === 'openai' && event.item) {
-				yield { type: 'model_provider_item', provider: 'openai', item: event.item };
+			if (event.type === 'reasoning_item' && event.provider && event.item) {
+				yield { type: 'model_provider_item', provider: event.provider, item: event.item };
 			}
 			if (event.type === 'tool_call_start') {
 				yield { type: 'model_tool_call_start', id: event.id, name: event.name };
@@ -195,7 +195,8 @@ export class LlmModel implements LlmAdapter {
 			openAIClientFactory: this.openAIClientFactory,
 			anthropicClientFactory: this.anthropicClientFactory,
 			reasoningEffortEnabled: this.reasoningEffortEnabled,
-			reasoningContentEnabled: this.reasoningContentEnabled,
+			reasoningContentEnabled:
+				this.reasoningContentEnabled || provider.id.toLowerCase() === 'deepseek',
 			thinkingModeEnabled: this.thinkingModeEnabled,
 		});
 	}

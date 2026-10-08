@@ -138,6 +138,9 @@ function toAssistantContent(content: Message['content']): LlmContentBlock[] {
 			if (block.type === 'provider_item' && block.provider === 'openai') {
 				return { type: 'provider_item', provider: 'openai', item: block.item };
 			}
+			if (block.type === 'provider_item' && block.provider === 'deepseek') {
+				return { type: 'reasoning', provider: 'deepseek', item: block.item };
+			}
 			return undefined;
 		})
 		.filter((block): block is LlmContentBlock => block !== undefined);
