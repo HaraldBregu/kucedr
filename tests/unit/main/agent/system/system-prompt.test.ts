@@ -126,7 +126,7 @@ describe('addSkillPrompt', () => {
 		expect(prompt).toContain('"canonicalRoot":"/skills/writer"');
 		expect(prompt).toContain('Follow this workflow.');
 		expect(prompt).toContain(
-			'Call `list_skills` or `load_skill` only when the user explicitly asks to list, load, or use skills.'
+			'Call those tools only when the user explicitly asks to list, load, or use skills.'
 		);
 		expect(prompt).toContain(
 			'A request merely matching a skill description is not authorization to call a skill tool.'
