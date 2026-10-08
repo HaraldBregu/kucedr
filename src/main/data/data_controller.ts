@@ -19,6 +19,7 @@ import { ragVectorStore } from '../agent/knowledge/rag/vector';
 import { DataArchive } from './data_archive';
 import { purgeRemoteRagNamespaces } from './data_purge_remote';
 import { isLocalRagDatabase } from '../../shared/rag_database';
+import { ragJob } from '../agent/knowledge/rag/job';
 
 interface AgentDataPort {
 	memory?: Pick<MemoryService, 'clear'>;
@@ -121,6 +122,8 @@ export class DataController {
 	}
 
 	async purge(scope: DataScope, confirmationId: string): Promise<DataPurgeResult> {
+		if (scope.kind === 'rag' && ragJob.running)
+			throw new Error('Cancel Knowledge indexing or wait for it to finish before purging its data.');
 		const pending = this.pendingPurges.get(confirmationId);
 		this.pendingPurges.delete(confirmationId);
 		if (
