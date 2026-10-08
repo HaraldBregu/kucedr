@@ -408,8 +408,10 @@ async function* loop(
 				yield { type: 'run_finished', result: toResult(session, 'success') };
 				return;
 			}
-			if (authorizationStatus === 'already_authorized')
-				await testMcpServer(requestedUncatalogedMcp.serverId);
+			if (authorizationStatus === 'already_authorized') {
+				const listed = await testMcpServer(requestedUncatalogedMcp.serverId);
+				if (!listed.ok) throw new Error(listed.error ?? 'Failed to load MCP tools.');
+			}
 			if (authorizationStatus === 'authorized' || authorizationStatus === 'already_authorized') {
 				await closeMcp?.();
 				const refreshed = await loadMcpTools(signal);
