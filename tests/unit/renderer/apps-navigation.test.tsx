@@ -32,6 +32,7 @@ const debugApp: App = {
 };
 
 beforeEach(() => {
+	Object.assign(globalThis, { __VITE_ENV__: { DEV: true, PROD: false } });
 	Object.defineProperty(window, 'apps', {
 		configurable: true,
 		value: {
@@ -91,7 +92,7 @@ it('shows a debug app badge and image preview', async () => {
 
 	const title = await screen.findByRole('heading', { name: 'Demo App' });
 	expect(title.parentElement).toHaveTextContent('settings.apps.debug.badge');
-	expect(title.closest('[data-slot="card"]')?.querySelector('img')).toHaveAttribute(
+	expect(title.closest('[data-slot="item"]')?.querySelector('img')).toHaveAttribute(
 		'src',
 		debugApp.imageUrl
 	);
@@ -258,4 +259,79 @@ it('treats an app detail route as a child of the apps breadcrumb', async () => {
 
 	await user.click(within(breadcrumb).getByRole('link', { name: 'settings.tabs.apps' }));
 	expect(await screen.findByText('Apps list')).toBeInTheDocument();
+});
+
+it.each([' DEMO APP ', 'demo app.', '@EXAMPLE', 'DEMO-APP'])(
+	'filters apps by title, description, handle or id: %s',
+	async (query) => {
+		const user = userEvent.setup();
+		(window.apps.list as jest.Mock).mockResolvedValue([
+			...apps,
+			{ ...apps[0], id: 'notes', title: 'Notes', handle: '@notes', description: 'Write notes.' },
+		]);
+		render(
+			<MemoryRouter>
+				<AppsPage />
+			</MemoryRouter>
+		);
+		await screen.findByText('Notes');
+		await user.type(screen.getByRole('searchbox', { name: 'settings.apps.search' }), query);
+
+		expect(screen.getByRole('link', { name: /Demo App/ })).toBeInTheDocument();
+		expect(screen.queryByText('Notes')).not.toBeInTheDocument();
+		await user.click(screen.getByRole('button', { name: 'settings.apps.clearSearch' }));
+		expect(screen.getByText('Notes')).toBeInTheDocument();
+		expect(screen.getByRole('searchbox')).toHaveValue('');
+	}
+);
+
+it('shows a distinct no-results state and restores apps after clearing search', async () => {
+	const user = userEvent.setup();
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
+	await screen.findByText('Demo App');
+	await user.type(screen.getByRole('searchbox', { name: 'settings.apps.search' }), 'missing');
+
+	expect(screen.getByText('settings.apps.noResults')).toBeInTheDocument();
+	expect(screen.getByText('settings.apps.noResultsDescription')).toBeInTheDocument();
+	expect(screen.queryByText('settings.apps.empty')).not.toBeInTheDocument();
+	await user.click(screen.getByRole('button', { name: 'settings.apps.clearSearch' }));
+	expect(screen.getByText('Demo App')).toBeInTheDocument();
+});
+
+it('keeps the installed-app empty state when searching an empty collection', async () => {
+	const user = userEvent.setup();
+	(window.apps.list as jest.Mock).mockResolvedValue([]);
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
+	await screen.findByText('settings.apps.empty');
+	await user.type(screen.getByRole('searchbox', { name: 'settings.apps.search' }), 'missing');
+
+	expect(screen.getByText('settings.apps.empty')).toBeInTheDocument();
+	expect(screen.queryByText('settings.apps.noResults')).not.toBeInTheDocument();
+});
+
+it('does not show debug controls, badges or local paths in production', async () => {
+	Object.assign(globalThis, { __VITE_ENV__: { DEV: false, PROD: true } });
+	(window.apps.list as jest.Mock).mockResolvedValue([debugApp]);
+	render(
+		<MemoryRouter>
+			<AppsPage />
+		</MemoryRouter>
+	);
+
+	await screen.findByText('Demo App');
+	expect(screen.queryByText('settings.apps.debug.title')).not.toBeInTheDocument();
+	expect(screen.queryByText('settings.apps.debug.badge')).not.toBeInTheDocument();
+	expect(screen.queryByLabelText('settings.apps.debug.pathLabel')).not.toBeInTheDocument();
+	expect(screen.queryByText(debugApp.debugPath as string)).not.toBeInTheDocument();
+	expect(window.apps.addDebug).not.toHaveBeenCalled();
+	expect(window.apps.selectDebugPath).not.toHaveBeenCalled();
+	expect(screen.getByRole('button', { name: 'settings.apps.open' })).toBeInTheDocument();
 });
