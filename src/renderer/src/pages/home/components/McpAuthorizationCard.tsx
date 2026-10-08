@@ -12,12 +12,13 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 		try {
 			output = JSON.parse(output);
 		} catch {
-			return null;
+			output = undefined;
 		}
 	}
-	if (!output || typeof output !== 'object' || Array.isArray(output)) return null;
-	const result = output as { status?: unknown; serverId?: unknown; serverName?: unknown };
-	const serverId = typeof result.serverId === 'string' ? result.serverId : undefined;
+	const result = output && typeof output === 'object' && !Array.isArray(output)
+		? output as { status?: unknown; serverId?: unknown; serverName?: unknown }
+		: undefined;
+	const serverId = typeof result?.serverId === 'string' ? result.serverId : undefined;
 	useEffect(() => {
 		if (!serverId) return;
 		let cancelled = false;
@@ -28,7 +29,7 @@ export function McpAuthorizationCard({ tool }: { readonly tool: AgentToolPart })
 		}).catch(() => undefined);
 		return () => { cancelled = true; };
 	}, [serverId]);
-	if ((result.status !== 'authorization_required' && result.status !== 'authorized') || !serverId) return null;
+	if ((result?.status !== 'authorization_required' && result?.status !== 'authorized') || !serverId) return null;
 	const serverName = typeof result.serverName === 'string' ? result.serverName : result.serverId;
 	const authorized = phase === 'authorized' || result.status === 'authorized';
 
