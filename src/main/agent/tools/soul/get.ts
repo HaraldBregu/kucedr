@@ -4,6 +4,7 @@ import { tool } from '../tool';
 
 export const getSoulTool = tool({
 	id: 'get_soul',
+	category: 'bootstrap',
 	name: 'Get soul',
 	description: 'Get the assistant personality and interaction style.',
 	planSafe: true,

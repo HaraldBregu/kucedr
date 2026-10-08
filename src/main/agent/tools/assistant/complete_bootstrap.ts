@@ -8,6 +8,7 @@ import { tool } from '../tool';
 
 export const completeBootstrapTool = tool({
 	id: 'complete_bootstrap',
+	category: 'bootstrap',
 	name: 'Complete bootstrap',
 	description: 'Complete the one-time bootstrap after the assistant identity, soul, and user profile have been updated.',
 	inputSchema: z.object({}),

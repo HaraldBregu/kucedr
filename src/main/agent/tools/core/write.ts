@@ -5,6 +5,7 @@ import { authorizeFilePath } from '../../files/authorize';
 
 export const writeTool = tool({
 	id: 'write',
+	category: 'workspace',
 	name: 'Write file',
 	description:
 		'Create or overwrite a UTF-8 text file with exact content, creating parent directories when needed.',

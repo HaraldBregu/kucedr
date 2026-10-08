@@ -6,6 +6,7 @@ import { z } from 'zod';
 export function updateHealthTool(config: Config) {
 	return tool({
 		id: 'update_health',
+		category: 'bootstrap',
 		name: 'Update health',
 		description: 'Replace the current HEALTH.md information.',
 		inputSchema: z.object({

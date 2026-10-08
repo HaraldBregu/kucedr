@@ -288,6 +288,7 @@ async function runProcess(
 
 export const processTool: Tool = tool({
 	id: 'process',
+	category: 'workspace',
 	name: 'Manage process',
 	description:
 		'Manage running exec sessions for commands already started: list, poll, log, write, send-keys, submit, paste, kill. ' +

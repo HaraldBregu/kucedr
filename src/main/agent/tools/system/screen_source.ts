@@ -3,6 +3,7 @@ import { tool } from '../tool';
 
 export const selectScreenSourceTool = tool({
 	id: 'select_screen_source',
+	category: 'system',
 	name: 'Select screen source',
 	description:
 		'Present the user with the display or window choices returned by screen_recorder. Call this immediately after screen_recorder returns status "selection_required", passing the sources unchanged. Then call screen_recorder again with the returned sourceId.',

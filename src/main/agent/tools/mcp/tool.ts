@@ -24,6 +24,7 @@ export function mcpTool(
 	const parseInput = mcpInputParser(schema);
 	return jsonTool({
 		id: runtimeName,
+		category: 'integration',
 		name: toolName.charAt(0).toUpperCase() + toolName.slice(1).replaceAll('_', ' '),
 		description,
 		policy: { kind: 'mcp', serverId, toolName },

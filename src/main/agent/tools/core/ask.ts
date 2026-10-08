@@ -3,6 +3,7 @@ import { tool } from '../tool';
 
 export const requestUserInputTool = tool({
 	id: 'ask',
+	category: 'system',
 	name: 'Request user input',
 	description:
 		'Pause Plan mode for one to three consequential questions. The interface adds an optional free-form Other choice to every question.',

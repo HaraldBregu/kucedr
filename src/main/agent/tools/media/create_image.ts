@@ -7,6 +7,7 @@ import { tool } from '../tool';
 export function createImageTool(): Tool {
 	return tool({
 		id: 'create_image',
+		category: 'media',
 		name: 'Create image',
 		description:
 			'Generate one to eight images from a text prompt using the configured text-to-image provider. Saves the images in your agent workspace directory and returns their absolute paths. The images are shown to the user automatically; if you reference one in markdown, use its returned path.',

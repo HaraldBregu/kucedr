@@ -12,6 +12,7 @@ import { tool } from '../tool';
 export function screenRecorderTool(): Tool {
 	return tool({
 		id: 'screen_recorder',
+		category: 'system',
 		name: 'Screen recorder',
 		description:
 			'Start recording the user screen (video only). When the user directly requests the full screen, workspace, or application, set target to start it immediately without selecting a source. Otherwise call without sourceId or target; if it returns selection_required, call select_screen_source with the returned sources, then call this tool again with the returned sourceId. Requires an open app window and macOS Screen Recording permission. The recording runs in the background: this returns immediately with a recording id and the destination path. Specify a duration to stop automatically, or omit it and use screen_recorder_stop.',

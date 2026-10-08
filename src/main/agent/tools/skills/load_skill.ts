@@ -12,6 +12,7 @@ export function loadSkillTool(
 	if (names.length === 0) return undefined;
 	return tool({
 		id: 'load_skill',
+		category: 'skill',
 		name: 'Load skill',
 		description:
 			'Load one Agent Skill by exact name for this run only when the user explicitly asks to load or use it. Its protected instructions and canonical resource root are injected on the next model turn.',

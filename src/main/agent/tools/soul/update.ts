@@ -3,6 +3,7 @@ import { tool } from '../tool';
 
 export const updateSoulTool = tool({
 	id: 'update_soul',
+	category: 'bootstrap',
 	name: 'Update soul',
 	description: 'Update the assistant tone, boundaries, and interaction style. Include existing details that should remain.',
 	inputSchema: soulSchema,

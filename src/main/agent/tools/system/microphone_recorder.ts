@@ -11,6 +11,7 @@ import { tool } from '../tool';
 export function microphoneRecorderTool(): Tool {
 	return tool({
 		id: 'microphone_recorder',
+		category: 'system',
 		name: 'Microphone recorder',
 		description:
 			'Start recording audio from the user microphone. Requires an open app window. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Specify a duration to stop automatically, or omit it and use microphone_recorder_stop. Use microphone_recorder_status to check progress or wait for completion before using the file.',

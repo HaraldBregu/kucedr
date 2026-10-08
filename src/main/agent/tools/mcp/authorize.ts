@@ -14,6 +14,7 @@ export function requestMcpAuthorizationTool() {
 		.map(([id, data]) => `${id}${data.name ? ` (${data.name})` : ''}`);
 	return tool({
 		id: 'request_mcp_authorization',
+		category: 'integration',
 		name: 'Request MCP authorization',
 		description: `Check saved OAuth authorization and show an in-chat authorization button if it is missing, even when the server's tools are available. Do not open the authorization URL yourself. Available servers: ${servers.join(', ') || 'none'}.`,
 		capability: { effects: ['read'] },

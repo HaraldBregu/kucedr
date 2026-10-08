@@ -3,6 +3,7 @@ import { tool } from '../tool';
 
 export const cancelA2aTaskTool = tool({
 	id: 'cancel_a2a_task',
+	category: 'delegation',
 	name: 'Cancel remote task',
 	description: 'Request cancellation of a known remote A2A task.',
 	hardApproval: true,

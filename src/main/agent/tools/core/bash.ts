@@ -414,6 +414,7 @@ export function execTool(
 ) {
 	const configured = tool({
 		id: 'bash',
+		category: 'workspace',
 		name: 'Execute command',
 		description:
 			'Run a shell command in a filesystem sandbox to create, edit, move, or delete a file. Reads are allowed; writes are confined to the workspace and trusted locations. Declare outside directories that need write access in additionalRoots to request and optionally remember permission. ' +

@@ -250,6 +250,7 @@ async function runAct(params: {
 
 export const useWebBrowserTool = tool({
 	id: 'use_web_browser',
+	category: 'web',
 	name: 'Use web browser',
 	description:
 		'Drive a real Chrome browser for interactive web tasks: login flows, clicking UI, screenshots, PDFs, pages that need JavaScript. Heavier than fetch_web_page. Typical flow: open → snapshot (get element refs) → act (click/type on refs). The browser uses a persistent profile, so logins survive restarts.',

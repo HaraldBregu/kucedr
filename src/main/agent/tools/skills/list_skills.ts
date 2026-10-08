@@ -8,6 +8,7 @@ export function listSkillsTool(snapshot: SkillRegistrySnapshot): Tool {
 
 	return tool({
 		id: 'list_skills',
+		category: 'skill',
 		name: 'List skills',
 		description:
 			'List the available Agent Skills with their names and descriptions. Use only when the user explicitly asks to list or inspect skills.',

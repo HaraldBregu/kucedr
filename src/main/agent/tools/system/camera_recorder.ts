@@ -11,6 +11,7 @@ import { tool } from '../tool';
 export function cameraRecorderTool(): Tool {
 	return tool({
 		id: 'camera_recorder',
+		category: 'system',
 		name: 'Camera recorder',
 		description:
 			'Start recording video (with audio) from the user camera. Requires an open app window. The recording runs in the background: this returns immediately with a recording id and the destination path, and the file is written when the recording finishes. Specify a duration to stop automatically, or omit it and use camera_recorder_stop. Use camera_recorder_status to check progress or wait for completion before using the file.',

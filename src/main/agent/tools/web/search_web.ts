@@ -5,6 +5,7 @@ import { tool } from '../tool';
 
 const searchWebTool = tool({
 	id: 'search_web',
+	category: 'web',
 	name: 'Search web',
 	description:
 		'Search the web for current information using the configured search engine. Returns a list of results with title, url, and description.',

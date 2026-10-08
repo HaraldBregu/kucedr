@@ -5,6 +5,7 @@ import { tool } from '../tool';
 
 export const readTool = tool({
 	id: 'read',
+	category: 'workspace',
 	name: 'Read file',
 	description:
 		'Read the full UTF-8 contents of a single text file. Use this before editing when you need the current file contents.',

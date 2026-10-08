@@ -3,6 +3,7 @@ import { tool } from '../tool';
 
 export const getA2aTaskTool = tool({
 	id: 'get_a2a_task',
+	category: 'delegation',
 	name: 'Get remote task',
 	description: 'Get the current state and output of a known remote A2A task.',
 	inputSchema: z.object({

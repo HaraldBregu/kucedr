@@ -3,6 +3,7 @@ import { tool } from '../tool';
 
 export const delegateA2aTool = tool({
 	id: 'delegate_a2a',
+	category: 'delegation',
 	name: 'Delegate to remote agent',
 	description:
 		'Delegate a task to a configured remote A2A agent. Call list_a2a_agents first to obtain a current enabled agent ID.',

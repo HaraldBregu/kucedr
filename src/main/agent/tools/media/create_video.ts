@@ -7,6 +7,7 @@ import { tool } from '../tool';
 export function createVideoTool(): Tool {
 	return tool({
 		id: 'create_video',
+		category: 'media',
 		name: 'Create video',
 		description:
 			'Generate a video from a text prompt using the configured text-to-video provider. Saves the video in your agent workspace directory and returns its absolute path. Video generation can take several minutes; if you reference it in markdown, use the returned path.',

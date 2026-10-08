@@ -5,6 +5,7 @@ import { tool } from '../tool';
 
 export const listA2aAgentsTool = tool({
 	id: 'list_a2a_agents',
+	category: 'delegation',
 	name: 'List remote agents',
 	description: 'List configured and enabled remote A2A agents and their advertised skills.',
 	planSafe: true,

@@ -10,6 +10,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 	return [
 		tool({
 			id: 'get_goal',
+			category: 'goal',
 			name: 'get_goal',
 			description: 'Read the active conversation goal, criteria, plan, evidence, and budget.',
 			inputSchema: z.object({}),
@@ -17,6 +18,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 		}),
 		tool({
 			id: 'update_goal_plan',
+			category: 'goal',
 			name: 'update_goal_plan',
 			description: 'Replace the operational steps for the active goal. Do not change its success criteria.',
 			inputSchema: z.object({
@@ -34,6 +36,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 		}),
 		tool({
 			id: 'record_goal_evidence',
+			category: 'goal',
 			name: 'record_goal_evidence',
 			description: 'Record concise evidence obtained from tool output for a goal criterion.',
 			inputSchema: z.object({ criterionId: z.string(), source: z.string(), summary: z.string().min(1).max(1000) }),
@@ -52,6 +55,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 		}),
 		tool({
 			id: 'request_goal_completion',
+			category: 'goal',
 			name: 'request_goal_completion',
 			description: 'Request completion. The runtime rejects completion unless every criterion has recorded evidence.',
 			inputSchema: z.object({ summary: z.string().min(1).max(1000) }),
@@ -65,6 +69,7 @@ export function goalTools(sessionDirectory: string): Tool[] {
 		}),
 		tool({
 			id: 'report_goal_blocker',
+			category: 'goal',
 			name: 'report_goal_blocker',
 			description: 'Stop an active goal when a concrete blocker prevents further progress.',
 			inputSchema: z.object({ reason: z.string().min(1).max(1000) }),
