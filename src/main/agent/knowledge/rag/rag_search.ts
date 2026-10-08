@@ -26,9 +26,11 @@ export async function searchRag(
 		throw new Error('Knowledge result count must be between 1 and 100.');
 	const vectorStore = dependencies.vectors ?? ragVectorStore();
 	const embeddingProvider = dependencies.embeddings ?? new SelectedEmbeddingProvider();
+	const timeout = AbortSignal.timeout(30_000);
+	const signal = dependencies.signal ? AbortSignal.any([dependencies.signal, timeout]) : timeout;
 
 	try {
-		dependencies.signal?.throwIfAborted();
+		signal.throwIfAborted();
 		const index = vectorStore.getIndex(selectedIndexName);
 		if (!index) throw new Error('Index the rag folder before searching.');
 		if ((index.indexName ?? DEFAULT_RAG_INDEX_NAME) !== selectedIndexName) {
@@ -50,9 +52,9 @@ export async function searchRag(
 				providerId: index.providerId,
 				modelId: index.modelId,
 			},
-			dependencies.signal
+			signal
 		);
-		dependencies.signal?.throwIfAborted();
+		signal.throwIfAborted();
 		if (embedded.providerId !== index.providerId || embedded.modelId !== index.modelId) {
 			throw new Error('Embedding provider did not use the indexed provider and model.');
 		}

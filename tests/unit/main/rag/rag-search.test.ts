@@ -94,7 +94,7 @@ it('searches SQLite with the exact embedding identity used to build the index', 
 			providerId: 'openai',
 			modelId: 'text-embedding-3-small',
 		},
-		undefined
+		expect.any(AbortSignal)
 	);
 	expect(search).toHaveBeenCalledWith('knowledge-base', [0.1, 0.2], 5);
 });
@@ -116,7 +116,8 @@ it('passes cancellation to the query embedding provider', async () => {
 	controller.abort(reason);
 
 	await expect(result).rejects.toBe(reason);
-	expect(embed.mock.calls[0][1]).toBe(controller.signal);
+	expect(embed.mock.calls[0][1].aborted).toBe(true);
+	expect(embed.mock.calls[0][1].reason).toBe(reason);
 	expect(search).not.toHaveBeenCalled();
 });
 
