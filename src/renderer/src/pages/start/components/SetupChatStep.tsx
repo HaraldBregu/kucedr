@@ -63,7 +63,13 @@ export function SetupChatStep({
 								disabled={loadingModels || savingConfig}
 								onChange={onServiceChange}
 							/>
-							<SetupCompaction modelGroups={assistantModelGroups.map((group) => ({ ...group, models: group.models.filter((model) => model.id !== 'local') }))} disabled={loadingModels || savingConfig} />
+							<SetupCompaction
+								modelGroups={assistantModelGroups.map((group) => ({
+									...group,
+									models: group.models.filter((model) => model.id !== 'local'),
+								}))}
+								disabled={loadingModels || savingConfig}
+							/>
 						</CardContent>
 					</Card>
 				</section>
