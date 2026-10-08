@@ -239,7 +239,7 @@ beforeEach(() => {
 
 it('organizes Knowledge into source, embedding, storage, indexing and search controls', async () => {
 	configuration.folders = ['/Users/example/docs'];
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	await screen.findByText('/Users/example/docs');
 	for (const name of ['Source folders', 'Embedding', 'Storage', 'Indexing']) {
 		expect(screen.getByRole('heading', { name })).toBeInTheDocument();
@@ -255,7 +255,7 @@ it('organizes Knowledge into source, embedding, storage, indexing and search con
 it('preserves an unavailable embedding selection without changing it on load', async () => {
 	configuration.embeddingProviderId = 'removed';
 	configuration.embeddingModelId = 'previous-model';
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const model = await screen.findByRole('combobox', { name: 'Embedding model' });
 	expect(model).toHaveTextContent('Select model');
 	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
@@ -270,7 +270,7 @@ it('saves the embedding provider and model together and clears its old disclosur
 		version: 1,
 		recipient: 'old',
 	};
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	await screen.findByRole('combobox', { name: 'Embedding model' });
 	fireEvent.click(screen.getByRole('option', { name: 'Voyage / Voyage 3' }));
 	await waitFor(() =>
@@ -296,7 +296,7 @@ it('saves the embedding provider and model together and clears its old disclosur
 
 it('keeps the persisted model selected when a model save fails', async () => {
 	agentApi.ragSaveConfiguration.mockRejectedValueOnce(new Error('Unable to save model'));
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const model = await screen.findByRole('combobox', { name: 'Embedding model' });
 	fireEvent.click(screen.getByRole('option', { name: 'Voyage / Voyage 3' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to save model');
@@ -305,7 +305,7 @@ it('keeps the persisted model selected when a model save fails', async () => {
 });
 
 it('leaves the database unselected until the user explicitly chooses local or remote', async () => {
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const database = await screen.findByRole('combobox', { name: 'Vector database' });
 	expect(database).toHaveTextContent('Select database');
 	expect(databaseApi.saveConfiguration).not.toHaveBeenCalled();
@@ -328,7 +328,7 @@ it('leaves the database unselected until the user explicitly chooses local or re
 it('saves the remote selection atomically and shows its disclosure beside storage', async () => {
 	configuration.databaseProviderId = 'local';
 	configuration.databaseId = 'sqlite';
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	await screen.findByRole('combobox', { name: 'Vector database' });
 	fireEvent.click(screen.getByRole('option', { name: 'Pinecone / Pinecone Vector Database' }));
 	await waitFor(() =>
@@ -348,7 +348,7 @@ it('saves the remote selection atomically and shows its disclosure beside storag
 
 it('enables Knowledge and records consent for the selected embedding model', async () => {
 	const user = userEvent.setup();
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	await user.click(await screen.findByRole('switch', { name: 'Enable Knowledge' }));
 	await waitFor(() => expect(configuration.enabled).toBe(true));
 	await user.click(screen.getByRole('switch', { name: 'Send document text for embeddings' }));
@@ -367,7 +367,7 @@ it('does not display disclosure without a recipient as accepted', async () => {
 		providerId: 'openai',
 		modelId: 'text-embedding-3-small',
 	};
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	expect(
 		await screen.findByRole('switch', { name: 'Send document text for embeddings' })
 	).not.toBeChecked();
@@ -387,7 +387,7 @@ it('allows indexing in explicitly selected local SQLite without remote storage c
 			recipient: 'embedding-recipient',
 		},
 	};
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const index = await screen.findByRole('button', { name: 'Generate index' });
 	expect(index).toBeEnabled();
 	fireEvent.click(index);
@@ -411,7 +411,7 @@ it('requires remote mirror consent before indexing in a selected remote database
 			recipient: 'embedding-recipient',
 		},
 	};
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const index = await screen.findByRole('button', { name: 'Generate index' });
 	expect(index).toBeDisabled();
 	fireEvent.click(
@@ -422,7 +422,7 @@ it('requires remote mirror consent before indexing in a selected remote database
 
 it('saves index-name and source-folder changes immediately', async () => {
 	const user = userEvent.setup();
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const index = await screen.findByLabelText('Index name');
 	await user.clear(index);
 	await user.type(index, 'knowledge-base');
@@ -436,7 +436,7 @@ it('saves index-name and source-folder changes immediately', async () => {
 
 it('saves schedule presets and supports a custom expression and timezone', async () => {
 	const user = userEvent.setup();
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	await screen.findByRole('combobox', { name: 'Indexing frequency' });
 	fireEvent.click(screen.getByRole('option', { name: 'Every 4 hours' }));
 	await waitFor(() =>
@@ -465,7 +465,7 @@ it('displays a background run, locks edits and data changes, and allows cancella
 	status.running = true;
 	status.outcome = 'running';
 	status.trigger = 'scheduled';
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	expect(await screen.findByText('Indexing in progress')).toBeInTheDocument();
 	expect(screen.getByRole('combobox', { name: 'Embedding model' })).toBeDisabled();
 	expect(screen.getByLabelText('Index name')).toBeDisabled();
@@ -492,7 +492,7 @@ it('blocks test search when the published index uses a different embedding model
 		dimensions: 1024,
 		completedAt: '2026-10-08T12:00:00Z',
 	};
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const query = await screen.findByLabelText('Test query');
 	fireEvent.change(query, { target: { value: 'a question' } });
 	expect(screen.getByText('Rebuild required')).toBeInTheDocument();
@@ -519,7 +519,7 @@ it('submits labeled test search with Enter and displays returned source snippets
 	agentApi.ragSearch.mockResolvedValue([
 		{ path: '/Users/example/docs/guide.md', text: 'Relevant source passage', score: 0.82 },
 	]);
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	await user.type(await screen.findByLabelText('Test query'), 'what is this?{Enter}');
 	await waitFor(() => expect(agentApi.ragSearch).toHaveBeenCalledWith('what is this?'));
 	expect(await screen.findByText('Relevant source passage')).toBeInTheDocument();
@@ -528,7 +528,7 @@ it('submits labeled test search with Enter and displays returned source snippets
 
 it('saves the minimum similarity threshold', async () => {
 	const user = userEvent.setup();
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const threshold = await screen.findByLabelText('Minimum similarity');
 	await user.clear(threshold);
 	await user.type(threshold, '0.35');
@@ -544,7 +544,7 @@ it('exports local data and only shows remote data controls for the remote select
 	const user = userEvent.setup();
 	configuration.databaseProviderId = 'pinecone';
 	configuration.databaseId = 'pinecone';
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const local = await screen.findByText('Full local knowledge index');
 	const localRow = local.closest('[class*="grid"]') as HTMLElement;
 	await user.click(within(localRow).getByRole('button', { name: 'Export' }));
@@ -568,7 +568,7 @@ it('exports local data and only shows remote data controls for the remote select
 
 it('provides a retry when loading Knowledge settings fails', async () => {
 	agentApi.ragGetConfiguration.mockRejectedValueOnce(new Error('Unable to load'));
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	expect(await screen.findByRole('alert')).toHaveTextContent('Unable to load');
 	fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
 	expect(await screen.findByRole('combobox', { name: 'Embedding model' })).toBeInTheDocument();
@@ -591,7 +591,7 @@ it('blocks test search and marks the index stale when source folders or the embe
 		dimensions: 1536,
 		completedAt: '2026-10-08T12:00:00Z',
 	};
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	const query = await screen.findByLabelText('Test query');
 	fireEvent.change(query, { target: { value: 'a question' } });
 	expect(screen.getByText('Rebuild required')).toBeInTheDocument();
@@ -603,7 +603,7 @@ it('blocks test search and marks the index stale when source folders or the embe
 it('refreshes status for an indexing run started while the page is open', async () => {
 	jest.useFakeTimers();
 	try {
-		render(<KnowledgePage />);
+		render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 		await screen.findByText('Not indexed');
 		status = { ...status, running: true, outcome: 'running', trigger: 'scheduled' };
 		await act(async () => {
@@ -628,10 +628,24 @@ it('does not fall back to local SQLite when the saved remote database is unavail
 		modelId: 'text-embedding-3-small',
 		recipient: 'embedding-recipient',
 	};
-	render(<KnowledgePage />);
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
 	expect(await screen.findByRole('combobox', { name: 'Vector database' })).toHaveTextContent(
 		'Select database'
 	);
 	expect(screen.getByRole('button', { name: 'Generate index' })).toBeDisabled();
 	expect(agentApi.ragSaveConfiguration).not.toHaveBeenCalled();
+});
+
+it('links directly to embedding and database provider configuration', async () => {
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
+	expect(await screen.findByRole('link', { name: 'Configure models' })).toHaveAttribute('href', '/settings/providers/models');
+	expect(screen.getByRole('link', { name: 'Configure databases' })).toHaveAttribute('href', '/settings/providers/database');
+});
+
+it('shows a persisted index as ready after restart and retains its completion date', async () => {
+	status.index = { indexName: 'kucedr', providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 1536, completedAt: '2026-10-08T12:00:00Z' };
+	render(<MemoryRouter><KnowledgePage /></MemoryRouter>);
+	expect(await screen.findByText('Index up to date')).toBeInTheDocument();
+	expect(screen.queryByText('Not indexed')).not.toBeInTheDocument();
+	expect(screen.getByText('settings.knowledge.lastRun')).toBeInTheDocument();
 });
