@@ -93,6 +93,10 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 	expect(session.toolCalls.map((call) => call.name)).toEqual([
 		mcp.id, 'request_mcp_authorization', mcp.id,
 	]);
+	expect(session.messages.filter((message) => message.role === 'assistant').slice(0, 3)
+		.map((message) => message.toolCalls?.map((call) => call.name))).toEqual([
+		[mcp.id], ['request_mcp_authorization'], [mcp.id],
+	]);
 	expect(session.toolCalls[0].result?.isError).toBe(true);
 	expect(session.toolCalls[2].result?.content).toBe('message found');
 	expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { text: 'Found it.' } });
