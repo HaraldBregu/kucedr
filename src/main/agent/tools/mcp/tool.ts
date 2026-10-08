@@ -18,7 +18,8 @@ export function mcpTool(
 	serverId: string,
 	approval?: McpApprovalPolicy,
 	runtimeName = mcpToolName(serverId, toolName, new Set()),
-	readOnly = false
+	readOnly = false,
+	resetConnection?: () => Promise<void>
 ) {
 	const parseInput = mcpInputParser(schema);
 	return jsonTool({
@@ -51,13 +52,14 @@ export function mcpTool(
 				const message = error instanceof Error ? error.message : String(error);
 				if (error instanceof UnauthorizedError || /unauthori[sz]ed|\b401\b|authentication required|insufficient_scope|Connect this MCP server with OAuth in Settings\./i.test(message)) {
 					const server = getMcpServers()[serverId];
-					if (server?.type === 'http' && (!findMcpService(server.url)?.oauth?.credentials_required || server.client_id))
-						return JSON.stringify({
+					if (server?.type === 'http' && (!findMcpService(server.url)?.oauth?.credentials_required || server.client_id)) {
+						await resetConnection?.();
+						return {
 							status: 'authorization_required',
 							serverId,
 							serverName: server.name?.trim() || serverId,
-							message: 'Call request_mcp_authorization for this server to display the chat button, then wait for the user before using its tools.',
-						});
+						};
+					}
 				}
 				throw error;
 			}

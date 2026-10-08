@@ -73,7 +73,12 @@ export async function loadMcpTools(signal?: AbortSignal): Promise<{
 					id,
 					data.require_approval,
 					runtimeName,
-					listedTool.annotations?.readOnlyHint === true
+					listedTool.annotations?.readOnlyHint === true,
+					async () => {
+						const connection = connections.get(id);
+						connections.delete(id);
+						if (connection) await connection.then(close).catch(() => undefined);
+					}
 				);
 				tools.push(configured);
 				entries.push({ tool: configured, serverId: id, serverName: data.name?.trim() || id });
