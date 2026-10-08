@@ -169,7 +169,15 @@ describe('Home prompt attachments', () => {
 			configurable: true,
 			value: {
 				readPromptFile: jest.fn(async () => new Uint8Array([112, 110, 103])),
-				listSessions: jest.fn(async () => [{ id: 'session-1', title: 'Planning chat', createdAtMs: 1, updatedAtMs: 1700000000000, category: 'main' }]),
+				listSessions: jest.fn(async () => [
+					{
+						id: 'session-1',
+						title: 'Planning chat',
+						createdAtMs: 1,
+						updatedAtMs: 1700000000000,
+						category: 'main',
+					},
+				]),
 			},
 		});
 		Object.defineProperty(window, 'library', {
@@ -200,8 +208,12 @@ describe('Home prompt attachments', () => {
 		);
 		expect(screen.getByLabelText('Attachment files')).not.toHaveAttribute('accept');
 
-		expect(screen.getByText(/^Good (morning|afternoon|evening), how are you\?$/)).toHaveClass('text-3xl');
-		expect(screen.getByText("I'm your assistant. What can I do for you?")).toHaveClass('text-sm/relaxed');
+		expect(screen.getByText(/^Good (morning|afternoon|evening), how are you\?$/)).toHaveClass(
+			'text-3xl'
+		);
+		expect(screen.getByText("I'm your assistant. What can I do for you?")).toHaveClass(
+			'text-sm/relaxed'
+		);
 		for (const label of [
 			'Plan my day',
 			'Rain sound',
@@ -290,9 +302,14 @@ describe('Home prompt attachments', () => {
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
-		expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute('data-state', 'done');
+		expect(screen.getByText('diagram.png').closest('[data-slot="attachment"]')).toHaveAttribute(
+			'data-state',
+			'done'
+		);
 		expect(screen.getByText('PNG · 3 B')).toBeInTheDocument();
-		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
+		expect(
+			screen.queryByText('This file type is not supported by the selected model.')
+		).not.toBeInTheDocument();
 	});
 
 	it('shows the selected file in an attachment card and removes it', async () => {
@@ -321,7 +338,9 @@ describe('Home prompt attachments', () => {
 		fireEvent.change(picker, {
 			target: { files: [new File(['png'], 'diagram.png', { type: 'image/png' })] },
 		});
-		await waitFor(() => expect(localStorage.getItem('kucedr-prompt-attachments')).toContain('/tmp/diagram.png'));
+		await waitFor(() =>
+			expect(localStorage.getItem('kucedr-prompt-attachments')).toContain('/tmp/diagram.png')
+		);
 		cleanup();
 		renderPage();
 		expect(await screen.findByText('diagram.png')).toBeInTheDocument();
@@ -340,9 +359,14 @@ describe('Home prompt attachments', () => {
 		});
 
 		expect(screen.getByText('archive.zip')).toBeInTheDocument();
-		expect(screen.getByText('archive.zip').closest('[data-slot="attachment"]')).toHaveAttribute('data-state', 'done');
+		expect(screen.getByText('archive.zip').closest('[data-slot="attachment"]')).toHaveAttribute(
+			'data-state',
+			'done'
+		);
 		expect(screen.getByText('ZIP · 6 B')).toBeInTheDocument();
-		expect(screen.queryByText('This file type is not supported by the selected model.')).not.toBeInTheDocument();
+		expect(
+			screen.queryByText('This file type is not supported by the selected model.')
+		).not.toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
 	});
 
