@@ -80,10 +80,11 @@ function allCatalogItems(section?: ProviderSetupSection): readonly ProviderCatal
 
 interface ProvidersPageProps {
 	readonly embedded?: boolean;
+	readonly onSearchSettingsChange?: (settings: SearchSettings) => void;
 	readonly section?: ProviderSetupSection;
 }
 
-const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section }) => {
+const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section, onSearchSettingsChange }) => {
 	const { t } = useTranslation();
 	const [providerEntries, setProviderEntries] = useState<ProviderSetupEntry[]>(() =>
 		allCatalogItems(section).map((provider) => ({
@@ -233,7 +234,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setSavingProviderId(providerId);
 		setError(null);
 		try {
-			setSearchSettings(await window.search.saveEngine(providerId as SearchEngineId, { apiKey }));
+			const settings = await window.search.saveEngine(providerId as SearchEngineId, { apiKey });
+			setSearchSettings(settings);
+			onSearchSettingsChange?.(settings);
 			updateProviderEntry(providerId, {
 				apiKey,
 				savedApiKey: apiKey,
@@ -252,7 +255,9 @@ const ProvidersPage: React.FC<ProvidersPageProps> = ({ embedded = false, section
 		setError(null);
 		try {
 			if (kind === 'search') {
-				setSearchSettings(await window.search.removeEngine(providerId as SearchEngineId));
+				const settings = await window.search.removeEngine(providerId as SearchEngineId);
+				setSearchSettings(settings);
+				onSearchSettingsChange?.(settings);
 			} else {
 				await window.provider.remove(providerId, kind);
 			}
