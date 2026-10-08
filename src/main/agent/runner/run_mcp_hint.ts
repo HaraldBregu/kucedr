@@ -13,7 +13,10 @@ export function resolveMcpServerHint(
 		}
 	}
 	const explicit = normalized.match(/\b([\p{L}\p{N}_-]+)\s+mcp\b/u)?.[1];
-	if (!explicit || ['a', 'an', 'check', 'my', 'server', 'the', 'tool', 'tools', 'use', 'using'].includes(explicit))
+	if (
+		!explicit ||
+		['a', 'an', 'check', 'my', 'server', 'the', 'tool', 'tools', 'use', 'using'].includes(explicit)
+	)
 		return undefined;
 	return explicit;
 }

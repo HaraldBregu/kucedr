@@ -29,9 +29,14 @@ describe('tool search', () => {
 	});
 	it('starts with required tools and searches schema metadata', async () => {
 		const read = fakeTool('read', 'Read a file');
-		const invoices = fakeTool('mcp__billing__invoices', 'Find customer records', {
-			invoiceNumber: { type: 'string', description: 'Customer invoice identifier' },
-		}, { kind: 'mcp', serverId: 'billing', toolName: 'invoices' });
+		const invoices = fakeTool(
+			'mcp__billing__invoices',
+			'Find customer records',
+			{
+				invoiceNumber: { type: 'string', description: 'Customer invoice identifier' },
+			},
+			{ kind: 'mcp', serverId: 'billing', toolName: 'invoices' }
+		);
 		const search = createToolSearch({
 			eligible: [read, invoices],
 			required: [read],
@@ -80,22 +85,35 @@ describe('tool search', () => {
 
 	it('does not offer unrelated tools when a named MCP server is requested', async () => {
 		const health = fakeTool('get_health', 'Read the current HEALTH.md information.');
-		const gmail = fakeTool('mcp__gmail__search_threads', 'Search Gmail inbox threads', {}, {
-			kind: 'mcp', serverId: 'gmail', toolName: 'search_threads',
-		});
+		const gmail = fakeTool(
+			'mcp__gmail__search_threads',
+			'Search Gmail inbox threads',
+			{},
+			{
+				kind: 'mcp',
+				serverId: 'gmail',
+				toolName: 'search_threads',
+			}
+		);
 		const search = createToolSearch({
 			eligible: [health, gmail],
 			required: [],
 			mcpTools: [{ tool: gmail, serverId: 'gmail', serverName: 'Gmail' }],
 			mcpServerHint: 'gmail',
 		});
-		expect(await search.tool.run({ query: 'read latest received Gmail message inbox' })).toMatchObject({
+		expect(
+			await search.tool.run({ query: 'read latest received Gmail message inbox' })
+		).toMatchObject({
 			selectedToolIds: ['mcp__gmail__search_threads'],
 		});
 		const missing = createToolSearch({
-			eligible: [health], required: [], mcpServerHint: 'gmail',
+			eligible: [health],
+			required: [],
+			mcpServerHint: 'gmail',
 		});
-		expect(await missing.tool.run({ query: 'read latest received Gmail message inbox' })).toMatchObject({
+		expect(
+			await missing.tool.run({ query: 'read latest received Gmail message inbox' })
+		).toMatchObject({
 			selectedToolIds: [],
 		});
 	});
@@ -105,15 +123,24 @@ describe('tool search', () => {
 			fakeTool(`invoice_${index}`, 'Find invoices')
 		);
 		const search = createToolSearch({ eligible: tools, required: [] });
-		expect((await search.tool.run({ query: 'invoices' }) as { selectedToolIds: string[] }).selectedToolIds).toHaveLength(5);
-		expect((await search.tool.run({ query: 'invoices', limit: 8 }) as { selectedToolIds: string[] }).selectedToolIds).toHaveLength(8);
-		const last = await search.tool.run({ query: 'invoices', limit: 8 }) as {
+		expect(
+			((await search.tool.run({ query: 'invoices' })) as { selectedToolIds: string[] })
+				.selectedToolIds
+		).toHaveLength(5);
+		expect(
+			((await search.tool.run({ query: 'invoices', limit: 8 })) as { selectedToolIds: string[] })
+				.selectedToolIds
+		).toHaveLength(8);
+		const last = (await search.tool.run({ query: 'invoices', limit: 8 })) as {
 			selectedToolIds: string[];
 			limitReached: boolean;
 		};
 		expect(last.selectedToolIds).toHaveLength(3);
 		expect(last.limitReached).toBe(true);
-		expect((await search.tool.run({ query: 'invoices' }) as { selectedToolIds: string[] }).selectedToolIds).toEqual([]);
+		expect(
+			((await search.tool.run({ query: 'invoices' })) as { selectedToolIds: string[] })
+				.selectedToolIds
+		).toEqual([]);
 	});
 
 	it('removes active tools when authorization narrows eligibility', async () => {
@@ -125,12 +152,26 @@ describe('tool search', () => {
 	});
 
 	it('refreshes active definitions and MCP metadata after a catalog change', async () => {
-		const first = fakeTool('mcp__billing__invoices', 'Find invoices', {}, {
-			kind: 'mcp', serverId: 'billing', toolName: 'invoices',
-		});
-		const changed = fakeTool('mcp__billing__invoices', 'Find current invoices', {}, {
-			kind: 'mcp', serverId: 'billing', toolName: 'invoices',
-		});
+		const first = fakeTool(
+			'mcp__billing__invoices',
+			'Find invoices',
+			{},
+			{
+				kind: 'mcp',
+				serverId: 'billing',
+				toolName: 'invoices',
+			}
+		);
+		const changed = fakeTool(
+			'mcp__billing__invoices',
+			'Find current invoices',
+			{},
+			{
+				kind: 'mcp',
+				serverId: 'billing',
+				toolName: 'invoices',
+			}
+		);
 		const search = createToolSearch({ eligible: [first], required: [first] });
 		search.replaceEligible([changed]);
 		search.replaceMcpEntries([{ tool: changed, serverId: 'billing', serverName: 'Billing' }]);
@@ -139,11 +180,18 @@ describe('tool search', () => {
 
 	it('keeps canonical IDs unique when an MCP namespace overlaps a native namespace', async () => {
 		const read = fakeTool('read', 'Read file contents');
-		const remote = fakeTool('mcp__files__read', 'Read remote file contents', {}, {
-			kind: 'mcp', serverId: 'files', toolName: 'read',
-		});
+		const remote = fakeTool(
+			'mcp__files__read',
+			'Read remote file contents',
+			{},
+			{
+				kind: 'mcp',
+				serverId: 'files',
+				toolName: 'read',
+			}
+		);
 		const search = createToolSearch({ eligible: [read, remote], required: [] });
-		const result = await search.tool.run({ query: 'read file', limit: 8 }) as {
+		const result = (await search.tool.run({ query: 'read file', limit: 8 })) as {
 			selectedCanonicalIds: string[];
 		};
 		expect(result.selectedCanonicalIds).toHaveLength(2);
