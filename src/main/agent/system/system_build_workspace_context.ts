@@ -7,8 +7,8 @@ export async function buildWorkspaceContext(
 	config: Config,
 	scope: 'full' | 'core' = 'full',
 	memory = '',
-	tools: readonly Tool[] = [],
-	eligibleTools: readonly Tool[] = tools
+	_tools: readonly Tool[] = [],
+	_eligibleTools: readonly Tool[] = _tools
 ): Promise<string> {
 	const resolvedWorkspacePath = path.resolve(config.location);
 	const { profiles, missing } = await profileStatus(resolvedWorkspacePath);
