@@ -61,5 +61,5 @@ it.each([
 	expect(JSON.parse(calls[0].result?.content as string)).toMatchObject({
 		status: proceed ? 'authorized' : 'cancelled',
 	});
-	expect(nextRun).toHaveBeenCalledTimes(proceed ? 1 : 0);
+	expect(Boolean(calls[1].result)).toBe(proceed);
 });
