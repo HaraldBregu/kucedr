@@ -90,6 +90,10 @@ pages do not accept or display credentials. For a Google Desktop app OAuth clien
 loopback ports are supported. A Google Web application OAuth client requires the exact
 registered callback. Never reuse an account sign-in callback for an MCP connection.
 
+For Microsoft 365, follow [Microsoft MCP setup](MICROSOFT.md) to register an Entra desktop
+client, grant server permissions, and configure `MICROSOFT_TENANT_ID` and `MICROSOFT_CLIENT_ID`.
+Microsoft Learn requires no credentials.
+
 The generic client supports pre-registered clients and dynamic client registration, with
 SDK authorization-server discovery, PKCE S256, per-attempt state validation, and token
 refresh. It does not currently publish a hosted OAuth client metadata document. Provider

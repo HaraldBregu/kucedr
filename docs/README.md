@@ -8,6 +8,7 @@ These guides describe the checked-in implementation; provider availability and o
 - [Application guide](APPLICATION.md): first launch, conversations, voice, media, automation, knowledge, integrations, backup, and troubleshooting.
 - [Apps guide](APPS.md): installable app windows, external development folders, app data, and the built-in Workspace.
 - [Feature reference](FEATURES.md): detailed capabilities and implementation limits.
+- [Microsoft MCP setup](MICROSOFT.md): create an Entra app, configure permissions and callbacks, and connect Microsoft 365 services.
 - [Provider reference](PROVIDERS.md): model and service catalogs and supported runtime adapters.
 - [Use-case tests](use-cases/README.md): copyable scenarios and pass checks for chat, media, web, local work, automation, and Google MCP services.
 

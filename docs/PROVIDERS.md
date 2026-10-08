@@ -11,6 +11,9 @@ GitHub, GitLab, Microsoft, Notion, Ollama, Supabase, and Telegram. See
 [Kucedr Feature Reference](FEATURES.md) and [Account and Cloud Architecture](CLOUD.md) for their
 respective runtime paths.
 
+For Microsoft MCP app registration, permissions, and environment configuration, see
+[Microsoft MCP setup](MICROSOFT.md).
+
 ## Support status
 
 | Status       | Meaning                                                                                        |
