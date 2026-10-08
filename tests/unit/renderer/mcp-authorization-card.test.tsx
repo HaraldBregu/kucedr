@@ -100,3 +100,8 @@ it('hides the card after authorization and for unrelated server statuses', () =>
 	);
 	expect(screen.queryByText(/connected/i)).not.toBeInTheDocument();
 });
+
+it('keeps the cancelled result visible', () => {
+	render(<McpAuthorizationCard tool={{ ...tool, output: { status: 'cancelled', serverId: 'gmail' } }} />);
+	expect(screen.getByText('Authorization cancelled')).toBeInTheDocument();
+});
