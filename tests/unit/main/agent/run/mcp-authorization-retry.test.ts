@@ -32,7 +32,9 @@ const mcp = jsonTool({
 });
 
 beforeEach(() => {
-	getMcpServers.mockReturnValue({ gmail: { type: 'http', url: 'https://mcp.example', name: 'Gmail' } });
+	getMcpServers.mockReturnValue({
+		gmail: { type: 'http', url: 'https://mcp.example', name: 'Gmail' },
+	});
 	getMcpOauth.mockReturnValue({});
 	runMcp.mockReset();
 	runModelTurnMock.mockReset();
@@ -40,7 +42,11 @@ beforeEach(() => {
 
 it('shows the failed MCP call, waits for authorization, then retries the same arguments once', async () => {
 	runMcp
-		.mockResolvedValueOnce({ status: 'authorization_required', serverId: 'gmail', serverName: 'Gmail' })
+		.mockResolvedValueOnce({
+			status: 'authorization_required',
+			serverId: 'gmail',
+			serverName: 'Gmail',
+		})
 		.mockResolvedValueOnce('message found');
 	runModelTurnMock
 		.mockImplementationOnce(async function* () {
@@ -59,11 +65,18 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 	session.messages = [{ role: 'user', content: 'Find the email' }];
 	const events: RuntimeEvent[] = [];
 	const iterator = stream(
-		{ location: '/workspace' }, session,
+		{ location: '/workspace' },
+		session,
 		{
-			runId: 'run', task: 'chat', message: 'Find the email', model: 'test-model',
-			type: 'default', agentId: 'main', contextMode: 'minimal',
-			interactionMode: 'default', approvalWindowId: 7,
+			runId: 'run',
+			task: 'chat',
+			message: 'Find the email',
+			model: 'test-model',
+			type: 'default',
+			agentId: 'main',
+			contextMode: 'minimal',
+			interactionMode: 'default',
+			approvalWindowId: 7,
 		},
 		new AbortController().signal,
 		{ tools: [mcp] }
@@ -75,50 +88,78 @@ it('shows the failed MCP call, waits for authorization, then retries the same ar
 		events.push(next.value);
 		if (next.value.type === 'user_input_request') request = next.value;
 	}
-	expect(events.map((event) => event.type)).toEqual(expect.arrayContaining(['tool_call_end', 'user_input_request']));
-	expect(events.findIndex((event) => event.type === 'tool_call_end')).toBeLessThan(events.findIndex((event) => event.type === 'user_input_request'));
+	expect(events.map((event) => event.type)).toEqual(
+		expect.arrayContaining(['tool_call_end', 'user_input_request'])
+	);
+	expect(events.findIndex((event) => event.type === 'tool_call_end')).toBeLessThan(
+		events.findIndex((event) => event.type === 'user_input_request')
+	);
 	expect(runMcp).toHaveBeenCalledTimes(1);
 	const next = iterator.next();
 	await Promise.resolve();
 	getMcpOauth.mockReturnValue({ tokens: { access_token: 'token' } });
-	expect(respondUserInput({
-		requestId: request.requestId, runId: 'run', toolCallId: request.toolCallId,
-		inputFingerprint: request.inputFingerprint,
-	}, [{ questionId: 'mcp-authorization', answer: 'authorized' }], 7)).toBe(true);
+	expect(
+		respondUserInput(
+			{
+				requestId: request.requestId,
+				runId: 'run',
+				toolCallId: request.toolCallId,
+				inputFingerprint: request.inputFingerprint,
+			},
+			[{ questionId: 'mcp-authorization', answer: 'authorized' }],
+			7
+		)
+	).toBe(true);
 	const resumed = await next;
 	if (!resumed.done) events.push(resumed.value);
 	for await (const event of iterator) events.push(event);
 	expect(runMcp).toHaveBeenCalledTimes(2);
 	expect(runMcp).toHaveBeenNthCalledWith(2, { query: 'subject' }, expect.any(AbortSignal));
 	expect(session.toolCalls.map((call) => call.name)).toEqual([
-		mcp.id, 'request_mcp_authorization', mcp.id,
+		mcp.id,
+		'request_mcp_authorization',
+		mcp.id,
 	]);
-	expect(session.messages.filter((message) => message.role === 'assistant').slice(0, 3)
-		.map((message) => message.toolCalls?.map((call) => call.name))).toEqual([
-		[mcp.id], ['request_mcp_authorization'], [mcp.id],
-	]);
+	expect(
+		session.messages
+			.filter((message) => message.role === 'assistant')
+			.slice(0, 3)
+			.map((message) => message.toolCalls?.map((call) => call.name))
+	).toEqual([[mcp.id], ['request_mcp_authorization'], [mcp.id]]);
 	expect(session.toolCalls[0].result?.isError).toBe(true);
 	expect(session.toolCalls[2].result?.content).toBe('message found');
 	expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { text: 'Found it.' } });
 });
 
 it('stops after cancellation without retrying the failed MCP call', async () => {
-	runMcp.mockResolvedValue({ status: 'authorization_required', serverId: 'gmail', serverName: 'Gmail' });
+	runMcp.mockResolvedValue({
+		status: 'authorization_required',
+		serverId: 'gmail',
+		serverName: 'Gmail',
+	});
 	runModelTurnMock.mockImplementationOnce(async function* () {
 		yield* [];
 		return {
-			content: '', model: 'test-model',
+			content: '',
+			model: 'test-model',
 			toolCalls: [{ id: 'original', name: mcp.id, args: { query: 'subject' } }],
 		};
 	});
 	const session = createSessionState();
 	session.messages = [{ role: 'user', content: 'Find the email' }];
 	const iterator = stream(
-		{ location: '/workspace' }, session,
+		{ location: '/workspace' },
+		session,
 		{
-			runId: 'run', task: 'chat', message: 'Find the email', model: 'test-model',
-			type: 'default', agentId: 'main', contextMode: 'minimal',
-			interactionMode: 'default', approvalWindowId: 7,
+			runId: 'run',
+			task: 'chat',
+			message: 'Find the email',
+			model: 'test-model',
+			type: 'default',
+			agentId: 'main',
+			contextMode: 'minimal',
+			interactionMode: 'default',
+			approvalWindowId: 7,
 		},
 		new AbortController().signal,
 		{ tools: [mcp] }
@@ -131,10 +172,18 @@ it('stops after cancellation without retrying the failed MCP call', async () => 
 	}
 	const next = iterator.next();
 	await Promise.resolve();
-	expect(respondUserInput({
-		requestId: request.requestId, runId: 'run', toolCallId: request.toolCallId,
-		inputFingerprint: request.inputFingerprint,
-	}, [{ questionId: 'mcp-authorization', answer: 'cancel' }], 7)).toBe(true);
+	expect(
+		respondUserInput(
+			{
+				requestId: request.requestId,
+				runId: 'run',
+				toolCallId: request.toolCallId,
+				inputFingerprint: request.inputFingerprint,
+			},
+			[{ questionId: 'mcp-authorization', answer: 'cancel' }],
+			7
+		)
+	).toBe(true);
 	const events: RuntimeEvent[] = [];
 	const resumed = await next;
 	if (!resumed.done) events.push(resumed.value);
@@ -142,5 +191,8 @@ it('stops after cancellation without retrying the failed MCP call', async () => 
 	expect(runMcp).toHaveBeenCalledTimes(1);
 	expect(runModelTurnMock).toHaveBeenCalledTimes(1);
 	expect(session.toolCalls.map((call) => call.name)).toEqual([mcp.id, 'request_mcp_authorization']);
-	expect(events.at(-1)).toMatchObject({ type: 'run_finished', result: { stopReason: 'cancelled' } });
+	expect(events.at(-1)).toMatchObject({
+		type: 'run_finished',
+		result: { stopReason: 'cancelled' },
+	});
 });
