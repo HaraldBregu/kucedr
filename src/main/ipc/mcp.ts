@@ -255,8 +255,9 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 				trusted.assert(event);
 				const server = getHttpMcpServer(id);
 				const state = randomBytes(32).toString('hex');
-				const options = mcpOAuthOptions(server.url);
-				const managedCredentials = Boolean(findMcpService(server.url)?.oauth?.client_id_env);
+				const serverUrl = parseMcpUrl(server.url).href;
+				const options = mcpOAuthOptions(serverUrl);
+				const managedCredentials = Boolean(findMcpService(serverUrl)?.oauth?.client_id_env);
 				this.activeOAuthCallback?.close();
 				const callback = await startOauthCallbackServer(state);
 				this.activeOAuthCallback = callback;
@@ -275,7 +276,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 						},
 					});
 					if (managedCredentials || force) await provider.invalidateCredentials?.('tokens');
-					const result = await auth(provider, { serverUrl: server.url });
+					const result = await auth(provider, { serverUrl });
 					if (result === 'AUTHORIZED') {
 						const listed = await testMcpServer(server.id);
 						if (!listed.ok) throw new Error(listed.error ?? 'Failed to list MCP tools.');
@@ -285,7 +286,7 @@ export class McpIpc implements IpcModule<McpIpcDeps> {
 						throw new Error(`MCP server "${id}" did not return an authorization URL.`);
 					await shell.openExternal(authorizationUrl);
 					const code = await callback.code;
-					const finish = await auth(provider, { serverUrl: server.url, authorizationCode: code });
+					const finish = await auth(provider, { serverUrl, authorizationCode: code });
 					if (finish !== 'AUTHORIZED') throw new Error(`OAuth authorization failed for "${id}".`);
 					const listed = await testMcpServer(server.id);
 					if (!listed.ok) throw new Error(listed.error ?? 'Failed to list MCP tools.');

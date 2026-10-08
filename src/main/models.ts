@@ -20,6 +20,7 @@ import type {
 import { userDataLocation } from './shared/user_data_location';
 import { parseProviderManifest } from '../shared/providers/validation';
 import { resourceRoot } from './shared/resource_root';
+import { resolveMcpEndpoint } from './mcp/endpoint';
 
 interface Catalog {
 	readonly models: readonly CatalogModel[];
@@ -56,7 +57,10 @@ export function loadWebSearches(): readonly CatalogWebSearch[] {
 
 /** Every MCP service across bundled and local provider manifests. */
 export function loadMcps(): readonly CatalogService[] {
-	return loadCatalog().mcps;
+	return loadCatalog().mcps.map((service) => ({
+		...service,
+		url: service.url ? resolveMcpEndpoint(service.url) : service.url,
+	}));
 }
 
 export function loadStorages(): readonly CatalogStorage[] {

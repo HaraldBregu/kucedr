@@ -23,7 +23,10 @@
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_MailTools",
 			"scopes": [],
 			"icon_dark_url": "/images/microsoft-outlook.svg",
-			"icon_light_url": "/images/microsoft-outlook.svg"
+			"icon_light_url": "/images/microsoft-outlook.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
 		},
 		{
 			"id": "microsoft-calendar",
@@ -33,7 +36,10 @@
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_CalendarTools",
 			"scopes": [],
 			"icon_dark_url": "/images/outlook-calendar.svg",
-			"icon_light_url": "/images/outlook-calendar.svg"
+			"icon_light_url": "/images/outlook-calendar.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
 		},
 		{
 			"id": "microsoft-teams",
@@ -43,7 +49,10 @@
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_TeamsServer",
 			"scopes": [],
 			"icon_dark_url": "/images/microsoft-teams.svg",
-			"icon_light_url": "/images/microsoft-teams.svg"
+			"icon_light_url": "/images/microsoft-teams.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
 		},
 		{
 			"id": "microsoft-onedrive",
@@ -53,7 +62,10 @@
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_OneDriveRemoteServer",
 			"scopes": [],
 			"icon_dark_url": "/images/microsoft-onedrive.svg",
-			"icon_light_url": "/images/microsoft-onedrive.svg"
+			"icon_light_url": "/images/microsoft-onedrive.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
 		},
 		{
 			"id": "microsoft-sharepoint",
@@ -63,7 +75,10 @@
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_SharePointRemoteServer",
 			"scopes": [],
 			"icon_dark_url": "/images/microsoft-sharepoint.svg",
-			"icon_light_url": "/images/microsoft-sharepoint.svg"
+			"icon_light_url": "/images/microsoft-sharepoint.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
 		},
 		{
 			"id": "microsoft-word",
@@ -73,7 +88,10 @@
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_WordServer",
 			"scopes": [],
 			"icon_dark_url": "/images/microsoft-word.svg",
-			"icon_light_url": "/images/microsoft-word.svg"
+			"icon_light_url": "/images/microsoft-word.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
 		},
 		{
 			"id": "microsoft-search",
@@ -83,7 +101,10 @@
 			"url": "https://agent365.svc.cloud.microsoft/agents/tenants/{tenantId}/servers/mcp_M365Copilot",
 			"scopes": [],
 			"icon_dark_url": "/images/microsoft-365-copilot.svg",
-			"icon_light_url": "/images/microsoft-365-copilot.svg"
+			"icon_light_url": "/images/microsoft-365-copilot.svg",
+			"oauth": {
+				"client_id_env": "MICROSOFT_CLIENT_ID"
+			}
 		}
 	],
 	"databases": []

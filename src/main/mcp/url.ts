@@ -1,7 +1,8 @@
 import { isIP } from 'node:net';
+import { resolveMcpEndpoint } from './endpoint';
 
 export function parseMcpUrl(value: string): URL {
-	const url = new URL(value);
+	const url = new URL(resolveMcpEndpoint(value, true));
 	if (url.protocol === 'https:') return url;
 	const hostname = url.hostname.replace(/^\[|\]$/g, '').toLowerCase();
 	const loopback =

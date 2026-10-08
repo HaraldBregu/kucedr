@@ -1,8 +1,9 @@
+import { resolveMcpEndpoint } from './endpoint';
 import { findMcpService } from './manifest';
 import type { McpOAuthProviderParams } from './mcp_types';
 
 export function mcpOAuthOptions(serverUrl: string): Partial<McpOAuthProviderParams> {
-	const service = findMcpService(serverUrl);
+	const service = findMcpService(resolveMcpEndpoint(serverUrl, true));
 	if (!service) return {};
 	const oauth = service.oauth;
 	const clientId = oauth?.client_id_env ? process.env[oauth.client_id_env]?.trim() : undefined;
