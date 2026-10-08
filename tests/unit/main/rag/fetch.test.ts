@@ -13,10 +13,14 @@ it.each(['operation', 'request'] as const)(
 		jest.mocked(global.fetch).mockImplementation(
 			async (_url, init) =>
 				new Promise<Response>((_resolve, reject) => {
-					init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), { once: true });
+					init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), {
+						once: true,
+					});
 				})
 		);
-		const result = vectorFetch(operation.signal)('https://api.example.test', { signal: request.signal });
+		const result = vectorFetch(operation.signal)('https://api.example.test', {
+			signal: request.signal,
+		});
 		({ operation, request })[cancelled].abort(reason);
 		await expect(result).rejects.toBe(reason);
 	}
@@ -25,7 +29,9 @@ it.each(['operation', 'request'] as const)(
 it('does not dispatch an HTTP request after cancellation', async () => {
 	const controller = new AbortController();
 	controller.abort(new Error('Already cancelled'));
-	await expect(vectorFetch(controller.signal)('https://api.example.test')).rejects.toThrow('Already cancelled');
+	await expect(vectorFetch(controller.signal)('https://api.example.test')).rejects.toThrow(
+		'Already cancelled'
+	);
 	expect(global.fetch).not.toHaveBeenCalled();
 });
 

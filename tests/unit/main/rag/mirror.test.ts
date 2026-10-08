@@ -141,7 +141,9 @@ it.each(['createIndex', 'describeIndex', 'upsert'] as const)(
 			async (_url, init) =>
 				new Promise<Response>((_resolve, reject) => {
 					requestStarted();
-					init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), { once: true });
+					init?.signal?.addEventListener('abort', () => reject(init.signal?.reason), {
+						once: true,
+					});
 				})
 		);
 		({ createIndex, describeIndex, upsert })[operation].mockImplementation(() =>
@@ -180,7 +182,12 @@ it('uses the separate cleanup deadline to abort an in-flight namespace deletion'
 	deleteNamespace.mockImplementation(() =>
 		mockPinecone.mock.calls.at(-1)?.[0].fetchApi('https://api.example.test/pinecone')
 	);
-	const result = pineconeVectorDatabase.discard('synthetic', 'knowledge-base', generation, controller.signal);
+	const result = pineconeVectorDatabase.discard(
+		'synthetic',
+		'knowledge-base',
+		generation,
+		controller.signal
+	);
 	await started;
 	controller.abort(reason);
 	await expect(result).rejects.toBe(reason);
