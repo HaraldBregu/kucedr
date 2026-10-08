@@ -1,4 +1,6 @@
 export const DEFAULT_RAG_INDEX_NAME = 'kucedr';
+export const LOCAL_RAG_DATABASE_PROVIDER_ID = 'local';
+export const LOCAL_RAG_DATABASE_ID = 'sqlite';
 
 export interface RagConfiguration {
 	enabled: boolean;
@@ -12,4 +14,5 @@ export interface RagConfiguration {
 	folders: string[];
 	scheduleEnabled: boolean;
 	cronExpression: string;
+	timezone?: string;
 }

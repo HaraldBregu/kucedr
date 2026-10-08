@@ -372,6 +372,8 @@ export interface AgentInvokeChannelMap {
 		args: [];
 		result: import('../main/agent/knowledge/rag/types').RagIndexResult;
 	};
+	[AgentChannels.ragGetStatus]: { args: []; result: import('./rag_status').RagStatus };
+	[AgentChannels.ragCancelIndex]: { args: []; result: void };
 	[AgentChannels.ragGetConfiguration]: { args: []; result: import('./rag_types').RagConfiguration };
 	[AgentChannels.ragSaveConfiguration]: {
 		args: [configuration: import('./rag_types').RagConfiguration];

@@ -68,8 +68,9 @@ import {
 } from '../agent/agent_store';
 import {
 	getRagConfiguration,
-	indexRag,
-	rescheduleRagIndexing,
+	runRagIndexing,
+	cancelRagIndexing,
+	getRagStatus,
 	saveRagConfiguration,
 	searchRag,
 	type RagIndexResult,
@@ -1063,12 +1064,19 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				(): Promise<RagIndexResult> => {
-					const configuration = getRagConfiguration();
-					if (configuration.enabled !== true) throw new Error('Knowledge is disabled.');
-					return indexRag(configuration.folders, configuration.indexName);
+					return runRagIndexing();
 				},
 				AgentChannels.ragIndex
 			)
+		);
+
+		ipcMain.handle(
+			AgentChannels.ragGetStatus,
+			wrapAgentHandler(mainAccess, getRagStatus, AgentChannels.ragGetStatus)
+		);
+		ipcMain.handle(
+			AgentChannels.ragCancelIndex,
+			wrapAgentHandler(mainAccess, cancelRagIndexing, AgentChannels.ragCancelIndex)
 		);
 
 		ipcMain.handle(
@@ -1085,17 +1093,9 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			wrapAgentHandler(
 				mainAccess,
 				(configuration: RagConfiguration): RagConfiguration => {
-					const current = getRagConfiguration();
 					const saved = saveRagConfiguration(
-						authorizeRagDisclosure({
-							...configuration,
-							databaseProviderId: current.databaseProviderId,
-							databaseId: current.databaseId,
-							embeddingProviderId: current.embeddingProviderId,
-							embeddingModelId: current.embeddingModelId,
-						})
+						authorizeRagDisclosure(configuration)
 					);
-					rescheduleRagIndexing();
 					return saved;
 				},
 				AgentChannels.ragSaveConfiguration

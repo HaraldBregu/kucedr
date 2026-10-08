@@ -1,5 +1,8 @@
 export { getRagConfiguration, saveRagConfiguration } from './rag_store';
 export { indexRag } from './rag_index';
+export { runRagIndexing } from './run';
+export { cancelRagIndexing } from './cancel';
+export { getRagStatus } from './status';
 export { ragLocation } from './rag_location';
 export { readRagManifest } from './rag_manifest';
 export { searchRag } from './rag_search';

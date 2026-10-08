@@ -18,6 +18,7 @@ import { normalizeAgentInputFiles } from '../shared/agent_files';
 import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
 import type { RagConfiguration } from '../shared/rag_types';
+import type { RagStatus } from '../shared/rag_status';
 import type { PermissionsSchema } from '../main/agent/permissions/permissions_types';
 import { optionalStringList, optionalTrimmedString } from './normalize';
 
@@ -348,6 +349,12 @@ export const agent: AgentApi = {
 	},
 	ragIndex: (): Promise<RagIndexResult> => {
 		return typedInvokeUnwrap(AgentChannels.ragIndex);
+	},
+	ragGetStatus: (): Promise<RagStatus> => {
+		return typedInvokeUnwrap(AgentChannels.ragGetStatus);
+	},
+	ragCancelIndex: (): Promise<void> => {
+		return typedInvokeUnwrap(AgentChannels.ragCancelIndex);
 	},
 	ragGetConfiguration: (): Promise<RagConfiguration> => {
 		return typedInvokeUnwrap(AgentChannels.ragGetConfiguration);

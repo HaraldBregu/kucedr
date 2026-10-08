@@ -35,6 +35,7 @@ import type { TaskRuntime, TaskSchedule, TaskScheduledTask } from '../main/tasks
 import type { HealthSettings } from '../main/health/types';
 import type { RagIndexResult, RagMatch } from '../main/agent/knowledge/rag';
 import type { RagConfiguration } from './rag_types';
+import type { RagStatus } from './rag_status';
 import type { PermissionsSchema } from '../main/agent/permissions/permissions_types';
 import type {
 	AgentHistoryMessage,
@@ -248,6 +249,8 @@ export interface AgentApi {
 	healthGetData: () => Promise<string>;
 	healthSaveData: (content: string) => Promise<string>;
 	ragIndex: () => Promise<RagIndexResult>;
+	ragGetStatus: () => Promise<RagStatus>;
+	ragCancelIndex: () => Promise<void>;
 	ragGetConfiguration: () => Promise<RagConfiguration>;
 	ragSaveConfiguration: (configuration: RagConfiguration) => Promise<RagConfiguration>;
 	ragSearch: (query: string, topK?: number) => Promise<RagMatch[]>;

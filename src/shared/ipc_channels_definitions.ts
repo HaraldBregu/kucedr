@@ -55,6 +55,8 @@ export const AgentChannels = {
 	healthData: 'agent:health:data',
 	healthSaveData: 'agent:health:data:save',
 	ragIndex: 'agent:rag:index',
+	ragGetStatus: 'agent:rag:status',
+	ragCancelIndex: 'agent:rag:cancel',
 	ragGetConfiguration: 'agent:rag:configuration:get',
 	ragSaveConfiguration: 'agent:rag:configuration:save',
 	ragSearch: 'agent:rag:search',
