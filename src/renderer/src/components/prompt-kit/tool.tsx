@@ -73,7 +73,9 @@ function formatValue(value: unknown): string {
 	return String(value);
 }
 
-export function toolIcon(toolPart: ToolPart): ElementType<{ className?: string; toolPart?: ToolPart }> {
+export function toolIcon(
+	toolPart: ToolPart
+): ElementType<{ className?: string; toolPart?: ToolPart }> {
 	const type = toolPart.type.toLowerCase();
 	const serviceId = toolPart.serviceId?.toLowerCase();
 	if (isTaskToolType(type)) return CalendarClock;
@@ -341,7 +343,8 @@ function Tool({
 								<span className="truncate">{toolCallId}</span>
 								{displayTokens !== undefined && displayTokens > 0 && (
 									<span className="shrink-0 tabular-nums">
-										{tokensAreEstimated ? '~' : ''}{displayTokens.toLocaleString()} tok
+										{tokensAreEstimated ? '~' : ''}
+										{displayTokens.toLocaleString()} tok
 									</span>
 								)}
 							</div>
