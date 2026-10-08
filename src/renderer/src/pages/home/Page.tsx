@@ -16,7 +16,9 @@ import {
 	FileCodeIcon,
 	FileImageIcon,
 	FileTextIcon,
+	Library,
 	Mic,
+	MonitorUp,
 	Plus,
 	Square,
 	TableIcon,
@@ -26,6 +28,12 @@ import { useNavigate } from 'react-router-dom';
 import { PageContainer, Split } from '@/components/app/base/page';
 import { AudioPlayer } from '@/components/audio-player';
 import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
 	Attachment,
 	AttachmentAction,
@@ -61,6 +69,7 @@ import { useChatSession } from '@/contexts/chat-session';
 import { cn } from '@/lib/utils';
 import type { StickToBottomContext } from '@/hooks/use-stick-to-bottom';
 import { ReplyPreview } from './components/Reply';
+import { LibraryPicker } from './components/LibraryPicker';
 import { Messages } from './Messages';
 import { Provider, welcomeMessage } from './context';
 import {
@@ -265,24 +274,39 @@ function AttachmentTray({
 
 function AttachmentButton({
 	disabled,
+	onLibrarySelect,
 }: {
 	readonly disabled?: boolean;
+	readonly onLibrarySelect: () => void;
 }): ReactElement {
 	const { triggerFileUpload } = usePromptInput();
 	return (
-		<PromptInputAction tooltip="Add attachment">
-			<Button
-				type="button"
-				variant="ghost"
-				size="icon"
-				className="size-9 rounded-full text-foreground hover:bg-muted"
-				aria-label="Add attachment"
-				disabled={disabled}
-				onClick={triggerFileUpload}
-			>
-				<Plus className="size-4" />
-			</Button>
-		</PromptInputAction>
+		<DropdownMenu>
+			<PromptInputAction tooltip="Add attachment">
+				<DropdownMenuTrigger asChild>
+					<Button
+						type="button"
+						variant="ghost"
+						size="icon"
+						className="size-9 rounded-full text-foreground hover:bg-muted"
+						aria-label="Add attachment"
+						disabled={disabled}
+					>
+						<Plus className="size-4" />
+					</Button>
+				</DropdownMenuTrigger>
+			</PromptInputAction>
+			<DropdownMenuContent align="start" side="top" className="w-52">
+				<DropdownMenuItem onSelect={onLibrarySelect}>
+					<Library className="size-4" />
+					From Library
+				</DropdownMenuItem>
+				<DropdownMenuItem onSelect={triggerFileUpload}>
+					<MonitorUp className="size-4" />
+					From computer
+				</DropdownMenuItem>
+			</DropdownMenuContent>
+		</DropdownMenu>
 	);
 }
 
