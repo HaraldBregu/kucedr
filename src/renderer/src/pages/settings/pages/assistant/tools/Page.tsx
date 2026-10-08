@@ -412,10 +412,9 @@ const ToolsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat
 									<Collapsible className="min-w-0 max-w-full overflow-hidden border-b border-border/60">
 										<div className="flex w-full items-center gap-3 px-4 py-3.5 transition-colors hover:bg-muted/40">
 											<CollapsibleTrigger className="flex min-w-0 flex-1 items-center gap-4 text-left">
-												<SearchIcon
-													className="size-5 shrink-0 text-muted-foreground"
-													aria-hidden="true"
-												/>
+												<SettingsItemMedia>
+													<SearchIcon className="size-5" aria-hidden="true" />
+												</SettingsItemMedia>
 												<div className="min-w-0 flex-1">
 													<div className="truncate text-[13px] font-medium leading-4 text-foreground">
 														Search web
