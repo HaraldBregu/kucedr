@@ -47,17 +47,14 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			{ id: 'read', category: 'workspace' },
 			{ id: 'bash', category: 'workspace' },
 			{ id: 'update_identity', category: 'bootstrap' },
-			{ id: 'tool_search', category: 'discovery' },
+			{ id: 'tool_search', category: 'workspace' },
 		] as never);
 		expect(complete).toContain('### Loaded tools');
 		expect(complete).toContain(
-			'#### Workspace\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.'
+			'#### Core\nRead and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — No description provided by this tool.\n- `bash` — No description provided by this tool.\n- `tool_search` — No description provided by this tool.'
 		);
 		expect(complete).toContain(
 			'#### Bootstrap\n- `update_identity` — No description provided by this tool.'
-		);
-		expect(complete).toContain(
-			'#### Discovery\n- `tool_search` — No description provided by this tool.'
 		);
 		expect(complete).toContain('### BOOTSTRAP.md');
 		expect(complete).toContain('### MEMORY\nUse memory as durable background context');

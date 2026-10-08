@@ -16,7 +16,7 @@ it('groups runtime tools by availability and category with descriptions and usag
 	const web = candidate('search_web', 'web', 'Search the web.');
 	const listSkills = candidate('list_skills', 'skill', 'List skills.');
 	const loadSkill = candidate('load_skill', 'skill', 'Load a skill.');
-	const search = candidate('tool_search', 'discovery', 'Find relevant tools.');
+	const search = candidate('tool_search', 'workspace', 'Find relevant tools.');
 	const gmail = candidate('mcp__gmail__search_threads', 'integration', 'Search Gmail threads.', {
 		kind: 'mcp',
 		serverId: 'gmail',
@@ -30,13 +30,10 @@ it('groups runtime tools by availability and category with descriptions and usag
 
 	expect(context).toContain('### Loaded tools');
 	expect(context).toContain(
-		'#### Core\nRead and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — Read a file.'
+		'#### Core\nRead and modify workspace files, run commands, manage processes, and undo or redo file operations.\n- `read` — Read a file.\n- `tool_search` — Find relevant tools.'
 	);
 	expect(context).toContain(
 		'#### Delegation\nDelegate independent work to subagents or connected remote agents and follow their progress.\n- `subagent` — Delegate one independent task.'
-	);
-	expect(context).toContain(
-		'#### Discovery\nFind relevant tools that are available to load on demand for the current model turn.\n- `tool_search` — Find relevant tools.'
 	);
 	expect(context).toContain('### Available through `tool_search`');
 	expect(context).toContain(
