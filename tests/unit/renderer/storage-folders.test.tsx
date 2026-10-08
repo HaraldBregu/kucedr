@@ -162,7 +162,7 @@ it('keeps a failed settings save editable and does not start a backup', async ()
 			<StoragePage />
 		</MemoryRouter>
 	);
-	await user.click(screen.getByRole('button', { name: 'Back up now' }));
+	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	expect(await screen.findByRole('alert')).toHaveTextContent('Could not save backup settings.');
 	expect(storageApi.backup).not.toHaveBeenCalled();
 	expect(screen.queryByRole('link', { name: 'Manage storage' })).not.toBeInTheDocument();

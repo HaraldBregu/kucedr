@@ -220,7 +220,7 @@ it('backs up directly and confirms before restoring matching local files', async
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: 'Back up now' }));
+	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
 	act(() => {
 		operationListener?.({
@@ -382,7 +382,7 @@ it('keeps a newer completion event when the backup command resolves late', async
 		</MemoryRouter>
 	);
 
-	await user.click(screen.getByRole('button', { name: 'Back up now' }));
+	await user.click(await screen.findByRole('button', { name: 'Back up now' }));
 	await waitFor(() => expect(storageApi.backup).toHaveBeenCalledWith());
 	act(() => {
 		operationListener?.({

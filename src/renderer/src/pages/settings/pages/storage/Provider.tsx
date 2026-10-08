@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 import {
 	Select,
 	SelectContent,
@@ -31,6 +33,7 @@ export default function Provider({
 				title={t('settings.storage.provider.title')}
 				description={t('settings.storage.provider.description')}
 				actions={
+					<div className="flex flex-wrap items-center justify-end gap-2">
 					<Select
 						value={providerId ?? null}
 						onValueChange={(value) => {
@@ -54,6 +57,10 @@ export default function Provider({
 							))}
 						</SelectContent>
 					</Select>
+					<Button variant="outline" size="sm" asChild>
+						<Link to="/settings/providers/storage">{t('settings.storageProviders.add')}</Link>
+					</Button>
+					</div>
 				}
 			/>
 		</SettingsPanel>
