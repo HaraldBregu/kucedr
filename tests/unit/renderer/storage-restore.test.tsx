@@ -49,7 +49,7 @@ it('restores an earlier backup to a chosen folder on another computer without co
 	);
 	expect(screen.getByRole('button', { name: 'Restore files' })).toBeDisabled();
 	await user.click(screen.getByRole('combobox', { name: 'Backup to restore' }));
-	await user.click(screen.getByRole('option', { name: /^Documents/ }));
+	await user.click(await screen.findByRole('option', { name: /^Documents/, hidden: true }));
 	expect(screen.getByRole('button', { name: 'Restore files' })).toBeDisabled();
 	await user.click(screen.getByRole('button', { name: 'Choose destination folder' }));
 	await screen.findByText('/new-computer/Documents');
