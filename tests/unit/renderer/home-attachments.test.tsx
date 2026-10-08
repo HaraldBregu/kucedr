@@ -208,6 +208,13 @@ describe('Home prompt attachments', () => {
 			value: {
 				list: jest.fn(async () => [
 					{
+						name: 'library-photo.png',
+						path: '/tmp/library/library-photo.png',
+						relativePath: 'images/library-photo.png',
+						size: 24,
+						modifiedAt: '2026-10-08T00:00:00.000Z',
+					},
+					{
 						name: 'library-notes.md',
 						path: '/tmp/library/library-notes.md',
 						relativePath: 'notes/library-notes.md',
@@ -305,6 +312,10 @@ describe('Home prompt attachments', () => {
 		fireEvent.click(await screen.findByText('From Library'));
 
 		expect(await screen.findByRole('heading', { name: 'Add from Library' })).toBeInTheDocument();
+		expect(screen.getByRole('img', { name: 'library-photo.png' })).toHaveAttribute(
+			'src',
+			'local-resource://file/tmp/library/library-photo.png'
+		);
 		fireEvent.click(await screen.findByRole('checkbox', { name: /library-notes\.md/ }));
 		fireEvent.click(screen.getByRole('button', { name: 'Add 1' }));
 

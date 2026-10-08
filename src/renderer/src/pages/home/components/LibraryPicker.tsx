@@ -10,7 +10,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
-import { libraryFileIcon } from '../../settings/pages/library/icon';
+import { LibraryPreview } from '../../settings/pages/library/Preview';
 
 export function LibraryPicker({
 	open,
@@ -69,7 +69,6 @@ export function LibraryPicker({
 						</div>
 					) : (
 						files.map((file) => {
-							const Icon = libraryFileIcon(file.name);
 							const selected = selectedPaths.has(file.relativePath);
 							return (
 								<label
@@ -89,7 +88,7 @@ export function LibraryPicker({
 											});
 										}}
 									/>
-									<Icon className="size-4 shrink-0 text-muted-foreground" />
+									<LibraryPreview file={file} compact />
 									<span className="min-w-0 flex-1">
 										<span className="block truncate text-sm font-medium">{file.name}</span>
 										<span className="block truncate text-xs text-muted-foreground">
