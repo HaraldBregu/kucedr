@@ -254,9 +254,18 @@ function AttachmentTray({
 							isAudio ? 'w-80' : 'w-64'
 						)}
 					>
-						<AttachmentMedia variant={isImage ? 'image' : 'icon'}>
-							{isImage ? <Preview file={attachment.file} /> : <Icon />}
-						</AttachmentMedia>
+					<AttachmentMedia variant={isImage ? 'image' : 'icon'}>
+						{isImage ? (
+							<Preview
+								file={attachment.file}
+								path={attachment.path}
+								name={attachment.file.name}
+								mimeType={attachment.file.type}
+							/>
+						) : (
+							<Icon />
+						)}
+					</AttachmentMedia>
 						<AttachmentContent>
 							<AttachmentTitle title={title}>{title}</AttachmentTitle>
 							<AttachmentDescription>

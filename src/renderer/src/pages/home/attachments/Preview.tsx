@@ -9,7 +9,7 @@ export function Preview({ file, path, name, mimeType }: { readonly file?: File; 
 		let active = true;
 		let previewUrl: string | undefined;
 		setUrl(undefined);
-		if (file) {
+		if (file && (!path || file.size > 0)) {
 			previewUrl = URL.createObjectURL(file);
 			setUrl(previewUrl);
 		} else if (path) {

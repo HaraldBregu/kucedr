@@ -184,6 +184,14 @@ function renderPage(): void {
 describe('Home prompt attachments', () => {
 	beforeEach(() => {
 		localStorage.clear();
+		Object.defineProperty(URL, 'createObjectURL', {
+			configurable: true,
+			value: jest.fn(() => 'blob:prompt-preview'),
+		});
+		Object.defineProperty(URL, 'revokeObjectURL', {
+			configurable: true,
+			value: jest.fn(),
+		});
 		Object.defineProperty(window, 'app', {
 			configurable: true,
 			value: { getPathForFile: (file: File) => `/tmp/${file.name}` },
@@ -321,6 +329,22 @@ describe('Home prompt attachments', () => {
 
 		expect(await screen.findByText('library-notes.md')).toBeInTheDocument();
 		expect(screen.getByRole('button', { name: 'Send message' })).toBeEnabled();
+	});
+
+	it('shows an image preview immediately after adding it from the Library', async () => {
+		renderPage();
+		fireEvent.click(await screen.findByText('From Library'));
+
+		fireEvent.click(await screen.findByRole('checkbox', { name: /library-photo\.png/ }));
+		fireEvent.click(screen.getByRole('button', { name: 'Add 1' }));
+
+		expect(await screen.findByRole('img', { name: 'library-photo.png' })).toHaveAttribute(
+			'src',
+			'blob:prompt-preview'
+		);
+		expect(window.agent.readPromptFile).toHaveBeenCalledWith(
+			'/tmp/library/library-photo.png'
+		);
 	});
 
 	it('keeps a queued image visible and Send enabled', async () => {
