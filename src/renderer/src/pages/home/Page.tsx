@@ -776,6 +776,7 @@ function PageContent(): ReactElement {
 						voiceMode === 'dictation' ? undefined : (
 							<AttachmentButton
 								disabled={attachmentDisabled}
+								onLibrarySelect={() => setLibraryPickerOpen(true)}
 							/>
 						)
 					}
