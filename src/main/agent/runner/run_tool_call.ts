@@ -28,6 +28,7 @@ import type { ExecutionBudget } from '../execution/budget';
 import { captureAccess } from '../permissions/capture_access';
 import { getToolConfiguration } from '../agent_store';
 import { isAgentToolAllowedForProfile, type AgentToolProfileId } from '../../../shared/agent_tools';
+import { getMcpOauth } from '../../mcp';
 
 export interface ToolCallSecurityContext {
 	runId: string;
