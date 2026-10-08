@@ -32,7 +32,12 @@ export async function buildWorkspaceContext(
 	] as const;
 	const sections = files
 		.filter(([name]) => scope === 'full' || (name !== 'BOOTSTRAP.md' && name !== 'USER.md'))
-		.filter(([, content]) => content.trim())
+		.filter(([name, content]) => {
+			const value = content.trim();
+			if (!value) return false;
+			if (name !== 'MEMORY.md') return true;
+			return Boolean(value.replace(/^#\s+MEMORY(?:\.md)?[^\n]*(?:\n|$)/i, '').trim());
+		})
 		.map(([name, content]) =>
 			name === 'USER.md'
 				? `### USER\nAdd projects only when the user chooses to describe them for this profile; do not derive them from workspace files or folders.\n${content

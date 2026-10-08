@@ -63,6 +63,10 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		);
 		expect(complete).not.toContain('USER.md');
 		expect(complete).not.toContain('Obsolete generated content');
+		const emptyMemory = await buildWorkspaceContext(config, 'full');
+		expect(emptyMemory).not.toContain('### MEMORY');
+		const headerOnlyMemory = await buildWorkspaceContext(config, 'full', '# Memory\n\n');
+		expect(headerOnlyMemory).not.toContain('### MEMORY');
 		const voice = await buildWorkspaceContext(config, 'full');
 		expect(voice).toContain('### SOUL');
 		expect(voice).not.toContain('## Tools available in this runtime');
