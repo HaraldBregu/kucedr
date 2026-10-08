@@ -152,7 +152,7 @@ const PluginsPage = (): React.JSX.Element => {
 			/>
 
 			{plugins.length > 0 ? (
-				<div className="-mx-4 space-y-6 pb-4">
+				<div className="-mx-4 space-y-8 pb-4">
 					{[...providerSections].map(([providerId, section]) => (
 						<section key={providerId} aria-labelledby={`plugin-provider-${providerId}`}>
 							<h2 id={`plugin-provider-${providerId}`} className="mb-2 px-3 text-sm font-medium">
