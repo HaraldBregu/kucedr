@@ -944,7 +944,7 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.policyGet,
 			wrapAgentHandler(
 				mainAccess,
-				(): PermissionsSchema => getPermissions(),
+				(profileId: unknown = 'chat'): PermissionsSchema => getPermissions(toToolProfileId(profileId)),
 				AgentChannels.policyGet
 			)
 		);
@@ -953,8 +953,8 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.policySet,
 			wrapAgentHandler(
 				mainAccess,
-				async (value: unknown): Promise<PermissionsSchema> => {
-					const permissions = setPermissions(toPermissions(value));
+				async (value: unknown, profileId: unknown = 'chat'): Promise<PermissionsSchema> => {
+					const permissions = setPermissions(toPermissions(value), toToolProfileId(profileId));
 					await agent.sandbox.invalidate();
 					return permissions;
 				},
@@ -966,8 +966,8 @@ export class AgentIpc implements IpcModule<AgentIpcDeps> {
 			AgentChannels.policyReset,
 			wrapAgentHandler(
 				mainAccess,
-				async (): Promise<PermissionsSchema> => {
-					const permissions = resetPermissions();
+				async (profileId: unknown = 'chat'): Promise<PermissionsSchema> => {
+					const permissions = resetPermissions(toToolProfileId(profileId));
 					await agent.sandbox.invalidate();
 					return permissions;
 				},

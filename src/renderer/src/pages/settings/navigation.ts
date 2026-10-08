@@ -238,6 +238,12 @@ export const SETTINGS_DETAIL_ITEMS: readonly SettingsDetailItem[] = [
 		keywords: 'voice tools permissions allow deny ask',
 	},
 	{
+		path: '/settings/voice/permissions',
+		labelKey: 'settings.tabs.permissions',
+		descriptionKey: 'settings.overview.descriptions.permissions',
+		keywords: 'voice permissions locations directories access allow deny',
+	},
+	{
 		path: '/settings/tasks/tools',
 		labelKey: 'settings.modelServices.tools',
 		descriptionKey: 'settings.modelServices.toolsDescription',

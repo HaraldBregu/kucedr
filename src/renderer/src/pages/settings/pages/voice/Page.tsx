@@ -48,7 +48,7 @@ export default function VoicePage(): React.JSX.Element {
 						actions={<ChevronRight className="size-4 text-muted-foreground" />}
 					/>
 				</Link>
-				<Link to="/settings/agent/permissions" className="block hover:bg-muted/40">
+				<Link to="/settings/voice/permissions" className="block hover:bg-muted/40">
 					<SettingsRow
 						title={t('settings.tabs.permissions')}
 						description={t('settings.overview.descriptions.permissions')}

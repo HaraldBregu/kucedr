@@ -338,15 +338,15 @@ export interface AgentInvokeChannelMap {
 		result: import('./agent_tools').AgentToolProfile;
 	};
 	[AgentChannels.policyGet]: {
-		args: [];
+		args: [profileId?: import('./agent_tools').AgentToolProfileId];
 		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
 	};
 	[AgentChannels.policySet]: {
-		args: [permissions: import('../main/agent/permissions/permissions_types').PermissionsSchema];
+		args: [permissions: import('../main/agent/permissions/permissions_types').PermissionsSchema, profileId?: import('./agent_tools').AgentToolProfileId];
 		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
 	};
 	[AgentChannels.policyReset]: {
-		args: [];
+		args: [profileId?: import('./agent_tools').AgentToolProfileId];
 		result: import('../main/agent/permissions/permissions_types').PermissionsSchema;
 	};
 	[AgentChannels.policyPickDirectory]: { args: []; result: string | undefined };

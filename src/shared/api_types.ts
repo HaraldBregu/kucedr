@@ -234,9 +234,9 @@ export interface AgentApi {
 		tool: AgentToolReference,
 		settings: AgentToolConfiguration
 	) => Promise<AgentToolProfile>;
-	policyGet: () => Promise<PermissionsSchema>;
-	policySet: (permissions: PermissionsSchema) => Promise<PermissionsSchema>;
-	policyReset: () => Promise<PermissionsSchema>;
+	policyGet: (profileId?: AgentToolProfileId) => Promise<PermissionsSchema>;
+	policySet: (permissions: PermissionsSchema, profileId?: AgentToolProfileId) => Promise<PermissionsSchema>;
+	policyReset: (profileId?: AgentToolProfileId) => Promise<PermissionsSchema>;
 	policyPickDirectory: () => Promise<string | undefined>;
 	policyNormalizeDirectory: (value: string) => Promise<string>;
 	healthGetSettings: () => Promise<HealthSettings>;

@@ -525,6 +525,14 @@ const routes: RouteObject[] = [
 						),
 					},
 					{
+						path: 'voice/permissions',
+						element: (
+							<SettingsRouteWrapper>
+								<PermissionsPage profile="voice" />
+							</SettingsRouteWrapper>
+						),
+					},
+					{
 						path: 'health',
 						children: [
 							{

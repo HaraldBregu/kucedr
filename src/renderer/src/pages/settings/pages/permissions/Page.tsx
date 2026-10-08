@@ -29,6 +29,7 @@ import {
 	SettingsRow,
 	SettingsSection,
 } from '../../components';
+import type { AgentToolProfileId } from '@shared/agent_tools';
 import Sandbox from './Sandbox';
 import { locationPath } from './location_path';
 
@@ -38,7 +39,7 @@ type PermissionBucket = 'allow' | 'deny';
 
 const KINDS: PermissionKind[] = ['read', 'write', 'exec'];
 
-const PermissionsPage: React.FC = () => {
+const PermissionsPage: React.FC<{ profile?: AgentToolProfileId }> = ({ profile = 'chat' }) => {
 	const { t } = useTranslation();
 	const [permissions, setPermissions] = useState<Permissions | null>(null);
 	const [workspace, setWorkspace] = useState('');
@@ -66,7 +67,7 @@ const PermissionsPage: React.FC = () => {
 	};
 
 	useEffect(() => {
-		Promise.all([window.agent.policyGet(), window.agent.getWorkspaceLocation()])
+		Promise.all([profile === 'chat' ? window.agent.policyGet() : window.agent.policyGet(profile), window.agent.getWorkspaceLocation()])
 			.then(([rules, location]) => {
 				setPermissions(rules);
 				setWorkspace(location);
@@ -74,7 +75,7 @@ const PermissionsPage: React.FC = () => {
 			.catch((cause: unknown) => {
 				setError(cause instanceof Error ? cause.message : String(cause));
 			});
-	}, []);
+	}, [profile]);
 
 	const rows = permissions
 		? (['allow', 'deny'] as const).flatMap((bucket) => {
@@ -156,7 +157,7 @@ const PermissionsPage: React.FC = () => {
 							type="button"
 							variant="outline"
 							size="sm"
-							onClick={() => apply(window.agent.policyReset)}
+							onClick={() => apply(() => profile === 'chat' ? window.agent.policyReset() : window.agent.policyReset(profile))}
 							disabled={saving}
 						>
 							<RotateCcw className="size-3" />
@@ -165,7 +166,7 @@ const PermissionsPage: React.FC = () => {
 						<Button
 							type="button"
 							size="sm"
-							onClick={() => permissions && apply(() => window.agent.policySet(permissions))}
+							onClick={() => permissions && apply(() => profile === 'chat' ? window.agent.policySet(permissions) : window.agent.policySet(permissions, profile))}
 							disabled={!permissions || saving}
 						>
 							<Save className="size-3" />

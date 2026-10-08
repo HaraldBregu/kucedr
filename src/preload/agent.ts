@@ -316,14 +316,14 @@ export const agent: AgentApi = {
 	setToolProfileTool: (profileId, tool, settings) => {
 		return typedInvokeUnwrap(AgentChannels.setToolProfileTool, profileId, tool, settings);
 	},
-	policyGet: (): Promise<PermissionsSchema> => {
-		return typedInvokeUnwrap(AgentChannels.policyGet);
+	policyGet: (profileId): Promise<PermissionsSchema> => {
+		return typedInvokeUnwrap(AgentChannels.policyGet, profileId);
 	},
-	policySet: (permissions: PermissionsSchema): Promise<PermissionsSchema> => {
-		return typedInvokeUnwrap(AgentChannels.policySet, permissions);
+	policySet: (permissions: PermissionsSchema, profileId): Promise<PermissionsSchema> => {
+		return typedInvokeUnwrap(AgentChannels.policySet, permissions, profileId);
 	},
-	policyReset: (): Promise<PermissionsSchema> => {
-		return typedInvokeUnwrap(AgentChannels.policyReset);
+	policyReset: (profileId): Promise<PermissionsSchema> => {
+		return typedInvokeUnwrap(AgentChannels.policyReset, profileId);
 	},
 	policyPickDirectory: (): Promise<string | undefined> => {
 		return typedInvokeUnwrap(AgentChannels.policyPickDirectory);
