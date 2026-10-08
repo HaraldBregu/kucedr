@@ -15,7 +15,7 @@ const record = { id: 'chunk', path: 'notes/guide.md', text: 'Document plaintext'
 beforeEach(() => {
 	jest.resetAllMocks();
 	namespace.mockReturnValue({ upsert });
-	describeIndex.mockResolvedValue({ spec: { serverless: { cloud: 'aws', region: 'us-east-1' } } });
+	describeIndex.mockResolvedValue({ dimension: 2, metric: 'cosine', spec: { serverless: { cloud: 'aws', region: 'us-east-1' } } });
 	mockPinecone.mockReturnValue({
 		createIndex,
 		describeIndex,
@@ -71,7 +71,7 @@ it('stops the next batch when the connection or consent is no longer current', a
 });
 
 it('rejects an existing index outside the consented Pinecone location before uploading', async () => {
-	describeIndex.mockResolvedValue({ spec: { serverless: { cloud: 'aws', region: 'eu-west-1' } } });
+	describeIndex.mockResolvedValue({ dimension: 2, metric: 'cosine', spec: { serverless: { cloud: 'aws', region: 'eu-west-1' } } });
 	await expect(
 		pineconeVectorDatabase.upload({
 			apiKey: 'synthetic-mirror-account',
@@ -82,6 +82,12 @@ it('rejects an existing index outside the consented Pinecone location before upl
 			assertCurrent: jest.fn(),
 		})
 	).rejects.toThrow('location differs');
+	expect(upsert).not.toHaveBeenCalled();
+});
+
+it.each([{ dimension: 3, metric: 'cosine' }, { dimension: 2, metric: 'dotproduct' }])('rejects incompatible existing index %j before uploading', async (settings) => {
+	describeIndex.mockResolvedValue({ ...settings, spec: { serverless: { cloud: 'aws', region: 'us-east-1' } } });
+	await expect(pineconeVectorDatabase.upload({ apiKey: 'synthetic', indexName: 'knowledge-base', generation, dimensions: 2, records: [record], assertCurrent: jest.fn() })).rejects.toThrow('dimensions or metric differ');
 	expect(upsert).not.toHaveBeenCalled();
 });
 

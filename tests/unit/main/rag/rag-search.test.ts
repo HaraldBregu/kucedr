@@ -30,6 +30,10 @@ beforeEach(() => {
 	jest.clearAllMocks();
 	recipient.mockReturnValue('approved-recipient');
 	configuration.mockReturnValue({
+		enabled: true,
+		indexName: 'knowledge-base',
+		embeddingProviderId: 'openai',
+		embeddingModelId: 'text-embedding-3-small',
 		embeddingConsent: {
 			providerId: 'openai',
 			modelId: 'text-embedding-3-small',
@@ -118,6 +122,7 @@ it('passes cancellation to the query embedding provider', async () => {
 
 it('requires the selected local index to exist', async () => {
 	getIndex.mockReturnValue(undefined);
+	configuration.mockReturnValue({ ...configuration(), indexName: 'another-index' });
 
 	await expect(searchRag('query', 'another-index', 5, { embeddings, vectors })).rejects.toThrow(
 		'Index the rag folder before searching.'
@@ -126,9 +131,42 @@ it('requires the selected local index to exist', async () => {
 });
 
 it('requires query disclosure even when an existing local index can be searched', async () => {
-	configuration.mockReturnValue({ embeddingConsent: null });
+	configuration.mockReturnValue({ ...configuration(), embeddingConsent: null });
 	await expect(searchRag('query', 'knowledge-base', 5, { embeddings, vectors })).rejects.toThrow(
 		'Confirm remote embedding'
 	);
 	expect(embed).not.toHaveBeenCalled();
+});
+
+it('requires a rebuild after changing embedding models without making a query request', async () => {
+	configuration.mockReturnValue({ ...configuration(), embeddingModelId: 'another-model' });
+	await expect(searchRag('query', 'knowledge-base', 5, { embeddings, vectors })).rejects.toThrow('Rebuild');
+	expect(embed).not.toHaveBeenCalled();
+});
+
+it.each(['', '   ', 'sk-abcdefghijklmnopqrstuvwxyz123456'])('rejects unsafe or empty queries before embedding', async (query) => {
+	await expect(searchRag(query, 'knowledge-base', 5, { embeddings, vectors })).rejects.toThrow('Query');
+	expect(embed).not.toHaveBeenCalled();
+});
+
+it.each([[[0, 0]], [[NaN, 1]], [], [[1, 2, 3]]])('rejects malformed query vectors %j', async (vectorsResponse) => {
+	embed.mockResolvedValue({ providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 2, embeddings: vectorsResponse });
+	await expect(searchRag('query', 'knowledge-base', 5, { embeddings, vectors })).rejects.toThrow(/embedding/i);
+	expect(search).not.toHaveBeenCalled();
+});
+
+it('applies the configured relevance threshold and drops nonfinite scores', async () => {
+	const match = search()[0];
+	configuration.mockReturnValue({ ...configuration(), minimumScore: 0.7 });
+	search.mockReturnValue([match, { ...match, score: 0.2 }, { ...match, score: NaN }]);
+	await expect(searchRag('query', 'knowledge-base', 5, { embeddings, vectors })).resolves.toHaveLength(1);
+});
+
+it('stops returning evidence if access is revoked while embedding the query', async () => {
+	embed.mockImplementationOnce(async () => {
+		configuration.mockReturnValue({ ...configuration(), enabled: false });
+		return { providerId: 'openai', modelId: 'text-embedding-3-small', dimensions: 2, embeddings: [[1, 2]] };
+	});
+	await expect(searchRag('query', 'knowledge-base', 5, { embeddings, vectors })).rejects.toThrow('settings changed');
+	expect(search).not.toHaveBeenCalled();
 });

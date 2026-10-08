@@ -9,3 +9,15 @@ it('keeps source-relative line ranges for citation metadata', () => {
 		},
 	]);
 });
+
+it('keeps leading blank lines and repeated passages tied to their exact source locations', () => {
+	const text = '\n\n' + Array.from({ length: 150 }, (_, index) => `Line ${index}: repeated text`).join('\n');
+	const lines = text.split('\n');
+	const chunks = chunkSpans(text);
+	expect(chunks.length).toBeGreaterThan(1);
+	expect(chunks[0].lineStart).toBe(3);
+	for (const chunk of chunks) {
+		expect(chunk.text.length).toBeLessThanOrEqual(2_000);
+		expect(lines.slice(chunk.lineStart - 1, chunk.lineEnd).join('\n')).toContain(chunk.text);
+	}
+});
