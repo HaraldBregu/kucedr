@@ -1,7 +1,9 @@
 import { useEffect, useState, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { Database } from 'lucide-react';
 import { LOCAL_RAG_DATABASE_PROVIDER_ID } from '@shared/rag_types';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import {
@@ -29,7 +31,14 @@ export default function Storage({ knowledge }: { knowledge: KnowledgeState }): J
 	const [indexName, setIndexName] = useState(configuration?.indexName ?? '');
 	useEffect(() => setIndexName(configuration?.indexName ?? ''), [configuration]);
 	return (
-		<SettingsSection title={t('settings.knowledge.storageTitle')}>
+		<SettingsSection
+			title={t('settings.knowledge.storageTitle')}
+			action={
+				<Button variant="outline" size="sm" disabled={disabled} nativeButton={false} render={<Link to="/settings/providers/database" />}>
+					{t('settings.knowledge.configureDatabases')}
+				</Button>
+			}
+		>
 			<SettingsPanel>
 				<SettingsRow
 					title={t('settings.knowledge.databaseTitle')}

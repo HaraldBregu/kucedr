@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import KnowledgePage from '../../../src/renderer/src/pages/settings/pages/knowledge/Page';
 
 jest.mock('@/components/ui/select', () => {
@@ -66,6 +67,8 @@ jest.mock('react-i18next', () => {
 		'settings.knowledge.title': 'Knowledge',
 		'settings.knowledge.enabled': 'Enable Knowledge',
 		'settings.knowledge.embeddingTitle': 'Embedding',
+		'settings.knowledge.configureModels': 'Configure models',
+		'settings.knowledge.configureDatabases': 'Configure databases',
 		'settings.knowledge.embeddingModelTitle': 'Embedding model',
 		'settings.knowledge.embeddingConsent': 'Send document text for embeddings',
 		'settings.knowledge.storageTitle': 'Storage',
