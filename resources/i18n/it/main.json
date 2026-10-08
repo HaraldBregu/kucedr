@@ -356,6 +356,7 @@
 			"description": "Collega i servizi che Kucedr può usare per tuo conto.",
 			"search": "Cerca plugin",
 			"searchPlaceholder": "Cerca plugin...",
+			"clearSearch": "Cancella ricerca plugin",
 			"databaseType": "Database {{type}}",
 			"storageType": "Archiviazione compatibile con S3",
 			"details": "Dettagli",

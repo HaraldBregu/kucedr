@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MoreHorizontal, Plus, Search, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Plus, Search, Trash2, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { McpData, McpSettings } from '@shared/mcp_types';
 import type {
@@ -158,13 +158,26 @@ const PluginsPage = (): React.JSX.Element => {
 							aria-hidden="true"
 						/>
 						<Input
-							type="search"
+							type="text"
+							role="searchbox"
 							value={query}
 							onChange={(event) => setQuery(event.target.value)}
 							placeholder={t('settings.integrations.searchPlaceholder')}
 							aria-label={t('settings.integrations.search')}
-							className="pl-9"
+							className="px-9"
 						/>
+						{query && (
+							<Button
+								type="button"
+								variant="ghost"
+								size="icon-sm"
+								className="absolute right-1 top-1/2 -translate-y-1/2 hover:bg-transparent dark:hover:bg-transparent"
+								onClick={() => setQuery('')}
+								aria-label={t('settings.integrations.clearSearch')}
+							>
+								<X className="size-4" aria-hidden="true" />
+							</Button>
+						)}
 					</div>
 				}
 			/>

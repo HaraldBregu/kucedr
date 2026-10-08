@@ -356,6 +356,7 @@
 			"description": "Connect the services Kucedr can use on your behalf.",
 			"search": "Search plugins",
 			"searchPlaceholder": "Search plugins...",
+			"clearSearch": "Clear plugin search",
 			"databaseType": "{{type}} database",
 			"storageType": "S3-compatible storage",
 			"details": "Details",

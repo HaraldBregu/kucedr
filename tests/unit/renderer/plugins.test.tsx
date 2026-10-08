@@ -194,8 +194,13 @@ it('filters plugins and hides provider sections without matches', async () => {
 	expect(within(microsoftSection).getByText('Outlook Mail')).toBeInTheDocument();
 	expect(within(microsoftSection).queryByText('Microsoft 365 Search')).not.toBeInTheDocument();
 	expect(screen.queryByRole('region', { name: 'Google' })).not.toBeInTheDocument();
+	expect(screen.getByRole('button', { name: 'settings.integrations.clearSearch' })).toBeInTheDocument();
 
-	await user.clear(screen.getByRole('searchbox', { name: 'settings.integrations.search' }));
+	await user.click(screen.getByRole('button', { name: 'settings.integrations.clearSearch' }));
+	expect(screen.getByRole('region', { name: 'Google' })).toBeInTheDocument();
+	expect(
+		screen.queryByRole('button', { name: 'settings.integrations.clearSearch' })
+	).not.toBeInTheDocument();
 	await user.type(
 		screen.getByRole('searchbox', { name: 'settings.integrations.search' }),
 		'missing'
