@@ -34,32 +34,32 @@ export default function Provider({
 				description={t('settings.storage.provider.description')}
 				actions={
 					<div className="flex flex-wrap items-center justify-end gap-2">
-					<Select
-						value={providerId ?? null}
-						onValueChange={(value) => {
-							if (value) onChange(value);
-						}}
-						disabled={disabled || providers.length === 0}
-					>
-						<SelectTrigger
-							className="min-w-40 max-w-full text-xs"
-							aria-label={t('settings.storage.provider.title')}
+						<Select
+							value={providerId ?? null}
+							onValueChange={(value) => {
+								if (value) onChange(value);
+							}}
+							disabled={disabled || providers.length === 0}
 						>
-							<SelectValue placeholder={t('settings.storage.provider.placeholder')}>
-								{selectedProvider?.name}
-							</SelectValue>
-						</SelectTrigger>
-						<SelectContent>
-							{providers.map((provider) => (
-								<SelectItem key={provider.id} value={provider.id}>
-									{provider.name}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-					<Button variant="outline" size="sm" asChild>
-						<Link to="/settings/providers/storage">{t('settings.storageProviders.add')}</Link>
-					</Button>
+							<SelectTrigger
+								className="min-w-40 max-w-full text-xs"
+								aria-label={t('settings.storage.provider.title')}
+							>
+								<SelectValue placeholder={t('settings.storage.provider.placeholder')}>
+									{selectedProvider?.name}
+								</SelectValue>
+							</SelectTrigger>
+							<SelectContent>
+								{providers.map((provider) => (
+									<SelectItem key={provider.id} value={provider.id}>
+										{provider.name}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+						<Button variant="outline" size="sm" asChild>
+							<Link to="/settings/providers/storage">{t('settings.storageProviders.add')}</Link>
+						</Button>
 					</div>
 				}
 			/>

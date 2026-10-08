@@ -37,9 +37,12 @@ export default function StorageProvidersPage(): React.JSX.Element {
 
 	useEffect(() => {
 		let cancelled = false;
-		void window.provider.listEnabledPlugins().then((enabled) => {
-			if (!cancelled) setEnabledPresetIds(enabled.storage);
-		}).catch(() => undefined);
+		void window.provider
+			.listEnabledPlugins()
+			.then((enabled) => {
+				if (!cancelled) setEnabledPresetIds(enabled.storage);
+			})
+			.catch(() => undefined);
 		void window.storage.listProviders().then(
 			(saved) => {
 				if (!cancelled) {
@@ -65,10 +68,14 @@ export default function StorageProvidersPage(): React.JSX.Element {
 				title={t('settings.tabs.storage')}
 				description={t('settings.storageProviders.description')}
 				action={
-					<Button size="sm" disabled={loading || removing !== null || editing !== null} onClick={() => {
-						setSelectedPresetId(undefined);
-						setEditing('new');
-					}}>
+					<Button
+						size="sm"
+						disabled={loading || removing !== null || editing !== null}
+						onClick={() => {
+							setSelectedPresetId(undefined);
+							setEditing('new');
+						}}
+					>
 						<Plus className="size-3.5" />
 						{t('settings.storageProviders.add')}
 					</Button>

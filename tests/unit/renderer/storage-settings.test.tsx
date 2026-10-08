@@ -77,7 +77,6 @@ const settings = {
 	syncCronExpression: '0 3 * * *',
 };
 
-
 beforeEach(() => {
 	jest.clearAllMocks();
 	operationListener = undefined;
@@ -338,9 +337,7 @@ it('shows a retry without editable defaults when settings cannot be loaded', asy
 		</MemoryRouter>
 	);
 
-	expect(await screen.findByRole('alert')).toHaveTextContent(
-		'Could not load storage settings.'
-	);
+	expect(await screen.findByRole('alert')).toHaveTextContent('Could not load storage settings.');
 	expect(screen.getByRole('button', { name: 'Try Again' })).toBeEnabled();
 	expect(screen.queryByRole('button', { name: 'Back up now' })).not.toBeInTheDocument();
 	expect(container.querySelector('[aria-busy="true"]')).not.toBeInTheDocument();

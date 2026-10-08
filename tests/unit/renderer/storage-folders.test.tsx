@@ -60,7 +60,6 @@ const storageApi = {
 	restore: jest.fn(),
 };
 
-
 beforeEach(() => {
 	jest.clearAllMocks();
 	Object.defineProperty(window, 'PointerEvent', { configurable: true, value: MouseEvent });

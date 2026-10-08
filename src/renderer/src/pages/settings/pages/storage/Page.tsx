@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import {
-	AlertTriangle,
-	Download,
-	FolderSync,
-	Plus,
-	Trash2,
-	Upload,
-} from 'lucide-react';
+import { AlertTriangle, Download, FolderSync, Plus, Trash2, Upload } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -110,7 +103,10 @@ const StoragePage: React.FC = () => {
 
 	useEffect(() => {
 		if (!versionedEnabled || !operationStatus || operationStatus.state === 'running') return;
-		void window.storage.listConflicts().then(setConflicts).catch(() => undefined);
+		void window.storage
+			.listConflicts()
+			.then(setConflicts)
+			.catch(() => undefined);
 	}, [versionedEnabled, operationStatus?.revision, operationStatus?.state]);
 
 	const storage = draft ?? settings;
@@ -329,19 +325,37 @@ const StoragePage: React.FC = () => {
 					</SettingsSection>
 
 					<div className="flex flex-wrap items-center gap-2">
-						<Button disabled={controlsDisabled || storage.paths.length === 0} onClick={() => void runBackup()}>
+						<Button
+							disabled={controlsDisabled || storage.paths.length === 0}
+							onClick={() => void runBackup()}
+						>
 							<Upload className="size-3.5" />
-							{runningOperation?.operation === 'backup' ? t('settings.storage.pushing') : t(versionedEnabled ? 'settings.storage.versioned.syncNow' : 'settings.storage.backup')}
+							{runningOperation?.operation === 'backup'
+								? t('settings.storage.pushing')
+								: t(
+										versionedEnabled
+											? 'settings.storage.versioned.syncNow'
+											: 'settings.storage.backup'
+									)}
 						</Button>
-						<Button variant="outline" disabled={controlsDisabled || storage.paths.length === 0} onClick={() => setRestoreOpen(true)}>
+						<Button
+							variant="outline"
+							disabled={controlsDisabled || storage.paths.length === 0}
+							onClick={() => setRestoreOpen(true)}
+						>
 							<Download className="size-3.5" />
-							{runningOperation?.operation === 'restore' ? t('settings.storage.pulling') : t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restore')}
+							{runningOperation?.operation === 'restore'
+								? t('settings.storage.pulling')
+								: t(
+										versionedEnabled
+											? 'settings.storage.versioned.catchUp'
+											: 'settings.storage.restore'
+									)}
 						</Button>
 					</div>
 					<SettingsSection
 						title={t('settings.storage.autoSync.sectionTitle')}
 						description={t('settings.storage.autoSync.sectionDescription')}
-
 					>
 						<Card size="sm" className="gap-0! py-0!" aria-busy={Boolean(runningOperation)}>
 							<CardContent className="p-0!">
@@ -359,7 +373,11 @@ const StoragePage: React.FC = () => {
 												className="w-56 max-w-full text-xs"
 												aria-label={t('settings.storage.autoSync.interval')}
 											>
-												<SelectValue>{t(`settings.storage.autoSync.${customSchedule ? 'custom' : intervalValue}`)}</SelectValue>
+												<SelectValue>
+													{t(
+														`settings.storage.autoSync.${customSchedule ? 'custom' : intervalValue}`
+													)}
+												</SelectValue>
 											</SelectTrigger>
 											<SelectContent>
 												<SelectItem value="off">{t('settings.storage.autoSync.off')}</SelectItem>
@@ -368,32 +386,39 @@ const StoragePage: React.FC = () => {
 														{t(`settings.storage.autoSync.${interval.key}`)}
 													</SelectItem>
 												))}
-												{(
+												{
 													<SelectItem value="custom">
 														{t('settings.storage.autoSync.custom')}
 													</SelectItem>
-												)}
+												}
 											</SelectContent>
 										</Select>
 									}
 								/>
 
-								{(customSchedule || intervalValue === 'custom') && <SettingsRow
-									title={t('settings.storage.autoSync.cronExpression')}
-									description={t('settings.storage.autoSync.cronDescription')}
-									actions={
-										<Input
-											value={cronDraft ?? storage.syncCronExpression}
-											aria-label={t('settings.storage.autoSync.cronExpression')}
-											className="w-56 max-w-full font-mono text-xs"
-											disabled={controlsDisabled}
-											onChange={(event) => setCronDraft(event.target.value)}
-											onBlur={() => {
-												if (cronDraft !== undefined) updateDraft({ ...storage, syncEnabled: true, syncCronExpression: cronDraft });
-											}}
-										/>
-									}
-								/>}
+								{(customSchedule || intervalValue === 'custom') && (
+									<SettingsRow
+										title={t('settings.storage.autoSync.cronExpression')}
+										description={t('settings.storage.autoSync.cronDescription')}
+										actions={
+											<Input
+												value={cronDraft ?? storage.syncCronExpression}
+												aria-label={t('settings.storage.autoSync.cronExpression')}
+												className="w-56 max-w-full font-mono text-xs"
+												disabled={controlsDisabled}
+												onChange={(event) => setCronDraft(event.target.value)}
+												onBlur={() => {
+													if (cronDraft !== undefined)
+														updateDraft({
+															...storage,
+															syncEnabled: true,
+															syncCronExpression: cronDraft,
+														});
+												}}
+											/>
+										}
+									/>
+								)}
 							</CardContent>
 						</Card>
 					</SettingsSection>
@@ -431,57 +456,68 @@ const StoragePage: React.FC = () => {
 					)}
 
 					<details className="group">
-						<summary className="cursor-pointer text-sm font-medium text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">{t('settings.storage.versioned.title')}</summary>
+						<summary className="cursor-pointer text-sm font-medium text-muted-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">
+							{t('settings.storage.versioned.title')}
+						</summary>
 						<div className="mt-4 grid gap-4">
-					<SettingsSection
-						title={t('settings.storage.versioned.title')}
-						description={t('settings.storage.versioned.description')}
-					>
-						<Card size="sm" className="gap-0! py-0!">
-							<CardContent className="p-0!">
-								<SettingsRow
-									title={t('settings.storage.versioned.enable')}
-									description={t('settings.storage.versioned.enableDescription')}
-									actions={
-										<Switch
-											checked={versionedEnabled}
-											aria-label={t('settings.storage.versioned.enable')}
-											disabled={busy || !selectedProvider || storage.paths.length === 0}
-											onCheckedChange={(enabled) => void setVersionHistory(enabled)}
-										/>
-									}
-								/>
-							</CardContent>
-						</Card>
-					</SettingsSection>
-					{versionedEnabled && conflicts.length > 0 && (
-						<SettingsSection
-							title={t('settings.storage.versioned.conflicts')}
-							description={t('settings.storage.versioned.conflictsDescription')}
-						>
-							<Card size="sm" className="gap-0! py-0!">
-								<CardContent className="p-0!">
-									{conflicts.map((conflict) => (
+							<SettingsSection
+								title={t('settings.storage.versioned.title')}
+								description={t('settings.storage.versioned.description')}
+							>
+								<Card size="sm" className="gap-0! py-0!">
+									<CardContent className="p-0!">
 										<SettingsRow
-											key={`${conflict.workspaceId}:${conflict.versionId}`}
-											title={conflict.path ?? t('settings.storage.versioned.deleted')}
-											description={`${conflict.kind} · ${conflict.versionId}`}
+											title={t('settings.storage.versioned.enable')}
+											description={t('settings.storage.versioned.enableDescription')}
+											actions={
+												<Switch
+													checked={versionedEnabled}
+													aria-label={t('settings.storage.versioned.enable')}
+													disabled={busy || !selectedProvider || storage.paths.length === 0}
+													onCheckedChange={(enabled) => void setVersionHistory(enabled)}
+												/>
+											}
 										/>
-									))}
-								</CardContent>
-							</Card>
-						</SettingsSection>
-					)}
-
+									</CardContent>
+								</Card>
+							</SettingsSection>
+							{versionedEnabled && conflicts.length > 0 && (
+								<SettingsSection
+									title={t('settings.storage.versioned.conflicts')}
+									description={t('settings.storage.versioned.conflictsDescription')}
+								>
+									<Card size="sm" className="gap-0! py-0!">
+										<CardContent className="p-0!">
+											{conflicts.map((conflict) => (
+												<SettingsRow
+													key={`${conflict.workspaceId}:${conflict.versionId}`}
+													title={conflict.path ?? t('settings.storage.versioned.deleted')}
+													description={`${conflict.kind} · ${conflict.versionId}`}
+												/>
+											))}
+										</CardContent>
+									</Card>
+								</SettingsSection>
+							)}
 						</div>
 					</details>
 
 					<Dialog open={restoreOpen} onOpenChange={setRestoreOpen}>
 						<DialogContent>
 							<DialogHeader>
-								<DialogTitle>{t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restoreDialog.title')}</DialogTitle>
+								<DialogTitle>
+									{t(
+										versionedEnabled
+											? 'settings.storage.versioned.catchUp'
+											: 'settings.storage.restoreDialog.title'
+									)}
+								</DialogTitle>
 								<DialogDescription>
-									{t(versionedEnabled ? 'settings.storage.versioned.catchUpDescription' : 'settings.storage.restoreDialog.description')}
+									{t(
+										versionedEnabled
+											? 'settings.storage.versioned.catchUpDescription'
+											: 'settings.storage.restoreDialog.description'
+									)}
 								</DialogDescription>
 							</DialogHeader>
 							<DialogFooter>
@@ -493,7 +529,11 @@ const StoragePage: React.FC = () => {
 									onClick={() => void runRestore()}
 								>
 									<Download className="size-3" />
-									{t(versionedEnabled ? 'settings.storage.versioned.catchUp' : 'settings.storage.restoreDialog.confirm')}
+									{t(
+										versionedEnabled
+											? 'settings.storage.versioned.catchUp'
+											: 'settings.storage.restoreDialog.confirm'
+									)}
 								</Button>
 							</DialogFooter>
 						</DialogContent>
