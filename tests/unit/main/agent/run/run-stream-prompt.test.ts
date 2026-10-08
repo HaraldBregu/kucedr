@@ -1277,6 +1277,39 @@ describe('run stream system prompt', () => {
 		expect(runModelTurnMock).toHaveBeenCalledTimes(2);
 	});
 
+	it('exposes only task-management tools for an explicit scheduled-task update', async () => {
+		const tools = ['read', 'complete_bootstrap', 'list_tasks', 'update_task'].map((id) =>
+			jsonTool({
+				id,
+				name: id,
+				description: `${id} description`,
+				schema: { type: 'object' },
+				execute: jest.fn(),
+			})
+		);
+
+		for await (const _event of stream(
+			{ location: '/workspace' },
+			createSessionState(),
+			{
+				runId: 'enable-scheduled-tasks',
+				task: 'chat',
+				message: 'update those schdeuled tasks by enabling them',
+				model: 'test-model',
+				type: 'default',
+				agentId: 'main',
+				contextMode: 'minimal',
+			},
+			new AbortController().signal,
+			{ tools, progressiveDiscovery: true }
+		))
+			void _event;
+
+		expect(
+			(runModelTurnMock.mock.calls[0][5] as Array<{ id: string }>).map((tool) => tool.id)
+		).toEqual(['list_tasks', 'update_task', 'tool_search']);
+	});
+
 	it('activates a searched native tool for the next turn', async () => {
 		const execute = jest.fn();
 		const bash = jsonTool({

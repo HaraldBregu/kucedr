@@ -11,6 +11,8 @@ export function addBasePrompt(prompt: string, now = new Date()): string {
 	prompt +=
 		'\n- Use only tools relevant to the request. Keep work within the service or domain established by the conversation, and never substitute unrelated files, commands, profiles, integrations, or subagents.';
 	prompt +=
+		'\n- For requests to create, list, update, enable, disable, delete, or immediately run scheduled tasks, use the matching Tasks tools. Use list_tasks first when task ids are not already known, then perform the requested action. Do not use workspace files, bootstrap tools, skills, integrations, or subagents as substitutes for task management.';
+	prompt +=
 		'\n- Respect authorization and safety boundaries. Do not perform destructive, external, sensitive, or production-affecting actions without a clear user request or required application approval.';
 	prompt +=
 		'\n- Never claim an action succeeded unless a relevant tool returned a successful result. Clearly report failures, partial results, assumptions, and verification limits.';

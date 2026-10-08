@@ -71,6 +71,7 @@ import { updateSoulTool } from '../tools/soul/update';
 import { updateUserTool } from '../tools/user/update';
 import { requestsSkillTools } from './run_skill_request';
 import { resolveMcpServerHint } from './run_mcp_hint';
+import { requestedTaskTools } from './run_task_request';
 
 export interface StreamOptions {
 	tools?: Tool[];
@@ -195,6 +196,7 @@ async function* loop(
 		return settings.permission !== 'deny';
 	};
 	const skillToolsRequested = requestsSkillTools(input.message, input.explicitSkill);
+	const taskToolIds = requestedTaskTools(input.message);
 	const skillLoadingEnabled =
 		!bootstrap &&
 		skillToolsRequested &&
@@ -352,6 +354,7 @@ async function* loop(
 		tools = filterRuntimeTools(filterTools(tools, input.toolsAllow, input.toolsDeny));
 		tools = filterPlanTools(tools, input.interactionMode);
 		if (!bootstrap && (!options.tools || options.progressiveDiscovery === true)) {
+			const taskRequest = taskToolIds.length > 0;
 			const requiredIds = new Set([
 				'read', 'write', 'edit', 'patch', 'undo', 'redo', 'complete_bootstrap', 'update_identity', 'update_soul', 'update_user',
 				'subagent', 'subagents',
@@ -368,7 +371,9 @@ async function* loop(
 				eligible: filterEligibleTools(tools),
 				required: mcpServerHint
 					? []
-					: filterEligibleTools(tools).filter((tool) => requiredIds.has(tool.id)),
+					: filterEligibleTools(tools).filter((tool) =>
+							taskRequest ? taskToolIds.includes(tool.id) : requiredIds.has(tool.id)
+						),
 				discoveryEnabled: searchEnabled,
 				mcpTools: mcpEntries,
 				mcpServerHint,
