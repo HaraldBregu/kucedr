@@ -44,7 +44,6 @@ export function AppSidebarFooter(): React.JSX.Element {
 		description: authenticatedUser?.email ?? t('settings.sidebar.summary'),
 		avatarPath: authenticatedUser?.avatarPath,
 	};
-	const accountInitial = accountItem.title.charAt(0).toUpperCase();
 	const menuItems = [
 		{ path: '/settings/account', label: t('settings.tabs.account'), icon: UserRound },
 		{ path: '/settings/storage', label: t('settings.tabs.storage'), icon: HardDrive },
@@ -109,7 +108,7 @@ export function AppSidebarFooter(): React.JSX.Element {
 									<Avatar className="size-8 rounded-md">
 										<AvatarImage src={accountItem.avatarPath} alt={accountItem.title} />
 										<AvatarFallback className="rounded-md bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground">
-											{accountInitial}
+											<UserRound className="size-4" />
 										</AvatarFallback>
 									</Avatar>
 									<div className="grid min-w-0 flex-1 text-left text-xs leading-tight">
