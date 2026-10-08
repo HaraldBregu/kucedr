@@ -40,7 +40,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 			{ id: 'update_identity' },
 			{ id: 'tool_search' },
 		] as never);
-		expect(complete).toContain('### Built-in\n- `read`\n- `bash`\n- `update_identity`\n- `tool_search`');
+		expect(complete).toContain('### Loaded built-in\n- `read`\n- `bash`\n- `update_identity`\n- `tool_search`');
 		for (const name of ['BOOTSTRAP', 'MEMORY']) {
 			expect(complete).toContain(`### ${name}.md`);
 		}
@@ -55,7 +55,7 @@ it('composes agent context from runtime modules and tools without using AGENTS.m
 		expect(complete).not.toContain('Obsolete generated content');
 		const voice = await buildWorkspaceContext(config, 'full', '', [{ id: 'complete_bootstrap' }] as never);
 		expect(voice).toContain('### SOUL');
-		expect(voice).toContain('### Built-in\n- `complete_bootstrap`');
+		expect(voice).toContain('### Loaded built-in\n- `complete_bootstrap`');
 		await completeBootstrapTool.run({});
 		const next = await buildWorkspaceContext(config, 'full');
 		expect(next).toContain('Calm and direct');

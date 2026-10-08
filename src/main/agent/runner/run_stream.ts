@@ -461,7 +461,8 @@ async function* loop(
 				config,
 				contextMode === 'workspace' || session.category === 'main' ? 'full' : 'core',
 				memoryContext,
-				turnTools
+				turnTools,
+				synthesisOnly ? [] : tools
 			);
 			systemPrompt += `\n\n${workspaceContext}`;
 			const runtimeContext = activeGoalContext;
